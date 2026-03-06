@@ -22,7 +22,7 @@ export const MenuTrigger = ({
   return (
     <MenuPrimitive.Trigger
       className={createClassName(
-        "flex h-10 select-none items-center justify-center gap-1.5 rounded-md border border-gray-200 bg-gray-50 px-3.5 font-medium text-base text-gray-900 hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-blue-800 focus-visible:-outline-offset-1 active:bg-gray-100 data-popup-open:bg-gray-100",
+        "flex h-10 select-none items-center justify-center gap-1.5 border border-accent-foreground bg-background px-3.5 font-medium text-base text-foreground hover:bg-background-dimmed focus-visible:outline-2 focus-visible:outline-primary focus-visible:-outline-offset-1 active:bg-background-dimmed data-popup-open:bg-background-dimmed",
         className,
       )}
       {...props}
@@ -80,7 +80,7 @@ export const MenuPopup = ({
   return (
     <MenuPrimitive.Popup
       className={createClassName(
-        "origin-[var(--transform-origin)] rounded-md bg-[canvas] py-1 text-gray-900 shadow-gray-200 shadow-lg outline-1 outline-gray-200 transition-[transform,scale,opacity] data-ending-style:scale-90 data-starting-style:scale-90 data-ending-style:opacity-0 data-starting-style:opacity-0 dark:shadow-none dark:outline-gray-300 dark:-outline-offset-1",
+        "origin-(--transform-origin) border border-accent-foreground bg-background py-1 text-foreground transition-[transform,scale,opacity] data-ending-style:scale-90 data-starting-style:scale-90 data-ending-style:opacity-0 data-starting-style:opacity-0",
         className,
       )}
       {...props}
@@ -144,7 +144,7 @@ export const MenuItem = ({
   return (
     <MenuPrimitive.Item
       className={createClassName(
-        "flex cursor-default select-none py-2 pr-8 pl-4 text-sm leading-4 outline-0 data-highlighted:relative data-highlighted:z-0 data-highlighted:text-gray-50 data-highlighted:before:absolute data-highlighted:before:inset-x-1 data-highlighted:before:inset-y-0 data-highlighted:before:z-[-1] data-highlighted:before:rounded-sm data-highlighted:before:bg-gray-900",
+        "flex cursor-default select-none py-2 pr-8 pl-4 text-sm leading-4 outline-0 data-highlighted:relative data-highlighted:z-0 data-highlighted:text-background data-highlighted:before:absolute data-highlighted:before:inset-x-1 data-highlighted:before:inset-y-0 data-highlighted:before:z-[-1] data-highlighted:before:bg-foreground",
         className,
       )}
       {...props}
@@ -162,7 +162,10 @@ export const MenuSeparator = ({
 }: MenuSeparator.Props): JSX.Element => {
   return (
     <MenuPrimitive.Separator
-      className={createClassName("mx-4 my-1.5 h-px bg-gray-200", className)}
+      className={createClassName(
+        "mx-4 my-1.5 h-px bg-accent-foreground",
+        className,
+      )}
       {...props}
     />
   );
@@ -185,7 +188,7 @@ export const MenuGroupLabel = ({
   return (
     <MenuPrimitive.GroupLabel
       className={createClassName(
-        "cursor-default select-none py-2 pr-8 pl-7.5 text-gray-600 text-sm leading-4",
+        "cursor-default select-none py-2 pr-8 pl-7.5 text-foreground-dimmed text-sm leading-4",
         className,
       )}
       {...props}
@@ -224,7 +227,7 @@ export const MenuRadioItem = ({
   return (
     <MenuPrimitive.RadioItem
       className={createClassName(
-        "grid cursor-default select-none grid-cols-[0.75rem_1fr] items-center gap-2 py-2 pr-8 pl-2.5 text-sm leading-4 outline-0 data-highlighted:relative data-highlighted:z-0 data-highlighted:text-gray-50 data-highlighted:before:absolute data-highlighted:before:inset-x-1 data-highlighted:before:inset-y-0 data-highlighted:before:z-[-1] data-highlighted:before:rounded-sm data-highlighted:before:bg-gray-900",
+        "grid cursor-default select-none grid-cols-[0.75rem_1fr] items-center gap-2 py-2 pr-8 pl-2.5 text-sm leading-4 outline-0 data-highlighted:relative data-highlighted:z-0 data-highlighted:text-background data-highlighted:before:absolute data-highlighted:before:inset-x-1 data-highlighted:before:inset-y-0 data-highlighted:before:z-[-1] data-highlighted:before:bg-foreground",
         className,
         classList?.root,
       )}
@@ -258,7 +261,7 @@ export const MenuCheckboxItem = ({
   return (
     <MenuPrimitive.CheckboxItem
       className={createClassName(
-        "grid cursor-default select-none grid-cols-[0.75rem_1fr] items-center gap-2 py-2 pr-8 pl-2.5 text-sm leading-4 outline-0 data-highlighted:relative data-highlighted:z-0 data-highlighted:text-gray-50 data-highlighted:before:absolute data-highlighted:before:inset-x-1 data-highlighted:before:inset-y-0 data-highlighted:before:z-[-1] data-highlighted:before:rounded-sm data-highlighted:before:bg-gray-900",
+        "grid cursor-default select-none grid-cols-[0.75rem_1fr] items-center gap-2 py-2 pr-8 pl-2.5 text-sm leading-4 outline-0 data-highlighted:relative data-highlighted:z-0 data-highlighted:text-background data-highlighted:before:absolute data-highlighted:before:inset-x-1 data-highlighted:before:inset-y-0 data-highlighted:before:z-[-1] data-highlighted:before:bg-foreground",
         className,
         classList?.root,
       )}
@@ -300,7 +303,7 @@ export const SubMenuTrigger = ({
   return (
     <MenuPrimitive.SubmenuTrigger
       className={createClassName(
-        "flex cursor-default select-none items-center justify-between gap-4 py-2 pr-4 pl-4 text-sm leading-4 outline-0 data-highlighted:relative data-popup-open:relative data-highlighted:z-0 data-popup-open:z-0 data-highlighted:text-gray-50 data-highlighted:data-popup-open:before:bg-gray-900 data-highlighted:before:absolute data-popup-open:before:absolute data-highlighted:before:inset-x-1 data-popup-open:before:inset-x-1 data-highlighted:before:inset-y-0 data-popup-open:before:inset-y-0 data-highlighted:before:z-[-1] data-popup-open:before:z-[-1] data-highlighted:before:rounded-sm data-popup-open:before:rounded-sm data-highlighted:before:bg-gray-900 data-popup-open:before:bg-gray-100",
+        "flex cursor-default select-none items-center justify-between gap-4 py-2 pr-4 pl-4 text-sm leading-4 outline-0 data-highlighted:relative data-popup-open:relative data-highlighted:z-0 data-popup-open:z-0 data-highlighted:text-gray-50 data-highlighted:data-popup-open:before:bg-foreground data-highlighted:before:absolute data-popup-open:before:absolute data-highlighted:before:inset-x-1 data-popup-open:before:inset-x-1 data-highlighted:before:inset-y-0 data-popup-open:before:inset-y-0 data-highlighted:before:z-[-1] data-popup-open:before:z-[-1] data-highlighted:before:bg-foreground data-popup-open:before:bg-background-dimmed",
         className,
       )}
       {...props}
@@ -319,7 +322,7 @@ export const Menubar = ({
   return (
     <MenubarPrimitive
       className={createClassName(
-        "flex rounded-md border border-gray-200 bg-gray-50 p-0.5",
+        "flex border border-accent-foreground bg-background p-0.5",
         className,
       )}
       {...props}

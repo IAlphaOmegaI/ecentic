@@ -46,7 +46,7 @@ export const SheetPopup = ({
       />
       <SheetPrimitive.Popup
         className={createClassName(
-          "fixed z-50 flex max-h-screen flex-col gap-4 bg-accent text-popover-foreground shadow-lg outline-hidden transition ease-in-out data-closed:duration-300 data-open:duration-500",
+          "fixed z-50 flex max-h-screen flex-col gap-4 bg-accent text-popover-foreground outline-hidden transition ease-in-out data-closed:duration-300 data-open:duration-500",
           side === "right" &&
             "inset-y-0 right-0 h-full w-3/4 origin-right border-l data-ending-style:translate-x-full data-starting-style:translate-x-full sm:max-w-sm",
           side === "left" &&
@@ -57,16 +57,13 @@ export const SheetPopup = ({
             "inset-x-0 bottom-0 mx-auto h-auto w-screen origin-bottom border-t data-ending-style:translate-y-full data-starting-style:translate-y-full",
           className,
           classList?.root,
-          {
-            "rounded-l-lg": side === "right",
-          },
         )}
         {...props}
       >
         {children}
         <SheetPrimitive.Close
           className={createClassName(
-            "absolute top-4 right-4 rounded-xs text-muted-foreground opacity-50 ring-offset-popover transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-[3px] focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+            "absolute top-4 right-4 text-muted-foreground opacity-50 ring-offset-popover transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-[3px] focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
             classList?.close?.root,
           )}
         >

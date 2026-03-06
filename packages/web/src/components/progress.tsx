@@ -17,7 +17,7 @@ export const Progress = ({
       {children}
       <ProgressPrimitive.Track
         className={createClassName(
-          "h-1 overflow-hidden rounded bg-gray-200 shadow-[inset_0_0_0_1px] shadow-gray-200",
+          "h-1 overflow-hidden bg-background-dimmed shadow-[inset_0_0_0_1px] shadow-accent-foreground",
           classList?.track,
         )}
       >
@@ -46,7 +46,7 @@ export const ProgressLabel = ({
   return (
     <ProgressPrimitive.Label
       className={createClassName(
-        "font-medium text-gray-900 text-sm",
+        "font-medium text-foreground text-sm",
         className,
       )}
       {...props}
@@ -64,7 +64,7 @@ export const ProgressValue = ({
   return (
     <ProgressPrimitive.Value
       className={createClassName(
-        "font-medium text-gray-900 text-sm",
+        "font-medium text-foreground text-sm",
         className,
       )}
       {...props}

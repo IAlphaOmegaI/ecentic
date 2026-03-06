@@ -26,7 +26,7 @@ export const TooltipTrigger = ({
   return (
     <TooltipPrimitive.Trigger
       className={createClassName(
-        "flex size-8 select-none items-center justify-center rounded-sm text-gray-900 hover:bg-gray-100 focus-visible:bg-none focus-visible:outline-2 focus-visible:outline-blue-800 focus-visible:-outline-offset-1 active:bg-gray-200 data-popup-open:bg-gray-100 focus-visible:[&:not(:hover)]:bg-transparent",
+        "flex size-8 select-none items-center justify-center text-foreground hover:bg-background-dimmed focus-visible:bg-none focus-visible:not-[&:hover]:bg-transparent focus-visible:outline-2 focus-visible:outline-primary focus-visible:-outline-offset-1 active:bg-background-dimmed data-popup-open:bg-background-dimmed",
         className,
       )}
       {...props}
@@ -78,7 +78,7 @@ export const TooltipPopup = ({
   return (
     <TooltipPrimitive.Popup
       className={createClassName(
-        "flex origin-[var(--transform-origin)] flex-col rounded-md bg-[canvas] px-2 py-1 text-sm shadow-gray-200 shadow-lg outline-1 outline-gray-200 transition-[transform,scale,opacity] data-ending-style:scale-90 data-starting-style:scale-90 data-ending-style:opacity-0 data-starting-style:opacity-0 data-instant:duration-0 dark:shadow-none dark:outline-gray-300 dark:-outline-offset-1",
+        "flex origin-(--transform-origin) flex-col border border-accent-foreground bg-background px-2 py-1 text-sm transition-[transform,scale,opacity] data-ending-style:scale-90 data-starting-style:scale-90 data-ending-style:opacity-0 data-starting-style:opacity-0 data-instant:duration-0",
         className,
       )}
       {...props}

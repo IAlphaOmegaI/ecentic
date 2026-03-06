@@ -12,7 +12,7 @@ export const Radio = ({
   return (
     <RadioPrimitive.Root
       className={createClassName(
-        "flex size-5 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-blue-800 focus-visible:outline-offset-2 data-unchecked:border data-unchecked:border-gray-300 data-checked:bg-primary",
+        "flex size-5 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 data-unchecked:border data-unchecked:border-accent-foreground data-checked:bg-primary",
         className,
         classList?.root,
       )}

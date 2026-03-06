@@ -30,7 +30,7 @@ export const ToolbarButton = ({
   return (
     <ToolbarPrimitive.Button
       className={createClassName(
-        "flex h-8 select-none items-center justify-center rounded-sm px-[0.75rem] font-[inherit] font-medium text-gray-600 text-sm hover:bg-gray-100 focus-visible:bg-none focus-visible:outline focus-visible:outline-blue-800 focus-visible:-outline-offset-1 active:bg-gray-200 data-pressed:bg-gray-100 data-pressed:text-gray-900",
+        "flex h-8 select-none items-center justify-center px-3 font-[inherit] font-medium text-foreground-dimmed text-sm hover:bg-background-dimmed focus-visible:bg-none focus-visible:outline focus-visible:outline-primary focus-visible:-outline-offset-1 active:bg-background-dimmed data-pressed:bg-background-dimmed data-pressed:text-foreground",
         className,
       )}
       {...props}

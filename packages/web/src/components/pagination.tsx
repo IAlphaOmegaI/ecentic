@@ -61,7 +61,7 @@ export const PaginationItem = ({
       className: cn(
         buttonVariants({
           size,
-          variant: "default",
+          variant: "outline",
         }),
         isActive && "!text-primary-dimmed border-primary-dimmed",
         className,

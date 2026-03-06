@@ -13,7 +13,7 @@ export const Checkbox = ({
   return (
     <CheckBoxPrimitive.Root
       className={createClassName(
-        "flex size-5 items-center justify-center rounded-sm focus-visible:outline-2 focus-visible:outline-primary-dimmed focus-visible:outline-offset-2 data-unchecked:border data-unchecked:border-gray-300 data-checked:bg-primary",
+        "flex size-5 items-center justify-center focus-visible:outline-2 focus-visible:outline-primary-dimmed focus-visible:outline-offset-2 data-unchecked:border data-unchecked:border-accent-foreground data-checked:bg-primary",
         className,
         classList?.root,
       )}

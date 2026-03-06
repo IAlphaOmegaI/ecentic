@@ -29,13 +29,13 @@ export const Slider = ({
       >
         <SliderPrimitive.Track
           className={createClassName(
-            "h-2 w-full select-none rounded bg-background-rich shadow-[inset_0_0_0_1px] shadow-background-dimmed",
+            "h-2 w-full select-none bg-background-rich shadow-[inset_0_0_0_1px] shadow-background-dimmed",
             classList?.track,
           )}
         >
           <SliderPrimitive.Indicator
             className={createClassName(
-              "select-none rounded bg-primary",
+              "select-none bg-primary",
               classList?.indicator,
             )}
           />
@@ -46,7 +46,7 @@ export const Slider = ({
               index={index}
               inputRef={index === 0 ? inputRef : undefined}
               className={createClassName(
-                "h-[calc(var(--spacing)*6-2px)] w-8 select-none rounded-full bg-background-rich outline-1 outline-accent-foreground focus-visible:outline-2 focus-visible:outline-primary",
+                "h-[calc(var(--spacing)*6-2px)] w-8 select-none bg-background-rich outline-1 outline-accent-foreground focus-visible:outline-2 focus-visible:outline-primary",
                 classList?.thumb,
               )}
               onBlur={onThumbBlur}

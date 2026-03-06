@@ -28,7 +28,7 @@ export const ComboboxInput = ({
   return (
     <ComboboxPrimitive.Input
       className={createClassName(
-        "h-10 w-64 rounded-md border border-gray-200 bg-[canvas] pl-3.5 font-normal text-base text-gray-900 focus:outline focus:outline-blue-800 focus:-outline-offset-1",
+        "h-10 w-64 border border-accent-foreground bg-background pl-3.5 font-normal text-base text-foreground focus:outline focus:outline-primary focus:-outline-offset-1",
         className,
       )}
       {...props}
@@ -47,7 +47,7 @@ export const ComboboxTrigger = ({
   return (
     <ComboboxPrimitive.Trigger
       className={createClassName(
-        "flex h-10 w-6 items-center justify-center rounded bg-transparent p-0",
+        "flex h-10 w-6 items-center justify-center bg-transparent p-0",
         className,
       )}
       {...props}
@@ -87,7 +87,7 @@ export const ComboboxChips = ({
   return (
     <ComboboxPrimitive.Chips
       className={createClassName(
-        "flex w-64 flex-wrap items-center gap-0.5 rounded-md border border-gray-200 px-1.5 py-1 focus-within:outline-2 focus-within:outline-blue-800 focus-within:-outline-offset-1 min-[500px]:w-[22rem]",
+        "flex w-64 flex-wrap items-center gap-0.5 border border-accent-foreground px-1.5 py-1 focus-within:outline-2 focus-within:outline-primary focus-within:-outline-offset-1 min-[500px]:w-88",
         className,
       )}
       {...props}
@@ -106,7 +106,7 @@ export const ComboboxChip = ({
   return (
     <ComboboxPrimitive.Chip
       className={createClassName(
-        "flex cursor-default items-center gap-1 rounded-md bg-gray-100 px-1.5 py-[0.2rem] text-gray-900 text-sm outline-none focus-within:bg-blue-800 focus-within:text-gray-50 focus-within:-outline-offset-1 [@media(hover:hover)]:[&[data-highlighted]]:bg-blue-800 [@media(hover:hover)]:[&[data-highlighted]]:text-gray-50",
+        "flex cursor-default items-center gap-1 bg-background-dimmed px-1.5 py-[0.2rem] text-foreground text-sm outline-none focus-within:bg-primary focus-within:text-background focus-within:-outline-offset-1 [@media(hover:hover)]:data-highlighted:bg-primary [@media(hover:hover)]:data-highlighted:text-background",
         className,
       )}
       {...props}
@@ -127,7 +127,7 @@ export const ComboboxChipRemove = ({
   return (
     <ComboboxPrimitive.ChipRemove
       className={createClassName(
-        "rounded-md p-1 text-inherit hover:bg-gray-200",
+        "p-1 text-inherit hover:bg-background-dimmed",
         className,
         classList?.root,
       )}
@@ -190,7 +190,7 @@ export const ComboboxPopup = ({
   return (
     <ComboboxPrimitive.Popup
       className={createClassName(
-        "max-h-[min(var(--available-height),23rem)] w-[var(--anchor-width)] max-w-[var(--available-width)] origin-[var(--transform-origin)] scroll-pt-2 scroll-pb-2 overflow-y-auto overscroll-contain rounded-md bg-[canvas] py-1 text-gray-900 shadow-gray-200 shadow-lg outline-1 outline-gray-200 transition-[transform,scale,opacity] data-[side=none]:data-starting-style:scale-100 data-[side=none]:data-starting-style:opacity-100 data-[side=none]:data-ending-style:transition-none data-[side=none]:data-starting-style:transition-none data-ending-style:scale-95 data-starting-style:scale-95 data-ending-style:opacity-0 data-starting-style:opacity-0 dark:shadow-none dark:outline-gray-300 dark:-outline-offset-1",
+        "max-h-[min(var(--available-height),23rem)] w-(--anchor-width) max-w-(--available-width) origin-(--transform-origin) scroll-pt-2 scroll-pb-2 overflow-y-auto overscroll-contain border border-accent-foreground bg-background py-1 text-foreground transition-[transform,scale,opacity] data-[side=none]:data-starting-style:scale-100 data-[side=none]:data-starting-style:opacity-100 data-[side=none]:data-ending-style:transition-none data-[side=none]:data-starting-style:transition-none data-ending-style:scale-95 data-starting-style:scale-95 data-ending-style:opacity-0 data-starting-style:opacity-0",
         className,
       )}
       {...props}
@@ -257,7 +257,7 @@ export const ComboboxItem = ({
   return (
     <ComboboxPrimitive.Item
       className={createClassName(
-        "grid cursor-default select-none grid-cols-[0.75rem_1fr] items-center gap-2 py-2 pr-8 pl-4 text-base leading-4 outline-none data-highlighted:relative data-highlighted:z-0 data-highlighted:text-gray-50 data-highlighted:before:absolute data-highlighted:before:inset-x-1 data-highlighted:before:inset-y-0 data-highlighted:before:z-[-1] data-highlighted:before:rounded-sm data-highlighted:before:bg-gray-900",
+        "grid cursor-default select-none grid-cols-[0.75rem_1fr] items-center gap-2 py-2 pr-8 pl-4 text-base leading-4 outline-none data-highlighted:relative data-highlighted:z-0 data-highlighted:text-background data-highlighted:before:absolute data-highlighted:before:inset-x-1 data-highlighted:before:inset-y-0 data-highlighted:before:z-[-1] data-highlighted:before:bg-foreground",
         className,
         classList?.root,
       )}

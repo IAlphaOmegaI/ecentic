@@ -88,7 +88,7 @@ export const Pricing = () => (
               variant={tier.highlighted ? "flat" : "outline"}
               color={tier.highlighted ? "primary" : "neutral"}
               type="button"
-              className="mt-auto w-full py-2 font-medium text-lg"
+              className="mt-4 md:mt-auto w-full py-2 font-medium text-lg"
             >
               {tier.cta}
             </Button>

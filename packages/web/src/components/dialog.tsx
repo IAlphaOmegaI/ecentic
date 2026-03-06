@@ -18,7 +18,7 @@ export const DialogTrigger = ({
   return (
     <DialogPrimitive.Trigger
       className={createClassName(
-        "flex h-10 select-none items-center justify-center rounded-md border border-gray-200 bg-gray-50 px-3.5 font-medium text-base text-gray-900 hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-blue-800 focus-visible:-outline-offset-1 active:bg-gray-100",
+        "flex h-10 select-none items-center justify-center border border-accent-foreground bg-background px-3.5 font-medium text-base text-foreground hover:bg-background-dimmed focus-visible:outline-2 focus-visible:outline-primary focus-visible:-outline-offset-1 active:bg-background-dimmed",
         className,
       )}
       {...props}
@@ -47,7 +47,7 @@ export const DialogPopup = ({
       />
       <DialogPrimitive.Popup
         className={createClassName(
-          "fixed top-1/2 left-1/2 -mt-8 w-96 max-w-[calc(100vw-3rem)] -translate-x-1/2 -translate-y-1/2 rounded-lg bg-gray-50 p-6 text-gray-900 outline-1 outline-gray-200 transition-all duration-150 data-ending-style:scale-90 data-starting-style:scale-90 data-ending-style:opacity-0 data-starting-style:opacity-0 dark:outline-gray-300",
+          "fixed top-1/2 left-1/2 -mt-8 w-96 max-w-[calc(100vw-3rem)] -translate-x-1/2 -translate-y-1/2 border border-accent-foreground bg-background p-6 text-foreground transition-all duration-150 data-ending-style:scale-90 data-starting-style:scale-90 data-ending-style:opacity-0 data-starting-style:opacity-0",
           className,
           classList?.root,
         )}
@@ -107,7 +107,7 @@ export const DialogClose = ({
   return (
     <DialogPrimitive.Close
       className={createClassName(
-        "flex h-10 select-none items-center justify-center rounded-md border border-gray-200 bg-gray-50 px-3.5 font-medium text-base text-gray-900 hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-blue-800 focus-visible:-outline-offset-1 active:bg-gray-100",
+        "flex h-10 select-none items-center justify-center border border-accent-foreground bg-background px-3.5 font-medium text-base text-foreground hover:bg-background-dimmed focus-visible:outline-2 focus-visible:outline-primary focus-visible:-outline-offset-1 active:bg-background-dimmed",
         className,
       )}
       {...props}

@@ -35,7 +35,7 @@ export const TableHeader = ({
     render,
     props: mergeProps<"thead">(props, {
       className: cn(
-        "[&_tr]:!bg-transparent overflow-hidden rounded-t-lg [&_tr]:border-b-accent-foreground",
+        "[&_tr]:!bg-transparent overflow-hidden [&_tr]:border-b-accent-foreground",
         className,
       ),
     }),

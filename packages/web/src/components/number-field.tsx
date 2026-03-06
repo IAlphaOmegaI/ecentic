@@ -33,7 +33,7 @@ export const NumberFieldScrubArea = ({
   return (
     <NumberFieldPrimitive.ScrubArea
       className={createClassName(
-        "flex h-10 w-24 select-none items-center justify-center rounded-md border border-gray-200 bg-gray-50 bg-clip-padding text-gray-900 hover:bg-gray-100 active:bg-gray-100",
+        "flex h-10 w-24 select-none items-center justify-center border border-accent-foreground bg-background bg-clip-padding text-foreground hover:bg-background-dimmed active:bg-background-dimmed",
         className,
         classList?.root,
       )}
@@ -97,7 +97,7 @@ export const NumberFieldInput = ({
   return (
     <NumberFieldPrimitive.Input
       className={createClassName(
-        "h-10 w-24 border-gray-200 border-t border-b text-center text-base text-gray-900 tabular-nums focus:z-1 focus:outline-2 focus:outline-blue-800 focus:-outline-offset-1",
+        "h-10 w-24 border-accent-foreground border-t border-b text-center text-base text-foreground tabular-nums focus:z-1 focus:outline-2 focus:outline-primary focus:-outline-offset-1",
         className,
       )}
       {...props}
@@ -118,7 +118,7 @@ export const NumberFieldDecrement = ({
   return (
     <NumberFieldPrimitive.Decrement
       className={createClassName(
-        "flex select-none items-center justify-center rounded-tl-md rounded-bl-md border border-gray-200 bg-gray-50 bg-clip-padding text-gray-900 hover:bg-gray-100 active:bg-gray-100",
+        "flex select-none items-center justify-center border border-accent-foreground bg-background bg-clip-padding text-foreground hover:bg-background-dimmed active:bg-background-dimmed",
         className,
         classList?.root,
       )}
@@ -145,7 +145,7 @@ export const NumberFieldIncrement = ({
   return (
     <NumberFieldPrimitive.Increment
       className={createClassName(
-        "flex select-none items-center justify-center rounded-tr-md rounded-br-md border border-gray-200 bg-gray-50 bg-clip-padding text-gray-900 hover:bg-gray-100 active:bg-gray-100",
+        "flex select-none items-center justify-center border border-accent-foreground bg-background bg-clip-padding text-foreground hover:bg-background-dimmed active:bg-background-dimmed",
         className,
         classList?.root,
       )}

@@ -6,7 +6,7 @@ export const Avatar = ({ className, ...props }: Avatar.Props): JSX.Element => {
   return (
     <AvatarPrimitive.Root
       className={createClassName(
-        "inline-flex size-12 select-none items-center justify-center overflow-hidden rounded-full bg-gray-100 align-middle font-medium text-base text-black",
+        "inline-flex size-12 select-none items-center justify-center overflow-hidden rounded-full bg-background-dimmed align-middle font-medium text-base text-foreground",
         className,
       )}
       {...props}

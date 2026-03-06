@@ -221,7 +221,7 @@ export const FileUploadInput = ({
     // biome-ignore lint/a11y/noStaticElementInteractions: needed to handle drag and drop
     <div
       className={cn(
-        "relative rounded-lg border border-accent-foreground p-2",
+        "relative border border-accent-foreground p-2",
         className,
         classList?.root,
       )}
@@ -243,7 +243,7 @@ export const FileUploadInput = ({
         type="button"
         disabled={disabled}
         className={cn(
-          "h-32 w-full origin-center flex-col items-center justify-center rounded-lg border border-dashed transition-all duration-300 duration-300 disabled:cursor-not-allowed disabled:opacity-50",
+          "h-32 w-full origin-center flex-col items-center justify-center border border-dashed transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50",
           isDragging
             ? "scale-95 border-primary bg-primary/10"
             : "border-accent-foreground",
@@ -294,7 +294,7 @@ export const FileUploadPreview = (): JSX.Element => {
         <div
           // biome-ignore lint/suspicious/noArrayIndexKey: no better key to use
           key={index}
-          className="flex h-full items-center gap-1 rounded-lg border border-accent-foreground py-0.5 pr-2"
+          className="flex h-full items-center gap-1 border border-accent-foreground py-0.5 pr-2"
         >
           <FileIcon className="size-10" />
           <div className="flex flex-col">

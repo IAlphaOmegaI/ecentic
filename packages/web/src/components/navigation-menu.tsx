@@ -12,7 +12,7 @@ export const NavigationMenu = ({
   return (
     <NavigationMenuPrimitive.Root
       className={createClassName(
-        "min-w-max rounded-lg bg-gray-50 p-1 text-gray-900",
+        "min-w-max bg-background p-1 text-foreground",
         className,
       )}
       {...props}
@@ -181,7 +181,7 @@ export const NavigationMenuPopup = ({
   return (
     <NavigationMenuPrimitive.Popup
       className={createClassName(
-        "data-ending-style:easing-[ease] relative h-[var(--popup-height)] w-full xs:w-[var(--popup-width)] origin-[var(--transform-origin)] rounded-lg bg-[canvas] text-gray-900 shadow-gray-200 shadow-lg outline-1 outline-gray-200 transition-[opacity,transform,width,height,scale,translate] duration-[var(--duration)] ease-[var(--easing)] data-ending-style:scale-90 data-starting-style:scale-90 data-ending-style:opacity-0 data-starting-style:opacity-0 data-ending-style:duration-150 min-[500px]:w-[var(--popup-width)] dark:shadow-none dark:outline-gray-300 dark:-outline-offset-1",
+        "data-ending-style:easing-[ease] relative h-(--popup-height) w-full xs:w-(--popup-width) origin-(--transform-origin) border border-accent-foreground bg-background text-foreground transition-[opacity,transform,width,height,scale,translate] duration-(--duration) ease-(--easing) data-ending-style:scale-90 data-starting-style:scale-90 data-ending-style:opacity-0 data-starting-style:opacity-0 data-ending-style:duration-150 min-[500px]:w-(--popup-width)",
         className,
       )}
       {...props}
@@ -259,10 +259,10 @@ export namespace NavigationMenuViewport {
 
 const triggerClassName =
   "box-border flex items-center justify-center gap-1.5 h-10 " +
-  "px-2 xs:px-3.5 m-0 rounded-md bg-gray-50 text-gray-900 font-medium " +
+  "px-2 xs:px-3.5 m-0 bg-background text-foreground font-medium " +
   "text-[0.925rem] xs:text-base leading-6 select-none no-underline " +
-  "hover:bg-gray-100 active:bg-gray-100 data-popup-open:bg-gray-100 " +
-  "focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-blue-800 focus-visible:relative";
+  "hover:bg-background-dimmed active:bg-background-dimmed data-popup-open:bg-background-dimmed " +
+  "focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-primary focus-visible:relative";
 
 const contentClassName =
   "w-[calc(100vw_-_40px)] h-full p-6 xs:w-max xs:min-w-[400px] xs:w-max " +
@@ -274,6 +274,6 @@ const contentClassName =
   "data-ending-style:data-[activation-direction=right]:translate-x-[-50%]";
 
 const linkCardClassName =
-  "block rounded-md p-2 xs:p-3 no-underline text-inherit " +
-  "hover:bg-gray-100 focus-visible:relative focus-visible:outline focus-visible:outline-2 " +
-  "focus-visible:-outline-offset-1 focus-visible:outline-blue-800";
+  "block p-2 xs:p-3 no-underline text-inherit " +
+  "hover:bg-background-dimmed focus-visible:relative focus-visible:outline focus-visible:outline-2 " +
+  "focus-visible:-outline-offset-1 focus-visible:outline-primary";

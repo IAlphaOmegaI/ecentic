@@ -268,7 +268,7 @@ export const buttonVariants: (props?: ButtonVariantsProps) => string = cva(
       {
         variant: "outline",
         color: "info",
-        className: "border-info/60 border-info text-info-rich hover:bg-info/20",
+        className: "border-info border-info/60 text-info-rich hover:bg-info/20",
       },
       {
         variant: "outline",
