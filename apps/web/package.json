@@ -21,7 +21,13 @@
     "react": "catalog:",
     "react-dom": "^19.2.3",
     "react-hook-form": "catalog:",
-    "zod": "catalog:"
+    "zod": "catalog:",
+    "date-fns": "catalog:",
+    "uploadthing": "^7.7.4",
+    "better-auth": "^1.4.18",
+    "drizzle-orm": "^0.45.1",
+    "@sentry/nextjs": "^10.38.0",
+    "nuqs": "^2.8.8"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "catalog:",

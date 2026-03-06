@@ -4,6 +4,431 @@ This document captures the coding conventions used in this codebase. When contri
 
 ---
 
+# Convex Conventions
+
+This codebase uses a structured two-layer architecture for all Convex backend code. The `apps/provider` package is the Convex deployment. Follow these patterns precisely.
+
+---
+
+## C1. Two-Layer Architecture: `definition/` and `app/`
+
+All Convex code is split into two layers:
+
+- **`definition/`** — Pure logic: model validators and service business logic. No Convex registrations here.
+  - `definition/models/` — Raw `v.*` validators that describe table shapes.
+  - `definition/services/` — Business logic functions using handler helpers. These are **never** registered directly with Convex.
+- **`app/`** — Convex registrations only.
+  - `app/schema.ts` — Imports from `definition/models/` and wraps with `defineTable()`.
+  - `app/services/` — Imports handlers from `definition/services/` and registers them with `query`, `mutation`, `authenticatedQuery`, `authenticatedMutation`, etc.
+
+```
+src/
+├── definition/
+│   ├── models/         ← v.* validators (schema shapes)
+│   └── services/       ← business logic handlers (not registered)
+├── app/
+│   ├── schema.ts       ← defineSchema + defineTable
+│   └── services/       ← actual Convex exports (args + handler + returns)
+└── utils/
+    ├── repository.ts   ← repository() + documentValidator()
+    ├── context.ts      ← queryHandler / mutationHandler / authenticatedXxxHandler
+    ├── authentication.ts ← authenticatedQuery / authenticatedMutation
+    ├── validator.ts    ← omit / pick / extend / partial / deepPartial
+    └── pagination.ts   ← paginated / paginationParams
+```
+
+---
+
+## C2. Model Definitions (`definition/models/`)
+
+Each table gets its own file in `definition/models/`. Export a single named const that is a `v.*` validator (usually `v.object(...)` or `v.union(...)`). No logic here — only schema shape.
+
+```ts
+// definition/models/booking.ts
+import { v } from "convex/values";
+
+export const booking = v.object({
+  business: v.id("business"),
+  by: v.id("profile"),
+  at: v.number(),
+  status: v.union(
+    v.literal("pending"),
+    v.literal("confirmed"),
+    v.literal("cancelled"),
+  ),
+});
+```
+
+Use `v.union(v.literal(...), ...)` for discriminated union tables (e.g., `profile` with `type: "artist" | "client"`):
+
+```ts
+// definition/models/profile.ts
+export const profile = v.union(
+  v.object({ type: v.literal("artist"), user: v.string(), ... }),
+  v.object({ type: v.literal("client"), user: v.string(), ... }),
+);
+```
+
+---
+
+## C3. Schema (`app/schema.ts`)
+
+Import all model validators from `definition/models/` and define the schema with `defineSchema` + `defineTable`. Declare all indexes here.
+
+```ts
+// app/schema.ts
+import { defineSchema, defineTable } from "convex/server";
+import { booking } from "@/definition/models/booking";
+import { profile } from "@/definition/models/profile";
+
+const schema = defineSchema({
+  profile: defineTable(profile)
+    .index("by_user", ["user"])
+    .index("by_user_and_type", ["user", "type"]),
+  booking: defineTable(booking)
+    .index("by_business", ["business"])
+    .index("by_profile_and_time", ["by", "at"]),
+});
+
+export default schema;
+```
+
+---
+
+## C4. Repository Pattern
+
+Use `repository(collectionName)` from `@/utils/repository` to get typed CRUD helpers. Never call `ctx.db` directly in service logic — always go through the repository.
+
+```ts
+// definition/services/booking.ts
+import { repository } from "@/utils/repository";
+
+const Booking = repository("booking");
+
+// Available methods:
+Booking.create(ctx, { data })          // → Id<T>
+Booking.get(ctx, { id })               // → Doc<T> | null
+Booking.update(ctx, { id, data })      // → void
+Booking.list(ctx, partialFilter)       // → Doc<T>[]
+Booking.destroy(ctx, { id })           // → void
+Booking.paginate(ctx, { filter?, paginationOpts }) // → PaginationResult<Doc<T>>
+Booking.replace(ctx, { id, data })     // → void
+Booking.query(ctx)                     // → raw QueryBuilder for .withIndex(...) chains
+Booking.stream(ctx)                    // → streaming QueryBuilder
+```
+
+Use `Booking.query(ctx).withIndex(...)` for index-based queries:
+
+```ts
+const results = await Booking.query(ctx)
+  .withIndex("by_profile_and_time", (q) =>
+    q.eq("by", ctx.session.profile._id).gt("at", Date.now()),
+  )
+  .paginate(paginationOpts);
+```
+
+---
+
+## C5. Handler Helpers (`utils/context.ts`)
+
+Wrap all service functions with a handler helper. These helpers type-narrow the context and args. Import from `@/utils/context`.
+
+```ts
+import {
+  queryHandler,
+  mutationHandler,
+  actionHandler,
+  authenticatedQueryHandler,
+  authenticatedMutationHandler,
+  authenticatedActionHandler,
+} from "@/utils/context";
+```
+
+- `queryHandler` / `mutationHandler` / `actionHandler` — Unauthenticated. `ctx` is the plain Convex context.
+- `authenticatedQueryHandler` / `authenticatedMutationHandler` / `authenticatedActionHandler` — Authenticated. `ctx` is extended with `ctx.session.profile` and `ctx.session.user`. Use these for anything that requires a logged-in user.
+
+```ts
+// ✅ Good — unauthenticated read
+export const get = queryHandler(
+  async (ctx, { id }: { id: Id<"booking"> }): Promise<Populated<Booking> | null> => {
+    const booking = await Booking.get(ctx, { id });
+    if (!booking) return null;
+    // ...
+    return { ...booking, business, services };
+  },
+);
+
+// ✅ Good — authenticated mutation
+export const book = authenticatedMutationHandler(
+  async (ctx, { data }: { data: ... }) => {
+    // ctx.session.profile and ctx.session.user are available
+    const id = await Booking.create(ctx, {
+      data: { ...data, by: ctx.session.profile._id },
+    });
+    return id;
+  },
+);
+```
+
+---
+
+## C6. Definition Services (`definition/services/`)
+
+Each service file owns all business logic for one collection. Structure:
+
+1. **`Internal` namespace** — Internal helpers (not exposed as Convex functions). Grouped as `export const Internal = { ... }`.
+2. **`Type`** — The populated document type using `WithPopulation<collection, PopulationMap>`.
+3. **Named type alias** — `export type Booking = Type` for ergonomics.
+4. **`document`** — The document validator factory from `documentValidator()`.
+5. **Named handler exports** — Each function exported individually, wrapped in a handler helper.
+
+```ts
+// definition/services/booking.ts
+import { repository, documentValidator } from "@/utils/repository";
+import { authenticatedQueryHandler, queryHandler } from "@/utils/context";
+import type { WithPopulation, Populated } from "@/utils/population";
+
+const Booking = repository("booking");
+
+// Internal helpers (not registered with Convex)
+export const Internal = {
+  ...Booking,
+  someHelper: queryHandler(async (ctx, args) => { ... }),
+};
+
+// Populated type
+export type Type = WithPopulation<"booking", {
+  business: Populated<Business.Type>;
+  services: Populated<Service.Type>[];
+}>;
+export type Booking = Type;
+
+// Document validator factory
+export const document = documentValidator("booking", {
+  business: Business.document(true, true),
+  services: v.array(Service.document(true, true)),
+});
+
+// Named handler exports (consumed by app/services/)
+export const get = queryHandler(async (ctx, { id }: { id: Id<"booking"> }) => {
+  // ...
+});
+
+export const paginate = authenticatedQueryHandler(async (ctx, { paginationOpts }) => {
+  // ...
+});
+```
+
+---
+
+## C7. App Services (`app/services/`)
+
+App services are the actual Convex function registrations. They are thin wrappers: declare `args`, `returns`, and point `handler` to the function from `definition/services/`. No business logic lives here.
+
+```ts
+// app/services/booking.ts
+import { v } from "convex/values";
+import * as Booking from "@/definition/services/booking";
+import { authenticatedQuery, authenticatedMutation } from "@/utils/authentication";
+import { paginated, paginationParams } from "@/utils/pagination";
+import { omit } from "@/utils/validator";
+
+export const get = authenticatedQuery({
+  args: { id: v.id("booking") },
+  handler: Booking.get,
+  returns: v.union(v.null(), Booking.document(true, true)),
+});
+
+export const paginate = authenticatedQuery({
+  args: paginationParams(),
+  handler: Booking.paginate,
+  returns: paginated(Booking.document(true, true)),
+});
+
+export const book = authenticatedMutation({
+  args: { data: omit(Booking.document(), ["status", "by", "duration"]) },
+  handler: Booking.book,
+  returns: v.optional(v.id("booking")),
+});
+```
+
+**Rules:**
+- `authenticatedQuery` / `authenticatedMutation` / `authenticatedAction` — from `@/utils/authentication` — for authenticated endpoints.
+- `query` / `mutation` / `action` — from `@/server` — for public endpoints.
+- Always declare `returns:` explicitly so Convex validates the return shape.
+- Always import handler from `definition/services/`, never write logic inline.
+
+---
+
+## C8. Document Validator Factory (`documentValidator`)
+
+`documentValidator(collection, augmentation?)` returns a curried function used to generate validators for a document, with optional population augmentation and system fields.
+
+```ts
+export const document = documentValidator("booking", {
+  // augmentation: these fields replace/extend the base validator when populated=true
+  business: Business.document(true, true),
+  services: v.array(Service.document(true, true)),
+});
+
+// Usage:
+Booking.document()           // base validator (no system fields, no population)
+Booking.document(true)       // populated (system fields omitted)
+Booking.document(true, true) // populated + system fields (_id, _creationTime)
+Booking.document(false, true)// base + system fields
+```
+
+- Use `document()` for mutation args (no system fields, no population).
+- Use `document(true, true)` for `returns:` validators that represent full documents.
+- Use `document(true)` for populated returns without system fields.
+
+---
+
+## C9. Validator Helpers (`utils/validator.ts`)
+
+These helpers operate on Convex validators and support both `VObject` and `VUnion` shapes (distributive over union members).
+
+```ts
+import { omit, pick, extend, partial, deepPartial } from "@/utils/validator";
+
+// omit — remove fields from a validator
+omit(Booking.document(), ["status", "by", "duration"])
+
+// pick — keep only specified fields
+pick(Profile.document(), ["type", "user"])
+
+// extend — add new fields to a validator
+extend(validator, { newField: v.string() })
+
+// partial — make all top-level fields optional (from convex-helpers)
+partial(validator)
+
+// deepPartial — recursively make all fields optional
+deepPartial(validator)
+```
+
+All helpers work correctly on `v.union(...)` validators by distributing the operation over each union member.
+
+---
+
+## C10. Pagination Helpers (`utils/pagination.ts`)
+
+```ts
+import { paginated, paginationParams } from "@/utils/pagination";
+
+// paginationParams() — generates args validator: { paginationOpts }
+// paginationParams(validator) — generates: { paginationOpts, filter?: Partial<...> }
+args: paginationParams()
+args: paginationParams(Booking.document())
+
+// paginated(validator) — generates the PaginationResult shape validator
+returns: paginated(Booking.document(true, true))
+```
+
+---
+
+## C11. Population Pattern
+
+Use `WithPopulation` + `Populated` to express the difference between a raw document (with `Id<T>` references) and a fully resolved document (with nested objects).
+
+```ts
+import type { WithPopulation, Populated } from "@/utils/population";
+
+// Define the type with population markers
+export type Type = WithPopulation<
+  "booking",
+  {
+    business: Populated<Business.Type>; // replaces Id<"business">
+    services: Populated<Service.Type>[];// replaces Id<"service">[]
+  }
+>;
+
+// Populated<Type> resolves the markers:
+// { ...bookingFields, business: PopulatedBusiness, services: PopulatedService[] }
+```
+
+- Raw document fields use `Id<"collection">` references.
+- `WithPopulation<C, Map>` merges the map as a phantom `~population` marker.
+- `Populated<T>` replaces the original ID fields with the populated types.
+
+---
+
+## C12. `definition/index.ts` — Type Re-exports
+
+The `definition/index.ts` is the public type surface of the provider package. All externally consumed types are re-exported from here.
+
+```ts
+// ✅ Good — import types for external use from @/definition
+import type { Booking } from "@/definition";
+import type { Id } from "@/definition";
+import type { Collection, Document } from "@/definition";
+```
+
+When adding a new service type that should be externally accessible, add a `export type { ... } from "@/services/..."` line to `definition/index.ts`.
+
+---
+
+## C13. `Internal` Namespace for Non-Exposed Helpers
+
+Group helpers that are only used within `definition/services/` under `export const Internal = { ... }`. These can spread the repository directly and add extra methods.
+
+```ts
+const Booking = repository("booking");
+
+export const Internal = {
+  ...Booking, // inherits create, get, update, list, destroy, paginate, query, stream
+  getForBooking: queryHandler(async (ctx, { booking }) => { ... }),
+  getOwner: queryHandler(async (ctx, { id }) => { ... }),
+};
+```
+
+Internal functions are consumed by other definition services. They are never registered directly in `app/services/`.
+
+---
+
+## C14. Error Handling in Convex
+
+Use `ConvexError` for known failure states (not `Error`). Throw it with a string code or a structured object.
+
+```ts
+import { ConvexError } from "convex/values";
+
+// ✅ Good — structured error
+throw new ConvexError({ status: "unauthenticated", error: "User is not authenticated" });
+
+// ✅ Good — string code
+throw new ConvexError("room/failed");
+
+// ❌ Bad — generic Error
+throw new Error("not found");
+```
+
+---
+
+## C15. Convex Summary Checklist
+
+- [ ] Model validators live in `definition/models/` — pure `v.*`, no logic
+- [ ] Schema in `app/schema.ts` — `defineSchema` + `defineTable` with indexes
+- [ ] All DB access goes through `repository()` — never call `ctx.db` directly
+- [ ] Business logic in `definition/services/` — wrapped in handler helpers
+- [ ] App registrations in `app/services/` — thin: `args` + `handler` + `returns` only
+- [ ] Use `queryHandler` / `mutationHandler` for unauthenticated handlers
+- [ ] Use `authenticatedQueryHandler` / `authenticatedMutationHandler` for handlers requiring `ctx.session`
+- [ ] Use `authenticatedQuery` / `authenticatedMutation` for app-layer registrations
+- [ ] Always declare `returns:` explicitly in app service exports
+- [ ] Use `documentValidator(collection, augmentation)` for all document validators
+- [ ] Call `document()` for args, `document(true, true)` for returns with system fields
+- [ ] Use `omit` / `pick` / `extend` / `partial` from `@/utils/validator` — not raw Convex methods
+- [ ] Use `paginated()` + `paginationParams()` for all paginated endpoints
+- [ ] Use `WithPopulation<C, Map>` + `Populated<T>` to express populated document types
+- [ ] Group internal helpers under `export const Internal = { ...repository, ... }`
+- [ ] Re-export public types from `definition/index.ts`
+- [ ] Throw `ConvexError` (not `Error`) for known failure states
+
+---
+
+---
+
 ## 1. Use `const` Only — Never `let`
 
 Always declare variables with `const`. Avoid `let` entirely. If a value needs to change, restructure the logic (e.g., use `reduce`, `map`, callbacks, or extract a function) so the binding stays immutable.
