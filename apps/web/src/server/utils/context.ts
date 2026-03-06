@@ -1,11 +1,14 @@
 import * as Sentry from "@sentry/nextjs";
-import { resultify, type Result, type UnwrapResult } from "@zenncore/utils";
+import {
+  resultify,
+  type Result,
+  type UnwrapResult,
+  type InferredError,
+} from "@zenncore/utils";
 import { type Brand, Environment } from "./environment";
 import { ErrorProtocol } from "./error";
 import { upload } from "../app/storage";
 import type { UploadThingError } from "uploadthing/server";
-
-type InferredError<T> = T extends Result<any, infer E> ? E : never;
 
 export type GenericContext = {
   environment: {

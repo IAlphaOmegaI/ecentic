@@ -93,3 +93,9 @@ export function unwrapResult<T extends Result<any> | Promise<Result<any>>>(
   };
   return handler();
 }
+
+// biome-ignore lint/suspicious/noExplicitAny: any is used to handle type errors when working with empty Results
+export type InferredError<T extends Result<any>> = Extract<
+  T,
+  { success: false }
+>["error"];
