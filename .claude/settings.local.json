@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git config user.name)",
+      "Bash(git config user.email)",
+      "Bash(git config --global user.name)",
+      "Bash(git config --global user.email)",
+      "Bash(where bun)",
+      "Read(//c/Users/Owner/.bun/**)",
+      "Read(//c/Users/Owner/Desktop/Development/ecentic/Local/**)",
+      "Read(//c/Users/Owner/Desktop/Development/ecentic/$USERPROFILE/**)",
+      "Bash(cmd.exe /c \"where bun\")",
+      "Bash(cmd.exe /c \"bun --version\")",
+      "Bash(powershell.exe -Command \"Get-Command bun -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source; Get-Item ''C:\\\\Users\\\\Owner\\\\.bun\\\\bin\\\\bun.exe'' -ErrorAction SilentlyContinue | Select-Object FullName\")",
+      "Bash(powershell.exe -Command \"Get-Command bun -ErrorAction SilentlyContinue\")",
+      "Bash(powershell.exe -Command \"Test-Path ''C:\\\\Users\\\\Owner\\\\.bun\\\\bin\\\\bun.exe''\")",
+      "Bash(node --version)",
+      "Bash(npm --version)",
+      "Bash(npm install -g bun)",
+      "Bash(bun --version)",
+      "Bash(bun install)",
+      "Bash(/c/Users/Owner/AppData/Roaming/npm/bun run --filter web dev)",
+      "Bash(/c/Users/Owner/AppData/Roaming/npm/bun run build --filter='@zenncore/*')",
+      "Bash(taskkill //F //PID 30880)"
+    ]
+  }
+}
