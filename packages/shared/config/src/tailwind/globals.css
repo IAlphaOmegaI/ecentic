@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@custom-variant light (&:where(.light, .light *));
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* background shades - more distinct neutral */
+  --color-background-dimmed: unset; /* Much darker */
+  --color-background: unset; /* Light but not white */
+  --color-background-rich: unset; /* Clear mid-tone */
+  /* foreground shades - pure neutral grays with more contrast */
+  --color-foreground-dimmed: unset;
+  --color-foreground: unset;
+  --color-foreground-rich: unset;
+  /* emphasis shades - warmer browns with more distinction */
+  --color-emphasis-dimmed: unset;
+  --color-emphasis: unset;
+  --color-emphasis-rich: unset;
+  --color-emphasis-foreground: unset;
+  /* accent shades - distinct cool grays */
+  --color-accent-dimmed: unset; /* Notably darker */
+  --color-accent: unset; /* Clean white */
+  --color-accent-rich: unset; /* Mid-tone */
+  --color-accent-foreground: unset; /* Darker for contrast */
+
+  /* primary shades - orange */
+  --color-primary-dimmed: #3d1a03;
+  --color-primary: #1572fa;
+  --color-primary-rich: #ff8c38;
+  /* secondary shades - teal green */
+  --color-secondary-dimmed: oklch(27.1% 0.105 12.094);
+  --color-secondary: oklch(45.5% 0.188 13.697);
+  --color-secondary-rich: oklch(71.2% 0.194 13.428);
+  /* destructive shades */
+  --color-error-dimmed: oklch(25.8% 0.092 26.042);
+  --color-error: oklch(44.4% 0.177 26.899);
+  --color-error-rich: oklch(57.7% 0.245 27.325);
+  --color-error-foreground: oklch(80.8% 0.114 19.571);
+  /* success shades */
+  --color-success-dimmed: hsl(142 72% 29%);
+  --color-success: hsl(142 76% 36%);
+  --color-success-rich: hsl(142 69% 58%);
+  --color-success-foreground: hsl(144 61% 20%);
+  /* info shades */
+  --color-info-dimmed: oklch(54.6% 0.245 262.881);
+  --color-info: oklch(62.3% 0.214 259.815);
+  --color-info-rich: oklch(74.6% 0.16 232.661);
+  --color-info-foreground: oklch(82.8% 0.111 230.318);
+  /* warning shades */
+  --color-warning-dimmed: hsl(35 92% 33%);
+  --color-warning: hsl(41 96% 40%);
+  --color-warning-rich: hsl(48 96% 53%);
+  --color-warning-foreground: hsl(28 73% 26%);
+  /* neutral shades - more contrast */
+  --color-neutral-dimmed: oklch(37.1% 0 0);
+  --color-neutral: oklch(55.4% 0.046 257.417);
+  --color-neutral-rich: oklch(55.1% 0.027 264.364);
+  --color-neutral-foreground: oklch(21% 0.034 264.665);
+}
+
+@layer theme {
+  :root {
+    @variant light {
+      /* background shades - more distinct neutral */
+      --color-background-dimmed: oklch(85% 0.006 286.286); /* Much darker */
+      --color-background: #eeeeee; /* Light but not white */
+      --color-background-rich: #ffffff; /* Clear mid-tone */
+      /* foreground shades - pure neutral grays with more contrast */
+      --color-foreground-dimmed: #919191;
+      --color-foreground: #474747;
+      --color-foreground-rich: hsl(0 0% 25%);
+      /* emphasis shades - warmer browns with more distinction */
+      --color-emphasis-dimmed: oklch(14.5% 0 0);
+      --color-emphasis: oklch(20.5% 0 0);
+      --color-emphasis-rich: oklch(26.9% 0 0);
+      --color-emphasis-foreground: oklch(55.6% 0 0);
+      /* accent shades - distinct cool grays */
+      --color-accent-dimmed: oklch(55.3% 0.013 58.071); /* Notably darker */
+      --color-accent: oklch(55.6% 0 0); /* Clean white */
+      --color-accent-rich: oklch(67% 0 0); /* Mid-tone */
+      --color-accent-foreground: oklch(90% 0 0); /* Darker for contrast */
+    }
+  }
+}

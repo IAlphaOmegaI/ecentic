@@ -1,0 +1,7 @@
+{
+    "tailwindCSS.experimental.configFile": {
+    "apps/web/src/app/globals.css": ["apps/web/src/**", "packages/web/src/components/**"],
+    //    "packages/shared/config/src/tailwind/globals.css": "packages/mobile/src/components/*"
+    "apps/mobile/src/globals.css": ["apps/mobile/src/**", "packages/mobile/src/components/**"]
+    }
+}

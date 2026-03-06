@@ -1,0 +1,23 @@
+{
+  "name": "@zenncore/config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf .turbo node_modules"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "catalog:",
+    "tailwindcss": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
+  },
+  "exports": {
+    "./tailwind": "./src/tailwind/globals.css",
+    "./tailwind/postcss": "./src/tailwind/postcss.config.mjs",
+    "./typescript": "./src/typescript/config.json",
+    "./typescript/lib": "./src/typescript/lib.config.json",
+    "./tsdown": "./src/tsdown/config.ts"
+  }
+}

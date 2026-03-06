@@ -1,0 +1,50 @@
+<svg width="1225" height="1107" viewBox="0 0 1225 1107" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_n_17_32)">
+<path d="M981.121 499.081C979.419 490.624 974.832 482.822 967.85 477.177L696.294 257.602C676.925 241.911 651.823 235.213 627.23 239.082L282.235 293.467C273.367 294.865 265.496 299.328 259.793 305.802C261.495 314.259 266.08 322.06 273.061 327.705L544.602 547.267C563.972 562.963 589.086 569.67 613.682 565.8L958.676 511.415C967.545 510.017 975.418 505.555 981.121 499.081Z" fill="url(#paint0_linear_17_32)"/>
+<path d="M1182.11 455.855L980.94 499.526L647.335 237.945L863.387 199.217L1182.11 455.855Z" fill="#1572FA"/>
+<path d="M77.0904 159.765L259.766 306.289L649.175 238.438L481.434 96.873L77.0904 159.765Z" fill="#1572FA"/>
+<g filter="url(#filter1_i_17_32)">
+<circle cx="552.559" cy="622.792" r="283.676" transform="rotate(15 552.559 622.792)" fill="url(#paint1_linear_17_32)"/>
+</g>
+<path d="M259.795 305.802C261.497 314.26 266.082 322.061 273.063 327.705L544.603 547.267C554.293 555.119 565.421 560.721 577.201 563.875L457.838 1009.34C446.071 1006.19 434.959 1000.59 425.281 992.772L179.135 793.683C152.159 771.814 140.443 736.061 149.454 702.434L251.666 320.971C253.097 315.63 255.605 310.866 258.894 306.848L259.795 305.802Z" fill="#1264DC"/>
+<path d="M981.144 499.082C975.44 505.555 967.568 510.018 958.698 511.415L613.704 565.8C601.413 567.734 588.992 567.027 577.223 563.876L457.86 1009.34C469.641 1012.5 482.079 1013.21 494.396 1011.26L807.1 961.925C841.395 956.468 869.374 931.372 878.385 897.745L980.597 516.282C981.991 511.081 982.228 505.843 981.464 500.841L981.144 499.082Z" fill="#09326D"/>
+<path d="M577.119 564.509L760.512 708.355L1149.92 640.505L981.286 498.21L577.119 564.509Z" fill="#1572FA"/>
+<path d="M577.053 564.458L376.653 605.466L43.0484 343.885L259.1 305.157L577.053 564.458Z" fill="#1572FA"/>
+</g>
+<defs>
+<filter id="filter0_n_17_32" x="43.0488" y="96.873" width="1139.06" height="915.472" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feTurbulence type="fractalNoise" baseFrequency="2.5 2.5" stitchTiles="stitch" numOctaves="3" result="noise" seed="8600" />
+<feColorMatrix in="noise" type="luminanceToAlpha" result="alphaNoise" />
+<feComponentTransfer in="alphaNoise" result="coloredNoise1">
+<feFuncA type="discrete" tableValues="1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 "/>
+</feComponentTransfer>
+<feComposite operator="in" in2="shape" in="coloredNoise1" result="noise1Clipped" />
+<feFlood flood-color="rgba(255, 255, 255, 0.11)" result="color1Flood" />
+<feComposite operator="in" in2="noise1Clipped" in="color1Flood" result="color1" />
+<feMerge result="effect1_noise_17_32">
+<feMergeNode in="shape" />
+<feMergeNode in="color1" />
+</feMerge>
+</filter>
+<filter id="filter1_i_17_32" x="268.812" y="339.045" width="567.493" height="569.95" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="2.4561"/>
+<feGaussianBlur stdDeviation="10.9296"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"/>
+<feBlend mode="normal" in2="shape" result="effect1_innerShadow_17_32"/>
+</filter>
+<linearGradient id="paint0_linear_17_32" x1="663.714" y1="241.005" x2="577.201" y2="563.876" gradientUnits="userSpaceOnUse">
+<stop stop-color="#1574FF"/>
+<stop offset="1"/>
+</linearGradient>
+<linearGradient id="paint1_linear_17_32" x1="552.559" y1="339.115" x2="552.559" y2="906.468" gradientUnits="userSpaceOnUse">
+<stop stop-color="#E6E6E6"/>
+<stop offset="1"/>
+</linearGradient>
+</defs>
+</svg>

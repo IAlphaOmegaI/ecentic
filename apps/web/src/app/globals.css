@@ -1,0 +1,6 @@
+@import "@zenncore/config/tailwind";
+@import "@zenncore/web/config/tailwind";
+
+@theme inline {
+  --font-body: var(--font-ltsuperior);
+}
