@@ -3,6 +3,7 @@ import type { PropsWithChildren } from "react";
 import "./globals.css";
 import localFont from "next/font/local";
 import { ThemeProvider } from "@/context/theme";
+import Script from "next/script";
 
 const ltsuperior = localFont({
   src: [
@@ -49,6 +50,15 @@ export const metadata: Metadata = {
 export default ({ children }: PropsWithChildren) => {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {process.env.NODE_ENV === "development" && (
+          <Script
+            src="//unpkg.com/react-grab/dist/index.global.js"
+            crossOrigin="anonymous"
+            strategy="beforeInteractive"
+          />
+        )}
+      </head>
       <body
         className={`${ltsuperior.variable} bg-background font-body tracking-[-4%] antialiased`}
       >

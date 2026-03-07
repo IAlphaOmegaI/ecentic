@@ -1,6 +1,7 @@
 export {
   type CreateCustomField,
   field,
+  type GenericField,
   type GenericFieldConfig,
   type InferredFieldConfig,
 } from "./field";
@@ -17,8 +18,8 @@ export type {
   GenericInterface,
   InterfaceValue,
 } from "./interface";
-export type { GenericProps, InferredProps } from "./props";
-export type { GenericSchema, InferredSchema, ZodInfer } from "./schema";
+export type { GenericProps, InferredProps, RefinedProps } from "./props";
+export type { GenericSchema, InferredSchema } from "./schema";
 export type { GenericShape } from "./shape";
 export {
   type GenericValidator,

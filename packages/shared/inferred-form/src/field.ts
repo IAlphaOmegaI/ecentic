@@ -1,4 +1,4 @@
-import type { ClassList } from "@zenncore/utils";
+import type { ClassList, ValueOf } from "@zenncore/utils";
 import type { EmptyObject, Prettify } from "@zenncore/utils/types";
 import type { ComponentType } from "react";
 import type * as z from "zod";
@@ -24,7 +24,10 @@ export type InferredFieldConfig<
   Shape extends GenericShape<Interface>,
   Validator extends InferredValidator<Interface, Shape>,
   Props extends InferredProps<Interface, Shape, Validator>,
-> = Omit<Props, "onValueChange" | "onBlur" | "classList" | "children"> & {
+> = Omit<
+  Props,
+  "onValueChange" | "onBlur" | "classList" | "children" | "value"
+> & {
   shape: Shape;
 
   validator: ReducedValidator<Validator>;
@@ -75,3 +78,12 @@ export type CustomField = CreateCustomField<
   RefinedProps<GenericValue>,
   ComponentType<RefinedProps<GenericValue>>
 >;
+
+export type GenericField<Interface extends GenericInterface> = ValueOf<{
+  [K in GenericShape<Interface>]: InferredFieldConfig<
+    Interface,
+    K,
+    InferredValidator<Interface, K>,
+    InferredProps<Interface, K, InferredValidator<Interface, K>>
+  >;
+}>;

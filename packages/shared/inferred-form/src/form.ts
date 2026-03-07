@@ -1,5 +1,9 @@
 import type { core, z } from "zod";
-import type { GenericFieldConfig, InferredFieldConfig } from "./field";
+import type {
+  CustomField,
+  GenericFieldConfig,
+  InferredFieldConfig,
+} from "./field";
 import type { GenericInterface } from "./interface";
 import type { InferredProps } from "./props";
 import type { GenericSchema } from "./schema";
@@ -21,15 +25,19 @@ export type InferredFormOptions<
   Schema extends GenericSchema,
 > = {
   [K in keyof Schema["shape"]]: Omit<
+    // @ts-expect-error
     InferredFieldConfig<
       Interface,
-      InferredValidatorShape<Interface, Schema["shape"][K]>,
-      Schema["shape"][K],
-      InferredProps<
-        Interface,
-        InferredValidatorShape<Interface, Schema["shape"][K]>,
-        Schema["shape"][K]
-      >
+      | InferredValidatorShape<Interface, Schema["shape"][K]>
+      | CustomField["Shape"],
+      // @ts-expect-error
+      Schema["shape"][K] | CustomField["Validator"],
+      | InferredProps<
+          Interface,
+          InferredValidatorShape<Interface, Schema["shape"][K]>,
+          Schema["shape"][K]
+        >
+      | CustomField["Props"]
     >,
     "validator"
   >;
@@ -44,6 +52,7 @@ export type FormFromOptions<
     validator: Schema["shape"][K];
   };
 };
+
 export const applyFormOptions = <
   Interface extends GenericInterface,
   Schema extends GenericSchema,
@@ -56,7 +65,7 @@ export const applyFormOptions = <
       key,
       { validator, ...options[key] },
     ]),
-  ) as FormFromOptions<
+  ) as unknown as FormFromOptions<
     Interface,
     Schema,
     InferredFormOptions<Interface, Schema>

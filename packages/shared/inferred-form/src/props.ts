@@ -15,13 +15,21 @@ export type InferredProps<
   : CompleteInterface<Interface>[Shape]["props"];
 
 export type GenericProps = {
-  value?: unknown;
+  value?: never;
+  onValueChange?: (value: never) => void;
   defaultValue?: unknown;
-  onValueChange?: (value: unknown) => void;
+  name?: string;
+  disabled?: boolean;
+  placeholder?: string;
 };
 
-export type RefinedProps<Value> = {
+export type RefinedProps<Value, Ref extends HTMLElement = HTMLInputElement> = {
   value?: Value;
-  defaultValue?: Value;
   onValueChange?: (value: Value) => void;
+  defaultValue?: Value;
+  onBlur?: (event: React.FocusEvent<Ref>) => void;
+  ref?: React.RefObject<Ref>;
+  name?: string;
+  disabled?: boolean;
+  placeholder?: string;
 };

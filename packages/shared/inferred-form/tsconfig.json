@@ -1,4 +1,6 @@
 {
   "extends": "@zenncore/config/typescript/lib",
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }

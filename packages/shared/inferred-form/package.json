@@ -1,6 +1,6 @@
 {
   "name": "@zenncore/inferred-form",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -14,7 +14,7 @@
     "@zenncore/utils": "workspace:*"
   },
   "peerDependencies": {
-    "@hookform/resolvers": "catalog:",
+    "@hookform/resolvers": "^5.2.2",
     "react": "catalog:",
     "react-hook-form": "catalog:",
     "zod": "catalog:"

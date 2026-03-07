@@ -1026,6 +1026,66 @@ If a component is only used on one page, put it in a `_components` folder inside
 // components/dashboard/dashboard-stats.tsx  (only used on /dashboard)
 ```
 
+### 21d. Pages with Forms — Server Component + Co-located Form
+
+Any page that contains a form **must**:
+
+1. Be a **server component** — no `"use client"` on the `page.tsx` file.
+2. Extract the form (and any other interactive elements) into a `_components/` folder co-located with the page.
+3. Use `InferredForm` + `field()` from `@zenncore/web/components/inferred-form` for all form fields — never raw inputs or `react-hook-form` directly.
+
+```ts
+// ✅ Good — page is a server component, form lives in _components/
+// app/(auth)/sign-in/page.tsx          ← server component, no "use client"
+// app/(auth)/sign-in/_components/sign-in-form.tsx  ← "use client", InferredForm
+```
+
+```ts
+// ❌ Bad — page is a client component with inline form
+// app/(auth)/sign-in/page.tsx  ← "use client" + raw <input> / useState
+```
+
+**page.tsx** — server component, imports the form:
+
+```tsx
+// app/(auth)/sign-in/page.tsx
+import { SignInForm } from "./_components/sign-in-form";
+
+export default () => (
+  <div>
+    {/* static shell */}
+    <SignInForm />
+  </div>
+);
+```
+
+**_components/sign-in-form.tsx** — client component with InferredForm:
+
+```tsx
+"use client";
+
+import { InferredForm, field } from "@zenncore/web/components/inferred-form";
+import { useAsyncAction } from "@zenncore/utils/hooks";
+import { z } from "zod";
+
+const config = {
+  email: field({ shape: "text", validator: z.string().email(), label: "Email" }),
+  password: field({ shape: "text", type: "password", validator: z.string().min(8), label: "Password" }),
+};
+
+export const SignInForm = () => {
+  const [handleSubmit, isPending] = useAsyncAction(async (data) => {
+    // submit logic
+  });
+
+  return (
+    <InferredForm config={config} onSubmit={handleSubmit}>
+      {/* submit button, extra links, etc. */}
+    </InferredForm>
+  );
+};
+```
+
 ---
 
 ## 22. `@zenncore` Package Usage
@@ -1358,3 +1418,4 @@ bg-primary             — primary background (CTAs, highlights)
 - [ ] **(Next.js)** Use server actions for mutations
 - [ ] **(Next.js)** Use partial prerendering (PPR)
 - [ ] **(Next.js)** Colocate page-specific components in `_components` inside the page folder
+- [ ] **(Next.js)** Pages with forms: `page.tsx` is a server component; form extracted to `_components/` using `InferredForm` + `field()`

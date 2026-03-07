@@ -6,6 +6,7 @@ import {
   type FormEntries,
   type FormFromOptions,
   field as fieldPrimitive,
+  type GenericField as GenericFieldPrimitive,
   type GenericForm,
   type GenericSchema,
   type GenericShape as GenericShapePrimitive,
@@ -15,11 +16,12 @@ import {
   type InferredSchema,
   type InferredValidator as InferredValidatorPrimitive,
   type InterfaceValue,
+  type RefinedProps,
   reduceValidator,
   type UseInferredFormParams,
   useInferredForm,
 } from "@zenncore/inferred-form";
-import { cn, type ValueOf } from "@zenncore/utils";
+import { cn } from "@zenncore/utils";
 import { type FocusEvent, type ReactNode, useEffect } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
@@ -34,11 +36,7 @@ import {
   Form,
 } from "./form";
 import { NumberField } from "./number-field";
-import {
-  PhoneField,
-  PhoneFieldCountryCombobox,
-  PhoneFieldInput,
-} from "./phone-field";
+import { Radio, RadioGroup } from "./radio";
 import {
   Select,
   SelectItem,
@@ -71,6 +69,7 @@ type Interface = {
         } & SelectTrigger.Props
       >
     | InterfaceValue<
+        // biome-ignore lint/suspicious/noExplicitAny: no better way to describe it
         z.ZodEnum<any>,
         {
           placeholder?: string;
@@ -78,6 +77,7 @@ type Interface = {
         } & SelectTrigger.Props
       >
     | InterfaceValue<
+        // biome-ignore lint/suspicious/noExplicitAny: no better way to describe it
         z.ZodArray<z.ZodEnum<any>>,
         {
           multiple: true;
@@ -85,7 +85,23 @@ type Interface = {
           items?: Select.Props<unknown>["items"];
         } & SelectTrigger.Props
       >;
-  phone: InterfaceValue<z.ZodString, PhoneField.Props>;
+  radio:
+    | InterfaceValue<
+        // biome-ignore lint/suspicious/noExplicitAny: no better way to describe it
+        z.ZodLiteral<any>,
+        {
+          items?: Array<{ label: string; value: string }>;
+          classList?: Radio.Props["classList"];
+        } & RadioGroup.Props
+      >
+    | InterfaceValue<
+        // biome-ignore lint/suspicious/noExplicitAny: no better way to describe it
+        z.ZodEnum<any>,
+        {
+          items?: Array<{ label: string; value: string }>;
+          classList?: Radio.Props["classList"];
+        } & RadioGroup.Props
+      >;
   file:
     | InterfaceValue<z.ZodFile, Extract<FileUpload.Props, { mode: "single" }>>
     | InterfaceValue<
@@ -95,7 +111,13 @@ type Interface = {
   checkbox: InterfaceValue<z.ZodBoolean, Checkbox.Props>;
 };
 
-export type { CreateCustomField, FormEntries, GenericForm, InferredSchema };
+export type {
+  CreateCustomField,
+  FormEntries,
+  GenericForm,
+  InferredSchema,
+  RefinedProps,
+};
 
 export type InferredFieldConfig<
   Shape extends GenericShape,
@@ -120,23 +142,38 @@ export const applyFormOptions = <Schema extends GenericSchema>(
 
 export type GenericShape = GenericShapePrimitive<Interface>;
 
-type SomeField = ValueOf<{
-  [K in GenericShape]: InferredFieldConfig<
-    K,
-    InferredValidator<K>,
-    InferredProps<K, InferredValidator<K>>
-  >;
-}>;
+export type GenericField = GenericFieldPrimitive<Interface>;
 
-export type InferredFormFieldProps<Field extends SomeField> = {
+export type InferredFormFieldProps<Field extends GenericField> = Field & {
   className?: string | ((state: never) => string);
   name: string;
-} & Field;
+  custom?: {
+    error?: FieldError.Props["render"];
+  };
+};
 
-export const InferredFormField = <Field extends SomeField>(
+export const InferredFormField = <Field extends GenericField>(
+  // @ts-expect-error - InferredFormFieldProps is a generic type that is used to infer the props for the field
   props: InferredFormFieldProps<Field>,
 ): ReactNode => {
-  const { className } = props;
+  const { className, name, validator } = props;
+
+  const isFieldRequired =
+    validator &&
+    (() => {
+      if (validator.safeParse(undefined).success) return false;
+      switch (validator.type) {
+        case "string":
+          return !validator.safeParse("").success;
+        case "array":
+          return !validator.safeParse([]).success;
+        case "object":
+          return !validator.safeParse({}).success;
+        default:
+          return true;
+      }
+    })();
+
   return (
     <FieldController
       name={props.name}
@@ -149,8 +186,6 @@ export const InferredFormField = <Field extends SomeField>(
           ref: inherit.ref,
           name: inherit.name,
         };
-
-        // const { shape, validator, ...controlProps } = props;
 
         const element = (() => {
           switch (props.shape) {
@@ -170,7 +205,14 @@ export const InferredFormField = <Field extends SomeField>(
               );
             }
             case "checkbox": {
-              return <Checkbox {...field} {...props} />;
+              //set checked as value
+              return (
+                <Checkbox
+                  {...field}
+                  {...props}
+                  checked={field?.value || false}
+                />
+              );
             }
             case "number": {
               return <NumberField {...field} {...props} />;
@@ -191,7 +233,7 @@ export const InferredFormField = <Field extends SomeField>(
                     ) instanceof z.ZodEnum
                   : reduceValidator(props.validator) instanceof z.ZodEnum;
 
-                if (isEnum) {
+                if (isEnum)
                   return multiple
                     ? reduceValidator(
                         (
@@ -201,7 +243,6 @@ export const InferredFormField = <Field extends SomeField>(
                         ).element,
                       ).options
                     : reduceValidator(props.validator as z.ZodEnum).options;
-                }
 
                 return multiple
                   ? Array.from(
@@ -238,36 +279,44 @@ export const InferredFormField = <Field extends SomeField>(
               return (
                 <Select
                   value={field.value}
+                  onValueChange={field.onValueChange}
                   inputRef={field.ref}
                   items={props.items}
                   multiple={multiple}
-                  onValueChange={field.onValueChange}
                 >
                   <SelectTrigger
                     {...props}
-                    className="group-data-invalid:border-error"
                     classList={props.classList?.control}
+                    className={"group-data-invalid:border-error"}
                   >
                     <SelectValue>
-                      {(value) =>
-                        multiple
-                          ? value
-                              ?.map(
-                                (value: string) =>
-                                  options.find(
-                                    (option) => option.value === value,
-                                  )?.label,
-                              )
-                              .join(", ")
-                          : options.find((option) => option.value === value)
-                              ?.label
-                      }
+                      {(value) => (
+                        <div className="max-w-[15rem] overflow-x-auto overflow-y-hidden">
+                          <div className="whitespace-nowrap">
+                            {multiple
+                              ? value
+                                  ?.map(
+                                    (value: string) =>
+                                      options.find(
+                                        (option) => option.value === value,
+                                      )?.label,
+                                  )
+                                  .join(", ")
+                              : options.find((option) => option.value === value)
+                                  ?.label}
+                          </div>
+                        </div>
+                      )}
                     </SelectValue>
                   </SelectTrigger>
                   <SelectPositioner>
                     <SelectPopup>
                       {options.map(({ value, label }) => (
-                        <SelectItem key={value} value={value}>
+                        <SelectItem
+                          key={value}
+                          value={value}
+                          classList={props.classList?.control?.selectItem}
+                        >
                           {label}
                         </SelectItem>
                       ))}
@@ -276,18 +325,51 @@ export const InferredFormField = <Field extends SomeField>(
                 </Select>
               );
             }
-            case "phone": {
+
+            case "radio": {
+              const _values = (() => {
+                const isEnum =
+                  reduceValidator(props.validator) instanceof z.ZodEnum;
+
+                if (isEnum)
+                  return reduceValidator(props.validator as z.ZodEnum).options;
+
+                return Array.from(
+                  reduceValidator(props.validator as z.ZodLiteral).values,
+                );
+              })();
+
               return (
-                <PhoneField {...field} {...props}>
-                  <PhoneFieldCountryCombobox />
-                  <PhoneFieldInput className="group-data-invalid:border-error" />
-                </PhoneField>
+                <RadioGroup
+                  value={field.value}
+                  onValueChange={field.onValueChange}
+                  disabled={field.disabled}
+                  {...props}
+                >
+                  {props.items?.map(({ value, label }) => (
+                    <div key={value} className="flex items-center space-x-3">
+                      <Radio
+                        value={value}
+                        classList={props.classList}
+                        id={name}
+                      />
+                      {/** biome-ignore lint/a11y/useKeyWithClickEvents: needed to handle the click event */}
+                      <label
+                        className="cursor-pointer font-medium text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        onClick={() => field.onValueChange?.(value)}
+                        htmlFor={name}
+                      >
+                        {label}
+                      </label>
+                    </div>
+                  ))}
+                </RadioGroup>
               );
             }
 
             case "custom": {
               const { Component, ...rest } = props;
-
+              // @ts-expect-error - Component is a custom component that is used to render the field
               return <Component {...rest} {...field} />;
             }
 
@@ -301,21 +383,31 @@ export const InferredFormField = <Field extends SomeField>(
                 </FileUpload>
               );
             }
+
+            // case "datetime": {
+            //   return <DateTimePicker {...field} {...props} />;
+            // }
           }
         })();
 
         return (
           <Field className={cn("group", props.classList?.field)}>
-            <FieldLabel
-              className={cn(
-                "font-semibold data-invalid:text-error",
-                props.classList?.label,
-              )}
-            >
-              {props.label ?? props.name}
-            </FieldLabel>
+            {props?.label && (
+              <FieldLabel
+                className={cn(
+                  "font-semibold data-invalid:text-error",
+                  props.classList?.label,
+                )}
+              >
+                {props.label}
+                {isFieldRequired && " *"}
+              </FieldLabel>
+            )}
             {element}
-            <FieldError className={props.classList?.error} />
+            <FieldError
+              className={props.classList?.error}
+              render={props.custom?.error}
+            />
             <FieldDescription
               className={cn(
                 "text-foreground-dimmed",
@@ -342,10 +434,14 @@ export const InferredForm = <
   onBlur,
   onSubmit,
   onChange,
+  renderFields = true,
+  custom,
+  extend,
 }: InferredForm.Props<Form, Schema>): ReactNode => {
   const form = useInferredForm({
     config,
     defaultValues,
+    extend,
   });
 
   useEffect(() => {
@@ -360,12 +456,18 @@ export const InferredForm = <
     <Form
       className={className}
       onBlur={(event) => onBlur?.(event, form)}
-      onSubmit={form.handleSubmit(() => onSubmit?.(form.getValues()))}
+      onSubmit={form.handleSubmit(() => onSubmit?.(form.getValues(), form))}
       form={form}
     >
-      {Object.entries(config).map(([key, field]) => (
-        <InferredFormField key={key} name={key} {...(field as SomeField)} />
-      ))}
+      {renderFields &&
+        Object.entries(config).map(([key, field]) => (
+          <InferredFormField
+            key={key}
+            custom={custom}
+            name={key}
+            {...(field as GenericField)}
+          />
+        ))}
       {children}
     </Form>
   );
@@ -377,7 +479,14 @@ export namespace InferredForm {
   > = UseInferredFormParams<Form, Schema> & {
     children?: ReactNode;
     className?: string;
-    onSubmit?: (data: FormEntries<Form>) => void;
+    renderFields?: boolean;
+    custom?: {
+      error?: FieldError.Props["render"];
+    };
+    onSubmit?: (
+      data: FormEntries<Form>,
+      form: UseFormReturn<FormEntries<Form>>,
+    ) => void;
     onBlur?: (
       event: FocusEvent<HTMLFormElement, Element>,
       form: UseFormReturn<FormEntries<Form>>,
