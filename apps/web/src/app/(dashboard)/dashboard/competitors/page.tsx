@@ -145,7 +145,7 @@ export default () => (
         <p className="font-medium text-foreground text-sm">Competitor Brands</p>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <table className="w-full border-collapse [&_th]:border-x [&_th]:border-accent-foreground [&_td]:border-x [&_td]:border-accent-foreground [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0 [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0">
           <thead>
             <tr className="border-accent-foreground border-b">
               {[
@@ -248,7 +248,7 @@ export default () => (
         </p>
       </div>
       <div className="overflow-x-auto p-4">
-        <table className="w-full text-xs">
+        <table className="w-full text-xs border-collapse [&_th]:border-x [&_th]:border-accent-foreground [&_td]:border-x [&_td]:border-accent-foreground [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0 [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0">
           <thead>
             <tr>
               <th className="pr-4 text-left font-medium text-foreground-dimmed text-xs">

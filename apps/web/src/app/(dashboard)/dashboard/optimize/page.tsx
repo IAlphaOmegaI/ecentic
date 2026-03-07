@@ -129,7 +129,8 @@ export default () => (
     </div>
 
     <Tabs defaultValue="pending">
-      <TabsList className="mb-4 border border-accent-foreground">
+      <TabsList className="mb-4 border border-accent-foreground bg-transparent px-0 h-auto">
+        <TabsIndicator className="rounded-none h-full top-0 translate-y-0" />
         <Tab value="pending">
           Pending{" "}
           <span className="ml-1 bg-white/20 px-1 text-xs">
@@ -144,7 +145,6 @@ export default () => (
         </Tab>
         <Tab value="published">Published</Tab>
         <Tab value="dismissed">Dismissed</Tab>
-        <TabsIndicator />
       </TabsList>
 
       <TabsPanel value="pending">

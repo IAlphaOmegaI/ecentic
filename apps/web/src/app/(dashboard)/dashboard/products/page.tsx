@@ -106,7 +106,7 @@ export default () => (
 
     <div className="border border-accent-foreground bg-background-rich">
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse">
+        <table className="w-full border-collapse [&_th]:border-x [&_th]:border-accent-foreground [&_td]:border-x [&_td]:border-accent-foreground [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0 [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0">
           <thead>
             <tr className="border-accent-foreground border-b">
               <th className="w-10 px-4 py-3">
@@ -154,14 +154,19 @@ export default () => (
                 <td className="px-4 py-3">
                   <Link
                     href={`/dashboard/products/${product._id}`}
-                    className="group"
+                    className="group flex items-center gap-3"
                   >
-                    <p className="font-medium text-foreground text-sm group-hover:text-primary transition-colors">
-                      {product.title}
-                    </p>
-                    <p className="font-light text-foreground-dimmed text-xs">
-                      {product.category} · {product.sku}
-                    </p>
+                    <div className="flex size-9 shrink-0 items-center justify-center bg-primary/10 font-semibold text-primary text-xs">
+                      {product.title.slice(0, 2).toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground text-sm group-hover:text-primary transition-colors">
+                        {product.title}
+                      </p>
+                      <p className="font-light text-foreground-dimmed text-xs">
+                        {product.category} · {product.sku}
+                      </p>
+                    </div>
                   </Link>
                 </td>
                 <td className="px-4 py-3 font-light text-foreground text-sm">

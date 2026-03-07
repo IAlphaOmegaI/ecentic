@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRightIcon, DownloadIcon, PlusIcon } from "@zenncore/icons";
+import { Tab, Tabs, TabsIndicator, TabsList } from "@zenncore/web/components/tabs";
 import { cn } from "@zenncore/utils";
 import Link from "next/link";
 import { useState } from "react";
@@ -347,24 +348,19 @@ export default () => {
             <p className="font-light text-foreground-dimmed text-xs uppercase tracking-widest">Performance</p>
             <p className="mt-1 font-medium text-foreground text-lg">Win Rate by Model</p>
           </div>
-          <div className="flex border border-accent-foreground">
-            {(["7d", "30d", "90d"] as const).map((period, index) => (
-              <button
-                key={period}
-                type="button"
-                onClick={() => setActivePeriod(period)}
-                className={cn(
-                  "px-3 py-1 text-xs transition-colors",
-                  activePeriod === period
-                    ? "bg-primary text-white"
-                    : "text-foreground-dimmed hover:text-foreground",
-                  index !== 0 && "border-accent-foreground border-l",
-                )}
-              >
-                {period}
-              </button>
-            ))}
-          </div>
+          <Tabs
+            value={activePeriod}
+            onValueChange={(value) => setActivePeriod(value as "7d" | "30d" | "90d")}
+          >
+            <TabsList className="border border-accent-foreground bg-transparent px-0 h-auto">
+              <TabsIndicator className="rounded-none h-full top-0 translate-y-0" />
+              {(["7d", "30d", "90d"] as const).map((period) => (
+                <Tab key={period} value={period} className="h-auto px-3 py-1 text-xs text-foreground-dimmed data-selected:text-white">
+                  {period}
+                </Tab>
+              ))}
+            </TabsList>
+          </Tabs>
         </div>
 
         {/* Model stats — big numbers */}
@@ -447,7 +443,7 @@ export default () => {
         </Link>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse">
+        <table className="w-full border-collapse [&_th]:border-x [&_th]:border-accent-foreground [&_td]:border-x [&_td]:border-accent-foreground [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0 [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0">
           <thead>
             <tr className="border-accent-foreground border-b">
               {["Product", "Win Rate", "GPT-4", "Claude", "Gemini", "vs. Top Competitor", "Status", ""].map(
@@ -469,12 +465,15 @@ export default () => {
                 className="border-accent-foreground border-b last:border-b-0 hover:bg-background-dimmed/50"
               >
                 <td className="px-4 py-3">
-                  <p className="font-medium text-foreground text-sm">
-                    {product.title}
-                  </p>
-                  <p className="font-light text-foreground-dimmed text-xs">
-                    {product.category}
-                  </p>
+                  <div className="flex items-center gap-3">
+                    <div className="flex size-9 shrink-0 items-center justify-center bg-primary/10 font-semibold text-primary text-xs">
+                      {product.title.slice(0, 2).toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground text-sm">{product.title}</p>
+                      <p className="font-light text-foreground-dimmed text-xs">{product.category}</p>
+                    </div>
+                  </div>
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">

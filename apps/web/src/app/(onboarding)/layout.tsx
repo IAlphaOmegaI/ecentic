@@ -82,7 +82,7 @@ export default ({ children }: PropsWithChildren) => {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="flex items-center justify-between border-accent-foreground border-b bg-background-rich px-6 py-4">
+      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-accent-foreground border-b bg-background-rich px-6 py-4">
         <Link href="/">
           <Image
             src="/images/trademark.svg"
@@ -100,29 +100,42 @@ export default ({ children }: PropsWithChildren) => {
             return (
               <div key={step.path} className="flex items-center gap-1">
                 <div
-                  className={`flex items-center gap-1.5 px-3 py-1 text-xs font-medium transition-colors ${
+                  className={`flex items-center gap-1.5 px-3 py-1 text-xs font-medium transition-all duration-300 ease-in-out ${
                     isCurrent
-                      ? "bg-primary text-white"
+                      ? "bg-primary text-white scale-105"
                       : isCompleted
-                        ? "text-foreground-dimmed"
-                        : "text-foreground-dimmed opacity-40"
+                        ? "text-primary scale-100"
+                        : "text-foreground-dimmed opacity-40 scale-100"
                   }`}
                 >
-                  <span
-                    className={`flex size-4 items-center justify-center text-xs ${
-                      isCompleted
-                        ? "text-foreground-dimmed"
-                        : isCurrent
-                          ? "text-white"
-                          : "text-foreground-dimmed"
-                    }`}
-                  >
-                    {isCompleted ? "✓" : index + 1}
+                  <span className="relative flex size-4 items-center justify-center text-xs overflow-hidden">
+                    <span
+                      className={`absolute transition-all duration-300 ease-in-out ${
+                        isCompleted
+                          ? "opacity-100 translate-y-0"
+                          : "opacity-0 -translate-y-3"
+                      }`}
+                    >
+                      ✓
+                    </span>
+                    <span
+                      className={`absolute transition-all duration-300 ease-in-out ${
+                        !isCompleted
+                          ? "opacity-100 translate-y-0"
+                          : "opacity-0 translate-y-3"
+                      }`}
+                    >
+                      {index + 1}
+                    </span>
                   </span>
                   {step.label}
                 </div>
                 {index < steps.length - 1 && (
-                  <div className="h-px w-4 bg-accent-foreground" />
+                  <div
+                    className={`h-px w-4 transition-colors duration-500 ${
+                      isCompleted ? "bg-primary" : "bg-accent-foreground"
+                    }`}
+                  />
                 )}
               </div>
             );
@@ -135,8 +148,8 @@ export default ({ children }: PropsWithChildren) => {
         </div>
       </header>
 
-      <div className="flex flex-1">
-        <aside className="hidden lg:flex w-72 sticky top-[57px] h-[calc(100vh-57px)] overflow-hidden">
+      <div className="flex flex-1 pt-[57px]">
+        <aside className="hidden lg:flex lg:w-1/2 sticky top-[57px] h-[calc(100vh-57px)] overflow-hidden">
           <div className="absolute inset-0 bg-primary" />
           <Image
             src="/images/onboarding-photo.png"
@@ -145,28 +158,33 @@ export default ({ children }: PropsWithChildren) => {
             className="object-contain object-bottom opacity-20"
             aria-hidden="true"
           />
-          <div className="relative z-10 flex flex-col justify-between p-8 w-full h-full">
+          <div className="relative z-10 flex flex-col justify-between p-10 w-full h-full">
             <Image
               src="/images/wordmark.svg"
               alt="écentic"
-              width={100}
-              height={28}
-              className="h-auto w-24 brightness-0 invert"
+              width={120}
+              height={32}
+              className="h-auto w-28 brightness-0 invert"
             />
             <div className="flex flex-1 items-end pb-2">
-              <h2 className="font-medium text-4xl text-white leading-none mb-6">
+              <h2 className="font-medium text-6xl text-white leading-none mb-6">
                 {content.headline}
               </h2>
             </div>
-            <div className="flex flex-col gap-3">
-              {content.points.map((point) => (
-                <div key={point} className="flex items-start gap-3">
-                  <div className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-white/20">
-                    <CheckIcon className="size-3 text-white" />
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-3">
+                {content.points.map((point) => (
+                  <div key={point} className="flex items-start gap-3">
+                    <div className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-white/20">
+                      <CheckIcon className="size-3 text-white" />
+                    </div>
+                    <p className="font-light text-sm text-white/90">{point}</p>
                   </div>
-                  <p className="font-light text-sm text-white/90">{point}</p>
-                </div>
-              ))}
+                ))}
+              </div>
+              <p className="font-light text-sm text-white/50">
+                Free to start. No credit card required.
+              </p>
             </div>
           </div>
         </aside>

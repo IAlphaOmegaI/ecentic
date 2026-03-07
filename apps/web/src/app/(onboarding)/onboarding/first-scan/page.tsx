@@ -138,35 +138,41 @@ export default () => {
   if (phase === "pre")
     return (
       <div className="flex flex-1 flex-col items-center justify-center px-6 py-12">
-        <div className="w-full max-w-lg">
-          <div className="mb-6 text-center">
-            <h1 className="font-medium text-2xl text-foreground">
-              Ready to see how AI agents judge your products?
+        <div className="w-full max-w-2xl">
+          <div className="mb-10 text-center">
+            <h1 className="font-medium text-4xl text-foreground leading-tight">
+              See who's winning.
             </h1>
-            <p className="mt-2 font-light text-foreground-dimmed text-sm">
-              We'll run your products through three leading AI models and show you
-              exactly why you win or lose.
+            <p className="mt-3 font-light text-foreground-dimmed text-base max-w-md mx-auto">
+              GPT-4, Claude & Gemini will simulate real shopping queries across your products and competitors.
             </p>
           </div>
 
-          <div className="mb-6 border border-accent-foreground bg-background-rich p-6">
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { label: "Products selected", value: "10" },
-                { label: "Competitors matched", value: "24" },
-                { label: "Models to test", value: "GPT-4, Claude, Gemini" },
-                { label: "Estimated time", value: "~30 seconds" },
-              ].map((item) => (
-                <div key={item.label}>
-                  <p className="font-light text-foreground-dimmed text-xs">
-                    {item.label}
-                  </p>
-                  <p className="font-medium text-foreground text-sm">
-                    {item.value}
-                  </p>
-                </div>
-              ))}
-            </div>
+          <div className="mb-8 grid grid-cols-3 gap-px bg-accent-foreground border border-accent-foreground">
+            {[
+              { model: "GPT-4", color: "text-blue-500", desc: "Spec-focused reasoning" },
+              { model: "Claude", color: "text-orange-500", desc: "Contextual analysis" },
+              { model: "Gemini", color: "text-green-500", desc: "Price-quality ratio" },
+            ].map((m) => (
+              <div key={m.model} className="flex flex-col gap-1 bg-background-rich p-5">
+                <span className={cn("font-semibold text-xl", m.color)}>{m.model}</span>
+                <span className="font-light text-foreground-dimmed text-xs">{m.desc}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="mb-8 grid grid-cols-2 gap-px bg-accent-foreground border border-accent-foreground">
+            {[
+              { label: "Products", value: "10" },
+              { label: "Competitors matched", value: "24" },
+              { label: "Simulations to run", value: "720" },
+              { label: "Estimated time", value: "~30 sec" },
+            ].map((item) => (
+              <div key={item.label} className="bg-background-rich px-5 py-4">
+                <p className="font-semibold text-2xl text-foreground">{item.value}</p>
+                <p className="font-light text-foreground-dimmed text-xs">{item.label}</p>
+              </div>
+            ))}
           </div>
 
           <Button
@@ -174,7 +180,7 @@ export default () => {
             color="primary"
             type="button"
             onClick={() => setPhase("running")}
-            className="w-full py-3 font-medium text-base"
+            className="w-full py-3.5 font-medium text-base"
           >
             Run Simulation
           </Button>
@@ -198,44 +204,33 @@ export default () => {
     return (
       <div className="flex flex-1 flex-col px-6 py-10">
         <div className="mx-auto w-full max-w-2xl">
-          <div className="mb-6">
-            <div className="mb-2 flex items-center justify-between">
-              <p className="font-medium text-foreground text-sm">
-                Simulating product {Math.min(Math.ceil(progress / 10), 10)} of 10...
-              </p>
-              <p className="font-light text-foreground-dimmed text-sm">
-                {progress}%
-              </p>
-            </div>
-            <div className="h-1.5 w-full bg-accent-foreground">
-              <div
-                className="h-full bg-primary transition-all duration-200"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
+          <div className="mb-2 flex items-center justify-between">
+            <p className="font-medium text-foreground text-sm">
+              Simulating product {Math.min(Math.ceil(progress / 10), 10)} of 10...
+            </p>
+            <p className="font-light text-foreground-dimmed text-sm">{progress}%</p>
+          </div>
+          <div className="mb-6 h-1.5 w-full bg-accent-foreground">
+            <div
+              className="h-full bg-primary transition-all duration-200"
+              style={{ width: `${progress}%` }}
+            />
           </div>
 
-          <div className="mb-4 grid grid-cols-3 gap-2">
-            {models.map((model) => {
+          <div className="mb-4 grid grid-cols-3 gap-px bg-accent-foreground border border-accent-foreground">
+            {(["GPT-4", "Claude", "Gemini"] as const).map((model) => {
               const status = modelStatuses[model];
+              const modelColor = model === "GPT-4" ? "text-blue-500" : model === "Claude" ? "text-orange-500" : "text-green-500";
               return (
-                <div
-                  key={model}
-                  className="flex items-center justify-between border border-accent-foreground bg-background-rich px-3 py-2"
-                >
-                  <span className="font-medium text-foreground text-xs">
-                    {model}
-                  </span>
-                  <span
-                    className={cn(
-                      "text-xs",
-                      status === "complete" && "text-success",
-                      status === "running" && "text-primary",
-                      status === "queued" && "text-foreground-dimmed",
-                    )}
-                  >
+                <div key={model} className="flex items-center justify-between bg-background-rich px-4 py-3">
+                  <span className={cn("font-semibold text-sm", modelColor)}>{model}</span>
+                  <span className={cn("text-xs font-medium",
+                    status === "complete" && "text-success",
+                    status === "running" && "text-primary",
+                    status === "queued" && "text-foreground-dimmed",
+                  )}>
                     {status === "complete" && "✓ Done"}
-                    {status === "running" && "Running"}
+                    {status === "running" && "● Running"}
                     {status === "queued" && "Queued"}
                   </span>
                 </div>
@@ -243,26 +238,15 @@ export default () => {
             })}
           </div>
 
-          <div className="mb-4 grid grid-cols-3 gap-2">
+          <div className="mb-4 grid grid-cols-3 gap-px bg-accent-foreground border border-accent-foreground">
             {[
               { label: "Wins", value: wins, color: "text-success" },
               { label: "Losses", value: losses, color: "text-error" },
-              {
-                label: "Win Rate",
-                value: `${wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0}%`,
-                color: "text-primary",
-              },
+              { label: "Win Rate", value: `${wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0}%`, color: "text-primary" },
             ].map((stat) => (
-              <div
-                key={stat.label}
-                className="border border-accent-foreground bg-background-rich p-3 text-center"
-              >
-                <p className={cn("font-medium text-xl", stat.color)}>
-                  {stat.value}
-                </p>
-                <p className="font-light text-foreground-dimmed text-xs">
-                  {stat.label}
-                </p>
+              <div key={stat.label} className="bg-background-rich px-4 py-4 text-center">
+                <p className={cn("font-semibold text-3xl", stat.color)}>{stat.value}</p>
+                <p className="font-light text-foreground-dimmed text-xs mt-0.5">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -273,22 +257,14 @@ export default () => {
           >
             {logEntries.map((entry) => (
               <div key={entry.id} className="mb-1">
-                <span
-                  className={cn(
-                    "font-medium",
-                    entry.model === "GPT-4" && "text-blue-400",
-                    entry.model === "Claude" && "text-orange-400",
-                    entry.model === "Gemini" && "text-green-400",
-                  )}
-                >
+                <span className={cn("font-medium",
+                  entry.model === "GPT-4" && "text-blue-400",
+                  entry.model === "Claude" && "text-orange-400",
+                  entry.model === "Gemini" && "text-green-400",
+                )}>
                   [{entry.model}]{" "}
                 </span>
-                <span
-                  className={cn(
-                    "text-white/80",
-                    entry.message.startsWith("DECISION") && "text-white font-medium",
-                  )}
-                >
+                <span className={cn("text-white/80", entry.message.startsWith("DECISION") && "text-white font-medium")}>
                   {entry.message}
                 </span>
               </div>
@@ -302,57 +278,64 @@ export default () => {
     );
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-6 py-12">
-      <div className="w-full max-w-lg">
-        <div className="mb-6 text-center">
-          <p className="mb-2 font-light text-foreground-dimmed text-sm uppercase tracking-wider">
-            Your Overall Win Rate
-          </p>
-          <p className={cn("font-semibold text-8xl", resultColor)}>
-            {winRate}%
-          </p>
-          <p className="mt-4 font-light text-foreground text-base">
-            {resultMessage}
-          </p>
-        </div>
+    <div className="flex flex-1 flex-col px-6 py-12">
+      <div className="mx-auto w-full max-w-2xl">
 
-        <div className="mb-6 border border-accent-foreground bg-background-rich p-4">
-          <p className="mb-3 font-medium text-foreground text-sm">
-            Win rate by model
-          </p>
-          {[
-            { model: "GPT-4", rate: 41 },
-            { model: "Claude", rate: 28 },
-            { model: "Gemini", rate: 32 },
-          ].map(({ model, rate }) => (
-            <div key={model} className="mb-2 flex items-center gap-3">
-              <span className="w-14 font-light text-foreground-dimmed text-xs">
-                {model}
-              </span>
-              <div className="flex-1 bg-accent-foreground">
-                <div
-                  className={cn(
-                    "h-2 transition-all",
-                    rate >= 60 ? "bg-success" : rate >= 30 ? "bg-warning" : "bg-error",
-                  )}
-                  style={{ width: `${rate}%` }}
-                />
+        <div className="mb-8 grid grid-cols-[1fr_auto] gap-px bg-accent-foreground border border-accent-foreground">
+          <div className="bg-background-rich px-6 py-8">
+            <p className="font-light text-foreground-dimmed text-xs uppercase tracking-widest mb-2">
+              Overall Win Rate
+            </p>
+            <p className={cn("font-semibold leading-none", resultColor, "text-[80px]")}>
+              {winRate}%
+            </p>
+            <p className="mt-4 font-light text-foreground text-sm max-w-xs">
+              {resultMessage}
+            </p>
+          </div>
+          <div className="flex flex-col divide-y divide-accent-foreground bg-background-rich">
+            {[
+              { label: "Wins", value: wins, color: "text-success" },
+              { label: "Losses", value: losses, color: "text-error" },
+              { label: "Products", value: 10, color: "text-foreground" },
+            ].map((stat) => (
+              <div key={stat.label} className="flex flex-1 flex-col items-center justify-center px-8 py-4">
+                <span className={cn("font-semibold text-3xl", stat.color)}>{stat.value}</span>
+                <span className="font-light text-foreground-dimmed text-xs mt-0.5">{stat.label}</span>
               </div>
-              <span className="w-8 text-right font-medium text-foreground text-xs">
-                {rate}%
-              </span>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        <div className="mb-6 border border-primary/20 bg-primary/5 p-4">
-          <p className="font-medium text-foreground text-sm">Top finding</p>
-          <p className="mt-1 font-light text-foreground-dimmed text-sm">
+        <div className="mb-4 border border-accent-foreground bg-background-rich">
+          <div className="border-b border-accent-foreground px-4 py-3">
+            <p className="font-medium text-foreground text-sm">Win rate by model</p>
+          </div>
+          <div className="grid grid-cols-3 divide-x divide-accent-foreground">
+            {[
+              { model: "GPT-4", rate: 41, color: "bg-blue-500" },
+              { model: "Claude", rate: 28, color: "bg-orange-500" },
+              { model: "Gemini", rate: 32, color: "bg-green-500" },
+            ].map(({ model, rate, color }) => (
+              <div key={model} className="flex flex-col gap-3 px-4 py-4">
+                <div className="flex items-end justify-between">
+                  <span className="font-light text-foreground-dimmed text-xs">{model}</span>
+                  <span className="font-semibold text-foreground text-lg">{rate}%</span>
+                </div>
+                <div className="h-1.5 w-full bg-accent-foreground">
+                  <div className={cn("h-full transition-all", color)} style={{ width: `${rate}%` }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mb-8 border border-primary/20 bg-primary/5 px-5 py-4">
+          <p className="font-medium text-primary text-xs uppercase tracking-widest mb-1.5">Top Finding</p>
+          <p className="font-light text-foreground text-sm">
             Pro Wireless Earbuds loses on{" "}
-            <span className="font-medium text-foreground">
-              battery_life and warranty
-            </span>{" "}
-            across all models — costs you 62% of simulations.
+            <span className="font-medium text-foreground">battery_life and warranty</span>{" "}
+            across all 3 models — costs you 62% of simulations.
           </p>
         </div>
 
@@ -362,7 +345,7 @@ export default () => {
             color="primary"
             type="button"
             onClick={() => router.push("/dashboard")}
-            className="flex w-full items-center justify-center gap-2 py-3 font-medium text-base"
+            className="flex w-full items-center justify-center gap-2 py-3.5 font-medium text-base"
           >
             Go to Dashboard
             <ArrowRightIcon className="size-4" />

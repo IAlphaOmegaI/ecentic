@@ -1,8 +1,8 @@
 "use client";
 
-import { CheckIcon, DownloadIcon, UploadIcon } from "@zenncore/icons";
+import { CheckIcon, UploadIcon } from "@zenncore/icons";
+import { Tab, Tabs, TabsIndicator, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import { cn } from "@zenncore/utils";
-import { useState } from "react";
 import { products } from "@/lib/mock-data";
 
 const completenessScore = 68;
@@ -20,7 +20,6 @@ const profileFields = [
 ] as const;
 
 export default () => {
-  const [activeTab, setActiveTab] = useState<"profile" | "products">("profile");
 
   const ucpJson = JSON.stringify({
     "@context": "https://ucp.ai/schema",
@@ -99,25 +98,14 @@ export default () => {
         </div>
       </div>
 
-      <div className="mb-4 flex gap-0 border-b border-accent-foreground">
-        {(["profile", "products"] as const).map((tab) => (
-          <button
-            key={tab}
-            type="button"
-            onClick={() => setActiveTab(tab)}
-            className={cn(
-              "px-4 py-2 font-medium text-sm border-b-2 transition-colors",
-              activeTab === tab
-                ? "border-primary text-primary"
-                : "border-transparent text-foreground-dimmed hover:text-foreground",
-            )}
-          >
-            {tab === "profile" ? "Merchant Profile" : "Product Structured Data"}
-          </button>
-        ))}
-      </div>
+      <Tabs defaultValue="profile">
+        <TabsList className="mb-4 border border-accent-foreground bg-transparent px-0 h-auto">
+          <TabsIndicator className="rounded-none h-full top-0 translate-y-0" />
+          <Tab value="profile">Merchant Profile</Tab>
+          <Tab value="products">Product Structured Data</Tab>
+        </TabsList>
 
-      {activeTab === "profile" && (
+        <TabsPanel value="profile">
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <div className="border border-accent-foreground bg-background-rich">
             <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
@@ -200,9 +188,9 @@ export default () => {
             </div>
           </div>
         </div>
-      )}
+        </TabsPanel>
 
-      {activeTab === "products" && (
+        <TabsPanel value="products">
         <div className="border border-accent-foreground bg-background-rich">
           <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2 flex items-center justify-between">
             <p className="font-medium text-foreground text-sm">
@@ -216,7 +204,7 @@ export default () => {
             </button>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full border-collapse [&_th]:border-x [&_th]:border-accent-foreground [&_td]:border-x [&_td]:border-accent-foreground [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0 [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0">
               <thead>
                 <tr className="border-accent-foreground border-b">
                   {["Product", "Structured Data", "Status", "Actions"].map((header) => (
@@ -235,8 +223,15 @@ export default () => {
                       className="border-accent-foreground border-b last:border-b-0 hover:bg-background-dimmed/30"
                     >
                       <td className="px-4 py-3">
-                        <p className="font-medium text-foreground text-sm">{product.title}</p>
-                        <p className="font-light text-foreground-dimmed text-xs">{product.category}</p>
+                        <div className="flex items-center gap-3">
+                          <div className="flex size-9 shrink-0 items-center justify-center bg-primary/10 font-semibold text-primary text-xs">
+                            {product.title.slice(0, 2).toUpperCase()}
+                          </div>
+                          <div>
+                            <p className="font-medium text-foreground text-sm">{product.title}</p>
+                            <p className="font-light text-foreground-dimmed text-xs">{product.category}</p>
+                          </div>
+                        </div>
                       </td>
                       <td className="px-4 py-3">
                         {hasData ? (
@@ -272,7 +267,8 @@ export default () => {
             </table>
           </div>
         </div>
-      )}
+        </TabsPanel>
+      </Tabs>
     </div>
   );
 };

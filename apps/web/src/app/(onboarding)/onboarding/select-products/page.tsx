@@ -44,6 +44,13 @@ export default () => {
   const router = useRouter();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
+  const toggleAll = () => {
+    setSelectedIds((previous) => {
+      if (previous.size === products.length) return new Set();
+      return new Set(products.slice(0, PRODUCT_LIMIT).map((p) => p._id));
+    });
+  };
+
   const toggleProduct = (id: string) => {
     setSelectedIds((previous) => {
       const next = new Set(previous);
@@ -90,69 +97,93 @@ export default () => {
           </div>
         )}
 
-        <div className="border border-accent-foreground bg-background-rich">
-          <div className="grid grid-cols-[auto_1fr_80px_80px_80px_90px] gap-0 border-accent-foreground border-b bg-background-dimmed px-4 py-2 text-foreground-dimmed text-xs font-medium">
-            <div className="pr-3" />
-            <div>Product</div>
-            <div className="text-right">Price</div>
-            <div className="text-right">Category</div>
-            <div className="text-right">Quality</div>
-            <div className="text-right">Variants</div>
-          </div>
-          {products.map((product) => {
-            const isSelected = selectedIds.has(product._id);
-            const isDisabled = !isSelected && selectedIds.size >= PRODUCT_LIMIT;
-
-            return (
-              <button
-                key={product._id}
-                type="button"
-                onClick={() => toggleProduct(product._id)}
-                disabled={isDisabled}
-                className={cn(
-                  "grid w-full grid-cols-[auto_1fr_80px_80px_80px_90px] items-center gap-0 border-accent-foreground border-b px-4 py-3 text-left transition-colors last:border-b-0",
-                  isSelected
-                    ? "bg-primary/5"
-                    : isDisabled
-                      ? "opacity-40"
-                      : "hover:bg-background-dimmed/50",
-                )}
-              >
-                <div className="pr-3">
+        <div className="border border-accent-foreground bg-background-rich overflow-x-auto">
+          <table className="w-full border-collapse [&_th]:border-x [&_th]:border-accent-foreground [&_td]:border-x [&_td]:border-accent-foreground [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0 [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0">
+            <thead>
+              <tr className="border-accent-foreground border-b">
+                <th className="px-4 py-2 w-10">
                   <div
+                    onClick={toggleAll}
                     className={cn(
-                      "flex size-4 items-center justify-center border",
-                      isSelected
+                      "flex size-4 cursor-pointer items-center justify-center border",
+                      selectedIds.size === products.length
                         ? "border-primary bg-primary"
                         : "border-accent-foreground bg-background-rich",
                     )}
                   >
-                    {isSelected && (
+                    {selectedIds.size === products.length && (
                       <CheckIcon className="size-2.5 text-white" />
                     )}
                   </div>
-                </div>
-                <div>
-                  <p className="font-medium text-foreground text-sm">
-                    {product.title}
-                  </p>
-                  <p className="text-foreground-dimmed text-xs">{product.sku}</p>
-                </div>
-                <div className="text-right font-light text-foreground text-sm">
-                  ${product.price}
-                </div>
-                <div className="text-right font-light text-foreground-dimmed text-xs">
-                  {product.category}
-                </div>
-                <div className="flex justify-end">
-                  <QualityBadge score={product.dataQuality} />
-                </div>
-                <div className="text-right font-light text-foreground-dimmed text-xs">
-                  1
-                </div>
-              </button>
-            );
-          })}
+                </th>
+                {["Product", "Price", "Category", "Quality", "Variants"].map((header) => (
+                  <th
+                    key={header}
+                    className="px-4 py-2 text-left font-medium text-foreground-dimmed text-xs"
+                  >
+                    {header}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {products.map((product) => {
+                const isSelected = selectedIds.has(product._id);
+                const isDisabled = !isSelected && selectedIds.size >= PRODUCT_LIMIT;
+
+                return (
+                  <tr
+                    key={product._id}
+                    onClick={() => !isDisabled && toggleProduct(product._id)}
+                    className={cn(
+                      "border-accent-foreground border-b last:border-b-0 transition-colors cursor-pointer",
+                      isSelected
+                        ? "bg-primary/5"
+                        : isDisabled
+                          ? "opacity-40 cursor-not-allowed"
+                          : "hover:bg-background-dimmed/50",
+                    )}
+                  >
+                    <td className="px-4 py-3 w-10">
+                      <div
+                        className={cn(
+                          "flex size-4 items-center justify-center border",
+                          isSelected
+                            ? "border-primary bg-primary"
+                            : "border-accent-foreground bg-background-rich",
+                        )}
+                      >
+                        {isSelected && <CheckIcon className="size-2.5 text-white" />}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        <div className="flex size-9 shrink-0 items-center justify-center bg-primary/10 font-semibold text-primary text-xs">
+                          {product.title.slice(0, 2).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="font-medium text-foreground text-sm">{product.title}</p>
+                          <p className="text-foreground-dimmed text-xs">{product.sku}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 font-light text-foreground text-sm">
+                      ${product.price}
+                    </td>
+                    <td className="px-4 py-3 font-light text-foreground-dimmed text-xs">
+                      {product.category}
+                    </td>
+                    <td className="px-4 py-3">
+                      <QualityBadge score={product.dataQuality} />
+                    </td>
+                    <td className="px-4 py-3 font-light text-foreground-dimmed text-xs">
+                      1
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
 
         <div className="mt-6 flex items-center justify-between">
@@ -166,15 +197,6 @@ export default () => {
             Back
           </Button>
           <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              color="neutral"
-              type="button"
-              onClick={handleNext}
-              className="text-foreground-dimmed text-sm"
-            >
-              Skip — auto-select top 10
-            </Button>
             <Button
               variant="flat"
               color="primary"

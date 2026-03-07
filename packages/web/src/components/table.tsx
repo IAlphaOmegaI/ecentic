@@ -13,7 +13,7 @@ export const Table = ({
     render,
     props: mergeProps<"table">(props, {
       className: cn(
-        "w-full max-w-full caption-bottom overflow-hidden text-sm",
+        "w-full max-w-full caption-bottom overflow-hidden text-sm border-collapse",
         className,
       ),
     }),

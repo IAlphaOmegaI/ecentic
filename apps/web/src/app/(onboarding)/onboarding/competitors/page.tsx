@@ -143,13 +143,18 @@ export default () => {
                       )}
                     </div>
                     <div className="flex flex-1 items-center justify-between">
-                      <div>
-                        <p className="font-medium text-foreground text-sm">
-                          {competitor.product}
-                        </p>
-                        <p className="text-foreground-dimmed text-xs">
-                          {competitor.brand} · {competitor.source}
-                        </p>
+                      <div className="flex items-center gap-3">
+                        <div className="flex size-9 shrink-0 items-center justify-center bg-primary/10 font-semibold text-primary text-xs">
+                          {competitor.product.slice(0, 2).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="font-medium text-foreground text-sm">
+                            {competitor.product}
+                          </p>
+                          <p className="text-foreground-dimmed text-xs">
+                            {competitor.brand} · {competitor.source}
+                          </p>
+                        </div>
                       </div>
                       <p className="font-light text-foreground text-sm">
                         ${competitor.price}

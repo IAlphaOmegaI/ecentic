@@ -62,9 +62,9 @@
   :root {
     @variant light {
       /* background shades - more distinct neutral */
-      --color-background-dimmed: oklch(85% 0.006 286.286); /* Much darker */
-      --color-background: #eeeeee; /* Light but not white */
-      --color-background-rich: #ffffff; /* Clear mid-tone */
+      --color-background-dimmed: #eeeeee;
+      --color-background: #ffffff;
+      --color-background-rich: #ffffff;
       /* foreground shades - pure neutral grays with more contrast */
       --color-foreground-dimmed: #919191;
       --color-foreground: #474747;

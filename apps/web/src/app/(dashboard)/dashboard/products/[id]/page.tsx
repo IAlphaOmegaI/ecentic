@@ -195,13 +195,13 @@ export default () => {
       </div>
 
       <Tabs defaultValue="overview">
-        <TabsList className="mb-4 border border-accent-foreground">
+        <TabsList className="mb-4 border border-accent-foreground bg-transparent px-0 h-auto">
+          <TabsIndicator className="rounded-none h-full top-0 translate-y-0" />
           <Tab value="overview">Win Rate</Tab>
           <Tab value="replay">Agent Replay</Tab>
           <Tab value="gaps">Attribute Gaps</Tab>
           <Tab value="battlecard">Battlecard</Tab>
           <Tab value="optimize">Optimize</Tab>
-          <TabsIndicator />
         </TabsList>
 
         <TabsPanel value="overview">
@@ -351,7 +351,7 @@ export default () => {
               </p>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full border-collapse [&_th]:border-x [&_th]:border-accent-foreground [&_td]:border-x [&_td]:border-accent-foreground [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0 [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0">
                 <thead>
                   <tr className="border-accent-foreground border-b">
                     <th className="px-4 py-2 text-left font-medium text-foreground-dimmed text-xs">
