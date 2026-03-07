@@ -21,7 +21,20 @@
       "Bash(bun install)",
       "Bash(/c/Users/Owner/AppData/Roaming/npm/bun run --filter web dev)",
       "Bash(/c/Users/Owner/AppData/Roaming/npm/bun run build --filter='@zenncore/*')",
-      "Bash(taskkill //F //PID 30880)"
+      "Bash(taskkill //F //PID 30880)",
+      "Bash(bun run dev:web)",
+      "Bash(\"$HOME/.bun/bin/bun\" run dev:web)",
+      "Bash(\"$HOME/.bun/bin/bun\" run dev)",
+      "Bash(export PATH=\"$HOME/.bun/bin:$PATH\")",
+      "Bash(bun run build:packages)",
+      "Bash(bun x turbo build --filter=\"@zenncore/*\")",
+      "Bash(bun run build)",
+      "Bash(bunx tsdown --entry ./src/index.ts --dts --no-fixed-extension --skip-node-modules-bundle --external react --no-config)",
+      "Bash(BUN=\"$HOME/.bun/bin/bun\")",
+      "Bash(\"$BUN\" x tsdown --entry.hooks/index ./src/hooks/index.ts --dts --no-fixed-extension --skip-node-modules-bundle --no-config)",
+      "Bash(\"$BUN\" x tsdown --entry.types/index ./src/types/index.ts --dts --no-fixed-extension --skip-node-modules-bundle --no-config)",
+      "Bash(\"$HOME/.bun/bin/bun\" build \"c:/Users/35568/Desktop/ecentic/packages/shared/config/src/tsdown/config.ts\" --outfile \"c:/Users/35568/Desktop/ecentic/packages/shared/config/src/tsdown/config.js\" --target node)",
+      "Bash(\"$HOME/.bun/bin/bun\" build \"c:/Users/35568/Desktop/ecentic/packages/shared/config/src/tsdown/config.ts\" --outfile \"c:/Users/35568/Desktop/ecentic/packages/shared/config/src/tsdown/config.js\" --target node --external tsdown)"
     ]
   }
 }
