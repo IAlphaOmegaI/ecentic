@@ -22,7 +22,7 @@ export const Footer = () => (
         >
           Get your free Win Rate Report
         </Button>
-        <div className="relative w-full flex-1">
+        <div className="relative w-full flex-1 transition-transform duration-500 ease-out hover:scale-[1.02] origin-bottom">
           <Image
             src={Logo}
             alt="Logo"

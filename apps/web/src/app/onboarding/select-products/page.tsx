@@ -6,7 +6,15 @@ import { cn } from "@zenncore/utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { products } from "@/lib/mock-data";
+import {
+  fadeInUp,
+  spring,
+  staggerContainer,
+  staggerItem,
+  scaleIn,
+} from "@/lib/animations";
 
 const PRODUCT_LIMIT = 10;
 
@@ -74,30 +82,49 @@ export default () => {
   };
 
   return (
-    <div className="flex flex-1 flex-col px-6 py-10">
+    <motion.div
+      className="flex flex-1 flex-col px-6 py-10"
+      variants={staggerContainer(0.05)}
+      initial="hidden"
+      animate="visible"
+    >
       <div className="mx-auto w-full max-w-3xl">
-        <div className="mb-6">
+        <motion.div className="mb-6" variants={fadeInUp}>
           <div className="mb-1 flex items-center gap-2">
             <h1 className="font-medium text-2xl text-foreground">
               Choose products to scan
             </h1>
-            <span className="border border-primary/30 bg-primary/10 px-2 py-0.5 text-primary text-xs">
+            <motion.span
+              className="border border-primary/30 bg-primary/10 px-2 py-0.5 text-primary text-xs"
+              variants={scaleIn}
+            >
               Free: {PRODUCT_LIMIT} products
-            </span>
+            </motion.span>
           </div>
           <p className="font-light text-foreground-dimmed text-sm">
             Select the products you want to test against AI shopping agents. We
             recommend starting with your best sellers.
           </p>
-        </div>
+        </motion.div>
 
-        {selectedIds.size > 0 && (
-          <div className="mb-4 border border-primary/20 bg-primary/5 px-4 py-2.5 text-primary text-sm">
-            {selectedIds.size} of {PRODUCT_LIMIT} products selected
-          </div>
-        )}
+        <AnimatePresence>
+          {selectedIds.size > 0 && (
+            <motion.div
+              className="mb-4 border border-primary/20 bg-primary/5 px-4 py-2.5 text-primary text-sm"
+              initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+              animate={{ opacity: 1, height: "auto", marginBottom: 16 }}
+              exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+              transition={spring.snappy}
+            >
+              {selectedIds.size} of {PRODUCT_LIMIT} products selected
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        <div className="border border-accent-foreground bg-background-rich overflow-x-auto">
+        <motion.div
+          className="border border-accent-foreground bg-background-rich overflow-x-auto"
+          variants={fadeInUp}
+        >
           <table className="w-full border-collapse [&_th]:border-x [&_th]:border-accent-foreground [&_td]:border-x [&_td]:border-accent-foreground [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0 [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0">
             <thead>
               <tr className="border-accent-foreground border-b">
@@ -105,15 +132,18 @@ export default () => {
                   <div
                     onClick={toggleAll}
                     className={cn(
-                      "flex size-4 cursor-pointer items-center justify-center border",
+                      "flex size-4 cursor-pointer items-center justify-center border transition-colors duration-150",
                       selectedIds.size === products.length
                         ? "border-primary bg-primary"
                         : "border-accent-foreground bg-background-rich",
                     )}
                   >
-                    {selectedIds.size === products.length && (
-                      <CheckIcon className="size-2.5 text-white" />
-                    )}
+                    <CheckIcon
+                      className={cn(
+                        "size-2.5 text-white transition-opacity duration-150",
+                        selectedIds.size === products.length ? "opacity-100" : "opacity-0",
+                      )}
+                    />
                   </div>
                 </th>
                 {["Product", "Price", "Category", "Quality", "Variants"].map((header) => (
@@ -126,14 +156,15 @@ export default () => {
                 ))}
               </tr>
             </thead>
-            <tbody>
+            <motion.tbody variants={staggerContainer(0.04)} initial="hidden" animate="visible">
               {products.map((product) => {
                 const isSelected = selectedIds.has(product._id);
                 const isDisabled = !isSelected && selectedIds.size >= PRODUCT_LIMIT;
 
                 return (
-                  <tr
+                  <motion.tr
                     key={product._id}
+                    variants={staggerItem}
                     onClick={() => !isDisabled && toggleProduct(product._id)}
                     className={cn(
                       "border-accent-foreground border-b last:border-b-0 transition-colors cursor-pointer",
@@ -147,13 +178,18 @@ export default () => {
                     <td className="px-4 py-3 w-10">
                       <div
                         className={cn(
-                          "flex size-4 items-center justify-center border",
+                          "flex size-4 items-center justify-center border transition-colors duration-150",
                           isSelected
                             ? "border-primary bg-primary"
                             : "border-accent-foreground bg-background-rich",
                         )}
                       >
-                        {isSelected && <CheckIcon className="size-2.5 text-white" />}
+                        <CheckIcon
+                          className={cn(
+                            "size-2.5 text-white transition-opacity duration-150",
+                            isSelected ? "opacity-100" : "opacity-0",
+                          )}
+                        />
                       </div>
                     </td>
                     <td className="px-4 py-3">
@@ -179,14 +215,14 @@ export default () => {
                     <td className="px-4 py-3 font-light text-foreground-dimmed text-xs">
                       1
                     </td>
-                  </tr>
+                  </motion.tr>
                 );
               })}
-            </tbody>
+            </motion.tbody>
           </table>
-        </div>
+        </motion.div>
 
-        <div className="mt-6 flex items-center justify-between">
+        <motion.div className="mt-6 flex items-center justify-between" variants={fadeInUp}>
           <Button
             variant="ghost"
             color="neutral"
@@ -196,7 +232,7 @@ export default () => {
           >
             Back
           </Button>
-          <div className="flex items-center gap-3">
+          <motion.div whileHover={{ y: -1 }} whileTap={{ scale: 0.97 }} transition={spring.snappy}>
             <Button
               variant="flat"
               color="primary"
@@ -207,9 +243,9 @@ export default () => {
             >
               Next: Add Competitors
             </Button>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
