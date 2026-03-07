@@ -34,7 +34,7 @@ const features = [
 
 export const Features = () => (
   <section className="relative -left-[calc(50vw-50%)] -z-1 w-screen border border-accent-foreground">
-    <div className="broder relative mx-auto max-w-6xl border-accent-foreground p-6 md:p-12">
+    <div className="relative mx-auto max-w-6xl p-6 md:p-12">
       <h1 className="font-body font-medium text-3xl md:text-5xl">
         Infrastructure for the agent economy.
       </h1>
@@ -43,7 +43,7 @@ export const Features = () => (
       {features.map((feature, _index) => (
         <div
           key={feature.title}
-          className="relative flex flex-col justify-end gap-2 bg-[#E8E8E8] p-4 md:h-82"
+          className="relative flex flex-col justify-end gap-2 bg-background-dimmed p-4 md:h-82"
         >
           <feature.icon className={cn(feature.color, "size-16")} />
           <h2 className="font-body font-medium text-2xl text-foreground md:text-4xl">

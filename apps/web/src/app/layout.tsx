@@ -4,6 +4,8 @@ import "./globals.css";
 import localFont from "next/font/local";
 import { ThemeProvider } from "@/context/theme";
 import Script from "next/script";
+import { ToastList } from "@/components/ui/toast";
+import { ToastProvider } from "@zenncore/web/components/toast";
 
 const ltsuperior = localFont({
   src: [
@@ -63,7 +65,10 @@ export default ({ children }: PropsWithChildren) => {
         className={`${ltsuperior.variable} bg-background font-body tracking-[-4%] antialiased`}
       >
         <ThemeProvider>
-          <div className="isolate">{children}</div>
+          <ToastProvider>
+            <div className="isolate">{children}</div>
+            <ToastList types={["error", "success", "info"]} />
+          </ToastProvider>
         </ThemeProvider>
       </body>
     </html>

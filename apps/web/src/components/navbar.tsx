@@ -1,3 +1,4 @@
+import { ArrowRightIcon } from "@zenncore/icons";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -29,9 +30,10 @@ export const Navbar = () => (
       />
       <Link
         href="/sign-up"
-        className="font-light text-primary text-lg relative z-100 flex -mt-1.5"
+        className="font-light text-primary text-xl relative z-100 flex  gap-2 flex items-center cursor-pointer group"
       >
-        Get Started
+        Get Started{" "}
+        <ArrowRightIcon className="size-4 group-hover:translate-x-1 transition-transform duration-300" />
       </Link>
     </div>
   </nav>

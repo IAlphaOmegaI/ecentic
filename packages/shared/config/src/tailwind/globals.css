@@ -5,8 +5,8 @@
 
 @theme {
   /* background shades - more distinct neutral */
-  --color-background-dimmed: #eeeeee;
-  --color-background: #ffffff;
+  --color-background-dimmed: #e8e8e8;
+  --color-background: #eeeeee;
   --color-background-rich: #ffffff;
   /* foreground shades - pure neutral grays with more contrast */
   --color-foreground-dimmed: #919191;
@@ -22,15 +22,14 @@
   --color-accent: oklch(55.6% 0 0); /* Clean white */
   --color-accent-rich: oklch(67% 0 0); /* Mid-tone */
   --color-accent-foreground: oklch(90% 0 0); /* Darker for contrast */
-
-  /* primary shades - orange */
-  --color-primary-dimmed: #3d1a03;
+  /* primary shades - blue */
+  --color-primary-dimmed: #0a3480;
   --color-primary: #1572fa;
-  --color-primary-rich: #ff8c38;
-  /* secondary shades - teal green */
-  --color-secondary-dimmed: oklch(27.1% 0.105 12.094);
-  --color-secondary: oklch(45.5% 0.188 13.697);
-  --color-secondary-rich: oklch(71.2% 0.194 13.428);
+  --color-primary-rich: #5b9dff;
+  /* secondary shades - purple */
+  --color-secondary-dimmed: oklch(27.1% 0.12 290);
+  --color-secondary: oklch(55% 0.2 290);
+  --color-secondary-rich: oklch(71.2% 0.18 290);
   /* destructive shades */
   --color-error-dimmed: oklch(25.8% 0.092 26.042);
   --color-error: oklch(44.4% 0.177 26.899);

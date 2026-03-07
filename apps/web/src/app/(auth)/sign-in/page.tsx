@@ -38,15 +38,15 @@ export default () => (
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-3">
             {brandPoints.map((point) => (
-              <div key={point} className="flex items-start gap-3">
-                <div className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-white/20">
-                  <CheckIcon className="size-3 text-white" />
+              <div key={point} className="flex items-center gap-3">
+                <div className="flex size-5 shrink-0 items-center justify-center rounded-full bg-white/20">
+                  <CheckIcon className="size-4 text-white" />
                 </div>
-                <p className="font-light text-sm text-white/90">{point}</p>
+                <p className="font-light text-white/90">{point}</p>
               </div>
             ))}
           </div>
-          <p className="font-light text-sm text-white/50">
+          <p className="font-light text-white/50">
             écentic — Infrastructure for the agent economy.
           </p>
         </div>
@@ -69,14 +69,14 @@ export default () => (
           <h2 className="font-medium text-2xl text-foreground">
             Sign in to écentic
           </h2>
-          <p className="mt-1 font-light text-foreground-dimmed text-sm">
+          <p className="mt-1 font-light text-foreground-dimmed">
             Continue optimizing your product listings.
           </p>
         </div>
 
         <SignInForm />
 
-        <p className="mt-4 text-center font-light text-foreground-dimmed text-sm">
+        <p className="mt-4 font-light text-foreground-dimmed">
           Don't have an account?{" "}
           <Link href="/sign-up" className="text-primary hover:underline">
             Get started free

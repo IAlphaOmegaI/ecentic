@@ -99,7 +99,7 @@ export const Pricing = () => (
           </div>
         ))}
       </div>
-      <div className="flex w-full flex-col gap-4 bg-background-dimmed/20 p-4 md:flex-row md:items-center md:justify-between md:gap-0">
+      <div className="flex w-full flex-col gap-4 bg-background-dimmed border-accent-foreground border-x p-4 md:flex-row md:items-center md:justify-between md:gap-0">
         <div>
           <h3 className="font-body font-medium text-2xl text-foreground">
             Enterprise
