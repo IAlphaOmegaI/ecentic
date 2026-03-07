@@ -10,7 +10,7 @@ export const Navbar = () => (
         src="/images/left-menu.svg"
         alt="écentic"
         fill
-        className="absolute inset-0 object-cover"
+        className="absolute inset-0 object-cover brightness-[100]"
       />
       <Image
         src="/images/trademark.svg"
@@ -26,7 +26,7 @@ export const Navbar = () => (
         src="/images/right-menu.svg"
         alt="écentic"
         fill
-        className="absolute inset-0 object-cover"
+        className="absolute inset-0 object-cover brightness-[100]"
       />
       <Link
         href="/sign-up"
