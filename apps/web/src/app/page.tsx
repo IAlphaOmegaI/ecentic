@@ -1,6 +1,7 @@
+import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { BlindSpot } from "./_components/blind-spot";
-import { Footer } from "@/components/footer";
+import { Comparison } from "./_components/comparison";
 import { Features } from "./_components/features";
 import { Hero } from "./_components/hero";
 import { Pricing } from "./_components/pricing";
@@ -13,7 +14,7 @@ export default () => (
     <BlindSpot />
     <Steps />
     <Features />
-    {/* <Comparison /> */}
+    <Comparison />
     <Pricing />
     <Footer />
   </main>

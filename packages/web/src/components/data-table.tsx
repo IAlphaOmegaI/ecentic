@@ -1,6 +1,10 @@
 "use client";
 
-import { flexRender } from "@tanstack/react-table";
+import {
+  type ColumnDef,
+  createColumnHelper,
+  flexRender,
+} from "@tanstack/react-table";
 import {
   DataTableProvider,
   type TableRow as TableRowType,
@@ -26,7 +30,7 @@ import {
   TableRow,
 } from "./table";
 
-export { DataTableProvider, useDataTable };
+export { DataTableProvider, useDataTable, type ColumnDef, createColumnHelper };
 
 type SlotComponent = ComponentType<{ children?: ReactNode | undefined }>;
 
@@ -52,15 +56,12 @@ export const DataTable = <T extends TableRowType>({
       <TableHeader>
         {header ||
           table.getHeaderGroups().map((group) => (
-            <TableRow key={group.id} className="bg-background-dimmed">
+            <TableRow key={group.id}>
               {group.headers.map((header) => {
                 return (
                   <TableHead
                     key={header.id}
-                    className={cn(
-                      "text-foreground-dimmed",
-                      classList?.["header-cell"],
-                    )}
+                    className={classList?.["header-cell"]}
                   >
                     {header.isPlaceholder
                       ? null
@@ -81,12 +82,18 @@ export const DataTable = <T extends TableRowType>({
                 key={row.original._id}
                 data-expanded={row.getIsExpanded()}
                 data-selected={row.getIsSelected()}
-                className={cn("relative z-10", classList?.["body-row"])}
+                className={cn(
+                  "relative z-10 border-accent-foreground border-b",
+                  classList?.["body-row"],
+                )}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}
-                    className={cn("relative", classList?.["body-cell"])}
+                    className={cn(
+                      "relative p-4 text-center font-body font-light text-foreground text-sm first:text-left last:bg-primary/5 md:p-6",
+                      classList?.["body-cell"],
+                    )}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>

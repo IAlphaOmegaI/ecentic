@@ -56,7 +56,7 @@ export const TableBody = ({
     defaultTagName: "tbody",
     render,
     props: mergeProps<"tbody">(props, {
-      className: cn("[&_tr:last-child]:border-0", className),
+      className,
     }),
   });
 
@@ -98,7 +98,7 @@ export const TableHead = ({
     render,
     props: mergeProps<"th">(props, {
       className: cn(
-        "whitespace-nowrap px-4 pb-1 text-left align-middle text-2xs text-accent-foreground uppercase [&:has([role=checkbox])]:pr-0",
+        "whitespace-nowrap p-4 font-light text-center text-lg text-foreground [&:has([role=checkbox])]:pr-0 border-x border-accent-foreground",
         className,
       ),
     }),
@@ -120,7 +120,7 @@ export const TableCell = ({
     render,
     props: mergeProps<"td">(props, {
       className: cn(
-        "h-12 px-4 py-2 align-middle [&:has([role=checkbox])]:pr-0",
+        "h-12 px-4 py-2 align-middle [&:has([role=checkbox])]:pr-0 border-x border-accent-foreground",
         className,
       ),
     }),
@@ -141,10 +141,7 @@ export const TableFooter = ({
     defaultTagName: "tfoot",
     render,
     props: mergeProps<"tfoot">(props, {
-      className: cn(
-        "border-t bg-background-dimmed/50 font-medium [&>tr]:last:border-b-0",
-        className,
-      ),
+      className: cn("border-t bg-background-dimmed/50 font-medium", className),
     }),
   });
 

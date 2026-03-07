@@ -686,7 +686,7 @@ if (!result.success) {
 
 ## 10. Namespace + Component Pattern
 
-When building React components with associated types, use a namespace to colocate `Props`, `State`, and other types with the component. This is the standard pattern for all components in `@zenncore/web`.
+When building React components with associated types, use a namespace to colocate `Props`, `State`, and other types with the component. This is the standard pattern for all components in `@zenncore/web/components/{component}`.
 
 ```ts
 // ✅ Good — from Button.tsx
@@ -1410,7 +1410,7 @@ bg-primary             — primary background (CTAs, highlights)
 - [ ] Use `ClassList<K>` for `classList` props on components with sub-elements
 - [ ] Use `InferredForm` + `field()` or `applyFormOptions()` for all forms — never raw react-hook-form
 - [ ] Use `DataTableProvider` + `DataTable` for all tables
-- [ ] Import all UI from `@zenncore/web/components`, never from `@base-ui/react` directly in app code
+- [ ] Import all UI from `@zenncore/web/components/{component}`, never from `@base-ui/react` directly in app code
 - [ ] Use `createContext` from `@zenncore/utils/hooks` for all React context
 - [ ] Use `useAsyncAction` from `@zenncore/utils/hooks` for async actions with loading state
 - [ ] Use `useDocument` hook for SSR-safe `document`/`window` access
