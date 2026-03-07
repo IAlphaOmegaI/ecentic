@@ -115,7 +115,7 @@ export const Field = ({ className, ...props }: Field.Props): JSX.Element => {
       invalid={invalid}
       touched={isTouched}
       dirty={isDirty}
-      className={createClassName("flex flex-col gap-2", className)}
+      className={createClassName("flex flex-col gap-1", className)}
       {...props}
     />
   );

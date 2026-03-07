@@ -153,9 +153,11 @@ const trendLabels: Record<string, string[]> = {
 const WinRateLineChart = ({
   data,
   labels,
+  className = "h-20",
 }: {
   data: number[];
   labels: string[];
+  className?: string;
 }) => {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const W = 600;
@@ -179,7 +181,7 @@ const WinRateLineChart = ({
     <div className="relative">
       <svg
         viewBox={`0 0 ${W} ${H}`}
-        className="h-20 w-full overflow-visible"
+        className={`${className} w-full overflow-visible`}
         preserveAspectRatio="none"
         onMouseMove={(e) => {
           const rect = e.currentTarget.getBoundingClientRect();
@@ -266,15 +268,12 @@ export default () => {
             {winRateTrend >= 0 ? "↑" : "↓"} {Math.abs(winRateTrend)}% vs last week
           </p>
         </div>
-        <div className="mt-3 flex gap-0.5">
-          {[28, 31, 35, 33, 38, 40, 43].map((value, index) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: sparkline data
-            <div
-              key={index}
-              className="flex-1 bg-primary/20"
-              style={{ height: `${(value / 50) * 32}px` }}
-            />
-          ))}
+        <div className="mt-3">
+          <WinRateLineChart
+            data={[28, 31, 35, 33, 38, 40, 43]}
+            labels={["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}
+            className="h-8"
+          />
         </div>
       </div>
 

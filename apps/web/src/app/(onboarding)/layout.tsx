@@ -1,5 +1,6 @@
 "use client";
 
+import { CheckIcon } from "@zenncore/icons";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -12,24 +13,72 @@ const steps = [
   { label: "Run Scan", path: "/onboarding/first-scan" },
 ] as const;
 
-const sidebarMessages = {
-  "/onboarding/connect":
-    "Let's connect your catalog so agents can find your products.",
-  "/onboarding/select-products":
-    "Pick the products you want to test against AI agents.",
-  "/onboarding/competitors":
-    "Who are you competing against? We'll find out who's winning.",
-  "/onboarding/first-scan":
-    "Running your products through the gauntlet. This is going to be eye-opening.",
+const sidebarContent = {
+  "/onboarding/connect": {
+    headline: (
+      <>
+        Connect your
+        <br />
+        catalog.
+      </>
+    ),
+    points: [
+      "Paste your store URL and we sync your products instantly",
+      "Works with Shopify, WooCommerce, and custom feeds",
+      "Your catalog stays live and always up to date",
+    ],
+  },
+  "/onboarding/select-products": {
+    headline: (
+      <>
+        Pick your
+        <br />
+        best.
+      </>
+    ),
+    points: [
+      "Choose which products to run through AI agent simulations",
+      "Focus on your top sellers or most competitive SKUs",
+      "You can add more products any time",
+    ],
+  },
+  "/onboarding/competitors": {
+    headline: (
+      <>
+        Know your
+        <br />
+        rivals.
+      </>
+    ),
+    points: [
+      "Add competitors so we benchmark you head-to-head",
+      "See exactly who agents pick over you and why",
+      "Track the gap and close it faster",
+    ],
+  },
+  "/onboarding/first-scan": {
+    headline: (
+      <>
+        See who's
+        <br />
+        winning.
+      </>
+    ),
+    points: [
+      "GPT-4, Claude & Gemini simulate real shopping queries",
+      "We score every product against your competitors",
+      "You'll know exactly what to fix before leaving this page",
+    ],
+  },
 } as const;
 
 export default ({ children }: PropsWithChildren) => {
   const pathname = usePathname();
   const currentIndex = steps.findIndex((step) => step.path === pathname);
 
-  const sidebarMessage =
-    sidebarMessages[pathname as keyof typeof sidebarMessages] ??
-    sidebarMessages["/onboarding/connect"];
+  const content =
+    sidebarContent[pathname as keyof typeof sidebarContent] ??
+    sidebarContent["/onboarding/connect"];
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -87,13 +136,39 @@ export default ({ children }: PropsWithChildren) => {
       </header>
 
       <div className="flex flex-1">
-        <aside className="hidden w-64 flex-col justify-between border-accent-foreground border-r bg-background-rich p-8 lg:flex">
-          <p className="font-light text-foreground-dimmed text-sm leading-relaxed">
-            {sidebarMessage}
-          </p>
-          <p className="font-light text-foreground-dimmed text-xs">
-            écentic — Infrastructure for the agent economy.
-          </p>
+        <aside className="hidden lg:flex w-72 sticky top-[57px] h-[calc(100vh-57px)] overflow-hidden">
+          <div className="absolute inset-0 bg-primary" />
+          <Image
+            src="/images/onboarding-photo.png"
+            alt=""
+            fill
+            className="object-contain object-bottom opacity-20"
+            aria-hidden="true"
+          />
+          <div className="relative z-10 flex flex-col justify-between p-8 w-full h-full">
+            <Image
+              src="/images/wordmark.svg"
+              alt="écentic"
+              width={100}
+              height={28}
+              className="h-auto w-24 brightness-0 invert"
+            />
+            <div className="flex flex-1 items-end pb-2">
+              <h2 className="font-medium text-4xl text-white leading-none mb-6">
+                {content.headline}
+              </h2>
+            </div>
+            <div className="flex flex-col gap-3">
+              {content.points.map((point) => (
+                <div key={point} className="flex items-start gap-3">
+                  <div className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-white/20">
+                    <CheckIcon className="size-3 text-white" />
+                  </div>
+                  <p className="font-light text-sm text-white/90">{point}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </aside>
         <main className="flex flex-1 flex-col">{children}</main>
       </div>

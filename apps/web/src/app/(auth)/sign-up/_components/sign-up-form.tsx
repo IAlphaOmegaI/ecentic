@@ -81,24 +81,24 @@ export const SignUpForm = () => {
 
   return (
     <>
-      <div className="mb-4 flex flex-col gap-2">
+      <div className="mb-3 flex flex-col gap-1.5">
         <button
           type="button"
-          className="flex w-full items-center justify-center gap-3 border border-accent-foreground bg-background-rich px-4 py-2.5 text-foreground text-sm transition-colors hover:bg-background-dimmed"
+          className="flex w-full items-center justify-center gap-3 border border-accent-foreground bg-background-rich px-4 py-2 text-foreground text-sm transition-colors hover:bg-background-dimmed"
         >
           <Image src="/images/google.svg" alt="Google" width={16} height={16} />
           Continue with Google
         </button>
         <button
           type="button"
-          className="flex w-full items-center justify-center gap-3 border border-accent-foreground bg-[#96BF48] px-4 py-2.5 text-sm text-white transition-colors hover:bg-[#85a83e]"
+          className="flex w-full items-center justify-center gap-3 border border-accent-foreground bg-[#96BF48] px-4 py-2 text-sm text-white transition-colors hover:bg-[#85a83e]"
         >
           <Image src="/images/shopify.svg" alt="Shopify" width={16} height={16} />
           Continue with Shopify
         </button>
       </div>
 
-      <div className="relative mb-4 flex items-center gap-3">
+      <div className="relative mb-3 flex items-center gap-3">
         <div className="h-px flex-1 bg-accent-foreground" />
         <span className="font-light text-foreground-dimmed text-xs">or</span>
         <div className="h-px flex-1 bg-accent-foreground" />
@@ -107,7 +107,7 @@ export const SignUpForm = () => {
       <InferredForm
         config={config}
         onSubmit={handleSubmit}
-        className="grid grid-cols-2 gap-3"
+        className="grid grid-cols-2 gap-0.5"
       >
         <Button
           type="submit"
