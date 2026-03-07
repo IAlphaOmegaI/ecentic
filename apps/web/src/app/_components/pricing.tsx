@@ -1,4 +1,5 @@
 import { CheckIcon } from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 
 const tiers = [
@@ -49,7 +50,7 @@ const tiers = [
 export const Pricing = () => (
   <section className="relative -left-[calc(50vw-50%)] w-screen border border-accent-foreground">
     <div className="broder relative mx-auto max-w-6xl border-accent-foreground p-6 md:p-12">
-      <h1 className="font-body font-medium text-3xl md:text-5xl">
+      <h1 className="font-body font-medium text-foreground text-3xl md:text-6xl">
         Start free. <br />
         Pay when agents start picking you.
       </h1>
@@ -86,9 +87,12 @@ export const Pricing = () => (
             </div>
             <Button
               variant={tier.highlighted ? "flat" : "outline"}
-              color={tier.highlighted ? "primary" : "neutral"}
+              color={tier.highlighted ? "primary" : "accent"}
               type="button"
-              className="mt-4 md:mt-auto w-full py-2 font-medium text-lg"
+              className={cn(
+                "mt-4 md:mt-auto w-full py-2 font-medium text-lg",
+                !tier.highlighted && "text-primary",
+              )}
             >
               {tier.cta}
             </Button>
@@ -107,10 +111,10 @@ export const Pricing = () => (
         </div>
         <div className="w-full md:w-1/3 md:pl-[20px]">
           <Button
-            variant="flat"
-            color="neutral"
+            variant="outline"
+            color="accent"
             type="button"
-            className="w-full py-2 font-medium text-lg"
+            className="w-full py-2 font-medium text-lg text-primary"
           >
             Contact Sales
           </Button>

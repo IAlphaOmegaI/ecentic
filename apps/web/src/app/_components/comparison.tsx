@@ -80,12 +80,12 @@ const columns = [
   {
     accessorKey: "label",
     header: () => (
-      <span className="text-left w-full text-lg min-w-82 w-82 flex">
+      <span className="flex w-full min-w-48 text-left text-lg md:min-w-82">
         Capabilities
       </span>
     ),
     cell: ({ row }: { row: { original: Capability } }) => (
-      <span className="text-left w-full text-lg flex">
+      <span className="flex w-full min-w-48 text-left text-lg md:min-w-82">
         {row.original.label}
       </span>
     ),
@@ -96,7 +96,9 @@ const columns = [
       <StatusCell status={row.original.audit} />
     ),
     header: () => (
-      <span className="w-32 min-w-32 flex justify-center">Audit Tools</span>
+      <span className="flex w-20 min-w-20 justify-center md:w-32 md:min-w-32">
+        Audit Tools
+      </span>
     ),
   },
   {
@@ -105,13 +107,15 @@ const columns = [
       <StatusCell status={row.original.geo} />
     ),
     header: () => (
-      <span className="w-48 min-w-48 flex justify-center">GEO Monitoring</span>
+      <span className="flex w-28 min-w-28 justify-center md:w-48 md:min-w-48">
+        GEO Monitoring
+      </span>
     ),
   },
   {
     accessorKey: "écentic",
     header: () => (
-      <span className="text-primary w-32 min-w-32 flex justify-center">
+      <span className="flex w-20 min-w-20 justify-center text-primary md:w-32 md:min-w-32">
         ecetric
       </span>
     ),
@@ -122,15 +126,15 @@ const columns = [
 ];
 
 export const Comparison = () => (
-  <section className="relative -left-[calc(50vw-50%)] w-screen border border-accent-foreground p-2 h-screen">
-    <div className="bg-background-rich rounded-xl size-full p-12 md:p-20 flex flex-col items-center justify-center gap-8">
-      <div className="relative mx-auto max-w-6xl border-accent-foreground px-6 md:px-12">
-        <h2 className="font-body font-medium text-3xl md:text-5xl text-center">
+  <section className="relative -left-[calc(50vw-50%)] w-screen border border-accent-foreground p-2">
+    <div className="flex flex-col items-center justify-center gap-6 rounded-xl bg-background-rich p-4 md:gap-8 md:p-20">
+      <div className="relative mx-auto max-w-6xl px-2 md:px-12">
+        <h2 className="text-center font-body text-3xl md:text-6xl">
           Audits tell you what's broken. <br />
-          <span className="text-primary">ecentric fixes it.</span>
+          <span className="mt-1 text-primary">écetric fixes it.</span>
         </h2>
       </div>
-      <div className="mx-auto max-w-6xl border-accent-foreground border-t">
+      <div className="w-full max-w-6xl overflow-x-auto border-accent-foreground border-t">
         <DataTableProvider rows={capabilities} columns={columns}>
           <DataTable className="w-full" />
         </DataTableProvider>
