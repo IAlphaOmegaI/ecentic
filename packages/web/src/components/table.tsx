@@ -98,7 +98,7 @@ export const TableHead = ({
     render,
     props: mergeProps<"th">(props, {
       className: cn(
-        "whitespace-nowrap p-4 font-light text-center text-lg text-foreground [&:has([role=checkbox])]:pr-0 border-x border-accent-foreground",
+        "whitespace-nowrap p-4 font-light text-center text-lg text-foreground [&:has([role=checkbox])]:pr-0 border-x border-accent-foreground text-foreground-dimmed",
         className,
       ),
     }),

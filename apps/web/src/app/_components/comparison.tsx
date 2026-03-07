@@ -13,7 +13,7 @@ type Capability = {
   label: string;
   audit: Status;
   geo: Status;
-  ecentric: Status;
+  ecetric: Status;
 };
 
 const capabilities: Capability[] = [
@@ -22,42 +22,42 @@ const capabilities: Capability[] = [
     label: 'Tells you if products are "AI-ready"',
     audit: "yes",
     geo: "no",
-    ecentric: "yes",
+    ecetric: "yes",
   },
   {
     _id: "brand-mentions",
     label: "Tracks brand mentions in AI search",
     audit: "no",
     geo: "yes",
-    ecentric: "yes",
+    ecetric: "yes",
   },
   {
     _id: "agent-purchasing",
     label: "Simulates actual agent purchasing",
     audit: "no",
     geo: "no",
-    ecentric: "yes",
+    ecetric: "yes",
   },
   {
     _id: "win-rate",
     label: "Measures win rate vs. specific competitors",
     audit: "no",
     geo: "no",
-    ecentric: "yes",
+    ecetric: "yes",
   },
   {
     _id: "optimized-listings",
     label: "Auto-generates optimized listings",
     audit: "partial",
     geo: "no",
-    ecentric: "yes",
+    ecetric: "yes",
   },
   {
     _id: "model-updates",
     label: "Re-optimizes when models update",
     audit: "no",
     geo: "no",
-    ecentric: "yes",
+    ecetric: "yes",
   },
 ];
 
@@ -67,12 +67,12 @@ const StatusCell = ({ status }: { status: Status }) => {
       return <CheckIcon className="mx-auto size-4 text-primary" />;
     case "partial":
       return (
-        <span className="font-body font-light text-foreground-dimmed text-sm">
+        <span className="font-body font-light text-foreground-dimmed text-lg">
           Partial
         </span>
       );
     case "no":
-      return <span className="text-foreground-dimmed">—</span>;
+      return <span className="text-foreground-dimmed text-lg">—</span>;
   }
 };
 
@@ -80,7 +80,9 @@ const columns = [
   {
     accessorKey: "label",
     header: () => (
-      <span className="text-left w-full min-w-82 w-82 flex">Capabilities</span>
+      <span className="text-left w-full text-lg min-w-82 w-82 flex">
+        Capabilities
+      </span>
     ),
     cell: ({ row }: { row: { original: Capability } }) => (
       <span className="text-left w-full text-lg flex">
@@ -114,7 +116,7 @@ const columns = [
       </span>
     ),
     cell: ({ row }: { row: { original: Capability } }) => (
-      <StatusCell status={row.original.ecentric} />
+      <StatusCell status={row.original.ecetric} />
     ),
   },
 ];

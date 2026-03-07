@@ -91,7 +91,7 @@ export const DataTable = <T extends TableRowType>({
                   <TableCell
                     key={cell.id}
                     className={cn(
-                      "relative p-4 text-center font-body font-light text-foreground text-sm first:text-left last:bg-primary/5 md:p-6",
+                      "relative p-4 text-center font-body font-light text-foreground text-sm first:text-left last:bg-primary/5",
                       classList?.["body-cell"],
                     )}
                   >
