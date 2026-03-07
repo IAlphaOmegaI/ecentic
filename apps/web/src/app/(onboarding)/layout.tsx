@@ -37,7 +37,7 @@ export default ({ children }: PropsWithChildren) => {
         <Link href="/">
           <Image
             src="/images/trademark.svg"
-            alt="écentric"
+            alt="écentic"
             width={100}
             height={28}
             className="h-auto w-24"
@@ -92,7 +92,7 @@ export default ({ children }: PropsWithChildren) => {
             {sidebarMessage}
           </p>
           <p className="font-light text-foreground-dimmed text-xs">
-            écentric — Infrastructure for the agent economy.
+            écentic — Infrastructure for the agent economy.
           </p>
         </aside>
         <main className="flex flex-1 flex-col">{children}</main>

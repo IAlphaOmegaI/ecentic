@@ -10,11 +10,11 @@ const brandPoints = [
 ] as const;
 
 export default () => (
-  <div className="flex min-h-screen">
-    <div className="hidden flex-col justify-between bg-primary p-10 lg:flex lg:w-2/5">
+  <div className="flex h-screen">
+    <div className="hidden flex-col justify-between bg-primary p-10 lg:flex lg:w-1/2 sticky top-0 h-screen">
       <Image
         src="/images/wordmark.svg"
-        alt="écentric"
+        alt="écentic"
         width={120}
         height={32}
         className="h-auto w-28 brightness-0 invert"
@@ -41,12 +41,12 @@ export default () => (
       </p>
     </div>
 
-    <div className="flex flex-1 flex-col items-center justify-center px-6 py-12">
+    <div className="flex flex-1 flex-col items-center justify-center overflow-y-auto px-6 py-12">
       <div className="w-full max-w-md">
         <div className="mb-8 lg:hidden">
           <Image
             src="/images/trademark.svg"
-            alt="écentric"
+            alt="écentic"
             width={100}
             height={28}
             className="h-auto w-24"
@@ -64,14 +64,14 @@ export default () => (
 
         <SignUpForm />
 
-        <p className="mt-4 text-center font-light text-foreground-dimmed text-xs">
+        <p className="mt-4 text-center font-light text-foreground-dimmed text-sm">
           Already have an account?{" "}
           <Link href="/sign-in" className="text-primary hover:underline">
             Sign in
           </Link>
         </p>
 
-        <p className="mt-3 text-center font-light text-foreground-dimmed text-xs">
+        <p className="mt-3 text-center font-light text-foreground-dimmed text-sm">
           By creating an account you agree to our{" "}
           <span className="text-foreground">Terms of Service</span> and{" "}
           <span className="text-foreground">Privacy Policy</span>.

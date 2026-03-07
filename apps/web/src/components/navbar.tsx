@@ -7,7 +7,7 @@ export const Navbar = () => (
     <div className="notch notch-right notch-inverted relative -left-4 shrink-0 bg-background p-2 pt-3 pl-4">
       <Image
         src="/images/trademark.svg"
-        alt="écentric"
+        alt="écentic"
         width={100}
         height={100}
         className="h-auto w-24 md:w-32"

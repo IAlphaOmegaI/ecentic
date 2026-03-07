@@ -1,6 +1,9 @@
+"use client";
+
 import { ArrowRightIcon, DownloadIcon, PlusIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import Link from "next/link";
+import { useState } from "react";
 import {
   activityFeed,
   overallWinRate,
@@ -135,7 +138,90 @@ const modelWinRates = [
   },
 ] as const;
 
-export default () => (
+const trendData: Record<string, number[]> = {
+  "7d": [38, 40, 39, 42, 41, 43, 43],
+  "30d": [28, 30, 29, 32, 31, 34, 33, 35, 36, 38, 37, 39, 38, 40, 39, 41, 40, 42, 41, 43, 42, 43, 44, 43, 44, 43, 44, 43, 43, 43],
+  "90d": [20, 22, 21, 23, 22, 24, 23, 25, 24, 26, 25, 27, 26, 27, 28, 27, 29, 28, 30, 29, 31, 30, 32, 31, 33, 32, 33, 34, 33, 34, 35, 34, 35, 36, 35, 37, 36, 37, 38, 37, 38, 39, 38, 39, 38, 40, 39, 40, 39, 40, 41, 40, 41, 40, 42, 41, 42, 41, 42, 41, 43, 42, 43, 42, 43, 44, 43, 44, 43, 44, 43, 43, 44, 43, 43, 43, 43, 43, 43, 43, 42, 43, 43, 42, 43, 43, 43, 43, 43, 43],
+};
+
+const trendLabels: Record<string, string[]> = {
+  "7d": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+  "30d": Array.from({ length: 30 }, (_, i) => i === 0 ? "30d ago" : i === 29 ? "Today" : `${30 - i}d ago`),
+  "90d": Array.from({ length: 90 }, (_, i) => i === 0 ? "90d ago" : i === 89 ? "Today" : `${90 - i}d ago`),
+};
+
+const WinRateLineChart = ({
+  data,
+  labels,
+}: {
+  data: number[];
+  labels: string[];
+}) => {
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  const W = 600;
+  const H = 80;
+  const PAD_Y = 8;
+  const minV = Math.min(...data) - 4;
+  const maxV = Math.max(...data) + 4;
+  const toX = (i: number) => (i / (data.length - 1)) * W;
+  const toY = (v: number) => H - PAD_Y - ((v - minV) / (maxV - minV)) * (H - 2 * PAD_Y);
+  const pts: [number, number][] = data.map((v, i) => [toX(i), toY(v)]);
+
+  const linePath = pts.reduce((d, [x, y], i) => {
+    if (i === 0) return `M ${x},${y}`;
+    const [px, py] = pts[i - 1];
+    const cpx = (px + x) / 2;
+    return `${d} C ${cpx},${py} ${cpx},${y} ${x},${y}`;
+  }, "");
+  const areaPath = `${linePath} L ${W},${H} L 0,${H} Z`;
+
+  return (
+    <div className="relative">
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        className="h-20 w-full overflow-visible"
+        preserveAspectRatio="none"
+        onMouseMove={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const x = ((e.clientX - rect.left) / rect.width) * W;
+          const index = Math.round((x / W) * (data.length - 1));
+          setHoverIndex(Math.max(0, Math.min(data.length - 1, index)));
+        }}
+        onMouseLeave={() => setHoverIndex(null)}
+      >
+        <defs>
+          <linearGradient id="winAreaGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="rgb(21,114,250)" stopOpacity="0.12" />
+            <stop offset="100%" stopColor="rgb(21,114,250)" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        {[0.25, 0.5, 0.75].map((pos) => (
+          <line key={pos} x1={0} y1={H * pos} x2={W} y2={H * pos} stroke="currentColor" strokeOpacity="0.08" strokeWidth="1" />
+        ))}
+        <path d={areaPath} fill="url(#winAreaGrad)" />
+        <path d={linePath} fill="none" stroke="rgb(21,114,250)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        {hoverIndex !== null && (
+          <>
+            <line x1={pts[hoverIndex][0]} y1={0} x2={pts[hoverIndex][0]} y2={H} stroke="currentColor" strokeOpacity="0.15" strokeWidth="1" />
+            <circle cx={pts[hoverIndex][0]} cy={pts[hoverIndex][1]} r="3" fill="white" stroke="rgb(21,114,250)" strokeWidth="2" />
+          </>
+        )}
+      </svg>
+      {hoverIndex !== null && (
+        <div
+          className="pointer-events-none absolute -top-8 z-10 -translate-x-1/2 whitespace-nowrap border border-accent-foreground bg-background-rich px-2 py-1 text-xs text-foreground shadow-sm"
+          style={{ left: `${(hoverIndex / (data.length - 1)) * 100}%` }}
+        >
+          {labels[hoverIndex]} · <span className="font-medium text-primary">{data[hoverIndex]}%</span>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default () => {
+  const [activePeriod, setActivePeriod] = useState<"7d" | "30d" | "90d">("7d");
+  return (
   <div className="p-6">
     <div className="mb-6 flex items-center justify-between">
       <div>
@@ -255,19 +341,25 @@ export default () => (
     </div>
 
     <div className="mb-6 grid grid-cols-1 gap-4 xl:grid-cols-3">
-      <div className="border border-accent-foreground bg-background-rich p-4 xl:col-span-2">
-        <div className="mb-4 flex items-center justify-between">
-          <p className="font-medium text-foreground text-sm">Win Rate by Model</p>
-          <div className="flex gap-1">
-            {["7d", "30d", "90d"].map((period, index) => (
+      <div className="border border-accent-foreground bg-background-rich p-8 xl:col-span-2">
+        {/* Header */}
+        <div className="mb-8 flex items-start justify-between">
+          <div>
+            <p className="font-light text-foreground-dimmed text-xs uppercase tracking-widest">Performance</p>
+            <p className="mt-1 font-medium text-foreground text-lg">Win Rate by Model</p>
+          </div>
+          <div className="flex border border-accent-foreground">
+            {(["7d", "30d", "90d"] as const).map((period, index) => (
               <button
                 key={period}
                 type="button"
+                onClick={() => setActivePeriod(period)}
                 className={cn(
-                  "px-2 py-0.5 text-xs",
-                  index === 1
+                  "px-3 py-1 text-xs transition-colors",
+                  activePeriod === period
                     ? "bg-primary text-white"
                     : "text-foreground-dimmed hover:text-foreground",
+                  index !== 0 && "border-accent-foreground border-l",
                 )}
               >
                 {period}
@@ -275,38 +367,29 @@ export default () => (
             ))}
           </div>
         </div>
-        <div className="flex flex-col gap-3">
+
+        {/* Model stats — big numbers */}
+        <div className="mb-10 grid grid-cols-3 divide-x divide-accent-foreground">
           {modelWinRates.map(({ model, rate }) => (
-            <div key={model} className="flex items-center gap-3">
-              <span className="w-12 font-light text-foreground-dimmed text-xs">
-                {model}
-              </span>
-              <WinRateBar rate={rate} />
+            <div key={model} className="flex flex-col items-center gap-1 px-6 first:pl-0 last:pr-0">
+              <span className="font-light text-foreground-dimmed text-xs uppercase tracking-widest">{model}</span>
+              <span className="font-semibold text-4xl text-foreground tabular-nums">{rate}<span className="text-xl font-light text-foreground-dimmed">%</span></span>
+              <div className="mt-2 h-0.5 w-full bg-accent-foreground">
+                <div className="h-full bg-primary transition-all" style={{ width: `${rate}%` }} />
+              </div>
             </div>
           ))}
         </div>
 
-        <div className="mt-6">
-          <p className="mb-3 font-medium text-foreground text-sm">
-            Win Rate Trend (30 days)
-          </p>
-          <div className="relative h-24 w-full">
-            <div className="absolute inset-0 flex items-end gap-1">
-              {[28, 30, 29, 32, 31, 34, 33, 35, 36, 38, 37, 39, 38, 40, 39, 41, 40, 42, 41, 43, 42, 43, 44, 43, 44, 43, 44, 43, 43, 43].map(
-                (value, index) => (
-                  // biome-ignore lint/suspicious/noArrayIndexKey: trend chart data
-                  <div
-                    key={index}
-                    className="flex-1 bg-primary/30 transition-all"
-                    style={{ height: `${(value / 50) * 96}px` }}
-                  />
-                ),
-              )}
-            </div>
-            <div className="absolute bottom-0 left-0 right-0 border-t border-accent-foreground" />
+        {/* Trend chart */}
+        <div>
+          <div className="mb-4 flex items-center justify-between">
+            <p className="font-light text-foreground-dimmed text-xs uppercase tracking-widest">{activePeriod} Trend</p>
+            <span className="font-medium text-primary text-xs">↑ +15%</span>
           </div>
-          <div className="mt-1 flex justify-between font-light text-foreground-dimmed text-xs">
-            <span>30 days ago</span>
+          <WinRateLineChart data={trendData[activePeriod]} labels={trendLabels[activePeriod]} />
+          <div className="mt-2 flex justify-between font-light text-foreground-dimmed text-xs">
+            <span>{trendLabels[activePeriod][0]}</span>
             <span>Today</span>
           </div>
         </div>
@@ -365,14 +448,14 @@ export default () => (
         </Link>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <table className="w-full border-collapse">
           <thead>
-            <tr className="border-accent-foreground border-b bg-background-dimmed">
+            <tr className="border-accent-foreground border-b">
               {["Product", "Win Rate", "GPT-4", "Claude", "Gemini", "vs. Top Competitor", "Status", ""].map(
                 (header) => (
                   <th
                     key={header}
-                    className="px-4 py-2 text-left font-medium text-foreground-dimmed text-xs"
+                    className="px-4 py-3 text-left font-light text-foreground-dimmed text-sm"
                   >
                     {header}
                   </th>
@@ -457,4 +540,5 @@ export default () => (
       </div>
     </div>
   </div>
-);
+  );
+};

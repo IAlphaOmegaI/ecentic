@@ -26,7 +26,7 @@ export const SelectTrigger = ({
   return (
     <SelectPrimitive.Trigger
       className={createClassName(
-        "flex h-10 min-w-36 select-none items-center justify-between gap-3 border border-accent-foreground pr-3 pl-3.5 text-base text-foreground hover:bg-background-dimmed focus-visible:outline-2 focus-visible:outline-primary focus-visible:-outline-offset-1 active:bg-background-dimmed data-popup-open:bg-background-dimmed",
+        "flex h-10 min-w-36 select-none items-center justify-between gap-3 border border-accent-foreground pr-3 pl-3.5 text-base text-foreground transition-colors duration-200 hover:bg-background-dimmed focus-visible:border-primary focus-visible:outline-0 active:bg-background-dimmed data-popup-open:bg-background-dimmed data-popup-open:border-primary",
         className,
         classList?.trigger,
       )}
@@ -100,7 +100,7 @@ export const SelectPopup = ({
     <>
       <SelectPrimitive.ScrollUpArrow
         className={createClassName(
-          "top-0 z-[1] flex h-4 w-full cursor-default items-center justify-center rounded-md bg-[canvas] text-center text-xs before:absolute before:top-[-100%] before:left-0 before:h-full before:w-full before:content-[''] data-[direction=down]:bottom-0 data-[direction=down]:before:bottom-[-100%]",
+          "top-0 z-[1] flex h-4 w-full cursor-default items-center justify-center bg-background text-center text-xs before:absolute before:top-[-100%] before:left-0 before:h-full before:w-full before:content-[''] data-[direction=down]:bottom-0 data-[direction=down]:before:bottom-[-100%]",
           classList?.arrow?.arrow,
           classList?.arrow?.up,
         )}
@@ -117,7 +117,7 @@ export const SelectPopup = ({
       </SelectPrimitive.Popup>
       <SelectPrimitive.ScrollDownArrow
         className={createClassName(
-          "bottom-0 z-[1] flex h-4 w-full cursor-default items-center justify-center rounded-md bg-[canvas] text-center text-xs before:absolute before:top-[-100%] before:left-0 before:h-full before:w-full before:content-[''] data-[direction=down]:bottom-0 data-[direction=down]:before:bottom-[-100%]",
+          "bottom-0 z-[1] flex h-4 w-full cursor-default items-center justify-center bg-background text-center text-xs before:absolute before:top-[-100%] before:left-0 before:h-full before:w-full before:content-[''] data-[direction=down]:bottom-0 data-[direction=down]:before:bottom-[-100%]",
           classList?.arrow?.arrow,
           classList?.arrow?.down,
         )}
@@ -148,7 +148,7 @@ export const SelectItem = ({
   return (
     <SelectPrimitive.Item
       className={createClassName(
-        "grid min-w-[var(--anchor-width)] cursor-default select-none grid-cols-[0.75rem_1fr] items-center gap-2 py-2 pr-4 pl-2.5 text-sm leading-4 outline-0 data-highlighted:relative data-highlighted:z-0 data-highlighted:text-background data-highlighted:before:absolute data-highlighted:before:inset-x-1 data-highlighted:before:inset-y-0 data-highlighted:before:z-[-1] data-highlighted:before:bg-foreground group-data-[side=none]:min-w-[calc(var(--anchor-width)+1rem)] group-data-[side=none]:pr-12 group-data-[side=none]:text-base group-data-[side=none]:leading-4",
+        "grid min-w-[var(--anchor-width)] cursor-default select-none grid-cols-[0.75rem_1fr] items-center gap-2 py-2 pr-4 pl-2.5 text-sm leading-4 outline-0 data-[selected]:not-data-highlighted:text-primary data-highlighted:relative data-highlighted:z-0 data-highlighted:text-white data-highlighted:before:absolute data-highlighted:before:inset-x-1 data-highlighted:before:inset-y-0 data-highlighted:before:z-[-1] data-highlighted:before:bg-primary group-data-[side=none]:min-w-[calc(var(--anchor-width)+1rem)] group-data-[side=none]:pr-12 group-data-[side=none]:text-base group-data-[side=none]:leading-4",
         className,
         classList?.item,
       )}
