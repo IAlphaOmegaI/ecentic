@@ -16,7 +16,7 @@ export const Navbar = () => (
         alt="écentic"
         width={100}
         height={100}
-        className="h-auto w-24 md:w-32 relative z-100 -mt-1.5"
+        className="h-auto w-22 md:w-30 relative z-100 -mt-1.5"
       />
     </div>
 
@@ -29,7 +29,7 @@ export const Navbar = () => (
       />
       <Link
         href="/sign-up"
-        className="font-light text-primary text-lg relative z-100 -mt-1.5"
+        className="font-light text-primary text-lg relative z-100 flex -mt-1.5"
       >
         Get Started
       </Link>

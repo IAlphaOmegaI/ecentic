@@ -38,7 +38,8 @@
       "Bash(pnpm biome check --write packages/web/src/components/data-table.tsx)",
       "Bash(npx biome check --write packages/web/src/components/data-table.tsx)",
       "Bash(npx biome check --write --unsafe packages/web/src/components/data-table.tsx)",
-      "Bash(npx biome check --write --unsafe apps/web/src/app/_components/comparison.tsx)"
+      "Bash(npx biome check --write --unsafe apps/web/src/app/_components/comparison.tsx)",
+      "Bash(bun biome check --write apps/web/src/app/\\\\\\(onboarding\\\\\\)/layout.tsx)"
     ]
   }
 }

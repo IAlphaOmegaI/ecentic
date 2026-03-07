@@ -46,6 +46,12 @@ import {
   SelectValue,
 } from "./select";
 import { TextField, TextFieldInput, TextFieldMaskToggle } from "./text-field";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "./otp-input";
 
 type Interface = {
   text: InterfaceValue<z.ZodString, TextField.Props>;
@@ -109,6 +115,12 @@ type Interface = {
         Extract<FileUpload.Props, { mode: "multiple" }>
       >;
   checkbox: InterfaceValue<z.ZodBoolean, Checkbox.Props>;
+  otp: InterfaceValue<
+    z.ZodString,
+    InputOTP.Props & {
+      length: number;
+    }
+  >;
 };
 
 export type {
@@ -189,6 +201,18 @@ export const InferredFormField = <Field extends GenericField>(
 
         const element = (() => {
           switch (props.shape) {
+            case "otp": {
+              return (
+                <InputOTP {...field} {...props} maxLength={props.length}>
+                  <InputOTPGroup>
+                    {Array.from({ length: props.length }).map((_, index) => (
+                      // biome-ignore lint/suspicious/noArrayIndexKey: needed to handle the key
+                      <InputOTPSlot key={`otp-slot-${index}`} index={index} />
+                    ))}
+                  </InputOTPGroup>
+                </InputOTP>
+              );
+            }
             case "text": {
               return (
                 <TextField

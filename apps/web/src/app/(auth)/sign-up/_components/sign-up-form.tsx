@@ -107,7 +107,7 @@ export const SignUpForm = () => {
       <InferredForm
         config={config}
         onSubmit={handleSubmit}
-        className="grid grid-cols-2 gap-0.5"
+        className="grid grid-cols-2 gap-x-3 gap-y-0.5"
       >
         <Button
           type="submit"

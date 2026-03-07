@@ -5,23 +5,23 @@
 
 @theme {
   /* background shades - more distinct neutral */
-  --color-background-dimmed: unset; /* Much darker */
-  --color-background: unset; /* Light but not white */
-  --color-background-rich: unset; /* Clear mid-tone */
+  --color-background-dimmed: #eeeeee;
+  --color-background: #ffffff;
+  --color-background-rich: #ffffff;
   /* foreground shades - pure neutral grays with more contrast */
-  --color-foreground-dimmed: unset;
-  --color-foreground: unset;
-  --color-foreground-rich: unset;
+  --color-foreground-dimmed: #919191;
+  --color-foreground: #474747;
+  --color-foreground-rich: hsl(0 0% 25%);
   /* emphasis shades - warmer browns with more distinction */
-  --color-emphasis-dimmed: unset;
-  --color-emphasis: unset;
-  --color-emphasis-rich: unset;
-  --color-emphasis-foreground: unset;
+  --color-emphasis-dimmed: oklch(14.5% 0 0);
+  --color-emphasis: oklch(20.5% 0 0);
+  --color-emphasis-rich: oklch(26.9% 0 0);
+  --color-emphasis-foreground: oklch(55.6% 0 0);
   /* accent shades - distinct cool grays */
-  --color-accent-dimmed: unset; /* Notably darker */
-  --color-accent: unset; /* Clean white */
-  --color-accent-rich: unset; /* Mid-tone */
-  --color-accent-foreground: unset; /* Darker for contrast */
+  --color-accent-dimmed: oklch(55.3% 0.013 58.071); /* Notably darker */
+  --color-accent: oklch(55.6% 0 0); /* Clean white */
+  --color-accent-rich: oklch(67% 0 0); /* Mid-tone */
+  --color-accent-foreground: oklch(90% 0 0); /* Darker for contrast */
 
   /* primary shades - orange */
   --color-primary-dimmed: #3d1a03;
@@ -56,29 +56,4 @@
   --color-neutral: oklch(55.4% 0.046 257.417);
   --color-neutral-rich: oklch(55.1% 0.027 264.364);
   --color-neutral-foreground: oklch(21% 0.034 264.665);
-}
-
-@layer theme {
-  :root {
-    @variant light {
-      /* background shades - more distinct neutral */
-      --color-background-dimmed: #eeeeee;
-      --color-background: #ffffff;
-      --color-background-rich: #ffffff;
-      /* foreground shades - pure neutral grays with more contrast */
-      --color-foreground-dimmed: #919191;
-      --color-foreground: #474747;
-      --color-foreground-rich: hsl(0 0% 25%);
-      /* emphasis shades - warmer browns with more distinction */
-      --color-emphasis-dimmed: oklch(14.5% 0 0);
-      --color-emphasis: oklch(20.5% 0 0);
-      --color-emphasis-rich: oklch(26.9% 0 0);
-      --color-emphasis-foreground: oklch(55.6% 0 0);
-      /* accent shades - distinct cool grays */
-      --color-accent-dimmed: oklch(55.3% 0.013 58.071); /* Notably darker */
-      --color-accent: oklch(55.6% 0 0); /* Clean white */
-      --color-accent-rich: oklch(67% 0 0); /* Mid-tone */
-      --color-accent-foreground: oklch(90% 0 0); /* Darker for contrast */
-    }
-  }
 }

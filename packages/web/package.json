@@ -19,6 +19,7 @@
     "@zenncore/inferred-form": "workspace:*",
     "@zenncore/phone": "workspace:*",
     "@zenncore/utils": "workspace:*",
+    "input-otp": "^1.4.2",
     "zod": "catalog:"
   },
   "peerDependencies": {

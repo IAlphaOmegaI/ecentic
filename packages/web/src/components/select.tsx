@@ -100,7 +100,7 @@ export const SelectPopup = ({
     <>
       <SelectPrimitive.ScrollUpArrow
         className={createClassName(
-          "top-0 z-[1] flex h-4 w-full cursor-default items-center justify-center bg-background text-center text-xs before:absolute before:top-[-100%] before:left-0 before:h-full before:w-full before:content-[''] data-[direction=down]:bottom-0 data-[direction=down]:before:bottom-[-100%]",
+          "top-0 z-1 flex h-4 w-full cursor-default items-center justify-center border border-accent-foreground border-b-0 bg-background text-center text-xs before:absolute before:top-[-100%] before:left-0 before:h-full before:w-full before:content-[''] data-[direction=down]:bottom-0 data-[direction=down]:before:bottom-[-100%]",
           classList?.arrow?.arrow,
           classList?.arrow?.up,
         )}
@@ -117,7 +117,7 @@ export const SelectPopup = ({
       </SelectPrimitive.Popup>
       <SelectPrimitive.ScrollDownArrow
         className={createClassName(
-          "bottom-0 z-[1] flex h-4 w-full cursor-default items-center justify-center bg-background text-center text-xs before:absolute before:top-[-100%] before:left-0 before:h-full before:w-full before:content-[''] data-[direction=down]:bottom-0 data-[direction=down]:before:bottom-[-100%]",
+          "bottom-0 z-[1] flex h-4 w-full cursor-default items-center justify-center border border-accent-foreground border-t-0 bg-background text-center text-xs before:absolute before:top-[-100%] before:left-0 before:h-full before:w-full before:content-[''] data-[direction=down]:bottom-0 data-[direction=down]:before:bottom-[-100%]",
           classList?.arrow?.arrow,
           classList?.arrow?.down,
         )}
