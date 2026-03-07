@@ -42,7 +42,7 @@ const ltsuperior = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "écentric — Infrastructure for the Agent Economy",
+  title: "écentic — Infrastructure for the Agent Economy",
   description:
     "Simulate how AI shopping agents choose your products, diagnose why they don't, and auto-optimize your listings to win every agent's cart.",
 };

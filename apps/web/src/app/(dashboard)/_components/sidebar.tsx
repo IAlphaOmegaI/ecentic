@@ -17,7 +17,7 @@ import { cn } from "@zenncore/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const navItems = [
   {
@@ -70,9 +70,21 @@ const navItems = [
 export const Sidebar = () => {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
+  const [hoverStyle, setHoverStyle] = useState<{ top: number; height: number } | null>(null);
+  const navRef = useRef<HTMLElement>(null);
 
   const isActive = (href: string, exact: boolean) =>
     exact ? pathname === href : pathname.startsWith(href);
+
+  const handleMouseEnter = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const nav = navRef.current;
+    if (!nav) return;
+    const navRect = nav.getBoundingClientRect();
+    const itemRect = e.currentTarget.getBoundingClientRect();
+    setHoverStyle({ top: itemRect.top - navRect.top, height: itemRect.height });
+  };
+
+  const handleMouseLeave = () => setHoverStyle(null);
 
   return (
     <aside
@@ -90,7 +102,7 @@ export const Sidebar = () => {
         {collapsed ? (
           <Image
             src="/images/trademark.svg"
-            alt="écentric"
+            alt="écentic"
             width={28}
             height={28}
             className="size-7"
@@ -98,7 +110,7 @@ export const Sidebar = () => {
         ) : (
           <Image
             src="/images/trademark.svg"
-            alt="écentric"
+            alt="écentic"
             width={96}
             height={28}
             className="h-auto w-24"
@@ -106,18 +118,26 @@ export const Sidebar = () => {
         )}
       </div>
 
-      <nav className="flex flex-1 flex-col gap-0.5 p-2">
+      <nav ref={navRef} className="relative flex flex-1 flex-col gap-0.5 p-2">
+        {hoverStyle && (
+          <div
+            className="pointer-events-none absolute inset-x-2 bg-background-dimmed transition-all duration-150 ease-out"
+            style={{ top: hoverStyle.top, height: hoverStyle.height }}
+          />
+        )}
         {navItems.map((item) => {
           const active = isActive(item.href, item.exact);
           return (
             <Link
               key={item.href}
               href={item.href}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
               className={cn(
-                "group flex items-center gap-3 px-3 py-2 text-sm transition-colors",
+                "group relative flex items-center gap-3 px-3 py-2 text-sm",
                 active
                   ? "bg-primary text-white"
-                  : "text-foreground-dimmed hover:bg-background-dimmed hover:text-foreground",
+                  : "text-foreground-dimmed hover:text-foreground",
                 collapsed && "justify-center px-2",
               )}
             >
@@ -135,8 +155,8 @@ export const Sidebar = () => {
                       className={cn(
                         "text-xs px-1.5 py-0.5 font-medium",
                         active
-                          ? "bg-white/20 text-white"
-                          : "bg-background-dimmed text-foreground-dimmed",
+                          ? "text-white/60"
+                          : "text-foreground-dimmed/50",
                       )}
                     >
                       {item.badge}

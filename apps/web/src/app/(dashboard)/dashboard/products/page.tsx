@@ -106,10 +106,10 @@ export default () => (
 
     <div className="border border-accent-foreground bg-background-rich">
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <table className="w-full border-collapse">
           <thead>
-            <tr className="border-accent-foreground border-b bg-background-dimmed">
-              <th className="w-10 px-4 py-2">
+            <tr className="border-accent-foreground border-b">
+              <th className="w-10 px-4 py-3">
                 <input
                   type="checkbox"
                   className="border border-accent-foreground"
@@ -131,7 +131,7 @@ export default () => (
               ].map((header) => (
                 <th
                   key={header}
-                  className="px-4 py-2 text-left font-medium text-foreground-dimmed text-xs"
+                  className="px-4 py-3 text-left font-light text-foreground-dimmed text-sm"
                 >
                   {header}
                 </th>

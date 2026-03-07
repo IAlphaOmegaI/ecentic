@@ -7,7 +7,7 @@ export default () => (
     <div className="hidden flex-col justify-between bg-primary p-10 lg:flex lg:w-2/5">
       <Image
         src="/images/wordmark.svg"
-        alt="écentric"
+        alt="écentic"
         width={120}
         height={32}
         className="h-auto w-28 brightness-0 invert"
@@ -21,7 +21,7 @@ export default () => (
         </p>
       </div>
       <p className="font-light text-sm text-white/50">
-        écentric — Infrastructure for the agent economy.
+        écentic — Infrastructure for the agent economy.
       </p>
     </div>
 
@@ -30,7 +30,7 @@ export default () => (
         <div className="mb-8 lg:hidden">
           <Image
             src="/images/trademark.svg"
-            alt="écentric"
+            alt="écentic"
             width={100}
             height={28}
             className="h-auto w-24"
@@ -39,7 +39,7 @@ export default () => (
 
         <div className="mb-6">
           <h2 className="font-medium text-2xl text-foreground">
-            Sign in to écentric
+            Sign in to écentic
           </h2>
           <p className="mt-1 font-light text-foreground-dimmed text-sm">
             Continue optimizing your product listings.

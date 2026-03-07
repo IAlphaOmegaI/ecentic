@@ -34,7 +34,8 @@
       "Bash(\"$BUN\" x tsdown --entry.hooks/index ./src/hooks/index.ts --dts --no-fixed-extension --skip-node-modules-bundle --no-config)",
       "Bash(\"$BUN\" x tsdown --entry.types/index ./src/types/index.ts --dts --no-fixed-extension --skip-node-modules-bundle --no-config)",
       "Bash(\"$HOME/.bun/bin/bun\" build \"c:/Users/35568/Desktop/ecentic/packages/shared/config/src/tsdown/config.ts\" --outfile \"c:/Users/35568/Desktop/ecentic/packages/shared/config/src/tsdown/config.js\" --target node)",
-      "Bash(\"$HOME/.bun/bin/bun\" build \"c:/Users/35568/Desktop/ecentic/packages/shared/config/src/tsdown/config.ts\" --outfile \"c:/Users/35568/Desktop/ecentic/packages/shared/config/src/tsdown/config.js\" --target node --external tsdown)"
+      "Bash(\"$HOME/.bun/bin/bun\" build \"c:/Users/35568/Desktop/ecentic/packages/shared/config/src/tsdown/config.ts\" --outfile \"c:/Users/35568/Desktop/ecentic/packages/shared/config/src/tsdown/config.js\" --target node --external tsdown)",
+      "Bash(bun x turbo build --filter=\"@zenncore/web\")"
     ]
   }
 }
