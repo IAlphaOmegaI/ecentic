@@ -76,7 +76,7 @@ export const Onboarding = ({
             {points.map((point) => (
               <motion.div
                 key={point}
-                className="flex items-start gap-3"
+                className="flex items-center gap-3"
                 variants={Stagger.Item}
               >
                 <div className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-white/20">

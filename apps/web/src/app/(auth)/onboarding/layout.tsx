@@ -29,6 +29,48 @@ const sidebar = {
       "Your catalog stays live and always up to date",
     ],
   },
+  "/onboarding/connect/shopify": {
+    headline: (
+      <>
+        Shopify
+        <br />
+        OAuth.
+      </>
+    ),
+    points: [
+      "One-click authorization — we never see your password",
+      "Read-only access to your product catalog",
+      "Products stay in sync automatically",
+    ],
+  },
+  "/onboarding/connect/woocommerce": {
+    headline: (
+      <>
+        WooCommerce
+        <br />
+        API keys.
+      </>
+    ),
+    points: [
+      "Generate a read-only key from your WooCommerce settings",
+      "Paste three fields and we handle the rest",
+      "Your credentials are encrypted and stored securely",
+    ],
+  },
+  "/onboarding/connect/feed": {
+    headline: (
+      <>
+        Product
+        <br />
+        feed.
+      </>
+    ),
+    points: [
+      "Works with Google Shopping XML and JSON feeds",
+      "We auto-detect the format and parse every product",
+      "Re-sync anytime to pick up changes",
+    ],
+  },
   "/onboarding/select-products": {
     headline: (
       <>
@@ -75,7 +117,9 @@ const sidebar = {
 
 export default ({ children }: PropsWithChildren) => {
   const pathname = usePathname();
-  const current = steps.findIndex((step) => step.path === pathname);
+  const current = steps.findIndex((step) =>
+    pathname.startsWith(step.path),
+  );
 
   const content =
     sidebar[pathname as keyof typeof sidebar] ?? sidebar["/onboarding/connect"];

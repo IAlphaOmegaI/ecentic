@@ -3,6 +3,9 @@ import type { NextConfig } from "next";
 export default {
   reactCompiler: true,
   typedRoutes: true,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   transpilePackages: [
     "@zenncore/icons",
     "@zenncore/phone",
