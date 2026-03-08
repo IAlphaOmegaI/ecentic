@@ -2,9 +2,12 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { db, schema } from "@/server/database";
+import { sendVerificationEmail } from "@/server/utils/send-verification-email";
+
+const baseUrl = process.env.BETTER_AUTH_BASE_URL;
 
 export const auth = betterAuth({
-  baseURL: process.env.BETTER_AUTH_BASE_URL,
+  baseURL: baseUrl,
   database: drizzleAdapter(db, {
     provider: "pg",
     schema,
@@ -29,6 +32,7 @@ export const auth = betterAuth({
   },
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: true,
     // sendResetPassword: async (context) => {
     //   await unwrapResult(
     //     Authentication.handlePasswordReset({
@@ -37,6 +41,14 @@ export const auth = betterAuth({
     //     }),
     //   );
     // },
+  },
+  emailVerification: {
+    sendVerificationEmail: async ({ user, url }) => {
+      void sendVerificationEmail({
+        to: user.email,
+        verificationUrl: url,
+      });
+    },
   },
 
   plugins: [nextCookies()],

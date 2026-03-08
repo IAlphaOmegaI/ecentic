@@ -1,61 +1,75 @@
 "use client";
-
-import { ArrowRightIcon } from "@zenncore/icons";
-import { InferredForm, field } from "@zenncore/web/components/inferred-form";
+import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
-import { motion } from "motion/react";
-import { useRouter } from "next/navigation";
+import { field, InferredForm } from "@zenncore/web/components/inferred-form";
+import { useToastManager } from "@zenncore/web/components/toast";
 import { z } from "zod";
-import { spring, staggerContainer, staggerItem } from "@/lib/animations";
+import { Motion } from "@/components/motion";
+import { Spring } from "@/lib/animations";
+import * as Authentication from "@/server/app/authentication";
 
 const config = {
   code: field({
     shape: "otp",
     validator: z.string().length(6),
-    length: 6,
+    maxLength: 6,
   }),
 };
 
-export const VerifyForm = () => {
-  const router = useRouter();
+export namespace VerifyForm {
+  export type Props = {
+    token: string;
+    className?: string;
+  };
+}
+
+export const VerifyForm = ({ token, className }: VerifyForm.Props) => {
+  const toast = useToastManager();
+
   const [handleSubmit, isPending] = useAsyncAction(async () => {
-    router.push("/onboarding/connect");
+    const result = await Authentication.verifyEmail(token);
+    if (!result.success) {
+      toast.add({
+        title: "Error",
+        description: result.error.message,
+        type: "error",
+      });
+      return;
+    }
+    window.location.href = result.data.redirectUrl;
   });
 
   return (
-    <motion.div
-      variants={staggerContainer(0.08)}
-      initial="hidden"
-      animate="visible"
-      // biome-ignore lint/style/noCommaOperator: delay offset for verify form
-      transition={{ delayChildren: 0.22 }}
-    >
-      <motion.div variants={staggerItem}>
+    <Motion.Stagger stagger={0.08} delay={0.22} className={className}>
+      <Motion.Item>
         <InferredForm
           config={config}
           onSubmit={handleSubmit}
           className="flex flex-col items-center gap-6"
         >
-          <motion.div
+          <Motion.Tap
             className="w-full"
             whileHover={{ y: -1 }}
-            whileTap={{ scale: 0.97 }}
-            transition={spring.snappy}
+            transition={Spring.Snappy}
           >
             <Button
               type="submit"
               variant="flat"
               color="primary"
               disabled={isPending}
-              className="w-full flex items-center justify-center gap-2 py-2.5 font-medium text-sm"
+              className="flex w-full items-center justify-center gap-2 py-2.5 font-medium text-sm"
             >
               {isPending ? "Verifying..." : "Verify Email"}
-              {!isPending && <ArrowRightIcon className="size-4" />}
+              {isPending ? (
+                <LoaderIcon className="size-4 animate-spin" />
+              ) : (
+                <ArrowRightIcon className="size-4" />
+              )}
             </Button>
-          </motion.div>
+          </Motion.Tap>
         </InferredForm>
-      </motion.div>
-    </motion.div>
+      </Motion.Item>
+    </Motion.Stagger>
   );
 };

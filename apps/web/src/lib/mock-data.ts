@@ -374,7 +374,8 @@ export const activityFeed = [
   {
     _id: "a5",
     type: "optimization_published",
-    message: "Optimization published for Stainless Steel Water Bottle — win rate +5%",
+    message:
+      "Optimization published for Stainless Steel Water Bottle — win rate +5%",
     timestamp: "2 days ago",
   },
 ] as const;

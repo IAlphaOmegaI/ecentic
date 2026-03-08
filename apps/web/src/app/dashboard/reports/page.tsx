@@ -1,4 +1,4 @@
-import { DownloadIcon, DocumentPdfIcon } from "@zenncore/icons";
+import { DocumentPdfIcon, DownloadIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 
 const reports = [
@@ -13,7 +13,8 @@ const reports = [
   {
     _id: "r2",
     title: "Product Performance",
-    description: "Per-product detailed report with trends and competitor comparison",
+    description:
+      "Per-product detailed report with trends and competitor comparison",
     formats: ["PDF", "CSV"],
     tier: "compete",
     lastGenerated: "Yesterday",
@@ -21,7 +22,8 @@ const reports = [
   {
     _id: "r3",
     title: "Competitor Analysis",
-    description: "Full competitive landscape with battlecards for all tracked brands",
+    description:
+      "Full competitive landscape with battlecards for all tracked brands",
     formats: ["PDF"],
     tier: "compete",
     lastGenerated: "2 days ago",
@@ -45,7 +47,8 @@ const reports = [
   {
     _id: "r6",
     title: "Model Drift History",
-    description: "Historical log of all AI model behavior changes affecting your products",
+    description:
+      "Historical log of all AI model behavior changes affecting your products",
     formats: ["CSV"],
     tier: "dominate",
     lastGenerated: "Last week",
@@ -75,7 +78,7 @@ const TierBadge = ({ tier }: { tier: string }) => {
   })();
 
   return (
-    <span className={cn("px-1.5 py-0.5 text-xs font-medium", config.color)}>
+    <span className={cn("px-1.5 py-0.5 font-medium text-xs", config.color)}>
       {config.label}
     </span>
   );
@@ -85,7 +88,7 @@ export default () => (
   <div className="p-6">
     <div className="mb-6 flex items-center justify-between">
       <div>
-        <h1 className="font-medium text-xl text-foreground">
+        <h1 className="font-medium text-foreground text-xl">
           Reports & Exports
         </h1>
         <p className="font-light text-foreground-dimmed text-sm">
@@ -102,7 +105,7 @@ export default () => (
 
     <div className="mb-4 border border-primary/20 bg-primary/5 p-4">
       <div className="flex items-start gap-3">
-        <div className="flex size-8 shrink-0 items-center justify-center bg-primary/10 text-primary font-bold text-sm">
+        <div className="flex size-8 shrink-0 items-center justify-center bg-primary/10 font-bold text-primary text-sm">
           ↗
         </div>
         <div>

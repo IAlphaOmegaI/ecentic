@@ -1,4 +1,4 @@
-import { ArrowRightIcon, PlusIcon, XIcon } from "@zenncore/icons";
+import { ArrowRightIcon, PlusIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { competitors } from "@/lib/mock-data";
 
@@ -71,7 +71,7 @@ const HeatCell = ({ result }: { result: "win" | "tie" | "loss" }) => {
   return (
     <div
       className={cn(
-        "flex size-7 items-center justify-center text-xs font-bold",
+        "flex size-7 items-center justify-center font-bold text-xs",
         config.bg,
       )}
     >
@@ -84,7 +84,7 @@ export default () => (
   <div className="p-6">
     <div className="mb-6 flex items-center justify-between">
       <div>
-        <h1 className="font-medium text-xl text-foreground">
+        <h1 className="font-medium text-foreground text-xl">
           Competitor Intelligence
         </h1>
         <p className="font-light text-foreground-dimmed text-sm">
@@ -122,7 +122,7 @@ export default () => (
         <p className="font-light text-foreground-dimmed text-xs uppercase tracking-wide">
           Most Dangerous
         </p>
-        <p className="mt-1 font-medium text-foreground text-base">
+        <p className="mt-1 font-medium text-base text-foreground">
           {
             competitors.reduce((worst, c) =>
               c.yourWinRate < worst.yourWinRate ? c : worst,
@@ -145,7 +145,7 @@ export default () => (
         <p className="font-medium text-foreground text-sm">Competitor Brands</p>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse [&_th]:border-x [&_th]:border-accent-foreground [&_td]:border-x [&_td]:border-accent-foreground [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0 [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0">
+        <table className="w-full border-collapse [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_td]:border-accent-foreground [&_td]:border-x [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0 [&_th]:border-accent-foreground [&_th]:border-x">
           <thead>
             <tr className="border-accent-foreground border-b">
               {[
@@ -170,7 +170,7 @@ export default () => (
             {competitors.map((competitor) => (
               <tr
                 key={competitor._id}
-                className="border-accent-foreground border-b last:border-b-0 hover:bg-background-dimmed/30 transition-colors"
+                className="border-accent-foreground border-b transition-colors last:border-b-0 hover:bg-background-dimmed/30"
               >
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
@@ -187,7 +187,7 @@ export default () => (
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-16 bg-accent-foreground h-1.5">
+                    <div className="h-1.5 w-16 bg-accent-foreground">
                       <div
                         className={cn(
                           "h-full",
@@ -226,7 +226,7 @@ export default () => (
                 <td className="px-4 py-3">
                   <button
                     type="button"
-                    className="flex items-center gap-1 font-light text-primary text-xs hover:underline whitespace-nowrap"
+                    className="flex items-center gap-1 whitespace-nowrap font-light text-primary text-xs hover:underline"
                   >
                     View Battlecard <ArrowRightIcon className="size-3" />
                   </button>
@@ -240,15 +240,13 @@ export default () => (
 
     <div className="mb-6 border border-accent-foreground bg-background-rich">
       <div className="border-accent-foreground border-b px-4 py-3">
-        <p className="font-medium text-foreground text-sm">
-          Attribute Heatmap
-        </p>
+        <p className="font-medium text-foreground text-sm">Attribute Heatmap</p>
         <p className="font-light text-foreground-dimmed text-xs">
           W = you win · = = tie · L = they win
         </p>
       </div>
       <div className="overflow-x-auto p-4">
-        <table className="w-full text-xs border-collapse [&_th]:border-x [&_th]:border-accent-foreground [&_td]:border-x [&_td]:border-accent-foreground [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0 [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0">
+        <table className="w-full border-collapse text-xs [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_td]:border-accent-foreground [&_td]:border-x [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0 [&_th]:border-accent-foreground [&_th]:border-x">
           <thead>
             <tr>
               <th className="pr-4 text-left font-medium text-foreground-dimmed text-xs">
@@ -288,20 +286,20 @@ export default () => (
 
     <div className="border border-accent-foreground bg-background-rich">
       <div className="border-accent-foreground border-b px-4 py-3">
-        <p className="font-medium text-foreground text-sm">
-          Competitor Alerts
-        </p>
+        <p className="font-medium text-foreground text-sm">Competitor Alerts</p>
       </div>
       <div className="divide-y divide-accent-foreground">
         {[
           {
             type: "update",
-            message: "SoundMax just updated their X3 listing — added 'Bluetooth 5.3' spec",
+            message:
+              "SoundMax just updated their X3 listing — added 'Bluetooth 5.3' spec",
             time: "2 hours ago",
           },
           {
             type: "increase",
-            message: "BassKing Pro's win rate against you increased by 8% this week",
+            message:
+              "BassKing Pro's win rate against you increased by 8% this week",
             time: "Yesterday",
           },
           {
@@ -310,13 +308,10 @@ export default () => (
             time: "2 days ago",
           },
         ].map((alert) => (
-          <div
-            key={alert.message}
-            className="flex items-start gap-3 px-4 py-3"
-          >
+          <div key={alert.message} className="flex items-start gap-3 px-4 py-3">
             <div
               className={cn(
-                "flex size-6 shrink-0 items-center justify-center text-xs font-bold",
+                "flex size-6 shrink-0 items-center justify-center font-bold text-xs",
                 alert.type === "update" && "bg-primary/10 text-primary",
                 alert.type === "increase" && "bg-warning/10 text-warning",
                 alert.type === "new" && "bg-success/10 text-success",

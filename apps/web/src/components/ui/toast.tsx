@@ -34,7 +34,7 @@ export const ToastList = ({ types, stacked = true }: ToastList.Props) => {
 
       return (
         <Toast key={toast.id} toast={toast} stacked={stacked}>
-          <div className="flex gap-1 items-center">
+          <div className="flex items-center gap-1">
             {/* {Icon && <Icon />} */}
             <ToastTitle />
           </div>

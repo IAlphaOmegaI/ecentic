@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckIcon, PlusIcon, XIcon } from "@zenncore/icons";
+import { CheckIcon, PlusIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { useState } from "react";
 
@@ -48,7 +48,8 @@ const Toggle = ({
 );
 
 export default () => {
-  const [activeSection, setActiveSection] = useState<SettingsSection>("account");
+  const [activeSection, setActiveSection] =
+    useState<SettingsSection>("account");
   const [notificationToggles, setNotificationToggles] = useState({
     winRateDrop: true,
     simulationComplete: true,
@@ -70,7 +71,7 @@ export default () => {
   return (
     <div className="p-6">
       <div className="mb-6">
-        <h1 className="font-medium text-xl text-foreground">Settings</h1>
+        <h1 className="font-medium text-foreground text-xl">Settings</h1>
         <p className="font-light text-foreground-dimmed text-sm">
           Manage your account, integrations, and preferences.
         </p>
@@ -84,7 +85,7 @@ export default () => {
               type="button"
               onClick={() => setActiveSection(item.id)}
               className={cn(
-                "px-3 py-2 text-left text-sm font-medium transition-colors",
+                "px-3 py-2 text-left font-medium text-sm transition-colors",
                 activeSection === item.id
                   ? "bg-primary text-white"
                   : "text-foreground-dimmed hover:bg-background-dimmed hover:text-foreground",
@@ -99,10 +100,10 @@ export default () => {
           {activeSection === "account" && (
             <div className="flex flex-col gap-4">
               <div className="border border-accent-foreground bg-background-rich p-6">
-                <h2 className="mb-4 font-medium text-foreground text-base">
+                <h2 className="mb-4 font-medium text-base text-foreground">
                   Profile
                 </h2>
-                <div className="flex items-center gap-4 mb-6">
+                <div className="mb-6 flex items-center gap-4">
                   <div className="flex size-16 items-center justify-center bg-primary font-semibold text-2xl text-white">
                     J
                   </div>
@@ -121,7 +122,7 @@ export default () => {
                     { label: "Role", value: "Founder / CEO" },
                   ].map((field) => (
                     <div key={field.label} className="flex flex-col gap-1">
-                      <label className="text-xs font-medium text-foreground">
+                      <label className="font-medium text-foreground text-xs">
                         {field.label}
                       </label>
                       <input
@@ -141,23 +142,25 @@ export default () => {
               </div>
 
               <div className="border border-accent-foreground bg-background-rich p-6">
-                <h2 className="mb-4 font-medium text-foreground text-base">
+                <h2 className="mb-4 font-medium text-base text-foreground">
                   Change Password
                 </h2>
-                <div className="flex flex-col gap-3 max-w-sm">
-                  {["Current Password", "New Password", "Confirm New Password"].map(
-                    (label) => (
-                      <div key={label} className="flex flex-col gap-1">
-                        <label className="text-xs font-medium text-foreground">
-                          {label}
-                        </label>
-                        <input
-                          type="password"
-                          className="border border-accent-foreground bg-background px-3 py-2 text-foreground text-sm focus:border-primary focus:outline-none"
-                        />
-                      </div>
-                    ),
-                  )}
+                <div className="flex max-w-sm flex-col gap-3">
+                  {[
+                    "Current Password",
+                    "New Password",
+                    "Confirm New Password",
+                  ].map((label) => (
+                    <div key={label} className="flex flex-col gap-1">
+                      <label className="font-medium text-foreground text-xs">
+                        {label}
+                      </label>
+                      <input
+                        type="password"
+                        className="border border-accent-foreground bg-background px-3 py-2 text-foreground text-sm focus:border-primary focus:outline-none"
+                      />
+                    </div>
+                  ))}
                   <button
                     type="button"
                     className="mt-1 w-fit border border-accent-foreground bg-background-rich px-4 py-2 text-foreground text-sm transition-colors hover:bg-background-dimmed"
@@ -168,7 +171,7 @@ export default () => {
               </div>
 
               <div className="border border-error/20 bg-error/5 p-6">
-                <h2 className="mb-2 font-medium text-error text-base">
+                <h2 className="mb-2 font-medium text-base text-error">
                   Danger Zone
                 </h2>
                 <p className="mb-3 font-light text-foreground-dimmed text-sm">
@@ -201,8 +204,16 @@ export default () => {
               </div>
               <div className="divide-y divide-accent-foreground">
                 {[
-                  { name: "Jane Smith", email: "jane@acmestore.com", role: "Owner" },
-                  { name: "Marcus Johnson", email: "marcus@acmestore.com", role: "Admin" },
+                  {
+                    name: "Jane Smith",
+                    email: "jane@acmestore.com",
+                    role: "Owner",
+                  },
+                  {
+                    name: "Marcus Johnson",
+                    email: "marcus@acmestore.com",
+                    role: "Admin",
+                  },
                 ].map((member) => (
                   <div
                     key={member.email}
@@ -274,7 +285,7 @@ export default () => {
                 <div className="divide-y divide-accent-foreground">
                   <div className="flex items-center justify-between px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="flex size-8 items-center justify-center bg-[#96BF48] text-xs font-bold text-white">
+                      <div className="flex size-8 items-center justify-center bg-[#96BF48] font-bold text-white text-xs">
                         SH
                       </div>
                       <div>
@@ -302,7 +313,7 @@ export default () => {
                 <div className="border-accent-foreground border-t p-4">
                   <button
                     type="button"
-                    className="flex items-center gap-1.5 border border-dashed border-accent-foreground px-3 py-2 text-foreground-dimmed text-sm transition-colors hover:border-primary hover:text-primary"
+                    className="flex items-center gap-1.5 border border-accent-foreground border-dashed px-3 py-2 text-foreground-dimmed text-sm transition-colors hover:border-primary hover:text-primary"
                   >
                     <PlusIcon className="size-3.5" />
                     Connect another store
@@ -322,14 +333,46 @@ export default () => {
               <div className="divide-y divide-accent-foreground">
                 {(
                   [
-                    { key: "winRateDrop", label: "Win Rate Drops", description: "Alert when any product drops >5%" },
-                    { key: "simulationComplete", label: "Simulation Complete", description: "When a simulation batch finishes" },
-                    { key: "optimizationReady", label: "Optimization Ready", description: "New optimization suggestions available" },
-                    { key: "autoPub", label: "Auto-Published", description: "When auto-optimization publishes changes" },
-                    { key: "modelDrift", label: "Model Drift Detected", description: "When an AI model updates its behavior" },
-                    { key: "competitorUpdate", label: "Competitor Updates", description: "When tracked competitor listings change" },
-                    { key: "newCompetitor", label: "New Competitors", description: "When a new competitor is detected" },
-                    { key: "weeklyDigest", label: "Weekly Digest", description: "Summary of the week's performance" },
+                    {
+                      key: "winRateDrop",
+                      label: "Win Rate Drops",
+                      description: "Alert when any product drops >5%",
+                    },
+                    {
+                      key: "simulationComplete",
+                      label: "Simulation Complete",
+                      description: "When a simulation batch finishes",
+                    },
+                    {
+                      key: "optimizationReady",
+                      label: "Optimization Ready",
+                      description: "New optimization suggestions available",
+                    },
+                    {
+                      key: "autoPub",
+                      label: "Auto-Published",
+                      description: "When auto-optimization publishes changes",
+                    },
+                    {
+                      key: "modelDrift",
+                      label: "Model Drift Detected",
+                      description: "When an AI model updates its behavior",
+                    },
+                    {
+                      key: "competitorUpdate",
+                      label: "Competitor Updates",
+                      description: "When tracked competitor listings change",
+                    },
+                    {
+                      key: "newCompetitor",
+                      label: "New Competitors",
+                      description: "When a new competitor is detected",
+                    },
+                    {
+                      key: "weeklyDigest",
+                      label: "Weekly Digest",
+                      description: "Summary of the week's performance",
+                    },
                   ] as const
                 ).map(({ key, label, description }) => (
                   <div
@@ -357,51 +400,67 @@ export default () => {
           {activeSection === "simulation" && (
             <div className="flex flex-col gap-4">
               <div className="border border-accent-foreground bg-background-rich p-4">
-                <h2 className="mb-4 font-medium text-foreground text-base">
+                <h2 className="mb-4 font-medium text-base text-foreground">
                   AI Models
                 </h2>
                 <div className="flex flex-col gap-2">
-                  {["GPT-4", "GPT-4o", "Claude 3.5 Sonnet", "Gemini Pro", "Perplexity"].map(
-                    (model, index) => (
-                      <label
-                        key={model}
-                        className="flex items-center gap-3 cursor-pointer"
-                      >
-                        <div className={cn(
+                  {[
+                    "GPT-4",
+                    "GPT-4o",
+                    "Claude 3.5 Sonnet",
+                    "Gemini Pro",
+                    "Perplexity",
+                  ].map((model, index) => (
+                    <label
+                      key={model}
+                      className="flex cursor-pointer items-center gap-3"
+                    >
+                      <div
+                        className={cn(
                           "flex size-4 items-center justify-center border",
-                          index < 3 ? "border-primary bg-primary" : "border-accent-foreground",
-                        )}>
-                          {index < 3 && <CheckIcon className="size-2.5 text-white" />}
-                        </div>
-                        <span className="font-light text-foreground text-sm">
-                          {model}
-                        </span>
-                        {index >= 3 && (
-                          <span className="bg-warning/10 px-1.5 py-0.5 text-warning text-xs">
-                            Dominate+
-                          </span>
+                          index < 3
+                            ? "border-primary bg-primary"
+                            : "border-accent-foreground",
                         )}
-                      </label>
-                    ),
-                  )}
+                      >
+                        {index < 3 && (
+                          <CheckIcon className="size-2.5 text-white" />
+                        )}
+                      </div>
+                      <span className="font-light text-foreground text-sm">
+                        {model}
+                      </span>
+                      {index >= 3 && (
+                        <span className="bg-warning/10 px-1.5 py-0.5 text-warning text-xs">
+                          Dominate+
+                        </span>
+                      )}
+                    </label>
+                  ))}
                 </div>
               </div>
 
               <div className="border border-accent-foreground bg-background-rich p-4">
-                <h2 className="mb-4 font-medium text-foreground text-base">
+                <h2 className="mb-4 font-medium text-base text-foreground">
                   Simulation Frequency
                 </h2>
                 <div className="flex flex-col gap-2">
                   {["Manual only", "Daily", "Weekly"].map((option, index) => (
                     <label
                       key={option}
-                      className="flex items-center gap-3 cursor-pointer"
+                      className="flex cursor-pointer items-center gap-3"
                     >
-                      <div className={cn(
-                        "flex size-4 items-center justify-center border rounded-full",
-                        index === 1 ? "border-primary bg-primary" : "border-accent-foreground",
-                      )}>
-                        {index === 1 && <div className="size-1.5 bg-white rounded-full" />}
+                      <div
+                        className={cn(
+                          "flex size-4 items-center justify-center rounded-full border",
+                          index === 1
+                            ? "border-primary bg-primary"
+                            : "border-accent-foreground",
+                        )}
+                      >
+                        {index === 1 && (
+                          <div className="size-1.5 rounded-full bg-white" />
+                        )}
                       </div>
                       <span className="font-light text-foreground text-sm">
                         {option}
@@ -412,7 +471,7 @@ export default () => {
               </div>
 
               <div className="border border-accent-foreground bg-background-rich p-4">
-                <h2 className="mb-3 font-medium text-foreground text-base">
+                <h2 className="mb-3 font-medium text-base text-foreground">
                   Purchase Persona
                 </h2>
                 <select className="w-full border border-accent-foreground bg-background px-3 py-2 text-foreground text-sm focus:border-primary focus:outline-none">
@@ -431,12 +490,12 @@ export default () => {
               <div className="border border-accent-foreground bg-background-rich p-6">
                 <div className="flex items-start justify-between">
                   <div>
-                    <p className="font-medium text-foreground text-base">
+                    <p className="font-medium text-base text-foreground">
                       Compete Plan
                     </p>
-                    <p className="font-semibold text-primary text-2xl mt-1">
+                    <p className="mt-1 font-semibold text-2xl text-primary">
                       $149
-                      <span className="font-light text-foreground-dimmed text-base">
+                      <span className="font-light text-base text-foreground-dimmed">
                         /mo
                       </span>
                     </p>
@@ -447,20 +506,34 @@ export default () => {
                 </div>
                 <div className="mt-4 flex flex-col gap-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="font-light text-foreground-dimmed">Products used</span>
-                    <span className="font-medium text-foreground">10 / 100</span>
+                    <span className="font-light text-foreground-dimmed">
+                      Products used
+                    </span>
+                    <span className="font-medium text-foreground">
+                      10 / 100
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-light text-foreground-dimmed">Billing cycle</span>
+                    <span className="font-light text-foreground-dimmed">
+                      Billing cycle
+                    </span>
                     <span className="font-medium text-foreground">Monthly</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-light text-foreground-dimmed">Next billing date</span>
-                    <span className="font-medium text-foreground">April 6, 2026</span>
+                    <span className="font-light text-foreground-dimmed">
+                      Next billing date
+                    </span>
+                    <span className="font-medium text-foreground">
+                      April 6, 2026
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-light text-foreground-dimmed">Payment method</span>
-                    <span className="font-medium text-foreground">Visa ending in 4242</span>
+                    <span className="font-light text-foreground-dimmed">
+                      Payment method
+                    </span>
+                    <span className="font-medium text-foreground">
+                      Visa ending in 4242
+                    </span>
                   </div>
                 </div>
                 <div className="mt-4 flex gap-2">
@@ -502,7 +575,7 @@ export default () => {
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="bg-success/10 px-1.5 py-0.5 text-success text-xs font-medium">
+                        <span className="bg-success/10 px-1.5 py-0.5 font-medium text-success text-xs">
                           {invoice.status}
                         </span>
                         <button

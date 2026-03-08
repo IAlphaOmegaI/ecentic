@@ -6,7 +6,17 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
+      "env": [
+        "BETTER_AUTH_SECRET",
+        "DATABASE_URL",
+        "UPLOADTHING_TOKEN",
+        "BETTER_AUTH_BASE_URL",
+        "RESEND_API_KEY",
+        "FROM_EMAIL",
+        "SHOPIFY_API_KEY",
+        "SHOPIFY_API_SECRET"
+      ]
     },
     "typecheck": {
       "dependsOn": ["^typecheck"]

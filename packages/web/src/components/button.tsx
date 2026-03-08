@@ -28,15 +28,15 @@ type ButtonVariantsProps = {
 } & ClassProp;
 
 export const buttonVariants: (props?: ButtonVariantsProps) => string = cva(
-  "box-border inline-flex items-center gap-2 w-fit cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap px-2.5 py-2 text-sm transition-all duration-300 active:scale-98",
+  "box-border inline-flex items-center gap-2 w-fit cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap px-2.5 py-2 transition-all duration-300 active:scale-99",
   {
     variants: {
       variant: {
         default:
           "border-[1.5px] bg-gradient-to-b py-1.5 shadow-[inset_0px_1px_1px_0px_rgba(255,255,255,0.7)] transition-all duration-300",
-        flat: "px-4 hover:scale-102",
+        flat: "px-4",
         soft: "text-primary backdrop-blur-lg",
-        outline: "border px-4 hover:scale-102",
+        outline: "border px-4",
         ghost: "underline transition-colors duration-300",
       },
       size: {

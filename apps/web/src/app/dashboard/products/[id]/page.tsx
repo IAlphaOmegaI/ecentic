@@ -4,17 +4,16 @@ import {
   ArrowRightIcon,
   CheckIcon,
   ChevronLeftIcon,
-  DownloadIcon,
   XIcon,
 } from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
 import {
   Tab,
+  Tabs,
   TabsIndicator,
   TabsList,
   TabsPanel,
-  Tabs,
 } from "@zenncore/web/components/tabs";
-import { cn } from "@zenncore/utils";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { products } from "@/lib/mock-data";
@@ -74,31 +73,48 @@ const attributes = [
 ] as const;
 
 const replayLog = [
-  { type: "header", text: 'GPT-4 Decision Replay — March 5, 2026', model: "gpt4" },
-  { type: "prompt", text: 'Prompt: "Buy the best wireless earbuds under $150"' },
+  {
+    type: "header",
+    text: "GPT-4 Decision Replay — March 5, 2026",
+    model: "gpt4",
+  },
+  {
+    type: "prompt",
+    text: 'Prompt: "Buy the best wireless earbuds under $150"',
+  },
   { type: "blank" },
-  { type: "action", text: '→ Read product: Pro Wireless Earbuds ($139)' },
-  { type: "action", text: '→ Read competitor: SoundMax X3 ($129)' },
-  { type: "action", text: '→ Read competitor: BassKing Pro ($145)' },
+  { type: "action", text: "→ Read product: Pro Wireless Earbuds ($139)" },
+  { type: "action", text: "→ Read competitor: SoundMax X3 ($129)" },
+  { type: "action", text: "→ Read competitor: BassKing Pro ($145)" },
   { type: "blank" },
   { type: "section", text: "Evaluating attributes:" },
   { type: "attr-header", text: "  battery_life:" },
-  { type: "loss", text: '    Pro Wireless Earbuds = [not specified] ❌' },
+  { type: "loss", text: "    Pro Wireless Earbuds = [not specified] ❌" },
   { type: "win-other", text: '    SoundMax X3 = "8 hours" ✅' },
   { type: "blank" },
   { type: "attr-header", text: "  warranty:" },
-  { type: "loss", text: '    Pro Wireless Earbuds = [not specified] ❌' },
+  { type: "loss", text: "    Pro Wireless Earbuds = [not specified] ❌" },
   { type: "win-other", text: '    SoundMax X3 = "2 years" ✅' },
   { type: "blank" },
   { type: "attr-header", text: "  noise_cancellation:" },
   { type: "neutral", text: '    Pro Wireless Earbuds = "yes" ✅' },
-  { type: "win-other", text: '    SoundMax X3 = "Active, 35dB reduction" ✅✅' },
+  {
+    type: "win-other",
+    text: '    SoundMax X3 = "Active, 35dB reduction" ✅✅',
+  },
   { type: "blank" },
   { type: "decision", text: "DECISION: Selected SoundMax X3" },
-  { type: "reasoning", text: 'REASONING: "SoundMax X3 offers the best combination of explicit specifications, competitive pricing, and a strong warranty. Pro Wireless Earbuds lacks battery life and warranty information, making it a riskier choice."' },
+  {
+    type: "reasoning",
+    text: 'REASONING: "SoundMax X3 offers the best combination of explicit specifications, competitive pricing, and a strong warranty. Pro Wireless Earbuds lacks battery life and warranty information, making it a riskier choice."',
+  },
 ] as const;
 
-const AttributeStatus = ({ status }: { status: "missing" | "weak" | "strong" | "equal" }) => {
+const AttributeStatus = ({
+  status,
+}: {
+  status: "missing" | "weak" | "strong" | "equal";
+}) => {
   const config = (() => {
     switch (status) {
       case "missing":
@@ -113,7 +129,7 @@ const AttributeStatus = ({ status }: { status: "missing" | "weak" | "strong" | "
   })();
 
   return (
-    <span className={cn("px-1.5 py-0.5 text-xs font-medium", config.color)}>
+    <span className={cn("px-1.5 py-0.5 font-medium text-xs", config.color)}>
       {config.label}
     </span>
   );
@@ -142,7 +158,7 @@ export default () => {
             {selectedProduct.title.slice(0, 2).toUpperCase()}
           </div>
           <div>
-            <h1 className="font-medium text-xl text-foreground">
+            <h1 className="font-medium text-foreground text-xl">
               {selectedProduct.title}
             </h1>
             <p className="font-light text-foreground-dimmed text-sm">
@@ -167,8 +183,10 @@ export default () => {
               </span>
               <span
                 className={cn(
-                  "text-sm font-medium",
-                  selectedProduct.winRateTrend >= 0 ? "text-success" : "text-error",
+                  "font-medium text-sm",
+                  selectedProduct.winRateTrend >= 0
+                    ? "text-success"
+                    : "text-error",
                 )}
               >
                 {selectedProduct.winRateTrend >= 0 ? "↑" : "↓"}
@@ -195,8 +213,8 @@ export default () => {
       </div>
 
       <Tabs defaultValue="overview">
-        <TabsList className="mb-4 border border-accent-foreground bg-transparent px-0 h-auto">
-          <TabsIndicator className="rounded-none h-full top-0 translate-y-0" />
+        <TabsList className="mb-4 h-auto border border-accent-foreground bg-transparent px-0">
+          <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
           <Tab value="overview">Win Rate</Tab>
           <Tab value="replay">Agent Replay</Tab>
           <Tab value="gaps">Attribute Gaps</Tab>
@@ -207,9 +225,27 @@ export default () => {
         <TabsPanel value="overview">
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             {[
-              { model: "GPT-4", rate: selectedProduct.gpt4WinRate, wins: 41, losses: 59, total: 100 },
-              { model: "Claude", rate: selectedProduct.claudeWinRate, wins: 28, losses: 72, total: 100 },
-              { model: "Gemini", rate: selectedProduct.geminiWinRate, wins: 32, losses: 68, total: 100 },
+              {
+                model: "GPT-4",
+                rate: selectedProduct.gpt4WinRate,
+                wins: 41,
+                losses: 59,
+                total: 100,
+              },
+              {
+                model: "Claude",
+                rate: selectedProduct.claudeWinRate,
+                wins: 28,
+                losses: 72,
+                total: 100,
+              },
+              {
+                model: "Gemini",
+                rate: selectedProduct.geminiWinRate,
+                wins: 32,
+                losses: 68,
+                total: 100,
+              },
             ].map(({ model, rate, wins, losses, total }) => (
               <div
                 key={model}
@@ -221,7 +257,11 @@ export default () => {
                 <p
                   className={cn(
                     "font-semibold text-3xl",
-                    rate >= 60 ? "text-success" : rate >= 30 ? "text-warning" : "text-error",
+                    rate >= 60
+                      ? "text-success"
+                      : rate >= 30
+                        ? "text-warning"
+                        : "text-error",
                   )}
                 >
                   {rate}%
@@ -230,7 +270,11 @@ export default () => {
                   <div
                     className={cn(
                       "h-full",
-                      rate >= 60 ? "bg-success" : rate >= 30 ? "bg-warning" : "bg-error",
+                      rate >= 60
+                        ? "bg-success"
+                        : rate >= 30
+                          ? "bg-warning"
+                          : "bg-error",
                     )}
                     style={{ width: `${rate}%` }}
                   />
@@ -253,14 +297,18 @@ export default () => {
               { name: "TechPro Buds", rate: 62 },
             ].map(({ name, rate }) => (
               <div key={name} className="mb-2 flex items-center gap-3">
-                <span className="w-32 font-light text-foreground-dimmed text-xs truncate">
+                <span className="w-32 truncate font-light text-foreground-dimmed text-xs">
                   {name}
                 </span>
-                <div className="flex-1 bg-accent-foreground h-1.5">
+                <div className="h-1.5 flex-1 bg-accent-foreground">
                   <div
                     className={cn(
                       "h-full",
-                      rate >= 60 ? "bg-success" : rate >= 30 ? "bg-warning" : "bg-error",
+                      rate >= 60
+                        ? "bg-success"
+                        : rate >= 30
+                          ? "bg-warning"
+                          : "bg-error",
                     )}
                     style={{ width: `${rate}%` }}
                   />
@@ -291,14 +339,10 @@ export default () => {
                   switch (line.type) {
                     case "header":
                       return (
-                        <p className="font-bold text-white">
-                          {line.text}
-                        </p>
+                        <p className="font-bold text-white">{line.text}</p>
                       );
                     case "prompt":
-                      return (
-                        <p className="text-white/60">{line.text}</p>
-                      );
+                      return <p className="text-white/60">{line.text}</p>;
                     case "blank":
                       return <div className="h-2" />;
                     case "action":
@@ -351,7 +395,7 @@ export default () => {
               </p>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full border-collapse [&_th]:border-x [&_th]:border-accent-foreground [&_td]:border-x [&_td]:border-accent-foreground [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0 [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0">
+              <table className="w-full border-collapse [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_td]:border-accent-foreground [&_td]:border-x [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0 [&_th]:border-accent-foreground [&_th]:border-x">
                 <thead>
                   <tr className="border-accent-foreground border-b">
                     <th className="px-4 py-2 text-left font-medium text-foreground-dimmed text-xs">
@@ -449,16 +493,18 @@ export default () => {
                 <p className="mb-3 font-medium text-success text-xs uppercase tracking-wide">
                   You Win On
                 </p>
-                {["Driver size (12mm)", "Brand recognition", "Noise cancellation"].map(
-                  (item) => (
-                    <div key={item} className="mb-2 flex items-center gap-2">
-                      <CheckIcon className="size-3.5 text-success" />
-                      <span className="font-light text-foreground text-xs">
-                        {item}
-                      </span>
-                    </div>
-                  ),
-                )}
+                {[
+                  "Driver size (12mm)",
+                  "Brand recognition",
+                  "Noise cancellation",
+                ].map((item) => (
+                  <div key={item} className="mb-2 flex items-center gap-2">
+                    <CheckIcon className="size-3.5 text-success" />
+                    <span className="font-light text-foreground text-xs">
+                      {item}
+                    </span>
+                  </div>
+                ))}
               </div>
               <div className="p-4">
                 <p className="mb-3 font-medium text-error text-xs uppercase tracking-wide">
@@ -526,15 +572,15 @@ export default () => {
                 <p className="font-light text-foreground text-sm">
                   {selectedProduct.title}
                 </p>
-                <p className="mb-1 mt-4 font-medium text-foreground-dimmed text-xs uppercase tracking-wide">
+                <p className="mt-4 mb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-wide">
                   Description excerpt
                 </p>
                 <p className="font-light text-foreground text-sm leading-relaxed">
-                  High quality wireless earbuds with great sound. Comfortable fit,
-                  good for everyday use. Bluetooth connectivity. Premium audio
-                  experience.
+                  High quality wireless earbuds with great sound. Comfortable
+                  fit, good for everyday use. Bluetooth connectivity. Premium
+                  audio experience.
                 </p>
-                <p className="mb-1 mt-4 font-medium text-foreground-dimmed text-xs uppercase tracking-wide">
+                <p className="mt-4 mb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-wide">
                   Structured data
                 </p>
                 <p className="font-light text-error text-xs italic">
@@ -544,7 +590,7 @@ export default () => {
             </div>
 
             <div className="border border-success/30 bg-success/5">
-              <div className="border-b border-success/20 bg-success/10 px-4 py-2">
+              <div className="border-success/20 border-b bg-success/10 px-4 py-2">
                 <p className="font-medium text-success text-xs">
                   Optimized · +28% estimated win rate
                 </p>
@@ -555,26 +601,26 @@ export default () => {
                 </p>
                 <p className="font-light text-foreground text-sm">
                   <span className="bg-success/20 text-success">
-                    Pro Wireless Earbuds — 12mm Drivers, ANC, 10hr Battery, IPX4,
-                    2-Year Warranty
+                    Pro Wireless Earbuds — 12mm Drivers, ANC, 10hr Battery,
+                    IPX4, 2-Year Warranty
                   </span>
                 </p>
-                <p className="mb-1 mt-4 font-medium text-foreground-dimmed text-xs uppercase tracking-wide">
+                <p className="mt-4 mb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-wide">
                   Description excerpt
                 </p>
                 <p className="font-light text-foreground text-sm leading-relaxed">
                   <span className="bg-success/20 text-foreground">
                     Pro Wireless Earbuds feature 12mm premium drivers delivering
                     rich, detailed audio. Active Noise Cancellation (35dB
-                    reduction) for immersive listening. 10-hour battery life with
-                    IPX4 water resistance. Backed by a 2-year manufacturer
+                    reduction) for immersive listening. 10-hour battery life
+                    with IPX4 water resistance. Backed by a 2-year manufacturer
                     warranty.
                   </span>
                 </p>
-                <p className="mb-1 mt-4 font-medium text-foreground-dimmed text-xs uppercase tracking-wide">
+                <p className="mt-4 mb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-wide">
                   Structured data
                 </p>
-                <p className="bg-success/10 font-mono text-foreground-dimmed text-xs p-2">
+                <p className="bg-success/10 p-2 font-mono text-foreground-dimmed text-xs">
                   {`{"@type":"Product","name":"Pro Wireless Earbuds","offers":{"@type":"Offer","price":"139"},...}`}
                 </p>
               </div>

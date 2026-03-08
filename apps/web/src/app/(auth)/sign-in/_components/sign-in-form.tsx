@@ -1,20 +1,25 @@
 "use client";
 
-import { ArrowRightIcon } from "@zenncore/icons";
-import { InferredForm, field } from "@zenncore/web/components/inferred-form";
+import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
+import { FieldLabel } from "@zenncore/web/components/form";
+import {
+  type FormEntries,
+  field,
+  type GenericForm,
+  InferredForm,
+} from "@zenncore/web/components/inferred-form";
+import { useToastManager } from "@zenncore/web/components/toast";
+import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
-import {
-  spring,
-  staggerContainer,
-  staggerItem,
-  tapScale,
-} from "@/lib/animations";
+import { Motion } from "@/components/motion";
+import { Spring, Stagger } from "@/lib/animations";
+import * as Authentication from "@/server/app/authentication";
 
 const config = {
   email: field({
@@ -27,43 +32,59 @@ const config = {
     shape: "text",
     type: "password",
     validator: z.string().min(1),
-    label: "Password",
+    // @ts-expect-error - label is a function
+    label: () => (
+      <div className="flex items-center justify-between">
+        <FieldLabel>Password</FieldLabel>
+        <Link
+          href="/forgot-password"
+          className="self-end font-light text-primary text-sm hover:underline"
+        >
+          Forgot password?
+        </Link>
+      </div>
+    ),
     placeholder: "Your password",
   }),
-};
+} satisfies GenericForm;
 
-export const SignInForm = () => {
+export namespace SignInForm {
+  export type Props = {
+    className?: string;
+  };
+}
+export const SignInForm = ({ className }: SignInForm.Props) => {
   const router = useRouter();
-  const [handleSubmit, isPending] = useAsyncAction(async () => {
-    router.push("/dashboard");
-  });
+  const toast = useToastManager();
+
+  const [handleSubmit, isPending] = useAsyncAction(
+    async (data: FormEntries<typeof config>) => {
+      const result = await Authentication.signIn(data);
+
+      if (!result.success) {
+        toast.add({
+          title: "Error",
+          description: result.error.message,
+          type: "error",
+        });
+        return;
+      }
+
+      router.push("/dashboard");
+    },
+  );
 
   return (
-    <motion.div
-      variants={staggerContainer(0.07)}
-      initial="hidden"
-      animate="visible"
-      transition={{ delayChildren: 0.18 }}
-    >
-      <motion.div
-        className="mb-4 flex flex-col gap-2"
-        variants={staggerContainer(0.06)}
+    <Motion.Stagger stagger={0.07} delay={0.18}>
+      <Motion.Stagger
+        stagger={0.06}
+        className={cn("mb-4 flex flex-col gap-2", className)}
       >
-        <motion.button
-          type="button"
-          className="flex w-full items-center justify-center gap-3 border border-accent-foreground bg-background-rich px-4 py-2.5 text-foreground text-sm transition-colors hover:bg-background-dimmed"
-          variants={staggerItem}
-          {...tapScale}
-        >
+        <Button variant="soft" color="emphasis" className="w-full">
           <Image src="/images/google.svg" alt="Google" width={16} height={16} />
           Continue with Google
-        </motion.button>
-        <motion.button
-          type="button"
-          className="flex w-full items-center justify-center gap-3 border border-accent-foreground bg-[#96BF48] px-4 py-2.5 text-sm text-white transition-colors hover:bg-[#85a83e]"
-          variants={staggerItem}
-          {...tapScale}
-        >
+        </Button>
+        <Button variant="flat" color="success" className="w-full">
           <Image
             src="/images/shopify.svg"
             alt="Shopify"
@@ -71,38 +92,28 @@ export const SignInForm = () => {
             height={16}
           />
           Continue with Shopify
-        </motion.button>
-      </motion.div>
+        </Button>
+      </Motion.Stagger>
 
       <motion.div
         className="relative mb-4 flex items-center gap-3"
-        variants={staggerItem}
+        variants={Stagger.Item}
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
-        transition={{ ...spring.gentle, delay: 0.3 }}
+        transition={{ ...Spring.Gentle, delay: 0.3 }}
       >
         <div className="h-px flex-1 bg-accent-foreground" />
-        <span className="font-light text-foreground-dimmed text-xs">or</span>
+        <span className="font-light text-foreground-dimmed">or</span>
         <div className="h-px flex-1 bg-accent-foreground" />
       </motion.div>
 
-      <motion.div variants={staggerItem}>
+      <Motion.Item>
         <InferredForm
           config={config}
           onSubmit={handleSubmit}
           className="flex flex-col gap-3"
         >
-          <Link
-            href="/forgot-password"
-            className="self-end font-light text-primary text-xs hover:underline"
-          >
-            Forgot password?
-          </Link>
-          <motion.div
-            whileHover={{ y: -1 }}
-            whileTap={{ scale: 0.97 }}
-            transition={spring.snappy}
-          >
+          <Motion.Tap whileHover={{ y: -1 }} transition={Spring.Snappy}>
             <Button
               type="submit"
               variant="flat"
@@ -111,11 +122,15 @@ export const SignInForm = () => {
               className="mt-1 flex w-full items-center justify-center gap-2 py-2.5 font-medium text-sm"
             >
               {isPending ? "Signing in..." : "Sign In"}
-              {!isPending && <ArrowRightIcon className="size-4" />}
+              {isPending ? (
+                <LoaderIcon className="size-4 animate-spin" />
+              ) : (
+                <ArrowRightIcon className="size-4" />
+              )}
             </Button>
-          </motion.div>
+          </Motion.Tap>
         </InferredForm>
-      </motion.div>
-    </motion.div>
+      </Motion.Item>
+    </Motion.Stagger>
   );
 };

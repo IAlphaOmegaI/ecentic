@@ -1,76 +1,89 @@
 import type { Transition, Variants } from "motion/react";
 
-export const spring = {
-  snappy: { type: "spring", stiffness: 320, damping: 28 } as Transition,
-  gentle: { type: "spring", stiffness: 200, damping: 24 } as Transition,
-  bounce: { type: "spring", stiffness: 400, damping: 20 } as Transition,
+export const Spring = {
+  Snappy: { type: "spring", stiffness: 320, damping: 28 } satisfies Transition,
+  Gentle: { type: "spring", stiffness: 200, damping: 24 } satisfies Transition,
+  Bounce: { type: "spring", stiffness: 400, damping: 20 } satisfies Transition,
 };
 
-export const fadeInUp: Variants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { type: "spring", stiffness: 320, damping: 28 },
-  },
+export const Fade = {
+  Up: {
+    hidden: { opacity: 0, y: 12 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { type: "spring", stiffness: 320, damping: 28 },
+    },
+  } as Variants,
+  Left: {
+    hidden: { opacity: 0, x: -24 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { type: "spring", stiffness: 280, damping: 26 },
+    },
+  } as Variants,
+  Right: {
+    hidden: { opacity: 0, x: 24 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { type: "spring", stiffness: 280, damping: 26 },
+    },
+  } as Variants,
 };
 
-export const fadeInLeft: Variants = {
-  hidden: { opacity: 0, x: -24 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { type: "spring", stiffness: 280, damping: 26 },
-  },
+export const Stagger = {
+  Container: (stagger = 0.06): Variants => ({
+    hidden: {},
+    visible: { transition: { staggerChildren: stagger, delayChildren: 0 } },
+  }),
+  Item: {
+    hidden: { opacity: 0, y: 10 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { type: "spring", stiffness: 320, damping: 28 },
+    },
+  } as Variants,
 };
 
-export const fadeInRight: Variants = {
-  hidden: { opacity: 0, x: 24 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { type: "spring", stiffness: 280, damping: 26 },
-  },
+export const Scale = {
+  In: {
+    hidden: { opacity: 0, scale: 0.94 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: { type: "spring", stiffness: 320, damping: 28 },
+    },
+  } as Variants,
 };
 
-export const staggerContainer = (stagger = 0.06): Variants => ({
-  hidden: {},
-  visible: { transition: { staggerChildren: stagger, delayChildren: 0 } },
-});
-
-export const staggerItem: Variants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { type: "spring", stiffness: 320, damping: 28 },
-  },
+export const Table = {
+  Row: {
+    hidden: { opacity: 0, x: -6 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { type: "spring", stiffness: 320, damping: 28 },
+    },
+  } as Variants,
 };
 
-export const tableRow: Variants = {
-  hidden: { opacity: 0, x: -6 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { type: "spring", stiffness: 320, damping: 28 },
-  },
-};
-
-export const scaleIn: Variants = {
-  hidden: { opacity: 0, scale: 0.94 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: { type: "spring", stiffness: 320, damping: 28 },
-  },
-};
-
-export const tapScale = {
+export const TapScale = {
   whileTap: { scale: 0.97 },
-  transition: { type: "spring", stiffness: 400, damping: 25 },
+  transition: {
+    type: "spring",
+    stiffness: 400,
+    damping: 25,
+  } satisfies Transition,
 };
 
-export const hoverLift = {
+export const HoverLift = {
   whileHover: { y: -2 },
-  transition: { type: "spring", stiffness: 400, damping: 25 },
+  transition: {
+    type: "spring",
+    stiffness: 400,
+    damping: 25,
+  } satisfies Transition,
 };

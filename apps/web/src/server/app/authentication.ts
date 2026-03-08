@@ -1,15 +1,30 @@
 "use server";
 import { type Result, resultify } from "@zenncore/utils";
+import { eq } from "drizzle-orm";
 import { cookies, headers } from "next/headers";
 
+import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
 import { withContext } from "../utils/context";
+import { Environment } from "../utils/environment";
 import {
   InvalidCredentialsError,
   NotFoundError,
   type UnauthenticatedError,
 } from "../utils/error";
 import * as User from "./user";
+
+const baseUrl = process.env.BETTER_AUTH_BASE_URL;
+
+const parseName = (fullName: string): { name: string; surname: string } => {
+  const trimmed = fullName.trim();
+  const spaceIndex = trimmed.indexOf(" ");
+  if (spaceIndex === -1) return { name: trimmed, surname: trimmed };
+  return {
+    name: trimmed.slice(0, spaceIndex),
+    surname: trimmed.slice(spaceIndex + 1).trim() || trimmed,
+  };
+};
 
 export const signIn = withContext(
   async (context, { email, password }: { email: string; password: string }) => {
@@ -144,14 +159,84 @@ export const getProxiedCurrentUser = withContext(async () => {
     };
   }
 
-  return JSON.parse(user) as User.Type;
+  const u = JSON.parse(user) as User.Type;
+
+  return {
+    success: true,
+    data: u,
+  };
 }, "Authentication.getProxiedCurrentUser");
 
 export const doesEmailExist = withContext(
   async (_, { email }: { email: string }) => {
-    const users = await User.find({ where: { email } });
+    const users = await User.find(Environment.SERVER, {
+      where: eq(schema.user.email, email),
+    });
+
     if (!users.success) return users;
     return { success: true, data: users.data.length > 0 };
   },
   "Authentication.getDoesEmailExist",
+);
+
+export const signUp = withContext(
+  async (
+    context,
+    payload: {
+      email: string;
+      password: string;
+      fullName: string;
+      role?: string;
+    },
+  ): Promise<Result<{ message: string }, Error>> => {
+    const { name, surname } = parseName(payload.fullName);
+
+    const result = await resultify(
+      async () =>
+        await context.auth.signUpEmail({
+          body: {
+            name,
+            surname,
+            email: payload.email,
+            password: payload.password,
+            ...(payload.role !== undefined && { role: payload.role }),
+            callbackURL: `${baseUrl}/onboarding/connect`,
+          },
+        }),
+    );
+
+    if (!result.success) {
+      return {
+        success: false,
+        error: new InvalidCredentialsError(
+          result.error?.message ?? "Sign up failed",
+          { cause: result.error },
+        ),
+      };
+    }
+
+    return {
+      success: true,
+      data: {
+        message:
+          "Account created. Please check your email to verify your address.",
+      },
+    };
+  },
+  "Authentication.signUp",
+);
+
+export const verifyEmail = withContext(
+  async (
+    _context,
+    token: string,
+  ): Promise<Result<{ redirectUrl: string }, Error>> => {
+    const callbackUrl = `${baseUrl}/onboarding/connect`;
+    const redirectUrl = `${baseUrl}/api/auth/verify-email?token=${encodeURIComponent(token)}&callbackURL=${encodeURIComponent(callbackUrl)}`;
+    return {
+      success: true,
+      data: { redirectUrl },
+    };
+  },
+  "Authentication.verifyEmail",
 );

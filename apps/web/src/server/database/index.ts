@@ -19,4 +19,11 @@ const client = postgres(process.env.DATABASE_URL, {
 export const db = drizzle(client, { schema });
 
 export { schema };
-export type { account, session, user, verification } from "./schema";
+export type {
+  account,
+  session,
+  user,
+  verification,
+  store,
+  product,
+} from "./schema";

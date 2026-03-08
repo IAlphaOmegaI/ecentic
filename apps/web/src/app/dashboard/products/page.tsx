@@ -31,7 +31,7 @@ const StatusBadge = ({
   })();
 
   return (
-    <span className={cn("px-1.5 py-0.5 text-xs font-medium", styles)}>
+    <span className={cn("px-1.5 py-0.5 font-medium text-xs", styles)}>
       {label}
     </span>
   );
@@ -41,7 +41,7 @@ export default () => (
   <div className="p-6">
     <div className="mb-6 flex items-center justify-between">
       <div>
-        <h1 className="font-medium text-xl text-foreground">Products</h1>
+        <h1 className="font-medium text-foreground text-xl">Products</h1>
         <p className="font-light text-foreground-dimmed text-sm">
           {products.length} products · Last simulated 30 minutes ago
         </p>
@@ -64,7 +64,7 @@ export default () => (
     </div>
 
     <div className="mb-4 flex flex-wrap items-center gap-2">
-      <div className="flex flex-1 items-center gap-2 border border-accent-foreground bg-background-rich px-3 py-1.5 min-w-48">
+      <div className="flex min-w-48 flex-1 items-center gap-2 border border-accent-foreground bg-background-rich px-3 py-1.5">
         <svg
           className="size-3.5 text-foreground-dimmed"
           viewBox="0 0 16 16"
@@ -106,7 +106,7 @@ export default () => (
 
     <div className="border border-accent-foreground bg-background-rich">
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse [&_th]:border-x [&_th]:border-accent-foreground [&_td]:border-x [&_td]:border-accent-foreground [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0 [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0">
+        <table className="w-full border-collapse [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_td]:border-accent-foreground [&_td]:border-x [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0 [&_th]:border-accent-foreground [&_th]:border-x">
           <thead>
             <tr className="border-accent-foreground border-b">
               <th className="w-10 px-4 py-3">
@@ -142,7 +142,7 @@ export default () => (
             {products.map((product) => (
               <tr
                 key={product._id}
-                className="border-accent-foreground border-b last:border-b-0 hover:bg-background-dimmed/30 transition-colors"
+                className="border-accent-foreground border-b transition-colors last:border-b-0 hover:bg-background-dimmed/30"
               >
                 <td className="px-4 py-3">
                   <input
@@ -160,7 +160,7 @@ export default () => (
                       {product.title.slice(0, 2).toUpperCase()}
                     </div>
                     <div>
-                      <p className="font-medium text-foreground text-sm group-hover:text-primary transition-colors">
+                      <p className="font-medium text-foreground text-sm transition-colors group-hover:text-primary">
                         {product.title}
                       </p>
                       <p className="font-light text-foreground-dimmed text-xs">
@@ -174,7 +174,7 @@ export default () => (
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-1.5">
-                    <div className="w-12 bg-accent-foreground h-1.5">
+                    <div className="h-1.5 w-12 bg-accent-foreground">
                       <div
                         className={cn(
                           "h-full",
@@ -204,7 +204,7 @@ export default () => (
                 <td className="px-4 py-3">
                   <span
                     className={cn(
-                      "text-xs font-medium",
+                      "font-medium text-xs",
                       product.winRate > product.competitorWinRate
                         ? "text-success"
                         : "text-error",
@@ -216,7 +216,7 @@ export default () => (
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-1.5">
-                    <div className="w-10 bg-accent-foreground h-1">
+                    <div className="h-1 w-10 bg-accent-foreground">
                       <div
                         className={cn(
                           "h-full",
@@ -234,7 +234,7 @@ export default () => (
                     </span>
                   </div>
                 </td>
-                <td className="px-4 py-3 font-light text-foreground-dimmed text-xs whitespace-nowrap">
+                <td className="whitespace-nowrap px-4 py-3 font-light text-foreground-dimmed text-xs">
                   {product.lastSimulated}
                 </td>
                 <td className="px-4 py-3">
@@ -243,7 +243,7 @@ export default () => (
                 <td className="px-4 py-3">
                   <Link
                     href={`/dashboard/products/${product._id}`}
-                    className="flex items-center gap-1 font-light text-primary text-xs hover:underline whitespace-nowrap"
+                    className="flex items-center gap-1 whitespace-nowrap font-light text-primary text-xs hover:underline"
                   >
                     View <ArrowRightIcon className="size-3" />
                   </Link>

@@ -4,7 +4,7 @@ import Logo from "@/public/images/footer.png";
 import WordMark from "@/public/images/wordmark.svg";
 
 export const Footer = () => (
-  <section className="relative -left-[calc(50vw-50%)] w-screen p-1 h-screen">
+  <section className="relative -left-[calc(50vw-50%)] h-screen w-screen p-1">
     <div className="h-full overflow-hidden rounded-xl border-accent-foreground border-y bg-linear-to-t from-primary to-primary/20">
       <div className="mx-auto flex h-full max-w-6xl flex-col items-center justify-center gap-6 p-6 pb-0 md:gap-12 md:p-12 md:pb-0">
         <Image src={WordMark} alt="WordMark" className="w-46" />
@@ -22,7 +22,7 @@ export const Footer = () => (
         >
           Get your free Win Rate Report
         </Button>
-        <div className="relative w-full flex-1 transition-transform duration-500 ease-out hover:scale-[1.02] origin-bottom">
+        <div className="relative w-full flex-1 origin-bottom transition-transform duration-500 ease-out hover:scale-[1.02]">
           <Image
             src={Logo}
             alt="Logo"

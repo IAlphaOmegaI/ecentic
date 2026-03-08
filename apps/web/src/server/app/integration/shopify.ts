@@ -1,0 +1,109 @@
+"use server";
+
+import type { Result } from "@zenncore/utils";
+import { withAuthentication } from "../../utils/authentication";
+import { Environment } from "../../utils/environment";
+import { parse, request } from "../../utils/http";
+import * as Product from "../product";
+import * as Store from "../store";
+
+type ShopifyProduct = {
+  id: number;
+  title: string;
+  body_html: string;
+  handle: string;
+  status: string;
+  variants: {
+    id: number;
+    price: string;
+    compare_at_price: string | null;
+    sku: string;
+  }[];
+  images: { id: number; src: string }[];
+};
+
+type ShopifyProductsResponse = {
+  products: ShopifyProduct[];
+};
+
+const API_VERSION = "2024-10";
+
+export const syncProducts = withAuthentication(
+  async (
+    context,
+    { storeId }: { storeId: string },
+  ): Promise<Result<number, Error>> => {
+    const store = await Store.get(Environment.SERVER, storeId);
+    if (!store.success) return store;
+    if (!store.data)
+      return { success: false, error: new Error("Store not found") };
+
+    const { domain, accessToken } = store.data;
+    if (!accessToken)
+      return { success: false, error: new Error("Missing Shopify access token") };
+
+    await Store.update(Environment.SERVER, storeId, { status: "syncing" });
+
+    const all: ShopifyProduct[] = [];
+    const limit = 250;
+    const maxPages = 10;
+    let url: string | null = `${domain}/admin/api/${API_VERSION}/products.json?limit=${limit}`;
+
+    for (const _ of Array.from({ length: maxPages })) {
+      if (!url) break;
+
+      const response = await request(url, {
+        method: "GET",
+        headers: {
+          "X-Shopify-Access-Token": accessToken,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.success) break;
+
+      const parsed = await parse<ShopifyProductsResponse>(response);
+      if (!parsed.success) break;
+
+      all.push(...parsed.data.products);
+
+      url = (() => {
+        const link = response.data.headers.get("Link") ?? "";
+        const next = link.match(/<([^>]+)>;\s*rel="next"/);
+        return next?.[1] ?? null;
+      })();
+    }
+
+    const results = await Promise.all(
+      all.map((item) => {
+        const variant = item.variants[0];
+        return Product.create(Environment.SERVER, {
+          storeId,
+          userId: context.session.user.id,
+          externalId: String(item.id),
+          title: item.title,
+          description: item.body_html,
+          price: variant?.price ?? null,
+          compareAtPrice: variant?.compare_at_price ?? null,
+          currency: "USD",
+          images: JSON.stringify(item.images.map((image) => image.src)),
+          url: `${domain}/products/${item.handle}`,
+          sku: variant?.sku || null,
+          status: item.status === "active" ? "active" : "draft",
+          rawData: JSON.stringify(item),
+          syncedAt: new Date(),
+        });
+      }),
+    );
+
+    const imported = results.filter((result) => result.success).length;
+
+    await Store.update(Environment.SERVER, storeId, {
+      status: "connected",
+      lastSyncedAt: new Date(),
+    });
+
+    return { success: true, data: imported };
+  },
+  "Shopify.syncProducts",
+);

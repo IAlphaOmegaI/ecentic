@@ -19,7 +19,7 @@ export const BlindSpot = () => (
         it.
       </p>
     </div>
-    <div className="grid bg-background-dimmed md:grid-cols-2 border-b border-accent-foreground">
+    <div className="grid border-accent-foreground border-b bg-background-dimmed md:grid-cols-2">
       <div className="flex flex-col items-center justify-center p-4">
         <p className="font-light text-primary text-xl">What Humans See</p>
         <Image src={Product} alt="Hero" className="w-full" />

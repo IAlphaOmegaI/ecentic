@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export const Topbar = () => (
   <header className="flex h-14 shrink-0 items-center justify-between border-accent-foreground border-b bg-background-rich px-5">
-    <div className="flex items-center gap-2 flex-1 max-w-md">
+    <div className="flex max-w-md flex-1 items-center gap-2">
       <div className="flex flex-1 items-center gap-2 border border-accent-foreground bg-background px-3 py-1.5">
         <svg
           className="size-3.5 text-foreground-dimmed"
@@ -49,14 +49,14 @@ export const Topbar = () => (
             strokeWidth="1.2"
           />
         </svg>
-        <span className="absolute right-1 top-1 flex size-1.5 items-center justify-center bg-primary text-white">
+        <span className="absolute top-1 right-1 flex size-1.5 items-center justify-center bg-primary text-white">
           <span className="sr-only">3 unread notifications</span>
         </span>
       </button>
 
       <Link
         href="/dashboard/settings/billing"
-        className="border border-primary/30 bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs hover:bg-primary/20 transition-colors"
+        className="border border-primary/30 bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs transition-colors hover:bg-primary/20"
       >
         Compete
       </Link>

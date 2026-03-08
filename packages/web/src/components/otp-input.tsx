@@ -1,9 +1,9 @@
 "use client";
 
-import * as React from "react";
-import { OTPInput, OTPInputContext } from "input-otp";
-import { cn, type ClassList } from "@zenncore/utils";
 import { MinusIcon } from "@zenncore/icons";
+import { type ClassList, cn } from "@zenncore/utils";
+import { OTPInput, OTPInputContext } from "input-otp";
+import * as React from "react";
 
 export const InputOTP = ({
   className,
@@ -76,7 +76,7 @@ export const InputOTPSlot = ({
       data-slot="input-otp-slot"
       data-active={isActive}
       className={cn(
-        "relative flex items-center justify-center size-12 first:border-l border-y border-r border-accent-foreground text-base text-foreground outline-none transition-colors data-[active=true]:z-10 data-[active=true]:border-primary aria-invalid:border-error data-[active=true]:aria-invalid:border-error",
+        "relative flex items-center justify-center size-12 first:border-l border-y border-r border-accent-foreground text-base text-foreground outline-none transition-colors data-[active=true]:z-10 data-[active=true]:outline-offset-2 data-[active=true]:outline data-[active=true]:outline-primary aria-invalid:border-error data-[active=true]:aria-invalid:border-error",
         className,
       )}
       {...props}

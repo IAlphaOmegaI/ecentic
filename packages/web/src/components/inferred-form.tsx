@@ -36,6 +36,12 @@ import {
   Form,
 } from "./form";
 import { NumberField } from "./number-field";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "./otp-input";
 import { Radio, RadioGroup } from "./radio";
 import {
   Select,
@@ -46,12 +52,6 @@ import {
   SelectValue,
 } from "./select";
 import { TextField, TextFieldInput, TextFieldMaskToggle } from "./text-field";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSeparator,
-  InputOTPSlot,
-} from "./otp-input";
 
 type Interface = {
   text: InterfaceValue<z.ZodString, TextField.Props>;
@@ -115,12 +115,7 @@ type Interface = {
         Extract<FileUpload.Props, { mode: "multiple" }>
       >;
   checkbox: InterfaceValue<z.ZodBoolean, Checkbox.Props>;
-  otp: InterfaceValue<
-    z.ZodString,
-    InputOTP.Props & {
-      length: number;
-    }
-  >;
+  otp: InterfaceValue<z.ZodString, InputOTP.Props>;
 };
 
 export type {
@@ -203,9 +198,9 @@ export const InferredFormField = <Field extends GenericField>(
           switch (props.shape) {
             case "otp": {
               return (
-                <InputOTP {...field} {...props} maxLength={props.length}>
+                <InputOTP {...field} {...props}>
                   <InputOTPGroup>
-                    {Array.from({ length: props.length }).map((_, index) => (
+                    {Array.from({ length: props.maxLength }).map((_, index) => (
                       // biome-ignore lint/suspicious/noArrayIndexKey: needed to handle the key
                       <InputOTPSlot key={`otp-slot-${index}`} index={index} />
                     ))}
@@ -351,17 +346,17 @@ export const InferredFormField = <Field extends GenericField>(
             }
 
             case "radio": {
-              const _values = (() => {
-                const isEnum =
-                  reduceValidator(props.validator) instanceof z.ZodEnum;
+              // const _values = (() => {
+              //   const isEnum =
+              //     reduceValidator(props.validator) instanceof z.ZodEnum;
 
-                if (isEnum)
-                  return reduceValidator(props.validator as z.ZodEnum).options;
+              //   if (isEnum)
+              //     return reduceValidator(props.validator as z.ZodEnum).options;
 
-                return Array.from(
-                  reduceValidator(props.validator as z.ZodLiteral).values,
-                );
-              })();
+              //   return Array.from(
+              //     reduceValidator(props.validator as z.ZodLiteral).values,
+              //   );
+              // })();
 
               return (
                 <RadioGroup
@@ -416,17 +411,20 @@ export const InferredFormField = <Field extends GenericField>(
 
         return (
           <Field className={cn("group", props.classList?.field)}>
-            {props?.label && (
-              <FieldLabel
-                className={cn(
-                  "font-semibold data-invalid:text-error",
-                  props.classList?.label,
-                )}
-              >
-                {props.label}
-                {isFieldRequired && " *"}
-              </FieldLabel>
-            )}
+            {props?.label &&
+              (typeof props.label === "function" ? (
+                props.label({ isFieldRequired, name })
+              ) : (
+                <FieldLabel
+                  className={cn(
+                    "data-invalid:text-error",
+                    props.classList?.label,
+                  )}
+                >
+                  {props.label}
+                  {isFieldRequired && " *"}
+                </FieldLabel>
+              ))}
             {element}
             <FieldError
               className={props.classList?.error}

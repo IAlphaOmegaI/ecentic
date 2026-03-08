@@ -184,6 +184,7 @@ export namespace FieldDescription {
 export const FieldError = ({
   children,
   className,
+  fallback = "",
   ...props
 }: FieldError.Props): JSX.Element => {
   const { error } = useField();
@@ -194,12 +195,14 @@ export const FieldError = ({
       className={createClassName("font-medium text-error text-sm", className)}
       {...props}
     >
-      {children ?? getErrorMessage(error)}
+      {children ?? getErrorMessage(error) ?? fallback}
     </FieldPrimitive.Error>
   );
 };
 export namespace FieldError {
-  export type Props = ComponentProps<typeof FieldPrimitive.Error>;
+  export type Props = ComponentProps<typeof FieldPrimitive.Error> & {
+    fallback?: string;
+  };
   export type State = FieldPrimitive.Error.State;
 }
 

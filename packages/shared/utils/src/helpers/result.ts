@@ -1,4 +1,4 @@
-export type Result<T = void, E = string> =
+export type Result<T = void, E = Error> =
   | (T extends void
       ? {
           success: true;

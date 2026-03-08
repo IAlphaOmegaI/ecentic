@@ -1,7 +1,6 @@
 // ../config/src/tsdown/config.ts
-import {
-  defineConfig
-} from "tsdown";
+import { defineConfig } from "tsdown";
+
 var mergeOptions = ({ preserveDirectives, ...options }, defaultOptions) => {
   return {
     ...defaultOptions,
@@ -9,8 +8,8 @@ var mergeOptions = ({ preserveDirectives, ...options }, defaultOptions) => {
     outputOptions: {
       ...defaultOptions.outputOptions,
       preserveModules: preserveDirectives,
-      ...options.outputOptions
-    }
+      ...options.outputOptions,
+    },
   };
 };
 var createTsdownConfig = (options = {}) => {
@@ -21,11 +20,11 @@ var createTsdownConfig = (options = {}) => {
       fixedExtension: false,
       skipNodeModulesBundle: true,
       external: ["react"],
-      ...flagOptions
+      ...flagOptions,
     };
-    return Array.isArray(options) ? options.map((options2) => mergeOptions(options2, defaultOptions)) : mergeOptions(options, defaultOptions);
+    return Array.isArray(options)
+      ? options.map((options2) => mergeOptions(options2, defaultOptions))
+      : mergeOptions(options, defaultOptions);
   });
 };
-export {
-  createTsdownConfig
-};
+export { createTsdownConfig };

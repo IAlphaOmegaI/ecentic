@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRightIcon, CheckIcon, XIcon } from "@zenncore/icons";
+import { CheckIcon, XIcon } from "@zenncore/icons";
 import {
   Tab,
   Tabs,
@@ -8,7 +8,6 @@ import {
   TabsList,
   TabsPanel,
 } from "@zenncore/web/components/tabs";
-import { cn } from "@zenncore/utils";
 import Link from "next/link";
 import { optimizations } from "@/lib/mock-data";
 
@@ -27,10 +26,18 @@ const typeLabel = (type: string) => {
   }
 };
 
-const pendingOptimizations = optimizations.filter((o) => o.status === "pending");
-const inProgressOptimizations = optimizations.filter((o) => o.status === "in_progress");
-const publishedOptimizations = optimizations.filter((o) => o.status === "published");
-const dismissedOptimizations = optimizations.filter((o) => o.status === "dismissed");
+const pendingOptimizations = optimizations.filter(
+  (o) => o.status === "pending",
+);
+const inProgressOptimizations = optimizations.filter(
+  (o) => o.status === "in_progress",
+);
+const publishedOptimizations = optimizations.filter(
+  (o) => o.status === "published",
+);
+const dismissedOptimizations = optimizations.filter(
+  (o) => o.status === "dismissed",
+);
 
 const OptimizationCard = ({
   optimization,
@@ -60,9 +67,11 @@ const OptimizationCard = ({
         </div>
         {"winRateBefore" in optimization && optimization.winRateBefore && (
           <p className="mt-1 font-light text-foreground-dimmed text-xs">
-            Before: {optimization.winRateBefore}% → After: {optimization.winRateAfter}%{" "}
+            Before: {optimization.winRateBefore}% → After:{" "}
+            {optimization.winRateAfter}%{" "}
             <span className="font-medium text-success">
-              (+{(optimization.winRateAfter ?? 0) - optimization.winRateBefore}%)
+              (+{(optimization.winRateAfter ?? 0) - optimization.winRateBefore}
+              %)
             </span>
           </p>
         )}
@@ -104,11 +113,12 @@ export default () => (
   <div className="p-6">
     <div className="mb-6 flex items-center justify-between">
       <div>
-        <h1 className="font-medium text-xl text-foreground">
+        <h1 className="font-medium text-foreground text-xl">
           Optimization Center
         </h1>
         <p className="font-light text-foreground-dimmed text-sm">
-          {pendingOptimizations.length} pending · {inProgressOptimizations.length} in progress
+          {pendingOptimizations.length} pending ·{" "}
+          {inProgressOptimizations.length} in progress
         </p>
       </div>
       <div className="flex items-center gap-2">
@@ -129,8 +139,8 @@ export default () => (
     </div>
 
     <Tabs defaultValue="pending">
-      <TabsList className="mb-4 border border-accent-foreground bg-transparent px-0 h-auto">
-        <TabsIndicator className="rounded-none h-full top-0 translate-y-0" />
+      <TabsList className="mb-4 h-auto border border-accent-foreground bg-transparent px-0">
+        <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
         <Tab value="pending">
           Pending{" "}
           <span className="ml-1 bg-white/20 px-1 text-xs">
@@ -187,9 +197,11 @@ export default () => (
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="h-1 w-24 bg-accent-foreground">
-                    <div className="h-full w-2/3 bg-primary animate-pulse" />
+                    <div className="h-full w-2/3 animate-pulse bg-primary" />
                   </div>
-                  <span className="font-light text-foreground-dimmed text-xs">67%</span>
+                  <span className="font-light text-foreground-dimmed text-xs">
+                    67%
+                  </span>
                 </div>
               </div>
             </div>
@@ -217,17 +229,21 @@ export default () => (
                       {optimization.publishedAt}
                     </span>
                   </div>
-                  {"winRateBefore" in optimization && optimization.winRateBefore && (
-                    <p className="mt-1 font-light text-foreground-dimmed text-xs">
-                      Win rate: {optimization.winRateBefore}% →{" "}
-                      <span className="font-medium text-foreground">
-                        {optimization.winRateAfter}%
-                      </span>{" "}
-                      <span className="font-medium text-success">
-                        (+{(optimization.winRateAfter ?? 0) - optimization.winRateBefore}%)
-                      </span>
-                    </p>
-                  )}
+                  {"winRateBefore" in optimization &&
+                    optimization.winRateBefore && (
+                      <p className="mt-1 font-light text-foreground-dimmed text-xs">
+                        Win rate: {optimization.winRateBefore}% →{" "}
+                        <span className="font-medium text-foreground">
+                          {optimization.winRateAfter}%
+                        </span>{" "}
+                        <span className="font-medium text-success">
+                          (+
+                          {(optimization.winRateAfter ?? 0) -
+                            optimization.winRateBefore}
+                          %)
+                        </span>
+                      </p>
+                    )}
                 </div>
                 <button
                   type="button"

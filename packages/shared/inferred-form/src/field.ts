@@ -1,6 +1,6 @@
 import type { ClassList, ValueOf } from "@zenncore/utils";
 import type { EmptyObject, Prettify } from "@zenncore/utils/types";
-import type { ComponentType } from "react";
+import type { ComponentType, ReactNode } from "react";
 import type * as z from "zod";
 import type { GenericInterface } from "./interface";
 import type { GenericProps, InferredProps, RefinedProps } from "./props";
@@ -34,7 +34,9 @@ export type InferredFieldConfig<
   defaultValue?: z.infer<Validator> | undefined;
 
   placeholder?: string;
-  label?: string;
+  label?:
+    | string
+    | ((props: { isFieldRequired: boolean; name: string }) => ReactNode);
   description?: string;
 
   classList?: Prettify<

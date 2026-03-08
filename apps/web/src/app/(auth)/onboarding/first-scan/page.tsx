@@ -1,43 +1,95 @@
 "use client";
 
-import { ArrowRightIcon, CheckIcon, LoaderIcon } from "@zenncore/icons";
-import { Button } from "@zenncore/web/components/button";
+import { ArrowRightIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
+import { Button } from "@zenncore/web/components/button";
+import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
-import { fadeInUp, spring, staggerContainer, staggerItem, scaleIn } from "@/lib/animations";
+import { Motion } from "@/components/motion";
+import { Spring, Stagger } from "@/lib/animations";
 
 type ScanPhase = "pre" | "running" | "complete";
 type ModelStatus = "queued" | "running" | "complete";
 type LogEntry = { id: number; model: string; message: string };
 
-const models = ["GPT-4", "Claude", "Gemini"] as const;
+const _models = ["GPT-4", "Claude", "Gemini"] as const;
 
 const logMessages = [
-  { model: "GPT-4", message: 'Evaluating "Pro Wireless Earbuds" vs "SoundMax X3"...' },
-  { model: "GPT-4", message: "Checking battery_life: Pro Earbuds = [not specified] ❌ | SoundMax = \"8 hours\" ✅" },
-  { model: "GPT-4", message: "Checking warranty: Pro Earbuds = [not specified] ❌ | SoundMax = \"2 years\" ✅" },
-  { model: "GPT-4", message: "DECISION: Selected SoundMax X3 (missing specs cost the win)" },
-  { model: "Claude", message: 'Evaluating "Pro Wireless Earbuds" vs "SoundMax X3"...' },
-  { model: "Claude", message: "Analyzing structured data completeness across candidates..." },
-  { model: "Claude", message: "DECISION: Selected SoundMax X3 (spec coverage: 78% vs 43%)" },
-  { model: "Gemini", message: 'Evaluating "Pro Wireless Earbuds" vs "BassKing Pro"...' },
-  { model: "Gemini", message: "Evaluating price-quality ratio and specification completeness..." },
-  { model: "Gemini", message: "DECISION: Selected BassKing Pro (stronger attribute coverage)" },
-  { model: "GPT-4", message: 'Evaluating "Bamboo Travel Mug" vs "GreenMug Pro"...' },
-  { model: "GPT-4", message: "Material specs: Bamboo Travel Mug = \"Organic bamboo, BPA-free\" ✅ | GreenMug = \"plastic\" ⚠️" },
-  { model: "GPT-4", message: "DECISION: Selected Bamboo Travel Mug (superior material specs)" },
-  { model: "Claude", message: 'Evaluating "Bamboo Travel Mug" vs "GreenMug Pro"...' },
-  { model: "Claude", message: "DECISION: Selected Bamboo Travel Mug (eco-credentials well documented)" },
+  {
+    model: "GPT-4",
+    message: 'Evaluating "Pro Wireless Earbuds" vs "SoundMax X3"...',
+  },
+  {
+    model: "GPT-4",
+    message:
+      'Checking battery_life: Pro Earbuds = [not specified] ❌ | SoundMax = "8 hours" ✅',
+  },
+  {
+    model: "GPT-4",
+    message:
+      'Checking warranty: Pro Earbuds = [not specified] ❌ | SoundMax = "2 years" ✅',
+  },
+  {
+    model: "GPT-4",
+    message: "DECISION: Selected SoundMax X3 (missing specs cost the win)",
+  },
+  {
+    model: "Claude",
+    message: 'Evaluating "Pro Wireless Earbuds" vs "SoundMax X3"...',
+  },
+  {
+    model: "Claude",
+    message: "Analyzing structured data completeness across candidates...",
+  },
+  {
+    model: "Claude",
+    message: "DECISION: Selected SoundMax X3 (spec coverage: 78% vs 43%)",
+  },
+  {
+    model: "Gemini",
+    message: 'Evaluating "Pro Wireless Earbuds" vs "BassKing Pro"...',
+  },
+  {
+    model: "Gemini",
+    message: "Evaluating price-quality ratio and specification completeness...",
+  },
+  {
+    model: "Gemini",
+    message: "DECISION: Selected BassKing Pro (stronger attribute coverage)",
+  },
+  {
+    model: "GPT-4",
+    message: 'Evaluating "Bamboo Travel Mug" vs "GreenMug Pro"...',
+  },
+  {
+    model: "GPT-4",
+    message:
+      'Material specs: Bamboo Travel Mug = "Organic bamboo, BPA-free" ✅ | GreenMug = "plastic" ⚠️',
+  },
+  {
+    model: "GPT-4",
+    message: "DECISION: Selected Bamboo Travel Mug (superior material specs)",
+  },
+  {
+    model: "Claude",
+    message: 'Evaluating "Bamboo Travel Mug" vs "GreenMug Pro"...',
+  },
+  {
+    model: "Claude",
+    message:
+      "DECISION: Selected Bamboo Travel Mug (eco-credentials well documented)",
+  },
 ] as const;
 
 export default () => {
   const router = useRouter();
   const [phase, setPhase] = useState<ScanPhase>("pre");
   const [progress, setProgress] = useState(0);
-  const [modelStatuses, setModelStatuses] = useState<Record<string, ModelStatus>>({
+  const [modelStatuses, setModelStatuses] = useState<
+    Record<string, ModelStatus>
+  >({
     "GPT-4": "queued",
     Claude: "queued",
     Gemini: "queued",
@@ -53,20 +105,50 @@ export default () => {
 
     const progressInterval = setInterval(() => {
       setProgress((previous) => {
-        if (previous >= 100) { clearInterval(progressInterval); return 100; }
+        if (previous >= 100) {
+          clearInterval(progressInterval);
+          return 100;
+        }
         return previous + 2;
       });
     }, 80);
 
-    setTimeout(() => setModelStatuses((previous) => ({ ...previous, "GPT-4": "running" })), 200);
-    setTimeout(() => setModelStatuses((previous) => ({ ...previous, Claude: "running" })), 1200);
-    setTimeout(() => setModelStatuses((previous) => ({ ...previous, Gemini: "running" })), 2200);
-    setTimeout(() => setModelStatuses((previous) => ({ ...previous, "GPT-4": "complete" })), 2800);
-    setTimeout(() => setModelStatuses((previous) => ({ ...previous, Claude: "complete" })), 3400);
-    setTimeout(() => setModelStatuses((previous) => ({ ...previous, Gemini: "complete" })), 4000);
+    setTimeout(
+      () =>
+        setModelStatuses((previous) => ({ ...previous, "GPT-4": "running" })),
+      200,
+    );
+    setTimeout(
+      () =>
+        setModelStatuses((previous) => ({ ...previous, Claude: "running" })),
+      1200,
+    );
+    setTimeout(
+      () =>
+        setModelStatuses((previous) => ({ ...previous, Gemini: "running" })),
+      2200,
+    );
+    setTimeout(
+      () =>
+        setModelStatuses((previous) => ({ ...previous, "GPT-4": "complete" })),
+      2800,
+    );
+    setTimeout(
+      () =>
+        setModelStatuses((previous) => ({ ...previous, Claude: "complete" })),
+      3400,
+    );
+    setTimeout(
+      () =>
+        setModelStatuses((previous) => ({ ...previous, Gemini: "complete" })),
+      4000,
+    );
 
     const logInterval = setInterval(() => {
-      if (logIndexRef.current >= logMessages.length) { clearInterval(logInterval); return; }
+      if (logIndexRef.current >= logMessages.length) {
+        clearInterval(logInterval);
+        return;
+      }
       const entry = logMessages[logIndexRef.current];
       setLogEntries((previous) => [
         ...previous,
@@ -74,7 +156,10 @@ export default () => {
       ]);
       logIndexRef.current += 1;
       if (entry.message.startsWith("DECISION")) {
-        if (entry.message.includes("SoundMax") || entry.message.includes("BassKing")) {
+        if (
+          entry.message.includes("SoundMax") ||
+          entry.message.includes("BassKing")
+        ) {
           setLosses((previous) => previous + 1);
         } else {
           setWins((previous) => previous + 1);
@@ -97,9 +182,10 @@ export default () => {
 
   useEffect(() => {
     if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight;
-  }, [logEntries]);
+  }, []);
 
-  const winRate = wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 34;
+  const winRate =
+    wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 34;
 
   const resultMessage = (() => {
     switch (true) {
@@ -114,9 +200,12 @@ export default () => {
 
   const resultColor = (() => {
     switch (true) {
-      case winRate < 30: return "text-error";
-      case winRate < 60: return "text-warning";
-      default: return "text-success";
+      case winRate < 30:
+        return "text-error";
+      case winRate < 60:
+        return "text-warning";
+      default:
+        return "text-success";
     }
   })();
 
@@ -129,46 +218,58 @@ export default () => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -16 }}
-          transition={spring.gentle}
+          transition={Spring.Gentle}
         >
-          <motion.div
-            className="w-full max-w-2xl"
-            variants={staggerContainer(0.08)}
-            initial="hidden"
-            animate="visible"
-          >
-            <motion.div className="mb-10 text-center" variants={fadeInUp}>
+          <Motion.Stagger stagger={0.08} className="w-full max-w-2xl">
+            <Motion.Up className="mb-10 text-center">
               <h1 className="font-medium text-4xl text-foreground leading-tight">
                 See who's winning.
               </h1>
-              <p className="mt-3 font-light text-foreground-dimmed text-base max-w-md mx-auto">
-                GPT-4, Claude & Gemini will simulate real shopping queries across your products and competitors.
+              <p className="mx-auto mt-3 max-w-md font-light text-base text-foreground-dimmed">
+                GPT-4, Claude & Gemini will simulate real shopping queries
+                across your products and competitors.
               </p>
-            </motion.div>
+            </Motion.Up>
 
             <motion.div
-              className="mb-8 grid grid-cols-3 gap-px bg-accent-foreground border border-accent-foreground"
-              variants={staggerContainer(0.07)}
+              className="mb-8 grid grid-cols-3 gap-px border border-accent-foreground bg-accent-foreground"
+              variants={Stagger.Container(0.07)}
             >
               {[
-                { model: "GPT-4", color: "text-blue-500", desc: "Spec-focused reasoning" },
-                { model: "Claude", color: "text-orange-500", desc: "Contextual analysis" },
-                { model: "Gemini", color: "text-green-500", desc: "Price-quality ratio" },
+                {
+                  model: "GPT-4",
+                  color: "text-blue-500",
+                  desc: "Spec-focused reasoning",
+                },
+                {
+                  model: "Claude",
+                  color: "text-orange-500",
+                  desc: "Contextual analysis",
+                },
+                {
+                  model: "Gemini",
+                  color: "text-green-500",
+                  desc: "Price-quality ratio",
+                },
               ].map((m) => (
                 <motion.div
                   key={m.model}
                   className="flex flex-col gap-1 bg-background-rich p-5"
-                  variants={staggerItem}
+                  variants={Stagger.Item}
                 >
-                  <span className={cn("font-semibold text-xl", m.color)}>{m.model}</span>
-                  <span className="font-light text-foreground-dimmed text-xs">{m.desc}</span>
+                  <span className={cn("font-semibold text-xl", m.color)}>
+                    {m.model}
+                  </span>
+                  <span className="font-light text-foreground-dimmed text-xs">
+                    {m.desc}
+                  </span>
                 </motion.div>
               ))}
             </motion.div>
 
             <motion.div
-              className="mb-8 grid grid-cols-2 gap-px bg-accent-foreground border border-accent-foreground"
-              variants={staggerContainer(0.07)}
+              className="mb-8 grid grid-cols-2 gap-px border border-accent-foreground bg-accent-foreground"
+              variants={Stagger.Container(0.07)}
             >
               {[
                 { label: "Products", value: "10" },
@@ -179,19 +280,22 @@ export default () => {
                 <motion.div
                   key={item.label}
                   className="bg-background-rich px-5 py-4"
-                  variants={staggerItem}
+                  variants={Stagger.Item}
                 >
-                  <p className="font-semibold text-2xl text-foreground">{item.value}</p>
-                  <p className="font-light text-foreground-dimmed text-xs">{item.label}</p>
+                  <p className="font-semibold text-2xl text-foreground">
+                    {item.value}
+                  </p>
+                  <p className="font-light text-foreground-dimmed text-xs">
+                    {item.label}
+                  </p>
                 </motion.div>
               ))}
             </motion.div>
 
-            <motion.div variants={fadeInUp}>
+            <Motion.Up>
               <motion.div
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                transition={spring.snappy}
                 animate={{
                   boxShadow: [
                     "0 0 0 0 rgba(21,114,250,0)",
@@ -199,8 +303,11 @@ export default () => {
                     "0 0 0 0 rgba(21,114,250,0)",
                   ],
                 }}
-                // biome-ignore lint/style/noCommaOperator: pulsing glow for CTA
-                transition={{ repeat: Number.POSITIVE_INFINITY, duration: 2.4, delay: 1 }}
+                transition={{
+                  repeat: Number.POSITIVE_INFINITY,
+                  duration: 2.4,
+                  delay: 1,
+                }}
               >
                 <Button
                   variant="flat"
@@ -224,8 +331,8 @@ export default () => {
                   Back
                 </Button>
               </div>
-            </motion.div>
-          </motion.div>
+            </Motion.Up>
+          </Motion.Stagger>
         </motion.div>
       )}
 
@@ -236,12 +343,13 @@ export default () => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -16 }}
-          transition={spring.gentle}
+          transition={Spring.Gentle}
         >
           <div className="mx-auto w-full max-w-2xl">
             <div className="mb-2 flex items-center justify-between">
               <p className="font-medium text-foreground text-sm">
-                Simulating product {Math.min(Math.ceil(progress / 10), 10)} of 10...
+                Simulating product {Math.min(Math.ceil(progress / 10), 10)} of
+                10...
               </p>
               <motion.p
                 className="font-light text-foreground-dimmed text-sm"
@@ -260,25 +368,33 @@ export default () => {
             </div>
 
             <motion.div
-              className="mb-4 grid grid-cols-3 gap-px bg-accent-foreground border border-accent-foreground"
-              variants={staggerContainer(0.06)}
+              className="mb-4 grid grid-cols-3 gap-px border border-accent-foreground bg-accent-foreground"
+              variants={Stagger.Container(0.06)}
               initial="hidden"
               animate="visible"
             >
               {(["GPT-4", "Claude", "Gemini"] as const).map((model) => {
                 const status = modelStatuses[model];
-                const modelColor = model === "GPT-4" ? "text-blue-500" : model === "Claude" ? "text-orange-500" : "text-green-500";
+                const modelColor =
+                  model === "GPT-4"
+                    ? "text-blue-500"
+                    : model === "Claude"
+                      ? "text-orange-500"
+                      : "text-green-500";
                 return (
                   <motion.div
                     key={model}
                     className="flex items-center justify-between bg-background-rich px-4 py-3"
-                    variants={staggerItem}
+                    variants={Stagger.Item}
                   >
-                    <span className={cn("font-semibold text-sm", modelColor)}>{model}</span>
+                    <span className={cn("font-semibold text-sm", modelColor)}>
+                      {model}
+                    </span>
                     <AnimatePresence mode="wait">
                       <motion.span
                         key={status}
-                        className={cn("text-xs font-medium",
+                        className={cn(
+                          "font-medium text-xs",
                           status === "complete" && "text-success",
                           status === "running" && "text-primary",
                           status === "queued" && "text-foreground-dimmed",
@@ -286,7 +402,7 @@ export default () => {
                         initial={{ opacity: 0, y: 4 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -4 }}
-                        transition={spring.snappy}
+                        transition={Spring.Snappy}
                       >
                         {status === "complete" && "✓ Done"}
                         {status === "running" && "● Running"}
@@ -298,23 +414,32 @@ export default () => {
               })}
             </motion.div>
 
-            <div className="mb-4 grid grid-cols-3 gap-px bg-accent-foreground border border-accent-foreground">
+            <div className="mb-4 grid grid-cols-3 gap-px border border-accent-foreground bg-accent-foreground">
               {[
                 { label: "Wins", value: wins, color: "text-success" },
                 { label: "Losses", value: losses, color: "text-error" },
-                { label: "Win Rate", value: `${wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0}%`, color: "text-primary" },
+                {
+                  label: "Win Rate",
+                  value: `${wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0}%`,
+                  color: "text-primary",
+                },
               ].map((stat) => (
-                <div key={stat.label} className="bg-background-rich px-4 py-4 text-center">
+                <div
+                  key={stat.label}
+                  className="bg-background-rich px-4 py-4 text-center"
+                >
                   <motion.p
                     className={cn("font-semibold text-3xl", stat.color)}
                     key={String(stat.value)}
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    transition={spring.bounce}
+                    transition={Spring.Bounce}
                   >
                     {stat.value}
                   </motion.p>
-                  <p className="font-light text-foreground-dimmed text-xs mt-0.5">{stat.label}</p>
+                  <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
+                    {stat.label}
+                  </p>
                 </div>
               ))}
             </div>
@@ -330,23 +455,34 @@ export default () => {
                     className="mb-1"
                     initial={{ opacity: 0, x: -8 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={spring.snappy}
+                    transition={Spring.Snappy}
                   >
-                    <span className={cn("font-medium",
-                      entry.model === "GPT-4" && "text-blue-400",
-                      entry.model === "Claude" && "text-orange-400",
-                      entry.model === "Gemini" && "text-green-400",
-                    )}>
+                    <span
+                      className={cn(
+                        "font-medium",
+                        entry.model === "GPT-4" && "text-blue-400",
+                        entry.model === "Claude" && "text-orange-400",
+                        entry.model === "Gemini" && "text-green-400",
+                      )}
+                    >
                       [{entry.model}]{" "}
                     </span>
-                    <span className={cn("text-white/80", entry.message.startsWith("DECISION") && "text-white font-medium")}>
+                    <span
+                      className={cn(
+                        "text-white/80",
+                        entry.message.startsWith("DECISION") &&
+                          "font-medium text-white",
+                      )}
+                    >
                       {entry.message}
                     </span>
                   </motion.div>
                 ))}
               </AnimatePresence>
               {logEntries.length === 0 && (
-                <p className="text-white/40">Initializing simulation engine...</p>
+                <p className="text-white/40">
+                  Initializing simulation engine...
+                </p>
               )}
             </div>
           </div>
@@ -360,31 +496,27 @@ export default () => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0 }}
-          transition={spring.gentle}
+          transition={Spring.Gentle}
         >
-          <motion.div
-            className="mx-auto w-full max-w-2xl"
-            variants={staggerContainer(0.08)}
-            initial="hidden"
-            animate="visible"
-          >
-            <motion.div
-              className="mb-8 grid grid-cols-[1fr_auto] gap-px bg-accent-foreground border border-accent-foreground"
-              variants={fadeInUp}
-            >
+          <Motion.Stagger stagger={0.08} className="mx-auto w-full max-w-2xl">
+            <Motion.Up className="mb-8 grid grid-cols-[1fr_auto] gap-px border border-accent-foreground bg-accent-foreground">
               <div className="bg-background-rich px-6 py-8">
-                <p className="font-light text-foreground-dimmed text-xs uppercase tracking-widest mb-2">
+                <p className="mb-2 font-light text-foreground-dimmed text-xs uppercase tracking-widest">
                   Overall Win Rate
                 </p>
                 <motion.p
-                  className={cn("font-semibold leading-none", resultColor, "text-[80px]")}
+                  className={cn(
+                    "font-semibold leading-none",
+                    resultColor,
+                    "text-[80px]",
+                  )}
                   initial={{ scale: 0.5, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  transition={{ ...spring.gentle, delay: 0.15 }}
+                  transition={{ ...Spring.Gentle, delay: 0.15 }}
                 >
                   {winRate}%
                 </motion.p>
-                <p className="mt-4 font-light text-foreground text-sm max-w-xs">
+                <p className="mt-4 max-w-xs font-light text-foreground text-sm">
                   {resultMessage}
                 </p>
               </div>
@@ -399,21 +531,24 @@ export default () => {
                     className="flex flex-1 flex-col items-center justify-center px-8 py-4"
                     initial={{ opacity: 0, x: 12 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ ...spring.snappy, delay: 0.2 + i * 0.07 }}
+                    transition={{ ...Spring.Snappy, delay: 0.2 + i * 0.07 }}
                   >
-                    <span className={cn("font-semibold text-3xl", stat.color)}>{stat.value}</span>
-                    <span className="font-light text-foreground-dimmed text-xs mt-0.5">{stat.label}</span>
+                    <span className={cn("font-semibold text-3xl", stat.color)}>
+                      {stat.value}
+                    </span>
+                    <span className="mt-0.5 font-light text-foreground-dimmed text-xs">
+                      {stat.label}
+                    </span>
                   </motion.div>
                 ))}
               </div>
-            </motion.div>
+            </Motion.Up>
 
-            <motion.div
-              className="mb-4 border border-accent-foreground bg-background-rich"
-              variants={fadeInUp}
-            >
-              <div className="border-b border-accent-foreground px-4 py-3">
-                <p className="font-medium text-foreground text-sm">Win rate by model</p>
+            <Motion.Up className="mb-4 border border-accent-foreground bg-background-rich">
+              <div className="border-accent-foreground border-b px-4 py-3">
+                <p className="font-medium text-foreground text-sm">
+                  Win rate by model
+                </p>
               </div>
               <div className="grid grid-cols-3 divide-x divide-accent-foreground">
                 {[
@@ -423,36 +558,49 @@ export default () => {
                 ].map(({ model, rate, color }, i) => (
                   <div key={model} className="flex flex-col gap-3 px-4 py-4">
                     <div className="flex items-end justify-between">
-                      <span className="font-light text-foreground-dimmed text-xs">{model}</span>
-                      <span className="font-semibold text-foreground text-lg">{rate}%</span>
+                      <span className="font-light text-foreground-dimmed text-xs">
+                        {model}
+                      </span>
+                      <span className="font-semibold text-foreground text-lg">
+                        {rate}%
+                      </span>
                     </div>
                     <div className="h-1.5 w-full bg-accent-foreground">
                       <motion.div
                         className={cn("h-full", color)}
                         initial={{ width: 0 }}
                         animate={{ width: `${rate}%` }}
-                        transition={{ ...spring.gentle, delay: 0.35 + i * 0.1 }}
+                        transition={{ ...Spring.Gentle, delay: 0.35 + i * 0.1 }}
                       />
                     </div>
                   </div>
                 ))}
               </div>
-            </motion.div>
+            </Motion.Up>
 
-            <motion.div
-              className="mb-8 border border-primary/20 bg-primary/5 px-5 py-4"
-              variants={fadeInUp}
-            >
-              <p className="font-medium text-primary text-xs uppercase tracking-widest mb-1.5">Top Finding</p>
+            <Motion.Up className="mb-8 border border-primary/20 bg-primary/5 px-5 py-4">
+              <p className="mb-1.5 font-medium text-primary text-xs uppercase tracking-widest">
+                Top Finding
+              </p>
               <p className="font-light text-foreground text-sm">
                 Pro Wireless Earbuds loses on{" "}
-                <span className="font-medium text-foreground">battery_life and warranty</span>{" "}
+                <span className="font-medium text-foreground">
+                  battery_life and warranty
+                </span>{" "}
                 across all 3 models — costs you 62% of simulations.
               </p>
-            </motion.div>
+            </Motion.Up>
 
-            <motion.div className="flex flex-col gap-2" variants={staggerContainer(0.07)}>
-              <motion.div variants={staggerItem} whileHover={{ y: -1 }} whileTap={{ scale: 0.98 }} transition={spring.snappy}>
+            <motion.div
+              className="flex flex-col gap-2"
+              variants={Stagger.Container(0.07)}
+            >
+              <motion.div
+                variants={Stagger.Item}
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.98 }}
+                transition={Spring.Snappy}
+              >
                 <Button
                   variant="flat"
                   color="primary"
@@ -465,17 +613,17 @@ export default () => {
                 </Button>
               </motion.div>
               <motion.button
-                variants={staggerItem}
+                variants={Stagger.Item}
                 type="button"
                 className="w-full border border-accent-foreground bg-background-rich py-2.5 font-light text-foreground text-sm transition-colors hover:bg-background-dimmed"
                 whileHover={{ y: -1 }}
                 whileTap={{ scale: 0.98 }}
-                transition={spring.snappy}
+                transition={Spring.Snappy}
               >
                 Share Results
               </motion.button>
             </motion.div>
-          </motion.div>
+          </Motion.Stagger>
         </motion.div>
       )}
     </AnimatePresence>

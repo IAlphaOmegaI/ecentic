@@ -11,8 +11,8 @@ export const Hero = () => (
         </h1>
         <p className="text-sm sm:text-base md:text-2xl">
           écentic simulates how AI shopping agents choose between your products
-          and competitors then automatically rewrites your listings to get picked
-          first. Not monitoring. Not auditing. Autonomous optimization.
+          and competitors then automatically rewrites your listings to get
+          picked first. Not monitoring. Not auditing. Autonomous optimization.
         </p>
       </div>
     </section>
