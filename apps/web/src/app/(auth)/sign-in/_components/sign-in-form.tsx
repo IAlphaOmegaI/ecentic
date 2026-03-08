@@ -43,7 +43,6 @@ export const SignInForm = () => {
       variants={staggerContainer(0.07)}
       initial="hidden"
       animate="visible"
-      // biome-ignore lint/style/noCommaOperator: delay offset for form section
       transition={{ delayChildren: 0.18 }}
     >
       <motion.div
