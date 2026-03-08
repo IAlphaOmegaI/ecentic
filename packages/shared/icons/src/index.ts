@@ -30,3 +30,4 @@ export * from "./support";
 export type * from "./types";
 export * from "./upload";
 export * from "./x";
+export * from "./arrow-left";

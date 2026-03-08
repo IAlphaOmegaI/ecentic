@@ -37,7 +37,7 @@ export const buttonVariants: (props?: ButtonVariantsProps) => string = cva(
         flat: "px-4",
         soft: "text-primary backdrop-blur-lg",
         outline: "border px-4",
-        ghost: "underline transition-colors duration-300",
+        ghost: "transition-colors duration-300",
       },
       size: {
         icon: "flex size-8 items-center justify-center p-2",

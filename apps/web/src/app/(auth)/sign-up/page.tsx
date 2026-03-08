@@ -30,7 +30,7 @@ export default () => (
       initial="hidden"
       animate="visible"
     >
-      <div className="w-full max-w-md h-full">
+      <div className="w-full max-w-md h-full md:h-auto">
         <div className="mb-8 lg:hidden">
           <Image
             src="/images/trademark.svg"
@@ -41,7 +41,7 @@ export default () => (
           />
         </div>
 
-        <Motion.Stagger className="mb-6" stagger={0.08} delay={0.1}>
+        <Motion.Stagger stagger={0.08} delay={0.1}>
           <Motion.Item>
             <h2 className="font-medium text-4xl text-foreground">
               Create your account

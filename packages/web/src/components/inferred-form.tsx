@@ -430,14 +430,18 @@ export const InferredFormField = <Field extends GenericField>(
               className={props.classList?.error}
               render={props.custom?.error}
             />
-            <FieldDescription
-              className={cn(
-                "text-foreground-dimmed",
-                props.classList?.description,
-              )}
-            >
-              {props.description}
-            </FieldDescription>
+            {typeof props.description === "function" ? (
+              props.description({ isFieldRequired, name })
+            ) : (
+              <FieldDescription
+                className={cn(
+                  "text-foreground-dimmed",
+                  props.classList?.description,
+                )}
+              >
+                {props.description}
+              </FieldDescription>
+            )}
           </Field>
         );
       }}

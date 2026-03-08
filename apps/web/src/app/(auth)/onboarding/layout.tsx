@@ -117,9 +117,7 @@ const sidebar = {
 
 export default ({ children }: PropsWithChildren) => {
   const pathname = usePathname();
-  const current = steps.findIndex((step) =>
-    pathname.startsWith(step.path),
-  );
+  const current = steps.findIndex((step) => pathname.startsWith(step.path));
 
   const content =
     sidebar[pathname as keyof typeof sidebar] ?? sidebar["/onboarding/connect"];
@@ -132,7 +130,7 @@ export default ({ children }: PropsWithChildren) => {
         points={content.points}
       />
 
-      <main className="flex flex-1 flex-col overflow-hidden rounded-l-xl bg-background">
+      <main className="flex flex-1 flex-col overflow-hidden md:rounded-l-xl bg-background">
         <motion.div
           className="border-accent-foreground border-b bg-background-rich px-6 py-4"
           initial={{ opacity: 0, y: -8 }}

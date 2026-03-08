@@ -2,6 +2,7 @@
 
 import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
+import { FieldDescription } from "@zenncore/web/components/form";
 import {
   type FormEntries,
   type GenericForm,
@@ -16,6 +17,21 @@ const config = {
     validator: z.string().min(1, "Shop domain is required"),
     label: "Shop Domain",
     placeholder: "yourstore.myshopify.com",
+    // @ts-expect-error - description is a function
+    description: () => (
+      <FieldDescription>
+        The subdomain you use to access Shopify admin. If your admin URL is{" "}
+        <span className="font-medium text-foreground">
+          acmestore.myshopify.com/admin
+        </span>
+        , enter <span className="font-medium text-foreground">acmestore</span>{" "}
+        or the full{" "}
+        <span className="font-medium text-foreground">
+          acmestore.myshopify.com
+        </span>
+        .
+      </FieldDescription>
+    ),
   }),
 } satisfies GenericForm;
 

@@ -8,7 +8,7 @@ import { parse, request } from "../../utils/http";
 import * as Product from "../product";
 import * as Store from "../store";
 
-type WooCommerceProduct = {
+type Type = {
   id: number;
   name: string;
   slug: string;
@@ -43,16 +43,13 @@ export const connect = withAuthentication(
   ): Promise<Result<Store.Type, RequestError | Error>> => {
     const base = normalize(domain);
 
-    const probe = await request(
-      `${base}/wp-json/wc/v3/products?per_page=1`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: credentials(consumerKey, consumerSecret),
-          "Content-Type": "application/json",
-        },
+    const probe = await request(`${base}/wp-json/wc/v3/products?per_page=1`, {
+      method: "GET",
+      headers: {
+        Authorization: credentials(consumerKey, consumerSecret),
+        "Content-Type": "application/json",
       },
-    );
+    });
 
     if (!probe.success)
       return {
@@ -101,11 +98,14 @@ export const syncProducts = withAuthentication(
 
     const { domain, consumerKey, consumerSecret } = store.data;
     if (!consumerKey || !consumerSecret)
-      return { success: false, error: new Error("Missing WooCommerce credentials") };
+      return {
+        success: false,
+        error: new Error("Missing WooCommerce credentials"),
+      };
 
     await Store.update(Environment.SERVER, storeId, { status: "syncing" });
 
-    const all: WooCommerceProduct[] = [];
+    const all: Type[] = [];
     const pageSize = 100;
     const maxPages = 20;
 
@@ -123,12 +123,14 @@ export const syncProducts = withAuthentication(
 
       if (!response.success) break;
 
-      const parsed = await parse<WooCommerceProduct[]>(response);
+      const parsed = await parse<Type[]>(response);
       if (!parsed.success) break;
 
       all.push(...parsed.data);
 
-      const totalPages = Number(response.data.headers.get("X-WP-TotalPages") ?? "1");
+      const totalPages = Number(
+        response.data.headers.get("X-WP-TotalPages") ?? "1",
+      );
       if (page >= totalPages) break;
     }
 
@@ -141,7 +143,8 @@ export const syncProducts = withAuthentication(
           title: item.name,
           description: item.short_description || item.description,
           price: item.price,
-          compareAtPrice: item.regular_price !== item.price ? item.regular_price : null,
+          compareAtPrice:
+            item.regular_price !== item.price ? item.regular_price : null,
           currency: "USD",
           images: JSON.stringify(item.images.map((image) => image.src)),
           url: item.permalink,

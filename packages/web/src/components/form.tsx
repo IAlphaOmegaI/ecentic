@@ -131,10 +131,7 @@ export const FieldLabel = ({
 }: FieldLabel.Props): JSX.Element => {
   return (
     <FieldPrimitive.Label
-      className={createClassName(
-        "font-medium text-gray-900 text-sm",
-        className,
-      )}
+      className={createClassName("text-foreground text-sm", className)}
       {...props}
     />
   );

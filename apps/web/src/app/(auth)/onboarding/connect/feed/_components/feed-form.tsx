@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 import * as FeedIntegration from "@/server/app/integration/feed";
 import * as Sync from "@/server/app/sync";
+import { FieldDescription } from "@zenncore/web/components/form";
 
 const config = {
   feedUrl: field({
@@ -21,6 +22,18 @@ const config = {
     validator: z.string().url("Enter a valid URL"),
     label: "Feed URL",
     placeholder: "https://yourstore.com/products.xml",
+    // @ts-expect-error - description is a function
+    description: () => (
+      <FieldDescription>
+        The publicly accessible URL that serves your product feed. For example:{" "}
+        <span className="font-medium text-foreground">
+          https://yourstore.com/feed/products.xml
+        </span>
+        . The URL must be reachable from the internet — localhost or
+        private-network URLs won&apos;t work. We auto-detect whether it&apos;s
+        XML or JSON based on the content.
+      </FieldDescription>
+    ),
   }),
 } satisfies GenericForm;
 

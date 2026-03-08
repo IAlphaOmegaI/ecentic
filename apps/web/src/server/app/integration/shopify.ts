@@ -7,7 +7,7 @@ import { parse, request } from "../../utils/http";
 import * as Product from "../product";
 import * as Store from "../store";
 
-type ShopifyProduct = {
+type Type = {
   id: number;
   title: string;
   body_html: string;
@@ -22,10 +22,6 @@ type ShopifyProduct = {
   images: { id: number; src: string }[];
 };
 
-type ShopifyProductsResponse = {
-  products: ShopifyProduct[];
-};
-
 const API_VERSION = "2024-10";
 
 export const syncProducts = withAuthentication(
@@ -35,19 +31,26 @@ export const syncProducts = withAuthentication(
   ): Promise<Result<number, Error>> => {
     const store = await Store.get(Environment.SERVER, storeId);
     if (!store.success) return store;
+
     if (!store.data)
       return { success: false, error: new Error("Store not found") };
 
     const { domain, accessToken } = store.data;
+
     if (!accessToken)
-      return { success: false, error: new Error("Missing Shopify access token") };
+      return {
+        success: false,
+        error: new Error("Missing Shopify access token"),
+      };
 
     await Store.update(Environment.SERVER, storeId, { status: "syncing" });
 
-    const all: ShopifyProduct[] = [];
+    const all: Type[] = [];
     const limit = 250;
     const maxPages = 10;
-    let url: string | null = `${domain}/admin/api/${API_VERSION}/products.json?limit=${limit}`;
+
+    let url: string | null =
+      `${domain}/admin/api/${API_VERSION}/products.json?limit=${limit}`;
 
     for (const _ of Array.from({ length: maxPages })) {
       if (!url) break;
@@ -62,7 +65,10 @@ export const syncProducts = withAuthentication(
 
       if (!response.success) break;
 
-      const parsed = await parse<ShopifyProductsResponse>(response);
+      const parsed = await parse<{
+        products: Type[];
+      }>(response);
+
       if (!parsed.success) break;
 
       all.push(...parsed.data.products);

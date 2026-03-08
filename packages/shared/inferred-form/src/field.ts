@@ -37,7 +37,9 @@ export type InferredFieldConfig<
   label?:
     | string
     | ((props: { isFieldRequired: boolean; name: string }) => ReactNode);
-  description?: string;
+  description?:
+    | string
+    | ((props: { isFieldRequired: boolean; name: string }) => ReactNode);
 
   classList?: Prettify<
     ClassList<"root" | "label" | "description" | "error" | "field"> &
