@@ -96,7 +96,7 @@ const columns = [
       <StatusCell status={row.original.audit} />
     ),
     header: () => (
-      <span className="flex w-20 min-w-20 justify-center md:w-32 md:min-w-32">
+      <span className="flex w-full min-w-20 justify-center md:min-w-32 text-center">
         Audit Tools
       </span>
     ),
@@ -107,7 +107,7 @@ const columns = [
       <StatusCell status={row.original.geo} />
     ),
     header: () => (
-      <span className="flex w-28 min-w-28 justify-center md:w-48 md:min-w-48">
+      <span className="flex w-full min-w-28 justify-center md:min-w-48  text-center">
         GEO Monitoring
       </span>
     ),
@@ -115,7 +115,7 @@ const columns = [
   {
     accessorKey: "écentic",
     header: () => (
-      <span className="flex w-20 min-w-20 justify-center text-primary md:w-32 md:min-w-32">
+      <span className="flex w-full min-w-20 justify-center text-primary md:min-w-32 text-center">
         ecetric
       </span>
     ),
