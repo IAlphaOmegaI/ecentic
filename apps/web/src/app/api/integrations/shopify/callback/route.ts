@@ -1,8 +1,9 @@
 import crypto from "node:crypto";
 import { cookies, headers } from "next/headers";
-import { type NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse as Response } from "next/server";
 import { auth } from "@/lib/auth";
-import { db, schema } from "@/server/database";
+import * as Store from "@/server/app/store";
+import * as HTTP from "@/server/utils/http";
 
 const verifyHmac = (query: URLSearchParams, secret: string): boolean => {
   const hmac = query.get("hmac");
@@ -23,74 +24,72 @@ const verifyHmac = (query: URLSearchParams, secret: string): boolean => {
 };
 
 export const GET = async (request: NextRequest) => {
-  const { SHOPIFY_API_KEY, SHOPIFY_API_SECRET, BETTER_AUTH_BASE_URL } =
-    process.env;
+  const { SHOPIFY_API_KEY, SHOPIFY_API_SECRET, APP_HOST } = process.env;
 
-  if (!SHOPIFY_API_KEY || !SHOPIFY_API_SECRET || !BETTER_AUTH_BASE_URL)
-    return NextResponse.json(
+  if (!SHOPIFY_API_KEY || !SHOPIFY_API_SECRET || !APP_HOST)
+    return Response.json(
       { error: "Shopify integration not configured" },
       { status: 500 },
     );
 
   const params = request.nextUrl.searchParams;
+
   const code = params.get("code");
   const shop = params.get("shop");
   const state = params.get("state");
 
   if (!code || !shop || !state)
-    return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
+    return Response.json({ error: "Missing parameters" }, { status: 400 });
 
   const jar = await cookies();
   const nonce = jar.get("shopify_nonce")?.value;
 
   if (state !== nonce)
-    return NextResponse.json({ error: "State mismatch" }, { status: 403 });
+    return Response.json({ error: "State mismatch" }, { status: 403 });
 
   if (!verifyHmac(params, SHOPIFY_API_SECRET))
-    return NextResponse.json({ error: "Invalid HMAC" }, { status: 403 });
+    return Response.json({ error: "Invalid HMAC" }, { status: 403 });
 
   const session = await auth.api.getSession({ headers: await headers() });
-  if (!session)
-    return NextResponse.redirect(`${BETTER_AUTH_BASE_URL}/sign-in`);
+  if (!session) return Response.redirect(`${APP_HOST}/sign-in`);
 
-  const tokenResponse = await fetch(
-    `https://${shop}/admin/oauth/access_token`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        client_id: SHOPIFY_API_KEY,
-        client_secret: SHOPIFY_API_SECRET,
-        code,
-      }),
-    },
-  );
+  const token = await HTTP.request(`https://${shop}/admin/oauth/access_token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      client_id: SHOPIFY_API_KEY,
+      client_secret: SHOPIFY_API_SECRET,
+      code,
+    }),
+  });
 
-  if (!tokenResponse.ok) {
-    const text = await tokenResponse.text();
-    return NextResponse.json(
-      { error: "Token exchange failed", details: text },
+  if (!token.success) {
+    return Response.json(
+      { error: "Token exchange failed", details: token.error },
       { status: 502 },
     );
   }
 
-  const { access_token } = (await tokenResponse.json()) as {
-    access_token: string;
-  };
+  const parsed = await HTTP.parse<{ access_token: string }>(token);
 
-  await db.insert(schema.store).values({
+  if (!parsed.success) {
+    return Response.json(
+      { error: "Token exchange failed", details: parsed.error },
+      { status: 502 },
+    );
+  }
+
+  await Store.create({
     userId: session.user.id,
     platform: "shopify",
     name: shop.replace(".myshopify.com", ""),
     domain: `https://${shop}`,
-    accessToken: access_token,
+    accessToken: parsed.data.access_token,
     status: "connected",
   });
 
   jar.delete("shopify_nonce");
   jar.delete("shopify_shop");
 
-  return NextResponse.redirect(
-    `${BETTER_AUTH_BASE_URL}/onboarding/select-products?connected=shopify`,
-  );
+  return Response.redirect(`${APP_HOST}/onboarding/products?connected=shopify`);
 };

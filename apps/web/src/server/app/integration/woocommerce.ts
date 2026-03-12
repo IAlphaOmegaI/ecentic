@@ -1,10 +1,9 @@
 "use server";
 
-import type { Result } from "@zenncore/utils";
 import { withAuthentication } from "../../utils/authentication";
 import { Environment } from "../../utils/environment";
-import { RequestError } from "../../utils/error";
-import { parse, request } from "../../utils/http";
+import { NotFoundError, RequestError } from "../../utils/error";
+import * as HTTP from "../../utils/http";
 import * as Product from "../product";
 import * as Store from "../store";
 
@@ -23,13 +22,14 @@ type Type = {
   images: { id: number; src: string; alt: string }[];
 };
 
-const credentials = (key: string, secret: string) =>
-  `Basic ${Buffer.from(`${key}:${secret}`).toString("base64")}`;
-
-const normalize = (url: string) => {
-  const trimmed = url.replace(/\/+$/, "");
-  if (trimmed.startsWith("http")) return trimmed;
-  return `https://${trimmed}`;
+const Utils = {
+  credentials: (key: string, secret: string) =>
+    `Basic ${Buffer.from(`${key}:${secret}`).toString("base64")}`,
+  normalize: (url: string) => {
+    const trimmed = url.replace(/\/+$/, "");
+    if (trimmed.startsWith("http")) return trimmed;
+    return `https://${trimmed}`;
+  },
 };
 
 export const connect = withAuthentication(
@@ -40,16 +40,19 @@ export const connect = withAuthentication(
       consumerKey,
       consumerSecret,
     }: { domain: string; consumerKey: string; consumerSecret: string },
-  ): Promise<Result<Store.Type, RequestError | Error>> => {
-    const base = normalize(domain);
+  ) => {
+    const host = Utils.normalize(domain);
 
-    const probe = await request(`${base}/wp-json/wc/v3/products?per_page=1`, {
-      method: "GET",
-      headers: {
-        Authorization: credentials(consumerKey, consumerSecret),
-        "Content-Type": "application/json",
+    const probe = await HTTP.request(
+      `${host}/wp-json/wc/v3/products?per_page=1`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: Utils.credentials(consumerKey, consumerSecret),
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
 
     if (!probe.success)
       return {
@@ -72,8 +75,8 @@ export const connect = withAuthentication(
     const store = await Store.create(Environment.SERVER, {
       userId: context.session.user.id,
       platform: "woocommerce",
-      name: new URL(base).hostname,
-      domain: base,
+      name: new URL(host).hostname,
+      domain: host,
       consumerKey,
       consumerSecret,
       status: "connected",
@@ -87,16 +90,15 @@ export const connect = withAuthentication(
 );
 
 export const syncProducts = withAuthentication(
-  async (
-    context,
-    { storeId }: { storeId: string },
-  ): Promise<Result<number, Error>> => {
+  async (context, { storeId }: { storeId: string }) => {
     const store = await Store.get(Environment.SERVER, storeId);
     if (!store.success) return store;
+
     if (!store.data)
-      return { success: false, error: new Error("Store not found") };
+      return { success: false, error: new NotFoundError("Store not found") };
 
     const { domain, consumerKey, consumerSecret } = store.data;
+
     if (!consumerKey || !consumerSecret)
       return {
         success: false,
@@ -106,16 +108,17 @@ export const syncProducts = withAuthentication(
     await Store.update(Environment.SERVER, storeId, { status: "syncing" });
 
     const all: Type[] = [];
-    const pageSize = 100;
-    const maxPages = 20;
 
-    for (const page of Array.from({ length: maxPages }, (_, i) => i + 1)) {
-      const response = await request(
-        `${domain}/wp-json/wc/v3/products?per_page=${pageSize}&page=${page}`,
+    const limit = 100;
+    const maximum = 20;
+
+    for (const page of Array.from({ length: maximum }, (_, i) => i + 1)) {
+      const response = await HTTP.request(
+        `${domain}/wp-json/wc/v3/products?per_page=${limit}&page=${page}`,
         {
           method: "GET",
           headers: {
-            Authorization: credentials(consumerKey, consumerSecret),
+            Authorization: Utils.credentials(consumerKey, consumerSecret),
             "Content-Type": "application/json",
           },
         },
@@ -123,7 +126,7 @@ export const syncProducts = withAuthentication(
 
       if (!response.success) break;
 
-      const parsed = await parse<Type[]>(response);
+      const parsed = await HTTP.parse<Type[]>(response);
       if (!parsed.success) break;
 
       all.push(...parsed.data);
@@ -131,6 +134,7 @@ export const syncProducts = withAuthentication(
       const totalPages = Number(
         response.data.headers.get("X-WP-TotalPages") ?? "1",
       );
+
       if (page >= totalPages) break;
     }
 
@@ -139,7 +143,7 @@ export const syncProducts = withAuthentication(
         Product.create(Environment.SERVER, {
           storeId,
           userId: context.session.user.id,
-          externalId: String(item.id),
+          externalId: item.id.toString(),
           title: item.name,
           description: item.short_description || item.description,
           price: item.price,

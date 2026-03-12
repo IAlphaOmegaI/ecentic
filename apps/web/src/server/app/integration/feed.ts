@@ -1,15 +1,16 @@
+/** biome-ignore-all lint/complexity/useLiteralKeys: we need to access the properties as strings */
 "use server";
 
 import { type Result, resultify } from "@zenncore/utils";
 import { XMLParser } from "fast-xml-parser";
 import { withAuthentication } from "../../utils/authentication";
 import { Environment } from "../../utils/environment";
-import { RequestError } from "../../utils/error";
-import { request } from "../../utils/http";
+import { NotFoundError, RequestError } from "../../utils/error";
+import * as HTTP from "../../utils/http";
 import * as Product from "../product";
 import * as Store from "../store";
 
-type FeedProduct = {
+type Type = {
   title: string;
   description?: string;
   price?: string;
@@ -19,59 +20,82 @@ type FeedProduct = {
   id?: string;
 };
 
-const parseXml = (text: string): FeedProduct[] => {
-  const parser = new XMLParser({
-    ignoreAttributes: false,
-    attributeNamePrefix: "@_",
-    removeNSPrefix: true,
-  });
+const Utils = {
+  Parser: {
+    xml: (text: string): Type[] => {
+      const parser = new XMLParser({
+        ignoreAttributes: false,
+        attributeNamePrefix: "@_",
+        removeNSPrefix: true,
+      });
 
-  const parsed = parser.parse(text);
+      const parsed = parser.parse(text);
 
-  const channel = parsed?.rss?.channel ?? parsed?.feed ?? parsed;
-  const raw: unknown[] = (() => {
-    if (Array.isArray(channel?.item)) return channel.item;
-    if (channel?.item) return [channel.item];
-    if (Array.isArray(channel?.entry)) return channel.entry;
-    if (channel?.entry) return [channel.entry];
-    return [];
-  })();
+      const channel = parsed?.rss?.channel ?? parsed?.feed ?? parsed;
 
-  return raw.map((item: Record<string, unknown>) => ({
-    title: String(item.title ?? item["g:title"] ?? "Untitled"),
-    description: String(item.description ?? item["g:description"] ?? ""),
-    price: String(item.price ?? item["g:price"] ?? ""),
-    image: String(
-      item.image_link ?? item["g:image_link"] ?? item.image ?? "",
-    ),
-    url: String(item.link ?? item["g:link"] ?? ""),
-    sku: String(item.id ?? item["g:id"] ?? item.sku ?? ""),
-    id: String(item.id ?? item["g:id"] ?? ""),
-  })) as FeedProduct[];
-};
+      const raw: unknown[] = (() => {
+        if (Array.isArray(channel?.item)) return channel.item;
 
-const parseJson = (text: string): FeedProduct[] => {
-  const result = resultify(() => JSON.parse(text));
-  if (!result.success) return [];
+        if (channel?.item) return [channel.item];
 
-  const data = Array.isArray(result.data) ? result.data : result.data?.products ?? result.data?.items ?? [];
-  if (!Array.isArray(data)) return [];
+        if (Array.isArray(channel?.entry)) return channel.entry;
 
-  return data.map((item: Record<string, unknown>) => ({
-    title: String(item.title ?? item.name ?? "Untitled"),
-    description: String(item.description ?? ""),
-    price: String(item.price ?? ""),
-    image: String(item.image ?? item.image_url ?? item.imageUrl ?? ""),
-    url: String(item.url ?? item.link ?? ""),
-    sku: String(item.sku ?? item.id ?? ""),
-    id: String(item.id ?? ""),
-  }));
-};
+        if (channel?.entry) return [channel.entry];
 
-const detect = (text: string): "xml" | "json" => {
-  const trimmed = text.trimStart();
-  if (trimmed.startsWith("<")) return "xml";
-  return "json";
+        return [];
+      })();
+
+      return raw.map((entry) => {
+        const item = entry as Record<string, unknown>;
+        return {
+          title: String(item["title"] ?? item["g:title"] ?? "Untitled"),
+          description: String(
+            item["description"] ?? item["g:description"] ?? "",
+          ),
+          price: String(item["price"] ?? item["g:price"] ?? ""),
+          image: String(
+            item["image_link"] ?? item["g:image_link"] ?? item["image"] ?? "",
+          ),
+          url: String(item["link"] ?? item["g:link"] ?? ""),
+          sku: String(item["id"] ?? item["g:id"] ?? item["sku"] ?? ""),
+          id: String(item["id"] ?? item["g:id"] ?? ""),
+        };
+      }) as Type[];
+    },
+
+    json: (text: string): Type[] => {
+      const result = resultify(
+        () =>
+          JSON.parse(text) as {
+            products?: Type[];
+            items?: Type[];
+          },
+      );
+      if (!result.success) return [];
+
+      const data = Array.isArray(result.data)
+        ? result.data
+        : (result.data?.products ?? result.data?.items ?? []);
+
+      if (!Array.isArray(data)) return [];
+
+      return data.map((item) => ({
+        title: String(item.title ?? item.name ?? "Untitled"),
+        description: String(item.description ?? ""),
+        price: String(item.price ?? ""),
+        image: String(item.image ?? item.image_url ?? item.imageUrl ?? ""),
+        url: String(item.url ?? item.link ?? ""),
+        sku: String(item.sku ?? item.id ?? ""),
+        id: String(item.id ?? ""),
+      }));
+    },
+  },
+
+  detect: (text: string): "xml" | "json" => {
+    const trimmed = text.trimStart();
+    if (trimmed.startsWith("<")) return "xml";
+    return "json";
+  },
 };
 
 export const connect = withAuthentication(
@@ -79,12 +103,14 @@ export const connect = withAuthentication(
     context,
     { feedUrl }: { feedUrl: string },
   ): Promise<Result<Store.Type, RequestError | Error>> => {
-    const response = await request(feedUrl, { method: "GET" });
+    const response = await HTTP.request(feedUrl, { method: "GET" });
 
     if (!response.success)
       return {
         success: false,
-        error: new RequestError("Could not reach the feed URL. Check the URL and try again."),
+        error: new RequestError(
+          "Could not reach the feed URL. Check the URL and try again.",
+        ),
       };
 
     if (!response.data.ok)
@@ -94,16 +120,26 @@ export const connect = withAuthentication(
       };
 
     const text = await resultify(() => response.data.text());
-    if (!text.success)
-      return { success: false, error: new RequestError("Failed to read feed response") };
 
-    const format = detect(text.data);
-    const products = format === "xml" ? parseXml(text.data) : parseJson(text.data);
+    if (!text.success)
+      return {
+        success: false,
+        error: new RequestError("Failed to read feed response"),
+      };
+
+    const format = Utils.detect(text.data);
+
+    const products =
+      format === "xml"
+        ? Utils.Parser.xml(text.data)
+        : Utils.Parser.json(text.data);
 
     if (products.length === 0)
       return {
         success: false,
-        error: new RequestError("No products found in the feed. Check the URL or format."),
+        error: new RequestError(
+          "No products found in the feed. Check the URL or format.",
+        ),
       };
 
     const hostname = (() => {
@@ -128,35 +164,39 @@ export const connect = withAuthentication(
 );
 
 export const syncProducts = withAuthentication(
-  async (
-    context,
-    { storeId }: { storeId: string },
-  ): Promise<Result<number, Error>> => {
+  async (context, { storeId }: { storeId: string }) => {
     const store = await Store.get(Environment.SERVER, storeId);
     if (!store.success) return store;
+
     if (!store.data)
-      return { success: false, error: new Error("Store not found") };
+      return { success: false, error: new NotFoundError("Store not found") };
 
     const { feedUrl } = store.data;
+
     if (!feedUrl)
       return { success: false, error: new Error("Missing feed URL") };
 
     await Store.update(Environment.SERVER, storeId, { status: "syncing" });
 
-    const response = await request(feedUrl, { method: "GET" });
+    const response = await HTTP.request(feedUrl, { method: "GET" });
+
     if (!response.success) {
       await Store.update(Environment.SERVER, storeId, { status: "error" });
       return { success: false, error: response.error };
     }
 
     const text = await resultify(() => response.data.text());
+
     if (!text.success) {
       await Store.update(Environment.SERVER, storeId, { status: "error" });
       return { success: false, error: text.error };
     }
 
-    const format = detect(text.data);
-    const products = format === "xml" ? parseXml(text.data) : parseJson(text.data);
+    const format = Utils.detect(text.data);
+    const products =
+      format === "xml"
+        ? Utils.Parser.xml(text.data)
+        : Utils.Parser.json(text.data);
 
     const results = await Promise.all(
       products.map((item) =>

@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { db, schema } from "@/server/database";
-import { sendVerificationEmail } from "@/server/utils/send-verification-email";
+import * as Authentication from "@/server/app/authentication";
 
 const baseUrl = process.env.BETTER_AUTH_BASE_URL;
 
@@ -44,7 +44,7 @@ export const auth = betterAuth({
   },
   emailVerification: {
     sendVerificationEmail: async ({ user, url }) => {
-      void sendVerificationEmail({
+      void Authentication.sendVerificationEmail({
         to: user.email,
         verificationUrl: url,
       });

@@ -1,9 +1,8 @@
 "use server";
 
-import type { Result } from "@zenncore/utils";
 import { withAuthentication } from "../../utils/authentication";
 import { Environment } from "../../utils/environment";
-import { parse, request } from "../../utils/http";
+import * as HTTP from "../../utils/http";
 import * as Product from "../product";
 import * as Store from "../store";
 
@@ -25,10 +24,7 @@ type Type = {
 const API_VERSION = "2024-10";
 
 export const syncProducts = withAuthentication(
-  async (
-    context,
-    { storeId }: { storeId: string },
-  ): Promise<Result<number, Error>> => {
+  async (context, { storeId }: { storeId: string }) => {
     const store = await Store.get(Environment.SERVER, storeId);
     if (!store.success) return store;
 
@@ -46,16 +42,17 @@ export const syncProducts = withAuthentication(
     await Store.update(Environment.SERVER, storeId, { status: "syncing" });
 
     const all: Type[] = [];
+
     const limit = 250;
-    const maxPages = 10;
+    const maximum = 10;
 
     let url: string | null =
       `${domain}/admin/api/${API_VERSION}/products.json?limit=${limit}`;
 
-    for (const _ of Array.from({ length: maxPages })) {
+    for (const _ of Array.from({ length: maximum })) {
       if (!url) break;
 
-      const response = await request(url, {
+      const response = await HTTP.request(url, {
         method: "GET",
         headers: {
           "X-Shopify-Access-Token": accessToken,
@@ -65,7 +62,7 @@ export const syncProducts = withAuthentication(
 
       if (!response.success) break;
 
-      const parsed = await parse<{
+      const parsed = await HTTP.parse<{
         products: Type[];
       }>(response);
 
@@ -83,10 +80,11 @@ export const syncProducts = withAuthentication(
     const results = await Promise.all(
       all.map((item) => {
         const variant = item.variants[0];
+
         return Product.create(Environment.SERVER, {
           storeId,
           userId: context.session.user.id,
-          externalId: String(item.id),
+          externalId: item.id.toString(),
           title: item.title,
           description: item.body_html,
           price: variant?.price ?? null,

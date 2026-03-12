@@ -13,7 +13,7 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import * as FeedIntegration from "@/server/app/integration/feed";
-import * as Sync from "@/server/app/sync";
+import * as Store from "@/server/app/store";
 import { FieldDescription } from "@zenncore/web/components/form";
 
 const config = {
@@ -59,9 +59,8 @@ export const FeedForm = () => {
         description: "Importing products — this may take a moment.",
         type: "success",
       });
-
       void (async () => {
-        await Sync.syncStore({ storeId: result.data.id });
+        await Store.syncProducts({ storeId: result.data.id });
       })();
 
       router.push("/onboarding/select-products");

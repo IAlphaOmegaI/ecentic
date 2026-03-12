@@ -13,7 +13,7 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import * as WooCommerceIntegration from "@/server/app/integration/woocommerce";
-import * as Sync from "@/server/app/sync";
+import * as Store from "@/server/app/store";
 import { FieldDescription } from "@zenncore/web/components/form";
 
 const config = {
@@ -87,10 +87,10 @@ export const WooCommerceForm = () => {
       });
 
       void (async () => {
-        await Sync.syncStore({ storeId: result.data.id });
+        await Store.syncProducts({ storeId: result.data.id });
       })();
 
-      router.push("/onboarding/select-products");
+      router.push("/onboarding/products");
     },
   );
 
