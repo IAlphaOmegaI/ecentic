@@ -25,12 +25,12 @@ export default () => (
       }
     />
     <motion.div
-      className="flex flex-1 flex-col items-center justify-center overflow-y-auto md:rounded-l-xl bg-background p-8"
+      className="flex flex-1 flex-col items-center justify-center overflow-y-auto bg-background p-8 md:rounded-l-xl"
       variants={Fade.Right}
       initial="hidden"
       animate="visible"
     >
-      <div className="w-full max-w-md h-full md:h-auto">
+      <div className="h-full w-full max-w-md md:h-auto">
         <div className="mb-8 lg:hidden">
           <Image
             src="/images/trademark.svg"
@@ -70,7 +70,7 @@ export default () => (
         </motion.p>
 
         <motion.p
-          className="mt-2 font-light text-foreground-dimmed md:pb-0 pb-8"
+          className="mt-2 pb-8 font-light text-foreground-dimmed md:pb-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.65 }}

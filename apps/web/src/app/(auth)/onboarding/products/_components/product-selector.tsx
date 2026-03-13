@@ -6,12 +6,57 @@ import { Button } from "@zenncore/web/components/button";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import type { ReactNode } from "react";
 import { useState } from "react";
 import { Motion } from "@/components/motion";
-import { Scale, Spring, Stagger } from "@/lib/animations";
-import { products } from "@/lib/mock-data";
+import { Spring, Stagger } from "@/lib/animations";
+import type * as Product from "@/server/app/product";
 
-const PRODUCT_LIMIT = 10;
+const limit = 10;
+
+const parseImages = (images: string | null): string[] => {
+  try {
+    const parsed = JSON.parse(images ?? "[]");
+    if (Array.isArray(parsed)) return parsed;
+    return [];
+  } catch {
+    return [];
+  }
+};
+
+const computeDataQuality = (product: Product.Type): number => {
+  const checks = [
+    [product.title, 20],
+    [product.description, 20],
+    [product.price, 15],
+    [parseImages(product.images).length > 0, 15],
+    [product.sku, 10],
+    [product.url, 10],
+    [product.compareAtPrice, 10],
+  ] as const;
+
+  return checks.reduce(
+    (score, [value, weight]) => score + (value ? weight : 0),
+    0,
+  );
+};
+
+const formatPrice = (price: string | null, currency: string | null): string => {
+  if (!price) return "\u2014";
+
+  const symbol = (() => {
+    switch (currency?.toUpperCase()) {
+      case "EUR":
+        return "\u20AC";
+      case "GBP":
+        return "\u00A3";
+      default:
+        return "$";
+    }
+  })();
+
+  return `${symbol}${price}`;
+};
 
 const QualityBadge = ({ score }: { score: number }) => {
   const color = (() => {
@@ -43,25 +88,35 @@ const QualityBadge = ({ score }: { score: number }) => {
   );
 };
 
-export default () => {
+export namespace ProductSelector {
+  export type Props = {
+    children: ReactNode;
+    products: Product.Type[];
+  };
+}
+
+export const ProductSelector = ({
+  children,
+  products,
+}: ProductSelector.Props) => {
   const router = useRouter();
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [selected, setSelected] = useState<Set<string>>(new Set());
 
   const toggleAll = () => {
-    setSelectedIds((previous) => {
+    setSelected((previous) => {
       if (previous.size === products.length) return new Set();
-      return new Set(products.slice(0, PRODUCT_LIMIT).map((p) => p._id));
+      return new Set(products.slice(0, limit).map((product) => product.id));
     });
   };
 
   const toggleProduct = (id: string) => {
-    setSelectedIds((previous) => {
+    setSelected((previous) => {
       const next = new Set(previous);
       if (next.has(id)) {
         next.delete(id);
         return next;
       }
-      if (next.size >= PRODUCT_LIMIT) return previous;
+      if (next.size >= limit) return previous;
       next.add(id);
       return next;
     });
@@ -69,38 +124,23 @@ export default () => {
 
   const handleNext = () => {
     const selection =
-      selectedIds.size > 0
-        ? selectedIds
-        : new Set(
-            products.slice(0, PRODUCT_LIMIT).map((product) => product._id),
-          );
-    void selection;
-    router.push("/onboarding/competitors");
+      selected.size > 0
+        ? selected
+        : new Set(products.slice(0, limit).map((product) => product.id));
+
+    const params = new URLSearchParams();
+
+    for (const product of selection) params.append("products", product);
+    router.push(`/onboarding/competitors?${params.toString()}`);
   };
 
   return (
     <Motion.Stagger stagger={0.05} className="flex flex-1 flex-col px-6 py-10">
       <div className="mx-auto w-full max-w-3xl">
-        <Motion.Up className="mb-6">
-          <div className="mb-1 flex items-center gap-2">
-            <h1 className="font-medium text-2xl text-foreground">
-              Choose products to scan
-            </h1>
-            <motion.span
-              className="border border-primary/30 bg-primary/10 px-2 py-0.5 text-primary text-xs"
-              variants={Scale.In}
-            >
-              Free: {PRODUCT_LIMIT} products
-            </motion.span>
-          </div>
-          <p className="font-light text-foreground-dimmed text-sm">
-            Select the products you want to test against AI shopping agents. We
-            recommend starting with your best sellers.
-          </p>
-        </Motion.Up>
+        {children}
 
         <AnimatePresence>
-          {selectedIds.size > 0 && (
+          {selected.size > 0 && (
             <motion.div
               className="mb-4 border border-primary/20 bg-primary/5 px-4 py-2.5 text-primary text-sm"
               initial={{ opacity: 0, height: 0, marginBottom: 0 }}
@@ -108,7 +148,7 @@ export default () => {
               exit={{ opacity: 0, height: 0, marginBottom: 0 }}
               transition={Spring.Snappy}
             >
-              {selectedIds.size} of {PRODUCT_LIMIT} products selected
+              {selected.size} of {limit} products selected
             </motion.div>
           )}
         </AnimatePresence>
@@ -123,7 +163,7 @@ export default () => {
                     onClick={toggleAll}
                     className={cn(
                       "flex size-4 cursor-pointer items-center justify-center border transition-colors duration-150",
-                      selectedIds.size === products.length
+                      selected.size === products.length
                         ? "border-primary bg-primary"
                         : "border-accent-foreground bg-background-rich",
                     )}
@@ -131,23 +171,21 @@ export default () => {
                     <CheckIcon
                       className={cn(
                         "size-2.5 text-white transition-opacity duration-150",
-                        selectedIds.size === products.length
+                        selected.size === products.length
                           ? "opacity-100"
                           : "opacity-0",
                       )}
                     />
                   </button>
                 </th>
-                {["Product", "Price", "Category", "Quality", "Variants"].map(
-                  (header) => (
-                    <th
-                      key={header}
-                      className="px-4 py-2 text-left font-medium text-foreground-dimmed text-xs"
-                    >
-                      {header}
-                    </th>
-                  ),
-                )}
+                {["Product", "Price", "Status", "Quality"].map((header) => (
+                  <th
+                    key={header}
+                    className="px-4 py-2 text-left font-medium text-foreground-dimmed text-xs"
+                  >
+                    {header}
+                  </th>
+                ))}
               </tr>
             </thead>
             <motion.tbody
@@ -156,15 +194,16 @@ export default () => {
               animate="visible"
             >
               {products.map((product) => {
-                const isSelected = selectedIds.has(product._id);
-                const isDisabled =
-                  !isSelected && selectedIds.size >= PRODUCT_LIMIT;
+                const isSelected = selected.has(product.id);
+                const isDisabled = !isSelected && selected.size >= limit;
+                const images = parseImages(product.images);
+                const quality = computeDataQuality(product);
 
                 return (
                   <motion.tr
-                    key={product._id}
+                    key={product.id}
                     variants={Stagger.Item}
-                    onClick={() => !isDisabled && toggleProduct(product._id)}
+                    onClick={() => !isDisabled && toggleProduct(product.id)}
                     className={cn(
                       "cursor-pointer border-accent-foreground border-b transition-colors last:border-b-0",
                       isSelected
@@ -193,30 +232,47 @@ export default () => {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex size-9 shrink-0 items-center justify-center bg-primary/10 font-semibold text-primary text-xs">
-                          {product.title.slice(0, 2).toUpperCase()}
-                        </div>
+                        {images[0] ? (
+                          // biome-ignore lint/performance/noImgElement: external image domains are unknown at build time
+                          <img
+                            src={images[0]}
+                            alt={product.title}
+                            className="size-9 shrink-0 object-cover"
+                          />
+                        ) : (
+                          <div className="flex size-9 shrink-0 items-center justify-center bg-primary/10 font-semibold text-primary text-xs">
+                            {product.title.slice(0, 2).toUpperCase()}
+                          </div>
+                        )}
                         <div>
                           <p className="font-medium text-foreground text-sm">
                             {product.title}
                           </p>
-                          <p className="text-foreground-dimmed text-xs">
-                            {product.sku}
-                          </p>
+                          {product.sku && (
+                            <p className="text-foreground-dimmed text-xs">
+                              {product.sku}
+                            </p>
+                          )}
                         </div>
                       </div>
                     </td>
                     <td className="px-4 py-3 font-light text-foreground text-sm">
-                      ${product.price}
-                    </td>
-                    <td className="px-4 py-3 font-light text-foreground-dimmed text-xs">
-                      {product.category}
+                      {formatPrice(product.price, product.currency)}
                     </td>
                     <td className="px-4 py-3">
-                      <QualityBadge score={product.dataQuality} />
+                      <span
+                        className={cn(
+                          "px-1.5 py-0.5 font-medium text-xs",
+                          product.status === "active"
+                            ? "bg-success/10 text-success"
+                            : "bg-foreground-dimmed/10 text-foreground-dimmed",
+                        )}
+                      >
+                        {product.status === "active" ? "Active" : "Draft"}
+                      </span>
                     </td>
-                    <td className="px-4 py-3 font-light text-foreground-dimmed text-xs">
-                      1
+                    <td className="px-4 py-3">
+                      <QualityBadge score={quality} />
                     </td>
                   </motion.tr>
                 );
@@ -241,7 +297,7 @@ export default () => {
               color="primary"
               type="button"
               onClick={handleNext}
-              disabled={selectedIds.size === 0}
+              disabled={selected.size === 0}
               className="px-6 py-2 font-medium text-sm"
             >
               Next: Add Competitors

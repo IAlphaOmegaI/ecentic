@@ -25,7 +25,7 @@ export default () => (
       }
     />
     <motion.div
-      className="flex flex-1 flex-col items-center justify-center overflow-hidden md:rounded-l-xl bg-background p-8"
+      className="flex flex-1 flex-col items-center justify-center overflow-hidden bg-background p-8 md:rounded-l-xl"
       variants={Fade.Right}
       initial="hidden"
       animate="visible"

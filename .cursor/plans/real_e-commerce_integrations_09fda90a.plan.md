@@ -165,7 +165,7 @@ Add relations for both, then run `drizzle-kit generate` + `drizzle-kit migrate`.
 2. Redirect to `**/api/integrations/shopify/install?shop={domain}**`
 3. That route builds the Shopify OAuth URL and redirects the user to Shopify
 4. Merchant authorizes -> Shopify redirects to `**/api/integrations/shopify/callback?code=X&shop=Y**`
-5. Callback route exchanges the code for an access token, creates a `store` row, triggers product sync, redirects to `/onboarding/select-products`
+5. Callback route exchanges the code for an access token, creates a `store` row, triggers product sync, redirects to `/onboarding/products`
 
 ### Files to create
 
@@ -188,7 +188,7 @@ Add relations for both, then run `drizzle-kit generate` + `drizzle-kit migrate`.
 1. User clicks "Connect WooCommerce" -> a dialog opens with three fields: **Store URL**, **Consumer Key**, **Consumer Secret**
 2. Server action validates the credentials by calling `GET {storeUrl}/wp-json/wc/v3/products?per_page=1` with basic auth
 3. If valid, create a `store` row, trigger product sync
-4. Redirect to `/onboarding/select-products`
+4. Redirect to `/onboarding/products`
 
 ### Files to create
 
@@ -209,7 +209,7 @@ Add relations for both, then run `drizzle-kit generate` + `drizzle-kit migrate`.
 1. User clicks "Custom Feed" -> input field for feed URL
 2. Server action fetches the URL, detects format (XML or JSON), parses products
 3. Creates `store` row + `product` rows
-4. Redirect to `/onboarding/select-products`
+4. Redirect to `/onboarding/products`
 
 ### Files to create
 

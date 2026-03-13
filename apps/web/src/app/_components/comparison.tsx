@@ -13,7 +13,7 @@ type Capability = {
   label: string;
   audit: Status;
   geo: Status;
-  ecetric: Status;
+  ecentic: Status;
 };
 
 const capabilities: Capability[] = [
@@ -22,42 +22,42 @@ const capabilities: Capability[] = [
     label: 'Tells you if products are "AI-ready"',
     audit: "yes",
     geo: "no",
-    ecetric: "yes",
+    ecentic: "yes",
   },
   {
     _id: "brand-mentions",
     label: "Tracks brand mentions in AI search",
     audit: "no",
     geo: "yes",
-    ecetric: "yes",
+    ecentic: "yes",
   },
   {
     _id: "agent-purchasing",
     label: "Simulates actual agent purchasing",
     audit: "no",
     geo: "no",
-    ecetric: "yes",
+    ecentic: "yes",
   },
   {
     _id: "win-rate",
     label: "Measures win rate vs. specific competitors",
     audit: "no",
     geo: "no",
-    ecetric: "yes",
+    ecentic: "yes",
   },
   {
     _id: "optimized-listings",
     label: "Auto-generates optimized listings",
     audit: "partial",
     geo: "no",
-    ecetric: "yes",
+    ecentic: "yes",
   },
   {
     _id: "model-updates",
     label: "Re-optimizes when models update",
     audit: "no",
     geo: "no",
-    ecetric: "yes",
+    ecentic: "yes",
   },
 ];
 
@@ -96,7 +96,7 @@ const columns = [
       <StatusCell status={row.original.audit} />
     ),
     header: () => (
-      <span className="flex w-full min-w-20 justify-center md:min-w-32 text-center">
+      <span className="flex w-full min-w-20 justify-center text-center md:min-w-32">
         Audit Tools
       </span>
     ),
@@ -107,7 +107,7 @@ const columns = [
       <StatusCell status={row.original.geo} />
     ),
     header: () => (
-      <span className="flex w-full min-w-28 justify-center md:min-w-48  text-center">
+      <span className="flex w-full min-w-28 justify-center text-center md:min-w-48">
         GEO Monitoring
       </span>
     ),
@@ -115,12 +115,12 @@ const columns = [
   {
     accessorKey: "écentic",
     header: () => (
-      <span className="flex w-full min-w-20 justify-center text-primary md:min-w-32 text-center">
-        ecetric
+      <span className="flex w-full min-w-20 justify-center text-center text-primary md:min-w-32">
+        écentic
       </span>
     ),
     cell: ({ row }: { row: { original: Capability } }) => (
-      <StatusCell status={row.original.ecetric} />
+      <StatusCell status={row.original.ecentic} />
     ),
   },
 ];

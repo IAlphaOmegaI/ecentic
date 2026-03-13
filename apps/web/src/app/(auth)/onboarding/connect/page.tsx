@@ -1,9 +1,9 @@
-import { Motion } from "@/components/motion";
 import { ArrowRightIcon, UploadIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import * as motion from "motion/react-client";
 import Image from "next/image";
 import Link from "next/link";
+import { Motion } from "@/components/motion";
 import { Fade } from "@/lib/animations";
 
 const platforms = [
@@ -51,7 +51,7 @@ const platforms = [
 
 export default () => (
   <motion.div
-    className="flex flex-1 flex-col items-center justify-center overflow-hidden md:rounded-l-xl bg-background p-8"
+    className="flex flex-1 flex-col items-center justify-center overflow-hidden bg-background p-8 md:rounded-l-xl"
     variants={Fade.Right}
     initial="hidden"
     animate="visible"

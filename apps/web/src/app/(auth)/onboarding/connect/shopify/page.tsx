@@ -1,11 +1,11 @@
+import { ArrowLeftIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
+import * as motion from "motion/react-client";
 import Image from "next/image";
 import Link from "next/link";
-import { ShopifyForm } from "./_components/shopify-form";
-import * as motion from "motion/react-client";
-import { Fade } from "@/lib/animations";
 import { Motion } from "@/components/motion";
-import { ArrowLeftIcon } from "@zenncore/icons";
+import { Fade } from "@/lib/animations";
+import { ShopifyForm } from "./_components/shopify-form";
 
 export default () => (
   <motion.div

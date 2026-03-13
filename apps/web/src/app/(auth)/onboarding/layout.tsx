@@ -9,9 +9,9 @@ import { Spring } from "@/lib/animations";
 
 const steps = [
   { label: "Connect Store", path: "/onboarding/connect" },
-  { label: "Select Products", path: "/onboarding/select-products" },
+  { label: "Select Products", path: "/onboarding/products" },
   { label: "Add Competitors", path: "/onboarding/competitors" },
-  { label: "Run Scan", path: "/onboarding/first-scan" },
+  { label: "Run Scan", path: "/onboarding/scan" },
 ] as const;
 
 const sidebar = {
@@ -71,7 +71,7 @@ const sidebar = {
       "Re-sync anytime to pick up changes",
     ],
   },
-  "/onboarding/select-products": {
+  "/onboarding/products": {
     headline: (
       <>
         Pick your
@@ -99,7 +99,7 @@ const sidebar = {
       "Track the gap and close it faster",
     ],
   },
-  "/onboarding/first-scan": {
+  "/onboarding/scan": {
     headline: (
       <>
         See who's
@@ -130,7 +130,7 @@ export default ({ children }: PropsWithChildren) => {
         points={content.points}
       />
 
-      <main className="flex flex-1 flex-col overflow-hidden md:rounded-l-xl bg-background">
+      <main className="flex flex-1 flex-col overflow-hidden bg-background md:rounded-l-xl">
         <motion.div
           className="border-accent-foreground border-b bg-background-rich px-6 py-4"
           initial={{ opacity: 0, y: -8 }}

@@ -32,7 +32,7 @@ type TextFieldContext = {
   id: string;
   // name?: string;
   type: "text" | "email" | "password";
-  value: string;
+  value: string | null;
   disabled: boolean;
   focusState: RefObject<InputFocusState>;
   inputRef: RefObject<HTMLInputElement | null>;
@@ -171,7 +171,7 @@ export namespace TextField {
     "div",
     State,
     {
-      value?: string;
+      value?: string | null;
       defaultValue?: string;
       onValueChange?: (value: string) => void;
     } & (
@@ -270,7 +270,7 @@ export const TextFieldInput = ({
     props: mergeProps<typeof InputPrimitive>(inputTypeProps[type], props, {
       id: inheritedID ?? id,
       type: type === "password" ? (masked ? "password" : "text") : type,
-      value: value ?? "",
+      value: value === null ? "" : value,
       disabled,
       "aria-roledescription": "Text field",
       //TODO className: (inputState)=> resolveClassName(className,{...state,...inputState})

@@ -1419,3 +1419,160 @@ bg-primary             — primary background (CTAs, highlights)
 - [ ] **(Next.js)** Use partial prerendering (PPR)
 - [ ] **(Next.js)** Colocate page-specific components in `_components` inside the page folder
 - [ ] **(Next.js)** Pages with forms: `page.tsx` is a server component; form extracted to `_components/` using `InferredForm` + `field()`
+
+---
+
+## 23. Code Quality Rules (from review)
+
+### 23a. Always Use the Repository Pattern for DB Operations
+
+Never use raw `db.insert(...)`, `db.select(...)`, etc. directly in application code. Every table must have a repository file in `server/app/` using the `repository()` helper. Use `Entity.create()`, `Entity.find()`, etc. for all database operations — including bulk inserts via `Promise.all(items.map(item => Entity.create(...)))`.
+
+```ts
+// ✅ Good — repository pattern
+await Promise.all(
+  results.map((record) =>
+    Simulation.create(Environment.SERVER, { scanId, ...record }),
+  ),
+);
+
+// ❌ Bad — raw db import and inline insert
+const { db } = await import("../../database");
+await db.insert(schema.simulation).values(results);
+```
+
+### 23b. Prefer `Object.fromEntries` + `.map()` Over Imperative Accumulation
+
+When building a record/map from an array, use `Object.fromEntries` with `.map()` instead of declaring an empty object and mutating it in a `for` loop.
+
+```ts
+// ✅ Good — declarative
+const rates = Object.fromEntries(
+  models.map((model) => {
+    const wins = results.filter((r) => r.model === model.id && r.winner === "product").length;
+    const total = results.filter((r) => r.model === model.id).length;
+    return [model.id, { wins, total, rate: total > 0 ? Math.round((wins / total) * 100) : 0 }];
+  }),
+);
+
+// ❌ Bad — imperative mutation
+const rates: Record<string, ...> = {};
+for (const model of models) {
+  rates[model.id] = { ... };
+}
+```
+
+### 23c. Fully Parallelize Independent Async Work
+
+When async operations are independent (no data dependency between iterations), flatten them into a single `Promise.all` with `.flatMap()` instead of sequential loops with nested `Promise.all`. This maximizes throughput.
+
+```ts
+// ✅ Good — all calls fire at once
+const results = await Promise.all(
+  products.flatMap((product) =>
+    competitors.flatMap((competitor) =>
+      models.map((model) => runSimulation(product, competitor, model)),
+    ),
+  ),
+);
+
+// ❌ Bad — sequential outer loop, parallel only within each pair
+for (const pair of pairs) {
+  const results = await Promise.all(
+    models.map((model) => runSimulation(pair.product, pair.competitor, model)),
+  );
+}
+```
+
+### 23d. Derive Instead of Mutate
+
+Prefer deriving values from data (`.filter().length`, `.reduce()`, `Object.fromEntries`) over mutable counters (`let wins = 0; wins += 1`). This eliminates mutation bugs and reads more clearly.
+
+```ts
+// ✅ Good — derived
+const wins = results.filter((r) => r.winner === "product").length;
+const losses = results.length - wins;
+
+// ❌ Bad — mutable counters
+let wins = 0;
+let losses = 0;
+for (const r of results) {
+  if (r.winner === "product") wins += 1;
+  else losses += 1;
+}
+```
+
+### 23e. Verify Icon Exports Before Using
+
+Always check that an icon exists in `@zenncore/icons` before importing it. The codebase uses `[Name]Icon` naming (e.g. `XIcon`, `CheckIcon`). Do not assume icons from other libraries exist here (e.g. `XMarkIcon` does not exist — use `XIcon`).
+
+### 23f. Maximize Server Component Content
+
+Server components should contain as much as possible — titles, static content, layout, data grids, and animations. Only truly interactive parts (event handlers, `useState`, `useEffect`) belong in client components. Never create a fully client page that renders everything client-side when static content could live in the server `page.tsx`.
+
+Pattern: Server `page.tsx` renders static content and passes it as `children` to a minimal client component that handles interactivity.
+
+```tsx
+// ✅ Good — server renders static content, client handles interactivity
+// page.tsx (server)
+import { Motion } from "@/components/motion";
+import { InteractivePanel } from "./_components/interactive-panel";
+
+export default async () => {
+  const data = await fetchData();
+  return (
+    <InteractivePanel count={data.length}>
+      <Motion.Stagger stagger={0.08} className="w-full max-w-2xl">
+        <Motion.Up>
+          <h1>Title</h1>
+          <p>Static description based on server data</p>
+        </Motion.Up>
+        <Motion.Up>
+          {/* Static data grid rendered on server */}
+        </Motion.Up>
+      </Motion.Stagger>
+    </InteractivePanel>
+  );
+};
+
+// ❌ Bad — entire page is a client component wrapper
+import { FullPageClient } from "./_components/full-page-client";
+
+export default async () => {
+  const data = await fetchData();
+  return <FullPageClient count={data.length} />;
+};
+```
+
+Motion animations work in server components via the `Motion` component from `@/components/motion` (which imports from `motion/react-client`). Use `Motion.Stagger`, `Motion.Up`, etc. for all server-side animations. Only use `motion` from `"motion/react"` directly inside client components.
+
+### 23g. Use `@zenncore` Components — Never Raw HTML Inputs
+
+Never use raw `<input>`, `<textarea>`, or unstyled form elements. Always use `@zenncore/web` components which are already styled and follow the design system.
+
+**`TextField`** is a compound component — `TextField` is the root container (a styled `<div>`), and `TextFieldInput` is the actual `<input>` element inside it. Pass `value`/`onValueChange` to the root, and `placeholder`/`onKeyDown`/etc. to the input.
+
+**`Textarea`** follows the same compound pattern — `Textarea` is the root, `TextareaInput` is the actual `<textarea>`.
+
+For form-based inputs (with validation, labels, descriptions), prefer `InferredForm` with `field()` config.
+
+```tsx
+// ✅ Good — compound component pattern
+import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
+import { Textarea, TextareaInput } from "@zenncore/web/components/textarea";
+
+<TextField value={query} onValueChange={setQuery}>
+  <TextFieldInput placeholder="Search..." onKeyDown={handler} />
+</TextField>
+
+<Textarea value={text} onValueChange={setText}>
+  <TextareaInput rows={6} placeholder="Enter text..." />
+</Textarea>
+
+// ❌ Bad — raw HTML elements
+<input value={query} onChange={e => setQuery(e.target.value)} />
+<textarea rows={6} value={text} onChange={e => setText(e.target.value)} />
+
+// ❌ Bad — passing input props to root
+<TextField placeholder="Search..." onKeyDown={handler} />
+```

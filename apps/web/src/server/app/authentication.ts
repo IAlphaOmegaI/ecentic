@@ -1,8 +1,10 @@
 "use server";
+import { render } from "@react-email/components";
 import { type Result, resultify } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
 import { cookies, headers } from "next/headers";
-
+import { Resend } from "resend";
+import { VerifyEmail } from "@/public/templates/verify";
 import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
 import { withContext } from "../utils/context";
@@ -13,11 +15,6 @@ import {
   type UnauthenticatedError,
 } from "../utils/error";
 import * as User from "./user";
-import { VerifyEmail } from "@/public/templates/verify";
-import { Resend } from "resend";
-import { render } from "@react-email/components";
-
-const baseUrl = process.env.BETTER_AUTH_BASE_URL;
 
 const parseName = (fullName: string): { name: string; surname: string } => {
   const trimmed = fullName.trim();
@@ -203,7 +200,7 @@ export const signUp = withContext(
             email: payload.email,
             password: payload.password,
             ...(payload.role !== undefined && { role: payload.role }),
-            callbackURL: `${baseUrl}/onboarding/connect`,
+            callbackURL: `${process.env.APP_HOST}/onboarding/connect`,
           },
         }),
     );
@@ -234,8 +231,8 @@ export const verifyEmail = withContext(
     _context,
     token: string,
   ): Promise<Result<{ redirectUrl: string }, Error>> => {
-    const callbackUrl = `${baseUrl}/onboarding/connect`;
-    const redirectUrl = `${baseUrl}/api/auth/verify-email?token=${encodeURIComponent(token)}&callbackURL=${encodeURIComponent(callbackUrl)}`;
+    const callbackUrl = `${process.env.APP_HOST}/onboarding/connect`;
+    const redirectUrl = `${process.env.APP_HOST}/api/auth/verify-email?token=${encodeURIComponent(token)}&callbackURL=${encodeURIComponent(callbackUrl)}`;
     return {
       success: true,
       data: { redirectUrl },

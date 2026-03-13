@@ -11,8 +11,8 @@ export const extractPaginationParams = async (
 ) => {
   const query = await searchParams;
 
-  const page = parseSearchParam(query.page, "single", 1);
-  const size = parseSearchParam(query.size, "single", 20);
+  const page = parseSearchParam(query.page, "single", "1");
+  const size = parseSearchParam(query.size, "single", "20");
 
   return {
     page: Number.parseInt(page, 10),

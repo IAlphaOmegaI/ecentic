@@ -1,30 +1,35 @@
-import { CheckBadgeIcon } from "@zenncore/icons";
+import {
+  BarChartIcon,
+  CodeIcon,
+  HammerIcon,
+  ShieldCheckIcon,
+} from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 
 const features = [
   {
-    icon: CheckBadgeIcon,
+    icon: BarChartIcon,
     color: "text-blue-500",
     title: "Agent Win Rate Dashboard",
     description:
       "See how often each product in your catalog is selected by AI agents vs. competitors, broken down by model (GPT, Claude, Gemini).",
   },
   {
-    icon: CheckBadgeIcon,
+    icon: ShieldCheckIcon,
     color: "text-green-500",
     title: "Multi-Model Engine",
     description:
       "We test every product across 5+ agent models, mapped to their unique selection biases.",
   },
   {
-    icon: CheckBadgeIcon,
+    icon: HammerIcon,
     color: "text-red-500",
     title: "Competitor Battlecards",
     description:
       "Know exactly which competitor products are beating yours, and on which specific attributes.",
   },
   {
-    icon: CheckBadgeIcon,
+    icon: CodeIcon,
     color: "text-purple-500",
     title: "UCP Readiness & Structured Data",
     description:

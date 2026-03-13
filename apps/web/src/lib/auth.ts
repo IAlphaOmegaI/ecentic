@@ -1,8 +1,8 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { db, schema } from "@/server/database";
 import * as Authentication from "@/server/app/authentication";
+import { db, schema } from "@/server/database";
 
 const baseUrl = process.env.BETTER_AUTH_BASE_URL;
 

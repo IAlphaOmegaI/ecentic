@@ -40,8 +40,8 @@
       "Bash(npx biome check --write --unsafe packages/web/src/components/data-table.tsx)",
       "Bash(npx biome check --write --unsafe apps/web/src/app/_components/comparison.tsx)",
       "Bash(bun biome check --write apps/web/src/app/\\\\\\(onboarding\\\\\\)/layout.tsx)",
-      "Bash(sed -i '' 's/className=\"\"px-4 py-3 w-10\"\"/className=\"\"w-10 px-4 py-3\"\"/' /Users/xhurianshaba/Developer/zennit/ecentic/apps/web/src/app/onboarding/select-products/page.tsx)",
-      "Bash(sed -i '' 's/className=\"\"px-6 py-2 text-sm font-medium\"\"/className=\"\"px-6 py-2 font-medium text-sm\"\"/' /Users/xhurianshaba/Developer/zennit/ecentic/apps/web/src/app/onboarding/select-products/page.tsx)",
+      "Bash(sed -i '' 's/className=\"\"px-4 py-3 w-10\"\"/className=\"\"w-10 px-4 py-3\"\"/' /Users/xhurianshaba/Developer/zennit/ecentic/apps/web/src/app/onboarding/products/page.tsx)",
+      "Bash(sed -i '' 's/className=\"\"px-6 py-2 text-sm font-medium\"\"/className=\"\"px-6 py-2 font-medium text-sm\"\"/' /Users/xhurianshaba/Developer/zennit/ecentic/apps/web/src/app/onboarding/products/page.tsx)",
       "Bash(npx biome check --write apps/web/src/app/onboarding/competitors/page.tsx)",
       "Bash(npx biome check --write --unsafe apps/web/src/app/onboarding/competitors/page.tsx)"
     ]

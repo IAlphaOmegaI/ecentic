@@ -1,18 +1,25 @@
 "use server";
 
+import { eq } from "drizzle-orm";
 import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
 import { Environment } from "../utils/environment";
 import type { Document } from "../utils/repository";
 import { repository } from "../utils/repository";
+import * as Feed from "./integration/feed";
 import * as Shopify from "./integration/shopify";
 import * as WooCommerce from "./integration/woocommerce";
-import * as Feed from "./integration/feed";
 
 export const { get, paginate, create, update, destroy, exists, count, find } =
   repository(schema.store);
 
 export type Type = Document<typeof schema.store>;
+
+export const getForCurrentUser = withAuthentication(async (context) => {
+  return find(Environment.SERVER, {
+    where: eq(schema.store.userId, context.session.user.id),
+  });
+}, "Store.getForCurrentUser");
 
 export const syncProducts = withAuthentication(
   async (_, { storeId }: { storeId: string }) => {

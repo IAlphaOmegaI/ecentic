@@ -3,18 +3,18 @@
 import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
+import { FieldDescription } from "@zenncore/web/components/form";
 import {
   type FormEntries,
+  field,
   type GenericForm,
   InferredForm,
-  field,
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import * as WooCommerceIntegration from "@/server/app/integration/woocommerce";
 import * as Store from "@/server/app/store";
-import { FieldDescription } from "@zenncore/web/components/form";
 
 const config = {
   domain: field({

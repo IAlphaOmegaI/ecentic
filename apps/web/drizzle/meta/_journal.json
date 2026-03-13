@@ -8,6 +8,20 @@
       "when": 1772971931573,
       "tag": "0000_mute_blizzard",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1773356001771,
+      "tag": "0001_remarkable_rafael_vega",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1773357555043,
+      "tag": "0002_legal_eternity",
+      "breakpoints": true
     }
   ]
 }
