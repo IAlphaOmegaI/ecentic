@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import { cookies } from "next/headers";
 import { type NextRequest, NextResponse as Response } from "next/server";
 
-const SCOPES = "read_products";
+const SCOPES = "read_products,write_products";
 
 export const GET = async (request: NextRequest) => {
   const { SHOPIFY_API_KEY, APP_HOST } = process.env;

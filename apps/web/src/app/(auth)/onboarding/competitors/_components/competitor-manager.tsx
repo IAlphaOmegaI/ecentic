@@ -102,7 +102,7 @@ export const CompetitorManager = ({
 
     setCompetitors((previous) => [...previous, ...result.data]);
 
-    setUrl("");
+    setUrl(null);
 
     toast.add({
       title: "Products extracted",

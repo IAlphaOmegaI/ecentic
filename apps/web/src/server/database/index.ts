@@ -24,6 +24,7 @@ export type {
   product,
   session,
   store,
+  ucpProfile,
   user,
   verification,
 } from "./schema";

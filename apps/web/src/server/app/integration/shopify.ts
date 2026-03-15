@@ -111,3 +111,76 @@ export const syncProducts = withAuthentication(
   },
   "Shopify.syncProducts",
 );
+
+export const updateProduct = withAuthentication(
+  async (
+    _context,
+    {
+      productId,
+      data,
+    }: {
+      productId: string;
+      data: {
+        title?: string;
+        body_html?: string;
+      };
+    },
+  ) => {
+    const product = await Product.get(Environment.SERVER, productId);
+    if (!product.success) return product;
+
+    if (!product.data)
+      return { success: false, error: new Error("Product not found") };
+
+    const store = await Store.get(Environment.SERVER, product.data.storeId);
+    if (!store.success) return store;
+
+    if (!store.data)
+      return { success: false, error: new Error("Store not found") };
+
+    if (store.data.platform !== "shopify")
+      return {
+        success: false,
+        error: new Error("Store is not a Shopify store"),
+      };
+
+    const { domain, accessToken } = store.data;
+
+    if (!accessToken)
+      return {
+        success: false,
+        error: new Error("Missing Shopify access token"),
+      };
+
+    if (!product.data.externalId)
+      return { success: false, error: new Error("Product has no external ID") };
+
+    const url = `${domain}/admin/api/${API_VERSION}/products/${product.data.externalId}.json`;
+
+    const response = await HTTP.request(url, {
+      method: "PUT",
+      headers: {
+        "X-Shopify-Access-Token": accessToken,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ product: data }),
+    });
+
+    if (!response.success) return response;
+
+    const parsed = await HTTP.parse<{ product: Type }>(response);
+    if (!parsed.success) return parsed;
+
+    const updated = parsed.data.product;
+
+    await Product.update(Environment.SERVER, productId, {
+      title: updated.title,
+      description: updated.body_html,
+      rawData: JSON.stringify(updated),
+      syncedAt: new Date(),
+    });
+
+    return { success: true, data: updated };
+  },
+  "Shopify.updateProduct",
+);

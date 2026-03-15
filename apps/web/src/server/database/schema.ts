@@ -33,6 +33,8 @@ export const session = pgTable("session", {
   token: text("token").notNull().unique(),
   expiresAt: timestamp("expiresAt", { mode: "date" }).notNull(),
   createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+  ipAddress: text("ipAddress"),
+  userAgent: text("userAgent"),
   updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
 });
 
@@ -100,6 +102,7 @@ export const product = pgTable("product", {
   sku: text("sku"),
   status: text("status").default("active"),
   rawData: text("rawData"),
+  structuredData: text("structuredData"),
   syncedAt: timestamp("syncedAt", { mode: "date" }),
   createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
@@ -138,6 +141,27 @@ export const scan = pgTable("scan", {
   updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
 });
 
+export const ucpProfile = pgTable("ucp_profile", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+  userId: text("userId")
+    .notNull()
+    .unique()
+    .references(() => user.id, { onDelete: "cascade" }),
+  merchantName: text("merchantName"),
+  description: text("description"),
+  logoUrl: text("logoUrl"),
+  paymentMethods: text("paymentMethods"),
+  shippingPolicy: text("shippingPolicy"),
+  returnPolicy: text("returnPolicy"),
+  contactEmail: text("contactEmail"),
+  sustainability: text("sustainability"),
+  certifications: text("certifications"),
+  generatedJson: text("generatedJson"),
+  autoUpdate: boolean("autoUpdate").notNull().default(true),
+  createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+});
+
 export const simulation = pgTable("simulation", {
   id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
   scanId: text("scanId")
@@ -168,6 +192,7 @@ export const tables = {
   competitor,
   scan,
   simulation,
+  ucpProfile,
 };
 
 /** Relations */
@@ -234,6 +259,12 @@ export const relations = defineRelations(tables, (r) => ({
     competitor: r.one.competitor({
       from: r.simulation.competitorId,
       to: r.competitor.id,
+    }),
+  },
+  ucpProfile: {
+    user: r.one.user({
+      from: r.ucpProfile.userId,
+      to: r.user.id,
     }),
   },
 }));

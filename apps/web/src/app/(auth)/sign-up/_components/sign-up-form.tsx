@@ -90,8 +90,6 @@ export namespace SignUpForm {
   };
 }
 export const SignUpForm = ({ className }: SignUpForm.Props) => {
-  const router = useRouter();
-
   const toast = useToastManager();
 
   const [handleSubmit, isPending] = useAsyncAction(
@@ -107,7 +105,12 @@ export const SignUpForm = ({ className }: SignUpForm.Props) => {
         return;
       }
 
-      router.push("/verify");
+      toast.add({
+        title: "Account created",
+        description:
+          "Please check your email to verify your address. You will be redirected to the onboarding process.",
+        type: "success",
+      });
     },
   );
   return (
