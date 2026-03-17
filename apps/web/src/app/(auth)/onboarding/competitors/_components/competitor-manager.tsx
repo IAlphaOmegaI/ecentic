@@ -17,16 +17,13 @@ import {
   TabsList,
   TabsPanel,
 } from "@zenncore/web/components/tabs";
-import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
-import { Textarea, TextareaInput } from "@zenncore/web/components/textarea";
-import { useToastManager } from "@zenncore/web/components/toast";
 import Link, { useLinkStatus } from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { Motion } from "@/components/motion";
+import { Spring } from "@/lib/animations";
 import * as Competitor from "@/server/app/competitor";
-import { detectCompetitors } from "@/server/app/intelligence/detect";
 import { scrapeUrls } from "@/server/app/intelligence/scrape";
 import { searchCompetitors } from "@/server/app/intelligence/search";
 
@@ -47,6 +44,8 @@ const formatPrice = (price: string | null, currency: string | null): string => {
   return `${symbol}${price}`;
 };
 
+type LogEntry = { text: string; type: "info" | "success" | "error" };
+
 export namespace CompetitorManager {
   export type Props = {
     children: ReactNode;
@@ -63,29 +62,87 @@ export const CompetitorManager = ({
   const router = useRouter();
   const toast = useToastManager();
   const [competitors, setCompetitors] = useState<Competitor.Type[]>(existing);
+  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [isDetectingUI, setIsDetectingUI] = useState(false);
 
   const [url, setUrl] = useState<string | null>(null);
   const [query, setQuery] = useState<string | null>(null);
 
-  const [handleDetect, isDetecting] = useAsyncAction(async () => {
-    const result = await detectCompetitors({ productIds });
+  const handleDetectWithLogs = async () => {
+    setIsDetectingUI(true);
+    setLogs([]);
 
-    if (!result.success) {
-      toast.add({
-        title: "Detection failed",
-        description: result.error.message,
-        type: "error",
-      });
+    const response = await fetch("/api/intelligence/detect", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ productIds }),
+    });
+
+    if (!response.ok || !response.body) {
+      setLogs([
+        { text: `Request failed — HTTP ${response.status}`, type: "error" },
+      ]);
       return;
     }
 
-    setCompetitors((previous) => [...previous, ...result.data]);
-    toast.add({
-      title: "Competitors found",
-      description: `Found ${result.data.length} competitor products.`,
-      type: "success",
-    });
-  });
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() ?? "";
+
+        for (const line of lines) {
+          if (!line.trim()) continue;
+
+          const event = JSON.parse(line) as
+            | { kind: "log"; text: string }
+            | { kind: "error"; text: string }
+            | { kind: "done"; competitors: Competitor.Type[] };
+
+          switch (event.kind) {
+            case "log":
+              setLogs((previous) => [
+                ...previous,
+                { text: event.text, type: "info" },
+              ]);
+              break;
+            case "error":
+              setLogs((previous) => [
+                ...previous,
+                { text: event.text, type: "error" },
+              ]);
+              return;
+            case "done":
+              setLogs((previous) => [
+                ...previous,
+                {
+                  text: `${event.competitors.length} competitors ready`,
+                  type: "success",
+                },
+              ]);
+              setCompetitors((previous) => [...previous, ...event.competitors]);
+              setIsDetectingUI(false);
+              return;
+          }
+        }
+      }
+    } catch (error) {
+      setLogs((previous) => [
+        ...previous,
+        {
+          text: error instanceof Error ? error.message : "Stream error",
+          type: "error",
+        },
+      ]);
+    }
+  };
 
   const [handleScrape, isScraping] = useAsyncAction(async () => {
     const urls =
@@ -108,7 +165,6 @@ export const CompetitorManager = ({
     }
 
     setCompetitors((previous) => [...previous, ...result.data]);
-
     setUrl(null);
 
     toast.add({
@@ -168,7 +224,7 @@ export const CompetitorManager = ({
   const brands = new Set(
     competitors.map((record) => record.brand).filter(Boolean),
   );
-  const isLoading = isDetecting || isScraping || isSearching;
+  const isLoading = isDetectingUI || isScraping || isSearching;
 
   return (
     <Motion.Stagger stagger={0.05} className="flex flex-1 flex-col px-6 py-10">
@@ -191,7 +247,7 @@ export const CompetitorManager = ({
             </TabsList>
 
             <TabsPanel value="auto">
-              <div className="border border-accent-foreground border-t-0 bg-background-rich">
+              <div className="border border-t-0 border-accent-foreground bg-background-rich">
                 <div className="flex flex-col items-center gap-4 py-12 text-center">
                   <p className="max-w-md font-light text-foreground-dimmed text-sm">
                     We'll analyze your products and use AI to find the most

@@ -159,7 +159,7 @@ export default ({ children }: PropsWithChildren) => {
                   className="hidden sm:flex items-center gap-1.5"
                 >
                   {/* Step pill */}
-                  <div className="relative flex items-center gap-2 px-2 py-1.5">
+                  <div className="relative flex items-center gap-2 px-3 py-1.5">
                     {/* Sliding active background */}
                     {isCurrent && (
                       <motion.div
