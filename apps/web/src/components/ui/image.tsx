@@ -5,13 +5,13 @@ import type { ComponentPropsWithRef, JSX } from "react";
 
 export const Image = (props: Image.Props): JSX.Element => {
   return (
-    <ImagePrimitive
+    <img
       {...props}
-      onError={(event) => {
-        props.onError?.(event);
-        if (event.currentTarget.src === "/images/placeholder.svg") return;
-        event.currentTarget.src = "/images/placeholder.svg";
-      }}
+      // onError={(event) => {
+      //   props.onError?.(event);
+      //   if (event.currentTarget.src === "/images/placeholder.svg") return;
+      //   event.currentTarget.src = "/images/placeholder.svg";
+      // }}
     />
   );
 };

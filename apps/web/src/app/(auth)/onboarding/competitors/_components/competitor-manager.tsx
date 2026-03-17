@@ -13,6 +13,13 @@ import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { Textarea, TextareaInput } from "@zenncore/web/components/textarea";
 import { useToastManager } from "@zenncore/web/components/toast";
+import {
+  Tab,
+  Tabs,
+  TabsIndicator,
+  TabsList,
+  TabsPanel,
+} from "@zenncore/web/components/tabs";
 import Link, { useLinkStatus } from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
@@ -22,8 +29,6 @@ import * as Competitor from "@/server/app/competitor";
 import { detectCompetitors } from "@/server/app/intelligence/detect";
 import { scrapeUrls } from "@/server/app/intelligence/scrape";
 import { searchCompetitors } from "@/server/app/intelligence/search";
-
-type Method = "auto" | "url" | "search";
 
 const formatPrice = (price: string | null, currency: string | null): string => {
   if (!price) return "\u2014";
@@ -57,8 +62,6 @@ export const CompetitorManager = ({
 }: CompetitorManager.Props) => {
   const router = useRouter();
   const toast = useToastManager();
-
-  const [method, setMethod] = useState<Method>("auto");
   const [competitors, setCompetitors] = useState<Competitor.Type[]>(existing);
 
   const [url, setUrl] = useState<string | null>(null);
@@ -172,145 +175,140 @@ export const CompetitorManager = ({
       <div className="mx-auto w-full max-w-3xl">
         {children}
 
-        <Motion.Up className="relative mb-4 flex gap-0 border border-accent-foreground">
-          {(["auto", "url", "search"] as const).map((tab) => {
-            const label = (() => {
-              switch (tab) {
-                case "auto":
-                  return "Auto-detect";
-                case "url":
-                  return "Paste URLs";
-                case "search":
-                  return "Search Brand";
-              }
-            })();
-
-            return (
-              <button
-                key={tab}
-                type="button"
-                onClick={() => setMethod(tab)}
-                className={cn(
-                  "relative flex-1 border-accent-foreground border-r py-2.5 font-medium text-sm transition-colors last:border-r-0",
-                  method === tab
-                    ? "bg-primary text-white"
-                    : "bg-background-rich text-foreground-dimmed hover:bg-background-dimmed",
-                )}
+        <Motion.Up className="relative mb-4">
+          <Tabs defaultValue="auto">
+            <TabsList className="flex w-full border border-accent-foreground bg-background-rich p-0">
+              <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
+              <Tab
+                value="auto"
+                className="flex-1 border-accent-foreground border-r py-2.5 last:border-r-0"
               >
-                <span className="relative z-10">{label}</span>
-              </button>
-            );
-          })}
-        </Motion.Up>
-
-        {method === "auto" && (
-          <div className="border border-accent-foreground bg-background-rich">
-            <div className="flex flex-col items-center gap-4 py-12 text-center">
-              <p className="max-w-md font-light text-foreground-dimmed text-sm">
-                We'll analyze your products and use AI to find the most relevant
-                competitors in your market.
-              </p>
-              <Button
-                variant="flat"
-                color="primary"
-                type="button"
-                onClick={handleDetect}
-                disabled={isLoading}
-                className="px-6 py-2 font-medium text-sm"
+                Auto-detect
+              </Tab>
+              <Tab
+                value="url"
+                className="flex-1 border-accent-foreground border-r py-2.5 last:border-r-0"
               >
-                {isDetecting
-                  ? "Analyzing your market..."
-                  : "Auto-detect competitors"}
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {method === "url" && (
-          <div className="border border-accent-foreground bg-background-rich p-4">
-            <label
-              htmlFor="urls"
-              className="mb-2 block font-medium text-foreground text-xs"
-            >
-              Paste competitor product URLs (one per line)
-            </label>
-            <Textarea value={url} onValueChange={setUrl}>
-              <TextareaInput
-                id="urls"
-                rows={6}
-                placeholder={
-                  "https://amazon.com/dp/B0XXXXX\nhttps://competitorstore.com/products/example\nhttps://amazon.com/dp/B0YYYYY"
-                }
-                className="font-mono text-sm"
-              />
-            </Textarea>
-            <Button
-              variant="flat"
-              color="primary"
-              type="button"
-              onClick={handleScrape}
-              disabled={!url?.trim() || isLoading}
-              className="mt-3 px-4 py-2 font-medium text-sm"
-            >
-              {isScraping
-                ? "Extracting product data..."
-                : "Extract Product Data"}
-            </Button>
-          </div>
-        )}
-
-        {method === "search" && (
-          <div className="border border-accent-foreground bg-background-rich p-4">
-            <label
-              htmlFor="brandSearch"
-              className="mb-2 block font-medium text-foreground text-xs"
-            >
-              Search by brand or category
-            </label>
-            <div className="flex gap-2">
-              <TextField value={query} onValueChange={setQuery}>
-                <TextFieldInput
-                  id="query"
-                  placeholder="e.g. SoundMax, wireless earbuds under $150..."
-                  className="text-sm"
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") handleSearch();
-                  }}
-                />
-              </TextField>
-              <Button
-                variant="flat"
-                color="primary"
-                type="button"
-                onClick={() => handleSearch()}
-                disabled={!query?.trim() || isLoading}
-                className="shrink-0 px-4 py-2 font-medium text-sm"
+                Paste URLs
+              </Tab>
+              <Tab
+                value="search"
+                className="flex-1 border-accent-foreground py-2.5"
               >
-                {isSearching ? "Searching..." : "Search"}
-              </Button>
-            </div>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {[
-                "Wireless Earbuds",
-                "Travel Mugs",
-                "Yoga Equipment",
-                "Kitchen Appliances",
-                "Running Shoes",
-                "Desk Lamps",
-              ].map((category) => (
-                <button
-                  key={category}
-                  type="button"
-                  onClick={() => handleSearch(category)}
-                  disabled={isLoading}
-                  className="border border-accent-foreground bg-background px-3 py-1.5 text-foreground-dimmed text-xs transition-colors hover:border-primary hover:text-primary disabled:opacity-50"
+                Search Brand
+              </Tab>
+            </TabsList>
+
+            <TabsPanel value="auto">
+              <div className="border border-accent-foreground bg-background-rich">
+                <div className="flex flex-col items-center gap-4 py-12 text-center">
+                  <p className="max-w-md font-light text-foreground-dimmed text-sm">
+                    We'll analyze your products and use AI to find the most
+                    relevant competitors in your market.
+                  </p>
+                  <Button
+                    variant="flat"
+                    color="primary"
+                    type="button"
+                    onClick={handleDetect}
+                    disabled={isLoading}
+                    className="px-6 py-2 font-medium text-sm"
+                  >
+                    {isDetecting
+                      ? "Analyzing your market..."
+                      : "Auto-detect competitors"}
+                  </Button>
+                </div>
+              </div>
+            </TabsPanel>
+
+            <TabsPanel value="url">
+              <div className="border border-accent-foreground bg-background-rich p-4">
+                <label
+                  htmlFor="urls"
+                  className="mb-2 block font-medium text-foreground text-xs"
                 >
-                  {category}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
+                  Paste competitor product URLs (one per line)
+                </label>
+                <Textarea value={url} onValueChange={setUrl}>
+                  <TextareaInput
+                    id="urls"
+                    rows={6}
+                    placeholder={
+                      "https://amazon.com/dp/B0XXXXX\nhttps://competitorstore.com/products/example\nhttps://amazon.com/dp/B0YYYYY"
+                    }
+                    className="font-mono text-sm"
+                  />
+                </Textarea>
+                <Button
+                  variant="flat"
+                  color="primary"
+                  type="button"
+                  onClick={handleScrape}
+                  disabled={!url?.trim() || isLoading}
+                  className="mt-3 px-4 py-2 font-medium text-sm"
+                >
+                  {isScraping
+                    ? "Extracting product data..."
+                    : "Extract Product Data"}
+                </Button>
+              </div>
+            </TabsPanel>
+
+            <TabsPanel value="search">
+              <div className="border border-accent-foreground bg-background-rich p-4">
+                <label
+                  htmlFor="brandSearch"
+                  className="mb-2 block font-medium text-foreground text-xs"
+                >
+                  Search by brand or category
+                </label>
+                <div className="flex gap-2">
+                  <TextField value={query} onValueChange={setQuery}>
+                    <TextFieldInput
+                      id="query"
+                      placeholder="e.g. SoundMax, wireless earbuds under $150..."
+                      className="text-sm"
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter") handleSearch();
+                      }}
+                    />
+                  </TextField>
+                  <Button
+                    variant="flat"
+                    color="primary"
+                    type="button"
+                    onClick={() => handleSearch()}
+                    disabled={!query?.trim() || isLoading}
+                    className="shrink-0 px-4 py-2 font-medium text-sm"
+                  >
+                    {isSearching ? "Searching..." : "Search"}
+                  </Button>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {[
+                    "Wireless Earbuds",
+                    "Travel Mugs",
+                    "Yoga Equipment",
+                    "Kitchen Appliances",
+                    "Running Shoes",
+                    "Desk Lamps",
+                  ].map((category) => (
+                    <button
+                      key={category}
+                      type="button"
+                      onClick={() => handleSearch(category)}
+                      disabled={isLoading}
+                      className="border border-accent-foreground bg-background px-3 py-1.5 text-foreground-dimmed text-xs transition-colors hover:border-primary hover:text-primary disabled:opacity-50"
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </TabsPanel>
+          </Tabs>
+        </Motion.Up>
 
         {competitors.length > 0 && (
           <Motion.Up className="mt-4">

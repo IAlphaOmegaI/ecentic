@@ -3,6 +3,7 @@ import { Motion } from "@/components/motion";
 import * as Competitor from "@/server/app/competitor";
 import { CompetitorManager } from "./_components/competitor-manager";
 
+// This page should should stream the AIs response
 export default async ({
   searchParams,
 }: {

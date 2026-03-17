@@ -1,6 +1,6 @@
-import { PlusIcon } from "@zenncore/icons";
+import { LoaderIcon, PlusIcon } from "@zenncore/icons";
 import { unwrapResult } from "@zenncore/utils";
-import Link from "next/link";
+import Link, { useLinkStatus } from "next/link";
 import { Suspense } from "react";
 import * as Competitor from "@/server/app/competitor";
 import { CompetitorsTable } from "./_components/competitors-table";
@@ -20,8 +20,7 @@ export default () => (
         href="/onboarding/competitors"
         className="flex items-center gap-1.5 bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primary/90"
       >
-        <PlusIcon className="size-4" />
-        Add Competitor
+        <Next />
       </Link>
     </div>
 
@@ -195,3 +194,17 @@ const InsightsSkeleton = () => (
     </div>
   </div>
 );
+
+const Next = () => {
+  const { pending } = useLinkStatus();
+  return (
+    <>
+      {pending ? (
+        <LoaderIcon className="size-4 animate-spin" />
+      ) : (
+        <PlusIcon className="size-4" />
+      )}
+      Add Competitor
+    </>
+  );
+};

@@ -53,7 +53,7 @@ Rules:
               title: z.string(),
               brand: z.string(),
               price: z.string(),
-              currency: z.string().default("USD"),
+              currency: z.string(),
               source: z.string(),
               url: z.string().nullable(),
               description: z.string().nullable(),

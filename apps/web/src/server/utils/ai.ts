@@ -7,7 +7,6 @@ import type { ZodSchema } from "zod";
 const azure = createAzure({
   resourceName: process.env.AZURE_RESOURCE_NAME,
   apiKey: process.env.AZURE_API_KEY,
-  baseURL: process.env.AZURE_BASE_URL,
 });
 
 const model = azure("gpt-5.3-chat");
