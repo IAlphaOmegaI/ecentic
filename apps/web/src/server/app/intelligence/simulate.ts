@@ -125,10 +125,10 @@ export const runScan = withAuthentication(async (ctx) => {
   if (!scan.success)
     return { success: false, error: new Error("Failed to create scan") };
 
-  const results = await Promise.all(
-    products.data.flatMap((product) =>
-      selected.flatMap((competitor) =>
-        perspectives.map(async (perspective) => {
+  const tasks = products.data.flatMap((product) =>
+    selected.flatMap((competitor) =>
+      perspectives.map(
+        (perspective) => async () => {
           const result = await resultify(() =>
             generate({
               system: perspective.system,
@@ -153,7 +153,11 @@ export const runScan = withAuthentication(async (ctx) => {
                   modelLabel: perspective.label,
                   productTitle: product.title,
                   competitorTitle: competitor.title,
-                  ...result.data,
+                  winner: result.data.winner,
+                  productScore: Math.round(result.data.productScore),
+                  competitorScore: Math.round(result.data.competitorScore),
+                  reasoning: result.data.reasoning,
+                  keyFactors: result.data.keyFactors,
                 };
               default:
                 return {
@@ -172,9 +176,37 @@ export const runScan = withAuthentication(async (ctx) => {
           })();
 
           return entry;
-        }),
+        },
       ),
     ),
+  );
+
+  const batchSize = 5;
+
+  const batches = Array.from(
+    { length: Math.ceil(tasks.length / batchSize) },
+    (_value, index) => tasks.slice(index * batchSize, index * batchSize + batchSize),
+  );
+
+  const results = await batches.reduce(
+    async (previousPromise, batch) => {
+      const previous = await previousPromise;
+      const current = await Promise.all(batch.map((task) => task()));
+      return [...previous, ...current];
+    },
+    Promise.resolve([] as {
+      productId: string;
+      competitorId: string;
+      model: string;
+      modelLabel: string;
+      productTitle: string;
+      competitorTitle: string;
+      winner: "product" | "competitor";
+      productScore: number;
+      competitorScore: number;
+      reasoning: string;
+      keyFactors?: string[];
+    }[]),
   );
 
   const wins = results.filter((r) => r.winner === "product").length;

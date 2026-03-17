@@ -13,11 +13,10 @@ type ToastType = "success" | "error" | "info";
 export namespace ToastList {
   export type Props = {
     types: ToastType[];
-    stacked?: boolean;
   };
 }
 
-export const ToastList = ({ types, stacked = true }: ToastList.Props) => {
+export const ToastList = ({ types }: ToastList.Props) => {
   const { toasts } = useToastManager();
 
   return toasts
@@ -33,7 +32,7 @@ export const ToastList = ({ types, stacked = true }: ToastList.Props) => {
       //   })();
 
       return (
-        <Toast key={toast.id} toast={toast} stacked={stacked}>
+        <Toast key={toast.id} toast={toast}>
           <div className="flex items-center gap-1">
             {/* {Icon && <Icon />} */}
             <ToastTitle />

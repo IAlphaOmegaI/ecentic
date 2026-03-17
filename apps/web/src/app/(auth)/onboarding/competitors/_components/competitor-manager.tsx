@@ -23,7 +23,7 @@ import {
 import Link, { useLinkStatus } from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Motion } from "@/components/motion";
 import * as Competitor from "@/server/app/competitor";
 import { detectCompetitors } from "@/server/app/intelligence/detect";
@@ -63,6 +63,7 @@ export const CompetitorManager = ({
   const router = useRouter();
   const toast = useToastManager();
   const [competitors, setCompetitors] = useState<Competitor.Type[]>(existing);
+  const listRef = useRef<HTMLDivElement | null>(null);
 
   const [url, setUrl] = useState<string | null>(null);
   const [query, setQuery] = useState<string | null>(null);
@@ -80,6 +81,7 @@ export const CompetitorManager = ({
     }
 
     setCompetitors((previous) => [...previous, ...result.data]);
+    listRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     toast.add({
       title: "Competitors found",
       description: `Found ${result.data.length} competitor products.`,
@@ -111,6 +113,8 @@ export const CompetitorManager = ({
 
     setUrl(null);
 
+    listRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+
     toast.add({
       title: "Products extracted",
       description: `Extracted ${result.data.length} products from URLs.`,
@@ -136,6 +140,8 @@ export const CompetitorManager = ({
 
       setCompetitors((previous) => [...previous, ...result.data]);
       setQuery(null);
+
+      listRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
       toast.add({
         title: "Products found",
@@ -311,8 +317,9 @@ export const CompetitorManager = ({
         </Motion.Up>
 
         {competitors.length > 0 && (
-          <Motion.Up className="mt-4">
-            <div className="border border-accent-foreground bg-background-rich">
+          <div ref={listRef}>
+            <Motion.Up className="mt-4">
+              <div className="border border-accent-foreground bg-background-rich">
               <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
                 <p className="text-foreground-dimmed text-xs">
                   {competitors.length} competitor products across {brands.size}{" "}
@@ -385,8 +392,9 @@ export const CompetitorManager = ({
                   </div>
                 ))}
               </div>
-            </div>
-          </Motion.Up>
+              </div>
+            </Motion.Up>
+          </div>
         )}
 
         <Motion.Up className="mt-6 flex items-center justify-between">
