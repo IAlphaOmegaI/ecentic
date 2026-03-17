@@ -20,13 +20,14 @@ import {
   TabsList,
   TabsPanel,
 } from "@zenncore/web/components/tabs";
+import { AnimatePresence, motion } from "motion/react";
 import Link, { useLinkStatus } from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { Motion } from "@/components/motion";
+import { Spring } from "@/lib/animations";
 import * as Competitor from "@/server/app/competitor";
-import { detectCompetitors } from "@/server/app/intelligence/detect";
 import { scrapeUrls } from "@/server/app/intelligence/scrape";
 import { searchCompetitors } from "@/server/app/intelligence/search";
 
@@ -47,6 +48,8 @@ const formatPrice = (price: string | null, currency: string | null): string => {
   return `${symbol}${price}`;
 };
 
+type LogEntry = { text: string; type: "info" | "success" | "error" };
+
 export namespace CompetitorManager {
   export type Props = {
     children: ReactNode;
@@ -63,29 +66,73 @@ export const CompetitorManager = ({
   const router = useRouter();
   const toast = useToastManager();
   const [competitors, setCompetitors] = useState<Competitor.Type[]>(existing);
+  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [isDetectingUI, setIsDetectingUI] = useState(false);
 
   const [url, setUrl] = useState<string | null>(null);
   const [query, setQuery] = useState<string | null>(null);
 
-  const [handleDetect, isDetecting] = useAsyncAction(async () => {
-    const result = await detectCompetitors({ productIds });
+  const handleDetectWithLogs = async () => {
+    setIsDetectingUI(true);
+    setLogs([]);
 
-    if (!result.success) {
-      toast.add({
-        title: "Detection failed",
-        description: result.error.message,
-        type: "error",
-      });
+    const response = await fetch("/api/intelligence/detect", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ productIds }),
+    });
+
+    if (!response.ok || !response.body) {
+      setLogs([{ text: `Request failed — HTTP ${response.status}`, type: "error" }]);
       return;
     }
 
-    setCompetitors((previous) => [...previous, ...result.data]);
-    toast.add({
-      title: "Competitors found",
-      description: `Found ${result.data.length} competitor products.`,
-      type: "success",
-    });
-  });
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() ?? "";
+
+        for (const line of lines) {
+          if (!line.trim()) continue;
+
+          const event = JSON.parse(line) as
+            | { kind: "log"; text: string }
+            | { kind: "error"; text: string }
+            | { kind: "done"; competitors: Competitor.Type[] };
+
+          switch (event.kind) {
+            case "log":
+              setLogs((previous) => [...previous, { text: event.text, type: "info" }]);
+              break;
+            case "error":
+              setLogs((previous) => [...previous, { text: event.text, type: "error" }]);
+              return;
+            case "done":
+              setLogs((previous) => [
+                ...previous,
+                { text: `${event.competitors.length} competitors ready`, type: "success" },
+              ]);
+              setCompetitors((previous) => [...previous, ...event.competitors]);
+              setIsDetectingUI(false);
+              return;
+          }
+        }
+      }
+    } catch (error) {
+      setLogs((previous) => [
+        ...previous,
+        { text: error instanceof Error ? error.message : "Stream error", type: "error" },
+      ]);
+    }
+  };
 
   const [handleScrape, isScraping] = useAsyncAction(async () => {
     const urls =
@@ -108,7 +155,6 @@ export const CompetitorManager = ({
     }
 
     setCompetitors((previous) => [...previous, ...result.data]);
-
     setUrl(null);
 
     toast.add({
@@ -168,7 +214,7 @@ export const CompetitorManager = ({
   const brands = new Set(
     competitors.map((record) => record.brand).filter(Boolean),
   );
-  const isLoading = isDetecting || isScraping || isSearching;
+  const isLoading = isDetectingUI || isScraping || isSearching;
 
   return (
     <Motion.Stagger stagger={0.05} className="flex flex-1 flex-col px-6 py-10">
@@ -192,24 +238,103 @@ export const CompetitorManager = ({
 
             <TabsPanel value="auto">
               <div className="border border-t-0 border-accent-foreground bg-background-rich">
-                <div className="flex flex-col items-center gap-4 py-12 text-center">
-                  <p className="max-w-md font-light text-foreground-dimmed text-sm">
-                    We'll analyze your products and use AI to find the most
-                    relevant competitors in your market.
-                  </p>
-                  <Button
-                    variant="flat"
-                    color="primary"
-                    type="button"
-                    onClick={handleDetect}
-                    disabled={isLoading}
-                    className="px-6 py-2 font-medium text-sm"
-                  >
-                    {isDetecting
-                      ? "Analyzing your market..."
-                      : "Auto-detect competitors"}
-                  </Button>
-                </div>
+                <AnimatePresence mode="wait">
+                  {isDetectingUI ? (
+                    <motion.div
+                      key="logs"
+                      className="p-5"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={Spring.Gentle}
+                    >
+                      {logs.at(-1)?.type === "error" && (
+                        <button
+                          type="button"
+                          onClick={() => setIsDetectingUI(false)}
+                          className="mb-3 font-medium text-foreground-dimmed text-xs underline underline-offset-2 hover:text-foreground"
+                        >
+                          ← Try again
+                        </button>
+                      )}
+                      <div className="mb-4 flex items-center gap-2">
+                        <motion.div
+                          className="size-1.5 rounded-full bg-primary"
+                          animate={{ opacity: [1, 0.3, 1] }}
+                          transition={{ duration: 1.2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                        />
+                        <p className="font-medium text-foreground text-xs tracking-wide">
+                          Scanning your market
+                        </p>
+                      </div>
+
+                      <div className="flex flex-col gap-1.5 font-mono text-xs">
+                        <AnimatePresence>
+                          {logs.map((log, index) => (
+                            <motion.div
+                              key={index}
+                              className={cn(
+                                "flex items-start gap-2.5",
+                                log.type === "success"
+                                  ? "text-primary"
+                                  : log.type === "error"
+                                    ? "text-error"
+                                    : "text-foreground-dimmed",
+                              )}
+                              initial={{ opacity: 0, x: -6 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={Spring.Snappy}
+                            >
+                              <span
+                                className={cn(
+                                  "mt-px shrink-0 select-none",
+                                  log.type === "success"
+                                    ? "text-primary"
+                                    : log.type === "error"
+                                      ? "text-error"
+                                      : "text-primary/40",
+                                )}
+                              >
+                                {log.type === "success" ? "✓" : log.type === "error" ? "✗" : "›"}
+                              </span>
+                              <span>{log.text}</span>
+                            </motion.div>
+                          ))}
+                        </AnimatePresence>
+
+                        <motion.span
+                          className="ml-[18px] inline-block h-3 w-1.5 bg-primary/50"
+                          animate={{ opacity: [1, 1, 0, 0] }}
+                          transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear", times: [0, 0.5, 0.5, 1] }}
+                        />
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="idle"
+                      className="flex flex-col items-center gap-4 py-12 text-center"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={Spring.Gentle}
+                    >
+                      <p className="max-w-md font-light text-foreground-dimmed text-sm">
+                        We'll analyze your products and use AI to find the most
+                        relevant competitors in your market.
+                      </p>
+                      <Button
+                        variant="flat"
+                        color="primary"
+                        type="button"
+                        onClick={handleDetectWithLogs}
+                        disabled={isLoading}
+                        className="px-6 py-2 font-medium text-sm"
+                      >
+                        Auto-detect competitors
+                      </Button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </TabsPanel>
 
