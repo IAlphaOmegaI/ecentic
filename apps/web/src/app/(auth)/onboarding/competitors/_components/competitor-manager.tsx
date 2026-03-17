@@ -25,8 +25,8 @@ import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { useRef, useState } from "react";
 import { Motion } from "@/components/motion";
+import { Spring } from "@/lib/animations";
 import * as Competitor from "@/server/app/competitor";
-import { detectCompetitors } from "@/server/app/intelligence/detect";
 import { scrapeUrls } from "@/server/app/intelligence/scrape";
 import { searchCompetitors } from "@/server/app/intelligence/search";
 
@@ -47,6 +47,8 @@ const formatPrice = (price: string | null, currency: string | null): string => {
   return `${symbol}${price}`;
 };
 
+type LogEntry = { text: string; type: "info" | "success" | "error" };
+
 export namespace CompetitorManager {
   export type Props = {
     children: ReactNode;
@@ -64,30 +66,96 @@ export const CompetitorManager = ({
   const toast = useToastManager();
   const [competitors, setCompetitors] = useState<Competitor.Type[]>(existing);
   const listRef = useRef<HTMLDivElement | null>(null);
+  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [isDetectingUI, setIsDetectingUI] = useState(false);
 
   const [url, setUrl] = useState<string | null>(null);
   const [query, setQuery] = useState<string | null>(null);
 
-  const [handleDetect, isDetecting] = useAsyncAction(async () => {
-    const result = await detectCompetitors({ productIds });
+  const handleDetectWithLogs = async () => {
+    setIsDetectingUI(true);
+    setLogs([]);
 
-    if (!result.success) {
-      toast.add({
-        title: "Detection failed",
-        description: result.error.message,
-        type: "error",
-      });
+    const response = await fetch("/api/intelligence/detect", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ productIds }),
+    });
+
+    if (!response.ok || !response.body) {
+      setLogs([
+        { text: `Request failed — HTTP ${response.status}`, type: "error" },
+      ]);
+      setIsDetectingUI(false);
       return;
     }
 
-    setCompetitors((previous) => [...previous, ...result.data]);
-    listRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    toast.add({
-      title: "Competitors found",
-      description: `Found ${result.data.length} competitor products.`,
-      type: "success",
-    });
-  });
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() ?? "";
+
+        for (const line of lines) {
+          if (!line.trim()) continue;
+
+          const event = JSON.parse(line) as
+            | { kind: "log"; text: string }
+            | { kind: "error"; text: string }
+            | { kind: "done"; competitors: Competitor.Type[] };
+
+          switch (event.kind) {
+            case "log":
+              setLogs((previous) => [
+                ...previous,
+                { text: event.text, type: "info" },
+              ]);
+              break;
+            case "error":
+              setLogs((previous) => [
+                ...previous,
+                { text: event.text, type: "error" },
+              ]);
+              setIsDetectingUI(false);
+              return;
+            case "done":
+              setLogs((previous) => [
+                ...previous,
+                {
+                  text: `${event.competitors.length} competitors ready`,
+                  type: "success",
+                },
+              ]);
+              setCompetitors((previous) => [...previous, ...event.competitors]);
+              setIsDetectingUI(false);
+              listRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+              toast.add({
+                title: "Competitors found",
+                description: `Found ${event.competitors.length} competitor products.`,
+                type: "success",
+              });
+              return;
+          }
+        }
+      }
+    } catch (error) {
+      setLogs((previous) => [
+        ...previous,
+        {
+          text: error instanceof Error ? error.message : "Stream error",
+          type: "error",
+        },
+      ]);
+      setIsDetectingUI(false);
+    }
+  };
 
   const [handleScrape, isScraping] = useAsyncAction(async () => {
     const urls =
@@ -110,7 +178,6 @@ export const CompetitorManager = ({
     }
 
     setCompetitors((previous) => [...previous, ...result.data]);
-
     setUrl(null);
 
     listRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -169,12 +236,15 @@ export const CompetitorManager = ({
     void Competitor.removeForUser({ id });
   };
 
+  const handleDetect = handleDetectWithLogs;
+  const isDetecting = isDetectingUI;
+
   const selected = competitors.filter((record) => record.selected).length;
 
   const brands = new Set(
     competitors.map((record) => record.brand).filter(Boolean),
   );
-  const isLoading = isDetecting || isScraping || isSearching;
+  const isLoading = isDetectingUI || isScraping || isSearching;
 
   return (
     <Motion.Stagger stagger={0.05} className="flex flex-1 flex-col px-6 py-10">
@@ -183,30 +253,21 @@ export const CompetitorManager = ({
 
         <Motion.Up className="relative mb-4">
           <Tabs defaultValue="auto">
-            <TabsList className="flex w-full border border-accent-foreground bg-background-rich p-0">
+            <TabsList className="flex w-full">
               <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
-              <Tab
-                value="auto"
-                className="flex-1 border-accent-foreground border-r py-2.5 last:border-r-0"
-              >
+              <Tab value="auto" className="flex-1">
                 Auto-detect
               </Tab>
-              <Tab
-                value="url"
-                className="flex-1 border-accent-foreground border-r py-2.5 last:border-r-0"
-              >
+              <Tab value="url" className="flex-1">
                 Paste URLs
               </Tab>
-              <Tab
-                value="search"
-                className="flex-1 border-accent-foreground py-2.5"
-              >
+              <Tab value="search" className="flex-1">
                 Search Brand
               </Tab>
             </TabsList>
 
             <TabsPanel value="auto">
-              <div className="border border-accent-foreground bg-background-rich">
+              <div className="border border-t-0 border-accent-foreground bg-background-rich">
                 <div className="flex flex-col items-center gap-4 py-12 text-center">
                   <p className="max-w-md font-light text-foreground-dimmed text-sm">
                     We'll analyze your products and use AI to find the most
@@ -229,7 +290,7 @@ export const CompetitorManager = ({
             </TabsPanel>
 
             <TabsPanel value="url">
-              <div className="border border-accent-foreground bg-background-rich p-4">
+              <div className="border border-accent-foreground border-t-0 bg-background-rich p-4">
                 <label
                   htmlFor="urls"
                   className="mb-2 block font-medium text-foreground text-xs"
@@ -262,7 +323,7 @@ export const CompetitorManager = ({
             </TabsPanel>
 
             <TabsPanel value="search">
-              <div className="border border-accent-foreground bg-background-rich p-4">
+              <div className="border border-accent-foreground border-t-0 bg-background-rich p-4">
                 <label
                   htmlFor="brandSearch"
                   className="mb-2 block font-medium text-foreground text-xs"

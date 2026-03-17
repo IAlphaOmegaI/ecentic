@@ -1,6 +1,6 @@
 "use client";
 
-import ImagePrimitive from "next/image";
+import type ImagePrimitive from "next/image";
 import type { ComponentPropsWithRef, JSX } from "react";
 
 export const Image = (props: Image.Props): JSX.Element => {
