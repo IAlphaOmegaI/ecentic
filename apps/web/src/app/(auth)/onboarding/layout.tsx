@@ -1,15 +1,23 @@
 "use client";
 
-import { CheckIcon } from "@zenncore/icons";
+import {
+  CheckIcon,
+  CircleBoltIcon,
+  FaceSearchIcon,
+  PhotoIcon,
+  ShoppingCartIcon,
+} from "@zenncore/icons";
+import { AnimatePresence, motion } from "motion/react";
 import { usePathname } from "next/navigation";
 import type { PropsWithChildren } from "react";
+import { Spring } from "@/lib/animations";
 import { Onboarding } from "@/components/onboarding";
 
 const steps = [
-  { label: "Connect Store", path: "/onboarding/connect" },
-  { label: "Select Products", path: "/onboarding/products" },
-  { label: "Add Competitors", path: "/onboarding/competitors" },
-  { label: "Run Scan", path: "/onboarding/scan" },
+  { label: "Connect Store", path: "/onboarding/connect", icon: ShoppingCartIcon },
+  { label: "Select Products", path: "/onboarding/products", icon: PhotoIcon },
+  { label: "Add Competitors", path: "/onboarding/competitors", icon: FaceSearchIcon },
+  { label: "Run Scan", path: "/onboarding/scan", icon: CircleBoltIcon },
 ] as const;
 
 const sidebar = {
@@ -129,54 +137,102 @@ export default ({ children }: PropsWithChildren) => {
       />
 
       <main className="flex flex-1 flex-col overflow-hidden bg-background md:rounded-l-xl">
-        <div className="border-accent-foreground border-b bg-background-rich px-6 py-4">
-          <div className="hidden items-center gap-1 sm:flex">
+        <div className="border-accent-foreground border-b bg-background-rich px-8 py-3">
+          {/* Desktop step indicator */}
+          <div className="mx-auto hidden w-full max-w-lg items-center gap-0 sm:flex sm:justify-end">
             {steps.map((step, index) => {
               const isCompleted = index < current;
               const isCurrent = index === current;
+              const StepIcon = step.icon;
 
               return (
-                <div key={step.path} className="flex items-center gap-1">
-                  <div className="relative">
+                <div key={step.path} className="flex items-center gap-1.5">
+                  {/* Step pill */}
+                  <div className="relative flex items-center gap-2 px-2 py-1.5">
+                    {/* Sliding active background */}
                     {isCurrent && (
-                      <div className="absolute inset-0 bg-primary" />
+                      <motion.div
+                        layoutId="step-active-bg"
+                        className="absolute inset-0 bg-primary"
+                        transition={Spring.Gentle}
+                      />
                     )}
-                    <div
-                      className={`relative z-10 flex items-center gap-1.5 px-3 py-1 font-medium text-xs transition-colors ${
+
+                    {/* Step icon */}
+                    <AnimatePresence mode="wait" initial={false}>
+                      {isCompleted ? (
+                        <motion.span
+                          key="check"
+                          className={`relative z-10 transition-colors ${isCurrent ? "text-white" : "text-primary"}`}
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 0, opacity: 0 }}
+                          transition={Spring.Snappy}
+                        >
+                          <CheckIcon className="size-4" />
+                        </motion.span>
+                      ) : (
+                        <motion.span
+                          key="icon"
+                          className={`relative z-10 transition-colors ${isCurrent ? "text-white" : "text-foreground-dimmed/40"}`}
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 0, opacity: 0 }}
+                          transition={Spring.Snappy}
+                        >
+                          <StepIcon className="size-4" />
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+
+                    {/* Label */}
+                    <span
+                      className={`relative z-10 whitespace-nowrap font-medium text-xs transition-colors ${
                         isCurrent
                           ? "text-white"
                           : isCompleted
                             ? "text-primary"
-                            : "text-foreground-dimmed opacity-40"
+                            : "text-foreground-dimmed/40"
                       }`}
                     >
-                      <span className="relative flex size-4 items-center justify-center overflow-hidden text-xs">
-                        {isCompleted ? (
-                          <span className="absolute">
-                            <CheckIcon className="size-3 text-foreground-dimmed" />
-                          </span>
-                        ) : (
-                          <span className="absolute">{index + 1}</span>
-                        )}
-                      </span>
                       {step.label}
-                    </div>
+                    </span>
                   </div>
+
+                  {/* Connector */}
                   {index < steps.length - 1 && (
-                    <div
-                      className="h-px w-4"
-                      style={{
-                        backgroundColor: isCompleted
-                          ? "rgb(21,114,250)"
-                          : "var(--color-accent-foreground)",
-                      }}
-                    />
+                    <div className="h-px w-5 overflow-hidden rounded-full bg-accent-foreground">
+                      <motion.div
+                        className="h-full bg-primary"
+                        initial={{ width: "0%" }}
+                        animate={{ width: isCompleted ? "100%" : "0%" }}
+                        transition={{ ...Spring.Gentle, delay: 0.05 }}
+                      />
+                    </div>
                   )}
                 </div>
               );
             })}
           </div>
-          <div className="flex items-center gap-1 sm:hidden">
+
+          {/* Mobile step indicator */}
+          <div className="flex items-center gap-3 sm:hidden">
+            <div className="flex gap-1">
+              {steps.map((_, index) => (
+                <motion.div
+                  key={index}
+                  className="h-1 rounded-full"
+                  animate={{
+                    width: index === current ? 20 : 6,
+                    backgroundColor:
+                      index <= current
+                        ? "var(--color-primary)"
+                        : "var(--color-accent-foreground)",
+                  }}
+                  transition={Spring.Gentle}
+                />
+              ))}
+            </div>
             <span className="font-light text-foreground-dimmed text-xs">
               Step {current + 1} of {steps.length}
             </span>

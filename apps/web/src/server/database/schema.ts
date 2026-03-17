@@ -1,4 +1,4 @@
-import { defineRelations, sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   boolean,
   integer,
@@ -196,75 +196,48 @@ export const tables = {
 };
 
 /** Relations */
-export const relations = defineRelations(tables, (r) => ({
-  user: {
-    sessions: r.many.session(),
-    accounts: r.many.account(),
-    stores: r.many.store(),
-    products: r.many.product(),
-    competitors: r.many.competitor(),
-    scans: r.many.scan(),
-  },
-  session: {
-    user: r.one.user({
-      from: r.session.userId,
-      to: r.user.id,
-    }),
-  },
-  account: {
-    user: r.one.user({
-      from: r.account.userId,
-      to: r.user.id,
-    }),
-  },
-  store: {
-    user: r.one.user({
-      from: r.store.userId,
-      to: r.user.id,
-    }),
-    products: r.many.product(),
-  },
-  product: {
-    store: r.one.store({
-      from: r.product.storeId,
-      to: r.store.id,
-    }),
-    user: r.one.user({
-      from: r.product.userId,
-      to: r.user.id,
-    }),
-  },
-  competitor: {
-    user: r.one.user({
-      from: r.competitor.userId,
-      to: r.user.id,
-    }),
-  },
-  scan: {
-    user: r.one.user({
-      from: r.scan.userId,
-      to: r.user.id,
-    }),
-    simulations: r.many.simulation(),
-  },
-  simulation: {
-    scan: r.one.scan({
-      from: r.simulation.scanId,
-      to: r.scan.id,
-    }),
-    product: r.one.product({
-      from: r.simulation.productId,
-      to: r.product.id,
-    }),
-    competitor: r.one.competitor({
-      from: r.simulation.competitorId,
-      to: r.competitor.id,
-    }),
-  },
-  ucpProfile: {
-    user: r.one.user({
-      from: r.ucpProfile.userId,
-      to: r.user.id,
-    }),
-  },
+export const userRelations = relations(user, ({ many }) => ({
+  sessions: many(session),
+  accounts: many(account),
+  stores: many(store),
+  products: many(product),
+  competitors: many(competitor),
+  scans: many(scan),
+}));
+
+export const sessionRelations = relations(session, ({ one }) => ({
+  user: one(user, { fields: [session.userId], references: [user.id] }),
+}));
+
+export const accountRelations = relations(account, ({ one }) => ({
+  user: one(user, { fields: [account.userId], references: [user.id] }),
+}));
+
+export const storeRelations = relations(store, ({ one, many }) => ({
+  user: one(user, { fields: [store.userId], references: [user.id] }),
+  products: many(product),
+}));
+
+export const productRelations = relations(product, ({ one }) => ({
+  store: one(store, { fields: [product.storeId], references: [store.id] }),
+  user: one(user, { fields: [product.userId], references: [user.id] }),
+}));
+
+export const competitorRelations = relations(competitor, ({ one }) => ({
+  user: one(user, { fields: [competitor.userId], references: [user.id] }),
+}));
+
+export const scanRelations = relations(scan, ({ one, many }) => ({
+  user: one(user, { fields: [scan.userId], references: [user.id] }),
+  simulations: many(simulation),
+}));
+
+export const simulationRelations = relations(simulation, ({ one }) => ({
+  scan: one(scan, { fields: [simulation.scanId], references: [scan.id] }),
+  product: one(product, { fields: [simulation.productId], references: [product.id] }),
+  competitor: one(competitor, { fields: [simulation.competitorId], references: [competitor.id] }),
+}));
+
+export const ucpProfileRelations = relations(ucpProfile, ({ one }) => ({
+  user: one(user, { fields: [ucpProfile.userId], references: [user.id] }),
 }));
