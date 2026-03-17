@@ -40,7 +40,7 @@ const Toggle = ({
   >
     <span
       className={cn(
-        "inline-block size-3.5 bg-white transition-transform",
+        "inline-block size-4 bg-white transition-transform",
         enabled ? "translate-x-4.5" : "translate-x-0.5",
       )}
     />
@@ -198,7 +198,7 @@ export default () => {
                   type="button"
                   className="flex items-center gap-1.5 bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primary/90"
                 >
-                  <PlusIcon className="size-3.5" />
+                  <PlusIcon className="size-4" />
                   Invite Member
                 </button>
               </div>
@@ -315,7 +315,7 @@ export default () => {
                     type="button"
                     className="flex items-center gap-1.5 border border-accent-foreground border-dashed px-3 py-2 text-foreground-dimmed text-sm transition-colors hover:border-primary hover:text-primary"
                   >
-                    <PlusIcon className="size-3.5" />
+                    <PlusIcon className="size-4" />
                     Connect another store
                   </button>
                 </div>

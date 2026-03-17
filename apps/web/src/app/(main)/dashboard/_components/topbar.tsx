@@ -5,7 +5,7 @@ export const Topbar = () => (
     <div className="flex max-w-md flex-1 items-center gap-2">
       <div className="flex flex-1 items-center gap-2 border border-accent-foreground bg-background px-3 py-1.5">
         <svg
-          className="size-3.5 text-foreground-dimmed"
+          className="size-4 text-foreground-dimmed"
           viewBox="0 0 16 16"
           fill="none"
           aria-hidden="true"

@@ -306,7 +306,7 @@ export default () => {
             whileTap={{ scale: 0.97 }}
             transition={Spring.Snappy}
           >
-            <DownloadIcon className="size-3.5" />
+            <DownloadIcon className="size-4" />
             Export
           </motion.button>
           <motion.button
@@ -316,7 +316,7 @@ export default () => {
             whileTap={{ scale: 0.97 }}
             transition={Spring.Snappy}
           >
-            <PlusIcon className="size-3.5" />
+            <PlusIcon className="size-4" />
             Run Simulation
           </motion.button>
         </div>

@@ -18,6 +18,7 @@
         "SHOPIFY_API_SECRET",
         "AZURE_RESOURCE_NAME",
         "AZURE_API_KEY",
+        "AZURE_BASE_URL",
         "APP_HOST"
       ]
     },

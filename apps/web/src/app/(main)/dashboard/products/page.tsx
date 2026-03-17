@@ -2,7 +2,6 @@ import { PlusIcon } from "@zenncore/icons";
 import { unwrapResult } from "@zenncore/utils";
 import Link from "next/link";
 import { Suspense } from "react";
-
 import * as Product from "@/server/app/product";
 import { ProductsTable } from "./_components/products-table";
 
@@ -19,7 +18,7 @@ export default () => (
         href="/onboarding/products"
         className="flex items-center gap-1.5 bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primary/90"
       >
-        <PlusIcon className="size-3.5" />
+        <PlusIcon className="size-4" />
         Add Products
       </Link>
     </div>

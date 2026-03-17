@@ -132,7 +132,7 @@ export default () => (
           type="button"
           className="flex items-center gap-1.5 bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primary/90"
         >
-          <CheckIcon className="size-3.5" />
+          <CheckIcon className="size-4" />
           Approve All ({pendingOptimizations.length})
         </button>
       </div>

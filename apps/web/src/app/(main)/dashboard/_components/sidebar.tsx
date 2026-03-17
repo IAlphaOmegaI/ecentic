@@ -15,7 +15,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const navItems = [
+const items = [
   { icon: SquareChartIcon, label: "Overview", href: "/dashboard", exact: true },
   {
     icon: ShoppingCartIcon,
@@ -65,10 +65,10 @@ export const Sidebar = () => {
     exact ? pathname === href : pathname.startsWith(href);
 
   return (
-    <aside className="relative hidden flex-col overflow-hidden border-accent-foreground border-r bg-background-rich md:flex">
+    <aside className="relative hidden flex-col overflow-hidden border-accent-foreground border-r bg-background-rich md:flex w-60">
       <div
         className={cn(
-          "flex h-14 items-center justify-center overflow-hidden border-accent-foreground border-b",
+          "flex h-14 items-center justify-center overflow-hidden border-accent-foreground border-b pr-22 pl-2",
         )}
       >
         <Image
@@ -76,29 +76,29 @@ export const Sidebar = () => {
           alt="écentic"
           width={96}
           height={28}
-          className="size-8"
+          className="w-full"
         />
       </div>
 
-      <nav className="relative flex flex-1 flex-col gap-0.5 p-2">
-        {navItems.map((item) => {
+      <nav className="relative flex flex-1 flex-col">
+        {items.map((item) => {
           const active = isActive(item.href, item.exact);
           return (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "group relative flex items-center gap-3 overflow-hidden px-3 py-2 text-sm",
+                "group relative flex items-center gap-1 overflow-hidden px-2 py-2 hover:bg-accent-foreground/20",
                 active
-                  ? "text-white"
+                  ? "text-primary bg-primary/20 hover:bg-primary/40"
                   : "text-foreground-dimmed hover:text-foreground",
               )}
             >
               <item.icon
                 className={cn(
-                  "relative z-10 size-8 shrink-0",
+                  "relative z-10 size-6 shrink-0",
                   active
-                    ? "text-white"
+                    ? "text-primary"
                     : "text-foreground-dimmed group-hover:text-foreground",
                 )}
               />
@@ -108,8 +108,8 @@ export const Sidebar = () => {
                 {"badge" in item && item.badge && (
                   <span
                     className={cn(
-                      "px-1.5 py-0.5 font-medium text-xs",
-                      active ? "text-white/60" : "text-foreground-dimmed/50",
+                      "px-1.5 py-0.5 font-medium text-sm tabular-nums",
+                      active ? "text-primary/60" : "text-foreground-dimmed/50",
                     )}
                   >
                     {item.badge}
@@ -127,7 +127,7 @@ export const Sidebar = () => {
             href="/dashboard"
             className="flex items-center justify-center gap-2 bg-primary px-3 py-2 font-medium text-sm text-white transition-colors hover:bg-primary/90"
           >
-            <PlusIcon className="size-3.5" />
+            <PlusIcon className="size-4" />
             Run Simulation
           </Link>
         </div>

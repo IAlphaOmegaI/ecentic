@@ -28,6 +28,10 @@ import {
 } from "@/server/app/intelligence/ucp";
 import type * as Product from "@/server/app/product";
 
+// todo: use inferred form
+// todo: use a markdown editor and add more implementation methods
+// todo: apply automatically to my store
+
 const definitions = [
   { key: "merchantName" as const, label: "Merchant Name" },
   { key: "description" as const, label: "Description" },
@@ -234,7 +238,7 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
     <>
       <div className="mb-6 flex justify-end">
         <Button onClick={() => navigator.clipboard.writeText(result)}>
-          <UploadIcon className="size-3.5" />
+          <UploadIcon className="size-4" />
           Copy JSON
         </Button>
       </div>

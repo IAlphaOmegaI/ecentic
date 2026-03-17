@@ -15,6 +15,7 @@ declare namespace NodeJS {
 
     AZURE_RESOURCE_NAME: string;
     AZURE_API_KEY: string;
+    AZURE_BASE_URL: string;
 
     NEXT_PUBLIC_POSTHOG_KEY: string;
     NEXT_PUBLIC_POSTHOG_HOST: string;

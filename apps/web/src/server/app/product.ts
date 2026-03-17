@@ -23,7 +23,7 @@ export const getForCurrentUser = withAuthentication(async (context) => {
   });
 }, "Product.getForCurrentUser");
 
-const qualityFields = [
+const keys = [
   "title",
   "description",
   "price",
@@ -33,14 +33,15 @@ const qualityFields = [
 ] as const;
 
 const computeDataQuality = (product: Type): number => {
-  const filled = qualityFields.filter((field) => {
+  const filled = keys.filter((field) => {
     const value = product[field];
     if (!value) return false;
+
     if (field === "images") return value !== "[]";
     return true;
   }).length;
 
-  return Math.round((filled / qualityFields.length) * 100);
+  return Math.round((filled / keys.length) * 100);
 };
 
 const computeModelWinRate = (
@@ -124,12 +125,11 @@ export const gatherIntelligence = dedupe(
   }, "Product.gatherIntelligence"),
 );
 
-const modelLabels = {
-  gpt4: "GPT-4",
-  claude: "Claude",
-  gemini: "Gemini",
+const Model = {
+  GPT4: ["GPT-4", "gpt4"],
+  Claude: ["Claude", "claude"],
+  GEMINI: ["Gemini", "gemini"],
 } as const;
-const modelIds = ["gpt4", "claude", "gemini"] as const;
 
 export const getDetail = withAuthentication(
   async (context, { id }: { id: string }) => {
@@ -162,17 +162,21 @@ export const getDetail = withAuthentication(
       results.data.map((competitor) => [competitor.id, competitor]),
     );
 
-    const models = modelIds.map((modelId) => {
+    const keys = Object.keys(Model);
+
+    const models = keys.map((key) => {
       const modelSimulations = simulations.data.filter(
-        (simulation) => simulation.model === modelId,
+        (simulation) => simulation.model === key,
       );
       const wins = modelSimulations.filter(
         (simulation) => simulation.winner === "product",
       ).length;
 
+      const [label, id] = Model[key as keyof typeof Model];
+
       return {
-        model: modelId,
-        label: modelLabels[modelId],
+        model: id,
+        label: label,
         rate:
           modelSimulations.length > 0
             ? Math.round((wins / modelSimulations.length) * 100)
@@ -215,7 +219,7 @@ export const getDetail = withAuthentication(
         ? Math.round((wins / simulations.data.length) * 100)
         : 0;
 
-    const enrichedSimulations = simulations.data.map((simulation) => ({
+    const enriched = simulations.data.map((simulation) => ({
       id: simulation.id,
       model: simulation.model,
       winner: simulation.winner,
@@ -237,13 +241,13 @@ export const getDetail = withAuthentication(
           price: product.data.price,
           currency: product.data.currency,
           sku: product.data.sku,
-          structuredData: product.data.structuredData,
-          dataQuality: computeDataQuality(product.data),
+          structured: product.data.structuredData,
+          quality: computeDataQuality(product.data),
         },
         winRate,
         models,
         competitors,
-        simulations: enrichedSimulations,
+        simulations: enriched,
       },
     };
   },

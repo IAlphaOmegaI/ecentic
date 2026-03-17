@@ -128,7 +128,7 @@ export const ProductDetail = ({ data }: ProductDetail.Props) => {
             className="flex items-center gap-1.5 bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primary/90"
           >
             Optimize
-            <ArrowRightIcon className="size-3.5" />
+            <ArrowRightIcon className="size-4" />
           </Link>
         </div>
       </div>
@@ -340,9 +340,9 @@ const GapsTab = ({ product }: { product: ProductDetailData["product"] }) => (
           >
             <div className="flex items-center gap-3">
               {filled ? (
-                <CheckIcon className="size-3.5 text-success" />
+                <CheckIcon className="size-4 text-success" />
               ) : (
-                <XIcon className="size-3.5 text-error" />
+                <XIcon className="size-4 text-error" />
               )}
               <span className="font-light text-foreground text-sm">
                 {label}
@@ -429,7 +429,7 @@ const BattlecardTab = ({
                       key={simulation.id}
                       className="mb-2 flex items-start gap-2"
                     >
-                      <CheckIcon className="mt-0.5 size-3.5 shrink-0 text-success" />
+                      <CheckIcon className="mt-0.5 size-4 shrink-0 text-success" />
                       <span className="font-light text-foreground text-xs leading-relaxed">
                         {simulation.reasoning
                           ? simulation.reasoning.slice(0, 120) +
@@ -454,7 +454,7 @@ const BattlecardTab = ({
                       key={simulation.id}
                       className="mb-2 flex items-start gap-2"
                     >
-                      <XIcon className="mt-0.5 size-3.5 shrink-0 text-error" />
+                      <XIcon className="mt-0.5 size-4 shrink-0 text-error" />
                       <span className="font-light text-foreground text-xs leading-relaxed">
                         {simulation.reasoning
                           ? simulation.reasoning.slice(0, 120) +
@@ -537,7 +537,7 @@ const OptimizeTab = ({
           className="flex w-full items-center justify-center gap-2 bg-primary py-2 font-medium text-sm text-white transition-colors hover:bg-primary/90"
         >
           Generate Optimized Data
-          <ArrowRightIcon className="size-3.5" />
+          <ArrowRightIcon className="size-4" />
         </Link>
       </div>
     </div>

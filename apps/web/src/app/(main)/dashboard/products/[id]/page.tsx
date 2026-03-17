@@ -13,7 +13,7 @@ export default ({ params }: PageProps<"/dashboard/products/[id]">) => (
         href="/dashboard/products"
         className="flex items-center gap-1 font-light text-foreground-dimmed text-sm hover:text-primary"
       >
-        <ChevronLeftIcon className="size-3.5" />
+        <ChevronLeftIcon className="size-4" />
         Back to Products
       </Link>
     </div>
@@ -46,9 +46,10 @@ const DetailSkeleton = () => (
     </div>
     <div className="mb-4 h-10 w-full animate-pulse bg-foreground/10" />
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-      {["model-a", "model-b", "model-c"].map((key) => (
+      {Array.from({ length: 3 }).map((_, index) => (
         <div
-          key={key}
+          // biome-ignore lint/suspicious/noArrayIndexKey: no better key
+          key={index}
           className="border border-accent-foreground bg-background-rich p-4"
         >
           <div className="h-4 w-16 animate-pulse bg-foreground/10" />

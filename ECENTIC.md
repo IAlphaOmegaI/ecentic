@@ -508,3 +508,6 @@ See `AGENTS.md` at the project root for the full code style guide. Key points:
 - Server components for pages, client components in `_components/`
 - `@zenncore/*` packages for all UI primitives, utilities, and icons
 - Semantic Tailwind tokens (`text-primary`, `bg-background`, etc.), no raw colors
+
+
+OPENAI ACP

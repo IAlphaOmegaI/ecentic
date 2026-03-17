@@ -20,7 +20,7 @@ export default () => (
         href="/onboarding/competitors"
         className="flex items-center gap-1.5 bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primary/90"
       >
-        <PlusIcon className="size-3.5" />
+        <PlusIcon className="size-4" />
         Add Competitor
       </Link>
     </div>
