@@ -1,3 +1,5 @@
+"use client";
+
 import { ArrowLeftIcon, LoaderIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
