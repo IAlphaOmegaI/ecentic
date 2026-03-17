@@ -1,19 +1,12 @@
-import { ArrowLeftIcon } from "@zenncore/icons";
+import { ArrowLeftIcon, LoaderIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import * as motion from "motion/react-client";
 import Image from "next/image";
-import Link from "next/link";
+import Link, { useLinkStatus } from "next/link";
 import { Motion } from "@/components/motion";
-import { Fade } from "@/lib/animations";
 import { FeedForm } from "./_components/feed-form";
 
 export default () => (
-  <motion.div
-    className="flex flex-1 flex-col overflow-hidden p-8"
-    variants={Fade.Right}
-    initial="hidden"
-    animate="visible"
-  >
+  <div className="flex flex-1 flex-col overflow-hidden p-8">
     <Motion.Stagger stagger={0.08} delay={0.1}>
       <Motion.Item>
         <Button
@@ -22,8 +15,7 @@ export default () => (
           className="mb-8 w-fit"
           render={<Link href="/onboarding/connect" />}
         >
-          <ArrowLeftIcon className="size-4" />
-          Back to platforms
+          <Back />
         </Button>
       </Motion.Item>
 
@@ -87,5 +79,19 @@ export default () => (
         </Motion.Item>
       </div>
     </Motion.Stagger>
-  </motion.div>
+  </div>
 );
+
+const Back = () => {
+  const { pending } = useLinkStatus();
+  return (
+    <>
+      {pending ? (
+        <LoaderIcon className="size-4 animate-spin" />
+      ) : (
+        <ArrowLeftIcon className="size-4" />
+      )}
+      Back to platforms
+    </>
+  );
+};

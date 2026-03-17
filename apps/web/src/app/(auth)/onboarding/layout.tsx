@@ -1,11 +1,9 @@
 "use client";
 
 import { CheckIcon } from "@zenncore/icons";
-import { AnimatePresence, motion } from "motion/react";
 import { usePathname } from "next/navigation";
 import type { PropsWithChildren } from "react";
 import { Onboarding } from "@/components/onboarding";
-import { Spring } from "@/lib/animations";
 
 const steps = [
   { label: "Connect Store", path: "/onboarding/connect" },
@@ -131,12 +129,7 @@ export default ({ children }: PropsWithChildren) => {
       />
 
       <main className="flex flex-1 flex-col overflow-hidden bg-background md:rounded-l-xl">
-        <motion.div
-          className="border-accent-foreground border-b bg-background-rich px-6 py-4"
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ ...Spring.Gentle, delay: 0.1 }}
-        >
+        <div className="border-accent-foreground border-b bg-background-rich px-6 py-4">
           <div className="hidden items-center gap-1 sm:flex">
             {steps.map((step, index) => {
               const isCompleted = index < current;
@@ -146,11 +139,7 @@ export default ({ children }: PropsWithChildren) => {
                 <div key={step.path} className="flex items-center gap-1">
                   <div className="relative">
                     {isCurrent && (
-                      <motion.div
-                        layoutId="onboarding-step-active"
-                        className="absolute inset-0 bg-primary"
-                        transition={Spring.Gentle}
-                      />
+                      <div className="absolute inset-0 bg-primary" />
                     )}
                     <div
                       className={`relative z-10 flex items-center gap-1.5 px-3 py-1 font-medium text-xs transition-colors ${
@@ -162,44 +151,25 @@ export default ({ children }: PropsWithChildren) => {
                       }`}
                     >
                       <span className="relative flex size-4 items-center justify-center overflow-hidden text-xs">
-                        <AnimatePresence mode="wait">
-                          {isCompleted ? (
-                            <motion.span
-                              key="check"
-                              className="absolute"
-                              initial={{ y: -8, opacity: 0 }}
-                              animate={{ y: 0, opacity: 1 }}
-                              exit={{ y: 8, opacity: 0 }}
-                              transition={Spring.Gentle}
-                            >
-                              <CheckIcon className="size-3 text-foreground-dimmed" />
-                            </motion.span>
-                          ) : (
-                            <motion.span
-                              key="num"
-                              className="absolute"
-                              initial={{ y: -8, opacity: 0 }}
-                              animate={{ y: 0, opacity: 1 }}
-                              exit={{ y: 8, opacity: 0 }}
-                              transition={Spring.Snappy}
-                            >
-                              {index + 1}
-                            </motion.span>
-                          )}
-                        </AnimatePresence>
+                        {isCompleted ? (
+                          <span className="absolute">
+                            <CheckIcon className="size-3 text-foreground-dimmed" />
+                          </span>
+                        ) : (
+                          <span className="absolute">{index + 1}</span>
+                        )}
                       </span>
                       {step.label}
                     </div>
                   </div>
                   {index < steps.length - 1 && (
-                    <motion.div
+                    <div
                       className="h-px w-4"
-                      animate={{
+                      style={{
                         backgroundColor: isCompleted
                           ? "rgb(21,114,250)"
                           : "var(--color-accent-foreground)",
                       }}
-                      transition={{ duration: 0.4 }}
                     />
                   )}
                 </div>
@@ -211,7 +181,7 @@ export default ({ children }: PropsWithChildren) => {
               Step {current + 1} of {steps.length}
             </span>
           </div>
-        </motion.div>
+        </div>
 
         {children}
       </main>

@@ -1,27 +1,36 @@
 "use client";
 
-import { CheckIcon } from "@zenncore/icons";
-import { cn } from "@zenncore/utils";
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  CheckIcon,
+  LoaderIcon,
+} from "@zenncore/icons";
+import { cn, resultify } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import { AnimatePresence, motion } from "motion/react";
-import Link from "next/link";
+import { motion } from "motion/react";
+import Link, { useLinkStatus } from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { Motion } from "@/components/motion";
-import { Spring, Stagger } from "@/lib/animations";
+import { Image } from "@/components/ui/image";
+import { Stagger } from "@/lib/animations";
 import type * as Product from "@/server/app/product";
 
 const limit = 10;
 
 const parseImages = (images: string | null): string[] => {
-  try {
+  if (!images) return [];
+
+  const result = resultify(() => {
     const parsed = JSON.parse(images ?? "[]");
     if (Array.isArray(parsed)) return parsed;
     return [];
-  } catch {
-    return [];
-  }
+  });
+
+  if (!result.success) return [];
+  return result.data;
 };
 
 const computeDataQuality = (product: Product.Type): number => {
@@ -139,21 +148,11 @@ export const ProductSelector = ({
       <div className="mx-auto w-full max-w-3xl">
         {children}
 
-        <AnimatePresence>
-          {selected.size > 0 && (
-            <motion.div
-              className="mb-4 border border-primary/20 bg-primary/5 px-4 py-2.5 text-primary text-sm"
-              initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-              animate={{ opacity: 1, height: "auto", marginBottom: 16 }}
-              exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-              transition={Spring.Snappy}
-            >
-              {selected.size} of {limit} products selected
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <Motion.Item className="mb-4 border border-primary/20 bg-primary/5 px-4 py-2.5 text-primary text-sm">
+          {selected.size} of {limit} products selected
+        </Motion.Item>
 
-        <Motion.Up className="overflow-x-auto border border-accent-foreground bg-background-rich">
+        <Motion.Item className="overflow-x-auto border border-accent-foreground bg-background-rich">
           <table className="w-full border-collapse [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_td]:border-accent-foreground [&_td]:border-x [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0 [&_th]:border-accent-foreground [&_th]:border-x">
             <thead>
               <tr className="border-accent-foreground border-b">
@@ -232,18 +231,13 @@ export const ProductSelector = ({
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        {images[0] ? (
-                          // biome-ignore lint/performance/noImgElement: external image domains are unknown at build time
-                          <img
-                            src={images[0]}
-                            alt={product.title}
-                            className="size-9 shrink-0 object-cover"
-                          />
-                        ) : (
-                          <div className="flex size-9 shrink-0 items-center justify-center bg-primary/10 font-semibold text-primary text-xs">
-                            {product.title.slice(0, 2).toUpperCase()}
-                          </div>
-                        )}
+                        <Image
+                          src={images[0] ?? "/images/placeholder.svg"}
+                          unoptimized
+                          alt={product.title.slice(0, 2).toUpperCase()}
+                          className="size-9 shrink-0 object-cover"
+                        />
+
                         <div>
                           <p className="font-medium text-foreground text-sm">
                             {product.title}
@@ -279,7 +273,7 @@ export const ProductSelector = ({
               })}
             </motion.tbody>
           </table>
-        </Motion.Up>
+        </Motion.Item>
 
         <Motion.Up className="mt-6 flex items-center justify-between">
           <Button
@@ -289,22 +283,48 @@ export const ProductSelector = ({
             className="text-foreground-dimmed text-sm"
             render={<Link href="/onboarding/connect" />}
           >
-            Back
+            <Back />
           </Button>
-          <Motion.Tap whileHover={{ y: -1 }} transition={Spring.Snappy}>
-            <Button
-              variant="flat"
-              color="primary"
-              type="button"
-              onClick={handleNext}
-              disabled={selected.size === 0}
-              className="px-6 py-2 font-medium text-sm"
-            >
-              Next: Add Competitors
-            </Button>
-          </Motion.Tap>
+          <Button
+            variant="flat"
+            color="primary"
+            type="button"
+            onClick={handleNext}
+            disabled={selected.size === 0}
+            className="px-6 py-2 font-medium text-sm"
+          >
+            <Next />
+          </Button>
         </Motion.Up>
       </div>
     </Motion.Stagger>
+  );
+};
+
+const Back = () => {
+  const { pending } = useLinkStatus();
+  return (
+    <>
+      {pending ? (
+        <LoaderIcon className="size-4 animate-spin" />
+      ) : (
+        <ArrowLeftIcon className="size-4" />
+      )}
+      Back
+    </>
+  );
+};
+
+const Next = () => {
+  const { pending } = useLinkStatus();
+  return (
+    <>
+      Next: Add Competitors
+      {pending ? (
+        <LoaderIcon className="size-4 animate-spin" />
+      ) : (
+        <ArrowRightIcon className="size-4" />
+      )}
+    </>
   );
 };

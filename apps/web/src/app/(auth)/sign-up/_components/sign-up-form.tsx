@@ -13,7 +13,6 @@ import {
 import { useToastManager } from "@zenncore/web/components/toast";
 import { motion } from "motion/react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { Motion } from "@/components/motion";
 import { Spring, Stagger } from "@/lib/animations";

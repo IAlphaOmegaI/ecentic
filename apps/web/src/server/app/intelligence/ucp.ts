@@ -15,7 +15,7 @@ export const { get, create, update, find } = repository(schema.ucpProfile);
 
 export type Type = Document<typeof schema.ucpProfile>;
 
-export type ProfileData = {
+export type Profile = {
   merchantName?: string | null;
   description?: string | null;
   logoUrl?: string | null;
@@ -39,7 +39,7 @@ export const getProfile = withAuthentication(async (context) => {
 }, "Ucp.getProfile");
 
 export const saveProfile = withAuthentication(
-  async (context, data: ProfileData) => {
+  async (context, data: Profile) => {
     const existing = await find(Environment.SERVER, {
       where: eq(schema.ucpProfile.userId, context.session.user.id),
     });
@@ -174,9 +174,7 @@ URL: ${product.url ?? ""}`,
           priceCurrency: z.string(),
           availability: z.string(),
         }),
-        brand: z
-          .object({ "@type": z.string(), name: z.string() })
-          .optional(),
+        brand: z.object({ "@type": z.string(), name: z.string() }).optional(),
         url: z.string().optional(),
       }),
     });

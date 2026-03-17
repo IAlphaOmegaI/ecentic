@@ -1,19 +1,23 @@
 "use client";
 
-import { CheckIcon, XIcon } from "@zenncore/icons";
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  CheckIcon,
+  LoaderIcon,
+  XIcon,
+} from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { Textarea, TextareaInput } from "@zenncore/web/components/textarea";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { AnimatePresence, motion } from "motion/react";
-import Link from "next/link";
+import Link, { useLinkStatus } from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { Motion } from "@/components/motion";
-import { Scale, Spring, Stagger } from "@/lib/animations";
 import * as Competitor from "@/server/app/competitor";
 import { detectCompetitors } from "@/server/app/intelligence/detect";
 import { scrapeUrls } from "@/server/app/intelligence/scrape";
@@ -189,181 +193,124 @@ export const CompetitorManager = ({
                 className={cn(
                   "relative flex-1 border-accent-foreground border-r py-2.5 font-medium text-sm transition-colors last:border-r-0",
                   method === tab
-                    ? "text-white"
+                    ? "bg-primary text-white"
                     : "bg-background-rich text-foreground-dimmed hover:bg-background-dimmed",
                 )}
               >
-                {method === tab && (
-                  <motion.div
-                    layoutId="competitor-tab-indicator"
-                    className="absolute inset-0 bg-primary"
-                    transition={Spring.Snappy}
-                  />
-                )}
                 <span className="relative z-10">{label}</span>
               </button>
             );
           })}
         </Motion.Up>
 
-        <AnimatePresence mode="wait">
-          {method === "auto" && (
-            <motion.div
-              key="auto"
-              className="border border-accent-foreground bg-background-rich"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={Spring.Snappy}
-            >
-              <div className="flex flex-col items-center gap-4 py-12 text-center">
-                <p className="max-w-md font-light text-foreground-dimmed text-sm">
-                  We'll analyze your products and use AI to find the most
-                  relevant competitors in your market.
-                </p>
-                <motion.div
-                  animate={
-                    isDetecting
-                      ? { scale: [1, 1.03, 1], opacity: [1, 0.75, 1] }
-                      : {}
-                  }
-                  transition={
-                    isDetecting
-                      ? {
-                          repeat: Number.POSITIVE_INFINITY,
-                          duration: 0.9,
-                        }
-                      : {}
-                  }
-                >
-                  <Button
-                    variant="flat"
-                    color="primary"
-                    type="button"
-                    onClick={handleDetect}
-                    disabled={isLoading}
-                    className="px-6 py-2 font-medium text-sm"
-                  >
-                    {isDetecting
-                      ? "Analyzing your market..."
-                      : "Auto-detect competitors"}
-                  </Button>
-                </motion.div>
-              </div>
-            </motion.div>
-          )}
-
-          {method === "url" && (
-            <motion.div
-              key="url"
-              className="border border-accent-foreground bg-background-rich p-4"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={Spring.Snappy}
-            >
-              <label
-                htmlFor="urls"
-                className="mb-2 block font-medium text-foreground text-xs"
+        {method === "auto" && (
+          <div className="border border-accent-foreground bg-background-rich">
+            <div className="flex flex-col items-center gap-4 py-12 text-center">
+              <p className="max-w-md font-light text-foreground-dimmed text-sm">
+                We'll analyze your products and use AI to find the most relevant
+                competitors in your market.
+              </p>
+              <Button
+                variant="flat"
+                color="primary"
+                type="button"
+                onClick={handleDetect}
+                disabled={isLoading}
+                className="px-6 py-2 font-medium text-sm"
               >
-                Paste competitor product URLs (one per line)
-              </label>
-              <Textarea value={url} onValueChange={setUrl}>
-                <TextareaInput
-                  id="urls"
-                  rows={6}
-                  placeholder={
-                    "https://amazon.com/dp/B0XXXXX\nhttps://competitorstore.com/products/example\nhttps://amazon.com/dp/B0YYYYY"
-                  }
-                  className="font-mono text-sm"
+                {isDetecting
+                  ? "Analyzing your market..."
+                  : "Auto-detect competitors"}
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {method === "url" && (
+          <div className="border border-accent-foreground bg-background-rich p-4">
+            <label
+              htmlFor="urls"
+              className="mb-2 block font-medium text-foreground text-xs"
+            >
+              Paste competitor product URLs (one per line)
+            </label>
+            <Textarea value={url} onValueChange={setUrl}>
+              <TextareaInput
+                id="urls"
+                rows={6}
+                placeholder={
+                  "https://amazon.com/dp/B0XXXXX\nhttps://competitorstore.com/products/example\nhttps://amazon.com/dp/B0YYYYY"
+                }
+                className="font-mono text-sm"
+              />
+            </Textarea>
+            <Button
+              variant="flat"
+              color="primary"
+              type="button"
+              onClick={handleScrape}
+              disabled={!url?.trim() || isLoading}
+              className="mt-3 px-4 py-2 font-medium text-sm"
+            >
+              {isScraping
+                ? "Extracting product data..."
+                : "Extract Product Data"}
+            </Button>
+          </div>
+        )}
+
+        {method === "search" && (
+          <div className="border border-accent-foreground bg-background-rich p-4">
+            <label
+              htmlFor="brandSearch"
+              className="mb-2 block font-medium text-foreground text-xs"
+            >
+              Search by brand or category
+            </label>
+            <div className="flex gap-2">
+              <TextField value={query} onValueChange={setQuery}>
+                <TextFieldInput
+                  id="query"
+                  placeholder="e.g. SoundMax, wireless earbuds under $150..."
+                  className="text-sm"
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") handleSearch();
+                  }}
                 />
-              </Textarea>
-              <Motion.Tap whileHover={{ y: -1 }} transition={Spring.Snappy}>
-                <Button
-                  variant="flat"
-                  color="primary"
-                  type="button"
-                  onClick={handleScrape}
-                  disabled={!url?.trim() || isLoading}
-                  className="mt-3 px-4 py-2 font-medium text-sm"
-                >
-                  {isScraping
-                    ? "Extracting product data..."
-                    : "Extract Product Data"}
-                </Button>
-              </Motion.Tap>
-            </motion.div>
-          )}
-
-          {method === "search" && (
-            <motion.div
-              key="search"
-              className="border border-accent-foreground bg-background-rich p-4"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={Spring.Snappy}
-            >
-              <label
-                htmlFor="brandSearch"
-                className="mb-2 block font-medium text-foreground text-xs"
+              </TextField>
+              <Button
+                variant="flat"
+                color="primary"
+                type="button"
+                onClick={() => handleSearch()}
+                disabled={!query?.trim() || isLoading}
+                className="shrink-0 px-4 py-2 font-medium text-sm"
               >
-                Search by brand or category
-              </label>
-              <div className="flex gap-2">
-                <TextField value={query} onValueChange={setQuery}>
-                  <TextFieldInput
-                    id="query"
-                    placeholder="e.g. SoundMax, wireless earbuds under $150..."
-                    className="text-sm"
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter") handleSearch();
-                    }}
-                  />
-                </TextField>
-                <Button
-                  variant="flat"
-                  color="primary"
+                {isSearching ? "Searching..." : "Search"}
+              </Button>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {[
+                "Wireless Earbuds",
+                "Travel Mugs",
+                "Yoga Equipment",
+                "Kitchen Appliances",
+                "Running Shoes",
+                "Desk Lamps",
+              ].map((category) => (
+                <button
+                  key={category}
                   type="button"
-                  onClick={() => handleSearch()}
-                  disabled={!query?.trim() || isLoading}
-                  className="shrink-0 px-4 py-2 font-medium text-sm"
+                  onClick={() => handleSearch(category)}
+                  disabled={isLoading}
+                  className="border border-accent-foreground bg-background px-3 py-1.5 text-foreground-dimmed text-xs transition-colors hover:border-primary hover:text-primary disabled:opacity-50"
                 >
-                  {isSearching ? "Searching..." : "Search"}
-                </Button>
-              </div>
-              <motion.div
-                className="mt-4 flex flex-wrap gap-2"
-                variants={Stagger.Container(0.06)}
-                initial="hidden"
-                animate="visible"
-              >
-                {[
-                  "Wireless Earbuds",
-                  "Travel Mugs",
-                  "Yoga Equipment",
-                  "Kitchen Appliances",
-                  "Running Shoes",
-                  "Desk Lamps",
-                ].map((category) => (
-                  <motion.button
-                    key={category}
-                    variants={Scale.In}
-                    type="button"
-                    onClick={() => handleSearch(category)}
-                    disabled={isLoading}
-                    className="border border-accent-foreground bg-background px-3 py-1.5 text-foreground-dimmed text-xs transition-colors hover:border-primary hover:text-primary disabled:opacity-50"
-                    whileHover={{ y: -1 }}
-                    whileTap={{ scale: 0.96 }}
-                    transition={Spring.Snappy}
-                  >
-                    {category}
-                  </motion.button>
-                ))}
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {competitors.length > 0 && (
           <Motion.Up className="mt-4">
@@ -375,17 +322,9 @@ export const CompetitorManager = ({
                 </p>
               </div>
               <div>
-                {competitors.map((record, index) => (
-                  <motion.div
+                {competitors.map((record, _index) => (
+                  <div
                     key={record.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 320,
-                      damping: 28,
-                      delay: index * 0.04,
-                    }}
                     className={cn(
                       "flex w-full items-center gap-3 border-accent-foreground border-b px-4 py-3 transition-colors last:border-b-0",
                       record.selected ? "bg-primary/5" : "opacity-60",
@@ -445,7 +384,7 @@ export const CompetitorManager = ({
                         </button>
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -460,7 +399,7 @@ export const CompetitorManager = ({
             className="text-foreground-dimmed text-sm"
             render={<Link href="/onboarding/products" />}
           >
-            Back
+            <Back />
           </Button>
           <div className="flex items-center gap-3">
             <Button
@@ -470,23 +409,49 @@ export const CompetitorManager = ({
               render={<Link href="/onboarding/scan" />}
               className="text-foreground-dimmed text-sm"
             >
-              Skip — auto-match
+              <Skip />
             </Button>
-            <Motion.Tap whileHover={{ y: -1 }} transition={Spring.Snappy}>
-              <Button
-                variant="flat"
-                color="primary"
-                type="button"
-                onClick={() => router.push("/onboarding/scan")}
-                disabled={selected === 0}
-                className="px-6 py-2 font-medium text-sm"
-              >
-                Next: Run Scan
-              </Button>
-            </Motion.Tap>
+            <Button
+              variant="flat"
+              color="primary"
+              type="button"
+              onClick={() => router.push("/onboarding/scan")}
+              disabled={selected === 0}
+              className="px-6 py-2 font-medium text-sm"
+            >
+              Next: Run Scan
+            </Button>
           </div>
         </Motion.Up>
       </div>
     </Motion.Stagger>
+  );
+};
+
+const Skip = () => {
+  const { pending } = useLinkStatus();
+  return (
+    <>
+      Skip — auto-match{" "}
+      {pending ? (
+        <LoaderIcon className="size-4 animate-spin" />
+      ) : (
+        <ArrowRightIcon className="size-4" />
+      )}
+    </>
+  );
+};
+
+const Back = () => {
+  const { pending } = useLinkStatus();
+  return (
+    <>
+      {pending ? (
+        <LoaderIcon className="size-4 animate-spin" />
+      ) : (
+        <ArrowLeftIcon className="size-4" />
+      )}
+      Back
+    </>
   );
 };

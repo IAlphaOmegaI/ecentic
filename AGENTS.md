@@ -1006,9 +1006,46 @@ export const createItem = async (data: FormData) => {
 export async function POST(request: Request) { ... }
 ```
 
-### 21b. Use Partial Prerendering
+### 21b. Every Page Exports HTML — PPR and Streaming
 
-Enable partial prerendering (PPR) to combine static shells with dynamic content. Set `experimental.ppr: true` in `next.config.js` and use `<Suspense>` boundaries for dynamic parts.
+Every `page.tsx` must be a **server component** that exports real HTML. Do not render a single client component that wraps the entire page. The shell should be server-rendered so the initial response contains static HTML (titles, layout, headings, descriptions). Data-dependent UI should stream in via `<Suspense>`.
+
+- **Static shell** — Render as much as possible in the server `page.tsx`: page title, description, layout, section headings. This becomes the initial HTML and improves perceived performance and SEO.
+- **Dynamic content** — Move data fetching into **separate server components** (can live in the same file or in `_components/`). Each async server component that fetches data must be wrapped in `<Suspense>` with a **skeleton fallback** that matches the content shape (e.g. placeholder cards, table rows, or a full-page skeleton).
+- **Streaming** — The server sends the static shell immediately, then streams the resolved async components when their data is ready. Users see the shell and skeletons first, then content replaces skeletons.
+
+**Exception:** Onboarding and auth flows (sign-in, sign-up, onboarding steps) may be designed as client-heavy by design; the rest of the app (dashboard, settings, list/detail pages) must follow the PPR pattern.
+
+```tsx
+// ✅ Good — page.tsx (server): static shell + Suspense with skeleton
+export default () => (
+  <div className="p-6">
+    <header className="mb-6">
+      <h1 className="font-medium text-foreground text-xl">Page Title</h1>
+      <p className="font-light text-foreground-dimmed text-sm">Static description.</p>
+    </header>
+    <Suspense fallback={<PageContentSkeleton />}>
+      <AsyncPageContent />
+    </Suspense>
+  </div>
+);
+
+// Async server component (same file or _components/) — fetches data, no "use client"
+async function AsyncPageContent() {
+  const data = await fetchData();
+  return <ClientPanel data={data} />;
+}
+```
+
+```tsx
+// ❌ Bad — page is a thin wrapper around one client component; no HTML shell
+export default async () => {
+  const [a, b] = await Promise.all([getA(), getB()]);
+  return <FullPageClient a={a} b={b} />;
+};
+```
+
+Use semantic skeleton fallbacks (e.g. `PageContentSkeleton`, `TableSkeleton`) so layout shift is minimal when content streams in.
 
 ### 21c. Colocate Page-Specific Components
 
@@ -1416,7 +1453,8 @@ bg-primary             — primary background (CTAs, highlights)
 - [ ] Use `useDocument` hook for SSR-safe `document`/`window` access
 - [ ] Use semantic design tokens; avoid raw Tailwind colors
 - [ ] **(Next.js)** Use server actions for mutations
-- [ ] **(Next.js)** Use partial prerendering (PPR)
+- [ ] **(Next.js)** Every `page.tsx` exports HTML: server component with static shell; no full-page client wrapper
+- [ ] **(Next.js)** PPR + streaming: static shell in `page.tsx`, data in async server components wrapped in `<Suspense fallback={<skeleton />}>`
 - [ ] **(Next.js)** Colocate page-specific components in `_components` inside the page folder
 - [ ] **(Next.js)** Pages with forms: `page.tsx` is a server component; form extracted to `_components/` using `InferredForm` + `field()`
 
@@ -1506,41 +1544,40 @@ for (const r of results) {
 
 Always check that an icon exists in `@zenncore/icons` before importing it. The codebase uses `[Name]Icon` naming (e.g. `XIcon`, `CheckIcon`). Do not assume icons from other libraries exist here (e.g. `XMarkIcon` does not exist — use `XIcon`).
 
-### 23f. Maximize Server Component Content
+### 23f. PPR and Streaming — Static Shell + Suspense + Skeleton
 
-Server components should contain as much as possible — titles, static content, layout, data grids, and animations. Only truly interactive parts (event handlers, `useState`, `useEffect`) belong in client components. Never create a fully client page that renders everything client-side when static content could live in the server `page.tsx`.
+Besides onboarding/auth screens (which may be client-heavy by design), every dashboard and app screen must be built around **Partial Prerendering (PPR) and streaming**:
 
-Pattern: Server `page.tsx` renders static content and passes it as `children` to a minimal client component that handles interactivity.
+1. **`page.tsx`** — Server component only. Renders the **static shell** (layout, page title, description, section structure) as initial HTML. No `await` at the top level that blocks the entire page; move data fetching into child server components.
+2. **Data fetching** — Done in **separate async server components** (same file or in `_components/`). Each such component is wrapped in `<Suspense fallback={…}>` with a **skeleton fallback** that approximates the content (e.g. card placeholders, table rows, or a dedicated `*Skeleton` component).
+3. **Client components** — Used only for interactivity (forms, buttons, tabs, `useState`). They receive data as props from the async server component that sits inside Suspense. Keep client boundaries as low as possible so that titles, headings, and static copy stay in the server-rendered shell.
+
+Pattern: Static shell in `page.tsx` → `<Suspense fallback={<Skeleton />}>` → async server component that fetches and renders a client component with the data.
 
 ```tsx
-// ✅ Good — server renders static content, client handles interactivity
+// ✅ Good — static shell + Suspense + skeleton; data fetched in async child
 // page.tsx (server)
-import { Motion } from "@/components/motion";
-import { InteractivePanel } from "./_components/interactive-panel";
+export default () => (
+  <div className="p-6">
+    <h1 className="font-medium text-foreground text-xl">Title</h1>
+    <p className="font-light text-foreground-dimmed text-sm">Description.</p>
+    <Suspense fallback={<ContentSkeleton />}>
+      <AsyncContent />
+    </Suspense>
+  </div>
+);
 
-export default async () => {
+async function AsyncContent() {
   const data = await fetchData();
-  return (
-    <InteractivePanel count={data.length}>
-      <Motion.Stagger stagger={0.08} className="w-full max-w-2xl">
-        <Motion.Up>
-          <h1>Title</h1>
-          <p>Static description based on server data</p>
-        </Motion.Up>
-        <Motion.Up>
-          {/* Static data grid rendered on server */}
-        </Motion.Up>
-      </Motion.Stagger>
-    </InteractivePanel>
-  );
-};
+  return <InteractivePanel data={data} />;
+}
+```
 
-// ❌ Bad — entire page is a client component wrapper
-import { FullPageClient } from "./_components/full-page-client";
-
+```tsx
+// ❌ Bad — page awaits all data then renders one client component; no shell, no streaming
 export default async () => {
-  const data = await fetchData();
-  return <FullPageClient count={data.length} />;
+  const [a, b] = await Promise.all([getA(), getB()]);
+  return <FullPageClient a={a} b={b} />;
 };
 ```
 
@@ -1576,3 +1613,13 @@ import { Textarea, TextareaInput } from "@zenncore/web/components/textarea";
 // ❌ Bad — passing input props to root
 <TextField placeholder="Search..." onKeyDown={handler} />
 ```
+
+---
+
+## Learned User Preferences
+
+- Use @zenncore/web components (Button, DataTable, TextField, etc.) for interactive UI; avoid raw HTML buttons, tables, and form inputs.
+
+## Learned Workspace Facts
+
+- When Postgres errors with "relation \"...\" does not exist", apply migrations from apps/web: `bun run db:migrate`.

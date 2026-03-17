@@ -93,13 +93,23 @@ There are no automated tests in this codebase currently.
 app/
 ├── (auth)/                   # Route group — sign-in, sign-up, verify, onboarding (4 steps)
 │   └── onboarding/           # connect → products → competitors → scan
-├── dashboard/                # Protected pages (all render mock data currently)
+├── dashboard/                # Protected pages (PPR + streaming)
 │   └── products/[id]/        # 5-tab product detail
 ├── api/integrations/shopify/ # install + callback OAuth routes
 └── _components/              # Landing page components
 ```
 
-Client components live in `_components/` subdirectories next to their page. Pages are server components.
+Client components live in `_components/` subdirectories next to their page.
+
+### PPR and Streaming (dashboard and app screens)
+
+Every `page.tsx` must be a **server component** that exports real HTML — not a thin wrapper around a single client component. Use **Partial Prerendering (PPR)** and streaming:
+
+- **Static shell** — Render in `page.tsx`: layout, page title, description, headings. This is the initial HTML.
+- **Data** — Fetch in **async server components** (same file or `_components/`). Wrap each in `<Suspense fallback={<Skeleton />}>` with a skeleton that matches the content shape.
+- **Streaming** — The server sends the shell first, then streams in resolved async components so users see content as it loads.
+
+Onboarding/auth screens may be client-heavy by design; all other screens (dashboard, settings, lists, details) follow this pattern. See AGENTS.md §21b and §23f.
 
 **Missing:** `/api/auth/[...all]/route.ts` — Better Auth route handler needs to be created for auth endpoints to work.
 

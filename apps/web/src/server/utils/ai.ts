@@ -9,7 +9,7 @@ const azure = createAzure({
   apiKey: process.env.AZURE_API_KEY,
 });
 
-export const model = azure("gpt-4o");
+const model = azure("gpt-4o");
 
 export const generate = async <T>(options: {
   system: string;

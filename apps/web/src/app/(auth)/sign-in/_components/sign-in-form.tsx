@@ -12,13 +12,11 @@ import {
   InferredForm,
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { Motion } from "@/components/motion";
-import { Spring, Stagger } from "@/lib/animations";
 import * as Authentication from "@/server/app/authentication";
 
 const config = {
@@ -76,10 +74,7 @@ export const SignInForm = ({ className }: SignInForm.Props) => {
 
   return (
     <Motion.Stagger stagger={0.07} delay={0.18}>
-      <Motion.Stagger
-        stagger={0.06}
-        className={cn("mb-4 flex flex-col gap-2", className)}
-      >
+      <Motion.Up className={cn("mb-4 flex flex-col gap-2", className)}>
         <Button variant="soft" color="emphasis" className="w-full">
           <Image src="/images/google.svg" alt="Google" width={16} height={16} />
           Continue with Google
@@ -93,44 +88,35 @@ export const SignInForm = ({ className }: SignInForm.Props) => {
           />
           Continue with Shopify
         </Button>
-      </Motion.Stagger>
+        <div className="relative mt-4 flex items-center gap-3">
+          <div className="h-px flex-1 bg-accent-foreground" />
+          <span className="font-light text-foreground-dimmed">or</span>
+          <div className="h-px flex-1 bg-accent-foreground" />
+        </div>
+      </Motion.Up>
 
-      <motion.div
-        className="relative mb-4 flex items-center gap-3"
-        variants={Stagger.Item}
-        initial={{ scaleX: 0 }}
-        animate={{ scaleX: 1 }}
-        transition={{ ...Spring.Gentle, delay: 0.3 }}
-      >
-        <div className="h-px flex-1 bg-accent-foreground" />
-        <span className="font-light text-foreground-dimmed">or</span>
-        <div className="h-px flex-1 bg-accent-foreground" />
-      </motion.div>
-
-      <Motion.Item>
+      <Motion.Up>
         <InferredForm
           config={config}
           onSubmit={handleSubmit}
           className="flex flex-col gap-3"
         >
-          <Motion.Tap whileHover={{ y: -1 }} transition={Spring.Snappy}>
-            <Button
-              type="submit"
-              variant="flat"
-              color="primary"
-              disabled={isPending}
-              className="mt-1 flex w-full items-center justify-center gap-2 py-2.5 font-medium text-sm"
-            >
-              {isPending ? "Signing in..." : "Sign In"}
-              {isPending ? (
-                <LoaderIcon className="size-4 animate-spin" />
-              ) : (
-                <ArrowRightIcon className="size-4" />
-              )}
-            </Button>
-          </Motion.Tap>
+          <Button
+            type="submit"
+            variant="flat"
+            color="primary"
+            disabled={isPending}
+            className="mt-1 flex w-full items-center justify-center gap-2 py-2.5 font-medium text-sm"
+          >
+            {isPending ? "Signing in..." : "Sign In"}
+            {isPending ? (
+              <LoaderIcon className="size-4 animate-spin" />
+            ) : (
+              <ArrowRightIcon className="size-4" />
+            )}
+          </Button>
         </InferredForm>
-      </Motion.Item>
+      </Motion.Up>
     </Motion.Stagger>
   );
 };

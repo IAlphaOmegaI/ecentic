@@ -6,3 +6,4 @@ export * from "./object";
 export * from "./ref";
 export * from "./result";
 export * from "./url";
+export * from "./array";

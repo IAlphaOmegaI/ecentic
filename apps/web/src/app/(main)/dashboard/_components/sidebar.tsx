@@ -1,14 +1,14 @@
 "use client";
 
 import {
+  ChartCircularIcon,
+  CodeIcon,
   DownloadIcon,
-  FileIcon,
+  GaugeIcon,
+  GearIcon,
   PlusIcon,
-  SendMessageIcon,
+  ShoppingCartIcon,
   SquareChartIcon,
-  SunsetIcon,
-  SupportIcon,
-  UploadIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import Image from "next/image";
@@ -18,27 +18,27 @@ import { usePathname } from "next/navigation";
 const navItems = [
   { icon: SquareChartIcon, label: "Overview", href: "/dashboard", exact: true },
   {
-    icon: FileIcon,
+    icon: ShoppingCartIcon,
     label: "Products",
     href: "/dashboard/products",
     exact: false,
     badge: "10",
   },
   {
-    icon: SendMessageIcon,
+    icon: ChartCircularIcon,
     label: "Competitors",
     href: "/dashboard/competitors",
     exact: false,
   },
   {
-    icon: SunsetIcon,
+    icon: GaugeIcon,
     label: "Optimize",
     href: "/dashboard/optimize",
     exact: false,
     badge: "4",
   },
   {
-    icon: UploadIcon,
+    icon: CodeIcon,
     label: "UCP & Data",
     href: "/dashboard/ucp",
     exact: false,
@@ -51,7 +51,7 @@ const navItems = [
     exact: false,
   },
   {
-    icon: SupportIcon,
+    icon: GearIcon,
     label: "Settings",
     href: "/dashboard/settings",
     exact: false,
@@ -68,7 +68,7 @@ export const Sidebar = () => {
     <aside className="relative hidden flex-col overflow-hidden border-accent-foreground border-r bg-background-rich md:flex">
       <div
         className={cn(
-          "flex items-center overflow-hidden border-accent-foreground border-b h-14 justify-center",
+          "flex h-14 items-center justify-center overflow-hidden border-accent-foreground border-b",
         )}
       >
         <Image
@@ -94,13 +94,9 @@ export const Sidebar = () => {
                   : "text-foreground-dimmed hover:text-foreground",
               )}
             >
-              {active && <div className="absolute inset-0 bg-primary" />}
-              {!active && (
-                <div className="absolute inset-0 bg-background-dimmed opacity-0 transition-opacity duration-150 group-hover:opacity-100" />
-              )}
               <item.icon
                 className={cn(
-                  "relative z-10 size-4 shrink-0",
+                  "relative z-10 size-8 shrink-0",
                   active
                     ? "text-white"
                     : "text-foreground-dimmed group-hover:text-foreground",

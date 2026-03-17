@@ -1,6 +1,6 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
 import { Environment } from "../utils/environment";
@@ -19,4 +19,28 @@ export const getForScan = withAuthentication(
     });
   },
   "Simulation.getForScan",
+);
+
+export const getForCompetitors = withAuthentication(
+  async (_, { competitors }: { competitors: string[] }) => {
+    if (competitors.length === 0)
+      return { success: true as const, data: [] as Type[] };
+
+    return find(Environment.SERVER, {
+      where: inArray(schema.simulation.competitorId, competitors),
+    });
+  },
+  "Simulation.getForCompetitorIds",
+);
+
+export const getForProducts = withAuthentication(
+  async (_, { products }: { products: string[] }) => {
+    if (products.length === 0)
+      return { success: true as const, data: [] as Type[] };
+
+    return find(Environment.SERVER, {
+      where: inArray(schema.simulation.productId, products),
+    });
+  },
+  "Simulation.getForProducts",
 );

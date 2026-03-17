@@ -1,10 +1,8 @@
 import { ArrowRightIcon, UploadIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import * as motion from "motion/react-client";
 import Image from "next/image";
 import Link from "next/link";
 import { Motion } from "@/components/motion";
-import { Fade } from "@/lib/animations";
 
 const platforms = [
   {
@@ -50,12 +48,7 @@ const platforms = [
 ] as const;
 
 export default () => (
-  <motion.div
-    className="flex flex-1 flex-col items-center justify-center overflow-hidden bg-background p-8 md:rounded-l-xl"
-    variants={Fade.Right}
-    initial="hidden"
-    animate="visible"
-  >
+  <div className="flex flex-1 flex-col items-center justify-center overflow-hidden bg-background p-8 md:rounded-l-xl">
     <Motion.Stagger stagger={0.08} delay={0.1}>
       <Motion.Item>
         <h2 className="font-medium text-4xl text-foreground">
@@ -130,17 +123,20 @@ export default () => (
           })}
 
           <div className="sm:col-span-2">
-            <div className="flex flex-col items-center justify-center gap-2 border border-accent-foreground border-dashed bg-background-rich p-6 opacity-50">
-              <UploadIcon className="size-6 text-foreground-dimmed" />
+            <Link
+              href="/onboarding/connect/csv"
+              className="group flex flex-col items-center justify-center gap-2 border border-accent-foreground border-dashed bg-background-rich p-6 transition-colors hover:border-primary"
+            >
+              <UploadIcon className="size-6 text-foreground-dimmed transition-colors group-hover:text-primary" />
               <div className="text-center">
                 <p className="font-medium text-foreground text-sm">
                   Upload a CSV file
                 </p>
                 <p className="font-light text-foreground-dimmed text-xs">
-                  Coming soon — drag and drop or click to browse
+                  Drag and drop or click to browse
                 </p>
               </div>
-            </div>
+            </Link>
           </div>
         </div>
 
@@ -159,5 +155,5 @@ export default () => (
         </div>
       </Motion.Item>
     </Motion.Stagger>
-  </motion.div>
+  </div>
 );

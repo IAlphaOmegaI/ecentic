@@ -1,5 +1,5 @@
-import { Navbar } from "@/components/navbar";
 import type { Metadata } from "next";
+import { Navbar } from "@/components/navbar";
 
 export const metadata: Metadata = {
   title: "Privacy Policy — écentic",
@@ -103,17 +103,13 @@ export default () => (
   <main className="mx-auto flex min-h-screen max-w-4xl flex-col gap-8 px-6 py-12">
     <Navbar />
     <header className="flex flex-col gap-4 pt-12">
-      <h1 className="font-semibold text-4xl text-foreground">
-        Privacy Policy
-      </h1>
-      <p className="text-foreground-dimmed">
-        Last updated: March 15, 2026
-      </p>
+      <h1 className="font-semibold text-4xl text-foreground">Privacy Policy</h1>
+      <p className="text-foreground-dimmed">Last updated: March 15, 2026</p>
       <p className="text-foreground-dimmed text-lg">
-        écentic (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) is committed to
-        protecting the privacy of merchants who use our e-commerce optimization
-        platform. This policy explains what data we collect, how we use it, and
-        your rights.
+        écentic (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) is committed
+        to protecting the privacy of merchants who use our e-commerce
+        optimization platform. This policy explains what data we collect, how we
+        use it, and your rights.
       </p>
     </header>
     <div className="flex flex-col gap-10">

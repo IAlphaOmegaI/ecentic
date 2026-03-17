@@ -109,10 +109,17 @@ type Interface = {
         } & RadioGroup.Props
       >;
   file:
-    | InterfaceValue<z.ZodFile, Extract<FileUpload.Props, { mode: "single" }>>
+    | InterfaceValue<
+        z.ZodFile,
+        Extract<FileUpload.Props, { mode: "single" }> & {
+          classList?: FileUploadInput.Props["classList"];
+        }
+      >
     | InterfaceValue<
         z.ZodArray<z.ZodFile>,
-        Extract<FileUpload.Props, { mode: "multiple" }>
+        Extract<FileUpload.Props, { mode: "multiple" }> & {
+          classList?: FileUploadInput.Props["classList"];
+        }
       >;
   checkbox: InterfaceValue<z.ZodBoolean, Checkbox.Props>;
   otp: InterfaceValue<z.ZodString, InputOTP.Props>;
@@ -396,7 +403,13 @@ export const InferredFormField = <Field extends GenericField>(
               return (
                 <FileUpload {...field} {...props}>
                   <FileUploadInput
-                    classList={{ input: "group-data-invalid:border-error" }}
+                    classList={{
+                      input: cn(
+                        "group-data-invalid:border-error",
+                        props.classList?.control?.input,
+                      ),
+                      root: props.classList?.control?.root,
+                    }}
                   />
                   <FileUploadPreview />
                 </FileUpload>

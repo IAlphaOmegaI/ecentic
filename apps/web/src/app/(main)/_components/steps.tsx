@@ -1,4 +1,4 @@
-import { FaceSearchIcon, RobotIcon, CircleBoltIcon } from "@zenncore/icons";
+import { CircleBoltIcon, FaceSearchIcon, RobotIcon } from "@zenncore/icons";
 
 export const Steps = () => (
   <section className="relative -left-[calc(50vw-50%)] -z-1 h-fit w-screen p-1">

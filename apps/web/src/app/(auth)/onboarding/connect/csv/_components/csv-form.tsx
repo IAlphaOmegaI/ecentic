@@ -1,0 +1,200 @@
+"use client";
+
+import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
+import { useAsyncAction } from "@zenncore/utils/hooks";
+import { Button } from "@zenncore/web/components/button";
+import {
+  type FormEntries,
+  field,
+  type GenericForm,
+  InferredForm,
+} from "@zenncore/web/components/inferred-form";
+import { useToastManager } from "@zenncore/web/components/toast";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { z } from "zod";
+import * as CsvIntegration from "@/server/app/integration/csv";
+
+type CsvProduct = {
+  title: string;
+  description?: string;
+  price?: string;
+  image?: string;
+  url?: string;
+  sku?: string;
+  id?: string;
+};
+
+const parseCSV = (text: string): CsvProduct[] => {
+  const lines = text.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+
+  const headers = (lines[0] ?? "")
+    .split(",")
+    .map((h) => h.trim().toLowerCase().replace(/['"]/g, ""));
+
+  return lines.slice(1).flatMap((line) => {
+    const values: string[] = [];
+    let current = "";
+    let inQuotes = false;
+
+    for (const char of line) {
+      if (char === '"') {
+        inQuotes = !inQuotes;
+      } else if (char === "," && !inQuotes) {
+        values.push(current.trim());
+        current = "";
+      } else {
+        current += char;
+      }
+    }
+    values.push(current.trim());
+
+    if (values.every((v) => v === "")) return [];
+
+    const row: Record<string, string> = {};
+    for (const [i, header] of headers.entries()) {
+      row[header] = values[i] ?? "";
+    }
+
+    const title = row.title ?? row.name ?? "";
+    if (!title) return [];
+
+    return [
+      {
+        title,
+        description: row.description,
+        price: row.price,
+        image: row.image ?? row.image_link ?? row.image_url,
+        url: row.url ?? row.link,
+        sku: row.sku,
+        id: row.id,
+      },
+    ];
+  });
+};
+
+const config = {
+  file: field({
+    shape: "file",
+    mode: "single",
+    accept: [".csv"],
+    validator: z.file(),
+    classList: {
+      control: {
+        input: "h-auto p-10",
+      },
+    },
+  }),
+} satisfies GenericForm;
+
+export const CsvForm = () => {
+  const router = useRouter();
+  const toast = useToastManager();
+  const [count, setCount] = useState<number | null>(null);
+
+  const [handleSubmit, isPending] = useAsyncAction(
+    async (data: FormEntries<typeof config>) => {
+      const file = data.file as File | null;
+
+      if (!file) {
+        toast.add({
+          title: "No file selected",
+          description: "Upload a CSV file first.",
+          type: "error",
+        });
+        return;
+      }
+
+      const text = await file.text();
+      const products = parseCSV(text);
+
+      if (products.length === 0) {
+        toast.add({
+          title: "No products found",
+          description:
+            "Check that your CSV has a header row with a title or name column.",
+          type: "error",
+        });
+        return;
+      }
+
+      const result = await CsvIntegration.connect({
+        products,
+        filename: file.name,
+      });
+
+      if (!result.success) {
+        toast.add({
+          title: "Import failed",
+          description: result.error.message,
+          type: "error",
+        });
+        return;
+      }
+
+      const sync = await CsvIntegration.syncProducts({
+        storeId: result.data.id,
+        products,
+      });
+
+      if (!sync.success) {
+        toast.add({
+          title: "Import failed",
+          description: sync.error.message,
+          type: "error",
+        });
+        return;
+      }
+
+      toast.add({
+        title: `${sync.data} product${sync.data !== 1 ? "s" : ""} imported`,
+        description: "Your catalog is ready.",
+        type: "success",
+      });
+
+      router.push("/onboarding/products");
+    },
+  );
+
+  return (
+    <InferredForm
+      config={config}
+      onSubmit={handleSubmit}
+      onChange={(values) => {
+        const file = (values as { file: File | null }).file;
+        if (!file) {
+          setCount(null);
+          return;
+        }
+        void file.text().then((text) => setCount(parseCSV(text).length));
+      }}
+      className="flex flex-col gap-4"
+    >
+      {count !== null && (
+        <p className="font-light text-foreground-dimmed text-sm">
+          {count} product{count !== 1 ? "s" : ""} detected
+        </p>
+      )}
+      <Button
+        type="submit"
+        variant="flat"
+        color="primary"
+        disabled={isPending}
+        className="mt-2 w-full"
+      >
+        {isPending ? (
+          <>
+            Importing...
+            <LoaderIcon className="size-4 animate-spin" />
+          </>
+        ) : (
+          <>
+            Import CSV
+            <ArrowRightIcon className="size-4" />
+          </>
+        )}
+      </Button>
+    </InferredForm>
+  );
+};
