@@ -10,7 +10,7 @@ const azure = createAzure({
   baseURL: process.env.AZURE_BASE_URL,
 });
 
-const model = azure("gpt-4o");
+const model = azure("gpt-5.3-chat");
 
 export const generate = async <T>(options: {
   system: string;
