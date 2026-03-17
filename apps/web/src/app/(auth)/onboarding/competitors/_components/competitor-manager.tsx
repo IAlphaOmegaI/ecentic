@@ -10,9 +10,6 @@ import {
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
-import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
-import { Textarea, TextareaInput } from "@zenncore/web/components/textarea";
-import { useToastManager } from "@zenncore/web/components/toast";
 import {
   Tab,
   Tabs,
@@ -20,6 +17,9 @@ import {
   TabsList,
   TabsPanel,
 } from "@zenncore/web/components/tabs";
+import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
+import { Textarea, TextareaInput } from "@zenncore/web/components/textarea";
+import { useToastManager } from "@zenncore/web/components/toast";
 import Link, { useLinkStatus } from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
@@ -191,7 +191,7 @@ export const CompetitorManager = ({
             </TabsList>
 
             <TabsPanel value="auto">
-              <div className="border border-t-0 border-accent-foreground bg-background-rich">
+              <div className="border border-accent-foreground border-t-0 bg-background-rich">
                 <div className="flex flex-col items-center gap-4 py-12 text-center">
                   <p className="max-w-md font-light text-foreground-dimmed text-sm">
                     We'll analyze your products and use AI to find the most
@@ -214,7 +214,7 @@ export const CompetitorManager = ({
             </TabsPanel>
 
             <TabsPanel value="url">
-              <div className="border border-t-0 border-accent-foreground bg-background-rich p-4">
+              <div className="border border-accent-foreground border-t-0 bg-background-rich p-4">
                 <label
                   htmlFor="urls"
                   className="mb-2 block font-medium text-foreground text-xs"
@@ -247,7 +247,7 @@ export const CompetitorManager = ({
             </TabsPanel>
 
             <TabsPanel value="search">
-              <div className="border border-t-0 border-accent-foreground bg-background-rich p-4">
+              <div className="border border-accent-foreground border-t-0 bg-background-rich p-4">
                 <label
                   htmlFor="brandSearch"
                   className="mb-2 block font-medium text-foreground text-xs"

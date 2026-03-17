@@ -10,7 +10,7 @@ import { CsvForm } from "./_components/csv-form";
 export default () => (
   <div className="flex flex-1 flex-col overflow-hidden p-8">
     <Motion.Stagger stagger={0.08} delay={0.1}>
-      <div className="mx-auto flex w-full max-w-lg flex-col">
+      <div className="mx-auto flex w-full flex-col">
         <Motion.Item>
           <Button
             variant="ghost"

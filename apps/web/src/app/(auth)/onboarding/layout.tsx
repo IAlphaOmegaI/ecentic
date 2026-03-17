@@ -10,13 +10,21 @@ import {
 import { AnimatePresence, motion } from "motion/react";
 import { usePathname } from "next/navigation";
 import type { PropsWithChildren } from "react";
-import { Spring } from "@/lib/animations";
 import { Onboarding } from "@/components/onboarding";
+import { Spring } from "@/lib/animations";
 
 const steps = [
-  { label: "Connect Store", path: "/onboarding/connect", icon: ShoppingCartIcon },
+  {
+    label: "Connect Store",
+    path: "/onboarding/connect",
+    icon: ShoppingCartIcon,
+  },
   { label: "Select Products", path: "/onboarding/products", icon: PhotoIcon },
-  { label: "Add Competitors", path: "/onboarding/competitors", icon: FaceSearchIcon },
+  {
+    label: "Add Competitors",
+    path: "/onboarding/competitors",
+    icon: FaceSearchIcon,
+  },
   { label: "Run Scan", path: "/onboarding/scan", icon: CircleBoltIcon },
 ] as const;
 
@@ -137,16 +145,19 @@ export default ({ children }: PropsWithChildren) => {
       />
 
       <main className="flex flex-1 flex-col overflow-hidden bg-background md:rounded-l-xl">
-        <div className="border-accent-foreground border-b bg-background-rich px-8 py-3">
+        <div className="border-accent-foreground border-b bg-background-rich py-2 items-center justify-center flex px-4">
           {/* Desktop step indicator */}
-          <div className="mx-auto hidden w-full max-w-lg items-center gap-0 sm:flex sm:justify-end">
+          <div className="mx-auto w-full max-w-xl items-center gap-0 flex">
             {steps.map((step, index) => {
               const isCompleted = index < current;
               const isCurrent = index === current;
               const StepIcon = step.icon;
 
               return (
-                <div key={step.path} className="flex items-center gap-1.5">
+                <div
+                  key={step.path}
+                  className="hidden sm:flex items-center gap-1.5"
+                >
                   {/* Step pill */}
                   <div className="relative flex items-center gap-2 px-2 py-1.5">
                     {/* Sliding active background */}
@@ -187,7 +198,7 @@ export default ({ children }: PropsWithChildren) => {
 
                     {/* Label */}
                     <span
-                      className={`relative z-10 whitespace-nowrap font-medium text-xs transition-colors ${
+                      className={`relative z-10 whitespace-nowrap font-medium text-sm transition-colors ${
                         isCurrent
                           ? "text-white"
                           : isCompleted
@@ -216,14 +227,14 @@ export default ({ children }: PropsWithChildren) => {
           </div>
 
           {/* Mobile step indicator */}
-          <div className="flex items-center gap-3 sm:hidden">
+          <div className="flex items-center gap-2 sm:hidden">
             <div className="flex gap-1">
               {steps.map((_, index) => (
                 <motion.div
                   key={index}
-                  className="h-1 rounded-full"
+                  className="h-2 rounded-full"
                   animate={{
-                    width: index === current ? 20 : 6,
+                    width: index === current ? 42 : 16,
                     backgroundColor:
                       index <= current
                         ? "var(--color-primary)"
@@ -233,7 +244,7 @@ export default ({ children }: PropsWithChildren) => {
                 />
               ))}
             </div>
-            <span className="font-light text-foreground-dimmed text-xs">
+            <span className="font-light text-foreground-dimmed whitespace-nowrap text-sm">
               Step {current + 1} of {steps.length}
             </span>
           </div>

@@ -65,7 +65,7 @@ export const Sidebar = () => {
     exact ? pathname === href : pathname.startsWith(href);
 
   return (
-    <aside className="relative hidden flex-col overflow-hidden border-accent-foreground border-r bg-background-rich md:flex w-60">
+    <aside className="relative hidden w-60 flex-col overflow-hidden border-accent-foreground border-r bg-background-rich md:flex">
       <div
         className={cn(
           "flex h-14 items-center justify-center overflow-hidden border-accent-foreground border-b pr-22 pl-2",
@@ -90,7 +90,7 @@ export const Sidebar = () => {
               className={cn(
                 "group relative flex items-center gap-1 overflow-hidden px-2 py-2 hover:bg-accent-foreground/20",
                 active
-                  ? "text-primary bg-primary/20 hover:bg-primary/40"
+                  ? "bg-primary/20 text-primary hover:bg-primary/40"
                   : "text-foreground-dimmed hover:text-foreground",
               )}
             >
