@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@zenncore/web/components/button";
-import { motion } from "motion/react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Spring } from "@/lib/animations";

@@ -22,7 +22,7 @@ export const TabsList = ({
   return (
     <TabsPrimitive.List
       className={createClassName(
-        "relative z-0 flex w-fit bg-background-rich border border-accent-foreground",
+        "relative z-0 flex w-fit bg-white border border-accent-foreground",
         className,
       )}
       {...props}
