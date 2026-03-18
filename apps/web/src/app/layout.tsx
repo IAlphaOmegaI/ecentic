@@ -6,6 +6,7 @@ import localFont from "next/font/local";
 import Script from "next/script";
 import { ToastList } from "@/components/ui/toast";
 import { ThemeProvider } from "@/context/theme";
+import { PostHogProvider } from "@/context/posthog";
 
 const ltsuperior = localFont({
   src: [
@@ -64,12 +65,14 @@ export default ({ children }: PropsWithChildren) => {
       <body
         className={`${ltsuperior.variable} bg-background font-body tracking-[-4%] antialiased`}
       >
-        <ThemeProvider>
-          <ToastProvider>
-            <div className="isolate">{children}</div>
-            <ToastList types={["error", "success", "info"]} />
-          </ToastProvider>
-        </ThemeProvider>
+        <PostHogProvider>
+          <ThemeProvider>
+            <ToastProvider>
+              <div className="isolate">{children}</div>
+              <ToastList types={["error", "success", "info"]} />
+            </ToastProvider>
+          </ThemeProvider>
+        </PostHogProvider>
       </body>
     </html>
   );

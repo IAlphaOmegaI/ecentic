@@ -34,7 +34,7 @@ export default async () => {
   })();
 
   return (
-    <ScanRunner totalSimulations={simulations}>
+    <ScanRunner simulations={simulations}>
       <Motion.Stagger stagger={0.08} className="w-full max-w-2xl">
         <Motion.Up className="mb-10 text-center">
           <h1 className="font-medium text-4xl text-foreground leading-tight">

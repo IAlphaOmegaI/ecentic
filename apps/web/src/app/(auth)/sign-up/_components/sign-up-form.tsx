@@ -151,26 +151,20 @@ export const SignUpForm = ({ className }: SignUpForm.Props) => {
           onSubmit={handleSubmit}
           className="grid grid-cols-2 gap-x-3 gap-y-0.5"
         >
-          <Motion.Tap
-            className="col-span-2"
-            whileHover={{ y: -1 }}
-            transition={Spring.Snappy}
+          <Button
+            type="submit"
+            variant="flat"
+            color="primary"
+            disabled={isPending}
+            className="mt-1 flex w-full col-span-2 items-center justify-center gap-2 py-2.5 font-medium text-sm"
           >
-            <Button
-              type="submit"
-              variant="flat"
-              color="primary"
-              disabled={isPending}
-              className="mt-1 flex w-full items-center justify-center gap-2 py-2.5 font-medium text-sm"
-            >
-              {isPending ? "Creating account..." : "Create Account"}
-              {isPending ? (
-                <LoaderIcon className="size-4 animate-spin" />
-              ) : (
-                <ArrowRightIcon className="size-4" />
-              )}
-            </Button>
-          </Motion.Tap>
+            {isPending ? "Creating account..." : "Create Account"}
+            {isPending ? (
+              <LoaderIcon className="size-4 animate-spin" />
+            ) : (
+              <ArrowRightIcon className="size-4" />
+            )}
+          </Button>
         </InferredForm>
       </Motion.Item>
     </Motion.Stagger>

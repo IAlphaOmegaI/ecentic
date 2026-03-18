@@ -73,22 +73,26 @@ export const detectCompetitors = async ({
 }) => {
   const session = await auth.api.getSession({ headers: await headers() });
 
-  return AI.stream<DetectEvent>(async (update) => {
-    if (!session) {
+  if (!session) {
+    return AI.stream<DetectEvent>(async (update) => {
       update({ kind: "error", text: "Unauthenticated" });
       return;
-    }
-
-    update({ kind: "log", text: "Reading your product catalog" });
-
-    const products = await Product.find(Environment.SERVER, {
-      where: eq(schema.product.userId, session.user.id),
     });
+  }
 
-    if (!products.success) {
+  const products = await Product.find(Environment.SERVER, {
+    where: eq(schema.product.userId, session.user.id),
+  });
+
+  if (!products.success) {
+    return AI.stream<DetectEvent>(async (update) => {
       update({ kind: "error", text: products.error.message });
       return;
-    }
+    });
+  }
+
+  return AI.stream<DetectEvent>(async (update) => {
+    update({ kind: "log", text: "Reading your product catalog" });
 
     const selected = products.data.filter((product) =>
       ids.includes(product.id),
@@ -122,7 +126,6 @@ export const detectCompetitors = async ({
     const result = await resultify(() =>
       AI.generate({
         system: `You are a competitive intelligence analyst for e-commerce merchants. Your job is to identify the specific competing products a merchant's items will be compared against by AI shopping agents and recommendation engines.
-
 Rules:
 - Only return products you are confident exist as real, purchasable items from established brands. Do not invent products or brands.
 - Match competitors within the same price tier (±40% of the merchant's price) and product subcategory — not just the broad category.

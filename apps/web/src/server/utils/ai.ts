@@ -1,9 +1,8 @@
 "use server";
 
 import { createAzure } from "@ai-sdk/azure";
-import { google } from "@ai-sdk/google";
 import { generateText, Output } from "ai";
-import { createStreamableValue } from "ai/rsc";
+import { createStreamableValue } from "@ai-sdk/rsc";
 import type { z } from "zod";
 
 const getModel = () => {
@@ -32,26 +31,36 @@ export const generate = async <T extends z.ZodTypeAny>(options: {
     output: Output.object({
       schema: options.schema,
     }),
-    tools: {
-      google_search: google.tools.googleSearch({}),
-    },
+
+    // tools: {
+    //   google_search: google.tools.googleSearch({}),
+    // },
   });
 
   return result.output as z.infer<T>;
 };
 
-export const stream = <T>(
+export const stream = async <T>(
   callback: (update: (value: T) => void) => Promise<void>,
 ) => {
-  const stream = createStreamableValue<T>();
+  const streamable = createStreamableValue<T>();
 
   (async () => {
     try {
-      await callback((value) => stream.update(value));
-    } finally {
-      stream.done();
+      await callback((value) => {
+        console.log(
+          "[AI.stream] update →",
+          JSON.stringify(value).slice(0, 120),
+        );
+        streamable.update(value);
+      });
+      console.log("[AI.stream] done");
+      streamable.done();
+    } catch (error) {
+      console.error("[AI.stream] error →", error);
+      streamable.error(error);
     }
   })();
 
-  return { output: stream.value };
+  return { output: streamable.value };
 };

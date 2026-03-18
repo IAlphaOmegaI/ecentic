@@ -21,6 +21,13 @@ This document captures the coding conventions used in this codebase. Follow all 
 
 - When Postgres errors with "relation \"...\" does not exist", apply migrations from apps/web: `bun run db:migrate`.
 
+## Learned Workspace Facts
+
+- AI streaming server actions use `AI.stream<EventType>()` in `server/utils/ai.ts` returning `{ output }`, consumed client-side via `readStreamableValue(output)` with a `switch (event.kind)` block — see `competitor.ts` `detectCompetitors` and `simulate.ts` `runScan` as canonical examples.
+- Avoid `z.default()` in Zod schemas passed to `generate()`; Azure requires every property listed in `"properties"` to also appear in `"required"`, and `.default()` fields trigger validation failures. Use `.optional()` instead for truly optional fields.
+- Dashboard and non-onboarding pages must follow PPR/streaming: `page.tsx` renders a real HTML static shell (title, description, headings); data is fetched in async server components in the same file, each wrapped in `<Suspense fallback={<Skeleton />}>`. Onboarding/auth screens are exempt from this rule.
+
 ## Learned User Preferences
 
-- Use @zenncore/web components (Button, DataTable, TextField, etc.) for interactive UI; avoid raw HTML buttons, tables, and form inputs.
+- Use `@zenncore/web` components for all interactive UI — `Button`, `DataTable`/`DataTableProvider`/`DataTableEmpty`, `TextField`, `Tab`/`Tabs`/`TabsIndicator`/`TabsList`/`TabsPanel` — never raw HTML buttons, tables, inputs, or custom tab implementations.
+- Only `Motion.Row`, `Motion.Up`, `Motion.Item`, and `Motion.Stagger` are permitted for animations. Do not add custom `motion/react` or `AnimatePresence` outside these wrappers; group related elements in the same `Motion.*` wrapper instead of animating each one separately.

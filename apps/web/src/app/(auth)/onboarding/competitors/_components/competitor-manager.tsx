@@ -32,11 +32,10 @@ export const CompetitorManager = ({
   existing,
   products,
 }: CompetitorManager.Props) => {
-  const router = useRouter();
   const [count, setCount] = useState(existing.length);
 
-  const handleSuccess = (newCompetitors: Competitor.Type[]) => {
-    setCount((previous) => previous + newCompetitors.length);
+  const handleSuccess = (competitors: Competitor.Type[]) => {
+    setCount((previous) => previous + competitors.length);
   };
 
   return (
@@ -97,12 +96,11 @@ export const CompetitorManager = ({
               variant="flat"
               color="primary"
               type="button"
-              onClick={() => router.push("/onboarding/competitors/review")}
               disabled={count === 0}
               className="px-6 py-2 font-medium text-sm"
+              render={<Link href="/onboarding/competitors/review" />}
             >
-              Next: Review
-              <ArrowRightIcon className="size-4" />
+              <Next />
             </Button>
           </div>
         </Motion.Up>
@@ -135,6 +133,20 @@ const Back = () => {
         <ArrowLeftIcon className="size-4" />
       )}
       Back
+    </>
+  );
+};
+
+const Next = () => {
+  const { pending } = useLinkStatus();
+  return (
+    <>
+      Next: Review
+      {pending ? (
+        <LoaderIcon className="size-4 animate-spin" />
+      ) : (
+        <ArrowRightIcon className="size-4" />
+      )}
     </>
   );
 };
