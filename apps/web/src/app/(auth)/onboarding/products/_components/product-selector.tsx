@@ -8,6 +8,14 @@ import {
 } from "@zenncore/icons";
 import { cn, resultify } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@zenncore/web/components/table";
 import { motion } from "motion/react";
 import Link, { useLinkStatus } from "next/link";
 import { useRouter } from "next/navigation";
@@ -153,10 +161,10 @@ export const ProductSelector = ({
         </Motion.Item>
 
         <Motion.Item className="overflow-x-auto border border-accent-foreground bg-background-rich">
-          <table className="w-full border-collapse [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_td]:border-accent-foreground [&_td]:border-x [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0 [&_th]:border-accent-foreground [&_th]:border-x">
-            <thead>
-              <tr className="border-accent-foreground border-b">
-                <th className="w-10 px-4 py-2">
+          <Table className="[&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-10 px-4 py-2">
                   <button
                     type="button"
                     onClick={toggleAll}
@@ -176,21 +184,25 @@ export const ProductSelector = ({
                       )}
                     />
                   </button>
-                </th>
+                </TableHead>
                 {["Product", "Price", "Status", "Quality"].map((header) => (
-                  <th
+                  <TableHead
                     key={header}
                     className="px-4 py-2 text-left font-medium text-foreground-dimmed text-xs"
                   >
                     {header}
-                  </th>
+                  </TableHead>
                 ))}
-              </tr>
-            </thead>
-            <motion.tbody
-              variants={Stagger.Container(0.04)}
-              initial="hidden"
-              animate="visible"
+              </TableRow>
+            </TableHeader>
+            <TableBody
+              render={
+                <motion.tbody
+                  variants={Stagger.Container(0.04)}
+                  initial="hidden"
+                  animate="visible"
+                />
+              }
             >
               {products.map((product) => {
                 const isSelected = selected.has(product.id);
@@ -199,12 +211,12 @@ export const ProductSelector = ({
                 const quality = computeDataQuality(product);
 
                 return (
-                  <motion.tr
+                  <TableRow
                     key={product.id}
-                    variants={Stagger.Item}
+                    render={<motion.tr variants={Stagger.Item} />}
                     onClick={() => !isDisabled && toggleProduct(product.id)}
                     className={cn(
-                      "cursor-pointer border-accent-foreground border-b transition-colors last:border-b-0",
+                      "cursor-pointer last:border-b-0",
                       isSelected
                         ? "bg-primary/5"
                         : isDisabled
@@ -212,7 +224,7 @@ export const ProductSelector = ({
                           : "hover:bg-background-dimmed/50",
                     )}
                   >
-                    <td className="w-10 px-4 py-3">
+                    <TableCell className="w-10 px-4 py-3">
                       <div
                         className={cn(
                           "flex size-4 items-center justify-center border transition-colors duration-150",
@@ -228,8 +240,8 @@ export const ProductSelector = ({
                           )}
                         />
                       </div>
-                    </td>
-                    <td className="px-4 py-3">
+                    </TableCell>
+                    <TableCell className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <Image
                           src={images[0] ?? "/images/placeholder.svg"}
@@ -237,7 +249,6 @@ export const ProductSelector = ({
                           alt={product.title.slice(0, 2).toUpperCase()}
                           className="size-9 shrink-0 object-cover"
                         />
-
                         <div>
                           <p className="font-medium text-foreground text-sm">
                             {product.title}
@@ -249,11 +260,11 @@ export const ProductSelector = ({
                           )}
                         </div>
                       </div>
-                    </td>
-                    <td className="px-4 py-3 font-light text-foreground text-sm">
+                    </TableCell>
+                    <TableCell className="px-4 py-3 font-light text-foreground text-sm">
                       {formatPrice(product.price, product.currency)}
-                    </td>
-                    <td className="px-4 py-3">
+                    </TableCell>
+                    <TableCell className="px-4 py-3">
                       <span
                         className={cn(
                           "px-1.5 py-0.5 font-medium text-xs",
@@ -264,15 +275,15 @@ export const ProductSelector = ({
                       >
                         {product.status === "active" ? "Active" : "Draft"}
                       </span>
-                    </td>
-                    <td className="px-4 py-3">
+                    </TableCell>
+                    <TableCell className="px-4 py-3">
                       <QualityBadge score={quality} />
-                    </td>
-                  </motion.tr>
+                    </TableCell>
+                  </TableRow>
                 );
               })}
-            </motion.tbody>
-          </table>
+            </TableBody>
+          </Table>
         </Motion.Item>
 
         <Motion.Up className="mt-6 flex items-center justify-between">

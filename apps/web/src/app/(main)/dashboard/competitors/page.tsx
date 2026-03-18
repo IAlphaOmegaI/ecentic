@@ -1,6 +1,5 @@
-import { LoaderIcon, PlusIcon } from "@zenncore/icons";
 import { unwrapResult } from "@zenncore/utils";
-import Link, {  } from "next/link";
+import Link from "next/link";
 import { Suspense } from "react";
 import * as Competitor from "@/server/app/competitor";
 import { CompetitorsTable } from "./_components/competitors-table";
@@ -196,10 +195,5 @@ const InsightsSkeleton = () => (
 );
 
 const Next = () => {
-  return (
-    <>
-
-      Add Competitor
-    </>
-  );
+  return <>Add Competitor</>;
 };

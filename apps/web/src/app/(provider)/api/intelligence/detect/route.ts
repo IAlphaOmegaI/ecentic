@@ -3,18 +3,13 @@ import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
+import * as Competitor from "@/server/app/competitor";
 import { db, schema } from "@/server/database";
 import { generate } from "@/server/utils/ai";
-import * as Competitor from "@/server/app/competitor";
 import { Environment } from "@/server/utils/environment";
 
-const send = (
-  controller: ReadableStreamDefaultController,
-  event: object,
-) => {
-  controller.enqueue(
-    new TextEncoder().encode(`${JSON.stringify(event)}\n`),
-  );
+const send = (controller: ReadableStreamDefaultController, event: object) => {
+  controller.enqueue(new TextEncoder().encode(`${JSON.stringify(event)}\n`));
 };
 
 export const POST = async (request: Request) => {
@@ -27,28 +22,31 @@ export const POST = async (request: Request) => {
   }
 
   const body = await request.json();
-  const productIds: string[] = body.productIds ?? [];
+  const products: string[] = body.products ?? [];
 
   const stream = new ReadableStream({
     async start(controller) {
       try {
         send(controller, { kind: "log", text: "Reading your product catalog" });
 
-        const productsResult = await resultify(async () =>
+        const results = await resultify(async () =>
           db
             .select()
             .from(schema.product)
             .where(eq(schema.product.userId, session.user.id)),
         );
 
-        if (!productsResult.success) {
-          send(controller, { kind: "error", text: productsResult.error.message });
+        if (!results.success) {
+          send(controller, {
+            kind: "error",
+            text: results.error.message,
+          });
           controller.close();
           return;
         }
 
-        const selected = productsResult.data.filter((product) =>
-          productIds.includes(product.id),
+        const selected = results.data.filter((product) =>
+          products.includes(product.id),
         );
 
         if (selected.length === 0) {
@@ -84,7 +82,7 @@ export const POST = async (request: Request) => {
           text: "Running competitive intelligence model",
         });
 
-        const aiResult = await resultify(async () =>
+        const ai = await resultify(async () =>
           generate({
             system: `You are a competitive intelligence analyst for e-commerce merchants. Your job is to identify the specific competing products a merchant's items will be compared against by AI shopping agents and recommendation engines.
 
@@ -112,19 +110,19 @@ Rules:
           }),
         );
 
-        if (!aiResult.success) {
-          send(controller, { kind: "error", text: aiResult.error.message });
+        if (!ai.success) {
+          send(controller, { kind: "error", text: ai.error.message });
           controller.close();
           return;
         }
 
         send(controller, {
           kind: "log",
-          text: `Saving ${aiResult.data.competitors.length} competitor products`,
+          text: `Saving ${ai.data.competitors.length} competitor products`,
         });
 
         const created = await Promise.all(
-          aiResult.data.competitors.map((entry) =>
+          ai.data.competitors.map((entry) =>
             Competitor.create(Environment.SERVER, {
               ...entry,
               userId: session.user.id,

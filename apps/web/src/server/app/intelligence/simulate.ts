@@ -127,57 +127,55 @@ export const runScan = withAuthentication(async (ctx) => {
 
   const tasks = products.data.flatMap((product) =>
     selected.flatMap((competitor) =>
-      perspectives.map(
-        (perspective) => async () => {
-          const result = await resultify(() =>
-            generate({
-              system: perspective.system,
-              prompt: `A consumer is choosing between these two products. Evaluate each listing and recommend one.\n\n--- PRODUCT A ---\n${Utils.formatProduct(product)}\n\n--- PRODUCT B ---\n${Utils.formatCompetitor(competitor)}\n\nScore each product 0-100 using your evaluation methodology. Pick a winner based on which LISTING better serves a buyer making a purchase decision. In your reasoning, cite the specific attributes or gaps that drove the decision (2-3 sentences max).`,
-              schema: z.object({
-                winner: z.enum(["product", "competitor"]),
-                productScore: z.number().min(0).max(100),
-                competitorScore: z.number().min(0).max(100),
-                reasoning: z.string(),
-                keyFactors: z.array(z.string()),
-              }),
+      perspectives.map((perspective) => async () => {
+        const result = await resultify(() =>
+          generate({
+            system: perspective.system,
+            prompt: `A consumer is choosing between these two products. Evaluate each listing and recommend one.\n\n--- PRODUCT A ---\n${Utils.formatProduct(product)}\n\n--- PRODUCT B ---\n${Utils.formatCompetitor(competitor)}\n\nScore each product 0-100 using your evaluation methodology. Pick a winner based on which LISTING better serves a buyer making a purchase decision. In your reasoning, cite the specific attributes or gaps that drove the decision (2-3 sentences max).`,
+            schema: z.object({
+              winner: z.enum(["product", "competitor"]),
+              productScore: z.number().min(0).max(100),
+              competitorScore: z.number().min(0).max(100),
+              reasoning: z.string(),
+              keyFactors: z.array(z.string()),
             }),
-          );
+          }),
+        );
 
-          const entry = (() => {
-            switch (true) {
-              case result.success:
-                return {
-                  productId: product.id,
-                  competitorId: competitor.id,
-                  model: perspective.id,
-                  modelLabel: perspective.label,
-                  productTitle: product.title,
-                  competitorTitle: competitor.title,
-                  winner: result.data.winner,
-                  productScore: Math.round(result.data.productScore),
-                  competitorScore: Math.round(result.data.competitorScore),
-                  reasoning: result.data.reasoning,
-                  keyFactors: result.data.keyFactors,
-                };
-              default:
-                return {
-                  productId: product.id,
-                  competitorId: competitor.id,
-                  model: perspective.id,
-                  modelLabel: perspective.label,
-                  winner: "competitor" as const,
-                  reasoning: "Evaluation failed — defaulting to competitor",
-                  productScore: 0,
-                  competitorScore: 50,
-                  productTitle: product.title,
-                  competitorTitle: competitor.title,
-                };
-            }
-          })();
+        const entry = (() => {
+          switch (true) {
+            case result.success:
+              return {
+                productId: product.id,
+                competitorId: competitor.id,
+                model: perspective.id,
+                modelLabel: perspective.label,
+                productTitle: product.title,
+                competitorTitle: competitor.title,
+                winner: result.data.winner,
+                productScore: Math.round(result.data.productScore),
+                competitorScore: Math.round(result.data.competitorScore),
+                reasoning: result.data.reasoning,
+                keyFactors: result.data.keyFactors,
+              };
+            default:
+              return {
+                productId: product.id,
+                competitorId: competitor.id,
+                model: perspective.id,
+                modelLabel: perspective.label,
+                winner: "competitor" as const,
+                reasoning: "Evaluation failed — defaulting to competitor",
+                productScore: 0,
+                competitorScore: 50,
+                productTitle: product.title,
+                competitorTitle: competitor.title,
+              };
+          }
+        })();
 
-          return entry;
-        },
-      ),
+        return entry;
+      }),
     ),
   );
 
@@ -185,7 +183,8 @@ export const runScan = withAuthentication(async (ctx) => {
 
   const batches = Array.from(
     { length: Math.ceil(tasks.length / batchSize) },
-    (_value, index) => tasks.slice(index * batchSize, index * batchSize + batchSize),
+    (_value, index) =>
+      tasks.slice(index * batchSize, index * batchSize + batchSize),
   );
 
   const results = await batches.reduce(
@@ -194,19 +193,21 @@ export const runScan = withAuthentication(async (ctx) => {
       const current = await Promise.all(batch.map((task) => task()));
       return [...previous, ...current];
     },
-    Promise.resolve([] as {
-      productId: string;
-      competitorId: string;
-      model: string;
-      modelLabel: string;
-      productTitle: string;
-      competitorTitle: string;
-      winner: "product" | "competitor";
-      productScore: number;
-      competitorScore: number;
-      reasoning: string;
-      keyFactors?: string[];
-    }[]),
+    Promise.resolve(
+      [] as {
+        productId: string;
+        competitorId: string;
+        model: string;
+        modelLabel: string;
+        productTitle: string;
+        competitorTitle: string;
+        winner: "product" | "competitor";
+        productScore: number;
+        competitorScore: number;
+        reasoning: string;
+        keyFactors?: string[];
+      }[],
+    ),
   );
 
   const wins = results.filter((r) => r.winner === "product").length;

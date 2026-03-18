@@ -20,7 +20,7 @@ export default async () => {
 
   const simulations = products.length * selected.length * 3;
 
-  const estimatedTime = (() => {
+  const estimation = (() => {
     switch (true) {
       case simulations <= 30:
         return "~15 sec";
@@ -47,16 +47,16 @@ export default async () => {
         </Motion.Up>
 
         <Motion.Up className="mb-8 grid grid-cols-3 gap-px border border-accent-foreground bg-accent-foreground">
-          {models.map((m) => (
+          {models.map((model) => (
             <div
-              key={m.model}
+              key={model.model}
               className="flex flex-col gap-1 bg-background-rich p-5"
             >
-              <span className={cn("font-semibold text-xl", m.color)}>
-                {m.model}
+              <span className={cn("font-semibold text-xl", model.color)}>
+                {model.model}
               </span>
               <span className="font-light text-foreground-dimmed text-xs">
-                {m.desc}
+                {model.desc}
               </span>
             </div>
           ))}
@@ -73,7 +73,7 @@ export default async () => {
               label: "Simulations to run",
               value: simulations.toLocaleString(),
             },
-            { label: "Estimated time", value: estimatedTime },
+            { label: "Estimated time", value: estimation },
           ].map((item) => (
             <div key={item.label} className="bg-background-rich px-5 py-4">
               <p className="font-semibold text-2xl text-foreground">

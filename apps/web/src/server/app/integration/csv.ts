@@ -7,7 +7,7 @@ import { RequestError } from "../../utils/error";
 import * as Product from "../product";
 import * as Store from "../store";
 
-type CsvProduct = {
+type Type = {
   title: string;
   description?: string;
   price?: string;
@@ -20,7 +20,7 @@ type CsvProduct = {
 export const connect = withAuthentication(
   async (
     context,
-    { products, filename }: { products: CsvProduct[]; filename: string },
+    { products, filename }: { products: Type[]; filename: string },
   ): Promise<Result<Store.Type, RequestError | Error>> => {
     if (products.length === 0)
       return {
@@ -49,7 +49,7 @@ export const connect = withAuthentication(
 export const syncProducts = withAuthentication(
   async (
     context,
-    { storeId, products }: { storeId: string; products: CsvProduct[] },
+    { storeId, products }: { storeId: string; products: Type[] },
   ) => {
     await Store.update(Environment.SERVER, storeId, { status: "syncing" });
 

@@ -11,7 +11,7 @@ export const searchCompetitors = withAuthentication(
   async (context, { query }: { query: string }) => {
     if (!query.trim())
       return {
-        success: false as const,
+        success: false,
         error: new Error("Search query is required"),
       };
 
@@ -43,8 +43,7 @@ Rules:
       }),
     );
 
-    if (!result.success)
-      return { success: false as const, error: result.error };
+    if (!result.success) return result;
 
     const created = await Promise.all(
       result.data.competitors.map((entry) =>
@@ -60,7 +59,7 @@ Rules:
       .filter((record) => record.success)
       .map((record) => record.data);
 
-    return { success: true as const, data: successful };
+    return { success: true, data: successful };
   },
   "Intelligence.searchCompetitors",
 );

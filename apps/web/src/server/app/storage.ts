@@ -27,12 +27,7 @@ export const upload = async (files: File[]) => {
 };
 
 export const fileRouter = {
-  thumbnails: f({
-    // image: {
-    //   maxFileSize: "4MB",
-    //   maxFileCount: 4,
-    // },
-  })
+  thumbnails: f({})
     .onUploadError(async ({ error }) => {
       console.log({ error });
     })

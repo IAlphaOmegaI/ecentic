@@ -1,7 +1,7 @@
 import { parseSearchParam, unwrapResult } from "@zenncore/utils";
 import { Motion } from "@/components/motion";
 import * as Competitor from "@/server/app/competitor";
-import { CompetitorManagerClient as CompetitorManager } from "./_components/competitor-manager-client";
+import { CompetitorManager } from "./_components/competitor-manager";
 
 export default async ({
   searchParams,
@@ -14,7 +14,7 @@ export default async ({
   const competitors = await unwrapResult(Competitor.getForCurrentUser());
 
   return (
-    <CompetitorManager existing={competitors} productIds={products}>
+    <CompetitorManager existing={competitors} products={products}>
       <Motion.Up className="mb-6">
         <h1 className="font-medium text-2xl text-foreground">
           Who are your competitors?

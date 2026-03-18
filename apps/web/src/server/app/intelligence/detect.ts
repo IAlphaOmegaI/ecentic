@@ -11,7 +11,7 @@ import * as Competitor from "../competitor";
 import * as Product from "../product";
 
 export const detectCompetitors = withAuthentication(
-  async (context, { productIds }: { productIds: string[] }) => {
+  async (context, { products: ids }: { products: string[] }) => {
     const products = await Product.find(Environment.SERVER, {
       where: eq(schema.product.userId, context.session.user.id),
     });
@@ -19,12 +19,12 @@ export const detectCompetitors = withAuthentication(
     if (!products.success) return products;
 
     const selected = products.data.filter((product) =>
-      productIds.includes(product.id),
+      ids.includes(product.id),
     );
 
     if (selected.length === 0)
       return {
-        success: false as const,
+        success: false,
         error: new Error("No products selected"),
       };
 
@@ -63,8 +63,7 @@ Rules:
       }),
     );
 
-    if (!result.success)
-      return { success: false as const, error: result.error };
+    if (!result.success) return { success: false, error: result.error };
 
     const created = await Promise.all(
       result.data.competitors.map((entry) =>
@@ -80,7 +79,7 @@ Rules:
       .filter((record) => record.success)
       .map((record) => record.data);
 
-    return { success: true as const, data: successful };
+    return { success: true, data: successful };
   },
   "Intelligence.detectCompetitors",
 );

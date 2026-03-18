@@ -13,9 +13,9 @@ export const { get, paginate, create, update, destroy, exists, count, find } =
 export type Type = Document<typeof schema.simulation>;
 
 export const getForScan = withAuthentication(
-  async (_, { scanId }: { scanId: string }) => {
+  async (_, { scan: id }: { scan: string }) => {
     return find(Environment.SERVER, {
-      where: eq(schema.simulation.scanId, scanId),
+      where: eq(schema.simulation.scanId, id),
     });
   },
   "Simulation.getForScan",

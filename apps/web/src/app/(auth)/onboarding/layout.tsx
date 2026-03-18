@@ -145,9 +145,8 @@ export default ({ children }: PropsWithChildren) => {
       />
 
       <main className="flex flex-1 flex-col overflow-hidden bg-background md:rounded-l-xl">
-        <div className="border-accent-foreground border-b bg-background-rich py-2 items-center justify-center flex px-4">
-          {/* Desktop step indicator */}
-          <div className="mx-auto w-full max-w-xl items-center gap-0 flex">
+        <div className="flex items-center justify-center border-accent-foreground border-b bg-background-rich px-4 py-2">
+          <div className="mx-auto flex w-full max-w-xl items-center gap-0">
             {steps.map((step, index) => {
               const isCompleted = index < current;
               const isCurrent = index === current;
@@ -156,7 +155,7 @@ export default ({ children }: PropsWithChildren) => {
               return (
                 <div
                   key={step.path}
-                  className="hidden sm:flex items-center gap-1.5"
+                  className="hidden items-center gap-1.5 sm:flex"
                 >
                   {/* Step pill */}
                   <div className="relative flex items-center gap-2 px-3 py-1.5">
@@ -226,11 +225,11 @@ export default ({ children }: PropsWithChildren) => {
             })}
           </div>
 
-          {/* Mobile step indicator */}
           <div className="flex items-center gap-2 sm:hidden">
             <div className="flex gap-1">
               {steps.map((_, index) => (
                 <motion.div
+                  // biome-ignore lint/suspicious/noArrayIndexKey: false positive
                   key={index}
                   className="h-2 rounded-full"
                   animate={{
@@ -244,7 +243,7 @@ export default ({ children }: PropsWithChildren) => {
                 />
               ))}
             </div>
-            <span className="font-light text-foreground-dimmed whitespace-nowrap text-sm">
+            <span className="whitespace-nowrap font-light text-foreground-dimmed text-sm">
               Step {current + 1} of {steps.length}
             </span>
           </div>

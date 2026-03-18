@@ -116,17 +116,17 @@ export const updateProduct = withAuthentication(
   async (
     _context,
     {
-      productId,
+      product: id,
       data,
     }: {
-      productId: string;
+      product: string;
       data: {
         title?: string;
         body_html?: string;
       };
     },
   ) => {
-    const product = await Product.get(Environment.SERVER, productId);
+    const product = await Product.get(Environment.SERVER, id);
     if (!product.success) return product;
 
     if (!product.data)
@@ -173,7 +173,7 @@ export const updateProduct = withAuthentication(
 
     const updated = parsed.data.product;
 
-    await Product.update(Environment.SERVER, productId, {
+    await Product.update(Environment.SERVER, id, {
       title: updated.title,
       description: updated.body_html,
       rawData: JSON.stringify(updated),
