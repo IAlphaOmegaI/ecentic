@@ -6,7 +6,7 @@ import { readStreamableValue } from "@ai-sdk/rsc";
 import { AnimatePresence } from "motion/react";
 import type { ReactNode } from "react";
 import { useState } from "react";
-import * as Simulation from "@/server/app/intelligence/simulate";
+import { runScan } from "@/server/app/intelligence/simulate";
 import { CompletePhase } from "./complete-phase";
 import { PrePhase } from "./pre-phase";
 import { RunningPhase } from "./running-phase";
@@ -53,8 +53,6 @@ export const ScanRunner = ({ children, simulations }: ScanRunner.Props) => {
 
   const [topFinding, setTopFinding] = useState<TopFinding | null>(null);
   const [count, setCount] = useState(0);
-  const [results, setResults] = useState<Simulation.SimulationResult[]>([]);
-  const [text, setText] = useState<string | null>(null);
 
   const appendLog = (model: string, message: string) => {
     setLogs((previous) => [
@@ -66,21 +64,23 @@ export const ScanRunner = ({ children, simulations }: ScanRunner.Props) => {
   const [handleRun, isRunning] = useAsyncAction(async () => {
     setPhase("running");
     setLogs([]);
-    setText(null);
     setStats(initialStats);
     setStatuses(initialStatuses);
 
-    const { output } = await unwrapResult(Simulation.runScan());
+    const { output } = await unwrapResult(runScan());
 
     for await (const event of readStreamableValue(output)) {
       if (!event) continue;
 
+      console.log(
+        "[ScanRunner] event →",
+        event.kind,
+        JSON.stringify(event).slice(0, 120),
+      );
+
       switch (event.kind) {
         case "log":
           appendLog(event.model, event.message);
-          break;
-        case "chunk":
-          setText((previous) => (previous ?? "") + event.text);
           break;
         case "progress": {
           const percentage =
@@ -110,12 +110,10 @@ export const ScanRunner = ({ children, simulations }: ScanRunner.Props) => {
           });
           return;
         case "done":
-          setText(null);
           setStats({ wins: event.wins, losses: event.losses, progress: 100 });
           setWinRates(event.modelWinRates);
           setTopFinding(event.topFinding);
           setCount(event.productCount);
-          setResults(event.results);
           setTimeout(() => setPhase("complete"), 800);
           return;
       }
@@ -138,7 +136,6 @@ export const ScanRunner = ({ children, simulations }: ScanRunner.Props) => {
           wins={stats.wins}
           losses={stats.losses}
           logs={logs}
-          streamingText={text ?? ""}
         />
       )}
 
@@ -149,7 +146,6 @@ export const ScanRunner = ({ children, simulations }: ScanRunner.Props) => {
           winRates={winRates}
           topFinding={topFinding}
           products={count}
-          results={results}
         />
       )}
     </AnimatePresence>

@@ -2,10 +2,8 @@
 
 import { resultify, unique } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
-import { headers } from "next/headers";
 import { cache as dedupe } from "react";
 import { z } from "zod";
-import { auth } from "@/lib/auth";
 import { schema } from "../database";
 import * as AI from "../utils/ai";
 import { withAuthentication } from "../utils/authentication";

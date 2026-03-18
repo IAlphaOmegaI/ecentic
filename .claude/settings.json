@@ -1,7 +1,5 @@
 {
   "permissions": {
-    "allow": [
-      "Bash(grep -E '\"\"ai\"\"' apps/web/package.json)"
-    ]
+    "allow": ["Bash(grep -E '\"\"ai\"\"' apps/web/package.json)"]
   }
 }

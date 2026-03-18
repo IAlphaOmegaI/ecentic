@@ -30,7 +30,10 @@ import type * as Product from "@/server/app/product";
 
 // ─── JSON syntax highlighter ────────────────────────────────────────────────
 
-type JToken = { text: string; type: "key" | "string" | "number" | "boolean" | "null" | "punct" | "space" };
+type JToken = {
+  text: string;
+  type: "key" | "string" | "number" | "boolean" | "null" | "punct" | "space";
+};
 
 const tokenizeJson = (json: string): JToken[] => {
   const tokens: JToken[] = [];
@@ -331,7 +334,7 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
           </div>
 
           <div className="flex-1">
-            <p className="font-medium text-foreground text-base">
+            <p className="font-medium text-base text-foreground">
               {filledCount} of {definitions.length} fields complete
             </p>
             <p className="mt-0.5 font-light text-foreground-dimmed text-sm">
@@ -364,8 +367,8 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
           <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
             {/* Fields */}
             <div className="border border-accent-foreground bg-background-rich">
-              <div className="border-b border-accent-foreground px-4 py-2.5">
-                <p className="font-medium text-foreground text-base">
+              <div className="border-accent-foreground border-b px-4 py-2.5">
+                <p className="font-medium text-base text-foreground">
                   Profile Fields
                 </p>
               </div>
@@ -374,7 +377,10 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
                   const value = state[field.key];
                   const isComplete = Boolean(value);
                   return (
-                    <div key={field.key} className="flex items-center gap-3 px-4 py-2.5">
+                    <div
+                      key={field.key}
+                      className="flex items-center gap-3 px-4 py-2.5"
+                    >
                       <span
                         className={cn(
                           "size-1.5 shrink-0 rounded-full transition-colors",
@@ -402,7 +408,7 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
                   );
                 })}
               </div>
-              <div className="flex items-center gap-2 border-t border-accent-foreground px-4 py-3">
+              <div className="flex items-center gap-2 border-accent-foreground border-t px-4 py-3">
                 <Button
                   variant="flat"
                   color="primary"
@@ -438,9 +444,9 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
             <div className="flex flex-col gap-4">
               {/* JSON Preview */}
               <div className="border border-accent-foreground bg-background-rich">
-                <div className="flex items-center justify-between border-b border-accent-foreground px-4 py-2.5">
+                <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-2.5">
                   <div className="flex items-center gap-2">
-                    <p className="font-medium text-foreground text-base">
+                    <p className="font-medium text-base text-foreground">
                       JSON Preview
                     </p>
                     {generation && (
@@ -474,8 +480,8 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
 
               {/* Install instructions */}
               <div className="border border-accent-foreground bg-background-rich">
-                <div className="border-b border-accent-foreground px-4 py-2.5">
-                  <p className="font-medium text-foreground text-base">
+                <div className="border-accent-foreground border-b px-4 py-2.5">
+                  <p className="font-medium text-base text-foreground">
                     Install
                   </p>
                   <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
@@ -485,19 +491,27 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
                   </p>
                 </div>
                 <pre className="p-4 font-mono text-xs leading-relaxed">
-                  <span className="text-foreground-dimmed/50">{"// Next.js — app/.well-known/ucp/route.ts\n"}</span>
+                  <span className="text-foreground-dimmed/50">
+                    {"// Next.js — app/.well-known/ucp/route.ts\n"}
+                  </span>
                   <span className="text-blue-400">{"export const "}</span>
                   <span className="text-foreground">{"GET"}</span>
-                  <span className="text-foreground-dimmed/60">{" = () => "}</span>
+                  <span className="text-foreground-dimmed/60">
+                    {" = () => "}
+                  </span>
                   <span className="text-yellow-400">{"Response"}</span>
                   <span className="text-foreground-dimmed/60">{"."}</span>
                   <span className="text-yellow-400">{"json"}</span>
                   <span className="text-foreground-dimmed/60">{"("}</span>
                   <span className="text-green-400">{"ucpData"}</span>
                   <span className="text-foreground-dimmed/60">{");\n\n"}</span>
-                  <span className="text-foreground-dimmed/50">{"// Static / Nginx\n"}</span>
+                  <span className="text-foreground-dimmed/50">
+                    {"// Static / Nginx\n"}
+                  </span>
                   <span className="text-blue-400">{"location"}</span>
-                  <span className="text-foreground-dimmed/60">{" /.well-known/ucp {\n  "}</span>
+                  <span className="text-foreground-dimmed/60">
+                    {" /.well-known/ucp {\n  "}
+                  </span>
                   <span className="text-blue-400">{"alias"}</span>
                   <span className="text-green-400">{" /path/to/ucp.json"}</span>
                   <span className="text-foreground-dimmed/60">{";\n}"}</span>
@@ -510,10 +524,10 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
         {/* Products tab */}
         <TabsPanel value="products">
           <div className="mt-4 border border-accent-foreground bg-background-rich">
-            <div className="flex items-center justify-between border-b border-accent-foreground px-4 py-3">
+            <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
               <div className="flex items-center gap-4">
                 <div>
-                  <p className="font-medium text-foreground text-base">
+                  <p className="font-medium text-base text-foreground">
                     {coveredCount} of {products.length} products covered
                   </p>
                   <div className="mt-1.5 h-0.5 w-28 bg-accent-foreground">
@@ -549,7 +563,7 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
                     "header-cell":
                       "px-4 py-2.5 text-left font-medium text-foreground-dimmed text-xs",
                     "body-row":
-                      "border-b border-accent-foreground last:border-b-0 hover:bg-background-dimmed/40 transition-colors",
+                      "border-accent-foreground border-b transition-colors last:border-b-0 hover:bg-background-dimmed/40",
                     "body-cell": "px-4 py-3 text-left text-foreground text-sm",
                   }}
                 >

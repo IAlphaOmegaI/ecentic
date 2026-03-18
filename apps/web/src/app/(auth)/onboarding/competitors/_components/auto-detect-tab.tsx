@@ -1,18 +1,14 @@
 "use client";
 
+import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { readStreamableValue } from "@ai-sdk/rsc";
 import { useState } from "react";
 import * as Competitor from "@/server/app/competitor";
+import { readStreamableValue } from "@ai-sdk/rsc";
+import { unwrapResult } from "@zenncore/utils";
 
-type Phase = "idle" | "scanning" | "done" | "error";
-
-type LogLine = {
-  id: number;
-  text: string;
-  elapsed: number;
-};
+type LogEntry = { text: string; type: "info" | "success" | "error" };
 
 export namespace AutoDetectTab {
   export type Props = {
@@ -24,14 +20,18 @@ export namespace AutoDetectTab {
 export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
   const toast = useToastManager();
   const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [text, setText] = useState<string | null>(null);
 
   const addLog = (entry: LogEntry) =>
     setLogs((previous) => [...previous, entry]);
 
   const [handleDetect, isDetecting] = useAsyncAction(async () => {
     setLogs([]);
+    setText(null);
 
-    const { output } = await Competitor.detectCompetitors({ products });
+    const { output } = await unwrapResult(
+      Competitor.detectCompetitors({ products }),
+    );
 
     for await (const event of readStreamableValue(output)) {
       if (!event) continue;
@@ -39,6 +39,9 @@ export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
       switch (event.kind) {
         case "log":
           addLog({ text: event.text, type: "info" });
+          break;
+        case "chunk":
+          setText((previous) => (previous ?? "") + event.text);
           break;
         case "error":
           addLog({ text: event.text, type: "error" });
@@ -93,9 +96,14 @@ export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
                 {log.text}
               </p>
             ))}
+            {text && (
+              <pre className="mt-2 max-h-24 overflow-auto rounded border border-edge bg-muted/50 px-2 py-1.5 font-mono text-[10px] text-foreground-dimmed">
+                {text}
+              </pre>
+            )}
           </div>
         )}
-      </AnimatePresence>
+      </div>
     </div>
   );
 };

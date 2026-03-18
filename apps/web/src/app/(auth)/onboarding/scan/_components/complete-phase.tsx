@@ -1,6 +1,5 @@
 "use client";
 
-import type * as Simulation from "@/server/app/intelligence/simulate";
 import { ArrowRightIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
@@ -42,7 +41,6 @@ export namespace CompletePhase {
       lossPercentage: number;
     } | null;
     products: number;
-    results?: Simulation.SimulationResult[];
   };
 }
 
@@ -52,7 +50,6 @@ export const CompletePhase = ({
   winRates,
   topFinding,
   products: finalProductCount,
-  results: _results = [],
 }: CompletePhase.Props) => {
   const router = useRouter();
 

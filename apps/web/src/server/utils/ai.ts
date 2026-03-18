@@ -1,6 +1,6 @@
 import { createAzure } from "@ai-sdk/azure";
-import { generateText, Output, streamText } from "ai";
 import { createStreamableValue } from "@ai-sdk/rsc";
+import { generateText, Output, streamText } from "ai";
 import type { z } from "zod";
 
 const getModel = () => {

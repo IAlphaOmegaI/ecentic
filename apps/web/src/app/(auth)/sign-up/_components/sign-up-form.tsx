@@ -156,7 +156,7 @@ export const SignUpForm = ({ className }: SignUpForm.Props) => {
             variant="flat"
             color="primary"
             disabled={isPending}
-            className="mt-1 flex w-full col-span-2 items-center justify-center gap-2 py-2.5 font-medium text-sm"
+            className="col-span-2 mt-1 flex w-full items-center justify-center gap-2 py-2.5 font-medium text-sm"
           >
             {isPending ? "Creating account..." : "Create Account"}
             {isPending ? (

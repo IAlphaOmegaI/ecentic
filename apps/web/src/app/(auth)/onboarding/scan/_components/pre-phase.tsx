@@ -3,6 +3,8 @@
 import { Button } from "@zenncore/web/components/button";
 import Link from "next/link";
 import type { ReactNode } from "react";
+
+import { motion } from "motion/react";
 import { Spring } from "@/lib/animations";
 
 export namespace PrePhase {

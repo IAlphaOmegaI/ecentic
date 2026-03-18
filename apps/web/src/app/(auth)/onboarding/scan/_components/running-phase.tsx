@@ -26,7 +26,6 @@ export namespace RunningPhase {
     wins: number;
     losses: number;
     logs: Array<{ id: number; model: string; message: string }>;
-    streamingText?: string;
   };
 }
 
@@ -37,7 +36,6 @@ export const RunningPhase = ({
   wins,
   losses,
   logs,
-  streamingText = "",
 }: RunningPhase.Props) => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -177,12 +175,7 @@ export const RunningPhase = ({
               </motion.div>
             ))}
           </AnimatePresence>
-          {streamingText.length > 0 && (
-            <p className="mt-2 text-white/50">
-              {streamingText}
-            </p>
-          )}
-          {logs.length === 0 && streamingText.length === 0 && (
+          {logs.length === 0 && (
             <p className="text-white/40">Initializing simulation engine...</p>
           )}
         </div>

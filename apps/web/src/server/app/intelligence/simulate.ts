@@ -3,6 +3,7 @@
 import { resultify } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
+import { withAuthentication } from "@/server/utils/authentication";
 import { schema } from "../../database";
 import * as AI from "../../utils/ai";
 import { Environment } from "../../utils/environment";
@@ -10,7 +11,6 @@ import * as Competitor from "../competitor";
 import * as Product from "../product";
 import * as Scan from "../scan";
 import * as Simulation from "../simulation";
-import { withAuthentication } from "@/server/utils/authentication";
 
 const perspectives = [
   {

@@ -1,6 +1,11 @@
 "use client";
 
-import { ArrowRightIcon, CircleBoltIcon, DownloadIcon, PlusIcon } from "@zenncore/icons";
+import {
+  ArrowRightIcon,
+  CircleBoltIcon,
+  DownloadIcon,
+  PlusIcon,
+} from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import {
   Tab,
@@ -11,7 +16,7 @@ import {
 import { motion } from "motion/react";
 import Link from "next/link";
 import { useState } from "react";
-import { HoverLift, Spring, Stagger, Table } from "@/lib/animations";
+import { Spring, Stagger, Table } from "@/lib/animations";
 import {
   activityFeed,
   overallWinRate,
@@ -352,7 +357,8 @@ export default () => {
                   winRateTrend >= 0 ? "text-success" : "text-error",
                 )}
               >
-                {winRateTrend >= 0 ? "+" : "−"}{Math.abs(winRateTrend)}% this week
+                {winRateTrend >= 0 ? "+" : "−"}
+                {Math.abs(winRateTrend)}% this week
               </span>
             </div>
           </div>
