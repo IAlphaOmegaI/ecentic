@@ -6,7 +6,7 @@ import {
   CheckIcon,
   LoaderIcon,
 } from "@zenncore/icons";
-import { cn, resultify } from "@zenncore/utils";
+import { cn, resultify, unique } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import {
   Table,
@@ -143,7 +143,7 @@ export const ProductSelector = ({
     const selection =
       selected.size > 0
         ? selected
-        : new Set(products.slice(0, limit).map((product) => product.id));
+        : unique(products.slice(0, limit).map((product) => product.id));
 
     const params = new URLSearchParams();
 
