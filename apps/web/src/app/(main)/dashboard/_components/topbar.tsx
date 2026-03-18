@@ -19,14 +19,29 @@ const navItems = [
   { label: "Settings", href: "/dashboard/settings" },
 ];
 
+const notifications: { id: number; title: string; body: string; time: string }[] = [];
+
 export const Topbar = () => {
   const [open, setOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [products, setProducts] = useState<Product.Type[]>([]);
   const [competitors, setCompetitors] = useState<Competitor.Type[]>([]);
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const fetchedRef = useRef(false);
+  const notifRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!notifOpen) return;
+    const handleClickOutside = (event: MouseEvent) => {
+      if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
+        setNotifOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [notifOpen]);
 
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
@@ -107,16 +122,68 @@ export const Topbar = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <button
-            type="button"
-            className="relative flex size-8 items-center justify-center text-foreground-dimmed transition-colors hover:text-foreground"
-            aria-label="Notifications"
-          >
-            <BellIcon className="size-5" />
-            <span className="absolute -top-0.5 -right-0.5 flex min-w-[16px] items-center justify-center bg-primary px-1 font-medium text-white text-[10px] leading-4">
-              3
-            </span>
-          </button>
+          <div ref={notifRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setNotifOpen((prev) => !prev)}
+              className="relative flex size-8 items-center justify-center text-foreground-dimmed transition-colors hover:text-foreground"
+              aria-label="Notifications"
+            >
+              <BellIcon className="size-5" />
+              {notifications.length > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 flex min-w-[16px] items-center justify-center bg-primary px-1 font-medium text-white text-[10px] leading-4">
+                  {notifications.length}
+                </span>
+              )}
+            </button>
+
+            <AnimatePresence>
+              {notifOpen && (
+                <motion.div
+                  key="notif-panel"
+                  className="absolute top-10 right-0 z-50 w-80 border border-accent-foreground bg-background-rich shadow-xl"
+                  initial={{ opacity: 0, y: -6, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -4, scale: 0.97 }}
+                  transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <div className="flex items-center justify-between border-b border-accent-foreground px-4 py-3">
+                    <span className="font-medium text-foreground text-sm">Notifications</span>
+                    {notifications.length > 0 && (
+                      <span className="flex size-5 items-center justify-center bg-primary font-medium text-white text-[10px]">
+                        {notifications.length}
+                      </span>
+                    )}
+                  </div>
+
+                  {notifications.length === 0 ? (
+                    <div className="flex flex-col items-center gap-2 px-4 py-10 text-center">
+                      <BellIcon className="size-8 text-foreground-dimmed/40" />
+                      <p className="font-medium text-foreground-dimmed text-sm">No notifications</p>
+                      <p className="font-light text-foreground-dimmed/70 text-xs">
+                        You're all caught up. We'll let you know when something needs attention.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="max-h-72 overflow-y-auto">
+                      {notifications.map((notif) => (
+                        <div
+                          key={notif.id}
+                          className="flex flex-col gap-0.5 border-b border-accent-foreground px-4 py-3 last:border-0 hover:bg-background transition-colors cursor-pointer"
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium text-foreground text-sm">{notif.title}</span>
+                            <span className="font-light text-foreground-dimmed text-xs">{notif.time}</span>
+                          </div>
+                          <span className="font-light text-foreground-dimmed text-xs">{notif.body}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
           <Link
             href="/dashboard/settings/billing"
