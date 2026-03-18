@@ -5,8 +5,8 @@ import { ToastProvider } from "@zenncore/web/components/toast";
 import localFont from "next/font/local";
 import Script from "next/script";
 import { ToastList } from "@/components/ui/toast";
-import { ThemeProvider } from "@/context/theme";
 import { PostHogProvider } from "@/context/posthog";
+import { ThemeProvider } from "@/context/theme";
 
 const ltsuperior = localFont({
   src: [

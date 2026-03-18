@@ -10,6 +10,7 @@ import { runScan } from "@/server/app/intelligence/simulate";
 import { CompletePhase } from "./complete-phase";
 import { PrePhase } from "./pre-phase";
 import { RunningPhase } from "./running-phase";
+import { unwrapResult } from "@zenncore/utils";
 
 type ScanPhase = "pre" | "running" | "complete";
 type ModelStatus = "queued" | "running" | "complete";
@@ -66,12 +67,16 @@ export const ScanRunner = ({ children, simulations }: ScanRunner.Props) => {
     setStats(initialStats);
     setStatuses(initialStatuses);
 
-    const { output } = await runScan();
+    const { output } = await unwrapResult(runScan());
 
     for await (const event of readStreamableValue(output)) {
       if (!event) continue;
 
-      console.log("[ScanRunner] event →", event.kind, JSON.stringify(event).slice(0, 120));
+      console.log(
+        "[ScanRunner] event →",
+        event.kind,
+        JSON.stringify(event).slice(0, 120),
+      );
 
       switch (event.kind) {
         case "log":

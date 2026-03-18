@@ -71,12 +71,11 @@ export const CompetitorReview = ({
             variant="flat"
             color="primary"
             type="button"
-            onClick={() => router.push("/onboarding/scan")}
             disabled={selected === 0}
             className="px-6 py-2 font-medium text-sm"
+            render={<Link href="/onboarding/scan" />}
           >
-            Next: Run Scan
-            <ArrowRightIcon className="size-4" />
+            <Next />
           </Button>
         </Motion.Up>
       </div>
@@ -94,6 +93,20 @@ const Back = () => {
         <ArrowLeftIcon className="size-4" />
       )}
       Back
+    </>
+  );
+};
+
+const Next = () => {
+  const { pending } = useLinkStatus();
+  return (
+    <>
+      Next: Run Scan
+      {pending ? (
+        <LoaderIcon className="size-4 animate-spin" />
+      ) : (
+        <ArrowRightIcon className="size-4" />
+      )}
     </>
   );
 };

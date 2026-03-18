@@ -4,10 +4,10 @@ import { BellIcon } from "@zenncore/icons";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { getForCurrentUser as getProducts } from "@/server/app/product";
+import type * as Competitor from "@/server/app/competitor";
 import { getForCurrentUser as getCompetitors } from "@/server/app/competitor";
 import type * as Product from "@/server/app/product";
-import type * as Competitor from "@/server/app/competitor";
+import { getForCurrentUser as getProducts } from "@/server/app/product";
 
 const navItems = [
   { label: "Overview", href: "/dashboard" },
@@ -19,7 +19,12 @@ const navItems = [
   { label: "Settings", href: "/dashboard/settings" },
 ];
 
-const notifications: { id: number; title: string; body: string; time: string }[] = [];
+const notifications: {
+  id: number;
+  title: string;
+  body: string;
+  time: string;
+}[] = [];
 
 export const Topbar = () => {
   const [open, setOpen] = useState(false);
@@ -35,7 +40,10 @@ export const Topbar = () => {
   useEffect(() => {
     if (!notifOpen) return;
     const handleClickOutside = (event: MouseEvent) => {
-      if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
+      if (
+        notifRef.current &&
+        !notifRef.current.contains(event.target as Node)
+      ) {
         setNotifOpen(false);
       }
     };
@@ -131,7 +139,7 @@ export const Topbar = () => {
             >
               <BellIcon className="size-5" />
               {notifications.length > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 flex min-w-[16px] items-center justify-center bg-primary px-1 font-medium text-white text-[10px] leading-4">
+                <span className="absolute -top-0.5 -right-0.5 flex min-w-[16px] items-center justify-center bg-primary px-1 font-medium text-[10px] text-white leading-4">
                   {notifications.length}
                 </span>
               )}
@@ -147,10 +155,12 @@ export const Topbar = () => {
                   exit={{ opacity: 0, y: -4, scale: 0.97 }}
                   transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <div className="flex items-center justify-between border-b border-accent-foreground px-4 py-3">
-                    <span className="font-medium text-foreground text-sm">Notifications</span>
+                  <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
+                    <span className="font-medium text-foreground text-sm">
+                      Notifications
+                    </span>
                     {notifications.length > 0 && (
-                      <span className="flex size-5 items-center justify-center bg-primary font-medium text-white text-[10px]">
+                      <span className="flex size-5 items-center justify-center bg-primary font-medium text-[10px] text-white">
                         {notifications.length}
                       </span>
                     )}
@@ -159,9 +169,12 @@ export const Topbar = () => {
                   {notifications.length === 0 ? (
                     <div className="flex flex-col items-center gap-2 px-4 py-10 text-center">
                       <BellIcon className="size-8 text-foreground-dimmed/40" />
-                      <p className="font-medium text-foreground-dimmed text-sm">No notifications</p>
+                      <p className="font-medium text-foreground-dimmed text-sm">
+                        No notifications
+                      </p>
                       <p className="font-light text-foreground-dimmed/70 text-xs">
-                        You're all caught up. We'll let you know when something needs attention.
+                        You're all caught up. We'll let you know when something
+                        needs attention.
                       </p>
                     </div>
                   ) : (
@@ -169,13 +182,19 @@ export const Topbar = () => {
                       {notifications.map((notif) => (
                         <div
                           key={notif.id}
-                          className="flex flex-col gap-0.5 border-b border-accent-foreground px-4 py-3 last:border-0 hover:bg-background transition-colors cursor-pointer"
+                          className="flex cursor-pointer flex-col gap-0.5 border-accent-foreground border-b px-4 py-3 transition-colors last:border-0 hover:bg-background"
                         >
                           <div className="flex items-center justify-between">
-                            <span className="font-medium text-foreground text-sm">{notif.title}</span>
-                            <span className="font-light text-foreground-dimmed text-xs">{notif.time}</span>
+                            <span className="font-medium text-foreground text-sm">
+                              {notif.title}
+                            </span>
+                            <span className="font-light text-foreground-dimmed text-xs">
+                              {notif.time}
+                            </span>
                           </div>
-                          <span className="font-light text-foreground-dimmed text-xs">{notif.body}</span>
+                          <span className="font-light text-foreground-dimmed text-xs">
+                            {notif.body}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -228,7 +247,7 @@ export const Topbar = () => {
               transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
             >
               {/* Search input */}
-              <div className="flex items-center gap-3 border-b border-accent-foreground px-4 py-3.5">
+              <div className="flex items-center gap-3 border-accent-foreground border-b px-4 py-3.5">
                 <svg
                   className="size-4 shrink-0 text-foreground-dimmed"
                   viewBox="0 0 16 16"
@@ -270,7 +289,7 @@ export const Topbar = () => {
 
                 {!loading && matchedProducts.length > 0 && (
                   <div>
-                    <p className="px-4 pb-1 pt-2 font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
+                    <p className="px-4 pt-2 pb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
                       Products
                     </p>
                     {matchedProducts.slice(0, 5).map((product) => (
@@ -300,7 +319,7 @@ export const Topbar = () => {
 
                 {!loading && matchedCompetitors.length > 0 && (
                   <div>
-                    <p className="px-4 pb-1 pt-3 font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
+                    <p className="px-4 pt-3 pb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
                       Competitors
                     </p>
                     {matchedCompetitors.slice(0, 4).map((competitor) => (
@@ -330,7 +349,7 @@ export const Topbar = () => {
 
                 {!loading && matchedNav.length > 0 && (
                   <div>
-                    <p className="px-4 pb-1 pt-3 font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
+                    <p className="px-4 pt-3 pb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
                       Pages
                     </p>
                     {matchedNav.map((item) => (
@@ -362,7 +381,7 @@ export const Topbar = () => {
                 )}
               </div>
 
-              <div className="flex items-center gap-4 border-t border-accent-foreground px-4 py-2">
+              <div className="flex items-center gap-4 border-accent-foreground border-t px-4 py-2">
                 <span className="font-light text-foreground-dimmed text-xs">
                   <kbd className="font-mono">↵</kbd> to open
                 </span>

@@ -3,9 +3,9 @@ import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
+import * as Competitor from "@/server/app/competitor";
 import { db, schema } from "@/server/database";
 import { generate } from "@/server/utils/ai";
-import * as Competitor from "@/server/app/competitor";
 import { Environment } from "@/server/utils/environment";
 
 const send = (controller: ReadableStreamDefaultController, event: object) =>
@@ -14,7 +14,9 @@ const send = (controller: ReadableStreamDefaultController, event: object) =>
 export const POST = async (request: Request) => {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session)
-    return new Response(JSON.stringify({ error: "Unauthenticated" }), { status: 401 });
+    return new Response(JSON.stringify({ error: "Unauthenticated" }), {
+      status: 401,
+    });
 
   const body = await request.json();
   const productIds: string[] = body.productIds ?? [];
@@ -25,16 +27,24 @@ export const POST = async (request: Request) => {
         send(controller, { kind: "log", text: "Reading your product catalog" });
 
         const productsResult = await resultify(async () =>
-          db.select().from(schema.product).where(eq(schema.product.userId, session.user.id)),
+          db
+            .select()
+            .from(schema.product)
+            .where(eq(schema.product.userId, session.user.id)),
         );
 
         if (!productsResult.success) {
-          send(controller, { kind: "error", text: productsResult.error.message });
+          send(controller, {
+            kind: "error",
+            text: productsResult.error.message,
+          });
           controller.close();
           return;
         }
 
-        const selected = productsResult.data.filter((p) => productIds.includes(p.id));
+        const selected = productsResult.data.filter((p) =>
+          productIds.includes(p.id),
+        );
 
         if (selected.length === 0) {
           send(controller, { kind: "error", text: "No products selected" });
@@ -47,7 +57,10 @@ export const POST = async (request: Request) => {
           text: `Loaded ${selected.length} product${selected.length !== 1 ? "s" : ""} for analysis`,
         });
 
-        send(controller, { kind: "log", text: "Mapping market categories and price tiers" });
+        send(controller, {
+          kind: "log",
+          text: "Mapping market categories and price tiers",
+        });
 
         const summaries = selected
           .map(
@@ -56,8 +69,14 @@ export const POST = async (request: Request) => {
           )
           .join("\n");
 
-        send(controller, { kind: "log", text: "Querying Amazon, Walmart, and Target signals" });
-        send(controller, { kind: "log", text: "Running competitive intelligence model" });
+        send(controller, {
+          kind: "log",
+          text: "Querying Amazon, Walmart, and Target signals",
+        });
+        send(controller, {
+          kind: "log",
+          text: "Running competitive intelligence model",
+        });
 
         const aiResult = await resultify(async () =>
           generate({
@@ -98,7 +117,10 @@ Rules:
           text: `Identified ${aiResult.data.competitors.length} competitor products`,
         });
 
-        send(controller, { kind: "log", text: "Saving competitors to your account" });
+        send(controller, {
+          kind: "log",
+          text: "Saving competitors to your account",
+        });
 
         const created = await Promise.all(
           aiResult.data.competitors.map((entry) =>
@@ -124,5 +146,7 @@ Rules:
     },
   });
 
-  return new Response(stream, { headers: { "Content-Type": "application/x-ndjson" } });
+  return new Response(stream, {
+    headers: { "Content-Type": "application/x-ndjson" },
+  });
 };

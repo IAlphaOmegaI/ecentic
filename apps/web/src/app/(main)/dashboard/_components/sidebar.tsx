@@ -154,7 +154,11 @@ export const Sidebar = () => {
                 <motion.span
                   className="inline-block size-1.5 rounded-full bg-warning"
                   animate={{ opacity: [1, 0.3, 1] }}
-                  transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                  transition={{
+                    duration: 2,
+                    repeat: Number.POSITIVE_INFINITY,
+                    ease: "easeInOut",
+                  }}
                 />
                 <span className="font-medium text-warning text-xs uppercase tracking-widest">
                   Free Trial
@@ -167,7 +171,9 @@ export const Sidebar = () => {
             <div className="mb-2 h-1 w-full bg-accent-foreground">
               <div
                 className="h-full bg-warning/60 transition-all"
-                style={{ width: `${Math.round((TRIAL_DAYS_LEFT / 14) * 100)}%` }}
+                style={{
+                  width: `${Math.round((TRIAL_DAYS_LEFT / 14) * 100)}%`,
+                }}
               />
             </div>
             <div className="flex items-center justify-between">
@@ -209,7 +215,10 @@ export const Sidebar = () => {
                     <motion.span
                       className="inline-block size-1.5 rounded-full bg-warning"
                       animate={{ opacity: [1, 0.3, 1] }}
-                      transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                      transition={{
+                        duration: 2,
+                        repeat: Number.POSITIVE_INFINITY,
+                      }}
                     />
                     <span className="font-medium text-warning text-xs uppercase tracking-widest">
                       Trial ending in {TRIAL_DAYS_LEFT} days
@@ -219,7 +228,8 @@ export const Sidebar = () => {
                     Upgrade to Pro
                   </h2>
                   <p className="mt-1 font-light text-foreground-dimmed text-sm">
-                    Keep full access to simulations, insights, and competitor intelligence.
+                    Keep full access to simulations, insights, and competitor
+                    intelligence.
                   </p>
                 </div>
                 <button
@@ -234,7 +244,9 @@ export const Sidebar = () => {
               {/* Trial progress */}
               <div className="border-accent-foreground border-b px-6 py-4">
                 <div className="mb-1.5 flex items-center justify-between">
-                  <span className="font-light text-foreground-dimmed text-xs">Trial progress</span>
+                  <span className="font-light text-foreground-dimmed text-xs">
+                    Trial progress
+                  </span>
                   <span className="font-mono text-foreground-dimmed text-xs">
                     {14 - TRIAL_DAYS_LEFT}/14 days used
                   </span>
@@ -243,7 +255,9 @@ export const Sidebar = () => {
                   <motion.div
                     className="h-full bg-warning"
                     initial={{ width: 0 }}
-                    animate={{ width: `${Math.round(((14 - TRIAL_DAYS_LEFT) / 14) * 100)}%` }}
+                    animate={{
+                      width: `${Math.round(((14 - TRIAL_DAYS_LEFT) / 14) * 100)}%`,
+                    }}
                     transition={{ ...Spring.Gentle, delay: 0.2 }}
                   />
                 </div>
@@ -261,12 +275,17 @@ export const Sidebar = () => {
                       className="flex items-center gap-2.5"
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ ...Spring.Snappy, delay: 0.1 + index * 0.05 }}
+                      transition={{
+                        ...Spring.Snappy,
+                        delay: 0.1 + index * 0.05,
+                      }}
                     >
                       <div className="flex size-4 shrink-0 items-center justify-center bg-primary/10">
                         <CheckIcon className="size-3 text-primary" />
                       </div>
-                      <span className="font-light text-foreground text-sm">{feature}</span>
+                      <span className="font-light text-foreground text-sm">
+                        {feature}
+                      </span>
                     </motion.div>
                   ))}
                 </div>
@@ -275,8 +294,12 @@ export const Sidebar = () => {
               {/* Pricing + CTA */}
               <div className="px-6 py-5">
                 <div className="mb-4 flex items-end gap-1.5">
-                  <span className="font-semibold text-foreground text-4xl leading-none">$99</span>
-                  <span className="mb-1 font-light text-foreground-dimmed text-sm">/month</span>
+                  <span className="font-semibold text-4xl text-foreground leading-none">
+                    $99
+                  </span>
+                  <span className="mb-1 font-light text-foreground-dimmed text-sm">
+                    /month
+                  </span>
                 </div>
 
                 <button

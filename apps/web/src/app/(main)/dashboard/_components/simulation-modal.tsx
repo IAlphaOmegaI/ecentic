@@ -1,10 +1,10 @@
 "use client";
 
+import { readStreamableValue } from "@ai-sdk/rsc";
 import { XIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { readStreamableValue } from "@ai-sdk/rsc";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { Motion } from "@/components/motion";
@@ -54,8 +54,11 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
   const [phase, setPhase] = useState<SimPhase>("pre");
   const [stats, setStats] = useState<Stats>(initialStats);
   const [logs, setLogs] = useState<LogEntry[]>([]);
-  const [statuses, setStatuses] = useState<Record<string, ModelStatus>>(initialStatuses);
-  const [winRates, setWinRates] = useState<Record<string, { wins: number; losses: number; rate: number }>>({});
+  const [statuses, setStatuses] =
+    useState<Record<string, ModelStatus>>(initialStatuses);
+  const [winRates, setWinRates] = useState<
+    Record<string, { wins: number; losses: number; rate: number }>
+  >({});
   const [topFinding, setTopFinding] = useState<TopFinding | null>(null);
   const [count, setCount] = useState(0);
   const [elapsed, setElapsed] = useState(0);
@@ -71,7 +74,7 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
     }
   };
 
-  useEffect(() => () => stopTimer(), []);
+  useEffect(() => () => stopTimer(), [stopTimer]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: scroll to bottom on new log
   useEffect(() => {
@@ -81,7 +84,12 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
   const appendLog = (model: string, message: string) =>
     setLogs((prev) => [
       ...prev,
-      { id: prev.length + 1, model, message, elapsed: Date.now() - startTimeRef.current },
+      {
+        id: prev.length + 1,
+        model,
+        message,
+        elapsed: Date.now() - startTimeRef.current,
+      },
     ]);
 
   const reset = () => {
@@ -127,7 +135,11 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
             event.total > 0
               ? Math.min(Math.round((event.completed / event.total) * 100), 99)
               : 0;
-          setStats({ wins: event.wins, losses: event.losses, progress: percentage });
+          setStats({
+            wins: event.wins,
+            losses: event.losses,
+            progress: percentage,
+          });
           break;
         }
         case "model_status":
@@ -137,7 +149,11 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
           stopTimer();
           setPhase("pre");
           setStatuses(initialStatuses);
-          toast.add({ title: "Simulation failed", description: event.text, type: "error" });
+          toast.add({
+            title: "Simulation failed",
+            description: event.text,
+            type: "error",
+          });
           return;
         case "done":
           stopTimer();
@@ -188,7 +204,11 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
                     <motion.span
                       className="inline-block size-1.5 rounded-full bg-primary"
                       animate={{ opacity: [1, 0.2, 1] }}
-                      transition={{ duration: 1.4, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                      transition={{
+                        duration: 1.4,
+                        repeat: Number.POSITIVE_INFINITY,
+                        ease: "easeInOut",
+                      }}
                     />
                     Live
                   </span>
@@ -228,15 +248,28 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
                         AI Shopping Simulation
                       </p>
                       <p className="max-w-sm font-light text-foreground-dimmed text-sm">
-                        Simulate how GPT-4, Claude, and Gemini compare your products against your competitors and see who they pick.
+                        Simulate how GPT-4, Claude, and Gemini compare your
+                        products against your competitors and see who they pick.
                       </p>
                     </div>
 
                     <div className="mb-6 w-full border border-accent-foreground">
                       {[
-                        { model: "GPT-4", color: "bg-blue-500", desc: "Spec-first evaluation" },
-                        { model: "Claude", color: "bg-orange-500", desc: "Value narrative analysis" },
-                        { model: "Gemini", color: "bg-green-500", desc: "Price-to-feature ratio" },
+                        {
+                          model: "GPT-4",
+                          color: "bg-blue-500",
+                          desc: "Spec-first evaluation",
+                        },
+                        {
+                          model: "Claude",
+                          color: "bg-orange-500",
+                          desc: "Value narrative analysis",
+                        },
+                        {
+                          model: "Gemini",
+                          color: "bg-green-500",
+                          desc: "Price-to-feature ratio",
+                        },
                       ].map((item, index) => (
                         <div
                           key={item.model}
@@ -245,9 +278,18 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
                             index < 2 && "border-accent-foreground border-b",
                           )}
                         >
-                          <span className={cn("size-2 shrink-0 rounded-full", item.color)} />
-                          <span className="font-medium text-foreground text-sm">{item.model}</span>
-                          <span className="font-light text-foreground-dimmed text-xs">{item.desc}</span>
+                          <span
+                            className={cn(
+                              "size-2 shrink-0 rounded-full",
+                              item.color,
+                            )}
+                          />
+                          <span className="font-medium text-foreground text-sm">
+                            {item.model}
+                          </span>
+                          <span className="font-light text-foreground-dimmed text-xs">
+                            {item.desc}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -278,7 +320,11 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
                       <div className="flex items-center gap-2">
                         <motion.span
                           animate={{ opacity: [1, 0.2, 1] }}
-                          transition={{ duration: 1.4, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                          transition={{
+                            duration: 1.4,
+                            repeat: Number.POSITIVE_INFINITY,
+                            ease: "easeInOut",
+                          }}
                           className="inline-block size-1.5 rounded-full bg-primary"
                         />
                         <span className="font-medium text-foreground text-xs uppercase tracking-widest">
@@ -310,18 +356,27 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
                       {(["GPT-4", "Claude", "Gemini"] as const).map((model) => {
                         const status = statuses[model];
                         return (
-                          <div key={model} className="flex items-center justify-between px-5 py-3">
-                            <span className={cn("font-medium text-sm", modelColors[model])}>
+                          <div
+                            key={model}
+                            className="flex items-center justify-between px-5 py-3"
+                          >
+                            <span
+                              className={cn(
+                                "font-medium text-sm",
+                                modelColors[model],
+                              )}
+                            >
                               {model}
                             </span>
                             <AnimatePresence mode="wait">
                               <motion.span
                                 key={status}
                                 className={cn(
-                                  "text-xs font-medium",
+                                  "font-medium text-xs",
                                   status === "complete" && "text-success",
                                   status === "running" && "text-primary",
-                                  status === "queued" && "text-foreground-dimmed/50",
+                                  status === "queued" &&
+                                    "text-foreground-dimmed/50",
                                 )}
                                 initial={{ opacity: 0, y: 3 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -354,7 +409,13 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
                             <span className="shrink-0 font-mono text-foreground-dimmed/50 text-xs tabular-nums">
                               {formatElapsed(entry.elapsed)}
                             </span>
-                            <span className={cn("shrink-0 font-medium text-xs", modelColors[entry.model] ?? "text-foreground-dimmed")}>
+                            <span
+                              className={cn(
+                                "shrink-0 font-medium text-xs",
+                                modelColors[entry.model] ??
+                                  "text-foreground-dimmed",
+                              )}
+                            >
                               [{entry.model}]
                             </span>
                             <span className="text-foreground-dimmed text-xs leading-relaxed">
@@ -377,12 +438,18 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
                         <motion.span
                           key={delay}
                           animate={{ opacity: [0.2, 1, 0.2] }}
-                          transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, delay, ease: "easeInOut" }}
+                          transition={{
+                            duration: 1,
+                            repeat: Number.POSITIVE_INFINITY,
+                            delay,
+                            ease: "easeInOut",
+                          }}
                           className="inline-block size-1 rounded-full bg-primary"
                         />
                       ))}
                       <span className="ml-1.5 font-light text-foreground-dimmed text-xs">
-                        Running simulations across {stats.wins + stats.losses} comparisons
+                        Running simulations across {stats.wins + stats.losses}{" "}
+                        comparisons
                       </span>
                     </div>
                   </motion.div>
@@ -412,9 +479,24 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
 };
 
 const metadatas = [
-  { id: "gpt4", label: "GPT-4", color: "text-blue-500", bgColor: "bg-blue-500" },
-  { id: "claude", label: "Claude", color: "text-orange-500", bgColor: "bg-orange-500" },
-  { id: "gemini", label: "Gemini", color: "text-green-500", bgColor: "bg-green-500" },
+  {
+    id: "gpt4",
+    label: "GPT-4",
+    color: "text-blue-500",
+    bgColor: "bg-blue-500",
+  },
+  {
+    id: "claude",
+    label: "Claude",
+    color: "text-orange-500",
+    bgColor: "bg-orange-500",
+  },
+  {
+    id: "gemini",
+    label: "Gemini",
+    color: "text-green-500",
+    bgColor: "bg-green-500",
+  },
 ] as const;
 
 type CompletePhaseModalProps = {
@@ -438,7 +520,8 @@ const CompletePhaseModal = ({
   onClose,
   onRunAgain,
 }: CompletePhaseModalProps) => {
-  const winRate = wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0;
+  const winRate =
+    wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0;
 
   const resultMessage = (() => {
     switch (true) {
@@ -478,7 +561,10 @@ const CompletePhaseModal = ({
               Overall Win Rate
             </p>
             <motion.p
-              className={cn("font-semibold text-[72px] leading-none", resultColor)}
+              className={cn(
+                "font-semibold text-[72px] leading-none",
+                resultColor,
+              )}
               initial={{ scale: 0.5, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ ...Spring.Gentle, delay: 0.15 }}
@@ -496,7 +582,11 @@ const CompletePhaseModal = ({
             {[
               { label: "Wins", value: wins, color: "text-success" },
               { label: "Losses", value: losses, color: "text-error" },
-              { label: "Products", value: finalProductCount, color: "text-foreground" },
+              {
+                label: "Products",
+                value: finalProductCount,
+                color: "text-foreground",
+              },
             ].map((stat, index) => (
               <motion.div
                 key={stat.label}
@@ -505,8 +595,12 @@ const CompletePhaseModal = ({
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ ...Spring.Snappy, delay: 0.2 + index * 0.07 }}
               >
-                <span className={cn("font-semibold text-2xl", stat.color)}>{stat.value}</span>
-                <span className="mt-0.5 font-light text-foreground-dimmed text-xs">{stat.label}</span>
+                <span className={cn("font-semibold text-2xl", stat.color)}>
+                  {stat.value}
+                </span>
+                <span className="mt-0.5 font-light text-foreground-dimmed text-xs">
+                  {stat.label}
+                </span>
               </motion.div>
             ))}
           </div>
@@ -514,7 +608,9 @@ const CompletePhaseModal = ({
 
         <Motion.Up className="mb-4 border border-accent-foreground bg-background-rich">
           <div className="border-accent-foreground border-b px-4 py-3">
-            <p className="font-medium text-foreground text-sm">Win rate by model</p>
+            <p className="font-medium text-foreground text-sm">
+              Win rate by model
+            </p>
           </div>
           <div className="grid grid-cols-3 divide-x divide-accent-foreground">
             {metadatas.map((meta, index) => {
@@ -523,15 +619,22 @@ const CompletePhaseModal = ({
               return (
                 <div key={meta.id} className="flex flex-col gap-3 px-4 py-4">
                   <div className="flex items-end justify-between">
-                    <span className="font-light text-foreground-dimmed text-xs">{meta.label}</span>
-                    <span className="font-semibold text-foreground text-lg">{rate}%</span>
+                    <span className="font-light text-foreground-dimmed text-xs">
+                      {meta.label}
+                    </span>
+                    <span className="font-semibold text-foreground text-lg">
+                      {rate}%
+                    </span>
                   </div>
                   <div className="h-1.5 w-full bg-accent-foreground">
                     <motion.div
                       className={cn("h-full", meta.bgColor)}
                       initial={{ width: 0 }}
                       animate={{ width: `${rate}%` }}
-                      transition={{ ...Spring.Gentle, delay: 0.35 + index * 0.1 }}
+                      transition={{
+                        ...Spring.Gentle,
+                        delay: 0.35 + index * 0.1,
+                      }}
                     />
                   </div>
                 </div>
@@ -550,7 +653,8 @@ const CompletePhaseModal = ({
               <span className="font-medium text-foreground">
                 {topFinding.missingAttributes.join(" and ")}
               </span>{" "}
-              — {topFinding.impactDescription} Costs you {topFinding.lossPercentage}% of simulations.
+              — {topFinding.impactDescription} Costs you{" "}
+              {topFinding.lossPercentage}% of simulations.
             </p>
           </Motion.Up>
         )}

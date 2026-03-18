@@ -3,6 +3,8 @@
 import { Button } from "@zenncore/web/components/button";
 import Link from "next/link";
 import type { ReactNode } from "react";
+
+import { motion } from "motion/react";
 import { Spring } from "@/lib/animations";
 
 export namespace PrePhase {
@@ -24,16 +26,16 @@ export const PrePhase = ({ children, onRun, isRunning }: PrePhase.Props) => (
   >
     {children}
     <div className="w-full max-w-2xl">
-        <Button
-          variant="flat"
-          color="primary"
-          type="button"
-          onClick={onRun}
-          disabled={isRunning}
-          className="w-full py-3.5 font-medium text-base"
-        >
-          Run Simulation
-        </Button>
+      <Button
+        variant="flat"
+        color="primary"
+        type="button"
+        onClick={onRun}
+        disabled={isRunning}
+        className="w-full py-3.5 font-medium text-base"
+      >
+        Run Simulation
+      </Button>
       <div className="mt-4 flex items-center justify-center">
         <Button
           variant="ghost"

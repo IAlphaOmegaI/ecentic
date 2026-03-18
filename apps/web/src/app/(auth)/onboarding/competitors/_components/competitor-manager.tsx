@@ -10,7 +10,6 @@ import {
   TabsPanel,
 } from "@zenncore/web/components/tabs";
 import Link, { useLinkStatus } from "next/link";
-import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { Motion } from "@/components/motion";

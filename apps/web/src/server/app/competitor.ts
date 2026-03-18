@@ -2,10 +2,8 @@
 
 import { resultify, unique } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
-import { headers } from "next/headers";
 import { cache as dedupe } from "react";
 import { z } from "zod";
-import { auth } from "@/lib/auth";
 import { schema } from "../database";
 import * as AI from "../utils/ai";
 import { withAuthentication } from "../utils/authentication";
@@ -63,68 +61,54 @@ export const toggleSelection = withAuthentication(
 
 type DetectEvent =
   | { kind: "log"; text: string }
+  | { kind: "chunk"; text: string }
   | { kind: "error"; text: string }
   | { kind: "done"; competitors: Type[] };
 
-export const detectCompetitors = async ({
-  products: ids,
-}: {
-  products: string[];
-}) => {
-  const session = await auth.api.getSession({ headers: await headers() });
-
-  if (!session) {
-    return AI.stream<DetectEvent>(async (update) => {
-      update({ kind: "error", text: "Unauthenticated" });
-      return;
-    });
-  }
-
-  const products = await Product.find(Environment.SERVER, {
-    where: eq(schema.product.userId, session.user.id),
-  });
-
-  if (!products.success) {
-    return AI.stream<DetectEvent>(async (update) => {
-      update({ kind: "error", text: products.error.message });
-      return;
-    });
-  }
-
-  return AI.stream<DetectEvent>(async (update) => {
-    update({ kind: "log", text: "Reading your product catalog" });
-
-    const selected = products.data.filter((product) =>
-      ids.includes(product.id),
-    );
-
-    if (selected.length === 0) {
-      update({ kind: "error", text: "No products selected" });
-      return;
-    }
-
-    update({
-      kind: "log",
-      text: `Loaded ${selected.length} product${selected.length !== 1 ? "s" : ""} for analysis`,
+export const detectCompetitors = withAuthentication(
+  async (context, { products: ids }: { products: string[] }) => {
+    const products = await Product.find(Environment.SERVER, {
+      where: eq(schema.product.userId, context.session.user.id),
     });
 
-    update({ kind: "log", text: "Mapping market categories and price tiers" });
+    if (!products.success) return products;
 
-    const summaries = selected
-      .map(
-        (product) =>
-          `- ${product.title}${product.price ? ` ($${product.price})` : ""}${product.description ? `: ${product.description.slice(0, 200)}` : ""}`,
-      )
-      .join("\n");
+    const stream = AI.stream<DetectEvent>(async (update) => {
+      update({ kind: "log", text: "Reading your product catalog" });
 
-    update({
-      kind: "log",
-      text: "Querying Amazon, Walmart, and Target signals",
-    });
-    update({ kind: "log", text: "Running competitive intelligence model" });
+      const selected = products.data.filter((product) =>
+        ids.includes(product.id),
+      );
 
-    const result = await resultify(() =>
-      AI.generate({
+      if (selected.length === 0) {
+        update({ kind: "error", text: "No products selected" });
+        return;
+      }
+
+      update({
+        kind: "log",
+        text: `Loaded ${selected.length} product${selected.length !== 1 ? "s" : ""} for analysis`,
+      });
+
+      update({
+        kind: "log",
+        text: "Mapping market categories and price tiers",
+      });
+
+      const summaries = selected
+        .map(
+          (product) =>
+            `- ${product.title}${product.price ? ` ($${product.price})` : ""}${product.description ? `: ${product.description.slice(0, 200)}` : ""}`,
+        )
+        .join("\n");
+
+      update({
+        kind: "log",
+        text: "Querying Amazon, Walmart, and Target signals",
+      });
+      update({ kind: "log", text: "Running competitive intelligence model" });
+
+      const { output, textStream } = AI.generate({
         system: `You are a competitive intelligence analyst for e-commerce merchants. Your job is to identify the specific competing products a merchant's items will be compared against by AI shopping agents and recommendation engines.
 Rules:
 - Only return products you are confident exist as real, purchasable items from established brands. Do not invent products or brands.
@@ -147,36 +131,54 @@ Rules:
             }),
           ),
         }),
-      }),
-    );
+        stream: true,
+      });
 
-    if (!result.success) {
-      update({ kind: "error", text: result.error.message });
-      return;
-    }
+      const [, result] = await Promise.all([
+        (async () => {
+          for await (const chunk of textStream) {
+            update({ kind: "chunk", text: chunk });
+          }
+        })(),
+        resultify(() => output),
+      ]);
 
-    update({
-      kind: "log",
-      text: `Saving ${result.data.competitors.length} competitor products`,
+      if (!result.success) {
+        update({ kind: "error", text: result.error.message });
+        return;
+      }
+
+      update({
+        kind: "log",
+        text: `Saving ${result.data.competitors.length} competitor products`,
+      });
+
+      const created = await Promise.all(
+        result.data.competitors.map((entry) =>
+          create(Environment.SERVER, {
+            ...entry,
+            userId: context.session.user.id,
+            selected: true,
+          }),
+        ),
+      );
+
+      const successful = created
+        .filter((record) => record.success)
+        .map((record) => record.data as Type);
+
+      update({ kind: "done", competitors: successful });
     });
 
-    const created = await Promise.all(
-      result.data.competitors.map((entry) =>
-        create(Environment.SERVER, {
-          ...entry,
-          userId: session.user.id,
-          selected: true,
-        }),
-      ),
-    );
-
-    const successful = created
-      .filter((record) => record.success)
-      .map((record) => record.data as Type);
-
-    update({ kind: "done", competitors: successful });
-  });
-};
+    return {
+      success: true,
+      data: {
+        output: stream.output,
+      },
+    };
+  },
+  "Competitor.detectCompetitors",
+);
 
 export const gatherIntelligence = dedupe(
   withAuthentication(async () => {

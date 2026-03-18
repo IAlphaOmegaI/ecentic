@@ -52,7 +52,7 @@ const Skeleton = () => (
     {/* Content */}
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <div className="border border-accent-foreground bg-background-rich">
-        <div className="border-b border-accent-foreground px-4 py-2.5">
+        <div className="border-accent-foreground border-b px-4 py-2.5">
           <div className="h-4 w-24 bg-accent-foreground/20" />
         </div>
         <div className="divide-y divide-accent-foreground">
