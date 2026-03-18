@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@ai-sdk/azure": "^3.0.42",
+    "@ai-sdk/google": "^3.0.43",
     "@hookform/resolvers": "catalog:",
     "@next/env": "^16.1.6",
     "@number-flow/react": "^0.6.0",
