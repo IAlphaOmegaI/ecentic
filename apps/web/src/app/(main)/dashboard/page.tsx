@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRightIcon, DownloadIcon, PlusIcon } from "@zenncore/icons";
+import { ArrowRightIcon, CircleBoltIcon, DownloadIcon, PlusIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import {
   Tab,
@@ -323,41 +323,37 @@ export default () => {
       </motion.div>
 
       <motion.div
-        className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4"
+        className="mb-6 grid grid-cols-1 gap-px border border-accent-foreground bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4"
         variants={Stagger.Container(0.07)}
         initial="hidden"
         animate="visible"
         // biome-ignore lint/style/noCommaOperator: delay offset for stat cards
         transition={{ delayChildren: 0.08 }}
       >
+        {/* Overall Win Rate */}
         <motion.div
-          className="border border-accent-foreground bg-background-rich p-4"
+          className="flex flex-col justify-between bg-background-rich p-5"
           variants={Stagger.Item}
-          {...HoverLift}
         >
-          <p className="mb-1 font-light text-foreground-dimmed text-xs uppercase tracking-wide">
-            Overall Win Rate
-          </p>
-          <div className="flex items-end gap-2">
-            <motion.p
-              className="font-semibold text-4xl text-foreground"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ ...Spring.Gentle, delay: 0.2 }}
-            >
-              {overallWinRate}%
-            </motion.p>
-            <p
-              className={cn(
-                "mb-1 font-medium text-sm",
-                winRateTrend >= 0 ? "text-success" : "text-error",
-              )}
-            >
-              {winRateTrend >= 0 ? "↑" : "↓"} {Math.abs(winRateTrend)}% vs last
-              week
+          <div>
+            <p className="font-light text-foreground-dimmed text-xs">
+              Overall Win Rate
             </p>
+            <div className="mt-2 flex items-baseline gap-2">
+              <span className="font-semibold text-4xl text-foreground tabular-nums">
+                {overallWinRate}%
+              </span>
+              <span
+                className={cn(
+                  "font-medium text-xs",
+                  winRateTrend >= 0 ? "text-success" : "text-error",
+                )}
+              >
+                {winRateTrend >= 0 ? "+" : "−"}{Math.abs(winRateTrend)}% this week
+              </span>
+            </div>
           </div>
-          <div className="mt-3">
+          <div className="mt-4">
             <WinRateLineChart
               data={[28, 31, 35, 33, 38, 40, 43]}
               labels={["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}
@@ -366,78 +362,92 @@ export default () => {
           </div>
         </motion.div>
 
+        {/* Products Scanned */}
         <motion.div
-          className="border border-accent-foreground bg-background-rich p-4"
+          className="flex flex-col justify-between bg-background-rich p-5"
           variants={Stagger.Item}
-          {...HoverLift}
         >
-          <p className="mb-1 font-light text-foreground-dimmed text-xs uppercase tracking-wide">
-            Products Scanned
-          </p>
-          <div className="flex items-end gap-2">
-            <p className="font-semibold text-4xl text-foreground">
-              {products.length}
+          <div>
+            <p className="font-light text-foreground-dimmed text-xs">
+              Products Scanned
             </p>
-            <p className="mb-1 font-light text-foreground-dimmed text-sm">
-              / 100
+            <div className="mt-2 flex items-baseline gap-1.5">
+              <span className="font-semibold text-4xl text-foreground tabular-nums">
+                {products.length}
+              </span>
+              <span className="font-light text-foreground-dimmed text-sm">
+                / 100
+              </span>
+            </div>
+          </div>
+          <div className="mt-4">
+            <div className="h-px w-full bg-accent-foreground">
+              <motion.div
+                className="h-full bg-primary"
+                initial={{ width: 0 }}
+                animate={{ width: `${(products.length / 100) * 100}%` }}
+                transition={{ ...Spring.Gentle, delay: 0.35 }}
+              />
+            </div>
+            <p className="mt-2 font-light text-foreground-dimmed text-xs">
+              {100 - products.length} slots remaining
             </p>
           </div>
-          <div className="mt-3 h-1.5 w-full bg-accent-foreground">
-            <motion.div
-              className="h-full bg-primary"
-              initial={{ width: 0 }}
-              animate={{ width: `${(products.length / 100) * 100}%` }}
-              transition={{ ...Spring.Gentle, delay: 0.35 }}
-            />
-          </div>
-          <p className="mt-1 font-light text-foreground-dimmed text-xs">
-            {100 - products.length} product slots remaining
-          </p>
         </motion.div>
 
+        {/* Top Performer */}
         <motion.div
-          className="border border-accent-foreground bg-background-rich p-4"
+          className="flex flex-col justify-between bg-background-rich p-5"
           variants={Stagger.Item}
-          {...HoverLift}
         >
-          <p className="mb-1 font-light text-foreground-dimmed text-xs uppercase tracking-wide">
-            Top Performer
-          </p>
-          <p className="font-medium text-base text-foreground leading-tight">
-            {topPerformer.title}
-          </p>
-          <p className="mt-1 font-semibold text-2xl text-success">
-            {topPerformer.winRate}%
-          </p>
-          <p className="font-light text-foreground-dimmed text-xs">win rate</p>
+          <div>
+            <p className="font-light text-foreground-dimmed text-xs">
+              Top Performer
+            </p>
+            <p className="mt-2 font-medium text-foreground text-sm leading-snug">
+              {topPerformer.title}
+            </p>
+            <div className="mt-1 flex items-baseline gap-1.5">
+              <span className="font-semibold text-3xl text-success tabular-nums">
+                {topPerformer.winRate}%
+              </span>
+              <span className="font-light text-foreground-dimmed text-xs">
+                win rate
+              </span>
+            </div>
+          </div>
           <Link
             href={`/dashboard/products/${topPerformer._id}`}
-            className="mt-2 flex items-center gap-1 font-light text-primary text-xs hover:underline"
+            className="mt-4 flex items-center gap-1 font-medium text-foreground-dimmed text-xs transition-colors hover:text-primary"
           >
             View details <ArrowRightIcon className="size-3" />
           </Link>
         </motion.div>
 
+        {/* Biggest Opportunity */}
         <motion.div
-          className="border border-accent-foreground bg-background-rich p-4"
+          className="flex flex-col justify-between bg-background-rich p-5"
           variants={Stagger.Item}
-          {...HoverLift}
         >
-          <p className="mb-1 font-light text-foreground-dimmed text-xs uppercase tracking-wide">
-            Biggest Opportunity
-          </p>
-          <p className="font-medium text-base text-foreground leading-tight">
-            {biggestOpportunity.title}
-          </p>
-          <p className="mt-1 font-semibold text-2xl text-error">
-            {biggestOpportunity.winRate}%
-          </p>
-          <p className="font-light text-foreground-dimmed text-xs">
-            win rate now
-          </p>
+          <div>
+            <p className="font-light text-foreground-dimmed text-xs">
+              Biggest Opportunity
+            </p>
+            <p className="mt-2 font-medium text-foreground text-sm leading-snug">
+              {biggestOpportunity.title}
+            </p>
+            <div className="mt-1 flex items-baseline gap-1.5">
+              <span className="font-semibold text-3xl text-error tabular-nums">
+                {biggestOpportunity.winRate}%
+              </span>
+              <span className="font-light text-foreground-dimmed text-xs">
+                win rate
+              </span>
+            </div>
+          </div>
           <Link
             href={`/dashboard/products/${biggestOpportunity._id}`}
-            className="mt-2 flex items-center gap-1 font-light text-primary text-xs hover:underline"
+            className="mt-4 flex items-center gap-1 font-medium text-foreground-dimmed text-xs transition-colors hover:text-primary"
           >
             Optimize now <ArrowRightIcon className="size-3" />
           </Link>
@@ -585,23 +595,43 @@ export default () => {
           </motion.div>
 
           <motion.div
-            className="border border-warning/20 bg-warning/5 p-4"
+            className="border border-warning/20 bg-warning/5"
             variants={Stagger.Item}
           >
-            <p className="mb-1 font-medium text-foreground text-sm">
-              Model drift detected
-            </p>
-            <p className="font-light text-foreground-dimmed text-xs">
-              Claude updated its behavior — 7 products affected. Win rate
-              change: avg −4%.
-            </p>
-            <Link
-              href="/dashboard/optimize"
-              className="mt-2 flex items-center gap-1 font-medium text-primary text-xs hover:underline"
-            >
-              Re-optimize affected products{" "}
-              <ArrowRightIcon className="size-3" />
-            </Link>
+            <div className="px-4 py-3.5">
+              {/* header */}
+              <div className="flex items-center gap-2">
+                <CircleBoltIcon className="size-4 shrink-0 text-warning" />
+                <p className="font-medium text-foreground text-sm">
+                  Model drift detected
+                </p>
+              </div>
+
+              {/* impact chips */}
+              <div className="mt-2.5 flex items-center gap-2">
+                <span className="bg-warning/10 px-2 py-0.5 font-medium text-warning text-xs">
+                  7 products
+                </span>
+                <span className="bg-error/10 px-2 py-0.5 font-medium text-error text-xs">
+                  avg −4% win rate
+                </span>
+              </div>
+
+              {/* description */}
+              <p className="mt-2.5 font-light text-foreground-dimmed text-xs leading-relaxed">
+                Claude updated its behavior — some listings may be losing
+                positions they previously held.
+              </p>
+
+              {/* CTA */}
+              <Link
+                href="/dashboard/optimize"
+                className="mt-3 inline-flex items-center gap-1 font-medium text-primary text-xs hover:underline"
+              >
+                Re-optimize affected products
+                <ArrowRightIcon className="size-3" />
+              </Link>
+            </div>
           </motion.div>
         </motion.div>
       </motion.div>

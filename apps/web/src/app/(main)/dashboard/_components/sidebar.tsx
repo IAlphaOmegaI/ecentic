@@ -90,7 +90,7 @@ export const Sidebar = () => {
               className={cn(
                 "group relative flex items-center gap-1 overflow-hidden px-2 py-2 hover:bg-accent-foreground/20",
                 active
-                  ? "bg-primary/20 text-primary hover:bg-primary/40"
+                  ? "bg-primary/10 text-primary hover:bg-primary/15"
                   : "text-foreground-dimmed hover:text-foreground",
               )}
             >
@@ -109,7 +109,15 @@ export const Sidebar = () => {
                   <span
                     className={cn(
                       "px-1.5 py-0.5 font-medium text-sm tabular-nums",
-                      active ? "text-primary/60" : "text-foreground-dimmed/50",
+                      (() => {
+                        const pct = Number.parseFloat(item.badge);
+                        if (!Number.isNaN(pct) && item.badge.includes("%")) {
+                          if (pct >= 80) return "text-success/70";
+                          if (pct >= 50) return "text-warning/70";
+                          return "text-error/70";
+                        }
+                        return "text-primary/70";
+                      })(),
                     )}
                   >
                     {item.badge}

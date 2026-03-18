@@ -10,6 +10,12 @@ import {
 
 type ToastType = "success" | "error" | "info";
 
+const dotColor: Record<ToastType, string> = {
+  success: "bg-primary",
+  error: "bg-error",
+  info: "bg-foreground-dimmed",
+};
+
 export namespace ToastList {
   export type Props = {
     types: ToastType[];
@@ -22,24 +28,20 @@ export const ToastList = ({ types }: ToastList.Props) => {
   return toasts
     .filter((t) => types.includes(t.type as ToastType))
     .map((toast) => {
-      //   const Icon = ((): React.JSX.Element => {
-      //     switch (toast.type as ToastType) {
-      //       case "info":
-      //         return null;
-      //       default:
-      //         return null;
-      //     }
-      //   })();
+      const type = (toast.type as ToastType) ?? "info";
+      const dot = dotColor[type] ?? dotColor.info;
 
       return (
-        <Toast key={toast.id} toast={toast}>
-          <div className="flex items-center gap-1">
-            {/* {Icon && <Icon />} */}
-            <ToastTitle />
+        <Toast key={toast.id} toast={toast} className="p-2.5">
+          <div className="flex items-start gap-2 pr-4">
+            <span className={`mt-[4px] size-1.5 shrink-0 rounded-full ${dot}`} />
+            <div className="flex-1 min-w-0">
+              <ToastTitle className="text-xs leading-4" />
+              <ToastDescription className="text-xs leading-4 mt-0" />
+            </div>
           </div>
-          <ToastDescription />
           <ToastClose aria-label="Close">
-            <XIcon className="size-4" />
+            <XIcon className="size-3" />
           </ToastClose>
         </Toast>
       );
