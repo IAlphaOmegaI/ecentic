@@ -672,7 +672,7 @@ export default () => {
                 ].map((header) => (
                   <th
                     key={header}
-                    className="px-4 py-3 text-left font-light text-foreground-dimmed text-sm"
+                    className="bg-accent-foreground/30 px-4 py-3 text-left font-light text-foreground-dimmed text-lg"
                   >
                     {header}
                   </th>
