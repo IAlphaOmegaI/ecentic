@@ -182,6 +182,7 @@ export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
             transition={{ duration: 0.2 }}
             className="flex flex-col"
           >
+            {/* Header */}
             <div className="flex items-center justify-between border-b border-accent-foreground px-5 py-3">
               <div className="flex items-center gap-2">
                 <motion.span
@@ -198,10 +199,20 @@ export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
               </span>
             </div>
 
-            <div className="h-52 overflow-y-auto px-5 py-4 space-y-1.5 scroll-smooth">
+            {/* Indeterminate progress bar */}
+            <div className="relative h-0.5 w-full overflow-hidden bg-accent-foreground">
+              <motion.div
+                className="absolute h-full w-1/3 bg-primary"
+                animate={{ x: ["-100%", "400%"] }}
+                transition={{ duration: 1.6, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+              />
+            </div>
+
+            {/* Log area */}
+            <div className="h-52 space-y-1.5 overflow-y-auto scroll-smooth px-5 py-4">
               {logs.map((log, index) => {
                 const age = logs.length - 1 - index;
-                const opacity = Math.max(0.25, 1 - age * 0.12);
+                const opacity = Math.max(0.2, 1 - age * 0.1);
                 return (
                   <motion.div
                     key={log.id}
@@ -210,7 +221,7 @@ export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
                     transition={{ duration: 0.25, ease: "easeOut" }}
                     className="flex items-baseline gap-3"
                   >
-                    <span className="font-mono text-foreground-dimmed/50 text-xs tabular-nums shrink-0">
+                    <span className="shrink-0 font-mono text-foreground-dimmed/50 text-xs tabular-nums">
                       {formatElapsed(log.elapsed)}
                     </span>
                     <span className="text-foreground-dimmed text-xs leading-relaxed">
@@ -219,24 +230,25 @@ export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
                   </motion.div>
                 );
               })}
+              {logs.length === 0 && (
+                <p className="text-foreground-dimmed/50 text-xs">
+                  Initializing intelligence scan...
+                </p>
+              )}
               <div ref={logsEndRef} />
             </div>
 
-            <div className="border-t border-accent-foreground px-5 py-3 flex items-center gap-1.5">
+            {/* Footer dots */}
+            <div className="flex items-center gap-1.5 border-t border-accent-foreground px-5 py-3">
               {[0, 0.2, 0.4].map((delay) => (
                 <motion.span
                   key={delay}
                   animate={{ opacity: [0.2, 1, 0.2] }}
-                  transition={{
-                    duration: 1,
-                    repeat: Number.POSITIVE_INFINITY,
-                    delay,
-                    ease: "easeInOut",
-                  }}
+                  transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, delay, ease: "easeInOut" }}
                   className="inline-block size-1 rounded-full bg-primary"
                 />
               ))}
-              <span className="ml-1.5 text-foreground-dimmed text-xs">
+              <span className="ml-1.5 font-light text-foreground-dimmed text-xs">
                 Analyzing market signals
               </span>
             </div>

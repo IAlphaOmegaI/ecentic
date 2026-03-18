@@ -5,18 +5,13 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef } from "react";
 import { Spring, Stagger } from "@/lib/animations";
 
-const logColor = (model: string): string => {
-  switch (model) {
-    case "GPT-4":
-      return "text-blue-400";
-    case "Claude":
-      return "text-orange-400";
-    case "Gemini":
-      return "text-green-400";
-    default:
-      return "text-white/60";
-  }
+const modelColors: Record<string, string> = {
+  "GPT-4": "text-blue-500",
+  Claude: "text-orange-500",
+  Gemini: "text-green-500",
 };
+
+const formatElapsed = (index: number) => `${(index * 0.4).toFixed(1)}s`;
 
 export namespace RunningPhase {
   export type Props = {
@@ -37,11 +32,11 @@ export const RunningPhase = ({
   losses,
   logs,
 }: RunningPhase.Props) => {
-  const ref = useRef<HTMLDivElement>(null);
+  const logsEndRef = useRef<HTMLDivElement>(null);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: logEntries triggers scroll-to-bottom on new entries
   useEffect(() => {
-    if (ref.current) ref.current.scrollTop = ref.current.scrollHeight;
+    logsEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [logs]);
 
   return (
@@ -53,44 +48,52 @@ export const RunningPhase = ({
       exit={{ opacity: 0, y: -16 }}
       transition={Spring.Gentle}
     >
-      <div className="mx-auto w-full max-w-2xl">
-        <div className="mb-2 flex items-center justify-between">
-          <p className="font-medium text-foreground text-sm">
-            Running {simulations} simulations across 3 models...
-          </p>
-          <motion.p
-            className="font-light text-foreground-dimmed text-sm"
-            key={Math.floor(progress)}
-          >
-            {Math.floor(progress)}%
-          </motion.p>
+      <div className="mx-auto w-full max-w-2xl border border-accent-foreground bg-background-rich">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-accent-foreground px-5 py-3">
+          <div className="flex items-center gap-2">
+            <motion.span
+              animate={{ opacity: [1, 0.2, 1] }}
+              transition={{ duration: 1.4, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+              className="inline-block size-1.5 rounded-full bg-primary"
+            />
+            <span className="font-medium text-foreground text-xs tracking-widest uppercase">
+              Live Intelligence Scan
+            </span>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="font-mono text-primary text-xs tabular-nums">
+              {Math.floor(progress)}%
+            </span>
+          </div>
         </div>
-        <div className="mb-6 h-1.5 w-full bg-accent-foreground">
+
+        {/* Progress bar */}
+        <div className="h-0.5 w-full bg-accent-foreground">
           <motion.div
             className="h-full bg-primary"
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.3 }}
           />
         </div>
 
+        {/* Model statuses */}
         <motion.div
-          className="mb-4 grid grid-cols-3 gap-px border border-accent-foreground bg-accent-foreground"
+          className="grid grid-cols-3 divide-x divide-accent-foreground border-b border-accent-foreground"
           variants={Stagger.Container(0.06)}
           initial="hidden"
           animate="visible"
         >
           {(["GPT-4", "Claude", "Gemini"] as const).map((model) => {
             const status = statuses[model];
-            const color = logColor(model);
-
             return (
               <motion.div
                 key={model}
-                className="flex items-center justify-between bg-background-rich px-4 py-3"
+                className="flex items-center justify-between px-5 py-3"
                 variants={Stagger.Item}
               >
-                <span className={cn("font-semibold text-sm", color)}>
+                <span className={cn("font-medium text-sm", modelColors[model])}>
                   {model}
                 </span>
                 <AnimatePresence mode="wait">
@@ -100,12 +103,12 @@ export const RunningPhase = ({
                       "font-medium text-xs",
                       status === "complete" && "text-success",
                       status === "running" && "text-primary",
-                      status === "queued" && "text-foreground-dimmed",
+                      status === "queued" && "text-foreground-dimmed/50",
                     )}
-                    initial={{ opacity: 0, y: 4 }}
+                    initial={{ opacity: 0, y: 3 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={Spring.Snappy}
+                    exit={{ opacity: 0, y: -3 }}
+                    transition={{ duration: 0.15 }}
                   >
                     {status === "complete" && "Done"}
                     {status === "running" && "Running"}
@@ -117,67 +120,52 @@ export const RunningPhase = ({
           })}
         </motion.div>
 
-        <div className="mb-4 grid grid-cols-3 gap-px border border-accent-foreground bg-accent-foreground">
-          {[
-            { label: "Wins", value: wins, color: "text-success" },
-            { label: "Losses", value: losses, color: "text-error" },
-            {
-              label: "Win Rate",
-              value: `${wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0}%`,
-              color: "text-primary",
-            },
-          ].map((stats) => (
-            <div
-              key={stats.label}
-              className="bg-background-rich px-4 py-4 text-center"
-            >
-              <motion.p
-                className={cn("font-semibold text-3xl", stats.color)}
-                key={String(stats.value)}
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={Spring.Bounce}
-              >
-                {stats.value}
-              </motion.p>
-              <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
-                {stats.label}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <div
-          ref={ref}
-          className="h-64 overflow-y-auto border border-accent-foreground bg-foreground p-4 font-mono text-xs"
-        >
-          <AnimatePresence>
-            {logs.map((entry) => (
+        {/* Log area — clean light design */}
+        <div className="h-56 space-y-1.5 overflow-y-auto scroll-smooth px-5 py-4">
+          {logs.map((entry, index) => {
+            const age = logs.length - 1 - index;
+            const opacity = Math.max(0.2, 1 - age * 0.1);
+            return (
               <motion.div
                 key={entry.id}
-                className="mb-1"
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={Spring.Snappy}
+                className="flex items-baseline gap-3"
+                initial={{ opacity: 0, x: -6 }}
+                animate={{ opacity, x: 0 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
               >
-                <span className={cn("font-medium", logColor(entry.model))}>
-                  [{entry.model}]{" "}
+                <span className="shrink-0 font-mono text-foreground-dimmed/50 text-xs tabular-nums">
+                  {formatElapsed(index)}
                 </span>
-                <span
-                  className={cn(
-                    "text-white/80",
-                    entry.message.startsWith("DECISION") &&
-                      "font-medium text-white",
-                  )}
-                >
+                <span className={cn("shrink-0 font-medium text-xs", modelColors[entry.model] ?? "text-foreground-dimmed")}>
+                  [{entry.model}]
+                </span>
+                <span className="text-foreground-dimmed text-xs leading-relaxed">
                   {entry.message}
                 </span>
               </motion.div>
-            ))}
-          </AnimatePresence>
+            );
+          })}
           {logs.length === 0 && (
-            <p className="text-white/40">Initializing simulation engine...</p>
+            <p className="text-foreground-dimmed/50 text-xs">
+              Initializing simulation engine...
+            </p>
           )}
+          <div ref={logsEndRef} />
+        </div>
+
+        {/* Footer dots */}
+        <div className="flex items-center gap-1.5 border-t border-accent-foreground px-5 py-3">
+          {[0, 0.2, 0.4].map((delay) => (
+            <motion.span
+              key={delay}
+              animate={{ opacity: [0.2, 1, 0.2] }}
+              transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, delay, ease: "easeInOut" }}
+              className="inline-block size-1 rounded-full bg-primary"
+            />
+          ))}
+          <span className="ml-1.5 font-light text-foreground-dimmed text-xs">
+            Running simulations across {simulations} comparisons
+          </span>
         </div>
       </div>
     </motion.div>
