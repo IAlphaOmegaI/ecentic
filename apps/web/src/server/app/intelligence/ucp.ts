@@ -63,7 +63,7 @@ export const saveProfile = withAuthentication(
 );
 
 export const generateJson = withAuthentication(async (context) => {
-  const [profileResult, productsResult] = await Promise.all([
+  const [profile, products] = await Promise.all([
     find(Environment.SERVER, {
       where: eq(schema.ucpProfile.userId, context.session.user.id),
     }),
@@ -72,13 +72,10 @@ export const generateJson = withAuthentication(async (context) => {
     }),
   ]);
 
-  if (!profileResult.success) return profileResult;
-  if (!productsResult.success) return productsResult;
+  if (!profile.success) return profile;
+  if (!products.success) return products;
 
-  const profile = profileResult.data[0];
-  const products = productsResult.data;
-
-  const productSummary = products
+  const productSummary = products.data
     .slice(0, 20)
     .map((p) => `- ${p.title} (${p.currency ?? "USD"} ${p.price ?? "N/A"})`)
     .join("\n");
@@ -88,15 +85,15 @@ export const generateJson = withAuthentication(async (context) => {
       "You are a structured data expert. Generate a valid Universal Commerce Protocol (UCP) JSON for a merchant profile. The UCP is served at /.well-known/ucp and helps AI shopping agents understand a merchant's identity, policies, and catalog.",
     prompt: `Generate a UCP JSON for this merchant:
 
-Merchant Name: ${profile?.merchantName ?? "Unknown"}
-Description: ${profile?.description ?? ""}
-Logo: ${profile?.logoUrl ?? ""}
-Payment Methods: ${profile?.paymentMethods ?? ""}
-Shipping Policy: ${profile?.shippingPolicy ?? ""}
-Return Policy: ${profile?.returnPolicy ?? ""}
-Contact Email: ${profile?.contactEmail ?? ""}
-Sustainability: ${profile?.sustainability ?? ""}
-Certifications: ${profile?.certifications ?? ""}
+Merchant Name: ${profile.data[0]?.merchantName ?? "Unknown"}
+Description: ${profile.data[0]?.description ?? ""}
+Logo: ${profile.data[0]?.logoUrl ?? ""}
+Payment Methods: ${profile.data[0]?.paymentMethods ?? ""}
+Shipping Policy: ${profile.data[0]?.shippingPolicy ?? ""}
+Return Policy: ${profile.data[0]?.returnPolicy ?? ""}
+Contact Email: ${profile.data[0]?.contactEmail ?? ""}
+Sustainability: ${profile.data[0]?.sustainability ?? ""}
+Certifications: ${profile.data[0]?.certifications ?? ""}
 
 Top products:
 ${productSummary || "No products yet"}`,
@@ -123,8 +120,8 @@ ${productSummary || "No products yet"}`,
 
   const generatedJson = JSON.stringify(ucpData, null, 2);
 
-  if (profile) {
-    await update(Environment.SERVER, profile.id, {
+  if (profile.data[0]) {
+    await update(Environment.SERVER, profile.data[0].id, {
       generatedJson,
       updatedAt: new Date(),
     });
@@ -140,28 +137,26 @@ ${productSummary || "No products yet"}`,
 
 export const generateProductStructuredData = withAuthentication(
   async (context, { productId }: { productId: string }) => {
-    const productResult = await Product.get(Environment.SERVER, productId);
+    const product = await Product.get(Environment.SERVER, productId);
 
-    if (!productResult.success) return productResult;
+    if (!product.success) return product;
 
-    const product = productResult.data;
-
-    if (!product)
+    if (!product.data)
       return { success: false as const, error: new Error("Product not found") };
 
-    if (product.userId !== context.session.user.id)
+    if (product.data?.userId !== context.session.user.id)
       return { success: false as const, error: new Error("Unauthorized") };
 
     const structured = await generate({
       system:
         "You are a structured data expert. Generate valid schema.org Product JSON-LD for an e-commerce product. This JSON helps AI shopping agents understand and recommend the product.",
       prompt: `Generate schema.org Product structured data for:
-Title: ${product.title}
-Description: ${product.description ?? ""}
-Price: ${product.currency ?? "USD"} ${product.price ?? ""}
-Compare At: ${product.compareAtPrice ?? ""}
-SKU: ${product.sku ?? ""}
-URL: ${product.url ?? ""}`,
+Title: ${product.data.title}
+Description: ${product.data.description ?? ""}
+Price: ${product.data.currency ?? "USD"} ${product.data.price ?? ""}
+Compare At: ${product.data.compareAtPrice ?? ""}
+SKU: ${product.data.sku ?? ""}
+URL: ${product.data.url ?? ""}`,
       schema: z.object({
         "@context": z.string(),
         "@type": z.literal("Product"),
@@ -181,7 +176,7 @@ URL: ${product.url ?? ""}`,
 
     const structuredJson = JSON.stringify(structured, null, 2);
 
-    await Product.update(Environment.SERVER, productId, {
+    await Product.update(Environment.SERVER, product.data.id, {
       structuredData: structuredJson,
       updatedAt: new Date(),
     });
@@ -193,14 +188,14 @@ URL: ${product.url ?? ""}`,
 
 export const generateAllProductStructuredData = withAuthentication(
   async (context) => {
-    const productsResult = await Product.find(Environment.SERVER, {
+    const products = await Product.find(Environment.SERVER, {
       where: eq(schema.product.userId, context.session.user.id),
     });
 
-    if (!productsResult.success) return productsResult;
+    if (!products.success) return products;
 
     const results = await Promise.all(
-      productsResult.data.map(async (product) => {
+      products.data.map(async (product) => {
         const structured = await resultify(() =>
           generate({
             system:

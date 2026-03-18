@@ -34,6 +34,7 @@ export const removeForUser = withAuthentication(
         success: false as const,
         error: new Error("Competitor not found"),
       };
+
     if (record.data.userId !== context.session.user.id)
       return { success: false as const, error: new Error("Not authorized") };
 
@@ -48,11 +49,11 @@ export const toggleSelection = withAuthentication(
     if (!record.success) return record;
     if (!record.data)
       return {
-        success: false as const,
+        success: false,
         error: new Error("Competitor not found"),
       };
     if (record.data.userId !== context.session.user.id)
-      return { success: false as const, error: new Error("Not authorized") };
+      return { success: false, error: new Error("Not authorized") };
 
     return update(Environment.SERVER, id, { selected });
   },

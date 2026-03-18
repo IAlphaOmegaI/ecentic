@@ -6,14 +6,6 @@ export default {
   typescript: {
     ignoreBuildErrors: true,
   },
-  transpilePackages: [
-    "@zenncore/icons",
-    "@zenncore/phone",
-    "@zenncore/utils",
-    "@zenncore/web",
-    "@zenncore/data-table",
-    "@zenncore/inferred-form",
-  ],
   async rewrites() {
     return [
       {

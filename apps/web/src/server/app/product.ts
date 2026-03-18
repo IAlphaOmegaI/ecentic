@@ -70,7 +70,7 @@ export const gatherIntelligence = dedupe(
     if (!products.success) return products;
     if (!scan.success) return scan;
 
-    if (products.data.length === 0)
+    if (products.data.length === 0) {
       return {
         success: true,
         data: {
@@ -79,6 +79,7 @@ export const gatherIntelligence = dedupe(
           scan: scan.data[0],
         },
       };
+    }
 
     const simulations = await Simulation.getForProducts({
       products: products.data.map((product) => product.id),
