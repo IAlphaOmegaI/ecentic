@@ -46,7 +46,7 @@ export const CompetitorManager = ({
 
         {/* Tabs — crossing borders */}
         <div className="-mx-8 flex flex-1 flex-col overflow-hidden border-y border-accent-foreground">
-          <div className="mx-8 flex flex-1 flex-col overflow-y-auto py-6">
+          <div className="mx-8 flex flex-1 flex-col pt-6">
         <Tabs defaultValue="auto" className="flex flex-1 flex-col">
           <TabsList className="mb-6">
             <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
@@ -55,7 +55,7 @@ export const CompetitorManager = ({
             <Tab value="search">Search Brand</Tab>
           </TabsList>
 
-          <TabsPanel value="auto">
+          <TabsPanel value="auto" className="flex flex-1 flex-col">
             <AutoDetectTab products={products} onSuccess={handleSuccess} />
           </TabsPanel>
 

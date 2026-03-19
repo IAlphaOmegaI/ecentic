@@ -46,11 +46,11 @@ const OptimizationCard = ({
   optimization: (typeof optimizations)[number];
   showActions?: boolean;
 }) => (
-  <div className="border border-accent-foreground bg-background-rich p-4">
+  <div className="border border-accent-foreground bg-background p-4">
     <div className="flex items-start justify-between">
       <div>
         <div className="flex items-center gap-2">
-          <p className="font-medium text-foreground text-sm">
+          <p className="font-medium text-foreground text-base">
             {optimization.productTitle}
           </p>
           <span className="border border-accent-foreground px-1.5 py-0.5 text-foreground-dimmed text-xs">
@@ -110,180 +110,190 @@ const OptimizationCard = ({
 );
 
 export default () => (
-  <div className="p-6">
-    <div className="mb-6 flex items-center justify-between">
-      <div>
-        <h1 className="font-medium text-foreground text-xl">
-          Optimization Center
-        </h1>
-        <p className="font-light text-foreground-dimmed text-sm">
-          {pendingOptimizations.length} pending ·{" "}
-          {inProgressOptimizations.length} in progress
-        </p>
-      </div>
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          className="border border-accent-foreground bg-background-rich px-3 py-1.5 text-foreground text-sm transition-colors hover:bg-background-dimmed"
-        >
-          Auto-Optimization Settings
-        </button>
-        <button
-          type="button"
-          className="flex items-center gap-1.5 bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primary/90"
-        >
-          <CheckIcon className="size-4" />
-          Approve All ({pendingOptimizations.length})
-        </button>
-      </div>
-    </div>
-
-    <Tabs defaultValue="pending">
-      <TabsList className="mb-4 h-auto border border-accent-foreground bg-transparent px-0">
-        <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
-        <Tab value="pending">
-          Pending{" "}
-          <span className="ml-1 bg-white/20 px-1 text-xs">
-            {pendingOptimizations.length}
-          </span>
-        </Tab>
-        <Tab value="in_progress">
-          In Progress{" "}
-          <span className="ml-1 bg-white/20 px-1 text-xs">
-            {inProgressOptimizations.length}
-          </span>
-        </Tab>
-        <Tab value="published">Published</Tab>
-        <Tab value="dismissed">Dismissed</Tab>
-      </TabsList>
-
-      <TabsPanel value="pending">
-        {pendingOptimizations.length === 0 ? (
-          <div className="py-12 text-center">
-            <p className="font-medium text-foreground text-sm">
-              No pending optimizations
-            </p>
-            <p className="font-light text-foreground-dimmed text-xs">
-              Run a simulation to generate new optimization suggestions.
+  <div className="flex flex-col">
+    <div className="mx-8 border-x border-accent-foreground">
+      {/* Title */}
+      <div className="-mx-8 border-b border-accent-foreground">
+        <div className="mx-8 flex items-center justify-between px-6 py-8">
+          <div>
+            <h1 className="font-medium text-foreground text-3xl">
+              Optimization Center
+            </h1>
+            <p className="font-light text-foreground-dimmed text-sm">
+              {pendingOptimizations.length} pending ·{" "}
+              {inProgressOptimizations.length} in progress
             </p>
           </div>
-        ) : (
-          <div className="flex flex-col gap-3">
-            {pendingOptimizations.map((optimization) => (
-              <OptimizationCard
-                key={optimization._id}
-                optimization={optimization}
-              />
-            ))}
-          </div>
-        )}
-      </TabsPanel>
-
-      <TabsPanel value="in_progress">
-        <div className="flex flex-col gap-3">
-          {inProgressOptimizations.map((optimization) => (
-            <div
-              key={optimization._id}
-              className="border border-primary/20 bg-primary/5 p-4"
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              className="border border-accent-foreground bg-background px-3 py-1.5 text-foreground text-sm transition-colors hover:bg-background-dimmed"
             >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-foreground text-sm">
-                    {optimization.productTitle}
+              Auto-Optimization Settings
+            </button>
+            <button
+              type="button"
+              className="flex items-center gap-1.5 bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primary/90"
+            >
+              <CheckIcon className="size-4" />
+              Approve All ({pendingOptimizations.length})
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Tabs + content */}
+      <div className="-mx-8 border-b border-accent-foreground">
+        <div className="mx-8 px-6 py-6">
+          <Tabs defaultValue="pending">
+            <TabsList className="mb-4 h-auto border border-accent-foreground bg-transparent px-0">
+              <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
+              <Tab value="pending">
+                Pending{" "}
+                <span className="ml-1 bg-white/20 px-1 text-xs">
+                  {pendingOptimizations.length}
+                </span>
+              </Tab>
+              <Tab value="in_progress">
+                In Progress{" "}
+                <span className="ml-1 bg-white/20 px-1 text-xs">
+                  {inProgressOptimizations.length}
+                </span>
+              </Tab>
+              <Tab value="published">Published</Tab>
+              <Tab value="dismissed">Dismissed</Tab>
+            </TabsList>
+
+            <TabsPanel value="pending">
+              {pendingOptimizations.length === 0 ? (
+                <div className="py-12 text-center">
+                  <p className="font-medium text-foreground text-base">
+                    No pending optimizations
                   </p>
                   <p className="font-light text-foreground-dimmed text-xs">
-                    Publishing to Shopify...
+                    Run a simulation to generate new optimization suggestions.
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="h-1 w-24 bg-accent-foreground">
-                    <div className="h-full w-2/3 animate-pulse bg-primary" />
-                  </div>
-                  <span className="font-light text-foreground-dimmed text-xs">
-                    67%
-                  </span>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  {pendingOptimizations.map((optimization) => (
+                    <OptimizationCard
+                      key={optimization._id}
+                      optimization={optimization}
+                    />
+                  ))}
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </TabsPanel>
+              )}
+            </TabsPanel>
 
-      <TabsPanel value="published">
-        <div className="flex flex-col gap-3">
-          {publishedOptimizations.map((optimization) => (
-            <div
-              key={optimization._id}
-              className="border border-accent-foreground bg-background-rich p-4"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="font-medium text-foreground text-sm">
-                    {optimization.productTitle}
-                  </p>
-                  <div className="mt-1 flex items-center gap-3">
-                    <span className="border border-accent-foreground px-1.5 py-0.5 text-foreground-dimmed text-xs">
-                      {typeLabel(optimization.type)}
-                    </span>
-                    <span className="font-light text-foreground-dimmed text-xs">
-                      {optimization.publishedAt}
-                    </span>
-                  </div>
-                  {"winRateBefore" in optimization &&
-                    optimization.winRateBefore && (
-                      <p className="mt-1 font-light text-foreground-dimmed text-xs">
-                        Win rate: {optimization.winRateBefore}% →{" "}
-                        <span className="font-medium text-foreground">
-                          {optimization.winRateAfter}%
-                        </span>{" "}
-                        <span className="font-medium text-success">
-                          (+
-                          {(optimization.winRateAfter ?? 0) -
-                            optimization.winRateBefore}
-                          %)
+            <TabsPanel value="in_progress">
+              <div className="flex flex-col gap-3">
+                {inProgressOptimizations.map((optimization) => (
+                  <div
+                    key={optimization._id}
+                    className="border border-primary/20 bg-primary/5 p-4"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium text-foreground text-base">
+                          {optimization.productTitle}
+                        </p>
+                        <p className="font-light text-foreground-dimmed text-xs">
+                          Publishing to Shopify...
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="h-1 w-24 bg-accent-foreground">
+                          <div className="h-full w-2/3 animate-pulse bg-primary" />
+                        </div>
+                        <span className="font-light text-foreground-dimmed text-xs">
+                          67%
                         </span>
-                      </p>
-                    )}
-                </div>
-                <button
-                  type="button"
-                  className="border border-accent-foreground px-2.5 py-1 text-foreground-dimmed text-xs transition-colors hover:bg-background-dimmed"
-                >
-                  Rollback
-                </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
-          ))}
-        </div>
-      </TabsPanel>
+            </TabsPanel>
 
-      <TabsPanel value="dismissed">
-        <div className="flex flex-col gap-3">
-          {dismissedOptimizations.map((optimization) => (
-            <div
-              key={optimization._id}
-              className="border border-accent-foreground bg-background-rich p-4 opacity-60"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-foreground text-sm">
-                    {optimization.productTitle}
-                  </p>
-                  <span className="border border-accent-foreground px-1.5 py-0.5 text-foreground-dimmed text-xs">
-                    {typeLabel(optimization.type)}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  className="border border-accent-foreground bg-background-rich px-2.5 py-1 text-foreground text-xs transition-colors hover:bg-background-dimmed"
-                >
-                  Reconsider
-                </button>
+            <TabsPanel value="published">
+              <div className="flex flex-col gap-3">
+                {publishedOptimizations.map((optimization) => (
+                  <div
+                    key={optimization._id}
+                    className="border border-accent-foreground bg-background p-4"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="font-medium text-foreground text-base">
+                          {optimization.productTitle}
+                        </p>
+                        <div className="mt-1 flex items-center gap-3">
+                          <span className="border border-accent-foreground px-1.5 py-0.5 text-foreground-dimmed text-xs">
+                            {typeLabel(optimization.type)}
+                          </span>
+                          <span className="font-light text-foreground-dimmed text-xs">
+                            {optimization.publishedAt}
+                          </span>
+                        </div>
+                        {"winRateBefore" in optimization &&
+                          optimization.winRateBefore && (
+                            <p className="mt-1 font-light text-foreground-dimmed text-xs">
+                              Win rate: {optimization.winRateBefore}% →{" "}
+                              <span className="font-medium text-foreground">
+                                {optimization.winRateAfter}%
+                              </span>{" "}
+                              <span className="font-medium text-success">
+                                (+
+                                {(optimization.winRateAfter ?? 0) -
+                                  optimization.winRateBefore}
+                                %)
+                              </span>
+                            </p>
+                          )}
+                      </div>
+                      <button
+                        type="button"
+                        className="border border-accent-foreground px-2.5 py-1 text-foreground-dimmed text-xs transition-colors hover:bg-background-dimmed"
+                      >
+                        Rollback
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
-          ))}
+            </TabsPanel>
+
+            <TabsPanel value="dismissed">
+              <div className="flex flex-col gap-3">
+                {dismissedOptimizations.map((optimization) => (
+                  <div
+                    key={optimization._id}
+                    className="border border-accent-foreground bg-background p-4 opacity-60"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium text-foreground text-base">
+                          {optimization.productTitle}
+                        </p>
+                        <span className="border border-accent-foreground px-1.5 py-0.5 text-foreground-dimmed text-xs">
+                          {typeLabel(optimization.type)}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        className="border border-accent-foreground bg-background px-2.5 py-1 text-foreground text-xs transition-colors hover:bg-background-dimmed"
+                      >
+                        Reconsider
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </TabsPanel>
+          </Tabs>
         </div>
-      </TabsPanel>
-    </Tabs>
+      </div>
+    </div>
   </div>
 );

@@ -6,6 +6,7 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import { readStreamableValue } from "@ai-sdk/rsc";
 import { unwrapResult } from "@zenncore/utils";
 import { AnimatePresence, motion } from "motion/react";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import * as Competitor from "@/server/app/competitor";
 
@@ -97,7 +98,7 @@ export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
   });
 
   return (
-    <div className="border border-accent-foreground bg-background-rich min-h-[280px]">
+    <div className="flex flex-1 flex-col border border-accent-foreground bg-background-rich">
       <AnimatePresence mode="wait" initial={false}>
         {!isDetecting && logs.length === 0 && (
           <motion.div
@@ -106,7 +107,7 @@ export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="flex flex-col items-center gap-4 px-6 py-14 text-center"
+            className="flex flex-1 flex-col items-center justify-center gap-4 px-6 py-14 text-center"
           >
             <p className="max-w-md font-light text-foreground-dimmed text-sm">
               We'll analyze your products and use AI to find the most relevant
@@ -121,6 +122,14 @@ export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
             >
               Auto-detect competitors
             </Button>
+            <div className="relative min-h-0 w-full flex-1">
+              <Image
+                src="/images/competitors-illustration.png"
+                alt="Competitors illustration"
+                fill
+                className="object-contain"
+              />
+            </div>
           </motion.div>
         )}
 
@@ -131,7 +140,7 @@ export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="flex flex-col"
+            className="flex flex-1 flex-col"
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-accent-foreground px-5 py-3">
@@ -164,7 +173,7 @@ export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
             )}
 
             {/* Log area */}
-            <div className="h-52 space-y-1.5 overflow-y-auto scroll-smooth px-5 py-4">
+            <div className="flex-1 space-y-1.5 overflow-y-auto scroll-smooth px-5 py-4">
               {logs.map((log, index) => {
                 const age = logs.length - 1 - index;
                 const opacity = isDetecting ? Math.max(0.2, 1 - age * 0.1) : 1;

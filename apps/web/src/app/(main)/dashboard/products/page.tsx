@@ -6,34 +6,48 @@ import * as Product from "@/server/app/product";
 import { ProductsTable } from "./_components/products-table";
 
 export default () => (
-  <div className="p-6">
-    <div className="mb-6 flex items-center justify-between">
-      <div>
-        <h1 className="font-medium text-foreground text-xl">Products</h1>
-        <p className="font-light text-foreground-dimmed text-sm">
-          Monitor how AI agents evaluate your product listings
-        </p>
+  <div className="flex flex-col">
+    <div className="mx-8 border-x border-accent-foreground">
+      {/* Title */}
+      <div className="-mx-8 border-b border-accent-foreground">
+        <div className="mx-8 flex items-center justify-between px-6 py-8">
+          <div>
+            <h1 className="font-medium text-foreground text-3xl">Products</h1>
+            <p className="font-light text-foreground-dimmed text-sm">
+              Monitor how AI agents evaluate your product listings
+            </p>
+          </div>
+          <Link
+            href="/onboarding/products"
+            className="flex items-center gap-1.5 bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primary/90"
+          >
+            <PlusIcon className="size-4" />
+            Add Products
+          </Link>
+        </div>
       </div>
-      <Link
-        href="/onboarding/products"
-        className="flex items-center gap-1.5 bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primary/90"
-      >
-        <PlusIcon className="size-4" />
-        Add Products
-      </Link>
+
+      {/* Stats + Table — share one crossing section so outer borders align */}
+      <div className="-mx-8 border-b border-accent-foreground">
+        <div className="mx-8">
+          <Suspense fallback={<StatsSkeleton />}>
+            <Statistics />
+          </Suspense>
+          <Suspense fallback={<TableSkeleton />}>
+            <Products />
+          </Suspense>
+        </div>
+      </div>
+
+      {/* Insights */}
+      <div className="-mx-8 border-b border-accent-foreground">
+        <div className="mx-8 px-6 py-6">
+          <Suspense fallback={<InsightsSkeleton />}>
+            <Insights />
+          </Suspense>
+        </div>
+      </div>
     </div>
-
-    <Suspense fallback={<StatsSkeleton />}>
-      <Statistics />
-    </Suspense>
-
-    <Suspense fallback={<TableSkeleton />}>
-      <Products />
-    </Suspense>
-
-    <Suspense fallback={<InsightsSkeleton />}>
-      <Insights />
-    </Suspense>
   </div>
 );
 
@@ -58,8 +72,8 @@ const Statistics = async () => {
   ).length;
 
   return (
-    <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-4">
-      <div className="border border-accent-foreground bg-background-rich p-4">
+    <div className="grid grid-cols-1 gap-px border-b border-accent-foreground bg-accent-foreground sm:grid-cols-4">
+      <div className="bg-background p-4">
         <p className="font-light text-foreground-dimmed text-xs uppercase tracking-wide">
           Total Products
         </p>
@@ -67,7 +81,7 @@ const Statistics = async () => {
           {products.length}
         </p>
       </div>
-      <div className="border border-accent-foreground bg-background-rich p-4">
+      <div className="bg-background p-4">
         <p className="font-light text-foreground-dimmed text-xs uppercase tracking-wide">
           Average Win Rate
         </p>
@@ -75,7 +89,7 @@ const Statistics = async () => {
           {averageWinRate}%
         </p>
       </div>
-      <div className="border border-accent-foreground bg-background-rich p-4">
+      <div className="bg-background p-4">
         <p className="font-light text-foreground-dimmed text-xs uppercase tracking-wide">
           High Performers
         </p>
@@ -83,7 +97,7 @@ const Statistics = async () => {
           {highPerformers}
         </p>
       </div>
-      <div className="border border-accent-foreground bg-background-rich p-4">
+      <div className="bg-background p-4">
         <p className="font-light text-foreground-dimmed text-xs uppercase tracking-wide">
           Needs Attention
         </p>
@@ -100,8 +114,8 @@ const Products = async () => {
 
   if (data.products.length === 0)
     return (
-      <div className="mb-6 border border-accent-foreground bg-background-rich p-8 text-center">
-        <p className="font-medium text-foreground text-sm">
+      <div className="bg-background p-8 text-center">
+        <p className="font-medium text-foreground text-base">
           No products imported yet
         </p>
         <p className="mt-1 font-light text-foreground-dimmed text-xs">
@@ -110,11 +124,7 @@ const Products = async () => {
       </div>
     );
 
-  return (
-    <div className="mb-6 border border-accent-foreground bg-background-rich">
-      <ProductsTable rows={data.products} />
-    </div>
-  );
+  return <ProductsTable rows={data.products} />;
 };
 
 const Insights = async () => {
@@ -122,24 +132,20 @@ const Insights = async () => {
   if (!data?.scan?.topFinding) return null;
 
   return (
-    <div className="border border-accent-foreground bg-background-rich">
-      <div className="border-accent-foreground border-b px-4 py-3">
-        <p className="font-medium text-foreground text-sm">
-          Latest Scan Insights
-        </p>
-      </div>
-      <div className="px-4 py-3">
-        <p className="font-light text-foreground text-sm">
-          {data.scan.topFinding}
-        </p>
-        <div className="mt-2 flex items-center gap-4">
-          <span className="font-light text-foreground-dimmed text-xs">
-            {data.scan.wins}W / {data.scan.losses}L
-          </span>
-          <span className="font-light text-foreground-dimmed text-xs">
-            {data.scan.completedSimulations} simulations
-          </span>
-        </div>
+    <div>
+      <p className="mb-2 font-medium text-foreground text-base">
+        Latest Scan Insights
+      </p>
+      <p className="font-light text-foreground text-sm">
+        {data.scan.topFinding}
+      </p>
+      <div className="mt-2 flex items-center gap-4">
+        <span className="font-light text-foreground-dimmed text-xs">
+          {data.scan.wins}W / {data.scan.losses}L
+        </span>
+        <span className="font-light text-foreground-dimmed text-xs">
+          {data.scan.completedSimulations} simulations
+        </span>
       </div>
     </div>
   );
@@ -149,12 +155,9 @@ const StatsSkeleton = () => {
   const keys = ["total", "average", "high", "attention"];
 
   return (
-    <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-4">
+    <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-4">
       {keys.map((key) => (
-        <div
-          key={key}
-          className="border border-accent-foreground bg-background-rich p-4"
-        >
+        <div key={key} className="bg-background p-4">
           <div className="h-3 w-24 animate-pulse bg-foreground/10" />
           <div className="mt-3 h-8 w-16 animate-pulse bg-foreground/10" />
         </div>
@@ -167,7 +170,7 @@ const TableSkeleton = () => {
   const keys = ["row-a", "row-b", "row-c", "row-d", "row-e"];
 
   return (
-    <div className="mb-6 border border-accent-foreground bg-background-rich">
+    <div>
       <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
         <div className="h-4 w-32 animate-pulse bg-foreground/10" />
       </div>
@@ -190,13 +193,9 @@ const TableSkeleton = () => {
 };
 
 const InsightsSkeleton = () => (
-  <div className="border border-accent-foreground bg-background-rich">
-    <div className="border-accent-foreground border-b px-4 py-3">
-      <div className="h-4 w-40 animate-pulse bg-foreground/10" />
-    </div>
-    <div className="px-4 py-3">
-      <div className="h-4 w-full animate-pulse bg-foreground/10" />
-      <div className="mt-2 h-3 w-32 animate-pulse bg-foreground/10" />
-    </div>
+  <div>
+    <div className="h-4 w-40 animate-pulse bg-foreground/10" />
+    <div className="mt-2 h-4 w-full animate-pulse bg-foreground/10" />
+    <div className="mt-2 h-3 w-32 animate-pulse bg-foreground/10" />
   </div>
 );
