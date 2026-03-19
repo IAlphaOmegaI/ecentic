@@ -1,14 +1,14 @@
 import { ArrowRightIcon, UploadIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
+import { cn } from "@zenncore/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { Motion } from "@/components/motion";
 
 const platforms = [
   {
     id: "shopify",
     name: "Shopify",
-    description: "Connect via OAuth — import your full catalog",
+    description: "Connect via OAuth",
     badge: "Recommended",
     href: "/onboarding/connect/shopify",
     image: "/images/shopify.svg",
@@ -16,7 +16,7 @@ const platforms = [
   {
     id: "woocommerce",
     name: "WooCommerce",
-    description: "API key connection — store URL + consumer key",
+    description: "API key connection",
     badge: null,
     href: "/onboarding/connect/woocommerce",
     image: "/images/woocommerce.svg",
@@ -24,7 +24,7 @@ const platforms = [
   {
     id: "bigcommerce",
     name: "BigCommerce",
-    description: "Connect via OAuth — full product sync",
+    description: "OAuth — full sync",
     badge: "Coming soon",
     href: null,
     image: "/images/bigcommerce.svg",
@@ -32,7 +32,7 @@ const platforms = [
   {
     id: "amazon",
     name: "Amazon Seller",
-    description: "SP-API OAuth — sync Amazon listings",
+    description: "SP-API OAuth",
     badge: "Coming soon",
     href: null,
     image: "/images/amazon.svg",
@@ -40,63 +40,70 @@ const platforms = [
   {
     id: "feed",
     name: "Custom Feed",
-    description: "Paste a URL to your XML or JSON product feed",
+    description: "XML or JSON feed URL",
     badge: null,
     href: "/onboarding/connect/feed",
     image: "/images/custom.svg",
   },
+  {
+    id: "csv",
+    name: "CSV Upload",
+    description: "Drag & drop or browse",
+    badge: null,
+    href: "/onboarding/connect/csv",
+    image: null,
+  },
 ] as const;
 
 export default () => (
-  <div className="flex flex-1 flex-col items-center justify-center overflow-hidden bg-background p-8 md:rounded-l-xl">
-    <Motion.Stagger stagger={0.08} delay={0.1}>
-      <Motion.Item>
-        <h2 className="font-medium text-4xl text-foreground">
-          Connect your store
-        </h2>
-      </Motion.Item>
-      <Motion.Item>
-        <p className="mt-1 font-light text-foreground-dimmed text-lg">
+  <div className="flex flex-1 flex-col overflow-y-auto">
+    {/* Left/right borders span the full page height */}
+    <div className="mx-8 flex flex-1 flex-col border-x border-accent-foreground">
+
+      {/* Title */}
+      <div className="px-6 py-8">
+        <h2 className="font-medium text-3xl text-foreground">Connect your store</h2>
+        <p className="mt-1 font-light text-foreground-dimmed">
           Start winning agent carts in 2 minutes.
         </p>
-      </Motion.Item>
-      <Motion.Item>
-        <div className="mt-6 grid w-full max-w-2xl grid-cols-1 gap-2 sm:grid-cols-2">
+      </div>
+
+      {/* Grid — -mx-8 escapes parent to full panel width, grid sits back inside with mx-8 */}
+      <div className="-mx-8 border-y border-accent-foreground">
+        <div className="mx-8 grid grid-cols-2 gap-px bg-accent-foreground sm:grid-cols-3">
           {platforms.map((platform) => {
-            const disabled = !platform.href;
-            const content = (
+            const disabled = !platform.href || platform.badge === "Coming soon";
+
+            const inner = (
               <>
-                <div className="flex items-center gap-3">
+                {platform.image ? (
                   <Image
                     src={platform.image}
                     alt={platform.name}
-                    width={36}
-                    height={36}
+                    width={40}
+                    height={40}
+                    className="mb-4 shrink-0"
                   />
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-foreground">
-                        {platform.name}
-                      </span>
-                      {platform.badge && (
-                        <span
-                          className={
-                            platform.badge === "Coming soon"
-                              ? "bg-foreground-dimmed/10 px-1.5 py-0.5 text-foreground-dimmed text-sm"
-                              : "bg-primary/10 px-1.5 py-0.5 text-primary text-sm"
-                          }
-                        >
-                          {platform.badge}
-                        </span>
-                      )}
-                    </div>
-                    <p className="font-light text-foreground-dimmed text-xs">
-                      {platform.description}
-                    </p>
+                ) : (
+                  <div className="mb-4 flex size-10 items-center justify-center">
+                    <UploadIcon className="size-6 text-foreground-dimmed transition-colors group-hover:text-primary" />
                   </div>
-                </div>
-                {!disabled && (
-                  <ArrowRightIcon className="size-4 text-foreground-dimmed transition-colors group-hover:text-primary" />
+                )}
+                <p className="font-medium text-foreground text-xl">{platform.name}</p>
+                <p className="mt-1 font-light text-foreground-dimmed text-sm">
+                  {platform.description}
+                </p>
+                {platform.badge && (
+                  <span
+                    className={cn(
+                      "mt-2 self-start px-1.5 py-0.5 text-xs",
+                      platform.badge === "Coming soon"
+                        ? "bg-foreground-dimmed/10 text-foreground-dimmed"
+                        : "bg-primary/10 text-primary",
+                    )}
+                  >
+                    {platform.badge}
+                  </span>
                 )}
               </>
             );
@@ -105,9 +112,9 @@ export default () => (
               return (
                 <div
                   key={platform.id}
-                  className="flex h-20 cursor-not-allowed items-center justify-between border border-accent-foreground bg-background-rich p-4 opacity-50"
+                  className="flex min-h-40 cursor-not-allowed flex-col justify-between bg-background-dimmed p-5 opacity-50"
                 >
-                  {content}
+                  {inner}
                 </div>
               );
 
@@ -115,45 +122,30 @@ export default () => (
               <Link
                 key={platform.id}
                 href={platform.href}
-                className="group flex h-20 items-center justify-between border border-accent-foreground bg-background-rich p-4 transition-colors hover:border-primary"
+                className="group flex min-h-40 flex-col justify-between bg-background-dimmed p-5 transition-colors hover:bg-background"
               >
-                {content}
+                {inner}
               </Link>
             );
           })}
-
-          <div className="sm:col-span-2">
-            <Link
-              href="/onboarding/connect/csv"
-              className="group flex flex-col items-center justify-center gap-2 border border-accent-foreground border-dashed bg-background-rich p-6 transition-colors hover:border-primary"
-            >
-              <UploadIcon className="size-6 text-foreground-dimmed transition-colors group-hover:text-primary" />
-              <div className="text-center">
-                <p className="font-medium text-foreground text-sm">
-                  Upload a CSV file
-                </p>
-                <p className="font-light text-foreground-dimmed text-xs">
-                  Drag and drop or click to browse
-                </p>
-              </div>
-            </Link>
-          </div>
         </div>
+      </div>
 
-        <div className="mt-6 flex w-full max-w-2xl items-center justify-between">
-          <Button
-            variant="ghost"
-            color="neutral"
-            type="button"
-            render={<Link href="/onboarding/products" />}
-          >
-            Skip for now
-          </Button>
-          <p className="font-light text-foreground-dimmed text-sm">
-            You can connect more stores later in Settings.
-          </p>
-        </div>
-      </Motion.Item>
-    </Motion.Stagger>
+      {/* Footer nav */}
+      <div className="mt-auto flex items-center justify-between px-6 py-6">
+        <Button
+          variant="ghost"
+          color="neutral"
+          type="button"
+          render={<Link href="/onboarding/products" />}
+        >
+          Skip for now
+        </Button>
+        <p className="font-light text-foreground-dimmed text-sm">
+          You can connect more stores later in Settings.
+        </p>
+      </div>
+
+    </div>
   </div>
 );

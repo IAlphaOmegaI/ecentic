@@ -45,39 +45,41 @@ export const CompetitorReview = ({
   const selected = competitors.filter((record) => record.selected).length;
 
   return (
-    <Motion.Stagger stagger={0.05} className="flex flex-1 flex-col px-6 py-10">
-      <div className="mx-auto w-full max-w-3xl">
-        {children}
+    <Motion.Stagger stagger={0.05} className="flex flex-1 flex-col overflow-hidden">
+      <div className="mx-8 flex flex-1 flex-col border-x border-accent-foreground overflow-y-auto px-6 py-10">
+        <div className="mx-auto w-full max-w-3xl">
+          {children}
 
-        <Motion.Item>
-          <CompetitorList
-            competitors={competitors}
-            onToggle={handleToggle}
-            onRemove={handleRemove}
-          />
-        </Motion.Item>
+          <Motion.Item>
+            <CompetitorList
+              competitors={competitors}
+              onToggle={handleToggle}
+              onRemove={handleRemove}
+            />
+          </Motion.Item>
 
-        <Motion.Up className="mt-6 flex items-center justify-between">
-          <Button
-            variant="ghost"
-            color="neutral"
-            type="button"
-            className="text-foreground-dimmed text-sm"
-            render={<Link href="/onboarding/competitors" />}
-          >
-            <Back />
-          </Button>
-          <Button
-            variant="flat"
-            color="primary"
-            type="button"
-            disabled={selected === 0}
-            className="px-6 py-2 font-medium text-sm"
-            render={<Link href="/onboarding/scan" />}
-          >
-            <Next />
-          </Button>
-        </Motion.Up>
+          <Motion.Up className="mt-6 flex items-center justify-between">
+            <Button
+              variant="ghost"
+              color="neutral"
+              type="button"
+              className="text-foreground-dimmed text-sm"
+              render={<Link href="/onboarding/competitors" />}
+            >
+              <Back />
+            </Button>
+            <Button
+              variant="flat"
+              color="primary"
+              type="button"
+              disabled={selected === 0}
+              className="px-6 py-2 font-medium text-sm"
+              render={<Link href="/onboarding/scan" />}
+            >
+              <Next />
+            </Button>
+          </Motion.Up>
+        </div>
       </div>
     </Motion.Stagger>
   );

@@ -12,7 +12,6 @@ import {
 import Link, { useLinkStatus } from "next/link";
 import type { ReactNode } from "react";
 import { useState } from "react";
-import { Motion } from "@/components/motion";
 import type * as Competitor from "@/server/app/competitor";
 import { AutoDetectTab } from "./auto-detect-tab";
 import { SearchTab } from "./search-tab";
@@ -38,40 +37,41 @@ export const CompetitorManager = ({
   };
 
   return (
-    <Motion.Stagger stagger={0.05} className="flex flex-1 flex-col px-6 py-10">
-      <div className="mx-auto w-full max-w-3xl">
-        {children}
+    <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="mx-8 flex flex-1 flex-col border-x border-accent-foreground">
+        {/* Title section */}
+        <div className="px-6 py-8">
+          {children}
+        </div>
 
-        <Motion.Up className="relative mb-4">
-          <Tabs defaultValue="auto">
-            <TabsList className="flex w-full">
-              <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
-              <Tab value="auto" className="flex-1">
-                Auto-detect
-              </Tab>
-              <Tab value="url" className="flex-1">
-                Paste URLs
-              </Tab>
-              <Tab value="search" className="flex-1">
-                Search Brand
-              </Tab>
-            </TabsList>
+        {/* Tabs — crossing borders */}
+        <div className="-mx-8 flex flex-1 flex-col overflow-hidden border-y border-accent-foreground">
+          <div className="mx-8 flex flex-1 flex-col overflow-y-auto py-6">
+        <Tabs defaultValue="auto" className="flex flex-1 flex-col">
+          <TabsList className="mb-6">
+            <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
+            <Tab value="auto">Auto-detect</Tab>
+            <Tab value="url">Paste URLs</Tab>
+            <Tab value="search">Search Brand</Tab>
+          </TabsList>
 
-            <TabsPanel value="auto">
-              <AutoDetectTab products={products} onSuccess={handleSuccess} />
-            </TabsPanel>
+          <TabsPanel value="auto">
+            <AutoDetectTab products={products} onSuccess={handleSuccess} />
+          </TabsPanel>
 
-            <TabsPanel value="url">
-              <UrlTab onSuccess={handleSuccess} />
-            </TabsPanel>
+          <TabsPanel value="url">
+            <UrlTab onSuccess={handleSuccess} />
+          </TabsPanel>
 
-            <TabsPanel value="search">
-              <SearchTab onSuccess={handleSuccess} />
-            </TabsPanel>
-          </Tabs>
-        </Motion.Up>
+          <TabsPanel value="search">
+            <SearchTab onSuccess={handleSuccess} />
+          </TabsPanel>
+        </Tabs>
+          </div>
+        </div>
 
-        <Motion.Up className="mt-6 flex items-center justify-between">
+        {/* Footer nav */}
+        <div className="flex items-center justify-between px-6 py-6">
           <Button
             variant="ghost"
             color="neutral"
@@ -102,9 +102,9 @@ export const CompetitorManager = ({
               <Next />
             </Button>
           </div>
-        </Motion.Up>
+        </div>
       </div>
-    </Motion.Stagger>
+    </div>
   );
 };
 
