@@ -165,75 +165,17 @@ export const ProductSelector = ({
         {/* Table — crossing borders */}
         <div className="-mx-8 flex-1 overflow-hidden border-y border-accent-foreground">
           <div className="mx-8 h-full overflow-auto">
-          <div className="bg-background-rich">
-          <Table className="w-full [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-10 px-4 py-2">
-                  <button
-                    type="button"
-                    onClick={toggleAll}
-                    className={cn(
-                      "flex size-4 cursor-pointer items-center justify-center border transition-colors duration-150",
-                      selected.size === products.length
-                        ? "border-primary bg-primary"
-                        : "border-accent-foreground bg-background-rich",
-                    )}
-                  >
-                    <CheckIcon
-                      className={cn(
-                        "size-2.5 text-white transition-opacity duration-150",
-                        selected.size === products.length
-                          ? "opacity-100"
-                          : "opacity-0",
-                      )}
-                    />
-                  </button>
-                </TableHead>
-                {["Product", "Price", "Status", "Quality"].map((header) => (
-                  <TableHead
-                    key={header}
-                    className="px-4 py-3 text-left font-medium text-foreground text-sm"
-                  >
-                    {header}
-                  </TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody
-              render={
-                <motion.tbody
-                  variants={Stagger.Container(0.04)}
-                  initial="hidden"
-                  animate="visible"
-                />
-              }
-            >
-              {products.map((product) => {
-                const isSelected = selected.has(product.id);
-                const isDisabled = !isSelected && selected.size >= limit;
-                const images = parseImages(product.images);
-                const quality = computeDataQuality(product);
-
-                return (
-                  <TableRow
-                    key={product.id}
-                    render={<motion.tr variants={Stagger.Item} />}
-                    onClick={() => !isDisabled && toggleProduct(product.id)}
-                    className={cn(
-                      "cursor-pointer last:border-b-0",
-                      isSelected
-                        ? "bg-primary/5"
-                        : isDisabled
-                          ? "cursor-not-allowed opacity-40"
-                          : "hover:bg-background-dimmed/50",
-                    )}
-                  >
-                    <TableCell className="w-10 px-4 py-3">
-                      <div
+            <div className="bg-background-rich">
+              <Table className="w-full [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-10 px-4 py-2">
+                      <button
+                        type="button"
+                        onClick={toggleAll}
                         className={cn(
-                          "flex size-4 items-center justify-center border transition-colors duration-150",
-                          isSelected
+                          "flex size-4 cursor-pointer items-center justify-center border transition-colors duration-150",
+                          selected.size === products.length
                             ? "border-primary bg-primary"
                             : "border-accent-foreground bg-background-rich",
                         )}
@@ -241,79 +183,136 @@ export const ProductSelector = ({
                         <CheckIcon
                           className={cn(
                             "size-2.5 text-white transition-opacity duration-150",
-                            isSelected ? "opacity-100" : "opacity-0",
+                            selected.size === products.length
+                              ? "opacity-100"
+                              : "opacity-0",
                           )}
                         />
-                      </div>
-                    </TableCell>
-                    <TableCell className="px-4 py-3">
-                      <div className="flex items-center gap-3">
-                        <Image
-                          src={images[0] ?? "/images/placeholder.svg"}
-                          unoptimized
-                          alt={product.title.slice(0, 2).toUpperCase()}
-                          className="size-9 shrink-0 object-cover"
-                        />
-                        <div>
-                          <p className="font-medium text-foreground text-sm">
-                            {product.title}
-                          </p>
-                          {product.sku && (
-                            <p className="text-foreground-dimmed text-xs">
-                              {product.sku}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell className="px-4 py-3 font-light text-foreground text-sm">
-                      {formatPrice(product.price, product.currency)}
-                    </TableCell>
-                    <TableCell className="px-4 py-3">
-                      <span
+                      </button>
+                    </TableHead>
+                    {["Product", "Price", "Status", "Quality"].map((header) => (
+                      <TableHead
+                        key={header}
+                        className="px-4 py-3 text-left font-medium text-foreground text-sm"
+                      >
+                        {header}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                </TableHeader>
+                <TableBody
+                  render={
+                    <motion.tbody
+                      variants={Stagger.Container(0.04)}
+                      initial="hidden"
+                      animate="visible"
+                    />
+                  }
+                >
+                  {products.map((product) => {
+                    const isSelected = selected.has(product.id);
+                    const isDisabled = !isSelected && selected.size >= limit;
+                    const images = parseImages(product.images);
+                    const quality = computeDataQuality(product);
+
+                    return (
+                      <TableRow
+                        key={product.id}
+                        render={<motion.tr variants={Stagger.Item} />}
+                        onClick={() => !isDisabled && toggleProduct(product.id)}
                         className={cn(
-                          "px-1.5 py-0.5 font-medium text-xs",
-                          product.status === "active"
-                            ? "bg-success/10 text-success"
-                            : "bg-foreground-dimmed/10 text-foreground-dimmed",
+                          "cursor-pointer last:border-b-0",
+                          isSelected
+                            ? "bg-primary/5"
+                            : isDisabled
+                              ? "cursor-not-allowed opacity-40"
+                              : "hover:bg-background-dimmed/50",
                         )}
                       >
-                        {product.status === "active" ? "Active" : "Draft"}
-                      </span>
-                    </TableCell>
-                    <TableCell className="px-4 py-3">
-                      <QualityBadge score={quality} />
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-          </div>
+                        <TableCell className="w-10 px-4 py-3">
+                          <div
+                            className={cn(
+                              "flex size-4 items-center justify-center border transition-colors duration-150",
+                              isSelected
+                                ? "border-primary bg-primary"
+                                : "border-accent-foreground bg-background-rich",
+                            )}
+                          >
+                            <CheckIcon
+                              className={cn(
+                                "size-2.5 text-white transition-opacity duration-150",
+                                isSelected ? "opacity-100" : "opacity-0",
+                              )}
+                            />
+                          </div>
+                        </TableCell>
+                        <TableCell className="px-4 py-3">
+                          <div className="flex items-center gap-3">
+                            <Image
+                              src={images[0] ?? "/images/placeholder.svg"}
+                              unoptimized
+                              alt={product.title.slice(0, 2).toUpperCase()}
+                              className="size-9 shrink-0 object-cover"
+                            />
+                            <div>
+                              <p className="font-medium text-foreground text-sm">
+                                {product.title}
+                              </p>
+                              {product.sku && (
+                                <p className="text-foreground-dimmed text-xs">
+                                  {product.sku}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="px-4 py-3 font-light text-foreground text-sm">
+                          {formatPrice(product.price, product.currency)}
+                        </TableCell>
+                        <TableCell className="px-4 py-3">
+                          <span
+                            className={cn(
+                              "px-1.5 py-0.5 font-medium text-xs",
+                              product.status === "active"
+                                ? "bg-success/10 text-success"
+                                : "bg-foreground-dimmed/10 text-foreground-dimmed",
+                            )}
+                          >
+                            {product.status === "active" ? "Active" : "Draft"}
+                          </span>
+                        </TableCell>
+                        <TableCell className="px-4 py-3">
+                          <QualityBadge score={quality} />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
           </div>
         </div>
 
-        {/* Footer nav */}
         <div className="flex items-center justify-between px-6 py-6">
-        <Button
-          variant="ghost"
-          color="neutral"
-          type="button"
-          className="text-foreground-dimmed text-sm"
-          render={<Link href="/onboarding/connect" />}
-        >
-          <Back />
-        </Button>
-        <Button
-          variant="flat"
-          color="primary"
-          type="button"
-          onClick={handleNext}
-          disabled={selected.size === 0}
-          className="px-6 py-2 font-medium text-sm"
-        >
-          <Next />
-        </Button>
+          <Button
+            variant="outline"
+            color="accent"
+            type="button"
+            className="text-foreground-dimmed text-sm"
+            render={<Link href="/onboarding/connect" />}
+          >
+            <Back />
+          </Button>
+          <Button
+            variant="flat"
+            color="primary"
+            type="button"
+            onClick={handleNext}
+            disabled={selected.size === 0}
+            className="px-6 py-2 font-medium text-sm"
+          >
+            <Next />
+          </Button>
         </div>
       </div>
     </div>
