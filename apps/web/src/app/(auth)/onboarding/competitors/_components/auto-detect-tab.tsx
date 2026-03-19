@@ -97,7 +97,7 @@ export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
   });
 
   return (
-    <div className="border border-accent-foreground border-t-0 bg-background-rich min-h-[280px]">
+    <div className="border border-accent-foreground bg-background-rich min-h-[280px]">
       <AnimatePresence mode="wait" initial={false}>
         {!isDetecting && logs.length === 0 && (
           <motion.div

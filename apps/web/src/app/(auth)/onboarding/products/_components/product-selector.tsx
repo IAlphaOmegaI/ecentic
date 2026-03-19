@@ -152,16 +152,21 @@ export const ProductSelector = ({
   };
 
   return (
-    <Motion.Stagger stagger={0.05} className="flex flex-1 flex-col px-6 py-10">
-      <div className="mx-auto w-full max-w-3xl">
-        {children}
+    <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="mx-8 flex flex-1 flex-col border-x border-accent-foreground">
+        {/* Title section */}
+        <div className="px-6 py-8">
+          {children}
+          <div className="mt-4 inline-flex items-center border border-primary/20 bg-primary/5 px-3 py-1.5 text-primary text-sm">
+            {selected.size} of {limit} products selected
+          </div>
+        </div>
 
-        <Motion.Item className="mb-4 border border-primary/20 bg-primary/5 px-4 py-2.5 text-primary text-sm">
-          {selected.size} of {limit} products selected
-        </Motion.Item>
-
-        <Motion.Item className="overflow-x-auto border border-accent-foreground bg-background-rich">
-          <Table className="[&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0">
+        {/* Table — crossing borders */}
+        <div className="-mx-8 flex-1 overflow-hidden border-y border-accent-foreground">
+          <div className="mx-8 h-full overflow-auto">
+          <div className="bg-background-rich">
+          <Table className="w-full [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0">
             <TableHeader>
               <TableRow>
                 <TableHead className="w-10 px-4 py-2">
@@ -188,7 +193,7 @@ export const ProductSelector = ({
                 {["Product", "Price", "Status", "Quality"].map((header) => (
                   <TableHead
                     key={header}
-                    className="px-4 py-2 text-left font-medium text-foreground-dimmed text-xs"
+                    className="px-4 py-3 text-left font-medium text-foreground text-sm"
                   >
                     {header}
                   </TableHead>
@@ -284,31 +289,34 @@ export const ProductSelector = ({
               })}
             </TableBody>
           </Table>
-        </Motion.Item>
+          </div>
+          </div>
+        </div>
 
-        <Motion.Up className="mt-6 flex items-center justify-between">
-          <Button
-            variant="ghost"
-            color="neutral"
-            type="button"
-            className="text-foreground-dimmed text-sm"
-            render={<Link href="/onboarding/connect" />}
-          >
-            <Back />
-          </Button>
-          <Button
-            variant="flat"
-            color="primary"
-            type="button"
-            onClick={handleNext}
-            disabled={selected.size === 0}
-            className="px-6 py-2 font-medium text-sm"
-          >
-            <Next />
-          </Button>
-        </Motion.Up>
+        {/* Footer nav */}
+        <div className="flex items-center justify-between px-6 py-6">
+        <Button
+          variant="ghost"
+          color="neutral"
+          type="button"
+          className="text-foreground-dimmed text-sm"
+          render={<Link href="/onboarding/connect" />}
+        >
+          <Back />
+        </Button>
+        <Button
+          variant="flat"
+          color="primary"
+          type="button"
+          onClick={handleNext}
+          disabled={selected.size === 0}
+          className="px-6 py-2 font-medium text-sm"
+        >
+          <Next />
+        </Button>
+        </div>
       </div>
-    </Motion.Stagger>
+    </div>
   );
 };
 

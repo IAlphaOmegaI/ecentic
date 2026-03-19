@@ -54,7 +54,7 @@ export const SearchTab = ({ onSuccess }: SearchTab.Props) => {
   );
 
   return (
-    <div className="border border-accent-foreground border-t-0 bg-background-rich p-4">
+    <div className="border border-accent-foreground bg-background-rich p-4">
       <label
         htmlFor="brandSearch"
         className="mb-2 block font-medium text-foreground text-xs"

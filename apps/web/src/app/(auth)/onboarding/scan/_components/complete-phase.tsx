@@ -81,12 +81,13 @@ export const CompletePhase = ({
   return (
     <motion.div
       key="complete"
-      className="flex flex-1 flex-col px-6 py-12"
+      className="flex flex-1 flex-col overflow-hidden"
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
       transition={Spring.Gentle}
     >
+      <div className="mx-8 flex flex-1 flex-col border-x border-accent-foreground overflow-y-auto px-6 py-12">
       <Motion.Stagger stagger={0.08} className="mx-auto w-full max-w-2xl">
         <Motion.Up className="mb-8 grid grid-cols-[1fr_auto] gap-px border border-accent-foreground bg-accent-foreground">
           <div className="bg-background-rich px-6 py-8">
@@ -222,6 +223,7 @@ export const CompletePhase = ({
           </motion.button>
         </motion.div>
       </Motion.Stagger>
+      </div>
     </motion.div>
   );
 };

@@ -42,12 +42,20 @@ export const RunningPhase = ({
   return (
     <motion.div
       key="running"
-      className="flex flex-1 flex-col px-6 py-10"
+      className="flex flex-1 flex-col overflow-hidden"
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -16 }}
       transition={Spring.Gentle}
     >
+      <div className="mx-8 flex flex-1 flex-col border-x border-accent-foreground overflow-y-auto px-6 py-10">
+      <div className="mb-6">
+        <h1 className="font-medium text-3xl text-foreground">Running simulation.</h1>
+        <p className="mt-1 font-light text-foreground-dimmed">
+          GPT-4, Claude & Gemini are comparing your products against competitors right now.
+        </p>
+      </div>
+
       <div className="mx-auto w-full max-w-2xl border border-accent-foreground bg-background-rich">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-accent-foreground px-5 py-3">
@@ -167,6 +175,7 @@ export const RunningPhase = ({
             Running simulations across {simulations} comparisons
           </span>
         </div>
+      </div>
       </div>
     </motion.div>
   );
