@@ -39,19 +39,12 @@ export const AutoDetectTab = ({
   className,
 }: AutoDetectTab.Props) => {
   const toast = useToastManager();
-  const [_logs, setLogs] = useState<LogEntry[]>([]);
+  const [logs, setLogs] = useState<LogEntry[]>([]);
   const [elapsed, setElapsed] = useState(0);
 
   const start = useRef<number>(0);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
   const target = useRef<HTMLDivElement>(null);
-
-  const logs = Array.from({ length: 1000 }, (_, index) => ({
-    id: index + 1,
-    text: `Analyzing market signals ${index + 1}`,
-    elapsed: 0,
-    type: "info",
-  }));
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: scroll to bottom on new log
   useEffect(() => {
@@ -63,14 +56,12 @@ export const AutoDetectTab = ({
       ...previous,
       {
         ...entry,
-        id: logs.length + 1,
+        id: Math.random(),
         elapsed: Date.now() - start.current,
       },
     ]);
 
-  const isDetecting = true;
-
-  const [handleDetect, _isDetecting] = useAsyncAction(async () => {
+  const [handleDetect, isDetecting] = useAsyncAction(async () => {
     setLogs([]);
     setElapsed(0);
     start.current = Date.now();
@@ -101,6 +92,7 @@ export const AutoDetectTab = ({
             text: `${event.competitors.length} competitors identified`,
             type: "success",
           });
+          clearInterval(timer.current);
           onSuccess(event.competitors);
           toast.add({
             title: "Competitors found",
@@ -159,9 +151,14 @@ export const AutoDetectTab = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="flex h-full max-h-full flex-1 flex-col"
+            className="flex h-full max-h-full min-h-0 flex-1 flex-col"
           >
-            <div className="flex items-center justify-between p-4">
+            <div
+              className={cn(
+                "flex items-center justify-between p-4",
+                !isDetecting && "border-accent-foreground border-b",
+              )}
+            >
               <div className="flex items-center gap-2">
                 {isDetecting && (
                   <motion.span
@@ -197,7 +194,7 @@ export const AutoDetectTab = ({
               </div>
             )}
 
-            <div className="h-full flex-1 space-y-1 overflow-y-auto scroll-smooth p-4">
+            <div className="min-h-0 flex-1 space-y-1 overflow-y-auto scroll-smooth p-4">
               {logs.map((log, index) => {
                 const age = logs.length - 1 - index;
                 const opacity = isDetecting ? Math.max(0.2, 1 - age * 0.1) : 1;
@@ -215,10 +212,10 @@ export const AutoDetectTab = ({
                     <span
                       className={
                         log.type === "error"
-                          ? "text-error text-xs leading-relaxed"
+                          ? "text-error leading-relaxed"
                           : log.type === "success"
-                            ? "font-medium text-success text-xs leading-relaxed"
-                            : "text-foreground-dimmed text-xs leading-relaxed"
+                            ? "font-medium text-success leading-relaxed"
+                            : "text-foreground-dimmed leading-relaxed"
                       }
                     >
                       {log.text}

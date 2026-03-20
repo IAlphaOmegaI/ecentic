@@ -60,7 +60,7 @@ export const CompetitorReview = ({
         </div>
       </Motion.Item>
 
-      <Motion.Item className="px-8">
+      <Motion.Item className="px-8 flex-1">
         <CompetitorList
           competitors={competitors}
           onToggle={handleToggle}

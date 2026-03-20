@@ -54,7 +54,7 @@ export const CompetitorList = ({
               {["Competitor", "Price", "Brand"].map((header) => (
                 <TableHead
                   key={header}
-                  className="px-4 py-2 text-left font-medium text-foreground-dimmed text-xs"
+                  className="px-4 py-3 text-left font-medium text-foreground text-sm"
                 >
                   {header}
                 </TableHead>

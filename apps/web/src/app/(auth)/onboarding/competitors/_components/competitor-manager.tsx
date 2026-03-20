@@ -41,7 +41,7 @@ export const CompetitorManager = ({
     <Motion.Stagger className="flex flex-1 flex-col overflow-hidden h-full">
       <div className="border-accent-foreground border-b px-8">{children}</div>
 
-      <Motion.Item className="flex-1 px-8 h-full">
+      <Motion.Item className="h-full min-h-0 flex-1 px-8">
         <div className="border-accent-foreground border-x h-full">
           <Tabs defaultValue="auto" className="h-full">
             <TabsList className={"w-full border-x-0 border-t-0"}>

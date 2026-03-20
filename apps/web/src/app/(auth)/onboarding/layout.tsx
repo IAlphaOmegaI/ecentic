@@ -138,7 +138,7 @@ export default ({ children }: PropsWithChildren) => {
     sidebar[pathname as keyof typeof sidebar] ?? sidebar["/onboarding/connect"];
 
   return (
-    <div className="flex min-h-screen bg-primary">
+    <div className="flex h-screen bg-primary">
       <Onboarding
         identifier={pathname}
         headline={content.headline}
