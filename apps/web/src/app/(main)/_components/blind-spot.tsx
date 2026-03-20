@@ -25,7 +25,7 @@ export const BlindSpot = () => (
     </div>
     <div className="grid border-accent-foreground border-b bg-background-dimmed md:grid-cols-3">
       {/* Col 1 — What Humans See */}
-      <div className="flex flex-col items-center justify-center border-accent-foreground border-b p-4 md:border-b-0 md:border-r">
+      <div className="flex flex-col items-center justify-center border-accent-foreground border-b p-4 md:border-r md:border-b-0">
         <p className="font-light text-primary text-xl">What Humans see</p>
         <Image src={Product} alt="Hero" className="w-full" />
         <div className="flex w-full flex-col">
@@ -47,7 +47,7 @@ export const BlindSpot = () => (
         </div>
       </div>
 
-      <div className="flex flex-col items-center justify-between border-accent-foreground border-b p-4 md:border-b-0 md:border-r md:border-t-0">
+      <div className="flex flex-col items-center justify-between border-accent-foreground border-b p-4 md:border-t-0 md:border-r md:border-b-0">
         <p className="font-light text-primary text-xl">What Agents see now</p>
         <p className="font-light font-mono text-foreground-dimmed text-primary text-xl">
           {"{"}
@@ -79,13 +79,13 @@ export const BlindSpot = () => (
         </p>
 
         <div className="flex flex-col items-center pt-6 pb-2 text-center">
-          <span className="font-semibold text-8xl text-primary leading-none tabular-nums">
+          <span className="font-semibold text-8xl text-primary tabular-nums leading-none">
             #1
           </span>
-          <p className="mt-3 font-medium text-foreground text-2xl">
+          <p className="mt-3 font-medium text-2xl text-foreground">
             Pro Wireless Earbuds
           </p>
-          <p className="font-light text-foreground-dimmed text-base">
+          <p className="font-light text-base text-foreground-dimmed">
             Pro Audio · $139
           </p>
         </div>
@@ -106,10 +106,10 @@ export const BlindSpot = () => (
               />
               <div className="flex flex-1 flex-col gap-1.5">
                 <div className="flex items-center justify-between">
-                  <span className="font-medium text-foreground text-base">
+                  <span className="font-medium text-base text-foreground">
                     {model}
                   </span>
-                  <span className="font-semibold text-primary text-lg tabular-nums">
+                  <span className="font-semibold text-lg text-primary tabular-nums">
                     {score}%
                   </span>
                 </div>
@@ -129,7 +129,7 @@ export const BlindSpot = () => (
         </h1>
       </div>
     </div>
-    <div className="flex justify-center h-12 bg-background-dimmed border-accent-foreground border-b" />
+    <div className="flex h-12 justify-center border-accent-foreground border-b bg-background-dimmed" />
     <div className="grid border-accent-foreground border-b bg-background-dimmed md:grid-cols-3">
       <div className="col-span-2 p-4">
         <p className="font-light text-foreground-dimmed text-lg md:text-2xl">
@@ -142,7 +142,7 @@ export const BlindSpot = () => (
           variant="outline"
           color="accent"
           type="button"
-          className="w-full border-primary text-primary mt-auto"
+          className="mt-auto w-full border-primary text-primary"
           render={<Link href="/sign-up" />}
         >
           See your AI agent score — it's free

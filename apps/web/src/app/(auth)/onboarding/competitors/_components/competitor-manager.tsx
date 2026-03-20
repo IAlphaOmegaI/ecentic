@@ -88,7 +88,7 @@ export const CompetitorManager = ({
         </div>
       </Motion.Item>
 
-      <Motion.Item className="flex items-center justify-between border-accent-foreground px-8 border-t border-accent-foreground">
+      <Motion.Item className="flex items-center justify-between border-accent-foreground border-accent-foreground border-t px-8">
         <div className="flex w-full items-center justify-between border-accent-foreground border-x border-b px-6 py-6">
           <Button
             variant="outline"

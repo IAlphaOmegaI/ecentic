@@ -1,8 +1,11 @@
+import { ArrowRightIcon } from "@zenncore/icons";
+import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Navbar } from "@/components/navbar";
-import { ArrowRightIcon } from "@zenncore/icons";
+import Background from "@/public/images/privacy-policy.png";
 
 export const metadata: Metadata = {
   title: "Privacy Policy — écentic",
@@ -72,7 +75,7 @@ When you delete your account, all associated data is permanently deleted, includ
 
 When a Shopify merchant uninstalls the écentic app, we receive a \`shop/redact\` webhook and automatically delete all store data, products, and associated records for that shop.
 
-For GDPR data subject requests (access, rectification, erasure, portability), contact privacy@ecentic.com.`,
+For GDPR data subject requests (access, rectification, erasure, portability), contact privacy@ecentic.ai.`,
   },
   {
     title: "Cookies",
@@ -94,7 +97,7 @@ We do not use advertising cookies or third-party tracking cookies.`,
 - Object to or restrict certain processing
 - Withdraw consent where processing is consent-based
 
-To exercise any of these rights, contact privacy@ecentic.com.`,
+To exercise any of these rights, contact privacy@ecentic.ai.`,
   },
   {
     title: "Changes to This Policy",
@@ -106,41 +109,46 @@ To exercise any of these rights, contact privacy@ecentic.com.`,
     title: "Contact",
     number: "09",
     content: `For questions about this privacy policy or our data practices:
-- Email: privacy@ecentic.com
+- Email: privacy@ecentic.ai
 - Company: [zennit](https://www.zennit.dev) (écentic is a product of zennit)`,
   },
 ] as const;
 
 const renderInline = (text: string): ReactNode[] =>
-  text.split(/\*\*(.*?)\*\*/g).flatMap((part, index) => {
-    if (index % 2 === 1) {
+  text.split(/\*\*(.*?)\*\*/g).flatMap((part, i) => {
+    if (i % 2 === 1)
       return [
-        <strong key={index} className="font-medium text-foreground">
+        // biome-ignore lint/suspicious/noArrayIndexKey: i is unique
+        <strong key={i} className="text-foreground">
           {part}
         </strong>,
       ];
-    }
+
     return part
-      .split(/(\[[^\]]+\]\([^)]+\)|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g)
-      .map((segment, segmentIndex) => {
-        const mdLink = segment.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
-        if (mdLink) {
+      .split(
+        /(\[[^\]]+\]\([^)]+\)|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
+      )
+      .map((segment, j) => {
+        const link = segment.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+        if (link) {
           return (
             <a
-              key={`${index}-${segmentIndex}`}
-              href={mdLink[2]}
+              // biome-ignore lint/suspicious/noArrayIndexKey: i and j are unique
+              key={`${i}-${j}`}
+              href={link[2]}
               target="_blank"
               rel="noopener noreferrer"
               className="text-purple-700 underline-offset-2 hover:underline"
             >
-              {mdLink[1]}
+              {link[1]}
             </a>
           );
         }
         if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(segment)) {
           return (
             <a
-              key={`${index}-${segmentIndex}`}
+              // biome-ignore lint/suspicious/noArrayIndexKey: i and j are unique
+              key={`${i}-${j}`}
               href={`mailto:${segment}`}
               className="text-primary underline-offset-2 hover:underline"
             >
@@ -157,35 +165,34 @@ const renderContent = (content: string): ReactNode => {
 
   return (
     <div className="flex flex-col gap-5">
-      {blocks.map((block, blockIndex) => {
+      {blocks.map((block, i) => {
         const lines = block.split("\n");
-        const listStart = lines.findIndex((line) => line.startsWith("- "));
+        const start = lines.findIndex((line) => line.startsWith("- "));
 
-        if (listStart === -1) {
+        if (start === -1)
           return (
-            <p
-              key={blockIndex}
-              className="text-foreground-dimmed leading-relaxed"
-            >
+            // biome-ignore lint/suspicious/noArrayIndexKey: i is unique
+            <p key={i} className="text-foreground-dimmed leading-relaxed">
               {renderInline(lines.join(" "))}
             </p>
           );
-        }
 
-        const paraLines = lines.slice(0, listStart);
-        const listLines = lines.slice(listStart);
+        const paragraphs = lines.slice(0, start);
+        const lists = lines.slice(start);
 
         return (
-          <div key={blockIndex} className="flex flex-col gap-3">
-            {paraLines.length > 0 && (
+          // biome-ignore lint/suspicious/noArrayIndexKey: i is unique
+          <div key={i} className="flex flex-col gap-2">
+            {paragraphs.length > 0 && (
               <p className="text-foreground-dimmed leading-relaxed">
-                {renderInline(paraLines.join(" "))}
+                {renderInline(paragraphs.join(" "))}
               </p>
             )}
             <ul className="flex flex-col gap-2">
-              {listLines.map((line, lineIndex) => (
+              {lists.map((line, j) => (
                 <li
-                  key={lineIndex}
+                  // biome-ignore lint/suspicious/noArrayIndexKey: j is unique
+                  key={j}
                   className="flex gap-3 text-foreground-dimmed leading-relaxed"
                 >
                   <span className="mt-[0.45rem] size-1.5 shrink-0 rounded-full bg-primary" />
@@ -202,60 +209,59 @@ const renderContent = (content: string): ReactNode => {
 
 export default () => (
   <main className="flex min-h-screen flex-col">
-    <div className="mx-auto w-full max-w-6xl border-x border-accent-foreground">
+    <div className="mx-auto w-full max-w-6xl border-accent-foreground border-x">
       <Navbar />
     </div>
 
-    {/* Hero */}
-    <div className="border-b border-accent-foreground">
-      <div className="mx-auto max-w-6xl border-x border-accent-foreground px-8 pb-16 pt-36">
-        <p className="mb-4 font-medium text-primary text-sm uppercase tracking-[0.2em]">
-          Legal
-        </p>
-        <h1 className="font-semibold text-7xl text-foreground tracking-tight">
-          Privacy Policy
-        </h1>
-        <p className="mt-3 text-foreground-dimmed text-sm">
-          Last updated: March 15, 2026
-        </p>
-        <p className="mt-6 max-w-2xl text-foreground-dimmed text-lg leading-relaxed">
-          écentic (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) is
-          committed to protecting the privacy of merchants who use our
-          e-commerce optimization platform. This policy explains what data we
-          collect, how we use it, and your rights.
-        </p>
+    <div className="border-accent-foreground border-b p-4">
+      <div className="relative size-full rounded-lg bg-primary">
+        <Image
+          src={Background}
+          alt="Privacy Policy"
+          className="absolute aspect-auto h-full w-full object-contain object-right"
+        />
+        <div className="relative z-10 mx-auto max-w-6xl border-accent-foreground border-x px-8 pt-36 pb-16">
+          <p className="mb-4 font-medium text-primary text-sm uppercase tracking-[0.2em]">
+            Legal
+          </p>
+          <h1 className="font-semibold text-7xl text-white tracking-tight">
+            Privacy Policy
+          </h1>
+          <p className="mt-2 text-white">Last updated: March 15, 2026</p>
+          <p className="mt-6 max-w-2xl text-lg text-white leading-relaxed">
+            écentic (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) is
+            committed to protecting the privacy of merchants who use our
+            e-commerce optimization platform. This policy explains what data we
+            collect, how we use it, and your rights.
+          </p>
+        </div>
       </div>
     </div>
 
-    {/* Sections */}
     {sections.map((section) => (
-      <div key={section.number} className="border-b border-accent-foreground">
-        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-px border-x border-accent-foreground bg-accent-foreground md:grid-cols-[5fr_8fr]">
-          <div className="flex flex-col bg-background px-8 py-10">
-            <span className="font-normal text-primary text-2xl">
+      <div key={section.number} className="border-accent-foreground border-b">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-px border-accent-foreground border-x bg-accent-foreground md:grid-cols-[5fr_8fr]">
+          <div className="flex flex-col bg-background-dimmed p-8">
+            <span className="mt-auto font-normal text-2xl text-primary">
               {section.number}
             </span>
-            <h2 className="font-semibold text-foreground text-2xl leading-snug">
+            <h2 className="text-4xl text-foreground leading-snug">
               {section.title}
             </h2>
           </div>
-          <div className="bg-background px-8 py-10">
+          <div className="bg-background p-8">
             {renderContent(section.content)}
           </div>
         </div>
       </div>
     ))}
 
-    {/* Footer row */}
-    <div className="border-b border-accent-foreground">
-      <div className="mx-auto flex max-w-6xl items-center justify-between border-x border-accent-foreground px-8 py-8">
-        <Link
-          href="/"
-          className="group flex items-center gap-2 font-light text-foreground-dimmed text-sm transition-colors hover:text-foreground"
-        >
+    <div className="border-accent-foreground border-b">
+      <div className="mx-auto flex max-w-6xl items-center justify-between border-accent-foreground border-x px-8 py-8">
+        <Button variant="outline" color="accent" render={<Link href="/" />}>
           <ArrowRightIcon className="size-3.5 rotate-180 transition-transform duration-300 group-hover:-translate-x-1" />
           Back to home
-        </Link>
+        </Button>
         <p className="text-foreground-dimmed text-sm">
           © 2026{" "}
           <a

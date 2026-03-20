@@ -39,8 +39,8 @@ export const Steps = () => (
           <CircleBoltIcon className="size-16" />
           <p className="font-medium text-4xl">Optimize</p>
           <p className="text-left font-light text-lg md:text-right">
-            écentic rewrites your titles, descriptions, and structured data
-            for maximum AI agent selection. Approve in one click or set to
+            écentic rewrites your titles, descriptions, and structured data for
+            maximum AI agent selection. Approve in one click or set to
             auto-publish. Continuously re-optimized as models evolve.
           </p>
         </div>

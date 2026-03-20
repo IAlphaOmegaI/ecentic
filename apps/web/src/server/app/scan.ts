@@ -1,8 +1,9 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
+import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
 import type { Document } from "../utils/repository";
 import { repository } from "../utils/repository";
@@ -24,3 +25,22 @@ export const getLatest = withAuthentication(async (context) => {
     orderBy: [{ column: schema.scan.createdAt, direction: "desc" as const }],
   });
 }, "Scan.getLatest");
+
+export const findPending = withContext(async (_context) => {
+  return find(Environment.SERVER, {
+    where: inArray(schema.scan.status, ["pending"]),
+    orderBy: [{ column: schema.scan.createdAt, direction: "asc" as const }],
+  });
+}, "Scan.findPending");
+
+export const findRunningForUser = withContext(
+  async (_context, { userId }: { userId: string }) => {
+    return find(Environment.SERVER, {
+      where: and(
+        eq(schema.scan.userId, userId),
+        inArray(schema.scan.status, ["running"]),
+      ),
+    });
+  },
+  "Scan.findRunningForUser",
+);

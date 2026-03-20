@@ -136,7 +136,7 @@ export const Pricing = () => (
 
         <div className="flex h-auto flex-col bg-primary p-6 text-white md:h-102">
           <h2 className="font-body font-medium text-2xl">{dominate.name}</h2>
-          <p className="font-body font-light text-white/70 text-lg">
+          <p className="font-body font-light text-lg text-white/70">
             {dominate.tagline}
           </p>
           <h3 className="mt-2 font-body font-medium text-4xl">

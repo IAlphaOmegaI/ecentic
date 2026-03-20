@@ -6,14 +6,6 @@ import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { Motion } from "@/components/motion";
 import { Spring, Stagger } from "@/lib/animations";
-import { Button } from "@zenncore/web/components/button";
-import Link, { useLinkStatus } from "next/link";
-import {
-  ArrowLeftIcon,
-  LoaderIcon,
-  ShareIcon,
-  ShoppingCartIcon,
-} from "@zenncore/icons";
 
 const modelColors: Record<string, string> = {
   "GPT-4": "text-blue-500",

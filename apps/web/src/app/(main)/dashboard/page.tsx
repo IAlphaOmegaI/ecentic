@@ -8,17 +8,6 @@ import {
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import {
-  Tab,
-  Tabs,
-  TabsIndicator,
-  TabsList,
-} from "@zenncore/web/components/tabs";
-import { motion } from "motion/react";
-import Link from "next/link";
-import { useState } from "react";
-import type { SVGProps } from "react";
-import { Spring, Stagger, Table as TableAnimations } from "@/lib/animations";
-import {
   Table,
   TableBody,
   TableCell,
@@ -26,6 +15,17 @@ import {
   TableHeader,
   TableRow,
 } from "@zenncore/web/components/table";
+import {
+  Tab,
+  Tabs,
+  TabsIndicator,
+  TabsList,
+} from "@zenncore/web/components/tabs";
+import { motion } from "motion/react";
+import Link from "next/link";
+import type { SVGProps } from "react";
+import { useState } from "react";
+import { Spring, Stagger, Table as TableAnimations } from "@/lib/animations";
 import {
   activityFeed,
   overallWinRate,
@@ -319,7 +319,9 @@ const WinRateLineChart = ({
             style={{ left: `${(hoverIndex / (data.length - 1)) * 100}%` }}
           >
             {labels[hoverIndex]} ·{" "}
-            <span className="font-medium text-primary">{data[hoverIndex]}%</span>
+            <span className="font-medium text-primary">
+              {data[hoverIndex]}%
+            </span>
           </div>
         </>
       )}
@@ -338,9 +340,9 @@ export default () => {
       animate={{ opacity: 1, y: 0 }}
       transition={Spring.Gentle}
     >
-      <div className="mx-8 border-x border-accent-foreground">
+      <div className="mx-8 border-accent-foreground border-x">
         {/* Title */}
-        <div className="-mx-8 border-b border-accent-foreground">
+        <div className="-mx-8 border-accent-foreground border-b">
           <motion.div
             className="mx-8 flex items-center justify-between px-6 py-8"
             initial={{ opacity: 0, y: 8 }}
@@ -348,7 +350,7 @@ export default () => {
             transition={{ ...Spring.Snappy, delay: 0.05 }}
           >
             <div>
-              <h1 className="font-medium text-foreground text-3xl">Overview</h1>
+              <h1 className="font-medium text-3xl text-foreground">Overview</h1>
               <p className="font-light text-foreground-dimmed text-sm">
                 Last updated: 2 hours ago
               </p>
@@ -380,7 +382,7 @@ export default () => {
         </div>
 
         {/* Stat cards */}
-        <div className="-mx-8 border-b border-accent-foreground">
+        <div className="-mx-8 border-accent-foreground border-b">
           <motion.div
             className="mx-8 grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4"
             variants={Stagger.Container(0.07)}
@@ -464,7 +466,7 @@ export default () => {
                 <p className="font-light text-foreground-dimmed text-sm">
                   Top Performer
                 </p>
-                <p className="mt-2 font-medium text-foreground text-base leading-snug">
+                <p className="mt-2 font-medium text-base text-foreground leading-snug">
                   {topPerformer.title}
                 </p>
                 <div className="mt-1 flex items-baseline gap-1.5">
@@ -493,7 +495,7 @@ export default () => {
                 <p className="font-light text-foreground-dimmed text-sm">
                   Biggest Opportunity
                 </p>
-                <p className="mt-2 font-medium text-foreground text-base leading-snug">
+                <p className="mt-2 font-medium text-base text-foreground leading-snug">
                   {biggestOpportunity.title}
                 </p>
                 <div className="mt-1 flex items-baseline gap-1.5">
@@ -517,7 +519,7 @@ export default () => {
 
         {/* Chart + Activity */}
         <div className="h-8" />
-        <div className="-mx-8 border-t border-b border-accent-foreground">
+        <div className="-mx-8 border-accent-foreground border-t border-b">
           <motion.div
             className="mx-8 grid grid-cols-1 gap-px bg-accent-foreground xl:grid-cols-3"
             initial={{ opacity: 0, y: 12 }}
@@ -567,37 +569,37 @@ export default () => {
                 {modelWinRates.map(({ model, rate }) => {
                   const Logo = modelLogos[model];
                   return (
-                  <motion.div
-                    key={model}
-                    className="flex flex-col items-center gap-1 px-6 first:pl-0 last:pr-0"
-                    variants={Stagger.Item}
-                  >
-                    <div className="flex items-center gap-1.5">
-                      <Logo className={cn("size-3.5", modelColors[model])} />
-                      <span className="font-light text-foreground-dimmed text-xs uppercase tracking-widest">
-                        {model}
-                      </span>
-                    </div>
-                    <motion.span
-                      className="font-semibold text-4xl text-foreground tabular-nums"
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ ...Spring.Gentle, delay: 0.3 }}
+                    <motion.div
+                      key={model}
+                      className="flex flex-col items-center gap-1 px-6 first:pl-0 last:pr-0"
+                      variants={Stagger.Item}
                     >
-                      {rate}
-                      <span className="font-light text-foreground-dimmed text-xl">
-                        %
-                      </span>
-                    </motion.span>
-                    <div className="mt-2 h-0.5 w-full bg-accent-foreground">
-                      <motion.div
-                        className={cn("h-full", modelBarColors[model])}
-                        initial={{ width: 0 }}
-                        animate={{ width: `${rate}%` }}
-                        transition={{ ...Spring.Gentle, delay: 0.4 }}
-                      />
-                    </div>
-                  </motion.div>
+                      <div className="flex items-center gap-1.5">
+                        <Logo className={cn("size-3.5", modelColors[model])} />
+                        <span className="font-light text-foreground-dimmed text-xs uppercase tracking-widest">
+                          {model}
+                        </span>
+                      </div>
+                      <motion.span
+                        className="font-semibold text-4xl text-foreground tabular-nums"
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ ...Spring.Gentle, delay: 0.3 }}
+                      >
+                        {rate}
+                        <span className="font-light text-foreground-dimmed text-xl">
+                          %
+                        </span>
+                      </motion.span>
+                      <div className="mt-2 h-0.5 w-full bg-accent-foreground">
+                        <motion.div
+                          className={cn("h-full", modelBarColors[model])}
+                          initial={{ width: 0 }}
+                          animate={{ width: `${rate}%` }}
+                          transition={{ ...Spring.Gentle, delay: 0.4 }}
+                        />
+                      </div>
+                    </motion.div>
                   );
                 })}
               </motion.div>
@@ -607,7 +609,9 @@ export default () => {
                   <p className="font-light text-foreground-dimmed text-xs uppercase tracking-widest">
                     {activePeriod} Trend
                   </p>
-                  <span className="font-medium text-primary text-xs">↑ +15%</span>
+                  <span className="font-medium text-primary text-xs">
+                    ↑ +15%
+                  </span>
                 </div>
                 <WinRateLineChart
                   data={trendData[activePeriod]}
@@ -632,7 +636,7 @@ export default () => {
                 transition={{ delayChildren: 0.3 }}
               >
                 <div className="mb-3 flex items-center justify-between">
-                  <p className="font-medium text-foreground text-base">
+                  <p className="font-medium text-base text-foreground">
                     Recent Activity
                   </p>
                 </div>
@@ -674,7 +678,7 @@ export default () => {
                 <div className="px-4 py-3.5">
                   <div className="flex items-center gap-2">
                     <CircleBoltIcon className="size-4 shrink-0 text-warning" />
-                    <p className="font-medium text-foreground text-base">
+                    <p className="font-medium text-base text-foreground">
                       Model drift detected
                     </p>
                   </div>
@@ -705,15 +709,15 @@ export default () => {
 
         {/* Product Win Rates table */}
         <div className="h-8" />
-        <div className="-mx-8 border-t border-b border-accent-foreground">
+        <div className="-mx-8 border-accent-foreground border-t border-b">
           <motion.div
             className="mx-8"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...Spring.Gentle, delay: 0.3 }}
           >
-            <div className="border-accent-foreground border-b px-4 py-3 flex items-center justify-between">
-              <p className="font-medium text-foreground text-base">
+            <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
+              <p className="font-medium text-base text-foreground">
                 Product Win Rates
               </p>
               <Link
@@ -727,7 +731,16 @@ export default () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    {["Product", "Win Rate", "GPT-4", "Claude", "Gemini", "vs. Top Competitor", "Status", ""].map((h) => (
+                    {[
+                      "Product",
+                      "Win Rate",
+                      "GPT-4",
+                      "Claude",
+                      "Gemini",
+                      "vs. Top Competitor",
+                      "Status",
+                      "",
+                    ].map((h) => (
                       <TableHead key={h}>{h}</TableHead>
                     ))}
                   </TableRow>
@@ -785,15 +798,31 @@ export default () => {
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="text-xs">{product.gpt4WinRate}%</TableCell>
-                      <TableCell className="text-xs">{product.claudeWinRate}%</TableCell>
-                      <TableCell className="text-xs">{product.geminiWinRate}%</TableCell>
+                      <TableCell className="text-xs">
+                        {product.gpt4WinRate}%
+                      </TableCell>
+                      <TableCell className="text-xs">
+                        {product.claudeWinRate}%
+                      </TableCell>
+                      <TableCell className="text-xs">
+                        {product.geminiWinRate}%
+                      </TableCell>
                       <TableCell>
                         <p className="font-light text-foreground-dimmed text-xs">
                           {product.topCompetitor}
                         </p>
-                        <p className={cn("font-medium text-xs", product.winRate > product.competitorWinRate ? "text-success" : "text-error")}>
-                          {product.winRate > product.competitorWinRate ? "+" : ""}{product.winRate - product.competitorWinRate}%
+                        <p
+                          className={cn(
+                            "font-medium text-xs",
+                            product.winRate > product.competitorWinRate
+                              ? "text-success"
+                              : "text-error",
+                          )}
+                        >
+                          {product.winRate > product.competitorWinRate
+                            ? "+"
+                            : ""}
+                          {product.winRate - product.competitorWinRate}%
                         </p>
                       </TableCell>
                       <TableCell>

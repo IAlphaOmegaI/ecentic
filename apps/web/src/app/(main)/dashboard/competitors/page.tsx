@@ -6,12 +6,12 @@ import { CompetitorsTable } from "./_components/competitors-table";
 
 export default () => (
   <div className="flex flex-col">
-    <div className="mx-8 border-x border-accent-foreground">
+    <div className="mx-8 border-accent-foreground border-x">
       {/* Title */}
-      <div className="-mx-8 border-b border-accent-foreground">
+      <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8 flex items-center justify-between px-6 py-8">
           <div>
-            <h1 className="font-medium text-foreground text-3xl">
+            <h1 className="font-medium text-3xl text-foreground">
               Competitor Intelligence
             </h1>
             <p className="font-light text-foreground-dimmed text-sm">
@@ -28,7 +28,7 @@ export default () => (
       </div>
 
       {/* Stats */}
-      <div className="-mx-8 border-b border-accent-foreground">
+      <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8">
           <Suspense fallback={<StatsSkeleton />}>
             <Statistics />
@@ -37,7 +37,7 @@ export default () => (
       </div>
 
       {/* Table */}
-      <div className="-mx-8 border-b border-accent-foreground">
+      <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8">
           <Suspense fallback={<TableSkeleton />}>
             <Competitors />
@@ -47,7 +47,7 @@ export default () => (
 
       {/* Insights */}
       <div className="h-8" />
-      <div className="-mx-8 border-t border-b border-accent-foreground">
+      <div className="-mx-8 border-accent-foreground border-t border-b">
         <div className="mx-8 px-6 py-6">
           <Suspense fallback={<InsightsSkeleton />}>
             <Insights />
@@ -119,7 +119,7 @@ const Competitors = async () => {
   if (data.brands.length === 0)
     return (
       <div className="bg-background p-8 text-center">
-        <p className="font-medium text-foreground text-base">
+        <p className="font-medium text-base text-foreground">
           No competitors tracked yet
         </p>
         <p className="mt-1 font-light text-foreground-dimmed text-xs">
@@ -137,7 +137,7 @@ const Insights = async () => {
 
   return (
     <div>
-      <p className="mb-2 font-medium text-foreground text-base">
+      <p className="mb-2 font-medium text-base text-foreground">
         Latest Scan Insights
       </p>
       <p className="font-light text-foreground text-sm">

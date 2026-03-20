@@ -11,6 +11,7 @@ import * as Competitor from "../competitor";
 import * as Product from "../product";
 import * as Scan from "../scan";
 import * as Simulation from "../simulation";
+import * as Formating from "./formating";
 
 const perspectives = [
   {
@@ -59,35 +60,6 @@ Critical rule: The cheapest product does NOT automatically win. Value = quality 
 Score each product 0-100 using the weights above. The winner is the product you would recommend to the consumer.`,
   },
 ] as const;
-
-export const Utils = {
-  formatProduct: (product: Product.Type): string => {
-    const lines = [`Title: ${product.title}`];
-    if (product.description)
-      lines.push(`Description: ${product.description.slice(0, 500)}`);
-    if (product.price)
-      lines.push(`Price: ${product.currency ?? "USD"} ${product.price}`);
-    if (product.compareAtPrice)
-      lines.push(
-        `Compare at: ${product.currency ?? "USD"} ${product.compareAtPrice}`,
-      );
-    if (product.sku) lines.push(`SKU: ${product.sku}`);
-    if (product.url) lines.push(`URL: ${product.url}`);
-    return lines.join("\n");
-  },
-
-  formatCompetitor: (competitor: Competitor.Type): string => {
-    const lines = [`Title: ${competitor.title}`];
-    if (competitor.description)
-      lines.push(`Description: ${competitor.description.slice(0, 500)}`);
-    if (competitor.price)
-      lines.push(`Price: ${competitor.currency ?? "USD"} ${competitor.price}`);
-    if (competitor.brand) lines.push(`Brand: ${competitor.brand}`);
-    if (competitor.source) lines.push(`Source: ${competitor.source}`);
-    if (competitor.url) lines.push(`URL: ${competitor.url}`);
-    return lines.join("\n");
-  },
-};
 
 type TopFinding = {
   name: string;
@@ -217,7 +189,7 @@ export const runScan = withAuthentication(async (context) => {
           (perspective) => async (): Promise<SimulationResult> => {
             const { output, textStream } = AI.generate({
               system: perspective.system,
-              prompt: `A consumer is choosing between these two products. Evaluate each listing and recommend one.\n\n--- PRODUCT A ---\n${Utils.formatProduct(product)}\n\n--- PRODUCT B ---\n${Utils.formatCompetitor(competitor)}\n\nScore each product 0-100 using your evaluation methodology. Pick a winner based on which LISTING better serves a buyer making a purchase decision. In your reasoning, cite the specific attributes or gaps that drove the decision (2-3 sentences max).`,
+              prompt: `A consumer is choosing between these two products. Evaluate each listing and recommend one.\n\n--- PRODUCT A ---\n${Formating.formatProduct(product)}\n\n--- PRODUCT B ---\n${Formating.formatCompetitor(competitor)}\n\nScore each product 0-100 using your evaluation methodology. Pick a winner based on which LISTING better serves a buyer making a purchase decision. In your reasoning, cite the specific attributes or gaps that drove the decision (2-3 sentences max).`,
               schema: z.object({
                 winner: z.enum(["product", "competitor"]),
                 productScore: z.number().min(0).max(100),
@@ -316,7 +288,10 @@ export const runScan = withAuthentication(async (context) => {
           ).length;
           return [
             perspective.label,
-            { wins: modelWinsCount, losses: modelResults.length - modelWinsCount },
+            {
+              wins: modelWinsCount,
+              losses: modelResults.length - modelWinsCount,
+            },
           ];
         }),
       );

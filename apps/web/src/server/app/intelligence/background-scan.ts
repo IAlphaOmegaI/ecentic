@@ -1,7 +1,7 @@
 "use server";
 
 import { resultify } from "@zenncore/utils";
-import { and, eq, inArray } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { schema } from "../../database";
 import { generate } from "../../utils/ai";
@@ -11,7 +11,7 @@ import * as Product from "../product";
 import * as Scan from "../scan";
 import * as Simulation from "../simulation";
 import * as User from "../user";
-import { Utils } from "./simulate";
+import * as Formating from "./formating";
 
 const perspectives = [
   {
@@ -52,7 +52,10 @@ const runScanForUser = async ({ userId }: { userId: string }) => {
   if (products.data.length === 0 || selected.length === 0)
     return {
       success: true as const,
-      data: { skipped: true as const, reason: "missing products or competitors" },
+      data: {
+        skipped: true as const,
+        reason: "missing products or competitors",
+      },
     };
 
   const totalSimulations =
@@ -75,7 +78,7 @@ const runScanForUser = async ({ userId }: { userId: string }) => {
         const generated = await resultify(() =>
           generate({
             system: perspective.system,
-            prompt: `A consumer is choosing between these two products.\n\n--- PRODUCT A ---\n${Utils.formatProduct(product)}\n\n--- PRODUCT B ---\n${Utils.formatCompetitor(competitor)}\n\nScore each product 0-100, pick a winner, and give concise reasoning.`,
+            prompt: `A consumer is choosing between these two products.\n\n--- PRODUCT A ---\n${Formating.formatProduct(product)}\n\n--- PRODUCT B ---\n${Formating.formatCompetitor(competitor)}\n\nScore each product 0-100, pick a winner, and give concise reasoning.`,
             schema: z.object({
               winner: z.enum(["product", "competitor"]),
               productScore: z.number().min(0).max(100),
@@ -117,7 +120,8 @@ const runScanForUser = async ({ userId }: { userId: string }) => {
   const batchSize = 5;
   const batches = Array.from(
     { length: Math.ceil(tasks.length / batchSize) },
-    (_value, index) => tasks.slice(index * batchSize, index * batchSize + batchSize),
+    (_value, index) =>
+      tasks.slice(index * batchSize, index * batchSize + batchSize),
   );
 
   const results: Awaited<ReturnType<(typeof tasks)[number]>>[] = [];
@@ -146,7 +150,10 @@ const runScanForUser = async ({ userId }: { userId: string }) => {
     losses,
   });
 
-  return { success: true as const, data: { scanId: scan.data.id, wins, losses } };
+  return {
+    success: true as const,
+    data: { scanId: scan.data.id, wins, losses },
+  };
 };
 
 export const runScanDaily = async ({ limit = 20 }: { limit?: number } = {}) => {
@@ -162,7 +169,10 @@ export const runScanDaily = async ({ limit = 20 }: { limit?: number } = {}) => {
       return [...previous, { userId: user.id, result }];
     },
     Promise.resolve(
-      [] as { userId: string; result: Awaited<ReturnType<typeof runScanForUser>> }[],
+      [] as {
+        userId: string;
+        result: Awaited<ReturnType<typeof runScanForUser>>;
+      }[],
     ),
   );
 
@@ -177,11 +187,12 @@ export const runScanDaily = async ({ limit = 20 }: { limit?: number } = {}) => {
   };
 };
 
-export const runPendingScans = async ({ limit = 1 }: { limit?: number } = {}) => {
-  const pending = await Scan.find(Environment.SERVER, {
-    where: inArray(schema.scan.status, ["pending"]),
-    orderBy: [{ column: schema.scan.createdAt, direction: "asc" as const }],
-  });
+export const runPendingScans = async ({
+  limit = 1,
+}: {
+  limit?: number;
+} = {}) => {
+  const pending = await Scan.findPending(Environment.SERVER);
   if (!pending.success) return pending;
 
   const selected = pending.data.slice(0, limit);
@@ -190,11 +201,8 @@ export const runPendingScans = async ({ limit = 1 }: { limit?: number } = {}) =>
     async (previousPromise, scan) => {
       const previous = await previousPromise;
 
-      const running = await Scan.find(Environment.SERVER, {
-        where: and(
-          eq(schema.scan.userId, scan.userId),
-          inArray(schema.scan.status, ["running"]),
-        ),
+      const running = await Scan.findRunningForUser(Environment.SERVER, {
+        userId: scan.userId,
       });
 
       if (!running.success || running.data.length > 0)

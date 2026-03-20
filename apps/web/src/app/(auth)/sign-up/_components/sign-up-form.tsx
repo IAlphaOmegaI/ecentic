@@ -108,10 +108,7 @@ export const SignUpForm = () => {
   );
   return (
     <Motion.Stagger stagger={0.07} delay={0.18}>
-      <Motion.Stagger
-        stagger={0.06}
-        className="mb-3 flex flex-col gap-1.5"
-      >
+      <Motion.Stagger stagger={0.06} className="mb-3 flex flex-col gap-1.5">
         <Button variant="soft" color="emphasis" className="w-full">
           <Image src="/images/google.svg" alt="Google" width={16} height={16} />
           Continue with Google

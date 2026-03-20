@@ -1,10 +1,10 @@
+import { ArrowRightIcon } from "@zenncore/icons";
 import * as motion from "motion/react-client";
 import Image from "next/image";
 import Link from "next/link";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import { Fade } from "@/lib/animations";
-import { ArrowRightIcon } from "@zenncore/icons";
 import { SignUpForm } from "./_components/sign-up-form";
 
 const points = [
