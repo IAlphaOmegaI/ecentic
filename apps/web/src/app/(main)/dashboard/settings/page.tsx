@@ -69,37 +69,44 @@ export default () => {
   };
 
   return (
-    <div className="p-6">
-      <div className="mb-6">
-        <h1 className="font-medium text-foreground text-xl">Settings</h1>
-        <p className="font-light text-foreground-dimmed text-sm">
-          Manage your account, integrations, and preferences.
-        </p>
-      </div>
+    <div className="flex flex-col">
+      <div className="mx-8 border-x border-accent-foreground">
+        {/* Title */}
+        <div className="-mx-8 border-b border-accent-foreground">
+          <div className="mx-8 px-6 py-8">
+            <h1 className="font-medium text-foreground text-3xl">Settings</h1>
+            <p className="font-light text-foreground-dimmed text-sm">
+              Manage your account, integrations, and preferences.
+            </p>
+          </div>
+        </div>
 
-      <div className="flex gap-6">
-        <nav className="hidden w-48 shrink-0 flex-col gap-0.5 md:flex">
-          {sectionItems.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => setActiveSection(item.id)}
-              className={cn(
-                "px-3 py-2 text-left font-medium text-sm transition-colors",
-                activeSection === item.id
-                  ? "bg-primary text-white"
-                  : "text-foreground-dimmed hover:bg-background-dimmed hover:text-foreground",
-              )}
-            >
-              {item.label}
-            </button>
-          ))}
-        </nav>
+        {/* Content */}
+        <div className="-mx-8 border-b border-accent-foreground">
+          <div className="mx-8 flex gap-px bg-accent-foreground">
+            <nav className="hidden w-44 shrink-0 flex-col gap-px bg-accent-foreground md:flex">
+              {sectionItems.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setActiveSection(item.id)}
+                  className={cn(
+                    "px-4 py-3 text-left font-medium text-sm transition-colors",
+                    activeSection === item.id
+                      ? "bg-primary text-white"
+                      : "bg-background text-foreground-dimmed hover:bg-background-dimmed hover:text-foreground",
+                  )}
+                >
+                  {item.label}
+                </button>
+              ))}
+              <div className="flex-1 bg-background" />
+            </nav>
 
-        <div className="flex-1">
+            <div className="flex-1 bg-background">
           {activeSection === "account" && (
             <div className="flex flex-col gap-4">
-              <div className="border border-accent-foreground bg-background-rich p-6">
+              <div className="border border-accent-foreground bg-background p-6">
                 <h2 className="mb-4 font-medium text-base text-foreground">
                   Profile
                 </h2>
@@ -141,7 +148,7 @@ export default () => {
                 </button>
               </div>
 
-              <div className="border border-accent-foreground bg-background-rich p-6">
+              <div className="border border-accent-foreground bg-background p-6">
                 <h2 className="mb-4 font-medium text-base text-foreground">
                   Change Password
                 </h2>
@@ -163,7 +170,7 @@ export default () => {
                   ))}
                   <button
                     type="button"
-                    className="mt-1 w-fit border border-accent-foreground bg-background-rich px-4 py-2 text-foreground text-sm transition-colors hover:bg-background-dimmed"
+                    className="mt-1 w-fit border border-accent-foreground bg-background px-4 py-2 text-foreground text-sm transition-colors hover:bg-background-dimmed"
                   >
                     Update Password
                   </button>
@@ -189,9 +196,9 @@ export default () => {
           )}
 
           {activeSection === "team" && (
-            <div className="border border-accent-foreground bg-background-rich">
+            <div className="border border-accent-foreground bg-background">
               <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
-                <p className="font-medium text-foreground text-sm">
+                <p className="font-medium text-foreground text-base">
                   Team Members
                 </p>
                 <button
@@ -224,7 +231,7 @@ export default () => {
                         {member.name.charAt(0)}
                       </div>
                       <div>
-                        <p className="font-medium text-foreground text-sm">
+                        <p className="font-medium text-foreground text-base">
                           {member.name}
                         </p>
                         <p className="font-light text-foreground-dimmed text-xs">
@@ -276,9 +283,9 @@ export default () => {
 
           {activeSection === "integrations" && (
             <div className="flex flex-col gap-4">
-              <div className="border border-accent-foreground bg-background-rich">
+              <div className="border border-accent-foreground bg-background">
                 <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
-                  <p className="font-medium text-foreground text-sm">
+                  <p className="font-medium text-foreground text-base">
                     Connected Stores
                   </p>
                 </div>
@@ -289,7 +296,7 @@ export default () => {
                         SH
                       </div>
                       <div>
-                        <p className="font-medium text-foreground text-sm">
+                        <p className="font-medium text-foreground text-base">
                           acme-store.myshopify.com
                         </p>
                         <p className="font-light text-foreground-dimmed text-xs">
@@ -324,9 +331,9 @@ export default () => {
           )}
 
           {activeSection === "notifications" && (
-            <div className="border border-accent-foreground bg-background-rich">
+            <div className="border border-accent-foreground bg-background">
               <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
-                <p className="font-medium text-foreground text-sm">
+                <p className="font-medium text-foreground text-base">
                   Email Notifications
                 </p>
               </div>
@@ -380,7 +387,7 @@ export default () => {
                     className="flex items-center justify-between px-4 py-3"
                   >
                     <div>
-                      <p className="font-medium text-foreground text-sm">
+                      <p className="font-medium text-foreground text-base">
                         {label}
                       </p>
                       <p className="font-light text-foreground-dimmed text-xs">
@@ -399,7 +406,7 @@ export default () => {
 
           {activeSection === "simulation" && (
             <div className="flex flex-col gap-4">
-              <div className="border border-accent-foreground bg-background-rich p-4">
+              <div className="border border-accent-foreground bg-background p-4">
                 <h2 className="mb-4 font-medium text-base text-foreground">
                   AI Models
                 </h2>
@@ -440,7 +447,7 @@ export default () => {
                 </div>
               </div>
 
-              <div className="border border-accent-foreground bg-background-rich p-4">
+              <div className="border border-accent-foreground bg-background p-4">
                 <h2 className="mb-4 font-medium text-base text-foreground">
                   Simulation Frequency
                 </h2>
@@ -470,7 +477,7 @@ export default () => {
                 </div>
               </div>
 
-              <div className="border border-accent-foreground bg-background-rich p-4">
+              <div className="border border-accent-foreground bg-background p-4">
                 <h2 className="mb-3 font-medium text-base text-foreground">
                   Purchase Persona
                 </h2>
@@ -487,7 +494,7 @@ export default () => {
 
           {activeSection === "billing" && (
             <div className="flex flex-col gap-4">
-              <div className="border border-accent-foreground bg-background-rich p-6">
+              <div className="border border-accent-foreground bg-background p-6">
                 <div className="flex items-start justify-between">
                   <div>
                     <p className="font-medium text-base text-foreground">
@@ -552,8 +559,8 @@ export default () => {
                 </div>
               </div>
 
-              <div className="border border-accent-foreground bg-background-rich p-6">
-                <p className="mb-3 font-medium text-foreground text-sm">
+              <div className="border border-accent-foreground bg-background p-6">
+                <p className="mb-3 font-medium text-foreground text-base">
                   Invoice History
                 </p>
                 <div className="divide-y divide-accent-foreground">
@@ -591,6 +598,8 @@ export default () => {
               </div>
             </div>
           )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -16,6 +16,7 @@ import {
 import { motion } from "motion/react";
 import Link from "next/link";
 import { useState } from "react";
+import type { SVGProps } from "react";
 import { Spring, Stagger, Table } from "@/lib/animations";
 import {
   activityFeed,
@@ -124,6 +125,42 @@ const ActivityIcon = ({ type }: { type: string }) => {
     </div>
   );
 };
+
+const OpenAILogo = (props: SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.91 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.776.776 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.767.767 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855-5.843-3.372 2.015-1.163a.076.076 0 0 1 .072 0l4.83 2.786a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.398-.678zm2.01-3.023-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08-4.778 2.758a.776.776 0 0 0-.392.681zm1.097-2.365 2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z" />
+  </svg>
+);
+
+const AnthropicLogo = (props: SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <path d="M17.304 3.541 13.766 12.6l3.538 9.059H24L17.304 3.541zM6.696 3.541 0 21.659h6.696l3.538-9.059-3.538-9.059z" />
+  </svg>
+);
+
+const GeminiLogo = (props: SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <path d="M12 24A14.304 14.304 0 0 0 0 12 14.304 14.304 0 0 0 12 0a14.304 14.304 0 0 0 12 12 14.304 14.304 0 0 0-12 12" />
+  </svg>
+);
+
+const modelLogos = {
+  "GPT-4": OpenAILogo,
+  Claude: AnthropicLogo,
+  Gemini: GeminiLogo,
+} as const;
+
+const modelColors = {
+  "GPT-4": "text-blue-500",
+  Claude: "text-orange-500",
+  Gemini: "text-green-500",
+} as const;
+
+const modelBarColors = {
+  "GPT-4": "bg-blue-500",
+  Claude: "bg-orange-500",
+  Gemini: "bg-green-500",
+} as const;
 
 const topProducts = [...products]
   .sort((a, b) => b.winRate - a.winRate)
@@ -288,495 +325,511 @@ export default () => {
 
   return (
     <motion.div
-      className="p-6"
+      className="flex flex-col"
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={Spring.Gentle}
     >
-      <motion.div
-        className="mb-6 flex items-center justify-between"
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ ...Spring.Snappy, delay: 0.05 }}
-      >
-        <div>
-          <h1 className="font-medium text-foreground text-xl">Overview</h1>
-          <p className="font-light text-foreground-dimmed text-sm">
-            Last updated: 2 hours ago
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <motion.button
-            type="button"
-            className="flex items-center gap-1.5 border border-accent-foreground bg-background-rich px-3 py-1.5 text-foreground text-sm transition-colors hover:bg-background-dimmed"
-            whileHover={{ y: -1 }}
-            whileTap={{ scale: 0.97 }}
-            transition={Spring.Snappy}
-          >
-            <DownloadIcon className="size-4" />
-            Export
-          </motion.button>
-          <motion.button
-            type="button"
-            onClick={() => setSimOpen(true)}
-            className="flex items-center gap-1.5 bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primary/90"
-            whileHover={{ y: -1 }}
-            whileTap={{ scale: 0.97 }}
-            transition={Spring.Snappy}
-          >
-            <PlusIcon className="size-4" />
-            Run Simulation
-          </motion.button>
-        </div>
-      </motion.div>
-
-      <motion.div
-        className="mb-6 grid grid-cols-1 gap-px border border-accent-foreground bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4"
-        variants={Stagger.Container(0.07)}
-        initial="hidden"
-        animate="visible"
-        // biome-ignore lint/style/noCommaOperator: delay offset for stat cards
-        transition={{ delayChildren: 0.08 }}
-      >
-        {/* Overall Win Rate */}
-        <motion.div
-          className="flex flex-col justify-between bg-background-rich p-5"
-          variants={Stagger.Item}
-        >
-          <div>
-            <p className="font-light text-foreground-dimmed text-xs">
-              Overall Win Rate
-            </p>
-            <div className="mt-2 flex items-baseline gap-2">
-              <span className="font-semibold text-4xl text-foreground tabular-nums">
-                {overallWinRate}%
-              </span>
-              <span
-                className={cn(
-                  "font-medium text-xs",
-                  winRateTrend >= 0 ? "text-success" : "text-error",
-                )}
-              >
-                {winRateTrend >= 0 ? "+" : "−"}
-                {Math.abs(winRateTrend)}% this week
-              </span>
-            </div>
-          </div>
-          <div className="mt-4">
-            <WinRateLineChart
-              data={[28, 31, 35, 33, 38, 40, 43]}
-              labels={["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}
-              className="h-8"
-            />
-          </div>
-        </motion.div>
-
-        {/* Products Scanned */}
-        <motion.div
-          className="flex flex-col justify-between bg-background-rich p-5"
-          variants={Stagger.Item}
-        >
-          <div>
-            <p className="font-light text-foreground-dimmed text-xs">
-              Products Scanned
-            </p>
-            <div className="mt-2 flex items-baseline gap-1.5">
-              <span className="font-semibold text-4xl text-foreground tabular-nums">
-                {products.length}
-              </span>
-              <span className="font-light text-foreground-dimmed text-sm">
-                / 100
-              </span>
-            </div>
-          </div>
-          <div className="mt-4">
-            <div className="h-px w-full bg-accent-foreground">
-              <motion.div
-                className="h-full bg-primary"
-                initial={{ width: 0 }}
-                animate={{ width: `${(products.length / 100) * 100}%` }}
-                transition={{ ...Spring.Gentle, delay: 0.35 }}
-              />
-            </div>
-            <p className="mt-2 font-light text-foreground-dimmed text-xs">
-              {100 - products.length} slots remaining
-            </p>
-          </div>
-        </motion.div>
-
-        {/* Top Performer */}
-        <motion.div
-          className="flex flex-col justify-between bg-background-rich p-5"
-          variants={Stagger.Item}
-        >
-          <div>
-            <p className="font-light text-foreground-dimmed text-xs">
-              Top Performer
-            </p>
-            <p className="mt-2 font-medium text-foreground text-sm leading-snug">
-              {topPerformer.title}
-            </p>
-            <div className="mt-1 flex items-baseline gap-1.5">
-              <span className="font-semibold text-3xl text-success tabular-nums">
-                {topPerformer.winRate}%
-              </span>
-              <span className="font-light text-foreground-dimmed text-xs">
-                win rate
-              </span>
-            </div>
-          </div>
-          <Link
-            href={`/dashboard/products/${topPerformer._id}`}
-            className="mt-4 flex items-center gap-1 font-medium text-foreground-dimmed text-xs transition-colors hover:text-primary"
-          >
-            View details <ArrowRightIcon className="size-3" />
-          </Link>
-        </motion.div>
-
-        {/* Biggest Opportunity */}
-        <motion.div
-          className="flex flex-col justify-between bg-background-rich p-5"
-          variants={Stagger.Item}
-        >
-          <div>
-            <p className="font-light text-foreground-dimmed text-xs">
-              Biggest Opportunity
-            </p>
-            <p className="mt-2 font-medium text-foreground text-sm leading-snug">
-              {biggestOpportunity.title}
-            </p>
-            <div className="mt-1 flex items-baseline gap-1.5">
-              <span className="font-semibold text-3xl text-error tabular-nums">
-                {biggestOpportunity.winRate}%
-              </span>
-              <span className="font-light text-foreground-dimmed text-xs">
-                win rate
-              </span>
-            </div>
-          </div>
-          <Link
-            href={`/dashboard/products/${biggestOpportunity._id}`}
-            className="mt-4 flex items-center gap-1 font-medium text-foreground-dimmed text-xs transition-colors hover:text-primary"
-          >
-            Optimize now <ArrowRightIcon className="size-3" />
-          </Link>
-        </motion.div>
-      </motion.div>
-
-      <motion.div
-        className="mb-6 grid grid-cols-1 gap-4 xl:grid-cols-3"
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ ...Spring.Gentle, delay: 0.2 }}
-      >
-        <div className="border border-accent-foreground bg-background-rich p-8 xl:col-span-2">
-          <div className="mb-8 flex items-start justify-between">
-            <div>
-              <p className="font-light text-foreground-dimmed text-xs uppercase tracking-widest">
-                Performance
-              </p>
-              <p className="mt-1 font-medium text-foreground text-lg">
-                Win Rate by Model
-              </p>
-            </div>
-            <Tabs
-              value={activePeriod}
-              onValueChange={(value) =>
-                setActivePeriod(value as "7d" | "30d" | "90d")
-              }
-            >
-              <TabsList className="h-auto border border-accent-foreground bg-transparent px-0">
-                <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
-                {(["7d", "30d", "90d"] as const).map((period) => (
-                  <Tab
-                    key={period}
-                    value={period}
-                    className="h-auto px-3 py-1 text-foreground-dimmed text-xs data-selected:text-white"
-                  >
-                    {period}
-                  </Tab>
-                ))}
-              </TabsList>
-            </Tabs>
-          </div>
-
+      <div className="mx-8 border-x border-accent-foreground">
+        {/* Title */}
+        <div className="-mx-8 border-b border-accent-foreground">
           <motion.div
-            className="mb-10 grid grid-cols-3 divide-x divide-accent-foreground"
-            variants={Stagger.Container(0.08)}
+            className="mx-8 flex items-center justify-between px-6 py-8"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ ...Spring.Snappy, delay: 0.05 }}
+          >
+            <div>
+              <h1 className="font-medium text-foreground text-3xl">Overview</h1>
+              <p className="font-light text-foreground-dimmed text-sm">
+                Last updated: 2 hours ago
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <motion.button
+                type="button"
+                className="flex items-center gap-1.5 border border-accent-foreground bg-background px-3 py-1.5 text-foreground text-sm transition-colors hover:bg-background-dimmed"
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.97 }}
+                transition={Spring.Snappy}
+              >
+                <DownloadIcon className="size-4" />
+                Export
+              </motion.button>
+              <motion.button
+                type="button"
+                onClick={() => setSimOpen(true)}
+                className="flex items-center gap-1.5 bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primary/90"
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.97 }}
+                transition={Spring.Snappy}
+              >
+                <PlusIcon className="size-4" />
+                Run Simulation
+              </motion.button>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Stat cards */}
+        <div className="-mx-8 border-b border-accent-foreground">
+          <motion.div
+            className="mx-8 grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4"
+            variants={Stagger.Container(0.07)}
             initial="hidden"
             animate="visible"
-            // biome-ignore lint/style/noCommaOperator: delay offset for model stats
-            transition={{ delayChildren: 0.25 }}
+            // biome-ignore lint/style/noCommaOperator: delay offset for stat cards
+            transition={{ delayChildren: 0.08 }}
           >
-            {modelWinRates.map(({ model, rate }) => (
-              <motion.div
-                key={model}
-                className="flex flex-col items-center gap-1 px-6 first:pl-0 last:pr-0"
-                variants={Stagger.Item}
-              >
-                <span className="font-light text-foreground-dimmed text-xs uppercase tracking-widest">
-                  {model}
-                </span>
-                <motion.span
-                  className="font-semibold text-4xl text-foreground tabular-nums"
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ ...Spring.Gentle, delay: 0.3 }}
-                >
-                  {rate}
-                  <span className="font-light text-foreground-dimmed text-xl">
-                    %
+            {/* Overall Win Rate */}
+            <motion.div
+              className="flex flex-col justify-between bg-background p-5"
+              variants={Stagger.Item}
+            >
+              <div>
+                <p className="font-light text-foreground-dimmed text-sm">
+                  Overall Win Rate
+                </p>
+                <div className="mt-2 flex items-baseline gap-2">
+                  <span className="font-semibold text-4xl text-foreground tabular-nums">
+                    {overallWinRate}%
                   </span>
-                </motion.span>
-                <div className="mt-2 h-0.5 w-full bg-accent-foreground">
+                  <span
+                    className={cn(
+                      "font-medium text-xs",
+                      winRateTrend >= 0 ? "text-success" : "text-error",
+                    )}
+                  >
+                    {winRateTrend >= 0 ? "+" : "−"}
+                    {Math.abs(winRateTrend)}% this week
+                  </span>
+                </div>
+              </div>
+              <div className="mt-4">
+                <WinRateLineChart
+                  data={[28, 31, 35, 33, 38, 40, 43]}
+                  labels={["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}
+                  className="h-8"
+                />
+              </div>
+            </motion.div>
+
+            {/* Products Scanned */}
+            <motion.div
+              className="flex flex-col justify-between bg-background p-5"
+              variants={Stagger.Item}
+            >
+              <div>
+                <p className="font-light text-foreground-dimmed text-sm">
+                  Products Scanned
+                </p>
+                <div className="mt-2 flex items-baseline gap-1.5">
+                  <span className="font-semibold text-4xl text-foreground tabular-nums">
+                    {products.length}
+                  </span>
+                  <span className="font-light text-foreground-dimmed text-sm">
+                    / 100
+                  </span>
+                </div>
+              </div>
+              <div className="mt-4">
+                <div className="h-px w-full bg-accent-foreground">
                   <motion.div
                     className="h-full bg-primary"
                     initial={{ width: 0 }}
-                    animate={{ width: `${rate}%` }}
-                    transition={{ ...Spring.Gentle, delay: 0.4 }}
+                    animate={{ width: `${(products.length / 100) * 100}%` }}
+                    transition={{ ...Spring.Gentle, delay: 0.35 }}
                   />
                 </div>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          <div>
-            <div className="mb-4 flex items-center justify-between">
-              <p className="font-light text-foreground-dimmed text-xs uppercase tracking-widest">
-                {activePeriod} Trend
-              </p>
-              <span className="font-medium text-primary text-xs">↑ +15%</span>
-            </div>
-            <WinRateLineChart
-              data={trendData[activePeriod]}
-              labels={trendLabels[activePeriod]}
-            />
-            <div className="mt-2 flex justify-between font-light text-foreground-dimmed text-xs">
-              <span>{trendLabels[activePeriod][0]}</span>
-              <span>Today</span>
-            </div>
-          </div>
-        </div>
-
-        <motion.div
-          className="flex flex-col gap-4"
-          variants={Stagger.Container(0.08)}
-          initial="hidden"
-          animate="visible"
-          // biome-ignore lint/style/noCommaOperator: delay offset for sidebar widgets
-          transition={{ delayChildren: 0.3 }}
-        >
-          <motion.div
-            className="border border-accent-foreground bg-background-rich p-4"
-            variants={Stagger.Item}
-          >
-            <div className="mb-3 flex items-center justify-between">
-              <p className="font-medium text-foreground text-sm">
-                Recent Activity
-              </p>
-            </div>
-            <motion.div
-              className="flex flex-col gap-3"
-              variants={Stagger.Container(0.06)}
-              initial="hidden"
-              animate="visible"
-              // biome-ignore lint/style/noCommaOperator: delay offset for activity items
-              transition={{ delayChildren: 0.4 }}
-            >
-              {activityFeed.slice(0, 4).map((entry) => (
-                <motion.div
-                  key={entry._id}
-                  className="flex items-start gap-2"
-                  variants={Stagger.Item}
-                >
-                  <ActivityIcon type={entry.type} />
-                  <div>
-                    <p className="font-light text-foreground text-xs leading-relaxed">
-                      {entry.message}
-                    </p>
-                    <p className="font-light text-foreground-dimmed text-xs">
-                      {entry.timestamp}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          </motion.div>
-
-          <motion.div
-            className="border border-warning/20 bg-warning/5"
-            variants={Stagger.Item}
-          >
-            <div className="px-4 py-3.5">
-              {/* header */}
-              <div className="flex items-center gap-2">
-                <CircleBoltIcon className="size-4 shrink-0 text-warning" />
-                <p className="font-medium text-foreground text-sm">
-                  Model drift detected
+                <p className="mt-2 font-light text-foreground-dimmed text-xs">
+                  {100 - products.length} slots remaining
                 </p>
               </div>
+            </motion.div>
 
-              {/* impact chips */}
-              <div className="mt-2.5 flex items-center gap-2">
-                <span className="bg-warning/10 px-2 py-0.5 font-medium text-warning text-xs">
-                  7 products
-                </span>
-                <span className="bg-error/10 px-2 py-0.5 font-medium text-error text-xs">
-                  avg −4% win rate
-                </span>
+            {/* Top Performer */}
+            <motion.div
+              className="flex flex-col justify-between bg-background p-5"
+              variants={Stagger.Item}
+            >
+              <div>
+                <p className="font-light text-foreground-dimmed text-sm">
+                  Top Performer
+                </p>
+                <p className="mt-2 font-medium text-foreground text-base leading-snug">
+                  {topPerformer.title}
+                </p>
+                <div className="mt-1 flex items-baseline gap-1.5">
+                  <span className="font-semibold text-3xl text-success tabular-nums">
+                    {topPerformer.winRate}%
+                  </span>
+                  <span className="font-light text-foreground-dimmed text-xs">
+                    win rate
+                  </span>
+                </div>
+              </div>
+              <Link
+                href={`/dashboard/products/${topPerformer._id}`}
+                className="mt-4 flex items-center gap-1 font-medium text-foreground-dimmed text-xs transition-colors hover:text-primary"
+              >
+                View details <ArrowRightIcon className="size-3" />
+              </Link>
+            </motion.div>
+
+            {/* Biggest Opportunity */}
+            <motion.div
+              className="flex flex-col justify-between bg-background p-5"
+              variants={Stagger.Item}
+            >
+              <div>
+                <p className="font-light text-foreground-dimmed text-sm">
+                  Biggest Opportunity
+                </p>
+                <p className="mt-2 font-medium text-foreground text-base leading-snug">
+                  {biggestOpportunity.title}
+                </p>
+                <div className="mt-1 flex items-baseline gap-1.5">
+                  <span className="font-semibold text-3xl text-error tabular-nums">
+                    {biggestOpportunity.winRate}%
+                  </span>
+                  <span className="font-light text-foreground-dimmed text-xs">
+                    win rate
+                  </span>
+                </div>
+              </div>
+              <Link
+                href={`/dashboard/products/${biggestOpportunity._id}`}
+                className="mt-4 flex items-center gap-1 font-medium text-foreground-dimmed text-xs transition-colors hover:text-primary"
+              >
+                Optimize now <ArrowRightIcon className="size-3" />
+              </Link>
+            </motion.div>
+          </motion.div>
+        </div>
+
+        {/* Chart + Activity */}
+        <div className="-mx-8 border-b border-accent-foreground">
+          <motion.div
+            className="mx-8 grid grid-cols-1 gap-px bg-accent-foreground xl:grid-cols-3"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ ...Spring.Gentle, delay: 0.2 }}
+          >
+            {/* Chart panel */}
+            <div className="bg-background p-4 xl:col-span-2">
+              <div className="mb-8 flex items-start justify-between">
+                <div>
+                  <p className="font-light text-foreground-dimmed text-xs uppercase tracking-widest">
+                    Performance
+                  </p>
+                  <p className="mt-1 font-medium text-foreground text-lg">
+                    Win Rate by Model
+                  </p>
+                </div>
+                <Tabs
+                  value={activePeriod}
+                  onValueChange={(value) =>
+                    setActivePeriod(value as "7d" | "30d" | "90d")
+                  }
+                >
+                  <TabsList className="h-auto border border-accent-foreground bg-transparent px-0">
+                    <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
+                    {(["7d", "30d", "90d"] as const).map((period) => (
+                      <Tab
+                        key={period}
+                        value={period}
+                        className="h-auto px-3 py-1 text-foreground-dimmed text-xs data-selected:text-white"
+                      >
+                        {period}
+                      </Tab>
+                    ))}
+                  </TabsList>
+                </Tabs>
               </div>
 
-              {/* description */}
-              <p className="mt-2.5 font-light text-foreground-dimmed text-xs leading-relaxed">
-                Claude updated its behavior — some listings may be losing
-                positions they previously held.
-              </p>
-
-              {/* CTA */}
-              <Link
-                href="/dashboard/optimize"
-                className="mt-3 inline-flex items-center gap-1 font-medium text-primary text-xs hover:underline"
+              <motion.div
+                className="mb-10 grid grid-cols-3 divide-x divide-accent-foreground"
+                variants={Stagger.Container(0.08)}
+                initial="hidden"
+                animate="visible"
+                // biome-ignore lint/style/noCommaOperator: delay offset for model stats
+                transition={{ delayChildren: 0.25 }}
               >
-                Re-optimize affected products
-                <ArrowRightIcon className="size-3" />
-              </Link>
-            </div>
-          </motion.div>
-        </motion.div>
-      </motion.div>
-
-      <motion.div
-        className="border border-accent-foreground bg-background-rich"
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ ...Spring.Gentle, delay: 0.3 }}
-      >
-        <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
-          <p className="font-medium text-foreground text-sm">
-            Product Win Rates
-          </p>
-          <Link
-            href="/dashboard/products"
-            className="flex items-center gap-1 font-light text-primary text-xs hover:underline"
-          >
-            View all products <ArrowRightIcon className="size-3" />
-          </Link>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_td]:border-accent-foreground [&_td]:border-x [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0 [&_th]:border-accent-foreground [&_th]:border-x">
-            <thead>
-              <tr className="border-accent-foreground border-b">
-                {[
-                  "Product",
-                  "Win Rate",
-                  "GPT-4",
-                  "Claude",
-                  "Gemini",
-                  "vs. Top Competitor",
-                  "Status",
-                  "",
-                ].map((header) => (
-                  <th
-                    key={header}
-                    className="bg-accent-foreground/30 px-4 py-3 text-left font-light text-foreground-dimmed text-lg"
+                {modelWinRates.map(({ model, rate }) => {
+                  const Logo = modelLogos[model];
+                  return (
+                  <motion.div
+                    key={model}
+                    className="flex flex-col items-center gap-1 px-6 first:pl-0 last:pr-0"
+                    variants={Stagger.Item}
                   >
-                    {header}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <motion.tbody
-              variants={Stagger.Container(0.05)}
-              initial="hidden"
-              animate="visible"
-              transition={{ delayChildren: 0.35 }}
-            >
-              {topProducts.map((product) => (
-                <motion.tr
-                  key={product._id}
-                  variants={Table.Row}
-                  className="border-accent-foreground border-b last:border-b-0"
-                  whileHover={{ backgroundColor: "rgba(0,0,0,0.015)" }}
-                >
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className="flex size-9 shrink-0 items-center justify-center bg-primary/10 font-semibold text-primary text-xs">
-                        {product.title.slice(0, 2).toUpperCase()}
-                      </div>
-                      <div>
-                        <p className="font-medium text-foreground text-sm">
-                          {product.title}
-                        </p>
-                        <p className="font-light text-foreground-dimmed text-xs">
-                          {product.category}
-                        </p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <div className="h-1 w-16 bg-accent-foreground">
-                        <motion.div
-                          className={cn(
-                            "h-full",
-                            product.winRate >= 60
-                              ? "bg-success"
-                              : product.winRate >= 30
-                                ? "bg-warning"
-                                : "bg-error",
-                          )}
-                          initial={{ width: 0 }}
-                          animate={{ width: `${product.winRate}%` }}
-                          transition={{ ...Spring.Gentle, delay: 0.4 }}
-                        />
-                      </div>
-                      <span className="font-medium text-foreground text-xs">
-                        {product.winRate}%
+                    <div className="flex items-center gap-1.5">
+                      <Logo className={cn("size-3.5", modelColors[model])} />
+                      <span className="font-light text-foreground-dimmed text-xs uppercase tracking-widest">
+                        {model}
                       </span>
                     </div>
-                  </td>
-                  <td className="px-4 py-3 font-light text-foreground text-xs">
-                    {product.gpt4WinRate}%
-                  </td>
-                  <td className="px-4 py-3 font-light text-foreground text-xs">
-                    {product.claudeWinRate}%
-                  </td>
-                  <td className="px-4 py-3 font-light text-foreground text-xs">
-                    {product.geminiWinRate}%
-                  </td>
-                  <td className="px-4 py-3">
-                    <p className="font-light text-foreground-dimmed text-xs">
-                      {product.topCompetitor}
-                    </p>
-                    <p
-                      className={cn(
-                        "font-medium text-xs",
-                        product.winRate > product.competitorWinRate
-                          ? "text-success"
-                          : "text-error",
-                      )}
+                    <motion.span
+                      className="font-semibold text-4xl text-foreground tabular-nums"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ ...Spring.Gentle, delay: 0.3 }}
                     >
-                      {product.winRate > product.competitorWinRate ? "+" : ""}
-                      {product.winRate - product.competitorWinRate}%
-                    </p>
-                  </td>
-                  <td className="px-4 py-3">
-                    <StatusBadge status={product.optimizationStatus} />
-                  </td>
-                  <td className="px-4 py-3">
-                    <Link
-                      href={`/dashboard/products/${product._id}`}
-                      className="font-light text-primary text-xs hover:underline"
+                      {rate}
+                      <span className="font-light text-foreground-dimmed text-xl">
+                        %
+                      </span>
+                    </motion.span>
+                    <div className="mt-2 h-0.5 w-full bg-accent-foreground">
+                      <motion.div
+                        className={cn("h-full", modelBarColors[model])}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${rate}%` }}
+                        transition={{ ...Spring.Gentle, delay: 0.4 }}
+                      />
+                    </div>
+                  </motion.div>
+                  );
+                })}
+              </motion.div>
+
+              <div>
+                <div className="mb-4 flex items-center justify-between">
+                  <p className="font-light text-foreground-dimmed text-xs uppercase tracking-widest">
+                    {activePeriod} Trend
+                  </p>
+                  <span className="font-medium text-primary text-xs">↑ +15%</span>
+                </div>
+                <WinRateLineChart
+                  data={trendData[activePeriod]}
+                  labels={trendLabels[activePeriod]}
+                />
+                <div className="mt-2 flex justify-between font-light text-foreground-dimmed text-xs">
+                  <span>{trendLabels[activePeriod][0]}</span>
+                  <span>Today</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right column */}
+            <div className="flex flex-col gap-px bg-accent-foreground [&>*:last-child]:flex-1">
+              {/* Recent Activity */}
+              <motion.div
+                className="bg-background p-4"
+                variants={Stagger.Item}
+                initial="hidden"
+                animate="visible"
+                // biome-ignore lint/style/noCommaOperator: delay offset for activity
+                transition={{ delayChildren: 0.3 }}
+              >
+                <div className="mb-3 flex items-center justify-between">
+                  <p className="font-medium text-foreground text-base">
+                    Recent Activity
+                  </p>
+                </div>
+                <motion.div
+                  className="flex flex-col gap-3"
+                  variants={Stagger.Container(0.06)}
+                  initial="hidden"
+                  animate="visible"
+                  // biome-ignore lint/style/noCommaOperator: delay offset for activity items
+                  transition={{ delayChildren: 0.4 }}
+                >
+                  {activityFeed.slice(0, 4).map((entry) => (
+                    <motion.div
+                      key={entry._id}
+                      className="flex items-start gap-2"
+                      variants={Stagger.Item}
                     >
-                      View →
-                    </Link>
-                  </td>
-                </motion.tr>
-              ))}
-            </motion.tbody>
-          </table>
+                      <ActivityIcon type={entry.type} />
+                      <div>
+                        <p className="font-light text-foreground text-xs leading-relaxed">
+                          {entry.message}
+                        </p>
+                        <p className="font-light text-foreground-dimmed text-xs">
+                          {entry.timestamp}
+                        </p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </motion.div>
+
+              {/* Model drift */}
+              <motion.div
+                className="bg-background"
+                variants={Stagger.Item}
+                initial="hidden"
+                animate="visible"
+              >
+                <div className="px-4 py-3.5">
+                  <div className="flex items-center gap-2">
+                    <CircleBoltIcon className="size-4 shrink-0 text-warning" />
+                    <p className="font-medium text-foreground text-base">
+                      Model drift detected
+                    </p>
+                  </div>
+                  <div className="mt-2.5 flex items-center gap-2">
+                    <span className="bg-warning/10 px-2 py-0.5 font-medium text-warning text-xs">
+                      7 products
+                    </span>
+                    <span className="bg-error/10 px-2 py-0.5 font-medium text-error text-xs">
+                      avg −4% win rate
+                    </span>
+                  </div>
+                  <p className="mt-2.5 font-light text-foreground-dimmed text-xs leading-relaxed">
+                    Claude updated its behavior — some listings may be losing
+                    positions they previously held.
+                  </p>
+                  <Link
+                    href="/dashboard/optimize"
+                    className="mt-3 inline-flex items-center gap-1 font-medium text-primary text-xs hover:underline"
+                  >
+                    Re-optimize affected products
+                    <ArrowRightIcon className="size-3" />
+                  </Link>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
         </div>
-      </motion.div>
+
+        {/* Product Win Rates table */}
+        <div className="-mx-8 border-b border-accent-foreground">
+          <motion.div
+            className="mx-8"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ ...Spring.Gentle, delay: 0.3 }}
+          >
+            <div className="border-accent-foreground border-b px-4 py-3 flex items-center justify-between">
+              <p className="font-medium text-foreground text-base">
+                Product Win Rates
+              </p>
+              <Link
+                href="/dashboard/products"
+                className="flex items-center gap-1 font-light text-primary text-xs hover:underline"
+              >
+                View all products <ArrowRightIcon className="size-3" />
+              </Link>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_td]:border-accent-foreground [&_td]:border-x [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0 [&_th]:border-accent-foreground [&_th]:border-x">
+                <thead>
+                  <tr className="border-accent-foreground border-b">
+                    {[
+                      "Product",
+                      "Win Rate",
+                      "GPT-4",
+                      "Claude",
+                      "Gemini",
+                      "vs. Top Competitor",
+                      "Status",
+                      "",
+                    ].map((header) => (
+                      <th
+                        key={header}
+                        className="bg-accent-foreground/30 px-4 py-3 text-left font-light text-foreground-dimmed text-lg"
+                      >
+                        {header}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <motion.tbody
+                  variants={Stagger.Container(0.05)}
+                  initial="hidden"
+                  animate="visible"
+                  transition={{ delayChildren: 0.35 }}
+                >
+                  {topProducts.map((product) => (
+                    <motion.tr
+                      key={product._id}
+                      variants={Table.Row}
+                      className="border-accent-foreground border-b last:border-b-0"
+                      whileHover={{ backgroundColor: "rgba(0,0,0,0.015)" }}
+                    >
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <div className="flex size-9 shrink-0 items-center justify-center bg-primary/10 font-semibold text-primary text-xs">
+                            {product.title.slice(0, 2).toUpperCase()}
+                          </div>
+                          <div>
+                            <p className="font-medium text-foreground text-base">
+                              {product.title}
+                            </p>
+                            <p className="font-light text-foreground-dimmed text-xs">
+                              {product.category}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <div className="h-1 w-16 bg-accent-foreground">
+                            <motion.div
+                              className={cn(
+                                "h-full",
+                                product.winRate >= 60
+                                  ? "bg-success"
+                                  : product.winRate >= 30
+                                    ? "bg-warning"
+                                    : "bg-error",
+                              )}
+                              initial={{ width: 0 }}
+                              animate={{ width: `${product.winRate}%` }}
+                              transition={{ ...Spring.Gentle, delay: 0.4 }}
+                            />
+                          </div>
+                          <span className="font-medium text-foreground text-xs">
+                            {product.winRate}%
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 font-light text-foreground text-xs">
+                        {product.gpt4WinRate}%
+                      </td>
+                      <td className="px-4 py-3 font-light text-foreground text-xs">
+                        {product.claudeWinRate}%
+                      </td>
+                      <td className="px-4 py-3 font-light text-foreground text-xs">
+                        {product.geminiWinRate}%
+                      </td>
+                      <td className="px-4 py-3">
+                        <p className="font-light text-foreground-dimmed text-xs">
+                          {product.topCompetitor}
+                        </p>
+                        <p
+                          className={cn(
+                            "font-medium text-xs",
+                            product.winRate > product.competitorWinRate
+                              ? "text-success"
+                              : "text-error",
+                          )}
+                        >
+                          {product.winRate > product.competitorWinRate ? "+" : ""}
+                          {product.winRate - product.competitorWinRate}%
+                        </p>
+                      </td>
+                      <td className="px-4 py-3">
+                        <StatusBadge status={product.optimizationStatus} />
+                      </td>
+                      <td className="px-4 py-3">
+                        <Link
+                          href={`/dashboard/products/${product._id}`}
+                          className="font-light text-primary text-xs hover:underline"
+                        >
+                          View →
+                        </Link>
+                      </td>
+                    </motion.tr>
+                  ))}
+                </motion.tbody>
+              </table>
+            </div>
+          </motion.div>
+        </div>
+      </div>
 
       <SimulationModal open={simOpen} onClose={() => setSimOpen(false)} />
     </motion.div>

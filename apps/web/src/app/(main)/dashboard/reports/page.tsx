@@ -85,99 +85,114 @@ const TierBadge = ({ tier }: { tier: string }) => {
 };
 
 export default () => (
-  <div className="p-6">
-    <div className="mb-6 flex items-center justify-between">
-      <div>
-        <h1 className="font-medium text-foreground text-xl">
-          Reports & Exports
-        </h1>
-        <p className="font-light text-foreground-dimmed text-sm">
-          Download or schedule automated reports on your agent performance.
-        </p>
-      </div>
-      <button
-        type="button"
-        className="border border-accent-foreground bg-background-rich px-3 py-1.5 text-foreground text-sm transition-colors hover:bg-background-dimmed"
-      >
-        Schedule Reports
-      </button>
-    </div>
-
-    <div className="mb-4 border border-primary/20 bg-primary/5 p-4">
-      <div className="flex items-start gap-3">
-        <div className="flex size-8 shrink-0 items-center justify-center bg-primary/10 font-bold text-primary text-sm">
-          ↗
-        </div>
-        <div>
-          <p className="font-medium text-foreground text-sm">
-            Shareable Win Rate Report
-          </p>
-          <p className="font-light text-foreground-dimmed text-xs">
-            Generate a public URL for a beautifully formatted win rate report —
-            designed for sharing on Twitter, LinkedIn, or with your team.
-          </p>
+  <div className="flex flex-col">
+    <div className="mx-8 border-x border-accent-foreground">
+      {/* Title */}
+      <div className="-mx-8 border-b border-accent-foreground">
+        <div className="mx-8 flex items-center justify-between px-6 py-8">
+          <div>
+            <h1 className="font-medium text-foreground text-3xl">
+              Reports & Exports
+            </h1>
+            <p className="font-light text-foreground-dimmed text-sm">
+              Download or schedule automated reports on your agent performance.
+            </p>
+          </div>
           <button
             type="button"
-            className="mt-2 bg-primary px-3 py-1.5 font-medium text-sm text-white transition-colors hover:bg-primary/90"
+            className="border border-accent-foreground bg-background px-3 py-1.5 text-foreground text-sm transition-colors hover:bg-background-dimmed"
           >
-            Generate Shareable Report
+            Schedule Reports
           </button>
         </div>
       </div>
-    </div>
 
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-      {reports.map((report) => (
-        <div
-          key={report._id}
-          className="flex flex-col border border-accent-foreground bg-background-rich p-4"
-        >
-          <div className="flex items-start justify-between">
-            <DocumentPdfIcon className="size-8 text-foreground-dimmed" />
-            <TierBadge tier={report.tier} />
-          </div>
-          <div className="mt-3 flex-1">
-            <p className="font-medium text-foreground text-sm">
-              {report.title}
-            </p>
-            <p className="mt-1 font-light text-foreground-dimmed text-xs leading-relaxed">
-              {report.description}
-            </p>
-          </div>
-          <div className="mt-4">
-            <p className="mb-2 font-light text-foreground-dimmed text-xs">
-              Last generated: {report.lastGenerated}
-            </p>
-            <div className="flex gap-2">
-              {report.formats.map((format) => (
-                <button
-                  key={format}
-                  type="button"
-                  className="flex flex-1 items-center justify-center gap-1.5 border border-accent-foreground bg-background px-3 py-1.5 text-foreground text-xs transition-colors hover:bg-background-dimmed"
-                >
-                  <DownloadIcon className="size-3" />
-                  {format}
-                </button>
-              ))}
+      {/* Featured shareable report */}
+      <div className="-mx-8 border-b border-accent-foreground">
+        <div className="mx-8">
+          <div className="flex items-start gap-3 bg-primary/5 px-6 py-6">
+            <div className="flex size-8 shrink-0 items-center justify-center bg-primary/10 font-bold text-primary text-sm">
+              ↗
+            </div>
+            <div>
+              <p className="font-medium text-foreground text-base">
+                Shareable Win Rate Report
+              </p>
+              <p className="font-light text-foreground-dimmed text-xs">
+                Generate a public URL for a beautifully formatted win rate
+                report — designed for sharing on Twitter, LinkedIn, or with your
+                team.
+              </p>
+              <button
+                type="button"
+                className="mt-2 bg-primary px-3 py-1.5 font-medium text-sm text-white transition-colors hover:bg-primary/90"
+              >
+                Generate Shareable Report
+              </button>
             </div>
           </div>
         </div>
-      ))}
-    </div>
+      </div>
 
-    <div className="mt-6 border border-accent-foreground bg-background-rich p-4">
-      <p className="mb-3 font-medium text-foreground text-sm">
-        Scheduled Reports
-      </p>
-      <p className="font-light text-foreground-dimmed text-sm">
-        No scheduled reports configured.
-      </p>
-      <button
-        type="button"
-        className="mt-3 border border-primary px-3 py-1.5 font-medium text-primary text-sm transition-colors hover:bg-primary/10"
-      >
-        Set Up Weekly Digest
-      </button>
+      {/* Report cards grid */}
+      <div className="-mx-8 border-b border-accent-foreground">
+        <div className="mx-8 grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-3">
+          {reports.map((report) => (
+            <div
+              key={report._id}
+              className="flex flex-col bg-background p-4"
+            >
+              <div className="flex items-start justify-between">
+                <DocumentPdfIcon className="size-8 text-foreground-dimmed" />
+                <TierBadge tier={report.tier} />
+              </div>
+              <div className="mt-3 flex-1">
+                <p className="font-medium text-foreground text-base">
+                  {report.title}
+                </p>
+                <p className="mt-1 font-light text-foreground-dimmed text-xs leading-relaxed">
+                  {report.description}
+                </p>
+              </div>
+              <div className="mt-4">
+                <p className="mb-2 font-light text-foreground-dimmed text-xs">
+                  Last generated: {report.lastGenerated}
+                </p>
+                <div className="flex gap-2">
+                  {report.formats.map((format) => (
+                    <button
+                      key={format}
+                      type="button"
+                      className="flex flex-1 items-center justify-center gap-1.5 border border-accent-foreground bg-background-dimmed px-3 py-1.5 text-foreground text-xs transition-colors hover:bg-accent-foreground"
+                    >
+                      <DownloadIcon className="size-3" />
+                      {format}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Scheduled reports */}
+      <div className="-mx-8 border-b border-accent-foreground">
+        <div className="mx-8 px-6 py-6">
+          <p className="mb-3 font-medium text-foreground text-base">
+            Scheduled Reports
+          </p>
+          <p className="font-light text-foreground-dimmed text-sm">
+            No scheduled reports configured.
+          </p>
+          <button
+            type="button"
+            className="mt-3 border border-primary px-3 py-1.5 font-medium text-primary text-sm transition-colors hover:bg-primary/10"
+          >
+            Set Up Weekly Digest
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 );

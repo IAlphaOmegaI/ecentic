@@ -143,11 +143,11 @@ export const Sidebar = () => {
         </nav>
 
         {/* Trial card */}
-        <div className="border-accent-foreground border-t p-3">
+        <div className="border-accent-foreground border-t">
           <button
             type="button"
             onClick={() => setUpgradeOpen(true)}
-            className="group w-full border border-warning/30 bg-warning/5 px-3 py-3 text-left transition-colors hover:bg-warning/10"
+            className="group w-full px-4 py-4 text-left transition-colors hover:bg-accent-foreground/30"
           >
             <div className="mb-2 flex items-center justify-between">
               <div className="flex items-center gap-1.5">
