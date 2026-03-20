@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import { Fade } from "@/lib/animations";
+import { ArrowRightIcon } from "@zenncore/icons";
 import { SignInForm } from "./_components/sign-in-form";
 
 const points = [
@@ -25,50 +26,56 @@ export default () => (
       }
     />
     <motion.div
-      className="flex flex-1 flex-col items-center justify-center overflow-hidden bg-background p-8 md:rounded-l-xl"
+      className="flex flex-1 flex-col overflow-hidden bg-background"
       variants={Fade.Right}
       initial="hidden"
       animate="visible"
     >
-      <div className="w-full max-w-md">
-        <div className="mb-8 lg:hidden">
-          <Image
-            src="/images/trademark.svg"
-            alt="écentic"
-            width={100}
-            height={28}
-            className="h-auto w-24"
-          />
-        </div>
+      <Motion.Stagger
+        stagger={0.08}
+        delay={0.1}
+        className="flex flex-1 flex-col overflow-y-auto"
+      >
+        <Motion.Item className="w-full border-accent-foreground border-b px-8">
+          <div className="flex flex-col gap-4 border-accent-foreground border-x p-6">
+            <div className="lg:hidden">
+              <Image
+                src="/images/trademark.svg"
+                alt="écentic"
+                width={100}
+                height={28}
+                className="h-auto w-24"
+              />
+            </div>
+            <div>
+              <h2 className="font-medium text-4xl text-foreground">
+                Sign in to écentic
+              </h2>
+              <p className="mt-1 font-light text-2xl text-foreground-dimmed">
+                Continue optimizing your product listings.
+              </p>
+            </div>
+          </div>
+        </Motion.Item>
 
-        <Motion.Stagger className="mb-6" stagger={0.08} delay={0.1}>
-          <Motion.Item>
-            <h2 className="font-medium text-4xl text-foreground">
-              Sign in to écentic
-            </h2>
-          </Motion.Item>
-          <Motion.Item>
-            <p className="mt-1 font-light text-foreground-dimmed text-lg">
-              Continue optimizing your product listings.
-            </p>
-          </Motion.Item>
-          <Motion.Item>
-            <SignInForm className="mt-4" />
-          </Motion.Item>
-        </Motion.Stagger>
+        <Motion.Item className="w-full flex-1 border-accent-foreground border-b px-8">
+          <div className="h-full border-accent-foreground border-x p-6">
+            <SignInForm />
+          </div>
+        </Motion.Item>
 
-        <motion.p
-          className="mt-4 font-light text-foreground-dimmed"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6, duration: 0.4 }}
-        >
-          Don't have an account?{" "}
-          <Link href="/sign-up" className="text-primary hover:underline">
-            Get started free
-          </Link>
-        </motion.p>
-      </div>
+        <Motion.Item className="w-full px-8">
+          <div className="border-accent-foreground border-x px-6 py-6 font-light text-foreground-dimmed">
+            Don't have an account?{" "}
+            <Link
+              href="/sign-up"
+              className="inline-flex items-center gap-2 text-primary hover:underline"
+            >
+              Get started free <ArrowRightIcon className="size-4" />
+            </Link>
+          </div>
+        </Motion.Item>
+      </Motion.Stagger>
     </motion.div>
   </div>
 );

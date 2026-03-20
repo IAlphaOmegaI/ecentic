@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import { Fade } from "@/lib/animations";
+import { ArrowRightIcon } from "@zenncore/icons";
 import { SignUpForm } from "./_components/sign-up-form";
 
 const points = [
@@ -25,61 +26,63 @@ export default () => (
       }
     />
     <motion.div
-      className="flex flex-1 flex-col items-center justify-center overflow-y-auto bg-background p-8 md:rounded-l-xl"
+      className="flex flex-1 flex-col overflow-hidden bg-background"
       variants={Fade.Right}
       initial="hidden"
       animate="visible"
     >
-      <div className="h-full w-full max-w-md md:h-auto">
-        <div className="mb-8 lg:hidden">
-          <Image
-            src="/images/trademark.svg"
-            alt="écentic"
-            width={100}
-            height={28}
-            className="h-auto w-24"
-          />
-        </div>
+      <Motion.Stagger
+        stagger={0.08}
+        delay={0.1}
+        className="flex flex-1 flex-col overflow-y-auto"
+      >
+        <Motion.Item className="w-full border-accent-foreground border-b px-8">
+          <div className="flex flex-col gap-4 border-accent-foreground border-x p-6">
+            <div className="lg:hidden">
+              <Image
+                src="/images/trademark.svg"
+                alt="écentic"
+                width={100}
+                height={28}
+                className="h-auto w-24"
+              />
+            </div>
+            <div>
+              <h2 className="font-medium text-4xl text-foreground">
+                Create your account
+              </h2>
+              <p className="mt-1 font-light text-2xl text-foreground-dimmed">
+                Start winning agent carts in 2 minutes.
+              </p>
+            </div>
+          </div>
+        </Motion.Item>
 
-        <Motion.Stagger stagger={0.08} delay={0.1}>
-          <Motion.Item>
-            <h2 className="font-medium text-4xl text-foreground">
-              Create your account
-            </h2>
-          </Motion.Item>
-          <Motion.Item>
-            <p className="mt-1 font-light text-foreground-dimmed text-lg">
-              Start winning agent carts in 2 minutes.
+        <Motion.Item className="w-full flex-1 border-accent-foreground border-b px-8">
+          <div className="h-full border-accent-foreground border-x p-6">
+            <SignUpForm />
+          </div>
+        </Motion.Item>
+
+        <Motion.Item className="w-full px-8">
+          <div className="flex flex-col gap-2 border-accent-foreground border-x px-6 py-6 font-light text-foreground-dimmed">
+            <p>
+              Already have an account?{" "}
+              <Link
+                href="/sign-in"
+                className="inline-flex items-center gap-2 text-primary hover:underline"
+              >
+                Sign in instead <ArrowRightIcon className="size-4" />
+              </Link>
             </p>
-          </Motion.Item>
-          <Motion.Item>
-            <SignUpForm className="mt-4" />
-          </Motion.Item>
-        </Motion.Stagger>
-
-        <motion.p
-          className="mt-6 font-light text-foreground-dimmed"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6, duration: 0.4 }}
-        >
-          Already have an account?{" "}
-          <Link href="/sign-in" className="text-primary hover:underline">
-            Sign in instead
-          </Link>
-        </motion.p>
-
-        <motion.p
-          className="mt-2 pb-8 font-light text-foreground-dimmed md:pb-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.65 }}
-        >
-          By creating an account you agree to our{" "}
-          <span className="text-foreground">Terms of Service</span> and{" "}
-          <span className="text-foreground">Privacy Policy</span>.
-        </motion.p>
-      </div>
+            <p>
+              By creating an account you agree to our{" "}
+              <span className="text-foreground">Terms of Service</span> and{" "}
+              <span className="text-foreground">Privacy Policy</span>.
+            </p>
+          </div>
+        </Motion.Item>
+      </Motion.Stagger>
     </motion.div>
   </div>
 );

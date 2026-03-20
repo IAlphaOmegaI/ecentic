@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
-import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { FieldLabel } from "@zenncore/web/components/form";
@@ -46,12 +45,7 @@ const config = {
   }),
 } satisfies GenericForm;
 
-export namespace SignInForm {
-  export type Props = {
-    className?: string;
-  };
-}
-export const SignInForm = ({ className }: SignInForm.Props) => {
+export const SignInForm = () => {
   const router = useRouter();
   const toast = useToastManager();
 
@@ -74,7 +68,7 @@ export const SignInForm = ({ className }: SignInForm.Props) => {
 
   return (
     <Motion.Stagger stagger={0.07} delay={0.18}>
-      <Motion.Up className={cn("mb-4 flex flex-col gap-2", className)}>
+      <Motion.Up className="mb-4 flex flex-col gap-2">
         <Button variant="soft" color="emphasis" className="w-full">
           <Image src="/images/google.svg" alt="Google" width={16} height={16} />
           Continue with Google

@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
-import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import {
@@ -83,12 +82,7 @@ const config = {
   }),
 } satisfies GenericForm;
 
-export namespace SignUpForm {
-  export type Props = {
-    className?: string;
-  };
-}
-export const SignUpForm = ({ className }: SignUpForm.Props) => {
+export const SignUpForm = () => {
   const toast = useToastManager();
 
   const [handleSubmit, isPending] = useAsyncAction(
@@ -116,7 +110,7 @@ export const SignUpForm = ({ className }: SignUpForm.Props) => {
     <Motion.Stagger stagger={0.07} delay={0.18}>
       <Motion.Stagger
         stagger={0.06}
-        className={cn("mb-3 flex flex-col gap-1.5", className)}
+        className="mb-3 flex flex-col gap-1.5"
       >
         <Button variant="soft" color="emphasis" className="w-full">
           <Image src="/images/google.svg" alt="Google" width={16} height={16} />
@@ -156,7 +150,7 @@ export const SignUpForm = ({ className }: SignUpForm.Props) => {
             variant="flat"
             color="primary"
             disabled={isPending}
-            className="col-span-2 mt-1 flex w-full items-center justify-center gap-2 py-2.5 font-medium text-sm"
+            className="col-span-2 mt-1 flex w-full"
           >
             {isPending ? "Creating account..." : "Create Account"}
             {isPending ? (
