@@ -45,7 +45,7 @@ export const CompletePhase = ({
   const winRate =
     wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0;
 
-  const resultMessage = (() => {
+  const message = (() => {
     switch (true) {
       case winRate < 30:
         return "AI agents are choosing your competitors most of the time. Let's fix that.";
@@ -56,7 +56,7 @@ export const CompletePhase = ({
     }
   })();
 
-  const resultColor = (() => {
+  const color = (() => {
     switch (true) {
       case winRate < 30:
         return "text-error";
@@ -86,7 +86,7 @@ export const CompletePhase = ({
               Scan complete.
             </h1>
             <p className="font-light text-2xl text-foreground-dimmed">
-              {resultMessage}
+              {message}
             </p>
           </div>
         </Motion.Item>
@@ -145,9 +145,7 @@ export const CompletePhase = ({
         <Motion.Item className="border-accent-foreground border-b px-8">
           <div className="grid grid-cols-2 gap-px border-accent-foreground border-x bg-accent-foreground">
             <div className="bg-background-dimmed p-4">
-              <p className={cn("font-medium text-2xl", resultColor)}>
-                {winRate}%
-              </p>
+              <p className={cn("font-medium text-2xl", color)}>{winRate}%</p>
               <p className="font-light text-foreground-dimmed">Win rate</p>
             </div>
             <div className="bg-background-dimmed p-4">
@@ -238,12 +236,12 @@ const Share = () => {
   const { pending } = useLinkStatus();
   return (
     <>
+      Share
       {pending ? (
         <LoaderIcon className="size-4 animate-spin" />
       ) : (
         <ShareIcon className="size-4" />
       )}
-      Share
     </>
   );
 };
