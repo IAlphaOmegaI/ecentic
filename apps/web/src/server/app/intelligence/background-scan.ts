@@ -11,6 +11,7 @@ import * as Product from "../product";
 import * as Scan from "../scan";
 import * as Simulation from "../simulation";
 import * as User from "../user";
+import { Utils } from "./simulate";
 
 const perspectives = [
   {
@@ -33,35 +34,7 @@ const perspectives = [
   },
 ] as const;
 
-const Utils = {
-  formatProduct: (product: Product.Type): string => {
-    const lines = [`Title: ${product.title}`];
-    if (product.description)
-      lines.push(`Description: ${product.description.slice(0, 500)}`);
-    if (product.price)
-      lines.push(`Price: ${product.currency ?? "USD"} ${product.price}`);
-    if (product.compareAtPrice)
-      lines.push(
-        `Compare at: ${product.currency ?? "USD"} ${product.compareAtPrice}`,
-      );
-    if (product.sku) lines.push(`SKU: ${product.sku}`);
-    if (product.url) lines.push(`URL: ${product.url}`);
-    return lines.join("\n");
-  },
-  formatCompetitor: (competitor: Competitor.Type): string => {
-    const lines = [`Title: ${competitor.title}`];
-    if (competitor.description)
-      lines.push(`Description: ${competitor.description.slice(0, 500)}`);
-    if (competitor.price)
-      lines.push(`Price: ${competitor.currency ?? "USD"} ${competitor.price}`);
-    if (competitor.brand) lines.push(`Brand: ${competitor.brand}`);
-    if (competitor.source) lines.push(`Source: ${competitor.source}`);
-    if (competitor.url) lines.push(`URL: ${competitor.url}`);
-    return lines.join("\n");
-  },
-};
-
-export const runScanForUser = async ({ userId }: { userId: string }) => {
+const runScanForUser = async ({ userId }: { userId: string }) => {
   const [products, competitors] = await Promise.all([
     Product.find(Environment.SERVER, {
       where: eq(schema.product.userId, userId),
@@ -75,6 +48,7 @@ export const runScanForUser = async ({ userId }: { userId: string }) => {
   if (!competitors.success) return competitors;
 
   const selected = competitors.data.filter((competitor) => competitor.selected);
+
   if (products.data.length === 0 || selected.length === 0)
     return {
       success: true as const,
@@ -92,48 +66,51 @@ export const runScanForUser = async ({ userId }: { userId: string }) => {
     wins: 0,
     losses: 0,
   });
+
   if (!scan.success) return scan;
 
   const tasks = products.data.flatMap((product) =>
     selected.flatMap((competitor) =>
-      perspectives.map(
-        (perspective) => async () => {
-          const generated = await resultify(() =>
-            generate({
-              system: perspective.system,
-              prompt: `A consumer is choosing between these two products.\n\n--- PRODUCT A ---\n${Utils.formatProduct(product)}\n\n--- PRODUCT B ---\n${Utils.formatCompetitor(competitor)}\n\nScore each product 0-100, pick a winner, and give concise reasoning.`,
-              schema: z.object({
-                winner: z.enum(["product", "competitor"]),
-                productScore: z.number().min(0).max(100),
-                competitorScore: z.number().min(0).max(100),
-                reasoning: z.string(),
-                keyFactors: z.array(z.string()),
-              }),
+      perspectives.map((perspective) => async () => {
+        const generated = await resultify(() =>
+          generate({
+            system: perspective.system,
+            prompt: `A consumer is choosing between these two products.\n\n--- PRODUCT A ---\n${Utils.formatProduct(product)}\n\n--- PRODUCT B ---\n${Utils.formatCompetitor(competitor)}\n\nScore each product 0-100, pick a winner, and give concise reasoning.`,
+            schema: z.object({
+              winner: z.enum(["product", "competitor"]),
+              productScore: z.number().min(0).max(100),
+              competitorScore: z.number().min(0).max(100),
+              reasoning: z.string(),
+              keyFactors: z.array(z.string()),
             }),
-          );
+          }),
+        );
 
-          if (!generated.success)
-            return {
-              productId: product.id,
-              competitorId: competitor.id,
-              model: perspective.id,
-              winner: "competitor" as const,
-              reasoning: "Evaluation failed — defaulting to competitor",
-              productScore: 0,
-              competitorScore: 50,
-            };
-
-          return {
-            productId: product.id,
-            competitorId: competitor.id,
-            model: perspective.id,
-            winner: generated.data.winner,
-            reasoning: generated.data.reasoning,
-            productScore: Math.round(generated.data.productScore),
-            competitorScore: Math.round(generated.data.competitorScore),
-          };
-        },
-      ),
+        return (() => {
+          switch (true) {
+            case !generated.success:
+              return {
+                productId: product.id,
+                competitorId: competitor.id,
+                model: perspective.id,
+                winner: "competitor" as const,
+                reasoning: "Evaluation failed — defaulting to competitor",
+                productScore: 0,
+                competitorScore: 50,
+              };
+            default:
+              return {
+                productId: product.id,
+                competitorId: competitor.id,
+                model: perspective.id,
+                winner: generated.data.winner,
+                reasoning: generated.data.reasoning,
+                productScore: Math.round(generated.data.productScore),
+                competitorScore: Math.round(generated.data.competitorScore),
+              };
+          }
+        })();
+      }),
     ),
   );
 
@@ -143,14 +120,12 @@ export const runScanForUser = async ({ userId }: { userId: string }) => {
     (_value, index) => tasks.slice(index * batchSize, index * batchSize + batchSize),
   );
 
-  const results = await batches.reduce(
-    async (previousPromise, batch) => {
-      const previous = await previousPromise;
-      const current = await Promise.all(batch.map((task) => task()));
-      return [...previous, ...current];
-    },
-    Promise.resolve([] as Awaited<ReturnType<(typeof tasks)[number]>>[]),
-  );
+  const results: Awaited<ReturnType<(typeof tasks)[number]>>[] = [];
+
+  for (const batch of batches) {
+    const batchResults = await Promise.all(batch.map((task) => task()));
+    results.push(...batchResults);
+  }
 
   await Promise.all(
     results.map((result) =>
@@ -221,6 +196,7 @@ export const runPendingScans = async ({ limit = 1 }: { limit?: number } = {}) =>
           inArray(schema.scan.status, ["running"]),
         ),
       });
+
       if (!running.success || running.data.length > 0)
         return [...previous, { scanId: scan.id, success: false as const }];
 

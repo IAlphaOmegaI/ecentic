@@ -60,7 +60,7 @@ Score each product 0-100 using the weights above. The winner is the product you 
   },
 ] as const;
 
-const Utils = {
+export const Utils = {
   formatProduct: (product: Product.Type): string => {
     const lines = [`Title: ${product.title}`];
     if (product.description)
