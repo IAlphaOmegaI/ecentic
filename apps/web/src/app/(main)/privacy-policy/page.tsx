@@ -201,60 +201,74 @@ const renderContent = (content: string): ReactNode => {
 };
 
 export default () => (
-  <main className="mx-auto flex min-h-screen max-w-6xl flex-col border-x border-accent-foreground">
-    <Navbar />
+  <main className="flex min-h-screen flex-col">
+    <div className="mx-auto w-full max-w-6xl border-x border-accent-foreground">
+      <Navbar />
+    </div>
 
     {/* Hero */}
-    <div className="border-b border-accent-foreground px-8 pb-16 pt-36">
-      <p className="mb-4 font-medium text-primary text-sm uppercase tracking-[0.2em]">
-        Legal
-      </p>
-      <h1 className="font-semibold text-7xl text-foreground tracking-tight">
-        Privacy Policy
-      </h1>
-      <p className="mt-3 text-foreground-dimmed text-sm">
-        Last updated: March 15, 2026
-      </p>
-      <p className="mt-6 max-w-2xl text-foreground-dimmed text-lg leading-relaxed">
-        écentic (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) is committed
-        to protecting the privacy of merchants who use our e-commerce
-        optimization platform. This policy explains what data we collect, how
-        we use it, and your rights.
-      </p>
+    <div className="border-b border-accent-foreground">
+      <div className="mx-auto max-w-6xl border-x border-accent-foreground px-8 pb-16 pt-36">
+        <p className="mb-4 font-medium text-primary text-sm uppercase tracking-[0.2em]">
+          Legal
+        </p>
+        <h1 className="font-semibold text-7xl text-foreground tracking-tight">
+          Privacy Policy
+        </h1>
+        <p className="mt-3 text-foreground-dimmed text-sm">
+          Last updated: March 15, 2026
+        </p>
+        <p className="mt-6 max-w-2xl text-foreground-dimmed text-lg leading-relaxed">
+          écentic (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) is
+          committed to protecting the privacy of merchants who use our
+          e-commerce optimization platform. This policy explains what data we
+          collect, how we use it, and your rights.
+        </p>
+      </div>
     </div>
 
     {/* Sections */}
     {sections.map((section) => (
-      <div
-        key={section.number}
-        className="grid grid-cols-1 gap-px border-b border-accent-foreground bg-accent-foreground md:grid-cols-[5fr_8fr]"
-      >
-        <div className="flex flex-col bg-background px-8 py-10">
-          <span className="font-normal text-primary text-2xl">
-            {section.number}
-          </span>
-          <h2 className="font-semibold text-foreground text-2xl leading-snug">
-            {section.title}
-          </h2>
-        </div>
-        <div className="bg-background px-8 py-10">
-          {renderContent(section.content)}
+      <div key={section.number} className="border-b border-accent-foreground">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-px border-x border-accent-foreground bg-accent-foreground md:grid-cols-[5fr_8fr]">
+          <div className="flex flex-col bg-background px-8 py-10">
+            <span className="font-normal text-primary text-2xl">
+              {section.number}
+            </span>
+            <h2 className="font-semibold text-foreground text-2xl leading-snug">
+              {section.title}
+            </h2>
+          </div>
+          <div className="bg-background px-8 py-10">
+            {renderContent(section.content)}
+          </div>
         </div>
       </div>
     ))}
 
     {/* Footer row */}
-    <div className="flex items-center justify-between px-8 py-8">
-      <Link
-        href="/"
-        className="group flex items-center gap-2 font-light text-foreground-dimmed text-sm transition-colors hover:text-foreground"
-      >
-        <ArrowRightIcon className="size-3.5 rotate-180 transition-transform duration-300 group-hover:-translate-x-1" />
-        Back to home
-      </Link>
-      <p className="text-foreground-dimmed text-sm">
-        © 2026 Zennit. All rights reserved.
-      </p>
+    <div className="border-b border-accent-foreground">
+      <div className="mx-auto flex max-w-6xl items-center justify-between border-x border-accent-foreground px-8 py-8">
+        <Link
+          href="/"
+          className="group flex items-center gap-2 font-light text-foreground-dimmed text-sm transition-colors hover:text-foreground"
+        >
+          <ArrowRightIcon className="size-3.5 rotate-180 transition-transform duration-300 group-hover:-translate-x-1" />
+          Back to home
+        </Link>
+        <p className="text-foreground-dimmed text-sm">
+          © 2026{" "}
+          <a
+            href="https://www.zennit.dev"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-purple-700 underline-offset-2 hover:underline"
+          >
+            zennit
+          </a>
+          . All rights reserved.
+        </p>
+      </div>
     </div>
   </main>
 );
