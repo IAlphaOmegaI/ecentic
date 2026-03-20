@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(grep -E '\"\"ai\"\"' apps/web/package.json)"
+      "Bash(grep -E '\"\"ai\"\"' apps/web/package.json)",
+      "Bash(ls -la \"c:/Users/35568/Desktop/ecentic/apps/web/src/app/\\(main\\)/dashboard/ucp/\")",
+      "Bash(ls -la \"/c/Users/35568/Desktop/ecentic/apps/web/src/app/\\(main\\)/dashboard/ucp/\")",
+      "Bash(find \"c:/Users/35568/Desktop/ecentic/apps/web/src/app/\\(main\\)/_components\" -name \"*.tsx\")"
     ]
   }
 }
