@@ -34,10 +34,12 @@ export const ToastList = ({ types }: ToastList.Props) => {
       return (
         <Toast key={toast.id} toast={toast} className="p-2.5">
           <div className="flex items-start gap-2 pr-4">
-            <span className={`mt-[4px] size-1.5 shrink-0 rounded-full ${dot}`} />
-            <div className="flex-1 min-w-0">
+            <span
+              className={`mt-[4px] size-1.5 shrink-0 rounded-full ${dot}`}
+            />
+            <div className="min-w-0 flex-1">
               <ToastTitle className="text-xs leading-4" />
-              <ToastDescription className="text-xs leading-4 mt-0" />
+              <ToastDescription className="mt-0 text-xs leading-4" />
             </div>
           </div>
           <ToastClose aria-label="Close">

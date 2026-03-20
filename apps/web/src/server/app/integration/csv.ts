@@ -7,7 +7,7 @@ import { RequestError } from "../../utils/error";
 import * as Product from "../product";
 import * as Store from "../store";
 
-type Type = {
+export type Type = {
   title: string;
   description?: string;
   price?: string;

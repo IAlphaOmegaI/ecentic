@@ -44,19 +44,9 @@ export const CompetitorList = ({
   onToggle,
   onRemove,
 }: CompetitorList.Props) => {
-  const selected = competitors.filter((record) => record.selected).length;
-  const brands = new Set(
-    competitors.map((record) => record.brand).filter(Boolean),
-  );
-
   return (
     <div>
-      <div className="mb-4 border border-primary/20 bg-primary/5 px-4 py-2.5 text-primary text-sm">
-        {competitors.length} competitor products across {brands.size} brands —{" "}
-        {selected} selected
-      </div>
-
-      <div className="overflow-x-auto border border-accent-foreground bg-background-rich">
+      <div className="overflow-x-auto border-x border-accent-foreground bg-background-rich">
         <Table className="[&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0">
           <TableHeader>
             <TableRow>

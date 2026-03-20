@@ -8,79 +8,84 @@ import { Motion } from "@/components/motion";
 import { FeedForm } from "./_components/feed-form";
 
 export default () => (
-  <div className="flex flex-1 flex-col overflow-hidden p-8">
-    <Motion.Stagger stagger={0.08} delay={0.1}>
-      <div className="mx-auto flex w-full flex-col">
-        <Motion.Item>
-          <Button
-            variant="ghost"
-            color="neutral"
-            className="mb-8 w-fit"
-            render={<Link href="/onboarding/connect" />}
-          >
-            <Back />
-          </Button>
-        </Motion.Item>
-        <div className="mb-8 flex items-center gap-4">
-          <Motion.Item>
-            <Image
-              src="/images/custom.svg"
-              alt="Custom Feed"
-              width={64}
-              height={64}
-            />
-          </Motion.Item>
+  <Motion.Stagger
+    stagger={0.08}
+    delay={0.1}
+    className="flex flex-1 flex-col overflow-hidden"
+  >
+    <Motion.Item className="w-full border-accent-foreground border-b px-8">
+      <div className="flex flex-col gap-4 border-accent-foreground border-x p-6">
+        <Image
+          src="/images/custom.svg"
+          alt="Custom Feed"
+          width={64}
+          height={64}
+        />
+        <div>
+          <h2 className="font-medium text-4xl text-foreground">
+            Connect a Product Feed
+          </h2>
+          <p className="mt-1 font-light text-2xl text-foreground-dimmed">
+            We&apos;ll fetch and parse your feed automatically.
+          </p>
+        </div>
+      </div>
+    </Motion.Item>
+
+    <Motion.Item className="w-full border-accent-foreground border-b px-8">
+      <div className="border-accent-foreground border-x bg-background-dimmed p-6">
+        <h3 className="font-medium text-foreground text-xl">
+          Supported formats
+        </h3>
+        <div className="flex flex-col gap-3 font-light text-foreground-dimmed">
           <div>
-            <Motion.Item>
-              <h2 className="font-medium text-4xl text-foreground">
-                Connect a Product Feed
-              </h2>
-            </Motion.Item>
-            <Motion.Item>
-              <p className="mt-1 font-light text-foreground-dimmed text-lg">
-                We&apos;ll fetch and parse your feed automatically.
-              </p>
-            </Motion.Item>
+            <span className="font-medium text-foreground">
+              Google Shopping XML
+            </span>{" "}
+            — the most common format. If you use Google Merchant Center, you
+            already have one. It&apos;s an RSS/Atom feed where each{" "}
+            <span className="font-medium text-primary">&lt;item&gt;</span>{" "}
+            contains <span className="font-medium text-primary">g:title</span>,{" "}
+            <span className="font-medium text-primary">g:price</span>,{" "}
+            <span className="font-medium text-primary">g:image_link</span>, etc.
+          </div>
+          <div>
+            <span className="font-medium text-foreground">JSON</span> — a simple
+            array of product objects. We look for{" "}
+            <span className="font-medium text-primary">title</span>,{" "}
+            <span className="font-medium text-primary">price</span>,{" "}
+            <span className="font-medium text-primary">image</span>, and{" "}
+            <span className="font-medium text-primary">url</span> fields. Nested
+            under a <span className="font-medium text-primary">products</span>{" "}
+            or <span className="font-medium text-primary">items</span> key is
+            fine too.
           </div>
         </div>
-
-        <Motion.Item>
-          <div className="mb-8 flex flex-col gap-4 border border-accent-foreground bg-background-rich p-5">
-            <h3 className="font-medium text-foreground text-sm">
-              Supported formats
-            </h3>
-            <div className="flex flex-col gap-3 font-light text-foreground-dimmed text-sm">
-              <div>
-                <span className="font-medium text-foreground">
-                  Google Shopping XML
-                </span>{" "}
-                — the most common format. If you use Google Merchant Center, you
-                already have one. It&apos;s an RSS/Atom feed where each{" "}
-                <code className="text-foreground">&lt;item&gt;</code> contains{" "}
-                <code className="text-foreground">g:title</code>,{" "}
-                <code className="text-foreground">g:price</code>,{" "}
-                <code className="text-foreground">g:image_link</code>, etc.
-              </div>
-              <div>
-                <span className="font-medium text-foreground">JSON</span> — a
-                simple array of product objects. We look for{" "}
-                <code className="text-foreground">title</code>,{" "}
-                <code className="text-foreground">price</code>,{" "}
-                <code className="text-foreground">image</code>, and{" "}
-                <code className="text-foreground">url</code> fields. Nested
-                under a <code className="text-foreground">products</code> or{" "}
-                <code className="text-foreground">items</code> key is fine too.
-              </div>
-            </div>
-          </div>
-        </Motion.Item>
-
-        <Motion.Item>
-          <FeedForm />
-        </Motion.Item>
       </div>
-    </Motion.Stagger>
-  </div>
+    </Motion.Item>
+
+    <Motion.Item className="w-full flex-1 border-accent-foreground border-b px-8">
+      <div className="h-full border-accent-foreground border-x p-6">
+        <FeedForm />
+      </div>
+    </Motion.Item>
+
+    <Motion.Item className="flex items-center justify-between border-accent-foreground px-8">
+      <div className="flex w-full items-center justify-between border-accent-foreground border-x px-6 py-6">
+        <Button
+          variant="outline"
+          color="accent"
+          type="button"
+          render={<Link href="/onboarding/connect" />}
+        >
+          <Back />
+        </Button>
+        <p className="font-light text-foreground-dimmed text-sm">
+          You can connect more stores later in Settings.
+        </p>
+      </div>
+    </Motion.Item>
+  </Motion.Stagger>
 );
 
 const Back = () => {

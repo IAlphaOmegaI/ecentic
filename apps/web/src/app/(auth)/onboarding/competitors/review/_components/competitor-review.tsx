@@ -3,7 +3,6 @@
 import { ArrowLeftIcon, ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import Link, { useLinkStatus } from "next/link";
-import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { Motion } from "@/components/motion";
@@ -21,7 +20,6 @@ export const CompetitorReview = ({
   children,
   existing,
 }: CompetitorReview.Props) => {
-  const router = useRouter();
   const [competitors, setCompetitors] = useState<Competitor.Type[]>(existing);
 
   const handleToggle = async (id: string) => {
@@ -43,26 +41,39 @@ export const CompetitorReview = ({
   };
 
   const selected = competitors.filter((record) => record.selected).length;
+  const brands = new Set(
+    competitors.map((record) => record.brand).filter(Boolean),
+  );
 
   return (
-    <Motion.Stagger stagger={0.05} className="flex flex-1 flex-col px-6 py-10">
-      <div className="mx-auto w-full max-w-3xl">
-        {children}
+    <Motion.Stagger
+      stagger={0.05}
+      className="flex flex-1 flex-col overflow-hidden"
+    >
+      <Motion.Item className="px-8 border-accent-foreground border-b">
+        <div className="border-accent-foreground border-x p-6">
+          {children}
+          <div className="border border-primary/20 w-fit bg-primary/5 px-4 py-2.5 text-primary text-sm mt-4">
+            {competitors.length} competitor products across {brands.size} brands
+            — {selected} selected
+          </div>
+        </div>
+      </Motion.Item>
 
-        <Motion.Item>
-          <CompetitorList
-            competitors={competitors}
-            onToggle={handleToggle}
-            onRemove={handleRemove}
-          />
-        </Motion.Item>
+      <Motion.Item className="px-8">
+        <CompetitorList
+          competitors={competitors}
+          onToggle={handleToggle}
+          onRemove={handleRemove}
+        />
+      </Motion.Item>
 
-        <Motion.Up className="mt-6 flex items-center justify-between">
+      <Motion.Item className="px-8 border-accent-foreground border-t">
+        <div className="flex w-full items-center justify-between border-accent-foreground border-x p-6">
           <Button
-            variant="ghost"
-            color="neutral"
+            variant="outline"
+            color="accent"
             type="button"
-            className="text-foreground-dimmed text-sm"
             render={<Link href="/onboarding/competitors" />}
           >
             <Back />
@@ -71,15 +82,13 @@ export const CompetitorReview = ({
             variant="flat"
             color="primary"
             type="button"
-            onClick={() => router.push("/onboarding/scan")}
             disabled={selected === 0}
-            className="px-6 py-2 font-medium text-sm"
+            render={<Link href="/onboarding/scan" />}
           >
-            Next: Run Scan
-            <ArrowRightIcon className="size-4" />
+            <Next />
           </Button>
-        </Motion.Up>
-      </div>
+        </div>
+      </Motion.Item>
     </Motion.Stagger>
   );
 };
@@ -94,6 +103,20 @@ const Back = () => {
         <ArrowLeftIcon className="size-4" />
       )}
       Back
+    </>
+  );
+};
+
+const Next = () => {
+  const { pending } = useLinkStatus();
+  return (
+    <>
+      Next: Run Scan
+      {pending ? (
+        <LoaderIcon className="size-4 animate-spin" />
+      ) : (
+        <ArrowRightIcon className="size-4" />
+      )}
     </>
   );
 };

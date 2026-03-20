@@ -5,6 +5,8 @@ import { motion } from "motion/react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Spring } from "@/lib/animations";
+import { Motion } from "@/components/motion";
+import { ArrowLeftIcon, ArrowRightIcon } from "@zenncore/icons";
 
 export namespace PrePhase {
   export type Props = {
@@ -17,52 +19,36 @@ export namespace PrePhase {
 export const PrePhase = ({ children, onRun, isRunning }: PrePhase.Props) => (
   <motion.div
     key="pre"
-    className="flex flex-1 flex-col items-center justify-center px-6 py-12"
+    className="flex flex-1 flex-col overflow-hidden"
     initial={{ opacity: 0, y: 16 }}
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0, y: -16 }}
     transition={Spring.Gentle}
   >
     {children}
-    <div className="w-full max-w-2xl">
-      <motion.div
-        whileHover={{ y: -2 }}
-        whileTap={{ scale: 0.98 }}
-        animate={{
-          boxShadow: [
-            "0 0 0 0 rgba(21,114,250,0)",
-            "0 0 0 8px rgba(21,114,250,0.12)",
-            "0 0 0 0 rgba(21,114,250,0)",
-          ],
-        }}
-        transition={{
-          repeat: Number.POSITIVE_INFINITY,
-          duration: 2.4,
-          delay: 1,
-        }}
-      >
+
+    <Motion.Item className="border-accent-foreground border-x px-8 mt-auto">
+      <div className="flex items-center justify-between border-accent-foreground border-x p-6">
+        <Button
+          variant="outline"
+          color="accent"
+          type="button"
+          render={<Link href="/onboarding/competitors" />}
+        >
+          <ArrowLeftIcon className="size-4" />
+          Back
+        </Button>
         <Button
           variant="flat"
           color="primary"
           type="button"
           onClick={onRun}
           disabled={isRunning}
-          className="w-full py-3.5 font-medium text-base"
         >
           Run Simulation
-        </Button>
-      </motion.div>
-      <div className="mt-4 flex items-center justify-center">
-        <Button
-          variant="ghost"
-          color="neutral"
-          type="button"
-          className="text-foreground-dimmed text-sm"
-          render={<Link href="/onboarding/competitors" />}
-        >
-          Back
+          <ArrowRightIcon className="size-4" />
         </Button>
       </div>
-    </div>
+    </Motion.Item>
   </motion.div>
 );

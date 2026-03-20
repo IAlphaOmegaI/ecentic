@@ -15,10 +15,10 @@ export default async () => {
         className="flex flex-1 flex-col items-center justify-center px-6 py-10"
       >
         <Motion.Up className="text-center">
-          <h1 className="mb-2 font-medium text-2xl text-foreground">
+          <h1 className="mb-2 font-medium text-4xl text-foreground">
             No products found
           </h1>
-          <p className="mb-6 font-light text-foreground-dimmed text-sm">
+          <p className="mb-6 font-light text-2xl text-foreground-dimmed">
             Connect a store and sync your products to get started.
           </p>
           <Button
@@ -35,15 +35,15 @@ export default async () => {
   return (
     <ProductSelector products={products}>
       <Motion.Up className="mb-6">
-        <div className="mb-1 flex items-center gap-2">
-          <h1 className="font-medium text-2xl text-foreground">
+        <div className="flex items-center gap-4">
+          <h1 className="font-medium text-4xl text-foreground">
             Choose products to scan
           </h1>
           <span className="border border-primary/30 bg-primary/10 px-2 py-0.5 text-primary text-xs">
             Free: 10 products
           </span>
         </div>
-        <p className="font-light text-foreground-dimmed text-sm">
+        <p className="font-light text-2xl text-foreground-dimmed">
           Select the products you want to test against AI shopping agents. We
           recommend starting with your best sellers.
         </p>

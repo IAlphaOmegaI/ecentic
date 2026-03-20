@@ -21,9 +21,9 @@
     "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.3.10",
-    "@turbo/gen": "^2.7.2",
-    "turbo": "^2.7.2"
+    "@biomejs/biome": "^2.4.8",
+    "@turbo/gen": "^2.8.19",
+    "turbo": "^2.8.19"
   },
   "engines": {
     "node": ">=24"
@@ -37,24 +37,24 @@
     ],
     "catalog": {
       "@hookform/resolvers": "^5.2.2",
-      "@tailwindcss/postcss": "^4.1.18",
-      "@types/node": "^24.10.4",
+      "@tailwindcss/postcss": "^4.2.2",
+      "@types/node": "^25.5.0",
       "@types/react": "^19.2.7",
       "@types/react-dom": "^19.2.3",
       "react": "^19.2.3",
       "react-hook-form": "^7.69.0",
-      "tailwindcss": "^4.1.18",
-      "tsdown": "^0.18.2",
+      "tailwindcss": "^4.2.2",
+      "tsdown": "^0.21.4",
       "typescript": "^5.9.3",
       "zod": "^4.2.1"
     },
     "catalogs": {
       "mobile": {
-        "@types/react": "~19.1.17",
-        "expo": "~54.0.23",
+        "@types/react": "~19.2.14",
+        "expo": "~55.0.7",
         "react": "19.1.0",
         "react-native": "0.81.5",
-        "uniwind": "^1.2.2"
+        "uniwind": "^1.5.0"
       }
     }
   }

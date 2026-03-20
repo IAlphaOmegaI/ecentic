@@ -7,6 +7,7 @@ import {
   PhotoIcon,
   ShoppingCartIcon,
 } from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
 import { AnimatePresence, motion } from "motion/react";
 import { usePathname } from "next/navigation";
 import type { PropsWithChildren } from "react";
@@ -15,13 +16,13 @@ import { Spring } from "@/lib/animations";
 
 const steps = [
   {
-    label: "Connect Store",
+    label: "Catalog",
     path: "/onboarding/connect",
     icon: ShoppingCartIcon,
   },
   { label: "Select Products", path: "/onboarding/products", icon: PhotoIcon },
   {
-    label: "Add Competitors",
+    label: "Competitors",
     path: "/onboarding/competitors",
     icon: FaceSearchIcon,
   },
@@ -144,9 +145,9 @@ export default ({ children }: PropsWithChildren) => {
         points={content.points}
       />
 
-      <main className="flex flex-1 flex-col overflow-hidden bg-background md:rounded-l-xl">
-        <div className="flex items-center justify-center border-accent-foreground border-b bg-background-rich px-4 py-2">
-          <div className="mx-auto flex w-full max-w-xl items-center gap-0">
+      <main className="flex flex-1 flex-col overflow-hidden bg-background">
+        <div className="flex items-center justify-center border-accent-foreground border-b px-8">
+          <div className="mx-auto flex w-full w-full items-center justify-center gap-0 border-accent-foreground border-x py-2">
             {steps.map((step, index) => {
               const isCompleted = index < current;
               const isCurrent = index === current;
@@ -155,11 +156,12 @@ export default ({ children }: PropsWithChildren) => {
               return (
                 <div
                   key={step.path}
-                  className="hidden items-center gap-1.5 sm:flex"
+                  className={cn(
+                    "hidden items-center gap-1.5 sm:flex",
+                    index !== 0 && "ml-1.5",
+                  )}
                 >
-                  {/* Step pill */}
                   <div className="relative flex items-center gap-2 px-3 py-1.5">
-                    {/* Sliding active background */}
                     {isCurrent && (
                       <motion.div
                         layoutId="step-active-bg"
@@ -168,7 +170,6 @@ export default ({ children }: PropsWithChildren) => {
                       />
                     )}
 
-                    {/* Step icon */}
                     <AnimatePresence mode="wait" initial={false}>
                       {isCompleted ? (
                         <motion.span
@@ -195,7 +196,6 @@ export default ({ children }: PropsWithChildren) => {
                       )}
                     </AnimatePresence>
 
-                    {/* Label */}
                     <span
                       className={`relative z-10 whitespace-nowrap font-medium text-sm transition-colors ${
                         isCurrent
@@ -209,7 +209,6 @@ export default ({ children }: PropsWithChildren) => {
                     </span>
                   </div>
 
-                  {/* Connector */}
                   {index < steps.length - 1 && (
                     <div className="h-px w-5 overflow-hidden rounded-full bg-accent-foreground">
                       <motion.div

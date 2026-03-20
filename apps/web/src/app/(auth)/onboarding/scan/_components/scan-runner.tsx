@@ -1,8 +1,9 @@
 "use client";
 
+import { readStreamableValue } from "@ai-sdk/rsc";
+import { unwrapResult } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { readStreamableValue } from "@ai-sdk/rsc";
 import { AnimatePresence } from "motion/react";
 import type { ReactNode } from "react";
 import { useState } from "react";
@@ -66,12 +67,16 @@ export const ScanRunner = ({ children, simulations }: ScanRunner.Props) => {
     setStats(initialStats);
     setStatuses(initialStatuses);
 
-    const { output } = await runScan();
+    const { output } = await unwrapResult(runScan());
 
     for await (const event of readStreamableValue(output)) {
       if (!event) continue;
 
-      console.log("[ScanRunner] event →", event.kind, JSON.stringify(event).slice(0, 120));
+      console.log(
+        "[ScanRunner] event →",
+        event.kind,
+        JSON.stringify(event).slice(0, 120),
+      );
 
       switch (event.kind) {
         case "log":

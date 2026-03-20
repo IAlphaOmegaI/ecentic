@@ -6,7 +6,7 @@ import {
   CheckIcon,
   LoaderIcon,
 } from "@zenncore/icons";
-import { cn, resultify } from "@zenncore/utils";
+import { cn, resultify, unique } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import {
   Table,
@@ -19,12 +19,12 @@ import {
 import { motion } from "motion/react";
 import Link, { useLinkStatus } from "next/link";
 import { useRouter } from "next/navigation";
-import type { ReactNode } from "react";
+import { useTransition, type ReactNode } from "react";
 import { useState } from "react";
-import { Motion } from "@/components/motion";
 import { Image } from "@/components/ui/image";
-import { Stagger } from "@/lib/animations";
+import { Stagger, Table as TableAnimations } from "@/lib/animations";
 import type * as Product from "@/server/app/product";
+import { Motion } from "@/components/motion";
 
 const limit = 10;
 
@@ -139,159 +139,169 @@ export const ProductSelector = ({
     });
   };
 
+  const [isPending, startTransition] = useTransition();
+
   const handleNext = () => {
-    const selection =
-      selected.size > 0
-        ? selected
-        : new Set(products.slice(0, limit).map((product) => product.id));
+    startTransition(() => {
+      const selection =
+        selected.size > 0
+          ? selected
+          : unique(products.slice(0, limit).map((product) => product.id));
 
-    const params = new URLSearchParams();
+      const params = new URLSearchParams();
 
-    for (const product of selection) params.append("products", product);
-    router.push(`/onboarding/competitors?${params.toString()}`);
+      for (const product of selection) params.append("products", product);
+      router.push(`/onboarding/competitors?${params.toString()}`);
+    });
   };
 
   return (
-    <Motion.Stagger stagger={0.05} className="flex flex-1 flex-col px-6 py-10">
-      <div className="mx-auto w-full max-w-3xl">
-        {children}
+    <Motion.Stagger className="flex flex-1 flex-col overflow-hidden">
+      <Motion.Item className="px-8">
+        <div className="border-accent-foreground border-x p-6">
+          {children}
+          <div className="mt-4 inline-flex items-center border border-primary/20 bg-primary/5 px-3 py-1.5 text-primary text-sm">
+            {selected.size} of {limit} products selected
+          </div>
+        </div>
+      </Motion.Item>
 
-        <Motion.Item className="mb-4 border border-primary/20 bg-primary/5 px-4 py-2.5 text-primary text-sm">
-          {selected.size} of {limit} products selected
-        </Motion.Item>
-
-        <Motion.Item className="overflow-x-auto border border-accent-foreground bg-background-rich">
-          <Table className="[&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-10 px-4 py-2">
-                  <button
-                    type="button"
-                    onClick={toggleAll}
-                    className={cn(
-                      "flex size-4 cursor-pointer items-center justify-center border transition-colors duration-150",
-                      selected.size === products.length
-                        ? "border-primary bg-primary"
-                        : "border-accent-foreground bg-background-rich",
-                    )}
-                  >
-                    <CheckIcon
+      <Motion.Item className="flex-1 overflow-hidden border-accent-foreground border-y px-8">
+        <div className="border-x h-full overflow-auto border-accent-foreground">
+          <div className="bg-background-rich">
+            <Table className="w-full [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0">
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-10 px-4 py-2">
+                    <button
+                      type="button"
+                      onClick={toggleAll}
                       className={cn(
-                        "size-2.5 text-white transition-opacity duration-150",
+                        "flex size-4 cursor-pointer items-center justify-center border transition-colors duration-150",
                         selected.size === products.length
-                          ? "opacity-100"
-                          : "opacity-0",
+                          ? "border-primary bg-primary"
+                          : "border-accent-foreground bg-background-rich",
                       )}
-                    />
-                  </button>
-                </TableHead>
-                {["Product", "Price", "Status", "Quality"].map((header) => (
-                  <TableHead
-                    key={header}
-                    className="px-4 py-2 text-left font-medium text-foreground-dimmed text-xs"
-                  >
-                    {header}
+                    >
+                      <CheckIcon
+                        className={cn(
+                          "size-2.5 text-white transition-opacity duration-150",
+                          selected.size === products.length
+                            ? "opacity-100"
+                            : "opacity-0",
+                        )}
+                      />
+                    </button>
                   </TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody
-              render={
-                <motion.tbody
-                  variants={Stagger.Container(0.04)}
-                  initial="hidden"
-                  animate="visible"
-                />
-              }
-            >
-              {products.map((product) => {
-                const isSelected = selected.has(product.id);
-                const isDisabled = !isSelected && selected.size >= limit;
-                const images = parseImages(product.images);
-                const quality = computeDataQuality(product);
+                  {["Product", "Price", "Status", "Quality"].map((header) => (
+                    <TableHead
+                      key={header}
+                      className="px-4 py-3 text-left font-medium text-foreground text-sm"
+                    >
+                      {header}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody
+                render={
+                  <motion.tbody
+                    variants={Stagger.Container(0.04)}
+                    initial="hidden"
+                    animate="visible"
+                  />
+                }
+              >
+                {products.map((product) => {
+                  const isSelected = selected.has(product.id);
+                  const isDisabled = !isSelected && selected.size >= limit;
+                  const images = parseImages(product.images);
+                  const quality = computeDataQuality(product);
 
-                return (
-                  <TableRow
-                    key={product.id}
-                    render={<motion.tr variants={Stagger.Item} />}
-                    onClick={() => !isDisabled && toggleProduct(product.id)}
-                    className={cn(
-                      "cursor-pointer last:border-b-0",
-                      isSelected
-                        ? "bg-primary/5"
-                        : isDisabled
-                          ? "cursor-not-allowed opacity-40"
-                          : "hover:bg-background-dimmed/50",
-                    )}
-                  >
-                    <TableCell className="w-10 px-4 py-3">
-                      <div
-                        className={cn(
-                          "flex size-4 items-center justify-center border transition-colors duration-150",
-                          isSelected
-                            ? "border-primary bg-primary"
-                            : "border-accent-foreground bg-background-rich",
-                        )}
-                      >
-                        <CheckIcon
+                  return (
+                    <TableRow
+                      key={product.id}
+                      render={<motion.tr variants={TableAnimations.Row} />}
+                      onClick={() => !isDisabled && toggleProduct(product.id)}
+                      className={cn(
+                        "cursor-pointer last:border-b-0",
+                        isSelected
+                          ? "bg-primary/5"
+                          : isDisabled
+                            ? "cursor-not-allowed opacity-40"
+                            : "hover:bg-background-dimmed/50",
+                      )}
+                    >
+                      <TableCell className="w-10 px-4 py-3">
+                        <div
                           className={cn(
-                            "size-2.5 text-white transition-opacity duration-150",
-                            isSelected ? "opacity-100" : "opacity-0",
+                            "flex size-4 items-center justify-center border transition-colors duration-150",
+                            isSelected
+                              ? "border-primary bg-primary"
+                              : "border-accent-foreground bg-background-rich",
                           )}
-                        />
-                      </div>
-                    </TableCell>
-                    <TableCell className="px-4 py-3">
-                      <div className="flex items-center gap-3">
-                        <Image
-                          src={images[0] ?? "/images/placeholder.svg"}
-                          unoptimized
-                          alt={product.title.slice(0, 2).toUpperCase()}
-                          className="size-9 shrink-0 object-cover"
-                        />
-                        <div>
-                          <p className="font-medium text-foreground text-sm">
-                            {product.title}
-                          </p>
-                          {product.sku && (
-                            <p className="text-foreground-dimmed text-xs">
-                              {product.sku}
-                            </p>
-                          )}
+                        >
+                          <CheckIcon
+                            className={cn(
+                              "size-2.5 text-white transition-opacity duration-150",
+                              isSelected ? "opacity-100" : "opacity-0",
+                            )}
+                          />
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell className="px-4 py-3 font-light text-foreground text-sm">
-                      {formatPrice(product.price, product.currency)}
-                    </TableCell>
-                    <TableCell className="px-4 py-3">
-                      <span
-                        className={cn(
-                          "px-1.5 py-0.5 font-medium text-xs",
-                          product.status === "active"
-                            ? "bg-success/10 text-success"
-                            : "bg-foreground-dimmed/10 text-foreground-dimmed",
-                        )}
-                      >
-                        {product.status === "active" ? "Active" : "Draft"}
-                      </span>
-                    </TableCell>
-                    <TableCell className="px-4 py-3">
-                      <QualityBadge score={quality} />
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </Motion.Item>
+                      </TableCell>
+                      <TableCell className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <Image
+                            src={images[0] ?? "/images/placeholder.svg"}
+                            unoptimized
+                            alt={product.title.slice(0, 2).toUpperCase()}
+                            className="size-9 shrink-0 object-cover"
+                          />
+                          <div>
+                            <p className="font-medium text-foreground text-sm">
+                              {product.title}
+                            </p>
+                            {product.sku && (
+                              <p className="text-foreground-dimmed text-xs">
+                                {product.sku}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="px-4 py-3 font-light text-foreground text-sm">
+                        {formatPrice(product.price, product.currency)}
+                      </TableCell>
+                      <TableCell className="px-4 py-3">
+                        <span
+                          className={cn(
+                            "px-1.5 py-0.5 font-medium text-xs",
+                            product.status === "active"
+                              ? "bg-success/10 text-success"
+                              : "bg-foreground-dimmed/10 text-foreground-dimmed",
+                          )}
+                        >
+                          {product.status === "active" ? "Active" : "Draft"}
+                        </span>
+                      </TableCell>
+                      <TableCell className="px-4 py-3">
+                        <QualityBadge score={quality} />
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+      </Motion.Item>
 
-        <Motion.Up className="mt-6 flex items-center justify-between">
+      <Motion.Item className="px-8">
+        <div className="flex w-full items-center justify-between border-accent-foreground border-x p-6">
           <Button
-            variant="ghost"
-            color="neutral"
+            variant="outline"
+            color="accent"
             type="button"
-            className="text-foreground-dimmed text-sm"
             render={<Link href="/onboarding/connect" />}
           >
             <Back />
@@ -302,12 +312,17 @@ export const ProductSelector = ({
             type="button"
             onClick={handleNext}
             disabled={selected.size === 0}
-            className="px-6 py-2 font-medium text-sm"
+            className="px-6 py-2"
           >
-            <Next />
+            Next: Add Competitors
+            {isPending ? (
+              <LoaderIcon className="size-4 animate-spin" />
+            ) : (
+              <ArrowRightIcon className="size-4" />
+            )}
           </Button>
-        </Motion.Up>
-      </div>
+        </div>
+      </Motion.Item>
     </Motion.Stagger>
   );
 };
@@ -322,20 +337,6 @@ const Back = () => {
         <ArrowLeftIcon className="size-4" />
       )}
       Back
-    </>
-  );
-};
-
-const Next = () => {
-  const { pending } = useLinkStatus();
-  return (
-    <>
-      Next: Add Competitors
-      {pending ? (
-        <LoaderIcon className="size-4 animate-spin" />
-      ) : (
-        <ArrowRightIcon className="size-4" />
-      )}
     </>
   );
 };

@@ -2,9 +2,8 @@
 
 import { resultify } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
-import { headers } from "next/headers";
 import { z } from "zod";
-import { auth } from "@/lib/auth";
+import { withAuthentication } from "@/server/utils/authentication";
 import { schema } from "../../database";
 import * as AI from "../../utils/ai";
 import { Environment } from "../../utils/environment";
@@ -97,8 +96,19 @@ type TopFinding = {
   lossPercentage: number;
 };
 
+export type SimulationResult = {
+  product: Product.Type & { score: number };
+  competitor: Competitor.Type & { score: number };
+  winner: "product" | "competitor";
+  reasoning: string;
+  keyFactors?: string[];
+  model: string;
+  modelLabel: string;
+};
+
 export type ScanEvent =
   | { kind: "log"; model: string; message: string }
+  | { kind: "chunk"; model: string; text: string }
   | {
       kind: "progress";
       completed: number;
@@ -119,36 +129,34 @@ export type ScanEvent =
       >;
       topFinding: TopFinding | null;
       productCount: number;
+      results: SimulationResult[];
     };
 
-export const runScan = async () => {
-  const session = await auth.api.getSession({ headers: await headers() });
+export const runScan = withAuthentication(async (context) => {
+  const [products, competitors] = await Promise.all([
+    Product.find(Environment.SERVER, {
+      where: eq(schema.product.userId, context.session.user.id),
+    }),
+    Competitor.find(Environment.SERVER, {
+      where: eq(schema.competitor.userId, context.session.user.id),
+    }),
+  ]);
 
-  return await AI.stream<ScanEvent>(async (update) => {
-    if (!session) {
-      update({ kind: "error", text: "Unauthenticated" });
-      return;
-    }
+  if (!products.success) {
+    return {
+      success: false,
+      error: products.error,
+    };
+  }
 
-    const [products, competitors] = await Promise.all([
-      Product.find(Environment.SERVER, {
-        where: eq(schema.product.userId, session.user.id),
-      }),
-      Competitor.find(Environment.SERVER, {
-        where: eq(schema.competitor.userId, session.user.id),
-      }),
-    ]);
+  if (!competitors.success) {
+    return {
+      success: false,
+      error: competitors.error,
+    };
+  }
 
-    if (!products.success) {
-      update({ kind: "error", text: products.error.message });
-      return;
-    }
-
-    if (!competitors.success) {
-      update({ kind: "error", text: competitors.error.message });
-      return;
-    }
-
+  const stream = AI.stream<ScanEvent>(async (update) => {
     const selected = competitors.data.filter((record) => record.selected);
 
     if (products.data.length === 0) {
@@ -165,7 +173,7 @@ export const runScan = async () => {
       products.data.length * selected.length * perspectives.length;
 
     const scan = await Scan.create(Environment.SERVER, {
-      userId: session.user.id,
+      userId: context.session.user.id,
       status: "running",
       totalSimulations,
       completedSimulations: 0,
@@ -202,9 +210,9 @@ export const runScan = async () => {
 
     const tasks = products.data.flatMap((product) =>
       selected.flatMap((competitor) =>
-        perspectives.map((perspective) => async () => {
-          const result = await resultify(() =>
-            AI.generate({
+        perspectives.map(
+          (perspective) => async (): Promise<SimulationResult> => {
+            const { output, textStream } = AI.generate({
               system: perspective.system,
               prompt: `A consumer is choosing between these two products. Evaluate each listing and recommend one.\n\n--- PRODUCT A ---\n${Utils.formatProduct(product)}\n\n--- PRODUCT B ---\n${Utils.formatCompetitor(competitor)}\n\nScore each product 0-100 using your evaluation methodology. Pick a winner based on which LISTING better serves a buyer making a purchase decision. In your reasoning, cite the specific attributes or gaps that drove the decision (2-3 sentences max).`,
               schema: z.object({
@@ -214,41 +222,54 @@ export const runScan = async () => {
                 reasoning: z.string(),
                 keyFactors: z.array(z.string()),
               }),
-            }),
-          );
+              stream: true,
+            });
 
-          return (() => {
-            switch (true) {
-              case result.success:
-                return {
-                  productId: product.id,
-                  competitorId: competitor.id,
-                  model: perspective.id,
-                  modelLabel: perspective.label,
-                  productTitle: product.title,
-                  competitorTitle: competitor.title,
-                  winner: result.data.winner,
-                  productScore: Math.round(result.data.productScore),
-                  competitorScore: Math.round(result.data.competitorScore),
-                  reasoning: result.data.reasoning,
-                  keyFactors: result.data.keyFactors,
-                };
-              default:
-                return {
-                  productId: product.id,
-                  competitorId: competitor.id,
-                  model: perspective.id,
-                  modelLabel: perspective.label,
-                  winner: "competitor" as const,
-                  reasoning: "Evaluation failed — defaulting to competitor",
-                  productScore: 0,
-                  competitorScore: 50,
-                  productTitle: product.title,
-                  competitorTitle: competitor.title,
-                };
-            }
-          })();
-        }),
+            const [, parseResult] = await Promise.all([
+              (async () => {
+                for await (const chunk of textStream) {
+                  update({
+                    kind: "chunk",
+                    model: perspective.label,
+                    text: chunk,
+                  });
+                }
+              })(),
+              resultify(() => output),
+            ]);
+
+            const productScore = parseResult.success
+              ? Math.round(parseResult.data.productScore)
+              : 0;
+            const competitorScore = parseResult.success
+              ? Math.round(parseResult.data.competitorScore)
+              : 50;
+
+            return (() => {
+              switch (true) {
+                case parseResult.success:
+                  return {
+                    product: { ...product, score: productScore },
+                    competitor: { ...competitor, score: competitorScore },
+                    winner: parseResult.data.winner,
+                    reasoning: parseResult.data.reasoning,
+                    keyFactors: parseResult.data.keyFactors,
+                    model: perspective.id,
+                    modelLabel: perspective.label,
+                  };
+                default:
+                  return {
+                    product: { ...product, score: 0 },
+                    competitor: { ...competitor, score: 50 },
+                    winner: "competitor" as const,
+                    reasoning: "Evaluation failed — defaulting to competitor",
+                    model: perspective.id,
+                    modelLabel: perspective.label,
+                  };
+              }
+            })();
+          },
+        ),
       ),
     );
 
@@ -259,45 +280,35 @@ export const runScan = async () => {
         tasks.slice(index * batchSize, index * batchSize + batchSize),
     );
 
-    const results: {
-      productId: string;
-      competitorId: string;
-      model: string;
-      modelLabel: string;
-      productTitle: string;
-      competitorTitle: string;
-      winner: "product" | "competitor";
-      productScore: number;
-      competitorScore: number;
-      reasoning: string;
-      keyFactors?: string[];
-    }[] = [];
+    const results: SimulationResult[] = [];
 
     for (const batch of batches) {
-      const batchResults = await Promise.all(batch.map((task) => task()));
-      results.push(...batchResults);
+      const batches = await Promise.all(batch.map((task) => task()));
+      results.push(...batches);
 
-      for (const record of batchResults) {
-        const winnerName =
+      for (const record of batches) {
+        const winner =
           record.winner === "product"
-            ? record.productTitle
-            : record.competitorTitle;
+            ? record.product.title
+            : record.competitor.title;
+
         update({
           kind: "log",
           model: record.modelLabel,
-          message: `DECISION: Selected ${winnerName} (${record.reasoning.slice(0, 80)})`,
+          message: `DECISION: Selected ${winner} (${record.reasoning.slice(0, 80)})`,
         });
       }
 
-      const currentWins = results.filter(
+      const wins = results.filter(
         (record) => record.winner === "product",
       ).length;
+
       update({
         kind: "progress",
         completed: results.length,
         total: totalSimulations,
-        wins: currentWins,
-        losses: results.length - currentWins,
+        wins,
+        losses: results.length - wins,
       });
     }
 
@@ -308,7 +319,13 @@ export const runScan = async () => {
       results.map((record) =>
         Simulation.create(Environment.SERVER, {
           scanId: scan.data.id,
-          ...record,
+          productId: record.product.id,
+          competitorId: record.competitor.id,
+          model: record.model,
+          winner: record.winner,
+          reasoning: record.reasoning,
+          productScore: record.product.score,
+          competitorScore: record.competitor.score,
         }),
       ),
     );
@@ -355,14 +372,14 @@ export const runScan = async () => {
       >();
 
       for (const record of misses) {
-        const existing = lossesByProduct.get(record.productId) ?? {
+        const existing = lossesByProduct.get(record.product.id) ?? {
           count: 0,
-          title: record.productTitle,
+          title: record.product.title,
           reasons: [],
         };
         existing.count += 1;
         existing.reasons.push(record.reasoning);
-        lossesByProduct.set(record.productId, existing);
+        lossesByProduct.set(record.product.id, existing);
       }
 
       const worst = [...lossesByProduct.entries()].sort(
@@ -401,7 +418,15 @@ export const runScan = async () => {
       losses,
       modelWinRates,
       topFinding: finding,
-      productCount: new Set(results.map((record) => record.productId)).size,
+      productCount: new Set(results.map((record) => record.product.id)).size,
+      results,
     });
   });
-};
+
+  return {
+    success: true,
+    data: {
+      output: stream.output,
+    },
+  };
+}, "Simulation.runScan");

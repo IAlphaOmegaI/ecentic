@@ -8,77 +8,71 @@ import { Motion } from "@/components/motion";
 import { ShopifyForm } from "./_components/shopify-form";
 
 export default () => (
-  <div className="flex flex-1 flex-col overflow-hidden p-8">
-    <Motion.Stagger stagger={0.08} delay={0.1}>
-      <div className="mx-auto flex w-full flex-col">
-        <Motion.Item>
-          <Button
-            variant="ghost"
-            color="neutral"
-            className="mb-8 -ml-2.5 w-fit"
-            render={<Link href="/onboarding/connect" />}
-          >
-            <Back />
-          </Button>
-        </Motion.Item>
-        <div className="mb-8 flex items-center gap-4">
-          <Motion.Item>
-            <Image
-              src="/images/shopify.svg"
-              alt="Shopify"
-              width={64}
-              height={64}
-            />
-          </Motion.Item>
-          <div>
-            <Motion.Item>
-              <h2 className="font-medium text-4xl text-foreground">
-                Connect Shopify
-              </h2>
-            </Motion.Item>
-            <Motion.Item>
-              <p className="mt-1 font-light text-foreground-dimmed text-lg">
-                OAuth connection — we never see your Shopify password.
-              </p>
-            </Motion.Item>
-          </div>
+  <Motion.Stagger
+    stagger={0.08}
+    delay={0.1}
+    className="flex flex-1 flex-col overflow-hidden"
+  >
+    <Motion.Item className="w-full border-accent-foreground border-b px-8">
+      <div className="flex flex-col gap-4 border-accent-foreground border-x p-6">
+        <Image src="/images/shopify.svg" alt="Shopify" width={64} height={64} />
+        <div>
+          <h2 className="font-medium text-4xl text-foreground">
+            Connect Shopify
+          </h2>
+          <p className="mt-1 font-light text-2xl text-foreground-dimmed">
+            OAuth connection — we never see your Shopify password.
+          </p>
         </div>
-
-        <Motion.Item>
-          <div className="mb-8 flex flex-col gap-4 border border-accent-foreground bg-background-rich p-5">
-            <h3 className="font-medium text-foreground text-sm">
-              How it works
-            </h3>
-            <ol className="flex list-inside list-decimal flex-col gap-3 font-light text-foreground-dimmed text-sm">
-              <li>
-                Enter your store domain below — this is the{" "}
-                <span className="font-medium text-foreground">
-                  yourstore.myshopify.com
-                </span>{" "}
-                URL you use to log into Shopify admin.
-              </li>
-              <li>
-                You&apos;ll be redirected to Shopify to authorize read-only
-                access to your product catalog. We only request{" "}
-                <span className="font-medium text-foreground">
-                  read_products
-                </span>{" "}
-                — no orders, customers, or write access.
-              </li>
-              <li>
-                After you approve, Shopify sends us a secure token and we
-                immediately import your products.
-              </li>
-            </ol>
-          </div>
-        </Motion.Item>
-
-        <Motion.Item>
-          <ShopifyForm />
-        </Motion.Item>
       </div>
-    </Motion.Stagger>
-  </div>
+    </Motion.Item>
+
+    <Motion.Item className="w-full border-accent-foreground border-b px-8">
+      <div className="border-accent-foreground border-x bg-background-dimmed p-6">
+        <h3 className="font-medium text-foreground text-xl">How it works?</h3>
+        <ol className="flex list-inside list-decimal flex-col gap-3 font-light text-foreground-dimmed">
+          <li>
+            Enter your store domain below — this is the{" "}
+            <span className="font-medium text-primary">
+              yourstore.myshopify.com
+            </span>{" "}
+            URL you use to log into Shopify admin.
+          </li>
+          <li>
+            You&apos;ll be redirected to Shopify to authorize read-only access
+            to your product catalog. We only request{" "}
+            <span className="font-medium text-primary">read_products</span> — no
+            orders, customers, or write access.
+          </li>
+          <li>
+            After you approve, Shopify sends us a secure token and we
+            immediately import your products.
+          </li>
+        </ol>
+      </div>
+    </Motion.Item>
+
+    <Motion.Item className="w-full flex-1 border-accent-foreground border-b px-8">
+      <div className="h-full border-accent-foreground border-x p-6">
+        <ShopifyForm />
+      </div>
+    </Motion.Item>
+    <Motion.Item className="flex items-center justify-between border-accent-foreground px-8">
+      <div className="flex w-full items-center justify-between border-accent-foreground border-x px-6 py-6">
+        <Button
+          variant="outline"
+          color="accent"
+          type="button"
+          render={<Link href="/onboarding/connect" />}
+        >
+          <Back />
+        </Button>
+        <p className="font-light text-foreground-dimmed text-sm">
+          You can connect more stores later in Settings.
+        </p>
+      </div>
+    </Motion.Item>
+  </Motion.Stagger>
 );
 
 const Back = () => {

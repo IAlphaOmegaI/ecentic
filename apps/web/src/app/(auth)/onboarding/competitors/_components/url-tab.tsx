@@ -7,14 +7,16 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import { useState } from "react";
 import type * as Competitor from "@/server/app/competitor";
 import { scrapeUrls } from "@/server/app/intelligence/scrape";
+import { cn } from "@zenncore/utils";
 
 export namespace UrlTab {
   export type Props = {
     onSuccess: (competitors: Competitor.Type[]) => void;
+    className?: string;
   };
 }
 
-export const UrlTab = ({ onSuccess }: UrlTab.Props) => {
+export const UrlTab = ({ onSuccess, className }: UrlTab.Props) => {
   const toast = useToastManager();
   const [url, setUrl] = useState<string | null>(null);
 
@@ -48,11 +50,13 @@ export const UrlTab = ({ onSuccess }: UrlTab.Props) => {
   });
 
   return (
-    <div className="border border-accent-foreground border-t-0 bg-background-rich p-4">
-      <label
-        htmlFor="urls"
-        className="mb-2 block font-medium text-foreground text-xs"
-      >
+    <div
+      className={cn(
+        "bg-background-dimmed min-h-full p-4 flex flex-col",
+        className,
+      )}
+    >
+      <label htmlFor="urls" className="mb-2 block font-medium text-foreground">
         Paste competitor product URLs (one per line)
       </label>
       <Textarea value={url} onValueChange={setUrl}>
@@ -71,7 +75,7 @@ export const UrlTab = ({ onSuccess }: UrlTab.Props) => {
         type="button"
         onClick={handleScrape}
         disabled={!url?.trim() || isScraping}
-        className="mt-3 px-4 py-2 font-medium text-sm"
+        className="mt-3 px-4 py-2 font-medium mt-auto"
       >
         {isScraping ? "Extracting product data..." : "Extract Product Data"}
       </Button>

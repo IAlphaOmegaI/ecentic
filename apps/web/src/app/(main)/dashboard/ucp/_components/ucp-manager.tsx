@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckIcon, CopyIcon } from "@zenncore/icons";
+import { CheckBadgeIcon, CheckIcon, CopyIcon, PhotoIcon, SunsetIcon } from "@zenncore/icons";
 import { cn, removeUndefinedEntries } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
@@ -19,6 +19,7 @@ import {
 } from "@zenncore/web/components/tabs";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useCallback, useMemo, useState } from "react";
+import type { ComponentProps, ReactElement } from "react";
 import type * as Ucp from "@/server/app/intelligence/ucp";
 import {
   generateAllProductStructuredData,
@@ -30,7 +31,10 @@ import type * as Product from "@/server/app/product";
 
 // ─── JSON syntax highlighter ────────────────────────────────────────────────
 
-type JToken = { text: string; type: "key" | "string" | "number" | "boolean" | "null" | "punct" | "space" };
+type JToken = {
+  text: string;
+  type: "key" | "string" | "number" | "boolean" | "null" | "punct" | "space";
+};
 
 const tokenizeJson = (json: string): JToken[] => {
   const tokens: JToken[] = [];
@@ -98,6 +102,60 @@ const JsonCode = ({ json }: { json: string }) => (
     ))}
   </code>
 );
+
+// ─── Field icons ────────────────────────────────────────────────────────────
+
+const StoreIcon = (props: ComponentProps<"svg">) => (
+  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" {...props}>
+    <path d="M2 6h12v8H2V6ZM1 6l2-4h10l2 4M6 14V9h4v5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const TextIcon = (props: ComponentProps<"svg">) => (
+  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" {...props}>
+    <path d="M2 4h12M2 8h8M2 12h10" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+  </svg>
+);
+
+const CreditCardIcon = (props: ComponentProps<"svg">) => (
+  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" {...props}>
+    <rect x="1" y="3" width="14" height="10" rx="1" stroke="currentColor" strokeWidth="1.3" />
+    <path d="M1 7h14M4 10h2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+  </svg>
+);
+
+const TruckIcon = (props: ComponentProps<"svg">) => (
+  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" {...props}>
+    <path d="M1 4h9v7H1V4ZM10 6l3 2v3h-3V6ZM3.5 12a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM12.5 12a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const RefreshIcon = (props: ComponentProps<"svg">) => (
+  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" {...props}>
+    <path d="M13.5 3A6.5 6.5 0 0 0 2 8M2.5 13A6.5 6.5 0 0 0 14 8M13 1v3h-3M3 15v-3h3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const MailIcon = (props: ComponentProps<"svg">) => (
+  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" {...props}>
+    <rect x="1" y="3" width="14" height="10" rx="1" stroke="currentColor" strokeWidth="1.3" />
+    <path d="M1 4l7 5 7-5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+type FieldIconComponent = (props: ComponentProps<"svg">) => ReactElement;
+
+const definitionIcons: Record<string, FieldIconComponent> = {
+  merchantName: StoreIcon,
+  description: TextIcon,
+  logoUrl: PhotoIcon,
+  paymentMethods: CreditCardIcon,
+  shippingPolicy: TruckIcon,
+  returnPolicy: RefreshIcon,
+  contactEmail: MailIcon,
+  sustainability: SunsetIcon,
+  certifications: CheckBadgeIcon,
+};
 
 // ─── Definitions ────────────────────────────────────────────────────────────
 
@@ -294,7 +352,7 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
   return (
     <div className="space-y-4">
       {/* Score card */}
-      <div className="border border-accent-foreground bg-background-rich">
+      <div className="border border-accent-foreground bg-background">
         <div className="flex items-center gap-6 p-5">
           <div className="relative size-14 shrink-0">
             <svg
@@ -331,7 +389,7 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
           </div>
 
           <div className="flex-1">
-            <p className="font-medium text-foreground text-base">
+            <p className="font-medium text-base text-foreground">
               {filledCount} of {definitions.length} fields complete
             </p>
             <p className="mt-0.5 font-light text-foreground-dimmed text-sm">
@@ -363,9 +421,9 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
         <TabsPanel value="profile">
           <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
             {/* Fields */}
-            <div className="border border-accent-foreground bg-background-rich">
-              <div className="border-b border-accent-foreground px-4 py-2.5">
-                <p className="font-medium text-foreground text-base">
+            <div className="border border-accent-foreground bg-background">
+              <div className="border-accent-foreground border-b px-4 py-2.5">
+                <p className="font-medium text-base text-foreground">
                   Profile Fields
                 </p>
               </div>
@@ -374,13 +432,21 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
                   const value = state[field.key];
                   const isComplete = Boolean(value);
                   return (
-                    <div key={field.key} className="flex items-center gap-3 px-4 py-2.5">
-                      <span
-                        className={cn(
-                          "size-1.5 shrink-0 rounded-full transition-colors",
-                          isComplete ? "bg-primary" : "bg-accent-foreground",
-                        )}
-                      />
+                    <div
+                      key={field.key}
+                      className="flex items-center gap-3 px-4 py-2.5"
+                    >
+                      {(() => {
+                        const Icon = definitionIcons[field.key];
+                        return (
+                          <Icon
+                            className={cn(
+                              "size-3.5 shrink-0 transition-colors",
+                              isComplete ? "text-primary" : "text-foreground-dimmed/40",
+                            )}
+                          />
+                        );
+                      })()}
                       <div className="flex min-w-0 flex-1 items-center gap-3">
                         <label className="w-36 shrink-0 font-medium text-foreground-dimmed text-xs">
                           {field.label}
@@ -402,7 +468,7 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
                   );
                 })}
               </div>
-              <div className="flex items-center gap-2 border-t border-accent-foreground px-4 py-3">
+              <div className="flex items-center gap-2 border-accent-foreground border-t px-4 py-3">
                 <Button
                   variant="flat"
                   color="primary"
@@ -437,10 +503,10 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
             {/* Right column */}
             <div className="flex flex-col gap-4">
               {/* JSON Preview */}
-              <div className="border border-accent-foreground bg-background-rich">
-                <div className="flex items-center justify-between border-b border-accent-foreground px-4 py-2.5">
+              <div className="border border-accent-foreground bg-background">
+                <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-2.5">
                   <div className="flex items-center gap-2">
-                    <p className="font-medium text-foreground text-base">
+                    <p className="font-medium text-base text-foreground">
                       JSON Preview
                     </p>
                     {generation && (
@@ -473,9 +539,9 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
               </div>
 
               {/* Install instructions */}
-              <div className="border border-accent-foreground bg-background-rich">
-                <div className="border-b border-accent-foreground px-4 py-2.5">
-                  <p className="font-medium text-foreground text-base">
+              <div className="border border-accent-foreground bg-background">
+                <div className="border-accent-foreground border-b px-4 py-2.5">
+                  <p className="font-medium text-base text-foreground">
                     Install
                   </p>
                   <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
@@ -485,19 +551,27 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
                   </p>
                 </div>
                 <pre className="p-4 font-mono text-xs leading-relaxed">
-                  <span className="text-foreground-dimmed/50">{"// Next.js — app/.well-known/ucp/route.ts\n"}</span>
+                  <span className="text-foreground-dimmed/50">
+                    {"// Next.js — app/.well-known/ucp/route.ts\n"}
+                  </span>
                   <span className="text-blue-400">{"export const "}</span>
                   <span className="text-foreground">{"GET"}</span>
-                  <span className="text-foreground-dimmed/60">{" = () => "}</span>
+                  <span className="text-foreground-dimmed/60">
+                    {" = () => "}
+                  </span>
                   <span className="text-yellow-400">{"Response"}</span>
                   <span className="text-foreground-dimmed/60">{"."}</span>
                   <span className="text-yellow-400">{"json"}</span>
                   <span className="text-foreground-dimmed/60">{"("}</span>
                   <span className="text-green-400">{"ucpData"}</span>
                   <span className="text-foreground-dimmed/60">{");\n\n"}</span>
-                  <span className="text-foreground-dimmed/50">{"// Static / Nginx\n"}</span>
+                  <span className="text-foreground-dimmed/50">
+                    {"// Static / Nginx\n"}
+                  </span>
                   <span className="text-blue-400">{"location"}</span>
-                  <span className="text-foreground-dimmed/60">{" /.well-known/ucp {\n  "}</span>
+                  <span className="text-foreground-dimmed/60">
+                    {" /.well-known/ucp {\n  "}
+                  </span>
                   <span className="text-blue-400">{"alias"}</span>
                   <span className="text-green-400">{" /path/to/ucp.json"}</span>
                   <span className="text-foreground-dimmed/60">{";\n}"}</span>
@@ -509,11 +583,11 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
 
         {/* Products tab */}
         <TabsPanel value="products">
-          <div className="mt-4 border border-accent-foreground bg-background-rich">
-            <div className="flex items-center justify-between border-b border-accent-foreground px-4 py-3">
+          <div className="mt-4 border border-accent-foreground bg-background">
+            <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
               <div className="flex items-center gap-4">
                 <div>
-                  <p className="font-medium text-foreground text-base">
+                  <p className="font-medium text-base text-foreground">
                     {coveredCount} of {products.length} products covered
                   </p>
                   <div className="mt-1.5 h-0.5 w-28 bg-accent-foreground">
@@ -549,7 +623,7 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
                     "header-cell":
                       "px-4 py-2.5 text-left font-medium text-foreground-dimmed text-xs",
                     "body-row":
-                      "border-b border-accent-foreground last:border-b-0 hover:bg-background-dimmed/40 transition-colors",
+                      "border-accent-foreground border-b transition-colors last:border-b-0 hover:bg-background-dimmed/40",
                     "body-cell": "px-4 py-3 text-left text-foreground text-sm",
                   }}
                 >

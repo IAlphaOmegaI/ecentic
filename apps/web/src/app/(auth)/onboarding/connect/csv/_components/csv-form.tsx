@@ -15,17 +15,7 @@ import { useState } from "react";
 import { z } from "zod";
 import * as CsvIntegration from "@/server/app/integration/csv";
 
-type CsvProduct = {
-  title: string;
-  description?: string;
-  price?: string;
-  image?: string;
-  url?: string;
-  sku?: string;
-  id?: string;
-};
-
-const parseCSV = (text: string): CsvProduct[] => {
+const parseCSV = (text: string): CsvIntegration.Type[] => {
   const lines = text.trim().split(/\r?\n/);
   if (lines.length < 2) return [];
 
@@ -52,12 +42,16 @@ const parseCSV = (text: string): CsvProduct[] => {
 
     if (values.every((v) => v === "")) return [];
 
-    const row: Record<string, string> = {};
-    for (const [i, header] of headers.entries()) {
-      row[header] = values[i] ?? "";
-    }
+    const row = Object.fromEntries(
+      headers.map((header, i) => [header, values[i] ?? ""]),
+    ) as CsvIntegration.Type & {
+      name?: string;
+      image_link?: string;
+      image_url?: string;
+      link?: string;
+    };
 
-    const title = row.title ?? row.name ?? "";
+    const title = row.title ?? row.name;
     if (!title) return [];
 
     return [
@@ -79,6 +73,8 @@ const config = {
     shape: "file",
     mode: "single",
     accept: [".csv"],
+    label: "Upload a CSV file",
+    description: "Upload a CSV file to import your products.",
     validator: z.file(),
     classList: {
       control: {

@@ -20,7 +20,7 @@ export const Onboarding = ({
   points,
 }: Onboarding.Props) => (
   <motion.aside
-    className="sticky top-0 hidden h-screen overflow-hidden lg:flex lg:w-1/2"
+    className="sticky top-0 hidden h-screen overflow-hidden lg:flex lg:w-[55%]"
     initial={{ x: -30, opacity: 0 }}
     animate={{ x: 0, opacity: 1 }}
     transition={Spring.Gentle}

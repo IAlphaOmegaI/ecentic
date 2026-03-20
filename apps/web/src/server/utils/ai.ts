@@ -1,8 +1,6 @@
-"use server";
-
 import { createAzure } from "@ai-sdk/azure";
-import { generateText, Output } from "ai";
 import { createStreamableValue } from "@ai-sdk/rsc";
+import { generateText, Output, streamText } from "ai";
 import type { z } from "zod";
 
 const getModel = () => {
@@ -19,28 +17,56 @@ const getModel = () => {
   return azure("gpt-5.3-chat");
 };
 
-export const generate = async <T extends z.ZodTypeAny>(options: {
+const outputConfig = <T extends z.ZodTypeAny>(schema: T) =>
+  Output.object({ schema });
+
+export type GenerateOptions<T extends z.ZodTypeAny> = {
   system: string;
   prompt: string;
   schema: T;
-}): Promise<z.infer<T>> => {
-  const result = await generateText({
-    model: getModel(),
-    system: options.system,
-    prompt: options.prompt,
-    output: Output.object({
-      schema: options.schema,
-    }),
-
-    // tools: {
-    //   google_search: google.tools.googleSearch({}),
-    // },
-  });
-
-  return result.output as z.infer<T>;
 };
 
-export const stream = async <T>(
+export type GenerateStreamResult<T> = {
+  output: Promise<T>;
+  textStream: AsyncIterable<string>;
+};
+
+export function generate<T extends z.ZodTypeAny>(
+  options: GenerateOptions<T> & { stream?: false },
+): Promise<z.infer<T>>;
+
+export function generate<T extends z.ZodTypeAny>(
+  options: GenerateOptions<T> & { stream: true },
+): GenerateStreamResult<z.infer<T>>;
+
+export function generate<T extends z.ZodTypeAny>(
+  options: GenerateOptions<T> & { stream?: boolean },
+): Promise<z.infer<T>> | GenerateStreamResult<z.infer<T>> {
+  const { system, prompt, schema, stream: useStream = false } = options;
+
+  if (!useStream) {
+    return generateText({
+      model: getModel(),
+      system,
+      prompt,
+      output: outputConfig(schema),
+    }).then((result) => result.output as z.infer<T>);
+  }
+
+  const result = streamText({
+    model: getModel(),
+    system,
+    prompt,
+    output: outputConfig(schema),
+  });
+
+  return {
+    output: result.output as Promise<z.infer<T>>,
+    textStream: result.textStream,
+  };
+}
+
+export const stream = <T>(
   callback: (update: (value: T) => void) => Promise<void>,
 ) => {
   const streamable = createStreamableValue<T>();
@@ -61,6 +87,5 @@ export const stream = async <T>(
       streamable.error(error);
     }
   })();
-
   return { output: streamable.value };
 };

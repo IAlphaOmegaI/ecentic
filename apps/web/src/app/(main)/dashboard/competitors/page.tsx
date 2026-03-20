@@ -5,35 +5,55 @@ import * as Competitor from "@/server/app/competitor";
 import { CompetitorsTable } from "./_components/competitors-table";
 
 export default () => (
-  <div className="p-6">
-    <div className="mb-6 flex items-center justify-between">
-      <div>
-        <h1 className="font-medium text-foreground text-xl">
-          Competitor Intelligence
-        </h1>
-        <p className="font-light text-foreground-dimmed text-sm">
-          Track and analyze your competitive landscape
-        </p>
+  <div className="flex flex-col">
+    <div className="mx-8 border-x border-accent-foreground">
+      {/* Title */}
+      <div className="-mx-8 border-b border-accent-foreground">
+        <div className="mx-8 flex items-center justify-between px-6 py-8">
+          <div>
+            <h1 className="font-medium text-foreground text-3xl">
+              Competitor Intelligence
+            </h1>
+            <p className="font-light text-foreground-dimmed text-sm">
+              Track and analyze your competitive landscape
+            </p>
+          </div>
+          <Link
+            href="/onboarding/competitors"
+            className="flex items-center gap-1.5 bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primary/90"
+          >
+            <Next />
+          </Link>
+        </div>
       </div>
-      <Link
-        href="/onboarding/competitors"
-        className="flex items-center gap-1.5 bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primary/90"
-      >
-        <Next />
-      </Link>
+
+      {/* Stats */}
+      <div className="-mx-8 border-b border-accent-foreground">
+        <div className="mx-8">
+          <Suspense fallback={<StatsSkeleton />}>
+            <Statistics />
+          </Suspense>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="-mx-8 border-b border-accent-foreground">
+        <div className="mx-8">
+          <Suspense fallback={<TableSkeleton />}>
+            <Competitors />
+          </Suspense>
+        </div>
+      </div>
+
+      {/* Insights */}
+      <div className="-mx-8 border-b border-accent-foreground">
+        <div className="mx-8 px-6 py-6">
+          <Suspense fallback={<InsightsSkeleton />}>
+            <Insights />
+          </Suspense>
+        </div>
+      </div>
     </div>
-
-    <Suspense fallback={<StatsSkeleton />}>
-      <Statistics />
-    </Suspense>
-
-    <Suspense fallback={<TableSkeleton />}>
-      <Competitors />
-    </Suspense>
-
-    <Suspense fallback={<InsightsSkeleton />}>
-      <Insights />
-    </Suspense>
   </div>
 );
 
@@ -52,8 +72,8 @@ const Statistics = async () => {
       : null;
 
   return (
-    <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-      <div className="border border-accent-foreground bg-background-rich p-4">
+    <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-3">
+      <div className="bg-background p-4">
         <p className="font-light text-foreground-dimmed text-xs uppercase tracking-wide">
           Brands Tracked
         </p>
@@ -61,7 +81,7 @@ const Statistics = async () => {
           {brands.length}
         </p>
       </div>
-      <div className="border border-accent-foreground bg-background-rich p-4">
+      <div className="bg-background p-4">
         <p className="font-light text-foreground-dimmed text-xs uppercase tracking-wide">
           Winning Against
         </p>
@@ -69,7 +89,7 @@ const Statistics = async () => {
           {winning} of {brands.length}
         </p>
       </div>
-      <div className="border border-accent-foreground bg-background-rich p-4">
+      <div className="bg-background p-4">
         <p className="font-light text-foreground-dimmed text-xs uppercase tracking-wide">
           Most Dangerous
         </p>
@@ -97,8 +117,8 @@ const Competitors = async () => {
 
   if (data.brands.length === 0)
     return (
-      <div className="mb-6 border border-accent-foreground bg-background-rich p-8 text-center">
-        <p className="font-medium text-foreground text-sm">
+      <div className="bg-background p-8 text-center">
+        <p className="font-medium text-foreground text-base">
           No competitors tracked yet
         </p>
         <p className="mt-1 font-light text-foreground-dimmed text-xs">
@@ -107,11 +127,7 @@ const Competitors = async () => {
       </div>
     );
 
-  return (
-    <div className="mb-6">
-      <CompetitorsTable rows={data.brands} />
-    </div>
-  );
+  return <CompetitorsTable rows={data.brands} />;
 };
 
 const Insights = async () => {
@@ -119,24 +135,20 @@ const Insights = async () => {
   if (!data?.scan?.topFinding) return null;
 
   return (
-    <div className="border border-accent-foreground bg-background-rich">
-      <div className="border-accent-foreground border-b px-4 py-3">
-        <p className="font-medium text-foreground text-sm">
-          Latest Scan Insights
-        </p>
-      </div>
-      <div className="px-4 py-3">
-        <p className="font-light text-foreground text-sm">
-          {data.scan.topFinding}
-        </p>
-        <div className="mt-2 flex items-center gap-4">
-          <span className="font-light text-foreground-dimmed text-xs">
-            {data.scan.wins}W / {data.scan.losses}L
-          </span>
-          <span className="font-light text-foreground-dimmed text-xs">
-            {data.scan.completedSimulations} simulations
-          </span>
-        </div>
+    <div>
+      <p className="mb-2 font-medium text-foreground text-base">
+        Latest Scan Insights
+      </p>
+      <p className="font-light text-foreground text-sm">
+        {data.scan.topFinding}
+      </p>
+      <div className="mt-2 flex items-center gap-4">
+        <span className="font-light text-foreground-dimmed text-xs">
+          {data.scan.wins}W / {data.scan.losses}L
+        </span>
+        <span className="font-light text-foreground-dimmed text-xs">
+          {data.scan.completedSimulations} simulations
+        </span>
       </div>
     </div>
   );
@@ -146,12 +158,9 @@ const StatsSkeleton = () => {
   const keys = ["brands", "winning", "dangerous"];
 
   return (
-    <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+    <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-3">
       {keys.map((key) => (
-        <div
-          key={key}
-          className="border border-accent-foreground bg-background-rich p-4"
-        >
+        <div key={key} className="bg-background p-4">
           <div className="h-3 w-24 animate-pulse bg-foreground/10" />
           <div className="mt-3 h-8 w-16 animate-pulse bg-foreground/10" />
         </div>
@@ -164,7 +173,7 @@ const TableSkeleton = () => {
   const keys = ["row-a", "row-b", "row-c", "row-d"];
 
   return (
-    <div className="mb-6 border border-accent-foreground bg-background-rich">
+    <div>
       <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
         <div className="h-4 w-32 animate-pulse bg-foreground/10" />
       </div>
@@ -183,17 +192,11 @@ const TableSkeleton = () => {
 };
 
 const InsightsSkeleton = () => (
-  <div className="border border-accent-foreground bg-background-rich">
-    <div className="border-accent-foreground border-b px-4 py-3">
-      <div className="h-4 w-40 animate-pulse bg-foreground/10" />
-    </div>
-    <div className="px-4 py-3">
-      <div className="h-4 w-full animate-pulse bg-foreground/10" />
-      <div className="mt-2 h-3 w-32 animate-pulse bg-foreground/10" />
-    </div>
+  <div>
+    <div className="h-4 w-40 animate-pulse bg-foreground/10" />
+    <div className="mt-2 h-4 w-full animate-pulse bg-foreground/10" />
+    <div className="mt-2 h-3 w-32 animate-pulse bg-foreground/10" />
   </div>
 );
 
-const Next = () => {
-  return <>Add Competitor</>;
-};
+const Next = () => <>Add Competitor</>;
