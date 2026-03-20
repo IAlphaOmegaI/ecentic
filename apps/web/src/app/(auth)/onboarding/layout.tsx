@@ -145,7 +145,7 @@ export default ({ children }: PropsWithChildren) => {
         points={content.points}
       />
 
-      <main className="flex flex-1 flex-col overflow-hidden bg-background h-full">
+      <main className="flex h-full flex-1 flex-col overflow-hidden bg-background">
         <div className="flex items-center justify-center border-accent-foreground border-b px-8">
           <div className="mx-auto flex w-full items-center justify-center gap-0 border-accent-foreground border-x py-2">
             {steps.map((step, index) => {

@@ -48,7 +48,7 @@ export const CompetitorReview = ({
   return (
     <Motion.Stagger
       stagger={0.05}
-      className="flex flex-1 flex-col overflow-hidden"
+      className="flex h-full flex-col overflow-hidden"
     >
       <Motion.Item className="border-accent-foreground border-b px-8">
         <div className="border-accent-foreground border-x p-6">
@@ -60,7 +60,7 @@ export const CompetitorReview = ({
         </div>
       </Motion.Item>
 
-      <Motion.Item className="px-8 flex-1">
+      <Motion.Item className="min-h-0 flex-1 px-8">
         <CompetitorList
           competitors={competitors}
           onToggle={handleToggle}

@@ -115,6 +115,7 @@ export type ScanEvent =
       total: number;
       wins: number;
       losses: number;
+      modelWins: Record<string, { wins: number; losses: number }>;
     }
   | { kind: "model_status"; model: string; status: "running" | "complete" }
   | { kind: "error"; text: string }
@@ -131,7 +132,6 @@ export type ScanEvent =
       productCount: number;
       results: SimulationResult[];
     };
-
 export const runScan = withAuthentication(async (context) => {
   const [products, competitors] = await Promise.all([
     Product.find(Environment.SERVER, {
@@ -206,6 +206,9 @@ export const runScan = withAuthentication(async (context) => {
       total: totalSimulations,
       wins: 0,
       losses: 0,
+      modelWins: Object.fromEntries(
+        perspectives.map((p) => [p.label, { wins: 0, losses: 0 }]),
+      ),
     });
 
     const tasks = products.data.flatMap((product) =>
@@ -303,12 +306,28 @@ export const runScan = withAuthentication(async (context) => {
         (record) => record.winner === "product",
       ).length;
 
+      const modelWins = Object.fromEntries(
+        perspectives.map((perspective) => {
+          const modelResults = results.filter(
+            (record) => record.model === perspective.id,
+          );
+          const modelWinsCount = modelResults.filter(
+            (record) => record.winner === "product",
+          ).length;
+          return [
+            perspective.label,
+            { wins: modelWinsCount, losses: modelResults.length - modelWinsCount },
+          ];
+        }),
+      );
+
       update({
         kind: "progress",
         completed: results.length,
         total: totalSimulations,
         wins,
         losses: results.length - wins,
+        modelWins,
       });
     }
 

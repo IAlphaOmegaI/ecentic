@@ -19,7 +19,7 @@ export namespace PrePhase {
 export const PrePhase = ({ children, onRun, isRunning }: PrePhase.Props) => (
   <motion.div
     key="pre"
-    className="flex flex-1 flex-col overflow-hidden"
+    className="flex flex-1 flex-col overflow-y-auto"
     initial={{ opacity: 0, y: 16 }}
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0, y: -16 }}

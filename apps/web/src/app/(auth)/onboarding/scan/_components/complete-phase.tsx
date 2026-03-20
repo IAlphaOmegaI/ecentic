@@ -1,32 +1,23 @@
 "use client";
 
-import { ArrowRightIcon } from "@zenncore/icons";
+import {
+  ArrowLeftIcon,
+  LoaderIcon,
+  ShareIcon,
+  ShoppingCartIcon,
+} from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import { motion } from "motion/react";
-import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Link, { useLinkStatus } from "next/link";
 import { Motion } from "@/components/motion";
 import { Spring, Stagger } from "@/lib/animations";
 
-const metadatas = [
-  {
-    id: "gpt4",
-    label: "GPT-4",
-    color: "text-blue-500",
-    bgColor: "bg-blue-500",
-  },
-  {
-    id: "claude",
-    label: "Claude",
-    color: "text-orange-500",
-    bgColor: "bg-orange-500",
-  },
-  {
-    id: "gemini",
-    label: "Gemini",
-    color: "text-green-500",
-    bgColor: "bg-green-500",
-  },
+const models = [
+  { id: "gpt4", label: "GPT-4", logo: "/images/chatgpt.svg" },
+  { id: "claude", label: "Claude", logo: "/images/claude.svg" },
+  { id: "gemini", label: "Gemini", logo: "/images/gemini.svg" },
 ] as const;
 
 export namespace CompletePhase {
@@ -51,8 +42,6 @@ export const CompletePhase = ({
   topFinding,
   products: finalProductCount,
 }: CompletePhase.Props) => {
-  const router = useRouter();
-
   const winRate =
     wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0;
 
@@ -87,79 +76,54 @@ export const CompletePhase = ({
       exit={{ opacity: 0 }}
       transition={Spring.Gentle}
     >
-      <div className="mx-8 flex flex-1 flex-col overflow-y-auto border-accent-foreground border-x px-6 py-12">
-        <Motion.Stagger stagger={0.08} className="mx-auto w-full max-w-2xl">
-          <Motion.Up className="mb-8 grid grid-cols-[1fr_auto] gap-px border border-accent-foreground bg-accent-foreground">
-            <div className="bg-background-rich px-6 py-8">
-              <p className="mb-2 font-light text-foreground-dimmed text-xs uppercase tracking-widest">
-                Overall Win Rate
-              </p>
-              <motion.p
-                className={cn(
-                  "font-semibold text-[80px] leading-none",
-                  resultColor,
-                )}
-                initial={{ scale: 0.5, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ ...Spring.Gentle, delay: 0.15 }}
-              >
-                {winRate}%
-              </motion.p>
-              <p className="mt-4 max-w-xs font-light text-foreground text-sm">
-                {resultMessage}
-              </p>
-            </div>
-            <div className="flex flex-col divide-y divide-accent-foreground bg-background-rich">
-              {[
-                { label: "Wins", value: wins, color: "text-success" },
-                { label: "Losses", value: losses, color: "text-error" },
-                {
-                  label: "Products",
-                  value: finalProductCount,
-                  color: "text-foreground",
-                },
-              ].map((stat, index) => (
-                <motion.div
-                  key={stat.label}
-                  className="flex flex-1 flex-col items-center justify-center px-8 py-4"
-                  initial={{ opacity: 0, x: 12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ ...Spring.Snappy, delay: 0.2 + index * 0.07 }}
-                >
-                  <span className={cn("font-semibold text-3xl", stat.color)}>
-                    {stat.value}
-                  </span>
-                  <span className="mt-0.5 font-light text-foreground-dimmed text-xs">
-                    {stat.label}
-                  </span>
-                </motion.div>
-              ))}
-            </div>
-          </Motion.Up>
+      <Motion.Stagger
+        stagger={0.05}
+        className="flex flex-1 flex-col overflow-hidden"
+      >
+        <Motion.Item className="border-accent-foreground border-b px-8">
+          <div className="border-accent-foreground border-x p-6">
+            <h1 className="font-medium text-4xl text-foreground">
+              Scan complete.
+            </h1>
+            <p className="font-light text-2xl text-foreground-dimmed">
+              {resultMessage}
+            </p>
+          </div>
+        </Motion.Item>
 
-          <Motion.Up className="mb-4 border border-accent-foreground bg-background-rich">
-            <div className="border-accent-foreground border-b px-4 py-3">
-              <p className="font-medium text-foreground text-sm">
-                Win rate by model
-              </p>
-            </div>
-            <div className="grid grid-cols-3 divide-x divide-accent-foreground">
-              {metadatas.map((meta, index) => {
-                const rates = winRates[meta.id];
-                const rate = rates?.rate ?? 0;
-                return (
-                  <div key={meta.id} className="flex flex-col gap-3 px-4 py-4">
-                    <div className="flex items-end justify-between">
-                      <span className="font-light text-foreground-dimmed text-xs">
-                        {meta.label}
-                      </span>
-                      <span className="font-semibold text-foreground text-lg">
-                        {rate}%
-                      </span>
-                    </div>
-                    <div className="h-1.5 w-full bg-accent-foreground">
+        <Motion.Item className="border-accent-foreground border-b px-8">
+          <motion.div
+            className="grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-x"
+            variants={Stagger.Container(0.06)}
+            initial="hidden"
+            animate="visible"
+          >
+            {models.map(({ id, label, logo }, index) => {
+              const rates = winRates[id];
+              const rate = rates?.rate ?? 0;
+              return (
+                <motion.div
+                  key={id}
+                  className="flex aspect-square flex-col bg-background-dimmed p-4"
+                  variants={Stagger.Item}
+                >
+                  <Image src={logo} alt={label} width={64} height={64} />
+                  <span className="mt-auto text-2xl text-foreground">
+                    {label}
+                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="font-light text-success">
+                      {rates?.wins ?? 0} W
+                    </span>
+                    <span className="text-foreground-dimmed/30">—</span>
+                    <span className="font-light text-error">
+                      {rates?.losses ?? 0} L
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-1 flex-1 bg-accent-foreground">
                       <motion.div
-                        className={cn("h-full", meta.bgColor)}
+                        className="h-full bg-primary"
                         initial={{ width: 0 }}
                         animate={{ width: `${rate}%` }}
                         transition={{
@@ -168,18 +132,48 @@ export const CompletePhase = ({
                         }}
                       />
                     </div>
+                    <span className="font-light text-foreground-dimmed">
+                      {rate}%
+                    </span>
                   </div>
-                );
-              })}
-            </div>
-          </Motion.Up>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        </Motion.Item>
 
-          {topFinding && (
-            <Motion.Up className="mb-8 border border-primary/20 bg-primary/5 px-5 py-4">
-              <p className="mb-1.5 font-medium text-primary text-xs uppercase tracking-widest">
+        <Motion.Item className="border-accent-foreground border-b px-8">
+          <div className="grid grid-cols-2 gap-px border-accent-foreground border-x bg-accent-foreground">
+            <div className="bg-background-dimmed p-4">
+              <p className={cn("font-medium text-2xl", resultColor)}>
+                {winRate}%
+              </p>
+              <p className="font-light text-foreground-dimmed">Win rate</p>
+            </div>
+            <div className="bg-background-dimmed p-4">
+              <p className="font-medium text-2xl text-foreground">
+                {finalProductCount}
+              </p>
+              <p className="font-light text-foreground-dimmed">Products</p>
+            </div>
+            <div className="bg-background-dimmed p-4">
+              <p className="font-medium text-2xl text-success">{wins}</p>
+              <p className="font-light text-foreground-dimmed">Wins</p>
+            </div>
+            <div className="bg-background-dimmed p-4">
+              <p className="font-medium text-2xl text-error">{losses}</p>
+              <p className="font-light text-foreground-dimmed">Losses</p>
+            </div>
+          </div>
+        </Motion.Item>
+
+        {topFinding && (
+          <Motion.Item className="border-accent-foreground border-b px-8">
+            <div className="border-primary/20 border-x bg-primary/5 p-6">
+              <p className="mb-1.5 font-medium text-primary uppercase tracking-widest">
                 Top Finding
               </p>
-              <p className="font-light text-foreground text-sm">
+              <p className="font-light text-foreground">
                 {topFinding.name} loses on{" "}
                 <span className="font-medium text-foreground">
                   {topFinding.missingAttributes.join(" and ")}
@@ -187,43 +181,83 @@ export const CompletePhase = ({
                 — {topFinding.impactDescription} Costs you{" "}
                 {topFinding.lossPercentage}% of simulations.
               </p>
-            </Motion.Up>
-          )}
+            </div>
+          </Motion.Item>
+        )}
 
-          <motion.div
-            className="flex flex-col gap-2"
-            variants={Stagger.Container(0.07)}
-          >
-            <motion.div
-              variants={Stagger.Item}
-              whileHover={{ y: -1 }}
-              whileTap={{ scale: 0.98 }}
-              transition={Spring.Snappy}
+        <Motion.Item className="mt-auto px-8">
+          <div className="flex items-center justify-between border-accent-foreground border-x p-6">
+            <Button
+              variant="outline"
+              color="accent"
+              type="button"
+              render={<Link href="/onboarding/scan" />}
             >
+              <Back />
+            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                color="accent"
+                type="button"
+                render={<Link href="/onboarding/share" />}
+              >
+                <Share />
+              </Button>
               <Button
                 variant="flat"
                 color="primary"
                 type="button"
-                onClick={() => router.push("/dashboard")}
-                className="flex w-full items-center justify-center gap-2 py-3.5 font-medium text-base"
+                render={<Link href="/onboarding/buy" />}
               >
-                Go to Dashboard
-                <ArrowRightIcon className="size-4" />
+                <Buy />
               </Button>
-            </motion.div>
-            <motion.button
-              variants={Stagger.Item}
-              type="button"
-              className="w-full border border-accent-foreground bg-background-rich py-2.5 font-light text-foreground text-sm transition-colors hover:bg-background-dimmed"
-              whileHover={{ y: -1 }}
-              whileTap={{ scale: 0.98 }}
-              transition={Spring.Snappy}
-            >
-              Share Results
-            </motion.button>
-          </motion.div>
-        </Motion.Stagger>
-      </div>
+            </div>
+          </div>
+        </Motion.Item>
+      </Motion.Stagger>
     </motion.div>
+  );
+};
+
+const Back = () => {
+  const { pending } = useLinkStatus();
+  return (
+    <>
+      {pending ? (
+        <LoaderIcon className="size-4 animate-spin" />
+      ) : (
+        <ArrowLeftIcon className="size-4" />
+      )}
+      Back to scan
+    </>
+  );
+};
+
+const Share = () => {
+  const { pending } = useLinkStatus();
+  return (
+    <>
+      {pending ? (
+        <LoaderIcon className="size-4 animate-spin" />
+      ) : (
+        <ShareIcon className="size-4" />
+      )}
+      Share
+    </>
+  );
+};
+
+const Buy = () => {
+  const { pending } = useLinkStatus();
+  return (
+    <>
+      {pending ? (
+        <LoaderIcon className="size-4 animate-spin" />
+      ) : (
+        <ShoppingCartIcon className="size-4" />
+      )}
+      Buy Now
+    </>
   );
 };
