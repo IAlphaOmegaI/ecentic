@@ -27,12 +27,19 @@ export default () => (
         </div>
       </div>
 
-      {/* Stats + Table — share one crossing section so outer borders align */}
+      {/* Stats */}
       <div className="-mx-8 border-b border-accent-foreground">
         <div className="mx-8">
           <Suspense fallback={<StatsSkeleton />}>
             <Statistics />
           </Suspense>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="h-8" />
+      <div className="-mx-8 border-t border-b border-accent-foreground">
+        <div className="mx-8">
           <Suspense fallback={<TableSkeleton />}>
             <Products />
           </Suspense>
@@ -40,7 +47,8 @@ export default () => (
       </div>
 
       {/* Insights */}
-      <div className="-mx-8 border-b border-accent-foreground">
+      <div className="h-8" />
+      <div className="-mx-8 border-t border-b border-accent-foreground">
         <div className="mx-8 px-6 py-6">
           <Suspense fallback={<InsightsSkeleton />}>
             <Insights />

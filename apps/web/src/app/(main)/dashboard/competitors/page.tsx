@@ -46,7 +46,8 @@ export default () => (
       </div>
 
       {/* Insights */}
-      <div className="-mx-8 border-b border-accent-foreground">
+      <div className="h-8" />
+      <div className="-mx-8 border-t border-b border-accent-foreground">
         <div className="mx-8 px-6 py-6">
           <Suspense fallback={<InsightsSkeleton />}>
             <Insights />

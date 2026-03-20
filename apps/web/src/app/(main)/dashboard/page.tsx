@@ -285,35 +285,35 @@ const WinRateLineChart = ({
           strokeLinejoin="round"
         />
         {hoverIndex !== null && (
-          <>
-            <line
-              x1={pts[hoverIndex][0]}
-              y1={0}
-              x2={pts[hoverIndex][0]}
-              y2={H}
-              stroke="currentColor"
-              strokeOpacity="0.15"
-              strokeWidth="1"
-            />
-            <circle
-              cx={pts[hoverIndex][0]}
-              cy={pts[hoverIndex][1]}
-              r="3"
-              fill="white"
-              stroke="rgb(21,114,250)"
-              strokeWidth="2"
-            />
-          </>
+          <line
+            x1={pts[hoverIndex][0]}
+            y1={0}
+            x2={pts[hoverIndex][0]}
+            y2={H}
+            stroke="currentColor"
+            strokeOpacity="0.15"
+            strokeWidth="1"
+          />
         )}
       </svg>
       {hoverIndex !== null && (
-        <div
-          className="pointer-events-none absolute -top-8 z-10 -translate-x-1/2 whitespace-nowrap border border-accent-foreground bg-background-rich px-2 py-1 text-foreground text-xs shadow-sm"
-          style={{ left: `${(hoverIndex / (data.length - 1)) * 100}%` }}
-        >
-          {labels[hoverIndex]} ·{" "}
-          <span className="font-medium text-primary">{data[hoverIndex]}%</span>
-        </div>
+        <>
+          {/* Dot rendered outside SVG to stay round regardless of SVG stretch */}
+          <div
+            className="pointer-events-none absolute z-10 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-primary bg-white"
+            style={{
+              left: `${(pts[hoverIndex][0] / W) * 100}%`,
+              top: `${(pts[hoverIndex][1] / H) * 100}%`,
+            }}
+          />
+          <div
+            className="pointer-events-none absolute -top-8 z-10 -translate-x-1/2 whitespace-nowrap border border-accent-foreground bg-background-rich px-2 py-1 text-foreground text-xs shadow-sm"
+            style={{ left: `${(hoverIndex / (data.length - 1)) * 100}%` }}
+          >
+            {labels[hoverIndex]} ·{" "}
+            <span className="font-medium text-primary">{data[hoverIndex]}%</span>
+          </div>
+        </>
       )}
     </div>
   );
@@ -508,7 +508,8 @@ export default () => {
         </div>
 
         {/* Chart + Activity */}
-        <div className="-mx-8 border-b border-accent-foreground">
+        <div className="h-8" />
+        <div className="-mx-8 border-t border-b border-accent-foreground">
           <motion.div
             className="mx-8 grid grid-cols-1 gap-px bg-accent-foreground xl:grid-cols-3"
             initial={{ opacity: 0, y: 12 }}
@@ -695,7 +696,8 @@ export default () => {
         </div>
 
         {/* Product Win Rates table */}
-        <div className="-mx-8 border-b border-accent-foreground">
+        <div className="h-8" />
+        <div className="-mx-8 border-t border-b border-accent-foreground">
           <motion.div
             className="mx-8"
             initial={{ opacity: 0, y: 12 }}
