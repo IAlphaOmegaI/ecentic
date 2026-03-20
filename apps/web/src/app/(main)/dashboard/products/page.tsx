@@ -7,12 +7,12 @@ import { ProductsTable } from "./_components/products-table";
 
 export default () => (
   <div className="flex flex-col">
-    <div className="mx-8 border-x border-accent-foreground">
+    <div className="mx-8 border-accent-foreground border-x">
       {/* Title */}
-      <div className="-mx-8 border-b border-accent-foreground">
+      <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8 flex items-center justify-between px-6 py-8">
           <div>
-            <h1 className="font-medium text-foreground text-3xl">Products</h1>
+            <h1 className="font-medium text-3xl text-foreground">Products</h1>
             <p className="font-light text-foreground-dimmed text-sm">
               Monitor how AI agents evaluate your product listings
             </p>
@@ -28,7 +28,7 @@ export default () => (
       </div>
 
       {/* Stats + Table — share one crossing section so outer borders align */}
-      <div className="-mx-8 border-b border-accent-foreground">
+      <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8">
           <Suspense fallback={<StatsSkeleton />}>
             <Statistics />
@@ -40,7 +40,7 @@ export default () => (
       </div>
 
       {/* Insights */}
-      <div className="-mx-8 border-b border-accent-foreground">
+      <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8 px-6 py-6">
           <Suspense fallback={<InsightsSkeleton />}>
             <Insights />
@@ -72,7 +72,7 @@ const Statistics = async () => {
   ).length;
 
   return (
-    <div className="grid grid-cols-1 gap-px border-b border-accent-foreground bg-accent-foreground sm:grid-cols-4">
+    <div className="grid grid-cols-1 gap-px border-accent-foreground border-b bg-accent-foreground sm:grid-cols-4">
       <div className="bg-background p-4">
         <p className="font-light text-foreground-dimmed text-xs uppercase tracking-wide">
           Total Products
@@ -115,7 +115,7 @@ const Products = async () => {
   if (data.products.length === 0)
     return (
       <div className="bg-background p-8 text-center">
-        <p className="font-medium text-foreground text-base">
+        <p className="font-medium text-base text-foreground">
           No products imported yet
         </p>
         <p className="mt-1 font-light text-foreground-dimmed text-xs">
@@ -133,7 +133,7 @@ const Insights = async () => {
 
   return (
     <div>
-      <p className="mb-2 font-medium text-foreground text-base">
+      <p className="mb-2 font-medium text-base text-foreground">
         Latest Scan Insights
       </p>
       <p className="font-light text-foreground text-sm">

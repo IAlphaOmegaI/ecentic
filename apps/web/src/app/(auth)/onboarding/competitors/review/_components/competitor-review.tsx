@@ -50,10 +50,10 @@ export const CompetitorReview = ({
       stagger={0.05}
       className="flex flex-1 flex-col overflow-hidden"
     >
-      <Motion.Item className="px-8 border-accent-foreground border-b">
+      <Motion.Item className="border-accent-foreground border-b px-8">
         <div className="border-accent-foreground border-x p-6">
           {children}
-          <div className="border border-primary/20 w-fit bg-primary/5 px-4 py-2.5 text-primary text-sm mt-4">
+          <div className="mt-4 w-fit border border-primary/20 bg-primary/5 px-4 py-2.5 text-primary text-sm">
             {competitors.length} competitor products across {brands.size} brands
             — {selected} selected
           </div>
@@ -68,7 +68,7 @@ export const CompetitorReview = ({
         />
       </Motion.Item>
 
-      <Motion.Item className="px-8 border-accent-foreground border-t">
+      <Motion.Item className="border-accent-foreground border-t px-8">
         <div className="flex w-full items-center justify-between border-accent-foreground border-x p-6">
           <Button
             variant="outline"

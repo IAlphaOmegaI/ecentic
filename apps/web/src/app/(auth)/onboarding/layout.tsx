@@ -145,9 +145,9 @@ export default ({ children }: PropsWithChildren) => {
         points={content.points}
       />
 
-      <main className="flex flex-1 flex-col overflow-hidden bg-background">
+      <main className="flex flex-1 flex-col overflow-hidden bg-background h-full">
         <div className="flex items-center justify-center border-accent-foreground border-b px-8">
-          <div className="mx-auto flex w-full w-full items-center justify-center gap-0 border-accent-foreground border-x py-2">
+          <div className="mx-auto flex w-full items-center justify-center gap-0 border-accent-foreground border-x py-2">
             {steps.map((step, index) => {
               const isCompleted = index < current;
               const isCurrent = index === current;

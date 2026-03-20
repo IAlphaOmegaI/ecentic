@@ -19,12 +19,11 @@ import {
 import { motion } from "motion/react";
 import Link, { useLinkStatus } from "next/link";
 import { useRouter } from "next/navigation";
-import { useTransition, type ReactNode } from "react";
-import { useState } from "react";
+import { type ReactNode, useState, useTransition } from "react";
+import { Motion } from "@/components/motion";
 import { Image } from "@/components/ui/image";
 import { Stagger, Table as TableAnimations } from "@/lib/animations";
 import type * as Product from "@/server/app/product";
-import { Motion } from "@/components/motion";
 
 const limit = 10;
 
@@ -167,7 +166,7 @@ export const ProductSelector = ({
       </Motion.Item>
 
       <Motion.Item className="flex-1 overflow-hidden border-accent-foreground border-y px-8">
-        <div className="border-x h-full overflow-auto border-accent-foreground">
+        <div className="h-full overflow-auto border-accent-foreground border-x">
           <div className="bg-background-rich">
             <Table className="w-full [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0">
               <TableHeader>

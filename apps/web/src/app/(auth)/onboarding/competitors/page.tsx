@@ -1,13 +1,10 @@
 import { parseSearchParam, unwrapResult } from "@zenncore/utils";
+import type { SearchParamsProps } from "@zenncore/web/types";
 import { Motion } from "@/components/motion";
 import * as Competitor from "@/server/app/competitor";
 import { CompetitorManager } from "./_components/competitor-manager";
 
-export default async ({
-  searchParams,
-}: {
-  searchParams: Promise<{ products?: string }>;
-}) => {
+export default async ({ searchParams }: SearchParamsProps<"products">) => {
   const params = await searchParams;
 
   const products = parseSearchParam(params.products, "list", []);

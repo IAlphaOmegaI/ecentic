@@ -1,6 +1,12 @@
 "use client";
 
-import { CheckBadgeIcon, CheckIcon, CopyIcon, PhotoIcon, SunsetIcon } from "@zenncore/icons";
+import {
+  CheckBadgeIcon,
+  CheckIcon,
+  CopyIcon,
+  PhotoIcon,
+  SunsetIcon,
+} from "@zenncore/icons";
 import { cn, removeUndefinedEntries } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
@@ -18,8 +24,8 @@ import {
   TabsPanel,
 } from "@zenncore/web/components/tabs";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
-import { useCallback, useMemo, useState } from "react";
 import type { ComponentProps, ReactElement } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type * as Ucp from "@/server/app/intelligence/ucp";
 import {
   generateAllProductStructuredData,
@@ -107,39 +113,89 @@ const JsonCode = ({ json }: { json: string }) => (
 
 const StoreIcon = (props: ComponentProps<"svg">) => (
   <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" {...props}>
-    <path d="M2 6h12v8H2V6ZM1 6l2-4h10l2 4M6 14V9h4v5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+    <path
+      d="M2 6h12v8H2V6ZM1 6l2-4h10l2 4M6 14V9h4v5"
+      stroke="currentColor"
+      strokeWidth="1.3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );
 
 const TextIcon = (props: ComponentProps<"svg">) => (
   <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" {...props}>
-    <path d="M2 4h12M2 8h8M2 12h10" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+    <path
+      d="M2 4h12M2 8h8M2 12h10"
+      stroke="currentColor"
+      strokeWidth="1.3"
+      strokeLinecap="round"
+    />
   </svg>
 );
 
 const CreditCardIcon = (props: ComponentProps<"svg">) => (
   <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" {...props}>
-    <rect x="1" y="3" width="14" height="10" rx="1" stroke="currentColor" strokeWidth="1.3" />
-    <path d="M1 7h14M4 10h2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+    <rect
+      x="1"
+      y="3"
+      width="14"
+      height="10"
+      rx="1"
+      stroke="currentColor"
+      strokeWidth="1.3"
+    />
+    <path
+      d="M1 7h14M4 10h2"
+      stroke="currentColor"
+      strokeWidth="1.3"
+      strokeLinecap="round"
+    />
   </svg>
 );
 
 const TruckIcon = (props: ComponentProps<"svg">) => (
   <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" {...props}>
-    <path d="M1 4h9v7H1V4ZM10 6l3 2v3h-3V6ZM3.5 12a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM12.5 12a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+    <path
+      d="M1 4h9v7H1V4ZM10 6l3 2v3h-3V6ZM3.5 12a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM12.5 12a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+      stroke="currentColor"
+      strokeWidth="1.3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );
 
 const RefreshIcon = (props: ComponentProps<"svg">) => (
   <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" {...props}>
-    <path d="M13.5 3A6.5 6.5 0 0 0 2 8M2.5 13A6.5 6.5 0 0 0 14 8M13 1v3h-3M3 15v-3h3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+    <path
+      d="M13.5 3A6.5 6.5 0 0 0 2 8M2.5 13A6.5 6.5 0 0 0 14 8M13 1v3h-3M3 15v-3h3"
+      stroke="currentColor"
+      strokeWidth="1.3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );
 
 const MailIcon = (props: ComponentProps<"svg">) => (
   <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" {...props}>
-    <rect x="1" y="3" width="14" height="10" rx="1" stroke="currentColor" strokeWidth="1.3" />
-    <path d="M1 4l7 5 7-5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+    <rect
+      x="1"
+      y="3"
+      width="14"
+      height="10"
+      rx="1"
+      stroke="currentColor"
+      strokeWidth="1.3"
+    />
+    <path
+      d="M1 4l7 5 7-5"
+      stroke="currentColor"
+      strokeWidth="1.3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );
 
@@ -442,7 +498,9 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
                           <Icon
                             className={cn(
                               "size-3.5 shrink-0 transition-colors",
-                              isComplete ? "text-primary" : "text-foreground-dimmed/40",
+                              isComplete
+                                ? "text-primary"
+                                : "text-foreground-dimmed/40",
                             )}
                           />
                         );

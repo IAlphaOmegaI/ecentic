@@ -1,9 +1,9 @@
 "use client";
+import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import Link, { useLinkStatus } from "next/link";
 import { Motion } from "@/components/motion";
 import { PlatformGrid } from "./_components/platform-grid";
-import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
 
 export default () => (
   <Motion.Stagger

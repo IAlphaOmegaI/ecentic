@@ -86,12 +86,12 @@ const TierBadge = ({ tier }: { tier: string }) => {
 
 export default () => (
   <div className="flex flex-col">
-    <div className="mx-8 border-x border-accent-foreground">
+    <div className="mx-8 border-accent-foreground border-x">
       {/* Title */}
-      <div className="-mx-8 border-b border-accent-foreground">
+      <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8 flex items-center justify-between px-6 py-8">
           <div>
-            <h1 className="font-medium text-foreground text-3xl">
+            <h1 className="font-medium text-3xl text-foreground">
               Reports & Exports
             </h1>
             <p className="font-light text-foreground-dimmed text-sm">
@@ -108,14 +108,14 @@ export default () => (
       </div>
 
       {/* Featured shareable report */}
-      <div className="-mx-8 border-b border-accent-foreground">
+      <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8">
           <div className="flex items-start gap-3 bg-primary/5 px-6 py-6">
             <div className="flex size-8 shrink-0 items-center justify-center bg-primary/10 font-bold text-primary text-sm">
               ↗
             </div>
             <div>
-              <p className="font-medium text-foreground text-base">
+              <p className="font-medium text-base text-foreground">
                 Shareable Win Rate Report
               </p>
               <p className="font-light text-foreground-dimmed text-xs">
@@ -135,19 +135,16 @@ export default () => (
       </div>
 
       {/* Report cards grid */}
-      <div className="-mx-8 border-b border-accent-foreground">
+      <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8 grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-3">
           {reports.map((report) => (
-            <div
-              key={report._id}
-              className="flex flex-col bg-background p-4"
-            >
+            <div key={report._id} className="flex flex-col bg-background p-4">
               <div className="flex items-start justify-between">
                 <DocumentPdfIcon className="size-8 text-foreground-dimmed" />
                 <TierBadge tier={report.tier} />
               </div>
               <div className="mt-3 flex-1">
-                <p className="font-medium text-foreground text-base">
+                <p className="font-medium text-base text-foreground">
                   {report.title}
                 </p>
                 <p className="mt-1 font-light text-foreground-dimmed text-xs leading-relaxed">
@@ -177,9 +174,9 @@ export default () => (
       </div>
 
       {/* Scheduled reports */}
-      <div className="-mx-8 border-b border-accent-foreground">
+      <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8 px-6 py-6">
-          <p className="mb-3 font-medium text-foreground text-base">
+          <p className="mb-3 font-medium text-base text-foreground">
             Scheduled Reports
           </p>
           <p className="font-light text-foreground-dimmed text-sm">
