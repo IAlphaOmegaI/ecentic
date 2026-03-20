@@ -13,7 +13,7 @@ export const Table = ({
     render,
     props: mergeProps<"table">(props, {
       className: cn(
-        "w-full max-w-full caption-bottom overflow-hidden text-sm border-collapse",
+        "w-full max-w-full caption-bottom overflow-hidden text-sm border-collapse [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0",
         className,
       ),
     }),
@@ -56,7 +56,7 @@ export const TableBody = ({
     defaultTagName: "tbody",
     render,
     props: mergeProps<"tbody">(props, {
-      className,
+      className: cn("[&_tr:last-child]:border-b-0", className),
     }),
   });
 
@@ -98,7 +98,7 @@ export const TableHead = ({
     render,
     props: mergeProps<"th">(props, {
       className: cn(
-        "whitespace-nowrap bg-accent-foreground/30 p-4 font-light text-center text-lg text-foreground-dimmed [&:has([role=checkbox])]:pr-0 border-x border-accent-foreground",
+        "whitespace-nowrap bg-background-rich px-4 py-3 font-medium text-left text-foreground text-sm [&:has([role=checkbox])]:pr-0 border-x border-accent-foreground",
         className,
       ),
     }),
@@ -120,7 +120,7 @@ export const TableCell = ({
     render,
     props: mergeProps<"td">(props, {
       className: cn(
-        "h-12 px-4 py-2 align-middle [&:has([role=checkbox])]:pr-0 border-x border-accent-foreground",
+        "px-4 py-3 align-middle [&:has([role=checkbox])]:pr-0 border-x border-accent-foreground",
         className,
       ),
     }),

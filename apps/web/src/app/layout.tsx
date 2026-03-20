@@ -147,7 +147,7 @@ export default ({ children }: PropsWithChildren) => {
         )}
       </head>
       <body
-        className={`${ltsuperior.variable} bg-background font-body tracking-[-4%] antialiased`}
+        className={`${ltsuperior.variable} overflow-x-hidden bg-background font-body tracking-[-4%] antialiased`}
       >
         <PostHogProvider>
           <ThemeProvider>

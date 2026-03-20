@@ -168,7 +168,7 @@ export const ProductSelector = ({
       <Motion.Item className="flex-1 overflow-hidden border-accent-foreground border-y px-8">
         <div className="h-full overflow-auto border-accent-foreground border-x">
           <div className="bg-background-rich">
-            <Table className="w-full [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0">
+            <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-10 px-4 py-2">
@@ -193,12 +193,7 @@ export const ProductSelector = ({
                     </button>
                   </TableHead>
                   {["Product", "Price", "Status", "Quality"].map((header) => (
-                    <TableHead
-                      key={header}
-                      className="px-4 py-3 text-left font-medium text-foreground text-sm"
-                    >
-                      {header}
-                    </TableHead>
+                    <TableHead key={header}>{header}</TableHead>
                   ))}
                 </TableRow>
               </TableHeader>
@@ -223,7 +218,7 @@ export const ProductSelector = ({
                       render={<motion.tr variants={TableAnimations.Row} />}
                       onClick={() => !isDisabled && toggleProduct(product.id)}
                       className={cn(
-                        "cursor-pointer last:border-b-0",
+                        "cursor-pointer",
                         isSelected
                           ? "bg-primary/5"
                           : isDisabled
@@ -231,7 +226,7 @@ export const ProductSelector = ({
                             : "hover:bg-background-dimmed/50",
                       )}
                     >
-                      <TableCell className="w-10 px-4 py-3">
+                      <TableCell className="w-10">
                         <div
                           className={cn(
                             "flex size-4 items-center justify-center border transition-colors duration-150",
@@ -248,7 +243,7 @@ export const ProductSelector = ({
                           />
                         </div>
                       </TableCell>
-                      <TableCell className="px-4 py-3">
+                      <TableCell>
                         <div className="flex items-center gap-3">
                           <Image
                             src={images[0] ?? "/images/placeholder.svg"}
@@ -268,10 +263,10 @@ export const ProductSelector = ({
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="px-4 py-3 font-light text-foreground text-sm">
+                      <TableCell>
                         {formatPrice(product.price, product.currency)}
                       </TableCell>
-                      <TableCell className="px-4 py-3">
+                      <TableCell>
                         <span
                           className={cn(
                             "px-1.5 py-0.5 font-medium text-xs",
@@ -283,7 +278,7 @@ export const ProductSelector = ({
                           {product.status === "active" ? "Active" : "Draft"}
                         </span>
                       </TableCell>
-                      <TableCell className="px-4 py-3">
+                      <TableCell>
                         <QualityBadge score={quality} />
                       </TableCell>
                     </TableRow>
