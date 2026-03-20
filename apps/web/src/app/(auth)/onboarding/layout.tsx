@@ -7,12 +7,12 @@ import {
   PhotoIcon,
   ShoppingCartIcon,
 } from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
 import { AnimatePresence, motion } from "motion/react";
 import { usePathname } from "next/navigation";
 import type { PropsWithChildren } from "react";
 import { Onboarding } from "@/components/onboarding";
 import { Spring } from "@/lib/animations";
-import { cn } from "@zenncore/utils";
 
 const steps = [
   {
@@ -147,7 +147,7 @@ export default ({ children }: PropsWithChildren) => {
 
       <main className="flex flex-1 flex-col overflow-hidden bg-background">
         <div className="flex items-center justify-center border-accent-foreground border-b px-8">
-          <div className="mx-auto flex w-full w-full items-center gap-0 justify-center border-x border-accent-foreground  py-2">
+          <div className="mx-auto flex w-full w-full items-center justify-center gap-0 border-accent-foreground border-x py-2">
             {steps.map((step, index) => {
               const isCompleted = index < current;
               const isCurrent = index === current;

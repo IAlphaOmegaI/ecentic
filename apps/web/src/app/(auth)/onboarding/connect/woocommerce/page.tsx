@@ -8,85 +8,85 @@ import { Motion } from "@/components/motion";
 import { WooCommerceForm } from "./_components/woocommerce-form";
 
 export default () => (
-  <div className="flex flex-1 flex-col overflow-hidden p-8">
-    <Motion.Stagger stagger={0.08} delay={0.1}>
-      <div className="mx-auto flex w-full flex-col">
-        <Motion.Item>
-          <Button
-            variant="ghost"
-            color="neutral"
-            className="mb-8 w-fit"
-            render={<Link href="/onboarding/connect" />}
-          >
-            <Back />
-          </Button>
-        </Motion.Item>
-        <div className="mb-8 flex items-center gap-4">
-          <Motion.Item>
-            <Image
-              src="/images/woocommerce.svg"
-              alt="WooCommerce"
-              width={64}
-              height={64}
-            />
-          </Motion.Item>
-          <div>
-            <Motion.Item>
-              <h2 className="font-medium text-4xl text-foreground">
-                Connect WooCommerce
-              </h2>
-            </Motion.Item>
-            <Motion.Item>
-              <p className="mt-1 font-light text-foreground-dimmed text-lg">
-                API key connection — store URL + consumer key.
-              </p>
-            </Motion.Item>
-          </div>
+  <Motion.Stagger
+    stagger={0.08}
+    delay={0.1}
+    className="flex flex-1 flex-col overflow-hidden"
+  >
+    <Motion.Item className="w-full border-accent-foreground border-b px-8">
+      <div className="flex flex-col gap-4 border-accent-foreground border-x p-6">
+        <Image
+          src="/images/woocommerce.svg"
+          alt="WooCommerce"
+          width={64}
+          height={64}
+        />
+        <div>
+          <h2 className="font-medium text-4xl text-foreground">
+            Connect WooCommerce
+          </h2>
+          <p className="mt-1 font-light text-2xl text-foreground-dimmed">
+            API key connection — store URL + consumer key.
+          </p>
         </div>
-
-        <Motion.Item>
-          <div className="mb-8 flex flex-col gap-4 border border-accent-foreground bg-background-rich p-5">
-            <h3 className="font-medium text-foreground text-sm">
-              Where to find your API keys
-            </h3>
-            <ol className="flex list-inside list-decimal flex-col gap-3 font-light text-foreground-dimmed text-sm">
-              <li>
-                Log into your WordPress admin panel and go to{" "}
-                <span className="font-medium text-foreground">
-                  WooCommerce &rarr; Settings &rarr; Advanced &rarr; REST API
-                </span>
-                .
-              </li>
-              <li>
-                Click{" "}
-                <span className="font-medium text-foreground">Add key</span>.
-                Give it a description like &quot;Ecentic&quot;, set permissions
-                to <span className="font-medium text-foreground">Read</span>,
-                and click Generate.
-              </li>
-              <li>
-                Copy the{" "}
-                <span className="font-medium text-foreground">
-                  Consumer key
-                </span>{" "}
-                (starts with <code className="text-foreground">ck_</code>) and{" "}
-                <span className="font-medium text-foreground">
-                  Consumer secret
-                </span>{" "}
-                (starts with <code className="text-foreground">cs_</code>). You
-                won&apos;t be able to see the secret again, so paste it here
-                right away.
-              </li>
-            </ol>
-          </div>
-        </Motion.Item>
-
-        <Motion.Item>
-          <WooCommerceForm />
-        </Motion.Item>
       </div>
-    </Motion.Stagger>
-  </div>
+    </Motion.Item>
+
+    <Motion.Item className="w-full border-accent-foreground border-b px-8">
+      <div className="border-accent-foreground border-x bg-background-dimmed p-6">
+        <h3 className="font-medium text-foreground text-xl">
+          Where to find your API keys
+        </h3>
+        <ol className="flex list-inside list-decimal flex-col gap-3 font-light text-foreground-dimmed">
+          <li>
+            Log into your WordPress admin panel and go to{" "}
+            <span className="font-medium text-primary">
+              WooCommerce &rarr; Settings &rarr; Advanced &rarr; REST API
+            </span>
+            .
+          </li>
+          <li>
+            Click <span className="font-medium text-primary">Add key</span>.
+            Give it a description like &quot;Ecentic&quot;, set permissions to{" "}
+            <span className="font-medium text-primary">Read</span>, and click
+            Generate.
+          </li>
+          <li>
+            Copy the{" "}
+            <span className="font-medium text-primary">Consumer key</span>{" "}
+            (starts with <span className="font-medium text-primary">ck_</span>)
+            and{" "}
+            <span className="font-medium text-primary">Consumer secret</span>{" "}
+            (starts with <span className="font-medium text-primary">cs_</span>).
+            You won&apos;t be able to see the secret again, so paste it here
+            right away.
+          </li>
+        </ol>
+      </div>
+    </Motion.Item>
+
+    <Motion.Item className="w-full flex-1 border-accent-foreground border-b px-8">
+      <div className="h-full border-accent-foreground border-x p-6">
+        <WooCommerceForm />
+      </div>
+    </Motion.Item>
+
+    <Motion.Item className="flex items-center justify-between border-accent-foreground px-8">
+      <div className="flex w-full items-center justify-between border-accent-foreground border-x px-6 py-6">
+        <Button
+          variant="outline"
+          color="accent"
+          type="button"
+          render={<Link href="/onboarding/connect" />}
+        >
+          <Back />
+        </Button>
+        <p className="font-light text-foreground-dimmed text-sm">
+          You can connect more stores later in Settings.
+        </p>
+      </div>
+    </Motion.Item>
+  </Motion.Stagger>
 );
 
 const Back = () => {

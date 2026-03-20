@@ -117,11 +117,13 @@ export const metadata: Metadata = {
       { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
     ],
     apple: [
-      { url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+      {
+        url: "/icons/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
     ],
-    other: [
-      { rel: "mask-icon", url: "/images/logo.svg", color: "#1572fa" },
-    ],
+    other: [{ rel: "mask-icon", url: "/images/logo.svg", color: "#1572fa" }],
   },
   manifest: "/manifest.webmanifest",
   other: {

@@ -15,15 +15,15 @@ export default async ({
 
   return (
     <CompetitorManager existing={competitors} products={products}>
-      <Motion.Up className="mb-6">
-        <h1 className="font-medium text-2xl text-foreground">
+      <Motion.Item className="border-accent-foreground border-x p-6">
+        <h2 className="font-medium text-4xl text-foreground">
           Who are your competitors?
-        </h1>
-        <p className="mt-1 font-light text-foreground-dimmed text-sm">
+        </h2>
+        <p className="mt-1 font-light text-2xl text-foreground-dimmed">
           We'll test your products head-to-head against these competitors in AI
           agent simulations.
         </p>
-      </Motion.Up>
+      </Motion.Item>
     </CompetitorManager>
   );
 };

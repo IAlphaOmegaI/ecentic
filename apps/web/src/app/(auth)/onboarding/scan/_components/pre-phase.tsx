@@ -1,10 +1,12 @@
 "use client";
 
 import { Button } from "@zenncore/web/components/button";
+import { motion } from "motion/react";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { motion } from "motion/react";
 import { Spring } from "@/lib/animations";
+import { Motion } from "@/components/motion";
+import { ArrowLeftIcon, ArrowRightIcon } from "@zenncore/icons";
 
 export namespace PrePhase {
   export type Props = {
@@ -23,38 +25,30 @@ export const PrePhase = ({ children, onRun, isRunning }: PrePhase.Props) => (
     exit={{ opacity: 0, y: -16 }}
     transition={Spring.Gentle}
   >
-    <div className="mx-8 flex flex-1 flex-col border-x border-accent-foreground">
-      {/* Content — model grids, stats, etc. from scan/page.tsx */}
-      <div className="-mx-8 flex-1 overflow-y-auto border-y border-accent-foreground">
-        <div className="mx-8 py-8">
-          {children}
-        </div>
-      </div>
+    {children}
 
-      {/* Footer CTA */}
-      <div className="px-6 py-6">
-      <Button
-        variant="flat"
-        color="primary"
-        type="button"
-        onClick={onRun}
-        disabled={isRunning}
-        className="w-full py-3.5 font-medium text-base"
-      >
-        Run Simulation
-      </Button>
-      <div className="mt-3 flex items-center justify-center">
+    <Motion.Item className="border-accent-foreground border-x px-8 mt-auto">
+      <div className="flex items-center justify-between border-accent-foreground border-x p-6">
         <Button
-          variant="ghost"
-          color="neutral"
+          variant="outline"
+          color="accent"
           type="button"
-          className="text-foreground-dimmed text-sm"
           render={<Link href="/onboarding/competitors" />}
         >
+          <ArrowLeftIcon className="size-4" />
           Back
         </Button>
+        <Button
+          variant="flat"
+          color="primary"
+          type="button"
+          onClick={onRun}
+          disabled={isRunning}
+        >
+          Run Simulation
+          <ArrowRightIcon className="size-4" />
+        </Button>
       </div>
-    </div>
-  </div>
+    </Motion.Item>
   </motion.div>
 );

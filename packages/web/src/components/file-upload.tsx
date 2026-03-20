@@ -88,8 +88,6 @@ export const FileUpload = (props: FileUpload.Props): JSX.Element => {
     props.onValueChange?.(updatedValue);
   });
 
-  console.log(value);
-
   // @ts-expect-error - context properties correctly match discriminated union at runtime based on props.mode
   const context: FileUploadContext = useMemo(
     () => ({
@@ -133,7 +131,9 @@ export const FileUploadInput = ({
   classList,
   // ...props
 }: FileUploadInput.Props): JSX.Element => {
-  const { mode, setValue, accept, disabled } = useFileUpload();
+  const { mode, value, setValue, accept, disabled } = useFileUpload();
+
+  const selectedFile = mode === "single" ? (value as File | null) : null;
 
   const ref = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -241,7 +241,7 @@ export const FileUploadInput = ({
       />
       <button
         type="button"
-        disabled={disabled}
+        disabled={disabled && !selectedFile}
         className={cn(
           "h-32 w-full origin-center flex-col items-center justify-center border border-dashed transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50",
           isDragging
@@ -249,19 +249,28 @@ export const FileUploadInput = ({
             : "border-accent-foreground",
           classList?.input,
         )}
-        onClick={() => ref.current?.click()}
+        onClick={() => !selectedFile && ref.current?.click()}
       >
-        <span
-          className={cn(
-            "flex flex-col items-center gap-2 transition-colors duration-300",
-            isDragging ? "text-primary" : "text-foreground-dimmed",
-          )}
-        >
-          <UploadIcon className="size-12" />
-          <span className="text-sm leading-4">
-            Select files <br /> or drag and drop
+        {selectedFile ? (
+          <span className="flex flex-col items-center gap-2">
+            <FileIcon className="size-12 text-foreground-dimmed" />
+            <span className="max-w-[90%] truncate text-foreground text-sm">
+              {selectedFile.name}
+            </span>
           </span>
-        </span>
+        ) : (
+          <span
+            className={cn(
+              "flex flex-col items-center gap-2 transition-colors duration-300",
+              isDragging ? "text-primary" : "text-foreground-dimmed",
+            )}
+          >
+            <UploadIcon className="size-12" />
+            <span className="text-sm leading-4">
+              Select files <br /> or drag and drop
+            </span>
+          </span>
+        )}
       </button>
     </div>
   );
@@ -277,10 +286,12 @@ export namespace FileUploadInput {
   >;
 }
 
-export const FileUploadPreview = (): JSX.Element => {
+export const FileUploadPreview = (): JSX.Element | null => {
   const { value, mode } = useFileUpload();
 
-  const files = mode === "multiple" ? value : [value];
+  if (mode === "single") return null;
+
+  const files = value as File[] | null;
   const items = files?.filter((file) => file !== null);
 
   return (

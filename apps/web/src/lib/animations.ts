@@ -61,10 +61,9 @@ export const Scale = {
 
 export const Table = {
   Row: {
-    hidden: { opacity: 0, x: -6 },
+    hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      x: 0,
       transition: { type: "spring", stiffness: 320, damping: 28 },
     },
   } as Variants,

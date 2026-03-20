@@ -1,20 +1,28 @@
 "use client";
 
+import { readStreamableValue } from "@ai-sdk/rsc";
+import { unwrapResult } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { readStreamableValue } from "@ai-sdk/rsc";
-import { unwrapResult } from "@zenncore/utils";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import * as Competitor from "@/server/app/competitor";
+import { cn } from "@zenncore/utils";
+import Image from "next/image";
 
-type LogEntry = { id: number; text: string; elapsed: number; type: "info" | "success" | "error" };
+type LogEntry = {
+  id: number;
+  text: string;
+  elapsed: number;
+  type: "info" | "success" | "error";
+};
 
 export namespace AutoDetectTab {
   export type Props = {
     products: string[];
     onSuccess: (competitors: Competitor.Type[]) => void;
+    className?: string;
   };
 }
 
@@ -25,44 +33,41 @@ const formatElapsed = (ms: number) => {
     : `${Math.floor(seconds / 60)}m ${(seconds % 60).toFixed(0)}s`;
 };
 
-export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
+export const AutoDetectTab = ({
+  products,
+  onSuccess,
+  className,
+}: AutoDetectTab.Props) => {
   const toast = useToastManager();
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [elapsed, setElapsed] = useState(0);
 
-  const startTimeRef = useRef<number>(0);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const logsEndRef = useRef<HTMLDivElement>(null);
-  const logIdRef = useRef(0);
-
-  const stopTimer = () => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-  };
-
-  useEffect(() => () => stopTimer(), []);
+  const start = useRef<number>(0);
+  const timer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const target = useRef<HTMLDivElement>(null);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: scroll to bottom on new log
   useEffect(() => {
-    logsEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    target.current?.scrollIntoView({ behavior: "smooth" });
   }, [logs]);
 
   const addLog = (entry: Omit<LogEntry, "id" | "elapsed">) =>
     setLogs((previous) => [
       ...previous,
-      { ...entry, id: logIdRef.current++, elapsed: Date.now() - startTimeRef.current },
+      {
+        ...entry,
+        id: logs.length + 1,
+        elapsed: Date.now() - start.current,
+      },
     ]);
 
   const [handleDetect, isDetecting] = useAsyncAction(async () => {
     setLogs([]);
     setElapsed(0);
-    logIdRef.current = 0;
-    startTimeRef.current = Date.now();
+    start.current = Date.now();
 
-    timerRef.current = setInterval(() => {
-      setElapsed(Date.now() - startTimeRef.current);
+    timer.current = setInterval(() => {
+      setElapsed(Date.now() - start.current);
     }, 100);
 
     const { output } = await unwrapResult(
@@ -77,14 +82,16 @@ export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
           addLog({ text: event.text, type: "info" });
           break;
         case "chunk":
+          addLog({ text: event.text, type: "info" });
           break;
         case "error":
-          stopTimer();
           addLog({ text: event.text, type: "error" });
           return;
         case "done":
-          stopTimer();
-          addLog({ text: `${event.competitors.length} competitors identified`, type: "success" });
+          addLog({
+            text: `${event.competitors.length} competitors identified`,
+            type: "success",
+          });
           onSuccess(event.competitors);
           toast.add({
             title: "Competitors found",
@@ -97,7 +104,14 @@ export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
   });
 
   return (
-    <div className="border border-accent-foreground bg-background-rich min-h-[280px]">
+    <div className={cn("min-h-full bg-background-dimmed relative", className)}>
+      {/* <Image
+        src="/images/auto-detect.png"
+        alt="Auto-detect"
+        width={100}
+        height={100}
+        className="w-full h-full object-contain absolute inset-0"
+      /> */}
       <AnimatePresence mode="wait" initial={false}>
         {!isDetecting && logs.length === 0 && (
           <motion.div
@@ -108,7 +122,7 @@ export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
             transition={{ duration: 0.2 }}
             className="flex flex-col items-center gap-4 px-6 py-14 text-center"
           >
-            <p className="max-w-md font-light text-foreground-dimmed text-sm">
+            <p className="max-w-md font-light text-foreground-dimmed">
               We'll analyze your products and use AI to find the most relevant
               competitors in your market.
             </p>
@@ -117,7 +131,7 @@ export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
               color="primary"
               type="button"
               onClick={handleDetect}
-              className="px-6 py-2 font-medium text-sm"
+              className="px-6 py-2 font-medium"
             >
               Auto-detect competitors
             </Button>
@@ -134,16 +148,20 @@ export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
             className="flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-accent-foreground px-5 py-3">
+            <div className="flex items-center justify-between border-accent-foreground border-b px-5 py-3">
               <div className="flex items-center gap-2">
                 {isDetecting && (
                   <motion.span
                     animate={{ opacity: [1, 0.2, 1] }}
-                    transition={{ duration: 1.4, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                    transition={{
+                      duration: 1.4,
+                      repeat: Number.POSITIVE_INFINITY,
+                      ease: "easeInOut",
+                    }}
                     className="inline-block size-1.5 rounded-full bg-primary"
                   />
                 )}
-                <span className="font-medium text-foreground text-xs tracking-widest uppercase">
+                <span className="font-medium text-foreground text-xs uppercase tracking-widest">
                   {isDetecting ? "Live Intelligence Scan" : "Scan Complete"}
                 </span>
               </div>
@@ -158,7 +176,11 @@ export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
                 <motion.div
                   className="absolute h-full w-1/3 bg-primary"
                   animate={{ x: ["-100%", "400%"] }}
-                  transition={{ duration: 1.6, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                  transition={{
+                    duration: 1.6,
+                    repeat: Number.POSITIVE_INFINITY,
+                    ease: "easeInOut",
+                  }}
                 />
               </div>
             )}
@@ -184,7 +206,7 @@ export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
                         log.type === "error"
                           ? "text-error text-xs leading-relaxed"
                           : log.type === "success"
-                            ? "text-success text-xs font-medium leading-relaxed"
+                            ? "font-medium text-success text-xs leading-relaxed"
                             : "text-foreground-dimmed text-xs leading-relaxed"
                       }
                     >
@@ -198,17 +220,22 @@ export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
                   Initializing intelligence scan...
                 </p>
               )}
-              <div ref={logsEndRef} />
+              <div ref={target} />
             </div>
 
             {/* Footer */}
             {isDetecting ? (
-              <div className="flex items-center gap-1.5 border-t border-accent-foreground px-5 py-3">
+              <div className="flex items-center gap-1.5 border-accent-foreground border-t px-5 py-3">
                 {[0, 0.2, 0.4].map((delay) => (
                   <motion.span
                     key={delay}
                     animate={{ opacity: [0.2, 1, 0.2] }}
-                    transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, delay, ease: "easeInOut" }}
+                    transition={{
+                      duration: 1,
+                      repeat: Number.POSITIVE_INFINITY,
+                      delay,
+                      ease: "easeInOut",
+                    }}
                     className="inline-block size-1 rounded-full bg-primary"
                   />
                 ))}
@@ -217,7 +244,7 @@ export const AutoDetectTab = ({ products, onSuccess }: AutoDetectTab.Props) => {
                 </span>
               </div>
             ) : (
-              <div className="flex items-center justify-between border-t border-accent-foreground px-5 py-3">
+              <div className="flex items-center justify-between border-accent-foreground border-t px-5 py-3">
                 <span className="font-light text-foreground-dimmed text-xs">
                   Finished in {formatElapsed(elapsed)}
                 </span>

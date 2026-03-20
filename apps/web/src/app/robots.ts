@@ -6,12 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: ["/", "/sign-in", "/sign-up", "/privacy-policy"],
-        disallow: [
-          "/dashboard/",
-          "/onboarding/",
-          "/verify",
-          "/api/",
-        ],
+        disallow: ["/dashboard/", "/onboarding/", "/verify", "/api/"],
       },
     ],
     sitemap: "https://ecentic.ai/sitemap.xml",

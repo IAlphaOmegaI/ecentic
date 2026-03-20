@@ -1,8 +1,9 @@
 "use client";
 
+import { readStreamableValue } from "@ai-sdk/rsc";
+import { unwrapResult } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { readStreamableValue } from "@ai-sdk/rsc";
 import { AnimatePresence } from "motion/react";
 import type { ReactNode } from "react";
 import { useState } from "react";
@@ -10,7 +11,6 @@ import { runScan } from "@/server/app/intelligence/simulate";
 import { CompletePhase } from "./complete-phase";
 import { PrePhase } from "./pre-phase";
 import { RunningPhase } from "./running-phase";
-import { unwrapResult } from "@zenncore/utils";
 
 type ScanPhase = "pre" | "running" | "complete";
 type ModelStatus = "queued" | "running" | "complete";
