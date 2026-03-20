@@ -85,16 +85,12 @@ const columns: ColumnDef<CompetitorsTable.Row>[] = [
 ];
 
 export const CompetitorsTable = ({ rows }: CompetitorsTable.Props) => (
-  <div className="border border-accent-foreground bg-background-rich">
-    <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
+  <div className="bg-background-rich">
+    <div className="border-accent-foreground border-b px-4 py-3">
       <p className="font-medium text-foreground text-sm">Competitor Brands</p>
     </div>
     <DataTableProvider rows={rows} columns={columns} pageSize={10}>
-      <DataTable
-        classList={{
-          "body-cell": "text-left",
-        }}
-      >
+      <DataTable>
         <DataTableEmpty>
           <p className="py-8 text-center font-light text-foreground-dimmed text-sm">
             No competitor brands found.

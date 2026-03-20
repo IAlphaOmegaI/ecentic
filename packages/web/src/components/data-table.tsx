@@ -83,7 +83,7 @@ export const DataTable = <T extends TableRowType>({
                 data-expanded={row.getIsExpanded()}
                 data-selected={row.getIsSelected()}
                 className={cn(
-                  "relative z-10 border-accent-foreground border-b",
+                  "hover:bg-background-dimmed/50",
                   classList?.["body-row"],
                 )}
               >
@@ -91,7 +91,7 @@ export const DataTable = <T extends TableRowType>({
                   <TableCell
                     key={cell.id}
                     className={cn(
-                      "relative p-4 text-center font-body font-light text-foreground text-sm first:text-left last:bg-primary/5",
+                      "font-light text-foreground text-sm",
                       classList?.["body-cell"],
                     )}
                   >
@@ -104,7 +104,7 @@ export const DataTable = <T extends TableRowType>({
               <TableRow>
                 <TableCell
                   colSpan={table.getAllColumns().length}
-                  className={cn("max-w-full bg-red-500 text-left")}
+                  className="text-left"
                 >
                   {empty}
                 </TableCell>

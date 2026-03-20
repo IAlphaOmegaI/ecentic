@@ -153,20 +153,18 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
 ];
 
 export const ProductsTable = ({ rows }: ProductsTable.Props) => (
-  <DataTableProvider rows={rows} columns={columns} pageSize={10}>
-    <DataTable
-      classList={{
-        "body-cell": "text-left",
-      }}
-    >
-      <DataTableEmpty>
-        <p className="py-8 text-center font-light text-foreground-dimmed text-sm">
-          No products found.
-        </p>
-      </DataTableEmpty>
-    </DataTable>
-    {rows.length > 10 && <DataTablePagination />}
-  </DataTableProvider>
+  <div className="bg-background-rich">
+    <DataTableProvider rows={rows} columns={columns} pageSize={10}>
+      <DataTable>
+        <DataTableEmpty>
+          <p className="py-8 text-center font-light text-foreground-dimmed text-sm">
+            No products found.
+          </p>
+        </DataTableEmpty>
+      </DataTable>
+      {rows.length > 10 && <DataTablePagination />}
+    </DataTableProvider>
+  </div>
 );
 export namespace ProductsTable {
   export type Props = {

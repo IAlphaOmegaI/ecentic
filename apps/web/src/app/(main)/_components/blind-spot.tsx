@@ -1,5 +1,6 @@
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
+import Link from "next/link";
 import Product from "@/public/images/product.png";
 
 export const BlindSpot = () => (
@@ -9,7 +10,7 @@ export const BlindSpot = () => (
         <span className="size-6 animate-pulse rounded-full bg-primary" />
         <span className="font-light text-primary text-xl">The Blind Spot</span>
       </div>
-      <h2 className="mb-3 max-w-3xl font-medium text-3xl text-foreground leading-tight tracking-tight md:mb-5 md:text-6xl">
+      <h2 className="mb-3 max-w-3xl font-body text-3xl text-foreground leading-none tracking-tight md:mb-5 md:text-6xl">
         Your products are invisible to the buyers that matter most.
       </h2>
       <p className="max-w-4xl font-light text-foreground-dimmed text-lg md:text-2xl">
@@ -19,8 +20,9 @@ export const BlindSpot = () => (
         it.
       </p>
     </div>
-    <div className="grid border-accent-foreground border-b bg-background-dimmed md:grid-cols-2">
-      <div className="flex flex-col items-center justify-center p-4">
+    <div className="grid border-accent-foreground border-b bg-background-dimmed md:grid-cols-3">
+      {/* Col 1 — What Humans See */}
+      <div className="flex flex-col items-center justify-center border-accent-foreground border-b p-4 md:border-b-0 md:border-r">
         <p className="font-light text-primary text-xl">What Humans See</p>
         <Image src={Product} alt="Hero" className="w-full" />
         <div className="flex w-full flex-col">
@@ -41,7 +43,9 @@ export const BlindSpot = () => (
           </Button>
         </div>
       </div>
-      <div className="flex flex-col items-center justify-between border-accent-foreground border-t p-4 md:border-t-0 md:border-l">
+
+      {/* Col 2 — What Agents See (untouched) */}
+      <div className="flex flex-col items-center justify-between border-accent-foreground border-b p-4 md:border-b-0 md:border-r md:border-t-0">
         <p className="font-light text-primary text-xl">What Agents See</p>
         <p className="font-light font-mono text-foreground-dimmed text-primary text-xl">
           {"{"}
@@ -65,6 +69,54 @@ export const BlindSpot = () => (
           RESULT: Dropped from consideration set. Competitor chosen due to
           explicit spec verification.
         </h1>
+      </div>
+
+      {/* Col 3 — What agents choose after écentic */}
+      <div className="flex flex-col justify-between p-4">
+        <p className="text-center font-light text-primary text-xl">What Agents Choose</p>
+
+        <div className="flex flex-col items-center pt-6 pb-2 text-center">
+          <span className="font-semibold text-8xl text-primary leading-none tabular-nums">#1</span>
+          <p className="mt-3 font-medium text-foreground text-2xl">Pro Wireless Earbuds</p>
+          <p className="font-light text-foreground-dimmed text-base">Pro Audio · $139</p>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          {[
+            { model: "GPT-4", logo: "/images/chatgpt.svg", score: 89 },
+            { model: "Claude", logo: "/images/claude.svg", score: 82 },
+            { model: "Gemini", logo: "/images/gemini.svg", score: 81 },
+          ].map(({ model, logo, score }) => (
+            <div key={model} className="flex items-center gap-4">
+              <Image src={logo} alt={model} width={32} height={32} className="shrink-0" />
+              <div className="flex flex-1 flex-col gap-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="font-medium text-foreground text-base">{model}</span>
+                  <span className="font-semibold text-primary text-lg tabular-nums">{score}%</span>
+                </div>
+                <div className="h-1 w-full bg-accent-foreground">
+                  <div className="h-full bg-primary transition-all" style={{ width: `${score}%` }} />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <h1 className="text-center font-light text-2xl text-primary">
+          RESULT: Top pick across GPT-4, Claude & Gemini.
+        </h1>
+      </div>
+    </div>
+    <div className="grid border-accent-foreground border-b bg-background-dimmed md:grid-cols-3">
+      <div className="col-span-2 p-4">
+        <p className="font-light text-foreground-dimmed text-lg md:text-2xl">
+          Every sale you're losing to a competitor right now, an AI agent made that call. Find out exactly where you stand.
+        </p>
+      </div>
+      <div className="flex items-center p-6">
+        <Button variant="outline" color="accent" type="button" className="w-full border-primary py-2.5 font-medium text-primary" asChild>
+          <Link href="/sign-up">See your AI agent score — it's free</Link>
+        </Button>
       </div>
     </div>
   </section>

@@ -12,35 +12,35 @@ const features = [
     color: "text-blue-500",
     title: "Agent Win Rate Dashboard",
     description:
-      "See how often each product in your catalog is selected by AI agents vs. competitors, broken down by model (GPT, Claude, Gemini).",
+      "See how often each product in your catalog is selected by AI agents versus competitors, broken down by model across GPT-4, Claude, and Gemini.",
   },
   {
     icon: ShieldCheckIcon,
     color: "text-green-500",
     title: "Multi-Model Engine",
     description:
-      "We test every product across 5+ agent models, mapped to their unique selection biases.",
+      "Every product is tested across multiple AI agent models, each mapped to their unique selection logic and ranking biases.",
   },
   {
     icon: HammerIcon,
     color: "text-red-500",
     title: "Competitor Battlecards",
     description:
-      "Know exactly which competitor products are beating yours, and on which specific attributes.",
+      "Know exactly which competitor products are beating yours and on which specific attributes AI agents are choosing them over you.",
   },
   {
     icon: CodeIcon,
     color: "text-purple-500",
     title: "UCP Readiness & Structured Data",
     description:
-      "Generate your /.well-known/ ucp merchant profile. Extract attributes from images and descriptions to fill gaps your competitors don't have.",
+      "Generate your structured merchant profile and extract missing attributes from images and descriptions. Fill the gaps your competitors have not filled yet.",
   },
 ] as const;
 
 export const Features = () => (
   <section className="relative -left-[calc(50vw-50%)] -z-1 w-screen border border-accent-foreground">
     <div className="relative mx-auto max-w-6xl p-6 md:p-12">
-      <h1 className="font-body font-medium text-3xl md:text-5xl">
+      <h1 className="font-body text-3xl md:text-5xl">
         Infrastructure for the agent economy.
       </h1>
     </div>

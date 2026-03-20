@@ -26,7 +26,7 @@ const capabilities: Capability[] = [
   },
   {
     _id: "brand-mentions",
-    label: "Tracks brand mentions in AI search",
+    label: "Tracks brand mentions in AI agent search",
     audit: "no",
     geo: "yes",
     ecentic: "yes",

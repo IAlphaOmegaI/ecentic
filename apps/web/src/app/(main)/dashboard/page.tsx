@@ -17,7 +17,15 @@ import { motion } from "motion/react";
 import Link from "next/link";
 import { useState } from "react";
 import type { SVGProps } from "react";
-import { Spring, Stagger, Table } from "@/lib/animations";
+import { Spring, Stagger, Table as TableAnimations } from "@/lib/animations";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@zenncore/web/components/table";
 import {
   activityFeed,
   overallWinRate,
@@ -383,7 +391,7 @@ export default () => {
           >
             {/* Overall Win Rate */}
             <motion.div
-              className="flex flex-col justify-between bg-background p-5"
+              className="flex flex-col justify-between bg-background-dimmed p-5"
               variants={Stagger.Item}
             >
               <div>
@@ -416,7 +424,7 @@ export default () => {
 
             {/* Products Scanned */}
             <motion.div
-              className="flex flex-col justify-between bg-background p-5"
+              className="flex flex-col justify-between bg-background-dimmed p-5"
               variants={Stagger.Item}
             >
               <div>
@@ -449,7 +457,7 @@ export default () => {
 
             {/* Top Performer */}
             <motion.div
-              className="flex flex-col justify-between bg-background p-5"
+              className="flex flex-col justify-between bg-background-dimmed p-5"
               variants={Stagger.Item}
             >
               <div>
@@ -478,7 +486,7 @@ export default () => {
 
             {/* Biggest Opportunity */}
             <motion.div
-              className="flex flex-col justify-between bg-background p-5"
+              className="flex flex-col justify-between bg-background-dimmed p-5"
               variants={Stagger.Item}
             >
               <div>
@@ -517,7 +525,7 @@ export default () => {
             transition={{ ...Spring.Gentle, delay: 0.2 }}
           >
             {/* Chart panel */}
-            <div className="bg-background p-4 xl:col-span-2">
+            <div className="bg-background-dimmed p-4 xl:col-span-2">
               <div className="mb-8 flex items-start justify-between">
                 <div>
                   <p className="font-light text-foreground-dimmed text-xs uppercase tracking-widest">
@@ -616,7 +624,7 @@ export default () => {
             <div className="flex flex-col gap-px bg-accent-foreground [&>*:last-child]:flex-1">
               {/* Recent Activity */}
               <motion.div
-                className="bg-background p-4"
+                className="bg-background-dimmed p-4"
                 variants={Stagger.Item}
                 initial="hidden"
                 animate="visible"
@@ -658,7 +666,7 @@ export default () => {
 
               {/* Model drift */}
               <motion.div
-                className="bg-background"
+                className="bg-background-dimmed"
                 variants={Stagger.Item}
                 initial="hidden"
                 animate="visible"
@@ -715,49 +723,38 @@ export default () => {
                 View all products <ArrowRightIcon className="size-3" />
               </Link>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_td]:border-accent-foreground [&_td]:border-x [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0 [&_th]:border-accent-foreground [&_th]:border-x">
-                <thead>
-                  <tr className="border-accent-foreground border-b">
-                    {[
-                      "Product",
-                      "Win Rate",
-                      "GPT-4",
-                      "Claude",
-                      "Gemini",
-                      "vs. Top Competitor",
-                      "Status",
-                      "",
-                    ].map((header) => (
-                      <th
-                        key={header}
-                        className="bg-accent-foreground/30 px-4 py-3 text-left font-light text-foreground-dimmed text-lg"
-                      >
-                        {header}
-                      </th>
+            <div className="overflow-x-auto bg-background-rich">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    {["Product", "Win Rate", "GPT-4", "Claude", "Gemini", "vs. Top Competitor", "Status", ""].map((h) => (
+                      <TableHead key={h}>{h}</TableHead>
                     ))}
-                  </tr>
-                </thead>
-                <motion.tbody
-                  variants={Stagger.Container(0.05)}
-                  initial="hidden"
-                  animate="visible"
-                  transition={{ delayChildren: 0.35 }}
+                  </TableRow>
+                </TableHeader>
+                <TableBody
+                  render={
+                    <motion.tbody
+                      variants={Stagger.Container(0.05)}
+                      initial="hidden"
+                      animate="visible"
+                      transition={{ delayChildren: 0.35 }}
+                    />
+                  }
                 >
                   {topProducts.map((product) => (
-                    <motion.tr
+                    <TableRow
                       key={product._id}
-                      variants={Table.Row}
-                      className="border-accent-foreground border-b last:border-b-0"
-                      whileHover={{ backgroundColor: "rgba(0,0,0,0.015)" }}
+                      render={<motion.tr variants={TableAnimations.Row} />}
+                      className="hover:bg-background-dimmed/50"
                     >
-                      <td className="px-4 py-3">
+                      <TableCell>
                         <div className="flex items-center gap-3">
                           <div className="flex size-9 shrink-0 items-center justify-center bg-primary/10 font-semibold text-primary text-xs">
                             {product.title.slice(0, 2).toUpperCase()}
                           </div>
                           <div>
-                            <p className="font-medium text-foreground text-base">
+                            <p className="font-medium text-foreground text-sm">
                               {product.title}
                             </p>
                             <p className="font-light text-foreground-dimmed text-xs">
@@ -765,8 +762,8 @@ export default () => {
                             </p>
                           </div>
                         </div>
-                      </td>
-                      <td className="px-4 py-3">
+                      </TableCell>
+                      <TableCell>
                         <div className="flex items-center gap-2">
                           <div className="h-1 w-16 bg-accent-foreground">
                             <motion.div
@@ -787,47 +784,33 @@ export default () => {
                             {product.winRate}%
                           </span>
                         </div>
-                      </td>
-                      <td className="px-4 py-3 font-light text-foreground text-xs">
-                        {product.gpt4WinRate}%
-                      </td>
-                      <td className="px-4 py-3 font-light text-foreground text-xs">
-                        {product.claudeWinRate}%
-                      </td>
-                      <td className="px-4 py-3 font-light text-foreground text-xs">
-                        {product.geminiWinRate}%
-                      </td>
-                      <td className="px-4 py-3">
+                      </TableCell>
+                      <TableCell className="text-xs">{product.gpt4WinRate}%</TableCell>
+                      <TableCell className="text-xs">{product.claudeWinRate}%</TableCell>
+                      <TableCell className="text-xs">{product.geminiWinRate}%</TableCell>
+                      <TableCell>
                         <p className="font-light text-foreground-dimmed text-xs">
                           {product.topCompetitor}
                         </p>
-                        <p
-                          className={cn(
-                            "font-medium text-xs",
-                            product.winRate > product.competitorWinRate
-                              ? "text-success"
-                              : "text-error",
-                          )}
-                        >
-                          {product.winRate > product.competitorWinRate ? "+" : ""}
-                          {product.winRate - product.competitorWinRate}%
+                        <p className={cn("font-medium text-xs", product.winRate > product.competitorWinRate ? "text-success" : "text-error")}>
+                          {product.winRate > product.competitorWinRate ? "+" : ""}{product.winRate - product.competitorWinRate}%
                         </p>
-                      </td>
-                      <td className="px-4 py-3">
+                      </TableCell>
+                      <TableCell>
                         <StatusBadge status={product.optimizationStatus} />
-                      </td>
-                      <td className="px-4 py-3">
+                      </TableCell>
+                      <TableCell>
                         <Link
                           href={`/dashboard/products/${product._id}`}
                           className="font-light text-primary text-xs hover:underline"
                         >
                           View →
                         </Link>
-                      </td>
-                    </motion.tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </motion.tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           </motion.div>
         </div>
