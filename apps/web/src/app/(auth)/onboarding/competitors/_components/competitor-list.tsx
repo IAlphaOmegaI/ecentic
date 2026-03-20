@@ -46,7 +46,7 @@ export const CompetitorList = ({
 }: CompetitorList.Props) => {
   return (
     <div>
-      <div className="overflow-x-auto border-x border-accent-foreground bg-background-rich">
+      <div className="overflow-x-auto border-accent-foreground border-x bg-background-rich">
         <Table className="[&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0">
           <TableHeader>
             <TableRow>
@@ -54,7 +54,7 @@ export const CompetitorList = ({
               {["Competitor", "Price", "Brand"].map((header) => (
                 <TableHead
                   key={header}
-                  className="px-4 py-2 text-left font-medium text-foreground-dimmed text-xs"
+                  className="px-4 py-3 text-left font-medium text-foreground text-sm"
                 >
                   {header}
                 </TableHead>

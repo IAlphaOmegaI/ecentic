@@ -12,11 +12,11 @@ import {
 import Link, { useLinkStatus } from "next/link";
 import type { ReactNode } from "react";
 import { useState } from "react";
+import { Motion } from "@/components/motion";
 import type * as Competitor from "@/server/app/competitor";
 import { AutoDetectTab } from "./auto-detect-tab";
 import { SearchTab } from "./search-tab";
 import { UrlTab } from "./url-tab";
-import { Motion } from "@/components/motion";
 
 export namespace CompetitorManager {
   export type Props = {
@@ -31,20 +31,20 @@ export const CompetitorManager = ({
   existing,
   products,
 }: CompetitorManager.Props) => {
-  const [count, setCount] = useState(existing.length);
+  const [_count, setCount] = useState(existing.length);
 
   const handleSuccess = (competitors: Competitor.Type[]) => {
     setCount((previous) => previous + competitors.length);
   };
 
   return (
-    <Motion.Stagger className="flex flex-1 flex-col overflow-hidden">
-      <div className="px-8 border-b border-accent-foreground">{children}</div>
+    <Motion.Stagger className="flex flex-1 flex-col overflow-hidden h-full">
+      <div className="border-accent-foreground border-b px-8">{children}</div>
 
-      <Motion.Item className="border-accent-foreground px-8 flex-1 border-b">
-        <div className="border-x border-accent-foreground h-full">
+      <Motion.Item className="h-full min-h-0 flex-1 px-8">
+        <div className="border-accent-foreground border-x h-full">
           <Tabs defaultValue="auto" className="h-full">
-            <TabsList className={"border-0 w-full"}>
+            <TabsList className={"w-full border-x-0 border-t-0"}>
               <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
               <Tab value="auto" className={"flex-1"}>
                 Auto-detect
@@ -59,31 +59,37 @@ export const CompetitorManager = ({
 
             <TabsPanel
               value="auto"
-              className={"border-0 flex-1 h-[calc(100%-(var(--spacing)*9))]"}
+              className={"h-[calc(100%-(var(--spacing)*9))] flex-1 border-0"}
             >
               <AutoDetectTab
                 products={products}
                 onSuccess={handleSuccess}
-                className={"flex-1"}
+                className={"flex-1 border-accent-foreground border-b h-full"}
               />
             </TabsPanel>
 
             <TabsPanel
               value="url"
-              className={"border-0 flex-1 h-[calc(100%-(var(--spacing)*9))]"}
+              className={"h-[calc(100%-(var(--spacing)*9))] flex-1 border-0"}
             >
-              <UrlTab onSuccess={handleSuccess} className={"flex-1"} />
+              <UrlTab
+                onSuccess={handleSuccess}
+                className={"flex-1 border-accent-foreground border-b"}
+              />
             </TabsPanel>
 
             <TabsPanel value="search" className={"border-0"}>
-              <SearchTab onSuccess={handleSuccess} />
+              <SearchTab
+                onSuccess={handleSuccess}
+                className={"flex-1 border-accent-foreground border-b"}
+              />
             </TabsPanel>
           </Tabs>
         </div>
       </Motion.Item>
 
       <Motion.Item className="flex items-center justify-between border-accent-foreground px-8">
-        <div className="flex w-full items-center justify-between border-accent-foreground border-x px-6 py-6">
+        <div className="flex w-full items-center justify-between border-accent-foreground border-x border-b px-6 py-6">
           <Button
             variant="outline"
             color="accent"

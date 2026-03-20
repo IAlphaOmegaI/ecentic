@@ -1,12 +1,12 @@
 "use client";
 
+import { ArrowLeftIcon, ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { motion } from "motion/react";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Spring } from "@/lib/animations";
 import { Motion } from "@/components/motion";
-import { ArrowLeftIcon, ArrowRightIcon } from "@zenncore/icons";
+import { Spring } from "@/lib/animations";
 
 export namespace PrePhase {
   export type Props = {
@@ -27,7 +27,7 @@ export const PrePhase = ({ children, onRun, isRunning }: PrePhase.Props) => (
   >
     {children}
 
-    <Motion.Item className="border-accent-foreground border-x px-8 mt-auto">
+    <Motion.Item className="mt-auto px-8">
       <div className="flex items-center justify-between border-accent-foreground border-x p-6">
         <Button
           variant="outline"

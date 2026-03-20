@@ -2,8 +2,8 @@
 
 import { cn } from "@zenncore/utils";
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useRef } from "react";
 import type { SVGProps } from "react";
+import { useEffect, useRef } from "react";
 import { Spring, Stagger } from "@/lib/animations";
 
 const modelColors: Record<string, string> = {
@@ -76,7 +76,7 @@ export const RunningPhase = ({
       exit={{ opacity: 0, y: -16 }}
       transition={Spring.Gentle}
     >
-      <div className="mx-8 flex flex-1 flex-col border-x border-accent-foreground overflow-y-auto px-6 py-10">
+      <div className="mx-8 flex flex-1 flex-col overflow-y-auto border-accent-foreground border-x px-6 py-10">
         <div className="mb-6">
           <h1 className="font-medium text-3xl text-foreground">
             Running simulation.
@@ -89,7 +89,7 @@ export const RunningPhase = ({
 
         <div className="w-full border border-accent-foreground bg-background-rich">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-accent-foreground px-5 py-3">
+          <div className="flex items-center justify-between border-accent-foreground border-b px-5 py-3">
             <div className="flex items-center gap-2">
               <motion.span
                 animate={{ opacity: [1, 0.2, 1] }}
@@ -100,7 +100,7 @@ export const RunningPhase = ({
                 }}
                 className="inline-block size-1.5 rounded-full bg-primary"
               />
-              <span className="font-medium text-foreground text-xs tracking-widest uppercase">
+              <span className="font-medium text-foreground text-xs uppercase tracking-widest">
                 Live Intelligence Scan
               </span>
             </div>
@@ -123,7 +123,7 @@ export const RunningPhase = ({
 
           {/* Model statuses */}
           <motion.div
-            className="grid grid-cols-3 divide-x divide-accent-foreground border-b border-accent-foreground"
+            className="grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-b"
             variants={Stagger.Container(0.06)}
             initial="hidden"
             animate="visible"
@@ -208,7 +208,7 @@ export const RunningPhase = ({
           </div>
 
           {/* Footer dots */}
-          <div className="flex items-center gap-1.5 border-t border-accent-foreground px-5 py-3">
+          <div className="flex items-center gap-1.5 border-accent-foreground border-t px-5 py-3">
             {[0, 0.2, 0.4].map((delay) => (
               <motion.span
                 key={delay}

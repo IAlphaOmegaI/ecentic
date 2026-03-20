@@ -70,11 +70,11 @@ export default () => {
 
   return (
     <div className="flex flex-col">
-      <div className="mx-8 border-x border-accent-foreground">
+      <div className="mx-8 border-accent-foreground border-x">
         {/* Title */}
-        <div className="-mx-8 border-b border-accent-foreground">
+        <div className="-mx-8 border-accent-foreground border-b">
           <div className="mx-8 px-6 py-8">
-            <h1 className="font-medium text-foreground text-3xl">Settings</h1>
+            <h1 className="font-medium text-3xl text-foreground">Settings</h1>
             <p className="font-light text-foreground-dimmed text-sm">
               Manage your account, integrations, and preferences.
             </p>
@@ -82,7 +82,7 @@ export default () => {
         </div>
 
         {/* Content */}
-        <div className="-mx-8 border-b border-accent-foreground">
+        <div className="-mx-8 border-accent-foreground border-b">
           <div className="mx-8 flex gap-px bg-accent-foreground">
             <nav className="hidden w-44 shrink-0 flex-col gap-px bg-accent-foreground md:flex">
               {sectionItems.map((item) => (
@@ -104,500 +104,518 @@ export default () => {
             </nav>
 
             <div className="flex-1 bg-background">
-          {activeSection === "account" && (
-            <div className="flex flex-col gap-4">
-              <div className="border border-accent-foreground bg-background p-6">
-                <h2 className="mb-4 font-medium text-base text-foreground">
-                  Profile
-                </h2>
-                <div className="mb-6 flex items-center gap-4">
-                  <div className="flex size-16 items-center justify-center bg-primary font-semibold text-2xl text-white">
-                    J
-                  </div>
-                  <button
-                    type="button"
-                    className="border border-accent-foreground px-3 py-1.5 text-foreground text-sm transition-colors hover:bg-background-dimmed"
-                  >
-                    Change Avatar
-                  </button>
-                </div>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  {[
-                    { label: "Full Name", value: "Jane Smith" },
-                    { label: "Email", value: "jane@acmestore.com" },
-                    { label: "Company", value: "Acme Store" },
-                    { label: "Role", value: "Founder / CEO" },
-                  ].map((field) => (
-                    <div key={field.label} className="flex flex-col gap-1">
-                      <label className="font-medium text-foreground text-xs">
-                        {field.label}
-                      </label>
-                      <input
-                        type="text"
-                        defaultValue={field.value}
-                        className="border border-accent-foreground bg-background px-3 py-2 text-foreground text-sm focus:border-primary focus:outline-none"
-                      />
-                    </div>
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  className="mt-4 bg-primary px-4 py-2 font-medium text-sm text-white transition-colors hover:bg-primary/90"
-                >
-                  Save Changes
-                </button>
-              </div>
-
-              <div className="border border-accent-foreground bg-background p-6">
-                <h2 className="mb-4 font-medium text-base text-foreground">
-                  Change Password
-                </h2>
-                <div className="flex max-w-sm flex-col gap-3">
-                  {[
-                    "Current Password",
-                    "New Password",
-                    "Confirm New Password",
-                  ].map((label) => (
-                    <div key={label} className="flex flex-col gap-1">
-                      <label className="font-medium text-foreground text-xs">
-                        {label}
-                      </label>
-                      <input
-                        type="password"
-                        className="border border-accent-foreground bg-background px-3 py-2 text-foreground text-sm focus:border-primary focus:outline-none"
-                      />
-                    </div>
-                  ))}
-                  <button
-                    type="button"
-                    className="mt-1 w-fit border border-accent-foreground bg-background px-4 py-2 text-foreground text-sm transition-colors hover:bg-background-dimmed"
-                  >
-                    Update Password
-                  </button>
-                </div>
-              </div>
-
-              <div className="border border-error/20 bg-error/5 p-6">
-                <h2 className="mb-2 font-medium text-base text-error">
-                  Danger Zone
-                </h2>
-                <p className="mb-3 font-light text-foreground-dimmed text-sm">
-                  Permanently delete your account and all associated data. This
-                  action cannot be undone.
-                </p>
-                <button
-                  type="button"
-                  className="border border-error px-4 py-2 font-medium text-error text-sm transition-colors hover:bg-error hover:text-white"
-                >
-                  Delete Account
-                </button>
-              </div>
-            </div>
-          )}
-
-          {activeSection === "team" && (
-            <div className="border border-accent-foreground bg-background">
-              <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
-                <p className="font-medium text-foreground text-base">
-                  Team Members
-                </p>
-                <button
-                  type="button"
-                  className="flex items-center gap-1.5 bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primary/90"
-                >
-                  <PlusIcon className="size-4" />
-                  Invite Member
-                </button>
-              </div>
-              <div className="divide-y divide-accent-foreground">
-                {[
-                  {
-                    name: "Jane Smith",
-                    email: "jane@acmestore.com",
-                    role: "Owner",
-                  },
-                  {
-                    name: "Marcus Johnson",
-                    email: "marcus@acmestore.com",
-                    role: "Admin",
-                  },
-                ].map((member) => (
-                  <div
-                    key={member.email}
-                    className="flex items-center justify-between px-4 py-3"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="flex size-8 items-center justify-center bg-primary/10 font-medium text-primary text-sm">
-                        {member.name.charAt(0)}
+              {activeSection === "account" && (
+                <div className="flex flex-col gap-4">
+                  <div className="border border-accent-foreground bg-background p-6">
+                    <h2 className="mb-4 font-medium text-base text-foreground">
+                      Profile
+                    </h2>
+                    <div className="mb-6 flex items-center gap-4">
+                      <div className="flex size-16 items-center justify-center bg-primary font-semibold text-2xl text-white">
+                        J
                       </div>
-                      <div>
-                        <p className="font-medium text-foreground text-base">
-                          {member.name}
-                        </p>
-                        <p className="font-light text-foreground-dimmed text-xs">
-                          {member.email}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="border border-accent-foreground px-2 py-0.5 text-foreground-dimmed text-xs">
-                        {member.role}
-                      </span>
-                      {member.role !== "Owner" && (
-                        <button
-                          type="button"
-                          className="font-light text-error text-xs hover:underline"
-                        >
-                          Remove
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="border-accent-foreground border-t p-4">
-                <p className="mb-2 font-medium text-foreground text-xs">
-                  Invite by email
-                </p>
-                <div className="flex gap-2">
-                  <input
-                    type="email"
-                    placeholder="colleague@company.com"
-                    className="flex-1 border border-accent-foreground bg-background px-3 py-1.5 text-foreground text-sm placeholder:text-foreground-dimmed focus:border-primary focus:outline-none"
-                  />
-                  <select className="border border-accent-foreground bg-background px-2 text-foreground text-sm focus:outline-none">
-                    <option>Editor</option>
-                    <option>Viewer</option>
-                    <option>Admin</option>
-                  </select>
-                  <button
-                    type="button"
-                    className="bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primary/90"
-                  >
-                    Send
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeSection === "integrations" && (
-            <div className="flex flex-col gap-4">
-              <div className="border border-accent-foreground bg-background">
-                <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
-                  <p className="font-medium text-foreground text-base">
-                    Connected Stores
-                  </p>
-                </div>
-                <div className="divide-y divide-accent-foreground">
-                  <div className="flex items-center justify-between px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className="flex size-8 items-center justify-center bg-[#96BF48] font-bold text-white text-xs">
-                        SH
-                      </div>
-                      <div>
-                        <p className="font-medium text-foreground text-base">
-                          acme-store.myshopify.com
-                        </p>
-                        <p className="font-light text-foreground-dimmed text-xs">
-                          Synced 30 minutes ago · 247 products
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="bg-success/10 px-2 py-0.5 font-medium text-success text-xs">
-                        Connected
-                      </span>
                       <button
                         type="button"
-                        className="border border-accent-foreground px-2.5 py-1 text-foreground text-xs transition-colors hover:bg-background-dimmed"
+                        className="border border-accent-foreground px-3 py-1.5 text-foreground text-sm transition-colors hover:bg-background-dimmed"
                       >
-                        Sync Now
+                        Change Avatar
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      {[
+                        { label: "Full Name", value: "Jane Smith" },
+                        { label: "Email", value: "jane@acmestore.com" },
+                        { label: "Company", value: "Acme Store" },
+                        { label: "Role", value: "Founder / CEO" },
+                      ].map((field) => (
+                        <div key={field.label} className="flex flex-col gap-1">
+                          <label className="font-medium text-foreground text-xs">
+                            {field.label}
+                          </label>
+                          <input
+                            type="text"
+                            defaultValue={field.value}
+                            className="border border-accent-foreground bg-background px-3 py-2 text-foreground text-sm focus:border-primary focus:outline-none"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    <button
+                      type="button"
+                      className="mt-4 bg-primary px-4 py-2 font-medium text-sm text-white transition-colors hover:bg-primary/90"
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+
+                  <div className="border border-accent-foreground bg-background p-6">
+                    <h2 className="mb-4 font-medium text-base text-foreground">
+                      Change Password
+                    </h2>
+                    <div className="flex max-w-sm flex-col gap-3">
+                      {[
+                        "Current Password",
+                        "New Password",
+                        "Confirm New Password",
+                      ].map((label) => (
+                        <div key={label} className="flex flex-col gap-1">
+                          <label className="font-medium text-foreground text-xs">
+                            {label}
+                          </label>
+                          <input
+                            type="password"
+                            className="border border-accent-foreground bg-background px-3 py-2 text-foreground text-sm focus:border-primary focus:outline-none"
+                          />
+                        </div>
+                      ))}
+                      <button
+                        type="button"
+                        className="mt-1 w-fit border border-accent-foreground bg-background px-4 py-2 text-foreground text-sm transition-colors hover:bg-background-dimmed"
+                      >
+                        Update Password
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="border border-error/20 bg-error/5 p-6">
+                    <h2 className="mb-2 font-medium text-base text-error">
+                      Danger Zone
+                    </h2>
+                    <p className="mb-3 font-light text-foreground-dimmed text-sm">
+                      Permanently delete your account and all associated data.
+                      This action cannot be undone.
+                    </p>
+                    <button
+                      type="button"
+                      className="border border-error px-4 py-2 font-medium text-error text-sm transition-colors hover:bg-error hover:text-white"
+                    >
+                      Delete Account
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {activeSection === "team" && (
+                <div className="border border-accent-foreground bg-background">
+                  <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
+                    <p className="font-medium text-base text-foreground">
+                      Team Members
+                    </p>
+                    <button
+                      type="button"
+                      className="flex items-center gap-1.5 bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primary/90"
+                    >
+                      <PlusIcon className="size-4" />
+                      Invite Member
+                    </button>
+                  </div>
+                  <div className="divide-y divide-accent-foreground">
+                    {[
+                      {
+                        name: "Jane Smith",
+                        email: "jane@acmestore.com",
+                        role: "Owner",
+                      },
+                      {
+                        name: "Marcus Johnson",
+                        email: "marcus@acmestore.com",
+                        role: "Admin",
+                      },
+                    ].map((member) => (
+                      <div
+                        key={member.email}
+                        className="flex items-center justify-between px-4 py-3"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="flex size-8 items-center justify-center bg-primary/10 font-medium text-primary text-sm">
+                            {member.name.charAt(0)}
+                          </div>
+                          <div>
+                            <p className="font-medium text-base text-foreground">
+                              {member.name}
+                            </p>
+                            <p className="font-light text-foreground-dimmed text-xs">
+                              {member.email}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="border border-accent-foreground px-2 py-0.5 text-foreground-dimmed text-xs">
+                            {member.role}
+                          </span>
+                          {member.role !== "Owner" && (
+                            <button
+                              type="button"
+                              className="font-light text-error text-xs hover:underline"
+                            >
+                              Remove
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="border-accent-foreground border-t p-4">
+                    <p className="mb-2 font-medium text-foreground text-xs">
+                      Invite by email
+                    </p>
+                    <div className="flex gap-2">
+                      <input
+                        type="email"
+                        placeholder="colleague@company.com"
+                        className="flex-1 border border-accent-foreground bg-background px-3 py-1.5 text-foreground text-sm placeholder:text-foreground-dimmed focus:border-primary focus:outline-none"
+                      />
+                      <select className="border border-accent-foreground bg-background px-2 text-foreground text-sm focus:outline-none">
+                        <option>Editor</option>
+                        <option>Viewer</option>
+                        <option>Admin</option>
+                      </select>
+                      <button
+                        type="button"
+                        className="bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primary/90"
+                      >
+                        Send
                       </button>
                     </div>
                   </div>
                 </div>
-                <div className="border-accent-foreground border-t p-4">
-                  <button
-                    type="button"
-                    className="flex items-center gap-1.5 border border-accent-foreground border-dashed px-3 py-2 text-foreground-dimmed text-sm transition-colors hover:border-primary hover:text-primary"
-                  >
-                    <PlusIcon className="size-4" />
-                    Connect another store
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+              )}
 
-          {activeSection === "notifications" && (
-            <div className="border border-accent-foreground bg-background">
-              <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
-                <p className="font-medium text-foreground text-base">
-                  Email Notifications
-                </p>
-              </div>
-              <div className="divide-y divide-accent-foreground">
-                {(
-                  [
-                    {
-                      key: "winRateDrop",
-                      label: "Win Rate Drops",
-                      description: "Alert when any product drops >5%",
-                    },
-                    {
-                      key: "simulationComplete",
-                      label: "Simulation Complete",
-                      description: "When a simulation batch finishes",
-                    },
-                    {
-                      key: "optimizationReady",
-                      label: "Optimization Ready",
-                      description: "New optimization suggestions available",
-                    },
-                    {
-                      key: "autoPub",
-                      label: "Auto-Published",
-                      description: "When auto-optimization publishes changes",
-                    },
-                    {
-                      key: "modelDrift",
-                      label: "Model Drift Detected",
-                      description: "When an AI model updates its behavior",
-                    },
-                    {
-                      key: "competitorUpdate",
-                      label: "Competitor Updates",
-                      description: "When tracked competitor listings change",
-                    },
-                    {
-                      key: "newCompetitor",
-                      label: "New Competitors",
-                      description: "When a new competitor is detected",
-                    },
-                    {
-                      key: "weeklyDigest",
-                      label: "Weekly Digest",
-                      description: "Summary of the week's performance",
-                    },
-                  ] as const
-                ).map(({ key, label, description }) => (
-                  <div
-                    key={key}
-                    className="flex items-center justify-between px-4 py-3"
-                  >
-                    <div>
-                      <p className="font-medium text-foreground text-base">
-                        {label}
-                      </p>
-                      <p className="font-light text-foreground-dimmed text-xs">
-                        {description}
+              {activeSection === "integrations" && (
+                <div className="flex flex-col gap-4">
+                  <div className="border border-accent-foreground bg-background">
+                    <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
+                      <p className="font-medium text-base text-foreground">
+                        Connected Stores
                       </p>
                     </div>
-                    <Toggle
-                      enabled={notificationToggles[key]}
-                      onToggle={() => toggleNotification(key)}
-                    />
+                    <div className="divide-y divide-accent-foreground">
+                      <div className="flex items-center justify-between px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <div className="flex size-8 items-center justify-center bg-[#96BF48] font-bold text-white text-xs">
+                            SH
+                          </div>
+                          <div>
+                            <p className="font-medium text-base text-foreground">
+                              acme-store.myshopify.com
+                            </p>
+                            <p className="font-light text-foreground-dimmed text-xs">
+                              Synced 30 minutes ago · 247 products
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="bg-success/10 px-2 py-0.5 font-medium text-success text-xs">
+                            Connected
+                          </span>
+                          <button
+                            type="button"
+                            className="border border-accent-foreground px-2.5 py-1 text-foreground text-xs transition-colors hover:bg-background-dimmed"
+                          >
+                            Sync Now
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="border-accent-foreground border-t p-4">
+                      <button
+                        type="button"
+                        className="flex items-center gap-1.5 border border-accent-foreground border-dashed px-3 py-2 text-foreground-dimmed text-sm transition-colors hover:border-primary hover:text-primary"
+                      >
+                        <PlusIcon className="size-4" />
+                        Connect another store
+                      </button>
+                    </div>
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {activeSection === "simulation" && (
-            <div className="flex flex-col gap-4">
-              <div className="border border-accent-foreground bg-background p-4">
-                <h2 className="mb-4 font-medium text-base text-foreground">
-                  AI Models
-                </h2>
-                <div className="flex flex-col gap-2">
-                  {[
-                    "GPT-4",
-                    "GPT-4o",
-                    "Claude 3.5 Sonnet",
-                    "Gemini Pro",
-                    "Perplexity",
-                  ].map((model, index) => (
-                    <label
-                      key={model}
-                      className="flex cursor-pointer items-center gap-3"
-                    >
-                      <div
-                        className={cn(
-                          "flex size-4 items-center justify-center border",
-                          index < 3
-                            ? "border-primary bg-primary"
-                            : "border-accent-foreground",
-                        )}
-                      >
-                        {index < 3 && (
-                          <CheckIcon className="size-2.5 text-white" />
-                        )}
-                      </div>
-                      <span className="font-light text-foreground text-sm">
-                        {model}
-                      </span>
-                      {index >= 3 && (
-                        <span className="bg-warning/10 px-1.5 py-0.5 text-warning text-xs">
-                          Dominate+
-                        </span>
-                      )}
-                    </label>
-                  ))}
                 </div>
-              </div>
+              )}
 
-              <div className="border border-accent-foreground bg-background p-4">
-                <h2 className="mb-4 font-medium text-base text-foreground">
-                  Simulation Frequency
-                </h2>
-                <div className="flex flex-col gap-2">
-                  {["Manual only", "Daily", "Weekly"].map((option, index) => (
-                    <label
-                      key={option}
-                      className="flex cursor-pointer items-center gap-3"
-                    >
-                      <div
-                        className={cn(
-                          "flex size-4 items-center justify-center rounded-full border",
-                          index === 1
-                            ? "border-primary bg-primary"
-                            : "border-accent-foreground",
-                        )}
-                      >
-                        {index === 1 && (
-                          <div className="size-1.5 rounded-full bg-white" />
-                        )}
-                      </div>
-                      <span className="font-light text-foreground text-sm">
-                        {option}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <div className="border border-accent-foreground bg-background p-4">
-                <h2 className="mb-3 font-medium text-base text-foreground">
-                  Purchase Persona
-                </h2>
-                <select className="w-full border border-accent-foreground bg-background px-3 py-2 text-foreground text-sm focus:border-primary focus:outline-none">
-                  <option>Budget-conscious shopper</option>
-                  <option>Premium buyer</option>
-                  <option>Technical researcher</option>
-                  <option>Gift purchase</option>
-                  <option>Custom...</option>
-                </select>
-              </div>
-            </div>
-          )}
-
-          {activeSection === "billing" && (
-            <div className="flex flex-col gap-4">
-              <div className="border border-accent-foreground bg-background p-6">
-                <div className="flex items-start justify-between">
-                  <div>
+              {activeSection === "notifications" && (
+                <div className="border border-accent-foreground bg-background">
+                  <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
                     <p className="font-medium text-base text-foreground">
-                      Compete Plan
-                    </p>
-                    <p className="mt-1 font-semibold text-2xl text-primary">
-                      $149
-                      <span className="font-light text-base text-foreground-dimmed">
-                        /mo
-                      </span>
+                      Email Notifications
                     </p>
                   </div>
-                  <span className="bg-success/10 px-2 py-0.5 font-medium text-success text-xs">
-                    Active
-                  </span>
+                  <div className="divide-y divide-accent-foreground">
+                    {(
+                      [
+                        {
+                          key: "winRateDrop",
+                          label: "Win Rate Drops",
+                          description: "Alert when any product drops >5%",
+                        },
+                        {
+                          key: "simulationComplete",
+                          label: "Simulation Complete",
+                          description: "When a simulation batch finishes",
+                        },
+                        {
+                          key: "optimizationReady",
+                          label: "Optimization Ready",
+                          description: "New optimization suggestions available",
+                        },
+                        {
+                          key: "autoPub",
+                          label: "Auto-Published",
+                          description:
+                            "When auto-optimization publishes changes",
+                        },
+                        {
+                          key: "modelDrift",
+                          label: "Model Drift Detected",
+                          description: "When an AI model updates its behavior",
+                        },
+                        {
+                          key: "competitorUpdate",
+                          label: "Competitor Updates",
+                          description:
+                            "When tracked competitor listings change",
+                        },
+                        {
+                          key: "newCompetitor",
+                          label: "New Competitors",
+                          description: "When a new competitor is detected",
+                        },
+                        {
+                          key: "weeklyDigest",
+                          label: "Weekly Digest",
+                          description: "Summary of the week's performance",
+                        },
+                      ] as const
+                    ).map(({ key, label, description }) => (
+                      <div
+                        key={key}
+                        className="flex items-center justify-between px-4 py-3"
+                      >
+                        <div>
+                          <p className="font-medium text-base text-foreground">
+                            {label}
+                          </p>
+                          <p className="font-light text-foreground-dimmed text-xs">
+                            {description}
+                          </p>
+                        </div>
+                        <Toggle
+                          enabled={notificationToggles[key]}
+                          onToggle={() => toggleNotification(key)}
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="mt-4 flex flex-col gap-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="font-light text-foreground-dimmed">
-                      Products used
-                    </span>
-                    <span className="font-medium text-foreground">
-                      10 / 100
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-light text-foreground-dimmed">
-                      Billing cycle
-                    </span>
-                    <span className="font-medium text-foreground">Monthly</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-light text-foreground-dimmed">
-                      Next billing date
-                    </span>
-                    <span className="font-medium text-foreground">
-                      April 6, 2026
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-light text-foreground-dimmed">
-                      Payment method
-                    </span>
-                    <span className="font-medium text-foreground">
-                      Visa ending in 4242
-                    </span>
-                  </div>
-                </div>
-                <div className="mt-4 flex gap-2">
-                  <button
-                    type="button"
-                    className="flex-1 bg-primary py-2 font-medium text-sm text-white transition-colors hover:bg-primary/90"
-                  >
-                    Upgrade to Dominate
-                  </button>
-                  <button
-                    type="button"
-                    className="border border-accent-foreground px-4 py-2 text-foreground-dimmed text-sm transition-colors hover:bg-background-dimmed"
-                  >
-                    Cancel Plan
-                  </button>
-                </div>
-              </div>
+              )}
 
-              <div className="border border-accent-foreground bg-background p-6">
-                <p className="mb-3 font-medium text-foreground text-base">
-                  Invoice History
-                </p>
-                <div className="divide-y divide-accent-foreground">
-                  {[
-                    { date: "Mar 6, 2026", amount: "$149.00", status: "Paid" },
-                    { date: "Feb 6, 2026", amount: "$149.00", status: "Paid" },
-                    { date: "Jan 6, 2026", amount: "$149.00", status: "Paid" },
-                  ].map((invoice) => (
-                    <div
-                      key={invoice.date}
-                      className="flex items-center justify-between py-2"
-                    >
+              {activeSection === "simulation" && (
+                <div className="flex flex-col gap-4">
+                  <div className="border border-accent-foreground bg-background p-4">
+                    <h2 className="mb-4 font-medium text-base text-foreground">
+                      AI Models
+                    </h2>
+                    <div className="flex flex-col gap-2">
+                      {[
+                        "GPT-4",
+                        "GPT-4o",
+                        "Claude 3.5 Sonnet",
+                        "Gemini Pro",
+                        "Perplexity",
+                      ].map((model, index) => (
+                        <label
+                          key={model}
+                          className="flex cursor-pointer items-center gap-3"
+                        >
+                          <div
+                            className={cn(
+                              "flex size-4 items-center justify-center border",
+                              index < 3
+                                ? "border-primary bg-primary"
+                                : "border-accent-foreground",
+                            )}
+                          >
+                            {index < 3 && (
+                              <CheckIcon className="size-2.5 text-white" />
+                            )}
+                          </div>
+                          <span className="font-light text-foreground text-sm">
+                            {model}
+                          </span>
+                          {index >= 3 && (
+                            <span className="bg-warning/10 px-1.5 py-0.5 text-warning text-xs">
+                              Dominate+
+                            </span>
+                          )}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="border border-accent-foreground bg-background p-4">
+                    <h2 className="mb-4 font-medium text-base text-foreground">
+                      Simulation Frequency
+                    </h2>
+                    <div className="flex flex-col gap-2">
+                      {["Manual only", "Daily", "Weekly"].map(
+                        (option, index) => (
+                          <label
+                            key={option}
+                            className="flex cursor-pointer items-center gap-3"
+                          >
+                            <div
+                              className={cn(
+                                "flex size-4 items-center justify-center rounded-full border",
+                                index === 1
+                                  ? "border-primary bg-primary"
+                                  : "border-accent-foreground",
+                              )}
+                            >
+                              {index === 1 && (
+                                <div className="size-1.5 rounded-full bg-white" />
+                              )}
+                            </div>
+                            <span className="font-light text-foreground text-sm">
+                              {option}
+                            </span>
+                          </label>
+                        ),
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="border border-accent-foreground bg-background p-4">
+                    <h2 className="mb-3 font-medium text-base text-foreground">
+                      Purchase Persona
+                    </h2>
+                    <select className="w-full border border-accent-foreground bg-background px-3 py-2 text-foreground text-sm focus:border-primary focus:outline-none">
+                      <option>Budget-conscious shopper</option>
+                      <option>Premium buyer</option>
+                      <option>Technical researcher</option>
+                      <option>Gift purchase</option>
+                      <option>Custom...</option>
+                    </select>
+                  </div>
+                </div>
+              )}
+
+              {activeSection === "billing" && (
+                <div className="flex flex-col gap-4">
+                  <div className="border border-accent-foreground bg-background p-6">
+                    <div className="flex items-start justify-between">
                       <div>
-                        <p className="font-light text-foreground text-sm">
-                          {invoice.date}
+                        <p className="font-medium text-base text-foreground">
+                          Compete Plan
                         </p>
-                        <p className="font-light text-foreground-dimmed text-xs">
-                          {invoice.amount}
+                        <p className="mt-1 font-semibold text-2xl text-primary">
+                          $149
+                          <span className="font-light text-base text-foreground-dimmed">
+                            /mo
+                          </span>
                         </p>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="bg-success/10 px-1.5 py-0.5 font-medium text-success text-xs">
-                          {invoice.status}
+                      <span className="bg-success/10 px-2 py-0.5 font-medium text-success text-xs">
+                        Active
+                      </span>
+                    </div>
+                    <div className="mt-4 flex flex-col gap-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="font-light text-foreground-dimmed">
+                          Products used
                         </span>
-                        <button
-                          type="button"
-                          className="font-light text-primary text-xs hover:underline"
-                        >
-                          Download
-                        </button>
+                        <span className="font-medium text-foreground">
+                          10 / 100
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-light text-foreground-dimmed">
+                          Billing cycle
+                        </span>
+                        <span className="font-medium text-foreground">
+                          Monthly
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-light text-foreground-dimmed">
+                          Next billing date
+                        </span>
+                        <span className="font-medium text-foreground">
+                          April 6, 2026
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-light text-foreground-dimmed">
+                          Payment method
+                        </span>
+                        <span className="font-medium text-foreground">
+                          Visa ending in 4242
+                        </span>
                       </div>
                     </div>
-                  ))}
+                    <div className="mt-4 flex gap-2">
+                      <button
+                        type="button"
+                        className="flex-1 bg-primary py-2 font-medium text-sm text-white transition-colors hover:bg-primary/90"
+                      >
+                        Upgrade to Dominate
+                      </button>
+                      <button
+                        type="button"
+                        className="border border-accent-foreground px-4 py-2 text-foreground-dimmed text-sm transition-colors hover:bg-background-dimmed"
+                      >
+                        Cancel Plan
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="border border-accent-foreground bg-background p-6">
+                    <p className="mb-3 font-medium text-base text-foreground">
+                      Invoice History
+                    </p>
+                    <div className="divide-y divide-accent-foreground">
+                      {[
+                        {
+                          date: "Mar 6, 2026",
+                          amount: "$149.00",
+                          status: "Paid",
+                        },
+                        {
+                          date: "Feb 6, 2026",
+                          amount: "$149.00",
+                          status: "Paid",
+                        },
+                        {
+                          date: "Jan 6, 2026",
+                          amount: "$149.00",
+                          status: "Paid",
+                        },
+                      ].map((invoice) => (
+                        <div
+                          key={invoice.date}
+                          className="flex items-center justify-between py-2"
+                        >
+                          <div>
+                            <p className="font-light text-foreground text-sm">
+                              {invoice.date}
+                            </p>
+                            <p className="font-light text-foreground-dimmed text-xs">
+                              {invoice.amount}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="bg-success/10 px-1.5 py-0.5 font-medium text-success text-xs">
+                              {invoice.status}
+                            </span>
+                            <button
+                              type="button"
+                              className="font-light text-primary text-xs hover:underline"
+                            >
+                              Download
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          )}
+              )}
             </div>
           </div>
         </div>

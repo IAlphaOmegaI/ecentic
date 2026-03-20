@@ -50,7 +50,7 @@ const OptimizationCard = ({
     <div className="flex items-start justify-between">
       <div>
         <div className="flex items-center gap-2">
-          <p className="font-medium text-foreground text-base">
+          <p className="font-medium text-base text-foreground">
             {optimization.productTitle}
           </p>
           <span className="border border-accent-foreground px-1.5 py-0.5 text-foreground-dimmed text-xs">
@@ -111,12 +111,12 @@ const OptimizationCard = ({
 
 export default () => (
   <div className="flex flex-col">
-    <div className="mx-8 border-x border-accent-foreground">
+    <div className="mx-8 border-accent-foreground border-x">
       {/* Title */}
-      <div className="-mx-8 border-b border-accent-foreground">
+      <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8 flex items-center justify-between px-6 py-8">
           <div>
-            <h1 className="font-medium text-foreground text-3xl">
+            <h1 className="font-medium text-3xl text-foreground">
               Optimization Center
             </h1>
             <p className="font-light text-foreground-dimmed text-sm">
@@ -143,7 +143,7 @@ export default () => (
       </div>
 
       {/* Tabs + content */}
-      <div className="-mx-8 border-b border-accent-foreground">
+      <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8 px-6 py-6">
           <Tabs defaultValue="pending">
             <TabsList className="mb-4 h-auto border border-accent-foreground bg-transparent px-0">
@@ -167,7 +167,7 @@ export default () => (
             <TabsPanel value="pending">
               {pendingOptimizations.length === 0 ? (
                 <div className="py-12 text-center">
-                  <p className="font-medium text-foreground text-base">
+                  <p className="font-medium text-base text-foreground">
                     No pending optimizations
                   </p>
                   <p className="font-light text-foreground-dimmed text-xs">
@@ -195,7 +195,7 @@ export default () => (
                   >
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="font-medium text-foreground text-base">
+                        <p className="font-medium text-base text-foreground">
                           {optimization.productTitle}
                         </p>
                         <p className="font-light text-foreground-dimmed text-xs">
@@ -225,7 +225,7 @@ export default () => (
                   >
                     <div className="flex items-start justify-between">
                       <div>
-                        <p className="font-medium text-foreground text-base">
+                        <p className="font-medium text-base text-foreground">
                           {optimization.productTitle}
                         </p>
                         <div className="mt-1 flex items-center gap-3">
@@ -273,7 +273,7 @@ export default () => (
                   >
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="font-medium text-foreground text-base">
+                        <p className="font-medium text-base text-foreground">
                           {optimization.productTitle}
                         </p>
                         <span className="border border-accent-foreground px-1.5 py-0.5 text-foreground-dimmed text-xs">

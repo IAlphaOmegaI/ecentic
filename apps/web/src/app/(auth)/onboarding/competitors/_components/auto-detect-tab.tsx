@@ -1,7 +1,8 @@
 "use client";
 
 import { readStreamableValue } from "@ai-sdk/rsc";
-import { unwrapResult } from "@zenncore/utils";
+import { RadarIcon } from "@zenncore/icons";
+import { cn, unwrapResult } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
@@ -9,8 +10,6 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import * as Competitor from "@/server/app/competitor";
-import { cn } from "@zenncore/utils";
-import Image from "next/image";
 
 type LogEntry = {
   id: number;
@@ -57,7 +56,7 @@ export const AutoDetectTab = ({
       ...previous,
       {
         ...entry,
-        id: logs.length + 1,
+        id: Math.random(),
         elapsed: Date.now() - start.current,
       },
     ]);
@@ -93,6 +92,7 @@ export const AutoDetectTab = ({
             text: `${event.competitors.length} competitors identified`,
             type: "success",
           });
+          clearInterval(timer.current);
           onSuccess(event.competitors);
           toast.add({
             title: "Competitors found",
@@ -105,14 +105,7 @@ export const AutoDetectTab = ({
   });
 
   return (
-    <div className={cn("min-h-full bg-background-dimmed relative", className)}>
-      {/* <Image
-        src="/images/auto-detect.png"
-        alt="Auto-detect"
-        width={100}
-        height={100}
-        className="w-full h-full object-contain absolute inset-0"
-      /> */}
+    <div className={cn("relative flex h-full bg-background-dimmed", className)}>
       <AnimatePresence mode="wait" initial={false}>
         {!isDetecting && logs.length === 0 && (
           <motion.div
@@ -121,29 +114,33 @@ export const AutoDetectTab = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="flex flex-1 flex-col items-center justify-center gap-4 px-6 py-14 text-center"
+            className="m-auto flex size-full h-full flex-1 flex-col items-center justify-center p-4"
           >
-            <p className="max-w-md font-light text-foreground-dimmed">
-              We'll analyze your products and use AI to find the most relevant
-              competitors in your market.
-            </p>
+            <Image
+              src="/images/competitors-illustration.png"
+              alt="Competitors illustration"
+              fill
+              className="object-contain opacity-30"
+            />
+
+            <div className="relative z-20">
+              <h3 className="text-center font-medium text-2xl text-foreground">
+                Auto-detect competitors
+              </h3>
+              <p className="relative text-center text-foreground-dimmed text-lg">
+                We'll analyze your products and use AI to find <br />
+                the most relevant competitors in your market.
+              </p>
+            </div>
             <Button
               variant="flat"
               color="primary"
               type="button"
               onClick={handleDetect}
-              className="px-6 py-2 font-medium"
+              className="relative z-20 mt-4"
             >
-              Auto-detect competitors
+              Auto-detect competitors <RadarIcon />
             </Button>
-            <div className="relative min-h-0 w-full flex-1">
-              <Image
-                src="/images/competitors-illustration.png"
-                alt="Competitors illustration"
-                fill
-                className="object-contain"
-              />
-            </div>
           </motion.div>
         )}
 
@@ -154,10 +151,14 @@ export const AutoDetectTab = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="flex flex-1 flex-col"
+            className="flex h-full max-h-full min-h-0 flex-1 flex-col"
           >
-            {/* Header */}
-            <div className="flex items-center justify-between border-accent-foreground border-b px-5 py-3">
+            <div
+              className={cn(
+                "flex items-center justify-between p-4",
+                !isDetecting && "border-accent-foreground border-b",
+              )}
+            >
               <div className="flex items-center gap-2">
                 {isDetecting && (
                   <motion.span
@@ -170,18 +171,17 @@ export const AutoDetectTab = ({
                     className="inline-block size-1.5 rounded-full bg-primary"
                   />
                 )}
-                <span className="font-medium text-foreground text-xs uppercase tracking-widest">
+                <span className="font-medium text-foreground uppercase tracking-widest">
                   {isDetecting ? "Live Intelligence Scan" : "Scan Complete"}
                 </span>
               </div>
-              <span className="font-mono text-foreground-dimmed text-xs tabular-nums">
+              <span className="font-mono text-foreground-dimmed tabular-nums">
                 {formatElapsed(elapsed)}
               </span>
             </div>
 
-            {/* Indeterminate progress bar */}
             {isDetecting && (
-              <div className="relative h-0.5 w-full overflow-hidden bg-accent-foreground">
+              <div className="relative h-0.5 w-full overflow-hidden bg-primary/20">
                 <motion.div
                   className="absolute h-full w-1/3 bg-primary"
                   animate={{ x: ["-100%", "400%"] }}
@@ -194,8 +194,7 @@ export const AutoDetectTab = ({
               </div>
             )}
 
-            {/* Log area */}
-            <div className="flex-1 space-y-1.5 overflow-y-auto scroll-smooth px-5 py-4">
+            <div className="min-h-0 flex-1 space-y-1 overflow-y-auto scroll-smooth p-4">
               {logs.map((log, index) => {
                 const age = logs.length - 1 - index;
                 const opacity = isDetecting ? Math.max(0.2, 1 - age * 0.1) : 1;
@@ -205,18 +204,18 @@ export const AutoDetectTab = ({
                     initial={{ opacity: 0, x: -6 }}
                     animate={{ opacity, x: 0 }}
                     transition={{ duration: 0.25, ease: "easeOut" }}
-                    className="flex items-baseline gap-3"
+                    className="flex items-baseline gap-2"
                   >
-                    <span className="shrink-0 font-mono text-foreground-dimmed/50 text-xs tabular-nums">
+                    <span className="shrink-0 font-mono text-foreground-dimmed/50 tabular-nums">
                       {formatElapsed(log.elapsed)}
                     </span>
                     <span
                       className={
                         log.type === "error"
-                          ? "text-error text-xs leading-relaxed"
+                          ? "text-error leading-relaxed"
                           : log.type === "success"
-                            ? "font-medium text-success text-xs leading-relaxed"
-                            : "text-foreground-dimmed text-xs leading-relaxed"
+                            ? "font-medium text-success leading-relaxed"
+                            : "text-foreground-dimmed leading-relaxed"
                       }
                     >
                       {log.text}
@@ -225,14 +224,13 @@ export const AutoDetectTab = ({
                 );
               })}
               {logs.length === 0 && (
-                <p className="text-foreground-dimmed/50 text-xs">
+                <p className="text-foreground-dimmed/50">
                   Initializing intelligence scan...
                 </p>
               )}
               <div ref={target} />
             </div>
 
-            {/* Footer */}
             {isDetecting ? (
               <div className="flex items-center gap-1.5 border-accent-foreground border-t px-5 py-3">
                 {[0, 0.2, 0.4].map((delay) => (
@@ -248,7 +246,7 @@ export const AutoDetectTab = ({
                     className="inline-block size-1 rounded-full bg-primary"
                   />
                 ))}
-                <span className="ml-1.5 font-light text-foreground-dimmed text-xs">
+                <span className="ml-1.5 font-light text-foreground-dimmed">
                   Analyzing market signals
                 </span>
               </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { Textarea, TextareaInput } from "@zenncore/web/components/textarea";
@@ -7,7 +8,6 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import { useState } from "react";
 import type * as Competitor from "@/server/app/competitor";
 import { scrapeUrls } from "@/server/app/intelligence/scrape";
-import { cn } from "@zenncore/utils";
 
 export namespace UrlTab {
   export type Props = {
@@ -52,7 +52,7 @@ export const UrlTab = ({ onSuccess, className }: UrlTab.Props) => {
   return (
     <div
       className={cn(
-        "bg-background-dimmed min-h-full p-4 flex flex-col",
+        "flex min-h-full flex-col bg-background-dimmed p-4",
         className,
       )}
     >
@@ -75,7 +75,7 @@ export const UrlTab = ({ onSuccess, className }: UrlTab.Props) => {
         type="button"
         onClick={handleScrape}
         disabled={!url?.trim() || isScraping}
-        className="mt-3 px-4 py-2 font-medium mt-auto"
+        className="mt-3 mt-auto px-4 py-2 font-medium"
       >
         {isScraping ? "Extracting product data..." : "Extract Product Data"}
       </Button>

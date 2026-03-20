@@ -11,7 +11,7 @@ export default () => (
   <Motion.Stagger
     stagger={0.08}
     delay={0.1}
-    className="flex flex-1 flex-col overflow-hidden"
+    className="flex flex-1 flex-col overflow-y-auto"
   >
     <Motion.Item className="w-full border-accent-foreground border-b px-8">
       <div className="flex flex-col gap-4 border-accent-foreground border-x p-6">
