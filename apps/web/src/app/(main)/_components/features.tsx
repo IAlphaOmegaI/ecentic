@@ -40,7 +40,7 @@ const features = [
 export const Features = () => (
   <section className="relative -left-[calc(50vw-50%)] -z-1 w-screen border border-accent-foreground">
     <div className="relative mx-auto max-w-6xl p-6 md:p-12">
-      <h1 className="font-body text-3xl md:text-5xl">
+      <h1 className="font-body text-3xl md:text-5xl text-foreground">
         Infrastructure for the agent economy.
       </h1>
     </div>
