@@ -45,8 +45,8 @@ export const CompetitorList = ({
   onRemove,
 }: CompetitorList.Props) => {
   return (
-    <div>
-      <div className="overflow-x-auto border-accent-foreground border-x bg-background-rich">
+    <div className="flex h-full flex-col">
+      <div className="min-h-0 flex-1 overflow-auto border-accent-foreground border-x bg-background-rich">
         <Table className="[&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0">
           <TableHeader>
             <TableRow>

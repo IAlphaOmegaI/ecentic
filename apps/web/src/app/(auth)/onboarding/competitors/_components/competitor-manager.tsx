@@ -38,11 +38,11 @@ export const CompetitorManager = ({
   };
 
   return (
-    <Motion.Stagger className="flex flex-1 flex-col overflow-hidden h-full">
+    <Motion.Stagger className="flex h-full flex-1 flex-col overflow-hidden">
       <div className="border-accent-foreground border-b px-8">{children}</div>
 
       <Motion.Item className="h-full min-h-0 flex-1 px-8">
-        <div className="border-accent-foreground border-x h-full">
+        <div className="h-full border-accent-foreground border-x">
           <Tabs defaultValue="auto" className="h-full">
             <TabsList className={"w-full border-x-0 border-t-0"}>
               <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
@@ -64,7 +64,7 @@ export const CompetitorManager = ({
               <AutoDetectTab
                 products={products}
                 onSuccess={handleSuccess}
-                className={"flex-1 border-accent-foreground border-b h-full"}
+                className={"h-full flex-1 border-accent-foreground border-b"}
               />
             </TabsPanel>
 

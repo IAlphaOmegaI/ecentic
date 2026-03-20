@@ -40,13 +40,16 @@ export namespace ScanRunner {
 
 export const ScanRunner = ({ children, simulations }: ScanRunner.Props) => {
   const toast = useToastManager();
-  const [phase, setPhase] = useState<ScanPhase>("pre");
+  const [phase, setPhase] = useState<ScanPhase>("complete");
   const [stats, setStats] = useState<Stats>(initialStats);
 
   const [logs, setLogs] = useState<LogEntry[]>([]);
 
   const [statuses, setStatuses] =
     useState<Record<string, ModelStatus>>(initialStatuses);
+  const [modelStats, setModelStats] = useState<
+    Record<string, { wins: number; losses: number }>
+  >({});
   const [winRates, setWinRates] = useState<
     Record<string, { wins: number; losses: number; rate: number }>
   >({});
@@ -92,6 +95,7 @@ export const ScanRunner = ({ children, simulations }: ScanRunner.Props) => {
             losses: event.losses,
             progress: percentage,
           });
+          setModelStats(event.modelWins);
           break;
         }
         case "model_status":
@@ -133,8 +137,7 @@ export const ScanRunner = ({ children, simulations }: ScanRunner.Props) => {
           simulations={simulations}
           progress={stats.progress}
           statuses={statuses}
-          wins={stats.wins}
-          losses={stats.losses}
+          modelStats={modelStats}
           logs={logs}
         />
       )}
