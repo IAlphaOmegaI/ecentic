@@ -4,7 +4,12 @@
       "Bash(grep -E '\"\"ai\"\"' apps/web/package.json)",
       "Bash(ls -la \"c:/Users/35568/Desktop/ecentic/apps/web/src/app/\\(main\\)/dashboard/ucp/\")",
       "Bash(ls -la \"/c/Users/35568/Desktop/ecentic/apps/web/src/app/\\(main\\)/dashboard/ucp/\")",
-      "Bash(find \"c:/Users/35568/Desktop/ecentic/apps/web/src/app/\\(main\\)/_components\" -name \"*.tsx\")"
+      "Bash(find \"c:/Users/35568/Desktop/ecentic/apps/web/src/app/\\(main\\)/_components\" -name \"*.tsx\")",
+      "Bash(find /c/Users/35568/Desktop/ecentic/packages -name *.ts -path *config*)",
+      "Bash(find /c/Users/35568/Desktop/ecentic -name tailwind* -type f)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\35568\\Desktop\\ecentic\\docs"
     ]
   }
 }
