@@ -1,29 +1,62 @@
-import { PlusIcon } from "@zenncore/icons";
+import {
+  ArrowRightIcon,
+  BoxMinusIcon,
+  CheckBadgeIcon,
+  DownloadIcon,
+  PlusIcon,
+  RadarIcon,
+  TrendUpIcon,
+} from "@zenncore/icons";
 import { unwrapResult } from "@zenncore/utils";
+import { Button } from "@zenncore/web/components/button";
 import Link from "next/link";
+import { connection } from "next/server";
 import { Suspense } from "react";
+import { formatRelativeTime } from "@/lib/date";
 import * as Product from "@/server/app/product";
+import * as Scan from "@/server/app/scan";
+import * as Tracking from "@/server/app/tracking";
+import { AgentVisitsChart } from "../_components/agent-visits-chart";
+import {
+  OptimizationBreakdown,
+  ProductsModelRates,
+  ProductsWinRateTrend,
+  QualityDistribution,
+} from "./_components/products-charts";
 import { ProductsTable } from "./_components/products-table";
 
 export default () => (
   <div className="flex flex-col">
     <div className="mx-8 border-accent-foreground border-x">
-      {/* Title */}
+      {/* Header */}
       <div className="-mx-8 border-accent-foreground border-b">
-        <div className="mx-8 flex items-center justify-between px-6 py-8">
+        <div className="mx-8 flex items-baseline justify-between px-6 py-8">
           <div>
-            <h1 className="font-medium text-3xl text-foreground">Products</h1>
-            <p className="font-light text-foreground-dimmed text-sm">
-              Monitor how AI agents evaluate your product listings
-            </p>
+            <h1 className="font-medium text-4xl text-foreground">Products</h1>
+            <Suspense
+              fallback={
+                <p className="mt-1 font-light text-2xl text-foreground-dimmed">
+                  Loading...
+                </p>
+              }
+            >
+              <LastScanned />
+            </Suspense>
           </div>
-          <Link
-            href="/onboarding/products"
-            className="flex items-center gap-1.5 bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primary/90"
-          >
-            <PlusIcon className="size-4" />
-            Add Products
-          </Link>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" color="accent">
+              <DownloadIcon className="size-4" />
+              Export
+            </Button>
+            <Button
+              variant="flat"
+              color="primary"
+              render={<Link href="/onboarding/products" />}
+            >
+              <PlusIcon className="size-4" />
+              Add Products
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -31,7 +64,17 @@ export default () => (
       <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8">
           <Suspense fallback={<StatsSkeleton />}>
-            <Statistics />
+            <StatCards />
+          </Suspense>
+        </div>
+      </div>
+
+      {/* Performance — Model Rates + Trend + Quality/Optimization */}
+      <div className="h-8" />
+      <div className="-mx-8 border-accent-foreground border-t border-b">
+        <div className="mx-8">
+          <Suspense fallback={<ChartSkeleton />}>
+            <Performance />
           </Suspense>
         </div>
       </div>
@@ -46,9 +89,18 @@ export default () => (
         </div>
       </div>
 
-      {/* Insights */}
+      {/* Agent Traffic */}
       <div className="h-8" />
-      <div className="-mx-8 border-accent-foreground border-t border-b">
+      <div className="-mx-8 mb-12 border-accent-foreground border-t border-b">
+        <div className="mx-8">
+          <Suspense fallback={<TrafficSkeleton />}>
+            <AgentTraffic />
+          </Suspense>
+        </div>
+      </div>
+
+      {/* Latest Scan Insights */}
+      <div className="-mx-8 mb-12 border-accent-foreground border-t border-b">
         <div className="mx-8 px-6 py-6">
           <Suspense fallback={<InsightsSkeleton />}>
             <Insights />
@@ -59,151 +111,647 @@ export default () => (
   </div>
 );
 
-const Statistics = async () => {
+const LastScanned = async () => {
+  await connection();
   const data = await unwrapResult(Product.gatherIntelligence());
-  if (!data) return null;
 
+  return (
+    <p className="mt-1 font-light text-2xl text-foreground-dimmed">
+      {data.scan?.updatedAt
+        ? `Last scanned: ${formatRelativeTime(data.scan.updatedAt)}`
+        : "No scans run yet"}
+    </p>
+  );
+};
+
+const StatCards = async () => {
+  await connection();
+  const data = await unwrapResult(Product.gatherIntelligence());
   const { products } = data;
-  if (products.length === 0) return null;
+
+  if (products.length === 0)
+    return (
+      <div className="grid h-39 min-h-39 grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
+        {[
+          { label: "Total Products", icon: <RadarIcon className="size-12" /> },
+          {
+            label: "Average Win Rate",
+            icon: <BoxMinusIcon className="size-12" />,
+          },
+          {
+            label: "High Performers",
+            icon: <TrendUpIcon className="size-12" />,
+          },
+          {
+            label: "Needs Attention",
+            icon: <CheckBadgeIcon className="size-12" />,
+          },
+        ].map(({ label, icon }) => (
+          <div key={label} className="h-full bg-background-dimmed p-4">
+            <p className="mb-4 text-foreground-dimmed">{label}</p>
+            <div className="flex flex-col items-center justify-center gap-2">
+              {icon}
+              <p className="text-foreground-dimmed">No data yet</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
 
   const averageWinRate = Math.round(
     products.reduce((sum, product) => sum + product.winRate.total, 0) /
       products.length,
   );
 
-  const needsAttention = products.filter(
-    (product) => product.winRate.total < 30,
-  ).length;
-
   const highPerformers = products.filter(
     (product) => product.winRate.total >= 60,
   ).length;
 
+  const needsAttention = products.filter(
+    (product) => product.winRate.total < 30,
+  ).length;
+
+  const scans = await unwrapResult(Scan.getLatest());
+  const completed = scans.filter((scan) => scan.status === "completed");
+
+  const trend = (() => {
+    if (completed.length < 2) return 0;
+
+    const current = completed[0];
+    const previous = completed[1];
+
+    if (!current || !previous) return 0;
+
+    const currentTotal = current.wins + current.losses;
+    const previousTotal = previous.wins + previous.losses;
+
+    const currentRate =
+      currentTotal > 0 ? Math.round((current.wins / currentTotal) * 100) : 0;
+    const previousRate =
+      previousTotal > 0
+        ? Math.round((previous.wins / previousTotal) * 100)
+        : 0;
+
+    return currentRate - previousRate;
+  })();
+
   return (
-    <div className="grid grid-cols-1 gap-px border-accent-foreground border-b bg-accent-foreground sm:grid-cols-4">
-      <div className="bg-background p-4">
-        <p className="font-light text-foreground-dimmed text-xs uppercase tracking-wide">
-          Total Products
-        </p>
-        <p className="mt-1 font-semibold text-3xl text-foreground">
-          {products.length}
-        </p>
+    <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
+      <div className="flex flex-col justify-between bg-background-dimmed p-4">
+        <p className="text-foreground-dimmed">Total Products</p>
+        <div className="mt-2 flex items-baseline gap-1.5">
+          <span className="text-4xl text-foreground tabular-nums">
+            {products.length}
+          </span>
+          <span className="text-foreground-dimmed">/ 100</span>
+        </div>
+        <div className="mt-4">
+          <div className="h-1 w-full bg-accent-foreground">
+            <div
+              className="h-full bg-primary"
+              style={{ width: `${(products.length / 100) * 100}%` }}
+            />
+          </div>
+          <p className="mt-2 text-foreground-dimmed">
+            {100 - products.length} slots remaining
+          </p>
+        </div>
       </div>
-      <div className="bg-background p-4">
-        <p className="font-light text-foreground-dimmed text-xs uppercase tracking-wide">
-          Average Win Rate
-        </p>
-        <p className="mt-1 font-semibold text-3xl text-foreground">
-          {averageWinRate}%
-        </p>
+
+      <div className="flex flex-col justify-between bg-background-dimmed p-4">
+        <p className="text-foreground-dimmed">Average Win Rate</p>
+        <div className="mt-2 flex items-baseline gap-2">
+          <span className="text-4xl text-foreground tabular-nums">
+            {averageWinRate}%
+          </span>
+          {trend !== 0 && (
+            <span className={trend >= 0 ? "text-success" : "text-error"}>
+              {trend >= 0 ? "+" : ""}
+              {trend}% since last scan
+            </span>
+          )}
+        </div>
       </div>
-      <div className="bg-background p-4">
-        <p className="font-light text-foreground-dimmed text-xs uppercase tracking-wide">
-          High Performers
-        </p>
-        <p className="mt-1 font-semibold text-3xl text-success">
+
+      <div className="flex flex-col justify-between bg-background-dimmed p-4">
+        <p className="text-foreground-dimmed">High Performers</p>
+        <span className="mt-2 text-4xl text-success tabular-nums">
           {highPerformers}
+        </span>
+        <p className="mt-2 font-light text-foreground-dimmed text-sm">
+          products with {"\u2265"}60% win rate
         </p>
       </div>
-      <div className="bg-background p-4">
-        <p className="font-light text-foreground-dimmed text-xs uppercase tracking-wide">
-          Needs Attention
-        </p>
-        <p className="mt-1 font-semibold text-3xl text-error">
+
+      <div className="flex flex-col justify-between bg-background-dimmed p-4">
+        <p className="text-foreground-dimmed">Needs Attention</p>
+        <span className="mt-2 text-4xl text-error tabular-nums">
           {needsAttention}
+        </span>
+        <p className="mt-2 font-light text-foreground-dimmed text-sm">
+          products below 30% win rate
         </p>
+      </div>
+    </div>
+  );
+};
+
+const Performance = async () => {
+  await connection();
+  const [data, scans] = await Promise.all([
+    unwrapResult(Product.gatherIntelligence()),
+    unwrapResult(Scan.getLatest()),
+  ]);
+
+  const { products } = data;
+
+  const models =
+    products.length > 0
+      ? [
+          {
+            label: "GPT-4",
+            rate: Math.round(
+              products.reduce((sum, p) => sum + p.winRate.gpt4, 0) /
+                products.length,
+            ),
+          },
+          {
+            label: "Claude",
+            rate: Math.round(
+              products.reduce((sum, p) => sum + p.winRate.claude, 0) /
+                products.length,
+            ),
+          },
+          {
+            label: "Gemini",
+            rate: Math.round(
+              products.reduce((sum, p) => sum + p.winRate.gemini, 0) /
+                products.length,
+            ),
+          },
+        ]
+      : [];
+
+  const completed = scans.filter((scan) => scan.status === "completed");
+
+  const trend = completed
+    .slice(0, 30)
+    .reverse()
+    .map((scan) => {
+      const total = scan.wins + scan.losses;
+      return {
+        date: scan.createdAt.toISOString(),
+        winRate: total > 0 ? Math.round((scan.wins / total) * 100) : 0,
+      };
+    });
+
+  const trendData = trend.map((point) => point.winRate);
+  const trendLabels = trend.map((point) =>
+    formatRelativeTime(new Date(point.date)),
+  );
+  const change = (() => {
+    if (trendData.length < 2) return 0;
+    return (trendData[trendData.length - 1] ?? 0) - (trendData[0] ?? 0);
+  })();
+
+  const averageQuality =
+    products.length > 0
+      ? Math.round(
+          products.reduce((sum, p) => sum + p.quality, 0) / products.length,
+        )
+      : 0;
+
+  const qualitySegments = [
+    {
+      label: "Good (\u226575%)",
+      count: products.filter((p) => p.quality >= 75).length,
+      color: "bg-success",
+    },
+    {
+      label: "Fair (50-74%)",
+      count: products.filter((p) => p.quality >= 50 && p.quality < 75).length,
+      color: "bg-warning",
+    },
+    {
+      label: "Poor (<50%)",
+      count: products.filter((p) => p.quality < 50).length,
+      color: "bg-error",
+    },
+  ];
+
+  const totalSimulations = products.reduce((sum, p) => sum + p.simulations, 0);
+  const optimized = products.filter(
+    (p) => p.quality >= 75 && p.winRate.total >= 60,
+  ).length;
+  const pending = products.filter(
+    (p) =>
+      p.simulations > 0 &&
+      !(p.quality >= 75 && p.winRate.total >= 60) &&
+      p.winRate.total >= 30,
+  ).length;
+  const unoptimized = products.length - optimized - pending;
+
+  return (
+    <div className="grid grid-cols-1 gap-px bg-accent-foreground xl:grid-cols-3">
+      <div className="bg-background-dimmed xl:col-span-2">
+        <div className="flex items-start justify-between p-4">
+          <div>
+            <p className="font-light text-foreground-dimmed uppercase tracking-widest">
+              Performance
+            </p>
+            <p className="mt-1 font-medium text-2xl text-foreground">
+              Win Rate by Model
+            </p>
+          </div>
+          <p className="font-light text-foreground-dimmed text-sm">
+            {totalSimulations} total simulations
+          </p>
+        </div>
+
+        <ProductsModelRates models={models} />
+
+        <ProductsWinRateTrend
+          data={trendData}
+          labels={trendLabels}
+          change={change}
+        />
+      </div>
+
+      <div className="flex flex-col gap-px bg-accent-foreground">
+        <div className="flex-1 bg-background-dimmed">
+          <QualityDistribution
+            segments={qualitySegments}
+            total={products.length}
+            averageQuality={averageQuality}
+          />
+        </div>
+        <div className="bg-background-dimmed">
+          <OptimizationBreakdown
+            optimized={optimized}
+            pending={pending}
+            unoptimized={unoptimized}
+            total={products.length}
+          />
+        </div>
+        <div className="flex items-center justify-between bg-background-dimmed p-4">
+          <Button
+            variant="outline"
+            color="accent"
+            render={<Link href="/dashboard/optimize" />}
+          >
+            Optimizations
+          </Button>
+          <Button
+            variant="outline"
+            color="primary"
+            render={<Link href="/dashboard/ucp" />}
+          >
+            UCP Manager <ArrowRightIcon className="size-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );
 };
 
 const Products = async () => {
+  await connection();
   const data = await unwrapResult(Product.gatherIntelligence());
 
   if (data.products.length === 0)
     return (
-      <div className="bg-background p-8 text-center">
-        <p className="font-medium text-base text-foreground">
-          No products imported yet
-        </p>
-        <p className="mt-1 font-light text-foreground-dimmed text-xs">
+      <div className="p-8 text-center">
+        <BoxMinusIcon className="mx-auto mb-6 size-24" />
+        <p className="text-foreground text-lg">No products imported yet</p>
+        <p className="mt-1 font-light text-foreground-dimmed text-sm">
           Connect your store or import products to start simulating.
         </p>
+        <Button
+          variant="flat"
+          color="primary"
+          className="mt-4"
+          render={<Link href="/onboarding/connect" />}
+        >
+          Connect Store
+        </Button>
       </div>
     );
 
-  return <ProductsTable rows={data.products} />;
+  return (
+    <>
+      <div className="flex items-center justify-between border-accent-foreground border-b p-4">
+        <p className="font-light text-2xl text-foreground-dimmed">
+          Product Catalog
+        </p>
+        <p className="font-light text-foreground-dimmed text-sm">
+          {data.products.length} products
+        </p>
+      </div>
+      <ProductsTable rows={data.products} />
+    </>
+  );
+};
+
+const AgentTraffic = async () => {
+  await connection();
+  const [summary, timeSeries] = await Promise.all([
+    unwrapResult(Tracking.getAgentTrafficSummary()),
+    unwrapResult(Tracking.getAgentTrafficTimeSeries()),
+  ]);
+
+  const max = Math.max(1, ...summary.byAgentType.map((entry) => entry.count));
+
+  return (
+    <div className="bg-background-dimmed p-4">
+      <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="font-light text-foreground-dimmed uppercase tracking-widest">
+            Traffic
+          </p>
+          <p className="mt-1 font-medium text-2xl text-foreground">
+            AI Agent Visits to Products
+          </p>
+          <p className="mt-1 font-light text-foreground-dimmed text-sm">
+            Browser-visible AI and referral signals from your ScriptTag tracker.
+          </p>
+        </div>
+        <p className="text-4xl text-foreground tabular-nums">
+          {summary.total30d}
+          <span className="ml-1 font-light text-foreground-dimmed text-sm">
+            last 30d
+          </span>
+        </p>
+      </div>
+
+      <AgentVisitsChart data={timeSeries} className="mb-6" />
+
+      {summary.byAgentType.length === 0 ? (
+        <p className="font-light text-foreground-dimmed text-sm">
+          No AI agent visits recorded yet. Traffic appears when shoppers arrive
+          via AI referrers or user-agents your tracker recognizes.
+        </p>
+      ) : (
+        <ul className="flex flex-col gap-3">
+          {summary.byAgentType.map((entry) => (
+            <li key={entry.agentType}>
+              <div className="mb-1 flex items-center justify-between gap-4">
+                <span className="font-light text-foreground text-sm">
+                  {entry.label}
+                </span>
+                <span className="shrink-0 font-medium text-foreground text-sm tabular-nums">
+                  {entry.count}
+                </span>
+              </div>
+              <div className="h-1 w-full bg-accent-foreground">
+                <div
+                  className="h-full bg-primary"
+                  style={{
+                    width: `${Math.round((entry.count / max) * 100)}%`,
+                  }}
+                />
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 };
 
 const Insights = async () => {
+  await connection();
   const data = await unwrapResult(Product.gatherIntelligence());
   if (!data?.scan?.topFinding) return null;
 
   return (
     <div>
-      <p className="mb-2 font-medium text-base text-foreground">
-        Latest Scan Insights
+      <p className="font-light text-foreground-dimmed uppercase tracking-widest">
+        Insights
+      </p>
+      <p className="mt-1 mb-2 font-medium text-2xl text-foreground">
+        Latest Scan
       </p>
       <p className="font-light text-foreground text-sm">
         {data.scan.topFinding}
       </p>
-      <div className="mt-2 flex items-center gap-4">
-        <span className="font-light text-foreground-dimmed text-xs">
+      <div className="mt-3 flex items-center gap-4">
+        <span className="font-medium text-foreground text-sm tabular-nums">
           {data.scan.wins}W / {data.scan.losses}L
         </span>
-        <span className="font-light text-foreground-dimmed text-xs">
-          {data.scan.completedSimulations} simulations
+        <span className="font-light text-foreground-dimmed text-sm">
+          {data.scan.completedSimulations} simulations completed
         </span>
       </div>
     </div>
   );
 };
 
-const StatsSkeleton = () => {
-  const keys = ["total", "average", "high", "attention"];
+/* ── Skeletons ─────────────────────────────────────────────── */
 
-  return (
-    <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-4">
-      {keys.map((key) => (
-        <div key={key} className="bg-background p-4">
-          <div className="h-3 w-24 animate-pulse bg-foreground/10" />
-          <div className="mt-3 h-8 w-16 animate-pulse bg-foreground/10" />
-        </div>
-      ))}
-    </div>
-  );
-};
-
-const TableSkeleton = () => {
-  const keys = ["row-a", "row-b", "row-c", "row-d", "row-e"];
-
-  return (
-    <div>
-      <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
-        <div className="h-4 w-32 animate-pulse bg-foreground/10" />
+const StatsSkeleton = () => (
+  <div className="grid h-39 min-h-39 grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
+    {["rate", "win", "high", "attention"].map((key) => (
+      <div key={key} className="bg-background-dimmed p-4">
+        <div className="h-4 w-28 animate-pulse bg-foreground/10" />
+        <div className="mt-4 h-10 w-20 animate-pulse bg-foreground/10" />
+        <div className="mt-3 h-3 w-32 animate-pulse bg-foreground/10" />
       </div>
-      {keys.map((key) => (
-        <div
-          key={key}
-          className="flex items-center gap-4 border-accent-foreground border-b px-4 py-3 last:border-b-0"
-        >
-          <div className="size-9 animate-pulse bg-foreground/10" />
-          <div className="flex-1 space-y-1.5">
-            <div className="h-4 w-32 animate-pulse bg-foreground/10" />
-            <div className="h-3 w-20 animate-pulse bg-foreground/10" />
+    ))}
+  </div>
+);
+
+const ChartSkeleton = () => (
+  <div className="grid grid-cols-1 gap-px bg-accent-foreground xl:grid-cols-3">
+    <div className="bg-background-dimmed xl:col-span-2">
+      <div className="p-4">
+        <div className="h-3 w-24 animate-pulse bg-foreground/10" />
+        <div className="mt-2 h-7 w-40 animate-pulse bg-foreground/10" />
+      </div>
+      <div className="grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-y px-4">
+        {["a", "b", "c"].map((key) => (
+          <div
+            key={key}
+            className="flex flex-col items-center gap-1 p-6 first:pl-0 last:pr-0"
+          >
+            <div className="flex w-full flex-row items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="size-6 animate-pulse bg-foreground/10" />
+                <div className="h-3 w-16 animate-pulse bg-foreground/10" />
+              </div>
+              <div className="flex items-baseline gap-1">
+                <div className="h-10 w-12 animate-pulse bg-foreground/10" />
+                <div className="h-5 w-4 animate-pulse bg-foreground/10" />
+              </div>
+            </div>
+            <div className="mt-2 h-1 w-full animate-pulse bg-foreground/10" />
           </div>
-          <div className="h-4 w-12 animate-pulse bg-foreground/10" />
-          <div className="h-4 w-16 animate-pulse bg-foreground/10" />
+        ))}
+      </div>
+      <div className="p-4">
+        <div className="mb-4 flex items-center justify-between">
+          <div className="h-3 w-28 animate-pulse bg-foreground/10" />
+        </div>
+        <div className="h-64 w-full animate-pulse bg-foreground/10" />
+      </div>
+    </div>
+    <div className="flex flex-col gap-px bg-accent-foreground">
+      <div className="flex-1 bg-background-dimmed p-4">
+        <div className="h-3 w-24 animate-pulse bg-foreground/10" />
+        <div className="mt-2 h-7 w-40 animate-pulse bg-foreground/10" />
+        <div className="mt-6 h-2 w-full animate-pulse bg-foreground/10" />
+        <div className="mt-4 grid grid-cols-3 gap-4">
+          {["x", "y", "z"].map((key) => (
+            <div key={key} className="space-y-2">
+              <div className="h-3 w-16 animate-pulse bg-foreground/10" />
+              <div className="h-4 w-8 animate-pulse bg-foreground/10" />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="bg-background-dimmed p-4">
+        <div className="h-3 w-24 animate-pulse bg-foreground/10" />
+        <div className="mt-2 h-7 w-40 animate-pulse bg-foreground/10" />
+        <div className="mt-6 h-2 w-full animate-pulse bg-foreground/10" />
+        <div className="mt-4 grid grid-cols-3 gap-4">
+          {["x", "y", "z"].map((key) => (
+            <div key={key} className="space-y-2">
+              <div className="h-3 w-16 animate-pulse bg-foreground/10" />
+              <div className="h-8 w-10 animate-pulse bg-foreground/10" />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="flex items-center justify-between bg-background-dimmed p-4">
+        <div className="h-9 w-28 animate-pulse bg-foreground/10" />
+        <div className="h-9 w-36 animate-pulse bg-foreground/10" />
+      </div>
+    </div>
+  </div>
+);
+
+const TableSkeleton = () => (
+  <div>
+    <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
+      <div className="h-7 w-40 animate-pulse bg-foreground/10" />
+      <div className="h-4 w-24 animate-pulse bg-foreground/10" />
+    </div>
+    <div className="overflow-x-auto bg-background-rich">
+      <table className="w-full">
+        <thead>
+          <tr className="border-accent-foreground border-b">
+            {[
+              "Product",
+              "Price",
+              "Win Rate",
+              "GPT-4",
+              "Claude",
+              "Gemini",
+              "Quality",
+              "Last Scan",
+              "",
+            ].map((header) => (
+              <th key={header} className="px-4 py-3 text-left">
+                {header && (
+                  <div className="h-3 w-16 animate-pulse bg-foreground/10" />
+                )}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {["a", "b", "c", "d", "e"].map((key) => (
+            <tr
+              key={key}
+              className="border-accent-foreground border-b last:border-b-0"
+            >
+              <td className="px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <div className="size-9 shrink-0 animate-pulse bg-foreground/10" />
+                  <div className="space-y-1.5">
+                    <div className="h-4 w-32 animate-pulse bg-foreground/10" />
+                    <div className="h-3 w-16 animate-pulse bg-foreground/10" />
+                  </div>
+                </div>
+              </td>
+              <td className="px-4 py-3">
+                <div className="h-4 w-14 animate-pulse bg-foreground/10" />
+              </td>
+              <td className="px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <div className="h-1.5 w-12 animate-pulse bg-foreground/10" />
+                  <div className="h-4 w-8 animate-pulse bg-foreground/10" />
+                </div>
+              </td>
+              <td className="px-4 py-3">
+                <div className="h-4 w-8 animate-pulse bg-foreground/10" />
+              </td>
+              <td className="px-4 py-3">
+                <div className="h-4 w-8 animate-pulse bg-foreground/10" />
+              </td>
+              <td className="px-4 py-3">
+                <div className="h-4 w-8 animate-pulse bg-foreground/10" />
+              </td>
+              <td className="px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <div className="h-1 w-10 animate-pulse bg-foreground/10" />
+                  <div className="h-4 w-6 animate-pulse bg-foreground/10" />
+                </div>
+              </td>
+              <td className="px-4 py-3">
+                <div className="h-3 w-14 animate-pulse bg-foreground/10" />
+              </td>
+              <td className="px-4 py-3">
+                <div className="h-4 w-10 animate-pulse bg-foreground/10" />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+);
+
+const TrafficSkeleton = () => (
+  <div className="bg-background-dimmed p-4">
+    <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <div className="h-3 w-16 animate-pulse bg-foreground/10" />
+        <div className="mt-2 h-7 w-48 animate-pulse bg-foreground/10" />
+        <div className="mt-1 h-4 w-64 animate-pulse bg-foreground/10" />
+      </div>
+      <div className="h-10 w-20 animate-pulse bg-foreground/10" />
+    </div>
+    <div className="mb-6 flex items-center gap-6">
+      {["a", "b", "c"].map((key) => (
+        <div key={key} className="flex items-center gap-2">
+          <div className="size-4 animate-pulse bg-foreground/10" />
+          <div className="h-3 w-14 animate-pulse bg-foreground/10" />
         </div>
       ))}
     </div>
-  );
-};
+    <div className="mb-6 h-64 w-full animate-pulse bg-foreground/10" />
+    <div className="flex flex-col gap-3">
+      {["d", "e", "f"].map((key) => (
+        <div key={key}>
+          <div className="mb-1 flex items-center justify-between">
+            <div className="h-4 w-28 animate-pulse bg-foreground/10" />
+            <div className="h-4 w-8 animate-pulse bg-foreground/10" />
+          </div>
+          <div className="h-1 w-full animate-pulse bg-foreground/10" />
+        </div>
+      ))}
+    </div>
+  </div>
+);
 
 const InsightsSkeleton = () => (
   <div>
-    <div className="h-4 w-40 animate-pulse bg-foreground/10" />
+    <div className="h-3 w-16 animate-pulse bg-foreground/10" />
+    <div className="mt-2 h-7 w-28 animate-pulse bg-foreground/10" />
     <div className="mt-2 h-4 w-full animate-pulse bg-foreground/10" />
-    <div className="mt-2 h-3 w-32 animate-pulse bg-foreground/10" />
+    <div className="mt-3 flex items-center gap-4">
+      <div className="h-4 w-20 animate-pulse bg-foreground/10" />
+      <div className="h-4 w-40 animate-pulse bg-foreground/10" />
+    </div>
   </div>
 );

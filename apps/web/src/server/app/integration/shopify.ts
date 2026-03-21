@@ -2,10 +2,7 @@
 
 import crypto from "node:crypto";
 import { resultify } from "@zenncore/utils";
-import {
-  type TransactionScope,
-  withTransaction,
-} from "../../database";
+import { type TransactionScope, withTransaction } from "../../database";
 import { withAuthentication } from "../../utils/authentication";
 import { withContext } from "../../utils/context";
 import { Environment } from "../../utils/environment";

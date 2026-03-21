@@ -8,14 +8,15 @@ import {
 import { unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Link from "next/link";
+import { connection } from "next/server";
 import { Suspense } from "react";
 import { formatRelativeTime } from "@/lib/date";
 import * as Product from "@/server/app/product";
 import * as Scan from "@/server/app/scan";
+import { AgentVisitsPanel } from "./_components/agent-visits-panel";
 import { OverviewActions } from "./_components/overview-actions";
 import { OverviewCharts } from "./_components/overview-charts";
 import { OverviewTable } from "./_components/overview-table";
-import { connection } from "next/server";
 
 export default () => (
   <div className="flex flex-col">
@@ -61,6 +62,14 @@ export default () => (
         <div className="mx-8">
           <Suspense fallback={<TableSkeleton />}>
             <TopProducts />
+          </Suspense>
+        </div>
+      </div>
+
+      <div className="-mx-8 mb-12 border-accent-foreground border-t border-b">
+        <div className="mx-8">
+          <Suspense fallback={<TableSkeleton />}>
+            <AgentVisitsPanel />
           </Suspense>
         </div>
       </div>

@@ -1,12 +1,14 @@
-import type * as Tracking from "@/server/app/tracking";
+import { unwrapResult } from "@zenncore/utils";
+import { connection } from "next/server";
+import * as Tracking from "@/server/app/tracking";
+import { AgentVisitsChart } from "./agent-visits-chart";
 
-export namespace AgentVisitsPanel {
-  export type Props = {
-    summary: Tracking.AgentTrafficSummary;
-  };
-}
-
-export const AgentVisitsPanel = ({ summary }: AgentVisitsPanel.Props) => {
+export const AgentVisitsPanel = async () => {
+  await connection();
+  const [summary, timeSeries] = await Promise.all([
+    unwrapResult(Tracking.getAgentTrafficSummary()),
+    unwrapResult(Tracking.getAgentTrafficTimeSeries()),
+  ]);
   const max = Math.max(1, ...summary.byAgentType.map((entry) => entry.count));
 
   return (
@@ -14,7 +16,7 @@ export const AgentVisitsPanel = ({ summary }: AgentVisitsPanel.Props) => {
       <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-foreground-dimmed">AI storefront traffic</p>
-          <p className="mt-2 text-2xl font-medium text-foreground">
+          <p className="mt-2 font-medium text-2xl text-foreground">
             Visits by agent (last 30 days)
           </p>
           <p className="mt-1 font-light text-foreground-dimmed text-sm">
@@ -29,6 +31,8 @@ export const AgentVisitsPanel = ({ summary }: AgentVisitsPanel.Props) => {
           </span>
         </p>
       </div>
+
+      <AgentVisitsChart data={timeSeries} className="mb-6" />
 
       {summary.byAgentType.length === 0 ? (
         <p className="font-light text-foreground-dimmed text-sm">

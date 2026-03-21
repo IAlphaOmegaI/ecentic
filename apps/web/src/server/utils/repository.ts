@@ -10,7 +10,7 @@ import {
 } from "drizzle-orm";
 import type { PgTableWithColumns } from "drizzle-orm/pg-core";
 import { updateTag } from "next/cache";
-import { type TransactionScope, db } from "@/server/database";
+import { db, type TransactionScope } from "@/server/database";
 import { withContext } from "./context";
 import { DatabaseError } from "./error";
 

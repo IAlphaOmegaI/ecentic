@@ -157,7 +157,8 @@
     }
   } catch (_) {}
 
-  const productExternalId = window?.__ECENTIC_CONFIG__?.productExternalId ?? null;
+  const productExternalId =
+    window?.__ECENTIC_CONFIG__?.productExternalId ?? null;
 
   const payload = {
     storeId: id,

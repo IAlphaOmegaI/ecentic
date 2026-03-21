@@ -70,10 +70,7 @@ const NULL_RESOLUTION = {
 } as const;
 
 export const resolveProductFromPageUrl = withContext(
-  async (
-    _,
-    { storeId, pageUrl }: { storeId: string; pageUrl: string },
-  ) => {
+  async (_, { storeId, pageUrl }: { storeId: string; pageUrl: string }) => {
     const parsed = await resultify(() => new URL(pageUrl));
     if (!parsed.success) {
       return { success: true as const, data: NULL_RESOLUTION };

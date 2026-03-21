@@ -1,8 +1,11 @@
 "use server";
 
+import { resultify, type UnwrapResult } from "@zenncore/utils";
+import { and, count, eq, gte, sql } from "drizzle-orm";
 import { z } from "zod";
-import { schema } from "../database";
-import type { GenericContext } from "../utils/context";
+import * as Store from "../app/store";
+import { db, schema } from "../database";
+import { withAuthentication } from "../utils/authentication";
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { repository } from "../utils/repository";
@@ -10,8 +13,6 @@ import {
   isOriginAllowedForStore,
   resolveProductFromPageUrl,
 } from "../utils/tracking";
-import type { UnwrapResult } from "@zenncore/utils";
-import * as Store from "../app/store";
 
 export const parse = withContext(
   async (_, { payload }: { payload: unknown }) => {
@@ -70,34 +71,162 @@ export const parse = withContext(
 const RATE_LIMIT_WINDOW = 3600;
 const RATE_LIMIT_MAX = 1000;
 
-const isRateLimited = async (
-  redis: GenericContext["durable"]["redis"],
-  storeId: string,
-): Promise<boolean> => {
+const isRateLimited = withContext(async (ctx, storeId: string) => {
   const key = `rate_limit:agent_visit:${storeId}`;
-  const count = await redis.incr(key);
+  const count = await ctx.durable.redis.incr(key);
 
-  if (count === 1) {
-    await redis.expire(key, RATE_LIMIT_WINDOW);
+  if (count === 1) await ctx.durable.redis.expire(key, RATE_LIMIT_WINDOW);
+
+  return { success: true, data: count > RATE_LIMIT_MAX };
+});
+
+const AGENT_LABELS: Record<string, string> = {
+  "chatgpt-user": "ChatGPT (user)",
+  "claude-user": "Claude (user)",
+  "perplexity-user": "Perplexity (user)",
+  "chatgpt-agent": "ChatGPT Agent",
+  "perplexity-comet": "Perplexity Comet",
+  gptbot: "GPTBot",
+  claudebot: "ClaudeBot",
+  "oai-searchbot": "OAI SearchBot",
+  perplexitybot: "PerplexityBot",
+  "claude-searchbot": "Claude SearchBot",
+  bytespider: "ByteSpider",
+  "google-extended": "Google Extended",
+  amazonbot: "AmazonBot",
+  googlebot: "GoogleBot",
+  "probe-ping": "Probe Ping",
+  "chatgpt-referral": "ChatGPT Referral",
+  "perplexity-referral": "Perplexity Referral",
+  "claude-referral": "Claude Referral",
+  "gemini-referral": "Gemini Referral",
+  "copilot-referral": "Copilot Referral",
+  "you-referral": "You.com Referral",
+};
+
+export type TrafficTimeSeriesPoint = {
+  date: string;
+  chatgpt: number;
+  claude: number;
+  gemini: number;
+};
+
+export const getAgentTrafficTimeSeries = withAuthentication(async (context) => {
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+  const modelFamily = sql<string>`
+      CASE
+        WHEN ${schema.agentVisit.agentType} IN ('chatgpt-user','chatgpt-agent','gptbot','oai-searchbot','chatgpt-referral') THEN 'ChatGPT'
+        WHEN ${schema.agentVisit.agentType} IN ('claude-user','claudebot','claude-searchbot','claude-referral') THEN 'Claude'
+        WHEN ${schema.agentVisit.agentType} IN ('gemini-referral','google-extended','googlebot') THEN 'Gemini'
+        ELSE 'Other'
+      END
+    `.as("model_family");
+
+  const day =
+    sql<string>`date_trunc('day', ${schema.agentVisit.createdAt})::date`.as(
+      "day",
+    );
+
+  const result = await resultify(async () =>
+    db
+      .select({
+        day,
+        modelFamily,
+        count: count(),
+      })
+      .from(schema.agentVisit)
+      .where(
+        and(
+          eq(schema.agentVisit.userId, context.session.user.id),
+          gte(schema.agentVisit.createdAt, thirtyDaysAgo),
+        ),
+      )
+      .groupBy(day, modelFamily)
+      .orderBy(day),
+  );
+
+  if (!result.success) return result;
+
+  const byDate = new Map<
+    string,
+    { chatgpt: number; claude: number; gemini: number }
+  >();
+
+  for (let i = 29; i >= 0; i--) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    const key = date.toISOString().split("T")[0] as string;
+    byDate.set(key, { chatgpt: 0, claude: 0, gemini: 0 });
   }
 
-  return count > RATE_LIMIT_MAX;
-};
+  for (const row of result.data) {
+    const entry = byDate.get(row.day);
+    if (!entry) continue;
 
-export type AgentTrafficSummary = {
-  total30d: number;
-  byAgentType: Array<{
-    agentType: string;
-    label: string;
-    count: number;
-  }>;
-};
+    switch (row.modelFamily) {
+      case "ChatGPT":
+        entry.chatgpt = row.count;
+        break;
+      case "Claude":
+        entry.claude = row.count;
+        break;
+      case "Gemini":
+        entry.gemini = row.count;
+        break;
+    }
+  }
+
+  const timeSeries: TrafficTimeSeriesPoint[] = Array.from(byDate.entries()).map(
+    ([date, counts]) => ({
+      date,
+      ...counts,
+    }),
+  );
+
+  return { success: true as const, data: timeSeries };
+}, "Tracking.getAgentTrafficTimeSeries");
+
+export const getAgentTrafficSummary = withAuthentication(async (context) => {
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+  const result = await resultify(async () =>
+    db
+      .select({
+        agentType: schema.agentVisit.agentType,
+        count: count(),
+      })
+      .from(schema.agentVisit)
+      .where(
+        and(
+          eq(schema.agentVisit.userId, context.session.user.id),
+          gte(schema.agentVisit.createdAt, thirtyDaysAgo),
+        ),
+      )
+      .groupBy(schema.agentVisit.agentType)
+      .orderBy(sql`count(*) desc`),
+  );
+
+  if (!result.success) return result;
+
+  const byAgentType = result.data.map((row) => ({
+    agentType: row.agentType,
+    label: AGENT_LABELS[row.agentType] ?? row.agentType,
+    count: row.count,
+  }));
+
+  const total30d = byAgentType.reduce((sum, entry) => sum + entry.count, 0);
+
+  return { success: true as const, data: { total30d, byAgentType } };
+}, "Tracking.getAgentTrafficSummary");
 
 const { create } = repository(schema.agentVisit);
 
 export const recordAgentVisit = withContext(
   async (
-    context,
+    _,
     {
       payload,
       apiKey,
@@ -129,7 +258,14 @@ export const recordAgentVisit = withContext(
     )
       return { success: false, error: new Error("Origin not allowed") };
 
-    if (await isRateLimited(context.durable.redis, payload.storeId))
+    const rateLimited = await isRateLimited(
+      Environment.SERVER,
+      payload.storeId,
+    );
+
+    if (!rateLimited.success) return rateLimited;
+
+    if (rateLimited.data)
       return { success: false, error: new Error("Rate limited") };
 
     const resolved = await resolveProductFromPageUrl(Environment.SERVER, {

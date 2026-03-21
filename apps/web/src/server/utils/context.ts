@@ -1,16 +1,17 @@
 import * as Sentry from "@sentry/nextjs";
+import type { Redis } from "@upstash/redis";
 import {
   type InferredError,
   type Result,
   resultify,
   type UnwrapResult,
 } from "@zenncore/utils";
-import type { Redis } from "@upstash/redis";
 import type { UploadThingError } from "uploadthing/server";
 import { upload } from "../app/storage";
 import { redis } from "./durable";
 import { type Brand, Environment } from "./environment";
 import { ErrorProtocol } from "./error";
+import { db } from "../database";
 
 export type GenericContext = {
   environment: {
@@ -27,6 +28,7 @@ export type GenericContext = {
   };
   durable: {
     redis: Redis;
+    db: typeof db;
   };
 };
 
@@ -66,6 +68,7 @@ const define = async () => {
     },
     durable: {
       redis,
+      db,
     },
   };
   return cache;
@@ -240,4 +243,42 @@ export const defineWithContext = <T extends ContextEnhancer>(enhancer: T) => {
     ...args: WithContextParams<EnhancedContext, A>
     // @ts-expect-error - we want to allow the context enhancer to return a different type than the context
   ) => withContext<A, Augmentation, PotentialError>(...args, enhancer);
+};
+
+/**
+ * A composable context enhancer that transforms one context into another.
+ * Unlike `ContextEnhancer`, the input type is generic — allowing enhancers
+ * to build on top of each other's output.
+ */
+export type Enhancer<
+  In extends GenericContext = GenericContext,
+  Out extends GenericContext = GenericContext,
+  E extends Error = Error,
+> = (context: In) => Promise<Result<Out, E>>;
+
+/**
+ * Composes two enhancers sequentially: the output of `first` feeds into `second`.
+ * If `first` fails, `second` is never called.
+ *
+ * @example
+ * ```ts
+ * const withAuthorization = (roles) =>
+ *   defineWithContext(pipe(authenticate, authorize(roles)));
+ * ```
+ */
+export const pipe = <
+  A extends GenericContext,
+  B extends GenericContext,
+  C extends GenericContext,
+  E1 extends Error,
+  E2 extends Error,
+>(
+  first: Enhancer<A, B, E1>,
+  second: Enhancer<B, C, E2>,
+): Enhancer<A, C, E1 | E2> => {
+  return async (context: A) => {
+    const result = await first(context);
+    if (!result.success) return result as Result<never, E1 | E2>;
+    return second(result.data as B) as Promise<Result<C, E1 | E2>>;
+  };
 };
