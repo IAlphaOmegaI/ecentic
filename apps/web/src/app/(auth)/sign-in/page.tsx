@@ -6,6 +6,7 @@ import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import { Fade } from "@/lib/animations";
 import { SignInForm } from "./_components/sign-in-form";
+import { Button } from "@zenncore/web/components/button";
 
 const points = [
   "Pick up right where you left off",
@@ -65,14 +66,16 @@ export default () => (
         </Motion.Item>
 
         <Motion.Item className="w-full px-8">
-          <div className="border-accent-foreground border-x px-6 py-6 font-light text-foreground-dimmed">
+          <div className="border-accent-foreground border-x p-6 font-light text-foreground-dimmed flex items-center justify-between flex-row">
             Don't have an account?{" "}
-            <Link
-              href="/sign-up"
-              className="inline-flex items-center gap-2 text-primary hover:underline"
+            <Button
+              variant="outline"
+              color="accent"
+              type="button"
+              render={<Link href="/sign-up" />}
             >
               Get started free <ArrowRightIcon className="size-4" />
-            </Link>
+            </Button>
           </div>
         </Motion.Item>
       </Motion.Stagger>

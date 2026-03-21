@@ -13,6 +13,7 @@ import Image from "next/image";
 import Link, { useLinkStatus } from "next/link";
 import { Motion } from "@/components/motion";
 import { Spring, Stagger } from "@/lib/animations";
+import { AwardIcon, TrendDownIcon, TrendUpIcon } from "@zenncore/icons";
 
 const models = [
   { id: "gpt4", label: "GPT-4", logo: "/images/chatgpt.svg" },
@@ -39,7 +40,7 @@ export const CompletePhase = ({
   wins,
   losses,
   winRates,
-  topFinding,
+  topFinding: _,
   products: finalProductCount,
 }: CompletePhase.Props) => {
   const winRate =
@@ -67,10 +68,17 @@ export const CompletePhase = ({
     }
   })();
 
+  const topFinding = {
+    name: "Product Name",
+    missingAttributes: ["Attribute 1", "Attribute 2", "Attribute 3"],
+    impactDescription: "Impact Description",
+    lossPercentage: 10,
+  };
+
   return (
     <motion.div
       key="complete"
-      className="flex flex-1 flex-col overflow-hidden"
+      className="flex flex-col overflow-hidden h-full"
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
@@ -78,7 +86,7 @@ export const CompletePhase = ({
     >
       <Motion.Stagger
         stagger={0.05}
-        className="flex flex-1 flex-col overflow-hidden"
+        className="flex h-full flex-col overflow-hidden"
       >
         <Motion.Item className="border-accent-foreground border-b px-8">
           <div className="border-accent-foreground border-x p-6">
@@ -142,28 +150,9 @@ export const CompletePhase = ({
           </motion.div>
         </Motion.Item>
 
-        <Motion.Item className="border-accent-foreground border-b px-8">
-          <div className="grid grid-cols-2 gap-px border-accent-foreground border-x bg-accent-foreground">
-            <div className="bg-background-dimmed p-4">
-              <p className={cn("font-medium text-2xl", color)}>{winRate}%</p>
-              <p className="font-light text-foreground-dimmed">Win rate</p>
-            </div>
-            <div className="bg-background-dimmed p-4">
-              <p className="font-medium text-2xl text-foreground">
-                {finalProductCount}
-              </p>
-              <p className="font-light text-foreground-dimmed">Products</p>
-            </div>
-            <div className="bg-background-dimmed p-4">
-              <p className="font-medium text-2xl text-success">{wins}</p>
-              <p className="font-light text-foreground-dimmed">Wins</p>
-            </div>
-            <div className="bg-background-dimmed p-4">
-              <p className="font-medium text-2xl text-error">{losses}</p>
-              <p className="font-light text-foreground-dimmed">Losses</p>
-            </div>
-          </div>
-        </Motion.Item>
+        {/* <Motion.Item className=" border-accent-foreground border-b px-8">
+          <div className="size-full border-x h-8 border-accent-foreground" />
+        </Motion.Item> */}
 
         {topFinding && (
           <Motion.Item className="border-accent-foreground border-b px-8">
@@ -182,6 +171,45 @@ export const CompletePhase = ({
             </div>
           </Motion.Item>
         )}
+
+        <Motion.Item className="border-accent-foreground border-b px-8 flex-1">
+          <div className="grid grid-cols-2 gap-px border-accent-foreground border-x bg-accent-foreground">
+            <div className="bg-background-dimmed p-4 flex items-center gap-2">
+              <div className="flex items-center gap-2">
+                <AwardIcon className="size-12 text-foreground" />
+                <div>
+                  <p className={cn("font-medium text-2xl", color)}>
+                    {winRate}%
+                  </p>
+                  <p className="font-light text-foreground-dimmed">Win rate</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-background-dimmed p-4 flex items-center gap-2">
+              <ShoppingCartIcon className="size-12 text-primary" />
+              <div>
+                <p className="font-medium text-2xl text-primary">
+                  {finalProductCount}
+                </p>
+                <p className="font-light text-foreground-dimmed">Products</p>
+              </div>
+            </div>
+            <div className="bg-background-dimmed p-4 flex items-center gap-2">
+              <TrendUpIcon className="size-12 text-success" />
+              <div>
+                <p className="font-medium text-2xl text-success">{wins}</p>
+                <p className="font-light text-foreground-dimmed">Wins</p>
+              </div>
+            </div>
+            <div className="bg-background-dimmed p-4 flex items-center gap-2">
+              <TrendDownIcon className="size-12 text-error" />
+              <div>
+                <p className="font-medium text-2xl text-error">{losses}</p>
+                <p className="font-light text-foreground-dimmed">Losses</p>
+              </div>
+            </div>
+          </div>
+        </Motion.Item>
 
         <Motion.Item className="mt-auto px-8">
           <div className="flex items-center justify-between border-accent-foreground border-x p-6">

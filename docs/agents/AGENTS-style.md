@@ -287,9 +287,9 @@ return { ...rest, affiliations };
 
 ---
 
-## 13. `as const` for Literal Narrowing
+## 13. `as const` for Literal Narrowing only when needed
 
-Use `as const` when returning object literals that need to narrow a union type, or for static data arrays defined outside components.
+Use `as const` when returning object literals that need to narrow a union type, or for static data arrays defined outside components. Not for server actions wrapped {with*}, this has type satisfaction build in. Only when needed.
 
 ```ts
 // ✅ Good — static data with as const

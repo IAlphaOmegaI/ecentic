@@ -117,7 +117,7 @@ export const AutoDetectTab = ({
             className="m-auto flex size-full h-full flex-1 flex-col items-center justify-center p-4"
           >
             <Image
-              src="/images/competitors-illustration.png"
+              src="/images/auto-detect.png"
               alt="Competitors illustration"
               fill
               className="object-contain opacity-30"
