@@ -6,32 +6,13 @@ import * as Shopify from "@/server/app/integration/shopify";
 import * as Product from "@/server/app/product";
 import * as Store from "@/server/app/store";
 import { ProductSelector } from "./_components/product-selector";
+import { unstable_noStore as noStore } from "next/cache";
+import { BoxMinusIcon } from "@zenncore/icons";
 
-export default async ({
-  searchParams,
-}: {
-  searchParams: Promise<{ connected?: string }>;
-}) => {
-  const params = await searchParams;
+export default async () => {
+  noStore();
 
-  let products = await unwrapResult(Product.getForCurrentUser());
-
-  if (products.length === 0 && params.connected === "shopify") {
-    const storesResult = await Store.getForCurrentUser();
-    if (storesResult.success) {
-      const shopifyStore = storesResult.data.find(
-        (record) => record.platform === "shopify",
-      );
-      if (shopifyStore) {
-        const sync = await Shopify.syncShopifyCatalog({
-          user: shopifyStore.userId,
-          store: shopifyStore.id,
-        });
-        if (sync.success)
-          products = await unwrapResult(Product.getForCurrentUser());
-      }
-    }
-  }
+  const products = await unwrapResult(Product.getForCurrentUser());
 
   if (products.length === 0)
     return (
@@ -40,10 +21,11 @@ export default async ({
         className="flex flex-1 flex-col items-center justify-center px-6 py-10"
       >
         <Motion.Up className="text-center">
-          <h1 className="mb-2 font-medium text-4xl text-foreground">
+          <BoxMinusIcon className="mx-auto mb-6 size-24" />
+          <h1 className="mb-6 font-medium text-4xl text-foreground">
             No products found
           </h1>
-          <p className="mb-6 font-light text-2xl text-foreground-dimmed">
+          <p className="mb-2 font-light text-2xl text-foreground-dimmed">
             Connect a store and sync your products to get started.
           </p>
           <Button

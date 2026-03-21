@@ -1,17 +1,18 @@
-import { parseSearchParam, unwrapResult } from "@zenncore/utils";
+import { parseSearchParam } from "@zenncore/utils";
 import type { SearchParamsProps } from "@zenncore/web/types";
 import { Motion } from "@/components/motion";
-import * as Competitor from "@/server/app/competitor";
 import { CompetitorManager } from "./_components/competitor-manager";
+import { unstable_noStore as noStore } from "next/cache";
 
 export default async ({ searchParams }: SearchParamsProps<"products">) => {
+  noStore();
+
   const params = await searchParams;
 
   const products = parseSearchParam(params.products, "list", []);
-  const competitors = await unwrapResult(Competitor.getForCurrentUser());
 
   return (
-    <CompetitorManager existing={competitors} products={products}>
+    <CompetitorManager products={products}>
       <Motion.Item className="border-accent-foreground border-x p-6">
         <h2 className="font-medium text-4xl text-foreground">
           Who are your competitors?

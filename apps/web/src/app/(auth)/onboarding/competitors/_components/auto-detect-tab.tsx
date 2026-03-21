@@ -21,7 +21,7 @@ type LogEntry = {
 export namespace AutoDetectTab {
   export type Props = {
     products: string[];
-    onSuccess: (competitors: Competitor.Type[]) => void;
+    onSuccess?: (competitors: Competitor.Type[]) => void;
     className?: string;
   };
 }
@@ -93,7 +93,7 @@ export const AutoDetectTab = ({
             type: "success",
           });
           clearInterval(timer.current);
-          onSuccess(event.competitors);
+          onSuccess?.(event.competitors);
           toast.add({
             title: "Competitors found",
             description: `Found ${event.competitors.length} competitor products.`,

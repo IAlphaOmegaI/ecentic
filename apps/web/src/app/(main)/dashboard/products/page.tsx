@@ -366,14 +366,14 @@ const Performance = async () => {
       </div>
 
       <div className="flex flex-col gap-px bg-accent-foreground">
-        <div className="bg-background-dimmed flex-1">
+        <div className="flex-1 bg-background-dimmed">
           <QualityDistribution
             segments={segments}
             total={products.length}
             averageQuality={average}
           />
         </div>
-        <div className="bg-background-dimmed flex-1">
+        <div className="flex-1 bg-background-dimmed">
           <OptimizationBreakdown
             optimized={optimized}
             pending={pending}

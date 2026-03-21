@@ -12,12 +12,12 @@ import * as Scrape from "@/server/app/intelligence/scrape";
 
 export namespace UrlTab {
   export type Props = {
-    onSuccess: (competitors: Competitor.Type[]) => void;
+    onSuccess?: (competitors: Competitor.Type[]) => void;
     className?: string;
   };
 }
 
-export const UrlTab = ({ onSuccess, className }: UrlTab.Props) => {
+export const UrlTab = ({ className, onSuccess }: UrlTab.Props) => {
   const toast = useToastManager();
   const [url, setUrl] = useState<string | null>(null);
 
@@ -41,7 +41,7 @@ export const UrlTab = ({ onSuccess, className }: UrlTab.Props) => {
       return;
     }
 
-    onSuccess(result.data);
+    onSuccess?.(result.data);
     setUrl(null);
     toast.add({
       title: "Products extracted",

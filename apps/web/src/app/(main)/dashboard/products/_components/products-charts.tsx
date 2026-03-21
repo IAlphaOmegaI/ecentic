@@ -103,7 +103,7 @@ export const QualityDistribution = ({
   total,
   averageQuality,
 }: QualityDistribution.Props) => (
-  <div className="p-4 size-full flex flex-col">
+  <div className="flex size-full flex-col p-4">
     <div className="flex items-start justify-between">
       <div>
         <p className="font-medium text-2xl text-foreground">
@@ -121,7 +121,7 @@ export const QualityDistribution = ({
       </div>
     </div>
 
-    <div className="flex h-2 w-full overflow-hidden bg-accent-foreground mt-auto">
+    <div className="mt-auto flex h-2 w-full overflow-hidden bg-accent-foreground">
       {segments.map((segment) => {
         const width = total > 0 ? (segment.count / total) * 100 : 0;
         if (width === 0) return null;

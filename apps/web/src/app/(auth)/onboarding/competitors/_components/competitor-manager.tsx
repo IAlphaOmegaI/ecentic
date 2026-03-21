@@ -11,9 +11,7 @@ import {
 } from "@zenncore/web/components/tabs";
 import Link, { useLinkStatus } from "next/link";
 import type { ReactNode } from "react";
-import { useState } from "react";
 import { Motion } from "@/components/motion";
-import type * as Competitor from "@/server/app/competitor";
 import { AutoDetectTab } from "./auto-detect-tab";
 import { SearchTab } from "./search-tab";
 import { UrlTab } from "./url-tab";
@@ -21,22 +19,14 @@ import { UrlTab } from "./url-tab";
 export namespace CompetitorManager {
   export type Props = {
     children: ReactNode;
-    existing: Competitor.Type[];
     products: string[];
   };
 }
 
 export const CompetitorManager = ({
   children,
-  existing,
   products,
 }: CompetitorManager.Props) => {
-  const [_count, setCount] = useState(existing.length);
-
-  const handleSuccess = (competitors: Competitor.Type[]) => {
-    setCount((previous) => previous + competitors.length);
-  };
-
   return (
     <Motion.Stagger className="flex h-full flex-1 flex-col overflow-hidden">
       <div className="border-accent-foreground border-b px-8">{children}</div>
@@ -63,7 +53,6 @@ export const CompetitorManager = ({
             >
               <AutoDetectTab
                 products={products}
-                onSuccess={handleSuccess}
                 className={"h-full flex-1 border-accent-foreground border-b"}
               />
             </TabsPanel>
@@ -72,15 +61,11 @@ export const CompetitorManager = ({
               value="url"
               className={"h-[calc(100%-(var(--spacing)*9))] flex-1 border-0"}
             >
-              <UrlTab
-                onSuccess={handleSuccess}
-                className={"flex-1 border-accent-foreground border-b"}
-              />
+              <UrlTab className={"flex-1 border-accent-foreground border-b"} />
             </TabsPanel>
 
             <TabsPanel value="search" className={"border-0"}>
               <SearchTab
-                onSuccess={handleSuccess}
                 className={"flex-1 border-accent-foreground border-b"}
               />
             </TabsPanel>

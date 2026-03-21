@@ -1,8 +1,6 @@
 import { NextResponse as Response } from "next/server";
 import * as BackgroundScan from "@/server/app/intelligence/background-scan";
 
-export const dynamic = "force-dynamic";
-
 export const GET = async (request: Request) => {
   const authorization = request.headers.get("authorization");
   const secret = process.env.CRON_SECRET;

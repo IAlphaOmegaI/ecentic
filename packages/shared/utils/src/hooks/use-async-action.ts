@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/correctness/useHookAtTopLevel: if the value of withTransition changes during render, let it error */
 "use client";
 
 import { useCallback, useState, useTransition } from "react";
@@ -17,7 +18,23 @@ type UseAsyncActionReturn<F extends AsyncAction<F>> = Prettify<
 
 export const useAsyncAction = <F extends AsyncAction<F>>(
   action: F,
+  withTransition = true,
 ): UseAsyncActionReturn<F> => {
+  if (!withTransition) {
+    const [isPending, setIsPending] = useState(false);
+    const handledAction = useCallback(
+      async (...args: Parameters<F>): Promise<Awaited<ReturnType<F>>> => {
+        setIsPending(true);
+        const result = await action(...args);
+        setIsPending(false);
+        return result;
+      },
+      [action],
+    );
+
+    return [handledAction, isPending] as const;
+  }
+
   const [isPending, startTransition] = useTransition();
   const [result, setResult] = useState<Awaited<ReturnType<F>> | null>(null);
 

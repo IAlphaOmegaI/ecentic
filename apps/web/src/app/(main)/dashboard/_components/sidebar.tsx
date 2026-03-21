@@ -76,7 +76,7 @@ const TRIAL_DAYS_LEFT = 7;
 
 export const Sidebar = () => {
   const pathname = usePathname();
-  const [upgradeOpen, setUpgradeOpen] = useState(false);
+  const [upgrade, setUpgrade] = useState(false);
 
   const isActive = (href: string, exact: boolean) =>
     exact ? pathname === href : pathname.startsWith(href);
@@ -147,7 +147,7 @@ export const Sidebar = () => {
         <div className="border-accent-foreground border-t">
           <button
             type="button"
-            onClick={() => setUpgradeOpen(true)}
+            onClick={() => setUpgrade(true)}
             className="group w-full px-4 py-4 text-left transition-colors hover:bg-accent-foreground/30"
           >
             <div className="mb-2 flex items-center justify-between">
@@ -189,7 +189,7 @@ export const Sidebar = () => {
 
       {/* Upgrade modal */}
       <AnimatePresence>
-        {upgradeOpen && (
+        {upgrade && (
           <>
             <motion.div
               key="upgrade-backdrop"
@@ -198,7 +198,7 @@ export const Sidebar = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              onClick={() => setUpgradeOpen(false)}
+              onClick={() => setUpgrade(false)}
             />
 
             <motion.div
@@ -235,7 +235,7 @@ export const Sidebar = () => {
                 </div>
                 <button
                   type="button"
-                  onClick={() => setUpgradeOpen(false)}
+                  onClick={() => setUpgrade(false)}
                   className="flex size-7 shrink-0 items-center justify-center text-foreground-dimmed transition-colors hover:text-foreground"
                 >
                   <XIcon className="size-4" />
@@ -306,13 +306,13 @@ export const Sidebar = () => {
                 <button
                   type="button"
                   className="mb-2 w-full bg-primary py-3 font-medium text-sm text-white transition-colors hover:bg-primary/90"
-                  onClick={() => setUpgradeOpen(false)}
+                  onClick={() => setUpgrade(false)}
                 >
                   Upgrade Now
                 </button>
                 <button
                   type="button"
-                  onClick={() => setUpgradeOpen(false)}
+                  onClick={() => setUpgrade(false)}
                   className="w-full py-2 font-light text-foreground-dimmed text-xs transition-colors hover:text-foreground"
                 >
                   Maybe later — {TRIAL_DAYS_LEFT} days remaining

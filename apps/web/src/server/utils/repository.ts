@@ -9,7 +9,6 @@ import {
   sql,
 } from "drizzle-orm";
 import type { PgTableWithColumns } from "drizzle-orm/pg-core";
-import { updateTag } from "next/cache";
 import { db, type TransactionScope } from "@/server/database";
 import { withContext } from "./context";
 import { DatabaseError } from "./error";
@@ -36,7 +35,7 @@ export type Insertable<T extends TableWithId> = Omit<
   "id"
 > & { id?: string };
 
-export type OrderByEntry<T extends TableWithId> = {
+export type OrderByEntry<_T extends TableWithId> = {
   column: AnyColumn;
   direction: "asc" | "desc";
 };
@@ -211,7 +210,7 @@ export function repository<T extends TableWithId>(table: T) {
         const rows = (result as { success: true; data: Document<T>[] }).data;
         const row = rows?.[0] as Document<T>;
 
-        updateTag(name);
+        // updateTag(name);
 
         return { success: true as const, data: row };
       },
@@ -251,10 +250,10 @@ export function repository<T extends TableWithId>(table: T) {
           };
         }
 
-        updateTag(name);
-        updateTag(id);
-        updateTag(`count:${name}`);
-        updateTag(`exists:${name}`);
+        // updateTag(name);
+        // updateTag(id);
+        // updateTag(`count:${name}`);
+        // updateTag(`exists:${name}`);
 
         const row = result.data?.[0] ?? null;
         return { success: true as const, data: row as Document<T> | null };
@@ -285,10 +284,10 @@ export function repository<T extends TableWithId>(table: T) {
           };
         }
 
-        updateTag(name);
-        updateTag(`count:${name}`);
-        updateTag(`exists:${name}`);
-        updateTag(id);
+        // updateTag(name);
+        // updateTag(`count:${name}`);
+        // updateTag(`exists:${name}`);
+        // updateTag(id);
 
         return { success: true as const, data: true };
       },

@@ -3,8 +3,6 @@ import type { NextRequest } from "next/server";
 import * as Tracking from "@/server/app/tracking";
 import { Environment } from "@/server/utils/environment";
 
-export const dynamic = "force-dynamic";
-
 const corsHeaders = (allowOrigin: string | null): Record<string, string> => ({
   "Access-Control-Allow-Origin": allowOrigin ?? "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",

@@ -10,9 +10,9 @@ import {
 import { cn } from "@zenncore/utils";
 import { AnimatePresence, motion } from "motion/react";
 import { usePathname } from "next/navigation";
-import type { PropsWithChildren } from "react";
 import { Onboarding } from "@/components/onboarding";
 import { Spring } from "@/lib/animations";
+import { unstable_noStore as noStore } from "next/cache";
 
 const steps = [
   {
@@ -130,7 +130,8 @@ const sidebar = {
   },
 } as const;
 
-export default ({ children }: PropsWithChildren) => {
+export default ({ children }: LayoutProps<"/onboarding">) => {
+  noStore();
   const pathname = usePathname();
   const current = steps.findIndex((step) => pathname.startsWith(step.path));
 

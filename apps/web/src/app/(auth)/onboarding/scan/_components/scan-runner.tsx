@@ -39,17 +39,23 @@ export namespace ScanRunner {
 }
 
 export const ScanRunner = ({ children, simulations }: ScanRunner.Props) => {
+  "use no memo";
+
   const toast = useToastManager();
   const [phase, setPhase] = useState<ScanPhase>("pre");
   const [stats, setStats] = useState<Stats>(initialStats);
 
   const [logs, setLogs] = useState<LogEntry[]>([]);
 
+  console.log({ phase });
+
   const [statuses, setStatuses] =
     useState<Record<string, ModelStatus>>(initialStatuses);
+
   const [modelStats, setModelStats] = useState<
     Record<string, { wins: number; losses: number }>
   >({});
+
   const [winRates, setWinRates] = useState<
     Record<string, { wins: number; losses: number; rate: number }>
   >({});
@@ -65,6 +71,7 @@ export const ScanRunner = ({ children, simulations }: ScanRunner.Props) => {
   };
 
   const [handleRun, isRunning] = useAsyncAction(async () => {
+    console.log("running");
     setPhase("running");
     setLogs([]);
     setStats(initialStats);
@@ -74,12 +81,6 @@ export const ScanRunner = ({ children, simulations }: ScanRunner.Props) => {
 
     for await (const event of readStreamableValue(output)) {
       if (!event) continue;
-
-      console.log(
-        "[ScanRunner] event →",
-        event.kind,
-        JSON.stringify(event).slice(0, 120),
-      );
 
       switch (event.kind) {
         case "log":
@@ -122,7 +123,7 @@ export const ScanRunner = ({ children, simulations }: ScanRunner.Props) => {
           return;
       }
     }
-  });
+  }, false);
 
   return (
     <AnimatePresence mode="wait">

@@ -181,6 +181,45 @@ Rules:
   "Competitor.detectCompetitors",
 );
 
+const aggregateBrands = (
+  competitors: Type[],
+  simulations: Simulation.Type[],
+) => {
+  return unique(competitors.map((c) => c.brand ?? c.title)).flatMap((brand) => {
+    const group = competitors.filter((c) => (c.brand ?? c.title) === brand);
+
+    const first = group[0];
+    if (!first) return [];
+
+    const ids = unique(group.map((competitor) => competitor.id));
+
+    const brandSimulations = simulations.filter((simulation) =>
+      ids.includes(simulation.competitorId),
+    );
+
+    const wins = brandSimulations.filter(
+      (simulation) => simulation.winner === "product",
+    ).length;
+
+    const total = brandSimulations.length;
+
+    const latestUpdate = group.reduce(
+      (latest, competitor) =>
+        competitor.updatedAt > latest ? competitor.updatedAt : latest,
+      first.updatedAt,
+    );
+
+    return {
+      _id: first.id,
+      brand,
+      products: group.length,
+      winRate: total > 0 ? Math.round((wins / total) * 100) : 0,
+      simulations: total,
+      updatedAt: latestUpdate,
+    };
+  });
+};
+
 export const gatherIntelligence = dedupe(
   withAuthentication(async () => {
     const [competitors, scan] = await Promise.all([
@@ -207,43 +246,7 @@ export const gatherIntelligence = dedupe(
 
     if (!simulations.success) return simulations;
 
-    const brands = unique(
-      competitors.data.map((c) => c.brand ?? c.title),
-    ).flatMap((brand) => {
-      const group = competitors.data.filter(
-        (c) => (c.brand ?? c.title) === brand,
-      );
-
-      const first = group[0];
-      if (!first) return [];
-
-      const ids = unique(group.map((competitor) => competitor.id));
-
-      const brandSimulations = simulations.data.filter((simulation) =>
-        ids.includes(simulation.competitorId),
-      );
-
-      const wins = brandSimulations.filter(
-        (simulation) => simulation.winner === "product",
-      ).length;
-
-      const total = brandSimulations.length;
-
-      const latestUpdate = group.reduce(
-        (latest, competitor) =>
-          competitor.updatedAt > latest ? competitor.updatedAt : latest,
-        first.updatedAt,
-      );
-
-      return {
-        _id: first.id,
-        brand,
-        products: group.length,
-        winRate: total > 0 ? Math.round((wins / total) * 100) : 0,
-        simulations: total,
-        updatedAt: latestUpdate,
-      };
-    });
+    const brands = aggregateBrands(competitors.data, simulations.data);
 
     return {
       success: true,
@@ -254,4 +257,47 @@ export const gatherIntelligence = dedupe(
       },
     };
   }, "Competitor.gatherIntelligence"),
+);
+
+export const gatherPaginatedIntelligence = withAuthentication(
+  async (_context, { page, size }: { page: number; size: number }) => {
+    const [competitors, scan] = await Promise.all([
+      getForCurrentUser(),
+      Scan.getLatest(),
+    ]);
+
+    if (!competitors.success) return competitors;
+    if (!scan.success) return scan;
+
+    if (competitors.data.length === 0)
+      return {
+        success: true,
+        data: {
+          brands: [],
+          scan: scan.data[0],
+          pagination: { total: 0, page, size },
+        },
+      };
+
+    const simulations = await Simulation.getForCompetitors({
+      competitors: competitors.data.map((competitor) => competitor.id),
+    });
+
+    if (!simulations.success) return simulations;
+
+    const allBrands = aggregateBrands(competitors.data, simulations.data);
+    const total = allBrands.length;
+    const offset = (page - 1) * size;
+    const brands = allBrands.slice(offset, offset + size);
+
+    return {
+      success: true,
+      data: {
+        brands,
+        scan: scan.data[0],
+        pagination: { total, page, size },
+      },
+    };
+  },
+  "Competitor.gatherPaginatedIntelligence",
 );

@@ -1,64 +1,69 @@
 import { unwrapResult } from "@zenncore/utils";
+import { Button } from "@zenncore/web/components/button";
+import type { SearchParamsProps } from "@zenncore/web/types";
 import Link from "next/link";
+import { connection } from "next/server";
 import { Suspense } from "react";
 import * as Competitor from "@/server/app/competitor";
+import type { Pager } from "@/server/utils/pagination";
+import { extractPaginationParams } from "@/server/utils/pagination";
 import { CompetitorsTable } from "./_components/competitors-table";
 
-export default () => (
-  <div className="flex flex-col">
-    <div className="mx-8 border-accent-foreground border-x">
-      {/* Title */}
-      <div className="-mx-8 border-accent-foreground border-b">
-        <div className="mx-8 flex items-center justify-between px-6 py-8">
-          <div>
-            <h1 className="font-medium text-3xl text-foreground">
-              Competitor Intelligence
-            </h1>
-            <p className="font-light text-foreground-dimmed text-sm">
-              Track and analyze your competitive landscape
-            </p>
+export default (props: SearchParamsProps<keyof Pager>) => {
+  return (
+    <div className="flex flex-col">
+      <div className="mx-8 border-accent-foreground border-x">
+        <div className="-mx-8 border-accent-foreground border-b">
+          <div className="mx-8 flex items-center justify-between px-6 py-8">
+            <div>
+              <h1 className="font-medium text-3xl text-foreground">
+                Competitor Intelligence
+              </h1>
+              <p className="font-light text-foreground-dimmed text-sm">
+                Track and analyze your competitive landscape
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              color="primary"
+              render={<Link href="/onboarding/competitors" />}
+            >
+              Add Competitor
+            </Button>
           </div>
-          <Link
-            href="/onboarding/competitors"
-            className="flex items-center gap-1.5 bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primary/90"
-          >
-            <Next />
-          </Link>
         </div>
-      </div>
 
-      {/* Stats */}
-      <div className="-mx-8 border-accent-foreground border-b">
-        <div className="mx-8">
-          <Suspense fallback={<StatsSkeleton />}>
-            <Statistics />
-          </Suspense>
+        <div className="-mx-8 border-accent-foreground border-b">
+          <div className="mx-8">
+            <Suspense fallback={<StatsSkeleton />}>
+              <Statistics />
+            </Suspense>
+          </div>
         </div>
-      </div>
 
-      {/* Table */}
-      <div className="-mx-8 border-accent-foreground border-b">
-        <div className="mx-8">
-          <Suspense fallback={<TableSkeleton />}>
-            <Competitors />
-          </Suspense>
+        <div className="-mx-8 border-accent-foreground border-b">
+          <div className="mx-8">
+            <Suspense fallback={<TableSkeleton />}>
+              <Competitors query={props} />
+            </Suspense>
+          </div>
         </div>
-      </div>
 
-      {/* Insights */}
-      <div className="h-8" />
-      <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="mx-8 px-6 py-6">
-          <Suspense fallback={<InsightsSkeleton />}>
-            <Insights />
-          </Suspense>
+        <div className="h-8" />
+        <div className="-mx-8 border-accent-foreground border-t border-b">
+          <div className="mx-8 px-6 py-6">
+            <Suspense fallback={<InsightsSkeleton />}>
+              <Insights />
+            </Suspense>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const Statistics = async () => {
+  await connection();
   const data = await unwrapResult(Competitor.gatherIntelligence());
   if (!data) return null;
 
@@ -113,10 +118,18 @@ const Statistics = async () => {
   );
 };
 
-const Competitors = async () => {
-  const data = await unwrapResult(Competitor.gatherIntelligence());
+const Competitors = async ({
+  query,
+}: {
+  query: SearchParamsProps<keyof Pager>;
+}) => {
+  await connection();
+  const { page, size } = await extractPaginationParams(query.searchParams);
+  const data = await unwrapResult(
+    Competitor.gatherPaginatedIntelligence({ page, size }),
+  );
 
-  if (data.brands.length === 0)
+  if (data.brands.length === 0 && data.pagination.total === 0)
     return (
       <div className="bg-background p-8 text-center">
         <p className="font-medium text-base text-foreground">
@@ -128,10 +141,11 @@ const Competitors = async () => {
       </div>
     );
 
-  return <CompetitorsTable rows={data.brands} />;
+  return <CompetitorsTable rows={data.brands} pagination={data.pagination} />;
 };
 
 const Insights = async () => {
+  await connection();
   const data = await unwrapResult(Competitor.gatherIntelligence());
   if (!data?.scan?.topFinding) return null;
 
@@ -175,19 +189,64 @@ const TableSkeleton = () => {
 
   return (
     <div>
-      <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
-        <div className="h-4 w-32 animate-pulse bg-foreground/10" />
+      <div className="flex items-center justify-between border-accent-foreground border-b p-4">
+        <div className="h-7 w-40 animate-pulse bg-foreground/10" />
       </div>
-      {keys.map((key) => (
-        <div
-          key={key}
-          className="flex items-center gap-4 border-accent-foreground border-b px-4 py-3 last:border-b-0"
-        >
-          <div className="size-7 animate-pulse bg-foreground/10" />
-          <div className="h-4 w-24 animate-pulse bg-foreground/10" />
-          <div className="ml-auto h-4 w-16 animate-pulse bg-foreground/10" />
-        </div>
-      ))}
+      <div className="overflow-x-auto bg-background-rich">
+        <table className="w-full">
+          <thead>
+            <tr className="border-accent-foreground border-b">
+              {[
+                "Brand",
+                "Products",
+                "Win Rate",
+                "Simulations",
+                "Updated",
+                "",
+              ].map((header) => (
+                <th key={header} className="px-4 py-3 text-left">
+                  {header && (
+                    <div className="h-3 w-16 animate-pulse bg-foreground/10" />
+                  )}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {keys.map((key) => (
+              <tr
+                key={key}
+                className="border-accent-foreground border-b last:border-b-0"
+              >
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    <div className="size-9 shrink-0 animate-pulse bg-foreground/10" />
+                    <div className="h-4 w-24 animate-pulse bg-foreground/10" />
+                  </div>
+                </td>
+                <td className="px-4 py-3">
+                  <div className="h-4 w-8 animate-pulse bg-foreground/10" />
+                </td>
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <div className="h-1 w-24 animate-pulse bg-foreground/10" />
+                    <div className="h-4 w-8 animate-pulse bg-foreground/10" />
+                  </div>
+                </td>
+                <td className="px-4 py-3">
+                  <div className="h-4 w-8 animate-pulse bg-foreground/10" />
+                </td>
+                <td className="px-4 py-3">
+                  <div className="h-4 w-16 animate-pulse bg-foreground/10" />
+                </td>
+                <td className="px-4 py-3">
+                  <div className="size-9 animate-pulse bg-foreground/10" />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
@@ -199,5 +258,3 @@ const InsightsSkeleton = () => (
     <div className="mt-2 h-3 w-32 animate-pulse bg-foreground/10" />
   </div>
 );
-
-const Next = () => <>Add Competitor</>;

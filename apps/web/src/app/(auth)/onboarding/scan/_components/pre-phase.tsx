@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeftIcon, ArrowRightIcon } from "@zenncore/icons";
+import { ArrowLeftIcon, ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { motion } from "motion/react";
 import Link from "next/link";
@@ -46,7 +46,11 @@ export const PrePhase = ({ children, onRun, isRunning }: PrePhase.Props) => (
           disabled={isRunning}
         >
           Run Simulation
-          <ArrowRightIcon className="size-4" />
+          {isRunning ? (
+            <LoaderIcon className="size-4 animate-spin" />
+          ) : (
+            <ArrowRightIcon className="size-4" />
+          )}
         </Button>
       </div>
     </Motion.Item>

@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
@@ -20,11 +21,12 @@ const categories = [
 
 export namespace SearchTab {
   export type Props = {
-    onSuccess: (competitors: Competitor.Type[]) => void;
+    onSuccess?: (competitors: Competitor.Type[]) => void;
+    className?: string;
   };
 }
 
-export const SearchTab = ({ onSuccess }: SearchTab.Props) => {
+export const SearchTab = ({ onSuccess, className }: SearchTab.Props) => {
   const toast = useToastManager();
   const [query, setQuery] = useState<string | null>(null);
 
@@ -44,7 +46,7 @@ export const SearchTab = ({ onSuccess }: SearchTab.Props) => {
         return;
       }
 
-      onSuccess(result.data);
+      onSuccess?.(result.data);
       setQuery(null);
       toast.add({
         title: "Products found",
@@ -55,7 +57,12 @@ export const SearchTab = ({ onSuccess }: SearchTab.Props) => {
   );
 
   return (
-    <div className="relative border border-accent-foreground bg-background-rich p-4">
+    <div
+      className={cn(
+        "relative border border-accent-foreground bg-background-rich p-4",
+        className,
+      )}
+    >
       <Image
         src="/images/websearch.png"
         alt="Competitors illustration"

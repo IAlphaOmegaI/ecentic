@@ -73,7 +73,7 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-[1fr_auto] border-accent-foreground border-y">
+          <div className="grid grid-cols-1 gap-px border-accent-foreground border-y bg-accent-foreground sm:grid-cols-[1fr_auto]">
             <div className="bg-primary p-6">
               <p className="mb-2 font-light text-background uppercase tracking-widest">
                 Impact
@@ -82,7 +82,7 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
                 {finding.impactDescription}
               </p>
             </div>
-            <div className="flex flex-col items-center justify-center bg-background-dimmed p-6 border-accent-foreground border-l">
+            <div className="flex flex-col items-center justify-center border-accent-foreground border-l bg-background-dimmed p-6">
               <span className="font-medium text-4xl text-error tabular-nums">
                 {finding.lossPercentage}%
               </span>
@@ -93,7 +93,7 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
           </div>
 
           {finding.missingAttributes.length > 0 && (
-            <div className="p-4 flex flex-col gap-4">
+            <div className="flex flex-col gap-4 p-4">
               <p className="font-light text-foreground-dimmed uppercase tracking-widest">
                 Missing Attributes
               </p>
@@ -165,7 +165,7 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
 
   return (
     <div>
-      <div className="flex items-start justify-between p-6 border-accent-foreground border-b">
+      <div className="flex items-start justify-between border-accent-foreground border-b p-6">
         <div>
           <p className="font-light text-foreground-dimmed uppercase tracking-widest">
             Insights

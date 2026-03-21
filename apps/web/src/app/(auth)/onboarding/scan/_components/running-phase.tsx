@@ -166,7 +166,7 @@ export const RunningPhase = ({
               />
             </div>
 
-            <div className="flex flex-1 space-y-1 overflow-y-auto scroll-smooth p-4">
+            <div className="flex-1 space-y-1 overflow-y-auto scroll-smooth p-4">
               {logs.map((entry, index) => {
                 const age = logs.length - 1 - index;
                 const opacity = Math.max(0.2, 1 - age * 0.1);
