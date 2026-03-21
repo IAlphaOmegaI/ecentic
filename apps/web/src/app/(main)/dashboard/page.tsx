@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { formatRelativeTime } from "@/lib/date";
 import * as Dashboard from "@/server/app/dashboard";
+import { AgentVisitsPanel } from "./_components/agent-visits-panel";
 import { OverviewActions } from "./_components/overview-actions";
 import { OverviewCharts } from "./_components/overview-charts";
 import { OverviewTable } from "./_components/overview-table";
@@ -40,6 +41,15 @@ export default () => (
         </div>
       </div>
 
+      {/* AI agent storefront visits */}
+      <div className="-mx-8 border-accent-foreground border-b">
+        <div className="mx-8">
+          <Suspense fallback={<AgentVisitsSkeleton />}>
+            <AgentVisitsSection />
+          </Suspense>
+        </div>
+      </div>
+
       {/* Charts + Activity */}
       <div className="h-8" />
       <div className="-mx-8 border-accent-foreground border-t border-b">
@@ -63,6 +73,27 @@ export default () => (
   </div>
 );
 
+const AgentVisitsSection = async () => {
+  const data = await unwrapResult(Dashboard.gatherIntelligence());
+
+  return <AgentVisitsPanel summary={data.agentTraffic} />;
+};
+
+const AgentVisitsSkeleton = () => (
+  <div className="border-accent-foreground border-x border-b bg-background-dimmed px-6 py-5">
+    <div className="h-3 w-40 animate-pulse bg-foreground/10" />
+    <div className="mt-3 h-6 w-64 animate-pulse bg-foreground/10" />
+    <div className="mt-6 space-y-3">
+      {["a", "b", "c"].map((key) => (
+        <div key={key} className="space-y-1">
+          <div className="h-3 w-full animate-pulse bg-foreground/10" />
+          <div className="h-1.5 w-full animate-pulse bg-foreground/10" />
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
 const LastUpdated = async () => {
   const data = await unwrapResult(Dashboard.gatherIntelligence());
 
@@ -80,7 +111,7 @@ const StatCards = async () => {
   const { stats } = data;
 
   return (
-    <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-5">
       {/* Overall Win Rate */}
       <div className="flex flex-col justify-between bg-background-dimmed p-5">
         <div>
@@ -136,6 +167,26 @@ const StatCards = async () => {
         </div>
       </div>
 
+      {/* AI site visits (30d) */}
+      <div className="flex flex-col justify-between bg-background-dimmed p-5">
+        <div>
+          <p className="font-light text-foreground-dimmed text-sm">
+            AI Site Visits
+          </p>
+          <div className="mt-2 flex items-baseline gap-1.5">
+            <span className="font-semibold text-4xl text-foreground tabular-nums">
+              {stats.aiSiteVisits30d}
+            </span>
+            <span className="font-light text-foreground-dimmed text-sm">
+              / 30 days
+            </span>
+          </div>
+        </div>
+        <p className="mt-4 font-light text-foreground-dimmed text-xs leading-relaxed">
+          Storefront tracker — see breakdown below.
+        </p>
+      </div>
+
       {/* Top Performer */}
       <div className="flex flex-col justify-between bg-background-dimmed p-5">
         <div>
@@ -167,7 +218,9 @@ const StatCards = async () => {
             variant="ghost"
             color="accent"
             className="mt-4"
-            render={<Link href={`/dashboard/products/${stats.topPerformer.id}`} />}
+            render={
+              <Link href={`/dashboard/products/${stats.topPerformer.id}`} />
+            }
           >
             View details <ArrowRightIcon className="size-3" />
           </Button>
@@ -205,7 +258,11 @@ const StatCards = async () => {
             variant="ghost"
             color="accent"
             className="mt-4"
-            render={<Link href={`/dashboard/products/${stats.biggestOpportunity.id}`} />}
+            render={
+              <Link
+                href={`/dashboard/products/${stats.biggestOpportunity.id}`}
+              />
+            }
           >
             Optimize now <ArrowRightIcon className="size-3" />
           </Button>
@@ -234,10 +291,10 @@ const TopProducts = async () => {
 };
 
 const StatsSkeleton = () => {
-  const keys = ["rate", "scanned", "top", "opportunity"];
+  const keys = ["rate", "scanned", "ai", "top", "opportunity"];
 
   return (
-    <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-5">
       {keys.map((key) => (
         <div key={key} className="bg-background-dimmed p-5">
           <div className="h-3 w-24 animate-pulse bg-foreground/10" />

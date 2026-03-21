@@ -40,7 +40,7 @@ export namespace ScanRunner {
 
 export const ScanRunner = ({ children, simulations }: ScanRunner.Props) => {
   const toast = useToastManager();
-  const [phase, setPhase] = useState<ScanPhase>("complete");
+  const [phase, setPhase] = useState<ScanPhase>("pre");
   const [stats, setStats] = useState<Stats>(initialStats);
 
   const [logs, setLogs] = useState<LogEntry[]>([]);

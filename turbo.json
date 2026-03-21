@@ -1,7 +1,12 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "ui": "tui",
-  "globalPassThroughEnv": ["APP_VARIANT", "EAS_BUILD"],
+  "globalPassThroughEnv": [
+    "APP_VARIANT",
+    "EAS_BUILD",
+    "ECENTIC_TRACKER_PUBLIC_ORIGIN",
+    "ECENTIC_TRACKER_PROBE"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -20,6 +25,8 @@
         "AZURE_API_KEY",
         "AZURE_BASE_URL",
         "APP_HOST",
+        "ECENTIC_TRACKER_PUBLIC_ORIGIN",
+        "ECENTIC_TRACKER_PROBE",
         "npm_package_name",
         "npm_package_version"
       ]

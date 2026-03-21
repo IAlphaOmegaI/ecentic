@@ -65,10 +65,6 @@ If code and docs disagree, prefer docs intent unless explicitly instructed other
 
 ## Learned User Preferences
 
-- Use `@zenncore/web` components for interactive UI; avoid raw HTML implementations for buttons, inputs, tables, tabs, dialogs, and form controls.
-- Prefer `@zenncore/*` package primitives (including `DataTable` and Tabs components) over custom local implementations.
-- Use semantic Tailwind tokens instead of raw color utility classes.
-- Use only `Motion.Row`, `Motion.Up`, `Motion.Item`, and `Motion.Stagger` for animations.
 - Keep onboarding and dashboard UX clear and structured, preferring dedicated pages when flows need detailed field explanations.
 - Treat `docs/context/` as the canonical source for project-specific product context before implementation decisions.
 
@@ -78,3 +74,5 @@ If code and docs disagree, prefer docs intent unless explicitly instructed other
 - AI streaming server actions use `AI.stream<EventType>()` and return `{ output }`, consumed client-side with `readStreamableValue(output)` and `switch (event.kind)`.
 - For Zod schemas passed to AI `generate()`, avoid `z.default()` and use `.optional()` for truly optional fields.
 - Non-onboarding/auth pages are expected to follow PPR/streaming patterns with a server-rendered `page.tsx` shell and Suspense-wrapped async server components.
+- After Shopify OAuth, import products on the server (same catalog sync pattern as WooCommerce and custom feed); only creating a `store` row leaves onboarding empty.
+- For Shopify storefront AI traffic (ScriptTag `tracker.js`), beacon requests must target the app origin with `Authorization: Bearer` and CORS; relative URLs from the merchant domain do not hit the app API.

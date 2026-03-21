@@ -25,7 +25,7 @@
 
 **Mode:** OAuth 2.0 — redirect-based app install flow
 
-**Scopes:** `read_products`, `write_products`
+**Scopes:** `read_products`, `write_products`, `read_script_tags`, `write_script_tags`
 
 **API version:** `2024-10`
 
@@ -35,7 +35,11 @@
 - [x] OAuth callback route — verifies HMAC + state cookie, exchanges code for access token, creates store record
 - [x] GDPR compliance webhooks — `customers/data_request`, `customers/redact`, `shop/redact`
 - [x] `syncProducts()` — paginated import up to 10 pages / 2,500 products; maps title, description, price, compareAtPrice, images, handle, SKU, status
+- [x] `syncShopifyCatalog()` runs automatically after OAuth (same as WooCommerce/feed calling `Store.syncProducts` after connect)
 - [x] `updateProduct()` — write-back of optimised title/description to Shopify via `PUT /admin/api/2024-10/products/{id}.json`
+- [x] AI agent traffic (Layer 1) — `tracker.js` via ScriptTag, beacon to `POST /api/tracking/agent-visit`, `store.trackerApiKey` + `storefrontHosts` from `shop.json`
+- [x] Optional env `ECENTIC_TRACKER_PROBE=true` — appends `&probe=1` to the ScriptTag URL so every storefront page sends a `probe-ping` event (use only for staging/debug; confirms CORS + DB without spoofing an AI user-agent)
+- [x] Optional env `ECENTIC_TRACKER_PUBLIC_ORIGIN` — HTTPS tunnel origin for `tracker.js` ScriptTag when `APP_HOST` is `http://localhost` (avoids mixed-content blocking on HTTPS Shopify)
 - [x] Onboarding form — accepts shop domain, redirects to install route
 - [x] Onboarding page with instructions and OAuth flow explanation
 
@@ -48,6 +52,20 @@
 - [ ] Order or customer data access (intentionally out of scope per Shopify listing)
 - [ ] Token expiry detection and reconnection flow
 - [ ] Sync scheduling / automation
+
+#### AI traffic — how user-agent is detected (storefront)
+
+- The ScriptTag loads `tracker.js` from your app origin; it reads **`navigator.userAgent`** and **`document.referrer`** in the browser (Shopify does not expose server access logs).
+- A beacon is sent only when the UA matches a known AI/crawler pattern, the referrer matches a known AI domain, or **`probe=1`** is on the script URL (see above).
+- Normal Chrome sessions usually produce **no** events — that is expected. To test: use DevTools **Network conditions** with a custom UA containing e.g. `ChatGPT-User` or `Googlebot`, or enable probe mode temporarily.
+
+#### Local dev (`localhost:3000`) + HTTPS Shopify storefront
+
+- Keep `APP_HOST` / `BETTER_AUTH_BASE_URL` as `http://localhost:3000` for OAuth and the app UI.
+- Browsers **block** loading `http://localhost/tracker.js` from an **HTTPS** Shopify page (mixed content), so the ScriptTag must use an **HTTPS** origin that forwards to your dev server.
+- Set **`ECENTIC_TRACKER_PUBLIC_ORIGIN`** to that HTTPS base URL with **no** trailing slash, e.g. `https://abcd-efgh.ngrok-free.app` (ngrok, Cloudflare Tunnel, etc. pointing at port 3000).
+- **Reconnect** Shopify OAuth after changing this env so the ScriptTag `src` is recreated.
+- The tracker script uses its own `script.src` origin for beacons, so `tracker.js` and `/api/tracking/agent-visit` are both hit via the tunnel when the tag loads from the tunnel.
 
 ---
 

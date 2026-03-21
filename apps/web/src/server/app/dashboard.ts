@@ -1,9 +1,9 @@
 "use server";
 
 import { unique } from "@zenncore/utils";
-import { inArray } from "drizzle-orm";
+import { and, count, eq, gte, inArray, sql } from "drizzle-orm";
 import { cache as dedupe } from "react";
-import { schema } from "../database";
+import { db, schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
 import { Environment } from "../utils/environment";
 import * as Competitor from "./competitor";
@@ -44,6 +44,11 @@ export type TrendPoint = {
   winRate: number;
 };
 
+export type AgentTrafficSummary = {
+  total30d: number;
+  byAgentType: { agentType: string; label: string; count: number }[];
+};
+
 export type DashboardData = {
   stats: {
     overallWinRate: number;
@@ -60,7 +65,9 @@ export type DashboardData = {
       title: string;
       winRate: number;
     } | null;
+    aiSiteVisits30d: number;
   };
+  agentTraffic: AgentTrafficSummary;
   models: ModelRate[];
   trend: TrendPoint[];
   products: ProductRow[];
@@ -88,6 +95,80 @@ const computeDataQuality = (product: Product.Type): number => {
   return Math.round((filled / QUALITY_KEYS.length) * 100);
 };
 
+const AGENT_TYPE_LABELS: Record<string, string> = {
+  "chatgpt-user": "ChatGPT (browser)",
+  "claude-user": "Claude (browser)",
+  "perplexity-user": "Perplexity (browser)",
+  "chatgpt-agent": "ChatGPT Agent",
+  "perplexity-comet": "Perplexity Comet",
+  gptbot: "GPTBot",
+  claudebot: "ClaudeBot",
+  "oai-searchbot": "OpenAI Search",
+  perplexitybot: "PerplexityBot",
+  "claude-searchbot": "Claude Search",
+  bytespider: "Bytespider",
+  "google-extended": "Google-Extended",
+  amazonbot: "Amazonbot",
+  googlebot: "Googlebot",
+  "probe-ping": "Connectivity probe",
+  "chatgpt-referral": "ChatGPT (referral)",
+  "perplexity-referral": "Perplexity (referral)",
+  "claude-referral": "Claude (referral)",
+  "gemini-referral": "Gemini (referral)",
+  "copilot-referral": "Copilot (referral)",
+  "you-referral": "You.com (referral)",
+};
+
+const labelForAgentType = (agentType: string): string =>
+  AGENT_TYPE_LABELS[agentType] ??
+  agentType
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
+const loadAgentTrafficSummary = async (
+  userId: string,
+): Promise<AgentTrafficSummary> => {
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+  const [totalRow] = await db
+    .select({ value: count() })
+    .from(schema.agentVisit)
+    .where(
+      and(
+        eq(schema.agentVisit.userId, userId),
+        gte(schema.agentVisit.createdAt, thirtyDaysAgo),
+      ),
+    );
+
+  const total30d = totalRow?.value ?? 0;
+
+  const breakdownRows = await db
+    .select({
+      agentType: schema.agentVisit.agentType,
+      count: sql<number>`count(*)::int`,
+    })
+    .from(schema.agentVisit)
+    .where(
+      and(
+        eq(schema.agentVisit.userId, userId),
+        gte(schema.agentVisit.createdAt, thirtyDaysAgo),
+      ),
+    )
+    .groupBy(schema.agentVisit.agentType);
+
+  const byAgentType = [...breakdownRows]
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 12)
+    .map((row) => ({
+      agentType: row.agentType,
+      label: labelForAgentType(row.agentType),
+      count: row.count,
+    }));
+
+  return { total30d, byAgentType };
+};
+
 const computeModelRate = (
   simulations: Simulation.Type[],
   model: string,
@@ -105,10 +186,11 @@ const computeModelRate = (
 };
 
 export const gatherIntelligence = dedupe(
-  withAuthentication(async () => {
-    const [products, scans] = await Promise.all([
+  withAuthentication(async (context) => {
+    const [products, scans, agentTraffic] = await Promise.all([
       Product.getForCurrentUser(),
       Scan.getLatest(),
+      loadAgentTrafficSummary(context.session.user.id),
     ]);
 
     if (!products.success) return products;
@@ -127,7 +209,9 @@ export const gatherIntelligence = dedupe(
             productLimit: 100,
             topPerformer: null,
             biggestOpportunity: null,
+            aiSiteVisits30d: agentTraffic.total30d,
           },
+          agentTraffic,
           models: [],
           trend: [],
           products: [],
@@ -174,10 +258,7 @@ export const gatherIntelligence = dedupe(
       const total = productSimulations.length;
       const winRate = total > 0 ? Math.round((wins / total) * 100) : 0;
 
-      const byCompetitor = new Map<
-        string,
-        { wins: number; total: number }
-      >();
+      const byCompetitor = new Map<string, { wins: number; total: number }>();
 
       for (const simulation of productSimulations) {
         const entry = byCompetitor.get(simulation.competitorId) ?? {
@@ -194,9 +275,7 @@ export const gatherIntelligence = dedupe(
 
       for (const [competitorId, stats] of byCompetitor) {
         const rate =
-          stats.total > 0
-            ? Math.round((stats.wins / stats.total) * 100)
-            : 0;
+          stats.total > 0 ? Math.round((stats.wins / stats.total) * 100) : 0;
         if (rate > highestRate) {
           highestRate = rate;
           const competitor = competitorMap.get(competitorId);
@@ -309,7 +388,9 @@ export const gatherIntelligence = dedupe(
                 winRate: biggestOpportunity.winRate,
               }
             : null,
+          aiSiteVisits30d: agentTraffic.total30d,
         },
+        agentTraffic,
         models,
         trend,
         products: sorted.slice(0, 10),

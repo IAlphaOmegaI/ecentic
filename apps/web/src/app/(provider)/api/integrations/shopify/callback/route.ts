@@ -2,8 +2,15 @@ import crypto from "node:crypto";
 import { cookies, headers } from "next/headers";
 import { type NextRequest, NextResponse as Response } from "next/server";
 import { auth } from "@/lib/auth";
+import * as Shopify from "@/server/app/integration/shopify";
 import * as Store from "@/server/app/store";
 import * as HTTP from "@/server/utils/http";
+import {
+  normalizeHostname,
+  resolveTrackerPublicOrigin,
+} from "@/server/utils/tracking";
+
+const API_VERSION = "2024-10";
 
 const verifyHmac = (query: URLSearchParams, secret: string): boolean => {
   const hmac = query.get("hmac");
@@ -23,6 +30,16 @@ const verifyHmac = (query: URLSearchParams, secret: string): boolean => {
   return crypto.timingSafeEqual(Buffer.from(digest), Buffer.from(hmac));
 };
 
+const storefrontHostsFromShop = (record: {
+  domain: string;
+  myshopify_domain: string;
+}): string[] => {
+  const hosts = new Set<string>();
+  hosts.add(normalizeHostname(record.domain));
+  hosts.add(normalizeHostname(record.myshopify_domain));
+  return [...hosts];
+};
+
 export const GET = async (request: NextRequest) => {
   const { SHOPIFY_API_KEY, SHOPIFY_API_SECRET, APP_HOST } = process.env;
 
@@ -30,6 +47,15 @@ export const GET = async (request: NextRequest) => {
     return Response.json(
       { error: "Shopify integration not configured" },
       { status: 500 },
+    );
+
+  if (
+    process.env.NODE_ENV === "development" &&
+    APP_HOST.startsWith("http://") &&
+    !process.env.ECENTIC_TRACKER_PUBLIC_ORIGIN
+  )
+    console.warn(
+      "[ecentic] Shopify storefronts are HTTPS: loading tracker.js from http://localhost is usually blocked (mixed content). Set ECENTIC_TRACKER_PUBLIC_ORIGIN to an HTTPS tunnel (ngrok/cloudflared) that forwards to this app, then reconnect Shopify.",
     );
 
   const params = request.nextUrl.searchParams;
@@ -79,14 +105,75 @@ export const GET = async (request: NextRequest) => {
     );
   }
 
-  await Store.create({
+  const accessToken = parsed.data.access_token;
+
+  const shopHttp = await HTTP.request(
+    `https://${shop}/admin/api/${API_VERSION}/shop.json`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Access-Token": accessToken,
+      },
+    },
+  );
+
+  const shopParsed = await HTTP.parse<{
+    shop: { domain: string; myshopify_domain: string };
+  }>(shopHttp);
+
+  const storefrontHosts = (() => {
+    if (!shopParsed.success) return [normalizeHostname(`https://${shop}`)];
+
+    return storefrontHostsFromShop(shopParsed.data.shop);
+  })();
+
+  const trackerApiKey = crypto.randomUUID();
+
+  const storeResult = await Store.create({
     userId: session.user.id,
     platform: "shopify",
     name: shop.replace(".myshopify.com", ""),
     domain: `https://${shop}`,
-    accessToken: parsed.data.access_token,
+    accessToken,
+    trackerApiKey,
+    storefrontHosts,
     status: "connected",
   });
+
+  if (storeResult.success && storeResult.data) {
+    await Shopify.syncShopifyCatalog({
+      userId: session.user.id,
+      storeId: storeResult.data.id,
+    });
+
+    const probeSuffix =
+      process.env.ECENTIC_TRACKER_PROBE === "true" ? "&probe=1" : "";
+
+    const trackerPublicOrigin = resolveTrackerPublicOrigin();
+
+    const trackerSrc = `${trackerPublicOrigin}/tracker.js?sid=${encodeURIComponent(
+      storeResult.data.id,
+    )}&k=${encodeURIComponent(trackerApiKey)}${probeSuffix}`;
+
+    await HTTP.request(
+      `https://${shop}/admin/api/${API_VERSION}/script_tags.json`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Access-Token": accessToken,
+        },
+        body: JSON.stringify({
+          script_tag: {
+            event: "onload",
+            src: trackerSrc,
+            display_scope: "all",
+          },
+        }),
+      },
+    );
+  }
 
   jar.delete("shopify_nonce");
   jar.delete("shopify_shop");
