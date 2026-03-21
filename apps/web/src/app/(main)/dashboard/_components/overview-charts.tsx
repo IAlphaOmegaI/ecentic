@@ -1,15 +1,28 @@
 "use client";
 
-import { ArrowRightIcon } from "@zenncore/icons";
+import {
+  ArrowRightIcon,
+  BellIcon,
+  BoxMinusIcon,
+  TrendDownIcon,
+} from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import { motion } from "motion/react";
+import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { Spring, Stagger } from "@/lib/animations";
 import { formatRelativeTime } from "@/lib/date";
-import Image from "next/image";
-import { BoxMinusIcon } from "@zenncore/icons";
+import { div } from "motion/react-client";
 
 type ModelRate = { label: string; rate: number };
 type TrendPoint = { date: string; winRate: number };
@@ -27,7 +40,13 @@ const modelBarColors: Record<string, string> = {
   Gemini: "bg-green-500",
 };
 
-const ActivityIcon = ({ type }: { type: string }) => {
+const ActivityIcon = ({
+  type,
+  className,
+}: {
+  type: string;
+  className?: string;
+}) => {
   const icon = (() => {
     switch (type) {
       case "simulation_complete":
@@ -51,7 +70,8 @@ const ActivityIcon = ({ type }: { type: string }) => {
   return (
     <div
       className={cn(
-        "flex size-6 shrink-0 items-center justify-center font-bold text-xs",
+        "flex size-12 shrink-0 items-center justify-center text-2xl",
+        className,
         color,
       )}
     >
@@ -60,120 +80,110 @@ const ActivityIcon = ({ type }: { type: string }) => {
   );
 };
 
+export namespace WinRateLineChart {
+  export type Props = {
+    data: number[];
+    labels: string[];
+    className?: string;
+  };
+}
+
 const WinRateLineChart = ({
   data,
   labels,
   className = "h-20",
-}: {
-  data: number[];
-  labels: string[];
-  className?: string;
-}) => {
-  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
-
-  if (data.length < 2) {
+}: WinRateLineChart.Props) => {
+  if (data.length < 2)
     return (
       <div
         className={cn(
-          "flex items-center justify-center text-foreground-dimmed text-sm",
+          "flex items-center justify-center text-foreground-dimmed flex-col gap-2 h-64 min-h-64 text-center",
           className,
         )}
       >
-        Not enough data for trend
+        <TrendDownIcon className="size-24" />
+        Not enough data for trend. <br />
+        Get started by running a simulation.
       </div>
     );
-  }
 
-  const W = 600;
-  const H = 80;
-  const PAD_Y = 8;
-  const minV = Math.min(...data) - 4;
-  const maxV = Math.max(...data) + 4;
-  const toX = (i: number) => (i / (data.length - 1)) * W;
-  const toY = (v: number) =>
-    H - PAD_Y - ((v - minV) / (maxV - minV)) * (H - 2 * PAD_Y);
-  const pts: [number, number][] = data.map((v, i) => [toX(i), toY(v)]);
-  const linePath = pts.reduce((d, [x, y], i) => {
-    if (i === 0) return `M ${x},${y}`;
-    const [px, py] = pts[i - 1];
-    const cpx = (px + x) / 2;
-    return `${d} C ${cpx},${py} ${cpx},${y} ${x},${y}`;
-  }, "");
-  const areaPath = `${linePath} L ${W},${H} L 0,${H} Z`;
+  const chart = data.map((winRate, index) => ({
+    label: labels[index] ?? "",
+    winRate,
+  }));
+
+  const [minimum, maximum] = (() => {
+    const values = data;
+    const minimum = Math.min(...values);
+    const maximum = Math.max(...values);
+    const padding = minimum === maximum ? 6 : 4;
+
+    return [minimum - padding, maximum + padding];
+  })();
 
   return (
-    <div className="relative">
-      <svg
-        viewBox={`0 0 ${W} ${H}`}
-        className={`${className} w-full overflow-visible`}
-        preserveAspectRatio="none"
-        onMouseMove={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          const x = ((e.clientX - rect.left) / rect.width) * W;
-          const index = Math.round((x / W) * (data.length - 1));
-          setHoverIndex(Math.max(0, Math.min(data.length - 1, index)));
-        }}
-        onMouseLeave={() => setHoverIndex(null)}
-      >
-        <defs>
-          <linearGradient id="winAreaGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="rgb(21,114,250)" stopOpacity="0.12" />
-            <stop offset="100%" stopColor="rgb(21,114,250)" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        {[0.25, 0.5, 0.75].map((pos) => (
-          <line
-            key={pos}
-            x1={0}
-            y1={H * pos}
-            x2={W}
-            y2={H * pos}
-            stroke="currentColor"
-            strokeOpacity="0.08"
-            strokeWidth="1"
+    <div className={cn("w-full h-64 min-h-64", className)}>
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart
+          data={chart}
+          margin={{ top: 6, right: 0, left: 0, bottom: 0 }}
+        >
+          <defs>
+            <linearGradient id="win-rate-area" x1="0" y1="0" x2="0" y2="1">
+              <stop
+                offset="0%"
+                stopColor="var(--color-primary)"
+                stopOpacity={0.22}
+              />
+              <stop
+                offset="100%"
+                stopColor="var(--color-primary)"
+                stopOpacity={0}
+              />
+            </linearGradient>
+          </defs>
+          <CartesianGrid
+            stroke="var(--color-foreground-dimmed)"
+            strokeOpacity={0.14}
+            vertical={false}
           />
-        ))}
-        <path d={areaPath} fill="url(#winAreaGrad)" />
-        <path
-          d={linePath}
-          fill="none"
-          stroke="rgb(21,114,250)"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        {hoverIndex !== null && (
-          <line
-            x1={pts[hoverIndex][0]}
-            y1={0}
-            x2={pts[hoverIndex][0]}
-            y2={H}
-            stroke="currentColor"
-            strokeOpacity="0.15"
-            strokeWidth="1"
-          />
-        )}
-      </svg>
-      {hoverIndex !== null && (
-        <>
-          <div
-            className="pointer-events-none absolute z-10 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-primary bg-white"
-            style={{
-              left: `${(pts[hoverIndex][0] / W) * 100}%`,
-              top: `${(pts[hoverIndex][1] / H) * 100}%`,
+          <XAxis dataKey="label" hide />
+          <YAxis hide domain={[minimum, maximum]} />
+          <Tooltip
+            cursor={{
+              stroke: "var(--color-foreground-dimmed)",
+              strokeOpacity: 0.35,
+            }}
+            content={({ active, payload, label }) => {
+              if (!active || !payload || payload.length === 0) return null;
+              const value = payload[0]?.value;
+              if (typeof value !== "number") return null;
+
+              return (
+                <div className="whitespace-nowrap border border-accent-foreground bg-background-rich px-2 py-1 shadow-sm">
+                  <span className="text-foreground">{label}</span>
+                  <span className="font-medium text-primary">{value}%</span>
+                </div>
+              );
             }}
           />
-          <div
-            className="pointer-events-none absolute -top-8 z-10 -translate-x-1/2 whitespace-nowrap border border-accent-foreground bg-background-rich px-2 py-1 text-foreground text-xs shadow-sm"
-            style={{ left: `${(hoverIndex / (data.length - 1)) * 100}%` }}
-          >
-            {labels[hoverIndex]} ·{" "}
-            <span className="font-medium text-primary">
-              {data[hoverIndex]}%
-            </span>
-          </div>
-        </>
-      )}
+          <Area
+            type="monotone"
+            dataKey="winRate"
+            stroke="var(--color-primary)"
+            strokeWidth={1.5}
+            fill="url(#win-rate-area)"
+            dot={false}
+            activeDot={{
+              r: 4,
+              fill: "var(--color-background-rich)",
+              stroke: "var(--color-primary)",
+              strokeWidth: 2,
+            }}
+            isAnimationActive={false}
+          />
+        </AreaChart>
+      </ResponsiveContainer>
     </div>
   );
 };
@@ -199,22 +209,22 @@ export const OverviewCharts = ({
             <p className="font-light text-foreground-dimmed uppercase tracking-widest">
               Performance
             </p>
-            <p className="mt-1 font-medium text-foreground text-2xl">
+            <p className="mt-1 font-medium text-2xl text-foreground">
               Win Rate by Model
             </p>
           </div>
         </div>
 
         {models.length > 0 ? (
-          <div className="grid grid-cols-3 divide-x divide-accent-foreground border-y border-accent-foreground px-4">
+          <div className="grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-y px-4">
             {models.map(({ label, rate }) => {
               return (
                 <div
                   key={label}
                   className="flex flex-col items-center gap-1 p-6 first:pl-0 last:pr-0"
                 >
-                  <div className="flex flex-row items-center justify-between w-full">
-                    <div className="flex items-baseline gap-2">
+                  <div className="flex w-full flex-row items-center justify-between">
+                    <div className="flex items-center gap-2">
                       <Image
                         src={getLogo(label)}
                         alt={label}
@@ -246,7 +256,7 @@ export const OverviewCharts = ({
             })}
           </div>
         ) : (
-          <p className="text-foreground-dimmed h-26 flex flex-col items-center justify-center border-y border-accent-foreground px-4 gap-2">
+          <p className="flex h-26 flex-col items-center justify-center gap-2 border-accent-foreground border-y px-4 text-foreground-dimmed">
             <BoxMinusIcon className="size-12" />
             Run a simulation to see per-model performance.
           </p>
@@ -274,85 +284,64 @@ export const OverviewCharts = ({
         </div>
       </div>
 
-      {/* Right column — activity */}
-      <div className="flex flex-col gap-px bg-accent-foreground [&>*:last-child]:flex-1">
-        <motion.div
-          className="bg-background-dimmed p-4"
-          variants={Stagger.Item}
-          initial="hidden"
-          animate="visible"
-          transition={{ delayChildren: 0.3 }}
-        >
-          <div className="mb-3 flex items-center justify-between">
-            <p className="font-medium text-base text-foreground">
+      <div className="flex flex-col gap-px bg-accent-foreground">
+        <div className="bg-background-dimmed flex-1">
+          <div className="mb-2 flex items-center justify-between px-4 pt-4">
+            <p className="font-light text-foreground-dimmed uppercase tracking-widest">
               Recent Activity
             </p>
           </div>
           {activity.length === 0 ? (
-            <p className="font-light text-foreground-dimmed text-sm">
-              No activity yet. Run your first simulation to see results here.
-            </p>
+            <div className="flex items-center gap-2 text-foreground-dimmed font-normal flex-col text-center items-center justify-center size-full p-4">
+              <BellIcon className="size-24" />
+              <p className="text-foreground-dimmed">
+                No activity yet. Run your <br />
+                first simulation to see results here.
+              </p>
+            </div>
           ) : (
-            <motion.div
-              className="flex flex-col gap-3"
-              variants={Stagger.Container(0.06)}
-              initial="hidden"
-              animate="visible"
-              transition={{ delayChildren: 0.4 }}
-            >
+            <div className="flex flex-col gap-2">
               {activity.map((entry) => (
-                <motion.div
+                <div
                   key={entry.id}
-                  className="flex items-start gap-2"
-                  variants={Stagger.Item}
+                  className="flex items-start gap-2 border-b last:border-b-0 pb-4 border-accent-foreground p-4 first:border-t"
                 >
-                  <ActivityIcon type={entry.type} />
+                  <ActivityIcon type={entry.type} className="size-6" />
                   <div>
-                    <p className="font-light text-foreground text-xs leading-relaxed">
+                    <p className="font-light text-foreground leading-relaxed">
                       {entry.message}
                     </p>
                     {entry.detail && (
-                      <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
-                        {entry.detail}
+                      <p className="mt-0.5 font-light text-foreground-dimmed text-sm">
+                        {entry.detail.slice(0, 100)}...
                       </p>
                     )}
-                    <p className="font-light text-foreground-dimmed text-xs">
+                    <p className="font-light mt-2 text-primary-dimmed text-xs">
                       {formatRelativeTime(new Date(entry.timestamp))}
                     </p>
                   </div>
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
+            </div>
           )}
-        </motion.div>
+        </div>
 
-        {/* Quick Actions */}
-        <motion.div
-          className="bg-background-dimmed p-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ ...Spring.Gentle, delay: 0.5 }}
-        >
-          <p className="mb-3 font-medium text-base text-foreground">
-            Quick Actions
-          </p>
-          <div className="flex flex-col gap-2">
-            <Button
-              variant="ghost"
-              color="primary"
-              render={<Link href="/dashboard/products" />}
-            >
-              View all products <ArrowRightIcon className="size-3" />
-            </Button>
-            <Button
-              variant="ghost"
-              color="primary"
-              render={<Link href="/dashboard/optimize" />}
-            >
-              View pending optimizations <ArrowRightIcon className="size-3" />
-            </Button>
-          </div>
-        </motion.div>
+        <div className="flex p-4 items-center justify-between bg-background-dimmed">
+          <Button
+            variant="outline"
+            color="accent"
+            render={<Link href="/dashboard/optimize" />}
+          >
+            Optimizations
+          </Button>
+          <Button
+            variant="outline"
+            color="primary"
+            render={<Link href="/dashboard/products" />}
+          >
+            View all products <ArrowRightIcon className="size-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );

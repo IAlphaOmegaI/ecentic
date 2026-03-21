@@ -1,4 +1,10 @@
-import { ArrowRightIcon } from "@zenncore/icons";
+import {
+  ArrowRightIcon,
+  BoxMinusIcon,
+  TrendUpIcon,
+  CheckBadgeIcon,
+  RadarIcon,
+} from "@zenncore/icons";
 import { cn, unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Link from "next/link";
@@ -48,9 +54,9 @@ export default () => (
         </div>
       </div>
 
-      {/* Product Win Rates table */}
       <div className="h-8" />
-      <div className="-mx-8 border-accent-foreground border-t border-b">
+
+      <div className="-mx-8 border-accent-foreground border-t border-b mb-12">
         <div className="mx-8">
           <Suspense fallback={<TableSkeleton />}>
             <TopProducts />
@@ -79,18 +85,35 @@ const StatCards = async () => {
 
   if (products.length === 0)
     return (
-      <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4 mon-h-39 h-39">
         {[
           "Overall Win Rate",
           "Products Scanned",
           "Top Performer",
           "Biggest Opportunity",
-        ].map((label) => (
-          <div key={label} className="bg-background-dimmed p-4">
-            <p className="text-foreground-dimmed">{label}</p>
-            <p className="mt-2 text-foreground-dimmed text-lg">No data yet</p>
-          </div>
-        ))}
+        ].map((label) => {
+          const icon = (() => {
+            switch (label) {
+              case "Overall Win Rate":
+                return <BoxMinusIcon className="size-12" />;
+              case "Products Scanned":
+                return <RadarIcon className="size-12" />;
+              case "Top Performer":
+                return <TrendUpIcon className="size-12" />;
+              case "Biggest Opportunity":
+                return <CheckBadgeIcon className="size-12" />;
+            }
+          })();
+          return (
+            <div key={label} className="bg-background-dimmed p-4 h-full">
+              <p className="text-foreground-dimmed mb-4">{label}</p>
+              <div className="flex flex-col items-center justify-center gap-2">
+                {icon}
+                <p className="text-foreground-dimmed">No data yet</p>
+              </div>
+            </div>
+          );
+        })}
       </div>
     );
 
@@ -293,12 +316,7 @@ const TopProducts = async () => {
     .slice(0, 10);
 
   const rows = sorted.map((product) => ({
-    id: product._id,
-    title: product.title,
-    price: product.price,
-    currency: product.currency,
-    winRate: product.winRate,
-    quality: product.quality,
+    ...product,
   }));
 
   return <OverviewTable products={rows} />;
