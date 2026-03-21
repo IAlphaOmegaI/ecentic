@@ -20,6 +20,25 @@ const getModel = () => {
 const outputConfig = <T extends z.ZodTypeAny>(schema: T) =>
   Output.object({ schema });
 
+const BUFFER_LINE_THRESHOLD = 50;
+
+async function* bufferTextStream(
+  stream: AsyncIterable<string>,
+): AsyncIterable<string> {
+  let buffer = "";
+  for await (const chunk of stream) {
+    buffer += chunk;
+    const lines = buffer.split("\n");
+    const remainder = lines.pop() ?? "";
+    if (lines.length > 0 || remainder.length >= BUFFER_LINE_THRESHOLD) {
+      const toSend = lines.length > 0 ? `${lines.join("\n")}\n` : remainder;
+      if (toSend) yield toSend;
+      buffer = lines.length > 0 ? remainder : "";
+    }
+  }
+  if (buffer) yield buffer;
+}
+
 export type GenerateOptions<T extends z.ZodTypeAny> = {
   system: string;
   prompt: string;
@@ -62,7 +81,7 @@ export function generate<T extends z.ZodTypeAny>(
 
   return {
     output: result.output as Promise<z.infer<T>>,
-    textStream: result.textStream,
+    textStream: bufferTextStream(result.textStream),
   };
 }
 
@@ -74,16 +93,10 @@ export const stream = <T>(
   (async () => {
     try {
       await callback((value) => {
-        console.log(
-          "[AI.stream] update →",
-          JSON.stringify(value).slice(0, 120),
-        );
         streamable.update(value);
       });
-      console.log("[AI.stream] done");
       streamable.done();
     } catch (error) {
-      console.error("[AI.stream] error →", error);
       streamable.error(error);
     }
   })();
