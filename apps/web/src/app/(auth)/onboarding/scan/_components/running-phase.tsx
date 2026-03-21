@@ -223,6 +223,9 @@ export const RunningPhase = ({
             </div>
           </div>
         </Motion.Item>
+        <Motion.Item className=" border-accent-foreground border-b px-8">
+          <div className="size-full border-x h-8 border-accent-foreground" />
+        </Motion.Item>
       </Motion.Stagger>
     </motion.div>
   );

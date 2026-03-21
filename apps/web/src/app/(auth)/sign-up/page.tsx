@@ -6,6 +6,7 @@ import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import { Fade } from "@/lib/animations";
 import { SignUpForm } from "./_components/sign-up-form";
+import { Button } from "@zenncore/web/components/button";
 
 const points = [
   "Simulate how GPT-4, Claude & Gemini pick products",
@@ -63,23 +64,27 @@ export default () => (
             <SignUpForm />
           </div>
         </Motion.Item>
-
-        <Motion.Item className="w-full px-8">
-          <div className="flex flex-col gap-2 border-accent-foreground border-x px-6 py-6 font-light text-foreground-dimmed">
-            <p>
-              Already have an account?{" "}
-              <Link
-                href="/sign-in"
-                className="inline-flex items-center gap-2 text-primary hover:underline"
-              >
-                Sign in instead <ArrowRightIcon className="size-4" />
-              </Link>
-            </p>
+        <Motion.Item className="w-full px-8 border-accent-foreground border-b">
+          <div className="flex flex-col gap-2 border-accent-foreground border-x p-6 font-light text-foreground-dimmed">
             <p>
               By creating an account you agree to our{" "}
               <span className="text-foreground">Terms of Service</span> and{" "}
               <span className="text-foreground">Privacy Policy</span>.
             </p>
+          </div>
+        </Motion.Item>
+
+        <Motion.Item className="w-full px-8">
+          <div className="flex items-center justify-between border-accent-foreground border-x p-6 font-light text-foreground-dimmed">
+            <p>Already have an account? </p>
+            <Button
+              variant="outline"
+              color="accent"
+              type="button"
+              render={<Link href="/sign-in" />}
+            >
+              Sign in instead <ArrowRightIcon className="size-4" />
+            </Button>
           </div>
         </Motion.Item>
       </Motion.Stagger>

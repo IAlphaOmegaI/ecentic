@@ -67,20 +67,20 @@ export const PlatformGrid = () => (
               alt={platform.name}
               width={40}
               height={40}
-              className="mb-4 shrink-0"
+              className="mb-4 shrink-0 size-14"
             />
           ) : (
-            <div className="mb-4 flex size-10 items-center justify-center">
-              <UploadIcon className="size-6 text-foreground-dimmed transition-colors group-hover:text-primary" />
+            <div className="mb-4 flex size-14 items-center justify-center">
+              <UploadIcon className="size-14 text-foreground-dimmed transition-colors group-hover:text-primary" />
             </div>
           )}
           <p className="font-medium text-foreground text-xl">{platform.name}</p>
-          <p className="mt-1 font-light text-foreground-dimmed text-sm">
+          <p className="font-light text-foreground-dimmed text-sm">
             {platform.description}
           </p>
           <span
             className={cn(
-              "mt-2 self-start px-1.5 py-0.5 text-xs",
+              "mt-2 self-start px-1.5 py-0.5 text-sm",
               !platform.badge && "opacity-0",
               platform.badge === "Coming soon"
                 ? "bg-foreground-dimmed/10 text-foreground-dimmed"

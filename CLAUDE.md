@@ -2,9 +2,24 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Docs-First Rule (Read Before Coding)
+
+Treat `docs/` as the canonical source of truth for product intent, implementation conventions, and package usage.
+
+Read in this order before substantial work:
+
+1. `docs/index.md` - docs navigation hub.
+2. `docs/context/ECENTIC.md` - product scope, flows, architecture, roadmap.
+3. `docs/context/AI Agent Shopping Strategy.md` - market, measurement, retention, enterprise strategy.
+4. `docs/context/shopify-app-listing.md` - Shopify-facing claims/copy/scopes/testing constraints.
+5. `docs/agents/AGENTS-*.md` - coding rules (`style`, `components`, `nextjs`, `packages`, `convex`, `checklist`).
+6. `docs/web/index.md` and `docs/shared/index.md` - component/package API references.
+
+If code and docs disagree, follow documented intent unless the user explicitly asks otherwise.
+
 ## What This Is
 
-**Écentic** is an e-commerce optimization platform for the AI agent economy. It simulates how AI shopping agents (GPT-4, Claude, Gemini) compare products vs. competitors, diagnoses why products win or lose, and auto-optimizes listings. See `ECENTIC.md` for full product spec and feature roadmap.
+**Écentic** is an e-commerce optimization platform for the AI agent economy. It simulates how AI shopping agents (GPT-4, Claude, Gemini) compare products vs. competitors, diagnoses why products win or lose, and auto-optimizes listings. See `docs/context/ECENTIC.md` for full product spec and feature roadmap.
 
 ---
 

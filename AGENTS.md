@@ -1,33 +1,80 @@
-# Code Style Guide for AI Agents
+# AGENTS.md - Docs-First Engineering Guide
 
-This document captures the coding conventions used in this codebase. Follow all sub-guides below.
+This repository uses `docs/` as the canonical source of truth for product context, implementation patterns, and package usage.
 
----
-
-## Sub-Guides
-
-| File | Contents |
-|------|----------|
-| [AGENTS-style.md](./AGENTS-style.md) | Core code style: `const`, naming, IIFE, switch, resultify, early returns |
-| [AGENTS-components.md](./AGENTS-components.md) | React component patterns: namespace, JSX style, sub-components |
-| [AGENTS-nextjs.md](./AGENTS-nextjs.md) | Next.js: server actions, PPR, streaming, Suspense, forms |
-| [AGENTS-packages.md](./AGENTS-packages.md) | `@zenncore` package usage: icons, utils, hooks, InferredForm, DataTable, design tokens |
-| [AGENTS-convex.md](./AGENTS-convex.md) | Convex backend conventions (C1–C15) |
-| [AGENTS-checklist.md](./AGENTS-checklist.md) | Summary checklist for all rules |
+Use this file as the entrypoint for any AI agent or developer, regardless of tool/editor.
 
 ---
 
-## Workspace Facts
+## How To Work In This Repo
 
-- When Postgres errors with "relation \"...\" does not exist", apply migrations from apps/web: `bun run db:migrate`.
+1. Start with `docs/index.md` for navigation.
+2. Read `docs/context/` before making product or UX decisions.
+3. Read `docs/agents/` before implementing code.
+4. Read package-level docs in `docs/web/` and `docs/shared/` before building components.
 
-## Learned Workspace Facts
+If code and docs disagree, prefer docs intent unless explicitly instructed otherwise.
 
-- AI streaming server actions use `AI.stream<EventType>()` in `server/utils/ai.ts` returning `{ output }`, consumed client-side via `readStreamableValue(output)` with a `switch (event.kind)` block — see `competitor.ts` `detectCompetitors` and `simulate.ts` `runScan` as canonical examples.
-- Avoid `z.default()` in Zod schemas passed to `generate()`; Azure requires every property listed in `"properties"` to also appear in `"required"`, and `.default()` fields trigger validation failures. Use `.optional()` instead for truly optional fields.
-- Dashboard and non-onboarding pages must follow PPR/streaming: `page.tsx` renders a real HTML static shell (title, description, headings); data is fetched in async server components in the same file, each wrapped in `<Suspense fallback={<Skeleton />}>`. Onboarding/auth screens are exempt from this rule.
+---
+
+## Priority Sources
+
+### Product Context (Read First For Feature Work)
+
+- `docs/context/ECENTIC.md` - core product definition, architecture, flows, roadmap.
+- `docs/context/AI Agent Shopping Strategy.md` - market/measurement strategy, retention, enterprise priorities.
+- `docs/context/shopify-app-listing.md` - Shopify-facing claims, copy, scopes, review/testing constraints.
+
+### Implementation Rules
+
+- `docs/agents/AGENTS-checklist.md` - execution checklist.
+- `docs/agents/AGENTS-style.md` - TypeScript and coding style conventions.
+- `docs/agents/AGENTS-components.md` - React component patterns.
+- `docs/agents/AGENTS-nextjs.md` - Next.js architecture and rendering patterns.
+- `docs/agents/AGENTS-packages.md` - required use of `@zenncore/*` packages.
+- `docs/agents/AGENTS-convex.md` - Convex-specific conventions.
+
+### Package Docs
+
+- `docs/web/index.md` - web components.
+- `docs/shared/index.md` - shared packages (`utils`, `icons`, `data-table`, `inferred-form`, `phone`).
+- `docs/mobile/index.md` - mobile package docs.
+
+---
+
+## Non-Negotiable Standards
+
+- Use `@zenncore/web` components for interactive UI; avoid custom raw HTML implementations for controls.
+- Prefer `@zenncore/*` packages before adding local duplicates.
+- Use semantic Tailwind tokens (`text-primary`, `bg-background`, `border-edge`, etc.), not raw color utility classes.
+- Use `const` over `let`, descriptive variable names, early returns, and `resultify`-style error handling.
+- Follow PPR/streaming on non-onboarding/non-auth pages: server-rendered shell in `page.tsx`, async server components wrapped in `<Suspense>` with matching skeletons.
+- Use only `Motion.Row`, `Motion.Up`, `Motion.Item`, and `Motion.Stagger` for animations.
+- Do not invent product facts or KPI definitions when they already exist in `docs/context/`.
+
+---
+
+## Delivery Expectations
+
+- Align implementation with documented product behavior and naming.
+- Keep docs in sync when behavior changes intentionally.
+- Prefer small, composable server/client boundaries over monolithic client pages.
+- Use documented component APIs and package contracts before introducing new patterns.
+
+---
 
 ## Learned User Preferences
 
-- Use `@zenncore/web` components for all interactive UI — `Button`, `DataTable`/`DataTableProvider`/`DataTableEmpty`, `TextField`, `Tab`/`Tabs`/`TabsIndicator`/`TabsList`/`TabsPanel` — never raw HTML buttons, tables, inputs, or custom tab implementations.
-- Only `Motion.Row`, `Motion.Up`, `Motion.Item`, and `Motion.Stagger` are permitted for animations. Do not add custom `motion/react` or `AnimatePresence` outside these wrappers; group related elements in the same `Motion.*` wrapper instead of animating each one separately.
+- Use `@zenncore/web` components for interactive UI; avoid raw HTML implementations for buttons, inputs, tables, tabs, dialogs, and form controls.
+- Prefer `@zenncore/*` package primitives (including `DataTable` and Tabs components) over custom local implementations.
+- Use semantic Tailwind tokens instead of raw color utility classes.
+- Use only `Motion.Row`, `Motion.Up`, `Motion.Item`, and `Motion.Stagger` for animations.
+- Keep onboarding and dashboard UX clear and structured, preferring dedicated pages when flows need detailed field explanations.
+- Treat `docs/context/` as the canonical source for project-specific product context before implementation decisions.
+
+## Learned Workspace Facts
+
+- If Postgres reports `relation "...\" does not exist`, run migrations from `apps/web` using `bun run db:migrate`.
+- AI streaming server actions use `AI.stream<EventType>()` and return `{ output }`, consumed client-side with `readStreamableValue(output)` and `switch (event.kind)`.
+- For Zod schemas passed to AI `generate()`, avoid `z.default()` and use `.optional()` for truly optional fields.
+- Non-onboarding/auth pages are expected to follow PPR/streaming patterns with a server-rendered `page.tsx` shell and Suspense-wrapped async server components.

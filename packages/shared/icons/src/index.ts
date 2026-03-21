@@ -45,3 +45,6 @@ export type * from "./types";
 export * from "./upload";
 export * from "./x";
 export * from "./share";
+export * from "./award";
+export * from "./trend-down";
+export * from "./trend-up";

@@ -100,7 +100,7 @@ export const SignInForm = () => {
             variant="flat"
             color="primary"
             disabled={isPending}
-            className="mt-1 flex w-full items-center justify-center gap-2 py-2.5 font-medium text-sm"
+            className="mt-1 flex w-full"
           >
             {isPending ? "Signing in..." : "Sign In"}
             {isPending ? (

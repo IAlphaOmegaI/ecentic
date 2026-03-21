@@ -7,6 +7,7 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import { useState } from "react";
 import type * as Competitor from "@/server/app/competitor";
 import { searchCompetitors } from "@/server/app/intelligence/search";
+import Image from "next/image";
 
 const categories = [
   "Wireless Earbuds",
@@ -54,7 +55,14 @@ export const SearchTab = ({ onSuccess }: SearchTab.Props) => {
   );
 
   return (
-    <div className="border border-accent-foreground bg-background-rich p-4">
+    <div className="border border-accent-foreground bg-background-rich p-4 relative">
+      <Image
+        src="/images/websearch.png"
+        alt="Competitors illustration"
+        fill
+        className="object-contain opacity-30"
+      />
+
       <label
         htmlFor="brandSearch"
         className="mb-2 block font-medium text-foreground text-xs"
