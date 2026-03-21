@@ -1,7 +1,9 @@
 import { defineRelations, sql } from "drizzle-orm";
 import {
   boolean,
+  date,
   integer,
+  jsonb,
   pgTable,
   text,
   timestamp,
@@ -78,6 +80,12 @@ export const store = pgTable("store", {
   consumerSecret: text("consumerSecret"),
   feedUrl: text("feedUrl"),
   status: text("status").notNull().default("connected"),
+  /** Write-only key for storefront beacons (Layer 1 tracker). */
+  trackerApiKey: text("trackerApiKey"),
+  /**
+   * Hostnames allowed for CORS on /api/tracking/agent-visit (primary domain + myshopify domain).
+   */
+  storefrontHosts: jsonb("storefrontHosts").$type<string[] | null>(),
   lastSyncedAt: timestamp("lastSyncedAt", { mode: "date" }),
   createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
@@ -181,6 +189,46 @@ export const simulation = pgTable("simulation", {
   createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
 });
 
+export const agentVisit = pgTable("agent_visit", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+  storeId: text("storeId")
+    .notNull()
+    .references(() => store.id, { onDelete: "cascade" }),
+  userId: text("userId")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  productId: text("productId").references(() => product.id, {
+    onDelete: "set null",
+  }),
+  externalProductId: text("externalProductId"),
+  agentType: text("agentType").notNull(),
+  agentCategory: text("agentCategory").notNull(),
+  detectionMethod: text("detectionMethod").notNull(),
+  detectionLayer: integer("detectionLayer").notNull().default(1),
+  pageUrl: text("pageUrl").notNull(),
+  pageType: text("pageType").notNull(),
+  referrer: text("referrer"),
+  userAgent: text("userAgent").notNull(),
+  createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+});
+
+export const agentTrafficDaily = pgTable("agent_traffic_daily", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+  storeId: text("storeId")
+    .notNull()
+    .references(() => store.id, { onDelete: "cascade" }),
+  userId: text("userId")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  date: date("date").notNull(),
+  agentType: text("agentType").notNull(),
+  agentCategory: text("agentCategory").notNull(),
+  pageType: text("pageType").notNull(),
+  visitCount: integer("visitCount").notNull().default(0),
+  uniqueProducts: integer("uniqueProducts").notNull().default(0),
+  productVisits: jsonb("productVisits"),
+});
+
 /** Tables object for defineRelations and better-auth adapter */
 export const tables = {
   user,
@@ -193,6 +241,8 @@ export const tables = {
   scan,
   simulation,
   ucpProfile,
+  agentVisit,
+  agentTrafficDaily,
 };
 
 /** Relations */
@@ -223,6 +273,8 @@ export const relations = defineRelations(tables, (r) => ({
       to: r.user.id,
     }),
     products: r.many.product(),
+    agentVisits: r.many.agentVisit(),
+    agentTrafficDaily: r.many.agentTrafficDaily(),
   },
   product: {
     store: r.one.store({
@@ -264,6 +316,31 @@ export const relations = defineRelations(tables, (r) => ({
   ucpProfile: {
     user: r.one.user({
       from: r.ucpProfile.userId,
+      to: r.user.id,
+    }),
+  },
+  agentVisit: {
+    store: r.one.store({
+      from: r.agentVisit.storeId,
+      to: r.store.id,
+    }),
+    user: r.one.user({
+      from: r.agentVisit.userId,
+      to: r.user.id,
+    }),
+    product: r.one.product({
+      from: r.agentVisit.productId,
+      to: r.product.id,
+      optional: true,
+    }),
+  },
+  agentTrafficDaily: {
+    store: r.one.store({
+      from: r.agentTrafficDaily.storeId,
+      to: r.store.id,
+    }),
+    user: r.one.user({
+      from: r.agentTrafficDaily.userId,
       to: r.user.id,
     }),
   },

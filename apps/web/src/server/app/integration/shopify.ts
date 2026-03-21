@@ -23,91 +23,114 @@ type Type = {
 
 const API_VERSION = "2024-10";
 
-export const syncProducts = withAuthentication(
-  async (context, { storeId }: { storeId: string }) => {
-    const store = await Store.get(Environment.SERVER, storeId);
-    if (!store.success) return store;
+/**
+ * Imports products from Shopify Admin API. Used by OAuth callback (no session
+ * wrapper) and by {@link syncProducts} (authenticated).
+ */
+export const syncShopifyCatalog = async ({
+  userId,
+  storeId,
+}: {
+  userId: string;
+  storeId: string;
+}) => {
+  const store = await Store.get(Environment.SERVER, storeId);
+  if (!store.success) return store;
 
-    if (!store.data)
-      return { success: false, error: new Error("Store not found") };
+  if (!store.data)
+    return { success: false, error: new Error("Store not found") };
 
-    const { domain, accessToken } = store.data;
+  if (store.data.platform !== "shopify")
+    return {
+      success: false,
+      error: new Error("Store is not a Shopify store"),
+    };
 
-    if (!accessToken)
-      return {
-        success: false,
-        error: new Error("Missing Shopify access token"),
-      };
+  const { domain, accessToken } = store.data;
 
-    await Store.update(Environment.SERVER, storeId, { status: "syncing" });
+  if (!accessToken)
+    return {
+      success: false,
+      error: new Error("Missing Shopify access token"),
+    };
 
-    const all: Type[] = [];
+  await Store.update(Environment.SERVER, storeId, { status: "syncing" });
 
-    const limit = 250;
-    const maximum = 10;
+  const all: Type[] = [];
 
-    let url: string | null =
-      `${domain}/admin/api/${API_VERSION}/products.json?limit=${limit}`;
+  const limit = 250;
+  const maximum = 10;
 
-    for (const _ of Array.from({ length: maximum })) {
-      if (!url) break;
+  let url: string | null =
+    `${domain}/admin/api/${API_VERSION}/products.json?limit=${limit}`;
 
-      const response = await HTTP.request(url, {
-        method: "GET",
-        headers: {
-          "X-Shopify-Access-Token": accessToken,
-          "Content-Type": "application/json",
-        },
-      });
+  for (const _ of Array.from({ length: maximum })) {
+    if (!url) break;
 
-      if (!response.success) break;
-
-      const parsed = await HTTP.parse<{
-        products: Type[];
-      }>(response);
-
-      if (!parsed.success) break;
-
-      all.push(...parsed.data.products);
-
-      url = (() => {
-        const link = response.data.headers.get("Link") ?? "";
-        const next = link.match(/<([^>]+)>;\s*rel="next"/);
-        return next?.[1] ?? null;
-      })();
-    }
-
-    const results = await Promise.all(
-      all.map((item) => {
-        const variant = item.variants[0];
-
-        return Product.create(Environment.SERVER, {
-          storeId,
-          userId: context.session.user.id,
-          externalId: item.id.toString(),
-          title: item.title,
-          description: item.body_html,
-          price: variant?.price ?? null,
-          compareAtPrice: variant?.compare_at_price ?? null,
-          currency: "USD",
-          images: JSON.stringify(item.images.map((image) => image.src)),
-          url: `${domain}/products/${item.handle}`,
-          sku: variant?.sku || null,
-          status: item.status === "active" ? "active" : "draft",
-          rawData: JSON.stringify(item),
-          syncedAt: new Date(),
-        });
-      }),
-    );
-
-    const imported = results.filter((result) => result.success).length;
-
-    await Store.update(Environment.SERVER, storeId, {
-      status: "connected",
-      lastSyncedAt: new Date(),
+    const response = await HTTP.request(url, {
+      method: "GET",
+      headers: {
+        "X-Shopify-Access-Token": accessToken,
+        "Content-Type": "application/json",
+      },
     });
 
-    return { success: true, data: imported };
+    if (!response.success) break;
+
+    const parsed = await HTTP.parse<{
+      products: Type[];
+    }>(response);
+
+    if (!parsed.success) break;
+
+    all.push(...parsed.data.products);
+
+    url = (() => {
+      const link = response.data.headers.get("Link") ?? "";
+      const next = link.match(/<([^>]+)>;\s*rel="next"/);
+      return next?.[1] ?? null;
+    })();
+  }
+
+  const results = await Promise.all(
+    all.map((item) => {
+      const variant = item.variants[0];
+
+      return Product.create(Environment.SERVER, {
+        storeId,
+        userId,
+        externalId: item.id.toString(),
+        title: item.title,
+        description: item.body_html,
+        price: variant?.price ?? null,
+        compareAtPrice: variant?.compare_at_price ?? null,
+        currency: "USD",
+        images: JSON.stringify(item.images.map((image) => image.src)),
+        url: `${domain}/products/${item.handle}`,
+        sku: variant?.sku ?? null,
+        status: item.status === "active" ? "active" : "draft",
+        rawData: JSON.stringify(item),
+        syncedAt: new Date(),
+      });
+    }),
+  );
+
+  const imported = results.filter((result) => result.success).length;
+
+  await Store.update(Environment.SERVER, storeId, {
+    status: "connected",
+    lastSyncedAt: new Date(),
+  });
+
+  return { success: true, data: imported };
+};
+
+export const syncProducts = withAuthentication(
+  async (context, { storeId }: { storeId: string }) => {
+    return syncShopifyCatalog({
+      userId: context.session.user.id,
+      storeId,
+    });
   },
   "Shopify.syncProducts",
 );

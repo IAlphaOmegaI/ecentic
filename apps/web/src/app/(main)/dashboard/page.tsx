@@ -323,7 +323,7 @@ const TopProducts = async () => {
 };
 
 const StatsSkeleton = () => {
-  const keys = ["rate", "scanned", "top", "opportunity"];
+  const keys = ["rate", "scanned", "ai", "top", "opportunity"];
 
   return (
     <div className="grid h-39 min-h-39 grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">

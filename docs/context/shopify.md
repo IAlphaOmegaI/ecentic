@@ -57,7 +57,7 @@ https://ecentic.com/privacy
 ## Scopes Requested
 
 ```
-read_products, write_products
+read_products, write_products, read_script_tags, write_script_tags
 ```
 
 **Justification for `write_products`**: écentic generates optimized product titles and descriptions based on AI simulation results. When merchants approve an optimization (or have auto-publish enabled), the app pushes the updated listing content back to Shopify via the Admin API.

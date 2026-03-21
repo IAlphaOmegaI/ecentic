@@ -2,11 +2,36 @@ import { unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Link from "next/link";
 import { Motion } from "@/components/motion";
+import * as Shopify from "@/server/app/integration/shopify";
 import * as Product from "@/server/app/product";
+import * as Store from "@/server/app/store";
 import { ProductSelector } from "./_components/product-selector";
 
-export default async () => {
-  const products = await unwrapResult(Product.getForCurrentUser());
+export default async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ connected?: string }>;
+}) => {
+  const params = await searchParams;
+
+  let products = await unwrapResult(Product.getForCurrentUser());
+
+  if (products.length === 0 && params.connected === "shopify") {
+    const storesResult = await Store.getForCurrentUser();
+    if (storesResult.success) {
+      const shopifyStore = storesResult.data.find(
+        (record) => record.platform === "shopify",
+      );
+      if (shopifyStore) {
+        const sync = await Shopify.syncShopifyCatalog({
+          userId: shopifyStore.userId,
+          storeId: shopifyStore.id,
+        });
+        if (sync.success)
+          products = await unwrapResult(Product.getForCurrentUser());
+      }
+    }
+  }
 
   if (products.length === 0)
     return (
