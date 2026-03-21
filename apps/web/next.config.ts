@@ -6,6 +6,7 @@ export default {
   typescript: {
     ignoreBuildErrors: true,
   },
+  cacheComponents: true,
   async rewrites() {
     return [
       {

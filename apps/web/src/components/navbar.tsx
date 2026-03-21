@@ -18,6 +18,7 @@ export const Navbar = () => (
         width={100}
         height={100}
         className="relative z-100 -mt-1.5 h-auto w-22 md:w-30"
+        loading="eager"
       />
     </div>
 

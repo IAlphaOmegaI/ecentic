@@ -12,6 +12,7 @@ import type { PgTableWithColumns } from "drizzle-orm/pg-core";
 import { db } from "@/server/database";
 import { withContext } from "./context";
 import { DatabaseError } from "./error";
+import { cacheTag, updateTag } from "next/cache";
 
 /** Table type that has id and optional createdAt for default ordering */
 /** Table type that has id and optional createdAt for default ordering */
@@ -68,6 +69,9 @@ export function repository<T extends TableWithId>(table: T) {
   return {
     get: withContext(
       async (_, id: string) => {
+        // "use cache";
+        // cacheTag(name, id);
+
         const t = asTable(table);
         const result = await resultify(async () =>
           db.select().from(t).where(eq(t.id, id)).limit(1),
@@ -101,8 +105,17 @@ export function repository<T extends TableWithId>(table: T) {
         size: number,
         options: PaginateOptions<T> = {},
       ) => {
+        // "use cache";
         const { where, orderBy } = options;
         const offset = (page - 1) * size;
+
+        // cacheTag(
+        //   name,
+        //   `pagination/page:${page}`,
+        //   `pagination/size:${size}`,
+        //   `pagination/where:${JSON.stringify(where)}`,
+        //   `pagination/orderBy:${JSON.stringify(orderBy)}`,
+        // );
 
         const t = asTable(table);
         const orderColumns = orderBy?.length
@@ -121,39 +134,39 @@ export function repository<T extends TableWithId>(table: T) {
           .offset(offset)
           .limit(size);
 
-        const countQuery = db
+        const cQuery = db
           .select({ count: sql<number>`count(*)::int` })
           .from(t)
           .where(where);
 
-        const [itemsResult, countResult] = await Promise.all([
+        const [result, count] = await Promise.all([
           resultify(() => query),
-          resultify(() => countQuery),
+          resultify(() => cQuery),
         ]);
 
-        if (!itemsResult.success) {
+        if (!result.success) {
           if (process.env.NODE_ENV === "development")
-            console.error(`Failed to paginate ${name}`, itemsResult.error);
+            console.error(`Failed to paginate ${name}`, result.error);
           return {
             success: false,
             error: new DatabaseError(
-              `Failed to paginate ${name}: ${itemsResult.error}`,
-              { cause: itemsResult.error },
+              `Failed to paginate ${name}: ${result.error}`,
+              { cause: result.error },
             ),
           };
         }
 
-        if (!countResult.success) {
+        if (!count.success) {
           return {
             success: false,
             error: new DatabaseError("Failed to count records", {
-              cause: countResult.error,
+              cause: count.error,
             }),
           };
         }
 
-        const total = countResult.data?.[0]?.count ?? 0;
-        const items = (itemsResult.data ?? []) as Document<T>[];
+        const total = count.data?.[0]?.count ?? 0;
+        const items = (result.data ?? []) as Document<T>[];
 
         return {
           success: true as const,
@@ -190,6 +203,9 @@ export function repository<T extends TableWithId>(table: T) {
 
         const rows = (result as { success: true; data: Document<T>[] }).data;
         const row = rows?.[0] as Document<T>;
+
+        updateTag(name);
+
         return { success: true as const, data: row };
       },
       `${capitalize(name)}.create`,
@@ -221,6 +237,11 @@ export function repository<T extends TableWithId>(table: T) {
           };
         }
 
+        updateTag(name);
+        updateTag(id);
+        updateTag(`count:${name}`);
+        updateTag(`exists:${name}`);
+
         const row = result.data?.[0] ?? null;
         return { success: true as const, data: row as Document<T> | null };
       },
@@ -249,6 +270,11 @@ export function repository<T extends TableWithId>(table: T) {
           };
         }
 
+        updateTag(name);
+        updateTag(`count:${name}`);
+        updateTag(`exists:${name}`);
+        updateTag(id);
+
         return { success: true as const, data: true };
       },
       `${capitalize(name)}.destroy`,
@@ -256,6 +282,9 @@ export function repository<T extends TableWithId>(table: T) {
 
     exists: withContext(
       async (_, id: string) => {
+        // "use cache";
+        // cacheTag(`exists:${name}`, id);
+
         const t = asTable(table);
         const result = await resultify(async () =>
           db.select({ id: t.id }).from(t).where(eq(t.id, id)).limit(1),
@@ -286,6 +315,9 @@ export function repository<T extends TableWithId>(table: T) {
 
     count: withContext(
       async (_, where?: SQL) => {
+        // "use cache";
+        // cacheTag(`count:${name}`, JSON.stringify(where));
+
         const t = asTable(table);
         const result = await resultify(async () =>
           db.select({ count: sql<number>`count(*)::int` }).from(t).where(where),
@@ -311,7 +343,14 @@ export function repository<T extends TableWithId>(table: T) {
 
     find: withContext(
       async (_, options: { where?: SQL; orderBy?: OrderByEntry<T>[] } = {}) => {
+        // "use cache";
         const { where, orderBy } = options;
+
+        // cacheTag(
+        //   name,
+        //   `find/where:${JSON.stringify(where)}`,
+        //   `find/orderBy:${JSON.stringify(orderBy)}`,
+        // );
 
         const t = asTable(table);
         const orderColumns = orderBy?.length

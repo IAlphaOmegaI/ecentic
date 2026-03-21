@@ -4,7 +4,8 @@ import { Button } from "@zenncore/web/components/button";
 import Link from "next/link";
 import { Suspense } from "react";
 import { formatRelativeTime } from "@/lib/date";
-import * as Dashboard from "@/server/app/dashboard";
+import * as Product from "@/server/app/product";
+import * as Scan from "@/server/app/scan";
 import { OverviewActions } from "./_components/overview-actions";
 import { OverviewCharts } from "./_components/overview-charts";
 import { OverviewTable } from "./_components/overview-table";
@@ -12,14 +13,13 @@ import { OverviewTable } from "./_components/overview-table";
 export default () => (
   <div className="flex flex-col">
     <div className="mx-8 border-accent-foreground border-x">
-      {/* Title */}
       <div className="-mx-8 border-accent-foreground border-b">
-        <div className="mx-8 flex items-center justify-between px-6 py-8">
+        <div className="mx-8 flex items-baseline justify-between px-6 py-8">
           <div>
-            <h1 className="font-medium text-3xl text-foreground">Overview</h1>
+            <h1 className="font-medium text-4xl text-foreground">Overview</h1>
             <Suspense
               fallback={
-                <p className="font-light text-foreground-dimmed text-sm">
+                <p className="mt-1 font-light text-2xl text-foreground-dimmed">
                   Loading...
                 </p>
               }
@@ -31,7 +31,6 @@ export default () => (
         </div>
       </div>
 
-      {/* Stat cards */}
       <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8">
           <Suspense fallback={<StatsSkeleton />}>
@@ -40,7 +39,6 @@ export default () => (
         </div>
       </div>
 
-      {/* Charts + Activity */}
       <div className="h-8" />
       <div className="-mx-8 border-accent-foreground border-t border-b">
         <div className="mx-8">
@@ -64,184 +62,257 @@ export default () => (
 );
 
 const LastUpdated = async () => {
-  const data = await unwrapResult(Dashboard.gatherIntelligence());
+  const data = await unwrapResult(Product.gatherIntelligence());
 
   return (
-    <p className="font-light text-foreground-dimmed text-sm">
-      {data.lastUpdated
-        ? `Last updated: ${formatRelativeTime(data.lastUpdated)}`
+    <p className="mt-1 font-light text-2xl text-foreground-dimmed">
+      {data.scan?.updatedAt
+        ? `Last updated: ${formatRelativeTime(data.scan.updatedAt)}`
         : "No scans run yet"}
     </p>
   );
 };
 
 const StatCards = async () => {
-  const data = await unwrapResult(Dashboard.gatherIntelligence());
-  const { stats } = data;
+  const data = await unwrapResult(Product.gatherIntelligence());
+  const { products } = data;
+
+  if (products.length === 0)
+    return (
+      <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
+        {[
+          "Overall Win Rate",
+          "Products Scanned",
+          "Top Performer",
+          "Biggest Opportunity",
+        ].map((label) => (
+          <div key={label} className="bg-background-dimmed p-4">
+            <p className="text-foreground-dimmed">{label}</p>
+            <p className="mt-2 text-foreground-dimmed text-lg">No data yet</p>
+          </div>
+        ))}
+      </div>
+    );
+
+  const overall = Math.round(
+    products.reduce((sum, product) => sum + product.winRate.total, 0) /
+      products.length,
+  );
+
+  const sorted = [...products].sort(
+    (a, b) => b.winRate.total - a.winRate.total,
+  );
+
+  const top = sorted[0];
+  const opportunity = sorted[sorted.length - 1];
+
+  const scans = await unwrapResult(Scan.getLatest());
+  const completed = scans.filter((scan) => scan.status === "completed");
+
+  const trend = (() => {
+    if (completed.length < 2) return 0;
+
+    const c = completed[0];
+    const p = completed[1];
+
+    if (!c) return 0;
+    if (!p) return 0;
+
+    const cTotal = c.wins + c.losses;
+    const pTotal = p.wins + p.losses;
+
+    const cRate = cTotal > 0 ? Math.round((c.wins / cTotal) * 100) : 0;
+    const pRate = pTotal > 0 ? Math.round((p.wins / pTotal) * 100) : 0;
+
+    return cRate - pRate;
+  })();
 
   return (
     <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
-      {/* Overall Win Rate */}
-      <div className="flex flex-col justify-between bg-background-dimmed p-5">
+      <div className="flex flex-col justify-between bg-background-dimmed p-4">
         <div>
-          <p className="font-light text-foreground-dimmed text-sm">
-            Overall Win Rate
-          </p>
+          <p className="text-foreground-dimmed">Overall Win Rate</p>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="font-semibold text-4xl text-foreground tabular-nums">
-              {stats.overallWinRate}%
+            <span className="text-4xl text-foreground tabular-nums">
+              {overall}%
             </span>
-            {stats.winRateTrend !== 0 && (
-              <span
-                className={cn(
-                  "font-medium text-xs",
-                  stats.winRateTrend >= 0 ? "text-success" : "text-error",
-                )}
-              >
-                {stats.winRateTrend >= 0 ? "+" : ""}
-                {stats.winRateTrend}% since last scan
+            {trend !== 0 && (
+              <span className={trend >= 0 ? "text-success" : "text-error"}>
+                {trend >= 0 ? "+" : ""}
+                {trend}% since last scan
               </span>
             )}
           </div>
         </div>
       </div>
 
-      {/* Products Scanned */}
-      <div className="flex flex-col justify-between bg-background-dimmed p-5">
+      <div className="flex flex-col justify-between bg-background-dimmed p-4">
         <div>
-          <p className="font-light text-foreground-dimmed text-sm">
-            Products Scanned
-          </p>
+          <p className="text-foreground-dimmed">Products Scanned</p>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="font-semibold text-4xl text-foreground tabular-nums">
-              {stats.productsScanned}
+            <span className="text-4xl text-foreground tabular-nums">
+              {data.total}
             </span>
-            <span className="font-light text-foreground-dimmed text-sm">
-              / {stats.productLimit}
-            </span>
+            <span className="text-foreground-dimmed">/ 100</span>
           </div>
         </div>
         <div className="mt-4">
-          <div className="h-px w-full bg-accent-foreground">
+          <div className="h-1 w-full bg-accent-foreground">
             <div
               className="h-full bg-primary"
-              style={{
-                width: `${(stats.productsScanned / stats.productLimit) * 100}%`,
-              }}
+              style={{ width: `${(data.total / 100) * 100}%` }}
             />
           </div>
-          <p className="mt-2 font-light text-foreground-dimmed text-xs">
-            {stats.productLimit - stats.productsScanned} slots remaining
+          <p className="mt-2 text-foreground-dimmed">
+            {100 - data.total} slots remaining
           </p>
         </div>
       </div>
 
-      {/* Top Performer */}
-      <div className="flex flex-col justify-between bg-background-dimmed p-5">
-        <div>
-          <p className="font-light text-foreground-dimmed text-sm">
-            Top Performer
-          </p>
-          {stats.topPerformer ? (
-            <>
-              <p className="mt-2 font-medium text-base text-foreground leading-snug">
-                {stats.topPerformer.title}
-              </p>
-              <div className="mt-1 flex items-baseline gap-1.5">
-                <span className="font-semibold text-3xl text-success tabular-nums">
-                  {stats.topPerformer.winRate}%
-                </span>
-                <span className="font-light text-foreground-dimmed text-xs">
-                  win rate
-                </span>
-              </div>
-            </>
-          ) : (
-            <p className="mt-2 font-light text-foreground-dimmed text-sm">
-              No data yet
-            </p>
-          )}
-        </div>
-        {stats.topPerformer && (
+      {top && (
+        <div className="flex flex-col justify-between bg-background-dimmed p-4">
+          <div>
+            <p className="text-foreground-dimmed">Top Performer</p>
+            <p className="text-foreground">{top.title}</p>
+            <div className="mt-2 flex items-baseline gap-2">
+              <span className="text-4xl text-success tabular-nums">
+                {top.winRate.total}%
+              </span>
+              <span className="text-foreground-dimmed">win rate</span>
+            </div>
+          </div>
           <Button
-            variant="ghost"
+            variant="outline"
             color="accent"
-            className="mt-4"
-            render={<Link href={`/dashboard/products/${stats.topPerformer.id}`} />}
+            className="mt-auto ml-auto"
+            render={<Link href={`/dashboard/products/${top._id}`} />}
           >
-            View details <ArrowRightIcon className="size-3" />
+            View details <ArrowRightIcon className="size-4" />
           </Button>
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* Biggest Opportunity */}
-      <div className="flex flex-col justify-between bg-background-dimmed p-5">
-        <div>
-          <p className="font-light text-foreground-dimmed text-sm">
-            Biggest Opportunity
-          </p>
-          {stats.biggestOpportunity ? (
-            <>
-              <p className="mt-2 font-medium text-base text-foreground leading-snug">
-                {stats.biggestOpportunity.title}
-              </p>
-              <div className="mt-1 flex items-baseline gap-1.5">
-                <span className="font-semibold text-3xl text-error tabular-nums">
-                  {stats.biggestOpportunity.winRate}%
-                </span>
-                <span className="font-light text-foreground-dimmed text-xs">
-                  win rate
-                </span>
-              </div>
-            </>
-          ) : (
-            <p className="mt-2 font-light text-foreground-dimmed text-sm">
-              No data yet
+      {opportunity && (
+        <div className="flex flex-col justify-between bg-background-dimmed p-4">
+          <div>
+            <p className="font-light text-foreground-dimmed">
+              Biggest Opportunity
             </p>
-          )}
-        </div>
-        {stats.biggestOpportunity && (
+            <p className="text-foreground leading-snug">{opportunity.title}</p>
+            <div className="mt-2 flex items-baseline gap-2">
+              <span className="text-4xl text-error tabular-nums">
+                {opportunity.winRate.total}%
+              </span>
+              <span className="text-foreground-dimmed">win rate</span>
+            </div>
+          </div>
           <Button
-            variant="ghost"
+            variant="outline"
             color="accent"
-            className="mt-4"
-            render={<Link href={`/dashboard/products/${stats.biggestOpportunity.id}`} />}
+            className="mt-auto ml-auto"
+            render={<Link href={`/dashboard/products/${opportunity._id}`} />}
           >
-            Optimize now <ArrowRightIcon className="size-3" />
+            Optimize now <ArrowRightIcon className="size-4" />
           </Button>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
 
 const Performance = async () => {
-  const data = await unwrapResult(Dashboard.gatherIntelligence());
+  const [data, scans] = await Promise.all([
+    unwrapResult(Product.gatherIntelligence()),
+    unwrapResult(Scan.getLatest()),
+  ]);
 
-  return (
-    <OverviewCharts
-      models={data.models}
-      trend={data.trend}
-      activity={data.activity}
-    />
-  );
+  const { products } = data;
+
+  const models =
+    products.length > 0
+      ? [
+          {
+            label: "GPT-4",
+            rate: Math.round(
+              products.reduce((sum, p) => sum + p.winRate.gpt4, 0) /
+                products.length,
+            ),
+          },
+          {
+            label: "Claude",
+            rate: Math.round(
+              products.reduce((sum, p) => sum + p.winRate.claude, 0) /
+                products.length,
+            ),
+          },
+          {
+            label: "Gemini",
+            rate: Math.round(
+              products.reduce((sum, p) => sum + p.winRate.gemini, 0) /
+                products.length,
+            ),
+          },
+        ]
+      : [];
+
+  const completed = scans.filter((scan) => scan.status === "completed");
+
+  const trend = completed
+    .slice(0, 30)
+    .reverse()
+    .map((scan) => {
+      const total = scan.wins + scan.losses;
+      return {
+        date: scan.createdAt.toISOString(),
+        winRate: total > 0 ? Math.round((scan.wins / total) * 100) : 0,
+      };
+    });
+
+  const activity = scans.slice(0, 5).map((scan) => ({
+    id: scan.id,
+    type:
+      scan.status === "completed"
+        ? ("simulation_complete" as const)
+        : ("simulation_running" as const),
+    message:
+      scan.status === "completed"
+        ? `Simulation completed — ${scan.wins} wins, ${scan.losses} losses`
+        : `Simulation in progress — ${scan.completedSimulations}/${scan.totalSimulations}`,
+    detail: scan.topFinding,
+    timestamp: scan.createdAt.toISOString(),
+  }));
+
+  return <OverviewCharts models={models} trend={trend} activity={activity} />;
 };
 
 const TopProducts = async () => {
-  const data = await unwrapResult(Dashboard.gatherIntelligence());
+  const data = await unwrapResult(Product.gatherIntelligence());
 
-  return <OverviewTable products={data.products} />;
+  const sorted = [...data.products]
+    .sort((a, b) => b.winRate.total - a.winRate.total)
+    .slice(0, 10);
+
+  const rows = sorted.map((product) => ({
+    id: product._id,
+    title: product.title,
+    price: product.price,
+    currency: product.currency,
+    winRate: product.winRate,
+    quality: product.quality,
+  }));
+
+  return <OverviewTable products={rows} />;
 };
 
 const StatsSkeleton = () => {
   const keys = ["rate", "scanned", "top", "opportunity"];
 
   return (
-    <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4 h-39 min-h-39">
       {keys.map((key) => (
-        <div key={key} className="bg-background-dimmed p-5">
-          <div className="h-3 w-24 animate-pulse bg-foreground/10" />
-          <div className="mt-4 h-9 w-20 animate-pulse bg-foreground/10" />
+        <div key={key} className="bg-background-dimmed p-4">
+          <div className="h-4 w-28 animate-pulse bg-foreground/10" />
+          <div className="mt-4 h-10 w-20 animate-pulse bg-foreground/10" />
           <div className="mt-3 h-3 w-32 animate-pulse bg-foreground/10" />
         </div>
       ))}

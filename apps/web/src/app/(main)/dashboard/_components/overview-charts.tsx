@@ -5,40 +5,20 @@ import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import { motion } from "motion/react";
 import Link from "next/link";
-import type { SVGProps } from "react";
 import { useState } from "react";
 import { Spring, Stagger } from "@/lib/animations";
 import { formatRelativeTime } from "@/lib/date";
-import type { ActivityEntry, ModelRate, TrendPoint } from "@/server/app/dashboard";
+import Image from "next/image";
+import { BoxMinusIcon } from "@zenncore/icons";
 
-const OpenAILogo = (props: SVGProps<SVGSVGElement>) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-    <path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.91 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.776.776 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.767.767 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855-5.843-3.372 2.015-1.163a.076.076 0 0 1 .072 0l4.83 2.786a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.398-.678zm2.01-3.023-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08-4.778 2.758a.776.776 0 0 0-.392.681zm1.097-2.365 2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z" />
-  </svg>
-);
-
-const AnthropicLogo = (props: SVGProps<SVGSVGElement>) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-    <path d="M17.304 3.541 13.766 12.6l3.538 9.059H24L17.304 3.541zM6.696 3.541 0 21.659h6.696l3.538-9.059-3.538-9.059z" />
-  </svg>
-);
-
-const GeminiLogo = (props: SVGProps<SVGSVGElement>) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-    <path d="M12 24A14.304 14.304 0 0 0 0 12 14.304 14.304 0 0 0 12 0a14.304 14.304 0 0 0 12 12 14.304 14.304 0 0 0-12 12" />
-  </svg>
-);
-
-const modelLogos: Record<string, (props: SVGProps<SVGSVGElement>) => React.JSX.Element> = {
-  "GPT-4": OpenAILogo,
-  Claude: AnthropicLogo,
-  Gemini: GeminiLogo,
-};
-
-const modelColors: Record<string, string> = {
-  "GPT-4": "text-blue-500",
-  Claude: "text-orange-500",
-  Gemini: "text-green-500",
+type ModelRate = { label: string; rate: number };
+type TrendPoint = { date: string; winRate: number };
+type ActivityEntry = {
+  id: string;
+  type: "simulation_complete" | "simulation_running";
+  message: string;
+  detail: string | null;
+  timestamp: string;
 };
 
 const modelBarColors: Record<string, string> = {
@@ -202,110 +182,93 @@ export const OverviewCharts = ({
   models,
   trend,
   activity,
-}: {
-  models: ModelRate[];
-  trend: TrendPoint[];
-  activity: ActivityEntry[];
-}) => {
-  const trendData = trend.map((point) => point.winRate);
-  const trendLabels = trend.map((point) => formatRelativeTime(point.date));
+}: OverviewCharts.Props) => {
+  const data = trend.map((point) => point.winRate);
+  const labels = trend.map((point) => formatRelativeTime(new Date(point.date)));
 
-  const trendChange = (() => {
-    if (trendData.length < 2) return 0;
-    return trendData[trendData.length - 1] - trendData[0];
+  const change = (() => {
+    if (data.length < 2) return 0;
+    return (data[data.length - 1] ?? 0) - (data[0] ?? 0);
   })();
 
   return (
-    <motion.div
-      className="grid grid-cols-1 gap-px bg-accent-foreground xl:grid-cols-3"
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ ...Spring.Gentle, delay: 0.2 }}
-    >
-      {/* Chart panel */}
-      <div className="bg-background-dimmed p-4 xl:col-span-2">
-        <div className="mb-8 flex items-start justify-between">
+    <div className="grid grid-cols-1 gap-px bg-accent-foreground xl:grid-cols-3">
+      <div className="bg-background-dimmed xl:col-span-2">
+        <div className="flex items-start justify-between p-4">
           <div>
-            <p className="font-light text-foreground-dimmed text-xs uppercase tracking-widest">
+            <p className="font-light text-foreground-dimmed uppercase tracking-widest">
               Performance
             </p>
-            <p className="mt-1 font-medium text-foreground text-lg">
+            <p className="mt-1 font-medium text-foreground text-2xl">
               Win Rate by Model
             </p>
           </div>
         </div>
 
-        <motion.div
-          className="mb-10 grid grid-cols-3 divide-x divide-accent-foreground"
-          variants={Stagger.Container(0.08)}
-          initial="hidden"
-          animate="visible"
-          transition={{ delayChildren: 0.25 }}
-        >
-          {models.map(({ label, rate }) => {
-            const Logo = modelLogos[label];
-            return (
-              <motion.div
-                key={label}
-                className="flex flex-col items-center gap-1 px-6 first:pl-0 last:pr-0"
-                variants={Stagger.Item}
-              >
-                <div className="flex items-center gap-1.5">
-                  {Logo && (
-                    <Logo
-                      className={cn("size-3.5", modelColors[label])}
-                    />
-                  )}
-                  <span className="font-light text-foreground-dimmed text-xs uppercase tracking-widest">
-                    {label}
-                  </span>
-                </div>
-                <motion.span
-                  className="font-semibold text-4xl text-foreground tabular-nums"
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ ...Spring.Gentle, delay: 0.3 }}
+        {models.length > 0 ? (
+          <div className="grid grid-cols-3 divide-x divide-accent-foreground border-y border-accent-foreground px-4">
+            {models.map(({ label, rate }) => {
+              return (
+                <div
+                  key={label}
+                  className="flex flex-col items-center gap-1 p-6 first:pl-0 last:pr-0"
                 >
-                  {rate}
-                  <span className="font-light text-foreground-dimmed text-xl">
-                    %
-                  </span>
-                </motion.span>
-                <div className="mt-2 h-0.5 w-full bg-accent-foreground">
-                  <motion.div
-                    className={cn("h-full", modelBarColors[label])}
-                    initial={{ width: 0 }}
-                    animate={{ width: `${rate}%` }}
-                    transition={{ ...Spring.Gentle, delay: 0.4 }}
-                  />
+                  <div className="flex flex-row items-center justify-between w-full">
+                    <div className="flex items-baseline gap-2">
+                      <Image
+                        src={getLogo(label)}
+                        alt={label}
+                        width={64}
+                        height={64}
+                        className="size-6"
+                      />
+                      <span className="text-foreground-dimmed uppercase tracking-widest">
+                        {label}
+                      </span>
+                    </div>
+                    <span className="font-medium text-4xl text-foreground tabular-nums">
+                      {rate}{" "}
+                      <span className="font-light text-foreground-dimmed text-xl">
+                        %
+                      </span>
+                    </span>
+                  </div>
+                  <div className="mt-2 h-1 w-full bg-accent-foreground">
+                    <motion.div
+                      className={cn("h-full", modelBarColors[label])}
+                      initial={{ width: 0 }}
+                      animate={{ width: `${rate}%` }}
+                      transition={{ ...Spring.Gentle, delay: 0.4 }}
+                    />
+                  </div>
                 </div>
-              </motion.div>
-            );
-          })}
-        </motion.div>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="text-foreground-dimmed h-26 flex flex-col items-center justify-center border-y border-accent-foreground px-4 gap-2">
+            <BoxMinusIcon className="size-12" />
+            Run a simulation to see per-model performance.
+          </p>
+        )}
 
         <div>
-          <div className="mb-4 flex items-center justify-between">
-            <p className="font-light text-foreground-dimmed text-xs uppercase tracking-widest">
+          <div className="mb-4 flex items-center justify-between p-4">
+            <p className="font-light text-foreground-dimmed uppercase tracking-widest">
               Win Rate Trend
             </p>
-            {trendChange !== 0 && (
-              <span
-                className={cn(
-                  "font-medium text-xs",
-                  trendChange > 0 ? "text-success" : "text-error",
-                )}
-              >
-                {trendChange > 0 ? "+" : ""}
-                {trendChange}%
+            {change !== 0 && (
+              <span className={cn(change > 0 ? "text-success" : "text-error")}>
+                {change > 0 ? "+" : ""}
+                {change}%
               </span>
             )}
           </div>
-          <WinRateLineChart data={trendData} labels={trendLabels} />
-          {trendLabels.length >= 2 && (
+          <WinRateLineChart data={data} labels={labels} />
+          {labels.length >= 2 && (
             <div className="mt-2 flex justify-between font-light text-foreground-dimmed text-xs">
-              <span>{trendLabels[0]}</span>
-              <span>{trendLabels[trendLabels.length - 1]}</span>
+              <span>{labels[0]}</span>
+              <span>{labels[labels.length - 1]}</span>
             </div>
           )}
         </div>
@@ -354,7 +317,7 @@ export const OverviewCharts = ({
                       </p>
                     )}
                     <p className="font-light text-foreground-dimmed text-xs">
-                      {formatRelativeTime(entry.timestamp)}
+                      {formatRelativeTime(new Date(entry.timestamp))}
                     </p>
                   </div>
                 </motion.div>
@@ -391,6 +354,27 @@ export const OverviewCharts = ({
           </div>
         </motion.div>
       </div>
-    </motion.div>
+    </div>
   );
+};
+
+export namespace OverviewCharts {
+  export type Props = {
+    models: ModelRate[];
+    trend: TrendPoint[];
+    activity: ActivityEntry[];
+  };
+}
+
+const getLogo = (label: string) => {
+  switch (label) {
+    case "GPT-4":
+      return "/images/chatgpt.svg";
+    case "Claude":
+      return "/images/claude.svg";
+    case "Gemini":
+      return "/images/gemini.svg";
+    default:
+      throw new Error(`Unknown model: ${label}`);
+  }
 };

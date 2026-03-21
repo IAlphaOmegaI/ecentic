@@ -14,7 +14,15 @@ import {
 import { motion } from "motion/react";
 import Link from "next/link";
 import { Spring, Stagger, Table as TableAnimations } from "@/lib/animations";
-import type { ProductRow } from "@/server/app/dashboard";
+
+type ProductRow = {
+  id: string;
+  title: string;
+  price: string | null;
+  currency: string | null;
+  winRate: { total: number; gpt4: number; claude: number; gemini: number };
+  quality: number;
+};
 
 export const OverviewTable = ({ products }: { products: ProductRow[] }) => {
   if (products.length === 0) {
@@ -58,7 +66,6 @@ export const OverviewTable = ({ products }: { products: ProductRow[] }) => {
                 "GPT-4",
                 "Claude",
                 "Gemini",
-                "Top Competitor",
                 "Quality",
                 "",
               ].map((h) => (
@@ -93,7 +100,9 @@ export const OverviewTable = ({ products }: { products: ProductRow[] }) => {
                       </p>
                       {product.price && (
                         <p className="font-light text-foreground-dimmed text-xs">
-                          {product.currency === "USD" ? "$" : product.currency}
+                          {product.currency === "USD"
+                            ? "$"
+                            : (product.currency ?? "")}
                           {product.price}
                         </p>
                       )}
@@ -106,50 +115,30 @@ export const OverviewTable = ({ products }: { products: ProductRow[] }) => {
                       <motion.div
                         className={cn(
                           "h-full",
-                          product.winRate >= 60
+                          product.winRate.total >= 60
                             ? "bg-success"
-                            : product.winRate >= 30
+                            : product.winRate.total >= 30
                               ? "bg-warning"
                               : "bg-error",
                         )}
                         initial={{ width: 0 }}
-                        animate={{ width: `${product.winRate}%` }}
+                        animate={{ width: `${product.winRate.total}%` }}
                         transition={{ ...Spring.Gentle, delay: 0.4 }}
                       />
                     </div>
                     <span className="font-medium text-foreground text-xs">
-                      {product.winRate}%
+                      {product.winRate.total}%
                     </span>
                   </div>
                 </TableCell>
-                <TableCell className="text-xs">{product.gpt4}%</TableCell>
-                <TableCell className="text-xs">{product.claude}%</TableCell>
-                <TableCell className="text-xs">{product.gemini}%</TableCell>
-                <TableCell>
-                  {product.topCompetitor ? (
-                    <div>
-                      <p className="font-light text-foreground-dimmed text-xs">
-                        {product.topCompetitor.name}
-                      </p>
-                      <p
-                        className={cn(
-                          "font-medium text-xs",
-                          product.winRate > product.topCompetitor.winRate
-                            ? "text-success"
-                            : "text-error",
-                        )}
-                      >
-                        {product.winRate > product.topCompetitor.winRate
-                          ? "+"
-                          : ""}
-                        {product.winRate - product.topCompetitor.winRate}%
-                      </p>
-                    </div>
-                  ) : (
-                    <span className="font-light text-foreground-dimmed text-xs">
-                      —
-                    </span>
-                  )}
+                <TableCell className="text-xs">
+                  {product.winRate.gpt4}%
+                </TableCell>
+                <TableCell className="text-xs">
+                  {product.winRate.claude}%
+                </TableCell>
+                <TableCell className="text-xs">
+                  {product.winRate.gemini}%
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
@@ -170,7 +159,9 @@ export const OverviewTable = ({ products }: { products: ProductRow[] }) => {
                   <Button
                     variant="ghost"
                     color="primary"
-                    render={<Link href={`/dashboard/products/${product.id}`} />}
+                    render={
+                      <Link href={`/dashboard/products/${product.id}`} />
+                    }
                   >
                     View →
                   </Button>

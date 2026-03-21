@@ -91,6 +91,7 @@ export const Sidebar = () => {
             width={96}
             height={28}
             className="w-full"
+            loading="eager"
           />
         </div>
 

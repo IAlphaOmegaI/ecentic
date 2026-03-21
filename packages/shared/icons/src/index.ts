@@ -48,3 +48,4 @@ export * from "./share";
 export * from "./award";
 export * from "./trend-down";
 export * from "./trend-up";
+export * from "./box-minus";
