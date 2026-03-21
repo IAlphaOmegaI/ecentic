@@ -1,6 +1,6 @@
 import { resultify } from "@zenncore/utils";
 import { and, eq, sql } from "drizzle-orm";
-import { db, schema } from "@/server/database";
+import { schema } from "@/server/database";
 import { withContext } from "./context";
 import { DatabaseError } from "./error";
 
@@ -27,13 +27,11 @@ export const normalizeHostname = (value: string): string => {
     return trimmed.split("/")[0]?.toLowerCase() ?? trimmed.toLowerCase();
   }
 
-  return (() => {
-    try {
-      return new URL(trimmed).hostname.toLowerCase();
-    } catch {
-      return trimmed.toLowerCase();
-    }
-  })();
+  const parsed = resultify(() => new URL(trimmed)?.hostname.toLowerCase());
+
+  if (!parsed.success) return trimmed.toLowerCase();
+
+  return parsed.data;
 };
 
 export const isOriginAllowedForStore = ({
@@ -44,24 +42,18 @@ export const isOriginAllowedForStore = ({
   origin: string | null;
   storeDomain: string;
   storefrontHosts: string[] | null;
-}): boolean => {
+}) => {
   if (!origin) return true;
 
-  const originHost = (() => {
-    try {
-      return new URL(origin).hostname.toLowerCase();
-    } catch {
-      return null;
-    }
-  })();
+  const parsed = resultify(() => new URL(origin).hostname.toLowerCase());
 
-  if (!originHost) return false;
+  if (!parsed.success) return false;
 
   const allowed = storefrontHosts?.length
     ? storefrontHosts.map((host) => normalizeHostname(host))
     : [normalizeHostname(storeDomain)];
 
-  return allowed.includes(originHost);
+  return allowed.includes(parsed.data);
 };
 
 const NULL_RESOLUTION = {
@@ -70,10 +62,10 @@ const NULL_RESOLUTION = {
 } as const;
 
 export const resolveProductFromPageUrl = withContext(
-  async (_, { storeId, pageUrl }: { storeId: string; pageUrl: string }) => {
-    const parsed = await resultify(() => new URL(pageUrl));
+  async (ctx, { storeId, pageUrl }: { storeId: string; pageUrl: string }) => {
+    const parsed = resultify(() => new URL(pageUrl));
     if (!parsed.success) {
-      return { success: true as const, data: NULL_RESOLUTION };
+      return { success: true, data: NULL_RESOLUTION };
     }
 
     const match = parsed.data.pathname.match(
@@ -81,11 +73,13 @@ export const resolveProductFromPageUrl = withContext(
     );
     if (!match) return { success: true as const, data: NULL_RESOLUTION };
 
+    if (!match[1]) return { success: true, data: NULL_RESOLUTION };
+
     const handle = decodeURIComponent(match[1]);
     const needle = `/products/${handle}`;
 
     const result = await resultify(async () =>
-      db
+      ctx.durable.db
         .select({
           id: schema.product.id,
           externalId: schema.product.externalId,
@@ -102,7 +96,7 @@ export const resolveProductFromPageUrl = withContext(
 
     if (!result.success) {
       return {
-        success: false as const,
+        success: false,
         error: new DatabaseError(
           `Failed to resolve product from page URL: ${result.error}`,
           { cause: result.error },
@@ -111,10 +105,10 @@ export const resolveProductFromPageUrl = withContext(
     }
 
     const row = result.data?.[0];
-    if (!row) return { success: true as const, data: NULL_RESOLUTION };
+    if (!row) return { success: true, data: NULL_RESOLUTION };
 
     return {
-      success: true as const,
+      success: true,
       data: {
         productId: row.id,
         externalProductId: row.externalId ?? null,

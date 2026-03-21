@@ -62,40 +62,39 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
   const finding = scan.topFinding;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col">
       {finding ? (
         <>
-          {/* Finding headline */}
-          <div className="border-primary/20 border-l-2 pl-4">
-            <p className="font-medium text-foreground text-lg leading-snug">
-              {finding.name}
-            </p>
+          <div className="p-6">
+            <div className="border-primary border-l-2 pl-4">
+              <p className="font-medium text-foreground text-lg leading-snug">
+                {finding.name}
+              </p>
+            </div>
           </div>
 
-          {/* Impact + loss % side by side */}
-          <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-[1fr_auto]">
-            <div className="bg-primary/5 p-4">
-              <p className="mb-1 font-light text-foreground-dimmed uppercase tracking-widest">
+          <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-[1fr_auto] border-accent-foreground border-y">
+            <div className="bg-primary p-6">
+              <p className="mb-2 font-light text-background uppercase tracking-widest">
                 Impact
               </p>
-              <p className="font-light text-foreground text-sm leading-relaxed">
+              <p className="text-white leading-relaxed">
                 {finding.impactDescription}
               </p>
             </div>
-            <div className="flex flex-col items-center justify-center bg-primary/5 px-6 py-4">
+            <div className="flex flex-col items-center justify-center bg-background-dimmed p-6 border-accent-foreground border-l">
               <span className="font-medium text-4xl text-error tabular-nums">
                 {finding.lossPercentage}%
               </span>
-              <p className="mt-1 font-light text-foreground-dimmed text-sm">
+              <p className="mt-2 font-light text-foreground-dimmed text-sm">
                 of sims lost
               </p>
             </div>
           </div>
 
-          {/* Missing attributes */}
           {finding.missingAttributes.length > 0 && (
-            <div>
-              <p className="mb-3 font-light text-foreground-dimmed uppercase tracking-widest">
+            <div className="p-4 flex flex-col gap-4">
+              <p className="font-light text-foreground-dimmed uppercase tracking-widest">
                 Missing Attributes
               </p>
               <div className="flex flex-wrap gap-2">
@@ -112,13 +111,12 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
           )}
         </>
       ) : (
-        <p className="font-light text-foreground-dimmed text-sm">
+        <p className="font-light text-foreground-dimmed">
           No finding recorded for this scan.
         </p>
       )}
 
-      {/* Simulate + optimize actions */}
-      <div className="flex items-center justify-between border-accent-foreground border-t pt-4">
+      <div className="flex items-center justify-between border-accent-foreground border-t p-6">
         <WinRatePill wins={scan.wins} losses={scan.losses} />
         <Button
           variant="outline"
@@ -155,6 +153,8 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
 
   const current = parsed[index];
 
+  console.log(current);
+
   if (!current) return null;
 
   const formatted = new Date(current.date).toLocaleDateString("en-US", {
@@ -165,8 +165,7 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
 
   return (
     <div>
-      {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between p-6 border-accent-foreground border-b">
         <div>
           <p className="font-light text-foreground-dimmed uppercase tracking-widest">
             Insights
@@ -177,20 +176,15 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
         </div>
 
         <div className="flex flex-col items-end gap-1">
-          <p className="font-light text-primary text-sm">{formatted}</p>
-          <p className="font-light text-foreground-dimmed text-sm">
+          <p className="font-light text-primary">{formatted}</p>
+          <p className="font-light text-foreground-dimmed">
             {current.completedSimulations} simulations
           </p>
         </div>
       </div>
 
-      {/* Divider */}
-      <div className="my-5 h-px bg-accent-foreground" />
-
-      {/* Card content */}
       <InsightCard scan={current} />
 
-      {/* Carousel navigation — only shown when >1 scan */}
       {parsed.length > 1 && (
         <div className="mt-6 flex items-center justify-between border-accent-foreground border-t pt-4">
           <button
@@ -205,14 +199,15 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
 
           {/* Dot indicators */}
           <div className="flex items-center gap-1.5">
-            {parsed.map((_, dotIndex) => (
+            {parsed.map((_, i) => (
               <button
-                key={dotIndex}
+                // biome-ignore lint/suspicious/noArrayIndexKey: we want to use the index as the key
+                key={i}
                 type="button"
-                onClick={() => setIndex(dotIndex)}
+                onClick={() => setIndex(i)}
                 className={cn(
                   "size-1.5 transition-all",
-                  dotIndex === index
+                  i === index
                     ? "bg-primary"
                     : "bg-accent-foreground hover:bg-foreground-dimmed",
                 )}
@@ -224,7 +219,7 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
             type="button"
             disabled={index === parsed.length - 1}
             onClick={() =>
-              setIndex((prev) => Math.min(parsed.length - 1, prev + 1))
+              setIndex((previous) => Math.min(parsed.length - 1, previous + 1))
             }
             className="flex items-center gap-1.5 font-light text-foreground-dimmed text-sm transition-colors hover:text-foreground disabled:opacity-30"
           >

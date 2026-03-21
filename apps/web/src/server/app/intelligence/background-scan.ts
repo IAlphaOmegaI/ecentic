@@ -32,7 +32,7 @@ const perspectives = [
     system:
       "You are an AI shopping agent optimizing for value. Compare two listings by price-to-feature ratio, hidden costs, and specification density. Score each product 0-100 and pick a winner.",
   },
-] as const;
+];
 
 const runScanForUser = async ({ userId }: { userId: string }) => {
   const [products, competitors] = await Promise.all([
@@ -51,9 +51,9 @@ const runScanForUser = async ({ userId }: { userId: string }) => {
 
   if (products.data.length === 0 || selected.length === 0)
     return {
-      success: true as const,
+      success: true,
       data: {
-        skipped: true as const,
+        skipped: true,
         reason: "missing products or competitors",
       },
     };
@@ -96,7 +96,7 @@ const runScanForUser = async ({ userId }: { userId: string }) => {
                 productId: product.id,
                 competitorId: competitor.id,
                 model: perspective.id,
-                winner: "competitor" as const,
+                winner: "competitor",
                 reasoning: "Evaluation failed — defaulting to competitor",
                 productScore: 0,
                 competitorScore: 50,
@@ -151,7 +151,7 @@ const runScanForUser = async ({ userId }: { userId: string }) => {
   });
 
   return {
-    success: true as const,
+    success: true,
     data: { scanId: scan.data.id, wins, losses },
   };
 };
@@ -177,7 +177,7 @@ export const runScanDaily = async ({ limit = 20 }: { limit?: number } = {}) => {
   );
 
   return {
-    success: true as const,
+    success: true,
     data: {
       users: selected.length,
       completed: results.filter((item) => item.result.success).length,
@@ -206,7 +206,7 @@ export const runPendingScans = async ({
       });
 
       if (!running.success || running.data.length > 0)
-        return [...previous, { scanId: scan.id, success: false as const }];
+        return [...previous, { scanId: scan.id, success: false }];
 
       await Scan.update(Environment.SERVER, scan.id, { status: "running" });
       const result = await runScanForUser({ userId: scan.userId });
@@ -220,7 +220,7 @@ export const runPendingScans = async ({
   );
 
   return {
-    success: true as const,
+    success: true,
     data: {
       selected: selected.length,
       completed: results.filter((result) => result.success).length,

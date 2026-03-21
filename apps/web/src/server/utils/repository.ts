@@ -15,11 +15,17 @@ import { withContext } from "./context";
 import { DatabaseError } from "./error";
 
 /** Table type that has id and optional createdAt for default ordering */
-// biome-ignore lint/suspicious/noExplicitAny: PgTableWithColumns requires TableConfig; generic table type
-type TableWithId = PgTableWithColumns<any> & {
-  id: AnyColumn;
-  createdAt?: AnyColumn;
-};
+type TableWithId =
+  PgTableWithColumns<// @ts-expect-error - PgTableWithColumns requires TableConfig; generic table type
+  {
+    columns: { id: AnyColumn };
+    name: string;
+    schema: undefined;
+    dialect: "pg";
+  }> & {
+    id: AnyColumn;
+    createdAt?: AnyColumn;
+  };
 
 /** Inferred select (row) type for a table */
 export type Document<T extends TableWithId> = T["$inferSelect"];
@@ -31,7 +37,7 @@ export type Insertable<T extends TableWithId> = Omit<
 > & { id?: string };
 
 export type OrderByEntry<T extends TableWithId> = {
-  column: T[keyof T] extends AnyColumn ? T[keyof T] : never;
+  column: AnyColumn;
   direction: "asc" | "desc";
 };
 
@@ -40,7 +46,7 @@ export type PaginateOptions<T extends TableWithId> = {
   orderBy?: OrderByEntry<T>[];
 };
 
-export type RepositoryOptions = {
+export type ExecuteOptions = {
   tx?: TransactionScope;
 };
 
@@ -58,12 +64,12 @@ const label = (table: TableWithId): string => {
 // biome-ignore lint/suspicious/noExplicitAny: Drizzle table generic is complex; cast needed for .from(t)
 const asTable = <T>(t: T): any => t;
 
-function capitalize(s: string): string {
+const capitalize = (s: string): string => {
   return s.charAt(0).toUpperCase() + s.slice(1);
-}
+};
 
 // biome-ignore lint/suspicious/noExplicitAny: tx and db share query API but have different nominal types
-const executor = (options?: RepositoryOptions): any => options?.tx ?? db;
+const executor = (options?: ExecuteOptions): any => options?.tx ?? db;
 
 /**
  * Generic repository over a Drizzle table (CRUD + paginate/find).
@@ -74,11 +80,14 @@ export function repository<T extends TableWithId>(table: T) {
 
   return {
     get: withContext(
-      async (_, id: string, options?: RepositoryOptions) => {
+      async (_, id: string, options?: ExecuteOptions) => {
         const run = executor(options);
         const t = asTable(table);
-        const result = await resultify(async () =>
-          run.select().from(t).where(eq(t.id, id)).limit(1),
+        const result = await resultify(
+          async () =>
+            run.select().from(t).where(eq(t.id, id)).limit(1) as Promise<
+              Document<T>[]
+            >,
         );
 
         if (!result.success) {
@@ -97,7 +106,7 @@ export function repository<T extends TableWithId>(table: T) {
         }
 
         const row = result.data?.[0] ?? null;
-        return { success: true as const, data: row as Document<T> | null };
+        return { success: true, data: row };
       },
       `${capitalize(name)}.get`,
     ),
@@ -108,7 +117,7 @@ export function repository<T extends TableWithId>(table: T) {
         page: number,
         size: number,
         paginateOptions: PaginateOptions<T> = {},
-        options?: RepositoryOptions,
+        options?: ExecuteOptions,
       ) => {
         const run = executor(options);
         const { where, orderBy } = paginateOptions;
@@ -129,7 +138,7 @@ export function repository<T extends TableWithId>(table: T) {
           .where(where)
           .orderBy(...orderColumns)
           .offset(offset)
-          .limit(size);
+          .limit(size) as Promise<Document<T>[]>;
 
         const cQuery = run
           .select({ count: sql<number>`count(*)::int` })
@@ -138,7 +147,7 @@ export function repository<T extends TableWithId>(table: T) {
 
         const [result, count] = await Promise.all([
           resultify(() => query),
-          resultify(() => cQuery),
+          resultify(() => cQuery as Promise<{ count: number }[]>),
         ]);
 
         if (!result.success) {
@@ -177,7 +186,7 @@ export function repository<T extends TableWithId>(table: T) {
     ),
 
     create: withContext(
-      async (_, data: Insertable<T>, options?: RepositoryOptions) => {
+      async (_, data: Insertable<T>, options?: ExecuteOptions) => {
         const run = executor(options);
         const t = asTable(table);
         const result = await resultify(async () =>
@@ -214,16 +223,17 @@ export function repository<T extends TableWithId>(table: T) {
         _,
         id: string,
         data: Partial<Insertable<T>>,
-        options?: RepositoryOptions,
+        options?: ExecuteOptions,
       ) => {
         const run = executor(options);
         const t = asTable(table);
-        const result = await resultify(async () =>
-          run
-            .update(t)
-            .set(data as Partial<T["$inferInsert"]>)
-            .where(eq(t.id, id))
-            .returning(),
+        const result = await resultify(
+          async () =>
+            run
+              .update(t)
+              .set(data as Partial<T["$inferInsert"]>)
+              .where(eq(t.id, id))
+              .returning() as Promise<Document<T>[]>,
         );
 
         if (!result.success) {
@@ -253,7 +263,7 @@ export function repository<T extends TableWithId>(table: T) {
     ),
 
     destroy: withContext(
-      async (_, id: string, options?: RepositoryOptions) => {
+      async (_, id: string, options?: ExecuteOptions) => {
         const run = executor(options);
         const t = asTable(table);
         const result = await resultify(async () =>
@@ -286,11 +296,16 @@ export function repository<T extends TableWithId>(table: T) {
     ),
 
     exists: withContext(
-      async (_, id: string, options?: RepositoryOptions) => {
+      async (_, id: string, options?: ExecuteOptions) => {
         const run = executor(options);
         const t = asTable(table);
-        const result = await resultify(async () =>
-          run.select({ id: t.id }).from(t).where(eq(t.id, id)).limit(1),
+        const result = await resultify(
+          async () =>
+            run
+              .select({ id: t.id })
+              .from(t)
+              .where(eq(t.id, id))
+              .limit(1) as Promise<{ id: string }[]>,
         );
 
         if (!result.success) {
@@ -317,14 +332,15 @@ export function repository<T extends TableWithId>(table: T) {
     ),
 
     count: withContext(
-      async (_, where?: SQL, options?: RepositoryOptions) => {
+      async (_, where?: SQL, options?: ExecuteOptions) => {
         const run = executor(options);
         const t = asTable(table);
-        const result = await resultify(async () =>
-          run
-            .select({ count: sql<number>`count(*)::int` })
-            .from(t)
-            .where(where),
+        const result = await resultify(
+          async () =>
+            run
+              .select({ count: sql<number>`count(*)::int` })
+              .from(t)
+              .where(where) as Promise<{ count: number }[]>,
         );
 
         if (!result.success) {
@@ -348,13 +364,19 @@ export function repository<T extends TableWithId>(table: T) {
     find: withContext(
       async (
         _,
-        findOptions: { where?: SQL; orderBy?: OrderByEntry<T>[] } = {},
-        options?: RepositoryOptions,
+        findOptions: {
+          where?: SQL;
+          orderBy?: OrderByEntry<T>[];
+          limit?: number;
+          offset?: number;
+        } = {},
+        options?: ExecuteOptions,
       ) => {
         const run = executor(options);
-        const { where, orderBy } = findOptions;
+        const { where, orderBy, limit, offset } = findOptions;
 
         const t = asTable(table);
+
         const orderColumns = orderBy?.length
           ? orderBy.map(({ column, direction }) =>
               direction === "desc" ? desc(column) : asc(column),
@@ -363,12 +385,15 @@ export function repository<T extends TableWithId>(table: T) {
             ? ([desc(t.createdAt)] as const)
             : ([desc(t.id)] as const);
 
-        const result = await resultify(async () =>
-          run
-            .select()
-            .from(t)
-            .where(where)
-            .orderBy(...orderColumns),
+        const result = await resultify(
+          async () =>
+            run
+              .select()
+              .from(t)
+              .where(where)
+              .orderBy(...orderColumns)
+              .offset(offset)
+              .limit(limit) as Promise<Document<T>[]>,
         );
 
         if (!result.success) {

@@ -27,7 +27,6 @@ export const useSlot = <Identifier extends string | ComponentType>(
   const childrens = Children.toArray(children);
 
   const slot = childrens.find((child) => {
-    console.log("child hello", child);
     if (isValidElement(child)) return identifySlot(identifier, child);
     return false;
   });

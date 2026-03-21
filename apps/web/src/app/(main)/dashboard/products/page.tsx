@@ -29,7 +29,6 @@ import { ScanInsightsCarousel } from "./_components/scan-insights-carousel";
 export default () => (
   <div className="flex flex-col">
     <div className="mx-8 border-accent-foreground border-x">
-      {/* Header */}
       <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8 flex items-baseline justify-between px-6 py-8">
           <div>
@@ -97,7 +96,7 @@ export default () => (
       </div>
 
       <div className="-mx-8 mb-12 border-accent-foreground border-t border-b">
-        <div className="mx-8 p-6">
+        <div className="mx-8">
           <Suspense fallback={<InsightsSkeleton />}>
             <Insights />
           </Suspense>
@@ -367,14 +366,14 @@ const Performance = async () => {
       </div>
 
       <div className="flex flex-col gap-px bg-accent-foreground">
-        <div className="bg-background-dimmed">
+        <div className="bg-background-dimmed flex-1">
           <QualityDistribution
             segments={segments}
             total={products.length}
             averageQuality={average}
           />
         </div>
-        <div className="bg-background-dimmed">
+        <div className="bg-background-dimmed flex-1">
           <OptimizationBreakdown
             optimized={optimized}
             pending={pending}
@@ -512,17 +511,17 @@ const Insights = async () => {
   const scans = await unwrapResult(Scan.getLatest());
   const completed = scans.filter((scan) => scan.status === "completed");
 
-  if (completed.length === 0) return null;
+  console.log({ completed });
 
-  const items = completed.map((scan) => ({
+  // if (completed.length === 0) return null;
+
+  const items = scans.map((scan) => ({
     date: scan.createdAt.toISOString(),
     ...scan,
   }));
 
   return <ScanInsightsCarousel scans={items} />;
 };
-
-/* ── Skeletons ─────────────────────────────────────────────── */
 
 const StatsSkeleton = () => (
   <div className="grid h-39 min-h-39 grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">

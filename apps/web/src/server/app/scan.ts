@@ -21,12 +21,18 @@ export const getForCurrentUser = withAuthentication(async (context) => {
 }, "Scan.getForCurrentUser");
 
 export const getLatest = dedupe(
-  withAuthentication(async (context) => {
-    return find(Environment.SERVER, {
-      where: eq(schema.scan.userId, context.session.user.id),
-      orderBy: [{ column: schema.scan.createdAt, direction: "desc" as const }],
-    });
-  }, "Scan.getLatest"),
+  withAuthentication(
+    async (context, { limit }: { limit?: number } = { limit: 10 }) => {
+      return find(Environment.SERVER, {
+        where: eq(schema.scan.userId, context.session.user.id),
+        orderBy: [
+          { column: schema.scan.createdAt, direction: "desc" as const },
+        ],
+        limit,
+      });
+    },
+    "Scan.getLatest",
+  ),
 );
 
 export const findPending = withContext(async (_context) => {
