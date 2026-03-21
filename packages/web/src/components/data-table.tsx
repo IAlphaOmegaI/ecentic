@@ -30,7 +30,7 @@ import {
   TableRow,
 } from "./table";
 
-export { DataTableProvider, useDataTable, type ColumnDef, createColumnHelper };
+export { type ColumnDef, createColumnHelper, DataTableProvider, useDataTable };
 
 type SlotComponent = ComponentType<{ children?: ReactNode | undefined }>;
 

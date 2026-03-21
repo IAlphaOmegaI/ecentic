@@ -24,6 +24,7 @@ import {
   QualityDistribution,
 } from "./_components/products-charts";
 import { ProductsTable } from "./_components/products-table";
+import { ScanInsightsCarousel } from "./_components/scan-insights-carousel";
 
 export default () => (
   <div className="flex flex-col">
@@ -60,7 +61,6 @@ export default () => (
         </div>
       </div>
 
-      {/* Stats */}
       <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8">
           <Suspense fallback={<StatsSkeleton />}>
@@ -69,7 +69,6 @@ export default () => (
         </div>
       </div>
 
-      {/* Performance — Model Rates + Trend + Quality/Optimization */}
       <div className="h-8" />
       <div className="-mx-8 border-accent-foreground border-t border-b">
         <div className="mx-8">
@@ -79,7 +78,6 @@ export default () => (
         </div>
       </div>
 
-      {/* Table */}
       <div className="h-8" />
       <div className="-mx-8 border-accent-foreground border-t border-b">
         <div className="mx-8">
@@ -89,7 +87,6 @@ export default () => (
         </div>
       </div>
 
-      {/* Agent Traffic */}
       <div className="h-8" />
       <div className="-mx-8 mb-12 border-accent-foreground border-t border-b">
         <div className="mx-8">
@@ -99,9 +96,8 @@ export default () => (
         </div>
       </div>
 
-      {/* Latest Scan Insights */}
       <div className="-mx-8 mb-12 border-accent-foreground border-t border-b">
-        <div className="mx-8 px-6 py-6">
+        <div className="mx-8 p-6">
           <Suspense fallback={<InsightsSkeleton />}>
             <Insights />
           </Suspense>
@@ -188,9 +184,7 @@ const StatCards = async () => {
     const currentRate =
       currentTotal > 0 ? Math.round((current.wins / currentTotal) * 100) : 0;
     const previousRate =
-      previousTotal > 0
-        ? Math.round((previous.wins / previousTotal) * 100)
-        : 0;
+      previousTotal > 0 ? Math.round((previous.wins / previousTotal) * 100) : 0;
 
     return currentRate - previousRate;
   })();
@@ -258,12 +252,10 @@ const StatCards = async () => {
 
 const Performance = async () => {
   await connection();
-  const [data, scans] = await Promise.all([
+  const [{ products }, scans] = await Promise.all([
     unwrapResult(Product.gatherIntelligence()),
     unwrapResult(Scan.getLatest()),
   ]);
-
-  const { products } = data;
 
   const models =
     products.length > 0
@@ -305,23 +297,22 @@ const Performance = async () => {
       };
     });
 
-  const trendData = trend.map((point) => point.winRate);
-  const trendLabels = trend.map((point) =>
-    formatRelativeTime(new Date(point.date)),
-  );
+  const data = trend.map((point) => point.winRate);
+  const labels = trend.map((point) => formatRelativeTime(new Date(point.date)));
+
   const change = (() => {
-    if (trendData.length < 2) return 0;
-    return (trendData[trendData.length - 1] ?? 0) - (trendData[0] ?? 0);
+    if (data.length < 2) return 0;
+    return (data[data.length - 1] ?? 0) - (data[0] ?? 0);
   })();
 
-  const averageQuality =
+  const average =
     products.length > 0
       ? Math.round(
           products.reduce((sum, p) => sum + p.quality, 0) / products.length,
         )
       : 0;
 
-  const qualitySegments = [
+  const segments = [
     {
       label: "Good (\u226575%)",
       count: products.filter((p) => p.quality >= 75).length,
@@ -340,9 +331,11 @@ const Performance = async () => {
   ];
 
   const totalSimulations = products.reduce((sum, p) => sum + p.simulations, 0);
+
   const optimized = products.filter(
     (p) => p.quality >= 75 && p.winRate.total >= 60,
   ).length;
+
   const pending = products.filter(
     (p) =>
       p.simulations > 0 &&
@@ -370,19 +363,15 @@ const Performance = async () => {
 
         <ProductsModelRates models={models} />
 
-        <ProductsWinRateTrend
-          data={trendData}
-          labels={trendLabels}
-          change={change}
-        />
+        <ProductsWinRateTrend data={data} labels={labels} change={change} />
       </div>
 
       <div className="flex flex-col gap-px bg-accent-foreground">
-        <div className="flex-1 bg-background-dimmed">
+        <div className="bg-background-dimmed">
           <QualityDistribution
-            segments={qualitySegments}
+            segments={segments}
             total={products.length}
-            averageQuality={averageQuality}
+            averageQuality={average}
           />
         </div>
         <div className="bg-background-dimmed">
@@ -520,30 +509,17 @@ const AgentTraffic = async () => {
 
 const Insights = async () => {
   await connection();
-  const data = await unwrapResult(Product.gatherIntelligence());
-  if (!data?.scan?.topFinding) return null;
+  const scans = await unwrapResult(Scan.getLatest());
+  const completed = scans.filter((scan) => scan.status === "completed");
 
-  return (
-    <div>
-      <p className="font-light text-foreground-dimmed uppercase tracking-widest">
-        Insights
-      </p>
-      <p className="mt-1 mb-2 font-medium text-2xl text-foreground">
-        Latest Scan
-      </p>
-      <p className="font-light text-foreground text-sm">
-        {data.scan.topFinding}
-      </p>
-      <div className="mt-3 flex items-center gap-4">
-        <span className="font-medium text-foreground text-sm tabular-nums">
-          {data.scan.wins}W / {data.scan.losses}L
-        </span>
-        <span className="font-light text-foreground-dimmed text-sm">
-          {data.scan.completedSimulations} simulations completed
-        </span>
-      </div>
-    </div>
-  );
+  if (completed.length === 0) return null;
+
+  const items = completed.map((scan) => ({
+    date: scan.createdAt.toISOString(),
+    ...scan,
+  }));
+
+  return <ScanInsightsCarousel scans={items} />;
 };
 
 /* ── Skeletons ─────────────────────────────────────────────── */
@@ -746,12 +722,29 @@ const TrafficSkeleton = () => (
 
 const InsightsSkeleton = () => (
   <div>
-    <div className="h-3 w-16 animate-pulse bg-foreground/10" />
-    <div className="mt-2 h-7 w-28 animate-pulse bg-foreground/10" />
-    <div className="mt-2 h-4 w-full animate-pulse bg-foreground/10" />
-    <div className="mt-3 flex items-center gap-4">
-      <div className="h-4 w-20 animate-pulse bg-foreground/10" />
-      <div className="h-4 w-40 animate-pulse bg-foreground/10" />
+    <div className="flex items-start justify-between">
+      <div>
+        <div className="h-3 w-16 animate-pulse bg-foreground/10" />
+        <div className="mt-2 h-7 w-28 animate-pulse bg-foreground/10" />
+      </div>
+      <div className="space-y-1.5 text-right">
+        <div className="h-4 w-24 animate-pulse bg-foreground/10" />
+        <div className="h-3 w-32 animate-pulse bg-foreground/10" />
+      </div>
+    </div>
+    <div className="my-5 h-px animate-pulse bg-foreground/10" />
+    <div className="mb-4 h-5 w-3/4 animate-pulse bg-foreground/10" />
+    <div className="grid grid-cols-1 gap-px sm:grid-cols-[1fr_auto]">
+      <div className="h-24 animate-pulse bg-foreground/10" />
+      <div className="h-24 w-28 animate-pulse bg-foreground/10" />
+    </div>
+    <div className="mt-6">
+      <div className="mb-3 h-3 w-32 animate-pulse bg-foreground/10" />
+      <div className="flex flex-wrap gap-2">
+        {["a", "b", "c", "d"].map((key) => (
+          <div key={key} className="h-7 w-24 animate-pulse bg-foreground/10" />
+        ))}
+      </div>
     </div>
   </div>
 );

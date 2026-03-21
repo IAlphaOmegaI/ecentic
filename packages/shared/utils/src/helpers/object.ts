@@ -33,12 +33,8 @@ export const access = <T extends EmptyObject, A extends PropertyAccessor<T>>(
   return access(accessee[key as keyof T], rest);
 };
 
-export type IsOptionalProperty<T, K extends keyof T> = EmptyObject extends Pick<
-  T,
-  K
->
-  ? true
-  : false;
+export type IsOptionalProperty<T, K extends keyof T> =
+  EmptyObject extends Pick<T, K> ? true : false;
 
 type Primitive = string | number | boolean | null | undefined;
 // biome-ignore lint/suspicious/noExplicitAny: any needed for generic objects

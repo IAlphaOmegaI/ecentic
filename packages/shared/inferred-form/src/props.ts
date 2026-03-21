@@ -7,12 +7,13 @@ export type InferredProps<
   Interface extends GenericInterface,
   Shape extends GenericShape<Interface>,
   Validator extends InferredValidator<Interface, Shape>,
-> = IsUnion<CompleteInterface<Interface>[Shape]> extends true
-  ? Extract<
-      CompleteInterface<Interface>[Shape],
-      { validator: ReducedValidator<Validator> }
-    >["props"]
-  : CompleteInterface<Interface>[Shape]["props"];
+> =
+  IsUnion<CompleteInterface<Interface>[Shape]> extends true
+    ? Extract<
+        CompleteInterface<Interface>[Shape],
+        { validator: ReducedValidator<Validator> }
+      >["props"]
+    : CompleteInterface<Interface>[Shape]["props"];
 
 export type GenericProps = {
   value?: never;

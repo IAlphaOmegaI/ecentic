@@ -1,3 +1,5 @@
+// maybe worth checking out some sort of auth to determine if subscription is active or not
+
 (() => {
   const UA_PATTERNS = [
     { pattern: "ChatGPT-User", type: "chatgpt-user", category: "user-action" },

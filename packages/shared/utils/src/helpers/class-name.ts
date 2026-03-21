@@ -3,8 +3,8 @@ import { twMerge } from "tailwind-merge";
 import type { Prettify, UnionToIntersection } from "../types";
 
 export { cva, type VariantProps } from "class-variance-authority";
-export type { ClassValue };
 export type { ClassProp } from "class-variance-authority/types";
+export type { ClassValue };
 export const cn = (...inputs: ClassValue[]): string => twMerge(clsx(inputs));
 
 type Input = string | Partial<{ [key: string]: Input }>;

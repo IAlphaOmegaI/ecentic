@@ -38,17 +38,15 @@ type CorrectPipe<
       : Accumulator
     : Accumulator;
 
-type Pipe<
-  Head extends GenericPipeHead,
-  Tail extends GenericPipeTail,
-> = Head extends PipeHead<infer _, infer FirstOutput>
-  ? CorrectPipe<[Pipeable<unknown, FirstOutput>, ...Tail]> extends [
-      infer _,
-      ...infer CorrectedTail,
-    ]
-    ? [Head, ...(CorrectedTail extends GenericPipeTail ? CorrectedTail : [])]
-    : never
-  : never;
+type Pipe<Head extends GenericPipeHead, Tail extends GenericPipeTail> =
+  Head extends PipeHead<infer _, infer FirstOutput>
+    ? CorrectPipe<[Pipeable<unknown, FirstOutput>, ...Tail]> extends [
+        infer _,
+        ...infer CorrectedTail,
+      ]
+      ? [Head, ...(CorrectedTail extends GenericPipeTail ? CorrectedTail : [])]
+      : never
+    : never;
 
 type PipeEndOutput<F extends GenericPipe> = F extends [
   GenericPipeHead,

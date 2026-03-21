@@ -103,13 +103,10 @@ export const QualityDistribution = ({
   total,
   averageQuality,
 }: QualityDistribution.Props) => (
-  <div className="p-4">
+  <div className="p-4 size-full flex flex-col">
     <div className="flex items-start justify-between">
       <div>
-        <p className="font-light text-foreground-dimmed uppercase tracking-widest">
-          Data Quality
-        </p>
-        <p className="mt-1 font-medium text-2xl text-foreground">
+        <p className="font-medium text-2xl text-foreground">
           Quality Distribution
         </p>
       </div>
@@ -124,7 +121,7 @@ export const QualityDistribution = ({
       </div>
     </div>
 
-    <div className="mt-6 flex h-2 w-full overflow-hidden bg-accent-foreground">
+    <div className="flex h-2 w-full overflow-hidden bg-accent-foreground mt-auto">
       {segments.map((segment) => {
         const width = total > 0 ? (segment.count / total) * 100 : 0;
         if (width === 0) return null;
@@ -145,7 +142,7 @@ export const QualityDistribution = ({
       {segments.map((segment) => (
         <div key={segment.label} className="flex items-center gap-2">
           <div className={cn("size-2.5 shrink-0", segment.color)} />
-          <span className="font-light text-foreground-dimmed text-sm">
+          <span className="font-light text-foreground-dimmed text-xs">
             {segment.label}
           </span>
           <span className="ml-auto font-medium text-foreground text-sm tabular-nums">
@@ -180,12 +177,7 @@ export const OptimizationBreakdown = ({
 
   return (
     <div className="p-4">
-      <p className="font-light text-foreground-dimmed uppercase tracking-widest">
-        Optimization
-      </p>
-      <p className="mt-1 font-medium text-2xl text-foreground">
-        Product Readiness
-      </p>
+      <p className="font-medium text-2xl text-foreground">Product Readiness</p>
 
       <div className="mt-6 flex h-2 w-full overflow-hidden bg-accent-foreground">
         {segments.map((segment) => {

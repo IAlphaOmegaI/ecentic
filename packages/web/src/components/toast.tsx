@@ -66,10 +66,7 @@ export const ToastTitle = ({
 }: ToastTitle.Props): JSX.Element => {
   return (
     <ToastPrimitive.Title
-      className={createClassName(
-        "font-medium leading-5",
-        className,
-      )}
+      className={createClassName("font-medium leading-5", className)}
       {...props}
     />
   );
@@ -85,10 +82,7 @@ export const ToastDescription = ({
 }: ToastDescription.Props): JSX.Element => {
   return (
     <ToastPrimitive.Description
-      className={createClassName(
-        "text-foreground-dimmed leading-5",
-        className,
-      )}
+      className={createClassName("text-foreground-dimmed leading-5", className)}
       {...props}
     />
   );
