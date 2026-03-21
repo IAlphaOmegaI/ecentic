@@ -79,14 +79,40 @@ export const GET = async (request: NextRequest) => {
     );
   }
 
-  await Store.create({
+  const trackerApiKey = crypto.randomUUID();
+
+  const storeResult = await Store.create({
     userId: session.user.id,
     platform: "shopify",
     name: shop.replace(".myshopify.com", ""),
     domain: `https://${shop}`,
     accessToken: parsed.data.access_token,
+    trackerApiKey,
     status: "connected",
   });
+
+  // Register tracker ScriptTag on the merchant's storefront (best-effort)
+  if (storeResult.success && storeResult.data) {
+    const trackerSrc = `${APP_HOST}/tracker.js?sid=${storeResult.data.id}`;
+
+    await HTTP.request(
+      `https://${shop}/admin/api/2024-10/script_tags.json`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Access-Token": parsed.data.access_token,
+        },
+        body: JSON.stringify({
+          script_tag: {
+            event: "onload",
+            src: trackerSrc,
+            display_scope: "all",
+          },
+        }),
+      },
+    );
+  }
 
   jar.delete("shopify_nonce");
   jar.delete("shopify_shop");
