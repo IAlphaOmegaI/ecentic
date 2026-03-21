@@ -25,6 +25,7 @@
     "@react-email/components": "^1.0.10",
     "@react-email/render": "^2.0.4",
     "@sentry/nextjs": "^10.45.0",
+    "@upstash/redis": "^1.37.0",
     "@zenncore/icons": "workspace:*",
     "@zenncore/phone": "workspace:*",
     "@zenncore/utils": "workspace:*",

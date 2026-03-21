@@ -5,8 +5,10 @@ import {
   resultify,
   type UnwrapResult,
 } from "@zenncore/utils";
+import type { Redis } from "@upstash/redis";
 import type { UploadThingError } from "uploadthing/server";
 import { upload } from "../app/storage";
+import { redis } from "./durable";
 import { type Brand, Environment } from "./environment";
 import { ErrorProtocol } from "./error";
 
@@ -22,6 +24,9 @@ export type GenericContext = {
       _slug: string,
       options: { files: File[] },
     ) => Promise<Result<{ ufsUrl: string }[], UploadThingError>>;
+  };
+  durable: {
+    redis: Redis;
   };
 };
 
@@ -58,6 +63,9 @@ const define = async () => {
     storage: {
       upload: async (_slug, options) =>
         await resultify(() => upload(options.files)),
+    },
+    durable: {
+      redis,
     },
   };
   return cache;

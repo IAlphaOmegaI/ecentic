@@ -18,6 +18,14 @@ const client = postgres(process.env.DATABASE_URL, {
  */
 export const db = drizzle({ client, relations });
 
+export type TransactionScope = Parameters<
+  Parameters<typeof db.transaction>[0]
+>[0];
+
+export const withTransaction = <T>(
+  callback: (tx: TransactionScope) => Promise<T>,
+): Promise<T> => db.transaction(callback);
+
 export type {
   account,
   product,

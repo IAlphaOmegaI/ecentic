@@ -10,11 +10,10 @@ import {
 } from "drizzle-orm";
 import type { PgTableWithColumns } from "drizzle-orm/pg-core";
 import { updateTag } from "next/cache";
-import { db } from "@/server/database";
+import { type TransactionScope, db } from "@/server/database";
 import { withContext } from "./context";
 import { DatabaseError } from "./error";
 
-/** Table type that has id and optional createdAt for default ordering */
 /** Table type that has id and optional createdAt for default ordering */
 // biome-ignore lint/suspicious/noExplicitAny: PgTableWithColumns requires TableConfig; generic table type
 type TableWithId = PgTableWithColumns<any> & {
@@ -41,6 +40,10 @@ export type PaginateOptions<T extends TableWithId> = {
   orderBy?: OrderByEntry<T>[];
 };
 
+export type RepositoryOptions = {
+  tx?: TransactionScope;
+};
+
 /** Human-readable table name for errors (e.g. "user") */
 const label = (table: TableWithId): string => {
   try {
@@ -59,6 +62,9 @@ function capitalize(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: tx and db share query API but have different nominal types
+const executor = (options?: RepositoryOptions): any => options?.tx ?? db;
+
 /**
  * Generic repository over a Drizzle table (CRUD + paginate/find).
  * Returns Result types for all operations. Use with schema.user, schema.session, etc.
@@ -68,13 +74,11 @@ export function repository<T extends TableWithId>(table: T) {
 
   return {
     get: withContext(
-      async (_, id: string) => {
-        // "use cache";
-        // cacheTag(name, id);
-
+      async (_, id: string, options?: RepositoryOptions) => {
+        const run = executor(options);
         const t = asTable(table);
         const result = await resultify(async () =>
-          db.select().from(t).where(eq(t.id, id)).limit(1),
+          run.select().from(t).where(eq(t.id, id)).limit(1),
         );
 
         if (!result.success) {
@@ -103,19 +107,12 @@ export function repository<T extends TableWithId>(table: T) {
         _,
         page: number,
         size: number,
-        options: PaginateOptions<T> = {},
+        paginateOptions: PaginateOptions<T> = {},
+        options?: RepositoryOptions,
       ) => {
-        // "use cache";
-        const { where, orderBy } = options;
+        const run = executor(options);
+        const { where, orderBy } = paginateOptions;
         const offset = (page - 1) * size;
-
-        // cacheTag(
-        //   name,
-        //   `pagination/page:${page}`,
-        //   `pagination/size:${size}`,
-        //   `pagination/where:${JSON.stringify(where)}`,
-        //   `pagination/orderBy:${JSON.stringify(orderBy)}`,
-        // );
 
         const t = asTable(table);
         const orderColumns = orderBy?.length
@@ -126,7 +123,7 @@ export function repository<T extends TableWithId>(table: T) {
             ? ([desc(t.createdAt)] as const)
             : ([desc(t.id)] as const);
 
-        const query = db
+        const query = run
           .select()
           .from(t)
           .where(where)
@@ -134,7 +131,7 @@ export function repository<T extends TableWithId>(table: T) {
           .offset(offset)
           .limit(size);
 
-        const cQuery = db
+        const cQuery = run
           .select({ count: sql<number>`count(*)::int` })
           .from(t)
           .where(where);
@@ -180,10 +177,11 @@ export function repository<T extends TableWithId>(table: T) {
     ),
 
     create: withContext(
-      async (_, data: Insertable<T>) => {
+      async (_, data: Insertable<T>, options?: RepositoryOptions) => {
+        const run = executor(options);
         const t = asTable(table);
         const result = await resultify(async () =>
-          db
+          run
             .insert(t)
             .values(data as T["$inferInsert"])
             .returning(),
@@ -212,10 +210,16 @@ export function repository<T extends TableWithId>(table: T) {
     ),
 
     update: withContext(
-      async (_, id: string, data: Partial<Insertable<T>>) => {
+      async (
+        _,
+        id: string,
+        data: Partial<Insertable<T>>,
+        options?: RepositoryOptions,
+      ) => {
+        const run = executor(options);
         const t = asTable(table);
         const result = await resultify(async () =>
-          db
+          run
             .update(t)
             .set(data as Partial<T["$inferInsert"]>)
             .where(eq(t.id, id))
@@ -249,10 +253,11 @@ export function repository<T extends TableWithId>(table: T) {
     ),
 
     destroy: withContext(
-      async (_, id: string) => {
+      async (_, id: string, options?: RepositoryOptions) => {
+        const run = executor(options);
         const t = asTable(table);
         const result = await resultify(async () =>
-          db.delete(t).where(eq(t.id, id)),
+          run.delete(t).where(eq(t.id, id)),
         );
 
         if (!result.success) {
@@ -281,13 +286,11 @@ export function repository<T extends TableWithId>(table: T) {
     ),
 
     exists: withContext(
-      async (_, id: string) => {
-        // "use cache";
-        // cacheTag(`exists:${name}`, id);
-
+      async (_, id: string, options?: RepositoryOptions) => {
+        const run = executor(options);
         const t = asTable(table);
         const result = await resultify(async () =>
-          db.select({ id: t.id }).from(t).where(eq(t.id, id)).limit(1),
+          run.select({ id: t.id }).from(t).where(eq(t.id, id)).limit(1),
         );
 
         if (!result.success) {
@@ -314,13 +317,14 @@ export function repository<T extends TableWithId>(table: T) {
     ),
 
     count: withContext(
-      async (_, where?: SQL) => {
-        // "use cache";
-        // cacheTag(`count:${name}`, JSON.stringify(where));
-
+      async (_, where?: SQL, options?: RepositoryOptions) => {
+        const run = executor(options);
         const t = asTable(table);
         const result = await resultify(async () =>
-          db.select({ count: sql<number>`count(*)::int` }).from(t).where(where),
+          run
+            .select({ count: sql<number>`count(*)::int` })
+            .from(t)
+            .where(where),
         );
 
         if (!result.success) {
@@ -342,15 +346,13 @@ export function repository<T extends TableWithId>(table: T) {
     ),
 
     find: withContext(
-      async (_, options: { where?: SQL; orderBy?: OrderByEntry<T>[] } = {}) => {
-        // "use cache";
-        const { where, orderBy } = options;
-
-        // cacheTag(
-        //   name,
-        //   `find/where:${JSON.stringify(where)}`,
-        //   `find/orderBy:${JSON.stringify(orderBy)}`,
-        // );
+      async (
+        _,
+        findOptions: { where?: SQL; orderBy?: OrderByEntry<T>[] } = {},
+        options?: RepositoryOptions,
+      ) => {
+        const run = executor(options);
+        const { where, orderBy } = findOptions;
 
         const t = asTable(table);
         const orderColumns = orderBy?.length
@@ -362,7 +364,7 @@ export function repository<T extends TableWithId>(table: T) {
             : ([desc(t.id)] as const);
 
         const result = await resultify(async () =>
-          db
+          run
             .select()
             .from(t)
             .where(where)

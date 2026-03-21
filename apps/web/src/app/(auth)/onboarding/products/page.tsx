@@ -24,8 +24,8 @@ export default async ({
       );
       if (shopifyStore) {
         const sync = await Shopify.syncShopifyCatalog({
-          userId: shopifyStore.userId,
-          storeId: shopifyStore.id,
+          user: shopifyStore.userId,
+          store: shopifyStore.id,
         });
         if (sync.success)
           products = await unwrapResult(Product.getForCurrentUser());

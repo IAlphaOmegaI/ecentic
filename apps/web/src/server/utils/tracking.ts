@@ -1,5 +1,8 @@
+import { resultify } from "@zenncore/utils";
 import { and, eq, sql } from "drizzle-orm";
 import { db, schema } from "@/server/database";
+import { withContext } from "./context";
+import { DatabaseError } from "./error";
 
 /**
  * Public origin used for `tracker.js` ScriptTag and (via the script URL) beacon
@@ -19,12 +22,18 @@ export const resolveTrackerPublicOrigin = (): string => {
 export const normalizeHostname = (value: string): string => {
   const trimmed = value.trim();
   if (!trimmed) return trimmed;
-  try {
-    if (trimmed.includes("://")) return new URL(trimmed).hostname.toLowerCase();
+
+  if (!trimmed.includes("://")) {
     return trimmed.split("/")[0]?.toLowerCase() ?? trimmed.toLowerCase();
-  } catch {
-    return trimmed.toLowerCase();
   }
+
+  return (() => {
+    try {
+      return new URL(trimmed).hostname.toLowerCase();
+    } catch {
+      return trimmed.toLowerCase();
+    }
+  })();
 };
 
 export const isOriginAllowedForStore = ({
@@ -38,62 +47,82 @@ export const isOriginAllowedForStore = ({
 }): boolean => {
   if (!origin) return true;
 
-  let originHost: string;
-  try {
-    originHost = new URL(origin).hostname.toLowerCase();
-  } catch {
-    return false;
-  }
+  const originHost = (() => {
+    try {
+      return new URL(origin).hostname.toLowerCase();
+    } catch {
+      return null;
+    }
+  })();
 
-  const fallback = [normalizeHostname(storeDomain)];
+  if (!originHost) return false;
+
   const allowed = storefrontHosts?.length
     ? storefrontHosts.map((host) => normalizeHostname(host))
-    : fallback;
+    : [normalizeHostname(storeDomain)];
 
   return allowed.includes(originHost);
 };
 
-export const resolveProductFromPageUrl = async ({
-  storeId,
-  pageUrl,
-}: {
-  storeId: string;
-  pageUrl: string;
-}): Promise<{
-  productId: string | null;
-  externalProductId: string | null;
-}> => {
-  let pathname: string;
-  try {
-    pathname = new URL(pageUrl).pathname;
-  } catch {
-    return { productId: null, externalProductId: null };
-  }
+const NULL_RESOLUTION = {
+  productId: null,
+  externalProductId: null,
+} as const;
 
-  const match = pathname.match(/\/(?:products|product)\/([^/?#]+)/);
-  if (!match) return { productId: null, externalProductId: null };
+export const resolveProductFromPageUrl = withContext(
+  async (
+    _,
+    { storeId, pageUrl }: { storeId: string; pageUrl: string },
+  ) => {
+    const parsed = await resultify(() => new URL(pageUrl));
+    if (!parsed.success) {
+      return { success: true as const, data: NULL_RESOLUTION };
+    }
 
-  const handle = decodeURIComponent(match[1]);
-  const needle = `/products/${handle}`;
+    const match = parsed.data.pathname.match(
+      /\/(?:products|product)\/([^/?#]+)/,
+    );
+    if (!match) return { success: true as const, data: NULL_RESOLUTION };
 
-  const [row] = await db
-    .select({
-      id: schema.product.id,
-      externalId: schema.product.externalId,
-    })
-    .from(schema.product)
-    .where(
-      and(
-        eq(schema.product.storeId, storeId),
-        sql`strpos(lower(${schema.product.url}), lower(${needle})) > 0`,
-      ),
-    )
-    .limit(1);
+    const handle = decodeURIComponent(match[1]);
+    const needle = `/products/${handle}`;
 
-  if (!row) return { productId: null, externalProductId: null };
+    const result = await resultify(async () =>
+      db
+        .select({
+          id: schema.product.id,
+          externalId: schema.product.externalId,
+        })
+        .from(schema.product)
+        .where(
+          and(
+            eq(schema.product.storeId, storeId),
+            sql`strpos(lower(${schema.product.url}), lower(${needle})) > 0`,
+          ),
+        )
+        .limit(1),
+    );
 
-  return {
-    productId: row.id,
-    externalProductId: row.externalId ?? null,
-  };
-};
+    if (!result.success) {
+      return {
+        success: false as const,
+        error: new DatabaseError(
+          `Failed to resolve product from page URL: ${result.error}`,
+          { cause: result.error },
+        ),
+      };
+    }
+
+    const row = result.data?.[0];
+    if (!row) return { success: true as const, data: NULL_RESOLUTION };
+
+    return {
+      success: true as const,
+      data: {
+        productId: row.id,
+        externalProductId: row.externalId ?? null,
+      },
+    };
+  },
+  "Tracking.resolveProductFromPageUrl",
+);

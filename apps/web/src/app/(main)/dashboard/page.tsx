@@ -15,6 +15,7 @@ import * as Scan from "@/server/app/scan";
 import { OverviewActions } from "./_components/overview-actions";
 import { OverviewCharts } from "./_components/overview-charts";
 import { OverviewTable } from "./_components/overview-table";
+import { connection } from "next/server";
 
 export default () => (
   <div className="flex flex-col">
@@ -68,6 +69,7 @@ export default () => (
 );
 
 const LastUpdated = async () => {
+  await connection();
   const data = await unwrapResult(Product.gatherIntelligence());
 
   return (
@@ -80,6 +82,7 @@ const LastUpdated = async () => {
 };
 
 const StatCards = async () => {
+  await connection();
   const data = await unwrapResult(Product.gatherIntelligence());
   const { products } = data;
 
@@ -244,6 +247,7 @@ const StatCards = async () => {
 };
 
 const Performance = async () => {
+  await connection();
   const [data, scans] = await Promise.all([
     unwrapResult(Product.gatherIntelligence()),
     unwrapResult(Scan.getLatest()),
@@ -309,6 +313,7 @@ const Performance = async () => {
 };
 
 const TopProducts = async () => {
+  await connection();
   const data = await unwrapResult(Product.gatherIntelligence());
 
   const sorted = [...data.products]

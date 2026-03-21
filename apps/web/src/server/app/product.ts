@@ -221,28 +221,15 @@ export const getDetail = withAuthentication(
         : 0;
 
     const enriched = simulations.data.map((simulation) => ({
-      id: simulation.id,
-      model: simulation.model,
-      winner: simulation.winner,
-      reasoning: simulation.reasoning,
-      productScore: simulation.productScore,
-      competitorScore: simulation.competitorScore,
-      competitorId: simulation.competitorId,
+      ...simulation,
       competitorTitle: map.get(simulation.competitorId)?.title ?? "Unknown",
-      createdAt: simulation.createdAt,
     }));
 
     return {
       success: true,
       data: {
         product: {
-          id: product.data.id,
-          title: product.data.title,
-          description: product.data.description,
-          price: product.data.price,
-          currency: product.data.currency,
-          sku: product.data.sku,
-          structured: product.data.structuredData,
+          ...product.data,
           quality: computeDataQuality(product.data),
         },
         winRate,

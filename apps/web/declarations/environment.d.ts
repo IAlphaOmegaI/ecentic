@@ -1,26 +1,32 @@
 declare namespace NodeJS {
   interface ProcessEnv {
-    BETTER_AUTH_BASE_URL: string;
+    readonly BETTER_AUTH_BASE_URL: string;
 
-    NEXT_PUBLIC_SENTRY_DSN: string;
+    readonly NEXT_PUBLIC_SENTRY_DSN: string;
 
-    DATABASE_URL: string;
-    APP_HOST: string;
+    readonly DATABASE_URL: string;
+    readonly APP_HOST: string;
 
-    RESEND_API_KEY: string;
-    FROM_EMAIL?: string;
+    readonly RESEND_API_KEY: string;
+    readonly FROM_EMAIL?: string;
 
-    SHOPIFY_API_KEY: string;
-    SHOPIFY_API_SECRET: string;
+    readonly SHOPIFY_API_KEY: string;
+    readonly SHOPIFY_API_SECRET: string;
 
-    AZURE_RESOURCE_NAME: string;
-    AZURE_API_KEY: string;
-    AZURE_BASE_URL: string;
+    readonly AZURE_RESOURCE_NAME: string;
+    readonly AZURE_API_KEY: string;
+    readonly AZURE_BASE_URL: string;
 
-    NEXT_PUBLIC_POSTHOG_KEY: string;
-    NEXT_PUBLIC_POSTHOG_HOST: string;
+    readonly NEXT_PUBLIC_POSTHOG_KEY: string;
+    readonly NEXT_PUBLIC_POSTHOG_HOST: string;
 
-    npm_package_name: string;
-    npm_package_version: string;
+    readonly ECENTIC_TRACKER_PROBE: string;
+    readonly ECENTIC_TRACKER_PUBLIC_ORIGIN: string;
+
+    readonly UPSTASH_REDIS_REST_URL: string;
+    readonly UPSTASH_REDIS_REST_TOKEN: string;
+
+    readonly npm_package_name: string;
+    readonly npm_package_version: string;
   }
 }

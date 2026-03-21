@@ -1,5 +1,5 @@
-(function () {
-  var UA_PATTERNS = [
+(() => {
+  const UA_PATTERNS = [
     { pattern: "ChatGPT-User", type: "chatgpt-user", category: "user-action" },
     { pattern: "Claude-User", type: "claude-user", category: "user-action" },
     {
@@ -48,8 +48,12 @@
     },
   ];
 
-  var REFERRER_DOMAINS = [
-    { domain: "chat.openai.com", type: "chatgpt-referral", category: "referral" },
+  const REFERRER_DOMAINS = [
+    {
+      domain: "chat.openai.com",
+      type: "chatgpt-referral",
+      category: "referral",
+    },
     { domain: "chatgpt.com", type: "chatgpt-referral", category: "referral" },
     {
       domain: "perplexity.ai",
@@ -70,28 +74,29 @@
     { domain: "you.com", type: "you-referral", category: "referral" },
   ];
 
-  var scriptEl =
+  var script =
     document.currentScript ||
-    (function () {
-      var nodes = document.querySelectorAll('script[src*="tracker.js"]');
+    (() => {
+      const nodes = document.querySelectorAll('script[src*="tracker.js"]');
       return nodes.length ? nodes[nodes.length - 1] : null;
     })();
 
-  if (!scriptEl || !scriptEl.src) return;
+  if (!script || !script.src) return;
 
   var scriptUrl;
+
   try {
-    scriptUrl = new URL(scriptEl.src);
+    scriptUrl = new URL(script.src);
   } catch (_) {
     return;
   }
 
-  var storeId = scriptUrl.searchParams.get("sid");
-  var token = scriptUrl.searchParams.get("k");
-  var apiOrigin = scriptUrl.origin;
-  var probe = scriptUrl.searchParams.get("probe") === "1";
+  const id = scriptUrl.searchParams.get("sid");
+  const token = scriptUrl.searchParams.get("k");
+  const origin = scriptUrl.origin;
+  const probe = scriptUrl.searchParams.get("probe") === "1";
 
-  if (!storeId || !token) return;
+  if (!id || !token) return;
 
   var ua = navigator.userAgent;
   var ref = document.referrer;
@@ -100,7 +105,7 @@
   var agentCategory = null;
   var detectionMethod = null;
 
-  for (var j = 0; j < UA_PATTERNS.length; j++) {
+  for (let j = 0; j < UA_PATTERNS.length; j++) {
     if (ua.indexOf(UA_PATTERNS[j].pattern) !== -1) {
       agentType = UA_PATTERNS[j].type;
       agentCategory = UA_PATTERNS[j].category;
@@ -109,7 +114,7 @@
     }
   }
 
-  for (var k = 0; k < REFERRER_DOMAINS.length; k++) {
+  for (let k = 0; k < REFERRER_DOMAINS.length; k++) {
     if (ref.indexOf(REFERRER_DOMAINS[k].domain) !== -1) {
       if (!agentType) {
         agentType = REFERRER_DOMAINS[k].type;
@@ -130,7 +135,7 @@
 
   var pageType = "other";
   try {
-    if (window.__ECENTIC_CONFIG__ && window.__ECENTIC_CONFIG__.pageType) {
+    if (window?.__ECENTIC_CONFIG__?.pageType) {
       pageType = window.__ECENTIC_CONFIG__.pageType;
     } else if (
       location.pathname.indexOf("/products/") !== -1 ||
@@ -152,14 +157,10 @@
     }
   } catch (_) {}
 
-  var productExternalId = null;
-  try {
-    if (window.__ECENTIC_CONFIG__ && window.__ECENTIC_CONFIG__.productExternalId)
-      productExternalId = String(window.__ECENTIC_CONFIG__.productExternalId);
-  } catch (_) {}
+  const productExternalId = window?.__ECENTIC_CONFIG__?.productExternalId ?? null;
 
-  var payload = {
-    storeId: storeId,
+  const payload = {
+    storeId: id,
     productUrl: location.href,
     userAgent: ua,
     referrer: ref,
@@ -172,18 +173,14 @@
 
   if (productExternalId) payload.productExternalId = productExternalId;
 
-  var beaconUrl = apiOrigin + "/api/tracking/agent-visit";
-
-  try {
-    fetch(beaconUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
-      body: JSON.stringify(payload),
-      mode: "cors",
-      keepalive: true,
-    }).catch(function () {});
-  } catch (_) {}
+  fetch(`${origin}/api/tracking/agent-visit`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+    mode: "cors",
+    keepalive: true,
+  }).catch(() => {});
 })();

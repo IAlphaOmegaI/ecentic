@@ -1,8 +1,8 @@
-import type { AgentTrafficSummary } from "@/server/app/dashboard";
+import type * as Tracking from "@/server/app/tracking";
 
 export namespace AgentVisitsPanel {
   export type Props = {
-    summary: AgentTrafficSummary;
+    summary: Tracking.AgentTrafficSummary;
   };
 }
 
@@ -10,21 +10,19 @@ export const AgentVisitsPanel = ({ summary }: AgentVisitsPanel.Props) => {
   const max = Math.max(1, ...summary.byAgentType.map((entry) => entry.count));
 
   return (
-    <div className="border-accent-foreground border-x border-b bg-background-dimmed px-6 py-5">
+    <div className="bg-background-dimmed p-4">
       <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="font-light text-foreground-dimmed text-xs uppercase tracking-widest">
-            AI storefront traffic
-          </p>
-          <p className="mt-2 font-medium text-foreground text-lg">
+          <p className="text-foreground-dimmed">AI storefront traffic</p>
+          <p className="mt-2 text-2xl font-medium text-foreground">
             Visits by agent (last 30 days)
           </p>
           <p className="mt-1 font-light text-foreground-dimmed text-sm">
-            From your ScriptTag tracker — browser-visible AI and referral
-            signals only.
+            From your ScriptTag tracker, browser-visible AI and referral signals
+            only.
           </p>
         </div>
-        <p className="font-semibold text-3xl text-foreground tabular-nums">
+        <p className="text-4xl text-foreground tabular-nums">
           {summary.total30d}
           <span className="ml-1 font-light text-foreground-dimmed text-sm">
             total
@@ -50,7 +48,7 @@ export const AgentVisitsPanel = ({ summary }: AgentVisitsPanel.Props) => {
                   {entry.count}
                 </span>
               </div>
-              <div className="h-1.5 w-full bg-accent-foreground">
+              <div className="h-1 w-full bg-accent-foreground">
                 <div
                   className="h-full bg-primary"
                   style={{
