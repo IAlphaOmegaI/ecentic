@@ -4,10 +4,10 @@ import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useToastManager } from "@zenncore/web/components/toast";
+import Image from "next/image";
 import { useState } from "react";
 import type * as Competitor from "@/server/app/competitor";
 import { searchCompetitors } from "@/server/app/intelligence/search";
-import Image from "next/image";
 
 const categories = [
   "Wireless Earbuds",
@@ -55,7 +55,7 @@ export const SearchTab = ({ onSuccess }: SearchTab.Props) => {
   );
 
   return (
-    <div className="border border-accent-foreground bg-background-rich p-4 relative">
+    <div className="relative border border-accent-foreground bg-background-rich p-4">
       <Image
         src="/images/websearch.png"
         alt="Competitors illustration"

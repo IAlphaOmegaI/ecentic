@@ -9,10 +9,10 @@ import {
   sql,
 } from "drizzle-orm";
 import type { PgTableWithColumns } from "drizzle-orm/pg-core";
+import { updateTag } from "next/cache";
 import { db } from "@/server/database";
 import { withContext } from "./context";
 import { DatabaseError } from "./error";
-import { cacheTag, updateTag } from "next/cache";
 
 /** Table type that has id and optional createdAt for default ordering */
 /** Table type that has id and optional createdAt for default ordering */

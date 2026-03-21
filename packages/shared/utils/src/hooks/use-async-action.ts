@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useState, useTransition } from "react";
 import type { Prettify } from "../types";
 
 // biome-ignore lint/suspicious/noExplicitAny: function arguments can be of any type
@@ -18,21 +18,20 @@ type UseAsyncActionReturn<F extends AsyncAction<F>> = Prettify<
 export const useAsyncAction = <F extends AsyncAction<F>>(
   action: F,
 ): UseAsyncActionReturn<F> => {
-  const [isPending, setIsPending] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const [result, setResult] = useState<Awaited<ReturnType<F>> | null>(null);
 
   const handledAction = useCallback(
     async (...args: Parameters<F>): Promise<Awaited<ReturnType<F>>> => {
-      setIsPending(true);
-      try {
+      startTransition(async () => {
         const result = await action(...args);
-        setIsPending(false);
-        return result;
-      } catch (error) {
-        setIsPending(false);
-        throw error;
-      }
+        setResult(result);
+      });
+
+      // biome-ignore lint/style/noNonNullAssertion: result is guaranteed to be set
+      return result!;
     },
-    [action],
+    [action, result],
   );
 
   return [

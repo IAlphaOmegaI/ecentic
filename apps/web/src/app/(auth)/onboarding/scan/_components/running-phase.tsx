@@ -223,8 +223,8 @@ export const RunningPhase = ({
             </div>
           </div>
         </Motion.Item>
-        <Motion.Item className=" border-accent-foreground border-b px-8">
-          <div className="size-full border-x h-8 border-accent-foreground" />
+        <Motion.Item className="border-accent-foreground border-b px-8">
+          <div className="size-full h-8 border-accent-foreground border-x" />
         </Motion.Item>
       </Motion.Stagger>
     </motion.div>

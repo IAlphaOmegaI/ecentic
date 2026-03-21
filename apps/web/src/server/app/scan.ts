@@ -1,13 +1,13 @@
 "use server";
 
 import { and, eq, inArray } from "drizzle-orm";
+import { cache as dedupe } from "react";
 import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
 import type { Document } from "../utils/repository";
 import { repository } from "../utils/repository";
-import { cache as dedupe } from "react";
 
 export const { get, paginate, create, update, destroy, exists, count, find } =
   repository(schema.scan);

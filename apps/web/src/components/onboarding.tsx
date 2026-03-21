@@ -30,7 +30,7 @@ export const Onboarding = ({
       src="/images/onboarding.png"
       alt="onboarding background"
       fill
-      className="object-contain object-bottom brightness-0 invert opacity-60"
+      className="object-contain object-bottom opacity-60 brightness-0 invert"
       aria-hidden="true"
     />
     <div className="relative z-10 flex h-full w-full flex-col justify-between p-8">

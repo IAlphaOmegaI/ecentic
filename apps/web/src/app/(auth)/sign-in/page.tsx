@@ -1,4 +1,5 @@
 import { ArrowRightIcon } from "@zenncore/icons";
+import { Button } from "@zenncore/web/components/button";
 import * as motion from "motion/react-client";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,7 +7,6 @@ import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import { Fade } from "@/lib/animations";
 import { SignInForm } from "./_components/sign-in-form";
-import { Button } from "@zenncore/web/components/button";
 
 const points = [
   "Pick up right where you left off",
@@ -67,7 +67,7 @@ export default () => (
         </Motion.Item>
 
         <Motion.Item className="w-full px-8">
-          <div className="border-accent-foreground border-x p-6 font-light text-foreground-dimmed flex items-center justify-between flex-row">
+          <div className="flex flex-row items-center justify-between border-accent-foreground border-x p-6 font-light text-foreground-dimmed">
             Don't have an account?{" "}
             <Button
               variant="outline"

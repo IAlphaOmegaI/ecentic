@@ -20,9 +20,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { Spring, Stagger } from "@/lib/animations";
+import { Spring } from "@/lib/animations";
 import { formatRelativeTime } from "@/lib/date";
-import { div } from "motion/react-client";
 
 type ModelRate = { label: string; rate: number };
 type TrendPoint = { date: string; winRate: number };
@@ -97,7 +96,7 @@ const WinRateLineChart = ({
     return (
       <div
         className={cn(
-          "flex items-center justify-center text-foreground-dimmed flex-col gap-2 h-64 min-h-64 text-center",
+          "flex h-64 min-h-64 flex-col items-center justify-center gap-2 text-center text-foreground-dimmed",
           className,
         )}
       >
@@ -122,7 +121,7 @@ const WinRateLineChart = ({
   })();
 
   return (
-    <div className={cn("w-full h-64 min-h-64", className)}>
+    <div className={cn("h-64 min-h-64 w-full", className)}>
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           data={chart}
@@ -285,14 +284,14 @@ export const OverviewCharts = ({
       </div>
 
       <div className="flex flex-col gap-px bg-accent-foreground">
-        <div className="bg-background-dimmed flex-1">
+        <div className="flex-1 bg-background-dimmed">
           <div className="mb-2 flex items-center justify-between px-4 pt-4">
             <p className="font-light text-foreground-dimmed uppercase tracking-widest">
               Recent Activity
             </p>
           </div>
           {activity.length === 0 ? (
-            <div className="flex items-center gap-2 text-foreground-dimmed font-normal flex-col text-center items-center justify-center size-full p-4">
+            <div className="flex size-full flex-col items-center items-center justify-center gap-2 p-4 text-center font-normal text-foreground-dimmed">
               <BellIcon className="size-24" />
               <p className="text-foreground-dimmed">
                 No activity yet. Run your <br />
@@ -304,7 +303,7 @@ export const OverviewCharts = ({
               {activity.map((entry) => (
                 <div
                   key={entry.id}
-                  className="flex items-start gap-2 border-b last:border-b-0 pb-4 border-accent-foreground p-4 first:border-t"
+                  className="flex items-start gap-2 border-accent-foreground border-b p-4 pb-4 first:border-t last:border-b-0"
                 >
                   <ActivityIcon type={entry.type} className="size-6" />
                   <div>
@@ -316,7 +315,7 @@ export const OverviewCharts = ({
                         {entry.detail.slice(0, 100)}...
                       </p>
                     )}
-                    <p className="font-light mt-2 text-primary-dimmed text-xs">
+                    <p className="mt-2 font-light text-primary-dimmed text-xs">
                       {formatRelativeTime(new Date(entry.timestamp))}
                     </p>
                   </div>
@@ -326,7 +325,7 @@ export const OverviewCharts = ({
           )}
         </div>
 
-        <div className="flex p-4 items-center justify-between bg-background-dimmed">
+        <div className="flex items-center justify-between bg-background-dimmed p-4">
           <Button
             variant="outline"
             color="accent"

@@ -123,7 +123,7 @@ const columns: ColumnDef<OverviewTable.Row>[] = [
 
 export const OverviewTable = ({ products }: OverviewTable.Props) => (
   <>
-    <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
+    <div className="flex items-center justify-between border-accent-foreground border-b p-4">
       <p className="mt-1 font-light text-2xl text-foreground-dimmed">
         Product Win Rates
       </p>
@@ -140,8 +140,8 @@ export const OverviewTable = ({ products }: OverviewTable.Props) => (
         <DataTable>
           <DataTableEmpty>
             <div className="p-8 text-center">
-              <BoxMinusIcon className="size-24 mb-6" />
-              <p className="text-lg text-foreground">No products scanned yet</p>
+              <BoxMinusIcon className="mb-6 size-24" />
+              <p className="text-foreground text-lg">No products scanned yet</p>
               <p className="mt-1 font-light text-foreground-dimmed text-sm">
                 Import products and run a simulation to see win rates here.
               </p>

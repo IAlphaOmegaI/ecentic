@@ -87,7 +87,6 @@ const config = {
 export const CsvForm = () => {
   const router = useRouter();
   const toast = useToastManager();
-  const [count, setCount] = useState<number | null>(null);
 
   const [handleSubmit, isPending] = useAsyncAction(
     async (data: FormEntries<typeof config>) => {
@@ -159,19 +158,10 @@ export const CsvForm = () => {
       onSubmit={handleSubmit}
       onChange={(values) => {
         const file = (values as { file: File | null }).file;
-        if (!file) {
-          setCount(null);
-          return;
-        }
-        void file.text().then((text) => setCount(parseCSV(text).length));
+        if (!file) return;
       }}
       className="flex flex-col gap-4"
     >
-      {count !== null && (
-        <p className="font-light text-foreground-dimmed text-sm">
-          {count} product{count !== 1 ? "s" : ""} detected
-        </p>
-      )}
       <Button
         type="submit"
         variant="flat"

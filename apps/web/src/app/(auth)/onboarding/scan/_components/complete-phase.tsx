@@ -2,9 +2,12 @@
 
 import {
   ArrowLeftIcon,
+  AwardIcon,
   LoaderIcon,
   ShareIcon,
   ShoppingCartIcon,
+  TrendDownIcon,
+  TrendUpIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
@@ -13,7 +16,6 @@ import Image from "next/image";
 import Link, { useLinkStatus } from "next/link";
 import { Motion } from "@/components/motion";
 import { Spring, Stagger } from "@/lib/animations";
-import { AwardIcon, TrendDownIcon, TrendUpIcon } from "@zenncore/icons";
 
 const models = [
   { id: "gpt4", label: "GPT-4", logo: "/images/chatgpt.svg" },
@@ -78,7 +80,7 @@ export const CompletePhase = ({
   return (
     <motion.div
       key="complete"
-      className="flex flex-col overflow-hidden h-full"
+      className="flex h-full flex-col overflow-hidden"
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
@@ -172,9 +174,9 @@ export const CompletePhase = ({
           </Motion.Item>
         )}
 
-        <Motion.Item className="border-accent-foreground border-b px-8 flex-1">
+        <Motion.Item className="flex-1 border-accent-foreground border-b px-8">
           <div className="grid grid-cols-2 gap-px border-accent-foreground border-x bg-accent-foreground">
-            <div className="bg-background-dimmed p-4 flex items-center gap-2">
+            <div className="flex items-center gap-2 bg-background-dimmed p-4">
               <div className="flex items-center gap-2">
                 <AwardIcon className="size-12 text-foreground" />
                 <div>
@@ -185,7 +187,7 @@ export const CompletePhase = ({
                 </div>
               </div>
             </div>
-            <div className="bg-background-dimmed p-4 flex items-center gap-2">
+            <div className="flex items-center gap-2 bg-background-dimmed p-4">
               <ShoppingCartIcon className="size-12 text-primary" />
               <div>
                 <p className="font-medium text-2xl text-primary">
@@ -194,14 +196,14 @@ export const CompletePhase = ({
                 <p className="font-light text-foreground-dimmed">Products</p>
               </div>
             </div>
-            <div className="bg-background-dimmed p-4 flex items-center gap-2">
+            <div className="flex items-center gap-2 bg-background-dimmed p-4">
               <TrendUpIcon className="size-12 text-success" />
               <div>
                 <p className="font-medium text-2xl text-success">{wins}</p>
                 <p className="font-light text-foreground-dimmed">Wins</p>
               </div>
             </div>
-            <div className="bg-background-dimmed p-4 flex items-center gap-2">
+            <div className="flex items-center gap-2 bg-background-dimmed p-4">
               <TrendDownIcon className="size-12 text-error" />
               <div>
                 <p className="font-medium text-2xl text-error">{losses}</p>

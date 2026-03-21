@@ -16,7 +16,7 @@ const platforms = [
     id: "woocommerce",
     name: "WooCommerce",
     description: "API key connection",
-    badge: null,
+    badge: "link now",
     href: "/onboarding/connect/woocommerce",
     image: "/images/woocommerce.svg",
   },
@@ -40,7 +40,7 @@ const platforms = [
     id: "feed",
     name: "Custom Feed",
     description: "XML or JSON feed URL",
-    badge: null,
+    badge: "link now",
     href: "/onboarding/connect/feed",
     image: "/images/custom.svg",
   },
@@ -48,7 +48,7 @@ const platforms = [
     id: "csv",
     name: "CSV Upload",
     description: "Drag & drop or browse",
-    badge: null,
+    badge: "link now",
     href: "/onboarding/connect/csv",
     image: null,
   },
@@ -67,7 +67,7 @@ export const PlatformGrid = () => (
               alt={platform.name}
               width={40}
               height={40}
-              className="mb-4 shrink-0 size-14"
+              className="mb-4 size-14 shrink-0"
             />
           ) : (
             <div className="mb-4 flex size-14 items-center justify-center">
@@ -80,9 +80,8 @@ export const PlatformGrid = () => (
           </p>
           <span
             className={cn(
-              "mt-2 self-start px-1.5 py-0.5 text-sm",
-              !platform.badge && "opacity-0",
-              platform.badge === "Coming soon"
+              "mt-2 self-start px-1.5 py-0.5 text-sm capitalize",
+              platform.badge === "Coming soon" || platform.badge === "link now"
                 ? "bg-foreground-dimmed/10 text-foreground-dimmed"
                 : "bg-primary/10 text-primary",
             )}

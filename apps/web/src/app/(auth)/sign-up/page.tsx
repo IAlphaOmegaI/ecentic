@@ -1,4 +1,5 @@
 import { ArrowRightIcon } from "@zenncore/icons";
+import { Button } from "@zenncore/web/components/button";
 import * as motion from "motion/react-client";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,7 +7,6 @@ import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import { Fade } from "@/lib/animations";
 import { SignUpForm } from "./_components/sign-up-form";
-import { Button } from "@zenncore/web/components/button";
 
 const points = [
   "Simulate how GPT-4, Claude & Gemini pick products",
@@ -65,7 +65,7 @@ export default () => (
             <SignUpForm />
           </div>
         </Motion.Item>
-        <Motion.Item className="w-full px-8 border-accent-foreground border-b">
+        <Motion.Item className="w-full border-accent-foreground border-b px-8">
           <div className="flex flex-col gap-2 border-accent-foreground border-x p-6 font-light text-foreground-dimmed">
             <p>
               By creating an account you agree to our{" "}
