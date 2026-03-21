@@ -7,6 +7,7 @@ import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
 import type { Document } from "../utils/repository";
 import { repository } from "../utils/repository";
+import { cache as dedupe } from "react";
 
 export const { get, paginate, create, update, destroy, exists, count, find } =
   repository(schema.scan);
@@ -19,12 +20,14 @@ export const getForCurrentUser = withAuthentication(async (context) => {
   });
 }, "Scan.getForCurrentUser");
 
-export const getLatest = withAuthentication(async (context) => {
-  return find(Environment.SERVER, {
-    where: eq(schema.scan.userId, context.session.user.id),
-    orderBy: [{ column: schema.scan.createdAt, direction: "desc" as const }],
-  });
-}, "Scan.getLatest");
+export const getLatest = dedupe(
+  withAuthentication(async (context) => {
+    return find(Environment.SERVER, {
+      where: eq(schema.scan.userId, context.session.user.id),
+      orderBy: [{ column: schema.scan.createdAt, direction: "desc" as const }],
+    });
+  }, "Scan.getLatest"),
+);
 
 export const findPending = withContext(async (_context) => {
   return find(Environment.SERVER, {

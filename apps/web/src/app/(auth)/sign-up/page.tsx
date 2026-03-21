@@ -46,6 +46,7 @@ export default () => (
                 width={100}
                 height={28}
                 className="h-auto w-24"
+                loading="eager"
               />
             </div>
             <div>
