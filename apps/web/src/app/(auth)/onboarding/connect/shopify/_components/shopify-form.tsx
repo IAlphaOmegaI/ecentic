@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowRightIcon } from "@zenncore/icons";
+import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
+import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { FieldDescription } from "@zenncore/web/components/form";
 import {
@@ -36,10 +37,12 @@ const config = {
 } satisfies GenericForm;
 
 export const ShopifyForm = () => {
-  const handleSubmit = (data: FormEntries<typeof config>) => {
-    const shop = data.shop.trim();
-    window.location.href = `/api/integrations/shopify/install?shop=${encodeURIComponent(shop)}`;
-  };
+  const [handleSubmit, isPending] = useAsyncAction(
+    async (data: FormEntries<typeof config>) => {
+      const shop = data.shop.trim();
+      window.location.href = `/api/integrations/shopify/install?shop=${encodeURIComponent(shop)}`;
+    },
+  );
 
   return (
     <InferredForm
@@ -52,9 +55,14 @@ export const ShopifyForm = () => {
         variant="flat"
         color="primary"
         className="mt-2 w-full"
+        disabled={isPending}
       >
         Connect to Shopify
-        <ArrowRightIcon className="size-4" />
+        {isPending ? (
+          <LoaderIcon className="size-4 animate-spin" />
+        ) : (
+          <ArrowRightIcon className="size-4" />
+        )}
       </Button>
     </InferredForm>
   );

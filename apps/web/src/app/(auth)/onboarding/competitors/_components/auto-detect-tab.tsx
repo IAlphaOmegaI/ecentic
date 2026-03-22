@@ -56,7 +56,7 @@ export const AutoDetectTab = ({
       ...previous,
       {
         ...entry,
-        id: Math.random(),
+        id: previous.length + 1,
         elapsed: Date.now() - start.current,
       },
     ]);
@@ -200,7 +200,8 @@ export const AutoDetectTab = ({
                 const opacity = isDetecting ? Math.max(0.2, 1 - age * 0.1) : 1;
                 return (
                   <motion.div
-                    key={log.id}
+                    // biome-ignore lint/suspicious/noArrayIndexKey: we want to use the index as the key
+                    key={index}
                     initial={{ opacity: 0, x: -6 }}
                     animate={{ opacity, x: 0 }}
                     transition={{ duration: 0.25, ease: "easeOut" }}
@@ -251,17 +252,17 @@ export const AutoDetectTab = ({
                 </span>
               </div>
             ) : (
-              <div className="flex items-center justify-between border-accent-foreground border-t px-5 py-3">
-                <span className="font-light text-foreground-dimmed text-xs">
+              <div className="flex items-center justify-between border-accent-foreground border-t p-4">
+                <span className="font-light text-foreground-dimmed">
                   Finished in {formatElapsed(elapsed)}
                 </span>
-                <button
-                  type="button"
+                <Button
                   onClick={handleDetect}
-                  className="font-light text-foreground-dimmed text-xs underline-offset-2 hover:underline"
+                  variant={"outline"}
+                  color="accent"
                 >
-                  Run again
-                </button>
+                  Run Again
+                </Button>
               </div>
             )}
           </motion.div>

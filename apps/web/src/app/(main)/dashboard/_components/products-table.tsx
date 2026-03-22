@@ -1,7 +1,8 @@
 "use client";
 
-import { ArrowRightIcon } from "@zenncore/icons";
+import { ArrowRightIcon, BoxMinusIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
+import { Button } from "@zenncore/web/components/button";
 import type { ColumnDef } from "@zenncore/web/components/data-table";
 import {
   DataTable,
@@ -10,6 +11,8 @@ import {
   DataTableProvider,
 } from "@zenncore/web/components/data-table";
 import Link from "next/link";
+import type { ReactNode } from "react";
+import { usePaginationChangeHandler } from "@/hooks/pagination";
 import { formatRelativeTime } from "@/lib/date";
 
 const WinRateBar = ({ rate }: { rate: number }) => {
@@ -25,11 +28,11 @@ const WinRateBar = ({ rate }: { rate: number }) => {
   })();
 
   return (
-    <div className="flex items-center gap-1.5">
-      <div className="h-1.5 w-12 bg-accent-foreground">
+    <div className="flex items-center gap-2">
+      <div className="h-1 w-24 bg-accent-foreground">
         <div className={cn("h-full", bar)} style={{ width: `${rate}%` }} />
       </div>
-      <span className={cn("font-medium text-xs", text)}>{rate}%</span>
+      <span className={cn("font-medium text-foreground", text)}>{rate}%</span>
     </div>
   );
 };
@@ -47,11 +50,11 @@ const QualityBar = ({ score }: { score: number }) => {
   })();
 
   return (
-    <div className="flex items-center gap-1.5">
-      <div className="h-1 w-10 bg-accent-foreground">
+    <div className="flex items-center gap-2">
+      <div className="h-1 w-24 bg-accent-foreground">
         <div className={cn("h-full", color)} style={{ width: `${score}%` }} />
       </div>
-      <span className="font-light text-foreground-dimmed text-xs">{score}</span>
+      <span className="text-foreground-dimmed">{score}/100</span>
     </div>
   );
 };
@@ -69,13 +72,11 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
           {row.original.title.slice(0, 2).toUpperCase()}
         </div>
         <div>
-          <p className="font-medium text-foreground text-sm transition-colors group-hover:text-primary">
+          <p className="font-medium text-foreground transition-colors group-hover:text-primary">
             {row.original.title}
           </p>
           {row.original.sku && (
-            <p className="font-light text-foreground-dimmed text-xs">
-              {row.original.sku}
-            </p>
+            <p className="text-foreground-dimmed">{row.original.sku}</p>
           )}
         </div>
       </Link>
@@ -85,9 +86,9 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
     accessorKey: "price",
     header: "Price",
     cell: ({ row }) => (
-      <span className="font-light text-foreground text-sm">
+      <span className="text-foreground">
         {row.original.price
-          ? `${row.original.currency ?? "$"}${row.original.price}`
+          ? `${row.original.currency ?? "$"} ${row.original.price}`
           : "—"}
       </span>
     ),
@@ -101,7 +102,7 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
     accessorKey: "winRate.gpt4",
     header: "GPT-4",
     cell: ({ row }) => (
-      <span className="font-light text-foreground text-xs">
+      <span className="font-light text-foreground">
         {row.original.winRate.gpt4}%
       </span>
     ),
@@ -110,7 +111,7 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
     accessorKey: "winRate.claude",
     header: "Claude",
     cell: ({ row }) => (
-      <span className="font-light text-foreground text-xs">
+      <span className="font-light text-foreground">
         {row.original.winRate.claude}%
       </span>
     ),
@@ -119,7 +120,7 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
     accessorKey: "winRate.gemini",
     header: "Gemini",
     cell: ({ row }) => (
-      <span className="font-light text-foreground text-xs">
+      <span className="font-light text-foreground">
         {row.original.winRate.gemini}%
       </span>
     ),
@@ -133,7 +134,7 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
     accessorKey: "updatedAt",
     header: "Last Scan",
     cell: ({ row }) => (
-      <span className="whitespace-nowrap font-light text-foreground-dimmed text-xs">
+      <span className="whitespace-nowrap font-light text-foreground-dimmed">
         {formatRelativeTime(row.original.updatedAt)}
       </span>
     ),
@@ -142,33 +143,71 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
     id: "actions",
     header: undefined,
     cell: ({ row }) => (
-      <Link
-        href={`/dashboard/products/${row.original._id}`}
-        className="flex items-center gap-1 whitespace-nowrap font-light text-primary text-xs hover:underline"
+      <Button
+        size={"icon"}
+        color="primary"
+        variant={"flat"}
+        render={<Link href={`/dashboard/products/${row.original._id}`} />}
       >
-        View <ArrowRightIcon className="size-3" />
-      </Link>
+        <ArrowRightIcon />
+      </Button>
     ),
   },
 ];
 
-export const ProductsTable = ({ rows }: ProductsTable.Props) => (
-  <div className="bg-background-rich">
-    <DataTableProvider rows={rows} columns={columns} pageSize={10}>
-      <DataTable>
-        <DataTableEmpty>
-          <p className="py-8 text-center font-light text-foreground-dimmed text-sm">
-            No products found.
-          </p>
-        </DataTableEmpty>
-      </DataTable>
-      {rows.length > 10 && <DataTablePagination />}
-    </DataTableProvider>
-  </div>
-);
+export const ProductsTable = ({
+  rows,
+  title = "Product Catalog",
+  action,
+  paginated,
+  pageCount,
+  ...props
+}: ProductsTable.Props) => {
+  const handlePaginationChange = usePaginationChangeHandler("products/");
+  return (
+    <>
+      <div className="flex items-baseline justify-between border-accent-foreground border-b p-4">
+        <p className="font-light text-2xl text-foreground-dimmed">{title}</p>
+        {action}
+      </div>
+      <div className="overflow-x-auto">
+        <DataTableProvider
+          rows={rows}
+          columns={columns}
+          pageSize={20}
+          pageCount={pageCount}
+          onPaginationChange={paginated ? handlePaginationChange : undefined}
+          handler="server"
+          {...props}
+        >
+          <DataTable className={cn(!paginated && "border-b-0")}>
+            <DataTableEmpty>
+              <div className="p-8 text-center">
+                <BoxMinusIcon className="mx-auto mb-6 size-24" />
+                <p className="text-foreground text-lg">No products found</p>
+                <p className="mt-1 font-light text-foreground-dimmed text-sm">
+                  Import products and run a simulation to see win rates here.
+                </p>
+              </div>
+            </DataTableEmpty>
+          </DataTable>
+          {paginated && <DataTablePagination />}
+        </DataTableProvider>
+      </div>
+    </>
+  );
+};
+
 export namespace ProductsTable {
-  export type Props = {
+  export type Props = Omit<
+    DataTableProvider.Props<Row>,
+    "columns" | "handler"
+  > & {
     rows: Row[];
+    title?: string;
+    action?: ReactNode;
+    paginated?: boolean;
+    pageCount: number;
   };
 
   export type Row = {

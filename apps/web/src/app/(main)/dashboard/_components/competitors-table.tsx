@@ -11,10 +11,8 @@ import {
   DataTableProvider,
 } from "@zenncore/web/components/data-table";
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
+import { usePaginationChangeHandler } from "@/hooks/pagination";
 import { formatRelativeTime } from "@/lib/date";
-import type { Paginated } from "@/server/utils/pagination";
 
 const WinRateBar = ({ rate }: { rate: number }) => {
   const color = (() => {
@@ -33,7 +31,7 @@ const WinRateBar = ({ rate }: { rate: number }) => {
       <div className="h-1 w-24 bg-accent-foreground">
         <div className={cn("h-full", color)} style={{ width: `${rate}%` }} />
       </div>
-      <span className="font-medium text-foreground">{rate}%</span>
+      <span className="text-foreground">{rate}%</span>
     </div>
   );
 };
@@ -43,34 +41,37 @@ const columns: ColumnDef<CompetitorsTable.Row>[] = [
     accessorKey: "brand",
     header: "Brand",
     cell: ({ row }) => (
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         <div className="flex size-9 shrink-0 items-center justify-center bg-primary/10 font-semibold text-primary text-xs">
           {row.original.brand.slice(0, 2).toUpperCase()}
         </div>
-        <p className="font-medium text-foreground text-sm">
-          {row.original.brand}
-        </p>
+        <div>
+          <p className="font-medium text-foreground">{row.original.brand}</p>
+          <p className="font-light text-foreground-dimmed text-sm">
+            {row.original.products}{" "}
+            {row.original.products === 1 ? "product" : "products"}
+          </p>
+        </div>
       </div>
     ),
   },
   {
-    accessorKey: "products",
-    header: "Products",
-  },
-  {
     accessorKey: "winRate",
-    header: "Your Win Rate",
+    header: "Win Rate",
     cell: ({ row }) => <WinRateBar rate={row.original.winRate} />,
   },
   {
     accessorKey: "simulations",
     header: "Simulations",
+    cell: ({ row }) => (
+      <span className="text-foreground-dimmed">{row.original.simulations}</span>
+    ),
   },
   {
     accessorKey: "updatedAt",
     header: "Last Updated",
     cell: ({ row }) => (
-      <span className="font-light text-foreground-dimmed text-xs">
+      <span className="font-light text-foreground-dimmed">
         {formatRelativeTime(new Date(row.original.updatedAt))}
       </span>
     ),
@@ -80,8 +81,8 @@ const columns: ColumnDef<CompetitorsTable.Row>[] = [
     header: undefined,
     cell: ({ row }) => (
       <Button
-        variant="outline"
-        color="accent"
+        variant="flat"
+        color="primary"
         size="icon"
         render={<Link href={`/dashboard/competitors/${row.original._id}`} />}
       >
@@ -93,40 +94,31 @@ const columns: ColumnDef<CompetitorsTable.Row>[] = [
 
 export const CompetitorsTable = ({
   rows,
-  pagination,
+  pageCount,
+  title = "Competitor Brands",
+  action,
+  paginated = false,
 }: CompetitorsTable.Props) => {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  const handlePaginationChange = useCallback(
-    (state: { pageIndex: number; pageSize: number }) => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set("page", String(state.pageIndex));
-      params.set("size", String(state.pageSize));
-      router.push(`${pathname}?${params.toString()}`);
-    },
-    [router, pathname, searchParams],
-  );
+  const handlePaginationChange = usePaginationChangeHandler("competitors/");
 
   return (
     <>
       <div className="flex items-center justify-between border-accent-foreground border-b p-4">
         <p className="mt-1 font-light text-2xl text-foreground-dimmed">
-          Competitor Brands
+          {title}
         </p>
+        {action}
       </div>
-      <div className="overflow-x-auto bg-background-rich">
+      <div className="overflow-x-auto">
         <DataTableProvider
           rows={rows}
           columns={columns}
           handler="server"
-          pageSize={pagination.size}
-          pageIndex={pagination.page}
-          rowCount={pagination.total}
-          onPaginationChange={handlePaginationChange}
+          pageSize={10}
+          pageCount={pageCount}
+          onPaginationChange={paginated ? handlePaginationChange : undefined}
         >
-          <DataTable>
+          <DataTable className={cn(!paginated && "border-b-0")}>
             <DataTableEmpty>
               <div className="p-8 text-center">
                 <BoxMinusIcon className="mb-6 size-24" />
@@ -139,7 +131,7 @@ export const CompetitorsTable = ({
               </div>
             </DataTableEmpty>
           </DataTable>
-          {pagination.total > pagination.size && <DataTablePagination />}
+          {paginated && <DataTablePagination />}
         </DataTableProvider>
       </div>
     </>
@@ -147,9 +139,15 @@ export const CompetitorsTable = ({
 };
 
 export namespace CompetitorsTable {
-  export type Props = {
+  export type Props = Omit<
+    DataTableProvider.Props<Row>,
+    "columns" | "handler"
+  > & {
     rows: Row[];
-    pagination: Paginated<Row>["pagination"];
+    title?: string;
+    action?: React.ReactNode;
+    paginated?: boolean;
+    pageCount: number;
   };
 
   export type Row = {

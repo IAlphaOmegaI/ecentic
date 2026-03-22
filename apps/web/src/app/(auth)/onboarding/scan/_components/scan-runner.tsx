@@ -3,6 +3,7 @@
 import { readStreamableValue } from "@ai-sdk/rsc";
 import { unwrapResult } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
+import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence } from "motion/react";
 import type { ReactNode } from "react";
@@ -39,15 +40,11 @@ export namespace ScanRunner {
 }
 
 export const ScanRunner = ({ children, simulations }: ScanRunner.Props) => {
-  "use no memo";
-
   const toast = useToastManager();
   const [phase, setPhase] = useState<ScanPhase>("pre");
   const [stats, setStats] = useState<Stats>(initialStats);
 
   const [logs, setLogs] = useState<LogEntry[]>([]);
-
-  console.log({ phase });
 
   const [statuses, setStatuses] =
     useState<Record<string, ModelStatus>>(initialStatuses);
@@ -71,7 +68,6 @@ export const ScanRunner = ({ children, simulations }: ScanRunner.Props) => {
   };
 
   const [handleRun, isRunning] = useAsyncAction(async () => {
-    console.log("running");
     setPhase("running");
     setLogs([]);
     setStats(initialStats);

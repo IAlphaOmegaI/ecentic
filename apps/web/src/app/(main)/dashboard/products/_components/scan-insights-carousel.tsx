@@ -186,18 +186,17 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
       <InsightCard scan={current} />
 
       {parsed.length > 1 && (
-        <div className="mt-6 flex items-center justify-between border-accent-foreground border-t pt-4">
-          <button
-            type="button"
+        <div className="flex items-center justify-between border-accent-foreground border-t p-6">
+          <Button
+            variant="outline"
+            color="accent"
+            size="icon"
             disabled={index === 0}
-            onClick={() => setIndex((prev) => Math.max(0, prev - 1))}
-            className="flex items-center gap-1.5 font-light text-foreground-dimmed text-sm transition-colors hover:text-foreground disabled:opacity-30"
+            onClick={() => setIndex((prvious) => Math.max(0, prvious - 1))}
           >
             <ChevronLeftIcon className="size-4" />
-            Newer
-          </button>
+          </Button>
 
-          {/* Dot indicators */}
           <div className="flex items-center gap-1.5">
             {parsed.map((_, i) => (
               <button
@@ -215,17 +214,17 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
             ))}
           </div>
 
-          <button
-            type="button"
+          <Button
+            variant="outline"
+            color="accent"
+            size="icon"
             disabled={index === parsed.length - 1}
             onClick={() =>
               setIndex((previous) => Math.min(parsed.length - 1, previous + 1))
             }
-            className="flex items-center gap-1.5 font-light text-foreground-dimmed text-sm transition-colors hover:text-foreground disabled:opacity-30"
           >
-            Older
             <ArrowRightIcon className="size-4" />
-          </button>
+          </Button>
         </div>
       )}
     </div>

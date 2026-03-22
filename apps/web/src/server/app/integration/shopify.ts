@@ -78,7 +78,7 @@ export const syncShopifyCatalog = withContext(
     {
       user: userId,
       store: storeId,
-      currency: currencyOverride,
+      currency: override,
       tx,
     }: {
       user: string;
@@ -110,9 +110,7 @@ export const syncShopifyCatalog = withContext(
       };
 
     const currency =
-      currencyOverride ??
-      (await fetchShopCurrency(domain, accessToken)) ??
-      null;
+      override ?? (await fetchShopCurrency(domain, accessToken)) ?? null;
 
     const update = await Store.update(
       Environment.SERVER,
@@ -203,7 +201,7 @@ export const syncShopifyCatalog = withContext(
 
 export const syncProducts = withAuthentication(
   async (context, { storeId }: { storeId: string }) => {
-    return syncShopifyCatalog({
+    return syncShopifyCatalog(Environment.SERVER, {
       user: context.session.user.id,
       store: storeId,
     });
@@ -308,7 +306,6 @@ export const handleOAuthCallback = withContext(
         await syncShopifyCatalog(Environment.SERVER, {
           user: userId,
           store: storeResult.data.id,
-          currency,
           tx,
         });
 

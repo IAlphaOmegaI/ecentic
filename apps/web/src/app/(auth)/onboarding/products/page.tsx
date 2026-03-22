@@ -1,18 +1,18 @@
+import { BoxMinusIcon } from "@zenncore/icons";
 import { unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
+import { unstable_noStore as noStore } from "next/cache";
 import Link from "next/link";
 import { Motion } from "@/components/motion";
 import * as Shopify from "@/server/app/integration/shopify";
 import * as Product from "@/server/app/product";
 import * as Store from "@/server/app/store";
 import { ProductSelector } from "./_components/product-selector";
-import { unstable_noStore as noStore } from "next/cache";
-import { BoxMinusIcon } from "@zenncore/icons";
 
 export default async () => {
   noStore();
 
-  const products = await unwrapResult(Product.getForCurrentUser());
+  const products = await unwrapResult(Product.skimForCurrentUser());
 
   if (products.length === 0)
     return (

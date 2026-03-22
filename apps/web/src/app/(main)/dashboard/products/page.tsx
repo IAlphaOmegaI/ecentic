@@ -9,6 +9,7 @@ import {
 } from "@zenncore/icons";
 import { unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
+import type { SearchParamsProps } from "@zenncore/web/types";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
@@ -16,17 +17,19 @@ import { formatRelativeTime } from "@/lib/date";
 import * as Product from "@/server/app/product";
 import * as Scan from "@/server/app/scan";
 import * as Tracking from "@/server/app/tracking";
+import { Environment } from "@/server/utils/environment";
+import { extractPaginationParams, type Pager } from "@/server/utils/pagination";
 import { AgentVisitsChart } from "../_components/agent-visits-chart";
+import { ProductsTable } from "../_components/products-table";
 import {
   OptimizationBreakdown,
   ProductsModelRates,
   ProductsWinRateTrend,
   QualityDistribution,
 } from "./_components/products-charts";
-import { ProductsTable } from "./_components/products-table";
 import { ScanInsightsCarousel } from "./_components/scan-insights-carousel";
 
-export default () => (
+export default ({ searchParams }: SearchParamsProps<keyof Pager>) => (
   <div className="flex flex-col">
     <div className="mx-8 border-accent-foreground border-x">
       <div className="-mx-8 border-accent-foreground border-b">
@@ -81,7 +84,7 @@ export default () => (
       <div className="-mx-8 border-accent-foreground border-t border-b">
         <div className="mx-8">
           <Suspense fallback={<TableSkeleton />}>
-            <Products />
+            <Products searchParams={searchParams} />
           </Suspense>
         </div>
       </div>
@@ -402,41 +405,30 @@ const Performance = async () => {
   );
 };
 
-const Products = async () => {
+const Products = async ({
+  searchParams,
+}: {
+  searchParams: SearchParamsProps<keyof Pager>["searchParams"];
+}) => {
   await connection();
-  const data = await unwrapResult(Product.gatherIntelligence());
-
-  if (data.products.length === 0)
-    return (
-      <div className="p-8 text-center">
-        <BoxMinusIcon className="mx-auto mb-6 size-24" />
-        <p className="text-foreground text-lg">No products imported yet</p>
-        <p className="mt-1 font-light text-foreground-dimmed text-sm">
-          Connect your store or import products to start simulating.
-        </p>
-        <Button
-          variant="flat"
-          color="primary"
-          className="mt-4"
-          render={<Link href="/onboarding/connect" />}
-        >
-          Connect Store
-        </Button>
-      </div>
-    );
+  const { page, size } = await extractPaginationParams(searchParams);
+  const data = await unwrapResult(
+    Product.paginateWithIntelligence(Environment.SERVER, { page, size }),
+  );
 
   return (
-    <>
-      <div className="flex items-center justify-between border-accent-foreground border-b p-4">
-        <p className="font-light text-2xl text-foreground-dimmed">
-          Product Catalog
+    <ProductsTable
+      paginated
+      rows={data.rows}
+      pageCount={data.pageCount}
+      pageSize={size}
+      pageIndex={page}
+      action={
+        <p className="font-light text-foreground-dimmed">
+          {data.total} products
         </p>
-        <p className="font-light text-foreground-dimmed text-sm">
-          {data.products.length} products
-        </p>
-      </div>
-      <ProductsTable rows={data.products} />
-    </>
+      }
+    />
   );
 };
 

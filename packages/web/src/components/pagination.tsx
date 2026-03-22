@@ -5,7 +5,6 @@ import type { ComponentProps, JSX } from "react";
 import type { RenderComponentProps } from "../utils/types/render-component-props";
 import { type Button, buttonVariants } from "./button";
 
-//TODO: add state management to pagination (context)
 export const Pagination = ({
   render,
   className,
@@ -35,7 +34,7 @@ export const PaginationContent = ({
     defaultTagName: "ul",
     render,
     props: mergeProps<"ul">(props, {
-      className: cn("flex flex-row items-center gap-1", className),
+      className: cn("flex flex-row items-center gap-2", className),
     }),
   });
 
@@ -61,9 +60,11 @@ export const PaginationItem = ({
       className: cn(
         buttonVariants({
           size,
+          color: "accent",
           variant: "outline",
         }),
-        isActive && "!text-primary-dimmed border-primary-dimmed",
+        "bg-background-rich",
+        isActive && "bg-primary-rich text-white",
         className,
       ),
     }),

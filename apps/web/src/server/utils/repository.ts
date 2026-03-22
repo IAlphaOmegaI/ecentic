@@ -123,7 +123,8 @@ export function repository<T extends TableWithId>(table: T) {
         const offset = (page - 1) * size;
 
         const t = asTable(table);
-        const orderColumns = orderBy?.length
+
+        const order = orderBy?.length
           ? orderBy.map(({ column, direction }) =>
               direction === "desc" ? desc(column) : asc(column),
             )
@@ -135,7 +136,7 @@ export function repository<T extends TableWithId>(table: T) {
           .select()
           .from(t)
           .where(where)
-          .orderBy(...orderColumns)
+          .orderBy(...order)
           .offset(offset)
           .limit(size) as Promise<Document<T>[]>;
 

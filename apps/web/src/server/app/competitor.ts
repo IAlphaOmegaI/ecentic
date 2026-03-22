@@ -19,11 +19,12 @@ export const { get, paginate, create, update, destroy, exists, count, find } =
 
 export type Type = Document<typeof schema.competitor>;
 
-export const getForCurrentUser = withAuthentication(async (context) => {
+export const skimForCurrentUser = withAuthentication(async (context) => {
   return find(Environment.SERVER, {
     where: eq(schema.competitor.userId, context.session.user.id),
+    limit: 10,
   });
-}, "Competitor.getForCurrentUser");
+}, "Competitor.skimForCurrentUser");
 
 export const removeForUser = withAuthentication(
   async (context, { id }: { id: string }) => {
@@ -223,7 +224,7 @@ const aggregateBrands = (
 export const gatherIntelligence = dedupe(
   withAuthentication(async () => {
     const [competitors, scan] = await Promise.all([
-      getForCurrentUser(),
+      skimForCurrentUser(),
       Scan.getLatest(),
     ]);
 
@@ -262,7 +263,7 @@ export const gatherIntelligence = dedupe(
 export const gatherPaginatedIntelligence = withAuthentication(
   async (_context, { page, size }: { page: number; size: number }) => {
     const [competitors, scan] = await Promise.all([
-      getForCurrentUser(),
+      skimForCurrentUser(),
       Scan.getLatest(),
     ]);
 
