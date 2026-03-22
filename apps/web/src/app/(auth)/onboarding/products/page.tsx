@@ -1,8 +1,8 @@
 import { BoxMinusIcon } from "@zenncore/icons";
 import { unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import { connection } from "next/server";
 import Link from "next/link";
+import { connection } from "next/server";
 import { Motion } from "@/components/motion";
 import * as Product from "@/server/app/product";
 import { ProductSelector } from "./_components/product-selector";

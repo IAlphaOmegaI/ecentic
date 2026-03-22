@@ -4,6 +4,8 @@ import {
   ArrowRightIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  BullseyeIcon,
+  RocketIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
@@ -51,13 +53,16 @@ const WinRatePill = ({ wins, losses }: { wins: number; losses: number }) => {
   })();
 
   return (
-    <div className="flex items-center gap-3">
-      <span className={cn("font-medium text-2xl tabular-nums", color)}>
-        {rate}%
-      </span>
-      <span className="font-light text-foreground-dimmed text-sm">
-        {wins}W / {losses}L
-      </span>
+    <div>
+      <h3>Win Rate:</h3>
+      <div className="flex items-center gap-3">
+        <span className={cn("font-medium text-2xl tabular-nums", color)}>
+          {rate}%
+        </span>
+        <span className="font-light text-foreground-dimmed text-sm">
+          {wins}W / {losses}L
+        </span>
+      </div>
     </div>
   );
 };
@@ -79,20 +84,19 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
 
           <div className="grid grid-cols-1 gap-px border-accent-foreground border-y bg-accent-foreground sm:grid-cols-[1fr_auto]">
             <div className="bg-primary p-6">
-              <p className="mb-2 font-light text-background uppercase tracking-widest">
+              <RocketIcon className="size-8 text-background" />
+              <p className="mb-2 text-white uppercase tracking-widest  mt-2">
                 Impact
               </p>
               <p className="text-white leading-relaxed">
                 {finding.impactDescription}
               </p>
             </div>
-            <div className="flex flex-col items-center justify-center border-accent-foreground border-l bg-background-dimmed p-6">
-              <span className="font-medium text-4xl text-error tabular-nums">
+            <div className="flex flex-col items-center justify-center border-accent-foreground border-l bg-error p-6">
+              <span className="font-medium text-4xl text-white tabular-nums">
                 {finding.lossPercentage}%
               </span>
-              <p className="mt-2 font-light text-foreground-dimmed text-sm">
-                of sims lost
-              </p>
+              <p className="mt-2 font-light text-white text-sm">of sims lost</p>
             </div>
           </div>
 

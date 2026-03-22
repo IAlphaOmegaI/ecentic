@@ -3,7 +3,6 @@
 import { readStreamableValue } from "@ai-sdk/rsc";
 import { unwrapResult } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
-import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence } from "motion/react";
 import type { ReactNode } from "react";

@@ -1,9 +1,8 @@
 import { parseSearchParam } from "@zenncore/utils";
 import type { SearchParamsProps } from "@zenncore/web/types";
-
+import { connection } from "next/server";
 import { Motion } from "@/components/motion";
 import { CompetitorManager } from "./_components/competitor-manager";
-import { connection } from "next/server";
 
 export default async ({ searchParams }: SearchParamsProps<"products">) => {
   await connection();
