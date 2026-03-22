@@ -1,0 +1,280 @@
+"use client";
+
+import { cn } from "@zenncore/utils";
+import { useAsyncAction } from "@zenncore/utils/hooks";
+import { Button } from "@zenncore/web/components/button";
+import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
+import { useState } from "react";
+import type { UcpCheckResult } from "@/server/app/intelligence/ucp-check";
+import { checkUcp } from "@/server/app/intelligence/ucp-check";
+
+// ─── Icons ───────────────────────────────────────────────────────────────────
+
+const CheckCircleIcon = () => (
+  <svg
+    viewBox="0 0 20 20"
+    fill="none"
+    className="size-5 shrink-0"
+    aria-hidden="true"
+  >
+    <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="1.5" />
+    <path
+      d="M6.5 10l2.5 2.5 4.5-5"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const XCircleIcon = () => (
+  <svg
+    viewBox="0 0 20 20"
+    fill="none"
+    className="size-5 shrink-0"
+    aria-hidden="true"
+  >
+    <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="1.5" />
+    <path
+      d="M7 7l6 6M13 7l-6 6"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+// ─── Check row ────────────────────────────────────────────────────────────────
+
+type CheckRowProps = {
+  label: string;
+  passed: boolean;
+  detail?: string | null;
+};
+
+const CheckRow = ({ label, passed, detail }: CheckRowProps) => (
+  <div className="flex items-start gap-3 py-3">
+    <span className={cn(passed ? "text-primary" : "text-red-500")}>
+      {passed ? <CheckCircleIcon /> : <XCircleIcon />}
+    </span>
+    <div className="flex-1">
+      <p className="font-medium text-foreground text-sm">{label}</p>
+      {detail && (
+        <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
+          {detail}
+        </p>
+      )}
+    </div>
+    <span
+      className={cn(
+        "mt-0.5 inline-flex items-center px-2 py-0.5 font-medium text-xs",
+        passed
+          ? "bg-primary/10 text-primary"
+          : "bg-red-500/10 text-red-500",
+      )}
+    >
+      {passed ? "Pass" : "Fail"}
+    </span>
+  </div>
+);
+
+// ─── JSON preview ─────────────────────────────────────────────────────────────
+
+type JToken = {
+  text: string;
+  type: "key" | "string" | "number" | "boolean" | "null" | "punct" | "space";
+};
+
+const tokenizeJson = (json: string): JToken[] => {
+  const tokens: JToken[] = [];
+  let i = 0;
+  while (i < json.length) {
+    if (/\s/.test(json[i])) {
+      let text = "";
+      while (i < json.length && /\s/.test(json[i])) text += json[i++];
+      tokens.push({ text, type: "space" });
+      continue;
+    }
+    if (json[i] === '"') {
+      let text = '"';
+      i++;
+      while (i < json.length && json[i] !== '"') {
+        if (json[i] === "\\") text += json[i++];
+        text += json[i++];
+      }
+      text += '"';
+      i++;
+      let j = i;
+      while (j < json.length && /\s/.test(json[j])) j++;
+      tokens.push({ text, type: json[j] === ":" ? "key" : "string" });
+      continue;
+    }
+    if (/[-\d]/.test(json[i])) {
+      let text = "";
+      while (i < json.length && /[-\d.eE+]/.test(json[i])) text += json[i++];
+      tokens.push({ text, type: "number" });
+      continue;
+    }
+    if (json.startsWith("true", i) || json.startsWith("false", i)) {
+      const word = json.startsWith("true", i) ? "true" : "false";
+      tokens.push({ text: word, type: "boolean" });
+      i += word.length;
+      continue;
+    }
+    if (json.startsWith("null", i)) {
+      tokens.push({ text: "null", type: "null" });
+      i += 4;
+      continue;
+    }
+    tokens.push({ text: json[i++], type: "punct" });
+  }
+  return tokens;
+};
+
+const tokenColor: Record<JToken["type"], string> = {
+  key: "text-blue-400",
+  string: "text-green-400",
+  number: "text-orange-400",
+  boolean: "text-purple-400",
+  null: "text-orange-300/60",
+  punct: "text-foreground-dimmed/60",
+  space: "",
+};
+
+const JsonPreview = ({ data }: { data: unknown }) => {
+  const json = JSON.stringify(data, null, 2);
+  return (
+    <pre className="max-h-80 overflow-auto rounded-none p-4 font-mono text-xs leading-relaxed">
+      <code>
+        {tokenizeJson(json).map((token, index) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: stable
+          <span key={index} className={tokenColor[token.type]}>
+            {token.text}
+          </span>
+        ))}
+      </code>
+    </pre>
+  );
+};
+
+// ─── Results ──────────────────────────────────────────────────────────────────
+
+const Results = ({ result }: { result: UcpCheckResult }) => {
+  const overallPass = result.https && result.found && result.valid;
+  return (
+    <div className="mt-6 border border-accent-foreground bg-background">
+      {/* Header */}
+      <div className="flex items-center justify-between border-accent-foreground border-b px-5 py-3">
+        <div>
+          <p className="font-medium text-foreground text-sm">
+            {result.domain}
+          </p>
+          <p className="mt-0.5 font-mono text-foreground-dimmed text-xs">
+            {result.url}
+          </p>
+        </div>
+        <span
+          className={cn(
+            "inline-flex items-center gap-1.5 px-3 py-1 font-semibold text-sm",
+            overallPass
+              ? "bg-primary/10 text-primary"
+              : "bg-red-500/10 text-red-500",
+          )}
+        >
+          <span
+            className={cn(
+              "size-2 rounded-full",
+              overallPass ? "bg-primary" : "bg-red-500",
+            )}
+          />
+          {overallPass ? "UCP Ready" : "Not UCP Ready"}
+        </span>
+      </div>
+
+      {/* Checks */}
+      <div className="divide-y divide-accent-foreground px-5">
+        <CheckRow
+          label="HTTPS"
+          passed={result.https}
+          detail="The domain must be served over a secure HTTPS connection."
+        />
+        <CheckRow
+          label="/.well-known/ucp exists"
+          passed={result.found}
+          detail={
+            result.found
+              ? result.httpStatus !== null
+                ? `HTTP ${result.httpStatus}${result.valid ? "" : " (body is not JSON)"}.`
+                : "Endpoint responded."
+              : (result.error ?? "No response at /.well-known/ucp.")
+          }
+        />
+        <CheckRow
+          label="Valid JSON"
+          passed={result.valid}
+          detail={
+            result.valid
+              ? `Content-Type: ${result.contentType ?? "—"}${result.httpStatus !== null ? ` · HTTP ${result.httpStatus}` : ""}`
+              : (result.error ?? "Response body is not valid JSON.")
+          }
+        />
+      </div>
+
+      {/* JSON preview */}
+      {result.valid && result.data !== null && (
+        <div className="border-accent-foreground border-t">
+          <div className="border-accent-foreground border-b px-5 py-2.5">
+            <p className="font-medium text-foreground text-sm">UCP Response</p>
+          </div>
+          <JsonPreview data={result.data} />
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ─── Form ─────────────────────────────────────────────────────────────────────
+
+export const UcpValidatorForm = () => {
+  const [domain, setDomain] = useState("");
+  const [result, setResult] = useState<UcpCheckResult | null>(null);
+
+  const [handleCheck, isChecking] = useAsyncAction(async () => {
+    const response = await checkUcp(domain);
+    if (response.success) setResult(response.data);
+  });
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    handleCheck();
+  };
+
+  return (
+    <div>
+      <form onSubmit={handleSubmit} className="flex gap-2">
+        <TextField
+          value={domain}
+          onValueChange={setDomain}
+          className="h-10 flex-1 border border-accent-foreground bg-background"
+        >
+          <TextFieldInput
+            placeholder="yourdomain.com"
+            className="px-3 text-sm"
+          />
+        </TextField>
+        <Button
+          type="submit"
+          variant="flat"
+          color="primary"
+          disabled={isChecking || !domain.trim()}
+          className="h-10 px-5 text-sm"
+        >
+          {isChecking ? "Checking..." : "Check"}
+        </Button>
+      </form>
+
+      {result && <Results result={result} />}
+    </div>
+  );
+};
