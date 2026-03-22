@@ -5,8 +5,11 @@ import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useState } from "react";
-import type { UcpCheckResult } from "@/server/app/intelligence/ucp-check";
-import { checkUcp } from "@/server/app/intelligence/ucp-check";
+import type {
+  SpecIssue,
+  UcpCheckResult,
+} from "@/server/app/intelligence/ucp-check";
+import { checkUCP } from "@/server/app/intelligence/ucp-check";
 
 // ─── Icons ───────────────────────────────────────────────────────────────────
 
@@ -69,9 +72,7 @@ const CheckRow = ({ label, passed, detail }: CheckRowProps) => (
     <span
       className={cn(
         "mt-0.5 inline-flex items-center px-2 py-0.5 font-medium text-xs",
-        passed
-          ? "bg-primary/10 text-primary"
-          : "bg-red-500/10 text-red-500",
+        passed ? "bg-primary/10 text-primary" : "bg-red-500/10 text-red-500",
       )}
     >
       {passed ? "Pass" : "Fail"}
@@ -167,9 +168,7 @@ const Results = ({ result }: { result: UcpCheckResult }) => {
       {/* Header */}
       <div className="flex items-center justify-between border-accent-foreground border-b px-5 py-3">
         <div>
-          <p className="font-medium text-foreground text-sm">
-            {result.domain}
-          </p>
+          <p className="font-medium text-foreground text-sm">{result.domain}</p>
           <p className="mt-0.5 font-mono text-foreground-dimmed text-xs">
             {result.url}
           </p>
@@ -221,6 +220,67 @@ const Results = ({ result }: { result: UcpCheckResult }) => {
         />
       </div>
 
+      {/* Spec issues */}
+      {result.specIssues.length > 0 && (
+        <div className="border-accent-foreground border-t">
+          <div className="border-accent-foreground border-b px-5 py-2.5">
+            <p className="font-medium text-foreground text-sm">
+              Spec Validation
+            </p>
+            <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
+              {
+                result.specIssues.filter(
+                  (i: SpecIssue) => i.severity === "error",
+                ).length
+              }{" "}
+              error
+              {result.specIssues.filter(
+                (i: SpecIssue) => i.severity === "error",
+              ).length !== 1
+                ? "s"
+                : ""}
+              ,{" "}
+              {
+                result.specIssues.filter(
+                  (i: SpecIssue) => i.severity === "warning",
+                ).length
+              }{" "}
+              warning
+              {result.specIssues.filter(
+                (i: SpecIssue) => i.severity === "warning",
+              ).length !== 1
+                ? "s"
+                : ""}
+            </p>
+          </div>
+          <div className="divide-y divide-accent-foreground">
+            {result.specIssues.map((issue: SpecIssue, index: number) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: stable list
+              <div key={index} className="flex items-start gap-3 px-5 py-2.5">
+                <span
+                  className={cn(
+                    "mt-0.5 inline-flex shrink-0 items-center px-1.5 py-0.5 font-medium text-xs",
+                    issue.severity === "error"
+                      ? "bg-red-500/10 text-red-500"
+                      : "bg-yellow-500/10 text-yellow-500",
+                  )}
+                >
+                  {issue.severity === "error" ? "Error" : "Warn"}
+                </span>
+                <div className="min-w-0">
+                  <p className="font-mono text-foreground-dimmed text-xs">
+                    {issue.field}
+                  </p>
+                  <p className="mt-0.5 text-foreground text-xs">
+                    {issue.message}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* JSON preview */}
       {result.valid && result.data !== null && (
         <div className="border-accent-foreground border-t">
@@ -241,7 +301,7 @@ export const UcpValidatorForm = () => {
   const [result, setResult] = useState<UcpCheckResult | null>(null);
 
   const [handleCheck, isChecking] = useAsyncAction(async () => {
-    const response = await checkUcp(domain);
+    const response = await checkUCP(domain);
     if (response.success) setResult(response.data);
   });
 
