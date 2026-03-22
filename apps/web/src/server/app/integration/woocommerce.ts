@@ -52,9 +52,7 @@ export const syncWooCommerceCatalog = withContext(
       tx?: TransactionScope;
     },
   ) => {
-    const options = tx ? { tx } : undefined;
-
-    const store = await Store.get(Environment.SERVER, storeId, options);
+    const store = await Store.get(Environment.SERVER, storeId, { tx });
     if (!store.success) return store;
 
     if (!store.data)
@@ -78,7 +76,7 @@ export const syncWooCommerceCatalog = withContext(
       Environment.SERVER,
       storeId,
       { status: "syncing" },
-      options,
+      { tx },
     );
 
     if (!update.success) return update;
@@ -135,7 +133,7 @@ export const syncWooCommerceCatalog = withContext(
             rawData: JSON.stringify(item),
             syncedAt: new Date(),
           },
-          options,
+          { tx },
         ),
       ),
     );
@@ -146,7 +144,7 @@ export const syncWooCommerceCatalog = withContext(
       Environment.SERVER,
       storeId,
       { status: "connected", lastSyncedAt: new Date() },
-      options,
+      { tx },
     );
 
     if (!insertion.success) return insertion;
@@ -198,7 +196,7 @@ export const connect = withAuthentication(
 
     const transaction = await resultify(() =>
       withTransaction(async (tx) => {
-        const storeResult = await Store.create(
+        const store = await Store.create(
           Environment.SERVER,
           {
             userId: context.session.user.id,
@@ -212,27 +210,22 @@ export const connect = withAuthentication(
           { tx },
         );
 
-        if (!storeResult.success) throw storeResult.error;
-        if (!storeResult.data)
-          throw new Error("Store creation returned no data");
+        if (!store.success) throw store.error;
+        if (!store.data) throw new Error("Store creation returned no data");
 
-        const syncResult = await syncWooCommerceCatalog(Environment.SERVER, {
+        const sync = await syncWooCommerceCatalog(Environment.SERVER, {
           user: context.session.user.id,
-          store: storeResult.data.id,
+          store: store.data.id,
           tx,
         });
 
-        if (!syncResult.success) throw syncResult.error;
+        if (!sync.success) throw sync.error;
 
-        return storeResult.data;
+        return store.data;
       }),
     );
 
-    if (!transaction.success) {
-      return { success: false, error: transaction.error };
-    }
-
-    return { success: true, data: transaction.data };
+    return transaction;
   },
   "WooCommerce.connect",
 );

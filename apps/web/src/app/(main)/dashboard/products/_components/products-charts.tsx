@@ -176,10 +176,10 @@ export const OptimizationBreakdown = ({
   ];
 
   return (
-    <div className="p-4">
+    <div className="p-4 h-full flex flex-col">
       <p className="font-medium text-2xl text-foreground">Product Readiness</p>
 
-      <div className="mt-6 flex h-2 w-full overflow-hidden bg-accent-foreground">
+      <div className="mt-auto flex h-2 w-full overflow-hidden bg-accent-foreground">
         {segments.map((segment) => {
           const width = total > 0 ? (segment.count / total) * 100 : 0;
           if (width === 0) return null;

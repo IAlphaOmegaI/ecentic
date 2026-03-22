@@ -26,6 +26,8 @@ declare namespace NodeJS {
     readonly UPSTASH_REDIS_REST_URL: string;
     readonly UPSTASH_REDIS_REST_TOKEN: string;
 
+    readonly CRON_SECRET: string;
+
     readonly npm_package_name: string;
     readonly npm_package_version: string;
   }

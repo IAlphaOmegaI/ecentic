@@ -1,6 +1,10 @@
 "use client";
 
-import { ArrowRightIcon, ChevronLeftIcon } from "@zenncore/icons";
+import {
+  ArrowRightIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Link from "next/link";
@@ -205,7 +209,7 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
                 type="button"
                 onClick={() => setIndex(i)}
                 className={cn(
-                  "size-1.5 transition-all",
+                  "size-3 transition-all",
                   i === index
                     ? "bg-primary"
                     : "bg-accent-foreground hover:bg-foreground-dimmed",
@@ -223,7 +227,7 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
               setIndex((previous) => Math.min(parsed.length - 1, previous + 1))
             }
           >
-            <ArrowRightIcon className="size-4" />
+            <ChevronRightIcon className="size-4" />
           </Button>
         </div>
       )}
