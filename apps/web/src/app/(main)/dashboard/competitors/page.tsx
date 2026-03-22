@@ -466,7 +466,7 @@ const Insights = async () => {
               Top Finding
             </p>
             <p className="mt-1 font-light text-foreground text-sm">
-              {data.scan.topFinding}
+              {data.scan.topFinding.impactDescription}
             </p>
           </div>
         )}
@@ -497,7 +497,7 @@ const Insights = async () => {
                   </p>
                   {scan.topFinding && (
                     <p className="mt-0.5 font-light text-foreground-dimmed text-sm">
-                      {scan.topFinding}
+                      {scan.topFinding.impactDescription}
                     </p>
                   )}
                 </div>

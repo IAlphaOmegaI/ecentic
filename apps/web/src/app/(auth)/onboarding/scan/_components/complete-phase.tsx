@@ -16,6 +16,7 @@ import Image from "next/image";
 import Link, { useLinkStatus } from "next/link";
 import { Motion } from "@/components/motion";
 import { Spring, Stagger } from "@/lib/animations";
+import type * as Simulate from "@/server/app/intelligence/simulate";
 
 const models = [
   { id: "gpt4", label: "GPT-4", logo: "/images/chatgpt.svg" },
@@ -28,12 +29,7 @@ export namespace CompletePhase {
     wins: number;
     losses: number;
     winRates: Record<string, { wins: number; losses: number; rate: number }>;
-    topFinding: {
-      name: string;
-      missingAttributes: string[];
-      impactDescription: string;
-      lossPercentage: number;
-    } | null;
+    topFinding: Simulate.TopFinding | null;
     products: number;
   };
 }

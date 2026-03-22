@@ -4,20 +4,13 @@ import {
   ArrowRightIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  BullseyeIcon,
   RocketIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Link from "next/link";
 import { useState } from "react";
-
-type TopFinding = {
-  name: string;
-  missingAttributes: string[];
-  impactDescription: string;
-  lossPercentage: number;
-};
+import type { TopFinding } from "@/server/types";
 
 export type ScanInsight = {
   id: string;
@@ -26,15 +19,6 @@ export type ScanInsight = {
   losses: number;
   completedSimulations: number;
   topFinding: TopFinding | null;
-};
-
-const parseFinding = (raw: string | null): TopFinding | null => {
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw) as TopFinding;
-  } catch {
-    return null;
-  }
 };
 
 const WinRatePill = ({ wins, losses }: { wins: number; losses: number }) => {
@@ -140,26 +124,14 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
 
 export namespace ScanInsightsCarousel {
   export type Props = {
-    scans: Array<{
-      id: string;
-      date: string;
-      wins: number;
-      losses: number;
-      completedSimulations: number;
-      topFinding: string | null;
-    }>;
+    scans: ScanInsight[];
   };
 }
 
 export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
   const [index, setIndex] = useState(0);
 
-  const parsed: ScanInsight[] = scans.map((scan) => ({
-    ...scan,
-    topFinding: parseFinding(scan.topFinding),
-  }));
-
-  const current = parsed[index];
+  const current = scans[index];
 
   if (!current) return null;
 
@@ -191,7 +163,7 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
 
       <InsightCard scan={current} />
 
-      {parsed.length > 1 && (
+      {scans.length > 1 && (
         <div className="flex items-center justify-between border-accent-foreground border-t p-6">
           <Button
             variant="outline"
@@ -204,7 +176,7 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
           </Button>
 
           <div className="flex items-center gap-1.5">
-            {parsed.map((_, i) => (
+            {scans.map((_, i) => (
               <button
                 // biome-ignore lint/suspicious/noArrayIndexKey: we want to use the index as the key
                 key={i}
@@ -224,9 +196,9 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
             variant="outline"
             color="accent"
             size="icon"
-            disabled={index === parsed.length - 1}
+            disabled={index === scans.length - 1}
             onClick={() =>
-              setIndex((previous) => Math.min(parsed.length - 1, previous + 1))
+              setIndex((previous) => Math.min(scans.length - 1, previous + 1))
             }
           >
             <ChevronRightIcon className="size-4" />

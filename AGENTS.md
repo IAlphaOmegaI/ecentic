@@ -21,9 +21,9 @@ If code and docs disagree, prefer docs intent unless explicitly instructed other
 
 ### Product Context (Read First For Feature Work)
 
-- `docs/context/ECENTIC.md` - core product definition, architecture, flows, roadmap.
-- `docs/context/AI Agent Shopping Strategy.md` - market/measurement strategy, retention, enterprise priorities.
-- `docs/context/shopify-app-listing.md` - Shopify-facing claims, copy, scopes, review/testing constraints.
+- `docs/context/idea.md` - core product definition, architecture, flows, roadmap.
+- `docs/context/strategy.md` - market/measurement strategy, retention, enterprise priorities.
+- `docs/context/shopify.md` - Shopify-facing claims, copy, scopes, review/testing constraints.
 
 ### Implementation Rules
 
@@ -32,13 +32,11 @@ If code and docs disagree, prefer docs intent unless explicitly instructed other
 - `docs/agents/AGENTS-components.md` - React component patterns.
 - `docs/agents/AGENTS-nextjs.md` - Next.js architecture and rendering patterns.
 - `docs/agents/AGENTS-packages.md` - required use of `@zenncore/*` packages.
-- `docs/agents/AGENTS-convex.md` - Convex-specific conventions.
 
 ### Package Docs
 
 - `docs/web/index.md` - web components.
 - `docs/shared/index.md` - shared packages (`utils`, `icons`, `data-table`, `inferred-form`, `phone`).
-- `docs/mobile/index.md` - mobile package docs.
 
 ---
 
