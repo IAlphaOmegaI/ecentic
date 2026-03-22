@@ -239,3 +239,86 @@ export const syncProducts = withAuthentication(
   },
   "WooCommerce.syncProducts",
 );
+
+export const updateProduct = withAuthentication(
+  async (
+    _context,
+    {
+      product: id,
+      data,
+    }: {
+      product: string;
+      data: {
+        title?: string;
+        body_html?: string;
+      };
+    },
+  ) => {
+    const product = await Product.get(Environment.SERVER, id);
+    if (!product.success) return product;
+
+    if (!product.data)
+      return { success: false, error: new Error("Product not found") };
+
+    const store = await Store.get(Environment.SERVER, product.data.storeId);
+    if (!store.success) return store;
+
+    if (!store.data)
+      return { success: false, error: new Error("Store not found") };
+
+    if (store.data.platform !== "woocommerce")
+      return {
+        success: false,
+        error: new Error("Store is not a WooCommerce store"),
+      };
+
+    const { domain, consumerKey, consumerSecret } = store.data;
+
+    if (!consumerKey || !consumerSecret)
+      return {
+        success: false,
+        error: new Error("Missing WooCommerce credentials"),
+      };
+
+    if (!product.data.externalId)
+      return { success: false, error: new Error("Product has no external ID") };
+
+    const body: Record<string, string> = {};
+    if (data.title !== undefined) body.name = data.title;
+    if (data.body_html !== undefined) body.description = data.body_html;
+
+    if (Object.keys(body).length === 0)
+      return {
+        success: false,
+        error: new RequestError("No fields to update"),
+      };
+
+    const url = `${domain}/wp-json/wc/v3/products/${product.data.externalId}.json`;
+
+    const response = await HTTP.request(url, {
+      method: "PUT",
+      headers: {
+        Authorization: Utils.credentials(consumerKey, consumerSecret),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.success) return response;
+
+    const parsed = await HTTP.parse<Type>(response);
+    if (!parsed.success) return parsed;
+
+    const updated = parsed.data;
+
+    await Product.update(Environment.SERVER, id, {
+      title: updated.name,
+      description: updated.short_description || updated.description,
+      rawData: JSON.stringify(updated),
+      syncedAt: new Date(),
+    });
+
+    return { success: true, data: updated };
+  },
+  "WooCommerce.updateProduct",
+);

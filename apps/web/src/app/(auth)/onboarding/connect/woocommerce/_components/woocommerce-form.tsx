@@ -41,7 +41,9 @@ const config = {
       <FieldDescription>
         The key WooCommerce generated for you. It always starts with{" "}
         <code className="text-foreground">ck_</code> followed by a long
-        alphanumeric string. We use this to authenticate read-only API requests.
+        alphanumeric string. We use this to authenticate API requests (catalog
+        sync needs read access; publishing optimised listings from the dashboard
+        needs read/write on the key).
       </FieldDescription>
     ),
   }),
