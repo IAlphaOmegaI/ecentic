@@ -5,7 +5,7 @@ import {
   SquareChartIcon,
 } from "@zenncore/icons";
 import { cn, unwrapResult } from "@zenncore/utils";
-import { unstable_noStore as noStore } from "next/cache";
+import { connection } from "next/server";
 import Image from "next/image";
 import { Motion } from "@/components/motion";
 import * as Competitor from "@/server/app/competitor";
@@ -31,7 +31,7 @@ const models = [
 ] as const;
 
 export default async () => {
-  noStore();
+  await connection();
 
   const [products, competitors] = await Promise.all([
     unwrapResult(Product.skimForCurrentUser()),

@@ -157,8 +157,6 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
 
   const current = parsed[index];
 
-  console.log(current);
-
   if (!current) return null;
 
   const formatted = new Date(current.date).toLocaleDateString("en-US", {
@@ -168,7 +166,7 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
   });
 
   return (
-    <div>
+    <div className="bg-background-rich">
       <div className="flex items-start justify-between border-accent-foreground border-b p-6">
         <div>
           <p className="font-light text-foreground-dimmed uppercase tracking-widest">
