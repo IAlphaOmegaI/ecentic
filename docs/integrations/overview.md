@@ -45,7 +45,7 @@
 
 #### What's missing
 
-- [ ] UI to trigger `updateProduct()` — function exists but no dashboard surface connects to it ("Optimize" tab)
+- [ ] UI to trigger listing publish — use `Store.publishProductListing()` from the dashboard; no Optimize tab wired yet
 - [ ] Webhook subscriptions for real-time product changes
 - [ ] App install/uninstall lifecycle webhooks
 - [ ] Inventory and stock level sync
@@ -86,10 +86,11 @@
 - [x] Error distinction — 401 (invalid credentials) vs other HTTP errors
 - [x] Onboarding form — accepts site URL, consumer key, consumer secret
 - [x] Onboarding page with REST API key generation instructions
+- [x] `updateProduct()` — write-back of optimised title/description via `PUT /wp-json/wc/v3/products/{id}.json` (maps `title` → `name`, `body_html` → `description`, same payload shape as Shopify)
+- [x] `Store.publishProductListing()` — dispatches to Shopify or WooCommerce `updateProduct` with ownership checks
 
 #### What's missing
 
-- [ ] Write-back / product update capability
 - [ ] Product variant and attribute sync (currently only first variant price is used)
 - [ ] Inventory and stock sync
 - [ ] Webhook subscriptions for real-time updates

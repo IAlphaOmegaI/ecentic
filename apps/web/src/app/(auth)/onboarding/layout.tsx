@@ -66,7 +66,7 @@ const sidebar = {
       </>
     ),
     points: [
-      "Generate a read-only key from your WooCommerce settings",
+      "Generate a REST API key in WooCommerce (read/write to publish listing updates from écentic, or read-only for sync only)",
       "Paste three fields and we handle the rest",
       "Your credentials are encrypted and stored securely",
     ],
