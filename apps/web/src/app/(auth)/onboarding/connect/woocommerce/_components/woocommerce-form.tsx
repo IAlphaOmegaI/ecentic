@@ -14,7 +14,6 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import * as WooCommerceIntegration from "@/server/app/integration/woocommerce";
-import * as Store from "@/server/app/store";
 
 const config = {
   domain: field({
@@ -82,15 +81,11 @@ export const WooCommerceForm = () => {
 
       toast.add({
         title: "Store connected",
-        description: "Syncing products — this may take a moment.",
+        description: "Your catalog is synced and ready.",
         type: "success",
       });
 
-      void (async () => {
-        await Store.syncProducts({ storeId: result.data.id });
-      })();
-
-      router.push("/onboarding/products");
+      router.push("/onboarding/products?connected=woocommerce");
     },
   );
 
