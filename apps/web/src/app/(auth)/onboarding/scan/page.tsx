@@ -5,8 +5,8 @@ import {
   SquareChartIcon,
 } from "@zenncore/icons";
 import { cn, unwrapResult } from "@zenncore/utils";
-import { connection } from "next/server";
 import Image from "next/image";
+import { connection } from "next/server";
 import { Motion } from "@/components/motion";
 import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";

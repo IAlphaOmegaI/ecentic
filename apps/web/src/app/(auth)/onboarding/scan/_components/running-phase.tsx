@@ -48,7 +48,7 @@ export const RunningPhase = ({
   return (
     <motion.div
       key="running"
-      className="flex flex-1 flex-col overflow-hidden h-full"
+      className="flex h-full flex-1 flex-col overflow-hidden"
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -16 }}
@@ -56,7 +56,7 @@ export const RunningPhase = ({
     >
       <Motion.Stagger
         stagger={0.05}
-        className="flex flex-col overflow-hidden h-full"
+        className="flex h-full flex-col overflow-hidden"
       >
         <Motion.Item className="border-accent-foreground border-b px-8">
           <div className="border-accent-foreground border-x p-6">
@@ -136,7 +136,7 @@ export const RunningPhase = ({
           </motion.div>
         </Motion.Item>
 
-        <Motion.Item className="flex flex-col flex-1 min-h-0 border-accent-foreground border-b px-8">
+        <Motion.Item className="flex min-h-0 flex-1 flex-col border-accent-foreground border-b px-8">
           <div className="flex h-full w-full flex-col border-accent-foreground border-x bg-background-rich">
             <div className="flex items-center justify-between border-accent-foreground p-4">
               <div className="flex items-center gap-2">

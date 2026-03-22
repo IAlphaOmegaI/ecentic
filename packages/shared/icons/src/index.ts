@@ -49,3 +49,5 @@ export * from "./trend-up";
 export type * from "./types";
 export * from "./upload";
 export * from "./x";
+export * from "./bullseye";
+export * from "./rocket";

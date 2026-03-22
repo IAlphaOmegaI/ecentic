@@ -146,8 +146,8 @@ export function repository<T extends TableWithId>(table: T) {
           .where(where);
 
         const [result, count] = await Promise.all([
-          resultify(async () => await query as Document<T>[]),
-          resultify(async () => await cQuery as { count: number }[]),
+          resultify(async () => (await query) as Document<T>[]),
+          resultify(async () => (await cQuery) as { count: number }[]),
         ]);
 
         if (!result.success) {

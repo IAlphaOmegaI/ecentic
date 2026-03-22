@@ -276,7 +276,7 @@ export const handleOAuthCallback = withContext(
       return storefrontHostsFromShop(shopParsed.data.shop);
     })();
 
-    const currency = shopParsed.success
+    const _currency = shopParsed.success
       ? shopParsed.data.shop.currency
       : undefined;
 

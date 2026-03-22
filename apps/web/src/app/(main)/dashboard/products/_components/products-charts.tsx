@@ -176,7 +176,7 @@ export const OptimizationBreakdown = ({
   ];
 
   return (
-    <div className="p-4 h-full flex flex-col">
+    <div className="flex h-full flex-col p-4">
       <p className="font-medium text-2xl text-foreground">Product Readiness</p>
 
       <div className="mt-auto flex h-2 w-full overflow-hidden bg-accent-foreground">
