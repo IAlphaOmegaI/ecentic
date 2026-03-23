@@ -7,6 +7,7 @@ import {
   pgTable,
   text,
   timestamp,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -229,6 +230,34 @@ export const agentTrafficDaily = pgTable("agent_traffic_daily", {
   productVisits: jsonb("productVisits"),
 });
 
+export const listingOptimization = pgTable(
+  "listing_optimization",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    userId: text("userId")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    productId: text("productId")
+      .notNull()
+      .references(() => product.id, { onDelete: "cascade" }),
+    status: text("status").notNull(),
+    proposedTitle: text("proposedTitle"),
+    proposedDescription: text("proposedDescription"),
+    winRateBefore: integer("winRateBefore"),
+    estimatedLift: integer("estimatedLift"),
+    winRateAfter: integer("winRateAfter"),
+    publishedAt: timestamp("publishedAt", { mode: "date" }),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("listing_optimization_user_product_unique").on(
+      table.userId,
+      table.productId,
+    ),
+  ],
+);
+
 /** Tables object for defineRelations and better-auth adapter */
 export const tables = {
   user,
@@ -243,6 +272,7 @@ export const tables = {
   ucpProfile,
   agentVisit,
   agentTrafficDaily,
+  listingOptimization,
 };
 
 /** Relations */
@@ -285,6 +315,7 @@ export const relations = defineRelations(tables, (r) => ({
       from: r.product.userId,
       to: r.user.id,
     }),
+    listingOptimizations: r.many.listingOptimization(),
   },
   competitor: {
     user: r.one.user({
@@ -342,6 +373,16 @@ export const relations = defineRelations(tables, (r) => ({
     user: r.one.user({
       from: r.agentTrafficDaily.userId,
       to: r.user.id,
+    }),
+  },
+  listingOptimization: {
+    user: r.one.user({
+      from: r.listingOptimization.userId,
+      to: r.user.id,
+    }),
+    product: r.one.product({
+      from: r.listingOptimization.productId,
+      to: r.product.id,
     }),
   },
 }));

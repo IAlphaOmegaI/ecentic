@@ -71,8 +71,12 @@ If code and docs disagree, prefer docs intent unless explicitly instructed other
 ## Learned Workspace Facts
 
 - If Postgres reports `relation "...\" does not exist`, run migrations from `apps/web` using `bun run db:migrate`.
+- From `apps/web`, `bun run db:push` pushes the Drizzle schema directly to the database (handy for local dev); `bun run db:migrate` applies versioned SQL migrations (prefer for production-style workflows).
 - AI streaming server actions use `AI.stream<EventType>()` and return `{ output }`, consumed client-side with `readStreamableValue(output)` and `switch (event.kind)`.
 - For Zod schemas passed to AI `generate()`, avoid `z.default()` and use `.optional()` for truly optional fields.
 - Non-onboarding/auth pages are expected to follow PPR/streaming patterns with a server-rendered `page.tsx` shell and Suspense-wrapped async server components.
-- After Shopify OAuth, import products on the server (same catalog sync pattern as WooCommerce and custom feed); only creating a `store` row leaves onboarding empty.
-- For Shopify storefront AI traffic (ScriptTag `tracker.js`), beacon requests must target the app origin with `Authorization: Bearer` and CORS; relative URLs from the merchant domain do not hit the app API.
+- Shopify OAuth and WooCommerce connect must run catalog import during the connect flow (not only `Store.create`); otherwise onboarding can show no products.
+- For Shopify storefront ScriptTag `tracker.js`, beacons use the script origin with `Authorization: Bearer` and CORS; requests relative to the merchant domain never reach the app API. HTTPS storefronts cannot load `http://localhost` scripts (mixed content); set `ECENTIC_TRACKER_PUBLIC_ORIGIN` to a public HTTPS base URL (for example an ngrok tunnel) for ScriptTag `src`, and reconnect OAuth after that URL changes.
+- WooCommerce REST product updates must use `PUT` to `/wp-json/wc/v3/products/{numericId}` with no `.json` suffix after the id; paths like `.../products/123.json` can trigger WordPress “No route was found matching the URL and request method.”
+- Publishing optimized listings to WooCommerce requires REST API keys with read/write permissions; read-only keys work for sync but not for `PUT` updates.
+- Local Next dev: after code or env changes, rely on hot reload or restart the dev server; that is sufficient—no cloud “redeploy” is required unless the app is hosted remotely.
