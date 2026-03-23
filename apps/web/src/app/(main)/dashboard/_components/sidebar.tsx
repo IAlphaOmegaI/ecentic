@@ -17,51 +17,10 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Spring } from "@/lib/animations";
-
-const items = [
-  { icon: SquareChartIcon, label: "Overview", href: "/dashboard", exact: true },
-  {
-    icon: ShoppingCartIcon,
-    label: "Products",
-    href: "/dashboard/products",
-    exact: false,
-    badge: "10",
-  },
-  {
-    icon: ChartCircularIcon,
-    label: "Competitors",
-    href: "/dashboard/competitors",
-    exact: false,
-  },
-  {
-    icon: GaugeIcon,
-    label: "Optimize",
-    href: "/dashboard/optimize",
-    exact: false,
-    badge: "4",
-  },
-  {
-    icon: CodeIcon,
-    label: "UCP & Data",
-    href: "/dashboard/ucp",
-    exact: false,
-    badge: "68%",
-  },
-  {
-    icon: DownloadIcon,
-    label: "Reports",
-    href: "/dashboard/reports",
-    exact: false,
-  },
-  {
-    icon: GearIcon,
-    label: "Settings",
-    href: "/dashboard/settings",
-    exact: false,
-  },
-] as const;
+import { listDashboard as getOptimizationDashboard } from "@/server/app/optimization";
+import { skimForCurrentUser as getProducts } from "@/server/app/product";
 
 const proFeatures = [
   "Unlimited AI simulations",
@@ -77,6 +36,65 @@ const TRIAL_DAYS_LEFT = 7;
 export const Sidebar = () => {
   const pathname = usePathname();
   const [upgrade, setUpgrade] = useState(false);
+  const [productCount, setProductCount] = useState(0);
+  const [pendingOptimizationCount, setPendingOptimizationCount] = useState(0);
+
+  useEffect(() => {
+    void (async () => {
+      const [products, optimizationDashboard] = await Promise.all([
+        getProducts(),
+        getOptimizationDashboard(),
+      ]);
+
+      if (products.success) setProductCount(products.data.length);
+
+      if (optimizationDashboard.success)
+        setPendingOptimizationCount(optimizationDashboard.data.pending.length);
+    })();
+  }, []);
+
+  const items = [
+    { icon: SquareChartIcon, label: "Overview", href: "/dashboard", exact: true },
+    {
+      icon: ShoppingCartIcon,
+      label: "Products",
+      href: "/dashboard/products",
+      exact: false,
+      badge: `${productCount}`,
+    },
+    {
+      icon: ChartCircularIcon,
+      label: "Competitors",
+      href: "/dashboard/competitors",
+      exact: false,
+    },
+    {
+      icon: GaugeIcon,
+      label: "Optimize",
+      href: "/dashboard/optimize",
+      exact: false,
+      badge: `${pendingOptimizationCount}`,
+    },
+    {
+      icon: CodeIcon,
+      label: "UCP & Data",
+      href: "/dashboard/ucp",
+      exact: false,
+      badge: "68%",
+    },
+    {
+      icon: DownloadIcon,
+      label: "Reports",
+      href: "/dashboard/reports",
+      exact: false,
+    },
+    {
+      icon: GearIcon,
+      label: "Settings",
+      href: "/dashboard/settings",
+      exact: false,
+    },
+  ] as const;
 
   const isActive = (href: string, exact: boolean) =>
     exact ? pathname === href : pathname.startsWith(href);
