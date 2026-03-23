@@ -375,7 +375,7 @@ const CompetitiveLandscape = async () => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-px bg-accent-foreground">
+      <div className="flex flex-col gap-px bg-accent-foreground flex-1">
         <div className="flex-1 bg-background-dimmed p-4">
           <p className="font-light text-foreground-dimmed uppercase tracking-widest">
             Distribution

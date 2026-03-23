@@ -261,32 +261,24 @@ export const gatherIntelligence = dedupe(
 );
 
 export const gatherPaginatedIntelligence = withAuthentication(
-  async (_context, { page, size }: { page: number; size: number }) => {
+  async (context, { page, size }: { page: number; size: number }) => {
     const [competitors, scan] = await Promise.all([
-      skimForCurrentUser(),
+      paginate(Environment.SERVER, page, size, {
+        where: eq(schema.competitor.userId, context.session.user.id),
+      }),
       Scan.getLatest(),
     ]);
 
     if (!competitors.success) return competitors;
     if (!scan.success) return scan;
 
-    if (competitors.data.length === 0)
-      return {
-        success: true,
-        data: {
-          brands: [],
-          scan: scan.data[0],
-          pagination: { total: 0, page, size },
-        },
-      };
-
     const simulations = await Simulation.getForCompetitors({
-      competitors: competitors.data.map((competitor) => competitor.id),
+      competitors: competitors.data.items.map((competitor) => competitor.id),
     });
 
     if (!simulations.success) return simulations;
 
-    const allBrands = aggregateBrands(competitors.data, simulations.data);
+    const allBrands = aggregateBrands(competitors.data.items, simulations.data);
     const total = allBrands.length;
     const offset = (page - 1) * size;
     const brands = allBrands.slice(offset, offset + size);
