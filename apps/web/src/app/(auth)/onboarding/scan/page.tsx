@@ -5,12 +5,12 @@ import {
   SquareChartIcon,
 } from "@zenncore/icons";
 import { cn, unwrapResult } from "@zenncore/utils";
+import { unstable_noStore as noStore } from "next/cache";
 import Image from "next/image";
 import { Motion } from "@/components/motion";
 import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
 import { ScanRunner } from "./_components/scan-runner";
-import { unstable_noStore as noStore } from "next/cache";
 
 const models = [
   {

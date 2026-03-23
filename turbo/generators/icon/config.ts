@@ -1,8 +1,6 @@
 import type { PlopTypes } from "@turbo/gen";
 import { transform } from "./transformer";
 
-//TODO: export the generated files in the index.ts
-
 export const config: PlopTypes.PlopGeneratorConfig = {
   description: "Generate a new icon component from SVG",
   prompts: [
@@ -20,9 +18,15 @@ export const config: PlopTypes.PlopGeneratorConfig = {
   actions: [
     {
       type: "add",
-      path: "packages/shared/icons/src/{{kebabCase name}}.tsx",
+      path: "packages/shared/icons/src/icons/{{kebabCase name}}.tsx",
       templateFile: "icon/template.hbs",
       transform,
+    },
+    {
+      type: "modify",
+      path: "packages/shared/icons/src/index.ts",
+      pattern: /(export type \* from "\.\/types";)/,
+      template: 'export * from "./icons/{{kebabCase name}}";\n$1',
     },
   ],
 };

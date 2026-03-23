@@ -1,5 +1,6 @@
 "use client";
 
+import { CheckCircleIcon, XCircleIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
@@ -10,45 +11,6 @@ import type {
   UcpCheckResult,
 } from "@/server/app/intelligence/ucp-check";
 import { checkUCP } from "@/server/app/intelligence/ucp-check";
-
-// ─── Icons ───────────────────────────────────────────────────────────────────
-
-const CheckCircleIcon = () => (
-  <svg
-    viewBox="0 0 20 20"
-    fill="none"
-    className="size-5 shrink-0"
-    aria-hidden="true"
-  >
-    <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="1.5" />
-    <path
-      d="M6.5 10l2.5 2.5 4.5-5"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const XCircleIcon = () => (
-  <svg
-    viewBox="0 0 20 20"
-    fill="none"
-    className="size-5 shrink-0"
-    aria-hidden="true"
-  >
-    <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="1.5" />
-    <path
-      d="M7 7l6 6M13 7l-6 6"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-    />
-  </svg>
-);
-
-// ─── Check row ────────────────────────────────────────────────────────────────
 
 type CheckRowProps = {
   label: string;
@@ -79,8 +41,6 @@ const CheckRow = ({ label, passed, detail }: CheckRowProps) => (
     </span>
   </div>
 );
-
-// ─── JSON preview ─────────────────────────────────────────────────────────────
 
 type JToken = {
   text: string;
@@ -158,8 +118,6 @@ const JsonPreview = ({ data }: { data: unknown }) => {
     </pre>
   );
 };
-
-// ─── Results ──────────────────────────────────────────────────────────────────
 
 const Results = ({ result }: { result: UcpCheckResult }) => {
   const overallPass = result.https && result.found && result.valid;

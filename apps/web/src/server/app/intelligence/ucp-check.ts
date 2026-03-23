@@ -23,197 +23,284 @@ export type UcpCheckResult = {
   error: string | null;
 };
 
+// Based on https://ucp.dev/schemas/ucp.json (business_schema variant)
+// The /.well-known/ucp profile is a FLAT object — no "ucp" wrapper.
+// Required at root: version, services, payment_handlers
+// Optional at root: capabilities, supported_versions, status, signing_keys
+
 const VERSION_RE = /^\d{4}-\d{2}-\d{2}$/;
 const HTTPS_RE = /^https:\/\//;
+// Reverse-domain key pattern: e.g. dev.ucp.shopping.checkout
+const REVERSE_DOMAIN_RE = /^[a-z][a-z0-9]*(\.[a-z][a-z0-9]*)+$/;
+const VALID_TRANSPORTS = ["rest", "mcp", "a2a", "embedded"] as const;
+const VALID_STATUSES = ["success", "error"] as const;
 
 const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
 const get = (obj: Record<string, unknown>, key: string) => obj[key];
 
+const issue = (
+  field: string,
+  message: string,
+  severity: SpecIssueSeverity,
+): SpecIssue => ({ field, message, severity });
+
+// Validates each entry in services / capabilities / payment_handlers registries.
+// Returns issues for that entry.
+const validateEntityArray = (
+  entries: unknown,
+  prefix: string,
+  requiredFields: string[],
+): SpecIssue[] => {
+  const issues: SpecIssue[] = [];
+  if (!Array.isArray(entries)) {
+    issues.push(issue(`${prefix}`, `"${prefix}" must be an array.`, "error"));
+    return issues;
+  }
+  for (const [index, entry] of entries.entries()) {
+    const p = `${prefix}[${index}]`;
+    if (!isObject(entry)) {
+      issues.push(issue(p, "Each entry must be an object.", "error"));
+      continue;
+    }
+    // version is required by entity base
+    const version = get(entry, "version");
+    if (!version) {
+      issues.push(
+        issue(`${p}.version`, 'Missing required "version".', "error"),
+      );
+    } else if (typeof version === "string" && !VERSION_RE.test(version)) {
+      issues.push(
+        issue(
+          `${p}.version`,
+          `"version" must be YYYY-MM-DD (got "${version}").`,
+          "warning",
+        ),
+      );
+    }
+    for (const field of requiredFields) {
+      if (!get(entry, field))
+        issues.push(
+          issue(`${p}.${field}`, `Missing required "${field}".`, "error"),
+        );
+    }
+  }
+  return issues;
+};
+
+// Validates service entries (transport, endpoint rules on top of entity base).
+const validateServiceArray = (
+  entries: unknown,
+  prefix: string,
+): SpecIssue[] => {
+  const issues = validateEntityArray(entries, prefix, []);
+  if (!Array.isArray(entries)) return issues;
+  for (const [index, entry] of entries.entries()) {
+    if (!isObject(entry)) continue;
+    const p = `${prefix}[${index}]`;
+    const transport = get(entry, "transport");
+    if (!transport) {
+      issues.push(
+        issue(`${p}.transport`, 'Missing required "transport".', "error"),
+      );
+    } else if (
+      !VALID_TRANSPORTS.includes(transport as (typeof VALID_TRANSPORTS)[number])
+    ) {
+      issues.push(
+        issue(
+          `${p}.transport`,
+          `"transport" must be one of: ${VALID_TRANSPORTS.join(", ")} (got "${transport}").`,
+          "warning",
+        ),
+      );
+    }
+    const endpoint = get(entry, "endpoint");
+    if (
+      transport !== "embedded" &&
+      typeof endpoint === "string" &&
+      !HTTPS_RE.test(endpoint)
+    ) {
+      issues.push(
+        issue(
+          `${p}.endpoint`,
+          `Endpoint must use HTTPS (got "${endpoint}").`,
+          "error",
+        ),
+      );
+    }
+  }
+  return issues;
+};
+
+const validateRegistry = (
+  registry: unknown,
+  field: string,
+  validateEntries: (entries: unknown, prefix: string) => SpecIssue[],
+): SpecIssue[] => {
+  const issues: SpecIssue[] = [];
+  if (!isObject(registry)) {
+    issues.push(issue(field, `"${field}" must be an object.`, "error"));
+    return issues;
+  }
+  for (const [name, entries] of Object.entries(registry)) {
+    if (!REVERSE_DOMAIN_RE.test(name)) {
+      issues.push(
+        issue(
+          `${field}.${name}`,
+          `Key "${name}" should use reverse-domain format (e.g. dev.ucp.shopping.checkout).`,
+          "warning",
+        ),
+      );
+    }
+    issues.push(...validateEntries(entries, `${field}.${name}`));
+  }
+  return issues;
+};
+
 const validateUcpSpec = (data: unknown): SpecIssue[] => {
   const issues: SpecIssue[] = [];
 
   if (!isObject(data)) {
-    issues.push({
-      field: "(root)",
-      message: "Root must be a JSON object.",
-      severity: "error",
-    });
+    issues.push(issue("(root)", "Root must be a JSON object.", "error"));
     return issues;
   }
 
-  if (!("ucp" in data)) {
-    issues.push({
-      field: "ucp",
-      message: 'Missing required field "ucp".',
-      severity: "error",
-    });
-    return issues;
-  }
+  // Support both flat { version, ... } and wrapped { ucp: { version, ... } }
+  const root: Record<string, unknown> =
+    isObject(get(data, "ucp")) ? (get(data, "ucp") as Record<string, unknown>) : data;
 
-  if (!isObject(get(data, "ucp"))) {
-    issues.push({
-      field: "ucp",
-      message: '"ucp" must be an object.',
-      severity: "error",
-    });
-    return issues;
-  }
-
-  const ucp = get(data, "ucp") as Record<string, unknown>;
-
-  const version = get(ucp, "version");
-  if (version === undefined) {
-    issues.push({
-      field: "ucp.version",
-      message: 'Missing required field "ucp.version".',
-      severity: "error",
-    });
+  // ── version (required) ──────────────────────────────────────────────────────
+  const version = get(root, "version");
+  if (!version) {
+    issues.push(issue("version", 'Missing required field "version".', "error"));
   } else if (typeof version !== "string") {
-    issues.push({
-      field: "ucp.version",
-      message: '"ucp.version" must be a string.',
-      severity: "error",
-    });
+    issues.push(issue("version", '"version" must be a string.', "error"));
   } else if (!VERSION_RE.test(version)) {
-    issues.push({
-      field: "ucp.version",
-      message: `"ucp.version" should be in YYYY-MM-DD format (got "${version}").`,
-      severity: "warning",
-    });
+    issues.push(
+      issue(
+        "version",
+        `"version" must be YYYY-MM-DD (got "${version}").`,
+        "warning",
+      ),
+    );
   }
 
-  if ("services" in ucp) {
-    const services = get(ucp, "services");
-    if (!isObject(services)) {
-      issues.push({
-        field: "ucp.services",
-        message: '"ucp.services" must be an object.',
-        severity: "error",
-      });
+  // ── status (optional) ───────────────────────────────────────────────────────
+  const status = get(root, "status");
+  if (
+    status !== undefined &&
+    !VALID_STATUSES.includes(status as (typeof VALID_STATUSES)[number])
+  ) {
+    issues.push(
+      issue(
+        "status",
+        `"status" must be "success" or "error" (got "${status}").`,
+        "error",
+      ),
+    );
+  }
+
+  // ── services (required) ─────────────────────────────────────────────────────
+  if (!("services" in root)) {
+    issues.push(
+      issue("services", 'Missing required field "services".', "error"),
+    );
+  } else {
+    issues.push(
+      ...validateRegistry(
+        get(root, "services"),
+        "services",
+        validateServiceArray,
+      ),
+    );
+  }
+
+  // ── payment_handlers (required) ─────────────────────────────────────────────
+  if (!("payment_handlers" in root)) {
+    issues.push(
+      issue(
+        "payment_handlers",
+        'Missing required field "payment_handlers".',
+        "error",
+      ),
+    );
+  } else {
+    issues.push(
+      ...validateRegistry(
+        get(root, "payment_handlers"),
+        "payment_handlers",
+        (entries, prefix) => validateEntityArray(entries, prefix, []),
+      ),
+    );
+  }
+
+  // ── capabilities (optional) ─────────────────────────────────────────────────
+  if ("capabilities" in root) {
+    issues.push(
+      ...validateRegistry(
+        get(root, "capabilities"),
+        "capabilities",
+        // business_schema requires spec + schema on each capability entry
+        (entries, prefix) =>
+          validateEntityArray(entries, prefix, ["spec", "schema"]),
+      ),
+    );
+  }
+
+  // ── supported_versions (optional) ───────────────────────────────────────────
+  const supportedVersions = get(root, "supported_versions");
+  if (supportedVersions !== undefined) {
+    if (!isObject(supportedVersions)) {
+      issues.push(
+        issue(
+          "supported_versions",
+          '"supported_versions" must be an object.',
+          "error",
+        ),
+      );
     } else {
-      for (const [name, entries] of Object.entries(services)) {
-        if (!Array.isArray(entries)) {
-          issues.push({
-            field: `ucp.services.${name}`,
-            message: `Service "${name}" must be an array of service definitions.`,
-            severity: "error",
-          });
-          continue;
+      for (const [key, uri] of Object.entries(supportedVersions)) {
+        if (!VERSION_RE.test(key)) {
+          issues.push(
+            issue(
+              `supported_versions.${key}`,
+              `Key "${key}" must be a YYYY-MM-DD version string.`,
+              "warning",
+            ),
+          );
         }
-        for (const [index, entry] of entries.entries()) {
-          const prefix = `ucp.services.${name}[${index}]`;
-          if (!isObject(entry)) {
-            issues.push({
-              field: prefix,
-              message: "Each service definition must be an object.",
-              severity: "error",
-            });
-            continue;
-          }
-          if (!get(entry, "version"))
-            issues.push({
-              field: `${prefix}.version`,
-              message: 'Missing "version" in service definition.',
-              severity: "error",
-            });
-          if (!get(entry, "spec"))
-            issues.push({
-              field: `${prefix}.spec`,
-              message: 'Missing "spec" in service definition.',
-              severity: "error",
-            });
-          const transport = get(entry, "transport");
-          if (!transport) {
-            issues.push({
-              field: `${prefix}.transport`,
-              message: 'Missing "transport" in service definition.',
-              severity: "error",
-            });
-          } else if (
-            !["rest", "mcp", "a2a", "embedded"].includes(transport as string)
-          ) {
-            issues.push({
-              field: `${prefix}.transport`,
-              message: `"transport" must be one of: rest, mcp, a2a, embedded (got "${transport}").`,
-              severity: "warning",
-            });
-          }
-          const endpoint = get(entry, "endpoint");
-          if (
-            transport !== "embedded" &&
-            typeof endpoint === "string" &&
-            !HTTPS_RE.test(endpoint)
-          ) {
-            issues.push({
-              field: `${prefix}.endpoint`,
-              message: `Endpoint URL must use HTTPS (got "${endpoint}").`,
-              severity: "error",
-            });
-          }
+        if (typeof uri !== "string" || !HTTPS_RE.test(uri)) {
+          issues.push(
+            issue(
+              `supported_versions.${key}`,
+              "Value must be an HTTPS URI pointing to that version's profile.",
+              "error",
+            ),
+          );
         }
       }
     }
   }
 
-  // capabilities
-  if ("capabilities" in ucp) {
-    const capabilities = get(ucp, "capabilities");
-    if (!isObject(capabilities)) {
-      issues.push({
-        field: "ucp.capabilities",
-        message: '"ucp.capabilities" must be an object.',
-        severity: "error",
-      });
-    } else {
-      for (const [name, entries] of Object.entries(capabilities)) {
-        if (!Array.isArray(entries)) {
-          issues.push({
-            field: `ucp.capabilities.${name}`,
-            message: `Capability "${name}" must be an array of capability definitions.`,
-            severity: "error",
-          });
-          continue;
-        }
-        for (const [index, entry] of entries.entries()) {
-          const prefix = `ucp.capabilities.${name}[${index}]`;
-          if (!isObject(entry)) continue;
-          if (!get(entry, "spec"))
-            issues.push({
-              field: `${prefix}.spec`,
-              message: 'Missing required "spec" in capability definition.',
-              severity: "error",
-            });
-          if (!get(entry, "schema"))
-            issues.push({
-              field: `${prefix}.schema`,
-              message: 'Missing required "schema" in capability definition.',
-              severity: "error",
-            });
-        }
-      }
-    }
-  }
-
-  // signing_keys
-  const signingKeys = get(data, "signing_keys");
+  // ── signing_keys (optional) ─────────────────────────────────────────────────
+  const signingKeys = get(root, "signing_keys");
   if (signingKeys !== undefined) {
     if (!Array.isArray(signingKeys)) {
-      issues.push({
-        field: "signing_keys",
-        message: '"signing_keys" must be an array.',
-        severity: "error",
-      });
+      issues.push(
+        issue("signing_keys", '"signing_keys" must be an array.', "error"),
+      );
     } else {
       for (const [index, key] of signingKeys.entries()) {
         if (!isObject(key)) continue;
         if (!get(key, "kty"))
-          issues.push({
-            field: `signing_keys[${index}].kty`,
-            message: 'JWK entry missing required "kty" field.',
-            severity: "error",
-          });
+          issues.push(
+            issue(
+              `signing_keys[${index}].kty`,
+              'JWK entry missing required "kty".',
+              "error",
+            ),
+          );
       }
     }
   }
