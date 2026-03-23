@@ -151,6 +151,16 @@ export const runScan = withAuthentication(async (context) => {
       return;
     }
 
+    context.span.addBreadcrumb({
+      category: "scan.start",
+      data: {
+        "scan.id": scan.data.id,
+        "products.count": products.data.length,
+        "competitors.count": selected.length,
+        "simulations.total": totalSimulations,
+      },
+    });
+
     update({
       kind: "log",
       model: "System",
@@ -396,6 +406,11 @@ export const runScan = withAuthentication(async (context) => {
       wins,
       losses,
       topFinding: finding,
+    });
+
+    context.span.addBreadcrumb({
+      category: "scan.complete",
+      data: { "scan.id": scan.data.id, wins, losses, "simulations.total": totalSimulations },
     });
 
     update({

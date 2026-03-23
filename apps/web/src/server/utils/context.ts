@@ -18,7 +18,9 @@ export type GenericContext = {
     deployment: string;
     version: string;
   };
-  span: Sentry.Span;
+  span: Sentry.Span & {
+    addBreadcrumb: (breadcrumb: Sentry.Breadcrumb) => void;
+  };
   auth: typeof import("@/lib/auth").auth.api;
   storage: {
     upload: (
@@ -142,7 +144,11 @@ export const withContext = <
     const span = Sentry.startInactiveSpan({
       name,
       op: "server",
-    });
+    }) as Sentry.Span & {
+      addBreadcrumb: typeof Sentry.addBreadcrumb;
+    };
+
+    span.addBreadcrumb = Sentry.addBreadcrumb;
 
     span.setAttribute("action.arguments", args);
 

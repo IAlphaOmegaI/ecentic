@@ -224,8 +224,8 @@ const aggregateBrands = (
 export const gatherIntelligence = dedupe(
   withAuthentication(async () => {
     const [competitors, scan] = await Promise.all([
-      skimForCurrentUser(),
-      Scan.getLatest(),
+      skimForCurrentUser(Environment.SERVER),
+      Scan.getLatest(Environment.SERVER),
     ]);
 
     if (!competitors.success) return competitors;
@@ -241,7 +241,7 @@ export const gatherIntelligence = dedupe(
         },
       };
 
-    const simulations = await Simulation.getForCompetitors({
+    const simulations = await Simulation.getForCompetitors(Environment.SERVER, {
       competitors: competitors.data.map((competitor) => competitor.id),
     });
 
@@ -266,13 +266,13 @@ export const gatherPaginatedIntelligence = withAuthentication(
       paginate(Environment.SERVER, page, size, {
         where: eq(schema.competitor.userId, context.session.user.id),
       }),
-      Scan.getLatest(),
+      Scan.getLatest(Environment.SERVER),
     ]);
 
     if (!competitors.success) return competitors;
     if (!scan.success) return scan;
 
-    const simulations = await Simulation.getForCompetitors({
+    const simulations = await Simulation.getForCompetitors(Environment.SERVER, {
       competitors: competitors.data.items.map((competitor) => competitor.id),
     });
 

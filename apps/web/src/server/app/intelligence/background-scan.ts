@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { schema } from "../../database";
 import { generate } from "../../utils/ai";
+import { type GenericContext, withContext } from "../../utils/context";
 import { Environment } from "../../utils/environment";
 import * as Competitor from "../competitor";
 import * as Product from "../product";
@@ -34,7 +35,7 @@ const perspectives = [
   },
 ];
 
-const runScanForUser = async ({ userId }: { userId: string }) => {
+const runScanForUser = async (context: GenericContext, { userId }: { userId: string }) => {
   const [products, competitors] = await Promise.all([
     Product.find(Environment.SERVER, {
       where: eq(schema.product.userId, userId),
@@ -71,6 +72,17 @@ const runScanForUser = async ({ userId }: { userId: string }) => {
   });
 
   if (!scan.success) return scan;
+
+  context.span.addBreadcrumb({
+    category: "scan.start",
+    data: {
+      "scan.id": scan.data.id,
+      "user.id": userId,
+      "products.count": products.data.length,
+      "competitors.count": selected.length,
+      "simulations.total": totalSimulations,
+    },
+  });
 
   const tasks = products.data.flatMap((product) =>
     selected.flatMap((competitor) =>
@@ -150,82 +162,94 @@ const runScanForUser = async ({ userId }: { userId: string }) => {
     losses,
   });
 
+  context.span.addBreadcrumb({
+    category: "scan.complete",
+    data: { "scan.id": scan.data.id, "user.id": userId, wins, losses },
+  });
+
   return {
     success: true,
     data: { scanId: scan.data.id, wins, losses },
   };
 };
 
-export const runScanDaily = async ({ limit = 20 }: { limit?: number } = {}) => {
-  const users = await User.find(Environment.SERVER);
-  if (!users.success) return users;
+export const runScanDaily = withContext(
+  async (context, { limit = 20 }: { limit?: number } = {}) => {
+    const users = await User.find(Environment.SERVER);
+    if (!users.success) return users;
 
-  const selected = users.data.slice(0, limit);
+    const selected = users.data.slice(0, limit);
 
-  const results = await selected.reduce(
-    async (previousPromise, user) => {
-      const previous = await previousPromise;
-      const result = await runScanForUser({ userId: user.id });
-      return [...previous, { userId: user.id, result }];
-    },
-    Promise.resolve(
-      [] as {
-        userId: string;
-        result: Awaited<ReturnType<typeof runScanForUser>>;
-      }[],
-    ),
-  );
+    context.span.addBreadcrumb({
+      category: "scan.daily.start",
+      data: { "users.count": selected.length },
+    });
 
-  return {
-    success: true,
-    data: {
-      users: selected.length,
-      completed: results.filter((item) => item.result.success).length,
-      failed: results.filter((item) => !item.result.success).length,
-      results,
-    },
-  };
-};
+    const results = await selected.reduce(
+      async (previousPromise, user) => {
+        const previous = await previousPromise;
+        const result = await runScanForUser(context, { userId: user.id });
+        return [...previous, { userId: user.id, result }];
+      },
+      Promise.resolve(
+        [] as {
+          userId: string;
+          result: Awaited<ReturnType<typeof runScanForUser>>;
+        }[],
+      ),
+    );
 
-export const runPendingScans = async ({
-  limit = 1,
-}: {
-  limit?: number;
-} = {}) => {
-  const pending = await Scan.findPending(Environment.SERVER);
-  if (!pending.success) return pending;
+    return {
+      success: true,
+      data: {
+        users: selected.length,
+        completed: results.filter((item) => item.result.success).length,
+        failed: results.filter((item) => !item.result.success).length,
+        results,
+      },
+    };
+  },
+  "BackgroundScan.runScanDaily",
+);
 
-  const selected = pending.data.slice(0, limit);
+export const runPendingScans = withContext(
+  async (context, { limit = 1 }: { limit?: number } = {}) => {
+    const pending = await Scan.findPending(Environment.SERVER);
+    if (!pending.success) return pending;
 
-  const results = await selected.reduce(
-    async (previousPromise, scan) => {
-      const previous = await previousPromise;
+    const selected = pending.data.slice(0, limit);
 
-      const running = await Scan.findRunningForUser(Environment.SERVER, {
-        userId: scan.userId,
-      });
+    const results = await selected.reduce(
+      async (previousPromise, scan) => {
+        const previous = await previousPromise;
 
-      if (!running.success || running.data.length > 0)
-        return [...previous, { scanId: scan.id, success: false }];
+        const running = await Scan.findRunningForUser(Environment.SERVER, {
+          userId: scan.userId,
+        });
 
-      await Scan.update(Environment.SERVER, scan.id, { status: "running" });
-      const result = await runScanForUser({ userId: scan.userId });
+        if (!running.success || running.data.length > 0)
+          return [...previous, { scanId: scan.id, success: false }];
 
-      if (!result.success)
-        await Scan.update(Environment.SERVER, scan.id, { status: "failed" });
+        await Scan.update(Environment.SERVER, scan.id, { status: "running" });
+        const result = await runScanForUser(context, { userId: scan.userId });
 
-      return [...previous, { scanId: scan.id, success: result.success }];
-    },
-    Promise.resolve([] as { scanId: string; success: boolean }[]),
-  );
+        if (!result.success)
+          await Scan.update(Environment.SERVER, scan.id, { status: "failed" });
 
-  return {
-    success: true,
-    data: {
-      selected: selected.length,
-      completed: results.filter((result) => result.success).length,
-      failed: results.filter((result) => !result.success).length,
-      results,
-    },
-  };
-};
+        return [...previous, { scanId: scan.id, success: result.success }];
+      },
+      Promise.resolve([] as { scanId: string; success: boolean }[]),
+    );
+
+    return {
+      success: true,
+      data: {
+        selected: selected.length,
+        completed: results.filter((result) => result.success).length,
+        failed: results.filter((result) => !result.success).length,
+        results,
+      },
+    };
+  },
+  "BackgroundScan.runPendingScans",
+);

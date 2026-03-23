@@ -1,5 +1,6 @@
 import { NextResponse as Response } from "next/server";
 import * as BackgroundScan from "@/server/app/intelligence/background-scan";
+import { Environment } from "@/server/utils/environment";
 
 export const GET = async (request: Request) => {
   const authorization = request.headers.get("authorization");
@@ -17,7 +18,7 @@ export const GET = async (request: Request) => {
       { status: 401 },
     );
 
-  const result = await BackgroundScan.runScanDaily({ limit: 20 });
+  const result = await BackgroundScan.runScanDaily(Environment.SERVER, { limit: 20 });
 
   if (!result.success)
     return Response.json(

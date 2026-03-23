@@ -1,13 +1,14 @@
 import { unwrapResult } from "@zenncore/utils";
 import { connection } from "next/server";
 import * as Tracking from "@/server/app/tracking";
+import { Environment } from "@/server/utils/environment";
 import { AgentVisitsChart } from "./agent-visits-chart";
 
 export const AgentVisitsPanel = async () => {
   await connection();
   const [summary, timeSeries] = await Promise.all([
-    unwrapResult(Tracking.getAgentTrafficSummary()),
-    unwrapResult(Tracking.getAgentTrafficTimeSeries()),
+    unwrapResult(Tracking.getAgentTrafficSummary(Environment.SERVER)),
+    unwrapResult(Tracking.getAgentTrafficTimeSeries(Environment.SERVER)),
   ]);
   const max = Math.max(1, ...summary.byAgentType.map((entry) => entry.count));
 

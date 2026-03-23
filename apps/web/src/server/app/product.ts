@@ -11,6 +11,7 @@ import { repository } from "../utils/repository";
 import * as Competitor from "./competitor";
 import * as Scan from "./scan";
 import * as Simulation from "./simulation";
+import type { Pager } from "../utils/pagination";
 
 export const { get, paginate, create, update, destroy, exists, count, find } =
   repository(schema.product);
@@ -64,8 +65,8 @@ const computeModelWinRate = (
 export const gatherIntelligence = dedupe(
   withAuthentication(async () => {
     const [products, scan] = await Promise.all([
-      skimForCurrentUser(),
-      Scan.getLatest(),
+      skimForCurrentUser(Environment.SERVER),
+      Scan.getLatest(Environment.SERVER),
     ]);
 
     if (!products.success) return products;
@@ -82,7 +83,7 @@ export const gatherIntelligence = dedupe(
       };
     }
 
-    const simulations = await Simulation.getForProducts({
+    const simulations = await Simulation.getForProducts(Environment.SERVER, {
       products: products.data.map((product) => product.id),
     });
 
@@ -156,7 +157,7 @@ const enrichProduct = (product: Type, simulations: Simulation.Type[]) => {
 };
 
 export const paginateWithIntelligence = withAuthentication(
-  async (context, { page, size }: { page: number; size: number }) => {
+  async (context, { page, size }: Pager) => {
     const result = await paginate(Environment.SERVER, page, size, {
       where: eq(schema.product.userId, context.session.user.id),
     });
@@ -165,18 +166,7 @@ export const paginateWithIntelligence = withAuthentication(
 
     const { items, pagination } = result.data;
 
-    if (items.length === 0) {
-      return {
-        success: true as const,
-        data: {
-          rows: [],
-          pageCount: 0,
-          total: pagination.total,
-        },
-      };
-    }
-
-    const simulations = await Simulation.getForProducts({
+    const simulations = await Simulation.getForProducts(Environment.SERVER, {
       products: items.map((product) => product.id),
     });
 
@@ -186,14 +176,11 @@ export const paginateWithIntelligence = withAuthentication(
       enrichProduct(product, simulations.data),
     );
 
-    const pageCount = Math.ceil(pagination.total / size);
-
     return {
-      success: true as const,
+      success: true,
       data: {
-        rows,
-        pageCount,
-        total: pagination.total,
+        items: rows,
+        pagination,
       },
     };
   },
@@ -212,24 +199,21 @@ export const getDetail = withAuthentication(
 
     if (!product.success) return product;
     if (!product.data)
-      return { success: false as const, error: new Error("Product not found") };
+      return { success: false, error: new Error("Product not found") };
 
     if (product.data.userId !== context.session.user.id)
-      return { success: false as const, error: new Error("Not authorized") };
+      return { success: false, error: new Error("Not authorized") };
 
-    const simulations = await Simulation.getForProducts({ products: [id] });
+    const simulations = await Simulation.getForProducts(Environment.SERVER, { products: [id] });
     if (!simulations.success) return simulations;
 
     const competitorIds = unique(
       simulations.data.map((simulation) => simulation.competitorId),
     );
 
-    const results =
-      competitorIds.length > 0
-        ? await Competitor.find(Environment.SERVER, {
-            where: inArray(schema.competitor.id, competitorIds),
-          })
-        : { success: true as const, data: [] as Competitor.Type[] };
+    const results = await Competitor.find(Environment.SERVER, {
+      where: inArray(schema.competitor.id, competitorIds),
+    });
 
     if (!results.success) return results;
 

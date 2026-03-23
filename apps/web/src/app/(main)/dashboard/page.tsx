@@ -90,7 +90,9 @@ export default () => (
 
 const LastUpdated = async () => {
   await connection();
-  const data = await unwrapResult(Product.gatherIntelligence());
+  const data = await unwrapResult(
+    Product.gatherIntelligence(Environment.SERVER),
+  );
 
   return (
     <p className="mt-1 font-light text-2xl text-foreground-dimmed">
@@ -103,7 +105,7 @@ const LastUpdated = async () => {
 
 const StatCards = async () => {
   await connection();
-  const data = await unwrapResult(Product.gatherIntelligence());
+  const data = await unwrapResult(Product.gatherIntelligence(Environment.SERVER));
   const { products } = data;
 
   if (products.length === 0)
@@ -152,7 +154,7 @@ const StatCards = async () => {
   const top = sorted[0];
   const opportunity = sorted[sorted.length - 1];
 
-  const scans = await unwrapResult(Scan.getLatest());
+  const scans = await unwrapResult(Scan.getLatest(Environment.SERVER));
   const completed = scans.filter((scan) => scan.status === "completed");
 
   const trend = (() => {
@@ -269,8 +271,8 @@ const StatCards = async () => {
 const Performance = async () => {
   await connection();
   const [data, scans] = await Promise.all([
-    unwrapResult(Product.gatherIntelligence()),
-    unwrapResult(Scan.getLatest()),
+    unwrapResult(Product.gatherIntelligence(Environment.SERVER)),
+    unwrapResult(Scan.getLatest(Environment.SERVER)),
   ]);
 
   const { products } = data;
@@ -334,7 +336,7 @@ const Performance = async () => {
 
 const TopProducts = async () => {
   await connection();
-  const data = await unwrapResult(Product.gatherIntelligence());
+  const data = await unwrapResult(Product.gatherIntelligence(Environment.SERVER));
 
   const sorted = [...data.products]
     .sort((a, b) => b.winRate.total - a.winRate.total)

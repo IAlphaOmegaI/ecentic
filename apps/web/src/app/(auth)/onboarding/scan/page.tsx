@@ -10,6 +10,7 @@ import { connection } from "next/server";
 import { Motion } from "@/components/motion";
 import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
+import { Environment } from "@/server/utils/environment";
 import { ScanRunner } from "./_components/scan-runner";
 
 const models = [
@@ -34,8 +35,8 @@ export default async () => {
   await connection();
 
   const [products, competitors] = await Promise.all([
-    unwrapResult(Product.skimForCurrentUser()),
-    unwrapResult(Competitor.skimForCurrentUser()),
+    unwrapResult(Product.skimForCurrentUser(Environment.SERVER)),
+    unwrapResult(Competitor.skimForCurrentUser(Environment.SERVER)),
   ]);
 
   const selected = competitors.filter((record) => record.selected);

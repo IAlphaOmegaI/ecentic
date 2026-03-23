@@ -74,7 +74,7 @@ const fetchShopCurrency = async (
  */
 export const syncShopifyCatalog = withContext(
   async (
-    _,
+    context,
     {
       user: userId,
       store: storeId,
@@ -186,6 +186,11 @@ export const syncShopifyCatalog = withContext(
 
     const imported = results.filter((result) => result.success).length;
 
+    context.span.addBreadcrumb({
+      category: "shopify.catalog.sync",
+      data: { "store.id": storeId, "products.fetched": all.length, "products.imported": imported },
+    });
+
     const insertion = await Store.update(
       Environment.SERVER,
       storeId,
@@ -211,7 +216,7 @@ export const syncProducts = withAuthentication(
 
 export const handleOAuthCallback = withContext(
   async (
-    _context,
+    context,
     {
       code,
       shop,
@@ -255,6 +260,8 @@ export const handleOAuthCallback = withContext(
     }
 
     const accessToken = t.data.access_token;
+
+    context.span.addBreadcrumb({ category: "shopify.oauth.exchange", data: { shop } });
 
     const shopResponse = await HTTP.request(
       `https://${shop}/admin/api/${API_VERSION}/shop.json`,
@@ -317,6 +324,11 @@ export const handleOAuthCallback = withContext(
       return { success: false, error: transaction.error };
     }
 
+    context.span.addBreadcrumb({
+      category: "shopify.store.created",
+      data: { "store.id": transaction.data.id, shop },
+    });
+
     const storeData = transaction.data;
 
     const origin = resolveTrackerPublicOrigin();
@@ -345,6 +357,11 @@ export const handleOAuthCallback = withContext(
         }),
       },
     );
+
+    context.span.addBreadcrumb({
+      category: "shopify.script_tag.installed",
+      data: { "store.id": storeData.id, shop },
+    });
 
     return { success: true, data: { storeId: storeData.id } };
   },
