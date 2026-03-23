@@ -1,9 +1,9 @@
 import { UcpValidatorForm } from "./_components/ucp-validator-form";
 
-export default function UcpValidatorPage() {
+export default () => {
   return (
-    <div className="mx-auto max-w-2xl px-4 py-16">
-      <div className="mb-8">
+    <div className="mx-auto max-w-2xl space-y-8 px-4 py-16">
+      <div>
         <h1 className="font-semibold text-2xl text-foreground">
           UCP Validator
         </h1>
@@ -16,4 +16,4 @@ export default function UcpValidatorPage() {
       <UcpValidatorForm />
     </div>
   );
-}
+};

@@ -5,7 +5,7 @@ import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
-import { useState } from "react";
+import { type SubmitEvent, useState } from "react";
 import type {
   SpecIssue,
   UcpCheckResult,
@@ -49,46 +49,60 @@ type JToken = {
 
 const tokenizeJson = (json: string): JToken[] => {
   const tokens: JToken[] = [];
-  let i = 0;
-  while (i < json.length) {
-    if (/\s/.test(json[i])) {
+  let index = 0;
+
+  while (index < json.length) {
+    if (json[index] === undefined) continue;
+
+    if (/\s/.test(json[index])) {
       let text = "";
-      while (i < json.length && /\s/.test(json[i])) text += json[i++];
+      while (index < json.length && /\s/.test(json[index]))
+        text += json[index++];
       tokens.push({ text, type: "space" });
       continue;
     }
-    if (json[i] === '"') {
+    if (json[index] === '"') {
       let text = '"';
-      i++;
-      while (i < json.length && json[i] !== '"') {
-        if (json[i] === "\\") text += json[i++];
-        text += json[i++];
+
+      index++;
+      while (index < json.length && json[index] !== '"') {
+        if (json[index] === "\\") text += json[index++];
+        text += json[index++];
       }
+
       text += '"';
-      i++;
-      let j = i;
+      index++;
+      let j = index;
+
       while (j < json.length && /\s/.test(json[j])) j++;
+
       tokens.push({ text, type: json[j] === ":" ? "key" : "string" });
       continue;
     }
-    if (/[-\d]/.test(json[i])) {
+
+    if (/[-\d]/.test(json[index])) {
       let text = "";
-      while (i < json.length && /[-\d.eE+]/.test(json[i])) text += json[i++];
+      while (index < json.length && /[-\d.eE+]/.test(json[index]))
+        text += json[index++];
       tokens.push({ text, type: "number" });
       continue;
     }
-    if (json.startsWith("true", i) || json.startsWith("false", i)) {
-      const word = json.startsWith("true", i) ? "true" : "false";
+
+    if (json.startsWith("true", index) || json.startsWith("false", index)) {
+      const word = json.startsWith("true", index) ? "true" : "false";
       tokens.push({ text: word, type: "boolean" });
-      i += word.length;
+      index += word.length;
       continue;
     }
-    if (json.startsWith("null", i)) {
+
+    if (json.startsWith("null", index)) {
       tokens.push({ text: "null", type: "null" });
-      i += 4;
+      index += 4;
       continue;
     }
-    tokens.push({ text: json[i++], type: "punct" });
+
+    tokens.push({ text: json[index], type: "punct" });
+    index++;
   }
   return tokens;
 };
@@ -149,7 +163,6 @@ const Results = ({ result }: { result: UcpCheckResult }) => {
         </span>
       </div>
 
-      {/* Checks */}
       <div className="divide-y divide-accent-foreground px-5">
         <CheckRow
           label="HTTPS"
@@ -178,7 +191,6 @@ const Results = ({ result }: { result: UcpCheckResult }) => {
         />
       </div>
 
-      {/* Spec issues */}
       {result.specIssues.length > 0 && (
         <div className="border-accent-foreground border-t">
           <div className="border-accent-foreground border-b px-5 py-2.5">
@@ -239,7 +251,6 @@ const Results = ({ result }: { result: UcpCheckResult }) => {
         </div>
       )}
 
-      {/* JSON preview */}
       {result.valid && result.data !== null && (
         <div className="border-accent-foreground border-t">
           <div className="border-accent-foreground border-b px-5 py-2.5">
@@ -252,8 +263,6 @@ const Results = ({ result }: { result: UcpCheckResult }) => {
   );
 };
 
-// ─── Form ─────────────────────────────────────────────────────────────────────
-
 export const UcpValidatorForm = () => {
   const [domain, setDomain] = useState("");
   const [result, setResult] = useState<UcpCheckResult | null>(null);
@@ -263,7 +272,7 @@ export const UcpValidatorForm = () => {
     if (response.success) setResult(response.data);
   });
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     handleCheck();
   };
