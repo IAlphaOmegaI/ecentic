@@ -28,7 +28,15 @@
         "ECENTIC_TRACKER_PUBLIC_ORIGIN",
         "ECENTIC_TRACKER_PROBE",
         "npm_package_name",
-        "npm_package_version"
+        "npm_package_version",
+        "SENTRY_AUTH_TOKEN",
+        "NEXT_PUBLIC_SENTRY_DSN",
+        "NODE_ENV",
+        "CI",
+        "UPSTASH_REDIS_REST_READ_ONLY_TOKEN",
+        "UPSTASH_REDIS_REST_TOKEN",
+        "UPSTASH_REDIS_REST_URL",
+        "UPSTASH_REDIS_URL"
       ]
     },
     "typecheck": {
