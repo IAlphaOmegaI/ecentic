@@ -3,6 +3,11 @@
 import { ArrowRightIcon, BoxMinusIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@zenncore/web/components/avatar";
 import type { ColumnDef } from "@zenncore/web/components/data-table";
 import {
   DataTable,
@@ -14,6 +19,8 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { usePaginationChangeHandler } from "@/hooks/pagination";
 import { formatRelativeTime } from "@/lib/date";
+
+const fallbackImageSource = "/images/fallback";
 
 const WinRateBar = ({ rate }: { rate: number }) => {
   const { bar, text } = (() => {
@@ -68,9 +75,15 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
         href={`/dashboard/products/${row.original._id}`}
         className="group flex items-center gap-3"
       >
-        <div className="flex size-9 shrink-0 items-center justify-center bg-primary/10 font-semibold text-primary text-xs">
-          {row.original.title.slice(0, 2).toUpperCase()}
-        </div>
+        <Avatar className="size-9 rounded-none bg-primary/10">
+          <AvatarImage
+            src={row.original.image ?? fallbackImageSource}
+            alt={row.original.title}
+          />
+          <AvatarFallback className="font-semibold text-primary text-xs">
+            {row.original.title.slice(0, 2).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
         <div>
           <p className="font-medium text-foreground transition-colors group-hover:text-primary">
             {row.original.title}
@@ -213,6 +226,7 @@ export namespace ProductsTable {
   export type Row = {
     _id: string;
     title: string;
+    image?: string | null;
     price: string | null;
     currency: string | null;
     sku: string | null;
