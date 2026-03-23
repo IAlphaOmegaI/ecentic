@@ -12,6 +12,7 @@ import { db } from "../database";
 import { redis } from "./durable";
 import { type Brand, Environment } from "./environment";
 import { ErrorProtocol } from "./error";
+import { headers } from "next/headers";
 
 export type GenericContext = {
   environment: {
@@ -177,7 +178,7 @@ export const withContext = <
 
     return Sentry.withServerActionInstrumentation(
       name,
-      { recordResponse: true },
+      { recordResponse: true, headers: await headers() },
       async () => {
         const result = await fn(context.data as Context, ...args);
 
