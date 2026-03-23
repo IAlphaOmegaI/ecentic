@@ -30,7 +30,7 @@ export default withSentryConfig(
   } satisfies NextConfig,
   {
     org: "zennit-aw",
-    project: "javascript-nextjs",
+    project: "ecentic",
     // Only print logs for uploading source maps in CI
     silent: !process.env.CI,
     // Pass the auth token
