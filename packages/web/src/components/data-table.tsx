@@ -4,6 +4,7 @@ import {
   type ColumnDef,
   createColumnHelper,
   flexRender,
+  type PaginationState,
 } from "@tanstack/react-table";
 import {
   DataTableProvider,
@@ -30,7 +31,13 @@ import {
   TableRow,
 } from "./table";
 
-export { type ColumnDef, createColumnHelper, DataTableProvider, useDataTable };
+export {
+  type ColumnDef,
+  createColumnHelper,
+  DataTableProvider,
+  type PaginationState,
+  useDataTable,
+};
 
 type SlotComponent = ComponentType<{ children?: ReactNode | undefined }>;
 
@@ -88,13 +95,7 @@ export const DataTable = <T extends TableRowType>({
                 )}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
-                    className={cn(
-                      "font-light text-foreground text-sm",
-                      classList?.["body-cell"],
-                    )}
-                  >
+                  <TableCell key={cell.id} className={classList?.["body-cell"]}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -128,7 +129,7 @@ export const DataTablePagination = <T extends TableRowType>(): JSX.Element => {
 
   return (
     <Pagination>
-      <PaginationContent className="w-full px-2">
+      <PaginationContent className="w-full p-4">
         <div className="mr-auto">
           {pagination.pageIndex} / {pagination.pageCount}
         </div>
@@ -168,21 +169,3 @@ export const DataTablePagination = <T extends TableRowType>(): JSX.Element => {
     </Pagination>
   );
 };
-
-// const DataTableEmpty = ({ children }: DataTableEmpty.Props) => {
-//   return (
-//     <TableRow>
-//       <TableCell
-//         className={cn("text-center bg-red-500 max-w-full text-left")}
-//         colSpan={table.getAllColumns().length}
-//       >
-//         {children}
-//       </TableCell>
-//     </TableRow>
-//   );
-// };
-// export namespace DataTableEmpty {
-//   export type Props = {
-//     children: ReactNode;
-//   };
-// }

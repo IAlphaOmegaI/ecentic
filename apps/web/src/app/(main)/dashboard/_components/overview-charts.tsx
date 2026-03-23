@@ -22,6 +22,7 @@ import {
 } from "recharts";
 import { Spring } from "@/lib/animations";
 import { formatRelativeTime } from "@/lib/date";
+import type * as Simulate from "@/server/app/intelligence/simulate";
 
 type ModelRate = { label: string; rate: number };
 type TrendPoint = { date: string; winRate: number };
@@ -29,7 +30,7 @@ type ActivityEntry = {
   id: string;
   type: "simulation_complete" | "simulation_running";
   message: string;
-  detail: string | null;
+  detail: Simulate.TopFinding | null;
   timestamp: string;
 };
 
@@ -312,7 +313,7 @@ export const OverviewCharts = ({
                     </p>
                     {entry.detail && (
                       <p className="mt-0.5 font-light text-foreground-dimmed text-sm">
-                        {entry.detail.slice(0, 100)}...
+                        {entry.detail.impactDescription.slice(0, 100)}...
                       </p>
                     )}
                     <p className="mt-2 font-light text-primary-dimmed text-xs">

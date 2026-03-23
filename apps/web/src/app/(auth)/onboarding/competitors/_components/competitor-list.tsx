@@ -47,17 +47,12 @@ export const CompetitorList = ({
   return (
     <div className="flex h-full flex-col">
       <div className="min-h-0 flex-1 overflow-auto border-accent-foreground border-x bg-background-rich">
-        <Table className="[&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0">
+        <Table>
           <TableHeader>
             <TableRow>
               <TableHead className="w-10 px-4 py-2" />
               {["Competitor", "Price", "Brand"].map((header) => (
-                <TableHead
-                  key={header}
-                  className="px-4 py-3 text-left font-medium text-foreground text-sm"
-                >
-                  {header}
-                </TableHead>
+                <TableHead key={header}>{header}</TableHead>
               ))}
               <TableHead className="w-10 px-4 py-2" />
             </TableRow>
@@ -83,7 +78,7 @@ export const CompetitorList = ({
                     : "opacity-60 hover:bg-background-dimmed/50",
                 )}
               >
-                <TableCell className="w-10 px-4 py-3">
+                <TableCell className="w-10">
                   <div
                     className={cn(
                       "flex size-4 items-center justify-center border transition-colors duration-150",
@@ -100,7 +95,7 @@ export const CompetitorList = ({
                     />
                   </div>
                 </TableCell>
-                <TableCell className="px-4 py-3">
+                <TableCell>
                   <div className="flex items-center gap-3">
                     {record.image ? (
                       // biome-ignore lint/performance/noImgElement: external image domains unknown
@@ -126,13 +121,13 @@ export const CompetitorList = ({
                     </div>
                   </div>
                 </TableCell>
-                <TableCell className="px-4 py-3 font-light text-foreground text-sm">
+                <TableCell>
                   {formatPrice(record.price, record.currency)}
                 </TableCell>
-                <TableCell className="px-4 py-3 text-foreground-dimmed text-sm">
+                <TableCell className="text-foreground-dimmed">
                   {record.brand ?? "\u2014"}
                 </TableCell>
-                <TableCell className="px-4 py-3">
+                <TableCell>
                   <button
                     type="button"
                     onClick={(e) => {

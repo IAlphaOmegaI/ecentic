@@ -17,11 +17,12 @@ export const { get, paginate, create, update, destroy, exists, count, find } =
 
 export type Type = Document<typeof schema.product>;
 
-export const getForCurrentUser = withAuthentication(async (context) => {
+export const skimForCurrentUser = withAuthentication(async (context) => {
   return find(Environment.SERVER, {
     where: eq(schema.product.userId, context.session.user.id),
+    limit: 10,
   });
-}, "Product.getForCurrentUser");
+}, "Product.skimForCurrentUser");
 
 const keys = [
   "title",
@@ -63,7 +64,7 @@ const computeModelWinRate = (
 export const gatherIntelligence = dedupe(
   withAuthentication(async () => {
     const [products, scan] = await Promise.all([
-      getForCurrentUser(),
+      skimForCurrentUser(),
       Scan.getLatest(),
     ]);
 
@@ -124,6 +125,79 @@ export const gatherIntelligence = dedupe(
       },
     };
   }, "Product.gatherIntelligence"),
+);
+
+const enrichProduct = (product: Type, simulations: Simulation.Type[]) => {
+  const productSimulations = simulations.filter(
+    (simulation) => simulation.productId === product.id,
+  );
+
+  const wins = productSimulations.filter(
+    (simulation) => simulation.winner === "product",
+  ).length;
+  const total = productSimulations.length;
+
+  return {
+    _id: product.id,
+    title: product.title,
+    price: product.price,
+    currency: product.currency,
+    sku: product.sku,
+    winRate: {
+      total: total > 0 ? Math.round((wins / total) * 100) : 0,
+      gpt4: computeModelWinRate(productSimulations, "gpt4"),
+      claude: computeModelWinRate(productSimulations, "claude"),
+      gemini: computeModelWinRate(productSimulations, "gemini"),
+    },
+    simulations: total,
+    quality: computeDataQuality(product),
+    updatedAt: product.updatedAt,
+  };
+};
+
+export const paginateWithIntelligence = withAuthentication(
+  async (context, { page, size }: { page: number; size: number }) => {
+    const result = await paginate(Environment.SERVER, page, size, {
+      where: eq(schema.product.userId, context.session.user.id),
+    });
+
+    if (!result.success) return result;
+
+    const { items, pagination } = result.data;
+
+    if (items.length === 0) {
+      return {
+        success: true as const,
+        data: {
+          rows: [],
+          pageCount: 0,
+          total: pagination.total,
+        },
+      };
+    }
+
+    const simulations = await Simulation.getForProducts({
+      products: items.map((product) => product.id),
+    });
+
+    if (!simulations.success) return simulations;
+
+    const rows = items.map((product) =>
+      enrichProduct(product, simulations.data),
+    );
+
+    const pageCount = Math.ceil(pagination.total / size);
+
+    return {
+      success: true as const,
+      data: {
+        rows,
+        pageCount,
+        total: pagination.total,
+      },
+    };
+  },
+  "Product.paginateWithIntelligence",
 );
 
 const Model = {

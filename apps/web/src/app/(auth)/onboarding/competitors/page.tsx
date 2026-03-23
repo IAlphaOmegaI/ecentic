@@ -1,11 +1,11 @@
 import { parseSearchParam } from "@zenncore/utils";
 import type { SearchParamsProps } from "@zenncore/web/types";
-import { unstable_noStore as noStore } from "next/cache";
+import { connection } from "next/server";
 import { Motion } from "@/components/motion";
 import { CompetitorManager } from "./_components/competitor-manager";
 
 export default async ({ searchParams }: SearchParamsProps<"products">) => {
-  noStore();
+  await connection();
 
   const params = await searchParams;
 

@@ -6,7 +6,7 @@ export default ({ children }: PropsWithChildren) => (
   <div className="flex h-screen overflow-hidden bg-background">
     <Suspense
       fallback={
-        <div className="w-60 h-full bg-background-rich animate-pulse" />
+        <div className="h-full w-60 animate-pulse bg-background-rich" />
       }
     >
       <Sidebar />

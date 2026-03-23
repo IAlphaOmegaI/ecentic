@@ -19,11 +19,12 @@ export const { get, paginate, create, update, destroy, exists, count, find } =
 
 export type Type = Document<typeof schema.competitor>;
 
-export const getForCurrentUser = withAuthentication(async (context) => {
+export const skimForCurrentUser = withAuthentication(async (context) => {
   return find(Environment.SERVER, {
     where: eq(schema.competitor.userId, context.session.user.id),
+    limit: 10,
   });
-}, "Competitor.getForCurrentUser");
+}, "Competitor.skimForCurrentUser");
 
 export const removeForUser = withAuthentication(
   async (context, { id }: { id: string }) => {
@@ -223,7 +224,7 @@ const aggregateBrands = (
 export const gatherIntelligence = dedupe(
   withAuthentication(async () => {
     const [competitors, scan] = await Promise.all([
-      getForCurrentUser(),
+      skimForCurrentUser(),
       Scan.getLatest(),
     ]);
 
@@ -260,32 +261,24 @@ export const gatherIntelligence = dedupe(
 );
 
 export const gatherPaginatedIntelligence = withAuthentication(
-  async (_context, { page, size }: { page: number; size: number }) => {
+  async (context, { page, size }: { page: number; size: number }) => {
     const [competitors, scan] = await Promise.all([
-      getForCurrentUser(),
+      paginate(Environment.SERVER, page, size, {
+        where: eq(schema.competitor.userId, context.session.user.id),
+      }),
       Scan.getLatest(),
     ]);
 
     if (!competitors.success) return competitors;
     if (!scan.success) return scan;
 
-    if (competitors.data.length === 0)
-      return {
-        success: true,
-        data: {
-          brands: [],
-          scan: scan.data[0],
-          pagination: { total: 0, page, size },
-        },
-      };
-
     const simulations = await Simulation.getForCompetitors({
-      competitors: competitors.data.map((competitor) => competitor.id),
+      competitors: competitors.data.items.map((competitor) => competitor.id),
     });
 
     if (!simulations.success) return simulations;
 
-    const allBrands = aggregateBrands(competitors.data, simulations.data);
+    const allBrands = aggregateBrands(competitors.data.items, simulations.data);
     const total = allBrands.length;
     const offset = (page - 1) * size;
     const brands = allBrands.slice(offset, offset + size);

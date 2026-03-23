@@ -3,7 +3,7 @@ import * as Competitor from "@/server/app/competitor";
 import { CompetitorReview } from "./_components/competitor-review";
 
 export default async () => {
-  const competitors = await unwrapResult(Competitor.getForCurrentUser());
+  const competitors = await unwrapResult(Competitor.skimForCurrentUser());
 
   return (
     <CompetitorReview existing={competitors}>

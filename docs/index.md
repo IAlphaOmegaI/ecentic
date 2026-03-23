@@ -6,9 +6,9 @@ Central navigation for product context, agent rules, and package/component docum
 
 ### If you need project context first
 
-- [Product + architecture handoff](./context/ECENTIC.md)
-- [AI agent commerce strategy](./context/AI%20Agent%20Shopping%20Strategy.md)
-- [Shopify app listing reference](./context/shopify-app-listing.md)
+- [Product + architecture handoff](./context/idea.md)
+- [AI agent commerce strategy](./context/strategy.md)
+- [Shopify app listing reference](./context/shopify.md)
 
 ### If you are implementing or refactoring code
 
@@ -17,13 +17,11 @@ Central navigation for product context, agent rules, and package/component docum
 - [Component patterns](./agents/AGENTS-components.md)
 - [Next.js patterns](./agents/AGENTS-nextjs.md)
 - [Package usage rules](./agents/AGENTS-packages.md)
-- [Convex conventions](./agents/AGENTS-convex.md)
 
 ### If you are building UI
 
 - [Web components index](./web/index.md)
 - [Shared packages index](./shared/index.md)
-- [Mobile components index](./mobile/index.md)
 
 ---
 
@@ -32,7 +30,6 @@ Central navigation for product context, agent rules, and package/component docum
 | Package | Description |
 |---------|-------------|
 | [Web](./web/index.md) | React components for web applications |
-| [Mobile](./mobile/index.md) | React Native components for mobile |
 | [Shared](./shared/index.md) | Shared utilities and packages |
 
 ---
@@ -62,5 +59,5 @@ Central navigation for product context, agent rules, and package/component docum
 ## Install Packages
 
 ```bash
-bun add @zenncore/web @zenncore/mobile @zenncore/utils @zenncore/icons @zenncore/phone @zenncore/data-table @zenncore/inferred-form
+bun add @zenncore/web @zenncore/utils @zenncore/icons @zenncore/phone @zenncore/data-table @zenncore/inferred-form
 ```

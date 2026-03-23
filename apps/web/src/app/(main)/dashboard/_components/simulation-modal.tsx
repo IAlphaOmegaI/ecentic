@@ -1,33 +1,14 @@
 "use client";
 
-import { readStreamableValue } from "@ai-sdk/rsc";
 import { XIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
-import { useAsyncAction } from "@zenncore/utils/hooks";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { useScanRunner } from "@/app/(auth)/onboarding/scan/_components/use-scan-runner";
 import { Motion } from "@/components/motion";
 import { Spring, Stagger } from "@/lib/animations";
-import { runScan } from "@/server/app/intelligence/simulate";
-
-type SimPhase = "pre" | "running" | "complete";
-type ModelStatus = "queued" | "running" | "complete";
-type LogEntry = { id: number; model: string; message: string; elapsed: number };
-type Stats = { wins: number; losses: number; progress: number };
-type TopFinding = {
-  name: string;
-  missingAttributes: string[];
-  impactDescription: string;
-  lossPercentage: number;
-};
-
-const initialStats: Stats = { wins: 0, losses: 0, progress: 0 };
-const initialStatuses: Record<string, ModelStatus> = {
-  "GPT-4": "queued",
-  Claude: "queued",
-  Gemini: "queued",
-};
+import type * as Simulate from "@/server/app/intelligence/simulate";
 
 const modelColors: Record<string, string> = {
   "GPT-4": "text-blue-500",
@@ -51,121 +32,38 @@ export namespace SimulationModal {
 
 export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
   const toast = useToastManager();
-  const [phase, setPhase] = useState<SimPhase>("pre");
-  const [stats, setStats] = useState<Stats>(initialStats);
-  const [logs, setLogs] = useState<LogEntry[]>([]);
-  const [statuses, setStatuses] =
-    useState<Record<string, ModelStatus>>(initialStatuses);
-  const [winRates, setWinRates] = useState<
-    Record<string, { wins: number; losses: number; rate: number }>
-  >({});
-  const [topFinding, setTopFinding] = useState<TopFinding | null>(null);
-  const [count, setCount] = useState(0);
-  const [elapsed, setElapsed] = useState(0);
-
-  const startTimeRef = useRef<number>(0);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const logsEndRef = useRef<HTMLDivElement>(null);
 
-  const stopTimer = () => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-  };
-
-  useEffect(() => () => stopTimer(), [stopTimer]);
+  const {
+    phase,
+    stats,
+    logs,
+    statuses,
+    winRates,
+    topFinding,
+    count,
+    elapsed,
+    handleRun,
+    isRunning,
+    reset,
+  } = useScanRunner({
+    onError: (text) =>
+      toast.add({
+        title: "Simulation failed",
+        description: text,
+        type: "error",
+      }),
+  });
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: scroll to bottom on new log
   useEffect(() => {
     logsEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [logs]);
 
-  const appendLog = (model: string, message: string) =>
-    setLogs((prev) => [
-      ...prev,
-      {
-        id: prev.length + 1,
-        model,
-        message,
-        elapsed: Date.now() - startTimeRef.current,
-      },
-    ]);
-
-  const reset = () => {
-    stopTimer();
-    setPhase("pre");
-    setStats(initialStats);
-    setLogs([]);
-    setStatuses(initialStatuses);
-    setWinRates({});
-    setTopFinding(null);
-    setCount(0);
-    setElapsed(0);
-  };
-
   const handleClose = () => {
     onClose();
     setTimeout(reset, 300);
   };
-
-  const [handleRun, isRunning] = useAsyncAction(async () => {
-    setPhase("running");
-    setLogs([]);
-    setStats(initialStats);
-    setStatuses(initialStatuses);
-    setElapsed(0);
-    startTimeRef.current = Date.now();
-
-    timerRef.current = setInterval(() => {
-      setElapsed(Date.now() - startTimeRef.current);
-    }, 100);
-
-    const { output } = await runScan();
-
-    for await (const event of readStreamableValue(output)) {
-      if (!event) continue;
-
-      switch (event.kind) {
-        case "log":
-          appendLog(event.model, event.message);
-          break;
-        case "progress": {
-          const percentage =
-            event.total > 0
-              ? Math.min(Math.round((event.completed / event.total) * 100), 99)
-              : 0;
-          setStats({
-            wins: event.wins,
-            losses: event.losses,
-            progress: percentage,
-          });
-          break;
-        }
-        case "model_status":
-          setStatuses((prev) => ({ ...prev, [event.model]: event.status }));
-          break;
-        case "error":
-          stopTimer();
-          setPhase("pre");
-          setStatuses(initialStatuses);
-          toast.add({
-            title: "Simulation failed",
-            description: event.text,
-            type: "error",
-          });
-          return;
-        case "done":
-          stopTimer();
-          setStats({ wins: event.wins, losses: event.losses, progress: 100 });
-          setWinRates(event.modelWinRates);
-          setTopFinding(event.topFinding);
-          setCount(event.productCount);
-          setTimeout(() => setPhase("complete"), 800);
-          return;
-      }
-    }
-  });
 
   const canClose = phase !== "running";
 
@@ -393,7 +291,7 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
                       })}
                     </div>
 
-                    {/* Log area — auto-detect style */}
+                    {/* Log area */}
                     <div className="h-56 space-y-1.5 overflow-y-auto scroll-smooth px-5 py-4">
                       {logs.map((entry, index) => {
                         const age = logs.length - 1 - index;
@@ -503,7 +401,7 @@ type CompletePhaseModalProps = {
   wins: number;
   losses: number;
   winRates: Record<string, { wins: number; losses: number; rate: number }>;
-  topFinding: TopFinding | null;
+  topFinding: Simulate.TopFinding | null;
   products: number;
   elapsed: number;
   onClose: () => void;

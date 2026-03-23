@@ -1,17 +1,16 @@
 "use client";
 
-import { ArrowRightIcon, ChevronLeftIcon } from "@zenncore/icons";
+import {
+  ArrowRightIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  RocketIcon,
+} from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Link from "next/link";
 import { useState } from "react";
-
-type TopFinding = {
-  name: string;
-  missingAttributes: string[];
-  impactDescription: string;
-  lossPercentage: number;
-};
+import type { TopFinding } from "@/server/types";
 
 export type ScanInsight = {
   id: string;
@@ -20,15 +19,6 @@ export type ScanInsight = {
   losses: number;
   completedSimulations: number;
   topFinding: TopFinding | null;
-};
-
-const parseFinding = (raw: string | null): TopFinding | null => {
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw) as TopFinding;
-  } catch {
-    return null;
-  }
 };
 
 const WinRatePill = ({ wins, losses }: { wins: number; losses: number }) => {
@@ -47,13 +37,16 @@ const WinRatePill = ({ wins, losses }: { wins: number; losses: number }) => {
   })();
 
   return (
-    <div className="flex items-center gap-3">
-      <span className={cn("font-medium text-2xl tabular-nums", color)}>
-        {rate}%
-      </span>
-      <span className="font-light text-foreground-dimmed text-sm">
-        {wins}W / {losses}L
-      </span>
+    <div>
+      <h3>Win Rate:</h3>
+      <div className="flex items-center gap-3">
+        <span className={cn("font-medium text-2xl tabular-nums", color)}>
+          {rate}%
+        </span>
+        <span className="font-light text-foreground-dimmed text-sm">
+          {wins}W / {losses}L
+        </span>
+      </div>
     </div>
   );
 };
@@ -75,20 +68,19 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
 
           <div className="grid grid-cols-1 gap-px border-accent-foreground border-y bg-accent-foreground sm:grid-cols-[1fr_auto]">
             <div className="bg-primary p-6">
-              <p className="mb-2 font-light text-background uppercase tracking-widest">
+              <RocketIcon className="size-8 text-background" />
+              <p className="mb-2 text-white uppercase tracking-widest  mt-2">
                 Impact
               </p>
               <p className="text-white leading-relaxed">
                 {finding.impactDescription}
               </p>
             </div>
-            <div className="flex flex-col items-center justify-center border-accent-foreground border-l bg-background-dimmed p-6">
-              <span className="font-medium text-4xl text-error tabular-nums">
+            <div className="flex flex-col items-center justify-center border-accent-foreground border-l bg-error p-6">
+              <span className="font-medium text-4xl text-white tabular-nums">
                 {finding.lossPercentage}%
               </span>
-              <p className="mt-2 font-light text-foreground-dimmed text-sm">
-                of sims lost
-              </p>
+              <p className="mt-2 font-light text-white text-sm">of sims lost</p>
             </div>
           </div>
 
@@ -132,28 +124,14 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
 
 export namespace ScanInsightsCarousel {
   export type Props = {
-    scans: Array<{
-      id: string;
-      date: string;
-      wins: number;
-      losses: number;
-      completedSimulations: number;
-      topFinding: string | null;
-    }>;
+    scans: ScanInsight[];
   };
 }
 
 export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
   const [index, setIndex] = useState(0);
 
-  const parsed: ScanInsight[] = scans.map((scan) => ({
-    ...scan,
-    topFinding: parseFinding(scan.topFinding),
-  }));
-
-  const current = parsed[index];
-
-  console.log(current);
+  const current = scans[index];
 
   if (!current) return null;
 
@@ -164,7 +142,7 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
   });
 
   return (
-    <div>
+    <div className="bg-background-rich">
       <div className="flex items-start justify-between border-accent-foreground border-b p-6">
         <div>
           <p className="font-light text-foreground-dimmed uppercase tracking-widest">
@@ -185,28 +163,27 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
 
       <InsightCard scan={current} />
 
-      {parsed.length > 1 && (
-        <div className="mt-6 flex items-center justify-between border-accent-foreground border-t pt-4">
-          <button
-            type="button"
+      {scans.length > 1 && (
+        <div className="flex items-center justify-between border-accent-foreground border-t p-6">
+          <Button
+            variant="outline"
+            color="accent"
+            size="icon"
             disabled={index === 0}
-            onClick={() => setIndex((prev) => Math.max(0, prev - 1))}
-            className="flex items-center gap-1.5 font-light text-foreground-dimmed text-sm transition-colors hover:text-foreground disabled:opacity-30"
+            onClick={() => setIndex((prvious) => Math.max(0, prvious - 1))}
           >
             <ChevronLeftIcon className="size-4" />
-            Newer
-          </button>
+          </Button>
 
-          {/* Dot indicators */}
           <div className="flex items-center gap-1.5">
-            {parsed.map((_, i) => (
+            {scans.map((_, i) => (
               <button
                 // biome-ignore lint/suspicious/noArrayIndexKey: we want to use the index as the key
                 key={i}
                 type="button"
                 onClick={() => setIndex(i)}
                 className={cn(
-                  "size-1.5 transition-all",
+                  "size-3 transition-all",
                   i === index
                     ? "bg-primary"
                     : "bg-accent-foreground hover:bg-foreground-dimmed",
@@ -215,17 +192,17 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
             ))}
           </div>
 
-          <button
-            type="button"
-            disabled={index === parsed.length - 1}
+          <Button
+            variant="outline"
+            color="accent"
+            size="icon"
+            disabled={index === scans.length - 1}
             onClick={() =>
-              setIndex((previous) => Math.min(parsed.length - 1, previous + 1))
+              setIndex((previous) => Math.min(scans.length - 1, previous + 1))
             }
-            className="flex items-center gap-1.5 font-light text-foreground-dimmed text-sm transition-colors hover:text-foreground disabled:opacity-30"
           >
-            Older
-            <ArrowRightIcon className="size-4" />
-          </button>
+            <ChevronRightIcon className="size-4" />
+          </Button>
         </div>
       )}
     </div>

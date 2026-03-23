@@ -11,12 +11,15 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { formatRelativeTime } from "@/lib/date";
+import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
 import * as Scan from "@/server/app/scan";
+import { Environment } from "@/server/utils/environment";
 import { AgentVisitsPanel } from "./_components/agent-visits-panel";
+import { CompetitorsTable } from "./_components/competitors-table";
 import { OverviewActions } from "./_components/overview-actions";
 import { OverviewCharts } from "./_components/overview-charts";
-import { OverviewTable } from "./_components/overview-table";
+import { ProductsTable } from "./_components/products-table";
 
 export default () => (
   <div className="flex flex-col">
@@ -62,6 +65,14 @@ export default () => (
         <div className="mx-8">
           <Suspense fallback={<TableSkeleton />}>
             <TopProducts />
+          </Suspense>
+        </div>
+      </div>
+
+      <div className="-mx-8 mb-12 border-accent-foreground border-t border-b">
+        <div className="mx-8">
+          <Suspense fallback={<CompetitorTableSkeleton />}>
+            <TopCompetitors />
           </Suspense>
         </div>
       </div>
@@ -329,79 +340,148 @@ const TopProducts = async () => {
     .sort((a, b) => b.winRate.total - a.winRate.total)
     .slice(0, 10);
 
-  const rows = sorted.map((product) => ({
-    ...product,
-  }));
-
-  return <OverviewTable products={rows} />;
-};
-
-const StatsSkeleton = () => {
-  const keys = ["rate", "scanned", "ai", "top", "opportunity"];
-
   return (
-    <div className="grid h-39 min-h-39 grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
-      {keys.map((key) => (
-        <div key={key} className="bg-background-dimmed p-4">
-          <div className="h-4 w-28 animate-pulse bg-foreground/10" />
-          <div className="mt-4 h-10 w-20 animate-pulse bg-foreground/10" />
-          <div className="mt-3 h-3 w-32 animate-pulse bg-foreground/10" />
-        </div>
-      ))}
-    </div>
+    <ProductsTable
+      rows={sorted}
+      pageCount={1}
+      title="Product Win Rates"
+      action={
+        <Button
+          variant="outline"
+          color="primary"
+          render={<Link href="/dashboard/products" />}
+        >
+          View all products <ArrowRightIcon className="size-4" />
+        </Button>
+      }
+    />
   );
 };
+
+const TopCompetitors = async () => {
+  await connection();
+  const data = await unwrapResult(
+    Competitor.gatherIntelligence(Environment.SERVER),
+  );
+
+  return (
+    <CompetitorsTable
+      rows={data.brands}
+      title="Top Competitors"
+      pageCount={1}
+      action={
+        <Button
+          variant="outline"
+          color="primary"
+          render={<Link href="/dashboard/competitors" />}
+        >
+          View all <ArrowRightIcon className="size-4" />
+        </Button>
+      }
+    />
+  );
+};
+
+const StatsSkeleton = () => (
+  <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
+    <div className="flex flex-col justify-between bg-background-dimmed p-4">
+      <div>
+        <div className="h-3.5 w-28 animate-pulse bg-foreground/10" />
+        <div className="mt-3 flex items-baseline gap-2">
+          <div className="h-10 w-20 animate-pulse bg-foreground/10" />
+          <div className="h-4 w-32 animate-pulse bg-foreground/10" />
+        </div>
+      </div>
+    </div>
+
+    <div className="flex flex-col justify-between bg-background-dimmed p-4">
+      <div>
+        <div className="h-3.5 w-32 animate-pulse bg-foreground/10" />
+        <div className="mt-3 flex items-baseline gap-1.5">
+          <div className="h-10 w-12 animate-pulse bg-foreground/10" />
+          <div className="h-4 w-12 animate-pulse bg-foreground/10" />
+        </div>
+      </div>
+      <div className="mt-4">
+        <div className="h-1 w-full animate-pulse bg-foreground/10" />
+        <div className="mt-2 h-3.5 w-28 animate-pulse bg-foreground/10" />
+      </div>
+    </div>
+
+    <div className="flex flex-col justify-between bg-background-dimmed p-4">
+      <div>
+        <div className="h-3.5 w-24 animate-pulse bg-foreground/10" />
+        <div className="mt-1.5 h-4 w-40 animate-pulse bg-foreground/10" />
+        <div className="mt-3 flex items-baseline gap-2">
+          <div className="h-10 w-16 animate-pulse bg-foreground/10" />
+          <div className="h-4 w-14 animate-pulse bg-foreground/10" />
+        </div>
+      </div>
+      <div className="mt-auto ml-auto h-9 w-28 animate-pulse bg-foreground/10" />
+    </div>
+
+    <div className="flex flex-col justify-between bg-background-dimmed p-4">
+      <div>
+        <div className="h-3.5 w-32 animate-pulse bg-foreground/10" />
+        <div className="mt-1.5 h-4 w-36 animate-pulse bg-foreground/10" />
+        <div className="mt-3 flex items-baseline gap-2">
+          <div className="h-10 w-16 animate-pulse bg-foreground/10" />
+          <div className="h-4 w-14 animate-pulse bg-foreground/10" />
+        </div>
+      </div>
+      <div className="mt-auto ml-auto h-9 w-28 animate-pulse bg-foreground/10" />
+    </div>
+  </div>
+);
 
 const ChartSkeleton = () => (
   <div className="grid grid-cols-1 gap-px bg-accent-foreground xl:grid-cols-3">
     <div className="bg-background-dimmed xl:col-span-2">
       <div className="p-4">
-        <div className="h-3 w-24 animate-pulse bg-foreground/10" />
-        <div className="mt-2 h-7 w-40 animate-pulse bg-foreground/10" />
+        <div className="h-3 w-20 animate-pulse bg-foreground/10" />
+        <div className="mt-2 h-8 w-44 animate-pulse bg-foreground/10" />
       </div>
-      <div className="grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-y px-4">
-        {["a", "b", "c"].map((key) => (
-          <div
-            key={key}
-            className="flex flex-col items-center gap-1 p-6 first:pl-0 last:pr-0"
-          >
-            <div className="flex w-full flex-row items-center justify-between">
+
+      <div className="grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-y">
+        {(["GPT-4", "Claude", "Gemini"] as const).map((model) => (
+          <div key={model} className="p-6">
+            <div className="flex w-full items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="size-6 animate-pulse bg-foreground/10" />
-                <div className="h-3 w-16 animate-pulse bg-foreground/10" />
+                <div className="size-5 animate-pulse rounded-full bg-foreground/10" />
+                <div className="h-3.5 w-14 animate-pulse bg-foreground/10" />
               </div>
-              <div className="flex items-baseline gap-1">
-                <div className="h-10 w-12 animate-pulse bg-foreground/10" />
-                <div className="h-5 w-4 animate-pulse bg-foreground/10" />
+              <div className="flex items-baseline gap-0.5">
+                <div className="h-9 w-10 animate-pulse bg-foreground/10" />
+                <div className="h-4 w-3 animate-pulse bg-foreground/10" />
               </div>
             </div>
-            <div className="mt-2 h-1 w-full animate-pulse bg-foreground/10" />
+            <div className="mt-3 h-1 w-full animate-pulse bg-foreground/10" />
           </div>
         ))}
       </div>
+
       <div className="p-4">
-        <div className="mb-4 flex items-center justify-between">
-          <div className="h-3 w-28 animate-pulse bg-foreground/10" />
-        </div>
-        <div className="h-64 w-full animate-pulse bg-foreground/10" />
+        <div className="mb-3 h-3 w-24 animate-pulse bg-foreground/10" />
+        <div className="h-56 w-full animate-pulse bg-foreground/10" />
       </div>
     </div>
+
     <div className="flex flex-col gap-px bg-accent-foreground">
       <div className="flex-1 bg-background-dimmed">
-        <div className="mb-2 px-4 pt-4">
-          <div className="h-3 w-28 animate-pulse bg-foreground/10" />
+        <div className="px-4 pt-4 pb-2">
+          <div className="h-3.5 w-24 animate-pulse bg-foreground/10" />
         </div>
         <div className="flex flex-col">
-          {["d", "e", "f"].map((key) => (
+          {(["a", "b", "c"] as const).map((key) => (
             <div
               key={key}
-              className="flex items-start gap-2 border-accent-foreground border-b p-4 first:border-t last:border-b-0"
+              className="flex items-start gap-3 border-accent-foreground border-b p-4 last:border-b-0"
             >
-              <div className="size-6 shrink-0 animate-pulse bg-foreground/10" />
+              <div className="mt-0.5 size-5 shrink-0 animate-pulse rounded-full bg-foreground/10" />
               <div className="flex-1 space-y-2">
                 <div className="h-4 w-full animate-pulse bg-foreground/10" />
-                <div className="h-3 w-3/4 animate-pulse bg-foreground/10" />
-                <div className="h-2.5 w-16 animate-pulse bg-foreground/10" />
+                <div className="h-3 w-4/5 animate-pulse bg-foreground/10" />
+                <div className="h-2.5 w-14 animate-pulse bg-foreground/10" />
               </div>
             </div>
           ))}
@@ -415,80 +495,142 @@ const ChartSkeleton = () => (
   </div>
 );
 
-const TableSkeleton = () => {
-  const keys = ["a", "b", "c", "d", "e"];
-
-  return (
-    <div>
-      <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
-        <div className="h-7 w-40 animate-pulse bg-foreground/10" />
-        <div className="h-9 w-40 animate-pulse bg-foreground/10" />
-      </div>
-      <div className="overflow-x-auto bg-background-rich">
-        <table className="w-full">
-          <thead>
-            <tr className="border-accent-foreground border-b">
-              {[
-                "Product",
-                "Win Rate",
-                "GPT-4",
-                "Claude",
-                "Gemini",
-                "Quality",
-                "",
-              ].map((header) => (
+const CompetitorTableSkeleton = () => (
+  <div>
+    <div className="flex items-center justify-between border-accent-foreground border-b p-4">
+      <div className="h-6 w-36 animate-pulse bg-foreground/10" />
+      <div className="h-9 w-24 animate-pulse bg-foreground/10" />
+    </div>
+    <div className="overflow-x-auto bg-background-rich">
+      <table className="w-full">
+        <thead>
+          <tr className="border-accent-foreground border-b">
+            {["Brand", "Win Rate", "Simulations", "Last Updated", ""].map(
+              (header) => (
                 <th key={header} className="px-4 py-3 text-left">
                   {header && (
-                    <div className="h-3 w-16 animate-pulse bg-foreground/10" />
+                    <div className="h-3 w-14 animate-pulse bg-foreground/10" />
                   )}
                 </th>
-              ))}
+              ),
+            )}
+          </tr>
+        </thead>
+        <tbody>
+          {(["a", "b", "c", "d", "e"] as const).map((key) => (
+            <tr
+              key={key}
+              className="border-accent-foreground border-b last:border-b-0"
+            >
+              <td className="px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <div className="size-9 shrink-0 animate-pulse bg-foreground/10" />
+                  <div className="space-y-1.5">
+                    <div className="h-4 w-28 animate-pulse bg-foreground/10" />
+                    <div className="h-3 w-16 animate-pulse bg-foreground/10" />
+                  </div>
+                </div>
+              </td>
+              <td className="px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <div className="h-1 w-20 animate-pulse bg-foreground/10" />
+                  <div className="h-4 w-9 animate-pulse bg-foreground/10" />
+                </div>
+              </td>
+              <td className="px-4 py-3">
+                <div className="h-4 w-10 animate-pulse bg-foreground/10" />
+              </td>
+              <td className="px-4 py-3">
+                <div className="h-4 w-20 animate-pulse bg-foreground/10" />
+              </td>
+              <td className="px-4 py-3">
+                <div className="size-9 animate-pulse bg-foreground/10" />
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {keys.map((key) => (
-              <tr
-                key={key}
-                className="border-accent-foreground border-b last:border-b-0"
-              >
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    <div className="size-9 shrink-0 animate-pulse bg-foreground/10" />
-                    <div className="space-y-1.5">
-                      <div className="h-4 w-32 animate-pulse bg-foreground/10" />
-                      <div className="h-3 w-16 animate-pulse bg-foreground/10" />
-                    </div>
-                  </div>
-                </td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <div className="h-1 w-24 animate-pulse bg-foreground/10" />
-                    <div className="h-4 w-8 animate-pulse bg-foreground/10" />
-                  </div>
-                </td>
-                <td className="px-4 py-3">
-                  <div className="h-4 w-8 animate-pulse bg-foreground/10" />
-                </td>
-                <td className="px-4 py-3">
-                  <div className="h-4 w-8 animate-pulse bg-foreground/10" />
-                </td>
-                <td className="px-4 py-3">
-                  <div className="h-4 w-8 animate-pulse bg-foreground/10" />
-                </td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <div className="h-1 w-24 animate-pulse bg-foreground/10" />
-                    <div className="h-4 w-8 animate-pulse bg-foreground/10" />
-                  </div>
-                </td>
-                <td className="px-4 py-3">
-                  <div className="size-9 animate-pulse bg-foreground/10" />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <div className="flex items-center justify-between border-accent-foreground border-t p-4">
+      <div className="h-4 w-24 animate-pulse bg-foreground/10" />
+      <div className="flex gap-2">
+        <div className="h-9 w-9 animate-pulse bg-foreground/10" />
+        <div className="h-9 w-9 animate-pulse bg-foreground/10" />
       </div>
     </div>
-  );
-};
+  </div>
+);
+
+const TableSkeleton = () => (
+  <div>
+    <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
+      <div className="h-6 w-28 animate-pulse bg-foreground/10" />
+      <div className="h-9 w-36 animate-pulse bg-foreground/10" />
+    </div>
+    <div className="overflow-x-auto bg-background-rich">
+      <table className="w-full">
+        <thead>
+          <tr className="border-accent-foreground border-b">
+            {[
+              "Product",
+              "Win Rate",
+              "GPT-4",
+              "Claude",
+              "Gemini",
+              "Quality",
+              "",
+            ].map((header) => (
+              <th key={header} className="px-4 py-3 text-left">
+                {header && (
+                  <div className="h-3 w-14 animate-pulse bg-foreground/10" />
+                )}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {(["a", "b", "c", "d", "e"] as const).map((key) => (
+            <tr
+              key={key}
+              className="border-accent-foreground border-b last:border-b-0"
+            >
+              <td className="px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <div className="size-9 shrink-0 animate-pulse bg-foreground/10" />
+                  <div className="space-y-1.5">
+                    <div className="h-4 w-36 animate-pulse bg-foreground/10" />
+                    <div className="h-3 w-20 animate-pulse bg-foreground/10" />
+                  </div>
+                </div>
+              </td>
+              <td className="px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <div className="h-1 w-20 animate-pulse bg-foreground/10" />
+                  <div className="h-4 w-9 animate-pulse bg-foreground/10" />
+                </div>
+              </td>
+              <td className="px-4 py-3">
+                <div className="h-4 w-9 animate-pulse bg-foreground/10" />
+              </td>
+              <td className="px-4 py-3">
+                <div className="h-4 w-9 animate-pulse bg-foreground/10" />
+              </td>
+              <td className="px-4 py-3">
+                <div className="h-4 w-9 animate-pulse bg-foreground/10" />
+              </td>
+              <td className="px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <div className="h-1 w-20 animate-pulse bg-foreground/10" />
+                  <div className="h-4 w-9 animate-pulse bg-foreground/10" />
+                </div>
+              </td>
+              <td className="px-4 py-3">
+                <div className="size-9 animate-pulse bg-foreground/10" />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+);

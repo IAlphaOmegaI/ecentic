@@ -5,9 +5,9 @@ import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type * as Competitor from "@/server/app/competitor";
-import { getForCurrentUser as getCompetitors } from "@/server/app/competitor";
+import { skimForCurrentUser as getCompetitors } from "@/server/app/competitor";
 import type * as Product from "@/server/app/product";
-import { getForCurrentUser as getProducts } from "@/server/app/product";
+import { skimForCurrentUser as getProducts } from "@/server/app/product";
 
 const navItems = [
   { label: "Overview", href: "/dashboard" },

@@ -67,7 +67,7 @@ const sidebar = {
       </>
     ),
     points: [
-      "Generate a read-only key from your WooCommerce settings",
+      "Generate a REST API key in WooCommerce (read/write to publish listing updates from écentic, or read-only for sync only)",
       "Paste three fields and we handle the rest",
       "Your credentials are encrypted and stored securely",
     ],
@@ -131,7 +131,6 @@ const sidebar = {
 } as const;
 
 export default ({ children }: LayoutProps<"/onboarding">) => {
-  noStore();
   const pathname = usePathname();
   const current = steps.findIndex((step) => pathname.startsWith(step.path));
 

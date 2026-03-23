@@ -9,17 +9,17 @@ Treat `docs/` as the canonical source of truth for product intent, implementatio
 Read in this order before substantial work:
 
 1. `docs/index.md` - docs navigation hub.
-2. `docs/context/ECENTIC.md` - product scope, flows, architecture, roadmap.
-3. `docs/context/AI Agent Shopping Strategy.md` - market, measurement, retention, enterprise strategy.
-4. `docs/context/shopify-app-listing.md` - Shopify-facing claims/copy/scopes/testing constraints.
-5. `docs/agents/AGENTS-*.md` - coding rules (`style`, `components`, `nextjs`, `packages`, `convex`, `checklist`).
+2. `docs/context/idea.md` - product scope, flows, architecture, roadmap.
+3. `docs/context/strategy.md` - market, measurement, retention, enterprise strategy.
+4. `docs/context/shopify.md` - Shopify-facing claims/copy/scopes/testing constraints.
+5. `docs/agents/AGENTS-*.md` - coding rules (`style`, `components`, `nextjs`, `packages`, `checklist`).
 6. `docs/web/index.md` and `docs/shared/index.md` - component/package API references.
 
 If code and docs disagree, follow documented intent unless the user explicitly asks otherwise.
 
 ## What This Is
 
-**Écentic** is an e-commerce optimization platform for the AI agent economy. It simulates how AI shopping agents (GPT-4, Claude, Gemini) compare products vs. competitors, diagnoses why products win or lose, and auto-optimizes listings. See `docs/context/ECENTIC.md` for full product spec and feature roadmap.
+**Écentic** is an e-commerce optimization platform for the AI agent economy. It simulates how AI shopping agents (GPT-4, Claude, Gemini) compare products vs. competitors, diagnoses why products win or lose, and auto-optimizes listings. See `docs/context/idea.md` for full product spec and feature roadmap.
 
 ---
 
@@ -46,6 +46,7 @@ bun run db:generate   # Generate Drizzle migration files
 bun run db:migrate    # Apply pending migrations
 bun run db:push       # Push schema directly (dev only)
 bun run db:studio     # Open Drizzle Studio UI
+bun run db:reset      # Reset database (scripts/reset.ts)
 ```
 
 There are no automated tests in this codebase currently.
@@ -70,6 +71,7 @@ There are no automated tests in this codebase currently.
     │   ├── inferred-form/    # @zenncore/inferred-form — schema-driven form builder
     │   ├── data-table/       # @zenncore/data-table — TanStack Table wrapper
     │   ├── icons/            # @zenncore/icons
+    │   ├── phone/            # @zenncore/phone — phone input utilities
     │   └── config/           # @zenncore/config — shared TS/Tailwind/tsdown configs
     └── mobile/               # @zenncore/mobile (placeholder)
 ```
@@ -82,7 +84,7 @@ There are no automated tests in this codebase currently.
 
 **1. Database** (`server/database/`)
 - Drizzle ORM + PostgreSQL via `postgres.js`
-- Schema in `schema.ts`: `user`, `session`, `account`, `verification`, `store`, `product`, `competitor`, `scan`, `simulation`
+- Schema in `schema.ts`: `user`, `session`, `account`, `verification`, `store`, `product`, `competitor`, `scan`, `simulation`, `ucpProfile`, `agentVisit`, `agentTrafficDaily`
 - Relations defined alongside schema for typed joins
 - Config in `apps/web/drizzle.config.ts`
 
@@ -95,6 +97,9 @@ There are no automated tests in this codebase currently.
 **3. Server actions** (`server/app/`)
 - `authentication.ts` — signIn, signUp, signOut, verifyEmail, resetPassword, getCurrentUser
 - `store.ts`, `product.ts`, `competitor.ts`, `scan.ts`, `simulation.ts` — CRUD via repository
+- `storage.ts` — UploadThing storage integration
+- `tracking.ts` — AI agent visit tracking
+- `user.ts`, `session.ts` — user/session management
 - `integration/shopify.ts` — OAuth token exchange + product sync via Shopify Admin API
 - `integration/woocommerce.ts` — credential validation + paginated product fetch
 - `integration/feed.ts` — XML/JSON auto-detection + Google Shopping format parsing
@@ -106,12 +111,32 @@ There are no automated tests in this codebase currently.
 
 ```
 app/
-├── (auth)/                   # Route group — sign-in, sign-up, verify, onboarding (4 steps)
-│   └── onboarding/           # connect → products → competitors → scan
-├── dashboard/                # Protected pages (PPR + streaming)
-│   └── products/[id]/        # 5-tab product detail
-├── api/integrations/shopify/ # install + callback OAuth routes
-└── _components/              # Landing page components
+├── (auth)/                       # Route group — sign-in, sign-up, onboarding
+│   ├── sign-in/
+│   ├── sign-up/
+│   └── onboarding/               # connect → products → competitors → scan
+├── (main)/                       # Route group — landing page + protected pages
+│   ├── page.tsx                  # Landing page
+│   ├── _components/              # Landing page components
+│   ├── privacy-policy/
+│   └── dashboard/                # Protected pages (PPR + streaming)
+│       ├── products/             # Product list + detail views
+│       ├── competitors/
+│       ├── reports/
+│       ├── optimize/
+│       ├── ucp/                  # Universal Commerce Protocol
+│       └── settings/
+├── (provider)/                   # Route group — API routes
+│   └── api/
+│       ├── auth/[...all]/        # Better Auth route handler
+│       ├── integrations/         # Shopify OAuth install + callback
+│       ├── cron/                 # Scheduled job endpoints
+│       └── tracking/             # Agent visit tracking endpoints
+├── layout.tsx
+├── globals.css
+├── manifest.ts
+├── robots.ts
+└── sitemap.ts
 ```
 
 Client components live in `_components/` subdirectories next to their page.
@@ -125,8 +150,6 @@ Every `page.tsx` must be a **server component** that exports real HTML — not a
 - **Streaming** — The server sends the shell first, then streams in resolved async components so users see content as it loads.
 
 Onboarding/auth screens may be client-heavy by design; all other screens (dashboard, settings, lists, details) follow this pattern. See AGENTS.md §21b and §23f.
-
-**Missing:** `/api/auth/[...all]/route.ts` — Better Auth route handler needs to be created for auth endpoints to work.
 
 ---
 
@@ -167,12 +190,14 @@ const Feature = {
 |-------|-----------|
 | Framework | Next.js 16, React 19, React Compiler |
 | Database | PostgreSQL, Drizzle ORM 1.0 beta |
-| Auth | Better Auth 1.4 (email/password + Drizzle adapter) |
+| Auth | Better Auth 1.5 (email/password + Drizzle adapter) |
 | AI | Vercel AI SDK 6.0 + Azure AI |
 | Email | Resend + React Email |
 | Storage | UploadThing |
 | Styling | Tailwind CSS 4 |
 | Animations | Motion (Framer Motion fork) |
+| Charts | Recharts |
+| URL State | nuqs |
 | Monitoring | Sentry + PostHog |
 | Linting | Biome (no ESLint/Prettier) |
 | Build | Turborepo + Bun |

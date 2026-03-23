@@ -7,7 +7,7 @@ import { UcpManager } from "./_components/ucp-manager";
 const UcpContent = async () => {
   const [profile, products] = await Promise.all([
     unwrapResult(Ucp.getProfile()),
-    unwrapResult(Product.getForCurrentUser()),
+    unwrapResult(Product.skimForCurrentUser()),
   ]);
 
   return <UcpManager profile={profile} products={products} />;

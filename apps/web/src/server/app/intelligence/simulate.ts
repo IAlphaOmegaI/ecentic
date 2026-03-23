@@ -61,13 +61,6 @@ Score each product 0-100 using the weights above. The winner is the product you 
   },
 ] as const;
 
-type TopFinding = {
-  name: string;
-  missingAttributes: string[];
-  impactDescription: string;
-  lossPercentage: number;
-};
-
 export type SimulationResult = {
   product: Product.Type & { score: number };
   competitor: Competitor.Type & { score: number };
@@ -402,7 +395,7 @@ export const runScan = withAuthentication(async (context) => {
       completedSimulations: totalSimulations,
       wins,
       losses,
-      topFinding: finding ? JSON.stringify(finding) : null,
+      topFinding: finding,
     });
 
     update({
@@ -424,3 +417,10 @@ export const runScan = withAuthentication(async (context) => {
     },
   };
 }, "Simulation.runScan");
+
+export type TopFinding = {
+  name: string;
+  missingAttributes: string[];
+  impactDescription: string;
+  lossPercentage: number;
+};
