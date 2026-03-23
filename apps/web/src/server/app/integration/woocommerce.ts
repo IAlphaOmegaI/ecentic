@@ -307,7 +307,7 @@ export const updateProduct = withAuthentication(
         error: new RequestError("No fields to update"),
       };
 
-    const url = `${domain}/wp-json/wc/v3/products/${product.data.externalId}.json`;
+    const url = `${domain}/wp-json/wc/v3/products/${product.data.externalId}`;
 
     const response = await HTTP.request(url, {
       method: "PUT",
