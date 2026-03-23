@@ -30,8 +30,8 @@ export const WinRateTiersChart = ({
   const data = tiers.filter((tier) => tier.count > 0);
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      <div className="size-48">
+    <div className="flex flex-col items-center gap-4 h-full">
+      <div className="size-64">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -49,7 +49,9 @@ export const WinRateTiersChart = ({
               {data.map((tier) => (
                 <Cell
                   key={tier.label}
-                  fill={tierColors[tier.color] ?? "var(--color-foreground-dimmed)"}
+                  fill={
+                    tierColors[tier.color] ?? "var(--color-foreground-dimmed)"
+                  }
                 />
               ))}
             </Pie>
@@ -73,12 +75,10 @@ export const WinRateTiersChart = ({
         </ResponsiveContainer>
       </div>
 
-      <div className="grid w-full grid-cols-2 gap-3">
+      <div className="grid w-full grid-cols-2 gap-3 mt-20">
         {tiers.map((tier) => (
           <div key={tier.label} className="flex items-start gap-2">
-            <div
-              className={cn("mt-1.5 size-2 shrink-0", tier.color)}
-            />
+            <div className={cn("mt-1.5 size-2 shrink-0", tier.color)} />
             <div>
               <p className="font-light text-foreground-dimmed text-sm">
                 {tier.label}

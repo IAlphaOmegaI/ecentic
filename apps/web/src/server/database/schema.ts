@@ -9,6 +9,7 @@ import {
   timestamp,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
+import type * as Simulate from "@/server/app/intelligence/simulate";
 
 /**
  * Better-auth core schema (compatible with drizzleAdapter).
@@ -145,7 +146,7 @@ export const scan = pgTable("scan", {
   completedSimulations: integer("completedSimulations").notNull().default(0),
   wins: integer("wins").notNull().default(0),
   losses: integer("losses").notNull().default(0),
-  topFinding: text("topFinding"),
+  topFinding: jsonb("topFinding").$type<Simulate.TopFinding>(),
   createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
 });

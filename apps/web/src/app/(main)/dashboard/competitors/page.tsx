@@ -15,6 +15,7 @@ import { Suspense } from "react";
 import { formatRelativeTime } from "@/lib/date";
 import * as Competitor from "@/server/app/competitor";
 import * as Scan from "@/server/app/scan";
+import { Environment } from "@/server/utils/environment";
 import type { Pager } from "@/server/utils/pagination";
 import { extractPaginationParams } from "@/server/utils/pagination";
 import { CompetitorsTable } from "../_components/competitors-table";
@@ -92,7 +93,7 @@ export default ({ searchParams }: SearchParamsProps<keyof Pager>) => (
 
 const LastScanned = async () => {
   await connection();
-  const data = await unwrapResult(Competitor.gatherIntelligence());
+  const data = await unwrapResult(Competitor.gatherIntelligence(Environment.SERVER));
 
   return (
     <p className="mt-1 font-light text-2xl text-foreground-dimmed">
@@ -105,7 +106,7 @@ const LastScanned = async () => {
 
 const StatCards = async () => {
   await connection();
-  const data = await unwrapResult(Competitor.gatherIntelligence());
+  const data = await unwrapResult(Competitor.gatherIntelligence(Environment.SERVER));
   if (!data) return null;
 
   const { brands } = data;
@@ -154,7 +155,7 @@ const StatCards = async () => {
         )
       : null;
 
-  const scans = await unwrapResult(Scan.getLatest());
+  const scans = await unwrapResult(Scan.getLatest(Environment.SERVER));
   const completed = scans.filter((scan) => scan.status === "completed");
 
   const trend = (() => {
@@ -272,7 +273,7 @@ const StatCards = async () => {
 
 const CompetitiveLandscape = async () => {
   await connection();
-  const data = await unwrapResult(Competitor.gatherIntelligence());
+  const data = await unwrapResult(Competitor.gatherIntelligence(Environment.SERVER));
 
   const { brands } = data;
 
@@ -375,7 +376,7 @@ const CompetitiveLandscape = async () => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-px bg-accent-foreground">
+      <div className="flex flex-col gap-px bg-accent-foreground flex-1">
         <div className="flex-1 bg-background-dimmed p-4">
           <p className="font-light text-foreground-dimmed uppercase tracking-widest">
             Distribution
@@ -416,7 +417,7 @@ const Competitors = async ({
   await connection();
   const { page, size } = await extractPaginationParams(searchParams);
   const data = await unwrapResult(
-    Competitor.gatherPaginatedIntelligence({ page, size }),
+    Competitor.gatherPaginatedIntelligence(Environment.SERVER, { page, size }),
   );
 
   return (
@@ -439,8 +440,8 @@ const Competitors = async ({
 const Insights = async () => {
   await connection();
   const [data, scans] = await Promise.all([
-    unwrapResult(Competitor.gatherIntelligence()),
-    unwrapResult(Scan.getLatest()),
+    unwrapResult(Competitor.gatherIntelligence(Environment.SERVER)),
+    unwrapResult(Scan.getLatest(Environment.SERVER)),
   ]);
 
   const completed = scans.filter((scan) => scan.status === "completed");
@@ -466,7 +467,7 @@ const Insights = async () => {
               Top Finding
             </p>
             <p className="mt-1 font-light text-foreground text-sm">
-              {data.scan.topFinding}
+              {data.scan.topFinding.impactDescription}
             </p>
           </div>
         )}
@@ -497,7 +498,7 @@ const Insights = async () => {
                   </p>
                   {scan.topFinding && (
                     <p className="mt-0.5 font-light text-foreground-dimmed text-sm">
-                      {scan.topFinding}
+                      {scan.topFinding.impactDescription}
                     </p>
                   )}
                 </div>

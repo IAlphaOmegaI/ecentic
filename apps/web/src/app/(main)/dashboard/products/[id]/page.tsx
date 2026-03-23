@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 import * as Product from "@/server/app/product";
+import { Environment } from "@/server/utils/environment";
 import { ProductDetail } from "./_components/product-detail";
 
 export default ({ params }: PageProps<"/dashboard/products/[id]">) => (
@@ -28,7 +29,7 @@ const ProductDetailContent = async ({
   params,
 }: Pick<PageProps<"/dashboard/products/[id]">, "params">) => {
   const { id } = await params;
-  const data = await unwrapResult(Product.getDetail({ id }));
+  const data = await unwrapResult(Product.getDetail(Environment.SERVER, { id }));
   if (!data) return null;
 
   return <ProductDetail data={data} />;

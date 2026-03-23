@@ -12,13 +12,16 @@ import { db } from "../database";
 import { redis } from "./durable";
 import { type Brand, Environment } from "./environment";
 import { ErrorProtocol } from "./error";
+import { headers } from "next/headers";
 
 export type GenericContext = {
   environment: {
     deployment: string;
     version: string;
   };
-  span: Sentry.Span;
+  span: Sentry.Span & {
+    addBreadcrumb: (breadcrumb: Sentry.Breadcrumb) => void;
+  };
   auth: typeof import("@/lib/auth").auth.api;
   storage: {
     upload: (
@@ -142,7 +145,11 @@ export const withContext = <
     const span = Sentry.startInactiveSpan({
       name,
       op: "server",
-    });
+    }) as Sentry.Span & {
+      addBreadcrumb: typeof Sentry.addBreadcrumb;
+    };
+
+    span.addBreadcrumb = Sentry.addBreadcrumb;
 
     span.setAttribute("action.arguments", args);
 
@@ -171,7 +178,7 @@ export const withContext = <
 
     return Sentry.withServerActionInstrumentation(
       name,
-      { recordResponse: true },
+      { recordResponse: true, headers: await headers() },
       async () => {
         const result = await fn(context.data as Context, ...args);
 

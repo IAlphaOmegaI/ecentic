@@ -47,9 +47,11 @@ export const signIn = withContext(
       };
     }
 
+    context.span.addBreadcrumb({ category: "auth.sign_in", data: { "user.id": result.data.user.id, "user.email": email } });
+
     const jar = await cookies();
 
-    const user = await User.get(result.data.user.id);
+    const user = await User.get(Environment.SERVER, result.data.user.id);
 
     if (!user.success) {
       throw new InvalidCredentialsError("Invalid credentials provided", {
@@ -214,6 +216,8 @@ export const signUp = withContext(
         ),
       };
     }
+
+    context.span.addBreadcrumb({ category: "auth.sign_up", data: { "user.email": payload.email } });
 
     return {
       success: true,

@@ -1,8 +1,12 @@
 declare namespace NodeJS {
   interface ProcessEnv {
+    readonly NODE_ENV: string;
+    readonly CI: string;
+
     readonly BETTER_AUTH_BASE_URL: string;
 
     readonly NEXT_PUBLIC_SENTRY_DSN: string;
+    readonly SENTRY_AUTH_TOKEN: string;
 
     readonly DATABASE_URL: string;
     readonly APP_HOST: string;

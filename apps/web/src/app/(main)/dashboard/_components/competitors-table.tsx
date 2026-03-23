@@ -99,7 +99,7 @@ export const CompetitorsTable = ({
   action,
   paginated = false,
 }: CompetitorsTable.Props) => {
-  const handlePaginationChange = usePaginationChangeHandler("competitors/");
+  const handlePaginationChange = usePaginationChangeHandler();
 
   return (
     <>
@@ -120,12 +120,12 @@ export const CompetitorsTable = ({
         >
           <DataTable className={cn(!paginated && "border-b-0")}>
             <DataTableEmpty>
-              <div className="p-8 text-center">
+              <div className="p-8 text-center flex flex-col items-center justify-center py-24">
                 <BoxMinusIcon className="mb-6 size-24" />
-                <p className="text-foreground text-lg">
+                <p className="text-foreground text-2xl font-medium">
                   No competitors tracked yet
                 </p>
-                <p className="mt-1 font-light text-foreground-dimmed text-sm">
+                <p className="mt-1 font-light text-foreground-dimmed text-lg">
                   Add competitors to start analyzing your competitive landscape.
                 </p>
               </div>
