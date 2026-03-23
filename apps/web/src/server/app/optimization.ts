@@ -58,6 +58,20 @@ export type OptimizationDashboardData = {
   pending: OptimizationQueueItem[];
   published: StoredOptimizationItem[];
   dismissed: StoredOptimizationItem[];
+  diagnostics: {
+    lowWinRateProducts: number;
+    publishableLowWinRateProducts: number;
+    nonPublishableLowWinRateProducts: number;
+    insights: {
+      productId: string;
+      productTitle: string;
+      winRate: number;
+      category: "seo" | "content" | "structured_data" | "platform";
+      severity: "high" | "medium";
+      message: string;
+      recommendation: string;
+    }[];
+  };
 };
 
 const winRateForSimulations = (
@@ -125,11 +139,17 @@ const buildDashboardData = async (
   const storeById = new Map(stores.map((store) => [store.id, store]));
   const productById = new Map(products.map((product) => [product.id, product]));
   const recordByProductId = new Map(records.map((row) => [row.productId, row]));
+  const productIds = products.map((product) => product.id);
 
   const publishableProducts = products.filter((product) => {
     const store = storeById.get(product.storeId);
     return store && PUBLISHABLE_PLATFORMS.has(store.platform);
   });
+
+  const allSimulationsResult = await Simulation.getForProducts({
+    products: productIds,
+  });
+  const allSimulations = allSimulationsResult.success ? allSimulationsResult.data : [];
 
   const simulationsResult = await Simulation.getForProducts({
     products: publishableProducts.map((product) => product.id),
@@ -139,6 +159,19 @@ const buildDashboardData = async (
 
   const now = Date.now();
   const pending: OptimizationQueueItem[] = [];
+  const diagnostics: OptimizationDashboardData["diagnostics"]["insights"] = [];
+  const publishableProductIds = new Set(publishableProducts.map((product) => product.id));
+  const lowWinRateProducts = products
+    .map((product) => {
+      const winRate = winRateForSimulations(product.id, allSimulations);
+      return {
+        product,
+        winRate,
+      };
+    })
+    .filter((entry): entry is { product: (typeof products)[number]; winRate: number } =>
+      entry.winRate !== null && entry.winRate < WIN_RATE_THRESHOLD,
+    );
 
   for (const product of publishableProducts) {
     const winRate = winRateForSimulations(product.id, simulations);
@@ -161,6 +194,67 @@ const buildDashboardData = async (
       modelsAffected: modelsForProduct(product.id, simulations),
       winRateBefore: winRate,
     });
+  }
+
+  for (const { product, winRate } of lowWinRateProducts) {
+    const store = storeById.get(product.storeId);
+    const isPublishable = publishableProductIds.has(product.id);
+    const imageMissing = !product.images || product.images === "[]";
+    const titleShort = product.title.trim().length < 25;
+    const descriptionShort = !product.description || product.description.trim().length < 140;
+    const structuredMissing = !product.structuredData;
+
+    if (!isPublishable) {
+      diagnostics.push({
+        productId: product.id,
+        productTitle: product.title,
+        winRate,
+        category: "platform",
+        severity: "high",
+        message: `Store platform "${store?.platform ?? "unknown"}" does not support one-click publishing in Optimization Center.`,
+        recommendation:
+          "Use Shopify or WooCommerce for one-click publishing, or manually apply the recommended SEO/content fixes below.",
+      });
+    }
+
+    if (structuredMissing) {
+      diagnostics.push({
+        productId: product.id,
+        productTitle: product.title,
+        winRate,
+        category: "structured_data",
+        severity: "high",
+        message: "Missing structured product data reduces AI agent confidence.",
+        recommendation:
+          "Generate schema markup from UCP & Structured Data and include key attributes (price, SKU, availability, brand).",
+      });
+    }
+
+    if (descriptionShort || titleShort) {
+      diagnostics.push({
+        productId: product.id,
+        productTitle: product.title,
+        winRate,
+        category: "content",
+        severity: descriptionShort ? "high" : "medium",
+        message: "Listing copy is too thin for strong AI shopping comparisons.",
+        recommendation:
+          "Expand description with concrete specs, use-case details, and trust signals (warranty, returns, certifications).",
+      });
+    }
+
+    if (imageMissing) {
+      diagnostics.push({
+        productId: product.id,
+        productTitle: product.title,
+        winRate,
+        category: "seo",
+        severity: "medium",
+        message: "No product imagery available in synced listing data.",
+        recommendation:
+          "Add high-quality product images and ensure they are present in your catalog sync/feed.",
+      });
+    }
   }
 
   const published: StoredOptimizationItem[] = records
@@ -195,7 +289,22 @@ const buildDashboardData = async (
       };
     });
 
-  return { pending, published, dismissed };
+  const publishableLowWinRateProducts = lowWinRateProducts.filter((entry) =>
+    publishableProductIds.has(entry.product.id),
+  ).length;
+
+  return {
+    pending,
+    published,
+    dismissed,
+    diagnostics: {
+      lowWinRateProducts: lowWinRateProducts.length,
+      publishableLowWinRateProducts,
+      nonPublishableLowWinRateProducts:
+        lowWinRateProducts.length - publishableLowWinRateProducts,
+      insights: diagnostics.slice(0, 24),
+    },
+  };
 };
 
 const generateImprovedListing = async (input: {

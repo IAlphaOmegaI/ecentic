@@ -8,6 +8,7 @@ import {
   DownloadIcon,
   GaugeIcon,
   GearIcon,
+  RadarIcon,
   ShoppingCartIcon,
   SquareChartIcon,
   XIcon,
@@ -68,6 +69,12 @@ export const Sidebar = () => {
       href: "/dashboard/competitors",
       exact: false,
     },
+  {
+    icon: RadarIcon,
+    label: "Simulations",
+    href: "/dashboard/simulations",
+    exact: false,
+  },
     {
       icon: GaugeIcon,
       label: "Optimize",
