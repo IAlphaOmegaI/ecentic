@@ -142,7 +142,11 @@ export const syncWooCommerceCatalog = withContext(
 
     context.span.addBreadcrumb({
       category: "woocommerce.catalog.sync",
-      data: { "store.id": storeId, "products.fetched": all.length, "products.imported": imported },
+      data: {
+        "store.id": storeId,
+        "products.fetched": all.length,
+        "products.imported": imported,
+      },
     });
 
     const insertion = await Store.update(
@@ -199,7 +203,10 @@ export const connect = withAuthentication(
         ),
       };
 
-    context.span.addBreadcrumb({ category: "woocommerce.probe", data: { "store.host": host } });
+    context.span.addBreadcrumb({
+      category: "woocommerce.probe",
+      data: { "store.host": host },
+    });
 
     const transaction = await resultify(() =>
       withTransaction(async (tx) => {

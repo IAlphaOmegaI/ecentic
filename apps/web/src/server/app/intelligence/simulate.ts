@@ -410,7 +410,12 @@ export const runScan = withAuthentication(async (context) => {
 
     context.span.addBreadcrumb({
       category: "scan.complete",
-      data: { "scan.id": scan.data.id, wins, losses, "simulations.total": totalSimulations },
+      data: {
+        "scan.id": scan.data.id,
+        wins,
+        losses,
+        "simulations.total": totalSimulations,
+      },
     });
 
     update({

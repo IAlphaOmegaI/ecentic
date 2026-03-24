@@ -31,6 +31,7 @@ export namespace CompletePhase {
     winRates: Record<string, { wins: number; losses: number; rate: number }>;
     topFinding: Simulate.TopFinding | null;
     products: number;
+    scanId: string | null;
   };
 }
 
@@ -40,6 +41,7 @@ export const CompletePhase = ({
   winRates,
   topFinding: _,
   products: finalProductCount,
+  scanId,
 }: CompletePhase.Props) => {
   const winRate =
     wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0;
@@ -224,7 +226,7 @@ export const CompletePhase = ({
                 variant="outline"
                 color="accent"
                 type="button"
-                render={<Link href="/onboarding/share" />}
+                render={<Link href={scanId ? `/share/${scanId}` : "#"} />}
               >
                 <Share />
               </Button>

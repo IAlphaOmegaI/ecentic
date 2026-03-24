@@ -93,7 +93,9 @@ export default ({ searchParams }: SearchParamsProps<keyof Pager>) => (
 
 const LastScanned = async () => {
   await connection();
-  const data = await unwrapResult(Competitor.gatherIntelligence(Environment.SERVER));
+  const data = await unwrapResult(
+    Competitor.gatherIntelligence(Environment.SERVER),
+  );
 
   return (
     <p className="mt-1 font-light text-2xl text-foreground-dimmed">
@@ -106,7 +108,9 @@ const LastScanned = async () => {
 
 const StatCards = async () => {
   await connection();
-  const data = await unwrapResult(Competitor.gatherIntelligence(Environment.SERVER));
+  const data = await unwrapResult(
+    Competitor.gatherIntelligence(Environment.SERVER),
+  );
   if (!data) return null;
 
   const { brands } = data;
@@ -273,7 +277,9 @@ const StatCards = async () => {
 
 const CompetitiveLandscape = async () => {
   await connection();
-  const data = await unwrapResult(Competitor.gatherIntelligence(Environment.SERVER));
+  const data = await unwrapResult(
+    Competitor.gatherIntelligence(Environment.SERVER),
+  );
 
   const { brands } = data;
 
@@ -376,7 +382,7 @@ const CompetitiveLandscape = async () => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-px bg-accent-foreground flex-1">
+      <div className="flex flex-1 flex-col gap-px bg-accent-foreground">
         <div className="flex-1 bg-background-dimmed p-4">
           <p className="font-light text-foreground-dimmed uppercase tracking-widest">
             Distribution

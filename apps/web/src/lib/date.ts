@@ -18,3 +18,10 @@ export const formatRelativeTime = (date: Date): string => {
       return date.toLocaleDateString();
   }
 };
+
+export const formatElapsed = (ms: number) => {
+  const seconds = ms / 1000;
+  return seconds < 60
+    ? `${seconds.toFixed(1)}s`
+    : `${Math.floor(seconds / 60)}m ${(seconds % 60).toFixed(0)}s`;
+};

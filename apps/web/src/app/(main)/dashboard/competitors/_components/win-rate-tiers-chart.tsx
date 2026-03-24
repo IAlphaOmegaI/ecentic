@@ -30,7 +30,7 @@ export const WinRateTiersChart = ({
   const data = tiers.filter((tier) => tier.count > 0);
 
   return (
-    <div className="flex flex-col items-center gap-4 h-full">
+    <div className="flex h-full flex-col items-center gap-4">
       <div className="size-64">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
@@ -75,7 +75,7 @@ export const WinRateTiersChart = ({
         </ResponsiveContainer>
       </div>
 
-      <div className="grid w-full grid-cols-2 gap-3 mt-20">
+      <div className="mt-20 grid w-full grid-cols-2 gap-3">
         {tiers.map((tier) => (
           <div key={tier.label} className="flex items-start gap-2">
             <div className={cn("mt-1.5 size-2 shrink-0", tier.color)} />

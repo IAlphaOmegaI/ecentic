@@ -35,7 +35,10 @@ const perspectives = [
   },
 ];
 
-const runScanForUser = async (context: GenericContext, { userId }: { userId: string }) => {
+const runScanForUser = async (
+  context: GenericContext,
+  { userId }: { userId: string },
+) => {
   const [products, competitors] = await Promise.all([
     Product.find(Environment.SERVER, {
       where: eq(schema.product.userId, userId),

@@ -188,7 +188,11 @@ export const syncShopifyCatalog = withContext(
 
     context.span.addBreadcrumb({
       category: "shopify.catalog.sync",
-      data: { "store.id": storeId, "products.fetched": all.length, "products.imported": imported },
+      data: {
+        "store.id": storeId,
+        "products.fetched": all.length,
+        "products.imported": imported,
+      },
     });
 
     const insertion = await Store.update(
@@ -261,7 +265,10 @@ export const handleOAuthCallback = withContext(
 
     const accessToken = t.data.access_token;
 
-    context.span.addBreadcrumb({ category: "shopify.oauth.exchange", data: { shop } });
+    context.span.addBreadcrumb({
+      category: "shopify.oauth.exchange",
+      data: { shop },
+    });
 
     const shopResponse = await HTTP.request(
       `https://${shop}/admin/api/${API_VERSION}/shop.json`,

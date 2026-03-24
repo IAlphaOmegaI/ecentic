@@ -44,7 +44,7 @@ If code and docs disagree, prefer docs intent unless explicitly instructed other
 
 - Use `@zenncore/web` components for interactive UI; avoid custom raw HTML implementations for controls.
 - Prefer `@zenncore/*` packages before adding local duplicates.
-- Use semantic Tailwind tokens (`text-primary`, `bg-background`, `border-edge`, etc.), not raw color utility classes.
+- Use semantic Tailwind tokens (`text-primary`, `bg-background`, `border-accent-foreground`, etc.), not raw color utility classes.
 - Use `const` over `let`, descriptive variable names, early returns, and `resultify`-style error handling.
 - Follow PPR/streaming on non-onboarding/non-auth pages: server-rendered shell in `page.tsx`, async server components wrapped in `<Suspense>` with matching skeletons.
 - Use only `Motion.Row`, `Motion.Up`, `Motion.Item`, and `Motion.Stagger` for animations.

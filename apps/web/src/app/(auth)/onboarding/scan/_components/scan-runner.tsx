@@ -26,6 +26,7 @@ export const ScanRunner = ({ children, simulations }: ScanRunner.Props) => {
     modelStats,
     winRates,
     topFinding,
+    scanId,
     count,
     handleRun,
     isRunning,
@@ -59,6 +60,7 @@ export const ScanRunner = ({ children, simulations }: ScanRunner.Props) => {
           winRates={winRates}
           topFinding={topFinding}
           products={count}
+          scanId={scanId}
         />
       )}
     </AnimatePresence>

@@ -69,7 +69,7 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
           <div className="grid grid-cols-1 gap-px border-accent-foreground border-y bg-accent-foreground sm:grid-cols-[1fr_auto]">
             <div className="bg-primary p-6">
               <RocketIcon className="size-8 text-background" />
-              <p className="mb-2 text-white uppercase tracking-widest  mt-2">
+              <p className="mt-2 mb-2 text-white uppercase tracking-widest">
                 Impact
               </p>
               <p className="text-white leading-relaxed">
@@ -80,7 +80,7 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
               <span className="font-medium text-4xl text-white tabular-nums">
                 {finding.lossPercentage}%
               </span>
-              <p className="mt-2 font-light text-white text-sm">of sims lost</p>
+              <p className="mt-2 font-light text-sm text-white">of sims lost</p>
             </div>
           </div>
 
