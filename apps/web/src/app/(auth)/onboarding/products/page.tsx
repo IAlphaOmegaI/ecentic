@@ -6,12 +6,13 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { Motion } from "@/components/motion";
 import * as Product from "@/server/app/product";
+import { Environment } from "@/server/utils/environment";
 import { ProductSelector } from "./_components/product-selector";
 
 export default async () => {
   await connection();
 
-  const products = await unwrapResult(Product.skimForCurrentUser());
+  const products = await unwrapResult(Product.skimForCurrentUser(Environment.SERVER));
 
   if (products.length === 0)
     return (

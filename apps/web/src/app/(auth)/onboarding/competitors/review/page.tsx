@@ -1,9 +1,10 @@
 import { unwrapResult } from "@zenncore/utils";
 import * as Competitor from "@/server/app/competitor";
+import { Environment } from "@/server/utils/environment";
 import { CompetitorReview } from "./_components/competitor-review";
 
 export default async () => {
-  const competitors = await unwrapResult(Competitor.skimForCurrentUser());
+  const competitors = await unwrapResult(Competitor.skimForCurrentUser(Environment.SERVER));
 
   return (
     <CompetitorReview existing={competitors}>

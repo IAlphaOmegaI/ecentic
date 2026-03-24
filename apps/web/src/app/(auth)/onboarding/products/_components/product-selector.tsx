@@ -9,6 +9,11 @@ import {
 import { cn, resultify, unique } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@zenncore/web/components/avatar";
+import {
   Table,
   TableBody,
   TableCell,
@@ -21,11 +26,11 @@ import Link, { useLinkStatus } from "next/link";
 import { useRouter } from "next/navigation";
 import { type ReactNode, useState, useTransition } from "react";
 import { Motion } from "@/components/motion";
-import { Image } from "@/components/ui/image";
 import { Stagger, Table as TableAnimations } from "@/lib/animations";
 import type * as Product from "@/server/app/product";
 
 const limit = 10;
+const fallbackImageSource = "/images/fallback";
 
 const parseImages = (images: string | null): string[] => {
   if (!images) return [];
@@ -245,12 +250,15 @@ export const ProductSelector = ({
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-3">
-                          <Image
-                            src={images[0] ?? "/images/placeholder.svg"}
-                            unoptimized
-                            alt={product.title.slice(0, 2).toUpperCase()}
-                            className="size-9 shrink-0 object-cover"
-                          />
+                          <Avatar className="size-9 rounded-none bg-primary/10">
+                            <AvatarImage
+                              src={images[0] ?? fallbackImageSource}
+                              alt={product.title}
+                            />
+                            <AvatarFallback className="font-semibold text-primary text-xs">
+                              {product.title.slice(0, 2).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
                           <div>
                             <p className="font-medium text-foreground text-sm">
                               {product.title}

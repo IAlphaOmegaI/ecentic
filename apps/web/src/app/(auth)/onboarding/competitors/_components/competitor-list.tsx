@@ -3,6 +3,11 @@
 import { CheckIcon, XIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@zenncore/web/components/avatar";
+import {
   Table,
   TableBody,
   TableCell,
@@ -13,6 +18,8 @@ import {
 import { motion } from "motion/react";
 import { Stagger } from "@/lib/animations";
 import type * as Competitor from "@/server/app/competitor";
+
+const fallbackImageSource = "/images/fallback";
 
 const formatPrice = (price: string | null, currency: string | null): string => {
   if (!price) return "\u2014";
@@ -97,18 +104,15 @@ export const CompetitorList = ({
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    {record.image ? (
-                      // biome-ignore lint/performance/noImgElement: external image domains unknown
-                      <img
-                        src={record.image}
+                    <Avatar className="size-9 rounded-none bg-primary/10">
+                      <AvatarImage
+                        src={record.image ?? fallbackImageSource}
                         alt={record.title}
-                        className="size-9 shrink-0 object-cover"
                       />
-                    ) : (
-                      <div className="flex size-9 shrink-0 items-center justify-center bg-primary/10 font-semibold text-primary text-xs">
+                      <AvatarFallback className="font-semibold text-primary text-xs">
                         {record.title.slice(0, 2).toUpperCase()}
-                      </div>
-                    )}
+                      </AvatarFallback>
+                    </Avatar>
                     <div>
                       <p className="font-medium text-foreground text-sm">
                         {record.title}

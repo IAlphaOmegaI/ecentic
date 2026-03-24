@@ -41,7 +41,7 @@ const Utils = {
  */
 export const syncWooCommerceCatalog = withContext(
   async (
-    _,
+    context,
     {
       user: userId,
       store: storeId,
@@ -140,6 +140,11 @@ export const syncWooCommerceCatalog = withContext(
 
     const imported = results.filter((result) => result.success).length;
 
+    context.span.addBreadcrumb({
+      category: "woocommerce.catalog.sync",
+      data: { "store.id": storeId, "products.fetched": all.length, "products.imported": imported },
+    });
+
     const insertion = await Store.update(
       Environment.SERVER,
       storeId,
@@ -194,6 +199,8 @@ export const connect = withAuthentication(
         ),
       };
 
+    context.span.addBreadcrumb({ category: "woocommerce.probe", data: { "store.host": host } });
+
     const transaction = await resultify(() =>
       withTransaction(async (tx) => {
         const store = await Store.create(
@@ -225,6 +232,13 @@ export const connect = withAuthentication(
       }),
     );
 
+    if (transaction.success) {
+      context.span.addBreadcrumb({
+        category: "woocommerce.connect.complete",
+        data: { "store.id": transaction.data.id, "store.host": host },
+      });
+    }
+
     return transaction;
   },
   "WooCommerce.connect",
@@ -232,7 +246,7 @@ export const connect = withAuthentication(
 
 export const syncProducts = withAuthentication(
   async (context, { storeId }: { storeId: string }) => {
-    return syncWooCommerceCatalog({
+    return syncWooCommerceCatalog(Environment.SERVER, {
       user: context.session.user.id,
       store: storeId,
     });
@@ -293,7 +307,7 @@ export const updateProduct = withAuthentication(
         error: new RequestError("No fields to update"),
       };
 
-    const url = `${domain}/wp-json/wc/v3/products/${product.data.externalId}.json`;
+    const url = `${domain}/wp-json/wc/v3/products/${product.data.externalId}`;
 
     const response = await HTTP.request(url, {
       method: "PUT",

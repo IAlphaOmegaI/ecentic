@@ -3,6 +3,11 @@
 import { ArrowRightIcon, BoxMinusIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@zenncore/web/components/avatar";
 import type { ColumnDef } from "@zenncore/web/components/data-table";
 import {
   DataTable,
@@ -13,6 +18,8 @@ import {
 import Link from "next/link";
 import { usePaginationChangeHandler } from "@/hooks/pagination";
 import { formatRelativeTime } from "@/lib/date";
+
+const fallbackImageSource = "/images/fallback";
 
 const WinRateBar = ({ rate }: { rate: number }) => {
   const color = (() => {
@@ -42,9 +49,15 @@ const columns: ColumnDef<CompetitorsTable.Row>[] = [
     header: "Brand",
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
-        <div className="flex size-9 shrink-0 items-center justify-center bg-primary/10 font-semibold text-primary text-xs">
-          {row.original.brand.slice(0, 2).toUpperCase()}
-        </div>
+        <Avatar className="size-9 rounded-none bg-primary/10">
+          <AvatarImage
+            src={row.original.image ?? fallbackImageSource}
+            alt={row.original.brand}
+          />
+          <AvatarFallback className="font-semibold text-primary text-xs">
+            {row.original.brand.slice(0, 2).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
         <div>
           <p className="font-medium text-foreground">{row.original.brand}</p>
           <p className="font-light text-foreground-dimmed text-sm">
@@ -120,9 +133,9 @@ export const CompetitorsTable = ({
         >
           <DataTable className={cn(!paginated && "border-b-0")}>
             <DataTableEmpty>
-              <div className="p-8 text-center flex flex-col items-center justify-center py-24">
+              <div className="flex flex-col items-center justify-center p-8 py-24 text-center">
                 <BoxMinusIcon className="mb-6 size-24" />
-                <p className="text-foreground text-2xl font-medium">
+                <p className="font-medium text-2xl text-foreground">
                   No competitors tracked yet
                 </p>
                 <p className="mt-1 font-light text-foreground-dimmed text-lg">
@@ -153,6 +166,7 @@ export namespace CompetitorsTable {
   export type Row = {
     _id: string;
     brand: string;
+    image?: string | null;
     products: number;
     winRate: number;
     simulations: number;

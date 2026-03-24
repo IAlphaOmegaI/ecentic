@@ -45,7 +45,7 @@
 
 #### What's missing
 
-- [ ] UI to trigger listing publish — use `Store.publishProductListing()` from the dashboard; no Optimize tab wired yet
+- [x] Optimization Center (`/dashboard/optimize`) — real queue from simulations + `listing_optimization`; Approve runs AI listing generation then `Store.publishProductListing()`
 - [ ] Webhook subscriptions for real-time product changes
 - [ ] App install/uninstall lifecycle webhooks
 - [ ] Inventory and stock level sync

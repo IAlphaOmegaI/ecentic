@@ -111,7 +111,7 @@ export default ({ searchParams }: SearchParamsProps<keyof Pager>) => (
 
 const LastScanned = async () => {
   await connection();
-  const data = await unwrapResult(Product.gatherIntelligence());
+  const data = await unwrapResult(Product.gatherIntelligence(Environment.SERVER));
 
   return (
     <p className="mt-1 font-light text-2xl text-foreground-dimmed">
@@ -124,7 +124,7 @@ const LastScanned = async () => {
 
 const StatCards = async () => {
   await connection();
-  const data = await unwrapResult(Product.gatherIntelligence());
+  const data = await unwrapResult(Product.gatherIntelligence(Environment.SERVER));
   const { products } = data;
 
   if (products.length === 0)
@@ -169,7 +169,7 @@ const StatCards = async () => {
     (product) => product.winRate.total < 30,
   ).length;
 
-  const scans = await unwrapResult(Scan.getLatest());
+  const scans = await unwrapResult(Scan.getLatest(Environment.SERVER));
   const completed = scans.filter((scan) => scan.status === "completed");
 
   const trend = (() => {
@@ -255,8 +255,8 @@ const StatCards = async () => {
 const Performance = async () => {
   await connection();
   const [{ products }, scans] = await Promise.all([
-    unwrapResult(Product.gatherIntelligence()),
-    unwrapResult(Scan.getLatest()),
+    unwrapResult(Product.gatherIntelligence(Environment.SERVER)),
+    unwrapResult(Scan.getLatest(Environment.SERVER)),
   ]);
 
   const models =
@@ -412,20 +412,25 @@ const Products = async ({
 }) => {
   await connection();
   const { page, size } = await extractPaginationParams(searchParams);
-  const data = await unwrapResult(
+  const { items, pagination } = await unwrapResult(
     Product.paginateWithIntelligence(Environment.SERVER, { page, size }),
+  );
+
+  const pageCount = Math.max(
+    1,
+    Math.ceil(pagination.total / pagination.size),
   );
 
   return (
     <ProductsTable
       paginated
-      rows={data.rows}
-      pageCount={data.pageCount}
-      pageSize={size}
-      pageIndex={page}
+      rows={items}
+      pageCount={pageCount}
+      pageSize={pagination.size}
+      pageIndex={pagination.page}
       action={
         <p className="font-light text-foreground-dimmed">
-          {data.total} products
+          {pagination.total} products
         </p>
       }
     />
@@ -435,8 +440,8 @@ const Products = async ({
 const AgentTraffic = async () => {
   await connection();
   const [summary, timeSeries] = await Promise.all([
-    unwrapResult(Tracking.getAgentTrafficSummary()),
-    unwrapResult(Tracking.getAgentTrafficTimeSeries()),
+    unwrapResult(Tracking.getAgentTrafficSummary(Environment.SERVER)),
+    unwrapResult(Tracking.getAgentTrafficTimeSeries(Environment.SERVER)),
   ]);
 
   const max = Math.max(1, ...summary.byAgentType.map((entry) => entry.count));
@@ -500,7 +505,7 @@ const AgentTraffic = async () => {
 
 const Insights = async () => {
   await connection();
-  const scans = await unwrapResult(Scan.getLatest());
+  const scans = await unwrapResult(Scan.getLatest(Environment.SERVER));
   const completed = scans.filter((scan) => scan.status === "completed");
 
   console.log({ completed });
