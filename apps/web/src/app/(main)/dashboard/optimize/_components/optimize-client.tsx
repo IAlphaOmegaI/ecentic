@@ -36,6 +36,30 @@ const formatPublished = (iso: string | null) => {
   return new Date(iso).toLocaleString();
 };
 
+const severityClass = (severity: "high" | "medium") => {
+  switch (severity) {
+    case "high":
+      return "text-error";
+    default:
+      return "text-warning";
+  }
+};
+
+const categoryLabel = (
+  category: "seo" | "content" | "structured_data" | "platform",
+) => {
+  switch (category) {
+    case "seo":
+      return "SEO";
+    case "content":
+      return "Content";
+    case "structured_data":
+      return "Structured data";
+    case "platform":
+      return "Platform";
+  }
+};
+
 export const OptimizeClient = ({
   data,
 }: {
@@ -134,7 +158,7 @@ export const OptimizeClient = ({
     });
   };
 
-  const { pending, published, dismissed } = data;
+  const { pending, published, dismissed, diagnostics } = data;
 
   return (
     <div className="flex flex-col">
@@ -169,6 +193,76 @@ export const OptimizeClient = ({
 
       <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8 px-6 py-6">
+          <div className="mb-4 grid grid-cols-1 gap-px border border-accent-foreground bg-accent-foreground sm:grid-cols-3">
+            <div className="bg-background-dimmed p-3">
+              <p className="font-light text-foreground-dimmed text-xs">
+                Low win-rate products
+              </p>
+              <p className="text-2xl text-foreground tabular-nums">
+                {diagnostics.lowWinRateProducts}
+              </p>
+            </div>
+            <div className="bg-background-dimmed p-3">
+              <p className="font-light text-foreground-dimmed text-xs">
+                Auto-publish eligible
+              </p>
+              <p className="text-2xl text-foreground tabular-nums">
+                {diagnostics.publishableLowWinRateProducts}
+              </p>
+            </div>
+            <div className="bg-background-dimmed p-3">
+              <p className="font-light text-foreground-dimmed text-xs">
+                Manual-fix only
+              </p>
+              <p className="text-2xl text-foreground tabular-nums">
+                {diagnostics.nonPublishableLowWinRateProducts}
+              </p>
+            </div>
+          </div>
+
+          {diagnostics.insights.length > 0 && (
+            <div className="mb-4 border border-accent-foreground bg-background">
+              <div className="border-accent-foreground border-b px-4 py-2">
+                <p className="font-medium text-foreground text-sm">
+                  Diagnostics for low win rate
+                </p>
+                <p className="font-light text-foreground-dimmed text-xs">
+                  These recommendations cover SEO/data-quality/platform issues in
+                  addition to listing text optimizations.
+                </p>
+              </div>
+              <div className="max-h-64 space-y-2 overflow-y-auto p-3">
+                {diagnostics.insights.map((insight) => (
+                  <div
+                    key={`${insight.productId}-${insight.category}-${insight.message}`}
+                    className="border border-accent-foreground bg-background-dimmed p-3"
+                  >
+                    <div className="mb-1 flex flex-wrap items-center gap-2">
+                      <p className="font-medium text-foreground text-sm">
+                        {insight.productTitle}
+                      </p>
+                      <span className="border border-accent-foreground px-1.5 py-0.5 text-xs text-foreground-dimmed">
+                        {categoryLabel(insight.category)}
+                      </span>
+                      <span className={severityClass(insight.severity)}>
+                        {insight.severity.toUpperCase()}
+                      </span>
+                      <span className="font-light text-foreground-dimmed text-xs">
+                        Win rate {insight.winRate}%
+                      </span>
+                    </div>
+                    <p className="font-light text-foreground-dimmed text-xs">
+                      {insight.message}
+                    </p>
+                    <p className="mt-1 text-foreground text-xs">
+                      {insight.recommendation}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <Tabs defaultValue="pending">
             <TabsList className="mb-4 h-auto border border-accent-foreground bg-transparent px-0">
               <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
