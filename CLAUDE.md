@@ -168,7 +168,7 @@ return { success: true, data: result.data };
 All forms are defined via Zod schema + `field()` descriptors. No inline `<input>` or manual react-hook-form registration.
 
 ### Styling — semantic Tailwind tokens only
-Use `text-primary`, `bg-background`, `border-edge`, etc. Never raw colors like `text-gray-500` or `bg-white`.
+Use `text-primary`, `bg-background`, `border-accent-foreground`, etc. Never raw colors like `text-gray-500` or `bg-white`.
 
 ### Components — Namespace pattern
 ```tsx

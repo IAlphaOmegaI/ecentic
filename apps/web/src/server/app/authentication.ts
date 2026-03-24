@@ -47,7 +47,10 @@ export const signIn = withContext(
       };
     }
 
-    context.span.addBreadcrumb({ category: "auth.sign_in", data: { "user.id": result.data.user.id, "user.email": email } });
+    context.span.addBreadcrumb({
+      category: "auth.sign_in",
+      data: { "user.id": result.data.user.id, "user.email": email },
+    });
 
     const jar = await cookies();
 
@@ -217,7 +220,10 @@ export const signUp = withContext(
       };
     }
 
-    context.span.addBreadcrumb({ category: "auth.sign_up", data: { "user.email": payload.email } });
+    context.span.addBreadcrumb({
+      category: "auth.sign_up",
+      data: { "user.email": payload.email },
+    });
 
     return {
       success: true,

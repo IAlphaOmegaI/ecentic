@@ -105,7 +105,9 @@ const LastUpdated = async () => {
 
 const StatCards = async () => {
   await connection();
-  const data = await unwrapResult(Product.gatherIntelligence(Environment.SERVER));
+  const data = await unwrapResult(
+    Product.gatherIntelligence(Environment.SERVER),
+  );
   const { products } = data;
 
   if (products.length === 0)
@@ -336,7 +338,9 @@ const Performance = async () => {
 
 const TopProducts = async () => {
   await connection();
-  const data = await unwrapResult(Product.gatherIntelligence(Environment.SERVER));
+  const data = await unwrapResult(
+    Product.gatherIntelligence(Environment.SERVER),
+  );
 
   const sorted = [...data.products]
     .sort((a, b) => b.winRate.total - a.winRate.total)

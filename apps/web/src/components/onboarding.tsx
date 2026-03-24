@@ -11,6 +11,7 @@ export namespace Onboarding {
     identifier?: string;
     headline: ReactNode;
     points: readonly string[];
+    image?: string;
   };
 }
 
@@ -18,6 +19,7 @@ export const Onboarding = ({
   identifier = "onboarding",
   headline,
   points,
+  image = "/images/onboarding.png",
 }: Onboarding.Props) => (
   <motion.aside
     className="sticky top-0 hidden h-screen overflow-hidden lg:flex lg:w-[55%]"
@@ -27,7 +29,7 @@ export const Onboarding = ({
   >
     <div className="absolute inset-0 bg-primary" />
     <Image
-      src="/images/onboarding.png"
+      src={image}
       alt="onboarding background"
       fill
       className="object-contain object-bottom opacity-60 brightness-0 invert"

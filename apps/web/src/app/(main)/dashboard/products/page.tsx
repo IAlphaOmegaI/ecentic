@@ -111,7 +111,9 @@ export default ({ searchParams }: SearchParamsProps<keyof Pager>) => (
 
 const LastScanned = async () => {
   await connection();
-  const data = await unwrapResult(Product.gatherIntelligence(Environment.SERVER));
+  const data = await unwrapResult(
+    Product.gatherIntelligence(Environment.SERVER),
+  );
 
   return (
     <p className="mt-1 font-light text-2xl text-foreground-dimmed">
@@ -124,7 +126,9 @@ const LastScanned = async () => {
 
 const StatCards = async () => {
   await connection();
-  const data = await unwrapResult(Product.gatherIntelligence(Environment.SERVER));
+  const data = await unwrapResult(
+    Product.gatherIntelligence(Environment.SERVER),
+  );
   const { products } = data;
 
   if (products.length === 0)

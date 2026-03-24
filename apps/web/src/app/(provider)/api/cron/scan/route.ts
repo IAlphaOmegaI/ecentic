@@ -18,7 +18,9 @@ export const GET = async (request: Request) => {
       { status: 401 },
     );
 
-  const result = await BackgroundScan.runScanDaily(Environment.SERVER, { limit: 20 });
+  const result = await BackgroundScan.runScanDaily(Environment.SERVER, {
+    limit: 20,
+  });
 
   if (!result.success)
     return Response.json(

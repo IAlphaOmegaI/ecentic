@@ -2,12 +2,12 @@
 
 import { ArrowRightIcon, BoxMinusIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
-import { Button } from "@zenncore/web/components/button";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@zenncore/web/components/avatar";
+import { Button } from "@zenncore/web/components/button";
 import type { ColumnDef } from "@zenncore/web/components/data-table";
 import {
   DataTable,

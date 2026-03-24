@@ -4,7 +4,9 @@ import { Environment } from "@/server/utils/environment";
 import { CompetitorReview } from "./_components/competitor-review";
 
 export default async () => {
-  const competitors = await unwrapResult(Competitor.skimForCurrentUser(Environment.SERVER));
+  const competitors = await unwrapResult(
+    Competitor.skimForCurrentUser(Environment.SERVER),
+  );
 
   return (
     <CompetitorReview existing={competitors}>
