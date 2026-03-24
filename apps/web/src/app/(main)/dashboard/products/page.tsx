@@ -412,20 +412,25 @@ const Products = async ({
 }) => {
   await connection();
   const { page, size } = await extractPaginationParams(searchParams);
-  const data = await unwrapResult(
+  const { items, pagination } = await unwrapResult(
     Product.paginateWithIntelligence(Environment.SERVER, { page, size }),
+  );
+
+  const pageCount = Math.max(
+    1,
+    Math.ceil(pagination.total / pagination.size),
   );
 
   return (
     <ProductsTable
       paginated
-      rows={data.rows}
-      pageCount={data.pageCount}
-      pageSize={size}
-      pageIndex={page}
+      rows={items}
+      pageCount={pageCount}
+      pageSize={pagination.size}
+      pageIndex={pagination.page}
       action={
         <p className="font-light text-foreground-dimmed">
-          {data.total} products
+          {pagination.total} products
         </p>
       }
     />
