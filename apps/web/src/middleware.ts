@@ -1,11 +1,14 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { isOnboardingOnlyScope } from "@/lib/app-scope";
 
 const ONBOARDING_ENTRY = "/onboarding/connect";
 
+/** Read env here — not via a shared module — so Next inlines it into the Edge middleware bundle. */
+const onboardingOnlyScope = () =>
+  process.env.NEXT_PUBLIC_APP_SCOPE?.trim() === "onboarding";
+
 export const middleware = (request: NextRequest) => {
-  if (!isOnboardingOnlyScope) return NextResponse.next();
+  if (!onboardingOnlyScope()) return NextResponse.next();
 
   const { pathname } = request.nextUrl;
   if (pathname === "/dashboard" || pathname.startsWith("/dashboard/")) {

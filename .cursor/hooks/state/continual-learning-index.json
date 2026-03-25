@@ -2,8 +2,12 @@
   "version": 1,
   "transcripts": {
     "/home/iseld/.cursor/projects/home-iseld-ecentic/agent-transcripts/04ad4c46-da2a-4dda-9d12-f0298a29f62d/04ad4c46-da2a-4dda-9d12-f0298a29f62d.jsonl": {
-      "mtimeMs": 1774104043000,
-      "lastProcessedAt": "2026-03-21T12:00:00Z"
+      "mtimeMs": 1774107176000,
+      "lastProcessedAt": "2026-03-22T00:00:00.000Z"
+    },
+    "/home/iseld/.cursor/projects/home-iseld-ecentic/agent-transcripts/85d77a1f-9f02-433a-9509-857fec25772d/85d77a1f-9f02-433a-9509-857fec25772d.jsonl": {
+      "mtimeMs": 1774432220000,
+      "lastProcessedAt": "2026-03-22T00:00:00.000Z"
     }
   }
 }
