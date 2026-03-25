@@ -36,7 +36,7 @@
     "drizzle-orm": "^1.0.0-beta.9-e89174b",
     "fast-xml-parser": "^5.5.8",
     "motion": "^12.38.0",
-    "next": "^16.2.1",
+    "next": "16.2.1",
     "nuqs": "^2.8.9",
     "postgres": "^3.4.8",
     "posthog-js": "^1.363.1",
