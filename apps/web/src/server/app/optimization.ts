@@ -28,6 +28,7 @@ const MODEL_LABELS: Record<string, string> = {
   gpt4: "GPT-4",
   claude: "Claude",
   gemini: "Gemini",
+  perplexity: "Perplexity",
 };
 
 const estimateLift = (winRate: number) =>

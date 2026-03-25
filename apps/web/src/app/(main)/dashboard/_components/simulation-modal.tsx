@@ -44,6 +44,14 @@ const providers = [
     bgColor: "bg-green-500",
     description: "Price-to-feature ratio",
   },
+  {
+    id: "perplexity",
+    model: "Perplexity",
+    logo: "/images/perplexity.svg",
+    textColor: "text-teal-500",
+    bgColor: "bg-teal-500",
+    description: "Search-augmented analysis",
+  },
 ] as const;
 
 const modelColors: Record<string, string> = Object.fromEntries(

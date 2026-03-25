@@ -12,7 +12,7 @@ const features = [
     color: "text-blue-500",
     title: "Agent Win Rate Dashboard",
     description:
-      "See how often each product in your catalog is selected by AI agents versus competitors, broken down by model across GPT-4, Claude, and Gemini.",
+      "See how often each product in your catalog is selected by AI agents versus competitors, broken down by model across GPT-4, Claude, Gemini, and Perplexity.",
   },
   {
     icon: ShieldCheckIcon,

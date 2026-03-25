@@ -4,7 +4,7 @@ import { resultify } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { schema } from "../../database";
-import { generate } from "../../utils/ai";
+import { type ModelId, generate } from "../../utils/ai";
 import { type GenericContext, withContext } from "../../utils/context";
 import { Environment } from "../../utils/environment";
 import * as Competitor from "../competitor";
@@ -18,20 +18,30 @@ const perspectives = [
   {
     id: "gpt4",
     label: "GPT-4",
+    model: "gpt-4o" as ModelId,
     system:
       "You are an AI shopping agent embedded in a product recommendation engine. A consumer has asked you to compare two products and recommend the better purchase. Focus heavily on concrete specifications and missing details. Score each product 0-100 and pick a winner.",
   },
   {
     id: "claude",
     label: "Claude",
+    model: "claude-sonnet-4-20250514" as ModelId,
     system:
       "You are an AI shopping assistant comparing two product listings for buyer confidence and clarity. Evaluate information architecture, trust signals, and completeness. Score each product 0-100 and pick a winner.",
   },
   {
     id: "gemini",
     label: "Gemini",
+    model: "gemini-2.5-flash" as ModelId,
     system:
       "You are an AI shopping agent optimizing for value. Compare two listings by price-to-feature ratio, hidden costs, and specification density. Score each product 0-100 and pick a winner.",
+  },
+  {
+    id: "perplexity",
+    label: "Perplexity",
+    model: "sonar-pro" as ModelId,
+    system:
+      "You are a search-augmented AI shopping agent. Compare two product listings by information depth, external validation signals, freshness, and comparison readiness. Score each product 0-100 and pick a winner.",
   },
 ];
 
@@ -92,6 +102,7 @@ const runScanForUser = async (
       perspectives.map((perspective) => async () => {
         const generated = await resultify(() =>
           generate({
+            model: perspective.model,
             system: perspective.system,
             prompt: `A consumer is choosing between these two products.\n\n--- PRODUCT A ---\n${Formating.formatProduct(product)}\n\n--- PRODUCT B ---\n${Formating.formatCompetitor(competitor)}\n\nScore each product 0-100, pick a winner, and give concise reasoning.`,
             schema: z.object({

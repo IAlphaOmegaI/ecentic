@@ -19,6 +19,7 @@ const modelBarColors: Record<string, string> = {
   "GPT-4": "bg-blue-500",
   Claude: "bg-orange-500",
   Gemini: "bg-green-500",
+  Perplexity: "bg-teal-500",
 };
 
 const getLogo = (label: string) => {
@@ -29,6 +30,8 @@ const getLogo = (label: string) => {
       return "/images/claude.svg";
     case "Gemini":
       return "/images/gemini.svg";
+    case "Perplexity":
+      return "/images/perplexity.svg";
     default:
       throw new Error(`Unknown model: ${label}`);
   }

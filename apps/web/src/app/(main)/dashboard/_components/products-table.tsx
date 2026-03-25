@@ -19,8 +19,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { usePaginationChangeHandler } from "@/hooks/pagination";
 import { formatRelativeTime } from "@/lib/date";
-
-const fallbackImageSource = "/images/fallback";
+import Image from "next/image";
 
 const WinRateBar = ({ rate }: { rate: number }) => {
   const { bar, text } = (() => {
@@ -73,15 +72,21 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
     cell: ({ row }) => (
       <Link
         href={`/dashboard/products/${row.original._id}`}
-        className="group flex items-center gap-3"
+        className="group flex items-center gap-2"
       >
         <Avatar className="size-9 rounded-none bg-primary/10">
           <AvatarImage
-            src={row.original.image ?? fallbackImageSource}
+            src={row.original.image ?? "/images/fallback"}
             alt={row.original.title}
           />
-          <AvatarFallback className="font-semibold text-primary text-xs">
-            {row.original.title.slice(0, 2).toUpperCase()}
+          <AvatarFallback className="relative">
+            <Image
+              src={"/images/fallback"}
+              alt={row.original.title}
+              width={36}
+              height={36}
+              fill
+            />
           </AvatarFallback>
         </Avatar>
         <div>
@@ -179,8 +184,8 @@ export const ProductsTable = ({
   const handlePaginationChange = usePaginationChangeHandler("products/");
   return (
     <>
-      <div className="flex items-baseline justify-between border-accent-foreground border-b p-4">
-        <p className="font-light text-2xl text-foreground-dimmed">{title}</p>
+      <div className="flex items-end justify-between border-accent-foreground border-b p-4">
+        <p className="font-medium text-2xl text-foreground">{title}</p>
         {action}
       </div>
       <div className="overflow-x-auto">

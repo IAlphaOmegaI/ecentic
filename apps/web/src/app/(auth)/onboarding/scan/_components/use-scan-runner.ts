@@ -18,6 +18,7 @@ const initialStatuses: Record<string, ModelStatus> = {
   "GPT-4": "queued",
   Claude: "queued",
   Gemini: "queued",
+  Perplexity: "queued",
 };
 
 type ScanRunnerOptions = {

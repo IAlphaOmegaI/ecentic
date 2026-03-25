@@ -135,29 +135,33 @@
     detectionMethod = "user-agent";
   } else if (!agentType) return;
 
-  var pageType = "other";
-  try {
-    if (window?.__ECENTIC_CONFIG__?.pageType) {
-      pageType = window.__ECENTIC_CONFIG__.pageType;
-    } else if (
-      location.pathname.indexOf("/products/") !== -1 ||
-      location.pathname.indexOf("/product/") !== -1
-    ) {
-      pageType = "product";
-    } else if (
-      location.pathname.indexOf("/collections/") !== -1 ||
-      location.pathname.indexOf("/category/") !== -1
-    ) {
-      pageType = "collection";
-    } else if (location.pathname.indexOf("/search") !== -1) {
-      pageType = "search";
-    } else if (
-      location.pathname === "/" ||
-      location.pathname === "/index.html"
-    ) {
-      pageType = "homepage";
+  var pageType = (() => {
+    try {
+      if (window?.__ECENTIC_CONFIG__?.pageType)
+        return window.__ECENTIC_CONFIG__.pageType;
+
+      if (
+        location.pathname.indexOf("/products/") !== -1 ||
+        location.pathname.indexOf("/product/") !== -1
+      )
+        return "product";
+
+      if (
+        location.pathname.indexOf("/collections/") !== -1 ||
+        location.pathname.indexOf("/category/") !== -1
+      )
+        return "collection";
+
+      if (location.pathname.indexOf("/search") !== -1) return "search";
+
+      if (location.pathname === "/" || location.pathname === "/index.html")
+        return "homepage";
+
+      return "other";
+    } catch (_) {
+      return "other";
     }
-  } catch (_) {}
+  })();
 
   const productExternalId =
     window?.__ECENTIC_CONFIG__?.productExternalId ?? null;

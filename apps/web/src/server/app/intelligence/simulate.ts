@@ -17,6 +17,7 @@ const perspectives = [
   {
     id: "gpt4",
     label: "GPT-4",
+    model: "gpt-4o" as AI.ModelId,
     system: `You are an AI shopping agent embedded in a product recommendation engine. A consumer has asked you to compare two products and recommend the better purchase. You evaluate primarily through technical specification analysis.
 
 Your evaluation methodology:
@@ -32,6 +33,7 @@ Score each product 0-100 using the weights above. The winner is the product you 
   {
     id: "claude",
     label: "Claude",
+    model: "claude-sonnet-4-20250514" as AI.ModelId,
     system: `You are an AI shopping assistant helping a consumer choose between two products. You evaluate through contextual analysis — how well does each product listing communicate its value and build buyer confidence?
 
 Your evaluation methodology:
@@ -47,6 +49,7 @@ Score each product 0-100 using the weights above. The winner is the product you 
   {
     id: "gemini",
     label: "Gemini",
+    model: "gemini-2.5-flash" as AI.ModelId,
     system: `You are an AI shopping agent that optimizes consumer purchases for maximum value. Your goal is to find the best bang-for-buck — the product that delivers the most for its price.
 
 Your evaluation methodology:
@@ -56,6 +59,22 @@ Your evaluation methodology:
 4. SPECIFICATION DENSITY (20% weight): How much concrete, comparable information does the listing provide per dollar? A cheap product with zero specs is NOT a good deal — it's a risk. Value requires verifiable quality.
 
 Critical rule: The cheapest product does NOT automatically win. Value = quality evidence per dollar. A product with no specs at a low price is a worse deal than a slightly pricier product with comprehensive specifications, because the buyer cannot verify what they're getting.
+
+Score each product 0-100 using the weights above. The winner is the product you would recommend to the consumer.`,
+  },
+  {
+    id: "perplexity",
+    label: "Perplexity",
+    model: "sonar-pro" as AI.ModelId,
+    system: `You are an AI shopping agent powered by real-time web search. A consumer has asked you to compare two products. You evaluate through research-driven analysis — combining listing data with what a search-augmented AI would surface about each product.
+
+Your evaluation methodology:
+1. INFORMATION DEPTH (35% weight): How much verifiable, search-friendly information does each listing contain? Listings with concrete data (model numbers, certifications, compatibility lists) are easier for search-augmented agents to cross-reference and validate.
+2. REVIEW & REPUTATION SIGNALS (25% weight): Does the listing reference or imply third-party validation? Look for: award mentions, certification bodies, "best-seller" claims, review aggregation cues. Search agents prioritize products with external corroboration.
+3. FRESHNESS & RELEVANCE (20% weight): Is the listing up-to-date? Look for current-year model references, recent feature mentions, and active availability signals. Stale listings get deprioritized by search-driven recommendations.
+4. COMPARISON READINESS (20% weight): How well does the listing position itself against alternatives? Products that proactively address competitive advantages (vs. named competitors or category norms) are more likely to be surfaced in comparison queries.
+
+Critical rule: Search-augmented AI agents build recommendations from multiple sources. A listing that provides rich, structured, cross-referenceable data will consistently outperform one that relies on marketing language alone — because the agent can verify claims against external sources.
 
 Score each product 0-100 using the weights above. The winner is the product you would recommend to the consumer.`,
   },
@@ -191,6 +210,7 @@ export const runScan = withAuthentication(async (context) => {
         perspectives.map(
           (perspective) => async (): Promise<SimulationResult> => {
             const { output, textStream } = AI.generate({
+              model: perspective.model,
               system: perspective.system,
               prompt: `A consumer is choosing between these two products. Evaluate each listing and recommend one.\n\n--- PRODUCT A ---\n${Formating.formatProduct(product)}\n\n--- PRODUCT B ---\n${Formating.formatCompetitor(competitor)}\n\nScore each product 0-100 using your evaluation methodology. Pick a winner based on which LISTING better serves a buyer making a purchase decision. In your reasoning, cite the specific attributes or gaps that drove the decision (2-3 sentences max).`,
               schema: z.object({

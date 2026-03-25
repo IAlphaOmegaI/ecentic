@@ -116,10 +116,8 @@ export const CompetitorsTable = ({
 
   return (
     <>
-      <div className="flex items-center justify-between border-accent-foreground border-b p-4">
-        <p className="mt-1 font-light text-2xl text-foreground-dimmed">
-          {title}
-        </p>
+      <div className="flex items-end justify-between border-accent-foreground border-b p-4">
+        <p className="font-medium text-2xl text-foreground">{title}</p>
         {action}
       </div>
       <div className="overflow-x-auto">

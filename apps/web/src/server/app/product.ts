@@ -110,6 +110,7 @@ export const gatherIntelligence = dedupe(
           gpt4: computeModelWinRate(productSimulations, "gpt4"),
           claude: computeModelWinRate(productSimulations, "claude"),
           gemini: computeModelWinRate(productSimulations, "gemini"),
+          perplexity: computeModelWinRate(productSimulations, "perplexity"),
         },
         simulations: total,
         quality: computeDataQuality(product),
@@ -191,6 +192,7 @@ const Model = {
   GPT4: ["GPT-4", "gpt4"],
   Claude: ["Claude", "claude"],
   GEMINI: ["Gemini", "gemini"],
+  Perplexity: ["Perplexity", "perplexity"],
 } as const;
 
 export const getDetail = withAuthentication(
