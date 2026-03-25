@@ -28,9 +28,8 @@ import { type ReactNode, useState, useTransition } from "react";
 import { Motion } from "@/components/motion";
 import { Stagger, Table as TableAnimations } from "@/lib/animations";
 import type * as Product from "@/server/app/product";
-
+import Image from "next/image";
 const limit = 10;
-const fallbackImageSource = "/images/fallback";
 
 const parseImages = (images: string | null): string[] => {
   if (!images) return [];
@@ -252,11 +251,15 @@ export const ProductSelector = ({
                         <div className="flex items-center gap-3">
                           <Avatar className="size-9 rounded-none bg-primary/10">
                             <AvatarImage
-                              src={images[0] ?? fallbackImageSource}
+                              src={images[0] ?? "/images/fallback.png"}
                               alt={product.title}
                             />
-                            <AvatarFallback className="font-semibold text-primary text-xs">
-                              {product.title.slice(0, 2).toUpperCase()}
+                            <AvatarFallback className="relative">
+                              <Image
+                                src="/images/fallback.png"
+                                alt="Fallback"
+                                fill
+                              />
                             </AvatarFallback>
                           </Avatar>
                           <div>

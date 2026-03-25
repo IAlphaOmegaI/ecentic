@@ -295,20 +295,22 @@ export const SimulationsClient = ({
 
               {phase === "complete" && (
                 <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-4">
-                  {(["gpt4", "claude", "gemini", "perplexity"] as const).map((model) => (
-                    <div key={model} className="bg-background-dimmed p-3">
-                      <p className="font-medium text-foreground uppercase">
-                        {model}
-                      </p>
-                      <p className="font-light text-foreground-dimmed text-sm">
-                        {winRates[model]?.wins ?? 0}W /{" "}
-                        {winRates[model]?.losses ?? 0}L
-                      </p>
-                      <p className="text-foreground">
-                        {winRates[model]?.rate ?? 0}%
-                      </p>
-                    </div>
-                  ))}
+                  {(["gpt4", "claude", "gemini", "perplexity"] as const).map(
+                    (model) => (
+                      <div key={model} className="bg-background-dimmed p-3">
+                        <p className="font-medium text-foreground uppercase">
+                          {model}
+                        </p>
+                        <p className="font-light text-foreground-dimmed text-sm">
+                          {winRates[model]?.wins ?? 0}W /{" "}
+                          {winRates[model]?.losses ?? 0}L
+                        </p>
+                        <p className="text-foreground">
+                          {winRates[model]?.rate ?? 0}%
+                        </p>
+                      </div>
+                    ),
+                  )}
                 </div>
               )}
             </div>

@@ -145,6 +145,7 @@ export default ({ children }: PropsWithChildren) => {
             strategy="beforeInteractive"
           />
         )}
+        <meta name="apple-mobile-web-app-title" content="écentic" />
       </head>
       <body
         className={`${ltsuperior.variable} overflow-x-hidden bg-background font-body tracking-[-4%] antialiased`}

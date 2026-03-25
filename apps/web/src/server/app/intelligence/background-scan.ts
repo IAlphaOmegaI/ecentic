@@ -4,7 +4,7 @@ import { resultify } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { schema } from "../../database";
-import { type ModelId, generate } from "../../utils/ai";
+import { generate, type ModelId } from "../../utils/ai";
 import { type GenericContext, withContext } from "../../utils/context";
 import { Environment } from "../../utils/environment";
 import * as Competitor from "../competitor";

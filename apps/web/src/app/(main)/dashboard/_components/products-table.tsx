@@ -15,11 +15,11 @@ import {
   DataTablePagination,
   DataTableProvider,
 } from "@zenncore/web/components/data-table";
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { usePaginationChangeHandler } from "@/hooks/pagination";
 import { formatRelativeTime } from "@/lib/date";
-import Image from "next/image";
 
 const WinRateBar = ({ rate }: { rate: number }) => {
   const { bar, text } = (() => {
@@ -76,17 +76,11 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
       >
         <Avatar className="size-9 rounded-none bg-primary/10">
           <AvatarImage
-            src={row.original.image ?? "/images/fallback"}
+            src={row.original.image ?? "/images/fallback.png"}
             alt={row.original.title}
           />
           <AvatarFallback className="relative">
-            <Image
-              src={"/images/fallback"}
-              alt={row.original.title}
-              width={36}
-              height={36}
-              fill
-            />
+            <Image src="/images/fallback.png" alt="Fallback" fill />
           </AvatarFallback>
         </Avatar>
         <div>

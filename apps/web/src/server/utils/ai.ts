@@ -1,5 +1,5 @@
 import { createStreamableValue } from "@ai-sdk/rsc";
-import { Output, generateText, streamText, type GatewayModelId } from "ai";
+import { type GatewayModelId, generateText, Output, streamText } from "ai";
 import type { z } from "zod";
 
 export type ModelId = GatewayModelId;

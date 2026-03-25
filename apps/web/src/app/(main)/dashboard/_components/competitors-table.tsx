@@ -18,8 +18,7 @@ import {
 import Link from "next/link";
 import { usePaginationChangeHandler } from "@/hooks/pagination";
 import { formatRelativeTime } from "@/lib/date";
-
-const fallbackImageSource = "/images/fallback";
+import Image from "next/image";
 
 const WinRateBar = ({ rate }: { rate: number }) => {
   const color = (() => {
@@ -51,11 +50,11 @@ const columns: ColumnDef<CompetitorsTable.Row>[] = [
       <div className="flex items-center gap-2">
         <Avatar className="size-9 rounded-none bg-primary/10">
           <AvatarImage
-            src={row.original.image ?? fallbackImageSource}
+            src={row.original.image ?? "/images/fallback.png"}
             alt={row.original.brand}
           />
-          <AvatarFallback className="font-semibold text-primary text-xs">
-            {row.original.brand.slice(0, 2).toUpperCase()}
+          <AvatarFallback className="relative">
+            <Image src="/images/fallback.png" alt="Fallback" fill />
           </AvatarFallback>
         </Avatar>
         <div>

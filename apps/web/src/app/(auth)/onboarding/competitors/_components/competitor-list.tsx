@@ -18,9 +18,7 @@ import {
 import { motion } from "motion/react";
 import { Stagger } from "@/lib/animations";
 import type * as Competitor from "@/server/app/competitor";
-
-const fallbackImageSource = "/images/fallback";
-
+import Image from "next/image";
 const formatPrice = (price: string | null, currency: string | null): string => {
   if (!price) return "\u2014";
 
@@ -106,11 +104,11 @@ export const CompetitorList = ({
                   <div className="flex items-center gap-3">
                     <Avatar className="size-9 rounded-none bg-primary/10">
                       <AvatarImage
-                        src={record.image ?? fallbackImageSource}
+                        src={record.image ?? "/images/fallback.png"}
                         alt={record.title}
                       />
-                      <AvatarFallback className="font-semibold text-primary text-xs">
-                        {record.title.slice(0, 2).toUpperCase()}
+                      <AvatarFallback className="relative">
+                        <Image src="/images/fallback.png" alt="Fallback" fill />
                       </AvatarFallback>
                     </Avatar>
                     <div>
