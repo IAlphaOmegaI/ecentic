@@ -13,6 +13,7 @@ import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import * as Scan from "@/server/app/scan";
 import { Environment } from "@/server/utils/environment";
+import { connection } from "next/server";
 
 const models = [
   {
@@ -39,6 +40,7 @@ const models = [
 ] as const;
 
 export default async ({ params }: PageProps<"/share/[id]">) => {
+  await connection();
   const { id } = await params;
 
   const result = await Scan.getShareData(Environment.SERVER, { id });

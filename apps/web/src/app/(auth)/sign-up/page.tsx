@@ -1,5 +1,3 @@
-"use client";
-
 import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import * as motion from "motion/react-client";
@@ -10,8 +8,6 @@ import { redirect } from "next/navigation";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import { Fade } from "@/lib/animations";
-import { postAuthLandingPath } from "@/lib/app-scope";
-import { auth } from "@/lib/auth";
 import { SignUpForm } from "./_components/sign-up-form";
 
 const points = [
@@ -20,12 +16,7 @@ const points = [
   "Auto-optimize listings to win every cart",
 ];
 
-export default async () => {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (session?.user) {
-    redirect(postAuthLandingPath);
-  }
-
+export default () => {
   return (
     <div className="flex h-screen overflow-hidden bg-primary">
       <Onboarding
