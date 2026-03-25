@@ -171,7 +171,7 @@ const upsertRecord = withContext(
 export const listDashboard = withAuthentication(async (context) => {
   const userId = context.session.user.id;
 
-  const [productsResult, storesResult, recordsResult] = await Promise.all([
+  const [products, stores, records] = await Promise.all([
     Product.find(Environment.SERVER, {
       where: eq(schema.product.userId, userId),
     }),
@@ -186,20 +186,20 @@ export const listDashboard = withAuthentication(async (context) => {
     }),
   ]);
 
-  const products = productsResult.success ? productsResult.data : [];
-  const stores = storesResult.success ? storesResult.data : [];
-  const records = recordsResult.success ? recordsResult.data : [];
+  if (!products.success) return products;
+  if (!stores.success) return stores;
+  if (!records.success) return records;
 
-  const storeById = new Map(stores.map((store) => [store.id, store]));
+  const storeById = new Map(stores.data.map((store) => [store.id, store]));
   const productById = Object.fromEntries(
-    products.map((product) => [product.id, product]),
+    products.data.map((product) => [product.id, product]),
   );
   const recordByProductId = new Map(
-    records.map((record) => [record.productId, record]),
+    records.data.map((record) => [record.productId, record]),
   );
 
   const publishableProductIds = new Set(
-    products
+    products.data
       .filter((product) => {
         const store = storeById.get(product.storeId);
         return store && PUBLISHABLE_PLATFORMS.has(store.platform);
@@ -208,18 +208,22 @@ export const listDashboard = withAuthentication(async (context) => {
   );
 
   const simulationsResult = await Simulation.getForProducts({
-    products: products.map((product) => product.id),
+    products: products.data.map((product) => product.id),
   });
   const simulations = simulationsResult.success ? simulationsResult.data : [];
 
-  const lowWinRateEntries = products
+  const lowWinRateEntries = products.data
     .map((product) => ({
       product,
       winRate: computeWinRate(product.id, simulations),
     }))
     .filter(
-      (entry): entry is { product: Product.Type; winRate: number } =>
-        entry.winRate !== null && entry.winRate < WIN_RATE_THRESHOLD,
+      (
+        entry,
+      ): entry is {
+        product: (typeof products.data)[number];
+        winRate: number;
+      } => entry.winRate !== null && entry.winRate < WIN_RATE_THRESHOLD,
     );
 
   const now = Date.now();
@@ -303,8 +307,12 @@ export const listDashboard = withAuthentication(async (context) => {
     }
   }
 
-  const published = records.filter((record) => record.status === "published");
-  const dismissed = records.filter((record) => record.status === "dismissed");
+  const published = records.data.filter(
+    (record) => record.status === "published",
+  );
+  const dismissed = records.data.filter(
+    (record) => record.status === "dismissed",
+  );
 
   const publishableLowWinRateCount = lowWinRateEntries.filter((entry) =>
     publishableProductIds.has(entry.product.id),
