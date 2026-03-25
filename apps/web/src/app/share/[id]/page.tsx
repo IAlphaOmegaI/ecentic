@@ -45,10 +45,11 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
   if (!result.success) notFound();
 
   const { scan, modelRates } = result.data;
+
   const total = scan.wins + scan.losses;
   const winRate = total > 0 ? Math.round((scan.wins / total) * 100) : 0;
 
-  const rateColor = (() => {
+  const color = (() => {
     switch (true) {
       case winRate >= 60:
         return "text-success";
@@ -118,7 +119,12 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
                 <p className="mb-1 font-light text-foreground-dimmed text-xs uppercase tracking-widest">
                   Overall Win Rate
                 </p>
-                <p className={cn("font-semibold text-[72px] leading-none", rateColor)}>
+                <p
+                  className={cn(
+                    "font-semibold text-[72px] leading-none",
+                    color,
+                  )}
+                >
                   {winRate}%
                 </p>
                 <p className="mt-3 font-light text-foreground text-sm">
@@ -174,7 +180,9 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
                       height={28}
                     />
                     <div className="flex items-end justify-between">
-                      <span className={cn("font-light text-xs", model.textColor)}>
+                      <span
+                        className={cn("font-light text-xs", model.textColor)}
+                      >
                         {model.label}
                       </span>
                       <span className="font-semibold text-foreground text-lg">
@@ -193,7 +201,9 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
                       <span className="font-light text-success text-xs">
                         {rates?.wins ?? 0} W
                       </span>
-                      <span className="text-foreground-dimmed/30 text-xs">—</span>
+                      <span className="text-foreground-dimmed/30 text-xs">
+                        —
+                      </span>
                       <span className="font-light text-error text-xs">
                         {rates?.losses ?? 0} L
                       </span>

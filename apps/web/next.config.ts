@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 
 export default withSentryConfig(
   {
-    reactCompiler: true,
+    // reactCompiler: true,
     typedRoutes: true,
     typescript: {
       ignoreBuildErrors: true,
