@@ -1,7 +1,5 @@
-"use client";
-
 import type { HTMLMotionProps } from "motion/react";
-import * as motion from "motion/react";
+import * as motion from "motion/react-client";
 import {
   Fade,
   HoverLift,
