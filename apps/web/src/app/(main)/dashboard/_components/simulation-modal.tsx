@@ -16,8 +16,8 @@ import { useEffect, useRef } from "react";
 import { useScanRunner } from "@/app/(auth)/onboarding/scan/_components/use-scan-runner";
 import { Motion } from "@/components/motion";
 import { Spring, Stagger } from "@/lib/animations";
-import type * as Simulate from "@/server/app/intelligence/simulate";
 import { formatElapsed } from "@/lib/date";
+import type * as Simulate from "@/server/app/intelligence/simulate";
 
 const providers = [
   {
@@ -110,7 +110,7 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
       >
         <div className="flex shrink-0 items-center justify-between border-accent-foreground border-b px-6 py-3.5">
           <div className="flex items-center gap-3">
-            <DialogTitle className="mt-0 mb-0 text-sm text-foreground">
+            <DialogTitle className="mt-0 mb-0 text-foreground text-sm">
               {phase === "pre" && "Run Simulation"}
               {phase === "running" && "Simulation Running"}
               {phase === "complete" && "Simulation Complete"}

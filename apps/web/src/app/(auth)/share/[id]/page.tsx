@@ -9,11 +9,11 @@ import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import * as Scan from "@/server/app/scan";
 import { Environment } from "@/server/utils/environment";
-import { connection } from "next/server";
 
 const models = [
   {
@@ -162,7 +162,7 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
 
           {/* Per-model breakdown */}
           <Motion.Item className="border-accent-foreground border-b px-8">
-            <div className="border-x border-b border-accent-foreground px-4 py-3">
+            <div className="border-accent-foreground border-x border-b px-4 py-3">
               <p className="font-medium text-foreground text-sm">
                 Win rate by model
               </p>

@@ -32,7 +32,9 @@ export const SimulationsClient = ({
   selectedCompetitorCount: initialSelectedCompetitorCount,
 }: SimulationsClient.Props) => {
   const toast = useToastManager();
-  const [competitorCount, setCompetitorCount] = useState(initialCompetitorCount);
+  const [competitorCount, setCompetitorCount] = useState(
+    initialCompetitorCount,
+  );
   const [selectedCompetitorCount, setSelectedCompetitorCount] = useState(
     initialSelectedCompetitorCount,
   );
@@ -52,7 +54,11 @@ export const SimulationsClient = ({
     reset,
   } = useScanRunner({
     onError: (text) =>
-      toast.add({ title: "Simulation failed", description: text, type: "error" }),
+      toast.add({
+        title: "Simulation failed",
+        description: text,
+        type: "error",
+      }),
   });
 
   const totalSimulations = useMemo(
@@ -88,7 +94,7 @@ export const SimulationsClient = ({
   return (
     <div className="-mx-8 border-accent-foreground border-b">
       <div className="mx-8 space-y-8 p-6">
-        <div className="grid grid-cols-1 gap-px border-accent-foreground border bg-accent-foreground xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-px border border-accent-foreground bg-accent-foreground xl:grid-cols-3">
           <div className="bg-background-dimmed p-4">
             <p className="font-light text-foreground-dimmed">Products</p>
             <p className="mt-2 text-4xl text-foreground tabular-nums">
@@ -96,7 +102,9 @@ export const SimulationsClient = ({
             </p>
           </div>
           <div className="bg-background-dimmed p-4">
-            <p className="font-light text-foreground-dimmed">Competitors selected</p>
+            <p className="font-light text-foreground-dimmed">
+              Competitors selected
+            </p>
             <p className="mt-2 text-4xl text-foreground tabular-nums">
               {selectedCompetitorCount}
             </p>
@@ -137,8 +145,8 @@ export const SimulationsClient = ({
                 Win-Rate Simulation
               </h2>
               <p className="font-light text-foreground-dimmed">
-                Re-run product vs competitor simulations across GPT-4, Claude, and
-                Gemini.
+                Re-run product vs competitor simulations across GPT-4, Claude,
+                and Gemini.
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -166,21 +174,29 @@ export const SimulationsClient = ({
           <div className="space-y-4 p-4">
             <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-4">
               <div className="bg-background-dimmed p-3">
-                <p className="font-light text-foreground-dimmed text-sm">Phase</p>
+                <p className="font-light text-foreground-dimmed text-sm">
+                  Phase
+                </p>
                 <p className="text-foreground capitalize">{phase}</p>
               </div>
               <div className="bg-background-dimmed p-3">
-                <p className="font-light text-foreground-dimmed text-sm">Progress</p>
+                <p className="font-light text-foreground-dimmed text-sm">
+                  Progress
+                </p>
                 <p className="text-foreground">{stats.progress}%</p>
               </div>
               <div className="bg-background-dimmed p-3">
-                <p className="font-light text-foreground-dimmed text-sm">Wins / Losses</p>
+                <p className="font-light text-foreground-dimmed text-sm">
+                  Wins / Losses
+                </p>
                 <p className="text-foreground">
                   {stats.wins} / {stats.losses}
                 </p>
               </div>
               <div className="bg-background-dimmed p-3">
-                <p className="font-light text-foreground-dimmed text-sm">Elapsed</p>
+                <p className="font-light text-foreground-dimmed text-sm">
+                  Elapsed
+                </p>
                 <p className="text-foreground">{formatElapsed(elapsed)}</p>
               </div>
             </div>
@@ -200,8 +216,8 @@ export const SimulationsClient = ({
                     {statuses[label] ?? "queued"}
                   </p>
                   <p className="mt-1 font-light text-foreground-dimmed text-sm">
-                    {modelStats[label]?.wins ?? 0}W / {modelStats[label]?.losses ?? 0}
-                    L
+                    {modelStats[label]?.wins ?? 0}W /{" "}
+                    {modelStats[label]?.losses ?? 0}L
                   </p>
                 </div>
               ))}
@@ -220,7 +236,9 @@ export const SimulationsClient = ({
                   <p className="font-light text-foreground-dimmed text-sm">
                     Overall win rate:{" "}
                     {stats.wins + stats.losses > 0
-                      ? Math.round((stats.wins / (stats.wins + stats.losses)) * 100)
+                      ? Math.round(
+                          (stats.wins / (stats.wins + stats.losses)) * 100,
+                        )
                       : 0}
                     %
                   </p>
@@ -264,11 +282,16 @@ export const SimulationsClient = ({
               <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-3">
                 {(["gpt4", "claude", "gemini"] as const).map((model) => (
                   <div key={model} className="bg-background-dimmed p-3">
-                    <p className="font-medium text-foreground uppercase">{model}</p>
-                    <p className="font-light text-foreground-dimmed text-sm">
-                      {winRates[model]?.wins ?? 0}W / {winRates[model]?.losses ?? 0}L
+                    <p className="font-medium text-foreground uppercase">
+                      {model}
                     </p>
-                    <p className="text-foreground">{winRates[model]?.rate ?? 0}%</p>
+                    <p className="font-light text-foreground-dimmed text-sm">
+                      {winRates[model]?.wins ?? 0}W /{" "}
+                      {winRates[model]?.losses ?? 0}L
+                    </p>
+                    <p className="text-foreground">
+                      {winRates[model]?.rate ?? 0}%
+                    </p>
                   </div>
                 ))}
               </div>
@@ -279,4 +302,3 @@ export const SimulationsClient = ({
     </div>
   );
 };
-

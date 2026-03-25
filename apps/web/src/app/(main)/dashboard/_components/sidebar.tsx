@@ -55,7 +55,12 @@ export const Sidebar = () => {
   }, []);
 
   const items = [
-    { icon: SquareChartIcon, label: "Overview", href: "/dashboard", exact: true },
+    {
+      icon: SquareChartIcon,
+      label: "Overview",
+      href: "/dashboard",
+      exact: true,
+    },
     {
       icon: ShoppingCartIcon,
       label: "Products",
@@ -69,12 +74,12 @@ export const Sidebar = () => {
       href: "/dashboard/competitors",
       exact: false,
     },
-  {
-    icon: RadarIcon,
-    label: "Simulations",
-    href: "/dashboard/simulations",
-    exact: false,
-  },
+    {
+      icon: RadarIcon,
+      label: "Simulations",
+      href: "/dashboard/simulations",
+      exact: false,
+    },
     {
       icon: GaugeIcon,
       label: "Optimize",

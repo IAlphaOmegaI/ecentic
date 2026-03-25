@@ -420,10 +420,7 @@ const Products = async ({
     Product.paginateWithIntelligence(Environment.SERVER, { page, size }),
   );
 
-  const pageCount = Math.max(
-    1,
-    Math.ceil(pagination.total / pagination.size),
-  );
+  const pageCount = Math.max(1, Math.ceil(pagination.total / pagination.size));
 
   return (
     <ProductsTable

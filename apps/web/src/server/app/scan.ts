@@ -88,9 +88,7 @@ export const getShareData = withContext(
           wins,
           losses,
           rate:
-            wins + losses > 0
-              ? Math.round((wins / (wins + losses)) * 100)
-              : 0,
+            wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0,
         },
       ]),
     );

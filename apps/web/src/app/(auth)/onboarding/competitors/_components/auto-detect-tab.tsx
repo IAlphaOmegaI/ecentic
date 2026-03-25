@@ -8,9 +8,9 @@ import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import * as Competitor from "@/server/app/competitor";
+import { useRef, useState } from "react";
 import { formatElapsed } from "@/lib/date";
+import * as Competitor from "@/server/app/competitor";
 
 type LogEntry = {
   id: number;

@@ -1,8 +1,4 @@
-import { Button } from "@zenncore/web/components/button";
-import { headers } from "next/headers";
-import Link from "next/link";
 import { type PropsWithChildren, Suspense } from "react";
-import { auth } from "@/lib/auth";
 import { Sidebar } from "./_components/sidebar";
 import { Topbar } from "./_components/topbar";
 
