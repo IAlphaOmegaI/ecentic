@@ -95,6 +95,7 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
           "Every product was scored head-to-head against competitors",
           "This report shows exactly where you win — and where you lose",
         ]}
+        image="/images/share.png"
       />
 
       <main className="flex h-full flex-1 flex-col overflow-y-auto bg-background">
