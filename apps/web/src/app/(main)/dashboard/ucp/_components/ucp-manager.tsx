@@ -24,6 +24,8 @@ import {
   TabsPanel,
 } from "@zenncore/web/components/tabs";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
+import { useToastManager } from "@zenncore/web/components/toast";
+import { useRouter } from "next/navigation";
 import type { ComponentProps, ReactElement } from "react";
 import { useCallback, useMemo, useState } from "react";
 import type * as Ucp from "@/server/app/intelligence/ucp";
@@ -33,7 +35,9 @@ import {
   generateProductStructuredData,
   saveProfile,
 } from "@/server/app/intelligence/ucp";
+import { runComplianceAudit } from "@/server/app/intelligence/ucp-audit";
 import type * as Product from "@/server/app/product";
+import { UCP_SPEC_VERSION } from "@/server/ucp/constants";
 
 // ─── JSON syntax highlighter ────────────────────────────────────────────────
 
@@ -46,29 +50,43 @@ const tokenizeJson = (json: string): JToken[] => {
   const tokens: JToken[] = [];
   let i = 0;
   while (i < json.length) {
-    if (/\s/.test(json[i])) {
+    const ch = json.charAt(i);
+    if (/\s/.test(ch)) {
       let text = "";
-      while (i < json.length && /\s/.test(json[i])) text += json[i++];
+      while (i < json.length && /\s/.test(json.charAt(i))) {
+        text += json.charAt(i);
+        i += 1;
+      }
       tokens.push({ text, type: "space" });
       continue;
     }
-    if (json[i] === '"') {
+    if (ch === '"') {
       let text = '"';
-      i++;
-      while (i < json.length && json[i] !== '"') {
-        if (json[i] === "\\") text += json[i++];
-        text += json[i++];
+      i += 1;
+      while (i < json.length && json.charAt(i) !== '"') {
+        if (json.charAt(i) === "\\") {
+          text += json.charAt(i);
+          i += 1;
+        }
+        text += json.charAt(i);
+        i += 1;
       }
       text += '"';
-      i++;
+      i += 1;
       let j = i;
-      while (j < json.length && /\s/.test(json[j])) j++;
-      tokens.push({ text, type: json[j] === ":" ? "key" : "string" });
+      while (j < json.length && /\s/.test(json.charAt(j))) j += 1;
+      tokens.push({
+        text,
+        type: json.charAt(j) === ":" ? "key" : "string",
+      });
       continue;
     }
-    if (/[-\d]/.test(json[i])) {
+    if (/[-\d]/.test(ch)) {
       let text = "";
-      while (i < json.length && /[-\d.eE+]/.test(json[i])) text += json[i++];
+      while (i < json.length && /[-\d.eE+]/.test(json.charAt(i))) {
+        text += json.charAt(i);
+        i += 1;
+      }
       tokens.push({ text, type: "number" });
       continue;
     }
@@ -83,7 +101,8 @@ const tokenizeJson = (json: string): JToken[] => {
       i += 4;
       continue;
     }
-    tokens.push({ text: json[i++], type: "punct" });
+    tokens.push({ text: ch, type: "punct" });
+    i += 1;
   }
   return tokens;
 };
@@ -233,10 +252,21 @@ export namespace UcpManager {
   export type Props = {
     profile: Ucp.Type | null;
     products: Product.Type[];
+    /** First connected store — used for the public UCP JSON URL. */
+    primaryStoreId: string | null;
+    /** Origin for API URLs (e.g. https://app.example.com). */
+    publicApiBase: string;
   };
 }
 
-export const UcpManager = ({ profile, products }: UcpManager.Props) => {
+export const UcpManager = ({
+  profile,
+  products,
+  primaryStoreId,
+  publicApiBase,
+}: UcpManager.Props) => {
+  const router = useRouter();
+  const toast = useToastManager();
   const [state, setState] = useState<Ucp.Profile>(profile ?? {});
   const [generation, setGeneration] = useState<string | null>(
     profile?.generatedJson ?? null,
@@ -247,7 +277,8 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
     ),
   );
   const [pending, setPending] = useState<Set<string>>(new Set());
-  const [copied, setCopied] = useState(false);
+  const [jsonCopied, setJsonCopied] = useState(false);
+  const [urlCopied, setUrlCopied] = useState(false);
 
   const filledCount = useMemo(
     () => definitions.filter(({ key }) => Boolean(state[key])).length,
@@ -265,8 +296,9 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
 
   const live = useMemo(() => {
     const json = removeUndefinedEntries({
-      "@context": "https://ucp.ai/schema",
+      "@context": "https://schema.org",
       "@type": "Merchant",
+      ucpSpecVersion: UCP_SPEC_VERSION,
       name: state.merchantName,
       description: state.description,
       logo: state.logoUrl,
@@ -295,6 +327,31 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
     if (r.success) setGeneration(r.data.json);
   });
 
+  const publicUcpPath =
+    primaryStoreId && publicApiBase
+      ? `${publicApiBase}/api/public/ucp/${primaryStoreId}`
+      : null;
+
+  const [handleComplianceAudit, isAuditing] = useAsyncAction(async () => {
+    const r = await runComplianceAudit();
+    if (!r.success) {
+      const message =
+        r.error instanceof Error ? r.error.message : String(r.error);
+      toast.add({
+        title: "UCP audit failed",
+        description: message,
+        type: "error",
+      });
+      return;
+    }
+    toast.add({
+      title: "UCP compliance audit complete",
+      description: `Recorded scores for ${r.data.audited} of ${r.data.totalProducts} products.`,
+      type: "success",
+    });
+    router.refresh();
+  });
+
   const [handleGenerateAll, isGeneratingAll] = useAsyncAction(async () => {
     const r = await generateAllProductStructuredData();
     if (!r.success) return;
@@ -318,8 +375,8 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(result);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    setJsonCopied(true);
+    setTimeout(() => setJsonCopied(false), 1500);
   };
 
   const columns: ColumnDef<ProductRow>[] = useMemo(
@@ -456,14 +513,55 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
 
           <div className="hidden shrink-0 text-right lg:block">
             <p className="font-light text-foreground-dimmed text-xs">
-              Served at
+              Public JSON (agents)
             </p>
-            <p className="mt-0.5 font-mono text-foreground text-xs">
-              your-store.com/.well-known/ucp
+            <p className="mt-0.5 break-all font-mono text-foreground text-xs">
+              {publicUcpPath ?? "Connect a store to enable"}
             </p>
           </div>
         </div>
       </div>
+
+      {publicUcpPath && (
+        <div className="border border-accent-foreground bg-background-dimmed p-4">
+          <p className="font-medium text-foreground text-sm">
+            Public UCP document
+          </p>
+          <p className="mt-1 font-light text-foreground-dimmed text-xs">
+            GET this URL with the same bearer token as your storefront tracker (
+            <code className="text-foreground">Authorization: Bearer …</code> or{" "}
+            <code className="text-foreground">?k=…</code>). WooCommerce-only
+            stores need a tracker key from Shopify connect or a future key
+            rotation flow.
+          </p>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <Button
+              variant="outline"
+              color="accent"
+              type="button"
+              className="text-xs"
+              onClick={() => {
+                void navigator.clipboard.writeText(publicUcpPath);
+                setUrlCopied(true);
+                setTimeout(() => setUrlCopied(false), 1500);
+              }}
+            >
+              <CopyIcon className="mr-1 size-3.5" />
+              {urlCopied ? "Copied" : "Copy URL"}
+            </Button>
+            <Button
+              variant="flat"
+              color="primary"
+              type="button"
+              className="text-xs"
+              onClick={handleComplianceAudit}
+              disabled={isAuditing}
+            >
+              {isAuditing ? "Auditing…" : "Run UCP compliance audit"}
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Tabs */}
       <Tabs defaultValue="profile">
@@ -493,7 +591,7 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
                       className="flex items-center gap-3 px-4 py-2.5"
                     >
                       {(() => {
-                        const Icon = definitionIcons[field.key];
+                        const Icon = definitionIcons[field.key] ?? StoreIcon;
                         return (
                           <Icon
                             className={cn(
@@ -506,9 +604,9 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
                         );
                       })()}
                       <div className="flex min-w-0 flex-1 items-center gap-3">
-                        <label className="w-36 shrink-0 font-medium text-foreground-dimmed text-xs">
+                        <span className="w-36 shrink-0 font-medium text-foreground-dimmed text-xs">
                           {field.label}
-                        </label>
+                        </span>
                         <TextField
                           value={value}
                           onValueChange={(val) =>
@@ -543,7 +641,7 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
                   disabled={isGeneratingJson}
                   className="px-4 py-1.5 text-foreground-dimmed text-xs"
                 >
-                  {isGeneratingJson ? "Generating..." : "Generate with AI"}
+                  {isGeneratingJson ? "Building…" : "Rebuild UCP from catalog"}
                 </Button>
                 {generation && (
                   <Button
@@ -569,7 +667,7 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
                     </p>
                     {generation && (
                       <span className="bg-primary/10 px-1.5 py-0.5 font-medium text-primary text-xs">
-                        AI-enhanced
+                        Catalog snapshot
                       </span>
                     )}
                   </div>
@@ -578,7 +676,7 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
                     onClick={handleCopy}
                     className="flex items-center gap-1 rounded px-2 py-1 font-medium text-foreground-dimmed text-xs transition-colors hover:bg-accent-foreground hover:text-foreground"
                   >
-                    {copied ? (
+                    {jsonCopied ? (
                       <>
                         <CheckIcon className="size-3.5 text-primary" />
                         <span className="text-primary">Copied</span>

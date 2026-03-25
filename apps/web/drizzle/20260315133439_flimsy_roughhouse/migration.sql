@@ -1,4 +1,4 @@
-CREATE TABLE "ucp_profile" (
+CREATE TABLE IF NOT EXISTS "ucp_profile" (
 	"id" text PRIMARY KEY DEFAULT gen_random_uuid(),
 	"userId" text NOT NULL UNIQUE,
 	"merchantName" text,
@@ -16,7 +16,14 @@ CREATE TABLE "ucp_profile" (
 	"updatedAt" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-ALTER TABLE "product" ADD COLUMN "structuredData" text;--> statement-breakpoint
-ALTER TABLE "session" ADD COLUMN "ipAddress" text;--> statement-breakpoint
-ALTER TABLE "session" ADD COLUMN "userAgent" text;--> statement-breakpoint
-ALTER TABLE "ucp_profile" ADD CONSTRAINT "ucp_profile_userId_user_id_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE;
+ALTER TABLE "product" ADD COLUMN IF NOT EXISTS "structuredData" text;
+--> statement-breakpoint
+ALTER TABLE "session" ADD COLUMN IF NOT EXISTS "ipAddress" text;
+--> statement-breakpoint
+ALTER TABLE "session" ADD COLUMN IF NOT EXISTS "userAgent" text;
+--> statement-breakpoint
+DO $$ BEGIN
+  ALTER TABLE "ucp_profile" ADD CONSTRAINT "ucp_profile_userId_user_id_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE;
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;

@@ -7,6 +7,7 @@ import { withContext } from "../../utils/context";
 import { Environment } from "../../utils/environment";
 import { NotFoundError, RequestError } from "../../utils/error";
 import * as HTTP from "../../utils/http";
+import { refreshUcpOffersForStore } from "../../ucp/refresh-store-offers";
 import * as Product from "../product";
 import * as Store from "../store";
 
@@ -157,6 +158,9 @@ export const syncWooCommerceCatalog = withContext(
     );
 
     if (!insertion.success) return insertion;
+
+    const exec = tx ? { tx } : undefined;
+    await refreshUcpOffersForStore(Environment.SERVER, storeId, exec);
 
     return { success: true, data: imported };
   },

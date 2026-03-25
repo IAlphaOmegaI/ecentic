@@ -4,6 +4,7 @@ import { unique } from "@zenncore/utils";
 import { eq, inArray } from "drizzle-orm";
 import { cache as dedupe } from "react";
 import { schema } from "../database";
+import { fetchLatestUcpAuditScoresForProducts } from "../ucp/audit-queries";
 import { withAuthentication } from "../utils/authentication";
 import { Environment } from "../utils/environment";
 import type { Pager } from "../utils/pagination";
@@ -32,6 +33,7 @@ const keys = [
   "images",
   "sku",
   "structuredData",
+  "ucpOfferJson",
 ] as const;
 
 const computeDataQuality = (product: Type): number => {
@@ -40,6 +42,8 @@ const computeDataQuality = (product: Type): number => {
     if (!value) return false;
 
     if (field === "images") return value !== "[]";
+    if (field === "ucpOfferJson")
+      return typeof value === "object" && value !== null;
     return true;
   }).length;
 
@@ -62,8 +66,41 @@ const computeModelWinRate = (
   return Math.round((wins / modelSimulations.length) * 100);
 };
 
+const enrichProduct = (
+  product: Type,
+  simulations: Simulation.Type[],
+  ucpComplianceByProduct?: Map<string, number>,
+) => {
+  const productSimulations = simulations.filter(
+    (simulation) => simulation.productId === product.id,
+  );
+
+  const wins = productSimulations.filter(
+    (simulation) => simulation.winner === "product",
+  ).length;
+  const total = productSimulations.length;
+
+  return {
+    _id: product.id,
+    title: product.title,
+    price: product.price,
+    currency: product.currency,
+    sku: product.sku,
+    winRate: {
+      total: total > 0 ? Math.round((wins / total) * 100) : 0,
+      gpt4: computeModelWinRate(productSimulations, "gpt4"),
+      claude: computeModelWinRate(productSimulations, "claude"),
+      gemini: computeModelWinRate(productSimulations, "gemini"),
+    },
+    simulations: total,
+    quality: computeDataQuality(product),
+    ucpCompliance: ucpComplianceByProduct?.get(product.id) ?? null,
+    updatedAt: product.updatedAt,
+  };
+};
+
 export const gatherIntelligence = dedupe(
-  withAuthentication(async () => {
+  withAuthentication(async (context) => {
     const [products, scan] = await Promise.all([
       skimForCurrentUser(Environment.SERVER),
       Scan.getLatest(Environment.SERVER),
@@ -89,33 +126,14 @@ export const gatherIntelligence = dedupe(
 
     if (!simulations.success) return simulations;
 
-    const rows = products.data.map((product) => {
-      const productSimulations = simulations.data.filter(
-        (simulation) => simulation.productId === product.id,
-      );
+    const ucpComplianceByProduct = await fetchLatestUcpAuditScoresForProducts(
+      context.session.user.id,
+      products.data.map((product) => product.id),
+    );
 
-      const wins = productSimulations.filter(
-        (simulation) => simulation.winner === "product",
-      ).length;
-      const total = productSimulations.length;
-
-      return {
-        _id: product.id,
-        title: product.title,
-        price: product.price,
-        currency: product.currency,
-        sku: product.sku,
-        winRate: {
-          total: total > 0 ? Math.round((wins / total) * 100) : 0,
-          gpt4: computeModelWinRate(productSimulations, "gpt4"),
-          claude: computeModelWinRate(productSimulations, "claude"),
-          gemini: computeModelWinRate(productSimulations, "gemini"),
-        },
-        simulations: total,
-        quality: computeDataQuality(product),
-        updatedAt: product.updatedAt,
-      };
-    });
+    const rows = products.data.map((product) =>
+      enrichProduct(product, simulations.data, ucpComplianceByProduct),
+    );
 
     return {
       success: true,
@@ -127,34 +145,6 @@ export const gatherIntelligence = dedupe(
     };
   }, "Product.gatherIntelligence"),
 );
-
-const enrichProduct = (product: Type, simulations: Simulation.Type[]) => {
-  const productSimulations = simulations.filter(
-    (simulation) => simulation.productId === product.id,
-  );
-
-  const wins = productSimulations.filter(
-    (simulation) => simulation.winner === "product",
-  ).length;
-  const total = productSimulations.length;
-
-  return {
-    _id: product.id,
-    title: product.title,
-    price: product.price,
-    currency: product.currency,
-    sku: product.sku,
-    winRate: {
-      total: total > 0 ? Math.round((wins / total) * 100) : 0,
-      gpt4: computeModelWinRate(productSimulations, "gpt4"),
-      claude: computeModelWinRate(productSimulations, "claude"),
-      gemini: computeModelWinRate(productSimulations, "gemini"),
-    },
-    simulations: total,
-    quality: computeDataQuality(product),
-    updatedAt: product.updatedAt,
-  };
-};
 
 export const paginateWithIntelligence = withAuthentication(
   async (context, { page, size }: Pager) => {
@@ -172,8 +162,13 @@ export const paginateWithIntelligence = withAuthentication(
 
     if (!simulations.success) return simulations;
 
+    const ucpComplianceByProduct = await fetchLatestUcpAuditScoresForProducts(
+      context.session.user.id,
+      items.map((product) => product.id),
+    );
+
     const rows = items.map((product) =>
-      enrichProduct(product, simulations.data),
+      enrichProduct(product, simulations.data, ucpComplianceByProduct),
     );
 
     return {
@@ -290,7 +285,7 @@ export const getDetail = withAuthentication(
       data: {
         product: {
           ...product.data,
-          quality: computeDataQuality(product.data),
+          dataQuality: computeDataQuality(product.data),
         },
         winRate,
         models,

@@ -2,6 +2,7 @@ import { defineRelations, sql } from "drizzle-orm";
 import {
   boolean,
   date,
+  index,
   integer,
   jsonb,
   pgTable,
@@ -113,6 +114,8 @@ export const product = pgTable("product", {
   status: text("status").default("active"),
   rawData: text("rawData"),
   structuredData: text("structuredData"),
+  /** Deterministic UCP-oriented product/offer JSON (validated in app code). */
+  ucpOfferJson: jsonb("ucpOfferJson").$type<Record<string, unknown> | null>(),
   syncedAt: timestamp("syncedAt", { mode: "date" }),
   createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
@@ -150,6 +153,30 @@ export const scan = pgTable("scan", {
   createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
 });
+
+export const ucpAudit = pgTable(
+  "ucp_audit",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    userId: text("userId")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    productId: text("productId")
+      .notNull()
+      .references(() => product.id, { onDelete: "cascade" }),
+    score: integer("score").notNull(),
+    gaps: jsonb("gaps").$type<string[]>().notNull(),
+    specVersion: text("specVersion").notNull(),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("ucp_audit_user_product_created_idx").on(
+      table.userId,
+      table.productId,
+      table.createdAt,
+    ),
+  ],
+);
 
 export const ucpProfile = pgTable("ucp_profile", {
   id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
@@ -274,6 +301,7 @@ export const tables = {
   agentVisit,
   agentTrafficDaily,
   listingOptimization,
+  ucpAudit,
 };
 
 /** Relations */
@@ -285,6 +313,7 @@ export const relations = defineRelations(tables, (r) => ({
     products: r.many.product(),
     competitors: r.many.competitor(),
     scans: r.many.scan(),
+    ucpAudits: r.many.ucpAudit(),
   },
   session: {
     user: r.one.user({
@@ -317,6 +346,7 @@ export const relations = defineRelations(tables, (r) => ({
       to: r.user.id,
     }),
     listingOptimizations: r.many.listingOptimization(),
+    ucpAudits: r.many.ucpAudit(),
   },
   competitor: {
     user: r.one.user({
@@ -383,6 +413,16 @@ export const relations = defineRelations(tables, (r) => ({
     }),
     product: r.one.product({
       from: r.listingOptimization.productId,
+      to: r.product.id,
+    }),
+  },
+  ucpAudit: {
+    user: r.one.user({
+      from: r.ucpAudit.userId,
+      to: r.user.id,
+    }),
+    product: r.one.product({
+      from: r.ucpAudit.productId,
       to: r.product.id,
     }),
   },

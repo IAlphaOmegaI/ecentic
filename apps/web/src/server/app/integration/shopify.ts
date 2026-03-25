@@ -11,6 +11,7 @@ import {
   normalizeHostname,
   resolveTrackerPublicOrigin,
 } from "../../utils/tracking";
+import { refreshUcpOffersForStore } from "../../ucp/refresh-store-offers";
 import * as Product from "../product";
 import * as Store from "../store";
 
@@ -203,6 +204,8 @@ export const syncShopifyCatalog = withContext(
     );
 
     if (!insertion.success) return insertion;
+
+    await refreshUcpOffersForStore(Environment.SERVER, storeId, options);
 
     return { success: true, data: imported };
   },

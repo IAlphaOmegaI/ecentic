@@ -4,6 +4,7 @@ import { resultify } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { schema } from "../../database";
+import { buildMerchantDocument } from "../../ucp/build-merchant";
 import { generate } from "../../utils/ai";
 import { withAuthentication } from "../../utils/authentication";
 import { Environment } from "../../utils/environment";
@@ -75,50 +76,12 @@ export const generateJson = withAuthentication(async (context) => {
   if (!profile.success) return profile;
   if (!products.success) return products;
 
-  const productSummary = products.data
-    .slice(0, 20)
-    .map((p) => `- ${p.title} (${p.currency ?? "USD"} ${p.price ?? "N/A"})`)
-    .join("\n");
-
-  const ucpData = await generate({
-    system:
-      "You are a structured data expert. Generate a valid Universal Commerce Protocol (UCP) JSON for a merchant profile. The UCP is served at /.well-known/ucp and helps AI shopping agents understand a merchant's identity, policies, and catalog.",
-    prompt: `Generate a UCP JSON for this merchant:
-
-Merchant Name: ${profile.data[0]?.merchantName ?? "Unknown"}
-Description: ${profile.data[0]?.description ?? ""}
-Logo: ${profile.data[0]?.logoUrl ?? ""}
-Payment Methods: ${profile.data[0]?.paymentMethods ?? ""}
-Shipping Policy: ${profile.data[0]?.shippingPolicy ?? ""}
-Return Policy: ${profile.data[0]?.returnPolicy ?? ""}
-Contact Email: ${profile.data[0]?.contactEmail ?? ""}
-Sustainability: ${profile.data[0]?.sustainability ?? ""}
-Certifications: ${profile.data[0]?.certifications ?? ""}
-
-Top products:
-${productSummary || "No products yet"}`,
-    schema: z.object({
-      "@context": z.string(),
-      "@type": z.literal("Merchant"),
-      name: z.string(),
-      description: z.string().optional(),
-      logo: z.string().optional(),
-      paymentMethods: z.array(z.string()).optional(),
-      shippingPolicy: z.string().optional(),
-      returnPolicy: z.string().optional(),
-      contact: z.object({ email: z.string().optional() }).optional(),
-      sustainability: z.string().optional(),
-      certifications: z.array(z.string()).optional(),
-      catalog: z
-        .object({
-          totalProducts: z.number(),
-          topCategories: z.array(z.string()).optional(),
-        })
-        .optional(),
-    }),
+  const doc = buildMerchantDocument({
+    profile: profile.data[0] ?? null,
+    products: products.data,
   });
 
-  const generatedJson = JSON.stringify(ucpData, null, 2);
+  const generatedJson = JSON.stringify(doc, null, 2);
 
   if (profile.data[0]) {
     await update(Environment.SERVER, profile.data[0].id, {

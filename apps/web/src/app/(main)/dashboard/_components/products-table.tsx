@@ -144,6 +144,17 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
     cell: ({ row }) => <QualityBar score={row.original.quality} />,
   },
   {
+    accessorKey: "ucpCompliance",
+    header: "UCP",
+    cell: ({ row }) => (
+      <span className="font-light text-foreground tabular-nums">
+        {row.original.ucpCompliance === null
+          ? "—"
+          : `${row.original.ucpCompliance}%`}
+      </span>
+    ),
+  },
+  {
     accessorKey: "updatedAt",
     header: "Last Scan",
     cell: ({ row }) => (
@@ -237,6 +248,8 @@ export namespace ProductsTable {
       gemini: number;
     };
     quality: number;
+    /** Latest deterministic UCP readiness audit score, if a run exists. */
+    ucpCompliance: number | null;
     simulations: number;
     updatedAt: Date;
   };

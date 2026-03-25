@@ -4,6 +4,7 @@ import type { Result } from "@zenncore/utils";
 import { withAuthentication } from "../../utils/authentication";
 import { Environment } from "../../utils/environment";
 import { RequestError } from "../../utils/error";
+import { refreshUcpOffersForStore } from "../../ucp/refresh-store-offers";
 import * as Product from "../product";
 import * as Store from "../store";
 
@@ -79,6 +80,8 @@ export const syncProducts = withAuthentication(
       status: "connected",
       lastSyncedAt: new Date(),
     });
+
+    await refreshUcpOffersForStore(Environment.SERVER, storeId);
 
     return { success: true, data: imported };
   },
