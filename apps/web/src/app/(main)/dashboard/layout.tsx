@@ -7,26 +7,6 @@ import { Sidebar } from "./_components/sidebar";
 import { Topbar } from "./_components/topbar";
 
 export default async ({ children }: PropsWithChildren) => {
-  const session = await auth.api.getSession({ headers: await headers() });
-
-  if (!session?.user) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-3 bg-background px-6 py-16">
-        <h1 className="font-medium text-2xl text-foreground">Unauthenticated</h1>
-        <p className="max-w-md text-center font-light text-foreground-dimmed text-sm">
-          Sign in to open the dashboard. If you already signed in, try again or
-          clear site data for this origin.
-        </p>
-        <Button color="primary" render={<Link href="/sign-in" />}>
-          Sign in
-        </Button>
-        <Button variant="outline" color="accent" render={<Link href="/" />}>
-          Back to home
-        </Button>
-      </div>
-    );
-  }
-
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       <Suspense
