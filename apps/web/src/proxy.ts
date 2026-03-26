@@ -15,6 +15,7 @@ const map = {
     "/privacy-policy",
     "/sign-up",
     "/verify",
+    "/sign-in",
     /^\/share(\/.*)?$/,
   ],
   [RouteAccess.ADMINISTRATOR]: [/^\/.*/],
