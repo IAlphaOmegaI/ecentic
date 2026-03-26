@@ -16,7 +16,7 @@ const points = [
   "Track your ranking improvements over time",
 ];
 
-export default async () => {
+export default () => {
   return (
     <div className="flex h-screen overflow-hidden bg-primary">
       <Onboarding

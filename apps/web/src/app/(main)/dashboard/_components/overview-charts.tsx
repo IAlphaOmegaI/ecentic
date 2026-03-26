@@ -206,7 +206,7 @@ export const OverviewCharts = ({
       <div className="bg-background-dimmed xl:col-span-2">
         <div className="flex items-start justify-between p-4">
           <div>
-            <p className="font-light text-foreground-dimmed uppercase tracking-widest">
+            <p className="font-light text-foreground-dimmed font-mono uppercase tracking-widest">
               Performance
             </p>
             <p className="mt-1 font-medium text-2xl text-foreground">
@@ -232,7 +232,7 @@ export const OverviewCharts = ({
                         height={64}
                         className="size-6"
                       />
-                      <span className="text-foreground-dimmed uppercase tracking-widest">
+                      <span className="text-foreground-dimmed font-mono uppercase tracking-widest">
                         {label}
                       </span>
                     </div>
@@ -264,7 +264,7 @@ export const OverviewCharts = ({
 
         <div>
           <div className="mb-4 flex items-center justify-between p-4">
-            <p className="font-light text-foreground-dimmed uppercase tracking-widest">
+            <p className="font-light text-foreground-dimmed font-mono uppercase tracking-widest">
               Win Rate Trend
             </p>
             {change !== 0 && (
@@ -287,7 +287,7 @@ export const OverviewCharts = ({
       <div className="flex flex-col gap-px bg-accent-foreground">
         <div className="flex-1 bg-background-dimmed">
           <div className="mb-2 flex items-center justify-between px-4 pt-4">
-            <p className="font-light text-foreground-dimmed uppercase tracking-widest">
+            <p className="font-light text-foreground-dimmed font-mono uppercase tracking-widest">
               Recent Activity
             </p>
           </div>

@@ -355,7 +355,7 @@ const Performance = async () => {
       <div className="bg-background-dimmed xl:col-span-2">
         <div className="flex items-start justify-between p-4">
           <div>
-            <p className="font-light text-foreground-dimmed uppercase tracking-widest">
+            <p className="font-light text-foreground-dimmed font-mono uppercase tracking-widest">
               Performance
             </p>
             <p className="mt-1 font-medium text-2xl text-foreground">
@@ -451,7 +451,7 @@ const AgentTraffic = async () => {
     <div className="bg-background-dimmed p-4">
       <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="font-light text-foreground-dimmed uppercase tracking-widest">
+          <p className="font-light text-foreground-dimmed font-mono uppercase tracking-widest">
             Traffic
           </p>
           <p className="mt-1 font-medium text-2xl text-foreground">

@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import type { PropsWithChildren } from "react";
 import "./globals.css";
 import { ToastProvider } from "@zenncore/web/components/toast";
+import { Red_Hat_Mono } from "next/font/google";
 import localFont from "next/font/local";
+
+const redHatMono = Red_Hat_Mono({ subsets: ["latin"], variable: "--font-red-hat-mono" });
 import Script from "next/script";
 import { ToastList } from "@/components/ui/toast";
 import { PostHogProvider } from "@/context/posthog";
@@ -148,7 +151,7 @@ export default ({ children }: PropsWithChildren) => {
         <meta name="apple-mobile-web-app-title" content="écentic" />
       </head>
       <body
-        className={`${ltsuperior.variable} overflow-x-hidden bg-background font-body tracking-[-4%] antialiased`}
+        className={`${ltsuperior.variable} ${redHatMono.variable} overflow-x-hidden bg-background font-body tracking-[-4%] antialiased`}
       >
         <PostHogProvider>
           <ThemeProvider>

@@ -114,7 +114,7 @@ export const Sidebar = () => {
   return (
     <>
       <aside className="relative hidden w-60 flex-col overflow-hidden border-accent-foreground border-r bg-background-rich md:flex">
-        <div className="flex h-14 items-center justify-center overflow-hidden border-accent-foreground border-b pr-22 pl-2">
+        <div className="flex h-14 items-center justify-center overflow-hidden border-accent-foreground border-b pr-22 pl-5">
           <Image
             src="/images/trademark.svg"
             alt="écentic"
@@ -133,7 +133,7 @@ export const Sidebar = () => {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "group relative flex items-center gap-1 overflow-hidden px-2 py-2 hover:bg-accent-foreground/20",
+                  "group relative flex items-center gap-1 overflow-hidden px-5 py-2 hover:bg-accent-foreground/20",
                   active
                     ? "bg-primary/10 text-primary hover:bg-primary/15"
                     : "text-foreground-dimmed hover:text-foreground",
@@ -182,16 +182,19 @@ export const Sidebar = () => {
           >
             <div className="mb-2 flex items-center justify-between">
               <div className="flex items-center gap-1.5">
-                <motion.span
-                  className="inline-block size-1.5 rounded-full bg-warning"
-                  animate={{ opacity: [1, 0.3, 1] }}
-                  transition={{
-                    duration: 2,
-                    repeat: Number.POSITIVE_INFINITY,
-                    ease: "easeInOut",
-                  }}
-                />
-                <span className="font-medium text-warning text-xs uppercase tracking-widest">
+                <span className="relative inline-flex size-2">
+                  <motion.span
+                    className="absolute inline-block size-full rounded-full bg-warning"
+                    animate={{ scale: [1, 2.2], opacity: [0.8, 0] }}
+                    transition={{
+                      duration: 0.8,
+                      repeat: Number.POSITIVE_INFINITY,
+                      ease: "easeOut",
+                    }}
+                  />
+                  <span className="relative inline-block size-2 rounded-full bg-warning" />
+                </span>
+                <span className="font-medium text-warning text-xs font-mono uppercase tracking-widest">
                   Free Trial
                 </span>
               </div>
@@ -251,7 +254,7 @@ export const Sidebar = () => {
                         repeat: Number.POSITIVE_INFINITY,
                       }}
                     />
-                    <span className="font-medium text-warning text-xs uppercase tracking-widest">
+                    <span className="font-medium text-warning text-xs font-mono uppercase tracking-widest">
                       Trial ending in {TRIAL_DAYS_LEFT} days
                     </span>
                   </div>
@@ -296,7 +299,7 @@ export const Sidebar = () => {
 
               {/* Features */}
               <div className="border-accent-foreground border-b px-6 py-5">
-                <p className="mb-3 font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
+                <p className="mb-3 font-medium text-foreground-dimmed text-xs font-mono uppercase tracking-widest">
                   Everything in Pro
                 </p>
                 <div className="grid grid-cols-1 gap-2">
