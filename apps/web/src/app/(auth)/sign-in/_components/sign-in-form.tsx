@@ -16,7 +16,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { Motion } from "@/components/motion";
-import { postAuthLandingPath } from "@/lib/app-scope";
 import * as Authentication from "@/server/app/authentication";
 
 const config = {
@@ -63,7 +62,7 @@ export const SignInForm = () => {
         return;
       }
 
-      router.push(postAuthLandingPath);
+      router.push("/dashboard");
     },
   );
 
