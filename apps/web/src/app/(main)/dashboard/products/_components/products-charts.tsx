@@ -68,7 +68,7 @@ export const ProductsModelRates = ({ models }: ProductsModelRates.Props) => {
                 height={64}
                 className="size-6"
               />
-              <span className="text-foreground-dimmed font-mono uppercase tracking-widest">
+              <span className="text-foreground-dimmed uppercase tracking-widest">
                 {label}
               </span>
             </div>
@@ -255,7 +255,7 @@ export const ProductsWinRateTrend = ({
   return (
     <div>
       <div className="mb-4 flex items-center justify-between p-4">
-        <p className="font-light text-foreground-dimmed font-mono uppercase tracking-widest">
+        <p className="font-light text-foreground-dimmed uppercase tracking-widest">
           Win Rate Trend
         </p>
         {change !== 0 && (

@@ -137,7 +137,7 @@ const StatCards = async () => {
           },
         ].map(({ label, icon }) => (
           <div key={label} className="h-full bg-background-dimmed p-4">
-            <p className="mb-4 text-foreground-dimmed">{label}</p>
+            <p className="mb-4 text-foreground-dimmed uppercase tracking-widest">{label}</p>
             <div className="flex flex-col items-center justify-center gap-2">
               {icon}
               <p className="text-foreground-dimmed">No data yet</p>
@@ -322,7 +322,7 @@ const CompetitiveLandscape = async () => {
       <div className="bg-background-dimmed xl:col-span-2">
         <div className="flex items-start justify-between p-4">
           <div>
-            <p className="font-light text-foreground-dimmed font-mono uppercase tracking-widest">
+            <p className="font-light text-foreground-dimmed uppercase tracking-widest">
               Landscape
             </p>
             <p className="mt-1 font-medium text-2xl text-foreground">
@@ -384,7 +384,7 @@ const CompetitiveLandscape = async () => {
 
       <div className="flex flex-1 flex-col gap-px bg-accent-foreground">
         <div className="flex-1 bg-background-dimmed p-4">
-          <p className="font-light text-foreground-dimmed font-mono uppercase tracking-widest">
+          <p className="font-light text-foreground-dimmed uppercase tracking-widest">
             Distribution
           </p>
           <p className="mt-1 font-medium text-2xl text-foreground">
@@ -460,7 +460,7 @@ const Insights = async () => {
     <div className="bg-background-dimmed">
       <div className="flex items-start justify-between p-4">
         <div>
-          <p className="font-light text-foreground-dimmed font-mono uppercase tracking-widest">
+          <p className="font-light text-foreground-dimmed uppercase tracking-widest">
             Intelligence
           </p>
           <p className="mt-1 font-medium text-2xl text-foreground">

@@ -250,7 +250,7 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
                           }}
                           className="inline-block size-1.5 rounded-full bg-primary"
                         />
-                        <span className="font-medium text-foreground text-xs font-mono uppercase tracking-widest">
+                        <span className="font-medium text-foreground text-xs uppercase tracking-widest">
                           Live Intelligence Scan
                         </span>
                       </div>
@@ -475,7 +475,7 @@ const CompletePhaseModal = ({
       <Motion.Stagger stagger={0.08}>
         <Motion.Up className="mb-6 grid grid-cols-[1fr_auto] gap-px border border-accent-foreground bg-background-dimmed">
           <div className="bg-background-rich px-6 py-6">
-            <p className="mb-1 font-light text-foreground-dimmed text-xs font-mono uppercase tracking-widest">
+            <p className="mb-1 font-light text-foreground-dimmed text-xs uppercase tracking-widest">
               Overall Win Rate
             </p>
             <motion.p
@@ -574,7 +574,7 @@ const CompletePhaseModal = ({
 
         {topFinding && (
           <Motion.Up className="mb-6 border border-primary/20 bg-primary/5 px-5 py-4">
-            <p className="mb-1.5 font-medium text-primary text-xs font-mono uppercase tracking-widest">
+            <p className="mb-1.5 font-medium text-primary text-xs uppercase tracking-widest">
               Top Finding
             </p>
             <p className="font-light text-foreground text-sm">

@@ -69,7 +69,7 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
           <div className="grid grid-cols-1 gap-px border-accent-foreground border-y bg-accent-foreground sm:grid-cols-[1fr_auto]">
             <div className="bg-primary p-6">
               <RocketIcon className="size-8 text-background" />
-              <p className="mt-2 mb-2 text-white font-mono uppercase tracking-widest">
+              <p className="mt-2 mb-2 text-white uppercase tracking-widest">
                 Impact
               </p>
               <p className="text-white leading-relaxed">
@@ -86,7 +86,7 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
 
           {finding.missingAttributes.length > 0 && (
             <div className="flex flex-col gap-4 p-4">
-              <p className="font-light text-foreground-dimmed font-mono uppercase tracking-widest">
+              <p className="font-light text-foreground-dimmed uppercase tracking-widest">
                 Missing Attributes
               </p>
               <div className="flex flex-wrap gap-2">
@@ -145,7 +145,7 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
     <div className="bg-background-rich">
       <div className="flex items-start justify-between border-accent-foreground border-b p-6">
         <div>
-          <p className="font-light text-foreground-dimmed font-mono uppercase tracking-widest">
+          <p className="font-light text-foreground-dimmed uppercase tracking-widest">
             Insights
           </p>
           <p className="mt-1 font-medium text-2xl text-foreground">

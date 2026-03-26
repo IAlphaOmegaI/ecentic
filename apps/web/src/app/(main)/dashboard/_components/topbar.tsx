@@ -289,7 +289,7 @@ export const Topbar = () => {
 
                 {!loading && matchedProducts.length > 0 && (
                   <div>
-                    <p className="px-4 pt-2 pb-1 font-medium text-foreground-dimmed text-xs font-mono uppercase tracking-widest">
+                    <p className="px-4 pt-2 pb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
                       Products
                     </p>
                     {matchedProducts.slice(0, 5).map((product) => (
@@ -319,7 +319,7 @@ export const Topbar = () => {
 
                 {!loading && matchedCompetitors.length > 0 && (
                   <div>
-                    <p className="px-4 pt-3 pb-1 font-medium text-foreground-dimmed text-xs font-mono uppercase tracking-widest">
+                    <p className="px-4 pt-3 pb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
                       Competitors
                     </p>
                     {matchedCompetitors.slice(0, 4).map((competitor) => (
@@ -349,7 +349,7 @@ export const Topbar = () => {
 
                 {!loading && matchedNav.length > 0 && (
                   <div>
-                    <p className="px-4 pt-3 pb-1 font-medium text-foreground-dimmed text-xs font-mono uppercase tracking-widest">
+                    <p className="px-4 pt-3 pb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
                       Pages
                     </p>
                     {matchedNav.map((item) => (

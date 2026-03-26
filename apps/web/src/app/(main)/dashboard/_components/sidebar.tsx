@@ -194,7 +194,7 @@ export const Sidebar = () => {
                   />
                   <span className="relative inline-block size-2 rounded-full bg-warning" />
                 </span>
-                <span className="font-medium text-warning text-xs font-mono uppercase tracking-widest">
+                <span className="font-medium text-warning text-xs uppercase tracking-widest">
                   Free Trial
                 </span>
               </div>
@@ -254,7 +254,7 @@ export const Sidebar = () => {
                         repeat: Number.POSITIVE_INFINITY,
                       }}
                     />
-                    <span className="font-medium text-warning text-xs font-mono uppercase tracking-widest">
+                    <span className="font-medium text-warning text-xs uppercase tracking-widest">
                       Trial ending in {TRIAL_DAYS_LEFT} days
                     </span>
                   </div>
@@ -299,7 +299,7 @@ export const Sidebar = () => {
 
               {/* Features */}
               <div className="border-accent-foreground border-b px-6 py-5">
-                <p className="mb-3 font-medium text-foreground-dimmed text-xs font-mono uppercase tracking-widest">
+                <p className="mb-3 font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
                   Everything in Pro
                 </p>
                 <div className="grid grid-cols-1 gap-2">
