@@ -51,3 +51,4 @@ export * from "./upload";
 export * from "./x";
 export * from "./bullseye";
 export * from "./rocket";
+export * from "./search";

@@ -22,13 +22,14 @@ import {
   TableRow,
 } from "@zenncore/web/components/table";
 import { motion } from "motion/react";
+import Image from "next/image";
 import Link, { useLinkStatus } from "next/link";
 import { useRouter } from "next/navigation";
 import { type ReactNode, useState, useTransition } from "react";
 import { Motion } from "@/components/motion";
 import { Stagger, Table as TableAnimations } from "@/lib/animations";
 import type * as Product from "@/server/app/product";
-import Image from "next/image";
+
 const limit = 10;
 
 const parseImages = (images: string | null): string[] => {

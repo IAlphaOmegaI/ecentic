@@ -15,10 +15,10 @@ import {
   DataTablePagination,
   DataTableProvider,
 } from "@zenncore/web/components/data-table";
+import Image from "next/image";
 import Link from "next/link";
 import { usePaginationChangeHandler } from "@/hooks/pagination";
 import { formatRelativeTime } from "@/lib/date";
-import Image from "next/image";
 
 const WinRateBar = ({ rate }: { rate: number }) => {
   const color = (() => {

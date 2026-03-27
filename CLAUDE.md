@@ -155,13 +155,27 @@ Onboarding/auth screens may be client-heavy by design; all other screens (dashbo
 
 ## Key Patterns
 
-### Error handling — use `resultify`, never `try/catch`
+### Error handling — `resultify` in actions, `unwrapResult` in server components
 ```ts
+// In server actions / utilities — use resultify + manual checks
 import { resultify } from "@zenncore/utils";
-
 const result = await resultify(() => fetch(url));
 if (!result.success) return { success: false, error: result.error };
 return { success: true, data: result.data };
+
+// In server components (inside Suspense) — use unwrapResult, throws on error
+import { unwrapResult } from "@zenncore/utils";
+import { Environment } from "@/server/utils/environment";
+const products = await unwrapResult(Products.skimForCurrentUser(Environment.SERVER));
+```
+
+### Server module imports — namespace pattern
+```ts
+// Server components: full namespace (functions + types)
+import * as Products from "@/server/app/product";
+
+// Client components: type-only namespace (no server code bundled)
+import type * as Products from "@/server/app/product";
 ```
 
 ### Forms — use `InferredForm` + `field()`

@@ -16,9 +16,10 @@ import {
   TableRow,
 } from "@zenncore/web/components/table";
 import { motion } from "motion/react";
+import Image from "next/image";
 import { Stagger } from "@/lib/animations";
 import type * as Competitor from "@/server/app/competitor";
-import Image from "next/image";
+
 const formatPrice = (price: string | null, currency: string | null): string => {
   if (!price) return "\u2014";
 

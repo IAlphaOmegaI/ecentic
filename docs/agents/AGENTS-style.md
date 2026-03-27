@@ -368,6 +368,66 @@ Use shorthand when property and variable names match.
 
 ---
 
+## 18a. Namespace Imports for Server Modules
+
+Import server modules as namespaces (`import * as Module`), not destructured functions. Each server module (`server/app/*.ts`) exports functions and a `Type` alias — the namespace keeps both accessible under a single name.
+
+In **server components**, use the full namespace (gives access to functions + types):
+
+```ts
+// ✅ Good — server component
+import * as Products from "@/server/app/product";
+import * as Optimizations from "@/server/app/optimization";
+
+const [products, optimizations] = await Promise.all([
+  unwrapResult(Products.skimForCurrentUser(Environment.SERVER)),
+  unwrapResult(Optimizations.listDashboard(Environment.SERVER)),
+]);
+```
+
+In **client components**, use `type`-only namespace imports (types only, no server code bundled):
+
+```ts
+// ✅ Good — client component
+import type * as Products from "@/server/app/product";
+import type * as Optimizations from "@/server/app/optimization";
+
+export namespace SidebarNav {
+  export type Props = {
+    products: Products.Type[];
+    optimizations: Optimizations.Type[];
+  };
+}
+```
+
+```ts
+// ❌ Bad — destructured imports lose the namespace grouping
+import { skimForCurrentUser } from "@/server/app/product";
+import { listDashboard } from "@/server/app/optimization";
+```
+
+---
+
+## 18b. Pass Domain Objects, Not Derived Primitives
+
+When a server component fetches data and passes it to a client component, pass the full domain objects. Let the client derive what it needs. This keeps the API richer, avoids premature data reduction, and makes the props self-documenting via `Module.Type`.
+
+```ts
+// ✅ Good — pass domain objects
+<SidebarNav products={products} optimizations={optimizations.published} />
+
+// Client derives:
+return `${products.length}`;
+return `${optimizations.length}`;
+```
+
+```ts
+// ❌ Bad — pre-computed primitives strip context
+<SidebarNav productCount={products.length} pendingOptimizationCount={optimizations.pending.length} />
+```
+
+---
+
 ## 18. No `types` Folder — Declare Types as Utils
 
 Never create a folder called `types`. Declare types alongside their related logic in util files.
