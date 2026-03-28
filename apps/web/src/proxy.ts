@@ -22,25 +22,6 @@ const map = {
   [RouteAccess.USER]: [/^\/onboarding(\/.*)?$/],
 } as const;
 
-// const ONBOARDING_ENTRY = "/onboarding/connect";
-
-// export const middleware = (request: NextRequest) => {
-//   if (!isOnboardingOnlyScope) return NextResponse.next();
-
-//   const { pathname } = request.nextUrl;
-//   if (pathname === "/dashboard" || pathname.startsWith("/dashboard/")) {
-//     const url = request.nextUrl.clone();
-//     url.pathname = ONBOARDING_ENTRY;
-//     return NextResponse.redirect(url);
-//   }
-
-//   return NextResponse.next();
-// };
-
-// export const config = {
-//   matcher: ["/dashboard", "/dashboard/:path*"],
-// };
-
 export const proxy = async (request: Request) => {
   if (process.env.NODE_ENV === "development") return Response.next();
   const { pathname } = request.nextUrl;
@@ -84,5 +65,7 @@ const isAuthorized = (pathname: string, access: RouteAccess): boolean => {
 };
 
 export const config = {
-  matcher: ["/((?!monitoring|_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/((?!monitoring|_next/static|_next/image|favicon\\.ico|api/auth|.*\\.(?:png|jpg|jpeg|webp|svg)).*)",
+  ],
 };

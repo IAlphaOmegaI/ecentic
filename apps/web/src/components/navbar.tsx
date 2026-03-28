@@ -31,7 +31,7 @@ export const Navbar = () => (
       />
       <Link
         href="/sign-up"
-        className="group relative z-100 flex flex cursor-pointer items-center gap-2 font-light text-primary text-xl"
+        className="group relative z-100 flex cursor-pointer items-center gap-2 font-light text-primary text-xl"
       >
         Get Started{" "}
         <ArrowRightIcon className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
