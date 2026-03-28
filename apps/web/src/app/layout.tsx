@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
-import type { PropsWithChildren } from "react";
+import { Suspense, type PropsWithChildren } from "react";
 import "./globals.css";
 import { ToastProvider } from "@zenncore/web/components/toast";
 import localFont from "next/font/local";
 import Script from "next/script";
 import { ToastList } from "@/components/ui/toast";
-import { PostHogProvider } from "@/context/posthog";
 import { ThemeProvider } from "@/context/theme";
+import dynamic from "next/dynamic";
+
+const PostHogProvider = dynamic(() =>
+  import("@/context/posthog").then((m) => m.PostHogProvider),
+);
 
 const ltsuperior = localFont({
   src: [
@@ -139,7 +143,11 @@ export default ({ children }: PropsWithChildren) => {
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://eu.i.posthog.com" />
-        <link rel="preconnect" href="https://eu-assets.i.posthog.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://eu-assets.i.posthog.com"
+          crossOrigin="anonymous"
+        />
         {process.env.NODE_ENV === "development" && (
           <Script
             src="//unpkg.com/react-grab/dist/index.global.js"
@@ -152,14 +160,16 @@ export default ({ children }: PropsWithChildren) => {
       <body
         className={`${ltsuperior.variable} overflow-x-hidden bg-background font-body tracking-[-4%] antialiased`}
       >
-        <PostHogProvider>
-          <ThemeProvider>
-            <ToastProvider>
-              <div className="isolate">{children}</div>
-              <ToastList types={["error", "success", "info"]} />
-            </ToastProvider>
-          </ThemeProvider>
-        </PostHogProvider>
+        <Suspense>
+          <PostHogProvider>
+            <ThemeProvider>
+              <ToastProvider>
+                <div className="isolate">{children}</div>
+                <ToastList types={["error", "success", "info"]} />
+              </ToastProvider>
+            </ThemeProvider>
+          </PostHogProvider>
+        </Suspense>
       </body>
     </html>
   );
