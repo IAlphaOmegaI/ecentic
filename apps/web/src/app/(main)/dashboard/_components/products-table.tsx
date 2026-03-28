@@ -19,6 +19,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { usePaginationChangeHandler } from "@/hooks/pagination";
+import { formatPrice } from "@/lib/currency";
 import { formatRelativeTime } from "@/lib/date";
 
 const WinRateBar = ({ rate }: { rate: number }) => {
@@ -99,9 +100,7 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
     header: "Price",
     cell: ({ row }) => (
       <span className="text-foreground">
-        {row.original.price
-          ? `${row.original.currency ?? "$"} ${row.original.price}`
-          : "—"}
+        {formatPrice(row.original.price, row.original.currency)}
       </span>
     ),
   },

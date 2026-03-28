@@ -19,7 +19,7 @@ If code and docs disagree, follow documented intent unless the user explicitly a
 
 ## What This Is
 
-**Écentic** is an e-commerce optimization platform for the AI agent economy. It simulates how AI shopping agents (GPT-4, Claude, Gemini) compare products vs. competitors, diagnoses why products win or lose, and auto-optimizes listings. See `docs/context/idea.md` for full product spec and feature roadmap.
+**Écentic** is an e-commerce optimization platform for the AI agent economy. It simulates how AI shopping agents (GPT-4, Claude, Gemini, Perplexity) compare products vs. competitors, diagnoses why products win or lose, and auto-optimizes listings. See `docs/context/idea.md` for full product spec and feature roadmap.
 
 ---
 
@@ -103,7 +103,7 @@ There are no automated tests in this codebase currently.
 - `integration/shopify.ts` — OAuth token exchange + product sync via Shopify Admin API
 - `integration/woocommerce.ts` — credential validation + paginated product fetch
 - `integration/feed.ts` — XML/JSON auto-detection + Google Shopping format parsing
-- `intelligence/simulate.ts` — AI simulation engine (GPT-4, Claude, Gemini perspectives)
+- `intelligence/simulate.ts` — AI simulation engine (GPT-4, Claude, Gemini, Perplexity perspectives)
 
 ---
 

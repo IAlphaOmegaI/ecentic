@@ -106,8 +106,8 @@ const SimulationsSkeleton = () => (
               )}
             </div>
             <div className="h-1 w-full bg-accent-foreground" />
-            <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-3">
-              {["GPT-4", "Claude", "Gemini"].map((label) => (
+            <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-4">
+              {["GPT-4", "Claude", "Gemini", "Perplexity"].map((label) => (
                 <div key={label} className="bg-background-dimmed p-3">
                   <div className="h-5 w-16 animate-pulse bg-foreground/10" />
                   <div className="mt-1 h-3.5 w-12 animate-pulse bg-foreground/10" />

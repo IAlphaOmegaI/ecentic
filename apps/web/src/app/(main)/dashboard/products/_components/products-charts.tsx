@@ -53,7 +53,7 @@ export const ProductsModelRates = ({ models }: ProductsModelRates.Props) => {
     );
 
   return (
-    <div className="grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-y px-4">
+    <div className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-y px-4">
       {models.map(({ label, rate }) => (
         <div
           key={label}

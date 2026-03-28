@@ -37,6 +37,13 @@ const models = [
     color: "bg-green-500",
     textColor: "text-green-500",
   },
+  {
+    id: "perplexity",
+    label: "Perplexity",
+    logo: "/images/perplexity.svg",
+    color: "bg-teal-500",
+    textColor: "text-teal-500",
+  },
 ] as const;
 
 export default async ({ params }: PageProps<"/share/[id]">) => {
@@ -91,7 +98,7 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
           </>
         }
         points={[
-          "GPT-4, Claude & Gemini simulated real shopping comparisons",
+          "GPT-4, Claude, Gemini & Perplexity simulated real shopping comparisons",
           "Every product was scored head-to-head against competitors",
           "This report shows exactly where you win — and where you lose",
         ]}
@@ -167,7 +174,7 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
                 Win rate by model
               </p>
             </div>
-            <div className="grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-x">
+            <div className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-x">
               {models.map((model) => {
                 const rates = modelRates[model.id];
                 const rate = rates?.rate ?? 0;

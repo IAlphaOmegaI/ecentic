@@ -10,6 +10,7 @@ import {
   TabsPanel,
 } from "@zenncore/web/components/tabs";
 import Link from "next/link";
+import { formatPrice } from "@/lib/currency";
 
 export type ProductDetailData = {
   product: {
@@ -99,7 +100,7 @@ export const ProductDetail = ({ data }: ProductDetail.Props) => {
             <p className="font-light text-foreground-dimmed text-sm">
               {[
                 product.sku,
-                product.price && `${product.currency ?? "$"}${product.price}`,
+                product.price && formatPrice(product.price, product.currency),
               ]
                 .filter(Boolean)
                 .join(" · ")}

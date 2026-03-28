@@ -3,6 +3,7 @@
 import { resultify } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
+import { formatPrice } from "@/lib/currency";
 import { schema } from "../../database";
 import { generate } from "../../utils/ai";
 import { withAuthentication } from "../../utils/authentication";
@@ -77,7 +78,7 @@ export const generateJson = withAuthentication(async (context) => {
 
   const productSummary = products.data
     .slice(0, 20)
-    .map((p) => `- ${p.title} (${p.currency ?? "USD"} ${p.price ?? "N/A"})`)
+    .map((p) => `- ${p.title} (${formatPrice(p.price, p.currency)})`)
     .join("\n");
 
   const ucpData = await generate({
@@ -153,7 +154,7 @@ export const generateProductStructuredData = withAuthentication(
       prompt: `Generate schema.org Product structured data for:
 Title: ${product.data.title}
 Description: ${product.data.description ?? ""}
-Price: ${product.data.currency ?? "USD"} ${product.data.price ?? ""}
+Price: ${formatPrice(product.data.price, product.data.currency)}
 Compare At: ${product.data.compareAtPrice ?? ""}
 SKU: ${product.data.sku ?? ""}
 URL: ${product.data.url ?? ""}`,
@@ -203,7 +204,7 @@ export const generateAllProductStructuredData = withAuthentication(
             prompt: `Generate schema.org Product structured data for:
 Title: ${product.title}
 Description: ${product.description ?? ""}
-Price: ${product.currency ?? "USD"} ${product.price ?? ""}
+Price: ${formatPrice(product.price, product.currency)}
 SKU: ${product.sku ?? ""}`,
             schema: z.object({
               "@context": z.string(),

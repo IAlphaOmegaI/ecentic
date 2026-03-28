@@ -11,7 +11,7 @@ import { Fade } from "@/lib/animations";
 import { SignUpForm } from "./_components/sign-up-form";
 
 const points = [
-  "Simulate how GPT-4, Claude & Gemini pick products",
+  "Simulate how GPT-4, Claude, Gemini & Perplexity pick products",
   "Diagnose exactly why agents skip yours",
   "Auto-optimize listings to win every cart",
 ];

@@ -172,14 +172,15 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
                         AI Shopping Simulation
                       </p>
                       <p className="max-w-2xl font-light text-foreground-dimmed text-sm">
-                        Simulate how GPT-4, Claude, and Gemini compare your
-                        products against your competitors and see who they pick.
+                        Simulate how GPT-4, Claude, Gemini & Perplexity compare
+                        your products against your competitors and see who they
+                        pick.
                       </p>
                     </div>
                   </Motion.Item>
 
                   <Motion.Item className="border-accent-foreground border-b px-8">
-                    <div className="grid w-full grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-x">
+                    <div className="grid w-full grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-x">
                       {providers.map((provider) => (
                         <div
                           key={provider.model}
@@ -274,8 +275,8 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
                   </Motion.Item>
 
                   <Motion.Item className="border-accent-foreground border-b px-8">
-                    <div className="grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-x">
-                      {(["GPT-4", "Claude", "Gemini"] as const).map((model) => {
+                    <div className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-x">
+                      {(["GPT-4", "Claude", "Gemini", "Perplexity"] as const).map((model) => {
                         const status = statuses[model];
                         const provider = providers.find(
                           (item) => item.model === model,
@@ -530,7 +531,7 @@ const CompletePhaseModal = ({
               Win rate by model
             </p>
           </div>
-          <div className="grid grid-cols-3 divide-x divide-accent-foreground">
+          <div className="grid grid-cols-4 divide-x divide-accent-foreground">
             {providers.map((provider, index) => {
               const rates = winRates[provider.id];
               const rate = rates?.rate ?? 0;

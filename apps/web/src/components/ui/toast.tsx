@@ -44,9 +44,9 @@ export const ToastList = ({ types }: ToastList.Props) => {
                     className={`size-3 rounded-full ${dot} absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}
                   />
                 </div>
-                <ToastTitle className="text-2xl leading-4" />
+                <ToastTitle className="text-lg font-medium" />
               </div>
-              <ToastDescription className="pl-7 text-lg leading-4" />
+              <ToastDescription className="pl-7" />
             </div>
           </div>
           <ToastClose aria-label="Close">

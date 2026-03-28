@@ -289,6 +289,13 @@ const Performance = async () => {
                 products.length,
             ),
           },
+          {
+            label: "Perplexity",
+            rate: Math.round(
+              products.reduce((sum, p) => sum + (p.winRate.perplexity ?? 0), 0) /
+                products.length,
+            ),
+          },
         ]
       : [];
 
@@ -542,8 +549,8 @@ const ChartSkeleton = () => (
         <div className="h-3 w-24 animate-pulse bg-foreground/10" />
         <div className="mt-2 h-7 w-40 animate-pulse bg-foreground/10" />
       </div>
-      <div className="grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-y px-4">
-        {["a", "b", "c"].map((key) => (
+      <div className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-y px-4">
+        {["a", "b", "c", "d"].map((key) => (
           <div
             key={key}
             className="flex flex-col items-center gap-1 p-6 first:pl-0 last:pr-0"
@@ -621,6 +628,7 @@ const TableSkeleton = () => (
               "GPT-4",
               "Claude",
               "Gemini",
+              "Perplexity",
               "Quality",
               "Last Scan",
               "",

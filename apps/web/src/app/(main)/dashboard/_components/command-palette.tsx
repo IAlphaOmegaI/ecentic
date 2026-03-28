@@ -8,6 +8,7 @@ import {
 } from "@zenncore/web/components/dialog";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { formatPrice } from "@/lib/currency";
 import type * as Competitor from "@/server/app/competitor";
 import type * as Product from "@/server/app/product";
 
@@ -137,7 +138,7 @@ export const CommandPalette = ({
                   </div>
                   {product.price && (
                     <span className="font-light text-foreground-dimmed text-xs">
-                      {product.currency ?? "USD"} {product.price}
+                      {formatPrice(product.price, product.currency)}
                     </span>
                   )}
                 </Link>
@@ -167,7 +168,7 @@ export const CommandPalette = ({
                   </div>
                   {competitor.price && (
                     <span className="font-light text-foreground-dimmed text-xs">
-                      {competitor.currency ?? "USD"} {competitor.price}
+                      {formatPrice(competitor.price, competitor.currency)}
                     </span>
                   )}
                 </Link>

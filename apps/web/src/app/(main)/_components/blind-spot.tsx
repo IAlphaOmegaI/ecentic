@@ -126,7 +126,7 @@ export const BlindSpot = () => (
         </div>
 
         <h1 className="text-center font-light text-2xl text-primary">
-          RESULT: Top pick across GPT-4, Claude & Gemini.
+          RESULT: Top pick across GPT-4, Claude, Gemini & Perplexity.
         </h1>
       </div>
     </div>

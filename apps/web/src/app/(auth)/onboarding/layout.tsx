@@ -122,7 +122,7 @@ const sidebar = {
       </>
     ),
     points: [
-      "GPT-4, Claude & Gemini simulate real shopping queries",
+      "GPT-4, Claude, Gemini & Perplexity simulate real shopping queries",
       "We score every product against your competitors",
       "You'll know exactly what to fix before leaving this page",
     ],

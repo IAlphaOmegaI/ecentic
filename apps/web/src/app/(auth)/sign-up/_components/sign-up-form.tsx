@@ -12,6 +12,7 @@ import {
 import { useToastManager } from "@zenncore/web/components/toast";
 import { motion } from "motion/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { Motion } from "@/components/motion";
 import { Spring, Stagger } from "@/lib/animations";
@@ -83,6 +84,7 @@ const config = {
 } satisfies GenericForm;
 
 export const SignUpForm = () => {
+  const router = useRouter();
   const toast = useToastManager();
 
   const [handleSubmit, isPending] = useAsyncAction(
@@ -98,12 +100,7 @@ export const SignUpForm = () => {
         return;
       }
 
-      toast.add({
-        title: "Account created",
-        description:
-          "Please check your email to verify your address. You will be redirected to the onboarding process.",
-        type: "success",
-      });
+      router.push("/verify");
     },
   );
   return (

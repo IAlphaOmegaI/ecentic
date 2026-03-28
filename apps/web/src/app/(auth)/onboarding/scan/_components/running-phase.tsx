@@ -11,12 +11,14 @@ const modelColors: Record<string, string> = {
   "GPT-4": "text-blue-500",
   Claude: "text-orange-500",
   Gemini: "text-green-500",
+  Perplexity: "text-teal-500",
 };
 
 const models = [
   { model: "GPT-4", logo: "/images/chatgpt.svg" },
   { model: "Claude", logo: "/images/claude.svg" },
   { model: "Gemini", logo: "/images/gemini.svg" },
+  { model: "Perplexity", logo: "/images/perplexity.svg" },
 ] as const;
 
 const formatElapsed = (index: number) => `${(index * 0.4).toFixed(1)}s`;
@@ -64,15 +66,15 @@ export const RunningPhase = ({
               Running simulation.
             </h1>
             <p className="font-light text-2xl text-foreground-dimmed">
-              GPT-4, Claude & Gemini are comparing your products against
-              competitors right now.
+              GPT-4, Claude, Gemini & Perplexity are comparing your products
+              against competitors right now.
             </p>
           </div>
         </Motion.Item>
 
         <Motion.Item className="border-accent-foreground border-b px-8">
           <motion.div
-            className="grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-x"
+            className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-x"
             variants={Stagger.Container(0.06)}
             initial="hidden"
             animate="visible"
@@ -86,24 +88,32 @@ export const RunningPhase = ({
                   className="flex aspect-square flex-col bg-background-dimmed p-4"
                   variants={Stagger.Item}
                 >
-                  <Image src={logo} alt={model} width={64} height={64} />
-                  <span className="mt-auto text-2xl text-foreground">
+                  <Image
+                    src={logo}
+                    alt={model}
+                    width={48}
+                    height={48}
+                    className="mb-4"
+                  />
+                  <span className="mt-auto text-lg text-foreground">
                     {model}
                   </span>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <motion.span
                       key={stats?.wins}
-                      className="font-light text-success"
+                      className="font-light text-success text-sm leading-tight"
                       initial={{ opacity: 0.6, y: -2 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.2 }}
                     >
                       {stats?.wins ?? 0} W
                     </motion.span>
-                    <span className="text-foreground-dimmed/30">—</span>
+                    <span className="text-foreground-dimmed/30 text-sm leading-tight">
+                      —
+                    </span>
                     <motion.span
                       key={`l-${stats?.losses}`}
-                      className="font-light text-error"
+                      className="font-light text-error text-sm leading-tight"
                       initial={{ opacity: 0.6, y: -2 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.2 }}

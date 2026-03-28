@@ -29,6 +29,7 @@ import { type ReactNode, useState, useTransition } from "react";
 import { Motion } from "@/components/motion";
 import { Stagger, Table as TableAnimations } from "@/lib/animations";
 import type * as Product from "@/server/app/product";
+import { getCurrencySymbol, normalizePrice } from "@/lib/currency";
 
 const limit = 10;
 
@@ -60,23 +61,6 @@ const computeDataQuality = (product: Product.Type): number => {
     (score, [value, weight]) => score + (value ? weight : 0),
     0,
   );
-};
-
-const formatPrice = (price: string | null, currency: string | null): string => {
-  if (!price) return "\u2014";
-
-  const symbol = (() => {
-    switch (currency?.toUpperCase()) {
-      case "EUR":
-        return "\u20AC";
-      case "GBP":
-        return "\u00A3";
-      default:
-        return "$";
-    }
-  })();
-
-  return `${symbol}${price}`;
 };
 
 const QualityBadge = ({ score }: { score: number }) => {
@@ -197,7 +181,7 @@ export const ProductSelector = ({
                       />
                     </button>
                   </TableHead>
-                  {["Product", "Price", "Status", "Quality"].map((header) => (
+                  {["Product", "Price", "Currency", "Status", "Quality"].map((header) => (
                     <TableHead key={header}>{header}</TableHead>
                   ))}
                 </TableRow>
@@ -223,7 +207,7 @@ export const ProductSelector = ({
                       render={<motion.tr variants={TableAnimations.Row} />}
                       onClick={() => !isDisabled && toggleProduct(product.id)}
                       className={cn(
-                        "cursor-pointer",
+                        "cursor-pointer last:border-b-0",
                         isSelected
                           ? "bg-primary/5"
                           : isDisabled
@@ -276,7 +260,10 @@ export const ProductSelector = ({
                         </div>
                       </TableCell>
                       <TableCell>
-                        {formatPrice(product.price, product.currency)}
+                        {product.price ? normalizePrice(product.price) : "\u2014"}
+                      </TableCell>
+                      <TableCell className="text-foreground-dimmed">
+                        {product.currency ? getCurrencySymbol(product.currency) : "\u2014"}
                       </TableCell>
                       <TableCell>
                         <span

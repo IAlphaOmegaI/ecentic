@@ -30,7 +30,7 @@ We do NOT access or store any customer personal data, order data, payment inform
     title: "How We Use Your Data",
     number: "02",
     content: `Your product catalog data is used exclusively to:
-- Run AI agent simulations that evaluate how AI shopping models (GPT-4, Claude, Gemini) compare your products against competitors
+- Run AI agent simulations that evaluate how AI shopping models (GPT-4, Claude, Gemini, Perplexity) compare your products against competitors
 - Generate optimization suggestions for product titles, descriptions, and structured data
 - Publish approved optimizations back to your connected store via the platform API
 - Generate your Universal Commerce Protocol (UCP) merchant profile

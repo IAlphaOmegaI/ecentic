@@ -33,6 +33,7 @@ import {
   generateProductStructuredData,
   saveProfile,
 } from "@/server/app/intelligence/ucp";
+import { formatPrice } from "@/lib/currency";
 import type * as Product from "@/server/app/product";
 
 // ─── JSON syntax highlighter ────────────────────────────────────────────────
@@ -339,7 +340,7 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
                   {product.title}
                 </p>
                 <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
-                  {product.currency ?? "USD"} {product.price ?? "—"}
+                  {formatPrice(product.price, product.currency)}
                 </p>
               </div>
             </div>

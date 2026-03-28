@@ -19,23 +19,7 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import { Stagger } from "@/lib/animations";
 import type * as Competitor from "@/server/app/competitor";
-
-const formatPrice = (price: string | null, currency: string | null): string => {
-  if (!price) return "\u2014";
-
-  const symbol = (() => {
-    switch (currency?.toUpperCase()) {
-      case "EUR":
-        return "\u20AC";
-      case "GBP":
-        return "\u00A3";
-      default:
-        return "$";
-    }
-  })();
-
-  return `${symbol}${price}`;
-};
+import { getCurrencySymbol, normalizePrice } from "@/lib/currency";
 
 export namespace CompetitorList {
   export type Props = {
@@ -57,7 +41,7 @@ export const CompetitorList = ({
           <TableHeader>
             <TableRow>
               <TableHead className="w-10 px-4 py-2" />
-              {["Competitor", "Price", "Brand"].map((header) => (
+              {["Competitor", "Price", "Currency", "Brand"].map((header) => (
                 <TableHead key={header}>{header}</TableHead>
               ))}
               <TableHead className="w-10 px-4 py-2" />
@@ -125,7 +109,10 @@ export const CompetitorList = ({
                   </div>
                 </TableCell>
                 <TableCell>
-                  {formatPrice(record.price, record.currency)}
+                  {record.price ? normalizePrice(record.price) : "\u2014"}
+                </TableCell>
+                <TableCell className="text-foreground-dimmed">
+                  {record.currency ? getCurrencySymbol(record.currency) : "\u2014"}
                 </TableCell>
                 <TableCell className="text-foreground-dimmed">
                   {record.brand ?? "\u2014"}

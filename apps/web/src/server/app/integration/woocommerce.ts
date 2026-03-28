@@ -35,6 +35,30 @@ const Utils = {
   },
 };
 
+const fetchStoreCurrency = async (
+  domain: string,
+  consumerKey: string,
+  consumerSecret: string,
+): Promise<string | null> => {
+  const response = await HTTP.request(
+    `${domain}/wp-json/wc/v3/data/currencies/current`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: Utils.credentials(consumerKey, consumerSecret),
+        "Content-Type": "application/json",
+      },
+    },
+  );
+
+  if (!response.success) return null;
+
+  const parsed = await HTTP.parse<{ code: string }>(response);
+  if (!parsed.success) return null;
+
+  return parsed.data.code;
+};
+
 /**
  * Imports products from the WooCommerce REST API. Used by {@link connect}
  * (inside a transaction) and by {@link syncProducts} (authenticated).
@@ -71,6 +95,9 @@ export const syncWooCommerceCatalog = withContext(
         success: false,
         error: new Error("Missing WooCommerce credentials"),
       };
+
+    const currency =
+      (await fetchStoreCurrency(domain, consumerKey, consumerSecret)) ?? "USD";
 
     const update = await Store.update(
       Environment.SERVER,
@@ -125,7 +152,7 @@ export const syncWooCommerceCatalog = withContext(
             price: item.price,
             compareAtPrice:
               item.regular_price !== item.price ? item.regular_price : null,
-            currency: "USD",
+            currency,
             images: JSON.stringify(item.images.map((image) => image.src)),
             url: item.permalink,
             sku: item.sku || null,

@@ -62,7 +62,7 @@ export const SimulationsClient = ({
   });
 
   const totalSimulations = useMemo(
-    () => productCount * selectedCompetitorCount * 3,
+    () => productCount * selectedCompetitorCount * 4,
     [productCount, selectedCompetitorCount],
   );
 
@@ -157,7 +157,7 @@ export const SimulationsClient = ({
                 </h2>
                 <p className="font-light text-foreground-dimmed">
                   Re-run product vs competitor simulations across GPT-4, Claude,
-                  and Gemini.
+                  Gemini & Perplexity.
                 </p>
               </div>
               <div className="flex items-center gap-2">

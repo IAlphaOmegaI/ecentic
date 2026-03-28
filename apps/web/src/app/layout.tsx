@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     template: "%s | écentic",
   },
   description:
-    "écentic is the e-commerce optimization platform for the AI agent economy. Simulate how GPT-4, Claude, and Gemini choose products, diagnose why your listings lose, and auto-optimize to win every agent's cart.",
+    "écentic is the e-commerce optimization platform for the AI agent economy. Simulate how GPT-4, Claude, Gemini & Perplexity choose products, diagnose why your listings lose, and auto-optimize to win every agent's cart.",
   keywords: [
     "AI shopping agent optimization",
     "e-commerce AI optimization",
@@ -96,7 +96,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "écentic — Win Every AI Shopping Agent's Cart",
     description:
-      "Simulate how GPT-4, Claude, and Gemini choose your products vs. competitors. Diagnose losses. Auto-optimize. Win every cart.",
+      "Simulate how GPT-4, Claude, Gemini & Perplexity choose your products vs. competitors. Diagnose losses. Auto-optimize. Win every cart.",
     images: ["/images/opengraph.png"],
     creator: "@ecentic",
   },

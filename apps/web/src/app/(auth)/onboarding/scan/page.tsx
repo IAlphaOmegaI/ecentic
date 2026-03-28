@@ -16,7 +16,7 @@ import { ScanRunner } from "./_components/scan-runner";
 const models = [
   {
     model: "GPT-4",
-    description: "Spec-focused reasoning",
+    description: "Spec-focused",
     logo: "/images/chatgpt.svg",
   },
   {
@@ -29,6 +29,11 @@ const models = [
     description: "Price-quality ratio",
     logo: "/images/gemini.svg",
   },
+  {
+    model: "Perplexity",
+    description: "Search analysis",
+    logo: "/images/perplexity.svg",
+  },
 ] as const;
 
 export default async () => {
@@ -40,7 +45,7 @@ export default async () => {
   ]);
 
   const selected = competitors.filter((record) => record.selected);
-  const simulations = products.length * selected.length * 3;
+  const simulations = products.length * selected.length * 4;
 
   const estimation = (() => {
     switch (true) {
@@ -90,14 +95,14 @@ export default async () => {
             See who's winning.
           </h2>
           <p className="font-light text-2xl text-foreground-dimmed">
-            GPT-4, Claude & Gemini will simulate real shopping queries across
-            your products and competitors.
+            GPT-4, Claude, Gemini & Perplexity will simulate real shopping
+            queries across your products and competitors.
           </p>
         </div>
       </Motion.Item>
 
       <Motion.Item className="border-accent-foreground border-b px-8">
-        <div className="grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-x">
+        <div className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-x">
           {models.map((model) => (
             <div
               key={model.model}
@@ -106,13 +111,13 @@ export default async () => {
               <Image
                 src={model.logo}
                 alt={model.model}
-                width={64}
-                height={64}
+                width={48}
+                height={48}
               />
-              <span className="mt-auto text-2xl text-foreground">
+              <span className="mt-auto text-xl text-foreground">
                 {model.model}
               </span>
-              <span className="font-light text-foreground-dimmed">
+              <span className="font-light text-foreground-dimmed leading-tight text-sm">
                 {model.description}
               </span>
             </div>
