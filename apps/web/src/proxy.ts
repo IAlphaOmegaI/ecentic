@@ -14,11 +14,10 @@ const map = {
     "/terms-and-conditions",
     "/privacy-policy",
     "/sign-up",
-    "/sign-in",
-    "/verify",
+    /^\/verify(\/.*)?$/,
     /^\/share(\/.*)?$/,
   ],
-  [RouteAccess.ADMINISTRATOR]: [/^\/.*/],
+  [RouteAccess.ADMINISTRATOR]: [/^\/.*/, "/sign-in"],
   [RouteAccess.USER]: [/^\/onboarding(\/.*)?$/],
 } as const;
 
@@ -34,8 +33,11 @@ export const proxy = async (request: Request) => {
       case "public": {
         return [RouteAccess.PUBLIC, "/sign-in"];
       }
+      case "administrator": {
+        return [RouteAccess.ADMINISTRATOR, "/sign-in"];
+      }
       default: {
-        return [RouteAccess.ADMINISTRATOR, "/onboarding/connect"];
+        return [RouteAccess.USER, "/onboarding/connect"];
       }
     }
   })();
@@ -66,6 +68,6 @@ const isAuthorized = (pathname: string, access: RouteAccess): boolean => {
 
 export const config = {
   matcher: [
-    "/((?!monitoring|_next/static|_next/image|favicon\\.ico|api/auth|.*\\.(?:png|jpg|jpeg|webp|svg)).*)",
+    "/((?!monitoring|_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt|api/auth|.*\\.(?:png|jpg|jpeg|webp|svg)).*)",
   ],
 };
