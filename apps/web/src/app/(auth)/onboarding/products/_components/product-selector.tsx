@@ -28,8 +28,8 @@ import { useRouter } from "next/navigation";
 import { type ReactNode, useState, useTransition } from "react";
 import { Motion } from "@/components/motion";
 import { Stagger, Table as TableAnimations } from "@/lib/animations";
-import type * as Product from "@/server/app/product";
 import { getCurrencySymbol, normalizePrice } from "@/lib/currency";
+import type * as Product from "@/server/app/product";
 
 const limit = 10;
 
@@ -181,9 +181,11 @@ export const ProductSelector = ({
                       />
                     </button>
                   </TableHead>
-                  {["Product", "Price", "Currency", "Status", "Quality"].map((header) => (
-                    <TableHead key={header}>{header}</TableHead>
-                  ))}
+                  {["Product", "Price", "Currency", "Status", "Quality"].map(
+                    (header) => (
+                      <TableHead key={header}>{header}</TableHead>
+                    ),
+                  )}
                 </TableRow>
               </TableHeader>
               <TableBody
@@ -260,10 +262,14 @@ export const ProductSelector = ({
                         </div>
                       </TableCell>
                       <TableCell>
-                        {product.price ? normalizePrice(product.price) : "\u2014"}
+                        {product.price
+                          ? normalizePrice(product.price)
+                          : "\u2014"}
                       </TableCell>
                       <TableCell className="text-foreground-dimmed">
-                        {product.currency ? getCurrencySymbol(product.currency) : "\u2014"}
+                        {product.currency
+                          ? getCurrencySymbol(product.currency)
+                          : "\u2014"}
                       </TableCell>
                       <TableCell>
                         <span

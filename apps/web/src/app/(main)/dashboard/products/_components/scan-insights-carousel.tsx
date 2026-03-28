@@ -105,7 +105,7 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
         </>
       ) : (
         <div className="flex flex-col items-center justify-center p-8">
-          <BoxMinusIcon className="size-24 text-foreground-dimmed mb-2" />
+          <BoxMinusIcon className="mb-2 size-24 text-foreground-dimmed" />
           <h1 className="font-medium text-foreground text-lg">
             No finding recorded for this scan.
           </h1>

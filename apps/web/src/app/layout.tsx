@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Suspense, type PropsWithChildren } from "react";
+import { type PropsWithChildren, Suspense } from "react";
 import "./globals.css";
 import { ToastProvider } from "@zenncore/web/components/toast";
+import dynamic from "next/dynamic";
 import localFont from "next/font/local";
 import Script from "next/script";
 import { ToastList } from "@/components/ui/toast";
 import { ThemeProvider } from "@/context/theme";
-import dynamic from "next/dynamic";
 
 const PostHogProvider = dynamic(() =>
   import("@/context/posthog").then((m) => m.PostHogProvider),

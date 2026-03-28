@@ -276,7 +276,9 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
 
                   <Motion.Item className="border-accent-foreground border-b px-8">
                     <div className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-x">
-                      {(["GPT-4", "Claude", "Gemini", "Perplexity"] as const).map((model) => {
+                      {(
+                        ["GPT-4", "Claude", "Gemini", "Perplexity"] as const
+                      ).map((model) => {
                         const status = statuses[model];
                         const provider = providers.find(
                           (item) => item.model === model,

@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link, { useLinkStatus } from "next/link";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
-import { Fade, Spring } from "@/lib/animations";
+import { Fade } from "@/lib/animations";
 
 const points = [
   "Your email address has been confirmed",
@@ -66,7 +66,7 @@ export default () => {
             <div className="flex h-full flex-col items-center justify-center gap-6 border-accent-foreground border-x p-6">
               <CheckBadgeIcon className="size-24 text-success" />
               <div className="flex flex-col items-center gap-2 text-center">
-                <p className="font-medium text-success text-2xl">
+                <p className="font-medium text-2xl text-success">
                   Successfully verified
                 </p>
                 <p className="font-light text-foreground-dimmed text-lg">

@@ -26,6 +26,7 @@ import {
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import type { ComponentProps, ReactElement } from "react";
 import { useCallback, useMemo, useState } from "react";
+import { formatPrice } from "@/lib/currency";
 import type * as Ucp from "@/server/app/intelligence/ucp";
 import {
   generateAllProductStructuredData,
@@ -33,7 +34,6 @@ import {
   generateProductStructuredData,
   saveProfile,
 } from "@/server/app/intelligence/ucp";
-import { formatPrice } from "@/lib/currency";
 import type * as Product from "@/server/app/product";
 
 // ─── JSON syntax highlighter ────────────────────────────────────────────────

@@ -68,9 +68,7 @@ export const VerifyEmail = ({
         </Text>
 
         <Hr style={hr} />
-        <Text style={brand}>
-          ecentic — Win every agent's cart.
-        </Text>
+        <Text style={brand}>ecentic — Win every agent's cart.</Text>
       </Container>
     </Body>
   </Html>

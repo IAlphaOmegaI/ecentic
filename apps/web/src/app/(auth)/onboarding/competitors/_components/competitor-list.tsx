@@ -18,8 +18,8 @@ import {
 import { motion } from "motion/react";
 import Image from "next/image";
 import { Stagger } from "@/lib/animations";
-import type * as Competitor from "@/server/app/competitor";
 import { getCurrencySymbol, normalizePrice } from "@/lib/currency";
+import type * as Competitor from "@/server/app/competitor";
 
 export namespace CompetitorList {
   export type Props = {
@@ -112,7 +112,9 @@ export const CompetitorList = ({
                   {record.price ? normalizePrice(record.price) : "\u2014"}
                 </TableCell>
                 <TableCell className="text-foreground-dimmed">
-                  {record.currency ? getCurrencySymbol(record.currency) : "\u2014"}
+                  {record.currency
+                    ? getCurrencySymbol(record.currency)
+                    : "\u2014"}
                 </TableCell>
                 <TableCell className="text-foreground-dimmed">
                   {record.brand ?? "\u2014"}

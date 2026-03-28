@@ -95,13 +95,13 @@ export const RunningPhase = ({
                     height={48}
                     className="mb-4"
                   />
-                  <span className="mt-auto text-lg text-foreground">
+                  <span className="mt-auto text-foreground text-lg">
                     {model}
                   </span>
                   <div className="flex items-center gap-2">
                     <motion.span
                       key={stats?.wins}
-                      className="font-light text-success text-sm leading-tight"
+                      className="font-light text-sm text-success leading-tight"
                       initial={{ opacity: 0.6, y: -2 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.2 }}

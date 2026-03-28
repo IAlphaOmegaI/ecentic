@@ -114,10 +114,10 @@ export default async () => {
                 width={48}
                 height={48}
               />
-              <span className="mt-auto text-xl text-foreground">
+              <span className="mt-auto text-foreground text-xl">
                 {model.model}
               </span>
-              <span className="font-light text-foreground-dimmed leading-tight text-sm">
+              <span className="font-light text-foreground-dimmed text-sm leading-tight">
                 {model.description}
               </span>
             </div>

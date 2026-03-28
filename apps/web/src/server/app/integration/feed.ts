@@ -33,7 +33,10 @@ const parsePrice = (
   // "29.99 USD" or "29.99 EUR" — numeric followed by currency code
   const trailingCode = trimmed.match(/^([\d.,]+)\s+([A-Z]{3})$/);
   if (trailingCode)
-    return { price: trailingCode[1] ?? null, currency: trailingCode[2] ?? null };
+    return {
+      price: trailingCode[1] ?? null,
+      currency: trailingCode[2] ?? null,
+    };
 
   // "USD 29.99" — currency code followed by numeric
   const leadingCode = trimmed.match(/^([A-Z]{3})\s+([\d.,]+)$/);
@@ -73,7 +76,9 @@ const Utils = {
       return raw.map((entry) => {
         const item = entry as Record<string, unknown>;
         const rawPrice = String(item["price"] ?? item["g:price"] ?? "");
-        const parsed = rawPrice ? parsePrice(rawPrice) : { price: "", currency: null };
+        const parsed = rawPrice
+          ? parsePrice(rawPrice)
+          : { price: "", currency: null };
         const currency =
           String(item["currency"] ?? item["g:currency"] ?? "") ||
           parsed.currency ||
@@ -114,7 +119,9 @@ const Utils = {
 
       return data.map((item) => {
         const rawPrice = String(item.price ?? "");
-        const parsed = rawPrice ? parsePrice(rawPrice) : { price: "", currency: null };
+        const parsed = rawPrice
+          ? parsePrice(rawPrice)
+          : { price: "", currency: null };
         const currency =
           String((item as Record<string, unknown>)["currency"] ?? "") ||
           parsed.currency ||

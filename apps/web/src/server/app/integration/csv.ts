@@ -25,7 +25,10 @@ const parsePrice = (
 
   const trailingCode = trimmed.match(/^([\d.,]+)\s+([A-Z]{3})$/);
   if (trailingCode)
-    return { price: trailingCode[1] ?? null, currency: trailingCode[2] ?? null };
+    return {
+      price: trailingCode[1] ?? null,
+      currency: trailingCode[2] ?? null,
+    };
 
   const leadingCode = trimmed.match(/^([A-Z]{3})\s+([\d.,]+)$/);
   if (leadingCode)
@@ -73,7 +76,9 @@ export const syncProducts = withAuthentication(
 
     const results = await Promise.all(
       products.map((item) => {
-        const parsed = item.price ? parsePrice(item.price) : { price: null, currency: null };
+        const parsed = item.price
+          ? parsePrice(item.price)
+          : { price: null, currency: null };
         const currency = item.currency || parsed.currency || "USD";
 
         return Product.create(Environment.SERVER, {

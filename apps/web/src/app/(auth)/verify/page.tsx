@@ -66,7 +66,7 @@ export default () => {
             <div className="flex h-full flex-col items-center justify-center gap-6 border-accent-foreground border-x p-6">
               <BellIcon className="size-24 text-primary" />
               <div className="flex flex-col items-center gap-2 text-center">
-                <p className="font-medium text-primary text-2xl">
+                <p className="font-medium text-2xl text-primary">
                   We've sent a verification link to your email address.
                 </p>
                 <p className="text-foreground-dimmed text-lg">
