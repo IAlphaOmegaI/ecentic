@@ -138,6 +138,8 @@ export default ({ children }: PropsWithChildren) => {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://eu.i.posthog.com" />
+        <link rel="preconnect" href="https://eu-assets.i.posthog.com" crossOrigin="anonymous" />
         {process.env.NODE_ENV === "development" && (
           <Script
             src="//unpkg.com/react-grab/dist/index.global.js"

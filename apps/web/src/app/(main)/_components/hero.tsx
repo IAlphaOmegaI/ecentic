@@ -5,8 +5,8 @@ import Background from "@/public/images/background.png";
 
 export const Hero = () => (
   <div className="relative -left-[calc(50vw-50%)] h-screen w-screen p-3">
-    <section className="relative relative flex size-full items-center justify-center overflow-hidden rounded-xl bg-primary">
-      <Image src={Background} alt="Hero" className="size-full object-cover" />
+    <section className="relative flex size-full items-center justify-center overflow-hidden rounded-xl bg-primary">
+      <Image src={Background} alt="Hero" className="size-full object-cover" priority sizes="100vw" />
       <div className="absolute bottom-6 left-6 z-20 flex max-w-[1200px] flex-col gap-4 text-white md:bottom-12 md:left-12">
         <h1 className="font-semibold text-4xl sm:text-5xl md:text-[76px]">
           40% of shoppers use AI agents to buy.{" "}
