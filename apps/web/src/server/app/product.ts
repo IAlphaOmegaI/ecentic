@@ -6,12 +6,12 @@ import { cache as dedupe } from "react";
 import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
 import { Environment } from "../utils/environment";
+import type { Pager } from "../utils/pagination";
 import type { Document } from "../utils/repository";
 import { repository } from "../utils/repository";
 import * as Competitor from "./competitor";
 import * as Scan from "./scan";
 import * as Simulation from "./simulation";
-import type { Pager } from "../utils/pagination";
 
 export const { get, paginate, create, update, destroy, exists, count, find } =
   repository(schema.product);
@@ -110,6 +110,7 @@ export const gatherIntelligence = dedupe(
           gpt4: computeModelWinRate(productSimulations, "gpt4"),
           claude: computeModelWinRate(productSimulations, "claude"),
           gemini: computeModelWinRate(productSimulations, "gemini"),
+          perplexity: computeModelWinRate(productSimulations, "perplexity"),
         },
         simulations: total,
         quality: computeDataQuality(product),
@@ -191,6 +192,7 @@ const Model = {
   GPT4: ["GPT-4", "gpt4"],
   Claude: ["Claude", "claude"],
   GEMINI: ["Gemini", "gemini"],
+  Perplexity: ["Perplexity", "perplexity"],
 } as const;
 
 export const getDetail = withAuthentication(
@@ -204,7 +206,9 @@ export const getDetail = withAuthentication(
     if (product.data.userId !== context.session.user.id)
       return { success: false, error: new Error("Not authorized") };
 
-    const simulations = await Simulation.getForProducts(Environment.SERVER, { products: [id] });
+    const simulations = await Simulation.getForProducts(Environment.SERVER, {
+      products: [id],
+    });
     if (!simulations.success) return simulations;
 
     const competitorIds = unique(

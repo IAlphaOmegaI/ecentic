@@ -111,7 +111,9 @@ export default ({ searchParams }: SearchParamsProps<keyof Pager>) => (
 
 const LastScanned = async () => {
   await connection();
-  const data = await unwrapResult(Product.gatherIntelligence(Environment.SERVER));
+  const data = await unwrapResult(
+    Product.gatherIntelligence(Environment.SERVER),
+  );
 
   return (
     <p className="mt-1 font-light text-2xl text-foreground-dimmed">
@@ -124,7 +126,9 @@ const LastScanned = async () => {
 
 const StatCards = async () => {
   await connection();
-  const data = await unwrapResult(Product.gatherIntelligence(Environment.SERVER));
+  const data = await unwrapResult(
+    Product.gatherIntelligence(Environment.SERVER),
+  );
   const { products } = data;
 
   if (products.length === 0)
@@ -146,7 +150,9 @@ const StatCards = async () => {
           },
         ].map(({ label, icon }) => (
           <div key={label} className="h-full bg-background-dimmed p-4">
-            <p className="mb-4 text-foreground-dimmed">{label}</p>
+            <p className="mb-4 text-foreground-dimmed uppercase tracking-widest">
+              {label}
+            </p>
             <div className="flex flex-col items-center justify-center gap-2">
               {icon}
               <p className="text-foreground-dimmed">No data yet</p>
@@ -283,6 +289,15 @@ const Performance = async () => {
                 products.length,
             ),
           },
+          {
+            label: "Perplexity",
+            rate: Math.round(
+              products.reduce(
+                (sum, p) => sum + (p.winRate.perplexity ?? 0),
+                0,
+              ) / products.length,
+            ),
+          },
         ]
       : [];
 
@@ -416,10 +431,7 @@ const Products = async ({
     Product.paginateWithIntelligence(Environment.SERVER, { page, size }),
   );
 
-  const pageCount = Math.max(
-    1,
-    Math.ceil(pagination.total / pagination.size),
-  );
+  const pageCount = Math.max(1, Math.ceil(pagination.total / pagination.size));
 
   return (
     <ProductsTable
@@ -539,8 +551,8 @@ const ChartSkeleton = () => (
         <div className="h-3 w-24 animate-pulse bg-foreground/10" />
         <div className="mt-2 h-7 w-40 animate-pulse bg-foreground/10" />
       </div>
-      <div className="grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-y px-4">
-        {["a", "b", "c"].map((key) => (
+      <div className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-y px-4">
+        {["a", "b", "c", "d"].map((key) => (
           <div
             key={key}
             className="flex flex-col items-center gap-1 p-6 first:pl-0 last:pr-0"
@@ -618,6 +630,7 @@ const TableSkeleton = () => (
               "GPT-4",
               "Claude",
               "Gemini",
+              "Perplexity",
               "Quality",
               "Last Scan",
               "",

@@ -47,7 +47,10 @@ export const signIn = withContext(
       };
     }
 
-    context.span.addBreadcrumb({ category: "auth.sign_in", data: { "user.id": result.data.user.id, "user.email": email } });
+    context.span.addBreadcrumb({
+      category: "auth.sign_in",
+      data: { "user.id": result.data.user.id, "user.email": email },
+    });
 
     const jar = await cookies();
 
@@ -202,7 +205,7 @@ export const signUp = withContext(
             email: payload.email,
             password: payload.password,
             ...(payload.role !== undefined && { role: payload.role }),
-            callbackURL: `${process.env.APP_HOST}/onboarding/connect`,
+            callbackURL: `${process.env.APP_HOST}/verify/success`,
           },
         }),
     );
@@ -217,7 +220,10 @@ export const signUp = withContext(
       };
     }
 
-    context.span.addBreadcrumb({ category: "auth.sign_up", data: { "user.email": payload.email } });
+    context.span.addBreadcrumb({
+      category: "auth.sign_up",
+      data: { "user.email": payload.email },
+    });
 
     return {
       success: true,
@@ -235,7 +241,7 @@ export const verifyEmail = withContext(
     _context,
     token: string,
   ): Promise<Result<{ redirectUrl: string }, Error>> => {
-    const callbackUrl = `${process.env.APP_HOST}/onboarding/connect`;
+    const callbackUrl = `${process.env.APP_HOST}/verify/success`;
     const redirectUrl = `${process.env.APP_HOST}/api/auth/verify-email?token=${encodeURIComponent(token)}&callbackURL=${encodeURIComponent(callbackUrl)}`;
     return {
       success: true,

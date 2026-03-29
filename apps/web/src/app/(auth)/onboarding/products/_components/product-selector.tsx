@@ -7,12 +7,12 @@ import {
   LoaderIcon,
 } from "@zenncore/icons";
 import { cn, resultify, unique } from "@zenncore/utils";
-import { Button } from "@zenncore/web/components/button";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@zenncore/web/components/avatar";
+import { Button } from "@zenncore/web/components/button";
 import {
   Table,
   TableBody,
@@ -22,15 +22,16 @@ import {
   TableRow,
 } from "@zenncore/web/components/table";
 import { motion } from "motion/react";
+import Image from "next/image";
 import Link, { useLinkStatus } from "next/link";
 import { useRouter } from "next/navigation";
 import { type ReactNode, useState, useTransition } from "react";
 import { Motion } from "@/components/motion";
 import { Stagger, Table as TableAnimations } from "@/lib/animations";
+import { getCurrencySymbol, normalizePrice } from "@/lib/currency";
 import type * as Product from "@/server/app/product";
 
 const limit = 10;
-const fallbackImageSource = "/images/fallback";
 
 const parseImages = (images: string | null): string[] => {
   if (!images) return [];
@@ -60,23 +61,6 @@ const computeDataQuality = (product: Product.Type): number => {
     (score, [value, weight]) => score + (value ? weight : 0),
     0,
   );
-};
-
-const formatPrice = (price: string | null, currency: string | null): string => {
-  if (!price) return "\u2014";
-
-  const symbol = (() => {
-    switch (currency?.toUpperCase()) {
-      case "EUR":
-        return "\u20AC";
-      case "GBP":
-        return "\u00A3";
-      default:
-        return "$";
-    }
-  })();
-
-  return `${symbol}${price}`;
 };
 
 const QualityBadge = ({ score }: { score: number }) => {
@@ -197,9 +181,11 @@ export const ProductSelector = ({
                       />
                     </button>
                   </TableHead>
-                  {["Product", "Price", "Status", "Quality"].map((header) => (
-                    <TableHead key={header}>{header}</TableHead>
-                  ))}
+                  {["Product", "Price", "Currency", "Status", "Quality"].map(
+                    (header) => (
+                      <TableHead key={header}>{header}</TableHead>
+                    ),
+                  )}
                 </TableRow>
               </TableHeader>
               <TableBody
@@ -223,7 +209,7 @@ export const ProductSelector = ({
                       render={<motion.tr variants={TableAnimations.Row} />}
                       onClick={() => !isDisabled && toggleProduct(product.id)}
                       className={cn(
-                        "cursor-pointer",
+                        "cursor-pointer last:border-b-0",
                         isSelected
                           ? "bg-primary/5"
                           : isDisabled
@@ -252,11 +238,15 @@ export const ProductSelector = ({
                         <div className="flex items-center gap-3">
                           <Avatar className="size-9 rounded-none bg-primary/10">
                             <AvatarImage
-                              src={images[0] ?? fallbackImageSource}
+                              src={images[0] ?? "/images/fallback.png"}
                               alt={product.title}
                             />
-                            <AvatarFallback className="font-semibold text-primary text-xs">
-                              {product.title.slice(0, 2).toUpperCase()}
+                            <AvatarFallback className="relative">
+                              <Image
+                                src="/images/fallback.png"
+                                alt="Fallback"
+                                fill
+                              />
                             </AvatarFallback>
                           </Avatar>
                           <div>
@@ -272,7 +262,14 @@ export const ProductSelector = ({
                         </div>
                       </TableCell>
                       <TableCell>
-                        {formatPrice(product.price, product.currency)}
+                        {product.price
+                          ? normalizePrice(product.price)
+                          : "\u2014"}
+                      </TableCell>
+                      <TableCell className="text-foreground-dimmed">
+                        {product.currency
+                          ? getCurrencySymbol(product.currency)
+                          : "\u2014"}
                       </TableCell>
                       <TableCell>
                         <span

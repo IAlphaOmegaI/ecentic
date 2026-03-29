@@ -32,6 +32,12 @@ const MODELS = [
     color: "var(--color-green-500)",
     logo: "/images/gemini.svg",
   },
+  {
+    key: "perplexity" as const,
+    label: "Perplexity",
+    color: "var(--color-teal-500)",
+    logo: "/images/perplexity.svg",
+  },
 ];
 
 const formatDate = (date: string) => {

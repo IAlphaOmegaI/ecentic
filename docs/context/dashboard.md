@@ -209,7 +209,7 @@ One bar per model (GPT-4, Claude, Gemini, Perplexity). Tooltip shows simulation 
 Daily/weekly resolution. One line per model (toggleable) + aggregate. Annotations for optimization events and drift events with hover detail.
 
 ### Product Win Rate Table (Top 10, expandable)
-Columns: Product (thumb + title), Overall Win Rate + trend, GPT-4, Claude, Gemini, Top Competitor + their win rate, Gap (delta, color-coded), Status badge, Action button. Bulk action bar on checkbox selection. "View All Products →" link.
+Columns: Product (thumb + title), Overall Win Rate + trend, GPT-4, Claude, Gemini, Perplexity, Top Competitor + their win rate, Gap (delta, color-coded), Status badge, Action button. Bulk action bar on checkbox selection. "View All Products →" link.
 
 ### Recent Activity Feed
 Scrollable timeline: optimizations published, simulations completed, model drift detected, new competitors found. Each clickable → relevant detail view.
@@ -225,7 +225,7 @@ Route: `/dashboard/products`
 
 Full-featured data table with: search (debounced 300ms), multi-select category filter, win rate range slider, model filter, status filter, store filter. Sort by win rate, title, price, last simulated. Table/grid view toggle. Bulk actions: run simulation, optimize all, export.
 
-Table columns: checkbox, image (48x48), product title + subtitle, price, win rate (color bar), GPT-4 %, Claude %, Gemini %, competitor gap, data quality score (progress ring), last simulated (relative time), actions menu.
+Table columns: checkbox, image (48x48), product title + subtitle, price, win rate (color bar), GPT-4 %, Claude %, Gemini %, Perplexity %, competitor gap, data quality score (progress ring), last simulated (relative time), actions menu.
 
 Pagination: 25/50/100 per page with total count.
 

@@ -6,11 +6,38 @@ import {
   Heading,
   Hr,
   Html,
+  Img,
   Link,
   Preview,
   Section,
+  Tailwind,
   Text,
 } from "@react-email/components";
+
+const config = {
+  theme: {
+    extend: {
+      colors: {
+        background: {
+          DEFAULT: "#f5f5f5",
+          rich: "#ffffff",
+          dimmed: "#e8e8e8",
+        },
+        foreground: {
+          DEFAULT: "#474747",
+          dimmed: "#919191",
+        },
+        emphasis: {
+          DEFAULT: "#292929",
+          dimmed: "#1c1c1c",
+        },
+        primary: {
+          DEFAULT: "#1572fa",
+        },
+      },
+    },
+  },
+};
 
 export namespace VerifyEmail {
   export type Props = {
@@ -25,103 +52,59 @@ export const VerifyEmail = ({
 }: VerifyEmail.Props) => (
   <Html>
     <Head />
-    <Preview>Verify your email address</Preview>
-    <Body style={main}>
-      <Container style={container}>
-        <Heading style={heading}>Verify your email</Heading>
-        <Text style={paragraph}>
-          Thanks for signing up. Click the button below to verify your email
-          address and get started.
-        </Text>
-        <Text style={subtext}>This link was sent to {userEmail}.</Text>
-        <Section style={buttonContainer}>
-          <Button style={button} href={verificationUrl}>
-            Verify email
-          </Button>
-        </Section>
-        <Hr style={hr} />
-        <Text style={footer}>
-          If you didn&apos;t create an account, you can safely ignore this
-          email.
-        </Text>
-        <Text style={footer}>
-          Or copy and paste this link into your browser:{" "}
-          <Link href={verificationUrl} style={link}>
-            {verificationUrl}
-          </Link>
-        </Text>
-      </Container>
-    </Body>
+    <Preview>Verify your email to start using ecentic</Preview>
+    <Tailwind config={config}>
+      <Body className="bg-background font-sans">
+        <Container className="mx-auto mt-10 mb-16 max-w-[480px] border border-background-dimmed bg-background-rich p-0">
+          <Section className="border-background-dimmed border-b px-8 py-6">
+            <Img
+              src="https://ecentic.com/images/trademark.svg"
+              alt="ecentic"
+              width={100}
+              height={28}
+            />
+          </Section>
+
+          <Heading className="m-0 mb-3 px-8 pt-8 pb-0 font-medium text-[28px] text-emphasis-dimmed leading-[1.3] tracking-[-0.5px]">
+            Verify your email
+          </Heading>
+          <Text className="m-0 mb-5 px-8 text-[15px] text-foreground leading-6">
+            Thanks for creating your ecentic account. Click the button below to
+            verify your email address and start optimizing your product listings
+            for AI shopping agents.
+          </Text>
+          <Text className="m-0 mb-6 px-8 text-[13px] text-foreground-dimmed leading-5">
+            This verification was requested for {userEmail}.
+          </Text>
+
+          <Section className="px-8 pb-8">
+            <Button
+              className="block w-full bg-primary px-6 py-3 text-center font-medium text-[15px] text-background-rich no-underline"
+              href={verificationUrl}
+            >
+              Verify email address
+            </Button>
+          </Section>
+
+          <Hr className="m-0 border-background-dimmed" />
+
+          <Text className="m-0 mb-2 px-8 pt-5 text-foreground-dimmed text-xs leading-[18px]">
+            If you didn&apos;t create an account on ecentic, you can safely
+            ignore this email.
+          </Text>
+          <Text className="m-0 mb-2 px-8 pt-5 text-foreground-dimmed text-xs leading-[18px]">
+            Or copy and paste this link into your browser:{" "}
+            <Link href={verificationUrl} className="break-all text-primary">
+              {verificationUrl}
+            </Link>
+          </Text>
+
+          <Hr className="m-0 border-background-dimmed" />
+          <Text className="m-0 px-8 py-5 text-center text-foreground-dimmed text-xs leading-[18px]">
+            ecentic — Win every agent&apos;s cart.
+          </Text>
+        </Container>
+      </Body>
+    </Tailwind>
   </Html>
 );
-
-const main = {
-  backgroundColor: "#f6f9fc",
-  fontFamily:
-    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Ubuntu, sans-serif',
-};
-
-const container = {
-  backgroundColor: "#ffffff",
-  margin: "0 auto",
-  padding: "40px 20px",
-  marginBottom: "64px",
-  borderRadius: "8px",
-  maxWidth: "480px",
-};
-
-const heading = {
-  fontSize: "24px",
-  letterSpacing: "-0.5px",
-  lineHeight: "1.3",
-  fontWeight: "600" as const,
-  color: "#1a1a1a",
-  margin: "0 0 16px",
-};
-
-const paragraph = {
-  margin: "0 0 24px",
-  fontSize: "16px",
-  lineHeight: "24px",
-  color: "#525f7f",
-};
-
-const subtext = {
-  margin: "0 0 24px",
-  fontSize: "14px",
-  lineHeight: "20px",
-  color: "#8898aa",
-};
-
-const buttonContainer = {
-  margin: "24px 0",
-};
-
-const button = {
-  backgroundColor: "#5469d4",
-  borderRadius: "6px",
-  color: "#fff",
-  fontSize: "16px",
-  fontWeight: "600" as const,
-  textDecoration: "none",
-  textAlign: "center" as const,
-  display: "block",
-  padding: "12px 24px",
-};
-
-const hr = {
-  borderColor: "#e6ebf1",
-  margin: "24px 0",
-};
-
-const footer = {
-  color: "#8898aa",
-  fontSize: "12px",
-  lineHeight: "16px",
-  margin: "0 0 8px",
-};
-
-const link = {
-  color: "#5469d4",
-  wordBreak: "break-all" as const,
-};

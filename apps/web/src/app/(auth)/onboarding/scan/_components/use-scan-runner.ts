@@ -4,8 +4,8 @@ import { readStreamableValue } from "@ai-sdk/rsc";
 import { unwrapResult } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { runScan } from "@/server/app/intelligence/simulate";
 import type * as Simulate from "@/server/app/intelligence/simulate";
+import { runScan } from "@/server/app/intelligence/simulate";
 
 type ScanPhase = "pre" | "running" | "complete";
 type ModelStatus = "queued" | "running" | "complete";
@@ -18,6 +18,7 @@ const initialStatuses: Record<string, ModelStatus> = {
   "GPT-4": "queued",
   Claude: "queued",
   Gemini: "queued",
+  Perplexity: "queued",
 };
 
 type ScanRunnerOptions = {
@@ -39,6 +40,7 @@ export const useScanRunner = (options?: ScanRunnerOptions) => {
   const [topFinding, setTopFinding] = useState<Simulate.TopFinding | null>(
     null,
   );
+  const [scanId, setScanId] = useState<string | null>(null);
   const [count, setCount] = useState(0);
   const [elapsed, setElapsed] = useState(0);
 
@@ -130,6 +132,7 @@ export const useScanRunner = (options?: ScanRunnerOptions) => {
           setStats({ wins: event.wins, losses: event.losses, progress: 100 });
           setWinRates(event.modelWinRates);
           setTopFinding(event.topFinding);
+          setScanId(event.scanId);
           setCount(event.productCount);
           setTimeout(() => setPhase("complete"), 800);
           return;
@@ -145,6 +148,7 @@ export const useScanRunner = (options?: ScanRunnerOptions) => {
     modelStats,
     winRates,
     topFinding,
+    scanId,
     count,
     elapsed,
     handleRun,

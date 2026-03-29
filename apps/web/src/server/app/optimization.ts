@@ -1,83 +1,40 @@
 "use server";
 
+import { resultify } from "@zenncore/utils";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { schema } from "../database";
 import * as AI from "../utils/ai";
 import { withAuthentication } from "../utils/authentication";
+import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
-import { repository } from "../utils/repository";
+import { type Document, repository } from "../utils/repository";
 import * as Product from "./product";
 import * as Simulation from "./simulation";
 import * as Store from "./store";
 
-const OptimizationRepo = repository(schema.listingOptimization);
+const { find, create, update, destroy } = repository(
+  schema.listingOptimization,
+);
+
+export type Type = Document<typeof schema.listingOptimization>;
 
 const PUBLISHABLE_PLATFORMS = new Set(["shopify", "woocommerce"]);
 const WIN_RATE_THRESHOLD = 55;
 const PUBLISH_COOLDOWN_MS = 14 * 24 * 60 * 60 * 1000;
 
-const modelLabel = (id: string) => {
-  switch (id) {
-    case "gpt4":
-      return "GPT-4";
-    case "claude":
-      return "Claude";
-    case "gemini":
-      return "Gemini";
-    default:
-      return id;
-  }
+const MODEL_LABELS: Record<string, string> = {
+  gpt4: "GPT-4",
+  claude: "Claude",
+  gemini: "Gemini",
+  perplexity: "Perplexity",
 };
 
 const estimateLift = (winRate: number) =>
   Math.max(5, Math.min(40, WIN_RATE_THRESHOLD - winRate));
 
-export type OptimizationQueueItem = {
-  productId: string;
-  productTitle: string;
-  type: "all";
-  estimatedLift: number;
-  modelsAffected: string[];
-  winRateBefore: number;
-};
-
-export type StoredOptimizationItem = {
-  recordId: string;
-  productId: string;
-  productTitle: string;
-  type: "all";
-  publishedAt: string | null;
-  updatedAt: string;
-  winRateBefore: number | null;
-  winRateAfter: number | null;
-};
-
-export type OptimizationDashboardData = {
-  pending: OptimizationQueueItem[];
-  published: StoredOptimizationItem[];
-  dismissed: StoredOptimizationItem[];
-  diagnostics: {
-    lowWinRateProducts: number;
-    publishableLowWinRateProducts: number;
-    nonPublishableLowWinRateProducts: number;
-    insights: {
-      productId: string;
-      productTitle: string;
-      winRate: number;
-      category: "seo" | "content" | "structured_data" | "platform";
-      severity: "high" | "medium";
-      message: string;
-      recommendation: string;
-    }[];
-  };
-};
-
-const winRateForSimulations = (
-  productId: string,
-  simulations: { productId: string; winner: string; model: string }[],
-) => {
+const computeWinRate = (productId: string, simulations: Simulation.Type[]) => {
   const rows = simulations.filter(
     (simulation) => simulation.productId === productId,
   );
@@ -89,42 +46,140 @@ const winRateForSimulations = (
   return Math.round((wins / rows.length) * 100);
 };
 
-const modelsForProduct = (
-  productId: string,
-  simulations: { productId: string; model: string }[],
-) => {
+const computeModels = (productId: string, simulations: Simulation.Type[]) => {
   const set = new Set<string>();
   for (const simulation of simulations) {
-    if (simulation.productId === productId)
-      set.add(modelLabel(simulation.model));
+    if (simulation.productId === productId) {
+      set.add(MODEL_LABELS[simulation.model] ?? simulation.model);
+    }
   }
   return [...set];
 };
 
-const findOptimizationRow = async (userId: string, productId: string) => {
-  const result = await OptimizationRepo.find(Environment.SERVER, {
-    where: and(
-      eq(schema.listingOptimization.userId, userId),
-      eq(schema.listingOptimization.productId, productId),
-    ),
-    limit: 1,
-  });
-
-  if (!result.success) return null;
-  return result.data[0] ?? null;
+type DiagnosticInsight = {
+  productId: string;
+  winRate: number;
+  category: "seo" | "content" | "structured_data" | "platform";
+  severity: "high" | "medium";
+  message: string;
+  recommendation: string;
 };
 
-const buildDashboardData = async (
-  userId: string,
-): Promise<OptimizationDashboardData> => {
-  const [productsResult, storesResult, recordsResult] = await Promise.all([
+export type DashboardData = {
+  pending: {
+    product: Product.Type;
+    winRate: number;
+    estimatedLift: number;
+    models: string[];
+  }[];
+  published: Type[];
+  dismissed: Type[];
+  products: Record<string, Product.Type>;
+  diagnostics: {
+    lowWinRateCount: number;
+    publishableCount: number;
+    nonPublishableCount: number;
+    insights: DiagnosticInsight[];
+  };
+};
+
+const findRecord = withContext(
+  async (
+    _context,
+    { userId, productId }: { userId: string; productId: string },
+  ) => {
+    const result = await find(Environment.SERVER, {
+      where: and(
+        eq(schema.listingOptimization.userId, userId),
+        eq(schema.listingOptimization.productId, productId),
+      ),
+      limit: 1,
+    });
+
+    if (!result.success) return result;
+    return { success: true, data: result.data[0] ?? null };
+  },
+  "Optimization.findRecord",
+);
+
+const generateImprovedListing = withContext(
+  async (
+    _context,
+    input: { title: string; description: string | null; winRateBefore: number },
+  ) => {
+    const result = await resultify(() =>
+      AI.generate({
+        system: `You improve e-commerce product listings so AI shopping agents choose this product more often.
+Output a clearer, spec-rich title and an HTML description (use <p>, <ul><li> where helpful).
+Do not invent specifications that contradict the original; you may reorganize and emphasize existing facts.
+Keep the title under 120 characters.`,
+        prompt: `Current win rate in AI agent simulations: ${input.winRateBefore}% (below target).
+
+Current title: ${input.title}
+Current description:
+${input.description ?? "(none)"}
+
+Return an improved title and full HTML description for the product page.`,
+        schema: z.object({
+          title: z.string().min(1),
+          description_html: z.string(),
+        }),
+      }),
+    );
+
+    if (!result.success) return result;
+    return { success: true, data: result.data };
+  },
+  "Optimization.generateImprovedListing",
+);
+
+const upsertRecord = withContext(
+  async (
+    _context,
+    {
+      userId,
+      productId,
+      status,
+      payload,
+    }: {
+      userId: string;
+      productId: string;
+      status: string;
+      payload: Parameters<typeof update>[2];
+    },
+  ) => {
+    const existing = await findRecord(Environment.SERVER, {
+      userId,
+      productId,
+    });
+
+    if (!existing.success) return existing;
+
+    if (existing.data) {
+      return update(Environment.SERVER, existing.data.id, payload);
+    }
+
+    return create(Environment.SERVER, {
+      userId,
+      productId,
+      status,
+      ...payload,
+    });
+  },
+  "Optimization.upsertRecord",
+);
+
+export const listDashboard = withAuthentication(async (context) => {
+  const userId = context.session.user.id;
+
+  const [products, stores, records] = await Promise.all([
     Product.find(Environment.SERVER, {
       where: eq(schema.product.userId, userId),
     }),
     Store.find(Environment.SERVER, {
       where: eq(schema.store.userId, userId),
     }),
-    OptimizationRepo.find(Environment.SERVER, {
+    find(Environment.SERVER, {
       where: eq(schema.listingOptimization.userId, userId),
       orderBy: [
         { column: schema.listingOptimization.updatedAt, direction: "desc" },
@@ -132,82 +187,81 @@ const buildDashboardData = async (
     }),
   ]);
 
-  const products = productsResult.success ? productsResult.data : [];
-  const stores = storesResult.success ? storesResult.data : [];
-  const records = recordsResult.success ? recordsResult.data : [];
+  if (!products.success) return products;
+  if (!stores.success) return stores;
+  if (!records.success) return records;
 
-  const storeById = new Map(stores.map((store) => [store.id, store]));
-  const productById = new Map(products.map((product) => [product.id, product]));
-  const recordByProductId = new Map(records.map((row) => [row.productId, row]));
-  const productIds = products.map((product) => product.id);
+  const storeById = new Map(stores.data.map((store) => [store.id, store]));
+  const productById = Object.fromEntries(
+    products.data.map((product) => [product.id, product]),
+  );
+  const recordByProductId = new Map(
+    records.data.map((record) => [record.productId, record]),
+  );
 
-  const publishableProducts = products.filter((product) => {
-    const store = storeById.get(product.storeId);
-    return store && PUBLISHABLE_PLATFORMS.has(store.platform);
-  });
-
-  const allSimulationsResult = await Simulation.getForProducts({
-    products: productIds,
-  });
-  const allSimulations = allSimulationsResult.success ? allSimulationsResult.data : [];
+  const publishableProductIds = new Set(
+    products.data
+      .filter((product) => {
+        const store = storeById.get(product.storeId);
+        return store && PUBLISHABLE_PLATFORMS.has(store.platform);
+      })
+      .map((product) => product.id),
+  );
 
   const simulationsResult = await Simulation.getForProducts({
-    products: publishableProducts.map((product) => product.id),
+    products: products.data.map((product) => product.id),
   });
-
   const simulations = simulationsResult.success ? simulationsResult.data : [];
 
-  const now = Date.now();
-  const pending: OptimizationQueueItem[] = [];
-  const diagnostics: OptimizationDashboardData["diagnostics"]["insights"] = [];
-  const publishableProductIds = new Set(publishableProducts.map((product) => product.id));
-  const lowWinRateProducts = products
-    .map((product) => {
-      const winRate = winRateForSimulations(product.id, allSimulations);
-      return {
-        product,
-        winRate,
-      };
-    })
-    .filter((entry): entry is { product: (typeof products)[number]; winRate: number } =>
-      entry.winRate !== null && entry.winRate < WIN_RATE_THRESHOLD,
+  const lowWinRateEntries = products.data
+    .map((product) => ({
+      product,
+      winRate: computeWinRate(product.id, simulations),
+    }))
+    .filter(
+      (
+        entry,
+      ): entry is {
+        product: (typeof products.data)[number];
+        winRate: number;
+      } => entry.winRate !== null && entry.winRate < WIN_RATE_THRESHOLD,
     );
 
-  for (const product of publishableProducts) {
-    const winRate = winRateForSimulations(product.id, simulations);
-    if (winRate === null) continue;
+  const now = Date.now();
+  const pending: DashboardData["pending"] = [];
 
-    const row = recordByProductId.get(product.id);
-    if (row?.status === "dismissed") continue;
+  for (const { product, winRate } of lowWinRateEntries) {
+    if (!publishableProductIds.has(product.id)) continue;
 
-    if (row?.status === "published" && row.publishedAt) {
-      if (now - row.publishedAt.getTime() < PUBLISH_COOLDOWN_MS) continue;
+    const record = recordByProductId.get(product.id);
+    if (record?.status === "dismissed") continue;
+
+    if (record?.status === "published" && record.publishedAt) {
+      if (now - record.publishedAt.getTime() < PUBLISH_COOLDOWN_MS) continue;
     }
 
-    if (winRate >= WIN_RATE_THRESHOLD) continue;
-
     pending.push({
-      productId: product.id,
-      productTitle: product.title,
-      type: "all",
+      product,
+      winRate,
       estimatedLift: estimateLift(winRate),
-      modelsAffected: modelsForProduct(product.id, simulations),
-      winRateBefore: winRate,
+      models: computeModels(product.id, simulations),
     });
   }
 
-  for (const { product, winRate } of lowWinRateProducts) {
+  const insights: DiagnosticInsight[] = [];
+
+  for (const { product, winRate } of lowWinRateEntries) {
     const store = storeById.get(product.storeId);
     const isPublishable = publishableProductIds.has(product.id);
     const imageMissing = !product.images || product.images === "[]";
     const titleShort = product.title.trim().length < 25;
-    const descriptionShort = !product.description || product.description.trim().length < 140;
+    const descriptionShort =
+      !product.description || product.description.trim().length < 140;
     const structuredMissing = !product.structuredData;
 
     if (!isPublishable) {
-      diagnostics.push({
+      insights.push({
         productId: product.id,
-        productTitle: product.title,
         winRate,
         category: "platform",
         severity: "high",
@@ -218,9 +272,8 @@ const buildDashboardData = async (
     }
 
     if (structuredMissing) {
-      diagnostics.push({
+      insights.push({
         productId: product.id,
-        productTitle: product.title,
         winRate,
         category: "structured_data",
         severity: "high",
@@ -231,9 +284,8 @@ const buildDashboardData = async (
     }
 
     if (descriptionShort || titleShort) {
-      diagnostics.push({
+      insights.push({
         productId: product.id,
-        productTitle: product.title,
         winRate,
         category: "content",
         severity: descriptionShort ? "high" : "medium",
@@ -244,9 +296,8 @@ const buildDashboardData = async (
     }
 
     if (imageMissing) {
-      diagnostics.push({
+      insights.push({
         productId: product.id,
-        productTitle: product.title,
         winRate,
         category: "seo",
         severity: "medium",
@@ -257,258 +308,231 @@ const buildDashboardData = async (
     }
   }
 
-  const published: StoredOptimizationItem[] = records
-    .filter((row) => row.status === "published")
-    .map((row) => {
-      const product = productById.get(row.productId);
-      return {
-        recordId: row.id,
-        productId: row.productId,
-        productTitle: product?.title ?? "Unknown product",
-        type: "all" as const,
-        publishedAt: row.publishedAt?.toISOString() ?? null,
-        updatedAt: row.updatedAt.toISOString(),
-        winRateBefore: row.winRateBefore,
-        winRateAfter: row.winRateAfter,
-      };
-    });
+  const published = records.data.filter(
+    (record) => record.status === "published",
+  );
+  const dismissed = records.data.filter(
+    (record) => record.status === "dismissed",
+  );
 
-  const dismissed: StoredOptimizationItem[] = records
-    .filter((row) => row.status === "dismissed")
-    .map((row) => {
-      const product = productById.get(row.productId);
-      return {
-        recordId: row.id,
-        productId: row.productId,
-        productTitle: product?.title ?? "Unknown product",
-        type: "all" as const,
-        publishedAt: null,
-        updatedAt: row.updatedAt.toISOString(),
-        winRateBefore: row.winRateBefore,
-        winRateAfter: row.winRateAfter,
-      };
-    });
-
-  const publishableLowWinRateProducts = lowWinRateProducts.filter((entry) =>
+  const publishableLowWinRateCount = lowWinRateEntries.filter((entry) =>
     publishableProductIds.has(entry.product.id),
   ).length;
 
   return {
-    pending,
-    published,
-    dismissed,
-    diagnostics: {
-      lowWinRateProducts: lowWinRateProducts.length,
-      publishableLowWinRateProducts,
-      nonPublishableLowWinRateProducts:
-        lowWinRateProducts.length - publishableLowWinRateProducts,
-      insights: diagnostics.slice(0, 24),
-    },
-  };
-};
-
-const generateImprovedListing = async (input: {
-  title: string;
-  description: string | null;
-  winRateBefore: number;
-}) => {
-  return AI.generate({
-    system: `You improve e-commerce product listings so AI shopping agents choose this product more often.
-Output a clearer, spec-rich title and an HTML description (use <p>, <ul><li> where helpful).
-Do not invent specifications that contradict the original; you may reorganize and emphasize existing facts.
-Keep the title under 120 characters.`,
-    prompt: `Current win rate in AI agent simulations: ${input.winRateBefore}% (below target).
-
-Current title: ${input.title}
-Current description:
-${input.description ?? "(none)"}
-
-Return an improved title and full HTML description for the product page.`,
-    schema: z.object({
-      title: z.string().min(1),
-      description_html: z.string(),
-    }),
-  });
-};
-
-const executeApprove = async (userId: string, productId: string) => {
-  const product = await Product.get(Environment.SERVER, productId);
-  if (!product.success) return product;
-  if (!product.data)
-    return { success: false as const, error: new Error("Product not found") };
-
-  if (product.data.userId !== userId)
-    return { success: false as const, error: new Error("Not authorized") };
-
-  const store = await Store.get(Environment.SERVER, product.data.storeId);
-  if (!store.success) return store;
-  if (!store.data)
-    return { success: false as const, error: new Error("Store not found") };
-
-  if (!PUBLISHABLE_PLATFORMS.has(store.data.platform))
-    return {
-      success: false as const,
-      error: new Error(
-        "Publishing is only supported for Shopify and WooCommerce stores",
-      ),
-    };
-
-  const simulationsResult = await Simulation.getForProducts({
-    products: [productId],
-  });
-  const simulations = simulationsResult.success ? simulationsResult.data : [];
-  const winRate = winRateForSimulations(productId, simulations) ?? 0;
-  const lift = estimateLift(winRate);
-
-  let improved: { title: string; description_html: string };
-  try {
-    improved = await generateImprovedListing({
-      title: product.data.title,
-      description: product.data.description,
-      winRateBefore: winRate,
-    });
-  } catch (error) {
-    return {
-      success: false as const,
-      error:
-        error instanceof Error
-          ? error
-          : new Error("Failed to generate improved listing"),
-    };
-  }
-
-  const publish = await Store.publishProductListing({
-    product: productId,
+    success: true,
     data: {
-      title: improved.title,
-      body_html: improved.description_html,
-    },
-  });
-
-  if (!publish.success) return publish;
-
-  const existing = await findOptimizationRow(userId, productId);
-  const payload = {
-    status: "published" as const,
-    proposedTitle: improved.title,
-    proposedDescription: improved.description_html,
-    winRateBefore: winRate,
-    estimatedLift: lift,
-    winRateAfter: Math.min(99, winRate + lift),
-    publishedAt: new Date(),
-    updatedAt: new Date(),
+      pending,
+      published,
+      dismissed,
+      products: productById,
+      diagnostics: {
+        lowWinRateCount: lowWinRateEntries.length,
+        publishableCount: publishableLowWinRateCount,
+        nonPublishableCount:
+          lowWinRateEntries.length - publishableLowWinRateCount,
+        insights: insights.slice(0, 24),
+      },
+    } satisfies DashboardData,
   };
-
-  if (existing) {
-    const updated = await OptimizationRepo.update(
-      Environment.SERVER,
-      existing.id,
-      payload,
-    );
-    if (!updated.success) return updated;
-  } else {
-    const created = await OptimizationRepo.create(Environment.SERVER, {
-      userId,
-      productId,
-      ...payload,
-    });
-    if (!created.success) return created;
-  }
-
-  revalidatePath("/dashboard/optimize");
-  revalidatePath("/dashboard/products");
-  revalidatePath(`/dashboard/products/${productId}`);
-
-  return { success: true as const, data: { productId } };
-};
-
-export const listDashboard = withAuthentication(async (context) => {
-  const data = await buildDashboardData(context.session.user.id);
-  return { success: true as const, data };
 }, "Optimization.listDashboard");
 
 export const approveProductListing = withAuthentication(
   async (context, { productId }: { productId: string }) => {
-    return executeApprove(context.session.user.id, productId);
+    const userId = context.session.user.id;
+
+    const product = await Product.get(Environment.SERVER, productId);
+    if (!product.success) return product;
+
+    if (!product.data)
+      return { success: false, error: new Error("Product not found") };
+
+    if (product.data.userId !== userId)
+      return { success: false, error: new Error("Not authorized") };
+
+    const store = await Store.get(Environment.SERVER, product.data.storeId);
+    if (!store.success) return store;
+    if (!store.data)
+      return { success: false, error: new Error("Store not found") };
+
+    if (!PUBLISHABLE_PLATFORMS.has(store.data.platform))
+      return {
+        success: false,
+        error: new Error(
+          "Publishing is only supported for Shopify and WooCommerce stores",
+        ),
+      };
+
+    const simulationsResult = await Simulation.getForProducts({
+      products: [productId],
+    });
+    const simulations = simulationsResult.success ? simulationsResult.data : [];
+    const winRate = computeWinRate(productId, simulations) ?? 0;
+    const lift = estimateLift(winRate);
+
+    const improved = await generateImprovedListing(Environment.SERVER, {
+      title: product.data.title,
+      description: product.data.description,
+      winRateBefore: winRate,
+    });
+
+    if (!improved.success) return improved;
+
+    const publish = await Store.publishProductListing({
+      product: productId,
+      data: {
+        title: improved.data.title,
+        body_html: improved.data.description_html,
+      },
+    });
+
+    if (!publish.success) return publish;
+
+    const upserted = await upsertRecord(Environment.SERVER, {
+      userId,
+      productId,
+      status: "published",
+      payload: {
+        proposedTitle: improved.data.title,
+        proposedDescription: improved.data.description_html,
+        winRateBefore: winRate,
+        estimatedLift: lift,
+        winRateAfter: Math.min(99, winRate + lift),
+        publishedAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+
+    if (!upserted.success) return upserted;
+
+    revalidatePath("/dashboard/optimize");
+    revalidatePath("/dashboard/products");
+    revalidatePath(`/dashboard/products/${productId}`);
+
+    return { success: true, data: { productId } };
   },
   "Optimization.approveProductListing",
 );
 
 export const dismissSuggestion = withAuthentication(
   async (context, { productId }: { productId: string }) => {
+    const userId = context.session.user.id;
+
     const product = await Product.get(Environment.SERVER, productId);
     if (!product.success) return product;
     if (!product.data)
-      return { success: false as const, error: new Error("Product not found") };
+      return { success: false, error: new Error("Product not found") };
 
-    if (product.data.userId !== context.session.user.id)
-      return { success: false as const, error: new Error("Not authorized") };
+    if (product.data.userId !== userId)
+      return { success: false, error: new Error("Not authorized") };
 
-    const existing = await findOptimizationRow(
-      context.session.user.id,
+    const upserted = await upsertRecord(Environment.SERVER, {
+      userId,
       productId,
-    );
+      status: "dismissed",
+      payload: {
+        proposedTitle: null,
+        proposedDescription: null,
+        winRateBefore: null,
+        estimatedLift: null,
+        winRateAfter: null,
+        publishedAt: null,
+        updatedAt: new Date(),
+      },
+    });
 
-    if (existing) {
-      const updated = await OptimizationRepo.update(
-        Environment.SERVER,
-        existing.id,
-        {
-          status: "dismissed",
-          proposedTitle: null,
-          proposedDescription: null,
-          winRateBefore: null,
-          estimatedLift: null,
-          winRateAfter: null,
-          publishedAt: null,
-          updatedAt: new Date(),
-        },
-      );
-      if (!updated.success) return updated;
-    } else {
-      const created = await OptimizationRepo.create(Environment.SERVER, {
-        userId: context.session.user.id,
-        productId,
-        status: "dismissed",
-      });
-      if (!created.success) return created;
-    }
+    if (!upserted.success) return upserted;
 
     revalidatePath("/dashboard/optimize");
-    return { success: true as const, data: { productId } };
+    return { success: true, data: { productId } };
   },
   "Optimization.dismissSuggestion",
 );
 
 export const reconsiderSuggestion = withAuthentication(
   async (context, { productId }: { productId: string }) => {
-    const row = await findOptimizationRow(context.session.user.id, productId);
-    if (!row)
-      return { success: false as const, error: new Error("Record not found") };
+    const userId = context.session.user.id;
 
-    const destroyed = await OptimizationRepo.destroy(
-      Environment.SERVER,
-      row.id,
-    );
+    const record = await findRecord(Environment.SERVER, {
+      userId,
+      productId,
+    });
+
+    if (!record.success) return record;
+    if (!record.data)
+      return { success: false, error: new Error("Record not found") };
+
+    const destroyed = await destroy(Environment.SERVER, record.data.id);
     if (!destroyed.success) return destroyed;
 
     revalidatePath("/dashboard/optimize");
-    return { success: true as const, data: { productId } };
+    return { success: true, data: { productId } };
   },
   "Optimization.reconsiderSuggestion",
 );
 
 export const approveAllPending = withAuthentication(async (context) => {
-  const data = await buildDashboardData(context.session.user.id);
+  const userId = context.session.user.id;
+
+  const [productsResult, storesResult, recordsResult] = await Promise.all([
+    Product.find(Environment.SERVER, {
+      where: eq(schema.product.userId, userId),
+    }),
+    Store.find(Environment.SERVER, {
+      where: eq(schema.store.userId, userId),
+    }),
+    find(Environment.SERVER, {
+      where: eq(schema.listingOptimization.userId, userId),
+    }),
+  ]);
+
+  const products = productsResult.success ? productsResult.data : [];
+  const stores = storesResult.success ? storesResult.data : [];
+  const records = recordsResult.success ? recordsResult.data : [];
+
+  const storeById = new Map(stores.map((store) => [store.id, store]));
+  const recordByProductId = new Map(
+    records.map((record) => [record.productId, record]),
+  );
+
+  const publishableProductIds = new Set(
+    products
+      .filter((product) => {
+        const store = storeById.get(product.storeId);
+        return store && PUBLISHABLE_PLATFORMS.has(store.platform);
+      })
+      .map((product) => product.id),
+  );
+
+  const simulationsResult = await Simulation.getForProducts({
+    products: products.map((product) => product.id),
+  });
+  const simulations = simulationsResult.success ? simulationsResult.data : [];
+
+  const now = Date.now();
+  const pendingProductIds: { id: string; title: string }[] = [];
+
+  for (const product of products) {
+    if (!publishableProductIds.has(product.id)) continue;
+
+    const winRate = computeWinRate(product.id, simulations);
+    if (winRate === null || winRate >= WIN_RATE_THRESHOLD) continue;
+
+    const record = recordByProductId.get(product.id);
+    if (record?.status === "dismissed") continue;
+
+    if (record?.status === "published" && record.publishedAt) {
+      if (now - record.publishedAt.getTime() < PUBLISH_COOLDOWN_MS) continue;
+    }
+
+    pendingProductIds.push({ id: product.id, title: product.title });
+  }
+
   const errors: string[] = [];
 
-  for (const item of data.pending) {
-    const result = await executeApprove(
-      context.session.user.id,
-      item.productId,
-    );
-    if (!result.success)
-      errors.push(`${item.productTitle}: ${result.error.message}`);
+  for (const { id, title } of pendingProductIds) {
+    const result = await approveProductListing({ productId: id });
+    if (!result.success) errors.push(`${title}: ${result.error.message}`);
   }
 
   revalidatePath("/dashboard/optimize");
@@ -516,9 +540,12 @@ export const approveAllPending = withAuthentication(async (context) => {
 
   if (errors.length > 0)
     return {
-      success: false as const,
+      success: false,
       error: new Error(errors.slice(0, 3).join("; ")),
     };
 
-  return { success: true as const, data: { count: data.pending.length } };
+  return {
+    success: true,
+    data: { count: pendingProductIds.length },
+  };
 }, "Optimization.approveAllPending");

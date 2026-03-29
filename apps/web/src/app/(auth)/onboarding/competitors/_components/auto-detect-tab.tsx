@@ -8,7 +8,8 @@ import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { formatElapsed } from "@/lib/date";
 import * as Competitor from "@/server/app/competitor";
 
 type LogEntry = {
@@ -26,13 +27,6 @@ export namespace AutoDetectTab {
   };
 }
 
-const formatElapsed = (ms: number) => {
-  const seconds = ms / 1000;
-  return seconds < 60
-    ? `${seconds.toFixed(1)}s`
-    : `${Math.floor(seconds / 60)}m ${(seconds % 60).toFixed(0)}s`;
-};
-
 export const AutoDetectTab = ({
   products,
   onSuccess,
@@ -45,11 +39,6 @@ export const AutoDetectTab = ({
   const start = useRef<number>(0);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
   const target = useRef<HTMLDivElement>(null);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: scroll to bottom on new log
-  useEffect(() => {
-    target.current?.scrollIntoView({ behavior: "smooth" });
-  }, [logs]);
 
   const addLog = (entry: Omit<LogEntry, "id" | "elapsed">) =>
     setLogs((previous) => [
@@ -102,6 +91,10 @@ export const AutoDetectTab = ({
           return;
       }
     }
+
+    requestAnimationFrame(() =>
+      target.current?.scrollIntoView({ behavior: "smooth" }),
+    );
   });
 
   return (

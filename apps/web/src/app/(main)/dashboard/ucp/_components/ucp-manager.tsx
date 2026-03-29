@@ -26,6 +26,7 @@ import {
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import type { ComponentProps, ReactElement } from "react";
 import { useCallback, useMemo, useState } from "react";
+import { formatPrice } from "@/lib/currency";
 import type * as Ucp from "@/server/app/intelligence/ucp";
 import {
   generateAllProductStructuredData,
@@ -339,7 +340,7 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
                   {product.title}
                 </p>
                 <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
-                  {product.currency ?? "USD"} {product.price ?? "—"}
+                  {formatPrice(product.price, product.currency)}
                 </p>
               </div>
             </div>

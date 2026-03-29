@@ -2,6 +2,7 @@
 
 import {
   ArrowRightIcon,
+  BoxMinusIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   RocketIcon,
@@ -10,7 +11,7 @@ import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Link from "next/link";
 import { useState } from "react";
-import type { TopFinding } from "@/server/types";
+import type * as Simulate from "@/server/app/intelligence/simulate";
 
 export type ScanInsight = {
   id: string;
@@ -18,7 +19,7 @@ export type ScanInsight = {
   wins: number;
   losses: number;
   completedSimulations: number;
-  topFinding: TopFinding | null;
+  topFinding: Simulate.TopFinding | null;
 };
 
 const WinRatePill = ({ wins, losses }: { wins: number; losses: number }) => {
@@ -69,7 +70,7 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
           <div className="grid grid-cols-1 gap-px border-accent-foreground border-y bg-accent-foreground sm:grid-cols-[1fr_auto]">
             <div className="bg-primary p-6">
               <RocketIcon className="size-8 text-background" />
-              <p className="mb-2 text-white uppercase tracking-widest  mt-2">
+              <p className="mt-2 mb-2 text-white uppercase tracking-widest">
                 Impact
               </p>
               <p className="text-white leading-relaxed">
@@ -80,7 +81,7 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
               <span className="font-medium text-4xl text-white tabular-nums">
                 {finding.lossPercentage}%
               </span>
-              <p className="mt-2 font-light text-white text-sm">of sims lost</p>
+              <p className="mt-2 font-light text-sm text-white">of sims lost</p>
             </div>
           </div>
 
@@ -103,11 +104,16 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
           )}
         </>
       ) : (
-        <p className="font-light text-foreground-dimmed">
-          No finding recorded for this scan.
-        </p>
+        <div className="flex flex-col items-center justify-center p-8">
+          <BoxMinusIcon className="mb-2 size-24 text-foreground-dimmed" />
+          <h1 className="font-medium text-foreground text-lg">
+            No finding recorded for this scan.
+          </h1>
+          <p className="text-foreground-dimmed">
+            Rerun the scan to see insights.
+          </p>
+        </div>
       )}
-
       <div className="flex items-center justify-between border-accent-foreground border-t p-6">
         <WinRatePill wins={scan.wins} losses={scan.losses} />
         <Button

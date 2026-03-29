@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
-import type { PropsWithChildren } from "react";
+import { type PropsWithChildren, Suspense } from "react";
 import "./globals.css";
 import { ToastProvider } from "@zenncore/web/components/toast";
+import dynamic from "next/dynamic";
 import localFont from "next/font/local";
 import Script from "next/script";
 import { ToastList } from "@/components/ui/toast";
-import { PostHogProvider } from "@/context/posthog";
 import { ThemeProvider } from "@/context/theme";
+
+const PostHogProvider = dynamic(() =>
+  import("@/context/posthog").then((m) => m.PostHogProvider),
+);
 
 const ltsuperior = localFont({
   src: [
@@ -50,7 +54,7 @@ export const metadata: Metadata = {
     template: "%s | écentic",
   },
   description:
-    "écentic is the e-commerce optimization platform for the AI agent economy. Simulate how GPT-4, Claude, and Gemini choose products, diagnose why your listings lose, and auto-optimize to win every agent's cart.",
+    "écentic is the e-commerce optimization platform for the AI agent economy. Simulate how GPT-4, Claude, Gemini & Perplexity choose products, diagnose why your listings lose, and auto-optimize to win every agent's cart.",
   keywords: [
     "AI shopping agent optimization",
     "e-commerce AI optimization",
@@ -96,7 +100,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "écentic — Win Every AI Shopping Agent's Cart",
     description:
-      "Simulate how GPT-4, Claude, and Gemini choose your products vs. competitors. Diagnose losses. Auto-optimize. Win every cart.",
+      "Simulate how GPT-4, Claude, Gemini & Perplexity choose your products vs. competitors. Diagnose losses. Auto-optimize. Win every cart.",
     images: ["/images/opengraph.png"],
     creator: "@ecentic",
   },
@@ -138,6 +142,12 @@ export default ({ children }: PropsWithChildren) => {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://eu.i.posthog.com" />
+        <link
+          rel="preconnect"
+          href="https://eu-assets.i.posthog.com"
+          crossOrigin="anonymous"
+        />
         {process.env.NODE_ENV === "development" && (
           <Script
             src="//unpkg.com/react-grab/dist/index.global.js"
@@ -145,18 +155,21 @@ export default ({ children }: PropsWithChildren) => {
             strategy="beforeInteractive"
           />
         )}
+        <meta name="apple-mobile-web-app-title" content="écentic" />
       </head>
       <body
         className={`${ltsuperior.variable} overflow-x-hidden bg-background font-body tracking-[-4%] antialiased`}
       >
-        <PostHogProvider>
-          <ThemeProvider>
-            <ToastProvider>
-              <div className="isolate">{children}</div>
-              <ToastList types={["error", "success", "info"]} />
-            </ToastProvider>
-          </ThemeProvider>
-        </PostHogProvider>
+        <Suspense>
+          <PostHogProvider>
+            <ThemeProvider>
+              <ToastProvider>
+                <div className="isolate">{children}</div>
+                <ToastList types={["error", "success", "info"]} />
+              </ToastProvider>
+            </ThemeProvider>
+          </PostHogProvider>
+        </Suspense>
       </body>
     </html>
   );

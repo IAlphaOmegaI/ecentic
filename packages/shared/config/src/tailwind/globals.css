@@ -6,7 +6,7 @@
 @theme {
   /* background shades - more distinct neutral */
   --color-background-dimmed: #e8e8e8;
-  --color-background: #eeeeee;
+  --color-background: #f5f5f5;
   --color-background-rich: #ffffff;
   /* foreground shades - pure neutral grays with more contrast */
   --color-foreground-dimmed: #919191;

@@ -17,9 +17,10 @@ export const Steps = () => (
           <RobotIcon className="size-16" />
           <p className="font-medium text-4xl">Simulate</p>
           <p className="text-left font-light text-lg md:text-right">
-            écentic runs your products through GPT-4, Claude, and Gemini
-            simultaneously. It maps exactly how each AI agent compares your
-            listings against every competitor in your category, in real time.
+            écentic runs your products through GPT-4, Claude, Gemini &
+            Perplexity simultaneously. It maps exactly how each AI agent
+            compares your listings against every competitor in your category, in
+            real time.
           </p>
         </div>
         <div className="hidden md:block" />

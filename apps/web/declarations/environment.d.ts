@@ -17,10 +17,6 @@ declare namespace NodeJS {
     readonly SHOPIFY_API_KEY: string;
     readonly SHOPIFY_API_SECRET: string;
 
-    readonly AZURE_RESOURCE_NAME: string;
-    readonly AZURE_API_KEY: string;
-    readonly AZURE_BASE_URL: string;
-
     readonly NEXT_PUBLIC_POSTHOG_KEY: string;
     readonly NEXT_PUBLIC_POSTHOG_HOST: string;
 
@@ -31,6 +27,10 @@ declare namespace NodeJS {
     readonly UPSTASH_REDIS_REST_TOKEN: string;
 
     readonly CRON_SECRET: string;
+
+    readonly AI_GATEWAY_API_KEY: string;
+    readonly AZURE_RESOURCE_NAME: string;
+    readonly AZURE_API_KEY: string;
 
     readonly npm_package_name: string;
     readonly npm_package_version: string;

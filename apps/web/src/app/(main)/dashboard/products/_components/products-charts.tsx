@@ -19,6 +19,7 @@ const modelBarColors: Record<string, string> = {
   "GPT-4": "bg-blue-500",
   Claude: "bg-orange-500",
   Gemini: "bg-green-500",
+  Perplexity: "bg-teal-500",
 };
 
 const getLogo = (label: string) => {
@@ -29,6 +30,8 @@ const getLogo = (label: string) => {
       return "/images/claude.svg";
     case "Gemini":
       return "/images/gemini.svg";
+    case "Perplexity":
+      return "/images/perplexity.svg";
     default:
       throw new Error(`Unknown model: ${label}`);
   }
@@ -50,7 +53,7 @@ export const ProductsModelRates = ({ models }: ProductsModelRates.Props) => {
     );
 
   return (
-    <div className="grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-y px-4">
+    <div className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-y px-4">
       {models.map(({ label, rate }) => (
         <div
           key={label}

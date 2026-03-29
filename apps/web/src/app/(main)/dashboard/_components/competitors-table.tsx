@@ -2,12 +2,12 @@
 
 import { ArrowRightIcon, BoxMinusIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
-import { Button } from "@zenncore/web/components/button";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@zenncore/web/components/avatar";
+import { Button } from "@zenncore/web/components/button";
 import type { ColumnDef } from "@zenncore/web/components/data-table";
 import {
   DataTable,
@@ -15,11 +15,10 @@ import {
   DataTablePagination,
   DataTableProvider,
 } from "@zenncore/web/components/data-table";
+import Image from "next/image";
 import Link from "next/link";
 import { usePaginationChangeHandler } from "@/hooks/pagination";
 import { formatRelativeTime } from "@/lib/date";
-
-const fallbackImageSource = "/images/fallback";
 
 const WinRateBar = ({ rate }: { rate: number }) => {
   const color = (() => {
@@ -51,11 +50,11 @@ const columns: ColumnDef<CompetitorsTable.Row>[] = [
       <div className="flex items-center gap-2">
         <Avatar className="size-9 rounded-none bg-primary/10">
           <AvatarImage
-            src={row.original.image ?? fallbackImageSource}
+            src={row.original.image ?? "/images/fallback.png"}
             alt={row.original.brand}
           />
-          <AvatarFallback className="font-semibold text-primary text-xs">
-            {row.original.brand.slice(0, 2).toUpperCase()}
+          <AvatarFallback className="relative">
+            <Image src="/images/fallback.png" alt="Fallback" fill />
           </AvatarFallback>
         </Avatar>
         <div>
@@ -116,10 +115,8 @@ export const CompetitorsTable = ({
 
   return (
     <>
-      <div className="flex items-center justify-between border-accent-foreground border-b p-4">
-        <p className="mt-1 font-light text-2xl text-foreground-dimmed">
-          {title}
-        </p>
+      <div className="flex items-end justify-between border-accent-foreground border-b p-4">
+        <p className="font-medium text-2xl text-foreground">{title}</p>
         {action}
       </div>
       <div className="overflow-x-auto">

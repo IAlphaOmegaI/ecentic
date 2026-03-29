@@ -85,13 +85,15 @@
 
   if (!script || !script.src) return;
 
-  var scriptUrl;
+  const scriptUrl = (() => {
+    try {
+      return new URL(script.src);
+    } catch (_) {
+      return;
+    }
+  })();
 
-  try {
-    scriptUrl = new URL(script.src);
-  } catch (_) {
-    return;
-  }
+  if (!scriptUrl) return;
 
   const id = scriptUrl.searchParams.get("sid");
   const token = scriptUrl.searchParams.get("k");
@@ -100,15 +102,15 @@
 
   if (!id || !token) return;
 
-  var ua = navigator.userAgent;
-  var ref = document.referrer;
+  var userAgent = navigator.userAgent;
+  var referrer = document.referrer;
 
   var agentType = null;
   var agentCategory = null;
   var detectionMethod = null;
 
   for (let j = 0; j < UA_PATTERNS.length; j++) {
-    if (ua.indexOf(UA_PATTERNS[j].pattern) !== -1) {
+    if (userAgent.indexOf(UA_PATTERNS[j].pattern) !== -1) {
       agentType = UA_PATTERNS[j].type;
       agentCategory = UA_PATTERNS[j].category;
       detectionMethod = "user-agent";
@@ -117,14 +119,12 @@
   }
 
   for (let k = 0; k < REFERRER_DOMAINS.length; k++) {
-    if (ref.indexOf(REFERRER_DOMAINS[k].domain) !== -1) {
+    if (referrer.indexOf(REFERRER_DOMAINS[k].domain) !== -1) {
       if (!agentType) {
         agentType = REFERRER_DOMAINS[k].type;
         agentCategory = REFERRER_DOMAINS[k].category;
         detectionMethod = "referrer";
-      } else {
-        detectionMethod = "both";
-      }
+      } else detectionMethod = "both";
       break;
     }
   }
@@ -135,46 +135,36 @@
     detectionMethod = "user-agent";
   } else if (!agentType) return;
 
-  var pageType = "other";
-  try {
-    if (window?.__ECENTIC_CONFIG__?.pageType) {
-      pageType = window.__ECENTIC_CONFIG__.pageType;
-    } else if (
-      location.pathname.indexOf("/products/") !== -1 ||
-      location.pathname.indexOf("/product/") !== -1
-    ) {
-      pageType = "product";
-    } else if (
-      location.pathname.indexOf("/collections/") !== -1 ||
-      location.pathname.indexOf("/category/") !== -1
-    ) {
-      pageType = "collection";
-    } else if (location.pathname.indexOf("/search") !== -1) {
-      pageType = "search";
-    } else if (
-      location.pathname === "/" ||
-      location.pathname === "/index.html"
-    ) {
-      pageType = "homepage";
+  var pageType = (() => {
+    try {
+      if (window?.__ECENTIC_CONFIG__?.pageType)
+        return window.__ECENTIC_CONFIG__.pageType;
+
+      if (
+        location.pathname.indexOf("/products/") !== -1 ||
+        location.pathname.indexOf("/product/") !== -1
+      )
+        return "product";
+
+      if (
+        location.pathname.indexOf("/collections/") !== -1 ||
+        location.pathname.indexOf("/category/") !== -1
+      )
+        return "collection";
+
+      if (location.pathname.indexOf("/search") !== -1) return "search";
+
+      if (location.pathname === "/" || location.pathname === "/index.html")
+        return "homepage";
+
+      return "other";
+    } catch (_) {
+      return "other";
     }
-  } catch (_) {}
+  })();
 
   const productExternalId =
     window?.__ECENTIC_CONFIG__?.productExternalId ?? null;
-
-  const payload = {
-    storeId: id,
-    productUrl: location.href,
-    userAgent: ua,
-    referrer: ref,
-    agentType: agentType,
-    agentCategory: agentCategory,
-    detectionMethod: detectionMethod,
-    pageType: pageType,
-    timestamp: new Date().toISOString(),
-  };
-
-  if (productExternalId) payload.productExternalId = productExternalId;
 
   fetch(`${origin}/api/tracking/agent-visit`, {
     method: "POST",
@@ -182,7 +172,18 @@
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify({
+      storeId: id,
+      productUrl: location.href,
+      userAgent,
+      referrer,
+      agentType,
+      agentCategory,
+      detectionMethod,
+      pageType,
+      productExternalId,
+      timestamp: new Date().toISOString(),
+    }),
     mode: "cors",
     keepalive: true,
   }).catch(() => {});

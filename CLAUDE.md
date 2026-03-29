@@ -19,7 +19,7 @@ If code and docs disagree, follow documented intent unless the user explicitly a
 
 ## What This Is
 
-**Écentic** is an e-commerce optimization platform for the AI agent economy. It simulates how AI shopping agents (GPT-4, Claude, Gemini) compare products vs. competitors, diagnoses why products win or lose, and auto-optimizes listings. See `docs/context/idea.md` for full product spec and feature roadmap.
+**Écentic** is an e-commerce optimization platform for the AI agent economy. It simulates how AI shopping agents (GPT-4, Claude, Gemini, Perplexity) compare products vs. competitors, diagnoses why products win or lose, and auto-optimizes listings. See `docs/context/idea.md` for full product spec and feature roadmap.
 
 ---
 
@@ -103,7 +103,7 @@ There are no automated tests in this codebase currently.
 - `integration/shopify.ts` — OAuth token exchange + product sync via Shopify Admin API
 - `integration/woocommerce.ts` — credential validation + paginated product fetch
 - `integration/feed.ts` — XML/JSON auto-detection + Google Shopping format parsing
-- `intelligence/simulate.ts` — AI simulation engine (GPT-4, Claude, Gemini perspectives)
+- `intelligence/simulate.ts` — AI simulation engine (GPT-4, Claude, Gemini, Perplexity perspectives)
 
 ---
 
@@ -155,20 +155,34 @@ Onboarding/auth screens may be client-heavy by design; all other screens (dashbo
 
 ## Key Patterns
 
-### Error handling — use `resultify`, never `try/catch`
+### Error handling — `resultify` in actions, `unwrapResult` in server components
 ```ts
+// In server actions / utilities — use resultify + manual checks
 import { resultify } from "@zenncore/utils";
-
 const result = await resultify(() => fetch(url));
 if (!result.success) return { success: false, error: result.error };
 return { success: true, data: result.data };
+
+// In server components (inside Suspense) — use unwrapResult, throws on error
+import { unwrapResult } from "@zenncore/utils";
+import { Environment } from "@/server/utils/environment";
+const products = await unwrapResult(Products.skimForCurrentUser(Environment.SERVER));
+```
+
+### Server module imports — namespace pattern
+```ts
+// Server components: full namespace (functions + types)
+import * as Products from "@/server/app/product";
+
+// Client components: type-only namespace (no server code bundled)
+import type * as Products from "@/server/app/product";
 ```
 
 ### Forms — use `InferredForm` + `field()`
 All forms are defined via Zod schema + `field()` descriptors. No inline `<input>` or manual react-hook-form registration.
 
 ### Styling — semantic Tailwind tokens only
-Use `text-primary`, `bg-background`, `border-edge`, etc. Never raw colors like `text-gray-500` or `bg-white`.
+Use `text-primary`, `bg-background`, `border-accent-foreground`, etc. Never raw colors like `text-gray-500` or `bg-white`.
 
 ### Components — Namespace pattern
 ```tsx

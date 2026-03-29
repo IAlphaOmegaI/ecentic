@@ -44,7 +44,7 @@ If code and docs disagree, prefer docs intent unless explicitly instructed other
 
 - Use `@zenncore/web` components for interactive UI; avoid custom raw HTML implementations for controls.
 - Prefer `@zenncore/*` packages before adding local duplicates.
-- Use semantic Tailwind tokens (`text-primary`, `bg-background`, `border-edge`, etc.), not raw color utility classes.
+- Use semantic Tailwind tokens (`text-primary`, `bg-background`, `border-accent-foreground`, etc.), not raw color utility classes.
 - Use `const` over `let`, descriptive variable names, early returns, and `resultify`-style error handling.
 - Follow PPR/streaming on non-onboarding/non-auth pages: server-rendered shell in `page.tsx`, async server components wrapped in `<Suspense>` with matching skeletons.
 - Use only `Motion.Row`, `Motion.Up`, `Motion.Item`, and `Motion.Stagger` for animations.
@@ -68,13 +68,15 @@ If code and docs disagree, prefer docs intent unless explicitly instructed other
 
 ## Learned Workspace Facts
 
-- If Postgres reports `relation "...\" does not exist`, run migrations from `apps/web` using `bun run db:migrate`.
-- From `apps/web`, `bun run db:push` pushes the Drizzle schema directly to the database (handy for local dev); `bun run db:migrate` applies versioned SQL migrations (prefer for production-style workflows).
+- If Postgres reports `relation "...\" does not exist`, run migrations from `apps/web` using `bun run db:migrate`. From the same app, `bun run db:push` syncs the Drizzle schema directly (dev convenience); `bun run db:migrate` applies versioned SQL migrations (prefer for production-style workflows).
 - AI streaming server actions use `AI.stream<EventType>()` and return `{ output }`, consumed client-side with `readStreamableValue(output)` and `switch (event.kind)`.
 - For Zod schemas passed to AI `generate()`, avoid `z.default()` and use `.optional()` for truly optional fields.
 - Non-onboarding/auth pages are expected to follow PPR/streaming patterns with a server-rendered `page.tsx` shell and Suspense-wrapped async server components.
+- Repository `paginate` and `Product.paginateWithIntelligence` return `{ items, pagination }` where `pagination` has `total`, `page`, and `size`; UI must pass `items` as table rows and derive `pageCount` from pagination. Using `data.rows` or `data.pageCount` leaves rows undefined and breaks `@zenncore/data-table`.
+- The dashboard layout checks Better Auth session on the server; without a session, users see an explicit unauthenticated state instead of the full dashboard shell calling authenticated actions.
+- `NEXT_PUBLIC_APP_SCOPE=onboarding` hides the dashboard: middleware redirects `/dashboard` to `/onboarding/connect` and sign-in uses the onboarding landing path. Read `process.env.NEXT_PUBLIC_APP_SCOPE` inside `middleware.ts` (not only via a shared module) so the Edge bundle inlines it correctly in dev and deploys. Changing `NEXT_PUBLIC_*` on Vercel requires a new deployment to take effect.
 - Shopify OAuth and WooCommerce connect must run catalog import during the connect flow (not only `Store.create`); otherwise onboarding can show no products.
 - For Shopify storefront ScriptTag `tracker.js`, beacons use the script origin with `Authorization: Bearer` and CORS; requests relative to the merchant domain never reach the app API. HTTPS storefronts cannot load `http://localhost` scripts (mixed content); set `ECENTIC_TRACKER_PUBLIC_ORIGIN` to a public HTTPS base URL (for example an ngrok tunnel) for ScriptTag `src`, and reconnect OAuth after that URL changes.
 - WooCommerce REST product updates must use `PUT` to `/wp-json/wc/v3/products/{numericId}` with no `.json` suffix after the id; paths like `.../products/123.json` can trigger WordPress “No route was found matching the URL and request method.”
 - Publishing optimized listings to WooCommerce requires REST API keys with read/write permissions; read-only keys work for sync but not for `PUT` updates.
-- Local Next dev: after code or env changes, rely on hot reload or restart the dev server; that is sufficient—no cloud “redeploy” is required unless the app is hosted remotely.
+- Local Next dev: after code or env changes, rely on hot reload or restart the dev server; remote hosting still needs redeploy when you change env or ship builds.

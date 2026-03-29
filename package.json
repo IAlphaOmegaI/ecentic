@@ -23,7 +23,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.4.8",
     "@turbo/gen": "^2.8.19",
-    "turbo": "^2.8.19"
+    "turbo": "^2.8.20"
   },
   "engines": {
     "node": ">=24"

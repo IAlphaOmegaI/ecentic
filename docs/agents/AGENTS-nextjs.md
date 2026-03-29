@@ -143,6 +143,49 @@ export const SignInForm = () => {
 
 ---
 
+## 22a. Server Component Data Fetching — `unwrapResult` + `Environment.SERVER`
+
+When calling server actions from **server components** (inside `<Suspense>`), use `unwrapResult` from `@zenncore/utils` instead of manually checking `result.success`. `unwrapResult` throws on error, which is caught by the nearest Suspense error boundary — no manual error branching needed.
+
+Always pass `Environment.SERVER` from `@/server/utils/environment` as the first argument to server actions when calling from the server.
+
+Import server modules as namespaces (`import * as Module`), not destructured functions (see AGENTS-style §18a).
+
+```ts
+// ✅ Good — server component inside Suspense
+import * as Products from "@/server/app/product";
+import * as Optimizations from "@/server/app/optimization";
+import { unwrapResult } from "@zenncore/utils";
+import { Environment } from "@/server/utils/environment";
+
+export const Sidebar = async () => {
+  const [products, optimizations] = await Promise.all([
+    unwrapResult(Products.skimForCurrentUser(Environment.SERVER)),
+    unwrapResult(Optimizations.listDashboard(Environment.SERVER)),
+  ]);
+
+  return (
+    <aside>
+      <SidebarNav products={products} optimizations={optimizations.published} />
+    </aside>
+  );
+};
+```
+
+```ts
+// ❌ Bad — manual success checks in server components wrapped by Suspense
+const products = await getProducts();
+if (!products.success) return null;
+const data = products.data;
+```
+
+```ts
+// ❌ Bad — calling without Environment
+const products = await Products.skimForCurrentUser();
+```
+
+---
+
 ## 23a. Always Use the Repository Pattern for DB Operations
 
 Never use raw `db.insert(...)`, `db.select(...)`, etc. directly in application code. Every table must have a repository file in `server/app/` using the `repository()` helper.

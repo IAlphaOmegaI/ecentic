@@ -22,7 +22,7 @@ AI agents don't see ads, don't scroll, don't read marketing copy. They read stru
 
 ### The Solution — Three Steps
 
-1. **Simulate** — Run AI agents (GPT-4, Claude, Gemini) against your products and competitors. Each agent scores both sides and picks a winner.
+1. **Simulate** — Run AI agents (GPT-4, Claude, Gemini, Perplexity) against your products and competitors. Each agent scores both sides and picks a winner.
 2. **Diagnose** — See step-by-step agent reasoning (agent replay), attribute gaps, competitor battlecards, and per-model win rates.
 3. **Optimize (Auto)** — Generate optimized titles, descriptions, and structured data. One-click approve or auto-publish. Re-optimize when models change (drift detection).
 
@@ -177,7 +177,7 @@ Each persona modifies the system prompt for the AI agent simulation. Win rates a
 The main dashboard is the merchant's real-time scorecard. It should show:
 
 - **Headline metrics** (top row): Overall win rate (%), total products scanned, win rate trend (up/down arrow + delta vs. last period)
-- **Win rate by model**: Three cards (GPT-4, Claude, Gemini) each showing current win rate, change since last sweep, and a mini sparkline of the last 30 days
+- **Win rate by model**: Four cards (GPT-4, Claude, Gemini, Perplexity) each showing current win rate, change since last sweep, and a mini sparkline of the last 30 days
 - **Top performer**: The product with the highest win rate, its score, and which models favor it
 - **Biggest opportunity**: The product with the largest gap between current win rate and estimated potential (based on optimization suggestions)
 - **Trend chart**: Line chart of overall win rate over time (7d / 30d / 90d toggle), with model-specific lines
@@ -188,7 +188,7 @@ The main dashboard is the merchant's real-time scorecard. It should show:
 ### Products (`/dashboard/products`)
 
 - **Table view**: Sortable/filterable table of all products
-- **Columns**: Title, price, category, overall win rate, GPT-4 %, Claude %, Gemini %, gap vs. top competitor, data quality score (0-100 based on attribute completeness), optimization status badge, last scanned timestamp
+- **Columns**: Title, price, category, overall win rate, GPT-4 %, Claude %, Gemini %, Perplexity %, gap vs. top competitor, data quality score (0-100 based on attribute completeness), optimization status badge, last scanned timestamp
 - **Filters**: Category, optimization status (optimized/pending/unoptimized), win rate range, data quality range
 - **Search**: Full-text search across title, SKU, description
 - **Bulk actions**: Select multiple → run simulation, generate optimizations, export CSV
@@ -233,7 +233,7 @@ Sections:
 - **Team** — Invite members, assign roles (admin / viewer)
 - **Connected Stores** — List of stores with status, last synced, disconnect option, add new store
 - **Notifications** — Toggle: drift alerts, competitor alerts, weekly digest, optimization published, new product detected
-- **Simulation Config** — Models to include (GPT-4, Claude, Gemini — checkboxes), simulation frequency (daily / 12h / 6h / continuous), purchase personas enabled
+- **Simulation Config** — Models to include (GPT-4, Claude, Gemini, Perplexity — checkboxes), simulation frequency (daily / 12h / 6h / continuous), purchase personas enabled
 - **Auto-Optimization** — Toggle auto-approve, toggle auto-publish to store, set win rate threshold for triggering optimization
 - **Billing** — Current plan, usage, upgrade/downgrade, payment method
 
@@ -458,7 +458,7 @@ Custom error classes via factory: `DatabaseError`, `NotFoundError`, `RequestErro
 ### Critical Path (core product)
 
 1. **Better Auth route handler** — `/api/auth/[...all]/route.ts` is missing; auth endpoints won't work without it
-2. **AI simulation engine** — The scan/simulation tables exist but the actual AI agent logic (calling GPT-4, Claude, Gemini to compare products) is not implemented. This is the single most important piece. Needs: structured prompts per model, persona variants, scoring rubric, reasoning extraction.
+2. **AI simulation engine** — The scan/simulation tables exist but the actual AI agent logic (calling GPT-4, Claude, Gemini, Perplexity to compare products) is not implemented. This is the single most important piece. Needs: structured prompts per model, persona variants, scoring rubric, reasoning extraction.
 3. **Background job system** — Cron-based or queue-based scheduler for running simulation sweeps, catalog syncs, drift detection, and auto-optimization without user input. See "Background Job Architecture" section above.
 4. **Dashboard with real data** — All dashboard pages currently render mock data; they need to query the actual database and display real simulation results, win rates, trends.
 

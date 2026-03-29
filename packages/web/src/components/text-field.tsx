@@ -62,6 +62,8 @@ export const TextField = ({
   disabled = false,
   // variant,
   className,
+  classList,
+  label: _label,
   onValueChange,
   ...props
 }: TextField.Props): JSX.Element => {
@@ -150,6 +152,7 @@ export const TextField = ({
         "flex h-10 w-full items-center justify-between gap-2 overflow-hidden border border-accent-foreground px-2 transition-colors duration-200 focus-within:border-primary",
         disabled && "cursor-not-allowed opacity-50",
         resolveClassName(className, state),
+        resolveClassName(classList?.root, state),
       ),
       // ...(masked ? { "data-masked": "" } : {}),
       //  ...{

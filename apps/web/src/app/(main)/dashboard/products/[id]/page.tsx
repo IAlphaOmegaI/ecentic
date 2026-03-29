@@ -29,7 +29,9 @@ const ProductDetailContent = async ({
   params,
 }: Pick<PageProps<"/dashboard/products/[id]">, "params">) => {
   const { id } = await params;
-  const data = await unwrapResult(Product.getDetail(Environment.SERVER, { id }));
+  const data = await unwrapResult(
+    Product.getDetail(Environment.SERVER, { id }),
+  );
   if (!data) return null;
 
   return <ProductDetail data={data} />;

@@ -16,27 +16,10 @@ import {
   TableRow,
 } from "@zenncore/web/components/table";
 import { motion } from "motion/react";
+import Image from "next/image";
 import { Stagger } from "@/lib/animations";
+import { getCurrencySymbol, normalizePrice } from "@/lib/currency";
 import type * as Competitor from "@/server/app/competitor";
-
-const fallbackImageSource = "/images/fallback";
-
-const formatPrice = (price: string | null, currency: string | null): string => {
-  if (!price) return "\u2014";
-
-  const symbol = (() => {
-    switch (currency?.toUpperCase()) {
-      case "EUR":
-        return "\u20AC";
-      case "GBP":
-        return "\u00A3";
-      default:
-        return "$";
-    }
-  })();
-
-  return `${symbol}${price}`;
-};
 
 export namespace CompetitorList {
   export type Props = {
@@ -58,7 +41,7 @@ export const CompetitorList = ({
           <TableHeader>
             <TableRow>
               <TableHead className="w-10 px-4 py-2" />
-              {["Competitor", "Price", "Brand"].map((header) => (
+              {["Competitor", "Price", "Currency", "Brand"].map((header) => (
                 <TableHead key={header}>{header}</TableHead>
               ))}
               <TableHead className="w-10 px-4 py-2" />
@@ -106,11 +89,11 @@ export const CompetitorList = ({
                   <div className="flex items-center gap-3">
                     <Avatar className="size-9 rounded-none bg-primary/10">
                       <AvatarImage
-                        src={record.image ?? fallbackImageSource}
+                        src={record.image ?? "/images/fallback.png"}
                         alt={record.title}
                       />
-                      <AvatarFallback className="font-semibold text-primary text-xs">
-                        {record.title.slice(0, 2).toUpperCase()}
+                      <AvatarFallback className="relative">
+                        <Image src="/images/fallback.png" alt="Fallback" fill />
                       </AvatarFallback>
                     </Avatar>
                     <div>
@@ -126,7 +109,12 @@ export const CompetitorList = ({
                   </div>
                 </TableCell>
                 <TableCell>
-                  {formatPrice(record.price, record.currency)}
+                  {record.price ? normalizePrice(record.price) : "\u2014"}
+                </TableCell>
+                <TableCell className="text-foreground-dimmed">
+                  {record.currency
+                    ? getCurrencySymbol(record.currency)
+                    : "\u2014"}
                 </TableCell>
                 <TableCell className="text-foreground-dimmed">
                   {record.brand ?? "\u2014"}

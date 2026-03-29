@@ -12,7 +12,9 @@ import { ProductSelector } from "./_components/product-selector";
 export default async () => {
   await connection();
 
-  const products = await unwrapResult(Product.skimForCurrentUser(Environment.SERVER));
+  const products = await unwrapResult(
+    Product.skimForCurrentUser(Environment.SERVER),
+  );
 
   if (products.length === 0)
     return (
