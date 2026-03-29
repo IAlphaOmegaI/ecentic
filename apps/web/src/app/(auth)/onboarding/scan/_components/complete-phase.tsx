@@ -40,7 +40,7 @@ export const CompletePhase = ({
   wins,
   losses,
   winRates,
-  topFinding: _,
+  topFinding,
   products: finalProductCount,
   scanId,
 }: CompletePhase.Props) => {
@@ -68,13 +68,6 @@ export const CompletePhase = ({
         return "text-success";
     }
   })();
-
-  const topFinding = {
-    name: "Product Name",
-    missingAttributes: ["Attribute 1", "Attribute 2", "Attribute 3"],
-    impactDescription: "Impact Description",
-    lossPercentage: 10,
-  };
 
   return (
     <motion.div
@@ -116,16 +109,24 @@ export const CompletePhase = ({
                   className="flex aspect-square flex-col bg-background-dimmed p-4"
                   variants={Stagger.Item}
                 >
-                  <Image src={logo} alt={label} width={64} height={64} />
-                  <span className="mt-auto text-2xl text-foreground">
+                  <Image
+                    src={logo}
+                    alt={label}
+                    width={48}
+                    height={48}
+                    className="mb-4"
+                  />
+                  <span className="mt-auto font-medium text-lg text-foreground">
                     {label}
                   </span>
-                  <div className="flex items-center gap-3">
-                    <span className="font-light text-success">
+                  <div className="flex items-center gap-2">
+                    <span className="font-light text-success text-sm leading-tight">
                       {rates?.wins ?? 0} W
                     </span>
-                    <span className="text-foreground-dimmed/30">—</span>
-                    <span className="font-light text-error">
+                    <span className="text-foreground-dimmed/30 text-sm leading-tight">
+                      —
+                    </span>
+                    <span className="font-light text-error text-sm leading-tight">
                       {rates?.losses ?? 0} L
                     </span>
                   </div>
@@ -151,10 +152,6 @@ export const CompletePhase = ({
           </motion.div>
         </Motion.Item>
 
-        {/* <Motion.Item className=" border-accent-foreground border-b px-8">
-          <div className="size-full border-x h-8 border-accent-foreground" />
-        </Motion.Item> */}
-
         {topFinding && (
           <Motion.Item className="border-accent-foreground border-b px-8">
             <div className="border-primary/20 border-x bg-primary/5 p-6">
@@ -173,7 +170,7 @@ export const CompletePhase = ({
           </Motion.Item>
         )}
 
-        <Motion.Item className="flex-1 border-accent-foreground border-b px-8">
+        <Motion.Item className="min-h-0 flex-1 border-accent-foreground border-b px-8">
           <div className="grid grid-cols-2 gap-px border-accent-foreground border-x bg-accent-foreground">
             <div className="flex items-center gap-2 bg-background-dimmed p-4">
               <div className="flex items-center gap-2">

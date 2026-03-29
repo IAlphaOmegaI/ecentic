@@ -18,7 +18,13 @@ const map = {
     /^\/share(\/.*)?$/,
   ],
   [RouteAccess.ADMINISTRATOR]: [/^\/.*/, "/sign-in"],
-  [RouteAccess.USER]: [/^\/onboarding(\/.*)?$/],
+  [RouteAccess.USER]: [
+    "/",
+    "/terms-and-conditions",
+    "/privacy-policy",
+    /^\/share(\/.*)?$/,
+    /^\/onboarding(\/.*)?$/,
+  ],
 } as const;
 
 export const proxy = async (request: Request) => {
@@ -68,6 +74,6 @@ const isAuthorized = (pathname: string, access: RouteAccess): boolean => {
 
 export const config = {
   matcher: [
-    "/((?!monitoring|_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt|api/auth|.*\\.(?:png|jpg|jpeg|webp|svg)).*)",
+    "/((?!monitoring|_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt|api|.*\\.(?:png|jpg|jpeg|webp|svg)).*)",
   ],
 };
