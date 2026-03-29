@@ -1,4 +1,4 @@
-"use client";
+("use client");
 
 import Lenis from "lenis";
 import { type PropsWithChildren, useEffect } from "react";
@@ -22,5 +22,5 @@ export const SmoothScroll = ({ children }: PropsWithChildren) => {
     };
   }, []);
 
-  return <>{children}</>;
+  return children;
 };

@@ -106,7 +106,7 @@ export default async () => {
           {models.map((model) => (
             <div
               key={model.model}
-              className="flex aspect-square flex-col bg-background-dimmed p-4"
+              className="flex flex-col bg-background-dimmed p-4 h-full"
             >
               <Image
                 src={model.logo}
