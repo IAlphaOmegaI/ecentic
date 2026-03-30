@@ -54,41 +54,43 @@ export const ProductsModelRates = ({ models }: ProductsModelRates.Props) => {
 
   return (
     <div className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-y px-4">
-      {models.map(({ label, rate }) => (
-        <div
-          key={label}
-          className="flex flex-col items-center gap-1 p-6 first:pl-0 last:pr-0"
-        >
-          <div className="flex w-full flex-row items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Image
-                src={getLogo(label)}
-                alt={label}
-                width={64}
-                height={64}
-                className="size-6"
-              />
-              <span className="text-foreground-dimmed uppercase tracking-widest">
-                {label}
+      {models.map(({ label, rate }) => {
+        return (
+          <div
+            key={label}
+            className="flex flex-col items-center gap-1 p-6 first:pl-0 last:pr-0"
+          >
+            <div className="flex w-full flex-row items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Image
+                  src={getLogo(label)}
+                  alt={label}
+                  width={64}
+                  height={64}
+                  className="size-4"
+                />
+                <span className="text-foreground-dimmed uppercase tracking-widest">
+                  {label}
+                </span>
+              </div>
+              <span className="font-medium text-lg text-foreground tabular-nums">
+                {rate}{" "}
+                <span className="font-light text-foreground-dimmed text-sm">
+                  %
+                </span>
               </span>
             </div>
-            <span className="font-medium text-4xl text-foreground tabular-nums">
-              {rate}{" "}
-              <span className="font-light text-foreground-dimmed text-xl">
-                %
-              </span>
-            </span>
+            <div className="mt-2 h-1 w-full bg-accent-foreground">
+              <motion.div
+                className={cn("h-full", modelBarColors[label])}
+                initial={{ width: 0 }}
+                animate={{ width: `${rate}%` }}
+                transition={{ ...Spring.Gentle, delay: 0.4 }}
+              />
+            </div>
           </div>
-          <div className="mt-2 h-1 w-full bg-accent-foreground">
-            <motion.div
-              className={cn("h-full", modelBarColors[label])}
-              initial={{ width: 0 }}
-              animate={{ width: `${rate}%` }}
-              transition={{ ...Spring.Gentle, delay: 0.4 }}
-            />
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

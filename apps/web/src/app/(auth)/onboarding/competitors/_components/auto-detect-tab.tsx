@@ -8,7 +8,7 @@ import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { formatElapsed } from "@/lib/date";
 import * as Competitor from "@/server/app/competitor";
 
@@ -49,6 +49,14 @@ export const AutoDetectTab = ({
         elapsed: Date.now() - start.current,
       },
     ]);
+
+  useEffect(() => {
+    if (logs.length === 0) return;
+
+    requestAnimationFrame(() =>
+      target.current?.scrollIntoView({ behavior: "smooth" }),
+    );
+  }, [logs]);
 
   const [handleDetect, isDetecting] = useAsyncAction(async () => {
     setLogs([]);

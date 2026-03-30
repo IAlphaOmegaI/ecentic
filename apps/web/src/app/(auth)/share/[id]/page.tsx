@@ -167,7 +167,6 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
             </div>
           </Motion.Item>
 
-          {/* Per-model breakdown */}
           <Motion.Item className="border-accent-foreground border-b px-8">
             <div className="border-accent-foreground border-x border-b px-4 py-3">
               <p className="font-medium text-foreground text-sm">
