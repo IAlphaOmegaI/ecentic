@@ -2,15 +2,15 @@
 
 client_id = "5ed9588ce5bd584f63adfcbacc0a09bc"
 name = "écentic.ai"
-application_url = "https://www.ecentic.ai/onboarding/connect/shopify,http://localhost:3000/onboarding/connect/shopify"
-embedded = true
+application_url = "https://ecentic.ai/onboarding/connect/shopify"
+embedded = false
 
 [webhooks]
 api_version = "2026-01"
 
 [[webhooks.subscriptions]]
 compliance_topics = ["customers/data_request", "customers/redact", "shop/redact"]
-uri = "https://www.ecentic.ai/api/integrations/shopify/webhooks"
+uri = "https://ecentic.ai/api/integrations/shopify/webhooks"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
@@ -20,6 +20,6 @@ use_legacy_install_flow = false
 
 [auth]
 redirect_urls = [
-  "https://www.ecentic.ai/api/integrations/shopify/callback",
+  "https://ecentic.ai/api/integrations/shopify/callback",
   "http://localhost:3000/api/integrations/shopify/callback"
 ]
