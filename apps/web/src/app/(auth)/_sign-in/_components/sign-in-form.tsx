@@ -14,24 +14,24 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { z } from "zod";
 import { Motion } from "@/components/motion";
 import { postAuthLandingPath } from "@/lib/app-scope";
+import { authEmailSchema, signInPasswordSchema } from "@/lib/auth-form-schema";
 import * as Authentication from "@/server/app/authentication";
 
 const config = {
   email: field({
     shape: "text",
-    validator: z.string().email(),
+    validator: authEmailSchema,
     label: "Email",
     placeholder: "jane@acmestore.com",
+    description: "Use the address you signed up with.",
   }),
   password: field({
     shape: "text",
     type: "password",
-    validator: z.string().min(1),
-    // @ts-expect-error - label is a function
-    label: () => (
+    validator: signInPasswordSchema,
+    label: (_props) => (
       <div className="flex items-center justify-between">
         <FieldLabel>Password</FieldLabel>
         <Link

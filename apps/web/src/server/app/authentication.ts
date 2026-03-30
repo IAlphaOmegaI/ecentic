@@ -4,6 +4,11 @@ import { type Result, resultify } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
 import { cookies, headers } from "next/headers";
 import { Resend } from "resend";
+import {
+  authEmailSchema,
+  signInPasswordSchema,
+  signUpPasswordSchema,
+} from "@/lib/auth-form-schema";
 import { VerifyEmail } from "@/public/templates/verify";
 import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
@@ -12,6 +17,7 @@ import { Environment } from "../utils/environment";
 import {
   InvalidCredentialsError,
   NotFoundError,
+  RequestError,
   type UnauthenticatedError,
 } from "../utils/error";
 import * as User from "./user";
@@ -28,12 +34,32 @@ const parseName = (fullName: string): { name: string; surname: string } => {
 
 export const signIn = withContext(
   async (context, { email, password }: { email: string; password: string }) => {
+    const emailParsed = authEmailSchema.safeParse(email);
+    if (!emailParsed.success) {
+      return {
+        success: false,
+        error: new RequestError(
+          emailParsed.error.issues[0]?.message ?? "Invalid email address",
+        ),
+      };
+    }
+
+    const passwordParsed = signInPasswordSchema.safeParse(password);
+    if (!passwordParsed.success) {
+      return {
+        success: false,
+        error: new RequestError(
+          passwordParsed.error.issues[0]?.message ?? "Invalid password",
+        ),
+      };
+    }
+
     const result = await resultify(
       async () =>
         await context.auth.signInEmail({
           body: {
-            email,
-            password,
+            email: emailParsed.data,
+            password: passwordParsed.data,
           },
         }),
     );
@@ -49,7 +75,7 @@ export const signIn = withContext(
 
     context.span.addBreadcrumb({
       category: "auth.sign_in",
-      data: { "user.id": result.data.user.id, "user.email": email },
+      data: { "user.id": result.data.user.id, "user.email": emailParsed.data },
     });
 
     const jar = await cookies();
@@ -194,6 +220,26 @@ export const signUp = withContext(
       role?: string;
     },
   ): Promise<Result<{ message: string }, Error>> => {
+    const emailParsed = authEmailSchema.safeParse(payload.email);
+    if (!emailParsed.success) {
+      return {
+        success: false,
+        error: new RequestError(
+          emailParsed.error.issues[0]?.message ?? "Invalid email address",
+        ),
+      };
+    }
+
+    const passwordParsed = signUpPasswordSchema.safeParse(payload.password);
+    if (!passwordParsed.success) {
+      return {
+        success: false,
+        error: new RequestError(
+          passwordParsed.error.issues[0]?.message ?? "Invalid password",
+        ),
+      };
+    }
+
     const { name, surname } = parseName(payload.fullName);
 
     const result = await resultify(
@@ -202,8 +248,8 @@ export const signUp = withContext(
           body: {
             name,
             surname,
-            email: payload.email,
-            password: payload.password,
+            email: emailParsed.data,
+            password: passwordParsed.data,
             ...(payload.role !== undefined && { role: payload.role }),
             callbackURL: `${process.env.APP_HOST}/onboarding/connect`,
           },

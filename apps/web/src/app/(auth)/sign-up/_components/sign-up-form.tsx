@@ -15,6 +15,11 @@ import Image from "next/image";
 import { z } from "zod";
 import { Motion } from "@/components/motion";
 import { Spring, Stagger } from "@/lib/animations";
+import {
+  authEmailSchema,
+  signUpPasswordRequirementsText,
+  signUpPasswordSchema,
+} from "@/lib/auth-form-schema";
 import * as Authentication from "@/server/app/authentication";
 
 const roles = [
@@ -24,9 +29,10 @@ const roles = [
   "Agency",
   "Developer",
   "Other",
-];
+] as const;
 
 const sources = [
+  "Prefer not to say",
   "Product Hunt",
   "Twitter / X",
   "LinkedIn",
@@ -36,7 +42,7 @@ const sources = [
   "Newsletter",
   "Podcast",
   "Other",
-];
+] as const;
 
 const config = {
   fullName: field({
@@ -55,28 +61,31 @@ const config = {
   }),
   email: field({
     shape: "text",
-    validator: z.string().email(),
+    validator: authEmailSchema,
     label: "Email",
     placeholder: "jane@acmestore.com",
+    description:
+      "We’ll send a verification link to this address. No spaces; use a standard format like name@domain.com.",
     classList: { field: "col-span-2" },
   }),
   password: field({
     shape: "text",
     type: "password",
-    validator: z.string().min(8),
+    validator: signUpPasswordSchema,
     label: "Password",
-    placeholder: "Min 8 characters",
+    description: signUpPasswordRequirementsText,
+    placeholder: "Create a strong password",
     classList: { field: "col-span-2" },
   }),
   role: field({
     shape: "select",
-    validator: z.literal(roles),
+    validator: z.enum(roles),
     label: "Your Role",
     classList: { field: "col-span-1" },
   }),
   source: field({
     shape: "select",
-    validator: z.literal(sources).optional(),
+    validator: z.enum(sources),
     label: "How did you hear?",
     classList: { field: "col-span-1" },
   }),
