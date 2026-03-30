@@ -15,7 +15,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { formatPrice } from "@/lib/currency";
 import type * as Competitor from "@/server/app/competitor";
-import { searchCompetitors } from "@/server/app/intelligence/search";
+import * as Search from "@/server/app/intelligence/search";
 
 export namespace SearchTab {
   export type Props = {
@@ -39,7 +39,7 @@ export const SearchTab = ({
       const term = manual ?? query;
       if (!term?.trim()) return;
 
-      const result = await searchCompetitors({ query: term });
+      const result = await Search.searchCompetitors({ query: term });
 
       if (!result.success) {
         toast.add({
@@ -63,10 +63,7 @@ export const SearchTab = ({
 
   return (
     <div
-      className={cn(
-        "relative flex h-full flex-col overflow-hidden",
-        className,
-      )}
+      className={cn("relative flex h-full flex-col overflow-hidden", className)}
     >
       <div className="relative border-accent-foreground border-b bg-background-dimmed p-4">
         <Image
@@ -188,11 +185,7 @@ export const SearchTab = ({
                       alt={competitor.title}
                     />
                     <AvatarFallback className="relative">
-                      <Image
-                        src="/images/fallback.png"
-                        alt="Fallback"
-                        fill
-                      />
+                      <Image src="/images/fallback.png" alt="Fallback" fill />
                     </AvatarFallback>
                   </Avatar>
                   <div className="min-w-0 flex-1">
