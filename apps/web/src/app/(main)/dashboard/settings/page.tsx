@@ -71,19 +71,20 @@ export default () => {
   return (
     <div className="flex flex-col">
       <div className="mx-8 border-accent-foreground border-x">
-        {/* Title */}
+        {/* Header */}
         <div className="-mx-8 border-accent-foreground border-b">
           <div className="mx-8 px-6 py-8">
-            <h1 className="font-medium text-3xl text-foreground">Settings</h1>
-            <p className="font-light text-foreground-dimmed text-sm">
+            <h1 className="font-medium text-4xl text-foreground">Settings</h1>
+            <p className="mt-1 font-light text-2xl text-foreground-dimmed">
               Manage your account, integrations, and preferences.
             </p>
           </div>
         </div>
 
-        {/* Content */}
-        <div className="-mx-8 border-accent-foreground border-b">
+        {/* Sidebar + content */}
+        <div className="-mx-8 mb-12 border-accent-foreground border-b">
           <div className="mx-8 flex gap-px bg-accent-foreground">
+            {/* Sidebar nav */}
             <nav className="hidden w-44 shrink-0 flex-col gap-px bg-accent-foreground md:flex">
               {sectionItems.map((item) => (
                 <button
@@ -103,13 +104,17 @@ export default () => {
               <div className="flex-1 bg-background" />
             </nav>
 
+            {/* Main panel — unified bg, no inner card boxes */}
             <div className="flex-1 bg-background">
               {activeSection === "account" && (
-                <div className="flex flex-col gap-4">
-                  <div className="border border-accent-foreground bg-background p-6">
-                    <h2 className="mb-4 font-medium text-base text-foreground">
+                <>
+                  {/* Profile */}
+                  <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
+                    <p className="font-medium text-base text-foreground">
                       Profile
-                    </h2>
+                    </p>
+                  </div>
+                  <div className="p-6">
                     <div className="mb-6 flex items-center gap-4">
                       <div className="flex size-16 items-center justify-center bg-primary font-semibold text-2xl text-white">
                         J
@@ -123,16 +128,17 @@ export default () => {
                     </div>
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       {[
-                        { label: "Full Name", value: "Jane Smith" },
-                        { label: "Email", value: "jane@acmestore.com" },
-                        { label: "Company", value: "Acme Store" },
-                        { label: "Role", value: "Founder / CEO" },
+                        { id: "profile-name", label: "Full Name", value: "Jane Smith" },
+                        { id: "profile-email", label: "Email", value: "jane@acmestore.com" },
+                        { id: "profile-company", label: "Company", value: "Acme Store" },
+                        { id: "profile-role", label: "Role", value: "Founder / CEO" },
                       ].map((field) => (
                         <div key={field.label} className="flex flex-col gap-1">
-                          <label className="font-medium text-foreground text-xs">
+                          <label htmlFor={field.id} className="font-medium text-foreground text-xs">
                             {field.label}
                           </label>
                           <input
+                            id={field.id}
                             type="text"
                             defaultValue={field.value}
                             className="border border-accent-foreground bg-background px-3 py-2 text-foreground text-sm focus:border-primary focus:outline-none"
@@ -148,21 +154,25 @@ export default () => {
                     </button>
                   </div>
 
-                  <div className="border border-accent-foreground bg-background p-6">
-                    <h2 className="mb-4 font-medium text-base text-foreground">
+                  {/* Change Password */}
+                  <div className="border-accent-foreground border-t border-b bg-background-dimmed px-4 py-3">
+                    <p className="font-medium text-base text-foreground">
                       Change Password
-                    </h2>
+                    </p>
+                  </div>
+                  <div className="p-6">
                     <div className="flex max-w-sm flex-col gap-3">
                       {[
-                        "Current Password",
-                        "New Password",
-                        "Confirm New Password",
-                      ].map((label) => (
+                        { id: "current-password", label: "Current Password" },
+                        { id: "new-password", label: "New Password" },
+                        { id: "confirm-password", label: "Confirm New Password" },
+                      ].map(({ id, label }) => (
                         <div key={label} className="flex flex-col gap-1">
-                          <label className="font-medium text-foreground text-xs">
+                          <label htmlFor={id} className="font-medium text-foreground text-xs">
                             {label}
                           </label>
                           <input
+                            id={id}
                             type="password"
                             className="border border-accent-foreground bg-background px-3 py-2 text-foreground text-sm focus:border-primary focus:outline-none"
                           />
@@ -177,7 +187,8 @@ export default () => {
                     </div>
                   </div>
 
-                  <div className="border border-error/20 bg-error/5 p-6">
+                  {/* Danger Zone */}
+                  <div className="border-accent-foreground border-t bg-error/5 p-6">
                     <h2 className="mb-2 font-medium text-base text-error">
                       Danger Zone
                     </h2>
@@ -192,12 +203,12 @@ export default () => {
                       Delete Account
                     </button>
                   </div>
-                </div>
+                </>
               )}
 
               {activeSection === "team" && (
-                <div className="border border-accent-foreground bg-background">
-                  <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
+                <>
+                  <div className="flex items-center justify-between border-accent-foreground border-b bg-background-dimmed px-4 py-3">
                     <p className="font-medium text-base text-foreground">
                       Team Members
                     </p>
@@ -278,61 +289,59 @@ export default () => {
                       </button>
                     </div>
                   </div>
-                </div>
+                </>
               )}
 
               {activeSection === "integrations" && (
-                <div className="flex flex-col gap-4">
-                  <div className="border border-accent-foreground bg-background">
-                    <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
-                      <p className="font-medium text-base text-foreground">
-                        Connected Stores
-                      </p>
-                    </div>
-                    <div className="divide-y divide-accent-foreground">
-                      <div className="flex items-center justify-between px-4 py-3">
-                        <div className="flex items-center gap-3">
-                          <div className="flex size-8 items-center justify-center bg-[#96BF48] font-bold text-white text-xs">
-                            SH
-                          </div>
-                          <div>
-                            <p className="font-medium text-base text-foreground">
-                              acme-store.myshopify.com
-                            </p>
-                            <p className="font-light text-foreground-dimmed text-xs">
-                              Synced 30 minutes ago · 247 products
-                            </p>
-                          </div>
+                <>
+                  <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
+                    <p className="font-medium text-base text-foreground">
+                      Connected Stores
+                    </p>
+                  </div>
+                  <div className="divide-y divide-accent-foreground">
+                    <div className="flex items-center justify-between px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        <div className="flex size-8 items-center justify-center bg-[#96BF48] font-bold text-white text-xs">
+                          SH
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className="bg-success/10 px-2 py-0.5 font-medium text-success text-xs">
-                            Connected
-                          </span>
-                          <button
-                            type="button"
-                            className="border border-accent-foreground px-2.5 py-1 text-foreground text-xs transition-colors hover:bg-background-dimmed"
-                          >
-                            Sync Now
-                          </button>
+                        <div>
+                          <p className="font-medium text-base text-foreground">
+                            acme-store.myshopify.com
+                          </p>
+                          <p className="font-light text-foreground-dimmed text-xs">
+                            Synced 30 minutes ago · 247 products
+                          </p>
                         </div>
                       </div>
-                    </div>
-                    <div className="border-accent-foreground border-t p-4">
-                      <button
-                        type="button"
-                        className="flex items-center gap-1.5 border border-accent-foreground border-dashed px-3 py-2 text-foreground-dimmed text-sm transition-colors hover:border-primary hover:text-primary"
-                      >
-                        <PlusIcon className="size-4" />
-                        Connect another store
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <span className="bg-success/10 px-2 py-0.5 font-medium text-success text-xs">
+                          Connected
+                        </span>
+                        <button
+                          type="button"
+                          className="border border-accent-foreground px-2.5 py-1 text-foreground text-xs transition-colors hover:bg-background-dimmed"
+                        >
+                          Sync Now
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
+                  <div className="border-accent-foreground border-t p-4">
+                    <button
+                      type="button"
+                      className="flex items-center gap-1.5 border border-accent-foreground border-dashed px-3 py-2 text-foreground-dimmed text-sm transition-colors hover:border-primary hover:text-primary"
+                    >
+                      <PlusIcon className="size-4" />
+                      Connect another store
+                    </button>
+                  </div>
+                </>
               )}
 
               {activeSection === "notifications" && (
-                <div className="border border-accent-foreground bg-background">
-                  <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
+                <>
+                  <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
                     <p className="font-medium text-base text-foreground">
                       Email Notifications
                     </p>
@@ -403,15 +412,18 @@ export default () => {
                       </div>
                     ))}
                   </div>
-                </div>
+                </>
               )}
 
               {activeSection === "simulation" && (
-                <div className="flex flex-col gap-4">
-                  <div className="border border-accent-foreground bg-background p-4">
-                    <h2 className="mb-4 font-medium text-base text-foreground">
+                <>
+                  {/* AI Models */}
+                  <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
+                    <p className="font-medium text-base text-foreground">
                       AI Models
-                    </h2>
+                    </p>
+                  </div>
+                  <div className="p-6">
                     <div className="flex flex-col gap-2">
                       {[
                         "GPT-4",
@@ -424,7 +436,13 @@ export default () => {
                           key={model}
                           className="flex cursor-pointer items-center gap-3"
                         >
+                          <input
+                            type="checkbox"
+                            className="sr-only"
+                            defaultChecked={index < 3}
+                          />
                           <div
+                            aria-hidden="true"
                             className={cn(
                               "flex size-4 items-center justify-center border",
                               index < 3
@@ -449,10 +467,13 @@ export default () => {
                     </div>
                   </div>
 
-                  <div className="border border-accent-foreground bg-background p-4">
-                    <h2 className="mb-4 font-medium text-base text-foreground">
+                  {/* Simulation Frequency */}
+                  <div className="border-accent-foreground border-t border-b bg-background-dimmed px-4 py-3">
+                    <p className="font-medium text-base text-foreground">
                       Simulation Frequency
-                    </h2>
+                    </p>
+                  </div>
+                  <div className="p-6">
                     <div className="flex flex-col gap-2">
                       {["Manual only", "Daily", "Weekly"].map(
                         (option, index) => (
@@ -460,7 +481,14 @@ export default () => {
                             key={option}
                             className="flex cursor-pointer items-center gap-3"
                           >
+                            <input
+                              type="radio"
+                              name="simulation-frequency"
+                              className="sr-only"
+                              defaultChecked={index === 1}
+                            />
                             <div
+                              aria-hidden="true"
                               className={cn(
                                 "flex size-4 items-center justify-center rounded-full border",
                                 index === 1
@@ -481,10 +509,13 @@ export default () => {
                     </div>
                   </div>
 
-                  <div className="border border-accent-foreground bg-background p-4">
-                    <h2 className="mb-3 font-medium text-base text-foreground">
+                  {/* Purchase Persona */}
+                  <div className="border-accent-foreground border-t border-b bg-background-dimmed px-4 py-3">
+                    <p className="font-medium text-base text-foreground">
                       Purchase Persona
-                    </h2>
+                    </p>
+                  </div>
+                  <div className="p-6">
                     <select className="w-full border border-accent-foreground bg-background px-3 py-2 text-foreground text-sm focus:border-primary focus:outline-none">
                       <option>Budget-conscious shopper</option>
                       <option>Premium buyer</option>
@@ -493,12 +524,18 @@ export default () => {
                       <option>Custom...</option>
                     </select>
                   </div>
-                </div>
+                </>
               )}
 
               {activeSection === "billing" && (
-                <div className="flex flex-col gap-4">
-                  <div className="border border-accent-foreground bg-background p-6">
+                <>
+                  {/* Current plan */}
+                  <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
+                    <p className="font-medium text-base text-foreground">
+                      Current Plan
+                    </p>
+                  </div>
+                  <div className="p-6">
                     <div className="flex items-start justify-between">
                       <div>
                         <p className="font-medium text-base text-foreground">
@@ -565,56 +602,57 @@ export default () => {
                     </div>
                   </div>
 
-                  <div className="border border-accent-foreground bg-background p-6">
-                    <p className="mb-3 font-medium text-base text-foreground">
+                  {/* Invoice History */}
+                  <div className="border-accent-foreground border-t border-b bg-background-dimmed px-4 py-3">
+                    <p className="font-medium text-base text-foreground">
                       Invoice History
                     </p>
-                    <div className="divide-y divide-accent-foreground">
-                      {[
-                        {
-                          date: "Mar 6, 2026",
-                          amount: "$149.00",
-                          status: "Paid",
-                        },
-                        {
-                          date: "Feb 6, 2026",
-                          amount: "$149.00",
-                          status: "Paid",
-                        },
-                        {
-                          date: "Jan 6, 2026",
-                          amount: "$149.00",
-                          status: "Paid",
-                        },
-                      ].map((invoice) => (
-                        <div
-                          key={invoice.date}
-                          className="flex items-center justify-between py-2"
-                        >
-                          <div>
-                            <p className="font-light text-foreground text-sm">
-                              {invoice.date}
-                            </p>
-                            <p className="font-light text-foreground-dimmed text-xs">
-                              {invoice.amount}
-                            </p>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="bg-success/10 px-1.5 py-0.5 font-medium text-success text-xs">
-                              {invoice.status}
-                            </span>
-                            <button
-                              type="button"
-                              className="font-light text-primary text-xs hover:underline"
-                            >
-                              Download
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
                   </div>
-                </div>
+                  <div className="divide-y divide-accent-foreground">
+                    {[
+                      {
+                        date: "Mar 6, 2026",
+                        amount: "$149.00",
+                        status: "Paid",
+                      },
+                      {
+                        date: "Feb 6, 2026",
+                        amount: "$149.00",
+                        status: "Paid",
+                      },
+                      {
+                        date: "Jan 6, 2026",
+                        amount: "$149.00",
+                        status: "Paid",
+                      },
+                    ].map((invoice) => (
+                      <div
+                        key={invoice.date}
+                        className="flex items-center justify-between px-4 py-3"
+                      >
+                        <div>
+                          <p className="font-light text-foreground text-sm">
+                            {invoice.date}
+                          </p>
+                          <p className="font-light text-foreground-dimmed text-xs">
+                            {invoice.amount}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="bg-success/10 px-1.5 py-0.5 font-medium text-success text-xs">
+                            {invoice.status}
+                          </span>
+                          <button
+                            type="button"
+                            className="font-light text-primary text-xs hover:underline"
+                          >
+                            Download
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
               )}
             </div>
           </div>

@@ -10,7 +10,6 @@ import {
   TabsPanel,
 } from "@zenncore/web/components/tabs";
 import Link from "next/link";
-import { formatPrice } from "@/lib/currency";
 
 export type ProductDetailData = {
   product: {
@@ -21,7 +20,7 @@ export type ProductDetailData = {
     currency: string | null;
     sku: string | null;
     structuredData: string | null;
-    dataQuality: number;
+    quality: number;
   };
   winRate: number;
   models: Array<{
@@ -84,91 +83,43 @@ const qualityFields = [
 ] as const;
 
 export const ProductDetail = ({ data }: ProductDetail.Props) => {
-  const { product, winRate, models, competitors, simulations } = data;
+  const { product, models, competitors, simulations } = data;
 
   return (
-    <>
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex items-start gap-4">
-          <div className="flex size-16 shrink-0 items-center justify-center bg-primary/10 font-bold text-primary text-xl">
-            {product.title.slice(0, 2).toUpperCase()}
-          </div>
-          <div>
-            <h1 className="font-medium text-foreground text-xl">
-              {product.title}
-            </h1>
-            <p className="font-light text-foreground-dimmed text-sm">
-              {[
-                product.sku,
-                product.price && formatPrice(product.price, product.currency),
-              ]
-                .filter(Boolean)
-                .join(" · ")}
-            </p>
-            <div className="mt-1 flex items-center gap-3">
-              <span
-                className={cn("font-semibold text-2xl", rateColor(winRate))}
-              >
-                {winRate}%
-              </span>
-              <span className="font-light text-foreground-dimmed text-sm">
-                win rate
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <Link
-            href={`/dashboard/products/${product.id}`}
-            className="border border-accent-foreground bg-background-rich px-3 py-1.5 text-foreground text-sm transition-colors hover:bg-background-dimmed"
-          >
-            Run Simulation
-          </Link>
-          <Link
-            href="/dashboard/ucp"
-            className="flex items-center gap-1.5 bg-primary px-3 py-1.5 text-sm text-white transition-colors hover:bg-primary/90"
-          >
-            Optimize
-            <ArrowRightIcon className="size-4" />
-          </Link>
-        </div>
-      </div>
+    <Tabs defaultValue="overview">
+      <TabsList className="mb-4 h-auto border border-accent-foreground bg-transparent px-0">
+        <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
+        <Tab value="overview">Win Rate</Tab>
+        <Tab value="replay">Agent Replay</Tab>
+        <Tab value="gaps">Data Gaps</Tab>
+        <Tab value="battlecard">Battlecard</Tab>
+        <Tab value="optimize">Optimize</Tab>
+      </TabsList>
 
-      <Tabs defaultValue="overview">
-        <TabsList className="mb-4 h-auto border border-accent-foreground bg-transparent px-0">
-          <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
-          <Tab value="overview">Win Rate</Tab>
-          <Tab value="replay">Agent Replay</Tab>
-          <Tab value="gaps">Data Gaps</Tab>
-          <Tab value="battlecard">Battlecard</Tab>
-          <Tab value="optimize">Optimize</Tab>
-        </TabsList>
+      <TabsPanel value="overview">
+        <OverviewTab models={models} competitors={competitors} />
+      </TabsPanel>
 
-        <TabsPanel value="overview">
-          <OverviewTab models={models} competitors={competitors} />
-        </TabsPanel>
+      <TabsPanel value="replay">
+        <ReplayTab simulations={simulations} product={product} />
+      </TabsPanel>
 
-        <TabsPanel value="replay">
-          <ReplayTab simulations={simulations} product={product} />
-        </TabsPanel>
+      <TabsPanel value="gaps">
+        <GapsTab product={product} />
+      </TabsPanel>
 
-        <TabsPanel value="gaps">
-          <GapsTab product={product} />
-        </TabsPanel>
+      <TabsPanel value="battlecard">
+        <BattlecardTab
+          product={product}
+          competitors={competitors}
+          simulations={simulations}
+        />
+      </TabsPanel>
 
-        <TabsPanel value="battlecard">
-          <BattlecardTab
-            product={product}
-            competitors={competitors}
-            simulations={simulations}
-          />
-        </TabsPanel>
-
-        <TabsPanel value="optimize">
-          <OptimizeTab product={product} />
-        </TabsPanel>
-      </Tabs>
-    </>
+      <TabsPanel value="optimize">
+        <OptimizeTab product={product} />
+      </TabsPanel>
+    </Tabs>
   );
 };
 export namespace ProductDetail {
@@ -318,7 +269,7 @@ const GapsTab = ({ product }: { product: ProductDetailData["product"] }) => (
       <p className="font-light text-foreground-dimmed text-xs">
         Data quality:{" "}
         <span className="font-medium text-foreground">
-          {product.dataQuality}/100
+          {product.quality}/100
         </span>
       </p>
     </div>
@@ -526,7 +477,7 @@ const OptimizeTab = ({
     <div className="border border-accent-foreground bg-background-rich">
       <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
         <p className="font-medium text-foreground text-xs">
-          Data Quality: {product.dataQuality}%
+          Data Quality: {product.quality}%
         </p>
       </div>
       <div className="p-4">
