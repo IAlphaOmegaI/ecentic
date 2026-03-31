@@ -8,6 +8,7 @@ import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { NotFoundError } from "../utils/error";
 import type { Document } from "../utils/repository";
+import * as Simulation from "./simulation";
 import { repository } from "../utils/repository";
 
 export const { get, paginate, create, update, destroy, exists, count, find } =
@@ -26,9 +27,7 @@ export const getLatest = dedupe(
     async (context, { limit }: { limit?: number } = { limit: 10 }) => {
       return find(Environment.SERVER, {
         where: eq(schema.scan.userId, context.session.user.id),
-        orderBy: [
-          { column: schema.scan.createdAt, direction: "desc" as const },
-        ],
+        orderBy: [{ column: schema.scan.createdAt, direction: "desc" }],
         limit,
       });
     },
@@ -39,7 +38,7 @@ export const getLatest = dedupe(
 export const findPending = withContext(async (_context) => {
   return find(Environment.SERVER, {
     where: inArray(schema.scan.status, ["pending"]),
-    orderBy: [{ column: schema.scan.createdAt, direction: "asc" as const }],
+    orderBy: [{ column: schema.scan.createdAt, direction: "asc" }],
   });
 }, "Scan.findPending");
 
@@ -60,43 +59,43 @@ export type ShareData = {
   modelRates: Record<string, { wins: number; losses: number; rate: number }>;
 };
 
-export const getShareData = withContext(
-  async (context, { id }: { id: string }) => {
-    const scanResult = await get(Environment.SERVER, id);
-    if (!scanResult.success) return scanResult;
-    if (!scanResult.data || scanResult.data.status !== "complete") {
-      return { success: false as const, error: new NotFoundError("Scan") };
-    }
+export const getShareData = withContext(async (_, { id }: { id: string }) => {
+  const scan = await get(Environment.SERVER, id);
+  if (!scan.success) return scan;
 
-    const simulations = await context.durable.db
-      .select()
-      .from(schema.simulation)
-      .where(eq(schema.simulation.scanId, id));
+  if (!scan.data || scan.data.status !== "complete") {
+    return { success: false, error: new NotFoundError("Scan") };
+  }
 
-    const modelMap = new Map<string, { wins: number; losses: number }>();
-    for (const simulation of simulations) {
-      const current = modelMap.get(simulation.model) ?? { wins: 0, losses: 0 };
-      if (simulation.winner === "product") current.wins++;
-      else current.losses++;
-      modelMap.set(simulation.model, current);
-    }
+  const simulations = await Simulation.getForScan(Environment.SERVER, {
+    scan: id,
+  });
 
-    const modelRates = Object.fromEntries(
-      Array.from(modelMap.entries()).map(([model, { wins, losses }]) => [
-        model,
-        {
-          wins,
-          losses,
-          rate:
-            wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0,
-        },
-      ]),
-    );
+  if (!simulations.success) return simulations;
 
-    return {
-      success: true as const,
-      data: { scan: scanResult.data, modelRates } satisfies ShareData,
-    };
-  },
-  "Scan.getShareData",
-);
+  const map = new Map<string, { wins: number; losses: number }>();
+
+  for (const simulation of simulations.data) {
+    const current = map.get(simulation.model) ?? { wins: 0, losses: 0 };
+    if (simulation.winner === "product") current.wins++;
+    else current.losses++;
+    map.set(simulation.model, current);
+  }
+
+  const modelRates = Object.fromEntries(
+    Array.from(map.entries()).map(([model, { wins, losses }]) => [
+      model,
+      {
+        wins,
+        losses,
+        rate:
+          wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0,
+      },
+    ]),
+  );
+
+  return {
+    success: true,
+    data: { scan: scan.data, modelRates },
+  };
+}, "Scan.getShareData");
