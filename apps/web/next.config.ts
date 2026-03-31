@@ -28,6 +28,14 @@ export default withSentryConfig(
     },
     // Required to support PostHog trailing slash API requests
     skipTrailingSlashRedirect: true,
+    images: {
+      remotePatterns: [
+        {
+          protocol: "https",
+          hostname: "d2qswj4ah2.ufs.sh",
+        },
+      ],
+    },
   } satisfies NextConfig,
   {
     org: "zennit-aw",
