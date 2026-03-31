@@ -4,10 +4,8 @@ import { nextCookies } from "better-auth/next-js";
 import * as Authentication from "@/server/app/authentication";
 import { db, schema } from "@/server/database";
 
-const baseUrl = process.env.BETTER_AUTH_BASE_URL;
-
 export const auth = betterAuth({
-  baseURL: baseUrl,
+  baseURL: process.env.APP_HOST,
   database: drizzleAdapter(db, {
     provider: "pg",
     schema,
