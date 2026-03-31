@@ -79,13 +79,6 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
         return "AI agents are choosing competitors.";
     }
   })();
-
-  const formatted = new Date(scan.createdAt).toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-
   return (
     <div className="flex h-screen overflow-hidden bg-primary">
       <Onboarding
@@ -112,9 +105,15 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
           className="flex flex-col overflow-y-auto"
         >
           <Motion.Item className="px-8 border-b border-accent-foreground">
-            <h1 className="font-medium text-4xl text-foreground border-x p-6 border-accent-foreground">
-              How does your store stack up?
-            </h1>
+            <div className="border-accent-foreground border-x p-6">
+              <h2 className="font-medium text-4xl text-foreground">
+                How does your store stack up?
+              </h2>
+              <p className="mt-1 font-light text-2xl text-foreground-dimmed">
+                Get an in-depth look at how your store stacks up against the
+                competition.
+              </p>
+            </div>
           </Motion.Item>
           <Motion.Item className="border-accent-foreground border-b px-8">
             <div className="grid grid-cols-[1fr_1fr] gap-px border-accent-foreground border-x bg-accent-foreground">
