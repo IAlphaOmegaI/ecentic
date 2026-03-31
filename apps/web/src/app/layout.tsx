@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     template: "%s | écentic",
   },
   description:
-    "écentic is the e-commerce optimization platform for the AI agent economy. Simulate how GPT-4, Claude, Gemini & Perplexity choose products, diagnose why your listings lose, and auto-optimize to win every agent's cart.",
+    "Optimize product listings for AI shopping agents. Simulate GPT-4, Claude, Gemini, and Perplexity decisions, diagnose losses, and improve win rate.",
   keywords: [
     "AI shopping agent optimization",
     "e-commerce AI optimization",

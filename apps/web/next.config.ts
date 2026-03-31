@@ -5,6 +5,7 @@ export default withSentryConfig(
   {
     reactCompiler: true,
     typedRoutes: true,
+    poweredByHeader: false,
     typescript: {
       ignoreBuildErrors: true,
     },
