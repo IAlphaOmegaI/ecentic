@@ -9,6 +9,7 @@ import {
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { AnimatePresence, motion } from "motion/react";
+import { unstable_noStore as noStore } from "next/cache";
 import { usePathname } from "next/navigation";
 import { Onboarding } from "@/components/onboarding";
 import { Spring } from "@/lib/animations";

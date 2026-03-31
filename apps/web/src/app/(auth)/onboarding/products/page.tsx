@@ -1,6 +1,7 @@
 import { BoxMinusIcon } from "@zenncore/icons";
 import { unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
+import { unstable_noStore as noStore } from "next/cache";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Motion } from "@/components/motion";

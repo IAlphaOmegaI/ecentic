@@ -5,6 +5,7 @@ import {
   SquareChartIcon,
 } from "@zenncore/icons";
 import { cn, unwrapResult } from "@zenncore/utils";
+import { unstable_noStore as noStore } from "next/cache";
 import Image from "next/image";
 import { connection } from "next/server";
 import { Motion } from "@/components/motion";

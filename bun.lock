@@ -31,7 +31,7 @@
         "@zenncore/utils": "workspace:*",
         "@zenncore/web": "workspace:*",
         "ai": "^6.0.134",
-        "better-auth": "^1.5.5",
+        "better-auth": "^1.5.6",
         "drizzle-kit": "^1.0.0-beta.9-e89174b",
         "drizzle-orm": "^1.0.0-beta.9-e89174b",
         "fast-xml-parser": "^5.5.8",
@@ -44,7 +44,7 @@
         "react": "^19.2.4",
         "react-dom": "^19.2.4",
         "react-email": "^5.2.10",
-        "react-hook-form": "^7.71.2",
+        "react-hook-form": "^7.72.0",
         "recharts": "^3.8.0",
         "resend": "^6.9.4",
         "uploadthing": "^7.7.4",
@@ -72,7 +72,7 @@
         "@zenncore/icons": "workspace:*",
         "@zenncore/utils": "workspace:*",
         "expo-image": "~55.0.6",
-        "heroui-native": "^1.0.0-rc.4",
+        "heroui-native": "^1.0.0",
         "metro-cache": "^0.84.2",
         "react-native-safe-area-context": "~5.6.0",
         "react-native-screens": "~4.16.0",
@@ -241,7 +241,7 @@
       "expo": "~55.0.7",
       "react": "19.1.0",
       "react-native": "0.81.5",
-      "uniwind": "^1.5.0",
+      "uniwind": "^1.6.0",
     },
   },
   "packages": {
@@ -3260,6 +3260,8 @@
     "uniwind/lightningcss": ["lightningcss@1.30.2", "", { "dependencies": { "detect-libc": "^2.0.3" }, "optionalDependencies": { "lightningcss-android-arm64": "1.30.2", "lightningcss-darwin-arm64": "1.30.2", "lightningcss-darwin-x64": "1.30.2", "lightningcss-freebsd-x64": "1.30.2", "lightningcss-linux-arm-gnueabihf": "1.30.2", "lightningcss-linux-arm64-gnu": "1.30.2", "lightningcss-linux-arm64-musl": "1.30.2", "lightningcss-linux-x64-gnu": "1.30.2", "lightningcss-linux-x64-musl": "1.30.2", "lightningcss-win32-arm64-msvc": "1.30.2", "lightningcss-win32-x64-msvc": "1.30.2" } }, "sha512-utfs7Pr5uJyyvDETitgsaqSyjCb2qNRAtuqUeWIAKztsOYdcACf2KtARYXg2pSvhkt+9NfoaNY7fxjl6nuMjIQ=="],
 
     "uploadthing/@standard-schema/spec": ["@standard-schema/spec@1.0.0-beta.4", "", {}, "sha512-d3IxtzLo7P1oZ8s8YNvxzBUXRXojSut8pbPrTYtzsc5sn4+53jVqbk66pQerSZbZSJZQux6LkclB/+8IDordHg=="],
+
+    "web/react-hook-form": ["react-hook-form@7.72.0", "", { "peerDependencies": { "react": "^16.8.0 || ^17 || ^18 || ^19" } }, "sha512-V4v6jubaf6JAurEaVnT9aUPKFbNtDgohj5CIgVGyPHvT9wRx5OZHVjz31GsxnPNI278XMu+ruFz+wGOscHaLKw=="],
 
     "webpack/mime-types": ["mime-types@2.1.35", "", { "dependencies": { "mime-db": "1.52.0" } }, "sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw=="],
 
