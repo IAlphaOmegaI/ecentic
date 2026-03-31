@@ -103,50 +103,75 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
           "This report shows exactly where you win — and where you lose",
         ]}
         image="/images/share.png"
+        classList={{ image: "opacity-20" }}
       />
 
       <main className="flex flex-1 flex-col overflow-hidden bg-background">
-        <div className="flex flex-1 flex-col overflow-y-auto">
-        {/* Header */}
-        <div className="flex shrink-0 items-center justify-between border-accent-foreground border-b px-8 py-4">
-          <Image
-            src="/images/wordmark.svg"
-            alt="écentic"
-            width={96}
-            height={24}
-            className="h-auto w-24"
-          />
-          <p className="font-light text-foreground-dimmed text-sm">{formatted}</p>
-        </div>
-
-        <Motion.Stagger stagger={0.06} className="flex flex-col">
-          {/* Win rate + models combined */}
+        <Motion.Stagger
+          stagger={0.06}
+          className="flex flex-col overflow-y-auto"
+        >
+          <Motion.Item className="px-8 border-b border-accent-foreground">
+            <h1 className="font-medium text-4xl text-foreground border-x p-6 border-accent-foreground">
+              How does your store stack up?
+            </h1>
+          </Motion.Item>
           <Motion.Item className="border-accent-foreground border-b px-8">
             <div className="grid grid-cols-[1fr_1fr] gap-px border-accent-foreground border-x bg-accent-foreground">
               {/* Score */}
               <div className="flex flex-col justify-between bg-background-dimmed px-6 py-8">
                 <div>
-                  <p className="mb-1 font-light text-foreground-dimmed text-xs uppercase tracking-widest">AI Agent Score</p>
-                  <p className={cn("font-semibold text-[88px] leading-none tabular-nums", color)}>
-                    {winRate}<span className="text-3xl">%</span>
+                  <p className="mb-1 font-light text-foreground-dimmed text-xs uppercase tracking-widest">
+                    AI Agent Score
+                  </p>
+                  <p
+                    className={cn(
+                      "font-semibold text-[88px] leading-none tabular-nums",
+                      color,
+                    )}
+                  >
+                    {winRate}
+                    <span className="text-3xl">%</span>
                   </p>
                 </div>
                 <div className="mt-6">
                   <div className="h-1 w-full bg-accent-foreground">
-                    <div className={cn("h-full", winRate >= 60 ? "bg-success" : winRate >= 30 ? "bg-warning" : "bg-error")} style={{ width: `${winRate}%` }} />
+                    <div
+                      className={cn(
+                        "h-full",
+                        winRate >= 60
+                          ? "bg-success"
+                          : winRate >= 30
+                            ? "bg-warning"
+                            : "bg-error",
+                      )}
+                      style={{ width: `${winRate}%` }}
+                    />
                   </div>
-                  <p className="mt-3 font-light text-foreground-dimmed text-sm">{message}</p>
-                  <p className="mt-1 font-light text-foreground-dimmed/50 text-xs">{scan.completedSimulations} simulations</p>
+                  <p className="mt-3 font-light text-foreground-dimmed text-sm">
+                    {message}
+                  </p>
+                  <p className="mt-1 font-light text-foreground-dimmed/50 text-xs">
+                    {scan.completedSimulations} simulations
+                  </p>
                   <div className="mt-4 flex gap-6">
                     <div className="flex items-center gap-2">
                       <TrendUpIcon className="size-4 text-success" />
-                      <span className="font-semibold text-2xl text-success tabular-nums">{scan.wins}</span>
-                      <span className="font-light text-foreground-dimmed text-sm">Wins</span>
+                      <span className="font-semibold text-2xl text-success tabular-nums">
+                        {scan.wins}
+                      </span>
+                      <span className="font-light text-foreground-dimmed text-sm">
+                        Wins
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <TrendDownIcon className="size-4 text-error" />
-                      <span className="font-semibold text-2xl text-error tabular-nums">{scan.losses}</span>
-                      <span className="font-light text-foreground-dimmed text-sm">Losses</span>
+                      <span className="font-semibold text-2xl text-error tabular-nums">
+                        {scan.losses}
+                      </span>
+                      <span className="font-light text-foreground-dimmed text-sm">
+                        Losses
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -157,19 +182,40 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
                   const rates = modelRates[model.id];
                   const rate = rates?.rate ?? 0;
                   return (
-                    <div key={model.id} className="flex flex-col gap-3 bg-background-dimmed px-4 py-5">
-                      <Image src={model.logo} alt={model.label} width={22} height={22} />
+                    <div
+                      key={model.id}
+                      className="flex flex-col gap-3 bg-background-dimmed px-4 py-5"
+                    >
+                      <Image
+                        src={model.logo}
+                        alt={model.label}
+                        width={22}
+                        height={22}
+                      />
                       <div>
-                        <p className="font-light text-foreground-dimmed text-xs">{model.label}</p>
-                        <p className="font-semibold text-foreground text-xl tabular-nums">{rate}%</p>
+                        <p className="font-light text-foreground-dimmed text-xs">
+                          {model.label}
+                        </p>
+                        <p className="font-semibold text-foreground text-xl tabular-nums">
+                          {rate}%
+                        </p>
                       </div>
                       <div className="h-1 w-full bg-accent-foreground">
-                        <div className="h-full bg-primary" style={{ width: `${rate}%` }} />
+                        <div
+                          className="h-full bg-primary"
+                          style={{ width: `${rate}%` }}
+                        />
                       </div>
                       <div className="flex gap-2">
-                        <span className="font-light text-success text-xs">{rates?.wins ?? 0}W</span>
-                        <span className="font-light text-foreground-dimmed/30 text-xs">/</span>
-                        <span className="font-light text-error text-xs">{rates?.losses ?? 0}L</span>
+                        <span className="font-light text-success text-xs">
+                          {rates?.wins ?? 0}W
+                        </span>
+                        <span className="font-light text-foreground-dimmed/30 text-xs">
+                          /
+                        </span>
+                        <span className="font-light text-error text-xs">
+                          {rates?.losses ?? 0}L
+                        </span>
                       </div>
                     </div>
                   );
@@ -178,32 +224,43 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
             </div>
           </Motion.Item>
 
-          {/* Top finding */}
           {scan.topFinding && (
             <Motion.Item className="border-accent-foreground border-b px-8">
               <div className="border-accent-foreground border-x">
-                <div className="border-accent-foreground border-b px-4 py-3">
-                  <p className="font-medium text-foreground text-sm">Top finding</p>
-                </div>
                 <div className="border-accent-foreground border-b px-6 py-5">
-                  <p className="font-body text-foreground text-2xl leading-snug">{scan.topFinding.name}</p>
+                  <p className="font-body text-foreground text-2xl leading-snug">
+                    {scan.topFinding.name}
+                  </p>
                 </div>
                 <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-[1fr_auto]">
                   <div className="bg-primary px-6 py-6">
-                    <p className="mb-3 font-light text-white/60 text-xs uppercase tracking-widest">Impact</p>
-                    <p className="font-light text-white text-base leading-relaxed">{scan.topFinding.impactDescription}</p>
+                    <p className="mb-3 font-light text-white/60 text-xs uppercase tracking-widest">
+                      Impact
+                    </p>
+                    <p className="font-light text-white text-base leading-relaxed">
+                      {scan.topFinding.impactDescription}
+                    </p>
                   </div>
                   <div className="flex flex-col items-center justify-center bg-background-dimmed px-8 py-6">
-                    <span className="font-semibold text-5xl text-error tabular-nums leading-none">{scan.topFinding.lossPercentage}%</span>
-                    <p className="mt-2 font-light text-foreground-dimmed text-xs">of sims lost</p>
+                    <span className="font-semibold text-5xl text-error tabular-nums leading-none">
+                      {scan.topFinding.lossPercentage}%
+                    </span>
+                    <p className="mt-2 font-light text-foreground-dimmed text-xs">
+                      of sims lost
+                    </p>
                   </div>
                 </div>
                 {scan.topFinding.missingAttributes.length > 0 && (
                   <div className="flex flex-col gap-3 border-accent-foreground border-t px-6 py-5">
-                    <p className="font-light text-foreground-dimmed text-xs uppercase tracking-widest">Missing attributes</p>
+                    <p className="font-light text-foreground-dimmed text-xs uppercase tracking-widest">
+                      Missing attributes
+                    </p>
                     <div className="flex flex-wrap gap-2">
                       {scan.topFinding.missingAttributes.map((attr) => (
-                        <span key={attr} className="border border-primary/20 bg-primary/8 px-3 py-1 font-light text-primary text-sm">
+                        <span
+                          key={attr}
+                          className="border border-primary/20 bg-primary/8 px-3 py-1 font-light text-primary text-sm"
+                        >
                           {attr}
                         </span>
                       ))}
@@ -214,23 +271,25 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
             </Motion.Item>
           )}
 
-          {/* CTA */}
+          <Motion.Item className="border-accent-foreground border-b px-8">
+            <div className="border-accent-foreground border-x p-6" />
+          </Motion.Item>
+
           <Motion.Item className="px-8">
-            <div className="grid gap-px border-accent-foreground border-x border-b bg-accent-foreground sm:grid-cols-[1fr_auto]">
-              <div className="bg-primary px-6 py-8">
-                <p className="font-body text-2xl text-white leading-snug">
+            <div className="grid border-accent-foreground border-x sm:grid-cols-[1fr_auto]">
+              <div className="px-6 py-8">
+                <p className="font-body text-2xl text-foreground leading-snug">
                   Ready to win every AI agent's cart?
                 </p>
-                <p className="mt-2 font-light text-sm text-white/60">
+                <p className="font-light text-foreground-dimmed">
                   écentic auto-optimizes your listings. Free to start.
                 </p>
               </div>
-              <div className="flex items-center bg-primary px-6">
+              <div className="flex items-end p-6">
                 <Button
                   variant="flat"
                   color="primary"
                   render={<Link href="/sign-up" />}
-                  className="border border-white/20 bg-white text-primary"
                 >
                   Start free
                   <ArrowRightIcon className="size-4" />
@@ -239,7 +298,6 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
             </div>
           </Motion.Item>
         </Motion.Stagger>
-        </div>
       </main>
     </div>
   );

@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { Spring, Stagger } from "@/lib/animations";
+import { cn } from "@zenncore/utils";
 
 export namespace Onboarding {
   export type Props = {
@@ -12,6 +13,9 @@ export namespace Onboarding {
     headline: ReactNode;
     points: readonly string[];
     image?: string;
+    classList?: {
+      image?: string;
+    };
   };
 }
 
@@ -20,6 +24,7 @@ export const Onboarding = ({
   headline,
   points,
   image = "/images/onboarding.png",
+  classList = {},
 }: Onboarding.Props) => (
   <motion.aside
     className="sticky top-0 hidden h-screen overflow-hidden lg:flex lg:w-[55%]"
@@ -32,7 +37,10 @@ export const Onboarding = ({
       src={image}
       alt="onboarding background"
       fill
-      className="object-contain object-bottom opacity-60 brightness-0 invert"
+      className={cn(
+        "object-contain object-bottom opacity-60 brightness-0 invert",
+        classList.image,
+      )}
       aria-hidden="true"
     />
     <div className="relative z-10 flex h-full w-full flex-col justify-between p-8">
