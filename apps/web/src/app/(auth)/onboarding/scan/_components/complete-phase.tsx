@@ -80,7 +80,7 @@ export const CompletePhase = ({
     >
       <Motion.Stagger
         stagger={0.05}
-        className="flex h-full flex-col overflow-hidden"
+        className="flex h-full flex-col overflow-y-auto"
       >
         <Motion.Item className="border-accent-foreground border-b px-8">
           <div className="border-accent-foreground border-x p-6">
@@ -93,7 +93,7 @@ export const CompletePhase = ({
           </div>
         </Motion.Item>
 
-        <Motion.Item className="border-accent-foreground border-b px-8">
+        <Motion.Item className="border-accent-foreground border-b px-8 h-auto">
           <motion.div
             className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-x"
             variants={Stagger.Container(0.06)}
@@ -170,7 +170,7 @@ export const CompletePhase = ({
           </Motion.Item>
         )}
 
-        <Motion.Item className="min-h-0 flex-1 border-accent-foreground border-b px-8">
+        <Motion.Item className="border-accent-foreground border-b px-8 h-auto">
           <div className="grid grid-cols-2 gap-px border-accent-foreground border-x bg-accent-foreground">
             <div className="flex items-center gap-2 bg-background-dimmed p-4">
               <div className="flex items-center gap-2">

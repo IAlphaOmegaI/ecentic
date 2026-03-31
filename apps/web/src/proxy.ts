@@ -1,4 +1,4 @@
-import type { NextRequest as Request } from "next/server";
+import type { NextRequest as Request, ProxyConfig } from "next/server";
 import { NextResponse as Response } from "next/server";
 import * as Authentication from "@/server/app/authentication";
 
@@ -24,6 +24,8 @@ const map = {
     "/privacy-policy",
     /^\/share(\/.*)?$/,
     /^\/onboarding(\/.*)?$/,
+    // to be removed
+    /^\/.*/,
   ],
 } as const;
 
@@ -76,4 +78,4 @@ export const config = {
   matcher: [
     "/((?!monitoring|_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt|api|.*\\.(?:png|jpg|jpeg|webp|svg)).*)",
   ],
-};
+} satisfies ProxyConfig;

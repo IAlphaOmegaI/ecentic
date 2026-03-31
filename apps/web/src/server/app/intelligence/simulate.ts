@@ -212,7 +212,7 @@ export const runScan = withAuthentication(async (context) => {
             const { output, textStream } = AI.generate({
               model: perspective.model,
               system: perspective.system,
-              prompt: `A consumer is choosing between these two products. Evaluate each listing and recommend one.\n\n--- PRODUCT A ---\n${Formating.formatProduct(product)}\n\n--- PRODUCT B ---\n${Formating.formatCompetitor(competitor)}\n\nScore each product 0-100 using your evaluation methodology. Pick a winner based on which LISTING better serves a buyer making a purchase decision. In your reasoning, cite the specific attributes or gaps that drove the decision (2-3 sentences max).`,
+              prompt: `A consumer is choosing between these two products. Evaluate each listing and recommend one.\n\n--- PRODUCT ---\n${Formating.formatProduct(product)}\n\n--- COMPETITOR ---\n${Formating.formatCompetitor(competitor)}\n\nScore each product 0-100 using your evaluation methodology. Pick a winner: use "product" if the PRODUCT listing wins, or "competitor" if the COMPETITOR listing wins. In your reasoning, cite the specific attributes or gaps that drove the decision (2-3 sentences max).`,
               schema: z.object({
                 winner: z.enum(["product", "competitor"]),
                 productScore: z.number().min(0).max(100),

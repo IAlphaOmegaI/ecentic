@@ -12,6 +12,7 @@ async function* bufferTextStream(
   stream: AsyncIterable<string>,
 ): AsyncIterable<string> {
   let buffer = "";
+
   for await (const chunk of stream) {
     buffer += chunk;
     const lines = buffer.split("\n");
@@ -22,6 +23,7 @@ async function* bufferTextStream(
       buffer = lines.length > 0 ? remainder : "";
     }
   }
+
   if (buffer) yield buffer;
 }
 

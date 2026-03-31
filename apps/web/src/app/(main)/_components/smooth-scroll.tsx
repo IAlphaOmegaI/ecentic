@@ -22,5 +22,5 @@ export const SmoothScroll = ({ children }: PropsWithChildren) => {
     };
   }, []);
 
-  return <>{children}</>;
+  return children;
 };

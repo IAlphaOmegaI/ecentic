@@ -20,12 +20,14 @@ export namespace CompetitorManager {
   export type Props = {
     children: ReactNode;
     products: string[];
+    productNames: string[];
   };
 }
 
 export const CompetitorManager = ({
   children,
   products,
+  productNames,
 }: CompetitorManager.Props) => {
   return (
     <Motion.Stagger className="flex h-full flex-1 flex-col overflow-hidden">
@@ -64,9 +66,13 @@ export const CompetitorManager = ({
               <UrlTab className={"flex-1 border-accent-foreground border-b"} />
             </TabsPanel>
 
-            <TabsPanel value="search" className={"border-0"}>
+            <TabsPanel
+              value="search"
+              className={"h-[calc(100%-(var(--spacing)*9))] flex-1 border-0"}
+            >
               <SearchTab
-                className={"flex-1 border-accent-foreground border-b"}
+                productNames={productNames}
+                className={"h-full flex-1 border-accent-foreground border-b"}
               />
             </TabsPanel>
           </Tabs>

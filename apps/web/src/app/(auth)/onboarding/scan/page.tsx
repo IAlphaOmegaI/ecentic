@@ -90,57 +90,59 @@ export default async () => {
 
   return (
     <ScanRunner simulations={simulations}>
-      <Motion.Item className="w-full border-accent-foreground border-b px-8">
-        <div className="flex flex-col border-accent-foreground border-x p-6">
-          <h2 className="font-medium text-4xl text-foreground">
-            See who's winning.
-          </h2>
-          <p className="font-light text-2xl text-foreground-dimmed">
-            GPT-4, Claude, Gemini & Perplexity will simulate real shopping
-            queries across your products and competitors.
-          </p>
-        </div>
-      </Motion.Item>
+      <Motion.Stagger className="flex flex-col h-full overflow-y-auto border-accent-foreground border-b ">
+        <Motion.Item className="w-full border-accent-foreground border-b px-8">
+          <div className="flex flex-col border-accent-foreground border-x p-6">
+            <h2 className="font-medium text-4xl text-foreground">
+              See who's winning.
+            </h2>
+            <p className="font-light text-2xl text-foreground-dimmed">
+              GPT-4, Claude, Gemini & Perplexity will simulate real shopping
+              queries across your products and competitors.
+            </p>
+          </div>
+        </Motion.Item>
 
-      <Motion.Item className="border-accent-foreground border-b px-8">
-        <div className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-x">
-          {models.map((model) => (
-            <div
-              key={model.model}
-              className="flex aspect-square flex-col bg-background-dimmed p-4"
-            >
-              <Image
-                src={model.logo}
-                alt={model.model}
-                width={48}
-                height={48}
-              />
-              <span className="mt-auto text-foreground text-xl">
-                {model.model}
-              </span>
-              <span className="font-light text-foreground-dimmed text-sm leading-tight">
-                {model.description}
-              </span>
-            </div>
-          ))}
-        </div>
-      </Motion.Item>
+        <Motion.Item className="border-accent-foreground border-b px-8">
+          <div className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-x">
+            {models.map((model) => (
+              <div
+                key={model.model}
+                className="flex flex-col bg-background-dimmed p-4 h-full"
+              >
+                <Image
+                  src={model.logo}
+                  alt={model.model}
+                  width={48}
+                  height={48}
+                />
+                <span className="mt-6 text-foreground text-xl">
+                  {model.model}
+                </span>
+                <span className="font-light text-foreground-dimmed text-sm leading-tight">
+                  {model.description}
+                </span>
+              </div>
+            ))}
+          </div>
+        </Motion.Item>
 
-      <Motion.Item className="h-12 w-full border-accent-foreground border-b px-8">
-        <div className="flex flex-col border-accent-foreground border-x p-6" />
-      </Motion.Item>
+        <Motion.Item className="h-12 w-full border-accent-foreground border-b px-8">
+          <div className="flex flex-col border-accent-foreground border-x p-6" />
+        </Motion.Item>
 
-      <Motion.Item className="flex-1 border-accent-foreground border-b px-8">
-        <div className="grid w-full grid-cols-2 gap-px border-accent-foreground border-x bg-accent-foreground">
-          {labels.map(({ label, value, icon: Icon, color }) => (
-            <div key={label} className="bg-background-dimmed p-4">
-              <Icon className={cn("mb-6 size-12", color)} />
-              <p className="font-medium text-2xl text-foreground">{value}</p>
-              <p className="font-light text-foreground-dimmed">{label}</p>
-            </div>
-          ))}
-        </div>
-      </Motion.Item>
+        <Motion.Item className="px-8">
+          <div className="grid size-full grid-cols-2 gap-px border-accent-foreground border-x bg-accent-foreground  max-h-full">
+            {labels.map(({ label, value, icon: Icon, color }) => (
+              <div key={label} className="bg-background-dimmed p-4">
+                <Icon className={cn("mb-6 size-12", color)} />
+                <p className="font-medium text-2xl text-foreground">{value}</p>
+                <p className="font-light text-foreground-dimmed">{label}</p>
+              </div>
+            ))}
+          </div>
+        </Motion.Item>
+      </Motion.Stagger>
     </ScanRunner>
   );
 };

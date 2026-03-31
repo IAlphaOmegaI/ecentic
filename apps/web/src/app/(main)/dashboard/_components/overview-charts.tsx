@@ -231,15 +231,15 @@ export const OverviewCharts = ({
                         alt={label}
                         width={64}
                         height={64}
-                        className="size-6"
+                        className="size-4"
                       />
                       <span className="text-foreground-dimmed uppercase tracking-widest">
                         {label}
                       </span>
                     </div>
-                    <span className="font-medium text-4xl text-foreground tabular-nums">
+                    <span className="font-medium text-lg text-foreground tabular-nums">
                       {rate}{" "}
-                      <span className="font-light text-foreground-dimmed text-xl">
+                      <span className="font-light text-foreground-dimmed text-sm">
                         %
                       </span>
                     </span>
