@@ -85,6 +85,7 @@ export const Footer = () => (
             src={Logo}
             alt="Logo"
             fill
+            sizes="(min-width: 2160px) 1056px, (min-width: 1000px) calc(90.88vw - 889px), (min-width: 780px) calc(100vw - 104px), (min-width: 700px) calc(96.67vw - 672px), (min-width: 560px) calc(100vw - 56px), (min-width: 440px) calc(205vw - 623px), calc(226.67vw - 774px)"
             className="object-contain object-bottom"
           />
         </div>

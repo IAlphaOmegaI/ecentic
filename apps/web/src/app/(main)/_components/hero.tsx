@@ -11,7 +11,7 @@ export const Hero = () => (
         alt="Hero"
         className="size-full object-cover"
         priority
-        sizes="100vw"
+        sizes="calc(100vw - 24px)"
       />
       <div className="absolute bottom-6 left-6 z-20 flex max-w-[1200px] flex-col gap-4 text-white md:bottom-12 md:left-12">
         <h1 className="font-semibold text-4xl sm:text-5xl md:text-[76px]">
