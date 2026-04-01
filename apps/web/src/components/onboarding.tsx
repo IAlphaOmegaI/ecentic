@@ -1,11 +1,11 @@
 "use client";
 
 import { CheckIcon } from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { Spring, Stagger } from "@/lib/animations";
-import { cn } from "@zenncore/utils";
 
 export namespace Onboarding {
   export type Props = {

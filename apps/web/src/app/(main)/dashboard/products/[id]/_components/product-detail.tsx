@@ -2,6 +2,13 @@
 
 import { ArrowRightIcon, CheckIcon, XIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
+import { Button } from "@zenncore/web/components/button";
+import type { ColumnDef } from "@zenncore/web/components/data-table";
+import {
+  DataTable,
+  DataTableEmpty,
+  DataTableProvider,
+} from "@zenncore/web/components/data-table";
 import {
   Tab,
   Tabs,
@@ -9,7 +16,11 @@ import {
   TabsList,
   TabsPanel,
 } from "@zenncore/web/components/tabs";
+import { motion } from "motion/react";
+import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import { Spring } from "@/lib/animations";
 
 export type ProductDetailData = {
   product: {
@@ -52,6 +63,95 @@ export type ProductDetailData = {
   }>;
 };
 
+const columns: ColumnDef<ProductDetailData["competitors"][number]>[] = [
+  {
+    accessorKey: "title",
+    header: "Competitor",
+    cell: ({ row }) => (
+      <div>
+        <p className="font-medium text-foreground">{row.original.title}</p>
+        {row.original.brand && (
+          <p className="font-light text-foreground-dimmed">
+            {row.original.brand}
+          </p>
+        )}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "rate",
+    header: "Win Rate",
+    cell: ({ row }) => {
+      const rate = row.original.rate;
+      const color = (() => {
+        switch (true) {
+          case rate >= 60:
+            return { bar: "bg-success", text: "text-success" };
+          case rate >= 30:
+            return { bar: "bg-warning", text: "text-warning" };
+          default:
+            return { bar: "bg-error", text: "text-error" };
+        }
+      })();
+      return (
+        <div className="flex items-center gap-2">
+          <div className="h-1 w-20 bg-accent-foreground">
+            <div
+              className={cn("h-full", color.bar)}
+              style={{ width: `${rate}%` }}
+            />
+          </div>
+          <span className={cn("font-medium tabular-nums", color.text)}>
+            {rate}%
+          </span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "wins",
+    header: "Wins",
+    cell: ({ row }) => (
+      <span className="font-medium text-success tabular-nums">
+        {row.original.wins}
+      </span>
+    ),
+  },
+  {
+    accessorKey: "losses",
+    header: "Losses",
+    cell: ({ row }) => (
+      <span className="font-medium text-error tabular-nums">
+        {row.original.losses}
+      </span>
+    ),
+  },
+  {
+    accessorKey: "total",
+    header: "Total",
+    cell: ({ row }) => (
+      <span className="font-light text-foreground-dimmed tabular-nums">
+        {row.original.total}
+      </span>
+    ),
+  },
+];
+
+const Model = {
+  "GPT-4": {
+    logo: "/images/chatgpt.svg",
+  },
+  Claude: {
+    logo: "/images/claude.svg",
+  },
+  Gemini: {
+    logo: "/images/gemini.svg",
+  },
+  Perplexity: {
+    logo: "/images/perplexity.svg",
+  },
+} as const;
+
 const rateColor = (rate: number) => {
   switch (true) {
     case rate >= 60:
@@ -87,13 +187,23 @@ export const ProductDetail = ({ data }: ProductDetail.Props) => {
 
   return (
     <Tabs defaultValue="overview">
-      <TabsList className="mb-4 h-auto border border-accent-foreground bg-transparent px-0">
-        <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
-        <Tab value="overview">Win Rate</Tab>
-        <Tab value="replay">Agent Replay</Tab>
-        <Tab value="gaps">Data Gaps</Tab>
-        <Tab value="battlecard">Battlecard</Tab>
-        <Tab value="optimize">Optimize</Tab>
+      <TabsList className="w-full border-none">
+        <TabsIndicator className={"h-full"} />
+        <Tab value="overview" className={"flex-1"}>
+          Win Rate
+        </Tab>
+        <Tab value="replay" className={"flex-1"}>
+          Agent Replay
+        </Tab>
+        <Tab value="gaps" className={"flex-1"}>
+          Data Gaps
+        </Tab>
+        <Tab value="battlecard" className={"flex-1"}>
+          Battlecard
+        </Tab>
+        <Tab value="optimize" className={"flex-1"}>
+          Optimize
+        </Tab>
       </TabsList>
 
       <TabsPanel value="overview">
@@ -136,54 +246,127 @@ const OverviewTab = ({
   competitors: ProductDetailData["competitors"];
 }) => (
   <>
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-      {models.map(({ model, label, rate, wins, losses, total }) => (
-        <div
-          key={model}
-          className="border border-accent-foreground bg-background-rich p-4"
-        >
-          <p className="mb-2 font-medium text-foreground text-sm">{label}</p>
-          <p className={cn("font-semibold text-3xl", rateColor(rate))}>
-            {rate}%
-          </p>
-          <div className="mt-2 h-1.5 w-full bg-accent-foreground">
-            <div
-              className={cn("h-full", barColor(rate))}
-              style={{ width: `${rate}%` }}
-            />
-          </div>
-          <p className="mt-1 font-light text-foreground-dimmed text-xs">
-            {wins} wins · {losses} losses · {total} total
-          </p>
-        </div>
-      ))}
-    </div>
+    <div className="grid grid-cols-2 gap-px border-accent-foreground border-t bg-accent-foreground lg:grid-cols-4">
+      {models.map(({ model, label, rate, wins, losses, total }) => {
+        const config = Model[label as keyof typeof Model];
+        return (
+          <div
+            key={model}
+            className={cn("flex flex-col gap-4 p-4", "bg-background-dimmed")}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-2">
+                {config?.logo && (
+                  <Image
+                    src={config.logo}
+                    alt={label}
+                    width={20}
+                    height={20}
+                    className="size-12"
+                  />
+                )}
+                <span
+                  className={cn(
+                    "font-medium uppercase tracking-widest",
+                    "text-foreground-dimmed",
+                  )}
+                >
+                  {label}
+                </span>
+              </div>
 
-    {competitors.length > 0 && (
-      <div className="mt-4 border border-accent-foreground bg-background-rich p-4">
-        <p className="mb-3 font-medium text-foreground text-sm">
+              <div>
+                <p
+                  className={cn(
+                    "font-semibold text-4xl tabular-nums",
+                    rateColor(rate),
+                  )}
+                >
+                  {rate}{" "}
+                  <span className="font-light text-foreground-dimmed text-xl">
+                    %
+                  </span>
+                </p>
+                <p className="mt-0.5 font-light text-foreground-dimmed">
+                  win rate
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-auto space-y-1.5">
+              <div className="h-1 w-full bg-accent-foreground">
+                <motion.div
+                  className={cn("h-full", barColor(rate))}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${rate}%` }}
+                  transition={{ ...Spring.Gentle, delay: 0.3 }}
+                />
+              </div>
+              <div className="flex justify-between font-light text-foreground-dimmed">
+                <span>
+                  {wins} W · {losses} L
+                </span>
+                <span>{total} total</span>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+    <div className="border-accent-foreground border-y p-4" />
+    <div className="mt-px">
+      <div className="flex items-end justify-between border-accent-foreground border-b p-4">
+        <p className="font-medium text-foreground text-xl">
           Win rate vs. each competitor
         </p>
-        {competitors.map(({ id, title, rate }) => (
-          <div key={id} className="mb-2 flex items-center gap-3">
-            <span className="w-32 truncate font-light text-foreground-dimmed text-xs">
-              {title}
-            </span>
-            <div className="h-1.5 flex-1 bg-accent-foreground">
-              <div
-                className={cn("h-full", barColor(rate))}
-                style={{ width: `${rate}%` }}
-              />
-            </div>
-            <span className="w-8 text-right font-medium text-foreground text-xs">
-              {rate}%
-            </span>
-          </div>
-        ))}
+        <Button
+          variant="outline"
+          color="accent"
+          render={<Link href="/dashboard/competitors" />}
+        >
+          View All
+          <ArrowRightIcon className="size-4" />
+        </Button>
       </div>
-    )}
+      <DataTableProvider
+        rows={competitors.map(({ id, title, brand, rate, wins, total }) => ({
+          _id: id,
+          title,
+          brand,
+          rate,
+          wins,
+          losses: total - wins,
+          total,
+        }))}
+        columns={columns}
+        handler="client"
+      >
+        <DataTable className="border-b-0">
+          <DataTableEmpty>
+            <p className="p-6 text-center font-light text-foreground-dimmed text-sm">
+              No competitors tracked yet.
+            </p>
+          </DataTableEmpty>
+        </DataTable>
+      </DataTableProvider>
+    </div>
   </>
 );
+
+const replayModelLabel = (modelId: string) => {
+  switch (modelId) {
+    case "gpt4":
+      return "GPT-4";
+    case "claude":
+      return "Claude";
+    case "gemini":
+      return "Gemini";
+    case "perplexity":
+      return "Perplexity";
+    default:
+      return modelId;
+  }
+};
 
 const ReplayTab = ({
   simulations,
@@ -192,7 +375,25 @@ const ReplayTab = ({
   simulations: ProductDetailData["simulations"];
   product: ProductDetailData["product"];
 }) => {
-  if (simulations.length === 0)
+  const grouped = ["gpt4", "claude", "gemini", "perplexity"].flatMap(
+    (modelId) => {
+      const modelSimulations = simulations.filter(
+        (simulation) => simulation.model === modelId,
+      );
+      if (modelSimulations.length === 0) return [];
+      return [
+        {
+          model: modelId,
+          label: replayModelLabel(modelId),
+          simulations: modelSimulations,
+        },
+      ];
+    },
+  );
+
+  const [selected, setSelected] = useState(grouped[0]?.model ?? null);
+
+  if (grouped.length === 0)
     return (
       <div className="border border-accent-foreground bg-background-rich p-8 text-center">
         <p className="font-light text-foreground-dimmed text-sm">
@@ -201,32 +402,80 @@ const ReplayTab = ({
       </div>
     );
 
-  const grouped = ["gpt4", "claude", "gemini"].flatMap((modelId) => {
-    const modelSimulations = simulations.filter(
-      (simulation) => simulation.model === modelId,
-    );
-    if (modelSimulations.length === 0) return [];
-    return [{ model: modelId, simulations: modelSimulations }];
-  });
+  const active = grouped.find((g) => g.model === selected) ?? grouped[0];
 
   return (
-    <div className="space-y-4">
-      {grouped.map(({ model, simulations: modelSimulations }) => (
-        <div key={model} className="border border-accent-foreground">
-          <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
-            <p className="font-medium text-foreground text-sm">
-              {model === "gpt4"
-                ? "GPT-4"
-                : model === "claude"
-                  ? "Claude"
-                  : "Gemini"}{" "}
-              Decision Replay
+    <div className="flex border border-accent-foreground">
+      <div className="flex shrink-0 flex-col border-accent-foreground border-r">
+        {grouped.map(({ model, label }) => {
+          const config = Model[label as keyof typeof Model];
+          const isSelected = model === selected;
+          return (
+            <button
+              key={model}
+              type="button"
+              onClick={() => setSelected(model)}
+              className={cn(
+                "flex flex-col items-center gap-2 border-accent-foreground border-b px-4 py-5 transition-colors last:border-b-0",
+                isSelected
+                  ? "bg-background-rich"
+                  : "bg-background-dimmed hover:bg-background-rich/60",
+              )}
+            >
+              {config?.logo && (
+                <Image
+                  src={config.logo}
+                  alt={label}
+                  width={20}
+                  height={20}
+                  className={cn(
+                    "size-8 transition-opacity",
+                    !isSelected && "opacity-40",
+                  )}
+                />
+              )}
+              <span
+                className={cn(
+                  "font-medium text-sm uppercase leading-tight tracking-wide transition-colors",
+                  isSelected ? "text-foreground" : "text-foreground-dimmed",
+                )}
+              >
+                {label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {active && (
+        <div className="flex min-w-0 flex-1 flex-col">
+          <div className="flex items-center gap-2 border-accent-foreground border-b bg-background-dimmed px-4 py-2">
+            {(() => {
+              const logo = Model[active.label as keyof typeof Model]?.logo;
+              return (
+                logo && (
+                  <Image
+                    src={logo}
+                    alt={active.label}
+                    width={16}
+                    height={16}
+                    className="size-6"
+                  />
+                )
+              );
+            })()}
+            <p className="font-medium text-foreground">
+              {active.label} Decision Replay
             </p>
+            <span className="ml-auto font-light text-foreground-dimmed text-xs">
+              {active.simulations.length} simulation
+              {active.simulations.length !== 1 ? "s" : ""}
+            </span>
           </div>
-          <div className="bg-foreground p-5 font-mono text-xs leading-relaxed">
+          <div className="flex-1 bg-foreground p-5 font-mono text-xs leading-relaxed">
             <p className="font-bold text-white">Evaluating: {product.title}</p>
             <div className="h-2" />
-            {modelSimulations.map((simulation) => (
+            {active.simulations.map((simulation) => (
               <div key={simulation.id} className="mb-4">
                 <p className="text-white/70">
                   → vs. {simulation.competitorTitle}
@@ -258,7 +507,7 @@ const ReplayTab = ({
             ))}
           </div>
         </div>
-      ))}
+      )}
     </div>
   );
 };
@@ -334,7 +583,7 @@ const BattlecardTab = ({
     );
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-px bg-accent-foreground">
       {competitors.map((competitor) => {
         const competitorSimulations = simulations.filter(
           (simulation) => simulation.competitorId === competitor.id,
@@ -345,78 +594,99 @@ const BattlecardTab = ({
         const losses = competitorSimulations.filter(
           (simulation) => simulation.winner !== "product",
         );
+        const total = wins.length + losses.length;
 
         return (
-          <div
-            key={competitor.id}
-            className="border border-accent-foreground bg-background-rich"
-          >
-            <div className="border-accent-foreground border-b px-4 py-3">
-              <p className="font-medium text-foreground text-sm">
-                {product.title} vs. {competitor.title}
-              </p>
-              <div className="mt-1 flex items-center gap-2">
-                <span className="font-light text-foreground-dimmed text-xs">
-                  Win rate:
-                </span>
-                <span
+          <div key={competitor.id} className="bg-background-rich">
+            <div className="grid grid-cols-[1fr_auto] items-start gap-6 border-accent-foreground border-b bg-background-dimmed p-4">
+              <div className="min-w-0">
+                <p className="font-medium text-foreground">
+                  {competitor.title}
+                </p>
+                <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
+                  vs. {product.title}
+                </p>
+                <div className="mt-3 flex items-center gap-3">
+                  <div className="h-1 flex-1 bg-accent-foreground">
+                    <div
+                      className={cn("h-full", barColor(competitor.rate))}
+                      style={{ width: `${competitor.rate}%` }}
+                    />
+                  </div>
+                  <span className="font-light text-foreground-dimmed text-xs tabular-nums">
+                    {wins.length}W · {losses.length}L
+                  </span>
+                </div>
+              </div>
+              <div className="text-right">
+                <p
                   className={cn(
-                    "font-semibold text-sm",
+                    "font-semibold text-3xl tabular-nums leading-none",
                     rateColor(competitor.rate),
                   )}
                 >
-                  {competitor.rate}%
-                </span>
+                  {competitor.rate}
+                  <span className="font-light text-base text-foreground-dimmed">
+                    %
+                  </span>
+                </p>
+                <p className="mt-1 font-light text-foreground-dimmed text-xs">
+                  {total} sim{total !== 1 ? "s" : ""}
+                </p>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-0 divide-x divide-accent-foreground">
+            <div className="grid grid-cols-2 divide-x divide-accent-foreground">
               <div className="p-4">
-                <p className="mb-3 font-medium text-success text-xs uppercase tracking-wide">
-                  You Win ({wins.length})
-                </p>
+                <div className="mb-3 flex items-center gap-1.5">
+                  <CheckIcon className="size-3 text-success" />
+                  <span className="font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
+                    Won · {wins.length}
+                  </span>
+                </div>
                 {wins.length > 0 ? (
-                  wins.map((simulation) => (
-                    <div
-                      key={simulation.id}
-                      className="mb-2 flex items-start gap-2"
-                    >
-                      <CheckIcon className="mt-0.5 size-4 shrink-0 text-success" />
-                      <span className="font-light text-foreground text-xs leading-relaxed">
+                  <div className="space-y-2">
+                    {wins.map((simulation) => (
+                      <p
+                        key={simulation.id}
+                        className="border-success/40 border-l-2 pl-2.5 font-light text-foreground text-xs leading-relaxed"
+                      >
                         {simulation.reasoning
-                          ? simulation.reasoning.slice(0, 120) +
-                            (simulation.reasoning.length > 120 ? "…" : "")
+                          ? simulation.reasoning.slice(0, 160) +
+                            (simulation.reasoning.length > 160 ? "…" : "")
                           : `Won with score ${simulation.productScore}`}
-                      </span>
-                    </div>
-                  ))
+                      </p>
+                    ))}
+                  </div>
                 ) : (
-                  <p className="font-light text-foreground-dimmed text-xs">
+                  <p className="font-light text-foreground-dimmed text-xs italic">
                     No wins recorded
                   </p>
                 )}
               </div>
               <div className="p-4">
-                <p className="mb-3 font-medium text-error text-xs uppercase tracking-wide">
-                  They Win ({losses.length})
-                </p>
+                <div className="mb-3 flex items-center gap-1.5">
+                  <XIcon className="size-3 text-error" />
+                  <span className="font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
+                    Lost · {losses.length}
+                  </span>
+                </div>
                 {losses.length > 0 ? (
-                  losses.map((simulation) => (
-                    <div
-                      key={simulation.id}
-                      className="mb-2 flex items-start gap-2"
-                    >
-                      <XIcon className="mt-0.5 size-4 shrink-0 text-error" />
-                      <span className="font-light text-foreground text-xs leading-relaxed">
+                  <div className="space-y-2">
+                    {losses.map((simulation) => (
+                      <p
+                        key={simulation.id}
+                        className="border-error/40 border-l-2 pl-2.5 font-light text-foreground text-xs leading-relaxed"
+                      >
                         {simulation.reasoning
-                          ? simulation.reasoning.slice(0, 120) +
-                            (simulation.reasoning.length > 120 ? "…" : "")
+                          ? simulation.reasoning.slice(0, 160) +
+                            (simulation.reasoning.length > 160 ? "…" : "")
                           : `Lost with score ${simulation.productScore}`}
-                      </span>
-                    </div>
-                  ))
+                      </p>
+                    ))}
+                  </div>
                 ) : (
-                  <p className="font-light text-foreground-dimmed text-xs">
+                  <p className="font-light text-foreground-dimmed text-xs italic">
                     No losses recorded
                   </p>
                 )}

@@ -128,13 +128,32 @@ export default () => {
                     </div>
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       {[
-                        { id: "profile-name", label: "Full Name", value: "Jane Smith" },
-                        { id: "profile-email", label: "Email", value: "jane@acmestore.com" },
-                        { id: "profile-company", label: "Company", value: "Acme Store" },
-                        { id: "profile-role", label: "Role", value: "Founder / CEO" },
+                        {
+                          id: "profile-name",
+                          label: "Full Name",
+                          value: "Jane Smith",
+                        },
+                        {
+                          id: "profile-email",
+                          label: "Email",
+                          value: "jane@acmestore.com",
+                        },
+                        {
+                          id: "profile-company",
+                          label: "Company",
+                          value: "Acme Store",
+                        },
+                        {
+                          id: "profile-role",
+                          label: "Role",
+                          value: "Founder / CEO",
+                        },
                       ].map((field) => (
                         <div key={field.label} className="flex flex-col gap-1">
-                          <label htmlFor={field.id} className="font-medium text-foreground text-xs">
+                          <label
+                            htmlFor={field.id}
+                            className="font-medium text-foreground text-xs"
+                          >
                             {field.label}
                           </label>
                           <input
@@ -165,10 +184,16 @@ export default () => {
                       {[
                         { id: "current-password", label: "Current Password" },
                         { id: "new-password", label: "New Password" },
-                        { id: "confirm-password", label: "Confirm New Password" },
+                        {
+                          id: "confirm-password",
+                          label: "Confirm New Password",
+                        },
                       ].map(({ id, label }) => (
                         <div key={label} className="flex flex-col gap-1">
-                          <label htmlFor={id} className="font-medium text-foreground text-xs">
+                          <label
+                            htmlFor={id}
+                            className="font-medium text-foreground text-xs"
+                          >
                             {label}
                           </label>
                           <input

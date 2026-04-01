@@ -5,7 +5,13 @@ import {
   RadarIcon,
 } from "@zenncore/icons";
 import { cn, unwrapResult } from "@zenncore/utils";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@zenncore/web/components/avatar";
 import { Button } from "@zenncore/web/components/button";
+import Image from "next/image";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
@@ -69,22 +75,28 @@ const ProductDetailContent = async ({
 
   return (
     <>
-      {/* Header */}
       <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8 px-6 py-8">
-          <Link
-            href="/dashboard/products"
-            className="flex w-fit items-center gap-1 font-light text-foreground-dimmed text-sm hover:text-primary"
+          <Button
+            variant="outline"
+            color="accent"
+            render={<Link href="/dashboard/products" />}
           >
             <ChevronLeftIcon className="size-4" />
             Back to Products
-          </Link>
+          </Button>
 
           <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div className="flex items-start gap-4">
-              <div className="flex size-16 shrink-0 items-center justify-center bg-primary/10 font-bold text-primary text-xl">
-                {product.title.slice(0, 2).toUpperCase()}
-              </div>
+              <Avatar className="size-9 min-w-9 rounded-none bg-primary/10">
+                <AvatarImage
+                  src={product.images?.[0] ?? "/images/fallback.png"}
+                  alt={product.title}
+                />
+                <AvatarFallback className="relative">
+                  <Image src="/images/fallback.png" alt="Fallback" fill />
+                </AvatarFallback>
+              </Avatar>
               <div>
                 <h1 className="font-medium text-4xl text-foreground">
                   {product.title}
@@ -123,7 +135,6 @@ const ProductDetailContent = async ({
         </div>
       </div>
 
-      {/* Stat cards */}
       <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8">
           <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
@@ -131,7 +142,10 @@ const ProductDetailContent = async ({
               <p className="text-foreground-dimmed">Win Rate</p>
               <div className="mt-2 flex items-baseline gap-1.5">
                 <span
-                  className={cn("text-4xl tabular-nums", rateTextColor(winRate))}
+                  className={cn(
+                    "text-4xl tabular-nums",
+                    rateTextColor(winRate),
+                  )}
                 >
                   {winRate}%
                 </span>
@@ -214,10 +228,9 @@ const ProductDetailContent = async ({
         </div>
       </div>
 
-      {/* Tabs content */}
       <div className="h-8" />
       <div className="-mx-8 mb-12 border-accent-foreground border-t border-b">
-        <div className="mx-8 p-6">
+        <div className="mx-8">
           <ProductDetail data={data} />
         </div>
       </div>

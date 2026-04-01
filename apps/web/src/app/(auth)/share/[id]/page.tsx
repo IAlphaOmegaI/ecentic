@@ -1,9 +1,4 @@
-import {
-  ArrowRightIcon,
-  RocketIcon,
-  TrendDownIcon,
-  TrendUpIcon,
-} from "@zenncore/icons";
+import { ArrowRightIcon, TrendDownIcon, TrendUpIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
@@ -104,7 +99,7 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
           stagger={0.06}
           className="flex flex-col overflow-y-auto"
         >
-          <Motion.Item className="px-8 border-b border-accent-foreground">
+          <Motion.Item className="border-accent-foreground border-b px-8">
             <div className="border-accent-foreground border-x p-6">
               <h2 className="font-medium text-4xl text-foreground">
                 How does your store stack up?
@@ -125,7 +120,7 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
                   </p>
                   <p
                     className={cn(
-                      "font-semibold text-[88px] leading-none tabular-nums",
+                      "font-semibold text-[88px] tabular-nums leading-none",
                       color,
                     )}
                   >
@@ -227,7 +222,7 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
             <Motion.Item className="border-accent-foreground border-b px-8">
               <div className="border-accent-foreground border-x">
                 <div className="border-accent-foreground border-b px-6 py-5">
-                  <p className="font-body text-foreground text-2xl leading-snug">
+                  <p className="font-body text-2xl text-foreground leading-snug">
                     {scan.topFinding.name}
                   </p>
                 </div>
@@ -236,7 +231,7 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
                     <p className="mb-3 font-light text-white/60 text-xs uppercase tracking-widest">
                       Impact
                     </p>
-                    <p className="font-light text-white text-base leading-relaxed">
+                    <p className="font-light text-base text-white leading-relaxed">
                       {scan.topFinding.impactDescription}
                     </p>
                   </div>

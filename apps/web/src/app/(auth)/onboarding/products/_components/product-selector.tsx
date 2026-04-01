@@ -236,7 +236,7 @@ export const ProductSelector = ({
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-3">
-                          <Avatar className="size-9 rounded-none bg-primary/10 min-w-9">
+                          <Avatar className="size-9 min-w-9 rounded-none bg-primary/10">
                             <AvatarImage
                               src={images[0] ?? "/images/fallback.png"}
                               alt={product.title}

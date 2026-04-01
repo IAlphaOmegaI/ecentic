@@ -93,7 +93,7 @@ export const CompletePhase = ({
           </div>
         </Motion.Item>
 
-        <Motion.Item className="border-accent-foreground border-b px-8 h-auto">
+        <Motion.Item className="h-auto border-accent-foreground border-b px-8">
           <motion.div
             className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-x"
             variants={Stagger.Container(0.06)}
@@ -116,11 +116,11 @@ export const CompletePhase = ({
                     height={48}
                     className="mb-4"
                   />
-                  <span className="mt-auto font-medium text-lg text-foreground">
+                  <span className="mt-auto font-medium text-foreground text-lg">
                     {label}
                   </span>
                   <div className="flex items-center gap-2">
-                    <span className="font-light text-success text-sm leading-tight">
+                    <span className="font-light text-sm text-success leading-tight">
                       {rates?.wins ?? 0} W
                     </span>
                     <span className="text-foreground-dimmed/30 text-sm leading-tight">
@@ -170,7 +170,7 @@ export const CompletePhase = ({
           </Motion.Item>
         )}
 
-        <Motion.Item className="border-accent-foreground border-b px-8 h-auto">
+        <Motion.Item className="h-auto border-accent-foreground border-b px-8">
           <div className="grid grid-cols-2 gap-px border-accent-foreground border-x bg-accent-foreground">
             <div className="flex items-center gap-2 bg-background-dimmed p-4">
               <div className="flex items-center gap-2">

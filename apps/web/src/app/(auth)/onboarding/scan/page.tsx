@@ -5,7 +5,6 @@ import {
   SquareChartIcon,
 } from "@zenncore/icons";
 import { cn, unwrapResult } from "@zenncore/utils";
-import { unstable_noStore as noStore } from "next/cache";
 import Image from "next/image";
 import { connection } from "next/server";
 import { Motion } from "@/components/motion";
@@ -90,7 +89,7 @@ export default async () => {
 
   return (
     <ScanRunner simulations={simulations}>
-      <Motion.Stagger className="flex flex-col h-full overflow-y-auto border-accent-foreground border-b ">
+      <Motion.Stagger className="flex h-full flex-col overflow-y-auto border-accent-foreground border-b">
         <Motion.Item className="w-full border-accent-foreground border-b px-8">
           <div className="flex flex-col border-accent-foreground border-x p-6">
             <h2 className="font-medium text-4xl text-foreground">
@@ -108,7 +107,7 @@ export default async () => {
             {models.map((model) => (
               <div
                 key={model.model}
-                className="flex flex-col bg-background-dimmed p-4 h-full"
+                className="flex h-full flex-col bg-background-dimmed p-4"
               >
                 <Image
                   src={model.logo}
@@ -132,7 +131,7 @@ export default async () => {
         </Motion.Item>
 
         <Motion.Item className="px-8">
-          <div className="grid size-full grid-cols-2 gap-px border-accent-foreground border-x bg-accent-foreground  max-h-full">
+          <div className="grid size-full max-h-full grid-cols-2 gap-px border-accent-foreground border-x bg-accent-foreground">
             {labels.map(({ label, value, icon: Icon, color }) => (
               <div key={label} className="bg-background-dimmed p-4">
                 <Icon className={cn("mb-6 size-12", color)} />

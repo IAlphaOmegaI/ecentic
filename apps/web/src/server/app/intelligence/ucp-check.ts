@@ -167,8 +167,9 @@ const validateUcpSpec = (data: unknown): SpecIssue[] => {
   }
 
   // Support both flat { version, ... } and wrapped { ucp: { version, ... } }
-  const root: Record<string, unknown> =
-    isObject(get(data, "ucp")) ? (get(data, "ucp") as Record<string, unknown>) : data;
+  const root: Record<string, unknown> = isObject(get(data, "ucp"))
+    ? (get(data, "ucp") as Record<string, unknown>)
+    : data;
 
   // ── version (required) ──────────────────────────────────────────────────────
   const version = get(root, "version");

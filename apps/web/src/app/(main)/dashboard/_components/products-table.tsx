@@ -75,7 +75,7 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
         href={`/dashboard/products/${row.original._id}`}
         className="group flex items-center gap-2"
       >
-        <Avatar className="size-9 rounded-none bg-primary/10">
+        <Avatar className="size-9 min-w-9 rounded-none bg-primary/10">
           <AvatarImage
             src={row.original.image ?? "/images/fallback.png"}
             alt={row.original.title}

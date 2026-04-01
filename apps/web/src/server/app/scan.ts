@@ -8,8 +8,8 @@ import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { NotFoundError } from "../utils/error";
 import type { Document } from "../utils/repository";
-import * as Simulation from "./simulation";
 import { repository } from "../utils/repository";
+import * as Simulation from "./simulation";
 
 export const { get, paginate, create, update, destroy, exists, count, find } =
   repository(schema.scan);

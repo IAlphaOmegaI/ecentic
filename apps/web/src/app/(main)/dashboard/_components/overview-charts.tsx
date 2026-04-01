@@ -237,7 +237,7 @@ export const OverviewCharts = ({
                         {label}
                       </span>
                     </div>
-                    <span className="font-medium text-lg text-foreground tabular-nums">
+                    <span className="font-medium text-foreground text-lg tabular-nums">
                       {rate}{" "}
                       <span className="font-light text-foreground-dimmed text-sm">
                         %

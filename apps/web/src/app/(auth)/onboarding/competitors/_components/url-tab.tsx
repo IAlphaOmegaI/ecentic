@@ -63,10 +63,7 @@ export const UrlTab = ({ className, onSuccess }: UrlTab.Props) => {
 
   return (
     <div
-      className={cn(
-        "relative flex h-full flex-col overflow-hidden",
-        className,
-      )}
+      className={cn("relative flex h-full flex-col overflow-hidden", className)}
     >
       <AnimatePresence mode="wait" initial={false}>
         {!hasResults ? (
@@ -113,7 +110,9 @@ export const UrlTab = ({ className, onSuccess }: UrlTab.Props) => {
                 disabled={!url?.trim() || isScraping}
                 className="mt-auto px-4 py-2 font-medium"
               >
-                {isScraping ? "Extracting product data..." : "Extract Product Data"}
+                {isScraping
+                  ? "Extracting product data..."
+                  : "Extract Product Data"}
               </Button>
             </div>
           </motion.div>
@@ -162,11 +161,7 @@ export const UrlTab = ({ className, onSuccess }: UrlTab.Props) => {
                       alt={competitor.title}
                     />
                     <AvatarFallback className="relative">
-                      <Image
-                        src="/images/fallback.png"
-                        alt="Fallback"
-                        fill
-                      />
+                      <Image src="/images/fallback.png" alt="Fallback" fill />
                     </AvatarFallback>
                   </Avatar>
                   <div className="min-w-0 flex-1">

@@ -1,4 +1,4 @@
-import type { NextRequest as Request, ProxyConfig } from "next/server";
+import type { ProxyConfig, NextRequest as Request } from "next/server";
 import { NextResponse as Response } from "next/server";
 import * as Authentication from "@/server/app/authentication";
 
