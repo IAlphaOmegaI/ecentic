@@ -1,7 +1,7 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import Image from "next/image";
 import Link from "next/link";
-import Background from "@/public/images/background.png";
+import Background from "@/public/images/background.webp";
 
 export const Hero = () => (
   <div className="relative -left-[calc(50vw-50%)] h-screen w-screen p-3">
