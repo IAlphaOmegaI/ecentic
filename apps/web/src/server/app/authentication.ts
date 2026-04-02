@@ -57,9 +57,12 @@ export const signIn = withContext(
     const user = await User.get(Environment.SERVER, result.data.user.id);
 
     if (!user.success) {
-      throw new InvalidCredentialsError("Invalid credentials provided", {
-        cause: user.error,
-      });
+      return {
+        success: false,
+        error: new InvalidCredentialsError("Invalid credentials provided", {
+          cause: user.error,
+        }),
+      };
     }
 
     jar.set("user", JSON.stringify(user.data));

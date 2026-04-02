@@ -35,6 +35,7 @@ const profile = {
   }),
   role: field({
     shape: "select",
+    // @ts-expect-error - role is not typed
     validator: z.literal([
       "Founder / CEO",
       "Marketing Lead",
