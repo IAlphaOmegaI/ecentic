@@ -298,7 +298,7 @@ export const handleOAuthCallback = withContext(
 
     const transaction = await resultify(() =>
       withTransaction(async (tx) => {
-        const storeResult = await Store.create(
+        const creation = await Store.create(
           Environment.SERVER,
           {
             userId,
@@ -313,13 +313,13 @@ export const handleOAuthCallback = withContext(
           { tx },
         );
 
-        if (!storeResult.success) throw storeResult.error;
-        if (!storeResult.data)
+        if (!creation.success) throw creation.error;
+        if (!creation.data)
           throw new Error("Store creation returned no data");
 
         await syncShopifyCatalog(Environment.SERVER, {
           user: userId,
-          store: storeResult.data.id,
+          store: creation.data.id,
           tx,
         });
 

@@ -6,11 +6,7 @@ import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { type SubmitEvent, useState } from "react";
-import type {
-  SpecIssue,
-  UcpCheckResult,
-} from "@/server/app/intelligence/ucp-check";
-import { checkUCP } from "@/server/app/intelligence/ucp-check";
+import * as UcpCheck from "@/server/app/intelligence/ucp-check";
 
 type CheckRowProps = {
   label: string;
@@ -133,7 +129,7 @@ const JsonPreview = ({ data }: { data: unknown }) => {
   );
 };
 
-const Results = ({ result }: { result: UcpCheckResult }) => {
+const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
   const overallPass = result.https && result.found && result.valid;
   return (
     <div className="mt-6 border border-accent-foreground bg-background">
@@ -200,24 +196,24 @@ const Results = ({ result }: { result: UcpCheckResult }) => {
             <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
               {
                 result.specIssues.filter(
-                  (i: SpecIssue) => i.severity === "error",
+                  (i: UcpCheck.SpecIssue) => i.severity === "error",
                 ).length
               }{" "}
               error
               {result.specIssues.filter(
-                (i: SpecIssue) => i.severity === "error",
+                (i: UcpCheck.SpecIssue) => i.severity === "error",
               ).length !== 1
                 ? "s"
                 : ""}
               ,{" "}
               {
                 result.specIssues.filter(
-                  (i: SpecIssue) => i.severity === "warning",
+                  (i: UcpCheck.SpecIssue) => i.severity === "warning",
                 ).length
               }{" "}
               warning
               {result.specIssues.filter(
-                (i: SpecIssue) => i.severity === "warning",
+                (i: UcpCheck.SpecIssue) => i.severity === "warning",
               ).length !== 1
                 ? "s"
                 : ""}
@@ -268,7 +264,7 @@ export const UcpValidatorForm = () => {
   const [result, setResult] = useState<UcpCheckResult | null>(null);
 
   const [handleCheck, isChecking] = useAsyncAction(async () => {
-    const response = await checkUCP(domain);
+    const response = await UcpCheck.checkUCP(domain);
     if (response.success) setResult(response.data);
   });
 
@@ -295,7 +291,6 @@ export const UcpValidatorForm = () => {
           variant="flat"
           color="primary"
           disabled={isChecking || !domain.trim()}
-          className="h-10 px-5 text-sm"
         >
           {isChecking ? "Checking..." : "Check"}
         </Button>

@@ -363,8 +363,8 @@ export const checkUCP = async (
   const httpStatus = response.status;
   const contentType = response.headers.get("content-type");
 
-  const textResult = await resultify(() => response.text());
-  if (!textResult.success) {
+  const text = await resultify(() => response.text());
+  if (!text.success) {
     return {
       success: true,
       data: {
@@ -386,7 +386,7 @@ export const checkUCP = async (
   // serve the UCP file with a non-200 status but a valid JSON body.
   let parsed: unknown = null;
   try {
-    parsed = JSON.parse(textResult.data);
+    parsed = JSON.parse(text.data);
   } catch {
     // not valid JSON
   }

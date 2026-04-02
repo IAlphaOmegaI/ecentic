@@ -208,10 +208,10 @@ export const listDashboard = withAuthentication(async (context) => {
       .map((product) => product.id),
   );
 
-  const simulationsResult = await Simulation.getForProducts({
+  const fetched = await Simulation.getForProducts({
     products: products.data.map((product) => product.id),
   });
-  const simulations = simulationsResult.success ? simulationsResult.data : [];
+  const simulations = fetched.success ? fetched.data : [];
 
   const lowWinRateEntries = products.data
     .map((product) => ({
@@ -363,10 +363,10 @@ export const approveProductListing = withAuthentication(
         ),
       };
 
-    const simulationsResult = await Simulation.getForProducts({
+    const fetched = await Simulation.getForProducts({
       products: [productId],
     });
-    const simulations = simulationsResult.success ? simulationsResult.data : [];
+    const simulations = fetched.success ? fetched.data : [];
     const winRate = computeWinRate(productId, simulations) ?? 0;
     const lift = estimateLift(winRate);
 
@@ -471,6 +471,45 @@ export const reconsiderSuggestion = withAuthentication(
   "Optimization.reconsiderSuggestion",
 );
 
+export const generateStructuredData = withAuthentication(
+  async (context, { productId }: { productId: string }) => {
+    const userId = context.session.user.id;
+
+    const product = await Product.get(Environment.SERVER, productId);
+    if (!product.success) return product;
+    if (!product.data)
+      return { success: false, error: new Error("Product not found") };
+    if (product.data.userId !== userId)
+      return { success: false, error: new Error("Not authorized") };
+
+    const result = await resultify(() =>
+      AI.generate({
+        system: `You generate JSON-LD structured data (schema.org/Product) for e-commerce product pages to help AI shopping agents understand product details.
+Output a single valid JSON string. Include @context, @type, name, description, brand, sku, and offers (price, priceCurrency, availability).
+Do not invent specifications not present in the input.`,
+        prompt: `Generate JSON-LD for this product:
+Title: ${product.data.title}
+Description: ${product.data.description ?? "(none)"}
+Price: ${product.data.price ?? "(unknown)"}${product.data.currency ? ` ${product.data.currency}` : ""}
+SKU: ${product.data.sku ?? "(unknown)"}`,
+        schema: z.object({ json_ld: z.string() }),
+      }),
+    );
+
+    if (!result.success) return result;
+
+    const updated = await Product.update(Environment.SERVER, productId, {
+      structuredData: result.data.json_ld,
+    });
+
+    if (!updated.success) return updated;
+
+    revalidatePath(`/dashboard/products/${productId}`);
+    return { success: true, data: { structuredData: result.data.json_ld } };
+  },
+  "Optimization.generateStructuredData",
+);
+
 export const approveAllPending = withAuthentication(async (context) => {
   const userId = context.session.user.id;
 
@@ -504,10 +543,10 @@ export const approveAllPending = withAuthentication(async (context) => {
       .map((product) => product.id),
   );
 
-  const simulationsResult = await Simulation.getForProducts({
+  const fetched = await Simulation.getForProducts({
     products: products.map((product) => product.id),
   });
-  const simulations = simulationsResult.success ? simulationsResult.data : [];
+  const simulations = fetched.success ? fetched.data : [];
 
   const now = Date.now();
   const pendingProductIds: { id: string; title: string }[] = [];

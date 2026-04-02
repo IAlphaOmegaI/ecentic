@@ -19,8 +19,9 @@ import {
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Spring } from "@/lib/animations";
+import * as Optimization from "@/server/app/optimization";
 
 export type ProductDetailData = {
   product: {
@@ -63,7 +64,7 @@ export type ProductDetailData = {
   }>;
 };
 
-const columns: ColumnDef<ProductDetailData["competitors"][number]>[] = [
+const columns = [
   {
     accessorKey: "title",
     header: "Competitor",
@@ -122,7 +123,7 @@ const columns: ColumnDef<ProductDetailData["competitors"][number]>[] = [
     header: "Losses",
     cell: ({ row }) => (
       <span className="font-medium text-error tabular-nums">
-        {row.original.losses}
+        {row.original.total - row.original.wins}
       </span>
     ),
   },
@@ -135,7 +136,7 @@ const columns: ColumnDef<ProductDetailData["competitors"][number]>[] = [
       </span>
     ),
   },
-];
+] satisfies ColumnDef<ProductDetailData["competitors"][number]>[];
 
 const Model = {
   "GPT-4": {
@@ -329,15 +330,7 @@ const OverviewTab = ({
         </Button>
       </div>
       <DataTableProvider
-        rows={competitors.map(({ id, title, brand, rate, wins, total }) => ({
-          _id: id,
-          title,
-          brand,
-          rate,
-          wins,
-          losses: total - wins,
-          total,
-        }))}
+        rows={competitors.map((row) => ({ _id: row.id, ...row }))}
         columns={columns}
         handler="client"
       >
@@ -405,7 +398,7 @@ const ReplayTab = ({
   const active = grouped.find((g) => g.model === selected) ?? grouped[0];
 
   return (
-    <div className="flex border border-accent-foreground">
+    <div className="flex border border-accent-foreground border-x-0">
       <div className="flex shrink-0 flex-col border-accent-foreground border-r">
         {grouped.map(({ model, label }) => {
           const config = Model[label as keyof typeof Model];
@@ -513,12 +506,14 @@ const ReplayTab = ({
 };
 
 const GapsTab = ({ product }: { product: ProductDetailData["product"] }) => (
-  <div className="border border-accent-foreground bg-background-rich">
-    <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
-      <p className="font-light text-foreground-dimmed text-xs">
-        Data quality:{" "}
-        <span className="font-medium text-foreground">
-          {product.quality}/100
+  <>
+    <div className="flex items-end justify-between border-accent-foreground border-y p-4">
+      <p className="font-medium text-foreground text-xl">Data Gaps</p>
+      <p className="font-light text-foreground-dimmed">
+        Quality score:{" "}
+        <span className={cn("font-semibold", rateColor(product.quality))}>
+          {product.quality}
+          <span className="font-light text-foreground-dimmed">/100</span>
         </span>
       </p>
     </div>
@@ -535,7 +530,7 @@ const GapsTab = ({ product }: { product: ProductDetailData["product"] }) => (
           <div
             key={key}
             className={cn(
-              "flex items-center justify-between px-4 py-3",
+              "flex items-center justify-between px-4 py-4",
               !filled && "bg-error/5",
             )}
           >
@@ -545,13 +540,11 @@ const GapsTab = ({ product }: { product: ProductDetailData["product"] }) => (
               ) : (
                 <XIcon className="size-4 text-error" />
               )}
-              <span className="font-light text-foreground text-sm">
-                {label}
-              </span>
+              <span className="font-medium text-foreground">{label}</span>
             </div>
             <span
               className={cn(
-                "font-medium text-xs",
+                "font-medium text-sm",
                 filled ? "text-success" : "text-error",
               )}
             >
@@ -561,7 +554,7 @@ const GapsTab = ({ product }: { product: ProductDetailData["product"] }) => (
         );
       })}
     </div>
-  </div>
+  </>
 );
 
 const BattlecardTab = ({
@@ -583,7 +576,7 @@ const BattlecardTab = ({
     );
 
   return (
-    <div className="space-y-px bg-accent-foreground">
+    <div className="space-y-px border-accent-foreground border-t bg-accent-foreground">
       {competitors.map((competitor) => {
         const competitorSimulations = simulations.filter(
           (simulation) => simulation.competitorId === competitor.id,
@@ -598,23 +591,23 @@ const BattlecardTab = ({
 
         return (
           <div key={competitor.id} className="bg-background-rich">
-            <div className="grid grid-cols-[1fr_auto] items-start gap-6 border-accent-foreground border-b bg-background-dimmed p-4">
+            <div className="grid grid-cols-[1fr_auto] items-start gap-4 border-accent-foreground border-b bg-background-dimmed p-4">
               <div className="min-w-0">
                 <p className="font-medium text-foreground">
                   {competitor.title}
                 </p>
-                <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
+                <p className="mt-0.5 font-light text-foreground-dimmed">
                   vs. {product.title}
                 </p>
-                <div className="mt-3 flex items-center gap-3">
+                <div className="mt-4 flex w-full items-center gap-2">
                   <div className="h-1 flex-1 bg-accent-foreground">
                     <div
                       className={cn("h-full", barColor(competitor.rate))}
                       style={{ width: `${competitor.rate}%` }}
                     />
                   </div>
-                  <span className="font-light text-foreground-dimmed text-xs tabular-nums">
-                    {wins.length}W · {losses.length}L
+                  <span className="font-light text-foreground-dimmed tabular-nums">
+                    {wins.length} W · {losses.length} L
                   </span>
                 </div>
               </div>
@@ -625,7 +618,7 @@ const BattlecardTab = ({
                     rateColor(competitor.rate),
                   )}
                 >
-                  {competitor.rate}
+                  {competitor.rate}{" "}
                   <span className="font-light text-base text-foreground-dimmed">
                     %
                   </span>
@@ -638,19 +631,17 @@ const BattlecardTab = ({
 
             <div className="grid grid-cols-2 divide-x divide-accent-foreground">
               <div className="p-4">
-                <div className="mb-3 flex items-center gap-1.5">
-                  <CheckIcon className="size-3 text-success" />
-                  <span className="font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
+                <div className="mb-2 flex items-center gap-2">
+                  <CheckIcon className="size-4 text-success" />
+                  <span className="font-medium text-foreground-dimmed text-lg uppercase tracking-widest">
                     Won · {wins.length}
                   </span>
                 </div>
                 {wins.length > 0 ? (
                   <div className="space-y-2">
                     {wins.map((simulation) => (
-                      <p
-                        key={simulation.id}
-                        className="border-success/40 border-l-2 pl-2.5 font-light text-foreground text-xs leading-relaxed"
-                      >
+                      <p key={simulation.id} className="text-foreground">
+                        -{" "}
                         {simulation.reasoning
                           ? simulation.reasoning.slice(0, 160) +
                             (simulation.reasoning.length > 160 ? "…" : "")
@@ -665,19 +656,17 @@ const BattlecardTab = ({
                 )}
               </div>
               <div className="p-4">
-                <div className="mb-3 flex items-center gap-1.5">
-                  <XIcon className="size-3 text-error" />
-                  <span className="font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
+                <div className="mb-2 flex items-center gap-2">
+                  <XIcon className="size-4 text-error" />
+                  <span className="font-medium text-foreground-dimmed text-lg uppercase tracking-widest">
                     Lost · {losses.length}
                   </span>
                 </div>
                 {losses.length > 0 ? (
                   <div className="space-y-2">
                     {losses.map((simulation) => (
-                      <p
-                        key={simulation.id}
-                        className="border-error/40 border-l-2 pl-2.5 font-light text-foreground text-xs leading-relaxed"
-                      >
+                      <p key={simulation.id} className="text-foreground">
+                        -{" "}
                         {simulation.reasoning
                           ? simulation.reasoning.slice(0, 160) +
                             (simulation.reasoning.length > 160 ? "…" : "")
@@ -686,7 +675,7 @@ const BattlecardTab = ({
                     ))}
                   </div>
                 ) : (
-                  <p className="font-light text-foreground-dimmed text-xs italic">
+                  <p className="font-light text-foreground-dimmed italic">
                     No losses recorded
                   </p>
                 )}
@@ -703,65 +692,96 @@ const OptimizeTab = ({
   product,
 }: {
   product: ProductDetailData["product"];
-}) => (
-  <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-    <div className="border border-accent-foreground bg-background-rich">
-      <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
-        <p className="font-medium text-foreground text-xs">Current Listing</p>
-      </div>
-      <div className="p-4">
-        <p className="mb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-wide">
-          Title
-        </p>
-        <p className="font-light text-foreground text-sm">{product.title}</p>
+}) => {
+  const [isPending, startTransition] = useTransition();
+  const [liveStructuredData, setLiveStructuredData] = useState<string | null>(
+    null,
+  );
 
-        <p className="mt-4 mb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-wide">
-          Description
-        </p>
-        {product.description ? (
-          <p className="font-light text-foreground text-sm leading-relaxed">
-            {product.description.slice(0, 300)}
-            {product.description.length > 300 ? "…" : ""}
-          </p>
-        ) : (
-          <p className="font-light text-error text-xs italic">
-            No description found
-          </p>
-        )}
+  const structuredData = liveStructuredData ?? product.structuredData;
 
-        <p className="mt-4 mb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-wide">
-          Structured Data
-        </p>
-        {product.structuredData ? (
-          <p className="bg-background-dimmed p-2 font-mono text-foreground-dimmed text-xs">
-            {product.structuredData.slice(0, 200)}…
-          </p>
-        ) : (
-          <p className="font-light text-error text-xs italic">
-            No JSON-LD structured data found
-          </p>
-        )}
-      </div>
-    </div>
+  const handleGenerateJsonLd = () => {
+    startTransition(async () => {
+      const generation = await Optimization.generateStructuredData({ productId: product.id });
+      if (generation.success) setLiveStructuredData(generation.data.structuredData);
+    });
+  };
 
-    <div className="border border-accent-foreground bg-background-rich">
-      <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
-        <p className="font-medium text-foreground text-xs">
-          Data Quality: {product.quality}%
+  return (
+    <>
+      <div className="flex items-end justify-between border-accent-foreground border-y p-4">
+        <p className="font-medium text-foreground text-xl">Optimize Listing</p>
+        <p className="font-light text-foreground-dimmed">
+          Quality:{" "}
+          <span className={cn("font-semibold", rateColor(product.quality))}>
+            {product.quality}
+            <span className="font-light text-foreground-dimmed">/100</span>
+          </span>
         </p>
       </div>
-      <div className="p-4">
-        <p className="mb-3 font-light text-foreground text-sm">
-          Improve your listing data to increase win rates across all AI models.
-        </p>
-        <Link
-          href="/dashboard/ucp"
-          className="flex w-full items-center justify-center gap-2 bg-primary py-2 font-medium text-sm text-white transition-colors hover:bg-primary/90"
-        >
-          Generate Optimized Data
-          <ArrowRightIcon className="size-4" />
-        </Link>
+      <div className="grid grid-cols-1 gap-px bg-accent-foreground lg:grid-cols-2">
+        <div className="bg-background-rich p-6">
+          <p className="mb-2 font-medium text-foreground-dimmed uppercase tracking-widest">
+            Title
+          </p>
+          <p className="font-light text-foreground">{product.title}</p>
+
+          <p className="mt-6 mb-2 font-medium text-foreground-dimmed uppercase tracking-widest">
+            Description
+          </p>
+          {product.description ? (
+            <div
+              className="max-h-48 overflow-y-auto bg-background-dimmed p-3 font-light text-foreground text-sm leading-relaxed [&_ol]:mt-1 [&_ol]:list-decimal [&_ol]:pl-4 [&_p+p]:mt-2 [&_ul]:mt-1 [&_ul]:list-disc [&_ul]:pl-4"
+              // biome-ignore lint/security/noDangerouslySetInnerHtml: product description is HTML sourced from the user's own store
+              dangerouslySetInnerHTML={{ __html: product.description }}
+            />
+          ) : (
+            <p className="font-light text-error text-sm italic">
+              No description found
+            </p>
+          )}
+
+          <p className="mt-6 mb-2 font-medium text-foreground-dimmed uppercase tracking-widest">
+            Structured Data
+          </p>
+          {structuredData ? (
+            <pre className="max-h-40 overflow-y-auto whitespace-pre-wrap bg-background-dimmed p-3 font-mono text-foreground-dimmed text-xs leading-relaxed">
+              {structuredData}
+            </pre>
+          ) : (
+            <div className="space-y-3">
+              <p className="font-light text-error text-sm italic">
+                No JSON-LD structured data found
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                color="accent"
+                onClick={handleGenerateJsonLd}
+                disabled={isPending}
+              >
+                {isPending ? "Generating…" : "Generate JSON-LD"}
+                {!isPending && <ArrowRightIcon className="size-4" />}
+              </Button>
+            </div>
+          )}
+        </div>
+
+        <div className="bg-background-rich p-6">
+          <p className="mb-4 font-light text-foreground leading-relaxed">
+            Improve your listing data to increase win rates across all AI
+            models.
+          </p>
+          <Button
+            variant="flat"
+            color="primary"
+            render={<Link href="/dashboard/ucp" />}
+          >
+            Generate Optimized Data
+            <ArrowRightIcon className="size-4" />
+          </Button>
+        </div>
       </div>
-    </div>
-  </div>
-);
+    </>
+  );
+};

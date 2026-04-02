@@ -4,8 +4,7 @@ import { readStreamableValue } from "@ai-sdk/rsc";
 import { unwrapResult } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type * as Simulate from "@/server/app/intelligence/simulate";
-import { runScan } from "@/server/app/intelligence/simulate";
+import * as Simulate from "@/server/app/intelligence/simulate";
 
 type ScanPhase = "pre" | "running" | "complete";
 type ModelStatus = "queued" | "running" | "complete";
@@ -93,7 +92,7 @@ export const useScanRunner = (options?: ScanRunnerOptions) => {
       setElapsed(Date.now() - start.current);
     }, 100);
 
-    const { output } = await unwrapResult(runScan());
+    const { output } = await unwrapResult(Simulate.runScan());
 
     for await (const event of readStreamableValue(output)) {
       if (!event) continue;

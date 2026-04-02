@@ -25,6 +25,8 @@ Quick reference for all coding conventions. See linked sub-guides for details.
 - [ ] Object shorthand when names match
 - [ ] No `types` folder — declare types in util files
 - [ ] Generic filenames — group related hooks/utils in one file
+- [ ] `import * as Bundle` for all server action imports — even in client files that call actions; `import type * as Bundle` only when types are all you need
+- [ ] Never add "Result" suffix to result variables — name by domain concept (`creation`, not `creationResult`) and access `.data` directly (`creation.data`)
 
 ---
 
@@ -47,6 +49,7 @@ Quick reference for all coding conventions. See linked sub-guides for details.
 - [ ] PPR + streaming: static shell in `page.tsx`, data in async server components wrapped in `<Suspense fallback={<Skeleton />}>`
 - [ ] Colocate page-specific components in `_components` inside the page folder
 - [ ] Pages with forms: `page.tsx` is a server component; form extracted to `_components/` using `InferredForm` + `field()`
+- [ ] Only the model's own `server/app/*.ts` file accesses the DB — all other files import and call the bundle
 - [ ] Use repository pattern for all DB operations — never raw `db.insert(...)` etc.
 - [ ] Prefer `Object.fromEntries` + `.map()` over imperative accumulation
 - [ ] Fully parallelize independent async work with `Promise.all` + `.flatMap()`
@@ -64,4 +67,6 @@ Quick reference for all coding conventions. See linked sub-guides for details.
 - [ ] Use `InferredForm` + `field()` or `applyFormOptions()` for all forms — never raw react-hook-form
 - [ ] Use `DataTableProvider` + `DataTable` for all tables
 - [ ] Import all UI from `@zenncore/web/components`, never from `@base-ui/react` directly in app code
+- [ ] Use `Button` with variants only — no `className` overrides; use `render={<Link />}` for navigation
 - [ ] Use semantic design tokens; avoid raw Tailwind colors
+- [ ] All spacing values (`gap`, `p`, `m`, etc.) must be multiples of 2; icons use `size-4` (never `size-3` or `size-5`)

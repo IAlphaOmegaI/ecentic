@@ -184,7 +184,26 @@ export const UsersTable = ({ data }: { data: Row[] }) => (
 
 ---
 
-## 22f. UI Primitives — `@zenncore/web/components`
+## 22f. Button — Use As-Is, No Custom ClassNames
+
+Use `Button` from `@zenncore/web/components` with the provided variants only. Do not pass `className` to override styles — the Button's built-in styles are intentional and complete. For navigation, use `render={<Link href="..." />}` instead of wrapping in an `<a>` tag or custom styling. Do not add `className` to text inside a Button either — it styles its children internally.
+
+```tsx
+// ✅ Good — variant-only, no className overrides
+<Button variant="ghost" render={<Link href="/dashboard" />}>Go to Dashboard</Button>
+<Button variant="outline">Cancel</Button>
+<Button>Submit</Button>
+
+// ❌ Bad — custom className overrides the design system
+<Button className="px-6 py-3 rounded-full text-sm font-bold">Custom</Button>
+
+// ❌ Bad — manually styled link instead of Button with render
+<a href="/dashboard" className="rounded bg-primary px-4 py-2 text-white">Go to Dashboard</a>
+```
+
+---
+
+## 22g. UI Primitives — `@zenncore/web/components`
 
 All headless UI is from `@base-ui/react` wrapped and re-exported from `@zenncore/web/components`. Always import from `@zenncore/web/components`, never directly from `@base-ui/react` in app code.
 
@@ -204,7 +223,7 @@ import {
 
 ---
 
-## 22g. `ClassList` Pattern for Components
+## 22h. `ClassList` Pattern for Components
 
 Components in `@zenncore/web` expose a `classList` prop for targeted styling of sub-elements instead of wrapping/overriding.
 
@@ -251,4 +270,30 @@ bg-primary             — primary background (CTAs, highlights)
 
 // ❌ Bad — raw colors bypass the design system
 <p className="text-gray-400">{caption}</p>
+```
+
+---
+
+## 26. Spacing — Always Multiples of 2
+
+Use only multiples of 2 for all spacing values (`gap`, `p`, `px`, `py`, `m`, `mx`, `my`, `space-x`, `space-y`, etc.). The design line grid is based on multiples of 4 and 8 — these create the visual rhythm. Odd values (3, 5, 6, 7) break the grid.
+
+For icons and fixed-size elements, always use `size-4` (not `size-3` or `size-5`). Use `size-8`, `size-16`, etc. for larger icons.
+
+```tsx
+// ✅ Good — multiples of 2, grid-aligned
+<div className="flex flex-col gap-4 p-8">
+  <div className="flex items-center gap-2 px-4 py-2">
+    <CheckIcon className="size-4" />
+    <span>Label</span>
+  </div>
+</div>
+<div className="m-4 space-y-8">...</div>
+
+// ❌ Bad — odd values break the grid
+<div className="flex flex-col gap-3 p-5">
+  <div className="flex items-center gap-1.5 px-3 py-1.5">
+    <CheckIcon className="size-3" />
+  </div>
+</div>
 ```

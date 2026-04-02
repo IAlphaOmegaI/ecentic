@@ -190,8 +190,36 @@ const products = await Products.skimForCurrentUser();
 
 Never use raw `db.insert(...)`, `db.select(...)`, etc. directly in application code. Every table must have a repository file in `server/app/` using the `repository()` helper.
 
+The **only files that should touch the DB** are the server action files that correspond directly to a model (e.g. `server/app/product.ts` owns the `product` table). All other files — pages, components, other server action files — must import the bundle and call its exported actions. This ensures `resultify`, Sentry, and other cross-cutting concerns are always applied.
+
 ```ts
-// ✅ Good — repository pattern
+// ✅ Good — model file owns DB access via repository
+// server/app/content.ts
+export const create = withAuthentication(async (environment, session, data) => {
+  return Content.create(environment, { ...data, userId: session.user.id });
+});
+
+// ✅ Good — other server files import the bundle, never the DB directly
+// server/app/simulation.ts
+import * as Content from "@/server/app/content";
+
+const creation = await Content.create(environment, data);
+if (!creation.success) return { success: false, error: creation.error };
+```
+
+```ts
+// ❌ Bad — raw db import in a non-model file
+import { db } from "@/server/database";
+import * as schema from "@/server/database/schema";
+await db.insert(schema.simulation).values(results);
+
+// ❌ Bad — bypassing the bundle in a component or page
+import { db } from "@/server/database";
+const products = await db.select().from(schema.product);
+```
+
+```ts
+// ✅ Good — repository pattern inside the model file
 await Promise.all(
   results.map((record) =>
     Simulation.create(Environment.SERVER, { scanId, ...record }),

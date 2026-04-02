@@ -385,10 +385,10 @@ const [products, optimizations] = await Promise.all([
 ]);
 ```
 
-In **client components**, use `type`-only namespace imports (types only, no server code bundled):
+In **client components that only need types** (no server action calls), use `type`-only namespace imports:
 
 ```ts
-// ✅ Good — client component
+// ✅ Good — client component, types only
 import type * as Products from "@/server/app/product";
 import type * as Optimizations from "@/server/app/optimization";
 
@@ -400,10 +400,25 @@ export namespace SidebarNav {
 }
 ```
 
+In **client components that call server actions**, use the full namespace import (Next.js handles the server boundary automatically for `"use server"` functions):
+
+```ts
+// ✅ Good — client component calling server actions
+import * as Content from "@/server/app/content";
+import * as Intelligence from "@/server/app/intelligence";
+
+const [handleSubmit] = useAsyncAction(async (data) => {
+  const creation = await Content.create(data);
+  if (!creation.success) return;
+  router.push(`/dashboard/content/${creation.data.id}`);
+});
+```
+
 ```ts
 // ❌ Bad — destructured imports lose the namespace grouping
 import { skimForCurrentUser } from "@/server/app/product";
 import { listDashboard } from "@/server/app/optimization";
+import { create } from "@/server/app/content";
 ```
 
 ---
@@ -425,6 +440,31 @@ return `${optimizations.length}`;
 // ❌ Bad — pre-computed primitives strip context
 <SidebarNav productCount={products.length} pendingOptimizationCount={optimizations.pending.length} />
 ```
+
+---
+
+## 18c. No "Result" Suffix on Result Variables
+
+Never name a variable `[something]Result` — the `Result` type is visible from the type annotation. Name the variable after the domain concept and access `.data` directly.
+
+```ts
+// ✅ Good
+const creation = await Content.create(data);
+if (!creation.success) return;
+router.push(`/dashboard/content/${creation.data.id}`);
+
+const deletion = await Content.destroy(id);
+if (!deletion.success) return { success: false, error: deletion.error };
+
+// ❌ Bad — "Result" suffix is redundant noise
+const creationResult = await Content.create(data);
+if (creationResult.success) creation = creationResult.data;
+
+const deletionResult = await Content.destroy(id);
+if (!deletionResult.success) return { success: false, error: deletionResult.error };
+```
+
+This applies everywhere: server actions, utilities, hooks, and any other `Result`-returning call.
 
 ---
 

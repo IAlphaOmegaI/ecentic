@@ -13,9 +13,9 @@ export default async ({ searchParams }: SearchParamsProps<"products">) => {
 
   const products = parseSearchParam(params.products, "list", []);
 
-  const productResult = await Product.skimForCurrentUser(Environment.SERVER);
-  const productNames = productResult.success
-    ? productResult.data.map((product) => product.title).filter(Boolean)
+  const skimmed = await Product.skimForCurrentUser(Environment.SERVER);
+  const productNames = skimmed.success
+    ? skimmed.data.map((product) => product.title).filter(Boolean)
     : [];
 
   return (
