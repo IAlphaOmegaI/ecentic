@@ -57,9 +57,12 @@ export const signIn = withContext(
     const user = await User.get(Environment.SERVER, result.data.user.id);
 
     if (!user.success) {
-      throw new InvalidCredentialsError("Invalid credentials provided", {
-        cause: user.error,
-      });
+      return {
+        success: false,
+        error: new InvalidCredentialsError("Invalid credentials provided", {
+          cause: user.error,
+        }),
+      };
     }
 
     jar.set("user", JSON.stringify(user.data));
@@ -171,6 +174,38 @@ export const getProxiedCurrentUser = withContext(async () => {
     data: u,
   };
 }, "Authentication.getProxiedCurrentUser");
+
+export const changePassword = withAuthentication(
+  async (
+    context,
+    {
+      currentPassword,
+      newPassword,
+    }: { currentPassword: string; newPassword: string },
+  ): Promise<Result> => {
+    const result = await resultify(async () =>
+      context.auth.changePassword({
+        body: {
+          currentPassword,
+          newPassword,
+          revokeOtherSessions: false,
+        },
+      }),
+    );
+
+    if (!result.success) {
+      return {
+        success: false,
+        error: new InvalidCredentialsError("Current password is incorrect", {
+          cause: result.error,
+        }),
+      };
+    }
+
+    return { success: true };
+  },
+  "Authentication.changePassword",
+);
 
 export const doesEmailExist = withContext(
   async (_, { email }: { email: string }) => {
