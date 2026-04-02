@@ -314,8 +314,7 @@ export const handleOAuthCallback = withContext(
         );
 
         if (!creation.success) throw creation.error;
-        if (!creation.data)
-          throw new Error("Store creation returned no data");
+        if (!creation.data) throw new Error("Store creation returned no data");
 
         await syncShopifyCatalog(Environment.SERVER, {
           user: userId,

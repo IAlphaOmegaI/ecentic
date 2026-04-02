@@ -5,14 +5,50 @@ import * as Optimization from "@/server/app/optimization";
 import { OptimizeClient } from "./_components/optimize-client";
 
 const OptimizeSkeleton = () => (
-  <div className="mx-8 animate-pulse px-6 py-8">
-    <div className="mb-8 h-8 w-64 rounded bg-background-dimmed" />
-    <div className="mb-4 h-10 w-full max-w-md rounded bg-background-dimmed" />
-    <div className="space-y-3">
-      <div className="h-24 rounded border border-accent-foreground bg-background-dimmed" />
-      <div className="h-24 rounded border border-accent-foreground bg-background-dimmed" />
+  <>
+    <div className="-mx-8 border-accent-foreground border-b">
+      <div className="mx-8 flex items-center justify-between px-6 py-8">
+        <div>
+          <div className="h-10 w-64 animate-pulse bg-foreground/10" />
+          <div className="mt-2 h-7 w-40 animate-pulse bg-foreground/10" />
+        </div>
+        <div className="h-9 w-36 animate-pulse bg-foreground/10" />
+      </div>
     </div>
-  </div>
+
+    <div className="-mx-8 border-accent-foreground border-b">
+      <div className="mx-8">
+        <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-3">
+          {(["a", "b", "c"] as const).map((key) => (
+            <div key={key} className="bg-background-dimmed p-4">
+              <div className="h-3 w-28 animate-pulse bg-foreground/10" />
+              <div className="mt-3 h-8 w-16 animate-pulse bg-foreground/10" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div className="h-8" />
+
+    <div className="-mx-8 mb-12 border-accent-foreground border-t border-b">
+      <div className="mx-8 px-6 py-6">
+        <div className="mb-4 h-9 w-56 animate-pulse bg-foreground/10" />
+        <div className="flex flex-col gap-3">
+          {(["d", "e", "f"] as const).map((key) => (
+            <div
+              key={key}
+              className="border border-accent-foreground bg-background-dimmed p-4"
+            >
+              <div className="h-5 w-48 animate-pulse bg-foreground/10" />
+              <div className="mt-2 h-3 w-full animate-pulse bg-foreground/10" />
+              <div className="mt-1 h-3 w-3/4 animate-pulse bg-foreground/10" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </>
 );
 
 async function OptimizeContent() {

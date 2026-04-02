@@ -172,6 +172,38 @@ export const getProxiedCurrentUser = withContext(async () => {
   };
 }, "Authentication.getProxiedCurrentUser");
 
+export const changePassword = withAuthentication(
+  async (
+    context,
+    {
+      currentPassword,
+      newPassword,
+    }: { currentPassword: string; newPassword: string },
+  ): Promise<Result> => {
+    const result = await resultify(async () =>
+      context.auth.changePassword({
+        body: {
+          currentPassword,
+          newPassword,
+          revokeOtherSessions: false,
+        },
+      }),
+    );
+
+    if (!result.success) {
+      return {
+        success: false,
+        error: new InvalidCredentialsError("Current password is incorrect", {
+          cause: result.error,
+        }),
+      };
+    }
+
+    return { success: true };
+  },
+  "Authentication.changePassword",
+);
+
 export const doesEmailExist = withContext(
   async (_, { email }: { email: string }) => {
     const users = await User.find(Environment.SERVER, {

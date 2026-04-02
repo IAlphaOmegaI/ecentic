@@ -1,8 +1,9 @@
-import { unwrapResult } from "@zenncore/utils";
+import { resultify, unwrapResult } from "@zenncore/utils";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
+import * as Scan from "@/server/app/scan";
 import { Environment } from "@/server/utils/environment";
 import { SimulationsClient } from "./_components/simulations-client";
 
@@ -35,12 +36,35 @@ const SimulationsData = async () => {
 
   const selected = competitors.filter((record) => record.selected);
 
+  const latestScans = await resultify(() =>
+    unwrapResult(Scan.getLatest(Environment.SERVER, { limit: 1 })),
+  );
+  const latestCompletedScan = latestScans.success
+    ? (latestScans.data.find((scan) => scan.status === "complete") ?? null)
+    : null;
+
+  const lastScan = await (async () => {
+    if (!latestCompletedScan) return null;
+    const result = await Scan.getShareData(Environment.SERVER, {
+      id: latestCompletedScan.id,
+    });
+    if (!result.success) return null;
+    return {
+      id: result.data.scan.id,
+      wins: result.data.scan.wins,
+      losses: result.data.scan.losses,
+      topFinding: result.data.scan.topFinding ?? null,
+      modelRates: result.data.modelRates,
+    };
+  })();
+
   return (
     <SimulationsClient
       productIds={products.map((record) => record.id)}
       productCount={products.length}
       competitorCount={competitors.length}
       selectedCompetitorCount={selected.length}
+      lastScan={lastScan}
     />
   );
 };
