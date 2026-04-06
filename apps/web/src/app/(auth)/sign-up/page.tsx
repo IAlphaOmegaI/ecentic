@@ -78,7 +78,7 @@ export default () => {
             </div>
           </Motion.Item>
 
-          <Motion.Item className="w-full px-8">
+          {/* <Motion.Item className="w-full px-8">
             <div className="flex items-center justify-between border-accent-foreground border-x p-6 font-light text-foreground-dimmed">
               <p>Already have an account? </p>
               <Button
@@ -90,7 +90,7 @@ export default () => {
                 Sign in instead <ArrowRightIcon className="size-4" />
               </Button>
             </div>
-          </Motion.Item>
+          </Motion.Item> */}
         </Motion.Stagger>
       </motion.div>
     </div>

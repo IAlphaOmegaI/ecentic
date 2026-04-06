@@ -62,13 +62,13 @@ export const SignInForm = () => {
         return;
       }
 
-      router.push("/dashboard");
+      router.push("/onboarding/connect");
     },
   );
 
   return (
     <Motion.Stagger stagger={0.07} delay={0.18}>
-      <Motion.Up className="mb-4 flex flex-col gap-2">
+      {/* <Motion.Item className="mb-4 flex flex-col gap-2">
         <Button variant="soft" color="emphasis" className="w-full">
           <Image src="/images/google.svg" alt="Google" width={16} height={16} />
           Continue with Google
@@ -87,9 +87,9 @@ export const SignInForm = () => {
           <span className="font-light text-foreground-dimmed">or</span>
           <div className="h-px flex-1 bg-accent-foreground" />
         </div>
-      </Motion.Up>
+      </Motion.Item> */}
 
-      <Motion.Up>
+      <Motion.Item>
         <InferredForm
           config={config}
           onSubmit={handleSubmit}
@@ -110,7 +110,7 @@ export const SignInForm = () => {
             )}
           </Button>
         </InferredForm>
-      </Motion.Up>
+      </Motion.Item>
     </Motion.Stagger>
   );
 };

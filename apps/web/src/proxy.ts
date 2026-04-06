@@ -14,6 +14,7 @@ const map = {
     "/terms-and-conditions",
     "/privacy-policy",
     "/sign-up",
+    "/sign-in",
     /^\/verify(\/.*)?$/,
     /^\/share(\/.*)?$/,
   ],

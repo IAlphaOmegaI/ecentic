@@ -85,7 +85,7 @@ export default () => {
                 variant="flat"
                 color="primary"
                 type="button"
-                render={<Link href="/sign-in" />}
+                render={<Link href="/onboarding/connect" />}
               >
                 <SignIn />
               </Button>
