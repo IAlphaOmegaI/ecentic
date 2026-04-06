@@ -2,6 +2,7 @@ import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import Logo from "@/public/images/footer.png";
 import WordMark from "@/public/images/wordmark.svg";
+import Link from "next/link";
 
 export const Footer = () => (
   <section className="relative -left-[calc(50vw-50%)] h-screen w-screen p-1">
@@ -19,6 +20,7 @@ export const Footer = () => (
           color="primary"
           type="button"
           className="px-12 py-4 font-medium text-xl"
+          render={<Link href="/sign-up" />}
         >
           Get your free Win Rate Report
         </Button>
