@@ -4,6 +4,16 @@ import { nextCookies } from "better-auth/next-js";
 import * as Authentication from "@/server/app/authentication";
 import { db, schema } from "@/server/database";
 
+const parseName = (fullName: string): { name: string; surname: string } => {
+  const trimmed = (fullName ?? "").trim();
+  const spaceIndex = trimmed.indexOf(" ");
+  if (spaceIndex === -1) return { name: trimmed, surname: trimmed };
+  return {
+    name: trimmed.slice(0, spaceIndex),
+    surname: trimmed.slice(spaceIndex + 1).trim() || trimmed,
+  };
+};
+
 export const auth = betterAuth({
   baseURL: process.env.APP_HOST,
   database: drizzleAdapter(db, {
@@ -40,17 +50,26 @@ export const auth = betterAuth({
       },
     },
   },
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          const { name, surname } = parseName(user.name);
+          return {
+            data: {
+              ...user,
+              name,
+              surname: user.surname || surname,
+              role: user.role || "user",
+            },
+          };
+        },
+      },
+    },
+  },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
-    // sendResetPassword: async (context) => {
-    //   await unwrapResult(
-    //     Authentication.handlePasswordReset({
-    //       id: context.user.id,
-    //       url: context.url,
-    //     }),
-    //   );
-    // },
   },
   emailVerification: {
     autoSignInAfterVerification: true,
@@ -61,7 +80,6 @@ export const auth = betterAuth({
       });
     },
   },
-
   plugins: [nextCookies()],
   socialProviders: {
     google: {

@@ -10,9 +10,7 @@ export default async ({ children }: LayoutProps<"/onboarding">) => {
     Authentication.getCurrentUser(Environment.SERVER),
   );
 
-  if (!user.company || !user.jobTitle) {
-    redirect("/complete-profile");
-  }
+  if (!user.company || !user.jobTitle) redirect("/complete-profile");
 
   return (
     <AuthProvider user={user}>

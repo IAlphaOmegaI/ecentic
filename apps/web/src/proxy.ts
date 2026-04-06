@@ -25,6 +25,7 @@ const map = {
     "/privacy-policy",
     /^\/share(\/.*)?$/,
     /^\/onboarding(\/.*)?$/,
+    "/complete-profile",
     // to be removed
     // /^\/.*/,
   ],

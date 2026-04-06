@@ -13,8 +13,8 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
+import { useState } from "react";
 import { Motion } from "@/components/motion";
-import { authClient } from "@/lib/auth-client";
 import * as Authentication from "@/server/app/authentication";
 
 const roles = [
@@ -86,15 +86,32 @@ export const SignUpForm = () => {
   const router = useRouter();
   const toast = useToastManager();
 
+  const [provider, setProvider] = useState<"email" | "google">("email");
+
   const [handleSubmit, isPending] = useAsyncAction(
-    async (data: FormEntries<typeof config>) => {
+    async (
+      data:
+        | { data: FormEntries<typeof config>; type: "email" }
+        | { type: "google" },
+    ) => {
+      setProvider(data.type);
+
+      if (data.type === "google") {
+        const result = await Authentication.signInWithGoogle({
+          callbackURL: "/complete-profile",
+        });
+
+        if (result.success) window.location.href = result.data.url;
+        return;
+      }
+
       const result = await Authentication.signUp({
-        email: data.email,
-        password: data.password,
-        fullName: data.fullName,
-        company: data.company,
-        jobTitle: data.role,
-        source: data.source,
+        email: data.data.email,
+        password: data.data.password,
+        fullName: data.data.fullName,
+        company: data.data.company,
+        jobTitle: data.data.role,
+        source: data.data.source,
       });
 
       if (!result.success) {
@@ -109,6 +126,7 @@ export const SignUpForm = () => {
       router.push("/verify");
     },
   );
+
   return (
     <Motion.Stagger stagger={0.07} delay={0.18}>
       <Motion.Item className="mb-3 flex flex-col gap-1.5">
@@ -117,14 +135,18 @@ export const SignUpForm = () => {
           color="emphasis"
           className="w-full"
           type="button"
-          onClick={() =>
-            authClient.signIn.social({
-              provider: "google",
-              callbackURL: "/complete-profile",
-            })
-          }
+          onClick={() => handleSubmit({ type: "google" })}
         >
-          <Image src="/images/google.svg" alt="Google" width={16} height={16} />
+          {provider === "google" && isPending ? (
+            <LoaderIcon className="size-4 animate-spin" />
+          ) : (
+            <Image
+              src="/images/google.svg"
+              alt="Google"
+              width={16}
+              height={16}
+            />
+          )}
           Continue with Google
         </Button>
         <div className="relative flex items-center gap-3">
@@ -137,7 +159,7 @@ export const SignUpForm = () => {
       <Motion.Item>
         <InferredForm
           config={config}
-          onSubmit={handleSubmit}
+          onSubmit={(data) => handleSubmit({ data, type: "email" })}
           className="grid grid-cols-2 gap-x-3 gap-y-0.5"
         >
           <Button
@@ -147,8 +169,12 @@ export const SignUpForm = () => {
             disabled={isPending}
             className="col-span-2 mt-1 flex w-full"
           >
-            {isPending ? "Creating account..." : "Create Account"}
-            {isPending ? (
+            {isPending
+              ? provider === "email"
+                ? "Creating account..."
+                : "Signing in with Google..."
+              : "Create Account"}
+            {provider === "email" && isPending ? (
               <LoaderIcon className="size-4 animate-spin" />
             ) : (
               <ArrowRightIcon className="size-4" />

@@ -16,8 +16,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { Motion } from "@/components/motion";
-import { authClient } from "@/lib/auth-client";
 import * as Authentication from "@/server/app/authentication";
+import { useState } from "react";
 
 const config = {
   email: field({
@@ -50,9 +50,24 @@ export const SignInForm = () => {
   const router = useRouter();
   const toast = useToastManager();
 
+  const [provider, setProvider] = useState<"email" | "google">("email");
+
   const [handleSubmit, isPending] = useAsyncAction(
-    async (data: FormEntries<typeof config>) => {
-      const result = await Authentication.signIn(data);
+    async (
+      data:
+        | { data: FormEntries<typeof config>; type: "email" }
+        | { type: "google" },
+    ) => {
+      setProvider(data.type);
+      if (data.type === "google") {
+        const result = await Authentication.signInWithGoogle({
+          callbackURL: "/onboarding/connect",
+        });
+
+        if (result.success) window.location.href = result.data.url;
+        return;
+      }
+      const result = await Authentication.signIn(data.data);
 
       if (!result.success) {
         toast.add({
@@ -75,14 +90,23 @@ export const SignInForm = () => {
           color="emphasis"
           className="w-full"
           type="button"
-          onClick={() =>
-            authClient.signIn.social({
-              provider: "google",
+          onClick={async () => {
+            const result = await Authentication.signInWithGoogle({
               callbackURL: "/onboarding/connect",
-            })
-          }
+            });
+            if (result.success) window.location.href = result.data.url;
+          }}
         >
-          <Image src="/images/google.svg" alt="Google" width={16} height={16} />
+          {provider === "google" && isPending ? (
+            <LoaderIcon className="size-4 animate-spin" />
+          ) : (
+            <Image
+              src="/images/google.svg"
+              alt="Google"
+              width={16}
+              height={16}
+            />
+          )}
           Continue with Google
         </Button>
         <div className="relative mt-4 flex items-center gap-3">
@@ -95,7 +119,7 @@ export const SignInForm = () => {
       <Motion.Item>
         <InferredForm
           config={config}
-          onSubmit={handleSubmit}
+          onSubmit={(data) => handleSubmit({ data, type: "email" })}
           className="flex flex-col gap-3"
         >
           <Button
@@ -105,8 +129,10 @@ export const SignInForm = () => {
             disabled={isPending}
             className="mt-1 flex w-full"
           >
-            {isPending ? "Signing in..." : "Sign In"}
-            {isPending ? (
+            {provider === "email"
+              ? "Signing in..."
+              : "Signing in with Google..."}
+            {provider === "email" && isPending ? (
               <LoaderIcon className="size-4 animate-spin" />
             ) : (
               <ArrowRightIcon className="size-4" />

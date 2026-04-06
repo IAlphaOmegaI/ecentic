@@ -37,7 +37,9 @@
         "UPSTASH_REDIS_REST_READ_ONLY_TOKEN",
         "UPSTASH_REDIS_REST_TOKEN",
         "UPSTASH_REDIS_REST_URL",
-        "UPSTASH_REDIS_URL"
+        "UPSTASH_REDIS_URL",
+        "GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_SECRET"
       ]
     },
     "typecheck": {

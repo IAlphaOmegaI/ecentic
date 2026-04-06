@@ -1,6 +1,6 @@
 "use server";
 import { render } from "@react-email/components";
-import { type Result, resultify } from "@zenncore/utils";
+import { resultify } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
 import { cookies, headers } from "next/headers";
 import { Resend } from "resend";
@@ -9,11 +9,7 @@ import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
-import {
-  InvalidCredentialsError,
-  NotFoundError,
-  type UnauthenticatedError,
-} from "../utils/error";
+import { InvalidCredentialsError, NotFoundError } from "../utils/error";
 import * as User from "./user";
 
 const parseName = (fullName: string): { name: string; surname: string } => {
@@ -25,6 +21,41 @@ const parseName = (fullName: string): { name: string; surname: string } => {
     surname: trimmed.slice(spaceIndex + 1).trim() || trimmed,
   };
 };
+
+export const signInWithGoogle = withContext(
+  async (context, { callbackURL }: { callbackURL: string }) => {
+    const result = await resultify(
+      async () =>
+        await context.auth.signInSocial({
+          body: {
+            provider: "google",
+            callbackURL,
+            newUserCallbackURL: "/complete-profile",
+            disableRedirect: true,
+          },
+        }),
+    );
+
+    if (!result.success) {
+      return {
+        success: false,
+        error: new InvalidCredentialsError("Google sign-in failed", {
+          cause: result.error,
+        }),
+      };
+    }
+
+    if (!result.data.url) {
+      return {
+        success: false,
+        error: new InvalidCredentialsError("Google sign-in failed"),
+      };
+    }
+
+    return { success: true, data: { url: result.data.url } };
+  },
+  "Authentication.signInWithGoogle",
+);
 
 export const signIn = withContext(
   async (context, { email, password }: { email: string; password: string }) => {
@@ -81,7 +112,7 @@ export const signIn = withContext(
   "Authentication.signIn",
 );
 
-export const signOut = withContext(async (context): Promise<Result> => {
+export const signOut = withContext(async (context) => {
   const result = await resultify(
     async () =>
       await context.auth.signOut({
@@ -100,7 +131,7 @@ export const signOut = withContext(async (context): Promise<Result> => {
 }, "Authentication.signOut");
 
 export const getCurrentUser = withAuthentication(
-  async (context): Promise<Result<User.Type, UnauthenticatedError>> => {
+  async (context) => {
     return {
       success: true,
       data: context.session.user,
@@ -113,7 +144,7 @@ export const resetPassword = withContext(
   async (
     context,
     { token, password }: { token: string; password: string },
-  ): Promise<Result> => {
+  ) => {
     const { status } = await context.auth.resetPassword({
       body: {
         token,
@@ -134,7 +165,7 @@ export const resetPassword = withContext(
 );
 
 export const forgotPassword = withContext(
-  async (context, { email }: { email: string }): Promise<Result> => {
+  async (context, { email }: { email: string }) => {
     const { status } = await context.auth.requestPasswordReset({
       body: {
         email,
@@ -156,23 +187,30 @@ export const forgotPassword = withContext(
   "Authentication.forgotPassword",
 );
 
-export const getProxiedCurrentUser = withContext(async () => {
+export const getProxiedCurrentUser = withContext(async (context) => {
   const jar = await cookies();
-  const user = jar.get("user")?.value;
+  const cached = jar.get("user")?.value;
 
-  if (!user) {
-    return {
-      success: false,
-      error: new Error("user-not-found"),
-    };
+  if (cached) {
+    return { success: true, data: JSON.parse(cached) as User.Type };
   }
 
-  const u = JSON.parse(user) as User.Type;
+  const session = await context.auth.getSession({
+    headers: await headers(),
+  });
 
-  return {
-    success: true,
-    data: u,
-  };
+  if (!session) {
+    return { success: false, error: new Error("user-not-found") };
+  }
+
+  const user = await User.get(Environment.SERVER, session.user.id);
+  if (!user.success) return user;
+
+  if (!user.data) return { success: false, error: new Error("user-not-found") };
+
+  jar.set("user", JSON.stringify(user.data));
+
+  return user;
 }, "Authentication.getProxiedCurrentUser");
 
 export const changePassword = withAuthentication(
@@ -182,7 +220,7 @@ export const changePassword = withAuthentication(
       currentPassword,
       newPassword,
     }: { currentPassword: string; newPassword: string },
-  ): Promise<Result> => {
+  ) => {
     const result = await resultify(async () =>
       context.auth.changePassword({
         body: {
@@ -230,7 +268,7 @@ export const signUp = withContext(
       jobTitle?: string;
       source?: string;
     },
-  ): Promise<Result<{ message: string }, Error>> => {
+  ) => {
     const { name, surname } = parseName(payload.fullName);
 
     const result = await resultify(
@@ -280,7 +318,7 @@ export const verifyEmail = withContext(
   async (
     _context,
     token: string,
-  ): Promise<Result<{ redirectUrl: string }, Error>> => {
+  ) => {
     const callbackUrl = `${process.env.APP_HOST}/verify/success`;
     const redirectUrl = `${process.env.APP_HOST}/api/auth/verify-email?token=${encodeURIComponent(token)}&callbackURL=${encodeURIComponent(callbackUrl)}`;
     return {
