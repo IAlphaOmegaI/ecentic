@@ -275,7 +275,10 @@ export const SimulationsClient = ({
 
                 <div className="grid grid-cols-2 gap-px bg-accent-foreground sm:grid-cols-4">
                   {models.map(({ id, label, logo }) => (
-                    <div key={id} className="flex flex-col bg-background-dimmed p-3">
+                    <div
+                      key={id}
+                      className="flex flex-col bg-background-dimmed p-3"
+                    >
                       <Image
                         src={logo}
                         alt={label}
@@ -302,8 +305,7 @@ export const SimulationsClient = ({
                           "font-light text-sm",
                           statuses[label] === "complete" && "text-success",
                           statuses[label] === "running" && "text-primary",
-                          (!statuses[label] ||
-                            statuses[label] === "queued") &&
+                          (!statuses[label] || statuses[label] === "queued") &&
                             "text-foreground-dimmed/50",
                         )}
                       >
@@ -435,7 +437,7 @@ const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
               />
               <p className="font-medium text-foreground">{label}</p>
               <div className="mt-0.5 flex items-center gap-2">
-                <span className="font-light text-success text-sm">
+                <span className="font-light text-sm text-success">
                   {rates?.wins ?? 0} W
                 </span>
                 <span className="text-foreground-dimmed/30 text-sm">—</span>

@@ -1,11 +1,12 @@
 "use server";
 
 import crypto from "node:crypto";
-import { resultify } from "@zenncore/utils";
+import { resultify, unwrapResult } from "@zenncore/utils";
 import { type TransactionScope, withTransaction } from "../../database";
 import { withAuthentication } from "../../utils/authentication";
 import { withContext } from "../../utils/context";
 import { Environment } from "../../utils/environment";
+import { RequestError } from "../../utils/error";
 import * as HTTP from "../../utils/http";
 import {
   normalizeHostname,
@@ -223,12 +224,12 @@ export const handleOAuthCallback = withContext(
     context,
     {
       code,
-      shop,
-      userId,
+      shop: shopId,
+      user: userId,
     }: {
       code: string;
       shop: string;
-      userId: string;
+      user: string;
     },
   ) => {
     const { SHOPIFY_API_KEY, SHOPIFY_API_SECRET } = process.env;
@@ -241,7 +242,7 @@ export const handleOAuthCallback = withContext(
     }
 
     const token = await HTTP.request(
-      `https://${shop}/admin/oauth/access_token`,
+      `https://${shopId}/admin/oauth/access_token`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -267,11 +268,11 @@ export const handleOAuthCallback = withContext(
 
     context.span.addBreadcrumb({
       category: "shopify.oauth.exchange",
-      data: { shop },
+      data: { shop: shopId },
     });
 
     const shopResponse = await HTTP.request(
-      `https://${shop}/admin/api/${API_VERSION}/shop.json`,
+      `https://${shopId}/admin/api/${API_VERSION}/shop.json`,
       {
         method: "GET",
         headers: {
@@ -281,18 +282,16 @@ export const handleOAuthCallback = withContext(
       },
     );
 
-    const shopParsed = await HTTP.parse<{
+    const shop = await HTTP.parse<{
       shop: { domain: string; myshopify_domain: string; currency: string };
     }>(shopResponse);
 
     const storefrontHosts = (() => {
-      if (!shopParsed.success) return [normalizeHostname(`https://${shop}`)];
-      return storefrontHostsFromShop(shopParsed.data.shop);
+      if (!shop.success) return [normalizeHostname(`https://${shopId}`)];
+      return storefrontHostsFromShop(shop.data.shop);
     })();
 
-    const _currency = shopParsed.success
-      ? shopParsed.data.shop.currency
-      : undefined;
+    // const currency = shop.success ? shop.data.shop.currency : undefined;
 
     const trackerApiKey = crypto.randomUUID();
 
@@ -303,8 +302,8 @@ export const handleOAuthCallback = withContext(
           {
             userId,
             platform: "shopify",
-            name: shop.replace(".myshopify.com", ""),
-            domain: `https://${shop}`,
+            name: shopId.replace(".myshopify.com", ""),
+            domain: `https://${shopId}`,
             accessToken,
             trackerApiKey,
             storefrontHosts,
@@ -316,26 +315,26 @@ export const handleOAuthCallback = withContext(
         if (!creation.success) throw creation.error;
         if (!creation.data) throw new Error("Store creation returned no data");
 
-        await syncShopifyCatalog(Environment.SERVER, {
-          user: userId,
-          store: creation.data.id,
-          tx,
-        });
+        unwrapResult(
+          await syncShopifyCatalog(Environment.SERVER, {
+            user: userId,
+            store: creation.data.id,
+            tx,
+          }),
+        );
 
-        return storeResult.data;
+        return creation.data;
       }),
     );
 
-    if (!transaction.success) {
-      return { success: false, error: transaction.error };
-    }
+    if (!transaction.success) return transaction;
 
     context.span.addBreadcrumb({
       category: "shopify.store.created",
-      data: { "store.id": transaction.data.id, shop },
+      data: { "store.id": transaction.data.id, shop: shopId },
     });
 
-    const storeData = transaction.data;
+    const store = transaction.data;
 
     const origin = resolveTrackerPublicOrigin();
 
@@ -343,11 +342,11 @@ export const handleOAuthCallback = withContext(
       process.env.ECENTIC_TRACKER_PROBE === "true" ? "&probe=1" : "";
 
     const src = `${origin}/tracker.js?sid=${encodeURIComponent(
-      storeData.id,
+      store.id,
     )}&k=${encodeURIComponent(trackerApiKey)}${probe}`;
 
     await HTTP.request(
-      `https://${shop}/admin/api/${API_VERSION}/script_tags.json`,
+      `https://${shopId}/admin/api/${API_VERSION}/script_tags.json`,
       {
         method: "POST",
         headers: {
@@ -366,10 +365,10 @@ export const handleOAuthCallback = withContext(
 
     context.span.addBreadcrumb({
       category: "shopify.script_tag.installed",
-      data: { "store.id": storeData.id, shop },
+      data: { "store.id": store.id, shop: shopId },
     });
 
-    return { success: true, data: { storeId: storeData.id } };
+    return { success: true, data: { storeId: store.id } };
   },
   "Shopify.handleOAuthCallback",
 );
@@ -445,4 +444,247 @@ export const updateProduct = withAuthentication(
     return { success: true, data: updated };
   },
   "Shopify.updateProduct",
+);
+
+// ---------------------------------------------------------------------------
+// Public storefront integration (no OAuth / app approval required)
+// ---------------------------------------------------------------------------
+
+const normalizeDomain = (domain: string): string => {
+  const trimmed = domain.trim().replace(/\/+$/, "");
+
+  const withProtocol = (() => {
+    if (trimmed.startsWith("http")) return trimmed;
+    return `https://${trimmed}`;
+  })();
+
+  const url = new URL(withProtocol);
+
+  if (!url.hostname.includes(".")) {
+    url.hostname = `${url.hostname}.myshopify.com`;
+  }
+
+  return `${url.protocol}//${url.hostname}`;
+};
+
+const detectCurrency = async (domain: string): Promise<string> => {
+  const response = await HTTP.request(`${domain}/meta.json`, {
+    method: "GET",
+    headers: { Accept: "application/json" },
+  });
+
+  if (!response.success) return "USD";
+
+  const parsed = await HTTP.parse<{ currency: string }>(response);
+  if (!parsed.success) return "USD";
+
+  return parsed.data.currency || "USD";
+};
+
+/**
+ * Imports products from the public Shopify storefront `/products.json` endpoint.
+ * No OAuth or access token required.
+ */
+export const syncPublicCatalog = withContext(
+  async (
+    context,
+    {
+      user: userId,
+      store: storeId,
+      tx,
+    }: {
+      user: string;
+      store: string;
+      tx?: TransactionScope;
+    },
+  ) => {
+    const options = tx ? { tx } : undefined;
+
+    const store = await Store.get(Environment.SERVER, storeId, options);
+    if (!store.success) return store;
+
+    if (!store.data)
+      return { success: false, error: new Error("Store not found") };
+
+    if (store.data.platform !== "shopify-public")
+      return {
+        success: false,
+        error: new Error("Store is not a public Shopify store"),
+      };
+
+    const { domain } = store.data;
+
+    const currency = await detectCurrency(domain);
+
+    const update = await Store.update(
+      Environment.SERVER,
+      storeId,
+      { status: "syncing" },
+      options,
+    );
+
+    if (!update.success) return update;
+
+    const all: Type[] = [];
+
+    const limit = 250;
+    const maximum = 10;
+
+    for (const page of Array.from({ length: maximum }, (_, i) => i + 1)) {
+      const response = await HTTP.request(
+        `${domain}/products.json?limit=${limit}&page=${page}`,
+        {
+          method: "GET",
+          headers: { Accept: "application/json" },
+        },
+      );
+
+      if (!response.success) break;
+
+      const parsed = await HTTP.parse<{ products: Type[] }>(response);
+      if (!parsed.success) break;
+
+      if (parsed.data.products.length === 0) break;
+
+      all.push(...parsed.data.products);
+
+      if (parsed.data.products.length < limit) break;
+    }
+
+    const results = await Promise.all(
+      all.map((item) => {
+        const variant = item.variants[0];
+
+        return Product.create(
+          Environment.SERVER,
+          {
+            storeId,
+            userId,
+            externalId: item.id.toString(),
+            title: item.title,
+            description: item.body_html,
+            price: variant?.price ?? null,
+            compareAtPrice: variant?.compare_at_price ?? null,
+            currency,
+            images: JSON.stringify(item.images.map((image) => image.src)),
+            url: `${domain}/products/${item.handle}`,
+            sku: variant?.sku ?? null,
+            status: item.published_at ? "active" : "draft",
+            rawData: JSON.stringify(item),
+            syncedAt: new Date(),
+          },
+          options,
+        );
+      }),
+    );
+
+    const imported = results.filter((result) => result.success).length;
+
+    context.span.addBreadcrumb({
+      category: "shopify-public.catalog.sync",
+      data: {
+        "store.id": storeId,
+        "products.fetched": all.length,
+        "products.imported": imported,
+      },
+    });
+
+    const insertion = await Store.update(
+      Environment.SERVER,
+      storeId,
+      { status: "connected", lastSyncedAt: new Date() },
+      options,
+    );
+
+    if (!insertion.success) return insertion;
+
+    return { success: true, data: imported };
+  },
+  "Shopify.syncPublicCatalog",
+);
+
+export const connectPublic = withAuthentication(
+  async (context, { domain }: { domain: string }) => {
+    const host = normalizeDomain(domain);
+
+    const probe = await HTTP.request(`${host}/products.json?limit=1`, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    });
+
+    if (!probe.success)
+      return {
+        success: false,
+        error: new RequestError(
+          "Could not reach the Shopify store. Check the domain and try again.",
+        ),
+      };
+
+    if (!probe.data.ok)
+      return {
+        success: false,
+        error: new RequestError(
+          probe.data.status === 404
+            ? "This store does not expose a public product catalog. Check the domain and try again."
+            : `Shopify returned ${probe.data.status}`,
+        ),
+      };
+
+    context.span.addBreadcrumb({
+      category: "shopify-public.probe",
+      data: { "store.host": host },
+    });
+
+    const storefrontHosts = [normalizeHostname(host)];
+
+    const transaction = await resultify(() =>
+      withTransaction(async (tx) => {
+        const store = await Store.create(
+          Environment.SERVER,
+          {
+            userId: context.session.user.id,
+            platform: "shopify-public",
+            name: new URL(host).hostname.replace(".myshopify.com", ""),
+            domain: host,
+            storefrontHosts,
+            status: "connected",
+          },
+          { tx },
+        );
+
+        if (!store.success) throw store.error;
+        if (!store.data) throw new Error("Store creation returned no data");
+
+        const sync = await syncPublicCatalog(Environment.SERVER, {
+          user: context.session.user.id,
+          store: store.data.id,
+          tx,
+        });
+
+        if (!sync.success) throw sync.error;
+
+        return store.data;
+      }),
+    );
+
+    if (transaction.success) {
+      context.span.addBreadcrumb({
+        category: "shopify-public.connect.complete",
+        data: { "store.id": transaction.data.id, "store.host": host },
+      });
+    }
+
+    return transaction;
+  },
+  "Shopify.connectPublic",
+);
+
+export const syncPublicProducts = withAuthentication(
+  async (context, { storeId }: { storeId: string }) => {
+    return syncPublicCatalog(Environment.SERVER, {
+      user: context.session.user.id,
+      store: storeId,
+    });
+  },
+  "Shopify.syncPublicProducts",
 );

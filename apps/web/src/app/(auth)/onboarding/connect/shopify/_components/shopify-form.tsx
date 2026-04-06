@@ -10,7 +10,11 @@ import {
   type GenericForm,
   InferredForm,
 } from "@zenncore/web/components/inferred-form";
+import { useToastManager } from "@zenncore/web/components/toast";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
+import * as Shopify from "@/server/app/integration/shopify";
+import { useCurrentUser } from "@/components/auth-context";
 
 const config = {
   shop: field({
@@ -37,10 +41,37 @@ const config = {
 } satisfies GenericForm;
 
 export const ShopifyForm = () => {
+  const router = useRouter();
+  const toast = useToastManager();
+  const user = useCurrentUser();
+
   const [handleSubmit, isPending] = useAsyncAction(
     async (data: FormEntries<typeof config>) => {
-      const shop = data.shop.trim();
-      window.location.href = `/api/integrations/shopify/install?shop=${encodeURIComponent(shop)}`;
+      if (user.role === "administrator") {
+        const shop = data.shop.trim();
+        window.location.href = `/api/integrations/shopify/install?shop=${encodeURIComponent(shop)}`;
+      }
+
+      const result = await Shopify.connectPublic({
+        domain: data.shop.trim(),
+      });
+
+      if (!result.success) {
+        toast.add({
+          title: "Connection failed",
+          description: result.error.message,
+          type: "error",
+        });
+        return;
+      }
+
+      toast.add({
+        title: "Store connected",
+        description: "Your catalog is synced and ready.",
+        type: "success",
+      });
+
+      router.push("/onboarding/products?connected=shopify");
     },
   );
 
@@ -57,11 +88,16 @@ export const ShopifyForm = () => {
         className="mt-2 w-full"
         disabled={isPending}
       >
-        Connect to Shopify
         {isPending ? (
-          <LoaderIcon className="size-4 animate-spin" />
+          <>
+            Connecting...
+            <LoaderIcon className="size-4 animate-spin" />
+          </>
         ) : (
-          <ArrowRightIcon className="size-4" />
+          <>
+            Connect to Shopify
+            <ArrowRightIcon className="size-4" />
+          </>
         )}
       </Button>
     </InferredForm>

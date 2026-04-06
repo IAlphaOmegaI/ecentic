@@ -241,7 +241,7 @@ const DiagnosticsPanel = ({
   return (
     <div className="mb-4">
       <div className="border-accent-foreground border-b p-4">
-        <p className="font-medium text-foreground text-2xl">
+        <p className="font-medium text-2xl text-foreground">
           Diagnostics for low win rate
         </p>
         <p className="font-light text-foreground-dimmed text-lg">

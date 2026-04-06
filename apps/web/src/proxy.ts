@@ -25,7 +25,7 @@ const map = {
     /^\/share(\/.*)?$/,
     /^\/onboarding(\/.*)?$/,
     // to be removed
-    /^\/.*/,
+    // /^\/.*/,
   ],
 } as const;
 

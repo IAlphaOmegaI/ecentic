@@ -33,6 +33,8 @@ export const syncProducts = withAuthentication(
     switch (store.data.platform) {
       case "shopify":
         return Shopify.syncProducts({ storeId });
+      case "shopify-public":
+        return Shopify.syncPublicProducts({ storeId });
       case "woocommerce":
         return WooCommerce.syncProducts({ storeId });
       case "feed":

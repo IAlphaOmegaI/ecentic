@@ -56,7 +56,7 @@ export const GET = async (request: NextRequest) => {
   const result = await Shopify.handleOAuthCallback(Environment.SERVER, {
     code,
     shop,
-    userId: session.user.id,
+    user: session.user.id,
   });
 
   jar.delete("shopify_nonce");
