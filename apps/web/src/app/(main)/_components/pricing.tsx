@@ -152,12 +152,13 @@ export const Pricing = () => (
             ))}
           </div>
           <Button
+            render={<Link href="mailto:sales@ecentic.com" />}
             variant="flat"
             color="primary"
             type="button"
             className="mt-4 w-full border border-white/30 bg-white text-primary md:mt-auto"
           >
-            {dominate.cta}
+            Contact Sales
           </Button>
         </div>
       </div>
@@ -177,6 +178,7 @@ export const Pricing = () => (
             color="accent"
             type="button"
             className="w-full border-primary text-primary"
+            render={<Link href="mailto:sales@ecentic.com" />}
           >
             Contact Sales
           </Button>
