@@ -80,7 +80,7 @@ const define = async () => {
  * Wraps a function with a context and Sentry instrumentation.
  * The function must return a Result. If the function returns a failure,
  * Sentry will be notified and the error will be captured.
- * Also the errors will be transpiled to a `TranspiledError` so they can be consumed by the client.
+ * Also the errors will be transpiled to a `SerializedError` so they can be consumed by the client.
  * If the function returns a success, the result will be returned.
  *
  * @param fn - The function to wrap. Must return a Result.
