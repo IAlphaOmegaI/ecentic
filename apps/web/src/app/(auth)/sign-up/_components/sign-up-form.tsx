@@ -105,7 +105,7 @@ export const SignUpForm = () => {
   );
   return (
     <Motion.Stagger stagger={0.07} delay={0.18}>
-      <Motion.Stagger stagger={0.06} className="mb-3 flex flex-col gap-1.5">
+      {/* <Motion.Item className="mb-3 flex flex-col gap-1.5">
         <Button variant="soft" color="emphasis" className="w-full">
           <Image src="/images/google.svg" alt="Google" width={16} height={16} />
           Continue with Google
@@ -119,19 +119,10 @@ export const SignUpForm = () => {
           />
           Continue with Shopify
         </Button>
-      </Motion.Stagger>
-
-      <motion.div
-        className="relative mb-4 flex items-center gap-3"
-        variants={Stagger.Item}
-        initial={{ scaleX: 0 }}
-        animate={{ scaleX: 1 }}
-        transition={{ ...Spring.Gentle, delay: 0.3 }}
-      >
         <div className="h-px flex-1 bg-accent-foreground" />
         <span className="font-light text-foreground-dimmed">or</span>
         <div className="h-px flex-1 bg-accent-foreground" />
-      </motion.div>
+      </Motion.Item> */}
 
       <Motion.Item>
         <InferredForm
