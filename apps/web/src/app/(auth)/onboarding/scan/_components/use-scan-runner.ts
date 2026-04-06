@@ -30,6 +30,7 @@ export const useScanRunner = (options?: ScanRunnerOptions) => {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [statuses, setStatuses] =
     useState<Record<string, ModelStatus>>(initialStatuses);
+
   const [modelStats, setModelStats] = useState<
     Record<string, { wins: number; losses: number }>
   >({});

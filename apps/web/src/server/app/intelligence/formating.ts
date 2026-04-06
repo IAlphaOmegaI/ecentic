@@ -2,29 +2,73 @@ import { formatPrice } from "@/lib/currency";
 import type * as Competitor from "../competitor";
 import type * as Product from "../product";
 
+const parseImageCount = (images: string | null | undefined): number => {
+  if (!images) return 0;
+  const parsed = (() => {
+    try {
+      return JSON.parse(images);
+    } catch {
+      return [];
+    }
+  })();
+  return Array.isArray(parsed) ? parsed.length : 0;
+};
+
 export const formatProduct = (product: Product.Type): string => {
   const lines = [`Title: ${product.title}`];
-  if (product.description)
-    lines.push(`Description: ${product.description.slice(0, 500)}`);
-  if (product.price)
-    lines.push(`Price: ${formatPrice(product.price, product.currency)}`);
-  if (product.compareAtPrice)
+
+  lines.push(
+    product.description
+      ? `Description: ${product.description.slice(0, 800)}`
+      : "Description: MISSING",
+  );
+  lines.push(
+    product.price
+      ? `Price: ${formatPrice(product.price, product.currency)}`
+      : "Price: MISSING",
+  );
+  if (product.compareAtPrice) {
     lines.push(
       `Compare at: ${formatPrice(product.compareAtPrice, product.currency)}`,
     );
-  if (product.sku) lines.push(`SKU: ${product.sku}`);
-  if (product.url) lines.push(`URL: ${product.url}`);
+  }
+
+  const imageCount = parseImageCount(product.images);
+  lines.push(`Image count: ${imageCount}`);
+
+  lines.push(product.sku ? `SKU: ${product.sku}` : "SKU: MISSING");
+  lines.push(product.url ? `URL: ${product.url}` : "URL: MISSING");
+
+  if (product.structuredData) {
+    lines.push(`Structured data: ${product.structuredData.slice(0, 600)}`);
+  }
+
   return lines.join("\n");
 };
 
 export const formatCompetitor = (competitor: Competitor.Type): string => {
   const lines = [`Title: ${competitor.title}`];
-  if (competitor.description)
-    lines.push(`Description: ${competitor.description.slice(0, 500)}`);
-  if (competitor.price)
-    lines.push(`Price: ${formatPrice(competitor.price, competitor.currency)}`);
-  if (competitor.brand) lines.push(`Brand: ${competitor.brand}`);
+
+  lines.push(
+    competitor.description
+      ? `Description: ${competitor.description.slice(0, 800)}`
+      : "Description: MISSING",
+  );
+  lines.push(
+    competitor.price
+      ? `Price: ${formatPrice(competitor.price, competitor.currency)}`
+      : "Price: MISSING",
+  );
+  lines.push(
+    competitor.brand ? `Brand: ${competitor.brand}` : "Brand: MISSING",
+  );
+
+  lines.push(
+    competitor.image ? "Has product image: Yes" : "Has product image: No",
+  );
+
   if (competitor.source) lines.push(`Source: ${competitor.source}`);
-  if (competitor.url) lines.push(`URL: ${competitor.url}`);
+  lines.push(competitor.url ? `URL: ${competitor.url}` : "URL: MISSING");
+
   return lines.join("\n");
 };

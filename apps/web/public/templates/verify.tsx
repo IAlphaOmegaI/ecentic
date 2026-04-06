@@ -47,11 +47,6 @@ export namespace VerifyEmail {
   };
 }
 
-const _origin =
-  process.env.NODE_ENV === "production"
-    ? "https://ecentic.com"
-    : (process.env.APP_HOST ?? "http://localhost:3000");
-
 export const VerifyEmail = ({
   verificationUrl,
   userEmail,
