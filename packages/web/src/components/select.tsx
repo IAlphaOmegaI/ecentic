@@ -26,7 +26,7 @@ export const SelectTrigger = ({
   return (
     <SelectPrimitive.Trigger
       className={createClassName(
-        "flex h-10 min-w-36 select-none items-center justify-between gap-3 border border-accent-foreground pr-3 pl-3.5 text-base text-foreground transition-colors duration-200 hover:bg-background-dimmed focus-visible:border-primary focus-visible:outline-0 active:bg-background-dimmed data-popup-open:bg-background-dimmed data-popup-open:border-primary",
+        "flex h-10 select-none items-center justify-between gap-3 border border-accent-foreground pr-3 pl-3.5 text-base text-foreground transition-colors duration-200 hover:bg-background-dimmed focus-visible:border-primary focus-visible:outline-0 active:bg-background-dimmed data-popup-open:bg-background-dimmed data-popup-open:border-primary",
         className,
         classList?.trigger,
       )}
