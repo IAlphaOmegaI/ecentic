@@ -10,12 +10,11 @@ import {
   InferredForm,
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { motion } from "motion/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { Motion } from "@/components/motion";
-import { Spring, Stagger } from "@/lib/animations";
+import { authClient } from "@/lib/auth-client";
 import * as Authentication from "@/server/app/authentication";
 
 const roles = [
@@ -89,7 +88,14 @@ export const SignUpForm = () => {
 
   const [handleSubmit, isPending] = useAsyncAction(
     async (data: FormEntries<typeof config>) => {
-      const result = await Authentication.signUp(data);
+      const result = await Authentication.signUp({
+        email: data.email,
+        password: data.password,
+        fullName: data.fullName,
+        company: data.company,
+        jobTitle: data.role,
+        source: data.source,
+      });
 
       if (!result.success) {
         toast.add({
@@ -105,24 +111,28 @@ export const SignUpForm = () => {
   );
   return (
     <Motion.Stagger stagger={0.07} delay={0.18}>
-      {/* <Motion.Item className="mb-3 flex flex-col gap-1.5">
-        <Button variant="soft" color="emphasis" className="w-full">
+      <Motion.Item className="mb-3 flex flex-col gap-1.5">
+        <Button
+          variant="soft"
+          color="emphasis"
+          className="w-full"
+          type="button"
+          onClick={() =>
+            authClient.signIn.social({
+              provider: "google",
+              callbackURL: "/complete-profile",
+            })
+          }
+        >
           <Image src="/images/google.svg" alt="Google" width={16} height={16} />
           Continue with Google
         </Button>
-        <Button variant="flat" color="success" className="w-full">
-          <Image
-            src="/images/shopify.svg"
-            alt="Shopify"
-            width={16}
-            height={16}
-          />
-          Continue with Shopify
-        </Button>
-        <div className="h-px flex-1 bg-accent-foreground" />
-        <span className="font-light text-foreground-dimmed">or</span>
-        <div className="h-px flex-1 bg-accent-foreground" />
-      </Motion.Item> */}
+        <div className="relative flex items-center gap-3">
+          <div className="h-px flex-1 bg-accent-foreground" />
+          <span className="font-light text-foreground-dimmed">or</span>
+          <div className="h-px flex-1 bg-accent-foreground" />
+        </div>
+      </Motion.Item>
 
       <Motion.Item>
         <InferredForm

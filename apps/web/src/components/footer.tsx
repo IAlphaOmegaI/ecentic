@@ -1,8 +1,8 @@
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
+import Link from "next/link";
 import Logo from "@/public/images/footer.png";
 import WordMark from "@/public/images/wordmark.svg";
-import Link from "next/link";
 
 export const Footer = () => (
   <section className="relative -left-[calc(50vw-50%)] h-screen w-screen p-1">

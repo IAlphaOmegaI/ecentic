@@ -32,6 +32,9 @@ declare namespace NodeJS {
     readonly AZURE_RESOURCE_NAME: string;
     readonly AZURE_API_KEY: string;
 
+    readonly GOOGLE_CLIENT_ID: string;
+    readonly GOOGLE_CLIENT_SECRET: string;
+
     readonly npm_package_name: string;
     readonly npm_package_version: string;
   }

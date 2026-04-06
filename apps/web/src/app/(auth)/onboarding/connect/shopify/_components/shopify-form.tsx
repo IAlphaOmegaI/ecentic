@@ -13,8 +13,8 @@ import {
 import { useToastManager } from "@zenncore/web/components/toast";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
-import * as Shopify from "@/server/app/integration/shopify";
 import { useCurrentUser } from "@/components/auth-context";
+import * as Shopify from "@/server/app/integration/shopify";
 
 const config = {
   shop: field({

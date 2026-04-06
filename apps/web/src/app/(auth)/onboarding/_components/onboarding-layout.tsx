@@ -131,7 +131,9 @@ const sidebar = {
 
 export const OnboardingLayout = ({
   children,
-}: { children: React.ReactNode }) => {
+}: {
+  children: React.ReactNode;
+}) => {
   const pathname = usePathname();
   const current = steps.findIndex((step) => pathname.startsWith(step.path));
 

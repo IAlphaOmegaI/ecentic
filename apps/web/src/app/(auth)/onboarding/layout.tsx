@@ -1,4 +1,5 @@
 import { unwrapResult } from "@zenncore/utils";
+import { redirect } from "next/navigation";
 import { AuthProvider } from "@/components/auth-context";
 import * as Authentication from "@/server/app/authentication";
 import { Environment } from "@/server/utils/environment";
@@ -8,6 +9,10 @@ export default async ({ children }: LayoutProps<"/onboarding">) => {
   const user = await unwrapResult(
     Authentication.getCurrentUser(Environment.SERVER),
   );
+
+  if (!user.company || !user.jobTitle) {
+    redirect("/complete-profile");
+  }
 
   return (
     <AuthProvider user={user}>

@@ -26,6 +26,18 @@ export const auth = betterAuth({
         type: "string",
         required: false,
       },
+      jobTitle: {
+        type: "string",
+        required: false,
+      },
+      company: {
+        type: "string",
+        required: false,
+      },
+      source: {
+        type: "string",
+        required: false,
+      },
     },
   },
   emailAndPassword: {
@@ -51,4 +63,10 @@ export const auth = betterAuth({
   },
 
   plugins: [nextCookies()],
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    },
+  },
 });

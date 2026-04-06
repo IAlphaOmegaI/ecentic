@@ -226,6 +226,9 @@ export const signUp = withContext(
       email: string;
       password: string;
       fullName: string;
+      company?: string;
+      jobTitle?: string;
+      source?: string;
     },
   ): Promise<Result<{ message: string }, Error>> => {
     const { name, surname } = parseName(payload.fullName);
@@ -240,6 +243,9 @@ export const signUp = withContext(
             password: payload.password,
             callbackURL: `${process.env.APP_HOST}/verify/success`,
             role: "user",
+            jobTitle: payload.jobTitle,
+            company: payload.company,
+            source: payload.source,
           },
         }),
     );

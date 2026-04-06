@@ -27,6 +27,9 @@ export const user = pgTable("user", {
   // additionalFields from auth config
   surname: text("surname").notNull(),
   role: text("role"),
+  jobTitle: text("jobTitle"),
+  company: text("company"),
+  source: text("source"),
 });
 
 export const session = pgTable("session", {

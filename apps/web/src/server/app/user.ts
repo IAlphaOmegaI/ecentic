@@ -14,9 +14,30 @@ export type Type = Document<typeof schema.user>;
 export const updateProfile = withAuthentication(
   async (
     context,
-    data: { name: string; surname: string; email: string; role?: string },
+    data: {
+      name?: string;
+      surname?: string;
+      email?: string;
+      jobTitle?: string;
+      company?: string;
+      source?: string;
+    },
   ) => {
     return update(Environment.SERVER, context.session.user.id, data);
   },
   "User.updateProfile",
+);
+
+export const completeProfile = withAuthentication(
+  async (
+    context,
+    data: {
+      company: string;
+      jobTitle: string;
+      source?: string;
+    },
+  ) => {
+    return update(Environment.SERVER, context.session.user.id, data);
+  },
+  "User.completeProfile",
 );
