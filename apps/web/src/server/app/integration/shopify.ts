@@ -254,15 +254,9 @@ export const handleOAuthCallback = withContext(
       },
     );
 
-    if (!token.success) {
-      return { success: false, error: token.error };
-    }
-
     const t = await HTTP.parse<{ access_token: string }>(token);
 
-    if (!t.success) {
-      return { success: false, error: t.error };
-    }
+    if (!t.success) return t;
 
     const accessToken = t.data.access_token;
 
@@ -271,7 +265,7 @@ export const handleOAuthCallback = withContext(
       data: { shop: shopId },
     });
 
-    const shopResponse = await HTTP.request(
+    const response = await HTTP.request(
       `https://${shopId}/admin/api/${API_VERSION}/shop.json`,
       {
         method: "GET",
@@ -284,7 +278,7 @@ export const handleOAuthCallback = withContext(
 
     const shop = await HTTP.parse<{
       shop: { domain: string; myshopify_domain: string; currency: string };
-    }>(shopResponse);
+    }>(response);
 
     const storefrontHosts = (() => {
       if (!shop.success) return [normalizeHostname(`https://${shopId}`)];
@@ -445,10 +439,6 @@ export const updateProduct = withAuthentication(
   },
   "Shopify.updateProduct",
 );
-
-// ---------------------------------------------------------------------------
-// Public storefront integration (no OAuth / app approval required)
-// ---------------------------------------------------------------------------
 
 const normalizeDomain = (domain: string): string => {
   const trimmed = domain.trim().replace(/\/+$/, "");
@@ -680,10 +670,10 @@ export const connectPublic = withAuthentication(
 );
 
 export const syncPublicProducts = withAuthentication(
-  async (context, { storeId }: { storeId: string }) => {
+  async (context, { store }: { store: string }) => {
     return syncPublicCatalog(Environment.SERVER, {
       user: context.session.user.id,
-      store: storeId,
+      store,
     });
   },
   "Shopify.syncPublicProducts",

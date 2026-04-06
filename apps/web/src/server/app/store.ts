@@ -34,7 +34,7 @@ export const syncProducts = withAuthentication(
       case "shopify":
         return Shopify.syncProducts({ storeId });
       case "shopify-public":
-        return Shopify.syncPublicProducts({ storeId });
+        return Shopify.syncPublicProducts({ store: storeId });
       case "woocommerce":
         return WooCommerce.syncProducts({ storeId });
       case "feed":
