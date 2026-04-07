@@ -76,6 +76,7 @@ const config = {
   }),
   source: field({
     shape: "select",
+    // @ts-expect-error - source is not typed
     validator: z.literal(sources).optional(),
     label: "How did you hear?",
     classList: { field: "col-span-1" },

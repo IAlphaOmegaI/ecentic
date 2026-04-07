@@ -26,10 +26,10 @@ export const ToastList = ({ types }: ToastList.Props) => {
         .filter((toast) => types.includes(toast.type as ToastType))
         .map((toast) => (
           <Toast key={toast.id} toast={toast} className="rounded-none p-4 pr-8">
-            <ToastTitle className="font-medium text-sm" />
-            <ToastDescription className="mt-0.5 text-xs" />
+            <ToastTitle className="font-medium text-lg" />
+            <ToastDescription className="mt-1" />
             <ToastClose aria-label="Close">
-              <XIcon className="size-3.5" />
+              <XIcon className="size-4" />
             </ToastClose>
           </Toast>
         ))}

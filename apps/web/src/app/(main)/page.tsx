@@ -1,10 +1,19 @@
 "use cache";
 
+import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
+import {
+  absoluteUrl,
+  createMetadata,
+  organizationSchema,
+  softwareApplicationSchema,
+  websiteSchema,
+} from "@/lib/seo";
 import { BlindSpot } from "./_components/blind-spot";
+import { DiscoveryPaths } from "./_components/discovery-paths";
 import { Features } from "./_components/features";
 import { Hero } from "./_components/hero";
 import { Pricing } from "./_components/pricing";
@@ -15,9 +24,48 @@ const Comparison = dynamic(() =>
   import("./_components/comparison").then((m) => m.Comparison),
 );
 
+const description =
+  "AI ecommerce platform for product listing optimization, competitor analysis, and AI shopping visibility. Simulate decisions and improve win rate.";
+
+export const metadata: Metadata = createMetadata({
+  title: "AI Ecommerce Platform for Product Visibility",
+  description,
+  path: "/",
+  keywords: [
+    "AI ecommerce tools",
+    "AI ecommerce platform",
+    "AI product listing optimization",
+    "AI for Shopify stores",
+    "AI shopping agents",
+  ],
+});
+
 export default async () => (
   <SmoothScroll>
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 border-accent-foreground border-x md:gap-12">
+      <script
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be rendered inline for search engines
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            organizationSchema,
+            websiteSchema,
+            softwareApplicationSchema,
+            {
+              "@context": "https://schema.org",
+              "@type": "WebPage",
+              name: "AI Ecommerce Platform for Product Visibility",
+              description,
+              url: absoluteUrl("/"),
+              about: [
+                "AI ecommerce platform",
+                "product listing optimization",
+                "AI shopping agents",
+              ],
+            },
+          ]),
+        }}
+      />
       <Navbar />
       <Hero />
       <BlindSpot />
@@ -27,6 +75,7 @@ export default async () => (
         <Comparison />
       </Suspense>
       <Pricing />
+      <DiscoveryPaths />
       <section aria-label="About écentic" className="sr-only">
         <h2>Make every product easier for AI shopping agents to recommend</h2>
         <p>

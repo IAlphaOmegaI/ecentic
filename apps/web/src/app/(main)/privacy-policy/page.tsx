@@ -6,6 +6,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Navbar } from "@/components/navbar";
 import Background from "@/public/images/privacy-policy.png";
+import { renderInline } from "../_components/rich-text";
 
 export const metadata: Metadata = {
   title: "Privacy Policy — écentic",
@@ -114,51 +115,9 @@ To exercise any of these rights, contact privacy@ecentic.ai.`,
   },
 ] as const;
 
-const renderInline = (text: string): ReactNode[] =>
-  text.split(/\*\*(.*?)\*\*/g).flatMap((part, i) => {
-    if (i % 2 === 1)
-      return [
-        // biome-ignore lint/suspicious/noArrayIndexKey: i is unique
-        <strong key={i} className="text-foreground">
-          {part}
-        </strong>,
-      ];
-
-    return part
-      .split(
-        /(\[[^\]]+\]\([^)]+\)|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
-      )
-      .map((segment, j) => {
-        const link = segment.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
-        if (link) {
-          return (
-            <a
-              // biome-ignore lint/suspicious/noArrayIndexKey: i and j are unique
-              key={`${i}-${j}`}
-              href={link[2]}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-purple-700 underline-offset-2 hover:underline"
-            >
-              {link[1]}
-            </a>
-          );
-        }
-        if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(segment)) {
-          return (
-            <a
-              // biome-ignore lint/suspicious/noArrayIndexKey: i and j are unique
-              key={`${i}-${j}`}
-              href={`mailto:${segment}`}
-              className="text-primary underline-offset-2 hover:underline"
-            >
-              {segment}
-            </a>
-          );
-        }
-        return segment;
-      });
-  });
+const inlineOptions = {
+  linkClassName: "text-purple-700 underline-offset-2 hover:underline",
+} as const;
 
 const renderContent = (content: string): ReactNode => {
   const blocks = content.split(/\n\n+/);
@@ -173,7 +132,7 @@ const renderContent = (content: string): ReactNode => {
           return (
             // biome-ignore lint/suspicious/noArrayIndexKey: i is unique
             <p key={i} className="text-foreground-dimmed leading-relaxed">
-              {renderInline(lines.join(" "))}
+              {renderInline(lines.join(" "), inlineOptions)}
             </p>
           );
 
@@ -185,7 +144,7 @@ const renderContent = (content: string): ReactNode => {
           <div key={i} className="flex flex-col gap-2">
             {paragraphs.length > 0 && (
               <p className="text-foreground-dimmed leading-relaxed">
-                {renderInline(paragraphs.join(" "))}
+                {renderInline(paragraphs.join(" "), inlineOptions)}
               </p>
             )}
             <ul className="flex flex-col gap-2">
@@ -196,7 +155,7 @@ const renderContent = (content: string): ReactNode => {
                   className="flex gap-3 text-foreground-dimmed leading-relaxed"
                 >
                   <span className="mt-[0.45rem] size-1.5 shrink-0 rounded-full bg-primary" />
-                  <span>{renderInline(line.slice(2))}</span>
+                  <span>{renderInline(line.slice(2), inlineOptions)}</span>
                 </li>
               ))}
             </ul>

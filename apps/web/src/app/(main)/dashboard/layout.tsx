@@ -1,6 +1,21 @@
+import type { Metadata } from "next";
 import { type PropsWithChildren, Suspense } from "react";
 import { Sidebar } from "./_components/sidebar";
 import { Topbar } from "./_components/topbar";
+
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: {
+      index: false,
+      follow: false,
+      "max-image-preview": "none",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+};
 
 const SidebarSkeleton = () => (
   <aside className="hidden w-60 flex-col border-accent-foreground border-r bg-background-rich md:flex">

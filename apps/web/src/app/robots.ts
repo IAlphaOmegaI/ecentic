@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { seo } from "@/lib/seo";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -9,6 +10,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/dashboard/", "/onboarding/", "/verify", "/api/"],
       },
     ],
-    sitemap: "https://ecentic.ai/sitemap.xml",
+    host: seo.host,
+    sitemap: `${seo.host}/sitemap.xml`,
   };
 }

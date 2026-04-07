@@ -1,4 +1,4 @@
-import { BoxMinusIcon } from "@zenncore/icons";
+import { ArrowRightIcon, BoxMinusIcon } from "@zenncore/icons";
 import { unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Link from "next/link";
@@ -19,24 +19,25 @@ export default async () => {
     return (
       <Motion.Stagger
         stagger={0.05}
-        className="flex flex-1 flex-col items-center justify-center px-6 py-10"
+        className="flex flex-1 flex-col items-center justify-center px-8"
       >
-        <Motion.Up className="text-center">
+        <Motion.Item className="text-center p-6 border-accent-foreground border-x size-full flex flex-col items-center justify-center">
           <BoxMinusIcon className="mx-auto mb-6 size-24" />
-          <h1 className="mb-6 font-medium text-4xl text-foreground">
+          <h1 className="mb-2 font-medium text-2xl text-foreground">
             No products found
           </h1>
-          <p className="mb-2 font-light text-2xl text-foreground-dimmed">
-            Connect a store and sync your products to get started.
+          <p className="mb-6 font-light text-lg text-foreground-dimmed">
+            Connect a store and sync <br /> your products to get started.
           </p>
           <Button
             variant="flat"
             color="primary"
             render={<Link href="/onboarding/connect" />}
           >
-            Connect a store
+            Connect a store and sync products{" "}
+            <ArrowRightIcon className="size-4" />
           </Button>
-        </Motion.Up>
+        </Motion.Item>
       </Motion.Stagger>
     );
 

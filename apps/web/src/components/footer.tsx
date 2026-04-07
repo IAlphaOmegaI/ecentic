@@ -4,6 +4,15 @@ import Link from "next/link";
 import Logo from "@/public/images/footer.png";
 import WordMark from "@/public/images/wordmark.svg";
 
+const pages = [
+  { href: "/features", label: "Features" },
+  { href: "/features/product-listings", label: "Product Listings" },
+  { href: "/platforms/shopify", label: "Shopify" },
+  { href: "/compare/best-ai-ecommerce-tools", label: "Compare" },
+  { href: "/blog", label: "Blog" },
+  { href: "/privacy-policy", label: "Privacy Policy" },
+] as const;
+
 export const Footer = () => (
   <section className="relative -left-[calc(50vw-50%)] h-screen w-screen p-1">
     <div className="h-full overflow-hidden rounded-xl border-accent-foreground border-y bg-linear-to-t from-primary to-primary/20">
@@ -76,17 +85,18 @@ export const Footer = () => (
             </a>
           ))}
         </div>
-        <div className="flex items-center gap-3 text-base text-white">
-          <Link href="/blog" className="transition-colors hover:text-white/80">
-            Blog
-          </Link>
-          <span className="text-white/40">/</span>
-          <Link
-            href="/privacy-policy"
-            className="transition-colors hover:text-white/80"
-          >
-            Privacy Policy
-          </Link>
+        <div className="flex flex-wrap items-center justify-center gap-3 text-base text-white">
+          {pages.map((page, index) => (
+            <div key={page.href} className="flex items-center gap-3">
+              {index > 0 && <span className="text-white/40">/</span>}
+              <Link
+                href={page.href}
+                className="transition-colors hover:text-white/80"
+              >
+                {page.label}
+              </Link>
+            </div>
+          ))}
         </div>
         <div className="relative w-full flex-1 origin-bottom transition-transform duration-500 ease-out hover:scale-[1.02]">
           <Image

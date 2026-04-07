@@ -90,12 +90,7 @@ export const SignInForm = () => {
           color="emphasis"
           className="w-full"
           type="button"
-          onClick={async () => {
-            const result = await Authentication.signInWithGoogle({
-              callbackURL: "/onboarding/connect",
-            });
-            if (result.success) window.location.href = result.data.url;
-          }}
+          onClick={() => handleSubmit({ type: "google" })}
         >
           {provider === "google" && isPending ? (
             <LoaderIcon className="size-4 animate-spin" />

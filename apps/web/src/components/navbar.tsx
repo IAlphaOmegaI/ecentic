@@ -12,14 +12,16 @@ export const Navbar = () => (
         fill
         className="absolute inset-0 object-cover"
       />
-      <Image
-        src="/images/trademark.svg"
-        alt="écentic"
-        width={100}
-        height={100}
-        className="relative z-100 -mt-1.5 h-auto w-22 md:w-30"
-        loading="eager"
-      />
+      <Link href="/" aria-label="Go to the écentic homepage">
+        <Image
+          src="/images/trademark.svg"
+          alt="écentic"
+          width={100}
+          height={100}
+          className="relative z-100 -mt-1.5 h-auto w-22 md:w-30"
+          loading="eager"
+        />
+      </Link>
     </div>
 
     <div className="relative shrink-0 p-2 pr-4 pl-10">
