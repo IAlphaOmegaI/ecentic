@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Navbar } from "@/components/navbar";
-import Background from "@/public/images/privacy-policy.png";
+import Background from "@/public/images/blog.png";
 
 const renderInline = (text: string): ReactNode[] =>
   text.split(/\*\*(.*?)\*\*/g).flatMap((part, index) => {
@@ -126,7 +126,7 @@ export const EditorialLayout = ({
         <Image
           src={Background}
           alt={title}
-          className="absolute aspect-auto h-full w-full object-contain object-right"
+          className="absolute aspect-auto h-full w-full object-contain object-right brightness-0 invert opacity-30"
         />
         <div className="relative z-10 mx-auto max-w-6xl border-accent-foreground border-x px-8 pt-36 pb-16">
           <p className="mb-4 font-medium text-primary text-sm uppercase tracking-[0.2em]">

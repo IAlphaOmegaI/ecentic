@@ -10,6 +10,7 @@ import {
   EditorialRichText,
   EditorialSplitSection,
 } from "./_components/editorial-page";
+import { Button } from "@zenncore/web/components/button";
 
 const formatter = new Intl.DateTimeFormat("en-US", {
   month: "long",
@@ -184,13 +185,14 @@ export default async () => {
                 <p className="max-w-2xl text-foreground-dimmed leading-relaxed">
                   {post.takeaways[0]}
                 </p>
-                <Link
-                  href={`/blog/${post.slug}`}
-                  className="inline-flex items-center gap-2 font-medium text-primary underline-offset-2 hover:underline"
+                <Button
+                  variant="flat"
+                  color="primary"
+                  render={<Link href={`/blog/${post.slug}`} />}
                 >
                   Read article
                   <ArrowRightIcon className="size-4" />
-                </Link>
+                </Button>
               </div>
             </div>
           }
