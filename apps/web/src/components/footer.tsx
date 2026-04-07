@@ -76,12 +76,18 @@ export const Footer = () => (
             </a>
           ))}
         </div>
-        <a
-          href="/privacy-policy"
-          className="text-base text-white transition-colors hover:text-white/80"
-        >
-          Privacy Policy
-        </a>
+        <div className="flex items-center gap-3 text-base text-white">
+          <Link href="/blog" className="transition-colors hover:text-white/80">
+            Blog
+          </Link>
+          <span className="text-white/40">/</span>
+          <Link
+            href="/privacy-policy"
+            className="transition-colors hover:text-white/80"
+          >
+            Privacy Policy
+          </Link>
+        </div>
         <div className="relative w-full flex-1 origin-bottom transition-transform duration-500 ease-out hover:scale-[1.02]">
           <Image
             src={Logo}

@@ -262,6 +262,35 @@ export const listingOptimization = pgTable(
   ],
 );
 
+export const blogPost = pgTable(
+  "blog_post",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    slug: text("slug").notNull(),
+    status: text("status").notNull().default("published"),
+    category: text("category").notNull(),
+    title: text("title").notNull(),
+    description: text("description").notNull(),
+    introduction: text("introduction").notNull(),
+    publishedAt: date("publishedAt").notNull(),
+    readTime: text("readTime").notNull(),
+    tags: jsonb("tags").$type<readonly string[]>().notNull(),
+    takeaways: jsonb("takeaways").$type<readonly string[]>().notNull(),
+    sections: jsonb("sections")
+      .$type<
+        readonly {
+          number: string;
+          title: string;
+          content: string;
+        }[]
+      >()
+      .notNull(),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [uniqueIndex("blog_post_slug_unique").on(table.slug)],
+);
+
 /** Tables object for defineRelations and better-auth adapter */
 export const tables = {
   user,
@@ -277,6 +306,7 @@ export const tables = {
   agentVisit,
   agentTrafficDaily,
   listingOptimization,
+  blogPost,
 };
 
 /** Relations */
@@ -389,4 +419,5 @@ export const relations = defineRelations(tables, (r) => ({
       to: r.product.id,
     }),
   },
+  blogPost: {},
 }));
