@@ -173,7 +173,7 @@ export default async () => {
                 {post.tags.slice(0, 3).map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full border border-accent-foreground bg-background-dimmed px-3 py-1 text-foreground-dimmed text-sm"
+                    className="border border-accent-foreground bg-background-dimmed p-2 text-foreground-dimmed text-sm"
                   >
                     {tag}
                   </span>
