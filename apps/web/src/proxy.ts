@@ -17,6 +17,7 @@ const map = {
     "/sign-in",
     /^\/verify(\/.*)?$/,
     /^\/share(\/.*)?$/,
+    /^\/blog(\/.*)?$/,
   ],
   [RouteAccess.ADMINISTRATOR]: [/^\/.*/, "/sign-in"],
   [RouteAccess.USER]: [
@@ -26,8 +27,6 @@ const map = {
     /^\/share(\/.*)?$/,
     /^\/onboarding(\/.*)?$/,
     "/complete-profile",
-    // to be removed
-    // /^\/.*/,
   ],
 } as const;
 
