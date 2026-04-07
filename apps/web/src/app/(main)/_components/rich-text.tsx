@@ -7,58 +7,87 @@ const segmentPattern =
 export const renderInline = (
   text: string,
   options: RenderInlineOptions = {},
-): ReactNode[] =>
-  text.split(/\*\*(.*?)\*\*/g).flatMap((part, index) => {
-    if (index % 2 === 1)
-      return [
-        <strong
-          key={`${part}-${index}`}
-          className={options.strongClassName ?? "text-foreground"}
-        >
-          {part}
-        </strong>,
-      ];
-
-    return part.split(segmentPattern).map((segment, innerIndex) => {
-      const link = segment.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
-
-      if (link) {
-        return (
-          <a
-            // biome-ignore lint/suspicious/noArrayIndexKey: split output is deterministic for this inline content renderer
-            key={`${index}-${innerIndex}`}
-            href={link[2]}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={
-              options.linkClassName ??
-              "text-primary underline-offset-2 hover:underline"
-            }
-          >
-            {link[1]}
-          </a>
-        );
+): ReactNode[] => {
+  const rendering = text.split(/\*\*(.*?)\*\*/g).reduce(
+    (state, part, index) => {
+      if (index % 2 === 1) {
+        return {
+          offset: state.offset + part.length,
+          nodes: [
+            ...state.nodes,
+            <strong
+              key={`strong-${state.offset}`}
+              className={options.strongClassName ?? "text-foreground"}
+            >
+              {part}
+            </strong>,
+          ],
+        };
       }
 
-      if (emailPattern.test(segment)) {
-        return (
-          <a
-            // biome-ignore lint/suspicious/noArrayIndexKey: split output is deterministic for this inline content renderer
-            key={`${index}-${innerIndex}`}
-            href={`mailto:${segment}`}
-            className={
-              options.emailClassName ??
-              "text-primary underline-offset-2 hover:underline"
-            }
-          >
-            {segment}
-          </a>
-        );
-      }
+      const inline = part.split(segmentPattern).reduce(
+        (result, segment) => {
+          const offset = result.offset;
+          const link = segment.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
 
-      return segment;
-    });
-  });
+          if (link) {
+            return {
+              offset: offset + segment.length,
+              nodes: [
+                ...result.nodes,
+                <a
+                  key={`link-${offset}`}
+                  href={link[2]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={
+                    options.linkClassName ??
+                    "text-primary underline-offset-2 hover:underline"
+                  }
+                >
+                  {link[1]}
+                </a>,
+              ],
+            };
+          }
+
+          if (emailPattern.test(segment)) {
+            return {
+              offset: offset + segment.length,
+              nodes: [
+                ...result.nodes,
+                <a
+                  key={`email-${offset}`}
+                  href={`mailto:${segment}`}
+                  className={
+                    options.emailClassName ??
+                    "text-primary underline-offset-2 hover:underline"
+                  }
+                >
+                  {segment}
+                </a>,
+              ],
+            };
+          }
+
+          return {
+            offset: offset + segment.length,
+            nodes: [...result.nodes, segment],
+          };
+        },
+        { offset: state.offset, nodes: [] as ReactNode[] },
+      );
+
+      return {
+        offset: inline.offset,
+        nodes: [...state.nodes, ...inline.nodes],
+      };
+    },
+    { offset: 0, nodes: [] as ReactNode[] },
+  );
+
+  return rendering.nodes;
+};
 
 type RenderInlineOptions = {
   strongClassName?: string;
