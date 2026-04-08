@@ -205,22 +205,41 @@ const extractPaymentHandlers = (data: unknown): PaymentHandlerEntry[] => {
   return entries;
 };
 
+const extractUcpVersion = (data: unknown): string | null => {
+  if (!data || typeof data !== "object" || Array.isArray(data)) return null;
+  const obj = data as Record<string, unknown>;
+  const rawRoot = obj["ucp"];
+  const root =
+    rawRoot && typeof rawRoot === "object" && !Array.isArray(rawRoot)
+      ? (rawRoot as Record<string, unknown>)
+      : obj;
+  return typeof root["version"] === "string" ? root["version"] : null;
+};
+
 const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
   const overallPass = result.https && result.found && result.valid;
   const paymentHandlers = extractPaymentHandlers(result.data);
+  const ucpVersion = extractUcpVersion(result.data);
   return (
     <div className="mt-6 border border-accent-foreground bg-background">
       {/* Header */}
-      <div className="flex items-center justify-between gap-4 border-accent-foreground border-b px-5 py-3">
-        <div>
-          <p className="font-medium text-foreground text-sm">{result.domain}</p>
-          <p className="mt-0.5 font-mono text-foreground-dimmed text-xs">
+      <div className="flex flex-wrap items-start justify-between gap-3 border-accent-foreground border-b px-5 py-4">
+        <div className="min-w-0">
+          <p className="truncate font-medium text-foreground text-sm">
+            {result.domain}
+          </p>
+          <p className="mt-0.5 truncate font-mono text-foreground-dimmed text-xs">
             {result.url}
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="inline-flex items-center px-3 py-1 font-medium text-foreground text-sm">
-            Latency: {formatLatency(result.latencyMs)}
+        <div className="flex flex-wrap items-center gap-2">
+          {ucpVersion && (
+            <span className="inline-flex items-center bg-accent-foreground/30 px-2 py-1 font-mono text-foreground-dimmed text-xs">
+              v{ucpVersion}
+            </span>
+          )}
+          <span className="inline-flex items-center bg-accent-foreground/20 px-2 py-1 font-mono text-foreground-dimmed text-xs">
+            {formatLatency(result.latencyMs)}
           </span>
           <span
             className={cn(
@@ -369,6 +388,41 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
                     {issue.message}
                   </p>
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {paymentHandlers.length > 0 && (
+        <div className="border-accent-foreground border-t">
+          <div className="border-accent-foreground border-b px-5 py-2.5">
+            <p className="font-medium text-foreground text-sm">
+              Payment Methods
+            </p>
+            <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
+              {paymentHandlers.length} handler
+              {paymentHandlers.length !== 1 ? "s" : ""} configured
+            </p>
+          </div>
+          <div className="divide-y divide-accent-foreground">
+            {paymentHandlers.map((handler, index) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: stable list
+              <div key={index} className="flex items-center gap-3 px-5 py-3">
+                <div className="flex-1">
+                  <p className="font-medium text-foreground text-sm">
+                    {handler.label}
+                  </p>
+                  <p className="mt-0.5 font-mono text-foreground-dimmed text-xs">
+                    {handler.registryKey}
+                    {handler.id ? ` · id: ${handler.id}` : ""}
+                  </p>
+                </div>
+                {handler.version && (
+                  <span className="inline-flex items-center bg-accent-foreground/30 px-2 py-0.5 font-mono text-foreground-dimmed text-xs">
+                    {handler.version}
+                  </span>
+                )}
               </div>
             ))}
           </div>
