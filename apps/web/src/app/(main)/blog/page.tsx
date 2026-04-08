@@ -1,5 +1,6 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { unwrapResult } from "@zenncore/utils";
+import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
 import Link from "next/link";
 import * as Blog from "@/server/app/blog";
@@ -10,7 +11,6 @@ import {
   EditorialRichText,
   EditorialSplitSection,
 } from "./_components/editorial-page";
-import { Button } from "@zenncore/web/components/button";
 
 const formatter = new Intl.DateTimeFormat("en-US", {
   month: "long",

@@ -21,12 +21,12 @@ export default async () => {
         stagger={0.05}
         className="flex flex-1 flex-col items-center justify-center px-8"
       >
-        <Motion.Item className="text-center p-6 border-accent-foreground border-x size-full flex flex-col items-center justify-center">
+        <Motion.Item className="flex size-full flex-col items-center justify-center border-accent-foreground border-x p-6 text-center">
           <BoxMinusIcon className="mx-auto mb-6 size-24" />
           <h1 className="mb-2 font-medium text-2xl text-foreground">
             No products found
           </h1>
-          <p className="mb-6 font-light text-lg text-foreground-dimmed">
+          <p className="mb-6 font-light text-foreground-dimmed text-lg">
             Connect a store and sync <br /> your products to get started.
           </p>
           <Button

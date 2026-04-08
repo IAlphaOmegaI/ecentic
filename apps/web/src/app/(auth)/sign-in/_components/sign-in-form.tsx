@@ -14,10 +14,10 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { z } from "zod";
 import { Motion } from "@/components/motion";
 import * as Authentication from "@/server/app/authentication";
-import { useState } from "react";
 
 const config = {
   email: field({

@@ -68,14 +68,14 @@ const faq = [
       "Yes. The repository notes already document WooCommerce product update behavior and the requirements around REST credentials with read and write access, which supports an approve-and-publish style workflow.",
   },
   {
-    question: "Why include WooCommerce in the first SEO implementation wave?",
+    question: "How does écentic compare to other WooCommerce product plugins?",
     answer:
-      "WooCommerce is a supported platform in the current product docs, so publishing a truthful platform page here is stronger than shipping an aspirational page for an unsupported integration.",
+      "Most WooCommerce product plugins help with catalog management or basic copy. écentic focuses specifically on understanding why products lose to competitors and turning that analysis into listing improvements that can be published back into the store.",
   },
   {
-    question: "Who should read this page next?",
+    question: "What is the right next step after reviewing the WooCommerce page?",
     answer:
-      "WooCommerce teams deciding between content generators and a broader optimization workflow should read this page, then move into the listing optimization feature page and the comparison guide.",
+      "Most merchants move from this page into the AI product listing optimization workflow, then into the comparison guide if they are still evaluating categories. From there, the blog provides the operational depth for teams ready to act.",
   },
 ] as const;
 
@@ -117,7 +117,6 @@ export default () => {
     <ContentPageLayout
       eyebrow="WooCommerce"
       title="AI for WooCommerce Stores That Need Cleaner Product Workflows"
-      meta={<p>Supported platform page · Commercial solution-aware intent</p>}
       description={description}
     >
       <script
@@ -129,7 +128,7 @@ export default () => {
       <ContentPageSection
         number="01"
         title="Why WooCommerce merchants need a focused AI workflow"
-        description="This page gives the supported WooCommerce path a dedicated search target instead of burying it inside generic copy."
+        description="WooCommerce operators usually need catalog-level insight, not just faster copy output."
       >
         <ContentPageRichText
           content={`AI for WooCommerce stores is not only about faster content creation. WooCommerce teams often need better product clarity across a catalog that changes quickly, is managed by lean operators, and depends on clean product data to compete well.
@@ -147,7 +146,7 @@ This page is built for that platform-specific search intent:
       <ContentPageSection
         number="02"
         title="How the WooCommerce workflow maps to the current product"
-        description="The copy is grounded in the documented integration behavior already captured in the repo."
+        description="The workflow connects product data to competitor analysis and then to a publishing path back inside WooCommerce."
       >
         <ContentPageRichText
           content={`The WooCommerce path starts with connecting the store and importing the catalog. From there, merchants can select products, benchmark them against competitors, and review where AI shopping systems interpret another listing as the stronger option.
@@ -166,25 +165,26 @@ For WooCommerce merchants, the biggest advantages usually show up when:
 
       <ContentPageSection
         number="03"
-        title="Why this page uses WooCommerce instead of an unsupported platform"
-        description="The SEO strategy workbook includes other platform ideas, but this implementation stays honest about current support."
+        title="What WooCommerce merchants should evaluate before choosing a tool"
+        description="The right optimization tool depends on where the catalog bottleneck actually sits."
       >
         <ContentPageRichText
-          content={`A strategy workbook can be broader than the product surface you should publish today. In this codebase, WooCommerce is already part of the documented connect flow and operational notes, which makes it a credible platform page to launch early.
+          content={`WooCommerce merchants evaluating AI tools for product listings usually face one of three situations.
 
-That matters for SEO because a useful landing page needs to answer the query truthfully. Publishing a page for an unsupported integration may create impressions, but it also creates confusion when the buyer reaches the product. A stronger approach is to build authority around supported workflows first, then expand the platform cluster as the product surface expands.
+The first is a content production problem. The catalog is growing faster than the team can write or review product copy. In this case, a content generation tool can help, though it does not address the underlying question of which content changes actually improve product selection.
 
-For merchants, that means this page should do three things well:
-- Explain the WooCommerce workflow clearly
-- Link into the product listing optimization page and supporting content
-- Turn platform-specific research into a clean sign-up or demo path`}
+The second is a competitive clarity problem. The team is not sure which products are losing to competitors or why. Adding more copy does not fix this. What helps is the ability to simulate how products compare, inspect the results, and surface the specific attributes that are making the difference.
+
+The third is a publishing friction problem. Good insights exist but they are slow to turn into live improvements because the review and publishing loop is disconnected from the store. For WooCommerce teams, a workflow that connects analysis to an approve-and-publish path inside the same store reduces the handoff cost significantly.
+
+Most merchants find that écentic addresses the second and third situations directly, which is where generic content tools tend to stop short.`}
         />
       </ContentPageSection>
 
       <ContentPageSection
         number="04"
         title="Keep exploring the platform and workflow cluster"
-        description="These internal links help reinforce the first set of SEO landing pages."
+        description="Continue into listing optimization, platform comparison, or blog content from here."
         classList={splitGridSectionClassList}
       >
         <ContentPageCardGrid items={related} classList={splitGridClassList} />
@@ -193,7 +193,7 @@ For merchants, that means this page should do three things well:
       <ContentPageSection
         number="05"
         title="Frequently asked questions"
-        description="FAQ content reinforces the page topic and supports structured data coverage."
+        description="Common questions from WooCommerce merchants evaluating AI optimization workflows."
         classList={splitGridSectionClassList}
       >
         <ContentPageFaqGrid items={faq} classList={splitGridClassList} />
@@ -202,7 +202,6 @@ For merchants, that means this page should do three things well:
       <ContentPageFooter
         primary={{ href: "/sign-up", label: "Connect your WooCommerce store" }}
         secondary={{ href: "/features", label: "Back to features" }}
-        note="Published as part of the supported-platform SEO cluster."
       />
     </ContentPageLayout>
   );

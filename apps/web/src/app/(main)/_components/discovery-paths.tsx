@@ -40,20 +40,20 @@ const pages = [
 export const DiscoveryPaths = () => (
   <section className="bg-background-dimmed/60">
     <div className="mx-auto max-w-6xl bg-background">
-      <div className="grid gap-6 p-8 border-accent-foreground border-b pb-8 md:grid-cols-[3fr_5fr]">
+      <div className="grid gap-6 border-accent-foreground border-b p-8 pb-8 md:grid-cols-[3fr_5fr]">
         <div>
           <p className="font-medium text-primary text-sm uppercase tracking-[0.2em]">
-            Next paths
+            Keep exploring
           </p>
           <h2 className="mt-3 max-w-md text-4xl text-foreground leading-tight">
-            Start with the pages built around the SEO strategy priorities
+            Find the page that matches your buying stage
           </h2>
         </div>
         <p className="max-w-3xl text-foreground-dimmed leading-relaxed">
-          The strategy centers on buyer-intent pages, internal links, and clear
-          commercial paths. This section turns the homepage into a stronger hub
-          for crawlers and merchants by linking directly to the highest-priority
-          content clusters we are building first.
+          Each page below targets a specific merchant question — which workflow
+          fits, which platform is supported, and which tool category makes sense
+          before you commit. Start with the one that matches where you are in
+          the decision.
         </p>
       </div>
 

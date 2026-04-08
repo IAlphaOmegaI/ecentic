@@ -12,8 +12,8 @@ import {
 import { useToastManager } from "@zenncore/web/components/toast";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { z } from "zod";
 import { useState } from "react";
+import { z } from "zod";
 import { Motion } from "@/components/motion";
 import * as Authentication from "@/server/app/authentication";
 

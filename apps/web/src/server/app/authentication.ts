@@ -130,21 +130,15 @@ export const signOut = withContext(async (context) => {
   };
 }, "Authentication.signOut");
 
-export const getCurrentUser = withAuthentication(
-  async (context) => {
-    return {
-      success: true,
-      data: context.session.user,
-    };
-  },
-  "Authentication.getCurrentUser",
-);
+export const getCurrentUser = withAuthentication(async (context) => {
+  return {
+    success: true,
+    data: context.session.user,
+  };
+}, "Authentication.getCurrentUser");
 
 export const resetPassword = withContext(
-  async (
-    context,
-    { token, password }: { token: string; password: string },
-  ) => {
+  async (context, { token, password }: { token: string; password: string }) => {
     const { status } = await context.auth.resetPassword({
       body: {
         token,
@@ -314,20 +308,14 @@ export const signUp = withContext(
   "Authentication.signUp",
 );
 
-export const verifyEmail = withContext(
-  async (
-    _context,
-    token: string,
-  ) => {
-    const callbackUrl = `${process.env.APP_HOST}/verify/success`;
-    const redirectUrl = `${process.env.APP_HOST}/api/auth/verify-email?token=${encodeURIComponent(token)}&callbackURL=${encodeURIComponent(callbackUrl)}`;
-    return {
-      success: true,
-      data: { redirectUrl },
-    };
-  },
-  "Authentication.verifyEmail",
-);
+export const verifyEmail = withContext(async (_context, token: string) => {
+  const callbackUrl = `${process.env.APP_HOST}/verify/success`;
+  const redirectUrl = `${process.env.APP_HOST}/api/auth/verify-email?token=${encodeURIComponent(token)}&callbackURL=${encodeURIComponent(callbackUrl)}`;
+  return {
+    success: true,
+    data: { redirectUrl },
+  };
+}, "Authentication.verifyEmail");
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 

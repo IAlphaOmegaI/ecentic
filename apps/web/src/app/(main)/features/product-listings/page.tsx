@@ -68,9 +68,9 @@ const faq = [
       "No. Better copy helps, but product listing optimization also includes structured product data, clearer specifications, category context, trust details, and the supporting information that helps a system evaluate the offer.",
   },
   {
-    question: "Why do merchants need a dedicated page for this topic?",
+    question: "What is the difference between AI product descriptions and full listing optimization?",
     answer:
-      "This keyword has strong commercial intent. Buyers searching for AI product listing optimization are usually comparing tools or looking for a focused solution, so the page needs to answer that need directly and link into the right platform or comparison content.",
+      "AI product descriptions focus on rewriting text faster. Full listing optimization improves titles, descriptions, structured attributes, and merchant trust signals together so the listing is easier for both buyers and AI shopping systems to evaluate.",
   },
   {
     question: "How does écentic help with product listing optimization?",
@@ -118,7 +118,6 @@ export default () => {
     <ContentPageLayout
       eyebrow="Product Listings"
       title="AI Product Listing Optimization for Stronger Product Pages"
-      meta={<p>Priority 1 feature page · Commercial solution-aware intent</p>}
       description={description}
     >
       <script
@@ -130,7 +129,7 @@ export default () => {
       <ContentPageSection
         number="01"
         title="Why product listings struggle in AI-mediated buying"
-        description="The page leads with the target keyword because buyers searching here usually want a specific workflow, not a broad category page."
+        description="Most catalog problems stem from the same gap: product data that was built for humans to browse, not for AI systems to compare."
       >
         <ContentPageRichText
           content={`AI product listing optimization matters because AI shopping systems do not browse a page the same way a human does. They compare product titles, product descriptions, structured attributes, price context, compatibility details, and merchant trust signals in a compressed decision window. If one listing is clearer, more complete, and easier to compare, it often wins before the shopper ever sees why.
@@ -148,7 +147,7 @@ The solution is not to stuff a page with keywords. It is to make product informa
       <ContentPageSection
         number="02"
         title="What better listing optimization actually changes"
-        description="The strongest optimization work improves the whole buying context, not just one block of copy."
+        description="Better optimization improves how a listing reads, how it competes, and how easy it is for a buyer to trust."
       >
         <ContentPageRichText
           content={`When merchants think about AI product descriptions, they often start with text generation. That can help, but it is only one slice of the work. High-performing product listing optimization usually improves four layers at the same time.
@@ -168,7 +167,7 @@ This is why a dedicated AI product listing optimization workflow needs to connec
       <ContentPageSection
         number="03"
         title="How écentic helps merchants improve listings"
-        description="This stays tied to the current product behavior documented in the repo."
+        description="The workflow runs from simulation to diagnosis to an approval-ready listing update — without rebuilding your catalog from scratch."
       >
         <ContentPageRichText
           content={`écentic approaches AI product listing optimization through a closed loop instead of a one-off content rewrite.
@@ -190,7 +189,7 @@ That workflow is especially useful for:
       <ContentPageSection
         number="04"
         title="Where to go after this page"
-        description="Internal links are part of the SEO strategy, so this section intentionally pushes users into the next commercial or educational step."
+        description="Move from the listing workflow into the platform or research content that fits your next step."
         classList={splitGridSectionClassList}
       >
         <ContentPageCardGrid items={nextSteps} classList={splitGridClassList} />
@@ -199,7 +198,7 @@ That workflow is especially useful for:
       <ContentPageSection
         number="05"
         title="Frequently asked questions"
-        description="These FAQs reinforce the page topic while adding another structured surface through FAQ schema."
+        description="Common questions from merchants researching AI product listing optimization."
         classList={splitGridSectionClassList}
       >
         <ContentPageFaqGrid items={faq} classList={splitGridClassList} />
@@ -208,7 +207,6 @@ That workflow is especially useful for:
       <ContentPageFooter
         primary={{ href: "/sign-up", label: "Start optimizing listings" }}
         secondary={{ href: "/features", label: "Back to features" }}
-        note="Built to target a high-intent feature keyword from the SEO workbook."
       />
     </ContentPageLayout>
   );

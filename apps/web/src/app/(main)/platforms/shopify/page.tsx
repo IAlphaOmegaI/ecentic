@@ -73,9 +73,9 @@ const faq = [
       "Yes. The documented workflow includes pushing approved title and description updates back through the Shopify Admin API for merchants who want the optimization loop to stay connected to the live catalog.",
   },
   {
-    question: "Who should use this page?",
+    question: "When should Shopify teams move beyond native AI tools?",
     answer:
-      "This page is built for buyers searching for AI for Shopify stores, especially teams that want more than a basic text generator and need a full workflow around product selection, comparison, and listing improvement.",
+      "When the team needs to understand why a specific competitor keeps winning, which listing attributes matter most, and how to prioritize catalog improvements across a large number of SKUs — that is when a dedicated optimization workflow adds more value than built-in generation alone.",
   },
 ] as const;
 
@@ -117,7 +117,6 @@ export default () => {
     <ContentPageLayout
       eyebrow="Shopify"
       title="AI for Shopify Stores That Need More Than Automated Copy"
-      meta={<p>Priority 1 platform page · Solution-aware commercial intent</p>}
       description={description}
     >
       <script
@@ -129,7 +128,7 @@ export default () => {
       <ContentPageSection
         number="01"
         title="Why Shopify merchants search for this category"
-        description="This page is designed around the platform-specific keyword cluster from the workbook."
+        description="Most Shopify merchants eventually hit a ceiling with native generation tools. This is what comes next."
       >
         <ContentPageRichText
           content={`AI for Shopify stores usually starts with a simple question: how do we make our product pages easier to publish, easier to compare, and easier for modern shopping systems to choose?
@@ -149,7 +148,7 @@ This page targets that decision point directly:
       <ContentPageSection
         number="02"
         title="What the Shopify workflow looks like in écentic"
-        description="Everything here stays aligned with the repository docs and Shopify integration notes."
+        description="The workflow connects the catalog, surfaces competitive gaps, and makes improvements publishable back into Shopify."
       >
         <ContentPageRichText
           content={`The Shopify workflow begins during connect and onboarding. Once the store is connected, products are imported so the merchant can choose which items should enter the optimization and simulation loop.
@@ -169,7 +168,7 @@ For Shopify teams, the operational value usually comes from four things:
       <ContentPageSection
         number="03"
         title="Where this fits alongside Shopify-native AI"
-        description="The page needs to help buyers compare approaches without making claims the product cannot support."
+        description="Choosing the right tool depends on the job your team needs to get done — faster drafting or a full optimization loop."
       >
         <ContentPageRichText
           content={`Shopify-native AI tools are helpful when the team needs faster drafting. That can save time, especially for early-stage merchandising work. But many merchants eventually need a more deliberate workflow around product selection and competitive clarity.
@@ -189,7 +188,7 @@ That distinction becomes more important when:
       <ContentPageSection
         number="04"
         title="Keep exploring the Shopify cluster"
-        description="Internal links matter for both users and the first SEO content cluster."
+        description="Continue into listing optimization, platform comparison, or blog content to build more context."
         classList={splitGridSectionClassList}
       >
         <ContentPageCardGrid items={related} classList={splitGridClassList} />
@@ -198,7 +197,7 @@ That distinction becomes more important when:
       <ContentPageSection
         number="05"
         title="Frequently asked questions"
-        description="These questions reinforce the page topic while adding FAQ schema for search."
+        description="Common questions from Shopify merchants evaluating AI optimization workflows."
         classList={splitGridSectionClassList}
       >
         <ContentPageFaqGrid items={faq} classList={splitGridClassList} />
@@ -207,7 +206,6 @@ That distinction becomes more important when:
       <ContentPageFooter
         primary={{ href: "/sign-up", label: "Connect your Shopify store" }}
         secondary={{ href: "/features", label: "Back to features" }}
-        note="Built from the platform keyword cluster while staying aligned with the current Shopify integration workflow."
       />
     </ContentPageLayout>
   );

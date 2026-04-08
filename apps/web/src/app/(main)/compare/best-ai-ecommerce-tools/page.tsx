@@ -176,7 +176,6 @@ export default () => {
     <ContentPageLayout
       eyebrow="Comparison"
       title="Best AI Tools for Ecommerce in 2026"
-      meta={<p>Priority 1 comparison guide · Ready-to-buy intent</p>}
       description={description}
     >
       <script
@@ -188,7 +187,7 @@ export default () => {
       <ContentPageSection
         number="01"
         title="How to use this comparison guide"
-        description="The workbook marks this as the highest-value content asset, so the page leads with buying intent instead of a broad industry overview."
+        description="Comparing categories first makes the final vendor decision faster and less likely to end up on the wrong shortlist."
       >
         <ContentPageRichText
           content={`The best AI tools for ecommerce in 2026 do not all solve the same problem. That is why this page compares categories before it compares brand names. A merchant choosing between a content generator, a personalization platform, a search product, and an agent-commerce workflow can easily end up with the wrong shortlist if everything is forced into one generic feature table.
@@ -209,7 +208,7 @@ This guide is organized to make that distinction clearer:
       <ContentPageSection
         number="02"
         title="The categories most merchants compare"
-        description="The competitor workbook informs the examples, but the copy stays stable by focusing on category fit rather than fragile feature lists."
+        description="Each category solves a different problem. The best shortlist usually starts with one tool per category."
         classList={splitGridSectionClassList}
       >
         <div className="grid gap-px bg-accent-foreground md:grid-cols-2">
@@ -235,7 +234,7 @@ This guide is organized to make that distinction clearer:
       <ContentPageSection
         number="03"
         title="Where merchants usually make the wrong comparison"
-        description="This is the section that helps buyers self-qualify instead of bouncing back to search."
+        description="The most useful evaluation narrows to the specific operational bottleneck first, not to the longest feature checklist."
       >
         <ContentPageRichText
           content={`A common mistake is to compare every AI ecommerce product as though it were a copy tool. That makes some evaluations look simpler, but it also hides the real buying decision.
@@ -256,7 +255,7 @@ Buyers usually get better results when they shortlist one tool per category firs
       <ContentPageSection
         number="04"
         title="Explore the pages behind the shortlist"
-        description="These internal links keep the guide connected to commercial and platform-specific pages."
+        description="Each page below goes deeper on a specific part of the decision — workflow, platform, or listing optimization."
         classList={splitGridSectionClassList}
       >
         <ContentPageCardGrid
@@ -268,7 +267,7 @@ Buyers usually get better results when they shortlist one tool per category firs
       <ContentPageSection
         number="05"
         title="Frequently asked questions"
-        description="FAQ schema supports long-tail comparison queries around AI ecommerce software."
+        description="Common questions from merchants comparing AI ecommerce tools and platforms."
         classList={splitGridSectionClassList}
       >
         <ContentPageFaqGrid items={faq} classList={splitGridClassList} />
@@ -277,7 +276,6 @@ Buyers usually get better results when they shortlist one tool per category firs
       <ContentPageFooter
         primary={{ href: "/sign-up", label: "Start with écentic" }}
         secondary={{ href: "/", label: "Back to home" }}
-        note="Built as the first comparison asset from the SEO content calendar."
       />
     </ContentPageLayout>
   );

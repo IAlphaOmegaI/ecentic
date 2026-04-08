@@ -131,7 +131,6 @@ export default () => {
     <ContentPageLayout
       eyebrow="Features"
       title="AI Ecommerce Tools for Merchants Who Need Better Product Visibility"
-      meta={<p>Foundation page · Priority 1 commercial intent</p>}
       description={description}
     >
       <script
@@ -143,7 +142,7 @@ export default () => {
       <ContentPageSection
         number="01"
         title="Why AI ecommerce tools matter now"
-        description="The SEO plan prioritizes pages with commercial intent. This page is built to answer that exact query with product-grounded language."
+        description="Understanding this shift is the starting point for merchants who want to compete on product clarity, not just price."
       >
         <ContentPageRichText
           content={`AI ecommerce tools are no longer only about writing faster copy or building one more dashboard. Merchants now need software that helps them understand how AI shopping systems compare products, why competitors are selected instead, and which listing changes are most likely to improve selection and conversion.
@@ -161,7 +160,7 @@ That makes this category especially useful for teams managing:
       <ContentPageSection
         number="02"
         title="What merchants should expect from the category"
-        description="The strongest pages in this cluster need to explain the job to be done, not just list features."
+        description="A stronger AI ecommerce stack improves how listings are compared, why products win, and which changes are worth making first."
       >
         <ContentPageRichText
           content={`A strong AI ecommerce tools stack should help a merchant move through three steps with very little friction.
@@ -183,7 +182,7 @@ The features below are the first content cluster we are building around that wor
       <ContentPageSection
         number="03"
         title="Choose the workflow that matches your buying stage"
-        description="These are the core internal links supporting the first wave of SEO pages."
+        description="Each path below targets a specific part of the optimization loop — listing quality, platform fit, or competitive research."
         classList={splitGridSectionClassList}
       >
         <ContentPageCardGrid items={workflows} classList={splitGridClassList} />
@@ -192,7 +191,7 @@ The features below are the first content cluster we are building around that wor
       <ContentPageSection
         number="04"
         title="How écentic fits inside the stack"
-        description="This copy stays aligned with the product docs rather than stretching into unsupported claims."
+        description="If your team already has core ecommerce infrastructure, the fastest next step is usually the product listing page for your platform."
       >
         <ContentPageRichText
           content={`écentic is best understood as a decision layer for agent commerce. It does not replace Shopify, WooCommerce, or the catalog system already running the business. It connects to the store, imports products, benchmarks them against competitors, and surfaces the updates that matter most.
@@ -206,7 +205,7 @@ If your team already has core ecommerce infrastructure in place, the fastest nex
       <ContentPageSection
         number="05"
         title="Frequently asked questions"
-        description="FAQ schema gives this page another structured surface for high-intent searches."
+        description="Common questions from merchants evaluating AI ecommerce tools."
         classList={splitGridSectionClassList}
       >
         <ContentPageFaqGrid items={faq} classList={splitGridClassList} />
@@ -215,7 +214,6 @@ If your team already has core ecommerce infrastructure in place, the fastest nex
       <ContentPageFooter
         primary={{ href: "/sign-up", label: "Get started" }}
         secondary={{ href: "/", label: "Back to home" }}
-        note="Built as a core commercial page in the first SEO implementation wave."
       />
     </ContentPageLayout>
   );

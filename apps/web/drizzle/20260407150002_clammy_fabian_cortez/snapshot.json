@@ -2,9 +2,7 @@
   "version": "8",
   "dialect": "postgres",
   "id": "67ef9611-61b8-432b-808e-2d5a21bbb532",
-  "prevIds": [
-    "9bb11ef6-f828-47a3-9385-0484dfbafdbc"
-  ],
+  "prevIds": ["9bb11ef6-f828-47a3-9385-0484dfbafdbc"],
   "ddl": [
     {
       "isRlsEnabled": false,
@@ -2351,14 +2349,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "userId"
-      ],
+      "columns": ["userId"],
       "schemaTo": "public",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "account_userId_user_id_fk",
@@ -2368,14 +2362,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "storeId"
-      ],
+      "columns": ["storeId"],
       "schemaTo": "public",
       "tableTo": "store",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "agent_traffic_daily_storeId_store_id_fkey",
@@ -2385,14 +2375,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "userId"
-      ],
+      "columns": ["userId"],
       "schemaTo": "public",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "agent_traffic_daily_userId_user_id_fkey",
@@ -2402,14 +2388,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "storeId"
-      ],
+      "columns": ["storeId"],
       "schemaTo": "public",
       "tableTo": "store",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "agent_visit_storeId_store_id_fkey",
@@ -2419,14 +2401,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "userId"
-      ],
+      "columns": ["userId"],
       "schemaTo": "public",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "agent_visit_userId_user_id_fkey",
@@ -2436,14 +2414,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "productId"
-      ],
+      "columns": ["productId"],
       "schemaTo": "public",
       "tableTo": "product",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "SET NULL",
       "name": "agent_visit_productId_product_id_fkey",
@@ -2453,14 +2427,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "userId"
-      ],
+      "columns": ["userId"],
       "schemaTo": "public",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "competitor_userId_user_id_fk",
@@ -2470,14 +2440,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "userId"
-      ],
+      "columns": ["userId"],
       "schemaTo": "public",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "listing_optimization_userId_user_id_fkey",
@@ -2487,14 +2453,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "productId"
-      ],
+      "columns": ["productId"],
       "schemaTo": "public",
       "tableTo": "product",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "listing_optimization_productId_product_id_fkey",
@@ -2504,14 +2466,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "storeId"
-      ],
+      "columns": ["storeId"],
       "schemaTo": "public",
       "tableTo": "store",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "product_storeId_store_id_fk",
@@ -2521,14 +2479,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "userId"
-      ],
+      "columns": ["userId"],
       "schemaTo": "public",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "product_userId_user_id_fk",
@@ -2538,14 +2492,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "userId"
-      ],
+      "columns": ["userId"],
       "schemaTo": "public",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "scan_userId_user_id_fk",
@@ -2555,14 +2505,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "userId"
-      ],
+      "columns": ["userId"],
       "schemaTo": "public",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "session_userId_user_id_fk",
@@ -2572,14 +2518,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "scanId"
-      ],
+      "columns": ["scanId"],
       "schemaTo": "public",
       "tableTo": "scan",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "simulation_scanId_scan_id_fk",
@@ -2589,14 +2531,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "productId"
-      ],
+      "columns": ["productId"],
       "schemaTo": "public",
       "tableTo": "product",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "simulation_productId_product_id_fk",
@@ -2606,14 +2544,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "competitorId"
-      ],
+      "columns": ["competitorId"],
       "schemaTo": "public",
       "tableTo": "competitor",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "simulation_competitorId_competitor_id_fk",
@@ -2623,14 +2557,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "userId"
-      ],
+      "columns": ["userId"],
       "schemaTo": "public",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "store_userId_user_id_fk",
@@ -2640,14 +2570,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "userId"
-      ],
+      "columns": ["userId"],
       "schemaTo": "public",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "ucp_profile_userId_user_id_fkey",
@@ -2656,9 +2582,7 @@
       "table": "ucp_profile"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "account_pkey",
       "schema": "public",
@@ -2666,9 +2590,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "agent_traffic_daily_pkey",
       "schema": "public",
@@ -2676,9 +2598,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "agent_visit_pkey",
       "schema": "public",
@@ -2686,9 +2606,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "blog_post_pkey",
       "schema": "public",
@@ -2696,9 +2614,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "competitor_pkey",
       "schema": "public",
@@ -2706,9 +2622,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "listing_optimization_pkey",
       "schema": "public",
@@ -2716,9 +2630,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "product_pkey",
       "schema": "public",
@@ -2726,9 +2638,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "scan_pkey",
       "schema": "public",
@@ -2736,9 +2646,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "session_pkey",
       "schema": "public",
@@ -2746,9 +2654,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "simulation_pkey",
       "schema": "public",
@@ -2756,9 +2662,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "store_pkey",
       "schema": "public",
@@ -2766,9 +2670,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "ucp_profile_pkey",
       "schema": "public",
@@ -2776,9 +2678,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "user_pkey",
       "schema": "public",
@@ -2786,9 +2686,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "verification_pkey",
       "schema": "public",
@@ -2797,9 +2695,7 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "token"
-      ],
+      "columns": ["token"],
       "nullsNotDistinct": false,
       "name": "session_token_unique",
       "schema": "public",
@@ -2808,9 +2704,7 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "userId"
-      ],
+      "columns": ["userId"],
       "nullsNotDistinct": false,
       "name": "ucp_profile_userId_key",
       "schema": "public",
@@ -2819,9 +2713,7 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "email"
-      ],
+      "columns": ["email"],
       "nullsNotDistinct": false,
       "name": "user_email_unique",
       "schema": "public",
