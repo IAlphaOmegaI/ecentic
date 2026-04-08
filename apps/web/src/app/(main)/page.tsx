@@ -28,7 +28,7 @@ const description =
   "AI ecommerce platform for product listing optimization, competitor analysis, and AI shopping visibility. Simulate decisions and improve win rate.";
 
 export const metadata: Metadata = createMetadata({
-  title: "AI Ecommerce Platform for Product Visibility",
+  title: "écentic — Win Every AI Shopping Agent's Cart",
   description,
   path: "/",
   keywords: [
