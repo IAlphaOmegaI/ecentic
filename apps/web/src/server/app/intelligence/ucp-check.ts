@@ -10,6 +10,13 @@ export type SpecIssue = {
   severity: SpecIssueSeverity;
 };
 
+export type RobotBotStatus = {
+  botId: string;
+  label: string;
+  description: string;
+  allowed: boolean;
+};
+
 export type UcpCheckResult = {
   domain: string;
   url: string;
@@ -20,7 +27,109 @@ export type UcpCheckResult = {
   contentType: string | null;
   data: unknown | null;
   specIssues: SpecIssue[];
+  robots: RobotBotStatus[];
   error: string | null;
+};
+
+const AI_BOTS = [
+  { botId: "GPTBot", label: "GPTBot", description: "OpenAI / ChatGPT" },
+  {
+    botId: "Google-Extended",
+    label: "Google-Extended",
+    description: "Gemini / Google",
+  },
+  { botId: "ClaudeBot", label: "ClaudeBot", description: "Claude / Anthropic" },
+  {
+    botId: "AppleBot-Extended",
+    label: "AppleBot-Extended",
+    description: "Apple Intelligence",
+  },
+  { botId: "CCBot", label: "CCBot", description: "Common Crawl" },
+] as const;
+
+type RobotsBlock = {
+  agents: string[];
+  disallows: string[];
+  allows: string[];
+};
+
+const parseRobotsTxt = (text: string): RobotsBlock[] => {
+  const blocks: RobotsBlock[] = [];
+  let current: RobotsBlock | null = null;
+
+  for (const rawLine of text.split("\n")) {
+    const line = (rawLine.split("#")[0] ?? "").trim();
+    if (!line) {
+      if (current) {
+        blocks.push(current);
+        current = null;
+      }
+      continue;
+    }
+
+    const colonIdx = line.indexOf(":");
+    if (colonIdx === -1) continue;
+
+    const directive = line.slice(0, colonIdx).trim().toLowerCase();
+    const value = line.slice(colonIdx + 1).trim();
+
+    if (directive === "user-agent") {
+      if (!current) {
+        current = { agents: [], disallows: [], allows: [] };
+      } else if (current.disallows.length > 0 || current.allows.length > 0) {
+        blocks.push(current);
+        current = { agents: [], disallows: [], allows: [] };
+      }
+      current.agents.push(value.toLowerCase());
+    } else if (directive === "disallow" && current) {
+      current.disallows.push(value);
+    } else if (directive === "allow" && current) {
+      current.allows.push(value);
+    }
+  }
+
+  if (current) blocks.push(current);
+  return blocks;
+};
+
+const isBotAllowed = (botId: string, blocks: RobotsBlock[]): boolean => {
+  const botLower = botId.toLowerCase();
+  const specific = blocks.find((b) => b.agents.includes(botLower));
+  const wildcard = blocks.find((b) => b.agents.includes("*"));
+
+  const blocksAll = (block: RobotsBlock) =>
+    block.disallows.some((d) => d === "/" || d === "") &&
+    !block.allows.some((a) => a === "/");
+
+  if (specific) return !blocksAll(specific);
+  if (wildcard) return !blocksAll(wildcard);
+  return true;
+};
+
+const checkRobots = async (cleaned: string): Promise<RobotBotStatus[]> => {
+  const result = await resultify(() =>
+    fetch(`https://${cleaned}/robots.txt`, {
+      redirect: "follow",
+      signal: AbortSignal.timeout(8000),
+      cache: "no-store",
+      headers: { "User-Agent": "UCP-Validator/1.0" },
+    }),
+  );
+
+  if (!result.success) {
+    return AI_BOTS.map((bot) => ({ ...bot, allowed: true }));
+  }
+
+  const text = await resultify(() => result.data.text());
+  if (!text.success || !result.data.ok) {
+    return AI_BOTS.map((bot) => ({ ...bot, allowed: true }));
+  }
+
+  const blocks = parseRobotsTxt(text.data);
+  return AI_BOTS.map((bot) => ({
+    ...bot,
+    allowed: isBotAllowed(bot.botId, blocks),
+  }));
 };
 
 // Based on https://ucp.dev/schemas/ucp.json (business_schema variant)
@@ -326,20 +435,23 @@ export const checkUCP = async (
   // The UCP spec (https://ucp.dev) requires agents to identify themselves via
   // the UCP-Agent header. Many CDNs gate on this header to distinguish AI
   // commerce agents from generic bots.
-  const result = await resultify(() =>
-    fetch(url, {
-      headers: {
-        Accept: "application/json, */*",
-        "Accept-Language": "en-US,en;q=0.9",
-        "UCP-Agent": 'profile="https://ecentic.com/ucp-validator"',
-        "User-Agent":
-          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-      },
-      redirect: "follow",
-      signal: AbortSignal.timeout(10000),
-      cache: "no-store",
-    }),
-  );
+  const [result, robots] = await Promise.all([
+    resultify(() =>
+      fetch(url, {
+        headers: {
+          Accept: "application/json, */*",
+          "Accept-Language": "en-US,en;q=0.9",
+          "UCP-Agent": 'profile="https://ecentic.com/ucp-validator"',
+          "User-Agent":
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+        },
+        redirect: "follow",
+        signal: AbortSignal.timeout(10000),
+        cache: "no-store",
+      }),
+    ),
+    checkRobots(cleaned),
+  ]);
 
   if (!result.success) {
     return {
@@ -354,6 +466,7 @@ export const checkUCP = async (
         contentType: null,
         data: null,
         specIssues: [],
+        robots,
         error: "Could not reach the domain or /.well-known/ucp endpoint.",
       },
     };
@@ -377,6 +490,7 @@ export const checkUCP = async (
         contentType,
         data: null,
         specIssues: [],
+        robots,
         error: `Endpoint returned HTTP ${httpStatus} and body could not be read.`,
       },
     };
@@ -404,6 +518,7 @@ export const checkUCP = async (
         contentType,
         data: parsed,
         specIssues: validateUcpSpec(parsed),
+        robots,
         error: null,
       },
     };
@@ -421,6 +536,7 @@ export const checkUCP = async (
       contentType,
       data: null,
       specIssues: [],
+      robots,
       error: response.ok
         ? "Response is not valid JSON."
         : `Endpoint returned HTTP ${httpStatus} with no parseable JSON body.`,

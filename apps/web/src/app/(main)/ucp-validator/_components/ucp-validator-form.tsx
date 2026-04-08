@@ -187,6 +187,43 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
         />
       </div>
 
+      {result.robots.length > 0 && (
+        <div className="border-accent-foreground border-t">
+          <div className="border-accent-foreground border-b px-5 py-2.5">
+            <p className="font-medium text-foreground text-sm">
+              AI Agent Access (Robots.txt)
+            </p>
+          </div>
+          <div className="divide-y divide-accent-foreground">
+            {result.robots.map((bot) => (
+              <div
+                key={bot.botId}
+                className="flex items-center gap-3 px-5 py-3"
+              >
+                <div className="flex-1">
+                  <span className="font-semibold text-foreground text-xs uppercase tracking-wide">
+                    {bot.label}
+                  </span>
+                  <span className="ml-2 text-foreground-dimmed text-xs">
+                    {bot.description}
+                  </span>
+                </div>
+                <span
+                  className={cn(
+                    "inline-flex items-center px-2 py-0.5 font-medium text-xs",
+                    bot.allowed
+                      ? "bg-primary/10 text-primary"
+                      : "bg-red-500/10 text-red-500",
+                  )}
+                >
+                  {bot.allowed ? "Allowed" : "Blocked"}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {result.specIssues.length > 0 && (
         <div className="border-accent-foreground border-t">
           <div className="border-accent-foreground border-b px-5 py-2.5">
@@ -220,7 +257,7 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
             </p>
           </div>
           <div className="divide-y divide-accent-foreground">
-            {result.specIssues.map((issue: SpecIssue, index: number) => (
+            {result.specIssues.map((issue: UcpCheck.SpecIssue, index: number) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: stable list
               <div key={index} className="flex items-start gap-3 px-5 py-2.5">
                 <span
