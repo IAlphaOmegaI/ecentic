@@ -48,38 +48,59 @@ const tokenizeJson = (json: string): JToken[] => {
   let index = 0;
 
   while (index < json.length) {
-    if (json[index] === undefined) continue;
+    const currentCharacter = json[index];
+    if (!currentCharacter) break;
 
-    if (/\s/.test(json[index])) {
+    if (/\s/.test(currentCharacter)) {
       let text = "";
-      while (index < json.length && /\s/.test(json[index]))
-        text += json[index++];
+      while (index < json.length) {
+        const character = json[index];
+        if (!character || !/\s/.test(character)) break;
+        text += character;
+        index++;
+      }
       tokens.push({ text, type: "space" });
       continue;
     }
-    if (json[index] === '"') {
+    if (currentCharacter === '"') {
       let text = '"';
 
       index++;
-      while (index < json.length && json[index] !== '"') {
-        if (json[index] === "\\") text += json[index++];
-        text += json[index++];
+      while (index < json.length) {
+        const character = json[index];
+        if (!character || character === '"') break;
+        if (character === "\\") {
+          text += character;
+          index++;
+        }
+        const escapedCharacter = json[index];
+        if (!escapedCharacter) break;
+        text += escapedCharacter;
+        index++;
       }
 
       text += '"';
       index++;
       let j = index;
 
-      while (j < json.length && /\s/.test(json[j])) j++;
+      while (j < json.length) {
+        const character = json[j];
+        if (!character || !/\s/.test(character)) break;
+        j++;
+      }
 
       tokens.push({ text, type: json[j] === ":" ? "key" : "string" });
       continue;
     }
 
-    if (/[-\d]/.test(json[index])) {
+    if (/[-\d]/.test(currentCharacter)) {
       let text = "";
-      while (index < json.length && /[-\d.eE+]/.test(json[index]))
-        text += json[index++];
+      while (index < json.length) {
+        const character = json[index];
+        if (!character || !/[-\d.eE+]/.test(character)) break;
+        text += character;
+        index++;
+      }
       tokens.push({ text, type: "number" });
       continue;
     }
@@ -97,7 +118,7 @@ const tokenizeJson = (json: string): JToken[] => {
       continue;
     }
 
-    tokens.push({ text: json[index], type: "punct" });
+    tokens.push({ text: currentCharacter, type: "punct" });
     index++;
   }
   return tokens;
@@ -129,34 +150,95 @@ const JsonPreview = ({ data }: { data: unknown }) => {
   );
 };
 
+type PaymentHandlerEntry = {
+  registryKey: string;
+  label: string;
+  id: string | null;
+  version: string | null;
+};
+
+const formatLatency = (latencyMs: number | null): string =>
+  latencyMs === null ? "Unavailable" : `${latencyMs} ms`;
+
+const PAYMENT_HANDLER_LABELS: Record<string, string> = {
+  "com.google.pay": "Google Pay",
+  "dev.shopify.card": "Shopify Card",
+  "dev.shopify.shop_pay": "Shop Pay",
+  "com.apple.pay": "Apple Pay",
+  "com.paypal": "PayPal",
+  "com.stripe": "Stripe",
+  "com.braintree": "Braintree",
+  "com.klarna": "Klarna",
+  "com.afterpay": "Afterpay",
+  "com.affirm": "Affirm",
+};
+
+const extractPaymentHandlers = (data: unknown): PaymentHandlerEntry[] => {
+  if (!data || typeof data !== "object" || Array.isArray(data)) return [];
+  const obj = data as Record<string, unknown>;
+  const rawRoot = obj["ucp"];
+  const root =
+    rawRoot && typeof rawRoot === "object" && !Array.isArray(rawRoot)
+      ? (rawRoot as Record<string, unknown>)
+      : obj;
+
+  const handlers = root["payment_handlers"];
+  if (!handlers || typeof handlers !== "object" || Array.isArray(handlers))
+    return [];
+
+  const entries: PaymentHandlerEntry[] = [];
+  for (const [key, items] of Object.entries(
+    handlers as Record<string, unknown>,
+  )) {
+    if (!Array.isArray(items)) continue;
+    for (const item of items) {
+      if (!item || typeof item !== "object" || Array.isArray(item)) continue;
+      const e = item as Record<string, unknown>;
+      entries.push({
+        registryKey: key,
+        label: PAYMENT_HANDLER_LABELS[key] ?? key,
+        id: typeof e["id"] === "string" ? e["id"] : null,
+        version: typeof e["version"] === "string" ? e["version"] : null,
+      });
+    }
+  }
+  return entries;
+};
+
 const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
   const overallPass = result.https && result.found && result.valid;
+  const paymentHandlers = extractPaymentHandlers(result.data);
   return (
     <div className="mt-6 border border-accent-foreground bg-background">
       {/* Header */}
-      <div className="flex items-center justify-between border-accent-foreground border-b px-5 py-3">
+      <div className="flex items-center justify-between gap-4 border-accent-foreground border-b px-5 py-3">
         <div>
           <p className="font-medium text-foreground text-sm">{result.domain}</p>
           <p className="mt-0.5 font-mono text-foreground-dimmed text-xs">
             {result.url}
           </p>
         </div>
-        <span
-          className={cn(
-            "inline-flex items-center gap-1.5 px-3 py-1 font-semibold text-sm",
-            overallPass
-              ? "bg-primary/10 text-primary"
-              : "bg-red-500/10 text-red-500",
-          )}
-        >
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center px-3 py-1 font-medium text-foreground text-sm">
+            Latency: {formatLatency(result.latencyMs)}
+          </span>
           <span
             className={cn(
-              "size-2 rounded-full",
-              overallPass ? "bg-primary" : "bg-red-500",
+              "inline-flex items-center gap-1.5 px-3 py-1 font-semibold text-sm",
+              overallPass
+                ? "bg-primary/10 text-primary"
+                : "bg-red-500/10 text-red-500",
             )}
-          />
-          {overallPass ? "UCP Ready" : "Not UCP Ready"}
-        </span>
+          >
+            <span
+              className={cn(
+                "size-2 rounded-full",
+                overallPass ? "bg-primary" : "bg-red-500",
+              )}
+            />
+            {overallPass ? "UCP Ready" : "Not UCP Ready"}
+          </span>
+        </div>
       </div>
 
       <div className="divide-y divide-accent-foreground px-5">
@@ -183,6 +265,15 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
             result.valid
               ? `Content-Type: ${result.contentType ?? "—"}${result.httpStatus !== null ? ` · HTTP ${result.httpStatus}` : ""}`
               : (result.error ?? "Response body is not valid JSON.")
+          }
+        />
+        <CheckRow
+          label="Website latency"
+          passed={result.latencyMs !== null}
+          detail={
+            result.latencyMs === null
+              ? "Latency could not be measured because the endpoint did not respond."
+              : `The UCP endpoint responded in ${formatLatency(result.latencyMs)}.`
           }
         />
       </div>
@@ -298,7 +389,7 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
 
 export const UcpValidatorForm = () => {
   const [domain, setDomain] = useState("");
-  const [result, setResult] = useState<UcpCheckResult | null>(null);
+  const [result, setResult] = useState<UcpCheck.UcpCheckResult | null>(null);
 
   const [handleCheck, isChecking] = useAsyncAction(async () => {
     const response = await UcpCheck.checkUCP(domain);

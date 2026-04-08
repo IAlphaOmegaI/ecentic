@@ -22,6 +22,7 @@ export type UcpCheckResult = {
   url: string;
   https: boolean;
   httpStatus: number | null;
+  latencyMs: number | null;
   found: boolean;
   valid: boolean;
   contentType: string | null;
@@ -431,6 +432,7 @@ export const checkUCP = async (
   if (!cleaned) return { success: false, error: "Please enter a domain." };
 
   const url = `https://${cleaned}/.well-known/ucp`;
+  const startedAt = performance.now();
 
   // The UCP spec (https://ucp.dev) requires agents to identify themselves via
   // the UCP-Agent header. Many CDNs gate on this header to distinguish AI
@@ -461,6 +463,7 @@ export const checkUCP = async (
         url,
         https: true,
         httpStatus: null,
+        latencyMs: null,
         found: false,
         valid: false,
         contentType: null,
@@ -473,6 +476,7 @@ export const checkUCP = async (
   }
 
   const response = result.data;
+  const latencyMs = Math.round(performance.now() - startedAt);
   const httpStatus = response.status;
   const contentType = response.headers.get("content-type");
 
@@ -485,6 +489,7 @@ export const checkUCP = async (
         url,
         https: true,
         httpStatus,
+        latencyMs,
         found: false,
         valid: false,
         contentType,
@@ -513,6 +518,7 @@ export const checkUCP = async (
         url,
         https: true,
         httpStatus,
+        latencyMs,
         found: true,
         valid: true,
         contentType,
@@ -531,6 +537,7 @@ export const checkUCP = async (
       url,
       https: true,
       httpStatus,
+      latencyMs,
       found: false,
       valid: false,
       contentType,
