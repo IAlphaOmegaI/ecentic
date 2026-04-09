@@ -52,6 +52,8 @@ export * from "./square-chart";
 export * from "./sunset";
 export * from "./trend-down";
 export * from "./trend-up";
+export * from "./icons/x-twitter";
+export * from "./icons/instagram";
 export type * from "./types";
 export * from "./upload";
 export * from "./x";
