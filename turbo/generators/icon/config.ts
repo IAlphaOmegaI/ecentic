@@ -18,7 +18,7 @@ export const config: PlopTypes.PlopGeneratorConfig = {
   actions: [
     {
       type: "add",
-      path: "packages/shared/icons/src/icons/{{kebabCase name}}.tsx",
+      path: "packages/shared/icons/src/{{kebabCase name}}.tsx",
       templateFile: "icon/template.hbs",
       transform,
     },
@@ -26,7 +26,7 @@ export const config: PlopTypes.PlopGeneratorConfig = {
       type: "modify",
       path: "packages/shared/icons/src/index.ts",
       pattern: /(export type \* from "\.\/types";)/,
-      template: 'export * from "./icons/{{kebabCase name}}";\n$1',
+      template: 'export * from "./{{kebabCase name}}";\n$1',
     },
   ],
 };
