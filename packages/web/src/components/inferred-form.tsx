@@ -170,7 +170,7 @@ export const InferredFormField = <Field extends GenericField>(
   // @ts-expect-error - InferredFormFieldProps is a generic type that is used to infer the props for the field
   props: InferredFormFieldProps<Field>,
 ): ReactNode => {
-  const { className, name, validator } = props;
+  const { className, name, validator, description, ...inputProps } = props;
 
   const isFieldRequired =
     validator &&
@@ -219,7 +219,7 @@ export const InferredFormField = <Field extends GenericField>(
               return (
                 <TextField
                   {...field}
-                  {...props}
+                  {...inputProps}
                   className={cn(
                     "border border-accent-foreground group-data-invalid:border-error group-data-invalid:placeholder:text-error",
                     className,
@@ -443,8 +443,8 @@ export const InferredFormField = <Field extends GenericField>(
               className={props.classList?.error}
               render={props.custom?.error}
             />
-            {typeof props.description === "function" ? (
-              props.description({ isFieldRequired, name })
+            {typeof description === "function" ? (
+              description({ isFieldRequired, name })
             ) : (
               <FieldDescription
                 className={cn(
@@ -452,7 +452,7 @@ export const InferredFormField = <Field extends GenericField>(
                   props.classList?.description,
                 )}
               >
-                {props.description}
+                {description}
               </FieldDescription>
             )}
           </Field>
