@@ -1,5 +1,5 @@
 import type { JSX } from "react";
-import type { IconProps } from "./types";
+import type { IconProps } from "../types";
 
 export const InstagramIcon = ({ title, ...props }: IconProps): JSX.Element => {
   return (
@@ -11,7 +11,6 @@ export const InstagramIcon = ({ title, ...props }: IconProps): JSX.Element => {
       {...props}
     >
       {title && <title>{title}</title>}
-      
     </svg>
   );
-}; 
+};

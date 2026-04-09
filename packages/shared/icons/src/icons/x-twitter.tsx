@@ -1,5 +1,5 @@
 import type { JSX } from "react";
-import type { IconProps } from "./types";
+import type { IconProps } from "../types";
 
 export const XTwitterIcon = ({ title, ...props }: IconProps): JSX.Element => {
   return (
