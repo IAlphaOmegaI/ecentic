@@ -319,8 +319,20 @@ const extractPaymentHandlers = (data: unknown): PaymentHandlerEntry[] => {
   return entries;
 };
 
+const extractUcpVersion = (data: unknown): string | null => {
+  if (!data || typeof data !== "object" || Array.isArray(data)) return null;
+  const obj = data as Record<string, unknown>;
+  const rawRoot = obj["ucp"];
+  const root =
+    rawRoot && typeof rawRoot === "object" && !Array.isArray(rawRoot)
+      ? (rawRoot as Record<string, unknown>)
+      : obj;
+  return typeof root["version"] === "string" ? root["version"] : null;
+};
+
 const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
   const paymentHandlers = extractPaymentHandlers(result.data);
+  const ucpVersion = extractUcpVersion(result.data);
   const errorCount = result.specIssues.filter(
     (issue: UcpCheck.SpecIssue) => issue.severity === "error",
   ).length;
@@ -349,10 +361,17 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
               </p>
             </div>
 
-            <StatusChip
-              label={overallPass ? "UCP Ready" : "Needs fixes"}
-              tone={overallPass ? "success" : "danger"}
-            />
+            <div className="flex shrink-0 items-center gap-2">
+              {ucpVersion && (
+                <span className="inline-flex items-center bg-accent-foreground px-2 py-1 font-mono text-foreground-dimmed text-xs">
+                  v{ucpVersion}
+                </span>
+              )}
+              <StatusChip
+                label={overallPass ? "UCP Ready" : "Needs fixes"}
+                tone={overallPass ? "success" : "danger"}
+              />
+            </div>
           </div>
 
           <div className="mt-4 grid gap-4 md:grid-cols-2">
@@ -569,6 +588,41 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
           </div>
         )}
       </div>
+
+      {paymentHandlers.length > 0 && (
+        <div className="border-accent-foreground border-t">
+          <div className="border-accent-foreground border-b px-5 py-2.5">
+            <p className="font-medium text-foreground text-sm">
+              Payment Methods
+            </p>
+            <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
+              {paymentHandlers.length} handler
+              {paymentHandlers.length !== 1 ? "s" : ""} configured
+            </p>
+          </div>
+          <div className="divide-y divide-accent-foreground">
+            {paymentHandlers.map((handler, index) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: stable list
+              <div key={index} className="flex items-center gap-3 px-5 py-3">
+                <div className="flex-1">
+                  <p className="font-medium text-foreground text-sm">
+                    {handler.label}
+                  </p>
+                  <p className="mt-0.5 font-mono text-foreground-dimmed text-xs">
+                    {handler.registryKey}
+                    {handler.id ? ` · id: ${handler.id}` : ""}
+                  </p>
+                </div>
+                {handler.version && (
+                  <span className="inline-flex items-center bg-accent-foreground/30 px-2 py-0.5 font-mono text-foreground-dimmed text-xs">
+                    {handler.version}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {result.valid && result.data !== null && (
         <div className="border-accent-foreground border-t">

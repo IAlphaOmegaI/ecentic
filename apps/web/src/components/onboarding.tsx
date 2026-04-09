@@ -37,10 +37,12 @@ export const Onboarding = ({
       src={image}
       alt="onboarding background"
       fill
+      sizes="(max-width: 1023px) 0vw, (min-width: 2330px) 1280px, 55vw"
       className={cn(
         "object-contain object-bottom opacity-60 brightness-0 invert",
         classList.image,
       )}
+      loading="eager"
       aria-hidden="true"
     />
     <div className="relative z-10 flex h-full w-full flex-col justify-between p-8">

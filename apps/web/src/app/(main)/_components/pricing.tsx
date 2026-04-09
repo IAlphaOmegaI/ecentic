@@ -57,7 +57,7 @@ export const Pricing = () => (
               alt="Shopify"
               width={28}
               height={28}
-              className="opacity-70"
+              className="size-[28px] opacity-70"
             />
           </div>
           <div className="mt-2 flex items-end gap-3">
