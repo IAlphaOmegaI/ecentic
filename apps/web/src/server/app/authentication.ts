@@ -1,4 +1,5 @@
 "use server";
+
 import { render } from "@react-email/components";
 import { resultify } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
@@ -15,12 +16,69 @@ import * as User from "./user";
 const parseName = (fullName: string): { name: string; surname: string } => {
   const trimmed = fullName.trim();
   const spaceIndex = trimmed.indexOf(" ");
+
   if (spaceIndex === -1) return { name: trimmed, surname: trimmed };
   return {
     name: trimmed.slice(0, spaceIndex),
     surname: trimmed.slice(spaceIndex + 1).trim() || trimmed,
   };
 };
+
+export const signInWithShopify = withContext(
+  async (
+    context,
+    { shop, callbackURL }: { shop: string; callbackURL: string },
+  ) => {
+    const jar = await cookies();
+
+    const domain = shop
+      .trim()
+      .replace(/^https?:\/\//, "")
+      .replace(/\/.*$/, "");
+    const normalizedDomain = domain.includes(".myshopify.com")
+      ? domain
+      : `${domain}.myshopify.com`;
+
+    jar.set("shopify_auth_shop", normalizedDomain, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      maxAge: 600,
+      path: "/",
+    });
+
+    const result = await resultify(
+      async () =>
+        await context.auth.signInWithOAuth2({
+          body: {
+            providerId: "shopify",
+            callbackURL,
+            newUserCallbackURL: "/complete-profile",
+            disableRedirect: true,
+          },
+        }),
+    );
+
+    if (!result.success) {
+      return {
+        success: false,
+        error: new InvalidCredentialsError("Shopify sign-in failed", {
+          cause: result.error,
+        }),
+      };
+    }
+
+    if (!result.data.url) {
+      return {
+        success: false,
+        error: new InvalidCredentialsError("Shopify sign-in failed"),
+      };
+    }
+
+    return { success: true, data: { url: result.data.url } };
+  },
+  "Authentication.signInWithShopify",
+);
 
 export const signInWithGoogle = withContext(
   async (context, { callbackURL }: { callbackURL: string }) => {
