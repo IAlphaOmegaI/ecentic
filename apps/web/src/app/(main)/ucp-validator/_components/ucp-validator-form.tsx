@@ -403,7 +403,7 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
           value={formatLatency(result.latencyMs)}
           detail={
             result.latencyMs === null
-              ? "We could not measure a live response time."
+              ? "We could not measure a live response time. "
               : "Response time for the UCP endpoint."
           }
           tone={result.latencyMs === null ? "danger" : "success"}
