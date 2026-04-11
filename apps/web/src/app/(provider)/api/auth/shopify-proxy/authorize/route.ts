@@ -4,11 +4,12 @@ import { type NextRequest, NextResponse as Response } from "next/server";
 export const GET = async (request: NextRequest) => {
   const { SHOPIFY_API_KEY, APP_HOST } = process.env;
 
-  if (!SHOPIFY_API_KEY || !APP_HOST)
+  if (!SHOPIFY_API_KEY || !APP_HOST) {
     return Response.json(
       { error: "Shopify integration not configured" },
       { status: 500 },
     );
+  }
 
   const jar = await cookies();
   const shop = jar.get("shopify_auth_shop")?.value;
