@@ -4,14 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 
 const platforms = [
-  // {
-  //   id: "shopify",
-  //   name: "Shopify",
-  //   description: "Connect via OAuth",
-  //   badge: "Recommended",
-  //   href: "/onboarding/connect/shopify",
-  //   image: "/images/shopify.svg",
-  // },
+  {
+    id: "shopify",
+    name: "Shopify",
+    description: "Connect via OAuth",
+    badge: "Recommended",
+    href: "/onboarding/connect/shopify",
+    image: "/images/shopify.svg",
+  },
   {
     id: "woocommerce",
     name: "WooCommerce",

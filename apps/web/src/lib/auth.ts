@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { genericOAuth } from "better-auth/plugins";
+import { cookies } from "next/headers";
 import * as Authentication from "@/server/app/authentication";
 import { db, schema } from "@/server/database";
 
@@ -93,8 +94,52 @@ export const auth = betterAuth({
           clientId: process.env.SHOPIFY_API_KEY,
           clientSecret: process.env.SHOPIFY_API_SECRET,
           authorizationUrl: `${process.env.APP_HOST}/api/auth/shopify-proxy/authorize`,
-          tokenUrl: `${process.env.APP_HOST}/api/auth/shopify-proxy/token`,
+          //BUG: tokenUrl is required by better-auth for config validation even when getToken is provided
+          tokenUrl: "https://shopify.myshopify.com/admin/oauth/access_token",
           scopes: ["read_customers"],
+          getToken: async ({ code }) => {
+            const jar = await cookies();
+            const shop = jar.get("shopify_auth_shop")?.value;
+
+            console.log(shop);
+
+            if (!shop) throw new Error("Missing Shopify shop domain");
+
+            const { SHOPIFY_API_KEY, SHOPIFY_API_SECRET } = process.env;
+
+            if (!SHOPIFY_API_KEY || !SHOPIFY_API_SECRET)
+              throw new Error("Shopify integration not configured");
+
+            const response = await fetch(
+              // make the access token expire (use ?expiring=1)
+              `https://${shop}/admin/oauth/access_token`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                  Accept: "application/json",
+                },
+                body: new URLSearchParams({
+                  client_id: SHOPIFY_API_KEY,
+                  client_secret: SHOPIFY_API_SECRET,
+                  code,
+                }).toString(),
+              },
+            );
+
+            if (!response.ok) throw new Error("Shopify token exchange failed");
+
+            const data = (await response.json()) as {
+              access_token: string;
+              scope: string;
+            };
+
+            return {
+              accessToken: data.access_token,
+              scopes: data.scope.split(","),
+              raw: { shop },
+            };
+          },
           getUserInfo: async (tokens) => {
             // biome-ignore lint/complexity/useLiteralKeys: index signature property
             const shop = tokens.raw?.["shop"];
@@ -102,7 +147,6 @@ export const auth = betterAuth({
             if (!shop || !tokens.accessToken) return null;
 
             const response = await fetch(
-              //`https://${shop}/admin/api/latest/shop.json`
               `https://${shop}/admin/api/2024-10/shop.json`,
               {
                 headers: {

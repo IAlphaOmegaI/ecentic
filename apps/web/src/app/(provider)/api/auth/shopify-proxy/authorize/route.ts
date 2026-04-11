@@ -23,6 +23,8 @@ export const GET = async (request: NextRequest) => {
   }
 
   shopifyUrl.searchParams.set("client_id", SHOPIFY_API_KEY);
+  // make Shopify issue an online access token
+  // shopifyUrl.searchParams.set("grant_options[]", "per-user");
 
   return Response.redirect(shopifyUrl.toString());
 };

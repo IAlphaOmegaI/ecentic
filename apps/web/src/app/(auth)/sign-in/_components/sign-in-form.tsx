@@ -46,14 +46,14 @@ const config = {
   }),
 } satisfies GenericForm;
 
-// const shopifyConfig = {
-//   shop: field({
-//     shape: "text",
-//     validator: z.string().min(1, "Enter your store domain"),
-//     label: "Shopify store domain",
-//     placeholder: "mystore.myshopify.com",
-//   }),
-// } satisfies GenericForm;
+const shopifyConfig = {
+  shop: field({
+    shape: "text",
+    validator: z.string().min(1, "Enter your store domain"),
+    label: "Shopify store domain",
+    placeholder: "mystore.myshopify.com",
+  }),
+} satisfies GenericForm;
 
 export const SignInForm = () => {
   const router = useRouter();
@@ -62,14 +62,14 @@ export const SignInForm = () => {
   const [provider, setProvider] = useState<"email" | "google" | "shopify">(
     "email",
   );
-  // const [showShopifyForm, setShowShopifyForm] = useState(false);
+  const [showShopifyForm, setShowShopifyForm] = useState(false);
 
   const [handleSubmit, isPending] = useAsyncAction(
     async (
       data:
         | { data: FormEntries<typeof config>; type: "email" }
-        | { type: "google" },
-      // | { data: FormEntries<typeof shopifyConfig>; type: "shopify" },
+        | { type: "google" }
+        | { data: FormEntries<typeof shopifyConfig>; type: "shopify" },
     ) => {
       setProvider(data.type);
 
@@ -81,22 +81,22 @@ export const SignInForm = () => {
         return;
       }
 
-      // if (data.type === "shopify") {
-      //   const result = await Authentication.signInWithShopify({
-      //     shop: data.data.shop,
-      //     callbackURL: "/onboarding/connect",
-      //   });
-      //   if (!result.success) {
-      //     toast.add({
-      //       title: "Error",
-      //       description: result.error.message,
-      //       type: "error",
-      //     });
-      //     return;
-      //   }
-      //   window.location.href = result.data.url;
-      //   return;
-      // }
+      if (data.type === "shopify") {
+        const result = await Authentication.signInWithShopify({
+          shop: data.data.shop,
+          callbackURL: "/onboarding/connect",
+        });
+        if (!result.success) {
+          toast.add({
+            title: "Error",
+            description: result.error.message,
+            type: "error",
+          });
+          return;
+        }
+        window.location.href = result.data.url;
+        return;
+      }
 
       const result = await Authentication.signIn(data.data);
 
@@ -135,7 +135,7 @@ export const SignInForm = () => {
           )}
           Continue with Google
         </Button>
-        {/* <Button
+        <Button
           variant="soft"
           color="emphasis"
           className="w-full"
@@ -150,11 +150,12 @@ export const SignInForm = () => {
               alt="Shopify"
               width={16}
               height={16}
+              className="size-[16px]"
             />
           )}
           Continue with Shopify
-        </Button> */}
-        {/* {showShopifyForm && (
+        </Button>
+        {showShopifyForm && (
           <InferredForm
             config={shopifyConfig}
             onSubmit={(data) => handleSubmit({ data, type: "shopify" })}
@@ -175,7 +176,7 @@ export const SignInForm = () => {
               Connect Shopify store
             </Button>
           </InferredForm>
-        )} */}
+        )}
         <div className="relative mt-4 flex items-center gap-3">
           <div className="h-px flex-1 bg-accent-foreground" />
           <span className="font-light text-foreground-dimmed">or</span>
