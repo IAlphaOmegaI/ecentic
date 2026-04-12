@@ -135,7 +135,7 @@ export const SignInForm = () => {
           )}
           Continue with Google
         </Button>
-        <Button
+        {/* <Button
           variant="soft"
           color="emphasis"
           className="w-full"
@@ -176,7 +176,7 @@ export const SignInForm = () => {
               Connect Shopify store
             </Button>
           </InferredForm>
-        )}
+        )} */}
         <div className="relative mt-4 flex items-center gap-3">
           <div className="h-px flex-1 bg-accent-foreground" />
           <span className="font-light text-foreground-dimmed">or</span>
