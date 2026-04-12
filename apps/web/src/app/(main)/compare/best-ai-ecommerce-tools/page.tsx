@@ -155,11 +155,17 @@ export default () => {
       "@context": "https://schema.org",
       "@type": "ItemList",
       name: "Best AI tools for ecommerce in 2026",
+      numberOfItems: tools.length,
+      itemListOrder: "https://schema.org/ItemListOrderDescending",
       itemListElement: tools.map((tool, index) => ({
         "@type": "ListItem",
         position: index + 1,
-        name: tool.name,
-        description: `${tool.category}. ${tool.summary}`,
+        item: {
+          "@type": "SoftwareApplication",
+          name: tool.name,
+          description: `${tool.category}. ${tool.summary}`,
+          applicationCategory: "BusinessApplication",
+        },
       })),
     },
     createBreadcrumbSchema([

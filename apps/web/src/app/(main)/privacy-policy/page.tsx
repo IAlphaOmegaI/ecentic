@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   title: "Privacy Policy — écentic",
   description:
     "How écentic collects, uses, and protects your data when using our e-commerce optimization platform.",
+  alternates: {
+    canonical: "/privacy-policy",
+  },
 };
 
 const sections = [

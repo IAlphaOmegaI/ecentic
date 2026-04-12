@@ -76,9 +76,7 @@ export const metadata: Metadata = {
   creator: "écentic",
   publisher: "écentic",
   metadataBase: new URL("https://ecentic.ai"),
-  alternates: {
-    canonical: "/",
-  },
+  alternates: {},
   openGraph: {
     type: "website",
     locale: "en_US",

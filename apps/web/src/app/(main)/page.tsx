@@ -19,6 +19,11 @@ import { Hero } from "./_components/hero";
 import { Pricing } from "./_components/pricing";
 import { SmoothScroll } from "./_components/smooth-scroll";
 import { Steps } from "./_components/steps";
+import {
+  aggregateRating,
+  reviewSchemas,
+  Testimonials,
+} from "./_components/testimonials";
 
 const Comparison = dynamic(() =>
   import("./_components/comparison").then((m) => m.Comparison),
@@ -50,7 +55,14 @@ export default async () => (
           __html: JSON.stringify([
             organizationSchema,
             websiteSchema,
-            softwareApplicationSchema,
+            {
+              ...softwareApplicationSchema,
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ...aggregateRating,
+              },
+              review: reviewSchemas,
+            },
             {
               "@context": "https://schema.org",
               "@type": "WebPage",
@@ -74,6 +86,7 @@ export default async () => (
       <Suspense>
         <Comparison />
       </Suspense>
+      <Testimonials />
       <Pricing />
       <DiscoveryPaths />
       <section aria-label="About écentic" className="sr-only">
