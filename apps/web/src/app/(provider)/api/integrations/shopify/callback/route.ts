@@ -7,6 +7,7 @@ import { Environment } from "@/server/utils/environment";
 
 const verifyHmac = (query: URLSearchParams, secret: string): boolean => {
   const hmac = query.get("hmac");
+
   if (!hmac) return false;
 
   const entries = Array.from(query.entries())

@@ -269,7 +269,7 @@ const JsonPreview = ({ data }: { data: unknown }) => {
   const json = JSON.stringify(data, null, 2);
 
   return (
-    <pre className="max-h-[32rem] overflow-auto bg-background-rich px-4 py-4 font-mono text-xs leading-relaxed sm:px-5">
+    <pre className="max-h-128 overflow-auto bg-background-rich px-4 py-4 font-mono text-xs leading-relaxed sm:px-5">
       <code>
         {tokenizeJson(json).map((token, index) => (
           // biome-ignore lint/suspicious/noArrayIndexKey: stable token order
