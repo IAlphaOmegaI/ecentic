@@ -55,6 +55,7 @@ export * from "./trend-up";
 export * from "./x-twitter";
 export * from "./instagram";
 export * from "./linkedin";
+export * from "./star-hand";
 export type * from "./types";
 export * from "./upload";
 export * from "./x";

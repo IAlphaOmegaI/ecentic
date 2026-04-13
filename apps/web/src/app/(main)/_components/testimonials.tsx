@@ -1,3 +1,6 @@
+import { cn } from "@zenncore/utils";
+import { StarHandIcon } from "@zenncore/icons";
+
 const testimonials = [
   {
     name: "Sarah Chen",
@@ -48,10 +51,10 @@ export const reviewSchemas = testimonials.map((testimonial) => ({
 
 const stars = [1, 2, 3, 4, 5] as const;
 
-const Stars = ({ count }: { count: number }) => (
+const Stars = ({ count, className }: { count: number; className?: string }) => (
   <div
     role="img"
-    className="flex gap-0.5 text-primary"
+    className={cn("flex gap-0.5 text-primary", className)}
     aria-label={`${count} out of 5 stars`}
   >
     {stars.map((star) => (
@@ -67,30 +70,20 @@ const Stars = ({ count }: { count: number }) => (
 );
 
 export const Testimonials = () => (
-  <section>
-    <div className="grid gap-6 border-accent-foreground border-y p-4 md:grid-cols-[3fr_5fr] md:p-8">
-      <div>
-        <p className="font-medium text-primary text-sm uppercase tracking-[0.2em]">
-          What merchants say
-        </p>
-        <h2 className="mt-3 max-w-md text-4xl text-foreground leading-tight">
-          Trusted by ecommerce teams shipping real products
-        </h2>
-      </div>
+  <section className="relative -left-[calc(50vw-50%)] -z-1 w-screen border border-accent-foreground">
+    <div className="relative mx-auto max-w-6xl p-6 md:p-12 flex flex-row justify-between">
+      <h1 className="font-body text-3xl text-foreground md:text-5xl">
+        Hear what they say.
+      </h1>
       <div className="flex flex-col justify-center">
-        <div className="flex items-baseline gap-3">
-          <span className="font-semibold text-5xl text-foreground tabular-nums">
-            {aggregateRating.ratingValue.toFixed(1)}
-          </span>
-          <Stars count={Math.round(aggregateRating.ratingValue)} />
-        </div>
-        <p className="mt-1 text-foreground-dimmed">
-          Based on {aggregateRating.ratingCount} merchant reviews
-        </p>
+        <h3 className="font-semibold text-5xl text-foreground tabular-nums flex items-center gap-2">
+          {aggregateRating.ratingValue.toFixed(1)} / 5{" "}
+          <StarHandIcon className="size-12 text-primary" />
+        </h3>
       </div>
     </div>
 
-    <div className="grid gap-px border-accent-foreground border-b bg-accent-foreground md:grid-cols-3">
+    <div className="mx-auto grid gap-px bg-accent-foreground md:grid-cols-3 max-w-6xl border-t border-accent-foreground">
       {testimonials.map((testimonial) => (
         <article
           key={testimonial.name}
