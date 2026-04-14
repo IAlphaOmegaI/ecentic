@@ -100,7 +100,7 @@ export const detectCompetitors = withAuthentication(
       const summaries = selected
         .map(
           (product) =>
-            `- ${product.title}${product.price ? ` ($${product.price})` : ""}${product.description ? `: ${product.description.slice(0, 200)}` : ""}`,
+            `- ${product.title}${product.price ? ` (${product.price} ${product.currency})` : ""}${product.description ? `: ${product.description.slice(0, 200)}` : ""}`,
         )
         .join("\n");
 

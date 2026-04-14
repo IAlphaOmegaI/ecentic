@@ -83,7 +83,6 @@ export const parse = async <T>(
       resolved.data?.message ??
       resolved.data?.error?.message ??
       resolved.data?.error ??
-      (await result.data.text()) ??
       result.data.statusText;
 
     return {
