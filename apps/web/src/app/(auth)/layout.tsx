@@ -15,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default ({ children }: LayoutProps<"/">) => (
-  <main className="min-h-screen">{children}</main>
+  <main className="min-h-screen h-screen">{children}</main>
 );

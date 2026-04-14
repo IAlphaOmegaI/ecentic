@@ -80,8 +80,11 @@ export const parse = async <T>(
       };
 
     const message =
+      // @ts-expect-error - message is not a valid type for Actionable
       resolved.data?.message ??
+      // @ts-expect-error - error is not a valid type for Actionable
       resolved.data?.error?.message ??
+      // @ts-expect-error - error is not a valid type for Actionable
       resolved.data?.error ??
       result.data.statusText;
 
