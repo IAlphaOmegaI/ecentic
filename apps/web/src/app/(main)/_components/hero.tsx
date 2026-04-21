@@ -25,10 +25,10 @@ export const Hero = () => (
         <div className="mt-2 flex flex-col items-start gap-2">
           <Link
             href="/sign-up"
-            className="group inline-flex items-center gap-2 bg-white px-6 py-3 text-primary transition-opacity hover:opacity-90 md:text-base"
+            className="group inline-flex items-center gap-4 bg-white px-8 py-4 text-primary transition-opacity hover:opacity-90 text-2xl"
           >
             Get your free diagnosis
-            <ArrowRightIcon className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
+            <ArrowRightIcon className="size-6 transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
           <span className="font-light text-sm text-white/60">
             No credit card. See results in 2 minutes.

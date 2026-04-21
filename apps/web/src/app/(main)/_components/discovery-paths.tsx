@@ -18,6 +18,8 @@ const pages = [
     description:
       "See how clearer product content, stronger attributes, and faster approvals improve comparison quality across AI shopping systems.",
     label: "View listing page",
+    color: "primary",
+    variant: "flat",
   },
   {
     href: "/platforms/shopify",
@@ -26,6 +28,8 @@ const pages = [
     description:
       "Connect your catalog, benchmark against competitors, and publish approved product listing updates back to Shopify.",
     label: "See Shopify workflow",
+    color: "primary",
+    variant: "flat",
   },
   {
     href: "/compare/best-ai-ecommerce-tools",
@@ -34,6 +38,8 @@ const pages = [
     description:
       "Use the comparison guide to understand when you need content generation, personalization, analytics, or agent-commerce optimization.",
     label: "Read comparison guide",
+    color: "primary",
+    variant: "flat",
   },
 ] as const;
 

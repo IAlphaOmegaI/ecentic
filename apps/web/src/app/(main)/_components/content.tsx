@@ -242,7 +242,7 @@ export const ContentPageFaqGrid = ({
       <article
         key={item.question}
         className={cn(
-          "flex flex-col gap-4 bg-background-dimmed p-6",
+          "flex flex-col gap-4 bg-background-rich p-6",
           classList?.item,
         )}
       >
