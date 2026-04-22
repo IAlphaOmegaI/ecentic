@@ -7,6 +7,14 @@ import localFont from "next/font/local";
 import Script from "next/script";
 import { ToastList } from "@/components/ui/toast";
 import { ThemeProvider } from "@/context/theme";
+import { createOgImageUrl } from "@/lib/seo";
+
+const defaultOgImage = createOgImageUrl({
+  title: "Win every AI shopping agent's cart.",
+  eyebrow: "Agent-commerce infrastructure",
+  description:
+    "Simulate how GPT-4, Claude, Gemini, and Perplexity choose your products, diagnose losses, and auto-optimize listings.",
+});
 
 const PostHogProvider = dynamic(() =>
   import("@/context/posthog").then((m) => m.PostHogProvider),
@@ -87,7 +95,7 @@ export const metadata: Metadata = {
       "Simulate how AI shopping agents choose your products, diagnose why they don't, and auto-optimize your listings. Built for the agent economy.",
     images: [
       {
-        url: "/images/opengraph.png",
+        url: defaultOgImage,
         width: 1200,
         height: 630,
         alt: "écentic — Infrastructure for the Agent Economy",
@@ -99,7 +107,7 @@ export const metadata: Metadata = {
     title: "écentic — Win Every AI Shopping Agent's Cart",
     description:
       "Simulate how GPT-4, Claude, Gemini & Perplexity choose your products vs. competitors. Diagnose losses. Auto-optimize. Win every cart.",
-    images: ["/images/opengraph.png"],
+    images: [defaultOgImage],
     creator: "@ecentic",
   },
   robots: {

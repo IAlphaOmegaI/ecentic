@@ -83,6 +83,7 @@ export const metadata: Metadata = createMetadata({
   title: "AI for WooCommerce",
   description,
   path: "/platforms/woocommerce",
+  eyebrow: "WooCommerce",
   keywords: [
     "AI for WooCommerce",
     "WooCommerce AI optimization",

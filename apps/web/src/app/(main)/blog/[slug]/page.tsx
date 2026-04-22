@@ -1,6 +1,7 @@
 import { unwrapResult } from "@zenncore/utils";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { createOgImageUrl } from "@/lib/seo";
 import * as Blog from "@/server/app/blog";
 import { Environment } from "@/server/utils/environment";
 import {
@@ -41,6 +42,11 @@ export const generateMetadata = async ({
 
   const post = result.data;
   const url = `https://ecentic.ai/blog/${post.slug}`;
+  const image = createOgImageUrl({
+    title: post.title,
+    eyebrow: post.category,
+    description: post.description,
+  });
 
   return {
     title: post.title,
@@ -61,7 +67,7 @@ export const generateMetadata = async ({
       tags: [...post.tags],
       images: [
         {
-          url: "/images/opengraph.png",
+          url: image,
           width: 1200,
           height: 630,
           alt: post.title,
@@ -72,7 +78,7 @@ export const generateMetadata = async ({
       card: "summary_large_image",
       title: `${post.title} | écentic`,
       description: post.description,
-      images: ["/images/opengraph.png"],
+      images: [image],
     },
   };
 };

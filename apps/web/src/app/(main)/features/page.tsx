@@ -85,6 +85,7 @@ export const metadata: Metadata = createMetadata({
   title: "AI Ecommerce Tools for Merchants",
   description,
   path: "/features",
+  eyebrow: "Features",
   keywords: [
     "AI ecommerce tools",
     "AI ecommerce platform",

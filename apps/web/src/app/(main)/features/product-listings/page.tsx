@@ -83,6 +83,7 @@ export const metadata: Metadata = createMetadata({
   title: "AI Product Listing Optimization",
   description,
   path: "/features/product-listings",
+  eyebrow: "Product listings",
   keywords: [
     "AI product listing optimization",
     "product listing optimization",

@@ -16,6 +16,25 @@ export const seo = {
 
 export const absoluteUrl = (path = "/") => new URL(path, seo.host).toString();
 
+export const createOgImageUrl = ({
+  title,
+  eyebrow,
+  description,
+}: createOgImageUrl.Props) => {
+  const params = new URLSearchParams({ title });
+  if (eyebrow) params.set("eyebrow", eyebrow);
+  if (description) params.set("description", description);
+  return `/api/og?${params.toString()}`;
+};
+
+export namespace createOgImageUrl {
+  export type Props = {
+    title: string;
+    eyebrow?: string;
+    description?: string;
+  };
+}
+
 export const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
@@ -68,35 +87,46 @@ export const createMetadata = ({
   path,
   keywords = [],
   type = "website",
-}: createMetadata.Props): Metadata => ({
-  title,
-  description,
-  keywords: [...keywords],
-  alternates: {
-    canonical: path,
-  },
-  openGraph: {
-    type,
-    url: absoluteUrl(path),
-    siteName: seo.name,
-    title: `${title} | ${seo.name}`,
+  eyebrow,
+  ogTitle,
+  ogDescription,
+}: createMetadata.Props): Metadata => {
+  const image = createOgImageUrl({
+    title: ogTitle ?? title,
+    eyebrow,
+    description: ogDescription ?? description,
+  });
+
+  return {
+    title,
     description,
-    images: [
-      {
-        url: seo.image,
-        width: 1200,
-        height: 630,
-        alt: title,
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${title} | ${seo.name}`,
-    description,
-    images: [seo.image],
-  },
-});
+    keywords: [...keywords],
+    alternates: {
+      canonical: path,
+    },
+    openGraph: {
+      type,
+      url: absoluteUrl(path),
+      siteName: seo.name,
+      title: `${title} | ${seo.name}`,
+      description,
+      images: [
+        {
+          url: image,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | ${seo.name}`,
+      description,
+      images: [image],
+    },
+  };
+};
 
 export namespace createMetadata {
   export type Props = {
@@ -105,6 +135,9 @@ export namespace createMetadata {
     path: string;
     keywords?: readonly string[];
     type?: "article" | "website";
+    eyebrow?: string;
+    ogTitle?: string;
+    ogDescription?: string;
   };
 }
 

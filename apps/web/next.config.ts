@@ -24,6 +24,10 @@ export default withSentryConfig(
           source: "/ingest/decide",
           destination: "https://eu.i.posthog.com/decide",
         },
+        {
+          source: "/.well-known/ucp",
+          destination: "/api/well-known/ucp",
+        },
       ];
     },
     // Required to support PostHog trailing slash API requests
