@@ -2,10 +2,6 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
-const logo = `data:image/svg+xml;base64,${readFileSync(
-  join(process.cwd(), "public/images/logo.svg"),
-).toString("base64")}`;
-
 const background = `data:image/png;base64,${readFileSync(
   join(process.cwd(), "public/images/background.png"),
 ).toString("base64")}`;
@@ -51,7 +47,7 @@ export const createOgImage = ({ title, description }: createOgImage.Params) => {
         src={background}
         width={1200}
         height={630}
-        alt=""
+        alt="Background"
         style={{
           position: "absolute",
           top: 0,
@@ -93,8 +89,6 @@ export const createOgImage = ({ title, description }: createOgImage.Params) => {
               marginBottom: "auto",
             }}
           >
-            {/* biome-ignore lint/performance/noImgElement: next/og Satori only supports plain img elements */}
-            <img src={logo} width={49} height={44} alt="" />
             <span
               style={{
                 fontSize: 32,
