@@ -136,7 +136,7 @@ export const createOgImage = ({ title, description }: createOgImage.Params) => {
                 letterSpacing: "-0.01em",
                 maxWidth: 980,
                 fontWeight: 200,
-                marginTop: -16,
+                marginTop: -8,
               }}
             >
               {displayDescription}
