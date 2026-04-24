@@ -14,7 +14,6 @@ export const metadata: Metadata = createMetadata({
   description:
     "How écentic collects, uses, and protects your data when using our e-commerce optimization platform.",
   path: "/privacy-policy",
-  eyebrow: "Legal",
 });
 
 const sections = [

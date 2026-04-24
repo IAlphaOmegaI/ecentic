@@ -36,8 +36,6 @@ export const metadata: Metadata = createMetadata({
   title: "écentic — Win Every AI Shopping Agent's Cart",
   description,
   path: "/",
-  eyebrow: "Agent-commerce infrastructure",
-  ogTitle: "Win every AI shopping agent's cart.",
   keywords: [
     "AI ecommerce tools",
     "AI ecommerce platform",

@@ -41,7 +41,6 @@ export const metadata: Metadata = createMetadata({
   title: "Blog",
   description,
   path: "/blog",
-  eyebrow: "Blog",
   keywords: [
     "ecommerce SEO 2026",
     "AI shopping agents",

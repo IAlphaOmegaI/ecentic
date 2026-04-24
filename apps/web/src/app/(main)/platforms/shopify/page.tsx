@@ -83,7 +83,6 @@ export const metadata: Metadata = createMetadata({
   title: "AI for Shopify Stores",
   description,
   path: "/platforms/shopify",
-  eyebrow: "Shopify",
   keywords: [
     "AI for Shopify stores",
     "Shopify AI optimization",

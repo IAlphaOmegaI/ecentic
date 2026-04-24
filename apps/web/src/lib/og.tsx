@@ -1,42 +1,35 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
-import type { NextRequest } from "next/server";
-import { parseSearchParam } from "@zenncore/utils";
+
+const logo = `data:image/svg+xml;base64,${readFileSync(
+  join(process.cwd(), "public/images/logo.svg"),
+).toString("base64")}`;
 
 const background = `data:image/png;base64,${readFileSync(
   join(process.cwd(), "public/images/background.png"),
 ).toString("base64")}`;
 
-const loadFont = async (request: NextRequest, path: string) => {
-  const response = await fetch(new URL(path, request.url));
-  return response.arrayBuffer();
-};
+const medium = readFileSync(
+  join(process.cwd(), "public/fonts/LTSuperior/LTSuperior-Medium.ttf"),
+);
+
+const semibold = readFileSync(
+  join(process.cwd(), "public/fonts/LTSuperior/LTSuperior-SemiBold.ttf"),
+);
 
 const truncate = (value: string, max: number) =>
   value.length > max ? `${value.slice(0, max - 1).trimEnd()}…` : value;
 
-export const GET = async (request: NextRequest) => {
-  const { searchParams } = new URL(request.url);
+export const ogImageSize = { width: 1200, height: 630 } as const;
+export const ogImageContentType = "image/png" as const;
 
-  const title = truncate(
-    parseSearchParam(searchParams.get("title"), "single", "écentic"),
-    110,
-  );
-
-  const description = truncate(
-    parseSearchParam(
-      searchParams.get("description"),
-      "single",
-      "Infrastructure for the agent economy",
-    ),
+export const createOgImage = ({ title, description }: createOgImage.Params) => {
+  const displayTitle = truncate(title || "écentic", 110);
+  const displayDescription = truncate(
+    description || "Infrastructure for the agent economy",
     180,
   );
-
-  const [medium, semibold] = await Promise.all([
-    loadFont(request, "/fonts/LTSuperior/LTSuperior-Medium.ttf"),
-    loadFont(request, "/fonts/LTSuperior/LTSuperior-SemiBold.ttf"),
-  ]);
 
   return new ImageResponse(
     <div
@@ -100,6 +93,8 @@ export const GET = async (request: NextRequest) => {
               marginBottom: "auto",
             }}
           >
+            {/* biome-ignore lint/performance/noImgElement: next/og Satori only supports plain img elements */}
+            <img src={logo} width={49} height={44} alt="" />
             <span
               style={{
                 fontSize: 32,
@@ -130,7 +125,7 @@ export const GET = async (request: NextRequest) => {
                 maxWidth: 880,
               }}
             >
-              {title}
+              {displayTitle}
             </h1>
 
             <p
@@ -144,7 +139,7 @@ export const GET = async (request: NextRequest) => {
                 marginTop: -16,
               }}
             >
-              {description}
+              {displayDescription}
             </p>
           </div>
 
@@ -166,8 +161,7 @@ export const GET = async (request: NextRequest) => {
       </section>
     </div>,
     {
-      width: 1200,
-      height: 630,
+      ...ogImageSize,
       fonts: [
         {
           name: "LTSuperior",
@@ -182,9 +176,13 @@ export const GET = async (request: NextRequest) => {
           weight: 600,
         },
       ],
-      headers: {
-        "Cache-Control": "public, max-age=3600, s-maxage=86400",
-      },
     },
   );
 };
+
+export namespace createOgImage {
+  export type Params = {
+    title: string;
+    description: string;
+  };
+}

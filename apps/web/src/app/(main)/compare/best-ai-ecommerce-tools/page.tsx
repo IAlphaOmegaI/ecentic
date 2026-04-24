@@ -123,7 +123,6 @@ export const metadata: Metadata = createMetadata({
   title: "Best AI Tools for Ecommerce 2026",
   description,
   path: "/compare/best-ai-ecommerce-tools",
-  eyebrow: "Buyer's guide",
   keywords: [
     "best AI tools for ecommerce 2026",
     "AI ecommerce software comparison",
