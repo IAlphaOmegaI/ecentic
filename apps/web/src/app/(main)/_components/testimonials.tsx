@@ -1,5 +1,5 @@
-import { cn } from "@zenncore/utils";
 import { StarHandIcon } from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
 
 const testimonials = [
   {

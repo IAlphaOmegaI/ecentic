@@ -1,9 +1,9 @@
+import { InstagramIcon, LinkedinIcon, XTwitterIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import Link from "next/link";
 import Logo from "@/public/images/footer.png";
 import WordMark from "@/public/images/wordmark.svg";
-import { InstagramIcon, LinkedinIcon, XTwitterIcon } from "@zenncore/icons";
 
 const pages = [
   { href: "/features", label: "Features" },

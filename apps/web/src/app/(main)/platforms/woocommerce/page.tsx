@@ -73,7 +73,8 @@ const faq = [
       "Most WooCommerce product plugins help with catalog management or basic copy. écentic focuses specifically on understanding why products lose to competitors and turning that analysis into listing improvements that can be published back into the store.",
   },
   {
-    question: "What is the right next step after reviewing the WooCommerce page?",
+    question:
+      "What is the right next step after reviewing the WooCommerce page?",
     answer:
       "Most merchants move from this page into the AI product listing optimization workflow, then into the comparison guide if they are still evaluating categories. From there, the blog provides the operational depth for teams ready to act.",
   },
