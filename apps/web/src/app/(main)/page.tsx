@@ -12,10 +12,12 @@ import {
   softwareApplicationSchema,
   websiteSchema,
 } from "@/lib/seo";
+import { AgentTrafficLive } from "./_components/agent-traffic-live";
 import { BlindSpot } from "./_components/blind-spot";
 import { DiscoveryPaths } from "./_components/discovery-paths";
 import { Features } from "./_components/features";
 import { Hero } from "./_components/hero";
+import { PartnersStrip } from "./_components/partners-strip";
 import { Pricing } from "./_components/pricing";
 import { SmoothScroll } from "./_components/smooth-scroll";
 import { Steps } from "./_components/steps";
@@ -24,6 +26,7 @@ import {
   reviewSchemas,
   Testimonials,
 } from "./_components/testimonials";
+import { UCPCallout } from "./_components/ucp-callout";
 
 const Comparison = dynamic(() =>
   import("./_components/comparison").then((m) => m.Comparison),
@@ -80,9 +83,12 @@ export default async () => (
       />
       <Navbar />
       <Hero />
+      <PartnersStrip />
       <BlindSpot />
+      <AgentTrafficLive />
       <Steps />
       <Features />
+      <UCPCallout />
       <Suspense>
         <Comparison />
       </Suspense>

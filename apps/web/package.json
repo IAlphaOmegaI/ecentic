@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.69",
-    "@ai-sdk/google": "^3.0.61",
+    "@ai-sdk/google": "^3.0.62",
     "@ai-sdk/openai": "^3.0.52",
     "@ai-sdk/perplexity": "^3.0.29",
     "@ai-sdk/rsc": "^2.0.158",
@@ -37,7 +37,7 @@
     "better-auth": "^1.6.2",
     "drizzle-kit": "^1.0.0-beta.9-e89174b",
     "drizzle-orm": "^1.0.0-beta.9-e89174b",
-    "fast-xml-parser": "^5.5.11",
+    "fast-xml-parser": "^5.5.12",
     "lenis": "^1.3.21",
     "motion": "^12.38.0",
     "next": "16.2.3",

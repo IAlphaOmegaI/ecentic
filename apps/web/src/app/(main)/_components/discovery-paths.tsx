@@ -35,6 +35,16 @@ const pages = [
       "Use the comparison guide to understand when you need content generation, personalization, analytics, or agent-commerce optimization.",
     label: "Read comparison guide",
   },
+  {
+    href: "/enterprise",
+    eyebrow: "Enterprise",
+    title: "Multi-brand agent intelligence for enterprise merchants",
+    description:
+      "API access, SSO, SOC 2, UCP signing, and a dedicated CSM — for the teams running hundreds of SKUs across platforms.",
+    label: "See enterprise plan",
+    color: "primary",
+    variant: "flat",
+  },
 ] as const;
 
 export const DiscoveryPaths = () => (

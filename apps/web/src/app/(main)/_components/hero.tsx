@@ -19,8 +19,9 @@ export const Hero = () => (
           <span className="underline">Be what they find.</span>
         </h1>
         <p className="text-sm sm:text-base md:text-2xl">
-          écentic automatically optimizes your listings so that when a shopper
-          asks an AI agent what to buy, your product is the answer.
+          Simulate how GPT-4, Claude, Gemini, and Perplexity compare your
+          products against competitors. Diagnose why you lose. Publish the fix
+          in one click. Measure the agent traffic that results.
         </p>
         <div className="mt-2 flex flex-col items-start gap-2">
           <Link

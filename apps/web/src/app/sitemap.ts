@@ -56,6 +56,18 @@ export default async (): Promise<MetadataRoute.Sitemap> => {
       changeFrequency: "weekly" as const,
       priority: 0.8,
     },
+    {
+      url: `${seo.host}/enterprise`,
+      lastModified: new Date("2026-04-26"),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    },
+    {
+      url: `${seo.host}/ucp-validator`,
+      lastModified: new Date("2026-04-26"),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    },
     ...blogs.map((post) => ({
       url: `${seo.host}/blog/${post.slug}`,
       lastModified: post.updatedAt,

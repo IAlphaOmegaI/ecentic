@@ -9,9 +9,25 @@ const pages = [
   { href: "/features", label: "Features" },
   { href: "/features/product-listings", label: "Product Listings" },
   { href: "/platforms/shopify", label: "Shopify" },
+  { href: "/enterprise", label: "Enterprise" },
   { href: "/compare/best-ai-ecommerce-tools", label: "Compare" },
   { href: "/blog", label: "Blog" },
   { href: "/privacy-policy", label: "Privacy Policy" },
+] as const;
+
+const programs = [
+  {
+    href: "https://www.plugandplaytechcenter.com/locations/tirana/",
+    label: "Plug and Play Tirana",
+  },
+  {
+    href: "https://basement.redbull.com/",
+    label: "Red Bull Basement",
+  },
+  {
+    href: "https://apps.shopify.com/",
+    label: "Shopify App Store",
+  },
 ] as const;
 
 export const Footer = () => (
@@ -74,6 +90,26 @@ export const Footer = () => (
               </Link>
             </div>
           ))}
+        </div>
+        <div className="flex flex-col items-center gap-1.5">
+          <p className="font-medium text-white/40 text-xs uppercase tracking-[0.2em]">
+            Programs
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-white/60">
+            {programs.map((program, index) => (
+              <div key={program.href} className="flex items-center gap-3">
+                {index > 0 && <span className="text-white/30">/</span>}
+                <a
+                  href={program.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors hover:text-white/90"
+                >
+                  {program.label}
+                </a>
+              </div>
+            ))}
+          </div>
         </div>
         <div className="relative w-full flex-1 origin-bottom transition-transform duration-500 ease-out hover:scale-[1.02]">
           <Image

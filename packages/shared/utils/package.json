@@ -11,7 +11,7 @@
     "clean": "rm -rf .turbo dist node_modules"
   },
   "dependencies": {
-    "@base-ui/utils": "^0.2.6",
+    "@base-ui/utils": "^0.2.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "es-toolkit": "^1.45.1",
