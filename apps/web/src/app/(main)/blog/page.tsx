@@ -3,6 +3,7 @@ import { unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { createMetadata } from "@/lib/seo";
 import * as Blog from "@/server/app/blog";
 import { Environment } from "@/server/utils/environment";
 import {
@@ -36,9 +37,10 @@ const introduction = `The ecommerce stack in 2026 is bigger than search rankings
 
 This blog focuses on the operator questions behind that shift: how to launch a store with better foundations, how to make products easier to compare, how to measure AI shopping traffic, and how to keep visibility tied to real commercial outcomes.`;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createMetadata({
   title: "Blog",
   description,
+  path: "/blog",
   keywords: [
     "ecommerce SEO 2026",
     "AI shopping agents",
@@ -46,30 +48,7 @@ export const metadata: Metadata = {
     "structured data ecommerce",
     "ecommerce blog",
   ],
-  alternates: {
-    canonical: "/blog",
-  },
-  openGraph: {
-    type: "website",
-    url: "https://ecentic.ai/blog",
-    title: "Blog | écentic",
-    description,
-    images: [
-      {
-        url: "/images/opengraph.png",
-        width: 1200,
-        height: 630,
-        alt: "écentic blog",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Blog | écentic",
-    description,
-    images: ["/images/opengraph.png"],
-  },
-};
+});
 
 export default async () => {
   const posts = await unwrapResult(Blog.listPublished(Environment.SERVER));

@@ -8,6 +8,15 @@ const RouteAccess = {
   USER: "user",
 } as const;
 
+const system = [
+  "/llms.txt",
+  "/manifest.webmanifest",
+  "/browserconfig.xml",
+  /^\/opengraph-image(?:-[^/]+)?$/,
+  /^\/twitter-image(?:-[^/]+)?$/,
+  /^\/\.well-known(?:\/.*)?$/,
+] as const;
+
 const map = {
   [RouteAccess.PUBLIC]: [
     "/",
@@ -15,6 +24,7 @@ const map = {
     "/privacy-policy",
     "/sign-up",
     "/sign-in",
+    ...system,
     /^\/verify(\/.*)?$/,
     /^\/share(\/.*)?$/,
     /^\/blog(\/.*)?$/,
@@ -27,6 +37,7 @@ const map = {
     "/",
     "/terms-and-conditions",
     "/privacy-policy",
+    ...system,
     /^\/share(\/.*)?$/,
     /^\/blog(\/.*)?$/,
     /^\/features(\/.*)?$/,
@@ -84,6 +95,6 @@ const isAuthorized = (pathname: string, access: RouteAccess): boolean => {
 
 export const config = {
   matcher: [
-    "/((?!monitoring|_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt|api|.*\\.(?:png|jpg|jpeg|webp|svg)).*)",
+    "/((?!monitoring|_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt|llms\\.txt|manifest\\.webmanifest|browserconfig\\.xml|\\.well-known(?:/.*)?$|opengraph-image(?:-[^/]+)?$|twitter-image(?:-[^/]+)?$|api|.*\\.(?:png|jpg|jpeg|webp|svg)).*)",
   ],
 } satisfies ProxyConfig;

@@ -85,21 +85,12 @@ export const metadata: Metadata = {
     title: "écentic — Win Every AI Shopping Agent's Cart",
     description:
       "Simulate how AI shopping agents choose your products, diagnose why they don't, and auto-optimize your listings. Built for the agent economy.",
-    images: [
-      {
-        url: "/images/opengraph.png",
-        width: 1200,
-        height: 630,
-        alt: "écentic — Infrastructure for the Agent Economy",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "écentic — Win Every AI Shopping Agent's Cart",
     description:
       "Simulate how GPT-4, Claude, Gemini & Perplexity choose your products vs. competitors. Diagnose losses. Auto-optimize. Win every cart.",
-    images: ["/images/opengraph.png"],
     creator: "@ecentic",
   },
   robots: {

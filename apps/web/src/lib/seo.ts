@@ -4,7 +4,6 @@ export const seo = {
   host: "https://ecentic.ai",
   name: "écentic",
   title: "écentic",
-  image: "/images/opengraph.png",
   description:
     "Optimize product listings for AI shopping agents. Simulate GPT-4, Claude, Gemini, and Perplexity decisions, diagnose losses, and improve win rate.",
   links: [
@@ -68,35 +67,28 @@ export const createMetadata = ({
   path,
   keywords = [],
   type = "website",
-}: createMetadata.Props): Metadata => ({
-  title,
-  description,
-  keywords: [...keywords],
-  alternates: {
-    canonical: path,
-  },
-  openGraph: {
-    type,
-    url: absoluteUrl(path),
-    siteName: seo.name,
-    title: `${title} | ${seo.name}`,
+}: createMetadata.Props): Metadata => {
+  return {
+    title,
     description,
-    images: [
-      {
-        url: seo.image,
-        width: 1200,
-        height: 630,
-        alt: title,
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${title} | ${seo.name}`,
-    description,
-    images: [seo.image],
-  },
-});
+    keywords: [...keywords],
+    alternates: {
+      canonical: path,
+    },
+    openGraph: {
+      type,
+      url: absoluteUrl(path),
+      siteName: seo.name,
+      title: `${title} | ${seo.name}`,
+      description,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | ${seo.name}`,
+      description,
+    },
+  };
+};
 
 export namespace createMetadata {
   export type Props = {

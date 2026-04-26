@@ -8,6 +8,7 @@ import { schema } from "../database";
 import * as AI from "../utils/ai";
 import { withAuthentication } from "../utils/authentication";
 import { Environment } from "../utils/environment";
+import { NotFoundError, UnauthorizedError } from "../utils/error";
 import type { Document } from "../utils/repository";
 import { repository } from "../utils/repository";
 import * as Product from "./product";
@@ -32,12 +33,12 @@ export const removeForUser = withAuthentication(
     if (!record.success) return record;
     if (!record.data)
       return {
-        success: false as const,
-        error: new Error("Competitor not found"),
+        success: false,
+        error: new NotFoundError("Competitor not found"),
       };
 
     if (record.data.userId !== context.session.user.id)
-      return { success: false as const, error: new Error("Not authorized") };
+      return { success: false, error: new UnauthorizedError("Not authorized") };
 
     return destroy(Environment.SERVER, id);
   },
@@ -51,10 +52,10 @@ export const toggleSelection = withAuthentication(
     if (!record.data)
       return {
         success: false,
-        error: new Error("Competitor not found"),
+        error: new NotFoundError("Competitor not found"),
       };
     if (record.data.userId !== context.session.user.id)
-      return { success: false, error: new Error("Not authorized") };
+      return { success: false, error: new UnauthorizedError("Not authorized") };
 
     return update(Environment.SERVER, id, { selected });
   },
@@ -100,7 +101,7 @@ export const detectCompetitors = withAuthentication(
       const summaries = selected
         .map(
           (product) =>
-            `- ${product.title}${product.price ? ` ($${product.price})` : ""}${product.description ? `: ${product.description.slice(0, 200)}` : ""}`,
+            `- ${product.title}${product.price ? ` (${product.price} ${product.currency})` : ""}${product.description ? `: ${product.description.slice(0, 200)}` : ""}`,
         )
         .join("\n");
 

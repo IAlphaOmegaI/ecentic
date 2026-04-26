@@ -246,6 +246,7 @@ export type ScanEvent =
       productCount: number;
       results: SimulationResult[];
     };
+
 export const runScan = withAuthentication(async (context) => {
   const [products, competitors] = await Promise.all([
     Product.find(Environment.SERVER, {

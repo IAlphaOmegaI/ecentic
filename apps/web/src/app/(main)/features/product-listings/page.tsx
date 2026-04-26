@@ -68,7 +68,8 @@ const faq = [
       "No. Better copy helps, but product listing optimization also includes structured product data, clearer specifications, category context, trust details, and the supporting information that helps a system evaluate the offer.",
   },
   {
-    question: "What is the difference between AI product descriptions and full listing optimization?",
+    question:
+      "What is the difference between AI product descriptions and full listing optimization?",
     answer:
       "AI product descriptions focus on rewriting text faster. Full listing optimization improves titles, descriptions, structured attributes, and merchant trust signals together so the listing is easier for both buyers and AI shopping systems to evaluate.",
   },

@@ -5,17 +5,16 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Navbar } from "@/components/navbar";
+import { createMetadata } from "@/lib/seo";
 import Background from "@/public/images/privacy-policy.png";
 import { renderInline } from "../_components/rich-text";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy — écentic",
+export const metadata: Metadata = createMetadata({
+  title: "Privacy Policy",
   description:
     "How écentic collects, uses, and protects your data when using our e-commerce optimization platform.",
-  alternates: {
-    canonical: "/privacy-policy",
-  },
-};
+  path: "/privacy-policy",
+});
 
 const sections = [
   {
