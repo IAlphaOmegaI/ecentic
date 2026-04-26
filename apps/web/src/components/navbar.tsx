@@ -5,7 +5,7 @@ import Link from "next/link";
 export const Navbar = () => (
   <nav className="fixed inset-x-0 top-0 right-0 left-0 z-50 flex items-center justify-between">
     <div className="absolute inset-x-0 top-0 h-[6px] w-full bg-background" />
-    <div className="relative shrink-0 p-2 pt-3 pr-12 pl-4">
+    <div className="relative shrink-0 p-4 pt-3 pr-12 pl-4 h-8">
       <Image
         src="/images/left-menu.svg"
         alt="écentic"
@@ -24,7 +24,7 @@ export const Navbar = () => (
       </Link>
     </div>
 
-    <div className="relative shrink-0 p-4 pr-6 pl-12">
+    <div className="relative shrink-0 p-4 pr-6 pl-12 h-8">
       <Image
         src="/images/right-menu.svg"
         alt="écentic"
