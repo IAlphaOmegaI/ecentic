@@ -95,8 +95,8 @@ export default () => (
         Agent-commerce infrastructure for merchants at scale.
       </h1>
       <p className="mt-5 max-w-2xl font-light text-foreground-dimmed text-lg md:text-2xl">
-        Multi-brand dashboards, API access, UCP signing, and dedicated support
-        — built for the commerce teams running hundreds of SKUs across multiple
+        Multi-brand dashboards, API access, UCP signing, and dedicated support —
+        built for the commerce teams running hundreds of SKUs across multiple
         platforms.
       </p>
       <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -138,28 +138,30 @@ export default () => (
     </Motion.Item>
 
     {/* Pipeline */}
-    <Motion.Item className="border-accent-foreground border-b px-6 py-10 md:px-12">
+    <Motion.Item className="border-accent-foreground border-b p-4 md:px-6">
       <p className="font-medium text-primary text-xs uppercase tracking-[0.24em]">
         Pipeline — introduced via Plug and Play
       </p>
-      <h2 className="mt-3 font-medium text-2xl text-foreground md:text-3xl">
+      <h2 className="mt-2 font-medium text-2xl text-foreground md:text-3xl">
         Enterprise conversations underway
       </h2>
       <p className="mt-2 max-w-2xl font-light text-foreground-dimmed text-base">
         These are active pilot conversations, not signed deals. We include them
         here so you have full context on where the enterprise motion stands.
       </p>
-      <div className="mt-8 grid gap-4 sm:grid-cols-2">
+    </Motion.Item>
+    <Motion.Item>
+      <div className="grid gap-4 sm:grid-cols-2 bg-accent-foreground gap-px border-b border-accent-foreground">
         {pipeline.map((entry) => (
           <div
             key={entry.name}
-            className="flex flex-col gap-2 border border-accent-foreground p-5"
+            className="flex flex-col gap-2 p-4 md:p-6 bg-background"
           >
-            <div className="flex items-start justify-between gap-3">
-              <h3 className="font-medium text-foreground text-lg">
+            <div className="flex items-start justify-between gap-2">
+              <h3 className="font-medium text-foreground text-xl">
                 {entry.name}
               </h3>
-              <span className="shrink-0 rounded-full border border-primary/30 px-2.5 py-0.5 text-primary text-xs">
+              <span className="shrink-0 border border-primary/30 px-2.5 py-0.5 text-primary text-sm">
                 {entry.status}
               </span>
             </div>
@@ -182,7 +184,7 @@ export default () => (
         required to start.
       </p>
       <Link
-        href="mailto:enterprise@ecentic.ai"
+        href="mailto:contact@ecentic.ai"
         className="mt-2 inline-flex items-center justify-center bg-primary px-10 py-4 font-medium text-lg text-white transition-opacity hover:opacity-90"
       >
         Contact enterprise sales
