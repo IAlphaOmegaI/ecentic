@@ -152,7 +152,7 @@ export const Pricing = () => (
             ))}
           </div>
           <Button
-            render={<Link href="mailto:sales@ecentic.com" />}
+            render={<Link href="mailto:sales@ecentic.ai" />}
             variant="flat"
             color="primary"
             type="button"
@@ -178,7 +178,7 @@ export const Pricing = () => (
             color="accent"
             type="button"
             className="w-full border-primary text-primary"
-            render={<Link href="mailto:sales@ecentic.com" />}
+            render={<Link href="mailto:sales@ecentic.ai" />}
           >
             Contact Sales
           </Button>

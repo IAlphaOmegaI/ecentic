@@ -51,7 +51,7 @@ Optimize your listings for AI shopping agent decisions
 ## Privacy Policy URL
 
 ```
-https://ecentic.com/privacy
+https://ecentic.ai/privacy
 ```
 
 ## Scopes Requested
@@ -68,9 +68,9 @@ Register these in the Shopify Partner Dashboard under "App setup > Compliance we
 
 | Webhook | URL |
 |---------|-----|
-| Customer data request | `https://ecentic.com/api/integrations/shopify/webhooks` |
-| Customer data erasure | `https://ecentic.com/api/integrations/shopify/webhooks` |
-| Shop data erasure | `https://ecentic.com/api/integrations/shopify/webhooks` |
+| Customer data request | `https://ecentic.ai/api/integrations/shopify/webhooks` |
+| Customer data erasure | `https://ecentic.ai/api/integrations/shopify/webhooks` |
+| Shop data erasure | `https://ecentic.ai/api/integrations/shopify/webhooks` |
 
 All three are handled by the same endpoint. The `x-shopify-topic` header determines which handler runs.
 
@@ -85,7 +85,7 @@ All three are handled by the same endpoint. The `x-shopify-topic` header determi
 To test this app:
 
 1. Install the app from your development store
-2. You will be redirected to ecentic.com to create an account
+2. You will be redirected to ecentic.ai to create an account
 3. Sign up with email and password, then verify your email with the OTP code
 4. During onboarding Step 1 (Connect Store), your Shopify store will already be connected via the OAuth flow
 5. In Step 2 (Select Products), choose which imported products to include in simulations
@@ -102,7 +102,7 @@ Dashboard features to verify:
 - Settings page shows connected stores with sync status
 
 Test account:
-Email: review@ecentic.com
+Email: review@ecentic.ai
 Password: [SET BEFORE SUBMISSION]
 
 This account has pre-seeded simulation data so you can see the full dashboard experience immediately without running a live simulation.
@@ -110,7 +110,7 @@ This account has pre-seeded simulation data so you can see the full dashboard ex
 
 ## Test Account Setup
 
-- [ ] Create `review@ecentic.com` account with verified email
+- [ ] Create `review@ecentic.ai` account with verified email
 - [ ] Connect a development store with products
 - [ ] Seed simulation results across multiple products and competitors
 - [ ] Seed at least one pending optimization with before/after preview

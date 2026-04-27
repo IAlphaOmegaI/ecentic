@@ -448,8 +448,8 @@ First 5 minutes target: Get Started (0:00) → Signup (0:15) → Store connected
 
 The app listing is already written. Key technical requirements:
 - Scopes: `read_products`, `write_products`
-- Compliance webhooks at `https://ecentic.com/api/integrations/shopify/webhooks` handling customer data request, customer data erasure, and shop data erasure via `x-shopify-topic` header
-- Test account `review@ecentic.com` with pre-seeded simulation data
+- Compliance webhooks at `https://ecentic.ai/api/integrations/shopify/webhooks` handling customer data request, customer data erasure, and shop data erasure via `x-shopify-topic` header
+- Test account `review@ecentic.ai` with pre-seeded simulation data
 - Desktop screenshots needed: Dashboard Overview, Agent Replay, Optimize Tab, Attribute Heatmap
 
 ---
