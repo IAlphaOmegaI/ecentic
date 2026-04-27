@@ -1,7 +1,9 @@
 "use client";
 
+import NumberFlow, { NumberFlowElement } from "@number-flow/react";
 import { cn } from "@zenncore/utils";
-import { useEffect, useState } from "react";
+import { useInView } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 
 type AgentModel = {
   name: string;
@@ -47,6 +49,8 @@ const total = DEMO_AGENTS.reduce((sum, a) => sum + a.visits, 0);
 
 const AnimatedCount = ({ target }: { target: number }) => {
   const [count, setCount] = useState(0);
+  const ref = useRef<NumberFlowElement>(null);
+  const inView = useInView(ref, { once: true });
 
   useEffect(() => {
     const duration = 1200;
@@ -61,15 +65,15 @@ const AnimatedCount = ({ target }: { target: number }) => {
     return () => clearInterval(timer);
   }, [target]);
 
-  return <span>{count.toLocaleString()}</span>;
+  return <NumberFlow value={count} ref={ref} animated={inView} />;
 };
 
 export const AgentTrafficLive = () => (
-  <section className="border-accent-foreground border-y px-4 py-10 md:py-14">
+  <section className="border-accent-foreground border-y p-4 md:p-6">
     <div className="mb-3 flex items-center gap-2">
       <span className="size-2.5 animate-pulse rounded-full bg-primary" />
       <p className="font-medium text-primary text-xs uppercase tracking-[0.2em]">
-        Live agent traffic — demo store, last 30 days
+        Live agent traffic — écentic.ai, last 30 days
       </p>
     </div>
     <div className="grid gap-8 md:grid-cols-[1fr_1.4fr]">
@@ -97,21 +101,21 @@ export const AgentTrafficLive = () => (
             <div key={agent.name}>
               <div className="mb-1 flex items-center justify-between">
                 <div>
-                  <span className="font-medium text-foreground text-sm">
+                  <span className="font-medium text-foreground">
                     {agent.name}
                   </span>
-                  <span className="ml-2 text-foreground-dimmed text-xs">
+                  <span className="ml-2 text-foreground-dimmed">
                     {agent.category}
                   </span>
                 </div>
-                <span className="font-medium text-foreground text-sm tabular-nums">
+                <span className="font-medium text-foreground tabular-nums">
                   {agent.visits.toLocaleString()}
                 </span>
               </div>
-              <div className="h-1.5 w-full rounded-full bg-accent-foreground">
+              <div className="h-1.5 w-full bg-accent-foreground">
                 <div
                   className={cn(
-                    "h-full rounded-full transition-all duration-1000",
+                    "h-full transition-all duration-1000",
                     agent.color,
                   )}
                   style={{ width: `${pct}%` }}
