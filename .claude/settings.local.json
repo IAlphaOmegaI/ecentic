@@ -45,7 +45,9 @@
       "Bash(npx biome check --write apps/web/src/app/onboarding/competitors/page.tsx)",
       "Bash(npx biome check --write --unsafe apps/web/src/app/onboarding/competitors/page.tsx)",
       "WebFetch(domain:ucp.dev)",
-      "Bash(bun run:*)"
+      "Bash(bun run:*)",
+      "Bash(git pull *)",
+      "Bash(bun i *)"
     ]
   }
 }
