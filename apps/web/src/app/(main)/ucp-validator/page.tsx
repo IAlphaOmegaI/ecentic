@@ -1,4 +1,5 @@
 import { Motion } from "@/components/motion";
+import { SimpleFooter } from "@/components/simple-footer";
 import { UcpValidatorForm } from "./_components/ucp-validator-form";
 
 const checks = [
@@ -73,5 +74,6 @@ export default () => (
         <UcpValidatorForm />
       </div>
     </Motion.Item>
+    <SimpleFooter />
   </Motion.Stagger>
 );

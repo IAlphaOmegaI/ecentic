@@ -48,7 +48,7 @@ export const PartnersStrip = () => (
             href={partner.href}
             target="_blank"
             rel="noopener noreferrer"
-            className={`group block transition-opacity ${partner.id === "plug-and-play" ? "opacity-100" : "opacity-50 hover:opacity-100"}`}
+            className="group block"
             aria-label={partner.caption}
             title={partner.caption}
           >
@@ -57,7 +57,7 @@ export const PartnersStrip = () => (
               alt={partner.name}
               width={160}
               height={40}
-              className={`${partner.id === "plug-and-play" ? "h-7" : "h-11"} w-auto grayscale transition-[filter] group-hover:grayscale-0`}
+              className={`${partner.id === "plug-and-play" ? "h-7" : "h-11"} w-auto`}
             />
           </Link>
         </li>

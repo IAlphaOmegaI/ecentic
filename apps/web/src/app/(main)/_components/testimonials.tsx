@@ -70,8 +70,9 @@ const Stars = ({ count, className }: { count: number; className?: string }) => (
 );
 
 export const Testimonials = () => (
-  <section className="relative -left-[calc(50vw-50%)] -z-1 w-screen border border-accent-foreground">
-    <div className="relative mx-auto max-w-6xl p-6 md:p-12 flex flex-row justify-between">
+  <section className="relative -left-[calc(50vw-50%)] -z-1 w-screen">
+    <div className="mx-auto max-w-6xl border-accent-foreground border-y">
+    <div className="relative mx-auto p-6 md:p-12 flex flex-row justify-between">
       <h1 className="font-body text-3xl text-foreground md:text-5xl">
         Hear what they say.
       </h1>
@@ -101,6 +102,7 @@ export const Testimonials = () => (
           </div>
         </article>
       ))}
+    </div>
     </div>
   </section>
 );

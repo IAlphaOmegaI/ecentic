@@ -1,8 +1,9 @@
 "use client";
 
-import NumberFlow, { NumberFlowElement } from "@number-flow/react";
+import NumberFlow from "@number-flow/react";
 import { cn } from "@zenncore/utils";
 import { useInView } from "motion/react";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 type AgentModel = {
@@ -10,6 +11,7 @@ type AgentModel = {
   category: string;
   visits: number;
   color: string;
+  logo: string;
 };
 
 const DEMO_AGENTS: AgentModel[] = [
@@ -18,30 +20,35 @@ const DEMO_AGENTS: AgentModel[] = [
     category: "Agentic browser",
     visits: 3847,
     color: "bg-emerald-500",
+    logo: "/images/chatgpt.svg",
   },
   {
     name: "Claude",
     category: "Agentic browser",
     visits: 2914,
     color: "bg-orange-400",
+    logo: "/images/claude.svg",
   },
   {
     name: "Gemini",
     category: "Agentic browser",
     visits: 2103,
     color: "bg-blue-500",
+    logo: "/images/gemini.svg",
   },
   {
     name: "Perplexity",
     category: "Search agent",
     visits: 1658,
     color: "bg-purple-500",
+    logo: "/images/perplexity.svg",
   },
   {
     name: "Google AI Overview",
     category: "Search crawler",
     visits: 892,
     color: "bg-yellow-500",
+    logo: "/images/google.svg",
   },
 ];
 
@@ -49,10 +56,11 @@ const total = DEMO_AGENTS.reduce((sum, a) => sum + a.visits, 0);
 
 const AnimatedCount = ({ target }: { target: number }) => {
   const [count, setCount] = useState(0);
-  const ref = useRef<NumberFlowElement>(null);
+  const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true });
 
   useEffect(() => {
+    if (!inView) return;
     const duration = 1200;
     const steps = 40;
     const increment = target / steps;
@@ -63,9 +71,13 @@ const AnimatedCount = ({ target }: { target: number }) => {
       if (current >= target) clearInterval(timer);
     }, duration / steps);
     return () => clearInterval(timer);
-  }, [target]);
+  }, [target, inView]);
 
-  return <NumberFlow value={count} ref={ref} animated={inView} />;
+  return (
+    <span ref={ref}>
+      <NumberFlow value={count} />
+    </span>
+  );
 };
 
 export const AgentTrafficLive = () => (
@@ -86,7 +98,7 @@ export const AgentTrafficLive = () => (
           listings pass their evaluation. Most merchants have no idea this is
           happening.
         </p>
-        <p className="mt-3 font-semibold text-4xl text-foreground tabular-nums">
+        <p className="mt-3 font-semibold text-4xl text-primary tabular-nums">
           <AnimatedCount target={total} />
           <span className="ml-2 font-light text-foreground-dimmed text-base">
             agent visits detected
@@ -100,24 +112,29 @@ export const AgentTrafficLive = () => (
           return (
             <div key={agent.name}>
               <div className="mb-1 flex items-center justify-between">
-                <div>
+                <div className="flex items-center gap-2">
+                  <Image
+                    src={agent.logo}
+                    alt={agent.name}
+                    width={20}
+                    height={20}
+                    className="size-5 shrink-0"
+                    unoptimized
+                  />
                   <span className="font-medium text-foreground">
                     {agent.name}
                   </span>
-                  <span className="ml-2 text-foreground-dimmed">
+                  <span className="text-foreground-dimmed text-sm">
                     {agent.category}
                   </span>
                 </div>
-                <span className="font-medium text-foreground tabular-nums">
+                <span className="font-medium text-primary tabular-nums">
                   {agent.visits.toLocaleString()}
                 </span>
               </div>
               <div className="h-1.5 w-full bg-accent-foreground">
                 <div
-                  className={cn(
-                    "h-full transition-all duration-1000",
-                    agent.color,
-                  )}
+                  className={cn("h-full transition-all duration-1000", agent.color)}
                   style={{ width: `${pct}%` }}
                 />
               </div>

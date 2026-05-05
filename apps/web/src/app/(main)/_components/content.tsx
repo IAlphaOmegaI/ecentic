@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Navbar } from "@/components/navbar";
+import { SimpleFooter } from "@/components/simple-footer";
 import Background from "@/public/images/blog.png";
 import { renderInline } from "./rich-text";
 
@@ -98,6 +99,7 @@ export const ContentPageLayout = ({
     </div>
 
     {children}
+    <SimpleFooter />
   </main>
 );
 

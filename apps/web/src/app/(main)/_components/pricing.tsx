@@ -31,8 +31,9 @@ const dominate = {
 };
 
 export const Pricing = () => (
-  <section className="relative -left-[calc(50vw-50%)] w-screen border border-accent-foreground">
-    <div className="relative mx-auto max-w-6xl border-accent-foreground p-6 md:p-12">
+  <section className="relative -left-[calc(50vw-50%)] w-screen">
+    <div className="mx-auto max-w-6xl border-accent-foreground border-y">
+    <div className="relative border-accent-foreground p-6 md:p-12">
       <h1 className="font-body text-3xl text-foreground md:text-6xl">
         Start free. <br />
         Pay when agents start picking you.
@@ -184,6 +185,7 @@ export const Pricing = () => (
           </Button>
         </div>
       </div>
+    </div>
     </div>
   </section>
 );

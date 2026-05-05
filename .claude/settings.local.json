@@ -47,7 +47,8 @@
       "WebFetch(domain:ucp.dev)",
       "Bash(bun run:*)",
       "Bash(git pull *)",
-      "Bash(bun i *)"
+      "Bash(bun i *)",
+      "Bash(ls -la \"c:\\\\\\\\Users\\\\\\\\Owner\\\\\\\\Desktop\\\\\\\\Development\\\\\\\\ecentic\\\\\\\\apps\\\\\\\\web\\\\\\\\src\\\\\\\\app\\\\\\\\\\(main\\)\\\\\\\\\")"
     ]
   }
 }

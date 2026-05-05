@@ -1,10 +1,8 @@
-import { ArrowRightIcon } from "@zenncore/icons";
-import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import type { ReactNode } from "react";
 import { Navbar } from "@/components/navbar";
+import { SimpleFooter } from "@/components/simple-footer";
 import { createMetadata } from "@/lib/seo";
 import Background from "@/public/images/privacy-policy.png";
 import { renderInline } from "../_components/rich-text";
@@ -217,25 +215,6 @@ export default () => (
       </div>
     ))}
 
-    <div className="border-accent-foreground border-b">
-      <div className="mx-auto flex max-w-6xl items-center justify-between border-accent-foreground border-x px-8 py-8">
-        <Button variant="outline" color="accent" render={<Link href="/" />}>
-          <ArrowRightIcon className="size-3.5 rotate-180 transition-transform duration-300 group-hover:-translate-x-1" />
-          Back to home
-        </Button>
-        <p className="text-foreground-dimmed text-sm">
-          © 2026{" "}
-          <a
-            href="https://www.zennit.dev"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-purple-700 underline-offset-2 hover:underline"
-          >
-            zennit
-          </a>
-          . All rights reserved.
-        </p>
-      </div>
-    </div>
+    <SimpleFooter />
   </main>
 );
