@@ -126,7 +126,7 @@ const columns = [
 ];
 
 export const Comparison = () => (
-  <section className="relative -left-[calc(50vw-50%)] w-screen border border-accent-foreground p-2">
+  <section className="relative -left-[calc(50vw-50%)] w-screen p-2">
     <div className="flex flex-col items-center justify-center gap-6 rounded-xl bg-background-rich p-4 md:gap-8 md:p-20">
       <div className="relative mx-auto max-w-6xl px-2 md:px-12">
         <h2 className="text-center font-body text-3xl md:text-6xl">

@@ -54,21 +54,69 @@ const pages = [
 ] as const;
 
 export const DiscoveryPaths = () => (
-  <section className="relative -left-[calc(50vw-50%)] w-screen border border-accent-foreground p-2">
-    <div className="flex flex-col items-center justify-center  rounded-xl bg-background-rich md:py-20 py-4">
-      <div className="size-full border-accent-foreground border-t gap-6 px-4 md:gap-8 md:px-20">
-        <div className="mx-auto max-w-6xl">
-          <div className=" border-accent-foreground">
-            <h2 className="text-center font-body text-3xl md:text-6xl border-x border-accent-foreground px-4 p-8">
-              Find the page that matches your buying stage
-            </h2>
-          </div>
-
-          <div className="-ml-[calc(50vw-50%)] px-[calc(50vw-50%)] w-screen border-accent-foreground border-y">
-            <ContentPageCardGrid items={pages} />
-          </div>
-        </div>
+  <section className="border-accent-foreground border-y">
+    <div className="mx-auto max-w-6xl border-accent-foreground border-x">
+      <h2 className="border-accent-foreground border-b p-8 text-center font-body text-3xl text-foreground md:text-5xl">
+        Find the page that matches your buying stage
+      </h2>
+      <div className="grid gap-px bg-accent-foreground md:grid-cols-3">
+        {pages.slice(0, 3).map((page) => (
+          <Card key={page.href} {...page} />
+        ))}
+      </div>
+      <div className="grid gap-px bg-accent-foreground border-accent-foreground border-t md:grid-cols-2">
+        {pages.slice(3).map((page) => (
+          <Card key={page.href} {...page} />
+        ))}
       </div>
     </div>
   </section>
 );
+
+import {
+  ArrowRightIcon,
+  BarChartIcon,
+  GaugeIcon,
+  RocketIcon,
+  ShieldCheckIcon,
+  ShoppingCartIcon,
+} from "@zenncore/icons";
+import { Button } from "@zenncore/web/components/button";
+import Link from "next/link";
+import type { ComponentType } from "react";
+
+const icons: Record<string, ComponentType<{ className?: string }>> = {
+  "/features": BarChartIcon,
+  "/features/product-listings": ShoppingCartIcon,
+  "/platforms/shopify": RocketIcon,
+  "/compare/best-ai-ecommerce-tools": GaugeIcon,
+  "/enterprise": ShieldCheckIcon,
+};
+
+const Card = ({
+  href,
+  eyebrow,
+  title,
+  description,
+  label,
+}: (typeof pages)[number]) => {
+  const Icon = icons[href];
+  return (
+    <article className="flex h-full flex-col gap-4 bg-background-dimmed p-6">
+      {Icon && <Icon className="size-7 text-primary" />}
+      <p className="font-medium text-foreground-dimmed text-xs uppercase tracking-[0.18em]">
+        {eyebrow}
+      </p>
+      <div className="flex flex-1 flex-col gap-2">
+        <h3 className="text-xl text-foreground leading-tight">{title}</h3>
+        <p className="text-foreground-dimmed text-sm leading-relaxed">
+          {description}
+        </p>
+      </div>
+      <Button variant="flat" color="primary" render={<Link href={href} />}>
+        {label}
+        <ArrowRightIcon className="size-4" />
+      </Button>
+    </article>
+  );
+};

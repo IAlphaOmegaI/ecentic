@@ -19,7 +19,6 @@ import { Features } from "./_components/features";
 import { Hero } from "./_components/hero";
 import { PartnersStrip } from "./_components/partners-strip";
 import { Pricing } from "./_components/pricing";
-import { SmoothScroll } from "./_components/smooth-scroll";
 import { Steps } from "./_components/steps";
 import {
   aggregateRating,
@@ -49,8 +48,7 @@ export const metadata: Metadata = createMetadata({
 });
 
 export default async () => (
-  <SmoothScroll>
-    <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 border-accent-foreground border-x md:gap-12">
+  <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 border-accent-foreground border-x md:gap-12">
       <script
         type="application/ld+json"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be rendered inline for search engines
@@ -123,5 +121,4 @@ export default async () => (
       </section>
       <Footer />
     </main>
-  </SmoothScroll>
 );
