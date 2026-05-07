@@ -72,26 +72,26 @@ const Stars = ({ count, className }: { count: number; className?: string }) => (
 export const Testimonials = () => (
   <section className="relative -left-[calc(50vw-50%)] -z-1 w-screen">
     <div className="mx-auto max-w-6xl border-accent-foreground border-y">
-      <div className="relative mx-auto p-6 md:p-12 flex flex-col md:flex-row justify-between gap-4 items-center md:items-start">
+      <div className="relative mx-auto flex flex-col items-center justify-between gap-4 p-6 md:flex-row md:items-start md:p-12">
         <h1 className="font-body text-3xl text-foreground md:text-5xl">
           Hear what they say.
         </h1>
         <div className="flex flex-col justify-center">
-          <h3 className="font-semibold text-5xl text-foreground tabular-nums flex items-center gap-2">
+          <h3 className="flex items-center gap-2 font-semibold text-5xl text-foreground tabular-nums">
             {aggregateRating.ratingValue.toFixed(1)} / 5{" "}
             <StarHandIcon className="size-12 text-primary" />
           </h3>
         </div>
       </div>
 
-      <div className="mx-auto grid gap-px bg-accent-foreground md:grid-cols-3 max-w-6xl border-t border-accent-foreground">
+      <div className="mx-auto grid max-w-6xl gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-3">
         {testimonials.map((testimonial) => (
           <article
             key={testimonial.name}
             className="flex flex-col gap-4 bg-background p-6 md:p-8"
           >
             <Stars count={testimonial.rating} />
-            <p className="flex-1 font-light text-foreground-dimmed leading-relaxed text-lg">
+            <p className="flex-1 font-light text-foreground-dimmed text-lg leading-relaxed">
               &ldquo;{testimonial.text}&rdquo;
             </p>
             <div>

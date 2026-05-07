@@ -38,10 +38,10 @@ export const PartnersStrip = () => (
     aria-label="Backed by and selected by"
     className="border-accent-foreground border-y py-10"
   >
-    <p className="text-center font-medium text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+    <p className="text-center font-light text-primary text-xl">
       Backed by and selected by
     </p>
-    <ul className="mt-8 flex flex-wrap items-center  justify-center gap-10 md:gap-16">
+    <ul className="mt-8 flex flex-wrap items-center justify-center gap-10 md:gap-16">
       {partners.map((partner) => (
         <li key={partner.name}>
           <Link

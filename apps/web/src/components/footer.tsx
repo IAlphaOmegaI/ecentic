@@ -21,7 +21,8 @@ export const Footer = () => (
       <div className="mx-auto flex h-full max-w-6xl flex-col items-center justify-center gap-6 p-6 pb-0 md:gap-12 md:p-12 md:pb-0">
         <Image src={WordMark} alt="WordMark" className="w-46" />
         <p className="text-center font-light text-2xl text-foreground md:text-4xl">
-          The next era of commerce isn't about who ranks #1 on Google. <br />
+          The next era of commerce isn't about who ranks #1 on Google.
+          <br />
           <span className="font-medium text-primary">
             It's about who gets picked by the agent.
           </span>

@@ -5,7 +5,7 @@ import Link from "next/link";
 export const Navbar = () => (
   <nav className="fixed inset-x-0 top-0 right-0 left-0 z-50 flex items-center justify-between">
     <div className="absolute inset-x-0 top-0 h-[6px] w-full bg-background" />
-    <div className="relative shrink-0 p-4 pr-12 h-14 sm:h-16">
+    <div className="relative h-14 shrink-0 p-4 pr-12 sm:h-16">
       <Image
         src="/images/left-menu.svg"
         alt="écentic"
@@ -24,7 +24,7 @@ export const Navbar = () => (
       </Link>
     </div>
 
-    <div className="relative shrink-0 p-4 pr-6 pl-12 h-14 sm:h-16">
+    <div className="relative h-14 shrink-0 p-4 pr-6 pl-12 sm:h-16">
       <Image
         src="/images/right-menu.svg"
         alt="écentic"
@@ -33,7 +33,7 @@ export const Navbar = () => (
       />
       <Link
         href="/sign-up"
-        className="group relative z-100 flex cursor-pointer items-center gap-2 text-primary font-header text-2xl"
+        className="group relative z-100 flex cursor-pointer items-center gap-2 font-header text-2xl text-primary"
       >
         Get Started{" "}
         <ArrowRightIcon className="size-6 transition-transform duration-300 group-hover:translate-x-1" />

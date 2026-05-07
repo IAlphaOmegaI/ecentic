@@ -1,3 +1,4 @@
+import type { Icon } from "@zenncore/icons";
 import {
   AwardIcon,
   BellIcon,
@@ -6,7 +7,6 @@ import {
   ShieldCheckIcon,
   SquareChartIcon,
 } from "@zenncore/icons";
-import type { Icon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -225,7 +225,7 @@ export default () => (
       <h2 className="max-w-xl font-medium text-3xl text-foreground md:text-4xl">
         Ready to talk?
       </h2>
-      <p className="max-w-md font-light text-foreground-dimmed text-base">
+      <p className="max-w-md font-light text-base text-foreground-dimmed">
         We run a short discovery call, share a custom ROI estimate for your
         catalog size, and scope an onboarding timeline. No procurement deck
         required to start.

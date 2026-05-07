@@ -4,7 +4,7 @@ import { Navbar } from "@/components/navbar";
 import { CompareForm } from "./_components/compare-form";
 
 export default () => (
-  <main className="flex flex-1 flex-col overflow-hidden size-full flex-1 min-h-full">
+  <main className="flex size-full min-h-full flex-1 flex-1 flex-col overflow-hidden">
     <Navbar />
     <div className="w-full border-accent-foreground border-b px-8">
       <div className="flex flex-col border-accent-foreground border-x p-6 pt-16">
@@ -17,8 +17,8 @@ export default () => (
       </div>
     </div>
 
-    <div className="w-full flex-1 overflow-hidden border-accent-foreground border-b flex-1">
-      <div className="flex h-full flex-col border-accent-foreground border-x size-full">
+    <div className="w-full flex-1 flex-1 overflow-hidden border-accent-foreground border-b">
+      <div className="flex size-full h-full flex-col border-accent-foreground border-x">
         <CompareForm />
       </div>
     </div>

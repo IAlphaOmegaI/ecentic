@@ -83,7 +83,7 @@
       return nodes.length ? nodes[nodes.length - 1] : null;
     })();
 
-  if (!script || !script.src) return;
+  if (!script?.src) return;
 
   const scriptUrl = (() => {
     try {

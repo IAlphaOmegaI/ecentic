@@ -13,7 +13,8 @@ const TAG_PREFIX = "next:cache:tag:";
  * @param {string} cacheKey
  * @returns {string}
  */
-const toEntryKey = (cacheKey) => `${ENTRY_PREFIX}${Buffer.from(cacheKey).toString("base64url")}`;
+const toEntryKey = (cacheKey) =>
+  `${ENTRY_PREFIX}${Buffer.from(cacheKey).toString("base64url")}`;
 
 /**
  * @param {string} tag
@@ -38,7 +39,8 @@ export class CacheHandler {
     }
 
     /** @type {any} */
-    const payload = typeof serialized === "string" ? JSON.parse(serialized) : serialized;
+    const payload =
+      typeof serialized === "string" ? JSON.parse(serialized) : serialized;
 
     const entry = this.deserializeEntry(payload);
     const now = Date.now();
@@ -109,7 +111,8 @@ export class CacheHandler {
     );
 
     return expirationValues.reduce(
-      (latest, value) => (Number.isFinite(value) && value > latest ? value : latest),
+      (latest, value) =>
+        Number.isFinite(value) && value > latest ? value : latest,
       0,
     );
   }
@@ -134,7 +137,9 @@ export class CacheHandler {
     }
 
     const timestamp = Date.now();
-    await Promise.all(normalizedTags.map(async (tag) => cache.set(toTagKey(tag), timestamp)));
+    await Promise.all(
+      normalizedTags.map(async (tag) => cache.set(toTagKey(tag), timestamp)),
+    );
   }
 
   /**
@@ -200,7 +205,10 @@ export class CacheHandler {
    */
   getEntryTtl(entry) {
     const limits = [entry.expire, entry.revalidate]
-      .filter((value) => typeof value === "number" && Number.isFinite(value) && value > 0)
+      .filter(
+        (value) =>
+          typeof value === "number" && Number.isFinite(value) && value > 0,
+      )
       .map((value) => Math.ceil(value));
 
     if (limits.length === 0) {

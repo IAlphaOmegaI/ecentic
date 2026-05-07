@@ -177,7 +177,7 @@ export const CompareForm = () => {
           className="flex flex-1 flex-col"
         >
           <div className="flex-1 px-8">
-            <div className="border-x border-accent-foreground p-6 grid grid-cols-1 gap-px md:grid-cols-2 flex-1 h-full">
+            <div className="grid h-full flex-1 grid-cols-1 gap-px border-accent-foreground border-x p-6 md:grid-cols-2">
               <ProductSide
                 label="Product A"
                 url={urlA}
@@ -194,11 +194,11 @@ export const CompareForm = () => {
           </div>
 
           <div className="flex flex-col gap-4 border-accent-foreground border-t px-8">
-            <div className="border-x border-accent-foreground p-6">
-              <h3 className="font-medium text-foreground text-2xl">
+            <div className="border-accent-foreground border-x p-6">
+              <h3 className="font-medium text-2xl text-foreground">
                 What matters most to you?
               </h3>
-              <p className="font-light text-foreground-dimmed text-lg mb-4">
+              <p className="mb-4 font-light text-foreground-dimmed text-lg">
                 Tell us what you're looking for, and we'll compare the products
                 based on your criteria.
               </p>
@@ -210,8 +210,8 @@ export const CompareForm = () => {
               </Textarea>
             </div>
           </div>
-          <div className="px-8 border-t border-accent-foreground">
-            <div className="border-x border-accent-foreground p-6 flex items-center justify-between w-full">
+          <div className="border-accent-foreground border-t px-8">
+            <div className="flex w-full items-center justify-between border-accent-foreground border-x p-6">
               <p className="font-light text-foreground-dimmed text-sm">
                 We'll run the comparison across 4 AI models.
               </p>
@@ -381,7 +381,7 @@ const ProductSide = ({
 }) => (
   <div className="flex flex-col items-center justify-center gap-4 bg-background p-8">
     <div className="flex flex-col items-center gap-2">
-      <span className="font-medium text-foreground text-2xl uppercase tracking-widest">
+      <span className="font-medium text-2xl text-foreground uppercase tracking-widest">
         {label}
       </span>
       <p className="text-center font-light text-foreground-dimmed text-lg">

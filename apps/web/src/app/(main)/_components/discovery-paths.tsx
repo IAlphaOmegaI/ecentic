@@ -1,5 +1,3 @@
-import { ContentPageCardGrid } from "./content";
-
 const pages = [
   {
     href: "/features",
@@ -60,7 +58,7 @@ export const DiscoveryPaths = () => (
         Find the page that matches your buying stage
       </h2>
 
-      <div className="grid gap-px bg-accent-foreground border-accent-foreground md:grid-cols-2">
+      <div className="grid gap-px border-accent-foreground bg-accent-foreground md:grid-cols-2">
         {pages.map((page) => (
           <Card key={page.href} {...page} />
         ))}
@@ -92,13 +90,13 @@ const icons: Record<string, ComponentType<{ className?: string }>> = {
 const Card = ({ href, title, description, label }: (typeof pages)[number]) => {
   const Icon = icons[href];
   return (
-    <article className="relative flex flex-col pt-24 gap-2 bg-background-dimmed p-4">
+    <article className="relative flex flex-col gap-2 bg-background-dimmed p-4 pt-24">
       {Icon && <Icon className="size-16 text-primary" />}
 
       <h3 className="font-body font-medium text-2xl text-foreground md:text-4xl">
         {title}
       </h3>
-      <p className="font-body font-light text-foreground-dimmed text-lg mt-auto">
+      <p className="mt-auto font-body font-light text-foreground-dimmed text-lg">
         {description}
       </p>
       <Button variant="flat" color="primary" render={<Link href={href} />}>

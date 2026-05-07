@@ -62,7 +62,7 @@ export const SignInForm = () => {
   const [provider, setProvider] = useState<"email" | "google" | "shopify">(
     "email",
   );
-  const [showShopifyForm, setShowShopifyForm] = useState(false);
+  const [_showShopifyForm, _setShowShopifyForm] = useState(false);
 
   const [handleSubmit, isPending] = useAsyncAction(
     async (

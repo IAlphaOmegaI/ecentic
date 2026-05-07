@@ -83,8 +83,8 @@ const AnimatedCount = ({ target }: { target: number }) => {
 export const AgentTrafficLive = () => (
   <section className="border-accent-foreground border-y p-4 md:p-6">
     <div className="mb-3 flex items-center gap-2">
-      <span className="size-2.5 animate-pulse rounded-full bg-primary" />
-      <p className="font-medium text-primary text-xs uppercase tracking-[0.2em]">
+      <span className="size-6 animate-pulse rounded-full bg-primary" />
+      <p className="font-light text-primary text-xl">
         Live agent traffic — écentic.ai, last 30 days
       </p>
     </div>
@@ -100,7 +100,7 @@ export const AgentTrafficLive = () => (
         </p>
         <p className="mt-3 font-semibold text-4xl text-primary tabular-nums">
           <AnimatedCount target={total} />
-          <span className="ml-2 font-light text-foreground-dimmed text-base">
+          <span className="ml-2 font-light text-base text-foreground-dimmed">
             agent visits detected
           </span>
         </p>
@@ -134,7 +134,10 @@ export const AgentTrafficLive = () => (
               </div>
               <div className="h-1.5 w-full bg-accent-foreground">
                 <div
-                  className={cn("h-full transition-all duration-1000", agent.color)}
+                  className={cn(
+                    "h-full transition-all duration-1000",
+                    agent.color,
+                  )}
                   style={{ width: `${pct}%` }}
                 />
               </div>

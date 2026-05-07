@@ -322,12 +322,12 @@ const extractPaymentHandlers = (data: unknown): PaymentHandlerEntry[] => {
 const extractUcpVersion = (data: unknown): string | null => {
   if (!data || typeof data !== "object" || Array.isArray(data)) return null;
   const obj = data as Record<string, unknown>;
-  const rawRoot = obj["ucp"];
+  const rawRoot = obj.ucp;
   const root =
     rawRoot && typeof rawRoot === "object" && !Array.isArray(rawRoot)
       ? (rawRoot as Record<string, unknown>)
       : obj;
-  return typeof root["version"] === "string" ? root["version"] : null;
+  return typeof root.version === "string" ? root.version : null;
 };
 
 const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
