@@ -15,27 +15,6 @@ const pages = [
   { href: "/privacy-policy", label: "Privacy Policy" },
 ] as const;
 
-const programs = [
-  {
-    id: "shopify",
-    href: "https://apps.shopify.com/",
-    label: "Shopify App Store",
-    logo: "/partners/shopify.svg",
-  },
-  {
-    id: "plug-and-play",
-    href: "https://www.plugandplaytechcenter.com/locations/tirana/",
-    label: "Plug and Play Tirana",
-    logo: "/partners/plug-and-play.svg",
-  },
-  {
-    id: "red-bull-basement",
-    href: "https://basement.redbull.com/",
-    label: "Red Bull Basement",
-    logo: "/partners/red-bull-basement.svg",
-  },
-] as const;
-
 export const Footer = () => (
   <section className="relative -left-[calc(50vw-50%)] h-screen w-screen p-1">
     <div className="h-full overflow-hidden rounded-xl border-accent-foreground border-y bg-linear-to-t from-primary to-primary/20">
@@ -97,32 +76,7 @@ export const Footer = () => (
             </div>
           ))}
         </div>
-        <div className="flex flex-col items-center gap-4">
-          <p className="font-medium text-white/40 text-xs uppercase tracking-[0.2em]">
-            Backed by and selected by
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
-            {programs.map((program) => (
-              <a
-                key={program.href}
-                href={program.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                title={program.label}
-                className=""
-              >
-                <Image
-                  src={program.logo}
-                  alt={program.label}
-                  width={120}
-                  height={32}
-                  className={`${program.id === "plug-and-play" ? "h-6 brightness-0 invert" : "h-9"} w-auto`}
-                  unoptimized
-                />
-              </a>
-            ))}
-          </div>
-        </div>
+
         <div className="relative w-full flex-1 origin-bottom transition-transform duration-500 ease-out hover:scale-[1.02]">
           <Image
             src={Logo}

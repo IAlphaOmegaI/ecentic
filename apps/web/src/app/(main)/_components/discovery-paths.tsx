@@ -55,17 +55,13 @@ const pages = [
 
 export const DiscoveryPaths = () => (
   <section className="border-accent-foreground border-y">
-    <div className="mx-auto max-w-6xl border-accent-foreground border-x">
-      <h2 className="border-accent-foreground border-b p-8 text-center font-body text-3xl text-foreground md:text-5xl">
+    <div className="mx-auto max-w-6xl">
+      <h2 className="border-accent-foreground border-b p-8 font-body text-3xl text-foreground md:text-5xl">
         Find the page that matches your buying stage
       </h2>
-      <div className="grid gap-px bg-accent-foreground md:grid-cols-3">
-        {pages.slice(0, 3).map((page) => (
-          <Card key={page.href} {...page} />
-        ))}
-      </div>
-      <div className="grid gap-px bg-accent-foreground border-accent-foreground border-t md:grid-cols-2">
-        {pages.slice(3).map((page) => (
+
+      <div className="grid gap-px bg-accent-foreground border-accent-foreground md:grid-cols-2">
+        {pages.map((page) => (
           <Card key={page.href} {...page} />
         ))}
       </div>
@@ -93,26 +89,18 @@ const icons: Record<string, ComponentType<{ className?: string }>> = {
   "/enterprise": ShieldCheckIcon,
 };
 
-const Card = ({
-  href,
-  eyebrow,
-  title,
-  description,
-  label,
-}: (typeof pages)[number]) => {
+const Card = ({ href, title, description, label }: (typeof pages)[number]) => {
   const Icon = icons[href];
   return (
-    <article className="flex h-full flex-col gap-4 bg-background-dimmed p-6">
-      {Icon && <Icon className="size-7 text-primary" />}
-      <p className="font-medium text-foreground-dimmed text-xs uppercase tracking-[0.18em]">
-        {eyebrow}
+    <article className="relative flex flex-col pt-24 gap-2 bg-background-dimmed p-4">
+      {Icon && <Icon className="size-16 text-primary" />}
+
+      <h3 className="font-body font-medium text-2xl text-foreground md:text-4xl">
+        {title}
+      </h3>
+      <p className="font-body font-light text-foreground-dimmed text-lg mt-auto">
+        {description}
       </p>
-      <div className="flex flex-1 flex-col gap-2">
-        <h3 className="text-xl text-foreground leading-tight">{title}</h3>
-        <p className="text-foreground-dimmed text-sm leading-relaxed">
-          {description}
-        </p>
-      </div>
       <Button variant="flat" color="primary" render={<Link href={href} />}>
         {label}
         <ArrowRightIcon className="size-4" />

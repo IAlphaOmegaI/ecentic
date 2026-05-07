@@ -72,37 +72,39 @@ const Stars = ({ count, className }: { count: number; className?: string }) => (
 export const Testimonials = () => (
   <section className="relative -left-[calc(50vw-50%)] -z-1 w-screen">
     <div className="mx-auto max-w-6xl border-accent-foreground border-y">
-    <div className="relative mx-auto p-6 md:p-12 flex flex-row justify-between">
-      <h1 className="font-body text-3xl text-foreground md:text-5xl">
-        Hear what they say.
-      </h1>
-      <div className="flex flex-col justify-center">
-        <h3 className="font-semibold text-5xl text-foreground tabular-nums flex items-center gap-2">
-          {aggregateRating.ratingValue.toFixed(1)} / 5{" "}
-          <StarHandIcon className="size-12 text-primary" />
-        </h3>
+      <div className="relative mx-auto p-6 md:p-12 flex flex-col md:flex-row justify-between gap-4 items-center md:items-start">
+        <h1 className="font-body text-3xl text-foreground md:text-5xl">
+          Hear what they say.
+        </h1>
+        <div className="flex flex-col justify-center">
+          <h3 className="font-semibold text-5xl text-foreground tabular-nums flex items-center gap-2">
+            {aggregateRating.ratingValue.toFixed(1)} / 5{" "}
+            <StarHandIcon className="size-12 text-primary" />
+          </h3>
+        </div>
       </div>
-    </div>
 
-    <div className="mx-auto grid gap-px bg-accent-foreground md:grid-cols-3 max-w-6xl border-t border-accent-foreground">
-      {testimonials.map((testimonial) => (
-        <article
-          key={testimonial.name}
-          className="flex flex-col gap-4 bg-background p-6 md:p-8"
-        >
-          <Stars count={testimonial.rating} />
-          <p className="flex-1 font-light text-foreground-dimmed leading-relaxed">
-            &ldquo;{testimonial.text}&rdquo;
-          </p>
-          <div>
-            <p className="font-medium text-foreground">{testimonial.name}</p>
-            <p className="text-foreground-dimmed text-sm">
-              {testimonial.role}, {testimonial.company}
+      <div className="mx-auto grid gap-px bg-accent-foreground md:grid-cols-3 max-w-6xl border-t border-accent-foreground">
+        {testimonials.map((testimonial) => (
+          <article
+            key={testimonial.name}
+            className="flex flex-col gap-4 bg-background p-6 md:p-8"
+          >
+            <Stars count={testimonial.rating} />
+            <p className="flex-1 font-light text-foreground-dimmed leading-relaxed text-lg">
+              &ldquo;{testimonial.text}&rdquo;
             </p>
-          </div>
-        </article>
-      ))}
-    </div>
+            <div>
+              <p className="font-medium text-foreground text-xl">
+                {testimonial.name}
+              </p>
+              <p className="text-foreground-dimmed">
+                {testimonial.role}, {testimonial.company}
+              </p>
+            </div>
+          </article>
+        ))}
+      </div>
     </div>
   </section>
 );
