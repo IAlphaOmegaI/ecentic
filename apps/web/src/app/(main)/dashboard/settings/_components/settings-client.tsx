@@ -9,6 +9,7 @@ import {
 } from "@zenncore/web/components/tabs";
 import { useState } from "react";
 import type * as Store from "@/server/app/store";
+import type * as Subscription from "@/server/app/subscription";
 import type * as User from "@/server/app/user";
 import { AccountSection } from "./settings/account-section";
 import { BillingSection } from "./settings/billing-section";
@@ -21,10 +22,17 @@ export namespace SettingsClient {
   export type Props = {
     user: User.Type;
     stores: Store.Type[];
+    subscription: Subscription.Type | null;
+    invoices: Subscription.InvoiceSummary[];
   };
 }
 
-export const SettingsClient = ({ user, stores }: SettingsClient.Props) => {
+export const SettingsClient = ({
+  user,
+  stores,
+  subscription,
+  invoices,
+}: SettingsClient.Props) => {
   const [notifications, setNotifications] = useState({
     winRateDrop: true,
     simulationComplete: true,
@@ -132,7 +140,10 @@ export const SettingsClient = ({ user, stores }: SettingsClient.Props) => {
             value="billing"
             className="min-w-0 flex-1 bg-background outline-none"
           >
-            <BillingSection />
+            <BillingSection
+              subscription={subscription}
+              invoices={invoices}
+            />
           </TabsPanel>
         </Tabs>
       </div>

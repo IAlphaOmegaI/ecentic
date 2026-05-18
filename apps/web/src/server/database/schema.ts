@@ -262,6 +262,25 @@ export const listingOptimization = pgTable(
   ],
 );
 
+export const subscription = pgTable("subscription", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+  userId: text("userId")
+    .notNull()
+    .unique()
+    .references(() => user.id, { onDelete: "cascade" }),
+  stripeCustomerId: text("stripeCustomerId").notNull().unique(),
+  stripeSubscriptionId: text("stripeSubscriptionId").unique(),
+  stripePriceId: text("stripePriceId"),
+  plan: text("plan"),
+  status: text("status").notNull().default("incomplete"),
+  currentPeriodStart: timestamp("currentPeriodStart", { mode: "date" }),
+  currentPeriodEnd: timestamp("currentPeriodEnd", { mode: "date" }),
+  cancelAtPeriodEnd: boolean("cancelAtPeriodEnd").notNull().default(false),
+  canceledAt: timestamp("canceledAt", { mode: "date" }),
+  createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+});
+
 export const blogPost = pgTable(
   "blog_post",
   {
@@ -306,6 +325,7 @@ export const tables = {
   agentVisit,
   agentTrafficDaily,
   listingOptimization,
+  subscription,
   blogPost,
 };
 
@@ -318,6 +338,11 @@ export const relations = defineRelations(tables, (r) => ({
     products: r.many.product(),
     competitors: r.many.competitor(),
     scans: r.many.scan(),
+    subscription: r.one.subscription({
+      from: r.user.id,
+      to: r.subscription.userId,
+      optional: true,
+    }),
   },
   session: {
     user: r.one.user({
@@ -417,6 +442,12 @@ export const relations = defineRelations(tables, (r) => ({
     product: r.one.product({
       from: r.listingOptimization.productId,
       to: r.product.id,
+    }),
+  },
+  subscription: {
+    user: r.one.user({
+      from: r.subscription.userId,
+      to: r.user.id,
     }),
   },
   blogPost: {},

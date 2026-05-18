@@ -35,6 +35,11 @@ declare namespace NodeJS {
     readonly GOOGLE_CLIENT_ID: string;
     readonly GOOGLE_CLIENT_SECRET: string;
 
+    readonly NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: string;
+    readonly STRIPE_SECRET_KEY: string;
+    readonly STRIPE_SUB_COMPETE: string;
+    readonly STRIPE_SUB_DOMINATE: string;
+
     readonly npm_package_name: string;
     readonly npm_package_version: string;
   }
