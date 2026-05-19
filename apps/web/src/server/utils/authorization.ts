@@ -10,21 +10,21 @@ import {
 import { UnauthorizedError } from "./error";
 
 export const authorize = (
-  allowedRoles: UserRole[],
+  whitelist: UserRole[],
 ): Enhancer<AuthenticatedContext, AuthenticatedContext, UnauthorizedError> => {
   return async (context) => {
-    const userRole = context.session.user.role as UserRole;
+    const current = context.session.user.role as UserRole;
 
-    if (!allowedRoles.includes(userRole)) {
+    if (!whitelist.includes(current)) {
       return {
         success: false,
         error: new UnauthorizedError(
-          `Insufficient permissions. Required role(s): ${allowedRoles.join(", ")}`,
+          `Insufficient permissions. Required role(s): ${whitelist.join(", ")}`,
         ),
       };
     }
 
-    context.span.setAttribute("session.user.role", userRole);
+    context.span.setAttribute("session.user.role", current);
 
     return { success: true, data: context };
   };
@@ -33,11 +33,11 @@ export const authorize = (
 export const withAuthorization = <
   T extends ContextedAction<AuthenticatedContext>,
 >(
-  allowedRoles: UserRole[],
+  whitelist: UserRole[],
   ...args: WithContextParams<AuthenticatedContext, T>
 ) => {
   const handler = defineWithContext(
-    pipe(authenticate, authorize(allowedRoles)),
+    pipe(authenticate, authorize(whitelist)),
   );
   return handler(...args);
 };

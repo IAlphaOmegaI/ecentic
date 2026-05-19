@@ -6,6 +6,7 @@ import {
   resultify,
   type UnwrapResult,
 } from "@zenncore/utils";
+import type { IsEqual } from "@zenncore/utils/types";
 import { headers } from "next/headers";
 import type { UploadThingError } from "uploadthing/server";
 import { upload } from "../app/storage";
@@ -98,17 +99,17 @@ export const withContext = <
   enhance: (
     base: GenericContext,
   ) => Promise<Result<Context, ContextError>> = async (context) =>
-    ({
-      success: true,
-      data: context as unknown as Context,
-    }) as Result<Context, ContextError>,
+      ({
+        success: true,
+        data: context as unknown as Context,
+      }) as Result<Context, ContextError>,
 ) => {
   type Return = InferredReturn<Context, T>;
 
   type ReturnSuccess = UnwrapResult<Return>;
   type ReturnError = InferredError<Return>;
   // Simplify ReturnError | never to ReturnError
-  type CombinedError = [ContextError] extends [never]
+  type CombinedError = IsEqual<ContextError, never> extends true
     ? ReturnError
     : ReturnError | ContextError;
 
@@ -125,8 +126,8 @@ export const withContext = <
       Result<
         ReturnSuccess,
         Env extends Brand<"client">
-          ? ErrorProtocol.SerializedError<CombinedError>
-          : CombinedError
+        ? ErrorProtocol.SerializedError<CombinedError>
+        : CombinedError
       >
     >;
   };
@@ -223,9 +224,9 @@ export type WithContextParams<
   Context extends GenericContext = GenericContext,
   T extends ContextedAction<Context> = ContextedAction<Context>,
 > = [
-  Parameters<typeof withContext<T, Context>>[0],
-  Parameters<typeof withContext<T, Context>>[1],
-];
+    Parameters<typeof withContext<T, Context>>[0],
+    Parameters<typeof withContext<T, Context>>[1],
+  ];
 
 type ContextEnhancer<
   Success extends GenericContext = GenericContext,
@@ -237,8 +238,8 @@ export const defineWithContext = <T extends ContextEnhancer>(enhancer: T) => {
 
   type EnhancedContext =
     UnwrapResult<Return> extends GenericContext
-      ? UnwrapResult<Return>
-      : GenericContext;
+    ? UnwrapResult<Return>
+    : GenericContext;
 
   type PotentialError = InferredError<Return>;
 

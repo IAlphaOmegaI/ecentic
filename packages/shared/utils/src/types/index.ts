@@ -1,6 +1,7 @@
 export type {
   DistributedOmit,
   DistributedPick,
+  IsEqual,
   IsUnion,
   PartialDeep as DeepPartial,
   //   EmptyObject, //doesn't work correctly on intersections
