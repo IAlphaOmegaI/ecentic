@@ -2,6 +2,7 @@ import { CheckIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import Link from "next/link";
+import { PricingCTA } from "./pricing-cta";
 
 const compete = {
   name: "Compete",
@@ -125,14 +126,12 @@ export const Pricing = () => (
                 </div>
               ))}
             </div>
-            <Button
-              variant="outline"
-              color="accent"
-              type="button"
+            <PricingCTA
+              plan="compete"
               className="mt-4 w-full border-primary text-primary md:mt-auto"
             >
               {compete.cta}
-            </Button>
+            </PricingCTA>
           </div>
 
           <div className="flex h-auto flex-col bg-primary p-6 text-white md:h-102">
@@ -152,15 +151,13 @@ export const Pricing = () => (
                 </div>
               ))}
             </div>
-            <Button
-              render={<Link href="mailto:sales@ecentic.ai" />}
+            <PricingCTA
+              plan="dominate"
               variant="flat"
-              color="primary"
-              type="button"
               className="mt-4 w-full border border-white/30 bg-white text-primary md:mt-auto"
             >
-              Contact Sales
-            </Button>
+              {dominate.cta}
+            </PricingCTA>
           </div>
         </div>
 

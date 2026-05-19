@@ -1,4 +1,4 @@
-CREATE TABLE "blog_post" (
+CREATE TABLE IF NOT EXISTS "blog_post" (
 	"id" text PRIMARY KEY DEFAULT gen_random_uuid(),
 	"slug" text NOT NULL,
 	"status" text DEFAULT 'published' NOT NULL,
@@ -15,4 +15,4 @@ CREATE TABLE "blog_post" (
 	"updatedAt" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX "blog_post_slug_unique" ON "blog_post" ("slug");
+CREATE UNIQUE INDEX IF NOT EXISTS "blog_post_slug_unique" ON "blog_post" ("slug");

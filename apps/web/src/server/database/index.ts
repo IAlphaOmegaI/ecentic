@@ -31,6 +31,7 @@ export type {
   product,
   session,
   store,
+  subscription,
   ucpProfile,
   user,
   verification,

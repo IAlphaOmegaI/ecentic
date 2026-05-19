@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import * as Authentication from "@/server/app/authentication";
 import * as Store from "@/server/app/store";
+import * as Subscription from "@/server/app/subscription";
 import { SettingsClient } from "./_components/settings-client";
 
 const SettingsSkeleton = () => (
@@ -34,11 +35,20 @@ const SettingsSkeleton = () => (
 
 async function SettingsContent() {
   await connection();
-  const [user, stores] = await Promise.all([
+  const [user, stores, subscription, invoices] = await Promise.all([
     unwrapResult(Authentication.getCurrentUser()),
     unwrapResult(Store.getForCurrentUser()),
+    unwrapResult(Subscription.getCurrentSubscription()),
+    unwrapResult(Subscription.listInvoices()),
   ]);
-  return <SettingsClient user={user} stores={stores} />;
+  return (
+    <SettingsClient
+      user={user}
+      stores={stores}
+      subscription={subscription}
+      invoices={invoices}
+    />
+  );
 }
 
 export default () => (

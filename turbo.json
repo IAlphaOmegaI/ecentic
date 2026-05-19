@@ -40,7 +40,12 @@
         "UPSTASH_REDIS_REST_URL",
         "UPSTASH_REDIS_URL",
         "GOOGLE_CLIENT_ID",
-        "GOOGLE_CLIENT_SECRET"
+        "GOOGLE_CLIENT_SECRET",
+        "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
+        "STRIPE_SECRET_KEY",
+        "STRIPE_WEBHOOK_SECRET",
+        "STRIPE_SUB_COMPETE",
+        "STRIPE_SUB_DOMINATE"
       ]
     },
     "typecheck": {

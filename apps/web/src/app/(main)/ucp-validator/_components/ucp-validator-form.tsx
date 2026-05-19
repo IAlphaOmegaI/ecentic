@@ -1,6 +1,11 @@
 "use client";
 
-import { CheckCircleIcon, XCircleIcon } from "@zenncore/icons";
+import {
+  CheckCircleIcon,
+  CodeIcon,
+  ShieldCheckIcon,
+  XCircleIcon,
+} from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
@@ -17,22 +22,31 @@ type JToken = {
 
 type Tone = "success" | "danger" | "warning" | "neutral";
 
-type PaymentHandlerEntry = {
-  registryKey: string;
-  label: string;
-  id: string | null;
-  version: string | null;
+const LATEST_UCP_VERSION = "2026-04-08";
+
+const ISSUE_CATEGORY_LABELS: Record<UcpCheck.SpecIssueCategory, string> = {
+  envelope: "Envelope",
+  version: "Version",
+  services: "Services",
+  capabilities: "Capabilities",
+  payment_handlers: "Payment handlers",
+  signing_keys: "Signing keys",
+  supported_versions: "Supported versions",
+  transport: "Transport",
+  security: "Security",
 };
 
-type UcpRoot = {
-  ucp?: unknown;
-  payment_handlers?: unknown;
-};
-
-type PaymentHandlerObject = {
-  id?: unknown;
-  version?: unknown;
-};
+const ISSUE_CATEGORY_ORDER: UcpCheck.SpecIssueCategory[] = [
+  "envelope",
+  "version",
+  "services",
+  "transport",
+  "capabilities",
+  "payment_handlers",
+  "signing_keys",
+  "security",
+  "supported_versions",
+];
 
 const notes = [
   {
@@ -41,9 +55,9 @@ const notes = [
       "Enter the root domain only, like acme.com or www.acme.com. We always validate the HTTPS version.",
   },
   {
-    title: "We check the live well-known route",
+    title: "We validate the full UCP 2026-04-08 spec",
     detail:
-      "Every run targets /.well-known/ucp, measures latency, and inspects the exact JSON returned by the server.",
+      "Services, capabilities, payment handlers, signing keys (JWK / RFC 9421), supported versions and transports are all parsed and checked.",
   },
   {
     title: "robots.txt matters too",
@@ -59,19 +73,6 @@ const toneClassList: Record<Tone, string> = {
   neutral: "border-accent-foreground bg-background text-foreground-dimmed",
 };
 
-const PAYMENT_HANDLER_LABELS: Record<string, string> = {
-  "com.google.pay": "Google Pay",
-  "dev.shopify.card": "Shopify Card",
-  "dev.shopify.shop_pay": "Shop Pay",
-  "com.apple.pay": "Apple Pay",
-  "com.paypal": "PayPal",
-  "com.stripe": "Stripe",
-  "com.braintree": "Braintree",
-  "com.klarna": "Klarna",
-  "com.afterpay": "Afterpay",
-  "com.affirm": "Affirm",
-};
-
 const tokenColor: Record<JToken["type"], string> = {
   key: "text-blue-400",
   string: "text-green-400",
@@ -84,6 +85,22 @@ const tokenColor: Record<JToken["type"], string> = {
 
 const formatLatency = (latencyMs: number | null): string =>
   latencyMs === null ? "Unavailable" : `${latencyMs} ms`;
+
+const formatTransport = (transport: string | null): string => {
+  if (!transport) return "—";
+  switch (transport) {
+    case "rest":
+      return "REST";
+    case "mcp":
+      return "MCP";
+    case "a2a":
+      return "A2A";
+    case "embedded":
+      return "Embedded";
+    default:
+      return transport;
+  }
+};
 
 const StatusChip = ({ label, tone }: { label: string; tone: Tone }) => (
   <span
@@ -282,64 +299,412 @@ const JsonPreview = ({ data }: { data: unknown }) => {
   );
 };
 
-const extractPaymentHandlers = (data: unknown): PaymentHandlerEntry[] => {
-  if (!data || typeof data !== "object" || Array.isArray(data)) return [];
+const ServicesSection = ({
+  services,
+}: {
+  services: UcpCheck.ParsedService[];
+}) => {
+  if (services.length === 0) return null;
 
-  const object = data as UcpRoot;
-  const rawRoot = object.ucp;
-  const root =
-    rawRoot && typeof rawRoot === "object" && !Array.isArray(rawRoot)
-      ? (rawRoot as UcpRoot)
-      : object;
+  return (
+    <div className="border-accent-foreground border-t">
+      <SectionHeading
+        title="Services & transports"
+        description="Endpoint surfaces an agent can negotiate against. Each entry maps to a reverse-domain service key in the profile."
+      />
+      <div className="divide-y divide-accent-foreground">
+        {services.map((service, index) => (
+          <div
+            key={`${service.name}-${service.transport ?? "no-transport"}-${service.endpoint ?? index}`}
+            className="grid gap-4 bg-background px-4 py-4 md:grid-cols-[minmax(0,260px)_minmax(0,1fr)_auto] md:items-start"
+          >
+            <div>
+              <div className="flex items-center gap-2">
+                <CodeIcon className="size-3.5 text-foreground-dimmed" />
+                <p className="font-medium text-foreground text-sm">
+                  {service.label}
+                </p>
+              </div>
+              <p className="mt-1 break-all font-mono text-foreground-dimmed text-xs">
+                {service.name}
+              </p>
+              {!service.recognized && (
+                <p className="mt-2 font-light text-foreground-dimmed text-xs">
+                  Custom service key — not one of the known UCP service
+                  identifiers.
+                </p>
+              )}
+            </div>
 
-  const handlers = root.payment_handlers;
-  if (!handlers || typeof handlers !== "object" || Array.isArray(handlers))
-    return [];
+            <div className="grid gap-2">
+              <div className="flex flex-wrap gap-2">
+                <StatusChip
+                  label={`Transport · ${formatTransport(service.transport)}`}
+                  tone={service.transport ? "success" : "danger"}
+                />
+                <StatusChip
+                  label={`Version · ${service.version ?? "Missing"}`}
+                  tone={service.version ? "success" : "danger"}
+                />
+              </div>
+              {service.endpoint && (
+                <p className="break-all font-light text-foreground-dimmed text-xs">
+                  <span className="font-medium text-foreground-dimmed">
+                    Endpoint:
+                  </span>{" "}
+                  <span className="font-mono text-foreground">
+                    {service.endpoint}
+                  </span>
+                </p>
+              )}
+              {service.schema && (
+                <p className="break-all font-light text-foreground-dimmed text-xs">
+                  <span className="font-medium text-foreground-dimmed">
+                    Schema:
+                  </span>{" "}
+                  <span className="font-mono text-foreground">
+                    {service.schema}
+                  </span>
+                </p>
+              )}
+            </div>
 
-  const entries: PaymentHandlerEntry[] = [];
-
-  for (const [key, items] of Object.entries(
-    handlers as Record<string, unknown>,
-  )) {
-    if (!Array.isArray(items)) continue;
-
-    for (const item of items) {
-      if (!item || typeof item !== "object" || Array.isArray(item)) continue;
-
-      const entry = item as PaymentHandlerObject;
-      entries.push({
-        registryKey: key,
-        label: PAYMENT_HANDLER_LABELS[key] ?? key,
-        id: typeof entry.id === "string" ? entry.id : null,
-        version: typeof entry.version === "string" ? entry.version : null,
-      });
-    }
-  }
-
-  return entries;
+            <StatusChip
+              label={service.recognized ? "Recognized" : "Custom"}
+              tone={service.recognized ? "success" : "warning"}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
-const extractUcpVersion = (data: unknown): string | null => {
-  if (!data || typeof data !== "object" || Array.isArray(data)) return null;
-  const obj = data as Record<string, unknown>;
-  const rawRoot = obj.ucp;
-  const root =
-    rawRoot && typeof rawRoot === "object" && !Array.isArray(rawRoot)
-      ? (rawRoot as Record<string, unknown>)
-      : obj;
-  return typeof root.version === "string" ? root.version : null;
+const CapabilitiesSection = ({
+  capabilities,
+}: {
+  capabilities: UcpCheck.ParsedCapability[];
+}) => {
+  if (capabilities.length === 0) return null;
+
+  return (
+    <div className="border-accent-foreground border-t">
+      <SectionHeading
+        title="Capabilities"
+        description="Discrete flows the storefront supports. Order, checkout and cart are required for transactional agents."
+      />
+      <div className="divide-y divide-accent-foreground">
+        {capabilities.map((capability, index) => {
+          const configKeys = capability.config
+            ? Object.keys(capability.config)
+            : [];
+
+          return (
+            <div
+              key={`${capability.name}-${capability.version ?? "no-version"}-${capability.spec ?? capability.schema ?? index}`}
+              className="grid gap-4 bg-background px-4 py-4 md:grid-cols-[minmax(0,260px)_minmax(0,1fr)_auto] md:items-start"
+            >
+              <div>
+                <p className="font-medium text-foreground text-sm">
+                  {capability.label}
+                </p>
+                <p className="mt-1 break-all font-mono text-foreground-dimmed text-xs">
+                  {capability.name}
+                </p>
+              </div>
+
+              <div className="grid gap-2">
+                <div className="flex flex-wrap gap-2">
+                  <StatusChip
+                    label={`Version · ${capability.version ?? "Missing"}`}
+                    tone={capability.version ? "success" : "danger"}
+                  />
+                  {capability.spec && (
+                    <StatusChip label="spec linked" tone="success" />
+                  )}
+                  {capability.schema && (
+                    <StatusChip label="schema linked" tone="success" />
+                  )}
+                </div>
+                {configKeys.length > 0 && (
+                  <div className="font-light text-foreground-dimmed text-xs">
+                    <span className="font-medium text-foreground-dimmed">
+                      Config:
+                    </span>{" "}
+                    <span className="font-mono text-foreground">
+                      {configKeys.join(", ")}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <StatusChip
+                label={capability.recognized ? "Known" : "Custom"}
+                tone={capability.recognized ? "success" : "warning"}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+const PaymentHandlersSection = ({
+  paymentHandlers,
+}: {
+  paymentHandlers: UcpCheck.ParsedPaymentHandler[];
+}) => {
+  if (paymentHandlers.length === 0) return null;
+
+  return (
+    <div className="border-accent-foreground border-t">
+      <SectionHeading
+        title="Payment handlers"
+        description="Tokenization endpoints declared by the merchant. Each handler must declare a version and any required handler IDs."
+      />
+      <div className="grid gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-3">
+        {paymentHandlers.map((handler, index) => (
+          <div
+            key={`${handler.registryKey}-${handler.id ?? handler.version ?? index}`}
+            className="bg-background px-4 py-4"
+          >
+            <p className="font-medium text-foreground text-sm">
+              {handler.label}
+            </p>
+            <p className="mt-1 break-all font-mono text-foreground-dimmed text-xs">
+              {handler.registryKey}
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <StatusChip
+                label={`Version · ${handler.version ?? "Missing"}`}
+                tone={handler.version ? "success" : "warning"}
+              />
+              {handler.id && (
+                <StatusChip label={`ID · ${handler.id}`} tone="success" />
+              )}
+              <StatusChip
+                label={handler.recognized ? "Known" : "Custom"}
+                tone={handler.recognized ? "success" : "warning"}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const SigningKeysSection = ({
+  signingKeys,
+  advertised,
+}: {
+  signingKeys: UcpCheck.ParsedSigningKey[];
+  advertised: boolean;
+}) => (
+  <div className="border-accent-foreground border-t">
+    <SectionHeading
+      title="Signing keys & authentication"
+      description="RFC 9421 HTTP Message Signatures are the basis of permissionless onboarding. Every request must be verifiable against a public JWK published here."
+    />
+    {!advertised ? (
+      <div className="bg-background px-4 py-5">
+        <div className="flex items-center gap-2">
+          <ShieldCheckIcon className="size-4 text-yellow-500" />
+          <StatusChip label="signing_keys not advertised" tone="warning" />
+        </div>
+        <p className="mt-3 max-w-2xl font-light text-foreground-dimmed text-sm">
+          The profile does not advertise any signing keys, so platforms cannot
+          verify RFC 9421 HTTP message signatures without an out-of-band secret
+          exchange. UCP allows this, but agents will fall back to traditional
+          auth (API keys, OAuth, mTLS).
+        </p>
+      </div>
+    ) : signingKeys.length === 0 ? (
+      <div className="bg-background px-4 py-5">
+        <StatusChip label="signing_keys is empty" tone="warning" />
+      </div>
+    ) : (
+      <div className="divide-y divide-accent-foreground">
+        {signingKeys.map((key, index) => {
+          const hasIssue =
+            !key.kid ||
+            !key.kty ||
+            (key.kty === "EC" && !key.crv) ||
+            key.hasPrivateMaterial;
+
+          return (
+            <div
+              key={`${key.kid ?? `no-kid-${index}`}-${key.alg ?? key.kty ?? "unknown"}`}
+              className="grid gap-4 bg-background px-4 py-4 md:grid-cols-[minmax(0,260px)_minmax(0,1fr)_auto] md:items-start"
+            >
+              <div>
+                <div className="flex items-center gap-2">
+                  <ShieldCheckIcon
+                    className={cn(
+                      "size-3.5",
+                      hasIssue ? "text-red-500" : "text-primary",
+                    )}
+                  />
+                  <p className="font-medium font-mono text-foreground text-sm">
+                    {key.kid ?? "(missing kid)"}
+                  </p>
+                </div>
+                <p className="mt-1 font-light text-foreground-dimmed text-xs">
+                  {key.hasPrivateMaterial
+                    ? "Contains private material — must be removed."
+                    : "Public JWK"}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <StatusChip
+                  label={`kty · ${key.kty ?? "Missing"}`}
+                  tone={key.kty ? "success" : "danger"}
+                />
+                <StatusChip
+                  label={`use · ${key.use ?? "Missing"}`}
+                  tone={key.use === "sig" ? "success" : "warning"}
+                />
+                <StatusChip
+                  label={`alg · ${key.alg ?? "Missing"}`}
+                  tone={key.alg ? "success" : "warning"}
+                />
+                {key.kty === "EC" && (
+                  <StatusChip
+                    label={`crv · ${key.crv ?? "Missing"}`}
+                    tone={key.crv ? "success" : "danger"}
+                  />
+                )}
+              </div>
+
+              <StatusChip
+                label={hasIssue ? "Issues" : "Valid"}
+                tone={hasIssue ? "danger" : "success"}
+              />
+            </div>
+          );
+        })}
+      </div>
+    )}
+  </div>
+);
+
+const SupportedVersionsSection = ({
+  supportedVersions,
+}: {
+  supportedVersions: UcpCheck.ParsedSupportedVersion[];
+}) => {
+  if (supportedVersions.length === 0) return null;
+
+  return (
+    <div className="border-accent-foreground border-t">
+      <SectionHeading
+        title="Supported versions"
+        description="Profile URIs for every protocol version this merchant still serves. Agents pick the highest version they understand."
+      />
+      <div className="divide-y divide-accent-foreground">
+        {supportedVersions.map((version) => (
+          <div
+            key={version.version}
+            className="grid gap-4 bg-background px-4 py-4 md:grid-cols-[minmax(0,160px)_minmax(0,1fr)_auto] md:items-center"
+          >
+            <p className="font-medium font-mono text-foreground text-sm">
+              {version.version}
+            </p>
+            <p className="break-all font-mono text-foreground-dimmed text-xs">
+              {version.uri || "—"}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {version.isCurrent && (
+                <StatusChip label="Current" tone="success" />
+              )}
+              <StatusChip
+                label={version.isHttps ? "HTTPS" : "Insecure"}
+                tone={version.isHttps ? "success" : "danger"}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const SpecIssuesSection = ({ issues }: { issues: UcpCheck.SpecIssue[] }) => {
+  const errorCount = issues.filter(
+    (issue) => issue.severity === "error",
+  ).length;
+  const warningCount = issues.filter(
+    (issue) => issue.severity === "warning",
+  ).length;
+
+  const grouped = ISSUE_CATEGORY_ORDER.flatMap((category) => {
+    const matching = issues.filter((issue) => issue.category === category);
+    if (matching.length === 0) return [];
+    return [{ category, issues: matching }];
+  });
+
+  return (
+    <div className="border-accent-foreground border-t">
+      <SectionHeading
+        title="Spec validation"
+        description={`${errorCount} error${errorCount !== 1 ? "s" : ""}, ${warningCount} warning${warningCount !== 1 ? "s" : ""} grouped by spec area.`}
+      />
+
+      {issues.length === 0 ? (
+        <div className="bg-background px-4 py-5">
+          <StatusChip label="No issues found" tone="success" />
+          <p className="mt-3 max-w-2xl font-light text-foreground-dimmed text-sm">
+            The current profile passed the validator without schema errors or
+            warnings.
+          </p>
+        </div>
+      ) : (
+        <div className="divide-y divide-accent-foreground">
+          {grouped.map((group) => (
+            <div key={group.category} className="bg-background">
+              <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
+                <p className="font-medium text-foreground text-xs uppercase tracking-[0.18em]">
+                  {ISSUE_CATEGORY_LABELS[group.category]} ·{" "}
+                  <span className="text-foreground-dimmed">
+                    {group.issues.length}
+                  </span>
+                </p>
+              </div>
+              <div className="divide-y divide-accent-foreground">
+                {group.issues.map((issue) => (
+                  <div
+                    key={`${issue.severity}-${issue.field}-${issue.message}`}
+                    className="grid gap-4 px-4 py-3 md:grid-cols-[auto_minmax(0,260px)_minmax(0,1fr)] md:items-start"
+                  >
+                    <StatusChip
+                      label={issue.severity === "error" ? "Error" : "Warning"}
+                      tone={issue.severity === "error" ? "danger" : "warning"}
+                    />
+                    <p className="break-all font-mono text-foreground-dimmed text-xs">
+                      {issue.field}
+                    </p>
+                    <p className="text-foreground text-sm">{issue.message}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 };
 
 const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
-  const paymentHandlers = extractPaymentHandlers(result.data);
-  const ucpVersion = extractUcpVersion(result.data);
   const errorCount = result.specIssues.filter(
-    (issue: UcpCheck.SpecIssue) => issue.severity === "error",
-  ).length;
-  const warningCount = result.specIssues.filter(
-    (issue: UcpCheck.SpecIssue) => issue.severity === "warning",
+    (issue) => issue.severity === "error",
   ).length;
   const allowedBotCount = result.robots.filter((bot) => bot.allowed).length;
+  const recognizedCapabilities = result.capabilities.filter(
+    (capability) => capability.recognized,
+  ).length;
   const overallPass =
     result.https &&
     result.found &&
@@ -361,10 +726,29 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
               </p>
             </div>
 
-            <div className="flex shrink-0 items-center gap-2">
-              {ucpVersion && (
+            <div className="flex shrink-0 flex-wrap items-center gap-2">
+              {result.ucpVersion && (
+                <span
+                  className={cn(
+                    "inline-flex items-center px-2 py-1 font-mono text-xs",
+                    result.isLatestVersion
+                      ? "bg-primary/10 text-primary"
+                      : "bg-yellow-500/10 text-yellow-500",
+                  )}
+                >
+                  v{result.ucpVersion}
+                  {!result.isLatestVersion && (
+                    <span className="ml-2 text-foreground-dimmed">
+                      (latest: {LATEST_UCP_VERSION})
+                    </span>
+                  )}
+                </span>
+              )}
+              {result.envelopeKind && (
                 <span className="inline-flex items-center bg-accent-foreground px-2 py-1 font-mono text-foreground-dimmed text-xs">
-                  v{ucpVersion}
+                  {result.envelopeKind === "wrapped"
+                    ? "envelope: ucp{}"
+                    : "envelope: flat"}
                 </span>
               )}
               <StatusChip
@@ -387,12 +771,17 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
 
             <div>
               <p className="font-medium text-foreground-dimmed text-xs uppercase tracking-[0.18em]">
-                Payment handlers
+                Detected surface
               </p>
               <p className="mt-1 font-light text-foreground-dimmed text-sm">
-                {paymentHandlers.length === 0
-                  ? "No payment handlers were detected in the current response."
-                  : `${paymentHandlers.length} handler${paymentHandlers.length !== 1 ? "s" : ""} detected in the profile.`}
+                {result.services.length} service
+                {result.services.length !== 1 ? "s" : ""},{" "}
+                {result.capabilities.length} capabilit
+                {result.capabilities.length !== 1 ? "ies" : "y"},{" "}
+                {result.paymentHandlers.length} payment handler
+                {result.paymentHandlers.length !== 1 ? "s" : ""},{" "}
+                {result.signingKeys.length} signing key
+                {result.signingKeys.length !== 1 ? "s" : ""}.
               </p>
             </div>
           </div>
@@ -403,7 +792,7 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
           value={formatLatency(result.latencyMs)}
           detail={
             result.latencyMs === null
-              ? "We could not measure a live response time. "
+              ? "We could not measure a live response time."
               : "Response time for the UCP endpoint."
           }
           tone={result.latencyMs === null ? "danger" : "success"}
@@ -421,14 +810,23 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
         />
 
         <SummaryCard
-          label="Warnings"
-          value={String(warningCount)}
+          label="Capabilities"
+          value={`${recognizedCapabilities}/${result.capabilities.length || 0}`}
           detail={
-            warningCount === 0
-              ? "No advisory warnings were raised."
-              : "Advisory issues that may affect compatibility."
+            result.capabilities.length === 0
+              ? "No capabilities declared."
+              : "Recognized vs. total declared capabilities."
           }
-          tone={warningCount > 0 ? "warning" : "success"}
+          tone={(() => {
+            switch (true) {
+              case result.capabilities.length === 0:
+                return "warning";
+              case recognizedCapabilities === result.capabilities.length:
+                return "success";
+              default:
+                return "warning";
+            }
+          })()}
         />
 
         <SummaryCard
@@ -482,43 +880,39 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
                 : `The UCP endpoint responded in ${formatLatency(result.latencyMs)}.`
             }
           />
+          <CheckRow
+            label="Latest protocol version"
+            passed={result.isLatestVersion}
+            detail={
+              result.ucpVersion
+                ? result.isLatestVersion
+                  ? `Profile declares ${result.ucpVersion} — the latest published UCP version.`
+                  : `Profile declares ${result.ucpVersion}; latest is ${LATEST_UCP_VERSION}.`
+                : "No version declared at the profile root."
+            }
+          />
+          <CheckRow
+            label="Signing keys advertised"
+            passed={
+              result.signingKeysAdvertised && result.signingKeys.length > 0
+            }
+            detail={
+              result.signingKeysAdvertised
+                ? `${result.signingKeys.length} JWK${result.signingKeys.length !== 1 ? "s" : ""} published for RFC 9421 verification.`
+                : "No signing_keys advertised — permissionless verification not possible."
+            }
+          />
         </div>
       </div>
 
-      {paymentHandlers.length > 0 && (
-        <div className="border-accent-foreground border-t">
-          <SectionHeading
-            title="Payment handlers"
-            description="Detected from the profile payload so you can quickly sanity-check surfaced checkout integrations."
-          />
-
-          <div className="grid gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-3">
-            {paymentHandlers.map((handler) => (
-              <div
-                key={`${handler.registryKey}-${handler.id ?? handler.version ?? handler.label}`}
-                className="bg-background px-4 py-4"
-              >
-                <p className="font-medium text-foreground text-sm">
-                  {handler.label}
-                </p>
-                <p className="mt-1 font-mono text-foreground-dimmed text-xs">
-                  {handler.registryKey}
-                </p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <StatusChip
-                    label={`ID ${handler.id ?? "Missing"}`}
-                    tone={handler.id ? "success" : "warning"}
-                  />
-                  <StatusChip
-                    label={`Version ${handler.version ?? "Missing"}`}
-                    tone={handler.version ? "success" : "warning"}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <ServicesSection services={result.services} />
+      <CapabilitiesSection capabilities={result.capabilities} />
+      <PaymentHandlersSection paymentHandlers={result.paymentHandlers} />
+      <SigningKeysSection
+        signingKeys={result.signingKeys}
+        advertised={result.signingKeysAdvertised}
+      />
+      <SupportedVersionsSection supportedVersions={result.supportedVersions} />
 
       <div className="border-accent-foreground border-t">
         <SectionHeading
@@ -554,75 +948,7 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
         </div>
       </div>
 
-      <div className="border-accent-foreground border-t">
-        <SectionHeading
-          title="Spec validation"
-          description={`${errorCount} error${errorCount !== 1 ? "s" : ""}, ${warningCount} warning${warningCount !== 1 ? "s" : ""}`}
-        />
-
-        {result.specIssues.length === 0 ? (
-          <div className="bg-background px-4 py-5">
-            <StatusChip label="No issues found" tone="success" />
-            <p className="mt-3 max-w-2xl font-light text-foreground-dimmed text-sm">
-              The current profile passed the validator without schema errors or
-              warnings.
-            </p>
-          </div>
-        ) : (
-          <div className="divide-y divide-accent-foreground">
-            {result.specIssues.map((issue: UcpCheck.SpecIssue) => (
-              <div
-                key={`${issue.severity}-${issue.field}-${issue.message}`}
-                className="grid gap-4 bg-background px-4 py-4 md:grid-cols-[auto_minmax(0,220px)_minmax(0,1fr)] md:items-start"
-              >
-                <StatusChip
-                  label={issue.severity === "error" ? "Error" : "Warning"}
-                  tone={issue.severity === "error" ? "danger" : "warning"}
-                />
-                <p className="font-mono text-foreground-dimmed text-xs">
-                  {issue.field}
-                </p>
-                <p className="text-foreground text-sm">{issue.message}</p>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {paymentHandlers.length > 0 && (
-        <div className="border-accent-foreground border-t">
-          <div className="border-accent-foreground border-b px-5 py-2.5">
-            <p className="font-medium text-foreground text-sm">
-              Payment Methods
-            </p>
-            <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
-              {paymentHandlers.length} handler
-              {paymentHandlers.length !== 1 ? "s" : ""} configured
-            </p>
-          </div>
-          <div className="divide-y divide-accent-foreground">
-            {paymentHandlers.map((handler, index) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: stable list
-              <div key={index} className="flex items-center gap-3 px-5 py-3">
-                <div className="flex-1">
-                  <p className="font-medium text-foreground text-sm">
-                    {handler.label}
-                  </p>
-                  <p className="mt-0.5 font-mono text-foreground-dimmed text-xs">
-                    {handler.registryKey}
-                    {handler.id ? ` · id: ${handler.id}` : ""}
-                  </p>
-                </div>
-                {handler.version && (
-                  <span className="inline-flex items-center bg-accent-foreground/30 px-2 py-0.5 font-mono text-foreground-dimmed text-xs">
-                    {handler.version}
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <SpecIssuesSection issues={result.specIssues} />
 
       {result.valid && result.data !== null && (
         <div className="border-accent-foreground border-t">
@@ -672,8 +998,12 @@ export const UcpValidatorForm = () => {
           <p className="mt-2 max-w-2xl font-light text-foreground-dimmed text-sm sm:text-base">
             Paste a domain and we&apos;ll fetch the live{" "}
             <span className="font-mono text-foreground">/.well-known/ucp</span>{" "}
-            document, evaluate the response, and lay out the issues in the same
-            structured style used across onboarding and dashboard surfaces.
+            document, parse every service, capability, payment handler and
+            signing key, then validate it against the{" "}
+            <span className="font-mono text-foreground">
+              {LATEST_UCP_VERSION}
+            </span>{" "}
+            spec.
           </p>
 
           <form
