@@ -26,6 +26,7 @@ import {
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import type { ComponentProps, ReactElement } from "react";
 import { useCallback, useMemo, useState } from "react";
+import { UcpValidatorForm } from "@/app/(main)/ucp-validator/_components/ucp-validator-form";
 import { formatPrice } from "@/lib/currency";
 import type * as Ucp from "@/server/app/intelligence/ucp";
 import {
@@ -472,6 +473,7 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
           <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
           <Tab value="profile">Merchant Profile</Tab>
           <Tab value="products">Product Structured Data</Tab>
+          <Tab value="validate">Validate</Tab>
         </TabsList>
 
         {/* Profile tab */}
@@ -637,6 +639,13 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
                 </pre>
               </div>
             </div>
+          </div>
+        </TabsPanel>
+
+        {/* Validate tab */}
+        <TabsPanel value="validate">
+          <div className="mt-4 border border-accent-foreground">
+            <UcpValidatorForm />
           </div>
         </TabsPanel>
 
