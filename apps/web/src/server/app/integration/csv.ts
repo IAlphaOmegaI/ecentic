@@ -70,9 +70,9 @@ export const connect = withAuthentication(
 export const syncProducts = withAuthentication(
   async (
     context,
-    { storeId, products }: { storeId: string; products: Type[] },
+    { store: id, products }: { store: string; products: Type[] },
   ) => {
-    await Store.update(Environment.SERVER, storeId, { status: "syncing" });
+    await Store.update(Environment.SERVER, id, { status: "syncing" });
 
     const results = await Promise.all(
       products.map((item) => {
@@ -82,7 +82,7 @@ export const syncProducts = withAuthentication(
         const currency = item.currency || parsed.currency || "USD";
 
         return Product.create(Environment.SERVER, {
-          storeId,
+          storeId: id,
           userId: context.session.user.id,
           externalId: item.id || null,
           title: item.title,
@@ -101,7 +101,7 @@ export const syncProducts = withAuthentication(
 
     const imported = results.filter((result) => result.success).length;
 
-    await Store.update(Environment.SERVER, storeId, {
+    await Store.update(Environment.SERVER, id, {
       status: "connected",
       lastSyncedAt: new Date(),
     });

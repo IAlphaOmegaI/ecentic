@@ -47,14 +47,14 @@ const perspectives = [
 
 const runScanForUser = async (
   context: GenericContext,
-  { userId }: { userId: string },
+  { user }: { user: string },
 ) => {
   const [products, competitors] = await Promise.all([
     Product.find(Environment.SERVER, {
-      where: eq(schema.product.userId, userId),
+      where: eq(schema.product.userId, user),
     }),
     Competitor.find(Environment.SERVER, {
-      where: eq(schema.competitor.userId, userId),
+      where: eq(schema.competitor.userId, user),
     }),
   ]);
 
@@ -76,7 +76,7 @@ const runScanForUser = async (
     products.data.length * selected.length * perspectives.length;
 
   const scan = await Scan.create(Environment.SERVER, {
-    userId,
+    userId: user,
     status: "running",
     totalSimulations,
     completedSimulations: 0,
@@ -90,7 +90,7 @@ const runScanForUser = async (
     category: "scan.start",
     data: {
       "scan.id": scan.data.id,
-      "user.id": userId,
+      "user.id": user,
       "products.count": products.data.length,
       "competitors.count": selected.length,
       "simulations.total": totalSimulations,
@@ -178,7 +178,7 @@ const runScanForUser = async (
 
   context.span.addBreadcrumb({
     category: "scan.complete",
-    data: { "scan.id": scan.data.id, "user.id": userId, wins, losses },
+    data: { "scan.id": scan.data.id, "user.id": user, wins, losses },
   });
 
   return {
@@ -202,12 +202,12 @@ export const runScanDaily = withContext(
     const results = await selected.reduce(
       async (previousPromise, user) => {
         const previous = await previousPromise;
-        const result = await runScanForUser(context, { userId: user.id });
-        return [...previous, { userId: user.id, result }];
+        const result = await runScanForUser(context, { user: user.id });
+        return [...previous, { user: user.id, result }];
       },
       Promise.resolve(
         [] as {
-          userId: string;
+          user: string;
           result: Awaited<ReturnType<typeof runScanForUser>>;
         }[],
       ),
@@ -238,14 +238,14 @@ export const runPendingScans = withContext(
         const previous = await previousPromise;
 
         const running = await Scan.findRunningForUser(Environment.SERVER, {
-          userId: scan.userId,
+          user: scan.userId,
         });
 
         if (!running.success || running.data.length > 0)
           return [...previous, { scanId: scan.id, success: false }];
 
         await Scan.update(Environment.SERVER, scan.id, { status: "running" });
-        const result = await runScanForUser(context, { userId: scan.userId });
+        const result = await runScanForUser(context, { user: scan.userId });
 
         if (!result.success)
           await Scan.update(Environment.SERVER, scan.id, { status: "failed" });

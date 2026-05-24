@@ -23,8 +23,8 @@ export const getForCurrentUser = withAuthentication(async (context) => {
 }, "Store.getForCurrentUser");
 
 export const syncProducts = withAuthentication(
-  async (_, { storeId }: { storeId: string }) => {
-    const store = await get(Environment.SERVER, storeId);
+  async (_, { store: id }: { store: string }) => {
+    const store = await get(Environment.SERVER, id);
     if (!store.success) return store;
 
     if (!store.data)
@@ -32,13 +32,13 @@ export const syncProducts = withAuthentication(
 
     switch (store.data.platform) {
       case "shopify":
-        return Shopify.syncProducts({ storeId });
+        return Shopify.syncProducts({ store: id });
       case "shopify-public":
-        return Shopify.syncPublicProducts({ store: storeId });
+        return Shopify.syncPublicProducts({ store: id });
       case "woocommerce":
-        return WooCommerce.syncProducts({ storeId });
+        return WooCommerce.syncProducts({ store: id });
       case "feed":
-        return Feed.syncProducts({ storeId });
+        return Feed.syncProducts({ store: id });
       default:
         return {
           success: false,
@@ -53,7 +53,7 @@ export const publishProductListing = withAuthentication(
   async (
     context,
     {
-      product: productId,
+      product: id,
       data,
     }: {
       product: string;
@@ -63,7 +63,7 @@ export const publishProductListing = withAuthentication(
       };
     },
   ) => {
-    const product = await Product.get(Environment.SERVER, productId);
+    const product = await Product.get(Environment.SERVER, id);
     if (!product.success) return product;
 
     if (!product.data)
@@ -83,9 +83,9 @@ export const publishProductListing = withAuthentication(
 
     switch (store.data.platform) {
       case "shopify":
-        return Shopify.updateProduct({ product: productId, data });
+        return Shopify.updateProduct({ product: id, data });
       case "woocommerce":
-        return WooCommerce.updateProduct({ product: productId, data });
+        return WooCommerce.updateProduct({ product: id, data });
       default:
         return {
           success: false,

@@ -128,7 +128,7 @@ export const CsvForm = () => {
       }
 
       const sync = await CsvIntegration.syncProducts({
-        storeId: result.data.id,
+        store: result.data.id,
         products,
       });
 

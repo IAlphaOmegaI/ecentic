@@ -62,7 +62,7 @@ const NULL_RESOLUTION = {
 } as const;
 
 export const resolveProductFromPageUrl = withContext(
-  async (ctx, { storeId, pageUrl }: { storeId: string; pageUrl: string }) => {
+  async (ctx, { store, pageUrl }: { store: string; pageUrl: string }) => {
     const parsed = resultify(() => new URL(pageUrl));
     if (!parsed.success) {
       return { success: true, data: NULL_RESOLUTION };
@@ -87,7 +87,7 @@ export const resolveProductFromPageUrl = withContext(
         .from(schema.product)
         .where(
           and(
-            eq(schema.product.storeId, storeId),
+            eq(schema.product.storeId, store),
             sql`strpos(lower(${schema.product.url}), lower(${needle})) > 0`,
           ),
         )

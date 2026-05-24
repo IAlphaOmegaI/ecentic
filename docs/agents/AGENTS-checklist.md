@@ -27,6 +27,7 @@ Quick reference for all coding conventions. See linked sub-guides for details.
 - [ ] Generic filenames — group related hooks/utils in one file
 - [ ] `import * as Bundle` for all server action imports — even in client files that call actions; `import type * as Bundle` only when types are all you need
 - [ ] Never add "Result" suffix to result variables — name by domain concept (`creation`, not `creationResult`) and access `.data` directly (`creation.data`)
+- [ ] Function arguments use the domain name (`{ store }`, not `{ storeId }`); rename via destructuring (`{ store: id }`) when the body has a local conflict
 
 ---
 

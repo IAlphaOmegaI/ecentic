@@ -1,4 +1,4 @@
-const currencySymbols: Record<string, string> = {
+const symbols: Record<string, string> = {
   EUR: "\u20AC",
   GBP: "\u00A3",
   USD: "$",
@@ -13,7 +13,7 @@ const currencySymbols: Record<string, string> = {
 
 export const getCurrencySymbol = (currency: string | null): string => {
   if (!currency) return "$";
-  return currencySymbols[currency.toUpperCase()] ?? currency.toUpperCase();
+  return symbols[currency.toUpperCase()] ?? currency.toUpperCase();
 };
 
 /**

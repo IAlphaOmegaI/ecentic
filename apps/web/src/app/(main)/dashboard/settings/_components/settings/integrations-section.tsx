@@ -18,8 +18,8 @@ const PLATFORM_BADGE: Record<string, { label: string; className: string }> = {
 export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
   const toast = useToastManager();
 
-  const [handleSync, isSyncing] = useAsyncAction(async (storeId: string) => {
-    const result = await Store.syncProducts({ storeId });
+  const [handleSync, isSyncing] = useAsyncAction(async (id: string) => {
+    const result = await Store.syncProducts({ store: id });
     if (!result.success) {
       toast.add({ title: "Sync failed", type: "error" });
       return;

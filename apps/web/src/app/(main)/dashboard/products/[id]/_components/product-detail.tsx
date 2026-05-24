@@ -703,7 +703,7 @@ const OptimizeTab = ({
   const handleGenerateJsonLd = () => {
     startTransition(async () => {
       const generation = await Optimization.generateStructuredData({
-        productId: product.id,
+        product: product.id,
       });
       if (generation.success)
         setLiveStructuredData(generation.data.structuredData);

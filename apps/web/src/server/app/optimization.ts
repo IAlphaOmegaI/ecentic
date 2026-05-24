@@ -84,20 +84,17 @@ export type DashboardData = {
 };
 
 const findRecord = withContext(
-  async (
-    _context,
-    { userId, productId }: { userId: string; productId: string },
-  ) => {
-    const result = await find(Environment.SERVER, {
+  async (_context, { user, product }: { user: string; product: string }) => {
+    const records = await find(Environment.SERVER, {
       where: and(
-        eq(schema.listingOptimization.userId, userId),
-        eq(schema.listingOptimization.productId, productId),
+        eq(schema.listingOptimization.userId, user),
+        eq(schema.listingOptimization.productId, product),
       ),
       limit: 1,
     });
 
-    if (!result.success) return result;
-    return { success: true, data: result.data[0] ?? null };
+    if (!records.success) return records;
+    return { success: true, data: records.data[0] ?? null };
   },
   "Optimization.findRecord",
 );
@@ -137,21 +134,18 @@ const upsertRecord = withContext(
   async (
     _context,
     {
-      userId,
-      productId,
+      user,
+      product,
       status,
       payload,
     }: {
-      userId: string;
-      productId: string;
+      user: string;
+      product: string;
       status: string;
       payload: Parameters<typeof update>[2];
     },
   ) => {
-    const existing = await findRecord(Environment.SERVER, {
-      userId,
-      productId,
-    });
+    const existing = await findRecord(Environment.SERVER, { user, product });
 
     if (!existing.success) return existing;
 
@@ -160,8 +154,8 @@ const upsertRecord = withContext(
     }
 
     return create(Environment.SERVER, {
-      userId,
-      productId,
+      userId: user,
+      productId: product,
       status,
       ...payload,
     });
@@ -338,16 +332,16 @@ export const listDashboard = withAuthentication(async (context) => {
 }, "Optimization.listDashboard");
 
 export const approveProductListing = withAuthentication(
-  async (context, { productId }: { productId: string }) => {
-    const userId = context.session.user.id;
+  async (context, { product: id }: { product: string }) => {
+    const user = context.session.user.id;
 
-    const product = await Product.get(Environment.SERVER, productId);
+    const product = await Product.get(Environment.SERVER, id);
     if (!product.success) return product;
 
     if (!product.data)
       return { success: false, error: new Error("Product not found") };
 
-    if (product.data.userId !== userId)
+    if (product.data.userId !== user)
       return { success: false, error: new Error("Not authorized") };
 
     const store = await Store.get(Environment.SERVER, product.data.storeId);
@@ -363,11 +357,9 @@ export const approveProductListing = withAuthentication(
         ),
       };
 
-    const fetched = await Simulation.getForProducts({
-      products: [productId],
-    });
+    const fetched = await Simulation.getForProducts({ products: [id] });
     const simulations = fetched.success ? fetched.data : [];
-    const winRate = computeWinRate(productId, simulations) ?? 0;
+    const winRate = computeWinRate(id, simulations) ?? 0;
     const lift = estimateLift(winRate);
 
     const improved = await generateImprovedListing(Environment.SERVER, {
@@ -379,7 +371,7 @@ export const approveProductListing = withAuthentication(
     if (!improved.success) return improved;
 
     const publish = await Store.publishProductListing({
-      product: productId,
+      product: id,
       data: {
         title: improved.data.title,
         body_html: improved.data.description_html,
@@ -389,8 +381,8 @@ export const approveProductListing = withAuthentication(
     if (!publish.success) return publish;
 
     const upserted = await upsertRecord(Environment.SERVER, {
-      userId,
-      productId,
+      user,
+      product: id,
       status: "published",
       payload: {
         proposedTitle: improved.data.title,
@@ -407,28 +399,28 @@ export const approveProductListing = withAuthentication(
 
     revalidatePath("/dashboard/optimize");
     revalidatePath("/dashboard/products");
-    revalidatePath(`/dashboard/products/${productId}`);
+    revalidatePath(`/dashboard/products/${id}`);
 
-    return { success: true, data: { productId } };
+    return { success: true, data: { product: id } };
   },
   "Optimization.approveProductListing",
 );
 
 export const dismissSuggestion = withAuthentication(
-  async (context, { productId }: { productId: string }) => {
-    const userId = context.session.user.id;
+  async (context, { product: id }: { product: string }) => {
+    const user = context.session.user.id;
 
-    const product = await Product.get(Environment.SERVER, productId);
+    const product = await Product.get(Environment.SERVER, id);
     if (!product.success) return product;
     if (!product.data)
       return { success: false, error: new Error("Product not found") };
 
-    if (product.data.userId !== userId)
+    if (product.data.userId !== user)
       return { success: false, error: new Error("Not authorized") };
 
     const upserted = await upsertRecord(Environment.SERVER, {
-      userId,
-      productId,
+      user,
+      product: id,
       status: "dismissed",
       payload: {
         proposedTitle: null,
@@ -444,19 +436,16 @@ export const dismissSuggestion = withAuthentication(
     if (!upserted.success) return upserted;
 
     revalidatePath("/dashboard/optimize");
-    return { success: true, data: { productId } };
+    return { success: true, data: { product: id } };
   },
   "Optimization.dismissSuggestion",
 );
 
 export const reconsiderSuggestion = withAuthentication(
-  async (context, { productId }: { productId: string }) => {
-    const userId = context.session.user.id;
+  async (context, { product: id }: { product: string }) => {
+    const user = context.session.user.id;
 
-    const record = await findRecord(Environment.SERVER, {
-      userId,
-      productId,
-    });
+    const record = await findRecord(Environment.SERVER, { user, product: id });
 
     if (!record.success) return record;
     if (!record.data)
@@ -466,23 +455,23 @@ export const reconsiderSuggestion = withAuthentication(
     if (!destroyed.success) return destroyed;
 
     revalidatePath("/dashboard/optimize");
-    return { success: true, data: { productId } };
+    return { success: true, data: { product: id } };
   },
   "Optimization.reconsiderSuggestion",
 );
 
 export const generateStructuredData = withAuthentication(
-  async (context, { productId }: { productId: string }) => {
-    const userId = context.session.user.id;
+  async (context, { product: id }: { product: string }) => {
+    const user = context.session.user.id;
 
-    const product = await Product.get(Environment.SERVER, productId);
+    const product = await Product.get(Environment.SERVER, id);
     if (!product.success) return product;
     if (!product.data)
       return { success: false, error: new Error("Product not found") };
-    if (product.data.userId !== userId)
+    if (product.data.userId !== user)
       return { success: false, error: new Error("Not authorized") };
 
-    const result = await resultify(() =>
+    const generated = await resultify(() =>
       AI.generate({
         system: `You generate JSON-LD structured data (schema.org/Product) for e-commerce product pages to help AI shopping agents understand product details.
 Output a single valid JSON string. Include @context, @type, name, description, brand, sku, and offers (price, priceCurrency, availability).
@@ -496,16 +485,16 @@ SKU: ${product.data.sku ?? "(unknown)"}`,
       }),
     );
 
-    if (!result.success) return result;
+    if (!generated.success) return generated;
 
-    const updated = await Product.update(Environment.SERVER, productId, {
-      structuredData: result.data.json_ld,
+    const updated = await Product.update(Environment.SERVER, id, {
+      structuredData: generated.data.json_ld,
     });
 
     if (!updated.success) return updated;
 
-    revalidatePath(`/dashboard/products/${productId}`);
-    return { success: true, data: { structuredData: result.data.json_ld } };
+    revalidatePath(`/dashboard/products/${id}`);
+    return { success: true, data: { structuredData: generated.data.json_ld } };
   },
   "Optimization.generateStructuredData",
 );
@@ -570,7 +559,7 @@ export const approveAllPending = withAuthentication(async (context) => {
   const errors: string[] = [];
 
   for (const { id, title } of pendingProductIds) {
-    const result = await approveProductListing({ productId: id });
+    const result = await approveProductListing({ product: id });
     if (!result.success) errors.push(`${title}: ${result.error.message}`);
   }
 

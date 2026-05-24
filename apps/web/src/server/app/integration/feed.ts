@@ -214,8 +214,8 @@ export const connect = withAuthentication(
 );
 
 export const syncProducts = withAuthentication(
-  async (context, { storeId }: { storeId: string }) => {
-    const store = await Store.get(Environment.SERVER, storeId);
+  async (context, { store: id }: { store: string }) => {
+    const store = await Store.get(Environment.SERVER, id);
     if (!store.success) return store;
 
     if (!store.data)
@@ -226,19 +226,19 @@ export const syncProducts = withAuthentication(
     if (!feedUrl)
       return { success: false, error: new Error("Missing feed URL") };
 
-    await Store.update(Environment.SERVER, storeId, { status: "syncing" });
+    await Store.update(Environment.SERVER, id, { status: "syncing" });
 
     const response = await HTTP.request(feedUrl, { method: "GET" });
 
     if (!response.success) {
-      await Store.update(Environment.SERVER, storeId, { status: "error" });
+      await Store.update(Environment.SERVER, id, { status: "error" });
       return { success: false, error: response.error };
     }
 
     const text = await resultify(() => response.data.text());
 
     if (!text.success) {
-      await Store.update(Environment.SERVER, storeId, { status: "error" });
+      await Store.update(Environment.SERVER, id, { status: "error" });
       return { success: false, error: text.error };
     }
 
@@ -251,7 +251,7 @@ export const syncProducts = withAuthentication(
     const results = await Promise.all(
       products.map((item) =>
         Product.create(Environment.SERVER, {
-          storeId,
+          storeId: id,
           userId: context.session.user.id,
           externalId: item.id || null,
           title: item.title,
@@ -270,7 +270,7 @@ export const syncProducts = withAuthentication(
 
     const imported = results.filter((result) => result.success).length;
 
-    await Store.update(Environment.SERVER, storeId, {
+    await Store.update(Environment.SERVER, id, {
       status: "connected",
       lastSyncedAt: new Date(),
     });

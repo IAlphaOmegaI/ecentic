@@ -43,10 +43,10 @@ export const findPending = withContext(async (_context) => {
 }, "Scan.findPending");
 
 export const findRunningForUser = withContext(
-  async (_context, { userId }: { userId: string }) => {
+  async (_context, { user }: { user: string }) => {
     return find(Environment.SERVER, {
       where: and(
-        eq(schema.scan.userId, userId),
+        eq(schema.scan.userId, user),
         inArray(schema.scan.status, ["running"]),
       ),
     });

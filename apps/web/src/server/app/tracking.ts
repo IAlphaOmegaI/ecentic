@@ -71,8 +71,8 @@ export const parse = withContext(
 const RATE_LIMIT_WINDOW = 3600;
 const RATE_LIMIT_MAX = 1000;
 
-const isRateLimited = withContext(async (ctx, storeId: string) => {
-  const key = `rate_limit:agent_visit:${storeId}`;
+const isRateLimited = withContext(async (ctx, { store }: { store: string }) => {
+  const key = `rate_limit:agent_visit:${store}`;
   const count = await ctx.durable.redis.incr(key);
 
   if (count === 1) await ctx.durable.redis.expire(key, RATE_LIMIT_WINDOW);
@@ -258,10 +258,9 @@ export const recordAgentVisit = withContext(
     )
       return { success: false, error: new Error("Origin not allowed") };
 
-    const rateLimited = await isRateLimited(
-      Environment.SERVER,
-      payload.storeId,
-    );
+    const rateLimited = await isRateLimited(Environment.SERVER, {
+      store: payload.storeId,
+    });
 
     if (!rateLimited.success) return rateLimited;
 
@@ -269,7 +268,7 @@ export const recordAgentVisit = withContext(
       return { success: false, error: new Error("Rate limited") };
 
     const resolved = await resolveProductFromPageUrl(Environment.SERVER, {
-      storeId: store.data.id,
+      store: store.data.id,
       pageUrl: payload.productUrl,
     });
 

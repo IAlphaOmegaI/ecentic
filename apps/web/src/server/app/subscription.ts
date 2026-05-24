@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import type Stripe from "stripe";
 import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
+import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
 import {
   NotFoundError,
@@ -27,114 +28,204 @@ export const { get, create, update, destroy, exists, find } = repository(
 
 export type Type = Document<typeof schema.subscription>;
 
-const findByUserId = async (userId: string) => {
-  const result = await find(Environment.SERVER, {
-    where: eq(schema.subscription.userId, userId),
+const findByUser = withContext(async (_, { user }: { user: string }) => {
+  const subscriptions = await find(Environment.SERVER, {
+    where: eq(schema.subscription.userId, user),
     limit: 1,
   });
 
-  if (!result.success) return result;
-  return { success: true as const, data: result.data[0] ?? null };
-};
+  if (!subscriptions.success) return subscriptions;
+  return { success: true as const, data: subscriptions.data[0] ?? null };
+}, "Subscription.findByUser");
 
-const ensureCustomer = async (record: {
-  id: string;
-  email: string;
-  name: string;
-  surname?: string | null;
-}): Promise<string> => {
-  const existing = await findByUserId(record.id);
-  if (existing.success && existing.data?.stripeCustomerId)
-    return existing.data.stripeCustomerId;
+const upsertFromStripeSubscription = withContext(
+  async (
+    _,
+    {
+      subscription,
+      fallbackUser,
+    }: {
+      subscription: Stripe.Subscription;
+      fallbackUser?: string | null;
+    },
+  ) => {
+    const customer =
+      typeof subscription.customer === "string"
+        ? subscription.customer
+        : subscription.customer.id;
 
-  const fullName = record.surname
-    ? `${record.name} ${record.surname}`.trim()
-    : record.name;
+    const user =
+      (subscription.metadata?.["userId"] as string | undefined) ??
+      fallbackUser ??
+      null;
 
-  const customer = await stripe().customers.create({
-    email: record.email,
-    name: fullName || undefined,
-    metadata: { userId: record.id },
-  });
+    const item = subscription.items.data[0];
+    const priceId = item?.price.id ?? null;
+    const plan = priceId ? resolvePlanByPriceId(priceId) : null;
 
-  return customer.id;
-};
+    const periodStartUnix = item?.current_period_start ?? null;
+    const periodEndUnix = item?.current_period_end ?? null;
 
-const syncFromStripe = async (
-  userId: string,
-  customerId: string,
-): Promise<Type | null> => {
-  const list = await resultify(() =>
-    stripe().subscriptions.list({
-      customer: customerId,
-      status: "all",
-      limit: 1,
-      expand: ["data.items.data.price"],
-    }),
-  );
+    const payload = {
+      stripeCustomerId: customer,
+      stripeSubscriptionId: subscription.id,
+      stripePriceId: priceId,
+      plan,
+      status: subscription.status,
+      currentPeriodStart: periodStartUnix
+        ? new Date(periodStartUnix * 1000)
+        : null,
+      currentPeriodEnd: periodEndUnix ? new Date(periodEndUnix * 1000) : null,
+      cancelAtPeriodEnd: subscription.cancel_at_period_end,
+      canceledAt: subscription.canceled_at
+        ? new Date(subscription.canceled_at * 1000)
+        : null,
+      updatedAt: new Date(),
+    };
 
-  if (!list.success) return null;
+    const lookup = await (async () => {
+      if (user) return findByUser(Environment.SERVER, { user });
+      const rows = await find(Environment.SERVER, {
+        where: eq(schema.subscription.stripeCustomerId, customer),
+        limit: 1,
+      });
+      if (!rows.success) return rows;
+      return { success: true as const, data: rows.data[0] ?? null };
+    })();
 
-  const live = list.data.data[0];
-  if (!live) return null;
+    if (!lookup.success) return lookup;
 
-  const result = await upsertFromStripeSubscription(live, userId);
-  if (!result.success) return null;
-  return result.data;
-};
+    if (lookup.data) return update(Environment.SERVER, lookup.data.id, payload);
+
+    if (!user)
+      return {
+        success: false as const,
+        error: new UnauthenticatedError(
+          "Cannot create subscription without a user id",
+        ),
+      };
+
+    return create(Environment.SERVER, { ...payload, userId: user });
+  },
+  "Subscription.upsertFromStripeSubscription",
+);
+
+const syncFromStripe = withContext(
+  async (_, { user, customer }: { user: string; customer: string }) => {
+    const subscriptions = await resultify(() =>
+      stripe().subscriptions.list({
+        customer,
+        status: "all",
+        limit: 1,
+        expand: ["data.items.data.price"],
+      }),
+    );
+
+    if (!subscriptions.success) return { success: true as const, data: null };
+
+    const active = subscriptions.data.data[0];
+    if (!active) return { success: true as const, data: null };
+
+    return upsertFromStripeSubscription(Environment.SERVER, {
+      subscription: active,
+      fallbackUser: user,
+    });
+  },
+  "Subscription.syncFromStripe",
+);
+
+const ensureCustomer = withContext(
+  async (
+    _,
+    {
+      user,
+    }: {
+      user: {
+        id: string;
+        email: string;
+        name: string;
+        surname?: string | null;
+      };
+    },
+  ) => {
+    const existing = await findByUser(Environment.SERVER, { user: user.id });
+    if (!existing.success) return existing;
+    if (existing.data?.stripeCustomerId)
+      return { success: true as const, data: existing.data.stripeCustomerId };
+
+    const fullName = user.surname
+      ? `${user.name} ${user.surname}`.trim()
+      : user.name;
+
+    const customer = await resultify(() =>
+      stripe().customers.create({
+        email: user.email,
+        name: fullName || undefined,
+        metadata: { userId: user.id },
+      }),
+    );
+
+    if (!customer.success)
+      return {
+        success: false as const,
+        error: new RequestError("Failed to create Stripe customer", {
+          cause: customer.error,
+        }),
+      };
+
+    return { success: true as const, data: customer.data.id };
+  },
+  "Subscription.ensureCustomer",
+);
 
 export const getCurrentSubscription = withAuthentication(async (context) => {
-  const existing = await findByUserId(context.session.user.id);
+  const existing = await findByUser(Environment.SERVER, {
+    user: context.session.user.id,
+  });
   if (!existing.success) return existing;
-
-  if (!existing.data?.stripeCustomerId) {
+  if (!existing.data) return { success: true as const, data: null };
+  if (!existing.data.stripeCustomerId)
     return { success: true as const, data: null };
-  }
 
-  const synced = await resultify(() =>
-    syncFromStripe(context.session.user.id, existing.data.stripeCustomerId),
-  );
+  const synced = await syncFromStripe(Environment.SERVER, {
+    user: context.session.user.id,
+    customer: existing.data.stripeCustomerId,
+  });
 
-  if (synced.success && synced.data) {
+  if (synced.success && synced.data)
     return { success: true as const, data: synced.data };
-  }
 
   return existing;
 }, "Subscription.getCurrentSubscription");
 
 export const createCheckoutSession = withAuthentication(
-  async (context, payload: { plan: string }) => {
-    if (!isPlanKey(payload.plan))
+  async (context, { plan }: { plan: string }) => {
+    if (!isPlanKey(plan))
       return {
         success: false as const,
-        error: new RequestError(`Unknown plan: ${payload.plan}`),
+        error: new RequestError(`Unknown plan: ${plan}`),
       };
 
-    const plan: PlanKey = payload.plan;
-    const priceId = PLANS[plan].priceId();
+    const key: PlanKey = plan;
+    const priceId = PLANS[key].priceId();
 
     if (!priceId)
       return {
         success: false as const,
-        error: new RequestError(`Stripe price for plan "${plan}" is not configured`),
+        error: new RequestError(
+          `Stripe price for plan "${key}" is not configured`,
+        ),
       };
 
-    const customerId = await resultify(() =>
-      ensureCustomer({
+    const customer = await ensureCustomer(Environment.SERVER, {
+      user: {
         id: context.session.user.id,
         email: context.session.user.email,
         name: context.session.user.name,
         surname: context.session.user.surname,
-      }),
-    );
-
-    if (!customerId.success)
-      return {
-        success: false as const,
-        error: new RequestError("Failed to create Stripe customer", {
-          cause: customerId.error,
-        }),
-      };
+      },
+    });
+    if (!customer.success) return customer;
 
     const appHost = process.env.APP_HOST;
     if (!appHost)
@@ -146,7 +237,7 @@ export const createCheckoutSession = withAuthentication(
     const session = await resultify(() =>
       stripe().checkout.sessions.create({
         mode: "subscription",
-        customer: customerId.data,
+        customer: customer.data,
         line_items: [{ price: priceId, quantity: 1 }],
         success_url: `${appHost}/dashboard/settings?checkout=success`,
         cancel_url: `${appHost}/?checkout=canceled#pricing`,
@@ -154,15 +245,9 @@ export const createCheckoutSession = withAuthentication(
         billing_address_collection: "auto",
         client_reference_id: context.session.user.id,
         subscription_data: {
-          metadata: {
-            userId: context.session.user.id,
-            plan,
-          },
+          metadata: { userId: context.session.user.id, plan: key },
         },
-        metadata: {
-          userId: context.session.user.id,
-          plan,
-        },
+        metadata: { userId: context.session.user.id, plan: key },
       }),
     );
 
@@ -180,14 +265,16 @@ export const createCheckoutSession = withAuthentication(
         error: new RequestError("Stripe did not return a checkout URL"),
       };
 
-    const existing = await findByUserId(context.session.user.id);
+    const existing = await findByUser(Environment.SERVER, {
+      user: context.session.user.id,
+    });
     if (!existing.success) return existing;
 
     if (!existing.data) {
       await create(Environment.SERVER, {
         userId: context.session.user.id,
-        stripeCustomerId: customerId.data,
-        plan,
+        stripeCustomerId: customer.data,
+        plan: key,
         status: "incomplete",
       });
     }
@@ -210,28 +297,28 @@ export type InvoiceSummary = {
 
 export const listInvoices = withAuthentication(
   async (context, { limit = 12 }: { limit?: number } = {}) => {
-    const existing = await findByUserId(context.session.user.id);
+    const existing = await findByUser(Environment.SERVER, {
+      user: context.session.user.id,
+    });
     if (!existing.success) return existing;
 
-    if (!existing.data?.stripeCustomerId)
+    const stripeCustomerId = existing.data?.stripeCustomerId;
+    if (!stripeCustomerId)
       return { success: true as const, data: [] as InvoiceSummary[] };
 
-    const list = await resultify(() =>
-      stripe().invoices.list({
-        customer: existing.data.stripeCustomerId,
-        limit,
-      }),
+    const response = await resultify(() =>
+      stripe().invoices.list({ customer: stripeCustomerId, limit }),
     );
 
-    if (!list.success)
+    if (!response.success)
       return {
         success: false as const,
         error: new RequestError("Failed to list invoices", {
-          cause: list.error,
+          cause: response.error,
         }),
       };
 
-    const invoices: InvoiceSummary[] = list.data.data.map((invoice) => ({
+    const invoices: InvoiceSummary[] = response.data.data.map((invoice) => ({
       id: invoice.id ?? "",
       number: invoice.number,
       status: invoice.status ?? "draft",
@@ -249,10 +336,13 @@ export const listInvoices = withAuthentication(
 
 export const createBillingPortalSession = withAuthentication(
   async (context) => {
-    const existing = await findByUserId(context.session.user.id);
+    const existing = await findByUser(Environment.SERVER, {
+      user: context.session.user.id,
+    });
     if (!existing.success) return existing;
 
-    if (!existing.data?.stripeCustomerId)
+    const customer = existing.data?.stripeCustomerId;
+    if (!customer)
       return {
         success: false as const,
         error: new NotFoundError("No Stripe customer for current user"),
@@ -265,11 +355,9 @@ export const createBillingPortalSession = withAuthentication(
         error: new RequestError("APP_HOST is not configured"),
       };
 
-    const customerId = existing.data.stripeCustomerId;
-
     const session = await resultify(() =>
       stripe().billingPortal.sessions.create({
-        customer: customerId,
+        customer,
         return_url: `${appHost}/dashboard/settings`,
       }),
     );
@@ -287,93 +375,26 @@ export const createBillingPortalSession = withAuthentication(
   "Subscription.createBillingPortalSession",
 );
 
-const upsertFromStripeSubscription = async (
-  subscription: Stripe.Subscription,
-  fallbackUserId?: string | null,
-) => {
-  const customerId =
-    typeof subscription.customer === "string"
-      ? subscription.customer
-      : subscription.customer.id;
-
-  const userId =
-    ((subscription.metadata?.["userId"] as string | undefined)) ??
-    fallbackUserId ??
-    null;
-
-  const item = subscription.items.data[0];
-  const priceId = item?.price.id ?? null;
-  const plan = priceId ? resolvePlanByPriceId(priceId) : null;
-
-  const periodStartUnix = item?.current_period_start ?? null;
-  const periodEndUnix = item?.current_period_end ?? null;
-
-  const data = {
-    stripeCustomerId: customerId,
-    stripeSubscriptionId: subscription.id,
-    stripePriceId: priceId,
-    plan,
-    status: subscription.status,
-    currentPeriodStart: periodStartUnix
-      ? new Date(periodStartUnix * 1000)
-      : null,
-    currentPeriodEnd: periodEndUnix ? new Date(periodEndUnix * 1000) : null,
-    cancelAtPeriodEnd: subscription.cancel_at_period_end,
-    canceledAt: subscription.canceled_at
-      ? new Date(subscription.canceled_at * 1000)
-      : null,
-    updatedAt: new Date(),
-  };
-
-  const lookup = userId
-    ? await findByUserId(userId)
-    : await find(Environment.SERVER, {
-        where: eq(schema.subscription.stripeCustomerId, customerId),
-        limit: 1,
-      }).then((result) =>
-        result.success
-          ? { success: true as const, data: result.data[0] ?? null }
-          : result,
-      );
-
-  if (!lookup.success) return lookup;
-
-  if (lookup.data) {
-    return update(Environment.SERVER, lookup.data.id, data);
-  }
-
-  if (!userId)
-    return {
-      success: false as const,
-      error: new UnauthenticatedError(
-        "Cannot create subscription without a user id",
-      ),
-    };
-
-  return create(Environment.SERVER, { ...data, userId });
-};
-
 export const handleStripeEvent = async (event: Stripe.Event) => {
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session;
       if (session.mode !== "subscription" || !session.subscription) break;
 
-      const subscriptionId =
+      const id =
         typeof session.subscription === "string"
           ? session.subscription
           : session.subscription.id;
 
-      const subscription = await stripe().subscriptions.retrieve(
-        subscriptionId,
-      );
+      const subscription = await stripe().subscriptions.retrieve(id);
 
-      await upsertFromStripeSubscription(
+      await upsertFromStripeSubscription(Environment.SERVER, {
         subscription,
-        ((session.metadata?.["userId"] as string | undefined)) ??
+        fallbackUser:
+          (session.metadata?.["userId"] as string | undefined) ??
           session.client_reference_id ??
           null,
-      );
+      });
       break;
     }
     case "customer.subscription.created":
@@ -383,7 +404,7 @@ export const handleStripeEvent = async (event: Stripe.Event) => {
     case "customer.subscription.resumed":
     case "customer.subscription.trial_will_end": {
       const subscription = event.data.object as Stripe.Subscription;
-      await upsertFromStripeSubscription(subscription);
+      await upsertFromStripeSubscription(Environment.SERVER, { subscription });
       break;
     }
     default:
