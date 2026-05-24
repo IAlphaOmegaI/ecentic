@@ -259,9 +259,11 @@ const KNOWN_PAYMENT_HANDLERS: Record<string, string> = {
   "dev.shopify.card": "Shopify Card",
 };
 
+// todo: use zod
 const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
+// todo: use access form "@zenncore/utils"
 const get = (object: Record<string, unknown>, key: string): unknown =>
   object[key];
 
@@ -562,23 +564,23 @@ const parseCapabilityEntries = (
         get(entry, "spec") === undefined
           ? null
           : validateHttpsField(
-              get(entry, "spec"),
-              `${path}.spec`,
-              "capabilities",
-              issues,
-              false,
-            );
+            get(entry, "spec"),
+            `${path}.spec`,
+            "capabilities",
+            issues,
+            false,
+          );
 
       const schema =
         get(entry, "schema") === undefined
           ? null
           : validateHttpsField(
-              get(entry, "schema"),
-              `${path}.schema`,
-              "capabilities",
-              issues,
-              false,
-            );
+            get(entry, "schema"),
+            `${path}.schema`,
+            "capabilities",
+            issues,
+            false,
+          );
 
       const rawConfig = get(entry, "config");
       const config = isObject(rawConfig) ? rawConfig : null;
@@ -1258,15 +1260,10 @@ export const checkUCP = async (
 
   // Parse regardless of HTTP status — some CDNs (e.g. Akamai + Azure Blob)
   // serve the UCP file with a non-200 status but a valid JSON body.
-  let parsed: unknown = null;
-  try {
-    parsed = JSON.parse(text.data);
-  } catch {
-    // not valid JSON
-  }
+  const parsed = resultify(() => JSON.parse(text.data) as unknown);
 
-  if (parsed !== null) {
-    const validation = validateUcpSpec(parsed);
+  if (parsed.success && parsed.data !== null) {
+    const validation = validateUcpSpec(parsed.data);
     return {
       success: true,
       data: {
@@ -1278,7 +1275,7 @@ export const checkUCP = async (
         found: true,
         valid: true,
         contentType,
-        data: parsed,
+        data: parsed.data,
         specIssues: validation.issues,
         robots,
         error: null,

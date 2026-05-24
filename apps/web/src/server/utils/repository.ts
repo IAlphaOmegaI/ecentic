@@ -51,21 +51,19 @@ export type ExecuteOptions = {
 
 /** Human-readable table name for errors (e.g. "user") */
 const label = (table: TableWithId): string => {
-  try {
-    const name = getTableName(table as Parameters<typeof getTableName>[0]);
-    return typeof name === "string" ? name : "table";
-  } catch {
-    return "table";
-  }
+  const resolved = resultify(() =>
+    getTableName(table as Parameters<typeof getTableName>[0]),
+  );
+  if (!resolved.success) return "table";
+  return typeof resolved.data === "string" ? resolved.data : "table";
 };
 
 /** Cast for Drizzle's strict table generics when using db.select/update/delete */
-// biome-ignore lint/suspicious/noExplicitAny: Drizzle table generic is complex; cast needed for .from(t)
-const asTable = <T>(t: T): any => t;
+// biome-ignore lint/suspicious/noExplicitAny: Drizzle table generic is complex; cast needed for .from(table)
+const asTable = <T>(value: T): any => value;
 
-const capitalize = (s: string): string => {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-};
+const capitalize = (value: string): string =>
+  value.charAt(0).toUpperCase() + value.slice(1);
 
 // biome-ignore lint/suspicious/noExplicitAny: tx and db share query API but have different nominal types
 const executor = (options?: ExecuteOptions): any => options?.tx ?? db;
@@ -81,10 +79,10 @@ export function repository<T extends TableWithId>(table: T) {
     get: withContext(
       async (_, id: string, options?: ExecuteOptions) => {
         const run = executor(options);
-        const t = asTable(table);
+        const target = asTable(table);
         const result = await resultify(
           async () =>
-            run.select().from(t).where(eq(t.id, id)).limit(1) as Promise<
+            run.select().from(target).where(eq(target.id, id)).limit(1) as Promise<
               Document<T>[]
             >,
         );
@@ -122,19 +120,19 @@ export function repository<T extends TableWithId>(table: T) {
         const { where, orderBy } = paginateOptions;
         const offset = (page - 1) * size;
 
-        const t = asTable(table);
+        const target = asTable(table);
 
         const order = orderBy?.length
           ? orderBy.map(({ column, direction }) =>
               direction === "desc" ? desc(column) : asc(column),
             )
-          : t.createdAt
-            ? ([desc(t.createdAt)] as const)
-            : ([desc(t.id)] as const);
+          : target.createdAt
+            ? ([desc(target.createdAt)] as const)
+            : ([desc(target.id)] as const);
 
         const query = run
           .select()
-          .from(t)
+          .from(target)
           .where(where)
           .orderBy(...order)
           .offset(offset)
@@ -142,7 +140,7 @@ export function repository<T extends TableWithId>(table: T) {
 
         const cQuery = run
           .select({ count: sql<number>`count(*)::int` })
-          .from(t)
+          .from(target)
           .where(where);
 
         const [result, count] = await Promise.all([
@@ -188,10 +186,10 @@ export function repository<T extends TableWithId>(table: T) {
     create: withContext(
       async (_, data: Insertable<T>, options?: ExecuteOptions) => {
         const run = executor(options);
-        const t = asTable(table);
+        const target = asTable(table);
         const result = await resultify(async () =>
           run
-            .insert(t)
+            .insert(target)
             .values(data as T["$inferInsert"])
             .returning(),
         );
@@ -226,13 +224,13 @@ export function repository<T extends TableWithId>(table: T) {
         options?: ExecuteOptions,
       ) => {
         const run = executor(options);
-        const t = asTable(table);
+        const target = asTable(table);
         const result = await resultify(
           async () =>
             run
-              .update(t)
+              .update(target)
               .set(data as Partial<T["$inferInsert"]>)
-              .where(eq(t.id, id))
+              .where(eq(target.id, id))
               .returning() as Promise<Document<T>[]>,
         );
 
@@ -265,9 +263,9 @@ export function repository<T extends TableWithId>(table: T) {
     destroy: withContext(
       async (_, id: string, options?: ExecuteOptions) => {
         const run = executor(options);
-        const t = asTable(table);
+        const target = asTable(table);
         const result = await resultify(async () =>
-          run.delete(t).where(eq(t.id, id)),
+          run.delete(target).where(eq(target.id, id)),
         );
 
         if (!result.success) {
@@ -298,13 +296,13 @@ export function repository<T extends TableWithId>(table: T) {
     exists: withContext(
       async (_, id: string, options?: ExecuteOptions) => {
         const run = executor(options);
-        const t = asTable(table);
+        const target = asTable(table);
         const result = await resultify(
           async () =>
             run
-              .select({ id: t.id })
-              .from(t)
-              .where(eq(t.id, id))
+              .select({ id: target.id })
+              .from(target)
+              .where(eq(target.id, id))
               .limit(1) as Promise<{ id: string }[]>,
         );
 
@@ -334,12 +332,12 @@ export function repository<T extends TableWithId>(table: T) {
     count: withContext(
       async (_, where?: SQL, options?: ExecuteOptions) => {
         const run = executor(options);
-        const t = asTable(table);
+        const target = asTable(table);
         const result = await resultify(
           async () =>
             run
               .select({ count: sql<number>`count(*)::int` })
-              .from(t)
+              .from(target)
               .where(where) as Promise<{ count: number }[]>,
         );
 
@@ -375,21 +373,21 @@ export function repository<T extends TableWithId>(table: T) {
         const run = executor(options);
         const { where, orderBy, limit, offset } = findOptions;
 
-        const t = asTable(table);
+        const target = asTable(table);
 
         const orderColumns = orderBy?.length
           ? orderBy.map(({ column, direction }) =>
               direction === "desc" ? desc(column) : asc(column),
             )
-          : t.createdAt
-            ? ([desc(t.createdAt)] as const)
-            : ([desc(t.id)] as const);
+          : target.createdAt
+            ? ([desc(target.createdAt)] as const)
+            : ([desc(target.id)] as const);
 
         const result = await resultify(
           async () =>
             run
               .select()
-              .from(t)
+              .from(target)
               .where(where)
               .orderBy(...orderColumns)
               .offset(offset)

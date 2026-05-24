@@ -4,30 +4,32 @@ import {
 } from "uploadthing/next";
 import { UTApi } from "uploadthing/server";
 
-const f = createUploadthing();
+const builder = createUploadthing();
 
-const utapi = new UTApi();
+const api = new UTApi();
 
 /**
  * Server-side upload using UTApi. Bypasses the file router callback flow
  * (which fails in dev due to self-fetch) and talks directly to UploadThing API.
  */
 export const upload = async (files: File[]) => {
-  const results = await utapi.uploadFiles(files);
+  const results = await api.uploadFiles(files);
 
-  const failed = results.find((r) => r.error !== null);
+  const failed = results.find((result) => result.error !== null);
   if (failed?.error) throw failed.error;
 
   return results
     .filter(
-      (r): r is { data: NonNullable<typeof r.data>; error: null } =>
-        r.data !== null,
+      (
+        result,
+      ): result is { data: NonNullable<typeof result.data>; error: null } =>
+        result.data !== null,
     )
-    .map((r) => ({ ufsUrl: r.data.url }));
+    .map((result) => ({ ufsUrl: result.data.url }));
 };
 
 export const fileRouter = {
-  thumbnails: f({})
+  thumbnails: builder({})
     .onUploadError(async ({ error }) => {
       console.log({ error });
     })
@@ -36,7 +38,7 @@ export const fileRouter = {
       return { url: file.ufsUrl };
     }),
 
-  projects: f({
+  projects: builder({
     image: {
       maxFileSize: "4MB",
       maxFileCount: 4,

@@ -40,7 +40,7 @@ const findByUser = withContext(async (_, { user }: { user: string }) => {
 
 const upsertFromStripeSubscription = withContext(
   async (
-    _,
+    context,
     {
       subscription,
       fallbackUser,
@@ -95,7 +95,20 @@ const upsertFromStripeSubscription = withContext(
 
     if (!lookup.success) return lookup;
 
-    if (lookup.data) return update(Environment.SERVER, lookup.data.id, payload);
+    if (lookup.data) {
+      context.span.addBreadcrumb({
+        category: "subscription.upsert",
+        data: {
+          action: "update",
+          "subscription.id": lookup.data.id,
+          "stripe.subscription.id": subscription.id,
+          "user.id": user,
+          plan,
+          status: subscription.status,
+        },
+      });
+      return update(Environment.SERVER, lookup.data.id, payload);
+    }
 
     if (!user)
       return {
@@ -104,6 +117,17 @@ const upsertFromStripeSubscription = withContext(
           "Cannot create subscription without a user id",
         ),
       };
+
+    context.span.addBreadcrumb({
+      category: "subscription.upsert",
+      data: {
+        action: "create",
+        "stripe.subscription.id": subscription.id,
+        "user.id": user,
+        plan,
+        status: subscription.status,
+      },
+    });
 
     return create(Environment.SERVER, { ...payload, userId: user });
   },
@@ -136,7 +160,7 @@ const syncFromStripe = withContext(
 
 const ensureCustomer = withContext(
   async (
-    _,
+    context,
     {
       user,
     }: {
@@ -172,6 +196,14 @@ const ensureCustomer = withContext(
           cause: customer.error,
         }),
       };
+
+    context.span.addBreadcrumb({
+      category: "subscription.customer.created",
+      data: {
+        "user.id": user.id,
+        "stripe.customer.id": customer.data.id,
+      },
+    });
 
     return { success: true as const, data: customer.data.id };
   },
@@ -264,6 +296,16 @@ export const createCheckoutSession = withAuthentication(
         success: false as const,
         error: new RequestError("Stripe did not return a checkout URL"),
       };
+
+    context.span.addBreadcrumb({
+      category: "subscription.checkout.created",
+      data: {
+        "user.id": context.session.user.id,
+        "stripe.session.id": session.data.id,
+        "stripe.customer.id": customer.data,
+        plan: key,
+      },
+    });
 
     const existing = await findByUser(Environment.SERVER, {
       user: context.session.user.id,
@@ -375,39 +417,68 @@ export const createBillingPortalSession = withAuthentication(
   "Subscription.createBillingPortalSession",
 );
 
-export const handleStripeEvent = async (event: Stripe.Event) => {
-  switch (event.type) {
-    case "checkout.session.completed": {
-      const session = event.data.object as Stripe.Checkout.Session;
-      if (session.mode !== "subscription" || !session.subscription) break;
+export const handleStripeEvent = withContext(
+  async (context, { event }: { event: Stripe.Event }) => {
+    context.span.addBreadcrumb({
+      category: "subscription.webhook.received",
+      data: {
+        "event.id": event.id,
+        "event.type": event.type,
+      },
+    });
 
-      const id =
-        typeof session.subscription === "string"
-          ? session.subscription
-          : session.subscription.id;
+    switch (event.type) {
+      case "checkout.session.completed": {
+        const session = event.data.object as Stripe.Checkout.Session;
+        if (session.mode !== "subscription" || !session.subscription)
+          return { success: true as const, data: { handled: false } };
 
-      const subscription = await stripe().subscriptions.retrieve(id);
+        const id =
+          typeof session.subscription === "string"
+            ? session.subscription
+            : session.subscription.id;
 
-      await upsertFromStripeSubscription(Environment.SERVER, {
-        subscription,
-        fallbackUser:
-          (session.metadata?.["userId"] as string | undefined) ??
-          session.client_reference_id ??
-          null,
-      });
-      break;
+        const retrieved = await resultify(() =>
+          stripe().subscriptions.retrieve(id),
+        );
+        if (!retrieved.success)
+          return {
+            success: false as const,
+            error: new RequestError(
+              "Failed to retrieve Stripe subscription from webhook",
+              { cause: retrieved.error },
+            ),
+          };
+
+        const upserted = await upsertFromStripeSubscription(Environment.SERVER, {
+          subscription: retrieved.data,
+          fallbackUser:
+            // biome-ignore lint/complexity/useLiteralKeys: Stripe.Metadata is an index signature; TS requires bracket access
+            (session.metadata?.["userId"] as string | undefined) ??
+            session.client_reference_id ??
+            null,
+        });
+        if (!upserted.success) return upserted;
+
+        return { success: true as const, data: { handled: true } };
+      }
+      case "customer.subscription.created":
+      case "customer.subscription.updated":
+      case "customer.subscription.deleted":
+      case "customer.subscription.paused":
+      case "customer.subscription.resumed":
+      case "customer.subscription.trial_will_end": {
+        const subscription = event.data.object as Stripe.Subscription;
+        const upserted = await upsertFromStripeSubscription(Environment.SERVER, {
+          subscription,
+        });
+        if (!upserted.success) return upserted;
+
+        return { success: true as const, data: { handled: true } };
+      }
+      default:
+        return { success: true as const, data: { handled: false } };
     }
-    case "customer.subscription.created":
-    case "customer.subscription.updated":
-    case "customer.subscription.deleted":
-    case "customer.subscription.paused":
-    case "customer.subscription.resumed":
-    case "customer.subscription.trial_will_end": {
-      const subscription = event.data.object as Stripe.Subscription;
-      await upsertFromStripeSubscription(Environment.SERVER, { subscription });
-      break;
-    }
-    default:
-      break;
-  }
-};
+  },
+  "Subscription.handleStripeEvent",
+);

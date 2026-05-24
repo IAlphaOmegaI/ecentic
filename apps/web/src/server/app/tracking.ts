@@ -149,41 +149,23 @@ export const getAgentTrafficTimeSeries = withAuthentication(async (context) => {
 
   if (!result.success) return result;
 
-  const byDate = new Map<
-    string,
-    { chatgpt: number; claude: number; gemini: number }
-  >();
-
-  for (let i = 29; i >= 0; i--) {
+  const dates = Array.from({ length: 30 }, (_value, index) => {
     const date = new Date();
-    date.setDate(date.getDate() - i);
-    const key = date.toISOString().split("T")[0] as string;
-    byDate.set(key, { chatgpt: 0, claude: 0, gemini: 0 });
-  }
+    date.setDate(date.getDate() - (29 - index));
+    return date.toISOString().split("T")[0] as string;
+  });
 
-  for (const row of result.data) {
-    const entry = byDate.get(row.day);
-    if (!entry) continue;
+  const countFor = (date: string, family: string) =>
+    result.data.find(
+      (row) => row.day === date && row.modelFamily === family,
+    )?.count ?? 0;
 
-    switch (row.modelFamily) {
-      case "ChatGPT":
-        entry.chatgpt = row.count;
-        break;
-      case "Claude":
-        entry.claude = row.count;
-        break;
-      case "Gemini":
-        entry.gemini = row.count;
-        break;
-    }
-  }
-
-  const timeSeries: TrafficTimeSeriesPoint[] = Array.from(byDate.entries()).map(
-    ([date, counts]) => ({
-      date,
-      ...counts,
-    }),
-  );
+  const timeSeries: TrafficTimeSeriesPoint[] = dates.map((date) => ({
+    date,
+    chatgpt: countFor(date, "ChatGPT"),
+    claude: countFor(date, "Claude"),
+    gemini: countFor(date, "Gemini"),
+  }));
 
   return { success: true as const, data: timeSeries };
 }, "Tracking.getAgentTrafficTimeSeries");
