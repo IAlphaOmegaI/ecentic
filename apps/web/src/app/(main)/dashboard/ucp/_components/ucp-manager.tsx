@@ -36,6 +36,7 @@ import {
   saveProfile,
 } from "@/server/app/intelligence/ucp";
 import type * as Product from "@/server/app/product";
+import { UcpAdvancedValidator } from "./ucp-advanced-validator";
 
 // ─── JSON syntax highlighter ────────────────────────────────────────────────
 
@@ -509,7 +510,10 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
                         );
                       })()}
                       <div className="flex min-w-0 flex-1 items-center gap-3">
-                        <label className="w-36 shrink-0 font-medium text-foreground-dimmed text-xs">
+                        <label
+                          htmlFor={`ucp-field-${field.key}`}
+                          className="w-36 shrink-0 font-medium text-foreground-dimmed text-xs"
+                        >
                           {field.label}
                         </label>
                         <TextField
@@ -520,6 +524,7 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
                           className="h-7 flex-1 cursor-text border border-accent-foreground bg-background"
                         >
                           <TextFieldInput
+                            id={`ucp-field-${field.key}`}
                             placeholder="—"
                             className="px-2 text-xs"
                           />
@@ -646,6 +651,9 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
         <TabsPanel value="validate">
           <div className="mt-4 border border-accent-foreground">
             <UcpValidatorForm />
+          </div>
+          <div className="mt-4 border border-accent-foreground">
+            <UcpAdvancedValidator />
           </div>
         </TabsPanel>
 
