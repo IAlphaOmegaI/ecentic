@@ -309,7 +309,7 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
 
   const handleGenerateProduct = useCallback(async (productId: string) => {
     setPending((prev) => new Set([...prev, productId]));
-    const r = await generateProductStructuredData({ productId });
+    const r = await generateProductStructuredData({ product: productId });
     setPending((prev) => {
       const next = new Set(prev);
       next.delete(productId);

@@ -210,10 +210,10 @@ export const syncShopifyCatalog = withContext(
 );
 
 export const syncProducts = withAuthentication(
-  async (context, { storeId }: { storeId: string }) => {
+  async (context, { store: id }: { store: string }) => {
     return syncShopifyCatalog(Environment.SERVER, {
       user: context.session.user.id,
-      store: storeId,
+      store: id,
     });
   },
   "Shopify.syncProducts",

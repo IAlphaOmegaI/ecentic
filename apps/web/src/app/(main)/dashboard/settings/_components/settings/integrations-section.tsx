@@ -1,16 +1,25 @@
 "use client";
 
 import { PlusIcon } from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
 import * as Store from "@/server/app/store";
 
+const PLATFORM_BADGE: Record<string, { label: string; className: string }> = {
+  shopify: { label: "SH", className: "bg-[#96BF48] text-white" },
+  "shopify-public": { label: "SH", className: "bg-[#96BF48] text-white" },
+  woocommerce: { label: "WC", className: "bg-[#7F54B3] text-white" },
+  feed: { label: "FD", className: "bg-primary/80 text-primary-foreground" },
+  csv: { label: "CSV", className: "bg-accent-foreground text-background" },
+};
+
 export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
   const toast = useToastManager();
 
-  const [handleSync, isSyncing] = useAsyncAction(async (storeId: string) => {
-    const result = await Store.syncProducts({ storeId });
+  const [handleSync, isSyncing] = useAsyncAction(async (id: string) => {
+    const result = await Store.syncProducts({ store: id });
     if (!result.success) {
       toast.add({ title: "Sync failed", type: "error" });
       return;
@@ -32,14 +41,24 @@ export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
           </div>
         ) : (
           <div className="divide-y divide-accent-foreground">
-            {stores.map((store) => (
+            {stores.map((store) => {
+              const badge = PLATFORM_BADGE[store.platform] ?? {
+                label: store.platform.slice(0, 2).toUpperCase(),
+                className: "bg-foreground-dimmed text-background",
+              };
+              return (
               <div
                 key={store.id}
                 className="flex items-center justify-between px-4 py-4"
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex size-9 items-center justify-center bg-[#96BF48] font-bold text-sm text-white">
-                    {store.platform === "shopify" ? "SH" : "WC"}
+                  <div
+                    className={cn(
+                      "flex size-9 items-center justify-center font-bold text-sm",
+                      badge.className,
+                    )}
+                  >
+                    {badge.label}
                   </div>
                   <div>
                     <p className="font-medium text-base text-foreground">
@@ -64,7 +83,8 @@ export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
                   </Button>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

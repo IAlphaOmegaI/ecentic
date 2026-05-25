@@ -43,10 +43,10 @@ export const findPending = withContext(async (_context) => {
 }, "Scan.findPending");
 
 export const findRunningForUser = withContext(
-  async (_context, { userId }: { userId: string }) => {
+  async (_context, { user }: { user: string }) => {
     return find(Environment.SERVER, {
       where: and(
-        eq(schema.scan.userId, userId),
+        eq(schema.scan.userId, user),
         inArray(schema.scan.status, ["running"]),
       ),
     });
@@ -73,25 +73,28 @@ export const getShareData = withContext(async (_, { id }: { id: string }) => {
 
   if (!simulations.success) return simulations;
 
-  const map = new Map<string, { wins: number; losses: number }>();
-
-  for (const simulation of simulations.data) {
-    const current = map.get(simulation.model) ?? { wins: 0, losses: 0 };
-    if (simulation.winner === "product") current.wins++;
-    else current.losses++;
-    map.set(simulation.model, current);
-  }
+  const models = [
+    ...new Set(simulations.data.map((simulation) => simulation.model)),
+  ];
 
   const modelRates = Object.fromEntries(
-    Array.from(map.entries()).map(([model, { wins, losses }]) => [
-      model,
-      {
-        wins,
-        losses,
-        rate:
-          wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0,
-      },
-    ]),
+    models.map((model) => {
+      const rows = simulations.data.filter(
+        (simulation) => simulation.model === model,
+      );
+      const wins = rows.filter(
+        (simulation) => simulation.winner === "product",
+      ).length;
+      const losses = rows.length - wins;
+      return [
+        model,
+        {
+          wins,
+          losses,
+          rate: rows.length > 0 ? Math.round((wins / rows.length) * 100) : 0,
+        },
+      ];
+    }),
   );
 
   return {

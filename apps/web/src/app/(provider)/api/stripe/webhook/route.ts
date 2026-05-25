@@ -2,6 +2,7 @@ import { resultify } from "@zenncore/utils";
 import { type NextRequest, NextResponse as Response } from "next/server";
 import type Stripe from "stripe";
 import { handleStripeEvent } from "@/server/app/subscription";
+import { Environment } from "@/server/utils/environment";
 import { stripe } from "@/server/utils/stripe";
 
 export const POST = async (request: NextRequest) => {
@@ -37,7 +38,9 @@ export const POST = async (request: NextRequest) => {
       { status: 400 },
     );
 
-  const handled = await resultify(() => handleStripeEvent(event.data));
+  const handled = await handleStripeEvent(Environment.SERVER, {
+    event: event.data,
+  });
 
   if (!handled.success) {
     console.error("Stripe webhook handler failed", handled.error);

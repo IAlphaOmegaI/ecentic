@@ -423,6 +423,59 @@ import { create } from "@/server/app/content";
 
 ---
 
+## 18b1. Function Arguments Use Domain Names — Rename Internally on Conflict
+
+Function parameters are named after the **domain concept**, not the technical primitive they hold. A function that takes a store identifier accepts `{ store }`, not `{ storeId }`. A function that takes a product accepts `{ product }`, not `{ productId }`. The caller sees the domain.
+
+If the parameter name conflicts with a local binding inside the body (typically when the body resolves the domain object via `[Module].get(id)` into a variable of the same name), **rename the parameter via destructuring**. Default to `id`. If the function takes multiple IDs that would all collapse onto `id`, use the longer `[domain]Id` form (`{ store: storeId, product: productId }`) to disambiguate.
+
+```ts
+// ✅ Good — argument is `store`; renamed to `id` because the resolved store occupies `store`
+export const syncProducts = withAuthentication(
+  async (_, { store: id }: { store: string }) => {
+    const store = await get(Environment.SERVER, id);
+    if (!store.success) return store;
+    if (!store.data) return { success: false, error: new Error("Store not found") };
+
+    switch (store.data.platform) {
+      case "shopify":
+        return Shopify.syncProducts({ store: id });
+      case "woocommerce":
+        return WooCommerce.syncProducts({ store: id });
+      case "feed":
+        return Feed.syncProducts({ store: id });
+    }
+  },
+  "Store.syncProducts",
+);
+
+// ✅ Good — no local conflict, so no rename needed
+export const list = withAuthentication(
+  async (_, { store }: { store: string }) => find(Environment.SERVER, { where: eq(schema.product.storeId, store) }),
+  "Product.list",
+);
+
+// ✅ Good — multiple IDs, disambiguate with [domain]Id
+async (_, { store: storeId, product: productId }: { store: string; product: string }) => { ... }
+```
+
+```ts
+// ❌ Bad — primitive-suffixed argument leaks the implementation detail
+async (_, { storeId }: { storeId: string }) => {
+  const store = await get(Environment.SERVER, storeId);
+  return Shopify.syncProducts({ storeId });
+}
+
+// ❌ Bad — caller has to know it's an ID; the domain name `store` is what they care about
+WooCommerce.syncProducts({ storeId: id });
+```
+
+**Why this matters:** The caller passes "the store" — they shouldn't need to know whether the receiver works with the full object, the ID, or a slug. The receiver is free to change its internal representation without breaking the call site contract.
+
+This is paired with §18b (pass domain objects, not derived primitives): together they say the **domain name** travels through the API, regardless of what concrete data shape is under the hood.
+
+---
+
 ## 18b. Pass Domain Objects, Not Derived Primitives
 
 When a server component fetches data and passes it to a client component, pass the full domain objects. Let the client derive what it needs. This keeps the API richer, avoids premature data reduction, and makes the props self-documenting via `Module.Type`.
@@ -443,28 +496,44 @@ return `${optimizations.length}`;
 
 ---
 
-## 18c. No "Result" Suffix on Result Variables
+## 18c. Name `Result`-Returning Calls After the Domain — Read `.data` Inline
 
-Never name a variable `[something]Result` — the `Result` type is visible from the type annotation. Name the variable after the domain concept and access `.data` directly.
+Two rules, applied together, for every call that returns a `Result`:
+
+1. **Never suffix the variable with `Result`.** The `Result` type is visible from the type annotation — the suffix is redundant noise.
+2. **Never extract `.data` into a second variable.** Bind the call once, using a single-word domain name, and read `.data` directly off it everywhere it's used.
+
+Together these collapse the two-step `const xResult = …; const x = xResult.data;` pattern into a single binding named after the thing itself.
 
 ```ts
-// ✅ Good
+// ✅ Good — single binding, single-word domain name, read .data inline
+const user = await User.get(id);
+if (!user.success) return null;
+return <Profile name={user.data.name} email={user.data.email} />;
+
 const creation = await Content.create(data);
 if (!creation.success) return;
 router.push(`/dashboard/content/${creation.data.id}`);
 
 const deletion = await Content.destroy(id);
 if (!deletion.success) return { success: false, error: deletion.error };
-
-// ❌ Bad — "Result" suffix is redundant noise
-const creationResult = await Content.create(data);
-if (creationResult.success) creation = creationResult.data;
-
-const deletionResult = await Content.destroy(id);
-if (!deletionResult.success) return { success: false, error: deletionResult.error };
 ```
 
-This applies everywhere: server actions, utilities, hooks, and any other `Result`-returning call.
+```ts
+// ❌ Bad — "Result" suffix is redundant noise
+const userResult = await User.get(id);
+if (!userResult.success) return null;
+
+// ❌ Bad — extracting .data into a second variable (even without the suffix)
+const userResult = await User.get(id);
+const user = userResult.data;
+
+// ❌ Bad — both anti-patterns at once
+const creationResult = await Content.create(data);
+if (creationResult.success) creation = creationResult.data;
+```
+
+Prefer single-word names for these bindings (`user`, `creation`, `deletion`, `update`, `scan`) — see §3. This applies everywhere: server actions, utilities, hooks, and any other `Result`-returning call.
 
 ---
 

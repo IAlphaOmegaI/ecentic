@@ -1,17 +1,13 @@
+import { resultify } from "@zenncore/utils";
 import { formatPrice } from "@/lib/currency";
 import type * as Competitor from "../competitor";
 import type * as Product from "../product";
 
 const parseImageCount = (images: string | null | undefined): number => {
   if (!images) return 0;
-  const parsed = (() => {
-    try {
-      return JSON.parse(images);
-    } catch {
-      return [];
-    }
-  })();
-  return Array.isArray(parsed) ? parsed.length : 0;
+  const parsed = resultify(() => JSON.parse(images) as unknown);
+  if (!parsed.success) return 0;
+  return Array.isArray(parsed.data) ? parsed.data.length : 0;
 };
 
 export const formatProduct = (product: Product.Type): string => {

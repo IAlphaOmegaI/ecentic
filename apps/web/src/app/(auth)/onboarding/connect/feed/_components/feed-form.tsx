@@ -60,7 +60,7 @@ export const FeedForm = () => {
         type: "success",
       });
       void (async () => {
-        await Store.syncProducts({ storeId: result.data.id });
+        await Store.syncProducts({ store: result.data.id });
       })();
 
       router.push("/onboarding/products");

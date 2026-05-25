@@ -137,8 +137,8 @@ ${productSummary || "No products yet"}`,
 }, "Ucp.generateJson");
 
 export const generateProductStructuredData = withAuthentication(
-  async (context, { productId }: { productId: string }) => {
-    const product = await Product.get(Environment.SERVER, productId);
+  async (context, { product: id }: { product: string }) => {
+    const product = await Product.get(Environment.SERVER, id);
 
     if (!product.success) return product;
 

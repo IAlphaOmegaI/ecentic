@@ -275,7 +275,9 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
   const [approveOne, isApprovePending] = useAsyncAction(
     async (productId: string) => {
       setSelected(productId);
-      const result = await Optimization.approveProductListing({ productId });
+      const result = await Optimization.approveProductListing({
+        product: productId,
+      });
       setSelected(null);
 
       if (!result.success) {
@@ -299,7 +301,9 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
   const [dismissOne, isDismissPending] = useAsyncAction(
     async (productId: string) => {
       setSelected(productId);
-      const result = await Optimization.dismissSuggestion({ productId });
+      const result = await Optimization.dismissSuggestion({
+        product: productId,
+      });
       setSelected(null);
       if (!result.success) {
         toast.add({
@@ -316,7 +320,9 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
   const [reconsiderOne, isReconsiderPending] = useAsyncAction(
     async (productId: string) => {
       setSelected(productId);
-      const result = await Optimization.reconsiderSuggestion({ productId });
+      const result = await Optimization.reconsiderSuggestion({
+        product: productId,
+      });
       setSelected(null);
       if (!result.success) {
         toast.add({

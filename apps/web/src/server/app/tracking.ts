@@ -71,8 +71,8 @@ export const parse = withContext(
 const RATE_LIMIT_WINDOW = 3600;
 const RATE_LIMIT_MAX = 1000;
 
-const isRateLimited = withContext(async (ctx, storeId: string) => {
-  const key = `rate_limit:agent_visit:${storeId}`;
+const isRateLimited = withContext(async (ctx, { store }: { store: string }) => {
+  const key = `rate_limit:agent_visit:${store}`;
   const count = await ctx.durable.redis.incr(key);
 
   if (count === 1) await ctx.durable.redis.expire(key, RATE_LIMIT_WINDOW);
@@ -149,41 +149,23 @@ export const getAgentTrafficTimeSeries = withAuthentication(async (context) => {
 
   if (!result.success) return result;
 
-  const byDate = new Map<
-    string,
-    { chatgpt: number; claude: number; gemini: number }
-  >();
-
-  for (let i = 29; i >= 0; i--) {
+  const dates = Array.from({ length: 30 }, (_value, index) => {
     const date = new Date();
-    date.setDate(date.getDate() - i);
-    const key = date.toISOString().split("T")[0] as string;
-    byDate.set(key, { chatgpt: 0, claude: 0, gemini: 0 });
-  }
+    date.setDate(date.getDate() - (29 - index));
+    return date.toISOString().split("T")[0] as string;
+  });
 
-  for (const row of result.data) {
-    const entry = byDate.get(row.day);
-    if (!entry) continue;
+  const countFor = (date: string, family: string) =>
+    result.data.find(
+      (row) => row.day === date && row.modelFamily === family,
+    )?.count ?? 0;
 
-    switch (row.modelFamily) {
-      case "ChatGPT":
-        entry.chatgpt = row.count;
-        break;
-      case "Claude":
-        entry.claude = row.count;
-        break;
-      case "Gemini":
-        entry.gemini = row.count;
-        break;
-    }
-  }
-
-  const timeSeries: TrafficTimeSeriesPoint[] = Array.from(byDate.entries()).map(
-    ([date, counts]) => ({
-      date,
-      ...counts,
-    }),
-  );
+  const timeSeries: TrafficTimeSeriesPoint[] = dates.map((date) => ({
+    date,
+    chatgpt: countFor(date, "ChatGPT"),
+    claude: countFor(date, "Claude"),
+    gemini: countFor(date, "Gemini"),
+  }));
 
   return { success: true as const, data: timeSeries };
 }, "Tracking.getAgentTrafficTimeSeries");
@@ -258,10 +240,9 @@ export const recordAgentVisit = withContext(
     )
       return { success: false, error: new Error("Origin not allowed") };
 
-    const rateLimited = await isRateLimited(
-      Environment.SERVER,
-      payload.storeId,
-    );
+    const rateLimited = await isRateLimited(Environment.SERVER, {
+      store: payload.storeId,
+    });
 
     if (!rateLimited.success) return rateLimited;
 
@@ -269,7 +250,7 @@ export const recordAgentVisit = withContext(
       return { success: false, error: new Error("Rate limited") };
 
     const resolved = await resolveProductFromPageUrl(Environment.SERVER, {
-      storeId: store.data.id,
+      store: store.data.id,
       pageUrl: payload.productUrl,
     });
 
