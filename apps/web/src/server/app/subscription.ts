@@ -15,8 +15,8 @@ import type { Document } from "../utils/repository";
 import { repository } from "../utils/repository";
 import {
   isPlanKey,
-  type PlanKey,
   PLANS,
+  type PlanKey,
   resolvePlanByPriceId,
   stripe,
 } from "../utils/stripe";
@@ -116,7 +116,9 @@ export const createCheckoutSession = withAuthentication(
     if (!priceId)
       return {
         success: false as const,
-        error: new RequestError(`Stripe price for plan "${plan}" is not configured`),
+        error: new RequestError(
+          `Stripe price for plan "${plan}" is not configured`,
+        ),
       };
 
     const customerId = await resultify(() =>
@@ -297,7 +299,7 @@ const upsertFromStripeSubscription = async (
       : subscription.customer.id;
 
   const userId =
-    ((subscription.metadata?.["userId"] as string | undefined)) ??
+    (subscription.metadata?.["userId"] as string | undefined) ??
     fallbackUserId ??
     null;
 
@@ -364,13 +366,12 @@ export const handleStripeEvent = async (event: Stripe.Event) => {
           ? session.subscription
           : session.subscription.id;
 
-      const subscription = await stripe().subscriptions.retrieve(
-        subscriptionId,
-      );
+      const subscription =
+        await stripe().subscriptions.retrieve(subscriptionId);
 
       await upsertFromStripeSubscription(
         subscription,
-        ((session.metadata?.["userId"] as string | undefined)) ??
+        (session.metadata?.["userId"] as string | undefined) ??
           session.client_reference_id ??
           null,
       );

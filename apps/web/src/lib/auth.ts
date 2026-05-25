@@ -1,19 +1,48 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { APIError, createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 import { genericOAuth } from "better-auth/plugins";
 import { cookies } from "next/headers";
 import * as Authentication from "@/server/app/authentication";
 import { db, schema } from "@/server/database";
+import { verifyHmac } from "@/server/utils/shopify";
 
-const parseName = (fullName: string): { name: string; surname: string } => {
-  const trimmed = (fullName ?? "").trim();
-  const spaceIndex = trimmed.indexOf(" ");
+type ShopifyOnlineTokenResponse = {
+  /** An API access token that can be used to access the shop's data. Your app should store the token somewhere to make authenticated requests for a shop's data. */
+  access_token: string;
+  /** The list of access scopes that were granted to your app and are associated with the access token. */
+  scope: string;
+  /** The number of seconds until the access token expires. */
+  expires_in: number;
+  /** The list of access scopes that were granted to the app and are available for this access token, given the user's permissions. */
+  associated_user_scope: string;
+  /** Information about the user who completed the OAuth authorization flow. The `email` field in this response appears regardless of the email verification status. If you're using emails as an identification source, then make sure that the `email_verified` field is also `true`. You can use the `id` field to uniquely identify a single user. */
+  associated_user: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    email_verified: boolean;
+    account_owner: boolean;
+    locale: string;
+    collaborator: boolean;
+  };
+};
 
-  if (spaceIndex === -1) return { name: trimmed, surname: trimmed };
+const parseName = (fullName: string): { name: string; surname?: string } => {
+  const trimmedFullName = fullName.trim();
+  // John Michael David => firstName = John Michael, surname = David
+  const spaceIndex = trimmedFullName.lastIndexOf(" ");
+
+  if (spaceIndex === -1) return { name: trimmedFullName };
+
+  const firstName = trimmedFullName.slice(0, spaceIndex);
+  const surname = trimmedFullName.slice(spaceIndex + 1).trim();
+
   return {
-    name: trimmed.slice(0, spaceIndex),
-    surname: trimmed.slice(spaceIndex + 1).trim() || trimmed,
+    name: firstName,
+    surname: surname !== "" ? surname : undefined,
   };
 };
 
@@ -56,16 +85,16 @@ export const auth = betterAuth({
   databaseHooks: {
     user: {
       create: {
-        before: async (user) => {
-          const { name, surname } = parseName(user.name);
+        before: async ({ role, name: fullName, ...user }) => {
+          const { name, surname } = parseName(fullName);
+
           return {
             data: {
               ...user,
               name,
               // biome-ignore lint/complexity/useLiteralKeys: index signature property
               surname: user["surname"] || surname,
-              // biome-ignore lint/complexity/useLiteralKeys: index signature property
-              role: user["role"] || "user",
+              role: role ?? "user",
             },
           };
         },
@@ -94,21 +123,28 @@ export const auth = betterAuth({
           clientId: process.env.SHOPIFY_API_KEY,
           clientSecret: process.env.SHOPIFY_API_SECRET,
           authorizationUrl: `${process.env.APP_HOST}/api/auth/shopify-proxy/authorize`,
+          authorizationUrlParams: {
+            grant_options: "per-user",
+          },
           //BUG: tokenUrl is required by better-auth for config validation even when getToken is provided
           tokenUrl: "https://shopify.myshopify.com/admin/oauth/access_token",
-          scopes: ["read_customers"],
           getToken: async ({ code }) => {
+            // TODO: the access_token should be an expiring offline token
+
+            // TODO: add custom access token generation and
+            // move `https://${shop}/admin/oauth/access_token` to getUserInfo since it is only needed to get the user info
+
             const jar = await cookies();
             const shop = jar.get("shopify_auth_shop")?.value;
 
-            console.log(shop);
-
             if (!shop) throw new Error("Missing Shopify shop domain");
 
-            const { SHOPIFY_API_KEY, SHOPIFY_API_SECRET } = process.env;
-
-            if (!SHOPIFY_API_KEY || !SHOPIFY_API_SECRET)
+            if (
+              !process.env.SHOPIFY_API_KEY ||
+              !process.env.SHOPIFY_API_SECRET
+            ) {
               throw new Error("Shopify integration not configured");
+            }
 
             const response = await fetch(
               // make the access token expire (use ?expiring=1)
@@ -120,8 +156,8 @@ export const auth = betterAuth({
                   Accept: "application/json",
                 },
                 body: new URLSearchParams({
-                  client_id: SHOPIFY_API_KEY,
-                  client_secret: SHOPIFY_API_SECRET,
+                  client_id: process.env.SHOPIFY_API_KEY,
+                  client_secret: process.env.SHOPIFY_API_SECRET,
                   code,
                 }).toString(),
               },
@@ -129,48 +165,36 @@ export const auth = betterAuth({
 
             if (!response.ok) throw new Error("Shopify token exchange failed");
 
-            const data = (await response.json()) as {
-              access_token: string;
-              scope: string;
-            };
+            const data = (await response.json()) as ShopifyOnlineTokenResponse;
+
+            jar.delete("shopify_auth_shop");
 
             return {
               accessToken: data.access_token,
+              accessTokenExpiresAt: new Date(
+                Date.now() + data.expires_in * 1000,
+              ),
               scopes: data.scope.split(","),
-              raw: { shop },
+              raw: { shop, associated_user: data.associated_user },
             };
           },
+
           getUserInfo: async (tokens) => {
             // biome-ignore lint/complexity/useLiteralKeys: index signature property
             const shop = tokens.raw?.["shop"];
+            // biome-ignore lint/complexity/useLiteralKeys: index signature property
+            const associatedUser = tokens.raw?.["associated_user"] as
+              | ShopifyOnlineTokenResponse["associated_user"]
+              | undefined;
 
-            if (!shop || !tokens.accessToken) return null;
-
-            const response = await fetch(
-              `https://${shop}/admin/api/2024-10/shop.json`,
-              {
-                headers: {
-                  "X-Shopify-Access-Token": tokens.accessToken,
-                  "Content-Type": "application/json",
-                },
-              },
-            );
-
-            if (!response.ok) return null;
-
-            const data = (await response.json()) as {
-              shop: {
-                email: string;
-                shop_owner: string;
-                myshopify_domain: string;
-              };
-            };
+            if (!tokens.accessToken || !shop || !associatedUser) return null;
 
             return {
-              id: data.shop.myshopify_domain,
-              email: data.shop.email,
-              name: data.shop.shop_owner,
-              emailVerified: true,
+              id: associatedUser.id,
+              email: associatedUser.email,
+              name: `${associatedUser.first_name} ${associatedUser.last_name}`,
+              emailVerified: associatedUser.email_verified,
+              role: associatedUser.account_owner ? "owner" : "administrator",
             };
           },
         },
@@ -182,5 +206,31 @@ export const auth = betterAuth({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     },
+  },
+  hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      const shopifyCallbackUrl = `${process.env.APP_HOST}/api/auth/oauth2/callback/shopify`;
+
+      if (ctx.request?.url.startsWith(shopifyCallbackUrl)) {
+        const jar = await cookies();
+
+        const url = new URL(ctx.request.url);
+
+        const state = url.searchParams.get("state");
+        const nonce = jar.get("shopify_auth_nonce")?.value;
+
+        if (state !== nonce) {
+          // TODO: redirect to `${process.env.APP_HOST}/sign-in?error=state_mismatch`
+          throw new APIError("UNAUTHORIZED", { message: "State mismatch" });
+        }
+
+        if (!verifyHmac(url.searchParams, process.env.SHOPIFY_API_SECRET)) {
+          // TODO: redirect to `${process.env.APP_HOST}/sign-in?error=invalid_hmac`
+          throw new APIError("UNAUTHORIZED", { message: "Invalid HMAC" });
+        }
+
+        jar.delete("shopify_auth_nonce");
+      }
+    }),
   },
 });

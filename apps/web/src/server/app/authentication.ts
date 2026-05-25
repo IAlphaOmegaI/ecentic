@@ -31,15 +31,15 @@ export const signInWithShopify = withContext(
   ) => {
     const jar = await cookies();
 
-    const domain = shop
+    const shopifyDomain = shop
       .trim()
       .replace(/^https?:\/\//, "")
       .replace(/\/.*$/, "");
-    const normalizedDomain = domain.includes(".myshopify.com")
-      ? domain
-      : `${domain}.myshopify.com`;
+    const normalizedShopifyDomain = shopifyDomain.includes(".myshopify.com")
+      ? shopifyDomain
+      : `${shopifyDomain}.myshopify.com`;
 
-    jar.set("shopify_auth_shop", normalizedDomain, {
+    jar.set("shopify_auth_shop", normalizedShopifyDomain, {
       httpOnly: true,
       secure: true,
       sameSite: "lax",
@@ -53,8 +53,8 @@ export const signInWithShopify = withContext(
           body: {
             providerId: "shopify",
             callbackURL,
-            newUserCallbackURL: "/complete-profile",
-            disableRedirect: true,
+            newUserCallbackURL: `/onboarding/connect/shopify?shop=${encodeURIComponent(shop)}`,
+            disableRedirect: false,
           },
         }),
     );

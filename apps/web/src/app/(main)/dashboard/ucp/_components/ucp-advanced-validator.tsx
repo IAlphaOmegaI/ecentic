@@ -201,7 +201,7 @@ const McpToolTestRow = ({
   const tone: Tone = !test.present ? "skip" : test.passed ? "success" : "danger";
 
   return (
-    <div className="grid gap-3 bg-background-dimmed/40 px-4 py-2.5 md:grid-cols-[28px_minmax(0,200px)_60px_80px_minmax(0,1fr)] md:items-center">
+    <div className="grid gap-3 bg-background-dimmed/40 px-4 py-2.5 md:grid-cols-[28px_minmax(0,200px)_80px_90px_minmax(0,1fr)] md:items-center">
       <span
         className={cn(
           "inline-flex size-6 shrink-0 items-center justify-center border text-[10px]",
@@ -305,7 +305,7 @@ const McpProbeRow = ({
 
       {probe.toolTests.length > 0 && (
         <div className="border-accent-foreground border-t">
-          <div className="hidden border-accent-foreground border-b bg-background-dimmed px-4 py-1.5 md:grid md:grid-cols-[28px_minmax(0,200px)_60px_80px_minmax(0,1fr)]">
+          <div className="hidden items-center gap-3 border-accent-foreground border-b bg-background-dimmed px-4 py-1.5 md:grid md:grid-cols-[28px_minmax(0,200px)_80px_90px_minmax(0,1fr)]">
             {["", "Tool", "Latency", "Result", "Note"].map((h) => (
               <p key={h} className="font-medium text-foreground-dimmed text-xs uppercase tracking-[0.12em]">
                 {h}

@@ -62,14 +62,14 @@ export const SignInForm = () => {
   const [provider, setProvider] = useState<"email" | "google" | "shopify">(
     "email",
   );
-  const [_showShopifyForm, _setShowShopifyForm] = useState(false);
+  const [showShopifyForm, setShowShopifyForm] = useState(false);
 
   const [handleSubmit, isPending] = useAsyncAction(
     async (
       data:
-        | { data: FormEntries<typeof config>; type: "email" }
+        | { type: "email"; data: FormEntries<typeof config> }
         | { type: "google" }
-        | { data: FormEntries<typeof shopifyConfig>; type: "shopify" },
+        | { type: "shopify"; data: FormEntries<typeof shopifyConfig> },
     ) => {
       setProvider(data.type);
 
@@ -135,7 +135,7 @@ export const SignInForm = () => {
           )}
           Continue with Google
         </Button>
-        {/* <Button
+        <Button
           variant="soft"
           color="emphasis"
           className="w-full"
@@ -176,7 +176,7 @@ export const SignInForm = () => {
               Connect Shopify store
             </Button>
           </InferredForm>
-        )} */}
+        )}
         <div className="relative mt-4 flex items-center gap-3">
           <div className="h-px flex-1 bg-accent-foreground" />
           <span className="font-light text-foreground-dimmed">or</span>
