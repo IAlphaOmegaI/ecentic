@@ -10,6 +10,7 @@ import { withAuthentication } from "../utils/authentication";
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { type Document, repository } from "../utils/repository";
+import * as Ucp from "./intelligence/ucp";
 import * as Product from "./product";
 import * as Simulation from "./simulation";
 import * as Store from "./store";
@@ -75,6 +76,7 @@ export type DashboardData = {
   published: Type[];
   dismissed: Type[];
   products: Record<string, Product.Type>;
+  shopifyStores: { id: string; name: string }[];
   diagnostics: {
     lowWinRateCount: number;
     publishableCount: number;
@@ -320,6 +322,9 @@ export const listDashboard = withAuthentication(async (context) => {
       published,
       dismissed,
       products: productById,
+      shopifyStores: stores.data
+        .filter((store) => store.platform === "shopify")
+        .map((store) => ({ id: store.id, name: store.name })),
       diagnostics: {
         lowWinRateCount: lowWinRateEntries.length,
         publishableCount: publishableLowWinRateCount,
@@ -577,3 +582,55 @@ export const approveAllPending = withAuthentication(async (context) => {
     data: { count: pendingProductIds.length },
   };
 }, "Optimization.approveAllPending");
+
+export const optimizeStoreForAgents = withAuthentication(
+  async (context, { store: storeId }: { store: string }) => {
+    const userId = context.session.user.id;
+
+    const store = await Store.get(Environment.SERVER, storeId);
+    if (!store.success) return store;
+    if (!store.data)
+      return { success: false as const, error: new Error("Store not found") };
+    if (store.data.userId !== userId)
+      return { success: false as const, error: new Error("Not authorized") };
+    if (store.data.platform !== "shopify-public")
+      return {
+        success: false as const,
+        error: new Error(
+          "Agent optimization is only supported for connected Shopify stores",
+        ),
+      };
+
+    const errors: string[] = [];
+
+    const profile = await Ucp.publishProfileToShopify({ store: storeId });
+    if (!profile.success) {
+      errors.push(`UCP profile: ${profile.error.message}`);
+    }
+
+    const products = await Ucp.publishProductsToShopify({ store: storeId });
+    if (!products.success) {
+      errors.push(`Product metafields: ${products.error.message}`);
+    }
+
+    const listings = await approveAllPending();
+    if (!listings.success) {
+      errors.push(`Listing rewrites: ${listings.error.message}`);
+    }
+
+    revalidatePath("/dashboard/optimize");
+    revalidatePath("/dashboard/ucp");
+
+    return {
+      success: true as const,
+      data: {
+        profileWritten: profile.success ? profile.data.written : 0,
+        productsPushed: products.success ? products.data.pushed : 0,
+        productsTotal: products.success ? products.data.total : 0,
+        listingsRewritten: listings.success ? listings.data.count : 0,
+        errors,
+      },
+    };
+  },
+  "Optimization.optimizeStoreForAgents",
+);

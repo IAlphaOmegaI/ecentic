@@ -1,6 +1,6 @@
-import { betterAuth } from "better-auth";
+import { type BetterAuthPlugin, betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { APIError, createAuthMiddleware } from "better-auth/api";
+import { APIError } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 import { genericOAuth } from "better-auth/plugins";
 import { cookies } from "next/headers";
@@ -45,6 +45,39 @@ const parseName = (fullName: string): { name: string; surname?: string } => {
     surname: surname !== "" ? surname : undefined,
   };
 };
+
+const shopifyCallbackValidationPlugin = {
+  id: "shopify-callback-validation",
+  hooks: {
+    before: [
+      {
+        matcher: (ctx) => {
+          const shopifyCallbackUrl = `${process.env.APP_HOST}/api/auth/oauth2/callback/shopify`;
+
+          return ctx.request?.url?.startsWith(shopifyCallbackUrl) ?? false;
+        },
+        handler: async (ctx) => {
+          const url = ctx.request ? new URL(ctx.request.url) : undefined;
+
+          if (!url) return;
+
+          // const state = url.searchParams.get("state");
+          // const nonce = jar.get("shopify_auth_nonce")?.value;
+
+          // NOTE: no need to verify state since betterAuth verifies it by default
+          // if (state !== nonce) {
+          //   // TODO: redirect to `${process.env.APP_HOST}/sign-in?error=state_mismatch`
+          //   throw new APIError("BAD_REQUEST", { message: "state_mismatch" });
+          // }
+
+          if (!verifyHmac(url.searchParams, process.env.SHOPIFY_API_SECRET)) {
+            throw new APIError("BAD_REQUEST", { message: "hmac_mismatch" });
+          }
+        },
+      },
+    ],
+  },
+} satisfies BetterAuthPlugin;
 
 export const auth = betterAuth({
   baseURL: process.env.APP_HOST,
@@ -200,6 +233,7 @@ export const auth = betterAuth({
         },
       ],
     }),
+    shopifyCallbackValidationPlugin,
   ],
   socialProviders: {
     google: {
@@ -207,30 +241,15 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     },
   },
-  hooks: {
-    before: createAuthMiddleware(async (ctx) => {
-      const shopifyCallbackUrl = `${process.env.APP_HOST}/api/auth/oauth2/callback/shopify`;
 
-      if (ctx.request?.url.startsWith(shopifyCallbackUrl)) {
-        const jar = await cookies();
-
-        const url = new URL(ctx.request.url);
-
-        const state = url.searchParams.get("state");
-        const nonce = jar.get("shopify_auth_nonce")?.value;
-
-        if (state !== nonce) {
-          // TODO: redirect to `${process.env.APP_HOST}/sign-in?error=state_mismatch`
-          throw new APIError("UNAUTHORIZED", { message: "State mismatch" });
-        }
-
-        if (!verifyHmac(url.searchParams, process.env.SHOPIFY_API_SECRET)) {
-          // TODO: redirect to `${process.env.APP_HOST}/sign-in?error=invalid_hmac`
-          throw new APIError("UNAUTHORIZED", { message: "Invalid HMAC" });
-        }
-
-        jar.delete("shopify_auth_nonce");
-      }
-    }),
-  },
+  // hooks: {
+  //   before: [
+  //     {
+  //       matcher: (ctx) =>
+  //         ctx.request?.url?.startsWith("/api/auth/oauth2/callback/shopify"),
+  //       handler: async (ctx) => {
+  //         console.log("validating hmac", ctx.request?.url);
+  //       },
+  //     },
+  //   ],
 });

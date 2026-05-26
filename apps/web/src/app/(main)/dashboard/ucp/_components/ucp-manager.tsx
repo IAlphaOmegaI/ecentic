@@ -24,6 +24,7 @@ import {
   TabsPanel,
 } from "@zenncore/web/components/tabs";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
+import { useToastManager } from "@zenncore/web/components/toast";
 import type { ComponentProps, ReactElement } from "react";
 import { useCallback, useMemo, useState } from "react";
 import { UcpValidatorForm } from "@/app/(main)/ucp-validator/_components/ucp-validator-form";
@@ -33,6 +34,8 @@ import {
   generateAllProductStructuredData,
   generateJson,
   generateProductStructuredData,
+  publishProductsToShopify,
+  publishProfileToShopify,
   saveProfile,
 } from "@/server/app/intelligence/ucp";
 import type * as Product from "@/server/app/product";
@@ -236,10 +239,16 @@ export namespace UcpManager {
   export type Props = {
     profile: Ucp.Type | null;
     products: Product.Type[];
+    shopifyStores: { id: string; name: string }[];
   };
 }
 
-export const UcpManager = ({ profile, products }: UcpManager.Props) => {
+export const UcpManager = ({
+  profile,
+  products,
+  shopifyStores,
+}: UcpManager.Props) => {
+  const toast = useToastManager();
   const [state, setState] = useState<Ucp.Profile>(profile ?? {});
   const [generation, setGeneration] = useState<string | null>(
     profile?.generatedJson ?? null,
@@ -306,6 +315,48 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
     );
     setProductData((prev) => ({ ...prev, ...updates }));
   });
+
+  const targetStore = shopifyStores[0] ?? null;
+
+  const [handlePublishProfile, isPublishingProfile] = useAsyncAction(
+    async () => {
+      if (!targetStore) return;
+      const r = await publishProfileToShopify({ store: targetStore.id });
+      if (!r.success) {
+        toast.add({
+          title: "Could not push UCP to Shopify",
+          description: r.error.message,
+          type: "error",
+        });
+        return;
+      }
+      toast.add({
+        title: "UCP profile pushed to Shopify",
+        description: `${r.data.written} metafield(s) written to ${targetStore.name} under namespace "ucp".`,
+        type: "success",
+      });
+    },
+  );
+
+  const [handlePublishProducts, isPublishingProducts] = useAsyncAction(
+    async () => {
+      if (!targetStore) return;
+      const r = await publishProductsToShopify({ store: targetStore.id });
+      if (!r.success) {
+        toast.add({
+          title: "Could not push product metafields",
+          description: r.error.message,
+          type: "error",
+        });
+        return;
+      }
+      toast.add({
+        title: "Product structured data pushed",
+        description: `${r.data.pushed} of ${r.data.total} products updated on ${targetStore.name}.`,
+        type: "success",
+      });
+    },
+  );
 
   const handleGenerateProduct = useCallback(async (productId: string) => {
     setPending((prev) => new Set([...prev, productId]));
@@ -553,6 +604,19 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
                 >
                   {isGeneratingJson ? "Generating..." : "Generate with AI"}
                 </Button>
+                {targetStore && (
+                  <Button
+                    variant="outline"
+                    color="primary"
+                    onClick={handlePublishProfile}
+                    disabled={isPublishingProfile}
+                    className="px-4 py-1.5 text-xs"
+                  >
+                    {isPublishingProfile
+                      ? "Pushing..."
+                      : `Push to ${targetStore.name}`}
+                  </Button>
+                )}
                 {generation && (
                   <Button
                     variant="ghost"
@@ -674,15 +738,30 @@ export const UcpManager = ({ profile, products }: UcpManager.Props) => {
                   </div>
                 </div>
               </div>
-              <Button
-                variant="flat"
-                color="primary"
-                onClick={handleGenerateAll}
-                disabled={isGeneratingAll || products.length === 0}
-                className="px-4 py-1.5 text-xs"
-              >
-                {isGeneratingAll ? "Generating..." : "Generate All"}
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="flat"
+                  color="primary"
+                  onClick={handleGenerateAll}
+                  disabled={isGeneratingAll || products.length === 0}
+                  className="px-4 py-1.5 text-xs"
+                >
+                  {isGeneratingAll ? "Generating..." : "Generate All"}
+                </Button>
+                {targetStore && (
+                  <Button
+                    variant="outline"
+                    color="primary"
+                    onClick={handlePublishProducts}
+                    disabled={isPublishingProducts || products.length === 0}
+                    className="px-4 py-1.5 text-xs"
+                  >
+                    {isPublishingProducts
+                      ? "Pushing..."
+                      : `Push to ${targetStore.name}`}
+                  </Button>
+                )}
+              </div>
             </div>
 
             <div className="overflow-x-auto">

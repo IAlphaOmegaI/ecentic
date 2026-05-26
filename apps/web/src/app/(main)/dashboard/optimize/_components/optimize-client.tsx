@@ -355,6 +355,34 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
     router.refresh();
   });
 
+  const primaryShopifyStore = data.shopifyStores[0] ?? null;
+
+  console.log("primaryShopifyStore", primaryShopifyStore);
+
+  const [handleOptimizeStore, isOptimizingStore] = useAsyncAction(async () => {
+    if (!primaryShopifyStore) return;
+    const result = await Optimization.optimizeStoreForAgents({
+      store: primaryShopifyStore.id,
+    });
+    if (!result.success) {
+      toast.add({
+        title: "Optimization failed",
+        description: result.error.message,
+        type: "error",
+      });
+      router.refresh();
+      return;
+    }
+    const { profileWritten, productsPushed, productsTotal, listingsRewritten } =
+      result.data;
+    toast.add({
+      title: "Store optimized for AI agents",
+      description: `${profileWritten} UCP metafields, ${productsPushed}/${productsTotal} products, ${listingsRewritten} listings rewritten.`,
+      type: result.data.errors.length > 0 ? "warning" : "success",
+    });
+    router.refresh();
+  });
+
   const busy =
     selected !== null ||
     isApprovingAll ||
@@ -377,21 +405,38 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
               {pending.length === 1 ? "" : "s"}
             </p>
           </div>
-          <Button
-            variant="flat"
-            color="primary"
-            disabled={
-              pending.length === 0 || isApprovingAll || selected !== null
-            }
-            onClick={handleApproveAll}
-          >
-            {isApprovingAll ? (
-              <LoaderIcon className="size-4 animate-spin" />
-            ) : (
-              <CheckIcon className="size-4" />
+          <div className="flex flex-wrap items-center gap-2">
+            {primaryShopifyStore && (
+              <Button
+                variant="flat"
+                color="primary"
+                disabled={isOptimizingStore || busy}
+                onClick={handleOptimizeStore}
+              >
+                {isOptimizingStore ? (
+                  <LoaderIcon className="size-4 animate-spin" />
+                ) : (
+                  <CheckIcon className="size-4" />
+                )}
+                Optimize {primaryShopifyStore.name} for Agents
+              </Button>
             )}
-            Approve All ({pending.length})
-          </Button>
+            <Button
+              variant="outline"
+              color="primary"
+              disabled={
+                pending.length === 0 || isApprovingAll || selected !== null
+              }
+              onClick={handleApproveAll}
+            >
+              {isApprovingAll ? (
+                <LoaderIcon className="size-4 animate-spin" />
+              ) : (
+                <CheckIcon className="size-4" />
+              )}
+              Approve All ({pending.length})
+            </Button>
+          </div>
         </div>
       </div>
 
