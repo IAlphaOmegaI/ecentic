@@ -1,6 +1,8 @@
+/** biome-ignore-all lint/complexity/useLiteralKeys: bracket access is required by TS4111 (noPropertyAccessFromIndexSignature) on Record<string, unknown> shapes parsed via zod */
 "use server";
 
 import { resultify } from "@zenncore/utils";
+import { z } from "zod";
 
 export type SpecIssueSeverity = "error" | "warning";
 
@@ -259,13 +261,13 @@ const KNOWN_PAYMENT_HANDLERS: Record<string, string> = {
   "dev.shopify.card": "Shopify Card",
 };
 
-// todo: use zod
-const isObject = (value: unknown): value is Record<string, unknown> =>
-  typeof value === "object" && value !== null && !Array.isArray(value);
+// ─── Zod-driven validation ──────────────────────────────────────────────────
+// Schemas narrow shape (must be an object, must be a string, must be an array).
+// Cross-field rules and value-shape rules (HTTPS, YYYY-MM-DD, enum membership)
+// run on the parsed shape and push SpecIssues — that channel carries severity
+// (error vs. warning), which zod's native issues do not preserve cleanly.
 
-// todo: use access form "@zenncore/utils"
-const get = (object: Record<string, unknown>, key: string): unknown =>
-  object[key];
+type WithSeverity = { severity?: SpecIssueSeverity };
 
 const issue = (
   category: SpecIssueCategory,
@@ -274,25 +276,74 @@ const issue = (
   severity: SpecIssueSeverity,
 ): SpecIssue => ({ category, field, message, severity });
 
-const validateVersionField = (
-  value: unknown,
+const joinPath = (prefix: string, path: ReadonlyArray<string | number>) => {
+  const tail = path.length === 0 ? "" : path.join(".");
+  if (!prefix) return tail;
+  if (!tail) return prefix;
+  return `${prefix}.${tail}`;
+};
+
+const mapZodIssues = (
+  error: z.ZodError,
+  category: SpecIssueCategory,
+  prefix: string,
+  defaultSeverity: SpecIssueSeverity = "error",
+): SpecIssue[] =>
+  error.issues.map((entry) => {
+    const params = (entry as { params?: WithSeverity }).params;
+    return issue(
+      category,
+      joinPath(prefix, entry.path as ReadonlyArray<string | number>),
+      entry.message,
+      params?.severity ?? defaultSeverity,
+    );
+  });
+
+const RecordSchema = z.record(z.string(), z.unknown());
+const ArraySchema = z.array(z.unknown());
+
+const ServiceEntrySchema = z
+  .object({
+    version: z.string().optional(),
+    transport: z.string({ error: 'Missing required "transport".' }),
+    endpoint: z.string().optional(),
+    schema: z.string().optional(),
+  })
+  .passthrough();
+
+const CapabilityEntrySchema = z
+  .object({
+    version: z.string().optional(),
+    spec: z.string().optional(),
+    schema: z.string().optional(),
+    config: z.record(z.string(), z.unknown()).optional(),
+  })
+  .passthrough();
+
+const PaymentHandlerEntrySchema = z
+  .object({
+    version: z.string().optional(),
+    id: z.string().optional(),
+  })
+  .passthrough();
+
+const SigningKeySchema = z
+  .object({
+    kid: z.string().optional(),
+    kty: z.string().optional(),
+    use: z.string().optional(),
+    alg: z.string().optional(),
+    crv: z.string().optional(),
+  })
+  .passthrough();
+
+const checkVersionFormat = (
+  value: string,
   field: string,
   category: SpecIssueCategory,
   issues: SpecIssue[],
-): string | null => {
-  if (value === undefined || value === null) {
-    issues.push(
-      issue(category, field, `Missing required "${field}".`, "error"),
-    );
-    return null;
-  }
-  if (typeof value !== "string") {
-    issues.push(
-      issue(category, field, `"${field}" must be a string.`, "error"),
-    );
-    return null;
-  }
-  if (!VERSION_RE.test(value)) {
+) => {
+  if (!VERSION_RE.test(value))
     issues.push(
       issue(
         category,
@@ -301,31 +352,14 @@ const validateVersionField = (
         "warning",
       ),
     );
-  }
-  return value;
 };
 
-const validateHttpsField = (
-  value: unknown,
+const checkHttpsUrl = (
+  value: string,
   field: string,
   category: SpecIssueCategory,
   issues: SpecIssue[],
-  required: boolean,
-): string | null => {
-  if (value === undefined || value === null) {
-    if (required) {
-      issues.push(
-        issue(category, field, `Missing required "${field}".`, "error"),
-      );
-    }
-    return null;
-  }
-  if (typeof value !== "string") {
-    issues.push(
-      issue(category, field, `"${field}" must be a string.`, "error"),
-    );
-    return null;
-  }
+) => {
   if (!HTTP_OR_HTTPS_RE.test(value)) {
     issues.push(
       issue(
@@ -335,9 +369,9 @@ const validateHttpsField = (
         "error",
       ),
     );
-    return value;
+    return;
   }
-  if (!HTTPS_RE.test(value)) {
+  if (!HTTPS_RE.test(value))
     issues.push(
       issue(
         category,
@@ -346,15 +380,14 @@ const validateHttpsField = (
         "error",
       ),
     );
-  }
-  return value;
 };
 
 const parseServiceEntries = (
   registry: unknown,
   issues: SpecIssue[],
 ): ParsedService[] => {
-  if (!isObject(registry)) {
+  const root = RecordSchema.safeParse(registry);
+  if (!root.success) {
     issues.push(
       issue("services", "services", '"services" must be an object.', "error"),
     );
@@ -363,8 +396,8 @@ const parseServiceEntries = (
 
   const services: ParsedService[] = [];
 
-  for (const [name, entries] of Object.entries(registry)) {
-    if (!REVERSE_DOMAIN_RE.test(name)) {
+  for (const [name, entries] of Object.entries(root.data)) {
+    if (!REVERSE_DOMAIN_RE.test(name))
       issues.push(
         issue(
           "services",
@@ -373,9 +406,9 @@ const parseServiceEntries = (
           "warning",
         ),
       );
-    }
 
-    if (!Array.isArray(entries)) {
+    const list = ArraySchema.safeParse(entries);
+    if (!list.success) {
       issues.push(
         issue(
           "services",
@@ -387,7 +420,7 @@ const parseServiceEntries = (
       continue;
     }
 
-    if (entries.length === 0) {
+    if (list.data.length === 0)
       issues.push(
         issue(
           "services",
@@ -396,83 +429,101 @@ const parseServiceEntries = (
           "warning",
         ),
       );
-    }
 
-    for (const [index, entry] of entries.entries()) {
+    for (const [index, raw] of list.data.entries()) {
       const path = `services.${name}[${index}]`;
-      if (!isObject(entry)) {
+      const shape = RecordSchema.safeParse(raw);
+      if (!shape.success) {
         issues.push(
           issue("services", path, "Each entry must be an object.", "error"),
         );
         continue;
       }
 
-      const version = validateVersionField(
-        get(entry, "version"),
-        `${path}.version`,
-        "services",
-        issues,
-      );
+      const parsed = ServiceEntrySchema.safeParse(shape.data);
+      if (!parsed.success) {
+        issues.push(...mapZodIssues(parsed.error, "services", path));
+        continue;
+      }
 
-      const rawTransport = get(entry, "transport");
-      let transport: string | null = null;
-      if (rawTransport === undefined || rawTransport === null) {
-        issues.push(
-          issue(
-            "transport",
-            `${path}.transport`,
-            'Missing required "transport".',
-            "error",
-          ),
-        );
-      } else if (typeof rawTransport !== "string") {
-        issues.push(
-          issue(
-            "transport",
-            `${path}.transport`,
-            '"transport" must be a string.',
-            "error",
-          ),
-        );
-      } else {
-        transport = rawTransport;
-        if (
-          !VALID_TRANSPORTS.includes(
-            rawTransport as (typeof VALID_TRANSPORTS)[number],
-          )
-        ) {
+      const entry = parsed.data;
+
+      const version = (() => {
+        if (entry.version === undefined) {
+          issues.push(
+            issue(
+              "services",
+              `${path}.version`,
+              'Missing required "version".',
+              "error",
+            ),
+          );
+          return null;
+        }
+        checkVersionFormat(entry.version, `${path}.version`, "services", issues);
+        return entry.version;
+      })();
+
+      const transport = (() => {
+        if (entry.transport === undefined) {
           issues.push(
             issue(
               "transport",
               `${path}.transport`,
-              `"transport" must be one of: ${VALID_TRANSPORTS.join(", ")} (got "${rawTransport}").`,
+              'Missing required "transport".',
+              "error",
+            ),
+          );
+          return null;
+        }
+        if (
+          !VALID_TRANSPORTS.includes(
+            entry.transport as (typeof VALID_TRANSPORTS)[number],
+          )
+        )
+          issues.push(
+            issue(
+              "transport",
+              `${path}.transport`,
+              `"transport" must be one of: ${VALID_TRANSPORTS.join(", ")} (got "${entry.transport}").`,
               "warning",
             ),
           );
-        }
-      }
-
-      const endpoint = (() => {
-        const rawEndpoint = get(entry, "endpoint");
-        if (transport === "embedded") {
-          return typeof rawEndpoint === "string" ? rawEndpoint : null;
-        }
-        return validateHttpsField(
-          rawEndpoint,
-          `${path}.endpoint`,
-          "services",
-          issues,
-          true,
-        );
+        return entry.transport;
       })();
 
-      const schema = validateHttpsField(
-        get(entry, "schema"),
-        `${path}.schema`,
-        "services",
-        issues,
-        true,
-      );
+      const endpoint = (() => {
+        if (transport === "embedded") return entry.endpoint ?? null;
+        if (entry.endpoint === undefined) {
+          issues.push(
+            issue(
+              "services",
+              `${path}.endpoint`,
+              'Missing required "endpoint".',
+              "error",
+            ),
+          );
+          return null;
+        }
+        checkHttpsUrl(entry.endpoint, `${path}.endpoint`, "services", issues);
+        return entry.endpoint;
+      })();
+
+      const schemaUrl = (() => {
+        if (entry.schema === undefined) {
+          issues.push(
+            issue(
+              "services",
+              `${path}.schema`,
+              'Missing required "schema".',
+              "error",
+            ),
+          );
+          return null;
+        }
+        checkHttpsUrl(entry.schema, `${path}.schema`, "services", issues);
+        return entry.schema;
+      })();
 
       services.push({
         name,
@@ -480,7 +531,7 @@ const parseServiceEntries = (
         version,
         transport,
         endpoint,
-        schema,
+        schema: schemaUrl,
         recognized: name in KNOWN_SERVICES,
       });
     }
@@ -493,7 +544,8 @@ const parseCapabilityEntries = (
   registry: unknown,
   issues: SpecIssue[],
 ): ParsedCapability[] => {
-  if (!isObject(registry)) {
+  const root = RecordSchema.safeParse(registry);
+  if (!root.success) {
     issues.push(
       issue(
         "capabilities",
@@ -507,8 +559,8 @@ const parseCapabilityEntries = (
 
   const capabilities: ParsedCapability[] = [];
 
-  for (const [name, entries] of Object.entries(registry)) {
-    if (!REVERSE_DOMAIN_RE.test(name)) {
+  for (const [name, entries] of Object.entries(root.data)) {
+    if (!REVERSE_DOMAIN_RE.test(name))
       issues.push(
         issue(
           "capabilities",
@@ -517,9 +569,9 @@ const parseCapabilityEntries = (
           "warning",
         ),
       );
-    }
 
-    if (!Array.isArray(entries)) {
+    const list = ArraySchema.safeParse(entries);
+    if (!list.success) {
       issues.push(
         issue(
           "capabilities",
@@ -531,7 +583,7 @@ const parseCapabilityEntries = (
       continue;
     }
 
-    if (entries.length === 0) {
+    if (list.data.length === 0)
       issues.push(
         issue(
           "capabilities",
@@ -540,51 +592,22 @@ const parseCapabilityEntries = (
           "warning",
         ),
       );
-    }
 
     const known = KNOWN_CAPABILITIES[name];
 
-    for (const [index, entry] of entries.entries()) {
+    for (const [index, raw] of list.data.entries()) {
       const path = `capabilities.${name}[${index}]`;
-      if (!isObject(entry)) {
+      const shape = RecordSchema.safeParse(raw);
+      if (!shape.success) {
         issues.push(
           issue("capabilities", path, "Each entry must be an object.", "error"),
         );
         continue;
       }
 
-      const version = validateVersionField(
-        get(entry, "version"),
-        `${path}.version`,
-        "capabilities",
-        issues,
-      );
-
-      const spec =
-        get(entry, "spec") === undefined
-          ? null
-          : validateHttpsField(
-            get(entry, "spec"),
-            `${path}.spec`,
-            "capabilities",
-            issues,
-            false,
-          );
-
-      const schema =
-        get(entry, "schema") === undefined
-          ? null
-          : validateHttpsField(
-            get(entry, "schema"),
-            `${path}.schema`,
-            "capabilities",
-            issues,
-            false,
-          );
-
-      const rawConfig = get(entry, "config");
-      const config = isObject(rawConfig) ? rawConfig : null;
-      if (rawConfig !== undefined && !isObject(rawConfig)) {
+      // Detect non-object config before strict parse (strict parse would reject)
+      const configRaw = shape.data["config"];
+      if (configRaw !== undefined && !RecordSchema.safeParse(configRaw).success)
         issues.push(
           issue(
             "capabilities",
@@ -593,12 +616,54 @@ const parseCapabilityEntries = (
             "error",
           ),
         );
+
+      const parsed = CapabilityEntrySchema.safeParse(shape.data);
+      if (!parsed.success) {
+        issues.push(...mapZodIssues(parsed.error, "capabilities", path));
+        continue;
       }
+
+      const entry = parsed.data;
+
+      const version = (() => {
+        if (entry.version === undefined) {
+          issues.push(
+            issue(
+              "capabilities",
+              `${path}.version`,
+              'Missing required "version".',
+              "error",
+            ),
+          );
+          return null;
+        }
+        checkVersionFormat(
+          entry.version,
+          `${path}.version`,
+          "capabilities",
+          issues,
+        );
+        return entry.version;
+      })();
+
+      const spec = (() => {
+        if (entry.spec === undefined) return null;
+        checkHttpsUrl(entry.spec, `${path}.spec`, "capabilities", issues);
+        return entry.spec;
+      })();
+
+      const schemaUrl = (() => {
+        if (entry.schema === undefined) return null;
+        checkHttpsUrl(entry.schema, `${path}.schema`, "capabilities", issues);
+        return entry.schema;
+      })();
+
+      const config = entry.config ?? null;
 
       if (known?.requiresConfig) {
         for (const requiredKey of known.requiresConfig) {
           const value = config?.[requiredKey];
-          if (typeof value !== "string" || !HTTPS_RE.test(value)) {
+          if (typeof value !== "string" || !HTTPS_RE.test(value))
             issues.push(
               issue(
                 "capabilities",
@@ -607,7 +672,6 @@ const parseCapabilityEntries = (
                 "error",
               ),
             );
-          }
         }
       }
 
@@ -616,7 +680,7 @@ const parseCapabilityEntries = (
         label: known?.label ?? name,
         version,
         spec,
-        schema,
+        schema: schemaUrl,
         config,
         recognized: Boolean(known),
       });
@@ -630,7 +694,8 @@ const parsePaymentHandlerEntries = (
   registry: unknown,
   issues: SpecIssue[],
 ): ParsedPaymentHandler[] => {
-  if (!isObject(registry)) {
+  const root = RecordSchema.safeParse(registry);
+  if (!root.success) {
     issues.push(
       issue(
         "payment_handlers",
@@ -644,8 +709,8 @@ const parsePaymentHandlerEntries = (
 
   const handlers: ParsedPaymentHandler[] = [];
 
-  for (const [key, entries] of Object.entries(registry)) {
-    if (!REVERSE_DOMAIN_RE.test(key)) {
+  for (const [key, entries] of Object.entries(root.data)) {
+    if (!REVERSE_DOMAIN_RE.test(key))
       issues.push(
         issue(
           "payment_handlers",
@@ -654,9 +719,9 @@ const parsePaymentHandlerEntries = (
           "warning",
         ),
       );
-    }
 
-    if (!Array.isArray(entries)) {
+    const list = ArraySchema.safeParse(entries);
+    if (!list.success) {
       issues.push(
         issue(
           "payment_handlers",
@@ -668,9 +733,10 @@ const parsePaymentHandlerEntries = (
       continue;
     }
 
-    for (const [index, entry] of entries.entries()) {
+    for (const [index, raw] of list.data.entries()) {
       const path = `payment_handlers.${key}[${index}]`;
-      if (!isObject(entry)) {
+      const shape = RecordSchema.safeParse(raw);
+      if (!shape.success) {
         issues.push(
           issue(
             "payment_handlers",
@@ -682,29 +748,41 @@ const parsePaymentHandlerEntries = (
         continue;
       }
 
-      const version = validateVersionField(
-        get(entry, "version"),
-        `${path}.version`,
-        "payment_handlers",
-        issues,
-      );
-
-      const idRaw = get(entry, "id");
-      if (idRaw !== undefined && typeof idRaw !== "string") {
+      const parsed = PaymentHandlerEntrySchema.safeParse(shape.data);
+      if (!parsed.success) {
         issues.push(
-          issue(
-            "payment_handlers",
-            `${path}.id`,
-            '"id" must be a string.',
-            "error",
-          ),
+          ...mapZodIssues(parsed.error, "payment_handlers", path),
         );
+        continue;
       }
+
+      const entry = parsed.data;
+
+      const version = (() => {
+        if (entry.version === undefined) {
+          issues.push(
+            issue(
+              "payment_handlers",
+              `${path}.version`,
+              'Missing required "version".',
+              "error",
+            ),
+          );
+          return null;
+        }
+        checkVersionFormat(
+          entry.version,
+          `${path}.version`,
+          "payment_handlers",
+          issues,
+        );
+        return entry.version;
+      })();
 
       handlers.push({
         registryKey: key,
         label: KNOWN_PAYMENT_HANDLERS[key] ?? key,
-        id: typeof idRaw === "string" ? idRaw : null,
+        id: entry.id ?? null,
         version,
         recognized: key in KNOWN_PAYMENT_HANDLERS,
       });
@@ -718,7 +796,8 @@ const parseSigningKeyEntries = (
   rawKeys: unknown,
   issues: SpecIssue[],
 ): ParsedSigningKey[] => {
-  if (!Array.isArray(rawKeys)) {
+  const list = ArraySchema.safeParse(rawKeys);
+  if (!list.success) {
     issues.push(
       issue(
         "signing_keys",
@@ -733,9 +812,10 @@ const parseSigningKeyEntries = (
   const seenKids = new Set<string>();
   const keys: ParsedSigningKey[] = [];
 
-  for (const [index, entry] of rawKeys.entries()) {
+  for (const [index, raw] of list.data.entries()) {
     const path = `signing_keys[${index}]`;
-    if (!isObject(entry)) {
+    const shape = RecordSchema.safeParse(raw);
+    if (!shape.success) {
       issues.push(
         issue(
           "signing_keys",
@@ -747,9 +827,16 @@ const parseSigningKeyEntries = (
       continue;
     }
 
-    const rawKid = get(entry, "kid");
-    const kid = typeof rawKid === "string" ? rawKid : null;
-    if (!kid) {
+    const parsed = SigningKeySchema.safeParse(shape.data);
+    if (!parsed.success) {
+      issues.push(...mapZodIssues(parsed.error, "signing_keys", path));
+      continue;
+    }
+
+    const entry = parsed.data;
+    const { kid, kty, use, alg, crv } = entry;
+
+    if (!kid)
       issues.push(
         issue(
           "signing_keys",
@@ -758,7 +845,7 @@ const parseSigningKeyEntries = (
           "error",
         ),
       );
-    } else if (seenKids.has(kid)) {
+    else if (seenKids.has(kid))
       issues.push(
         issue(
           "signing_keys",
@@ -767,13 +854,9 @@ const parseSigningKeyEntries = (
           "error",
         ),
       );
-    } else {
-      seenKids.add(kid);
-    }
+    else seenKids.add(kid);
 
-    const rawKty = get(entry, "kty");
-    const kty = typeof rawKty === "string" ? rawKty : null;
-    if (!kty) {
+    if (!kty)
       issues.push(
         issue(
           "signing_keys",
@@ -782,7 +865,7 @@ const parseSigningKeyEntries = (
           "error",
         ),
       );
-    } else if (!VALID_JWK_KTY.includes(kty as (typeof VALID_JWK_KTY)[number])) {
+    else if (!VALID_JWK_KTY.includes(kty as (typeof VALID_JWK_KTY)[number]))
       issues.push(
         issue(
           "signing_keys",
@@ -791,11 +874,8 @@ const parseSigningKeyEntries = (
           "error",
         ),
       );
-    }
 
-    const rawUse = get(entry, "use");
-    const use = typeof rawUse === "string" ? rawUse : null;
-    if (use !== null && use !== "sig") {
+    if (use !== undefined && use !== "sig")
       issues.push(
         issue(
           "signing_keys",
@@ -804,7 +884,7 @@ const parseSigningKeyEntries = (
           "error",
         ),
       );
-    } else if (use === null) {
+    else if (use === undefined)
       issues.push(
         issue(
           "signing_keys",
@@ -813,11 +893,8 @@ const parseSigningKeyEntries = (
           "warning",
         ),
       );
-    }
 
-    const rawAlg = get(entry, "alg");
-    const alg = typeof rawAlg === "string" ? rawAlg : null;
-    if (!alg) {
+    if (!alg)
       issues.push(
         issue(
           "signing_keys",
@@ -826,9 +903,9 @@ const parseSigningKeyEntries = (
           "warning",
         ),
       );
-    } else if (kty) {
+    else if (kty) {
       const allowed = VALID_JWS_ALG_BY_KTY[kty];
-      if (allowed && !allowed.includes(alg)) {
+      if (allowed && !allowed.includes(alg))
         issues.push(
           issue(
             "signing_keys",
@@ -837,13 +914,10 @@ const parseSigningKeyEntries = (
             "error",
           ),
         );
-      }
     }
 
-    const rawCrv = get(entry, "crv");
-    const crv = typeof rawCrv === "string" ? rawCrv : null;
     if (kty === "EC") {
-      if (!crv) {
+      if (!crv)
         issues.push(
           issue(
             "signing_keys",
@@ -852,9 +926,9 @@ const parseSigningKeyEntries = (
             "error",
           ),
         );
-      } else if (
+      else if (
         !VALID_EC_CURVES.includes(crv as (typeof VALID_EC_CURVES)[number])
-      ) {
+      )
         issues.push(
           issue(
             "signing_keys",
@@ -863,13 +937,12 @@ const parseSigningKeyEntries = (
             "error",
           ),
         );
-      }
     }
 
     const hasPrivateMaterial = JWK_PRIVATE_FIELDS.some(
-      (field) => field in entry,
+      (field) => field in shape.data,
     );
-    if (hasPrivateMaterial) {
+    if (hasPrivateMaterial)
       issues.push(
         issue(
           "signing_keys",
@@ -878,20 +951,19 @@ const parseSigningKeyEntries = (
           "error",
         ),
       );
-    }
 
     keys.push({
-      kid,
-      kty,
-      use,
-      crv,
-      alg,
-      isSigning: use === "sig" || use === null,
+      kid: kid ?? null,
+      kty: kty ?? null,
+      use: use ?? null,
+      crv: crv ?? null,
+      alg: alg ?? null,
+      isSigning: use === "sig" || use === undefined,
       hasPrivateMaterial,
     });
   }
 
-  if (keys.length === 0) {
+  if (keys.length === 0)
     issues.push(
       issue(
         "signing_keys",
@@ -900,7 +972,6 @@ const parseSigningKeyEntries = (
         "warning",
       ),
     );
-  }
 
   return keys;
 };
@@ -910,7 +981,8 @@ const parseSupportedVersions = (
   currentVersion: string | null,
   issues: SpecIssue[],
 ): ParsedSupportedVersion[] => {
-  if (!isObject(raw)) {
+  const root = RecordSchema.safeParse(raw);
+  if (!root.success) {
     issues.push(
       issue(
         "supported_versions",
@@ -922,11 +994,8 @@ const parseSupportedVersions = (
     return [];
   }
 
-  const versions: ParsedSupportedVersion[] = [];
-
-  for (const [key, uri] of Object.entries(raw)) {
-    const validKey = VERSION_RE.test(key);
-    if (!validKey) {
+  return Object.entries(root.data).map(([key, uri]) => {
+    if (!VERSION_RE.test(key))
       issues.push(
         issue(
           "supported_versions",
@@ -935,11 +1004,9 @@ const parseSupportedVersions = (
           "warning",
         ),
       );
-    }
 
-    const isString = typeof uri === "string";
-    const isHttps = isString && HTTPS_RE.test(uri);
-    if (!isString) {
+    const value = z.string().safeParse(uri);
+    if (!value.success) {
       issues.push(
         issue(
           "supported_versions",
@@ -948,26 +1015,32 @@ const parseSupportedVersions = (
           "error",
         ),
       );
-    } else if (!isHttps) {
+      return {
+        version: key,
+        uri: "",
+        isCurrent: currentVersion !== null && key === currentVersion,
+        isHttps: false,
+      };
+    }
+
+    const isHttps = HTTPS_RE.test(value.data);
+    if (!isHttps)
       issues.push(
         issue(
           "supported_versions",
           `supported_versions.${key}`,
-          `Profile URI must use HTTPS (got "${uri}").`,
+          `Profile URI must use HTTPS (got "${value.data}").`,
           "error",
         ),
       );
-    }
 
-    versions.push({
+    return {
       version: key,
-      uri: isString ? uri : "",
+      uri: value.data,
       isCurrent: currentVersion !== null && key === currentVersion,
       isHttps,
-    });
-  }
-
-  return versions;
+    };
+  });
 };
 
 type ValidationOutput = {
@@ -1000,18 +1073,21 @@ const validateUcpSpec = (data: unknown): ValidationOutput => {
   const output = emptyValidation();
   const { issues } = output;
 
-  if (!isObject(data)) {
+  const rootShape = RecordSchema.safeParse(data);
+  if (!rootShape.success) {
     issues.push(
       issue("envelope", "(root)", "Root must be a JSON object.", "error"),
     );
     return output;
   }
 
-  const wrapped = isObject(get(data, "ucp"));
+  const envelope = rootShape.data;
+  const wrappedUcp = RecordSchema.safeParse(envelope["ucp"]);
+  const wrapped = wrappedUcp.success;
   output.envelopeKind = wrapped ? "wrapped" : "flat";
-  const root = wrapped ? (get(data, "ucp") as Record<string, unknown>) : data;
+  const root = wrapped ? wrappedUcp.data : envelope;
 
-  if (wrapped) {
+  if (wrapped)
     issues.push(
       issue(
         "envelope",
@@ -1020,17 +1096,28 @@ const validateUcpSpec = (data: unknown): ValidationOutput => {
         "warning",
       ),
     );
-  }
 
-  output.ucpVersion = validateVersionField(
-    get(root, "version"),
-    "version",
-    "version",
-    issues,
-  );
+  output.ucpVersion = (() => {
+    const rawVersion = root["version"];
+    if (rawVersion === undefined || rawVersion === null) {
+      issues.push(
+        issue("version", "version", 'Missing required "version".', "error"),
+      );
+      return null;
+    }
+    const versionString = z.string().safeParse(rawVersion);
+    if (!versionString.success) {
+      issues.push(
+        issue("version", "version", '"version" must be a string.', "error"),
+      );
+      return null;
+    }
+    checkVersionFormat(versionString.data, "version", "version", issues);
+    return versionString.data;
+  })();
   output.isLatestVersion = output.ucpVersion === LATEST_UCP_VERSION;
 
-  if (output.ucpVersion && !output.isLatestVersion) {
+  if (output.ucpVersion && !output.isLatestVersion)
     issues.push(
       issue(
         "version",
@@ -1039,24 +1126,21 @@ const validateUcpSpec = (data: unknown): ValidationOutput => {
         "warning",
       ),
     );
-  }
 
-  const status = get(root, "status");
   if (
-    status !== undefined &&
-    !VALID_STATUSES.includes(status as (typeof VALID_STATUSES)[number])
-  ) {
+    root["status"] !== undefined &&
+    !VALID_STATUSES.includes(root["status"] as (typeof VALID_STATUSES)[number])
+  )
     issues.push(
       issue(
         "envelope",
         "status",
-        `"status" must be "success" or "error" (got "${String(status)}").`,
+        `"status" must be "success" or "error" (got "${String(root["status"])}").`,
         "error",
       ),
     );
-  }
 
-  if (!("services" in root)) {
+  if (!("services" in root))
     issues.push(
       issue(
         "services",
@@ -1065,11 +1149,9 @@ const validateUcpSpec = (data: unknown): ValidationOutput => {
         "error",
       ),
     );
-  } else {
-    output.services = parseServiceEntries(get(root, "services"), issues);
-  }
+  else output.services = parseServiceEntries(root["services"], issues);
 
-  if (!("payment_handlers" in root)) {
+  if (!("payment_handlers" in root))
     issues.push(
       issue(
         "payment_handlers",
@@ -1078,19 +1160,15 @@ const validateUcpSpec = (data: unknown): ValidationOutput => {
         "error",
       ),
     );
-  } else {
+  else
     output.paymentHandlers = parsePaymentHandlerEntries(
-      get(root, "payment_handlers"),
+      root["payment_handlers"],
       issues,
     );
-  }
 
-  if ("capabilities" in root) {
-    output.capabilities = parseCapabilityEntries(
-      get(root, "capabilities"),
-      issues,
-    );
-  } else {
+  if ("capabilities" in root)
+    output.capabilities = parseCapabilityEntries(root["capabilities"], issues);
+  else
     issues.push(
       issue(
         "capabilities",
@@ -1099,23 +1177,21 @@ const validateUcpSpec = (data: unknown): ValidationOutput => {
         "warning",
       ),
     );
-  }
 
-  if ("supported_versions" in root) {
+  if ("supported_versions" in root)
     output.supportedVersions = parseSupportedVersions(
-      get(root, "supported_versions"),
+      root["supported_versions"],
       output.ucpVersion,
       issues,
     );
-  }
 
   // signing_keys may live at the root of the wrapped envelope (alongside "ucp")
   // or inside the flat document. Honor both.
   const signingKeysRaw = wrapped
-    ? (get(data, "signing_keys") ?? get(root, "signing_keys"))
-    : get(root, "signing_keys");
+    ? (envelope["signing_keys"] ?? root["signing_keys"])
+    : root["signing_keys"];
 
-  if (signingKeysRaw === undefined) {
+  if (signingKeysRaw === undefined)
     issues.push(
       issue(
         "security",
@@ -1124,7 +1200,7 @@ const validateUcpSpec = (data: unknown): ValidationOutput => {
         "warning",
       ),
     );
-  } else {
+  else {
     output.signingKeysAdvertised = true;
     output.signingKeys = parseSigningKeyEntries(signingKeysRaw, issues);
   }

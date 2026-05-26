@@ -4,3 +4,8 @@
 @theme inline {
   --font-body: var(--font-ltsuperior);
 }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+}

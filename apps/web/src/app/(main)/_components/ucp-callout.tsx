@@ -8,9 +8,9 @@ export const UCPCallout = () => (
       <div className="flex items-start gap-4">
         <ShieldCheckIcon className="size-14 shrink-0 text-primary" />
         <div>
-          <p className="font-medium text-primary text-sm uppercase tracking-[0.2em]">
+          {/* <p className="font-medium text-primary text-sm uppercase tracking-[0.2em]">
             Universal Commerce Protocol
-          </p>
+          </p> */}
           <h2 className="font-medium text-2xl text-foreground md:text-3xl">
             Is your store visible to AI agents?
           </h2>

@@ -40,10 +40,10 @@ export abstract class PhoneCountryConfig {
 
     if (significantNumber.length === 0) return phone;
 
-    // TODO: fix if formattedSignificantNumber already contain zeros
-    if (type === FormatType.NATIONAL) {
-      return `0${formattedSignificantNumber}`;
-    }
+    if (type === FormatType.NATIONAL)
+      return formattedSignificantNumber.startsWith("0")
+        ? formattedSignificantNumber
+        : `0${formattedSignificantNumber}`;
 
     if (type === FormatType.INTERNATIONAL) {
       return `00${this.prefix} ${formattedSignificantNumber}`;
