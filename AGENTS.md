@@ -65,6 +65,7 @@ If code and docs disagree, prefer docs intent unless explicitly instructed other
 
 - Keep onboarding and dashboard UX clear and structured, preferring dedicated pages when flows need detailed field explanations.
 - Treat `docs/context/` as the canonical source for project-specific product context before implementation decisions.
+- Prefer colocating tightly related UI pieces (for example desktop/mobile navbar variants and shared links) in one file rather than splitting into small component files.
 
 ## Learned Workspace Facts
 

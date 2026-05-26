@@ -144,6 +144,26 @@ export default ({ children }: PropsWithChildren) => {
             strategy="beforeInteractive"
           />
         )}
+        {process.env.NEXT_PUBLIC_CHATWOOT_BASE_URL &&
+          process.env.NEXT_PUBLIC_CHATWOOT_WEBSITE_TOKEN && (
+            <Script id="chatwoot-widget" strategy="afterInteractive">
+              {`
+            (function(d,t) {
+              var BASE_URL="${process.env.NEXT_PUBLIC_CHATWOOT_BASE_URL}";
+              var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+              g.src=BASE_URL+"/packs/js/sdk.js";
+              g.async = true;
+              s.parentNode.insertBefore(g,s);
+              g.onload=function(){
+                window.chatwootSDK.run({
+                  websiteToken: "${process.env.NEXT_PUBLIC_CHATWOOT_WEBSITE_TOKEN}",
+                  baseUrl: BASE_URL
+                })
+              }
+          })(document,"script");
+            `}
+            </Script>
+          )}
         <meta name="apple-mobile-web-app-title" content="écentic" />
       </head>
       <body

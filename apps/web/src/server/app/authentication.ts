@@ -118,13 +118,15 @@ export const signInWithGoogle = withContext(
 export const signIn = withContext(
   async (context, { email, password }: { email: string; password: string }) => {
     const result = await resultify(
-      async () =>
-        await context.auth.signInEmail({
+      async () => {
+        const response = await context.auth.signInEmail({
           body: {
             email,
             password,
           },
-        }),
+        })
+        return response;
+      },
     );
 
     if (!result.success) {
@@ -143,29 +145,9 @@ export const signIn = withContext(
 
     const jar = await cookies();
 
-    const user = await User.get(Environment.SERVER, result.data.user.id);
+    jar.set("user", JSON.stringify(result.data.user));
 
-    if (!user.success) {
-      return {
-        success: false,
-        error: new InvalidCredentialsError("Invalid credentials provided", {
-          cause: user.error,
-        }),
-      };
-    }
-
-    jar.set("user", JSON.stringify(user.data));
-
-    if (!user.data) {
-      return {
-        success: false,
-        error: new InvalidCredentialsError("Invalid credentials provided", {
-          cause: new NotFoundError("User not found"),
-        }),
-      };
-    }
-
-    return user;
+    return { success: true, data: result.data.user };
   },
   "Authentication.signIn",
 );
