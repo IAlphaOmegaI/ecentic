@@ -96,7 +96,7 @@ export const syncShopifyCatalog = withContext(
     if (!store.data)
       return { success: false, error: new Error("Store not found") };
 
-    if (store.data.platform !== "shopify")
+    if (store.data.platform !== "shopify-public")
       return {
         success: false,
         error: new Error("Store is not a Shopify store"),
@@ -367,6 +367,411 @@ export const handleOAuthCallback = withContext(
   "Shopify.handleOAuthCallback",
 );
 
+type ShopifyMetafield = {
+  namespace: string;
+  key: string;
+  type: string;
+  value: string;
+};
+
+const UCP_NAMESPACE = "ucp";
+
+const metafieldBasePath = (ownerPath: string) =>
+  ownerPath ? `${ownerPath}/metafields` : "metafields";
+
+const findExistingMetafield = async (
+  domain: string,
+  accessToken: string,
+  ownerPath: string,
+  namespace: string,
+  key: string,
+): Promise<number | null> => {
+  const response = await HTTP.request(
+    `${domain}/admin/api/${API_VERSION}/${metafieldBasePath(
+      ownerPath,
+    )}.json?namespace=${encodeURIComponent(namespace)}&key=${encodeURIComponent(key)}`,
+    {
+      method: "GET",
+      headers: {
+        "X-Shopify-Access-Token": accessToken,
+        "Content-Type": "application/json",
+      },
+    },
+  );
+
+  if (!response.success) return null;
+
+  const parsed = await HTTP.parse<{
+    metafields: { id: number; namespace: string; key: string }[];
+  }>(response);
+
+  if (!parsed.success) return null;
+
+  const match = parsed.data.metafields.find(
+    (entry) => entry.namespace === namespace && entry.key === key,
+  );
+  return match?.id ?? null;
+};
+
+const upsertMetafield = async (
+  domain: string,
+  accessToken: string,
+  ownerPath: string,
+  field: ShopifyMetafield,
+) => {
+  const existingId = await findExistingMetafield(
+    domain,
+    accessToken,
+    ownerPath,
+    field.namespace,
+    field.key,
+  );
+
+  if (existingId !== null) {
+    return HTTP.request(
+      `${domain}/admin/api/${API_VERSION}/${ownerPath}/metafields/${existingId}.json`,
+      {
+        method: "PUT",
+        headers: {
+          "X-Shopify-Access-Token": accessToken,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          metafield: {
+            id: existingId,
+            value: field.value,
+            type: field.type,
+          },
+        }),
+      },
+    );
+  }
+
+  return HTTP.request(
+    `${domain}/admin/api/${API_VERSION}/${ownerPath}/metafields.json`,
+    {
+      method: "POST",
+      headers: {
+        "X-Shopify-Access-Token": accessToken,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ metafield: field }),
+    },
+  );
+};
+
+const splitList = (value: string | null | undefined): string[] => {
+  if (!value) return [];
+  return value
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+};
+
+const buildShopMetafields = (input: {
+  profile: {
+    merchantName?: string | null;
+    description?: string | null;
+    logoUrl?: string | null;
+    paymentMethods?: string | null;
+    shippingPolicy?: string | null;
+    returnPolicy?: string | null;
+    contactEmail?: string | null;
+    sustainability?: string | null;
+    certifications?: string | null;
+  };
+  generatedJson: string;
+}): ShopifyMetafield[] => {
+  const fields: ShopifyMetafield[] = [
+    {
+      namespace: UCP_NAMESPACE,
+      key: "merchant_profile",
+      type: "json",
+      value: input.generatedJson,
+    },
+  ];
+
+  const facets: {
+    key: string;
+    type: string;
+    value: string | string[] | null | undefined;
+  }[] = [
+    {
+      key: "merchant_name",
+      type: "single_line_text_field",
+      value: input.profile.merchantName,
+    },
+    {
+      key: "description",
+      type: "multi_line_text_field",
+      value: input.profile.description,
+    },
+    { key: "logo_url", type: "url", value: input.profile.logoUrl },
+    {
+      key: "payment_methods",
+      type: "list.single_line_text_field",
+      value: splitList(input.profile.paymentMethods),
+    },
+    {
+      key: "shipping_policy",
+      type: "multi_line_text_field",
+      value: input.profile.shippingPolicy,
+    },
+    {
+      key: "return_policy",
+      type: "multi_line_text_field",
+      value: input.profile.returnPolicy,
+    },
+    {
+      key: "contact_email",
+      type: "single_line_text_field",
+      value: input.profile.contactEmail,
+    },
+    {
+      key: "sustainability",
+      type: "multi_line_text_field",
+      value: input.profile.sustainability,
+    },
+    {
+      key: "certifications",
+      type: "list.single_line_text_field",
+      value: splitList(input.profile.certifications),
+    },
+  ];
+
+  for (const facet of facets) {
+    if (facet.value === null || facet.value === undefined) continue;
+    if (Array.isArray(facet.value)) {
+      if (facet.value.length === 0) continue;
+      fields.push({
+        namespace: UCP_NAMESPACE,
+        key: facet.key,
+        type: facet.type,
+        value: JSON.stringify(facet.value),
+      });
+      continue;
+    }
+    if (facet.value.trim().length === 0) continue;
+    fields.push({
+      namespace: UCP_NAMESPACE,
+      key: facet.key,
+      type: facet.type,
+      value: facet.value,
+    });
+  }
+
+  return fields;
+};
+
+const buildProductMetafields = (input: {
+  structuredJson: string;
+  product: {
+    title: string;
+    sku: string | null;
+    price: string | null;
+    currency: string | null;
+  };
+}): ShopifyMetafield[] => {
+  const summary = (() => {
+    try {
+      const parsed = JSON.parse(input.structuredJson) as { name?: unknown };
+      return {
+        name:
+          typeof parsed.name === "string" ? parsed.name : input.product.title,
+        sku: input.product.sku ?? null,
+        price: input.product.price ?? null,
+        currency: input.product.currency ?? null,
+      };
+    } catch {
+      return {
+        name: input.product.title,
+        sku: input.product.sku ?? null,
+        price: input.product.price ?? null,
+        currency: input.product.currency ?? null,
+      };
+    }
+  })();
+
+  return [
+    {
+      namespace: UCP_NAMESPACE,
+      key: "structured_data",
+      type: "json",
+      value: input.structuredJson,
+    },
+    {
+      namespace: UCP_NAMESPACE,
+      key: "agentic_summary",
+      type: "json",
+      value: JSON.stringify(summary),
+    },
+  ];
+};
+
+export const pushShopUcpMetafields = withContext(
+  async (
+    context,
+    {
+      store: storeId,
+      profile,
+      generatedJson,
+    }: {
+      store: string;
+      profile: Parameters<typeof buildShopMetafields>[0]["profile"];
+      generatedJson: string;
+    },
+  ) => {
+    const store = await Store.get(Environment.SERVER, storeId);
+    if (!store.success) return store;
+    if (!store.data)
+      return { success: false as const, error: new Error("Store not found") };
+    if (store.data.platform !== "shopify-public")
+      return {
+        success: false as const,
+        error: new Error("Store is not a Shopify store"),
+      };
+
+    const { domain, accessToken } = store.data;
+    if (!accessToken)
+      return {
+        success: false as const,
+        error: new Error("Missing Shopify access token"),
+      };
+
+    const fields = buildShopMetafields({ profile, generatedJson });
+    const errors: string[] = [];
+
+    for (const field of fields) {
+      const response = await upsertMetafield(
+        domain,
+        accessToken,
+        "",
+        field,
+      ).then((result) => {
+        if (!result.success) return result;
+        return HTTP.parse<{ metafield?: unknown; errors?: unknown }>(result);
+      });
+
+      if (!response.success) {
+        errors.push(`${field.key}: ${response.error.message}`);
+        continue;
+      }
+
+      if (response.data?.errors) {
+        errors.push(`${field.key}: ${JSON.stringify(response.data.errors)}`);
+      }
+    }
+
+    context.span.addBreadcrumb({
+      category: "shopify.ucp.shop.metafields",
+      data: {
+        "store.id": storeId,
+        "metafields.written": fields.length - errors.length,
+        "metafields.errors": errors.length,
+      },
+    });
+
+    if (errors.length === fields.length)
+      return {
+        success: false as const,
+        error: new Error(errors.slice(0, 3).join("; ")),
+      };
+
+    return {
+      success: true as const,
+      data: { written: fields.length - errors.length, errors },
+    };
+  },
+  "Shopify.pushShopUcpMetafields",
+);
+
+export const pushProductUcpMetafields = withContext(
+  async (
+    context,
+    {
+      product: productId,
+      structuredJson,
+    }: {
+      product: string;
+      structuredJson: string;
+    },
+  ) => {
+    const product = await Product.get(Environment.SERVER, productId);
+    if (!product.success) return product;
+    if (!product.data)
+      return { success: false as const, error: new Error("Product not found") };
+
+    if (!product.data.externalId)
+      return {
+        success: false as const,
+        error: new Error("Product has no Shopify external ID"),
+      };
+
+    const store = await Store.get(Environment.SERVER, product.data.storeId);
+    if (!store.success) return store;
+    if (!store.data)
+      return { success: false as const, error: new Error("Store not found") };
+    if (store.data.platform !== "shopify-public")
+      return {
+        success: false as const,
+        error: new Error("Store is not a Shopify store"),
+      };
+
+    const { domain, accessToken } = store.data;
+    if (!accessToken)
+      return {
+        success: false as const,
+        error: new Error("Missing Shopify access token"),
+      };
+
+    const fields = buildProductMetafields({
+      structuredJson,
+      product: {
+        title: product.data.title,
+        sku: product.data.sku,
+        price: product.data.price,
+        currency: product.data.currency,
+      },
+    });
+
+    const ownerPath = `products/${product.data.externalId}`;
+    const errors: string[] = [];
+
+    for (const field of fields) {
+      const response = await upsertMetafield(
+        domain,
+        accessToken,
+        ownerPath,
+        field,
+      );
+      if (!response.success) {
+        errors.push(`${field.key}: ${response.error.message}`);
+      }
+    }
+
+    context.span.addBreadcrumb({
+      category: "shopify.ucp.product.metafields",
+      data: {
+        "product.id": productId,
+        "metafields.written": fields.length - errors.length,
+        "metafields.errors": errors.length,
+      },
+    });
+
+    if (errors.length === fields.length)
+      return {
+        success: false as const,
+        error: new Error(errors.slice(0, 3).join("; ")),
+      };
+
+    return {
+      success: true as const,
+      data: { written: fields.length - errors.length, errors },
+    };
+  },
+  "Shopify.pushProductUcpMetafields",
+);
+
 export const updateProduct = withAuthentication(
   async (
     _context,
@@ -393,7 +798,7 @@ export const updateProduct = withAuthentication(
     if (!store.data)
       return { success: false, error: new Error("Store not found") };
 
-    if (store.data.platform !== "shopify")
+    if (store.data.platform !== "shopify-public")
       return {
         success: false,
         error: new Error("Store is not a Shopify store"),

@@ -10,7 +10,9 @@ import { withAuthentication } from "../../utils/authentication";
 import { Environment } from "../../utils/environment";
 import type { Document } from "../../utils/repository";
 import { repository } from "../../utils/repository";
+import * as Shopify from "../integration/shopify";
 import * as Product from "../product";
+import * as Store from "../store";
 
 export const { get, create, update, find } = repository(schema.ucpProfile);
 
@@ -102,20 +104,24 @@ ${productSummary || "No products yet"}`,
       "@context": z.string(),
       "@type": z.literal("Merchant"),
       name: z.string(),
-      description: z.string().optional(),
-      logo: z.string().optional(),
-      paymentMethods: z.array(z.string()).optional(),
-      shippingPolicy: z.string().optional(),
-      returnPolicy: z.string().optional(),
-      contact: z.object({ email: z.string().optional() }).optional(),
-      sustainability: z.string().optional(),
-      certifications: z.array(z.string()).optional(),
+      description: z.string().nullable(),
+      logo: z.string().nullable(),
+      paymentMethods: z.array(z.string()).nullable(),
+      shippingPolicy: z.string().nullable(),
+      returnPolicy: z.string().nullable(),
+      contact: z
+        .object({
+          email: z.string().nullable(),
+        })
+        .nullable(),
+      sustainability: z.string().nullable(),
+      certifications: z.array(z.string()).nullable(),
       catalog: z
         .object({
           totalProducts: z.number(),
-          topCategories: z.array(z.string()).optional(),
+          topCategories: z.array(z.string()).nullable(),
         })
-        .optional(),
+        .nullable(),
     }),
   });
 
@@ -162,16 +168,16 @@ URL: ${product.data.url ?? ""}`,
         "@context": z.string(),
         "@type": z.literal("Product"),
         name: z.string(),
-        description: z.string().optional(),
-        sku: z.string().optional(),
+        description: z.string().nullable(),
+        sku: z.string().nullable(),
         offers: z.object({
           "@type": z.literal("Offer"),
           price: z.string(),
           priceCurrency: z.string(),
           availability: z.string(),
         }),
-        brand: z.object({ "@type": z.string(), name: z.string() }).optional(),
-        url: z.string().optional(),
+        brand: z.object({ "@type": z.string(), name: z.string() }).nullable(),
+        url: z.string().nullable(),
       }),
     });
 
@@ -210,8 +216,8 @@ SKU: ${product.sku ?? ""}`,
               "@context": z.string(),
               "@type": z.literal("Product"),
               name: z.string(),
-              description: z.string().optional(),
-              sku: z.string().optional(),
+              description: z.string().nullable(),
+              sku: z.string().nullable(),
               offers: z.object({
                 "@type": z.literal("Offer"),
                 price: z.string(),
@@ -252,4 +258,150 @@ SKU: ${product.sku ?? ""}`,
     };
   },
   "Ucp.generateAllProductStructuredData",
+);
+
+const ensureProfileForUser = async (userId: string) => {
+  const existing = await find(Environment.SERVER, {
+    where: eq(schema.ucpProfile.userId, userId),
+  });
+
+  if (!existing.success) return existing;
+
+  const profile = existing.data[0];
+
+  if (profile?.generatedJson) {
+    return { success: true as const, data: profile };
+  }
+
+  const generated = await generateJson();
+  if (!generated.success) return generated;
+
+  const refreshed = await find(Environment.SERVER, {
+    where: eq(schema.ucpProfile.userId, userId),
+  });
+
+  if (!refreshed.success) return refreshed;
+  if (!refreshed.data[0])
+    return {
+      success: false as const,
+      error: new Error("UCP profile could not be generated"),
+    };
+
+  return { success: true as const, data: refreshed.data[0] };
+};
+
+export const publishProfileToShopify = withAuthentication(
+  async (context, { store: storeId }: { store: string }) => {
+    const userId = context.session.user.id;
+
+    const store = await Store.get(Environment.SERVER, storeId);
+    if (!store.success) return store;
+    if (!store.data)
+      return { success: false as const, error: new Error("Store not found") };
+    if (store.data.userId !== userId)
+      return { success: false as const, error: new Error("Not authorized") };
+    if (store.data.platform !== "shopify-public")
+      return {
+        success: false as const,
+        error: new Error(
+          "UCP publishing is only supported for Shopify stores (OAuth)",
+        ),
+      };
+
+    const profile = await ensureProfileForUser(userId);
+    if (!profile.success) return profile;
+
+    return Shopify.pushShopUcpMetafields({
+      store: storeId,
+      profile: {
+        merchantName: profile.data.merchantName,
+        description: profile.data.description,
+        logoUrl: profile.data.logoUrl,
+        paymentMethods: profile.data.paymentMethods,
+        shippingPolicy: profile.data.shippingPolicy,
+        returnPolicy: profile.data.returnPolicy,
+        contactEmail: profile.data.contactEmail,
+        sustainability: profile.data.sustainability,
+        certifications: profile.data.certifications,
+      },
+      generatedJson:
+        profile.data.generatedJson ??
+        JSON.stringify({
+          "@context": "https://ucp.ai/schema",
+          "@type": "Merchant",
+          name: profile.data.merchantName ?? "",
+        }),
+    });
+  },
+  "Ucp.publishProfileToShopify",
+);
+
+export const publishProductsToShopify = withAuthentication(
+  async (context, { store: storeId }: { store: string }) => {
+    const userId = context.session.user.id;
+
+    const store = await Store.get(Environment.SERVER, storeId);
+    if (!store.success) return store;
+    if (!store.data)
+      return { success: false as const, error: new Error("Store not found") };
+    if (store.data.userId !== userId)
+      return { success: false as const, error: new Error("Not authorized") };
+    if (store.data.platform !== "shopify-public")
+      return {
+        success: false as const,
+        error: new Error(
+          "Product metafield publishing is only supported for Shopify stores (OAuth)",
+        ),
+      };
+
+    const products = await Product.find(Environment.SERVER, {
+      where: eq(schema.product.storeId, storeId),
+    });
+    if (!products.success) return products;
+
+    let pushed = 0;
+    const errors: string[] = [];
+
+    for (const product of products.data) {
+      if (!product.externalId) continue;
+
+      const structuredJson = await (async () => {
+        if (product.structuredData) return product.structuredData;
+        const generated = await generateProductStructuredData({
+          product: product.id,
+        });
+        if (!generated.success) return null;
+        return generated.data.json;
+      })();
+
+      if (!structuredJson) {
+        errors.push(`${product.title}: could not generate structured data`);
+        continue;
+      }
+
+      const result = await Shopify.pushProductUcpMetafields({
+        product: product.id,
+        structuredJson,
+      });
+
+      if (!result.success) {
+        errors.push(`${product.title}: ${result.error.message}`);
+        continue;
+      }
+
+      pushed += 1;
+    }
+
+    if (pushed === 0 && errors.length > 0)
+      return {
+        success: false as const,
+        error: new Error(errors.slice(0, 3).join("; ")),
+      };
+
+    return {
+      success: true as const,
+      data: { pushed, total: products.data.length, errors },
+    };
+  },
+  "Ucp.publishProductsToShopify",
 );

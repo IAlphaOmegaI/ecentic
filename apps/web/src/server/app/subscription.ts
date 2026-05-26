@@ -16,8 +16,8 @@ import type { Document } from "../utils/repository";
 import { repository } from "../utils/repository";
 import {
   isPlanKey,
-  type PlanKey,
   PLANS,
+  type PlanKey,
   resolvePlanByPriceId,
   stripe,
 } from "../utils/stripe";
@@ -245,7 +245,7 @@ export const createCheckoutSession = withAuthentication(
       return {
         success: false as const,
         error: new RequestError(
-          `Stripe price for plan "${key}" is not configured`,
+          `Stripe price for plan "${plan}" is not configured`,
         ),
       };
 

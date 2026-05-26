@@ -51,7 +51,8 @@
       "Bash(ls -la \"c:\\\\\\\\Users\\\\\\\\Owner\\\\\\\\Desktop\\\\\\\\Development\\\\\\\\ecentic\\\\\\\\apps\\\\\\\\web\\\\\\\\src\\\\\\\\app\\\\\\\\\\(main\\)\\\\\\\\\")",
       "Bash(bunx tsc *)",
       "Bash(bunx @biomejs/biome check \"src/app/\\(main\\)/ucp-validator/_components/ucp-validator-form.tsx\" \"src/server/app/intelligence/ucp-check.ts\")",
-      "Bash(bun add *)"
+      "Bash(bun add *)",
+      "Bash(bunx biome *)"
     ]
   }
 }

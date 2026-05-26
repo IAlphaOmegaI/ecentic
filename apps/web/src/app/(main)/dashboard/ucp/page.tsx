@@ -2,16 +2,28 @@ import { unwrapResult } from "@zenncore/utils";
 import { Suspense } from "react";
 import * as Ucp from "@/server/app/intelligence/ucp";
 import * as Product from "@/server/app/product";
+import * as Store from "@/server/app/store";
 import { Environment } from "@/server/utils/environment";
 import { UcpManager } from "./_components/ucp-manager";
 
 const UcpContent = async () => {
-  const [profile, products] = await Promise.all([
+  const [profile, products, stores] = await Promise.all([
     unwrapResult(Ucp.getProfile(Environment.SERVER)),
     unwrapResult(Product.skimForCurrentUser(Environment.SERVER)),
+    unwrapResult(Store.getForCurrentUser(Environment.SERVER)),
   ]);
 
-  return <UcpManager profile={profile} products={products} />;
+  const shopifyStores = stores
+    .filter((store) => store.platform === "shopify-public")
+    .map((store) => ({ id: store.id, name: store.name }));
+
+  return (
+    <UcpManager
+      profile={profile}
+      products={products}
+      shopifyStores={shopifyStores}
+    />
+  );
 };
 
 export default () => (
