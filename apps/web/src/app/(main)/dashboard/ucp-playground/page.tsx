@@ -10,8 +10,8 @@ export default () => (
             UCP Playground
           </h1>
           <p className="mt-0.5 font-light text-foreground-dimmed text-sm">
-            Test the Universal Commerce Protocol flow against any store — catalog
-            search, product lookup, and cart operations.
+            Test the Universal Commerce Protocol flow against any store —
+            catalog search, product lookup, and cart operations.
           </p>
         </div>
       </div>

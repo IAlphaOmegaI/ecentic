@@ -156,9 +156,8 @@ export const getAgentTrafficTimeSeries = withAuthentication(async (context) => {
   });
 
   const countFor = (date: string, family: string) =>
-    result.data.find(
-      (row) => row.day === date && row.modelFamily === family,
-    )?.count ?? 0;
+    result.data.find((row) => row.day === date && row.modelFamily === family)
+      ?.count ?? 0;
 
   const timeSeries: TrafficTimeSeriesPoint[] = dates.map((date) => ({
     date,

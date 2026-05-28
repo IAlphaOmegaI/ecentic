@@ -97,9 +97,7 @@ const ActivePlan = ({
             </p>
           )}
         </div>
-        <span
-          className={`px-2 py-0.5 font-medium text-sm ${statusClass}`}
-        >
+        <span className={`px-2 py-0.5 font-medium text-sm ${statusClass}`}>
           {statusLabel}
         </span>
       </div>
@@ -108,9 +106,7 @@ const ActivePlan = ({
           <span className="font-light text-foreground-dimmed text-sm">
             Billing cycle
           </span>
-          <span className="font-medium text-base text-foreground">
-            Monthly
-          </span>
+          <span className="font-medium text-base text-foreground">Monthly</span>
         </div>
         <div className="flex justify-between">
           <span className="font-light text-foreground-dimmed text-sm">

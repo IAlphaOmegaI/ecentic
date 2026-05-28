@@ -6,7 +6,7 @@ export const verifyHmac = (query: URLSearchParams, secret: string) => {
   if (!receivedHmac) return false;
 
   const message = [...query.entries()]
-    .filter(([key]) => key !== "hmac")  
+    .filter(([key]) => key !== "hmac")
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([key, value]) => `${key}=${value}`)
     .join("&");

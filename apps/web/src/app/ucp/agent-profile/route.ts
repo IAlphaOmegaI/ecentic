@@ -90,9 +90,7 @@ const agentProfile = {
         },
       ],
     },
-    payment_handlers: {
-      
-    },
+    payment_handlers: {},
   },
 };
 

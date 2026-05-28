@@ -460,7 +460,12 @@ const parseServiceEntries = (
           );
           return null;
         }
-        checkVersionFormat(entry.version, `${path}.version`, "services", issues);
+        checkVersionFormat(
+          entry.version,
+          `${path}.version`,
+          "services",
+          issues,
+        );
         return entry.version;
       })();
 
@@ -750,9 +755,7 @@ const parsePaymentHandlerEntries = (
 
       const parsed = PaymentHandlerEntrySchema.safeParse(shape.data);
       if (!parsed.success) {
-        issues.push(
-          ...mapZodIssues(parsed.error, "payment_handlers", path),
-        );
+        issues.push(...mapZodIssues(parsed.error, "payment_handlers", path));
         continue;
       }
 

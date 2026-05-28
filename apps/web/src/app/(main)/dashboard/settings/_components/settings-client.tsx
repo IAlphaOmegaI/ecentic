@@ -140,10 +140,7 @@ export const SettingsClient = ({
             value="billing"
             className="min-w-0 flex-1 bg-background outline-none"
           >
-            <BillingSection
-              subscription={subscription}
-              invoices={invoices}
-            />
+            <BillingSection subscription={subscription} invoices={invoices} />
           </TabsPanel>
         </Tabs>
       </div>

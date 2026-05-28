@@ -108,7 +108,6 @@ export const stream = <T>(
 ) => {
   const streamable = createStreamableValue<T>();
 
-
   // @note: needed like this, otherwise the streamable value is not updated correctly, do not use resultify here
   (async () => {
     try {
