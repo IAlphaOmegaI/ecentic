@@ -55,6 +55,9 @@ export const signInWithShopify = withContext(
             callbackURL,
             newUserCallbackURL: `/onboarding/connect/shopify?shop=${encodeURIComponent(shop)}`,
             disableRedirect: false,
+            // additionalData: {
+            //   shop,
+            // },
           },
         }),
     );

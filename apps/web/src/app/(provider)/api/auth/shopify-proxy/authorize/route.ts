@@ -1,4 +1,3 @@
-import crypto from "node:crypto";
 import { cookies } from "next/headers";
 import { type NextRequest, NextResponse as Response } from "next/server";
 
@@ -22,10 +21,6 @@ export const GET = async (request: NextRequest) => {
     );
   }
 
-  const state =
-    request.nextUrl.searchParams.get("state") ??
-    crypto.randomBytes(16).toString("hex");
-
   const jar = await cookies();
   const shop = jar.get("shopify_auth_shop")?.value;
 
@@ -42,13 +37,14 @@ export const GET = async (request: NextRequest) => {
     shopifyUrl.searchParams.set(shopifyKey, value);
   }
 
-  jar.set("shopify_auth_nonce", state, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "lax",
-    maxAge: 600,
-    path: "/",
-  });
+  // TODO: add state when calling /authorize on store register
+  // jar.set("shopify_auth_state", state, {
+  //   httpOnly: true,
+  //   secure: true,
+  //   sameSite: "lax",
+  //   maxAge: 600,
+  //   path: "/",
+  // });
 
   // shopifyUrl.searchParams.set("client_id", clientId);
   // shopifyUrl.searchParams.set(
