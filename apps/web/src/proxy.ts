@@ -6,8 +6,8 @@ const RouteAccess = {
   PUBLIC: "public",
   ADMINISTRATOR: "administrator",
   USER: "user",
-} as const;
-
+} as const
+ 
 const system = [
   "/llms.txt",
   "/manifest.webmanifest",
