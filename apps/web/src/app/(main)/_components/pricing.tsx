@@ -32,7 +32,10 @@ const dominate = {
 };
 
 export const Pricing = () => (
-  <section className="relative -left-[calc(50vw-50%)] w-screen">
+  <section
+    id="pricing"
+    className="relative -left-[calc(50vw-50%)] w-screen scroll-mt-[5.5rem]"
+  >
     <div className="mx-auto max-w-6xl border-accent-foreground border-y">
       <div className="relative border-accent-foreground p-6 md:p-12">
         <h1 className="font-body text-3xl text-foreground md:text-6xl">

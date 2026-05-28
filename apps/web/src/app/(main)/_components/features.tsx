@@ -38,7 +38,10 @@ const features = [
 ] as const;
 
 export const Features = () => (
-  <section className="relative -left-[calc(50vw-50%)] -z-1 w-screen">
+  <section
+    id="features"
+    className="relative -left-[calc(50vw-50%)] -z-1 w-screen scroll-mt-[5.5rem]"
+  >
     <div className="mx-auto max-w-6xl border-accent-foreground border-y">
       <div className="relative p-6 md:p-12">
         <h1 className="font-body text-3xl text-foreground md:text-5xl">

@@ -19,6 +19,8 @@ declare namespace NodeJS {
 
     readonly NEXT_PUBLIC_POSTHOG_KEY: string;
     readonly NEXT_PUBLIC_POSTHOG_HOST: string;
+    readonly NEXT_PUBLIC_CHATWOOT_BASE_URL: string;
+    readonly NEXT_PUBLIC_CHATWOOT_WEBSITE_TOKEN: string;
 
     readonly ECENTIC_TRACKER_PROBE: string;
     readonly ECENTIC_TRACKER_PUBLIC_ORIGIN: string;

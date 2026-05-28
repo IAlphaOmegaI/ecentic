@@ -52,7 +52,10 @@ const pages = [
 ] as const;
 
 export const DiscoveryPaths = () => (
-  <section className="border-accent-foreground border-y">
+  <section
+    id="resources"
+    className="scroll-mt-[5.5rem] border-accent-foreground border-y"
+  >
     <div className="mx-auto max-w-6xl">
       <h2 className="border-accent-foreground border-b p-8 font-body text-3xl text-foreground md:text-5xl">
         Find the page that matches your buying stage

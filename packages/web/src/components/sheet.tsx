@@ -46,7 +46,7 @@ export const SheetPopup = ({
       />
       <SheetPrimitive.Popup
         className={createClassName(
-          "fixed z-50 flex max-h-screen flex-col gap-4 bg-accent text-popover-foreground outline-hidden transition ease-in-out data-closed:duration-300 data-open:duration-500",
+          "fixed z-50 flex max-h-screen flex-col gap-4 bg-accent text-popover-foreground outline-hidden transition ease-in-out data-closed:duration-300 data-open:duration-500 border-accent-foreground",
           side === "right" &&
             "inset-y-0 right-0 h-full w-3/4 origin-right border-l data-ending-style:translate-x-full data-starting-style:translate-x-full sm:max-w-sm",
           side === "left" &&
