@@ -108,19 +108,59 @@ const WELL_KNOWN_MCP_TOOLS: Array<{
   label: string;
   testArgs: Record<string, unknown>;
 }> = [
-  { name: "search_catalog", label: "Search catalog", testArgs: { query: "coffee" } },
+  {
+    name: "search_catalog",
+    label: "Search catalog",
+    testArgs: { query: "coffee" },
+  },
   { name: "lookup_catalog", label: "Lookup catalog", testArgs: { ids: [] } },
-  { name: "get_product", label: "Get product", testArgs: { id: "__ecentic_probe__" } },
+  {
+    name: "get_product",
+    label: "Get product",
+    testArgs: { id: "__ecentic_probe__" },
+  },
   { name: "create_cart", label: "Create cart", testArgs: { items: [] } },
-  { name: "get_cart", label: "Get cart", testArgs: { id: "__ecentic_probe__" } },
-  { name: "update_cart", label: "Update cart", testArgs: { id: "__ecentic_probe__", items: [] } },
-  { name: "cancel_cart", label: "Cancel cart", testArgs: { id: "__ecentic_probe__" } },
+  {
+    name: "get_cart",
+    label: "Get cart",
+    testArgs: { id: "__ecentic_probe__" },
+  },
+  {
+    name: "update_cart",
+    label: "Update cart",
+    testArgs: { id: "__ecentic_probe__", items: [] },
+  },
+  {
+    name: "cancel_cart",
+    label: "Cancel cart",
+    testArgs: { id: "__ecentic_probe__" },
+  },
   { name: "create_checkout", label: "Create checkout", testArgs: {} },
-  { name: "get_checkout", label: "Get checkout", testArgs: { id: "__ecentic_probe__" } },
-  { name: "update_checkout", label: "Update checkout", testArgs: { id: "__ecentic_probe__" } },
-  { name: "complete_checkout", label: "Complete checkout", testArgs: { id: "__ecentic_probe__" } },
-  { name: "cancel_checkout", label: "Cancel checkout", testArgs: { id: "__ecentic_probe__" } },
-  { name: "get_order", label: "Get order", testArgs: { id: "__ecentic_probe__" } },
+  {
+    name: "get_checkout",
+    label: "Get checkout",
+    testArgs: { id: "__ecentic_probe__" },
+  },
+  {
+    name: "update_checkout",
+    label: "Update checkout",
+    testArgs: { id: "__ecentic_probe__" },
+  },
+  {
+    name: "complete_checkout",
+    label: "Complete checkout",
+    testArgs: { id: "__ecentic_probe__" },
+  },
+  {
+    name: "cancel_checkout",
+    label: "Cancel checkout",
+    testArgs: { id: "__ecentic_probe__" },
+  },
+  {
+    name: "get_order",
+    label: "Get order",
+    testArgs: { id: "__ecentic_probe__" },
+  },
 ];
 
 const isObject = (value: unknown): value is Record<string, unknown> =>
@@ -150,7 +190,9 @@ const callMcpTool = async (
         params: {
           name: toolName,
           arguments: {
-            meta: { "ucp-agent": { profile: "https://ecentic.ai/.well-known/ucp" } },
+            meta: {
+              "ucp-agent": { profile: "https://ecentic.ai/ucp/agent-profile" },
+            },
             ...testArgs,
           },
         },
@@ -164,14 +206,30 @@ const callMcpTool = async (
   const latencyMs = Math.round(performance.now() - start);
 
   if (!result.success) {
-    return { toolName, label: toolLabel, present: true, httpStatus: null, latencyMs: null, passed: false, note: "Request timed out." };
+    return {
+      toolName,
+      label: toolLabel,
+      present: true,
+      httpStatus: null,
+      latencyMs: null,
+      passed: false,
+      note: "Request timed out.",
+    };
   }
 
   const response = result.data;
   const textResult = await resultify(() => response.text());
 
   if (!textResult.success) {
-    return { toolName, label: toolLabel, present: true, httpStatus: response.status, latencyMs, passed: false, note: "Could not read response body." };
+    return {
+      toolName,
+      label: toolLabel,
+      present: true,
+      httpStatus: response.status,
+      latencyMs,
+      passed: false,
+      note: "Could not read response body.",
+    };
   }
 
   type McpCallBody = {
@@ -183,7 +241,15 @@ const callMcpTool = async (
   try {
     body = JSON.parse(textResult.data) as McpCallBody;
   } catch {
-    return { toolName, label: toolLabel, present: true, httpStatus: response.status, latencyMs, passed: response.status < 500, note: "Response is not valid JSON." };
+    return {
+      toolName,
+      label: toolLabel,
+      present: true,
+      httpStatus: response.status,
+      latencyMs,
+      passed: response.status < 500,
+      note: "Response is not valid JSON.",
+    };
   }
 
   if (body.error) {
@@ -215,9 +281,10 @@ const callMcpTool = async (
     httpStatus: response.status,
     latencyMs,
     passed: response.status < 500,
-    note: body.result?.isError === true
-      ? "Tool returned an application error — expected for probe input."
-      : "Tool responded successfully.",
+    note:
+      body.result?.isError === true
+        ? "Tool returned an application error — expected for probe input."
+        : "Tool responded successfully.",
   };
 };
 
@@ -362,7 +429,9 @@ const probeMcpEndpoint = async (
     ...toolTests.filter((t) => t.present).map((t) => t.toolName.toLowerCase()),
   ]);
   const hasSearch = [...confirmedToolNames].some((n) =>
-    ["search", "find", "catalog", "browse", "lookup"].some((k) => n.includes(k)),
+    ["search", "find", "catalog", "browse", "lookup"].some((k) =>
+      n.includes(k),
+    ),
   );
   const hasCheckout = [...confirmedToolNames].some((n) =>
     ["checkout", "cart", "order", "buy", "purchase"].some((k) => n.includes(k)),
@@ -382,7 +451,10 @@ const probeMcpEndpoint = async (
     hasSearch,
     hasCheckout,
     transport: "http-json",
-    error: initResponse.status >= 500 ? `Server error HTTP ${initResponse.status}.` : null,
+    error:
+      initResponse.status >= 500
+        ? `Server error HTTP ${initResponse.status}.`
+        : null,
   };
 };
 
@@ -436,7 +508,10 @@ const probeEndpoint = async (
     httpStatus: response.status,
     latencyMs,
     corsAllowed: corsOrigin !== null,
-    error: response.status >= 500 ? `Server returned HTTP ${response.status}.` : null,
+    error:
+      response.status >= 500
+        ? `Server returned HTTP ${response.status}.`
+        : null,
   };
 };
 
@@ -475,8 +550,12 @@ const runCheckoutLifecycle = async (
       note: "OPTIONS request timed out — endpoint may block CORS preflight from AI agent clients.",
     });
   } else {
-    const allowOrigin = corsResult.data.headers.get("access-control-allow-origin");
-    const allowMethods = corsResult.data.headers.get("access-control-allow-methods");
+    const allowOrigin = corsResult.data.headers.get(
+      "access-control-allow-origin",
+    );
+    const allowMethods = corsResult.data.headers.get(
+      "access-control-allow-methods",
+    );
     steps.push({
       step: "cors",
       label: "CORS preflight",
@@ -484,9 +563,10 @@ const runCheckoutLifecycle = async (
       latencyMs: corsLatency,
       passed: allowOrigin !== null,
       skipped: false,
-      note: allowOrigin !== null
-        ? `Access-Control-Allow-Origin: ${allowOrigin}${allowMethods ? ` · Methods: ${allowMethods}` : ""}`
-        : "No CORS headers — browser-hosted AI agent clients will be blocked by same-origin policy.",
+      note:
+        allowOrigin !== null
+          ? `Access-Control-Allow-Origin: ${allowOrigin}${allowMethods ? ` · Methods: ${allowMethods}` : ""}`
+          : "No CORS headers — browser-hosted AI agent clients will be blocked by same-origin policy.",
     });
   }
 
@@ -496,7 +576,9 @@ const runCheckoutLifecycle = async (
     fetch(cartsUrl, {
       method: "POST",
       headers: AGENT_HEADERS,
-      body: JSON.stringify({ items: [{ product_id: "__ecentic_probe__", quantity: 1 }] }),
+      body: JSON.stringify({
+        items: [{ product_id: "__ecentic_probe__", quantity: 1 }],
+      }),
       redirect: "follow",
       signal: AbortSignal.timeout(8_000),
       cache: "no-store",
@@ -520,7 +602,14 @@ const runCheckoutLifecycle = async (
       { step: "checkout_complete" as const, label: "Complete checkout" },
       { step: "checkout_cancel" as const, label: "Cancel checkout" },
     ]) {
-      steps.push({ ...s, httpStatus: null, latencyMs: null, passed: false, skipped: true, note: "Skipped — cart create failed." });
+      steps.push({
+        ...s,
+        httpStatus: null,
+        latencyMs: null,
+        passed: false,
+        skipped: true,
+        note: "Skipped — cart create failed.",
+      });
     }
     return steps;
   }
@@ -529,7 +618,11 @@ const runCheckoutLifecycle = async (
   const cartCreateText = await resultify(() => cartCreateResult.data.text());
   let cartId: string | null = null;
 
-  if (cartCreateText.success && cartCreateStatus >= 200 && cartCreateStatus < 300) {
+  if (
+    cartCreateText.success &&
+    cartCreateStatus >= 200 &&
+    cartCreateStatus < 300
+  ) {
     try {
       type CartBody = { id?: string; cart_id?: string };
       const body = JSON.parse(cartCreateText.data) as CartBody;
@@ -546,10 +639,14 @@ const runCheckoutLifecycle = async (
     passed: cartCreateStatus < 500,
     skipped: false,
     note: (() => {
-      if (cartCreateStatus >= 500) return `Server error HTTP ${cartCreateStatus} — bug in cart handler.`;
-      if (cartCreateStatus >= 200 && cartCreateStatus < 300) return `Cart created${cartId ? " · cart ID received" : " · no cart ID in response"}.`;
-      if (cartCreateStatus === 400 || cartCreateStatus === 422) return `HTTP ${cartCreateStatus} — validation error expected for probe item ID.`;
-      if (cartCreateStatus === 404) return "HTTP 404 — confirm /carts path is correct for this endpoint.";
+      if (cartCreateStatus >= 500)
+        return `Server error HTTP ${cartCreateStatus} — bug in cart handler.`;
+      if (cartCreateStatus >= 200 && cartCreateStatus < 300)
+        return `Cart created${cartId ? " · cart ID received" : " · no cart ID in response"}.`;
+      if (cartCreateStatus === 400 || cartCreateStatus === 422)
+        return `HTTP ${cartCreateStatus} — validation error expected for probe item ID.`;
+      if (cartCreateStatus === 404)
+        return "HTTP 404 — confirm /carts path is correct for this endpoint.";
       return `HTTP ${cartCreateStatus}`;
     })(),
   });
@@ -563,9 +660,10 @@ const runCheckoutLifecycle = async (
       latencyMs: null,
       passed: true,
       skipped: true,
-      note: cartCreateStatus < 300
-        ? "Skipped — no cart ID in create response."
-        : "Skipped — cart create returned validation error (expected for probe item).",
+      note:
+        cartCreateStatus < 300
+          ? "Skipped — no cart ID in create response."
+          : "Skipped — cart create returned validation error (expected for probe item).",
     });
   } else {
     const cartUpdateStart = performance.now();
@@ -573,7 +671,9 @@ const runCheckoutLifecycle = async (
       fetch(`${cartsUrl}/${cartId}`, {
         method: "PUT",
         headers: AGENT_HEADERS,
-        body: JSON.stringify({ items: [{ product_id: "__ecentic_probe__", quantity: 2 }] }),
+        body: JSON.stringify({
+          items: [{ product_id: "__ecentic_probe__", quantity: 2 }],
+        }),
         redirect: "follow",
         signal: AbortSignal.timeout(8_000),
         cache: "no-store",
@@ -582,7 +682,15 @@ const runCheckoutLifecycle = async (
     const cartUpdateLatency = Math.round(performance.now() - cartUpdateStart);
 
     if (!cartUpdateResult.success) {
-      steps.push({ step: "cart_update", label: "Update cart", httpStatus: null, latencyMs: null, passed: false, skipped: false, note: "PUT /carts/{id} timed out." });
+      steps.push({
+        step: "cart_update",
+        label: "Update cart",
+        httpStatus: null,
+        latencyMs: null,
+        passed: false,
+        skipped: false,
+        note: "PUT /carts/{id} timed out.",
+      });
     } else {
       const status = cartUpdateResult.data.status;
       steps.push({
@@ -609,7 +717,9 @@ const runCheckoutLifecycle = async (
       cache: "no-store",
     }),
   );
-  const checkoutCreateLatency = Math.round(performance.now() - checkoutCreateStart);
+  const checkoutCreateLatency = Math.round(
+    performance.now() - checkoutCreateStart,
+  );
 
   let sessionId: string | null = null;
 
@@ -627,17 +737,34 @@ const runCheckoutLifecycle = async (
       { step: "checkout_complete" as const, label: "Complete checkout" },
       { step: "checkout_cancel" as const, label: "Cancel checkout" },
     ]) {
-      steps.push({ ...s, httpStatus: null, latencyMs: null, passed: false, skipped: true, note: "Skipped — checkout session create failed." });
+      steps.push({
+        ...s,
+        httpStatus: null,
+        latencyMs: null,
+        passed: false,
+        skipped: true,
+        note: "Skipped — checkout session create failed.",
+      });
     }
     return steps;
   }
 
   const checkoutCreateStatus = checkoutCreateResult.data.status;
-  const checkoutCreateText = await resultify(() => checkoutCreateResult.data.text());
+  const checkoutCreateText = await resultify(() =>
+    checkoutCreateResult.data.text(),
+  );
 
-  if (checkoutCreateText.success && checkoutCreateStatus >= 200 && checkoutCreateStatus < 300) {
+  if (
+    checkoutCreateText.success &&
+    checkoutCreateStatus >= 200 &&
+    checkoutCreateStatus < 300
+  ) {
     try {
-      type CheckoutSessionBody = { id?: string; session_id?: string; checkout_id?: string };
+      type CheckoutSessionBody = {
+        id?: string;
+        session_id?: string;
+        checkout_id?: string;
+      };
       const body = JSON.parse(checkoutCreateText.data) as CheckoutSessionBody;
       const rawId = body.id ?? body.session_id ?? body.checkout_id;
       if (typeof rawId === "string") sessionId = rawId;
@@ -652,20 +779,44 @@ const runCheckoutLifecycle = async (
     passed: checkoutCreateStatus < 500,
     skipped: false,
     note: (() => {
-      if (checkoutCreateStatus >= 500) return `Server error HTTP ${checkoutCreateStatus} — bug in checkout handler.`;
-      if (checkoutCreateStatus >= 200 && checkoutCreateStatus < 300) return `Session created${sessionId ? " · session ID received" : " · no session ID in response"}.`;
-      if (checkoutCreateStatus === 400 || checkoutCreateStatus === 422) return `HTTP ${checkoutCreateStatus} — validation error expected for probe cart.`;
-      if (checkoutCreateStatus === 404) return "HTTP 404 — confirm /checkout-sessions path is correct for this endpoint.";
+      if (checkoutCreateStatus >= 500)
+        return `Server error HTTP ${checkoutCreateStatus} — bug in checkout handler.`;
+      if (checkoutCreateStatus >= 200 && checkoutCreateStatus < 300)
+        return `Session created${sessionId ? " · session ID received" : " · no session ID in response"}.`;
+      if (checkoutCreateStatus === 400 || checkoutCreateStatus === 422)
+        return `HTTP ${checkoutCreateStatus} — validation error expected for probe cart.`;
+      if (checkoutCreateStatus === 404)
+        return "HTTP 404 — confirm /checkout-sessions path is correct for this endpoint.";
       return `HTTP ${checkoutCreateStatus}`;
     })(),
   });
 
   // Step 5: Complete checkout — POST /checkout-sessions/{id}/complete
-  const completeSkipNote = sessionId ? null : checkoutCreateStatus < 300 ? "Skipped — no session ID in create response." : "Skipped — checkout session create returned validation error.";
+  const completeSkipNote = sessionId
+    ? null
+    : checkoutCreateStatus < 300
+      ? "Skipped — no session ID in create response."
+      : "Skipped — checkout session create returned validation error.";
 
   if (completeSkipNote) {
-    steps.push({ step: "checkout_complete", label: "Complete checkout", httpStatus: null, latencyMs: null, passed: true, skipped: true, note: completeSkipNote });
-    steps.push({ step: "checkout_cancel", label: "Cancel checkout", httpStatus: null, latencyMs: null, passed: true, skipped: true, note: completeSkipNote });
+    steps.push({
+      step: "checkout_complete",
+      label: "Complete checkout",
+      httpStatus: null,
+      latencyMs: null,
+      passed: true,
+      skipped: true,
+      note: completeSkipNote,
+    });
+    steps.push({
+      step: "checkout_cancel",
+      label: "Cancel checkout",
+      httpStatus: null,
+      latencyMs: null,
+      passed: true,
+      skipped: true,
+      note: completeSkipNote,
+    });
     return steps;
   }
 
@@ -683,7 +834,15 @@ const runCheckoutLifecycle = async (
   const completeLatency = Math.round(performance.now() - completeStart);
 
   if (!completeResult.success) {
-    steps.push({ step: "checkout_complete", label: "Complete checkout", httpStatus: null, latencyMs: null, passed: false, skipped: false, note: "POST /checkout-sessions/{id}/complete timed out." });
+    steps.push({
+      step: "checkout_complete",
+      label: "Complete checkout",
+      httpStatus: null,
+      latencyMs: null,
+      passed: false,
+      skipped: false,
+      note: "POST /checkout-sessions/{id}/complete timed out.",
+    });
   } else {
     const status = completeResult.data.status;
     steps.push({
@@ -693,11 +852,12 @@ const runCheckoutLifecycle = async (
       latencyMs: completeLatency,
       passed: status < 500,
       skipped: false,
-      note: status >= 500
-        ? `Server error HTTP ${status}.`
-        : (status === 400 || status === 402)
-          ? `HTTP ${status} — payment validation correctly rejected test payment method.`
-          : `HTTP ${status}`,
+      note:
+        status >= 500
+          ? `Server error HTTP ${status}.`
+          : status === 400 || status === 402
+            ? `HTTP ${status} — payment validation correctly rejected test payment method.`
+            : `HTTP ${status}`,
     });
   }
 
@@ -715,7 +875,15 @@ const runCheckoutLifecycle = async (
   const cancelLatency = Math.round(performance.now() - cancelStart);
 
   if (!cancelResult.success) {
-    steps.push({ step: "checkout_cancel", label: "Cancel checkout", httpStatus: null, latencyMs: null, passed: false, skipped: false, note: "POST /checkout-sessions/{id}/cancel timed out." });
+    steps.push({
+      step: "checkout_cancel",
+      label: "Cancel checkout",
+      httpStatus: null,
+      latencyMs: null,
+      passed: false,
+      skipped: false,
+      note: "POST /checkout-sessions/{id}/cancel timed out.",
+    });
   } else {
     const status = cancelResult.data.status;
     steps.push({
@@ -744,7 +912,8 @@ const probeA2aEndpoint = async (
       method: "GET",
       headers: {
         Accept: "application/json",
-        "X-A2A-Extensions": "https://ucp.dev/2026-04-08/specification/reference",
+        "X-A2A-Extensions":
+          "https://ucp.dev/2026-04-08/specification/reference",
         "User-Agent": AGENT_HEADERS["User-Agent"],
       },
       redirect: "follow",
@@ -782,7 +951,10 @@ const probeA2aEndpoint = async (
     const origin = new URL(endpoint).origin;
     const cardResult = await resultify(() =>
       fetch(`${origin}/.well-known/agent-card.json`, {
-        headers: { Accept: "application/json", "User-Agent": AGENT_HEADERS["User-Agent"] },
+        headers: {
+          Accept: "application/json",
+          "User-Agent": AGENT_HEADERS["User-Agent"],
+        },
         signal: AbortSignal.timeout(5_000),
         cache: "no-store",
       }),
@@ -810,7 +982,8 @@ const probeA2aEndpoint = async (
     agentCardFound,
     agentName,
     ucpExtensionPresent,
-    error: response.status >= 500 ? `Server error HTTP ${response.status}.` : null,
+    error:
+      response.status >= 500 ? `Server error HTTP ${response.status}.` : null,
   };
 };
 
@@ -820,20 +993,29 @@ const computeGrade = (
   a2aProbes: A2aProbeResult[],
   lifecycle: CheckoutStepResult[],
 ): { grade: AdvancedGrade; detail: string } => {
-  const allProbesEmpty = probes.length === 0 && mcpProbes.length === 0 && a2aProbes.length === 0;
+  const allProbesEmpty =
+    probes.length === 0 && mcpProbes.length === 0 && a2aProbes.length === 0;
   if (allProbesEmpty) {
-    return { grade: "C", detail: "No service endpoints with URLs declared in the UCP profile." };
+    return {
+      grade: "C",
+      detail: "No service endpoints with URLs declared in the UCP profile.",
+    };
   }
 
   const serverErrors = [
     ...probes.filter((p) => p.httpStatus !== null && p.httpStatus >= 500),
     ...mcpProbes.filter((p) => p.httpStatus !== null && p.httpStatus >= 500),
     ...a2aProbes.filter((p) => p.httpStatus !== null && p.httpStatus >= 500),
-    ...lifecycle.filter((s) => !s.skipped && s.httpStatus !== null && s.httpStatus >= 500),
+    ...lifecycle.filter(
+      (s) => !s.skipped && s.httpStatus !== null && s.httpStatus >= 500,
+    ),
   ];
 
   if (serverErrors.length > 0) {
-    return { grade: "F", detail: `${serverErrors.length} endpoint(s) returning server errors (5xx) — investigate before launch.` };
+    return {
+      grade: "F",
+      detail: `${serverErrors.length} endpoint(s) returning server errors (5xx) — investigate before launch.`,
+    };
   }
 
   const reachableCount = probes.filter((p) => p.reachable).length;
@@ -842,9 +1024,12 @@ const computeGrade = (
   const a2aReachableCount = a2aProbes.filter((p) => p.reachable).length;
   const activeSteps = lifecycle.filter((s) => !s.skipped);
   const passedSteps = activeSteps.filter((s) => s.passed).length;
-  const allRestReachable = probes.length === 0 || reachableCount === probes.length;
-  const allMcpReachable = mcpProbes.length === 0 || mcpReachableCount === mcpProbes.length;
-  const allA2aReachable = a2aProbes.length === 0 || a2aReachableCount === a2aProbes.length;
+  const allRestReachable =
+    probes.length === 0 || reachableCount === probes.length;
+  const allMcpReachable =
+    mcpProbes.length === 0 || mcpReachableCount === mcpProbes.length;
+  const allA2aReachable =
+    a2aProbes.length === 0 || a2aReachableCount === a2aProbes.length;
 
   if (
     allRestReachable &&
@@ -857,11 +1042,20 @@ const computeGrade = (
     const parts: string[] = [];
     if (mcpProbes.length > 0) parts.push(`${mcpReachableCount} MCP`);
     if (a2aProbes.length > 0) parts.push(`${a2aReachableCount} A2A`);
-    const note = parts.length > 0 ? `, ${parts.join(", ")} endpoint(s) responding` : "";
-    return { grade: "A", detail: `All endpoints reachable${note}, CORS configured, checkout lifecycle validated.` };
+    const note =
+      parts.length > 0 ? `, ${parts.join(", ")} endpoint(s) responding` : "";
+    return {
+      grade: "A",
+      detail: `All endpoints reachable${note}, CORS configured, checkout lifecycle validated.`,
+    };
   }
 
-  if (allRestReachable && allMcpReachable && allA2aReachable && passedSteps >= Math.ceil(activeSteps.length / 2)) {
+  if (
+    allRestReachable &&
+    allMcpReachable &&
+    allA2aReachable &&
+    passedSteps >= Math.ceil(activeSteps.length / 2)
+  ) {
     return {
       grade: "B",
       detail: `All endpoint(s) reachable${corsOk ? "" : " — CORS needs attention"}. Lifecycle partially validated.`,
@@ -869,9 +1063,18 @@ const computeGrade = (
   }
 
   const issues: string[] = [];
-  if (!allRestReachable) issues.push(`${reachableCount}/${probes.length} REST endpoint(s) reachable`);
-  if (!allMcpReachable) issues.push(`${mcpReachableCount}/${mcpProbes.length} MCP endpoint(s) reachable`);
-  if (!allA2aReachable) issues.push(`${a2aReachableCount}/${a2aProbes.length} A2A endpoint(s) reachable`);
+  if (!allRestReachable)
+    issues.push(
+      `${reachableCount}/${probes.length} REST endpoint(s) reachable`,
+    );
+  if (!allMcpReachable)
+    issues.push(
+      `${mcpReachableCount}/${mcpProbes.length} MCP endpoint(s) reachable`,
+    );
+  if (!allA2aReachable)
+    issues.push(
+      `${a2aReachableCount}/${a2aProbes.length} A2A endpoint(s) reachable`,
+    );
   if (!corsOk) issues.push("CORS not configured");
   return { grade: "C", detail: `${issues.join(". ")}. Review endpoint setup.` };
 };
@@ -879,7 +1082,8 @@ const computeGrade = (
 export const checkUCPAdvanced = async (
   domain: string,
 ): Promise<
-  { success: true; data: AdvancedCheckResult } | { success: false; error: string }
+  | { success: true; data: AdvancedCheckResult }
+  | { success: false; error: string }
 > => {
   const cleaned = domain
     .trim()
@@ -902,12 +1106,19 @@ export const checkUCPAdvanced = async (
   );
 
   if (!profileResult.success) {
-    return { success: false, error: "Could not reach the UCP profile endpoint. Run basic validation first." };
+    return {
+      success: false,
+      error:
+        "Could not reach the UCP profile endpoint. Run basic validation first.",
+    };
   }
 
   const bodyText = await resultify(() => profileResult.data.text());
   if (!bodyText.success) {
-    return { success: false, error: "Could not read UCP profile response body." };
+    return {
+      success: false,
+      error: "Could not read UCP profile response body.",
+    };
   }
 
   let profile: unknown = null;
@@ -916,7 +1127,10 @@ export const checkUCPAdvanced = async (
   } catch {}
 
   if (!isObject(profile)) {
-    return { success: false, error: "UCP profile is not valid JSON — run basic validation first." };
+    return {
+      success: false,
+      error: "UCP profile is not valid JSON — run basic validation first.",
+    };
   }
 
   const root = isObject(profile.ucp) ? profile.ucp : profile;
@@ -958,24 +1172,37 @@ export const checkUCPAdvanced = async (
         a2aProbes: [],
         checkoutLifecycle: [],
         grade: "C",
-        gradeDetail: "No service endpoints with URLs declared in the UCP profile.",
+        gradeDetail:
+          "No service endpoints with URLs declared in the UCP profile.",
       },
     };
   }
 
-  const restEndpoints = serviceEndpoints.filter((svc) => svc.transport !== "mcp" && svc.transport !== "a2a");
-  const mcpEndpoints = serviceEndpoints.filter((svc) => svc.transport === "mcp");
-  const a2aEndpoints = serviceEndpoints.filter((svc) => svc.transport === "a2a");
+  const restEndpoints = serviceEndpoints.filter(
+    (svc) => svc.transport !== "mcp" && svc.transport !== "a2a",
+  );
+  const mcpEndpoints = serviceEndpoints.filter(
+    (svc) => svc.transport === "mcp",
+  );
+  const a2aEndpoints = serviceEndpoints.filter(
+    (svc) => svc.transport === "a2a",
+  );
 
   const [endpointProbes, mcpProbes, a2aProbes] = await Promise.all([
     Promise.all(
-      restEndpoints.map((svc) => probeEndpoint(svc.name, svc.label, svc.endpoint, svc.transport)),
+      restEndpoints.map((svc) =>
+        probeEndpoint(svc.name, svc.label, svc.endpoint, svc.transport),
+      ),
     ),
     Promise.all(
-      mcpEndpoints.map((svc) => probeMcpEndpoint(svc.name, svc.label, svc.endpoint)),
+      mcpEndpoints.map((svc) =>
+        probeMcpEndpoint(svc.name, svc.label, svc.endpoint),
+      ),
     ),
     Promise.all(
-      a2aEndpoints.map((svc) => probeA2aEndpoint(svc.name, svc.label, svc.endpoint)),
+      a2aEndpoints.map((svc) =>
+        probeA2aEndpoint(svc.name, svc.label, svc.endpoint),
+      ),
     ),
   ]);
 
@@ -987,7 +1214,12 @@ export const checkUCPAdvanced = async (
     ? await runCheckoutLifecycle(shoppingService.endpoint)
     : [];
 
-  const { grade, detail } = computeGrade(endpointProbes, mcpProbes, a2aProbes, checkoutLifecycle);
+  const { grade, detail } = computeGrade(
+    endpointProbes,
+    mcpProbes,
+    a2aProbes,
+    checkoutLifecycle,
+  );
 
   return {
     success: true,

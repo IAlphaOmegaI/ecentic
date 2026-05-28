@@ -2,6 +2,7 @@
 
 import {
   ChartCircularIcon,
+  CircleBoltIcon,
   CodeIcon,
   DownloadIcon,
   GaugeIcon,
@@ -53,6 +54,12 @@ const items = [
     href: "/dashboard/ucp",
     exact: false,
     badge: "68%",
+  },
+  {
+    icon: CircleBoltIcon,
+    label: "UCP Playground",
+    href: "/dashboard/ucp-playground",
+    exact: false,
   },
   {
     icon: DownloadIcon,
