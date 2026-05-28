@@ -82,9 +82,11 @@ export function repository<T extends TableWithId>(table: T) {
         const target = asTable(table);
         const result = await resultify(
           async () =>
-            run.select().from(target).where(eq(target.id, id)).limit(1) as Promise<
-              Document<T>[]
-            >,
+            run
+              .select()
+              .from(target)
+              .where(eq(target.id, id))
+              .limit(1) as Promise<Document<T>[]>,
         );
 
         if (!result.success) {

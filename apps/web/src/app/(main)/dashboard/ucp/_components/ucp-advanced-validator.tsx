@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  CheckCircleIcon,
-  XCircleIcon,
-} from "@zenncore/icons";
+import { CheckCircleIcon, XCircleIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
@@ -33,8 +30,7 @@ const gradeConfig: Record<
   F: { tone: "danger", label: "F", description: "Critical issues" },
 };
 
-const formatLatency = (ms: number | null) =>
-  ms === null ? "—" : `${ms} ms`;
+const formatLatency = (ms: number | null) => (ms === null ? "—" : `${ms} ms`);
 
 const Chip = ({ label, tone }: { label: string; tone: Tone }) => (
   <span
@@ -66,11 +62,16 @@ const SectionHeading = ({
 
 const formatTransport = (transport: string | null) => {
   switch (transport) {
-    case "rest": return "REST";
-    case "mcp": return "MCP";
-    case "a2a": return "A2A";
-    case "embedded": return "Embedded";
-    default: return transport ?? "—";
+    case "rest":
+      return "REST";
+    case "mcp":
+      return "MCP";
+    case "a2a":
+      return "A2A";
+    case "embedded":
+      return "Embedded";
+    default:
+      return transport ?? "—";
   }
 };
 
@@ -81,7 +82,9 @@ const EndpointProbeRow = ({
 }) => (
   <div className="grid gap-3 bg-background px-4 py-4 sm:grid-cols-[minmax(0,160px)_minmax(0,1fr)_80px_80px_80px] sm:items-center">
     <div>
-      <p className="font-medium text-foreground text-sm">{probe.serviceLabel}</p>
+      <p className="font-medium text-foreground text-sm">
+        {probe.serviceLabel}
+      </p>
       <p className="mt-0.5 break-all font-mono text-foreground-dimmed text-xs">
         {probe.serviceName}
       </p>
@@ -98,13 +101,12 @@ const EndpointProbeRow = ({
 
     <div className="flex flex-wrap gap-1.5 sm:flex-col">
       <Chip
-        label={probe.httpStatus !== null ? `HTTP ${probe.httpStatus}` : "No response"}
+        label={
+          probe.httpStatus !== null ? `HTTP ${probe.httpStatus}` : "No response"
+        }
         tone={probe.reachable ? "success" : "danger"}
       />
-      <Chip
-        label={formatTransport(probe.transport)}
-        tone="neutral"
-      />
+      <Chip label={formatTransport(probe.transport)} tone="neutral" />
     </div>
 
     <div>
@@ -198,7 +200,11 @@ const McpToolTestRow = ({
 }: {
   test: UcpAdvancedCheck.McpToolTestResult;
 }) => {
-  const tone: Tone = !test.present ? "skip" : test.passed ? "success" : "danger";
+  const tone: Tone = !test.present
+    ? "skip"
+    : test.passed
+      ? "success"
+      : "danger";
 
   return (
     <div className="grid gap-3 bg-background-dimmed/40 px-4 py-2.5 md:grid-cols-[28px_minmax(0,200px)_80px_90px_minmax(0,1fr)] md:items-center">
@@ -208,10 +214,18 @@ const McpToolTestRow = ({
           toneClasses[tone],
         )}
       >
-        {!test.present ? "—" : test.passed ? <CheckCircleIcon className="size-3" /> : <XCircleIcon className="size-3" />}
+        {!test.present ? (
+          "—"
+        ) : test.passed ? (
+          <CheckCircleIcon className="size-3" />
+        ) : (
+          <XCircleIcon className="size-3" />
+        )}
       </span>
 
-      <p className="font-medium font-mono text-foreground text-xs">{test.toolName}</p>
+      <p className="font-medium font-mono text-foreground text-xs">
+        {test.toolName}
+      </p>
 
       <span
         className={cn(
@@ -238,11 +252,7 @@ const McpToolTestRow = ({
   );
 };
 
-const McpProbeRow = ({
-  probe,
-}: {
-  probe: UcpAdvancedCheck.McpProbeResult;
-}) => {
+const McpProbeRow = ({ probe }: { probe: UcpAdvancedCheck.McpProbeResult }) => {
   const statusTone: Tone = probe.reachable ? "success" : "danger";
   const transportLabel =
     probe.transport === "http-json"
@@ -255,18 +265,26 @@ const McpProbeRow = ({
     <div className="bg-background">
       <div className="grid gap-3 px-4 py-4 lg:grid-cols-[minmax(0,200px)_minmax(0,1fr)_minmax(0,1fr)] lg:items-start">
         <div>
-          <p className="font-medium text-foreground text-sm">{probe.serviceLabel}</p>
+          <p className="font-medium text-foreground text-sm">
+            {probe.serviceLabel}
+          </p>
           <p className="mt-0.5 break-all font-mono text-foreground-dimmed text-xs">
             {probe.endpoint}
           </p>
           {probe.error && (
-            <p className="mt-1 font-light text-red-500 text-xs">{probe.error}</p>
+            <p className="mt-1 font-light text-red-500 text-xs">
+              {probe.error}
+            </p>
           )}
         </div>
 
         <div className="flex flex-wrap gap-1.5">
           <Chip
-            label={probe.httpStatus !== null ? `HTTP ${probe.httpStatus}` : "No response"}
+            label={
+              probe.httpStatus !== null
+                ? `HTTP ${probe.httpStatus}`
+                : "No response"
+            }
             tone={statusTone}
           />
           <Chip label={transportLabel} tone="neutral" />
@@ -298,7 +316,10 @@ const McpProbeRow = ({
           {probe.hasSearch && <Chip label="Search" tone="success" />}
           {probe.hasCheckout && <Chip label="Checkout" tone="success" />}
           {probe.transport === "sse" && (
-            <Chip label="SSE — tool calls require streaming client" tone="warning" />
+            <Chip
+              label="SSE — tool calls require streaming client"
+              tone="warning"
+            />
           )}
         </div>
       </div>
@@ -307,7 +328,10 @@ const McpProbeRow = ({
         <div className="border-accent-foreground border-t">
           <div className="hidden items-center gap-3 border-accent-foreground border-b bg-background-dimmed px-4 py-1.5 md:grid md:grid-cols-[28px_minmax(0,200px)_80px_90px_minmax(0,1fr)]">
             {["", "Tool", "Latency", "Result", "Note"].map((h) => (
-              <p key={h} className="font-medium text-foreground-dimmed text-xs uppercase tracking-[0.12em]">
+              <p
+                key={h}
+                className="font-medium text-foreground-dimmed text-xs uppercase tracking-[0.12em]"
+              >
                 {h}
               </p>
             ))}
@@ -323,17 +347,15 @@ const McpProbeRow = ({
   );
 };
 
-const A2aProbeRow = ({
-  probe,
-}: {
-  probe: UcpAdvancedCheck.A2aProbeResult;
-}) => {
+const A2aProbeRow = ({ probe }: { probe: UcpAdvancedCheck.A2aProbeResult }) => {
   const statusTone: Tone = probe.reachable ? "success" : "danger";
 
   return (
     <div className="grid gap-3 bg-background px-4 py-4 lg:grid-cols-[minmax(0,200px)_minmax(0,1fr)_minmax(0,1fr)] lg:items-start">
       <div>
-        <p className="font-medium text-foreground text-sm">{probe.serviceLabel}</p>
+        <p className="font-medium text-foreground text-sm">
+          {probe.serviceLabel}
+        </p>
         <p className="mt-0.5 break-all font-mono text-foreground-dimmed text-xs">
           {probe.endpoint}
         </p>
@@ -344,7 +366,11 @@ const A2aProbeRow = ({
 
       <div className="flex flex-wrap gap-1.5">
         <Chip
-          label={probe.httpStatus !== null ? `HTTP ${probe.httpStatus}` : "No response"}
+          label={
+            probe.httpStatus !== null
+              ? `HTTP ${probe.httpStatus}`
+              : "No response"
+          }
           tone={statusTone}
         />
         <Chip label="A2A" tone="neutral" />
@@ -371,7 +397,9 @@ const A2aProbeRow = ({
           tone={probe.agentCardFound ? "success" : "warning"}
         />
         <Chip
-          label={probe.ucpExtensionPresent ? "UCP extension" : "No UCP extension"}
+          label={
+            probe.ucpExtensionPresent ? "UCP extension" : "No UCP extension"
+          }
           tone={probe.ucpExtensionPresent ? "success" : "warning"}
         />
       </div>
@@ -426,7 +454,10 @@ const AdvancedResults = ({
         />
         <div className="hidden border-accent-foreground border-b bg-background-dimmed px-4 py-2 sm:grid sm:grid-cols-[minmax(0,160px)_minmax(0,1fr)_80px_80px_80px]">
           {["Service", "Endpoint", "Status", "Latency", "CORS"].map((h) => (
-            <p key={h} className="font-medium text-foreground-dimmed text-xs uppercase tracking-[0.14em]">
+            <p
+              key={h}
+              className="font-medium text-foreground-dimmed text-xs uppercase tracking-[0.14em]"
+            >
               {h}
             </p>
           ))}
@@ -484,7 +515,9 @@ const AdvancedResults = ({
         />
         <div className="divide-y divide-accent-foreground">
           {LIFECYCLE_STEP_ORDER.map((stepKey) => {
-            const step = result.checkoutLifecycle.find((s) => s.step === stepKey);
+            const step = result.checkoutLifecycle.find(
+              (s) => s.step === stepKey,
+            );
             if (!step) return null;
             return <LifecycleStepRow key={step.step} step={step} />;
           })}
@@ -492,22 +525,26 @@ const AdvancedResults = ({
       </div>
     )}
 
-    {result.endpointProbes.length === 0 && result.mcpProbes.length === 0 && result.a2aProbes.length === 0 && result.checkoutLifecycle.length === 0 && (
-      <div className="border-accent-foreground border-t bg-background px-5 py-5">
-        <p className="font-light text-foreground-dimmed text-sm">
-          No service endpoints with URLs found in the UCP profile. Add{" "}
-          <span className="font-mono text-foreground">endpoint</span> fields to
-          your services to enable live testing.
-        </p>
-      </div>
-    )}
+    {result.endpointProbes.length === 0 &&
+      result.mcpProbes.length === 0 &&
+      result.a2aProbes.length === 0 &&
+      result.checkoutLifecycle.length === 0 && (
+        <div className="border-accent-foreground border-t bg-background px-5 py-5">
+          <p className="font-light text-foreground-dimmed text-sm">
+            No service endpoints with URLs found in the UCP profile. Add{" "}
+            <span className="font-mono text-foreground">endpoint</span> fields
+            to your services to enable live testing.
+          </p>
+        </div>
+      )}
   </Motion.Up>
 );
 
 export const UcpAdvancedValidator = () => {
   const toast = useToastManager();
   const [domain, setDomain] = useState("");
-  const [result, setResult] = useState<UcpAdvancedCheck.AdvancedCheckResult | null>(null);
+  const [result, setResult] =
+    useState<UcpAdvancedCheck.AdvancedCheckResult | null>(null);
 
   const [handleCheck, isChecking] = useAsyncAction(async () => {
     const response = await UcpAdvancedCheck.checkUCPAdvanced(domain);
@@ -537,8 +574,8 @@ export const UcpAdvancedValidator = () => {
         </p>
         <p className="mt-1 font-light text-foreground-dimmed text-xs">
           Probes all service endpoints declared in the profile and simulates the
-          full AI agent checkout lifecycle — Create → Update → Complete → Cancel.
-          Makes live HTTP requests to the merchant server.
+          full AI agent checkout lifecycle — Create → Update → Complete →
+          Cancel. Makes live HTTP requests to the merchant server.
         </p>
       </div>
 

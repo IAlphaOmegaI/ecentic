@@ -120,17 +120,15 @@ export const signInWithGoogle = withContext(
 
 export const signIn = withContext(
   async (context, { email, password }: { email: string; password: string }) => {
-    const result = await resultify(
-      async () => {
-        const response = await context.auth.signInEmail({
-          body: {
-            email,
-            password,
-          },
-        })
-        return response;
-      },
-    );
+    const result = await resultify(async () => {
+      const response = await context.auth.signInEmail({
+        body: {
+          email,
+          password,
+        },
+      });
+      return response;
+    });
 
     if (!result.success) {
       return {

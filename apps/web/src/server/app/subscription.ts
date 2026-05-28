@@ -450,14 +450,17 @@ export const handleStripeEvent = withContext(
             ),
           };
 
-        const upserted = await upsertFromStripeSubscription(Environment.SERVER, {
-          subscription: retrieved.data,
-          fallbackUser:
-            // biome-ignore lint/complexity/useLiteralKeys: Stripe.Metadata is an index signature; TS requires bracket access
-            (session.metadata?.["userId"] as string | undefined) ??
-            session.client_reference_id ??
-            null,
-        });
+        const upserted = await upsertFromStripeSubscription(
+          Environment.SERVER,
+          {
+            subscription: retrieved.data,
+            fallbackUser:
+              // biome-ignore lint/complexity/useLiteralKeys: Stripe.Metadata is an index signature; TS requires bracket access
+              (session.metadata?.["userId"] as string | undefined) ??
+              session.client_reference_id ??
+              null,
+          },
+        );
         if (!upserted.success) return upserted;
 
         return { success: true as const, data: { handled: true } };
@@ -469,9 +472,12 @@ export const handleStripeEvent = withContext(
       case "customer.subscription.resumed":
       case "customer.subscription.trial_will_end": {
         const subscription = event.data.object as Stripe.Subscription;
-        const upserted = await upsertFromStripeSubscription(Environment.SERVER, {
-          subscription,
-        });
+        const upserted = await upsertFromStripeSubscription(
+          Environment.SERVER,
+          {
+            subscription,
+          },
+        );
         if (!upserted.success) return upserted;
 
         return { success: true as const, data: { handled: true } };

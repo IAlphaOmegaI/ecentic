@@ -36,8 +36,6 @@ export const withAuthorization = <
   whitelist: UserRole[],
   ...args: WithContextParams<AuthenticatedContext, T>
 ) => {
-  const handler = defineWithContext(
-    pipe(authenticate, authorize(whitelist)),
-  );
+  const handler = defineWithContext(pipe(authenticate, authorize(whitelist)));
   return handler(...args);
 };

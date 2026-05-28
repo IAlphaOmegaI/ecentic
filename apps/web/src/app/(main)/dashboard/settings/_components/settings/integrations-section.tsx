@@ -47,42 +47,42 @@ export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
                 className: "bg-foreground-dimmed text-background",
               };
               return (
-              <div
-                key={store.id}
-                className="flex items-center justify-between px-4 py-4"
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={cn(
-                      "flex size-9 items-center justify-center font-bold text-sm",
-                      badge.className,
-                    )}
-                  >
-                    {badge.label}
+                <div
+                  key={store.id}
+                  className="flex items-center justify-between px-4 py-4"
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={cn(
+                        "flex size-9 items-center justify-center font-bold text-sm",
+                        badge.className,
+                      )}
+                    >
+                      {badge.label}
+                    </div>
+                    <div>
+                      <p className="font-medium text-base text-foreground">
+                        {store.domain}
+                      </p>
+                      <p className="font-light text-foreground-dimmed text-sm capitalize">
+                        {store.platform} · {store.name}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-medium text-base text-foreground">
-                      {store.domain}
-                    </p>
-                    <p className="font-light text-foreground-dimmed text-sm capitalize">
-                      {store.platform} · {store.name}
-                    </p>
+                  <div className="flex items-center gap-3">
+                    <span className="bg-success/10 px-2 py-0.5 font-medium text-sm text-success">
+                      Connected
+                    </span>
+                    <Button
+                      variant="outline"
+                      color="neutral"
+                      disabled={isSyncing}
+                      onClick={() => handleSync(store.id)}
+                    >
+                      {isSyncing ? "Syncing…" : "Sync Now"}
+                    </Button>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="bg-success/10 px-2 py-0.5 font-medium text-sm text-success">
-                    Connected
-                  </span>
-                  <Button
-                    variant="outline"
-                    color="neutral"
-                    disabled={isSyncing}
-                    onClick={() => handleSync(store.id)}
-                  >
-                    {isSyncing ? "Syncing…" : "Sync Now"}
-                  </Button>
-                </div>
-              </div>
               );
             })}
           </div>
