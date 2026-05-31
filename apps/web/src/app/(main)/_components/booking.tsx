@@ -26,12 +26,9 @@ export const Booking = () => (
   >
     <div className="mx-auto max-w-6xl border-accent-foreground border-y">
       <div className="relative border-accent-foreground p-6 md:p-12">
-        <p className="font-medium text-primary text-xs uppercase tracking-[0.24em]">
-          Book a call
-        </p>
-        <h2 className="mt-4 max-w-3xl font-body text-3xl text-foreground md:text-6xl">
-          See your AI win rate, <br className="hidden md:block" />
-          live in 15 minutes.
+        <p className="font-light text-primary text-xl">Book a call</p>
+        <h2 className="mt-4 font-body text-3xl text-foreground md:text-6xl">
+          See your AI win rate, live in 15 minutes.
         </h2>
         <p className="mt-5 max-w-2xl font-body font-light text-foreground-dimmed text-lg">
           Pick a slot and we’ll simulate how AI shopping agents compare your
@@ -44,10 +41,10 @@ export const Booking = () => (
           {expectations.map((expectation) => (
             <div key={expectation.title} className="flex gap-4 p-6 md:p-8">
               <span className="flex size-10 shrink-0 items-center justify-center border border-accent-foreground bg-background text-primary">
-                <CheckIcon className="size-5" />
+                <CheckIcon className="size-6" />
               </span>
               <div className="flex flex-col gap-1">
-                <h3 className="font-medium text-foreground text-lg">
+                <h3 className="font-medium text-foreground text-xl">
                   {expectation.title}
                 </h3>
                 <p className="font-light text-base text-foreground-dimmed">
@@ -56,9 +53,9 @@ export const Booking = () => (
               </div>
             </div>
           ))}
-          <p className="mt-auto p-6 font-light text-foreground-dimmed text-sm md:p-8">
-            No card, no commitment — just a 15-minute look at how agents see your
-            catalog. Pick a time on the right and you’re booked.
+          <p className="mt-auto p-6 font-light text-foreground-dimmed md:p-8">
+            No card, no commitment — just a 15-minute look at how agents see
+            your catalog. Pick a time on the right and you’re booked.
           </p>
         </div>
 

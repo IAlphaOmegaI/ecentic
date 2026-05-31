@@ -33,7 +33,7 @@ const socials = [
 ] as const;
 
 export const SimpleFooter = () => (
-  <footer className="border-accent-foreground border-t">
+  <footer className="border-accent-foreground">
     <div className="mx-auto max-w-6xl border-accent-foreground border-x px-8 py-8">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <Link href="/">

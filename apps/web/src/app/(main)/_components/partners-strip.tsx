@@ -31,6 +31,20 @@ const partners: Partner[] = [
     logo: "/partners/red-bull-basement.svg",
     caption: "Red Bull Basement — Albania national winner",
   },
+  {
+    id: "the-founder-games",
+    name: "The Founder Game",
+    href: "https://www.foundergames.com/",
+    logo: "/partners/the-founder-games.png",
+    caption: "The Founder Games — Part of season 2",
+  },
+  {
+    id: "microsoft-for-startups",
+    name: "Microsoft for Startups",
+    href: "https://www.microsoft.com/en-us/startups/",
+    logo: "/partners/microsoft-for-startups.png",
+    caption: "Microsoft for Startups",
+  },
 ];
 
 export const PartnersStrip = () => (
