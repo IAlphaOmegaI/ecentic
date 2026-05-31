@@ -22,6 +22,7 @@ const map = {
     "/",
     "/terms-and-conditions",
     "/privacy-policy",
+    "/ucp/agent-profile",
     "/sign-up",
     "/sign-in",
     ...system,

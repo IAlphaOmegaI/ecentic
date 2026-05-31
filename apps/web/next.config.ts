@@ -10,7 +10,7 @@ export default withSentryConfig(
       ignoreBuildErrors: true,
     },
     cacheComponents: true,
-    async rewrites() {
+    rewrites: async () => {
       return [
         {
           source: "/ingest/static/:path*",
