@@ -224,28 +224,28 @@ export type ScanEvent =
   | { kind: "log"; model: string; message: string }
   | { kind: "chunk"; model: string; text: string }
   | {
-      kind: "progress";
-      completed: number;
-      total: number;
-      wins: number;
-      losses: number;
-      modelWins: Record<string, { wins: number; losses: number }>;
-    }
+    kind: "progress";
+    completed: number;
+    total: number;
+    wins: number;
+    losses: number;
+    modelWins: Record<string, { wins: number; losses: number }>;
+  }
   | { kind: "model_status"; model: string; status: "running" | "complete" }
   | { kind: "error"; text: string }
   | {
-      kind: "done";
-      scanId: string;
-      wins: number;
-      losses: number;
-      modelWinRates: Record<
-        string,
-        { wins: number; losses: number; rate: number }
-      >;
-      topFinding: TopFinding | null;
-      productCount: number;
-      results: SimulationResult[];
-    };
+    kind: "done";
+    scanId: string;
+    wins: number;
+    losses: number;
+    modelWinRates: Record<
+      string,
+      { wins: number; losses: number; rate: number }
+    >;
+    topFinding: TopFinding | null;
+    productCount: number;
+    results: SimulationResult[];
+  };
 
 export const runScan = withAuthentication(async (context) => {
   const [products, competitors] = await Promise.all([
@@ -369,7 +369,7 @@ INSTRUCTIONS:
               stream: true,
             });
 
-            const [, parseResult] = await Promise.all([
+            const [, parsing] = await Promise.all([
               (async () => {
                 for await (const chunk of textStream) {
                   update({
@@ -382,22 +382,22 @@ INSTRUCTIONS:
               resultify(() => output),
             ]);
 
-            const productScore = parseResult.success
-              ? Math.round(parseResult.data.productScore)
+            const productScore = parsing.success
+              ? Math.round(parsing.data.productScore)
               : 0;
-            const competitorScore = parseResult.success
-              ? Math.round(parseResult.data.competitorScore)
+            const competitorScore = parsing.success
+              ? Math.round(parsing.data.competitorScore)
               : 50;
 
             return (() => {
               switch (true) {
-                case parseResult.success:
+                case parsing.success:
                   return {
                     product: { ...product, score: productScore },
                     competitor: { ...competitor, score: competitorScore },
-                    winner: parseResult.data.winner,
-                    reasoning: parseResult.data.reasoning,
-                    keyFactors: parseResult.data.keyFactors,
+                    winner: parsing.data.winner,
+                    reasoning: parsing.data.reasoning,
+                    keyFactors: parsing.data.keyFactors,
                     model: perspective.id,
                     modelLabel: perspective.label,
                   };
