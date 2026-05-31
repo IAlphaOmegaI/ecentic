@@ -10,6 +10,7 @@ import {
 import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BookCall } from "@/components/cal";
 import { Footer } from "@/components/footer";
 import { Motion } from "@/components/motion";
 import { Navbar } from "@/components/navbar";
@@ -133,14 +134,13 @@ export default () => (
         platforms.
       </p>
       <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-        <Button
+        <BookCall
           variant="flat"
           color="primary"
           className="px-8 py-3.5 font-medium"
-          render={<Link href="mailto:enterprise@ecentic.ai" />}
         >
           Talk to sales
-        </Button>
+        </BookCall>
         <Button
           variant="outline"
           color="accent"
@@ -230,14 +230,13 @@ export default () => (
         catalog size, and scope an onboarding timeline. No procurement deck
         required to start.
       </p>
-      <Button
+      <BookCall
         variant="flat"
         color="primary"
         className="mt-2 px-10 py-4 font-medium text-lg"
-        render={<Link href="mailto:contact@ecentic.ai" />}
       >
         Contact enterprise sales
-      </Button>
+      </BookCall>
     </Motion.Item>
 
     <Footer />

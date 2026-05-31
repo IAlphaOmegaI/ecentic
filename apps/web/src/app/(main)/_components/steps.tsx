@@ -5,9 +5,9 @@ export const Steps = () => (
     <div className="rounded-xl bg-primary pb-6 md:pb-24">
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-col gap-2 p-6 text-white md:px-24 md:pt-24 md:pb-0">
-          <h1 className="font-body text-4xl sm:text-5xl md:text-[76px]">
+          <h2 className="font-body text-4xl sm:text-5xl md:text-[76px]">
             From invisible to chosen in three steps.
-          </h1>
+          </h2>
           <p className="font-light text-xl md:text-3xl">
             A closed-loop system built exclusively for the AI agent economy.
           </p>

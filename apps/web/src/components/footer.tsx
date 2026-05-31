@@ -7,9 +7,12 @@ import WordMark from "@/public/images/wordmark.svg";
 
 const pages = [
   { href: "/features", label: "Features" },
+  { href: "/how-it-works", label: "How it works" },
+  { href: "/pricing", label: "Pricing" },
   { href: "/features/product-listings", label: "Product Listings" },
   { href: "/platforms/shopify", label: "Shopify" },
   { href: "/enterprise", label: "Enterprise" },
+  { href: "/demo", label: "Book a demo" },
   { href: "/compare/best-ai-ecommerce-tools", label: "Compare" },
   { href: "/blog", label: "Blog" },
   { href: "/privacy-policy", label: "Privacy Policy" },

@@ -33,6 +33,24 @@ export default async (): Promise<MetadataRoute.Sitemap> => {
       priority: 0.9,
     },
     {
+      url: `${seo.host}/pricing`,
+      lastModified: new Date("2026-05-31"),
+      changeFrequency: "weekly" as const,
+      priority: 0.9,
+    },
+    {
+      url: `${seo.host}/how-it-works`,
+      lastModified: new Date("2026-05-31"),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    },
+    {
+      url: `${seo.host}/demo`,
+      lastModified: new Date("2026-05-31"),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    },
+    {
       url: `${seo.host}/features/product-listings`,
       lastModified: new Date("2026-04-07"),
       changeFrequency: "weekly" as const,

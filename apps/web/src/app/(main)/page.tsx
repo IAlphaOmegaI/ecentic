@@ -14,6 +14,7 @@ import {
 } from "@/lib/seo";
 import { AgentTrafficLive } from "./_components/agent-traffic-live";
 import { BlindSpot } from "./_components/blind-spot";
+import { Booking } from "./_components/booking";
 import { DiscoveryPaths } from "./_components/discovery-paths";
 import { Features } from "./_components/features";
 import { Hero } from "./_components/hero";
@@ -94,6 +95,7 @@ export default async () => (
       </Suspense>
       <Testimonials />
       <Pricing />
+      <Booking />
       <DiscoveryPaths />
       <section aria-label="About écentic" className="sr-only">
         <h2>Make every product easier for AI shopping agents to recommend</h2>

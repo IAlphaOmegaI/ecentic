@@ -2,6 +2,7 @@ import { CheckIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import Link from "next/link";
+import { BookCall } from "@/components/cal";
 import { PricingCTA } from "./pricing-cta";
 
 const compete = {
@@ -38,10 +39,10 @@ export const Pricing = () => (
   >
     <div className="mx-auto max-w-6xl border-accent-foreground border-y">
       <div className="relative border-accent-foreground p-6 md:p-12">
-        <h1 className="font-body text-3xl text-foreground md:text-6xl">
+        <h2 className="font-body text-3xl text-foreground md:text-6xl">
           Start free. <br />
           Pay when agents start picking you.
-        </h1>
+        </h2>
       </div>
 
       <div className="mx-auto max-w-6xl border-accent-foreground border-t">
@@ -174,15 +175,13 @@ export const Pricing = () => (
             </p>
           </div>
           <div className="flex items-center p-6">
-            <Button
+            <BookCall
               variant="outline"
               color="accent"
-              type="button"
               className="w-full border-primary text-primary"
-              render={<Link href="mailto:sales@ecentic.ai" />}
             >
-              Contact Sales
-            </Button>
+              Book a call
+            </BookCall>
           </div>
         </div>
       </div>

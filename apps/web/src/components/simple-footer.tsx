@@ -5,8 +5,11 @@ import WordMark from "@/public/images/wordmark.svg";
 
 const links = [
   { href: "/features", label: "Features" },
+  { href: "/how-it-works", label: "How it works" },
+  { href: "/pricing", label: "Pricing" },
   { href: "/platforms/shopify", label: "Shopify" },
   { href: "/enterprise", label: "Enterprise" },
+  { href: "/demo", label: "Book a demo" },
   { href: "/blog", label: "Blog" },
   { href: "/privacy-policy", label: "Privacy Policy" },
 ] as const;
