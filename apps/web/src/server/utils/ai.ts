@@ -1,10 +1,42 @@
 import { createStreamableValue } from "@ai-sdk/rsc";
-import { type GatewayModelId, generateText, Output, streamText } from "ai";
+import {
+  type GatewayModelId,
+  generateObject,
+  type RepairTextFunction,
+  streamObject,
+} from "ai";
 import type { z } from "zod";
 
 export type ModelId = GatewayModelId;
 
-const output = <T extends z.ZodTypeAny>(schema: T) => Output.object({ schema });
+// Models occasionally wrap the JSON in markdown fences or surround it with
+// prose/citations (Perplexity's sonar-pro especially, and Gemini when it
+// "thinks out loud"). That makes the raw output unparseable and surfaces as
+// NoObjectGeneratedError. Strip fences and extract the outermost `{ ... }` so
+// the SDK can parse and validate instead of throwing.
+const repairText: RepairTextFunction = async ({ text }) => {
+  const stripped = text
+    .replace(/```json/gi, "")
+    .replace(/```/g, "")
+    .trim();
+  const start = stripped.indexOf("{");
+  const end = stripped.lastIndexOf("}");
+  if (start === -1 || end === -1 || end <= start) return null;
+  return stripped.slice(start, end + 1);
+};
+
+const providerOptions = {
+  gateway: {
+    byok: {
+      azure: [
+        {
+          apiKey: process.env.AZURE_API_KEY,
+          resourceName: process.env.AZURE_RESOURCE_NAME,
+        },
+      ],
+    },
+  },
+};
 
 const BUFFER_LINE_THRESHOLD = 50;
 
@@ -32,6 +64,8 @@ export type GenerateOptions<T extends z.ZodTypeAny> = {
   prompt: string;
   schema: T;
   model?: GatewayModelId;
+  schemaName?: string;
+  schemaDescription?: string;
 };
 
 export type GenerateStreamResult<T> = {
@@ -56,49 +90,33 @@ export function generate<T extends z.ZodTypeAny>(
     schema,
     stream: s = false,
     model = "gpt-4o",
+    schemaName,
+    schemaDescription,
   } = options;
 
-  if (!s)
-    return generateText({
-      model,
-      system,
-      prompt,
-      output: output(schema),
-      providerOptions: {
-        gateway: {
-          byok: {
-            azure: [
-              {
-                apiKey: process.env.AZURE_API_KEY,
-                resourceName: process.env.AZURE_RESOURCE_NAME,
-              },
-            ],
-          },
-        },
-      },
-    }).then((result) => result.output as z.infer<T>);
-
-  const result = streamText({
+  const settings = {
     model,
     system,
     prompt,
-    output: output(schema),
-    providerOptions: {
-      gateway: {
-        byok: {
-          azure: [
-            {
-              apiKey: process.env.AZURE_API_KEY,
-              resourceName: process.env.AZURE_RESOURCE_NAME,
-            },
-          ],
-        },
-      },
-    },
-  });
+    schema,
+    schemaName,
+    schemaDescription,
+    experimental_repairText: repairText,
+    providerOptions,
+  };
+
+  if (!s)
+    return generateObject(settings).then(
+      (result) => result.object as z.infer<T>,
+    );
+
+  // @note: errors during streaming surface on `result.object` (which we await
+  // via resultify at the call site) rather than thrown — repairText still runs
+  // before that rejects, so malformed output is recovered transparently.
+  const result = streamObject({ ...settings, onError: () => {} });
 
   return {
-    output: result.output as Promise<z.infer<T>>,
+    output: result.object as Promise<z.infer<T>>,
     textStream: bufferTextStream(result.textStream),
   };
 }

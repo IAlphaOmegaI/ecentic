@@ -13,7 +13,7 @@ import {
 import { useToastManager } from "@zenncore/web/components/toast";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
-import * as WooCommerceIntegration from "@/server/app/integration/woocommerce";
+import * as WooCommerce from "@/server/app/integration/woocommerce";
 
 const config = {
   domain: field({
@@ -70,7 +70,7 @@ export const WooCommerceForm = () => {
 
   const [handleSubmit, isPending] = useAsyncAction(
     async (data: FormEntries<typeof config>) => {
-      const result = await WooCommerceIntegration.connect(data);
+      const result = await WooCommerce.connect(data);
 
       if (!result.success) {
         toast.add({

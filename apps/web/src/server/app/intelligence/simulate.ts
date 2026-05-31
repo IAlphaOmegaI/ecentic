@@ -224,28 +224,28 @@ export type ScanEvent =
   | { kind: "log"; model: string; message: string }
   | { kind: "chunk"; model: string; text: string }
   | {
-    kind: "progress";
-    completed: number;
-    total: number;
-    wins: number;
-    losses: number;
-    modelWins: Record<string, { wins: number; losses: number }>;
-  }
+      kind: "progress";
+      completed: number;
+      total: number;
+      wins: number;
+      losses: number;
+      modelWins: Record<string, { wins: number; losses: number }>;
+    }
   | { kind: "model_status"; model: string; status: "running" | "complete" }
   | { kind: "error"; text: string }
   | {
-    kind: "done";
-    scanId: string;
-    wins: number;
-    losses: number;
-    modelWinRates: Record<
-      string,
-      { wins: number; losses: number; rate: number }
-    >;
-    topFinding: TopFinding | null;
-    productCount: number;
-    results: SimulationResult[];
-  };
+      kind: "done";
+      scanId: string;
+      wins: number;
+      losses: number;
+      modelWinRates: Record<
+        string,
+        { wins: number; losses: number; rate: number }
+      >;
+      topFinding: TopFinding | null;
+      productCount: number;
+      results: SimulationResult[];
+    };
 
 export const runScan = withAuthentication(async (context) => {
   const [products, competitors] = await Promise.all([
@@ -358,14 +358,42 @@ INSTRUCTIONS:
 4. Do NOT favor either listing based on its label ("PRODUCT" vs "COMPETITOR"). Evaluate purely on evidence.
 5. Pick a winner: use "product" if the PRODUCT listing wins, or "competitor" if the COMPETITOR listing wins.
 6. In your reasoning, cite the specific data points (or missing data points) that drove the decision. Be concrete — reference actual field values or their absence.
-7. In keyFactors, list the top 3-5 specific attributes or gaps that determined the outcome (e.g., "PRODUCT has 0 images vs COMPETITOR has 5", "COMPETITOR missing price", "Neither listing has reviews").`,
+7. In keyFactors, list the top 3-5 specific attributes or gaps that determined the outcome (e.g., "PRODUCT has 0 images vs COMPETITOR has 5", "COMPETITOR missing price", "Neither listing has reviews").
+8. Output ONLY the structured fields defined by the schema. Put all narrative analysis inside the "reasoning" field — do not emit any prose, markdown, or citations outside the object.`,
               schema: z.object({
-                winner: z.enum(["product", "competitor"]),
-                productScore: z.number().min(0).max(100),
-                competitorScore: z.number().min(0).max(100),
-                reasoning: z.string(),
-                keyFactors: z.array(z.string()),
+                winner: z
+                  .enum(["product", "competitor"])
+                  .describe(
+                    '"product" if the PRODUCT listing wins, "competitor" if the COMPETITOR listing wins',
+                  ),
+                productScore: z
+                  .number()
+                  .min(0)
+                  .max(100)
+                  .describe(
+                    "0-100 evidence-based score for the PRODUCT listing",
+                  ),
+                competitorScore: z
+                  .number()
+                  .min(0)
+                  .max(100)
+                  .describe(
+                    "0-100 evidence-based score for the COMPETITOR listing",
+                  ),
+                reasoning: z
+                  .string()
+                  .describe(
+                    "Concrete explanation citing the specific data points or missing fields that drove the decision",
+                  ),
+                keyFactors: z
+                  .array(z.string())
+                  .describe(
+                    "Top 3-5 specific attributes or gaps that determined the outcome",
+                  ),
               }),
+              schemaName: "ListingComparison",
+              schemaDescription:
+                "Evidence-based audit comparing a product listing against a competitor listing",
               stream: true,
             });
 
@@ -553,14 +581,27 @@ INSTRUCTIONS:
 
       return AI.generate({
         system:
-          "You are an e-commerce optimization analyst. Given the reasons a product lost in AI shopping simulations, identify the specific missing attributes or weaknesses that caused the most losses. Be concise and actionable.",
+          "You are an e-commerce optimization analyst. Given the reasons a product lost in AI shopping simulations, identify the specific missing attributes or weaknesses that caused the most losses. Be concise and actionable. Respond only with the structured fields — no prose outside the object.",
         prompt: `Product "${worst[1].title}" lost ${worst[1].count} out of ${results.length} total simulations.\n\nHere are the reasons it lost:\n${worst[1].reasons.slice(0, 10).join("\n---\n")}\n\nIdentify the top missing attributes and estimate what percentage of simulations these gaps cost.`,
         schema: z.object({
-          name: z.string(),
-          missingAttributes: z.array(z.string()),
-          impactDescription: z.string(),
-          lossPercentage: z.number(),
+          name: z.string().describe("The product name"),
+          missingAttributes: z
+            .array(z.string())
+            .describe("Specific attributes or data the listing is missing"),
+          impactDescription: z
+            .string()
+            .describe(
+              "Concise, actionable summary of how these gaps cost wins",
+            ),
+          lossPercentage: z
+            .number()
+            .describe(
+              "Estimated percentage (0-100) of simulations these gaps cost",
+            ),
         }),
+        schemaName: "TopFinding",
+        schemaDescription:
+          "The biggest optimization opportunity for the worst-performing product",
       });
     });
 

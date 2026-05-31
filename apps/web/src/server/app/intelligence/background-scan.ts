@@ -104,14 +104,33 @@ const runScanForUser = async (
           generate({
             model: perspective.model,
             system: perspective.system,
-            prompt: `A consumer is choosing between these two products.\n\n--- PRODUCT A ---\n${Formating.formatProduct(product)}\n\n--- PRODUCT B ---\n${Formating.formatCompetitor(competitor)}\n\nScore each product 0-100, pick a winner, and give concise reasoning.`,
+            prompt: `A consumer is choosing between these two products.\n\n--- PRODUCT A ---\n${Formating.formatProduct(product)}\n\n--- PRODUCT B ---\n${Formating.formatCompetitor(competitor)}\n\nScore each product 0-100, pick a winner, and give concise reasoning. Output only the structured fields — put all analysis in "reasoning", no prose or markdown outside the object.`,
             schema: z.object({
-              winner: z.enum(["product", "competitor"]),
-              productScore: z.number().min(0).max(100),
-              competitorScore: z.number().min(0).max(100),
-              reasoning: z.string(),
-              keyFactors: z.array(z.string()),
+              winner: z
+                .enum(["product", "competitor"])
+                .describe(
+                  '"product" if PRODUCT A wins, "competitor" if PRODUCT B wins',
+                ),
+              productScore: z
+                .number()
+                .min(0)
+                .max(100)
+                .describe("0-100 score for PRODUCT A"),
+              competitorScore: z
+                .number()
+                .min(0)
+                .max(100)
+                .describe("0-100 score for PRODUCT B"),
+              reasoning: z
+                .string()
+                .describe("Concise explanation of the decision"),
+              keyFactors: z
+                .array(z.string())
+                .describe("Top attributes or gaps that determined the outcome"),
             }),
+            schemaName: "ListingComparison",
+            schemaDescription:
+              "Evidence-based comparison of two product listings",
           }),
         );
 
