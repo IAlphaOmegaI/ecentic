@@ -47,7 +47,7 @@ export const ShopifyForm = () => {
 
   const [handleSubmit, isPending] = useAsyncAction(
     async (data: FormEntries<typeof config>) => {
-      if (user.role === "administrator") {
+      if (user.role === "administrator" || user.role === "owner") {
         const shop = data.shop.trim();
         window.location.href = `/api/integrations/shopify/install?shop=${encodeURIComponent(shop)}`;
 

@@ -110,11 +110,30 @@ export const syncShopifyCatalog = withContext(
 
     const { domain } = store.data;
 
-    const storeAccount = storeAccountId
-      ? await StoreAccount.get(Environment.SERVER, storeAccountId, options)
-      : await StoreAccount.getForStore(Environment.SERVER, {
-          store: storeId,
-        });
+    const storeAccount = await (async () => {
+      const account = storeAccountId
+        ? await StoreAccount.get(Environment.SERVER, storeAccountId, options)
+        : await StoreAccount.getForStore(Environment.SERVER, {
+            store: storeId,
+          });
+
+      if (!account.success || !account.data) return account;
+
+      const { accessTokenExpiresAt } = account.data;
+      const isExpired =
+        accessTokenExpiresAt &&
+        accessTokenExpiresAt.getTime() - Date.now() < 5 * 60 * 1000;
+
+      if (!isExpired) return account;
+
+      const refreshed = await refreshAccessToken(Environment.SERVER, {
+        store: storeId,
+      });
+
+      if (!refreshed.success || !refreshed.data) return account;
+
+      return { success: true as const, data: refreshed.data };
+    })();
 
     if (!storeAccount.success || !storeAccount.data?.accessToken) {
       return {
@@ -232,6 +251,65 @@ export const syncProducts = withAuthentication(
     });
   },
   "Shopify.syncProducts",
+);
+
+export const refreshAccessToken = withContext(
+  async (_, { store: storeId }: { store: string }) => {
+    const { SHOPIFY_API_KEY, SHOPIFY_API_SECRET } = process.env;
+
+    if (!SHOPIFY_API_KEY || !SHOPIFY_API_SECRET)
+      return {
+        success: false,
+        error: new Error("Shopify integration not configured"),
+      };
+
+    const storeAccount = await StoreAccount.getForStore(Environment.SERVER, {
+      store: storeId,
+    });
+    if (!storeAccount.success) return storeAccount;
+    if (!storeAccount.data?.refreshToken)
+      return { success: false, error: new Error("No refresh token stored") };
+
+    const store = await Store.get(Environment.SERVER, storeId);
+    if (!store.success) return store;
+    if (!store.data)
+      return { success: false, error: new Error("Store not found") };
+
+    const shopId = new URL(store.data.domain).hostname;
+
+    const tokenResponse = await HTTP.request(
+      `https://${shopId}/admin/oauth/access_token`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          client_id: SHOPIFY_API_KEY,
+          client_secret: SHOPIFY_API_SECRET,
+          grant_type: "refresh_token",
+          refresh_token: storeAccount.data.refreshToken,
+        }),
+      },
+    );
+
+    const t = await HTTP.parse<{
+      access_token: string;
+      expires_in: number;
+      refresh_token: string;
+      refresh_token_expires_in: number;
+    }>(tokenResponse);
+
+    if (!t.success) return t;
+
+    return StoreAccount.update(Environment.SERVER, storeAccount.data.id, {
+      accessToken: t.data.access_token,
+      accessTokenExpiresAt: new Date(Date.now() + t.data.expires_in * 1000),
+      refreshToken: t.data.refresh_token,
+      refreshTokenExpiresAt: new Date(
+        Date.now() + t.data.refresh_token_expires_in * 1000,
+      ),
+    });
+  },
+  "Shopify.refreshAccessToken",
 );
 
 export const handleOAuthCallback = withContext(
