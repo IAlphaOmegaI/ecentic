@@ -21,6 +21,7 @@ import {
   resolvePlanByPriceId,
   stripe,
 } from "../utils/stripe";
+import * as User from "./user";
 
 export const { get, create, update, destroy, exists, find } = repository(
   schema.subscription,
@@ -232,6 +233,25 @@ export const getCurrentSubscription = withAuthentication(async (context) => {
 
 export const createCheckoutSession = withAuthentication(
   async (context, { plan }: { plan: string }) => {
+    return createCheckoutSessionForUser(Environment.SERVER, {
+      user: context.session.user.id,
+      plan,
+    });
+  },
+  "Subscription.createCheckoutSession",
+);
+
+export const createCheckoutSessionForUser = withContext(
+  async (
+    _,
+    {
+      user: id,
+      plan,
+    }: {
+      user: string;
+      plan: string;
+    },
+  ) => {
     if (!isPlanKey(plan))
       return {
         success: false as const,
@@ -249,14 +269,15 @@ export const createCheckoutSession = withAuthentication(
         ),
       };
 
-    const customer = await ensureCustomer(Environment.SERVER, {
-      user: {
-        id: context.session.user.id,
-        email: context.session.user.email,
-        name: context.session.user.name,
-        surname: context.session.user.surname,
-      },
-    });
+    const user = await User.get(Environment.SERVER, id);
+    if (!user.success) return user;
+    if (!user.data)
+      return {
+        success: false as const,
+        error: new NotFoundError("User not found"),
+      };
+
+    const customer = await ensureCustomer(Environment.SERVER, { user: user.data });
     if (!customer.success) return customer;
 
     const appHost = process.env.APP_HOST;
@@ -275,11 +296,11 @@ export const createCheckoutSession = withAuthentication(
         cancel_url: `${appHost}/?checkout=canceled#pricing`,
         allow_promotion_codes: true,
         billing_address_collection: "auto",
-        client_reference_id: context.session.user.id,
+        client_reference_id: id,
         subscription_data: {
-          metadata: { userId: context.session.user.id, plan: key },
+          metadata: { userId: id, plan: key },
         },
-        metadata: { userId: context.session.user.id, plan: key },
+        metadata: { userId: id, plan: key },
       }),
     );
 
@@ -297,24 +318,14 @@ export const createCheckoutSession = withAuthentication(
         error: new RequestError("Stripe did not return a checkout URL"),
       };
 
-    context.span.addBreadcrumb({
-      category: "subscription.checkout.created",
-      data: {
-        "user.id": context.session.user.id,
-        "stripe.session.id": session.data.id,
-        "stripe.customer.id": customer.data,
-        plan: key,
-      },
-    });
-
     const existing = await findByUser(Environment.SERVER, {
-      user: context.session.user.id,
+      user: id,
     });
     if (!existing.success) return existing;
 
     if (!existing.data) {
       await create(Environment.SERVER, {
-        userId: context.session.user.id,
+        userId: id,
         stripeCustomerId: customer.data,
         plan: key,
         status: "incomplete",
@@ -323,7 +334,7 @@ export const createCheckoutSession = withAuthentication(
 
     return { success: true as const, data: { url: session.data.url } };
   },
-  "Subscription.createCheckoutSession",
+  "Subscription.createCheckoutSessionForUser",
 );
 
 export type InvoiceSummary = {

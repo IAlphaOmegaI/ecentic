@@ -281,6 +281,28 @@ export const subscription = pgTable("subscription", {
   updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
 });
 
+export const agentApiKey = pgTable(
+  "agent_api_key",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    userId: text("userId")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    prefix: text("prefix").notNull(),
+    keyHash: text("keyHash").notNull(),
+    lastUsedAt: timestamp("lastUsedAt", { mode: "date" }),
+    expiresAt: timestamp("expiresAt", { mode: "date" }),
+    revokedAt: timestamp("revokedAt", { mode: "date" }),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("agent_api_key_hash_unique").on(table.keyHash),
+    uniqueIndex("agent_api_key_prefix_unique").on(table.prefix),
+  ],
+);
+
 export const blogPost = pgTable(
   "blog_post",
   {
@@ -326,6 +348,7 @@ export const tables = {
   agentTrafficDaily,
   listingOptimization,
   subscription,
+  agentApiKey,
   blogPost,
 };
 
@@ -343,6 +366,7 @@ export const relations = defineRelations(tables, (r) => ({
       to: r.subscription.userId,
       optional: true,
     }),
+    agentApiKeys: r.many.agentApiKey(),
   },
   session: {
     user: r.one.user({
@@ -447,6 +471,12 @@ export const relations = defineRelations(tables, (r) => ({
   subscription: {
     user: r.one.user({
       from: r.subscription.userId,
+      to: r.user.id,
+    }),
+  },
+  agentApiKey: {
+    user: r.one.user({
+      from: r.agentApiKey.userId,
       to: r.user.id,
     }),
   },

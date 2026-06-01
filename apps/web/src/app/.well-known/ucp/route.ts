@@ -23,6 +23,13 @@ const profile = {
   },
   platforms: ["Web"],
   integrations: ["Shopify", "WooCommerce", "Google Shopping Feed"],
+  agentInterfaces: [
+    {
+      protocol: "mcp",
+      endpoint: "https://ecentic.ai/api/mcp",
+      profile: "https://ecentic.ai/ucp/agent-profile",
+    },
+  ],
   programs: [
     {
       name: "Shopify App Store",
