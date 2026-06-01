@@ -384,7 +384,7 @@ const getOnboardingStatus = async (actor: Actor, raw: unknown) => {
   };
 };
 
-export const getRoute = () =>
+export const getRoute = async () =>
   Response.json(
     {
       name: Utils.protocol.server.name,
