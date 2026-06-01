@@ -11,17 +11,18 @@ export const { get, paginate, create, update, destroy, exists, count, find } =
 
 export type Type = Document<typeof schema.store_account>;
 
-export const getByStore = withAuthentication(
+export const getForStore = withAuthentication(
   async (_, { store: storeId }: { store: string }) => {
-    const result = await resultify(() =>
-      db.query.store_account.findFirst({
-        where: { storeId },
-      }),
+    const result = await resultify(
+      async () =>
+        await db.query.store_account.findFirst({
+          where: { storeId },
+        }),
     );
 
     if (!result.success) return result;
 
     return { success: true as const, data: result.data };
   },
-  "StoreAccount.getByStore",
+  "StoreAccount.getForStore",
 );
