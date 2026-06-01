@@ -415,6 +415,7 @@ export const handleOAuthCallback = withContext(
             trackerApiKey,
             storefrontHosts,
             status: "connected",
+            storeId: String(shop.data.shop.id),
           },
           { tx },
         );
@@ -434,7 +435,6 @@ export const handleOAuthCallback = withContext(
             refreshTokenExpiresAt: new Date(
               Date.now() + t.data.refresh_token_expires_in * 1000,
             ),
-            storeAccountId: String(shop.data.shop.id),
           },
           { tx },
         );

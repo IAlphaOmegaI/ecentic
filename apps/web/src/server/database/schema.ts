@@ -82,6 +82,7 @@ export const store = pgTable("store", {
   domain: text("domain").notNull(),
   feedUrl: text("feedUrl"),
   status: text("status").notNull().default("connected"),
+  storeId: text("storeId").notNull(),
   /** Write-only key for storefront beacons (Layer 1 tracker). */
   trackerApiKey: text("trackerApiKey"),
   /**
@@ -97,8 +98,8 @@ export const store_account = pgTable("store_account", {
   id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
   storeId: text("storeId")
     .notNull()
+    .unique()
     .references(() => store.id, { onDelete: "cascade" }),
-  storeAccountId: text("storeAccountId").notNull(),
   accessToken: text("accessToken"), // shopify access token
   accessTokenExpiresAt: timestamp("accessTokenExpiresAt", {
     mode: "date",
@@ -404,15 +405,12 @@ export const relations = defineRelations(tables, (r) => ({
       to: r.user.id,
     }),
     products: r.many.product(),
-    storeAccounts: r.many.store_account(),
+    storeAccount: r.one.store_account({
+      from: r.store.storeId,
+      to: r.store_account.storeId,
+    }),
     agentVisits: r.many.agentVisit(),
     agentTrafficDaily: r.many.agentTrafficDaily(),
-  },
-  store_account: {
-    store: r.one.store({
-      from: r.store_account.storeId,
-      to: r.store.id,
-    }),
   },
   product: {
     store: r.one.store({
