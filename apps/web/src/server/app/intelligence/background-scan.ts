@@ -1,46 +1,47 @@
 "use server";
 
-import { eq, inArray } from "drizzle-orm";
+import { resultify } from "@zenncore/utils";
+import { eq } from "drizzle-orm";
+import { z } from "zod";
 import { schema } from "../../database";
-import type { ModelId } from "../../utils/ai";
+import { generate, type ModelId } from "../../utils/ai";
 import { type GenericContext, withContext } from "../../utils/context";
 import { Environment } from "../../utils/environment";
 import * as Competitor from "../competitor";
 import * as Product from "../product";
 import * as Scan from "../scan";
 import * as Simulation from "../simulation";
-import * as Store from "../store";
 import * as User from "../user";
-import { deriveDomain, runUcpAgent } from "./ucp-agent";
+import * as Formating from "./formating";
 
 const perspectives = [
   {
     id: "gpt4",
-    label: "GPT-4o",
+    label: "GPT-4",
     model: "gpt-4o" as ModelId,
     system:
-      "You are an autonomous AI buyer-agent transacting via UCP. Probe each store's /.well-known/ucp manifest and REST shopping flow using the provided tools. Score what you observe; never invent capabilities.",
+      "You are an AI shopping agent embedded in a product recommendation engine. A consumer has asked you to compare two products and recommend the better purchase. Focus heavily on concrete specifications and missing details. Score each product 0-100 and pick a winner.",
   },
   {
     id: "claude",
-    label: "Claude Sonnet 4.6",
-    model: "claude-sonnet-4-6" as ModelId,
+    label: "Claude",
+    model: "claude-sonnet-4-20250514" as ModelId,
     system:
-      "You are an AI commerce agent assessing UCP readiness — manifest, catalog, cart, checkout. Be conservative: missing capabilities are missing.",
+      "You are an AI shopping assistant comparing two product listings for buyer confidence and clarity. Evaluate information architecture, trust signals, and completeness. Score each product 0-100 and pick a winner.",
   },
   {
     id: "gemini",
-    label: "Gemini 2.5",
+    label: "Gemini",
     model: "gemini-2.5-flash" as ModelId,
     system:
-      "You are an autonomous AI shopping agent. Use the tools to call each store's UCP endpoints and judge by what actually happened.",
+      "You are an AI shopping agent optimizing for value. Compare two listings by price-to-feature ratio, hidden costs, and specification density. Score each product 0-100 and pick a winner.",
   },
   {
     id: "perplexity",
-    label: "Perplexity Sonar",
+    label: "Perplexity",
     model: "sonar-pro" as ModelId,
     system:
-      "You are a search-augmented AI commerce agent. Walk the UCP flow where possible. A missing UCP profile is a critical signal.",
+      "You are a search-augmented AI shopping agent. Compare two product listings by information depth, external validation signals, freshness, and comparison readiness. Score each product 0-100 and pick a winner.",
   },
 ];
 
@@ -65,19 +66,11 @@ const runScanForUser = async (
   if (products.data.length === 0 || selected.length === 0)
     return {
       success: true,
-      data: { skipped: true, reason: "missing products or competitors" },
+      data: {
+        skipped: true,
+        reason: "missing products or competitors",
+      },
     };
-
-  const storeIds = [
-    ...new Set(products.data.map((product) => product.storeId)),
-  ];
-  const stores = await Store.find(Environment.SERVER, {
-    where: inArray(schema.store.id, storeIds),
-  });
-  if (!stores.success) return stores;
-  const storeDomainById = new Map(
-    stores.data.map((store) => [store.id, store.domain]),
-  );
 
   const totalSimulations =
     products.data.length * selected.length * perspectives.length;
@@ -169,7 +162,7 @@ const runScanForUser = async (
     ),
   );
 
-  const batchSize = 3;
+  const batchSize = 5;
   const batches = Array.from(
     { length: Math.ceil(tasks.length / batchSize) },
     (_value, index) =>
