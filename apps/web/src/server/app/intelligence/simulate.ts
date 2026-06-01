@@ -118,7 +118,7 @@ ${STRICT_SCORING_RULES}`,
   {
     id: "gemini",
     label: "Gemini",
-    model: "gemini-2.5-flash" as AI.ModelId,
+    model: "gemini-2.0-flash" as AI.ModelId,
     system: `You are a value-optimization AI agent that evaluates product listings with extreme rigor. You determine which listing delivers more verifiable value per dollar. You punish vagueness and reward concrete, measurable data.
 
 Your evaluation methodology:
@@ -221,8 +221,8 @@ export type SimulationResult = {
 };
 
 export type ScanEvent =
+  | { kind: "heartbeat" }
   | { kind: "log"; model: string; message: string }
-  | { kind: "chunk"; model: string; text: string }
   | {
       kind: "progress";
       completed: number;
@@ -340,10 +340,11 @@ export const runScan = withAuthentication(async (context) => {
       selected.flatMap((competitor) =>
         perspectives.map(
           (perspective) => async (): Promise<SimulationResult> => {
-            const { output, textStream } = AI.generate({
-              model: perspective.model,
-              system: perspective.system,
-              prompt: `A consumer is choosing between these two products. Perform a strict, evidence-based audit of each listing.
+            const parsing = await resultify(() =>
+              AI.generate({
+                model: perspective.model,
+                system: perspective.system,
+                prompt: `A consumer is choosing between these two products. Perform a strict, evidence-based audit of each listing.
 
 --- PRODUCT ---
 ${Formating.formatProduct(product)}
@@ -360,55 +361,42 @@ INSTRUCTIONS:
 6. In your reasoning, cite the specific data points (or missing data points) that drove the decision. Be concrete — reference actual field values or their absence.
 7. In keyFactors, list the top 3-5 specific attributes or gaps that determined the outcome (e.g., "PRODUCT has 0 images vs COMPETITOR has 5", "COMPETITOR missing price", "Neither listing has reviews").
 8. Output ONLY the structured fields defined by the schema. Put all narrative analysis inside the "reasoning" field — do not emit any prose, markdown, or citations outside the object.`,
-              schema: z.object({
-                winner: z
-                  .enum(["product", "competitor"])
-                  .describe(
-                    '"product" if the PRODUCT listing wins, "competitor" if the COMPETITOR listing wins',
-                  ),
-                productScore: z
-                  .number()
-                  .min(0)
-                  .max(100)
-                  .describe(
-                    "0-100 evidence-based score for the PRODUCT listing",
-                  ),
-                competitorScore: z
-                  .number()
-                  .min(0)
-                  .max(100)
-                  .describe(
-                    "0-100 evidence-based score for the COMPETITOR listing",
-                  ),
-                reasoning: z
-                  .string()
-                  .describe(
-                    "Concrete explanation citing the specific data points or missing fields that drove the decision",
-                  ),
-                keyFactors: z
-                  .array(z.string())
-                  .describe(
-                    "Top 3-5 specific attributes or gaps that determined the outcome",
-                  ),
+                schema: z.object({
+                  winner: z
+                    .enum(["product", "competitor"])
+                    .describe(
+                      '"product" if the PRODUCT listing wins, "competitor" if the COMPETITOR listing wins',
+                    ),
+                  productScore: z
+                    .number()
+                    .min(0)
+                    .max(100)
+                    .describe(
+                      "0-100 evidence-based score for the PRODUCT listing",
+                    ),
+                  competitorScore: z
+                    .number()
+                    .min(0)
+                    .max(100)
+                    .describe(
+                      "0-100 evidence-based score for the COMPETITOR listing",
+                    ),
+                  reasoning: z
+                    .string()
+                    .describe(
+                      "Concrete explanation citing the specific data points or missing fields that drove the decision",
+                    ),
+                  keyFactors: z
+                    .array(z.string())
+                    .describe(
+                      "Top 3-5 specific attributes or gaps that determined the outcome",
+                    ),
+                }),
+                schemaName: "ListingComparison",
+                schemaDescription:
+                  "Evidence-based audit comparing a product listing against a competitor listing",
               }),
-              schemaName: "ListingComparison",
-              schemaDescription:
-                "Evidence-based audit comparing a product listing against a competitor listing",
-              stream: true,
-            });
-
-            const [, parsing] = await Promise.all([
-              (async () => {
-                for await (const chunk of textStream) {
-                  update({
-                    kind: "chunk",
-                    model: perspective.label,
-                    text: chunk,
-                  });
-                }
-              })(),
-              resultify(() => output),
-            ]);
+            );
 
             const productScore = parsing.success
               ? Math.round(parsing.data.productScore)
@@ -445,7 +433,7 @@ INSTRUCTIONS:
       ),
     );
 
-    const batchSize = 5;
+    const batchSize = 8;
     const batches = Array.from(
       { length: Math.ceil(tasks.length / batchSize) },
       (_value, index) =>
@@ -453,12 +441,30 @@ INSTRUCTIONS:
     );
 
     const results: SimulationResult[] = [];
+    const heartbeat = setInterval(() => update({ kind: "heartbeat" }), 2000);
+
+    try {
 
     for (const batch of batches) {
-      const batches = await Promise.all(batch.map((task) => task()));
-      results.push(...batches);
+      const batchResults = await Promise.all(batch.map((task) => task()));
+      results.push(...batchResults);
 
-      for (const record of batches) {
+      await Promise.all(
+        batchResults.map((record) =>
+          Simulation.create(Environment.SERVER, {
+            scanId: scan.data.id,
+            productId: record.product.id,
+            competitorId: record.competitor.id,
+            model: record.model,
+            winner: record.winner,
+            reasoning: record.reasoning,
+            productScore: record.product.score,
+            competitorScore: record.competitor.score,
+          }),
+        ),
+      );
+
+      for (const record of batchResults) {
         const winner =
           record.winner === "product"
             ? record.product.title
@@ -506,21 +512,6 @@ INSTRUCTIONS:
     const wins = results.filter((record) => record.winner === "product").length;
     const losses = results.length - wins;
 
-    await Promise.all(
-      results.map((record) =>
-        Simulation.create(Environment.SERVER, {
-          scanId: scan.data.id,
-          productId: record.product.id,
-          competitorId: record.competitor.id,
-          model: record.model,
-          winner: record.winner,
-          reasoning: record.reasoning,
-          productScore: record.product.score,
-          competitorScore: record.competitor.score,
-        }),
-      ),
-    );
-
     const modelWinRates = Object.fromEntries(
       perspectives.map((perspective) => {
         const model = results.filter(
@@ -551,6 +542,12 @@ INSTRUCTIONS:
         status: "complete",
       });
     }
+
+    update({
+      kind: "log",
+      model: "System",
+      message: "Analyzing results for top optimization opportunity...",
+    });
 
     const topFinding = await resultify(async () => {
       const misses = results.filter((record) => record.winner === "competitor");
@@ -607,6 +604,12 @@ INSTRUCTIONS:
 
     const finding = topFinding.success ? topFinding.data : null;
 
+    update({
+      kind: "log",
+      model: "System",
+      message: "Finalizing scan...",
+    });
+
     await Scan.update(Environment.SERVER, scan.data.id, {
       status: "complete",
       completedSimulations: totalSimulations,
@@ -625,16 +628,19 @@ INSTRUCTIONS:
       },
     });
 
-    update({
-      kind: "done",
-      scanId: scan.data.id,
-      wins,
-      losses,
-      modelWinRates,
-      topFinding: finding,
-      productCount: new Set(results.map((record) => record.product.id)).size,
-      results,
-    });
+      update({
+        kind: "done",
+        scanId: scan.data.id,
+        wins,
+        losses,
+        modelWinRates,
+        topFinding: finding,
+        productCount: new Set(results.map((record) => record.product.id)).size,
+        results,
+      });
+    } finally {
+      clearInterval(heartbeat);
+    }
   });
 
   return {
