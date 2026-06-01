@@ -444,189 +444,192 @@ INSTRUCTIONS:
     const heartbeat = setInterval(() => update({ kind: "heartbeat" }), 2000);
 
     try {
+      for (const batch of batches) {
+        const batchResults = await Promise.all(batch.map((task) => task()));
+        results.push(...batchResults);
 
-    for (const batch of batches) {
-      const batchResults = await Promise.all(batch.map((task) => task()));
-      results.push(...batchResults);
+        await Promise.all(
+          batchResults.map((record) =>
+            Simulation.create(Environment.SERVER, {
+              scanId: scan.data.id,
+              productId: record.product.id,
+              competitorId: record.competitor.id,
+              model: record.model,
+              winner: record.winner,
+              reasoning: record.reasoning,
+              productScore: record.product.score,
+              competitorScore: record.competitor.score,
+            }),
+          ),
+        );
 
-      await Promise.all(
-        batchResults.map((record) =>
-          Simulation.create(Environment.SERVER, {
-            scanId: scan.data.id,
-            productId: record.product.id,
-            competitorId: record.competitor.id,
-            model: record.model,
-            winner: record.winner,
-            reasoning: record.reasoning,
-            productScore: record.product.score,
-            competitorScore: record.competitor.score,
+        for (const record of batchResults) {
+          const winner =
+            record.winner === "product"
+              ? record.product.title
+              : record.competitor.title;
+
+          update({
+            kind: "log",
+            model: record.modelLabel,
+            message: `DECISION: Selected ${winner} (${record.reasoning.slice(0, 80)})`,
+          });
+        }
+
+        const wins = results.filter(
+          (record) => record.winner === "product",
+        ).length;
+
+        const modelWins = Object.fromEntries(
+          perspectives.map((perspective) => {
+            const modelResults = results.filter(
+              (record) => record.model === perspective.id,
+            );
+            const modelWinsCount = modelResults.filter(
+              (record) => record.winner === "product",
+            ).length;
+            return [
+              perspective.label,
+              {
+                wins: modelWinsCount,
+                losses: modelResults.length - modelWinsCount,
+              },
+            ];
           }),
-        ),
-      );
-
-      for (const record of batchResults) {
-        const winner =
-          record.winner === "product"
-            ? record.product.title
-            : record.competitor.title;
+        );
 
         update({
-          kind: "log",
-          model: record.modelLabel,
-          message: `DECISION: Selected ${winner} (${record.reasoning.slice(0, 80)})`,
+          kind: "progress",
+          completed: results.length,
+          total: totalSimulations,
+          wins,
+          losses: results.length - wins,
+          modelWins,
         });
       }
 
       const wins = results.filter(
         (record) => record.winner === "product",
       ).length;
+      const losses = results.length - wins;
 
-      const modelWins = Object.fromEntries(
+      const modelWinRates = Object.fromEntries(
         perspectives.map((perspective) => {
-          const modelResults = results.filter(
+          const model = results.filter(
             (record) => record.model === perspective.id,
           );
-          const modelWinsCount = modelResults.filter(
+          const modelWins = model.filter(
             (record) => record.winner === "product",
           ).length;
+
           return [
-            perspective.label,
+            perspective.id,
             {
-              wins: modelWinsCount,
-              losses: modelResults.length - modelWinsCount,
+              wins: modelWins,
+              losses: model.length - modelWins,
+              rate:
+                model.length > 0
+                  ? Math.round((modelWins / model.length) * 100)
+                  : 0,
             },
           ];
         }),
       );
 
-      update({
-        kind: "progress",
-        completed: results.length,
-        total: totalSimulations,
-        wins,
-        losses: results.length - wins,
-        modelWins,
-      });
-    }
-
-    const wins = results.filter((record) => record.winner === "product").length;
-    const losses = results.length - wins;
-
-    const modelWinRates = Object.fromEntries(
-      perspectives.map((perspective) => {
-        const model = results.filter(
-          (record) => record.model === perspective.id,
-        );
-        const modelWins = model.filter(
-          (record) => record.winner === "product",
-        ).length;
-
-        return [
-          perspective.id,
-          {
-            wins: modelWins,
-            losses: model.length - modelWins,
-            rate:
-              model.length > 0
-                ? Math.round((modelWins / model.length) * 100)
-                : 0,
-          },
-        ];
-      }),
-    );
-
-    for (const perspective of perspectives) {
-      update({
-        kind: "model_status",
-        model: perspective.label,
-        status: "complete",
-      });
-    }
-
-    update({
-      kind: "log",
-      model: "System",
-      message: "Analyzing results for top optimization opportunity...",
-    });
-
-    const topFinding = await resultify(async () => {
-      const misses = results.filter((record) => record.winner === "competitor");
-
-      if (misses.length === 0) return null;
-
-      const lossesByProduct = new Map<
-        string,
-        { count: number; title: string; reasons: string[] }
-      >();
-
-      for (const record of misses) {
-        const existing = lossesByProduct.get(record.product.id) ?? {
-          count: 0,
-          title: record.product.title,
-          reasons: [],
-        };
-        existing.count += 1;
-        existing.reasons.push(record.reasoning);
-        lossesByProduct.set(record.product.id, existing);
+      for (const perspective of perspectives) {
+        update({
+          kind: "model_status",
+          model: perspective.label,
+          status: "complete",
+        });
       }
 
-      const worst = [...lossesByProduct.entries()].sort(
-        (a, b) => b[1].count - a[1].count,
-      )[0];
-
-      if (!worst) return null;
-
-      return AI.generate({
-        system:
-          "You are an e-commerce optimization analyst. Given the reasons a product lost in AI shopping simulations, identify the specific missing attributes or weaknesses that caused the most losses. Be concise and actionable. Respond only with the structured fields — no prose outside the object.",
-        prompt: `Product "${worst[1].title}" lost ${worst[1].count} out of ${results.length} total simulations.\n\nHere are the reasons it lost:\n${worst[1].reasons.slice(0, 10).join("\n---\n")}\n\nIdentify the top missing attributes and estimate what percentage of simulations these gaps cost.`,
-        schema: z.object({
-          name: z.string().describe("The product name"),
-          missingAttributes: z
-            .array(z.string())
-            .describe("Specific attributes or data the listing is missing"),
-          impactDescription: z
-            .string()
-            .describe(
-              "Concise, actionable summary of how these gaps cost wins",
-            ),
-          lossPercentage: z
-            .number()
-            .describe(
-              "Estimated percentage (0-100) of simulations these gaps cost",
-            ),
-        }),
-        schemaName: "TopFinding",
-        schemaDescription:
-          "The biggest optimization opportunity for the worst-performing product",
+      update({
+        kind: "log",
+        model: "System",
+        message: "Analyzing results for top optimization opportunity...",
       });
-    });
 
-    const finding = topFinding.success ? topFinding.data : null;
+      const topFinding = await resultify(async () => {
+        const misses = results.filter(
+          (record) => record.winner === "competitor",
+        );
 
-    update({
-      kind: "log",
-      model: "System",
-      message: "Finalizing scan...",
-    });
+        if (misses.length === 0) return null;
 
-    await Scan.update(Environment.SERVER, scan.data.id, {
-      status: "complete",
-      completedSimulations: totalSimulations,
-      wins,
-      losses,
-      topFinding: finding,
-    });
+        const lossesByProduct = new Map<
+          string,
+          { count: number; title: string; reasons: string[] }
+        >();
 
-    context.span.addBreadcrumb({
-      category: "scan.complete",
-      data: {
-        "scan.id": scan.data.id,
+        for (const record of misses) {
+          const existing = lossesByProduct.get(record.product.id) ?? {
+            count: 0,
+            title: record.product.title,
+            reasons: [],
+          };
+          existing.count += 1;
+          existing.reasons.push(record.reasoning);
+          lossesByProduct.set(record.product.id, existing);
+        }
+
+        const worst = [...lossesByProduct.entries()].sort(
+          (a, b) => b[1].count - a[1].count,
+        )[0];
+
+        if (!worst) return null;
+
+        return AI.generate({
+          system:
+            "You are an e-commerce optimization analyst. Given the reasons a product lost in AI shopping simulations, identify the specific missing attributes or weaknesses that caused the most losses. Be concise and actionable. Respond only with the structured fields — no prose outside the object.",
+          prompt: `Product "${worst[1].title}" lost ${worst[1].count} out of ${results.length} total simulations.\n\nHere are the reasons it lost:\n${worst[1].reasons.slice(0, 10).join("\n---\n")}\n\nIdentify the top missing attributes and estimate what percentage of simulations these gaps cost.`,
+          schema: z.object({
+            name: z.string().describe("The product name"),
+            missingAttributes: z
+              .array(z.string())
+              .describe("Specific attributes or data the listing is missing"),
+            impactDescription: z
+              .string()
+              .describe(
+                "Concise, actionable summary of how these gaps cost wins",
+              ),
+            lossPercentage: z
+              .number()
+              .describe(
+                "Estimated percentage (0-100) of simulations these gaps cost",
+              ),
+          }),
+          schemaName: "TopFinding",
+          schemaDescription:
+            "The biggest optimization opportunity for the worst-performing product",
+        });
+      });
+
+      const finding = topFinding.success ? topFinding.data : null;
+
+      update({
+        kind: "log",
+        model: "System",
+        message: "Finalizing scan...",
+      });
+
+      await Scan.update(Environment.SERVER, scan.data.id, {
+        status: "complete",
+        completedSimulations: totalSimulations,
         wins,
         losses,
-        "simulations.total": totalSimulations,
-      },
-    });
+        topFinding: finding,
+      });
+
+      context.span.addBreadcrumb({
+        category: "scan.complete",
+        data: {
+          "scan.id": scan.data.id,
+          wins,
+          losses,
+          "simulations.total": totalSimulations,
+        },
+      });
 
       update({
         kind: "done",

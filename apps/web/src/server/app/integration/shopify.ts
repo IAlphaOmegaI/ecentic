@@ -130,7 +130,8 @@ export const syncShopifyCatalog = withContext(
         store: storeId,
       });
 
-      if (!refreshed.success || !refreshed.data) return account;
+      if (!refreshed.success) return refreshed;
+      if (!refreshed.data) return account;
 
       return { success: true as const, data: refreshed.data };
     })();
@@ -269,6 +270,16 @@ export const refreshAccessToken = withContext(
     if (!storeAccount.success) return storeAccount;
     if (!storeAccount.data?.refreshToken)
       return { success: false, error: new Error("No refresh token stored") };
+
+    const { refreshTokenExpiresAt } = storeAccount.data;
+
+    if (refreshTokenExpiresAt && refreshTokenExpiresAt.getTime() < Date.now())
+      return {
+        success: false,
+        error: new Error(
+          "Shopify authorization has expired. Please reconnect your store.",
+        ),
+      };
 
     const store = await Store.get(Environment.SERVER, storeId);
     if (!store.success) return store;

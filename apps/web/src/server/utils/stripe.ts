@@ -36,4 +36,3 @@ export const resolvePlanByPriceId = (priceId: string): PlanKey | null => {
   if (priceId === process.env.STRIPE_SUB_DOMINATE) return "dominate";
   return null;
 };
-

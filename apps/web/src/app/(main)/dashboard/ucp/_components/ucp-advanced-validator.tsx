@@ -427,7 +427,7 @@ const GradeCard = ({
         {config.label}
       </div>
       <div>
-        <p className="text-base font-medium text-foreground">
+        <p className="font-medium text-base text-foreground">
           {config.description}
         </p>
         <p className="mt-1 font-light text-foreground-dimmed text-sm">

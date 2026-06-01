@@ -77,12 +77,12 @@ export const store = pgTable("store", {
   userId: text("userId")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
+  storeId: text("storeId").notNull(),
   platform: text("platform").notNull(),
   name: text("name").notNull(),
   domain: text("domain").notNull(),
   feedUrl: text("feedUrl"),
   status: text("status").notNull().default("connected"),
-  storeId: text("storeId").notNull(),
   /** Write-only key for storefront beacons (Layer 1 tracker). */
   trackerApiKey: text("trackerApiKey"),
   /**

@@ -143,7 +143,7 @@ const callMcp = async (
 // };
 
 // UCP §4 — line items use variant_id + quantity
-// item	Item	Yes	
+// item	Item	Yes
 // quantity	integer	Yes	Quantity of the item being purchased.
 // totals	Array[Total]	Yes	Line item totals breakdown.
 // parent_id	string	No	Parent line item identifier for any nested structures.

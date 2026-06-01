@@ -21,6 +21,24 @@ export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
   const [handleSync, isSyncing] = useAsyncAction(async (id: string) => {
     const result = await Store.syncProducts({ store: id });
     if (!result.success) {
+      // const isExpired = result.error.message.includes(
+      //   "Shopify authorization has expired",
+      // );
+      // toast.add({
+      //   title: isExpired ? "Reconnect required" : "Sync failed",
+      //   description: isExpired
+      //     ? "Your Shopify authorization has expired. Please reconnect your store."
+      //     : undefined,
+      //   type: "error",
+      //   ...(isExpired && {
+      //     actionLabel: "Reconnect",
+      //     onAction: () => {
+      //       const shopId = new URL(domain).hostname;
+      //       window.location.href = `/api/integrations/shopify/install?shop=${encodeURIComponent(shopId)}`;
+      //     },
+      //   }),
+      // });
+
       toast.add({ title: "Sync failed", type: "error" });
       return;
     }

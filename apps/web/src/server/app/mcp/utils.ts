@@ -42,7 +42,8 @@ export const Utils = {
   tools: [
     {
       name: "list_plans",
-      description: "List available ecentic plans and Stripe price availability.",
+      description:
+        "List available ecentic plans and Stripe price availability.",
       inputSchema: {
         type: "object",
         properties: {},

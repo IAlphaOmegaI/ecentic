@@ -92,10 +92,7 @@ const parse = async (
   return { success: true, data: json.data as JsonRpcRequest };
 };
 
-const parseToolArgs = <T>(
-  schema: z.ZodType<T>,
-  value: unknown,
-) => {
+const parseToolArgs = <T>(schema: z.ZodType<T>, value: unknown) => {
   const parsed = schema.safeParse(value);
   if (!parsed.success)
     return {
@@ -149,7 +146,9 @@ const resolveActor = async (request: Request): Promise<Actor | null> => {
   })();
 
   if (token) {
-    const authenticated = await Agent.authenticate(Environment.SERVER, { token });
+    const authenticated = await Agent.authenticate(Environment.SERVER, {
+      token,
+    });
     if (!authenticated.success || !authenticated.data) return null;
 
     return {
@@ -375,10 +374,10 @@ const getOnboardingStatus = async (actor: Actor, raw: unknown) => {
       },
       subscription: subscriptions.data[0]
         ? {
-          plan: subscriptions.data[0].plan,
-          status: subscriptions.data[0].status,
-          currentPeriodEnd: subscriptions.data[0].currentPeriodEnd,
-        }
+            plan: subscriptions.data[0].plan,
+            status: subscriptions.data[0].status,
+            currentPeriodEnd: subscriptions.data[0].currentPeriodEnd,
+          }
         : null,
     }),
   };
@@ -403,7 +402,10 @@ export const getRoute = async () =>
 export const handleRequest = async (request: Request) => {
   const payload = await parse(request);
   if (!payload.success)
-    return response(null, undefined, { code: -32700, message: payload.message });
+    return response(null, undefined, {
+      code: -32700,
+      message: payload.message,
+    });
 
   const body = payload.data;
 
@@ -450,7 +452,10 @@ export const handleRequest = async (request: Request) => {
         }
         case "connect_woocommerce": {
           if (!actor) return unauthorized(body.id);
-          const connection = await connectWooCommerce(actor, call.data.arguments);
+          const connection = await connectWooCommerce(
+            actor,
+            call.data.arguments,
+          );
           if ("error" in connection)
             return response(body.id, undefined, connection.error);
           return response(body.id, connection.result);
@@ -465,7 +470,8 @@ export const handleRequest = async (request: Request) => {
         case "get_onboarding_status": {
           if (!actor) return unauthorized(body.id);
           const status = await getOnboardingStatus(actor, call.data.arguments);
-          if ("error" in status) return response(body.id, undefined, status.error);
+          if ("error" in status)
+            return response(body.id, undefined, status.error);
           return response(body.id, status.result);
         }
         default:

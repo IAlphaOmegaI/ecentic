@@ -228,14 +228,14 @@ export const CompletePhase = ({
               >
                 <Share />
               </Button>
-              <Button
+              {/* <Button
                 variant="flat"
                 color="primary"
                 type="button"
                 render={<Link href="/onboarding/buy" />}
               >
                 <Buy />
-              </Button>
+              </Button> */}
             </div>
           </div>
         </Motion.Item>

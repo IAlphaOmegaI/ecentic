@@ -1,0 +1,1 @@
+ALTER TABLE "store_account" ADD CONSTRAINT "store_account_storeId_key" UNIQUE("storeId");

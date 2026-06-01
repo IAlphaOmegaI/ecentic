@@ -277,7 +277,9 @@ export const createCheckoutSessionForUser = withContext(
         error: new NotFoundError("User not found"),
       };
 
-    const customer = await ensureCustomer(Environment.SERVER, { user: user.data });
+    const customer = await ensureCustomer(Environment.SERVER, {
+      user: user.data,
+    });
     if (!customer.success) return customer;
 
     const appHost = process.env.APP_HOST;
