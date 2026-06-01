@@ -159,16 +159,34 @@ Rules:
 - For brand: look for "by [Brand]", "Brand: [Name]", or the first prominent brand mention.
 - For title: use the main product title, not breadcrumbs or category names.
 - For description: extract the primary product description, truncated to 300 characters.
-- For image: extract the primary product image URL if present. Return null if not clearly identifiable.`,
+- For image: extract the primary product image URL if present. Return null if not clearly identifiable.
+- Output only the structured fields — no prose or markdown outside the object.`,
       prompt: `Extract the product from this page:\n\nURL: ${url}\nContent:\n${html}`,
       schema: z.object({
-        title: z.string(),
-        brand: z.string().nullable(),
-        price: z.string().nullable(),
-        currency: z.string(),
-        description: z.string().nullable(),
-        image: z.string().nullable(),
+        title: z.string().describe("The main product title"),
+        brand: z
+          .string()
+          .nullable()
+          .describe("Brand name, or null if not present"),
+        price: z
+          .string()
+          .nullable()
+          .describe(
+            'Current price as a numeric string (e.g. "29.99"), or null',
+          ),
+        currency: z.string().describe("Currency code or symbol"),
+        description: z
+          .string()
+          .nullable()
+          .describe("Primary product description (max 300 chars), or null"),
+        image: z
+          .string()
+          .nullable()
+          .describe("Primary product image URL, or null if not identifiable"),
       }),
+      schemaName: "ProductExtraction",
+      schemaDescription:
+        "Structured product data extracted from an e-commerce page",
     }),
   );
 
@@ -281,14 +299,36 @@ INSTRUCTIONS:
 3. Pick a winner: use "a" if PRODUCT A wins, or "b" if PRODUCT B wins.
 4. Consider the consumer's stated preference: "${prompt}" — weigh this as a tiebreaker or prioritization signal.
 5. In your reasoning, cite the specific data points that drove the decision.
-6. In keyFactors, list the top 3-5 specific attributes or gaps that determined the outcome.`,
+6. In keyFactors, list the top 3-5 specific attributes or gaps that determined the outcome.
+7. Output ONLY the structured fields defined by the schema. Put all narrative analysis inside the "reasoning" field — do not emit any prose, markdown, or citations outside the object.`,
             schema: z.object({
-              winner: z.enum(["a", "b"]),
-              scoreA: z.number().min(0).max(100),
-              scoreB: z.number().min(0).max(100),
-              reasoning: z.string(),
-              keyFactors: z.array(z.string()),
+              winner: z
+                .enum(["a", "b"])
+                .describe('"a" if PRODUCT A wins, "b" if PRODUCT B wins'),
+              scoreA: z
+                .number()
+                .min(0)
+                .max(100)
+                .describe("0-100 evidence-based score for PRODUCT A"),
+              scoreB: z
+                .number()
+                .min(0)
+                .max(100)
+                .describe("0-100 evidence-based score for PRODUCT B"),
+              reasoning: z
+                .string()
+                .describe(
+                  "Concrete explanation citing the specific data points that drove the decision",
+                ),
+              keyFactors: z
+                .array(z.string())
+                .describe(
+                  "Top 3-5 specific attributes or gaps that determined the outcome",
+                ),
             }),
+            schemaName: "ListingComparison",
+            schemaDescription:
+              "Evidence-based audit comparing two product listings against a consumer preference",
             stream: true,
           });
 

@@ -49,9 +49,23 @@ const map = {
   ],
 } as const;
 
+const prefersMarkdown = (accept: string | null) =>
+  accept != null && /\btext\/markdown\b/i.test(accept);
+
 export const proxy = async (request: Request) => {
-  if (process.env.NODE_ENV === "development") return Response.next();
   const { pathname } = request.nextUrl;
+
+  if (
+    request.method === "GET" &&
+    pathname === "/" &&
+    prefersMarkdown(request.headers.get("accept"))
+  ) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/llms.txt";
+    return Response.rewrite(url);
+  }
+
+  if (process.env.NODE_ENV === "development") return Response.next();
 
   const user = await Authentication.getProxiedCurrentUser();
   const role = user.success ? (user.data.role ?? "public") : "public";

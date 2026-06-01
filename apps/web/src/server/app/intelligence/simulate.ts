@@ -221,57 +221,103 @@ export const runScan = withAuthentication(async (context) => {
               model: perspective.model,
               modelLabel: perspective.label,
               system: perspective.system,
-              productStoreDomain: storeDomain,
-              competitorDomain,
-              productTitle: product.title,
-              productDescription: product.description,
-              onLog: (event) => {
-                update({
-                  kind: "log",
-                  model: perspective.label,
-                  message: describeFinding(event),
-                });
-              },
-              onText: (chunk) => {
-                update({
-                  kind: "chunk",
-                  model: perspective.label,
-                  text: chunk,
-                });
-              },
+              prompt: `A consumer is choosing between these two products. Perform a strict, evidence-based audit of each listing.
+
+--- PRODUCT ---
+${Formating.formatProduct(product)}
+
+--- COMPETITOR ---
+${Formating.formatCompetitor(competitor)}
+
+INSTRUCTIONS:
+1. Score each product 0-100 using your evaluation methodology. Apply all penalties for missing data — do NOT skip them.
+2. Be harsh. Most real-world listings score 30-55. A score above 70 requires exceptional completeness (6+ images, reviews, full specs, clear brand, structured data).
+3. Missing data is a FAILURE, not neutral. Every "MISSING" field in the listing above should trigger the corresponding penalty from your scoring rubric.
+4. Do NOT favor either listing based on its label ("PRODUCT" vs "COMPETITOR"). Evaluate purely on evidence.
+5. Pick a winner: use "product" if the PRODUCT listing wins, or "competitor" if the COMPETITOR listing wins.
+6. In your reasoning, cite the specific data points (or missing data points) that drove the decision. Be concrete — reference actual field values or their absence.
+7. In keyFactors, list the top 3-5 specific attributes or gaps that determined the outcome (e.g., "PRODUCT has 0 images vs COMPETITOR has 5", "COMPETITOR missing price", "Neither listing has reviews").
+8. Output ONLY the structured fields defined by the schema. Put all narrative analysis inside the "reasoning" field — do not emit any prose, markdown, or citations outside the object.`,
+              schema: z.object({
+                winner: z
+                  .enum(["product", "competitor"])
+                  .describe(
+                    '"product" if the PRODUCT listing wins, "competitor" if the COMPETITOR listing wins',
+                  ),
+                productScore: z
+                  .number()
+                  .min(0)
+                  .max(100)
+                  .describe(
+                    "0-100 evidence-based score for the PRODUCT listing",
+                  ),
+                competitorScore: z
+                  .number()
+                  .min(0)
+                  .max(100)
+                  .describe(
+                    "0-100 evidence-based score for the COMPETITOR listing",
+                  ),
+                reasoning: z
+                  .string()
+                  .describe(
+                    "Concrete explanation citing the specific data points or missing fields that drove the decision",
+                  ),
+                keyFactors: z
+                  .array(z.string())
+                  .describe(
+                    "Top 3-5 specific attributes or gaps that determined the outcome",
+                  ),
+              }),
+              schemaName: "ListingComparison",
+              schemaDescription:
+                "Evidence-based audit comparing a product listing against a competitor listing",
+              stream: true,
             });
 
-            if (!agentResult.evaluation) {
-              return {
-                product: { ...product, score: 0 },
-                competitor: { ...competitor, score: 0 },
-                winner: "competitor",
-                reasoning:
-                  agentResult.error ??
-                  "Agent did not return a structured evaluation.",
-                keyFactors: [],
-                ucpFindings: agentResult.findings,
-                model: perspective.id,
-                modelLabel: perspective.label,
-              };
-            }
+            const [, parsing] = await Promise.all([
+              (async () => {
+                for await (const chunk of textStream) {
+                  update({
+                    kind: "chunk",
+                    model: perspective.label,
+                    text: chunk,
+                  });
+                }
+              })(),
+              resultify(() => output),
+            ]);
 
-            return {
-              product: {
-                ...product,
-                score: Math.round(agentResult.evaluation.storeScore),
-              },
-              competitor: {
-                ...competitor,
-                score: Math.round(agentResult.evaluation.competitorScore),
-              },
-              winner: agentResult.evaluation.winner,
-              reasoning: agentResult.evaluation.reasoning,
-              keyFactors: agentResult.evaluation.keyFactors,
-              ucpFindings: agentResult.findings,
-              model: perspective.id,
-              modelLabel: perspective.label,
-            };
+            const productScore = parsing.success
+              ? Math.round(parsing.data.productScore)
+              : 0;
+            const competitorScore = parsing.success
+              ? Math.round(parsing.data.competitorScore)
+              : 50;
+
+            return (() => {
+              switch (true) {
+                case parsing.success:
+                  return {
+                    product: { ...product, score: productScore },
+                    competitor: { ...competitor, score: competitorScore },
+                    winner: parsing.data.winner,
+                    reasoning: parsing.data.reasoning,
+                    keyFactors: parsing.data.keyFactors,
+                    model: perspective.id,
+                    modelLabel: perspective.label,
+                  };
+                default:
+                  return {
+                    product: { ...product, score: 0 },
+                    competitor: { ...competitor, score: 50 },
+                    winner: "competitor" as const,
+                    reasoning: "Evaluation failed — defaulting to competitor",
+                    model: perspective.id,
+                    modelLabel: perspective.label,
+                  };
+              }
+            })();
           },
         ),
       ),
@@ -419,22 +465,27 @@ export const runScan = withAuthentication(async (context) => {
 
       return AI.generate({
         system:
-          "You are a UCP commerce analyst. Given evidence from real AI-agent UCP probes, identify the specific store-level gaps that caused the user's store to lose AI-commerce simulations. Be concrete and actionable — reference manifest/endpoint/protocol gaps, not generic listing advice.",
-        prompt: `User's store lost ${worst[1].count} of ${results.length} simulations targeting "${worst[1].title}".
-
-Agent reasoning (sample):
-${worst[1].reasons.slice(0, 6).join("\n---\n")}
-
-UCP probe findings (sample):
-${worst[1].findings.slice(0, 15).join("\n")}
-
-Identify the top missing UCP capabilities or broken endpoints and estimate what percentage of simulations these gaps cost.`,
+          "You are an e-commerce optimization analyst. Given the reasons a product lost in AI shopping simulations, identify the specific missing attributes or weaknesses that caused the most losses. Be concise and actionable. Respond only with the structured fields — no prose outside the object.",
+        prompt: `Product "${worst[1].title}" lost ${worst[1].count} out of ${results.length} total simulations.\n\nHere are the reasons it lost:\n${worst[1].reasons.slice(0, 10).join("\n---\n")}\n\nIdentify the top missing attributes and estimate what percentage of simulations these gaps cost.`,
         schema: z.object({
-          name: z.string(),
-          missingAttributes: z.array(z.string()),
-          impactDescription: z.string(),
-          lossPercentage: z.number(),
+          name: z.string().describe("The product name"),
+          missingAttributes: z
+            .array(z.string())
+            .describe("Specific attributes or data the listing is missing"),
+          impactDescription: z
+            .string()
+            .describe(
+              "Concise, actionable summary of how these gaps cost wins",
+            ),
+          lossPercentage: z
+            .number()
+            .describe(
+              "Estimated percentage (0-100) of simulations these gaps cost",
+            ),
         }),
+        schemaName: "TopFinding",
+        schemaDescription:
+          "The biggest optimization opportunity for the worst-performing product",
       });
     });
 

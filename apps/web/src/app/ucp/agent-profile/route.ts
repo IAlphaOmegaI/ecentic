@@ -13,6 +13,12 @@ const agentProfile = {
             "https://ucp.dev/2026-04-08/services/shopping/rest.openapi.json",
           endpoint: "https://ecentic.ai/ucp",
         },
+        {
+          version: "2026-04-08",
+          spec: "https://modelcontextprotocol.io/specification/2025-03-26",
+          transport: "mcp",
+          endpoint: "https://ecentic.ai/api/mcp",
+        },
       ],
     },
     capabilities: {

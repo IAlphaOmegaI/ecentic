@@ -107,57 +107,64 @@ const runScanForUser = async (
   const tasks = products.data.flatMap((product) =>
     selected.flatMap((competitor) =>
       perspectives.map((perspective) => async () => {
-        const storeDomain = storeDomainById.get(product.storeId) ?? null;
-        const competitorDomain = deriveDomain(competitor.url);
+        const generated = await resultify(() =>
+          generate({
+            model: perspective.model,
+            system: perspective.system,
+            prompt: `A consumer is choosing between these two products.\n\n--- PRODUCT A ---\n${Formating.formatProduct(product)}\n\n--- PRODUCT B ---\n${Formating.formatCompetitor(competitor)}\n\nScore each product 0-100, pick a winner, and give concise reasoning. Output only the structured fields — put all analysis in "reasoning", no prose or markdown outside the object.`,
+            schema: z.object({
+              winner: z
+                .enum(["product", "competitor"])
+                .describe(
+                  '"product" if PRODUCT A wins, "competitor" if PRODUCT B wins',
+                ),
+              productScore: z
+                .number()
+                .min(0)
+                .max(100)
+                .describe("0-100 score for PRODUCT A"),
+              competitorScore: z
+                .number()
+                .min(0)
+                .max(100)
+                .describe("0-100 score for PRODUCT B"),
+              reasoning: z
+                .string()
+                .describe("Concise explanation of the decision"),
+              keyFactors: z
+                .array(z.string())
+                .describe("Top attributes or gaps that determined the outcome"),
+            }),
+            schemaName: "ListingComparison",
+            schemaDescription:
+              "Evidence-based comparison of two product listings",
+          }),
+        );
 
-        if (!storeDomain) {
-          return {
-            productId: product.id,
-            competitorId: competitor.id,
-            model: perspective.id,
-            winner: "competitor",
-            reasoning:
-              "User store has no registered domain — cannot run UCP flow.",
-            productScore: 0,
-            competitorScore: 0,
-          };
-        }
-
-        const agentResult = await runUcpAgent({
-          model: perspective.model,
-          modelLabel: perspective.label,
-          system: perspective.system,
-          productStoreDomain: storeDomain,
-          competitorDomain,
-          productTitle: product.title,
-          productDescription: product.description,
-          onLog: () => {},
-          onText: () => {},
-        });
-
-        if (!agentResult.evaluation) {
-          return {
-            productId: product.id,
-            competitorId: competitor.id,
-            model: perspective.id,
-            winner: "competitor",
-            reasoning:
-              agentResult.error ??
-              "Agent did not return a structured evaluation.",
-            productScore: 0,
-            competitorScore: 0,
-          };
-        }
-
-        return {
-          productId: product.id,
-          competitorId: competitor.id,
-          model: perspective.id,
-          winner: agentResult.evaluation.winner,
-          reasoning: agentResult.evaluation.reasoning,
-          productScore: Math.round(agentResult.evaluation.storeScore),
-          competitorScore: Math.round(agentResult.evaluation.competitorScore),
-        };
+        return (() => {
+          switch (true) {
+            case !generated.success:
+              return {
+                productId: product.id,
+                competitorId: competitor.id,
+                model: perspective.id,
+                winner: "competitor",
+                reasoning: "Evaluation failed — defaulting to competitor",
+                productScore: 0,
+                competitorScore: 50,
+              };
+            default:
+              return {
+                productId: product.id,
+                competitorId: competitor.id,
+                model: perspective.id,
+                winner: generated.data.winner,
+                reasoning: generated.data.reasoning,
+                productScore: Math.round(generated.data.productScore),
+                competitorScore: Math.round(generated.data.competitorScore),
+              };
+          }
+        })();
       }),
     ),
   );

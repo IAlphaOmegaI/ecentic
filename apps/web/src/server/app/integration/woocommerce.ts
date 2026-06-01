@@ -199,6 +199,31 @@ export const connect = withAuthentication(
       consumerSecret,
     }: { domain: string; consumerKey: string; consumerSecret: string },
   ) => {
+    return connectForUser(Environment.SERVER, {
+      user: context.session.user.id,
+      domain,
+      consumerKey,
+      consumerSecret,
+    });
+  },
+  "WooCommerce.connect",
+);
+
+export const connectForUser = withContext(
+  async (
+    context,
+    {
+      user: id,
+      domain,
+      consumerKey,
+      consumerSecret,
+    }: {
+      user: string;
+      domain: string;
+      consumerKey: string;
+      consumerSecret: string;
+    },
+  ) => {
     const host = Utils.normalize(domain);
 
     const probe = await HTTP.request(
@@ -240,7 +265,7 @@ export const connect = withAuthentication(
         const store = await Store.create(
           Environment.SERVER,
           {
-            userId: context.session.user.id,
+            userId: id,
             platform: "woocommerce",
             name: new URL(host).hostname,
             domain: host,
@@ -255,7 +280,7 @@ export const connect = withAuthentication(
         if (!store.data) throw new Error("Store creation returned no data");
 
         const sync = await syncWooCommerceCatalog(Environment.SERVER, {
-          user: context.session.user.id,
+          user: id,
           store: store.data.id,
           tx,
         });
@@ -275,7 +300,7 @@ export const connect = withAuthentication(
 
     return transaction;
   },
-  "WooCommerce.connect",
+  "WooCommerce.connectForUser",
 );
 
 export const syncProducts = withAuthentication(
@@ -332,8 +357,8 @@ export const updateProduct = withAuthentication(
       return { success: false, error: new Error("Product has no external ID") };
 
     const body: Record<string, string> = {};
-    if (data.title !== undefined) body.name = data.title;
-    if (data.body_html !== undefined) body.description = data.body_html;
+    if (data.title !== undefined) body["name"] = data.title;
+    if (data.body_html !== undefined) body["description"] = data.body_html;
 
     if (Object.keys(body).length === 0)
       return {

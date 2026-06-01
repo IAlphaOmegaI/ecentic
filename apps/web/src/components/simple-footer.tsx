@@ -5,8 +5,11 @@ import WordMark from "@/public/images/wordmark.svg";
 
 const links = [
   { href: "/features", label: "Features" },
+  { href: "/how-it-works", label: "How it works" },
+  { href: "/pricing", label: "Pricing" },
   { href: "/platforms/shopify", label: "Shopify" },
   { href: "/enterprise", label: "Enterprise" },
+  { href: "/demo", label: "Book a demo" },
   { href: "/blog", label: "Blog" },
   { href: "/privacy-policy", label: "Privacy Policy" },
 ] as const;
@@ -30,7 +33,7 @@ const socials = [
 ] as const;
 
 export const SimpleFooter = () => (
-  <footer className="border-accent-foreground border-t">
+  <footer className="border-accent-foreground">
     <div className="mx-auto max-w-6xl border-accent-foreground border-x px-8 py-8">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <Link href="/">

@@ -66,6 +66,7 @@ If code and docs disagree, prefer docs intent unless explicitly instructed other
 - Keep onboarding and dashboard UX clear and structured, preferring dedicated pages when flows need detailed field explanations.
 - Treat `docs/context/` as the canonical source for project-specific product context before implementation decisions.
 - Prefer colocating tightly related UI pieces (for example desktop/mobile navbar variants and shared links) in one file rather than splitting into small component files.
+- Do not hoist repeated Tailwind `className` strings into top-level const declarations; inline classes on elements or use inline unexported sub-components instead.
 
 ## Learned Workspace Facts
 
@@ -80,5 +81,5 @@ If code and docs disagree, prefer docs intent unless explicitly instructed other
 - Local Next dev: after code or env changes, rely on hot reload or restart the dev server; remote hosting still needs redeploy when you change env or ship builds.
 - Prefer repository delegates from `apps/web/src/server/repositories/` (for example `import * as CourseForumPost` and `CourseForumPost.find(...)`) instead of ad hoc `db` calls when the repository already exposes the operation.
 - Wrap exported server actions with `withContext` or `withAuthorization` to match sibling modules in `apps/web/src/server/app/` (`withAuthorization` for role-gated manager flows, `withContext` where only session/request context is needed). Do not add explicit return type annotations on those wrappers so return types stay inferred.
-- UCP discovery is a plain HTTPS GET to `/.well-known/ucp`; use `UCP-Agent` (RFC 8941 `profile="..."`) on platform-to-business API calls, not as a requirement for discovery fetches.
-- For UCP negotiation flows, use first-party écentic-hosted `ucp-agent.profile` URLs over Shopify-hosted fixtures, and ensure profile URLs are HTTPS in real environments.
+- UCP discovery is a plain HTTPS GET to `/.well-known/ucp` (no `UCP-Agent` header required); use `UCP-Agent` (RFC 8941 `profile="..."`) on platform-to-business API calls. For negotiation flows, prefer first-party écentic-hosted `ucp-agent.profile` URLs over Shopify-hosted fixtures, and ensure profile URLs are HTTPS in real environments.
+- In `apps/web/src/app/robots.ts`, use `disallow` only for blocked prefixes; omit explicit `allow` unless creating exceptions inside a disallowed path (everything else is crawlable by default).

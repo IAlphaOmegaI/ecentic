@@ -4,6 +4,7 @@
 import { type Result, resultify } from "@zenncore/utils";
 import { XMLParser } from "fast-xml-parser";
 import { withAuthentication } from "../../utils/authentication";
+import { withContext } from "../../utils/context";
 import { Environment } from "../../utils/environment";
 import { NotFoundError, RequestError } from "../../utils/error";
 import * as HTTP from "../../utils/http";
@@ -153,6 +154,19 @@ export const connect = withAuthentication(
     context,
     { feedUrl }: { feedUrl: string },
   ): Promise<Result<Store.Type, RequestError | Error>> => {
+    return connectForUser(Environment.SERVER, {
+      user: context.session.user.id,
+      feedUrl,
+    });
+  },
+  "Feed.connect",
+);
+
+export const connectForUser = withContext(
+  async (
+    _,
+    { user, feedUrl }: { user: string; feedUrl: string },
+  ): Promise<Result<Store.Type, RequestError | Error>> => {
     const response = await HTTP.request(feedUrl, { method: "GET" });
 
     if (!response.success)
@@ -198,7 +212,7 @@ export const connect = withAuthentication(
     })();
 
     const store = await Store.create(Environment.SERVER, {
-      userId: context.session.user.id,
+      userId: user,
       platform: "feed",
       name: hostname,
       domain: feedUrl,
@@ -210,7 +224,7 @@ export const connect = withAuthentication(
 
     return store;
   },
-  "Feed.connect",
+  "Feed.connectForUser",
 );
 
 export const syncProducts = withAuthentication(

@@ -56,6 +56,14 @@ export const GET = async () => {
       description: "Legal and data handling.",
       links: [{ path: "/privacy-policy", label: "Privacy Policy" }],
     },
+    {
+      title: "Agent API",
+      description: "Machine-facing endpoints for AI agent integrations.",
+      links: [
+        { path: "/api/mcp", label: "MCP endpoint (JSON-RPC tools)" },
+        { path: "/ucp/agent-profile", label: "UCP agent profile" },
+      ],
+    },
 
     {
       title: "Blog",
@@ -81,6 +89,7 @@ export const GET = async () => {
     `- Site: ${seo.host}`,
     `- Sitemap: ${seo.host}/sitemap.xml`,
     `- UCP profile: ${seo.host}/.well-known/ucp`,
+    `- MCP endpoint: ${seo.host}/api/mcp`,
     "",
   ].join("\n");
 
