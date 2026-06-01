@@ -1,12 +1,11 @@
+/** Non-distributive check: `T | undefined` must not split into separate success branches. */
+// biome-ignore lint/suspicious/noConfusingVoidType: exact void-only success shape (not undefined)
+type SuccessResult<T> = [T] extends [void]
+  ? { success: true }
+  : { success: true; data: T };
+
 export type Result<T = void, E = Error> =
-  | (T extends void
-      ? {
-          success: true;
-        }
-      : {
-          success: true;
-          data: T;
-        })
+  | SuccessResult<T>
   | {
       success: false;
       error: E;

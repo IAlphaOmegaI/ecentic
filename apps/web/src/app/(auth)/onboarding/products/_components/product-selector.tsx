@@ -43,6 +43,7 @@ const parseImages = (images: string | null): string[] => {
   });
 
   if (!result.success) return [];
+
   return result.data;
 };
 

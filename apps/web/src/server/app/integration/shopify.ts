@@ -113,7 +113,7 @@ export const syncShopifyCatalog = withContext(
     const storeAccount = await (async () => {
       const account = storeAccountId
         ? await StoreAccount.get(Environment.SERVER, storeAccountId, options)
-        : await StoreAccount.getForStore(Environment.SERVER, {
+        : await StoreAccount.getByStore(Environment.SERVER, {
             store: storeId,
           });
 
