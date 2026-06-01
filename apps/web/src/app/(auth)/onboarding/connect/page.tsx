@@ -1,4 +1,5 @@
 "use client";
+
 import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import Link, { useLinkStatus } from "next/link";

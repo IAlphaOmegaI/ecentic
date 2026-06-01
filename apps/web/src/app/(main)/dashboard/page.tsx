@@ -3,6 +3,7 @@ import {
   BoxMinusIcon,
   CheckBadgeIcon,
   RadarIcon,
+  ShoppingCartIcon,
   TrendUpIcon,
 } from "@zenncore/icons";
 import { unwrapResult } from "@zenncore/utils";
@@ -14,6 +15,7 @@ import { formatRelativeTime } from "@/lib/date";
 import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
 import * as Scan from "@/server/app/scan";
+import * as Store from "@/server/app/store";
 import { Environment } from "@/server/utils/environment";
 import { AgentVisitsPanel } from "./_components/agent-visits-panel";
 import { CompetitorsTable } from "./_components/competitors-table";
@@ -23,6 +25,9 @@ import { ProductsTable } from "./_components/products-table";
 
 export default () => (
   <div className="flex flex-col">
+    <Suspense>
+      <StoreCheck />
+    </Suspense>
     <div className="mx-8 border-accent-foreground border-x">
       <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8 flex items-baseline justify-between px-6 py-8">
@@ -87,6 +92,40 @@ export default () => (
     </div>
   </div>
 );
+
+const StoreCheck = async () => {
+  await connection();
+  const result = await Store.getForCurrentUser(Environment.SERVER);
+  const hasStore = result.success && result.data.length > 0;
+
+  if (hasStore) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+      <div className="mx-4 flex max-w-md flex-col items-center gap-6 border border-accent-foreground bg-background p-10 text-center">
+        <div className="flex size-16 items-center justify-center border border-accent-foreground bg-background-dimmed">
+          <ShoppingCartIcon className="size-8 text-foreground-dimmed" />
+        </div>
+        <div className="space-y-2">
+          <h2 className="font-medium text-2xl text-foreground">
+            Connect your store
+          </h2>
+          <p className="text-foreground-dimmed">
+            To see your dashboard, connect a store first. We'll import your
+            products and start tracking how AI agents compare them.
+          </p>
+        </div>
+        <Button
+          color="primary"
+          render={<Link href="/onboarding/connect" />}
+          className="w-full"
+        >
+          Connect a store <ArrowRightIcon className="size-4" />
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 const LastUpdated = async () => {
   await connection();

@@ -80,9 +80,6 @@ export const store = pgTable("store", {
   platform: text("platform").notNull(),
   name: text("name").notNull(),
   domain: text("domain").notNull(),
-  accessToken: text("accessToken"),
-  consumerKey: text("consumerKey"),
-  consumerSecret: text("consumerSecret"),
   feedUrl: text("feedUrl"),
   status: text("status").notNull().default("connected"),
   /** Write-only key for storefront beacons (Layer 1 tracker). */
@@ -101,6 +98,7 @@ export const store_account = pgTable("store_account", {
   storeId: text("storeId")
     .notNull()
     .references(() => store.id, { onDelete: "cascade" }),
+  storeAccountId: text("storeAccountId").notNull(),
   accessToken: text("accessToken"), // shopify access token
   accessTokenExpiresAt: timestamp("accessTokenExpiresAt", {
     mode: "date",

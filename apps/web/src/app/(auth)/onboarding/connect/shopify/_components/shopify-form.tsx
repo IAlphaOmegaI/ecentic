@@ -50,6 +50,8 @@ export const ShopifyForm = () => {
       if (user.role === "administrator") {
         const shop = data.shop.trim();
         window.location.href = `/api/integrations/shopify/install?shop=${encodeURIComponent(shop)}`;
+
+        return;
       }
 
       const result = await Shopify.connectPublic({
