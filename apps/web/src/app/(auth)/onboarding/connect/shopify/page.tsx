@@ -41,12 +41,12 @@ export default () => (
           <li>
             You&apos;ll be redirected to Shopify to authorize read-only access
             to your product catalog. We only request{" "}
-            <span className="font-medium text-primary">read_products</span> — no
-            orders, customers, or write access.
+            <span className="font-medium text-primary">product scopes</span> —
+            no orders, no customers.
           </li>
           <li>
-            After you approve, Shopify sends us a secure token and we
-            immediately import your products.
+            After you approve, Shopify allows écentic to read and write your
+            store's product data.
           </li>
         </ol>
       </div>

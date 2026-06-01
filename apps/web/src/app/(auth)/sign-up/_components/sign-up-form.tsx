@@ -38,7 +38,7 @@ const sources = [
   "Other",
 ];
 
-const config = {
+const credentialFormConfig = {
   fullName: field({
     shape: "text",
     validator: z.string().min(1),
@@ -83,16 +83,28 @@ const config = {
   }),
 } satisfies GenericForm;
 
+const shopifyFormConfig = {
+  shop: field({
+    shape: "text",
+    validator: z.string().min(1, "Enter your store domain"),
+    label: "Shopify store domain",
+    placeholder: "mystore.myshopify.com",
+  }),
+} satisfies GenericForm;
+
 export const SignUpForm = () => {
   const router = useRouter();
   const toast = useToastManager();
 
-  const [provider, setProvider] = useState<"email" | "google">("email");
+  const [provider, setProvider] = useState<"credential" | "google" | "shopify">(
+    "credential",
+  );
 
   const [handleSubmit, isPending] = useAsyncAction(
     async (
       data:
-        | { data: FormEntries<typeof config>; type: "email" }
+        | { type: "credential"; data: FormEntries<typeof credentialFormConfig> }
+        | { type: "shopify"; data: FormEntries<typeof shopifyFormConfig> }
         | { type: "google" },
     ) => {
       setProvider(data.type);
@@ -103,6 +115,26 @@ export const SignUpForm = () => {
         });
 
         if (result.success) window.location.href = result.data.url;
+        return;
+      }
+
+      if (data.type === "shopify") {
+        const result = await Authentication.signInWithShopify({
+          shop: data.data.shop,
+          callbackURL: "/dashboard",
+        });
+
+        if (!result.success) {
+          toast.add({
+            title: "Error",
+            description: result.error.message,
+            type: "error",
+          });
+
+          return;
+        }
+
+        window.location.href = result.data.url;
         return;
       }
 
@@ -150,6 +182,52 @@ export const SignUpForm = () => {
           )}
           Continue with Google
         </Button>
+        <Button
+          variant="soft"
+          color="emphasis"
+          className="w-full"
+          type="button"
+          onClick={() =>
+            setProvider((previous) =>
+              previous === "shopify" ? "credential" : "shopify",
+            )
+          }
+        >
+          {provider === "shopify" && isPending ? (
+            <LoaderIcon className="size-4 animate-spin" />
+          ) : (
+            <Image
+              src="/images/shopify.svg"
+              alt="Shopify"
+              width={16}
+              height={16}
+              className="size-[16px]"
+            />
+          )}
+          Continue with Shopify
+        </Button>
+        {provider === "shopify" && (
+          <InferredForm
+            config={shopifyFormConfig}
+            onSubmit={(data) => handleSubmit({ data, type: "shopify" })}
+            className="flex flex-col gap-2 pt-1"
+          >
+            <Button
+              type="submit"
+              variant="flat"
+              color="primary"
+              disabled={isPending}
+              className="w-full"
+            >
+              {isPending ? (
+                <LoaderIcon className="size-4 animate-spin" />
+              ) : (
+                <ArrowRightIcon className="size-4" />
+              )}
+              Connect Shopify store
+            </Button>
+          </InferredForm>
+        )}
         <div className="relative flex items-center gap-3">
           <div className="h-px flex-1 bg-accent-foreground" />
           <span className="font-light text-foreground-dimmed">or</span>
@@ -159,9 +237,9 @@ export const SignUpForm = () => {
 
       <Motion.Item>
         <InferredForm
-          config={config}
-          onSubmit={(data) => handleSubmit({ data, type: "email" })}
+          config={credentialFormConfig}
           className="grid grid-cols-2 gap-x-3 gap-y-0.5"
+          onSubmit={(data) => handleSubmit({ type: "credential", data })}
         >
           <Button
             type="submit"
@@ -171,11 +249,11 @@ export const SignUpForm = () => {
             className="col-span-2 mt-1 flex w-full"
           >
             {isPending
-              ? provider === "email"
+              ? provider === "credential"
                 ? "Creating account..."
                 : "Signing in with Google..."
               : "Create Account"}
-            {provider === "email" && isPending ? (
+            {provider === "credential" && isPending ? (
               <LoaderIcon className="size-4 animate-spin" />
             ) : (
               <ArrowRightIcon className="size-4" />

@@ -96,7 +96,10 @@ export const syncShopifyCatalog = withContext(
     if (!store.data)
       return { success: false, error: new Error("Store not found") };
 
-    if (store.data.platform !== "shopify-public")
+    if (
+      store.data.platform !== "shopify-public" &&
+      store.data.platform !== "shopify"
+    )
       return {
         success: false,
         error: new Error("Store is not a Shopify store"),
@@ -625,7 +628,10 @@ export const pushShopUcpMetafields = withContext(
     if (!store.success) return store;
     if (!store.data)
       return { success: false as const, error: new Error("Store not found") };
-    if (store.data.platform !== "shopify-public")
+    if (
+      store.data.platform !== "shopify-public" &&
+      store.data.platform !== "shopify"
+    )
       return {
         success: false as const,
         error: new Error("Store is not a Shopify store"),
@@ -711,7 +717,10 @@ export const pushProductUcpMetafields = withContext(
     if (!store.success) return store;
     if (!store.data)
       return { success: false as const, error: new Error("Store not found") };
-    if (store.data.platform !== "shopify-public")
+    if (
+      store.data.platform !== "shopify-public" &&
+      store.data.platform !== "shopify"
+    )
       return {
         success: false as const,
         error: new Error("Store is not a Shopify store"),
@@ -798,7 +807,10 @@ export const updateProduct = withAuthentication(
     if (!store.data)
       return { success: false, error: new Error("Store not found") };
 
-    if (store.data.platform !== "shopify-public")
+    if (
+      store.data.platform !== "shopify-public" &&
+      store.data.platform !== "shopify"
+    )
       return {
         success: false,
         error: new Error("Store is not a Shopify store"),

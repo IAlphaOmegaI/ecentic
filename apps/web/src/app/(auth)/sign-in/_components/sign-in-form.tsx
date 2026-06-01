@@ -19,7 +19,7 @@ import { z } from "zod";
 import { Motion } from "@/components/motion";
 import * as Authentication from "@/server/app/authentication";
 
-const config = {
+const credentialFormConfig = {
   email: field({
     shape: "text",
     validator: z.string().email(),
@@ -46,7 +46,7 @@ const config = {
   }),
 } satisfies GenericForm;
 
-const shopifyConfig = {
+const shopifyFormConfig = {
   shop: field({
     shape: "text",
     validator: z.string().min(1, "Enter your store domain"),
@@ -58,18 +58,16 @@ const shopifyConfig = {
 export const SignInForm = () => {
   const router = useRouter();
   const toast = useToastManager();
-
-  const [provider, setProvider] = useState<"email" | "google" | "shopify">(
-    "email",
+  const [provider, setProvider] = useState<"credential" | "google" | "shopify">(
+    "credential",
   );
-  const [showShopifyForm, setShowShopifyForm] = useState(false);
 
   const [handleSubmit, isPending] = useAsyncAction(
     async (
       data:
-        | { type: "email"; data: FormEntries<typeof config> }
+        | { type: "credential"; data: FormEntries<typeof credentialFormConfig> }
         | { type: "google" }
-        | { type: "shopify"; data: FormEntries<typeof shopifyConfig> },
+        | { type: "shopify"; data: FormEntries<typeof shopifyFormConfig> },
     ) => {
       setProvider(data.type);
 
@@ -77,23 +75,37 @@ export const SignInForm = () => {
         const result = await Authentication.signInWithGoogle({
           callbackURL: "/onboarding/connect",
         });
-        if (result.success) window.location.href = result.data.url;
-        return;
-      }
 
-      if (data.type === "shopify") {
-        const result = await Authentication.signInWithShopify({
-          shop: data.data.shop,
-          callbackURL: "/onboarding/connect",
-        });
         if (!result.success) {
           toast.add({
             title: "Error",
             description: result.error.message,
             type: "error",
           });
+
           return;
         }
+
+        window.location.href = result.data.url;
+        return;
+      }
+
+      if (data.type === "shopify") {
+        const result = await Authentication.signInWithShopify({
+          shop: data.data.shop,
+          callbackURL: "/dashboard",
+        });
+
+        if (!result.success) {
+          toast.add({
+            title: "Error",
+            description: result.error.message,
+            type: "error",
+          });
+
+          return;
+        }
+
         window.location.href = result.data.url;
         return;
       }
@@ -140,7 +152,11 @@ export const SignInForm = () => {
           color="emphasis"
           className="w-full"
           type="button"
-          onClick={() => setShowShopifyForm((previous) => !previous)}
+          onClick={() =>
+            setProvider((previous) =>
+              previous === "shopify" ? "email" : "shopify",
+            )
+          }
         >
           {provider === "shopify" && isPending ? (
             <LoaderIcon className="size-4 animate-spin" />
@@ -155,9 +171,9 @@ export const SignInForm = () => {
           )}
           Continue with Shopify
         </Button>
-        {showShopifyForm && (
+        {provider === "shopify" && (
           <InferredForm
-            config={shopifyConfig}
+            config={shopifyFormConfig}
             onSubmit={(data) => handleSubmit({ data, type: "shopify" })}
             className="flex flex-col gap-2 pt-1"
           >
@@ -165,10 +181,10 @@ export const SignInForm = () => {
               type="submit"
               variant="flat"
               color="primary"
-              disabled={isPending && provider === "shopify"}
+              disabled={isPending}
               className="w-full"
             >
-              {provider === "shopify" && isPending ? (
+              {isPending ? (
                 <LoaderIcon className="size-4 animate-spin" />
               ) : (
                 <ArrowRightIcon className="size-4" />
@@ -186,8 +202,8 @@ export const SignInForm = () => {
 
       <Motion.Item>
         <InferredForm
-          config={config}
-          onSubmit={(data) => handleSubmit({ data, type: "email" })}
+          config={credentialFormConfig}
+          onSubmit={(data) => handleSubmit({ type: "credential", data })}
           className="flex flex-col gap-3"
         >
           <Button
@@ -197,12 +213,12 @@ export const SignInForm = () => {
             disabled={isPending}
             className="mt-1 flex w-full"
           >
-            {provider === "email" && isPending
+            {provider === "credential" && isPending
               ? "Signing in..."
               : provider === "google" && isPending
                 ? "Signing in with Google..."
                 : "Sign in"}
-            {provider === "email" && isPending ? (
+            {provider === "credential" && isPending ? (
               <LoaderIcon className="size-4 animate-spin" />
             ) : (
               <ArrowRightIcon className="size-4" />

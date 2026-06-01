@@ -3,11 +3,9 @@
 import { createStreamableValue } from "@ai-sdk/rsc";
 import { resultify } from "@zenncore/utils";
 import { stepCountIs, streamText, tool } from "ai";
-import { z } from "zod";
+import * as z from "zod";
 
-const DEFAULT_AGENT_PROFILE = process.env["UCP_AGENT_PROFILE_URL"]?.trim();
-const APP_HOST = process.env.APP_HOST?.replace(/\/+$/, "");
-const AGENT_PROFILE_PATH = "/ucp/agent-profile";
+const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
 
 const gatewayOptions = () => ({
   gateway: {
@@ -21,8 +19,6 @@ const gatewayOptions = () => ({
     },
   },
 });
-
-// ─── Types ───────────────────────────────────────────────────────────────────
 
 type UcpTransportEntry = {
   version?: string;
@@ -52,8 +48,6 @@ export type PlaygroundEvent =
   | { kind: "tool_result"; id: string; tool: string; result: unknown }
   | { kind: "done" }
   | { kind: "error"; message: string };
-
-// ─── MCP caller ──────────────────────────────────────────────────────────────
 
 const callMcp = async (
   endpoint: string,
@@ -106,52 +100,54 @@ const callMcp = async (
         data: body.error.data ?? null,
       };
     }
+
     return body.result ?? null;
   } catch {
     return { error: "Response is not valid JSON", raw: textResult.data };
   }
 };
 
-// ─── REST caller ─────────────────────────────────────────────────────────────
+// const callRest = async (
+//   baseEndpoint: string,
+//   method: "GET" | "POST" | "PUT",
+//   path: string,
+//   agentProfileUrl: string,
+//   body?: unknown,
+// ): Promise<unknown> => {
+//   const url = `${baseEndpoint.replace(/\/$/, "")}${path}`;
+//   const response = await resultify(() =>
+//     fetch(url, {
+//       method,
+//       headers: {
+//         "Content-Type": "application/json",
+//         Accept: "application/json",
+//         "UCP-Agent": `profile="${agentProfileUrl}"`,
+//         "User-Agent": "UCP-Playground/1.0 (Ecentic; https://ecentic.ai)",
+//       },
+//       body: body !== undefined ? JSON.stringify(body) : undefined,
+//       signal: AbortSignal.timeout(12_000),
+//       cache: "no-store",
+//     }),
+//   );
 
-const callRest = async (
-  baseEndpoint: string,
-  method: "GET" | "POST" | "PUT",
-  path: string,
-  agentProfileUrl: string,
-  body?: unknown,
-): Promise<unknown> => {
-  const url = `${baseEndpoint.replace(/\/$/, "")}${path}`;
-  const response = await resultify(() =>
-    fetch(url, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        "UCP-Agent": `profile="${agentProfileUrl}"`,
-        "User-Agent": "UCP-Playground/1.0 (Ecentic; https://ecentic.ai)",
-      },
-      body: body !== undefined ? JSON.stringify(body) : undefined,
-      signal: AbortSignal.timeout(12_000),
-      cache: "no-store",
-    }),
-  );
+//   if (!response.success) return { error: "Network request failed" };
 
-  if (!response.success) return { error: "Network request failed" };
+//   const textResult = await resultify(() => response.data.text());
+//   if (!textResult.success) return { error: "Could not read response body" };
 
-  const textResult = await resultify(() => response.data.text());
-  if (!textResult.success) return { error: "Could not read response body" };
-
-  try {
-    return JSON.parse(textResult.data);
-  } catch {
-    return { error: "Response is not valid JSON", raw: textResult.data };
-  }
-};
-
-// ─── Tool builders ───────────────────────────────────────────────────────────
+//   try {
+//     return JSON.parse(textResult.data);
+//   } catch {
+//     return { error: "Response is not valid JSON", raw: textResult.data };
+//   }
+// };
 
 // UCP §4 — line items use variant_id + quantity
+// item	Item	Yes	
+// quantity	integer	Yes	Quantity of the item being purchased.
+// totals	Array[Total]	Yes	Line item totals breakdown.
+// parent_id	string	No	Parent line item identifier for any nested structures.
+
 const lineItemSchema = z.object({
   variant_id: z.string().describe("Product variant global ID"),
   quantity: z.number().int().positive(),
@@ -185,12 +181,12 @@ const catalogFiltersSchema = z
 const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
   search_catalog: tool({
     description:
-      "Search the store product catalog. Returns matching products with IDs, titles, prices, and variant IDs. Arguments go under the 'catalog' key per UCP spec.",
+      "Search the store product catalog. Returns matching products with IDs, titles, prices, and variant IDs. Arguments go under the 'catalog' key per UCP spec (only define them if the user asks something that could be done by using the catalog properties).",
     inputSchema: z.object({
       catalog: z.object({
-        query: z.string().describe("Text search query"),
-        context: catalogContextSchema,
-        filters: catalogFiltersSchema,
+        query: z.string().describe("Text search query").optional(),
+        context: catalogContextSchema.optional(),
+        filters: catalogFiltersSchema.optional(),
         pagination: z
           .object({ limit: z.number().int().positive().optional() })
           .optional(),
@@ -200,22 +196,22 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
       callMcp(endpoint, "search_catalog", { catalog }, agentProfileUrl),
   }),
 
-  // UCP MCP binding — lookup identifiers under "catalog" key
-  lookup_catalog: tool({
-    description:
-      "Lookup products or variants by identifiers. Use this when you already have IDs.",
-    inputSchema: z.object({
-      catalog: z.object({
-        ids: z
-          .array(z.string())
-          .describe("Product/variant identifiers to resolve"),
-        context: catalogContextSchema,
-        filters: catalogFiltersSchema,
-      }),
-    }),
-    execute: async ({ catalog }) =>
-      callMcp(endpoint, "lookup_catalog", { catalog }, agentProfileUrl),
-  }),
+  // // UCP MCP binding — lookup identifiers under "catalog" key
+  // lookup_catalog: tool({
+  //   description:
+  //     "Lookup products or variants by identifiers. Use this when you already have IDs.",
+  //   inputSchema: z.object({
+  //     catalog: z.object({
+  //       ids: z
+  //         .array(z.string())
+  //         .describe("Product/variant identifiers to resolve"),
+  //       context: catalogContextSchema,
+  //       filters: catalogFiltersSchema,
+  //     }),
+  //   }),
+  //   execute: async ({ catalog }) =>
+  //     callMcp(endpoint, "lookup_catalog", { catalog }, agentProfileUrl),
+  // }),
 
   // UCP MCP binding — get_product input nested under "catalog"
   get_product: tool({
@@ -236,19 +232,19 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
       callMcp(endpoint, "get_product", { catalog }, agentProfileUrl),
   }),
 
-  // UCP §5 — cart creation: payload nested under "cart" key
-  create_cart: tool({
-    description:
-      "Create a new cart. Items and context go under the 'cart' key.",
-    inputSchema: z.object({
-      cart: z.object({
-        line_items: z.array(lineItemSchema),
-        context: z.object({ country: z.string().optional() }).optional(),
-      }),
-    }),
-    execute: async ({ cart }) =>
-      callMcp(endpoint, "create_cart", { cart }, agentProfileUrl),
-  }),
+  // // UCP §5 — cart creation: payload nested under "cart" key
+  // create_cart: tool({
+  //   description:
+  //     "Create a new cart. Items and context go under the 'cart' key.",
+  //   inputSchema: z.object({
+  //     cart: z.object({
+  //       line_items: z.array(lineItemSchema),
+  //       context: z.object({ country: z.string().optional() }).optional(),
+  //     }),
+  //   }),
+  //   execute: async ({ cart }) =>
+  //     callMcp(endpoint, "create_cart", { cart }, agentProfileUrl),
+  // }),
 
   // UCP §5 — cart update: id at top level, replacement payload under "cart" key
   update_cart: tool({
@@ -266,54 +262,54 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
       callMcp(endpoint, "update_cart", { id, cart }, agentProfileUrl),
   }),
 
-  // UCP §5 — cart lookup: id at top level
-  get_cart: tool({
-    description:
-      "Get current cart state (line items, totals). Use this to confirm cart contents after create/update.",
-    inputSchema: z.object({
-      id: z.string().describe("Cart ID returned by create_cart"),
-    }),
-    execute: async ({ id }) =>
-      callMcp(endpoint, "get_cart", { id }, agentProfileUrl),
-  }),
+  // // UCP §5 — cart lookup: id at top level
+  // get_cart: tool({
+  //   description:
+  //     "Get current cart state (line items, totals). Use this to confirm cart contents after create/update.",
+  //   inputSchema: z.object({
+  //     id: z.string().describe("Cart ID returned by create_cart"),
+  //   }),
+  //   execute: async ({ id }) =>
+  //     callMcp(endpoint, "get_cart", { id }, agentProfileUrl),
+  // }),
 });
 
-// REST transport: standard HTTP body shapes per UCP §2A
-const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
-  search_catalog: tool({
-    description: "Search the store product catalog via REST.",
-    inputSchema: z.object({
-      query: z.string().describe("Text search query"),
-      context: catalogContextSchema,
-      filters: catalogFiltersSchema,
-      pagination: z
-        .object({ limit: z.number().int().positive().optional() })
-        .optional(),
-    }),
-    execute: async (args) =>
-      callRest(endpoint, "POST", "/catalog/search", agentProfileUrl, args),
-  }),
+// // REST transport: standard HTTP body shapes per UCP §2A
+// const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
+//   search_catalog: tool({
+//     description: "Search the store product catalog via REST.",
+//     inputSchema: z.object({
+//       query: z.string().describe("Text search query"),
+//       context: catalogContextSchema,
+//       filters: catalogFiltersSchema,
+//       pagination: z
+//         .object({ limit: z.number().int().positive().optional() })
+//         .optional(),
+//     }),
+//     execute: async (args) =>
+//       callRest(endpoint, "POST", "/catalog/search", agentProfileUrl, args),
+//   }),
 
-  get_product: tool({
-    description: "Get full product details by global ID via REST.",
-    inputSchema: z.object({
-      id: z.string().describe("Product global ID"),
-    }),
-    execute: async ({ id }) =>
-      callRest(endpoint, "POST", "/catalog/product", agentProfileUrl, { id }),
-  }),
+//   get_product: tool({
+//     description: "Get full product details by global ID via REST.",
+//     inputSchema: z.object({
+//       id: z.string().describe("Product global ID"),
+//     }),
+//     execute: async ({ id }) =>
+//       callRest(endpoint, "POST", "/catalog/product", agentProfileUrl, { id }),
+//   }),
 
-  create_cart: tool({
-    description: "Create a new cart via REST.",
-    inputSchema: z.object({
-      line_items: z.array(lineItemSchema),
-      context: z.object({ country: z.string().optional() }).optional(),
-    }),
-    execute: async (args) =>
-      callRest(endpoint, "POST", "/carts", agentProfileUrl, args),
-  }),
+//   create_cart: tool({
+//     description: "Create a new cart via REST.",
+//     inputSchema: z.object({
+//       line_items: z.array(lineItemSchema),
+//       context: z.object({ country: z.string().optional() }).optional(),
+//     }),
+//     execute: async (args) =>
+//       callRest(endpoint, "POST", "/carts", agentProfileUrl, args),
+//   }),
 
-  update_cart: tool({
+update_cart: tool({
     description: "Replace all cart line items via REST (full replacement).",
     inputSchema: z.object({
       id: z.string().describe("Cart ID"),
@@ -325,17 +321,15 @@ const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
       }),
   }),
 
-  get_cart: tool({
-    description: "Get current cart state via REST.",
-    inputSchema: z.object({
-      id: z.string().describe("Cart ID"),
-    }),
-    execute: async ({ id }) =>
-      callRest(endpoint, "GET", `/carts/${id}`, agentProfileUrl),
-  }),
-});
-
-// ─── Main action ─────────────────────────────────────────────────────────────
+//   get_cart: tool({
+//     description: "Get current cart state via REST.",
+//     inputSchema: z.object({
+//       id: z.string().describe("Cart ID"),
+//     }),
+//     execute: async ({ id }) =>
+//       callRest(endpoint, "GET", `/carts/${id}`, agentProfileUrl),
+//   }),
+// });
 
 export type RunPlaygroundInput = {
   storeUrl: string;
@@ -418,59 +412,48 @@ export const runPlayground = async ({
 
       const transport: PlaygroundTransport = mcpEntry ? "mcp" : "rest";
       const endpoint = chosen.endpoint;
-      // Some servers perform live discovery on the profile URL.
-      // Prefer explicit env override, otherwise use the target store profile
-      // as a guaranteed reachable, UCP-valid fallback.
-      const resolvedAgentProfileUrl =
-        agentProfileUrl?.trim() ||
-        DEFAULT_AGENT_PROFILE ||
-        (APP_HOST ? `${APP_HOST}${AGENT_PROFILE_PATH}` : profileUrl);
 
       emit({
         kind: "profile",
         transport,
         endpoint,
         profileUrl,
-        agentProfileUrl: resolvedAgentProfileUrl,
+        agentProfileUrl: AGENT_PROFILE,
       });
 
       // 3. Build tools for the detected transport
-      const tools =
-        transport === "mcp"
-          ? buildMcpTools(endpoint, resolvedAgentProfileUrl)
-          : buildRestTools(endpoint, resolvedAgentProfileUrl);
+      // const tools =
+      //   transport === "mcp"
+      //     ? buildMcpTools(endpoint, AGENT_PROFILE)
+      //     : buildRestTools(endpoint, AGENT_PROFILE);
+
+      // TODO: Add REST tools
+      const tools = buildMcpTools(endpoint, AGENT_PROFILE);
 
       const searchQuery = query?.trim() || "product";
 
       // 4. Run the agentic flow
       const agentResult = streamText({
-        model: "gpt-4o",
+        model: "google/gemini-3-flash",
         system: `You are a UCP (Universal Commerce Protocol) shopping agent running a live integration test against a ${transport.toUpperCase()} endpoint.
 
 CRITICAL ARGUMENT SHAPES — follow these exactly, do not add or remove top-level keys:
 
 search_catalog:
-  { catalog: { query: "...", pagination: { limit: 5 }, filters: {}, context: {} } }
-
+  { catalog: { query: "...", pagination: { limit: 5 }, filters: {}, context: {} } } (only define them if the user asks something that could be done by using the catalog properties even tho they might have been defined in the schema).
 get_product:
   { catalog: { id: "<product_id>" } }
-
-create_cart:
-  { cart: { line_items: [{ variant_id: "...", quantity: 1 }] } }
-
 update_cart:
-  { id: "<cart_id>", cart: { line_items: [{ variant_id: "...", quantity: 1 }] } }
-
-get_cart:
-  { id: "<cart_id>" }
+  { id: "<cart_id>", cart: { line_items: [{ variant_id: "...", item: { id: "<variant_id>", title: "...", price: { amount, currency } }, quantity: 1 }] } }
 
 Work through this flow in order:
 1. search_catalog with query "${searchQuery}"
 2. get_product with the ID of the first result
-3. create_cart with one unit of the first available variant_id from that product
-4. get_cart to confirm contents and totals
+3. add the product to the cart
 
-Use ONLY IDs returned by the tools — never invent them. After all steps, write 2–3 sentences summarizing what you found.`,
+Use ONLY IDs returned by the tools — never invent them. After all steps, write 2–3 sentences summarizing what you found.
+DON'T CALL the same tool again if the first one hasn't finished yet.
+`,
         prompt: `Test the UCP ${transport} endpoint at ${endpoint} (store: ${domain}).`,
         tools,
         stopWhen: stepCountIs(12),

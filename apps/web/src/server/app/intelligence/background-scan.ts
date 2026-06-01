@@ -1,47 +1,46 @@
 "use server";
 
-import { resultify } from "@zenncore/utils";
-import { eq } from "drizzle-orm";
-import { z } from "zod";
+import { eq, inArray } from "drizzle-orm";
 import { schema } from "../../database";
-import { generate, type ModelId } from "../../utils/ai";
+import type { ModelId } from "../../utils/ai";
 import { type GenericContext, withContext } from "../../utils/context";
 import { Environment } from "../../utils/environment";
 import * as Competitor from "../competitor";
 import * as Product from "../product";
 import * as Scan from "../scan";
 import * as Simulation from "../simulation";
+import * as Store from "../store";
 import * as User from "../user";
-import * as Formating from "./formating";
+import { deriveDomain, runUcpAgent } from "./ucp-agent";
 
 const perspectives = [
   {
     id: "gpt4",
-    label: "GPT-4",
+    label: "GPT-4o",
     model: "gpt-4o" as ModelId,
     system:
-      "You are an AI shopping agent embedded in a product recommendation engine. A consumer has asked you to compare two products and recommend the better purchase. Focus heavily on concrete specifications and missing details. Score each product 0-100 and pick a winner.",
+      "You are an autonomous AI buyer-agent transacting via UCP. Probe each store's /.well-known/ucp manifest and REST shopping flow using the provided tools. Score what you observe; never invent capabilities.",
   },
   {
     id: "claude",
-    label: "Claude",
-    model: "claude-sonnet-4-20250514" as ModelId,
+    label: "Claude Sonnet 4.6",
+    model: "claude-sonnet-4-6" as ModelId,
     system:
-      "You are an AI shopping assistant comparing two product listings for buyer confidence and clarity. Evaluate information architecture, trust signals, and completeness. Score each product 0-100 and pick a winner.",
+      "You are an AI commerce agent assessing UCP readiness — manifest, catalog, cart, checkout. Be conservative: missing capabilities are missing.",
   },
   {
     id: "gemini",
-    label: "Gemini",
+    label: "Gemini 2.5",
     model: "gemini-2.5-flash" as ModelId,
     system:
-      "You are an AI shopping agent optimizing for value. Compare two listings by price-to-feature ratio, hidden costs, and specification density. Score each product 0-100 and pick a winner.",
+      "You are an autonomous AI shopping agent. Use the tools to call each store's UCP endpoints and judge by what actually happened.",
   },
   {
     id: "perplexity",
-    label: "Perplexity",
+    label: "Perplexity Sonar",
     model: "sonar-pro" as ModelId,
     system:
-      "You are a search-augmented AI shopping agent. Compare two product listings by information depth, external validation signals, freshness, and comparison readiness. Score each product 0-100 and pick a winner.",
+      "You are a search-augmented AI commerce agent. Walk the UCP flow where possible. A missing UCP profile is a critical signal.",
   },
 ];
 
@@ -66,11 +65,19 @@ const runScanForUser = async (
   if (products.data.length === 0 || selected.length === 0)
     return {
       success: true,
-      data: {
-        skipped: true,
-        reason: "missing products or competitors",
-      },
+      data: { skipped: true, reason: "missing products or competitors" },
     };
+
+  const storeIds = [
+    ...new Set(products.data.map((product) => product.storeId)),
+  ];
+  const stores = await Store.find(Environment.SERVER, {
+    where: inArray(schema.store.id, storeIds),
+  });
+  if (!stores.success) return stores;
+  const storeDomainById = new Map(
+    stores.data.map((store) => [store.id, store.domain]),
+  );
 
   const totalSimulations =
     products.data.length * selected.length * perspectives.length;
@@ -100,50 +107,62 @@ const runScanForUser = async (
   const tasks = products.data.flatMap((product) =>
     selected.flatMap((competitor) =>
       perspectives.map((perspective) => async () => {
-        const generated = await resultify(() =>
-          generate({
-            model: perspective.model,
-            system: perspective.system,
-            prompt: `A consumer is choosing between these two products.\n\n--- PRODUCT A ---\n${Formating.formatProduct(product)}\n\n--- PRODUCT B ---\n${Formating.formatCompetitor(competitor)}\n\nScore each product 0-100, pick a winner, and give concise reasoning.`,
-            schema: z.object({
-              winner: z.enum(["product", "competitor"]),
-              productScore: z.number().min(0).max(100),
-              competitorScore: z.number().min(0).max(100),
-              reasoning: z.string(),
-              keyFactors: z.array(z.string()),
-            }),
-          }),
-        );
+        const storeDomain = storeDomainById.get(product.storeId) ?? null;
+        const competitorDomain = deriveDomain(competitor.url);
 
-        return (() => {
-          switch (true) {
-            case !generated.success:
-              return {
-                productId: product.id,
-                competitorId: competitor.id,
-                model: perspective.id,
-                winner: "competitor",
-                reasoning: "Evaluation failed — defaulting to competitor",
-                productScore: 0,
-                competitorScore: 50,
-              };
-            default:
-              return {
-                productId: product.id,
-                competitorId: competitor.id,
-                model: perspective.id,
-                winner: generated.data.winner,
-                reasoning: generated.data.reasoning,
-                productScore: Math.round(generated.data.productScore),
-                competitorScore: Math.round(generated.data.competitorScore),
-              };
-          }
-        })();
+        if (!storeDomain) {
+          return {
+            productId: product.id,
+            competitorId: competitor.id,
+            model: perspective.id,
+            winner: "competitor",
+            reasoning:
+              "User store has no registered domain — cannot run UCP flow.",
+            productScore: 0,
+            competitorScore: 0,
+          };
+        }
+
+        const agentResult = await runUcpAgent({
+          model: perspective.model,
+          modelLabel: perspective.label,
+          system: perspective.system,
+          productStoreDomain: storeDomain,
+          competitorDomain,
+          productTitle: product.title,
+          productDescription: product.description,
+          onLog: () => {},
+          onText: () => {},
+        });
+
+        if (!agentResult.evaluation) {
+          return {
+            productId: product.id,
+            competitorId: competitor.id,
+            model: perspective.id,
+            winner: "competitor",
+            reasoning:
+              agentResult.error ??
+              "Agent did not return a structured evaluation.",
+            productScore: 0,
+            competitorScore: 0,
+          };
+        }
+
+        return {
+          productId: product.id,
+          competitorId: competitor.id,
+          model: perspective.id,
+          winner: agentResult.evaluation.winner,
+          reasoning: agentResult.evaluation.reasoning,
+          productScore: Math.round(agentResult.evaluation.storeScore),
+          competitorScore: Math.round(agentResult.evaluation.competitorScore),
+        };
       }),
     ),
   );
 
-  const batchSize = 5;
+  const batchSize = 3;
   const batches = Array.from(
     { length: Math.ceil(tasks.length / batchSize) },
     (_value, index) =>

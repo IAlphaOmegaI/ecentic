@@ -10,8 +10,10 @@ import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
-import { InvalidCredentialsError, NotFoundError } from "../utils/error";
+import { InvalidCredentialsError } from "../utils/error";
 import * as User from "./user";
+
+// TODO: use betterAuth client instead of server actions (default redirection)
 
 const parseName = (fullName: string): { name: string; surname: string } => {
   const trimmed = fullName.trim();
@@ -54,7 +56,6 @@ export const signInWithShopify = withContext(
             providerId: "shopify",
             callbackURL,
             newUserCallbackURL: `/onboarding/connect/shopify?shop=${encodeURIComponent(shop)}`,
-            disableRedirect: false,
             // additionalData: {
             //   shop,
             // },
@@ -92,7 +93,7 @@ export const signInWithGoogle = withContext(
             provider: "google",
             callbackURL,
             newUserCallbackURL: "/complete-profile",
-            disableRedirect: true,
+            disableRedirect: false,
           },
         }),
     );
@@ -384,7 +385,5 @@ export const sendVerificationEmail = async ({
     html,
   });
 
-  if (result.error) {
-    throw result.error;
-  }
+  if (result.error) throw result.error;
 };

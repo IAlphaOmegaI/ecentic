@@ -96,6 +96,25 @@ export const store = pgTable("store", {
   updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
 });
 
+export const store_account = pgTable("store_account", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+  storeId: text("storeId")
+    .notNull()
+    .references(() => store.id, { onDelete: "cascade" }),
+  accessToken: text("accessToken"), // shopify access token
+  accessTokenExpiresAt: timestamp("accessTokenExpiresAt", {
+    mode: "date",
+  }), // shopify access token expires at
+  refreshToken: text("refreshToken"), // shopify refresh token
+  refreshTokenExpiresAt: timestamp("refreshTokenExpiresAt", {
+    mode: "date",
+  }), // shopify refresh token expires at
+  // wooCommerceConsumerKey: text("wooCommerceConsumerKey"),
+  // wooCommerceConsumerSecret: text("wooCommerceConsumerSecret"),
+  createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+});
+
 export const product = pgTable("product", {
   id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
   storeId: text("storeId")
