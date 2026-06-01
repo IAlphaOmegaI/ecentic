@@ -56,6 +56,7 @@ export const signInWithShopify = withContext(
             providerId: "shopify",
             callbackURL,
             // `/onboarding/connect/shopify?shop=${encodeURIComponent(shop)}`
+            // TODO: replace with /api/auth/shopify-proxy/authorize
             newUserCallbackURL: `/api/integrations/shopify/install?shop=${encodeURIComponent(shop)}`,
             // additionalData: {
             //   shop,

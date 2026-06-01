@@ -14,6 +14,7 @@ import {
 } from "../../utils/tracking";
 import * as Product from "../product";
 import * as Store from "../store";
+import * as StoreAccount from "../store-account";
 
 type Type = {
   id: number;
@@ -30,7 +31,7 @@ type Type = {
   images: { id: number; src: string }[];
 };
 
-const API_VERSION = "2024-10";
+const API_VERSION = "2026-04";
 
 const storefrontHostsFromShop = (record: {
   domain: string;
@@ -79,11 +80,13 @@ export const syncShopifyCatalog = withContext(
     {
       user: userId,
       store: storeId,
+      storeAccount: storeAccountId,
       currency: override,
       tx,
     }: {
       user: string;
       store: string;
+      storeAccount?: string;
       currency?: string;
       tx?: TransactionScope;
     },
@@ -105,13 +108,22 @@ export const syncShopifyCatalog = withContext(
         error: new Error("Store is not a Shopify store"),
       };
 
-    const { domain, accessToken } = store.data;
+    const { domain } = store.data;
 
-    if (!accessToken)
+    const storeAccount = storeAccountId
+      ? await StoreAccount.get(Environment.SERVER, storeAccountId, options)
+      : await StoreAccount.getForStore(Environment.SERVER, {
+          store: storeId,
+        });
+
+    if (!storeAccount.success || !storeAccount.data?.accessToken) {
       return {
         success: false,
         error: new Error("Missing Shopify access token"),
       };
+    }
+
+    const { accessToken } = storeAccount.data;
 
     const currency =
       override ?? (await fetchShopCurrency(domain, accessToken)) ?? null;
@@ -244,8 +256,8 @@ export const handleOAuthCallback = withContext(
       };
     }
 
-    const token = await HTTP.request(
-      `https://${shopId}/admin/oauth/access_token`,
+    const tokenResponse = await HTTP.request(
+      `https://${shopId}/admin/oauth/access_token?expiring=1`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -257,7 +269,13 @@ export const handleOAuthCallback = withContext(
       },
     );
 
-    const t = await HTTP.parse<{ access_token: string }>(token);
+    const t = await HTTP.parse<{
+      access_token: string;
+      scope: string;
+      expires_in: number;
+      refresh_token: string;
+      refresh_token_expires_in: number;
+    }>(tokenResponse);
 
     if (!t.success) return t;
 
@@ -279,9 +297,24 @@ export const handleOAuthCallback = withContext(
       },
     );
 
+    // response.data.body is  readable stream, so we need to read it all
+    // console.log("response", await new Response(response.data.body).text());
+
     const shop = await HTTP.parse<{
-      shop: { domain: string; myshopify_domain: string; currency: string };
+      shop: {
+        id: number;
+        domain: string;
+        myshopify_domain: string;
+        currency: string;
+      };
     }>(response);
+
+    if (!shop.success) {
+      return {
+        success: false,
+        error: new Error("Failed to fetch shop"),
+      };
+    }
 
     const storefrontHosts = (() => {
       if (!shop.success) return [normalizeHostname(`https://${shopId}`)];
@@ -301,7 +334,6 @@ export const handleOAuthCallback = withContext(
             platform: "shopify",
             name: shopId.replace(".myshopify.com", ""),
             domain: `https://${shopId}`,
-            accessToken,
             trackerApiKey,
             storefrontHosts,
             status: "connected",
@@ -312,10 +344,30 @@ export const handleOAuthCallback = withContext(
         if (!creation.success) throw creation.error;
         if (!creation.data) throw new Error("Store creation returned no data");
 
+        const storeAccount = await StoreAccount.create(
+          Environment.SERVER,
+          {
+            storeId: creation.data.id,
+            accessToken,
+            accessTokenExpiresAt: new Date(
+              Date.now() + t.data.expires_in * 1000,
+            ),
+            refreshToken: t.data.refresh_token,
+            refreshTokenExpiresAt: new Date(
+              Date.now() + t.data.refresh_token_expires_in * 1000,
+            ),
+            storeAccountId: String(shop.data.shop.id),
+          },
+          { tx },
+        );
+
+        if (!storeAccount.success) throw storeAccount.error;
+
         unwrapResult(
           await syncShopifyCatalog(Environment.SERVER, {
             user: userId,
             store: creation.data.id,
+            storeAccount: storeAccount.data.id,
             tx,
           }),
         );
@@ -637,12 +689,17 @@ export const pushShopUcpMetafields = withContext(
         error: new Error("Store is not a Shopify store"),
       };
 
-    const { domain, accessToken } = store.data;
-    if (!accessToken)
+    const storeAccount = await StoreAccount.get(Environment.SERVER, storeId);
+
+    if (!storeAccount.success || !storeAccount.data?.accessToken) {
       return {
-        success: false as const,
+        success: false,
         error: new Error("Missing Shopify access token"),
       };
+    }
+
+    const { domain } = store.data;
+    const { accessToken } = storeAccount.data;
 
     const fields = buildShopMetafields({ profile, generatedJson });
     const errors: string[] = [];
@@ -726,12 +783,19 @@ export const pushProductUcpMetafields = withContext(
         error: new Error("Store is not a Shopify store"),
       };
 
-    const { domain, accessToken } = store.data;
-    if (!accessToken)
+    const storeAccount = await StoreAccount.get(
+      Environment.SERVER,
+      store.data.id,
+    );
+
+    if (!storeAccount.success || !storeAccount.data?.accessToken) {
       return {
-        success: false as const,
+        success: false,
         error: new Error("Missing Shopify access token"),
       };
+    }
+    const { domain } = store.data;
+    const { accessToken } = storeAccount.data;
 
     const fields = buildProductMetafields({
       structuredJson,
@@ -816,13 +880,19 @@ export const updateProduct = withAuthentication(
         error: new Error("Store is not a Shopify store"),
       };
 
-    const { domain, accessToken } = store.data;
+    const storeAccount = await StoreAccount.get(
+      Environment.SERVER,
+      store.data.id,
+    );
 
-    if (!accessToken)
+    if (!storeAccount.success || !storeAccount.data?.accessToken) {
       return {
         success: false,
         error: new Error("Missing Shopify access token"),
       };
+    }
+    const { domain } = store.data;
+    const { accessToken } = storeAccount.data;
 
     if (!product.data.externalId)
       return { success: false, error: new Error("Product has no external ID") };

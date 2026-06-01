@@ -356,6 +356,7 @@ export const tables = {
   account,
   verification,
   store,
+  store_account,
   product,
   competitor,
   scan,
@@ -403,8 +404,15 @@ export const relations = defineRelations(tables, (r) => ({
       to: r.user.id,
     }),
     products: r.many.product(),
+    storeAccounts: r.many.store_account(),
     agentVisits: r.many.agentVisit(),
     agentTrafficDaily: r.many.agentTrafficDaily(),
+  },
+  store_account: {
+    store: r.one.store({
+      from: r.store_account.storeId,
+      to: r.store.id,
+    }),
   },
   product: {
     store: r.one.store({
