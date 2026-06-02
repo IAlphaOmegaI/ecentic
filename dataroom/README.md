@@ -4,27 +4,18 @@
 **HQ:** Tirana, Albania
 **Stage:** Pre-seed / Seed — raising €300K
 **Last updated:** 2026-06-02
-**Maintained by:** Xhurian Shaba (founder, CEO)
 
-For investor access requests, email **investing@ecentic.ai**.
+For investor access, email **investing@ecentic.ai**.
 
 ---
 
-## How this data room is organized
+## File formats in this room
 
-Three top-level sections, mirroring a standard seed diligence checklist:
+- **PDFs (Times New Roman, A4)** — the canonical version of every text document, ready to share with investors
+- **DOCX** — editable source of every PDF, useful when you want to make changes before re-distributing
+- **XLSX** — spreadsheets (cap table, financial model, sales pipeline) where formulas matter
 
-1. **Company Fundamentals** — snapshot, team, governance, cap table, legal
-2. **Traction & Financials** — customers, pipeline, financials, GTM
-3. **Product & Brand** — product, tech, press
-
-Every document below has one of four statuses:
-
-- **DELIVERED** — final version, ready to share
-- **DRAFT** — populated but should be reviewed before sharing externally
-- **PLACEHOLDER** — structure in place, key numbers/details flagged `[TO CONFIRM]`
-- **PENDING** — not yet drafted in this round
-- **N/A** — does not apply at our stage (noted with reason)
+When you change a markdown file, regenerate the PDF with: `pandoc <file>.md --reference-doc=reference.docx -o <file>.docx && libreoffice --headless --convert-to pdf <file>.docx`.
 
 ---
 
@@ -32,54 +23,54 @@ Every document below has one of four statuses:
 
 ### 1.1 Snapshot
 
-| Document | Status | File |
+| Document | Format | File |
 |---|---|---|
-| One Pager | DELIVERED | `1.1_snapshot/ecentic-one-pager.pdf` |
-| Pitch Deck | DELIVERED | `1.1_snapshot/ecentic-pitch-deck.pdf` |
-| Key Metrics Dashboard | DRAFT | `1.1_snapshot/key-metrics-dashboard.md` |
-| Long-Term Vision | DRAFT | `1.1_snapshot/long-term-vision.md` |
+| One Pager | PDF | `1.1_snapshot/ecentic-one-pager.pdf` |
+| Pitch Deck | PDF | `1.1_snapshot/ecentic-pitch-deck.pdf` |
+| Key Metrics Dashboard | PDF + MD | `1.1_snapshot/key-metrics-dashboard.pdf` |
+| Long-Term Vision | PDF + MD | `1.1_snapshot/long-term-vision.pdf` |
 
 ### 1.2 Team
 
-| Document | Status | File |
+| Document | Format | File |
 |---|---|---|
-| Team Bios | DRAFT | `1.2_team/team-bios.md` |
-| Org Chart | DRAFT | `1.2_team/org-chart.md` |
-| Hiring Plan (12-month) | DRAFT | `1.2_team/hiring-plan.md` |
+| Team Bios | PDF + MD | `1.2_team/team-bios.pdf` |
+| Org Chart | PDF + MD | `1.2_team/org-chart.pdf` |
+| Hiring Plan (12-month) | PDF + MD | `1.2_team/hiring-plan.pdf` |
 | Advisors | N/A | No formal advisors at this stage |
-| Employment Agreements | PENDING | Standard Albanian SHPK contracts |
-| ESOP Plan | DRAFT | `1.4_investment_docs/ecentic-stock-option-plan.docx` |
+| Employment Agreements | PENDING | Standard Albanian SHPK contracts; templates Q3 2026 |
+| ESOP Plan | PDF + DOCX | `1.4_investment_docs/ecentic-stock-option-plan.pdf` |
 
 ### 1.3 Company Documents
 
-| Document | Status | File |
+| Document | Format | File |
 |---|---|---|
-| Incorporation Certificate (NIPT) | PLACEHOLDER | Awaiting registered NIPT number from founder |
-| Bylaws | PENDING | Standard Albanian SHPK statute, to be attached |
-| Shareholders Agreement | DRAFT | `1.3_company_docs/ecentic-shareholders-agreement.docx` |
-| Org Chart | DRAFT | `1.2_team/org-chart.md` (linked) |
+| Shareholders Agreement (Albania, écentic shpk) | PDF + DOCX | `1.3_company_docs/ecentic-shareholders-agreement.pdf` |
+| Incorporation Certificate (NIPT) | PLACEHOLDER | Awaiting NIPT number scan |
+| Bylaws / Statute | PENDING | Standard Albanian SHPK statute — to be attached after registration |
+| Org Chart | (see 1.2) | `1.2_team/org-chart.pdf` |
 
 ### 1.4 Investment Documents
 
-| Document | Status | File |
+| Document | Format | File |
 |---|---|---|
-| Cap Table | DRAFT | `1.4_investment_docs/ecentic-cap-table.xlsx` |
-| Stock Option Plan | DRAFT | `1.4_investment_docs/ecentic-stock-option-plan.docx` |
+| Cap Table (3 founders + ESOP, post-money scenarios, vesting) | XLSX | `1.4_investment_docs/ecentic-cap-table.xlsx` |
+| Stock Option Plan | PDF + DOCX | `1.4_investment_docs/ecentic-stock-option-plan.pdf` |
+| Investor Update Template | PDF + MD | `1.4_investment_docs/investor-update-template.pdf` |
 | SAFE / Convertible Notes | N/A | No prior funding round closed |
 | Prior Round Materials | N/A | First institutional round |
-| Investor Update Template | DRAFT | `1.4_investment_docs/investor-update-template.md` |
 
 ### 1.5 Legal
 
-| Document | Status | File |
+| Document | Format | File |
 |---|---|---|
-| IP & Trademarks Memo | DRAFT | `1.5_legal/ip-and-trademarks.md` |
-| Privacy Policy | DRAFT | `1.5_legal/privacy-policy.md` |
-| GDPR Compliance Memo | DRAFT | `1.5_legal/gdpr-compliance.md` |
-| Internal Policies | DRAFT | `1.5_legal/internal-policies.md` |
-| NDA Template (mutual) | DRAFT | `1.5_legal/nda-mutual-template.md` |
-| Tech & Security Agreements | PENDING | To be drafted as enterprise customers sign |
-| Insurance | PENDING | Not yet procured — flag for post-raise |
+| IP & Trademarks Memo | PDF + MD | `1.5_legal/ip-and-trademarks.pdf` |
+| Privacy Policy | PDF + MD | `1.5_legal/privacy-policy.pdf` |
+| GDPR Compliance Memo | PDF + MD | `1.5_legal/gdpr-compliance.pdf` |
+| Internal Company Policies | PDF + MD | `1.5_legal/internal-policies.pdf` |
+| NDA Template (mutual) | PDF + MD | `1.5_legal/nda-mutual-template.pdf` |
+| Tech & Security Agreements | PENDING | Drafted on enterprise contract close |
+| Insurance | PENDING | Not procured; flag for post-raise |
 | Litigation | N/A | No active or threatened disputes |
 
 ---
@@ -88,36 +79,34 @@ Every document below has one of four statuses:
 
 ### 2.1 Customers
 
-| Document | Status | File |
+| Document | Format | File |
 |---|---|---|
-| Sales Pipeline | DRAFT | `2.1_customers/sales-pipeline.xlsx` |
-| Testimonials | DRAFT | `2.1_customers/testimonials.md` |
-| Customer KPIs & Analytics | DRAFT | `2.1_customers/customer-kpis.md` |
-| Market Research Summary | DRAFT | `2.1_customers/market-research.md` |
-| CAC / LTV Analysis | DRAFT | `2.1_customers/cac-ltv-analysis.md` |
-| Customer Contract Template | DRAFT | `2.1_customers/customer-contract-template.md` |
-| Cohort Reports | N/A | Too early — first paying cohort < 90 days old |
+| Sales Pipeline (named accounts, weighted) | XLSX | `2.1_customers/sales-pipeline.xlsx` |
+| Testimonials | PDF + MD | `2.1_customers/testimonials.pdf` |
+| Customer KPIs & Analytics | PDF + MD | `2.1_customers/customer-kpis.pdf` |
+| Market Research Summary | PDF + MD | `2.1_customers/market-research.pdf` |
+| CAC / LTV Analysis | PDF + MD | `2.1_customers/cac-ltv-analysis.pdf` |
+| Customer Contract Template | PDF + MD | `2.1_customers/customer-contract-template.pdf` |
+| Cohort Reports | N/A | Too early — first paying cohort < 90 days |
 
 ### 2.2 Financials
 
-| Document | Status | File |
+| Document | Format | File |
 |---|---|---|
-| Financial Model + Projections | DRAFT | `2.2_financials/ecentic-financial-model.xlsx` |
-| Unit Economics | DRAFT | Tab in `ecentic-financial-model.xlsx` |
-| Burn Rate & Runway | DRAFT | Tab in `ecentic-financial-model.xlsx` |
-| Tax Filings | PENDING | First filing due post Year 1 — noted |
-| Historical Financials | N/A | Company recently incorporated — no historical statements |
-| Bank Statements | PENDING | Will share on request during diligence |
+| Financial Model (Assumptions, P&L 36-month, Unit Economics, Burn/Runway, Use of Funds) | XLSX | `2.2_financials/ecentic-financial-model.xlsx` |
+| Tax Filings | PENDING | First filing due post Year 1 |
+| Historical Financials | N/A | Company recently incorporated |
+| Bank Statements | PENDING | Available on request during diligence |
 
 ### 2.3 GTM & Revenue
 
-| Document | Status | File |
+| Document | Format | File |
 |---|---|---|
-| GTM Strategy | DRAFT | `2.3_gtm_revenue/gtm-strategy.md` |
-| Pricing & Revenue Model | DRAFT | `2.3_gtm_revenue/pricing-and-revenue-model.md` |
-| ICP & Market Segmentation | DRAFT | `2.3_gtm_revenue/icp-segmentation.md` |
-| Sales Playbook | DRAFT | `2.3_gtm_revenue/sales-playbook.md` |
-| Customer Journey Map | DRAFT | `2.3_gtm_revenue/customer-journey.md` |
+| GTM Strategy | PDF + MD | `2.3_gtm_revenue/gtm-strategy.pdf` |
+| Pricing & Revenue Model | PDF + MD | `2.3_gtm_revenue/pricing-and-revenue-model.pdf` |
+| ICP & Market Segmentation | PDF + MD | `2.3_gtm_revenue/icp-segmentation.pdf` |
+| Sales Playbook | PDF + MD | `2.3_gtm_revenue/sales-playbook.pdf` |
+| Customer Journey Map | PDF + MD | `2.3_gtm_revenue/customer-journey.pdf` |
 
 ---
 
@@ -125,24 +114,24 @@ Every document below has one of four statuses:
 
 ### 3.1 Product
 
-| Document | Status | File |
+| Document | Format | File |
 |---|---|---|
-| Demo Video | DELIVERED | Hosted at ecentic.ai/demo *(link to be added)* |
-| Roadmap & Vision | DRAFT | `3.1_product/product-roadmap.md` |
-| Usage & Engagement Metrics | DRAFT | `3.1_product/usage-metrics.md` |
-| Tech Stack Overview | DRAFT | `3.1_product/tech-stack-overview.md` |
-| IP Strategy | DRAFT | `1.5_legal/ip-and-trademarks.md` (linked) |
-| User Personas | DRAFT | `3.1_product/user-personas.md` |
-| Security Documentation | DRAFT | `3.1_product/security-overview.md` |
+| Demo Video | EXTERNAL | Hosted at ecentic.ai/demo *(URL to add)* |
+| Product Roadmap & Vision | PDF + MD | `3.1_product/product-roadmap.pdf` |
+| Tech Stack Overview | PDF + MD | `3.1_product/tech-stack-overview.pdf` |
+| User Personas | PDF + MD | `3.1_product/user-personas.pdf` |
+| IP Strategy | (see 1.5) | `1.5_legal/ip-and-trademarks.pdf` |
+| Usage & Engagement Metrics | (see 2.1) | `2.1_customers/customer-kpis.pdf` |
+| Security Documentation | (see 1.5) | `1.5_legal/gdpr-compliance.pdf` + tech-stack-overview |
 
 ### 3.2 Press & Brand
 
-| Document | Status | File |
+| Document | Format | File |
 |---|---|---|
-| Press Kit | DRAFT | `3.2_press_brand/press-kit.md` |
-| Media Mentions | PENDING | None as of 2026-06-02 — will populate post-Red Bull Final |
-| Brand Assets Inventory | DRAFT | `3.2_press_brand/brand-assets-inventory.md` |
-| Awards & Recognition | DRAFT | `3.2_press_brand/awards-and-recognition.md` |
+| Press Kit | PDF + MD | `3.2_press_brand/press-kit.pdf` |
+| Awards & Recognition | PDF + MD | `3.2_press_brand/awards-and-recognition.pdf` |
+| Brand Assets Inventory | PDF + MD | `3.2_press_brand/brand-assets-inventory.pdf` |
+| Media Mentions | PENDING | None as of 2026-06-02 — populate post-Red Bull Final |
 
 ---
 
@@ -150,18 +139,29 @@ Every document below has one of four statuses:
 
 These are intentionally left as placeholders. They need real data from you before this room goes live to investors.
 
-1. **NIPT number** (Albanian tax ID) — for shareholders agreement, cap table, and incorporation certificate scan
+1. **NIPT number** (Albanian tax ID) — fill into the shareholders agreement, cap table, contracts
 2. **Incorporation date** of écentic shpk
 3. **Registered address** of écentic shpk
-4. **Domain ownership proof** for ecentic.ai (screenshot of registrar account)
-5. **Bank account statement** for the past 3 months (will be requested during diligence)
-6. **Founder ID scans** (passport / Albanian ID)
-7. **Demo video URL** to drop into the Product section
-8. **Trademark filing status** for "écentic" mark — application number if filed, intent date if not
+4. **Domain ownership proof** for ecentic.ai (registrar screenshot)
+5. **Bank account statements** for the past 3 months (provided on diligence request)
+6. **Founder ID scans** (passport or Albanian ID)
+7. **Demo video URL**
+8. **Trademark filing status** for "écentic" — application number if filed, intent date otherwise
+9. **Confirmation of exact MRR, cash, and burn** to replace the conservative placeholders in the financial model
+10. **Written customer approval** for Dua Flavours and Avatid testimonial / logo use (verbal confirmed, written outstanding)
 
 ---
 
-## Index of source documents (originals)
+## Conventions used in this room
+
+- **Currency:** EUR (€) throughout, except where source documents are denominated in USD or GBP
+- **Dates:** ISO format (YYYY-MM-DD) in document headers; UK long format in body text
+- **Times New Roman 11pt body** is the standard for every PDF
+- **PDF is the canonical format for sharing.** Markdown sources are kept alongside for editing.
+
+---
+
+## Index of source documents
 
 The data room is built from / consistent with:
 
@@ -171,10 +171,14 @@ The data room is built from / consistent with:
 - `CLAUDE.md` — codebase architecture
 - Uploaded pitch deck (Red Bull Final 2026 version)
 - Uploaded one-pager
-- Uploaded LookUp Parking shareholders agreement (used as template for écentic version)
+- Uploaded LookUp Parking shareholders agreement (used as base for écentic version)
 
 ---
 
-## Versioning notes
+## File counts in this room (snapshot at 2 June 2026)
 
-Every document carries a "Last updated" timestamp at the top. When updating, bump the date. Keep this README as the single source of truth for what is and is not in the room.
+- 31 PDFs
+- 30 DOCX editable sources
+- 3 XLSX (Cap Table, Financial Model, Sales Pipeline)
+- 1 README (this file)
+- Total: ~65 documents organised across 10 categories
