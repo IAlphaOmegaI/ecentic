@@ -1,5 +1,3 @@
-"use server";
-
 import { z } from "zod";
 
 const empty = z.object({}).strict();

@@ -309,17 +309,17 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
 //       callRest(endpoint, "POST", "/carts", agentProfileUrl, args),
 //   }),
 
-update_cart: tool({
-    description: "Replace all cart line items via REST (full replacement).",
-    inputSchema: z.object({
-      id: z.string().describe("Cart ID"),
-      line_items: z.array(lineItemSchema),
-    }),
-    execute: async ({ id, line_items }) =>
-      callRest(endpoint, "PUT", `/carts/${id}`, agentProfileUrl, {
-        line_items,
-      }),
-  }),
+//   update_cart: tool({
+//     description: "Replace all cart line items via REST (full replacement).",
+//     inputSchema: z.object({
+//       id: z.string().describe("Cart ID"),
+//       line_items: z.array(lineItemSchema),
+//     }),
+//     execute: async ({ id, line_items }) =>
+//       callRest(endpoint, "PUT", `/carts/${id}`, agentProfileUrl, {
+//         line_items,
+//       }),
+//   }),
 
 //   get_cart: tool({
 //     description: "Get current cart state via REST.",
