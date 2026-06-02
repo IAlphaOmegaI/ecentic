@@ -32,6 +32,13 @@ const map = {
     /^\/features(\/.*)?$/,
     /^\/platforms(\/.*)?$/,
     /^\/compare(\/.*)?$/,
+    "/pricing",
+    "/demo",
+    "/enterprise",
+    "/ucp-validator",
+    "/enterprise",
+    "/how-it-works"
+
   ],
   [RouteAccess.ADMINISTRATOR]: [/^\/.*/, "/sign-in"],
   [RouteAccess.USER]: [
@@ -46,6 +53,12 @@ const map = {
     /^\/compare(\/.*)?$/,
     /^\/onboarding(\/.*)?$/,
     "/complete-profile",
+    "/pricing",
+    "/demo",
+    "/enterprise",
+    "/ucp-validator",
+    "/enterprise",
+    "/how-it-works"
   ],
 } as const;
 

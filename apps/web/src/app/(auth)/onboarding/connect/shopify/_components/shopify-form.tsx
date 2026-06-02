@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
+import { resultify } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { FieldDescription } from "@zenncore/web/components/form";
@@ -15,6 +16,31 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { useCurrentUser } from "@/components/auth-context";
 import * as Shopify from "@/server/app/integration/shopify";
+
+/**
+ * Resolves a user-entered store value to a `*.myshopify.com` admin domain for
+ * OAuth. Accepts a bare handle or myshopify domain (with or without
+ * protocol/path); returns `null` for custom storefront domains, which cannot
+ * be used for OAuth authorize.
+ */
+const resolveShopDomain = (shop: string): string | null => {
+  const trimmed = shop.trim().toLowerCase();
+  if (!trimmed) return null;
+
+  const host = (() => {
+    const candidate = trimmed.includes("://") ? trimmed : `https://${trimmed}`;
+    const parsed = resultify(() => new URL(candidate).hostname);
+    return parsed.success ? parsed.data : (trimmed.split("/")[0] ?? trimmed);
+  })();
+
+  const cleaned = host.replace(/[^a-z0-9.-]/g, "");
+  if (!cleaned) return null;
+
+  if (cleaned.endsWith(".myshopify.com")) return cleaned;
+  if (!cleaned.includes(".")) return `${cleaned}.myshopify.com`;
+
+  return null;
+};
 
 const config = {
   shop: field({
@@ -48,7 +74,18 @@ export const ShopifyForm = () => {
   const [handleSubmit, isPending] = useAsyncAction(
     async (data: FormEntries<typeof config>) => {
       if (user.role === "administrator" || user.role === "owner") {
-        const shop = data.shop.trim();
+        const shop = resolveShopDomain(data.shop);
+
+        if (!shop) {
+          toast.add({
+            title: "Enter your myshopify.com domain",
+            description:
+              "OAuth needs your Shopify admin domain (e.g. yourstore.myshopify.com) or store handle — not a custom storefront URL.",
+            type: "error",
+          });
+          return;
+        }
+
         window.location.href = `/api/integrations/shopify/install?shop=${encodeURIComponent(shop)}`;
 
         return;

@@ -77,7 +77,8 @@ export const store = pgTable("store", {
   userId: text("userId")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-  storeId: text("storeId").notNull(),
+  /** External platform store id (Shopify numeric shop id). Only known for OAuth integrations. */
+  storeId: text("storeId"),
   platform: text("platform").notNull(),
   name: text("name").notNull(),
   domain: text("domain").notNull(),

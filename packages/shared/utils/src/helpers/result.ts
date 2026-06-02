@@ -33,11 +33,18 @@ export function resultify<
 
     if (result instanceof Promise) {
       const handler = async (): Promise<Result<Awaited<ReturnType<T>>, E>> => {
-        const data = await result;
-        return {
-          success: true,
-          data,
-        } as Result<Awaited<ReturnType<T>>, E>;
+        try {
+          const data = await result;
+          return {
+            success: true,
+            data,
+          } as Result<Awaited<ReturnType<T>>, E>;
+        } catch (error) {
+          return {
+            success: false,
+            error: error as E,
+          };
+        }
       };
 
       return handler();

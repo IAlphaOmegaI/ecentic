@@ -658,48 +658,48 @@ const buildShopMetafields = (input: {
     type: string;
     value: string | string[] | null | undefined;
   }[] = [
-    {
-      key: "merchant_name",
-      type: "single_line_text_field",
-      value: input.profile.merchantName,
-    },
-    {
-      key: "description",
-      type: "multi_line_text_field",
-      value: input.profile.description,
-    },
-    { key: "logo_url", type: "url", value: input.profile.logoUrl },
-    {
-      key: "payment_methods",
-      type: "list.single_line_text_field",
-      value: splitList(input.profile.paymentMethods),
-    },
-    {
-      key: "shipping_policy",
-      type: "multi_line_text_field",
-      value: input.profile.shippingPolicy,
-    },
-    {
-      key: "return_policy",
-      type: "multi_line_text_field",
-      value: input.profile.returnPolicy,
-    },
-    {
-      key: "contact_email",
-      type: "single_line_text_field",
-      value: input.profile.contactEmail,
-    },
-    {
-      key: "sustainability",
-      type: "multi_line_text_field",
-      value: input.profile.sustainability,
-    },
-    {
-      key: "certifications",
-      type: "list.single_line_text_field",
-      value: splitList(input.profile.certifications),
-    },
-  ];
+      {
+        key: "merchant_name",
+        type: "single_line_text_field",
+        value: input.profile.merchantName,
+      },
+      {
+        key: "description",
+        type: "multi_line_text_field",
+        value: input.profile.description,
+      },
+      { key: "logo_url", type: "url", value: input.profile.logoUrl },
+      {
+        key: "payment_methods",
+        type: "list.single_line_text_field",
+        value: splitList(input.profile.paymentMethods),
+      },
+      {
+        key: "shipping_policy",
+        type: "multi_line_text_field",
+        value: input.profile.shippingPolicy,
+      },
+      {
+        key: "return_policy",
+        type: "multi_line_text_field",
+        value: input.profile.returnPolicy,
+      },
+      {
+        key: "contact_email",
+        type: "single_line_text_field",
+        value: input.profile.contactEmail,
+      },
+      {
+        key: "sustainability",
+        type: "multi_line_text_field",
+        value: input.profile.sustainability,
+      },
+      {
+        key: "certifications",
+        type: "list.single_line_text_field",
+        value: splitList(input.profile.certifications),
+      },
+    ];
 
   for (const facet of facets) {
     if (facet.value === null || facet.value === undefined) continue;
