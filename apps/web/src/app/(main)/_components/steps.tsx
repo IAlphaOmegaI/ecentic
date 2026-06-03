@@ -9,7 +9,9 @@ export const Steps = () => (
             From invisible to chosen in three steps.
           </h2>
           <p className="font-light text-xl md:text-3xl">
-            A closed-loop system built exclusively for the AI agent economy.
+            Connect your store in one click. Then écentic runs the loop —
+            simulate, diagnose, and ship the fix. Built exclusively for the AI
+            agent economy.
           </p>
         </div>
         <div className="mt-8 grid w-full grid-cols-1 text-white md:mt-24 md:h-[1100px] md:grid-cols-2 md:grid-rows-3">
@@ -44,9 +46,10 @@ export const Steps = () => (
             <CircleBoltIcon className="size-16" />
             <p className="font-medium text-4xl">Optimize</p>
             <p className="text-left font-light text-lg md:text-right">
-              écentic rewrites your titles, descriptions, and structured data
-              for maximum AI agent selection. Approve in one click or set to
-              auto-publish. Continuously re-optimized as models evolve.
+              We don't just suggest — écentic writes the fix and publishes it.
+              Titles, descriptions, and structured data, rewritten for maximum
+              AI agent selection. Approve in one click or set to auto-publish,
+              continuously re-optimized as models evolve.
             </p>
           </div>
           <div className="hidden border-white md:block md:border-t" />

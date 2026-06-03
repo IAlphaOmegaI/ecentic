@@ -16,6 +16,7 @@ import { AgentTrafficLive } from "./_components/agent-traffic-live";
 import { BlindSpot } from "./_components/blind-spot";
 import { Booking } from "./_components/booking";
 import { DiscoveryPaths } from "./_components/discovery-paths";
+import { DiscoveryShift } from "./_components/discovery-shift";
 import { Features } from "./_components/features";
 import { Hero } from "./_components/hero";
 import { PartnersStrip } from "./_components/partners-strip";
@@ -28,6 +29,7 @@ import {
   Testimonials,
 } from "./_components/testimonials";
 import { UCPCallout } from "./_components/ucp-callout";
+import { WhyNow } from "./_components/why-now";
 
 const Comparison = dynamic(() =>
   import("./_components/comparison").then((m) => m.Comparison),
@@ -85,16 +87,18 @@ export default async () => (
       <Navbar />
       <Hero />
       <PartnersStrip />
+      <DiscoveryShift />
       <BlindSpot />
-      <AgentTrafficLive />
+      <WhyNow />
+      {/* <AgentTrafficLive /> */}
       <Steps />
       <Features />
       <UCPCallout />
       <Suspense>
         <Comparison />
       </Suspense>
-      <Testimonials />
       <Pricing />
+      <Testimonials />
       <Booking />
       <DiscoveryPaths />
       <section aria-label="About écentic" className="sr-only">

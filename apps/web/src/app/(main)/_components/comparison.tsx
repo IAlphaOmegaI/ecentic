@@ -131,7 +131,9 @@ export const Comparison = () => (
       <div className="relative mx-auto max-w-6xl px-2 md:px-12">
         <h2 className="text-center font-body text-3xl md:text-6xl">
           Audits tell you what's broken. <br />
-          <span className="mt-1 text-primary">écentic fixes it.</span>
+          <span className="mt-1 text-primary">
+            écentic writes and ships the fix.
+          </span>
         </h2>
       </div>
       <div className="w-full max-w-6xl overflow-x-auto border-accent-foreground border-t">

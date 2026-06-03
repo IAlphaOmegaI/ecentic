@@ -1,7 +1,29 @@
+import { EyeClosedIcon, RobotIcon, SearchIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import Link from "next/link";
 import Product from "@/public/images/product.png";
+
+const story = [
+  {
+    icon: SearchIcon,
+    step: "A customer asks",
+    description:
+      "“Find me the best shisha flavour under £30.” They never open a store or scroll a results page.",
+  },
+  {
+    icon: RobotIcon,
+    step: "The agent picks 3",
+    description:
+      "In milliseconds the AI compares structured data, trust signals, and spec depth — then names three products.",
+  },
+  {
+    icon: EyeClosedIcon,
+    step: "You're invisible",
+    description:
+      "Your store didn't show up. You don't know it happened. Shopify analytics never sees the visit.",
+  },
+] as const;
 
 export const BlindSpot = () => (
   <section>
@@ -22,6 +44,27 @@ export const BlindSpot = () => (
           <span className="text-primary">écentic</span> fixes this.
         </span>
       </p>
+    </div>
+    <div className="grid border-accent-foreground border-b bg-background-dimmed md:grid-cols-3">
+      {story.map(({ icon: Icon, step, description }, index) => (
+        <div
+          key={step}
+          className={`flex flex-col gap-3 border-accent-foreground border-b p-4 md:border-b-0 md:p-8 ${index < story.length - 1 ? "md:border-r" : ""}`}
+        >
+          <div className="flex items-center gap-3">
+            <span className="font-semibold text-5xl text-primary tabular-nums leading-none">
+              {index + 1}
+            </span>
+            <Icon className="size-9 text-primary" />
+          </div>
+          <h3 className="font-medium text-2xl text-foreground md:text-3xl">
+            {step}
+          </h3>
+          <p className="font-light text-base text-foreground-dimmed md:text-lg">
+            {description}
+          </p>
+        </div>
+      ))}
     </div>
     <div className="grid border-accent-foreground border-b bg-background-dimmed md:grid-cols-3">
       {/* Col 1 — What Humans See */}
@@ -49,7 +92,7 @@ export const BlindSpot = () => (
 
       <div className="flex flex-col items-center justify-between border-accent-foreground border-b p-4 md:border-t-0 md:border-r md:border-b-0">
         <p className="font-light text-primary text-xl">What Agents see now</p>
-        <p className="font-light font-mono text-foreground-dimmed text-primary text-xl">
+        <p className="font-light font-mono text-primary text-xl">
           {"{"}
           <br />
           "product": <span className="text-green-400">"Earbuds"</span>,<br />
