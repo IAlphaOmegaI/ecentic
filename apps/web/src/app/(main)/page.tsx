@@ -97,10 +97,10 @@ export default async () => (
       <Suspense>
         <Comparison />
       </Suspense>
-      <Pricing />
+      {/* <Pricing /> */}
       <Testimonials />
       <Booking />
-      <DiscoveryPaths />
+      {/* <DiscoveryPaths /> */}
       <section aria-label="About écentic" className="sr-only">
         <h2>Make every product easier for AI shopping agents to recommend</h2>
         <p>

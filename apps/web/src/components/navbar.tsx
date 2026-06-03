@@ -13,8 +13,8 @@ import { usePathname } from "next/navigation";
 import { type MouseEvent, type ReactNode, useEffect } from "react";
 
 const links = [
-  { href: "/#features", label: "Features" },
-  { href: "/#pricing", label: "Pricing" },
+  { href: "/features", label: "Features" },
+  { href: "/pricing", label: "Pricing" },
   { href: "/#resources", label: "Resources" },
   { href: "mailto:support@ecentic.ai", label: "Support" },
 ] as const;
