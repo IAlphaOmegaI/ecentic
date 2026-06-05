@@ -1508,7 +1508,7 @@ Defined in `apps/web/declarations/environment.d.ts`:
 
 - `@sentry/nextjs` — error/trace monitoring
 - `uploadthing` — uploads
-- `react-email`, `@react-email/components`, `resend` — email
+- `react-email`, `resend` — email
 - `@hookform/resolvers`, `react-hook-form`, `zod` — forms
 - `@zenncore/icons`, `@zenncore/utils`, `@zenncore/web` — internal UI/utils
 

@@ -1,9 +1,9 @@
 "use server";
 
-import { render } from "@react-email/components";
 import { resultify } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
 import { cookies, headers } from "next/headers";
+import { render } from "react-email";
 import { Resend } from "resend";
 import { VerifyEmail } from "@/public/templates/verify";
 import { schema } from "../database";
