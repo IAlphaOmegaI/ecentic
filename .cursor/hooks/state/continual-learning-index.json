@@ -1,37 +1,89 @@
 {
   "version": 1,
   "transcripts": {
+    "/Users/alvipalloshi/.cursor/projects/Users-alvipalloshi-Projects-ecentic/agent-transcripts/1e29463e-f4a5-4dad-b7c9-405d2905e29e/1e29463e-f4a5-4dad-b7c9-405d2905e29e.jsonl": {
+      "mtimeMs": 1780652883000,
+      "lastProcessedAt": "2026-06-05T00:00:00Z"
+    },
+    "/Users/alvipalloshi/.cursor/projects/Users-alvipalloshi-Projects-ecentic/agent-transcripts/27732dc1-bd9e-4ab9-a624-5692974eae8b/27732dc1-bd9e-4ab9-a624-5692974eae8b.jsonl": {
+      "mtimeMs": 1780317407000,
+      "lastProcessedAt": "2026-06-05T00:00:00Z"
+    },
     "/Users/alvipalloshi/.cursor/projects/Users-alvipalloshi-Projects-ecentic/agent-transcripts/2d2fca5b-5c97-4734-8a1d-bc318002a347/2d2fca5b-5c97-4734-8a1d-bc318002a347.jsonl": {
-      "mtimeMs": 1775152331737,
-      "lastProcessedAt": "2026-05-28T09:13:24Z"
+      "mtimeMs": 1775152331000,
+      "lastProcessedAt": "2026-06-05T00:00:00Z"
+    },
+    "/Users/alvipalloshi/.cursor/projects/Users-alvipalloshi-Projects-ecentic/agent-transcripts/3256da7b-3bde-405d-872f-debe533dddc0/3256da7b-3bde-405d-872f-debe533dddc0.jsonl": {
+      "mtimeMs": 1780658902000,
+      "lastProcessedAt": "2026-06-05T00:00:00Z"
     },
     "/Users/alvipalloshi/.cursor/projects/Users-alvipalloshi-Projects-ecentic/agent-transcripts/351d64e8-7083-48c4-adb5-61d3f61f2b64/351d64e8-7083-48c4-adb5-61d3f61f2b64.jsonl": {
-      "mtimeMs": 1779959539081,
-      "lastProcessedAt": "2026-05-28T09:13:24Z"
+      "mtimeMs": 1779959926000,
+      "lastProcessedAt": "2026-06-05T00:00:00Z"
+    },
+    "/Users/alvipalloshi/.cursor/projects/Users-alvipalloshi-Projects-ecentic/agent-transcripts/37b6a7c3-bdd4-4c59-974c-0a93b49e1375/37b6a7c3-bdd4-4c59-974c-0a93b49e1375.jsonl": {
+      "mtimeMs": 1779969270000,
+      "lastProcessedAt": "2026-06-05T00:00:00Z"
+    },
+    "/Users/alvipalloshi/.cursor/projects/Users-alvipalloshi-Projects-ecentic/agent-transcripts/49376963-21d1-4f81-bca7-5b5dca16684c/49376963-21d1-4f81-bca7-5b5dca16684c.jsonl": {
+      "mtimeMs": 1779964030000,
+      "lastProcessedAt": "2026-06-05T00:00:00Z"
+    },
+    "/Users/alvipalloshi/.cursor/projects/Users-alvipalloshi-Projects-ecentic/agent-transcripts/51271e4f-36a7-4c5b-807c-fcaeb24f9d96/51271e4f-36a7-4c5b-807c-fcaeb24f9d96.jsonl": {
+      "mtimeMs": 1780663943000,
+      "lastProcessedAt": "2026-06-05T00:00:00Z"
     },
     "/Users/alvipalloshi/.cursor/projects/Users-alvipalloshi-Projects-ecentic/agent-transcripts/67a2d11a-ec28-462a-bb1e-cd45083c23bd/67a2d11a-ec28-462a-bb1e-cd45083c23bd.jsonl": {
-      "mtimeMs": 1774188786156,
-      "lastProcessedAt": "2026-05-28T09:13:24Z"
+      "mtimeMs": 1774188786000,
+      "lastProcessedAt": "2026-06-05T00:00:00Z"
+    },
+    "/Users/alvipalloshi/.cursor/projects/Users-alvipalloshi-Projects-ecentic/agent-transcripts/823d7e19-05f0-44d9-9c6f-c88515759a76/823d7e19-05f0-44d9-9c6f-c88515759a76.jsonl": {
+      "mtimeMs": 1780315616000,
+      "lastProcessedAt": "2026-06-05T00:00:00Z"
     },
     "/Users/alvipalloshi/.cursor/projects/Users-alvipalloshi-Projects-ecentic/agent-transcripts/8eedd2c3-6163-4c93-805a-e2db6c2de09b/8eedd2c3-6163-4c93-805a-e2db6c2de09b.jsonl": {
-      "mtimeMs": 1779438349352,
-      "lastProcessedAt": "2026-05-28T09:13:24Z"
+      "mtimeMs": 1779438349000,
+      "lastProcessedAt": "2026-06-05T00:00:00Z"
+    },
+    "/Users/alvipalloshi/.cursor/projects/Users-alvipalloshi-Projects-ecentic/agent-transcripts/9b97f51b-c845-4605-a568-c04b38feb07a/9b97f51b-c845-4605-a568-c04b38feb07a.jsonl": {
+      "mtimeMs": 1779989890000,
+      "lastProcessedAt": "2026-06-05T00:00:00Z"
+    },
+    "/Users/alvipalloshi/.cursor/projects/Users-alvipalloshi-Projects-ecentic/agent-transcripts/9cb0b093-168e-4b50-a174-d226ca0c06be/9cb0b093-168e-4b50-a174-d226ca0c06be.jsonl": {
+      "mtimeMs": 1779968273000,
+      "lastProcessedAt": "2026-06-05T00:00:00Z"
+    },
+    "/Users/alvipalloshi/.cursor/projects/Users-alvipalloshi-Projects-ecentic/agent-transcripts/c8d04b02-b4ea-4535-a567-834e7e12712c/c8d04b02-b4ea-4535-a567-834e7e12712c.jsonl": {
+      "mtimeMs": 1780345192000,
+      "lastProcessedAt": "2026-06-05T00:00:00Z"
     },
     "/Users/alvipalloshi/.cursor/projects/Users-alvipalloshi-Projects-ecentic/agent-transcripts/ca14de26-40c6-41b0-aa8f-e1b520bafa0e/ca14de26-40c6-41b0-aa8f-e1b520bafa0e.jsonl": {
-      "mtimeMs": 1776015917049,
-      "lastProcessedAt": "2026-05-28T09:13:24Z"
+      "mtimeMs": 1776015917000,
+      "lastProcessedAt": "2026-06-05T00:00:00Z"
+    },
+    "/Users/alvipalloshi/.cursor/projects/Users-alvipalloshi-Projects-ecentic/agent-transcripts/caf07d15-47a1-4594-b2e5-4c6b8bdf1ffa/caf07d15-47a1-4594-b2e5-4c6b8bdf1ffa.jsonl": {
+      "mtimeMs": 1780328176000,
+      "lastProcessedAt": "2026-06-05T00:00:00Z"
     },
     "/Users/alvipalloshi/.cursor/projects/Users-alvipalloshi-Projects-ecentic/agent-transcripts/d92cbbca-41fa-4fe7-8425-f12213e79c22/d92cbbca-41fa-4fe7-8425-f12213e79c22.jsonl": {
-      "mtimeMs": 1774967592151,
-      "lastProcessedAt": "2026-05-28T09:13:24Z"
+      "mtimeMs": 1774967592000,
+      "lastProcessedAt": "2026-06-05T00:00:00Z"
     },
     "/Users/alvipalloshi/.cursor/projects/Users-alvipalloshi-Projects-ecentic/agent-transcripts/df80d0b1-582d-4937-9b05-ebe1d982b415/df80d0b1-582d-4937-9b05-ebe1d982b415.jsonl": {
-      "mtimeMs": 1779789373363,
-      "lastProcessedAt": "2026-05-28T09:13:24Z"
+      "mtimeMs": 1779789373000,
+      "lastProcessedAt": "2026-06-05T00:00:00Z"
     },
     "/Users/alvipalloshi/.cursor/projects/Users-alvipalloshi-Projects-ecentic/agent-transcripts/e2c0bffb-8db3-4690-95b0-7db750ec74b7/e2c0bffb-8db3-4690-95b0-7db750ec74b7.jsonl": {
-      "mtimeMs": 1779693306534,
-      "lastProcessedAt": "2026-05-28T09:13:24Z"
+      "mtimeMs": 1779693306000,
+      "lastProcessedAt": "2026-06-05T00:00:00Z"
+    },
+    "/Users/alvipalloshi/.cursor/projects/Users-alvipalloshi-Projects-ecentic/agent-transcripts/fbcbf849-de8c-48e9-a3d4-2e8212a1ebef/fbcbf849-de8c-48e9-a3d4-2e8212a1ebef.jsonl": {
+      "mtimeMs": 1779969379000,
+      "lastProcessedAt": "2026-06-05T00:00:00Z"
+    },
+    "/Users/alvipalloshi/.cursor/projects/Users-alvipalloshi-Projects-ecentic/agent-transcripts/fc578c79-930d-473e-b8c9-b87de6fada6f/fc578c79-930d-473e-b8c9-b87de6fada6f.jsonl": {
+      "mtimeMs": 1780651019000,
+      "lastProcessedAt": "2026-06-05T00:00:00Z"
     }
   }
 }

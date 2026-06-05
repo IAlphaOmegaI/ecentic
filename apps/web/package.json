@@ -29,6 +29,7 @@
     "@number-flow/react": "^0.6.0",
     "@sentry/nextjs": "^10.56.0",
     "@shopify/cli": "^4.1.0",
+    "@ucp-js/sdk": "^0.1.0",
     "@upstash/redis": "^1.38.0",
     "@zenncore/icons": "workspace:*",
     "@zenncore/phone": "workspace:*",
