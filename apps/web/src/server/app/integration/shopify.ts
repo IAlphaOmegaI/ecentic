@@ -124,7 +124,10 @@ export const syncShopifyCatalog = withContext(
             success: false as const,
             error: new Error("Missing Shopify access token"),
           };
-        return { success: true as const, accessToken: account.data.accessToken };
+        return {
+          success: true as const,
+          accessToken: account.data.accessToken,
+        };
       }
       return resolveAccessToken(storeId);
     })();
@@ -336,7 +339,10 @@ const resolveAccessToken = async (
   });
   if (!refreshed.success) return refreshed;
   if (!refreshed.data?.accessToken)
-    return { success: false, error: new Error("Missing access token after refresh") };
+    return {
+      success: false,
+      error: new Error("Missing access token after refresh"),
+    };
 
   return { success: true, accessToken: refreshed.data.accessToken };
 };
@@ -658,48 +664,48 @@ const buildShopMetafields = (input: {
     type: string;
     value: string | string[] | null | undefined;
   }[] = [
-      {
-        key: "merchant_name",
-        type: "single_line_text_field",
-        value: input.profile.merchantName,
-      },
-      {
-        key: "description",
-        type: "multi_line_text_field",
-        value: input.profile.description,
-      },
-      { key: "logo_url", type: "url", value: input.profile.logoUrl },
-      {
-        key: "payment_methods",
-        type: "list.single_line_text_field",
-        value: splitList(input.profile.paymentMethods),
-      },
-      {
-        key: "shipping_policy",
-        type: "multi_line_text_field",
-        value: input.profile.shippingPolicy,
-      },
-      {
-        key: "return_policy",
-        type: "multi_line_text_field",
-        value: input.profile.returnPolicy,
-      },
-      {
-        key: "contact_email",
-        type: "single_line_text_field",
-        value: input.profile.contactEmail,
-      },
-      {
-        key: "sustainability",
-        type: "multi_line_text_field",
-        value: input.profile.sustainability,
-      },
-      {
-        key: "certifications",
-        type: "list.single_line_text_field",
-        value: splitList(input.profile.certifications),
-      },
-    ];
+    {
+      key: "merchant_name",
+      type: "single_line_text_field",
+      value: input.profile.merchantName,
+    },
+    {
+      key: "description",
+      type: "multi_line_text_field",
+      value: input.profile.description,
+    },
+    { key: "logo_url", type: "url", value: input.profile.logoUrl },
+    {
+      key: "payment_methods",
+      type: "list.single_line_text_field",
+      value: splitList(input.profile.paymentMethods),
+    },
+    {
+      key: "shipping_policy",
+      type: "multi_line_text_field",
+      value: input.profile.shippingPolicy,
+    },
+    {
+      key: "return_policy",
+      type: "multi_line_text_field",
+      value: input.profile.returnPolicy,
+    },
+    {
+      key: "contact_email",
+      type: "single_line_text_field",
+      value: input.profile.contactEmail,
+    },
+    {
+      key: "sustainability",
+      type: "multi_line_text_field",
+      value: input.profile.sustainability,
+    },
+    {
+      key: "certifications",
+      type: "list.single_line_text_field",
+      value: splitList(input.profile.certifications),
+    },
+  ];
 
   for (const facet of facets) {
     if (facet.value === null || facet.value === undefined) continue;

@@ -14,7 +14,8 @@
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
     "db:reset": "bun scripts/reset.ts",
-    "db:seed": "bun scripts/seed.ts"
+    "db:seed": "bun scripts/seed.ts",
+    "db:seed:demo": "bun scripts/seed-demo.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.81",
