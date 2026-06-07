@@ -1,15 +1,19 @@
 import { unwrapResult } from "@zenncore/utils";
 import Link from "next/link";
+import * as Authentication from "@/server/app/authentication";
 import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
+import * as Subscription from "@/server/app/subscription";
 import { Environment } from "@/server/utils/environment";
 import { CommandPalette } from "./command-palette";
 import { NotificationBell } from "./notification-bell";
 
 export const Topbar = async () => {
-  const [products, competitors] = await Promise.all([
+  const [user, products, competitors, subscription] = await Promise.all([
+    unwrapResult(Authentication.getCurrentUser(Environment.SERVER)),
     unwrapResult(Product.skimForCurrentUser(Environment.SERVER)),
     unwrapResult(Competitor.skimForCurrentUser(Environment.SERVER)),
+    unwrapResult(Subscription.getCurrentSubscription()),
   ]);
 
   return (
@@ -23,9 +27,9 @@ export const Topbar = async () => {
 
         <Link
           href="/dashboard/settings/billing"
-          className="border border-primary/30 bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs transition-colors hover:bg-primary/20"
+          className={`border border-primary/30 bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs ${subscription?.plan && "capitalize"} transition-colors hover:bg-primary/20`}
         >
-          Compete
+          {subscription?.plan ?? "No plan"}
         </Link>
 
         <button
@@ -33,10 +37,10 @@ export const Topbar = async () => {
           className="flex items-center gap-2 transition-opacity hover:opacity-80"
         >
           <div className="flex size-7 items-center justify-center bg-primary font-medium text-sm text-white">
-            J
+            {user.name.charAt(0)}
           </div>
           <span className="hidden font-medium text-foreground text-sm md:block">
-            Jane Smith
+            {user.name} {user.surname}
           </span>
         </button>
       </div>

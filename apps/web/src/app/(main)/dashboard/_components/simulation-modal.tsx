@@ -150,7 +150,7 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
           )}
         </div>
 
-        <div className="relative min-h-0 flex-1 overflow-hidden">
+        <div className="relative min-h-0 flex-1 overflow-y-auto">
           <AnimatePresence mode="wait" initial={false}>
             {/* ── PRE ── */}
             {phase === "pre" && (

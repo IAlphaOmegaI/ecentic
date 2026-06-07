@@ -68,18 +68,18 @@ export const SettingsClient = ({
             <Tab value="account" className={className}>
               Account
             </Tab>
-            <Tab value="team" className={className}>
+            {/* <Tab value="team" className={className}>
               Team
-            </Tab>
+            </Tab> */}
             <Tab value="integrations" className={className}>
               Integrations
             </Tab>
             <Tab value="notifications" className={className}>
               Notifications
             </Tab>
-            <Tab value="simulation" className={className}>
+            {/* <Tab value="simulation" className={className}>
               Simulation
-            </Tab>
+            </Tab> */}
             <Tab value="billing" className={className}>
               Billing
             </Tab>
@@ -93,12 +93,12 @@ export const SettingsClient = ({
             <AccountSection user={user} />
           </TabsPanel>
 
-          <TabsPanel
+          {/* <TabsPanel
             value="team"
             className="min-w-0 flex-1 bg-background outline-none"
           >
             <TeamSection user={user} />
-          </TabsPanel>
+          </TabsPanel> */}
 
           <TabsPanel
             value="integrations"

@@ -11,10 +11,10 @@ export const OverviewActions = () => {
   return (
     <>
       <div className="flex items-center gap-2">
-        <Button variant="outline" color="accent">
+        {/* <Button variant="outline" color="accent">
           <DownloadIcon className="size-4" />
           Export
-        </Button>
+        </Button> */}
         <Button variant="flat" color="primary" onClick={() => setOpen(true)}>
           <PlusIcon className="size-4" />
           Run Simulation

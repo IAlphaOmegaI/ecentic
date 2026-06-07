@@ -26,7 +26,7 @@ export const Sidebar = async () => {
       </div>
 
       <SidebarNav products={products} optimizations={optimizations.published} />
-      <TrialCard />
+      {/* <TrialCard /> */}
     </aside>
   );
 };

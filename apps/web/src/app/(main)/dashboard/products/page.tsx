@@ -47,10 +47,10 @@ export default ({ searchParams }: SearchParamsProps<keyof Pager>) => (
             </Suspense>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" color="accent">
+            {/* <Button variant="outline" color="accent">
               <DownloadIcon className="size-4" />
               Export
-            </Button>
+            </Button> */}
             <Button
               variant="flat"
               color="primary"

@@ -38,7 +38,7 @@ export const AutoDetectTab = ({
 
   const start = useRef<number>(0);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
-  const target = useRef<HTMLDivElement>(null);
+  const logRef = useRef<HTMLDivElement>(null);
 
   const addLog = (entry: Omit<LogEntry, "id" | "elapsed">) =>
     setLogs((previous) => [
@@ -53,9 +53,15 @@ export const AutoDetectTab = ({
   useEffect(() => {
     if (logs.length === 0) return;
 
-    requestAnimationFrame(() =>
-      target.current?.scrollIntoView({ behavior: "smooth" }),
-    );
+    const container = logRef.current;
+    if (!container) return;
+
+    requestAnimationFrame(() => {
+      container.scrollTo({
+        top: container.scrollHeight,
+        behavior: "smooth",
+      });
+    });
   }, [logs]);
 
   const [handleDetect, isDetecting] = useAsyncAction(async () => {
@@ -99,10 +105,6 @@ export const AutoDetectTab = ({
           return;
       }
     }
-
-    requestAnimationFrame(() =>
-      target.current?.scrollIntoView({ behavior: "smooth" }),
-    );
   });
 
   return (
@@ -195,7 +197,10 @@ export const AutoDetectTab = ({
               </div>
             )}
 
-            <div className="min-h-0 flex-1 space-y-1 overflow-y-auto scroll-smooth p-4">
+            <div
+              ref={logRef}
+              className="min-h-0 flex-1 space-y-1 overflow-y-auto scroll-smooth p-4"
+            >
               {logs.map((log, index) => {
                 const age = logs.length - 1 - index;
                 const opacity = isDetecting ? Math.max(0.2, 1 - age * 0.1) : 1;
@@ -230,7 +235,6 @@ export const AutoDetectTab = ({
                   Initializing intelligence scan...
                 </p>
               )}
-              <div ref={target} />
             </div>
 
             {isDetecting ? (

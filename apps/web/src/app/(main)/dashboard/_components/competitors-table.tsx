@@ -88,20 +88,20 @@ const columns: ColumnDef<CompetitorsTable.Row>[] = [
       </span>
     ),
   },
-  {
-    id: "actions",
-    header: undefined,
-    cell: ({ row }) => (
-      <Button
-        variant="flat"
-        color="primary"
-        size="icon"
-        render={<Link href={`/dashboard/competitors/${row.original._id}`} />}
-      >
-        <ArrowRightIcon className="size-4" />
-      </Button>
-    ),
-  },
+  // {
+  //   id: "actions",
+  //   header: undefined,
+  //   cell: ({ row }) => (
+  //     <Button
+  //       variant="flat"
+  //       color="primary"
+  //       size="icon"
+  //       render={<Link href={`/dashboard/competitors/${row.original._id}`} />}
+  //     >
+  //       <ArrowRightIcon className="size-4" />
+  //     </Button>
+  //   ),
+  // },
 ];
 
 export const CompetitorsTable = ({

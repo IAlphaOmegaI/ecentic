@@ -248,14 +248,14 @@ const StatCards = async () => {
               <span className="text-foreground-dimmed">win rate</span>
             </div>
           </div>
-          <Button
+          {/* <Button
             variant="outline"
             color="accent"
             className="mt-auto ml-auto"
             render={<Link href={`/dashboard/competitors/${dangerous._id}`} />}
           >
             View battlecard <ArrowRightIcon className="size-4" />
-          </Button>
+          </Button> */}
         </div>
       ) : (
         <div className="flex flex-col justify-between bg-background-dimmed p-4">

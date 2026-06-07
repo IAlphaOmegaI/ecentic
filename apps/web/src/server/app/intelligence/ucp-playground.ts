@@ -1,11 +1,69 @@
 "use server";
 
 import { createStreamableValue } from "@ai-sdk/rsc";
+// import { UcpDiscoveryProfileSchema } from "@ucp-js/sdk";
 import { resultify } from "@zenncore/utils";
 import { stepCountIs, streamText, tool } from "ai";
 import * as z from "zod";
+import { discoveryProfileSchema } from "./ucp-advanced-validator";
 
+// écentic UCP platform profile
 const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
+
+// Shopify UCP MCP requires params.arguments.meta["ucp-agent"].profile on every
+// JSON-RPC message (initialize, tools/list, tools/call, notifications). The AI
+// SDK client does not send this by default, so we inject it at the fetch layer.
+// const createUcpMcpFetch =
+//   (agentProfileUrl: string): typeof fetch =>
+//   async (input, init) => {
+//     if (!init?.body || typeof init.body !== "string") {
+//       return fetch(input, init);
+//     }
+
+//     try {
+//       const message = JSON.parse(init.body) as {
+//         method?: string;
+//         params?: Record<string, unknown>;
+//       };
+
+//       if (!message.method) return fetch(input, init);
+
+//       const params = { ...(message.params ?? {}) };
+//       // biome-ignore lint/complexity/useLiteralKeys: index signature property
+//       const argumentsParams = params["arguments"];
+
+//       const existingArgs =
+//         typeof argumentsParams === "object" && argumentsParams !== null
+//           ? (argumentsParams as Record<string, unknown>)
+//           : {};
+
+//       // biome-ignore lint/complexity/useLiteralKeys: index signature property
+//       const metaParams = existingArgs["meta"];
+
+//       const existingMeta =
+//         typeof metaParams === "object" && metaParams !== null
+//           ? (metaParams as Record<string, unknown>)
+//           : {};
+
+//       const nextBody = JSON.stringify({
+//         ...message,
+//         params: {
+//           ...params,
+//           arguments: {
+//             ...existingArgs,
+//             meta: {
+//               ...existingMeta,
+//               "ucp-agent": { profile: agentProfileUrl },
+//             },
+//           },
+//         },
+//       });
+
+//       return fetch(input, { ...init, body: nextBody });
+//     } catch {
+//       return fetch(input, init);
+//     }
+//   };
 
 const gatewayOptions = () => ({
   gateway: {
@@ -19,19 +77,6 @@ const gatewayOptions = () => ({
     },
   },
 });
-
-type UcpTransportEntry = {
-  version?: string;
-  transport: string;
-  endpoint: string;
-};
-
-type UcpProfileJson = {
-  ucp?: {
-    version?: string;
-    services?: Record<string, UcpTransportEntry[]>;
-  };
-};
 
 export type PlaygroundTransport = "mcp" | "rest";
 
@@ -184,8 +229,12 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
       "Search the store product catalog. Returns matching products with IDs, titles, prices, and variant IDs. Arguments go under the 'catalog' key per UCP spec (only define them if the user asks something that could be done by using the catalog properties).",
     inputSchema: z.object({
       catalog: z.object({
-        query: z.string().describe("Text search query").optional(),
-        context: catalogContextSchema.optional(),
+        query: z.string().optional().describe("Free-text search query."),
+        context: catalogContextSchema
+          .optional()
+          .describe(
+            "Provisional buyer signals for relevance and localization—not authoritative data. Businesses SHOULD use these values when verified inputs (e.g., shipping address) are absent, and MAY ignore or down-rank them if inconsistent with higher-confidence signals (authenticated account, risk detection) or regulatory constraints (export controls). Eligibility and policy enforcement MUST occur at checkout time using binding transaction data. Context SHOULD be non-identifying and can be disclosed progressively—coarse signals early, finer resolution as the session progresses. Higher-resolution data (shipping address, billing address) supersedes context.",
+          ),
         filters: catalogFiltersSchema.optional(),
         pagination: z
           .object({ limit: z.number().int().positive().optional() })
@@ -228,8 +277,18 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
         filters: catalogFiltersSchema,
       }),
     }),
-    execute: async ({ catalog }) =>
-      callMcp(endpoint, "get_product", { catalog }, agentProfileUrl),
+    execute: async ({ catalog }) => {
+      const result = await callMcp(
+        endpoint,
+        "get_product",
+        { catalog },
+        agentProfileUrl,
+      );
+
+      console.log("result", result.structuredContent.product);
+
+      return result;
+    },
   }),
 
   // // UCP §5 — cart creation: payload nested under "cart" key
@@ -340,7 +399,7 @@ export type RunPlaygroundInput = {
 export const runPlayground = async ({
   storeUrl,
   query,
-  agentProfileUrl,
+  agentProfileUrl = AGENT_PROFILE,
 }: RunPlaygroundInput) => {
   const streamable = createStreamableValue<PlaygroundEvent>();
 
@@ -351,74 +410,109 @@ export const runPlayground = async ({
       const domain = storeUrl.replace(/\/+$/, "");
       const profileUrl = `${domain}/.well-known/ucp`;
 
-      // 1. Resolve UCP profile
-      const profileFetch = await resultify(() =>
+      const businessProfileResponse = await resultify(() =>
         fetch(profileUrl, {
           headers: { Accept: "application/json" },
           signal: AbortSignal.timeout(8_000),
-          cache: "no-store",
         }),
       );
 
-      if (!profileFetch.success) {
+      if (!businessProfileResponse.success) {
         emit({
           kind: "error",
-          message: `Could not reach UCP profile at ${profileUrl}. Make sure the store serves a valid /.well-known/ucp endpoint.`,
+          message: `Could not reach Business UCP profile at ${profileUrl}. Make sure the store serves a valid /.well-known/ucp endpoint.`,
         });
         streamable.done();
         return;
       }
 
-      const profileText = await resultify(() => profileFetch.data.text());
-      if (!profileText.success) {
+      const businessProfileText = await resultify(() =>
+        businessProfileResponse.data.text(),
+      );
+
+      if (!businessProfileText.success) {
         emit({
           kind: "error",
-          message: "Could not read profile response body.",
+          message: "Could not read business profile response body.",
         });
         streamable.done();
+
         return;
       }
 
-      let profile: UcpProfileJson;
-      try {
-        profile = JSON.parse(profileText.data) as UcpProfileJson;
-      } catch {
+      const {
+        success: businessProfileSuccess,
+        data: businessProfile,
+        error,
+        // TODO: replace with UcpDiscoveryProfileSchema when updated
+      } = discoveryProfileSchema.safeParse(
+        JSON.parse(businessProfileText.data),
+      );
+
+      if (!businessProfileSuccess) {
+        console.error(error);
         emit({
           kind: "error",
-          message:
-            "UCP profile is not valid JSON. Check /.well-known/ucp on the target store.",
+          message: error.message,
         });
         streamable.done();
+
         return;
       }
 
       // 2. Discover transport and endpoint
-      const services = profile.ucp?.services ?? {};
-      const shoppingServices = services["dev.ucp.shopping"] ?? [];
+      const shoppingServices = businessProfile.ucp.services["dev.ucp.shopping"];
 
-      const mcpEntry = shoppingServices.find((s) => s.transport === "mcp");
-      const restEntry = shoppingServices.find((s) => s.transport === "rest");
-      const chosen = mcpEntry ?? restEntry;
+      const mcpShoppingService = shoppingServices?.find(
+        (shoppingService) => shoppingService.transport === "mcp",
+      );
+      const restShoppingService = shoppingServices?.find(
+        (shoppingService) => shoppingService.transport === "rest",
+      );
+      const shoppingEndpoint =
+        mcpShoppingService?.endpoint ?? restShoppingService?.endpoint;
+      const shoppingTransport = mcpShoppingService ? "mcp" : "rest";
 
-      if (!chosen) {
+      if (!shoppingEndpoint || !shoppingTransport) {
         emit({
           kind: "error",
           message:
             "No dev.ucp.shopping service found in the UCP profile. The store does not advertise MCP or REST shopping endpoints.",
         });
+
         streamable.done();
         return;
       }
 
-      const transport: PlaygroundTransport = mcpEntry ? "mcp" : "rest";
-      const endpoint = chosen.endpoint;
+      // const mcpClient = await createMCPClient({
+      //   transport: {
+      //     type: "http",
+      //     url: endpoint,
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       Accept: "application/json",
+      //       "User-Agent": "UCP-Playground/1.0 (écentic; https://ecentic.ai)",
+      //     },
+
+      //     // optional: provide an OAuth client provider for automatic authorization
+      //     // authProvider: myOAuthClientProvider,
+
+      //     // optional: reject redirect responses to prevent SSRF
+      //     // redirect: "error",
+
+      //     fetch: createUcpMcpFetch(agentProfileUrl),
+      //   },
+      // });
+
+      // const toolNames = await mcpClient.tools();
+      // console.log("toolNames", toolNames);
 
       emit({
         kind: "profile",
-        transport,
-        endpoint,
+        transport: shoppingTransport,
+        endpoint: shoppingEndpoint,
         profileUrl,
-        agentProfileUrl: AGENT_PROFILE,
+        agentProfileUrl,
       });
 
       // 3. Build tools for the detected transport
@@ -428,33 +522,32 @@ export const runPlayground = async ({
       //     : buildRestTools(endpoint, AGENT_PROFILE);
 
       // TODO: Add REST tools
-      const tools = buildMcpTools(endpoint, AGENT_PROFILE);
+      const tools = buildMcpTools(shoppingEndpoint, AGENT_PROFILE);
 
       const searchQuery = query?.trim() || "product";
 
       // 4. Run the agentic flow
       const agentResult = streamText({
         model: "google/gemini-3-flash",
-        system: `You are a UCP (Universal Commerce Protocol) shopping agent running a live integration test against a ${transport.toUpperCase()} endpoint.
+        system: `You are a UCP (Universal Commerce Protocol) shopping agent running a live integration test against a ${shoppingTransport.toUpperCase()} endpoint.
 
-CRITICAL ARGUMENT SHAPES — follow these exactly, do not add or remove top-level keys:
+      CRITICAL ARGUMENT SHAPES — follow these exactly, do not add or remove top-level keys:
 
-search_catalog:
-  { catalog: { query: "...", pagination: { limit: 5 }, filters: {}, context: {} } } (only define them if the user asks something that could be done by using the catalog properties even tho they might have been defined in the schema).
-get_product:
-  { catalog: { id: "<product_id>" } }
-update_cart:
-  { id: "<cart_id>", cart: { line_items: [{ variant_id: "...", item: { id: "<variant_id>", title: "...", price: { amount, currency } }, quantity: 1 }] } }
+      search_catalog:
+        { catalog: { query: "...", pagination: { limit: 5 }, filters: {}, context: {} } } (only define them if the user asks something that could be done by using the catalog properties even tho they might have been defined in the schema).
+      get_product:
+        { catalog: { id: "<product_id>" } }
+      update_cart:
+        { id: "<cart_id>", cart: { line_items: [{ variant_id: "...", item: { id: "<variant_id>", title: "...", price: { amount, currency } }, quantity: 1 }] } }
 
-Work through this flow in order:
-1. search_catalog with query "${searchQuery}"
-2. get_product with the ID of the first result
-3. add the product to the cart
+      Work through this flow in order:
+      1. search_catalog with query "${searchQuery}"
+      2. get_product with the ID of the first result
 
-Use ONLY IDs returned by the tools — never invent them. After all steps, write 2–3 sentences summarizing what you found.
-DON'T CALL the same tool again if the first one hasn't finished yet.
-`,
-        prompt: `Test the UCP ${transport} endpoint at ${endpoint} (store: ${domain}).`,
+      Use ONLY IDs returned by the tools — never invent them. After all steps, write 2–3 sentences summarizing what you found.
+      DON'T CALL the same tool again if the first one hasn't finished yet.
+      `,
+        prompt: `Test the UCP ${shoppingTransport} endpoint at ${shoppingEndpoint} (store: ${domain}).`,
         tools,
         stopWhen: stepCountIs(12),
         providerOptions: gatewayOptions(),
@@ -495,6 +588,7 @@ DON'T CALL the same tool again if the first one hasn't finished yet.
 
       emit({ kind: "done" });
     } catch (error) {
+      console.error("error", error);
       emit({
         kind: "error",
         message: error instanceof Error ? error.message : "Unexpected error",
