@@ -25,12 +25,18 @@ export const Topbar = async () => {
       <div className="flex items-center gap-3">
         <NotificationBell />
 
-        <Link
+        {/* <Link
           href="/dashboard/settings/billing"
           className={`border border-primary/30 bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs ${subscription?.plan && "capitalize"} transition-colors hover:bg-primary/20`}
         >
           {subscription?.plan ?? "No plan"}
-        </Link>
+        </Link> */}
+
+        <p
+          className={`border border-primary/30 bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs ${subscription?.plan && "capitalize"} transition-colors hover:bg-primary/20`}
+        >
+          {subscription?.plan ?? "No plan"}
+        </p>
 
         <button
           type="button"

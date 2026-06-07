@@ -14,7 +14,10 @@ const UcpContent = async () => {
   ]);
 
   const shopifyStores = stores
-    .filter((store) => store.platform === "shopify-public")
+    .filter(
+      (store) =>
+        store.platform === "shopify-public" || store.platform === "shopify",
+    )
     .map((store) => ({ id: store.id, name: store.name }));
 
   return (

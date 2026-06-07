@@ -9,7 +9,7 @@ import { CompleteProfileForm } from "./_components/complete-profile-form";
 
 const points = [
   "Help us personalize your experience",
-  "Takes less than 30 seconds",
+  "Takes less than 90 seconds",
   "Start optimizing right after",
 ];
 

@@ -52,7 +52,7 @@ export default async () => {
       case simulations <= 30:
         return "~15 sec";
       case simulations <= 100:
-        return "~30 sec";
+        return "~90 sec";
       case simulations <= 300:
         return "~1 min";
       default:
