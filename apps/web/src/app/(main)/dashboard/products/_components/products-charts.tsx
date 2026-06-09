@@ -1,6 +1,6 @@
 "use client";
 
-import { BoxMinusIcon, TrendDownIcon } from "@zenncore/icons";
+import { BoxMinusIcon, TrendDownIcon, TrendUpIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { motion } from "motion/react";
 import Image from "next/image";
@@ -46,7 +46,7 @@ export namespace ProductsModelRates {
 export const ProductsModelRates = ({ models }: ProductsModelRates.Props) => {
   if (models.length === 0)
     return (
-      <p className="flex h-26 flex-col items-center justify-center gap-2 text-foreground-dimmed">
+      <p className="flex h-26 flex-col items-center justify-center gap-2 border-accent-foreground border-y px-4 text-foreground-dimmed">
         <BoxMinusIcon className="size-12" />
         Run a simulation to see per-model performance.
       </p>
@@ -67,13 +67,13 @@ export const ProductsModelRates = ({ models }: ProductsModelRates.Props) => {
                   alt={label}
                   width={64}
                   height={64}
-                  className="size-4"
+                  className="size-8"
                 />
-                <span className="text-foreground-dimmed uppercase tracking-widest">
+                <span className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
                   {label}
                 </span>
               </div>
-              <span className="font-medium text-foreground text-lg tabular-nums">
+              <span className="font-medium text-2xl text-foreground tabular-nums">
                 {rate}{" "}
                 <span className="font-light text-foreground-dimmed text-sm">
                   %
@@ -111,12 +111,15 @@ export const QualityDistribution = ({
   <div className="flex size-full flex-col p-4">
     <div className="flex items-start justify-between">
       <div>
-        <p className="font-medium text-2xl text-foreground">
+        <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+          Quality
+        </p>
+        <p className="mt-2 font-medium text-2xl text-foreground">
           Quality Distribution
         </p>
       </div>
       <div className="text-right">
-        <span className="font-medium text-4xl text-foreground tabular-nums">
+        <span className="font-medium text-4xl text-foreground tabular-nums tracking-tight">
           {averageQuality}
           <span className="font-light text-foreground-dimmed text-xl">%</span>
         </span>
@@ -182,7 +185,14 @@ export const OptimizationBreakdown = ({
 
   return (
     <div className="flex h-full flex-col p-4">
-      <p className="font-medium text-2xl text-foreground">Product Readiness</p>
+      <div>
+        <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+          Optimization
+        </p>
+        <p className="mt-2 font-medium text-2xl text-foreground">
+          Product Readiness
+        </p>
+      </div>
 
       <div className="mt-auto flex h-2 w-full overflow-hidden bg-accent-foreground">
         {segments.map((segment) => {
@@ -235,7 +245,7 @@ export const ProductsWinRateTrend = ({
 }: ProductsWinRateTrend.Props) => {
   if (data.length < 2)
     return (
-      <div className="flex h-64 min-h-64 flex-col items-center justify-center gap-2 text-center text-foreground-dimmed">
+      <div className="flex h-64 min-h-64 flex-1 flex-col items-center justify-center gap-2 text-center text-foreground-dimmed">
         <TrendDownIcon className="size-24" />
         Not enough data for trend. <br />
         Run more simulations to see history.
@@ -248,30 +258,44 @@ export const ProductsWinRateTrend = ({
   }));
 
   const [minimum, maximum] = (() => {
-    const minimum = Math.min(...data);
-    const maximum = Math.max(...data);
-    const padding = minimum === maximum ? 6 : 4;
-    return [minimum - padding, maximum + padding];
+    const lowest = Math.min(...data);
+    const highest = Math.max(...data);
+    const padding = lowest === highest ? 6 : 4;
+
+    return [
+      Math.max(0, Math.floor((lowest - padding) / 5) * 5),
+      Math.min(100, Math.ceil((highest + padding) / 5) * 5),
+    ];
   })();
 
   return (
-    <div>
+    <div className="flex flex-1 flex-col">
       <div className="mb-4 flex items-center justify-between p-4">
-        <p className="font-light text-foreground-dimmed uppercase tracking-widest">
+        <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
           Win Rate Trend
         </p>
         {change !== 0 && (
-          <span className={cn(change > 0 ? "text-success" : "text-error")}>
+          <span
+            className={cn(
+              "flex items-center gap-1.5 text-sm",
+              change > 0 ? "text-success" : "text-error",
+            )}
+          >
+            {change > 0 ? (
+              <TrendUpIcon className="size-6" />
+            ) : (
+              <TrendDownIcon className="size-6" />
+            )}
             {change > 0 ? "+" : ""}
             {change}%
           </span>
         )}
       </div>
-      <div className="h-64 min-h-64 w-full">
+      <div className="h-full min-h-64 w-full flex-1 px-4 pb-4">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={chart}
-            margin={{ top: 6, right: 0, left: 0, bottom: 0 }}
+            margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
           >
             <defs>
               <linearGradient
@@ -298,8 +322,25 @@ export const ProductsWinRateTrend = ({
               strokeOpacity={0.14}
               vertical={false}
             />
-            <XAxis dataKey="label" hide />
-            <YAxis hide domain={[minimum, maximum]} />
+            <XAxis
+              dataKey="label"
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "var(--color-foreground-dimmed)", fontSize: 11 }}
+              interval="preserveStartEnd"
+              minTickGap={64}
+              dy={8}
+            />
+            <YAxis
+              domain={[minimum, maximum]}
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "var(--color-foreground-dimmed)", fontSize: 11 }}
+              tickFormatter={(value: number) => `${value}%`}
+              allowDecimals={false}
+              tickCount={5}
+              width={44}
+            />
             <Tooltip
               cursor={{
                 stroke: "var(--color-foreground-dimmed)",
@@ -311,8 +352,10 @@ export const ProductsWinRateTrend = ({
                 if (typeof value !== "number") return null;
 
                 return (
-                  <div className="whitespace-nowrap border border-accent-foreground bg-background-rich px-2 py-1 shadow-sm">
-                    <span className="text-foreground">{label} </span>
+                  <div className="flex items-baseline gap-3 whitespace-nowrap border border-accent-foreground bg-background-rich px-3 py-1.5 shadow-sm">
+                    <span className="text-foreground-dimmed text-sm">
+                      {label}
+                    </span>
                     <span className="font-medium text-primary">{value}%</span>
                   </div>
                 );
@@ -336,12 +379,6 @@ export const ProductsWinRateTrend = ({
           </AreaChart>
         </ResponsiveContainer>
       </div>
-      {labels.length >= 2 && (
-        <div className="mt-2 flex justify-between px-4 font-light text-foreground-dimmed text-xs">
-          <span>{labels[0]}</span>
-          <span>{labels[labels.length - 1]}</span>
-        </div>
-      )}
     </div>
   );
 };

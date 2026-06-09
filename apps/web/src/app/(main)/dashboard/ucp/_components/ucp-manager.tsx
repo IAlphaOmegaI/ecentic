@@ -265,7 +265,7 @@ export const UcpManager = ({
     () => definitions.filter(({ key }) => Boolean(state[key])).length,
     [state],
   );
-  const score = Math.round((filledCount / definitions.length) * 100);
+  const _score = Math.round((filledCount / definitions.length) * 100);
 
   const coveredCount = useMemo(
     () => products.filter((p) => Boolean(productData[p.id])).length,
@@ -385,7 +385,7 @@ export const UcpManager = ({
           const product = row.original;
           return (
             <div className="flex items-center gap-3">
-              <div className="flex size-8 shrink-0 items-center justify-center bg-primary/10 font-semibold text-primary text-xs">
+              <div className="flex size-8 shrink-0 items-center justify-center border border-accent-foreground bg-background-dimmed font-medium text-foreground-dimmed text-xs">
                 {product.title.slice(0, 2).toUpperCase()}
               </div>
               <div>
@@ -408,16 +408,14 @@ export const UcpManager = ({
           return (
             <span
               className={cn(
-                "inline-flex items-center gap-1.5 px-2 py-0.5 font-medium text-xs",
-                hasData
-                  ? "bg-primary/10 text-primary"
-                  : "bg-accent-foreground text-foreground-dimmed",
+                "inline-flex items-center gap-1.5 font-medium text-xs",
+                hasData ? "text-success" : "text-foreground-dimmed",
               )}
             >
               <span
                 className={cn(
-                  "size-1.5 rounded-full",
-                  hasData ? "bg-primary" : "bg-foreground-dimmed/40",
+                  "size-1.5",
+                  hasData ? "bg-success" : "bg-accent-rich",
                 )}
               />
               {hasData ? "Complete" : "Missing"}
@@ -462,7 +460,7 @@ export const UcpManager = ({
   return (
     <div className="space-y-4">
       {/* Score card */}
-      {/* <div className="border border-accent-foreground bg-background">
+      {/* <div className="border border-accent-foreground bg-background-rich">
         <div className="flex items-center gap-6 p-5">
           <div className="relative size-14 shrink-0">
             <svg
@@ -532,7 +530,7 @@ export const UcpManager = ({
         <TabsPanel value="profile">
           <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
             {/* Fields */}
-            <div className="border border-accent-foreground bg-background">
+            <div className="border border-accent-foreground bg-background-rich">
               <div className="border-accent-foreground border-b px-4 py-2.5">
                 <p className="font-medium text-base text-foreground">
                   Profile Fields
@@ -552,7 +550,7 @@ export const UcpManager = ({
                         return (
                           <Icon
                             className={cn(
-                              "size-3.5 shrink-0 transition-colors",
+                              "size-6 shrink-0 transition-colors",
                               isComplete
                                 ? "text-primary"
                                 : "text-foreground-dimmed/40",
@@ -572,7 +570,7 @@ export const UcpManager = ({
                           onValueChange={(val) =>
                             setState((prev) => ({ ...prev, [field.key]: val }))
                           }
-                          className="h-7 flex-1 cursor-text border border-accent-foreground bg-background"
+                          className="h-7 flex-1 cursor-text border border-accent-foreground bg-background-dimmed"
                         >
                           <TextFieldInput
                             id={`ucp-field-${field.key}`}
@@ -633,14 +631,14 @@ export const UcpManager = ({
             {/* Right column */}
             <div className="flex flex-col gap-4">
               {/* JSON Preview */}
-              <div className="border border-accent-foreground bg-background">
+              <div className="border border-accent-foreground bg-background-rich">
                 <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-2.5">
                   <div className="flex items-center gap-2">
                     <p className="font-medium text-base text-foreground">
                       JSON Preview
                     </p>
                     {generation && (
-                      <span className="bg-primary/10 px-1.5 py-0.5 font-medium text-primary text-xs">
+                      <span className="font-medium text-primary text-xs">
                         AI-enhanced
                       </span>
                     )}
@@ -648,7 +646,7 @@ export const UcpManager = ({
                   <button
                     type="button"
                     onClick={handleCopy}
-                    className="flex items-center gap-1 rounded px-2 py-1 font-medium text-foreground-dimmed text-xs transition-colors hover:bg-accent-foreground hover:text-foreground"
+                    className="flex items-center gap-1 px-2 py-1 font-medium text-foreground-dimmed text-xs transition-colors hover:bg-background hover:text-foreground"
                   >
                     {copied ? (
                       <>
@@ -669,7 +667,7 @@ export const UcpManager = ({
               </div>
 
               {/* Install instructions */}
-              <div className="border border-accent-foreground bg-background">
+              <div className="border border-accent-foreground bg-background-rich">
                 <div className="border-accent-foreground border-b px-4 py-2.5">
                   <p className="font-medium text-base text-foreground">
                     Install
@@ -723,7 +721,7 @@ export const UcpManager = ({
 
         {/* Products tab */}
         <TabsPanel value="products">
-          <div className="mt-4 border border-accent-foreground bg-background">
+          <div className="mt-4 border border-accent-foreground bg-background-rich">
             <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
               <div className="flex items-center gap-4">
                 <div>

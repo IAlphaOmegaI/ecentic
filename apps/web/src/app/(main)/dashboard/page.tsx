@@ -12,7 +12,7 @@ import { cn, unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Link from "next/link";
 import { connection } from "next/server";
-import { type ReactNode, Suspense } from "react";
+import { Suspense } from "react";
 import { formatRelativeTime } from "@/lib/date";
 import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
@@ -21,32 +21,15 @@ import * as Store from "@/server/app/store";
 import { Environment } from "@/server/utils/environment";
 import { AgentVisitsPanel } from "./_components/agent-visits-panel";
 import { CompetitorsTable } from "./_components/competitors-table";
+import {
+  ClosingGutter,
+  Crosshair,
+  SectionGutter,
+  StatLabel,
+} from "./_components/grid";
 import { OverviewActions } from "./_components/overview-actions";
 import { OverviewCharts } from "./_components/overview-charts";
 import { ProductsTable } from "./_components/products-table";
-
-const Crosshair = ({ className }: { className?: string }) => (
-  <svg
-    aria-hidden
-    viewBox="0 0 12 12"
-    fill="none"
-    className={cn(
-      "pointer-events-none absolute z-10 size-3 text-accent-rich",
-      className,
-    )}
-  >
-    <path d="M6 0v12M0 6h12" stroke="currentColor" strokeWidth="1" />
-  </svg>
-);
-
-const SectionGutter = () => (
-  <div className="relative h-10 bg-grid-stripes">
-    <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-    <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-    <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-    <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-  </div>
-);
 
 export default () => (
   <div className="flex flex-col">
@@ -125,10 +108,7 @@ export default () => (
         </div>
       </div>
 
-      <div className="relative h-12 bg-grid-stripes">
-        <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-        <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-      </div>
+      <ClosingGutter />
     </div>
   </div>
 );
@@ -187,15 +167,6 @@ const LastUpdated = async () => {
     </div>
   );
 };
-
-const StatLabel = ({ label, icon }: { label: string; icon: ReactNode }) => (
-  <div className="flex items-center justify-between gap-2">
-    <p className="pr-12 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-      {label}
-    </p>
-    <span className="absolute top-5 right-5">{icon}</span>
-  </div>
-);
 
 const StatCards = async () => {
   await connection();
@@ -275,9 +246,7 @@ const StatCards = async () => {
       <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
         <StatLabel
           label="Overall Win Rate"
-          icon={
-            <GaugeIcon className="size-8 shrink-0 text-primary" />
-          }
+          icon={<GaugeIcon className="size-8 shrink-0 text-primary" />}
         />
         <div>
           <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
@@ -318,9 +287,7 @@ const StatCards = async () => {
       <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
         <StatLabel
           label="Products Scanned"
-          icon={
-            <RadarIcon className="size-8 shrink-0 text-warning" />
-          }
+          icon={<RadarIcon className="size-8 shrink-0 text-warning" />}
         />
         <div>
           <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
@@ -347,9 +314,7 @@ const StatCards = async () => {
         <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
           <StatLabel
             label="Top Performer"
-            icon={
-              <AwardIcon className="size-8 shrink-0 text-success" />
-            }
+            icon={<AwardIcon className="size-8 shrink-0 text-success" />}
           />
           <div>
             <p className="line-clamp-1 text-foreground">{top.title}</p>
@@ -373,9 +338,7 @@ const StatCards = async () => {
         <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
           <StatLabel
             label="Biggest Opportunity"
-            icon={
-              <BullseyeIcon className="size-8 shrink-0 text-error" />
-            }
+            icon={<BullseyeIcon className="size-8 shrink-0 text-error" />}
           />
           <div>
             <p className="line-clamp-1 text-foreground">{opportunity.title}</p>

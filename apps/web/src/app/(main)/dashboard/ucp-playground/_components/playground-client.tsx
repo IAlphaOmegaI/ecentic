@@ -48,13 +48,11 @@ const ProfileLine = ({
 }) => (
   <div className="flex flex-col gap-1">
     <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-      <span className="font-medium text-blue-400">Profile resolved</span>
+      <span className="font-medium text-primary">Profile resolved</span>
       <span
         className={cn(
-          "px-1.5 py-0.5 font-mono text-xs uppercase",
-          line.transport === "mcp"
-            ? "bg-primary/15 text-primary"
-            : "bg-yellow-500/15 text-yellow-400",
+          "font-mono text-xs uppercase",
+          line.transport === "mcp" ? "text-primary" : "text-warning",
         )}
       >
         {line.transport}
@@ -80,7 +78,7 @@ const ToolCallLine = ({
   <div className="flex flex-col gap-0.5">
     <div className="flex items-center gap-2">
       <span className="text-foreground-dimmed/50">▶</span>
-      <span className="font-mono font-semibold text-amber-400 text-sm">
+      <span className="font-mono font-semibold text-sm text-warning">
         {line.tool}
       </span>
       <span className="font-mono text-foreground-dimmed/60 text-xs">
@@ -108,14 +106,14 @@ const TextSegment = ({ text }: { text: string }) => (
 );
 
 const ErrorLine = ({ message }: { message: string }) => (
-  <div className="flex items-start gap-2 text-red-400">
+  <div className="flex items-start gap-2 text-error">
     <span className="shrink-0">✕</span>
     <span className="font-mono text-xs">{message}</span>
   </div>
 );
 
 const DoneLine = () => (
-  <div className="flex items-center gap-2 border-accent-foreground/30 border-t pt-2 text-primary">
+  <div className="flex items-center gap-2 border-accent-foreground/30 border-t pt-2 text-success">
     <span>✓</span>
     <span className="font-mono text-xs">Run complete</span>
   </div>
@@ -258,7 +256,7 @@ export const PlaygroundClient = () => {
   return (
     <div className="space-y-4">
       {/* Input panel */}
-      <div className="border border-accent-foreground bg-background">
+      <div className="border border-accent-foreground bg-background-rich">
         <div className="border-accent-foreground border-b px-4 py-2.5">
           <p className="font-medium text-base text-foreground">
             Store endpoint
@@ -319,22 +317,22 @@ export const PlaygroundClient = () => {
       </div>
 
       {/* Terminal output */}
-      <div className="border border-accent-foreground bg-background">
+      <div className="border border-accent-foreground bg-background-rich">
         <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-2.5">
           <div className="flex items-center gap-2">
             <p className="font-medium text-base text-foreground">Output</p>
             {phase === "running" && (
-              <span className="bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs">
+              <span className="font-medium text-primary text-xs uppercase tracking-[0.2em]">
                 live
               </span>
             )}
             {phase === "done" && (
-              <span className="bg-success/10 px-2 py-0.5 font-medium text-success text-xs">
+              <span className="font-medium text-success text-xs uppercase tracking-[0.2em]">
                 done
               </span>
             )}
             {phase === "error" && (
-              <span className="bg-error/10 px-2 py-0.5 font-medium text-error text-xs">
+              <span className="font-medium text-error text-xs uppercase tracking-[0.2em]">
                 error
               </span>
             )}
@@ -414,7 +412,7 @@ const CartResult = ({ lines }: { lines: LogLine[] }) => {
   const json = JSON.stringify(raw, null, 2);
 
   return (
-    <div className="border border-accent-foreground bg-background">
+    <div className="border border-accent-foreground bg-background-rich">
       <div className="border-accent-foreground border-b px-4 py-2.5">
         <p className="font-medium text-base text-foreground">Cart state</p>
         <p className="mt-0.5 font-light text-foreground-dimmed text-xs">

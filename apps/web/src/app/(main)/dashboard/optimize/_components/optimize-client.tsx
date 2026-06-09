@@ -1,6 +1,15 @@
 "use client";
 
-import { CheckIcon, LoaderIcon, XIcon } from "@zenncore/icons";
+import {
+  CheckIcon,
+  CircleBoltIcon,
+  HammerIcon,
+  LoaderIcon,
+  TrendDownIcon,
+  TrendUpIcon,
+  XIcon,
+} from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import {
@@ -13,10 +22,18 @@ import {
 import { useToastManager } from "@zenncore/web/components/toast";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import type { ReactNode } from "react";
 import { useState } from "react";
 import type { DashboardData, Type } from "@/server/app/optimization";
 import * as Optimization from "@/server/app/optimization";
 import type * as Product from "@/server/app/product";
+import {
+  ClosingGutter,
+  Crosshair,
+  SectionGutter,
+  SectionKicker,
+  StatLabel,
+} from "../../_components/grid";
 
 const CATEGORY_LABELS = {
   seo: "SEO",
@@ -26,8 +43,8 @@ const CATEGORY_LABELS = {
 } as const;
 
 const SEVERITY_CLASSES = {
-  high: "bg-error/10 px-1.5 py-0.5 font-medium text-error text-xs",
-  medium: "bg-warning/10 px-1.5 py-0.5 font-medium text-warning text-xs",
+  high: "font-medium text-error text-xs uppercase tracking-[0.2em]",
+  medium: "font-medium text-warning text-xs uppercase tracking-[0.2em]",
 } as const;
 
 const formatPublished = (date: string | Date | null) => {
@@ -35,10 +52,20 @@ const formatPublished = (date: string | Date | null) => {
   return new Date(date).toLocaleString();
 };
 
-const StatCard = ({ label, value }: { label: string; value: number }) => (
-  <div className="bg-background-rich p-4">
-    <p className="text-foreground-dimmed">{label}</p>
-    <p className="mt-2 text-4xl text-foreground tabular-nums">{value}</p>
+const StatCard = ({
+  label,
+  value,
+  icon,
+}: {
+  label: string;
+  value: number;
+  icon: ReactNode;
+}) => (
+  <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+    <StatLabel label={label} icon={icon} />
+    <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
+      {value}
+    </p>
   </div>
 );
 
@@ -49,7 +76,7 @@ const EmptyState = ({
   title: string;
   description?: string;
 }) => (
-  <div className="py-12 text-center">
+  <div className="bg-background-rich py-12 text-center">
     <p className="font-medium text-base text-foreground">{title}</p>
     {description && (
       <p className="mt-1 font-light text-foreground-dimmed text-xs">
@@ -66,16 +93,16 @@ const InsightCard = ({
   insight: DashboardData["diagnostics"]["insights"][number];
   productTitle: string;
 }) => (
-  <div className="bg-background-rich p-4">
-    <div className="mb-1 flex flex-wrap items-center gap-2">
+  <div className="bg-background-rich p-5 transition-colors hover:bg-background">
+    <div className="mb-1 flex flex-wrap items-center gap-3">
       <p className="font-medium text-foreground">{productTitle}</p>
-      <span className="border border-accent-foreground px-1.5 py-0.5 text-foreground-dimmed text-xs">
+      <span className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
         {CATEGORY_LABELS[insight.category]}
       </span>
       <span className={SEVERITY_CLASSES[insight.severity]}>
         {insight.severity.toUpperCase()}
       </span>
-      <span className="px-1.5 py-0.5 font-light text-foreground-dimmed text-xs">
+      <span className="font-light text-foreground-dimmed text-xs">
         {insight.winRate}% win rate
       </span>
     </div>
@@ -99,20 +126,20 @@ const PendingCard = ({
   onApprove: (productId: string) => void;
   onDismiss: (productId: string) => void;
 }) => (
-  <div className="bg-background p-4">
+  <div className="bg-background-rich p-5 transition-colors hover:bg-background">
     <div className="flex items-start justify-between gap-4">
       <div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-3">
           <p className="font-medium text-base text-foreground">
             {item.product.title}
           </p>
-          <span className="border border-accent-foreground px-1.5 py-0.5 text-foreground-dimmed text-xs">
+          <span className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
             Title + Description
           </span>
         </div>
-        <div className="mt-1 flex flex-wrap items-center gap-3">
-          <span className="bg-success/10 px-1.5 py-0.5 font-medium text-success text-xs">
-            +{item.estimatedLift}% est. lift
+        <div className="mt-2 flex flex-wrap items-center gap-3">
+          <span className="flex items-center gap-1.5 text-sm text-success">
+            <TrendUpIcon className="size-6" />+{item.estimatedLift}% est. lift
           </span>
           <span className="font-light text-foreground-dimmed text-xs">
             Win rate: {item.winRate}% · Models: {item.models.join(", ")}
@@ -166,7 +193,7 @@ const PublishedCard = ({
   record: Type;
   productTitle: string;
 }) => (
-  <div className="bg-background p-4">
+  <div className="bg-background-rich p-5 transition-colors hover:bg-background">
     <div className="flex items-start justify-between">
       <div>
         <p className="font-medium text-base text-foreground">{productTitle}</p>
@@ -209,7 +236,7 @@ const DismissedCard = ({
   busyProductId: string | null;
   onReconsider: (productId: string) => void;
 }) => (
-  <div className="bg-background p-4 opacity-80">
+  <div className="bg-background-rich p-5 opacity-80 transition-colors hover:bg-background">
     <div className="flex items-center justify-between gap-4">
       <p className="font-medium text-base text-foreground">{productTitle}</p>
       <Button
@@ -235,36 +262,33 @@ const DiagnosticsPanel = ({
 }: {
   insights: DashboardData["diagnostics"]["insights"];
   products: Record<string, Product.Type>;
-}) => {
-  if (insights.length === 0) return null;
-
-  return (
-    <div className="mb-4">
-      <div className="border-accent-foreground border-b p-4">
-        <p className="font-medium text-2xl text-foreground">
-          Diagnostics for low win rate
-        </p>
-        <p className="font-light text-foreground-dimmed text-lg">
-          These recommendations cover SEO/data-quality/platform issues in
-          addition to listing text optimizations.
-        </p>
-      </div>
-      <div className="max-h-64 overflow-y-auto">
-        <div className="space-y-px bg-accent-foreground">
-          {insights.map((insight) => (
-            <InsightCard
-              key={`${insight.productId}-${insight.category}-${insight.message}`}
-              insight={insight}
-              productTitle={
-                products[insight.productId]?.title ?? "Unknown product"
-              }
-            />
-          ))}
-        </div>
+}) => (
+  <div>
+    <div className="border-accent-foreground border-b p-4">
+      <SectionKicker>01 — Diagnostics</SectionKicker>
+      <p className="mt-2 font-medium text-2xl text-foreground">
+        Diagnostics for low win rate
+      </p>
+      <p className="mt-1 font-light text-foreground-dimmed text-lg">
+        These recommendations cover SEO/data-quality/platform issues in addition
+        to listing text optimizations.
+      </p>
+    </div>
+    <div className="max-h-64 overflow-y-auto">
+      <div className="space-y-px bg-accent-foreground">
+        {insights.map((insight) => (
+          <InsightCard
+            key={`${insight.productId}-${insight.category}-${insight.message}`}
+            insight={insight}
+            productTitle={
+              products[insight.productId]?.title ?? "Unknown product"
+            }
+          />
+        ))}
       </div>
     </div>
-  );
-};
+  </div>
+);
 
 export const OptimizeClient = ({ data }: { data: DashboardData }) => {
   const router = useRouter();
@@ -357,8 +381,6 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
 
   const primaryShopifyStore = data.shopifyStores[0] ?? null;
 
-  console.log("primaryShopifyStore", primaryShopifyStore);
-
   const [handleOptimizeStore, isOptimizingStore] = useAsyncAction(async () => {
     if (!primaryShopifyStore) return;
     const result = await Optimization.optimizeStoreForAgents({
@@ -392,17 +414,29 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
 
   const { pending, published, dismissed, products, diagnostics } = data;
 
+  const hasDiagnostics = diagnostics.insights.length > 0;
+  const queueKicker = hasDiagnostics ? "02" : "01";
+
   return (
     <div className="flex flex-col">
       <div className="-mx-8 border-accent-foreground border-b">
-        <div className="mx-8 flex items-baseline justify-between px-6 py-8">
+        <div className="mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="font-medium text-4xl text-foreground">
-              Optimization Center
-            </h1>
-            <p className="mt-1 font-light text-2xl text-foreground-dimmed">
+            <div className="flex items-center gap-2.5 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+              <span
+                className={cn(
+                  "size-2",
+                  pending.length > 0 ? "bg-success" : "bg-accent-rich",
+                )}
+              />
               {pending.length} pending suggestion
               {pending.length === 1 ? "" : "s"}
+            </div>
+            <h1 className="mt-3 font-medium text-4xl text-foreground">
+              Optimization Center
+            </h1>
+            <p className="mt-1 font-light text-foreground-dimmed text-lg">
+              Approve AI-improved listings and push them straight to your store.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -441,39 +475,61 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
       </div>
 
       <div className="-mx-8 border-accent-foreground border-b">
-        <div className="mx-8">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-3">
             <StatCard
               label="Low win-rate products"
               value={diagnostics.lowWinRateCount}
+              icon={<TrendDownIcon className="size-8 shrink-0 text-error" />}
             />
             <StatCard
               label="Auto-publish eligible"
               value={diagnostics.publishableCount}
+              icon={<CircleBoltIcon className="size-8 shrink-0 text-success" />}
             />
             <StatCard
               label="Manual-fix only"
               value={diagnostics.nonPublishableCount}
+              icon={<HammerIcon className="size-8 shrink-0 text-warning" />}
             />
           </div>
         </div>
       </div>
 
-      <div className="h-8" />
+      <SectionGutter />
 
-      <div className="-mx-8 mb-12 border-accent-foreground border-t border-b">
-        <div className="mx-8">
-          <DiagnosticsPanel
-            insights={diagnostics.insights}
-            products={products}
-          />
+      {hasDiagnostics && (
+        <>
+          <div className="-mx-8 border-accent-foreground border-t border-b">
+            <div className="mx-8 bg-background-rich">
+              <DiagnosticsPanel
+                insights={diagnostics.insights}
+                products={products}
+              />
+            </div>
+          </div>
+
+          <SectionGutter />
+        </>
+      )}
+
+      <div className="-mx-8 border-accent-foreground border-t border-b">
+        <div className="mx-8 bg-background-rich">
+          <div className="border-accent-foreground border-b p-4">
+            <SectionKicker>{queueKicker} — Optimization Queue</SectionKicker>
+            <p className="mt-2 font-medium text-2xl text-foreground">
+              Listing Suggestions
+            </p>
+          </div>
 
           <Tabs defaultValue="pending">
-            <TabsList className="w-full border-0 border-t">
+            <TabsList className="w-full border-0">
               <TabsIndicator className="h-full" />
               <Tab value="pending" className="flex-1">
                 Pending{" "}
-                <span className="ml-1 bg-white/20 px-1 text-xs">
+                <span className="ml-1 text-xs tabular-nums">
                   {pending.length}
                 </span>
               </Tab>
@@ -552,6 +608,8 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
           </Tabs>
         </div>
       </div>
+
+      <ClosingGutter />
     </div>
   );
 };
