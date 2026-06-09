@@ -138,7 +138,7 @@ const ProductDetailContent = async ({
       <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8">
           <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
-            <div className="flex flex-col justify-between bg-background-dimmed p-4">
+            <div className="flex flex-col justify-between bg-background-rich p-4">
               <p className="text-foreground-dimmed">Win Rate</p>
               <div className="mt-2 flex items-baseline gap-1.5">
                 <span
@@ -163,7 +163,7 @@ const ProductDetailContent = async ({
               </div>
             </div>
 
-            <div className="flex flex-col justify-between bg-background-dimmed p-4">
+            <div className="flex flex-col justify-between bg-background-rich p-4">
               <p className="text-foreground-dimmed">Data Quality</p>
               <div className="mt-2 flex items-baseline gap-1.5">
                 <span
@@ -188,7 +188,7 @@ const ProductDetailContent = async ({
               </div>
             </div>
 
-            <div className="flex flex-col justify-between bg-background-dimmed p-4">
+            <div className="flex flex-col justify-between bg-background-rich p-4">
               <p className="text-foreground-dimmed">Simulations Run</p>
               <span className="mt-2 text-4xl text-foreground tabular-nums">
                 {simulations.length}
@@ -199,7 +199,7 @@ const ProductDetailContent = async ({
               </p>
             </div>
 
-            <div className="flex flex-col justify-between bg-background-dimmed p-4">
+            <div className="flex flex-col justify-between bg-background-rich p-4">
               <p className="text-foreground-dimmed">Best Model</p>
               {models.length > 0 ? (
                 <>
@@ -265,7 +265,7 @@ const PageSkeleton = () => (
       <div className="mx-8">
         <div className="grid h-39 min-h-39 grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
           {["a", "b", "c", "d"].map((key) => (
-            <div key={key} className="bg-background-dimmed p-4">
+            <div key={key} className="bg-background-rich p-4">
               <div className="h-4 w-28 animate-pulse bg-foreground/10" />
               <div className="mt-4 h-10 w-20 animate-pulse bg-foreground/10" />
               <div className="mt-3 h-1 w-full animate-pulse bg-foreground/10" />

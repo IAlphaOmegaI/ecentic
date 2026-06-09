@@ -79,7 +79,7 @@ const SimulationsSkeleton = () => (
             "Competitors selected",
             "Estimated scan simulations",
           ].map((label) => (
-            <div key={label} className="bg-background-dimmed p-4">
+            <div key={label} className="bg-background-rich p-4">
               <p className="font-light text-foreground-dimmed">{label}</p>
               <div className="mt-2 h-10 w-16 animate-pulse bg-foreground/10" />
             </div>
@@ -91,7 +91,7 @@ const SimulationsSkeleton = () => (
     <div className="h-8" />
     <div className="-mx-8 border-accent-foreground border-t border-b">
       <div className="mx-8">
-        <div className="bg-background-dimmed">
+        <div className="bg-background-rich">
           <div className="border-accent-foreground border-b p-4">
             <div className="h-7 w-52 animate-pulse bg-foreground/10" />
             <div className="mt-2 h-4 w-80 animate-pulse bg-foreground/10" />
@@ -105,7 +105,7 @@ const SimulationsSkeleton = () => (
     <div className="h-8" />
     <div className="-mx-8 mb-12 border-accent-foreground border-t border-b">
       <div className="mx-8">
-        <div className="bg-background-dimmed">
+        <div className="bg-background-rich">
           <div className="flex items-center justify-between border-accent-foreground border-b p-4">
             <div>
               <div className="h-7 w-44 animate-pulse bg-foreground/10" />
@@ -120,7 +120,7 @@ const SimulationsSkeleton = () => (
             <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-4">
               {["Phase", "Progress", "Wins / Losses", "Elapsed"].map(
                 (label) => (
-                  <div key={label} className="bg-background-dimmed p-3">
+                  <div key={label} className="bg-background-rich p-3">
                     <p className="font-light text-foreground-dimmed text-sm">
                       {label}
                     </p>
@@ -132,14 +132,14 @@ const SimulationsSkeleton = () => (
             <div className="h-1 w-full bg-accent-foreground" />
             <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-4">
               {["GPT-4", "Claude", "Gemini", "Perplexity"].map((label) => (
-                <div key={label} className="bg-background-dimmed p-3">
+                <div key={label} className="bg-background-rich p-3">
                   <div className="h-5 w-16 animate-pulse bg-foreground/10" />
                   <div className="mt-1 h-3.5 w-12 animate-pulse bg-foreground/10" />
                   <div className="mt-1 h-3.5 w-16 animate-pulse bg-foreground/10" />
                 </div>
               ))}
             </div>
-            <div className="h-72 border border-accent-foreground bg-background-dimmed p-3">
+            <div className="h-72 border border-accent-foreground bg-background-rich p-3">
               <div className="h-3.5 w-72 animate-pulse bg-foreground/10" />
             </div>
           </div>

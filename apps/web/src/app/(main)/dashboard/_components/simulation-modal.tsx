@@ -184,7 +184,7 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
                       {providers.map((provider) => (
                         <div
                           key={provider.model}
-                          className="flex aspect-square flex-col bg-background-dimmed p-4"
+                          className="flex aspect-square flex-col bg-background-rich p-4"
                         >
                           <Image
                             src={provider.logo}
@@ -286,7 +286,7 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
                         return (
                           <div
                             key={model}
-                            className="flex items-center justify-between bg-background-dimmed px-4 py-3"
+                            className="flex items-center justify-between bg-background-rich px-4 py-3"
                           >
                             <div className="flex items-center gap-2">
                               {provider && (
@@ -476,7 +476,7 @@ const CompletePhaseModal = ({
       transition={Spring.Gentle}
     >
       <Motion.Stagger stagger={0.08}>
-        <Motion.Up className="mb-6 grid grid-cols-[1fr_auto] gap-px border border-accent-foreground bg-background-dimmed">
+        <Motion.Up className="mb-6 grid grid-cols-[1fr_auto] gap-px border border-accent-foreground bg-background-rich">
           <div className="bg-background-rich px-6 py-6">
             <p className="mb-1 font-light text-foreground-dimmed text-xs uppercase tracking-widest">
               Overall Win Rate
@@ -540,7 +540,7 @@ const CompletePhaseModal = ({
               return (
                 <div
                   key={provider.id}
-                  className="flex flex-col gap-3 bg-background-dimmed px-4 py-4"
+                  className="flex flex-col gap-3 bg-background-rich px-4 py-4"
                 >
                   <Image
                     src={provider.logo}

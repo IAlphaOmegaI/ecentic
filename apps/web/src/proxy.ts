@@ -67,6 +67,8 @@ const prefersMarkdown = (accept: string | null) =>
 export const proxy = async (request: Request) => {
   const { pathname } = request.nextUrl;
 
+  if (process.env.NODE_ENV === "development") return Response.next();
+
   if (
     request.method === "GET" &&
     pathname === "/" &&
@@ -77,10 +79,9 @@ export const proxy = async (request: Request) => {
     return Response.rewrite(url);
   }
 
-  if (process.env.NODE_ENV === "development") return Response.next();
 
   const user = await Authentication.getProxiedCurrentUser();
-  const role = user.success ? (user.data.role ?? "public") : "public";
+  const role = user.success ? (user.data?.role ?? "public") : "public";
 
   const [access, redirectTo] = (() => {
     switch (role) {

@@ -147,13 +147,13 @@ export const SimulationsClient = ({
       <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8">
           <div className="grid grid-cols-1 gap-px bg-accent-foreground xl:grid-cols-3">
-            <div className="bg-background-dimmed p-4">
+            <div className="bg-background-rich p-4">
               <p className="font-light text-foreground-dimmed">Products</p>
               <p className="mt-2 text-4xl text-foreground tabular-nums">
                 {productCount}
               </p>
             </div>
-            <div className="bg-background-dimmed p-4">
+            <div className="bg-background-rich p-4">
               <p className="font-light text-foreground-dimmed">
                 Competitors selected
               </p>
@@ -161,7 +161,7 @@ export const SimulationsClient = ({
                 {selectedCompetitorCount}
               </p>
             </div>
-            <div className="bg-background-dimmed p-4">
+            <div className="bg-background-rich p-4">
               <p className="font-light text-foreground-dimmed">
                 Estimated scan simulations
               </p>
@@ -176,7 +176,7 @@ export const SimulationsClient = ({
       <div className="h-8" />
       <div className="-mx-8 border-accent-foreground border-t border-b">
         <div className="mx-8">
-          <div className="bg-background-dimmed">
+          <div className="bg-background-rich">
             <div className="border-accent-foreground border-b p-4">
               <h2 className="font-medium text-2xl text-foreground">
                 Competitor Discovery
@@ -200,7 +200,7 @@ export const SimulationsClient = ({
       <div className="h-8" />
       <div className="-mx-8 mb-12 border-accent-foreground border-t border-b">
         <div className="mx-8">
-          <div className="bg-background-dimmed">
+          <div className="bg-background-rich">
             <div className="flex items-center justify-between border-accent-foreground border-b p-4">
               <div>
                 <h2 className="font-medium text-2xl text-foreground">
@@ -238,19 +238,19 @@ export const SimulationsClient = ({
             ) : (
               <div className="space-y-4 p-4">
                 <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-4">
-                  <div className="bg-background-dimmed p-3">
+                  <div className="bg-background-rich p-3">
                     <p className="font-light text-foreground-dimmed text-sm">
                       Phase
                     </p>
                     <p className="text-foreground capitalize">{phase}</p>
                   </div>
-                  <div className="bg-background-dimmed p-3">
+                  <div className="bg-background-rich p-3">
                     <p className="font-light text-foreground-dimmed text-sm">
                       Progress
                     </p>
                     <p className="text-foreground">{stats.progress}%</p>
                   </div>
-                  <div className="bg-background-dimmed p-3">
+                  <div className="bg-background-rich p-3">
                     <p className="font-light text-foreground-dimmed text-sm">
                       Wins / Losses
                     </p>
@@ -258,7 +258,7 @@ export const SimulationsClient = ({
                       {stats.wins} / {stats.losses}
                     </p>
                   </div>
-                  <div className="bg-background-dimmed p-3">
+                  <div className="bg-background-rich p-3">
                     <p className="font-light text-foreground-dimmed text-sm">
                       Elapsed
                     </p>
@@ -277,7 +277,7 @@ export const SimulationsClient = ({
                   {models.map(({ id, label, logo }) => (
                     <div
                       key={id}
-                      className="flex flex-col bg-background-dimmed p-3"
+                      className="flex flex-col bg-background-rich p-3"
                     >
                       <Image
                         src={logo}
@@ -384,7 +384,7 @@ const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
   return (
     <div className="space-y-4 p-4">
       <div className="grid grid-cols-2 gap-px bg-accent-foreground sm:grid-cols-4">
-        <div className="flex items-center gap-3 bg-background-dimmed p-4">
+        <div className="flex items-center gap-3 bg-background-rich p-4">
           <AwardIcon className={cn("size-10", winRateColor)} />
           <div>
             <p className={cn("font-medium text-2xl", winRateColor)}>
@@ -395,7 +395,7 @@ const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3 bg-background-dimmed p-4">
+        <div className="flex items-center gap-3 bg-background-rich p-4">
           <ShoppingCartIcon className="size-10 text-primary" />
           <div>
             <p className="font-medium text-2xl text-primary">{count}</p>
@@ -404,14 +404,14 @@ const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3 bg-background-dimmed p-4">
+        <div className="flex items-center gap-3 bg-background-rich p-4">
           <TrendUpIcon className="size-10 text-success" />
           <div>
             <p className="font-medium text-2xl text-success">{wins}</p>
             <p className="font-light text-foreground-dimmed text-sm">Wins</p>
           </div>
         </div>
-        <div className="flex items-center gap-3 bg-background-dimmed p-4">
+        <div className="flex items-center gap-3 bg-background-rich p-4">
           <TrendDownIcon className="size-10 text-error" />
           <div>
             <p className="font-medium text-2xl text-error">{losses}</p>
@@ -427,7 +427,7 @@ const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
           const rates = modelRates[id];
           const rate = rates?.rate ?? 0;
           return (
-            <div key={id} className="flex flex-col bg-background-dimmed p-4">
+            <div key={id} className="flex flex-col bg-background-rich p-4">
               <Image
                 src={logo}
                 alt={label}

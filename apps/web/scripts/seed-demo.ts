@@ -1,20 +1,29 @@
 /**
  * Demo seeder — fills the dashboard with realistic data for a client demo.
  *
- * Attaches a fully-populated "Écentic" Shopify store (consumer electronics &
- * audio) to an existing user account, seeding products, competitors, a 30-day
- * scan history with simulations, AI agent traffic, listing optimizations, a UCP
- * profile and an active subscription. Idempotent: re-running wipes the target
- * user's prior demo data first.
+ * Seeds competitors, a 30-day scan history with simulations, AI agent traffic,
+ * listing optimizations, a UCP profile and an active subscription for a user.
+ *
+ * Two modes (auto-detected):
+ *   - attach: a real OAuth Shopify store (one with a store_account write token)
+ *     exists for the user. Analytics are layered onto its REAL synced products,
+ *     so published optimizations write back to the live store. The fabricated
+ *     placeholder store and any same-shop duplicate connections are removed.
+ *   - create: no real store found — fabricates a demo store + products.
+ *
+ * Idempotent and safe: re-running only wipes regenerated analytics + the
+ * placeholder/duplicate store rows. It never deletes the target store, its
+ * products, or its token.
  *
  * Usage:
- *   bun scripts/seed-demo.ts                       # defaults to contact@ecentic.ai
+ *   bun scripts/seed-demo.ts                        # auto-detect store, contact@ecentic.ai
+ *   bun scripts/seed-demo.ts --store=<storeId>      # attach to a specific store
  *   bun scripts/seed-demo.ts --email=foo@bar.com --password=Secret123!
  */
 
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { db, schema } from "@/server/database";
 
 // ---------------------------------------------------------------------------
@@ -29,7 +38,10 @@ const parseArgs = () => {
   }
   return {
     email: args.get("email") ?? "contact@ecentic.ai",
-    password: args.get("password") ?? "EcenticDemo2026!",
+    // null = leave the existing password untouched (don't clobber a real one).
+    password: args.get("password") ?? null,
+    // target store id; when omitted the real OAuth store is auto-detected.
+    store: args.get("store") ?? null,
     products: Number.parseInt(args.get("products") ?? "24", 10),
   };
 };
@@ -58,6 +70,16 @@ const chunk = <T>(items: T[], size: number): T[][] => {
   for (let index = 0; index < items.length; index += size)
     out.push(items.slice(index, index + size));
   return out;
+};
+
+const hostnameOf = (value: string): string => {
+  try {
+    return new URL(
+      value.startsWith("http") ? value : `https://${value}`,
+    ).hostname.toLowerCase();
+  } catch {
+    return value.replace(/^https?:\/\//, "").toLowerCase();
+  }
 };
 
 const images = (handle: string, count: number) =>
@@ -903,12 +925,12 @@ const pageTypes = [
 // ---------------------------------------------------------------------------
 
 const seed = async () => {
-  const { email, password, products: productCount } = parseArgs();
-
-  const auth = betterAuth({
-    database: drizzleAdapter(db, { provider: "pg", schema }),
-    emailAndPassword: { enabled: true },
-  });
+  const {
+    email,
+    password,
+    store: storeArg,
+    products: productCount,
+  } = parseArgs();
 
   // --- Resolve the target user -------------------------------------------
   const [user] = await db
@@ -927,48 +949,99 @@ const seed = async () => {
   const userId = user.id;
   console.log(`Seeding demo data for ${email} (${userId})`);
 
-  // --- Reset password + verify so the demo login works -------------------
-  const context = await auth.$context;
-  const hash = await context.password.hash(password);
-
+  // --- Ensure the account can log in -------------------------------------
+  // Always verify email; only (re)set the password when --password is passed,
+  // so we never clobber the real password of a live account.
   await db
     .update(schema.user)
     .set({ emailVerified: true })
     .where(eq(schema.user.id, userId));
 
-  const [credential] = await db
-    .select({ id: schema.account.id })
-    .from(schema.account)
-    .where(
-      and(
-        eq(schema.account.userId, userId),
-        eq(schema.account.providerId, "credential"),
-      ),
-    )
-    .limit(1);
-
-  if (credential) {
-    await db
-      .update(schema.account)
-      .set({ password: hash, updatedAt: new Date() })
-      .where(eq(schema.account.id, credential.id));
-  } else {
-    await db.insert(schema.account).values({
-      id: id(),
-      userId,
-      accountId: userId,
-      providerId: "credential",
-      password: hash,
+  if (password) {
+    const auth = betterAuth({
+      database: drizzleAdapter(db, { provider: "pg", schema }),
+      emailAndPassword: { enabled: true },
     });
+    const context = await auth.$context;
+    const hash = await context.password.hash(password);
+
+    const [credential] = await db
+      .select({ id: schema.account.id })
+      .from(schema.account)
+      .where(
+        and(
+          eq(schema.account.userId, userId),
+          eq(schema.account.providerId, "credential"),
+        ),
+      )
+      .limit(1);
+
+    if (credential) {
+      await db
+        .update(schema.account)
+        .set({ password: hash, updatedAt: new Date() })
+        .where(eq(schema.account.id, credential.id));
+    } else {
+      await db.insert(schema.account).values({
+        id: id(),
+        userId,
+        accountId: userId,
+        providerId: "credential",
+        password: hash,
+      });
+    }
   }
 
-  // --- Wipe prior demo data for this user (idempotent) -------------------
-  console.log("Clearing prior demo data...");
-  await db.delete(schema.scan).where(eq(schema.scan.userId, userId));
-  await db.delete(schema.product).where(eq(schema.product.userId, userId));
+  // --- Resolve the target store ------------------------------------------
+  // Prefer a real OAuth store (one with a store_account write token). Only the
+  // fabricated placeholder (ecentic-demo.myshopify.com) is ever deleted, so a
+  // genuine connected store + its token are never destroyed by re-runs.
+  const DEMO_DOMAIN = "ecentic-demo.myshopify.com";
+
+  const stores = await db
+    .select()
+    .from(schema.store)
+    .where(eq(schema.store.userId, userId));
+
+  const accounts = stores.length
+    ? await db
+        .select({ storeId: schema.store_account.storeId })
+        .from(schema.store_account)
+        .where(
+          inArray(
+            schema.store_account.storeId,
+            stores.map((store) => store.id),
+          ),
+        )
+    : [];
+  const tokened = new Set(accounts.map((account) => account.storeId));
+
+  const target = (() => {
+    if (storeArg) return stores.find((store) => store.id === storeArg) ?? null;
+    return (
+      stores.find(
+        (store) => tokened.has(store.id) && !store.domain.includes(DEMO_DOMAIN),
+      ) ?? null
+    );
+  })();
+
+  if (storeArg && !target) {
+    console.error(`No store "${storeArg}" found for ${email}.`);
+    process.exit(1);
+  }
+
+  const mode = target ? "attach" : "create";
+  const targetHost = target ? hostnameOf(target.domain) : null;
+
+  // --- Clean prior analytics (regenerated below) -------------------------
+  // Safe by construction: never deletes the target store, its products, or its
+  // token. Only user-scoped analytics + the placeholder and same-shop
+  // duplicate store rows are removed.
+  console.log(`Clearing prior demo analytics (${mode} mode)...`);
+  await db.delete(schema.scan).where(eq(schema.scan.userId, userId)); // cascades simulations (scanId)
   await db
     .delete(schema.competitor)
-    .where(eq(schema.competitor.userId, userId));
+    .where(eq(schema.competitor.userId, userId)); // cascades simulations (competitorId)
   await db
     .delete(schema.agentVisit)
     .where(eq(schema.agentVisit.userId, userId));
@@ -978,7 +1051,6 @@ const seed = async () => {
   await db
     .delete(schema.listingOptimization)
     .where(eq(schema.listingOptimization.userId, userId));
-  await db.delete(schema.store).where(eq(schema.store.userId, userId));
   await db
     .delete(schema.ucpProfile)
     .where(eq(schema.ucpProfile.userId, userId));
@@ -986,82 +1058,210 @@ const seed = async () => {
     .delete(schema.subscription)
     .where(eq(schema.subscription.userId, userId));
 
-  // --- Store -------------------------------------------------------------
-  const storeId = id();
-  const domain = "ecentic-demo.myshopify.com";
-  await db.insert(schema.store).values({
-    id: storeId,
-    userId,
-    storeId: String(between(60000000000, 69999999999)),
-    platform: "shopify",
-    name: "Écentic",
-    domain,
-    status: "connected",
-    trackerApiKey: `ec_live_${crypto.randomUUID().replace(/-/g, "")}`,
-    storefrontHosts: [domain, "ecentic.ai"],
-    lastSyncedAt: daysAgo(0, 3),
-    createdAt: daysAgo(60),
-    updatedAt: daysAgo(0, 3),
-  });
-
-  // --- Products ----------------------------------------------------------
-  const specs = productSpecs.slice(
-    0,
-    clamp(productCount, 3, productSpecs.length),
-  );
-
-  // The overview aggregates over the 10 *newest* products (skimForCurrentUser
-  // caps at 10). Interleave high/low win-rates across the timeline so any
-  // recent slice is a balanced sample (real top performer + real opportunity).
-  const winOrder = specs
-    .map((spec, index) => ({ index, win: spec.win }))
-    .sort((a, b) => b.win - a.win);
-  const interleaved: number[] = [];
-  let low = 0;
-  let high = winOrder.length - 1;
-  while (low <= high) {
-    interleaved.push(winOrder[low++].index);
-    if (low <= high) interleaved.push(winOrder[high--].index);
+  for (const store of stores) {
+    if (store.id === target?.id) continue; // never the target store
+    const isPlaceholder = store.domain.includes(DEMO_DOMAIN);
+    // Same shop connected more than once: a redundant duplicate row. The shop
+    // stays connected through the target, so removing the extra row is safe.
+    const isDuplicateShop =
+      targetHost !== null && hostnameOf(store.domain) === targetHost;
+    if (!isPlaceholder && !isDuplicateShop) continue; // keep unrelated stores
+    await db.delete(schema.store).where(eq(schema.store.id, store.id)); // cascades products + its store_account
+    console.log(
+      `Removed ${isPlaceholder ? "placeholder" : "duplicate"} store ${store.domain} (${store.id}).`,
+    );
   }
-  const rank: number[] = new Array(specs.length);
-  interleaved.forEach((specIndex, position) => {
-    rank[specIndex] = position;
-  });
 
-  const productRows = specs.map((spec, index) => {
-    const price = spec.price.toFixed(2);
-    const description = spec.description;
-    const structured =
-      spec.structured && description
-        ? jsonLd({ title: spec.title, price, sku: spec.sku, description })
-        : null;
-    const createdAt = daysAgo(0, rank[index] * 2 + 2); // rank 0 = newest
-    return {
-      id: id(),
-      storeId,
+  // --- Store + products --------------------------------------------------
+  // attach mode: layer analytics onto the real, already-synced products so
+  //   that published fixes write back to the live Shopify store.
+  // create mode: fabricate a demo store + products (no real store found).
+  const { storeId, domain, productRows } = await (async () => {
+    if (mode === "attach" && target) {
+      const host = (() => {
+        try {
+          return new URL(target.domain).hostname;
+        } catch {
+          return target.domain.replace(/^https?:\/\//, "");
+        }
+      })();
+
+      const real = await db
+        .select()
+        .from(schema.product)
+        .where(eq(schema.product.storeId, target.id));
+
+      if (real.length === 0) {
+        console.error(
+          `Store ${target.domain} has no products — sync the store first.`,
+        );
+        process.exit(1);
+      }
+
+      // Map curated win-rates back onto real products by title; fall back to a
+      // data-quality estimate for anything not in the seeded catalog.
+      const winByTitle = new Map(
+        productSpecs.map((spec) => [spec.title.trim().toLowerCase(), spec.win]),
+      );
+      const qualityKeys = [
+        "title",
+        "description",
+        "price",
+        "images",
+        "sku",
+        "structuredData",
+      ] as const;
+      const winFor = (product: (typeof real)[number]) => {
+        const matched = winByTitle.get(product.title.trim().toLowerCase());
+        if (matched !== undefined) return matched;
+        const filled = qualityKeys.filter((key) => {
+          const value = product[key];
+          if (!value) return false;
+          if (key === "images") return value !== "[]";
+          return true;
+        }).length;
+        return clamp(
+          Math.round((filled / qualityKeys.length) * 100 * 0.7) +
+            between(-6, 6),
+          12,
+          80,
+        );
+      };
+
+      const ranked = real.map((product) => ({
+        product,
+        win: winFor(product),
+      }));
+
+      // Interleave by win so the overview's 10-newest sample stays balanced.
+      const order = ranked
+        .map((entry, index) => ({ index, win: entry.win }))
+        .sort((a, b) => b.win - a.win);
+      const interleaved: number[] = [];
+      let low = 0;
+      let high = order.length - 1;
+      while (low <= high) {
+        interleaved.push(order[low++].index);
+        if (low <= high) interleaved.push(order[high--].index);
+      }
+      const rank: number[] = new Array(ranked.length);
+      interleaved.forEach((index, position) => {
+        rank[index] = position;
+      });
+
+      // Repoint createdAt (sample ordering) + updatedAt ("last scan") only —
+      // no other real product data is touched.
+      for (const [index, entry] of ranked.entries()) {
+        await db
+          .update(schema.product)
+          .set({
+            createdAt: daysAgo(0, rank[index] * 2 + 2),
+            updatedAt: daysAgo(0, 1),
+          })
+          .where(eq(schema.product.id, entry.product.id));
+      }
+
+      console.log(`Found ${real.length} real products on ${host}.`);
+
+      return {
+        storeId: target.id,
+        domain: host,
+        productRows: ranked.map(({ product, win }) => ({
+          id: product.id,
+          win,
+          title: product.title,
+          externalId: product.externalId,
+          url: product.url ?? `https://${host}/`,
+        })),
+      };
+    }
+
+    // create mode — fabricate the demo store + products.
+    const newStoreId = id();
+    await db.insert(schema.store).values({
+      id: newStoreId,
       userId,
-      externalId: `gid://shopify/Product/${between(7000000000000, 7999999999999)}`,
-      title: spec.title,
-      description,
-      price,
-      compareAtPrice: spec.compareAt ? spec.compareAt.toFixed(2) : null,
-      currency: "USD",
-      images: spec.imageCount > 0 ? images(spec.handle, spec.imageCount) : "[]",
-      url: `https://${domain}/products/${spec.handle}`,
-      sku: spec.hasSku ? spec.sku : null,
-      status: "active",
-      structuredData: structured,
-      syncedAt: daysAgo(0, 3),
-      createdAt,
-      updatedAt: daysAgo(0, 1),
-      win: spec.win,
-    };
-  });
+      storeId: String(between(60000000000, 69999999999)),
+      platform: "shopify",
+      name: "Écentic",
+      domain: DEMO_DOMAIN,
+      status: "connected",
+      trackerApiKey: `ec_live_${crypto.randomUUID().replace(/-/g, "")}`,
+      storefrontHosts: [DEMO_DOMAIN, "ecentic.ai"],
+      lastSyncedAt: daysAgo(0, 3),
+      createdAt: daysAgo(60),
+      updatedAt: daysAgo(0, 3),
+    });
 
-  await db
-    .insert(schema.product)
-    .values(productRows.map(({ win: _win, ...row }) => row));
-  console.log(`Inserted ${productRows.length} products.`);
+    const specs = productSpecs.slice(
+      0,
+      clamp(productCount, 3, productSpecs.length),
+    );
+    const winOrder = specs
+      .map((spec, index) => ({ index, win: spec.win }))
+      .sort((a, b) => b.win - a.win);
+    const interleaved: number[] = [];
+    let low = 0;
+    let high = winOrder.length - 1;
+    while (low <= high) {
+      interleaved.push(winOrder[low++].index);
+      if (low <= high) interleaved.push(winOrder[high--].index);
+    }
+    const rank: number[] = new Array(specs.length);
+    interleaved.forEach((specIndex, position) => {
+      rank[specIndex] = position;
+    });
+
+    const rows = specs.map((spec, index) => {
+      const price = spec.price.toFixed(2);
+      const description = spec.description;
+      const structured =
+        spec.structured && description
+          ? jsonLd({ title: spec.title, price, sku: spec.sku, description })
+          : null;
+      return {
+        id: id(),
+        storeId: newStoreId,
+        userId,
+        externalId: `gid://shopify/Product/${between(7000000000000, 7999999999999)}`,
+        title: spec.title,
+        description,
+        price,
+        compareAtPrice: spec.compareAt ? spec.compareAt.toFixed(2) : null,
+        currency: "USD",
+        images:
+          spec.imageCount > 0 ? images(spec.handle, spec.imageCount) : "[]",
+        url: `https://${DEMO_DOMAIN}/products/${spec.handle}`,
+        sku: spec.hasSku ? spec.sku : null,
+        status: "active",
+        structuredData: structured,
+        syncedAt: daysAgo(0, 3),
+        createdAt: daysAgo(0, rank[index] * 2 + 2),
+        updatedAt: daysAgo(0, 1),
+        win: spec.win,
+      };
+    });
+
+    await db
+      .insert(schema.product)
+      .values(rows.map(({ win: _win, ...row }) => row));
+
+    return {
+      storeId: newStoreId,
+      domain: DEMO_DOMAIN,
+      productRows: rows.map((row) => ({
+        id: row.id,
+        win: row.win,
+        title: row.title,
+        externalId: row.externalId,
+        url: row.url,
+      })),
+    };
+  })();
+
+  console.log(
+    `${mode === "attach" ? "Attached analytics to" : "Created demo store"} ${domain} (${productRows.length} products).`,
+  );
 
   // --- Competitors -------------------------------------------------------
   // The flagship (first) product of each brand is "selected" and created
@@ -1419,8 +1619,14 @@ const seed = async () => {
 
   console.log("\n✅ Demo seed complete.");
   console.log(`   Login:    ${email}`);
-  console.log(`   Password: ${password}`);
-  console.log(`   Store:    Écentic (${domain})`);
+  console.log(
+    `   Password: ${password ?? "(unchanged — pass --password to reset)"}`,
+  );
+  console.log(`   Store:    ${domain} (${mode} mode)`);
+  if (mode === "attach")
+    console.log(
+      "   Products are real & connected — published optimizations write to Shopify.",
+    );
 };
 
 void seed()

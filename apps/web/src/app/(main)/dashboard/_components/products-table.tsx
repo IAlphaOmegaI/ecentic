@@ -169,6 +169,7 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
 export const ProductsTable = ({
   rows,
   title = "Product Catalog",
+  kicker,
   action,
   paginated,
   pageCount,
@@ -178,7 +179,15 @@ export const ProductsTable = ({
   return (
     <>
       <div className="flex items-end justify-between border-accent-foreground border-b p-4">
-        <p className="font-medium text-2xl text-foreground">{title}</p>
+        <div>
+          {kicker && (
+            <p className="mb-2 flex items-center gap-2 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+              <span className="size-1.5 bg-primary" />
+              {kicker}
+            </p>
+          )}
+          <p className="font-medium text-2xl text-foreground">{title}</p>
+        </div>
         {action}
       </div>
       <div className="overflow-x-auto">
@@ -216,6 +225,7 @@ export namespace ProductsTable {
   > & {
     rows: Row[];
     title?: string;
+    kicker?: string;
     action?: ReactNode;
     paginated?: boolean;
     pageCount: number;

@@ -1,13 +1,12 @@
 "use client";
 
-import { ArrowRightIcon, BoxMinusIcon } from "@zenncore/icons";
+import { BoxMinusIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@zenncore/web/components/avatar";
-import { Button } from "@zenncore/web/components/button";
 import type { ColumnDef } from "@zenncore/web/components/data-table";
 import {
   DataTable,
@@ -16,7 +15,6 @@ import {
   DataTableProvider,
 } from "@zenncore/web/components/data-table";
 import Image from "next/image";
-import Link from "next/link";
 import { usePaginationChangeHandler } from "@/hooks/pagination";
 import { formatRelativeTime } from "@/lib/date";
 
@@ -108,6 +106,7 @@ export const CompetitorsTable = ({
   rows,
   pageCount,
   title = "Competitor Brands",
+  kicker,
   action,
   paginated = false,
 }: CompetitorsTable.Props) => {
@@ -116,7 +115,15 @@ export const CompetitorsTable = ({
   return (
     <>
       <div className="flex items-end justify-between border-accent-foreground border-b p-4">
-        <p className="font-medium text-2xl text-foreground">{title}</p>
+        <div>
+          {kicker && (
+            <p className="mb-2 flex items-center gap-2 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+              <span className="size-1.5 bg-primary" />
+              {kicker}
+            </p>
+          )}
+          <p className="font-medium text-2xl text-foreground">{title}</p>
+        </div>
         {action}
       </div>
       <div className="overflow-x-auto">
@@ -155,6 +162,7 @@ export namespace CompetitorsTable {
   > & {
     rows: Row[];
     title?: string;
+    kicker?: string;
     action?: React.ReactNode;
     paginated?: boolean;
     pageCount: number;

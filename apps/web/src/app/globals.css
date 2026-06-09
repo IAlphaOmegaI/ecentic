@@ -9,3 +9,13 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 5.5rem;
 }
+
+@utility bg-grid-stripes {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-accent-foreground),
+    var(--color-accent-foreground) 1px,
+    transparent 1px,
+    transparent 7px
+  );
+}
