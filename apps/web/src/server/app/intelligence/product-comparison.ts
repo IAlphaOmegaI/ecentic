@@ -7,6 +7,7 @@ import { isLoopFinished, streamText, tool } from "ai";
 import * as z from "zod";
 import {
   catalogSearchRequestSchema,
+  catalogSearchResponseSchema,
   discoveryProfileSchema,
 } from "./ucp-advanced-validator";
 
@@ -102,7 +103,7 @@ const callMcp = async (
   toolName: string,
   args: Record<string, unknown>,
   agentProfileUrl: string,
-): Promise<unknown> => {
+) => {
   const response = await resultify(() =>
     fetch(endpoint, {
       method: "POST",
@@ -113,11 +114,10 @@ const callMcp = async (
       },
       body: JSON.stringify({
         jsonrpc: "2.0",
-        id: Math.floor(Math.random() * 100_000),
+        id: crypto.randomUUID(),
         method: "tools/call",
         params: {
           name: toolName,
-          // UCP spec §3B: meta must be injected in every MCP tool invocation
           arguments: {
             meta: {
               "ucp-agent": { profile: agentProfileUrl },
@@ -226,20 +226,37 @@ const catalogFiltersSchema = z
 // UCP MCP transport §3A — search_catalog: payload nested under "catalog" key
 // Example per spec:
 //   arguments: { meta: {...}, catalog: { query, context, filters, pagination } }
-const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
-  search_catalog: tool({
+const buildMcpTools = (endpoints: string[], agentProfileUrl: string) => ({
+  search_catalogs: tool({
     description:
-      "Search the store product catalog. Returns matching products with IDs, titles, prices, and variant IDs. Pass query, context (currency, intent), and filters (price, categories) as top-level fields derived from the buyer request.",
+      "Search the stores product catalog. Returns matching products with IDs, titles, prices, and variant IDs. Pass query, context (currency, intent), and filters (price, categories) as top-level fields derived from the buyer request.",
     inputSchema: catalogSearchRequestSchema,
-    // outputSchema: catalogSearchResponseSchema,
+    outputSchema: z.array(
+      z.object({
+        endpoint: z.string(),
+        result: z.looseObject({
+          structuredContent: catalogSearchResponseSchema,
+        }),
+      }),
+    ),
     execute: async (request) => {
-      console.log("request", request);
-      return callMcp(
-        endpoint,
-        "search_catalog",
-        { catalog: request },
-        agentProfileUrl,
+      const results = await Promise.all(
+        endpoints.map(async (endpoint) => {
+          const searchCatalogResult = await callMcp(
+            endpoint,
+            "search_catalog",
+            { catalog: request },
+            agentProfileUrl,
+          );
+
+          return {
+            endpoint,
+            result: searchCatalogResult,
+          };
+        }),
       );
+
+      return results;
     },
   }),
 
@@ -261,23 +278,23 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
   // }),
 
   // UCP MCP binding — get_product input nested under "catalog"
-  get_product: tool({
-    description:
-      "Get full product details (variants, pricing, images) for a product by its global ID.",
-    inputSchema: z.object({
-      catalog: z.object({
-        id: z.string().describe("Product global ID from search results"),
-        selected: z
-          .array(z.object({ name: z.string(), label: z.string() }))
-          .optional(),
-        preferences: z.array(z.string()).optional(),
-        context: catalogContextSchema,
-        filters: catalogFiltersSchema,
-      }),
-    }),
-    execute: async ({ catalog }) =>
-      callMcp(endpoint, "get_product", { catalog }, agentProfileUrl),
-  }),
+  // get_product: tool({
+  //   description:
+  //     "Get full product details (variants, pricing, images) for a product by its global ID.",
+  //   inputSchema: z.object({
+  //     catalog: z.object({
+  //       id: z.string().describe("Product global ID from search results"),
+  //       selected: z
+  //         .array(z.object({ name: z.string(), label: z.string() }))
+  //         .optional(),
+  //       preferences: z.array(z.string()).optional(),
+  //       context: catalogContextSchema,
+  //       filters: catalogFiltersSchema,
+  //     }),
+  //   }),
+  //   execute: async ({ catalog }) =>
+  //     callMcp(endpoint, "get_product", { catalog }, agentProfileUrl),
+  // }),
 
   // // UCP §5 — cart creation: payload nested under "cart" key
   // create_cart: tool({
@@ -294,20 +311,20 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
   // }),
 
   // UCP §5 — cart update: id at top level, replacement payload under "cart" key
-  update_cart: tool({
-    description:
-      "Replace all line items in a cart (full replacement per UCP spec). id at top level, items under 'cart'.",
-    inputSchema: z.object({
-      id: z.string().describe("Cart ID"),
-      cart: z.object({
-        line_items: z
-          .array(lineItemSchema)
-          .describe("Complete new list (replaces all existing)"),
-      }),
-    }),
-    execute: async ({ id, cart }) =>
-      callMcp(endpoint, "update_cart", { id, cart }, agentProfileUrl),
-  }),
+  // update_cart: tool({
+  //   description:
+  //     "Replace all line items in a cart (full replacement per UCP spec). id at top level, items under 'cart'.",
+  //   inputSchema: z.object({
+  //     id: z.string().describe("Cart ID"),
+  //     cart: z.object({
+  //       line_items: z
+  //         .array(lineItemSchema)
+  //         .describe("Complete new list (replaces all existing)"),
+  //     }),
+  //   }),
+  //   execute: async ({ id, cart }) =>
+  //     callMcp(endpoint, "update_cart", { id, cart }, agentProfileUrl),
+  // }),
 
   // // UCP §5 — cart lookup: id at top level
   // get_cart: tool({
@@ -384,158 +401,254 @@ export type RunPlaygroundInput = {
   agentProfileUrl?: string;
 };
 
-export const runPlayground = async ({
-  storeUrl,
+export type StoreDiscovery = {
+  domain: string;
+  profileUrl: string;
+  transport: PlaygroundTransport;
+  endpoint: string;
+};
+
+export type ComparisonEvent =
+  | { kind: "search_params"; params: unknown }
+  | { kind: "store_profile"; storeUrl: string; discovery: StoreDiscovery }
+  | { kind: "store_searching"; storeUrl: string }
+  | { kind: "store_result"; storeUrl: string; result: unknown }
+  | { kind: "store_error"; storeUrl: string; message: string }
+  | { kind: "text"; text: string }
+  | { kind: "done" }
+  | { kind: "error"; message: string };
+
+export type RunStoreComparisonInput = {
+  storeUrls: string[];
+  query?: string;
+  agentProfileUrl?: string;
+};
+
+const normalizeStoreUrl = (storeUrl: string) => storeUrl.replace(/\/+$/, "");
+
+const discoverStore = async (
+  storeUrl: string,
+): Promise<
+  { success: true; data: StoreDiscovery } | { success: false; error: string }
+> => {
+  const domain = normalizeStoreUrl(storeUrl);
+  const profileUrl = `${domain}/.well-known/ucp`;
+
+  const businessProfileResponse = await resultify(() =>
+    fetch(profileUrl, {
+      headers: { Accept: "application/json" },
+      signal: AbortSignal.timeout(8_000),
+    }),
+  );
+
+  if (!businessProfileResponse.success) {
+    return {
+      success: false,
+      error: `Could not reach UCP profile at ${profileUrl}`,
+    };
+  }
+
+  const businessProfileText = await resultify(() =>
+    businessProfileResponse.data.text(),
+  );
+
+  if (!businessProfileText.success) {
+    return {
+      success: false,
+      error: "Could not read business profile response body",
+    };
+  }
+
+  const parsed = discoveryProfileSchema.safeParse(
+    JSON.parse(businessProfileText.data),
+  );
+
+  if (!parsed.success) {
+    return {
+      success: false,
+      error: parsed.error.message,
+    };
+  }
+
+  const shoppingServices = parsed.data.ucp.services["dev.ucp.shopping"];
+  const mcpShoppingService = shoppingServices?.find(
+    (shoppingService) => shoppingService.transport === "mcp",
+  );
+  const restShoppingService = shoppingServices?.find(
+    (shoppingService) => shoppingService.transport === "rest",
+  );
+  const endpoint =
+    mcpShoppingService?.endpoint ?? restShoppingService?.endpoint;
+  const transport = mcpShoppingService ? "mcp" : "rest";
+
+  if (!endpoint || !transport) {
+    return {
+      success: false,
+      error:
+        "No dev.ucp.shopping service found — store does not advertise MCP or REST shopping endpoints",
+    };
+  }
+
+  return {
+    success: true,
+    data: { domain, profileUrl, transport, endpoint },
+  };
+};
+
+export const unwrapMcpCatalogResult = async (
+  result: unknown,
+): Promise<unknown> => {
+  if (!result || typeof result !== "object") return result;
+
+  const record = result as Record<string, unknown>;
+  if ("error" in record) return record;
+
+  const content = record["content"];
+  if (!Array.isArray(content)) return result;
+
+  for (const part of content) {
+    if (
+      part &&
+      typeof part === "object" &&
+      "text" in part &&
+      typeof (part as { text: unknown }).text === "string"
+    ) {
+      const text = (part as { text: string }).text;
+      try {
+        return JSON.parse(text);
+      } catch {
+        return text;
+      }
+    }
+  }
+
+  return result;
+};
+
+export const extractCatalogProducts = async (result: unknown) => {
+  const unwrapped = unwrapMcpCatalogResult(result);
+  if (!unwrapped || typeof unwrapped !== "object") return [];
+
+  const record = unwrapped as Record<string, unknown>;
+  const candidates = [record["products"], record["items"], record["results"]];
+
+  for (const candidate of candidates) {
+    if (Array.isArray(candidate)) return candidate;
+  }
+
+  return [];
+};
+
+export const runStoreComparison = async ({
+  storeUrls,
   query,
   agentProfileUrl = AGENT_PROFILE,
-}: RunPlaygroundInput) => {
-  const streamable = createStreamableValue<PlaygroundEvent>();
-
-  const emit = (event: PlaygroundEvent) => streamable.update(event);
+}: RunStoreComparisonInput) => {
+  const streamable = createStreamableValue<ComparisonEvent>();
+  const emit = (event: ComparisonEvent) => streamable.update(event);
 
   (async () => {
     try {
-      const domain = storeUrl.replace(/\/+$/, "");
-      const profileUrl = `${domain}/.well-known/ucp`;
+      const domains = [
+        ...new Set(
+          storeUrls.map((url) => normalizeStoreUrl(url.trim())).filter(Boolean),
+        ),
+      ];
 
-      const businessProfileResponse = await resultify(() =>
-        fetch(profileUrl, {
-          headers: { Accept: "application/json" },
-          signal: AbortSignal.timeout(8_000),
+      if (domains.length < 2) {
+        emit({
+          kind: "error",
+          message: "Add at least two store URLs to compare.",
+        });
+        streamable.done();
+        return;
+      }
+
+      const buyerRequest = query?.trim() || "product";
+
+      const storeOutcomes = await Promise.all(
+        domains.map(async (storeUrl) => {
+          const discoveryResult = await discoverStore(storeUrl);
+
+          if (!discoveryResult.success) {
+            emit({
+              kind: "store_error",
+              storeUrl,
+              message: discoveryResult.error,
+            });
+            return {
+              storeUrl,
+              discovery: null,
+              error: discoveryResult.error,
+            };
+          }
+
+          const { data: discovery } = discoveryResult;
+          emit({ kind: "store_profile", storeUrl, discovery });
+
+          if (discovery.transport !== "mcp") {
+            const message =
+              "Store comparison currently supports MCP transport only.";
+            emit({ kind: "store_error", storeUrl, message });
+            return { storeUrl, discovery, error: message };
+          }
+
+          return { storeUrl, discovery, error: null };
         }),
       );
 
-      if (!businessProfileResponse.success) {
-        emit({
-          kind: "error",
-          message: `Could not reach Business UCP profile at ${profileUrl}. Make sure the store serves a valid /.well-known/ucp endpoint.`,
-        });
-        streamable.done();
-        return;
-      }
-
-      const businessProfileText = await resultify(() =>
-        businessProfileResponse.data.text(),
+      const mcpStores = storeOutcomes.filter(
+        (
+          storeOutcome,
+        ): storeOutcome is {
+          storeUrl: string;
+          discovery: StoreDiscovery;
+          error: null;
+        } => storeOutcome.discovery !== null && storeOutcome.error === null,
       );
 
-      if (!businessProfileText.success) {
-        emit({
-          kind: "error",
-          message: "Could not read business profile response body.",
-        });
-        streamable.done();
-
-        return;
-      }
-
-      const {
-        success: businessProfileSuccess,
-        data: businessProfile,
-        error,
-        // TODO: replace with UcpDiscoveryProfileSchema when updated
-      } = discoveryProfileSchema.safeParse(
-        JSON.parse(businessProfileText.data),
-      );
-
-      if (!businessProfileSuccess) {
-        console.error(error);
-        emit({
-          kind: "error",
-          message: error.message,
-        });
-        streamable.done();
-
-        return;
-      }
-
-      // 2. Discover transport and endpoint
-      const shoppingServices = businessProfile.ucp.services["dev.ucp.shopping"];
-
-      const mcpShoppingService = shoppingServices?.find(
-        (shoppingService) => shoppingService.transport === "mcp",
-      );
-      const restShoppingService = shoppingServices?.find(
-        (shoppingService) => shoppingService.transport === "rest",
-      );
-      const shoppingEndpoint =
-        mcpShoppingService?.endpoint ?? restShoppingService?.endpoint;
-      const shoppingTransport = mcpShoppingService ? "mcp" : "rest";
-
-      if (!shoppingEndpoint || !shoppingTransport) {
+      if (mcpStores.length < 2) {
         emit({
           kind: "error",
           message:
-            "No dev.ucp.shopping service found in the UCP profile. The store does not advertise MCP or REST shopping endpoints.",
+            "Need at least two MCP-enabled stores to compare. Check store URLs and UCP profiles.",
         });
-
         streamable.done();
         return;
       }
 
-      // const mcpClient = await createMCPClient({
-      //   transport: {
-      //     type: "http",
-      //     url: endpoint,
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //       Accept: "application/json",
-      //       "User-Agent": "UCP-Playground/1.0 (écentic; https://ecentic.ai)",
-      //     },
+      const endpoints = mcpStores.map(({ discovery }) => discovery.endpoint);
+      const storeCatalog = mcpStores.map(({ storeUrl, discovery }) => ({
+        domain: discovery.domain,
+        endpoint: discovery.endpoint,
+        storeUrl,
+      }));
 
-      //     // optional: provide an OAuth client provider for automatic authorization
-      //     // authProvider: myOAuthClientProvider,
+      const tools = buildMcpTools(endpoints, agentProfileUrl);
 
-      //     // optional: reject redirect responses to prevent SSRF
-      //     // redirect: "error",
-
-      //     fetch: createUcpMcpFetch(agentProfileUrl),
-      //   },
-      // });
-
-      // const toolNames = await mcpClient.tools();
-      // console.log("toolNames", toolNames);
-
-      emit({
-        kind: "profile",
-        transport: shoppingTransport,
-        endpoint: shoppingEndpoint,
-        profileUrl,
-        agentProfileUrl,
-      });
-
-      // 3. Build tools for the detected transport
-      // const tools =
-      //   transport === "mcp"
-      //     ? buildMcpTools(endpoint, AGENT_PROFILE)
-      //     : buildRestTools(endpoint, AGENT_PROFILE);
-
-      // TODO: Add REST tools
-      const tools = buildMcpTools(shoppingEndpoint, AGENT_PROFILE);
-
-      const searchQuery = query?.trim() || "product";
-
-      // 4. Run the agentic flow
       const agentResult = streamText({
         model: "google/gemini-3-flash",
-        system: `You are a UCP (Universal Commerce Protocol) shopping agent running a live integration test against a ${shoppingTransport.toUpperCase()} endpoint.
+        system: `You are a UCP shopping agent comparing catalog search results across multiple stores.
 
-Your job is to search the store catalog for products that match the buyer request.
+## Flow — follow in order
 
-## Parse the buyer request into search_catalog parameters
+1. Parse the buyer request into search_catalogs tool parameters.
+2. Call search_catalogs exactly once with those parameters. It queries every store endpoint in parallel.
+3. Compare the per-endpoint results and write 3–5 short paragraphs covering relevance, price/selection differences, gaps, and a buyer recommendation.
 
-Read the buyer request and derive tool arguments before calling search_catalog:
+## Parse buyer request into search_catalogs parameters
 
 - query — product keywords only (e.g. "wireless mouse"). Strip price, currency, and constraint phrases.
-- context.currency — ISO 4217 code when the buyer mentions a currency (e.g. "200lek(ALL)" → "ALL", "$50" → "USD"). Required whenever you set filters.price.
-- context.intent — optional; the full buyer request as background context.
-- filters.price.min / filters.price.max — price bounds in ISO 4217 minor units (e.g. 200 ALL → 20000 because ALL has 2 decimal places; $50 USD → 5000). Use max for "under/below/at most", min for "over/above/at least".
-- filters.categories — when the buyer names a category or product type that maps to catalog categories.
+- context.currency — ISO 4217 when mentioned (e.g. "200lek(ALL)" → "ALL", "$50" → "USD"). Required when filters.price is set.
+- context.intent — the full buyer request as background context.
+- filters.price.min / filters.price.max — bounds in ISO 4217 minor units (200 ALL → 20000; $50 USD → 5000).
+- filters.categories — when the buyer names a category.
 
-Only include fields you can infer from the request. Do not invent categories or IDs.
+Only include fields inferable from the request. Do not invent categories or IDs.
 
-## search_catalog argument shape
+## search_catalogs argument shape
 
-Pass a flat object (the tool schema is top-level, not nested under "catalog"):
+Pass a flat object (top-level fields, not nested under "catalog"):
 
 {
   "query": "<product keywords>",
@@ -550,15 +663,13 @@ Example for "wireless mouse under price 200lek(ALL)":
   "filters": { "price": { "max": 20000 } }
 }
 
-## Flow
+Stores being compared:
+${storeCatalog.map((store) => `${store.domain} (${store.storeUrl})`).join("\n")}
 
-1. Call search_catalog once with the derived parameters for: "${searchQuery}"
-2. Optionally call get_product for a result ID if you need full variant details.
+Reference store domains in your summary, not internal IDs.`,
+        prompt: `Buyer request: "${buyerRequest}"
 
-Use ONLY IDs returned by tools — never invent them. After finishing, write 2–3 sentences summarizing what you found.`,
-        prompt: `Buyer request: "${searchQuery}"
-
-Search the UCP ${shoppingTransport} catalog at ${shoppingEndpoint} (store: ${domain}).`,
+Call search_catalogs with parameters derived from this request, then compare results across all stores.`,
         tools,
         stopWhen: isLoopFinished(),
         providerOptions: gatewayOptions(),
@@ -566,24 +677,53 @@ Search the UCP ${shoppingTransport} catalog at ${shoppingEndpoint} (store: ${dom
 
       for await (const event of agentResult.fullStream) {
         switch (event.type) {
+          case "tool-call": {
+            if (event.toolName !== "search_catalogs") break;
+
+            const args = "input" in event ? event.input : undefined;
+            emit({ kind: "search_params", params: args });
+            for (const { storeUrl } of mcpStores) {
+              emit({ kind: "store_searching", storeUrl });
+            }
+            break;
+          }
+          case "tool-result": {
+            if (event.toolName !== "search_catalogs") break;
+
+            const output = "output" in event ? event.output : undefined;
+            if (!Array.isArray(output)) break;
+
+            for (const entry of output) {
+              if (!entry || typeof entry !== "object") continue;
+              const record = entry as {
+                endpoint?: string;
+                result?: {
+                  structuredContent: z.infer<
+                    typeof catalogSearchResponseSchema
+                  >;
+                };
+              };
+              if (!record.endpoint) continue;
+
+              const endpointToStoreUrl = new Map(
+                mcpStores.map(({ storeUrl, discovery }) => [
+                  discovery.endpoint,
+                  storeUrl,
+                ]),
+              );
+
+              const storeUrl =
+                endpointToStoreUrl.get(record.endpoint) ?? record.endpoint;
+              emit({
+                kind: "store_result",
+                storeUrl,
+                result: record.result?.structuredContent.products ?? null,
+              });
+            }
+            break;
+          }
           case "text-delta":
             emit({ kind: "text", text: event.text });
-            break;
-          case "tool-call":
-            emit({
-              kind: "tool_call",
-              id: event.toolCallId,
-              tool: event.toolName,
-              args: "input" in event ? event.input : undefined,
-            });
-            break;
-          case "tool-result":
-            emit({
-              kind: "tool_result",
-              id: event.toolCallId,
-              tool: event.toolName,
-              result: "output" in event ? event.output : undefined,
-            });
             break;
           case "error":
             emit({
@@ -599,7 +739,6 @@ Search the UCP ${shoppingTransport} catalog at ${shoppingEndpoint} (store: ${dom
 
       emit({ kind: "done" });
     } catch (error) {
-      console.error("error", error);
       emit({
         kind: "error",
         message: error instanceof Error ? error.message : "Unexpected error",

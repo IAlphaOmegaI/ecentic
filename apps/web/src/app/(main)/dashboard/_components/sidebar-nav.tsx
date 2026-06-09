@@ -1,10 +1,10 @@
 "use client";
 
 import {
+  BarChartIcon,
   ChartCircularIcon,
   CircleBoltIcon,
   CodeIcon,
-  DownloadIcon,
   GaugeIcon,
   GearIcon,
   RadarIcon,
@@ -59,6 +59,12 @@ const items = [
     icon: CircleBoltIcon,
     label: "UCP Playground",
     href: "/dashboard/ucp-playground",
+    exact: false,
+  },
+  {
+    icon: BarChartIcon,
+    label: "UCP Comparison",
+    href: "/dashboard/ucp-comparison",
     exact: false,
   },
   // {

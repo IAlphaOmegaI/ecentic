@@ -12,7 +12,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { runPlayground } from "@/server/app/intelligence/product-comparison";
+import { runPlayground } from "@/server/app/intelligence/ucp-playground";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 

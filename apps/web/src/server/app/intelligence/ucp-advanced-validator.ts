@@ -330,6 +330,103 @@ export const signalsSchema = z.record(signalNameSchema, z.unknown());
 //   webhook_url: "https://platform.example.com/webhooks/ucp/orders";
 // }
 
+const priceSchema = z.object({
+  amount: z
+    .number()
+    .describe("Amount in ISO 4217 minor units. Use 0 for free items."),
+  currency: z
+    .string()
+    .describe("ISO 4217 currency code (e.g., 'USD', 'EUR', 'GBP')."),
+});
+
+const priceRangeSchema = z.object({
+  min: z.number().optional().describe("Minimum price in ISO 4217 minor units."),
+  max: z.number().optional().describe("Maximum price in ISO 4217 minor units."),
+});
+
+const commonMessageSchema = z.object({
+  content: z.string().describe("Human-readable message."),
+  content_type: z
+    .enum(["plain", "markdown"])
+    .default("plain")
+    .describe("Content format."),
+  path: z
+    .string()
+    .optional()
+    .describe(
+      "RFC 9535 JSONPath to the component the message refers to (e.g., $.items[1]).",
+    ),
+  code: z
+    .string()
+    .optional()
+    .describe(
+      "Code identifying the type of message. Standard errors/warnings/infos are defined in specification, and have standardized semantics; freeform codes are permitted.",
+    ),
+});
+
+const messageSchema = z.discriminatedUnion("type", [
+  commonMessageSchema.extend({
+    type: z.literal("error").describe("Error message."),
+    severity: z
+      .enum([
+        "recoverable",
+        "requires_buyer_input",
+        "requires_buyer_review",
+        "unrecoverable",
+      ])
+      .describe(
+        "Reflects the resource state and recommended action. 'recoverable': platform can resolve by modifying inputs and retrying via API. 'requires_buyer_input': merchant requires information their API doesn't support collecting programmatically (checkout incomplete). 'requires_buyer_review': buyer must authorize before order placement due to policy, regulatory, or entitlement rules. 'unrecoverable': no valid resource exists to act on, retry with new resource or inputs. Errors with 'requires_' severity contribute to 'status: requires_escalation'. Enum:* recoverable, requires_buyer_input, requires_buyer_review, unrecoverable",
+      ),
+  }),
+  commonMessageSchema.extend({
+    type: z.literal("warning").describe("Message type discriminator."),
+    presentation: z
+      .string()
+      .optional()
+      .describe(
+        "Rendering contract for this warning. 'notice' (default): platform MUST display, MAY dismiss. 'disclosure': platform MUST display in proximity to the path-referenced component, MUST NOT hide or auto-dismiss. See specification for full contract.",
+      ),
+    image_url: z
+      .string()
+      .optional()
+      .describe(
+        "URL to a required visual element (e.g., warning symbol, energy class label).",
+      ),
+    url: z
+      .string()
+      .optional()
+      .describe(
+        "Reference URL for more information (e.g., regulatory site, registry entry, policy page).",
+      ),
+  }),
+  commonMessageSchema.extend({
+    type: z.literal("info").describe("Informational message."),
+  }),
+]);
+
+export const descriptionSchema = z.object({
+  plain: z.string().optional().describe("Plain text content."),
+  html: z
+    .string()
+    .optional()
+    .describe(
+      "	HTML-formatted content. Security: Platforms MUST sanitize before rendering—strip scripts, event handlers, and untrusted elements. Treat all rich text as untrusted input.",
+    ),
+  markdown: z.string().describe("Markdown-formatted content."),
+});
+
+export const categorySchema = z.object({
+  value: z
+    .string()
+    .describe("Category value or path (e.g., 'Apparel > Shirts', '1604')."),
+  taxonomy: z
+    .string()
+    .optional()
+    .describe(
+      "Source taxonomy. Well-known values: google_product_category, shopify, merchant.",
+    ),
+});
+
 const catalogContextSchema = z.looseObject({
   address_country: z
     .string()
@@ -378,36 +475,40 @@ const catalogContextSchema = z.looseObject({
   ),
 });
 
-const catalogPaginationRequestSchema = z.object({
-  cursor: z
-    .string()
-    .optional()
-    .describe("Opaque cursor from previous response."),
-  limit: z
-    .number()
-    .int()
-    .positive()
-    .optional()
-    .describe(
-      "Requested page size. Implementations MAY clamp to a lower maximum.",
-    ),
-});
+const catalogPaginationRequestSchema = z
+  .object({
+    cursor: z
+      .string()
+      .optional()
+      .describe("Opaque cursor from previous response."),
+    limit: z
+      .number()
+      .int()
+      .positive()
+      .optional()
+      .describe(
+        "Requested page size. Implementations MAY clamp to a lower maximum.",
+      ),
+  })
+  .describe("Pagination parameters for requests.");
 
-const catalogPaginationResponseSchema = z.object({
-  has_next_page: z.boolean().describe("Whether more results are available."),
-  cursor: z
-    .string()
-    .optional()
-    .describe(
-      "Cursor to fetch the next page of results. MUST be present when has_next_page is true.",
-    ),
-  total_count: z
-    .number()
-    .int()
-    .positive()
-    .optional()
-    .describe("Total number of matching items, if available."),
-});
+const catalogPaginationResponseSchema = z
+  .object({
+    has_next_page: z.boolean().describe("Whether more results are available."),
+    cursor: z
+      .string()
+      .optional()
+      .describe(
+        "Cursor to fetch the next page of results. MUST be present when has_next_page is true.",
+      ),
+    total_count: z
+      .number()
+      .int()
+      .positive()
+      .optional()
+      .describe("Total number of matching items, if available."),
+  })
+  .describe("Pagination information in responses.");
 
 export const catalogSearchRequestSchema = z.object({
   query: z.string().optional().describe("Free-text search query."),
@@ -429,17 +530,7 @@ export const catalogSearchRequestSchema = z.object({
         .describe(
           "Filter by product categories (OR logic — matches products in any listed categories). Values match against the value field in product category entries. Valid values can be discovered from the categories field in search results, merchant documentation, or standard taxonomies that businesses may align with.",
         ),
-      price: z
-        .object({
-          min: z
-            .number()
-            .optional()
-            .describe("Minimum price in ISO 4217 minor units."),
-          max: z
-            .number()
-            .optional()
-            .describe("Maximum price in ISO 4217 minor units."),
-        })
+      price: priceRangeSchema
         .optional()
         .describe(
           "Price range filter denominated in context.currency. When context.currency matches the presentment currency, businesses apply the filter directly. When it differs, businesses SHOULD convert filter values to the presentment currency before applying; if conversion is not supported, businesses MAY ignore the filter and SHOULD indicate this via a message. When context.currency is absent, filter denomination is ambiguous and businesses MAY ignore it.",
@@ -448,5 +539,175 @@ export const catalogSearchRequestSchema = z.object({
     .optional()
     .describe(
       "Filter criteria to narrow search results. All specified filters combine with AND logic.",
+    ),
+  pagination: catalogPaginationRequestSchema.optional(),
+});
+
+const selectedOptionsSchema = z.object({
+  name: z.string().describe("Option name (e.g., 'Size')."),
+  label: z.string().describe("Selected option label (e.g., 'Large')."),
+  id: z
+    .string()
+    .describe(
+      "Optional option value identifier from option_value.id. When present, the server SHOULD use it for matching; name and label remain required for display.",
+    ),
+});
+
+const mediaSchema = z.object({
+  type: z
+    .enum(["image", "video", "model_3d"])
+    .describe("Media type. Well-known values: image, video, model_3d."),
+  url: z.string().describe("URL to the media resource."),
+  alt_text: z
+    .string()
+    .optional()
+    .describe("Accessibility text describing the media."),
+  width: z.number().optional().describe("Width in pixels (for images/video)."),
+  height: z
+    .number()
+    .optional()
+    .describe("Height in pixels (for images/video)."),
+});
+
+const ratingSchema = z.object({
+  value: z.number().describe("Average rating value."),
+  scale_max: z
+    .number()
+    .describe("Maximum value on the rating scale (e.g., 5 for 5-star)."),
+  scale_min: z
+    .number()
+    .optional()
+    .describe("Minimum value on the rating scale (e.g., 1 for 1-5 stars)."),
+  count: z
+    .number()
+    .optional()
+    .describe("Number of reviews contributing to the rating."),
+});
+
+export const variantSchema = z.looseObject({
+  id: z
+    .string()
+    .describe(
+      "Global ID (GID) uniquely identifying this variant. Used as item.id in checkout.",
+    ),
+  title: z.string().describe("Variant display title (e.g., 'Blue / Large')."),
+  description: descriptionSchema.describe(
+    "Variant description in one or more formats.",
+  ),
+  price: priceSchema.describe("Current selling price."),
+  sku: z
+    .string()
+    .optional()
+    .describe("Business-assigned identifier for inventory and fulfillment."),
+  barcodes: z
+    .array(z.record(z.string(), z.unknown()))
+    .optional()
+    .describe(
+      "Industry-standard product identifiers for cross-reference and correlation.",
+    ),
+  handle: z.string().optional().describe("URL-safe variant handle/slug."),
+  url: z.string().optional().describe("Canonical variant page URL."),
+  categories: z
+    .array(categorySchema)
+    .optional()
+    .describe("Variant categories with optional taxonomy identifiers."),
+  list_price: priceSchema.optional().describe("Variant listing price."),
+  unit_price: z
+    .record(z.string(), priceSchema)
+    .optional()
+    .describe(
+      "Price per standard unit of measurement. MAY be omitted when unit pricing does not apply.",
+    ),
+  availability: z
+    .record(z.string(), z.unknown())
+    .optional()
+    .describe("Variant availability for purchase."),
+  options: z
+    .array(selectedOptionsSchema)
+    .optional()
+    .describe(
+      "Option values that define this variant (e.g., Color: Blue, Size: Large).",
+    ),
+  media: z
+    .array(mediaSchema)
+    .optional()
+    .describe(
+      "Variant media (images, videos, 3D models). First item is the featured media for listings.",
+    ),
+  rating: ratingSchema.optional().describe("Variant rating."),
+  tags: z
+    .array(z.record(z.string(), z.unknown()))
+    .optional()
+    .describe("Variant tags for categorization and search."),
+  metadata: z
+    .record(z.string(), z.unknown())
+    .optional()
+    .describe(
+      "Business-defined custom data extending the standard variant model.",
+    ),
+  seller: z
+    .record(z.string(), z.unknown())
+    .optional()
+    .describe("Optional seller context for this variant."),
+});
+
+export const productSchema = z.looseObject({
+  id: z.string().describe("Global ID (GID) uniquely identifying this product."),
+  title: z.string().describe("Product title."),
+  description: descriptionSchema.describe(
+    "Product description in one or more formats.",
+  ),
+  price_range: priceRangeSchema.describe("Price range across all variants."),
+  variants: z
+    .array(variantSchema)
+    .describe(
+      "Purchasable variants of this product. First item is the featured variant for listings.",
+    ),
+  handle: z
+    .string()
+    .optional()
+    .describe(
+      "URL-safe slug for SEO-friendly URLs (e.g., 'blue-runner-pro'). Use id for stable API references.",
+    ),
+  url: z.string().optional().describe("Canonical product page URL."),
+  categories: z
+    .array(categorySchema)
+    .optional()
+    .describe("Product categories with optional taxonomy identifiers."),
+  list_price_range: priceRangeSchema
+    .optional()
+    .describe("List price range before discounts (for strikethrough display)."),
+  media: z
+    .array(mediaSchema)
+    .optional()
+    .describe(
+      "Product media (images, videos, 3D models). First item is the featured media for listings.",
+    ),
+  options: z
+    .array(selectedOptionsSchema)
+    .optional()
+    .describe("Product options (Size, Color, etc.)."),
+  rating: ratingSchema.optional().describe("Aggregate product rating."),
+  tags: z
+    .array(z.record(z.string(), z.unknown()))
+    .optional()
+    .describe("Product tags for categorization and search.."),
+  metadata: z
+    .record(z.string(), z.unknown())
+    .optional()
+    .describe(
+      "Business-defined custom data extending the standard product model.",
+    ),
+});
+
+export const catalogSearchResponseSchema = z.object({
+  ucp: z.any().describe("UCP metadata for catalog responses."),
+  products: z.array(productSchema),
+  pagination: catalogPaginationResponseSchema.optional(),
+  messages: z
+    .array(messageSchema)
+    .optional()
+    .describe(
+      "Errors, warnings, or informational messages about the search results.",
     ),
 });
