@@ -76,7 +76,9 @@ export default () => (
       </div>
 
       <div className="-mx-8 border-accent-foreground border-b">
-        <div className="mx-8 bg-background-rich">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <Suspense fallback={<StatsSkeleton />}>
             <StatCards />
           </Suspense>
@@ -173,17 +175,12 @@ const LastUpdated = async () => {
 
   return (
     <div className="flex items-center gap-2.5 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-      <span className="relative flex size-2">
-        {data.scan?.updatedAt && (
-          <span className="absolute size-full animate-ping bg-success opacity-60" />
+      <span
+        className={cn(
+          "size-2",
+          data.scan?.updatedAt ? "bg-success" : "bg-accent-rich",
         )}
-        <span
-          className={cn(
-            "relative size-2",
-            data.scan?.updatedAt ? "bg-success" : "bg-accent-rich",
-          )}
-        />
-      </span>
+      />
       {data.scan?.updatedAt
         ? `Live — updated ${formatRelativeTime(data.scan.updatedAt)}`
         : "No scans run yet"}
@@ -193,10 +190,10 @@ const LastUpdated = async () => {
 
 const StatLabel = ({ label, icon }: { label: string; icon: ReactNode }) => (
   <div className="flex items-center justify-between gap-2">
-    <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+    <p className="pr-12 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
       {label}
     </p>
-    {icon}
+    <span className="absolute top-5 right-5">{icon}</span>
   </div>
 );
 
@@ -211,21 +208,24 @@ const StatCards = async () => {
     return (
       <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
         {[
-          { label: "Overall Win Rate", icon: GaugeIcon },
-          { label: "Products Scanned", icon: RadarIcon },
-          { label: "Top Performer", icon: AwardIcon },
-          { label: "Biggest Opportunity", icon: BullseyeIcon },
-        ].map(({ label, icon: Icon }) => (
+          { label: "Overall Win Rate", icon: GaugeIcon, color: "text-primary" },
+          { label: "Products Scanned", icon: RadarIcon, color: "text-warning" },
+          { label: "Top Performer", icon: AwardIcon, color: "text-success" },
+          {
+            label: "Biggest Opportunity",
+            icon: BullseyeIcon,
+            color: "text-error",
+          },
+        ].map(({ label, icon: Icon, color }) => (
           <div
             key={label}
-            className="flex h-44 flex-col justify-between bg-background-rich p-5"
+            className="relative flex h-44 flex-col justify-between bg-background-rich p-5"
           >
             <StatLabel
               label={label}
-              icon={<Icon className="size-4 shrink-0 text-foreground-dimmed" />}
+              icon={<Icon className={cn("size-8 shrink-0", color)} />}
             />
             <div className="flex flex-col items-center gap-2 pb-4">
-              <Icon className="size-10 text-accent-rich" />
               <p className="font-light text-foreground-dimmed text-sm">
                 No data yet
               </p>
@@ -272,11 +272,11 @@ const StatCards = async () => {
 
   return (
     <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
-      <div className="flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+      <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
         <StatLabel
           label="Overall Win Rate"
           icon={
-            <GaugeIcon className="size-4 shrink-0 text-foreground-dimmed" />
+            <GaugeIcon className="size-8 shrink-0 text-primary" />
           }
         />
         <div>
@@ -290,26 +290,24 @@ const StatCards = async () => {
             <p className="mt-3 flex items-center gap-2">
               <span
                 className={cn(
-                  "flex items-center gap-1 border px-1.5 py-0.5 text-xs",
-                  trend >= 0
-                    ? "border-success/40 bg-success/10 text-success"
-                    : "border-error/40 bg-error/10 text-error",
+                  "flex items-center gap-1.5 text-sm",
+                  trend >= 0 ? "text-success" : "text-error",
                 )}
               >
                 {trend >= 0 ? (
-                  <TrendUpIcon className="size-3" />
+                  <TrendUpIcon className="size-6" />
                 ) : (
-                  <TrendDownIcon className="size-3" />
+                  <TrendDownIcon className="size-6" />
                 )}
                 {trend >= 0 ? "+" : ""}
                 {trend}%
               </span>
-              <span className="font-light text-foreground-dimmed text-xs">
+              <span className="font-light text-foreground-dimmed text-sm">
                 vs last scan
               </span>
             </p>
           ) : (
-            <p className="mt-3 font-light text-foreground-dimmed text-xs">
+            <p className="mt-3 font-light text-foreground-dimmed text-sm">
               across {products.length}{" "}
               {products.length === 1 ? "product" : "products"}
             </p>
@@ -317,11 +315,11 @@ const StatCards = async () => {
         </div>
       </div>
 
-      <div className="flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+      <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
         <StatLabel
           label="Products Scanned"
           icon={
-            <RadarIcon className="size-4 shrink-0 text-foreground-dimmed" />
+            <RadarIcon className="size-8 shrink-0 text-warning" />
           }
         />
         <div>
@@ -346,11 +344,11 @@ const StatCards = async () => {
       </div>
 
       {top && (
-        <div className="flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+        <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
           <StatLabel
             label="Top Performer"
             icon={
-              <AwardIcon className="size-4 shrink-0 text-foreground-dimmed" />
+              <AwardIcon className="size-8 shrink-0 text-success" />
             }
           />
           <div>
@@ -372,11 +370,11 @@ const StatCards = async () => {
       )}
 
       {opportunity && (
-        <div className="flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+        <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
           <StatLabel
             label="Biggest Opportunity"
             icon={
-              <BullseyeIcon className="size-4 shrink-0 text-foreground-dimmed" />
+              <BullseyeIcon className="size-8 shrink-0 text-error" />
             }
           />
           <div>
@@ -534,11 +532,11 @@ const StatsSkeleton = () => (
     {(["a", "b", "c", "d"] as const).map((key) => (
       <div
         key={key}
-        className="flex h-44 flex-col justify-between bg-background-rich p-5"
+        className="relative flex h-44 flex-col justify-between bg-background-rich p-5"
       >
         <div className="flex items-center justify-between">
           <div className="h-3 w-28 animate-pulse bg-foreground/10" />
-          <div className="size-4 animate-pulse bg-foreground/10" />
+          <div className="absolute top-5 right-5 size-8 animate-pulse bg-foreground/10" />
         </div>
         <div>
           <div className="h-11 w-24 animate-pulse bg-foreground/10" />
@@ -562,7 +560,7 @@ const ChartSkeleton = () => (
           <div key={model} className="p-6">
             <div className="flex w-full items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="size-5 animate-pulse rounded-full bg-foreground/10" />
+                <div className="size-8 animate-pulse rounded-full bg-foreground/10" />
                 <div className="h-3.5 w-14 animate-pulse bg-foreground/10" />
               </div>
               <div className="flex items-baseline gap-0.5">

@@ -149,12 +149,15 @@ export const AgentVisitsChart = ({
                       return (
                         <div
                           key={model.key}
-                          className="flex items-center justify-between gap-4"
+                          className="flex items-center justify-between gap-6 py-0.5"
                         >
-                          <div className="flex items-center gap-1.5">
-                            <div
-                              className="size-2"
-                              style={{ backgroundColor: model.color }}
+                          <div className="flex items-center gap-2">
+                            <Image
+                              src={model.logo}
+                              alt={model.label}
+                              width={20}
+                              height={20}
+                              className="size-5"
                             />
                             <span className="font-light text-foreground text-sm">
                               {model.label}
