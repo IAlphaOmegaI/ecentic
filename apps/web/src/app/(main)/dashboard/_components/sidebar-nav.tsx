@@ -55,12 +55,12 @@ const items = [
     exact: false,
     badge: "68%",
   },
-  // {
-  //   icon: CircleBoltIcon,
-  //   label: "UCP Playground",
-  //   href: "/dashboard/ucp-playground",
-  //   exact: false,
-  // },
+  {
+    icon: CircleBoltIcon,
+    label: "UCP Playground",
+    href: "/dashboard/ucp-playground",
+    exact: false,
+  },
   // {
   //   icon: DownloadIcon,
   //   label: "Reports",

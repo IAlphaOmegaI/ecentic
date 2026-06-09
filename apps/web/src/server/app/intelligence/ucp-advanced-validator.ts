@@ -5,7 +5,7 @@ import * as z from "zod";
 
 const LATEST_UCP_VERSION = "2026-04-08";
 const UCP_VERSION_REGEX = /^\d{4}-\d{2}-\d{2}$/;
-const UCP_NAMESPACE_SEGMENT_REGEX = /^[a-z0-9-]+(\.[a-z0-9-]+){2,}$/;
+const UCP_REVERSE_DOMAIN_NAME_REGEX = /^[a-z][a-z0-9]*(?:\.[a-z][a-z0-9_]*)+$/;
 
 // dev.ucp.* → ucp.dev, com.example.* → example.com, dev.shopify.* → shopify.dev
 const namespaceAuthorityHostname = (namespaceName: string) => {
@@ -52,7 +52,7 @@ const supportedVersionsSchema = z.record(
 const serviceNameSchema = z
   .string()
   .regex(
-    UCP_NAMESPACE_SEGMENT_REGEX,
+    UCP_REVERSE_DOMAIN_NAME_REGEX,
     "Service name must use reverse-domain format {reverse-domain}.{service} (e.g. dev.ucp.shopping)",
   );
 
@@ -153,7 +153,7 @@ const servicesSchema = z
 const capabilityNameSchema = z
   .string()
   .regex(
-    UCP_NAMESPACE_SEGMENT_REGEX,
+    UCP_REVERSE_DOMAIN_NAME_REGEX,
     "Capability name must use reverse-domain format {reverse-domain}.{service}.{capability}",
   );
 
@@ -307,7 +307,7 @@ export const discoveryProfileSchema = z.looseObject({
 //   // TODO: Implement more rules
 // });
 
-export const signalSchema = z.union([
+export const signalNameSchema = z.union([
   z.literal("dev.ucp.buyer_ip").describe("Client's IP address (IPv4 or IPv6)."),
   z
     .literal("dev.ucp.user_agent")
@@ -315,7 +315,7 @@ export const signalSchema = z.union([
   z
     .string()
     .regex(
-      UCP_NAMESPACE_SEGMENT_REGEX,
+      UCP_REVERSE_DOMAIN_NAME_REGEX,
       "Signal name must use reverse-domain format {reverse-domain}.{signal}",
     )
     .describe(
@@ -323,7 +323,130 @@ export const signalSchema = z.union([
     ),
 ]);
 
+export const signalsSchema = z.record(signalNameSchema, z.unknown());
+
 // TODO: suggest businesses to add webhook_url to their config to track ai orders
 // config: {
 //   webhook_url: "https://platform.example.com/webhooks/ucp/orders";
 // }
+
+const catalogContextSchema = z.looseObject({
+  address_country: z
+    .string()
+    .optional()
+    .describe(
+      "The country. Recommended to be in 2-letter ISO 3166-1 alpha-2 format, for example 'US'. For backward compatibility, a 3-letter ISO 3166-1 alpha-3 country code such as 'SGP' or a full country name such as 'Singapore' can also be used. Optional hint for market context (currency, availability, pricing)—higher-resolution data (e.g., shipping address) supersedes this value.",
+    ),
+  address_region: z
+    .string()
+    .optional()
+    .describe(
+      "The region in which the locality is, and which is in the country. For example, California or another appropriate first-level Administrative division. Optional hint for progressive localization—higher-resolution data (e.g., shipping address) supersedes this value.",
+    ),
+  postal_code: z
+    .string()
+    .optional()
+    .describe(
+      "The postal code. For example, 94043. Optional hint for regional refinement—higher-resolution data (e.g., shipping address) supersedes this value.",
+    ),
+  intent: z
+    .string()
+    .optional()
+    .describe(
+      "Background context describing buyer's intent (e.g., 'looking for a gift under $50', 'need something durable for outdoor use'). Informs relevance, recommendations, and personalization.",
+    ),
+  language: z
+    .string()
+    .optional()
+    .describe(
+      "Preferred language for content. Use IETF BCP 47 language tags (e.g., 'en', 'fr-CA', 'zh-Hans'). For REST, equivalent to Accept-Language header—platforms SHOULD fall back to Accept-Language when this field is absent; when provided, overrides Accept-Language. Businesses MAY return content in a different language if unavailable.",
+    ),
+  currency: z
+    .string()
+    .optional()
+    .describe(
+      "Preferred currency (ISO 4217, e.g., 'EUR', 'USD'). Businesses determine presentment currency from context and authoritative signals; this hint MAY inform selection in multi-currency markets. Also serves as the denomination for price filter values — platforms SHOULD include this field when sending price filters. Response prices include explicit currency confirming the resolution.",
+    ),
+  eligibility: z.array(
+    z
+      .string()
+      .regex(
+        UCP_REVERSE_DOMAIN_NAME_REGEX,
+        "Buyer claims about eligible benefits such as loyalty membership, payment instrument perks, and similar. Recognized claims MAY inform the Business response (e.g., member-only product availability, adjusted pricing in catalog, provisional discounts at cart or checkout). Businesses MUST ignore unrecognized values without error. Values MUST use reverse-domain naming (e.g., 'com.example.loyalty_gold', 'org.school.student') and MUST be non-identifying.",
+      )
+      .optional(),
+  ),
+});
+
+const catalogPaginationRequestSchema = z.object({
+  cursor: z
+    .string()
+    .optional()
+    .describe("Opaque cursor from previous response."),
+  limit: z
+    .number()
+    .int()
+    .positive()
+    .optional()
+    .describe(
+      "Requested page size. Implementations MAY clamp to a lower maximum.",
+    ),
+});
+
+const catalogPaginationResponseSchema = z.object({
+  has_next_page: z.boolean().describe("Whether more results are available."),
+  cursor: z
+    .string()
+    .optional()
+    .describe(
+      "Cursor to fetch the next page of results. MUST be present when has_next_page is true.",
+    ),
+  total_count: z
+    .number()
+    .int()
+    .positive()
+    .optional()
+    .describe("Total number of matching items, if available."),
+});
+
+export const catalogSearchRequestSchema = z.object({
+  query: z.string().optional().describe("Free-text search query."),
+  context: catalogContextSchema
+    .optional()
+    .describe(
+      "Provisional buyer signals for relevance and localization—not authoritative data. Businesses SHOULD use these values when verified inputs (e.g., shipping address) are absent, and MAY ignore or down-rank them if inconsistent with higher-confidence signals (authenticated account, risk detection) or regulatory constraints (export controls). Eligibility and policy enforcement MUST occur at checkout time using binding transaction data. Context SHOULD be non-identifying and can be disclosed progressively—coarse signals early, finer resolution as the session progresses. Higher-resolution data (shipping address, billing address) supersedes context.",
+    ),
+  signals: signalsSchema
+    .optional()
+    .describe(
+      "Environment data provided by the platform to support authorization and abuse prevention. Values MUST NOT be buyer-asserted claims — platforms provide signals based on direct observation or independently verifiable third-party attestations. All signal keys MUST use reverse-domain naming to ensure provenance and prevent collisions when multiple extensions contribute to the shared namespace.",
+    ),
+  filters: z
+    .looseObject({
+      categories: z
+        .array(z.string())
+        .optional()
+        .describe(
+          "Filter by product categories (OR logic — matches products in any listed categories). Values match against the value field in product category entries. Valid values can be discovered from the categories field in search results, merchant documentation, or standard taxonomies that businesses may align with.",
+        ),
+      price: z
+        .object({
+          min: z
+            .number()
+            .optional()
+            .describe("Minimum price in ISO 4217 minor units."),
+          max: z
+            .number()
+            .optional()
+            .describe("Maximum price in ISO 4217 minor units."),
+        })
+        .optional()
+        .describe(
+          "Price range filter denominated in context.currency. When context.currency matches the presentment currency, businesses apply the filter directly. When it differs, businesses SHOULD convert filter values to the presentment currency before applying; if conversion is not supported, businesses MAY ignore the filter and SHOULD indicate this via a message. When context.currency is absent, filter denomination is ambiguous and businesses MAY ignore it.",
+        ),
+    })
+    .optional()
+    .describe(
+      "Filter criteria to narrow search results. All specified filters combine with AND logic.",
+    ),
+});
