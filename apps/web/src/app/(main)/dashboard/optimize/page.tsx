@@ -20,7 +20,7 @@ const OptimizeSkeleton = () => (
       <div className="mx-8">
         <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-3">
           {(["a", "b", "c"] as const).map((key) => (
-            <div key={key} className="bg-background-dimmed p-4">
+            <div key={key} className="bg-background-rich p-4">
               <div className="h-3 w-28 animate-pulse bg-foreground/10" />
               <div className="mt-3 h-8 w-16 animate-pulse bg-foreground/10" />
             </div>
@@ -38,7 +38,7 @@ const OptimizeSkeleton = () => (
           {(["d", "e", "f"] as const).map((key) => (
             <div
               key={key}
-              className="border border-accent-foreground bg-background-dimmed p-4"
+              className="border border-accent-foreground bg-background-rich p-4"
             >
               <div className="h-5 w-48 animate-pulse bg-foreground/10" />
               <div className="mt-2 h-3 w-full animate-pulse bg-foreground/10" />

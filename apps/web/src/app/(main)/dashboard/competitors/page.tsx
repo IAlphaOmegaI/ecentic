@@ -136,7 +136,7 @@ const StatCards = async () => {
             icon: <CheckBadgeIcon className="size-12" />,
           },
         ].map(({ label, icon }) => (
-          <div key={label} className="h-full bg-background-dimmed p-4">
+          <div key={label} className="h-full bg-background-rich p-4">
             <p className="mb-4 text-foreground-dimmed uppercase tracking-widest">
               {label}
             </p>
@@ -192,7 +192,7 @@ const StatCards = async () => {
 
   return (
     <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
-      <div className="flex flex-col justify-between bg-background-dimmed p-4">
+      <div className="flex flex-col justify-between bg-background-rich p-4">
         <p className="text-foreground-dimmed">Brands Tracked</p>
         <div className="mt-2 flex items-baseline gap-1.5">
           <span className="text-4xl text-foreground tabular-nums">
@@ -204,7 +204,7 @@ const StatCards = async () => {
         </div>
       </div>
 
-      <div className="flex flex-col justify-between bg-background-dimmed p-4">
+      <div className="flex flex-col justify-between bg-background-rich p-4">
         <p className="text-foreground-dimmed">Winning Against</p>
         <div className="mt-2 flex items-baseline gap-2">
           <span className="text-4xl text-success tabular-nums">
@@ -237,7 +237,7 @@ const StatCards = async () => {
       </div>
 
       {dangerous ? (
-        <div className="flex flex-col justify-between bg-background-dimmed p-4">
+        <div className="flex flex-col justify-between bg-background-rich p-4">
           <div>
             <p className="text-foreground-dimmed">Most Dangerous</p>
             <p className="mt-1 text-foreground">{dangerous.brand}</p>
@@ -258,13 +258,13 @@ const StatCards = async () => {
           </Button> */}
         </div>
       ) : (
-        <div className="flex flex-col justify-between bg-background-dimmed p-4">
+        <div className="flex flex-col justify-between bg-background-rich p-4">
           <p className="text-foreground-dimmed">Most Dangerous</p>
           <p className="mt-2 text-foreground-dimmed">No data yet</p>
         </div>
       )}
 
-      <div className="flex flex-col justify-between bg-background-dimmed p-4">
+      <div className="flex flex-col justify-between bg-background-rich p-4">
         <p className="text-foreground-dimmed">Total Simulations</p>
         <span className="mt-2 text-4xl text-foreground tabular-nums">
           {totalSimulations}
@@ -321,7 +321,7 @@ const CompetitiveLandscape = async () => {
 
   return (
     <div className="grid grid-cols-1 gap-px bg-accent-foreground xl:grid-cols-3">
-      <div className="bg-background-dimmed xl:col-span-2">
+      <div className="bg-background-rich xl:col-span-2">
         <div className="flex items-start justify-between p-4">
           <div>
             <p className="font-light text-foreground-dimmed uppercase tracking-widest">
@@ -354,7 +354,7 @@ const CompetitiveLandscape = async () => {
             return (
               <div
                 key={brand._id}
-                className="flex items-center gap-4 bg-background-dimmed px-4 py-3"
+                className="flex items-center gap-4 bg-background-rich px-4 py-3"
               >
                 <div className="flex w-36 shrink-0 items-center gap-2">
                   <div className="flex size-7 shrink-0 items-center justify-center bg-primary/10 font-semibold text-primary text-xs">
@@ -385,7 +385,7 @@ const CompetitiveLandscape = async () => {
       </div>
 
       <div className="flex flex-1 flex-col gap-px bg-accent-foreground">
-        <div className="flex-1 bg-background-dimmed p-4">
+        <div className="flex-1 bg-background-rich p-4">
           <p className="font-light text-foreground-dimmed uppercase tracking-widest">
             Distribution
           </p>
@@ -396,7 +396,7 @@ const CompetitiveLandscape = async () => {
           <WinRateTiersChart tiers={tiers} total={brands.length} />
         </div>
 
-        <div className="flex items-center justify-between bg-background-dimmed p-4">
+        <div className="flex items-center justify-between bg-background-rich p-4">
           <Button
             variant="outline"
             color="accent"
@@ -459,7 +459,7 @@ const Insights = async () => {
   const recentScans = completed.slice(0, 3);
 
   return (
-    <div className="bg-background-dimmed">
+    <div className="bg-background-rich">
       <div className="flex items-start justify-between p-4">
         <div>
           <p className="font-light text-foreground-dimmed uppercase tracking-widest">
@@ -489,7 +489,7 @@ const Insights = async () => {
           return (
             <div
               key={scan.id}
-              className="flex items-center justify-between bg-background-dimmed px-4 py-3"
+              className="flex items-center justify-between bg-background-rich px-4 py-3"
             >
               <div className="flex items-center gap-3">
                 <div
@@ -550,7 +550,7 @@ const Insights = async () => {
 const StatsSkeleton = () => (
   <div className="grid h-39 min-h-39 grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
     {["brands", "winning", "dangerous", "simulations"].map((key) => (
-      <div key={key} className="bg-background-dimmed p-4">
+      <div key={key} className="bg-background-rich p-4">
         <div className="h-4 w-28 animate-pulse bg-foreground/10" />
         <div className="mt-4 h-10 w-20 animate-pulse bg-foreground/10" />
         <div className="mt-3 h-3 w-32 animate-pulse bg-foreground/10" />
@@ -561,7 +561,7 @@ const StatsSkeleton = () => (
 
 const LandscapeSkeleton = () => (
   <div className="grid grid-cols-1 gap-px bg-accent-foreground xl:grid-cols-3">
-    <div className="bg-background-dimmed xl:col-span-2">
+    <div className="bg-background-rich xl:col-span-2">
       <div className="p-4">
         <div className="h-3 w-20 animate-pulse bg-foreground/10" />
         <div className="mt-2 h-7 w-48 animate-pulse bg-foreground/10" />
@@ -570,7 +570,7 @@ const LandscapeSkeleton = () => (
         {["a", "b", "c", "d", "e"].map((key) => (
           <div
             key={key}
-            className="flex items-center gap-4 bg-background-dimmed px-4 py-3"
+            className="flex items-center gap-4 bg-background-rich px-4 py-3"
           >
             <div className="flex w-36 items-center gap-2">
               <div className="size-7 shrink-0 animate-pulse bg-foreground/10" />
@@ -586,7 +586,7 @@ const LandscapeSkeleton = () => (
       </div>
     </div>
     <div className="flex flex-col gap-px bg-accent-foreground">
-      <div className="flex-1 bg-background-dimmed p-4">
+      <div className="flex-1 bg-background-rich p-4">
         <div className="h-3 w-24 animate-pulse bg-foreground/10" />
         <div className="mt-2 h-7 w-32 animate-pulse bg-foreground/10" />
         <div className="mt-6 h-2 w-full animate-pulse bg-foreground/10" />
@@ -599,7 +599,7 @@ const LandscapeSkeleton = () => (
           ))}
         </div>
       </div>
-      <div className="flex items-center justify-between bg-background-dimmed p-4">
+      <div className="flex items-center justify-between bg-background-rich p-4">
         <div className="h-9 w-28 animate-pulse bg-foreground/10" />
         <div className="h-9 w-36 animate-pulse bg-foreground/10" />
       </div>
@@ -676,7 +676,7 @@ const TableSkeleton = () => (
 );
 
 const InsightsSkeleton = () => (
-  <div className="bg-background-dimmed">
+  <div className="bg-background-rich">
     <div className="flex items-start justify-between p-4">
       <div>
         <div className="h-3 w-24 animate-pulse bg-foreground/10" />
@@ -691,7 +691,7 @@ const InsightsSkeleton = () => (
       {["a", "b", "c"].map((key) => (
         <div
           key={key}
-          className="flex items-center justify-between bg-background-dimmed px-4 py-3"
+          className="flex items-center justify-between bg-background-rich px-4 py-3"
         >
           <div className="flex items-center gap-3">
             <div className="size-2 shrink-0 animate-pulse rounded-full bg-foreground/10" />

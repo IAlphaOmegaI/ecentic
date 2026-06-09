@@ -253,7 +253,7 @@ const OverviewTab = ({
         return (
           <div
             key={model}
-            className={cn("flex flex-col gap-4 p-4", "bg-background-dimmed")}
+            className={cn("flex flex-col gap-4 p-4", "bg-background-rich")}
           >
             <div className="flex items-center justify-between">
               <div className="flex flex-col gap-2">
@@ -412,7 +412,7 @@ const ReplayTab = ({
                 "flex flex-col items-center gap-2 border-accent-foreground border-b px-4 py-5 transition-colors last:border-b-0",
                 isSelected
                   ? "bg-background-rich"
-                  : "bg-background-dimmed hover:bg-background-rich/60",
+                  : "bg-background-rich hover:bg-background",
               )}
             >
               {config?.logo && (
@@ -442,7 +442,7 @@ const ReplayTab = ({
 
       {active && (
         <div className="flex min-w-0 flex-1 flex-col">
-          <div className="flex items-center gap-2 border-accent-foreground border-b bg-background-dimmed px-4 py-2">
+          <div className="flex items-center gap-2 border-accent-foreground border-b bg-background-rich px-4 py-2">
             {(() => {
               const logo = Model[active.label as keyof typeof Model]?.logo;
               return (
@@ -591,7 +591,7 @@ const BattlecardTab = ({
 
         return (
           <div key={competitor.id} className="bg-background-rich">
-            <div className="grid grid-cols-[1fr_auto] items-start gap-4 border-accent-foreground border-b bg-background-dimmed p-4">
+            <div className="grid grid-cols-[1fr_auto] items-start gap-4 border-accent-foreground border-b bg-background-rich p-4">
               <div className="min-w-0">
                 <p className="font-medium text-foreground">
                   {competitor.title}

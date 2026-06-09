@@ -13,10 +13,13 @@ export const AgentVisitsPanel = async () => {
   const max = Math.max(1, ...summary.byAgentType.map((entry) => entry.count));
 
   return (
-    <div className="bg-background-dimmed p-4">
+    <div className="bg-background-rich p-4">
       <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-foreground-dimmed">AI storefront traffic</p>
+          <p className="flex items-center gap-2 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+            <span className="size-1.5 bg-primary" />
+            04 — Agent Traffic
+          </p>
           <p className="mt-2 font-medium text-2xl text-foreground">
             Visits by agent (last 30 days)
           </p>
@@ -25,9 +28,9 @@ export const AgentVisitsPanel = async () => {
             only.
           </p>
         </div>
-        <p className="text-4xl text-foreground tabular-nums">
+        <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
           {summary.total30d}
-          <span className="ml-1 font-light text-foreground-dimmed text-sm">
+          <span className="ml-1.5 font-light text-foreground-dimmed text-sm">
             total
           </span>
         </p>

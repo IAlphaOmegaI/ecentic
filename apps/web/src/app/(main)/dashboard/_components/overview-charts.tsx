@@ -4,6 +4,8 @@ import {
   ArrowRightIcon,
   BellIcon,
   BoxMinusIcon,
+  CheckCircleIcon,
+  LoaderIcon,
   TrendDownIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
@@ -48,30 +50,31 @@ const ActivityIcon = ({
   type: string;
   className?: string;
 }) => {
-  const icon = (() => {
+  const { icon, color } = (() => {
     switch (type) {
       case "simulation_complete":
-        return "✓";
+        return {
+          icon: <CheckCircleIcon className="size-4" />,
+          color: "border-success/40 bg-success/10 text-success",
+        };
       case "simulation_running":
-        return "↻";
+        return {
+          icon: <LoaderIcon className="size-4 animate-spin" />,
+          color: "border-primary/40 bg-primary/10 text-primary",
+        };
       default:
-        return "·";
+        return {
+          icon: <BellIcon className="size-4" />,
+          color:
+            "border-accent-foreground bg-foreground-dimmed/10 text-foreground-dimmed",
+        };
     }
   })();
-  const color = (() => {
-    switch (type) {
-      case "simulation_complete":
-        return "bg-success/10 text-success";
-      case "simulation_running":
-        return "bg-primary/10 text-primary";
-      default:
-        return "bg-foreground-dimmed/10 text-foreground-dimmed";
-    }
-  })();
+
   return (
     <div
       className={cn(
-        "flex size-12 shrink-0 items-center justify-center text-2xl",
+        "flex size-8 shrink-0 items-center justify-center border",
         className,
         color,
       )}
@@ -204,13 +207,14 @@ export const OverviewCharts = ({
 
   return (
     <div className="grid grid-cols-1 gap-px bg-accent-foreground xl:grid-cols-3">
-      <div className="bg-background-dimmed xl:col-span-2">
+      <div className="bg-background-rich xl:col-span-2">
         <div className="flex items-start justify-between p-4">
           <div>
-            <p className="font-light text-foreground-dimmed uppercase tracking-widest">
-              Performance
+            <p className="flex items-center gap-2 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+              <span className="size-1.5 bg-primary" />
+              01 — Performance
             </p>
-            <p className="mt-1 font-medium text-2xl text-foreground">
+            <p className="mt-2 font-medium text-2xl text-foreground">
               Win Rate by Model
             </p>
           </div>
@@ -233,11 +237,11 @@ export const OverviewCharts = ({
                         height={64}
                         className="size-4"
                       />
-                      <span className="text-foreground-dimmed uppercase tracking-widest">
+                      <span className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
                         {label}
                       </span>
                     </div>
-                    <span className="font-medium text-foreground text-lg tabular-nums">
+                    <span className="font-medium text-2xl text-foreground tabular-nums">
                       {rate}{" "}
                       <span className="font-light text-foreground-dimmed text-sm">
                         %
@@ -265,11 +269,18 @@ export const OverviewCharts = ({
 
         <div>
           <div className="mb-4 flex items-center justify-between p-4">
-            <p className="font-light text-foreground-dimmed uppercase tracking-widest">
+            <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
               Win Rate Trend
             </p>
             {change !== 0 && (
-              <span className={cn(change > 0 ? "text-success" : "text-error")}>
+              <span
+                className={cn(
+                  "border px-1.5 py-0.5 text-xs",
+                  change > 0
+                    ? "border-success/40 bg-success/10 text-success"
+                    : "border-error/40 bg-error/10 text-error",
+                )}
+              >
                 {change > 0 ? "+" : ""}
                 {change}%
               </span>
@@ -286,9 +297,9 @@ export const OverviewCharts = ({
       </div>
 
       <div className="flex flex-col gap-px bg-accent-foreground">
-        <div className="flex-1 bg-background-dimmed">
+        <div className="flex-1 bg-background-rich">
           <div className="mb-2 flex items-center justify-between px-4 pt-4">
-            <p className="font-light text-foreground-dimmed uppercase tracking-widest">
+            <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
               Recent Activity
             </p>
           </div>
@@ -305,9 +316,9 @@ export const OverviewCharts = ({
               {activity.map((entry) => (
                 <div
                   key={entry.id}
-                  className="flex items-start gap-2 border-accent-foreground border-b p-4 pb-4 first:border-t last:border-b-0"
+                  className="flex items-start gap-3 border-accent-foreground border-b p-4 first:border-t last:border-b-0"
                 >
-                  <ActivityIcon type={entry.type} className="size-6" />
+                  <ActivityIcon type={entry.type} />
                   <div>
                     <p className="font-light text-foreground leading-relaxed">
                       {entry.message}
@@ -317,7 +328,7 @@ export const OverviewCharts = ({
                         {entry.detail.impactDescription.slice(0, 100)}...
                       </p>
                     )}
-                    <p className="mt-2 font-light text-primary-dimmed text-xs">
+                    <p className="mt-2 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
                       {formatRelativeTime(new Date(entry.timestamp))}
                     </p>
                   </div>
@@ -327,7 +338,7 @@ export const OverviewCharts = ({
           )}
         </div>
 
-        <div className="flex items-center justify-between bg-background-dimmed p-4">
+        <div className="flex items-center justify-between bg-background-rich p-4">
           <Button
             variant="outline"
             color="accent"

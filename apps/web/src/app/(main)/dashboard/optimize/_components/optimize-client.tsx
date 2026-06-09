@@ -36,7 +36,7 @@ const formatPublished = (date: string | Date | null) => {
 };
 
 const StatCard = ({ label, value }: { label: string; value: number }) => (
-  <div className="bg-background-dimmed p-4">
+  <div className="bg-background-rich p-4">
     <p className="text-foreground-dimmed">{label}</p>
     <p className="mt-2 text-4xl text-foreground tabular-nums">{value}</p>
   </div>
@@ -66,7 +66,7 @@ const InsightCard = ({
   insight: DashboardData["diagnostics"]["insights"][number];
   productTitle: string;
 }) => (
-  <div className="bg-background-dimmed p-4">
+  <div className="bg-background-rich p-4">
     <div className="mb-1 flex flex-wrap items-center gap-2">
       <p className="font-medium text-foreground">{productTitle}</p>
       <span className="border border-accent-foreground px-1.5 py-0.5 text-foreground-dimmed text-xs">
