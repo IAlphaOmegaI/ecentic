@@ -37,8 +37,7 @@ const map = {
     "/enterprise",
     "/ucp-validator",
     "/enterprise",
-    "/how-it-works"
-
+    "/how-it-works",
   ],
   [RouteAccess.ADMINISTRATOR]: [/^\/.*/, "/sign-in"],
   [RouteAccess.USER]: [
@@ -58,7 +57,7 @@ const map = {
     "/enterprise",
     "/ucp-validator",
     "/enterprise",
-    "/how-it-works"
+    "/how-it-works",
   ],
 } as const;
 

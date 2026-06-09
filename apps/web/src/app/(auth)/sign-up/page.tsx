@@ -6,6 +6,9 @@ import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import { Fade } from "@/lib/animations";
 import { SignUpForm } from "./_components/sign-up-form";
+import Link from "next/link";
+import { ArrowRightIcon } from "@zenncore/icons";
+import { Button } from "@zenncore/web/components/button";
 
 const points = [
   "Simulate how GPT-4, Claude, Gemini & Perplexity pick products",
@@ -66,8 +69,17 @@ export default () => {
             </div>
           </Motion.Item>
           <Motion.Item className="w-full border-accent-foreground border-b px-8">
-            <div className="flex flex-col gap-2 border-accent-foreground border-x p-6 font-light text-foreground-dimmed">
-              <p>
+            <div className="flex gap-2 border-accent-foreground border-x p-6 font-light text-foreground-dimmed justify-between">
+              <Button
+                type="button"
+                variant="outline"
+                color="accent"
+                className="flex items-center gap-2"
+                render={<Link href="/sign-in" />}
+              >
+                Sign in instead <ArrowRightIcon className="size-4" />
+              </Button>
+              <p className="w-1/2">
                 By creating an account you agree to our{" "}
                 <span className="text-foreground">Terms of Service</span> and{" "}
                 <span className="text-foreground">Privacy Policy</span>.
