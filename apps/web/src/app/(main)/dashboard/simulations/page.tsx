@@ -6,7 +6,7 @@ import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
 import * as Scan from "@/server/app/scan";
 import { Environment } from "@/server/utils/environment";
-import { ClosingGutter, Crosshair, SectionGutter } from "../_components/grid";
+import { Crosshair, SectionGutter } from "../_components/grid";
 import { SimulationsClient } from "./_components/simulations-client";
 
 const progressLabels = [
@@ -43,8 +43,6 @@ export default () => (
       <Suspense fallback={<SimulationsSkeleton />}>
         <SimulationsData />
       </Suspense>
-
-      <ClosingGutter />
     </div>
   </div>
 );

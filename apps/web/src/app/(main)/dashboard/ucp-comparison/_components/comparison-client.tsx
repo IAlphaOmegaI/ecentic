@@ -48,7 +48,7 @@ const summarise = (value: unknown, maxLen = 120): string => {
 
 const productPrice = (product: z.infer<typeof productSchema>) => {
   if (product.variants.length > 0) {
-    return product.variants[0]!.price.amount;
+    return product.variants[0]?.price.amount;
   }
 
   return product.price_range.min;
@@ -554,7 +554,7 @@ export const ComparisonClient = () => {
                     );
                   case "store_searching":
                     return (
-                      <p key={lineKey} className="text-amber-400">
+                      <p key={lineKey} className="text-warning">
                         searching → {line.storeUrl}
                       </p>
                     );

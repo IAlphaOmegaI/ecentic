@@ -28,7 +28,6 @@ import type { DashboardData, Type } from "@/server/app/optimization";
 import * as Optimization from "@/server/app/optimization";
 import type * as Product from "@/server/app/product";
 import {
-  ClosingGutter,
   Crosshair,
   SectionGutter,
   SectionKicker,
@@ -247,7 +246,7 @@ const DismissedCard = ({
         onClick={() => onReconsider(record.productId)}
       >
         {busyProductId === record.productId ? (
-          <LoaderIcon className="size-3 animate-spin" />
+          <LoaderIcon className="size-4 animate-spin" />
         ) : (
           "Reconsider"
         )}
@@ -608,8 +607,6 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
           </Tabs>
         </div>
       </div>
-
-      <ClosingGutter />
     </div>
   );
 };

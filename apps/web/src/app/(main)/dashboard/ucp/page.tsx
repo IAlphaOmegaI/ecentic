@@ -4,7 +4,7 @@ import * as Ucp from "@/server/app/intelligence/ucp";
 import * as Product from "@/server/app/product";
 import * as Store from "@/server/app/store";
 import { Environment } from "@/server/utils/environment";
-import { ClosingGutter, Crosshair, SectionKicker } from "../_components/grid";
+import { Crosshair, SectionKicker } from "../_components/grid";
 import { UcpManager } from "./_components/ucp-manager";
 
 const UcpContent = async () => {
@@ -69,8 +69,6 @@ export default () => (
           </div>
         </div>
       </div>
-
-      <ClosingGutter />
     </div>
   </div>
 );
@@ -79,7 +77,7 @@ const Skeleton = () => (
   <div className="animate-pulse space-y-4">
     <div className="border border-accent-foreground bg-background-rich p-5">
       <div className="flex items-center gap-6">
-        <div className="size-14 shrink-0 rounded-full bg-accent-foreground/20" />
+        <div className="size-14 shrink-0 bg-accent-foreground/20" />
         <div className="flex-1 space-y-2">
           <div className="h-4 w-40 bg-accent-foreground/20" />
           <div className="h-3 w-72 bg-accent-foreground/10" />
@@ -101,7 +99,7 @@ const Skeleton = () => (
           {Array.from({ length: 9 }).map((_, index) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: skeleton
             <div key={index} className="flex items-center gap-3 px-4 py-2.5">
-              <div className="size-1.5 shrink-0 rounded-full bg-accent-foreground/30" />
+              <div className="size-1.5 shrink-0 bg-accent-foreground/30" />
               <div className="h-3 w-28 bg-accent-foreground/20" />
               <div className="h-7 flex-1 bg-accent-foreground/10" />
             </div>

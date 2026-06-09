@@ -424,7 +424,7 @@ const ReplayTab = ({
               )}
               <span
                 className={cn(
-                  "font-medium text-sm uppercase leading-tight tracking-wide transition-colors",
+                  "font-medium text-sm uppercase leading-tight tracking-[0.2em] transition-colors",
                   isSelected ? "text-foreground" : "text-foreground-dimmed",
                 )}
               >

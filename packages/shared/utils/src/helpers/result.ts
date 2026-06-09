@@ -94,7 +94,7 @@ export function unwrapResult<T extends Result<any> | Promise<Result<any>>>(
 
   const handler = async () => {
     const data = await result;
-    if (!data.success) throw new Error(data.error);
+    if (!data.success) throw data.error;
     return ("data" in data ? data.data : undefined) as UnwrapResult<Awaited<T>>;
   };
   return handler();

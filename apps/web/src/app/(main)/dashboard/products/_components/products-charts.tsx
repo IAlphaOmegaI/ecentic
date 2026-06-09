@@ -149,7 +149,7 @@ export const QualityDistribution = ({
     <div className="mt-4 grid grid-cols-3 gap-4">
       {segments.map((segment) => (
         <div key={segment.label} className="flex items-center gap-2">
-          <div className={cn("size-2.5 shrink-0", segment.color)} />
+          <div className={cn("size-2 shrink-0", segment.color)} />
           <span className="font-light text-foreground-dimmed text-xs">
             {segment.label}
           </span>
@@ -215,7 +215,7 @@ export const OptimizationBreakdown = ({
         {segments.map((segment) => (
           <div key={segment.label}>
             <div className="flex items-center gap-2">
-              <div className={cn("size-2.5 shrink-0", segment.color)} />
+              <div className={cn("size-2 shrink-0", segment.color)} />
               <span className="font-light text-foreground-dimmed text-sm">
                 {segment.label}
               </span>

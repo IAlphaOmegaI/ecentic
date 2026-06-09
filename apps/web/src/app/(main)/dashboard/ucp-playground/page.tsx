@@ -1,4 +1,4 @@
-import { ClosingGutter, Crosshair, SectionKicker } from "../_components/grid";
+import { Crosshair, SectionKicker } from "../_components/grid";
 import { PlaygroundClient } from "./_components/playground-client";
 
 export default () => (
@@ -39,8 +39,6 @@ export default () => (
           </div>
         </div>
       </div>
-
-      <ClosingGutter />
     </div>
   </div>
 );

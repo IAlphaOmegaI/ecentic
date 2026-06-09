@@ -28,19 +28,8 @@ export const TrialCard = () => {
         >
           <div className="mb-2 flex items-center justify-between">
             <div className="flex items-center gap-1.5">
-              <span className="relative inline-flex size-2">
-                <motion.span
-                  className="absolute inline-block size-full rounded-full bg-warning"
-                  animate={{ scale: [1, 2.2], opacity: [0.8, 0] }}
-                  transition={{
-                    duration: 0.8,
-                    repeat: Number.POSITIVE_INFINITY,
-                    ease: "easeOut",
-                  }}
-                />
-                <span className="relative inline-block size-2 rounded-full bg-warning" />
-              </span>
-              <span className="font-medium text-warning text-xs uppercase tracking-widest">
+              <span className="inline-block size-2 bg-warning" />
+              <span className="font-medium text-warning text-xs uppercase tracking-[0.2em]">
                 Free Trial
               </span>
             </div>
@@ -60,7 +49,7 @@ export const TrialCard = () => {
             <span className="font-light text-foreground-dimmed text-xs">
               Upgrade before it ends
             </span>
-            <ArrowRightIcon className="size-3 text-warning transition-transform group-hover:translate-x-0.5" />
+            <ArrowRightIcon className="size-4 text-warning transition-transform group-hover:translate-x-0.5" />
           </div>
         </button>
       </div>
@@ -91,14 +80,14 @@ export const TrialCard = () => {
                 <div>
                   <div className="mb-1 flex items-center gap-2">
                     <motion.span
-                      className="inline-block size-1.5 rounded-full bg-warning"
+                      className="inline-block size-1.5 bg-warning"
                       animate={{ opacity: [1, 0.3, 1] }}
                       transition={{
                         duration: 2,
                         repeat: Number.POSITIVE_INFINITY,
                       }}
                     />
-                    <span className="font-medium text-warning text-xs uppercase tracking-widest">
+                    <span className="font-medium text-warning text-xs uppercase tracking-[0.2em]">
                       Trial ending in {TRIAL_DAYS_LEFT} days
                     </span>
                   </div>
@@ -143,7 +132,7 @@ export const TrialCard = () => {
 
               {/* Features */}
               <div className="border-accent-foreground border-b px-6 py-5">
-                <p className="mb-3 font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
+                <p className="mb-3 font-medium text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
                   Everything in Pro
                 </p>
                 <div className="grid grid-cols-1 gap-2">
@@ -158,8 +147,8 @@ export const TrialCard = () => {
                         delay: 0.1 + index * 0.05,
                       }}
                     >
-                      <div className="flex size-4 shrink-0 items-center justify-center bg-primary/10">
-                        <CheckIcon className="size-3 text-primary" />
+                      <div className="flex size-5 shrink-0 items-center justify-center">
+                        <CheckIcon className="size-4 text-primary" />
                       </div>
                       <span className="font-light text-foreground text-sm">
                         {feature}

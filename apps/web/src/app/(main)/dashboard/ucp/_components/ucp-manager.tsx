@@ -98,7 +98,7 @@ const tokenColor: Record<JToken["type"], string> = {
   key: "text-blue-400",
   string: "text-green-400",
   number: "text-orange-400",
-  boolean: "text-purple-400",
+  boolean: "text-secondary",
   null: "text-orange-300/60",
   punct: "text-foreground-dimmed/60",
   space: "",
@@ -650,12 +650,12 @@ export const UcpManager = ({
                   >
                     {copied ? (
                       <>
-                        <CheckIcon className="size-3.5 text-primary" />
+                        <CheckIcon className="size-4 text-primary" />
                         <span className="text-primary">Copied</span>
                       </>
                     ) : (
                       <>
-                        <CopyIcon className="size-3.5" />
+                        <CopyIcon className="size-4" />
                         Copy
                       </>
                     )}
@@ -687,9 +687,9 @@ export const UcpManager = ({
                   <span className="text-foreground-dimmed/60">
                     {" = () => "}
                   </span>
-                  <span className="text-yellow-400">{"Response"}</span>
+                  <span className="text-warning">{"Response"}</span>
                   <span className="text-foreground-dimmed/60">{"."}</span>
-                  <span className="text-yellow-400">{"json"}</span>
+                  <span className="text-warning">{"json"}</span>
                   <span className="text-foreground-dimmed/60">{"("}</span>
                   <span className="text-green-400">{"ucpData"}</span>
                   <span className="text-foreground-dimmed/60">{");\n\n"}</span>

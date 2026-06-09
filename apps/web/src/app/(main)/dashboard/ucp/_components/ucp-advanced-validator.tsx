@@ -13,11 +13,11 @@ import * as UcpAdvancedCheck from "@/server/app/intelligence/ucp-advanced-check"
 type Tone = "success" | "danger" | "warning" | "neutral" | "skip";
 
 const toneClasses: Record<Tone, string> = {
-  success: "border-primary/20 bg-primary/10 text-primary",
-  danger: "border-red-500/20 bg-red-500/10 text-red-500",
-  warning: "border-yellow-500/20 bg-yellow-500/10 text-yellow-500",
-  neutral: "border-accent-foreground bg-background text-foreground-dimmed",
-  skip: "border-accent-foreground bg-background-dimmed text-foreground-dimmed/60",
+  success: "text-primary",
+  danger: "text-error",
+  warning: "text-warning",
+  neutral: "text-foreground-dimmed",
+  skip: "text-foreground-dimmed/60",
 };
 
 const gradeConfig: Record<
@@ -95,7 +95,7 @@ const EndpointProbeRow = ({
         {probe.endpoint}
       </p>
       {probe.error && (
-        <p className="mt-1 font-light text-red-500 text-xs">{probe.error}</p>
+        <p className="mt-1 font-light text-error text-xs">{probe.error}</p>
       )}
     </div>
 
@@ -118,8 +118,8 @@ const EndpointProbeRow = ({
             : probe.latencyMs < 400
               ? "text-primary"
               : probe.latencyMs < 1200
-                ? "text-yellow-500"
-                : "text-red-500",
+                ? "text-warning"
+                : "text-error",
         )}
       >
         {formatLatency(probe.latencyMs)}
@@ -162,9 +162,9 @@ const LifecycleStepRow = ({
         {step.skipped ? (
           <span className="font-medium text-[10px]">—</span>
         ) : step.passed ? (
-          <CheckCircleIcon className="size-3.5" />
+          <CheckCircleIcon className="size-4" />
         ) : (
-          <XCircleIcon className="size-3.5" />
+          <XCircleIcon className="size-4" />
         )}
       </span>
 
@@ -178,8 +178,8 @@ const LifecycleStepRow = ({
             : step.latencyMs < 400
               ? "text-primary"
               : step.latencyMs < 1200
-                ? "text-yellow-500"
-                : "text-red-500",
+                ? "text-warning"
+                : "text-error",
         )}
       >
         {formatLatency(step.latencyMs)}
@@ -217,9 +217,9 @@ const McpToolTestRow = ({
         {!test.present ? (
           "—"
         ) : test.passed ? (
-          <CheckCircleIcon className="size-3" />
+          <CheckCircleIcon className="size-4" />
         ) : (
-          <XCircleIcon className="size-3" />
+          <XCircleIcon className="size-4" />
         )}
       </span>
 
@@ -235,8 +235,8 @@ const McpToolTestRow = ({
             : test.latencyMs < 400
               ? "text-primary"
               : test.latencyMs < 1200
-                ? "text-yellow-500"
-                : "text-red-500",
+                ? "text-warning"
+                : "text-error",
         )}
       >
         {formatLatency(test.latencyMs)}
@@ -272,9 +272,7 @@ const McpProbeRow = ({ probe }: { probe: UcpAdvancedCheck.McpProbeResult }) => {
             {probe.endpoint}
           </p>
           {probe.error && (
-            <p className="mt-1 font-light text-red-500 text-xs">
-              {probe.error}
-            </p>
+            <p className="mt-1 font-light text-error text-xs">{probe.error}</p>
           )}
         </div>
 
@@ -300,8 +298,8 @@ const McpProbeRow = ({ probe }: { probe: UcpAdvancedCheck.McpProbeResult }) => {
                 : probe.latencyMs < 400
                   ? "text-primary"
                   : probe.latencyMs < 1200
-                    ? "text-yellow-500"
-                    : "text-red-500",
+                    ? "text-warning"
+                    : "text-error",
             )}
           >
             {formatLatency(probe.latencyMs)}
@@ -330,7 +328,7 @@ const McpProbeRow = ({ probe }: { probe: UcpAdvancedCheck.McpProbeResult }) => {
             {["", "Tool", "Latency", "Result", "Note"].map((h) => (
               <p
                 key={h}
-                className="font-medium text-foreground-dimmed text-xs uppercase tracking-[0.12em]"
+                className="font-medium text-foreground-dimmed text-xs uppercase tracking-[0.2em]"
               >
                 {h}
               </p>
@@ -360,7 +358,7 @@ const A2aProbeRow = ({ probe }: { probe: UcpAdvancedCheck.A2aProbeResult }) => {
           {probe.endpoint}
         </p>
         {probe.error && (
-          <p className="mt-1 font-light text-red-500 text-xs">{probe.error}</p>
+          <p className="mt-1 font-light text-error text-xs">{probe.error}</p>
         )}
       </div>
 
@@ -383,8 +381,8 @@ const A2aProbeRow = ({ probe }: { probe: UcpAdvancedCheck.A2aProbeResult }) => {
               : probe.latencyMs < 400
                 ? "text-primary"
                 : probe.latencyMs < 1200
-                  ? "text-yellow-500"
-                  : "text-red-500",
+                  ? "text-warning"
+                  : "text-error",
           )}
         >
           {formatLatency(probe.latencyMs)}
@@ -456,7 +454,7 @@ const AdvancedResults = ({
           {["Service", "Endpoint", "Status", "Latency", "CORS"].map((h) => (
             <p
               key={h}
-              className="font-medium text-foreground-dimmed text-xs uppercase tracking-[0.14em]"
+              className="font-medium text-foreground-dimmed text-xs uppercase tracking-[0.2em]"
             >
               {h}
             </p>

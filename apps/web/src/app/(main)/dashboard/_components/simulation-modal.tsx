@@ -126,7 +126,7 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
             {phase === "running" && (
               <span className="flex items-center gap-1.5 border border-primary/30 bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs">
                 <motion.span
-                  className="inline-block size-1.5 rounded-full bg-primary"
+                  className="inline-block size-1.5 bg-primary"
                   animate={{ opacity: [1, 0.2, 1] }}
                   transition={{
                     duration: 1.4,
@@ -249,9 +249,9 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
                             repeat: Number.POSITIVE_INFINITY,
                             ease: "easeInOut",
                           }}
-                          className="inline-block size-1.5 rounded-full bg-primary"
+                          className="inline-block size-1.5 bg-primary"
                         />
-                        <span className="font-medium text-foreground text-xs uppercase tracking-widest">
+                        <span className="font-medium text-foreground text-xs uppercase tracking-[0.2em]">
                           Live Intelligence Scan
                         </span>
                       </div>
@@ -385,7 +385,7 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
                               delay,
                               ease: "easeInOut",
                             }}
-                            className="inline-block size-1 rounded-full bg-primary"
+                            className="inline-block size-1 bg-primary"
                           />
                         ))}
                         <span className="ml-1.5 font-light text-foreground-dimmed text-xs">
@@ -478,7 +478,7 @@ const CompletePhaseModal = ({
       <Motion.Stagger stagger={0.08}>
         <Motion.Up className="mb-6 grid grid-cols-[1fr_auto] gap-px border border-accent-foreground bg-background-rich">
           <div className="bg-background-rich px-6 py-6">
-            <p className="mb-1 font-light text-foreground-dimmed text-xs uppercase tracking-widest">
+            <p className="mb-1 font-light text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
               Overall Win Rate
             </p>
             <motion.p
@@ -577,7 +577,7 @@ const CompletePhaseModal = ({
 
         {topFinding && (
           <Motion.Up className="mb-6 border border-primary/20 bg-primary/5 px-5 py-4">
-            <p className="mb-1.5 font-medium text-primary text-xs uppercase tracking-widest">
+            <p className="mb-1.5 font-medium text-primary text-xs uppercase tracking-[0.2em]">
               Top Finding
             </p>
             <p className="font-light text-foreground text-sm">

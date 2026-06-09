@@ -333,9 +333,7 @@ export const SimulationsClient = ({
                       <span className="font-light text-success text-xs">
                         {modelStats[label]?.wins ?? 0}W
                       </span>
-                      <span className="text-foreground-dimmed/30 text-xs">
-                        ·
-                      </span>
+                      <span className="text-foreground-dimmed text-xs">·</span>
                       <span className="font-light text-error text-xs">
                         {modelStats[label]?.losses ?? 0}L
                       </span>

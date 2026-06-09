@@ -15,7 +15,15 @@ import {
   useState,
 } from "react";
 import { useDocument } from "@/hooks/use-document";
-export type Theme = "light" | "dark" | "system";
+
+const THEMES = ["light", "dark", "system"] as const;
+
+export type Theme = (typeof THEMES)[number];
+
+const parseStoredTheme = (value: string): Theme => {
+  const normalized = value.replaceAll('"', "") as Theme;
+  return THEMES.includes(normalized) ? normalized : "light";
+};
 
 export type ThemeContext = [
   theme: Theme,
@@ -92,7 +100,10 @@ export type ThemeChangeOptions = {
 };
 
 export const ThemeProvider = ({ children }: PropsWithChildren) => {
-  const [theme, setTheme] = useLocalStorage<Theme>("theme", "light");
+  const [theme, setTheme] = useLocalStorage<Theme>("theme", "light", {
+    serializer: (value) => value,
+    deserializer: parseStoredTheme,
+  });
 
   const [isPending, setIsPending] = useState(false);
   const environment = useMemo(() => ({ isPending }), [isPending]);
@@ -162,9 +173,12 @@ const ThemeScript = () => {
       dangerouslySetInnerHTML={{
         __html: `(${(
           () => {
-            const theme = JSON.parse(
-              localStorage.getItem("theme") ?? '"light"',
-            );
+            const stored = (
+              localStorage.getItem("theme") ?? "light"
+            ).replaceAll('"', "");
+            const theme = ["light", "dark", "system"].includes(stored)
+              ? stored
+              : "light";
 
             const element = document.documentElement;
 

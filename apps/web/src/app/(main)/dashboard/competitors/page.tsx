@@ -21,7 +21,6 @@ import type { Pager } from "@/server/utils/pagination";
 import { extractPaginationParams } from "@/server/utils/pagination";
 import { CompetitorsTable } from "../_components/competitors-table";
 import {
-  ClosingGutter,
   Crosshair,
   SectionGutter,
   SectionKicker,
@@ -108,8 +107,6 @@ export default ({ searchParams }: SearchParamsProps<keyof Pager>) => (
           </Suspense>
         </div>
       </div>
-
-      <ClosingGutter />
     </div>
   </div>
 );
@@ -385,7 +382,7 @@ const CompetitiveLandscape = async () => {
                 className="flex items-center gap-4 bg-background-rich px-4 py-3 transition-colors hover:bg-background"
               >
                 <div className="flex w-36 shrink-0 items-center gap-2">
-                  <div className="flex size-8 shrink-0 items-center justify-center bg-background-dimmed font-semibold text-primary text-xs">
+                  <div className="flex size-8 shrink-0 items-center justify-center bg-background-dimmed font-medium text-primary text-xs">
                     {brand.brand.slice(0, 2).toUpperCase()}
                   </div>
                   <span className="truncate font-medium text-foreground text-sm">

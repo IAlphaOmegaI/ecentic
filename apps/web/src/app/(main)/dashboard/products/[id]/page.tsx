@@ -15,12 +15,7 @@ import { formatPrice } from "@/lib/currency";
 import { formatRelativeTime } from "@/lib/date";
 import * as Product from "@/server/app/product";
 import { Environment } from "@/server/utils/environment";
-import {
-  ClosingGutter,
-  Crosshair,
-  SectionGutter,
-  StatLabel,
-} from "../../_components/grid";
+import { Crosshair, SectionGutter, StatLabel } from "../../_components/grid";
 import { ProductDetail } from "./_components/product-detail";
 
 export default ({ params }: PageProps<"/dashboard/products/[id]">) => (
@@ -266,8 +261,6 @@ const ProductDetailContent = async ({
           <ProductDetail data={data} />
         </div>
       </div>
-
-      <ClosingGutter />
     </>
   );
 };
@@ -343,7 +336,5 @@ const PageSkeleton = () => (
         </div>
       </div>
     </div>
-
-    <ClosingGutter />
   </>
 );

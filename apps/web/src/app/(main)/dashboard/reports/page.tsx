@@ -6,12 +6,7 @@ import {
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import {
-  ClosingGutter,
-  Crosshair,
-  SectionGutter,
-  SectionKicker,
-} from "../_components/grid";
+import { Crosshair, SectionGutter, SectionKicker } from "../_components/grid";
 
 const reports = [
   {
@@ -218,8 +213,6 @@ export default () => (
           </div>
         </div>
       </div>
-
-      <ClosingGutter />
     </div>
   </div>
 );

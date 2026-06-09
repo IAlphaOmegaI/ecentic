@@ -21,7 +21,6 @@ import { Environment } from "@/server/utils/environment";
 import { extractPaginationParams, type Pager } from "@/server/utils/pagination";
 import { AgentVisitsChart } from "../_components/agent-visits-chart";
 import {
-  ClosingGutter,
   Crosshair,
   SectionGutter,
   SectionKicker,
@@ -130,8 +129,6 @@ export default ({ searchParams }: SearchParamsProps<keyof Pager>) => (
           </Suspense>
         </div>
       </div>
-
-      <ClosingGutter />
     </div>
   </div>
 );
@@ -624,7 +621,7 @@ const ChartSkeleton = () => (
           >
             <div className="flex w-full flex-row items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="size-8 animate-pulse rounded-full bg-foreground/10" />
+                <div className="size-8 animate-pulse bg-foreground/10" />
                 <div className="h-3 w-14 animate-pulse bg-foreground/10" />
               </div>
               <div className="flex items-baseline gap-0.5">

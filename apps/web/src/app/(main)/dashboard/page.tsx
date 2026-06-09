@@ -21,12 +21,7 @@ import * as Store from "@/server/app/store";
 import { Environment } from "@/server/utils/environment";
 import { AgentVisitsPanel } from "./_components/agent-visits-panel";
 import { CompetitorsTable } from "./_components/competitors-table";
-import {
-  ClosingGutter,
-  Crosshair,
-  SectionGutter,
-  StatLabel,
-} from "./_components/grid";
+import { Crosshair, SectionGutter, StatLabel } from "./_components/grid";
 import { OverviewActions } from "./_components/overview-actions";
 import { OverviewCharts } from "./_components/overview-charts";
 import { ProductsTable } from "./_components/products-table";
@@ -107,8 +102,6 @@ export default () => (
           </Suspense>
         </div>
       </div>
-
-      <ClosingGutter />
     </div>
   </div>
 );
@@ -328,7 +321,7 @@ const StatCards = async () => {
               href={`/dashboard/products/${top._id}`}
               className="mt-3 inline-flex items-center gap-1 text-primary text-sm transition-colors hover:text-primary-rich"
             >
-              View details <ArrowRightIcon className="size-3.5" />
+              View details <ArrowRightIcon className="size-4" />
             </Link>
           </div>
         </div>
@@ -352,7 +345,7 @@ const StatCards = async () => {
               href={`/dashboard/products/${opportunity._id}`}
               className="mt-3 inline-flex items-center gap-1 text-primary text-sm transition-colors hover:text-primary-rich"
             >
-              Optimize now <ArrowRightIcon className="size-3.5" />
+              Optimize now <ArrowRightIcon className="size-4" />
             </Link>
           </div>
         </div>
@@ -523,7 +516,7 @@ const ChartSkeleton = () => (
           <div key={model} className="p-6">
             <div className="flex w-full items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="size-8 animate-pulse rounded-full bg-foreground/10" />
+                <div className="size-8 animate-pulse bg-foreground/10" />
                 <div className="h-3.5 w-14 animate-pulse bg-foreground/10" />
               </div>
               <div className="flex items-baseline gap-0.5">
@@ -642,7 +635,7 @@ const CompetitorTableSkeleton = () => (
 
 const TableSkeleton = () => (
   <div>
-    <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
+    <div className="flex items-center justify-between border-accent-foreground border-b p-4">
       <div className="space-y-2">
         <div className="h-3 w-32 animate-pulse bg-foreground/10" />
         <div className="h-6 w-28 animate-pulse bg-foreground/10" />

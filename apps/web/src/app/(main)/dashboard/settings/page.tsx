@@ -4,7 +4,8 @@ import { Suspense } from "react";
 import * as Authentication from "@/server/app/authentication";
 import * as Store from "@/server/app/store";
 import * as Subscription from "@/server/app/subscription";
-import { ClosingGutter, Crosshair } from "../_components/grid";
+import { Environment } from "@/server/utils/environment";
+import { Crosshair } from "../_components/grid";
 import { SettingsClient } from "./_components/settings-client";
 
 const SettingsSkeleton = () => (
@@ -32,14 +33,20 @@ const SettingsSkeleton = () => (
   </div>
 );
 
-async function SettingsContent() {
+const SettingsContent = async () => {
   await connection();
-  const [user, stores, subscription, invoices] = await Promise.all([
-    unwrapResult(Authentication.getCurrentUser()),
-    unwrapResult(Store.getForCurrentUser()),
-    unwrapResult(Subscription.getCurrentSubscription()),
-    unwrapResult(Subscription.listInvoices()),
+  const [user, stores, subscriptionResult, invoicesResult] = await Promise.all([
+    unwrapResult(Authentication.getCurrentUser(Environment.SERVER)),
+    unwrapResult(Store.getForCurrentUser(Environment.SERVER)),
+    Subscription.getCurrentSubscription(Environment.SERVER),
+    Subscription.listInvoices(Environment.SERVER),
   ]);
+
+  const subscription = subscriptionResult.success
+    ? subscriptionResult.data
+    : null;
+  const invoices = invoicesResult.success ? invoicesResult.data : [];
+
   return (
     <SettingsClient
       user={user}
@@ -48,7 +55,7 @@ async function SettingsContent() {
       invoices={invoices}
     />
   );
-}
+};
 
 export default () => (
   <div className="flex flex-col">
@@ -79,8 +86,6 @@ export default () => (
           </Suspense>
         </div>
       </div>
-
-      <ClosingGutter />
     </div>
   </div>
 );

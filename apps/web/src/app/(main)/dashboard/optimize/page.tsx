@@ -2,7 +2,7 @@ import { unwrapResult } from "@zenncore/utils";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import * as Optimization from "@/server/app/optimization";
-import { ClosingGutter, Crosshair, SectionGutter } from "../_components/grid";
+import { Crosshair, SectionGutter } from "../_components/grid";
 import { OptimizeClient } from "./_components/optimize-client";
 
 const OptimizeSkeleton = () => (
@@ -61,8 +61,6 @@ const OptimizeSkeleton = () => (
         </div>
       </div>
     </div>
-
-    <ClosingGutter />
   </>
 );
 
