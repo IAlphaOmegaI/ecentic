@@ -419,7 +419,8 @@ export type ComparisonEvent =
   | { kind: "error"; message: string };
 
 export type RunStoreComparisonInput = {
-  storeUrls: string[];
+  sourceStoreUrl: string;
+  competitorStoreUrls: string[];
   query?: string;
   agentProfileUrl?: string;
 };
@@ -526,7 +527,8 @@ export const unwrapMcpCatalogResult = async (
 };
 
 export const runStoreComparison = async ({
-  storeUrls,
+  sourceStoreUrl,
+  competitorStoreUrls,
   query,
   agentProfileUrl = AGENT_PROFILE,
 }: RunStoreComparisonInput) => {
@@ -535,20 +537,34 @@ export const runStoreComparison = async ({
 
   (async () => {
     try {
-      const domains = [
+      const source = normalizeStoreUrl(sourceStoreUrl.trim());
+      const competitors = [
         ...new Set(
-          storeUrls.map((url) => normalizeStoreUrl(url.trim())).filter(Boolean),
+          competitorStoreUrls
+            .map((url) => normalizeStoreUrl(url.trim()))
+            .filter(Boolean),
         ),
-      ];
+      ].filter((url) => url !== source);
 
-      if (domains.length < 2) {
+      if (!source) {
         emit({
           kind: "error",
-          message: "Add at least two store URLs to compare.",
+          message: "Add your store URL to compare.",
         });
         streamable.done();
         return;
       }
+
+      if (competitors.length < 1) {
+        emit({
+          kind: "error",
+          message: "Add at least one competitor store URL to compare against.",
+        });
+        streamable.done();
+        return;
+      }
+
+      const domains = [source, ...competitors];
 
       const buyerRequest = query?.trim() || "product";
 
@@ -593,11 +609,18 @@ export const runStoreComparison = async ({
         } => storeOutcome.discovery !== null && storeOutcome.error === null,
       );
 
-      if (mcpStores.length < 2) {
+      const sourceStore = mcpStores.find(
+        (storeOutcome) => storeOutcome.storeUrl === source,
+      );
+      const competitorStores = mcpStores.filter(
+        (storeOutcome) => storeOutcome.storeUrl !== source,
+      );
+
+      if (!sourceStore || competitorStores.length < 1) {
         emit({
           kind: "error",
           message:
-            "Need at least two MCP-enabled stores to compare. Check store URLs and UCP profiles.",
+            "Your store and at least one competitor must expose MCP shopping endpoints. Check store URLs and UCP profiles.",
         });
         streamable.done();
         return;
@@ -608,19 +631,39 @@ export const runStoreComparison = async ({
         domain: discovery.domain,
         endpoint: discovery.endpoint,
         storeUrl,
+        role: storeUrl === source ? ("source" as const) : ("competitor" as const),
       }));
 
       const tools = buildMcpTools(endpoints, agentProfileUrl);
 
       const agentResult = streamText({
         model: "google/gemini-3-flash",
-        system: `You are a UCP shopping agent comparing catalog search results across multiple stores.
+        system: `You are an AI shopping agent evaluator. Simulate how autonomous shopping agents (GPT-4, Claude, Gemini, Perplexity, and similar) decide where to buy when a buyer asks for something — then explain whether the source merchant would win or lose against competitors as a group.
+
+This is not a store-by-store ranking. Frame everything as **my store vs competitors**: one side (the source store) against the combined competitor set. Do not rank competitors against each other or assign first/second/third place to individual stores.
+
+AI shopping agents ignore branding and ads. They evaluate structured catalog signals in milliseconds. When writing your summary, explicitly walk through every factor an agent weighs and how each factor applies to the source store vs competitors:
+
+- **Query relevance** — how well returned products match the buyer's intent and keywords
+- **Title clarity** — whether titles are specific, searchable, and unambiguous
+- **Description quality** — completeness, spec detail, and whether an agent can extract key attributes
+- **Structured attributes** — variants, options, SKUs, categories, and any metadata an agent can parse
+- **Price fit** — whether listed prices fall within the buyer's budget and represent good value
+- **Price transparency** — clear pricing, compare-at or sale signals, no missing or ambiguous amounts
+- **Variant availability** — whether the right size/color/model exists and is selectable
+- **Selection breadth** — enough matching products vs competitors offering more or better fits
+- **Catalog confidence** — whether data is complete enough for an agent to recommend without guessing
+- **Recommendation defensibility** — which side gives an agent stronger, clearer reasons to tell the buyer "buy here"
 
 ## Flow — follow in order
 
 1. Parse the buyer request into search_catalogs tool parameters.
 2. Call search_catalogs exactly once with those parameters. It queries every store endpoint in parallel.
-3. Compare the per-endpoint results and write 3–5 short paragraphs covering relevance, price/selection differences, gaps, and a buyer recommendation.
+3. Write 4–6 short paragraphs as a **my store vs competitors** verdict:
+   - State clearly whether an AI shopping agent would buy from the source store or from a competitor for this query, and why
+   - Go through each evaluation factor above: what the source store shows, what competitors show collectively, and which side wins on that factor
+   - Summarize the decisive signals — the factors that most likely tip the agent's purchase decision
+   - If the source store loses, list concrete listing and catalog improvements to flip the outcome
 
 ## Parse buyer request into search_catalogs parameters
 
@@ -649,13 +692,22 @@ Example for "wireless mouse under price 200lek(ALL)":
   "filters": { "price": { "max": 20000 } }
 }
 
-Stores being compared:
-${storeCatalog.map((store) => `${store.domain} (${store.storeUrl})`).join("\n")}
+Source store (the merchant being evaluated):
+${storeCatalog
+  .filter((store) => store.role === "source")
+  .map((store) => `${store.domain} (${store.storeUrl})`)
+  .join("\n")}
 
-Reference store domains in your summary, not internal IDs.`,
+Competitor stores:
+${storeCatalog
+  .filter((store) => store.role === "competitor")
+  .map((store) => `${store.domain} (${store.storeUrl})`)
+  .join("\n")}
+
+Write for a merchant asking: "Would an AI shopping agent buy from my store or from a competitor for this query?" Reference store domains, not internal IDs. Never rank individual competitors against each other — only my store vs competitors.`,
         prompt: `Buyer request: "${buyerRequest}"
 
-Call search_catalogs with parameters derived from this request, then compare results across all stores.`,
+Call search_catalogs with parameters derived from this request, then evaluate my store vs competitors: list every factor an AI shopping agent would weigh, say which side wins on each, and give a clear verdict on where the agent would buy and why.`,
         tools,
         stopWhen: isLoopFinished(),
         providerOptions: gatewayOptions(),

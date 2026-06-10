@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import * as Authentication from "@/server/app/authentication";
 import * as Store from "@/server/app/store";
 import * as Subscription from "@/server/app/subscription";
+import { Environment } from "@/server/utils/environment";
 import { SettingsClient } from "./_components/settings-client";
 
 const SettingsSkeleton = () => (
@@ -35,12 +36,14 @@ const SettingsSkeleton = () => (
 
 async function SettingsContent() {
   await connection();
+
   const [user, stores, subscription, invoices] = await Promise.all([
-    unwrapResult(Authentication.getCurrentUser()),
-    unwrapResult(Store.getForCurrentUser()),
-    unwrapResult(Subscription.getCurrentSubscription()),
-    unwrapResult(Subscription.listInvoices()),
+    unwrapResult(Authentication.getCurrentUser(Environment.SERVER)),
+    unwrapResult(Store.getForCurrentUser(Environment.SERVER)),
+    unwrapResult(Subscription.getCurrentSubscription(Environment.SERVER)),
+    unwrapResult(Subscription.listInvoices(Environment.SERVER)),
   ]);
+
   return (
     <SettingsClient
       user={user}

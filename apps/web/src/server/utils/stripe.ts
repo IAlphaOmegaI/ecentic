@@ -9,7 +9,6 @@ export const stripe = (): Stripe => {
   if (!secretKey) throw new Error("Stripe is not configured");
 
   cached = new Stripe(secretKey, {
-    apiVersion: "2026-05-27.dahlia",
     typescript: true,
   });
   return cached;

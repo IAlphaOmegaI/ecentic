@@ -462,7 +462,7 @@ export const UcpManager = ({
   return (
     <div className="space-y-4">
       {/* Score card */}
-      {/* <div className="border border-accent-foreground bg-background">
+      <div className="border border-accent-foreground bg-background">
         <div className="flex items-center gap-6 p-5">
           <div className="relative size-14 shrink-0">
             <svg
@@ -517,13 +517,13 @@ export const UcpManager = ({
             </p>
           </div>
         </div>
-      </div> */}
+      </div>
 
       {/* Tabs */}
       <Tabs defaultValue="profile">
         <TabsList className="h-auto border border-accent-foreground bg-transparent px-0">
           <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
-          {/* <Tab value="profile">Merchant Profile</Tab> */}
+          <Tab value="profile">Merchant Profile</Tab>
           <Tab value="products">Product Structured Data</Tab>
           <Tab value="validate">Validate</Tab>
         </TabsList>

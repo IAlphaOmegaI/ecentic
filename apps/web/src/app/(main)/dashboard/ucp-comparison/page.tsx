@@ -9,8 +9,8 @@ export default () => (
             UCP Store Comparison
           </h1>
           <p className="mt-0.5 font-light text-foreground-dimmed text-sm">
-            Add multiple UCP-compliant stores, run the same catalog search on
-            each, and compare how agents would see their product listings.
+            Add your store and competitor stores, run the same catalog search on
+            each, and see how your listings stack up in agent-mediated shopping.
           </p>
         </div>
       </div>

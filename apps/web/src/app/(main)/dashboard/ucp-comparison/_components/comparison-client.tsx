@@ -30,8 +30,11 @@ type ComparisonLine =
   | { kind: "error"; message: string }
   | { kind: "done" };
 
+type StoreRole = "source" | "competitor";
+
 type StoreState = {
   url: string;
+  role: StoreRole;
   status: "idle" | "discovering" | "searching" | "done" | "error";
   discovery: StoreDiscovery | null;
   products: z.infer<typeof productSchema>[];
@@ -71,9 +74,26 @@ const flushText = (
 };
 
 const StoreCard = ({ store }: { store: StoreState }) => (
-  <div className="border border-accent-foreground bg-background">
+  <div
+    className={cn(
+      "border bg-background",
+      store.role === "source"
+        ? "border-primary/40"
+        : "border-accent-foreground",
+    )}
+  >
     <div className="border-accent-foreground border-b px-4 py-2.5">
       <div className="flex flex-wrap items-center gap-2">
+        <span
+          className={cn(
+            "px-1.5 py-0.5 font-medium text-xs",
+            store.role === "source"
+              ? "bg-primary/15 text-primary"
+              : "bg-accent-foreground/10 text-foreground-dimmed",
+          )}
+        >
+          {store.role === "source" ? "Your store" : "Competitor"}
+        </span>
         <p className="font-medium text-foreground text-sm">
           {store.discovery?.domain ?? store.url}
         </p>
@@ -150,20 +170,20 @@ const StoreCard = ({ store }: { store: StoreState }) => (
   </div>
 );
 
-type StoreInput = {
+type CompetitorInput = {
   id: string;
   url: string;
 };
 
-const createStoreInput = (url = ""): StoreInput => ({
+const createCompetitorInput = (url = ""): CompetitorInput => ({
   id: crypto.randomUUID(),
   url,
 });
 
 export const ComparisonClient = () => {
-  const [storeInputs, setStoreInputs] = useState<StoreInput[]>([
-    createStoreInput(),
-    createStoreInput(),
+  const [sourceStoreUrl, setSourceStoreUrl] = useState("");
+  const [competitorInputs, setCompetitorInputs] = useState<CompetitorInput[]>([
+    createCompetitorInput(),
   ]);
   const [query, setQuery] = useState("");
   const [lines, setLines] = useState<ComparisonLine[]>([]);
@@ -172,7 +192,6 @@ export const ComparisonClient = () => {
   const [phase, setPhase] = useState<"idle" | "running" | "done" | "error">(
     "idle",
   );
-  console.log("stores", stores);
   const logRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -181,49 +200,64 @@ export const ComparisonClient = () => {
     }
   });
 
-  const updateStoreUrl = (id: string, value: string) => {
-    setStoreInputs((previous) =>
+  const updateCompetitorUrl = (id: string, value: string) => {
+    setCompetitorInputs((previous) =>
       previous.map((input) =>
         input.id === id ? { ...input, url: value } : input,
       ),
     );
   };
 
-  const addStore = () => {
-    setStoreInputs((previous) => [...previous, createStoreInput()]);
+  const addCompetitor = () => {
+    setCompetitorInputs((previous) => [...previous, createCompetitorInput()]);
   };
 
-  const removeStore = (id: string) => {
-    setStoreInputs((previous) =>
-      previous.length <= 2
+  const removeCompetitor = (id: string) => {
+    setCompetitorInputs((previous) =>
+      previous.length <= 1
         ? previous
         : previous.filter((input) => input.id !== id),
     );
   };
 
-  const validStoreCount = storeInputs.filter((input) =>
+  const validCompetitorCount = competitorInputs.filter((input) =>
     input.url.trim(),
   ).length;
+  const canCompare = sourceStoreUrl.trim().length > 0 && validCompetitorCount >= 1;
 
   const [handleRun, isRunning] = useAsyncAction(async () => {
-    const urls = storeInputs.map((input) => input.url.trim()).filter(Boolean);
-    if (urls.length < 2) return;
+    const source = sourceStoreUrl.trim();
+    const competitors = competitorInputs
+      .map((input) => input.url.trim())
+      .filter(Boolean);
+
+    if (!source || competitors.length < 1) return;
 
     setLines([]);
     setSearchParams(null);
     setPhase("running");
-    setStores(
-      urls.map((url) => ({
-        url,
+    setStores([
+      {
+        url: source,
+        role: "source",
         status: "discovering",
         discovery: null,
         products: [],
         error: null,
+      },
+      ...competitors.map((url) => ({
+        url,
+        role: "competitor" as const,
+        status: "discovering" as const,
+        discovery: null,
+        products: [] as z.infer<typeof productSchema>[],
+        error: null,
       })),
-    );
+    ]);
 
     const { stream } = await runStoreComparison({
-      storeUrls: urls,
+      sourceStoreUrl: source,
+      competitorStoreUrls: competitors,
       query: query.trim() || undefined,
       agentProfileUrl: "https://ecentic.ai/ucp/agent-profile",
     });
@@ -259,13 +293,15 @@ export const ComparisonClient = () => {
           break;
         }
         case "store_result": {
+          const products = (event.result ??
+            []) as z.infer<typeof productSchema>[];
           setStores((previous) =>
             previous.map((store) =>
               store.url === event.storeUrl
                 ? {
                     ...store,
                     status: "done",
-                    products: event.result,
+                    products,
                   }
                 : store,
             ),
@@ -333,40 +369,66 @@ export const ComparisonClient = () => {
     .map((line) => line.text)
     .join("");
 
+  const sourceStore = stores.find((store) => store.role === "source");
+  const competitorStores = stores.filter((store) => store.role === "competitor");
+
   return (
     <div className="space-y-4">
       <div className="border border-accent-foreground bg-background">
         <div className="border-accent-foreground border-b px-4 py-2.5">
-          <p className="font-medium text-base text-foreground">Stores</p>
+          <p className="font-medium text-base text-foreground">Your store</p>
           <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
-            Add two or more store domains. Each{" "}
+            The merchant catalog you want to evaluate against competitors.
+          </p>
+        </div>
+        <div className="px-4 py-3">
+          <TextField
+            value={sourceStoreUrl}
+            onValueChange={setSourceStoreUrl}
+            className="h-8 border border-primary/30 bg-background-dimmed"
+          >
+            <TextFieldInput
+              placeholder="https://your-store.example.com"
+              className="px-3 font-mono text-sm"
+            />
+          </TextField>
+        </div>
+      </div>
+
+      <div className="border border-accent-foreground bg-background">
+        <div className="border-accent-foreground border-b px-4 py-2.5">
+          <p className="font-medium text-base text-foreground">
+            Competitor stores
+          </p>
+          <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
+            Add one or more competitor domains. Each{" "}
             <span className="font-mono">/.well-known/ucp</span> profile is
             resolved, then <span className="font-mono">search_catalog</span>{" "}
-            runs with the same derived parameters.
+            runs with the same derived parameters as your store.
           </p>
         </div>
 
         <div className="space-y-2 px-4 py-3">
-          {storeInputs.map((input, index) => (
+          {competitorInputs.map((input, index) => (
             <div
               key={input.id}
               className="flex flex-col gap-2 sm:flex-row sm:items-center"
             >
               <TextField
                 value={input.url}
-                onValueChange={(value) => updateStoreUrl(input.id, value)}
+                onValueChange={(value) => updateCompetitorUrl(input.id, value)}
                 className="h-8 flex-1 border border-accent-foreground bg-background-dimmed"
               >
                 <TextFieldInput
-                  placeholder={`https://store-${index + 1}.example.com`}
+                  placeholder={`https://competitor-${index + 1}.example.com`}
                   className="px-3 font-mono text-sm"
                 />
               </TextField>
               <Button
                 variant="soft"
                 color="neutral"
-                onClick={() => removeStore(input.id)}
-                disabled={storeInputs.length <= 2 || isRunning}
+                onClick={() => removeCompetitor(input.id)}
+                disabled={competitorInputs.length <= 1 || isRunning}
                 className="shrink-0 px-3 py-1.5 text-sm"
               >
                 <XCircleIcon className="size-4" />
@@ -378,12 +440,12 @@ export const ComparisonClient = () => {
             <Button
               variant="soft"
               color="neutral"
-              onClick={addStore}
-              disabled={isRunning || storeInputs.length >= 6}
+              onClick={addCompetitor}
+              disabled={isRunning || competitorInputs.length >= 5}
               className="shrink-0 px-4 py-1.5 text-sm"
             >
               <PlusIcon className="size-4" />
-              Add store
+              Add competitor
             </Button>
 
             <TextField
@@ -401,7 +463,7 @@ export const ComparisonClient = () => {
               variant="flat"
               color="primary"
               onClick={handleRun}
-              disabled={isRunning || validStoreCount < 2}
+              disabled={isRunning || !canCompare}
               className="shrink-0 px-5 py-1.5 text-sm"
             >
               {isRunning ? (
@@ -434,10 +496,27 @@ export const ComparisonClient = () => {
       )}
 
       {stores.length > 0 && (
-        <div className="grid gap-4 lg:grid-cols-2">
-          {stores.map((store) => (
-            <StoreCard key={store.url} store={store} />
-          ))}
+        <div className="space-y-4">
+          {sourceStore && (
+            <div>
+              <p className="mb-2 font-medium text-foreground text-sm">
+                Your store results
+              </p>
+              <StoreCard store={sourceStore} />
+            </div>
+          )}
+          {competitorStores.length > 0 && (
+            <div>
+              <p className="mb-2 font-medium text-foreground text-sm">
+                Competitor results
+              </p>
+              <div className="grid gap-4 lg:grid-cols-2">
+                {competitorStores.map((store) => (
+                  <StoreCard key={store.url} store={store} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -505,7 +584,7 @@ export const ComparisonClient = () => {
         >
           {lines.length === 0 ? (
             <p className="font-light text-foreground-dimmed/50 text-xs">
-              Add store URLs and press{" "}
+              Add your store and at least one competitor, then press{" "}
               <span className="font-medium text-foreground-dimmed">
                 Compare
               </span>{" "}
@@ -565,7 +644,7 @@ export const ComparisonClient = () => {
                           (line.result as z.infer<typeof productSchema>[])
                             .length
                         }{" "}
-                        products) products)
+                        products)
                       </p>
                     );
                   case "store_error":
