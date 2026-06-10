@@ -1,12 +1,13 @@
 import {
   ArrowRightIcon,
-  BoxMinusIcon,
-  CheckBadgeIcon,
+  BullseyeIcon,
+  GaugeIcon,
   PlusIcon,
   RadarIcon,
+  TrendDownIcon,
   TrendUpIcon,
 } from "@zenncore/icons";
-import { unwrapResult } from "@zenncore/utils";
+import { cn, unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import type { SearchParamsProps } from "@zenncore/web/types";
 import Link from "next/link";
@@ -19,6 +20,12 @@ import * as Tracking from "@/server/app/tracking";
 import { Environment } from "@/server/utils/environment";
 import { extractPaginationParams, type Pager } from "@/server/utils/pagination";
 import { AgentVisitsChart } from "../_components/agent-visits-chart";
+import {
+  Crosshair,
+  SectionGutter,
+  SectionKicker,
+  StatLabel,
+} from "../_components/grid";
 import { ProductsTable } from "../_components/products-table";
 import {
   OptimizationBreakdown,
@@ -28,22 +35,33 @@ import {
 } from "./_components/products-charts";
 import { ScanInsightsCarousel } from "./_components/scan-insights-carousel";
 
+const emptyStatCards = [
+  { label: "Total Products", icon: RadarIcon, color: "text-warning" },
+  { label: "Average Win Rate", icon: GaugeIcon, color: "text-primary" },
+  { label: "High Performers", icon: TrendUpIcon, color: "text-success" },
+  { label: "Needs Attention", icon: BullseyeIcon, color: "text-error" },
+] as const;
+
 export default ({ searchParams }: SearchParamsProps<keyof Pager>) => (
   <div className="flex flex-col">
     <div className="mx-8 border-accent-foreground border-x">
       <div className="-mx-8 border-accent-foreground border-b">
-        <div className="mx-8 flex items-baseline justify-between px-6 py-8">
+        <div className="mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="font-medium text-4xl text-foreground">Products</h1>
             <Suspense
               fallback={
-                <p className="mt-1 font-light text-2xl text-foreground-dimmed">
-                  Loading...
-                </p>
+                <div className="h-4 w-56 animate-pulse bg-foreground/10" />
               }
             >
               <LastScanned />
             </Suspense>
+            <h1 className="mt-3 font-medium text-4xl text-foreground">
+              Products
+            </h1>
+            <p className="mt-1 font-light text-foreground-dimmed text-lg">
+              How each product in your catalog performs across AI shopping
+              agents.
+            </p>
           </div>
           <div className="flex items-center gap-2">
             {/* <Button variant="outline" color="accent">
@@ -63,42 +81,49 @@ export default ({ searchParams }: SearchParamsProps<keyof Pager>) => (
       </div>
 
       <div className="-mx-8 border-accent-foreground border-b">
-        <div className="mx-8">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <Suspense fallback={<StatsSkeleton />}>
             <StatCards />
           </Suspense>
         </div>
       </div>
 
-      <div className="h-8" />
+      <SectionGutter />
+
       <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="mx-8">
+        <div className="mx-8 bg-background-rich">
           <Suspense fallback={<ChartSkeleton />}>
             <Performance />
           </Suspense>
         </div>
       </div>
 
-      <div className="h-8" />
+      <SectionGutter />
+
       <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="mx-8">
+        <div className="mx-8 bg-background-rich">
           <Suspense fallback={<TableSkeleton />}>
             <Products searchParams={searchParams} />
           </Suspense>
         </div>
       </div>
 
-      <div className="h-8" />
-      <div className="-mx-8 mb-12 border-accent-foreground border-t border-b">
-        <div className="mx-8">
+      <SectionGutter />
+
+      <div className="-mx-8 border-accent-foreground border-t border-b">
+        <div className="mx-8 bg-background-rich">
           <Suspense fallback={<TrafficSkeleton />}>
             <AgentTraffic />
           </Suspense>
         </div>
       </div>
 
-      <div className="-mx-8 mb-12 border-accent-foreground border-t border-b">
-        <div className="mx-8">
+      <SectionGutter />
+
+      <div className="-mx-8 border-accent-foreground border-t border-b">
+        <div className="mx-8 bg-background-rich">
           <Suspense fallback={<InsightsSkeleton />}>
             <Insights />
           </Suspense>
@@ -115,11 +140,17 @@ const LastScanned = async () => {
   );
 
   return (
-    <p className="mt-1 font-light text-2xl text-foreground-dimmed">
+    <div className="flex items-center gap-2.5 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+      <span
+        className={cn(
+          "size-2",
+          data.scan?.updatedAt ? "bg-success" : "bg-accent-rich",
+        )}
+      />
       {data.scan?.updatedAt
-        ? `Last scanned: ${formatRelativeTime(data.scan.updatedAt)}`
+        ? `Live — last scanned ${formatRelativeTime(data.scan.updatedAt)}`
         : "No scans run yet"}
-    </p>
+    </div>
   );
 };
 
@@ -132,29 +163,20 @@ const StatCards = async () => {
 
   if (products.length === 0)
     return (
-      <div className="grid h-39 min-h-39 grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
-        {[
-          { label: "Total Products", icon: <RadarIcon className="size-12" /> },
-          {
-            label: "Average Win Rate",
-            icon: <BoxMinusIcon className="size-12" />,
-          },
-          {
-            label: "High Performers",
-            icon: <TrendUpIcon className="size-12" />,
-          },
-          {
-            label: "Needs Attention",
-            icon: <CheckBadgeIcon className="size-12" />,
-          },
-        ].map(({ label, icon }) => (
-          <div key={label} className="h-full bg-background-rich p-4">
-            <p className="mb-4 text-foreground-dimmed uppercase tracking-widest">
-              {label}
-            </p>
-            <div className="flex flex-col items-center justify-center gap-2">
-              {icon}
-              <p className="text-foreground-dimmed">No data yet</p>
+      <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
+        {emptyStatCards.map(({ label, icon: Icon, color }) => (
+          <div
+            key={label}
+            className="relative flex h-44 flex-col justify-between bg-background-rich p-5"
+          >
+            <StatLabel
+              label={label}
+              icon={<Icon className={cn("size-8 shrink-0", color)} />}
+            />
+            <div className="flex flex-col items-center gap-2 pb-4">
+              <p className="font-light text-foreground-dimmed text-sm">
+                No data yet
+              </p>
             </div>
           </div>
         ))}
@@ -198,60 +220,101 @@ const StatCards = async () => {
 
   return (
     <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
-      <div className="flex flex-col justify-between bg-background-rich p-4">
-        <p className="text-foreground-dimmed">Total Products</p>
-        <div className="mt-2 flex items-baseline gap-1.5">
-          <span className="text-4xl text-foreground tabular-nums">
+      <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+        <StatLabel
+          label="Total Products"
+          icon={<RadarIcon className="size-8 shrink-0 text-warning" />}
+        />
+        <div>
+          <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
             {products.length}
-          </span>
-          <span className="text-foreground-dimmed">/ 100</span>
-        </div>
-        <div className="mt-4">
-          <div className="h-1 w-full bg-accent-foreground">
-            <div
-              className="h-full bg-primary"
-              style={{ width: `${(products.length / 100) * 100}%` }}
-            />
-          </div>
-          <p className="mt-2 text-foreground-dimmed">
-            {100 - products.length} slots remaining
+            <span className="ml-1 font-light text-2xl text-foreground-dimmed">
+              / 100
+            </span>
           </p>
+          <div className="mt-3">
+            <div className="h-1 w-full bg-accent-foreground">
+              <div
+                className="h-full bg-primary"
+                style={{ width: `${(products.length / 100) * 100}%` }}
+              />
+            </div>
+            <p className="mt-2 font-light text-foreground-dimmed text-xs">
+              {100 - products.length} slots remaining
+            </p>
+          </div>
         </div>
       </div>
 
-      <div className="flex flex-col justify-between bg-background-rich p-4">
-        <p className="text-foreground-dimmed">Average Win Rate</p>
-        <div className="mt-2 flex items-baseline gap-2">
-          <span className="text-4xl text-foreground tabular-nums">
-            {averageWinRate}%
-          </span>
-          {trend !== 0 && (
-            <span className={trend >= 0 ? "text-success" : "text-error"}>
-              {trend >= 0 ? "+" : ""}
-              {trend}% since last scan
+      <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+        <StatLabel
+          label="Average Win Rate"
+          icon={<GaugeIcon className="size-8 shrink-0 text-primary" />}
+        />
+        <div>
+          <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
+            {averageWinRate}
+            <span className="ml-0.5 font-light text-2xl text-foreground-dimmed">
+              %
             </span>
+          </p>
+          {trend !== 0 ? (
+            <p className="mt-3 flex items-center gap-2">
+              <span
+                className={cn(
+                  "flex items-center gap-1.5 text-sm",
+                  trend >= 0 ? "text-success" : "text-error",
+                )}
+              >
+                {trend >= 0 ? (
+                  <TrendUpIcon className="size-6" />
+                ) : (
+                  <TrendDownIcon className="size-6" />
+                )}
+                {trend >= 0 ? "+" : ""}
+                {trend}%
+              </span>
+              <span className="font-light text-foreground-dimmed text-sm">
+                vs last scan
+              </span>
+            </p>
+          ) : (
+            <p className="mt-3 font-light text-foreground-dimmed text-sm">
+              across {products.length}{" "}
+              {products.length === 1 ? "product" : "products"}
+            </p>
           )}
         </div>
       </div>
 
-      <div className="flex flex-col justify-between bg-background-rich p-4">
-        <p className="text-foreground-dimmed">High Performers</p>
-        <span className="mt-2 text-4xl text-success tabular-nums">
-          {highPerformers}
-        </span>
-        <p className="mt-2 font-light text-foreground-dimmed text-sm">
-          products with {"\u2265"}60% win rate
-        </p>
+      <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+        <StatLabel
+          label="High Performers"
+          icon={<TrendUpIcon className="size-8 shrink-0 text-success" />}
+        />
+        <div>
+          <p className="font-medium text-5xl text-success tabular-nums tracking-tight">
+            {highPerformers}
+          </p>
+          <p className="mt-3 font-light text-foreground-dimmed text-sm">
+            products with {"≥"}60% win rate
+          </p>
+        </div>
       </div>
 
-      <div className="flex flex-col justify-between bg-background-rich p-4">
-        <p className="text-foreground-dimmed">Needs Attention</p>
-        <span className="mt-2 text-4xl text-error tabular-nums">
-          {needsAttention}
-        </span>
-        <p className="mt-2 font-light text-foreground-dimmed text-sm">
-          products below 30% win rate
-        </p>
+      <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+        <StatLabel
+          label="Needs Attention"
+          icon={<BullseyeIcon className="size-8 shrink-0 text-error" />}
+        />
+        <div>
+          <p className="font-medium text-5xl text-error tabular-nums tracking-tight">
+            {needsAttention}
+          </p>
+          <p className="mt-3 font-light text-foreground-dimmed text-sm">
+            products below 30% win rate
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -330,7 +393,7 @@ const Performance = async () => {
 
   const segments = [
     {
-      label: "Good (\u226575%)",
+      label: "Good (≥75%)",
       count: products.filter((p) => p.quality >= 75).length,
       color: "bg-success",
     },
@@ -362,13 +425,11 @@ const Performance = async () => {
 
   return (
     <div className="grid grid-cols-1 gap-px bg-accent-foreground xl:grid-cols-3">
-      <div className="bg-background-rich xl:col-span-2">
+      <div className="flex flex-col bg-background-rich xl:col-span-2">
         <div className="flex items-start justify-between p-4">
           <div>
-            <p className="font-light text-foreground-dimmed uppercase tracking-widest">
-              Performance
-            </p>
-            <p className="mt-1 font-medium text-2xl text-foreground">
+            <SectionKicker>01 — Performance</SectionKicker>
+            <p className="mt-2 font-medium text-2xl text-foreground">
               Win Rate by Model
             </p>
           </div>
@@ -439,6 +500,7 @@ const Products = async ({
       pageCount={pageCount}
       pageSize={pagination.size}
       pageIndex={pagination.page}
+      kicker="02 — Catalog"
       action={
         <p className="font-light text-foreground-dimmed">
           {pagination.total} products
@@ -458,36 +520,34 @@ const AgentTraffic = async () => {
   const max = Math.max(1, ...summary.byAgentType.map((entry) => entry.count));
 
   return (
-    <div className="bg-background-rich p-4">
-      <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+    <div className="bg-background-rich">
+      <div className="flex flex-col gap-6 p-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="font-light text-foreground-dimmed uppercase tracking-widest">
-            Traffic
-          </p>
-          <p className="mt-1 font-medium text-2xl text-foreground">
+          <SectionKicker>03 — Traffic</SectionKicker>
+          <p className="mt-2 font-medium text-2xl text-foreground">
             AI Agent Visits to Products
           </p>
           <p className="mt-1 font-light text-foreground-dimmed text-sm">
             Browser-visible AI and referral signals from your ScriptTag tracker.
           </p>
         </div>
-        <p className="text-4xl text-foreground tabular-nums">
+        <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
           {summary.total30d}
-          <span className="ml-1 font-light text-foreground-dimmed text-sm">
+          <span className="ml-2 font-light text-foreground-dimmed text-sm">
             last 30d
           </span>
         </p>
       </div>
 
-      <AgentVisitsChart data={timeSeries} className="mb-6" />
+      <AgentVisitsChart data={timeSeries} className="px-4 pb-6" />
 
       {summary.byAgentType.length === 0 ? (
-        <p className="font-light text-foreground-dimmed text-sm">
+        <p className="px-4 pb-4 font-light text-foreground-dimmed text-sm">
           No AI agent visits recorded yet. Traffic appears when shoppers arrive
           via AI referrers or user-agents your tracker recognizes.
         </p>
       ) : (
-        <ul className="flex flex-col gap-3">
+        <ul className="flex flex-col gap-3 px-4 pb-4">
           {summary.byAgentType.map((entry) => (
             <li key={entry.agentType}>
               <div className="mb-1 flex items-center justify-between gap-4">
@@ -517,11 +577,6 @@ const AgentTraffic = async () => {
 const Insights = async () => {
   await connection();
   const scans = await unwrapResult(Scan.getLatest(Environment.SERVER));
-  const completed = scans.filter((scan) => scan.status === "completed");
-
-  console.log({ completed });
-
-  // if (completed.length === 0) return null;
 
   const items = scans.map((scan) => ({
     date: scan.createdAt.toISOString(),
@@ -532,12 +587,20 @@ const Insights = async () => {
 };
 
 const StatsSkeleton = () => (
-  <div className="grid h-39 min-h-39 grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
-    {["rate", "win", "high", "attention"].map((key) => (
-      <div key={key} className="bg-background-rich p-4">
-        <div className="h-4 w-28 animate-pulse bg-foreground/10" />
-        <div className="mt-4 h-10 w-20 animate-pulse bg-foreground/10" />
-        <div className="mt-3 h-3 w-32 animate-pulse bg-foreground/10" />
+  <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
+    {(["a", "b", "c", "d"] as const).map((key) => (
+      <div
+        key={key}
+        className="relative flex h-44 flex-col justify-between bg-background-rich p-5"
+      >
+        <div className="flex items-center justify-between">
+          <div className="h-3 w-28 animate-pulse bg-foreground/10" />
+          <div className="absolute top-5 right-5 size-8 animate-pulse bg-foreground/10" />
+        </div>
+        <div>
+          <div className="h-11 w-24 animate-pulse bg-foreground/10" />
+          <div className="mt-3 h-4 w-32 animate-pulse bg-foreground/10" />
+        </div>
       </div>
     ))}
   </div>
@@ -547,23 +610,23 @@ const ChartSkeleton = () => (
   <div className="grid grid-cols-1 gap-px bg-accent-foreground xl:grid-cols-3">
     <div className="bg-background-rich xl:col-span-2">
       <div className="p-4">
-        <div className="h-3 w-24 animate-pulse bg-foreground/10" />
-        <div className="mt-2 h-7 w-40 animate-pulse bg-foreground/10" />
+        <div className="h-3 w-32 animate-pulse bg-foreground/10" />
+        <div className="mt-2 h-8 w-44 animate-pulse bg-foreground/10" />
       </div>
       <div className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-y px-4">
-        {["a", "b", "c", "d"].map((key) => (
+        {(["a", "b", "c", "d"] as const).map((key) => (
           <div
             key={key}
             className="flex flex-col items-center gap-1 p-6 first:pl-0 last:pr-0"
           >
             <div className="flex w-full flex-row items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="size-6 animate-pulse bg-foreground/10" />
-                <div className="h-3 w-16 animate-pulse bg-foreground/10" />
+                <div className="size-8 animate-pulse bg-foreground/10" />
+                <div className="h-3 w-14 animate-pulse bg-foreground/10" />
               </div>
-              <div className="flex items-baseline gap-1">
-                <div className="h-10 w-12 animate-pulse bg-foreground/10" />
-                <div className="h-5 w-4 animate-pulse bg-foreground/10" />
+              <div className="flex items-baseline gap-0.5">
+                <div className="h-8 w-10 animate-pulse bg-foreground/10" />
+                <div className="h-4 w-3 animate-pulse bg-foreground/10" />
               </div>
             </div>
             <div className="mt-2 h-1 w-full animate-pulse bg-foreground/10" />
@@ -571,19 +634,16 @@ const ChartSkeleton = () => (
         ))}
       </div>
       <div className="p-4">
-        <div className="mb-4 flex items-center justify-between">
-          <div className="h-3 w-28 animate-pulse bg-foreground/10" />
-        </div>
+        <div className="mb-4 h-3 w-28 animate-pulse bg-foreground/10" />
         <div className="h-64 w-full animate-pulse bg-foreground/10" />
       </div>
     </div>
     <div className="flex flex-col gap-px bg-accent-foreground">
       <div className="flex-1 bg-background-rich p-4">
-        <div className="h-3 w-24 animate-pulse bg-foreground/10" />
-        <div className="mt-2 h-7 w-40 animate-pulse bg-foreground/10" />
+        <div className="h-7 w-40 animate-pulse bg-foreground/10" />
         <div className="mt-6 h-2 w-full animate-pulse bg-foreground/10" />
         <div className="mt-4 grid grid-cols-3 gap-4">
-          {["x", "y", "z"].map((key) => (
+          {(["x", "y", "z"] as const).map((key) => (
             <div key={key} className="space-y-2">
               <div className="h-3 w-16 animate-pulse bg-foreground/10" />
               <div className="h-4 w-8 animate-pulse bg-foreground/10" />
@@ -591,12 +651,11 @@ const ChartSkeleton = () => (
           ))}
         </div>
       </div>
-      <div className="bg-background-rich p-4">
-        <div className="h-3 w-24 animate-pulse bg-foreground/10" />
-        <div className="mt-2 h-7 w-40 animate-pulse bg-foreground/10" />
+      <div className="flex-1 bg-background-rich p-4">
+        <div className="h-7 w-40 animate-pulse bg-foreground/10" />
         <div className="mt-6 h-2 w-full animate-pulse bg-foreground/10" />
         <div className="mt-4 grid grid-cols-3 gap-4">
-          {["x", "y", "z"].map((key) => (
+          {(["x", "y", "z"] as const).map((key) => (
             <div key={key} className="space-y-2">
               <div className="h-3 w-16 animate-pulse bg-foreground/10" />
               <div className="h-8 w-10 animate-pulse bg-foreground/10" />
@@ -614,8 +673,11 @@ const ChartSkeleton = () => (
 
 const TableSkeleton = () => (
   <div>
-    <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
-      <div className="h-7 w-40 animate-pulse bg-foreground/10" />
+    <div className="flex items-end justify-between border-accent-foreground border-b p-4">
+      <div className="space-y-2">
+        <div className="h-3 w-28 animate-pulse bg-foreground/10" />
+        <div className="h-7 w-40 animate-pulse bg-foreground/10" />
+      </div>
       <div className="h-4 w-24 animate-pulse bg-foreground/10" />
     </div>
     <div className="overflow-x-auto bg-background-rich">
@@ -643,7 +705,7 @@ const TableSkeleton = () => (
           </tr>
         </thead>
         <tbody>
-          {["a", "b", "c", "d", "e"].map((key) => (
+          {(["a", "b", "c", "d", "e"] as const).map((key) => (
             <tr
               key={key}
               className="border-accent-foreground border-b last:border-b-0"
@@ -696,26 +758,28 @@ const TableSkeleton = () => (
 );
 
 const TrafficSkeleton = () => (
-  <div className="bg-background-rich p-4">
-    <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+  <div className="bg-background-rich">
+    <div className="flex flex-col gap-6 p-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <div className="h-3 w-16 animate-pulse bg-foreground/10" />
-        <div className="mt-2 h-7 w-48 animate-pulse bg-foreground/10" />
-        <div className="mt-1 h-4 w-64 animate-pulse bg-foreground/10" />
+        <div className="h-3 w-24 animate-pulse bg-foreground/10" />
+        <div className="mt-2 h-8 w-64 animate-pulse bg-foreground/10" />
+        <div className="mt-1 h-4 w-72 animate-pulse bg-foreground/10" />
       </div>
-      <div className="h-10 w-20 animate-pulse bg-foreground/10" />
+      <div className="h-12 w-28 animate-pulse bg-foreground/10" />
     </div>
-    <div className="mb-6 flex items-center gap-6">
-      {["a", "b", "c"].map((key) => (
+    <div className="flex items-center gap-6 px-4">
+      {(["a", "b", "c", "d"] as const).map((key) => (
         <div key={key} className="flex items-center gap-2">
           <div className="size-4 animate-pulse bg-foreground/10" />
           <div className="h-3 w-14 animate-pulse bg-foreground/10" />
         </div>
       ))}
     </div>
-    <div className="mb-6 h-64 w-full animate-pulse bg-foreground/10" />
-    <div className="flex flex-col gap-3">
-      {["d", "e", "f"].map((key) => (
+    <div className="px-4 pt-4 pb-6">
+      <div className="h-64 w-full animate-pulse bg-foreground/10" />
+    </div>
+    <div className="flex flex-col gap-3 px-4 pb-4">
+      {(["d", "e", "f"] as const).map((key) => (
         <div key={key}>
           <div className="mb-1 flex items-center justify-between">
             <div className="h-4 w-28 animate-pulse bg-foreground/10" />
@@ -729,30 +793,45 @@ const TrafficSkeleton = () => (
 );
 
 const InsightsSkeleton = () => (
-  <div>
-    <div className="flex items-start justify-between">
-      <div>
-        <div className="h-3 w-16 animate-pulse bg-foreground/10" />
-        <div className="mt-2 h-7 w-28 animate-pulse bg-foreground/10" />
+  <div className="bg-background-rich">
+    <div className="flex items-start justify-between border-accent-foreground border-b p-4">
+      <div className="space-y-2">
+        <div className="h-3 w-24 animate-pulse bg-foreground/10" />
+        <div className="h-7 w-32 animate-pulse bg-foreground/10" />
       </div>
-      <div className="space-y-1.5 text-right">
+      <div className="space-y-1.5">
         <div className="h-4 w-24 animate-pulse bg-foreground/10" />
-        <div className="h-3 w-32 animate-pulse bg-foreground/10" />
+        <div className="h-3 w-28 animate-pulse bg-foreground/10" />
       </div>
     </div>
-    <div className="my-5 h-px animate-pulse bg-foreground/10" />
-    <div className="mb-4 h-5 w-3/4 animate-pulse bg-foreground/10" />
-    <div className="grid grid-cols-1 gap-px sm:grid-cols-[1fr_auto]">
-      <div className="h-24 animate-pulse bg-foreground/10" />
-      <div className="h-24 w-28 animate-pulse bg-foreground/10" />
+    <div className="p-6">
+      <div className="h-5 w-3/4 animate-pulse bg-foreground/10" />
     </div>
-    <div className="mt-6">
-      <div className="mb-3 h-3 w-32 animate-pulse bg-foreground/10" />
+    <div className="grid grid-cols-1 gap-px border-accent-foreground border-y bg-accent-foreground sm:grid-cols-[1fr_auto]">
+      <div className="bg-background-rich p-6">
+        <div className="size-12 animate-pulse bg-foreground/10" />
+        <div className="mt-4 h-3 w-16 animate-pulse bg-foreground/10" />
+        <div className="mt-2 h-4 w-full animate-pulse bg-foreground/10" />
+      </div>
+      <div className="flex flex-col items-center justify-center bg-background-rich p-6 sm:min-w-44">
+        <div className="h-11 w-20 animate-pulse bg-foreground/10" />
+        <div className="mt-2 h-4 w-16 animate-pulse bg-foreground/10" />
+      </div>
+    </div>
+    <div className="flex flex-col gap-4 p-4">
+      <div className="h-3 w-32 animate-pulse bg-foreground/10" />
       <div className="flex flex-wrap gap-2">
-        {["a", "b", "c", "d"].map((key) => (
+        {(["a", "b", "c", "d"] as const).map((key) => (
           <div key={key} className="h-7 w-24 animate-pulse bg-foreground/10" />
         ))}
       </div>
+    </div>
+    <div className="flex items-center justify-between border-accent-foreground border-t p-4">
+      <div className="space-y-2">
+        <div className="h-3 w-16 animate-pulse bg-foreground/10" />
+        <div className="h-7 w-28 animate-pulse bg-foreground/10" />
+      </div>
+      <div className="h-9 w-24 animate-pulse bg-foreground/10" />
     </div>
   </div>
 );

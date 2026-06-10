@@ -13,9 +13,10 @@ html {
 @utility bg-grid-stripes {
   background-image: repeating-linear-gradient(
     -45deg,
-    var(--color-accent-foreground),
+    var(--color-accent-foreground) 0,
     var(--color-accent-foreground) 1px,
-    transparent 1px,
-    transparent 7px
+    transparent 0,
+    transparent 50%
   );
+  background-size: 8px 8px;
 }

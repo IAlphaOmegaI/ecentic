@@ -1,5 +1,4 @@
 import { unwrapResult } from "@zenncore/utils";
-import Link from "next/link";
 import * as Authentication from "@/server/app/authentication";
 import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
@@ -33,7 +32,7 @@ export const Topbar = async () => {
         </Link> */}
 
         <p
-          className={`border border-primary/30 bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs ${subscription?.plan && "capitalize"} transition-colors hover:bg-primary/20`}
+          className={`font-medium text-primary text-xs uppercase tracking-[0.2em] ${subscription?.plan && "capitalize"}`}
         >
           {subscription?.plan ?? "No plan"}
         </p>

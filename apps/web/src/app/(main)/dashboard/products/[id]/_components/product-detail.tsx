@@ -22,6 +22,7 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 import { Spring } from "@/lib/animations";
 import * as Optimization from "@/server/app/optimization";
+import { SectionKicker, StatLabel } from "../../../_components/grid";
 
 export type ProductDetailData = {
   product: {
@@ -247,102 +248,96 @@ const OverviewTab = ({
   competitors: ProductDetailData["competitors"];
 }) => (
   <>
+    <div className="p-4">
+      <SectionKicker>01 — Performance</SectionKicker>
+      <p className="mt-2 font-medium text-2xl text-foreground">
+        Win Rate by Model
+      </p>
+    </div>
     <div className="grid grid-cols-2 gap-px border-accent-foreground border-t bg-accent-foreground lg:grid-cols-4">
       {models.map(({ model, label, rate, wins, losses, total }) => {
         const config = Model[label as keyof typeof Model];
         return (
           <div
             key={model}
-            className={cn("flex flex-col gap-4 p-4", "bg-background-rich")}
+            className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background"
           >
-            <div className="flex items-center justify-between">
-              <div className="flex flex-col gap-2">
-                {config?.logo && (
+            <StatLabel
+              label={label}
+              icon={
+                config?.logo && (
                   <Image
                     src={config.logo}
                     alt={label}
-                    width={20}
-                    height={20}
-                    className="size-12"
+                    width={32}
+                    height={32}
+                    className="size-8 shrink-0"
                   />
+                )
+              }
+            />
+            <div>
+              <p
+                className={cn(
+                  "font-medium text-5xl tabular-nums tracking-tight",
+                  rateColor(rate),
                 )}
-                <span
-                  className={cn(
-                    "font-medium uppercase tracking-widest",
-                    "text-foreground-dimmed",
-                  )}
-                >
-                  {label}
+              >
+                {rate}
+                <span className="ml-0.5 font-light text-2xl text-foreground-dimmed">
+                  %
                 </span>
-              </div>
-
-              <div>
-                <p
-                  className={cn(
-                    "font-semibold text-4xl tabular-nums",
-                    rateColor(rate),
-                  )}
-                >
-                  {rate}{" "}
-                  <span className="font-light text-foreground-dimmed text-xl">
-                    %
+              </p>
+              <div className="mt-3">
+                <div className="h-1 w-full bg-accent-foreground">
+                  <motion.div
+                    className={cn("h-full", barColor(rate))}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${rate}%` }}
+                    transition={{ ...Spring.Gentle, delay: 0.3 }}
+                  />
+                </div>
+                <div className="mt-2 flex justify-between font-light text-foreground-dimmed text-sm">
+                  <span>
+                    {wins} W · {losses} L
                   </span>
-                </p>
-                <p className="mt-0.5 font-light text-foreground-dimmed">
-                  win rate
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-auto space-y-1.5">
-              <div className="h-1 w-full bg-accent-foreground">
-                <motion.div
-                  className={cn("h-full", barColor(rate))}
-                  initial={{ width: 0 }}
-                  animate={{ width: `${rate}%` }}
-                  transition={{ ...Spring.Gentle, delay: 0.3 }}
-                />
-              </div>
-              <div className="flex justify-between font-light text-foreground-dimmed">
-                <span>
-                  {wins} W · {losses} L
-                </span>
-                <span>{total} total</span>
+                  <span>{total} total</span>
+                </div>
               </div>
             </div>
           </div>
         );
       })}
     </div>
-    <div className="border-accent-foreground border-y p-4" />
-    <div className="mt-px">
-      <div className="flex items-end justify-between border-accent-foreground border-b p-4">
-        <p className="font-medium text-foreground text-xl">
+    <div className="flex items-end justify-between border-accent-foreground border-y p-4">
+      <div>
+        <SectionKicker>02 — Competitive Landscape</SectionKicker>
+        <p className="mt-2 font-medium text-2xl text-foreground">
           Win rate vs. each competitor
         </p>
-        <Button
-          variant="outline"
-          color="accent"
-          render={<Link href="/dashboard/competitors" />}
-        >
-          View All
-          <ArrowRightIcon className="size-4" />
-        </Button>
       </div>
-      <DataTableProvider
-        rows={competitors.map((row) => ({ _id: row.id, ...row }))}
-        columns={columns}
-        handler="client"
+      <Button
+        variant="outline"
+        color="primary"
+        render={<Link href="/dashboard/competitors" />}
       >
-        <DataTable className="border-b-0">
-          <DataTableEmpty>
-            <p className="p-6 text-center font-light text-foreground-dimmed text-sm">
-              No competitors tracked yet.
-            </p>
-          </DataTableEmpty>
-        </DataTable>
-      </DataTableProvider>
+        View All
+        <ArrowRightIcon className="size-4" />
+      </Button>
     </div>
+    <DataTableProvider
+      rows={competitors.map((row) => ({ _id: row.id, ...row }))}
+      columns={columns}
+      handler="client"
+    >
+      <DataTable className="border-b-0">
+        <DataTableEmpty>
+          <p className="p-6 text-center font-light text-foreground-dimmed text-sm">
+            No competitors tracked yet.
+          </p>
+        </DataTableEmpty>
+      </DataTable>
+    </DataTableProvider>
   </>
 );
 
@@ -388,7 +383,7 @@ const ReplayTab = ({
 
   if (grouped.length === 0)
     return (
-      <div className="border border-accent-foreground bg-background-rich p-8 text-center">
+      <div className="border-accent-foreground border-t bg-background-rich p-8 text-center">
         <p className="font-light text-foreground-dimmed text-sm">
           No simulations yet. Run a scan to see agent decision replays.
         </p>
@@ -429,7 +424,7 @@ const ReplayTab = ({
               )}
               <span
                 className={cn(
-                  "font-medium text-sm uppercase leading-tight tracking-wide transition-colors",
+                  "font-medium text-sm uppercase leading-tight tracking-[0.2em] transition-colors",
                   isSelected ? "text-foreground" : "text-foreground-dimmed",
                 )}
               >
@@ -508,7 +503,10 @@ const ReplayTab = ({
 const GapsTab = ({ product }: { product: ProductDetailData["product"] }) => (
   <>
     <div className="flex items-end justify-between border-accent-foreground border-y p-4">
-      <p className="font-medium text-foreground text-xl">Data Gaps</p>
+      <div>
+        <SectionKicker>01 — Listing Health</SectionKicker>
+        <p className="mt-2 font-medium text-2xl text-foreground">Data Gaps</p>
+      </div>
       <p className="font-light text-foreground-dimmed">
         Quality score:{" "}
         <span className={cn("font-semibold", rateColor(product.quality))}>
@@ -529,16 +527,13 @@ const GapsTab = ({ product }: { product: ProductDetailData["product"] }) => (
         return (
           <div
             key={key}
-            className={cn(
-              "flex items-center justify-between px-4 py-4",
-              !filled && "bg-error/5",
-            )}
+            className="flex items-center justify-between bg-background-rich px-4 py-4 transition-colors hover:bg-background"
           >
             <div className="flex items-center gap-3">
               {filled ? (
-                <CheckIcon className="size-4 text-success" />
+                <CheckIcon className="size-6 text-success" />
               ) : (
-                <XIcon className="size-4 text-error" />
+                <XIcon className="size-6 text-error" />
               )}
               <span className="font-medium text-foreground">{label}</span>
             </div>
@@ -568,7 +563,7 @@ const BattlecardTab = ({
 }) => {
   if (competitors.length === 0)
     return (
-      <div className="border border-accent-foreground bg-background-rich p-8 text-center">
+      <div className="border-accent-foreground border-t bg-background-rich p-8 text-center">
         <p className="font-light text-foreground-dimmed text-sm">
           No competitor data available. Run a scan to generate battlecards.
         </p>
@@ -576,115 +571,125 @@ const BattlecardTab = ({
     );
 
   return (
-    <div className="space-y-px border-accent-foreground border-t bg-accent-foreground">
-      {competitors.map((competitor) => {
-        const competitorSimulations = simulations.filter(
-          (simulation) => simulation.competitorId === competitor.id,
-        );
-        const wins = competitorSimulations.filter(
-          (simulation) => simulation.winner === "product",
-        );
-        const losses = competitorSimulations.filter(
-          (simulation) => simulation.winner !== "product",
-        );
-        const total = wins.length + losses.length;
+    <>
+      <div className="flex items-end justify-between border-accent-foreground border-y p-4">
+        <div>
+          <SectionKicker>01 — Battlecards</SectionKicker>
+          <p className="mt-2 font-medium text-2xl text-foreground">
+            Head-to-Head Results
+          </p>
+        </div>
+      </div>
+      <div className="space-y-px bg-accent-foreground">
+        {competitors.map((competitor) => {
+          const competitorSimulations = simulations.filter(
+            (simulation) => simulation.competitorId === competitor.id,
+          );
+          const wins = competitorSimulations.filter(
+            (simulation) => simulation.winner === "product",
+          );
+          const losses = competitorSimulations.filter(
+            (simulation) => simulation.winner !== "product",
+          );
+          const total = wins.length + losses.length;
 
-        return (
-          <div key={competitor.id} className="bg-background-rich">
-            <div className="grid grid-cols-[1fr_auto] items-start gap-4 border-accent-foreground border-b bg-background-rich p-4">
-              <div className="min-w-0">
-                <p className="font-medium text-foreground">
-                  {competitor.title}
-                </p>
-                <p className="mt-0.5 font-light text-foreground-dimmed">
-                  vs. {product.title}
-                </p>
-                <div className="mt-4 flex w-full items-center gap-2">
-                  <div className="h-1 flex-1 bg-accent-foreground">
-                    <div
-                      className={cn("h-full", barColor(competitor.rate))}
-                      style={{ width: `${competitor.rate}%` }}
-                    />
+          return (
+            <div key={competitor.id} className="bg-background-rich">
+              <div className="grid grid-cols-[1fr_auto] items-start gap-4 border-accent-foreground border-b bg-background-rich p-4">
+                <div className="min-w-0">
+                  <p className="font-medium text-foreground">
+                    {competitor.title}
+                  </p>
+                  <p className="mt-0.5 font-light text-foreground-dimmed">
+                    vs. {product.title}
+                  </p>
+                  <div className="mt-4 flex w-full items-center gap-2">
+                    <div className="h-1 flex-1 bg-accent-foreground">
+                      <div
+                        className={cn("h-full", barColor(competitor.rate))}
+                        style={{ width: `${competitor.rate}%` }}
+                      />
+                    </div>
+                    <span className="font-light text-foreground-dimmed tabular-nums">
+                      {wins.length} W · {losses.length} L
+                    </span>
                   </div>
-                  <span className="font-light text-foreground-dimmed tabular-nums">
-                    {wins.length} W · {losses.length} L
-                  </span>
+                </div>
+                <div className="text-right">
+                  <p
+                    className={cn(
+                      "font-medium text-3xl tabular-nums leading-none tracking-tight",
+                      rateColor(competitor.rate),
+                    )}
+                  >
+                    {competitor.rate}{" "}
+                    <span className="font-light text-base text-foreground-dimmed">
+                      %
+                    </span>
+                  </p>
+                  <p className="mt-1 font-light text-foreground-dimmed text-xs">
+                    {total} sim{total !== 1 ? "s" : ""}
+                  </p>
                 </div>
               </div>
-              <div className="text-right">
-                <p
-                  className={cn(
-                    "font-semibold text-3xl tabular-nums leading-none",
-                    rateColor(competitor.rate),
+
+              <div className="grid grid-cols-2 divide-x divide-accent-foreground">
+                <div className="p-4">
+                  <div className="mb-2 flex items-center gap-2">
+                    <CheckIcon className="size-6 text-success" />
+                    <span className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+                      Won · {wins.length}
+                    </span>
+                  </div>
+                  {wins.length > 0 ? (
+                    <div className="space-y-2">
+                      {wins.map((simulation) => (
+                        <p key={simulation.id} className="text-foreground">
+                          -{" "}
+                          {simulation.reasoning
+                            ? simulation.reasoning.slice(0, 160) +
+                              (simulation.reasoning.length > 160 ? "…" : "")
+                            : `Won with score ${simulation.productScore}`}
+                        </p>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="font-light text-foreground-dimmed text-xs italic">
+                      No wins recorded
+                    </p>
                   )}
-                >
-                  {competitor.rate}{" "}
-                  <span className="font-light text-base text-foreground-dimmed">
-                    %
-                  </span>
-                </p>
-                <p className="mt-1 font-light text-foreground-dimmed text-xs">
-                  {total} sim{total !== 1 ? "s" : ""}
-                </p>
+                </div>
+                <div className="p-4">
+                  <div className="mb-2 flex items-center gap-2">
+                    <XIcon className="size-6 text-error" />
+                    <span className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+                      Lost · {losses.length}
+                    </span>
+                  </div>
+                  {losses.length > 0 ? (
+                    <div className="space-y-2">
+                      {losses.map((simulation) => (
+                        <p key={simulation.id} className="text-foreground">
+                          -{" "}
+                          {simulation.reasoning
+                            ? simulation.reasoning.slice(0, 160) +
+                              (simulation.reasoning.length > 160 ? "…" : "")
+                            : `Lost with score ${simulation.productScore}`}
+                        </p>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="font-light text-foreground-dimmed italic">
+                      No losses recorded
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
-
-            <div className="grid grid-cols-2 divide-x divide-accent-foreground">
-              <div className="p-4">
-                <div className="mb-2 flex items-center gap-2">
-                  <CheckIcon className="size-4 text-success" />
-                  <span className="font-medium text-foreground-dimmed text-lg uppercase tracking-widest">
-                    Won · {wins.length}
-                  </span>
-                </div>
-                {wins.length > 0 ? (
-                  <div className="space-y-2">
-                    {wins.map((simulation) => (
-                      <p key={simulation.id} className="text-foreground">
-                        -{" "}
-                        {simulation.reasoning
-                          ? simulation.reasoning.slice(0, 160) +
-                            (simulation.reasoning.length > 160 ? "…" : "")
-                          : `Won with score ${simulation.productScore}`}
-                      </p>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="font-light text-foreground-dimmed text-xs italic">
-                    No wins recorded
-                  </p>
-                )}
-              </div>
-              <div className="p-4">
-                <div className="mb-2 flex items-center gap-2">
-                  <XIcon className="size-4 text-error" />
-                  <span className="font-medium text-foreground-dimmed text-lg uppercase tracking-widest">
-                    Lost · {losses.length}
-                  </span>
-                </div>
-                {losses.length > 0 ? (
-                  <div className="space-y-2">
-                    {losses.map((simulation) => (
-                      <p key={simulation.id} className="text-foreground">
-                        -{" "}
-                        {simulation.reasoning
-                          ? simulation.reasoning.slice(0, 160) +
-                            (simulation.reasoning.length > 160 ? "…" : "")
-                          : `Lost with score ${simulation.productScore}`}
-                      </p>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="font-light text-foreground-dimmed italic">
-                    No losses recorded
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        );
-      })}
-    </div>
+          );
+        })}
+      </div>
+    </>
   );
 };
 
@@ -713,7 +718,12 @@ const OptimizeTab = ({
   return (
     <>
       <div className="flex items-end justify-between border-accent-foreground border-y p-4">
-        <p className="font-medium text-foreground text-xl">Optimize Listing</p>
+        <div>
+          <SectionKicker>01 — Optimization</SectionKicker>
+          <p className="mt-2 font-medium text-2xl text-foreground">
+            Optimize Listing
+          </p>
+        </div>
         <p className="font-light text-foreground-dimmed">
           Quality:{" "}
           <span className={cn("font-semibold", rateColor(product.quality))}>
@@ -724,12 +734,12 @@ const OptimizeTab = ({
       </div>
       <div className="grid grid-cols-1 gap-px bg-accent-foreground lg:grid-cols-2">
         <div className="bg-background-rich p-6">
-          <p className="mb-2 font-medium text-foreground-dimmed uppercase tracking-widest">
+          <p className="mb-2 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
             Title
           </p>
           <p className="font-light text-foreground">{product.title}</p>
 
-          <p className="mt-6 mb-2 font-medium text-foreground-dimmed uppercase tracking-widest">
+          <p className="mt-6 mb-2 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
             Description
           </p>
           {product.description ? (
@@ -744,7 +754,7 @@ const OptimizeTab = ({
             </p>
           )}
 
-          <p className="mt-6 mb-2 font-medium text-foreground-dimmed uppercase tracking-widest">
+          <p className="mt-6 mb-2 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
             Structured Data
           </p>
           {structuredData ? (

@@ -1,5 +1,12 @@
-import { DocumentPdfIcon, DownloadIcon } from "@zenncore/icons";
+import {
+  ArrowRightIcon,
+  DocumentPdfIcon,
+  DownloadIcon,
+  ShareIcon,
+} from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
+import { Button } from "@zenncore/web/components/button";
+import { Crosshair, SectionGutter, SectionKicker } from "../_components/grid";
 
 const reports = [
   {
@@ -67,18 +74,23 @@ const TierBadge = ({ tier }: { tier: string }) => {
   const config = (() => {
     switch (tier) {
       case "all":
-        return { label: "All plans", color: "bg-primary/10 text-primary" };
+        return { label: "All plans", color: "text-primary" };
       case "compete":
-        return { label: "Compete+", color: "bg-foreground/10 text-foreground" };
+        return { label: "Compete+", color: "text-foreground" };
       case "dominate":
-        return { label: "Dominate+", color: "bg-warning/10 text-warning" };
+        return { label: "Dominate+", color: "text-warning" };
       default:
-        return { label: tier, color: "bg-primary/10 text-primary" };
+        return { label: tier, color: "text-primary" };
     }
   })();
 
   return (
-    <span className={cn("px-1.5 py-0.5 font-medium text-xs", config.color)}>
+    <span
+      className={cn(
+        "font-medium text-xs uppercase tracking-[0.2em]",
+        config.color,
+      )}
+    >
       {config.label}
     </span>
   );
@@ -87,107 +99,118 @@ const TierBadge = ({ tier }: { tier: string }) => {
 export default () => (
   <div className="flex flex-col">
     <div className="mx-8 border-accent-foreground border-x">
-      {/* Title */}
       <div className="-mx-8 border-accent-foreground border-b">
-        <div className="mx-8 flex items-center justify-between px-6 py-8">
+        <div className="mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="font-medium text-3xl text-foreground">
+            <div className="flex items-center gap-2.5 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+              <span className="size-2 bg-success" />
+              {reports.length} report types available
+            </div>
+            <h1 className="mt-3 font-medium text-4xl text-foreground">
               Reports & Exports
             </h1>
-            <p className="font-light text-foreground-dimmed text-sm">
+            <p className="mt-1 font-light text-foreground-dimmed text-lg">
               Download or schedule automated reports on your agent performance.
             </p>
           </div>
-          <button
-            type="button"
-            className="border border-accent-foreground bg-background px-3 py-1.5 text-foreground text-sm transition-colors hover:bg-background-dimmed"
-          >
+          <Button variant="outline" color="primary">
             Schedule Reports
-          </button>
+          </Button>
         </div>
       </div>
 
-      {/* Featured shareable report */}
       <div className="-mx-8 border-accent-foreground border-b">
-        <div className="mx-8">
-          <div className="flex items-start gap-3 bg-primary/5 px-6 py-6">
-            <div className="flex size-8 shrink-0 items-center justify-center bg-primary/10 font-bold text-primary text-sm">
-              ↗
-            </div>
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <div className="flex items-start gap-4 px-6 py-6 transition-colors hover:bg-background">
+            <ShareIcon className="size-8 shrink-0 text-primary" />
             <div>
               <p className="font-medium text-base text-foreground">
                 Shareable Win Rate Report
               </p>
-              <p className="font-light text-foreground-dimmed text-xs">
+              <p className="mt-1 font-light text-foreground-dimmed text-sm">
                 Generate a public URL for a beautifully formatted win rate
                 report — designed for sharing on Twitter, LinkedIn, or with your
                 team.
               </p>
-              <button
-                type="button"
-                className="mt-2 bg-primary px-3 py-1.5 font-medium text-sm text-white transition-colors hover:bg-primary/90"
-              >
-                Generate Shareable Report
-              </button>
+              <Button variant="flat" color="primary" className="mt-3">
+                Generate Shareable Report <ArrowRightIcon className="size-4" />
+              </Button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Report cards grid */}
-      <div className="-mx-8 border-accent-foreground border-b">
-        <div className="mx-8 grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-3">
-          {reports.map((report) => (
-            <div key={report._id} className="flex flex-col bg-background p-4">
-              <div className="flex items-start justify-between">
-                <DocumentPdfIcon className="size-8 text-foreground-dimmed" />
-                <TierBadge tier={report.tier} />
-              </div>
-              <div className="mt-3 flex-1">
-                <p className="font-medium text-base text-foreground">
-                  {report.title}
-                </p>
-                <p className="mt-1 font-light text-foreground-dimmed text-xs leading-relaxed">
-                  {report.description}
-                </p>
-              </div>
-              <div className="mt-4">
-                <p className="mb-2 font-light text-foreground-dimmed text-xs">
-                  Last generated: {report.lastGenerated}
-                </p>
-                <div className="flex gap-2">
-                  {report.formats.map((format) => (
-                    <button
-                      key={format}
-                      type="button"
-                      className="flex flex-1 items-center justify-center gap-1.5 border border-accent-foreground bg-background-dimmed px-3 py-1.5 text-foreground text-xs transition-colors hover:bg-accent-foreground"
-                    >
-                      <DownloadIcon className="size-3" />
-                      {format}
-                    </button>
-                  ))}
+      <SectionGutter />
+
+      <div className="-mx-8 border-accent-foreground border-t border-b">
+        <div className="mx-8 bg-background-rich">
+          <div className="border-accent-foreground border-b p-4">
+            <SectionKicker>01 — Library</SectionKicker>
+            <p className="mt-2 font-medium text-2xl text-foreground">
+              Available Reports
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-3">
+            {reports.map((report) => (
+              <div
+                key={report._id}
+                className="flex flex-col bg-background-rich p-5 transition-colors hover:bg-background"
+              >
+                <div className="flex items-start justify-between">
+                  <DocumentPdfIcon className="size-8 text-foreground-dimmed" />
+                  <TierBadge tier={report.tier} />
+                </div>
+                <div className="mt-3 flex-1">
+                  <p className="font-medium text-base text-foreground">
+                    {report.title}
+                  </p>
+                  <p className="mt-1 font-light text-foreground-dimmed text-xs leading-relaxed">
+                    {report.description}
+                  </p>
+                </div>
+                <div className="mt-4">
+                  <p className="mb-2 font-light text-foreground-dimmed text-xs">
+                    Last generated: {report.lastGenerated}
+                  </p>
+                  <div className="flex gap-2">
+                    {report.formats.map((format) => (
+                      <button
+                        key={format}
+                        type="button"
+                        className="flex flex-1 items-center justify-center gap-1.5 border border-accent-foreground bg-background-dimmed px-3 py-1.5 text-foreground text-xs transition-colors hover:bg-accent-foreground"
+                      >
+                        <DownloadIcon className="size-4" />
+                        {format}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Scheduled reports */}
-      <div className="-mx-8 border-accent-foreground border-b">
-        <div className="mx-8 px-6 py-6">
-          <p className="mb-3 font-medium text-base text-foreground">
-            Scheduled Reports
-          </p>
-          <p className="font-light text-foreground-dimmed text-sm">
-            No scheduled reports configured.
-          </p>
-          <button
-            type="button"
-            className="mt-3 border border-primary px-3 py-1.5 font-medium text-primary text-sm transition-colors hover:bg-primary/10"
-          >
-            Set Up Weekly Digest
-          </button>
+      <SectionGutter />
+
+      <div className="-mx-8 border-accent-foreground border-t border-b">
+        <div className="mx-8 bg-background-rich">
+          <div className="border-accent-foreground border-b p-4">
+            <SectionKicker>02 — Automation</SectionKicker>
+            <p className="mt-2 font-medium text-2xl text-foreground">
+              Scheduled Reports
+            </p>
+          </div>
+          <div className="px-6 py-6">
+            <p className="font-light text-foreground-dimmed">
+              No scheduled reports configured.
+            </p>
+            <Button variant="outline" color="primary" className="mt-3">
+              Set Up Weekly Digest
+            </Button>
+          </div>
         </div>
       </div>
     </div>

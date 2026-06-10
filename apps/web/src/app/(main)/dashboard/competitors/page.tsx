@@ -4,6 +4,7 @@ import {
   PlusIcon,
   RadarIcon,
   ShieldCheckIcon,
+  TrendDownIcon,
   TrendUpIcon,
 } from "@zenncore/icons";
 import { cn, unwrapResult } from "@zenncore/utils";
@@ -19,26 +20,40 @@ import { Environment } from "@/server/utils/environment";
 import type { Pager } from "@/server/utils/pagination";
 import { extractPaginationParams } from "@/server/utils/pagination";
 import { CompetitorsTable } from "../_components/competitors-table";
+import {
+  Crosshair,
+  SectionGutter,
+  SectionKicker,
+  StatLabel,
+} from "../_components/grid";
 import { WinRateTiersChart } from "./_components/win-rate-tiers-chart";
+
+const emptyStatCards = [
+  { label: "Brands Tracked", icon: RadarIcon, color: "text-primary" },
+  { label: "Winning Against", icon: TrendUpIcon, color: "text-success" },
+  { label: "Most Dangerous", icon: ShieldCheckIcon, color: "text-error" },
+  { label: "Total Simulations", icon: CheckBadgeIcon, color: "text-warning" },
+] as const;
 
 export default ({ searchParams }: SearchParamsProps<keyof Pager>) => (
   <div className="flex flex-col">
     <div className="mx-8 border-accent-foreground border-x">
       <div className="-mx-8 border-accent-foreground border-b">
-        <div className="mx-8 flex items-baseline justify-between px-6 py-8">
+        <div className="mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="font-medium text-4xl text-foreground">
-              Competitor Intelligence
-            </h1>
             <Suspense
               fallback={
-                <p className="mt-1 font-light text-2xl text-foreground-dimmed">
-                  Loading...
-                </p>
+                <div className="h-4 w-56 animate-pulse bg-foreground/10" />
               }
             >
               <LastScanned />
             </Suspense>
+            <h1 className="mt-3 font-medium text-4xl text-foreground">
+              Competitors
+            </h1>
+            <p className="mt-1 font-light text-foreground-dimmed text-lg">
+              How AI shopping agents rank you against the brands you track.
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -54,34 +69,39 @@ export default ({ searchParams }: SearchParamsProps<keyof Pager>) => (
       </div>
 
       <div className="-mx-8 border-accent-foreground border-b">
-        <div className="mx-8">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <Suspense fallback={<StatsSkeleton />}>
             <StatCards />
           </Suspense>
         </div>
       </div>
 
-      <div className="h-8" />
+      <SectionGutter />
+
       <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="mx-8">
+        <div className="mx-8 bg-background-rich">
           <Suspense fallback={<LandscapeSkeleton />}>
             <CompetitiveLandscape />
           </Suspense>
         </div>
       </div>
 
-      <div className="h-8" />
+      <SectionGutter />
+
       <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="mx-8">
+        <div className="mx-8 bg-background-rich">
           <Suspense fallback={<TableSkeleton />}>
             <Competitors searchParams={searchParams} />
           </Suspense>
         </div>
       </div>
 
-      <div className="h-8" />
-      <div className="-mx-8 mb-12 border-accent-foreground border-t border-b">
-        <div className="mx-8">
+      <SectionGutter />
+
+      <div className="-mx-8 border-accent-foreground border-t border-b">
+        <div className="mx-8 bg-background-rich">
           <Suspense fallback={<InsightsSkeleton />}>
             <Insights />
           </Suspense>
@@ -98,11 +118,17 @@ const LastScanned = async () => {
   );
 
   return (
-    <p className="mt-1 font-light text-2xl text-foreground-dimmed">
+    <div className="flex items-center gap-2.5 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+      <span
+        className={cn(
+          "size-2",
+          data.scan?.updatedAt ? "bg-success" : "bg-accent-rich",
+        )}
+      />
       {data.scan?.updatedAt
-        ? `Last scanned: ${formatRelativeTime(data.scan.updatedAt)}`
+        ? `Live — last scanned ${formatRelativeTime(data.scan.updatedAt)}`
         : "No scans run yet"}
-    </p>
+    </div>
   );
 };
 
@@ -117,32 +143,20 @@ const StatCards = async () => {
 
   if (brands.length === 0)
     return (
-      <div className="grid h-39 min-h-39 grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
-        {[
-          {
-            label: "Brands Tracked",
-            icon: <RadarIcon className="size-12" />,
-          },
-          {
-            label: "Winning Against",
-            icon: <TrendUpIcon className="size-12" />,
-          },
-          {
-            label: "Most Dangerous",
-            icon: <ShieldCheckIcon className="size-12" />,
-          },
-          {
-            label: "Total Simulations",
-            icon: <CheckBadgeIcon className="size-12" />,
-          },
-        ].map(({ label, icon }) => (
-          <div key={label} className="h-full bg-background-rich p-4">
-            <p className="mb-4 text-foreground-dimmed uppercase tracking-widest">
-              {label}
-            </p>
-            <div className="flex flex-col items-center justify-center gap-2">
-              {icon}
-              <p className="text-foreground-dimmed">No data yet</p>
+      <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
+        {emptyStatCards.map(({ label, icon: Icon, color }) => (
+          <div
+            key={label}
+            className="relative flex h-44 flex-col justify-between bg-background-rich p-5"
+          >
+            <StatLabel
+              label={label}
+              icon={<Icon className={cn("size-8 shrink-0", color)} />}
+            />
+            <div className="flex flex-col items-center gap-2 pb-4">
+              <p className="font-light text-foreground-dimmed text-sm">
+                No data yet
+              </p>
             </div>
           </div>
         ))}
@@ -150,16 +164,14 @@ const StatCards = async () => {
     );
 
   const winning = brands.filter((brand) => brand.winRate >= 50).length;
+  const totalProducts = brands.reduce((sum, brand) => sum + brand.products, 0);
   const totalSimulations = brands.reduce(
     (sum, brand) => sum + brand.simulations,
     0,
   );
-  const dangerous =
-    brands.length > 0
-      ? brands.reduce((worst, brand) =>
-          brand.winRate < worst.winRate ? brand : worst,
-        )
-      : null;
+  const dangerous = brands.reduce((worst, brand) =>
+    brand.winRate < worst.winRate ? brand : worst,
+  );
 
   const scans = await unwrapResult(Scan.getLatest(Environment.SERVER));
   const completed = scans.filter((scan) => scan.status === "completed");
@@ -183,95 +195,110 @@ const StatCards = async () => {
     return currentRate - previousRate;
   })();
 
-  const overallWinRate =
-    brands.length > 0
-      ? Math.round(
-          brands.reduce((sum, brand) => sum + brand.winRate, 0) / brands.length,
-        )
-      : 0;
+  const overallWinRate = Math.round(
+    brands.reduce((sum, brand) => sum + brand.winRate, 0) / brands.length,
+  );
 
   return (
     <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
-      <div className="flex flex-col justify-between bg-background-rich p-4">
-        <p className="text-foreground-dimmed">Brands Tracked</p>
-        <div className="mt-2 flex items-baseline gap-1.5">
-          <span className="text-4xl text-foreground tabular-nums">
+      <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+        <StatLabel
+          label="Brands Tracked"
+          icon={<RadarIcon className="size-8 shrink-0 text-primary" />}
+        />
+        <div>
+          <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
             {brands.length}
-          </span>
-          <span className="text-foreground-dimmed">
-            {brands.reduce((sum, brand) => sum + brand.products, 0)} products
-          </span>
-        </div>
-      </div>
-
-      <div className="flex flex-col justify-between bg-background-rich p-4">
-        <p className="text-foreground-dimmed">Winning Against</p>
-        <div className="mt-2 flex items-baseline gap-2">
-          <span className="text-4xl text-success tabular-nums">
-            {winning}
-            <span className="font-light text-foreground-dimmed text-sm">
-              {" "}
-              / {brands.length}
-            </span>
-          </span>
-          {trend !== 0 && (
-            <span className={trend >= 0 ? "text-success" : "text-error"}>
-              {trend >= 0 ? "+" : ""}
-              {trend}% since last scan
-            </span>
-          )}
-        </div>
-        <div className="mt-4">
-          <div className="h-1 w-full bg-accent-foreground">
-            <div
-              className="h-full bg-success"
-              style={{
-                width: `${brands.length > 0 ? Math.round((winning / brands.length) * 100) : 0}%`,
-              }}
-            />
-          </div>
-          <p className="mt-2 font-light text-foreground-dimmed text-sm">
-            {overallWinRate}% average win rate
+          </p>
+          <p className="mt-3 font-light text-foreground-dimmed text-sm">
+            {totalProducts} {totalProducts === 1 ? "product" : "products"}{" "}
+            monitored
           </p>
         </div>
       </div>
 
-      {dangerous ? (
-        <div className="flex flex-col justify-between bg-background-rich p-4">
-          <div>
-            <p className="text-foreground-dimmed">Most Dangerous</p>
-            <p className="mt-1 text-foreground">{dangerous.brand}</p>
-            <div className="mt-2 flex items-baseline gap-2">
-              <span className="text-4xl text-error tabular-nums">
-                {dangerous.winRate}%
+      <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+        <StatLabel
+          label="Winning Against"
+          icon={<TrendUpIcon className="size-8 shrink-0 text-success" />}
+        />
+        <div>
+          <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
+            {winning}
+            <span className="ml-1 font-light text-2xl text-foreground-dimmed">
+              / {brands.length}
+            </span>
+          </p>
+          {trend !== 0 ? (
+            <p className="mt-3 flex items-center gap-2">
+              <span
+                className={cn(
+                  "flex items-center gap-1.5 text-sm",
+                  trend >= 0 ? "text-success" : "text-error",
+                )}
+              >
+                {trend >= 0 ? (
+                  <TrendUpIcon className="size-6" />
+                ) : (
+                  <TrendDownIcon className="size-6" />
+                )}
+                {trend >= 0 ? "+" : ""}
+                {trend}%
               </span>
-              <span className="text-foreground-dimmed">win rate</span>
+              <span className="font-light text-foreground-dimmed text-sm">
+                since last scan
+              </span>
+            </p>
+          ) : (
+            <div className="mt-3">
+              <div className="h-1 w-full bg-accent-foreground">
+                <div
+                  className="h-full bg-success"
+                  style={{
+                    width: `${Math.round((winning / brands.length) * 100)}%`,
+                  }}
+                />
+              </div>
+              <p className="mt-2 font-light text-foreground-dimmed text-xs">
+                {overallWinRate}% average win rate
+              </p>
             </div>
-          </div>
-          {/* <Button
-            variant="outline"
-            color="accent"
-            className="mt-auto ml-auto"
-            render={<Link href={`/dashboard/competitors/${dangerous._id}`} />}
-          >
-            View battlecard <ArrowRightIcon className="size-4" />
-          </Button> */}
+          )}
         </div>
-      ) : (
-        <div className="flex flex-col justify-between bg-background-rich p-4">
-          <p className="text-foreground-dimmed">Most Dangerous</p>
-          <p className="mt-2 text-foreground-dimmed">No data yet</p>
-        </div>
-      )}
+      </div>
 
-      <div className="flex flex-col justify-between bg-background-rich p-4">
-        <p className="text-foreground-dimmed">Total Simulations</p>
-        <span className="mt-2 text-4xl text-foreground tabular-nums">
-          {totalSimulations}
-        </span>
-        <p className="mt-2 font-light text-foreground-dimmed text-sm">
-          across {brands.length} competitor{brands.length !== 1 ? "s" : ""}
-        </p>
+      <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+        <StatLabel
+          label="Most Dangerous"
+          icon={<ShieldCheckIcon className="size-8 shrink-0 text-error" />}
+        />
+        <div>
+          <p className="line-clamp-1 text-foreground">{dangerous.brand}</p>
+          <p className="mt-1 font-medium text-5xl text-error tabular-nums tracking-tight">
+            {dangerous.winRate}
+            <span className="ml-0.5 font-light text-2xl text-foreground-dimmed">
+              %
+            </span>
+          </p>
+          <p className="mt-3 font-light text-foreground-dimmed text-sm">
+            your win rate against them
+          </p>
+        </div>
+      </div>
+
+      <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+        <StatLabel
+          label="Total Simulations"
+          icon={<CheckBadgeIcon className="size-8 shrink-0 text-warning" />}
+        />
+        <div>
+          <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
+            {totalSimulations}
+          </p>
+          <p className="mt-3 font-light text-foreground-dimmed text-sm">
+            across {brands.length} competitor{brands.length !== 1 ? "s" : ""}
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -291,18 +318,18 @@ const CompetitiveLandscape = async () => {
 
   const tiers = [
     {
-      label: "Dominating (\u226575%)",
+      label: "Dominating (≥75%)",
       count: brands.filter((brand) => brand.winRate >= 75).length,
       color: "bg-success",
     },
     {
-      label: "Competitive (50\u201374%)",
+      label: "Competitive (50–74%)",
       count: brands.filter((brand) => brand.winRate >= 50 && brand.winRate < 75)
         .length,
       color: "bg-primary",
     },
     {
-      label: "At Risk (30\u201349%)",
+      label: "At Risk (30–49%)",
       count: brands.filter((brand) => brand.winRate >= 30 && brand.winRate < 50)
         .length,
       color: "bg-warning",
@@ -324,10 +351,8 @@ const CompetitiveLandscape = async () => {
       <div className="bg-background-rich xl:col-span-2">
         <div className="flex items-start justify-between p-4">
           <div>
-            <p className="font-light text-foreground-dimmed uppercase tracking-widest">
-              Landscape
-            </p>
-            <p className="mt-1 font-medium text-2xl text-foreground">
+            <SectionKicker>01 — Landscape</SectionKicker>
+            <p className="mt-2 font-medium text-2xl text-foreground">
               Win Rate by Competitor
             </p>
           </div>
@@ -354,10 +379,10 @@ const CompetitiveLandscape = async () => {
             return (
               <div
                 key={brand._id}
-                className="flex items-center gap-4 bg-background-rich px-4 py-3"
+                className="flex items-center gap-4 bg-background-rich px-4 py-3 transition-colors hover:bg-background"
               >
                 <div className="flex w-36 shrink-0 items-center gap-2">
-                  <div className="flex size-7 shrink-0 items-center justify-center bg-primary/10 font-semibold text-primary text-xs">
+                  <div className="flex size-8 shrink-0 items-center justify-center bg-background-dimmed font-medium text-primary text-xs">
                     {brand.brand.slice(0, 2).toUpperCase()}
                   </div>
                   <span className="truncate font-medium text-foreground text-sm">
@@ -385,13 +410,15 @@ const CompetitiveLandscape = async () => {
       </div>
 
       <div className="flex flex-1 flex-col gap-px bg-accent-foreground">
-        <div className="flex-1 bg-background-rich p-4">
-          <p className="font-light text-foreground-dimmed uppercase tracking-widest">
-            Distribution
-          </p>
-          <p className="mt-1 font-medium text-2xl text-foreground">
-            Win Rate Tiers
-          </p>
+        <div className="flex flex-1 flex-col bg-background-rich">
+          <div className="p-4">
+            <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+              Distribution
+            </p>
+            <p className="mt-2 font-medium text-2xl text-foreground">
+              Win Rate Tiers
+            </p>
+          </div>
 
           <WinRateTiersChart tiers={tiers} total={brands.length} />
         </div>
@@ -435,6 +462,7 @@ const Competitors = async ({
       pageCount={data.pagination.total}
       pageIndex={page}
       rows={data.brands}
+      kicker="02 — All Competitors"
       action={
         <p className="font-light text-foreground-dimmed">
           {data.pagination.total} competitor
@@ -462,10 +490,8 @@ const Insights = async () => {
     <div className="bg-background-rich">
       <div className="flex items-start justify-between p-4">
         <div>
-          <p className="font-light text-foreground-dimmed uppercase tracking-widest">
-            Intelligence
-          </p>
-          <p className="mt-1 font-medium text-2xl text-foreground">
+          <SectionKicker>03 — Intelligence</SectionKicker>
+          <p className="mt-2 font-medium text-2xl text-foreground">
             Recent Scan Activity
           </p>
         </div>
@@ -489,12 +515,12 @@ const Insights = async () => {
           return (
             <div
               key={scan.id}
-              className="flex items-center justify-between bg-background-rich px-4 py-3"
+              className="flex items-center justify-between bg-background-rich px-4 py-3 transition-colors hover:bg-background"
             >
               <div className="flex items-center gap-3">
                 <div
                   className={cn(
-                    "size-2 shrink-0 rounded-full",
+                    "size-2 shrink-0",
                     scan.status === "completed" ? "bg-success" : "bg-warning",
                   )}
                 />
@@ -548,12 +574,20 @@ const Insights = async () => {
 };
 
 const StatsSkeleton = () => (
-  <div className="grid h-39 min-h-39 grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
-    {["brands", "winning", "dangerous", "simulations"].map((key) => (
-      <div key={key} className="bg-background-rich p-4">
-        <div className="h-4 w-28 animate-pulse bg-foreground/10" />
-        <div className="mt-4 h-10 w-20 animate-pulse bg-foreground/10" />
-        <div className="mt-3 h-3 w-32 animate-pulse bg-foreground/10" />
+  <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
+    {(["a", "b", "c", "d"] as const).map((key) => (
+      <div
+        key={key}
+        className="relative flex h-44 flex-col justify-between bg-background-rich p-5"
+      >
+        <div className="flex items-center justify-between">
+          <div className="h-3 w-28 animate-pulse bg-foreground/10" />
+          <div className="absolute top-5 right-5 size-8 animate-pulse bg-foreground/10" />
+        </div>
+        <div>
+          <div className="h-11 w-24 animate-pulse bg-foreground/10" />
+          <div className="mt-3 h-4 w-32 animate-pulse bg-foreground/10" />
+        </div>
       </div>
     ))}
   </div>
@@ -563,17 +597,17 @@ const LandscapeSkeleton = () => (
   <div className="grid grid-cols-1 gap-px bg-accent-foreground xl:grid-cols-3">
     <div className="bg-background-rich xl:col-span-2">
       <div className="p-4">
-        <div className="h-3 w-20 animate-pulse bg-foreground/10" />
-        <div className="mt-2 h-7 w-48 animate-pulse bg-foreground/10" />
+        <div className="h-3 w-32 animate-pulse bg-foreground/10" />
+        <div className="mt-2 h-8 w-56 animate-pulse bg-foreground/10" />
       </div>
       <div className="flex flex-col gap-px border-accent-foreground border-t bg-accent-foreground">
-        {["a", "b", "c", "d", "e"].map((key) => (
+        {(["a", "b", "c", "d", "e"] as const).map((key) => (
           <div
             key={key}
             className="flex items-center gap-4 bg-background-rich px-4 py-3"
           >
             <div className="flex w-36 items-center gap-2">
-              <div className="size-7 shrink-0 animate-pulse bg-foreground/10" />
+              <div className="size-8 shrink-0 animate-pulse bg-foreground/10" />
               <div className="h-4 w-20 animate-pulse bg-foreground/10" />
             </div>
             <div className="flex flex-1 items-center gap-3">
@@ -586,15 +620,17 @@ const LandscapeSkeleton = () => (
       </div>
     </div>
     <div className="flex flex-col gap-px bg-accent-foreground">
-      <div className="flex-1 bg-background-rich p-4">
-        <div className="h-3 w-24 animate-pulse bg-foreground/10" />
-        <div className="mt-2 h-7 w-32 animate-pulse bg-foreground/10" />
-        <div className="mt-6 h-2 w-full animate-pulse bg-foreground/10" />
-        <div className="mt-4 grid grid-cols-2 gap-4">
-          {["x", "y", "z", "w"].map((key) => (
+      <div className="flex flex-1 flex-col bg-background-rich">
+        <div className="p-4">
+          <div className="h-3 w-24 animate-pulse bg-foreground/10" />
+          <div className="mt-2 h-8 w-40 animate-pulse bg-foreground/10" />
+        </div>
+        <div className="mx-4 min-h-56 flex-1 animate-pulse bg-foreground/10" />
+        <div className="grid grid-cols-2 gap-3 p-4">
+          {(["x", "y", "z", "w"] as const).map((key) => (
             <div key={key} className="space-y-2">
               <div className="h-3 w-20 animate-pulse bg-foreground/10" />
-              <div className="h-5 w-8 animate-pulse bg-foreground/10" />
+              <div className="h-5 w-12 animate-pulse bg-foreground/10" />
             </div>
           ))}
         </div>
@@ -610,7 +646,10 @@ const LandscapeSkeleton = () => (
 const TableSkeleton = () => (
   <div>
     <div className="flex items-center justify-between border-accent-foreground border-b p-4">
-      <div className="h-6 w-36 animate-pulse bg-foreground/10" />
+      <div className="space-y-2">
+        <div className="h-3 w-40 animate-pulse bg-foreground/10" />
+        <div className="h-6 w-36 animate-pulse bg-foreground/10" />
+      </div>
       <div className="h-4 w-24 animate-pulse bg-foreground/10" />
     </div>
     <div className="overflow-x-auto bg-background-rich">
@@ -679,8 +718,8 @@ const InsightsSkeleton = () => (
   <div className="bg-background-rich">
     <div className="flex items-start justify-between p-4">
       <div>
-        <div className="h-3 w-24 animate-pulse bg-foreground/10" />
-        <div className="mt-2 h-7 w-40 animate-pulse bg-foreground/10" />
+        <div className="h-3 w-32 animate-pulse bg-foreground/10" />
+        <div className="mt-2 h-8 w-48 animate-pulse bg-foreground/10" />
       </div>
       <div className="space-y-1.5 text-right">
         <div className="h-3 w-20 animate-pulse bg-foreground/10" />
@@ -688,13 +727,13 @@ const InsightsSkeleton = () => (
       </div>
     </div>
     <div className="flex flex-col gap-px border-accent-foreground border-t bg-accent-foreground">
-      {["a", "b", "c"].map((key) => (
+      {(["a", "b", "c"] as const).map((key) => (
         <div
           key={key}
           className="flex items-center justify-between bg-background-rich px-4 py-3"
         >
           <div className="flex items-center gap-3">
-            <div className="size-2 shrink-0 animate-pulse rounded-full bg-foreground/10" />
+            <div className="size-2 shrink-0 animate-pulse bg-foreground/10" />
             <div className="space-y-1.5">
               <div className="h-4 w-48 animate-pulse bg-foreground/10" />
               <div className="h-3 w-64 animate-pulse bg-foreground/10" />

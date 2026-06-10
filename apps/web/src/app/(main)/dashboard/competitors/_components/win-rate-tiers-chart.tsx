@@ -30,8 +30,8 @@ export const WinRateTiersChart = ({
   const data = tiers.filter((tier) => tier.count > 0);
 
   return (
-    <div className="flex h-full flex-col items-center gap-4">
-      <div className="size-64">
+    <div className="flex h-full flex-1 flex-col px-4 pb-4">
+      <div className="min-h-56 w-full flex-1">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -40,8 +40,8 @@ export const WinRateTiersChart = ({
               nameKey="label"
               cx="50%"
               cy="50%"
-              innerRadius={52}
-              outerRadius={80}
+              innerRadius="62%"
+              outerRadius="92%"
               paddingAngle={2}
               strokeWidth={0}
               isAnimationActive={false}
@@ -61,11 +61,24 @@ export const WinRateTiersChart = ({
                 const entry = payload[0];
                 if (!entry) return null;
 
+                const share = (() => {
+                  if (total <= 0) return null;
+                  if (typeof entry.value !== "number") return null;
+                  return Math.round((entry.value / total) * 100);
+                })();
+
                 return (
-                  <div className="whitespace-nowrap border border-accent-foreground bg-background-rich px-2 py-1 shadow-sm">
-                    <span className="text-foreground">{entry.name} </span>
-                    <span className="font-medium text-primary">
+                  <div className="flex items-baseline gap-3 whitespace-nowrap border border-accent-foreground bg-background-rich px-3 py-1.5 shadow-sm">
+                    <span className="text-foreground-dimmed text-sm">
+                      {entry.name}
+                    </span>
+                    <span className="font-medium text-foreground tabular-nums">
                       {entry.value}
+                      {share !== null && (
+                        <span className="ml-1.5 font-light text-foreground-dimmed text-xs">
+                          ({share}%)
+                        </span>
+                      )}
                     </span>
                   </div>
                 );
@@ -75,7 +88,7 @@ export const WinRateTiersChart = ({
         </ResponsiveContainer>
       </div>
 
-      <div className="mt-20 grid w-full grid-cols-2 gap-3">
+      <div className="mt-4 grid w-full grid-cols-2 gap-3">
         {tiers.map((tier) => (
           <div key={tier.label} className="flex items-start gap-2">
             <div className={cn("mt-1.5 size-2 shrink-0", tier.color)} />

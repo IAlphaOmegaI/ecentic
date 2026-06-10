@@ -1,21 +1,42 @@
-import { resultify, unwrapResult } from "@zenncore/utils";
+import { cn, resultify, unwrapResult } from "@zenncore/utils";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { formatRelativeTime } from "@/lib/date";
 import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
 import * as Scan from "@/server/app/scan";
 import { Environment } from "@/server/utils/environment";
+import { Crosshair, SectionGutter } from "../_components/grid";
 import { SimulationsClient } from "./_components/simulations-client";
+
+const progressLabels = [
+  "Phase",
+  "Progress",
+  "Wins / Losses",
+  "Elapsed",
+] as const;
+const modelLabels = ["GPT-4", "Claude", "Gemini", "Perplexity"] as const;
 
 export default () => (
   <div className="flex flex-col">
     <div className="mx-8 border-accent-foreground border-x">
       <div className="-mx-8 border-accent-foreground border-b">
-        <div className="mx-8 px-6 py-8">
-          <h1 className="font-medium text-4xl text-foreground">Simulations</h1>
-          <p className="mt-1 font-light text-2xl text-foreground-dimmed">
-            Re-run competitor discovery and win-rate simulations anytime.
-          </p>
+        <div className="mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <Suspense
+              fallback={
+                <div className="h-4 w-56 animate-pulse bg-foreground/10" />
+              }
+            >
+              <LastRun />
+            </Suspense>
+            <h1 className="mt-3 font-medium text-4xl text-foreground">
+              Simulations
+            </h1>
+            <p className="mt-1 font-light text-foreground-dimmed text-lg">
+              Re-run competitor discovery and win-rate simulations anytime.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -25,6 +46,25 @@ export default () => (
     </div>
   </div>
 );
+
+const LastRun = async () => {
+  await connection();
+  const latestScans = await resultify(() =>
+    unwrapResult(Scan.getLatest(Environment.SERVER, { limit: 1 })),
+  );
+  const latestScan = latestScans.success ? (latestScans.data[0] ?? null) : null;
+
+  return (
+    <div className="flex items-center gap-2.5 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+      <span
+        className={cn("size-2", latestScan ? "bg-success" : "bg-accent-rich")}
+      />
+      {latestScan
+        ? `Last simulation ${formatRelativeTime(latestScan.createdAt)}`
+        : "No simulations run yet"}
+    </div>
+  );
+};
 
 const SimulationsData = async () => {
   await connection();
@@ -72,76 +112,82 @@ const SimulationsData = async () => {
 const SimulationsSkeleton = () => (
   <>
     <div className="-mx-8 border-accent-foreground border-b">
-      <div className="mx-8">
+      <div className="relative mx-8 bg-background-rich">
+        <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+        <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
         <div className="grid grid-cols-1 gap-px bg-accent-foreground xl:grid-cols-3">
-          {[
-            "Products",
-            "Competitors selected",
-            "Estimated scan simulations",
-          ].map((label) => (
-            <div key={label} className="bg-background-rich p-4">
-              <p className="font-light text-foreground-dimmed">{label}</p>
-              <div className="mt-2 h-10 w-16 animate-pulse bg-foreground/10" />
+          {(["a", "b", "c"] as const).map((key) => (
+            <div
+              key={key}
+              className="relative flex h-44 flex-col justify-between bg-background-rich p-5"
+            >
+              <div className="flex items-center justify-between">
+                <div className="h-3 w-28 animate-pulse bg-foreground/10" />
+                <div className="absolute top-5 right-5 size-8 animate-pulse bg-foreground/10" />
+              </div>
+              <div>
+                <div className="h-11 w-24 animate-pulse bg-foreground/10" />
+                <div className="mt-3 h-4 w-32 animate-pulse bg-foreground/10" />
+              </div>
             </div>
           ))}
         </div>
       </div>
     </div>
 
-    <div className="h-8" />
+    <SectionGutter />
+
     <div className="-mx-8 border-accent-foreground border-t border-b">
-      <div className="mx-8">
-        <div className="bg-background-rich">
-          <div className="border-accent-foreground border-b p-4">
-            <div className="h-7 w-52 animate-pulse bg-foreground/10" />
-            <div className="mt-2 h-4 w-80 animate-pulse bg-foreground/10" />
-            <div className="mt-2 h-3.5 w-44 animate-pulse bg-foreground/10" />
-          </div>
-          <div className="h-[520px] animate-pulse bg-foreground/5" />
+      <div className="mx-8 bg-background-rich">
+        <div className="border-accent-foreground border-b p-4">
+          <div className="h-3 w-32 animate-pulse bg-foreground/10" />
+          <div className="mt-2 h-7 w-52 animate-pulse bg-foreground/10" />
+          <div className="mt-2 h-4 w-80 animate-pulse bg-foreground/10" />
+          <div className="mt-2 h-3.5 w-44 animate-pulse bg-foreground/10" />
         </div>
+        <div className="h-[520px] animate-pulse bg-foreground/5" />
       </div>
     </div>
 
-    <div className="h-8" />
-    <div className="-mx-8 mb-12 border-accent-foreground border-t border-b">
-      <div className="mx-8">
-        <div className="bg-background-rich">
-          <div className="flex items-center justify-between border-accent-foreground border-b p-4">
-            <div>
-              <div className="h-7 w-44 animate-pulse bg-foreground/10" />
-              <div className="mt-2 h-4 w-96 animate-pulse bg-foreground/10" />
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="h-9 w-20 animate-pulse bg-foreground/10" />
-              <div className="h-9 w-32 animate-pulse bg-foreground/10" />
-            </div>
+    <SectionGutter />
+
+    <div className="-mx-8 border-accent-foreground border-t border-b">
+      <div className="mx-8 bg-background-rich">
+        <div className="flex items-center justify-between border-accent-foreground border-b p-4">
+          <div>
+            <div className="h-3 w-32 animate-pulse bg-foreground/10" />
+            <div className="mt-2 h-7 w-44 animate-pulse bg-foreground/10" />
+            <div className="mt-2 h-4 w-96 animate-pulse bg-foreground/10" />
           </div>
-          <div className="space-y-4 p-4">
-            <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-4">
-              {["Phase", "Progress", "Wins / Losses", "Elapsed"].map(
-                (label) => (
-                  <div key={label} className="bg-background-rich p-3">
-                    <p className="font-light text-foreground-dimmed text-sm">
-                      {label}
-                    </p>
-                    <div className="mt-1 h-5 w-16 animate-pulse bg-foreground/10" />
-                  </div>
-                ),
-              )}
-            </div>
-            <div className="h-1 w-full bg-accent-foreground" />
-            <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-4">
-              {["GPT-4", "Claude", "Gemini", "Perplexity"].map((label) => (
-                <div key={label} className="bg-background-rich p-3">
-                  <div className="h-5 w-16 animate-pulse bg-foreground/10" />
-                  <div className="mt-1 h-3.5 w-12 animate-pulse bg-foreground/10" />
-                  <div className="mt-1 h-3.5 w-16 animate-pulse bg-foreground/10" />
-                </div>
-              ))}
-            </div>
-            <div className="h-72 border border-accent-foreground bg-background-rich p-3">
-              <div className="h-3.5 w-72 animate-pulse bg-foreground/10" />
-            </div>
+          <div className="flex items-center gap-2">
+            <div className="h-9 w-20 animate-pulse bg-foreground/10" />
+            <div className="h-9 w-32 animate-pulse bg-foreground/10" />
+          </div>
+        </div>
+        <div className="space-y-4 p-4">
+          <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-4">
+            {progressLabels.map((label) => (
+              <div key={label} className="bg-background-rich p-3">
+                <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+                  {label}
+                </p>
+                <div className="mt-1 h-5 w-16 animate-pulse bg-foreground/10" />
+              </div>
+            ))}
+          </div>
+          <div className="h-1 w-full bg-accent-foreground" />
+          <div className="grid grid-cols-2 gap-px bg-accent-foreground sm:grid-cols-4">
+            {modelLabels.map((label) => (
+              <div key={label} className="bg-background-rich p-3">
+                <div className="size-8 animate-pulse bg-foreground/10" />
+                <div className="mt-2 h-5 w-16 animate-pulse bg-foreground/10" />
+                <div className="mt-1 h-3.5 w-12 animate-pulse bg-foreground/10" />
+                <div className="mt-1 h-3.5 w-16 animate-pulse bg-foreground/10" />
+              </div>
+            ))}
+          </div>
+          <div className="h-72 border border-accent-foreground bg-background-dimmed p-3">
+            <div className="h-3.5 w-72 animate-pulse bg-foreground/10" />
           </div>
         </div>
       </div>

@@ -21,7 +21,7 @@ export const NotificationBell = () => (
       className="relative flex size-8 items-center justify-center border-none bg-transparent text-foreground-dimmed transition-colors hover:bg-transparent hover:text-foreground"
       aria-label="Notifications"
     >
-      <BellIcon className="size-5" />
+      <BellIcon className="size-6" />
       {notifications.length > 0 && (
         <span className="absolute -top-0.5 -right-0.5 flex min-w-[16px] items-center justify-center bg-primary px-1 font-medium text-[10px] text-white leading-4">
           {notifications.length}

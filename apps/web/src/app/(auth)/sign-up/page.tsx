@@ -1,14 +1,14 @@
 "use client";
 
+import { ArrowRightIcon } from "@zenncore/icons";
+import { Button } from "@zenncore/web/components/button";
 import * as motion from "motion/react-client";
 import Image from "next/image";
+import Link from "next/link";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import { Fade } from "@/lib/animations";
 import { SignUpForm } from "./_components/sign-up-form";
-import Link from "next/link";
-import { ArrowRightIcon } from "@zenncore/icons";
-import { Button } from "@zenncore/web/components/button";
 
 const points = [
   "Simulate how GPT-4, Claude, Gemini & Perplexity pick products",

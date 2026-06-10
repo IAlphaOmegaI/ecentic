@@ -30,7 +30,7 @@ export const AgentVisitsPanel = async () => {
         </div>
         <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
           {summary.total30d}
-          <span className="ml-1.5 font-light text-foreground-dimmed text-sm">
+          <span className="ml-1.5 font-light text-2xl text-foreground-dimmed">
             total
           </span>
         </p>

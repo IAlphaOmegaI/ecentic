@@ -118,7 +118,7 @@ export const CommandPalette = ({
 
           {matchedProducts.length > 0 && (
             <div>
-              <p className="px-4 pt-2 pb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
+              <p className="px-4 pt-2 pb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
                 Products
               </p>
               {matchedProducts.slice(0, 5).map((product) => (
@@ -148,7 +148,7 @@ export const CommandPalette = ({
 
           {matchedCompetitors.length > 0 && (
             <div>
-              <p className="px-4 pt-3 pb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
+              <p className="px-4 pt-3 pb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
                 Competitors
               </p>
               {matchedCompetitors.slice(0, 4).map((competitor) => (
@@ -178,7 +178,7 @@ export const CommandPalette = ({
 
           {matchedNav.length > 0 && (
             <div>
-              <p className="px-4 pt-3 pb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
+              <p className="px-4 pt-3 pb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
                 Pages
               </p>
               {matchedNav.map((item) => (
@@ -188,7 +188,7 @@ export const CommandPalette = ({
                   onClick={() => setOpen(false)}
                   className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-accent-foreground"
                 >
-                  <ArrowRightIcon className="size-3.5 shrink-0 text-foreground-dimmed" />
+                  <ArrowRightIcon className="size-4 shrink-0 text-foreground-dimmed" />
                   <span className="text-foreground text-sm">{item.label}</span>
                 </Link>
               ))}

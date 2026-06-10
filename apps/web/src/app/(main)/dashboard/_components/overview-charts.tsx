@@ -54,19 +54,18 @@ const ActivityIcon = ({
     switch (type) {
       case "simulation_complete":
         return {
-          icon: <CheckCircleIcon className="size-4" />,
-          color: "border-success/40 bg-success/10 text-success",
+          icon: <CheckCircleIcon className="size-8" />,
+          color: "text-success",
         };
       case "simulation_running":
         return {
-          icon: <LoaderIcon className="size-4 animate-spin" />,
-          color: "border-primary/40 bg-primary/10 text-primary",
+          icon: <LoaderIcon className="size-8 animate-spin" />,
+          color: "text-primary",
         };
       default:
         return {
-          icon: <BellIcon className="size-4" />,
-          color:
-            "border-accent-foreground bg-foreground-dimmed/10 text-foreground-dimmed",
+          icon: <BellIcon className="size-8" />,
+          color: "text-foreground-dimmed",
         };
     }
   })();
@@ -74,7 +73,7 @@ const ActivityIcon = ({
   return (
     <div
       className={cn(
-        "flex size-8 shrink-0 items-center justify-center border",
+        "flex size-8 shrink-0 items-center justify-center",
         className,
         color,
       )}
@@ -117,12 +116,14 @@ const WinRateLineChart = ({
   }));
 
   const [minimum, maximum] = (() => {
-    const values = data;
-    const minimum = Math.min(...values);
-    const maximum = Math.max(...values);
-    const padding = minimum === maximum ? 6 : 4;
+    const lowest = Math.min(...data);
+    const highest = Math.max(...data);
+    const padding = lowest === highest ? 6 : 4;
 
-    return [minimum - padding, maximum + padding];
+    return [
+      Math.max(0, Math.floor((lowest - padding) / 5) * 5),
+      Math.min(100, Math.ceil((highest + padding) / 5) * 5),
+    ];
   })();
 
   return (
@@ -130,7 +131,7 @@ const WinRateLineChart = ({
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           data={chart}
-          margin={{ top: 6, right: 0, left: 0, bottom: 0 }}
+          margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
         >
           <defs>
             <linearGradient id="win-rate-area" x1="0" y1="0" x2="0" y2="1">
@@ -151,8 +152,25 @@ const WinRateLineChart = ({
             strokeOpacity={0.14}
             vertical={false}
           />
-          <XAxis dataKey="label" hide />
-          <YAxis hide domain={[minimum, maximum]} />
+          <XAxis
+            dataKey="label"
+            axisLine={false}
+            tickLine={false}
+            tick={{ fill: "var(--color-foreground-dimmed)", fontSize: 11 }}
+            interval="preserveStartEnd"
+            minTickGap={64}
+            dy={8}
+          />
+          <YAxis
+            domain={[minimum, maximum]}
+            axisLine={false}
+            tickLine={false}
+            tick={{ fill: "var(--color-foreground-dimmed)", fontSize: 11 }}
+            tickFormatter={(value: number) => `${value}%`}
+            allowDecimals={false}
+            tickCount={5}
+            width={44}
+          />
           <Tooltip
             cursor={{
               stroke: "var(--color-foreground-dimmed)",
@@ -164,8 +182,10 @@ const WinRateLineChart = ({
               if (typeof value !== "number") return null;
 
               return (
-                <div className="whitespace-nowrap border border-accent-foreground bg-background-rich px-2 py-1 shadow-sm">
-                  <span className="text-foreground">{label}</span>
+                <div className="flex items-baseline gap-3 whitespace-nowrap border border-accent-foreground bg-background-rich px-3 py-1.5 shadow-sm">
+                  <span className="text-foreground-dimmed text-sm">
+                    {label}
+                  </span>
                   <span className="font-medium text-primary">{value}%</span>
                 </div>
               );
@@ -207,7 +227,7 @@ export const OverviewCharts = ({
 
   return (
     <div className="grid grid-cols-1 gap-px bg-accent-foreground xl:grid-cols-3">
-      <div className="bg-background-rich xl:col-span-2">
+      <div className="flex flex-col bg-background-rich xl:col-span-2">
         <div className="flex items-start justify-between p-4">
           <div>
             <p className="flex items-center gap-2 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
@@ -235,7 +255,7 @@ export const OverviewCharts = ({
                         alt={label}
                         width={64}
                         height={64}
-                        className="size-4"
+                        className="size-8"
                       />
                       <span className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
                         {label}
@@ -267,7 +287,7 @@ export const OverviewCharts = ({
           </p>
         )}
 
-        <div>
+        <div className="flex flex-1 flex-col">
           <div className="mb-4 flex items-center justify-between p-4">
             <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
               Win Rate Trend
@@ -275,10 +295,8 @@ export const OverviewCharts = ({
             {change !== 0 && (
               <span
                 className={cn(
-                  "border px-1.5 py-0.5 text-xs",
-                  change > 0
-                    ? "border-success/40 bg-success/10 text-success"
-                    : "border-error/40 bg-error/10 text-error",
+                  "text-xs",
+                  change > 0 ? "text-success" : "text-error",
                 )}
               >
                 {change > 0 ? "+" : ""}
@@ -286,13 +304,11 @@ export const OverviewCharts = ({
               </span>
             )}
           </div>
-          <WinRateLineChart data={data} labels={labels} />
-          {labels.length >= 2 && (
-            <div className="mt-2 flex justify-between font-light text-foreground-dimmed text-xs">
-              <span>{labels[0]}</span>
-              <span>{labels[labels.length - 1]}</span>
-            </div>
-          )}
+          <WinRateLineChart
+            data={data}
+            labels={labels}
+            className="h-full flex-1 px-4 pb-4"
+          />
         </div>
       </div>
 
