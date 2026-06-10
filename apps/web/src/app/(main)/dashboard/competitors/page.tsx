@@ -174,7 +174,7 @@ const StatCards = async () => {
   );
 
   const scans = await unwrapResult(Scan.getLatest(Environment.SERVER));
-  const completed = scans.filter((scan) => scan.status === "completed");
+  const completed = scans.filter((scan) => scan.status === "complete");
 
   const trend = (() => {
     if (completed.length < 2) return 0;
@@ -480,7 +480,7 @@ const Insights = async () => {
     unwrapResult(Scan.getLatest(Environment.SERVER)),
   ]);
 
-  const completed = scans.filter((scan) => scan.status === "completed");
+  const completed = scans.filter((scan) => scan.status === "complete");
 
   if (completed.length === 0 && !data?.scan?.topFinding) return null;
 
@@ -521,12 +521,12 @@ const Insights = async () => {
                 <div
                   className={cn(
                     "size-2 shrink-0",
-                    scan.status === "completed" ? "bg-success" : "bg-warning",
+                    scan.status === "complete" ? "bg-success" : "bg-warning",
                   )}
                 />
                 <div>
                   <p className="font-medium text-foreground text-sm">
-                    {scan.status === "completed"
+                    {scan.status === "complete"
                       ? `Scan completed — ${scan.wins}W / ${scan.losses}L`
                       : `Scan in progress — ${scan.completedSimulations}/${scan.totalSimulations}`}
                   </p>

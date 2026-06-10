@@ -212,7 +212,7 @@ const StatCards = async () => {
   const opportunity = sorted[sorted.length - 1];
 
   const scans = await unwrapResult(Scan.getLatest(Environment.SERVER));
-  const completed = scans.filter((scan) => scan.status === "completed");
+  const completed = scans.filter((scan) => scan.status === "complete");
 
   const trend = (() => {
     if (completed.length < 2) return 0;
@@ -399,7 +399,7 @@ const Performance = async () => {
         ]
       : [];
 
-  const completed = scans.filter((scan) => scan.status === "completed");
+  const completed = scans.filter((scan) => scan.status === "complete");
 
   const trend = completed
     .slice(0, 30)
@@ -415,11 +415,11 @@ const Performance = async () => {
   const activity = scans.slice(0, 5).map((scan) => ({
     id: scan.id,
     type:
-      scan.status === "completed"
+      scan.status === "complete"
         ? ("simulation_complete" as const)
         : ("simulation_running" as const),
     message:
-      scan.status === "completed"
+      scan.status === "complete"
         ? `Simulation completed — ${scan.wins} wins, ${scan.losses} losses`
         : `Simulation in progress — ${scan.completedSimulations}/${scan.totalSimulations}`,
     detail: scan.topFinding,
