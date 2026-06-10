@@ -10,6 +10,8 @@ import * as Product from "../product";
 import * as Store from "../store";
 import { detect, Parser } from "./feed-parsing";
 
+const FEED_BYTE_LIMIT = 10 * 1024 * 1024;
+
 export const connect = withAuthentication(
   async (
     context,
@@ -50,6 +52,12 @@ export const connectForUser = withContext(
       return {
         success: false,
         error: new RequestError("Failed to read feed response"),
+      };
+
+    if (text.data.length > FEED_BYTE_LIMIT)
+      return {
+        success: false,
+        error: new RequestError("feed-too-large"),
       };
 
     const format = detect(text.data);
@@ -113,6 +121,14 @@ export const syncProducts = withAuthentication(
     if (!text.success) {
       await Store.update(Environment.SERVER, id, { status: "error" });
       return { success: false, error: text.error };
+    }
+
+    if (text.data.length > FEED_BYTE_LIMIT) {
+      await Store.update(Environment.SERVER, id, { status: "error" });
+      return {
+        success: false,
+        error: new RequestError("feed-too-large"),
+      };
     }
 
     const format = detect(text.data);

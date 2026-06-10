@@ -2,6 +2,25 @@
 import { resultify } from "@zenncore/utils";
 import { XMLParser } from "fast-xml-parser";
 
+// Bounded decoder for the five predefined XML entities.
+// Applied after parsing with processEntities:false so that DOCTYPE entity
+// expansion attacks ("billion laughs") are never evaluated, while normal
+// text like &amp; and &lt; still round-trips correctly.
+// &amp; is decoded last to avoid double-decoding "&amp;lt;" → "<".
+const XML_ENTITIES = [
+  ["&lt;", "<"],
+  ["&gt;", ">"],
+  ["&quot;", '"'],
+  ["&apos;", "'"],
+  ["&amp;", "&"],
+] as const;
+
+const decode = (value: string) =>
+  XML_ENTITIES.reduce(
+    (decoded, [entity, character]) => decoded.replaceAll(entity, character),
+    value,
+  );
+
 export type Item = {
   title: string;
   description?: string;
@@ -46,6 +65,7 @@ export const Parser = {
       ignoreAttributes: false,
       attributeNamePrefix: "@_",
       removeNSPrefix: true,
+      processEntities: false,
     });
 
     const parsed = parser.parse(text);
@@ -76,16 +96,20 @@ export const Parser = {
         undefined;
 
       return {
-        title: String(item["title"] ?? item["g:title"] ?? "Untitled"),
-        description: String(item["description"] ?? item["g:description"] ?? ""),
+        title: decode(String(item["title"] ?? item["g:title"] ?? "Untitled")),
+        description: decode(
+          String(item["description"] ?? item["g:description"] ?? ""),
+        ),
         price: itemParsed.price ?? undefined,
         currency,
-        image: String(
-          item["image_link"] ?? item["g:image_link"] ?? item["image"] ?? "",
+        image: decode(
+          String(
+            item["image_link"] ?? item["g:image_link"] ?? item["image"] ?? "",
+          ),
         ),
-        url: String(item["link"] ?? item["g:link"] ?? ""),
-        sku: String(item["id"] ?? item["g:id"] ?? item["sku"] ?? ""),
-        id: String(item["id"] ?? item["g:id"] ?? ""),
+        url: decode(String(item["link"] ?? item["g:link"] ?? "")),
+        sku: decode(String(item["id"] ?? item["g:id"] ?? item["sku"] ?? "")),
+        id: decode(String(item["id"] ?? item["g:id"] ?? "")),
       };
     }) as Item[];
   },

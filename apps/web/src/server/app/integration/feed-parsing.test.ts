@@ -140,6 +140,41 @@ describe("Parser.xml — edge cases", () => {
   });
 });
 
+// ─── Security: entity expansion ────────────────────────────────────────────
+
+describe("Parser.xml — entity expansion", () => {
+  const bomb = `<?xml version="1.0"?>
+<!DOCTYPE lolz [
+  <!ENTITY lol "lol">
+  <!ENTITY lol2 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">
+  <!ENTITY lol3 "&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;">
+  <!ENTITY lol4 "&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;">
+]>
+<rss><channel><item><title>&lol4;</title><price>1</price></item></channel></rss>`;
+
+  test("entity bomb title is the LITERAL string '&lol4;' (processEntities:false)", () => {
+    const items = Parser.xml(bomb);
+    expect(items.length).toBe(1);
+    // With processEntities:false entities are not expanded — literal text is preserved
+    expect(items[0]?.title).toBe("&lol4;");
+  });
+
+  test("normal predefined entities decode correctly after processEntities:false", () => {
+    const xml = `<?xml version="1.0"?>
+<rss>
+  <channel>
+    <item>
+      <title>Beauty &amp; Care &lt;Premium&gt;</title>
+      <id>enc-1</id>
+    </item>
+  </channel>
+</rss>`;
+    const items = Parser.xml(xml);
+    expect(items.length).toBe(1);
+    expect(items[0]?.title).toBe("Beauty & Care <Premium>");
+  });
+});
+
 // ─── Parser.json ───────────────────────────────────────────────────────────
 
 describe("Parser.json", () => {
