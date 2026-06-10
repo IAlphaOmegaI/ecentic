@@ -15,7 +15,12 @@ import { formatPrice } from "@/lib/currency";
 import { formatRelativeTime } from "@/lib/date";
 import * as Product from "@/server/app/product";
 import { Environment } from "@/server/utils/environment";
-import { Crosshair, SectionGutter, StatLabel } from "../../_components/grid";
+import {
+  Crosshair,
+  SectionGutter,
+  StatLabel,
+  StatusPill,
+} from "../../_components/grid";
 import { ProductDetail } from "./_components/product-detail";
 
 export default ({ params }: PageProps<"/dashboard/products/[id]">) => (
@@ -89,47 +94,27 @@ const ProductDetailContent = async ({
       <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <div className="flex items-center gap-2.5 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-              <span
-                className={cn(
-                  "size-2",
-                  latestSimulatedAt ? "bg-success" : "bg-accent-rich",
-                )}
-              />
+            <StatusPill tone={latestSimulatedAt ? "success" : "neutral"}>
               {latestSimulatedAt
                 ? `Live — updated ${formatRelativeTime(latestSimulatedAt)}`
                 : "No simulations run yet"}
-            </div>
-            <h1 className="mt-3 font-medium text-4xl text-foreground">
+            </StatusPill>
+            <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
               {product.title}
             </h1>
-            <p className="mt-1 font-light text-foreground-dimmed text-lg">
-              {subtitle}
-            </p>
+            <p className="mt-1 text-foreground-dimmed text-sm">{subtitle}</p>
           </div>
 
           <div className="flex shrink-0 items-center gap-2">
-            <Button
-              variant="outline"
-              color="accent"
-              render={<Link href="/dashboard/products" />}
-            >
+            <Button color="accent" render={<Link href="/dashboard/products" />}>
               <ChevronLeftIcon className="size-4" />
               Back to Products
             </Button>
-            <Button
-              variant="outline"
-              color="accent"
-              render={<Link href="/dashboard/products" />}
-            >
+            <Button color="accent" render={<Link href="/dashboard/products" />}>
               <RadarIcon className="size-4" />
               Run Scan
             </Button>
-            <Button
-              variant="flat"
-              color="primary"
-              render={<Link href="/dashboard/ucp" />}
-            >
+            <Button color="primary" render={<Link href="/dashboard/ucp" />}>
               Optimize
               <ArrowRightIcon className="size-4" />
             </Button>
@@ -145,28 +130,31 @@ const ProductDetailContent = async ({
             <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
               <StatLabel
                 label="Win Rate"
-                icon={<GaugeIcon className="size-8 shrink-0 text-primary" />}
+                icon={<GaugeIcon className="size-7.5 text-primary" />}
               />
               <div>
                 <p
                   className={cn(
-                    "font-medium text-5xl tabular-nums tracking-tight",
+                    "font-bold text-4xl tabular-nums tracking-[-0.02em]",
                     rateTextColor(winRate),
                   )}
                 >
                   {winRate}
-                  <span className="ml-0.5 font-light text-2xl text-foreground-dimmed">
+                  <span className="ml-0.5 font-medium text-foreground-dimmed text-xl">
                     %
                   </span>
                 </p>
                 <div className="mt-3">
-                  <div className="h-1 w-full bg-accent-foreground">
+                  <div className="h-1 w-full rounded-full bg-accent-foreground">
                     <div
-                      className={cn("h-full", rateBarColor(winRate))}
+                      className={cn(
+                        "h-full rounded-full",
+                        rateBarColor(winRate),
+                      )}
                       style={{ width: `${winRate}%` }}
                     />
                   </div>
-                  <p className="mt-2 font-light text-foreground-dimmed text-sm">
+                  <p className="mt-2 text-foreground-dimmed text-xs">
                     {totalWins} wins · {simulations.length} simulations
                   </p>
                 </div>
@@ -176,28 +164,31 @@ const ProductDetailContent = async ({
             <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
               <StatLabel
                 label="Data Quality"
-                icon={<BullseyeIcon className="size-8 shrink-0 text-error" />}
+                icon={<BullseyeIcon className="size-7.5 text-error" />}
               />
               <div>
                 <p
                   className={cn(
-                    "font-medium text-5xl tabular-nums tracking-tight",
+                    "font-bold text-4xl tabular-nums tracking-[-0.02em]",
                     rateTextColor(product.quality),
                   )}
                 >
                   {product.quality}
-                  <span className="ml-0.5 font-light text-2xl text-foreground-dimmed">
+                  <span className="ml-0.5 font-medium text-foreground-dimmed text-xl">
                     %
                   </span>
                 </p>
                 <div className="mt-3">
-                  <div className="h-1 w-full bg-accent-foreground">
+                  <div className="h-1 w-full rounded-full bg-accent-foreground">
                     <div
-                      className={cn("h-full", rateBarColor(product.quality))}
+                      className={cn(
+                        "h-full rounded-full",
+                        rateBarColor(product.quality),
+                      )}
                       style={{ width: `${product.quality}%` }}
                     />
                   </div>
-                  <p className="mt-2 font-light text-foreground-dimmed text-sm">
+                  <p className="mt-2 text-foreground-dimmed text-xs">
                     listing completeness score
                   </p>
                 </div>
@@ -207,13 +198,13 @@ const ProductDetailContent = async ({
             <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
               <StatLabel
                 label="Simulations Run"
-                icon={<RadarIcon className="size-8 shrink-0 text-warning" />}
+                icon={<RadarIcon className="size-7.5 text-warning" />}
               />
               <div>
-                <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
+                <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
                   {simulations.length}
                 </p>
-                <p className="mt-3 font-light text-foreground-dimmed text-sm">
+                <p className="mt-3 text-foreground-dimmed text-xs">
                   across {competitors.length} competitor
                   {competitors.length === 1 ? "" : "s"}
                 </p>
@@ -223,22 +214,22 @@ const ProductDetailContent = async ({
             <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
               <StatLabel
                 label="Best Model"
-                icon={<AwardIcon className="size-8 shrink-0 text-success" />}
+                icon={<AwardIcon className="size-7.5 text-success" />}
               />
               {models.length > 0 ? (
                 <div>
                   <p
                     className={cn(
-                      "font-medium text-5xl tabular-nums tracking-tight",
+                      "font-bold text-4xl tabular-nums tracking-[-0.02em]",
                       rateTextColor(bestModel.rate),
                     )}
                   >
                     {bestModel.rate}
-                    <span className="ml-0.5 font-light text-2xl text-foreground-dimmed">
+                    <span className="ml-0.5 font-medium text-foreground-dimmed text-xl">
                       %
                     </span>
                   </p>
-                  <p className="mt-3 font-light text-foreground-dimmed text-sm">
+                  <p className="mt-3 text-foreground-dimmed text-xs">
                     {bestModel.label} win rate
                   </p>
                 </div>
@@ -271,9 +262,9 @@ const PageSkeleton = () => (
     <div className="-mx-8 border-accent-foreground border-b">
       <div className="mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <div className="h-4 w-56 animate-pulse bg-foreground/10" />
-          <div className="mt-3 h-10 w-64 animate-pulse bg-foreground/10" />
-          <div className="mt-2 h-6 w-40 animate-pulse bg-foreground/10" />
+          <div className="h-5 w-56 animate-pulse rounded-full bg-foreground/10" />
+          <div className="mt-3 h-9 w-64 animate-pulse bg-foreground/10" />
+          <div className="mt-2 h-5 w-40 animate-pulse bg-foreground/10" />
         </div>
         <div className="flex shrink-0 gap-2">
           <div className="h-9 w-36 animate-pulse bg-foreground/10" />
@@ -296,10 +287,10 @@ const PageSkeleton = () => (
             >
               <div className="flex items-center justify-between">
                 <div className="h-3 w-28 animate-pulse bg-foreground/10" />
-                <div className="absolute top-5 right-5 size-8 animate-pulse bg-foreground/10" />
+                <div className="absolute top-5 right-5 size-7.5 animate-pulse bg-foreground/10" />
               </div>
               <div>
-                <div className="h-11 w-24 animate-pulse bg-foreground/10" />
+                <div className="h-10 w-24 animate-pulse bg-foreground/10" />
                 <div className="mt-3 h-4 w-32 animate-pulse bg-foreground/10" />
               </div>
             </div>
@@ -314,7 +305,7 @@ const PageSkeleton = () => (
     <div className="-mx-8 border-accent-foreground border-t border-b">
       <div className="mx-8 bg-background-rich">
         <div className="p-4">
-          <div className="h-10 w-full animate-pulse bg-foreground/10" />
+          <div className="h-11 w-full animate-pulse rounded-lg bg-foreground/10" />
         </div>
         <div className="grid grid-cols-1 gap-px bg-accent-foreground lg:grid-cols-4">
           {(["a", "b", "c", "d"] as const).map((key) => (
@@ -324,11 +315,11 @@ const PageSkeleton = () => (
             >
               <div className="flex items-center justify-between">
                 <div className="h-3 w-20 animate-pulse bg-foreground/10" />
-                <div className="absolute top-5 right-5 size-8 animate-pulse bg-foreground/10" />
+                <div className="absolute top-5 right-5 size-7.5 animate-pulse bg-foreground/10" />
               </div>
               <div>
-                <div className="h-11 w-20 animate-pulse bg-foreground/10" />
-                <div className="mt-3 h-1 w-full animate-pulse bg-foreground/10" />
+                <div className="h-10 w-20 animate-pulse bg-foreground/10" />
+                <div className="mt-3 h-1 w-full animate-pulse rounded-full bg-foreground/10" />
                 <div className="mt-2 h-4 w-32 animate-pulse bg-foreground/10" />
               </div>
             </div>

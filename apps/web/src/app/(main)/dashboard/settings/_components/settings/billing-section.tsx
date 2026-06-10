@@ -17,15 +17,18 @@ const PLAN_META = {
   dominate: { label: "Dominate Plan", price: 449 },
 } as const;
 
+const STATUS_PILL_CLASS_NAME =
+  "rounded-full px-2 py-0.5 font-semibold text-[11px] uppercase tracking-[0.05em]";
+
 const STATUS_STYLES: Record<string, string> = {
   active: "bg-success/10 text-success",
   trialing: "bg-success/10 text-success",
   past_due: "bg-warning/10 text-warning",
   unpaid: "bg-warning/10 text-warning",
-  canceled: "bg-foreground/10 text-foreground-dimmed",
-  incomplete: "bg-foreground/10 text-foreground-dimmed",
-  incomplete_expired: "bg-foreground/10 text-foreground-dimmed",
-  paused: "bg-foreground/10 text-foreground-dimmed",
+  canceled: "bg-background-dimmed text-foreground-dimmed",
+  incomplete: "bg-background-dimmed text-foreground-dimmed",
+  incomplete_expired: "bg-background-dimmed text-foreground-dimmed",
+  paused: "bg-background-dimmed text-foreground-dimmed",
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -76,7 +79,7 @@ const ActivePlan = ({
   const meta = planKey ? PLAN_META[planKey] : null;
   const statusKey = subscription.status;
   const statusClass =
-    STATUS_STYLES[statusKey] ?? "bg-foreground/10 text-foreground-dimmed";
+    STATUS_STYLES[statusKey] ?? "bg-background-dimmed text-foreground-dimmed";
   const statusLabel = STATUS_LABELS[statusKey] ?? statusKey;
   const upgradeTarget: "compete" | "dominate" | null =
     planKey === "compete" ? "dominate" : null;
@@ -85,39 +88,37 @@ const ActivePlan = ({
     <>
       <div className="flex items-start justify-between">
         <div>
-          <p className="font-medium text-base text-foreground">
+          <p className="font-semibold text-base text-foreground-rich">
             {meta?.label ?? "No active plan"}
           </p>
           {meta && (
-            <p className="mt-1 font-semibold text-2xl text-primary">
+            <p className="mt-1 font-bold text-2xl text-primary tracking-[-0.02em]">
               ${meta.price}
-              <span className="font-light text-base text-foreground-dimmed">
+              <span className="font-medium text-foreground-dimmed text-sm">
                 /mo
               </span>
             </p>
           )}
         </div>
-        <span className={`px-2 py-0.5 font-medium text-sm ${statusClass}`}>
+        <span className={`${STATUS_PILL_CLASS_NAME} ${statusClass}`}>
           {statusLabel}
         </span>
       </div>
       <div className="mt-4 flex flex-col gap-2">
         <div className="flex justify-between">
-          <span className="font-light text-foreground-dimmed text-sm">
-            Billing cycle
-          </span>
-          <span className="font-medium text-base text-foreground">Monthly</span>
+          <span className="text-foreground-dimmed text-sm">Billing cycle</span>
+          <span className="font-medium text-foreground text-sm">Monthly</span>
         </div>
         <div className="flex justify-between">
-          <span className="font-light text-foreground-dimmed text-sm">
+          <span className="text-foreground-dimmed text-sm">
             {subscription.cancelAtPeriodEnd ? "Ends on" : "Next billing date"}
           </span>
-          <span className="font-medium text-base text-foreground">
+          <span className="font-medium text-foreground text-sm">
             {formatDate(subscription.currentPeriodEnd)}
           </span>
         </div>
         {subscription.cancelAtPeriodEnd && (
-          <p className="mt-1 font-light text-foreground-dimmed text-sm">
+          <p className="mt-1 text-foreground-dimmed text-sm">
             Your plan is set to cancel at the end of the current period.
           </p>
         )}
@@ -125,7 +126,6 @@ const ActivePlan = ({
       <div className="mt-6 flex flex-wrap gap-3">
         {upgradeTarget && (
           <Button
-            variant="flat"
             color="primary"
             className="flex-1"
             disabled={isCheckingOut}
@@ -136,12 +136,7 @@ const ActivePlan = ({
               : "Upgrade to Dominate"}
           </Button>
         )}
-        <Button
-          variant="outline"
-          color="neutral"
-          onClick={onManage}
-          disabled={isManaging}
-        >
+        <Button color="neutral" onClick={onManage} disabled={isManaging}>
           {isManaging ? "Loading…" : "Manage Billing"}
         </Button>
       </div>
@@ -160,14 +155,15 @@ const NoPlan = ({
 }) => (
   <>
     <div>
-      <p className="font-medium text-base text-foreground">No active plan</p>
-      <p className="mt-1 font-light text-foreground-dimmed text-sm">
+      <p className="font-semibold text-base text-foreground-rich">
+        No active plan
+      </p>
+      <p className="mt-1 text-foreground-dimmed text-sm">
         Pick a plan to start running daily agent simulations.
       </p>
     </div>
     <div className="mt-6 flex flex-wrap gap-3">
       <Button
-        variant="outline"
         color="accent"
         className="flex-1 border-primary text-primary"
         disabled={isCheckingOut}
@@ -178,7 +174,6 @@ const NoPlan = ({
           : "Start Compete · $149/mo"}
       </Button>
       <Button
-        variant="flat"
         color="primary"
         className="flex-1"
         disabled={isCheckingOut}
@@ -251,7 +246,9 @@ export const BillingSection = ({ subscription, invoices }: Props) => {
     <div className="divide-y divide-accent-foreground">
       <div>
         <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
-          <p className="font-medium text-base text-foreground">Current Plan</p>
+          <p className="font-semibold text-foreground-rich text-sm">
+            Current Plan
+          </p>
         </div>
         <div className="p-6">
           {hasActivePlan && subscription ? (
@@ -275,40 +272,44 @@ export const BillingSection = ({ subscription, invoices }: Props) => {
 
       <div>
         <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
-          <p className="font-medium text-base text-foreground">
+          <p className="font-semibold text-foreground-rich text-sm">
             Invoice History
           </p>
         </div>
         {invoices.length === 0 ? (
-          <div className="px-4 py-6 font-light text-foreground-dimmed text-sm">
+          <div className="px-4 py-6 text-foreground-dimmed text-sm">
             No invoices yet.
           </div>
         ) : (
           <div className="divide-y divide-accent-foreground">
             {invoices.map((invoice) => {
-              const statusClass =
-                invoice.status === "paid"
-                  ? "bg-success/10 text-success"
-                  : invoice.status === "open"
-                    ? "bg-warning/10 text-warning"
-                    : "bg-foreground/10 text-foreground-dimmed";
+              const statusClass = (() => {
+                switch (true) {
+                  case invoice.status === "paid":
+                    return "bg-success/10 text-success";
+                  case invoice.status === "open":
+                    return "bg-warning/10 text-warning";
+                  default:
+                    return "bg-background-dimmed text-foreground-dimmed";
+                }
+              })();
               return (
                 <div
                   key={invoice.id}
                   className="flex items-center justify-between px-4 py-3"
                 >
                   <div>
-                    <p className="font-medium text-base text-foreground">
+                    <p className="font-medium text-foreground text-sm">
                       {formatDate(invoice.createdAt)}
                     </p>
-                    <p className="font-light text-foreground-dimmed text-sm">
+                    <p className="mt-0.5 text-foreground-dimmed text-xs">
                       {formatAmount(invoice.amountPaid, invoice.currency)}
                       {invoice.number ? ` · ${invoice.number}` : ""}
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
                     <span
-                      className={`px-2 py-0.5 font-medium text-sm ${statusClass}`}
+                      className={`${STATUS_PILL_CLASS_NAME} ${statusClass}`}
                     >
                       {invoice.status}
                     </span>
@@ -317,7 +318,7 @@ export const BillingSection = ({ subscription, invoices }: Props) => {
                         href={invoice.pdfUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="font-light text-primary text-sm hover:underline"
+                        className="text-primary text-sm transition-colors hover:text-primary-rich"
                       >
                         Download
                       </a>

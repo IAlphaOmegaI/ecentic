@@ -10,13 +10,13 @@ const OptimizeSkeleton = () => (
     <div className="-mx-8 border-accent-foreground border-b">
       <div className="mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <div className="h-4 w-48 animate-pulse bg-foreground/10" />
-          <div className="mt-3 h-10 w-72 animate-pulse bg-foreground/10" />
-          <div className="mt-1 h-7 w-96 animate-pulse bg-foreground/10" />
+          <div className="h-5 w-44 animate-pulse rounded-full bg-foreground/10" />
+          <div className="mt-3 h-8 w-64 animate-pulse bg-foreground/10" />
+          <div className="mt-2 h-4 w-80 animate-pulse bg-foreground/10" />
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <div className="h-9 w-44 animate-pulse bg-foreground/10" />
-          <div className="h-9 w-36 animate-pulse bg-foreground/10" />
+          <div className="h-9 w-44 animate-pulse rounded-md bg-foreground/10" />
+          <div className="h-9 w-36 animate-pulse rounded-md bg-foreground/10" />
         </div>
       </div>
     </div>
@@ -33,9 +33,9 @@ const OptimizeSkeleton = () => (
             >
               <div className="flex items-center justify-between">
                 <div className="h-3 w-32 animate-pulse bg-foreground/10" />
-                <div className="absolute top-5 right-5 size-8 animate-pulse bg-foreground/10" />
+                <div className="absolute top-5 right-5 size-7.5 animate-pulse bg-foreground/10" />
               </div>
-              <div className="h-11 w-16 animate-pulse bg-foreground/10" />
+              <div className="h-10 w-16 animate-pulse bg-foreground/10" />
             </div>
           ))}
         </div>
@@ -48,11 +48,14 @@ const OptimizeSkeleton = () => (
       <div className="mx-8 bg-background-rich">
         <div className="border-accent-foreground border-b p-4">
           <div className="h-3 w-44 animate-pulse bg-foreground/10" />
-          <div className="mt-2 h-7 w-56 animate-pulse bg-foreground/10" />
+          <div className="mt-2 h-6 w-56 animate-pulse bg-foreground/10" />
         </div>
-        <div className="space-y-px bg-accent-foreground">
+        <div className="flex flex-col gap-3 p-4">
           {(["d", "e", "f"] as const).map((key) => (
-            <div key={key} className="bg-background-rich p-5">
+            <div
+              key={key}
+              className="rounded-lg border border-accent-foreground bg-background-rich p-4"
+            >
               <div className="h-5 w-48 animate-pulse bg-foreground/10" />
               <div className="mt-2 h-3 w-full animate-pulse bg-foreground/10" />
               <div className="mt-1 h-3 w-3/4 animate-pulse bg-foreground/10" />

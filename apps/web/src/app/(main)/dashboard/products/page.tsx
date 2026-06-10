@@ -25,6 +25,7 @@ import {
   SectionGutter,
   SectionKicker,
   StatLabel,
+  StatusPill,
 } from "../_components/grid";
 import { ProductsTable } from "../_components/products-table";
 import {
@@ -36,10 +37,10 @@ import {
 import { ScanInsightsCarousel } from "./_components/scan-insights-carousel";
 
 const emptyStatCards = [
-  { label: "Total Products", icon: RadarIcon, color: "text-warning" },
-  { label: "Average Win Rate", icon: GaugeIcon, color: "text-primary" },
-  { label: "High Performers", icon: TrendUpIcon, color: "text-success" },
-  { label: "Needs Attention", icon: BullseyeIcon, color: "text-error" },
+  { label: "Total Products", icon: RadarIcon },
+  { label: "Average Win Rate", icon: GaugeIcon },
+  { label: "High Performers", icon: TrendUpIcon },
+  { label: "Needs Attention", icon: BullseyeIcon },
 ] as const;
 
 export default ({ searchParams }: SearchParamsProps<keyof Pager>) => (
@@ -55,21 +56,20 @@ export default ({ searchParams }: SearchParamsProps<keyof Pager>) => (
             >
               <LastScanned />
             </Suspense>
-            <h1 className="mt-3 font-medium text-4xl text-foreground">
+            <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
               Products
             </h1>
-            <p className="mt-1 font-light text-foreground-dimmed text-lg">
+            <p className="mt-1 text-foreground-dimmed text-sm">
               How each product in your catalog performs across AI shopping
               agents.
             </p>
           </div>
           <div className="flex items-center gap-2">
-            {/* <Button variant="outline" color="accent">
+            {/* <Button color="accent">
               <DownloadIcon className="size-4" />
               Export
             </Button> */}
             <Button
-              variant="flat"
               color="primary"
               render={<Link href="/onboarding/products" />}
             >
@@ -140,17 +140,11 @@ const LastScanned = async () => {
   );
 
   return (
-    <div className="flex items-center gap-2.5 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-      <span
-        className={cn(
-          "size-2",
-          data.scan?.updatedAt ? "bg-success" : "bg-accent-rich",
-        )}
-      />
+    <StatusPill tone={data.scan?.updatedAt ? "success" : "neutral"}>
       {data.scan?.updatedAt
         ? `Live — last scanned ${formatRelativeTime(data.scan.updatedAt)}`
         : "No scans run yet"}
-    </div>
+    </StatusPill>
   );
 };
 
@@ -164,15 +158,12 @@ const StatCards = async () => {
   if (products.length === 0)
     return (
       <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
-        {emptyStatCards.map(({ label, icon: Icon, color }) => (
+        {emptyStatCards.map(({ label, icon: Icon }) => (
           <div
             key={label}
             className="relative flex h-44 flex-col justify-between bg-background-rich p-5"
           >
-            <StatLabel
-              label={label}
-              icon={<Icon className={cn("size-8 shrink-0", color)} />}
-            />
+            <StatLabel label={label} icon={<Icon className="size-7.5" />} />
             <div className="flex flex-col items-center gap-2 pb-4">
               <p className="font-light text-foreground-dimmed text-sm">
                 No data yet
@@ -223,23 +214,23 @@ const StatCards = async () => {
       <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
         <StatLabel
           label="Total Products"
-          icon={<RadarIcon className="size-8 shrink-0 text-warning" />}
+          icon={<RadarIcon className="size-7.5 text-warning" />}
         />
         <div>
-          <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
+          <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
             {products.length}
-            <span className="ml-1 font-light text-2xl text-foreground-dimmed">
+            <span className="ml-1 font-medium text-foreground-dimmed text-xl">
               / 100
             </span>
           </p>
           <div className="mt-3">
-            <div className="h-1 w-full bg-accent-foreground">
+            <div className="h-1 w-full rounded-full bg-accent-foreground">
               <div
-                className="h-full bg-primary"
+                className="h-full rounded-full bg-primary transition-[width] duration-600"
                 style={{ width: `${(products.length / 100) * 100}%` }}
               />
             </div>
-            <p className="mt-2 font-light text-foreground-dimmed text-xs">
+            <p className="mt-2 text-foreground-dimmed text-xs">
               {100 - products.length} slots remaining
             </p>
           </div>
@@ -249,12 +240,12 @@ const StatCards = async () => {
       <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
         <StatLabel
           label="Average Win Rate"
-          icon={<GaugeIcon className="size-8 shrink-0 text-primary" />}
+          icon={<GaugeIcon className="size-7.5 text-primary" />}
         />
         <div>
-          <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
+          <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
             {averageWinRate}
-            <span className="ml-0.5 font-light text-2xl text-foreground-dimmed">
+            <span className="ml-0.5 font-medium text-foreground-dimmed text-xl">
               %
             </span>
           </p>
@@ -262,24 +253,24 @@ const StatCards = async () => {
             <p className="mt-3 flex items-center gap-2">
               <span
                 className={cn(
-                  "flex items-center gap-1.5 text-sm",
+                  "flex items-center gap-1 font-medium text-xs",
                   trend >= 0 ? "text-success" : "text-error",
                 )}
               >
                 {trend >= 0 ? (
-                  <TrendUpIcon className="size-6" />
+                  <TrendUpIcon className="size-4" />
                 ) : (
-                  <TrendDownIcon className="size-6" />
+                  <TrendDownIcon className="size-4" />
                 )}
                 {trend >= 0 ? "+" : ""}
                 {trend}%
               </span>
-              <span className="font-light text-foreground-dimmed text-sm">
+              <span className="text-foreground-dimmed text-xs">
                 vs last scan
               </span>
             </p>
           ) : (
-            <p className="mt-3 font-light text-foreground-dimmed text-sm">
+            <p className="mt-3 text-foreground-dimmed text-xs">
               across {products.length}{" "}
               {products.length === 1 ? "product" : "products"}
             </p>
@@ -290,13 +281,13 @@ const StatCards = async () => {
       <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
         <StatLabel
           label="High Performers"
-          icon={<TrendUpIcon className="size-8 shrink-0 text-success" />}
+          icon={<TrendUpIcon className="size-7.5 text-success" />}
         />
         <div>
-          <p className="font-medium text-5xl text-success tabular-nums tracking-tight">
+          <p className="font-bold text-4xl text-success tabular-nums tracking-[-0.02em]">
             {highPerformers}
           </p>
-          <p className="mt-3 font-light text-foreground-dimmed text-sm">
+          <p className="mt-3 text-foreground-dimmed text-xs">
             products with {"≥"}60% win rate
           </p>
         </div>
@@ -305,13 +296,13 @@ const StatCards = async () => {
       <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
         <StatLabel
           label="Needs Attention"
-          icon={<BullseyeIcon className="size-8 shrink-0 text-error" />}
+          icon={<BullseyeIcon className="size-7.5 text-error" />}
         />
         <div>
-          <p className="font-medium text-5xl text-error tabular-nums tracking-tight">
+          <p className="font-bold text-4xl text-error tabular-nums tracking-[-0.02em]">
             {needsAttention}
           </p>
-          <p className="mt-3 font-light text-foreground-dimmed text-sm">
+          <p className="mt-3 text-foreground-dimmed text-xs">
             products below 30% win rate
           </p>
         </div>
@@ -429,11 +420,11 @@ const Performance = async () => {
         <div className="flex items-start justify-between p-4">
           <div>
             <SectionKicker>01 — Performance</SectionKicker>
-            <p className="mt-2 font-medium text-2xl text-foreground">
+            <p className="mt-2 font-semibold text-foreground-rich text-lg">
               Win Rate by Model
             </p>
           </div>
-          <p className="font-light text-foreground-dimmed text-sm">
+          <p className="text-foreground-dimmed text-sm">
             {totalSimulations} total simulations
           </p>
         </div>
@@ -460,18 +451,10 @@ const Performance = async () => {
           />
         </div>
         <div className="flex items-center justify-between bg-background-rich p-4">
-          <Button
-            variant="outline"
-            color="accent"
-            render={<Link href="/dashboard/optimize" />}
-          >
+          <Button color="accent" render={<Link href="/dashboard/optimize" />}>
             Optimizations
           </Button>
-          <Button
-            variant="outline"
-            color="primary"
-            render={<Link href="/dashboard/ucp" />}
-          >
+          <Button color="primary" render={<Link href="/dashboard/ucp" />}>
             UCP Manager <ArrowRightIcon className="size-4" />
           </Button>
         </div>
@@ -502,7 +485,7 @@ const Products = async ({
       pageIndex={pagination.page}
       kicker="02 — Catalog"
       action={
-        <p className="font-light text-foreground-dimmed">
+        <p className="text-foreground-dimmed text-sm">
           {pagination.total} products
         </p>
       }
@@ -524,16 +507,16 @@ const AgentTraffic = async () => {
       <div className="flex flex-col gap-6 p-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <SectionKicker>03 — Traffic</SectionKicker>
-          <p className="mt-2 font-medium text-2xl text-foreground">
+          <p className="mt-2 font-semibold text-foreground-rich text-lg">
             AI Agent Visits to Products
           </p>
-          <p className="mt-1 font-light text-foreground-dimmed text-sm">
+          <p className="mt-1 text-foreground-dimmed text-sm">
             Browser-visible AI and referral signals from your ScriptTag tracker.
           </p>
         </div>
-        <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
+        <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
           {summary.total30d}
-          <span className="ml-2 font-light text-foreground-dimmed text-sm">
+          <span className="ml-2 font-medium text-foreground-dimmed text-sm">
             last 30d
           </span>
         </p>
@@ -542,7 +525,7 @@ const AgentTraffic = async () => {
       <AgentVisitsChart data={timeSeries} className="px-4 pb-6" />
 
       {summary.byAgentType.length === 0 ? (
-        <p className="px-4 pb-4 font-light text-foreground-dimmed text-sm">
+        <p className="px-4 pb-4 text-foreground-dimmed text-sm">
           No AI agent visits recorded yet. Traffic appears when shoppers arrive
           via AI referrers or user-agents your tracker recognizes.
         </p>
@@ -551,16 +534,14 @@ const AgentTraffic = async () => {
           {summary.byAgentType.map((entry) => (
             <li key={entry.agentType}>
               <div className="mb-1 flex items-center justify-between gap-4">
-                <span className="font-light text-foreground text-sm">
-                  {entry.label}
-                </span>
-                <span className="shrink-0 font-medium text-foreground text-sm tabular-nums">
+                <span className="text-foreground text-sm">{entry.label}</span>
+                <span className="shrink-0 font-medium text-foreground-rich text-sm tabular-nums">
                   {entry.count}
                 </span>
               </div>
-              <div className="h-1 w-full bg-accent-foreground">
+              <div className="h-1 w-full rounded-full bg-accent-foreground">
                 <div
-                  className="h-full bg-primary"
+                  className="h-full rounded-full bg-primary"
                   style={{
                     width: `${Math.round((entry.count / max) * 100)}%`,
                   }}
@@ -595,10 +576,10 @@ const StatsSkeleton = () => (
       >
         <div className="flex items-center justify-between">
           <div className="h-3 w-28 animate-pulse bg-foreground/10" />
-          <div className="absolute top-5 right-5 size-8 animate-pulse bg-foreground/10" />
+          <div className="absolute top-5 right-5 size-7.5 animate-pulse bg-foreground/10" />
         </div>
         <div>
-          <div className="h-11 w-24 animate-pulse bg-foreground/10" />
+          <div className="h-10 w-24 animate-pulse bg-foreground/10" />
           <div className="mt-3 h-4 w-32 animate-pulse bg-foreground/10" />
         </div>
       </div>
@@ -625,11 +606,11 @@ const ChartSkeleton = () => (
                 <div className="h-3 w-14 animate-pulse bg-foreground/10" />
               </div>
               <div className="flex items-baseline gap-0.5">
-                <div className="h-8 w-10 animate-pulse bg-foreground/10" />
+                <div className="h-9 w-10 animate-pulse bg-foreground/10" />
                 <div className="h-4 w-3 animate-pulse bg-foreground/10" />
               </div>
             </div>
-            <div className="mt-2 h-1 w-full animate-pulse bg-foreground/10" />
+            <div className="mt-2 h-1 w-full animate-pulse rounded-full bg-foreground/10" />
           </div>
         ))}
       </div>
@@ -640,8 +621,8 @@ const ChartSkeleton = () => (
     </div>
     <div className="flex flex-col gap-px bg-accent-foreground">
       <div className="flex-1 bg-background-rich p-4">
-        <div className="h-7 w-40 animate-pulse bg-foreground/10" />
-        <div className="mt-6 h-2 w-full animate-pulse bg-foreground/10" />
+        <div className="h-6 w-40 animate-pulse bg-foreground/10" />
+        <div className="mt-6 h-1 w-full animate-pulse rounded-full bg-foreground/10" />
         <div className="mt-4 grid grid-cols-3 gap-4">
           {(["x", "y", "z"] as const).map((key) => (
             <div key={key} className="space-y-2">
@@ -652,8 +633,8 @@ const ChartSkeleton = () => (
         </div>
       </div>
       <div className="flex-1 bg-background-rich p-4">
-        <div className="h-7 w-40 animate-pulse bg-foreground/10" />
-        <div className="mt-6 h-2 w-full animate-pulse bg-foreground/10" />
+        <div className="h-6 w-40 animate-pulse bg-foreground/10" />
+        <div className="mt-6 h-1 w-full animate-pulse rounded-full bg-foreground/10" />
         <div className="mt-4 grid grid-cols-3 gap-4">
           {(["x", "y", "z"] as const).map((key) => (
             <div key={key} className="space-y-2">
@@ -710,7 +691,7 @@ const TableSkeleton = () => (
               key={key}
               className="border-accent-foreground border-b last:border-b-0"
             >
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <div className="flex items-center gap-3">
                   <div className="size-9 shrink-0 animate-pulse bg-foreground/10" />
                   <div className="space-y-1.5">
@@ -719,34 +700,34 @@ const TableSkeleton = () => (
                   </div>
                 </div>
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <div className="h-4 w-14 animate-pulse bg-foreground/10" />
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <div className="flex items-center gap-2">
-                  <div className="h-1.5 w-12 animate-pulse bg-foreground/10" />
+                  <div className="h-1 w-12 animate-pulse rounded-full bg-foreground/10" />
                   <div className="h-4 w-8 animate-pulse bg-foreground/10" />
                 </div>
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <div className="h-4 w-8 animate-pulse bg-foreground/10" />
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <div className="h-4 w-8 animate-pulse bg-foreground/10" />
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <div className="h-4 w-8 animate-pulse bg-foreground/10" />
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <div className="flex items-center gap-2">
-                  <div className="h-1 w-10 animate-pulse bg-foreground/10" />
+                  <div className="h-1 w-10 animate-pulse rounded-full bg-foreground/10" />
                   <div className="h-4 w-6 animate-pulse bg-foreground/10" />
                 </div>
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <div className="h-3 w-14 animate-pulse bg-foreground/10" />
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <div className="h-4 w-10 animate-pulse bg-foreground/10" />
               </td>
             </tr>
@@ -765,7 +746,7 @@ const TrafficSkeleton = () => (
         <div className="mt-2 h-8 w-64 animate-pulse bg-foreground/10" />
         <div className="mt-1 h-4 w-72 animate-pulse bg-foreground/10" />
       </div>
-      <div className="h-12 w-28 animate-pulse bg-foreground/10" />
+      <div className="h-10 w-28 animate-pulse bg-foreground/10" />
     </div>
     <div className="flex items-center gap-6 px-4">
       {(["a", "b", "c", "d"] as const).map((key) => (
@@ -785,7 +766,7 @@ const TrafficSkeleton = () => (
             <div className="h-4 w-28 animate-pulse bg-foreground/10" />
             <div className="h-4 w-8 animate-pulse bg-foreground/10" />
           </div>
-          <div className="h-1 w-full animate-pulse bg-foreground/10" />
+          <div className="h-1 w-full animate-pulse rounded-full bg-foreground/10" />
         </div>
       ))}
     </div>
@@ -809,12 +790,12 @@ const InsightsSkeleton = () => (
     </div>
     <div className="grid grid-cols-1 gap-px border-accent-foreground border-y bg-accent-foreground sm:grid-cols-[1fr_auto]">
       <div className="bg-background-rich p-6">
-        <div className="size-12 animate-pulse bg-foreground/10" />
+        <div className="size-7.5 animate-pulse bg-foreground/10" />
         <div className="mt-4 h-3 w-16 animate-pulse bg-foreground/10" />
         <div className="mt-2 h-4 w-full animate-pulse bg-foreground/10" />
       </div>
       <div className="flex flex-col items-center justify-center bg-background-rich p-6 sm:min-w-44">
-        <div className="h-11 w-20 animate-pulse bg-foreground/10" />
+        <div className="h-10 w-20 animate-pulse bg-foreground/10" />
         <div className="mt-2 h-4 w-16 animate-pulse bg-foreground/10" />
       </div>
     </div>
@@ -822,7 +803,10 @@ const InsightsSkeleton = () => (
       <div className="h-3 w-32 animate-pulse bg-foreground/10" />
       <div className="flex flex-wrap gap-2">
         {(["a", "b", "c", "d"] as const).map((key) => (
-          <div key={key} className="h-7 w-24 animate-pulse bg-foreground/10" />
+          <div
+            key={key}
+            className="h-5 w-20 animate-pulse rounded bg-foreground/10"
+          />
         ))}
       </div>
     </div>

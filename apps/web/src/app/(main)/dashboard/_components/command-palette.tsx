@@ -77,12 +77,12 @@ export const CommandPalette = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="flex h-auto flex-1 items-center gap-2 border border-accent-foreground bg-background px-3 py-1.5 text-left transition-colors hover:border-primary/40 hover:bg-background">
+      <DialogTrigger className="flex h-9 flex-1 items-center gap-2 rounded-lg border border-accent-foreground bg-background px-3 text-left transition-[border-color,box-shadow] hover:border-primary/40 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-primary/15">
         <SearchIcon className="size-4 shrink-0 text-foreground-dimmed" />
         <span className="font-light text-foreground-dimmed text-sm">
           Search products, competitors...
         </span>
-        <kbd className="ml-auto font-light text-foreground-dimmed text-xs opacity-60">
+        <kbd className="ml-auto rounded border border-accent-foreground bg-background-rich px-1 py-px font-medium text-[10px] text-foreground-dimmed">
           ⌘K
         </kbd>
       </DialogTrigger>

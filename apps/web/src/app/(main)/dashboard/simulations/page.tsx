@@ -1,4 +1,4 @@
-import { cn, resultify, unwrapResult } from "@zenncore/utils";
+import { resultify, unwrapResult } from "@zenncore/utils";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { formatRelativeTime } from "@/lib/date";
@@ -6,7 +6,7 @@ import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
 import * as Scan from "@/server/app/scan";
 import { Environment } from "@/server/utils/environment";
-import { Crosshair, SectionGutter } from "../_components/grid";
+import { Crosshair, SectionGutter, StatusPill } from "../_components/grid";
 import { SimulationsClient } from "./_components/simulations-client";
 
 const progressLabels = [
@@ -30,10 +30,10 @@ export default () => (
             >
               <LastRun />
             </Suspense>
-            <h1 className="mt-3 font-medium text-4xl text-foreground">
+            <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
               Simulations
             </h1>
-            <p className="mt-1 font-light text-foreground-dimmed text-lg">
+            <p className="mt-1 text-foreground-dimmed text-sm">
               Re-run competitor discovery and win-rate simulations anytime.
             </p>
           </div>
@@ -55,14 +55,11 @@ const LastRun = async () => {
   const latestScan = latestScans.success ? (latestScans.data[0] ?? null) : null;
 
   return (
-    <div className="flex items-center gap-2.5 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-      <span
-        className={cn("size-2", latestScan ? "bg-success" : "bg-accent-rich")}
-      />
+    <StatusPill tone={latestScan ? "success" : "neutral"}>
       {latestScan
         ? `Last simulation ${formatRelativeTime(latestScan.createdAt)}`
         : "No simulations run yet"}
-    </div>
+    </StatusPill>
   );
 };
 
@@ -123,7 +120,7 @@ const SimulationsSkeleton = () => (
             >
               <div className="flex items-center justify-between">
                 <div className="h-3 w-28 animate-pulse bg-foreground/10" />
-                <div className="absolute top-5 right-5 size-8 animate-pulse bg-foreground/10" />
+                <div className="absolute top-5 right-5 size-7.5 animate-pulse bg-foreground/10" />
               </div>
               <div>
                 <div className="h-11 w-24 animate-pulse bg-foreground/10" />
@@ -141,7 +138,7 @@ const SimulationsSkeleton = () => (
       <div className="mx-8 bg-background-rich">
         <div className="border-accent-foreground border-b p-4">
           <div className="h-3 w-32 animate-pulse bg-foreground/10" />
-          <div className="mt-2 h-7 w-52 animate-pulse bg-foreground/10" />
+          <div className="mt-2 h-6 w-52 animate-pulse bg-foreground/10" />
           <div className="mt-2 h-4 w-80 animate-pulse bg-foreground/10" />
           <div className="mt-2 h-3.5 w-44 animate-pulse bg-foreground/10" />
         </div>
@@ -156,7 +153,7 @@ const SimulationsSkeleton = () => (
         <div className="flex items-center justify-between border-accent-foreground border-b p-4">
           <div>
             <div className="h-3 w-32 animate-pulse bg-foreground/10" />
-            <div className="mt-2 h-7 w-44 animate-pulse bg-foreground/10" />
+            <div className="mt-2 h-6 w-44 animate-pulse bg-foreground/10" />
             <div className="mt-2 h-4 w-96 animate-pulse bg-foreground/10" />
           </div>
           <div className="flex items-center gap-2">
@@ -168,14 +165,14 @@ const SimulationsSkeleton = () => (
           <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-4">
             {progressLabels.map((label) => (
               <div key={label} className="bg-background-rich p-3">
-                <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+                <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
                   {label}
                 </p>
                 <div className="mt-1 h-5 w-16 animate-pulse bg-foreground/10" />
               </div>
             ))}
           </div>
-          <div className="h-1 w-full bg-accent-foreground" />
+          <div className="h-1.5 w-full rounded-full bg-accent-foreground" />
           <div className="grid grid-cols-2 gap-px bg-accent-foreground sm:grid-cols-4">
             {modelLabels.map((label) => (
               <div key={label} className="bg-background-rich p-3">
@@ -186,7 +183,7 @@ const SimulationsSkeleton = () => (
               </div>
             ))}
           </div>
-          <div className="h-72 border border-accent-foreground bg-background-dimmed p-3">
+          <div className="h-72 rounded-md border border-accent-foreground bg-background-dimmed p-3">
             <div className="h-3.5 w-72 animate-pulse bg-foreground/10" />
           </div>
         </div>

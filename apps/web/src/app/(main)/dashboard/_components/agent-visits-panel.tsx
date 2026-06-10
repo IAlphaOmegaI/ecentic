@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import * as Tracking from "@/server/app/tracking";
 import { Environment } from "@/server/utils/environment";
 import { AgentVisitsChart } from "./agent-visits-chart";
+import { SectionKicker } from "./grid";
 
 export const AgentVisitsPanel = async () => {
   await connection();
@@ -16,21 +17,18 @@ export const AgentVisitsPanel = async () => {
     <div className="bg-background-rich p-4">
       <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="flex items-center gap-2 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-            <span className="size-1.5 bg-primary" />
-            04 — Agent Traffic
-          </p>
-          <p className="mt-2 font-medium text-2xl text-foreground">
+          <SectionKicker>04 — Agent Traffic</SectionKicker>
+          <p className="mt-2 font-semibold text-foreground-rich text-lg">
             Visits by agent (last 30 days)
           </p>
-          <p className="mt-1 font-light text-foreground-dimmed text-sm">
+          <p className="mt-1 text-foreground-dimmed text-sm">
             From your ScriptTag tracker, browser-visible AI and referral signals
             only.
           </p>
         </div>
-        <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
+        <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
           {summary.total30d}
-          <span className="ml-1.5 font-light text-2xl text-foreground-dimmed">
+          <span className="ml-1.5 font-medium text-foreground-dimmed text-xl">
             total
           </span>
         </p>
@@ -39,7 +37,7 @@ export const AgentVisitsPanel = async () => {
       <AgentVisitsChart data={timeSeries} className="mb-6" />
 
       {summary.byAgentType.length === 0 ? (
-        <p className="font-light text-foreground-dimmed text-sm">
+        <p className="text-foreground-dimmed text-sm">
           No AI agent visits recorded yet. Traffic appears when shoppers arrive
           via AI referrers or user-agents your tracker recognizes, or when probe
           mode is enabled.
@@ -49,16 +47,14 @@ export const AgentVisitsPanel = async () => {
           {summary.byAgentType.map((entry) => (
             <li key={entry.agentType}>
               <div className="mb-1 flex items-center justify-between gap-4">
-                <span className="font-light text-foreground text-sm">
-                  {entry.label}
-                </span>
-                <span className="shrink-0 font-medium text-foreground text-sm tabular-nums">
+                <span className="text-foreground text-sm">{entry.label}</span>
+                <span className="shrink-0 font-medium text-foreground-rich text-sm tabular-nums">
                   {entry.count}
                 </span>
               </div>
-              <div className="h-1 w-full bg-accent-foreground">
+              <div className="h-1 w-full rounded-full bg-accent-foreground">
                 <div
-                  className="h-full bg-primary"
+                  className="h-full rounded-full bg-primary"
                   style={{
                     width: `${Math.round((entry.count / max) * 100)}%`,
                   }}

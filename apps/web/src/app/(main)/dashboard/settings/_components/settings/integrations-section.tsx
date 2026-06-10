@@ -49,7 +49,7 @@ export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
     <div className="divide-y divide-accent-foreground">
       <div>
         <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
-          <p className="font-medium text-base text-foreground">
+          <p className="font-semibold text-foreground-rich text-sm">
             Connected Stores
           </p>
         </div>
@@ -72,27 +72,26 @@ export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
                   <div className="flex items-center gap-3">
                     <div
                       className={cn(
-                        "flex size-9 items-center justify-center font-bold text-sm",
+                        "flex size-9 items-center justify-center rounded-md font-bold text-sm",
                         badge.className,
                       )}
                     >
                       {badge.label}
                     </div>
                     <div>
-                      <p className="font-medium text-base text-foreground">
+                      <p className="font-medium text-foreground text-sm">
                         {store.domain}
                       </p>
-                      <p className="font-light text-foreground-dimmed text-sm capitalize">
+                      <p className="mt-0.5 text-foreground-dimmed text-xs capitalize">
                         {store.platform} · {store.name}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="bg-success/10 px-2 py-0.5 font-medium text-sm text-success">
+                    <span className="rounded-full bg-success/10 px-2 py-0.5 font-semibold text-[11px] text-success uppercase tracking-[0.05em]">
                       Connected
                     </span>
                     <Button
-                      variant="outline"
                       color="neutral"
                       disabled={isSyncing}
                       onClick={() => handleSync(store.id)}
@@ -110,7 +109,7 @@ export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
       <div className="p-4">
         <button
           type="button"
-          className="flex items-center gap-2 border border-accent-foreground border-dashed px-4 py-2.5 text-foreground-dimmed text-sm transition-colors hover:border-primary hover:text-primary"
+          className="flex items-center gap-2 rounded-md border border-accent-foreground border-dashed px-4 py-2.5 text-foreground-dimmed text-sm transition-colors duration-150 hover:border-primary hover:text-primary"
         >
           <PlusIcon className="size-4" />
           Connect another store

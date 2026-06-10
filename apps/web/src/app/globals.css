@@ -2,7 +2,7 @@
 @import "@zenncore/web/config/tailwind";
 
 @theme inline {
-  --font-body: var(--font-ltsuperior);
+  --font-body: var(--font-redhat-display);
 }
 
 html {
@@ -19,4 +19,17 @@ html {
     transparent 50%
   );
   background-size: 8px 8px;
+}
+
+button,
+a,
+[role="tab"],
+[role="menuitem"] {
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-duration: 150ms;
+  transition-timing-function: ease;
+}
+
+tr {
+  transition: background-color 100ms ease;
 }

@@ -17,25 +17,29 @@ import {
 import Image from "next/image";
 import { usePaginationChangeHandler } from "@/hooks/pagination";
 import { formatRelativeTime } from "@/lib/date";
+import { SectionKicker } from "./grid";
 
 const WinRateBar = ({ rate }: { rate: number }) => {
-  const color = (() => {
+  const { bar, text } = (() => {
     switch (true) {
       case rate >= 60:
-        return "bg-success";
+        return { bar: "bg-success", text: "text-success" };
       case rate >= 30:
-        return "bg-warning";
+        return { bar: "bg-warning", text: "text-warning" };
       default:
-        return "bg-error";
+        return { bar: "bg-error", text: "text-error" };
     }
   })();
 
   return (
     <div className="flex items-center gap-2">
-      <div className="h-1 w-24 bg-accent-foreground">
-        <div className={cn("h-full", color)} style={{ width: `${rate}%` }} />
+      <div className="h-1 w-24 rounded-full bg-accent-foreground">
+        <div
+          className={cn("h-full rounded-full", bar)}
+          style={{ width: `${rate}%` }}
+        />
       </div>
-      <span className="text-foreground">{rate}%</span>
+      <span className={cn("font-medium tabular-nums", text)}>{rate}%</span>
     </div>
   );
 };
@@ -46,7 +50,7 @@ const columns: ColumnDef<CompetitorsTable.Row>[] = [
     header: "Brand",
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
-        <Avatar className="size-9 rounded-none bg-primary/10">
+        <Avatar className="size-9 rounded-md bg-background-dimmed">
           <AvatarImage
             src={row.original.image ?? "/images/fallback.png"}
             alt={row.original.brand}
@@ -56,8 +60,10 @@ const columns: ColumnDef<CompetitorsTable.Row>[] = [
           </AvatarFallback>
         </Avatar>
         <div>
-          <p className="font-medium text-foreground">{row.original.brand}</p>
-          <p className="font-light text-foreground-dimmed text-sm">
+          <p className="font-medium text-foreground-rich">
+            {row.original.brand}
+          </p>
+          <p className="text-foreground-dimmed text-sm">
             {row.original.products}{" "}
             {row.original.products === 1 ? "product" : "products"}
           </p>
@@ -74,14 +80,16 @@ const columns: ColumnDef<CompetitorsTable.Row>[] = [
     accessorKey: "simulations",
     header: "Simulations",
     cell: ({ row }) => (
-      <span className="text-foreground-dimmed">{row.original.simulations}</span>
+      <span className="text-foreground-dimmed tabular-nums">
+        {row.original.simulations}
+      </span>
     ),
   },
   {
     accessorKey: "updatedAt",
     header: "Last Updated",
     cell: ({ row }) => (
-      <span className="font-light text-foreground-dimmed">
+      <span className="text-foreground-dimmed">
         {formatRelativeTime(new Date(row.original.updatedAt))}
       </span>
     ),
@@ -91,7 +99,7 @@ const columns: ColumnDef<CompetitorsTable.Row>[] = [
   //   header: undefined,
   //   cell: ({ row }) => (
   //     <Button
-  //       variant="flat"
+  //
   //       color="primary"
   //       size="icon"
   //       render={<Link href={`/dashboard/competitors/${row.original._id}`} />}
@@ -117,12 +125,11 @@ export const CompetitorsTable = ({
       <div className="flex items-end justify-between border-accent-foreground border-b p-4">
         <div>
           {kicker && (
-            <p className="mb-2 flex items-center gap-2 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-              <span className="size-1.5 bg-primary" />
-              {kicker}
-            </p>
+            <div className="mb-2">
+              <SectionKicker>{kicker}</SectionKicker>
+            </div>
           )}
-          <p className="font-medium text-2xl text-foreground">{title}</p>
+          <p className="font-semibold text-foreground-rich text-lg">{title}</p>
         </div>
         {action}
       </div>
@@ -142,7 +149,7 @@ export const CompetitorsTable = ({
                 <p className="font-medium text-2xl text-foreground">
                   No competitors tracked yet
                 </p>
-                <p className="mt-1 font-light text-foreground-dimmed text-lg">
+                <p className="mt-1 text-foreground-dimmed text-lg">
                   Add competitors to start analyzing your competitive landscape.
                 </p>
               </div>

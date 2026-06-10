@@ -19,6 +19,7 @@ import {
   type StoreDiscovery,
 } from "@/server/app/intelligence/product-comparison";
 import type { productSchema } from "@/server/app/intelligence/ucp-advanced-validator";
+import { StatusPill } from "../../_components/grid";
 
 type ComparisonLine =
   | { kind: "search_params"; params: unknown }
@@ -76,20 +77,20 @@ const flushText = (
 const StoreCard = ({ store }: { store: StoreState }) => (
   <div
     className={cn(
-      "border bg-background",
+      "rounded-lg border bg-background-rich",
       store.role === "source"
         ? "border-primary/40"
         : "border-accent-foreground",
     )}
   >
-    <div className="border-accent-foreground border-b px-4 py-2.5">
-      <div className="flex flex-wrap items-center gap-2">
+    <div className="border-accent-foreground border-b px-4 py-3">
+      <div className="flex flex-wrap items-center gap-3">
         <span
           className={cn(
-            "px-1.5 py-0.5 font-medium text-xs",
+            "rounded-full px-2 py-0.5 font-semibold text-[11px] uppercase tracking-[0.05em]",
             store.role === "source"
-              ? "bg-primary/15 text-primary"
-              : "bg-accent-foreground/10 text-foreground-dimmed",
+              ? "bg-primary/10 text-primary"
+              : "bg-background-dimmed text-foreground-dimmed",
           )}
         >
           {store.role === "source" ? "Your store" : "Competitor"}
@@ -100,31 +101,35 @@ const StoreCard = ({ store }: { store: StoreState }) => (
         {store.discovery && (
           <span
             className={cn(
-              "px-1.5 py-0.5 font-mono text-xs uppercase",
+              "rounded-full px-2 py-0.5 font-semibold text-[11px] uppercase tracking-[0.05em]",
               store.discovery.transport === "mcp"
-                ? "bg-primary/15 text-primary"
-                : "bg-warning/15 text-warning",
+                ? "bg-primary/10 text-primary"
+                : "bg-warning/10 text-warning",
             )}
           >
             {store.discovery.transport}
           </span>
         )}
-        <span
-          className={cn(
-            "px-1.5 py-0.5 font-medium text-xs",
-            store.status === "done" && "bg-success/10 text-success",
-            store.status === "error" && "bg-error/10 text-error",
-            (store.status === "discovering" || store.status === "searching") &&
-              "bg-primary/10 text-primary",
-            store.status === "idle" &&
-              "bg-accent-foreground/10 text-foreground-dimmed",
-          )}
+        <StatusPill
+          tone={(() => {
+            switch (true) {
+              case store.status === "done":
+                return "success";
+              case store.status === "error":
+                return "error";
+              case store.status === "discovering" ||
+                store.status === "searching":
+                return "primary";
+              default:
+                return "neutral";
+            }
+          })()}
         >
           {store.status}
-        </span>
+        </StatusPill>
       </div>
       {store.discovery?.endpoint && (
-        <p className="mt-1 font-mono text-foreground-dimmed/70 text-xs">
+        <p className="mt-1 font-mono text-foreground-dimmed text-xs">
           {store.discovery.endpoint}
         </p>
       )}
@@ -223,7 +228,8 @@ export const ComparisonClient = () => {
   const validCompetitorCount = competitorInputs.filter((input) =>
     input.url.trim(),
   ).length;
-  const canCompare = sourceStoreUrl.trim().length > 0 && validCompetitorCount >= 1;
+  const canCompare =
+    sourceStoreUrl.trim().length > 0 && validCompetitorCount >= 1;
 
   const [handleRun, isRunning] = useAsyncAction(async () => {
     const source = sourceStoreUrl.trim();
@@ -293,8 +299,9 @@ export const ComparisonClient = () => {
           break;
         }
         case "store_result": {
-          const products = (event.result ??
-            []) as z.infer<typeof productSchema>[];
+          const products = (event.result ?? []) as z.infer<
+            typeof productSchema
+          >[];
           setStores((previous) =>
             previous.map((store) =>
               store.url === event.storeUrl
@@ -370,14 +377,18 @@ export const ComparisonClient = () => {
     .join("");
 
   const sourceStore = stores.find((store) => store.role === "source");
-  const competitorStores = stores.filter((store) => store.role === "competitor");
+  const competitorStores = stores.filter(
+    (store) => store.role === "competitor",
+  );
 
   return (
     <div className="space-y-4">
-      <div className="border border-accent-foreground bg-background">
-        <div className="border-accent-foreground border-b px-4 py-2.5">
-          <p className="font-medium text-base text-foreground">Your store</p>
-          <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
+      <div className="rounded-lg border border-accent-foreground bg-background-rich">
+        <div className="border-accent-foreground border-b px-4 py-3">
+          <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+            Your store
+          </p>
+          <p className="mt-1.5 text-foreground-dimmed text-sm">
             The merchant catalog you want to evaluate against competitors.
           </p>
         </div>
@@ -385,7 +396,7 @@ export const ComparisonClient = () => {
           <TextField
             value={sourceStoreUrl}
             onValueChange={setSourceStoreUrl}
-            className="h-8 border border-primary/30 bg-background-dimmed"
+            className="h-9 border-primary/30 bg-background-dimmed"
           >
             <TextFieldInput
               placeholder="https://your-store.example.com"
@@ -395,12 +406,12 @@ export const ComparisonClient = () => {
         </div>
       </div>
 
-      <div className="border border-accent-foreground bg-background">
-        <div className="border-accent-foreground border-b px-4 py-2.5">
-          <p className="font-medium text-base text-foreground">
+      <div className="rounded-lg border border-accent-foreground bg-background-rich">
+        <div className="border-accent-foreground border-b px-4 py-3">
+          <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
             Competitor stores
           </p>
-          <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
+          <p className="mt-1.5 text-foreground-dimmed text-sm">
             Add one or more competitor domains. Each{" "}
             <span className="font-mono">/.well-known/ucp</span> profile is
             resolved, then <span className="font-mono">search_catalog</span>{" "}
@@ -425,7 +436,6 @@ export const ComparisonClient = () => {
                 />
               </TextField>
               <Button
-                variant="soft"
                 color="neutral"
                 onClick={() => removeCompetitor(input.id)}
                 disabled={competitorInputs.length <= 1 || isRunning}
@@ -438,7 +448,6 @@ export const ComparisonClient = () => {
 
           <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center">
             <Button
-              variant="soft"
               color="neutral"
               onClick={addCompetitor}
               disabled={isRunning || competitorInputs.length >= 5}
@@ -460,7 +469,6 @@ export const ComparisonClient = () => {
             </TextField>
 
             <Button
-              variant="flat"
               color="primary"
               onClick={handleRun}
               disabled={isRunning || !canCompare}
@@ -480,16 +488,16 @@ export const ComparisonClient = () => {
       </div>
 
       {searchParams !== null && (
-        <div className="border border-accent-foreground bg-background">
-          <div className="border-accent-foreground border-b px-4 py-2.5">
-            <p className="font-medium text-base text-foreground">
-              Derived search parameters
+        <div className="rounded-lg border border-accent-foreground bg-background-rich">
+          <div className="border-accent-foreground border-b px-4 py-3">
+            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+              Derived Search Parameters
             </p>
-            <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
+            <p className="mt-1.5 text-foreground-dimmed text-sm">
               Parsed once from the buyer request and applied to every store.
             </p>
           </div>
-          <pre className="overflow-auto p-4 font-mono text-foreground/80 text-xs leading-relaxed">
+          <pre className="m-4 overflow-auto rounded-md bg-background-dimmed p-4 font-mono text-foreground text-xs leading-relaxed">
             {JSON.stringify(searchParams, null, 2)}
           </pre>
         </div>
@@ -499,7 +507,7 @@ export const ComparisonClient = () => {
         <div className="space-y-4">
           {sourceStore && (
             <div>
-              <p className="mb-2 font-medium text-foreground text-sm">
+              <p className="mb-2 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
                 Your store results
               </p>
               <StoreCard store={sourceStore} />
@@ -507,7 +515,7 @@ export const ComparisonClient = () => {
           )}
           {competitorStores.length > 0 && (
             <div>
-              <p className="mb-2 font-medium text-foreground text-sm">
+              <p className="mb-2 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
                 Competitor results
               </p>
               <div className="grid gap-4 lg:grid-cols-2">
@@ -521,20 +529,18 @@ export const ComparisonClient = () => {
       )}
 
       {(summaryText || phase === "running") && (
-        <div className="border border-accent-foreground bg-background">
-          <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-2.5">
-            <div className="flex items-center gap-2">
-              <p className="font-medium text-base text-foreground">
-                Comparison summary
+        <div className="rounded-lg border border-accent-foreground bg-background-rich">
+          <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
+            <div className="flex items-center gap-3">
+              <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+                Comparison Summary
               </p>
               {phase === "running" && !summaryText && (
-                <span className="bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs">
-                  generating
-                </span>
+                <StatusPill tone="primary">Generating</StatusPill>
               )}
             </div>
           </div>
-          <div className="p-4 font-mono text-foreground/80 text-sm leading-relaxed">
+          <div className="m-4 rounded-md bg-background-dimmed p-4 font-mono text-foreground text-xs leading-relaxed">
             {summaryText || (
               <span className="inline-block h-3 w-1.5 animate-pulse bg-primary/60" />
             )}
@@ -542,25 +548,17 @@ export const ComparisonClient = () => {
         </div>
       )}
 
-      <div className="border border-accent-foreground bg-background">
-        <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-2.5">
-          <div className="flex items-center gap-2">
-            <p className="font-medium text-base text-foreground">Event log</p>
+      <div className="rounded-lg border border-accent-foreground bg-background-rich">
+        <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
+          <div className="flex items-center gap-3">
+            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+              Event Log
+            </p>
             {phase === "running" && (
-              <span className="bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs">
-                live
-              </span>
+              <StatusPill tone="primary">Live</StatusPill>
             )}
-            {phase === "done" && (
-              <span className="bg-success/10 px-2 py-0.5 font-medium text-success text-xs">
-                done
-              </span>
-            )}
-            {phase === "error" && (
-              <span className="bg-error/10 px-2 py-0.5 font-medium text-error text-xs">
-                error
-              </span>
-            )}
+            {phase === "done" && <StatusPill tone="success">Done</StatusPill>}
+            {phase === "error" && <StatusPill tone="error">Error</StatusPill>}
           </div>
           {lines.length > 0 && (
             <button
@@ -580,7 +578,7 @@ export const ComparisonClient = () => {
 
         <div
           ref={logRef}
-          className="max-h-80 min-h-32 overflow-y-auto p-4 font-mono"
+          className="m-4 max-h-80 min-h-40 overflow-y-auto rounded-md bg-background-dimmed p-4 font-mono text-xs"
         >
           {lines.length === 0 ? (
             <p className="font-light text-foreground-dimmed/50 text-xs">
@@ -619,7 +617,7 @@ export const ComparisonClient = () => {
                 switch (line.kind) {
                   case "search_params":
                     return (
-                      <p key={lineKey} className="text-blue-400">
+                      <p key={lineKey} className="text-info">
                         search params → {summarise(line.params)}
                       </p>
                     );

@@ -14,24 +14,26 @@ import { z } from "zod";
 import * as Authentication from "@/server/app/authentication";
 import * as User from "@/server/app/user";
 
+const labelClassName = "font-medium text-[13px] text-foreground";
+
 const profile = {
   name: field({
     shape: "text",
     validator: z.string().min(1, "Required"),
     label: "First Name",
-    classList: { field: "col-span-1" },
+    classList: { field: "col-span-1", label: labelClassName },
   }),
   surname: field({
     shape: "text",
     validator: z.string().min(1, "Required"),
     label: "Last Name",
-    classList: { field: "col-span-1" },
+    classList: { field: "col-span-1", label: labelClassName },
   }),
   email: field({
     shape: "text",
     validator: z.string().email("Invalid email"),
     label: "Email",
-    classList: { field: "col-span-2" },
+    classList: { field: "col-span-2", label: labelClassName },
   }),
   role: field({
     shape: "select",
@@ -45,7 +47,7 @@ const profile = {
       "Other",
     ]),
     label: "Role",
-    classList: { field: "col-span-2" },
+    classList: { field: "col-span-2", label: labelClassName },
   }),
 } satisfies GenericForm;
 
@@ -55,18 +57,21 @@ const password = {
     type: "password",
     validator: z.string().min(1, "Required"),
     label: "Current Password",
+    classList: { label: labelClassName },
   }),
   newPassword: field({
     shape: "text",
     type: "password",
     validator: z.string().min(8, "Minimum 8 characters"),
     label: "New Password",
+    classList: { label: labelClassName },
   }),
   confirmPassword: field({
     shape: "text",
     type: "password",
     validator: z.string().min(8, "Minimum 8 characters"),
     label: "Confirm New Password",
+    classList: { label: labelClassName },
   }),
 } satisfies GenericForm;
 
@@ -120,8 +125,10 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
     <div className="divide-y divide-accent-foreground">
       <div className="px-8">
         <div className="border-accent-foreground border-x p-4">
-          <h3 className="font-medium text-2xl text-foreground">Profile</h3>
-          <p className="font-light text-foreground-dimmed text-lg">
+          <h3 className="font-semibold text-base text-foreground-rich">
+            Profile
+          </h3>
+          <p className="mt-1 text-foreground-dimmed text-sm">
             Update your profile information.
           </p>
         </div>
@@ -142,7 +149,6 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
               <div className="flex justify-end p-4 pb-0">
                 <Button
                   type="submit"
-                  variant="flat"
                   color="primary"
                   disabled={isProfilePending}
                 >
@@ -161,10 +167,10 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
 
       <div className="px-8">
         <div className="border-accent-foreground border-x p-4">
-          <h3 className="font-medium text-2xl text-foreground">
+          <h3 className="font-semibold text-base text-foreground-rich">
             Change Password
           </h3>
-          <p className="font-light text-foreground-dimmed text-lg">
+          <p className="mt-1 text-foreground-dimmed text-sm">
             Use a strong password you do not reuse on other sites.
           </p>
         </div>
@@ -178,7 +184,6 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
               <div className="flex justify-end p-4 pb-0">
                 <Button
                   type="submit"
-                  variant="flat"
                   color="primary"
                   disabled={isPasswordPending}
                 >
@@ -197,8 +202,8 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
 
       <div className="px-8">
         <div className="border-accent-foreground border-x p-4">
-          <h3 className="font-medium text-2xl text-error">Danger Zone</h3>
-          <p className="font-light text-foreground-dimmed text-lg">
+          <h3 className="font-semibold text-base text-error">Danger Zone</h3>
+          <p className="mt-1 text-foreground-dimmed text-sm">
             Permanently delete your account and all associated data. This action
             cannot be undone.
           </p>
@@ -206,10 +211,18 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
         <div className="-mx-8 border-accent-foreground border-t px-8">
           <div className="border-accent-foreground border-x">
             <div className="-mx-8 px-8">
-              <div className="flex justify-end p-4">
-                <Button variant="flat" color="error">
-                  Delete Account
-                </Button>
+              <div className="p-4">
+                <div className="flex items-center justify-between gap-4 rounded-lg border border-error/20 bg-error/5 p-4">
+                  <p className="font-medium text-[13px] text-foreground">
+                    Delete this account and all of its data.
+                  </p>
+                  <Button
+                    color="error"
+                    className="rounded-md border-[1.5px] border-error bg-background-rich text-error hover:bg-error/5"
+                  >
+                    Delete Account
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

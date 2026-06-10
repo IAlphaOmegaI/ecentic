@@ -75,7 +75,7 @@ export const NotificationsSection = ({
   return (
     <div>
       <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
-        <p className="font-medium text-base text-foreground">
+        <p className="font-semibold text-foreground-rich text-sm">
           Email Notifications
         </p>
       </div>
@@ -86,8 +86,8 @@ export const NotificationsSection = ({
             className="flex items-center justify-between px-4 py-4"
           >
             <div>
-              <p className="font-medium text-base text-foreground">{label}</p>
-              <p className="mt-0.5 font-light text-foreground-dimmed text-sm">
+              <p className="font-medium text-[13px] text-foreground">{label}</p>
+              <p className="mt-0.5 text-foreground-dimmed text-xs">
                 {description}
               </p>
             </div>

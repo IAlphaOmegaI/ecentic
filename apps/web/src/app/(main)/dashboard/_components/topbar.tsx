@@ -12,7 +12,7 @@ export const Topbar = async () => {
     unwrapResult(Authentication.getCurrentUser(Environment.SERVER)),
     unwrapResult(Product.skimForCurrentUser(Environment.SERVER)),
     unwrapResult(Competitor.skimForCurrentUser(Environment.SERVER)),
-    unwrapResult(Subscription.getCurrentSubscription()),
+    unwrapResult(Subscription.getCurrentSubscription(Environment.SERVER)),
   ]);
 
   return (
@@ -32,19 +32,19 @@ export const Topbar = async () => {
         </Link> */}
 
         <p
-          className={`font-medium text-primary text-xs uppercase tracking-[0.2em] ${subscription?.plan && "capitalize"}`}
+          className={`rounded-md border-[1.5px] border-primary px-3 py-1 font-semibold text-[13px] text-primary ${subscription?.plan && "capitalize"}`}
         >
           {subscription?.plan ?? "No plan"}
         </p>
 
         <button
           type="button"
-          className="flex items-center gap-2 transition-opacity hover:opacity-80"
+          className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
         >
-          <div className="flex size-7 items-center justify-center bg-primary font-medium text-sm text-white">
+          <div className="flex size-8 items-center justify-center rounded-full bg-primary font-bold text-sm text-white">
             {user.name.charAt(0)}
           </div>
-          <span className="hidden font-medium text-foreground text-sm md:block">
+          <span className="hidden font-medium text-base text-foreground md:block">
             {user.name} {user.surname}
           </span>
         </button>

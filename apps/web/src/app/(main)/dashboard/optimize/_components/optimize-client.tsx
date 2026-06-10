@@ -9,7 +9,6 @@ import {
   TrendUpIcon,
   XIcon,
 } from "@zenncore/icons";
-import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import {
@@ -32,6 +31,8 @@ import {
   SectionGutter,
   SectionKicker,
   StatLabel,
+  StatusPill,
+  WinRateBadge,
 } from "../../_components/grid";
 
 const CATEGORY_LABELS = {
@@ -41,9 +42,17 @@ const CATEGORY_LABELS = {
   platform: "Platform",
 } as const;
 
+const TYPE_TAG_CLASSES =
+  "rounded bg-background-dimmed px-1.5 py-0.5 font-semibold text-[10px] text-foreground-dimmed uppercase tracking-[0.06em]";
+
+const SUGGESTION_CARD_CLASSES =
+  "rounded-lg border border-accent-foreground bg-background-rich p-4 transition-[border-color,box-shadow] hover:border-primary/30 hover:shadow-sm";
+
 const SEVERITY_CLASSES = {
-  high: "font-medium text-error text-xs uppercase tracking-[0.2em]",
-  medium: "font-medium text-warning text-xs uppercase tracking-[0.2em]",
+  high: "rounded bg-error/10 px-1.5 py-0.5 font-semibold text-[10px] text-error uppercase tracking-[0.06em]",
+  medium:
+    "rounded bg-warning/10 px-1.5 py-0.5 font-semibold text-[10px] text-warning uppercase tracking-[0.06em]",
+  low: "rounded bg-success/10 px-1.5 py-0.5 font-semibold text-[10px] text-success uppercase tracking-[0.06em]",
 } as const;
 
 const formatPublished = (date: string | Date | null) => {
@@ -62,7 +71,7 @@ const StatCard = ({
 }) => (
   <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
     <StatLabel label={label} icon={icon} />
-    <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
+    <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
       {value}
     </p>
   </div>
@@ -76,9 +85,9 @@ const EmptyState = ({
   description?: string;
 }) => (
   <div className="bg-background-rich py-12 text-center">
-    <p className="font-medium text-base text-foreground">{title}</p>
+    <p className="font-medium text-base text-foreground-rich">{title}</p>
     {description && (
-      <p className="mt-1 font-light text-foreground-dimmed text-xs">
+      <p className="mx-auto mt-1 max-w-xl text-foreground-dimmed text-xs">
         {description}
       </p>
     )}
@@ -93,20 +102,18 @@ const InsightCard = ({
   productTitle: string;
 }) => (
   <div className="bg-background-rich p-5 transition-colors hover:bg-background">
-    <div className="mb-1 flex flex-wrap items-center gap-3">
-      <p className="font-medium text-foreground">{productTitle}</p>
-      <span className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+    <div className="mb-1 flex flex-wrap items-center gap-2">
+      <p className="font-medium text-foreground-rich">{productTitle}</p>
+      <span className={TYPE_TAG_CLASSES}>
         {CATEGORY_LABELS[insight.category]}
       </span>
       <span className={SEVERITY_CLASSES[insight.severity]}>
         {insight.severity.toUpperCase()}
       </span>
-      <span className="font-light text-foreground-dimmed text-xs">
-        {insight.winRate}% win rate
-      </span>
+      <WinRateBadge rate={insight.winRate} />
     </div>
-    <p className="font-light text-foreground-dimmed">{insight.message}</p>
-    <p className="mt-2 text-foreground">{insight.recommendation}</p>
+    <p className="text-foreground-dimmed text-sm">{insight.message}</p>
+    <p className="mt-2 text-foreground text-sm">{insight.recommendation}</p>
   </div>
 );
 
@@ -125,40 +132,37 @@ const PendingCard = ({
   onApprove: (productId: string) => void;
   onDismiss: (productId: string) => void;
 }) => (
-  <div className="bg-background-rich p-5 transition-colors hover:bg-background">
+  <div className={SUGGESTION_CARD_CLASSES}>
     <div className="flex items-start justify-between gap-4">
       <div>
-        <div className="flex flex-wrap items-center gap-3">
-          <p className="font-medium text-base text-foreground">
+        <div className="flex flex-wrap items-center gap-2">
+          <p className="font-medium text-base text-foreground-rich">
             {item.product.title}
           </p>
-          <span className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-            Title + Description
+          <span className={TYPE_TAG_CLASSES}>Title + Description</span>
+        </div>
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 font-semibold text-[11px] text-success">
+            <TrendUpIcon className="size-3.5" />+{item.estimatedLift}% est. lift
+          </span>
+          <WinRateBadge rate={item.winRate} />
+          <span className="text-foreground-dimmed text-xs">
+            Models: {item.models.join(", ")}
           </span>
         </div>
-        <div className="mt-2 flex flex-wrap items-center gap-3">
-          <span className="flex items-center gap-1.5 text-sm text-success">
-            <TrendUpIcon className="size-6" />+{item.estimatedLift}% est. lift
-          </span>
-          <span className="font-light text-foreground-dimmed text-xs">
-            Win rate: {item.winRate}% · Models: {item.models.join(", ")}
-          </span>
-        </div>
-        <p className="mt-2 font-light text-foreground-dimmed text-xs">
+        <p className="mt-2 text-foreground-dimmed text-xs">
           Approve generates an improved listing with AI, then publishes to your
           store (Shopify or WooCommerce).
         </p>
       </div>
       <div className="flex shrink-0 flex-wrap items-center gap-2">
         <Button
-          variant="outline"
           color="accent"
           render={<Link href={`/dashboard/products/${item.product.id}`} />}
         >
           Preview
         </Button>
         <Button
-          variant="flat"
           color="primary"
           disabled={busy}
           onClick={() => onApprove(item.product.id)}
@@ -171,14 +175,15 @@ const PendingCard = ({
           Approve
         </Button>
         <Button
-          variant="outline"
-          color="accent"
+          variant="ghost"
+          color="neutral"
           size="icon"
+          className="text-foreground-dimmed hover:text-error"
           disabled={busy}
           onClick={() => onDismiss(item.product.id)}
           aria-label="Dismiss"
         >
-          <XIcon className="size-6" />
+          <XIcon className="size-4" />
         </Button>
       </div>
     </div>
@@ -192,17 +197,19 @@ const PublishedCard = ({
   record: Type;
   productTitle: string;
 }) => (
-  <div className="bg-background-rich p-5 transition-colors hover:bg-background">
+  <div className={SUGGESTION_CARD_CLASSES}>
     <div className="flex items-start justify-between">
       <div>
-        <p className="font-medium text-base text-foreground">{productTitle}</p>
+        <p className="font-medium text-base text-foreground-rich">
+          {productTitle}
+        </p>
         <div className="mt-1 flex flex-wrap items-center gap-3">
-          <span className="font-light text-foreground-dimmed text-xs">
+          <span className="text-foreground-dimmed text-xs">
             {formatPublished(record.publishedAt)}
           </span>
         </div>
         {record.winRateBefore !== null && record.winRateAfter !== null && (
-          <p className="mt-1 font-light text-foreground-dimmed text-xs">
+          <p className="mt-1 text-foreground-dimmed text-xs">
             Est. win rate: {record.winRateBefore}% →{" "}
             <span className="font-medium text-foreground">
               {record.winRateAfter}%
@@ -211,8 +218,7 @@ const PublishedCard = ({
         )}
       </div>
       <Button
-        variant="outline"
-        color="accent"
+        color="primary"
         className="px-2.5 py-1 text-xs"
         render={<Link href={`/dashboard/products/${record.productId}`} />}
       >
@@ -235,12 +241,13 @@ const DismissedCard = ({
   busyProductId: string | null;
   onReconsider: (productId: string) => void;
 }) => (
-  <div className="bg-background-rich p-5 opacity-80 transition-colors hover:bg-background">
+  <div className={`${SUGGESTION_CARD_CLASSES} opacity-80`}>
     <div className="flex items-center justify-between gap-4">
-      <p className="font-medium text-base text-foreground">{productTitle}</p>
+      <p className="font-medium text-base text-foreground-rich">
+        {productTitle}
+      </p>
       <Button
-        variant="outline"
-        color="accent"
+        color="primary"
         className="px-2.5 py-1 text-xs"
         disabled={busy}
         onClick={() => onReconsider(record.productId)}
@@ -265,10 +272,10 @@ const DiagnosticsPanel = ({
   <div>
     <div className="border-accent-foreground border-b p-4">
       <SectionKicker>01 — Diagnostics</SectionKicker>
-      <p className="mt-2 font-medium text-2xl text-foreground">
+      <p className="mt-2 font-semibold text-foreground-rich text-lg">
         Diagnostics for low win rate
       </p>
-      <p className="mt-1 font-light text-foreground-dimmed text-lg">
+      <p className="mt-1 text-foreground-dimmed text-sm">
         These recommendations cover SEO/data-quality/platform issues in addition
         to listing text optimizations.
       </p>
@@ -421,27 +428,20 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
       <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <div className="flex items-center gap-2.5 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-              <span
-                className={cn(
-                  "size-2",
-                  pending.length > 0 ? "bg-success" : "bg-accent-rich",
-                )}
-              />
+            <StatusPill tone={pending.length > 0 ? "success" : "neutral"}>
               {pending.length} pending suggestion
               {pending.length === 1 ? "" : "s"}
-            </div>
-            <h1 className="mt-3 font-medium text-4xl text-foreground">
+            </StatusPill>
+            <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
               Optimization Center
             </h1>
-            <p className="mt-1 font-light text-foreground-dimmed text-lg">
+            <p className="mt-1 text-foreground-dimmed text-sm">
               Approve AI-improved listings and push them straight to your store.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             {primaryShopifyStore && (
               <Button
-                variant="flat"
                 color="primary"
                 disabled={isOptimizingStore || busy}
                 onClick={handleOptimizeStore}
@@ -455,7 +455,6 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
               </Button>
             )}
             <Button
-              variant="outline"
               color="primary"
               disabled={
                 pending.length === 0 || isApprovingAll || selected !== null
@@ -481,17 +480,17 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
             <StatCard
               label="Low win-rate products"
               value={diagnostics.lowWinRateCount}
-              icon={<TrendDownIcon className="size-8 shrink-0 text-error" />}
+              icon={<TrendDownIcon className="size-7.5 text-error" />}
             />
             <StatCard
               label="Auto-publish eligible"
               value={diagnostics.publishableCount}
-              icon={<CircleBoltIcon className="size-8 shrink-0 text-success" />}
+              icon={<CircleBoltIcon className="size-7.5 text-success" />}
             />
             <StatCard
               label="Manual-fix only"
               value={diagnostics.nonPublishableCount}
-              icon={<HammerIcon className="size-8 shrink-0 text-warning" />}
+              icon={<HammerIcon className="size-7.5 text-warning" />}
             />
           </div>
         </div>
@@ -518,7 +517,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
         <div className="mx-8 bg-background-rich">
           <div className="border-accent-foreground border-b p-4">
             <SectionKicker>{queueKicker} — Optimization Queue</SectionKicker>
-            <p className="mt-2 font-medium text-2xl text-foreground">
+            <p className="mt-2 font-semibold text-foreground-rich text-lg">
               Listing Suggestions
             </p>
           </div>
@@ -528,7 +527,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
               <TabsIndicator className="h-full" />
               <Tab value="pending" className="flex-1">
                 Pending{" "}
-                <span className="ml-1 text-xs tabular-nums">
+                <span className="ml-1.5 bg-current/15 px-1.5 py-0.5 font-medium text-sm tabular-nums">
                   {pending.length}
                 </span>
               </Tab>
@@ -547,7 +546,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
                   description="Products from Shopify or WooCommerce with simulation win rate under 55% appear here. Run a scan, then approve to push AI-improved titles and descriptions to your store."
                 />
               ) : (
-                <div className="space-y-px border-accent-foreground border-t bg-accent-foreground">
+                <div className="flex flex-col gap-3 border-accent-foreground border-t p-4">
                   {pending.map((item) => (
                     <PendingCard
                       key={item.product.id}
@@ -570,7 +569,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
                   description="Approved changes are recorded here with estimated win-rate impact."
                 />
               ) : (
-                <div className="space-y-px border-accent-foreground border-t bg-accent-foreground">
+                <div className="flex flex-col gap-3 border-accent-foreground border-t p-4">
                   {published.map((record) => (
                     <PublishedCard
                       key={record.id}
@@ -588,7 +587,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
               {dismissed.length === 0 ? (
                 <EmptyState title="Nothing dismissed" />
               ) : (
-                <div className="space-y-px border-accent-foreground border-t bg-accent-foreground">
+                <div className="flex flex-col gap-3 border-accent-foreground border-t p-4">
                   {dismissed.map((record) => (
                     <DismissedCard
                       key={record.id}

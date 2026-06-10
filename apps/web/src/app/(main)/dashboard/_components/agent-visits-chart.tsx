@@ -73,7 +73,7 @@ export const AgentVisitsChart = ({
               height={16}
               className="size-4"
             />
-            <span className="font-light text-foreground-dimmed text-sm">
+            <span className="text-foreground-dimmed text-sm">
               {model.label}
             </span>
           </div>
@@ -135,8 +135,8 @@ export const AgentVisitsChart = ({
                 if (!active || !payload || payload.length === 0) return null;
 
                 return (
-                  <div className="border border-accent-foreground bg-background-rich px-3 py-2 shadow-sm">
-                    <p className="mb-1.5 font-light text-foreground-dimmed text-xs">
+                  <div className="rounded-md border border-accent-foreground bg-background-rich px-3 py-2 shadow-md">
+                    <p className="mb-1.5 text-foreground-dimmed text-xs">
                       {formatDate(String(label))}
                     </p>
                     {MODELS.map((model) => {
@@ -159,11 +159,11 @@ export const AgentVisitsChart = ({
                               height={20}
                               className="size-5"
                             />
-                            <span className="font-light text-foreground text-sm">
+                            <span className="text-foreground text-sm">
                               {model.label}
                             </span>
                           </div>
-                          <span className="font-medium text-foreground text-sm tabular-nums">
+                          <span className="font-medium text-foreground-rich text-sm tabular-nums">
                             {value}
                           </span>
                         </div>

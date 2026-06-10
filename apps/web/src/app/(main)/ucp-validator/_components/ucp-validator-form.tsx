@@ -991,11 +991,11 @@ export const UcpValidatorForm = () => {
   return (
     <div className="flex flex-col">
       <div className="grid gap-px bg-accent-foreground lg:grid-cols-[minmax(0,1fr)_320px]">
-        <div className="bg-background px-6 py-6 sm:px-8 sm:py-8">
-          <h2 className="font-medium text-2xl text-foreground sm:text-3xl">
+        <div className="bg-background-rich px-6 py-6 sm:px-8 sm:py-8">
+          <h2 className="font-semibold text-foreground-rich text-lg">
             Run a live validation
           </h2>
-          <p className="mt-2 max-w-2xl font-light text-foreground-dimmed text-sm sm:text-base">
+          <p className="mt-1 max-w-2xl text-foreground-dimmed text-sm">
             Paste a domain and we&apos;ll fetch the live{" "}
             <span className="font-mono text-foreground">/.well-known/ucp</span>{" "}
             document, parse every service, capability, payment handler and
@@ -1006,21 +1006,18 @@ export const UcpValidatorForm = () => {
             spec.
           </p>
 
-          <form
-            onSubmit={handleSubmit}
-            className="mt-6 grid gap-px bg-accent-foreground"
-          >
-            <div className="bg-background-dimmed p-4">
-              <label
-                htmlFor="ucp-domain"
-                className="block font-medium text-foreground text-xs uppercase tracking-[0.18em]"
-              >
-                Domain
-              </label>
+          <form onSubmit={handleSubmit} className="mt-6">
+            <label
+              htmlFor="ucp-domain"
+              className="block font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
+            >
+              Domain
+            </label>
+            <div className="mt-2 flex flex-col gap-3 sm:flex-row">
               <TextField
                 value={domain}
                 onValueChange={setDomain}
-                className="mt-2 h-9 border border-accent-foreground bg-background"
+                className="h-10 flex-1 bg-background-rich"
               >
                 <TextFieldInput
                   id="ucp-domain"
@@ -1028,29 +1025,25 @@ export const UcpValidatorForm = () => {
                   className="px-3 text-sm"
                 />
               </TextField>
-              <p className="mt-2 font-light text-foreground-dimmed text-xs">
-                Use the storefront domain only, like{" "}
-                <span className="font-mono text-foreground">acme.com</span> or{" "}
-                <span className="font-mono text-foreground">www.acme.com</span>.
-              </p>
-            </div>
-
-            <div className="bg-background p-4">
               <Button
                 type="submit"
-                variant="flat"
                 color="primary"
                 disabled={isChecking || !domain.trim()}
-                className="w-full justify-center py-2 text-sm"
+                className="h-10 shrink-0 justify-center px-5 text-sm"
               >
                 {isChecking ? "Checking..." : "Check domain"}
               </Button>
             </div>
+            <p className="mt-2 text-foreground-dimmed text-xs">
+              Use the storefront domain only, like{" "}
+              <span className="font-mono text-foreground">acme.com</span> or{" "}
+              <span className="font-mono text-foreground">www.acme.com</span>.
+            </p>
           </form>
         </div>
 
-        <div className="bg-background-dimmed px-6 py-6 sm:px-8 sm:py-8">
-          <p className="font-medium text-foreground text-sm">
+        <div className="bg-background-rich px-6 py-6 sm:px-8 sm:py-8">
+          <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
             Before you run it
           </p>
           <div className="mt-4 space-y-4">
@@ -1059,10 +1052,10 @@ export const UcpValidatorForm = () => {
                 key={note.title}
                 className="border-accent-foreground border-t pt-4 first:border-t-0 first:pt-0"
               >
-                <p className="font-medium text-foreground text-sm">
+                <p className="font-semibold text-foreground-rich text-sm">
                   {note.title}
                 </p>
-                <p className="mt-1 font-light text-foreground-dimmed text-sm">
+                <p className="mt-1 text-foreground-dimmed text-sm">
                   {note.detail}
                 </p>
               </div>

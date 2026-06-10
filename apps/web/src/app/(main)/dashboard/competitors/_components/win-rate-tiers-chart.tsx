@@ -4,8 +4,8 @@ import { cn } from "@zenncore/utils";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
 const tierColors: Record<string, string> = {
-  "bg-success": "var(--color-success)",
   "bg-primary": "var(--color-primary)",
+  "bg-info": "var(--color-info)",
   "bg-warning": "var(--color-warning)",
   "bg-error": "var(--color-error)",
 };
@@ -68,14 +68,14 @@ export const WinRateTiersChart = ({
                 })();
 
                 return (
-                  <div className="flex items-baseline gap-3 whitespace-nowrap border border-accent-foreground bg-background-rich px-3 py-1.5 shadow-sm">
+                  <div className="flex items-baseline gap-3 whitespace-nowrap rounded-md border border-accent-foreground bg-background-rich px-3 py-1.5 shadow-md">
                     <span className="text-foreground-dimmed text-sm">
                       {entry.name}
                     </span>
-                    <span className="font-medium text-foreground tabular-nums">
+                    <span className="font-medium text-foreground-rich tabular-nums">
                       {entry.value}
                       {share !== null && (
-                        <span className="ml-1.5 font-light text-foreground-dimmed text-xs">
+                        <span className="ml-1.5 text-foreground-dimmed text-xs">
                           ({share}%)
                         </span>
                       )}
@@ -91,14 +91,14 @@ export const WinRateTiersChart = ({
       <div className="mt-4 grid w-full grid-cols-2 gap-3">
         {tiers.map((tier) => (
           <div key={tier.label} className="flex items-start gap-2">
-            <div className={cn("mt-1.5 size-2 shrink-0", tier.color)} />
+            <div
+              className={cn("mt-1 size-2 shrink-0 rounded-[2px]", tier.color)}
+            />
             <div>
-              <p className="font-light text-foreground-dimmed text-sm">
-                {tier.label}
-              </p>
-              <p className="font-medium text-foreground text-lg tabular-nums">
+              <p className="text-foreground-dimmed text-xs">{tier.label}</p>
+              <p className="font-semibold text-foreground-rich text-lg tabular-nums">
                 {tier.count}
-                <span className="ml-1 font-light text-foreground-dimmed text-xs">
+                <span className="ml-1 font-medium text-foreground-dimmed text-xs">
                   {total > 0
                     ? `(${Math.round((tier.count / total) * 100)}%)`
                     : ""}

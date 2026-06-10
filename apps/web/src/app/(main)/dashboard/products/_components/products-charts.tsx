@@ -73,16 +73,16 @@ export const ProductsModelRates = ({ models }: ProductsModelRates.Props) => {
                   {label}
                 </span>
               </div>
-              <span className="font-medium text-2xl text-foreground tabular-nums">
+              <span className="font-bold text-2xl text-foreground-rich tabular-nums tracking-[-0.02em]">
                 {rate}{" "}
-                <span className="font-light text-foreground-dimmed text-sm">
+                <span className="font-medium text-foreground-dimmed text-sm">
                   %
                 </span>
               </span>
             </div>
-            <div className="mt-2 h-1 w-full bg-accent-foreground">
+            <div className="mt-2 h-1 w-full rounded-full bg-accent-foreground">
               <motion.div
-                className={cn("h-full", modelBarColors[label])}
+                className={cn("h-full rounded-full", modelBarColors[label])}
                 initial={{ width: 0 }}
                 animate={{ width: `${rate}%` }}
                 transition={{ ...Spring.Gentle, delay: 0.4 }}
@@ -114,22 +114,22 @@ export const QualityDistribution = ({
         <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
           Quality
         </p>
-        <p className="mt-2 font-medium text-2xl text-foreground">
+        <p className="mt-2 font-semibold text-foreground-rich text-lg">
           Quality Distribution
         </p>
       </div>
       <div className="text-right">
-        <span className="font-medium text-4xl text-foreground tabular-nums tracking-tight">
+        <span className="font-bold text-3xl text-foreground-rich tabular-nums tracking-[-0.02em]">
           {averageQuality}
-          <span className="font-light text-foreground-dimmed text-xl">%</span>
+          <span className="ml-0.5 font-medium text-foreground-dimmed text-lg">
+            %
+          </span>
         </span>
-        <p className="font-light text-foreground-dimmed text-sm">
-          avg. quality
-        </p>
+        <p className="text-foreground-dimmed text-xs">avg. quality</p>
       </div>
     </div>
 
-    <div className="mt-auto flex h-2 w-full overflow-hidden bg-accent-foreground">
+    <div className="mt-auto flex h-1 w-full overflow-hidden rounded-full bg-accent-foreground">
       {segments.map((segment) => {
         const width = total > 0 ? (segment.count / total) * 100 : 0;
         if (width === 0) return null;
@@ -149,11 +149,11 @@ export const QualityDistribution = ({
     <div className="mt-4 grid grid-cols-3 gap-4">
       {segments.map((segment) => (
         <div key={segment.label} className="flex items-center gap-2">
-          <div className={cn("size-2 shrink-0", segment.color)} />
-          <span className="font-light text-foreground-dimmed text-xs">
+          <div className={cn("size-2 shrink-0 rounded-[2px]", segment.color)} />
+          <span className="text-foreground-dimmed text-xs">
             {segment.label}
           </span>
-          <span className="ml-auto font-medium text-foreground text-sm tabular-nums">
+          <span className="ml-auto font-semibold text-foreground-rich text-sm tabular-nums">
             {segment.count}
           </span>
         </div>
@@ -189,12 +189,12 @@ export const OptimizationBreakdown = ({
         <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
           Optimization
         </p>
-        <p className="mt-2 font-medium text-2xl text-foreground">
+        <p className="mt-2 font-semibold text-foreground-rich text-lg">
           Product Readiness
         </p>
       </div>
 
-      <div className="mt-auto flex h-2 w-full overflow-hidden bg-accent-foreground">
+      <div className="mt-auto flex h-1 w-full overflow-hidden rounded-full bg-accent-foreground">
         {segments.map((segment) => {
           const width = total > 0 ? (segment.count / total) * 100 : 0;
           if (width === 0) return null;
@@ -215,12 +215,14 @@ export const OptimizationBreakdown = ({
         {segments.map((segment) => (
           <div key={segment.label}>
             <div className="flex items-center gap-2">
-              <div className={cn("size-2 shrink-0", segment.color)} />
-              <span className="font-light text-foreground-dimmed text-sm">
+              <div
+                className={cn("size-2 shrink-0 rounded-[2px]", segment.color)}
+              />
+              <span className="text-foreground-dimmed text-xs">
                 {segment.label}
               </span>
             </div>
-            <p className="mt-1 ml-4.5 font-medium text-2xl text-foreground tabular-nums">
+            <p className="mt-1 ml-4.5 font-bold text-2xl text-foreground-rich tabular-nums tracking-[-0.02em]">
               {segment.count}
             </p>
           </div>
@@ -277,14 +279,14 @@ export const ProductsWinRateTrend = ({
         {change !== 0 && (
           <span
             className={cn(
-              "flex items-center gap-1.5 text-sm",
+              "flex items-center gap-1 font-medium text-xs",
               change > 0 ? "text-success" : "text-error",
             )}
           >
             {change > 0 ? (
-              <TrendUpIcon className="size-6" />
+              <TrendUpIcon className="size-4" />
             ) : (
-              <TrendDownIcon className="size-6" />
+              <TrendDownIcon className="size-4" />
             )}
             {change > 0 ? "+" : ""}
             {change}%
@@ -352,7 +354,7 @@ export const ProductsWinRateTrend = ({
                 if (typeof value !== "number") return null;
 
                 return (
-                  <div className="flex items-baseline gap-3 whitespace-nowrap border border-accent-foreground bg-background-rich px-3 py-1.5 shadow-sm">
+                  <div className="flex items-baseline gap-3 whitespace-nowrap rounded-md border border-accent-foreground bg-background-rich px-3 py-1.5 shadow-md">
                     <span className="text-foreground-dimmed text-sm">
                       {label}
                     </span>

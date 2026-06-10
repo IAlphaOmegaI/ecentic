@@ -25,6 +25,7 @@ import {
 import { Spring } from "@/lib/animations";
 import { formatRelativeTime } from "@/lib/date";
 import type * as Simulate from "@/server/app/intelligence/simulate";
+import { SectionKicker } from "./grid";
 
 type ModelRate = { label: string; rate: number };
 type TrendPoint = { date: string; winRate: number };
@@ -54,33 +55,23 @@ const ActivityIcon = ({
     switch (type) {
       case "simulation_complete":
         return {
-          icon: <CheckCircleIcon className="size-8" />,
+          icon: <CheckCircleIcon className="size-7.5" />,
           color: "text-success",
         };
       case "simulation_running":
         return {
-          icon: <LoaderIcon className="size-8 animate-spin" />,
+          icon: <LoaderIcon className="size-7.5 animate-spin" />,
           color: "text-primary",
         };
       default:
         return {
-          icon: <BellIcon className="size-8" />,
+          icon: <BellIcon className="size-7.5" />,
           color: "text-foreground-dimmed",
         };
     }
   })();
 
-  return (
-    <div
-      className={cn(
-        "flex size-8 shrink-0 items-center justify-center",
-        className,
-        color,
-      )}
-    >
-      {icon}
-    </div>
-  );
+  return <div className={cn("shrink-0", className, color)}>{icon}</div>;
 };
 
 export namespace WinRateLineChart {
@@ -182,7 +173,7 @@ const WinRateLineChart = ({
               if (typeof value !== "number") return null;
 
               return (
-                <div className="flex items-baseline gap-3 whitespace-nowrap border border-accent-foreground bg-background-rich px-3 py-1.5 shadow-sm">
+                <div className="flex items-baseline gap-3 whitespace-nowrap rounded-md border border-accent-foreground bg-background-rich px-3 py-1.5 shadow-md">
                   <span className="text-foreground-dimmed text-sm">
                     {label}
                   </span>
@@ -230,11 +221,8 @@ export const OverviewCharts = ({
       <div className="flex flex-col bg-background-rich xl:col-span-2">
         <div className="flex items-start justify-between p-4">
           <div>
-            <p className="flex items-center gap-2 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-              <span className="size-1.5 bg-primary" />
-              01 — Performance
-            </p>
-            <p className="mt-2 font-medium text-2xl text-foreground">
+            <SectionKicker>01 — Performance</SectionKicker>
+            <p className="mt-2 font-semibold text-foreground-rich text-lg">
               Win Rate by Model
             </p>
           </div>
@@ -257,20 +245,23 @@ export const OverviewCharts = ({
                         height={64}
                         className="size-8"
                       />
-                      <span className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+                      <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
                         {label}
                       </span>
                     </div>
-                    <span className="font-medium text-2xl text-foreground tabular-nums">
+                    <span className="font-bold text-2xl text-foreground-rich tabular-nums tracking-[-0.02em]">
                       {rate}{" "}
-                      <span className="font-light text-foreground-dimmed text-sm">
+                      <span className="font-medium text-foreground-dimmed text-sm">
                         %
                       </span>
                     </span>
                   </div>
-                  <div className="mt-2 h-1 w-full bg-accent-foreground">
+                  <div className="mt-2 h-1 w-full rounded-full bg-accent-foreground">
                     <motion.div
-                      className={cn("h-full", modelBarColors[label])}
+                      className={cn(
+                        "h-full rounded-full",
+                        modelBarColors[label],
+                      )}
                       initial={{ width: 0 }}
                       animate={{ width: `${rate}%` }}
                       transition={{ ...Spring.Gentle, delay: 0.4 }}
@@ -289,14 +280,16 @@ export const OverviewCharts = ({
 
         <div className="flex flex-1 flex-col">
           <div className="mb-4 flex items-center justify-between p-4">
-            <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
               Win Rate Trend
             </p>
             {change !== 0 && (
               <span
                 className={cn(
-                  "text-xs",
-                  change > 0 ? "text-success" : "text-error",
+                  "rounded-full px-2 py-0.5 font-semibold text-[11px]",
+                  change > 0
+                    ? "bg-success/10 text-success"
+                    : "bg-error/10 text-error",
                 )}
               >
                 {change > 0 ? "+" : ""}
@@ -315,7 +308,7 @@ export const OverviewCharts = ({
       <div className="flex flex-col gap-px bg-accent-foreground">
         <div className="flex-1 bg-background-rich">
           <div className="mb-2 flex items-center justify-between px-4 pt-4">
-            <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
               Recent Activity
             </p>
           </div>
@@ -336,15 +329,15 @@ export const OverviewCharts = ({
                 >
                   <ActivityIcon type={entry.type} />
                   <div>
-                    <p className="font-light text-foreground leading-relaxed">
+                    <p className="text-foreground leading-relaxed">
                       {entry.message}
                     </p>
                     {entry.detail && (
-                      <p className="mt-0.5 font-light text-foreground-dimmed text-sm">
+                      <p className="mt-0.5 text-foreground-dimmed text-sm">
                         {entry.detail.impactDescription.slice(0, 100)}...
                       </p>
                     )}
-                    <p className="mt-2 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+                    <p className="mt-2 text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
                       {formatRelativeTime(new Date(entry.timestamp))}
                     </p>
                   </div>
@@ -355,18 +348,10 @@ export const OverviewCharts = ({
         </div>
 
         <div className="flex items-center justify-between bg-background-rich p-4">
-          <Button
-            variant="outline"
-            color="accent"
-            render={<Link href="/dashboard/optimize" />}
-          >
+          <Button color="accent" render={<Link href="/dashboard/optimize" />}>
             Optimizations
           </Button>
-          <Button
-            variant="outline"
-            color="primary"
-            render={<Link href="/dashboard/products" />}
-          >
+          <Button color="primary" render={<Link href="/dashboard/products" />}>
             View all products <ArrowRightIcon className="size-4" />
           </Button>
         </div>

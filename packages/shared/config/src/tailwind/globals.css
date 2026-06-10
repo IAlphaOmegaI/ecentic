@@ -10,8 +10,8 @@
   --color-background-rich: #ffffff;
   /* foreground shades - pure neutral grays with more contrast */
   --color-foreground-dimmed: #919191;
-  --color-foreground: #474747;
-  --color-foreground-rich: hsl(0 0% 25%);
+  --color-foreground: #404040;
+  --color-foreground-rich: #16181d;
   /* emphasis shades - warmer browns with more distinction */
   --color-emphasis-dimmed: oklch(14.5% 0 0);
   --color-emphasis: oklch(20.5% 0 0);

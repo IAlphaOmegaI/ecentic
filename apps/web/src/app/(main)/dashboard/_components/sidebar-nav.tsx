@@ -117,34 +117,31 @@ export const SidebarNav = ({ products, optimizations }: SidebarNav.Props) => {
             key={item.href}
             href={item.href}
             className={cn(
-              "group relative flex items-center gap-1 overflow-hidden px-5 py-2 hover:bg-accent-foreground/20",
+              "group relative flex items-center gap-2.5 overflow-hidden border-l-[3px] px-5 py-2.5 text-sm",
               active
-                ? "bg-primary/10 text-primary hover:bg-primary/15"
-                : "text-foreground-dimmed hover:text-foreground",
+                ? "border-primary bg-primary/5 font-semibold text-primary"
+                : "border-transparent font-normal text-foreground-dimmed hover:bg-background hover:text-foreground",
             )}
           >
-            <item.icon
-              className={cn(
-                "relative z-10 size-6 shrink-0",
-                active
-                  ? "text-primary"
-                  : "text-foreground-dimmed group-hover:text-foreground",
-              )}
-            />
-            <span className="relative z-10 flex flex-1 items-center gap-2 overflow-hidden whitespace-nowrap font-medium">
+            <item.icon className="size-4 shrink-0" />
+            <span className="flex flex-1 items-center gap-2 overflow-hidden whitespace-nowrap">
               <span className="flex-1">{item.label}</span>
               {badge && (
                 <span
                   className={cn(
-                    "px-1.5 py-0.5 font-medium text-sm tabular-nums",
+                    "rounded-full px-1.5 py-px font-semibold text-[11px] tabular-nums",
                     (() => {
-                      const pct = Number.parseFloat(badge);
-                      if (!Number.isNaN(pct) && badge.includes("%")) {
-                        if (pct >= 80) return "text-success/70";
-                        if (pct >= 50) return "text-warning/70";
-                        return "text-error/70";
+                      const percentage = Number.parseFloat(badge);
+                      switch (true) {
+                        case Number.isNaN(percentage) || !badge.includes("%"):
+                          return "bg-primary/10 text-primary";
+                        case percentage >= 80:
+                          return "bg-success/10 text-success";
+                        case percentage >= 50:
+                          return "bg-warning/10 text-warning";
+                        default:
+                          return "bg-error/10 text-error";
                       }
-                      return "text-primary/70";
                     })(),
                   )}
                 >

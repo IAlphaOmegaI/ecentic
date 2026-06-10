@@ -89,10 +89,7 @@ export const DataTable = <T extends TableRowType>({
                 key={row.original._id}
                 data-expanded={row.getIsExpanded()}
                 data-selected={row.getIsSelected()}
-                className={cn(
-                  "hover:bg-background-dimmed/50",
-                  classList?.["body-row"],
-                )}
+                className={cn("hover:bg-background", classList?.["body-row"])}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id} className={classList?.["body-cell"]}>
@@ -130,8 +127,8 @@ export const DataTablePagination = <T extends TableRowType>(): JSX.Element => {
   return (
     <Pagination>
       <PaginationContent className="w-full p-4">
-        <div className="mr-auto">
-          {pagination.pageIndex} / {pagination.pageCount}
+        <div className="mr-auto text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+          Page {pagination.pageIndex} of {pagination.pageCount}
         </div>
         <PaginationItem
           onClick={() => {

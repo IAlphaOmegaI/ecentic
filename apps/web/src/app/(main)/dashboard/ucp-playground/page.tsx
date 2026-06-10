@@ -1,4 +1,4 @@
-import { Crosshair, SectionKicker } from "../_components/grid";
+import { Crosshair, SectionKicker, StatusPill } from "../_components/grid";
 import { PlaygroundClient } from "./_components/playground-client";
 
 export default () => (
@@ -8,14 +8,11 @@ export default () => (
       <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <div className="flex items-center gap-2.5 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-              <span className="size-2 bg-accent-rich" />
-              Sandbox — UCP flow testing
-            </div>
-            <h1 className="mt-3 font-medium text-4xl text-foreground">
+            <StatusPill tone="neutral">Sandbox — UCP flow testing</StatusPill>
+            <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
               UCP Playground
             </h1>
-            <p className="mt-1 font-light text-foreground-dimmed text-lg">
+            <p className="mt-1 text-foreground-dimmed text-sm">
               Test catalog search, product lookup, and cart operations against
               any store.
             </p>
@@ -30,7 +27,7 @@ export default () => (
           <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <div className="border-accent-foreground border-b p-4">
             <SectionKicker>01 — Flow Test</SectionKicker>
-            <h2 className="mt-2 font-medium text-2xl text-foreground">
+            <h2 className="mt-2 font-semibold text-foreground-rich text-lg">
               Agent Run
             </h2>
           </div>

@@ -21,7 +21,12 @@ import * as Store from "@/server/app/store";
 import { Environment } from "@/server/utils/environment";
 import { AgentVisitsPanel } from "./_components/agent-visits-panel";
 import { CompetitorsTable } from "./_components/competitors-table";
-import { Crosshair, SectionGutter, StatLabel } from "./_components/grid";
+import {
+  Crosshair,
+  SectionGutter,
+  StatLabel,
+  StatusPill,
+} from "./_components/grid";
 import { OverviewActions } from "./_components/overview-actions";
 import { OverviewCharts } from "./_components/overview-charts";
 import { ProductsTable } from "./_components/products-table";
@@ -42,10 +47,10 @@ export default () => (
             >
               <LastUpdated />
             </Suspense>
-            <h1 className="mt-3 font-medium text-4xl text-foreground">
+            <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
               Overview
             </h1>
-            <p className="mt-1 font-light text-foreground-dimmed text-lg">
+            <p className="mt-1 text-foreground-dimmed text-sm">
               How AI shopping agents rank your catalog against competitors.
             </p>
           </div>
@@ -147,17 +152,11 @@ const LastUpdated = async () => {
   );
 
   return (
-    <div className="flex items-center gap-2.5 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-      <span
-        className={cn(
-          "size-2",
-          data.scan?.updatedAt ? "bg-success" : "bg-accent-rich",
-        )}
-      />
+    <StatusPill tone={data.scan?.updatedAt ? "success" : "neutral"}>
       {data.scan?.updatedAt
         ? `Live — updated ${formatRelativeTime(data.scan.updatedAt)}`
         : "No scans run yet"}
-    </div>
+    </StatusPill>
   );
 };
 
@@ -172,23 +171,16 @@ const StatCards = async () => {
     return (
       <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
         {[
-          { label: "Overall Win Rate", icon: GaugeIcon, color: "text-primary" },
-          { label: "Products Scanned", icon: RadarIcon, color: "text-warning" },
-          { label: "Top Performer", icon: AwardIcon, color: "text-success" },
-          {
-            label: "Biggest Opportunity",
-            icon: BullseyeIcon,
-            color: "text-error",
-          },
-        ].map(({ label, icon: Icon, color }) => (
+          { label: "Overall Win Rate", icon: GaugeIcon },
+          { label: "Products Scanned", icon: RadarIcon },
+          { label: "Top Performer", icon: AwardIcon },
+          { label: "Biggest Opportunity", icon: BullseyeIcon },
+        ].map(({ label, icon: Icon }) => (
           <div
             key={label}
             className="relative flex h-44 flex-col justify-between bg-background-rich p-5"
           >
-            <StatLabel
-              label={label}
-              icon={<Icon className={cn("size-8 shrink-0", color)} />}
-            />
+            <StatLabel label={label} icon={<Icon className="size-7.5" />} />
             <div className="flex flex-col items-center gap-2 pb-4">
               <p className="font-light text-foreground-dimmed text-sm">
                 No data yet
@@ -239,12 +231,12 @@ const StatCards = async () => {
       <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
         <StatLabel
           label="Overall Win Rate"
-          icon={<GaugeIcon className="size-8 shrink-0 text-primary" />}
+          icon={<GaugeIcon className="size-7.5 text-primary" />}
         />
         <div>
-          <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
+          <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
             {overall}
-            <span className="ml-0.5 font-light text-2xl text-foreground-dimmed">
+            <span className="ml-0.5 font-medium text-foreground-dimmed text-xl">
               %
             </span>
           </p>
@@ -252,24 +244,24 @@ const StatCards = async () => {
             <p className="mt-3 flex items-center gap-2">
               <span
                 className={cn(
-                  "flex items-center gap-1.5 text-sm",
+                  "flex items-center gap-1 font-medium text-xs",
                   trend >= 0 ? "text-success" : "text-error",
                 )}
               >
                 {trend >= 0 ? (
-                  <TrendUpIcon className="size-6" />
+                  <TrendUpIcon className="size-4" />
                 ) : (
-                  <TrendDownIcon className="size-6" />
+                  <TrendDownIcon className="size-4" />
                 )}
                 {trend >= 0 ? "+" : ""}
                 {trend}%
               </span>
-              <span className="font-light text-foreground-dimmed text-sm">
+              <span className="text-foreground-dimmed text-xs">
                 vs last scan
               </span>
             </p>
           ) : (
-            <p className="mt-3 font-light text-foreground-dimmed text-sm">
+            <p className="mt-3 text-foreground-dimmed text-xs">
               across {products.length}{" "}
               {products.length === 1 ? "product" : "products"}
             </p>
@@ -280,23 +272,23 @@ const StatCards = async () => {
       <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
         <StatLabel
           label="Products Scanned"
-          icon={<RadarIcon className="size-8 shrink-0 text-warning" />}
+          icon={<RadarIcon className="size-7.5 text-warning" />}
         />
         <div>
-          <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
+          <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
             {data.total}
-            <span className="ml-1 font-light text-2xl text-foreground-dimmed">
+            <span className="ml-1 font-medium text-foreground-dimmed text-xl">
               / 100
             </span>
           </p>
           <div className="mt-3">
-            <div className="h-1 w-full bg-accent-foreground">
+            <div className="h-1 w-full rounded-full bg-accent-foreground">
               <div
-                className="h-full bg-primary"
+                className="h-full rounded-full bg-primary transition-[width] duration-600"
                 style={{ width: `${(data.total / 100) * 100}%` }}
               />
             </div>
-            <p className="mt-2 font-light text-foreground-dimmed text-xs">
+            <p className="mt-2 text-foreground-dimmed text-xs">
               {100 - data.total} slots remaining
             </p>
           </div>
@@ -307,13 +299,13 @@ const StatCards = async () => {
         <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
           <StatLabel
             label="Top Performer"
-            icon={<AwardIcon className="size-8 shrink-0 text-success" />}
+            icon={<AwardIcon className="size-7.5 text-success" />}
           />
           <div>
-            <p className="line-clamp-1 text-foreground">{top.title}</p>
-            <p className="mt-1 font-medium text-5xl text-success tabular-nums tracking-tight">
+            <p className="line-clamp-1 text-foreground text-sm">{top.title}</p>
+            <p className="mt-1 font-bold text-4xl text-success tabular-nums tracking-[-0.02em]">
               {top.winRate.total}
-              <span className="ml-0.5 font-light text-2xl text-foreground-dimmed">
+              <span className="ml-0.5 font-medium text-foreground-dimmed text-xl">
                 %
               </span>
             </p>
@@ -331,13 +323,15 @@ const StatCards = async () => {
         <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
           <StatLabel
             label="Biggest Opportunity"
-            icon={<BullseyeIcon className="size-8 shrink-0 text-error" />}
+            icon={<BullseyeIcon className="size-7.5 text-error" />}
           />
           <div>
-            <p className="line-clamp-1 text-foreground">{opportunity.title}</p>
-            <p className="mt-1 font-medium text-5xl text-error tabular-nums tracking-tight">
+            <p className="line-clamp-1 text-foreground text-sm">
+              {opportunity.title}
+            </p>
+            <p className="mt-1 font-bold text-4xl text-error tabular-nums tracking-[-0.02em]">
               {opportunity.winRate.total}
-              <span className="ml-0.5 font-light text-2xl text-foreground-dimmed">
+              <span className="ml-0.5 font-medium text-foreground-dimmed text-xl">
                 %
               </span>
             </p>
@@ -446,11 +440,7 @@ const TopProducts = async () => {
       kicker="02 — Catalog"
       title="Product Win Rates"
       action={
-        <Button
-          variant="outline"
-          color="primary"
-          render={<Link href="/dashboard/products" />}
-        >
+        <Button color="primary" render={<Link href="/dashboard/products" />}>
           View all products <ArrowRightIcon className="size-4" />
         </Button>
       }
@@ -471,11 +461,7 @@ const TopCompetitors = async () => {
       title="Top Competitors"
       pageCount={1}
       action={
-        <Button
-          variant="outline"
-          color="primary"
-          render={<Link href="/dashboard/competitors" />}
-        >
+        <Button color="primary" render={<Link href="/dashboard/competitors" />}>
           View all <ArrowRightIcon className="size-4" />
         </Button>
       }
@@ -492,7 +478,7 @@ const StatsSkeleton = () => (
       >
         <div className="flex items-center justify-between">
           <div className="h-3 w-28 animate-pulse bg-foreground/10" />
-          <div className="absolute top-5 right-5 size-8 animate-pulse bg-foreground/10" />
+          <div className="absolute top-5 right-5 size-7.5 animate-pulse bg-foreground/10" />
         </div>
         <div>
           <div className="h-11 w-24 animate-pulse bg-foreground/10" />
@@ -594,7 +580,7 @@ const CompetitorTableSkeleton = () => (
               key={key}
               className="border-accent-foreground border-b last:border-b-0"
             >
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <div className="flex items-center gap-3">
                   <div className="size-9 shrink-0 animate-pulse bg-foreground/10" />
                   <div className="space-y-1.5">
@@ -603,19 +589,19 @@ const CompetitorTableSkeleton = () => (
                   </div>
                 </div>
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <div className="flex items-center gap-2">
                   <div className="h-1 w-20 animate-pulse bg-foreground/10" />
                   <div className="h-4 w-9 animate-pulse bg-foreground/10" />
                 </div>
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <div className="h-4 w-10 animate-pulse bg-foreground/10" />
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <div className="h-4 w-20 animate-pulse bg-foreground/10" />
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <div className="size-9 animate-pulse bg-foreground/10" />
               </td>
             </tr>
@@ -670,7 +656,7 @@ const TableSkeleton = () => (
               key={key}
               className="border-accent-foreground border-b last:border-b-0"
             >
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <div className="flex items-center gap-3">
                   <div className="size-9 shrink-0 animate-pulse bg-foreground/10" />
                   <div className="space-y-1.5">
@@ -679,28 +665,28 @@ const TableSkeleton = () => (
                   </div>
                 </div>
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <div className="flex items-center gap-2">
                   <div className="h-1 w-20 animate-pulse bg-foreground/10" />
                   <div className="h-4 w-9 animate-pulse bg-foreground/10" />
                 </div>
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <div className="h-4 w-9 animate-pulse bg-foreground/10" />
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <div className="h-4 w-9 animate-pulse bg-foreground/10" />
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <div className="h-4 w-9 animate-pulse bg-foreground/10" />
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <div className="flex items-center gap-2">
                   <div className="h-1 w-20 animate-pulse bg-foreground/10" />
                   <div className="h-4 w-9 animate-pulse bg-foreground/10" />
                 </div>
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <div className="size-9 animate-pulse bg-foreground/10" />
               </td>
             </tr>

@@ -49,7 +49,7 @@ export const TeamSection = ({ user }: { user: User.Type }) => {
       <div>
         <div className="flex items-center justify-between border-accent-foreground border-b bg-background-dimmed px-4 py-3">
           <p className="font-medium text-base text-foreground">Team Members</p>
-          <Button variant="flat" color="primary" className="gap-1.5">
+          <Button color="primary" className="gap-1.5">
             <PlusIcon className="size-4" />
             Invite Member
           </Button>
@@ -114,12 +114,7 @@ export const TeamSection = ({ user }: { user: User.Type }) => {
             onSubmit={handleInviteSubmit}
             className="flex items-end gap-3"
           >
-            <Button
-              type="submit"
-              variant="flat"
-              color="primary"
-              className="shrink-0"
-            >
+            <Button type="submit" color="primary" className="shrink-0">
               Send Invite
             </Button>
           </InferredForm>

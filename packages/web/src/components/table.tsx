@@ -13,7 +13,7 @@ export const Table = ({
     render,
     props: mergeProps<"table">(props, {
       className: cn(
-        "w-full max-w-full bg-background-rich caption-bottom border-collapse overflow-hidden text-sm [&_td:first-child]:border-l-0 [&_td:last-child]:border-r-0 [&_th:first-child]:border-l-0 [&_th:last-child]:border-r-0 border-b border-accent-foreground",
+        "w-full max-w-full caption-bottom border-collapse overflow-hidden border-accent-foreground border-b bg-background-rich text-sm",
         className,
       ),
     }),
@@ -98,7 +98,7 @@ export const TableHead = ({
     render,
     props: mergeProps<"th">(props, {
       className: cn(
-        "whitespace-nowrap border-accent-foreground border-x px-4 py-3 text-left font-medium text-foreground text-sm [&:has([role=checkbox])]:pr-0",
+        "whitespace-nowrap px-4 py-3 text-left font-semibold text-[11px] text-foreground-dimmed uppercase tracking-[0.06em] [&:has([role=checkbox])]:pr-0",
         className,
       ),
     }),
@@ -120,7 +120,7 @@ export const TableCell = ({
     render,
     props: mergeProps<"td">(props, {
       className: cn(
-        "border-accent-foreground border-x px-4 py-3 align-middle font-light text-foreground text-sm [&:has([role=checkbox])]:pr-0",
+        "px-4 py-3.5 align-middle font-light text-foreground text-sm [&:has([role=checkbox])]:pr-0",
         className,
       ),
     }),

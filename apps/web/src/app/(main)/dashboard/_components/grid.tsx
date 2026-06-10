@@ -16,7 +16,7 @@ export const Crosshair = ({ className }: { className?: string }) => (
 );
 
 export const SectionGutter = () => (
-  <div className="relative h-10 bg-grid-stripes">
+  <div className="relative h-6 bg-grid-stripes">
     <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
     <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
     <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
@@ -24,11 +24,77 @@ export const SectionGutter = () => (
   </div>
 );
 
-export const SectionKicker = ({ children }: PropsWithChildren) => (
-  <p className="flex items-center gap-2 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-    <span className="size-1.5 bg-primary" />
+export const SectionKicker = ({ children }: PropsWithChildren) => {
+  if (typeof children !== "string")
+    return (
+      <p className="font-medium text-[11px] text-foreground-dimmed uppercase">
+        {children}
+      </p>
+    );
+
+  const [index, ...label] = children.split("—");
+
+  return (
+    <p className="font-medium text-[11px] text-foreground-dimmed uppercase">
+      <span className="font-mono font-semibold text-primary">
+        {index?.trim()}
+      </span>
+      {label.length > 0 && (
+        <span className="ml-2">{label.join("—").trim()}</span>
+      )}
+    </p>
+  );
+};
+
+const statusPillTones = {
+  success: "bg-success/10 text-success",
+  warning: "bg-warning/10 text-warning",
+  error: "bg-error/10 text-error",
+  primary: "bg-primary/10 text-primary",
+  neutral: "bg-background-dimmed text-foreground-dimmed",
+} as const;
+
+export const StatusPill = ({
+  tone = "neutral",
+  className,
+  children,
+}: PropsWithChildren<{
+  tone?: keyof typeof statusPillTones;
+  className?: string;
+}>) => (
+  <span
+    className={cn(
+      "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-semibold text-[11px] uppercase tracking-[0.05em]",
+      statusPillTones[tone],
+      className,
+    )}
+  >
     {children}
-  </p>
+  </span>
+);
+
+export const TopFindingCallout = ({
+  label = "Top Finding",
+  className,
+  children,
+}: PropsWithChildren<{ label?: string; className?: string }>) => (
+  <div className={cn("bg-primary/5 px-4 py-3", className)}>
+    <p className="font-medium text-[10px] text-primary uppercase tracking-[0.08em]">
+      {label}
+    </p>
+    <p className="mt-1 max-w-3xl text-foreground text-sm">{children}</p>
+  </div>
+);
+
+export const WinRateBadge = ({ rate }: { rate: number }) => (
+  <span
+    className={cn(
+      "whitespace-nowrap rounded px-1.5 py-0.5 font-semibold text-[10px] uppercase tabular-nums tracking-[0.06em]",
+      rate >= 50 ? "bg-success/10 text-success" : "bg-error/10 text-error",
+    )}
+  >
+    {rate}% win rate
+  </span>
 );
 
 export const StatLabel = ({
@@ -39,9 +105,11 @@ export const StatLabel = ({
   icon: ReactNode;
 }) => (
   <div className="flex items-center justify-between gap-2">
-    <p className="pr-12 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+    <p className="pr-12 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
       {label}
     </p>
-    <span className="absolute top-5 right-5">{icon}</span>
+    <span className="absolute top-5 right-5 text-foreground-dimmed">
+      {icon}
+    </span>
   </div>
 );

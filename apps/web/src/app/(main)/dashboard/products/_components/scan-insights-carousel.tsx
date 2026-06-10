@@ -12,6 +12,7 @@ import { Button } from "@zenncore/web/components/button";
 import Link from "next/link";
 import { useState } from "react";
 import type * as Simulate from "@/server/app/intelligence/simulate";
+import { SectionKicker } from "../../_components/grid";
 
 export type ScanInsight = {
   id: string;
@@ -45,13 +46,13 @@ const WinRateSummary = ({ wins, losses }: { wins: number; losses: number }) => {
       <div className="mt-2 flex items-baseline gap-3">
         <span
           className={cn(
-            "font-medium text-2xl tabular-nums tracking-tight",
+            "font-bold text-2xl tabular-nums tracking-[-0.02em]",
             color,
           )}
         >
           {rate}%
         </span>
-        <span className="font-light text-foreground-dimmed text-sm">
+        <span className="text-foreground-dimmed text-sm">
           {wins}W / {losses}L
         </span>
       </div>
@@ -68,7 +69,7 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
         <>
           <div className="p-6">
             <div className="border-primary border-l-2 pl-4">
-              <p className="font-medium text-foreground text-lg leading-snug">
+              <p className="font-semibold text-foreground-rich text-lg leading-snug">
                 {finding.name}
               </p>
             </div>
@@ -76,9 +77,7 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
 
           <div className="grid grid-cols-1 gap-px border-accent-foreground border-y bg-accent-foreground sm:grid-cols-[1fr_auto]">
             <div className="bg-background-rich p-6 transition-colors hover:bg-background">
-              <div className="flex size-12 items-center justify-center bg-background-dimmed">
-                <RocketIcon className="size-8 text-primary" />
-              </div>
+              <RocketIcon className="size-7.5 text-error" />
               <p className="mt-4 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
                 Impact
               </p>
@@ -87,13 +86,13 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
               </p>
             </div>
             <div className="flex flex-col items-center justify-center bg-background-rich p-6 transition-colors hover:bg-background sm:min-w-44">
-              <p className="font-medium text-5xl text-error tabular-nums tracking-tight">
+              <p className="font-bold text-4xl text-error tabular-nums tracking-[-0.02em]">
                 {finding.lossPercentage}
-                <span className="ml-0.5 font-light text-2xl text-foreground-dimmed">
+                <span className="ml-0.5 font-medium text-foreground-dimmed text-xl">
                   %
                 </span>
               </p>
-              <p className="mt-2 font-light text-foreground-dimmed text-sm">
+              <p className="mt-2 text-foreground-dimmed text-xs">
                 of sims lost
               </p>
             </div>
@@ -108,7 +107,7 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
                 {finding.missingAttributes.map((attribute) => (
                   <span
                     key={attribute}
-                    className="bg-background-dimmed px-2.5 py-1 font-light text-foreground text-sm"
+                    className="rounded bg-background-dimmed px-1.5 py-0.5 font-semibold text-[10px] text-foreground-dimmed uppercase tracking-[0.06em]"
                   >
                     {attribute}
                   </span>
@@ -120,7 +119,7 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
       ) : (
         <div className="flex flex-col items-center justify-center p-8">
           <BoxMinusIcon className="mb-2 size-24 text-foreground-dimmed" />
-          <p className="font-medium text-foreground text-lg">
+          <p className="font-semibold text-foreground-rich text-lg">
             No finding recorded for this scan.
           </p>
           <p className="text-foreground-dimmed">
@@ -130,11 +129,7 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
       )}
       <div className="flex items-center justify-between border-accent-foreground border-t p-4">
         <WinRateSummary wins={scan.wins} losses={scan.losses} />
-        <Button
-          variant="outline"
-          color="primary"
-          render={<Link href="/dashboard/optimize" />}
-        >
+        <Button color="primary" render={<Link href="/dashboard/optimize" />}>
           Fix this <ArrowRightIcon className="size-4" />
         </Button>
       </div>
@@ -165,18 +160,15 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
     <div className="bg-background-rich">
       <div className="flex items-start justify-between border-accent-foreground border-b p-4">
         <div>
-          <p className="flex items-center gap-2 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-            <span className="size-1.5 bg-primary" />
-            04 — Insights
-          </p>
-          <p className="mt-2 font-medium text-2xl text-foreground">
+          <SectionKicker>04 — Insights</SectionKicker>
+          <p className="mt-2 font-semibold text-foreground-rich text-lg">
             Scan Results
           </p>
         </div>
 
         <div className="flex flex-col items-end gap-1">
-          <p className="font-light text-primary">{formatted}</p>
-          <p className="font-light text-foreground-dimmed text-sm">
+          <p className="font-medium text-primary text-sm">{formatted}</p>
+          <p className="text-foreground-dimmed text-xs">
             {current.completedSimulations} simulations
           </p>
         </div>
@@ -187,9 +179,9 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
       {scans.length > 1 && (
         <div className="flex items-center justify-between border-accent-foreground border-t p-4">
           <Button
-            variant="outline"
             color="accent"
             size="icon"
+            className="rounded-md"
             disabled={index === 0}
             onClick={() => setIndex((previous) => Math.max(0, previous - 1))}
           >
@@ -204,7 +196,7 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
                 type="button"
                 onClick={() => setIndex(scanIndex)}
                 className={cn(
-                  "size-3 transition-all",
+                  "size-2.5 rounded-full transition-all",
                   scanIndex === index
                     ? "bg-primary"
                     : "bg-accent-foreground hover:bg-foreground-dimmed",
@@ -214,9 +206,9 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
           </div>
 
           <Button
-            variant="outline"
             color="accent"
             size="icon"
+            className="rounded-md"
             disabled={index === scans.length - 1}
             onClick={() =>
               setIndex((previous) => Math.min(scans.length - 1, previous + 1))

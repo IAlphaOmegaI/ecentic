@@ -18,6 +18,7 @@ import { Motion } from "@/components/motion";
 import { Spring, Stagger } from "@/lib/animations";
 import { formatElapsed } from "@/lib/date";
 import type * as Simulate from "@/server/app/intelligence/simulate";
+import { StatusPill, TopFindingCallout } from "./grid";
 
 const providers = [
   {
@@ -124,23 +125,10 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
               {phase === "complete" && "Simulation Complete"}
             </DialogTitle>
             {phase === "running" && (
-              <span className="flex items-center gap-1.5 border border-primary/30 bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs">
-                <motion.span
-                  className="inline-block size-1.5 bg-primary"
-                  animate={{ opacity: [1, 0.2, 1] }}
-                  transition={{
-                    duration: 1.4,
-                    repeat: Number.POSITIVE_INFINITY,
-                    ease: "easeInOut",
-                  }}
-                />
-                Live
-              </span>
+              <StatusPill tone="primary">Live</StatusPill>
             )}
             {phase === "complete" && (
-              <span className="border border-success/20 bg-success/10 px-2 py-0.5 font-medium text-success text-xs">
-                Done
-              </span>
+              <StatusPill tone="success">Done</StatusPill>
             )}
           </div>
           {closable && (
@@ -214,7 +202,6 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
                         type="button"
                         onClick={handleRun}
                         disabled={isRunning}
-                        variant="flat"
                         color="primary"
                         className="w-full"
                       >
@@ -576,18 +563,15 @@ const CompletePhaseModal = ({
         </Motion.Up>
 
         {topFinding && (
-          <Motion.Up className="mb-6 border border-primary/20 bg-primary/5 px-5 py-4">
-            <p className="mb-1.5 font-medium text-primary text-xs uppercase tracking-[0.2em]">
-              Top Finding
-            </p>
-            <p className="font-light text-foreground text-sm">
+          <Motion.Up className="mb-6">
+            <TopFindingCallout className="rounded-md">
               {topFinding.name} loses on{" "}
-              <span className="font-medium text-foreground">
+              <span className="font-semibold text-foreground-rich">
                 {topFinding.missingAttributes.join(" and ")}
               </span>{" "}
               — {topFinding.impactDescription} Costs you{" "}
               {topFinding.lossPercentage}% of simulations.
-            </p>
+            </TopFindingCallout>
           </Motion.Up>
         )}
 
@@ -596,7 +580,6 @@ const CompletePhaseModal = ({
             <Button
               type="button"
               onClick={onClose}
-              variant="flat"
               color="primary"
               className="w-full"
             >
@@ -607,7 +590,6 @@ const CompletePhaseModal = ({
             <Button
               type="button"
               onClick={onRunAgain}
-              variant="outline"
               color="accent"
               className="w-full"
             >

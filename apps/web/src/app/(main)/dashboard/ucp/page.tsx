@@ -4,7 +4,7 @@ import * as Ucp from "@/server/app/intelligence/ucp";
 import * as Product from "@/server/app/product";
 import * as Store from "@/server/app/store";
 import { Environment } from "@/server/utils/environment";
-import { Crosshair, SectionKicker } from "../_components/grid";
+import { Crosshair, SectionKicker, StatusPill } from "../_components/grid";
 import { UcpManager } from "./_components/ucp-manager";
 
 const UcpContent = async () => {
@@ -37,14 +37,11 @@ export default () => (
       <div className="-mx-8 border-accent-foreground border-b">
         <div className="mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <div className="flex items-center gap-2.5 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-              <span className="size-2 bg-accent-rich" />
-              Universal Commerce Protocol
-            </div>
-            <h1 className="mt-3 font-medium text-4xl text-foreground">
+            <StatusPill tone="neutral">Universal Commerce Protocol</StatusPill>
+            <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
               UCP & Structured Data
             </h1>
-            <p className="mt-1 font-light text-foreground-dimmed text-lg">
+            <p className="mt-1 text-foreground-dimmed text-sm">
               Your merchant identity for AI shopping agents.
             </p>
           </div>
@@ -58,7 +55,7 @@ export default () => (
           <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <div className="border-accent-foreground border-b p-4">
             <SectionKicker>01 — Protocol</SectionKicker>
-            <h2 className="mt-2 font-medium text-2xl text-foreground">
+            <h2 className="mt-2 font-semibold text-foreground-rich text-lg">
               Structured Data
             </h2>
           </div>

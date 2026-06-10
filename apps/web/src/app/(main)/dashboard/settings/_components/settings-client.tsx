@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Tab,
-  Tabs,
-  TabsIndicator,
-  TabsList,
-  TabsPanel,
-} from "@zenncore/web/components/tabs";
+import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import { useState } from "react";
 import type * as Store from "@/server/app/store";
 import type * as Subscription from "@/server/app/subscription";
@@ -53,7 +47,7 @@ export const SettingsClient = ({
   const [persona, setPersona] = useState("Budget-conscious shopper");
 
   const className =
-    "h-auto w-full justify-start border-0 border-b border-accent-foreground p-4 text-left font-medium text-foreground-dimmed hover:text-foreground data-selected:bg-transparent data-active:text-white data-selected:text-white";
+    "h-auto w-full justify-start rounded-none border-0 border-accent-foreground border-b border-l-[3px] border-l-transparent p-4 text-left font-medium text-foreground-dimmed text-sm transition-colors duration-150 hover:bg-background hover:text-foreground data-selected:border-l-primary data-selected:bg-primary/5 data-selected:font-semibold data-selected:text-primary data-[active]:text-primary";
 
   return (
     <div className="flex gap-px bg-accent-foreground">
@@ -81,7 +75,6 @@ export const SettingsClient = ({
           <Tab value="billing" className={className}>
             Billing
           </Tab>
-          <TabsIndicator className="top-(--active-tab-top) left-0 h-(--active-tab-height) w-full translate-x-0 translate-y-0 bg-primary transition-all duration-200 ease-in-out" />
         </TabsList>
 
         <TabsPanel

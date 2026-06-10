@@ -23,6 +23,8 @@ import {
   SectionGutter,
   SectionKicker,
   StatLabel,
+  StatusPill,
+  TopFindingCallout,
 } from "../../_components/grid";
 
 const models = [
@@ -160,15 +162,13 @@ export const SimulationsClient = ({
             <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
               <StatLabel
                 label="Products"
-                icon={
-                  <ShoppingCartIcon className="size-8 shrink-0 text-primary" />
-                }
+                icon={<ShoppingCartIcon className="size-7.5 text-primary" />}
               />
               <div>
-                <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
+                <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
                   {productCount}
                 </p>
-                <p className="mt-3 font-light text-foreground-dimmed text-sm">
+                <p className="mt-3 text-foreground-dimmed text-xs">
                   in your catalog
                 </p>
               </div>
@@ -177,16 +177,16 @@ export const SimulationsClient = ({
             <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
               <StatLabel
                 label="Competitors Selected"
-                icon={<BullseyeIcon className="size-8 shrink-0 text-warning" />}
+                icon={<BullseyeIcon className="size-7.5 text-error" />}
               />
               <div>
-                <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
+                <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
                   {selectedCompetitorCount}
-                  <span className="ml-1 font-light text-2xl text-foreground-dimmed">
+                  <span className="ml-1 font-medium text-foreground-dimmed text-xl">
                     / {competitorCount}
                   </span>
                 </p>
-                <p className="mt-3 font-light text-foreground-dimmed text-sm">
+                <p className="mt-3 text-foreground-dimmed text-xs">
                   selected for simulations
                 </p>
               </div>
@@ -195,13 +195,13 @@ export const SimulationsClient = ({
             <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
               <StatLabel
                 label="Estimated Simulations"
-                icon={<RadarIcon className="size-8 shrink-0 text-success" />}
+                icon={<RadarIcon className="size-7.5 text-warning" />}
               />
               <div>
-                <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
+                <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
                   {totalSimulations}
                 </p>
-                <p className="mt-3 font-light text-foreground-dimmed text-sm">
+                <p className="mt-3 text-foreground-dimmed text-xs">
                   products × competitors × 4 models
                 </p>
               </div>
@@ -216,13 +216,13 @@ export const SimulationsClient = ({
         <div className="mx-8 bg-background-rich">
           <div className="border-accent-foreground border-b p-4">
             <SectionKicker>01 — Discovery</SectionKicker>
-            <h2 className="mt-2 font-medium text-2xl text-foreground">
+            <h2 className="mt-2 font-semibold text-foreground-rich text-lg">
               Competitor Discovery
             </h2>
-            <p className="font-light text-foreground-dimmed">
+            <p className="mt-1 text-foreground-dimmed text-sm">
               Re-run AI competitor detection using your current products.
             </p>
-            <p className="mt-2 font-light text-foreground-dimmed text-sm">
+            <p className="mt-2 text-foreground-dimmed text-xs">
               Current total competitors: {competitorCount}
             </p>
           </div>
@@ -241,17 +241,16 @@ export const SimulationsClient = ({
           <div className="flex items-center justify-between border-accent-foreground border-b p-4">
             <div>
               <SectionKicker>02 — Simulation</SectionKicker>
-              <h2 className="mt-2 font-medium text-2xl text-foreground">
+              <h2 className="mt-2 font-semibold text-foreground-rich text-lg">
                 Win-Rate Simulation
               </h2>
-              <p className="font-light text-foreground-dimmed">
+              <p className="mt-1 text-foreground-dimmed text-sm">
                 Re-run product vs competitor simulations across GPT-4, Claude,
                 Gemini & Perplexity.
               </p>
             </div>
             <div className="flex items-center gap-2">
               <Button
-                variant="outline"
                 color="accent"
                 type="button"
                 onClick={reset}
@@ -260,7 +259,6 @@ export const SimulationsClient = ({
                 Reset
               </Button>
               <Button
-                variant="flat"
                 color="primary"
                 type="button"
                 onClick={runScan}
@@ -277,38 +275,42 @@ export const SimulationsClient = ({
             <div className="space-y-4 p-4">
               <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-4">
                 <div className="bg-background-rich p-3 transition-colors hover:bg-background">
-                  <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+                  <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
                     Phase
                   </p>
-                  <p className="mt-1 text-foreground capitalize">{phase}</p>
+                  <p className="mt-1 font-medium text-foreground-rich capitalize">
+                    {phase}
+                  </p>
                 </div>
                 <div className="bg-background-rich p-3 transition-colors hover:bg-background">
-                  <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+                  <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
                     Progress
                   </p>
-                  <p className="mt-1 text-foreground">{stats.progress}%</p>
+                  <p className="mt-1 font-medium text-foreground-rich tabular-nums">
+                    {stats.progress}%
+                  </p>
                 </div>
                 <div className="bg-background-rich p-3 transition-colors hover:bg-background">
-                  <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+                  <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
                     Wins / Losses
                   </p>
-                  <p className="mt-1 text-foreground">
+                  <p className="mt-1 font-medium text-foreground-rich tabular-nums">
                     {stats.wins} / {stats.losses}
                   </p>
                 </div>
                 <div className="bg-background-rich p-3 transition-colors hover:bg-background">
-                  <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+                  <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
                     Elapsed
                   </p>
-                  <p className="mt-1 text-foreground">
+                  <p className="mt-1 font-medium text-foreground-rich tabular-nums">
                     {formatElapsed(elapsed)}
                   </p>
                 </div>
               </div>
 
-              <div className="h-1 w-full bg-accent-foreground">
+              <div className="h-1.5 w-full rounded-full bg-accent-foreground">
                 <div
-                  className="h-full bg-primary transition-all"
+                  className="h-full rounded-full bg-primary transition-all"
                   style={{ width: `${stats.progress}%` }}
                 />
               </div>
@@ -326,26 +328,30 @@ export const SimulationsClient = ({
                       height={32}
                       className="mb-2 size-8"
                     />
-                    <p className="font-medium text-foreground text-sm">
+                    <p className="font-medium text-foreground-rich text-sm">
                       {label}
                     </p>
                     <div className="mt-0.5 flex items-center gap-1.5">
-                      <span className="font-light text-success text-xs">
+                      <span className="font-medium text-success text-xs">
                         {modelStats[label]?.wins ?? 0}W
                       </span>
                       <span className="text-foreground-dimmed text-xs">·</span>
-                      <span className="font-light text-error text-xs">
+                      <span className="font-medium text-error text-xs">
                         {modelStats[label]?.losses ?? 0}L
                       </span>
                     </div>
-                    <span
-                      className={cn(
-                        "font-light text-sm",
-                        statuses[label] === "complete" && "text-success",
-                        statuses[label] === "running" && "text-primary",
-                        (!statuses[label] || statuses[label] === "queued") &&
-                          "text-foreground-dimmed/50",
-                      )}
+                    <StatusPill
+                      tone={(() => {
+                        switch (true) {
+                          case statuses[label] === "complete":
+                            return "success";
+                          case statuses[label] === "running":
+                            return "primary";
+                          default:
+                            return "neutral";
+                        }
+                      })()}
+                      className="mt-2 self-start"
                     >
                       {(() => {
                         switch (true) {
@@ -357,14 +363,14 @@ export const SimulationsClient = ({
                             return "Queued";
                         }
                       })()}
-                    </span>
+                    </StatusPill>
                   </div>
                 ))}
               </div>
 
-              <div className="max-h-72 overflow-y-auto border border-accent-foreground bg-background-dimmed p-3">
+              <div className="max-h-72 overflow-y-auto rounded-md border border-accent-foreground bg-background-dimmed p-3">
                 {logs.length === 0 ? (
-                  <p className="font-light text-foreground-dimmed text-sm">
+                  <p className="text-foreground-dimmed text-sm">
                     No logs yet. Start a simulation to see live output.
                   </p>
                 ) : (
@@ -383,7 +389,7 @@ export const SimulationsClient = ({
                         >
                           [{entry.model}]
                         </span>
-                        <span className="font-light text-foreground-dimmed leading-relaxed">
+                        <span className="text-foreground-dimmed leading-relaxed">
                           {entry.message}
                         </span>
                       </div>
@@ -429,16 +435,16 @@ const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
         <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
           <StatLabel
             label="Win Rate"
-            icon={<AwardIcon className={cn("size-8 shrink-0", winRateColor)} />}
+            icon={<AwardIcon className="size-7.5 text-success" />}
           />
           <p
             className={cn(
-              "font-medium text-5xl tabular-nums tracking-tight",
+              "font-bold text-4xl tabular-nums tracking-[-0.02em]",
               winRateColor,
             )}
           >
             {winRate}
-            <span className="ml-0.5 font-light text-2xl text-foreground-dimmed">
+            <span className="ml-0.5 font-medium text-foreground-dimmed text-xl">
               %
             </span>
           </p>
@@ -446,27 +452,27 @@ const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
         <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
           <StatLabel
             label="Products"
-            icon={<ShoppingCartIcon className="size-8 shrink-0 text-primary" />}
+            icon={<ShoppingCartIcon className="size-7.5 text-primary" />}
           />
-          <p className="font-medium text-5xl text-foreground tabular-nums tracking-tight">
+          <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
             {count}
           </p>
         </div>
         <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
           <StatLabel
             label="Wins"
-            icon={<TrendUpIcon className="size-8 shrink-0 text-success" />}
+            icon={<TrendUpIcon className="size-7.5 text-success" />}
           />
-          <p className="font-medium text-5xl text-success tabular-nums tracking-tight">
+          <p className="font-bold text-4xl text-success tabular-nums tracking-[-0.02em]">
             {wins}
           </p>
         </div>
         <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
           <StatLabel
             label="Losses"
-            icon={<TrendDownIcon className="size-8 shrink-0 text-error" />}
+            icon={<TrendDownIcon className="size-7.5 text-error" />}
           />
-          <p className="font-medium text-5xl text-error tabular-nums tracking-tight">
+          <p className="font-bold text-4xl text-error tabular-nums tracking-[-0.02em]">
             {losses}
           </p>
         </div>
@@ -490,24 +496,24 @@ const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
                 height={32}
                 className="mb-3 size-8"
               />
-              <p className="font-medium text-foreground">{label}</p>
+              <p className="font-medium text-foreground-rich">{label}</p>
               <div className="mt-0.5 flex items-center gap-2">
-                <span className="font-light text-sm text-success">
+                <span className="font-medium text-sm text-success">
                   {rates?.wins ?? 0} W
                 </span>
                 <span className="text-foreground-dimmed/30 text-sm">—</span>
-                <span className="font-light text-error text-sm">
+                <span className="font-medium text-error text-sm">
                   {rates?.losses ?? 0} L
                 </span>
               </div>
               <div className="mt-2 flex items-center gap-2">
-                <div className="h-0.5 flex-1 bg-accent-foreground">
+                <div className="h-1 flex-1 rounded-full bg-accent-foreground">
                   <div
-                    className="h-full bg-primary"
+                    className="h-full rounded-full bg-primary"
                     style={{ width: `${rate}%` }}
                   />
                 </div>
-                <span className="w-8 text-right font-light text-foreground-dimmed text-xs">
+                <span className="w-8 text-right text-foreground-dimmed text-xs tabular-nums">
                   {rate}%
                 </span>
               </div>
@@ -517,17 +523,14 @@ const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
       </div>
 
       {topFinding && (
-        <div className="border border-accent-foreground bg-background-rich p-4">
-          <SectionKicker>Top Finding</SectionKicker>
-          <p className="mt-2 font-light text-foreground">
-            {topFinding.name} loses on{" "}
-            <span className="font-medium text-foreground">
-              {topFinding.missingAttributes.join(" and ")}
-            </span>{" "}
-            — {topFinding.impactDescription} Costs you{" "}
-            {topFinding.lossPercentage}% of simulations.
-          </p>
-        </div>
+        <TopFindingCallout className="rounded-md">
+          {topFinding.name} loses on{" "}
+          <span className="font-semibold text-foreground-rich">
+            {topFinding.missingAttributes.join(" and ")}
+          </span>{" "}
+          — {topFinding.impactDescription} Costs you {topFinding.lossPercentage}
+          % of simulations.
+        </TopFindingCallout>
       )}
     </div>
   );

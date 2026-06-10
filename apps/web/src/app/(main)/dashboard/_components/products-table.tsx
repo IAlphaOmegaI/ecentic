@@ -21,6 +21,7 @@ import type { ReactNode } from "react";
 import { usePaginationChangeHandler } from "@/hooks/pagination";
 import { formatPrice } from "@/lib/currency";
 import { formatRelativeTime } from "@/lib/date";
+import { SectionKicker } from "./grid";
 
 const WinRateBar = ({ rate }: { rate: number }) => {
   const { bar, text } = (() => {
@@ -36,10 +37,13 @@ const WinRateBar = ({ rate }: { rate: number }) => {
 
   return (
     <div className="flex items-center gap-2">
-      <div className="h-1 w-24 bg-accent-foreground">
-        <div className={cn("h-full", bar)} style={{ width: `${rate}%` }} />
+      <div className="h-1 w-24 rounded-full bg-accent-foreground">
+        <div
+          className={cn("h-full rounded-full", bar)}
+          style={{ width: `${rate}%` }}
+        />
       </div>
-      <span className={cn("font-medium text-foreground", text)}>{rate}%</span>
+      <span className={cn("font-medium tabular-nums", text)}>{rate}%</span>
     </div>
   );
 };
@@ -58,10 +62,13 @@ const QualityBar = ({ score }: { score: number }) => {
 
   return (
     <div className="flex items-center gap-2">
-      <div className="h-1 w-24 bg-accent-foreground">
-        <div className={cn("h-full", color)} style={{ width: `${score}%` }} />
+      <div className="h-1 w-24 rounded-full bg-accent-foreground">
+        <div
+          className={cn("h-full rounded-full", color)}
+          style={{ width: `${score}%` }}
+        />
       </div>
-      <span className="text-foreground-dimmed">{score}/100</span>
+      <span className="text-foreground-dimmed tabular-nums">{score}/100</span>
     </div>
   );
 };
@@ -75,7 +82,7 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
         href={`/dashboard/products/${row.original._id}`}
         className="group flex items-center gap-2"
       >
-        <Avatar className="size-9 min-w-9 rounded-none bg-primary/10">
+        <Avatar className="size-9 min-w-9 rounded-md bg-background-dimmed">
           <AvatarImage
             src={row.original.image ?? "/images/fallback.png"}
             alt={row.original.title}
@@ -85,7 +92,7 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
           </AvatarFallback>
         </Avatar>
         <div>
-          <p className="font-medium text-foreground transition-colors group-hover:text-primary">
+          <p className="font-medium text-foreground-rich transition-colors group-hover:text-primary">
             {row.original.title}
           </p>
           {row.original.sku && (
@@ -99,7 +106,7 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
     accessorKey: "price",
     header: "Price",
     cell: ({ row }) => (
-      <span className="text-foreground">
+      <span className="text-foreground tabular-nums">
         {formatPrice(row.original.price, row.original.currency)}
       </span>
     ),
@@ -113,7 +120,7 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
     accessorKey: "winRate.gpt4",
     header: "GPT-4",
     cell: ({ row }) => (
-      <span className="font-light text-foreground">
+      <span className="text-foreground tabular-nums">
         {row.original.winRate.gpt4}%
       </span>
     ),
@@ -122,7 +129,7 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
     accessorKey: "winRate.claude",
     header: "Claude",
     cell: ({ row }) => (
-      <span className="font-light text-foreground">
+      <span className="text-foreground tabular-nums">
         {row.original.winRate.claude}%
       </span>
     ),
@@ -131,7 +138,7 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
     accessorKey: "winRate.gemini",
     header: "Gemini",
     cell: ({ row }) => (
-      <span className="font-light text-foreground">
+      <span className="text-foreground tabular-nums">
         {row.original.winRate.gemini}%
       </span>
     ),
@@ -145,7 +152,7 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
     accessorKey: "updatedAt",
     header: "Last Scan",
     cell: ({ row }) => (
-      <span className="whitespace-nowrap font-light text-foreground-dimmed">
+      <span className="whitespace-nowrap text-foreground-dimmed">
         {formatRelativeTime(row.original.updatedAt)}
       </span>
     ),
@@ -155,12 +162,12 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
     header: undefined,
     cell: ({ row }) => (
       <Button
-        size={"icon"}
-        color="primary"
-        variant={"flat"}
+        size="icon"
+        color="accent"
+        className="size-7"
         render={<Link href={`/dashboard/products/${row.original._id}`} />}
       >
-        <ArrowRightIcon />
+        <ArrowRightIcon className="size-4" />
       </Button>
     ),
   },
@@ -181,12 +188,11 @@ export const ProductsTable = ({
       <div className="flex items-end justify-between border-accent-foreground border-b p-4">
         <div>
           {kicker && (
-            <p className="mb-2 flex items-center gap-2 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-              <span className="size-1.5 bg-primary" />
-              {kicker}
-            </p>
+            <div className="mb-2">
+              <SectionKicker>{kicker}</SectionKicker>
+            </div>
           )}
-          <p className="font-medium text-2xl text-foreground">{title}</p>
+          <p className="font-semibold text-foreground-rich text-lg">{title}</p>
         </div>
         {action}
       </div>
@@ -205,7 +211,7 @@ export const ProductsTable = ({
               <div className="p-8 text-center">
                 <BoxMinusIcon className="mx-auto mb-6 size-24" />
                 <p className="text-foreground text-lg">No products found</p>
-                <p className="mt-1 font-light text-foreground-dimmed text-sm">
+                <p className="mt-1 text-foreground-dimmed text-sm">
                   Import products and run a simulation to see win rates here.
                 </p>
               </div>

@@ -3,7 +3,9 @@
 import {
   CheckBadgeIcon,
   CheckIcon,
+  CircleBoltIcon,
   CopyIcon,
+  LoaderIcon,
   PhotoIcon,
   SunsetIcon,
 } from "@zenncore/icons";
@@ -39,6 +41,7 @@ import {
   saveProfile,
 } from "@/server/app/intelligence/ucp";
 import type * as Product from "@/server/app/product";
+import { StatusPill } from "../../_components/grid";
 import { UcpAdvancedValidator } from "./ucp-advanced-validator";
 
 // ─── JSON syntax highlighter ────────────────────────────────────────────────
@@ -385,7 +388,7 @@ export const UcpManager = ({
           const product = row.original;
           return (
             <div className="flex items-center gap-3">
-              <div className="flex size-8 shrink-0 items-center justify-center bg-primary/10 font-semibold text-primary text-xs">
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 font-semibold text-[11px] text-primary">
                 {product.title.slice(0, 2).toUpperCase()}
               </div>
               <div>
@@ -406,22 +409,9 @@ export const UcpManager = ({
         cell: ({ row }) => {
           const hasData = Boolean(productData[row.original.id]);
           return (
-            <span
-              className={cn(
-                "inline-flex items-center gap-1.5 px-2 py-0.5 font-medium text-xs",
-                hasData
-                  ? "bg-primary/10 text-primary"
-                  : "bg-accent-foreground text-foreground-dimmed",
-              )}
-            >
-              <span
-                className={cn(
-                  "size-1.5 rounded-full",
-                  hasData ? "bg-primary" : "bg-foreground-dimmed/40",
-                )}
-              />
+            <StatusPill tone={hasData ? "success" : "neutral"}>
               {hasData ? "Complete" : "Missing"}
-            </span>
+            </StatusPill>
           );
         },
       },
@@ -435,12 +425,16 @@ export const UcpManager = ({
 
           return (
             <Button
-              variant="ghost"
-              color="neutral"
+              color="accent"
               onClick={() => handleGenerateProduct(product.id)}
               disabled={isGenerating}
-              className="text-foreground-dimmed text-xs hover:text-foreground disabled:opacity-40"
+              className="px-2.5 py-1 text-xs"
             >
+              {isGenerating ? (
+                <LoaderIcon className="size-4 animate-spin text-foreground-dimmed" />
+              ) : (
+                <CircleBoltIcon className="size-4 text-foreground-dimmed" />
+              )}
               {(() => {
                 switch (true) {
                   case isGenerating:
@@ -521,7 +515,7 @@ export const UcpManager = ({
 
       {/* Tabs */}
       <Tabs defaultValue="profile">
-        <TabsList className="h-auto border border-accent-foreground bg-transparent px-0">
+        <TabsList className="h-auto overflow-hidden rounded-lg border border-accent-foreground bg-transparent px-0">
           <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
           <Tab value="profile">Merchant Profile</Tab>
           <Tab value="products">Product Structured Data</Tab>
@@ -532,7 +526,7 @@ export const UcpManager = ({
         <TabsPanel value="profile">
           <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
             {/* Fields */}
-            <div className="border border-accent-foreground bg-background">
+            <div className="overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
               <div className="border-accent-foreground border-b px-4 py-2.5">
                 <p className="font-medium text-base text-foreground">
                   Profile Fields
@@ -587,7 +581,6 @@ export const UcpManager = ({
               </div>
               <div className="flex items-center gap-2 border-accent-foreground border-t px-4 py-3">
                 <Button
-                  variant="flat"
                   color="primary"
                   onClick={handleSave}
                   disabled={isSaving}
@@ -606,7 +599,6 @@ export const UcpManager = ({
                 </Button>
                 {targetStore && (
                   <Button
-                    variant="outline"
                     color="primary"
                     onClick={handlePublishProfile}
                     disabled={isPublishingProfile}
@@ -633,14 +625,14 @@ export const UcpManager = ({
             {/* Right column */}
             <div className="flex flex-col gap-4">
               {/* JSON Preview */}
-              <div className="border border-accent-foreground bg-background">
+              <div className="overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
                 <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-2.5">
                   <div className="flex items-center gap-2">
                     <p className="font-medium text-base text-foreground">
                       JSON Preview
                     </p>
                     {generation && (
-                      <span className="bg-primary/10 px-1.5 py-0.5 font-medium text-primary text-xs">
+                      <span className="rounded-full bg-primary/10 px-2 py-0.5 font-semibold text-[11px] text-primary">
                         AI-enhanced
                       </span>
                     )}
@@ -669,7 +661,7 @@ export const UcpManager = ({
               </div>
 
               {/* Install instructions */}
-              <div className="border border-accent-foreground bg-background">
+              <div className="overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
                 <div className="border-accent-foreground border-b px-4 py-2.5">
                   <p className="font-medium text-base text-foreground">
                     Install
@@ -713,17 +705,17 @@ export const UcpManager = ({
 
         {/* Validate tab */}
         <TabsPanel value="validate">
-          <div className="mt-4 border border-accent-foreground">
+          <div className="mt-4 overflow-hidden rounded-lg border border-accent-foreground">
             <UcpValidatorForm />
           </div>
-          <div className="mt-4 border border-accent-foreground">
+          <div className="mt-4 overflow-hidden rounded-lg border border-accent-foreground">
             <UcpAdvancedValidator />
           </div>
         </TabsPanel>
 
         {/* Products tab */}
         <TabsPanel value="products">
-          <div className="mt-4 border border-accent-foreground bg-background">
+          <div className="mt-4 overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
             <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
               <div className="flex items-center gap-4">
                 <div>
@@ -740,7 +732,6 @@ export const UcpManager = ({
               </div>
               <div className="flex items-center gap-2">
                 <Button
-                  variant="flat"
                   color="primary"
                   onClick={handleGenerateAll}
                   disabled={isGeneratingAll || products.length === 0}
@@ -750,7 +741,6 @@ export const UcpManager = ({
                 </Button>
                 {targetStore && (
                   <Button
-                    variant="outline"
                     color="primary"
                     onClick={handlePublishProducts}
                     disabled={isPublishingProducts || products.length === 0}

@@ -20,6 +20,14 @@ const toneClasses: Record<Tone, string> = {
   skip: "text-foreground-dimmed/60",
 };
 
+const chipToneClasses: Record<Tone, string> = {
+  success: "bg-primary/10 text-primary",
+  danger: "bg-error/10 text-error",
+  warning: "bg-warning/10 text-warning",
+  neutral: "bg-background-dimmed text-foreground-dimmed",
+  skip: "bg-background-dimmed text-foreground-dimmed/60",
+};
+
 const gradeConfig: Record<
   UcpAdvancedCheck.AdvancedGrade,
   { tone: Tone; label: string; description: string }
@@ -35,8 +43,8 @@ const formatLatency = (ms: number | null) => (ms === null ? "—" : `${ms} ms`);
 const Chip = ({ label, tone }: { label: string; tone: Tone }) => (
   <span
     className={cn(
-      "inline-flex w-fit items-center border px-2.5 py-1 font-medium text-xs",
-      toneClasses[tone],
+      "inline-flex w-fit items-center rounded-full px-2 py-0.5 font-semibold text-[11px]",
+      chipToneClasses[tone],
     )}
   >
     {label}
@@ -51,11 +59,11 @@ const SectionHeading = ({
   description?: string;
 }) => (
   <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3 sm:px-5">
-    <p className="font-medium text-foreground text-sm">{title}</p>
+    <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+      {title}
+    </p>
     {description && (
-      <p className="mt-1 font-light text-foreground-dimmed text-xs">
-        {description}
-      </p>
+      <p className="mt-1 text-foreground-dimmed text-xs">{description}</p>
     )}
   </div>
 );
@@ -155,7 +163,7 @@ const LifecycleStepRow = ({
     <div className="grid gap-3 bg-background px-4 py-4 md:grid-cols-[28px_minmax(0,160px)_60px_80px_minmax(0,1fr)] md:items-center">
       <span
         className={cn(
-          "inline-flex size-7 shrink-0 items-center justify-center border",
+          "inline-flex size-7 shrink-0 items-center justify-center",
           toneClasses[tone],
         )}
       >
@@ -210,7 +218,7 @@ const McpToolTestRow = ({
     <div className="grid gap-3 bg-background-dimmed/40 px-4 py-2.5 md:grid-cols-[28px_minmax(0,200px)_80px_90px_minmax(0,1fr)] md:items-center">
       <span
         className={cn(
-          "inline-flex size-6 shrink-0 items-center justify-center border text-[10px]",
+          "inline-flex size-6 shrink-0 items-center justify-center text-[10px]",
           toneClasses[tone],
         )}
       >
@@ -328,7 +336,7 @@ const McpProbeRow = ({ probe }: { probe: UcpAdvancedCheck.McpProbeResult }) => {
             {["", "Tool", "Latency", "Result", "Note"].map((h) => (
               <p
                 key={h}
-                className="font-medium text-foreground-dimmed text-xs uppercase tracking-[0.2em]"
+                className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
               >
                 {h}
               </p>
@@ -418,19 +426,17 @@ const GradeCard = ({
     <div className="flex items-center gap-5 bg-background px-5 py-5">
       <div
         className={cn(
-          "flex size-16 shrink-0 items-center justify-center border font-semibold text-4xl",
-          toneClasses[config.tone],
+          "flex size-16 shrink-0 items-center justify-center rounded-lg font-semibold text-4xl",
+          chipToneClasses[config.tone],
         )}
       >
         {config.label}
       </div>
       <div>
-        <p className="font-medium text-base text-foreground">
+        <p className="font-semibold text-base text-foreground-rich">
           {config.description}
         </p>
-        <p className="mt-1 font-light text-foreground-dimmed text-sm">
-          {detail}
-        </p>
+        <p className="mt-1 text-foreground-dimmed text-sm">{detail}</p>
       </div>
     </div>
   );
@@ -454,7 +460,7 @@ const AdvancedResults = ({
           {["Service", "Endpoint", "Status", "Latency", "CORS"].map((h) => (
             <p
               key={h}
-              className="font-medium text-foreground-dimmed text-xs uppercase tracking-[0.2em]"
+              className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
             >
               {h}
             </p>
@@ -567,10 +573,10 @@ export const UcpAdvancedValidator = () => {
   return (
     <div className="flex flex-col">
       <div className="border-accent-foreground border-t bg-background-dimmed px-5 py-4">
-        <p className="font-medium text-foreground text-sm">
+        <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
           Advanced endpoint & lifecycle testing
         </p>
-        <p className="mt-1 font-light text-foreground-dimmed text-xs">
+        <p className="mt-1 text-foreground-dimmed text-xs">
           Probes all service endpoints declared in the profile and simulates the
           full AI agent checkout lifecycle — Create → Update → Complete →
           Cancel. Makes live HTTP requests to the merchant server.
@@ -581,11 +587,11 @@ export const UcpAdvancedValidator = () => {
         onSubmit={handleSubmit}
         className="grid gap-px bg-accent-foreground sm:grid-cols-[minmax(0,1fr)_auto]"
       >
-        <div className="bg-background px-4 py-3">
+        <div className="bg-background-rich px-4 py-3">
           <TextField
             value={domain}
             onValueChange={setDomain}
-            className="h-9 border border-accent-foreground bg-background"
+            className="h-10 bg-background-rich"
           >
             <TextFieldInput
               placeholder="yourdomain.com"
@@ -594,10 +600,9 @@ export const UcpAdvancedValidator = () => {
             />
           </TextField>
         </div>
-        <div className="flex items-center bg-background px-4 py-3">
+        <div className="flex items-center bg-background-rich px-4 py-3">
           <Button
             type="submit"
-            variant="flat"
             color="primary"
             disabled={isChecking || !domain.trim()}
             className="w-full justify-center py-2 text-sm sm:w-auto"

@@ -12,7 +12,7 @@ export const Switch = ({
     <SwitchPrimitive.Root
       defaultChecked
       className={createClassName(
-        "relative flex h-6 w-14 bg-background-dimmed p-px shadow-[inset_0_1.5px_2px] shadow-accent-foreground outline-1 outline-accent-foreground -outline-offset-1 transition-[box-shadow,background] duration-125 ease-[cubic-bezier(0.26,0.75,0.38,0.45)] before:absolute before:outline-primary before:outline-offset-2 focus-visible:before:inset-0 focus-visible:before:outline-2 active:bg-background-dimmed data-checked:bg-primary data-checked:active:bg-primary-rich",
+        "relative flex h-6 w-11 items-center rounded-full bg-accent-foreground p-0.5 transition-colors duration-150 ease-out before:absolute before:rounded-full before:outline-primary before:outline-offset-2 focus-visible:before:inset-0 focus-visible:before:outline-2 data-checked:bg-primary",
         className,
         classList?.root,
       )}
@@ -20,7 +20,7 @@ export const Switch = ({
     >
       <SwitchPrimitive.Thumb
         className={createClassName(
-          "h-full w-8 bg-background-rich shadow-[0_0_1px_1px,0_1px_1px,1px_2px_4px_-1px] shadow-accent-foreground transition-transform duration-150 data-checked:translate-x-6",
+          "size-5 rounded-full bg-background-rich shadow-[0_1px_2px_rgba(0,0,0,0.2)] transition-transform duration-150 ease-out data-checked:translate-x-5",
           classList?.thumb,
         )}
       />

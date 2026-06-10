@@ -97,9 +97,9 @@ const columns = [
       })();
       return (
         <div className="flex items-center gap-2">
-          <div className="h-1 w-20 bg-accent-foreground">
+          <div className="h-1 w-20 rounded-full bg-accent-foreground">
             <div
-              className={cn("h-full", color.bar)}
+              className={cn("h-full rounded-full", color.bar)}
               style={{ width: `${rate}%` }}
             />
           </div>
@@ -189,21 +189,21 @@ export const ProductDetail = ({ data }: ProductDetail.Props) => {
 
   return (
     <Tabs defaultValue="overview">
-      <TabsList className="w-full border-none">
-        <TabsIndicator className={"h-full"} />
-        <Tab value="overview" className={"flex-1"}>
+      <TabsList className="w-full border-0">
+        <TabsIndicator className="h-full" />
+        <Tab value="overview" className="flex-1">
           Win Rate
         </Tab>
-        <Tab value="replay" className={"flex-1"}>
+        <Tab value="replay" className="flex-1">
           Agent Replay
         </Tab>
-        <Tab value="gaps" className={"flex-1"}>
+        <Tab value="gaps" className="flex-1">
           Data Gaps
         </Tab>
-        <Tab value="battlecard" className={"flex-1"}>
+        <Tab value="battlecard" className="flex-1">
           Battlecard
         </Tab>
-        <Tab value="optimize" className={"flex-1"}>
+        <Tab value="optimize" className="flex-1">
           Optimize
         </Tab>
       </TabsList>
@@ -250,7 +250,7 @@ const OverviewTab = ({
   <>
     <div className="p-4">
       <SectionKicker>01 — Performance</SectionKicker>
-      <p className="mt-2 font-medium text-2xl text-foreground">
+      <p className="mt-2 font-semibold text-foreground-rich text-lg">
         Win Rate by Model
       </p>
     </div>
@@ -269,9 +269,9 @@ const OverviewTab = ({
                   <Image
                     src={config.logo}
                     alt={label}
-                    width={32}
-                    height={32}
-                    className="size-8 shrink-0"
+                    width={20}
+                    height={20}
+                    className="size-5 shrink-0"
                   />
                 )
               }
@@ -279,25 +279,25 @@ const OverviewTab = ({
             <div>
               <p
                 className={cn(
-                  "font-medium text-5xl tabular-nums tracking-tight",
+                  "font-bold text-4xl tabular-nums tracking-[-0.02em]",
                   rateColor(rate),
                 )}
               >
                 {rate}
-                <span className="ml-0.5 font-light text-2xl text-foreground-dimmed">
+                <span className="ml-0.5 font-medium text-foreground-dimmed text-xl">
                   %
                 </span>
               </p>
               <div className="mt-3">
-                <div className="h-1 w-full bg-accent-foreground">
+                <div className="h-1 w-full rounded-full bg-accent-foreground">
                   <motion.div
-                    className={cn("h-full", barColor(rate))}
+                    className={cn("h-full rounded-full", barColor(rate))}
                     initial={{ width: 0 }}
                     animate={{ width: `${rate}%` }}
                     transition={{ ...Spring.Gentle, delay: 0.3 }}
                   />
                 </div>
-                <div className="mt-2 flex justify-between font-light text-foreground-dimmed text-sm">
+                <div className="mt-2 flex justify-between text-foreground-dimmed text-xs">
                   <span>
                     {wins} W · {losses} L
                   </span>
@@ -312,15 +312,11 @@ const OverviewTab = ({
     <div className="flex items-end justify-between border-accent-foreground border-y p-4">
       <div>
         <SectionKicker>02 — Competitive Landscape</SectionKicker>
-        <p className="mt-2 font-medium text-2xl text-foreground">
+        <p className="mt-2 font-semibold text-foreground-rich text-lg">
           Win rate vs. each competitor
         </p>
       </div>
-      <Button
-        variant="outline"
-        color="primary"
-        render={<Link href="/dashboard/competitors" />}
-      >
+      <Button color="primary" render={<Link href="/dashboard/competitors" />}>
         View All
         <ArrowRightIcon className="size-4" />
       </Button>
@@ -424,8 +420,10 @@ const ReplayTab = ({
               )}
               <span
                 className={cn(
-                  "font-medium text-sm uppercase leading-tight tracking-[0.2em] transition-colors",
-                  isSelected ? "text-foreground" : "text-foreground-dimmed",
+                  "font-medium text-[10px] uppercase leading-tight tracking-[0.08em] transition-colors",
+                  isSelected
+                    ? "text-foreground-rich"
+                    : "text-foreground-dimmed",
                 )}
               >
                 {label}
@@ -436,39 +434,27 @@ const ReplayTab = ({
       </div>
 
       {active && (
-        <div className="flex min-w-0 flex-1 flex-col">
-          <div className="flex items-center gap-2 border-accent-foreground border-b bg-background-rich px-4 py-2">
-            {(() => {
-              const logo = Model[active.label as keyof typeof Model]?.logo;
-              return (
-                logo && (
-                  <Image
-                    src={logo}
-                    alt={active.label}
-                    width={16}
-                    height={16}
-                    className="size-6"
-                  />
-                )
-              );
-            })()}
-            <p className="font-medium text-foreground">
+        <div className="flex min-w-0 flex-1 flex-col p-4">
+          <div className="flex items-center gap-2 rounded-t-lg bg-emphasis-rich px-4 py-2">
+            <p className="font-mono text-accent text-xs">
               {active.label} Decision Replay
             </p>
-            <span className="ml-auto font-light text-foreground-dimmed text-xs">
+            <span className="ml-auto font-mono text-accent text-xs">
               {active.simulations.length} simulation
               {active.simulations.length !== 1 ? "s" : ""}
             </span>
           </div>
-          <div className="flex-1 bg-foreground p-5 font-mono text-xs leading-relaxed">
-            <p className="font-bold text-white">Evaluating: {product.title}</p>
+          <div className="flex-1 rounded-b-lg bg-emphasis px-6 py-5 font-mono text-xs leading-relaxed">
+            <p className="font-bold text-accent-foreground">
+              Evaluating: {product.title}
+            </p>
             <div className="h-2" />
             {active.simulations.map((simulation) => (
               <div key={simulation.id} className="mb-4">
-                <p className="text-white/70">
+                <p className="text-accent-rich">
                   → vs. {simulation.competitorTitle}
                 </p>
-                <p className="text-white/60">
+                <p className="text-accent">
                   Score: {simulation.productScore ?? "?"} vs{" "}
                   {simulation.competitorScore ?? "?"}
                 </p>
@@ -476,8 +462,8 @@ const ReplayTab = ({
                   className={cn(
                     "font-bold",
                     simulation.winner === "product"
-                      ? "text-success"
-                      : "text-warning",
+                      ? "text-success-rich"
+                      : "text-warning-rich",
                   )}
                 >
                   DECISION:{" "}
@@ -486,7 +472,7 @@ const ReplayTab = ({
                     : simulation.competitorTitle}
                 </p>
                 {simulation.reasoning && (
-                  <p className="mt-1 text-white/60 leading-relaxed">
+                  <p className="mt-1 text-accent leading-relaxed">
                     REASONING: &quot;{simulation.reasoning}&quot;
                   </p>
                 )}
@@ -505,13 +491,15 @@ const GapsTab = ({ product }: { product: ProductDetailData["product"] }) => (
     <div className="flex items-end justify-between border-accent-foreground border-y p-4">
       <div>
         <SectionKicker>01 — Listing Health</SectionKicker>
-        <p className="mt-2 font-medium text-2xl text-foreground">Data Gaps</p>
+        <p className="mt-2 font-semibold text-foreground-rich text-lg">
+          Data Gaps
+        </p>
       </div>
-      <p className="font-light text-foreground-dimmed">
+      <p className="text-foreground-dimmed text-sm">
         Quality score:{" "}
         <span className={cn("font-semibold", rateColor(product.quality))}>
           {product.quality}
-          <span className="font-light text-foreground-dimmed">/100</span>
+          <span className="font-normal text-foreground-dimmed">/100</span>
         </span>
       </p>
     </div>
@@ -575,7 +563,7 @@ const BattlecardTab = ({
       <div className="flex items-end justify-between border-accent-foreground border-y p-4">
         <div>
           <SectionKicker>01 — Battlecards</SectionKicker>
-          <p className="mt-2 font-medium text-2xl text-foreground">
+          <p className="mt-2 font-semibold text-foreground-rich text-lg">
             Head-to-Head Results
           </p>
         </div>
@@ -604,13 +592,16 @@ const BattlecardTab = ({
                     vs. {product.title}
                   </p>
                   <div className="mt-4 flex w-full items-center gap-2">
-                    <div className="h-1 flex-1 bg-accent-foreground">
+                    <div className="h-1 flex-1 rounded-full bg-accent-foreground">
                       <div
-                        className={cn("h-full", barColor(competitor.rate))}
+                        className={cn(
+                          "h-full rounded-full",
+                          barColor(competitor.rate),
+                        )}
                         style={{ width: `${competitor.rate}%` }}
                       />
                     </div>
-                    <span className="font-light text-foreground-dimmed tabular-nums">
+                    <span className="text-foreground-dimmed text-xs tabular-nums">
                       {wins.length} W · {losses.length} L
                     </span>
                   </div>
@@ -618,16 +609,16 @@ const BattlecardTab = ({
                 <div className="text-right">
                   <p
                     className={cn(
-                      "font-medium text-3xl tabular-nums leading-none tracking-tight",
+                      "font-bold text-3xl tabular-nums leading-none tracking-[-0.02em]",
                       rateColor(competitor.rate),
                     )}
                   >
                     {competitor.rate}{" "}
-                    <span className="font-light text-base text-foreground-dimmed">
+                    <span className="font-medium text-base text-foreground-dimmed">
                       %
                     </span>
                   </p>
-                  <p className="mt-1 font-light text-foreground-dimmed text-xs">
+                  <p className="mt-1 text-foreground-dimmed text-xs">
                     {total} sim{total !== 1 ? "s" : ""}
                   </p>
                 </div>
@@ -637,7 +628,7 @@ const BattlecardTab = ({
                 <div className="p-4">
                   <div className="mb-2 flex items-center gap-2">
                     <CheckIcon className="size-6 text-success" />
-                    <span className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+                    <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
                       Won · {wins.length}
                     </span>
                   </div>
@@ -662,7 +653,7 @@ const BattlecardTab = ({
                 <div className="p-4">
                   <div className="mb-2 flex items-center gap-2">
                     <XIcon className="size-6 text-error" />
-                    <span className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+                    <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
                       Lost · {losses.length}
                     </span>
                   </div>
@@ -720,55 +711,52 @@ const OptimizeTab = ({
       <div className="flex items-end justify-between border-accent-foreground border-y p-4">
         <div>
           <SectionKicker>01 — Optimization</SectionKicker>
-          <p className="mt-2 font-medium text-2xl text-foreground">
+          <p className="mt-2 font-semibold text-foreground-rich text-lg">
             Optimize Listing
           </p>
         </div>
-        <p className="font-light text-foreground-dimmed">
+        <p className="text-foreground-dimmed text-sm">
           Quality:{" "}
           <span className={cn("font-semibold", rateColor(product.quality))}>
             {product.quality}
-            <span className="font-light text-foreground-dimmed">/100</span>
+            <span className="font-normal text-foreground-dimmed">/100</span>
           </span>
         </p>
       </div>
       <div className="grid grid-cols-1 gap-px bg-accent-foreground lg:grid-cols-2">
         <div className="bg-background-rich p-6">
-          <p className="mb-2 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+          <p className="mb-2 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
             Title
           </p>
-          <p className="font-light text-foreground">{product.title}</p>
+          <p className="text-foreground">{product.title}</p>
 
-          <p className="mt-6 mb-2 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+          <p className="mt-6 mb-2 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
             Description
           </p>
           {product.description ? (
             <div
-              className="max-h-48 overflow-y-auto bg-background-dimmed p-3 font-light text-foreground text-sm leading-relaxed [&_ol]:mt-1 [&_ol]:list-decimal [&_ol]:pl-4 [&_p+p]:mt-2 [&_ul]:mt-1 [&_ul]:list-disc [&_ul]:pl-4"
+              className="max-h-48 overflow-y-auto rounded-md bg-background-dimmed p-3 text-foreground text-sm leading-relaxed [&_ol]:mt-1 [&_ol]:list-decimal [&_ol]:pl-4 [&_p+p]:mt-2 [&_ul]:mt-1 [&_ul]:list-disc [&_ul]:pl-4"
               // biome-ignore lint/security/noDangerouslySetInnerHtml: product description is HTML sourced from the user's own store
               dangerouslySetInnerHTML={{ __html: product.description }}
             />
           ) : (
-            <p className="font-light text-error text-sm italic">
-              No description found
-            </p>
+            <p className="text-error text-sm italic">No description found</p>
           )}
 
-          <p className="mt-6 mb-2 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+          <p className="mt-6 mb-2 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
             Structured Data
           </p>
           {structuredData ? (
-            <pre className="max-h-40 overflow-y-auto whitespace-pre-wrap bg-background-dimmed p-3 font-mono text-foreground-dimmed text-xs leading-relaxed">
+            <pre className="max-h-40 overflow-y-auto whitespace-pre-wrap rounded-md bg-background-dimmed p-3 font-mono text-foreground-dimmed text-xs leading-relaxed">
               {structuredData}
             </pre>
           ) : (
             <div className="space-y-3">
-              <p className="font-light text-error text-sm italic">
+              <p className="text-error text-sm italic">
                 No JSON-LD structured data found
               </p>
               <Button
                 type="button"
-                variant="outline"
                 color="accent"
                 onClick={handleGenerateJsonLd}
                 disabled={isPending}
@@ -781,15 +769,11 @@ const OptimizeTab = ({
         </div>
 
         <div className="bg-background-rich p-6">
-          <p className="mb-4 font-light text-foreground leading-relaxed">
+          <p className="mb-4 text-foreground leading-relaxed">
             Improve your listing data to increase win rates across all AI
             models.
           </p>
-          <Button
-            variant="flat"
-            color="primary"
-            render={<Link href="/dashboard/ucp" />}
-          >
+          <Button color="primary" render={<Link href="/dashboard/ucp" />}>
             Generate Optimized Data
             <ArrowRightIcon className="size-4" />
           </Button>

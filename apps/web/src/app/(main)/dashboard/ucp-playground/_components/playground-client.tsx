@@ -13,6 +13,7 @@ import {
   useState,
 } from "react";
 import { runPlayground } from "@/server/app/intelligence/ucp-playground";
+import { StatusPill } from "../../_components/grid";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -51,8 +52,10 @@ const ProfileLine = ({
       <span className="font-medium text-primary">Profile resolved</span>
       <span
         className={cn(
-          "font-mono text-xs uppercase",
-          line.transport === "mcp" ? "text-primary" : "text-warning",
+          "rounded-full px-2 py-0.5 font-semibold text-[11px] uppercase tracking-[0.05em]",
+          line.transport === "mcp"
+            ? "bg-primary/10 text-primary"
+            : "bg-warning/10 text-warning",
         )}
       >
         {line.transport}
@@ -256,12 +259,12 @@ export const PlaygroundClient = () => {
   return (
     <div className="space-y-4">
       {/* Input panel */}
-      <div className="border border-accent-foreground bg-background-rich">
+      <div className="rounded-lg border border-accent-foreground bg-background-rich">
         <div className="border-accent-foreground border-b px-4 py-2.5">
-          <p className="font-medium text-base text-foreground">
+          <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
             Store endpoint
           </p>
-          <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
+          <p className="mt-1 text-foreground-dimmed text-xs">
             Enter the base URL of a UCP-compliant store. A{" "}
             <span className="font-mono">/.well-known/ucp</span> profile will be
             resolved automatically to detect MCP or REST transport.
@@ -289,7 +292,6 @@ export const PlaygroundClient = () => {
             />
           </TextField>
           <Button
-            variant="flat"
             color="primary"
             onClick={handleRun}
             disabled={isRunning || !storeUrl.trim()}
@@ -306,10 +308,10 @@ export const PlaygroundClient = () => {
           </Button>
         </div>
         <div className="border-accent-foreground border-t px-4 py-3">
-          <p className="font-medium text-foreground text-xs">
+          <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
             Agent profile fixture
           </p>
-          <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
+          <p className="mt-1 text-foreground-dimmed text-xs">
             Used as <span className="font-mono">meta.ucp-agent.profile</span> in
             tool calls to test negotiation outcomes.
           </p>
@@ -317,25 +319,17 @@ export const PlaygroundClient = () => {
       </div>
 
       {/* Terminal output */}
-      <div className="border border-accent-foreground bg-background-rich">
+      <div className="rounded-lg border border-accent-foreground bg-background-rich">
         <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-2.5">
           <div className="flex items-center gap-2">
-            <p className="font-medium text-base text-foreground">Output</p>
+            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+              Output
+            </p>
             {phase === "running" && (
-              <span className="font-medium text-primary text-xs uppercase tracking-[0.2em]">
-                live
-              </span>
+              <StatusPill tone="primary">Live</StatusPill>
             )}
-            {phase === "done" && (
-              <span className="font-medium text-success text-xs uppercase tracking-[0.2em]">
-                done
-              </span>
-            )}
-            {phase === "error" && (
-              <span className="font-medium text-error text-xs uppercase tracking-[0.2em]">
-                error
-              </span>
-            )}
+            {phase === "done" && <StatusPill tone="success">Done</StatusPill>}
+            {phase === "error" && <StatusPill tone="error">Error</StatusPill>}
           </div>
           {!isEmpty && (
             <button
@@ -353,7 +347,7 @@ export const PlaygroundClient = () => {
 
         <div
           ref={logRef}
-          className="max-h-[520px] min-h-48 overflow-y-auto p-4 font-mono"
+          className="m-4 max-h-[520px] min-h-40 overflow-y-auto rounded-md bg-background-dimmed p-4 font-mono text-xs"
         >
           {isEmpty ? (
             <p className="font-light text-foreground-dimmed/50 text-xs">
@@ -412,14 +406,16 @@ const CartResult = ({ lines }: { lines: LogLine[] }) => {
   const json = JSON.stringify(raw, null, 2);
 
   return (
-    <div className="border border-accent-foreground bg-background-rich">
+    <div className="rounded-lg border border-accent-foreground bg-background-rich">
       <div className="border-accent-foreground border-b px-4 py-2.5">
-        <p className="font-medium text-base text-foreground">Cart state</p>
-        <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
+        <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+          Cart state
+        </p>
+        <p className="mt-1 text-foreground-dimmed text-xs">
           Last <span className="font-mono">get_cart</span> response
         </p>
       </div>
-      <pre className="max-h-72 overflow-auto p-4 font-mono text-foreground/80 text-xs leading-relaxed">
+      <pre className="m-4 max-h-72 overflow-auto rounded-md bg-background-dimmed p-4 font-mono text-foreground/80 text-xs leading-relaxed">
         {json}
       </pre>
     </div>

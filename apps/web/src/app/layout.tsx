@@ -3,7 +3,7 @@ import { type PropsWithChildren, Suspense } from "react";
 import "./globals.css";
 import { ToastProvider } from "@zenncore/web/components/toast";
 import dynamic from "next/dynamic";
-import localFont from "next/font/local";
+import { Red_Hat_Display } from "next/font/google";
 import Script from "next/script";
 import { ToastList } from "@/components/ui/toast";
 import { ThemeProvider } from "@/context/theme";
@@ -12,40 +12,9 @@ const PostHogProvider = dynamic(() =>
   import("@/context/posthog").then((m) => m.PostHogProvider),
 );
 
-const ltsuperior = localFont({
-  src: [
-    {
-      path: "../../public/fonts/LTSuperior/LTSuperior-Light.ttf",
-      weight: "300",
-      style: "light",
-    },
-    {
-      path: "../../public/fonts/LTSuperior/LTSuperior-Regular.ttf",
-      weight: "400",
-      style: "normal",
-    },
-    {
-      path: "../../public/fonts/LTSuperior/LTSuperior-Medium.ttf",
-      weight: "500",
-      style: "medium",
-    },
-    {
-      path: "../../public/fonts/LTSuperior/LTSuperior-SemiBold.ttf",
-      weight: "600",
-      style: "semibold",
-    },
-    {
-      path: "../../public/fonts/LTSuperior/LTSuperior-Bold.ttf",
-      weight: "700",
-      style: "bold",
-    },
-    {
-      path: "../../public/fonts/LTSuperior/LTSuperior-Black.ttf",
-      weight: "900",
-      style: "black",
-    },
-  ],
-  variable: "--font-ltsuperior",
+const redHatDisplay = Red_Hat_Display({
+  subsets: ["latin"],
+  variable: "--font-redhat-display",
 });
 
 export const metadata: Metadata = {
@@ -167,7 +136,7 @@ export default ({ children }: PropsWithChildren) => {
         <meta name="apple-mobile-web-app-title" content="écentic" />
       </head>
       <body
-        className={`${ltsuperior.variable} overflow-x-hidden bg-background font-body tracking-[-4%] antialiased`}
+        className={`${redHatDisplay.variable} overflow-x-hidden bg-background font-body antialiased`}
       >
         <Suspense>
           <PostHogProvider>
