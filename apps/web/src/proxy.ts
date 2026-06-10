@@ -79,7 +79,6 @@ export const proxy = async (request: Request) => {
     return Response.rewrite(url);
   }
 
-
   const user = await Authentication.getProxiedCurrentUser();
   const role = user.success ? (user.data?.role ?? "public") : "public";
 
