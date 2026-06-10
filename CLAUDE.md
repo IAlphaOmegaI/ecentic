@@ -84,7 +84,7 @@ There are no automated tests in this codebase currently.
 
 **1. Database** (`server/database/`)
 - Drizzle ORM + PostgreSQL via `postgres.js`
-- Schema in `schema.ts`: `user`, `session`, `account`, `verification`, `store`, `product`, `competitor`, `scan`, `simulation`, `ucpProfile`, `agentVisit`, `agentTrafficDaily`
+- Schema in `schema.ts`: `user`, `session`, `account`, `verification`, `store`, `store_account` (Shopify OAuth tokens per store), `product`, `competitor`, `scan`, `simulation`, `ucpProfile`, `agentVisit`, `agentTrafficDaily`, `listingOptimization` (listing rewrites + win-rate lift tracking), `subscription` (Stripe billing state), `agentApiKey` (hashed agent API keys), `blogPost`
 - Relations defined alongside schema for typed joins
 - Config in `apps/web/drizzle.config.ts`
 
