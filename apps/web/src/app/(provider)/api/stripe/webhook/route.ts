@@ -6,7 +6,7 @@ import { Environment } from "@/server/utils/environment";
 import { stripe } from "@/server/utils/stripe";
 
 export const POST = async (request: NextRequest) => {
-  const secret = process.env["STRIPE_WEBHOOK_SECRET"];
+  const secret = process.env.STRIPE_WEBHOOK_SECRET;
 
   if (!secret)
     return Response.json(

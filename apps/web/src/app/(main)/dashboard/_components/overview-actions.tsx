@@ -1,6 +1,6 @@
 "use client";
 
-import { DownloadIcon, PlusIcon } from "@zenncore/icons";
+import { PlusIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { useState } from "react";
 import { SimulationModal } from "./simulation-modal";

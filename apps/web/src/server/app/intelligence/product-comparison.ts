@@ -196,13 +196,13 @@ const callMcp = async (
 // totals	Array[Total]	Yes	Line item totals breakdown.
 // parent_id	string	No	Parent line item identifier for any nested structures.
 
-const lineItemSchema = z.object({
+const _lineItemSchema = z.object({
   variant_id: z.string().describe("Product variant global ID"),
   quantity: z.number().int().positive(),
 });
 
 // UCP §4 — catalog search context
-const catalogContextSchema = z
+const _catalogContextSchema = z
   .object({
     address_country: z.string().optional(),
     address_region: z.string().optional(),
@@ -211,7 +211,7 @@ const catalogContextSchema = z
   .optional();
 
 // UCP §4 — catalog filters
-const catalogFiltersSchema = z
+const _catalogFiltersSchema = z
   .object({
     categories: z.array(z.string()).optional(),
     price: z
@@ -503,7 +503,7 @@ export const unwrapMcpCatalogResult = async (
   const record = result as Record<string, unknown>;
   if ("error" in record) return record;
 
-  const content = record["content"];
+  const content = record.content;
   if (!Array.isArray(content)) return result;
 
   for (const part of content) {
@@ -530,7 +530,7 @@ export const extractCatalogProducts = async (result: unknown) => {
   if (!unwrapped || typeof unwrapped !== "object") return [];
 
   const record = unwrapped as Record<string, unknown>;
-  const candidates = [record["products"], record["items"], record["results"]];
+  const candidates = [record.products, record.items, record.results];
 
   for (const candidate of candidates) {
     if (Array.isArray(candidate)) return candidate;

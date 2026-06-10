@@ -69,7 +69,7 @@ export default () => {
             </div>
           </Motion.Item>
           <Motion.Item className="w-full border-accent-foreground border-b px-8">
-            <div className="flex gap-2 border-accent-foreground border-x p-6 font-light text-foreground-dimmed justify-between">
+            <div className="flex justify-between gap-2 border-accent-foreground border-x p-6 font-light text-foreground-dimmed">
               <Button
                 type="button"
                 variant="outline"
