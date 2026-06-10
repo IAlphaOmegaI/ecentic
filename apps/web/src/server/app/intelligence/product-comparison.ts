@@ -525,20 +525,6 @@ export const unwrapMcpCatalogResult = async (
   return result;
 };
 
-export const extractCatalogProducts = async (result: unknown) => {
-  const unwrapped = unwrapMcpCatalogResult(result);
-  if (!unwrapped || typeof unwrapped !== "object") return [];
-
-  const record = unwrapped as Record<string, unknown>;
-  const candidates = [record["products"], record["items"], record["results"]];
-
-  for (const candidate of candidates) {
-    if (Array.isArray(candidate)) return candidate;
-  }
-
-  return [];
-};
-
 export const runStoreComparison = async ({
   storeUrls,
   query,

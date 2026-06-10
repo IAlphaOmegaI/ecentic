@@ -15,7 +15,6 @@ import {
 } from "react";
 import type z from "zod";
 import {
-  extractCatalogProducts,
   runStoreComparison,
   type StoreDiscovery,
 } from "@/server/app/intelligence/product-comparison";
@@ -562,7 +561,11 @@ export const ComparisonClient = () => {
                     return (
                       <p key={lineKey} className="text-success">
                         results → {line.storeUrl} (
-                        {extractCatalogProducts(line.result).length} products)
+                        {
+                          (line.result as z.infer<typeof productSchema>[])
+                            .length
+                        }{" "}
+                        products) products)
                       </p>
                     );
                   case "store_error":
