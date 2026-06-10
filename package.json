@@ -15,6 +15,7 @@
     "dev:web": "turbo run dev --filter=./apps/web...",
     "dev:mobile": "turbo run dev --filter=./apps/mobile...",
     "dev:packages": "turbo dev --filter=@zenncore/*",
+    "test": "cd apps/web && bun test src",
     "lint": "biome check --write",
     "typecheck": "turbo run typecheck",
     "outdated": "turbo run outdated && bun outdated -r",
