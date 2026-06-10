@@ -11,9 +11,27 @@ import { withAuthentication } from "../utils/authentication";
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { InvalidCredentialsError } from "../utils/error";
+import { sign, verify } from "../utils/signature";
 import * as User from "./user";
 
 // TODO: use betterAuth client instead of server actions (default redirection)
+
+const USER_COOKIE_MAX_AGE = 60 * 60; // 1 hour
+
+const setUserCookie = (
+  jar: Awaited<ReturnType<typeof cookies>>,
+  user: User.Type,
+) =>
+  jar.set(
+    "user",
+    sign(JSON.stringify(user), process.env.BETTER_AUTH_SECRET as string),
+    {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: USER_COOKIE_MAX_AGE,
+    },
+  );
 
 const parseName = (fullName: string): { name: string; surname: string } => {
   const trimmed = fullName.trim();
@@ -149,7 +167,7 @@ export const signIn = withContext(
 
     const jar = await cookies();
 
-    jar.set("user", JSON.stringify(result.data.user));
+    setUserCookie(jar, result.data.user as User.Type);
 
     return { success: true, data: result.data.user };
   },
@@ -228,10 +246,12 @@ export const forgotPassword = withContext(
 export const getProxiedCurrentUser = withContext(async (context) => {
   const jar = await cookies();
   const cached = jar.get("user")?.value;
-
-  if (cached) {
-    return { success: true, data: JSON.parse(cached) as User.Type };
-  }
+  const payload = cached
+    ? verify(cached, process.env.BETTER_AUTH_SECRET as string)
+    : null;
+  const parsed =
+    payload !== null ? resultify(() => JSON.parse(payload) as User.Type) : null;
+  if (parsed?.success) return { success: true, data: parsed.data };
 
   const session = await context.auth.getSession({
     headers: await headers(),
@@ -246,7 +266,7 @@ export const getProxiedCurrentUser = withContext(async (context) => {
 
   if (!user.data) return { success: false, error: new Error("user-not-found") };
 
-  jar.set("user", JSON.stringify(user.data));
+  setUserCookie(jar, user.data);
 
   return user;
 }, "Authentication.getProxiedCurrentUser");
