@@ -176,7 +176,7 @@ const runScanForUser = async (
     results.push(...batchResults);
   }
 
-  await Promise.all(
+  const persisted = await Promise.all(
     results.map((result) =>
       Simulation.create(Environment.SERVER, {
         scanId: scan.data.id,
@@ -185,15 +185,22 @@ const runScanForUser = async (
     ),
   );
 
+  const failure = persisted.find((creation) => !creation.success);
+  if (failure && !failure.success) {
+    await Scan.update(Environment.SERVER, scan.data.id, { status: "failed" });
+    return failure;
+  }
+
   const wins = results.filter((result) => result.winner === "product").length;
   const losses = results.length - wins;
 
-  await Scan.update(Environment.SERVER, scan.data.id, {
+  const completion = await Scan.update(Environment.SERVER, scan.data.id, {
     status: "complete",
     completedSimulations: totalSimulations,
     wins,
     losses,
   });
+  if (!completion.success) return completion;
 
   context.span.addBreadcrumb({
     category: "scan.complete",
@@ -263,9 +270,14 @@ export const runPendingScans = withContext(
         if (!running.success || running.data.length > 0)
           return [...previous, { scanId: scan.id, success: false }];
 
-        await Scan.update(Environment.SERVER, scan.id, { status: "running" });
+        const transition = await Scan.update(Environment.SERVER, scan.id, {
+          status: "running",
+        });
+        if (!transition.success)
+          return [...previous, { scanId: scan.id, success: false }];
         const result = await runScanForUser(context, { user: scan.userId });
 
+        // best-effort: the scan failure below is already reported
         if (!result.success)
           await Scan.update(Environment.SERVER, scan.id, { status: "failed" });
 
