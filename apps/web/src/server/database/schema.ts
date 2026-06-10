@@ -163,7 +163,10 @@ export const scan = pgTable("scan", {
   userId: text("userId")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-  status: text("status").notNull().default("pending"),
+  status: text("status")
+    .$type<"pending" | "running" | "complete" | "failed">()
+    .notNull()
+    .default("pending"),
   totalSimulations: integer("totalSimulations").notNull().default(0),
   completedSimulations: integer("completedSimulations").notNull().default(0),
   wins: integer("wins").notNull().default(0),
