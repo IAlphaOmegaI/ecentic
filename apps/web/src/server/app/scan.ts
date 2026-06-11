@@ -63,7 +63,7 @@ export const getShareData = withContext(async (_, { id }: { id: string }) => {
   const scan = await get(Environment.SERVER, id);
   if (!scan.success) return scan;
 
-  if (!scan.data || scan.data.status !== "complete") {
+  if (scan.data?.status !== "complete") {
     return { success: false, error: new NotFoundError("Scan") };
   }
 

@@ -183,10 +183,15 @@ URL: ${product.data.url ?? ""}`,
 
     const structuredJson = JSON.stringify(structured, null, 2);
 
-    await Product.update(Environment.SERVER, product.data.id, {
-      structuredData: structuredJson,
-      updatedAt: new Date(),
-    });
+    const persistence = await Product.update(
+      Environment.SERVER,
+      product.data.id,
+      {
+        structuredData: structuredJson,
+        updatedAt: new Date(),
+      },
+    );
+    if (!persistence.success) return persistence;
 
     return { success: true as const, data: { json: structuredJson } };
   },
@@ -233,10 +238,16 @@ SKU: ${product.sku ?? ""}`,
 
         const json = JSON.stringify(structured.data, null, 2);
 
-        await Product.update(Environment.SERVER, product.id, {
-          structuredData: json,
-          updatedAt: new Date(),
-        });
+        const persistence = await Product.update(
+          Environment.SERVER,
+          product.id,
+          {
+            structuredData: json,
+            updatedAt: new Date(),
+          },
+        );
+        if (!persistence.success)
+          return { productId: product.id, success: false as const };
 
         return { productId: product.id, success: true as const, json };
       }),

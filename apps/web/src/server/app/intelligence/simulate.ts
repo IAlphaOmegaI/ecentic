@@ -613,13 +613,19 @@ INSTRUCTIONS:
         message: "Finalizing scan...",
       });
 
-      await Scan.update(Environment.SERVER, scan.data.id, {
+      const completion = await Scan.update(Environment.SERVER, scan.data.id, {
         status: "complete",
         completedSimulations: totalSimulations,
         wins,
         losses,
         topFinding: finding,
       });
+      if (!completion.success)
+        update({
+          kind: "log",
+          model: "System",
+          message: "Failed to persist scan results — please re-run the scan.",
+        });
 
       context.span.addBreadcrumb({
         category: "scan.complete",

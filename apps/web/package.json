@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "test": "bun test src",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf .turbo .next node_modules",
     "lint": "biome check --write --unsafe",
@@ -30,7 +31,6 @@
     "@next/env": "^16.2.7",
     "@number-flow/react": "^0.6.0",
     "@sentry/nextjs": "^10.57.0",
-    "@shopify/cli": "^4.1.0",
     "@ucp-js/sdk": "^0.1.0",
     "@upstash/redis": "^1.38.0",
     "@zenncore/icons": "workspace:*",
@@ -64,10 +64,9 @@
     "@types/node": "^25.9.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "@types/three": "^0.184.1",
     "@zenncore/config": "workspace:*",
+    "bun-types": "^1.3.14",
     "tailwindcss": "^4.3.0",
-    "three": "^0.184.0",
     "typescript": "^6.0.3"
   }
 }

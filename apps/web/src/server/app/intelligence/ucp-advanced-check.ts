@@ -374,14 +374,15 @@ const probeMcpEndpoint = async (
   };
 
   if (initTextResult.success && initResponse.ok) {
-    try {
-      const body = JSON.parse(initTextResult.data) as McpInitBody;
-      if (typeof body.result?.protocolVersion === "string") {
-        protocolVersion = body.result.protocolVersion;
-      }
-      const srvName = body.result?.serverInfo?.name;
+    const body = resultify(
+      () => JSON.parse(initTextResult.data) as McpInitBody,
+    );
+    if (body.success) {
+      if (typeof body.data.result?.protocolVersion === "string")
+        protocolVersion = body.data.result.protocolVersion;
+      const srvName = body.data.result?.serverInfo?.name;
       if (typeof srvName === "string") serverName = srvName;
-    } catch {}
+    }
   }
 
   // List tools
@@ -405,13 +406,12 @@ const probeMcpEndpoint = async (
   if (toolsResult.success && toolsResult.data.ok) {
     const toolsText = await resultify(() => toolsResult.data.text());
     if (toolsText.success) {
-      try {
-        const body = JSON.parse(toolsText.data) as McpToolsBody;
-        tools = (body.result?.tools ?? []).map((t) => ({
+      const body = resultify(() => JSON.parse(toolsText.data) as McpToolsBody);
+      if (body.success)
+        tools = (body.data.result?.tools ?? []).map((t) => ({
           name: typeof t.name === "string" ? t.name : "unknown",
           description: typeof t.description === "string" ? t.description : null,
         }));
-      } catch {}
     }
   }
 
@@ -623,12 +623,12 @@ const runCheckoutLifecycle = async (
     cartCreateStatus >= 200 &&
     cartCreateStatus < 300
   ) {
-    try {
-      type CartBody = { id?: string; cart_id?: string };
-      const body = JSON.parse(cartCreateText.data) as CartBody;
-      const rawId = body.id ?? body.cart_id;
+    type CartBody = { id?: string; cart_id?: string };
+    const body = resultify(() => JSON.parse(cartCreateText.data) as CartBody);
+    if (body.success) {
+      const rawId = body.data.id ?? body.data.cart_id;
       if (typeof rawId === "string") cartId = rawId;
-    } catch {}
+    }
   }
 
   steps.push({
@@ -759,16 +759,19 @@ const runCheckoutLifecycle = async (
     checkoutCreateStatus >= 200 &&
     checkoutCreateStatus < 300
   ) {
-    try {
-      type CheckoutSessionBody = {
-        id?: string;
-        session_id?: string;
-        checkout_id?: string;
-      };
-      const body = JSON.parse(checkoutCreateText.data) as CheckoutSessionBody;
-      const rawId = body.id ?? body.session_id ?? body.checkout_id;
+    type CheckoutSessionBody = {
+      id?: string;
+      session_id?: string;
+      checkout_id?: string;
+    };
+    const body = resultify(
+      () => JSON.parse(checkoutCreateText.data) as CheckoutSessionBody,
+    );
+    if (body.success) {
+      const rawId =
+        body.data.id ?? body.data.session_id ?? body.data.checkout_id;
       if (typeof rawId === "string") sessionId = rawId;
-    } catch {}
+    }
   }
 
   steps.push({
@@ -947,10 +950,10 @@ const probeA2aEndpoint = async (
   let agentCardFound = false;
   let agentName: string | null = null;
 
-  try {
-    const origin = new URL(endpoint).origin;
+  const originResult = resultify(() => new URL(endpoint).origin);
+  if (originResult.success) {
     const cardResult = await resultify(() =>
-      fetch(`${origin}/.well-known/agent-card.json`, {
+      fetch(`${originResult.data}/.well-known/agent-card.json`, {
         headers: {
           Accept: "application/json",
           "User-Agent": AGENT_HEADERS["User-Agent"],
@@ -963,14 +966,13 @@ const probeA2aEndpoint = async (
       agentCardFound = true;
       const cardText = await resultify(() => cardResult.data.text());
       if (cardText.success) {
-        try {
-          type AgentCard = { name?: string };
-          const card = JSON.parse(cardText.data) as AgentCard;
-          if (typeof card.name === "string") agentName = card.name;
-        } catch {}
+        type AgentCard = { name?: string };
+        const card = resultify(() => JSON.parse(cardText.data) as AgentCard);
+        if (card.success && typeof card.data.name === "string")
+          agentName = card.data.name;
       }
     }
-  } catch {}
+  }
 
   return {
     serviceName,
@@ -1121,10 +1123,8 @@ export const checkUCPAdvanced = async (
     };
   }
 
-  let profile: unknown = null;
-  try {
-    profile = JSON.parse(bodyText.data);
-  } catch {}
+  const profileParsed = resultify(() => JSON.parse(bodyText.data) as unknown);
+  const profile = profileParsed.success ? profileParsed.data : null;
 
   if (!isObject(profile)) {
     return {

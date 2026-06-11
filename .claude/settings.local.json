@@ -52,7 +52,17 @@
       "Bash(bunx tsc *)",
       "Bash(bunx @biomejs/biome check \"src/app/\\(main\\)/ucp-validator/_components/ucp-validator-form.tsx\" \"src/server/app/intelligence/ucp-check.ts\")",
       "Bash(bun add *)",
-      "Bash(bunx biome *)"
+      "Bash(bunx biome *)",
+      "Bash(sed -n '1,50p' \"apps/web/src/app/\\(main\\)/dashboard/_components/overview-actions.tsx\")",
+      "Bash(sed -n '60,100p' apps/web/src/server/app/optimization.ts)",
+      "Bash(sed -n '225,262p' apps/web/src/server/app/competitor.ts)",
+      "Bash(bun test *)",
+      "Bash(git *)",
+      "Bash(bun run *)",
+      "Bash(echo \"build:packages exit=$?\")",
+      "Bash(echo \"typecheck exit=$?\")",
+      "Bash(grep -c '\\\\$type<\\\\\"pending\\\\\" | \\\\\"running\\\\\" | \\\\\"complete\\\\\" | \\\\\"failed\\\\\">' /Users/xhurianshaba/Developer/zennit/ecentic/.claude/worktrees/agent-a372bc533eaf89799/apps/web/src/server/database/schema.ts)",
+      "Bash(grep -oE '`[a-zA-Z_]+`')"
     ]
   }
 }

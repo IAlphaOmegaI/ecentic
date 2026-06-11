@@ -1399,7 +1399,7 @@ const seed = async () => {
   await db.insert(schema.scan).values({
     id: latestScanId,
     userId,
-    status: "completed",
+    status: "complete",
     totalSimulations: latestTotal,
     completedSimulations: latestTotal,
     wins: latestWins,
@@ -1417,7 +1417,7 @@ const seed = async () => {
   );
 
   // --- Historical scans (trend line) -------------------------------------
-  // Status "completed" so the dashboard trend/activity/insights populate.
+  // Status "complete" so the dashboard trend/activity/insights populate.
   // Climb to just under the latest scan so the trend line peaks at "now".
   const historyRates = [30, 32, 34, 36, 38, 39, 40, 41, 42];
   const historyScans = historyRates.map((rate, index) => {
@@ -1427,7 +1427,7 @@ const seed = async () => {
     return {
       id: id(),
       userId,
-      status: "completed",
+      status: "complete" as const,
       totalSimulations: total,
       completedSimulations: total,
       wins,
