@@ -465,7 +465,7 @@ const attributionSchema = z
     "Platform-emitted referral and conversion-event context — campaign identifiers, click IDs, source/medium markers, etc. The same parameters platforms communicate via URL query parameters in browser-based flows.",
   );
 
-const priceSchema = z.object({
+const amountSchema = z.object({
   amount: z
     .number()
     .int()
@@ -479,8 +479,8 @@ const priceSchema = z.object({
 
 const priceRangeSchema = z
   .object({
-    min: priceSchema.describe("Minimum price in ISO 4217 minor units."),
-    max: priceSchema.describe("Maximum price in ISO 4217 minor units."),
+    min: amountSchema.describe("Minimum price in ISO 4217 minor units."),
+    max: amountSchema.describe("Maximum price in ISO 4217 minor units."),
   })
   .refine((range) => range.min.currency === range.max.currency, {
     error: "price range min and max must share a currency",
@@ -707,6 +707,7 @@ const selectedOptionSchema = z.object({
 export const mediaSchema = z.object({
   type: z
     .enum(["image", "video", "model_3d"])
+    .or(z.string())
     .describe("Media type. Well-known values: image, video, model_3d."),
   url: z.string().describe("URL to the media resource."),
   alt_text: z
@@ -795,7 +796,7 @@ export const variantSchema = z.looseObject({
   description: descriptionSchema.describe(
     "Variant description in one or more formats.",
   ),
-  price: priceSchema.describe("Current selling price."),
+  price: amountSchema.describe("Current selling price."),
   sku: z
     .string()
     .optional()
@@ -812,9 +813,9 @@ export const variantSchema = z.looseObject({
     .array(categorySchema)
     .optional()
     .describe("Variant categories with optional taxonomy identifiers."),
-  list_price: priceSchema.optional().describe("Variant listing price."),
+  list_price: amountSchema.optional().describe("Variant listing price."),
   unit_price: z
-    .record(z.string(), priceSchema)
+    .record(z.string(), amountSchema)
     .optional()
     .describe(
       "Price per standard unit of measurement. MAY be omitted when unit pricing does not apply.",
@@ -1115,4 +1116,135 @@ export const getProductResponseSchema = z.object({
     .describe(
       "Warnings or informational messages about the product (e.g., price recently changed, limited availability).",
     ),
+});
+
+export const cartItemSchema = z.looseObject({
+  id: z
+    .string()
+    .describe(
+      "The product identifier, often the SKU, required to resolve the product details associated with this line item. Should be recognized by both the Platform, and the Business.",
+    ),
+  title: z.string().describe("Product title."),
+  price: amountSchema.describe("Product price."),
+  image_url: z.string().describe("Product image URI."),
+});
+
+export const cartTotalSchema = z.object({
+  // TODO: specify
+  type: z
+    .string()
+    .describe(
+      "Cost category. Well-known values: subtotal, items_discount, discount, fulfillment, tax, fee, total. Businesses MAY use additional values",
+    ),
+  amount: z
+    .number()
+    .int()
+    .describe(
+      "Monetary amount in the currency's minor unit as defined by ISO 4217. Refer to the currency's exponent to determine minor-to-major ratio (e.g., 2 for USD, 0 for JPY, 3 for KWD). May be negative — the sign is intrinsic to the value (e.g., discounts are negative, charges are positive).",
+    ),
+  display_text: z
+    .string()
+    .optional()
+    .describe(
+      "Text to display against the amount. Should reflect appropriate method (e.g., 'Shipping', 'Delivery').",
+    ),
+});
+
+export const lineItemSchema = z.looseObject({
+  id: z.string(),
+  item: cartItemSchema,
+  quantity: z
+    .number()
+    .int()
+    .positive()
+    .describe("Quantity of the item being purchased."),
+  totals: z.array(cartTotalSchema).describe("Line item totals breakdown."),
+  parent_id: z
+    .string()
+    .optional()
+    .describe("Parent line item identifier for any nested structures."),
+});
+
+export const buyerSchema = z.looseObject({
+  first_name: z.string().optional().describe("First name of the buyer."),
+  last_name: z.string().optional().describe("Last name of the buyer."),
+  email: z.string().optional().describe("Email of the buyer."),
+  phone_number: z.string().optional().describe("E.164 standard."),
+});
+
+export const createCartRequestSchema = z.object({
+  line_items: z
+    .array(lineItemSchema)
+    .describe(
+      "Cart line items. Same structure as checkout. Full replacement on update.",
+    ),
+  context: contextSchema
+    .optional()
+    .describe(
+      "Buyer signals for localization (country, region, postal_code). Merchant uses for pricing, availability, currency. Falls back to geo-IP if omitted.",
+    ),
+  signals: signalsSchema.optional(),
+  attribution: attributionSchema.optional(),
+  buyer: buyerSchema.optional(),
+});
+
+const linkSchema = z.object({
+  type: z
+    .string()
+    .describe(
+      "Type of link. Well-known values: privacy_policy, terms_of_service, refund_policy, shipping_policy, faq. Consumers SHOULD handle unknown values gracefully by displaying them using the title field or omitting the link.",
+    ),
+  url: z
+    .string()
+    .describe("The actual URL pointing to the content to be displayed."),
+  title: z
+    .string()
+    .optional()
+    .describe(
+      "Optional display text for the link. When provided, use this instead of generating from type.",
+    ),
+});
+
+export const createCartResponseSchema = z.object({
+  ucp: z.any().describe("UCP metadata for cart responses."),
+  id: z.string().optional().describe("Unique cart identifier."),
+  line_items: z.array(lineItemSchema).describe("Cart line items."),
+  currency: z
+    .string()
+    .describe(
+      "ISO 4217 currency code. Determined by merchant based on context or geo-IP.",
+    ),
+  totals: z
+    .array(cartTotalSchema)
+    .describe(
+      "Estimated cost breakdown. May be partial if shipping/tax not yet calculable.",
+    ),
+  context: contextSchema
+    .optional()
+    .describe(
+      "Buyer signals for localization (country, region, postal_code). Merchant uses for pricing, availability, currency. Falls back to geo-IP if omitted.",
+    ),
+  signals: signalsSchema.optional(),
+  attribution: attributionSchema.optional(),
+  buyer: buyerSchema
+    .optional()
+    .describe("Optional buyer information for personalized estimates."),
+  messages: z
+    .array(messageSchema)
+    .optional()
+    .describe("Validation messages, warnings, or informational notices."),
+  links: z
+    .array(linkSchema)
+    .optional()
+    .describe("Optional merchant links (policies, FAQs)."),
+  continue_url: z
+    .string()
+    .optional()
+    .describe(
+      "URL for cart handoff and session recovery. Enables sharing and human-in-the-loop flows.",
+    ),
+  expires_at: z
+    .string()
+    .optional()
+    .describe("Cart expiry timestamp (RFC 3339)."),
 });

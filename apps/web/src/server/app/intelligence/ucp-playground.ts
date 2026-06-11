@@ -7,6 +7,8 @@ import { merge, resultify } from "@zenncore/utils";
 import { isLoopFinished, stepCountIs, streamText, tool } from "ai";
 import * as z from "zod";
 import {
+  createCartRequestSchema,
+  createCartResponseSchema,
   discoveryProfileSchema,
   getProductRequestSchema,
   getProductResponseSchema,
@@ -296,35 +298,50 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
     },
   }),
 
-  // // UCP §5 — cart creation: payload nested under "cart" key
-  // create_cart: tool({
-  //   description:
-  //     "Create a new cart. Items and context go under the 'cart' key.",
-  //   inputSchema: z.object({
-  //     cart: z.object({
-  //       line_items: z.array(lineItemSchema),
-  //       context: z.object({ country: z.string().optional() }).optional(),
-  //     }),
-  //   }),
-  //   execute: async ({ cart }) =>
-  //     callMcp(endpoint, "create_cart", { cart }, agentProfileUrl),
-  // }),
+  create_cart: tool({
+    description:
+      "Create a new cart. Items and context go under the 'cart' key.",
+    inputSchema: z.object({
+      cart: createCartRequestSchema,
+    }),
+    execute: async (input) => {
+      console.log("input", input);
+
+      const result = await callMCP(
+        endpoint,
+        "create_cart",
+        input,
+        agentProfileUrl,
+      );
+
+      if ("error" in result) return result.error;
+
+      const parsedResult = createCartResponseSchema.safeParse(
+        result.structuredContent,
+      );
+
+      console.log("parsedResult", parsedResult);
+      console.log("result", result.structuredContent);
+
+      return parsedResult.success ? parsedResult.data : parsedResult.error;
+    },
+  }),
 
   // UCP §5 — cart update: id at top level, replacement payload under "cart" key
-  update_cart: tool({
-    description:
-      "Replace all line items in a cart (full replacement per UCP spec). id at top level, items under 'cart'.",
-    inputSchema: z.object({
-      id: z.string().describe("Cart ID"),
-      cart: z.object({
-        line_items: z
-          .array(lineItemSchema)
-          .describe("Complete new list (replaces all existing)"),
-      }),
-    }),
-    execute: async ({ id, cart }) =>
-      callMCP(endpoint, "update_cart", { id, cart }, agentProfileUrl),
-  }),
+  // update_cart: tool({
+  //   description:
+  //     "Replace all line items in a cart (full replacement per UCP spec). id at top level, items under 'cart'.",
+  //   inputSchema: z.object({
+  //     id: z.string().describe("Cart ID"),
+  //     cart: z.object({
+  //       line_items: z
+  //         .array(lineItemSchema)
+  //         .describe("Complete new list (replaces all existing)"),
+  //     }),
+  //   }),
+  //   execute: async ({ id, cart }) =>
+  //     callMCP(endpoint, "update_cart", { id, cart }, agentProfileUrl),
+  // }),
 
   // // UCP §5 — cart lookup: id at top level
   // get_cart: tool({
@@ -543,15 +560,16 @@ export const runPlayground = async ({
         { catalog: { ids: ["<product_id_or_variant_id>"] } }
       get_product:
         { catalog: { id: "<product_id>" } }
-      update_cart:
-        { id: "<cart_id>", cart: { line_items: [{ variant_id: "...", item: { id: "<variant_id>", title: "...", price: { amount, currency } }, quantity: 1 }] } }
+      create_cart:
+        { cart: { line_items: [{ item: { id: "<variant_id>", title: "...", price: { amount: <minor_units>, currency: "USD" } }, quantity: 1 }] } }
 
       Work through this flow in order:
       1. search_catalog with query "${searchQuery}"
       2. lookup_catalog with the product ID (or variant ID) of the first search result
       3. get_product with the ID of the first result
+      4. create_cart with one line item using a variant ID, title, and price from get_product
 
-      Use ONLY IDs returned by the tools — never invent them. After all steps, write 2–3 sentences summarizing what you found.
+      Use ONLY IDs, titles, and prices returned by the tools — never invent them. After all steps, write 2–3 sentences summarizing what you found.
       DON'T CALL the same tool again if the first one hasn't finished yet.
       `,
         prompt: `Test the UCP ${shoppingTransport} endpoint at ${shoppingEndpoint} (store: ${domain}).`,
