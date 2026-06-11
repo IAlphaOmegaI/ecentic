@@ -10,6 +10,8 @@ import {
   discoveryProfileSchema,
   getProductRequestSchema,
   getProductResponseSchema,
+  lookupCatalogRequestSchema,
+  lookupCatalogResponseSchema,
   searchCatalogRequestSchema,
   searchCatalogResponseSchema,
   ucpMCPResponseSchema,
@@ -252,21 +254,23 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
     description:
       "Lookup products or variants by identifiers. Use this when you already have IDs.",
     inputSchema: z.object({
-      catalog: z.object({
-        ids: z
-          .array(z.string())
-          .describe("Product/variant identifiers to resolve"),
-        context: catalogContextSchema,
-        filters: catalogFiltersSchema,
-      }),
+      catalog: lookupCatalogRequestSchema,
     }),
     execute: async (input) => {
-      const result = callMCP(
+      const result = await callMCP(
         endpoint,
         "lookup_catalog",
         input,
         agentProfileUrl,
       );
+
+      if ("error" in result) return result.error;
+
+      const parsedResult = lookupCatalogResponseSchema.safeParse(
+        result.structuredContent,
+      );
+
+      return parsedResult.success ? parsedResult.data : parsedResult.error;
     },
   }),
 
@@ -287,8 +291,6 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
       const parsedResult = getProductResponseSchema.safeParse(
         result.structuredContent,
       );
-
-      console.log("parsedResult", parsedResult.data?.product);
 
       return parsedResult.success ? parsedResult.data : parsedResult.error;
     },
@@ -537,6 +539,8 @@ export const runPlayground = async ({
 
       search_catalog:
        example parameters: { catalog: { query: "...", pagination: { limit: 5 }, filters: {}, context: {} } } (only define them if the user asks something that could be done by using the catalog properties even tho they might have been defined in the schema).
+      lookup_catalog:
+        { catalog: { ids: ["<product_id_or_variant_id>"] } }
       get_product:
         { catalog: { id: "<product_id>" } }
       update_cart:
@@ -544,7 +548,8 @@ export const runPlayground = async ({
 
       Work through this flow in order:
       1. search_catalog with query "${searchQuery}"
-      2. get_product with the ID of the first result
+      2. lookup_catalog with the product ID (or variant ID) of the first search result
+      3. get_product with the ID of the first result
 
       Use ONLY IDs returned by the tools — never invent them. After all steps, write 2–3 sentences summarizing what you found.
       DON'T CALL the same tool again if the first one hasn't finished yet.

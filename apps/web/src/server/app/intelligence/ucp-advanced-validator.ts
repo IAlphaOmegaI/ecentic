@@ -468,16 +468,28 @@ const attributionSchema = z
 const priceSchema = z.object({
   amount: z
     .number()
+    .int()
+    .nonnegative()
     .describe("Amount in ISO 4217 minor units. Use 0 for free items."),
   currency: z
     .string()
+    .regex(/^[A-Z]{3}$/, "currency must be a 3-letter ISO 4217 code")
     .describe("ISO 4217 currency code (e.g., 'USD', 'EUR', 'GBP')."),
 });
 
-const priceRangeSchema = z.object({
-  min: priceSchema.describe("Minimum price in ISO 4217 minor units."),
-  max: priceSchema.describe("Maximum price in ISO 4217 minor units."),
-});
+const priceRangeSchema = z
+  .object({
+    min: priceSchema.describe("Minimum price in ISO 4217 minor units."),
+    max: priceSchema.describe("Maximum price in ISO 4217 minor units."),
+  })
+  .refine((range) => range.min.currency === range.max.currency, {
+    error: "price range min and max must share a currency",
+    path: ["max", "currency"],
+  })
+  .refine((range) => range.min.amount <= range.max.amount, {
+    error: "price range min must not exceed max",
+    path: ["min", "amount"],
+  });
 
 const commonMessageSchema = z.object({
   content: z.string().describe("Human-readable message."),
@@ -499,7 +511,7 @@ const commonMessageSchema = z.object({
     ),
 });
 
-export const messageSchema = z.discriminatedUnion("type", [
+const messageSchema = z.discriminatedUnion("type", [
   commonMessageSchema.extend({
     type: z.literal("error").describe("Error message."),
     severity: z
@@ -708,20 +720,70 @@ export const mediaSchema = z.object({
     .describe("Height in pixels (for images/video)."),
 });
 
-export const ratingSchema = z.object({
-  value: z.number().describe("Average rating value."),
-  scale_max: z
-    .number()
-    .describe("Maximum value on the rating scale (e.g., 5 for 5-star)."),
-  scale_min: z
-    .number()
+export const ratingSchema = z
+  .object({
+    value: z.number().describe("Average rating value."),
+    scale_max: z
+      .number()
+      .describe("Maximum value on the rating scale (e.g., 5 for 5-star)."),
+    scale_min: z
+      .number()
+      .optional()
+      .describe("Minimum value on the rating scale (e.g., 1 for 1-5 stars)."),
+    count: z
+      .number()
+      .int()
+      .nonnegative()
+      .optional()
+      .describe("Number of reviews contributing to the rating."),
+  })
+  .refine(
+    (rating) =>
+      rating.scale_min === undefined || rating.scale_min < rating.scale_max,
+    { error: "scale_min must be less than scale_max", path: ["scale_min"] },
+  )
+  .refine(
+    (rating) =>
+      rating.value >= (rating.scale_min ?? 0) &&
+      rating.value <= rating.scale_max,
+    {
+      error: "value must fall within [scale_min ?? 0, scale_max]",
+      path: ["value"],
+    },
+  );
+
+// écentic Enhancement:
+// Each variant in a lookup_catalog response carries inputs[] correlating it back
+// to the request identifiers that resolved to it. Spec: variants without an
+// inputs entry MUST NOT appear in lookup responses.
+const variantInputSchema = z.object({
+  id: z
+    .string()
+    .describe(
+      "The identifier from the lookup request that resolved to this variant.",
+    ),
+  match: z
+    .string()
     .optional()
-    .describe("Minimum value on the rating scale (e.g., 1 for 1-5 stars)."),
-  count: z
-    .number()
-    .optional()
-    .describe("Number of reviews contributing to the rating."),
+    .describe(
+      "How the request identifier resolved. Well-known: 'exact' (input directly identifies this variant), 'featured' (server selected as representative).",
+    ),
 });
+
+// TODO: écentic Enhancement:
+// Spec defines `available`/`exists` semantics for option values; the variant-level
+const variantAvailabilitySchema = z
+  .looseObject({
+    available: z.boolean(),
+    quantity: z.number().int().nonnegative().optional(),
+    policy: z
+      .enum(["in_stock", "out_of_stock", "preorder", "backorder"])
+      .optional(),
+  })
+  .refine((value) => !(value.available === true && value.quantity === 0), {
+    error: "available cannot be true when quantity is 0",
+    path: ["quantity"],
+  });
 
 export const variantSchema = z.looseObject({
   id: z
@@ -738,7 +800,6 @@ export const variantSchema = z.looseObject({
     .string()
     .optional()
     .describe("Business-assigned identifier for inventory and fulfillment."),
-  // TODO: specify entry value
   barcodes: z
     .array(z.record(z.string(), z.unknown()))
     .optional()
@@ -758,12 +819,15 @@ export const variantSchema = z.looseObject({
     .describe(
       "Price per standard unit of measurement. MAY be omitted when unit pricing does not apply.",
     ),
-  // TODO: OPTIMIZATION => écentic agent should suggest adding
-  // TODO: specify
-  availability: z
-    .record(z.string(), z.unknown())
+  availability: variantAvailabilitySchema
     .optional()
     .describe("Variant availability for purchase."),
+  inputs: z
+    .array(variantInputSchema)
+    .optional()
+    .describe(
+      "Request identifiers that resolved to this variant. Required in lookup_catalog responses.",
+    ),
   options: z
     .array(selectedOptionSchema)
     .optional()
@@ -795,17 +859,35 @@ export const variantSchema = z.looseObject({
     .describe("Optional seller context for this variant."),
 });
 
-const optionValueSchema = z.object({
-  label: z
-    .string()
-    .describe("Display text for this option value (e.g., 'Small', 'Blue')."),
-  id: z
-    .string()
-    .optional()
-    .describe(
-      "Optional server-assigned identifier for this option value. When present in a selected_option, the server SHOULD use it for matching instead of label.",
-    ),
-});
+const optionValueSchema = z
+  .object({
+    label: z
+      .string()
+      .describe("Display text for this option value (e.g., 'Small', 'Blue')."),
+    id: z
+      .string()
+      .optional()
+      .describe(
+        "Optional server-assigned identifier for this option value. When present in a selected_option, the server SHOULD use it for matching instead of label.",
+      ),
+    available: z
+      .boolean()
+      .optional()
+      .describe(
+        "In stock and purchasable relative to product.selected. UI: selectable.",
+      ),
+    exists: z
+      .boolean()
+      .optional()
+      .describe(
+        "A variant exists for this value combined with product.selected. false → no such combination (UI: hidden or visually distinct).",
+      ),
+  })
+  .refine((value) => !(value.available === true && value.exists === false), {
+    error:
+      "available cannot be true when exists is false — a purchasable value must map to an existing variant",
+    path: ["available"],
+  });
 
 const productOptionSchema = z.object({
   name: z.string().describe("Option name (e.g., 'Size', 'Color')."),
@@ -814,7 +896,7 @@ const productOptionSchema = z.object({
     .describe("Available values for this option."),
 });
 
-export const productSchema = z.looseObject({
+const productSchema = z.looseObject({
   id: z.string().describe("Global ID (GID) uniquely identifying this product."),
   title: z.string().describe("Product title."),
   description: descriptionSchema.describe(
@@ -823,8 +905,15 @@ export const productSchema = z.looseObject({
   price_range: priceRangeSchema.describe("Price range across all variants."),
   variants: z
     .array(variantSchema)
+    .min(1, "product MUST have at least one variant")
     .describe(
       "Purchasable variants of this product. First item is the featured variant for listings.",
+    ),
+  selected: z
+    .array(selectedOptionSchema)
+    .optional()
+    .describe(
+      "Effective option selections after any relaxation. MUST be present when the product has configurable options; reflects the featured variant's defaults otherwise.",
     ),
   handle: z
     .string()
@@ -864,6 +953,67 @@ export const productSchema = z.looseObject({
     ),
 });
 
+// écentic Enhancement:
+const refineProductIntegrity = (
+  product: z.infer<typeof productSchema>,
+  context: z.core.$RefinementCtx,
+) => {
+  const hasOptions = (product.options?.length ?? 0) > 0;
+
+  // écentic Enhancement:
+  // Spec: response MUST include product.selected when the product has options.
+  // if (hasOptions && product.selected === undefined) {
+  //   context.addIssue({
+  //     code: "custom",
+  //     path: ["selected"],
+  //     message:
+  //       "product.selected MUST be present when the product has configurable options",
+  //   });
+  // }
+
+  const optionNames = new Set(product.options?.map((option) => option.name));
+  const selectedNames = new Set<string>();
+
+  for (const [index, selection] of (product.selected ?? []).entries()) {
+    // selected option names must be unique
+    if (selectedNames.has(selection.name)) {
+      context.addIssue({
+        code: "custom",
+        path: ["selected", index, "name"],
+        message: `option "${selection.name}" appears more than once in selected`,
+      });
+    } else {
+      selectedNames.add(selection.name);
+    }
+
+    // must reference a declared product option
+    if (optionNames.size > 0 && !optionNames.has(selection.name)) {
+      context.addIssue({
+        code: "custom",
+        path: ["selected", index, "name"],
+        message: `selected option "${selection.name}" is not a declared product option`,
+      });
+    }
+  }
+};
+
+// écentic Enhancement:
+// Lookup responses are stricter: every variant MUST carry an inputs[] entry
+// correlating it back to the request identifiers that resolved to it.
+const lookupVariantSchema = variantSchema.extend({
+  inputs: z
+    .array(variantInputSchema)
+    .min(1, "lookup response variants MUST carry at least one inputs entry"),
+});
+
+const lookupProductSchema = productSchema
+  .extend({
+    variants: z
+      .array(lookupVariantSchema)
+      .min(1, "product MUST have at least one variant"),
+  })
+  .superRefine(refineProductIntegrity);
+
 export const searchCatalogResponseSchema = z.object({
   ucp: z.any().describe("UCP metadata for catalog responses."),
   products: z.array(productSchema),
@@ -878,9 +1028,10 @@ export const searchCatalogResponseSchema = z.object({
 
 export const lookupCatalogRequestSchema = z.object({
   ids: z
-    .array(z.string())
+    .array(z.string().min(1, "identifiers must be non-empty"))
+    .min(1, "at least one identifier is required")
     .describe(
-      "Identifiers to lookup. Implementations MUST support product ID and variant ID; MAY support secondary identifiers (SKU, handle, etc.).",
+      "Identifiers to lookup. Implementations MUST support product ID and variant ID; MAY support secondary identifiers (SKU, handle, etc.). Duplicates are deduplicated server-side.",
     ),
   filters: searchFiltersSchema
     .optional()
@@ -899,7 +1050,7 @@ export const lookupCatalogRequestSchema = z.object({
 export const lookupCatalogResponseSchema = z.object({
   ucp: z.any().describe("UCP metadata for catalog responses."),
   products: z
-    .array(productSchema)
+    .array(lookupProductSchema)
     .describe(
       "Products matching the requested identifiers. May contain fewer items if some identifiers not found, or more if identifiers match multiple products.",
     ),
@@ -914,17 +1065,27 @@ export const lookupCatalogResponseSchema = z.object({
 export const getProductRequestSchema = z.object({
   id: z
     .string()
+    .min(1, "identifier must be non-empty")
     .describe(
       "Product or variant identifier. Implementations MUST support product ID and variant ID.",
     ),
   selected: z
     .array(selectedOptionSchema)
+    .refine(
+      (selected) =>
+        new Set(selected.map((option) => option.name)).size === selected.length,
+      "each option name may appear at most once in selected",
+    )
     .optional()
     .describe(
       "Partial or full option selections for interactive variant narrowing. When provided, response option values include availability signals (available, exists) relative to these selections.",
     ),
   preferences: z
     .array(z.string())
+    .refine(
+      (preferences) => new Set(preferences).size === preferences.length,
+      "preferences must not contain duplicate option names",
+    )
     .optional()
     .describe(
       "Option names in relaxation priority order. When no exact variant matches all selections, the server drops options from the end of this list first. E.g., ['Color', 'Size'] keeps Color and relaxes Size.",
