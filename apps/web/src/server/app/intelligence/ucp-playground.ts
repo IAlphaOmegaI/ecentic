@@ -4,23 +4,81 @@ import type { JSONRPCRequest } from "@ai-sdk/mcp";
 import { createStreamableValue } from "@ai-sdk/rsc";
 // import { UcpDiscoveryProfileSchema } from "@ucp-js/sdk";
 import { merge, resultify } from "@zenncore/utils";
-import { isLoopFinished, stepCountIs, streamText, tool } from "ai";
+import { isLoopFinished, streamText, tool } from "ai";
 import * as z from "zod";
 import {
+  cancelCartRequestSchema,
+  cancelCartResponseSchema,
   createCartRequestSchema,
   createCartResponseSchema,
   discoveryProfileSchema,
+  getCartRequestSchema,
+  getCartResponseSchema,
   getProductRequestSchema,
   getProductResponseSchema,
   lookupCatalogRequestSchema,
   lookupCatalogResponseSchema,
+  messageSchema,
   searchCatalogRequestSchema,
   searchCatalogResponseSchema,
   ucpMCPResponseSchema,
+  updateCartRequestSchema,
+  updateCartResponseSchema,
 } from "./ucp-advanced-validator";
 
 // écentic UCP platform profile
 const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
+
+// Gemini 3 requires thoughtSignature replay on multi-step tool loops; the gateway
+// path triggers SDK sentinel injection + warnings. 2.5-flash is sufficient here.
+const PLAYGROUND_MODEL = "google/gemini-3-flash";
+
+const formatUcpMessage = (message: z.infer<typeof messageSchema>): string => {
+  const path = message.path ? ` (${message.path})` : "";
+  const code = message.code ? `[${message.code}] ` : "";
+  return `${code}${message.content}${path}`;
+};
+
+const extractUcpToolError = (
+  structuredContent: Record<string, unknown>,
+): string | null => {
+  const ucp = structuredContent["ucp"];
+  const ucpStatus =
+    typeof ucp === "object" && ucp !== null && "status" in ucp
+      ? ucp.status
+      : undefined;
+
+  const messagesResult = z
+    .array(messageSchema)
+    .safeParse(structuredContent["messages"]);
+  const messages = messagesResult.success ? messagesResult.data : [];
+  const errorMessages = messages.filter((message) => message.type === "error");
+
+  if (ucpStatus === "error" || errorMessages.length > 0) {
+    return errorMessages.length > 0
+      ? errorMessages.map(formatUcpMessage).join("; ")
+      : "UCP tool returned status: error";
+  }
+
+  return null;
+};
+
+const parseUcpToolContent = <T>(
+  structuredContent: Record<string, unknown>,
+  successSchema: z.ZodType<T>,
+): { success: true; data: T } | { success: false; error: string } => {
+  const ucpError = extractUcpToolError(structuredContent);
+
+  if (ucpError) return { success: false, error: ucpError };
+
+  const parsed = successSchema.safeParse(structuredContent);
+
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.message };
+  }
+
+  return { success: true, data: parsed.data };
+};
 
 // Shopify UCP MCP requires params.arguments.meta["ucp-agent"].profile on every
 // JSON-RPC message (initialize, tools/list, tools/call, notifications). The AI
@@ -161,6 +219,21 @@ const callMCP = async (
   return "error" in body.data ? { error: body.data.error } : body.data.result;
 };
 
+const parseMcpToolResult = <T>(
+  result:
+    | { structuredContent: Record<string, unknown> }
+    | { error: { message: string } },
+  successSchema: z.ZodType<T>,
+) => {
+  if ("error" in result) {
+    return { error: result.error.message };
+  }
+
+  const parsed = parseUcpToolContent(result.structuredContent, successSchema);
+
+  return parsed.success ? parsed.data : { error: parsed.error };
+};
+
 // const callRest = async (
 //   baseEndpoint: string,
 //   method: "GET" | "POST" | "PUT",
@@ -196,39 +269,6 @@ const callMCP = async (
 //   }
 // };
 
-// UCP §4 — line items use variant_id + quantity
-// item	Item	Yes
-// quantity	integer	Yes	Quantity of the item being purchased.
-// totals	Array[Total]	Yes	Line item totals breakdown.
-// parent_id	string	No	Parent line item identifier for any nested structures.
-
-const lineItemSchema = z.object({
-  variant_id: z.string().describe("Product variant global ID"),
-  quantity: z.number().int().positive(),
-});
-
-// UCP §4 — catalog search context
-const catalogContextSchema = z
-  .object({
-    address_country: z.string().optional(),
-    address_region: z.string().optional(),
-    intent: z.string().optional(),
-  })
-  .optional();
-
-// UCP §4 — catalog filters
-const catalogFiltersSchema = z
-  .object({
-    categories: z.array(z.string()).optional(),
-    price: z
-      .object({
-        min: z.number().optional(),
-        max: z.number().optional(),
-      })
-      .optional(),
-  })
-  .optional();
-
 const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
   search_catalog: tool({
     description:
@@ -242,13 +282,7 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
         agentProfileUrl,
       );
 
-      if ("error" in result) return result.error;
-
-      const parsedResult = searchCatalogResponseSchema.safeParse(
-        result.structuredContent,
-      );
-
-      return parsedResult.success ? parsedResult.data : parsedResult.error;
+      return parseMcpToolResult(result, searchCatalogResponseSchema);
     },
   }),
 
@@ -266,13 +300,7 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
         agentProfileUrl,
       );
 
-      if ("error" in result) return result.error;
-
-      const parsedResult = lookupCatalogResponseSchema.safeParse(
-        result.structuredContent,
-      );
-
-      return parsedResult.success ? parsedResult.data : parsedResult.error;
+      return parseMcpToolResult(result, lookupCatalogResponseSchema);
     },
   }),
 
@@ -288,25 +316,17 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
         agentProfileUrl,
       );
 
-      if ("error" in result) return result.error;
-
-      const parsedResult = getProductResponseSchema.safeParse(
-        result.structuredContent,
-      );
-
-      return parsedResult.success ? parsedResult.data : parsedResult.error;
+      return parseMcpToolResult(result, getProductResponseSchema);
     },
   }),
 
   create_cart: tool({
     description:
-      "Create a new cart. Items and context go under the 'cart' key.",
+      "Create a new cart. Payload goes under the 'cart' key. Each line item needs only item.id (variant ID from catalog tools) and quantity. Optional cart.context for localization. Do not set line_items[].id.",
     inputSchema: z.object({
       cart: createCartRequestSchema,
     }),
     execute: async (input) => {
-      console.log("input", input);
-
       const result = await callMCP(
         endpoint,
         "create_cart",
@@ -314,45 +334,60 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
         agentProfileUrl,
       );
 
-      if ("error" in result) return result.error;
-
-      const parsedResult = createCartResponseSchema.safeParse(
-        result.structuredContent,
-      );
-
-      console.log("parsedResult", parsedResult);
-      console.log("result", result.structuredContent);
-
-      return parsedResult.success ? parsedResult.data : parsedResult.error;
+      return parseMcpToolResult(result, createCartResponseSchema);
     },
   }),
 
-  // UCP §5 — cart update: id at top level, replacement payload under "cart" key
-  // update_cart: tool({
-  //   description:
-  //     "Replace all line items in a cart (full replacement per UCP spec). id at top level, items under 'cart'.",
-  //   inputSchema: z.object({
-  //     id: z.string().describe("Cart ID"),
-  //     cart: z.object({
-  //       line_items: z
-  //         .array(lineItemSchema)
-  //         .describe("Complete new list (replaces all existing)"),
-  //     }),
-  //   }),
-  //   execute: async ({ id, cart }) =>
-  //     callMCP(endpoint, "update_cart", { id, cart }, agentProfileUrl),
-  // }),
+  get_cart: tool({
+    description:
+      "Get current cart state. Pass the cart id from the create_cart response.",
+    inputSchema: getCartRequestSchema,
+    execute: async (input) => {
+      const result = await callMCP(
+        endpoint,
+        "get_cart",
+        input,
+        agentProfileUrl,
+      );
 
-  // // UCP §5 — cart lookup: id at top level
-  // get_cart: tool({
-  //   description:
-  //     "Get current cart state (line items, totals). Use this to confirm cart contents after create/update.",
-  //   inputSchema: z.object({
-  //     id: z.string().describe("Cart ID returned by create_cart"),
-  //   }),
-  //   execute: async ({ id }) =>
-  //     callMcp(endpoint, "get_cart", { id }, agentProfileUrl),
-  // }),
+      return parseMcpToolResult(result, getCartResponseSchema);
+    },
+  }),
+
+  update_cart: tool({
+    description:
+      "Replace all cart line items (full replacement). Pass cart id at top level plus the complete new line_items array. Copy line_items from get_cart and modify — keep line_items[].id from get_cart.",
+    inputSchema: z.object({
+      id: updateCartRequestSchema.shape.id,
+      cart: updateCartRequestSchema.omit({ id: true }),
+    }),
+    execute: async (input) => {
+      const result = await callMCP(
+        endpoint,
+        "update_cart",
+        input,
+        agentProfileUrl,
+      );
+
+      return parseMcpToolResult(result, updateCartResponseSchema);
+    },
+  }),
+
+  cancel_cart: tool({
+    description:
+      "Cancel a cart session. Pass the cart id from create_cart at the top level.",
+    inputSchema: cancelCartRequestSchema,
+    execute: async (input) => {
+      const result = await callMCP(
+        endpoint,
+        "cancel_cart",
+        input,
+        agentProfileUrl,
+      );
+
+      return parseMcpToolResult(result, cancelCartResponseSchema);
+    },
+  }),
 });
 
 // // REST transport: standard HTTP body shapes per UCP §2A
@@ -549,7 +584,7 @@ export const runPlayground = async ({
 
       // 4. Run the agentic flow
       const agentResult = streamText({
-        model: "google/gemini-3-flash",
+        model: PLAYGROUND_MODEL,
         system: `You are a UCP (Universal Commerce Protocol) shopping agent running a live integration test against a ${shoppingTransport.toUpperCase()} endpoint.
 
       CRITICAL ARGUMENT SHAPES — follow these exactly, do not add or remove top-level keys:
@@ -561,15 +596,26 @@ export const runPlayground = async ({
       get_product:
         { catalog: { id: "<product_id>" } }
       create_cart:
-        { cart: { line_items: [{ item: { id: "<variant_id>", title: "...", price: { amount: <minor_units>, currency: "USD" } }, quantity: 1 }] } }
+        { cart: { line_items: [{ item: { id: "<variant_id from get_product product.variants[].id>" }, quantity: 1 }] } }
+        Only item.id and quantity per line item. Do NOT set line_items[].id.
+      get_cart:
+        { id: "<copy id field exactly from create_cart tool result>" }
+      update_cart:
+        { id: "<cart id from create_cart>", line_items: [<line items from get_cart with quantity set to 2>] }
+        Full replacement. Keep line_items[].id from get_cart — only change quantity or items as needed.
+      cancel_cart:
+        { id: "<cart id from create_cart>" }
 
       Work through this flow in order:
       1. search_catalog with query "${searchQuery}"
       2. lookup_catalog with the product ID (or variant ID) of the first search result
       3. get_product with the ID of the first result
-      4. create_cart with one line item using a variant ID, title, and price from get_product
+      4. create_cart with one line item using product.variants[0].id from get_product
+      5. get_cart — pass the id from create_cart
+      6. update_cart — pass the same cart id and line_items from get_cart with quantity 2
+      7. cancel_cart — pass the same cart id
 
-      Use ONLY IDs, titles, and prices returned by the tools — never invent them. After all steps, write 2–3 sentences summarizing what you found.
+      Use ONLY IDs returned by the tools — never invent them. If a tool returns { error: "..." } or ucp.status is error, report the failure and stop — do not retry with made-up values. After all steps, write 2–3 sentences summarizing what you found.
       DON'T CALL the same tool again if the first one hasn't finished yet.
       `,
         prompt: `Test the UCP ${shoppingTransport} endpoint at ${shoppingEndpoint} (store: ${domain}).`,
