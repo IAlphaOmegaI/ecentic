@@ -188,7 +188,7 @@ const StatCards = async () => {
   ).length;
 
   const scans = await unwrapResult(Scan.getLatest(Environment.SERVER));
-  const completed = scans.filter((scan) => scan.status === "completed");
+  const completed = scans.filter((scan) => scan.status === "complete");
 
   const trend = (() => {
     if (completed.length < 2) return 0;
@@ -354,7 +354,7 @@ const Performance = async () => {
         ]
       : [];
 
-  const completed = scans.filter((scan) => scan.status === "completed");
+  const completed = scans.filter((scan) => scan.status === "complete");
 
   const trend = completed
     .slice(0, 30)

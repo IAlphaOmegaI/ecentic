@@ -272,7 +272,7 @@ const Share = () => {
   );
 };
 
-const Buy = () => {
+const _Buy = () => {
   const { pending } = useLinkStatus();
   return (
     <>

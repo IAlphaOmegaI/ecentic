@@ -3,7 +3,7 @@ import * as z from "zod";
 // TODO: Implement UCP Advanced Validator
 // write advanced zod schemas for the UCP profile for the best ucp compatibility
 
-const LATEST_UCP_VERSION = "2026-04-08";
+const _LATEST_UCP_VERSION = "2026-04-08";
 const UCP_VERSION_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 const UCP_REVERSE_DOMAIN_NAME_REGEX = /^[a-z][a-z0-9]*(?:\.[a-z][a-z0-9_]*)+$/;
 

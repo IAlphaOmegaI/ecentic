@@ -4,7 +4,6 @@ import * as Optimizations from "@/server/app/optimization";
 import * as Products from "@/server/app/product";
 import { Environment } from "@/server/utils/environment";
 import { SidebarNav } from "./sidebar-nav";
-import { TrialCard } from "./trial-card";
 
 export const Sidebar = async () => {
   const [products, optimizations] = await Promise.all([

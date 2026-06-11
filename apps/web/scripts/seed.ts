@@ -2,6 +2,120 @@ import { db, schema } from "@/server/database";
 
 const posts = [
   {
+    slug: "morph-agentic-economy-report-500-billion-commerce-2028",
+    category: "AI Commerce",
+    title:
+      "Morph's Agentic Economy Report: $500 Billion in AI Commerce by 2028",
+    description:
+      "Morph's Agentic Economy report argues AI agents are becoming buyers — not just assistants. Here is what the $500 billion forecast, payment stack, and 2028 predictions mean for merchants.",
+    introduction:
+      "For years, the AI commerce conversation centered on content, recommendations, and productivity. Morph's new Agentic Economy report marks a sharper turn: AI systems are becoming economic actors that discover products, negotiate terms, authorize payments, and settle transactions on behalf of shoppers.\n\nThe headline forecast is hard to ignore. Morph predicts agent-influenced commerce will exceed $500 billion in global gross merchandise volume by 2028. McKinsey's wider estimate — roughly $1 trillion in U.S. retail and $3 trillion to $5 trillion globally by 2030 — points in the same direction. Salesforce already attributed $67 billion in Cyber Week 2025 spending to AI agent influence, about one-fifth of the period's total.\n\nThis guide distills what merchants need from the report: where infrastructure is landing, which standards matter, why stablecoins enter the picture, and how to prepare catalogs before agents choose for your customers.",
+    publishedAt: "2026-06-04",
+    updatedAt: "2026-06-04",
+    readTime: "12 min",
+    tags: [
+      "agentic commerce",
+      "AI shopping agents",
+      "UCP",
+      "agent payments",
+      "ecommerce strategy",
+    ],
+    takeaways: [
+      "AI agents are shifting from recommendations to autonomous buying — Visa, Mastercard, Google, Stripe, and Shopify have all shipped agent checkout infrastructure.",
+      "Morph forecasts $500 billion in agent-influenced GMV by 2028; McKinsey projects up to $5 trillion globally by 2030.",
+      "Agent commerce runs on four layers: identity, mandate, checkout, and settlement — with UCP, ACP, AP2, and MCP as complementary standards.",
+      "Most merchants should optimize product data and checkout readiness now, before agent traffic scales past early experimentation.",
+    ],
+    sections: [
+      {
+        number: "01",
+        title: "The agent is becoming the buyer",
+        content: `Morph's central claim is that AI is moving past content generation into direct economic participation. Agents are beginning to discover products, compare offers, negotiate shipping and returns, authorize payments, and complete purchases without a human clicking through every step.
+
+The last twelve months made that concrete. Visa reported hundreds of secure agent-initiated transactions across its ecosystem. Mastercard expanded Agent Pay to U.S. cardholders. Google launched the Agent Payments Protocol with more than 60 partners and native stablecoin settlement through x402. Stripe and OpenAI introduced the Agentic Commerce Protocol. Shopify began rolling agent-enabled checkout to merchants — with more than one million reportedly queued for agentic checkout capabilities.
+
+For merchants, the practical shift is simple: your next customer may not be a person browsing your storefront. It may be an agent evaluating your catalog against competitors on price, trust signals, structured data, and checkout compatibility. Visibility and conversion logic that worked for human shoppers will not automatically transfer.
+
+- Treat agent readiness as a catalog and checkout problem, not only a marketing problem
+- Assume comparison happens across merchants with near-perfect efficiency
+- Watch which payment and commerce protocols your platform already supports`,
+      },
+      {
+        number: "02",
+        title: "Why the market numbers are getting serious",
+        content: `The report stacks several independent data points that explain why enterprises are investing now rather than waiting.
+
+Salesforce attributed $67 billion in global spending to AI agent influence during Cyber Week 2025 — roughly one-fifth of total holiday-period spending. Adobe recorded a 693% year-over-year increase in generative-AI-driven retail traffic during the 2025 holiday season. McKinsey estimates agentic commerce could reach approximately $1 trillion in U.S. retail revenue and $3 trillion to $5 trillion globally by 2030.
+
+Morph's own forecast is that agent-influenced commerce exceeds $500 billion in global GMV by 2028. Other predictions in the report include AI agents overtaking humans in commercial stablecoin payment activity, more than one-quarter of U.S. product-discovery searches starting in AI chat interfaces rather than traditional search, and one in ten U.S. households regularly allowing agents to complete purchases on their behalf by 2028.
+
+These figures are projections, not guarantees. But they frame the strategic question for merchants: if even a fraction materializes, the stores that are machine-readable, competitively priced, and checkout-ready will capture disproportionate share.
+
+- Use agent-influenced revenue as a planning scenario, not a current baseline
+- Pair traffic metrics with product-level win rate, not only session volume
+- Prioritize categories where specification-driven comparison already favors agents`,
+      },
+      {
+        number: "03",
+        title: "The four-layer agentic payment stack",
+        content: `A large section of Morph's report focuses on infrastructure. Agent commerce only works when machines can transact safely. Morph breaks the emerging stack into four layers:
+
+**Identity** — Can this agent be trusted and held accountable?
+**Mandate** — Has a human authorized this specific transaction?
+**Checkout** — Can the agent negotiate price, shipping, tax, and returns?
+**Settlement** — How does money actually move?
+
+Several industry standards are gaining traction across those layers. Anthropic's Model Context Protocol (MCP) helps agents connect to tools and data. Google's Agent Payments Protocol (AP2) handles payment authorization. The Stripe and OpenAI-backed Agentic Commerce Protocol (ACP) standardizes agent checkout. Shopify's Universal Commerce Protocol (UCP) exposes merchant catalogs and cart flows to agents. Visa's Trusted Agent Protocol, Ethereum's ERC-8004 framework, and x402 for machine-to-machine micropayments round out the picture.
+
+Morph argues these are complementary layers, not competing products. For merchants on Shopify or platforms adopting UCP, the near-term work is making sure product feeds, policies, and checkout endpoints are valid for agent consumption.
+
+- Map which protocols your commerce platform already exposes
+- Keep return, shipping, and tax details consistent across feeds and storefront
+- Do not wait for a single winning standard — readiness is multi-protocol`,
+      },
+      {
+        number: "04",
+        title: "Stablecoins and machine-scale payments",
+        content: `The report gives significant attention to stablecoins as the native settlement layer for agent-driven commerce. The argument is economic: traditional card rails carry fixed processing costs that make sub-dollar transactions uneconomical. Morph notes average x402 payments around $0.20 — sizes that are awkward on card networks but natural for stablecoin settlement between machines.
+
+Stablecoins spent recent years proving themselves for treasury and B2B flows. The next phase, according to Morph, is becoming the default rail for high-volume, low-value agent transactions — automated service purchases, API calls, micropayments between agents, and machine-to-machine commerce at internet scale.
+
+That does not mean every merchant must accept stablecoins tomorrow. It does mean payment infrastructure is diversifying beyond card checkout, and agent-initiated volume may eventually settle outside traditional rails — especially for automated and recurring agent purchases.
+
+- Monitor whether your platform adds non-card settlement options for agent checkout
+- Understand that agent comparison may eventually include payment-method compatibility
+- Treat stablecoin adoption as an infrastructure signal, not a merchant fad`,
+      },
+      {
+        number: "05",
+        title: "Infrastructure is ahead of transaction volume — for now",
+        content: `Morph is explicit that excitement and economic activity are not the same thing yet. Bloomberg reported roughly $24 million in x402 payment volume over a 30-day period; Andreessen Horowitz analysis suggested trade-filtered activity closer to $1.6 million in the same window. Much of today's activity is still testing, experimentation, and synthetic transactions rather than mature commercial demand.
+
+What is spreading faster is adoption of the underlying tooling. MCP SDK installations reportedly reached 97 million monthly installs by March 2026. AP2 launched with more than 60 ecosystem partners. Visa, Google, Shopify, and Stripe are not running demos — they are shipping production paths.
+
+For merchants, the gap between infrastructure and volume is actually useful. It means there is still time to fix catalog clarity, structured data, competitive positioning, and checkout compatibility before agent traffic becomes a mainstream revenue line. Stores that optimize now compound advantage as volume catches up to tooling.
+
+- Do not dismiss the channel because current GMV is small
+- Do not assume you can catch up later without catalog rework
+- Run simulations against competitors now while the cost of losing is still low`,
+      },
+      {
+        number: "06",
+        title: "What merchants should do before 2028",
+        content: `Morph's ten predictions for 2028 include disruptive scenarios: autonomous agents driving real price declines above 10% in comparable categories, a Fortune 100 breach attributed to an AI agent, and major retailers reorganizing e-commerce around agent readiness. Whether every forecast lands, the direction is clear — businesses will need to optimize for machine buyers alongside human ones.
+
+Practical preparation starts with product data. Agents evaluate titles, attributes, pricing, availability, reviews, and policy signals programmatically. Incomplete or inconsistent catalogs lose comparisons before a human ever sees the product. Checkout and protocol readiness matter next: if agents cannot complete a transaction through your stack, discovery is wasted.
+
+Finally, measure agent influence before it shows up cleanly in standard analytics. Server-side logs, agent visit tracking, and product-level win-rate simulation reveal whether you are winning or losing in AI-mediated comparisons today — not after the $500 billion forecast becomes yesterday's news.
+
+- Audit top SKUs for machine-readable titles, attributes, and structured data
+- Confirm checkout and feed compatibility with your platform's agent protocols
+- Simulate how GPT-4, Claude, Gemini, and Perplexity rank you against competitors
+- Revisit pricing and trust signals where agents comparison-shop with perfect efficiency`,
+      },
+    ],
+  },
+  {
     slug: "how-to-start-an-ecommerce-business-in-2026",
     category: "Getting Started",
     title: "How to Start an Ecommerce Business in 2026",

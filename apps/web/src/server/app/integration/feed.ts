@@ -1,8 +1,6 @@
-/** biome-ignore-all lint/complexity/useLiteralKeys: we need to access the properties as strings */
 "use server";
 
 import { type Result, resultify } from "@zenncore/utils";
-import { XMLParser } from "fast-xml-parser";
 import { withAuthentication } from "../../utils/authentication";
 import { withContext } from "../../utils/context";
 import { Environment } from "../../utils/environment";
@@ -10,144 +8,9 @@ import { NotFoundError, RequestError } from "../../utils/error";
 import * as HTTP from "../../utils/http";
 import * as Product from "../product";
 import * as Store from "../store";
+import { detect, Parser } from "./feed-parsing";
 
-type Type = {
-  title: string;
-  description?: string;
-  price?: string;
-  currency?: string;
-  image?: string;
-  url?: string;
-  sku?: string;
-  id?: string;
-};
-
-/**
- * Splits a price string like "29.99 USD" or "$29.99" into numeric price
- * and ISO currency code. Falls back to null currency if none detected.
- */
-const parsePrice = (
-  raw: string,
-): { price: string | null; currency: string | null } => {
-  const trimmed = raw.trim();
-
-  // "29.99 USD" or "29.99 EUR" — numeric followed by currency code
-  const trailingCode = trimmed.match(/^([\d.,]+)\s+([A-Z]{3})$/);
-  if (trailingCode)
-    return {
-      price: trailingCode[1] ?? null,
-      currency: trailingCode[2] ?? null,
-    };
-
-  // "USD 29.99" — currency code followed by numeric
-  const leadingCode = trimmed.match(/^([A-Z]{3})\s+([\d.,]+)$/);
-  if (leadingCode)
-    return { price: leadingCode[2] ?? null, currency: leadingCode[1] ?? null };
-
-  // Strip any leading currency symbol and return numeric part
-  const numeric = trimmed.replace(/^[^\d]*/, "");
-  return { price: numeric || trimmed, currency: null };
-};
-
-const Utils = {
-  Parser: {
-    xml: (text: string): Type[] => {
-      const parser = new XMLParser({
-        ignoreAttributes: false,
-        attributeNamePrefix: "@_",
-        removeNSPrefix: true,
-      });
-
-      const parsed = parser.parse(text);
-
-      const channel = parsed?.rss?.channel ?? parsed?.feed ?? parsed;
-
-      const raw: unknown[] = (() => {
-        if (Array.isArray(channel?.item)) return channel.item;
-
-        if (channel?.item) return [channel.item];
-
-        if (Array.isArray(channel?.entry)) return channel.entry;
-
-        if (channel?.entry) return [channel.entry];
-
-        return [];
-      })();
-
-      return raw.map((entry) => {
-        const item = entry as Record<string, unknown>;
-        const rawPrice = String(item["price"] ?? item["g:price"] ?? "");
-        const parsed = rawPrice
-          ? parsePrice(rawPrice)
-          : { price: "", currency: null };
-        const currency =
-          String(item["currency"] ?? item["g:currency"] ?? "") ||
-          parsed.currency ||
-          undefined;
-
-        return {
-          title: String(item["title"] ?? item["g:title"] ?? "Untitled"),
-          description: String(
-            item["description"] ?? item["g:description"] ?? "",
-          ),
-          price: parsed.price ?? undefined,
-          currency,
-          image: String(
-            item["image_link"] ?? item["g:image_link"] ?? item["image"] ?? "",
-          ),
-          url: String(item["link"] ?? item["g:link"] ?? ""),
-          sku: String(item["id"] ?? item["g:id"] ?? item["sku"] ?? ""),
-          id: String(item["id"] ?? item["g:id"] ?? ""),
-        };
-      }) as Type[];
-    },
-
-    json: (text: string): Type[] => {
-      const result = resultify(
-        () =>
-          JSON.parse(text) as {
-            products?: Type[];
-            items?: Type[];
-          },
-      );
-      if (!result.success) return [];
-
-      const data = Array.isArray(result.data)
-        ? result.data
-        : (result.data?.products ?? result.data?.items ?? []);
-
-      if (!Array.isArray(data)) return [];
-
-      return data.map((item) => {
-        const rawPrice = String(item.price ?? "");
-        const parsed = rawPrice
-          ? parsePrice(rawPrice)
-          : { price: "", currency: null };
-        const currency =
-          String((item as Record<string, unknown>)["currency"] ?? "") ||
-          parsed.currency ||
-          undefined;
-
-        return {
-          title: String(item.title ?? item.name ?? "Untitled"),
-          description: String(item.description ?? ""),
-          price: parsed.price ?? undefined,
-          currency,
-          image: String(item.image ?? item.image_url ?? item.imageUrl ?? ""),
-          url: String(item.url ?? item.link ?? ""),
-          sku: String(item.sku ?? item.id ?? ""),
-          id: String(item.id ?? ""),
-        };
-      });
-    },
-  },
-
-  detect: (text: string): "xml" | "json" => {
-    const trimmed = text.trimStart();
-    if (trimmed.startsWith("<")) return "xml";
-    return "json";
-  },
-};
+const FEED_BYTE_LIMIT = 10 * 1024 * 1024;
 
 export const connect = withAuthentication(
   async (
@@ -191,12 +54,16 @@ export const connectForUser = withContext(
         error: new RequestError("Failed to read feed response"),
       };
 
-    const format = Utils.detect(text.data);
+    if (text.data.length > FEED_BYTE_LIMIT)
+      return {
+        success: false,
+        error: new RequestError("feed-too-large"),
+      };
+
+    const format = detect(text.data);
 
     const products =
-      format === "xml"
-        ? Utils.Parser.xml(text.data)
-        : Utils.Parser.json(text.data);
+      format === "xml" ? Parser.xml(text.data) : Parser.json(text.data);
 
     if (products.length === 0)
       return {
@@ -256,11 +123,17 @@ export const syncProducts = withAuthentication(
       return { success: false, error: text.error };
     }
 
-    const format = Utils.detect(text.data);
+    if (text.data.length > FEED_BYTE_LIMIT) {
+      await Store.update(Environment.SERVER, id, { status: "error" });
+      return {
+        success: false,
+        error: new RequestError("feed-too-large"),
+      };
+    }
+
+    const format = detect(text.data);
     const products =
-      format === "xml"
-        ? Utils.Parser.xml(text.data)
-        : Utils.Parser.json(text.data);
+      format === "xml" ? Parser.xml(text.data) : Parser.json(text.data);
 
     const results = await Promise.all(
       products.map((item) =>
