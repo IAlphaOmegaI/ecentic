@@ -1,11 +1,21 @@
 "use server";
 
+import type { JSONRPCRequest } from "@ai-sdk/mcp";
 import { createStreamableValue } from "@ai-sdk/rsc";
 // import { UcpDiscoveryProfileSchema } from "@ucp-js/sdk";
-import { resultify } from "@zenncore/utils";
-import { stepCountIs, streamText, tool } from "ai";
+import { merge, resultify } from "@zenncore/utils";
+import { isLoopFinished, stepCountIs, streamText, tool } from "ai";
 import * as z from "zod";
-import { discoveryProfileSchema } from "./ucp-advanced-validator";
+import {
+  discoveryProfileSchema,
+  getProductRequestSchema,
+  getProductResponseSchema,
+  lookupCatalogRequestSchema,
+  lookupCatalogResponseSchema,
+  searchCatalogRequestSchema,
+  searchCatalogResponseSchema,
+  ucpMCPResponseSchema,
+} from "./ucp-advanced-validator";
 
 // écentic UCP platform profile
 const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
@@ -94,12 +104,12 @@ export type PlaygroundEvent =
   | { kind: "done" }
   | { kind: "error"; message: string };
 
-const callMcp = async (
+const callMCP = async (
   endpoint: string,
   toolName: string,
   args: Record<string, unknown>,
   agentProfileUrl: string,
-): Promise<unknown> => {
+) => {
   const response = await resultify(() =>
     fetch(endpoint, {
       method: "POST",
@@ -110,46 +120,43 @@ const callMcp = async (
       },
       body: JSON.stringify({
         jsonrpc: "2.0",
-        id: Math.floor(Math.random() * 100_000),
+        id: crypto.randomUUID(),
         method: "tools/call",
-        params: {
-          name: toolName,
-          // UCP spec §3B: meta must be injected in every MCP tool invocation
-          arguments: {
-            meta: {
-              "ucp-agent": { profile: agentProfileUrl },
+        params: merge(
+          {
+            name: toolName,
+            arguments: {
+              meta: {
+                "ucp-agent": { profile: agentProfileUrl },
+              },
             },
-            ...args,
           },
-        },
-      }),
+          {
+            arguments: args,
+          },
+        ),
+      } satisfies JSONRPCRequest),
       signal: AbortSignal.timeout(12_000),
     }),
   );
 
-  if (!response.success) return { error: "Network request failed" };
+  if (!response.success) return { error: { message: "Tool call failed" } };
 
-  const textResult = await resultify(() => response.data.text());
-  if (!textResult.success) return { error: "Could not read response body" };
+  const dataResult = await resultify(() => response.data.json());
 
-  try {
-    const body = JSON.parse(textResult.data) as {
-      result?: unknown;
-      error?: { code?: number; message?: string; data?: unknown };
-    };
-    if (body.error) {
-      console.log("body.error", body.error);
-      return {
-        error: body.error.message ?? "MCP error",
-        code: body.error.code ?? null,
-        data: body.error.data ?? null,
-      };
-    }
-
-    return body.result ?? null;
-  } catch {
-    return { error: "Response is not valid JSON", raw: textResult.data };
+  if (!dataResult.success) {
+    return { error: { message: "Tool call response is not valid JSON" } };
   }
+
+  const body = ucpMCPResponseSchema.safeParse(dataResult.data);
+
+  if (!body.success) {
+    return {
+      error: { message: body.error.message },
+    };
+  }
+
+  return "error" in body.data ? { error: body.data.error } : body.data.result;
 };
 
 // const callRest = async (
@@ -220,74 +227,72 @@ const catalogFiltersSchema = z
   })
   .optional();
 
-// UCP MCP transport §3A — search_catalog: payload nested under "catalog" key
-// Example per spec:
-//   arguments: { meta: {...}, catalog: { query, context, filters, pagination } }
 const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
   search_catalog: tool({
     description:
       "Search the store product catalog. Returns matching products with IDs, titles, prices, and variant IDs. Arguments go under the 'catalog' key per UCP spec (only define them if the user asks something that could be done by using the catalog properties).",
-    inputSchema: z.object({
-      catalog: z.object({
-        query: z.string().optional().describe("Free-text search query."),
-        context: catalogContextSchema
-          .optional()
-          .describe(
-            "Provisional buyer signals for relevance and localization—not authoritative data. Businesses SHOULD use these values when verified inputs (e.g., shipping address) are absent, and MAY ignore or down-rank them if inconsistent with higher-confidence signals (authenticated account, risk detection) or regulatory constraints (export controls). Eligibility and policy enforcement MUST occur at checkout time using binding transaction data. Context SHOULD be non-identifying and can be disclosed progressively—coarse signals early, finer resolution as the session progresses. Higher-resolution data (shipping address, billing address) supersedes context.",
-          ),
-        filters: catalogFiltersSchema.optional(),
-        pagination: z
-          .object({ limit: z.number().int().positive().optional() })
-          .optional(),
-      }),
-    }),
-    execute: async ({ catalog }) =>
-      callMcp(endpoint, "search_catalog", { catalog }, agentProfileUrl),
-  }),
-
-  // // UCP MCP binding — lookup identifiers under "catalog" key
-  // lookup_catalog: tool({
-  //   description:
-  //     "Lookup products or variants by identifiers. Use this when you already have IDs.",
-  //   inputSchema: z.object({
-  //     catalog: z.object({
-  //       ids: z
-  //         .array(z.string())
-  //         .describe("Product/variant identifiers to resolve"),
-  //       context: catalogContextSchema,
-  //       filters: catalogFiltersSchema,
-  //     }),
-  //   }),
-  //   execute: async ({ catalog }) =>
-  //     callMcp(endpoint, "lookup_catalog", { catalog }, agentProfileUrl),
-  // }),
-
-  // UCP MCP binding — get_product input nested under "catalog"
-  get_product: tool({
-    description:
-      "Get full product details (variants, pricing, images) for a product by its global ID.",
-    inputSchema: z.object({
-      catalog: z.object({
-        id: z.string().describe("Product global ID from search results"),
-        selected: z
-          .array(z.object({ name: z.string(), label: z.string() }))
-          .optional(),
-        preferences: z.array(z.string()).optional(),
-        context: catalogContextSchema,
-        filters: catalogFiltersSchema,
-      }),
-    }),
-    execute: async ({ catalog }) => {
-      const result = await callMcp(
+    inputSchema: z.object({ catalog: searchCatalogRequestSchema }),
+    execute: async (input) => {
+      const result = await callMCP(
         endpoint,
-        "get_product",
-        { catalog },
+        "search_catalog",
+        input,
         agentProfileUrl,
       );
 
-      console.log("result", result.structuredContent.product);
+      if ("error" in result) return result.error;
 
-      return result;
+      const parsedResult = searchCatalogResponseSchema.safeParse(
+        result.structuredContent,
+      );
+
+      return parsedResult.success ? parsedResult.data : parsedResult.error;
+    },
+  }),
+
+  lookup_catalog: tool({
+    description:
+      "Lookup products or variants by identifiers. Use this when you already have IDs.",
+    inputSchema: z.object({
+      catalog: lookupCatalogRequestSchema,
+    }),
+    execute: async (input) => {
+      const result = await callMCP(
+        endpoint,
+        "lookup_catalog",
+        input,
+        agentProfileUrl,
+      );
+
+      if ("error" in result) return result.error;
+
+      const parsedResult = lookupCatalogResponseSchema.safeParse(
+        result.structuredContent,
+      );
+
+      return parsedResult.success ? parsedResult.data : parsedResult.error;
+    },
+  }),
+
+  get_product: tool({
+    description:
+      "Get full product details (variants, pricing, images) for a product by its global ID.",
+    inputSchema: z.object({ catalog: getProductRequestSchema }),
+    execute: async (input) => {
+      const result = await callMCP(
+        endpoint,
+        "get_product",
+        input,
+        agentProfileUrl,
+      );
+
+      if ("error" in result) return result.error;
+
+      const parsedResult = getProductResponseSchema.safeParse(
+        result.structuredContent,
+      );
+
+      return parsedResult.success ? parsedResult.data : parsedResult.error;
     },
   }),
 
@@ -318,7 +323,7 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
       }),
     }),
     execute: async ({ id, cart }) =>
-      callMcp(endpoint, "update_cart", { id, cart }, agentProfileUrl),
+      callMCP(endpoint, "update_cart", { id, cart }, agentProfileUrl),
   }),
 
   // // UCP §5 — cart lookup: id at top level
@@ -408,29 +413,30 @@ export const runPlayground = async ({
   (async () => {
     try {
       const domain = storeUrl.replace(/\/+$/, "");
-      const profileUrl = `${domain}/.well-known/ucp`;
+      const businessProfileUrl = `${domain}/.well-known/ucp`;
 
-      const businessProfileResponse = await resultify(() =>
-        fetch(profileUrl, {
+      const businessProfileDiscoveryResult = await resultify(() =>
+        fetch(businessProfileUrl, {
           headers: { Accept: "application/json" },
           signal: AbortSignal.timeout(8_000),
         }),
       );
 
-      if (!businessProfileResponse.success) {
+      if (!businessProfileDiscoveryResult.success) {
         emit({
           kind: "error",
-          message: `Could not reach Business UCP profile at ${profileUrl}. Make sure the store serves a valid /.well-known/ucp endpoint.`,
+          message: `Could not reach Business UCP profile at ${businessProfileUrl}. Make sure the store serves a valid /.well-known/ucp endpoint.`,
         });
         streamable.done();
+
         return;
       }
 
-      const businessProfileText = await resultify(() =>
-        businessProfileResponse.data.text(),
+      const businessProfileResult = await resultify(() =>
+        businessProfileDiscoveryResult.data.json(),
       );
 
-      if (!businessProfileText.success) {
+      if (!businessProfileResult.success) {
         emit({
           kind: "error",
           message: "Could not read business profile response body.",
@@ -445,9 +451,7 @@ export const runPlayground = async ({
         data: businessProfile,
         error,
         // TODO: replace with UcpDiscoveryProfileSchema when updated
-      } = discoveryProfileSchema.safeParse(
-        JSON.parse(businessProfileText.data),
-      );
+      } = discoveryProfileSchema.safeParse(businessProfileResult.data);
 
       if (!businessProfileSuccess) {
         console.error(error);
@@ -511,7 +515,7 @@ export const runPlayground = async ({
         kind: "profile",
         transport: shoppingTransport,
         endpoint: shoppingEndpoint,
-        profileUrl,
+        profileUrl: businessProfileUrl,
         agentProfileUrl,
       });
 
@@ -534,7 +538,9 @@ export const runPlayground = async ({
       CRITICAL ARGUMENT SHAPES — follow these exactly, do not add or remove top-level keys:
 
       search_catalog:
-        { catalog: { query: "...", pagination: { limit: 5 }, filters: {}, context: {} } } (only define them if the user asks something that could be done by using the catalog properties even tho they might have been defined in the schema).
+       example parameters: { catalog: { query: "...", pagination: { limit: 5 }, filters: {}, context: {} } } (only define them if the user asks something that could be done by using the catalog properties even tho they might have been defined in the schema).
+      lookup_catalog:
+        { catalog: { ids: ["<product_id_or_variant_id>"] } }
       get_product:
         { catalog: { id: "<product_id>" } }
       update_cart:
@@ -542,14 +548,15 @@ export const runPlayground = async ({
 
       Work through this flow in order:
       1. search_catalog with query "${searchQuery}"
-      2. get_product with the ID of the first result
+      2. lookup_catalog with the product ID (or variant ID) of the first search result
+      3. get_product with the ID of the first result
 
       Use ONLY IDs returned by the tools — never invent them. After all steps, write 2–3 sentences summarizing what you found.
       DON'T CALL the same tool again if the first one hasn't finished yet.
       `,
         prompt: `Test the UCP ${shoppingTransport} endpoint at ${shoppingEndpoint} (store: ${domain}).`,
         tools,
-        stopWhen: stepCountIs(12),
+        stopWhen: isLoopFinished(),
         providerOptions: gatewayOptions(),
       });
 

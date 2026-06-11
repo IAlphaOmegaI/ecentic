@@ -1,8 +1,16 @@
-/** Non-distributive check: `T | undefined` must not split into separate success branches. */
-// biome-ignore lint/suspicious/noConfusingVoidType: exact void-only success shape (not undefined)
-type SuccessResult<T> = [T] extends [void]
-  ? { success: true }
-  : { success: true; data: T };
+/**
+ * Success shape for `Result<T>`.
+ * - `void` only → no `data` (sync helpers with no return value).
+ * - `any` / `unknown` / unions with `undefined` → always include `data`.
+ *
+ * Uses tuple wrapping so `T | undefined` does not distribute, and `0 extends 1 & T`
+ * so `any` does not union both branches (`[any] extends [void]` is ambiguous in TS).
+ */
+type SuccessResult<T> = 0 extends 1 & T
+  ? { success: true; data: T }
+  : [T] extends [void]
+    ? { success: true }
+    : { success: true; data: T };
 
 export type Result<T = void, E = Error> =
   | SuccessResult<T>

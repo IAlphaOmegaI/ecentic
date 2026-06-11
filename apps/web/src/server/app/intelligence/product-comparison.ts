@@ -6,9 +6,9 @@ import { resultify } from "@zenncore/utils";
 import { isLoopFinished, streamText, tool } from "ai";
 import * as z from "zod";
 import {
-  catalogSearchRequestSchema,
-  catalogSearchResponseSchema,
   discoveryProfileSchema,
+  searchCatalogRequestSchema,
+  searchCatalogResponseSchema,
 } from "./ucp-advanced-validator";
 
 // écentic UCP platform profile
@@ -230,12 +230,12 @@ const buildMcpTools = (endpoints: string[], agentProfileUrl: string) => ({
   search_catalogs: tool({
     description:
       "Search the stores product catalog. Returns matching products with IDs, titles, prices, and variant IDs. Pass query, context (currency, intent), and filters (price, categories) as top-level fields derived from the buyer request.",
-    inputSchema: catalogSearchRequestSchema,
+    inputSchema: searchCatalogRequestSchema,
     outputSchema: z.array(
       z.object({
         endpoint: z.string(),
         result: z.looseObject({
-          structuredContent: catalogSearchResponseSchema,
+          structuredContent: searchCatalogResponseSchema,
         }),
       }),
     ),
@@ -631,7 +631,8 @@ export const runStoreComparison = async ({
         domain: discovery.domain,
         endpoint: discovery.endpoint,
         storeUrl,
-        role: storeUrl === source ? ("source" as const) : ("competitor" as const),
+        role:
+          storeUrl === source ? ("source" as const) : ("competitor" as const),
       }));
 
       const tools = buildMcpTools(endpoints, agentProfileUrl);
@@ -737,7 +738,7 @@ Call search_catalogs with parameters derived from this request, then evaluate my
                 endpoint?: string;
                 result?: {
                   structuredContent: z.infer<
-                    typeof catalogSearchResponseSchema
+                    typeof searchCatalogResponseSchema
                   >;
                 };
               };
