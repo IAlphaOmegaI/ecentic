@@ -3,6 +3,7 @@ import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import Link from "next/link";
 import { BookCall } from "@/components/cal";
+import { Plus } from "@/components/plus";
 import { PricingCTA } from "./pricing-cta";
 
 const compete = {
@@ -37,7 +38,11 @@ export const Pricing = () => (
     id="pricing"
     className="relative -left-[calc(50vw-50%)] w-screen scroll-mt-[5.5rem]"
   >
-    <div className="mx-auto max-w-6xl border-accent-foreground border-x border-b">
+    <div className="relative mx-auto max-w-6xl border-accent-foreground border-x border-b">
+      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+      <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+      <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
       <div className="relative border-accent-foreground p-6 md:p-12">
         <h2 className="font-body text-3xl text-foreground md:text-6xl">
           Start free. <br />
@@ -45,8 +50,12 @@ export const Pricing = () => (
         </h2>
       </div>
 
-      <div className="mx-auto max-w-6xl border-accent-foreground border-t">
-        <div className="grid grid-cols-1 divide-y divide-accent-foreground border-accent-foreground border-b md:grid-cols-3 md:divide-x md:divide-y-0">
+      <div className="relative mx-auto max-w-6xl border-accent-foreground border-t">
+        <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+        <div className="relative grid grid-cols-1 divide-y divide-accent-foreground border-accent-foreground border-b md:grid-cols-3 md:divide-x md:divide-y-0">
+          <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2 hidden md:flex" />
+          <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden md:flex" />
           {/* Scan */}
           <div className="flex h-auto flex-col p-6 md:h-102">
             <div className="flex items-center justify-between">

@@ -990,72 +990,75 @@ export const UcpValidatorForm = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="grid gap-px bg-accent-foreground lg:grid-cols-[minmax(0,1fr)_320px]">
-        <div className="bg-background-rich px-6 py-6 sm:px-8 sm:py-8">
-          <h2 className="font-semibold text-foreground-rich text-lg">
+      <div className="grid border-accent-foreground border-b lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="border-accent-foreground px-8 py-8 lg:border-r">
+          <h2 className="font-body text-2xl text-foreground">
             Run a live validation
           </h2>
-          <p className="mt-1 max-w-2xl text-foreground-dimmed text-sm">
+          <p className="mt-2 max-w-2xl font-light text-foreground-dimmed">
             Paste a domain and we&apos;ll fetch the live{" "}
-            <span className="font-mono text-foreground">/.well-known/ucp</span>{" "}
+            <span className="font-mono text-foreground text-sm">
+              /.well-known/ucp
+            </span>{" "}
             document, parse every service, capability, payment handler and
             signing key, then validate it against the{" "}
-            <span className="font-mono text-foreground">
+            <span className="font-mono text-foreground text-sm">
               {LATEST_UCP_VERSION}
             </span>{" "}
             spec.
           </p>
 
-          <form onSubmit={handleSubmit} className="mt-6">
+          <form onSubmit={handleSubmit} className="mt-8">
             <label
               htmlFor="ucp-domain"
-              className="block font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
+              className="block font-medium text-foreground-dimmed text-xs uppercase tracking-[0.16em]"
             >
               Domain
             </label>
-            <div className="mt-2 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-3 flex flex-col gap-3 sm:flex-row">
               <TextField
                 value={domain}
                 onValueChange={setDomain}
-                className="h-10 flex-1 bg-background-rich"
+                className="h-11 flex-1"
               >
                 <TextFieldInput
                   id="ucp-domain"
                   placeholder="yourdomain.com"
-                  className="px-3 text-sm"
+                  className="px-4"
                 />
               </TextField>
               <Button
                 type="submit"
                 color="primary"
                 disabled={isChecking || !domain.trim()}
-                className="h-10 shrink-0 justify-center px-5 text-sm"
+                className="h-11 shrink-0 justify-center px-6"
               >
                 {isChecking ? "Checking..." : "Check domain"}
               </Button>
             </div>
-            <p className="mt-2 text-foreground-dimmed text-xs">
-              Use the storefront domain only, like{" "}
+            <p className="mt-3 font-light text-foreground-dimmed text-sm">
+              Root domain only —{" "}
               <span className="font-mono text-foreground">acme.com</span> or{" "}
               <span className="font-mono text-foreground">www.acme.com</span>.
+              We always validate the HTTPS version.
             </p>
           </form>
         </div>
 
-        <div className="bg-background-rich px-6 py-6 sm:px-8 sm:py-8">
-          <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+        <div className="bg-background-dimmed px-8 py-8">
+          <p className="font-medium text-foreground-dimmed text-xs uppercase tracking-[0.16em]">
             Before you run it
           </p>
-          <div className="mt-4 space-y-4">
+          <div className="mt-5 flex flex-col gap-5">
             {notes.map((note) => (
               <div
                 key={note.title}
-                className="border-accent-foreground border-t pt-4 first:border-t-0 first:pt-0"
+                className="border-accent-foreground border-t pt-5 first:border-t-0 first:pt-0"
               >
-                <p className="font-semibold text-foreground-rich text-sm">
+                <p className="font-medium text-foreground text-sm">
                   {note.title}
                 </p>
-                <p className="mt-1 text-foreground-dimmed text-sm">
+                <p className="mt-1 font-light text-foreground-dimmed text-sm leading-relaxed">
                   {note.detail}
                 </p>
               </div>
