@@ -84,6 +84,8 @@ export default ({ searchParams }: SearchParamsProps<keyof Pager>) => (
         <div className="relative mx-8 bg-background-rich">
           <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
           <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <Suspense fallback={<StatsSkeleton />}>
             <StatCards />
           </Suspense>
@@ -93,7 +95,11 @@ export default ({ searchParams }: SearchParamsProps<keyof Pager>) => (
       <SectionGutter />
 
       <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="mx-8 bg-background-rich">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <Suspense fallback={<ChartSkeleton />}>
             <Performance />
           </Suspense>
@@ -103,7 +109,11 @@ export default ({ searchParams }: SearchParamsProps<keyof Pager>) => (
       <SectionGutter />
 
       <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="mx-8 bg-background-rich">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <Suspense fallback={<TableSkeleton />}>
             <Products searchParams={searchParams} />
           </Suspense>
@@ -113,7 +123,11 @@ export default ({ searchParams }: SearchParamsProps<keyof Pager>) => (
       <SectionGutter />
 
       <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="mx-8 bg-background-rich">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <Suspense fallback={<TrafficSkeleton />}>
             <AgentTraffic />
           </Suspense>
@@ -123,7 +137,11 @@ export default ({ searchParams }: SearchParamsProps<keyof Pager>) => (
       <SectionGutter />
 
       <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="mx-8 bg-background-rich">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <Suspense fallback={<InsightsSkeleton />}>
             <Insights />
           </Suspense>

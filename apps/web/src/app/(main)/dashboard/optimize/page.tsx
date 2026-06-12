@@ -75,7 +75,9 @@ const OptimizeContent = async () => {
 
 export default () => (
   <div className="flex flex-col">
-    <div className="mx-8 border-accent-foreground border-x">
+    <div className="relative mx-8 border-accent-foreground border-x">
+      <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+      <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
       <Suspense fallback={<OptimizeSkeleton />}>
         <OptimizeContent />
       </Suspense>

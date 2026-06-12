@@ -86,6 +86,8 @@ export default () => (
         <div className="relative mx-8 bg-background-rich">
           <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
           <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <div className="flex items-start gap-4 px-6 py-6 transition-colors hover:bg-background">
             <ShareIcon className="size-8 shrink-0 text-primary" />
             <div>
@@ -112,7 +114,11 @@ export default () => (
       <SectionGutter />
 
       <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="mx-8 bg-background-rich">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <div className="border-accent-foreground border-b p-4">
             <SectionKicker>01 — Library</SectionKicker>
             <p className="mt-2 font-semibold text-foreground-rich text-lg">
@@ -128,7 +134,11 @@ export default () => (
       <SectionGutter />
 
       <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="mx-8 bg-background-rich">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <div className="border-accent-foreground border-b p-4">
             <SectionKicker>02 — Automation</SectionKicker>
             <p className="mt-2 font-semibold text-foreground-rich text-lg">

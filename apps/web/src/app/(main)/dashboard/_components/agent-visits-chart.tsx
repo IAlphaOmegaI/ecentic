@@ -17,25 +17,25 @@ const MODELS = [
   {
     key: "chatgpt" as const,
     label: "ChatGPT",
-    color: "var(--color-blue-500)",
+    color: "var(--color-primary)",
     logo: "/images/chatgpt.svg",
   },
   {
     key: "claude" as const,
     label: "Claude",
-    color: "var(--color-orange-500)",
+    color: "var(--color-warning)",
     logo: "/images/claude.svg",
   },
   {
     key: "gemini" as const,
     label: "Gemini",
-    color: "var(--color-green-500)",
+    color: "var(--color-success)",
     logo: "/images/gemini.svg",
   },
   {
     key: "perplexity" as const,
     label: "Perplexity",
-    color: "var(--color-teal-500)",
+    color: "var(--color-info)",
     logo: "/images/perplexity.svg",
   },
 ];
@@ -86,25 +86,6 @@ export const AgentVisitsChart = ({
             data={data}
             margin={{ top: 6, right: 0, left: 0, bottom: 0 }}
           >
-            <defs>
-              {MODELS.map((model) => (
-                <linearGradient
-                  key={model.key}
-                  id={`area-${model.key}`}
-                  x1="0"
-                  y1="0"
-                  x2="0"
-                  y2="1"
-                >
-                  <stop
-                    offset="0%"
-                    stopColor={model.color}
-                    stopOpacity={0.22}
-                  />
-                  <stop offset="100%" stopColor={model.color} stopOpacity={0} />
-                </linearGradient>
-              ))}
-            </defs>
             <CartesianGrid
               stroke="var(--color-foreground-dimmed)"
               strokeOpacity={0.14}
@@ -180,7 +161,8 @@ export const AgentVisitsChart = ({
                 dataKey={model.key}
                 stroke={model.color}
                 strokeWidth={1.5}
-                fill={`url(#area-${model.key})`}
+                fill="var(--color-primary)"
+                fillOpacity={0.08}
                 dot={false}
                 activeDot={{
                   r: 4,

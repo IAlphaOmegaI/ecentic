@@ -34,17 +34,25 @@ tr {
   transition: background-color 100ms ease;
 }
 
-@keyframes dominate-pulse {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: 0 0 0px 0px rgba(21, 114, 250, 0);
-  }
-  50% {
-    transform: scale(1.04);
-    box-shadow: 0 0 14px 3px rgba(21, 114, 250, 0.45);
-  }
+@keyframes gold-shine {
+  from { background-position: -200% center; }
+  to { background-position: 200% center; }
 }
 
-@utility animate-dominate-pulse {
-  animation: dominate-pulse 2.4s ease-in-out infinite;
+@utility animate-gold-shine {
+  background-image: linear-gradient(
+    90deg,
+    #9a6e0a 0%,
+    #c8920e 18%,
+    #e8b820 36%,
+    #fef090 50%,
+    #e8b820 64%,
+    #c8920e 82%,
+    #9a6e0a 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gold-shine 3s linear infinite;
 }

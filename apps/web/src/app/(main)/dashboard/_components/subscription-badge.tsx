@@ -3,9 +3,9 @@ type SubscriptionBadgeProps = {
 };
 
 export const SubscriptionBadge = ({ plan }: SubscriptionBadgeProps) => (
-  <p
-    className={`animate-dominate-pulse cursor-default rounded-md border-[1.5px] border-primary px-3 py-1 font-semibold text-[13px] text-primary ${plan && "capitalize"}`}
+  <span
+    className={`animate-gold-shine cursor-default rounded-md border border-[hsl(42_78%_45%)] px-3 py-1 font-semibold text-sm ${plan ? "capitalize" : ""}`}
   >
     {plan ?? "No plan"}
-  </p>
+  </span>
 );

@@ -164,8 +164,8 @@ const NoPlan = ({
     </div>
     <div className="mt-6 flex flex-wrap gap-3">
       <Button
-        color="accent"
-        className="flex-1 border-primary text-primary"
+        color="primary"
+        className="flex-1"
         disabled={isCheckingOut}
         onClick={() => onCheckout("compete")}
       >

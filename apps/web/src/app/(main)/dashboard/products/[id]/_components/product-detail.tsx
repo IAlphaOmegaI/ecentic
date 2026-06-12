@@ -22,7 +22,7 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 import { Spring } from "@/lib/animations";
 import * as Optimization from "@/server/app/optimization";
-import { SectionKicker, StatLabel } from "../../../_components/grid";
+import { Crosshair, SectionKicker, StatLabel } from "../../../_components/grid";
 
 export type ProductDetailData = {
   product: {
@@ -254,7 +254,11 @@ const OverviewTab = ({
         Win Rate by Model
       </p>
     </div>
-    <div className="grid grid-cols-2 gap-px border-accent-foreground border-t bg-accent-foreground lg:grid-cols-4">
+    <div className="relative grid grid-cols-2 gap-px border-accent-foreground border-t bg-accent-foreground lg:grid-cols-4">
+      <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+      <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+      <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+      <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
       {models.map(({ model, label, rate, wins, losses, total }) => {
         const config = Model[label as keyof typeof Model];
         return (
@@ -309,7 +313,11 @@ const OverviewTab = ({
         );
       })}
     </div>
-    <div className="flex items-end justify-between border-accent-foreground border-y p-4">
+    <div className="relative flex items-end justify-between border-accent-foreground border-y p-4">
+      <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+      <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+      <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+      <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
       <div>
         <SectionKicker>02 — Competitive Landscape</SectionKicker>
         <p className="mt-2 font-semibold text-foreground-rich text-lg">
@@ -488,7 +496,11 @@ const ReplayTab = ({
 
 const GapsTab = ({ product }: { product: ProductDetailData["product"] }) => (
   <>
-    <div className="flex items-end justify-between border-accent-foreground border-y p-4">
+    <div className="relative flex items-end justify-between border-accent-foreground border-y p-4">
+      <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+      <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+      <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+      <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
       <div>
         <SectionKicker>01 — Listing Health</SectionKicker>
         <p className="mt-2 font-semibold text-foreground-rich text-lg">
@@ -560,7 +572,11 @@ const BattlecardTab = ({
 
   return (
     <>
-      <div className="flex items-end justify-between border-accent-foreground border-y p-4">
+      <div className="relative flex items-end justify-between border-accent-foreground border-y p-4">
+        <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+        <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+        <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+        <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
         <div>
           <SectionKicker>01 — Battlecards</SectionKicker>
           <p className="mt-2 font-semibold text-foreground-rich text-lg">
@@ -708,7 +724,11 @@ const OptimizeTab = ({
 
   return (
     <>
-      <div className="flex items-end justify-between border-accent-foreground border-y p-4">
+      <div className="relative flex items-end justify-between border-accent-foreground border-y p-4">
+        <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+        <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+        <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+        <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
         <div>
           <SectionKicker>01 — Optimization</SectionKicker>
           <p className="mt-2 font-semibold text-foreground-rich text-lg">
@@ -723,7 +743,11 @@ const OptimizeTab = ({
           </span>
         </p>
       </div>
-      <div className="grid grid-cols-1 gap-px bg-accent-foreground lg:grid-cols-2">
+      <div className="relative grid grid-cols-1 gap-px bg-accent-foreground lg:grid-cols-2">
+        <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+        <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+        <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+        <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
         <div className="bg-background-rich p-6">
           <p className="mb-2 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
             Title

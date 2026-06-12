@@ -38,7 +38,7 @@ export const Topbar = async () => {
           type="button"
           className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
         >
-          <div className="flex size-8 items-center justify-center rounded-full bg-primary font-bold text-sm text-white">
+          <div className="flex size-8 items-center justify-center rounded-full bg-primary font-bold text-sm text-background-rich">
             {user.name.charAt(0)}
           </div>
           <span className="hidden font-medium text-base text-foreground md:block">

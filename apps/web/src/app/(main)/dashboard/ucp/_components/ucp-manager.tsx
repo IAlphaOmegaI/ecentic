@@ -456,7 +456,7 @@ export const UcpManager = ({
   return (
     <div className="space-y-4">
       {/* Score card */}
-      <div className="border border-accent-foreground bg-background">
+      <div className="border border-accent-foreground bg-background-rich">
         <div className="flex items-center gap-6 p-5">
           <div className="relative size-14 shrink-0">
             <svg
@@ -589,7 +589,6 @@ export const UcpManager = ({
                   {isSaving ? "Saving..." : "Save"}
                 </Button>
                 <Button
-                  variant="ghost"
                   color="neutral"
                   onClick={handleGenerateJson}
                   disabled={isGeneratingJson}
@@ -611,7 +610,6 @@ export const UcpManager = ({
                 )}
                 {generation && (
                   <Button
-                    variant="ghost"
                     color="neutral"
                     onClick={() => setGeneration(null)}
                     className="ml-auto px-3 py-1.5 text-foreground-dimmed text-xs"
@@ -705,10 +703,10 @@ export const UcpManager = ({
 
         {/* Validate tab */}
         <TabsPanel value="validate">
-          <div className="mt-4 overflow-hidden rounded-lg border border-accent-foreground">
+          <div className="mt-4 overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
             <UcpValidatorForm />
           </div>
-          <div className="mt-4 overflow-hidden rounded-lg border border-accent-foreground">
+          <div className="mt-4 overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
             <UcpAdvancedValidator />
           </div>
         </TabsPanel>

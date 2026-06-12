@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRightIcon, CheckIcon, XIcon } from "@zenncore/icons";
+import Button from "@zenncore/web/components/button";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { Spring } from "@/lib/animations";
@@ -169,13 +170,14 @@ export const TrialCard = () => {
                   </span>
                 </div>
 
-                <button
+                <Button
+                  color="primary"
                   type="button"
-                  className="mb-2 w-full bg-primary py-3 font-medium text-sm text-white transition-colors hover:bg-primary/90"
+                  className="mb-2 w-full py-3 font-medium text-sm transition-colors"
                   onClick={() => setUpgrade(false)}
                 >
                   Upgrade Now
-                </button>
+                </Button>
                 <button
                   type="button"
                   onClick={() => setUpgrade(false)}
