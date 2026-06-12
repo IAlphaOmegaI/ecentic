@@ -160,13 +160,13 @@ export default async () => {
                 ))}
               </div>
 
-              <div className="mt-auto flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+              <div className="mt-auto flex flex-col gap-4">
                 <p className="max-w-2xl text-foreground-dimmed leading-relaxed">
                   {post.takeaways[0]}
                 </p>
                 <Button
-                  variant="flat"
                   color="primary"
+                  className="self-start"
                   render={<Link href={`/blog/${post.slug}`} />}
                 >
                   Read article

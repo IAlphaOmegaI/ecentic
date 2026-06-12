@@ -302,7 +302,6 @@ export const ContentPageFooter = ({
 
         {primary && (
           <Button
-            variant="flat"
             color="primary"
             render={<Link href={primary.href} />}
           >
