@@ -30,26 +30,26 @@
   --color-secondary-dimmed: oklch(27.1% 0.12 290);
   --color-secondary: oklch(55% 0.2 290);
   --color-secondary-rich: oklch(71.2% 0.18 290);
-  /* destructive shades */
-  --color-error-dimmed: oklch(25.8% 0.092 26.042);
-  --color-error: oklch(44.4% 0.177 26.899);
-  --color-error-rich: oklch(57.7% 0.245 27.325);
-  --color-error-foreground: oklch(80.8% 0.114 19.571);
-  /* success shades */
-  --color-success-dimmed: hsl(142 72% 29%);
-  --color-success: hsl(142 76% 36%);
-  --color-success-rich: hsl(142 69% 58%);
-  --color-success-foreground: hsl(144 61% 20%);
+  /* error shades - rose (Tailwind) */
+  --color-error-dimmed: #9f1239;
+  --color-error: #e11d48;
+  --color-error-rich: #f43f5e;
+  --color-error-foreground: #fda4af;
+  /* success shades - emerald (Tailwind) */
+  --color-success-dimmed: #065f46;
+  --color-success: #059669;
+  --color-success-rich: #34d399;
+  --color-success-foreground: #064e3b;
   /* info shades */
   --color-info-dimmed: oklch(54.6% 0.245 262.881);
   --color-info: oklch(62.3% 0.214 259.815);
   --color-info-rich: oklch(74.6% 0.16 232.661);
   --color-info-foreground: oklch(82.8% 0.111 230.318);
-  /* warning shades */
-  --color-warning-dimmed: hsl(35 92% 33%);
-  --color-warning: hsl(41 96% 40%);
-  --color-warning-rich: hsl(48 96% 53%);
-  --color-warning-foreground: hsl(28 73% 26%);
+  /* warning shades - amber (Tailwind) */
+  --color-warning-dimmed: #b45309;
+  --color-warning: #d97706;
+  --color-warning-rich: #fbbf24;
+  --color-warning-foreground: #78350f;
   /* neutral shades - more contrast */
   --color-neutral-dimmed: oklch(37.1% 0 0);
   --color-neutral: oklch(55.4% 0.046 257.417);
