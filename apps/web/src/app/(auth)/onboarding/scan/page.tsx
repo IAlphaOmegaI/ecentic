@@ -8,6 +8,7 @@ import { cn, unwrapResult } from "@zenncore/utils";
 import Image from "next/image";
 import { connection } from "next/server";
 import { Motion } from "@/components/motion";
+import { Plus } from "@/components/plus";
 import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
 import { Environment } from "@/server/utils/environment";
@@ -91,7 +92,11 @@ export default async () => {
     <ScanRunner simulations={simulations}>
       <Motion.Stagger className="flex h-full flex-col overflow-y-auto border-accent-foreground border-b">
         <Motion.Item className="w-full border-accent-foreground border-b px-8">
-          <div className="flex flex-col border-accent-foreground border-x p-6">
+          <div className="relative flex flex-col border-accent-foreground border-x p-6">
+            <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+            <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+            <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+            <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
             <h2 className="font-medium text-4xl text-foreground">
               See who's winning.
             </h2>
@@ -103,7 +108,11 @@ export default async () => {
         </Motion.Item>
 
         <Motion.Item className="border-accent-foreground border-b px-8">
-          <div className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-x">
+          <div className="relative grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-x">
+            <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+            <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+            <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+            <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
             {models.map((model) => (
               <div
                 key={model.model}
@@ -131,7 +140,11 @@ export default async () => {
         </Motion.Item>
 
         <Motion.Item className="px-8">
-          <div className="grid size-full max-h-full grid-cols-2 gap-px border-accent-foreground border-x bg-accent-foreground">
+          <div className="relative grid size-full max-h-full grid-cols-2 gap-px border-accent-foreground border-x bg-accent-foreground">
+            <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+            <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+            <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+            <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
             {labels.map(({ label, value, icon: Icon, color }) => (
               <div key={label} className="bg-background-dimmed p-4">
                 <Icon className={cn("mb-6 size-12", color)} />

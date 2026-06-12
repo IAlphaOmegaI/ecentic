@@ -90,7 +90,6 @@ export const BlindSpot = () => (
             ergonomic design. The perfect companion for your daily commute.
           </p>
           <Button
-            variant="flat"
             color="primary"
             type="button"
             className="w-full p-4 font-medium text-xl"
@@ -195,10 +194,9 @@ export const BlindSpot = () => (
       </div>
       <div className="flex items-center p-6">
         <Button
-          variant="outline"
-          color="accent"
+          color="primary"
           type="button"
-          className="mt-auto w-full border-primary text-primary"
+          className="mt-auto w-full"
           render={<Link href="/sign-up" />}
         >
           See your AI agent score — it's free

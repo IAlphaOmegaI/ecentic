@@ -163,7 +163,6 @@ export const CsvForm = () => {
     >
       <Button
         type="submit"
-        variant="flat"
         color="primary"
         disabled={isPending}
         className="mt-2 w-full"

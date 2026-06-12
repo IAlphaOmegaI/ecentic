@@ -30,7 +30,6 @@ export default async () => {
             Connect a store and sync <br /> your products to get started.
           </p>
           <Button
-            variant="flat"
             color="primary"
             render={<Link href="/onboarding/connect" />}
           >

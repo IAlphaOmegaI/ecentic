@@ -216,7 +216,6 @@ export const CompareForm = () => {
                 We'll run the comparison across 4 AI models.
               </p>
               <Button
-                variant="flat"
                 color="primary"
                 type="button"
                 onClick={handleCompare}
@@ -535,11 +534,10 @@ const CompareResults = ({
           Finished in {formatElapsed(elapsed)}
         </span>
         <div className="flex items-center gap-3">
-          <Button variant="outline" color="accent" onClick={onReset}>
+          <Button color="accent" onClick={onReset}>
             Compare again
           </Button>
           <Button
-            variant="flat"
             color="primary"
             render={<Link href="/sign-up" />}
           >

@@ -207,7 +207,6 @@ export const ContentPageCardGrid = ({
           </p>
         </div>
         <Button
-          variant={item.variant ?? "outline"}
           color={item.color ?? "accent"}
           render={<Link href={item.href} />}
         >
@@ -228,7 +227,6 @@ export namespace ContentPageCardGrid {
     label: string;
     eyebrow?: string;
     color?: "accent" | "primary";
-    variant?: "flat" | "outline";
   };
 
   export type Props = {
@@ -291,7 +289,6 @@ export const ContentPageFooter = ({
       <div className="flex flex-wrap items-center gap-4">
         {secondary && (
           <Button
-            variant="outline"
             color="accent"
             render={<Link href={secondary.href} />}
           >

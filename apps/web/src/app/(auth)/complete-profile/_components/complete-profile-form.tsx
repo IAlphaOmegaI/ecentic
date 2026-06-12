@@ -93,7 +93,6 @@ export const CompleteProfileForm = () => {
         >
           <Button
             type="submit"
-            variant="flat"
             color="primary"
             disabled={isPending}
             className="col-span-2 mt-1 flex w-full"

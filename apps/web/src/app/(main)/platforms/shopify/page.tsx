@@ -28,7 +28,6 @@ const related = [
       "See how the listing workflow improves titles, descriptions, and structured product context before you publish.",
     label: "View listing workflow",
     color: "primary",
-    variant: "flat",
   },
   {
     href: "/compare/best-ai-ecommerce-tools",

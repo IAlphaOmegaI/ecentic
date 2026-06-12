@@ -107,10 +107,9 @@ export const Pricing = () => (
               ))}
             </div>
             <Button
-              variant="outline"
-              color="accent"
+              color="primary"
               type="button"
-              className="mt-4 w-full border-primary text-primary md:mt-auto"
+              className="mt-4 w-full md:mt-auto"
               render={<Link href="/sign-up" />}
             >
               Scan your Shopify store
@@ -141,7 +140,7 @@ export const Pricing = () => (
             </div>
             <PricingCTA
               plan="compete"
-              className="mt-4 w-full border-primary text-primary md:mt-auto"
+              className="mt-4 w-full md:mt-auto"
             >
               {compete.cta}
             </PricingCTA>
@@ -166,8 +165,7 @@ export const Pricing = () => (
             </div>
             <PricingCTA
               plan="dominate"
-              variant="flat"
-              className="mt-4 w-full border border-white/30 bg-white text-primary md:mt-auto"
+              className="mt-4 w-full md:mt-auto"
             >
               {dominate.cta}
             </PricingCTA>
@@ -185,9 +183,8 @@ export const Pricing = () => (
           </div>
           <div className="flex items-center p-6">
             <BookCall
-              variant="outline"
               color="accent"
-              className="w-full border-primary text-primary"
+              className="w-full"
             >
               Book a call
             </BookCall>

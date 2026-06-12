@@ -212,7 +212,6 @@ export const CompletePhase = ({
         <Motion.Item className="mt-auto px-8">
           <div className="flex items-center justify-between border-accent-foreground border-x p-6">
             <Button
-              variant="outline"
               color="accent"
               type="button"
               render={<Link href="/onboarding/scan" />}
@@ -221,7 +220,6 @@ export const CompletePhase = ({
             </Button>
             <div className="flex items-center gap-2">
               <Button
-                variant="outline"
                 color="accent"
                 type="button"
                 render={<Link href={scanId ? `/share/${scanId}` : "#"} />}

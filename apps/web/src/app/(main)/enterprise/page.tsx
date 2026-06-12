@@ -143,9 +143,8 @@ export default () => (
             Talk to sales
           </BookCall>
           <Button
-            variant="outline"
             color="accent"
-            className="px-8 py-3.5 font-medium hover:border-primary hover:text-primary"
+            className="px-8 py-3.5 font-medium"
             render={<Link href="/sign-up" />}
           >
             Start free trial

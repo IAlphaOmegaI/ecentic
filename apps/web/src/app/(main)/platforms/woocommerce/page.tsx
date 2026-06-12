@@ -28,7 +28,6 @@ const related = [
       "Review the listing workflow first if your team wants the category-level explanation before jumping into WooCommerce specifics.",
     label: "View listing workflow",
     color: "primary",
-    variant: "flat",
   },
   {
     href: "/platforms/shopify",

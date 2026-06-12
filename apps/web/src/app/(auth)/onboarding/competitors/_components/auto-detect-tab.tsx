@@ -136,7 +136,6 @@ export const AutoDetectTab = ({
               </p>
             </div>
             <Button
-              variant="flat"
               color="primary"
               type="button"
               onClick={handleDetect}
@@ -263,7 +262,6 @@ export const AutoDetectTab = ({
                 </span>
                 <Button
                   onClick={handleDetect}
-                  variant={"outline"}
                   color="accent"
                 >
                   Run Again
