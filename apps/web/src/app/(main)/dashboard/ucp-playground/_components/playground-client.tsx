@@ -384,8 +384,94 @@ export const PlaygroundClient = () => {
         </div>
       </div>
 
-      {/* Cart result */}
+      {/* Session results */}
+      <CheckoutResult lines={lines} />
       <CartResult lines={lines} />
+    </div>
+  );
+};
+
+// ─── Checkout result panel ────────────────────────────────────────────────────
+
+const checkoutTools = new Set([
+  "create_checkout",
+  "get_checkout",
+  "update_checkout",
+  "complete_checkout",
+]);
+
+const CheckoutResult = ({ lines }: { lines: LogLine[] }) => {
+  const checkoutResult = [...lines]
+    .reverse()
+    .find(
+      (line): line is Extract<LogLine, { kind: "tool_result" }> =>
+        line.kind === "tool_result" && checkoutTools.has(line.tool),
+    );
+
+  if (!checkoutResult) return null;
+
+  const raw = checkoutResult.result;
+  if (!raw || typeof raw !== "object" || "error" in raw) return null;
+
+  const checkout = raw as Record<string, unknown>;
+  const status =
+    typeof checkout["status"] === "string" ? checkout["status"] : null;
+  const continueUrl =
+    typeof checkout["continue_url"] === "string"
+      ? checkout["continue_url"]
+      : null;
+  const checkoutId =
+    typeof checkout["id"] === "string" ? checkout["id"] : null;
+
+  return (
+    <div className="rounded-lg border border-accent-foreground bg-background-rich">
+      <div className="border-accent-foreground border-b px-4 py-2.5">
+        <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+          Checkout session
+        </p>
+        <p className="mt-1 text-foreground-dimmed text-xs">
+          Last <span className="font-mono">{checkoutResult.tool}</span> response
+        </p>
+      </div>
+      <div className="space-y-3 p-4">
+        {status && (
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-medium text-foreground text-sm">Status</span>
+            <StatusPill
+              tone={
+                status === "completed"
+                  ? "success"
+                  : status === "requires_escalation" ||
+                      status === "incomplete"
+                    ? "warning"
+                    : status === "canceled"
+                      ? "error"
+                      : "primary"
+              }
+            >
+              {status}
+            </StatusPill>
+          </div>
+        )}
+        {checkoutId && (
+          <p className="break-all font-mono text-foreground-dimmed text-xs">
+            {checkoutId}
+          </p>
+        )}
+        {continueUrl && (
+          <a
+            href={continueUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block font-mono text-primary text-xs underline underline-offset-2"
+          >
+            {continueUrl}
+          </a>
+        )}
+        <pre className="max-h-72 overflow-auto rounded-md bg-background-dimmed p-4 font-mono text-foreground/80 text-xs leading-relaxed">
+          {JSON.stringify(raw, null, 2)}
+        </pre>
+      </div>
     </div>
   );
 };
