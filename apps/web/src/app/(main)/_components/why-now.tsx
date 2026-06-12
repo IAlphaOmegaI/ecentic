@@ -52,7 +52,10 @@ export const WhyNow = () => (
     <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
     <div className="p-4 md:p-8">
       <div className="mb-3 flex items-center gap-2 md:mb-5">
-        <span className="size-6 animate-pulse rounded-full bg-primary" />
+        <span className="relative flex size-4 shrink-0 items-center justify-center">
+          <span className="absolute size-full animate-ping rounded-full bg-primary opacity-40" />
+          <span className="relative size-2.5 rounded-full bg-primary" />
+        </span>
         <span className="font-light text-primary text-xl">Why now</span>
       </div>
       <h2 className="mb-3 max-w-4xl font-body text-3xl text-foreground leading-none tracking-tight md:mb-5 md:text-6xl">

@@ -124,7 +124,10 @@ export const Footer = () => (
             ))}
           </div>
           <div className="mt-auto flex items-center gap-2 pt-4">
-            <span className="size-2.5 animate-pulse rounded-full bg-success" />
+            <span className="relative flex size-3 shrink-0 items-center justify-center">
+              <span className="absolute size-full animate-ping rounded-full bg-success opacity-40" />
+              <span className="relative size-1.5 rounded-full bg-success" />
+            </span>
             <span className="font-light text-foreground-dimmed text-sm">
               Built for the agent economy
             </span>
