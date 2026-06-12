@@ -76,6 +76,9 @@ export const WhyNow = () => (
           {index < milestones.length - 1 && (
             <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
           )}
+          {index < milestones.length - 1 && (
+            <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden md:flex" />
+          )}
           <div className="flex items-center justify-between">
             {milestone.logo ? (
               <Image

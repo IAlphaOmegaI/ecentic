@@ -184,7 +184,9 @@ export const BlindSpot = () => (
       </div>
     </div>
     <div className="flex h-12 justify-center border-accent-foreground border-b bg-background-dimmed" />
-    <div className="grid border-accent-foreground border-b bg-background-dimmed md:grid-cols-3">
+    <div className="relative grid border-accent-foreground border-b bg-background-dimmed md:grid-cols-3">
+      <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+      <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
       <div className="col-span-2 p-4">
         <p className="font-light text-foreground-dimmed text-lg md:text-2xl">
           Every sale you're losing to a competitor right now, an AI agent made

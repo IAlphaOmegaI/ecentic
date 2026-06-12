@@ -46,6 +46,7 @@ export const DiscoveryShift = () => (
       {/* Before — the search era */}
       <div className="relative flex flex-col border-accent-foreground border-b p-4 md:border-r md:border-b-0 md:p-8">
         <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+        <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden md:flex" />
         <div className="mb-4 flex items-center gap-2 text-foreground-dimmed">
           <SearchIcon className="size-5" />
           <span className="font-light text-lg">Before — the search era</span>

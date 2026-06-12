@@ -64,6 +64,12 @@ export const Features = () => (
             {index === 0 && (
               <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
             )}
+            {index === 0 && (
+              <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden md:flex" />
+            )}
+            {index === 2 && (
+              <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden md:flex" />
+            )}
             <feature.icon className={cn(feature.color, "size-16")} />
             <h2 className="font-body font-medium text-2xl text-foreground md:text-4xl">
               {feature.title}

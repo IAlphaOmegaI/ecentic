@@ -2,6 +2,7 @@ import { InstagramIcon, LinkedinIcon, XTwitterIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import Link from "next/link";
+import { Plus } from "./plus";
 import Logo from "@/public/images/footer.png";
 import WordMark from "@/public/images/wordmark.svg";
 
@@ -20,6 +21,8 @@ const pages = [
 
 export const Footer = () => (
   <section className="relative -left-[calc(50vw-50%)] h-screen w-screen p-1">
+    <Plus className="top-1 left-[calc(50vw-50%)] -translate-x-1/2 -translate-y-1/2" />
+    <Plus className="top-1 right-[calc(50vw-50%)] translate-x-1/2 -translate-y-1/2" />
     <div className="h-full overflow-hidden rounded-xl border-accent-foreground border-y bg-linear-to-t from-primary to-primary/20">
       <div className="mx-auto flex h-full max-w-6xl flex-col items-center justify-center gap-6 p-6 pb-0 md:gap-12 md:p-12 md:pb-0">
         <Image src={WordMark} alt="WordMark" className="w-46" />
