@@ -6,6 +6,7 @@ import * as Subscription from "@/server/app/subscription";
 import { Environment } from "@/server/utils/environment";
 import { CommandPalette } from "./command-palette";
 import { NotificationBell } from "./notification-bell";
+import { SubscriptionBadge } from "./subscription-badge";
 
 export const Topbar = async () => {
   const [user, products, competitors, subscription] = await Promise.all([
@@ -31,11 +32,7 @@ export const Topbar = async () => {
           {subscription?.plan ?? "No plan"}
         </Link> */}
 
-        <p
-          className={`rounded-md border-[1.5px] border-primary px-3 py-1 font-semibold text-[13px] text-primary ${subscription?.plan && "capitalize"}`}
-        >
-          {subscription?.plan ?? "No plan"}
-        </p>
+        <SubscriptionBadge plan={subscription?.plan ?? null} />
 
         <button
           type="button"

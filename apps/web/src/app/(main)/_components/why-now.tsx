@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Plus } from "@/components/plus";
 
 type Milestone = {
   brand: string;
@@ -44,7 +45,11 @@ const milestones: Milestone[] = [
 ];
 
 export const WhyNow = () => (
-  <section className="border-accent-foreground border-y bg-background-dimmed">
+  <section className="relative border-accent-foreground border-y bg-background-dimmed">
+    <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+    <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+    <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+    <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
     <div className="p-4 md:p-8">
       <div className="mb-3 flex items-center gap-2 md:mb-5">
         <span className="size-6 animate-pulse rounded-full bg-primary" />
@@ -60,12 +65,17 @@ export const WhyNow = () => (
       </p>
     </div>
 
-    <div className="grid border-accent-foreground border-t md:grid-cols-4">
+    <div className="relative grid border-accent-foreground border-t md:grid-cols-4">
+      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
       {milestones.map((milestone, index) => (
         <article
           key={milestone.brand}
-          className={`flex flex-col gap-3 border-accent-foreground border-b p-4 md:border-b-0 md:p-6 ${index < milestones.length - 1 ? "md:border-r" : ""}`}
+          className={`relative flex flex-col gap-3 border-accent-foreground border-b p-4 md:border-b-0 md:p-6 ${index < milestones.length - 1 ? "md:border-r" : ""}`}
         >
+          {index < milestones.length - 1 && (
+            <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+          )}
           <div className="flex items-center justify-between">
             {milestone.logo ? (
               <Image
