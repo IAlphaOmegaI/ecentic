@@ -107,9 +107,10 @@ export const Pricing = () => (
               ))}
             </div>
             <Button
+              variant="outline"
               color="accent"
               type="button"
-              className="mt-4 w-full md:mt-auto"
+              className="mt-4 w-full border-primary text-primary md:mt-auto"
               render={<Link href="/sign-up" />}
             >
               Scan your Shopify store
@@ -184,8 +185,9 @@ export const Pricing = () => (
           </div>
           <div className="flex items-center p-6">
             <BookCall
+              variant="outline"
               color="accent"
-              className="w-full"
+              className="w-full border-primary text-primary"
             >
               Book a call
             </BookCall>

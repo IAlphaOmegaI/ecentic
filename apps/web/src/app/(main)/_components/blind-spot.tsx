@@ -195,9 +195,10 @@ export const BlindSpot = () => (
       </div>
       <div className="flex items-center p-6">
         <Button
+          variant="outline"
           color="accent"
           type="button"
-          className="mt-auto w-full"
+          className="mt-auto w-full border-primary text-primary"
           render={<Link href="/sign-up" />}
         >
           See your AI agent score — it's free
