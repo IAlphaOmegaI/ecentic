@@ -13,6 +13,8 @@ const posts = [
     publishedAt: "2026-06-04",
     updatedAt: "2026-06-04",
     readTime: "12 min",
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?auto=format&fit=crop&w=600&q=80",
     tags: [
       "agentic commerce",
       "AI shopping agents",
@@ -126,6 +128,8 @@ Finally, measure agent influence before it shows up cleanly in standard analytic
     publishedAt: "2026-04-02",
     updatedAt: "2026-04-02",
     readTime: "14 min",
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=600&q=80",
     tags: [
       "ecommerce strategy",
       "catalog setup",
@@ -250,6 +254,8 @@ If a store adopts that rhythm early, it becomes much easier to grow responsibly.
     publishedAt: "2026-03-29",
     updatedAt: "2026-03-29",
     readTime: "15 min",
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80",
     tags: [
       "ecommerce SEO",
       "merchant listings",
@@ -372,6 +378,8 @@ A mature ecommerce SEO program therefore connects search reporting to merchandis
     publishedAt: "2026-03-23",
     updatedAt: "2026-03-23",
     readTime: "14 min",
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80",
     tags: [
       "AI traffic",
       "analytics",
@@ -494,6 +502,8 @@ Over time, that workflow turns measurement into a product-improvement engine. Th
     publishedAt: "2026-03-16",
     updatedAt: "2026-03-16",
     readTime: "14 min",
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80",
     tags: [
       "structured data",
       "schema",
@@ -624,6 +634,7 @@ const seed = async () => {
           introduction: post.introduction,
           publishedAt: post.publishedAt,
           readTime: post.readTime,
+          thumbnailUrl: post.thumbnailUrl,
           tags: [...post.tags],
           takeaways: [...post.takeaways],
           sections: [...post.sections],
@@ -639,6 +650,7 @@ const seed = async () => {
             introduction: post.introduction,
             publishedAt: post.publishedAt,
             readTime: post.readTime,
+            thumbnailUrl: post.thumbnailUrl,
             tags: [...post.tags],
             takeaways: [...post.takeaways],
             sections: [...post.sections],

@@ -143,9 +143,8 @@ export default () => (
             Talk to sales
           </BookCall>
           <Button
-            variant="outline"
             color="accent"
-            className="px-8 py-3.5 font-medium hover:border-primary hover:text-primary"
+            className="px-8 py-3.5 font-medium"
             render={<Link href="/sign-up" />}
           >
             Start free trial
@@ -172,8 +171,6 @@ export default () => (
         <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2 lg:grid-cols-3">
           <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 hidden lg:flex" />
           <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden lg:flex" />
-          <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2 hidden lg:flex" />
-          <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden lg:flex" />
           {capabilities.map((capability, index) => (
             <div
               key={capability.title}
@@ -222,8 +219,6 @@ export default () => (
         <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground sm:grid-cols-2">
           <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 hidden sm:flex" />
           <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden sm:flex" />
-          <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2 hidden sm:flex" />
-          <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden sm:flex" />
           {pipeline.map((entry, index) => (
             <div
               key={entry.name}

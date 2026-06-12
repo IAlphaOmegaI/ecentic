@@ -390,6 +390,7 @@ export const blogPost = pgTable(
     introduction: text("introduction").notNull(),
     publishedAt: date("publishedAt").notNull(),
     readTime: text("readTime").notNull(),
+    thumbnailUrl: text("thumbnailUrl"),
     tags: jsonb("tags").$type<readonly string[]>().notNull(),
     takeaways: jsonb("takeaways").$type<readonly string[]>().notNull(),
     sections: jsonb("sections")
