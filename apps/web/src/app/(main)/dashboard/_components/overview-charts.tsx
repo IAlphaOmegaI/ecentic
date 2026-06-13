@@ -25,7 +25,7 @@ import {
 import { Spring } from "@/lib/animations";
 import { formatRelativeTime } from "@/lib/date";
 import type * as Simulate from "@/server/app/intelligence/simulate";
-import { Crosshair, SectionKicker } from "./grid";
+import { SectionKicker } from "./grid";
 
 type ModelRate = { label: string; rate: number };
 type TrendPoint = { date: string; winRate: number };
@@ -204,151 +204,148 @@ export const OverviewCharts = ({
   })();
 
   return (
-    <div className="relative">
-      <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-      <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-      <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-      <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+    <div>
       <div className="grid grid-cols-1 gap-px bg-accent-foreground xl:grid-cols-3">
-      <div className="flex flex-col bg-background-rich xl:col-span-2">
-        <div className="flex items-start justify-between p-4">
-          <div>
-            <SectionKicker>01 — Performance</SectionKicker>
-            <p className="mt-2 font-semibold text-foreground-rich text-lg">
-              Win Rate by Model
-            </p>
-          </div>
-        </div>
-
-        {models.length > 0 ? (
-          <div className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-y px-4">
-            {models.map(({ label, rate }) => {
-              return (
-                <div
-                  key={label}
-                  className="flex flex-col items-center gap-1 p-6 first:pl-0 last:pr-0"
-                >
-                  <div className="flex w-full flex-row items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Image
-                        src={getLogo(label)}
-                        alt={label}
-                        width={64}
-                        height={64}
-                        className="size-8"
-                      />
-                      <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-                        {label}
-                      </span>
-                    </div>
-                    <span className="font-bold text-2xl text-foreground-rich tabular-nums tracking-[-0.02em]">
-                      {rate}{" "}
-                      <span className="font-medium text-foreground-dimmed text-sm">
-                        %
-                      </span>
-                    </span>
-                  </div>
-                  <div className="mt-2 h-1 w-full rounded-full bg-accent-foreground">
-                    <motion.div
-                      className={cn(
-                        "h-full rounded-full",
-                        modelBarColors[label],
-                      )}
-                      initial={{ width: 0 }}
-                      animate={{ width: `${rate}%` }}
-                      transition={{ ...Spring.Gentle, delay: 0.4 }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <p className="flex h-26 flex-col items-center justify-center gap-2 border-accent-foreground border-y px-4 text-foreground-dimmed">
-            <BoxMinusIcon className="size-12" />
-            Run a simulation to see per-model performance.
-          </p>
-        )}
-
-        <div className="flex flex-1 flex-col">
-          <div className="mb-4 flex items-center justify-between p-4">
-            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-              Win Rate Trend
-            </p>
-            {change !== 0 && (
-              <span
-                className={cn(
-                  "rounded-full px-2 py-0.5 font-semibold text-[11px]",
-                  change > 0
-                    ? "bg-success/10 text-success"
-                    : "bg-error/10 text-error",
-                )}
-              >
-                {change > 0 ? "+" : ""}
-                {change}%
-              </span>
-            )}
-          </div>
-          <WinRateLineChart
-            data={data}
-            labels={labels}
-            className="h-full flex-1 px-4 pb-4"
-          />
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-px bg-accent-foreground">
-        <div className="flex-1 bg-background-rich">
-          <div className="mb-2 flex items-center justify-between px-4 pt-4">
-            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-              Recent Activity
-            </p>
-          </div>
-          {activity.length === 0 ? (
-            <div className="flex size-full flex-col items-center items-center justify-center gap-2 p-4 text-center font-normal text-foreground-dimmed">
-              <BellIcon className="size-24" />
-              <p className="text-foreground-dimmed">
-                No activity yet. Run your <br />
-                first simulation to see results here.
+        <div className="flex flex-col bg-background-rich xl:col-span-2">
+          <div className="flex items-start justify-between p-4">
+            <div>
+              <SectionKicker>01 — Performance</SectionKicker>
+              <p className="mt-2 font-semibold text-foreground-rich text-lg">
+                Win Rate by Model
               </p>
             </div>
-          ) : (
-            <div className="flex flex-col gap-2">
-              {activity.map((entry) => (
-                <div
-                  key={entry.id}
-                  className="flex items-start gap-3 border-accent-foreground border-b p-4 first:border-t last:border-b-0"
-                >
-                  <ActivityIcon type={entry.type} />
-                  <div>
-                    <p className="text-foreground leading-relaxed">
-                      {entry.message}
-                    </p>
-                    {entry.detail && (
-                      <p className="mt-0.5 text-foreground-dimmed text-sm">
-                        {entry.detail.impactDescription.slice(0, 100)}...
-                      </p>
-                    )}
-                    <p className="mt-2 text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-                      {formatRelativeTime(new Date(entry.timestamp))}
-                    </p>
+          </div>
+
+          {models.length > 0 ? (
+            <div className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-y px-4">
+              {models.map(({ label, rate }) => {
+                return (
+                  <div
+                    key={label}
+                    className="flex flex-col items-center gap-1 p-6 first:pl-0 last:pr-0"
+                  >
+                    <div className="flex w-full flex-row items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Image
+                          src={getLogo(label)}
+                          alt={label}
+                          width={64}
+                          height={64}
+                          className="size-8"
+                        />
+                        <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+                          {label}
+                        </span>
+                      </div>
+                      <span className="font-bold text-2xl text-foreground-rich tabular-nums tracking-[-0.02em]">
+                        {rate}{" "}
+                        <span className="font-medium text-foreground-dimmed text-sm">
+                          %
+                        </span>
+                      </span>
+                    </div>
+                    <div className="mt-2 h-1 w-full rounded-full bg-accent-foreground">
+                      <motion.div
+                        className={cn(
+                          "h-full rounded-full",
+                          modelBarColors[label],
+                        )}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${rate}%` }}
+                        transition={{ ...Spring.Gentle, delay: 0.4 }}
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
+          ) : (
+            <p className="flex h-26 flex-col items-center justify-center gap-2 border-accent-foreground border-y px-4 text-foreground-dimmed">
+              <BoxMinusIcon className="size-12" />
+              Run a simulation to see per-model performance.
+            </p>
           )}
+
+          <div className="flex flex-1 flex-col">
+            <div className="mb-4 flex items-center justify-between p-4">
+              <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+                Win Rate Trend
+              </p>
+              {change !== 0 && (
+                <span
+                  className={cn(
+                    "rounded-full px-2 py-0.5 font-semibold text-[11px]",
+                    change > 0
+                      ? "bg-success/10 text-success"
+                      : "bg-error/10 text-error",
+                  )}
+                >
+                  {change > 0 ? "+" : ""}
+                  {change}%
+                </span>
+              )}
+            </div>
+            <WinRateLineChart
+              data={data}
+              labels={labels}
+              className="h-full flex-1 px-4 pb-4"
+            />
+          </div>
         </div>
 
-        <div className="flex items-center justify-between bg-background-rich p-4">
-          <Button color="accent" render={<Link href="/dashboard/optimize" />}>
-            Optimizations
-          </Button>
-          <Button color="primary" render={<Link href="/dashboard/products" />}>
-            View all products <ArrowRightIcon className="size-4" />
-          </Button>
+        <div className="flex flex-col gap-px bg-accent-foreground">
+          <div className="flex-1 bg-background-rich">
+            <div className="mb-2 flex items-center justify-between px-4 pt-4">
+              <SectionKicker>01.5 — Recent Activity</SectionKicker>
+            </div>
+            {activity.length === 0 ? (
+              <div className="flex size-full flex-col items-center items-center justify-center gap-2 p-4 text-center font-normal text-foreground-dimmed">
+                <BellIcon className="size-24" />
+                <p className="text-foreground-dimmed">
+                  No activity yet. Run your <br />
+                  first simulation to see results here.
+                </p>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2">
+                {activity.map((entry) => (
+                  <div
+                    key={entry.id}
+                    className="flex items-start gap-3 border-accent-foreground border-b p-4 first:border-t last:border-b-0"
+                  >
+                    <ActivityIcon type={entry.type} />
+                    <div>
+                      <p className="text-foreground leading-relaxed">
+                        {entry.message}
+                      </p>
+                      {entry.detail && (
+                        <p className="mt-0.5 text-foreground-dimmed text-sm">
+                          {entry.detail.impactDescription.slice(0, 100)}...
+                        </p>
+                      )}
+                      <p className="mt-2 text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+                        {formatRelativeTime(new Date(entry.timestamp))}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center justify-between bg-background-rich p-4">
+            <Button color="accent" render={<Link href="/dashboard/optimize" />}>
+              Optimizations
+            </Button>
+            <Button
+              color="primary"
+              render={<Link href="/dashboard/products" />}
+            >
+              View all products <ArrowRightIcon className="size-4" />
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
     </div>
   );
 };

@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import type { ReactNode } from "react";
+import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { Plus } from "@/components/plus";
-import { SimpleFooter } from "@/components/simple-footer";
 import { createMetadata } from "@/lib/seo";
 import Background from "@/public/images/privacy-policy.png";
 import { renderInline } from "../_components/rich-text";
@@ -222,6 +222,6 @@ export default () => (
       </div>
     ))}
 
-    <SimpleFooter />
+    <Footer stacked />
   </main>
 );

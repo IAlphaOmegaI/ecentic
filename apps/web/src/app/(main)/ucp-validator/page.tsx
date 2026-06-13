@@ -1,6 +1,6 @@
+import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { Plus } from "@/components/plus";
-import { SimpleFooter } from "@/components/simple-footer";
 import { UcpValidatorForm } from "./_components/ucp-validator-form";
 
 const checks = [
@@ -79,12 +79,14 @@ export default () => (
       </div>
     </section>
 
-    <section className="relative -left-[calc(50vw-50%)] w-screen">
-      <div className="mx-auto max-w-6xl border-accent-foreground border-x">
+    <section className="relative -left-[calc(50vw-50%)] w-screen border-accent-foreground border-b">
+      <div className="relative mx-auto max-w-6xl border-accent-foreground border-x">
+        <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+        <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
         <UcpValidatorForm />
       </div>
     </section>
 
-    <SimpleFooter />
+    <Footer stacked />
   </main>
 );

@@ -14,6 +14,7 @@ import {
   YAxis,
 } from "recharts";
 import { Spring } from "@/lib/animations";
+import { SectionKicker } from "../../_components/grid";
 
 const modelBarColors: Record<string, string> = {
   "GPT-4": "bg-primary",
@@ -111,9 +112,7 @@ export const QualityDistribution = ({
   <div className="flex size-full flex-col p-4">
     <div className="flex items-start justify-between">
       <div>
-        <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-          Quality
-        </p>
+        <SectionKicker>01.1 — Quality</SectionKicker>
         <p className="mt-2 font-semibold text-foreground-rich text-lg">
           Quality Distribution
         </p>
@@ -186,9 +185,7 @@ export const OptimizationBreakdown = ({
   return (
     <div className="flex h-full flex-col p-4">
       <div>
-        <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-          Optimization
-        </p>
+        <SectionKicker>01.2 — Optimization</SectionKicker>
         <p className="mt-2 font-semibold text-foreground-rich text-lg">
           Product Readiness
         </p>

@@ -280,6 +280,6 @@ export default () => (
       </div>
     </section>
 
-    <Footer />
+    <Footer stacked />
   </main>
 );

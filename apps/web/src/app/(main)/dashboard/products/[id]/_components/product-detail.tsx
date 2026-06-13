@@ -257,8 +257,6 @@ const OverviewTab = ({
     <div className="relative grid grid-cols-2 gap-px border-accent-foreground border-t bg-accent-foreground lg:grid-cols-4">
       <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-      <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-      <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
       {models.map(({ model, label, rate, wins, losses, total }) => {
         const config = Model[label as keyof typeof Model];
         return (
@@ -743,11 +741,7 @@ const OptimizeTab = ({
           </span>
         </p>
       </div>
-      <div className="relative grid grid-cols-1 gap-px bg-accent-foreground lg:grid-cols-2">
-        <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-        <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-        <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-        <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+      <div className="grid grid-cols-1 gap-px bg-accent-foreground lg:grid-cols-2">
         <div className="bg-background-rich p-6">
           <p className="mb-2 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
             Title

@@ -8,7 +8,7 @@ import { NotFoundError, RequestError } from "../../utils/error";
 import * as HTTP from "../../utils/http";
 import * as Product from "../product";
 import * as Store from "../store";
-import { detect, Parser } from "./feed-parsing";
+import { detect, Parser } from "../parsers/feed";
 
 const FEED_BYTE_LIMIT = 10 * 1024 * 1024;
 
