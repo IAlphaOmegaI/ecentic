@@ -86,8 +86,6 @@ export const CompetitorManager = ({
 
       <Motion.Item className="flex items-center justify-between border-accent-foreground border-accent-foreground border-t px-8">
         <div className="relative flex w-full items-center justify-between border-accent-foreground border-x border-b px-6 py-6">
-          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <Button
