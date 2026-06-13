@@ -120,19 +120,20 @@ export default async () => {
       {posts.map((post, index) => (
         <EditorialSplitSection
           key={post.slug}
+          thumbnail={post.thumbnailUrl ?? undefined}
           left={
             <>
-              <span className="font-normal text-2xl text-primary">
+              <span className="font-normal text-2xl text-white">
                 {String(index + 1).padStart(2, "0")}
               </span>
               <div className="mt-auto flex flex-col gap-2">
-                <p className="font-medium text-foreground text-sm uppercase tracking-[0.18em]">
+                <p className="font-medium text-white/70 text-sm uppercase tracking-[0.18em]">
                   {post.category}
                 </p>
-                <p className="text-foreground">
+                <p className="text-white">
                   {formatBlogDate(post.publishedAt)}
                 </p>
-                <p className="text-foreground-dimmed text-sm">
+                <p className="text-white/60 text-sm">
                   {post.readTime} read
                 </p>
               </div>
@@ -160,13 +161,13 @@ export default async () => {
                 ))}
               </div>
 
-              <div className="mt-auto flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+              <div className="mt-auto flex flex-col gap-4">
                 <p className="max-w-2xl text-foreground-dimmed leading-relaxed">
                   {post.takeaways[0]}
                 </p>
                 <Button
-                  variant="flat"
                   color="primary"
+                  className="self-start"
                   render={<Link href={`/blog/${post.slug}`} />}
                 >
                   Read article

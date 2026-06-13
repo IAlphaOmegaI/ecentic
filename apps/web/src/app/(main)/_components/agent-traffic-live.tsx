@@ -83,7 +83,10 @@ const AnimatedCount = ({ target }: { target: number }) => {
 export const AgentTrafficLive = () => (
   <section className="border-accent-foreground border-y p-4 md:p-6">
     <div className="mb-3 flex items-center gap-2">
-      <span className="size-6 animate-pulse rounded-full bg-primary" />
+      <span className="relative flex size-4 shrink-0 items-center justify-center">
+        <span className="absolute size-full animate-ping rounded-full bg-primary opacity-40" />
+        <span className="relative size-2.5 rounded-full bg-primary" />
+      </span>
       <p className="font-light text-primary text-xl">
         Live agent traffic — écentic.ai, last 30 days
       </p>

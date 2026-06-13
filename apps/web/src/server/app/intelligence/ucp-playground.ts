@@ -1,6 +1,6 @@
 "use server";
 
-import type { JSONRPCRequest } from "@ai-sdk/mcp";
+import { createMCPClient, type JSONRPCRequest } from "@ai-sdk/mcp";
 import { createStreamableValue } from "@ai-sdk/rsc";
 // import { UcpDiscoveryProfileSchema } from "@ucp-js/sdk";
 import { merge, resultify } from "@zenncore/utils";
@@ -9,21 +9,31 @@ import * as z from "zod";
 import {
   cancelCartRequestSchema,
   cancelCartResponseSchema,
+  cancelCheckoutRequestSchema,
+  checkoutPaymentSchema,
+  checkoutResponseSchema,
+  checkoutWithFulfillmentResponseSchema,
+  completeCheckoutWithFulfillmentResponseSchema,
   createCartRequestSchema,
   createCartResponseSchema,
+  createCheckoutWithFulfillmentRequestSchema,
   discoveryProfileSchema,
   getCartRequestSchema,
   getCartResponseSchema,
+  getCheckoutRequestSchema,
+  getOrderRequestSchema,
   getProductRequestSchema,
   getProductResponseSchema,
   lookupCatalogRequestSchema,
   lookupCatalogResponseSchema,
   messageSchema,
+  orderResponseSchema,
   searchCatalogRequestSchema,
   searchCatalogResponseSchema,
   ucpMCPResponseSchema,
   updateCartRequestSchema,
   updateCartResponseSchema,
+  updateCheckoutWithFulfillmentRequestSchema,
 } from "./ucp-advanced-validator";
 
 // écentic UCP platform profile
@@ -83,57 +93,44 @@ const parseUcpToolContent = <T>(
 // Shopify UCP MCP requires params.arguments.meta["ucp-agent"].profile on every
 // JSON-RPC message (initialize, tools/list, tools/call, notifications). The AI
 // SDK client does not send this by default, so we inject it at the fetch layer.
-// const createUcpMcpFetch =
-//   (agentProfileUrl: string): typeof fetch =>
-//   async (input, init) => {
-//     if (!init?.body || typeof init.body !== "string") {
-//       return fetch(input, init);
-//     }
+const createUcpMcpFetch = (agentProfileUrl: string): typeof fetch => {
+  const ucpMcpFetch = async (
+    input: RequestInfo | URL,
+    init?: RequestInit,
+  ): Promise<Response> => {
+    if (!init?.body || typeof init.body !== "string") {
+      return fetch(input, init);
+    }
 
-//     try {
-//       const message = JSON.parse(init.body) as {
-//         method?: string;
-//         params?: Record<string, unknown>;
-//       };
+    try {
+      const message = JSON.parse(init.body) as {
+        method?: string;
+        params?: Record<string, unknown>;
+      };
 
-//       if (!message.method) return fetch(input, init);
+      if (!message.method) return fetch(input, init);
 
-//       const params = { ...(message.params ?? {}) };
-//       // biome-ignore lint/complexity/useLiteralKeys: index signature property
-//       const argumentsParams = params["arguments"];
+      console.log("message", message);
+      const nextBody = JSON.stringify(
+        merge(message, {
+          params: {
+            arguments: {
+              meta: {
+                "ucp-agent": { profile: agentProfileUrl },
+              },
+            },
+          },
+        }),
+      );
 
-//       const existingArgs =
-//         typeof argumentsParams === "object" && argumentsParams !== null
-//           ? (argumentsParams as Record<string, unknown>)
-//           : {};
+      return fetch(input, { ...init, body: nextBody });
+    } catch {
+      return fetch(input, init);
+    }
+  };
 
-//       // biome-ignore lint/complexity/useLiteralKeys: index signature property
-//       const metaParams = existingArgs["meta"];
-
-//       const existingMeta =
-//         typeof metaParams === "object" && metaParams !== null
-//           ? (metaParams as Record<string, unknown>)
-//           : {};
-
-//       const nextBody = JSON.stringify({
-//         ...message,
-//         params: {
-//           ...params,
-//           arguments: {
-//             ...existingArgs,
-//             meta: {
-//               ...existingMeta,
-//               "ucp-agent": { profile: agentProfileUrl },
-//             },
-//           },
-//         },
-//       });
-
-//       return fetch(input, { ...init, body: nextBody });
-//     } catch {
-//       return fetch(input, init);
-//     }
-//   };
+  return Object.assign(ucpMcpFetch, { preconnect: fetch.preconnect });
+};
 
 const gatewayOptions = () => ({
   gateway: {
@@ -269,6 +266,69 @@ const parseMcpToolResult = <T>(
 //   }
 // };
 
+// MCP §3A — checkout arguments: session id at top level; body nested under checkout
+const checkoutCurrencySchema = z
+  .string()
+  .regex(/^[A-Z]{3}$/, "currency must be a 3-letter ISO 4217 code")
+  .describe("ISO 4217 currency code (e.g., USD).");
+
+const checkoutMcpPayloadSchema =
+  createCheckoutWithFulfillmentRequestSchema.extend({
+    currency: checkoutCurrencySchema.optional(),
+  });
+
+const checkoutMcpUpdatePayloadSchema =
+  updateCheckoutWithFulfillmentRequestSchema.omit({ id: true }).extend({
+    currency: checkoutCurrencySchema.optional(),
+  });
+
+const createCheckoutMcpInputSchema = z
+  .object({
+    cart_id: z
+      .string()
+      .optional()
+      .describe(
+        "Cart ID to convert to checkout. Business MUST use cart contents (line_items, context, buyer) and MUST ignore overlapping fields in checkout payload.",
+      ),
+    checkout: checkoutMcpPayloadSchema
+      .optional()
+      .describe(
+        "Checkout body under arguments.checkout. Use alone for from-scratch create — omit cart_id.",
+      ),
+  })
+  .superRefine((input, context) => {
+    if (!input.cart_id && !input.checkout) {
+      context.addIssue({
+        code: "custom",
+        message: "Provide cart_id or checkout",
+      });
+    }
+    if (input.cart_id && input.checkout) {
+      context.addIssue({
+        code: "custom",
+        message: "Use cart_id alone OR checkout alone, not both",
+      });
+    }
+  });
+
+const updateCheckoutMcpInputSchema = z.object({
+  id: z.string().describe("Checkout session ID at arguments top level."),
+  checkout: checkoutMcpUpdatePayloadSchema.describe(
+    "Full replacement checkout body under arguments.checkout. Must not contain a session id.",
+  ),
+});
+
+const completeCheckoutMcpInputSchema = z.object({
+  id: z.string().describe("Checkout session ID at arguments top level."),
+  checkout: z
+    .object({
+      payment: checkoutPaymentSchema.describe(
+        "Payment instruments nested under arguments.checkout.payment.",
+      ),
+    })
+    .describe("Finalization payload under arguments.checkout."),
+});
+
 const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
   search_catalog: tool({
     description:
@@ -386,6 +446,109 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
       );
 
       return parseMcpToolResult(result, cancelCartResponseSchema);
+    },
+  }),
+
+  create_checkout: tool({
+    description:
+      "Create a checkout session from scratch. Pass only checkout body nested under checkout — do not use cart_id (not supported by this business endpoint).",
+    inputSchema: createCheckoutMcpInputSchema,
+    execute: async (input) => {
+      const result = await callMCP(
+        endpoint,
+        "create_checkout",
+        input,
+        agentProfileUrl,
+      );
+
+      return parseMcpToolResult(result, checkoutWithFulfillmentResponseSchema);
+    },
+  }),
+
+  get_checkout: tool({
+    description:
+      "Get checkout session state. Pass checkout id at top level (from create_checkout).",
+    inputSchema: getCheckoutRequestSchema,
+    execute: async (input) => {
+      const result = await callMCP(
+        endpoint,
+        "get_checkout",
+        input,
+        agentProfileUrl,
+      );
+
+      return parseMcpToolResult(result, checkoutWithFulfillmentResponseSchema);
+    },
+  }),
+
+  update_checkout: tool({
+    description:
+      "Replace checkout session state (full PUT). MCP shape: id at top level; full checkout body nested under checkout (no session id inside checkout).",
+    inputSchema: updateCheckoutMcpInputSchema,
+    execute: async (input) => {
+      const result = await callMCP(
+        endpoint,
+        "update_checkout",
+        input,
+        agentProfileUrl,
+      );
+
+      return parseMcpToolResult(result, checkoutWithFulfillmentResponseSchema);
+    },
+  }),
+
+  complete_checkout: tool({
+    description:
+      "Place the order when status is ready_for_complete. MCP shape: id at top level; payment nested under checkout.payment. Do not use when status is requires_escalation.",
+    inputSchema: completeCheckoutMcpInputSchema,
+    execute: async (input) => {
+      const result = await callMCP(
+        endpoint,
+        "complete_checkout",
+        {
+          ...input,
+          meta: { "idempotency-key": crypto.randomUUID() },
+        },
+        agentProfileUrl,
+      );
+
+      return parseMcpToolResult(
+        result,
+        completeCheckoutWithFulfillmentResponseSchema,
+      );
+    },
+  }),
+
+  cancel_checkout: tool({
+    description: "Cancel a checkout session. Pass checkout id at top level.",
+    inputSchema: cancelCheckoutRequestSchema,
+    execute: async (input) => {
+      const result = await callMCP(
+        endpoint,
+        "cancel_checkout",
+        {
+          ...input,
+          meta: { "idempotency-key": crypto.randomUUID() },
+        },
+        agentProfileUrl,
+      );
+
+      return parseMcpToolResult(result, checkoutResponseSchema);
+    },
+  }),
+
+  get_order: tool({
+    description: "Get order details. Pass order id at top level.",
+    inputSchema: getOrderRequestSchema,
+    execute: async (input) => {
+      const result = await callMCP(
+        endpoint,
+        "get_order",
+        input,
+        agentProfileUrl,
+      );
+
+      return parseMcpToolResult(result, orderResponseSchema);
     },
   }),
 });
@@ -540,35 +703,85 @@ export const runPlayground = async ({
         return;
       }
 
-      // const mcpClient = await createMCPClient({
-      //   transport: {
-      //     type: "http",
-      //     url: endpoint,
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //       Accept: "application/json",
-      //       "User-Agent": "UCP-Playground/1.0 (écentic; https://ecentic.ai)",
-      //     },
+      const mcpClient = await createMCPClient({
+        transport: {
+          type: "http",
+          url: shoppingEndpoint,
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "User-Agent": "UCP-Playground/1.0 (écentic; https://ecentic.ai)",
+          },
 
-      //     // optional: provide an OAuth client provider for automatic authorization
-      //     // authProvider: myOAuthClientProvider,
+          // optional: provide an OAuth client provider for automatic authorization
+          // authProvider: myOAuthClientProvider,
 
-      //     // optional: reject redirect responses to prevent SSRF
-      //     // redirect: "error",
+          // optional: reject redirect responses to prevent SSRF
+          // redirect: "error",
 
-      //     fetch: createUcpMcpFetch(agentProfileUrl),
-      //   },
-      // });
+          fetch: createUcpMcpFetch(agentProfileUrl),
+        },
+      });
 
-      // const toolNames = await mcpClient.tools();
-      // console.log("toolNames", toolNames);
-
-      emit({
-        kind: "profile",
-        transport: shoppingTransport,
-        endpoint: shoppingEndpoint,
-        profileUrl: businessProfileUrl,
-        agentProfileUrl,
+      // TODO: Add REST tools
+      const businessTools = await mcpClient.tools({
+        schemas: {
+          search_catalog: {
+            inputSchema: z.object({ catalog: searchCatalogRequestSchema }),
+            outputSchema: searchCatalogResponseSchema,
+          },
+          lookup_catalog: {
+            inputSchema: z.object({ catalog: lookupCatalogRequestSchema }),
+            outputSchema: lookupCatalogResponseSchema,
+          },
+          get_product: {
+            inputSchema: z.object({ catalog: getProductRequestSchema }),
+            outputSchema: getProductResponseSchema,
+          },
+          create_cart: {
+            inputSchema: z.object({ cart: createCartRequestSchema }),
+            outputSchema: createCartResponseSchema,
+          },
+          get_cart: {
+            inputSchema: getCartRequestSchema,
+            outputSchema: getCartResponseSchema,
+          },
+          update_cart: {
+            inputSchema: z.object({
+              id: updateCartRequestSchema.shape.id,
+              cart: updateCartRequestSchema.omit({ id: true }),
+            }),
+            outputSchema: updateCartResponseSchema,
+          },
+          cancel_cart: {
+            inputSchema: cancelCartRequestSchema,
+            outputSchema: cancelCartResponseSchema,
+          },
+          create_checkout: {
+            inputSchema: createCheckoutMcpInputSchema,
+            outputSchema: checkoutWithFulfillmentResponseSchema,
+          },
+          get_checkout: {
+            inputSchema: getCheckoutRequestSchema,
+            outputSchema: checkoutWithFulfillmentResponseSchema,
+          },
+          update_checkout: {
+            inputSchema: updateCheckoutMcpInputSchema,
+            outputSchema: checkoutWithFulfillmentResponseSchema,
+          },
+          cancel_checkout: {
+            inputSchema: cancelCheckoutRequestSchema,
+            outputSchema: checkoutResponseSchema,
+          },
+          complete_checkout: {
+            inputSchema: completeCheckoutMcpInputSchema,
+            outputSchema: completeCheckoutWithFulfillmentResponseSchema,
+          },
+          get_order: {
+            inputSchema: getOrderRequestSchema,
+            outputSchema: orderResponseSchema,
+          },
+        },
       });
 
       // 3. Build tools for the detected transport
@@ -576,9 +789,6 @@ export const runPlayground = async ({
       //   transport === "mcp"
       //     ? buildMcpTools(endpoint, AGENT_PROFILE)
       //     : buildRestTools(endpoint, AGENT_PROFILE);
-
-      // TODO: Add REST tools
-      const tools = buildMcpTools(shoppingEndpoint, AGENT_PROFILE);
 
       const searchQuery = query?.trim() || "product";
 
@@ -601,10 +811,23 @@ export const runPlayground = async ({
       get_cart:
         { id: "<copy id field exactly from create_cart tool result>" }
       update_cart:
-        { id: "<cart id from create_cart>", line_items: [<line items from get_cart with quantity set to 2>] }
-        Full replacement. Keep line_items[].id from get_cart — only change quantity or items as needed.
+        { id: "<cart id>", cart: { line_items: [{ id: "<from get_cart>", item: { id: "<variant_id>" }, quantity: 2 }] } }
+        Full replacement under cart. Keep line_items[].id from get_cart.
       cancel_cart:
         { id: "<cart id from create_cart>" }
+      create_checkout:
+        { checkout: { buyer: { email, first_name, last_name }, line_items: [{ item: { id: "<variant_id>" }, quantity: 1 }], currency: "USD", fulfillment: { methods: [...] } } }
+        Do NOT use cart_id — this business endpoint does not support cart conversion.
+      get_checkout:
+        { id: "<checkout id from create_checkout>" }
+      update_checkout:
+        { id: "<checkout id>", checkout: { buyer: {...}, line_items: [{ id: "li_...", item: { id: "<variant_id>" }, quantity: 1 }], currency: "USD", fulfillment: { methods: [{ id: "...", line_item_ids: [...], groups: [{ id: "...", selected_option_id: "..." }] }] } } }
+        id is only at arguments top level — never inside checkout.
+      complete_checkout:
+        { id: "<checkout id>", checkout: { payment: { instruments: [...] } } }
+        Only when status is ready_for_complete. Never call for requires_escalation.
+      cancel_checkout:
+        { id: "<checkout id>" }
 
       Work through this flow in order:
       1. search_catalog with query "${searchQuery}"
@@ -612,14 +835,18 @@ export const runPlayground = async ({
       3. get_product with the ID of the first result
       4. create_cart with one line item using product.variants[0].id from get_product
       5. get_cart — pass the id from create_cart
-      6. update_cart — pass the same cart id and line_items from get_cart with quantity 2
-      7. cancel_cart — pass the same cart id
+      6. update_cart — same cart id; cart.line_items from get_cart with quantity 2
+      7. create_checkout — from scratch with checkout payload only (variant id from get_product; no cart_id)
+      8. get_checkout — id from step 7
+      9. If checkout status is requires_escalation or incomplete, report continue_url and messages — do NOT call complete_checkout
+      10. cancel_checkout — id from step 7
+      11. cancel_cart — pass cart id
 
-      Use ONLY IDs returned by the tools — never invent them. If a tool returns { error: "..." } or ucp.status is error, report the failure and stop — do not retry with made-up values. After all steps, write 2–3 sentences summarizing what you found.
+      Call create_checkout once with the checkout body shape above. Use ONLY IDs returned by the tools — never invent them. If any tool returns { error: "..." }, ucp.status is error, or a step otherwise fails, stop immediately — do not call further tools. Summarize what succeeded, which step failed, and the error details. If all steps complete successfully, write 2–3 sentences on checkout status and continue_url when present.
       DON'T CALL the same tool again if the first one hasn't finished yet.
       `,
         prompt: `Test the UCP ${shoppingTransport} endpoint at ${shoppingEndpoint} (store: ${domain}).`,
-        tools,
+        tools: businessTools,
         stopWhen: isLoopFinished(),
         providerOptions: gatewayOptions(),
       });
@@ -660,6 +887,7 @@ export const runPlayground = async ({
       emit({ kind: "done" });
     } catch (error) {
       console.error("error", error);
+
       emit({
         kind: "error",
         message: error instanceof Error ? error.message : "Unexpected error",

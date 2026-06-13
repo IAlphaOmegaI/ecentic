@@ -6,6 +6,7 @@ import Link, { useLinkStatus } from "next/link";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { Motion } from "@/components/motion";
+import { Plus } from "@/components/plus";
 import * as Competitor from "@/server/app/competitor";
 import { CompetitorList } from "../../_components/competitor-list";
 
@@ -51,7 +52,11 @@ export const CompetitorReview = ({
       className="flex h-full flex-col overflow-hidden"
     >
       <Motion.Item className="border-accent-foreground border-b px-8">
-        <div className="border-accent-foreground border-x p-6">
+        <div className="relative border-accent-foreground border-x p-6">
+          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           {children}
           <div className="mt-4 w-fit border border-primary/20 bg-primary/5 px-4 py-2.5 text-primary text-sm">
             {competitors.length} competitor products across {brands.size} brands
@@ -69,9 +74,12 @@ export const CompetitorReview = ({
       </Motion.Item>
 
       <Motion.Item className="border-accent-foreground border-t px-8">
-        <div className="flex w-full items-center justify-between border-accent-foreground border-x p-6">
+        <div className="relative flex w-full items-center justify-between border-accent-foreground border-x p-6">
+          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <Button
-            variant="outline"
             color="accent"
             type="button"
             render={<Link href="/onboarding/competitors" />}
@@ -79,7 +87,6 @@ export const CompetitorReview = ({
             <Back />
           </Button>
           <Button
-            variant="flat"
             color="primary"
             type="button"
             disabled={selected === 0}

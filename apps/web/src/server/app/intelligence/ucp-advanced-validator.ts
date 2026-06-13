@@ -1,7 +1,9 @@
 import * as z from "zod";
 
-// TODO: Implement UCP Advanced Validator
+// TODO: Implement UCP Advanced Validator (for free validator use ucp-js sdk)
 // write advanced zod schemas for the UCP profile for the best ucp compatibility
+
+// TODO: add proper response ucp validation (example: https://ucp.dev/2026-04-08/schemas/ucp.json#/$defs/response_order_schema)
 
 const _LATEST_UCP_VERSION = "2026-04-08";
 const UCP_VERSION_REGEX = /^\d{4}-\d{2}-\d{2}$/;
@@ -503,17 +505,16 @@ const commonMessageSchema = z.object({
     .describe(
       "RFC 9535 JSONPath to the component the message refers to (e.g., $.items[1]).",
     ),
-  code: z
-    .string()
-    .optional()
-    .describe(
-      "Code identifying the type of message. Standard errors/warnings/infos are defined in specification, and have standardized semantics; freeform codes are permitted.",
-    ),
 });
 
 export const messageSchema = z.discriminatedUnion("type", [
   commonMessageSchema.extend({
     type: z.literal("error").describe("Error message."),
+    code: z
+      .string()
+      .describe(
+        "Code identifying the error type. Standard codes are defined in the specification and have standardized semantics; freeform codes are permitted.",
+      ),
     severity: z
       .enum([
         "recoverable",
@@ -522,11 +523,16 @@ export const messageSchema = z.discriminatedUnion("type", [
         "unrecoverable",
       ])
       .describe(
-        "Reflects the resource state and recommended action. 'recoverable': platform can resolve by modifying inputs and retrying via API. 'requires_buyer_input': merchant requires information their API doesn't support collecting programmatically (checkout incomplete). 'requires_buyer_review': buyer must authorize before order placement due to policy, regulatory, or entitlement rules. 'unrecoverable': no valid resource exists to act on, retry with new resource or inputs. Errors with 'requires_' severity contribute to 'status: requires_escalation'. Enum:* recoverable, requires_buyer_input, requires_buyer_review, unrecoverable",
+        "Reflects the resource state and recommended action. 'recoverable': platform can resolve by modifying inputs and retrying via API. 'requires_buyer_input': merchant requires information their API doesn't support collecting programmatically (checkout incomplete). 'requires_buyer_review': buyer must authorize before order placement due to policy, regulatory, or entitlement rules. 'unrecoverable': no valid resource exists to act on, retry with new resource or inputs. Errors with 'requires_*' severity contribute to 'status: requires_escalation'.",
       ),
   }),
   commonMessageSchema.extend({
     type: z.literal("warning").describe("Message type discriminator."),
+    code: z
+      .string()
+      .describe(
+        "Code identifying the warning type. Standard codes are defined in the specification and have standardized semantics; freeform codes are permitted.",
+      ),
     presentation: z
       .string()
       .optional()
@@ -534,13 +540,13 @@ export const messageSchema = z.discriminatedUnion("type", [
         "Rendering contract for this warning. 'notice' (default): platform MUST display, MAY dismiss. 'disclosure': platform MUST display in proximity to the path-referenced component, MUST NOT hide or auto-dismiss. See specification for full contract.",
       ),
     image_url: z
-      .string()
+      .url()
       .optional()
       .describe(
         "URL to a required visual element (e.g., warning symbol, energy class label).",
       ),
     url: z
-      .string()
+      .url()
       .optional()
       .describe(
         "Reference URL for more information (e.g., regulatory site, registry entry, policy page).",
@@ -548,6 +554,12 @@ export const messageSchema = z.discriminatedUnion("type", [
   }),
   commonMessageSchema.extend({
     type: z.literal("info").describe("Informational message."),
+    code: z
+      .string()
+      .optional()
+      .describe(
+        "Code identifying the info type. Standard codes are defined in the specification and have standardized semantics; freeform codes are permitted.",
+      ),
   }),
 ]);
 
@@ -611,16 +623,46 @@ const contextSchema = z.looseObject({
     .describe(
       "Preferred currency (ISO 4217, e.g., 'EUR', 'USD'). Businesses determine presentment currency from context and authoritative signals; this hint MAY inform selection in multi-currency markets. Also serves as the denomination for price filter values — platforms SHOULD include this field when sending price filters. Response prices include explicit currency confirming the resolution.",
     ),
-  eligibility: z.array(
-    z
-      .string()
-      .regex(
-        UCP_REVERSE_DOMAIN_NAME_REGEX,
-        "Buyer claims about eligible benefits such as loyalty membership, payment instrument perks, and similar. Recognized claims MAY inform the Business response (e.g., member-only product availability, adjusted pricing in catalog, provisional discounts at cart or checkout). Businesses MUST ignore unrecognized values without error. Values MUST use reverse-domain naming (e.g., 'com.example.loyalty_gold', 'org.school.student') and MUST be non-identifying.",
-      )
-      .optional(),
-  ),
+  eligibility: z
+    .array(
+      z
+        .string()
+        .regex(
+          UCP_REVERSE_DOMAIN_NAME_REGEX,
+          "Buyer claims about eligible benefits such as loyalty membership, payment instrument perks, and similar. Recognized claims MAY inform the Business response (e.g., member-only product availability, adjusted pricing in catalog, provisional discounts at cart or checkout). Businesses MUST ignore unrecognized values without error. Values MUST use reverse-domain naming (e.g., 'com.example.loyalty_gold', 'org.school.student') and MUST be non-identifying.",
+        ),
+    )
+    .refine(
+      (values) => new Set(values).size === values.length,
+      "eligibility must not contain duplicate values",
+    )
+    .optional(),
 });
+
+// price_filter.json: min/max are plain amounts (integers, ISO 4217 minor units in context.currency),
+// NOT price objects with currency — the denomination is context.currency
+const priceFilterSchema = z
+  .object({
+    min: z
+      .number()
+      .int()
+      .nonnegative()
+      .optional()
+      .describe(
+        "Minimum price in ISO 4217 minor units (denominated in context.currency).",
+      ),
+    max: z
+      .number()
+      .int()
+      .nonnegative()
+      .optional()
+      .describe(
+        "Maximum price in ISO 4217 minor units (denominated in context.currency).",
+      ),
+  })
+  .describe(
+    "Price range filter denominated in context.currency. When context.currency matches the presentment currency, businesses apply the filter directly. When it differs, businesses SHOULD convert filter values to the presentment currency before applying; if conversion is not supported, businesses MAY ignore the filter and SHOULD indicate this via a message. When context.currency is absent, filter denomination is ambiguous and businesses MAY ignore it.",
+  );
 
 const searchFiltersSchema = z
   .looseObject({
@@ -630,11 +672,7 @@ const searchFiltersSchema = z
       .describe(
         "Filter by product categories (OR logic — matches products in any listed categories). Values match against the value field in product category entries. Valid values can be discovered from the categories field in search results, merchant documentation, or standard taxonomies that businesses may align with.",
       ),
-    price: priceRangeSchema
-      .optional()
-      .describe(
-        "Price range filter denominated in context.currency. When context.currency matches the presentment currency, businesses apply the filter directly. When it differs, businesses SHOULD convert filter values to the presentment currency before applying; if conversion is not supported, businesses MAY ignore the filter and SHOULD indicate this via a message. When context.currency is absent, filter denomination is ambiguous and businesses MAY ignore it.",
-      ),
+    price: priceFilterSchema.optional(),
   })
   .describe("Filter criteria for narrowing search results.");
 
@@ -667,10 +705,18 @@ const catalogPaginationResponseSchema = z
     total_count: z
       .number()
       .int()
-      .positive()
+      .nonnegative()
       .optional()
       .describe("Total number of matching items, if available."),
   })
+  .refine(
+    (pagination) =>
+      !(pagination.has_next_page && pagination.cursor === undefined),
+    {
+      error: "cursor MUST be present when has_next_page is true",
+      path: ["cursor"],
+    },
+  )
   .describe("Pagination information in responses.");
 
 export const searchCatalogRequestSchema = z.object({
@@ -709,26 +755,35 @@ export const mediaSchema = z.object({
     .enum(["image", "video", "model_3d"])
     .or(z.string())
     .describe("Media type. Well-known values: image, video, model_3d."),
-  url: z.string().describe("URL to the media resource."),
+  url: z.url().describe("URL to the media resource."),
   alt_text: z
     .string()
     .optional()
     .describe("Accessibility text describing the media."),
-  width: z.number().optional().describe("Width in pixels (for images/video)."),
+  width: z
+    .number()
+    .int()
+    .min(1)
+    .optional()
+    .describe("Width in pixels (for images/video)."),
   height: z
     .number()
+    .int()
+    .min(1)
     .optional()
     .describe("Height in pixels (for images/video)."),
 });
 
 export const ratingSchema = z
   .object({
-    value: z.number().describe("Average rating value."),
+    value: z.number().nonnegative().describe("Average rating value."),
     scale_max: z
       .number()
+      .min(1)
       .describe("Maximum value on the rating scale (e.g., 5 for 5-star)."),
     scale_min: z
       .number()
+      .nonnegative()
       .optional()
       .describe("Minimum value on the rating scale (e.g., 1 for 1-5 stars)."),
     count: z
@@ -776,6 +831,13 @@ const variantInputSchema = z.object({
 const variantAvailabilitySchema = z
   .looseObject({
     available: z.boolean(),
+    status: z
+      .string()
+      .optional()
+      .describe(
+        "Qualifies available with fulfillment state. Well-known values: in_stock, backorder, preorder, out_of_stock, discontinued.",
+      ),
+    // écentic extension (not in spec):
     quantity: z.number().int().nonnegative().optional(),
     policy: z
       .enum(["in_stock", "out_of_stock", "preorder", "backorder"])
@@ -802,20 +864,55 @@ export const variantSchema = z.looseObject({
     .optional()
     .describe("Business-assigned identifier for inventory and fulfillment."),
   barcodes: z
-    .array(z.record(z.string(), z.unknown()))
+    .array(
+      z.object({
+        type: z
+          .string()
+          .describe(
+            "Barcode standard. Well-known values: UPC, EAN, ISBN, GTIN, JAN.",
+          ),
+        value: z.string().describe("Barcode value."),
+      }),
+    )
     .optional()
     .describe(
       "Industry-standard product identifiers for cross-reference and correlation.",
     ),
   handle: z.string().optional().describe("URL-safe variant handle/slug."),
-  url: z.string().optional().describe("Canonical variant page URL."),
+  url: z.url().optional().describe("Canonical variant page URL."),
   categories: z
     .array(categorySchema)
     .optional()
     .describe("Variant categories with optional taxonomy identifiers."),
   list_price: priceSchema.optional().describe("Variant listing price."),
   unit_price: z
-    .record(z.string(), priceSchema)
+    .object({
+      amount: z
+        .number()
+        .int()
+        .nonnegative()
+        .describe(
+          "Unit price in ISO 4217 minor units. Business MUST return precomputed unit price value: (variant.price / measure.value) * reference.value.",
+        ),
+      currency: z
+        .string()
+        .regex(/^[A-Z]{3}$/, "currency must be a 3-letter ISO 4217 code")
+        .describe("ISO 4217 currency code."),
+      measure: z
+        .object({
+          value: z.number().describe("Package quantity."),
+          unit: z.string().describe("Unit of measurement."),
+        })
+        .describe("Product quantity in packaging (e.g., 750ml bottle)."),
+      reference: z
+        .object({
+          value: z.number().int().describe("Reference quantity."),
+          unit: z.string().describe("Unit of measurement."),
+        })
+        .describe(
+          "Denominator for unit price display (e.g., per 100ml, per 1kg).",
+        ),
+    })
     .optional()
     .describe(
       "Price per standard unit of measurement. MAY be omitted when unit pricing does not apply.",
@@ -853,35 +950,49 @@ export const variantSchema = z.looseObject({
     .describe(
       "Business-defined custom data extending the standard variant model.",
     ),
-  // TODO: specify
   seller: z
-    .record(z.string(), z.unknown())
+    .looseObject({
+      name: z.string().optional().describe("Seller display name."),
+      links: z
+        .array(
+          z.looseObject({
+            type: z.string(),
+            url: z.url(),
+            title: z.string().optional(),
+          }),
+        )
+        .optional()
+        .describe("Seller policy and information links."),
+    })
     .optional()
     .describe("Optional seller context for this variant."),
 });
 
-const optionValueSchema = z
-  .object({
-    label: z
-      .string()
-      .describe("Display text for this option value (e.g., 'Small', 'Blue')."),
-    id: z
-      .string()
-      .optional()
-      .describe(
-        "Optional server-assigned identifier for this option value. When present in a selected_option, the server SHOULD use it for matching instead of label.",
-      ),
+const optionValueSchema = z.object({
+  label: z
+    .string()
+    .describe("Display text for this option value (e.g., 'Small', 'Blue')."),
+  id: z
+    .string()
+    .optional()
+    .describe(
+      "Optional server-assigned identifier for this option value. When present in a selected_option, the server SHOULD use it for matching instead of label.",
+    ),
+});
+
+const detailOptionValueSchema = optionValueSchema
+  .extend({
     available: z
       .boolean()
       .optional()
       .describe(
-        "In stock and purchasable relative to product.selected. UI: selectable.",
+        "Whether a variant matching this value and the current option selections is purchasable. UI: selectable.",
       ),
     exists: z
       .boolean()
       .optional()
       .describe(
-        "A variant exists for this value combined with product.selected. false → no such combination (UI: hidden or visually distinct).",
+        "Whether a variant matching this value and the current option selections exists in the catalog. false → no such combination (UI: hidden or visually distinct).",
       ),
   })
   .refine((value) => !(value.available === true && value.exists === false), {
@@ -894,7 +1005,18 @@ const productOptionSchema = z.object({
   name: z.string().describe("Option name (e.g., 'Size', 'Color')."),
   values: z
     .array(optionValueSchema)
+    .min(1)
     .describe("Available values for this option."),
+});
+
+const detailProductOptionSchema = z.object({
+  name: z.string().describe("Option name (e.g., 'Size', 'Color')."),
+  values: z
+    .array(detailOptionValueSchema)
+    .min(1)
+    .describe(
+      "Available values with availability signals relative to the current option selections.",
+    ),
 });
 
 const productSchema = z.looseObject({
@@ -922,7 +1044,7 @@ const productSchema = z.looseObject({
     .describe(
       "URL-safe slug for SEO-friendly URLs (e.g., 'blue-runner-pro'). Use id for stable API references.",
     ),
-  url: z.string().optional().describe("Canonical product page URL."),
+  url: z.url().optional().describe("Canonical product page URL."),
   categories: z
     .array(categorySchema)
     .optional()
@@ -1012,6 +1134,17 @@ const lookupProductSchema = productSchema
     variants: z
       .array(lookupVariantSchema)
       .min(1, "product MUST have at least one variant"),
+  })
+  .superRefine(refineProductIntegrity);
+
+const detailProductSchema = productSchema
+  .extend({
+    options: z
+      .array(detailProductOptionSchema)
+      .optional()
+      .describe(
+        "Product options with availability signals relative to the effective selections.",
+      ),
   })
   .superRefine(refineProductIntegrity);
 
@@ -1107,7 +1240,7 @@ export const getProductRequestSchema = z.object({
 
 export const getProductResponseSchema = z.object({
   ucp: z.any().describe("UCP metadata for catalog responses."),
-  product: productSchema.describe(
+  product: detailProductSchema.describe(
     "The requested product with full detail. Singular — this is a single-resource operation.",
   ),
   messages: z
@@ -1130,58 +1263,133 @@ export const cartItemSchema = z.looseObject({
     .int()
     .nonnegative()
     .describe("Unit price in ISO 4217 minor units."),
-  image_url: z.string().optional().describe("Product image URI."),
+  image_url: z.url().optional().describe("Product image URI."),
 });
 
-export const cartTotalSchema = z.object({
-  // TODO: specify
-  type: z
+export const cartTotalSchema = z
+  .object({
+    type: z
+      .string()
+      .describe(
+        "Cost category. Well-known values: subtotal, items_discount, discount, fulfillment, tax, fee, total. Businesses MAY use additional values.",
+      ),
+    amount: z
+      .number()
+      .int()
+      .describe(
+        "Monetary amount in the currency's minor unit as defined by ISO 4217. Refer to the currency's exponent to determine minor-to-major ratio (e.g., 2 for USD, 0 for JPY, 3 for KWD). May be negative — the sign is intrinsic to the value (e.g., discounts are negative, charges are positive).",
+      ),
+    display_text: z
+      .string()
+      .optional()
+      .describe(
+        "Text to display against the amount. Should reflect appropriate method (e.g., 'Shipping', 'Delivery').",
+      ),
+  })
+  .superRefine((total, ctx) => {
+    if (
+      ["discount", "items_discount"].includes(total.type) &&
+      total.amount >= 0
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["amount"],
+        message: `amount must be negative (< 0) for type "${total.type}"`,
+      });
+    }
+    if (
+      ["subtotal", "fulfillment", "tax", "fee"].includes(total.type) &&
+      total.amount < 0
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["amount"],
+        message: `amount must be non-negative (>= 0) for type "${total.type}"`,
+      });
+    }
+  });
+
+const totalsArraySchema = z
+  .array(cartTotalSchema)
+  .superRefine((totals, ctx) => {
+    const subtotalCount = totals.filter((t) => t.type === "subtotal").length;
+    const totalCount = totals.filter((t) => t.type === "total").length;
+
+    if (subtotalCount !== 1) {
+      ctx.addIssue({
+        code: "custom",
+        message: `totals MUST contain exactly one entry with type "subtotal", found ${subtotalCount}`,
+      });
+    }
+    if (totalCount !== 1) {
+      ctx.addIssue({
+        code: "custom",
+        message: `totals MUST contain exactly one entry with type "total", found ${totalCount}`,
+      });
+    }
+  });
+
+const cartItemRequestSchema = z.object({
+  id: z
     .string()
     .describe(
-      "Cost category. Well-known values: subtotal, items_discount, discount, fulfillment, tax, fee, total. Businesses MAY use additional values",
-    ),
-  amount: z
-    .number()
-    .int()
-    .describe(
-      "Monetary amount in the currency's minor unit as defined by ISO 4217. Refer to the currency's exponent to determine minor-to-major ratio (e.g., 2 for USD, 0 for JPY, 3 for KWD). May be negative — the sign is intrinsic to the value (e.g., discounts are negative, charges are positive).",
-    ),
-  display_text: z
-    .string()
-    .optional()
-    .describe(
-      "Text to display against the amount. Should reflect appropriate method (e.g., 'Shipping', 'Delivery').",
+      "Product identifier. Should be recognized by both the Platform and the Business.",
     ),
 });
 
-export const lineItemSchema = z.looseObject({
-  id: z.string().optional().describe("Line item identifier"),
-  item: cartItemSchema,
+const lineItemRequestBaseSchema = z.object({
+  item: cartItemRequestSchema,
   quantity: z
     .number()
     .int()
     .positive()
     .describe("Quantity of the item being purchased."),
-  totals: z.array(cartTotalSchema).describe("Line item totals breakdown."),
   parent_id: z
     .string()
     .optional()
     .describe("Parent line item identifier for any nested structures."),
 });
 
-export const buyerSchema = z.looseObject({
-  first_name: z.string().optional().describe("First name of the buyer."),
-  last_name: z.string().optional().describe("Last name of the buyer."),
-  email: z.string().optional().describe("Email of the buyer."),
-  phone_number: z.string().optional().describe("E.164 standard."),
+export const lineItemCreateRequestSchema = lineItemRequestBaseSchema;
+export const lineItemUpdateRequestSchema = lineItemRequestBaseSchema.extend({
+  id: z
+    .string()
+    .optional()
+    .describe(
+      "Line item identifier. Optional — used to correlate with an existing line item on update.",
+    ),
 });
+
+export const lineItemSchema = z.looseObject({
+  id: z.string().describe("Line item identifier."),
+  item: cartItemSchema,
+  quantity: z
+    .number()
+    .int()
+    .positive()
+    .describe("Quantity of the item being purchased."),
+  totals: totalsArraySchema.describe("Line item totals breakdown."),
+  parent_id: z
+    .string()
+    .optional()
+    .describe("Parent line item identifier for any nested structures."),
+});
+
+export const buyerSchema = z
+  .looseObject({
+    first_name: z.string().optional().describe("First name of the buyer."),
+    last_name: z.string().optional().describe("Last name of the buyer."),
+    email: z.string().optional().describe("Email of the buyer."),
+    phone_number: z.string().optional().describe("E.164 standard."),
+  })
+  .describe("Representation of the buyer.");
 
 export const createCartRequestSchema = z.object({
   line_items: z
-    .array(lineItemSchema)
+    .array(lineItemCreateRequestSchema)
     .min(1)
     .describe(
-      "Cart line items for create. Each entry needs item.id and quantity only; do not set line_items[].id.",
+      "Cart line items for create. Each entry needs item.id and quantity only; line_items[].id must be omitted.",
     ),
   context: contextSchema
     .optional()
@@ -1200,7 +1408,7 @@ const linkSchema = z.object({
       "Type of link. Well-known values: privacy_policy, terms_of_service, refund_policy, shipping_policy, faq. Consumers SHOULD handle unknown values gracefully by displaying them using the title field or omitting the link.",
     ),
   url: z
-    .string()
+    .url()
     .describe("The actual URL pointing to the content to be displayed."),
   title: z
     .string()
@@ -1219,11 +1427,9 @@ export const createCartResponseSchema = z.object({
     .describe(
       "ISO 4217 currency code. Determined by merchant based on context or geo-IP.",
     ),
-  totals: z
-    .array(cartTotalSchema)
-    .describe(
-      "Estimated cost breakdown. May be partial if shipping/tax not yet calculable.",
-    ),
+  totals: totalsArraySchema.describe(
+    "Estimated cost breakdown. May be partial if shipping/tax not yet calculable.",
+  ),
   context: contextSchema
     .optional()
     .describe(
@@ -1243,13 +1449,13 @@ export const createCartResponseSchema = z.object({
     .optional()
     .describe("Optional merchant links (policies, FAQs)."),
   continue_url: z
-    .string()
+    .url()
     .optional()
     .describe(
       "URL for cart handoff and session recovery. Enables sharing and human-in-the-loop flows.",
     ),
-  expires_at: z
-    .string()
+  expires_at: z.iso
+    .datetime()
     .optional()
     .describe("Cart expiry timestamp (RFC 3339)."),
 });
@@ -1267,11 +1473,9 @@ export const getCartResponseSchema = z.object({
     .describe(
       "ISO 4217 currency code. Determined by merchant based on context or geo-IP.",
     ),
-  totals: z
-    .array(cartTotalSchema)
-    .describe(
-      "Estimated cost breakdown. May be partial if shipping/tax not yet calculable.",
-    ),
+  totals: totalsArraySchema.describe(
+    "Estimated cost breakdown. May be partial if shipping/tax not yet calculable.",
+  ),
   context: contextSchema
     .optional()
     .describe(
@@ -1291,20 +1495,22 @@ export const getCartResponseSchema = z.object({
     .optional()
     .describe("Optional merchant links (policies, FAQs)."),
   continue_url: z
-    .string()
+    .url()
     .optional()
     .describe(
       "URL for cart handoff and session recovery. Enables sharing and human-in-the-loop flows.",
     ),
-  expires_at: z
-    .string()
+  expires_at: z.iso
+    .datetime()
     .optional()
     .describe("Cart expiry timestamp (RFC 3339)."),
 });
 
 export const updateCartRequestSchema = z.object({
   id: z.string().describe("The ID of the cart session to update."),
-  line_items: z.array(lineItemSchema).describe("Cart line items."),
+  line_items: z
+    .array(lineItemUpdateRequestSchema)
+    .describe("Cart line items. Full replacement on update."),
   context: contextSchema
     .optional()
     .describe(
@@ -1326,11 +1532,9 @@ export const updateCartResponseSchema = z.object({
     .describe(
       "ISO 4217 currency code. Determined by merchant based on context or geo-IP.",
     ),
-  totals: z
-    .array(cartTotalSchema)
-    .describe(
-      "Estimated cost breakdown. May be partial if shipping/tax not yet calculable.",
-    ),
+  totals: totalsArraySchema.describe(
+    "Estimated cost breakdown. May be partial if shipping/tax not yet calculable.",
+  ),
   context: contextSchema
     .optional()
     .describe(
@@ -1350,13 +1554,13 @@ export const updateCartResponseSchema = z.object({
     .optional()
     .describe("Optional merchant links (policies, FAQs)."),
   continue_url: z
-    .string()
+    .url()
     .optional()
     .describe(
       "URL for cart handoff and session recovery. Enables sharing and human-in-the-loop flows.",
     ),
-  expires_at: z
-    .string()
+  expires_at: z.iso
+    .datetime()
     .optional()
     .describe("Cart expiry timestamp (RFC 3339)."),
 });
@@ -1374,11 +1578,9 @@ export const cancelCartResponseSchema = z.object({
     .describe(
       "ISO 4217 currency code. Determined by merchant based on context or geo-IP.",
     ),
-  totals: z
-    .array(cartTotalSchema)
-    .describe(
-      "Estimated cost breakdown. May be partial if shipping/tax not yet calculable.",
-    ),
+  totals: totalsArraySchema.describe(
+    "Estimated cost breakdown. May be partial if shipping/tax not yet calculable.",
+  ),
   context: contextSchema
     .optional()
     .describe(
@@ -1398,13 +1600,758 @@ export const cancelCartResponseSchema = z.object({
     .optional()
     .describe("Optional merchant links (policies, FAQs)."),
   continue_url: z
-    .string()
+    .url()
     .optional()
     .describe(
       "URL for cart handoff and session recovery. Enables sharing and human-in-the-loop flows.",
     ),
-  expires_at: z
-    .string()
+  expires_at: z.iso
+    .datetime()
     .optional()
     .describe("Cart expiry timestamp (RFC 3339)."),
+});
+
+export const postalAddressSchema = z.looseObject({
+  extended_address: z
+    .string()
+    .optional()
+    .describe(
+      "An address extension such as an apartment number, C/O or alternative name.",
+    ),
+  street_address: z.string().optional().describe("The street address."),
+  address_locality: z
+    .string()
+    .optional()
+    .describe(
+      "The locality in which the street address is, and which is in the region. For example, Mountain View.",
+    ),
+  address_region: z
+    .string()
+    .optional()
+    .describe(
+      "The region in which the locality is, and which is in the country. Required for applicable countries (i.e. state in US, province in CA). For example, California or another appropriate first-level Administrative division.",
+    ),
+  address_country: z
+    .string()
+    .optional()
+    .describe(
+      'The country. Recommended to be in 2-letter ISO 3166-1 alpha-2 format, for example "US". For backward compatibility, a 3-letter ISO 3166-1 alpha-3 country code such as "SGP" or a full country name such as "Singapore" can also be used.',
+    ),
+  postal_code: z
+    .string()
+    .optional()
+    .describe("The postal code. For example, 94043."),
+  first_name: z
+    .string()
+    .optional()
+    .describe("First name of the contact associated with the address."),
+  last_name: z
+    .string()
+    .optional()
+    .describe("Last name of the contact associated with the address."),
+  phone_number: z
+    .string()
+    .optional()
+    .describe("Phone number of the contact associated with the address."),
+});
+
+const paymentCredentialSchema = z.looseObject({
+  type: z.string().describe("Credential type discriminator."),
+});
+
+const paymentInstrumentSchema = z.looseObject({
+  id: z
+    .string()
+    .describe(
+      "Unique instrument instance identifier, assigned by the platform.",
+    ),
+  handler_id: z
+    .string()
+    .describe("ID of the payment handler that produced this instrument."),
+  type: z
+    .string()
+    .describe("Broad instrument category (e.g., 'card', 'tokenized_card')."),
+  billing_address: postalAddressSchema.optional(),
+  credential: paymentCredentialSchema.optional(),
+  display: z
+    .looseObject({})
+    .optional()
+    .describe("Handler-defined display info."),
+});
+
+const selectedPaymentInstrumentSchema = paymentInstrumentSchema.extend({
+  selected: z
+    .boolean()
+    .optional()
+    .describe("Whether this instrument is selected."),
+});
+
+export const checkoutPaymentSchema = z.looseObject({
+  instruments: z
+    .array(selectedPaymentInstrumentSchema)
+    .optional()
+    .describe(
+      "Payment instruments collected by the platform. Each must reference a handler via handler_id.",
+    ),
+});
+
+const fulfillmentOptionSchema = z
+  .looseObject({
+    id: z.string().describe("Unique fulfillment option identifier."),
+    title: z
+      .string()
+      .describe(
+        "Short label (e.g., 'Express Shipping', 'Curbside Pickup'). Must distinguish this option from siblings.",
+      ),
+    totals: z
+      .array(cartTotalSchema)
+      .describe("Fulfillment option totals breakdown."),
+    description: z
+      .string()
+      .optional()
+      .describe(
+        "Complete context for buyer decision (e.g., 'Arrives Dec 12-15 via FedEx').",
+      ),
+    carrier: z.string().optional().describe("Carrier name (for shipping)."),
+    earliest_fulfillment_time: z.iso
+      .datetime()
+      .optional()
+      .describe("Earliest fulfillment date (ISO 8601)."),
+    latest_fulfillment_time: z.iso
+      .datetime()
+      .optional()
+      .describe("Latest fulfillment date (ISO 8601)."),
+  })
+  .refine(
+    (opt) =>
+      opt.earliest_fulfillment_time === undefined ||
+      opt.latest_fulfillment_time === undefined ||
+      new Date(opt.latest_fulfillment_time) >=
+        new Date(opt.earliest_fulfillment_time),
+    {
+      error: "latest_fulfillment_time must be >= earliest_fulfillment_time",
+      path: ["latest_fulfillment_time"],
+    },
+  );
+
+const fulfillmentGroupSchema = z
+  .looseObject({
+    id: z
+      .string()
+      .describe(
+        "Group identifier. Required on update to reference merchant-generated groups.",
+      ),
+    line_item_ids: z
+      .array(z.string())
+      .describe("Line item IDs included in this group."),
+    options: z
+      .array(fulfillmentOptionSchema)
+      .optional()
+      .describe("Available fulfillment options for this group."),
+    selected_option_id: z
+      .string()
+      .nullable()
+      .optional()
+      .describe(
+        "ID of the selected option. Must reference an options[] entry.",
+      ),
+  })
+  .superRefine((group, ctx) => {
+    if (
+      group.selected_option_id !== null &&
+      group.selected_option_id !== undefined
+    ) {
+      const optionIds = new Set(group.options?.map((o) => o.id) ?? []);
+      if (!optionIds.has(group.selected_option_id)) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["selected_option_id"],
+          message: `selected_option_id "${group.selected_option_id}" does not reference a known option id`,
+        });
+      }
+    }
+  });
+
+const shippingDestinationSchema = postalAddressSchema.extend({
+  id: z.string().describe("ID specific to this shipping destination."),
+});
+
+const retailLocationSchema = z.looseObject({
+  id: z.string().describe("Unique location identifier."),
+  name: z.string().describe("Location name (e.g., store name)."),
+  address: postalAddressSchema.optional().describe("Physical address."),
+});
+
+const fulfillmentDestinationSchema = z.union([
+  shippingDestinationSchema,
+  retailLocationSchema,
+]);
+
+const fulfillmentMethodSchema = z
+  .looseObject({
+    id: z.string().describe("Unique fulfillment method identifier."),
+    type: z.enum(["shipping", "pickup"]).describe("Fulfillment method type."),
+    line_item_ids: z
+      .array(z.string())
+      .describe("Line item IDs fulfilled via this method."),
+    destinations: z
+      .array(fulfillmentDestinationSchema)
+      .optional()
+      .describe(
+        "Available destinations. For shipping: addresses. For pickup: retail locations.",
+      ),
+    selected_destination_id: z
+      .string()
+      .nullable()
+      .optional()
+      .describe(
+        "ID of the selected destination. Must reference a destinations[] entry.",
+      ),
+    groups: z
+      .array(fulfillmentGroupSchema)
+      .optional()
+      .describe(
+        "Fulfillment groups for selecting options. Agent sets selected_option_id on groups.",
+      ),
+  })
+  .superRefine((method, ctx) => {
+    if (
+      method.selected_destination_id !== null &&
+      method.selected_destination_id !== undefined
+    ) {
+      const destinationIds = new Set(
+        method.destinations?.map((d) => (d as { id: string }).id) ?? [],
+      );
+      if (!destinationIds.has(method.selected_destination_id)) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["selected_destination_id"],
+          message: `selected_destination_id "${method.selected_destination_id}" does not reference a known destination id`,
+        });
+      }
+    }
+  });
+
+const fulfillmentAvailableMethodSchema = z.looseObject({
+  type: z
+    .enum(["shipping", "pickup"])
+    .describe("Fulfillment method type this availability applies to."),
+  line_item_ids: z
+    .array(z.string())
+    .describe("Line items available for this method."),
+  fulfillable_on: z
+    .string()
+    .nullable()
+    .optional()
+    .describe(
+      "'now' for immediate availability, or ISO 8601 date for future (preorders, transfers).",
+    ),
+  description: z
+    .string()
+    .optional()
+    .describe(
+      "Human-readable availability info (e.g., 'Available for pickup at Downtown Store today').",
+    ),
+});
+
+export const fulfillmentSchema = z.looseObject({
+  methods: z
+    .array(fulfillmentMethodSchema)
+    .optional()
+    .describe("Fulfillment methods for cart items."),
+  available_methods: z
+    .array(fulfillmentAvailableMethodSchema)
+    .optional()
+    .describe("Inventory availability hints (response only)."),
+});
+
+const checkoutStatusSchema = z
+  .enum([
+    "incomplete",
+    "requires_escalation",
+    "ready_for_complete",
+    "complete_in_progress",
+    "completed",
+    "canceled",
+  ])
+  .describe(
+    "Checkout state indicating the current phase and required action. Flow: incomplete ↔ requires_escalation → ready_for_complete → complete_in_progress → completed. canceled reachable from any non-terminal state.",
+  );
+
+const checkoutOrderSchema = z.looseObject({
+  id: z.string().describe("Unique order identifier."),
+  permalink_url: z
+    .url()
+    .optional()
+    .describe("Permalink to access the order on merchant site."),
+});
+
+const checkoutResponseBaseSchema = z.looseObject({
+  ucp: z.any().describe("UCP metadata for checkout responses."),
+  id: z.string().describe("Unique identifier of the checkout session."),
+  status: checkoutStatusSchema,
+  line_items: z
+    .array(lineItemSchema)
+    .describe("List of line items being checked out."),
+  currency: z
+    .string()
+    .describe(
+      "ISO 4217 currency code reflecting the merchant's market determination. Derived from address, context, and geo IP—buyers provide signals, merchants determine currency.",
+    ),
+  totals: totalsArraySchema.describe(
+    "Different cart totals. Checkout cost breakdown.",
+  ),
+  links: z
+    .array(linkSchema)
+    .describe(
+      "Links to be displayed by the platform (Privacy Policy, TOS). Mandatory for legal compliance.",
+    ),
+  buyer: buyerSchema.optional(),
+  context: contextSchema.optional(),
+  signals: signalsSchema.optional(),
+  attribution: attributionSchema.optional(),
+  payment: checkoutPaymentSchema.optional(),
+  messages: z.array(messageSchema).optional(),
+  continue_url: httpsUrlSchema
+    .optional()
+    .describe(
+      "URL for checkout handoff and session recovery. MUST be present when status is requires_escalation. MUST be an absolute HTTPS URL. SHOULD be omitted for terminal states (completed, canceled).",
+    ),
+  expires_at: z.iso
+    .datetime()
+    .optional()
+    .describe(
+      "RFC 3339 expiry timestamp. Default TTL is 6 hours from creation if not sent.",
+    ),
+  order: checkoutOrderSchema
+    .optional()
+    .describe("Order details. Present after successful completion."),
+});
+
+const refineCheckoutConstraints = (
+  checkout: z.infer<typeof checkoutResponseBaseSchema>,
+  ctx: z.core.$RefinementCtx,
+) => {
+  if (
+    checkout.status === "requires_escalation" &&
+    checkout.continue_url === undefined
+  ) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["continue_url"],
+      message:
+        "continue_url MUST be present when status is requires_escalation",
+    });
+  }
+
+  if (checkout.status === "requires_escalation") {
+    const escalationMessages = (checkout.messages ?? []).filter((message) => {
+      if (message.type !== "error") return false;
+      return (
+        message.severity === "requires_buyer_input" ||
+        message.severity === "requires_buyer_review"
+      );
+    });
+    if (escalationMessages.length === 0) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["messages"],
+        message:
+          'status requires_escalation MUST include at least one error message with severity "requires_buyer_input" or "requires_buyer_review"',
+      });
+    }
+  }
+};
+
+export const createCheckoutRequestSchema = z.object({
+  line_items: z
+    .array(lineItemCreateRequestSchema)
+    .min(1)
+    .describe(
+      "Items being checked out. line_items[].id must be omitted on create.",
+    ),
+  buyer: buyerSchema.optional(),
+  context: contextSchema.optional(),
+  signals: signalsSchema.optional(),
+  attribution: attributionSchema.optional(),
+  payment: checkoutPaymentSchema
+    .optional()
+    .describe(
+      "The payment instruments available for this payment. Each instrument is associated with a specific handler via the handler_id field. Handlers can extend the base payment_instrument schema to add handler-specific fields.",
+    ),
+});
+
+export const updateCheckoutRequestSchema = z.object({
+  id: z.string().describe("Unique identifier of the checkout session."),
+  line_items: z
+    .array(lineItemUpdateRequestSchema)
+    .min(1)
+    .describe(
+      "List of line items being checked out. Full replacement of line items on update.",
+    ),
+  buyer: buyerSchema.optional(),
+  context: contextSchema.optional(),
+  signals: signalsSchema.optional(),
+  attribution: attributionSchema.optional(),
+  payment: checkoutPaymentSchema.optional(),
+});
+
+export const completeCheckoutRequestSchema = z.object({
+  id: z.string().describe("Unique identifier of the checkout session."),
+  payment: checkoutPaymentSchema,
+});
+
+export const getCheckoutRequestSchema = z.object({
+  id: z.string().describe("Unique identifier of the checkout session."),
+});
+
+export const cancelCheckoutRequestSchema = z.object({
+  id: z.string().describe("Unique identifier of the checkout session."),
+});
+
+export const checkoutResponseSchema = checkoutResponseBaseSchema.superRefine(
+  refineCheckoutConstraints,
+);
+
+export const completeCheckoutResponseSchema = checkoutResponseBaseSchema
+  .extend({
+    order: checkoutOrderSchema.describe(
+      "Order details. Required in the complete checkout response.",
+    ),
+  })
+  .superRefine(refineCheckoutConstraints);
+
+export const createCheckoutWithFulfillmentRequestSchema =
+  createCheckoutRequestSchema.extend({
+    fulfillment: fulfillmentSchema
+      .optional()
+      .describe("Fulfillment details for this checkout. Optional on create."),
+  });
+
+export const updateCheckoutWithFulfillmentRequestSchema =
+  updateCheckoutRequestSchema.extend({
+    fulfillment: fulfillmentSchema
+      .optional()
+      .describe("Fulfillment details for this checkout. Optional on update."),
+  });
+
+const checkoutWithFulfillmentResponseBaseSchema =
+  checkoutResponseBaseSchema.extend({
+    fulfillment: fulfillmentSchema
+      .optional()
+      .describe(
+        "Fulfillment details. Present when the fulfillment capability is active.",
+      ),
+  });
+
+export const checkoutWithFulfillmentResponseSchema =
+  checkoutWithFulfillmentResponseBaseSchema.superRefine(
+    refineCheckoutConstraints,
+  );
+
+export const completeCheckoutWithFulfillmentResponseSchema =
+  checkoutWithFulfillmentResponseBaseSchema
+    .extend({
+      order: checkoutOrderSchema.describe(
+        "Order details. Required in the complete checkout response.",
+      ),
+    })
+    .superRefine(refineCheckoutConstraints);
+
+// ─── Order ────────────────────────────────────────────────────────────────────
+
+const orderLineItemRefSchema = z.object({
+  id: z.string().describe("Line item ID reference."),
+  quantity: z
+    .number()
+    .int()
+    .min(1)
+    .describe("Quantity of this item in this group."),
+});
+
+const adjustmentLineItemRefSchema = z.object({
+  id: z.string().describe("Line item ID reference."),
+  quantity: z
+    .number()
+    .int()
+    .describe(
+      "Signed quantity. Negative for reductions (returns), positive for additions (exchanges).",
+    ),
+});
+
+const orderLineItemQuantitySchema = z.object({
+  total: z
+    .number()
+    .int()
+    .nonnegative()
+    .describe(
+      "Current total active quantity. May differ from original due to post-order modifications.",
+    ),
+  fulfilled: z
+    .number()
+    .int()
+    .nonnegative()
+    .describe("Quantity fulfilled so far."),
+  original: z
+    .number()
+    .int()
+    .nonnegative()
+    .optional()
+    .describe("Quantity from the original checkout."),
+});
+
+const orderLineItemStatusSchema = z.enum([
+  "processing",
+  "partial",
+  "fulfilled",
+  "removed",
+]);
+
+const orderLineItemSchema = z
+  .looseObject({
+    id: z.string().describe("Line item identifier."),
+    item: cartItemSchema.describe(
+      "Product data (id, title, price, image_url).",
+    ),
+    quantity: orderLineItemQuantitySchema.describe(
+      "Quantity tracking for the line item.",
+    ),
+    totals: totalsArraySchema.describe("Line item totals breakdown."),
+    status: orderLineItemStatusSchema.describe(
+      "Derived status: removed if quantity.total == 0, fulfilled if total > 0 and fulfilled == total, partial if fulfilled > 0, otherwise processing.",
+    ),
+    parent_id: z
+      .string()
+      .optional()
+      .describe("Parent line item identifier for nested structures."),
+  })
+  .superRefine((item, ctx) => {
+    const { total, fulfilled } = item.quantity;
+    const expectedStatus = (() => {
+      if (total === 0) return "removed";
+      if (fulfilled === total) return "fulfilled";
+      if (fulfilled > 0) return "partial";
+      return "processing";
+    })();
+    if (item.status !== expectedStatus) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["status"],
+        message: `status must be "${expectedStatus}" given quantity.total=${total} and quantity.fulfilled=${fulfilled}`,
+      });
+    }
+  });
+
+const expectationSchema = z.looseObject({
+  id: z.string().describe("Expectation identifier."),
+  line_items: z
+    .array(orderLineItemRefSchema)
+    .describe("Which line items and quantities are in this expectation."),
+  method_type: z
+    .enum(["shipping", "pickup", "digital"])
+    .describe("Delivery method type."),
+  destination: postalAddressSchema.describe("Delivery destination address."),
+  description: z
+    .string()
+    .optional()
+    .describe(
+      "Human-readable delivery description (e.g., 'Arrives in 5-8 business days').",
+    ),
+  fulfillable_on: z
+    .string()
+    .optional()
+    .describe(
+      "'now' for immediate availability, or ISO 8601 timestamp for future (backorder, pre-order).",
+    ),
+});
+
+const fulfillmentEventSchema = z
+  .looseObject({
+    id: z.string().describe("Fulfillment event identifier."),
+    occurred_at: z.iso
+      .datetime()
+      .describe("RFC 3339 timestamp when this fulfillment event occurred."),
+    type: z
+      .string()
+      .describe(
+        "Fulfillment event type. Common values: processing, shipped, in_transit, delivered, failed_attempt, canceled, undeliverable, returned_to_sender.",
+      ),
+    line_items: z
+      .array(orderLineItemRefSchema)
+      .describe("Which line items and quantities are fulfilled in this event."),
+    tracking_number: z
+      .string()
+      .optional()
+      .describe("Carrier tracking number. Required if type is not processing."),
+    tracking_url: z
+      .url()
+      .optional()
+      .describe(
+        "URL to track this shipment. Required if type is not processing.",
+      ),
+    carrier: z
+      .string()
+      .optional()
+      .describe("Carrier name (e.g., 'FedEx', 'USPS')."),
+    description: z
+      .string()
+      .optional()
+      .describe(
+        "Human-readable description of the shipment status (e.g., 'Delivered to front door').",
+      ),
+  })
+  .superRefine((event, ctx) => {
+    if (event.type !== "processing") {
+      if (event.tracking_number === undefined) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["tracking_number"],
+          message: "tracking_number is required when type is not processing",
+        });
+      }
+      if (event.tracking_url === undefined) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["tracking_url"],
+          message: "tracking_url is required when type is not processing",
+        });
+      }
+    }
+  });
+
+const adjustmentTotalSchema = z.looseObject({
+  type: z.string().describe("Total type label."),
+  amount: z
+    .number()
+    .int()
+    .describe(
+      "Signed amount in smallest currency unit. Negative for money returned to buyer (refunds, credits), positive for additional charges.",
+    ),
+  display_text: z
+    .string()
+    .optional()
+    .describe("Human-readable display label for this total line."),
+});
+
+const adjustmentSchema = z
+  .looseObject({
+    id: z.string().describe("Adjustment event identifier."),
+    type: z
+      .string()
+      .describe(
+        "Type of adjustment (open string). Typical values: refund, return, credit, price_adjustment, dispute, cancellation.",
+      ),
+    occurred_at: z.iso
+      .datetime()
+      .describe("RFC 3339 timestamp when this adjustment occurred."),
+    status: z
+      .enum(["pending", "completed", "failed"])
+      .describe("Adjustment status."),
+    line_items: z
+      .array(adjustmentLineItemRefSchema)
+      .optional()
+      .describe("Which line items and quantities are affected."),
+    totals: z
+      .array(adjustmentTotalSchema)
+      .optional()
+      .describe(
+        "Adjustment totals breakdown. Signed: negative for money returned to buyer, positive for additional charges.",
+      ),
+    description: z
+      .string()
+      .optional()
+      .describe(
+        "Human-readable reason or description (e.g., 'Defective item', 'Customer requested').",
+      ),
+  })
+  .describe(
+    "Post-order event that exists independently of fulfillment. Typically represents money movements but can be any post-order change. Polymorphic type that can optionally reference line items.",
+  );
+
+const orderFulfillmentSchema = z.looseObject({
+  expectations: z
+    .array(expectationSchema)
+    .optional()
+    .describe(
+      "Buyer-facing groups representing when/how items will be delivered. Can be split, merged, or adjusted post-order.",
+    ),
+  events: z
+    .array(fulfillmentEventSchema)
+    .optional()
+    .describe(
+      "Append-only event log of actual shipments. Each event references line items by ID.",
+    ),
+});
+
+export const getOrderRequestSchema = z.object({
+  id: z.string().describe("Unique order identifier."),
+});
+
+export const listOrdersRequestSchema = z.object({
+  cursor: z
+    .string()
+    .optional()
+    .describe("Pagination cursor from a previous response."),
+  limit: z
+    .number()
+    .int()
+    .positive()
+    .optional()
+    .describe("Maximum number of orders to return per page."),
+});
+
+export const orderResponseSchema = z.looseObject({
+  ucp: z.any().describe("UCP metadata for order responses."),
+  id: z.string().describe("Unique order identifier."),
+  checkout_id: z
+    .string()
+    .describe("Associated checkout ID for reconciliation."),
+  permalink_url: z
+    .url()
+    .describe("Permalink to access the order on the merchant site."),
+  label: z
+    .string()
+    .optional()
+    .describe(
+      "Human-readable label for identifying the order. MUST only be provided by the business.",
+    ),
+  line_items: z
+    .array(orderLineItemSchema)
+    .describe(
+      "Line items representing what was purchased. Can change post-order via edits or exchanges.",
+    ),
+  fulfillment: orderFulfillmentSchema.describe(
+    "Fulfillment data: buyer expectations and what actually happened.",
+  ),
+  adjustments: z
+    .array(adjustmentSchema)
+    .optional()
+    .describe(
+      "Post-order events (refunds, returns, credits, disputes, cancellations) that exist independently of fulfillment.",
+    ),
+  currency: z
+    .string()
+    .describe(
+      "ISO 4217 currency code. MUST match the currency from the originating checkout session.",
+    ),
+  totals: totalsArraySchema.describe("Different totals for the order."),
+  messages: z
+    .array(messageSchema)
+    .optional()
+    .describe(
+      "Business outcome messages. Present when the business needs to communicate status or issues to the platform.",
+    ),
+  attribution: attributionSchema
+    .optional()
+    .describe(
+      "Snapshot of the attribution from the originating checkout. Read-only.",
+    ),
+});
+
+export const listOrdersResponseSchema = z.looseObject({
+  ucp: z.any().describe("UCP metadata for list order responses."),
+  orders: z.array(orderResponseSchema).describe("List of orders."),
+  pagination: catalogPaginationResponseSchema
+    .optional()
+    .describe("Pagination metadata."),
 });

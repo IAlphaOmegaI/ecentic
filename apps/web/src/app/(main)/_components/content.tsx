@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Navbar } from "@/components/navbar";
+import { Plus } from "@/components/plus";
 import { SimpleFooter } from "@/components/simple-footer";
 import Background from "@/public/images/blog.png";
 import { renderInline } from "./rich-text";
@@ -132,16 +133,22 @@ export const ContentPageSection = ({
   <div className={cn("border-accent-foreground border-b", classList?.root)}>
     <div
       className={cn(
-        "mx-auto grid max-w-6xl grid-cols-1 gap-px border-accent-foreground border-x bg-accent-foreground md:grid-cols-[5fr_8fr]",
+        "relative mx-auto grid max-w-6xl grid-cols-1 gap-px border-accent-foreground border-x bg-accent-foreground md:grid-cols-[5fr_8fr]",
         classList?.grid,
       )}
     >
+      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+      <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2 hidden md:flex" />
+      <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden md:flex" />
       <div
         className={cn(
-          "flex flex-col bg-background-dimmed p-8",
+          "relative flex flex-col bg-background-dimmed p-8",
           classList?.left,
         )}
       >
+        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+        <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden md:flex" />
         <span className="mt-auto font-normal text-2xl text-primary">
           {number}
         </span>
@@ -200,7 +207,6 @@ export const ContentPageCardGrid = ({
           </p>
         </div>
         <Button
-          variant={item.variant ?? "outline"}
           color={item.color ?? "accent"}
           render={<Link href={item.href} />}
         >
@@ -221,7 +227,6 @@ export namespace ContentPageCardGrid {
     label: string;
     eyebrow?: string;
     color?: "accent" | "primary";
-    variant?: "flat" | "outline";
   };
 
   export type Props = {
@@ -276,11 +281,14 @@ export const ContentPageFooter = ({
   note,
 }: ContentPageFooter.Props) => (
   <div className="border-accent-foreground border-b">
-    <div className="mx-auto flex max-w-6xl flex-col gap-4 border-accent-foreground border-x px-8 py-8 md:flex-row md:items-center md:justify-between">
+    <div className="relative mx-auto flex max-w-6xl flex-col gap-4 border-accent-foreground border-x px-8 py-8 md:flex-row md:items-center md:justify-between">
+      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+      <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+      <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
       <div className="flex flex-wrap items-center gap-4">
         {secondary && (
           <Button
-            variant="outline"
             color="accent"
             render={<Link href={secondary.href} />}
           >
@@ -291,7 +299,6 @@ export const ContentPageFooter = ({
 
         {primary && (
           <Button
-            variant="flat"
             color="primary"
             render={<Link href={primary.href} />}
           >

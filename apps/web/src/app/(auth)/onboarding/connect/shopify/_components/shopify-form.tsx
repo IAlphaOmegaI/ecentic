@@ -122,7 +122,6 @@ export const ShopifyForm = () => {
     >
       <Button
         type="submit"
-        variant="flat"
         color="primary"
         className="mt-2 w-full"
         disabled={isPending}

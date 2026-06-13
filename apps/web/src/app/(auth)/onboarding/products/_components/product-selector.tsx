@@ -27,6 +27,7 @@ import Link, { useLinkStatus } from "next/link";
 import { useRouter } from "next/navigation";
 import { type ReactNode, useState, useTransition } from "react";
 import { Motion } from "@/components/motion";
+import { Plus } from "@/components/plus";
 import { Stagger, Table as TableAnimations } from "@/lib/animations";
 import { getCurrencySymbol, normalizePrice } from "@/lib/currency";
 import type * as Product from "@/server/app/product";
@@ -147,7 +148,11 @@ export const ProductSelector = ({
   return (
     <Motion.Stagger className="flex flex-1 flex-col overflow-hidden">
       <Motion.Item className="px-8">
-        <div className="border-accent-foreground border-x p-6">
+        <div className="relative border-accent-foreground border-x p-6">
+          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           {children}
           <div className="mt-4 inline-flex items-center border border-primary/20 bg-primary/5 px-3 py-1.5 text-primary text-sm">
             {selected.size} of {limit} products selected
@@ -156,7 +161,11 @@ export const ProductSelector = ({
       </Motion.Item>
 
       <Motion.Item className="flex-1 overflow-hidden border-accent-foreground border-y px-8">
-        <div className="h-full overflow-auto border-accent-foreground border-x">
+        <div className="relative h-full overflow-auto border-accent-foreground border-x">
+          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <div className="bg-background-rich">
             <Table>
               <TableHeader>
@@ -297,9 +306,12 @@ export const ProductSelector = ({
       </Motion.Item>
 
       <Motion.Item className="px-8">
-        <div className="flex w-full items-center justify-between border-accent-foreground border-x p-6">
+        <div className="relative flex w-full items-center justify-between border-accent-foreground border-x p-6">
+          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <Button
-            variant="outline"
             color="accent"
             type="button"
             render={<Link href="/onboarding/connect" />}
@@ -307,7 +319,6 @@ export const ProductSelector = ({
             <Back />
           </Button>
           <Button
-            variant="flat"
             color="primary"
             type="button"
             onClick={handleNext}

@@ -2,6 +2,7 @@ import { EyeClosedIcon, RobotIcon, SearchIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import Link from "next/link";
+import { Plus } from "@/components/plus";
 import Product from "@/public/images/product.png";
 
 const story = [
@@ -27,9 +28,16 @@ const story = [
 
 export const BlindSpot = () => (
   <section>
-    <div className="border-accent-foreground border-y p-4 md:p-8">
+    <div className="relative border-accent-foreground border-y p-4 md:p-8">
+      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+      <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+      <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
       <div className="mb-3 flex items-center gap-2 md:mb-5">
-        <span className="size-6 animate-pulse rounded-full bg-primary" />
+        <span className="relative flex size-4 shrink-0 items-center justify-center">
+          <span className="absolute size-full animate-ping rounded-full bg-primary opacity-40" />
+          <span className="relative size-2.5 rounded-full bg-primary" />
+        </span>
         <span className="font-light text-primary text-xl">The Blind Spot</span>
       </div>
       <h2 className="mb-3 max-w-3xl font-body text-3xl text-foreground leading-none tracking-tight md:mb-5 md:text-6xl">
@@ -45,12 +53,17 @@ export const BlindSpot = () => (
         </span>
       </p>
     </div>
-    <div className="grid border-accent-foreground border-b bg-background-dimmed md:grid-cols-3">
+    <div className="relative grid border-accent-foreground border-b bg-background-dimmed md:grid-cols-3">
+      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
       {story.map(({ icon: Icon, step, description }, index) => (
         <div
           key={step}
-          className={`flex flex-col gap-3 border-accent-foreground border-b p-4 md:border-b-0 md:p-8 ${index < story.length - 1 ? "md:border-r" : ""}`}
+          className={`relative flex flex-col gap-3 border-accent-foreground border-b p-4 md:border-b-0 md:p-8 ${index < story.length - 1 ? "md:border-r" : ""}`}
         >
+          {index < story.length - 1 && (
+            <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+          )}
           <div className="flex items-center gap-3">
             <span className="font-semibold text-5xl text-primary tabular-nums leading-none">
               {index + 1}
@@ -80,7 +93,6 @@ export const BlindSpot = () => (
             ergonomic design. The perfect companion for your daily commute.
           </p>
           <Button
-            variant="flat"
             color="primary"
             type="button"
             className="w-full p-4 font-medium text-xl"
@@ -174,7 +186,9 @@ export const BlindSpot = () => (
       </div>
     </div>
     <div className="flex h-12 justify-center border-accent-foreground border-b bg-background-dimmed" />
-    <div className="grid border-accent-foreground border-b bg-background-dimmed md:grid-cols-3">
+    <div className="relative grid border-accent-foreground border-b bg-background-dimmed md:grid-cols-3">
+      <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+      <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
       <div className="col-span-2 p-4">
         <p className="font-light text-foreground-dimmed text-lg md:text-2xl">
           Every sale you're losing to a competitor right now, an AI agent made
@@ -183,10 +197,9 @@ export const BlindSpot = () => (
       </div>
       <div className="flex items-center p-6">
         <Button
-          variant="outline"
-          color="accent"
+          color="primary"
           type="button"
-          className="mt-auto w-full border-primary text-primary"
+          className="mt-auto w-full"
           render={<Link href="/sign-up" />}
         >
           See your AI agent score — it's free

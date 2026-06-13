@@ -29,7 +29,6 @@ const workflows = [
       "Turn losing product pages into clearer buying inputs for AI shopping agents and high-intent shoppers.",
     label: "View listing workflow",
     color: "primary",
-    variant: "flat",
   },
   {
     href: "/platforms/shopify",

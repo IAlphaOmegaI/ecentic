@@ -2,6 +2,7 @@ import { InstagramIcon, LinkedinIcon, XTwitterIcon } from "@zenncore/icons";
 import Image from "next/image";
 import Link from "next/link";
 import WordMark from "@/public/images/wordmark.svg";
+import { Plus } from "./plus";
 
 const links = [
   { href: "/features", label: "Features" },
@@ -34,7 +35,11 @@ const socials = [
 
 export const SimpleFooter = () => (
   <footer className="border-accent-foreground">
-    <div className="mx-auto max-w-6xl border-accent-foreground border-x px-8 py-8">
+    <div className="relative mx-auto max-w-6xl border-accent-foreground border-x border-t px-8 py-8">
+      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+      <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+      <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
       <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <Link href="/">
           <Image src={WordMark} alt="écentic" className="h-4 w-auto" />

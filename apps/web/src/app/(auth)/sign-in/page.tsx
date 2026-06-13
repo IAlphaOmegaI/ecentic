@@ -10,6 +10,7 @@ import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import { Fade } from "@/lib/animations";
 import { SignInForm } from "./_components/sign-in-form";
+import { Plus } from "@/components/plus";
 
 const points = [
   "Pick up right where you left off",
@@ -54,7 +55,9 @@ export default () => {
           className="flex flex-1 flex-col overflow-y-auto"
         >
           <Motion.Item className="w-full border-accent-foreground border-b px-8">
-            <div className="flex flex-col gap-4 border-accent-foreground border-x p-6">
+            <div className="relative flex flex-col gap-4 border-accent-foreground border-x p-6">
+              <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+              <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
               <div className="lg:hidden">
                 <Image
                   src="/images/trademark.svg"
@@ -77,16 +80,21 @@ export default () => {
           </Motion.Item>
 
           <Motion.Item className="w-full flex-1 border-accent-foreground border-b px-8">
-            <div className="h-full border-accent-foreground border-x p-6">
+            <div className="relative h-full border-accent-foreground border-x p-6">
+              <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+              <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+              <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+              <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
               <SignInForm />
             </div>
           </Motion.Item>
 
           <Motion.Item className="w-full px-8">
-            <div className="flex flex-row items-center justify-between border-accent-foreground border-x p-6 font-light text-foreground-dimmed">
+            <div className="relative flex flex-row items-center justify-between border-accent-foreground border-x p-6 font-light text-foreground-dimmed">
+              <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+              <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
               Don't have an account?{" "}
               <Button
-                variant="outline"
                 color="accent"
                 type="button"
                 render={<Link href="/sign-up" />}

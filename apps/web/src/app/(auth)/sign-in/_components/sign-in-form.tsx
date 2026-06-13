@@ -179,7 +179,6 @@ export const SignInForm = () => {
           >
             <Button
               type="submit"
-              variant="flat"
               color="primary"
               disabled={isPending}
               className="w-full"
@@ -208,7 +207,6 @@ export const SignInForm = () => {
         >
           <Button
             type="submit"
-            variant="flat"
             color="primary"
             disabled={isPending}
             className="mt-1 flex w-full"

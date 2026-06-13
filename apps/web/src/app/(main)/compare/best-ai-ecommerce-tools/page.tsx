@@ -67,7 +67,6 @@ const internalLinks = [
       "Use the features page if you want the product-led overview before diving into a specific platform or comparison path.",
     label: "Open features page",
     color: "primary",
-    variant: "flat",
   },
   {
     href: "/features/product-listings",

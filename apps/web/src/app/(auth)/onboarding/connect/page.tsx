@@ -4,6 +4,7 @@ import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import Link, { useLinkStatus } from "next/link";
 import { Motion } from "@/components/motion";
+import { Plus } from "@/components/plus";
 import { PlatformGrid } from "./_components/platform-grid";
 
 export default () => (
@@ -13,7 +14,11 @@ export default () => (
     className="flex flex-1 flex-col overflow-hidden"
   >
     <Motion.Item className="w-full border-accent-foreground border-b px-8">
-      <div className="flex flex-col border-accent-foreground border-x p-6">
+      <div className="relative flex flex-col border-accent-foreground border-x p-6">
+        <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+        <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+        <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
         <h2 className="font-medium text-4xl text-foreground">
           Connect your store
         </h2>
@@ -24,15 +29,22 @@ export default () => (
     </Motion.Item>
 
     <Motion.Item className="w-full flex-1 border-accent-foreground border-b px-8">
-      <div className="h-full border-accent-foreground border-x">
+      <div className="relative h-full border-accent-foreground border-x">
+        <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+        <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+        <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
         <PlatformGrid />
       </div>
     </Motion.Item>
 
     <Motion.Item className="flex items-center justify-between border-accent-foreground px-8">
-      <div className="flex w-full items-center justify-between border-accent-foreground border-x px-6 py-6">
+      <div className="relative flex w-full items-center justify-between border-accent-foreground border-x px-6 py-6">
+        <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+        <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+        <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
         <Button
-          variant="outline"
           color="accent"
           type="button"
           render={<Link href="/onboarding/products" />}

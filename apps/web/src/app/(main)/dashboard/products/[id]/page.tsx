@@ -110,7 +110,7 @@ const ProductDetailContent = async ({
               <ChevronLeftIcon className="size-4" />
               Back to Products
             </Button>
-            <Button color="accent" render={<Link href="/dashboard/products" />}>
+            <Button color="primary" render={<Link href="/dashboard/products" />}>
               <RadarIcon className="size-4" />
               Run Scan
             </Button>
@@ -126,6 +126,8 @@ const ProductDetailContent = async ({
         <div className="relative mx-8 bg-background-rich">
           <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
           <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
             <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
               <StatLabel
@@ -248,7 +250,11 @@ const ProductDetailContent = async ({
       <SectionGutter />
 
       <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="mx-8 bg-background-rich">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <ProductDetail data={data} />
         </div>
       </div>

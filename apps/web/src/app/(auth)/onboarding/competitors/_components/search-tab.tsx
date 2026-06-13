@@ -91,7 +91,6 @@ export const SearchTab = ({
               />
             </TextField>
             <Button
-              variant="flat"
               color="primary"
               type="button"
               onClick={() => handleSearch()}

@@ -23,7 +23,7 @@ export const NotificationBell = () => (
     >
       <BellIcon className="size-6" />
       {notifications.length > 0 && (
-        <span className="absolute -top-0.5 -right-0.5 flex min-w-[16px] items-center justify-center bg-primary px-1 font-medium text-[10px] text-white leading-4">
+        <span className="absolute -top-0.5 -right-0.5 flex min-w-[16px] items-center justify-center bg-primary px-1 font-medium text-[10px] text-background-rich leading-4">
           {notifications.length}
         </span>
       )}
@@ -36,7 +36,7 @@ export const NotificationBell = () => (
             Notifications
           </span>
           {notifications.length > 0 && (
-            <span className="flex size-5 items-center justify-center bg-primary font-medium text-[10px] text-white">
+            <span className="flex size-5 items-center justify-center bg-primary font-medium text-[10px] text-background-rich">
               {notifications.length}
             </span>
           )}

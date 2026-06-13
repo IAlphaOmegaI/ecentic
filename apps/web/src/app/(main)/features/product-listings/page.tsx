@@ -28,7 +28,6 @@ const nextSteps = [
       "Connect products, benchmark competitors, and publish approved listing updates back into Shopify.",
     label: "Open Shopify page",
     color: "primary",
-    variant: "flat",
   },
   {
     href: "/platforms/woocommerce",

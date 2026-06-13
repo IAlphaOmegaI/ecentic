@@ -47,7 +47,7 @@ export default () => (
             >
               <LastUpdated />
             </Suspense>
-            <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
+            <h1 className="mt-3 font-bold text-3xl text-foreground-rich tracking-[-0.02em]">
               Overview
             </h1>
             <p className="mt-1 text-foreground-dimmed text-sm">
@@ -62,6 +62,8 @@ export default () => (
         <div className="relative mx-8 bg-background-rich">
           <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
           <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <Suspense fallback={<StatsSkeleton />}>
             <StatCards />
           </Suspense>
@@ -71,7 +73,11 @@ export default () => (
       <SectionGutter />
 
       <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="mx-8 bg-background-rich">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <Suspense fallback={<ChartSkeleton />}>
             <Performance />
           </Suspense>
@@ -81,7 +87,11 @@ export default () => (
       <SectionGutter />
 
       <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="mx-8 bg-background-rich">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <Suspense fallback={<TableSkeleton />}>
             <TopProducts />
           </Suspense>
@@ -91,7 +101,11 @@ export default () => (
       <SectionGutter />
 
       <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="mx-8 bg-background-rich">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <Suspense fallback={<CompetitorTableSkeleton />}>
             <TopCompetitors />
           </Suspense>
@@ -101,7 +115,11 @@ export default () => (
       <SectionGutter />
 
       <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="mx-8 bg-background-rich">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <Suspense fallback={<TableSkeleton />}>
             <AgentVisitsPanel />
           </Suspense>

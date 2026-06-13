@@ -99,7 +99,6 @@ export const WooCommerceForm = () => {
     >
       <Button
         type="submit"
-        variant="flat"
         color="primary"
         disabled={isPending}
         className="mt-2 w-full"

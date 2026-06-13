@@ -10,10 +10,9 @@ type Props = {
   plan: "compete" | "dominate";
   className?: string;
   children: React.ReactNode;
-  variant?: "outline" | "flat";
 };
 
-export const PricingCTA = ({ plan, className, children, variant }: Props) => {
+export const PricingCTA = ({ plan, className, children }: Props) => {
   const router = useRouter();
   const toast = useToastManager();
 
@@ -38,8 +37,7 @@ export const PricingCTA = ({ plan, className, children, variant }: Props) => {
 
   return (
     <Button
-      variant={variant ?? "outline"}
-      color={variant === "flat" ? "primary" : "accent"}
+      color={plan === "dominate" ? "accent" : "primary"}
       type="button"
       className={className}
       onClick={() => handleClick()}

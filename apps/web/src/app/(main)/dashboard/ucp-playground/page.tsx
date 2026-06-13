@@ -13,8 +13,8 @@ export default () => (
               UCP Playground
             </h1>
             <p className="mt-1 text-foreground-dimmed text-sm">
-              Test catalog search, product lookup, and cart operations against
-              any store.
+              Test catalog search, product lookup, cart, and checkout operations
+              against any UCP-compliant store.
             </p>
           </div>
         </div>

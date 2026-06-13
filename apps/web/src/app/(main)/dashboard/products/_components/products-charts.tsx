@@ -16,10 +16,10 @@ import {
 import { Spring } from "@/lib/animations";
 
 const modelBarColors: Record<string, string> = {
-  "GPT-4": "bg-blue-500",
-  Claude: "bg-orange-500",
-  Gemini: "bg-green-500",
-  Perplexity: "bg-teal-500",
+  "GPT-4": "bg-primary",
+  Claude: "bg-warning",
+  Gemini: "bg-success",
+  Perplexity: "bg-info",
 };
 
 const getLogo = (label: string) => {
@@ -299,26 +299,6 @@ export const ProductsWinRateTrend = ({
             data={chart}
             margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
           >
-            <defs>
-              <linearGradient
-                id="products-win-rate-area"
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1"
-              >
-                <stop
-                  offset="0%"
-                  stopColor="var(--color-primary)"
-                  stopOpacity={0.22}
-                />
-                <stop
-                  offset="100%"
-                  stopColor="var(--color-primary)"
-                  stopOpacity={0}
-                />
-              </linearGradient>
-            </defs>
             <CartesianGrid
               stroke="var(--color-foreground-dimmed)"
               strokeOpacity={0.14}
@@ -368,7 +348,8 @@ export const ProductsWinRateTrend = ({
               dataKey="winRate"
               stroke="var(--color-primary)"
               strokeWidth={1.5}
-              fill="url(#products-win-rate-area)"
+              fill="var(--color-primary)"
+              fillOpacity={0.08}
               dot={false}
               activeDot={{
                 r: 4,

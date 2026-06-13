@@ -6,6 +6,7 @@ import { motion } from "motion/react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Motion } from "@/components/motion";
+import { Plus } from "@/components/plus";
 import { Spring } from "@/lib/animations";
 
 export namespace PrePhase {
@@ -28,9 +29,12 @@ export const PrePhase = ({ children, onRun, isRunning }: PrePhase.Props) => (
     {children}
 
     <Motion.Item className="mt-auto px-8">
-      <div className="flex items-center justify-between border-accent-foreground border-x p-6">
+      <div className="relative flex items-center justify-between border-accent-foreground border-x p-6">
+        <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+        <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+        <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
         <Button
-          variant="outline"
           color="accent"
           type="button"
           render={<Link href="/onboarding/competitors" />}
@@ -39,7 +43,6 @@ export const PrePhase = ({ children, onRun, isRunning }: PrePhase.Props) => (
           Back
         </Button>
         <Button
-          variant="flat"
           color="primary"
           type="button"
           onClick={onRun}

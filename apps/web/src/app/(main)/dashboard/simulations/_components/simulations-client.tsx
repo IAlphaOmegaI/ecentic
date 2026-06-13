@@ -35,10 +35,10 @@ const models = [
 ] as const;
 
 const modelColors: Record<string, string> = {
-  "GPT-4": "text-blue-500",
-  Claude: "text-orange-500",
-  Gemini: "text-green-500",
-  Perplexity: "text-teal-500",
+  "GPT-4": "text-primary",
+  Claude: "text-warning",
+  Gemini: "text-success",
+  Perplexity: "text-info",
   System: "text-foreground-dimmed",
 };
 
@@ -213,7 +213,11 @@ export const SimulationsClient = ({
       <SectionGutter />
 
       <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="mx-8 bg-background-rich">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <div className="border-accent-foreground border-b p-4">
             <SectionKicker>01 — Discovery</SectionKicker>
             <h2 className="mt-2 font-semibold text-foreground-rich text-lg">
@@ -237,7 +241,11 @@ export const SimulationsClient = ({
       <SectionGutter />
 
       <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="mx-8 bg-background-rich">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <div className="flex items-center justify-between border-accent-foreground border-b p-4">
             <div>
               <SectionKicker>02 — Simulation</SectionKicker>

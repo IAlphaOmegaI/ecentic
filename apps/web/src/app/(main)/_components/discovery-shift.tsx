@@ -1,5 +1,6 @@
 import { SearchIcon, StarHandIcon } from "@zenncore/icons";
 import Image from "next/image";
+import { Plus } from "@/components/plus";
 
 const oldResults = [
   {
@@ -18,10 +19,17 @@ const oldResults = [
 ];
 
 export const DiscoveryShift = () => (
-  <section className="border-accent-foreground border-y">
+  <section className="relative border-accent-foreground border-y">
+    <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+    <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+    <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+    <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
     <div className="p-4 md:p-8">
       <div className="mb-3 flex items-center gap-2 md:mb-5">
-        <span className="size-6 animate-pulse rounded-full bg-primary" />
+        <span className="relative flex size-4 shrink-0 items-center justify-center">
+          <span className="absolute size-full animate-ping rounded-full bg-primary opacity-40" />
+          <span className="relative size-2.5 rounded-full bg-primary" />
+        </span>
         <span className="font-light text-primary text-xl">The Shift</span>
       </div>
       <h2 className="mb-3 max-w-3xl font-body text-3xl text-foreground leading-none tracking-tight md:mb-5 md:text-6xl">
@@ -35,9 +43,13 @@ export const DiscoveryShift = () => (
       </p>
     </div>
 
-    <div className="grid border-accent-foreground border-t bg-background-dimmed md:grid-cols-2">
+    <div className="relative grid border-accent-foreground border-t bg-background-dimmed md:grid-cols-2">
+      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
       {/* Before — the search era */}
-      <div className="flex flex-col border-accent-foreground border-b p-4 md:border-r md:border-b-0 md:p-8">
+      <div className="relative flex flex-col border-accent-foreground border-b p-4 md:border-r md:border-b-0 md:p-8">
+        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+        <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden md:flex" />
         <div className="mb-4 flex items-center gap-2 text-foreground-dimmed">
           <SearchIcon className="size-5" />
           <span className="font-light text-lg">Before — the search era</span>

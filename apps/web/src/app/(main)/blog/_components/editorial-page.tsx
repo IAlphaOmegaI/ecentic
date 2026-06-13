@@ -3,6 +3,7 @@ import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import Link from "next/link";
+import { Plus } from "@/components/plus";
 import type { ReactNode } from "react";
 import { Navbar } from "@/components/navbar";
 import { SimpleFooter } from "@/components/simple-footer";
@@ -114,16 +115,41 @@ export namespace EditorialLayout {
 export const EditorialSplitSection = ({
   left,
   right,
+  thumbnail,
   className,
   leftClassName,
   rightClassName,
 }: EditorialSplitSection.Props) => (
   <div className={cn("border-accent-foreground border-b", className)}>
-    <div className="mx-auto grid max-w-6xl grid-cols-1 gap-px border-accent-foreground border-x bg-accent-foreground md:grid-cols-[5fr_8fr]">
+    <div className="relative mx-auto grid max-w-6xl grid-cols-1 gap-px border-accent-foreground border-x bg-accent-foreground md:grid-cols-[5fr_8fr]">
+      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+      <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2 hidden md:flex" />
+      <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden md:flex" />
       <div
-        className={cn("flex flex-col bg-background-dimmed p-8", leftClassName)}
+        className={cn(
+          "relative flex flex-col overflow-hidden p-8",
+          thumbnail ? "bg-neutral-900" : "bg-background-dimmed",
+          leftClassName,
+        )}
+        style={
+          thumbnail
+            ? {
+                backgroundImage: `url(${thumbnail})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }
+            : undefined
+        }
       >
-        {left}
+        {thumbnail && (
+          <div className="absolute inset-0 bg-black/60" />
+        )}
+        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+        <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden md:flex" />
+        <div className="relative z-10 flex flex-1 flex-col">
+          {left}
+        </div>
       </div>
       <div className={cn("bg-background p-8", rightClassName)}>{right}</div>
     </div>
@@ -134,6 +160,7 @@ export namespace EditorialSplitSection {
   export type Props = {
     left: ReactNode;
     right: ReactNode;
+    thumbnail?: string;
     className?: string;
     leftClassName?: string;
     rightClassName?: string;
@@ -146,11 +173,14 @@ export const EditorialFooter = ({
   secondary,
 }: EditorialFooter.Props) => (
   <div className="border-accent-foreground border-b">
-    <div className="mx-auto flex max-w-6xl flex-col gap-4 border-accent-foreground border-x px-8 py-8 md:flex-row md:items-center md:justify-between">
+    <div className="relative mx-auto flex max-w-6xl flex-col gap-4 border-accent-foreground border-x px-8 py-8 md:flex-row md:items-center md:justify-between">
+      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+      <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+      <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
       <div className="flex flex-wrap items-center gap-4">
         {secondary && (
           <Button
-            variant="outline"
             color="accent"
             render={<Link href={secondary.href} />}
           >
@@ -161,7 +191,6 @@ export const EditorialFooter = ({
 
         {primary && (
           <Button
-            variant="flat"
             color="primary"
             render={<Link href={primary.href} />}
           >

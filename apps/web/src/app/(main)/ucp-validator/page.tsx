@@ -1,4 +1,5 @@
-import { Motion } from "@/components/motion";
+import { Navbar } from "@/components/navbar";
+import { Plus } from "@/components/plus";
 import { SimpleFooter } from "@/components/simple-footer";
 import { UcpValidatorForm } from "./_components/ucp-validator-form";
 
@@ -21,21 +22,28 @@ const checks = [
 ] as const;
 
 export default () => (
-  <Motion.Stagger
-    stagger={0.08}
-    delay={0.1}
-    className="mx-auto flex min-h-screen w-full max-w-6xl flex-col"
-  >
-    <Motion.Item className="border-accent-foreground border-b px-4 sm:px-8">
-      <div className="grid border-accent-foreground border-x lg:grid-cols-[minmax(0,1fr)_320px]">
-        <div className="px-6 py-8 sm:px-8 sm:py-10">
-          <p className="font-medium text-primary text-xs uppercase tracking-[0.24em]">
+  <main className="relative flex min-h-screen flex-col">
+    <div className="relative -left-[calc(50vw-50%)] w-screen">
+      <div className="mx-auto max-w-6xl border-accent-foreground border-x">
+        <Navbar />
+      </div>
+    </div>
+
+    <section className="relative -left-[calc(50vw-50%)] w-screen border-accent-foreground border-b">
+      <div className="relative mx-auto max-w-6xl border-accent-foreground border-x">
+        <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+        <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+        <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+
+        <div className="px-8 pt-16 pb-12 md:pb-16">
+          <p className="font-medium text-primary text-sm uppercase tracking-[0.2em]">
             Universal Commerce Protocol
           </p>
-          <h1 className="mt-4 font-medium text-4xl text-foreground sm:text-5xl">
+          <h1 className="mt-4 max-w-3xl font-body text-5xl text-foreground leading-tight md:text-7xl">
             UCP Validator
           </h1>
-          <p className="mt-3 max-w-3xl font-light text-foreground-dimmed text-lg sm:text-2xl">
+          <p className="mt-5 max-w-2xl font-light text-foreground-dimmed text-xl leading-relaxed">
             Check whether a storefront publishes a valid{" "}
             <span className="text-foreground">Universal Commerce Profile</span>{" "}
             at{" "}
@@ -46,34 +54,37 @@ export default () => (
           </p>
         </div>
 
-        <div className="border-accent-foreground border-t bg-background-dimmed p-6 lg:border-t-0 lg:border-l">
-          <p className="font-medium text-foreground text-sm">
-            What this validator checks
-          </p>
-          <div className="mt-4 space-y-4">
-            {checks.map((check) => (
-              <div
-                key={check.title}
-                className="border-accent-foreground border-t pt-4 first:border-t-0 first:pt-0"
-              >
-                <p className="font-medium text-foreground text-sm">
-                  {check.title}
-                </p>
-                <p className="mt-1 font-light text-foreground-dimmed text-sm">
-                  {check.description}
-                </p>
-              </div>
-            ))}
-          </div>
+        <div className="relative grid border-accent-foreground border-t md:grid-cols-3">
+          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+          {checks.map((check, index) => (
+            <div
+              key={check.title}
+              className={`relative p-6 md:p-8 ${
+                index < checks.length - 1
+                  ? "border-accent-foreground border-b md:border-b-0 md:border-r"
+                  : ""
+              }`}
+            >
+              {index < checks.length - 1 && (
+                <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+              )}
+              <p className="font-medium text-foreground">{check.title}</p>
+              <p className="mt-2 font-light text-foreground-dimmed text-sm leading-relaxed">
+                {check.description}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
-    </Motion.Item>
+    </section>
 
-    <Motion.Item className="border-accent-foreground border-b px-4 sm:px-8">
-      <div className="border-accent-foreground border-x">
+    <section className="relative -left-[calc(50vw-50%)] w-screen">
+      <div className="mx-auto max-w-6xl border-accent-foreground border-x">
         <UcpValidatorForm />
       </div>
-    </Motion.Item>
+    </section>
+
     <SimpleFooter />
-  </Motion.Stagger>
+  </main>
 );

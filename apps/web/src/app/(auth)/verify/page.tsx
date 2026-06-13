@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link, { useLinkStatus } from "next/link";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
+import { Plus } from "@/components/plus";
 import { Fade } from "@/lib/animations";
 
 const points = [
@@ -40,7 +41,9 @@ export default () => {
           className="flex flex-1 flex-col overflow-y-auto"
         >
           <Motion.Item className="w-full border-accent-foreground border-b px-8">
-            <div className="flex flex-col gap-4 border-accent-foreground border-x p-6">
+            <div className="relative flex flex-col gap-4 border-accent-foreground border-x p-6">
+              <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+              <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
               <div className="lg:hidden">
                 <Image
                   src="/images/trademark.svg"
@@ -63,7 +66,11 @@ export default () => {
           </Motion.Item>
 
           <Motion.Item className="w-full flex-1 border-accent-foreground border-b px-8">
-            <div className="flex h-full flex-col items-center justify-center gap-6 border-accent-foreground border-x p-6">
+            <div className="relative flex h-full flex-col items-center justify-center gap-6 border-accent-foreground border-x p-6">
+              <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+              <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+              <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+              <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
               <BellIcon className="size-24 text-primary" />
               <div className="flex flex-col items-center gap-2 text-center">
                 <p className="font-medium text-2xl text-primary">
@@ -79,7 +86,11 @@ export default () => {
           </Motion.Item>
 
           <Motion.Item className="w-full border-accent-foreground border-b px-8">
-            <div className="flex flex-col gap-2 border-accent-foreground border-x p-6 font-light text-foreground-dimmed">
+            <div className="relative flex flex-col gap-2 border-accent-foreground border-x p-6 font-light text-foreground-dimmed">
+              <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+              <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+              <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+              <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
               <p>
                 The link will expire in 24 hours. If it expires, you can request
                 a new one by signing up again.
@@ -88,10 +99,11 @@ export default () => {
           </Motion.Item>
 
           <Motion.Item className="w-full px-8">
-            <div className="flex items-center justify-between border-accent-foreground border-x p-6 font-light text-foreground-dimmed">
+            <div className="relative flex items-center justify-between border-accent-foreground border-x p-6 font-light text-foreground-dimmed">
+              <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+              <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
               <p>Want to use a different email?</p>
               <Button
-                variant="outline"
                 color="accent"
                 type="button"
                 render={<Link href="/sign-up" />}

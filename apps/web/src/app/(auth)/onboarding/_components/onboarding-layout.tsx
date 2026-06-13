@@ -11,6 +11,7 @@ import { cn } from "@zenncore/utils";
 import { AnimatePresence, motion } from "motion/react";
 import { usePathname } from "next/navigation";
 import { Onboarding } from "@/components/onboarding";
+import { Plus } from "@/components/plus";
 import { Spring } from "@/lib/animations";
 
 const steps = [
@@ -150,7 +151,11 @@ export const OnboardingLayout = ({
 
       <main className="flex h-full flex-1 flex-col overflow-hidden bg-background">
         <div className="flex items-center justify-center border-accent-foreground border-b px-8">
-          <div className="mx-auto flex w-full items-center justify-center gap-0 border-accent-foreground border-x py-2">
+          <div className="relative mx-auto flex w-full items-center justify-center gap-0 border-accent-foreground border-x py-2">
+            <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+            <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+            <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+            <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
             {steps.map((step, index) => {
               const isCompleted = index < current;
               const isCurrent = index === current;
