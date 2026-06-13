@@ -14,7 +14,7 @@ import {
 import { useToastManager } from "@zenncore/web/components/toast";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
-import { useCurrentUser } from "@/components/auth-context";
+import { useCurrentUser } from "@/context/auth";
 import * as Shopify from "@/server/app/integration/shopify";
 
 /**

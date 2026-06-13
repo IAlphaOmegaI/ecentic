@@ -39,4 +39,4 @@ export const GET = () => {
 };
 
 export const POST = () => methodNotImplemented("POST");
-export const PUT = () => methodNotImplemented("PUT");
+export const PUT = () => methodNotImplemented("PUT"); 
