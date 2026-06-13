@@ -296,6 +296,12 @@ const AgentEra = () => {
                   Best overall. Industry-leading noise cancellation, excellent
                   sound, all-day comfort.
                 </p>
+                <button
+                  type="button"
+                  className="mt-1 w-fit rounded-full bg-primary px-3 py-1 font-medium text-white text-xs transition-opacity hover:opacity-90"
+                >
+                  Buy now — $348
+                </button>
               </div>
             </motion.div>
           )}
