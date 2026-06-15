@@ -36,7 +36,9 @@ export namespace PreviewCardTrigger {
 export const PreviewCardPositioner = ({
   container,
   keepMounted,
-  sideOffset = 8,
+  sideOffset = 4,
+  align="center",
+  alignOffset=4,
   className,
   classList,
   ...props
@@ -50,6 +52,8 @@ export const PreviewCardPositioner = ({
       {/* <PreviewCardPrimitive.Backdrop /> */}
       <PreviewCardPrimitive.Positioner
         sideOffset={sideOffset}
+        align={align}
+        alignOffset={alignOffset}
         className={createClassName(className, classList?.positioner)}
         {...props}
       />

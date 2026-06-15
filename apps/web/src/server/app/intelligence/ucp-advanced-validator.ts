@@ -3,8 +3,6 @@ import * as z from "zod";
 // TODO: Implement UCP Advanced Validator (for free validator use ucp-js sdk)
 // write advanced zod schemas for the UCP profile for the best ucp compatibility
 
-// TODO: add proper response ucp validation (example: https://ucp.dev/2026-04-08/schemas/ucp.json#/$defs/response_order_schema)
-
 const _LATEST_UCP_VERSION = "2026-04-08";
 const UCP_VERSION_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 const UCP_REVERSE_DOMAIN_NAME_REGEX = /^[a-z][a-z0-9]*(?:\.[a-z][a-z0-9_]*)+$/;
@@ -13,6 +11,56 @@ const UCP_REVERSE_DOMAIN_NAME_REGEX = /^[a-z][a-z0-9]*(?:\.[a-z][a-z0-9_]*)+$/;
 // config: {
 //   webhook_url: "https://platform.example.com/webhooks/ucp/orders";
 // }
+
+const versionSchema = (error = "Version must be in YYYY-MM-DD format") =>
+  z
+    .string()
+    .regex(UCP_VERSION_REGEX, error)
+    .describe("Version in YYYY-MM-DD format.");
+
+const reverseDomainNameSchema = (
+  error = "Reverse-domain name must be in reverse-domain format {reverse-domain}.{service} (e.g. dev.ucp.shopping)",
+) =>
+  z
+    .string()
+    .regex(UCP_REVERSE_DOMAIN_NAME_REGEX, error)
+    .describe(
+      "Reverse-domain identifier used for collision-safe namespacing of capabilities, services, handlers, eligibility claims, and extension-contributed keys. Must contain at least two dot-separated segments (e.g., 'dev.ucp.shopping.checkout', 'com.example.loyalty_gold').",
+    );
+
+const versionConstraintSchema = z
+  .looseObject({
+    min: versionSchema(
+      "Version constraint min must be in YYYY-MM-DD format",
+    ).describe("Minimum required version (inclusive)."),
+    max: versionSchema("Version constraint max must be in YYYY-MM-DD format")
+      .optional()
+      .describe(
+        "Maximum compatible version (inclusive). When absent, no upper bound.",
+      ),
+  })
+  .refine(
+    (constraint) =>
+      constraint.max === undefined || constraint.max >= constraint.min,
+    { error: "version constraint max must be >= min", path: ["max"] },
+  )
+  .describe("Version range requirement with minimum and optional maximum.");
+
+const requiresSchema = z
+  .object({
+    protocol: versionConstraintSchema
+      .optional()
+      .describe("Required protocol version."),
+    capabilities: z
+      .record(reverseDomainNameSchema(), versionConstraintSchema)
+      .optional()
+      .describe(
+        "Required capability versions, keyed by reverse-domain name. Keys must be a subset of the extension's declared capability names.",
+      ),
+  })
+  .describe(
+    "Version requirements for extension schemas. Declares minimum (and optionally maximum) protocol and capability versions needed for correct operation.",
+  );
 
 export const ucpMCPError = z.object({
   code: z.number().int().describe("The error type that occurred."),
@@ -55,6 +103,39 @@ export const ucpMCPResponseSchema = z
   ])
   .describe("A response to a request, containing either the result or error.");
 
+const httpsUrlSchema = z.url({
+  protocol: /^https$/,
+  hostname: z.regexes.domain,
+  error: "url must be a valid HTTPS URL",
+});
+
+const entitySchema = z
+  .object({
+    version: versionSchema(),
+    // TODO: suggest
+    spec: httpsUrlSchema
+      .optional()
+      .describe("URL to human-readable specification document."),
+    // TODO: suggest
+    schema: httpsUrlSchema
+      .optional()
+      .describe("URL to JSON Schema for this entity."),
+    id: z
+      .string()
+      .optional()
+      .describe(
+        "Unique identifier for this entity instance. Used to disambiguate when multiple instances exist.",
+      ),
+    // TODO: specify
+    config: z
+      .record(z.string(), z.unknown())
+      .optional()
+      .describe(
+        "Entity-specific configuration. Structure defined by each entity's schema.",
+      ),
+  })
+  .describe("Shared foundation for all UCP entities.");
+
 // dev.ucp.* → ucp.dev, com.example.* → example.com, dev.shopify.* → shopify.dev
 const namespaceAuthorityHostname = (namespaceName: string) => {
   const segments = namespaceName.split(".");
@@ -81,37 +162,10 @@ const urlOriginMatchesNamespaceAuthority = (
   return authority !== null && hostname === authority;
 };
 
-const httpsUrlSchema = z.url({
-  protocol: /^https$/,
-  hostname: z.regexes.domain,
-  error: "url must be a valid HTTPS URL",
-});
-
-const supportedVersionsSchema = z.record(
-  z
-    .string()
-    .regex(
-      UCP_VERSION_REGEX,
-      "supported_versions must be YYYY-MM-DD protocol version strings",
-    ),
-  httpsUrlSchema,
-);
-
-const serviceNameSchema = z
-  .string()
-  .regex(
-    UCP_REVERSE_DOMAIN_NAME_REGEX,
-    "Service name must use reverse-domain format {reverse-domain}.{service} (e.g. dev.ucp.shopping)",
-  );
-
-const serviceSchemaUrlSchema = z
-  .url({
-    protocol: /^https$/,
-    hostname: z.regexes.domain,
-    error: "schema must be a valid HTTPS URL",
-  })
+const supportedVersionsSchema = z
+  .record(versionSchema(), httpsUrlSchema)
   .describe(
-    "URL to JSON Schema defining this entity's structure and payloads.",
+    "Previous protocol versions this business supports, mapped to profile URIs. Businesses that support older protocol versions SHOULD advertise each version and link to its profile. Each URI points to a complete, self-contained profile for that version. When omitted, only version is supported.",
   );
 
 const serviceEndpointSchema = z
@@ -126,182 +180,152 @@ const serviceEndpointSchema = z
   )
   .describe("Endpoint URL for this transport binding.");
 
-const commonServiceSchema = z.looseObject({
-  version: z
-    .string()
-    .regex(UCP_VERSION_REGEX, "Entity version must be in YYYY-MM-DD format")
-    .describe("Entity version in YYYY-MM-DD format."),
-  spec: z.string().describe("URL to human-readable specification document."),
-  endpoint: serviceEndpointSchema,
-  id: z
-    .string()
-    .optional()
-    .describe(
-      "Unique identifier for this entity instance. Used to disambiguate when multiple instances exist.",
-    ),
-  schema: serviceSchemaUrlSchema,
-  // TODO: specify
-  config: z
-    .record(z.string(), z.unknown())
-    .optional()
-    .describe(
-      "Entity-specific configuration. Structure defined by each entity's schema.",
-    ),
-});
-
-const serviceSchema = z.discriminatedUnion("transport", [
-  commonServiceSchema.extend({
-    transport: z.union([z.literal("mcp"), z.literal("rest")]),
-  }),
-  commonServiceSchema.extend({
-    transport: z.literal("a2a"),
-    schema: serviceSchemaUrlSchema.optional(),
-  }),
-  commonServiceSchema.extend({
-    transport: z.literal("embedded"),
-    endpoint: serviceEndpointSchema.optional(),
-  }),
-]);
-
-const servicesSchema = z
-  .record(serviceNameSchema, z.array(serviceSchema))
-  .superRefine((services, context) => {
-    for (const [namespaceName, entries] of Object.entries(services)) {
-      const authority = namespaceAuthorityHostname(namespaceName);
-
-      if (!authority) {
-        context.addIssue({
-          code: "custom",
-          path: [namespaceName],
-          message: `Service namespace "${namespaceName}" must include a valid reverse-domain authority`,
-        });
-      }
-
-      for (const entry of entries) {
-        const urlProperties = (["spec", "schema"] as const).entries();
-
-        for (const [index, field] of urlProperties) {
-          const value = entry[field];
-
-          if (
-            typeof value === "string" &&
-            !urlOriginMatchesNamespaceAuthority(value, namespaceName)
-          ) {
-            context.addIssue({
-              code: "custom",
-              path: [namespaceName, index, field],
-              message: `${field} origin must match namespace authority (${authority}) for "${namespaceName}"`,
-            });
-          }
-        }
-      }
-    }
-  });
-
-// there are some capabilities that are with 3 segments (dev.shopify.catalog)
-const capabilityNameSchema = z
-  .string()
-  .regex(
-    UCP_REVERSE_DOMAIN_NAME_REGEX,
-    "Capability name must use reverse-domain format {reverse-domain}.{service}.{capability}",
+const embeddedTransportConfigSchema = z
+  .looseObject({
+    delegate: z
+      .array(z.string())
+      .describe(
+        "Delegations the business allows. At service-level, declares available delegations. In UCP responses, confirms accepted delegations for this session.",
+      ),
+    color_scheme: z
+      .array(z.enum(["light", "dark"]))
+      .describe(
+        "Color schemes the business supports. Hosts use ec_color_scheme query parameter to request a scheme from this list.",
+      ),
+  })
+  .describe(
+    "Per-session configuration for embedded transport binding. Allows businesses to vary EP availability and delegations based on cart contents, agent authorization, or policy.",
   );
 
-const capabilitySchema = z.looseObject({
-  version: z
-    .string()
-    .regex(UCP_VERSION_REGEX, "Capability version must be in YYYY-MM-DD format")
-    .describe("Entity version in YYYY-MM-DD format."),
-  spec: httpsUrlSchema.describe(
-    "URL to human-readable specification document.",
-  ),
-  schema: httpsUrlSchema.describe(
-    "URL to JSON Schema defining this entity's structure and payloads.",
-  ),
-  id: z
-    .string()
-    .optional()
-    .describe(
-      "Unique identifier for this entity instance. Used to disambiguate when multiple instances exist.",
-    ),
-  extends: z
-    .union([capabilityNameSchema, z.array(capabilityNameSchema)])
-    .optional()
-    .describe(
-      "Parent capability(s) this extends. Present for extensions, absent for root capabilities. Use array for multi-parent extensions.",
-    ),
-  // TODO: specify
-  requires: z.record(z.string(), z.unknown()).optional(),
-  // TODO: specify
-  config: z
-    .record(z.string(), z.unknown())
-    .optional()
-    .describe(
-      "Entity-specific configuration. Structure defined by each entity's schema.",
-    ),
+const baseServiceSchema = entitySchema.extend({
+  // TODO: specify config
+  // TODO: suggest specifying for all bindings
+  // TODO: suggest specifying for rest, mcp and embedded transport bindings
+  endpoint: serviceEndpointSchema,
 });
+
+const businessServiceSchema = z
+  .discriminatedUnion("transport", [
+    baseServiceSchema.extend({
+      transport: z.enum(["mcp", "rest"]),
+    }),
+    baseServiceSchema.extend({
+      transport: z.literal("a2a"),
+    }),
+    baseServiceSchema.extend({
+      transport: z.literal("embedded"),
+      endpoint: serviceEndpointSchema.optional(),
+      config: embeddedTransportConfigSchema.optional(),
+    }),
+  ])
+  .describe(
+    "Service binding for a specific transport for business/merchant configuration. Each transport binding is a separate entry in the service array.",
+  );
+
+const businessServicesSchema = z
+  .record(reverseDomainNameSchema(), z.array(businessServiceSchema))
+  .describe("Service registry keyed by reverse-domain name.");
+//
+//   for (const [namespaceName, entries] of Object.entries(services)) {
+//     const authority = namespaceAuthorityHostname(namespaceName);
+
+//     if (!authority) {
+//       context.addIssue({
+//         code: "custom",
+//         path: [namespaceName],
+//         message: `Service namespace "${namespaceName}" must include a valid reverse-domain authority`,
+//       });
+//     }
+
+//     for (const entry of entries) {
+//       const urlProperties = (["spec", "schema"] as const).entries();
+
+//       for (const [index, field] of urlProperties) {
+//         const value = entry[field];
+
+//         if (
+//           typeof value === "string" &&
+//           !urlOriginMatchesNamespaceAuthority(value, namespaceName)
+//         ) {
+//           context.addIssue({
+//             code: "custom",
+//             path: [namespaceName, index, field],
+//             message: `${field} origin must match namespace authority (${authority}) for "${namespaceName}"`,
+//           });
+//         }
+//       }
+//     }
+//   }
+// });
+
+const capabilitySchema = entitySchema
+  .extend({
+    extends: z
+      .union([reverseDomainNameSchema(), z.array(reverseDomainNameSchema())])
+      .optional()
+      .describe("Parent capability(s) this extends."),
+    // TODO: replace with discriminated union ("extends")
+    requires: requiresSchema
+      .optional()
+      .describe(
+        "Version requirements declared by this extension. Only meaningful when extends is present.",
+      ),
+  })
+  .describe(
+    "Schema for business/merchant level for UCP capabilities and extensions. May include business-specific config overrides.",
+  );
 
 const capabilitiesSchema = z
-  .record(capabilityNameSchema, z.array(capabilitySchema))
-  .superRefine((capabilities, context) => {
-    for (const [namespaceName, entries] of Object.entries(capabilities)) {
-      const authority = namespaceAuthorityHostname(namespaceName);
+  .record(reverseDomainNameSchema(), z.array(capabilitySchema))
+  .describe("Capability registry keyed by reverse-domain name.");
+// .superRefine((capabilities, context) => {
+//   for (const [namespaceName, entries] of Object.entries(capabilities)) {
+//     const authority = namespaceAuthorityHostname(namespaceName);
 
-      if (!authority) {
-        context.addIssue({
-          code: "custom",
-          path: [namespaceName],
-          message: `Capability namespace "${namespaceName}" must include a valid reverse-domain authority`,
-        });
-        continue;
-      }
+//     if (!authority) {
+//       context.addIssue({
+//         code: "custom",
+//         path: [namespaceName],
+//         message: `Capability namespace "${namespaceName}" must include a valid reverse-domain authority`,
+//       });
+//       continue;
+//     }
 
-      const urlProperties = (["spec", "schema"] as const).entries();
+//     const urlProperties = (["spec", "schema"] as const).entries();
 
-      for (const entry of entries) {
-        for (const [index, field] of urlProperties) {
-          const value = entry[field];
+//     for (const entry of entries) {
+//       for (const [index, field] of urlProperties) {
+//         const value = entry[field];
 
-          if (
-            typeof value === "string" &&
-            !urlOriginMatchesNamespaceAuthority(value, namespaceName)
-          ) {
-            context.addIssue({
-              code: "custom",
-              path: [namespaceName, index, field],
-              message: `${field} origin must match namespace authority (${authority}) for "${namespaceName}"`,
-            });
-          }
-        }
-      }
-    }
-  });
+//         if (
+//           typeof value === "string" &&
+//           !urlOriginMatchesNamespaceAuthority(value, namespaceName)
+//         ) {
+//           context.addIssue({
+//             code: "custom",
+//             path: [namespaceName, index, field],
+//             message: `${field} origin must match namespace authority (${authority}) for "${namespaceName}"`,
+//           });
+//         }
+//       }
+//     }
+//   }
+// });
 
-const paymentHandlerSchema = z.looseObject({
-  id: z.string(),
-  version: z
-    .string()
-    .regex(UCP_VERSION_REGEX, "UCP version must be in YYYY-MM-DD format"),
-  spec: z.url({
-    protocol: /^https$/,
-    hostname: z.regexes.domain,
-    error: "spec must be a valid HTTPS URL",
-  }),
-  schema: z.url({
-    protocol: /^https$/,
-    hostname: z.regexes.domain,
-    error: "schema must be a valid HTTPS URL",
-  }),
-  available_instruments: z
-    .array(
-      z.looseObject({
-        type: z.string(),
-        constraints: z.record(z.string(), z.array(z.string())),
-      }),
-    )
-    .optional(),
-  // TODO: specify
-  config: z.record(z.string(), z.unknown()),
-});
+const paymentHandlerSchema = entitySchema
+  .extend({
+    id: z.string().describe("Unique payment handler identifier."),
+    available_instruments: z
+      .array(z.looseObject({ type: z.string() }))
+      .min(1)
+      .optional()
+      .describe(
+        "Instrument types this handler supports. When absent, all instruments are available.",
+      ),
+  })
+  .describe(
+    "Business declaration for payment handlers. Handlers define how payment instruments are processed. May include partial config state required for discovery.",
+  );
 
 const signingKeySchema = z.object({
   kid: z.string(),
@@ -315,32 +339,25 @@ const signingKeySchema = z.object({
   e: z.string().optional(),
 });
 
-export const discoveryProfileSchema = z.looseObject({
-  ucp: z
-    .object({
-      // version: z.regex(
-      //   UCP_VERSION_REGEX,
-      //   "UCP version must be in YYYY-MM-DD format",
-      // ),
+export const businessProfileSchema = z
+  .looseObject({
+    ucp: z.object({
+      // version: versionSchema,
       version: z
         .literal("2026-04-08")
         .describe("UCP version in YYYY-MM-DD format."),
-      services: servicesSchema.describe(
-        "Service registry keyed by reverse-domain name.",
-      ),
-      payment_handlers: z.record(z.string(), z.array(paymentHandlerSchema)),
-      supported_versions: supportedVersionsSchema
-        .optional()
-        .describe(
-          "Previous protocol versions this business supports, mapped to profile URIs. Businesses that support older protocol versions SHOULD advertise each version and link to its profile. Each URI points to a complete, self-contained profile for that version. When omitted, only version is supported.",
-        ),
-      capabilities: capabilitiesSchema
-        .optional()
-        .describe("Capability registry keyed by reverse-domain name."),
-    })
-    .describe("Payment handler registry keyed by reverse-domain name."),
-  signing_keys: z.array(signingKeySchema).optional(),
-});
+      services: businessServicesSchema,
+      payment_handlers: z
+        .record(reverseDomainNameSchema(), z.array(paymentHandlerSchema))
+        .describe("Payment handler registry keyed by reverse-domain name."),
+      supported_versions: supportedVersionsSchema.optional(),
+      capabilities: capabilitiesSchema.optional(),
+    }),
+    signing_keys: z.array(signingKeySchema).optional(),
+  })
+  .describe(
+    "UCP protocol metadata for business/merchant-level configuration for discovery profiles and responses. Uses slim schema pattern with context-specific required fields.",
+  );
 
 // .superRefine((value, ctx) => {
 //   // TODO: fetch if store has previous versions that are not in the supported_versions list
@@ -441,43 +458,57 @@ const signalNameSchema = z.union([
   z
     .literal("dev.ucp.user_agent")
     .describe("Client's HTTP User-Agent header or equivalent."),
-  z
-    .string()
-    .regex(
-      UCP_REVERSE_DOMAIN_NAME_REGEX,
-      "Signal name must use reverse-domain format {reverse-domain}.{signal}",
-    )
-    .describe(
-      "Signal name must use reverse-domain format {reverse-domain}.{signal}",
-    ),
+  reverseDomainNameSchema(
+    "Signal name must use reverse-domain format {reverse-domain}.{signal}",
+  ).describe(
+    "Reverse-domain identifier (e.g., dev.ucp.buyer_ip, com.example.device_id).",
+  ),
 ]);
 
 const signalsSchema = z
+  .object({
+    "dev.ucp.buyer_ip": z
+      .string()
+      .optional()
+      .describe("Client's IP address (IPv4 or IPv6)."),
+    "dev.ucp.user_agent": z
+      .string()
+      .optional()
+      .describe("Client's HTTP User-Agent header or equivalent."),
+  })
   // TODO: specify entry value
-  .record(signalNameSchema, z.unknown())
+  .and(z.record(signalNameSchema, z.unknown()))
   .describe(
     "Environment data provided by the platform to support authorization and abuse prevention. Values MUST NOT be buyer-asserted claims — platforms provide signals based on direct observation or independently verifiable third-party attestations. All signal keys MUST use reverse-domain naming to ensure provenance and prevent collisions when multiple extensions contribute to the shared namespace.",
   );
 
 // TODO: specify
 const attributionSchema = z
-  .record(z.string(), z.unknown())
-  .optional()
+  .record(
+    z.string(),
+    z
+      .string()
+      .describe(
+        "URL-style parameter value, encoded as a string. Numeric or boolean values MUST be string-encoded as they would be in a URL query string.",
+      ),
+  )
   .describe(
     "Platform-emitted referral and conversion-event context — campaign identifiers, click IDs, source/medium markers, etc. The same parameters platforms communicate via URL query parameters in browser-based flows.",
   );
 
-const priceSchema = z.object({
-  amount: z
-    .number()
-    .int()
-    .nonnegative()
-    .describe("Amount in ISO 4217 minor units. Use 0 for free items."),
-  currency: z
-    .string()
-    .regex(/^[A-Z]{3}$/, "currency must be a 3-letter ISO 4217 code")
-    .describe("ISO 4217 currency code (e.g., 'USD', 'EUR', 'GBP')."),
-});
+const priceSchema = z
+  .object({
+    amount: z
+      .number()
+      .int()
+      .nonnegative()
+      .describe("Amount in ISO 4217 minor units. Use 0 for free items."),
+    currency: z
+      .string()
+      .regex(/^[A-Z]{3}$/, "currency must be a 3-letter ISO 4217 code")
+      .describe("ISO 4217 currency code (e.g., 'USD', 'EUR', 'GBP')."),
+  })
+  .describe("Price with explicit currency.");
 
 const priceRangeSchema = z
   .object({
@@ -491,24 +522,31 @@ const priceRangeSchema = z
   .refine((range) => range.min.amount <= range.max.amount, {
     error: "price range min must not exceed max",
     path: ["min", "amount"],
-  });
+  })
+  .describe(
+    "A price range representing minimum and maximum values (e.g., across product variants).",
+  );
 
-const commonMessageSchema = z.object({
-  content: z.string().describe("Human-readable message."),
-  content_type: z
-    .enum(["plain", "markdown"])
-    .default("plain")
-    .describe("Content format."),
-  path: z
-    .string()
-    .optional()
-    .describe(
-      "RFC 9535 JSONPath to the component the message refers to (e.g., $.items[1]).",
-    ),
-});
+const baseMessageSchema = z
+  .object({
+    content: z.string().describe("Human-readable message."),
+    content_type: z
+      .enum(["plain", "markdown"])
+      // TODO: zod should exclude field frm required array in json schema if default is provided
+      .default("plain")
+      .optional()
+      .describe("Content format."),
+    path: z
+      .string()
+      .optional()
+      .describe(
+        "RFC 9535 JSONPath to the component the message refers to (e.g., $.items[1]).",
+      ),
+  })
+  .describe("Container for error, warning, or info messages.");
 
 export const messageSchema = z.discriminatedUnion("type", [
-  commonMessageSchema.extend({
+  baseMessageSchema.extend({
     type: z.literal("error").describe("Error message."),
     code: z
       .string()
@@ -526,7 +564,7 @@ export const messageSchema = z.discriminatedUnion("type", [
         "Reflects the resource state and recommended action. 'recoverable': platform can resolve by modifying inputs and retrying via API. 'requires_buyer_input': merchant requires information their API doesn't support collecting programmatically (checkout incomplete). 'requires_buyer_review': buyer must authorize before order placement due to policy, regulatory, or entitlement rules. 'unrecoverable': no valid resource exists to act on, retry with new resource or inputs. Errors with 'requires_*' severity contribute to 'status: requires_escalation'.",
       ),
   }),
-  commonMessageSchema.extend({
+  baseMessageSchema.extend({
     type: z.literal("warning").describe("Message type discriminator."),
     code: z
       .string()
@@ -535,6 +573,8 @@ export const messageSchema = z.discriminatedUnion("type", [
       ),
     presentation: z
       .string()
+      // TODO: zod should exclude field frm required array in json schema if default is provided
+      .default("notice")
       .optional()
       .describe(
         "Rendering contract for this warning. 'notice' (default): platform MUST display, MAY dismiss. 'disclosure': platform MUST display in proximity to the path-referenced component, MUST NOT hide or auto-dismiss. See specification for full contract.",
@@ -552,7 +592,7 @@ export const messageSchema = z.discriminatedUnion("type", [
         "Reference URL for more information (e.g., regulatory site, registry entry, policy page).",
       ),
   }),
-  commonMessageSchema.extend({
+  baseMessageSchema.extend({
     type: z.literal("info").describe("Informational message."),
     code: z
       .string()
@@ -563,16 +603,24 @@ export const messageSchema = z.discriminatedUnion("type", [
   }),
 ]);
 
-const descriptionSchema = z.object({
-  plain: z.string().optional().describe("Plain text content."),
-  html: z
-    .string()
-    .optional()
-    .describe(
-      "	HTML-formatted content. Security: Platforms MUST sanitize before rendering—strip scripts, event handlers, and untrusted elements. Treat all rich text as untrusted input.",
-    ),
-  markdown: z.string().optional().describe("Markdown-formatted content."),
-});
+const descriptionSchema = z
+  .object({
+    plain: z.string().optional().describe("Plain text content."),
+    html: z
+      .string()
+      .optional()
+      .describe(
+        "HTML-formatted content. Security: Platforms MUST sanitize before rendering—strip scripts, event handlers, and untrusted elements. Treat all rich text as untrusted input.",
+      ),
+    markdown: z.string().optional().describe("Markdown-formatted content."),
+  })
+  .refine(
+    (description) =>
+      description.plain !== undefined ||
+      description.html !== undefined ||
+      description.markdown !== undefined,
+    "description must include at least one of: plain, html, markdown",
+  );
 
 const categorySchema = z.object({
   value: z
@@ -586,61 +634,60 @@ const categorySchema = z.object({
     ),
 });
 
-const contextSchema = z.looseObject({
-  address_country: z
-    .string()
-    .optional()
-    .describe(
-      "The country. Recommended to be in 2-letter ISO 3166-1 alpha-2 format, for example 'US'. For backward compatibility, a 3-letter ISO 3166-1 alpha-3 country code such as 'SGP' or a full country name such as 'Singapore' can also be used. Optional hint for market context (currency, availability, pricing)—higher-resolution data (e.g., shipping address) supersedes this value.",
-    ),
-  address_region: z
-    .string()
-    .optional()
-    .describe(
-      "The region in which the locality is, and which is in the country. For example, California or another appropriate first-level Administrative division. Optional hint for progressive localization—higher-resolution data (e.g., shipping address) supersedes this value.",
-    ),
-  postal_code: z
-    .string()
-    .optional()
-    .describe(
-      "The postal code. For example, 94043. Optional hint for regional refinement—higher-resolution data (e.g., shipping address) supersedes this value.",
-    ),
-  intent: z
-    .string()
-    .optional()
-    .describe(
-      "Background context describing buyer's intent (e.g., 'looking for a gift under $50', 'need something durable for outdoor use'). Informs relevance, recommendations, and personalization.",
-    ),
-  language: z
-    .string()
-    .optional()
-    .describe(
-      "Preferred language for content. Use IETF BCP 47 language tags (e.g., 'en', 'fr-CA', 'zh-Hans'). For REST, equivalent to Accept-Language header—platforms SHOULD fall back to Accept-Language when this field is absent; when provided, overrides Accept-Language. Businesses MAY return content in a different language if unavailable.",
-    ),
-  currency: z
-    .string()
-    .optional()
-    .describe(
-      "Preferred currency (ISO 4217, e.g., 'EUR', 'USD'). Businesses determine presentment currency from context and authoritative signals; this hint MAY inform selection in multi-currency markets. Also serves as the denomination for price filter values — platforms SHOULD include this field when sending price filters. Response prices include explicit currency confirming the resolution.",
-    ),
-  eligibility: z
-    .array(
-      z
-        .string()
-        .regex(
-          UCP_REVERSE_DOMAIN_NAME_REGEX,
+const contextSchema = z
+  .looseObject({
+    address_country: z
+      .string()
+      .optional()
+      .describe(
+        "The country. Recommended to be in 2-letter ISO 3166-1 alpha-2 format, for example 'US'. For backward compatibility, a 3-letter ISO 3166-1 alpha-3 country code such as 'SGP' or a full country name such as 'Singapore' can also be used. Optional hint for market context (currency, availability, pricing)—higher-resolution data (e.g., shipping address) supersedes this value.",
+      ),
+    address_region: z
+      .string()
+      .optional()
+      .describe(
+        "The region in which the locality is, and which is in the country. For example, California or another appropriate first-level Administrative division. Optional hint for progressive localization—higher-resolution data (e.g., shipping address) supersedes this value.",
+      ),
+    postal_code: z
+      .string()
+      .optional()
+      .describe(
+        "The postal code. For example, 94043. Optional hint for regional refinement—higher-resolution data (e.g., shipping address) supersedes this value.",
+      ),
+    intent: z
+      .string()
+      .optional()
+      .describe(
+        "Background context describing buyer's intent (e.g., 'looking for a gift under $50', 'need something durable for outdoor use'). Informs relevance, recommendations, and personalization.",
+      ),
+    language: z
+      .string()
+      .optional()
+      .describe(
+        "Preferred language for content. Use IETF BCP 47 language tags (e.g., 'en', 'fr-CA', 'zh-Hans'). For REST, equivalent to Accept-Language header—platforms SHOULD fall back to Accept-Language when this field is absent; when provided, overrides Accept-Language. Businesses MAY return content in a different language if unavailable.",
+      ),
+    currency: z
+      .string()
+      .optional()
+      .describe(
+        "Preferred currency (ISO 4217, e.g., 'EUR', 'USD'). Businesses determine presentment currency from context and authoritative signals; this hint MAY inform selection in multi-currency markets. Also serves as the denomination for price filter values — platforms SHOULD include this field when sending price filters. Response prices include explicit currency confirming the resolution.",
+      ),
+    eligibility: z
+      .array(
+        reverseDomainNameSchema(
           "Buyer claims about eligible benefits such as loyalty membership, payment instrument perks, and similar. Recognized claims MAY inform the Business response (e.g., member-only product availability, adjusted pricing in catalog, provisional discounts at cart or checkout). Businesses MUST ignore unrecognized values without error. Values MUST use reverse-domain naming (e.g., 'com.example.loyalty_gold', 'org.school.student') and MUST be non-identifying.",
         ),
-    )
-    .refine(
-      (values) => new Set(values).size === values.length,
-      "eligibility must not contain duplicate values",
-    )
-    .optional(),
-});
+      )
+      .refine(
+        (values) => new Set(values).size === values.length,
+        "eligibility must not contain duplicate values",
+      )
+      .optional(),
+  })
+  .describe(
+    "Provisional buyer signals for relevance and localization—not authoritative data. Businesses SHOULD use these values when verified inputs (e.g., shipping address) are absent, and MAY ignore or down-rank them if inconsistent with higher-confidence signals (authenticated account, risk detection) or regulatory constraints (export controls). Eligibility and policy enforcement MUST occur at checkout time using binding transaction data. Context SHOULD be non-identifying and can be disclosed progressively—coarse signals early, finer resolution as the session progresses. Higher-resolution data (shipping address, billing address) supersedes context.",
+  );
 
-// price_filter.json: min/max are plain amounts (integers, ISO 4217 minor units in context.currency),
-// NOT price objects with currency — the denomination is context.currency
 const priceFilterSchema = z
   .object({
     min: z
@@ -674,9 +721,11 @@ const searchFiltersSchema = z
       ),
     price: priceFilterSchema.optional(),
   })
-  .describe("Filter criteria for narrowing search results.");
+  .describe(
+    "Filter criteria to narrow search results. All specified filters combine with AND logic.",
+  );
 
-const catalogPaginationRequestSchema = z
+const paginationRequestSchema = z
   .object({
     cursor: z
       .string()
@@ -686,74 +735,39 @@ const catalogPaginationRequestSchema = z
       .number()
       .int()
       .positive()
+      // TODO: zod should exclude field frm required array in json schema if default is provided
+      .default(10)
       .optional()
       .describe(
         "Requested page size. Implementations MAY clamp to a lower maximum.",
       ),
   })
-  .describe("Pagination parameters for requests.");
-
-const catalogPaginationResponseSchema = z
-  .object({
-    has_next_page: z.boolean().describe("Whether more results are available."),
-    cursor: z
-      .string()
-      .optional()
-      .describe(
-        "Cursor to fetch the next page of results. MUST be present when has_next_page is true.",
-      ),
-    total_count: z
-      .number()
-      .int()
-      .nonnegative()
-      .optional()
-      .describe("Total number of matching items, if available."),
-  })
-  .refine(
-    (pagination) =>
-      !(pagination.has_next_page && pagination.cursor === undefined),
-    {
-      error: "cursor MUST be present when has_next_page is true",
-      path: ["cursor"],
-    },
-  )
-  .describe("Pagination information in responses.");
+  .describe("Cursor-based Pagination parameters for list operation requests.");
 
 export const searchCatalogRequestSchema = z.object({
   query: z.string().optional().describe("Free-text search query."),
-  context: contextSchema
-    .optional()
-    .describe(
-      "Provisional buyer signals for relevance and localization—not authoritative data. Businesses SHOULD use these values when verified inputs (e.g., shipping address) are absent, and MAY ignore or down-rank them if inconsistent with higher-confidence signals (authenticated account, risk detection) or regulatory constraints (export controls). Eligibility and policy enforcement MUST occur at checkout time using binding transaction data. Context SHOULD be non-identifying and can be disclosed progressively—coarse signals early, finer resolution as the session progresses. Higher-resolution data (shipping address, billing address) supersedes context.",
-    ),
-  signals: signalsSchema
-    .optional()
-    .describe(
-      "Environment data provided by the platform to support authorization and abuse prevention. Values MUST NOT be buyer-asserted claims — platforms provide signals based on direct observation or independently verifiable third-party attestations. All signal keys MUST use reverse-domain naming to ensure provenance and prevent collisions when multiple extensions contribute to the shared namespace.",
-    ),
-  filters: searchFiltersSchema
-    .optional()
-    .describe(
-      "Filter criteria to narrow search results. All specified filters combine with AND logic.",
-    ),
-  pagination: catalogPaginationRequestSchema.optional(),
+  context: contextSchema.optional(),
+  signals: signalsSchema.optional(),
+  filters: searchFiltersSchema.optional(),
+  pagination: paginationRequestSchema.optional(),
 });
 
-const selectedOptionSchema = z.object({
-  name: z.string().describe("Option name (e.g., 'Size')."),
-  label: z.string().describe("Selected option label (e.g., 'Large')."),
-  id: z
-    .string()
-    .optional()
-    .describe(
-      "Optional option value identifier from option_value.id. When present, the server SHOULD use it for matching; name and label remain required for display.",
-    ),
-});
+const selectedOptionSchema = z
+  .object({
+    name: z.string().describe("Option name (e.g., 'Size')."),
+    label: z.string().describe("Selected option label (e.g., 'Large')."),
+    id: z
+      .string()
+      .optional()
+      .describe(
+        "Optional option value identifier from option_value.id. When present, the server SHOULD use it for matching; name and label remain required for display.",
+      ),
+  })
+  .describe("A specific option selection on a variant (e.g., Size: Large).");
 
 export const mediaSchema = z.object({
   type: z
-    .enum(["image", "video", "model_3d"])
-    .or(z.string())
+    .string()
     .describe("Media type. Well-known values: image, video, model_3d."),
   url: z.url().describe("URL to the media resource."),
   alt_text: z
@@ -779,11 +793,13 @@ export const ratingSchema = z
     value: z.number().nonnegative().describe("Average rating value."),
     scale_max: z
       .number()
-      .min(1)
+      .min(1) // .positive()
       .describe("Maximum value on the rating scale (e.g., 5 for 5-star)."),
     scale_min: z
       .number()
       .nonnegative()
+      // TODO: zod should exclude field frm required array in json schema if default is provided
+      .default(1)
       .optional()
       .describe("Minimum value on the rating scale (e.g., 1 for 1-5 stars)."),
     count: z
@@ -808,29 +824,15 @@ export const ratingSchema = z
     },
   );
 
-// écentic Enhancement:
-// Each variant in a lookup_catalog response carries inputs[] correlating it back
-// to the request identifiers that resolved to it. Spec: variants without an
-// inputs entry MUST NOT appear in lookup responses.
-const variantInputSchema = z.object({
-  id: z
-    .string()
-    .describe(
-      "The identifier from the lookup request that resolved to this variant.",
-    ),
-  match: z
-    .string()
-    .optional()
-    .describe(
-      "How the request identifier resolved. Well-known: 'exact' (input directly identifies this variant), 'featured' (server selected as representative).",
-    ),
-});
-
 // TODO: écentic Enhancement:
 // Spec defines `available`/`exists` semantics for option values; the variant-level
 const variantAvailabilitySchema = z
   .looseObject({
-    available: z.boolean(),
+    available: z
+      .boolean()
+      .describe(
+        "Whether this variant can be purchased. See status for fulfillment details.",
+      ),
     status: z
       .string()
       .optional()
@@ -920,12 +922,6 @@ export const variantSchema = z.looseObject({
   availability: variantAvailabilitySchema
     .optional()
     .describe("Variant availability for purchase."),
-  inputs: z
-    .array(variantInputSchema)
-    .optional()
-    .describe(
-      "Request identifiers that resolved to this variant. Required in lookup_catalog responses.",
-    ),
   options: z
     .array(selectedOptionSchema)
     .optional()
@@ -951,14 +947,27 @@ export const variantSchema = z.looseObject({
       "Business-defined custom data extending the standard variant model.",
     ),
   seller: z
-    .looseObject({
+    .object({
       name: z.string().optional().describe("Seller display name."),
       links: z
         .array(
           z.looseObject({
-            type: z.string(),
-            url: z.url(),
-            title: z.string().optional(),
+            type: z
+              .string()
+              .describe(
+                "Type of link. Well-known values: `privacy_policy`, `terms_of_service`, `refund_policy`, `shipping_policy`, `faq`. Consumers SHOULD handle unknown values gracefully by displaying them using the `title` field or omitting the link.",
+              ),
+            url: z
+              .url()
+              .describe(
+                "The actual URL pointing to the content to be displayed.",
+              ),
+            title: z
+              .string()
+              .optional()
+              .describe(
+                "Optional display text for the link. When provided, use this instead of generating from type.",
+              ),
           }),
         )
         .optional()
@@ -1121,12 +1130,37 @@ const refineProductIntegrity = (
 };
 
 // écentic Enhancement:
+// Each variant in a lookup_catalog response carries inputs[] correlating it back
+// to the request identifiers that resolved to it. Spec: variants without an
+// inputs entry MUST NOT appear in lookup responses.
+const variantInputSchema = z
+  .object({
+    id: z
+      .string()
+      .describe(
+        "The identifier from the lookup request that resolved to this variant.",
+      ),
+    match: z
+      .string()
+      .optional()
+      .describe(
+        "How the request identifier resolved. Well-known: 'exact' (input directly identifies this variant), 'featured' (server selected as representative).",
+      ),
+  })
+  .describe(
+    "Maps a request identifier to the variant it resolved to, with match semantics.",
+  );
+
+// écentic Enhancement:
 // Lookup responses are stricter: every variant MUST carry an inputs[] entry
 // correlating it back to the request identifiers that resolved to it.
 const lookupVariantSchema = variantSchema.extend({
   inputs: z
     .array(variantInputSchema)
-    .min(1, "lookup response variants MUST carry at least one inputs entry"),
+    .min(1, "lookup response variants MUST carry at least one inputs entry")
+    .describe(
+      "Which request identifiers resolved to this variant, and how. Each entry maps a request ID to its match type.",
+    ),
 });
 
 const lookupProductSchema = productSchema
@@ -1148,10 +1182,108 @@ const detailProductSchema = productSchema
   })
   .superRefine(refineProductIntegrity);
 
+const serviceResponseSchema = z
+  .discriminatedUnion("transport", [
+    baseServiceSchema.extend({
+      transport: z.enum(["mcp", "rest", "a2a"]),
+    }),
+    baseServiceSchema.extend({
+      transport: z.literal("embedded"),
+      config: embeddedTransportConfigSchema.optional(),
+    }),
+  ])
+  .describe(
+    "Service binding in API responses. Includes per-resource transport configuration via typed config.",
+  );
+
+const paymentHandlersResponseSchema = z.record(
+  reverseDomainNameSchema(),
+  z.array(
+    paymentHandlerSchema.describe(
+      "Handler reference in responses. May include full config state for runtime usage of the handler.",
+    ),
+  ),
+);
+
+const baseUCPResponseSchema = z.looseObject({
+  version: versionSchema(),
+  status: z
+    .enum(["success", "error"])
+    .optional()
+    .describe("Application-level status. Defaults to success."),
+  services: z
+    .record(reverseDomainNameSchema(), z.array(serviceResponseSchema))
+    .optional(),
+  capabilities: z
+    .record(
+      reverseDomainNameSchema(),
+      z.array(
+        capabilitySchema.describe(
+          "Capability reference in responses. Only name/version required to confirm active capabilities.",
+        ),
+      ),
+    )
+    .optional(),
+  payment_handlers: paymentHandlersResponseSchema.optional(),
+});
+
+const ucpCatalogResponseSchema = baseUCPResponseSchema.describe(
+  "UCP metadata for catalog responses.",
+);
+
+const ucpCartResponseSchema = baseUCPResponseSchema.describe(
+  "UCP metadata for cart responses. No payment handlers needed pre-checkout.",
+);
+
+const ucpCheckoutResponseSchema = baseUCPResponseSchema
+  .extend({
+    payment_handlers: paymentHandlersResponseSchema.describe(
+      "Payment handler registry. Required in checkout responses.",
+    ),
+  })
+  .describe("UCP metadata for checkout responses.");
+
+const ucpOrderResponseSchema = baseUCPResponseSchema.describe(
+  "UCP metadata for order responses. No payment handlers needed post-purchase.",
+);
+
+const basePaginationResponseSchema = z.object({
+  cursor: z
+    .string()
+    .optional()
+    .describe(
+      "Cursor to fetch the next page of results. MUST be present when has_next_page is true.",
+    ),
+  total_count: z
+    .number()
+    .int()
+    .nonnegative()
+    .optional()
+    .describe("Total number of matching items, if available."),
+});
+
+const paginationResponseSchema = z.discriminatedUnion("has_next_page", [
+  basePaginationResponseSchema.extend({
+    has_next_page: z
+      .literal(true)
+      .describe("Whether more results are available."),
+    cursor: z
+      .string()
+      .describe(
+        "Cursor to fetch the next page of results. MUST be present when has_next_page is true.",
+      ),
+  }),
+  basePaginationResponseSchema.extend({
+    has_next_page: z
+      .literal(false)
+      .describe("Whether more results are available."),
+  }),
+]);
+
 export const searchCatalogResponseSchema = z.object({
-  ucp: z.any().describe("UCP metadata for catalog responses."),
+  ucp: ucpCatalogResponseSchema,
   products: z.array(productSchema),
-  pagination: catalogPaginationResponseSchema.optional(),
+  pagination: paginationResponseSchema.optional(),
   messages: z
     .array(messageSchema)
     .optional()
@@ -1182,11 +1314,11 @@ export const lookupCatalogRequestSchema = z.object({
 });
 
 export const lookupCatalogResponseSchema = z.object({
-  ucp: z.any().describe("UCP metadata for catalog responses."),
+  ucp: ucpCatalogResponseSchema,
   products: z
     .array(lookupProductSchema)
     .describe(
-      "Products matching the requested identifiers. May contain fewer items if some identifiers not found, or more if identifiers match multiple products.",
+      "Products matching the search criteria. May contain fewer items if some identifiers not found, or more if identifiers match multiple products.",
     ),
   messages: z
     .array(messageSchema)
@@ -1196,50 +1328,55 @@ export const lookupCatalogResponseSchema = z.object({
     ),
 });
 
-export const getProductRequestSchema = z.object({
-  id: z
-    .string()
-    .min(1, "identifier must be non-empty")
-    .describe(
-      "Product or variant identifier. Implementations MUST support product ID and variant ID.",
-    ),
-  selected: z
-    .array(selectedOptionSchema)
-    .refine(
-      (selected) =>
-        new Set(selected.map((option) => option.name)).size === selected.length,
-      "each option name may appear at most once in selected",
-    )
-    .optional()
-    .describe(
-      "Partial or full option selections for interactive variant narrowing. When provided, response option values include availability signals (available, exists) relative to these selections.",
-    ),
-  preferences: z
-    .array(z.string())
-    .refine(
-      (preferences) => new Set(preferences).size === preferences.length,
-      "preferences must not contain duplicate option names",
-    )
-    .optional()
-    .describe(
-      "Option names in relaxation priority order. When no exact variant matches all selections, the server drops options from the end of this list first. E.g., ['Color', 'Size'] keeps Color and relaxes Size.",
-    ),
-  filters: searchFiltersSchema
-    .optional()
-    .describe(
-      "Filter criteria to narrow returned variants. All specified filters combine with AND logic.",
-    ),
-  context: contextSchema
-    .optional()
-    .describe(
-      "Provisional buyer signals for relevance and localization—not authoritative data. Businesses SHOULD use these values when verified inputs (e.g., shipping address) are absent, and MAY ignore or down-rank them if inconsistent with higher-confidence signals (authenticated account, risk detection) or regulatory constraints (export controls). Eligibility and policy enforcement MUST occur at checkout time using binding transaction data. Context SHOULD be non-identifying and can be disclosed progressively—coarse signals early, finer resolution as the session progresses. Higher-resolution data (shipping address, billing address) supersedes context.",
-    ),
-  signals: signalsSchema.optional(),
-  attribution: attributionSchema.optional(),
-});
+export const getProductRequestSchema = z
+  .object({
+    id: z
+      .string()
+      .min(1, "identifier must be non-empty")
+      .describe(
+        "Product or variant identifier. Implementations MUST support product ID and variant ID.",
+      ),
+    selected: z
+      .array(selectedOptionSchema)
+      .refine(
+        (selected) =>
+          new Set(selected.map((option) => option.name)).size ===
+          selected.length,
+        "each option name may appear at most once in selected",
+      )
+      .optional()
+      .describe(
+        "Partial or full option selections for interactive variant narrowing. When provided, response option values include availability signals (available, exists) relative to these selections.",
+      ),
+    preferences: z
+      .array(z.string())
+      .refine(
+        (preferences) => new Set(preferences).size === preferences.length,
+        "preferences must not contain duplicate option names",
+      )
+      .optional()
+      .describe(
+        "Option names in relaxation priority order. When no exact variant matches all selections, the server drops options from the end of this list first. E.g., ['Color', 'Size'] keeps Color and relaxes Size.",
+      ),
+    filters: searchFiltersSchema
+      .optional()
+      .describe(
+        "Filter criteria to narrow returned variants. All specified filters combine with AND logic.",
+      ),
+    context: contextSchema
+      .optional()
+      .describe(
+        "Provisional buyer signals for relevance and localization—not authoritative data. Businesses SHOULD use these values when verified inputs (e.g., shipping address) are absent, and MAY ignore or down-rank them if inconsistent with higher-confidence signals (authenticated account, risk detection) or regulatory constraints (export controls). Eligibility and policy enforcement MUST occur at checkout time using binding transaction data. Context SHOULD be non-identifying and can be disclosed progressively—coarse signals early, finer resolution as the session progresses. Higher-resolution data (shipping address, billing address) supersedes context.",
+      ),
+    signals: signalsSchema.optional(),
+    attribution: attributionSchema.optional(),
+  })
+  .describe(
+    "Request body for single-product retrieval. Supports interactive variant narrowing via selected and preferences.",
+  );
 
 export const getProductResponseSchema = z.object({
-  ucp: z.any().describe("UCP metadata for catalog responses."),
+  ucp: ucpCatalogResponseSchema,
   product: detailProductSchema.describe(
     "The requested product with full detail. Singular — this is a single-resource operation.",
   ),
@@ -1266,50 +1403,117 @@ export const cartItemSchema = z.looseObject({
   image_url: z.url().optional().describe("Product image URI."),
 });
 
+const totalLinesSchema = z
+  .array(
+    z
+      .looseObject({
+        display_text: z
+          .string()
+          .describe("Human-readable label for this sub-line."),
+        amount: z
+          .number()
+          .int()
+          .describe("Signed amount in ISO 4217 minor units."),
+      })
+      .describe("Sub-line entry. Additional metadata MAY be included."),
+  )
+  .optional()
+  .describe(
+    "Optional itemized breakdown. The parent entry is always rendered; lines are supplementary. Sum of line amounts MUST equal the parent entry amount.",
+  );
+
+const totalDisplayTextSchema = z
+  .string()
+  .optional()
+  .describe(
+    "Text to display against the amount. Should reflect appropriate method (e.g., 'Shipping', 'Delivery').",
+  );
+
 export const cartTotalSchema = z
-  .object({
-    type: z
-      .string()
-      .describe(
-        "Cost category. Well-known values: subtotal, items_discount, discount, fulfillment, tax, fee, total. Businesses MAY use additional values.",
-      ),
-    amount: z
-      .number()
-      .int()
-      .describe(
-        "Monetary amount in the currency's minor unit as defined by ISO 4217. Refer to the currency's exponent to determine minor-to-major ratio (e.g., 2 for USD, 0 for JPY, 3 for KWD). May be negative — the sign is intrinsic to the value (e.g., discounts are negative, charges are positive).",
-      ),
-    display_text: z
-      .string()
-      .optional()
-      .describe(
-        "Text to display against the amount. Should reflect appropriate method (e.g., 'Shipping', 'Delivery').",
-      ),
-  })
+  .union([
+    z.discriminatedUnion("type", [
+      z.object({
+        type: z.literal("subtotal"),
+        amount: z.number().int().nonnegative().describe("Amount in ISO 4217 minor units. Must be non-negative."),
+        display_text: totalDisplayTextSchema,
+        lines: totalLinesSchema,
+      }),
+      z.object({
+        type: z.literal("items_discount"),
+        amount: z.number().int().negative().describe("Amount in ISO 4217 minor units. Must be negative."),
+        display_text: totalDisplayTextSchema,
+        lines: totalLinesSchema,
+      }),
+      z.object({
+        type: z.literal("discount"),
+        amount: z.number().int().negative().describe("Amount in ISO 4217 minor units. Must be negative."),
+        display_text: totalDisplayTextSchema,
+        lines: totalLinesSchema,
+      }),
+      z.object({
+        type: z.literal("fulfillment"),
+        amount: z.number().int().nonnegative().describe("Amount in ISO 4217 minor units. Must be non-negative."),
+        display_text: totalDisplayTextSchema,
+        lines: totalLinesSchema,
+      }),
+      z.object({
+        type: z.literal("tax"),
+        amount: z.number().int().nonnegative().describe("Amount in ISO 4217 minor units. Must be non-negative."),
+        display_text: totalDisplayTextSchema,
+        lines: totalLinesSchema,
+      }),
+      z.object({
+        type: z.literal("fee"),
+        amount: z.number().int().nonnegative().describe("Amount in ISO 4217 minor units. Must be non-negative."),
+        display_text: totalDisplayTextSchema,
+        lines: totalLinesSchema,
+      }),
+      z.object({
+        type: z.literal("total"),
+        amount: z
+          .number()
+          .int()
+          .describe(
+            "Monetary amount in the currency's minor unit as defined by ISO 4217. Refer to the currency's exponent to determine minor-to-major ratio (e.g., 2 for USD, 0 for JPY, 3 for KWD). May be negative — the sign is intrinsic to the value (e.g., discounts are negative, charges are positive).",
+          ),
+        display_text: totalDisplayTextSchema,
+        lines: totalLinesSchema,
+      }),
+    ]),
+    z.object({
+      type: z
+        .string()
+        .describe(
+          "Extension cost category. Businesses MAY use additional values beyond the well-known set (subtotal, items_discount, discount, fulfillment, tax, fee, total).",
+        ),
+      amount: z
+        .number()
+        .int()
+        .describe(
+          "Monetary amount in the currency's minor unit as defined by ISO 4217. Refer to the currency's exponent to determine minor-to-major ratio (e.g., 2 for USD, 0 for JPY, 3 for KWD). May be negative — the sign is intrinsic to the value (e.g., discounts are negative, charges are positive).",
+        ),
+      display_text: z
+        .string()
+        .describe(
+          "Required for extension types. Text to display against the amount. Should reflect appropriate method (e.g., 'Shipping', 'Delivery').",
+        ),
+      lines: totalLinesSchema,
+    }),
+  ])
   .superRefine((total, ctx) => {
-    if (
-      ["discount", "items_discount"].includes(total.type) &&
-      total.amount >= 0
-    ) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["amount"],
-        message: `amount must be negative (< 0) for type "${total.type}"`,
-      });
-    }
-    if (
-      ["subtotal", "fulfillment", "tax", "fee"].includes(total.type) &&
-      total.amount < 0
-    ) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["amount"],
-        message: `amount must be non-negative (>= 0) for type "${total.type}"`,
-      });
+    if (total.lines !== undefined) {
+      const linesSum = total.lines.reduce((sum, line) => sum + line.amount, 0);
+      if (linesSum !== total.amount) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["lines"],
+          message: `sum of lines amounts (${linesSum}) must equal parent amount (${total.amount})`,
+        });
+      }
     }
   });
 
-const totalsArraySchema = z
+const totalsSchema = z
   .array(cartTotalSchema)
   .superRefine((totals, ctx) => {
     const subtotalCount = totals.filter((t) => t.type === "subtotal").length;
@@ -1327,7 +1531,7 @@ const totalsArraySchema = z
         message: `totals MUST contain exactly one entry with type "total", found ${totalCount}`,
       });
     }
-  });
+  }).describe("Pricing breakdown provided by the business. MUST contain exactly one subtotal and one total entry. Detail types (tax, fee, discount, fulfillment) may appear multiple times for itemization. Platforms MUST render all entries in order using display_text and amount.");
 
 const cartItemRequestSchema = z.object({
   id: z
@@ -1368,7 +1572,7 @@ export const lineItemSchema = z.looseObject({
     .int()
     .positive()
     .describe("Quantity of the item being purchased."),
-  totals: totalsArraySchema.describe("Line item totals breakdown."),
+  totals: totalsSchema.describe("Line item totals breakdown."),
   parent_id: z
     .string()
     .optional()
@@ -1419,7 +1623,7 @@ const linkSchema = z.object({
 });
 
 export const createCartResponseSchema = z.object({
-  ucp: z.any().describe("UCP metadata for cart responses."),
+  ucp: ucpCartResponseSchema,
   id: z.string().optional().describe("Unique cart identifier."),
   line_items: z.array(lineItemSchema).describe("Cart line items."),
   currency: z
@@ -1427,7 +1631,7 @@ export const createCartResponseSchema = z.object({
     .describe(
       "ISO 4217 currency code. Determined by merchant based on context or geo-IP.",
     ),
-  totals: totalsArraySchema.describe(
+  totals: totalsSchema.describe(
     "Estimated cost breakdown. May be partial if shipping/tax not yet calculable.",
   ),
   context: contextSchema
@@ -1465,7 +1669,7 @@ export const getCartRequestSchema = z.object({
 });
 
 export const getCartResponseSchema = z.object({
-  ucp: z.any().describe("UCP metadata for cart responses."),
+  ucp: ucpCartResponseSchema,
   id: z.string().describe("Unique cart identifier."),
   line_items: z.array(lineItemSchema).describe("Cart line items."),
   currency: z
@@ -1473,7 +1677,7 @@ export const getCartResponseSchema = z.object({
     .describe(
       "ISO 4217 currency code. Determined by merchant based on context or geo-IP.",
     ),
-  totals: totalsArraySchema.describe(
+  totals: totalsSchema.describe(
     "Estimated cost breakdown. May be partial if shipping/tax not yet calculable.",
   ),
   context: contextSchema
@@ -1524,7 +1728,7 @@ export const updateCartRequestSchema = z.object({
 });
 
 export const updateCartResponseSchema = z.object({
-  ucp: z.any().describe("UCP metadata for cart responses."),
+  ucp: ucpCartResponseSchema,
   id: z.string().describe("Unique cart identifier."),
   line_items: z.array(lineItemSchema).describe("Cart line items."),
   currency: z
@@ -1532,7 +1736,7 @@ export const updateCartResponseSchema = z.object({
     .describe(
       "ISO 4217 currency code. Determined by merchant based on context or geo-IP.",
     ),
-  totals: totalsArraySchema.describe(
+  totals: totalsSchema.describe(
     "Estimated cost breakdown. May be partial if shipping/tax not yet calculable.",
   ),
   context: contextSchema
@@ -1570,7 +1774,7 @@ export const cancelCartRequestSchema = z.object({
 });
 
 export const cancelCartResponseSchema = z.object({
-  ucp: z.any().describe("UCP metadata for cart responses."),
+  ucp: ucpCartResponseSchema,
   id: z.string().describe("Unique cart identifier."),
   line_items: z.array(lineItemSchema).describe("Cart line items."),
   currency: z
@@ -1578,7 +1782,7 @@ export const cancelCartResponseSchema = z.object({
     .describe(
       "ISO 4217 currency code. Determined by merchant based on context or geo-IP.",
     ),
-  totals: totalsArraySchema.describe(
+  totals: totalsSchema.describe(
     "Estimated cost breakdown. May be partial if shipping/tax not yet calculable.",
   ),
   context: contextSchema
@@ -1780,7 +1984,7 @@ const retailLocationSchema = z.looseObject({
   id: z.string().describe("Unique location identifier."),
   name: z.string().describe("Location name (e.g., store name)."),
   address: postalAddressSchema.optional().describe("Physical address."),
-});
+}).describe("A pickup location (retail store, locker, etc.).");
 
 const fulfillmentDestinationSchema = z.union([
   shippingDestinationSchema,
@@ -1887,7 +2091,7 @@ const checkoutOrderSchema = z.looseObject({
 });
 
 const checkoutResponseBaseSchema = z.looseObject({
-  ucp: z.any().describe("UCP metadata for checkout responses."),
+  ucp: ucpCheckoutResponseSchema,
   id: z.string().describe("Unique identifier of the checkout session."),
   status: checkoutStatusSchema,
   line_items: z
@@ -1898,7 +2102,7 @@ const checkoutResponseBaseSchema = z.looseObject({
     .describe(
       "ISO 4217 currency code reflecting the merchant's market determination. Derived from address, context, and geo IP—buyers provide signals, merchants determine currency.",
     ),
-  totals: totalsArraySchema.describe(
+  totals: totalsSchema.describe(
     "Different cart totals. Checkout cost breakdown.",
   ),
   links: z
@@ -2116,7 +2320,7 @@ const orderLineItemSchema = z
     quantity: orderLineItemQuantitySchema.describe(
       "Quantity tracking for the line item.",
     ),
-    totals: totalsArraySchema.describe("Line item totals breakdown."),
+    totals: totalsSchema.describe("Line item totals breakdown."),
     status: orderLineItemStatusSchema.describe(
       "Derived status: removed if quantity.total == 0, fulfilled if total > 0 and fulfilled == total, partial if fulfilled > 0, otherwise processing.",
     ),
@@ -2301,7 +2505,7 @@ export const listOrdersRequestSchema = z.object({
 });
 
 export const orderResponseSchema = z.looseObject({
-  ucp: z.any().describe("UCP metadata for order responses."),
+  ucp: ucpOrderResponseSchema,
   id: z.string().describe("Unique order identifier."),
   checkout_id: z
     .string()
@@ -2334,7 +2538,7 @@ export const orderResponseSchema = z.looseObject({
     .describe(
       "ISO 4217 currency code. MUST match the currency from the originating checkout session.",
     ),
-  totals: totalsArraySchema.describe("Different totals for the order."),
+  totals: totalsSchema.describe("Different totals for the order."),
   messages: z
     .array(messageSchema)
     .optional()
@@ -2349,9 +2553,9 @@ export const orderResponseSchema = z.looseObject({
 });
 
 export const listOrdersResponseSchema = z.looseObject({
-  ucp: z.any().describe("UCP metadata for list order responses."),
+  ucp: ucpOrderResponseSchema,
   orders: z.array(orderResponseSchema).describe("List of orders."),
-  pagination: catalogPaginationResponseSchema
+  pagination: paginationResponseSchema
     .optional()
     .describe("Pagination metadata."),
 });
