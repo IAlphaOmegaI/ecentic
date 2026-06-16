@@ -1,10 +1,11 @@
-"use server";
+// Shared UCP tools/discovery library. Consumed by the chat route handler at
+// app/(provider)/api/ucp-playground/route.ts, which owns the streamText call and
+// returns a UI message stream for the useChat client.
 
-import { createMCPClient, type JSONRPCRequest } from "@ai-sdk/mcp";
-import { createStreamableValue } from "@ai-sdk/rsc";
+import type { JSONRPCRequest } from "@ai-sdk/mcp";
 // import { UcpDiscoveryProfileSchema } from "@ucp-js/sdk";
 import { merge, resultify } from "@zenncore/utils";
-import { isLoopFinished, stepCountIs, streamText, tool } from "ai";
+import { isToolOrDynamicToolUIPart, tool, type UIMessage } from "ai";
 import * as z from "zod";
 import {
   businessProfileSchema,
@@ -37,14 +38,17 @@ import {
 } from "./ucp-advanced-validator";
 
 // écentic UCP platform profile
-const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
+export const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
 
-// Gemini 3 requires thoughtSignature replay on multi-step tool loops; the gateway
-// path triggers SDK sentinel injection + warnings. 2.5-flash is sufficient here.
-const PLAYGROUND_MODEL = "google/gemini-3-flash";
+// Gemini 3 attaches a thoughtSignature to each reasoning/tool-call step that must
+// be replayed verbatim on follow-up requests. Once tool calls are rebuilt across
+// turns via convertToModelMessages and routed through the Vercel gateway, that
+// signature gets corrupted → 400 "Corrupted thought signature". 2.5-flash emits no
+// thought signatures and handles the UCP tool flow fine.
+export const PLAYGROUND_MODEL = "google/gemini-2.5-flash";
 
-// Shared by both the automated (runPlayground) and conversational (chatPlayground)
-// system prompts — keep a single source of truth so tool argument shapes never drift.
+// Single source of truth for the tool argument shapes the agent must follow, so
+// they never drift from the tool definitions below.
 const UCP_ARGUMENT_SHAPES = `CRITICAL ARGUMENT SHAPES — follow these exactly, do not add or remove top-level keys:
 
 search_catalog:
@@ -166,7 +170,7 @@ const createUcpMcpFetch = (agentProfileUrl: string): typeof fetch => {
   return Object.assign(ucpMcpFetch, { preconnect: fetch.preconnect });
 };
 
-const gatewayOptions = () => ({
+export const gatewayOptions = () => ({
   gateway: {
     byok: {
       azure: [
@@ -181,21 +185,23 @@ const gatewayOptions = () => ({
 
 export type PlaygroundTransport = "mcp" | "rest";
 
-export type PlaygroundEvent =
-  | {
-      kind: "profile";
-      transport: PlaygroundTransport;
-      endpoint: string;
-      profileUrl: string;
-      agentProfileUrl: string;
-    }
-  | { kind: "text"; text: string }
-  | { kind: "tool_call"; id: string; tool: string; args: unknown }
-  | { kind: "tool_result"; id: string; tool: string; result: unknown }
-  | { kind: "done" }
-  | { kind: "error"; message: string };
+// Custom UI message data parts streamed alongside the assistant reply. `profile`
+// confirms the resolved transport/endpoint once per session; `error` reports a
+// discovery failure before any model turn runs. Shared between the route handler
+// and the useChat client so both agree on the part shapes.
+export type PlaygroundDataParts = {
+  profile: {
+    transport: PlaygroundTransport;
+    endpoint: string;
+    profileUrl: string;
+    agentProfileUrl: string;
+  };
+  error: { message: string };
+};
 
-type ResolvedShoppingService =
+export type PlaygroundUIMessage = UIMessage<never, PlaygroundDataParts>;
+
+export type ResolvedShoppingService =
   | {
       success: true;
       endpoint: string;
@@ -204,13 +210,24 @@ type ResolvedShoppingService =
     }
   | { success: false; error: string };
 
+export const normalizePlaygroundStoreDomain = (storeUrl: string): string =>
+  storeUrl
+    .trim()
+    .replace(/^https?:\/\//, "")
+    .replace(/\/+$/, "");
+
 // Resolve a store's UCP business profile and pick its dev.ucp.shopping endpoint,
 // preferring the MCP transport over REST. Stateless — safe to call per request.
-const resolveShoppingService = async (
+export const resolveShoppingService = async (
   storeUrl: string,
 ): Promise<ResolvedShoppingService> => {
-  const domain = storeUrl.replace(/\/+$/, "");
-  const businessProfileUrl = `${domain}/.well-known/ucp`;
+  const domain = normalizePlaygroundStoreDomain(storeUrl);
+
+  if (!domain) {
+    return { success: false, error: "Please enter a store domain." };
+  }
+
+  const businessProfileUrl = `https://${domain}/.well-known/ucp`;
 
   const discoveryResult = await resultify(() =>
     fetch(businessProfileUrl, {
@@ -458,7 +475,7 @@ const completeCheckoutMcpInputSchema = z.object({
     .describe("Finalization payload under arguments.checkout."),
 });
 
-const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
+export const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
   search_catalog: tool({
     description:
       "Search the store product catalog. Returns matching products with IDs, titles, prices, and variant IDs. Arguments go under the 'catalog' key per UCP spec (only define them if the user asks something that could be done by using the catalog properties).",
@@ -683,7 +700,7 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
 });
 
 // REST transport: same input shapes as MCP tools; IDs move to URL path per HTTP conventions
-const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
+export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
   search_catalog: tool({
     description:
       "Search the store product catalog. Returns matching products with IDs, titles, prices, and variant IDs. Arguments go under the 'catalog' key per UCP spec.",
@@ -895,148 +912,11 @@ const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
   }),
 });
 
-export type RunPlaygroundInput = {
-  storeUrl: string;
-  query?: string;
-  agentProfileUrl?: string;
-};
+// ─── Conversational system prompt ─────────────────────────────────────────────
+// Frames the agent to act one user-directed turn at a time rather than walking a
+// fixed search→cart→checkout sequence.
 
-export const runPlayground = async ({
-  storeUrl,
-  query,
-  agentProfileUrl = AGENT_PROFILE,
-}: RunPlaygroundInput) => {
-  const streamable = createStreamableValue<PlaygroundEvent>();
-
-  const emit = (event: PlaygroundEvent) => streamable.update(event);
-
-  (async () => {
-    try {
-      const domain = storeUrl.replace(/\/+$/, "");
-
-      const service = await resolveShoppingService(storeUrl);
-
-      if (!service.success) {
-        emit({ kind: "error", message: service.error });
-        streamable.done();
-
-        return;
-      }
-
-      const {
-        endpoint: shoppingEndpoint,
-        transport: shoppingTransport,
-        profileUrl: businessProfileUrl,
-      } = service;
-
-      emit({
-        kind: "profile",
-        transport: shoppingTransport,
-        endpoint: shoppingEndpoint,
-        profileUrl: businessProfileUrl,
-        agentProfileUrl,
-      });
-
-      // Build tools for the detected transport
-      const tools =
-        shoppingTransport === "mcp"
-          ? buildMcpTools(shoppingEndpoint, agentProfileUrl)
-          : buildRestTools(shoppingEndpoint, agentProfileUrl);
-
-      const searchQuery = query?.trim() || "product";
-
-      // Run the agentic flow
-      const agentResult = streamText({
-        model: PLAYGROUND_MODEL,
-        system: `You are a UCP (Universal Commerce Protocol) shopping agent running a live integration test against a ${shoppingTransport.toUpperCase()} endpoint.
-
-${UCP_ARGUMENT_SHAPES}
-
-Work through this flow in order:
-1. search_catalog with query "${searchQuery}"
-2. lookup_catalog with the product ID (or variant ID) of the first search result
-3. get_product with the ID of the first result
-4. create_cart with one line item using product.variants[0].id from get_product
-5. get_cart — pass the id from create_cart
-6. update_cart — same cart id; cart.line_items from get_cart with quantity 2
-7. create_checkout — from scratch with checkout payload only (variant id from get_product; no cart_id)
-8. get_checkout — id from step 7
-9. If checkout status is requires_escalation or incomplete, report continue_url and messages — do NOT call complete_checkout
-
-Call create_checkout once with the checkout body shape above. Use ONLY IDs returned by the tools — never invent them. If any tool returns { error: "..." }, ucp.status is error, or a step otherwise fails, stop immediately — do not call further tools. Summarize what succeeded, which step failed, and the error details. If all steps complete successfully, write 2–3 sentences on checkout status and continue_url when present.
-DON'T CALL the same tool again if the first one hasn't finished yet.
-`,
-        prompt: `Test the UCP ${shoppingTransport.toUpperCase()} endpoint at ${shoppingEndpoint} (store: ${domain}).`,
-        tools,
-        stopWhen: isLoopFinished(),
-        providerOptions: gatewayOptions(),
-      });
-
-      for await (const event of agentResult.fullStream) {
-        switch (event.type) {
-          case "text-delta":
-            emit({ kind: "text", text: event.text });
-            break;
-          case "tool-call":
-            emit({
-              kind: "tool_call",
-              id: event.toolCallId,
-              tool: event.toolName,
-              args: event.input,
-            });
-            break;
-          case "tool-result":
-            emit({
-              kind: "tool_result",
-              id: event.toolCallId,
-              tool: event.toolName,
-              result: event.output,
-            });
-            break;
-          case "error":
-            emit({
-              kind: "error",
-              message:
-                event.error instanceof Error
-                  ? event.error.message
-                  : "Stream error",
-            });
-            break;
-        }
-      }
-
-      emit({ kind: "done" });
-    } catch (error) {
-      console.error("error", error);
-
-      emit({
-        kind: "error",
-        message: error instanceof Error ? error.message : "Unexpected error",
-      });
-    } finally {
-      streamable.done();
-    }
-  })();
-
-  return { stream: streamable.value };
-};
-
-// ─── Conversational playground ────────────────────────────────────────────────
-// Drives the same UCP tools, but one user-directed turn at a time instead of the
-// fixed search→cart→checkout sequence runPlayground walks automatically.
-
-export type PlaygroundChatMessage = {
-  role: "user" | "assistant";
-  content: string;
-};
-
-export type ChatPlaygroundInput = {
-  storeUrl: string;
-  messages: PlaygroundChatMessage[];
-  agentProfileUrl?: string;
-};
-
-const buildChatSystemPrompt = (
+export const buildChatSystemPrompt = (
   transport: PlaygroundTransport,
   endpoint: string,
   domain: string,
@@ -1052,106 +932,71 @@ How to behave in this console:
 - After running tools, reply with a short, plain-language summary: what you did, the resulting status, key IDs, and continue_url when present.
 - Do not call the same tool again while a previous call to it is still pending.`;
 
-export const chatPlayground = async ({
-  storeUrl,
-  messages,
-  agentProfileUrl = AGENT_PROFILE,
-}: ChatPlaygroundInput) => {
-  const streamable = createStreamableValue<PlaygroundEvent>();
+// ─── History compaction ───────────────────────────────────────────────────────
+// Every turn re-sends the whole conversation as input tokens, and UCP tool results
+// (catalog pages, product detail, cart/checkout bodies) are the heavy part. We
+// shrink tool outputs from *previous* assistant turns — capping arrays/strings/depth
+// while leaving structure and IDs intact — so repeat turns stay cheap. The most
+// recent assistant turn is kept at full fidelity, since the next action builds on it.
 
-  const emit = (event: PlaygroundEvent) => streamable.update(event);
+const MAX_HISTORY_STRING = 200;
+const MAX_HISTORY_ARRAY = 5;
+const MAX_HISTORY_DEPTH = 6;
 
-  (async () => {
-    try {
-      const domain = storeUrl.replace(/\/+$/, "");
+const compactValue = (value: unknown, depth = 0): unknown => {
+  if (typeof value === "string") {
+    return value.length > MAX_HISTORY_STRING
+      ? `${value.slice(0, MAX_HISTORY_STRING)}…+${value.length - MAX_HISTORY_STRING}chars`
+      : value;
+  }
 
-      const service = await resolveShoppingService(storeUrl);
+  if (Array.isArray(value)) {
+    if (depth >= MAX_HISTORY_DEPTH) return `[${value.length} items]`;
+    const head = value
+      .slice(0, MAX_HISTORY_ARRAY)
+      .map((item) => compactValue(item, depth + 1));
+    return value.length > MAX_HISTORY_ARRAY
+      ? [...head, `…+${value.length - MAX_HISTORY_ARRAY} more`]
+      : head;
+  }
 
-      if (!service.success) {
-        emit({ kind: "error", message: service.error });
-        streamable.done();
+  if (value !== null && typeof value === "object") {
+    if (depth >= MAX_HISTORY_DEPTH) return "{…}";
+    return Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [
+        key,
+        compactValue(item, depth + 1),
+      ]),
+    );
+  }
 
-        return;
-      }
+  return value;
+};
 
-      // Surface the resolved transport/endpoint once, on the first turn only, so
-      // later replies aren't prefixed with a redundant profile card.
-      const isFirstTurn =
-        messages.filter((message) => message.role === "user").length <= 1;
+// Compact tool outputs in every assistant turn except the most recent one. IDs
+// (cart/variant/checkout) live near the top of each payload, so they survive; only
+// the verbose long tail (extra variants, media, long descriptions) is trimmed.
+export const compactToolHistory = (
+  messages: PlaygroundUIMessage[],
+): PlaygroundUIMessage[] => {
+  const lastAssistantIndex = messages.reduce(
+    (latest, message, index) =>
+      message.role === "assistant" ? index : latest,
+    -1,
+  );
 
-      if (isFirstTurn) {
-        emit({
-          kind: "profile",
-          transport: service.transport,
-          endpoint: service.endpoint,
-          profileUrl: service.profileUrl,
-          agentProfileUrl,
-        });
-      }
-
-      const tools =
-        service.transport === "mcp"
-          ? buildMcpTools(service.endpoint, agentProfileUrl)
-          : buildRestTools(service.endpoint, agentProfileUrl);
-
-      const agentResult = streamText({
-        model: PLAYGROUND_MODEL,
-        system: buildChatSystemPrompt(
-          service.transport,
-          service.endpoint,
-          domain,
-        ),
-        messages,
-        tools,
-        stopWhen: isLoopFinished(),
-        providerOptions: gatewayOptions(),
-      });
-
-      for await (const event of agentResult.fullStream) {
-        switch (event.type) {
-          case "text-delta":
-            emit({ kind: "text", text: event.text });
-            break;
-          case "tool-call":
-            emit({
-              kind: "tool_call",
-              id: event.toolCallId,
-              tool: event.toolName,
-              args: event.input,
-            });
-            break;
-          case "tool-result":
-            emit({
-              kind: "tool_result",
-              id: event.toolCallId,
-              tool: event.toolName,
-              result: event.output,
-            });
-            break;
-          case "error":
-            emit({
-              kind: "error",
-              message:
-                event.error instanceof Error
-                  ? event.error.message
-                  : "Stream error",
-            });
-            break;
-        }
-      }
-
-      emit({ kind: "done" });
-    } catch (error) {
-      console.error("chatPlayground error", error);
-
-      emit({
-        kind: "error",
-        message: error instanceof Error ? error.message : "Unexpected error",
-      });
-    } finally {
-      streamable.done();
+  return messages.map((message, index) => {
+    if (message.role !== "assistant" || index === lastAssistantIndex) {
+      return message;
     }
-  })();
 
-  return { stream: streamable.value };
+    return {
+      ...message,
+      parts: message.parts.map((part) =>
+        isToolOrDynamicToolUIPart(part) && part.state === "output-available"
+          ? { ...part, output: compactValue(part.output) }
+          : part,
+      ),
+    };
+  });
 };

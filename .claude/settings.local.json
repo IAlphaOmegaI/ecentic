@@ -62,7 +62,8 @@
       "Bash(echo \"build:packages exit=$?\")",
       "Bash(echo \"typecheck exit=$?\")",
       "Bash(grep -c '\\\\$type<\\\\\"pending\\\\\" | \\\\\"running\\\\\" | \\\\\"complete\\\\\" | \\\\\"failed\\\\\">' /Users/xhurianshaba/Developer/zennit/ecentic/.claude/worktrees/agent-a372bc533eaf89799/apps/web/src/server/database/schema.ts)",
-      "Bash(grep -oE '`[a-zA-Z_]+`')"
+      "Bash(grep -oE '`[a-zA-Z_]+`')",
+      "WebFetch(domain:ai-sdk.dev)"
     ]
   }
 }
