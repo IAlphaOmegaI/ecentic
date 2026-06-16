@@ -88,7 +88,7 @@ export const Reasoning = memo(
         setIsOpenState(next);
         onOpenChange?.(next);
       },
-      [setIsOpenState, onOpenChange]
+      [setIsOpenState, onOpenChange],
     );
 
     const hasEverStreamedRef = useRef(isStreaming);
@@ -136,12 +136,12 @@ export const Reasoning = memo(
       (newOpen: boolean) => {
         setIsOpen(newOpen);
       },
-      [setIsOpen]
+      [setIsOpen],
     );
 
     const contextValue = useMemo(
       () => ({ duration, isOpen, isStreaming, setIsOpen }),
-      [duration, isOpen, isStreaming, setIsOpen]
+      [duration, isOpen, isStreaming, setIsOpen],
     );
 
     return (
@@ -156,7 +156,7 @@ export const Reasoning = memo(
         </Collapsible>
       </ReasoningContext.Provider>
     );
-  }
+  },
 );
 
 export type ReasoningTriggerProps = ComponentProps<
@@ -188,7 +188,7 @@ export const ReasoningTrigger = memo(
       <CollapsibleTrigger
         className={cn(
           "flex w-full items-center gap-2 text-muted-foreground text-sm transition-colors hover:text-foreground",
-          className
+          className,
         )}
         {...props}
       >
@@ -199,19 +199,17 @@ export const ReasoningTrigger = memo(
             <ChevronDownIcon
               className={cn(
                 "size-4 transition-transform",
-                isOpen ? "rotate-180" : "rotate-0"
+                isOpen ? "rotate-180" : "rotate-0",
               )}
             />
           </>
         )}
       </CollapsibleTrigger>
     );
-  }
+  },
 );
 
-export type ReasoningContentProps = ComponentProps<
-  typeof CollapsiblePanel
-> & {
+export type ReasoningContentProps = ComponentProps<typeof CollapsiblePanel> & {
   children: string;
 };
 
@@ -222,13 +220,13 @@ export const ReasoningContent = memo(
     <CollapsiblePanel
       className={cn(
         "mt-4 bg-transparent text-muted-foreground text-sm outline-none",
-        className
+        className,
       )}
       {...props}
     >
       <Streamdown plugins={streamdownPlugins}>{children}</Streamdown>
     </CollapsiblePanel>
-  )
+  ),
 );
 
 Reasoning.displayName = "Reasoning";

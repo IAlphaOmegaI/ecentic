@@ -288,20 +288,14 @@ export const ContentPageFooter = ({
       <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
       <div className="flex flex-wrap items-center gap-4">
         {secondary && (
-          <Button
-            color="accent"
-            render={<Link href={secondary.href} />}
-          >
+          <Button color="accent" render={<Link href={secondary.href} />}>
             <ArrowRightIcon className="size-4 rotate-180" />
             {secondary.label}
           </Button>
         )}
 
         {primary && (
-          <Button
-            color="primary"
-            render={<Link href={primary.href} />}
-          >
+          <Button color="primary" render={<Link href={primary.href} />}>
             {primary.label}
             <ArrowRightIcon className="size-4" />
           </Button>

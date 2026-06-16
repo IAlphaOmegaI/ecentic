@@ -112,7 +112,10 @@ const ProductDetailContent = async ({
               <ChevronLeftIcon className="size-4" />
               Back to Products
             </Button>
-            <Button color="primary" render={<Link href="/dashboard/products" />}>
+            <Button
+              color="primary"
+              render={<Link href="/dashboard/products" />}
+            >
               <RadarIcon className="size-4" />
               Run Scan
             </Button>

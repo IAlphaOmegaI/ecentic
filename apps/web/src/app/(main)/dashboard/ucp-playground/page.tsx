@@ -2,42 +2,40 @@ import { Crosshair, SectionKicker, StatusPill } from "../_components/grid";
 import { PlaygroundClient } from "./_components/playground-client";
 
 export default () => (
-    <div className="mx-8 border-accent-foreground flex flex-col h-full border-x">
-      {/* Title */}
-      <div className="-mx-8 border-accent-foreground border-b">
-        <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
-          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
-          <div>
-            <StatusPill tone="neutral">Sandbox — UCP flow testing</StatusPill>
-            <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
-              UCP Playground
-            </h1>
-            <p className="mt-1 text-foreground-dimmed text-sm">
-              Test catalog search, product lookup, cart, and checkout operations
-              against any UCP-compliant store.
-            </p>
-          </div>
+  <div className="mx-8 border-accent-foreground flex flex-col h-full border-x">
+    {/* Title */}
+    <div className="-mx-8 border-accent-foreground border-b">
+      <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
+        <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+        <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+        <div>
+          <StatusPill tone="neutral">Sandbox — UCP flow testing</StatusPill>
+          <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
+            UCP Playground
+          </h1>
+          <p className="mt-1 text-foreground-dimmed text-sm">
+            Test catalog search, product lookup, cart, and checkout operations
+            against any UCP-compliant store.
+          </p>
         </div>
       </div>
+    </div>
 
-      {/* Content */}
-      <div className="-mx-8 min-h-0 border-accent-foreground border-b">
+    {/* Content */}
+    <div className="-mx-8 min-h-0 border-accent-foreground border-b">
       <div className="relative mx-8 h-full bg-background-rich">
-          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
-          <div className="border-accent-foreground border-b p-4">
-            <SectionKicker>store.com</SectionKicker>
-          </div>
-      <PlaygroundClient />
-      </div>
+        <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+        <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+        <div className="border-accent-foreground border-b p-4">
+          <SectionKicker>store.com</SectionKicker>
+        </div>
+        <PlaygroundClient />
       </div>
     </div>
+  </div>
 );
 
-
 // "use client";
-
 
 // import {
 //   Conversation,
@@ -369,10 +367,6 @@ export default () => (
 
 // const chefs = ["OpenAI", "Anthropic", "Google"];
 
-
-
-
-
 // const SuggestionItem = ({
 //   suggestion,
 //   onClick,
@@ -555,7 +549,6 @@ export default () => (
 //     []
 //   );
 
-
 //   const handleModelSelect = useCallback((modelId: string) => {
 //     setModel(modelId);
 //     setModelSelectorOpen(false);
@@ -608,7 +601,7 @@ export default () => (
 //                   </Message>
 //                 ))}
 //               </MessageBranchContent>
-              
+
 //             </MessageBranch>
 //           ))}
 //         </ConversationContent>
@@ -626,7 +619,7 @@ export default () => (
 //         </Suggestions>
 //         <div className="w-full px-4 pb-4">
 //           <PromptInput globalDrop multiple onSubmit={handleSubmit}>
-           
+
 //             <PromptInputBody>
 //               <PromptInputTextarea onChange={handleTextChange} value={text} />
 //             </PromptInputBody>
@@ -648,7 +641,7 @@ export default () => (
 //                         </ModelSelectorName>
 //                       )}
 //                     </PromptInputButton>}/>
-                   
+
 //                   <ModelSelectorContent>
 //                     <ModelSelectorInput placeholder="Search models..." />
 //                     <ModelSelectorList>

@@ -5,7 +5,5 @@ const escape = (value: string | number | null | undefined) => {
   return /[",\n\r]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
 };
 
-export const serialize = (
-  headers: readonly string[],
-  rows: readonly Row[],
-) => [headers, ...rows].map((row) => row.map(escape).join(",")).join("\r\n");
+export const serialize = (headers: readonly string[], rows: readonly Row[]) =>
+  [headers, ...rows].map((row) => row.map(escape).join(",")).join("\r\n");

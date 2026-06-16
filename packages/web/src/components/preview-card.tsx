@@ -37,8 +37,8 @@ export const PreviewCardPositioner = ({
   container,
   keepMounted,
   sideOffset = 4,
-  align="center",
-  alignOffset=4,
+  align = "center",
+  alignOffset = 4,
   className,
   classList,
   ...props

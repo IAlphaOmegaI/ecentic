@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.4.10/schema.json",
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "vcs": {
     "clientKind": "git",
     "useIgnoreFile": false
@@ -17,6 +17,9 @@
       "a11y": {
         "noSvgWithoutTitle": "off"
       },
+      "suspicious": {
+        "noUndeclaredEnvVars": "error"
+      },
       "style": {
         "noNonNullAssertion": "warn",
         "noParameterAssign": "error",
@@ -31,7 +34,6 @@
         "useNumberNamespace": "warn"
       },
       "nursery": {
-        "noUndeclaredEnvVars": "error",
         "useSortedClasses": {
           "level": "warn",
           "options": {

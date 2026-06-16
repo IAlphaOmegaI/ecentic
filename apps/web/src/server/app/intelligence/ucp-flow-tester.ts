@@ -149,12 +149,12 @@ export type UCPTransports = "mcp" | "rest";
 
 export type FlowTesterEvent =
   | {
-    kind: "profile";
-    transport: UCPTransports;
-    endpoint: string;
-    profileUrl: string;
-    agentProfileUrl: string;
-  }
+      kind: "profile";
+      transport: UCPTransports;
+      endpoint: string;
+      profileUrl: string;
+      agentProfileUrl: string;
+    }
   | { kind: "text"; text: string }
   | { kind: "tool_call"; id: string; tool: string; args: unknown }
   | { kind: "tool_result"; id: string; tool: string; result: unknown }
@@ -356,13 +356,12 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
       "Search the store product catalog. Returns matching products with IDs, titles, prices, and variant IDs. Arguments go under the 'catalog' key per UCP spec (only define them if the user asks something that could be done by using the catalog properties).",
     inputSchema: z.object({ catalog: searchCatalogRequestSchema }),
     execute: async (input) => {
-     const result = await callMCP(
+      const result = await callMCP(
         endpoint,
         "search_catalog",
         input,
         agentProfileUrl,
       );
-
 
       return parseMcpToolResult(result, searchCatalogResponseSchema);
     },
@@ -839,7 +838,6 @@ export const runFlowTester = async ({
         return;
       }
 
-
       const {
         success: businessProfileSuccess,
         data: businessProfile,
@@ -867,7 +865,8 @@ export const runFlowTester = async ({
       const restShoppingService = shoppingServices?.find(
         (shoppingService) => shoppingService.transport === "rest",
       );
-      const shoppingEndpoint = mcpShoppingService?.endpoint ?? restShoppingService?.endpoint;
+      const shoppingEndpoint =
+        mcpShoppingService?.endpoint ?? restShoppingService?.endpoint;
       const shoppingTransport = mcpShoppingService ? "mcp" : "rest";
 
       if (!shoppingEndpoint || !shoppingTransport) {

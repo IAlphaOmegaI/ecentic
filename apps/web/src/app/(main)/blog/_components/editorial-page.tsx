@@ -3,10 +3,10 @@ import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import Link from "next/link";
-import { Plus } from "@/components/plus";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
+import { Plus } from "@/components/plus";
 import Background from "@/public/images/blog.png";
 import { renderInline } from "../../_components/rich-text";
 
@@ -142,14 +142,10 @@ export const EditorialSplitSection = ({
             : undefined
         }
       >
-        {thumbnail && (
-          <div className="absolute inset-0 bg-black/60" />
-        )}
+        {thumbnail && <div className="absolute inset-0 bg-black/60" />}
         <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
         <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden md:flex" />
-        <div className="relative z-10 flex flex-1 flex-col">
-          {left}
-        </div>
+        <div className="relative z-10 flex flex-1 flex-col">{left}</div>
       </div>
       <div className={cn("bg-background p-8", rightClassName)}>{right}</div>
     </div>
@@ -180,20 +176,14 @@ export const EditorialFooter = ({
       <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
       <div className="flex flex-wrap items-center gap-4">
         {secondary && (
-          <Button
-            color="accent"
-            render={<Link href={secondary.href} />}
-          >
+          <Button color="accent" render={<Link href={secondary.href} />}>
             <ArrowRightIcon className="size-4 rotate-180" />
             {secondary.label}
           </Button>
         )}
 
         {primary && (
-          <Button
-            color="primary"
-            render={<Link href={primary.href} />}
-          >
+          <Button color="primary" render={<Link href={primary.href} />}>
             {primary.label}
             <ArrowRightIcon className="size-4" />
           </Button>

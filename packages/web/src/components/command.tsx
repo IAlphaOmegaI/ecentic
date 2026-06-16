@@ -4,12 +4,7 @@ import { CheckIcon, SearchIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Command as CommandPrimitive } from "cmdk";
 import type { ComponentProps, JSX, ReactNode } from "react";
-import {
-  Dialog,
-  DialogDescription,
-  DialogPopup,
-  DialogTitle,
-} from "./dialog";
+import { Dialog, DialogDescription, DialogPopup, DialogTitle } from "./dialog";
 import { TextField } from "./text-field";
 
 export const Command = ({

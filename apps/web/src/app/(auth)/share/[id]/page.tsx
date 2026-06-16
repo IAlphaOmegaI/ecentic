@@ -280,10 +280,7 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
                 </p>
               </div>
               <div className="flex items-end p-6">
-                <Button
-                  color="primary"
-                  render={<Link href="/sign-up" />}
-                >
+                <Button color="primary" render={<Link href="/sign-up" />}>
                   Start free
                   <ArrowRightIcon className="size-4" />
                 </Button>

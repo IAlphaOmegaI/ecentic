@@ -35,8 +35,12 @@ tr {
 }
 
 @keyframes gold-shine {
-  from { background-position: -200% center; }
-  to { background-position: 200% center; }
+  from {
+    background-position: -200% center;
+  }
+  to {
+    background-position: 200% center;
+  }
 }
 
 @utility animate-gold-shine {

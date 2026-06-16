@@ -7,9 +7,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
+import { Plus } from "@/components/plus";
 import { Fade } from "@/lib/animations";
 import { SignUpForm } from "./_components/sign-up-form";
-import { Plus } from "@/components/plus";
 
 const points = [
   "Simulate how GPT-4, Claude, Gemini & Perplexity pick products",

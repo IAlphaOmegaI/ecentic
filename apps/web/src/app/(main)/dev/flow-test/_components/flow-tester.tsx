@@ -1,6 +1,5 @@
 "use client";
 
-import { runFlowTester } from "@/server/app/intelligence/ucp-flow-tester";
 import { readStreamableValue } from "@ai-sdk/rsc";
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
@@ -13,6 +12,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { runFlowTester } from "@/server/app/intelligence/ucp-flow-tester";
 import { StatusPill } from "../../../dashboard/_components/grid";
 
 type LogLine =

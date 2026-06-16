@@ -1434,37 +1434,61 @@ export const cartTotalSchema = z
     z.discriminatedUnion("type", [
       z.object({
         type: z.literal("subtotal"),
-        amount: z.number().int().nonnegative().describe("Amount in ISO 4217 minor units. Must be non-negative."),
+        amount: z
+          .number()
+          .int()
+          .nonnegative()
+          .describe("Amount in ISO 4217 minor units. Must be non-negative."),
         display_text: totalDisplayTextSchema,
         lines: totalLinesSchema,
       }),
       z.object({
         type: z.literal("items_discount"),
-        amount: z.number().int().negative().describe("Amount in ISO 4217 minor units. Must be negative."),
+        amount: z
+          .number()
+          .int()
+          .negative()
+          .describe("Amount in ISO 4217 minor units. Must be negative."),
         display_text: totalDisplayTextSchema,
         lines: totalLinesSchema,
       }),
       z.object({
         type: z.literal("discount"),
-        amount: z.number().int().negative().describe("Amount in ISO 4217 minor units. Must be negative."),
+        amount: z
+          .number()
+          .int()
+          .negative()
+          .describe("Amount in ISO 4217 minor units. Must be negative."),
         display_text: totalDisplayTextSchema,
         lines: totalLinesSchema,
       }),
       z.object({
         type: z.literal("fulfillment"),
-        amount: z.number().int().nonnegative().describe("Amount in ISO 4217 minor units. Must be non-negative."),
+        amount: z
+          .number()
+          .int()
+          .nonnegative()
+          .describe("Amount in ISO 4217 minor units. Must be non-negative."),
         display_text: totalDisplayTextSchema,
         lines: totalLinesSchema,
       }),
       z.object({
         type: z.literal("tax"),
-        amount: z.number().int().nonnegative().describe("Amount in ISO 4217 minor units. Must be non-negative."),
+        amount: z
+          .number()
+          .int()
+          .nonnegative()
+          .describe("Amount in ISO 4217 minor units. Must be non-negative."),
         display_text: totalDisplayTextSchema,
         lines: totalLinesSchema,
       }),
       z.object({
         type: z.literal("fee"),
-        amount: z.number().int().nonnegative().describe("Amount in ISO 4217 minor units. Must be non-negative."),
+        amount: z
+          .number()
+          .int()
+          .nonnegative()
+          .describe("Amount in ISO 4217 minor units. Must be non-negative."),
         display_text: totalDisplayTextSchema,
         lines: totalLinesSchema,
       }),
@@ -1531,7 +1555,10 @@ const totalsSchema = z
         message: `totals MUST contain exactly one entry with type "total", found ${totalCount}`,
       });
     }
-  }).describe("Pricing breakdown provided by the business. MUST contain exactly one subtotal and one total entry. Detail types (tax, fee, discount, fulfillment) may appear multiple times for itemization. Platforms MUST render all entries in order using display_text and amount.");
+  })
+  .describe(
+    "Pricing breakdown provided by the business. MUST contain exactly one subtotal and one total entry. Detail types (tax, fee, discount, fulfillment) may appear multiple times for itemization. Platforms MUST render all entries in order using display_text and amount.",
+  );
 
 const cartItemRequestSchema = z.object({
   id: z
@@ -1980,11 +2007,13 @@ const shippingDestinationSchema = postalAddressSchema.extend({
   id: z.string().describe("ID specific to this shipping destination."),
 });
 
-const retailLocationSchema = z.looseObject({
-  id: z.string().describe("Unique location identifier."),
-  name: z.string().describe("Location name (e.g., store name)."),
-  address: postalAddressSchema.optional().describe("Physical address."),
-}).describe("A pickup location (retail store, locker, etc.).");
+const retailLocationSchema = z
+  .looseObject({
+    id: z.string().describe("Unique location identifier."),
+    name: z.string().describe("Location name (e.g., store name)."),
+    address: postalAddressSchema.optional().describe("Physical address."),
+  })
+  .describe("A pickup location (retail store, locker, etc.).");
 
 const fulfillmentDestinationSchema = z.union([
   shippingDestinationSchema,

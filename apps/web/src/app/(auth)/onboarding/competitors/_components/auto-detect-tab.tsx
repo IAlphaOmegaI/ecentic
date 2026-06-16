@@ -260,10 +260,7 @@ export const AutoDetectTab = ({
                 <span className="font-light text-foreground-dimmed">
                   Finished in {formatElapsed(elapsed)}
                 </span>
-                <Button
-                  onClick={handleDetect}
-                  color="accent"
-                >
+                <Button onClick={handleDetect} color="accent">
                   Run Again
                 </Button>
               </div>

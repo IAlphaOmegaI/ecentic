@@ -537,10 +537,7 @@ const CompareResults = ({
           <Button color="accent" onClick={onReset}>
             Compare again
           </Button>
-          <Button
-            color="primary"
-            render={<Link href="/sign-up" />}
-          >
+          <Button color="primary" render={<Link href="/sign-up" />}>
             Start optimizing
             <ArrowRightIcon className="size-4" />
           </Button>

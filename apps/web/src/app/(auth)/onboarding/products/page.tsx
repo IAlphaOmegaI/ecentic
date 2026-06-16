@@ -29,10 +29,7 @@ export default async () => {
           <p className="mb-6 font-light text-foreground-dimmed text-lg">
             Connect a store and sync <br /> your products to get started.
           </p>
-          <Button
-            color="primary"
-            render={<Link href="/onboarding/connect" />}
-          >
+          <Button color="primary" render={<Link href="/onboarding/connect" />}>
             Connect a store and sync products{" "}
             <ArrowRightIcon className="size-4" />
           </Button>

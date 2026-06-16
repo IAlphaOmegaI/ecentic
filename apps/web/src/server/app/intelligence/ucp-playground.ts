@@ -43,6 +43,40 @@ const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
 // path triggers SDK sentinel injection + warnings. 2.5-flash is sufficient here.
 const PLAYGROUND_MODEL = "google/gemini-3-flash";
 
+// Shared by both the automated (runPlayground) and conversational (chatPlayground)
+// system prompts — keep a single source of truth so tool argument shapes never drift.
+const UCP_ARGUMENT_SHAPES = `CRITICAL ARGUMENT SHAPES — follow these exactly, do not add or remove top-level keys:
+
+search_catalog:
+  example parameters: { catalog: { query: "...", pagination: { limit: 5 }, filters: {}, context: {} } } (only define them if the user asks something that could be done by using the catalog properties even tho they might have been defined in the schema).
+lookup_catalog:
+  { catalog: { ids: ["<product_id_or_variant_id>"] } }
+get_product:
+  { catalog: { id: "<product_id>" } }
+create_cart:
+  { cart: { line_items: [{ item: { id: "<variant_id from get_product product.variants[].id>" }, quantity: 1 }] } }
+  Only item.id and quantity per line item. Do NOT set line_items[].id.
+get_cart:
+  { id: "<copy id field exactly from create_cart tool result>" }
+update_cart:
+  { id: "<cart id>", cart: { line_items: [{ id: "<from get_cart>", item: { id: "<variant_id>" }, quantity: 2 }] } }
+  Full replacement under cart. Keep line_items[].id from get_cart.
+cancel_cart:
+  { id: "<cart id from create_cart>" }
+create_checkout:
+  { checkout: { buyer: { email, first_name, last_name }, line_items: [{ item: { id: "<variant_id>" }, quantity: 1 }], currency: "USD", fulfillment: { methods: [...] } } }
+  Do NOT use cart_id — this business endpoint does not support cart conversion.
+get_checkout:
+  { id: "<checkout id from create_checkout>" }
+update_checkout:
+  { id: "<checkout id>", checkout: { buyer: {...}, line_items: [{ id: "li_...", item: { id: "<variant_id>" }, quantity: 1 }], currency: "USD", fulfillment: { methods: [{ id: "...", line_item_ids: [...], groups: [{ id: "...", selected_option_id: "..." }] }] } } }
+  id is only at arguments top level — never inside checkout.
+complete_checkout:
+  { id: "<checkout id>", checkout: { payment: { instruments: [...] } } }
+  Only when status is ready_for_complete. Never call for requires_escalation.
+cancel_checkout:
+  { id: "<checkout id>" }`;
+
 const formatUcpMessage = (message: z.infer<typeof messageSchema>): string => {
   const path = message.path ? ` (${message.path})` : "";
   const code = message.code ? `[${message.code}] ` : "";
@@ -149,17 +183,91 @@ export type PlaygroundTransport = "mcp" | "rest";
 
 export type PlaygroundEvent =
   | {
-    kind: "profile";
-    transport: PlaygroundTransport;
-    endpoint: string;
-    profileUrl: string;
-    agentProfileUrl: string;
-  }
+      kind: "profile";
+      transport: PlaygroundTransport;
+      endpoint: string;
+      profileUrl: string;
+      agentProfileUrl: string;
+    }
   | { kind: "text"; text: string }
   | { kind: "tool_call"; id: string; tool: string; args: unknown }
   | { kind: "tool_result"; id: string; tool: string; result: unknown }
   | { kind: "done" }
   | { kind: "error"; message: string };
+
+type ResolvedShoppingService =
+  | {
+      success: true;
+      endpoint: string;
+      transport: PlaygroundTransport;
+      profileUrl: string;
+    }
+  | { success: false; error: string };
+
+// Resolve a store's UCP business profile and pick its dev.ucp.shopping endpoint,
+// preferring the MCP transport over REST. Stateless — safe to call per request.
+const resolveShoppingService = async (
+  storeUrl: string,
+): Promise<ResolvedShoppingService> => {
+  const domain = storeUrl.replace(/\/+$/, "");
+  const businessProfileUrl = `${domain}/.well-known/ucp`;
+
+  const discoveryResult = await resultify(() =>
+    fetch(businessProfileUrl, {
+      headers: { Accept: "application/json" },
+      signal: AbortSignal.timeout(8_000),
+    }),
+  );
+
+  if (!discoveryResult.success) {
+    return {
+      success: false,
+      error: `Could not reach Business UCP profile at ${businessProfileUrl}. Make sure the store serves a valid /.well-known/ucp endpoint.`,
+    };
+  }
+
+  const bodyResult = await resultify(() => discoveryResult.data.json());
+
+  if (!bodyResult.success) {
+    return {
+      success: false,
+      error: "Could not read business profile response body.",
+    };
+  }
+
+  // TODO: replace with UcpDiscoveryProfileSchema when updated
+  const parsed = businessProfileSchema.safeParse(bodyResult.data);
+
+  if (!parsed.success) {
+    console.error(parsed.error);
+    return { success: false, error: parsed.error.message };
+  }
+
+  const shoppingServices = parsed.data.ucp.services["dev.ucp.shopping"];
+  const mcpShoppingService = shoppingServices?.find(
+    (shoppingService) => shoppingService.transport === "mcp",
+  );
+  const restShoppingService = shoppingServices?.find(
+    (shoppingService) => shoppingService.transport === "rest",
+  );
+  const endpoint =
+    mcpShoppingService?.endpoint ?? restShoppingService?.endpoint;
+
+  if (!endpoint) {
+    return {
+      success: false,
+      error:
+        "No dev.ucp.shopping service found in the UCP profile. The store does not advertise MCP or REST shopping endpoints.",
+    };
+  }
+
+  return {
+    success: true,
+    endpoint,
+    transport: mcpShoppingService ? "mcp" : "rest",
+    profileUrl: businessProfileUrl,
+  };
+};
 
 const callMCP = async (
   endpoint: string,
@@ -356,13 +464,12 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
       "Search the store product catalog. Returns matching products with IDs, titles, prices, and variant IDs. Arguments go under the 'catalog' key per UCP spec (only define them if the user asks something that could be done by using the catalog properties).",
     inputSchema: z.object({ catalog: searchCatalogRequestSchema }),
     execute: async (input) => {
-     const result = await callMCP(
+      const result = await callMCP(
         endpoint,
         "search_catalog",
         input,
         agentProfileUrl,
       );
-
 
       return parseMcpToolResult(result, searchCatalogResponseSchema);
     },
@@ -806,80 +913,21 @@ export const runPlayground = async ({
   (async () => {
     try {
       const domain = storeUrl.replace(/\/+$/, "");
-      const businessProfileUrl = `${domain}/.well-known/ucp`;
 
-      const businessProfileDiscoveryResult = await resultify(() =>
-        fetch(businessProfileUrl, {
-          headers: { Accept: "application/json" },
-          signal: AbortSignal.timeout(8_000),
-        }),
-      );
+      const service = await resolveShoppingService(storeUrl);
 
-      if (!businessProfileDiscoveryResult.success) {
-        emit({
-          kind: "error",
-          message: `Could not reach Business UCP profile at ${businessProfileUrl}. Make sure the store serves a valid /.well-known/ucp endpoint.`,
-        });
+      if (!service.success) {
+        emit({ kind: "error", message: service.error });
         streamable.done();
 
         return;
       }
-
-      const businessProfileResult = await resultify(() =>
-        businessProfileDiscoveryResult.data.json(),
-      );
-
-      if (!businessProfileResult.success) {
-        emit({
-          kind: "error",
-          message: "Could not read business profile response body.",
-        });
-        streamable.done();
-
-        return;
-      }
-
 
       const {
-        success: businessProfileSuccess,
-        data: businessProfile,
-        error,
-        // TODO: replace with UcpDiscoveryProfileSchema when updated
-      } = businessProfileSchema.safeParse(businessProfileResult.data);
-
-      if (!businessProfileSuccess) {
-        console.error(error);
-        emit({
-          kind: "error",
-          message: error.message,
-        });
-        streamable.done();
-
-        return;
-      }
-
-      // 2. Discover transport and endpoint
-      const shoppingServices = businessProfile.ucp.services["dev.ucp.shopping"];
-
-      const mcpShoppingService = shoppingServices?.find(
-        (shoppingService) => shoppingService.transport === "mcp",
-      );
-      const restShoppingService = shoppingServices?.find(
-        (shoppingService) => shoppingService.transport === "rest",
-      );
-      const shoppingEndpoint = mcpShoppingService?.endpoint ?? restShoppingService?.endpoint;
-      const shoppingTransport = mcpShoppingService ? "mcp" : "rest";
-
-      if (!shoppingEndpoint || !shoppingTransport) {
-        emit({
-          kind: "error",
-          message:
-            "No dev.ucp.shopping service found in the UCP profile. The store does not advertise MCP or REST shopping endpoints.",
-        });
-
-        streamable.done();
-        return;
-      }
+        endpoint: shoppingEndpoint,
+        transport: shoppingTransport,
+        profileUrl: businessProfileUrl,
+      } = service;
 
       emit({
         kind: "profile",
@@ -889,7 +937,7 @@ export const runPlayground = async ({
         agentProfileUrl,
       });
 
-      // 3. Build tools for the detected transport
+      // Build tools for the detected transport
       const tools =
         shoppingTransport === "mcp"
           ? buildMcpTools(shoppingEndpoint, agentProfileUrl)
@@ -897,42 +945,12 @@ export const runPlayground = async ({
 
       const searchQuery = query?.trim() || "product";
 
-      // 4. Run the agentic flow
+      // Run the agentic flow
       const agentResult = streamText({
         model: PLAYGROUND_MODEL,
         system: `You are a UCP (Universal Commerce Protocol) shopping agent running a live integration test against a ${shoppingTransport.toUpperCase()} endpoint.
 
-CRITICAL ARGUMENT SHAPES — follow these exactly, do not add or remove top-level keys:
-
-search_catalog:
-  example parameters: { catalog: { query: "...", pagination: { limit: 5 }, filters: {}, context: {} } } (only define them if the user asks something that could be done by using the catalog properties even tho they might have been defined in the schema).
-lookup_catalog:
-  { catalog: { ids: ["<product_id_or_variant_id>"] } }
-get_product:
-  { catalog: { id: "<product_id>" } }
-create_cart:
-  { cart: { line_items: [{ item: { id: "<variant_id from get_product product.variants[].id>" }, quantity: 1 }] } }
-  Only item.id and quantity per line item. Do NOT set line_items[].id.
-get_cart:
-  { id: "<copy id field exactly from create_cart tool result>" }
-update_cart:
-  { id: "<cart id>", cart: { line_items: [{ id: "<from get_cart>", item: { id: "<variant_id>" }, quantity: 2 }] } }
-  Full replacement under cart. Keep line_items[].id from get_cart.
-cancel_cart:
-  { id: "<cart id from create_cart>" }
-create_checkout:
-  { checkout: { buyer: { email, first_name, last_name }, line_items: [{ item: { id: "<variant_id>" }, quantity: 1 }], currency: "USD", fulfillment: { methods: [...] } } }
-  Do NOT use cart_id — this business endpoint does not support cart conversion.
-get_checkout:
-  { id: "<checkout id from create_checkout>" }
-update_checkout:
-  { id: "<checkout id>", checkout: { buyer: {...}, line_items: [{ id: "li_...", item: { id: "<variant_id>" }, quantity: 1 }], currency: "USD", fulfillment: { methods: [{ id: "...", line_item_ids: [...], groups: [{ id: "...", selected_option_id: "..." }] }] } } }
-  id is only at arguments top level — never inside checkout.
-complete_checkout:
-  { id: "<checkout id>", checkout: { payment: { instruments: [...] } } }
-  Only when status is ready_for_complete. Never call for requires_escalation.
-cancel_checkout:
-  { id: "<checkout id>" }
+${UCP_ARGUMENT_SHAPES}
 
 Work through this flow in order:
 1. search_catalog with query "${searchQuery}"
@@ -990,6 +1008,141 @@ DON'T CALL the same tool again if the first one hasn't finished yet.
       emit({ kind: "done" });
     } catch (error) {
       console.error("error", error);
+
+      emit({
+        kind: "error",
+        message: error instanceof Error ? error.message : "Unexpected error",
+      });
+    } finally {
+      streamable.done();
+    }
+  })();
+
+  return { stream: streamable.value };
+};
+
+// ─── Conversational playground ────────────────────────────────────────────────
+// Drives the same UCP tools, but one user-directed turn at a time instead of the
+// fixed search→cart→checkout sequence runPlayground walks automatically.
+
+export type PlaygroundChatMessage = {
+  role: "user" | "assistant";
+  content: string;
+};
+
+export type ChatPlaygroundInput = {
+  storeUrl: string;
+  messages: PlaygroundChatMessage[];
+  agentProfileUrl?: string;
+};
+
+const buildChatSystemPrompt = (
+  transport: PlaygroundTransport,
+  endpoint: string,
+  domain: string,
+): string => `You are a UCP (Universal Commerce Protocol) shopping agent in an interactive test console, connected to a live ${transport.toUpperCase()} endpoint at ${endpoint} (store: ${domain}). You act on the user's instructions, calling UCP tools to search the catalog, inspect products, build carts, and run checkout.
+
+${UCP_ARGUMENT_SHAPES}
+
+How to behave in this console:
+- Do exactly what the user asks in their latest message — one action (or a small set of directly related actions) at a time. Do NOT run the whole search→cart→checkout flow unless the user explicitly asks you to.
+- Use ONLY IDs returned by earlier tool calls — never invent them. Previous tool calls and their results are included in the conversation; reuse their IDs (variant id, cart id, checkout id) when the user refers to "it", "that", or "the cart".
+- If you need an ID you don't have yet (e.g. the user says "add it to a cart" but nothing was looked up), search or look it up first, or ask the user to clarify.
+- If a tool returns { error: "..." } or ucp.status is error, stop and report the error details and which step failed — do not retry blindly.
+- After running tools, reply with a short, plain-language summary: what you did, the resulting status, key IDs, and continue_url when present.
+- Do not call the same tool again while a previous call to it is still pending.`;
+
+export const chatPlayground = async ({
+  storeUrl,
+  messages,
+  agentProfileUrl = AGENT_PROFILE,
+}: ChatPlaygroundInput) => {
+  const streamable = createStreamableValue<PlaygroundEvent>();
+
+  const emit = (event: PlaygroundEvent) => streamable.update(event);
+
+  (async () => {
+    try {
+      const domain = storeUrl.replace(/\/+$/, "");
+
+      const service = await resolveShoppingService(storeUrl);
+
+      if (!service.success) {
+        emit({ kind: "error", message: service.error });
+        streamable.done();
+
+        return;
+      }
+
+      // Surface the resolved transport/endpoint once, on the first turn only, so
+      // later replies aren't prefixed with a redundant profile card.
+      const isFirstTurn =
+        messages.filter((message) => message.role === "user").length <= 1;
+
+      if (isFirstTurn) {
+        emit({
+          kind: "profile",
+          transport: service.transport,
+          endpoint: service.endpoint,
+          profileUrl: service.profileUrl,
+          agentProfileUrl,
+        });
+      }
+
+      const tools =
+        service.transport === "mcp"
+          ? buildMcpTools(service.endpoint, agentProfileUrl)
+          : buildRestTools(service.endpoint, agentProfileUrl);
+
+      const agentResult = streamText({
+        model: PLAYGROUND_MODEL,
+        system: buildChatSystemPrompt(
+          service.transport,
+          service.endpoint,
+          domain,
+        ),
+        messages,
+        tools,
+        stopWhen: isLoopFinished(),
+        providerOptions: gatewayOptions(),
+      });
+
+      for await (const event of agentResult.fullStream) {
+        switch (event.type) {
+          case "text-delta":
+            emit({ kind: "text", text: event.text });
+            break;
+          case "tool-call":
+            emit({
+              kind: "tool_call",
+              id: event.toolCallId,
+              tool: event.toolName,
+              args: event.input,
+            });
+            break;
+          case "tool-result":
+            emit({
+              kind: "tool_result",
+              id: event.toolCallId,
+              tool: event.toolName,
+              result: event.output,
+            });
+            break;
+          case "error":
+            emit({
+              kind: "error",
+              message:
+                event.error instanceof Error
+                  ? event.error.message
+                  : "Stream error",
+            });
+            break;
+        }
+      }
+
+      emit({ kind: "done" });
+    } catch (error) {
+      console.error("chatPlayground error", error);
 
       emit({
         kind: "error",
