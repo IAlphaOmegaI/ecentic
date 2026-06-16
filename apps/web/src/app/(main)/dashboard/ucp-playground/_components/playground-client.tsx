@@ -1,16 +1,17 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
+import { ShoppingCartIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import {
   DefaultChatTransport,
-  type DynamicToolUIPart,
-  getToolOrDynamicToolName,
-  isToolOrDynamicToolUIPart,
+  getToolName,
+  isToolUIPart,
   type ToolUIPart,
 } from "ai";
 import { useCallback, useState } from "react";
+import type z from "zod";
 import {
   Conversation,
   ConversationContent,
@@ -31,6 +32,12 @@ import {
 } from "@/components/ui/ai/prompt-input";
 import { Suggestion, Suggestions } from "@/components/ui/ai/suggestion";
 import type {
+  detailProductSchema,
+  lookupProductSchema,
+  priceSchema,
+  productSchema,
+} from "@/server/app/intelligence/ucp-advanced-validator";
+import type {
   PlaygroundDataParts,
   PlaygroundUIMessage,
 } from "@/server/app/intelligence/ucp-playground";
@@ -45,6 +52,11 @@ const starterSuggestions = [
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
+const isClassicToolUIPart = (
+  part: PlaygroundUIMessage["parts"][number],
+): part is Extract<PlaygroundUIMessage["parts"][number], ToolUIPart> =>
+  isToolUIPart(part) && part.type.startsWith("tool-");
+
 const formatJson = (value: unknown): string => {
   try {
     return JSON.stringify(value, null, 2);
@@ -53,27 +65,185 @@ const formatJson = (value: unknown): string => {
   }
 };
 
-// UCP tools resolve to `{ error: "..." }` (output-available) instead of throwing,
-// so a successful tool call can still represent a UCP-level failure.
-const extractToolError = (output: unknown): string | undefined => {
-  if (
-    output !== null &&
-    typeof output === "object" &&
-    "error" in output &&
-    typeof (output as { error: unknown }).error === "string"
-  ) {
-    return (output as { error: string }).error;
-  }
-  return undefined;
+// Tools throw on failure, so the AI SDK surfaces errors as output-error parts
+// (part.errorText) — a successful (output-available) result is always valid.
+
+type UcpMoney = z.infer<typeof priceSchema>;
+
+type UcpProduct = z.infer<
+  typeof productSchema | typeof lookupProductSchema | typeof detailProductSchema
+>;
+
+// Pull products out of a validated catalog output: search/lookup return
+// `products`, get_product returns a single `product`. The validated shapes are
+// checked against the UcpProduct view-model — no casts.
+const getProducts = (output: CatalogOutput | undefined): UcpProduct[] => {
+  if (!output) return [];
+  if ("products" in output) return output.products;
+  if ("product" in output) return [output.product];
+  return [];
 };
 
-// ─── Part renderers ───────────────────────────────────────────────────────────
+// UCP money amounts are minor units (e.g. 24750 = $247.50).
+const formatMoney = (money: UcpMoney): string => {
+  const { amount, currency } = money;
+  const value = amount / 100;
 
-const ToolView = ({ part }: { part: ToolUIPart | DynamicToolUIPart }) => {
-  const name = getToolOrDynamicToolName(part);
+  try {
+    return new Intl.NumberFormat(undefined, {
+      style: "currency",
+      currency,
+    }).format(value);
+  } catch {
+    return `${value.toFixed(2)} ${currency}`;
+  }
+};
+
+const priceLabel = (product: UcpProduct): string | null => {
+  const min = formatMoney(product.price_range?.min);
+  const max = formatMoney(product.price_range?.max);
+
+  if (!min) return null;
+  return max && max !== min ? `${min} – ${max}` : min;
+};
+
+const productImage = (product: UcpProduct): string | undefined =>
+  product.media?.find((item) => item?.url)?.url;
+
+// A tool message part narrowed by its `tool-<name>` type literal, so part.output
+// carries that tool's zod-validated result instead of `unknown`.
+type ToolPart<Type extends PlaygroundUIMessage["parts"][number]["type"]> =
+  Extract<PlaygroundUIMessage["parts"][number], { type: Type }>;
+
+type CatalogToolPart = ToolPart<
+  "tool-search_catalog" | "tool-lookup_catalog" | "tool-get_product"
+>;
+
+// The validated output of a catalog tool (output-available). A UCP-level failure
+// arrives as { error } and is filtered out before rendering.
+type CatalogOutput = NonNullable<
+  Extract<CatalogToolPart, { state: "output-available" }>["output"]
+>;
+
+// ─── Cart shaping ─────────────────────────────────────────────────────────────
+// create_cart / get_cart / update_cart return the cart flat (id, line_items,
+// totals, currency, continue_url). Amounts are minor units in the cart currency.
+
+type UcpCartTotal = { type?: string; amount?: number; display_text?: string };
+
+type UcpCartLineItem = {
+  id?: string;
+  quantity?: number;
+  item?: { id?: string; title?: string; price?: number; image_url?: string };
+};
+
+type UcpCart = {
+  id?: string;
+  currency?: string;
+  status?: string | null;
+  continue_url?: string;
+  line_items?: UcpCartLineItem[];
+  totals?: UcpCartTotal[];
+};
+
+// cancel_cart is intentionally excluded — a cancellation shouldn't render a cart
+type CartToolPart = ToolPart<
+  "tool-create_cart" | "tool-get_cart" | "tool-update_cart"
+>;
+
+type CartOutput = NonNullable<
+  Extract<CartToolPart, { state: "output-available" }>["output"]
+>;
+
+const getCart = (output: CartOutput | undefined): UcpCart | null => {
+  if (!output) return null;
+  return "line_items" in output ? output : null;
+};
+
+const ProductCard = ({ product }: { product: UcpProduct }) => {
+  const image = productImage(product);
+  const price = priceLabel(product);
+  // On sale only when the compare-at (list) price is actually higher than the
+  // current price — stores send list_price_range { amount: 0 } to mean "none".
+  const listMin = product.list_price_range?.min;
+  const priceMin = product.price_range?.min;
+  const listPrice =
+    listMin && priceMin && listMin.amount > priceMin.amount
+      ? formatMoney(listMin)
+      : null;
+  const onSale = listPrice !== null;
+  const variantCount = product.variants?.length ?? 0;
+
+  const card = (
+    <div className="group flex h-full flex-col overflow-hidden rounded-lg border border-accent-foreground bg-background-rich transition-colors hover:border-primary">
+      <div className="aspect-square overflow-hidden bg-background-dimmed">
+        {image ? (
+          // biome-ignore lint/performance/noImgElement: arbitrary store CDNs can't be whitelisted for next/image
+          <img
+            alt={product.title ?? ""}
+            className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
+            loading="lazy"
+            src={image}
+          />
+        ) : (
+          <div className="flex size-full items-center justify-center text-[10px] text-foreground-dimmed/40 uppercase tracking-[0.08em]">
+            No image
+          </div>
+        )}
+      </div>
+      <div className="flex flex-1 flex-col gap-1 p-3">
+        <p className="line-clamp-2 font-medium text-foreground-rich text-sm leading-tight">
+          {product.title ?? "Untitled product"}
+        </p>
+        <div className="mt-auto flex items-end justify-between gap-2 pt-1">
+          <span className="flex items-baseline gap-1.5">
+            {price && (
+              <span className="font-semibold text-primary text-sm">
+                {price}
+              </span>
+            )}
+            {onSale && (
+              <span className="text-[11px] text-foreground-dimmed line-through">
+                {listPrice}
+              </span>
+            )}
+          </span>
+          {variantCount > 1 && (
+            <span className="shrink-0 text-[10px] text-foreground-dimmed uppercase tracking-[0.06em]">
+              {variantCount} variants
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  if (!product.url) return card;
+
+  return (
+    <a
+      className="block h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      href={product.url}
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      {card}
+    </a>
+  );
+};
+
+const ProductGrid = ({ products }: { products: UcpProduct[] }) => (
+  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+    {products.map((product, index) => (
+      <ProductCard key={product.id ?? index} product={product} />
+    ))}
+  </div>
+);
+
+const ToolView = ({ part }: { part: ToolUIPart }) => {
+  const name = getToolName(part);
   const output = part.state === "output-available" ? part.output : undefined;
-  const sdkError = part.state === "output-error" ? part.errorText : undefined;
-  const error = sdkError ?? extractToolError(output);
+  const error = part.state === "output-error" ? part.errorText : undefined;
   const pending =
     part.state === "input-streaming" || part.state === "input-available";
   const tone = error ? "error" : pending ? "primary" : "success";
@@ -138,7 +308,7 @@ const ProfileView = ({ data }: { data: PlaygroundDataParts["profile"] }) => (
 );
 
 const ErrorView = ({ message }: { message: string }) => (
-  <div className="flex items-start gap-2 rounded-lg border border-error/30 bg-error/5 p-3 text-error text-xs">
+  <div className="flex w-fit items-start gap-2 rounded-lg border border-error/30 bg-error/5 p-3 text-error text-xs">
     <span className="shrink-0">✕</span>
     <span className="font-mono">{message}</span>
   </div>
@@ -151,6 +321,172 @@ const Thinking = () => (
     <span className="size-1.5 animate-bounce rounded-full bg-foreground-dimmed" />
   </div>
 );
+
+const CartView = ({ cart }: { cart: UcpCart }) => {
+  const currency = cart.currency ?? "USD";
+  const lineItems = cart.line_items ?? [];
+  const totalRow =
+    cart.totals?.find((total) => total.type === "total") ?? cart.totals?.at(-1);
+  const itemCount = lineItems.reduce(
+    (sum, item) => sum + (item.quantity ?? 1),
+    0,
+  );
+
+  return (
+    <div className="w-fit overflow-hidden rounded-xl border border-accent-foreground bg-background-rich">
+      <div className="flex items-center justify-between gap-2 border-accent-foreground border-b bg-background-dimmed px-4 py-2.5">
+        <div className="flex items-center gap-2">
+          <ShoppingCartIcon className="size-4 text-primary" />
+          <span className="font-medium text-foreground-rich text-sm">Cart</span>
+          <span className="text-foreground-dimmed text-xs">
+            {itemCount} item{itemCount === 1 ? "" : "s"}
+          </span>
+        </div>
+        {totalRow?.amount && (
+          <span className="font-semibold text-primary text-sm">
+            {formatMoney({ amount: totalRow.amount, currency })}
+          </span>
+        )}
+      </div>
+
+      {lineItems.length > 0 && (
+        <ul className="divide-y divide-accent-foreground">
+          {lineItems.map((line, index) => (
+            <li
+              className="flex items-center gap-3 px-4 py-3"
+              key={line.id ?? index}
+            >
+              <div className="size-12 shrink-0 overflow-hidden rounded-md bg-background-dimmed">
+                {line.item?.image_url && (
+                  // biome-ignore lint/performance/noImgElement: arbitrary store CDNs can't be whitelisted for next/image
+                  <img
+                    alt={line.item.title ?? ""}
+                    className="size-full object-cover"
+                    loading="lazy"
+                    src={line.item.image_url}
+                  />
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-medium text-foreground text-sm">
+                  {line.item?.title ?? "Item"}
+                </p>
+                <p className="text-foreground-dimmed text-xs">
+                  Qty {line.quantity ?? 1}
+                </p>
+              </div>
+              {line.item?.price && (
+                <span className="shrink-0 font-mono text-foreground text-sm">
+                  {formatMoney({ amount: line.item.price, currency })}
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {cart.totals && cart.totals.length > 0 && (
+        <div className="space-y-1 border-accent-foreground border-t px-4 py-3">
+          {cart.totals.map((total) => {
+            const isTotal = total.type === "total";
+            return (
+              <div
+                className={cn(
+                  "flex items-center justify-between gap-2",
+                  isTotal
+                    ? "pt-1 font-semibold text-foreground-rich text-sm"
+                    : "text-foreground-dimmed text-xs",
+                )}
+                key={total.type ?? total.display_text ?? "total-row"}
+              >
+                <span>{total.display_text ?? total.type}</span>
+                {total.amount && (
+                  <span className="font-mono">
+                    {formatMoney({ amount: total.amount, currency })}
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {cart.continue_url && (
+        <a
+          className="block border-accent-foreground border-t px-4 py-2.5 text-center font-medium text-primary text-xs transition-colors hover:bg-primary/5"
+          href={cart.continue_url}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Open cart ↗
+        </a>
+      )}
+    </div>
+  );
+};
+
+const ToolLoading = ({ label }: { label: string }) => (
+  <div className="flex items-center gap-2 rounded-xl border border-accent-foreground bg-background-rich px-4 py-3 text-foreground-dimmed text-sm">
+    <span className="inline-block size-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
+    {label}
+  </div>
+);
+
+const CartPart = ({ part }: { part: CartToolPart }) => {
+  if (part.state === "input-streaming" || part.state === "input-available") {
+    return <ToolLoading label="Updating cart…" />;
+  }
+  if (part.state === "output-error") {
+    return <ErrorView message={part.errorText ?? "Cart operation failed"} />;
+  }
+
+  const output = part.state === "output-available" ? part.output : undefined;
+
+  const cart = getCart(output);
+  if (!cart) return <ToolView part={part} />;
+
+  return <CartView cart={cart} />;
+};
+
+const ProductsCard = ({
+  products,
+  output,
+}: {
+  products: UcpProduct[];
+  output: unknown;
+}) => (
+  <div className="space-y-2">
+    <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+      {products.length} product{products.length === 1 ? "" : "s"}
+    </p>
+    <ProductGrid products={products} />
+    <details className="group">
+      <summary className="cursor-pointer list-none text-[10px] text-foreground-dimmed uppercase tracking-[0.08em] hover:text-foreground">
+        Raw JSON
+      </summary>
+      <pre className="mt-1 max-h-64 overflow-auto rounded-lg border border-accent-foreground bg-background-dimmed p-3 font-mono text-foreground/80 text-xs">
+        {formatJson(output)}
+      </pre>
+    </details>
+  </div>
+);
+
+const CatalogPart = ({ part }: { part: CatalogToolPart }) => {
+  if (part.state === "input-streaming" || part.state === "input-available") {
+    return <ToolLoading label="Searching catalog…" />;
+  }
+  if (part.state === "output-error") {
+    return <ErrorView message={part.errorText ?? "Catalog request failed"} />;
+  }
+
+  const output = part.state === "output-available" ? part.output : undefined;
+
+  const products = getProducts(output);
+
+  if (products.length === 0) return <ToolView part={part} />;
+
+  return <ProductsCard output={output} products={products} />;
+};
 
 const MessageParts = ({ message }: { message: PlaygroundUIMessage }) => {
   const hasVisibleContent = message.parts.some(
@@ -171,9 +507,25 @@ const MessageParts = ({ message }: { message: PlaygroundUIMessage }) => {
           return <ProfileView data={part.data} key={key} />;
         }
         if (part.type === "data-error") {
+          console.error(part.data);
           return <ErrorView key={key} message={part.data.message} />;
         }
-        if (isToolOrDynamicToolUIPart(part)) {
+
+        if (
+          part.type === "tool-search_catalog" ||
+          part.type === "tool-lookup_catalog" ||
+          part.type === "tool-get_product"
+        ) {
+          return <CatalogPart key={key} part={part} />;
+        }
+        if (
+          part.type === "tool-create_cart" ||
+          part.type === "tool-get_cart" ||
+          part.type === "tool-update_cart"
+        ) {
+          return <CartPart key={key} part={part} />;
+        }
+        if (isClassicToolUIPart(part)) {
           return <ToolView key={key} part={part} />;
         }
         return null;
@@ -182,8 +534,6 @@ const MessageParts = ({ message }: { message: PlaygroundUIMessage }) => {
     </>
   );
 };
-
-// ─── Main component ───────────────────────────────────────────────────────────
 
 const transport = new DefaultChatTransport<PlaygroundUIMessage>({
   api: "/api/ucp-playground",
@@ -201,13 +551,12 @@ export const PlaygroundClient = () => {
     stop,
     setMessages,
     clearError,
-  } =
+  } = useChat<PlaygroundUIMessage>({
+    transport,
     // Throttle UI updates so streaming large tool-result JSON doesn't re-render
     // the transcript on every token.
-    useChat<PlaygroundUIMessage>({
-      transport,
-      // experimental_throttle: 50
-    });
+    // experimental_throttle: 50
+  });
 
   const isGenerating = status === "submitted" || status === "streaming";
   const hasStore = storeUrl.trim().length > 0;
@@ -225,7 +574,8 @@ export const PlaygroundClient = () => {
 
   const hostOf = (value: string): string => {
     try {
-      return new URL(value.startsWith("http") ? value : `https://${value}`).host;
+      return new URL(value.startsWith("http") ? value : `https://${value}`)
+        .host;
     } catch {
       return value;
     }

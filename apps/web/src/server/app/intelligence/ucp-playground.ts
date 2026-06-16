@@ -5,7 +5,7 @@
 import type { JSONRPCRequest } from "@ai-sdk/mcp";
 // import { UcpDiscoveryProfileSchema } from "@ucp-js/sdk";
 import { merge, resultify } from "@zenncore/utils";
-import { isToolOrDynamicToolUIPart, tool, type UIMessage } from "ai";
+import { type InferUITools, isToolUIPart, tool, type UIMessage } from "ai";
 import * as z from "zod";
 import {
   businessProfileSchema,
@@ -95,10 +95,10 @@ const extractUcpToolError = (
     typeof ucp === "object" && ucp !== null && "status" in ucp
       ? ucp.status
       : undefined;
-
   const messagesResult = z
     .array(messageSchema)
     .safeParse(structuredContent["messages"]);
+
   const messages = messagesResult.success ? messagesResult.data : [];
   const errorMessages = messages.filter((message) => message.type === "error");
 
@@ -114,18 +114,12 @@ const extractUcpToolError = (
 const parseUcpToolContent = <T>(
   structuredContent: Record<string, unknown>,
   successSchema: z.ZodType<T>,
-): { success: true; data: T } | { success: false; error: string } => {
+): T => {
   const ucpError = extractUcpToolError(structuredContent);
 
-  if (ucpError) return { success: false, error: ucpError };
+  if (ucpError) throw new Error(ucpError);
 
-  const parsed = successSchema.safeParse(structuredContent);
-
-  if (!parsed.success) {
-    return { success: false, error: parsed.error.message };
-  }
-
-  return { success: true, data: parsed.data };
+  return successSchema.parse(structuredContent);
 };
 
 // Shopify UCP MCP requires params.arguments.meta["ucp-agent"].profile on every
@@ -148,7 +142,6 @@ const createUcpMcpFetch = (agentProfileUrl: string): typeof fetch => {
 
       if (!message.method) return fetch(input, init);
 
-      console.log("message", message);
       const nextBody = JSON.stringify(
         merge(message, {
           params: {
@@ -199,7 +192,8 @@ export type PlaygroundDataParts = {
   error: { message: string };
 };
 
-export type PlaygroundUIMessage = UIMessage<never, PlaygroundDataParts>;
+// PlaygroundTools / PlaygroundUIMessage are defined after the tool builders
+// below, since they infer the validated tool I/O from buildMcpTools.
 
 export type ResolvedShoppingService =
   | {
@@ -346,14 +340,12 @@ const parseMcpToolResult = <T>(
     | { structuredContent: Record<string, unknown> }
     | { error: { message: string } },
   successSchema: z.ZodType<T>,
-) => {
+): T => {
   if ("error" in result) {
-    return { error: result.error.message };
+    throw new Error(result.error.message);
   }
 
-  const parsed = parseUcpToolContent(result.structuredContent, successSchema);
-
-  return parsed.success ? parsed.data : { error: parsed.error };
+  return parseUcpToolContent(result.structuredContent, successSchema);
 };
 
 const callRest = async (
@@ -393,23 +385,21 @@ const callRest = async (
   }
 };
 
-// REST body ≈ MCP structuredContent — reuse parseUcpToolContent directly
 const parseRestToolResult = <T>(
   result: unknown,
   successSchema: z.ZodType<T>,
-) => {
+): T => {
   if (result === null || typeof result !== "object") {
-    return { error: "Invalid response" };
+    throw new Error("Invalid response");
   }
 
   const obj = result as Record<string, unknown>;
 
   if ("error" in obj && typeof obj["error"] === "string") {
-    return { error: obj["error"] };
+    throw new Error(obj["error"]);
   }
 
-  const parsed = parseUcpToolContent(obj, successSchema);
-  return parsed.success ? parsed.data : { error: parsed.error };
+  return parseUcpToolContent(obj, successSchema);
 };
 
 // MCP §3A — checkout arguments: session id at top level; body nested under checkout
@@ -912,6 +902,14 @@ export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
   }),
 });
 
+export type PlaygroundTools = InferUITools<ReturnType<typeof buildMcpTools>>;
+
+export type PlaygroundUIMessage = UIMessage<
+  never,
+  PlaygroundDataParts,
+  PlaygroundTools
+>;
+
 // ─── Conversational system prompt ─────────────────────────────────────────────
 // Frames the agent to act one user-directed turn at a time rather than walking a
 // fixed search→cart→checkout sequence.
@@ -928,8 +926,9 @@ How to behave in this console:
 - Do exactly what the user asks in their latest message — one action (or a small set of directly related actions) at a time. Do NOT run the whole search→cart→checkout flow unless the user explicitly asks you to.
 - Use ONLY IDs returned by earlier tool calls — never invent them. Previous tool calls and their results are included in the conversation; reuse their IDs (variant id, cart id, checkout id) when the user refers to "it", "that", or "the cart".
 - If you need an ID you don't have yet (e.g. the user says "add it to a cart" but nothing was looked up), search or look it up first, or ask the user to clarify.
-- If a tool returns { error: "..." } or ucp.status is error, stop and report the error details and which step failed — do not retry blindly.
-- After running tools, reply with a short, plain-language summary: what you did, the resulting status, key IDs, and continue_url when present.
+- If a tool call fails or ucp.status is error, stop and report the error details and which step failed — do not retry blindly.
+- The UI renders catalog results (search/lookup/product) and carts as rich visual cards the user can already see, so do NOT re-list products, variants, prices, or cart line items in your reply. After those tools, answer with a single short sentence (e.g. "Found a few carry-on options below." or "Added the Carry-On to your cart."). The card already shows images, prices, totals, and the cart link.
+- For results without a card (checkout, order), give a short plain-language summary: status, key IDs, and continue_url when present.
 - Do not call the same tool again while a previous call to it is still pending.`;
 
 // ─── History compaction ───────────────────────────────────────────────────────
@@ -980,8 +979,7 @@ export const compactToolHistory = (
   messages: PlaygroundUIMessage[],
 ): PlaygroundUIMessage[] => {
   const lastAssistantIndex = messages.reduce(
-    (latest, message, index) =>
-      message.role === "assistant" ? index : latest,
+    (latest, message, index) => (message.role === "assistant" ? index : latest),
     -1,
   );
 
@@ -993,7 +991,7 @@ export const compactToolHistory = (
     return {
       ...message,
       parts: message.parts.map((part) =>
-        isToolOrDynamicToolUIPart(part) && part.state === "output-available"
+        isToolUIPart(part) && part.state === "output-available"
           ? { ...part, output: compactValue(part.output) }
           : part,
       ),

@@ -6,6 +6,7 @@ import {
   streamText,
 } from "ai";
 import { headers } from "next/headers";
+import * as z from "zod";
 import { auth } from "@/lib/auth";
 import {
   AGENT_PROFILE,
@@ -22,6 +23,11 @@ import {
 
 // Gemini multi-step tool loops against a live store can take a while.
 export const maxDuration = 60;
+
+const formatStreamError = (error: unknown): string => {
+  if (error instanceof z.ZodError) return z.prettifyError(error);
+  return error instanceof Error ? error.message : "Unexpected error";
+};
 
 type ChatRequestBody = {
   messages: PlaygroundUIMessage[];
@@ -50,9 +56,7 @@ export const POST = async (request: Request) => {
   const service = await resolveShoppingService(storeUrl);
 
   const stream = createUIMessageStream<PlaygroundUIMessage>({
-    // Surface real error messages to the client instead of the masked default.
-    onError: (error) =>
-      error instanceof Error ? error.message : "Unexpected error",
+    onError: formatStreamError,
     execute: async ({ writer }) => {
       if (!service.success) {
         writer.write({ type: "data-error", data: { message: service.error } });
@@ -92,13 +96,13 @@ export const POST = async (request: Request) => {
         // convertToModelMessages then rebuilds prior tool calls/results as model
         // messages, so IDs (cart, variant, checkout) carry across turns natively.
         // Data parts (data-profile/data-error) are dropped by default.
-        messages: await convertToModelMessages(compactToolHistory(messages)),
+        messages: await convertToModelMessages(messages),
         tools,
         stopWhen: stepCountIs(20),
         providerOptions: gatewayOptions(),
       });
 
-      writer.merge(result.toUIMessageStream());
+      writer.merge(result.toUIMessageStream({ onError: formatStreamError }));
     },
   });
 

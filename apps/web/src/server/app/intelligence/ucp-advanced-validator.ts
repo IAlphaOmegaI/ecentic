@@ -496,7 +496,7 @@ const attributionSchema = z
     "Platform-emitted referral and conversion-event context — campaign identifiers, click IDs, source/medium markers, etc. The same parameters platforms communicate via URL query parameters in browser-based flows.",
   );
 
-const priceSchema = z
+export const priceSchema = z
   .object({
     amount: z
       .number()
@@ -1028,7 +1028,7 @@ const detailProductOptionSchema = z.object({
     ),
 });
 
-const productSchema = z.looseObject({
+export const productSchema = z.looseObject({
   id: z.string().describe("Global ID (GID) uniquely identifying this product."),
   title: z.string().describe("Product title."),
   description: descriptionSchema.describe(
@@ -1163,7 +1163,7 @@ const lookupVariantSchema = variantSchema.extend({
     ),
 });
 
-const lookupProductSchema = productSchema
+export const lookupProductSchema = productSchema
   .extend({
     variants: z
       .array(lookupVariantSchema)
@@ -1171,7 +1171,7 @@ const lookupProductSchema = productSchema
   })
   .superRefine(refineProductIntegrity);
 
-const detailProductSchema = productSchema
+export const detailProductSchema = productSchema
   .extend({
     options: z
       .array(detailProductOptionSchema)
