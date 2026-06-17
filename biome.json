@@ -17,9 +17,6 @@
       "a11y": {
         "noSvgWithoutTitle": "off"
       },
-      "suspicious": {
-        "noUndeclaredEnvVars": "error"
-      },
       "style": {
         "noNonNullAssertion": "warn",
         "noParameterAssign": "error",
