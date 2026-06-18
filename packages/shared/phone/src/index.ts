@@ -1,6 +1,7 @@
-export { PhoneCountryConfig } from "./config";
+export { FormatType, PhoneCountryConfig } from "./config";
 export { al } from "./countries/al";
 export { de } from "./countries/de";
+export { gb } from "./countries/gb";
 export { us } from "./countries/us";
 export {
   type Countries,
@@ -11,4 +12,4 @@ export {
 export { formatPhone } from "./format";
 export { normalizePhone } from "./normalize";
 export { getSignificantNumber } from "./significant";
-export { isValidPhone, validatePhone } from "./validate";
+export { validatePhone } from "./validate";

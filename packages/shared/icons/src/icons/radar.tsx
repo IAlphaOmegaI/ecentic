@@ -1,0 +1,60 @@
+import type { JSX } from "react";
+import type { IconProps } from "../types";
+
+export const RadarIcon = ({ title, ...props }: IconProps): JSX.Element => {
+  return (
+    <svg
+      height="18"
+      width="18"
+      viewBox="0 0 18 18"
+      strokeWidth="1.5"
+      {...props}
+    >
+      {title && <title>{title}</title>}
+      <g fill="currentColor">
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M9 1C4.58179 1 1 4.58179 1 9C1 13.4182 4.58179 17 9 17C13.4182 17 17 13.4182 17 9C17 4.58179 13.4182 1 9 1ZM9 4.5C6.51475 4.5 4.5 6.51475 4.5 9C4.5 11.4852 6.51475 13.5 9 13.5C11.4852 13.5 13.5 11.4852 13.5 9C13.5 6.51475 11.4852 4.5 9 4.5Z"
+          fill="currentColor"
+          fillOpacity=".4"
+        />
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M9 0.25C9.41421 0.25 9.75 0.585786 9.75 1V2C9.75 2.41421 9.41421 2.75 9 2.75C8.58579 2.75 8.25 2.41421 8.25 2V1C8.25 0.585786 8.58579 0.25 9 0.25Z"
+          fill="currentColor"
+        />
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M15.25 9C15.25 8.58579 15.5858 8.25 16 8.25H17C17.4142 8.25 17.75 8.58579 17.75 9C17.75 9.41421 17.4142 9.75 17 9.75H16C15.5858 9.75 15.25 9.41421 15.25 9Z"
+          fill="currentColor"
+        />
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M9 15.25C9.41421 15.25 9.75 15.5858 9.75 16V17C9.75 17.4142 9.41421 17.75 9 17.75C8.58579 17.75 8.25 17.4142 8.25 17V16C8.25 15.5858 8.58579 15.25 9 15.25Z"
+          fill="currentColor"
+        />
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M0.25 9C0.25 8.58579 0.585786 8.25 1 8.25H2C2.41421 8.25 2.75 8.58579 2.75 9C2.75 9.41421 2.41421 9.75 2 9.75H1C0.585786 9.75 0.25 9.41421 0.25 9Z"
+          fill="currentColor"
+        />
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M4.5 9C4.5 6.51475 6.51475 4.5 9 4.5C11.4852 4.5 13.5 6.51475 13.5 9C13.5 11.4852 11.4852 13.5 9 13.5C6.51475 13.5 4.5 11.4852 4.5 9Z"
+          fill="currentColor"
+          fillOpacity=".2"
+        />
+        <path
+          d="M15.3993 3.66134C15.6922 3.36845 15.6922 2.89358 15.3993 2.60068C15.1064 2.30779 14.6316 2.30779 14.3387 2.60068L8.46967 8.46967C8.17678 8.76256 8.17678 9.23744 8.46967 9.53033C8.76256 9.82323 9.23744 9.82323 9.53033 9.53033L15.3993 3.66134Z"
+          fill="currentColor"
+        />
+      </g>
+    </svg>
+  );
+};

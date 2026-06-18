@@ -1,16 +1,12 @@
 export class PhoneValidationError extends Error {
-  static override name = "PhoneValidationError";
-}
-export class InvalidCountryError extends PhoneValidationError {
-  static override name = "InvalidCountryError";
-}
-export class InvalidSignificantError extends PhoneValidationError {
-  static override name = "InvalidSignificantError";
+  constructor(message?: string, options?: ErrorOptions) {
+    super(message, options);
+    this.name = new.target.name;
+  }
 }
 
-export class InvalidNationalCodeError extends InvalidSignificantError {
-  static override name = "InvalidNationalCodeError";
-}
-export class InvalidSignificantLengthError extends InvalidSignificantError {
-  static override name = "InvalidSignificantLengthError";
-}
+export class InvalidCountryError extends PhoneValidationError {}
+export class InvalidSignificantError extends PhoneValidationError {}
+
+export class InvalidNationalCodeError extends InvalidSignificantError {}
+export class InvalidSignificantLengthError extends InvalidSignificantError {}

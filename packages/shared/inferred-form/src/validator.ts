@@ -1,13 +1,13 @@
-import type { EmptyObject } from "@zenncore/utils/types";
 import { type core, z } from "zod";
 import type { CompleteInterface, GenericInterface } from "./interface";
-import type { GenericShape } from "./shape";
+
+export type { InferredValueValidator } from "./value-validator";
 
 export type GenericValidator = core.$ZodType;
 
 export type InferredValidator<
   Interface extends GenericInterface,
-  Shape extends GenericShape<Interface>,
+  Shape extends keyof CompleteInterface<Interface>,
 > = CompleteInterface<Interface>[Shape]["validator"];
 
 export type ReducedValidator<T extends GenericValidator> =
@@ -34,21 +34,3 @@ export const reduceValidator = <T extends GenericValidator>(
       return validator as ReducedValidator<T>;
   }
 };
-
-export type InferredValueValidator<T> = T extends string
-  ? z.ZodString
-  : T extends number
-    ? z.ZodNumber
-    : T extends boolean
-      ? z.ZodBoolean
-      : T extends null
-        ? z.ZodNull
-        : T extends undefined
-          ? z.ZodUndefined
-          : T extends Array<infer I>
-            ? z.ZodArray<InferredValueValidator<I>>
-            : T extends EmptyObject
-              ? z.ZodObject<{
-                  [K in keyof T]: InferredValueValidator<T[K]>;
-                }>
-              : z.ZodNever;
