@@ -10,6 +10,7 @@ import {
 class AL extends PhoneCountryConfig {
   readonly iso = "AL";
   readonly prefix = "355";
+  readonly significantLength = 9;
   flag = "🇦🇱";
 
   formatSignificantNumber(significantNumber: string): string {
@@ -22,7 +23,7 @@ class AL extends PhoneCountryConfig {
     return `${significantNumber.slice(0, 2)} ${significantNumber.slice(
       2,
       5,
-    )} ${significantNumber.slice(5, 9)}`;
+    )} ${significantNumber.slice(5, this.significantLength)}`;
   }
 
   validate(phone: string): Result<void, PhoneValidationError> {
@@ -51,7 +52,8 @@ class AL extends PhoneCountryConfig {
       };
     }
 
-    const isValidSignificantNumber = significantNumber.length === 9;
+    const isValidSignificantNumber =
+      significantNumber.length === this.significantLength;
 
     if (!isValidSignificantNumber) {
       return {

@@ -1,4 +1,4 @@
-import { type Country, countries } from "./country";
+import { type Country, countries } from "./registry";
 
 export const getSignificantNumber = (
   phone: string,

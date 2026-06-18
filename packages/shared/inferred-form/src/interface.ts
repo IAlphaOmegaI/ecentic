@@ -1,6 +1,6 @@
 import type { EmptyObject } from "@zenncore/utils/types";
 import type { core } from "zod";
-import type { CustomField } from "./field";
+import type { CustomField } from "./custom-field";
 
 export type InterfaceValue<
   FieldValidator extends core.$ZodType,

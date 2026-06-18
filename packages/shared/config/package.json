@@ -18,6 +18,6 @@
     "./tailwind/postcss": "./src/tailwind/postcss.config.mjs",
     "./typescript": "./src/typescript/config.json",
     "./typescript/lib": "./src/typescript/lib.config.json",
-    "./tsdown": "./src/tsdown/config.js"
+    "./tsdown": "./src/tsdown/config.ts"
   }
 }
