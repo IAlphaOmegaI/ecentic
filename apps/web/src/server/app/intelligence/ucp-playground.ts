@@ -1,7 +1,3 @@
-// Shared UCP tools/discovery library. Consumed by the chat route handler at
-// app/(provider)/api/ucp-playground/route.ts, which owns the streamText call and
-// returns a UI message stream for the useChat client.
-
 import type { JSONRPCRequest } from "@ai-sdk/mcp";
 // import { UcpDiscoveryProfileSchema } from "@ucp-js/sdk";
 import { merge, resultify } from "@zenncore/utils";
@@ -68,8 +64,9 @@ update_cart:
 cancel_cart:
   { id: "<cart id from create_cart>" }
 create_checkout:
-  { checkout: { buyer: { email, first_name, last_name }, line_items: [{ item: { id: "<variant_id>" }, quantity: 1 }], currency: "USD", fulfillment: { methods: [...] } } }
-  Do NOT use cart_id — this business endpoint does not support cart conversion.
+  If a cart was created, convert it (preferred): { cart_id: "<cart id from create_cart>" } — omit the checkout body; the business uses the cart's line_items/buyer.
+  From scratch (no cart): { checkout: { buyer: { email, first_name, last_name }, line_items: [{ item: { id: "<variant_id>" }, quantity: 1 }], currency: "USD", fulfillment: { methods: [...] } } }
+  Pass cart_id OR checkout, never both.
 get_checkout:
   { id: "<checkout id from create_checkout>" }
 update_checkout:
@@ -327,8 +324,9 @@ const callMCP = async (
   const body = ucpMCPResponseSchema.safeParse(dataResult.data);
 
   if (!body.success) {
+    // TODO: for advanced(paid) version show the error and redirect user to fix it
     return {
-      error: { message: body.error.message },
+      error: { message: z.prettifyError(body.error) },
     };
   }
 
@@ -587,7 +585,7 @@ export const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
 
   create_checkout: tool({
     description:
-      "Create a checkout session from scratch. Pass only checkout body nested under checkout — do not use cart_id (not supported by this business endpoint).",
+      "Create a checkout session. To convert an existing cart, pass cart_id (the cart id from create_cart) and omit checkout — the business uses the cart's line_items/buyer. Otherwise pass the checkout body to create from scratch. Provide cart_id OR checkout, never both.",
     inputSchema: createCheckoutMcpInputSchema,
     execute: async (input) => {
       const result = await callMCP(
@@ -809,15 +807,15 @@ export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
 
   create_checkout: tool({
     description:
-      "Create a checkout session from scratch. Pass only checkout body nested under checkout — do not use cart_id.",
+      "Create a checkout session. To convert an existing cart, pass cart_id (the cart id from create_cart) and omit checkout — the business uses the cart's line_items/buyer. Otherwise pass the checkout body to create from scratch. Provide cart_id OR checkout, never both.",
     inputSchema: createCheckoutMcpInputSchema,
-    execute: async ({ checkout }) => {
+    execute: async ({ cart_id, checkout }) => {
       const result = await callRest(
         endpoint,
         "POST",
         "/checkouts",
         agentProfileUrl,
-        checkout,
+        cart_id ? { cart_id } : checkout,
       );
       return parseRestToolResult(result, checkoutWithFulfillmentResponseSchema);
     },
@@ -990,11 +988,13 @@ export const compactToolHistory = (
 
     return {
       ...message,
+      // compactValue trims output to unknown JSON, so cast back to the part type —
+      // compaction is intentionally lossy and the result is only fed to the model.
       parts: message.parts.map((part) =>
         isToolUIPart(part) && part.state === "output-available"
           ? { ...part, output: compactValue(part.output) }
           : part,
-      ),
+      ) as PlaygroundUIMessage["parts"],
     };
   });
 };
