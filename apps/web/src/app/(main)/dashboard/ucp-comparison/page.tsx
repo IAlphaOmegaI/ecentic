@@ -27,7 +27,7 @@ export default () => (
       <div className="-mx-8 border-accent-foreground border-b">
         <div className="relative mx-8 bg-background-rich">
           <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div className="border-accent-foreground border-b p-4">
             <SectionKicker>01 — Comparison</SectionKicker>
             <h2 className="mt-2 font-semibold text-foreground-rich text-lg">

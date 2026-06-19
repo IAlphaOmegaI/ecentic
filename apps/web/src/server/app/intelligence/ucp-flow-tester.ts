@@ -258,6 +258,8 @@ const callRest = async (
 
   if (!response.success) return { error: "Network request failed" };
 
+  // console.log("response.data", response.data.ok, response.data.statusText);
+
   const textResult = await resultify(() => response.data.text());
   if (!textResult.success) return { error: "Could not read response body" };
 

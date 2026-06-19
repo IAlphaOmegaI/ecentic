@@ -1,7 +1,13 @@
 import type { JSONRPCRequest } from "@ai-sdk/mcp";
 // import { UcpDiscoveryProfileSchema } from "@ucp-js/sdk";
 import { merge, resultify } from "@zenncore/utils";
-import { type InferUITools, isToolUIPart, tool, type UIMessage } from "ai";
+import {
+  type InferUITools,
+  isToolUIPart,
+  type LanguageModel,
+  tool,
+  type UIMessage,
+} from "ai";
 import * as z from "zod";
 import {
   businessProfileSchema,
@@ -41,7 +47,8 @@ export const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
 // turns via convertToModelMessages and routed through the Vercel gateway, that
 // signature gets corrupted → 400 "Corrupted thought signature". 2.5-flash emits no
 // thought signatures and handles the UCP tool flow fine.
-export const PLAYGROUND_MODEL = "google/gemini-2.5-flash";
+export const PLAYGROUND_MODEL =
+  "google/gemini-2.5-flash" satisfies LanguageModel;
 
 // Single source of truth for the tool argument shapes the agent must follow, so
 // they never drift from the tool definitions below.
@@ -794,7 +801,7 @@ export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
     description:
       "Cancel a cart session. Pass the cart id from create_cart at the top level.",
     inputSchema: cancelCartRequestSchema,
-    execute: async ({ id }) => {
+    execute: async (input) => {
       const result = await callRest(
         endpoint,
         "DELETE",
@@ -809,13 +816,13 @@ export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
     description:
       "Create a checkout session. To convert an existing cart, pass cart_id (the cart id from create_cart) and omit checkout — the business uses the cart's line_items/buyer. Otherwise pass the checkout body to create from scratch. Provide cart_id OR checkout, never both.",
     inputSchema: createCheckoutMcpInputSchema,
-    execute: async ({ cart_id, checkout }) => {
+    execute: async (input) => {
       const result = await callRest(
         endpoint,
         "POST",
         "/checkouts",
         agentProfileUrl,
-        cart_id ? { cart_id } : checkout,
+        input,
       );
       return parseRestToolResult(result, checkoutWithFulfillmentResponseSchema);
     },
