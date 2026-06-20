@@ -7,6 +7,7 @@ import * as z from "zod";
 import type { StoreDiscovery } from "./product-comparison";
 import {
   businessProfileSchema,
+  getProductResponseSchema,
   searchCatalogRequestSchema,
   searchCatalogResponseSchema,
 } from "./ucp-advanced-validator";
@@ -163,32 +164,47 @@ const discoverStore = async (
   };
 };
 
-const winnerSelectionSchema = z.object({
+const rankedProductSchema = z.object({
+  rank: z
+    .number()
+    .int()
+    .positive()
+    .describe(
+      "Position in the ranking. 1 is the product you would buy. Strictly increasing, no gaps, no ties.",
+    ),
   store_domain: z
     .string()
-    .describe("Domain of the store the winning product comes from."),
-  product_id: z
-    .string()
-    .describe("Global ID of the single winning product you picked."),
-  product_title: z.string().describe("Title of the winning product."),
+    .describe("Domain of the store this product comes from."),
+  product_id: z.string().describe("Global ID of this product."),
+  product_title: z.string().describe("Title of this product."),
   price: z
     .string()
     .optional()
-    .describe("Price of the winning product, formatted as shown in catalog."),
+    .describe("Price of this product, formatted as shown in catalog."),
   reason: z
     .string()
     .describe(
-      "One or two sentences on why this product won over every other option.",
+      "Why this product sits at this rank — what makes it stronger than the ones below and weaker than the ones above.",
     ),
-  runner_up: z
+  data_signal: z
     .string()
     .optional()
     .describe(
-      "The closest competing product/store and the decisive reason it lost.",
+      "Fill this ONLY when catalog data completeness genuinely affected this product's rank — never invent it. Name the specific fields: e.g. it specified a field the others left out, had a more detailed or structured property/attribute, declared more variants/options/SKUs, or (conversely) had thinner data that hurt it. Leave empty when data completeness was not a factor in this product's placement.",
     ),
 });
 
-export type WinnerSelection = z.infer<typeof winnerSelectionSchema>;
+const productRankingSchema = z.object({
+  rankings: z
+    .array(rankedProductSchema)
+    .min(1)
+    .describe(
+      "Every product worth considering, ordered best-first across all stores. Ranks start at 1 with no gaps or ties.",
+    ),
+});
+
+export type RankedProduct = z.infer<typeof rankedProductSchema>;
+export type ProductRanking = z.infer<typeof productRankingSchema>;
 
 // UCP MCP transport §3A — search_catalog: payload nested under "catalog" key.
 // In free-for-all, every store is queried as an equal candidate and the result
@@ -196,49 +212,166 @@ export type WinnerSelection = z.infer<typeof winnerSelectionSchema>;
 const buildFreeForAllTools = (
   stores: { domain: string; endpoint: string }[],
   agentProfileUrl: string,
-) => ({
-  search_catalogs: tool({
-    description:
-      "Search every store's product catalog in parallel. Returns each store's matching products tagged with the store domain. Pass query, context (currency, intent), and filters (price, categories) as top-level fields derived from the buyer request.",
-    inputSchema: searchCatalogRequestSchema,
-    outputSchema: z.array(
-      z.object({
-        store: z.string(),
-        endpoint: z.string(),
-        result: z.looseObject({
-          structuredContent: searchCatalogResponseSchema,
+) => {
+  const domainToEndpoint = new Map(
+    stores.map(({ domain, endpoint }) => [domain, endpoint]),
+  );
+
+  return {
+    search_catalogs: tool({
+      description:
+        "Search every store's product catalog in parallel. Returns each store's matching products tagged with the store domain. Pass query, context (currency, intent), and filters (price, categories) as top-level fields derived from the buyer request.",
+      inputSchema: searchCatalogRequestSchema,
+      outputSchema: z.array(
+        z.looseObject({
+          store: z.string(),
+          endpoint: z.string(),
+          ok: z.boolean().describe("Whether this store returned a catalog."),
+          error: z
+            .string()
+            .optional()
+            .describe("Why this store failed, when ok is false."),
+          result: z
+            .looseObject({ structuredContent: searchCatalogResponseSchema })
+            .optional(),
         }),
+      ),
+      execute: async (request) => {
+        const results = await Promise.all(
+          stores.map(async ({ domain, endpoint }) => {
+            const searchCatalogResult = await callMcp(
+              endpoint,
+              "search_catalog",
+              { catalog: request },
+              agentProfileUrl,
+            );
+
+            const hasStructuredContent =
+              !!searchCatalogResult &&
+              typeof searchCatalogResult === "object" &&
+              "structuredContent" in searchCatalogResult;
+
+            if (!hasStructuredContent) {
+              const error =
+                searchCatalogResult &&
+                typeof searchCatalogResult === "object" &&
+                "error" in searchCatalogResult
+                  ? String((searchCatalogResult as { error?: unknown }).error)
+                  : "Store returned no catalog data";
+
+              return { store: domain, endpoint, ok: false as const, error };
+            }
+
+            return {
+              store: domain,
+              endpoint,
+              ok: true as const,
+              result: searchCatalogResult as {
+                structuredContent: z.infer<typeof searchCatalogResponseSchema>;
+              },
+            };
+          }),
+        );
+
+        return results;
+      },
+    }),
+
+    get_product: tool({
+      description:
+        "Retrieve the authoritative current state of a single product at a specific store: real-time availability, variant-level pricing, and selectable options. Per the UCP spec, get_product is the authoritative source for purchase decisions — use it to verify your genuine top contenders before finalizing the ranking. Pass the store domain and product id exactly as they appeared in search_catalogs results; when the buyer specified a variant (size, color, etc.), pass it as selected to confirm that exact variant is available.",
+      inputSchema: z.object({
+        store: z
+          .string()
+          .describe(
+            "Store domain the product belongs to, exactly as returned by search_catalogs.",
+          ),
+        id: z
+          .string()
+          .describe("Product global ID from search_catalogs results."),
+        selected: z
+          .array(
+            z.object({
+              name: z.string().describe("Option name (e.g. 'Size')."),
+              label: z
+                .string()
+                .describe("Selected option label (e.g. 'Large')."),
+            }),
+          )
+          .optional()
+          .describe(
+            "Option selections to resolve a specific variant and read its real-time availability.",
+          ),
+        preferences: z
+          .array(z.string())
+          .optional()
+          .describe(
+            "Option names in relaxation priority order when no exact variant matches all selections.",
+          ),
       }),
-    ),
-    execute: async (request) => {
-      const results = await Promise.all(
-        stores.map(async ({ domain, endpoint }) => {
-          const searchCatalogResult = await callMcp(
-            endpoint,
-            "search_catalog",
-            { catalog: request },
-            agentProfileUrl,
-          );
+      outputSchema: z.looseObject({
+        store: z.string(),
+        id: z.string(),
+        ok: z.boolean(),
+        error: z.string().optional(),
+        result: z
+          .looseObject({ structuredContent: getProductResponseSchema })
+          .optional(),
+      }),
+      execute: async ({ store, id, selected, preferences }) => {
+        const endpoint = domainToEndpoint.get(store);
 
+        if (!endpoint) {
           return {
-            store: domain,
-            endpoint,
-            result: searchCatalogResult,
+            store,
+            id,
+            ok: false as const,
+            error: `Unknown store "${store}". Use a store domain from search_catalogs results.`,
           };
-        }),
-      );
+        }
 
-      return results;
-    },
-  }),
+        const getProductResult = await callMcp(
+          endpoint,
+          "get_product",
+          { catalog: { id, selected, preferences } },
+          agentProfileUrl,
+        );
 
-  select_winner: tool({
-    description:
-      "Record your final, single decision after evaluating and negotiating across all stores. Call this exactly once with the one product you would actually buy and why it beats every other option.",
-    inputSchema: winnerSelectionSchema,
-    execute: async (selection) => ({ acknowledged: true, ...selection }),
-  }),
-});
+        const hasStructuredContent =
+          !!getProductResult &&
+          typeof getProductResult === "object" &&
+          "structuredContent" in getProductResult;
+
+        if (!hasStructuredContent) {
+          const error =
+            getProductResult &&
+            typeof getProductResult === "object" &&
+            "error" in getProductResult
+              ? String((getProductResult as { error?: unknown }).error)
+              : "Store returned no product data";
+
+          return { store, id, ok: false as const, error };
+        }
+
+        return {
+          store,
+          id,
+          ok: true as const,
+          result: getProductResult as {
+            structuredContent: z.infer<typeof getProductResponseSchema>;
+          },
+        };
+      },
+    }),
+
+    rank_products: tool({
+      description:
+        "Record your final ranking after evaluating across all stores. Call this exactly once with every product worth considering, ordered best-first — rank 1 is the product you would actually buy.",
+      inputSchema: productRankingSchema,
+      execute: async (ranking) => ({ acknowledged: true, ...ranking }),
+    }),
+  };
+};
 
 export type FreeForAllEvent =
   | { kind: "search_params"; params: unknown }
@@ -246,7 +379,16 @@ export type FreeForAllEvent =
   | { kind: "store_searching"; storeUrl: string }
   | { kind: "store_result"; storeUrl: string; result: unknown }
   | { kind: "store_error"; storeUrl: string; message: string }
-  | { kind: "winner"; winner: WinnerSelection }
+  | { kind: "product_lookup"; store: string; productId: string }
+  | {
+      kind: "product_checked";
+      store: string;
+      productId: string;
+      ok: boolean;
+      title?: string;
+      error?: string;
+    }
+  | { kind: "ranking"; rankings: RankedProduct[] }
   | { kind: "text"; text: string }
   | { kind: "done" }
   | { kind: "error"; message: string };
@@ -269,9 +411,7 @@ export const runFreeForAll = async ({
     try {
       const domains = [
         ...new Set(
-          storeUrls
-            .map((url) => normalizeStoreUrl(url.trim()))
-            .filter(Boolean),
+          storeUrls.map((url) => normalizeStoreUrl(url.trim())).filter(Boolean),
         ),
       ];
 
@@ -348,32 +488,19 @@ export const runFreeForAll = async ({
       const tools = buildFreeForAllTools(storeCatalog, agentProfileUrl);
 
       const agentResult = streamText({
-        model: "google/gemini-3-flash",
-        system: `You are an autonomous AI shopping agent running a "free-for-all" buy decision. Every store below is an equal candidate — there is no home store and no competitors. Your job is to evaluate all of them on a level playing field, negotiate the trade-offs, and pick exactly ONE product to buy.
+        model: "anthropic/claude-sonnet-4.6",
+        system: `You are an autonomous AI shopping agent running a "free-for-all" buy decision. Every store below is an equal candidate — there is no home store and no competitors. A buyer has asked for something, and your job is to look at what every store actually offers and pick exactly ONE product you would buy.
 
-AI shopping agents ignore branding and ads. They evaluate structured catalog signals in milliseconds. Weigh every factor across all stores at once:
-
-- **Query relevance** — how well a product matches the buyer's intent and keywords
-- **Title clarity** — specific, searchable, unambiguous titles
-- **Description quality** — completeness and spec detail an agent can extract
-- **Structured attributes** — variants, options, SKUs, categories, metadata
-- **Price fit** — fits the buyer's budget and represents the best value
-- **Price transparency** — clear pricing, sale/compare-at signals, no ambiguity
-- **Variant availability** — the right size/color/model exists and is buyable
-- **Catalog confidence** — data complete enough to recommend without guessing
-- **Defensibility** — which single product gives the strongest, clearest reason to tell the buyer "buy this one"
+Decide however you genuinely would. There is no supplied rubric, scorecard, or list of factors to apply — use your own judgement about what matters for this specific request and these specific products.
 
 ## Flow — follow in order
 
 1. Parse the buyer request into search_catalogs tool parameters.
-2. Call search_catalogs exactly once. It queries every store's catalog in parallel and tags each result with its store domain.
-3. Compare every returned product across every store as one combined pool. Negotiate the trade-offs (price vs. relevance vs. data quality vs. availability).
-4. Call select_winner exactly once with the single product you would buy. Reference the store domain and product id from the search results — never invent ids.
-5. Write 3–5 short paragraphs explaining your decision:
-   - State the winning product and store, and the decisive reasons it beat the field
-   - Walk through how the strongest runner-up products from other stores compared and why each fell short
-   - Note any close calls or trade-offs you had to negotiate
-   - Be concrete: cite titles, prices, and data-quality differences, not generic praise
+2. Call search_catalogs exactly once. It queries every store's catalog in parallel and tags each result with its store domain. Some stores may fail to respond — their entry has "ok": false and an "error". Ignore failed stores entirely and decide only among the stores that returned products.
+3. Identify your top contenders from the search results. For each one, call get_product (passing its store domain and product id) to pull the authoritative current state — real-time availability, variant-level pricing, and selectable options etc. Per the UCP spec, get_product is the authoritative source for purchase decisions, so base the top of your ranking on it, not on search results alone. When the buyer specified a variant (size, color, model, etc.), pass it as selected to confirm that exact variant is in stock.
+4. Look at everything together — search results plus the authoritative get_product state — and rank the products from best to worst for this buyer.
+5. Call rank_products exactly once with every product worth considering, ordered best-first (rank 1 is the product you would buy). Reference the store domain and product id from the search results — never invent ids. Whenever a product's placement was actually influenced by how complete its catalog data was — it specified a field another product omitted, carried a more detailed or structured property/attribute, declared more variants/options, or had thinner data that hurt it — record that in its data_signal. Do not manufacture a data_signal when data completeness genuinely played no part.
+6. Write a few short paragraphs explaining, in your own words, how you actually reached this ranking — what you looked at, what the get_product checks confirmed or changed, what separates the top pick from the rest, and where the close calls were. Where your decision turned on one product having richer or more specific catalog data than another (more fields filled in, a more detailed property field), say so plainly and name the field. Describe your real reasoning, not a generic checklist.
 
 ## Parse buyer request into search_catalogs parameters
 
@@ -398,10 +525,10 @@ Pass a flat object (top-level fields, not nested under "catalog"):
 Stores in this free-for-all:
 ${storeCatalog.map((store) => `${store.domain}`).join("\n")}
 
-Reference store domains, not internal endpoints. Pick exactly one winning product — never rank a podium, never hedge across multiple winners.`,
+Reference store domains, not internal endpoints. Produce one ordered ranking across all stores — rank 1 is the product you would actually buy.`,
         prompt: `Buyer request: "${buyerRequest}"
 
-Call search_catalogs with parameters derived from this request. Then evaluate and negotiate across every store's products, call select_winner with the single product you would buy, and explain why it won over the rest of the field.`,
+Call search_catalogs with parameters derived from this request. Verify your top contenders with get_product (the authoritative source for purchase decisions), then rank every product worth considering best-first across all stores, call rank_products with that ranking, and explain in your own words how you really decided.`,
         tools,
         stopWhen: isLoopFinished(),
         providerOptions: gatewayOptions(),
@@ -419,11 +546,26 @@ Call search_catalogs with parameters derived from this request. Then evaluate an
                 }
                 break;
               }
-              case "select_winner": {
+              case "get_product": {
                 const input = "input" in event ? event.input : undefined;
-                const parsed = winnerSelectionSchema.safeParse(input);
+                const record =
+                  input && typeof input === "object"
+                    ? (input as { store?: string; id?: string })
+                    : undefined;
+                if (record?.store && record?.id) {
+                  emit({
+                    kind: "product_lookup",
+                    store: record.store,
+                    productId: record.id,
+                  });
+                }
+                break;
+              }
+              case "rank_products": {
+                const input = "input" in event ? event.input : undefined;
+                const parsed = productRankingSchema.safeParse(input);
                 if (parsed.success) {
-                  emit({ kind: "winner", winner: parsed.data });
+                  emit({ kind: "ranking", rankings: parsed.data.rankings });
                 }
                 break;
               }
@@ -431,30 +573,87 @@ Call search_catalogs with parameters derived from this request. Then evaluate an
             break;
           }
           case "tool-result": {
-            if (event.toolName !== "search_catalogs") break;
+            switch (event.toolName) {
+              case "search_catalogs": {
+                const output = "output" in event ? event.output : undefined;
+                if (!Array.isArray(output)) break;
 
-            const output = "output" in event ? event.output : undefined;
-            if (!Array.isArray(output)) break;
+                for (const entry of output) {
+                  if (!entry || typeof entry !== "object") continue;
+                  const record = entry as {
+                    endpoint?: string;
+                    ok?: boolean;
+                    error?: string;
+                    result?: {
+                      structuredContent?: z.infer<
+                        typeof searchCatalogResponseSchema
+                      >;
+                    };
+                  };
+                  if (!record.endpoint) continue;
 
-            for (const entry of output) {
-              if (!entry || typeof entry !== "object") continue;
-              const record = entry as {
-                endpoint?: string;
-                result?: {
-                  structuredContent: z.infer<
-                    typeof searchCatalogResponseSchema
-                  >;
+                  const storeUrl =
+                    endpointToStoreUrl.get(record.endpoint) ?? record.endpoint;
+
+                  const structuredContent = record.result?.structuredContent;
+
+                  if (record.ok === false || !structuredContent) {
+                    emit({
+                      kind: "store_error",
+                      storeUrl,
+                      message: record.error ?? "Store returned no catalog data",
+                    });
+                    continue;
+                  }
+
+                  emit({
+                    kind: "store_result",
+                    storeUrl,
+                    result: structuredContent.products ?? null,
+                  });
+                }
+                break;
+              }
+              case "get_product": {
+                const output = "output" in event ? event.output : undefined;
+                if (!output || typeof output !== "object") break;
+
+                const record = output as {
+                  store?: string;
+                  id?: string;
+                  ok?: boolean;
+                  error?: string;
+                  result?: {
+                    structuredContent?: z.infer<
+                      typeof getProductResponseSchema
+                    >;
+                  };
                 };
-              };
-              if (!record.endpoint) continue;
 
-              const storeUrl =
-                endpointToStoreUrl.get(record.endpoint) ?? record.endpoint;
-              emit({
-                kind: "store_result",
-                storeUrl,
-                result: record.result?.structuredContent.products ?? null,
-              });
+                const store = record.store ?? "";
+                const productId = record.id ?? "";
+                const product = record.result?.structuredContent?.product;
+
+                if (record.ok === false || !product) {
+                  emit({
+                    kind: "product_checked",
+                    store,
+                    productId,
+                    ok: false,
+                    error: record.error ?? "Store returned no product data",
+                  });
+                  break;
+                }
+
+                emit({
+                  kind: "product_checked",
+                  store,
+                  productId,
+                  ok: true,
+                  title: product.title,
+                });
+                break;
+              }
             }
             break;
           }

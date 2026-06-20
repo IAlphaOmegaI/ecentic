@@ -6,18 +6,13 @@ import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
-import {
-  type Dispatch,
-  type SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useRef, useState } from "react";
 import type z from "zod";
+import { MessageResponse } from "@/components/ui/ai/message";
 import {
   type FreeForAllEvent,
+  type RankedProduct,
   runFreeForAll,
-  type WinnerSelection,
 } from "@/server/app/intelligence/free-for-all";
 import type { StoreDiscovery } from "@/server/app/intelligence/product-comparison";
 import type { productSchema } from "@/server/app/intelligence/ucp-advanced-validator";
@@ -50,35 +45,32 @@ const productPrice = (
   return product.price_range.min.amount;
 };
 
-const flushText = (
-  buffer: string,
-  setter: Dispatch<SetStateAction<string>>,
-) => {
-  if (!buffer) return;
-  setter((previous) => previous + buffer);
-};
+// Streamdown re-parses the whole markdown string on each render, so flushing the
+// verdict on every token delta is O(n²) and janky. Batch deltas in a ref and push
+// to state at most every VERDICT_FLUSH_MS.
+const VERDICT_FLUSH_MS = 120;
 
 const StoreCard = ({
   store,
-  isWinner,
+  isTopRanked,
 }: {
   store: StoreState;
-  isWinner: boolean;
+  isTopRanked: boolean;
 }) => (
   <div
     className={cn(
       "rounded-lg border bg-background-rich",
-      isWinner
+      isTopRanked
         ? "border-success/50 ring-1 ring-success/30"
         : "border-accent-foreground",
     )}
   >
     <div className="border-accent-foreground border-b px-4 py-3">
       <div className="flex flex-wrap items-center gap-3">
-        {isWinner && (
+        {isTopRanked && (
           <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 font-semibold text-[11px] text-success uppercase tracking-[0.05em]">
             <AwardIcon className="size-3" />
-            Picked
+            Top pick
           </span>
         )}
         <p className="font-medium text-foreground text-sm">
@@ -161,48 +153,61 @@ const StoreCard = ({
   </div>
 );
 
-const WinnerCard = ({ winner }: { winner: WinnerSelection }) => (
+const RankingCard = ({ rankings }: { rankings: RankedProduct[] }) => (
   <div className="rounded-lg border border-success/50 bg-success/5">
     <div className="flex items-center gap-2 border-success/30 border-b px-4 py-3">
       <AwardIcon className="size-4 text-success" />
       <p className="font-semibold text-[10px] text-success uppercase tracking-[0.08em]">
-        Agent's Pick
+        Agent's Ranking
       </p>
     </div>
-    <div className="space-y-3 px-4 py-4">
-      <div>
-        <p className="font-semibold text-base text-foreground-rich">
-          {winner.product_title}
-        </p>
-        <p className="mt-0.5 flex flex-wrap items-center gap-2 text-foreground-dimmed text-sm">
-          <span className="font-mono">{winner.store_domain}</span>
-          {winner.price && (
-            <span className="rounded bg-background-dimmed px-1.5 py-0.5 font-mono text-foreground text-xs">
-              {winner.price}
-            </span>
+    <ol className="divide-y divide-accent-foreground/40">
+      {rankings.map((item) => (
+        <li
+          key={`${item.rank}-${item.product_id}`}
+          className={cn(
+            "flex gap-3 px-4 py-3",
+            item.rank === 1 && "bg-success/5",
           )}
-        </p>
-      </div>
-      <div>
-        <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-          Why it won
-        </p>
-        <p className="mt-1 text-foreground text-sm">{winner.reason}</p>
-      </div>
-      {winner.runner_up && (
-        <div>
-          <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-            Closest runner-up
-          </p>
-          <p className="mt-1 text-foreground-dimmed text-sm">
-            {winner.runner_up}
-          </p>
-        </div>
-      )}
-      <p className="font-mono text-[10px] text-foreground-dimmed/60">
-        {winner.product_id}
-      </p>
-    </div>
+        >
+          <span
+            className={cn(
+              "flex size-6 shrink-0 items-center justify-center rounded-full font-semibold text-xs tabular-nums",
+              item.rank === 1
+                ? "bg-success/15 text-success"
+                : "bg-background-dimmed text-foreground-dimmed",
+            )}
+          >
+            {item.rank}
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="font-semibold text-foreground-rich text-sm">
+              {item.product_title}
+            </p>
+            <p className="mt-0.5 flex flex-wrap items-center gap-2 text-foreground-dimmed text-xs">
+              <span className="font-mono">{item.store_domain}</span>
+              {item.price && (
+                <span className="rounded bg-background-dimmed px-1.5 py-0.5 font-mono text-foreground">
+                  {item.price}
+                </span>
+              )}
+            </p>
+            <p className="mt-1 text-foreground text-sm">{item.reason}</p>
+            {item.data_signal && (
+              <p className="mt-1.5 rounded border border-info/20 bg-info/5 px-2 py-1 text-foreground-dimmed text-xs">
+                <span className="font-semibold text-info uppercase tracking-[0.04em]">
+                  Data signal ·{" "}
+                </span>
+                {item.data_signal}
+              </p>
+            )}
+            <p className="mt-1 font-mono text-[10px] text-foreground-dimmed/60">
+              {item.product_id}
+            </p>
+          </div>
+        </li>
+      ))}
+    </ol>
   </div>
 );
 
@@ -211,7 +216,7 @@ type StoreInput = {
   url: string;
 };
 
-const MAX_STORES = 8;
+const MAX_STORES = 20;
 
 // Accepts bare domains ("x.com") and full URLs ("https://x.com/"), returning a
 // canonical "https://x.com". Kept in sync with the server normalizer so the
@@ -240,11 +245,13 @@ export const FreeForAllClient = () => {
   const [verdict, setVerdict] = useState("");
   const [stores, setStores] = useState<StoreState[]>([]);
   const [searchParams, setSearchParams] = useState<unknown>(null);
-  const [winner, setWinner] = useState<WinnerSelection | null>(null);
+  const [rankings, setRankings] = useState<RankedProduct[]>([]);
   const [phase, setPhase] = useState<"idle" | "running" | "done" | "error">(
     "idle",
   );
   const logRef = useRef<HTMLDivElement>(null);
+  const verdictBufferRef = useRef("");
+  const lastVerdictFlushRef = useRef(0);
 
   useEffect(() => {
     if (logRef.current) {
@@ -308,7 +315,7 @@ export const FreeForAllClient = () => {
     setVerdict("");
     setStores([]);
     setSearchParams(null);
-    setWinner(null);
+    setRankings([]);
     setPhase("idle");
   };
 
@@ -325,8 +332,10 @@ export const FreeForAllClient = () => {
 
     setLines([]);
     setVerdict("");
+    verdictBufferRef.current = "";
+    lastVerdictFlushRef.current = 0;
     setSearchParams(null);
-    setWinner(null);
+    setRankings([]);
     setPhase("running");
     setStores(
       storeUrls.map((url) => ({
@@ -393,13 +402,24 @@ export const FreeForAllClient = () => {
           setLines((previous) => [...previous, event]);
           break;
         }
-        case "winner": {
-          setWinner(event.winner);
+        case "product_lookup":
+        case "product_checked": {
+          setLines((previous) => [...previous, event]);
+          break;
+        }
+        case "ranking": {
+          setRankings(event.rankings);
           setLines((previous) => [...previous, event]);
           break;
         }
         case "text": {
-          flushText(event.text, setVerdict);
+          if (!event.text) break;
+          verdictBufferRef.current += event.text;
+          const now = Date.now();
+          if (now - lastVerdictFlushRef.current >= VERDICT_FLUSH_MS) {
+            lastVerdictFlushRef.current = now;
+            setVerdict(verdictBufferRef.current);
+          }
           break;
         }
         case "error": {
@@ -414,6 +434,9 @@ export const FreeForAllClient = () => {
         }
       }
     }
+
+    // Flush any deltas buffered since the last throttled update.
+    setVerdict(verdictBufferRef.current);
   });
 
   return (
@@ -502,7 +525,7 @@ export const FreeForAllClient = () => {
         </div>
       </div>
 
-      {winner && <WinnerCard winner={winner} />}
+      {rankings.length > 0 && <RankingCard rankings={rankings} />}
 
       {searchParams !== null && (
         <div className="rounded-lg border border-accent-foreground bg-background-rich">
@@ -530,9 +553,9 @@ export const FreeForAllClient = () => {
               <StoreCard
                 key={store.url}
                 store={store}
-                isWinner={
-                  winner !== null &&
-                  store.discovery?.domain === winner.store_domain
+                isTopRanked={
+                  rankings.length > 0 &&
+                  store.discovery?.domain === rankings[0]?.store_domain
                 }
               />
             ))}
@@ -552,8 +575,15 @@ export const FreeForAllClient = () => {
               )}
             </div>
           </div>
-          <div className="m-4 rounded-md bg-background-dimmed p-4 font-mono text-foreground text-xs leading-relaxed">
-            {verdict || (
+          <div className="m-4 rounded-md bg-background-dimmed p-4">
+            {verdict ? (
+              <MessageResponse
+                isAnimating={false}
+                className="text-foreground text-sm leading-relaxed"
+              >
+                {verdict}
+              </MessageResponse>
+            ) : (
               <span className="inline-block h-3 w-1.5 animate-pulse bg-primary/60" />
             )}
           </div>
@@ -594,7 +624,7 @@ export const FreeForAllClient = () => {
                 Run free-for-all
               </span>{" "}
               to fetch UCP profiles, search every catalog, and let the agent
-              pick one winner.
+              rank the products.
             </p>
           ) : (
             <div className="space-y-1.5 text-xs">
@@ -611,8 +641,12 @@ export const FreeForAllClient = () => {
                       return `result-${line.storeUrl}`;
                     case "store_error":
                       return `error-${line.storeUrl}`;
-                    case "winner":
-                      return `winner-${line.winner.product_id}`;
+                    case "product_lookup":
+                      return `lookup-${line.store}-${line.productId}`;
+                    case "product_checked":
+                      return `checked-${line.store}-${line.productId}`;
+                    case "ranking":
+                      return `ranking-${line.rankings.length}`;
                     case "error":
                       return `fatal-${line.message}`;
                     case "done":
@@ -661,11 +695,28 @@ export const FreeForAllClient = () => {
                         error → {line.storeUrl}: {line.message}
                       </p>
                     );
-                  case "winner":
+                  case "product_lookup":
+                    return (
+                      <p key={lineKey} className="text-info">
+                        get_product → {line.store} ({line.productId})
+                      </p>
+                    );
+                  case "product_checked":
+                    return line.ok ? (
+                      <p key={lineKey} className="text-success">
+                        verified → {line.title ?? line.productId} @ {line.store}
+                      </p>
+                    ) : (
+                      <p key={lineKey} className="text-error">
+                        get_product failed → {line.store}: {line.error}
+                      </p>
+                    );
+                  case "ranking":
                     return (
                       <p key={lineKey} className="text-success">
-                        ✓ picked → {line.winner.product_title} @{" "}
-                        {line.winner.store_domain}
+                        ✓ ranked {line.rankings.length} products → #1{" "}
+                        {line.rankings[0]?.product_title} @{" "}
+                        {line.rankings[0]?.store_domain}
                       </p>
                     );
                   case "error":

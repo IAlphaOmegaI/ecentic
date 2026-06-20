@@ -19,8 +19,9 @@ export default () => (
             </h1>
             <p className="mt-1 text-foreground-dimmed text-sm">
               Add any number of stores on a level playing field. The AI shopping
-              agent evaluates and negotiates across every catalog, then picks the
-              single product it would buy — and explains why it beat the rest.
+              agent evaluates across every catalog, then ranks the products
+              best-first — rank 1 is what it would buy — and explains how it
+              decided.
             </p>
           </div>
         </div>
@@ -33,7 +34,7 @@ export default () => (
           <div className="border-accent-foreground border-b p-4">
             <SectionKicker>01 — Agent Decision</SectionKicker>
             <h2 className="mt-2 font-semibold text-foreground-rich text-lg">
-              One Buyer Request, One Winning Product
+              One Buyer Request, Ranked Across Stores
             </h2>
           </div>
           <div className="p-6">
