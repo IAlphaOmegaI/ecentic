@@ -32,13 +32,16 @@ export const Topbar = async () => {
           {subscription?.plan ?? "No plan"}
         </Link> */}
 
-        <SubscriptionBadge plan={subscription?.plan ?? null} />
+        <SubscriptionBadge
+          plan={subscription?.plan ?? null}
+          status={subscription?.status ?? null}
+        />
 
         <button
           type="button"
           className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
         >
-          <div className="flex size-8 items-center justify-center rounded-md bg-primary font-bold text-sm text-background-rich">
+          <div className="flex size-8 items-center justify-center rounded-md bg-primary font-bold text-background-rich text-sm">
             {user.name.charAt(0)}
           </div>
           <span className="hidden font-medium text-base text-foreground md:block">
