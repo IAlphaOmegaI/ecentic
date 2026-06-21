@@ -1,10 +1,16 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { ShoppingCartIcon } from "@zenncore/icons";
+import { LoaderIcon, ShoppingCartIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
+import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
-import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
+import {
+  type FormEntries,
+  field,
+  type GenericForm,
+  InferredForm,
+} from "@zenncore/web/components/inferred-form";
 import {
   DefaultChatTransport,
   getToolName,
@@ -12,7 +18,7 @@ import {
   type ToolUIPart,
 } from "ai";
 import { useCallback, useState } from "react";
-import type z from "zod";
+import { z } from "zod";
 import {
   Conversation,
   ConversationContent,
@@ -42,7 +48,17 @@ import type {
   PlaygroundDataParts,
   PlaygroundUIMessage,
 } from "@/server/app/intelligence/ucp-playground";
+import { resolvePlaygroundStore } from "@/server/app/intelligence/ucp-playground-actions";
 import { SectionKicker, StatusPill } from "../../_components/grid";
+
+const connectFormConfig = {
+  storeUrl: field({
+    shape: "text",
+    validator: z.string().min(1, "Enter a store domain"),
+    label: "Store domain",
+    placeholder: "store.example.com",
+  }),
+} satisfies GenericForm;
 
 const starterSuggestions = [
   "Search the catalog for coffee",
@@ -50,8 +66,6 @@ const starterSuggestions = [
   "Add the first product to a new cart",
   "Start a checkout for the cart",
 ];
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const isClassicToolUIPart = (
   part: PlaygroundUIMessage["parts"][number],
@@ -290,24 +304,6 @@ const ToolView = ({ part }: { part: ToolUIPart }) => {
   );
 };
 
-const ProfileView = ({ data }: { data: PlaygroundDataParts["profile"] }) => (
-  <div className="rounded-lg border border-accent-foreground bg-background-dimmed p-3 font-mono text-xs">
-    <div className="flex flex-wrap items-center gap-2">
-      <span className="font-medium text-foreground-rich">Profile resolved</span>
-      <StatusPill tone={data.transport === "mcp" ? "primary" : "warning"}>
-        {data.transport}
-      </StatusPill>
-      <span className="break-all text-foreground-dimmed">{data.endpoint}</span>
-    </div>
-    <p className="mt-1 break-all text-foreground-dimmed/70">
-      Store profile: {data.profileUrl}
-    </p>
-    <p className="break-all text-foreground-dimmed/70">
-      Agent profile: {data.agentProfileUrl}
-    </p>
-  </div>
-);
-
 const ErrorView = ({ message }: { message: string }) => (
   <div className="flex w-fit items-start gap-2 rounded-lg border border-error/30 bg-error/5 p-3 text-error text-xs">
     <span className="shrink-0">✕</span>
@@ -504,9 +500,6 @@ const MessageParts = ({ message }: { message: PlaygroundUIMessage }) => {
             <MessageResponse key={key}>{part.text}</MessageResponse>
           ) : null;
         }
-        if (part.type === "data-profile") {
-          return <ProfileView data={part.data} key={key} />;
-        }
         if (part.type === "data-error") {
           console.error(part.data);
           return <ErrorView key={key} message={part.data.message} />;
@@ -542,7 +535,10 @@ const transport = new DefaultChatTransport<PlaygroundUIMessage>({
 
 export const PlaygroundClient = () => {
   const [storeUrl, setStoreUrl] = useState("");
-  const [connected, setConnected] = useState(false);
+  const [connection, setConnection] = useState<
+    PlaygroundDataParts["profile"] | null
+  >(null);
+  const [connectError, setConnectError] = useState<string | null>(null);
   const [text, setText] = useState("");
 
   const {
@@ -561,18 +557,7 @@ export const PlaygroundClient = () => {
   });
 
   const isGenerating = status === "submitted" || status === "streaming";
-  const hasStore = storeUrl.trim().length > 0;
-  const canSend = hasStore && text.trim().length > 0;
-
-  // Latest resolved profile (data-profile part), shown in the section header.
-  const profile = (() => {
-    for (const message of messages) {
-      for (const part of message.parts) {
-        if (part.type === "data-profile") return part.data;
-      }
-    }
-    return null;
-  })();
+  const canSend = text.trim().length > 0;
 
   const hostOf = (value: string): string => {
     try {
@@ -583,20 +568,28 @@ export const PlaygroundClient = () => {
     }
   };
 
-  const connectedHost = profile ? hostOf(profile.profileUrl) : null;
-  const typedHost = hasStore ? hostOf(storeUrl.trim()) : null;
+  const connectedHost = connection ? hostOf(connection.profileUrl) : null;
 
-  const handleConnect = useCallback(
-    (event: React.FormEvent) => {
-      event.preventDefault();
-      if (storeUrl.trim()) setConnected(true);
+  // Resolve + validate the store's UCP profile before entering the chat.
+  const [handleConnect, isConnecting] = useAsyncAction(
+    async ({ storeUrl: domain }: FormEntries<typeof connectFormConfig>) => {
+      setConnectError(null);
+
+      const result = await resolvePlaygroundStore(domain);
+
+      if (!result.success) {
+        setConnectError(result.error);
+        return;
+      }
+
+      setStoreUrl(domain);
+      setConnection(result.profile);
     },
-    [storeUrl],
   );
 
-  // Back to the connect screen for a fresh session (keeps the typed domain).
   const handleDisconnect = useCallback(() => {
-    setConnected(false);
+    setConnection(null);
+    setConnectError(null);
     setMessages([]);
     clearError();
   }, [setMessages, clearError]);
@@ -605,6 +598,7 @@ export const PlaygroundClient = () => {
     (raw: string) => {
       const value = raw.trim();
       if (!value || !storeUrl.trim() || isGenerating) return;
+
       sendMessage({ text: value }, { body: { storeUrl: storeUrl.trim() } });
       setText("");
     },
@@ -625,15 +619,11 @@ export const PlaygroundClient = () => {
 
   const isEmpty = messages.length === 0;
 
-  // Connect screen — the user submits a store domain before the chat is shown.
-  if (!connected) {
+  if (!connection) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center p-8">
-        <form
-          className="w-full max-w-md space-y-4 text-center"
-          onSubmit={handleConnect}
-        >
-          <div className="space-y-1">
+        <div className="w-full max-w-md space-y-4">
+          <div className="space-y-1 text-center">
             <h2 className="font-semibold text-foreground-rich text-lg">
               Connect a UCP store
             </h2>
@@ -642,22 +632,23 @@ export const PlaygroundClient = () => {
               session.
             </p>
           </div>
-          <div className="flex gap-2">
-            <TextField
-              className="h-10 flex-1 border border-accent-foreground bg-background-dimmed"
-              onValueChange={setStoreUrl}
-              value={storeUrl}
+          <InferredForm
+            className="flex flex-col gap-3"
+            config={connectFormConfig}
+            onSubmit={handleConnect}
+          >
+            <Button
+              className="w-full"
+              color="primary"
+              disabled={isConnecting}
+              type="submit"
             >
-              <TextFieldInput
-                className="px-3 font-mono text-sm"
-                placeholder="store.example.com"
-              />
-            </TextField>
-            <Button color="primary" disabled={!hasStore} type="submit">
-              Connect
+              {isConnecting && <LoaderIcon className="size-4 animate-spin" />}
+              {isConnecting ? "Connecting…" : "Connect"}
             </Button>
-          </div>
-        </form>
+          </InferredForm>
+          {connectError && <ErrorView message={connectError} />}
+        </div>
       </div>
     );
   }
@@ -667,23 +658,19 @@ export const PlaygroundClient = () => {
       {/* Connected store + transport */}
       <div className="flex shrink-0 items-center justify-between gap-3 p-4">
         <SectionKicker>
-          {profile ? (
-            <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 normal-case">
-              <span className="font-mono font-semibold text-primary">
-                {connectedHost}
-              </span>
-              <StatusPill
-                tone={profile.transport === "mcp" ? "primary" : "warning"}
-              >
-                {profile.transport}
-              </StatusPill>
-              <span className="min-w-0 truncate font-mono text-[11px] text-foreground-dimmed lowercase">
-                {profile.endpoint}
-              </span>
+          <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 normal-case">
+            <span className="font-mono font-semibold text-primary">
+              {connectedHost}
             </span>
-          ) : (
-            (typedHost ?? "store.com")
-          )}
+            <StatusPill
+              tone={connection.transport === "mcp" ? "primary" : "warning"}
+            >
+              {connection.transport}
+            </StatusPill>
+            <span className="min-w-0 truncate font-mono text-[11px] text-foreground-dimmed lowercase">
+              {connection.endpoint}
+            </span>
+          </span>
         </SectionKicker>
         <button
           className="shrink-0 font-medium text-foreground-dimmed text-xs hover:text-foreground"
