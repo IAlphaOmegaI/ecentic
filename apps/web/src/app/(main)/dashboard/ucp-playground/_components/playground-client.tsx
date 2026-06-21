@@ -3,6 +3,7 @@
 import { useChat } from "@ai-sdk/react";
 import { ShoppingCartIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
+import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import {
   DefaultChatTransport,
@@ -541,6 +542,7 @@ const transport = new DefaultChatTransport<PlaygroundUIMessage>({
 
 export const PlaygroundClient = () => {
   const [storeUrl, setStoreUrl] = useState("");
+  const [connected, setConnected] = useState(false);
   const [text, setText] = useState("");
 
   const {
@@ -584,15 +586,20 @@ export const PlaygroundClient = () => {
   const connectedHost = profile ? hostOf(profile.profileUrl) : null;
   const typedHost = hasStore ? hostOf(storeUrl.trim()) : null;
 
-  const handleStoreUrlChange = useCallback(
-    (value: string) => {
-      setStoreUrl(value);
-      // Changing the target store starts a fresh session.
-      setMessages([]);
-      clearError();
+  const handleConnect = useCallback(
+    (event: React.FormEvent) => {
+      event.preventDefault();
+      if (storeUrl.trim()) setConnected(true);
     },
-    [setMessages, clearError],
+    [storeUrl],
   );
+
+  // Back to the connect screen for a fresh session (keeps the typed domain).
+  const handleDisconnect = useCallback(() => {
+    setConnected(false);
+    setMessages([]);
+    clearError();
+  }, [setMessages, clearError]);
 
   const submit = useCallback(
     (raw: string) => {
@@ -618,10 +625,47 @@ export const PlaygroundClient = () => {
 
   const isEmpty = messages.length === 0;
 
+  // Connect screen — the user submits a store domain before the chat is shown.
+  if (!connected) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center p-8">
+        <form
+          className="w-full max-w-md space-y-4 text-center"
+          onSubmit={handleConnect}
+        >
+          <div className="space-y-1">
+            <h2 className="font-semibold text-foreground-rich text-lg">
+              Connect a UCP store
+            </h2>
+            <p className="text-foreground-dimmed text-sm">
+              Enter a store domain to resolve its UCP profile and start a
+              session.
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <TextField
+              className="h-10 flex-1 border border-accent-foreground bg-background-dimmed"
+              onValueChange={setStoreUrl}
+              value={storeUrl}
+            >
+              <TextFieldInput
+                className="px-3 font-mono text-sm"
+                placeholder="store.example.com"
+              />
+            </TextField>
+            <Button color="primary" disabled={!hasStore} type="submit">
+              Connect
+            </Button>
+          </div>
+        </form>
+      </div>
+    );
+  }
+
   return (
     <div className="relative flex min-h-40 flex-1 flex-col divide-y divide-accent-foreground">
       {/* Connected store + transport */}
-      <div className="flex shrink-0 flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex shrink-0 items-center justify-between gap-3 p-4">
         <SectionKicker>
           {profile ? (
             <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 normal-case">
@@ -641,16 +685,13 @@ export const PlaygroundClient = () => {
             (typedHost ?? "store.com")
           )}
         </SectionKicker>
-        <TextField
-          className="h-9 w-full border border-accent-foreground bg-background-dimmed sm:w-80"
-          onValueChange={handleStoreUrlChange}
-          value={storeUrl}
+        <button
+          className="shrink-0 font-medium text-foreground-dimmed text-xs hover:text-foreground"
+          onClick={handleDisconnect}
+          type="button"
         >
-          <TextFieldInput
-            className="px-3 font-mono text-sm"
-            placeholder="store.example.com"
-          />
-        </TextField>
+          Change store
+        </button>
       </div>
 
       {/* Conversation */}
@@ -658,7 +699,7 @@ export const PlaygroundClient = () => {
         <ConversationContent>
           {isEmpty ? (
             <ConversationEmptyState
-              description="Connect a store above, then ask the agent to search the catalog, inspect a product, build a cart, or run checkout — one step at a time."
+              description="Ask the agent to search the catalog, inspect a product, build a cart, or run checkout — one step at a time."
               title="Start a UCP session"
             />
           ) : (
@@ -683,7 +724,6 @@ export const PlaygroundClient = () => {
           <Suggestions>
             {starterSuggestions.map((suggestion) => (
               <Suggestion
-                disabled={!hasStore}
                 key={suggestion}
                 onClick={submit}
                 suggestion={suggestion}
@@ -691,20 +731,13 @@ export const PlaygroundClient = () => {
             ))}
           </Suggestions>
         )}
-        <PromptInput
-          className={cn("flex flex-row", !hasStore && "opacity-60")}
-          onSubmit={handleSubmit}
-        >
+        <PromptInput className="flex flex-row" onSubmit={handleSubmit}>
           <PromptInputBody className="flex items-center px-4 py-2">
             <PromptInputTextarea
               className="flex-1 p-0"
-              disabled={!hasStore || isGenerating}
+              disabled={isGenerating}
               onChange={handleTextChange}
-              placeholder={
-                hasStore
-                  ? "Ask the agent to run a UCP action…"
-                  : "Enter a store URL above first…"
-              }
+              placeholder="Ask the agent to run a UCP action…"
               value={text}
             />
             <PromptInputSubmit
