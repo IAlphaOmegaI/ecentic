@@ -52,7 +52,7 @@
     "next": "16.2.9",
     "nuqs": "^2.8.9",
     "postgres": "^3.4.9",
-    "posthog-js": "^1.391.3",
+    "posthog-js": "^1.392.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-email": "^6.6.3",
