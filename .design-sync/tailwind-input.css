@@ -1,0 +1,39 @@
+/* Tailwind v4 compile input for the design-sync bundle stylesheet.
+ *
+ * The @zenncore/web components are styled entirely with Tailwind utility
+ * classes; the package dist ships no compiled CSS (the host app generates it).
+ * This input reproduces the host app's Tailwind layer so previews render with
+ * the real tokens + utilities:
+ *   - @zenncore/config preset → `@import "tailwindcss"` + the @theme color tokens
+ *   - @zenncore/web preset    → `@source "../../components"` (scans component classes)
+ * Compiled to packages/web/dist/ds-tailwind.css and fed to cfg.cssEntry.
+ *
+ * Paths are relative to THIS file (.design-sync/). The web preset's own
+ * @source is relative to the preset file, so it still resolves to
+ * packages/web/src/components regardless of where this input lives.
+ */
+/* Brand font. The app loads Red Hat Display via next/font as
+ * --font-redhat-display at runtime; designs built in Claude Design get only this
+ * compiled stylesheet, so load it from Google Fonts here and make it the default
+ * family (matching the app's body font). */
+@import url("https://fonts.googleapis.com/css2?family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap");
+@import "../packages/shared/config/src/tailwind/globals.css";
+@import "../packages/web/src/config/tailwind/globals.css";
+
+@theme {
+  --font-redhat-display: "Red Hat Display", ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-redhat-display);
+  --default-font-family: var(--font-redhat-display);
+}
+
+/* Also scan the components directly and the authored previews, so utility
+ * classes used only in preview layout glue are emitted on rebuild. */
+@source "../packages/web/src/components";
+@source "./previews";
+
+/* Safelist the full semantic color matrix. Designs built with this DS receive
+ * only this compiled stylesheet, so the brand token vocabulary documented in
+ * conventions.md must be emitted even where no component happens to use a given
+ * class. Tailwind emits only the combinations whose token is actually defined. */
+@source inline("{bg,text,border}-{background,foreground,primary,secondary,accent,emphasis,neutral,error,success,warning,info}{,-dimmed,-rich,-foreground}");
+@source inline("{bg,text,border}-{primary,secondary,accent,emphasis,neutral,error,success,warning,info,foreground,background}/{10,20,40,60,80}");

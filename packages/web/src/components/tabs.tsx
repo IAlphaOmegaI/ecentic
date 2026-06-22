@@ -22,7 +22,7 @@ export const TabsList = ({
   return (
     <TabsPrimitive.List
       className={createClassName(
-        "relative z-0 flex w-fit bg-white border border-accent-foreground",
+        "relative z-0 flex w-fit overflow-hidden rounded-md bg-white border border-accent-foreground",
         className,
       )}
       {...props}
@@ -62,7 +62,7 @@ export const TabsIndicator = ({
   return (
     <TabsPrimitive.Indicator
       className={createClassName(
-        "absolute top-1/2 left-0 z-[-1] h-6 w-(--active-tab-width) translate-x-(--active-tab-left) -translate-y-1/2 bg-primary transition-all duration-200 ease-in-out",
+        "absolute top-0 left-0 z-[-1] h-full w-(--active-tab-width) translate-x-(--active-tab-left) bg-primary transition-all duration-200 ease-in-out",
         className,
       )}
       {...props}
