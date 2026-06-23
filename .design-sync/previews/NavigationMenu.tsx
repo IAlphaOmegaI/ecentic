@@ -38,31 +38,61 @@ export const Open = () => (
             <li>
               <NavigationMenuLink href="#">
                 <h3 style={{ margin: "0 0 4px", fontSize: 14 }}>Simulations</h3>
-                <p style={{ margin: 0, fontSize: 13, color: "var(--color-foreground-dimmed)" }}>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: 13,
+                    color: "var(--color-foreground-dimmed)",
+                  }}
+                >
                   See how GPT-4, Claude, Gemini and Perplexity rank you.
                 </p>
               </NavigationMenuLink>
             </li>
             <li>
               <NavigationMenuLink href="#">
-                <h3 style={{ margin: "0 0 4px", fontSize: 14 }}>Listing optimizer</h3>
-                <p style={{ margin: 0, fontSize: 13, color: "var(--color-foreground-dimmed)" }}>
+                <h3 style={{ margin: "0 0 4px", fontSize: 14 }}>
+                  Listing optimizer
+                </h3>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: 13,
+                    color: "var(--color-foreground-dimmed)",
+                  }}
+                >
                   Auto-rewrite titles and bullets to lift win rate.
                 </p>
               </NavigationMenuLink>
             </li>
             <li>
               <NavigationMenuLink href="#">
-                <h3 style={{ margin: "0 0 4px", fontSize: 14 }}>Competitor tracking</h3>
-                <p style={{ margin: 0, fontSize: 13, color: "var(--color-foreground-dimmed)" }}>
+                <h3 style={{ margin: "0 0 4px", fontSize: 14 }}>
+                  Competitor tracking
+                </h3>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: 13,
+                    color: "var(--color-foreground-dimmed)",
+                  }}
+                >
                   Monitor rivals across marketplaces.
                 </p>
               </NavigationMenuLink>
             </li>
             <li>
               <NavigationMenuLink href="#">
-                <h3 style={{ margin: "0 0 4px", fontSize: 14 }}>Agent analytics</h3>
-                <p style={{ margin: 0, fontSize: 13, color: "var(--color-foreground-dimmed)" }}>
+                <h3 style={{ margin: "0 0 4px", fontSize: 14 }}>
+                  Agent analytics
+                </h3>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: 13,
+                    color: "var(--color-foreground-dimmed)",
+                  }}
+                >
                   Track AI shopping-agent traffic to your listings.
                 </p>
               </NavigationMenuLink>
@@ -77,7 +107,9 @@ export const Open = () => (
           <NavigationMenuIcon />
         </NavigationMenuTrigger>
         <NavigationMenuContent>
-          <ul style={{ margin: 0, padding: 0, listStyle: "none", minWidth: 260 }}>
+          <ul
+            style={{ margin: 0, padding: 0, listStyle: "none", minWidth: 260 }}
+          >
             <li>
               <NavigationMenuLink href="#">Docs</NavigationMenuLink>
             </li>

@@ -11,13 +11,22 @@ export const Horizontal = () => (
         <Tab value="agents">AI Agents</Tab>
         <Tab value="competitors">Competitors</Tab>
       </TabsList>
-      <TabsPanel value="overview" style={{ padding: 16, color: "var(--color-foreground)" }}>
+      <TabsPanel
+        value="overview"
+        style={{ padding: 16, color: "var(--color-foreground)" }}
+      >
         Your product wins 62% of AI shopping-agent comparisons this week.
       </TabsPanel>
-      <TabsPanel value="agents" style={{ padding: 16, color: "var(--color-foreground)" }}>
+      <TabsPanel
+        value="agents"
+        style={{ padding: 16, color: "var(--color-foreground)" }}
+      >
         Simulated across GPT-4, Claude, Gemini and Perplexity.
       </TabsPanel>
-      <TabsPanel value="competitors" style={{ padding: 16, color: "var(--color-foreground)" }}>
+      <TabsPanel
+        value="competitors"
+        style={{ padding: 16, color: "var(--color-foreground)" }}
+      >
         Tracking 8 competitors across 3 marketplaces.
       </TabsPanel>
     </Tabs>
@@ -29,17 +38,32 @@ export const FullWidth = () => (
     <Tabs defaultValue="auto">
       <TabsList>
         <TabsIndicator />
-        <Tab value="auto" style={{ flex: 1 }}>Auto-detect</Tab>
-        <Tab value="url" style={{ flex: 1 }}>Paste URLs</Tab>
-        <Tab value="search" style={{ flex: 1 }}>Search brand</Tab>
+        <Tab value="auto" style={{ flex: 1 }}>
+          Auto-detect
+        </Tab>
+        <Tab value="url" style={{ flex: 1 }}>
+          Paste URLs
+        </Tab>
+        <Tab value="search" style={{ flex: 1 }}>
+          Search brand
+        </Tab>
       </TabsList>
-      <TabsPanel value="auto" style={{ padding: 16, color: "var(--color-foreground)" }}>
+      <TabsPanel
+        value="auto"
+        style={{ padding: 16, color: "var(--color-foreground)" }}
+      >
         We detect competitors automatically from your catalog.
       </TabsPanel>
-      <TabsPanel value="url" style={{ padding: 16, color: "var(--color-foreground)" }}>
+      <TabsPanel
+        value="url"
+        style={{ padding: 16, color: "var(--color-foreground)" }}
+      >
         Paste competitor product URLs to track them directly.
       </TabsPanel>
-      <TabsPanel value="search" style={{ padding: 16, color: "var(--color-foreground)" }}>
+      <TabsPanel
+        value="search"
+        style={{ padding: 16, color: "var(--color-foreground)" }}
+      >
         Search by brand name to discover competing listings.
       </TabsPanel>
     </Tabs>

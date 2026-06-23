@@ -1,8 +1,22 @@
 import { TextField, TextFieldInput, TextFieldMaskToggle } from "@zenncore/web";
 
-const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
+const Field = ({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) => (
   <div style={{ width: 320, display: "flex", flexDirection: "column", gap: 6 }}>
-    <span style={{ fontSize: 13, fontWeight: 500, color: "var(--color-foreground)" }}>{label}</span>
+    <span
+      style={{
+        fontSize: 13,
+        fontWeight: 500,
+        color: "var(--color-foreground)",
+      }}
+    >
+      {label}
+    </span>
     {children}
   </div>
 );

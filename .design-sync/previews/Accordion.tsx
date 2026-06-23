@@ -11,7 +11,9 @@ export const FAQ = () => (
   <div style={{ width: 460 }}>
     <Accordion defaultValue={["agents"]}>
       <AccordionItem value="agents">
-        <AccordionTrigger>How do AI agents compare my products?</AccordionTrigger>
+        <AccordionTrigger>
+          How do AI agents compare my products?
+        </AccordionTrigger>
         <AccordionPanel>
           <div style={{ paddingBottom: 12, color: "var(--color-foreground)" }}>
             We simulate GPT-4, Claude, Gemini and Perplexity shopping for your

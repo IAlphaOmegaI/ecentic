@@ -63,7 +63,31 @@
       "Bash(echo \"typecheck exit=$?\")",
       "Bash(grep -c '\\\\$type<\\\\\"pending\\\\\" | \\\\\"running\\\\\" | \\\\\"complete\\\\\" | \\\\\"failed\\\\\">' /Users/xhurianshaba/Developer/zennit/ecentic/.claude/worktrees/agent-a372bc533eaf89799/apps/web/src/server/database/schema.ts)",
       "Bash(grep -oE '`[a-zA-Z_]+`')",
-      "WebFetch(domain:ai-sdk.dev)"
+      "WebFetch(domain:ai-sdk.dev)",
+      "Bash(node .design-sync/gen-entry.mjs)",
+      "Bash(npm i *)",
+      "Bash(node -p \"require\\('./packages/web/node_modules/react/package.json'\\).version\")",
+      "Bash(node -p \"require\\('./apps/web/node_modules/react-dom/package.json'\\).version\")",
+      "Bash(node -p \"require\\('./packages/web/node_modules/react-dom/package.json'\\).version\")",
+      "Bash(./node_modules/.bin/playwright install *)",
+      "Bash(node .ds-sync/package-build.mjs --config .design-sync/config.json --node-modules packages/web/node_modules --entry ./packages/web/dist/index.js --out ./ds-bundle)",
+      "Bash(node .ds-sync/package-capture.mjs --out ./ds-bundle --components Button,TextField,Tabs,Dialog)",
+      "Bash(node .ds-sync/lib/preview-rebuild.mjs --config .design-sync/config.json --node-modules packages/web/node_modules --out ./ds-bundle --components Tabs)",
+      "Bash(node .ds-sync/package-capture.mjs --out ./ds-bundle --components Tabs)",
+      "Bash(node .ds-sync/lib/preview-rebuild.mjs --config .design-sync/config.json --node-modules packages/web/node_modules --out ./ds-bundle --components Checkbox,Radio,Switch,Slider,NumberField,Textarea,Meter,Progress,AlertDialog,Sheet,Popover,Tooltip,PreviewCard)",
+      "Bash(node .ds-sync/lib/preview-rebuild.mjs --config .design-sync/config.json --node-modules packages/web/node_modules --out ./ds-bundle --components DropdownMenu,ContextMenu,Menu,Command,NavigationMenu,Table,DataTable,Avatar,Pagination,ScrollArea,Separator)",
+      "Bash(node .ds-sync/package-capture.mjs --out ./ds-bundle --components Checkbox,Radio,Switch,Slider,NumberField,Textarea,Meter,Progress,AlertDialog,Sheet,Popover,Tooltip,PreviewCard,DropdownMenu,ContextMenu,Menu,Command,NavigationMenu,Table,DataTable,Avatar,Pagination,ScrollArea,Separator)",
+      "Bash(node .ds-sync/package-capture.mjs --out ./ds-bundle --components Select,Combobox,Autocomplete,PhoneField,InputOTP,Accordion,Collapsible,Form,InferredForm,Fieldset,FileUpload,Toggle,Toolbar)",
+      "Bash(node .ds-sync/lib/preview-rebuild.mjs --config .design-sync/config.json --node-modules packages/web/node_modules --out ./ds-bundle --components Radio,PhoneField,DropdownMenu,Form)",
+      "Bash(node .ds-sync/package-capture.mjs --out ./ds-bundle --components Radio,PhoneField,DropdownMenu,Form)",
+      "Bash(node .ds-sync/lib/preview-rebuild.mjs --config .design-sync/config.json --node-modules packages/web/node_modules --out ./ds-bundle --components DropdownMenu)",
+      "Bash(node .ds-sync/package-capture.mjs --out ./ds-bundle --components DropdownMenu)",
+      "Bash(node *)",
+      "Bash(gh auth *)",
+      "Bash(awk '/export const MenuPopup/,/^};?$/' menu.tsx)",
+      "Bash(awk '/export const ContextMenuPopup/,/^};?$/' context-menu.tsx)",
+      "Bash(awk '/export const ContextMenuItem /,/^};?$/' context-menu.tsx)",
+      "Bash(./.ds-sync/node_modules/.bin/tailwindcss -i .design-sync/tailwind-input.css -o packages/web/dist/ds-tailwind.css)"
     ]
   }
 }

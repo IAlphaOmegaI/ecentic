@@ -1,6 +1,12 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@zenncore/web";
 
-const Cell = ({ children, label }: { children: React.ReactNode; label: string }) => (
+const Cell = ({
+  children,
+  label,
+}: {
+  children: React.ReactNode;
+  label: string;
+}) => (
   <div
     style={{
       display: "flex",
@@ -20,10 +26,7 @@ const Cell = ({ children, label }: { children: React.ReactNode; label: string })
 export const WithImage = () => (
   <Cell label="Store owner">
     <Avatar className="size-12">
-      <AvatarImage
-        src="https://i.pravatar.cc/96?img=12"
-        alt="Mara Ellison"
-      />
+      <AvatarImage src="https://i.pravatar.cc/96?img=12" alt="Mara Ellison" />
       <AvatarFallback>ME</AvatarFallback>
     </Avatar>
   </Cell>

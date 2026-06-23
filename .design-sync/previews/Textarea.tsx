@@ -9,7 +9,11 @@ const Field = ({
 }) => (
   <div style={{ width: 360, display: "flex", flexDirection: "column", gap: 8 }}>
     <span
-      style={{ fontSize: 13, fontWeight: 500, color: "var(--color-foreground)" }}
+      style={{
+        fontSize: 13,
+        fontWeight: 500,
+        color: "var(--color-foreground)",
+      }}
     >
       {label}
     </span>

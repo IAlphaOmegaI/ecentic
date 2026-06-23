@@ -1,13 +1,7 @@
 import { Progress, ProgressLabel, ProgressValue } from "@zenncore/web";
 
 // Progress.Root lays out children + a full-width Track; wrap in a fixed width.
-const Bar = ({
-  label,
-  value,
-}: {
-  label: string;
-  value: number | null;
-}) => (
+const Bar = ({ label, value }: { label: string; value: number | null }) => (
   <Progress
     value={value}
     style={{ width: 320, display: "flex", flexDirection: "column", gap: 8 }}

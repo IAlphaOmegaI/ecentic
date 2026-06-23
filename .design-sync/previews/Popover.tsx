@@ -15,7 +15,13 @@ import {
 // a viewport so the portalled popup renders inside the card.
 export const Open = () => (
   <Popover defaultOpen>
-    <PopoverTrigger render={<Button variant="soft" color="primary">Why is this losing?</Button>} />
+    <PopoverTrigger
+      render={
+        <Button variant="soft" color="primary">
+          Why is this losing?
+        </Button>
+      }
+    />
     <PopoverPositioner side="bottom" align="end">
       <PopoverPopup
         style={{
@@ -26,13 +32,21 @@ export const Open = () => (
         }}
       >
         <PopoverArrow />
-        <PopoverTitle style={{ fontWeight: 600, color: "var(--color-foreground-rich)" }}>
+        <PopoverTitle
+          style={{ fontWeight: 600, color: "var(--color-foreground-rich)" }}
+        >
           GPT-4 ranked you 3rd
         </PopoverTitle>
-        <PopoverDescription style={{ marginTop: 6, color: "var(--color-foreground)", fontSize: 14 }}>
-          The agent flagged a missing battery-life spec and 2 fewer reviews
-          than Anker. Adding "48h playback" to your title is projected to
-          recover the top slot.
+        <PopoverDescription
+          style={{
+            marginTop: 6,
+            color: "var(--color-foreground)",
+            fontSize: 14,
+          }}
+        >
+          The agent flagged a missing battery-life spec and 2 fewer reviews than
+          Anker. Adding "48h playback" to your title is projected to recover the
+          top slot.
         </PopoverDescription>
       </PopoverPopup>
     </PopoverPositioner>

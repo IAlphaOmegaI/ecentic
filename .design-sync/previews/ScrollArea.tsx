@@ -18,7 +18,9 @@ const agents = [
 // ScrollArea needs a constrained size and overflowing content to show the bar.
 export const AgentFeed = () => (
   <ScrollArea style={{ height: 220, width: 360 }}>
-    <div style={{ padding: 12, display: "flex", flexDirection: "column", gap: 12 }}>
+    <div
+      style={{ padding: 12, display: "flex", flexDirection: "column", gap: 12 }}
+    >
       {agents.map((line, index) => (
         <div
           key={line}
@@ -49,7 +51,11 @@ export const TallContent = () => (
       {Array.from({ length: 20 }).map((_, index) => (
         <p
           key={index}
-          style={{ fontSize: 13, color: "var(--color-foreground)", margin: "8px 0 0" }}
+          style={{
+            fontSize: 13,
+            color: "var(--color-foreground)",
+            margin: "8px 0 0",
+          }}
         >
           Rewrite #{index + 1}: win rate +{index + 1}.2% across agents
         </p>

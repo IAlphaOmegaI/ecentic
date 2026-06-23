@@ -1,13 +1,32 @@
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@zenncore/web";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@zenncore/web";
 
 // InputOTP is an inline grid of one-time-code slots. maxLength sets slot
 // count; a controlled `value` fills the digits so they show in the card.
 // onValueChange is required by the wrapper (no-op here for a static preview).
 const noop = () => {};
 
-const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
+const Field = ({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) => (
   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-    <span style={{ fontSize: 13, fontWeight: 500, color: "var(--color-foreground)" }}>{label}</span>
+    <span
+      style={{
+        fontSize: 13,
+        fontWeight: 500,
+        color: "var(--color-foreground)",
+      }}
+    >
+      {label}
+    </span>
     {children}
   </div>
 );

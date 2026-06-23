@@ -5,9 +5,21 @@ import {
   TextFieldInput,
 } from "@zenncore/web";
 
-const Row = ({ label, children }: { label: string; children: React.ReactNode }) => (
+const Row = ({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) => (
   <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-    <span style={{ fontSize: 13, fontWeight: 500, color: "var(--color-foreground)" }}>
+    <span
+      style={{
+        fontSize: 13,
+        fontWeight: 500,
+        color: "var(--color-foreground)",
+      }}
+    >
       {label}
     </span>
     {children}

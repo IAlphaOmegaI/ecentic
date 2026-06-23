@@ -15,7 +15,11 @@ import {
 export const Open = () => (
   <AlertDialog defaultOpen>
     <AlertDialogTrigger
-      render={<Button variant="ghost" color="error">Delete competitor</Button>}
+      render={
+        <Button variant="ghost" color="error">
+          Delete competitor
+        </Button>
+      }
     />
     <AlertDialogPopup
       style={{
@@ -28,18 +32,39 @@ export const Open = () => (
       }}
     >
       <AlertDialogTitle
-        style={{ fontSize: 18, fontWeight: 600, color: "var(--color-foreground-rich)" }}
+        style={{
+          fontSize: 18,
+          fontWeight: 600,
+          color: "var(--color-foreground-rich)",
+        }}
       >
         Stop tracking Anker PowerCore?
       </AlertDialogTitle>
-      <AlertDialogDescription style={{ marginTop: 8, color: "var(--color-foreground)" }}>
-        This competitor will be removed from all simulations. 142 days of
-        agent win-rate history against GPT-4, Claude, Gemini and Perplexity
-        will be archived. This can't be undone.
+      <AlertDialogDescription
+        style={{ marginTop: 8, color: "var(--color-foreground)" }}
+      >
+        This competitor will be removed from all simulations. 142 days of agent
+        win-rate history against GPT-4, Claude, Gemini and Perplexity will be
+        archived. This can't be undone.
       </AlertDialogDescription>
-      <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 24 }}>
-        <AlertDialogClose render={<Button variant="ghost" color="neutral">Keep tracking</Button>} />
-        <AlertDialogClose render={<Button color="error">Stop tracking</Button>} />
+      <div
+        style={{
+          display: "flex",
+          gap: 8,
+          justifyContent: "flex-end",
+          marginTop: 24,
+        }}
+      >
+        <AlertDialogClose
+          render={
+            <Button variant="ghost" color="neutral">
+              Keep tracking
+            </Button>
+          }
+        />
+        <AlertDialogClose
+          render={<Button color="error">Stop tracking</Button>}
+        />
       </div>
     </AlertDialogPopup>
   </AlertDialog>

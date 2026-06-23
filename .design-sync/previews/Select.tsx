@@ -67,7 +67,11 @@ export const Grouped = () => (
             <SelectItem value="woocommerce">WooCommerce</SelectItem>
           </SelectGroup>
           <SelectSeparator
-            style={{ height: 1, margin: "4px 0", background: "var(--color-accent-foreground)" }}
+            style={{
+              height: 1,
+              margin: "4px 0",
+              background: "var(--color-accent-foreground)",
+            }}
           />
           <SelectGroup>
             <SelectGroupLabel

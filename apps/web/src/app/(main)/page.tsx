@@ -18,6 +18,7 @@ import { DiscoveryShift } from "./_components/discovery-shift";
 import { Features } from "./_components/features";
 import { Hero } from "./_components/hero";
 import { PartnersStrip } from "./_components/partners-strip";
+import { PartnershipBanner } from "./_components/partnership-banner";
 import { SmoothScroll } from "./_components/smooth-scroll";
 import { Steps } from "./_components/steps";
 import {
@@ -83,6 +84,7 @@ export default async () => (
       />
       <Navbar />
       <Hero />
+      {/* <PartnershipBanner /> */}
       <PartnersStrip />
       <DiscoveryShift />
       <BlindSpot />

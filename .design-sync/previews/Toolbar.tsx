@@ -1,3 +1,4 @@
+import { SearchIcon } from "@zenncore/icons";
 import {
   Toolbar,
   ToolbarButton,
@@ -6,7 +7,6 @@ import {
   ToolbarLink,
   ToolbarSeparator,
 } from "@zenncore/web";
-import { SearchIcon } from "@zenncore/icons";
 
 // A listing-editor formatting bar. ToolbarGroup keeps related actions
 // together; a pressed button shows the active state. Column cardMode.
@@ -96,7 +96,13 @@ export const TableActions = () => (
           height: 32,
         }}
       >
-        <SearchIcon style={{ width: 14, height: 14, color: "var(--color-foreground-dimmed)" }} />
+        <SearchIcon
+          style={{
+            width: 14,
+            height: 14,
+            color: "var(--color-foreground-dimmed)",
+          }}
+        />
         <ToolbarInput
           placeholder="Search products"
           style={{

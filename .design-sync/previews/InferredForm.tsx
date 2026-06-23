@@ -1,4 +1,4 @@
-import { InferredForm, field } from "@zenncore/web";
+import { field, InferredForm } from "@zenncore/web";
 import { z } from "zod";
 
 // Schema-driven form built from a field() config. InferredForm wires up

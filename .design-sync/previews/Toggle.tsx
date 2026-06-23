@@ -1,10 +1,19 @@
+import {
+  BarChartIcon,
+  BullseyeIcon,
+  RadarIcon,
+  RobotIcon,
+} from "@zenncore/icons";
 import { Toggle, ToggleGroup } from "@zenncore/web";
-import { RobotIcon, RadarIcon, BarChartIcon, BullseyeIcon } from "@zenncore/icons";
 
 // A single pressed toggle (defaultPressed) so the active state is visible.
 export const Pressed = () => (
   <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-    <Toggle defaultPressed aria-label="Auto-optimize" style={{ borderRadius: 6 }}>
+    <Toggle
+      defaultPressed
+      aria-label="Auto-optimize"
+      style={{ borderRadius: 6 }}
+    >
       <BullseyeIcon style={{ width: 16, height: 16 }} />
     </Toggle>
     <span style={{ fontSize: 14, color: "var(--color-foreground)" }}>
@@ -36,13 +45,22 @@ export const AgentFilter = () => (
     defaultValue={["gpt-4", "claude"]}
     style={{ borderRadius: 8, gap: 2 }}
   >
-    <Toggle value="gpt-4" style={{ width: "auto", padding: "0 12px", borderRadius: 6 }}>
+    <Toggle
+      value="gpt-4"
+      style={{ width: "auto", padding: "0 12px", borderRadius: 6 }}
+    >
       GPT-4
     </Toggle>
-    <Toggle value="claude" style={{ width: "auto", padding: "0 12px", borderRadius: 6 }}>
+    <Toggle
+      value="claude"
+      style={{ width: "auto", padding: "0 12px", borderRadius: 6 }}
+    >
       Claude
     </Toggle>
-    <Toggle value="gemini" style={{ width: "auto", padding: "0 12px", borderRadius: 6 }}>
+    <Toggle
+      value="gemini"
+      style={{ width: "auto", padding: "0 12px", borderRadius: 6 }}
+    >
       Gemini
     </Toggle>
   </ToggleGroup>

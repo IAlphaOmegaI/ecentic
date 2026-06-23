@@ -21,7 +21,8 @@
 @import "../packages/web/src/config/tailwind/globals.css";
 
 @theme {
-  --font-redhat-display: "Red Hat Display", ui-sans-serif, system-ui, sans-serif;
+  --font-redhat-display:
+    "Red Hat Display", ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-redhat-display);
   --default-font-family: var(--font-redhat-display);
 }

@@ -12,10 +12,34 @@ import {
 // Column mode: one rich, full-width cell. A competitor win-rate breakdown
 // across AI shopping agents and marketplaces.
 const rows = [
-  { name: "AcousticPro X3", marketplace: "Amazon", gpt4: 71, claude: 68, win: 69 },
-  { name: "SoundForge Studio", marketplace: "Shopify", gpt4: 54, claude: 49, win: 52 },
-  { name: "EchoLab Mini", marketplace: "Walmart", gpt4: 38, claude: 41, win: 40 },
-  { name: "PulseWave Air", marketplace: "Amazon", gpt4: 22, claude: 27, win: 25 },
+  {
+    name: "AcousticPro X3",
+    marketplace: "Amazon",
+    gpt4: 71,
+    claude: 68,
+    win: 69,
+  },
+  {
+    name: "SoundForge Studio",
+    marketplace: "Shopify",
+    gpt4: 54,
+    claude: 49,
+    win: 52,
+  },
+  {
+    name: "EchoLab Mini",
+    marketplace: "Walmart",
+    gpt4: 38,
+    claude: 41,
+    win: 40,
+  },
+  {
+    name: "PulseWave Air",
+    marketplace: "Amazon",
+    gpt4: 22,
+    claude: 27,
+    win: 25,
+  },
 ];
 
 export const CompetitorWinRates = () => (

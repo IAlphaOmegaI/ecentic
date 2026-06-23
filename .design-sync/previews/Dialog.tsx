@@ -14,7 +14,11 @@ import {
 export const Open = () => (
   <Dialog defaultOpen>
     <DialogTrigger
-      render={<Button variant="soft" color="primary">Run simulation</Button>}
+      render={
+        <Button variant="soft" color="primary">
+          Run simulation
+        </Button>
+      }
     />
     <DialogPopup
       style={{
@@ -26,15 +30,36 @@ export const Open = () => (
         boxShadow: "0 20px 50px rgba(0,0,0,0.25)",
       }}
     >
-      <DialogTitle style={{ fontSize: 18, fontWeight: 600, color: "var(--color-foreground-rich)" }}>
+      <DialogTitle
+        style={{
+          fontSize: 18,
+          fontWeight: 600,
+          color: "var(--color-foreground-rich)",
+        }}
+      >
         Run simulation?
       </DialogTitle>
-      <DialogDescription style={{ marginTop: 8, color: "var(--color-foreground)" }}>
+      <DialogDescription
+        style={{ marginTop: 8, color: "var(--color-foreground)" }}
+      >
         We'll compare your product against 8 competitors across GPT-4, Claude,
         Gemini and Perplexity. This uses 1 simulation credit.
       </DialogDescription>
-      <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 24 }}>
-        <DialogClose render={<Button variant="ghost" color="neutral">Cancel</Button>} />
+      <div
+        style={{
+          display: "flex",
+          gap: 8,
+          justifyContent: "flex-end",
+          marginTop: 24,
+        }}
+      >
+        <DialogClose
+          render={
+            <Button variant="ghost" color="neutral">
+              Cancel
+            </Button>
+          }
+        />
         <DialogClose render={<Button color="primary">Run simulation</Button>} />
       </div>
     </DialogPopup>

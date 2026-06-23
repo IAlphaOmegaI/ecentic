@@ -15,7 +15,13 @@ export const Open = () => (
     <PreviewCard open>
       <PreviewCardTrigger
         render={
-          <a style={{ color: "var(--color-primary)", fontWeight: 600, cursor: "pointer" }}>
+          <a
+            style={{
+              color: "var(--color-primary)",
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
             Anker PowerCore
           </a>
         }
@@ -47,10 +53,20 @@ export const Open = () => (
               A
             </div>
             <div>
-              <div style={{ fontWeight: 600, color: "var(--color-foreground-rich)" }}>
+              <div
+                style={{
+                  fontWeight: 600,
+                  color: "var(--color-foreground-rich)",
+                }}
+              >
                 Anker PowerCore 20K
               </div>
-              <div style={{ fontSize: 12, color: "var(--color-foreground-dimmed)" }}>
+              <div
+                style={{
+                  fontSize: 12,
+                  color: "var(--color-foreground-dimmed)",
+                }}
+              >
                 Top competitor · Amazon
               </div>
             </div>
@@ -59,9 +75,22 @@ export const Open = () => (
             $59.99 · 4.7★ (18,204 reviews). Wins 64% of GPT-4 and Perplexity
             comparisons against your listing this week.
           </div>
-          <div style={{ display: "flex", gap: 16, fontSize: 12, color: "var(--color-foreground-dimmed)" }}>
-            <span>Win rate <b style={{ color: "var(--color-foreground-rich)" }}>64%</b></span>
-            <span>Mentions <b style={{ color: "var(--color-foreground-rich)" }}>312</b></span>
+          <div
+            style={{
+              display: "flex",
+              gap: 16,
+              fontSize: 12,
+              color: "var(--color-foreground-dimmed)",
+            }}
+          >
+            <span>
+              Win rate{" "}
+              <b style={{ color: "var(--color-foreground-rich)" }}>64%</b>
+            </span>
+            <span>
+              Mentions{" "}
+              <b style={{ color: "var(--color-foreground-rich)" }}>312</b>
+            </span>
           </div>
         </PreviewCardPopup>
       </PreviewCardPositioner>

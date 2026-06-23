@@ -38,7 +38,10 @@ export const Open = () => (
   <div style={{ width: 320 }}>
     <Combobox items={competitors} defaultValue="Sony WF-1000XM5" defaultOpen>
       <div style={{ position: "relative", width: 320 }}>
-        <ComboboxInput placeholder="Search competitors..." style={{ width: 320 }} />
+        <ComboboxInput
+          placeholder="Search competitors..."
+          style={{ width: 320 }}
+        />
         <ComboboxTrigger
           aria-label="Open"
           style={{ position: "absolute", right: 0, top: 0 }}
@@ -103,7 +106,10 @@ export const Closed = () => (
   <div style={{ width: 320 }}>
     <Combobox items={competitors} defaultValue="Anker Soundcore">
       <div style={{ position: "relative", width: 320 }}>
-        <ComboboxInput placeholder="Search competitors..." style={{ width: 320 }} />
+        <ComboboxInput
+          placeholder="Search competitors..."
+          style={{ width: 320 }}
+        />
         <ComboboxTrigger
           aria-label="Open"
           style={{ position: "absolute", right: 0, top: 0 }}

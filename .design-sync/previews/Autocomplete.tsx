@@ -44,7 +44,11 @@ const queries = [
 const grouped = [
   {
     value: "Products",
-    items: ["Wireless Earbuds Pro", "Wireless Earbuds Lite", "Over-Ear Headphones"],
+    items: [
+      "Wireless Earbuds Pro",
+      "Wireless Earbuds Lite",
+      "Over-Ear Headphones",
+    ],
   },
   {
     value: "Competitors",
@@ -55,7 +59,10 @@ const grouped = [
 export const Open = () => (
   <div style={{ width: 320 }}>
     <Autocomplete items={queries} defaultValue="earbuds" defaultOpen>
-      <AutocompleteInput placeholder="What would a shopper ask?" style={inputStyle} />
+      <AutocompleteInput
+        placeholder="What would a shopper ask?"
+        style={inputStyle}
+      />
       <AutocompletePositioner>
         <AutocompletePopup style={popupStyle}>
           <AutocompleteEmpty>No suggestions</AutocompleteEmpty>
@@ -75,7 +82,10 @@ export const Open = () => (
 export const Grouped = () => (
   <div style={{ width: 320 }}>
     <Autocomplete items={grouped} defaultOpen>
-      <AutocompleteInput placeholder="Search catalog & competitors" style={inputStyle} />
+      <AutocompleteInput
+        placeholder="Search catalog & competitors"
+        style={inputStyle}
+      />
       <AutocompletePositioner>
         <AutocompletePopup style={popupStyle}>
           <AutocompleteEmpty>No matches</AutocompleteEmpty>
@@ -83,7 +93,10 @@ export const Grouped = () => (
             {(group: { value: string; items: string[] }) => (
               <AutocompleteGroup key={group.value} items={group.items}>
                 <AutocompleteGroupLabel
-                  style={{ background: "var(--color-background-rich)", color: "var(--color-foreground-dimmed)" }}
+                  style={{
+                    background: "var(--color-background-rich)",
+                    color: "var(--color-foreground-dimmed)",
+                  }}
                 >
                   {group.value}
                 </AutocompleteGroupLabel>
@@ -105,7 +118,10 @@ export const Grouped = () => (
 export const Closed = () => (
   <div style={{ width: 320 }}>
     <Autocomplete items={queries} defaultValue="noise cancelling">
-      <AutocompleteInput placeholder="What would a shopper ask?" style={inputStyle} />
+      <AutocompleteInput
+        placeholder="What would a shopper ask?"
+        style={inputStyle}
+      />
       <AutocompletePositioner>
         <AutocompletePopup style={popupStyle}>
           <AutocompleteList>

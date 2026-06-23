@@ -17,7 +17,13 @@ export const Open = () => (
   <TooltipProvider>
     <div style={{ display: "flex", justifyContent: "center", padding: 24 }}>
       <Tooltip open>
-        <TooltipTrigger render={<Button variant="soft" color="primary">Win rate</Button>} />
+        <TooltipTrigger
+          render={
+            <Button variant="soft" color="primary">
+              Win rate
+            </Button>
+          }
+        />
         <TooltipPositioner side="top">
           <TooltipPopup
             style={{

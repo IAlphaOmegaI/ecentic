@@ -62,18 +62,13 @@ export const ProductsModelRates = ({ models }: ProductsModelRates.Props) => {
             className="flex flex-col items-center gap-1 p-6 first:pl-0 last:pr-0"
           >
             <div className="flex w-full flex-row items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Image
-                  src={getLogo(label)}
-                  alt={label}
-                  width={64}
-                  height={64}
-                  className="size-8"
-                />
-                <span className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-                  {label}
-                </span>
-              </div>
+              <Image
+                src={getLogo(label)}
+                alt={label}
+                width={64}
+                height={64}
+                className="size-8"
+              />
               <span className="font-bold text-2xl text-foreground-rich tabular-nums tracking-[-0.02em]">
                 {rate}{" "}
                 <span className="font-medium text-foreground-dimmed text-sm">

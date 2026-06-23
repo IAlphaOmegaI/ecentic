@@ -1,9 +1,9 @@
+import { ChevronDownIcon } from "@zenncore/icons";
 import {
   Collapsible,
   CollapsiblePanel,
   CollapsibleTrigger,
 } from "@zenncore/web";
-import { ChevronDownIcon } from "@zenncore/icons";
 
 // Rendered defaultOpen so the panel is visible. Used to disclose the agent
 // reasoning behind a simulation result.
