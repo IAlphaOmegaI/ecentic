@@ -15,6 +15,11 @@ import {
   AlertDialogPopup,
   AlertDialogTitle,
 } from "@zenncore/web/components/alert-dialog";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@zenncore/web/components/avatar";
 import { Button } from "@zenncore/web/components/button";
 import type { ColumnDef } from "@zenncore/web/components/data-table";
 import {
@@ -65,6 +70,7 @@ export type ProductDetailData = {
     id: string;
     title: string;
     brand: string | null;
+    image: string | null;
     rate: number;
     wins: number;
     total: number;
@@ -87,13 +93,24 @@ const columns = [
     accessorKey: "title",
     header: "Competitor",
     cell: ({ row }) => (
-      <div>
-        <p className="font-medium text-foreground">{row.original.title}</p>
-        {row.original.brand && (
-          <p className="font-light text-foreground-dimmed">
-            {row.original.brand}
-          </p>
-        )}
+      <div className="flex items-center gap-2">
+        <Avatar className="size-9 shrink-0 rounded-md bg-background-dimmed">
+          <AvatarImage
+            src={row.original.image ?? "/images/fallback.png"}
+            alt={row.original.title}
+          />
+          <AvatarFallback className="relative">
+            <Image src="/images/fallback.png" alt="Fallback" fill />
+          </AvatarFallback>
+        </Avatar>
+        <div>
+          <p className="font-medium text-foreground">{row.original.title}</p>
+          {row.original.brand && (
+            <p className="font-light text-foreground-dimmed">
+              {row.original.brand}
+            </p>
+          )}
+        </div>
       </div>
     ),
   },

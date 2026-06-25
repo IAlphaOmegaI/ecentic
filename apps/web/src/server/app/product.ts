@@ -271,6 +271,7 @@ export const getDetail = withAuthentication(
         id: competitorId,
         title: competitor?.title ?? "Unknown",
         brand: competitor?.brand ?? null,
+        image: competitor?.image ?? null,
         rate:
           competitorSimulations.length > 0
             ? Math.round((wins / competitorSimulations.length) * 100)

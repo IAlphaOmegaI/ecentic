@@ -612,11 +612,32 @@ export const enqueueScan = withAuthentication(async (context) => {
     orderBy: [{ column: schema.scan.createdAt, direction: "desc" }],
     limit: 1,
   });
-  if (existing.success && existing.data[0])
-    return {
-      success: true as const,
-      data: { scanId: existing.data[0].id },
-    };
+  const inflight = existing.success ? existing.data[0] : null;
+
+  // Self-heal a wedged scan instead of reusing it: a "running" whose worker died
+  // mid-run, or a "pending" the drain never picked up, would otherwise block this
+  // user's queue until a cron reaper fires — and locally (no cron) forever. Fail
+  // it and fall through to enqueue a fresh one; reuse only a genuinely-live scan.
+  const stale = (() => {
+    if (!inflight) return false;
+    switch (inflight.status) {
+      case "running":
+        return Date.now() - inflight.updatedAt.getTime() > 10 * 60 * 1000;
+      case "pending":
+        return Date.now() - inflight.createdAt.getTime() > 5 * 60 * 1000;
+      default:
+        return false;
+    }
+  })();
+
+  if (inflight && !stale)
+    return { success: true as const, data: { scanId: inflight.id } };
+
+  if (inflight)
+    await Scan.update(Environment.SERVER, inflight.id, {
+      status: "failed",
+      updatedAt: new Date(),
+    });
 
   const [products, competitors] = await Promise.all([
     Product.find(Environment.SERVER, {
