@@ -6,7 +6,7 @@ import { resultify } from "@zenncore/utils";
 import { isLoopFinished, streamText, tool } from "ai";
 import * as z from "zod";
 import {
-  discoveryProfileSchema,
+  businessProfileSchema,
   searchCatalogRequestSchema,
   searchCatalogResponseSchema,
 } from "./ucp-advanced-validator";
@@ -460,7 +460,7 @@ const discoverStore = async (
     };
   }
 
-  const parsed = discoveryProfileSchema.safeParse(
+  const parsed = businessProfileSchema.safeParse(
     JSON.parse(businessProfileText.data),
   );
 

@@ -239,6 +239,7 @@ export const BillingSection = ({ subscription, invoices }: Props) => {
     "unpaid",
     "paused",
   ]);
+
   const hasActivePlan =
     subscription !== null && activeStatuses.has(subscription.status);
 

@@ -135,8 +135,8 @@ export default () => (
         </h1>
         <p className="mt-5 max-w-2xl font-light text-foreground-dimmed text-xl leading-relaxed">
           Multi-brand dashboards, API access, UCP signing, and dedicated support
-          — built for the commerce teams running hundreds of SKUs across multiple
-          platforms.
+          — built for the commerce teams running hundreds of SKUs across
+          multiple platforms.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
           <BookCall color="primary" className="px-8 py-3.5 font-medium">
@@ -280,6 +280,6 @@ export default () => (
       </div>
     </section>
 
-    <Footer />
+    <Footer stacked />
   </main>
 );

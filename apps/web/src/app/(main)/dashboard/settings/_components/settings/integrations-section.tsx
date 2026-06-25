@@ -9,7 +9,10 @@ import * as Store from "@/server/app/store";
 
 const PLATFORM_BADGE: Record<string, { label: string; className: string }> = {
   shopify: { label: "SH", className: "bg-[#96BF48] text-background-rich" },
-  "shopify-public": { label: "SH", className: "bg-[#96BF48] text-background-rich" },
+  "shopify-public": {
+    label: "SH",
+    className: "bg-[#96BF48] text-background-rich",
+  },
   woocommerce: { label: "WC", className: "bg-[#7F54B3] text-background-rich" },
   feed: { label: "FD", className: "bg-primary/80 text-primary-foreground" },
   csv: { label: "CSV", className: "bg-accent-foreground text-background" },

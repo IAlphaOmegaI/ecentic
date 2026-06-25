@@ -22,7 +22,6 @@ const models = [
   { id: "gpt4", label: "GPT-4", logo: "/images/chatgpt.svg" },
   { id: "claude", label: "Claude", logo: "/images/claude.svg" },
   { id: "gemini", label: "Gemini", logo: "/images/gemini.svg" },
-  { id: "perplexity", label: "Perplexity", logo: "/images/perplexity.svg" },
 ] as const;
 
 export namespace CompletePhase {
@@ -95,7 +94,7 @@ export const CompletePhase = ({
 
         <Motion.Item className="h-auto border-accent-foreground border-b px-8">
           <motion.div
-            className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-x"
+            className="grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-x"
             variants={Stagger.Container(0.06)}
             initial="hidden"
             animate="visible"

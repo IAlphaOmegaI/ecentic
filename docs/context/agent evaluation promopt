@@ -1,0 +1,126 @@
+# Production System Prompts for Écentic's AI-Shopping-Agent Simulation: Research & Design
+
+## TL;DR
+- **Build ONE strong shared, rubric-anchored system prompt for the win-rate judge (Job A), parameterized by category, not four hand-tuned per-model prompts** — the evidence for stable, reproducible model-specific *calibration* differences is thin and contested, while the evidence that rubric anchoring, forced evidence-before-verdict, position-swapping, and absolute (pointwise) scoring reduce judge bias is strong; reserve per-model text for mechanical output-format quirks only.
+- **For competitor detection (Job B), a pure-parametric call is the wrong architecture for the stated goal of "REAL, purchasable products only"** — LLMs fabricate facts and especially URLs at high rates, so the single biggest reliability win is to add grounding (live search/retrieval) and, until then, force the model to return brand+model (never invented URLs), demand high-confidence well-known brands, and explicitly allow returning fewer than 4 (abstain) rather than padding with hallucinations.
+- **A critical implementation finding: `sonar-pro` (Perplexity) is a poor fit for the current `generateObject` design** — the official Vercel AI SDK Perplexity provider does not list object-generation support, and Sonar always grounds in live web data, which both breaks structured output and contaminates a controlled head-to-head comparison; treat Sonar as a grounded competitor-finder (Job B), not as a controlled judge (Job A).
+
+## Key Findings
+
+### 1. How real AI shopping agents rank products in 2025–2026
+Real shopping agents converge on a consistent signal set, and it directly validates Écentic's instinct to penalize missing data — but with an important reframe (penalize *unanswerable*, not merely *short*).
+
+- **ChatGPT shopping** selects products using user intent/context, **structured third-party metadata** (title, description, price, reviews), and model reasoning, and explicitly states results are organic, not ads. OpenAI's November 24, 2025 "shopping research" is "powered by a version of GPT‑5 mini trained with reinforcement learning specifically for shopping tasks ... post-trained on GPT‑5‑Thinking‑mini," and OpenAI's internal eval reports 64% product accuracy on multi-constraint queries versus 37% for ChatGPT Search; it performs best in detail-heavy categories (electronics, beauty, home, kitchen, sports). The Agentic Commerce Protocol (ACP) makes the **merchant feed a primary ranking authority**, not just a secondary signal.
+- **Amazon Rufus / "Alexa for Shopping"** (rebranded ~May 2026) runs on the COSMO knowledge graph + RAG with a query-planner. It is **conservative by design: it only recommends products it can explain with confidence**, reads structured backend attributes (not just copy), and independent analysis (Mars United, Amalytix, 1,000–1,300+ products) found it effectively requires ~4-star minimum ratings and high review counts. Incomplete backend attributes make a product "effectively invisible."
+- **Google AI Mode / Gemini + Shopping Graph** — Google's official blog states the Shopping Graph "now has more than 50 billion product listings ... every hour more than 2 billion of those product listings are refreshed on Google." It uses "query fan-out" to decompose queries and **reads structured Merchant Center feeds**; if a field is empty, "the AI doesn't guess — it marks it 'unknown' and moves on," potentially recommending a competitor whose data answers the question.
+- **Perplexity** grounds every answer in live web search with citations; per Perplexity's official Sonar Pro announcement, "Sonar Pro leads this benchmark with an F-score of 0.858, while Sonar received an F-score of 0.773" on SimpleQA factuality.
+
+**Decisive cross-agent signals:** structured/machine-readable data (schema.org Product/Offer/AggregateRating, feeds), reviews/ratings & social proof, price, real-time availability/in-stock, freshness, and retailer/brand authority/trust. To decide between two similar products, agents reward **completeness and confident explainability** — the product whose data can answer the most constraints wins. This is strong support for Écentic's "reward verifiable specifics, penalize missing data" design.
+
+### 2. Structured data & agentic-commerce standards
+A product's "agent-readability" measurably affects whether it is surfaced.
+
+- **Agentic Commerce Protocol (ACP)** — open standard co-developed by OpenAI + Stripe (Apache 2.0), powering Instant Checkout in ChatGPT; merchants expose products/pricing/checkout via structured feeds.
+- **Google Agent Payments Protocol (AP2)** and **Universal Commerce Protocol (UCP)** — UCP announced by Google at NRF on January 11, 2026, co-developed with Shopify, Etsy, Wayfair, Target, Walmart, endorsed by 20+ partners (Visa, Mastercard, Stripe, Amex…). Merchants publish a capability profile at a well-known discovery URL (`/.well-known/ucp`); agents negotiate the capability intersection. UCP is compatible with AP2 and integrates via REST, A2A, and the **Model Context Protocol (MCP)**.
+- Practitioner reporting claims products with near-complete attributes ("Golden Record," ~99.9% completion) see materially higher AI-recommendation visibility — directional, vendor-sourced, not peer-reviewed.
+
+**Implication for Écentic:** the simulation should treat structured-data completeness as a first-class, category-aware scoring dimension, because that is what real agents actually consume.
+
+### 3. Category-dependence of decisive attributes
+Generic checklists under-fit reality: the attributes that decide a purchase differ sharply by category (mattress = firmness/dimensions/materials/trial period; laptop = CPU/RAM/storage/battery/display; supplement = ingredients/dosage/certifications/third-party testing; apparel = sizing/material/fit). Schema.org itself encodes category-specific structure (e.g., a laptop's `additionalProperty` for RAM/storage; energy-efficiency enums; size/size-system for apparel), and product-data practitioners stress that schema attributes must map to how buyers in that category decide. The prompt should therefore **first infer the category, then evaluate against that category's decisive attributes**, rather than applying a flat checklist.
+
+### 4. LLM-as-judge failure modes & evidence-backed mitigations
+This is the most rigorously sourced area and should anchor Job A's redesign.
+
+- **Position/label bias** — first documented by Zheng et al. 2023 ("Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena," NeurIPS 2023), measured at ~10–15 points of win-rate swing by slot order; Shi et al. 2024 ("Judging the Judges," arXiv:2406.07791, 150,000+ instances) confirmed it persists across 15 judges and is **strongest when the quality gap is small**. Mitigation: **swap positions and check verdict stability**; randomize order. Note: a 2026 production guide argues instructing the judge to "ignore order" has roughly zero measured effect — the bias is in the decode, so you must swap mechanically, not just instruct.
+- **Verbosity bias** — Wang et al. 2023 measured 15–30 points of inflated preference for longer answers across GPT-4/Claude/PaLM-2 judges. Mitigation: separate substance from length; penalize unsupported length; reward verifiable specifics.
+- **Self-enhancement/self-preference bias** — Zheng et al. 2023 document self-enhancement bias where judges "favor the answers generated by themselves" (e.g., GPT-4 favoring its own outputs at higher win-rates than human-judged). Relevant because Écentic uses multiple model "perspectives."
+- **Leniency/score inflation & central-tendency** — documented LLM judge positive bias; LLM judges have poor calibration on broad/unbounded numeric scales and compress toward the middle. Mitigations: narrow scales (3–5 anchored levels), **explicit score anchors with concrete reference examples**, and **negative criteria (penalties) to counteract leniency**.
+- **Chain-of-thought / forced reasoning before verdict** — G-Eval (Liu et al., "NLG Evaluation using GPT-4 with Better Human Alignment") shows CoT evaluation steps + form-filling improve correlation with humans over BLEU/ROUGE. Force evidence/reasoning **before** the score.
+- **Pointwise vs pairwise** — "Pairwise or Pointwise?" (arXiv:2504.14716) finds pairwise preferences flip ~35% of the time under distractor features vs ~9% for absolute scoring; **absolute (pointwise) scoring is more robust to manipulation.** This argues Écentic should keep its 0–100 per-listing scores as the primary signal and treat the winner as a derived comparison.
+- **Self-consistency / multiple samples & panels** — sampling multiple times and aggregating, and panels of diverse judges (Verga et al. 2024, PoLL), improve reliability; Écentic's 4-model design is itself a de facto panel.
+
+### 5. Model-specific differences (gpt-4o, claude-sonnet-4, gemini-2.5-flash, sonar-pro)
+Evidence for *reproducible calibration* differences is thin; evidence for *mechanical output-format* differences is solid.
+
+- **Structured output:** Only OpenAI publishes a hard schema-compliance number — gpt-4o (2024-08-06+) with Structured Outputs hits ~100% via constrained decoding (vs <40% for older GPT-4). Claude Sonnet 4 historically has **no native json_schema** and relies on a tool-use trick (the Vercel AI SDK forces JSON via an injected tool); this conflicts with extended thinking and can throw 400s on unsupported JSON-Schema keywords (e.g., `minimum`/`maximum`/`oneOf`). Gemini 2.5 Flash uses native `responseSchema`; vendor claims "guaranteed" compliance but publishes no measured rate.
+- **sonar-pro:** Perplexity Sonar **always performs live web search** on every call and grounds in current web data with citations — there is no documented off-switch (you can narrow via `search_domain_filter`/`search_recency_filter` but not disable). Critically, the **official Vercel AI SDK Perplexity provider does not list object-generation support**, and `generateObject` with Sonar is documented to fail (`AI_NoObjectGeneratedError`). Perplexity's own docs warn that requesting links inside JSON "can result in hallucinations or broken links" and that a new JSON schema can incur a 10–30s cold-start (timeout risk).
+- **Context windows:** gpt-4o 128K; claude-sonnet-4 200K; gemini-2.5-flash ~1M; sonar-pro ~200K (verify on official Perplexity page).
+- **Verbosity/leniency by model:** third-party (not official) evidence suggests verbosity bias is worse in Gemini and GPT-3.5-class judges than GPT-4-Turbo; Anthropic's own docs note Claude is "engaging"/verbose by default. These are directional and version-sensitive — **do not hard-code calibration differences.**
+
+**Conclusion:** the genuine, evidence-backed per-model differences are about *how to reliably get the JSON out*, not about *how harshly each model should score*. This strongly favors one shared scoring rubric + thin per-model output-format handling.
+
+### 6. Minimizing hallucination in parametric competitor detection (Job B)
+- LLMs fabricate citations/URLs at high and domain-dependent rates. A 2026 study found 3–13% of URLs fabricated **even in retrieval-augmented settings**; parametric DOI/citation hallucination ranges far higher (e.g., 29–90%+ by domain), and GhostCite benchmarks 14–95% across 40 domains. Netcraft (July 2025, "Large Language Models are falling for phishing scams"), testing GPT-4.1-family across 50 brands, found that of 131 hostnames returned, "34% of them were not controlled by the brand at all," with "nearly 30% ... unregistered, parked, or otherwise inactive" — i.e., LLM-invented URLs are unreliable by default.
+- **Popularity bias:** LLM-generated references skew strongly to the most popular/well-cited entities (existence rates 40–50%, ~90% of valid refs in the top-10% most-cited). This is actually exploitable: **asking only for well-known, high-confidence brands raises the hit rate.**
+- **Abstention reduces hallucination:** instructing the model to say "I don't know"/return fewer items when uncertain, and announcing reward-for-abstaining schemes, measurably reduces confident errors (Tomani et al. 2024, "Uncertainty-Based Abstention"; "Don't Hallucinate, Abstain," arXiv:2402.00367; I-CALM 2026).
+- **Grounding/RAG reduces (but does not eliminate) hallucination** by conditioning on retrieved evidence (Lewis et al. 2020 and the large RAG literature). Caveat: the Stanford RegLab/HAI study (Magesh et al., *J. Empirical Legal Studies* 2025; arXiv:2405.20362) found leading retrieval-augmented legal tools "hallucinate between 17% and 33% of the time" (Westlaw AI-Assisted Research 33%, Lexis+ AI 17%, vs GPT-4 at 43%) — so grounding must be paired with verification.
+
+**Implication:** the #1 fix is architectural (add grounding); the #2 fix is prompt-level (brand+model not URLs, high-confidence brands only, allow abstention).
+
+## Details — Recommended Prompts & Rationale
+
+### Job A — Win-Rate Simulation: ONE shared, category-aware, anchored system prompt
+**Decision: one shared prompt, not four.** Rationale: (a) the debiasing/calibration techniques that matter are model-agnostic; (b) per-model calibration evidence is thin/contested and version-fragile; (c) a shared rubric maximizes cross-"perspective" comparability (the 4 models function as a panel, whose value comes from *diversity of model*, not divergence of instructions); (d) only output-format handling genuinely needs per-model treatment.
+
+Core instruction blocks (each tied to evidence):
+1. **Role + harsh calibration with explicit anchors** — define 0–100 bands with concrete descriptions (e.g., 0–30 = critical data missing/unverifiable; 30–55 = typical real listing, several gaps; 56–69 = solid, most key attributes verifiable; 70–84 = excellent, near-complete + specific; 85–100 = exceptional, rare). *Why:* anchor examples and narrow, behaviorally-defined bands counter leniency, central-tendency, and poor numeric calibration.
+2. **Category inference first, then category-specific attributes** — instruct: infer the product category, enumerate that category's decisive attributes, then score against them. *Why:* category-dependence of decisive attributes; mirrors how real agents match attributes to intent.
+3. **Forced evidence before verdict** — require the model to list verifiable specifics found and missing per dimension *before* emitting scores (placed earlier in the `reasoning` field, which the schema permits). *Why:* G-Eval CoT improves human alignment; reasoning-before-score reduces snap leniency.
+4. **Penalize unanswerable/unverifiable, not merely short** — replace blunt fixed penalties (−30 description, −25 images) with "penalize each decisive attribute that is missing or unverifiable." *Why:* verbosity-bias and real-agent behavior both say reward confident answerability, not length; fixed penalties can mis-fire across categories.
+5. **Anti-position/label-bias clause + mechanical swap in the harness** — state the labels are arbitrary, but rely on **swapping product/competitor positions across two calls and checking stability**, not on the instruction alone. *Why:* position bias lives in the decode; only swapping reliably measures/mitigates it.
+6. **Absolute scoring primary, winner derived** — score each listing independently on the same rubric; derive the winner from scores. *Why:* pointwise scoring is far more manipulation-robust than pairwise (9% vs 35% flips).
+7. **Concrete keyFactors required** — each keyFactor must cite a specific present/absent attribute, not marketing adjectives.
+8. **Strict output contract** — emit ONLY the schema `{winner, productScore, competitorScore, reasoning, keyFactors[]}`.
+
+**Per-model layer (format only):** gpt-4o via native Structured Outputs; gemini-2.5-flash via responseSchema; claude-sonnet-4 via tool-forced JSON (avoid extended-thinking conflict; sanitize unsupported JSON-Schema keywords). **Do not route Job A to sonar-pro** (no object-generation support; live grounding contaminates the controlled comparison).
+
+**Illustrative shared system prompt (Job A):**
+> You are a deliberately skeptical e-commerce listing auditor simulating how an AI shopping agent evaluates a product before recommending it. You will be given two listings labelled PRODUCT and COMPETITOR. THE LABELS ARE ARBITRARY and must not influence your judgment.
+> STEP 1 — Infer the product category and list the 4–7 attributes that actually decide a purchase in THAT category (e.g., laptop → CPU, RAM, storage, battery, display, weight; supplement → active ingredients, dosage, certifications, third-party testing).
+> STEP 2 — For each listing, in `reasoning`, record which decisive attributes are present and verifiable vs missing/unverifiable, plus data completeness (description, price, images, SKU/identifiers, structured data) and social proof. Reward verifiable specifics; treat marketing adjectives with no backing as absent.
+> STEP 3 — Score each listing independently 0–100 using these anchors: 0–30 critical data missing/unverifiable; 31–55 typical real listing with several gaps; 56–69 solid, most key attributes verifiable; 70–84 excellent, near-complete and specific; 85–100 exceptional (rare). Most real listings should fall 30–55; 70+ is rare. Penalize each decisive attribute that is missing or unverifiable — do not neutral-rate gaps.
+> STEP 4 — Set `winner` to whichever has the higher score (the higher score wins; if tied, judge on count of verifiable decisive attributes). Provide 3–6 `keyFactors`, each naming a specific present or absent attribute.
+> Output ONLY the JSON object. Do not add fields.
+
+### Job B — Competitor Detection: SYSTEM + USER prompt to minimize hallucination
+**Architecture recommendation first:** wire in grounding. Sonar-pro (live web search by default) or a search tool over gpt-4o/gemini is the right home for Job B; pure-parametric is structurally mismatched to "real, purchasable products only."
+
+System prompt blocks (each tied to evidence):
+1. **Real, high-confidence, well-known brands only** — request brands that demonstrably rank on Amazon/Walmart/Target. *Why:* LLM popularity bias means well-known entities have far higher existence rates.
+2. **Brand + model, NOT invented URLs** — require brand + product model/line; forbid fabricated URLs; if grounded, only return URLs that came from search results/citations. *Why:* LLM-generated URLs are unreliable (Netcraft: 34% wrong, ~30% unregistered); Perplexity's own docs warn against links-in-JSON.
+3. **Explicit abstention / variable count** — return 2–4 only if confident; returning fewer is correct when uncertain; never pad. *Why:* abstention measurably cuts hallucination.
+4. **Matching constraints** — same price tier (±40%), same subcategory, no near-duplicate brands.
+5. **(If grounded) cite source/retailer per item** and prefer items verifiable at a named retailer.
+
+**Illustrative SYSTEM prompt (Job B):**
+> You identify real, currently-purchasable competitor products for a given merchant product. Output only products you are highly confident exist and are sold by mainstream retailers (products from brands that rank on Amazon, Walmart, or Target). Rules: (1) Return brand + specific model/line, never a fabricated URL — only include a `url` if it came from a verified source. (2) Same subcategory and within ±40% of the merchant price. (3) No near-duplicate brands. (4) It is better to return 2 high-confidence competitors than 4 with one guess — if you are not confident a product is real, omit it. Never invent a brand, model, or price.
+
+**USER prompt (Job B):** supply the merchant product (title, brand, price, currency, inferred category/subcategory, key specs) and restate the constraints, then request 2–4 competitors in the required schema (title, brand, price, currency, source/retailer, url, description).
+
+## Lightweight Evaluation Plan (no ground truth required)
+1. **Discrimination / score spread** — measure score variance and product-vs-competitor separation across a sample; a healthy judge produces spread (the 30–55 mode with rare 70+), not a flat or all-high distribution. Flat distribution = judge stopped discriminating.
+2. **Calibration check** — verify the realized distribution matches the intended bands; track drift when model versions change.
+3. **Position/label-bias test** — run each pair twice with positions swapped; report verdict-flip rate and score deltas; target near-zero flips on clear-gap pairs (the literature says flips concentrate where the gap is small).
+4. **Self-consistency** — sample each judgment k times (temp low); measure score/verdict stability.
+5. **Hallucination rate (Job B)** — programmatically verify each returned competitor exists and is purchasable (search/lookup; URL liveness via HTTP HEAD); report % real, % live URL, % matching price tier/subcategory, % duplicate brands.
+6. **Adversarial test cases** — (a) identical listings (should tie); (b) "repetitive list"/verbose-but-empty listing vs concise-specific listing (verbosity trap); (c) one rich listing vs one barren listing (should separate); (d) swapped labels; (e) obscure-niche product for Job B (should abstain rather than fabricate); (f) cross-category mismatch.
+
+## Optional Addendum — read-only UCP/structured-catalog tool
+If the simulating agent could later fetch a merchant's structured catalog/policies via a read-only UCP/MCP-style tool (as real agents do):
+- **Change to Job A prompt:** add a dimension rewarding presence/quality of agent-readable structured data (schema.org/feed/UCP capability profile), since real agents weight this.
+- **Fairness guard against one-sided data:** if the merchant exposes structured data but the competitor does not (or vice versa), **do not let richer raw data alone decide the verdict.** Normalize: judge each side on the *best available representation*, mark fields "unknown" symmetrically, and report a confidence/coverage flag. Avoid double-counting the same structured attribute as both a "spec completeness" win and a "structured-data" win. State explicitly that absence of UCP data for one side is an asymmetry of *observability*, not necessarily of *product quality*, and cap the structured-data dimension's weight so it cannot dominate.
+
+## Recommendations (staged)
+1. **Now (prompt-only):** Ship the single shared, anchored, category-aware Job A prompt with absolute scoring + required evidence-before-verdict; add position-swapping in the harness. For Job B, add brand+model-not-URLs, high-confidence-brands-only, and abstention clauses. **Benchmark that changes them:** if swapped-position flip rate >5–10% on clear-gap pairs, strengthen anchoring/decomposition.
+2. **Next (architecture):** Move Job B to a grounded path (search tool or Sonar) and add post-hoc existence/URL verification. **Threshold:** if measured hallucination (non-existent or non-purchasable competitors) exceeds a few percent, grounding is mandatory, not optional.
+3. **Re-evaluate model routing:** Remove sonar-pro from Job A (structured-output + contamination issues); consider it for Job B grounding. Keep gpt-4o/gemini/claude as the Job A panel.
+4. **Ongoing:** Run the no-ground-truth eval suite on every prompt or model-version change; watch for calibration drift.
+
+## Caveats
+- Much 2025–2026 shopping-agent reporting is vendor/SEO-practitioner sourced (HubSpot, Search Engine Land, agency blogs) and should be read as directional; the few rigorous data points (Mars United/Amalytix Rufus studies, the Stanford RegLab legal-RAG study, OpenAI/Google/Stripe primary docs) are flagged as such.
+- Several Rufus optimization claims (e.g., specific conversion-lift figures) have no traceable primary source and are explicitly unconfirmed.
+- Per-model calibration/verbosity differences are version-sensitive and mostly third-party; treated as not reliable enough to hard-code.
+- "Golden Record"/99.9%-completeness visibility claims are vendor-sourced, not peer-reviewed.
+- Grounding reduces but does not eliminate hallucination (17–33% in leading legal-RAG tools); verification remains necessary.
+- Model identifiers and behaviors evolve quickly; re-verify structured-output support and context windows against official docs before launch — especially whether your pinned Claude Sonnet 4 snapshot has since gained native structured outputs, which would simplify the per-model layer.

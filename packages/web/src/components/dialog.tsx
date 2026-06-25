@@ -47,7 +47,7 @@ export const DialogPopup = ({
       />
       <DialogPrimitive.Popup
         className={createClassName(
-          "fixed top-1/2 left-1/2 -mt-8 w-96 max-w-[calc(100vw-3rem)] -translate-x-1/2 -translate-y-1/2 border border-accent-foreground bg-background p-6 text-foreground transition-all duration-150 data-ending-style:scale-90 data-starting-style:scale-90 data-ending-style:opacity-0 data-starting-style:opacity-0",
+          "fixed top-1/2 left-1/2 -mt-8 w-96 max-w-[calc(100vw-3rem)] rounded-lg -translate-x-1/2 -translate-y-1/2 border border-accent-foreground bg-background p-6 text-foreground transition-all duration-150 data-ending-style:scale-90 data-starting-style:scale-90 data-ending-style:opacity-0 data-starting-style:opacity-0",
           className,
           classList?.root,
         )}

@@ -130,12 +130,8 @@ export default async () => {
                 <p className="font-medium text-white/70 text-sm uppercase tracking-[0.18em]">
                   {post.category}
                 </p>
-                <p className="text-white">
-                  {formatBlogDate(post.publishedAt)}
-                </p>
-                <p className="text-white/60 text-sm">
-                  {post.readTime} read
-                </p>
+                <p className="text-white">{formatBlogDate(post.publishedAt)}</p>
+                <p className="text-white/60 text-sm">{post.readTime} read</p>
               </div>
             </>
           }

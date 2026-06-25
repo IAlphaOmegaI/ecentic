@@ -12,7 +12,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { runPlayground } from "@/server/app/intelligence/ucp-playground";
+import { runFlowTester } from "@/server/app/intelligence/ucp-flow-tester";
 import { StatusPill } from "../../../dashboard/_components/grid";
 
 type LogLine =
@@ -156,7 +156,9 @@ export const FlowTester = () => {
     setLines([]);
     setPhase("running");
 
-    const { stream } = await runPlayground({
+    //TODO: for flow tester check also if the ucp fetch is blocked by cloudflare (also read robots.txt)
+
+    const { stream } = await runFlowTester({
       storeUrl: storeUrl.trim(),
       query: query.trim() || undefined,
       agentProfileUrl: "https://ecentic.ai/ucp/agent-profile",

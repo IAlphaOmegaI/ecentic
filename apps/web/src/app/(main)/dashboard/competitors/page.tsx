@@ -42,7 +42,9 @@ export default ({ searchParams }: SearchParamsProps<keyof Pager>) => (
   <div className="flex flex-col">
     <div className="mx-8 border-accent-foreground border-x">
       <div className="-mx-8 border-accent-foreground border-b">
-        <div className="mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
+        <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <div>
             <Suspense
               fallback={
@@ -72,8 +74,8 @@ export default ({ searchParams }: SearchParamsProps<keyof Pager>) => (
 
       <div className="-mx-8 border-accent-foreground border-b">
         <div className="relative mx-8 bg-background-rich">
-          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <Suspense fallback={<StatsSkeleton />}>
             <StatCards />
           </Suspense>
@@ -174,8 +176,9 @@ const StatCards = async () => {
     (sum, brand) => sum + brand.simulations,
     0,
   );
-  const dangerous = brands.reduce((worst, brand) =>
-    brand.winRate < worst.winRate ? brand : worst,
+  const scored = brands.filter((brand) => brand.simulations > 0);
+  const dangerous = (scored.length > 0 ? scored : brands).reduce(
+    (worst, brand) => (brand.winRate < worst.winRate ? brand : worst),
   );
 
   const scans = await unwrapResult(Scan.getLatest(Environment.SERVER));
@@ -483,8 +486,46 @@ const Insights = async () => {
   ]);
 
   const completed = scans.filter((scan) => scan.status === "complete");
+  const scored = (data?.brands ?? []).filter((brand) => brand.simulations > 0);
 
-  if (completed.length === 0 && !data?.scan?.topFinding) return null;
+  if (scored.length === 0 && completed.length === 0 && !data?.scan?.topFinding)
+    return null;
+
+  const insight = (() => {
+    if (scored.length === 0) return null;
+
+    const ranked = [...scored].sort((a, b) => a.winRate - b.winRate);
+    const toughest = ranked[0];
+    const strongest = ranked[ranked.length - 1];
+    if (!toughest || !strongest) return null;
+
+    const winning = scored.filter((brand) => brand.winRate >= 50).length;
+    const overall = Math.round(
+      scored.reduce((sum, brand) => sum + brand.winRate, 0) / scored.length,
+    );
+    const plural = scored.length === 1 ? "" : "s";
+
+    switch (true) {
+      case winning === scored.length:
+        return {
+          headline: `You out-rank all ${scored.length} simulated competitor${plural} (avg ${overall}% win rate).`,
+          detail: `Your slimmest lead is against ${toughest.brand} at ${toughest.winRate}%. Keep listings optimized to defend it.`,
+        };
+      case toughest.winRate < 30:
+        return {
+          headline: `${toughest.brand} wins ${100 - toughest.winRate}% of agent comparisons against you — your biggest opportunity.`,
+          detail: `You hold the majority against ${winning} of ${scored.length} competitor${plural} (avg ${overall}%). Optimizing the products you lose to ${toughest.brand} moves the needle most.`,
+        };
+      default:
+        return {
+          headline: `You hold the majority against ${winning} of ${scored.length} competitor${plural} (avg ${overall}% win rate).`,
+          detail:
+            toughest._id === strongest._id
+              ? `Focus a listing optimization on the products ${toughest.brand} beats you on.`
+              : `${toughest.brand} is your toughest rival at ${toughest.winRate}%; you lead ${strongest.brand} at ${strongest.winRate}%.`,
+        };
+    }
+  })();
 
   const recentScans = completed.slice(0, 3);
 
@@ -493,9 +534,30 @@ const Insights = async () => {
       <div className="p-4">
         <SectionKicker>03 — Intelligence</SectionKicker>
         <p className="mt-2 font-semibold text-foreground-rich text-lg">
-          Recent Scan Activity
+          Competitive Summary
         </p>
       </div>
+
+      {insight && (
+        <div className="border-accent-foreground border-t bg-primary/5 p-4">
+          <p className="font-medium text-[10px] text-primary uppercase tracking-[0.08em]">
+            Key Insight
+          </p>
+          <p className="mt-1 max-w-3xl font-medium text-base text-foreground-rich">
+            {insight.headline}
+          </p>
+          <p className="mt-1 max-w-3xl text-foreground-dimmed text-sm leading-relaxed">
+            {insight.detail}
+          </p>
+          <Button
+            color="primary"
+            className="mt-3"
+            render={<Link href="/dashboard/optimize" />}
+          >
+            Optimize losing listings <ArrowRightIcon className="size-4" />
+          </Button>
+        </div>
+      )}
 
       {data.scan?.topFinding && (
         <TopFindingCallout className="border-accent-foreground border-t">
@@ -503,52 +565,64 @@ const Insights = async () => {
         </TopFindingCallout>
       )}
 
-      <div className="flex flex-col gap-px border-accent-foreground border-t bg-accent-foreground">
-        {recentScans.map((scan) => {
-          const total = scan.wins + scan.losses;
-          const winRate = total > 0 ? Math.round((scan.wins / total) * 100) : 0;
+      {recentScans.length > 0 && (
+        <>
+          <div className="border-accent-foreground border-t px-4 pt-4 pb-1">
+            <p className="font-medium text-[11px] text-foreground-dimmed uppercase tracking-[0.1em]">
+              Recent Scan Activity
+            </p>
+          </div>
+          <div className="flex flex-col gap-px border-accent-foreground border-t bg-accent-foreground">
+            {recentScans.map((scan) => {
+              const total = scan.wins + scan.losses;
+              const winRate =
+                total > 0 ? Math.round((scan.wins / total) * 100) : 0;
 
-          return (
-            <div
-              key={scan.id}
-              className="flex items-center justify-between bg-background-rich px-4 py-3 transition-colors hover:bg-background"
-            >
-              <div className="flex min-w-0 items-center gap-3 pr-4">
+              return (
                 <div
-                  className={cn(
-                    "size-2 shrink-0 rounded-[2px]",
-                    scan.status === "complete" ? "bg-success" : "bg-warning",
-                  )}
-                />
-                <div className="min-w-0">
-                  <p className="font-medium text-foreground-rich text-sm">
-                    {scan.status === "complete"
-                      ? `Scan completed — ${scan.wins}W / ${scan.losses}L`
-                      : `Scan in progress — ${scan.completedSimulations}/${scan.totalSimulations}`}
-                  </p>
-                  {scan.topFinding && (
-                    <p className="mt-0.5 truncate text-foreground-dimmed text-sm">
-                      {scan.topFinding.impactDescription}
-                    </p>
-                  )}
+                  key={scan.id}
+                  className="flex items-center justify-between bg-background-rich px-4 py-3 transition-colors hover:bg-background"
+                >
+                  <div className="flex min-w-0 items-center gap-3 pr-4">
+                    <div
+                      className={cn(
+                        "size-2 shrink-0 rounded-[2px]",
+                        scan.status === "complete"
+                          ? "bg-success"
+                          : "bg-warning",
+                      )}
+                    />
+                    <div className="min-w-0">
+                      <p className="font-medium text-foreground-rich text-sm">
+                        {scan.status === "complete"
+                          ? `Scan completed — ${scan.wins}W / ${scan.losses}L`
+                          : `Scan in progress — ${scan.completedSimulations}/${scan.totalSimulations}`}
+                      </p>
+                      {scan.topFinding && (
+                        <p className="mt-0.5 truncate text-foreground-dimmed text-sm">
+                          {scan.topFinding.impactDescription}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-3">
+                    {total > 0 && <WinRateBadge rate={winRate} />}
+                    <span className="whitespace-nowrap text-foreground-dimmed text-xs tabular-nums">
+                      {formatRelativeTime(scan.createdAt)}
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <div className="flex shrink-0 items-center gap-3">
-                {total > 0 && <WinRateBadge rate={winRate} />}
-                <span className="whitespace-nowrap text-foreground-dimmed text-xs tabular-nums">
-                  {formatRelativeTime(scan.createdAt)}
-                </span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+              );
+            })}
+          </div>
+        </>
+      )}
 
       <div className="flex items-center justify-between border-accent-foreground border-t p-4">
         <p className="text-foreground-dimmed text-sm">
           {completed.length} completed scan{completed.length !== 1 ? "s" : ""}
         </p>
-        <Button color="primary" render={<Link href="/dashboard" />}>
+        <Button color="accent" render={<Link href="/dashboard" />}>
           View all activity <ArrowRightIcon className="size-4" />
         </Button>
       </div>

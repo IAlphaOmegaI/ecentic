@@ -41,7 +41,7 @@ export const CompetitorManager = ({
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <Tabs defaultValue="auto" className="h-full">
-            <TabsList className={"w-full border-x-0 border-t-0"}>
+            <TabsList className={"w-full border-x-0 border-t-0 rounded-none"}>
               <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
               <Tab value="auto" className={"flex-1"}>
                 Auto-detect
@@ -54,8 +54,11 @@ export const CompetitorManager = ({
               </Tab>
             </TabsList>
 
+            {/* keepMounted: a detection stream in progress must survive
+                switching to another tab instead of being torn down/restarted. */}
             <TabsPanel
               value="auto"
+              keepMounted
               className={"h-[calc(100%-(var(--spacing)*9))] flex-1 border-0"}
             >
               <AutoDetectTab
@@ -86,8 +89,6 @@ export const CompetitorManager = ({
 
       <Motion.Item className="flex items-center justify-between border-accent-foreground border-accent-foreground border-t px-8">
         <div className="relative flex w-full items-center justify-between border-accent-foreground border-x border-b px-6 py-6">
-          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <Button

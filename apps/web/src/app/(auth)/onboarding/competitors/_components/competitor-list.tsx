@@ -19,6 +19,7 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import { Stagger } from "@/lib/animations";
 import { getCurrencySymbol, normalizePrice } from "@/lib/currency";
+import { getBrandLogo } from "@/lib/logo";
 import type * as Competitor from "@/server/app/competitor";
 
 export namespace CompetitorList {
@@ -89,8 +90,13 @@ export const CompetitorList = ({
                   <div className="flex items-center gap-3">
                     <Avatar className="size-9 rounded-none bg-primary/10">
                       <AvatarImage
-                        src={record.image ?? "/images/fallback.png"}
+                        src={
+                          record.image ??
+                          getBrandLogo(record.brand) ??
+                          undefined
+                        }
                         alt={record.title}
+                        className="object-contain"
                       />
                       <AvatarFallback className="relative">
                         <Image src="/images/fallback.png" alt="Fallback" fill />

@@ -1,0 +1,9 @@
+{
+  "namespace": "ZennWeb",
+  "source": "@zenncore/web@0.0.0",
+  "shape": "package",
+  "provider": null,
+  "componentCount": 42,
+  "skippedStoryIds": [],
+  "runtimeFontPrefixes": []
+}

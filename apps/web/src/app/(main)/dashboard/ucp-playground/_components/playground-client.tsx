@@ -1,509 +1,739 @@
 "use client";
 
-import { readStreamableValue } from "@ai-sdk/rsc";
+import { useChat } from "@ai-sdk/react";
+import { LoaderIcon, ShoppingCartIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
-import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import {
-  type Dispatch,
-  type SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { runPlayground } from "@/server/app/intelligence/ucp-playground";
-import { StatusPill } from "../../_components/grid";
+  type FormEntries,
+  field,
+  type GenericForm,
+  InferredForm,
+} from "@zenncore/web/components/inferred-form";
+import {
+  DefaultChatTransport,
+  getToolName,
+  isToolUIPart,
+  type ToolUIPart,
+} from "ai";
+import { useCallback, useState } from "react";
+import { z } from "zod";
+import {
+  Conversation,
+  ConversationContent,
+  ConversationEmptyState,
+  ConversationScrollButton,
+} from "@/components/ui/ai/conversation";
+import {
+  Message,
+  MessageContent,
+  MessageResponse,
+} from "@/components/ui/ai/message";
+import type { PromptInputMessage } from "@/components/ui/ai/prompt-input";
+import {
+  PromptInput,
+  PromptInputBody,
+  PromptInputSubmit,
+  PromptInputTextarea,
+} from "@/components/ui/ai/prompt-input";
+import { Suggestion, Suggestions } from "@/components/ui/ai/suggestion";
+import type {
+  detailProductSchema,
+  lookupProductSchema,
+  priceSchema,
+  productSchema,
+} from "@/server/app/intelligence/ucp-advanced-validator";
+import type {
+  PlaygroundDataParts,
+  PlaygroundUIMessage,
+} from "@/server/app/intelligence/ucp-playground";
+import { resolvePlaygroundStore } from "@/server/app/intelligence/ucp-playground-actions";
+import { SectionKicker, StatusPill } from "../../_components/grid";
 
-// ─── Types ───────────────────────────────────────────────────────────────────
+const connectFormConfig = {
+  storeUrl: field({
+    shape: "text",
+    validator: z.string().min(1, "Enter a store domain"),
+    label: "Store domain",
+    placeholder: "store.example.com",
+  }),
+} satisfies GenericForm;
 
-type LogLine =
-  | {
-      kind: "profile";
-      transport: string;
-      endpoint: string;
-      profileUrl: string;
-      agentProfileUrl: string;
-    }
-  | { kind: "text"; text: string }
-  | { kind: "tool_call"; id: string; tool: string; args: unknown }
-  | { kind: "tool_result"; id: string; tool: string; result: unknown }
-  | { kind: "error"; message: string }
-  | { kind: "done" };
+const starterSuggestions = [
+  "Search the catalog for coffee",
+  "Show me details for the first product",
+  "Add the first product to a new cart",
+  "Start a checkout for the cart",
+];
 
-// ─── JSON collapse util ───────────────────────────────────────────────────────
+const isClassicToolUIPart = (
+  part: PlaygroundUIMessage["parts"][number],
+): part is Extract<PlaygroundUIMessage["parts"][number], ToolUIPart> =>
+  isToolUIPart(part) && part.type.startsWith("tool-");
 
-const summarise = (value: unknown, maxLen = 160): string => {
-  if (value === null || value === undefined) return "null";
-  const raw = JSON.stringify(value);
-  if (raw.length <= maxLen) return raw;
-  return `${raw.slice(0, maxLen)}…`;
+const formatJson = (value: unknown): string => {
+  try {
+    return JSON.stringify(value, null, 2);
+  } catch {
+    return String(value);
+  }
 };
 
-// ─── Log line renderers ───────────────────────────────────────────────────────
+// Tools throw on failure, so the AI SDK surfaces errors as output-error parts
+// (part.errorText) — a successful (output-available) result is always valid.
 
-const ProfileLine = ({
-  line,
-}: {
-  line: Extract<LogLine, { kind: "profile" }>;
-}) => (
-  <div className="flex flex-col gap-1">
-    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-      <span className="font-medium text-primary">Profile resolved</span>
-      <span
-        className={cn(
-          "rounded-full px-2 py-0.5 font-semibold text-[11px] uppercase tracking-[0.05em]",
-          line.transport === "mcp"
-            ? "bg-primary/10 text-primary"
-            : "bg-warning/10 text-warning",
+type UcpMoney = z.infer<typeof priceSchema>;
+
+type UcpProduct = z.infer<
+  typeof productSchema | typeof lookupProductSchema | typeof detailProductSchema
+>;
+
+// Pull products out of a validated catalog output: search/lookup return
+// `products`, get_product returns a single `product`. The validated shapes are
+// checked against the UcpProduct view-model — no casts.
+const getProducts = (output: CatalogOutput | undefined): UcpProduct[] => {
+  if (!output) return [];
+  if ("products" in output) return output.products;
+  if ("product" in output) return [output.product];
+  return [];
+};
+
+// UCP money amounts are minor units (e.g. 24750 = $247.50).
+const formatMoney = (money: UcpMoney): string => {
+  const { amount, currency } = money;
+  const value = amount / 100;
+
+  try {
+    return new Intl.NumberFormat(undefined, {
+      style: "currency",
+      currency,
+    }).format(value);
+  } catch {
+    return `${value.toFixed(2)} ${currency}`;
+  }
+};
+
+const priceLabel = (product: UcpProduct): string | null => {
+  const min = formatMoney(product.price_range?.min);
+  const max = formatMoney(product.price_range?.max);
+
+  if (!min) return null;
+  return max && max !== min ? `${min} – ${max}` : min;
+};
+
+const productImage = (product: UcpProduct): string | undefined =>
+  product.media?.find((item) => item?.url)?.url;
+
+// A tool message part narrowed by its `tool-<name>` type literal, so part.output
+// carries that tool's zod-validated result instead of `unknown`.
+type ToolPart<Type extends PlaygroundUIMessage["parts"][number]["type"]> =
+  Extract<PlaygroundUIMessage["parts"][number], { type: Type }>;
+
+type CatalogToolPart = ToolPart<
+  "tool-search_catalog" | "tool-lookup_catalog" | "tool-get_product"
+>;
+
+// The validated output of a catalog tool (output-available). A UCP-level failure
+// arrives as { error } and is filtered out before rendering.
+type CatalogOutput = NonNullable<
+  Extract<CatalogToolPart, { state: "output-available" }>["output"]
+>;
+
+// ─── Cart shaping ─────────────────────────────────────────────────────────────
+// create_cart / get_cart / update_cart return the cart flat (id, line_items,
+// totals, currency, continue_url). Amounts are minor units in the cart currency.
+
+type UcpCartTotal = { type?: string; amount?: number; display_text?: string };
+
+type UcpCartLineItem = {
+  id?: string;
+  quantity?: number;
+  item?: { id?: string; title?: string; price?: number; image_url?: string };
+};
+
+type UcpCart = {
+  id?: string;
+  currency?: string;
+  status?: string | null;
+  continue_url?: string;
+  line_items?: UcpCartLineItem[];
+  totals?: UcpCartTotal[];
+};
+
+// cancel_cart is intentionally excluded — a cancellation shouldn't render a cart
+type CartToolPart = ToolPart<
+  "tool-create_cart" | "tool-get_cart" | "tool-update_cart"
+>;
+
+type CartOutput = NonNullable<
+  Extract<CartToolPart, { state: "output-available" }>["output"]
+>;
+
+const getCart = (output: CartOutput | undefined): UcpCart | null => {
+  if (!output) return null;
+  return "line_items" in output ? output : null;
+};
+
+const ProductCard = ({ product }: { product: UcpProduct }) => {
+  const image = productImage(product);
+  const price = priceLabel(product);
+  // On sale only when the compare-at (list) price is actually higher than the
+  // current price — stores send list_price_range { amount: 0 } to mean "none".
+  const listMin = product.list_price_range?.min;
+  const priceMin = product.price_range?.min;
+  const listPrice =
+    listMin && priceMin && listMin.amount > priceMin.amount
+      ? formatMoney(listMin)
+      : null;
+  const onSale = listPrice !== null;
+  const variantCount = product.variants?.length ?? 0;
+
+  const card = (
+    <div className="group flex h-full flex-col overflow-hidden rounded-lg border border-accent-foreground bg-background-rich transition-colors hover:border-primary">
+      <div className="aspect-square overflow-hidden bg-background-dimmed">
+        {image ? (
+          // biome-ignore lint/performance/noImgElement: arbitrary store CDNs can't be whitelisted for next/image
+          <img
+            alt={product.title ?? ""}
+            className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
+            loading="lazy"
+            src={image}
+          />
+        ) : (
+          <div className="flex size-full items-center justify-center text-[10px] text-foreground-dimmed/40 uppercase tracking-[0.08em]">
+            No image
+          </div>
         )}
-      >
-        {line.transport}
-      </span>
-      <span className="font-mono text-foreground-dimmed/70 text-xs">
-        {line.endpoint}
-      </span>
+      </div>
+      <div className="flex flex-1 flex-col gap-1 p-3">
+        <p className="line-clamp-2 font-medium text-foreground-rich text-sm leading-tight">
+          {product.title ?? "Untitled product"}
+        </p>
+        <div className="mt-auto flex items-end justify-between gap-2 pt-1">
+          <span className="flex items-baseline gap-1.5">
+            {price && (
+              <span className="font-semibold text-primary text-sm">
+                {price}
+              </span>
+            )}
+            {onSale && (
+              <span className="text-[11px] text-foreground-dimmed line-through">
+                {listPrice}
+              </span>
+            )}
+          </span>
+          {variantCount > 1 && (
+            <span className="shrink-0 text-[10px] text-foreground-dimmed uppercase tracking-[0.06em]">
+              {variantCount} variants
+            </span>
+          )}
+        </div>
+      </div>
     </div>
-    <div className="font-mono text-foreground-dimmed/60 text-xs">
-      Agent profile: {line.agentProfileUrl}
-    </div>
-    <span className="font-mono text-foreground-dimmed/60 text-xs">
-      Store profile: {line.profileUrl}
-    </span>
+  );
+
+  if (!product.url) return card;
+
+  return (
+    <a
+      className="block h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      href={product.url}
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      {card}
+    </a>
+  );
+};
+
+const ProductGrid = ({ products }: { products: UcpProduct[] }) => (
+  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+    {products.map((product, index) => (
+      <ProductCard key={product.id ?? index} product={product} />
+    ))}
   </div>
 );
 
-const ToolCallLine = ({
-  line,
-}: {
-  line: Extract<LogLine, { kind: "tool_call" }>;
-}) => (
-  <div className="flex flex-col gap-0.5">
-    <div className="flex items-center gap-2">
-      <span className="text-foreground-dimmed/50">▶</span>
-      <span className="font-mono font-semibold text-sm text-warning">
-        {line.tool}
-      </span>
-      <span className="font-mono text-foreground-dimmed/60 text-xs">
-        {summarise(line.args)}
-      </span>
+const ToolView = ({ part }: { part: ToolUIPart }) => {
+  const name = getToolName(part);
+  const output = part.state === "output-available" ? part.output : undefined;
+  const error = part.state === "output-error" ? part.errorText : undefined;
+  const pending =
+    part.state === "input-streaming" || part.state === "input-available";
+  const tone = error ? "error" : pending ? "primary" : "success";
+  const label = error ? "Failed" : pending ? "Running" : "Done";
+
+  return (
+    <div className="overflow-hidden rounded-lg border border-accent-foreground bg-background-dimmed font-mono text-xs">
+      <div className="flex items-center gap-2 border-accent-foreground border-b px-3 py-2">
+        <span className="text-foreground-dimmed">▶</span>
+        <span className="font-semibold text-foreground-rich">{name}</span>
+        <StatusPill className="ml-auto" tone={tone}>
+          {label}
+        </StatusPill>
+      </div>
+      <div className="space-y-3 p-3">
+        <div>
+          <p className="mb-1 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+            Arguments
+          </p>
+          <pre className="overflow-x-auto text-foreground/80">
+            {formatJson(part.input)}
+          </pre>
+        </div>
+        {error ? (
+          <div>
+            <p className="mb-1 font-medium text-[10px] text-error uppercase tracking-[0.08em]">
+              Error
+            </p>
+            <p className="wrap-break-word text-error">{error}</p>
+          </div>
+        ) : output !== undefined ? (
+          <div>
+            <p className="mb-1 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+              Result
+            </p>
+            <pre className="max-h-64 overflow-auto text-foreground/80">
+              {formatJson(output)}
+            </pre>
+          </div>
+        ) : null}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
-const ToolResultLine = ({
-  line,
-}: {
-  line: Extract<LogLine, { kind: "tool_result" }>;
-}) => (
-  <div className="ml-4 flex items-start gap-2 border-foreground-dimmed/10 border-l-2 pl-3">
-    <span className="mt-0.5 shrink-0 text-foreground-dimmed/40">└</span>
-    <span className="font-mono text-foreground-dimmed/70 text-xs leading-relaxed">
-      {summarise(line.result)}
-    </span>
-  </div>
-);
-
-const TextSegment = ({ text }: { text: string }) => (
-  <span className="font-mono text-foreground/80 text-xs">{text}</span>
-);
-
-const ErrorLine = ({ message }: { message: string }) => (
-  <div className="flex items-start gap-2 text-error">
+const ErrorView = ({ message }: { message: string }) => (
+  <div className="flex w-fit items-start gap-2 rounded-lg border border-error/30 bg-error/5 p-3 text-error text-xs">
     <span className="shrink-0">✕</span>
-    <span className="font-mono text-xs">{message}</span>
+    <span className="font-mono">{message}</span>
   </div>
 );
 
-const DoneLine = () => (
-  <div className="flex items-center gap-2 border-accent-foreground/30 border-t pt-2 text-success">
-    <span>✓</span>
-    <span className="font-mono text-xs">Run complete</span>
+const Thinking = () => (
+  <div className="flex items-center gap-1.5 py-1.5">
+    <span className="size-1.5 animate-bounce rounded-full bg-foreground-dimmed [animation-delay:-0.2s]" />
+    <span className="size-1.5 animate-bounce rounded-full bg-foreground-dimmed [animation-delay:-0.1s]" />
+    <span className="size-1.5 animate-bounce rounded-full bg-foreground-dimmed" />
   </div>
 );
 
-// ─── Main component ───────────────────────────────────────────────────────────
+const CartView = ({ cart }: { cart: UcpCart }) => {
+  const currency = cart.currency ?? "USD";
+  const lineItems = cart.line_items ?? [];
+  const totalRow =
+    cart.totals?.find((total) => total.type === "total") ?? cart.totals?.at(-1);
+  const itemCount = lineItems.reduce(
+    (sum, item) => sum + (item.quantity ?? 1),
+    0,
+  );
+
+  return (
+    <div className="w-fit overflow-hidden rounded-xl border border-accent-foreground bg-background-rich">
+      <div className="flex items-center justify-between gap-2 border-accent-foreground border-b bg-background-dimmed px-4 py-2.5">
+        <div className="flex items-center gap-2">
+          <ShoppingCartIcon className="size-4 text-primary" />
+          <span className="font-medium text-foreground-rich text-sm">Cart</span>
+          <span className="text-foreground-dimmed text-xs">
+            {itemCount} item{itemCount === 1 ? "" : "s"}
+          </span>
+        </div>
+        {totalRow?.amount && (
+          <span className="font-semibold text-primary text-sm">
+            {formatMoney({ amount: totalRow.amount, currency })}
+          </span>
+        )}
+      </div>
+
+      {lineItems.length > 0 && (
+        <ul className="divide-y divide-accent-foreground">
+          {lineItems.map((line, index) => (
+            <li
+              className="flex items-center gap-3 px-4 py-3"
+              key={line.id ?? index}
+            >
+              <div className="size-12 shrink-0 overflow-hidden rounded-md bg-background-dimmed">
+                {line.item?.image_url && (
+                  // biome-ignore lint/performance/noImgElement: arbitrary store CDNs can't be whitelisted for next/image
+                  <img
+                    alt={line.item.title ?? ""}
+                    className="size-full object-cover"
+                    loading="lazy"
+                    src={line.item.image_url}
+                  />
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-medium text-foreground text-sm">
+                  {line.item?.title ?? "Item"}
+                </p>
+                <p className="text-foreground-dimmed text-xs">
+                  Qty {line.quantity ?? 1}
+                </p>
+              </div>
+              {line.item?.price && (
+                <span className="shrink-0 font-mono text-foreground text-sm">
+                  {formatMoney({ amount: line.item.price, currency })}
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {cart.totals && cart.totals.length > 0 && (
+        <div className="space-y-1 border-accent-foreground border-t px-4 py-3">
+          {cart.totals.map((total) => {
+            const isTotal = total.type === "total";
+            return (
+              <div
+                className={cn(
+                  "flex items-center justify-between gap-2",
+                  isTotal
+                    ? "pt-1 font-semibold text-foreground-rich text-sm"
+                    : "text-foreground-dimmed text-xs",
+                )}
+                key={total.type ?? total.display_text ?? "total-row"}
+              >
+                <span>{total.display_text ?? total.type}</span>
+                {total.amount && (
+                  <span className="font-mono">
+                    {formatMoney({ amount: total.amount, currency })}
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {cart.continue_url && (
+        <a
+          className="block border-accent-foreground border-t px-4 py-2.5 text-center font-medium text-primary text-xs transition-colors hover:bg-primary/5"
+          href={cart.continue_url}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Open cart ↗
+        </a>
+      )}
+    </div>
+  );
+};
+
+const ToolLoading = ({ label }: { label: string }) => (
+  <div className="flex items-center gap-2 rounded-xl border border-accent-foreground bg-background-rich px-4 py-3 text-foreground-dimmed text-sm">
+    <span className="inline-block size-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
+    {label}
+  </div>
+);
+
+const CartPart = ({ part }: { part: CartToolPart }) => {
+  if (part.state === "input-streaming" || part.state === "input-available") {
+    return <ToolLoading label="Updating cart…" />;
+  }
+  if (part.state === "output-error") {
+    return <ErrorView message={part.errorText ?? "Cart operation failed"} />;
+  }
+
+  const output = part.state === "output-available" ? part.output : undefined;
+
+  const cart = getCart(output);
+  if (!cart) return <ToolView part={part} />;
+
+  return <CartView cart={cart} />;
+};
+
+const ProductsCard = ({
+  products,
+  output,
+}: {
+  products: UcpProduct[];
+  output: unknown;
+}) => (
+  <div className="space-y-2">
+    <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+      {products.length} product{products.length === 1 ? "" : "s"}
+    </p>
+    <ProductGrid products={products} />
+    <details className="group">
+      <summary className="cursor-pointer list-none text-[10px] text-foreground-dimmed uppercase tracking-[0.08em] hover:text-foreground">
+        Raw JSON
+      </summary>
+      <pre className="mt-1 max-h-64 overflow-auto rounded-lg border border-accent-foreground bg-background-dimmed p-3 font-mono text-foreground/80 text-xs">
+        {formatJson(output)}
+      </pre>
+    </details>
+  </div>
+);
+
+const CatalogPart = ({ part }: { part: CatalogToolPart }) => {
+  if (part.state === "input-streaming" || part.state === "input-available") {
+    return <ToolLoading label="Searching catalog…" />;
+  }
+  if (part.state === "output-error") {
+    return <ErrorView message={part.errorText ?? "Catalog request failed"} />;
+  }
+
+  const output = part.state === "output-available" ? part.output : undefined;
+
+  const products = getProducts(output);
+
+  if (products.length === 0) return <ToolView part={part} />;
+
+  return <ProductsCard output={output} products={products} />;
+};
+
+const MessageParts = ({ message }: { message: PlaygroundUIMessage }) => {
+  const hasVisibleContent = message.parts.some(
+    (part) => part.type !== "step-start",
+  );
+
+  return (
+    <>
+      {message.parts.map((part, index) => {
+        const key = `${message.id}-${index}`;
+
+        if (part.type === "text") {
+          return part.text ? (
+            <MessageResponse key={key}>{part.text}</MessageResponse>
+          ) : null;
+        }
+        if (part.type === "data-error") {
+          console.error(part.data);
+          return <ErrorView key={key} message={part.data.message} />;
+        }
+
+        if (
+          part.type === "tool-search_catalog" ||
+          part.type === "tool-lookup_catalog" ||
+          part.type === "tool-get_product"
+        ) {
+          return <CatalogPart key={key} part={part} />;
+        }
+        if (
+          part.type === "tool-create_cart" ||
+          part.type === "tool-get_cart" ||
+          part.type === "tool-update_cart"
+        ) {
+          return <CartPart key={key} part={part} />;
+        }
+        if (isClassicToolUIPart(part)) {
+          return <ToolView key={key} part={part} />;
+        }
+        return null;
+      })}
+      {message.role === "assistant" && !hasVisibleContent && <Thinking />}
+    </>
+  );
+};
+
+const transport = new DefaultChatTransport<PlaygroundUIMessage>({
+  api: "/api/ucp-playground",
+});
 
 export const PlaygroundClient = () => {
   const [storeUrl, setStoreUrl] = useState("");
-  const [query, setQuery] = useState("");
+  const [connection, setConnection] = useState<
+    PlaygroundDataParts["profile"] | null
+  >(null);
+  const [connectError, setConnectError] = useState<string | null>(null);
+  const [text, setText] = useState("");
 
-  const [lines, setLines] = useState<LogLine[]>([]);
-  const [phase, setPhase] = useState<"idle" | "running" | "done" | "error">(
-    "idle",
-  );
-  const logRef = useRef<HTMLDivElement>(null);
-
-  // auto-scroll
-  useEffect(() => {
-    if (logRef.current) {
-      logRef.current.scrollTop = logRef.current.scrollHeight;
-    }
+  const {
+    messages,
+    sendMessage,
+    status,
+    error,
+    stop,
+    setMessages,
+    clearError,
+  } = useChat<PlaygroundUIMessage>({
+    transport,
+    // Throttle UI updates so streaming large tool-result JSON doesn't re-render
+    // the transcript on every token.
+    // experimental_throttle: 50
   });
 
-  const flushText = (
-    buffer: string,
-    setter: Dispatch<SetStateAction<LogLine[]>>,
-  ) => {
-    if (!buffer) return;
-    setter((prev) => {
-      const last = prev[prev.length - 1];
-      if (last?.kind === "text") {
-        return [
-          ...prev.slice(0, -1),
-          { kind: "text", text: last.text + buffer } as LogLine,
-        ];
-      }
-      return [...prev, { kind: "text", text: buffer } as LogLine];
-    });
+  const isGenerating = status === "submitted" || status === "streaming";
+  const canSend = text.trim().length > 0;
+
+  const hostOf = (value: string): string => {
+    try {
+      return new URL(value.startsWith("http") ? value : `https://${value}`)
+        .host;
+    } catch {
+      return value;
+    }
   };
 
-  const [handleRun, isRunning] = useAsyncAction(async () => {
-    if (!storeUrl.trim()) return;
+  const connectedHost = connection ? hostOf(connection.profileUrl) : null;
 
-    setLines([]);
-    setPhase("running");
+  const [handleConnect, isConnecting] = useAsyncAction(
+    async ({ storeUrl: domain }: FormEntries<typeof connectFormConfig>) => {
+      setConnectError(null);
 
-    const { stream } = await runPlayground({
-      storeUrl: storeUrl.trim(),
-      query: query.trim() || undefined,
-      agentProfileUrl: "https://ecentic.ai/ucp/agent-profile",
-    });
+      const result = await resolvePlaygroundStore(domain);
 
-    let localBuffer = "";
-
-    for await (const event of readStreamableValue(stream)) {
-      if (!event) continue;
-
-      switch (event.kind) {
-        case "text": {
-          localBuffer += event.text;
-          // flush on sentence boundaries to reduce re-renders
-          if (/[.\n]/.test(event.text)) {
-            const captured = localBuffer;
-            localBuffer = "";
-            setLines((prev) => {
-              const last = prev[prev.length - 1];
-              if (last?.kind === "text") {
-                return [
-                  ...prev.slice(0, -1),
-                  { kind: "text", text: last.text + captured } as LogLine,
-                ];
-              }
-              return [...prev, { kind: "text", text: captured } as LogLine];
-            });
-          }
-          break;
-        }
-        case "tool_call":
-        case "tool_result":
-        case "profile": {
-          // flush any pending text first
-          if (localBuffer) {
-            const captured = localBuffer;
-            localBuffer = "";
-            setLines((prev) => {
-              const last = prev[prev.length - 1];
-              if (last?.kind === "text") {
-                return [
-                  ...prev.slice(0, -1),
-                  { kind: "text", text: last.text + captured } as LogLine,
-                ];
-              }
-              return [...prev, { kind: "text", text: captured } as LogLine];
-            });
-          }
-          setLines((prev) => [...prev, event as LogLine]);
-          break;
-        }
-        case "error": {
-          if (localBuffer) {
-            const captured = localBuffer;
-            localBuffer = "";
-            flushText(captured, setLines);
-          }
-          setLines((prev) => [...prev, event as LogLine]);
-          setPhase("error");
-          break;
-        }
-        case "done": {
-          if (localBuffer) {
-            const captured = localBuffer;
-            localBuffer = "";
-            setLines((prev) => {
-              const last = prev[prev.length - 1];
-              if (last?.kind === "text") {
-                return [
-                  ...prev.slice(0, -1),
-                  { kind: "text", text: last.text + captured } as LogLine,
-                ];
-              }
-              return [...prev, { kind: "text", text: captured } as LogLine];
-            });
-          }
-          setLines((prev) => [...prev, { kind: "done" } as LogLine]);
-          setPhase("done");
-          break;
-        }
+      if (!result.success) {
+        setConnectError(result.error);
+        return;
       }
-    }
 
-    // flush any remaining buffer
-    if (localBuffer) {
-      flushText(localBuffer, setLines);
-    }
-  });
-
-  const isEmpty = lines.length === 0 && phase === "idle";
-
-  return (
-    <div className="space-y-4">
-      {/* Input panel */}
-      <div className="rounded-lg border border-accent-foreground bg-background-rich">
-        <div className="border-accent-foreground border-b px-4 py-2.5">
-          <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-            Store endpoint
-          </p>
-          <p className="mt-1 text-foreground-dimmed text-xs">
-            Enter the base URL of a UCP-compliant store. A{" "}
-            <span className="font-mono">/.well-known/ucp</span> profile will be
-            resolved automatically to detect MCP or REST transport.
-          </p>
-        </div>
-        <div className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center">
-          <TextField
-            value={storeUrl}
-            onValueChange={setStoreUrl}
-            className="h-8 flex-1 border border-accent-foreground bg-background-dimmed"
-          >
-            <TextFieldInput
-              placeholder="https://store.example.com"
-              className="px-3 font-mono text-sm"
-            />
-          </TextField>
-          <TextField
-            value={query}
-            onValueChange={setQuery}
-            className="h-8 w-full border border-accent-foreground bg-background-dimmed sm:w-48"
-          >
-            <TextFieldInput
-              placeholder='Search query (e.g. "coffee")'
-              className="px-3 text-sm"
-            />
-          </TextField>
-          <Button
-            color="primary"
-            onClick={handleRun}
-            disabled={isRunning || !storeUrl.trim()}
-            className="shrink-0 px-5 py-1.5 text-sm"
-          >
-            {isRunning ? (
-              <span className="flex items-center gap-2">
-                <span className="inline-block size-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                Running…
-              </span>
-            ) : (
-              "Run"
-            )}
-          </Button>
-        </div>
-        <div className="border-accent-foreground border-t px-4 py-3">
-          <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-            Agent profile fixture
-          </p>
-          <p className="mt-1 text-foreground-dimmed text-xs">
-            Used as <span className="font-mono">meta.ucp-agent.profile</span> in
-            tool calls to test negotiation outcomes.
-          </p>
-        </div>
-      </div>
-
-      {/* Terminal output */}
-      <div className="rounded-lg border border-accent-foreground bg-background-rich">
-        <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-2.5">
-          <div className="flex items-center gap-2">
-            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-              Output
-            </p>
-            {phase === "running" && (
-              <StatusPill tone="primary">Live</StatusPill>
-            )}
-            {phase === "done" && <StatusPill tone="success">Done</StatusPill>}
-            {phase === "error" && <StatusPill tone="error">Error</StatusPill>}
-          </div>
-          {!isEmpty && (
-            <button
-              type="button"
-              onClick={() => {
-                setLines([]);
-                setPhase("idle");
-              }}
-              className="font-medium text-foreground-dimmed text-xs hover:text-foreground"
-            >
-              Clear
-            </button>
-          )}
-        </div>
-
-        <div
-          ref={logRef}
-          className="m-4 max-h-[520px] min-h-40 overflow-y-auto rounded-md bg-background-dimmed p-4 font-mono text-xs"
-        >
-          {isEmpty ? (
-            <p className="font-light text-foreground-dimmed/50 text-xs">
-              Enter a store URL above and press{" "}
-              <span className="font-medium text-foreground-dimmed">Run</span> to
-              start the UCP flow test.
-            </p>
-          ) : (
-            <div className="space-y-2">
-              {lines.map((line, index) => {
-                const key = index;
-                switch (line.kind) {
-                  case "profile":
-                    return <ProfileLine key={key} line={line} />;
-                  case "tool_call":
-                    return <ToolCallLine key={key} line={line} />;
-                  case "tool_result":
-                    return <ToolResultLine key={key} line={line} />;
-                  case "text":
-                    return <TextSegment key={key} text={line.text} />;
-                  case "error":
-                    return <ErrorLine key={key} message={line.message} />;
-                  case "done":
-                    return <DoneLine key={key} />;
-                  default:
-                    return null;
-                }
-              })}
-              {isRunning && phase !== "done" && phase !== "error" && (
-                <span className="inline-block h-3 w-1.5 animate-pulse bg-primary/60" />
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Session results */}
-      <CheckoutResult lines={lines} />
-      <CartResult lines={lines} />
-    </div>
+      setStoreUrl(domain);
+      setConnection(result.profile);
+    },
   );
-};
 
-// ─── Checkout result panel ────────────────────────────────────────────────────
+  const handleDisconnect = useCallback(() => {
+    setConnection(null);
+    setConnectError(null);
+    setMessages([]);
+    clearError();
+  }, [setMessages, clearError]);
 
-const checkoutTools = new Set([
-  "create_checkout",
-  "get_checkout",
-  "update_checkout",
-  "complete_checkout",
-]);
+  const submit = useCallback(
+    (raw: string) => {
+      const value = raw.trim();
+      if (!value || !storeUrl.trim() || isGenerating) return;
 
-const CheckoutResult = ({ lines }: { lines: LogLine[] }) => {
-  const checkoutResult = [...lines]
-    .reverse()
-    .find(
-      (line): line is Extract<LogLine, { kind: "tool_result" }> =>
-        line.kind === "tool_result" && checkoutTools.has(line.tool),
+      sendMessage({ text: value }, { body: { storeUrl: storeUrl.trim() } });
+      setText("");
+    },
+    [sendMessage, storeUrl, isGenerating],
+  );
+
+  const handleSubmit = useCallback(
+    (message: PromptInputMessage) => submit(message.text ?? ""),
+    [submit],
+  );
+
+  const handleTextChange = useCallback(
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setText(event.target.value);
+    },
+    [],
+  );
+
+  const isEmpty = messages.length === 0;
+
+  if (!connection) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center p-8">
+        <div className="w-full max-w-md space-y-4">
+          <div className="space-y-1 text-center">
+            <h2 className="font-semibold text-foreground-rich text-lg">
+              Connect a UCP store
+            </h2>
+            <p className="text-foreground-dimmed text-sm">
+              Enter a store domain to resolve its UCP profile and start a
+              session.
+            </p>
+          </div>
+          <InferredForm
+            className="flex flex-col gap-3"
+            config={connectFormConfig}
+            onSubmit={handleConnect}
+          >
+            <Button
+              className="w-full"
+              color="primary"
+              disabled={isConnecting}
+              type="submit"
+            >
+              {isConnecting && <LoaderIcon className="size-4 animate-spin" />}
+              {isConnecting ? "Connecting…" : "Connect"}
+            </Button>
+          </InferredForm>
+          {connectError && <ErrorView message={connectError} />}
+        </div>
+      </div>
     );
-
-  if (!checkoutResult) return null;
-
-  const raw = checkoutResult.result;
-  if (!raw || typeof raw !== "object" || "error" in raw) return null;
-
-  const checkout = raw as Record<string, unknown>;
-  const status =
-    typeof checkout["status"] === "string" ? checkout["status"] : null;
-  const continueUrl =
-    typeof checkout["continue_url"] === "string"
-      ? checkout["continue_url"]
-      : null;
-  const checkoutId =
-    typeof checkout["id"] === "string" ? checkout["id"] : null;
+  }
 
   return (
-    <div className="rounded-lg border border-accent-foreground bg-background-rich">
-      <div className="border-accent-foreground border-b px-4 py-2.5">
-        <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-          Checkout session
-        </p>
-        <p className="mt-1 text-foreground-dimmed text-xs">
-          Last <span className="font-mono">{checkoutResult.tool}</span> response
-        </p>
-      </div>
-      <div className="space-y-3 p-4">
-        {status && (
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="font-medium text-foreground text-sm">Status</span>
+    <div className="relative flex min-h-40 flex-1 flex-col divide-y divide-accent-foreground">
+      {/* Connected store + transport */}
+      <div className="flex shrink-0 items-center justify-between gap-3 p-4">
+        <SectionKicker>
+          <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 normal-case">
+            <span className="font-mono font-semibold text-primary">
+              {connectedHost}
+            </span>
             <StatusPill
-              tone={
-                status === "completed"
-                  ? "success"
-                  : status === "requires_escalation" ||
-                      status === "incomplete"
-                    ? "warning"
-                    : status === "canceled"
-                      ? "error"
-                      : "primary"
-              }
+              tone={connection.transport === "mcp" ? "primary" : "warning"}
             >
-              {status}
+              {connection.transport}
             </StatusPill>
-          </div>
-        )}
-        {checkoutId && (
-          <p className="break-all font-mono text-foreground-dimmed text-xs">
-            {checkoutId}
-          </p>
-        )}
-        {continueUrl && (
-          <a
-            href={continueUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block font-mono text-primary text-xs underline underline-offset-2"
-          >
-            {continueUrl}
-          </a>
-        )}
-        <pre className="max-h-72 overflow-auto rounded-md bg-background-dimmed p-4 font-mono text-foreground/80 text-xs leading-relaxed">
-          {JSON.stringify(raw, null, 2)}
-        </pre>
+            <span className="min-w-0 truncate font-mono text-[11px] text-foreground-dimmed lowercase">
+              {connection.endpoint}
+            </span>
+          </span>
+        </SectionKicker>
+        <button
+          className="shrink-0 font-medium text-foreground-dimmed text-xs hover:text-foreground"
+          onClick={handleDisconnect}
+          type="button"
+        >
+          Change store
+        </button>
       </div>
-    </div>
-  );
-};
 
-// ─── Cart result panel ────────────────────────────────────────────────────────
+      {/* Conversation */}
+      <Conversation className="min-h-0">
+        <ConversationContent>
+          {isEmpty ? (
+            <ConversationEmptyState
+              description="Ask the agent to search the catalog, inspect a product, build a cart, or run checkout — one step at a time."
+              title="Start a UCP session"
+            />
+          ) : (
+            messages.map((message) => (
+              <Message from={message.role} key={message.id}>
+                <MessageContent>
+                  <MessageParts message={message} />
+                </MessageContent>
+              </Message>
+            ))
+          )}
+        </ConversationContent>
+        <ConversationScrollButton />
+      </Conversation>
 
-const CartResult = ({ lines }: { lines: LogLine[] }) => {
-  const cartResult = [...lines]
-    .reverse()
-    .find(
-      (l): l is Extract<LogLine, { kind: "tool_result" }> =>
-        l.kind === "tool_result" && l.tool === "get_cart",
-    );
-
-  if (!cartResult) return null;
-
-  const raw = cartResult.result;
-  const json = JSON.stringify(raw, null, 2);
-
-  return (
-    <div className="rounded-lg border border-accent-foreground bg-background-rich">
-      <div className="border-accent-foreground border-b px-4 py-2.5">
-        <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-          Cart state
-        </p>
-        <p className="mt-1 text-foreground-dimmed text-xs">
-          Last <span className="font-mono">get_cart</span> response
-        </p>
+      {/* Input */}
+      <div className="shrink-0 space-y-3 p-4">
+        {error && (
+          <ErrorView message={error.message || "Something went wrong"} />
+        )}
+        {isEmpty && (
+          <Suggestions>
+            {starterSuggestions.map((suggestion) => (
+              <Suggestion
+                key={suggestion}
+                onClick={submit}
+                suggestion={suggestion}
+              />
+            ))}
+          </Suggestions>
+        )}
+        <PromptInput className="flex flex-row" onSubmit={handleSubmit}>
+          <PromptInputBody className="flex items-center px-4 py-2">
+            <PromptInputTextarea
+              className="flex-1 p-0"
+              disabled={isGenerating}
+              onChange={handleTextChange}
+              placeholder="Ask the agent to run a UCP action…"
+              value={text}
+            />
+            <PromptInputSubmit
+              disabled={isGenerating ? false : !canSend}
+              onStop={stop}
+              status={status}
+            />
+          </PromptInputBody>
+        </PromptInput>
       </div>
-      <pre className="m-4 max-h-72 overflow-auto rounded-md bg-background-dimmed p-4 font-mono text-foreground/80 text-xs leading-relaxed">
-        {json}
-      </pre>
     </div>
   );
 };

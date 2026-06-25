@@ -38,7 +38,9 @@ export default () => (
     </Suspense>
     <div className="mx-8 border-accent-foreground border-x">
       <div className="-mx-8 border-accent-foreground border-b">
-        <div className="mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
+        <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <div>
             <Suspense
               fallback={
@@ -60,8 +62,6 @@ export default () => (
 
       <div className="-mx-8 border-accent-foreground border-b">
         <div className="relative mx-8 bg-background-rich">
-          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <Suspense fallback={<StatsSkeleton />}>
@@ -397,15 +397,6 @@ const Performance = async () => {
             rate: Math.round(
               products.reduce((sum, p) => sum + p.winRate.gemini, 0) /
                 products.length,
-            ),
-          },
-          {
-            label: "Perplexity",
-            rate: Math.round(
-              products.reduce(
-                (sum, p) => sum + (p.winRate.perplexity ?? 0),
-                0,
-              ) / products.length,
             ),
           },
         ]

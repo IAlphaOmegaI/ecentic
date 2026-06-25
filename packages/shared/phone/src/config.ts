@@ -9,6 +9,7 @@ import {
 import { normalizePhone } from "./normalize";
 
 export const FormatType = {
+  ONLY_SIGNIFICANT: "only-significant",
   NATIONAL: "national",
   INTERNATIONAL: "international",
   E164: "e164",
@@ -40,10 +41,14 @@ export abstract class PhoneCountryConfig {
 
     if (significantNumber.length === 0) return phone;
 
-    if (type === FormatType.NATIONAL)
-      return formattedSignificantNumber.startsWith("0")
-        ? formattedSignificantNumber
-        : `0${formattedSignificantNumber}`;
+    if (type === FormatType.ONLY_SIGNIFICANT) {
+      return formattedSignificantNumber;
+    }
+
+    // TODO: fix if formattedSignificantNumber already contain zeros
+    if (type === FormatType.NATIONAL) {
+      return `0${formattedSignificantNumber}`;
+    }
 
     if (type === FormatType.INTERNATIONAL) {
       return `00${this.prefix} ${formattedSignificantNumber}`;

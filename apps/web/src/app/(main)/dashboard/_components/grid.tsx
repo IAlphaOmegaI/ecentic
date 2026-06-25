@@ -15,14 +15,7 @@ export const Crosshair = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export const SectionGutter = () => (
-  <div className="relative h-6 bg-grid-stripes">
-    <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-    <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-    <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-    <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-  </div>
-);
+export const SectionGutter = () => <div className="h-6 bg-grid-stripes" />;
 
 export const SectionKicker = ({ children }: PropsWithChildren) => {
   if (typeof children !== "string")

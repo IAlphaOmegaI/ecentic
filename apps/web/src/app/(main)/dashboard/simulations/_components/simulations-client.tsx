@@ -31,14 +31,12 @@ const models = [
   { id: "gpt4", label: "GPT-4", logo: "/images/chatgpt.svg" },
   { id: "claude", label: "Claude", logo: "/images/claude.svg" },
   { id: "gemini", label: "Gemini", logo: "/images/gemini.svg" },
-  { id: "perplexity", label: "Perplexity", logo: "/images/perplexity.svg" },
 ] as const;
 
 const modelColors: Record<string, string> = {
   "GPT-4": "text-primary",
   Claude: "text-warning",
   Gemini: "text-success",
-  Perplexity: "text-info",
   System: "text-foreground-dimmed",
 };
 
@@ -104,7 +102,7 @@ export const SimulationsClient = ({
   });
 
   const totalSimulations = useMemo(
-    () => productCount * selectedCompetitorCount * 4,
+    () => productCount * selectedCompetitorCount * 3,
     [productCount, selectedCompetitorCount],
   );
 
@@ -156,8 +154,8 @@ export const SimulationsClient = ({
     <>
       <div className="-mx-8 border-accent-foreground border-b">
         <div className="relative mx-8 bg-background-rich">
-          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <div className="grid grid-cols-1 gap-px bg-accent-foreground xl:grid-cols-3">
             <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
               <StatLabel
@@ -202,7 +200,7 @@ export const SimulationsClient = ({
                   {totalSimulations}
                 </p>
                 <p className="mt-3 text-foreground-dimmed text-xs">
-                  products × competitors × 4 models
+                  products × competitors × 3 models
                 </p>
               </div>
             </div>
@@ -253,8 +251,8 @@ export const SimulationsClient = ({
                 Win-Rate Simulation
               </h2>
               <p className="mt-1 text-foreground-dimmed text-sm">
-                Re-run product vs competitor simulations across GPT-4, Claude,
-                Gemini & Perplexity.
+                Re-run product vs competitor simulations across GPT-4, Claude &
+                Gemini.
               </p>
             </div>
             <div className="flex items-center gap-2">

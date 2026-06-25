@@ -10,6 +10,7 @@ import {
 class DE extends PhoneCountryConfig {
   readonly iso = "DE";
   readonly prefix = "49";
+  readonly significantLength = 10;
   flag = "🇩🇪";
 
   formatSignificantNumber(significantNumber: string): string {

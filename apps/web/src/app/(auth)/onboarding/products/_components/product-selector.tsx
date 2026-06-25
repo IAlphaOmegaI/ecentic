@@ -149,8 +149,6 @@ export const ProductSelector = ({
     <Motion.Stagger className="flex flex-1 flex-col overflow-hidden">
       <Motion.Item className="px-8">
         <div className="relative border-accent-foreground border-x p-6">
-          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           {children}
@@ -162,8 +160,6 @@ export const ProductSelector = ({
 
       <Motion.Item className="flex-1 overflow-hidden border-accent-foreground border-y px-8">
         <div className="relative h-full overflow-auto border-accent-foreground border-x">
-          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <div className="bg-background-rich">
@@ -307,8 +303,6 @@ export const ProductSelector = ({
 
       <Motion.Item className="px-8">
         <div className="relative flex w-full items-center justify-between border-accent-foreground border-x p-6">
-          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <Button

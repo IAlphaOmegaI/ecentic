@@ -8,9 +8,9 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
+import { Plus } from "@/components/plus";
 import { Fade } from "@/lib/animations";
 import { SignInForm } from "./_components/sign-in-form";
-import { Plus } from "@/components/plus";
 
 const points = [
   "Pick up right where you left off",

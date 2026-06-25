@@ -138,10 +138,7 @@ export const Pricing = () => (
                 </div>
               ))}
             </div>
-            <PricingCTA
-              plan="compete"
-              className="mt-4 w-full md:mt-auto"
-            >
+            <PricingCTA plan="compete" className="mt-4 w-full md:mt-auto">
               {compete.cta}
             </PricingCTA>
           </div>
@@ -163,10 +160,7 @@ export const Pricing = () => (
                 </div>
               ))}
             </div>
-            <PricingCTA
-              plan="dominate"
-              className="mt-4 w-full md:mt-auto"
-            >
+            <PricingCTA plan="dominate" className="mt-4 w-full md:mt-auto">
               {dominate.cta}
             </PricingCTA>
           </div>
@@ -182,10 +176,7 @@ export const Pricing = () => (
             </p>
           </div>
           <div className="flex items-center p-6">
-            <BookCall
-              color="accent"
-              className="w-full"
-            >
+            <BookCall color="accent" className="w-full">
               Book a call
             </BookCall>
           </div>

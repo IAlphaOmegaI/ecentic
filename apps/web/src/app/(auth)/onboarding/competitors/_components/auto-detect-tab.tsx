@@ -1,13 +1,13 @@
 "use client";
 
-import { readStreamableValue } from "@ai-sdk/rsc";
 import { RadarIcon } from "@zenncore/icons";
-import { cn, unwrapResult } from "@zenncore/utils";
+import { cn, resultify, unwrapResult } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { formatElapsed } from "@/lib/date";
 import * as Competitor from "@/server/app/competitor";
@@ -18,6 +18,12 @@ type LogEntry = {
   elapsed: number;
   type: "info" | "success" | "error";
 };
+
+const POLL_INTERVAL = 1200;
+// Matches /api/detect maxDuration on Pro; quiescence usually finishes well before.
+const DETECTION_TIMEOUT = 120_000;
+// Stop once verified competitors have stopped arriving for this long.
+const QUIESCENCE = 5000;
 
 export namespace AutoDetectTab {
   export type Props = {
@@ -33,6 +39,7 @@ export const AutoDetectTab = ({
   className,
 }: AutoDetectTab.Props) => {
   const toast = useToastManager();
+  const router = useRouter();
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [elapsed, setElapsed] = useState(0);
 
@@ -64,6 +71,13 @@ export const AutoDetectTab = ({
     });
   }, [logs]);
 
+  useEffect(
+    () => () => {
+      if (timer.current) clearInterval(timer.current);
+    },
+    [],
+  );
+
   const [handleDetect, isDetecting] = useAsyncAction(async () => {
     setLogs([]);
     setElapsed(0);
@@ -73,38 +87,90 @@ export const AutoDetectTab = ({
       setElapsed(Date.now() - start.current);
     }, 100);
 
-    const { output } = await unwrapResult(
-      Competitor.detectCompetitors({ products }),
-    );
+    addLog({
+      text: `Reading ${products.length} product${products.length === 1 ? "" : "s"} from your catalog`,
+      type: "info",
+    });
+    addLog({
+      text: "Querying the intelligence model and verifying live listings…",
+      type: "info",
+    });
 
-    for await (const event of readStreamableValue(output)) {
-      if (!event) continue;
+    // Detection runs server-side (survives this tab closing) and persists each
+    // competitor the moment it verifies it. We poll for those rows and stream
+    // them in as they land, finishing once results settle (quiescence) or we
+    // hit the timeout.
+    const detection = await resultify(async () => {
+      const { since } = await unwrapResult(
+        Competitor.detectCompetitors({ products }),
+      );
 
-      switch (event.kind) {
-        case "log":
-          addLog({ text: event.text, type: "info" });
-          break;
-        case "chunk":
-          addLog({ text: event.text, type: "info" });
-          break;
-        case "error":
-          addLog({ text: event.text, type: "error" });
-          return;
-        case "done":
-          addLog({
-            text: `${event.competitors.length} competitors identified`,
-            type: "success",
-          });
-          clearInterval(timer.current);
-          onSuccess?.(event.competitors);
-          toast.add({
-            title: "Competitors found",
-            description: `Found ${event.competitors.length} competitor products.`,
-            type: "success",
-          });
-          return;
+      const seen = new Set<string>();
+      const collected: Competitor.Type[] = [];
+      const quiet = { since: Date.now() };
+      const deadline = Date.now() + DETECTION_TIMEOUT;
+
+      while (Date.now() < deadline) {
+        await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL));
+
+        const found = await Competitor.detectedSince({ since });
+        if (!found.success) continue;
+
+        const fresh = found.data.filter((record) => !seen.has(record.id));
+        for (const record of fresh) {
+          seen.add(record.id);
+          collected.push(record);
+          addLog({ text: `Verified · ${record.title}`, type: "success" });
+        }
+        if (fresh.length > 0) quiet.since = Date.now();
+
+        // competitors have stopped arriving — detection has settled.
+        if (collected.length > 0 && Date.now() - quiet.since > QUIESCENCE)
+          return collected;
       }
+      return collected;
+    });
+
+    if (timer.current) {
+      clearInterval(timer.current);
+      timer.current = null;
     }
+
+    if (!detection.success) {
+      addLog({ text: "Detection failed. Please try again.", type: "error" });
+      toast.add({
+        title: "Detection failed",
+        description: detection.error.message,
+        type: "error",
+      });
+      return;
+    }
+
+    if (detection.data.length === 0) {
+      addLog({
+        text: "No new competitors found. Please try again.",
+        type: "error",
+      });
+      toast.add({
+        title: "No competitors found",
+        description: "We couldn't identify new competitors. Please try again.",
+        type: "error",
+      });
+      return;
+    }
+
+    addLog({
+      text: `${detection.data.length} competitor${detection.data.length === 1 ? "" : "s"} identified`,
+      type: "success",
+    });
+    // refresh the server-rendered competitor list to include what just streamed in.
+    router.refresh();
+    onSuccess?.(detection.data);
+    toast.add({
+      title: "Competitors found",
+      description: `Found ${detection.data.length} competitor product${detection.data.length !== 1 ? "s" : ""}.`,
+      type: "success",
+    });
   });
 
   return (
@@ -260,10 +326,7 @@ export const AutoDetectTab = ({
                 <span className="font-light text-foreground-dimmed">
                   Finished in {formatElapsed(elapsed)}
                 </span>
-                <Button
-                  onClick={handleDetect}
-                  color="accent"
-                >
+                <Button onClick={handleDetect} color="accent">
                   Run Again
                 </Button>
               </div>

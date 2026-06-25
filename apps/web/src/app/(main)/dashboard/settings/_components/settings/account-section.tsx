@@ -216,9 +216,7 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
                   <p className="font-medium text-sm text-foreground">
                     Delete this account and all of its data.
                   </p>
-                  <Button color="error">
-                    Delete Account
-                  </Button>
+                  <Button color="error">Delete Account</Button>
                 </div>
               </div>
             </div>

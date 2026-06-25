@@ -1,6 +1,6 @@
 import { unwrapResult } from "@zenncore/utils";
 import { redirect } from "next/navigation";
-import { AuthProvider } from "@/components/auth-context";
+import { AuthProvider } from "@/context/auth";
 import * as Authentication from "@/server/app/authentication";
 import { Environment } from "@/server/utils/environment";
 import { OnboardingLayout } from "./_components/onboarding-layout";

@@ -53,8 +53,6 @@ export const CompetitorReview = ({
     >
       <Motion.Item className="border-accent-foreground border-b px-8">
         <div className="relative border-accent-foreground border-x p-6">
-          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           {children}

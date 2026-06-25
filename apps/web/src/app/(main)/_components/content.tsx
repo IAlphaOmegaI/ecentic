@@ -4,9 +4,9 @@ import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { Plus } from "@/components/plus";
-import { SimpleFooter } from "@/components/simple-footer";
 import Background from "@/public/images/blog.png";
 import { renderInline } from "./rich-text";
 
@@ -100,7 +100,7 @@ export const ContentPageLayout = ({
     </div>
 
     {children}
-    <SimpleFooter />
+    <Footer stacked />
   </main>
 );
 
@@ -288,20 +288,14 @@ export const ContentPageFooter = ({
       <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
       <div className="flex flex-wrap items-center gap-4">
         {secondary && (
-          <Button
-            color="accent"
-            render={<Link href={secondary.href} />}
-          >
+          <Button color="accent" render={<Link href={secondary.href} />}>
             <ArrowRightIcon className="size-4 rotate-180" />
             {secondary.label}
           </Button>
         )}
 
         {primary && (
-          <Button
-            color="primary"
-            render={<Link href={primary.href} />}
-          >
+          <Button color="primary" render={<Link href={primary.href} />}>
             {primary.label}
             <ArrowRightIcon className="size-4" />
           </Button>

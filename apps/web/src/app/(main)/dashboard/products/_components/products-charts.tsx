@@ -14,6 +14,7 @@ import {
   YAxis,
 } from "recharts";
 import { Spring } from "@/lib/animations";
+import { SectionKicker } from "../../_components/grid";
 
 const modelBarColors: Record<string, string> = {
   "GPT-4": "bg-primary",
@@ -61,18 +62,13 @@ export const ProductsModelRates = ({ models }: ProductsModelRates.Props) => {
             className="flex flex-col items-center gap-1 p-6 first:pl-0 last:pr-0"
           >
             <div className="flex w-full flex-row items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Image
-                  src={getLogo(label)}
-                  alt={label}
-                  width={64}
-                  height={64}
-                  className="size-8"
-                />
-                <span className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-                  {label}
-                </span>
-              </div>
+              <Image
+                src={getLogo(label)}
+                alt={label}
+                width={64}
+                height={64}
+                className="size-8"
+              />
               <span className="font-bold text-2xl text-foreground-rich tabular-nums tracking-[-0.02em]">
                 {rate}{" "}
                 <span className="font-medium text-foreground-dimmed text-sm">
@@ -111,9 +107,7 @@ export const QualityDistribution = ({
   <div className="flex size-full flex-col p-4">
     <div className="flex items-start justify-between">
       <div>
-        <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-          Quality
-        </p>
+        <SectionKicker>01.1 — Quality</SectionKicker>
         <p className="mt-2 font-semibold text-foreground-rich text-lg">
           Quality Distribution
         </p>
@@ -186,9 +180,7 @@ export const OptimizationBreakdown = ({
   return (
     <div className="flex h-full flex-col p-4">
       <div>
-        <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-          Optimization
-        </p>
+        <SectionKicker>01.2 — Optimization</SectionKicker>
         <p className="mt-2 font-semibold text-foreground-rich text-lg">
           Product Readiness
         </p>
