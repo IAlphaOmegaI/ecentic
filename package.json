@@ -22,10 +22,10 @@
     "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.0",
-    "@turbo/gen": "^2.9.18",
+    "@biomejs/biome": "^2.5.1",
+    "@turbo/gen": "^2.10.0",
     "babel-plugin-react-compiler": "^1.0.0",
-    "turbo": "^2.9.18"
+    "turbo": "^2.10.0"
   },
   "engines": {
     "node": ">=24"
