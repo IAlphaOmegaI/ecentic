@@ -1361,17 +1361,19 @@ export const catalogInfoCodeSchema = z
   .enum(["promotional_pricing", "limited_availability", "not_found"])
   .describe("Well-known catalog info codes.");
 
-export const searchCatalogResponseSchema = z.object({
-  ucp: ucpCatalogResponseSchema,
-  products: z.array(productSchema),
-  pagination: paginationResponseSchema.optional(),
-  messages: z
-    .array(messageSchema)
-    .optional()
-    .describe(
-      "Errors, warnings, or informational messages about the search results.",
-    ),
-}).superRefine(refineCatalogMessages);
+export const searchCatalogResponseSchema = z
+  .object({
+    ucp: ucpCatalogResponseSchema,
+    products: z.array(productSchema),
+    pagination: paginationResponseSchema.optional(),
+    messages: z
+      .array(messageSchema)
+      .optional()
+      .describe(
+        "Errors, warnings, or informational messages about the search results.",
+      ),
+  })
+  .superRefine(refineCatalogMessages);
 
 export const lookupCatalogRequestSchema = z.object({
   ids: z
@@ -1394,20 +1396,21 @@ export const lookupCatalogRequestSchema = z.object({
   attribution: attributionSchema.optional(),
 });
 
-export const lookupCatalogResponseSchema = z.object({
-  ucp: ucpCatalogResponseSchema,
-  products: z
-    .array(lookupProductSchema)
-    .describe(
-      "Products matching the search criteria. May contain fewer items if some identifiers not found, or more if identifiers match multiple products.",
-    ),
-  messages: z
-    .array(messageSchema)
-    .optional()
-    .describe(
-      "Errors, warnings, or informational messages about the requested items.",
-    ),
-})
+export const lookupCatalogResponseSchema = z
+  .object({
+    ucp: ucpCatalogResponseSchema,
+    products: z
+      .array(lookupProductSchema)
+      .describe(
+        "Products matching the search criteria. May contain fewer items if some identifiers not found, or more if identifiers match multiple products.",
+      ),
+    messages: z
+      .array(messageSchema)
+      .optional()
+      .describe(
+        "Errors, warnings, or informational messages about the requested items.",
+      ),
+  })
   .superRefine(refineCatalogMessages)
   .superRefine((response, ctx) => {
     // Spec: when multiple identifiers resolve to the same product, it MUST be returned once.
@@ -1472,18 +1475,20 @@ export const getProductRequestSchema = z
     "Request body for single-product retrieval. Supports interactive variant narrowing via selected and preferences.",
   );
 
-export const getProductResponseSchema = z.object({
-  ucp: ucpCatalogResponseSchema,
-  product: detailProductSchema.describe(
-    "The requested product with full detail. Singular — this is a single-resource operation.",
-  ),
-  messages: z
-    .array(messageSchema)
-    .optional()
-    .describe(
-      "Warnings or informational messages about the product (e.g., price recently changed, limited availability).",
+export const getProductResponseSchema = z
+  .object({
+    ucp: ucpCatalogResponseSchema,
+    product: detailProductSchema.describe(
+      "The requested product with full detail. Singular — this is a single-resource operation.",
     ),
-}).superRefine(refineCatalogMessages);
+    messages: z
+      .array(messageSchema)
+      .optional()
+      .describe(
+        "Warnings or informational messages about the product (e.g., price recently changed, limited availability).",
+      ),
+  })
+  .superRefine(refineCatalogMessages);
 
 export const cartItemSchema = z.looseObject({
   id: z
@@ -3071,51 +3076,53 @@ const refineOrderLineItems = (
   }
 };
 
-export const orderResponseSchema = z.looseObject({
-  ucp: ucpOrderResponseSchema,
-  id: z.string().describe("Unique order identifier."),
-  checkout_id: z
-    .string()
-    .describe("Associated checkout ID for reconciliation."),
-  permalink_url: z
-    .url()
-    .describe("Permalink to access the order on the merchant site."),
-  label: z
-    .string()
-    .optional()
-    .describe(
-      "Human-readable label for identifying the order. MUST only be provided by the business.",
+export const orderResponseSchema = z
+  .looseObject({
+    ucp: ucpOrderResponseSchema,
+    id: z.string().describe("Unique order identifier."),
+    checkout_id: z
+      .string()
+      .describe("Associated checkout ID for reconciliation."),
+    permalink_url: z
+      .url()
+      .describe("Permalink to access the order on the merchant site."),
+    label: z
+      .string()
+      .optional()
+      .describe(
+        "Human-readable label for identifying the order. MUST only be provided by the business.",
+      ),
+    line_items: z
+      .array(orderLineItemSchema)
+      .describe(
+        "Line items representing what was purchased. Can change post-order via edits or exchanges.",
+      ),
+    fulfillment: orderFulfillmentSchema.describe(
+      "Fulfillment data: buyer expectations and what actually happened.",
     ),
-  line_items: z
-    .array(orderLineItemSchema)
-    .describe(
-      "Line items representing what was purchased. Can change post-order via edits or exchanges.",
+    adjustments: z
+      .array(adjustmentSchema)
+      .optional()
+      .describe(
+        "Post-order events (refunds, returns, credits, disputes, cancellations) that exist independently of fulfillment.",
+      ),
+    currency: currencyCodeSchema.describe(
+      "ISO 4217 currency code. MUST match the currency from the originating checkout session.",
     ),
-  fulfillment: orderFulfillmentSchema.describe(
-    "Fulfillment data: buyer expectations and what actually happened.",
-  ),
-  adjustments: z
-    .array(adjustmentSchema)
-    .optional()
-    .describe(
-      "Post-order events (refunds, returns, credits, disputes, cancellations) that exist independently of fulfillment.",
-    ),
-  currency: currencyCodeSchema.describe(
-    "ISO 4217 currency code. MUST match the currency from the originating checkout session.",
-  ),
-  totals: totalsSchema.describe("Different totals for the order."),
-  messages: z
-    .array(messageSchema)
-    .optional()
-    .describe(
-      "Business outcome messages. Present when the business needs to communicate status or issues to the platform.",
-    ),
-  attribution: attributionSchema
-    .optional()
-    .describe(
-      "Snapshot of the attribution from the originating checkout. Read-only.",
-    ),
-}).superRefine(refineOrderLineItems);
+    totals: totalsSchema.describe("Different totals for the order."),
+    messages: z
+      .array(messageSchema)
+      .optional()
+      .describe(
+        "Business outcome messages. Present when the business needs to communicate status or issues to the platform.",
+      ),
+    attribution: attributionSchema
+      .optional()
+      .describe(
+        "Snapshot of the attribution from the originating checkout. Read-only.",
+      ),
+  })
+  .superRefine(refineOrderLineItems);
 
 export const listOrdersResponseSchema = z.looseObject({
   ucp: ucpOrderResponseSchema,
