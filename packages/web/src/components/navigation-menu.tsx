@@ -181,7 +181,7 @@ export const NavigationMenuPopup = ({
   return (
     <NavigationMenuPrimitive.Popup
       className={createClassName(
-        "data-ending-style:easing-[ease] relative h-(--popup-height) w-full xs:w-(--popup-width) origin-(--transform-origin) border border-accent-foreground bg-background text-foreground transition-[opacity,transform,width,height,scale,translate] duration-(--duration) ease-(--easing) data-ending-style:scale-90 data-starting-style:scale-90 data-ending-style:opacity-0 data-starting-style:opacity-0 data-ending-style:duration-150 min-[500px]:w-(--popup-width)",
+        "data-ending-style:easing-[ease] relative h-(--popup-height) w-full xs:w-(--popup-width) origin-(--transform-origin) overflow-hidden rounded-lg border border-accent-foreground bg-background text-foreground transition-[opacity,transform,width,height,scale,translate] duration-(--duration) ease-(--easing) data-ending-style:scale-90 data-starting-style:scale-90 data-ending-style:opacity-0 data-starting-style:opacity-0 data-ending-style:duration-150 min-[500px]:w-(--popup-width)",
         className,
       )}
       {...props}
@@ -265,7 +265,7 @@ const triggerClassName =
   "focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-primary focus-visible:relative";
 
 const contentClassName =
-  "w-[calc(100vw_-_40px)] h-full p-6 xs:w-max xs:min-w-[400px] xs:w-max " +
+  "w-[calc(100vw_-_40px)] h-full p-4 xs:w-max xs:min-w-[400px] xs:w-max " +
   "transition-[opacity,transform,translate] duration-[var(--duration)] ease-[var(--easing)] " +
   "data-starting-style:opacity-0 data-ending-style:opacity-0 " +
   "data-starting-style:data-[activation-direction=left]:translate-x-[-50%] " +

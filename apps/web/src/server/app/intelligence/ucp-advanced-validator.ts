@@ -496,6 +496,11 @@ const attributionSchema = z
     "Platform-emitted referral and conversion-event context — campaign identifiers, click IDs, source/medium markers, etc. The same parameters platforms communicate via URL query parameters in browser-based flows.",
   );
 
+const currencyCodeSchema = z
+  .string()
+  .regex(/^[A-Z]{3}$/, "currency must be a 3-letter ISO 4217 code")
+  .describe("ISO 4217 currency code (e.g., 'USD', 'EUR', 'GBP').");
+
 export const priceSchema = z
   .object({
     amount: z
@@ -572,7 +577,7 @@ export const messageSchema = z.discriminatedUnion("type", [
         "Code identifying the warning type. Standard codes are defined in the specification and have standardized semantics; freeform codes are permitted.",
       ),
     presentation: z
-      .string()
+      .enum(["notice", "disclosure"])
       // TODO: zod should exclude field frm required array in json schema if default is provided
       .default("notice")
       .optional()
@@ -602,6 +607,30 @@ export const messageSchema = z.discriminatedUnion("type", [
       ),
   }),
 ]);
+
+// Standardized checkout error codes platforms are expected to handle with
+// specific UX. Reference set — message.code stays freeform, so this is not
+// enforced on the union; use it where you want strict checkout error handling.
+export const checkoutStandardErrorCodeSchema = z
+  .enum([
+    "out_of_stock",
+    "item_unavailable",
+    "address_undeliverable",
+    "payment_failed",
+    "eligibility_invalid",
+  ])
+  .describe("Standard checkout error codes with standardized platform UX.");
+
+// Well-known eligibility message codes (see Eligibility Verification at
+// Completion). Each is paired with a message type: not_accepted→warning,
+// accepted→info, invalid→error.
+export const eligibilityMessageCodeSchema = z
+  .enum([
+    "eligibility_not_accepted",
+    "eligibility_accepted",
+    "eligibility_invalid",
+  ])
+  .describe("Well-known eligibility message codes.");
 
 const descriptionSchema = z
   .object({
@@ -707,6 +736,13 @@ const priceFilterSchema = z
         "Maximum price in ISO 4217 minor units (denominated in context.currency).",
       ),
   })
+  .refine(
+    (filter) =>
+      filter.min === undefined ||
+      filter.max === undefined ||
+      filter.min <= filter.max,
+    { error: "price filter min must not exceed max", path: ["min"] },
+  )
   .describe(
     "Price range filter denominated in context.currency. When context.currency matches the presentment currency, businesses apply the filter directly. When it differs, businesses SHOULD convert filter values to the presentment currency before applying; if conversion is not supported, businesses MAY ignore the filter and SHOULD indicate this via a message. When context.currency is absent, filter denomination is ambiguous and businesses MAY ignore it.",
   );
@@ -744,13 +780,28 @@ const paginationRequestSchema = z
   })
   .describe("Cursor-based Pagination parameters for list operation requests.");
 
-export const searchCatalogRequestSchema = z.object({
-  query: z.string().optional().describe("Free-text search query."),
-  context: contextSchema.optional(),
-  signals: signalsSchema.optional(),
-  filters: searchFiltersSchema.optional(),
-  pagination: paginationRequestSchema.optional(),
-});
+export const searchCatalogRequestSchema = z
+  .object({
+    query: z.string().optional().describe("Free-text search query."),
+    context: contextSchema.optional(),
+    signals: signalsSchema.optional(),
+    filters: searchFiltersSchema.optional(),
+    pagination: paginationRequestSchema.optional(),
+  })
+  .refine(
+    (request) => {
+      const hasQuery =
+        request.query !== undefined && request.query.trim().length > 0;
+      const hasFilters =
+        request.filters !== undefined &&
+        Object.keys(request.filters).length > 0;
+      return hasQuery || hasFilters;
+    },
+    {
+      error:
+        "search request MUST include at least one input: a non-empty query or at least one filter",
+    },
+  );
 
 const selectedOptionSchema = z
   .object({
@@ -1090,19 +1141,6 @@ const refineProductIntegrity = (
   product: z.infer<typeof productSchema>,
   context: z.core.$RefinementCtx,
 ) => {
-  const hasOptions = (product.options?.length ?? 0) > 0;
-
-  // écentic Enhancement:
-  // Spec: response MUST include product.selected when the product has options.
-  // if (hasOptions && product.selected === undefined) {
-  //   context.addIssue({
-  //     code: "custom",
-  //     path: ["selected"],
-  //     message:
-  //       "product.selected MUST be present when the product has configurable options",
-  //   });
-  // }
-
   const optionNames = new Set(product.options?.map((option) => option.name));
   const selectedNames = new Set<string>();
 
@@ -1180,7 +1218,19 @@ export const detailProductSchema = productSchema
         "Product options with availability signals relative to the effective selections.",
       ),
   })
-  .superRefine(refineProductIntegrity);
+  .superRefine(refineProductIntegrity)
+  .superRefine((product, ctx) => {
+    // get_product MUST return product.selected when the product has configurable options.
+    const hasOptions = (product.options?.length ?? 0) > 0;
+    if (hasOptions && product.selected === undefined) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["selected"],
+        message:
+          "product.selected MUST be present when the product has configurable options",
+      });
+    }
+  });
 
 const serviceResponseSchema = z
   .discriminatedUnion("transport", [
@@ -1280,6 +1330,37 @@ const paginationResponseSchema = z.discriminatedUnion("has_next_page", [
   }),
 ]);
 
+// Spec: "All catalog errors use severity: recoverable" — agents handle them
+// programmatically. Enforced on every error message in catalog responses.
+const refineCatalogMessages = (
+  response: { messages?: z.infer<typeof messageSchema>[] | undefined },
+  ctx: z.core.$RefinementCtx,
+) => {
+  for (const [index, message] of (response.messages ?? []).entries()) {
+    if (message.type === "error" && message.severity !== "recoverable") {
+      ctx.addIssue({
+        code: "custom",
+        path: ["messages", index, "severity"],
+        message: 'catalog error messages MUST use severity "recoverable"',
+      });
+    }
+  }
+};
+
+// Well-known catalog message codes (reference sets — message.code stays freeform,
+// so these are not enforced on the union).
+export const catalogErrorCodeSchema = z
+  .enum(["not_found", "out_of_stock", "region_restricted", "request_too_large"])
+  .describe("Well-known catalog error codes.");
+
+export const catalogWarningCodeSchema = z
+  .enum(["delayed_fulfillment", "final_sale", "allergens"])
+  .describe("Well-known catalog warning codes.");
+
+export const catalogInfoCodeSchema = z
+  .enum(["promotional_pricing", "limited_availability", "not_found"])
+  .describe("Well-known catalog info codes.");
+
 export const searchCatalogResponseSchema = z.object({
   ucp: ucpCatalogResponseSchema,
   products: z.array(productSchema),
@@ -1290,7 +1371,7 @@ export const searchCatalogResponseSchema = z.object({
     .describe(
       "Errors, warnings, or informational messages about the search results.",
     ),
-});
+}).superRefine(refineCatalogMessages);
 
 export const lookupCatalogRequestSchema = z.object({
   ids: z
@@ -1326,7 +1407,23 @@ export const lookupCatalogResponseSchema = z.object({
     .describe(
       "Errors, warnings, or informational messages about the requested items.",
     ),
-});
+})
+  .superRefine(refineCatalogMessages)
+  .superRefine((response, ctx) => {
+    // Spec: when multiple identifiers resolve to the same product, it MUST be returned once.
+    const seen = new Set<string>();
+    for (const [index, product] of response.products.entries()) {
+      if (seen.has(product.id)) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["products", index, "id"],
+          message: `product "${product.id}" appears more than once; it MUST be returned once`,
+        });
+      } else {
+        seen.add(product.id);
+      }
+    }
+  });
 
 export const getProductRequestSchema = z
   .object({
@@ -1386,7 +1483,7 @@ export const getProductResponseSchema = z.object({
     .describe(
       "Warnings or informational messages about the product (e.g., price recently changed, limited availability).",
     ),
-});
+}).superRefine(refineCatalogMessages);
 
 export const cartItemSchema = z.looseObject({
   id: z
@@ -1555,9 +1652,25 @@ const totalsSchema = z
         message: `totals MUST contain exactly one entry with type "total", found ${totalCount}`,
       });
     }
+
+    // Accounting identity: total.amount equals the sum of every other entry
+    // (subtotal + signed adjustments). Only meaningful when exactly one total exists.
+    const totalEntry = totals.find((total) => total.type === "total");
+    if (totalCount === 1 && totalEntry !== undefined) {
+      const componentsSum = totals
+        .filter((total) => total.type !== "total")
+        .reduce((sum, total) => sum + total.amount, 0);
+
+      if (componentsSum !== totalEntry.amount) {
+        ctx.addIssue({
+          code: "custom",
+          message: `total amount (${totalEntry.amount}) must equal the sum of all other total entries (${componentsSum})`,
+        });
+      }
+    }
   })
   .describe(
-    "Pricing breakdown provided by the business. MUST contain exactly one subtotal and one total entry. Detail types (tax, fee, discount, fulfillment) may appear multiple times for itemization. Platforms MUST render all entries in order using display_text and amount.",
+    "Pricing breakdown provided by the business. MUST contain exactly one subtotal and one total entry. The total entry's amount MUST equal the sum of all other entries (accounting identity). Detail types (tax, fee, discount, fulfillment) may appear multiple times for itemization. Platforms MUST render all entries in order using display_text and amount.",
   );
 
 const cartItemRequestSchema = z.object({
@@ -1649,93 +1762,126 @@ const linkSchema = z.object({
     ),
 });
 
-export const createCartResponseSchema = z.object({
-  ucp: ucpCartResponseSchema,
-  id: z.string().optional().describe("Unique cart identifier."),
-  line_items: z.array(lineItemSchema).describe("Cart line items."),
-  currency: z
-    .string()
-    .describe(
+// Line-item integrity shared across cart responses: IDs are unique within the
+// cart, and each parent_id references another line item in the same cart.
+const refineCartLineItems = (
+  cart: {
+    line_items: { id: string; parent_id?: string | undefined }[];
+  },
+  ctx: z.core.$RefinementCtx,
+) => {
+  const ids = new Set<string>();
+
+  for (const [index, lineItem] of cart.line_items.entries()) {
+    if (ids.has(lineItem.id)) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["line_items", index, "id"],
+        message: `duplicate line item id "${lineItem.id}"`,
+      });
+    } else {
+      ids.add(lineItem.id);
+    }
+  }
+
+  for (const [index, lineItem] of cart.line_items.entries()) {
+    if (lineItem.parent_id !== undefined && !ids.has(lineItem.parent_id)) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["line_items", index, "parent_id"],
+        message: `parent_id "${lineItem.parent_id}" does not reference a known line item id`,
+      });
+    }
+  }
+};
+
+export const createCartResponseSchema = z
+  .object({
+    ucp: ucpCartResponseSchema,
+    id: z.string().optional().describe("Unique cart identifier."),
+    line_items: z.array(lineItemSchema).describe("Cart line items."),
+    currency: currencyCodeSchema.describe(
       "ISO 4217 currency code. Determined by merchant based on context or geo-IP.",
     ),
-  totals: totalsSchema.describe(
-    "Estimated cost breakdown. May be partial if shipping/tax not yet calculable.",
-  ),
-  context: contextSchema
-    .optional()
-    .describe(
-      "Buyer signals for localization (country, region, postal_code). Merchant uses for pricing, availability, currency. Falls back to geo-IP if omitted.",
+    totals: totalsSchema.describe(
+      "Estimated cost breakdown. May be partial if shipping/tax not yet calculable.",
     ),
-  signals: signalsSchema.optional(),
-  attribution: attributionSchema.optional(),
-  buyer: buyerSchema
-    .optional()
-    .describe("Optional buyer information for personalized estimates."),
-  messages: z
-    .array(messageSchema)
-    .optional()
-    .describe("Validation messages, warnings, or informational notices."),
-  links: z
-    .array(linkSchema)
-    .optional()
-    .describe("Optional merchant links (policies, FAQs)."),
-  continue_url: z
-    .url()
-    .optional()
-    .describe(
-      "URL for cart handoff and session recovery. Enables sharing and human-in-the-loop flows.",
-    ),
-  expires_at: z.iso
-    .datetime()
-    .optional()
-    .describe("Cart expiry timestamp (RFC 3339)."),
-});
+    context: contextSchema
+      .optional()
+      .describe(
+        "Buyer signals for localization (country, region, postal_code). Merchant uses for pricing, availability, currency. Falls back to geo-IP if omitted.",
+      ),
+    signals: signalsSchema.optional(),
+    attribution: attributionSchema.optional(),
+    buyer: buyerSchema
+      .optional()
+      .describe("Optional buyer information for personalized estimates."),
+    messages: z
+      .array(messageSchema)
+      .optional()
+      .describe("Validation messages, warnings, or informational notices."),
+    links: z
+      .array(linkSchema)
+      .optional()
+      .describe("Optional merchant links (policies, FAQs)."),
+    continue_url: z
+      .url()
+      .optional()
+      .describe(
+        "URL for cart handoff and session recovery. Enables sharing and human-in-the-loop flows.",
+      ),
+    expires_at: z.iso
+      .datetime()
+      .optional()
+      .describe("Cart expiry timestamp (RFC 3339)."),
+  })
+  .superRefine(refineCartLineItems);
 
 export const getCartRequestSchema = z.object({
   id: z.string().describe("The ID of the cart session."),
 });
 
-export const getCartResponseSchema = z.object({
-  ucp: ucpCartResponseSchema,
-  id: z.string().describe("Unique cart identifier."),
-  line_items: z.array(lineItemSchema).describe("Cart line items."),
-  currency: z
-    .string()
-    .describe(
+export const getCartResponseSchema = z
+  .object({
+    ucp: ucpCartResponseSchema,
+    id: z.string().describe("Unique cart identifier."),
+    line_items: z.array(lineItemSchema).describe("Cart line items."),
+    currency: currencyCodeSchema.describe(
       "ISO 4217 currency code. Determined by merchant based on context or geo-IP.",
     ),
-  totals: totalsSchema.describe(
-    "Estimated cost breakdown. May be partial if shipping/tax not yet calculable.",
-  ),
-  context: contextSchema
-    .optional()
-    .describe(
-      "Buyer signals for localization (country, region, postal_code). Merchant uses for pricing, availability, currency. Falls back to geo-IP if omitted.",
+    totals: totalsSchema.describe(
+      "Estimated cost breakdown. May be partial if shipping/tax not yet calculable.",
     ),
-  signals: signalsSchema.optional(),
-  attribution: attributionSchema.optional(),
-  buyer: buyerSchema
-    .optional()
-    .describe("Optional buyer information for personalized estimates."),
-  messages: z
-    .array(messageSchema)
-    .optional()
-    .describe("Validation messages, warnings, or informational notices."),
-  links: z
-    .array(linkSchema)
-    .optional()
-    .describe("Optional merchant links (policies, FAQs)."),
-  continue_url: z
-    .url()
-    .optional()
-    .describe(
-      "URL for cart handoff and session recovery. Enables sharing and human-in-the-loop flows.",
-    ),
-  expires_at: z.iso
-    .datetime()
-    .optional()
-    .describe("Cart expiry timestamp (RFC 3339)."),
-});
+    context: contextSchema
+      .optional()
+      .describe(
+        "Buyer signals for localization (country, region, postal_code). Merchant uses for pricing, availability, currency. Falls back to geo-IP if omitted.",
+      ),
+    signals: signalsSchema.optional(),
+    attribution: attributionSchema.optional(),
+    buyer: buyerSchema
+      .optional()
+      .describe("Optional buyer information for personalized estimates."),
+    messages: z
+      .array(messageSchema)
+      .optional()
+      .describe("Validation messages, warnings, or informational notices."),
+    links: z
+      .array(linkSchema)
+      .optional()
+      .describe("Optional merchant links (policies, FAQs)."),
+    continue_url: z
+      .url()
+      .optional()
+      .describe(
+        "URL for cart handoff and session recovery. Enables sharing and human-in-the-loop flows.",
+      ),
+    expires_at: z.iso
+      .datetime()
+      .optional()
+      .describe("Cart expiry timestamp (RFC 3339)."),
+  })
+  .superRefine(refineCartLineItems);
 
 export const updateCartRequestSchema = z.object({
   id: z.string().describe("The ID of the cart session to update."),
@@ -1754,93 +1900,93 @@ export const updateCartRequestSchema = z.object({
     .describe("Optional buyer information for personalized estimates."),
 });
 
-export const updateCartResponseSchema = z.object({
-  ucp: ucpCartResponseSchema,
-  id: z.string().describe("Unique cart identifier."),
-  line_items: z.array(lineItemSchema).describe("Cart line items."),
-  currency: z
-    .string()
-    .describe(
+export const updateCartResponseSchema = z
+  .object({
+    ucp: ucpCartResponseSchema,
+    id: z.string().describe("Unique cart identifier."),
+    line_items: z.array(lineItemSchema).describe("Cart line items."),
+    currency: currencyCodeSchema.describe(
       "ISO 4217 currency code. Determined by merchant based on context or geo-IP.",
     ),
-  totals: totalsSchema.describe(
-    "Estimated cost breakdown. May be partial if shipping/tax not yet calculable.",
-  ),
-  context: contextSchema
-    .optional()
-    .describe(
-      "Buyer signals for localization (country, region, postal_code). Merchant uses for pricing, availability, currency. Falls back to geo-IP if omitted.",
+    totals: totalsSchema.describe(
+      "Estimated cost breakdown. May be partial if shipping/tax not yet calculable.",
     ),
-  signals: signalsSchema.optional(),
-  attribution: attributionSchema.optional(),
-  buyer: buyerSchema
-    .optional()
-    .describe("Optional buyer information for personalized estimates."),
-  messages: z
-    .array(messageSchema)
-    .optional()
-    .describe("Validation messages, warnings, or informational notices."),
-  links: z
-    .array(linkSchema)
-    .optional()
-    .describe("Optional merchant links (policies, FAQs)."),
-  continue_url: z
-    .url()
-    .optional()
-    .describe(
-      "URL for cart handoff and session recovery. Enables sharing and human-in-the-loop flows.",
-    ),
-  expires_at: z.iso
-    .datetime()
-    .optional()
-    .describe("Cart expiry timestamp (RFC 3339)."),
-});
+    context: contextSchema
+      .optional()
+      .describe(
+        "Buyer signals for localization (country, region, postal_code). Merchant uses for pricing, availability, currency. Falls back to geo-IP if omitted.",
+      ),
+    signals: signalsSchema.optional(),
+    attribution: attributionSchema.optional(),
+    buyer: buyerSchema
+      .optional()
+      .describe("Optional buyer information for personalized estimates."),
+    messages: z
+      .array(messageSchema)
+      .optional()
+      .describe("Validation messages, warnings, or informational notices."),
+    links: z
+      .array(linkSchema)
+      .optional()
+      .describe("Optional merchant links (policies, FAQs)."),
+    continue_url: z
+      .url()
+      .optional()
+      .describe(
+        "URL for cart handoff and session recovery. Enables sharing and human-in-the-loop flows.",
+      ),
+    expires_at: z.iso
+      .datetime()
+      .optional()
+      .describe("Cart expiry timestamp (RFC 3339)."),
+  })
+  .superRefine(refineCartLineItems);
 
 export const cancelCartRequestSchema = z.object({
   id: z.string().describe("The ID of the cart session to cancel."),
 });
 
-export const cancelCartResponseSchema = z.object({
-  ucp: ucpCartResponseSchema,
-  id: z.string().describe("Unique cart identifier."),
-  line_items: z.array(lineItemSchema).describe("Cart line items."),
-  currency: z
-    .string()
-    .describe(
+export const cancelCartResponseSchema = z
+  .object({
+    ucp: ucpCartResponseSchema,
+    id: z.string().describe("Unique cart identifier."),
+    line_items: z.array(lineItemSchema).describe("Cart line items."),
+    currency: currencyCodeSchema.describe(
       "ISO 4217 currency code. Determined by merchant based on context or geo-IP.",
     ),
-  totals: totalsSchema.describe(
-    "Estimated cost breakdown. May be partial if shipping/tax not yet calculable.",
-  ),
-  context: contextSchema
-    .optional()
-    .describe(
-      "Buyer signals for localization (country, region, postal_code). Merchant uses for pricing, availability, currency. Falls back to geo-IP if omitted.",
+    totals: totalsSchema.describe(
+      "Estimated cost breakdown. May be partial if shipping/tax not yet calculable.",
     ),
-  signals: signalsSchema.optional(),
-  attribution: attributionSchema.optional(),
-  buyer: buyerSchema
-    .optional()
-    .describe("Optional buyer information for personalized estimates."),
-  messages: z
-    .array(messageSchema)
-    .optional()
-    .describe("Validation messages, warnings, or informational notices."),
-  links: z
-    .array(linkSchema)
-    .optional()
-    .describe("Optional merchant links (policies, FAQs)."),
-  continue_url: z
-    .url()
-    .optional()
-    .describe(
-      "URL for cart handoff and session recovery. Enables sharing and human-in-the-loop flows.",
-    ),
-  expires_at: z.iso
-    .datetime()
-    .optional()
-    .describe("Cart expiry timestamp (RFC 3339)."),
-});
+    context: contextSchema
+      .optional()
+      .describe(
+        "Buyer signals for localization (country, region, postal_code). Merchant uses for pricing, availability, currency. Falls back to geo-IP if omitted.",
+      ),
+    signals: signalsSchema.optional(),
+    attribution: attributionSchema.optional(),
+    buyer: buyerSchema
+      .optional()
+      .describe("Optional buyer information for personalized estimates."),
+    messages: z
+      .array(messageSchema)
+      .optional()
+      .describe("Validation messages, warnings, or informational notices."),
+    links: z
+      .array(linkSchema)
+      .optional()
+      .describe("Optional merchant links (policies, FAQs)."),
+    continue_url: z
+      .url()
+      .optional()
+      .describe(
+        "URL for cart handoff and session recovery. Enables sharing and human-in-the-loop flows.",
+      ),
+    expires_at: z.iso
+      .datetime()
+      .optional()
+      .describe("Cart expiry timestamp (RFC 3339)."),
+  })
+  .superRefine(refineCartLineItems);
 
 export const postalAddressSchema = z.looseObject({
   extended_address: z
@@ -1926,6 +2072,177 @@ export const checkoutPaymentSchema = z.looseObject({
     ),
 });
 
+const discountAllocationSchema = z
+  .object({
+    path: z
+      .string()
+      .describe(
+        "JSONPath to the allocation target (e.g., '$.line_items[0]', '$.totals.shipping').",
+      ),
+    amount: z
+      .number()
+      .int()
+      .nonnegative()
+      .describe(
+        "Amount allocated to this target in ISO 4217 minor units. Positive magnitude (the negative sign lives in totals[]).",
+      ),
+  })
+  .describe(
+    "Breakdown of how a discount amount was allocated to a specific target.",
+  );
+
+const appliedDiscountSchema = z
+  .object({
+    code: z
+      .string()
+      .optional()
+      .describe("The discount code. Omitted for automatic discounts."),
+    title: z
+      .string()
+      .describe("Human-readable discount name (e.g., 'Summer Sale 20% Off')."),
+    amount: z
+      .number()
+      .int()
+      .nonnegative()
+      .describe(
+        "Total discount amount in ISO 4217 minor units. Positive magnitude (the value of the discount); the corresponding totals[] entry is negative.",
+      ),
+    // TODO: zod should exclude field frm required array in json schema if default is provided
+    automatic: z
+      .boolean()
+      .default(false)
+      .optional()
+      .describe(
+        "True if applied automatically by merchant rules (no code required).",
+      ),
+    method: z
+      .enum(["each", "across"])
+      .optional()
+      .describe(
+        "Allocation method. 'each' = applied independently per item. 'across' = split proportionally by value.",
+      ),
+    priority: z
+      .number()
+      .int()
+      .min(1)
+      .optional()
+      .describe(
+        "Stacking order for discount calculation. Lower numbers applied first (1 = first).",
+      ),
+    // TODO: zod should exclude field frm required array in json schema if default is provided
+    provisional: z
+      .boolean()
+      .default(false)
+      .optional()
+      .describe("True if this discount requires additional verification."),
+    eligibility: reverseDomainNameSchema()
+      .optional()
+      .describe(
+        "The eligibility claim accepted by the Business for this discount. Corresponds to a value from context.eligibility. Omitted for code-based and non-eligibility automatic discounts.",
+      ),
+    allocations: z
+      .array(discountAllocationSchema)
+      .optional()
+      .describe(
+        "Breakdown of where this discount was allocated. Sum of allocation amounts equals total amount.",
+      ),
+  })
+  .superRefine((discount, ctx) => {
+    // Invariant: sum of allocations[].amount equals applied_discount.amount.
+    if (discount.allocations !== undefined) {
+      const allocationsSum = discount.allocations.reduce(
+        (sum, allocation) => sum + allocation.amount,
+        0,
+      );
+      if (allocationsSum !== discount.amount) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["allocations"],
+          message: `sum of allocation amounts (${allocationsSum}) must equal discount amount (${discount.amount})`,
+        });
+      }
+    }
+
+    // Automatic discounts carry no code (spec: code "Omitted for automatic discounts").
+    if (discount.automatic === true && discount.code !== undefined) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["code"],
+        message:
+          "code must be omitted for automatic discounts (automatic: true)",
+      });
+    }
+
+    // Eligibility-triggered discounts are automatic (spec: automatic true, code omitted).
+    if (discount.eligibility !== undefined && discount.automatic !== true) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["automatic"],
+        message:
+          "automatic must be true for eligibility-triggered discounts (eligibility is set)",
+      });
+    }
+  })
+  .describe("A discount that was successfully applied.");
+
+export const discountsObjectSchema = z
+  .object({
+    codes: z
+      .array(z.string())
+      .optional()
+      .describe(
+        "Discount codes to apply. Case-insensitive. Replaces previously submitted codes. Send empty array to clear.",
+      ),
+    // ucp_request: "omit" — output only, populated by the business in responses.
+    applied: z
+      .array(appliedDiscountSchema)
+      .optional()
+      .describe("Discounts successfully applied (code-based and automatic)."),
+  })
+  .describe("Discount codes input and applied discounts output.");
+
+// Well-known rejection codes for discount codes that could not be applied.
+// Surfaced on the top-level messages[] array as type: "warning" with the
+// rejected code's path (e.g. "$.discounts.codes[1]"). Businesses MAY also use
+// freeform codes, so this is a reference set — not enforced on messageSchema.code.
+export const discountRejectionCodeSchema = z
+  .enum([
+    "discount_code_expired",
+    "discount_code_invalid",
+    "discount_code_already_applied",
+    "discount_code_combination_disallowed",
+    "discount_code_user_not_logged_in",
+    "discount_code_user_ineligible",
+  ])
+  .describe("Standard error codes for rejected discount codes.");
+
+const consentSchema = z
+  .object({
+    analytics: z
+      .boolean()
+      .optional()
+      .describe("Consent for analytics and performance tracking."),
+    preferences: z
+      .boolean()
+      .optional()
+      .describe("Consent for storing user preferences."),
+    marketing: z
+      .boolean()
+      .optional()
+      .describe("Consent for marketing communications."),
+    sale_of_data: z
+      .boolean()
+      .optional()
+      .describe("Consent for selling data to third parties (CCPA)."),
+  })
+  .describe("User consent states for data processing.");
+
+export const buyerWithConsentSchema = buyerSchema
+  .extend({
+    consent: consentSchema.optional().describe("Consent tracking fields."),
+  })
+  .describe("Buyer object extended with consent tracking.");
+
 const fulfillmentOptionSchema = z
   .looseObject({
     id: z.string().describe("Unique fulfillment option identifier."),
@@ -1963,7 +2280,18 @@ const fulfillmentOptionSchema = z
       error: "latest_fulfillment_time must be >= earliest_fulfillment_time",
       path: ["latest_fulfillment_time"],
     },
-  );
+  )
+  .superRefine((option, ctx) => {
+    // Rendering contract: every option must surface a "total" (its price).
+    if (!option.totals.some((total) => total.type === "total")) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["totals"],
+        message:
+          "fulfillment option totals must include a 'total' entry (the option price)",
+      });
+    }
+  });
 
 const fulfillmentGroupSchema = z
   .looseObject({
@@ -1988,18 +2316,31 @@ const fulfillmentGroupSchema = z
       ),
   })
   .superRefine((group, ctx) => {
-    if (
-      group.selected_option_id !== null &&
-      group.selected_option_id !== undefined
-    ) {
-      const optionIds = new Set(group.options?.map((o) => o.id) ?? []);
-      if (!optionIds.has(group.selected_option_id)) {
+    // Option IDs must be unique within the group (so selected_option_id is unambiguous).
+    const seenOptionIds = new Set<string>();
+
+    for (const [index, option] of (group.options ?? []).entries()) {
+      if (seenOptionIds.has(option.id)) {
         ctx.addIssue({
           code: "custom",
-          path: ["selected_option_id"],
-          message: `selected_option_id "${group.selected_option_id}" does not reference a known option id`,
+          path: ["options", index, "id"],
+          message: `duplicate option id "${option.id}" within group`,
         });
+      } else {
+        seenOptionIds.add(option.id);
       }
+    }
+
+    if (
+      group.selected_option_id !== null &&
+      group.selected_option_id !== undefined &&
+      !seenOptionIds.has(group.selected_option_id)
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["selected_option_id"],
+        message: `selected_option_id "${group.selected_option_id}" does not reference a known option id`,
+      });
     }
   });
 
@@ -2048,19 +2389,58 @@ const fulfillmentMethodSchema = z
       ),
   })
   .superRefine((method, ctx) => {
-    if (
-      method.selected_destination_id !== null &&
-      method.selected_destination_id !== undefined
-    ) {
-      const destinationIds = new Set(
-        method.destinations?.map((d) => (d as { id: string }).id) ?? [],
-      );
-      if (!destinationIds.has(method.selected_destination_id)) {
+    // Destination IDs must be unique within the method.
+    const seenDestinationIds = new Set<string>();
+
+    for (const [index, destination] of (method.destinations ?? []).entries()) {
+      const destinationId = (destination as { id: string }).id;
+      if (seenDestinationIds.has(destinationId)) {
         ctx.addIssue({
           code: "custom",
-          path: ["selected_destination_id"],
-          message: `selected_destination_id "${method.selected_destination_id}" does not reference a known destination id`,
+          path: ["destinations", index, "id"],
+          message: `duplicate destination id "${destinationId}" within method`,
         });
+      } else {
+        seenDestinationIds.add(destinationId);
+      }
+    }
+
+    if (
+      method.selected_destination_id !== null &&
+      method.selected_destination_id !== undefined &&
+      !seenDestinationIds.has(method.selected_destination_id)
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["selected_destination_id"],
+        message: `selected_destination_id "${method.selected_destination_id}" does not reference a known destination id`,
+      });
+    }
+
+    // Group IDs must be unique within the method, and each group's items must
+    // belong to the method's line_item_ids.
+    const methodLineItemIds = new Set(method.line_item_ids);
+    const seenGroupIds = new Set<string>();
+
+    for (const [groupIndex, group] of (method.groups ?? []).entries()) {
+      if (seenGroupIds.has(group.id)) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["groups", groupIndex, "id"],
+          message: `duplicate group id "${group.id}" within method`,
+        });
+      } else {
+        seenGroupIds.add(group.id);
+      }
+
+      for (const lineItemId of group.line_item_ids) {
+        if (!methodLineItemIds.has(lineItemId)) {
+          ctx.addIssue({
+            code: "custom",
+            path: ["groups", groupIndex, "line_item_ids"],
+            message: `group line item "${lineItemId}" is not in the method's line_item_ids`,
+          });
+        }
       }
     }
   });
@@ -2073,11 +2453,11 @@ const fulfillmentAvailableMethodSchema = z.looseObject({
     .array(z.string())
     .describe("Line items available for this method."),
   fulfillable_on: z
-    .string()
+    .union([z.literal("now"), z.iso.datetime(), z.iso.date()])
     .nullable()
     .optional()
     .describe(
-      "'now' for immediate availability, or ISO 8601 date for future (preorders, transfers).",
+      "'now' for immediate availability, or ISO 8601 date/datetime for future (preorders, transfers).",
     ),
   description: z
     .string()
@@ -2126,11 +2506,9 @@ const checkoutResponseBaseSchema = z.looseObject({
   line_items: z
     .array(lineItemSchema)
     .describe("List of line items being checked out."),
-  currency: z
-    .string()
-    .describe(
-      "ISO 4217 currency code reflecting the merchant's market determination. Derived from address, context, and geo IP—buyers provide signals, merchants determine currency.",
-    ),
+  currency: currencyCodeSchema.describe(
+    "ISO 4217 currency code reflecting the merchant's market determination. Derived from address, context, and geo IP—buyers provide signals, merchants determine currency.",
+  ),
   totals: totalsSchema.describe(
     "Different cart totals. Checkout cost breakdown.",
   ),
@@ -2191,6 +2569,51 @@ const refineCheckoutConstraints = (
         path: ["messages"],
         message:
           'status requires_escalation MUST include at least one error message with severity "requires_buyer_input" or "requires_buyer_review"',
+      });
+    }
+  }
+
+  // "completed" means the order was placed — the order field must be present.
+  if (checkout.status === "completed" && checkout.order === undefined) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["order"],
+      message: "order MUST be present when status is completed",
+    });
+  }
+
+  // Eligibility message-code contract (see Eligibility Verification at Completion).
+  for (const [index, message] of (checkout.messages ?? []).entries()) {
+    const requiredType = (() => {
+      switch (message.code) {
+        case "eligibility_invalid":
+          return "error";
+        case "eligibility_not_accepted":
+          return "warning";
+        case "eligibility_accepted":
+          return "info";
+        default:
+          return undefined;
+      }
+    })();
+
+    if (requiredType !== undefined && message.type !== requiredType) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["messages", index, "type"],
+        message: `message code "${message.code}" must be used with type "${requiredType}"`,
+      });
+    }
+
+    if (
+      message.type === "error" &&
+      message.code === "eligibility_invalid" &&
+      message.severity !== "recoverable"
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["messages", index, "severity"],
+        message: 'eligibility_invalid errors MUST use severity "recoverable"',
       });
     }
   }
@@ -2291,7 +2714,37 @@ export const completeCheckoutWithFulfillmentResponseSchema =
     })
     .superRefine(refineCheckoutConstraints);
 
-// ─── Order ────────────────────────────────────────────────────────────────────
+export const cartWithDiscountSchema = getCartResponseSchema
+  .extend({
+    discounts: discountsObjectSchema
+      .optional()
+      .describe(
+        "Discount codes input and applied discounts output. Optional on cart create and update.",
+      ),
+  })
+  .describe("Cart extended with discount capability.");
+
+export const checkoutWithDiscountSchema = checkoutResponseBaseSchema
+  .extend({
+    discounts: discountsObjectSchema
+      .optional()
+      .describe(
+        "Discount codes input and applied discounts output. Optional on checkout create and update; omitted on complete.",
+      ),
+  })
+  .superRefine(refineCheckoutConstraints)
+  .describe("Checkout extended with discount capability.");
+
+export const checkoutWithBuyerConsentSchema = checkoutResponseBaseSchema
+  .extend({
+    buyer: buyerWithConsentSchema
+      .optional()
+      .describe(
+        "Buyer with consent tracking. Optional on checkout create and update; omitted on complete.",
+      ),
+  })
+  .superRefine(refineCheckoutConstraints)
+  .describe("Checkout extended with consent tracking via buyer object.");
 
 const orderLineItemRefSchema = z.object({
   id: z.string().describe("Line item ID reference."),
@@ -2360,17 +2813,27 @@ const orderLineItemSchema = z
   })
   .superRefine((item, ctx) => {
     const { total, fulfilled } = item.quantity;
+
     const expectedStatus = (() => {
       if (total === 0) return "removed";
       if (fulfilled === total) return "fulfilled";
       if (fulfilled > 0) return "partial";
       return "processing";
     })();
+
     if (item.status !== expectedStatus) {
       ctx.addIssue({
         code: "custom",
         path: ["status"],
         message: `status must be "${expectedStatus}" given quantity.total=${total} and quantity.fulfilled=${fulfilled}`,
+      });
+    }
+
+    if (fulfilled > total) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["quantity", "fulfilled"],
+        message: `quantity.fulfilled (${fulfilled}) cannot exceed quantity.total (${total})`,
       });
     }
   });
@@ -2391,7 +2854,7 @@ const expectationSchema = z.looseObject({
       "Human-readable delivery description (e.g., 'Arrives in 5-8 business days').",
     ),
   fulfillable_on: z
-    .string()
+    .union([z.literal("now"), z.iso.datetime(), z.iso.date()])
     .optional()
     .describe(
       "'now' for immediate availability, or ISO 8601 timestamp for future (backorder, pre-order).",
@@ -2533,6 +2996,81 @@ export const listOrdersRequestSchema = z.object({
     .describe("Maximum number of orders to return per page."),
 });
 
+// Standard error codes returned by Get Order. Reference set — message.code stays
+// freeform, so this is not enforced on the union.
+export const orderErrorCodeSchema = z
+  .enum(["not_found", "unauthorized"])
+  .describe("Standard error codes for order retrieval failures.");
+
+// Referential integrity for orders: line-item IDs are unique, each parent_id and
+// every id referenced by expectations / events / adjustments resolves to an order
+// line item. Spec: these components "reference line items by ID."
+const refineOrderLineItems = (
+  order: {
+    line_items: { id: string; parent_id?: string | undefined }[];
+    fulfillment?: {
+      expectations?: { line_items: { id: string }[] }[] | undefined;
+      events?: { line_items: { id: string }[] }[] | undefined;
+    };
+    adjustments?: { line_items?: { id: string }[] | undefined }[] | undefined;
+  },
+  ctx: z.core.$RefinementCtx,
+) => {
+  const ids = new Set<string>();
+  for (const [index, lineItem] of order.line_items.entries()) {
+    if (ids.has(lineItem.id)) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["line_items", index, "id"],
+        message: `duplicate line item id "${lineItem.id}"`,
+      });
+    } else {
+      ids.add(lineItem.id);
+    }
+  }
+
+  for (const [index, lineItem] of order.line_items.entries()) {
+    if (lineItem.parent_id !== undefined && !ids.has(lineItem.parent_id)) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["line_items", index, "parent_id"],
+        message: `parent_id "${lineItem.parent_id}" does not reference a known line item id`,
+      });
+    }
+  }
+
+  const checkRefs = (refs: { id: string }[], path: (string | number)[]) => {
+    for (const [index, ref] of refs.entries()) {
+      if (!ids.has(ref.id)) {
+        ctx.addIssue({
+          code: "custom",
+          path: [...path, index, "id"],
+          message: `references unknown line item id "${ref.id}"`,
+        });
+      }
+    }
+  };
+
+  for (const [index, expectation] of (
+    order.fulfillment?.expectations ?? []
+  ).entries()) {
+    checkRefs(expectation.line_items, [
+      "fulfillment",
+      "expectations",
+      index,
+      "line_items",
+    ]);
+  }
+  for (const [index, event] of (order.fulfillment?.events ?? []).entries()) {
+    checkRefs(event.line_items, ["fulfillment", "events", index, "line_items"]);
+  }
+  for (const [index, adjustment] of (order.adjustments ?? []).entries()) {
+    if (adjustment.line_items !== undefined) {
+      checkRefs(adjustment.line_items, ["adjustments", index, "line_items"]);
+    }
+  }
+};
+
 export const orderResponseSchema = z.looseObject({
   ucp: ucpOrderResponseSchema,
   id: z.string().describe("Unique order identifier."),
@@ -2562,11 +3100,9 @@ export const orderResponseSchema = z.looseObject({
     .describe(
       "Post-order events (refunds, returns, credits, disputes, cancellations) that exist independently of fulfillment.",
     ),
-  currency: z
-    .string()
-    .describe(
-      "ISO 4217 currency code. MUST match the currency from the originating checkout session.",
-    ),
+  currency: currencyCodeSchema.describe(
+    "ISO 4217 currency code. MUST match the currency from the originating checkout session.",
+  ),
   totals: totalsSchema.describe("Different totals for the order."),
   messages: z
     .array(messageSchema)
@@ -2579,7 +3115,7 @@ export const orderResponseSchema = z.looseObject({
     .describe(
       "Snapshot of the attribution from the originating checkout. Read-only.",
     ),
-});
+}).superRefine(refineOrderLineItems);
 
 export const listOrdersResponseSchema = z.looseObject({
   ucp: ucpOrderResponseSchema,

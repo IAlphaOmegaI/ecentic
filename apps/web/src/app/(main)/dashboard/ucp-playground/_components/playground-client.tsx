@@ -570,7 +570,6 @@ export const PlaygroundClient = () => {
 
   const connectedHost = connection ? hostOf(connection.profileUrl) : null;
 
-  // Resolve + validate the store's UCP profile before entering the chat.
   const [handleConnect, isConnecting] = useAsyncAction(
     async ({ storeUrl: domain }: FormEntries<typeof connectFormConfig>) => {
       setConnectError(null);
