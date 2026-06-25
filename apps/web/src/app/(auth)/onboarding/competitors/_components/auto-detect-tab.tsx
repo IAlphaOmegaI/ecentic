@@ -7,6 +7,7 @@ import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { formatElapsed } from "@/lib/date";
 import * as Competitor from "@/server/app/competitor";
@@ -18,15 +19,11 @@ type LogEntry = {
   type: "info" | "success" | "error";
 };
 
-const steps = [
-  "Reading your product catalog",
-  "Mapping market categories and price tiers",
-  "Querying Amazon, Walmart, and Target signals",
-  "Running competitive intelligence model",
-] as const;
-
-const POLL_INTERVAL = 1500;
-const DETECTION_TIMEOUT = 90_000;
+const POLL_INTERVAL = 1200;
+// Matches /api/detect maxDuration on Pro; quiescence usually finishes well before.
+const DETECTION_TIMEOUT = 120_000;
+// Stop once verified competitors have stopped arriving for this long.
+const QUIESCENCE = 5000;
 
 export namespace AutoDetectTab {
   export type Props = {
@@ -42,6 +39,7 @@ export const AutoDetectTab = ({
   className,
 }: AutoDetectTab.Props) => {
   const toast = useToastManager();
+  const router = useRouter();
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [elapsed, setElapsed] = useState(0);
 
@@ -89,22 +87,48 @@ export const AutoDetectTab = ({
       setElapsed(Date.now() - start.current);
     }, 100);
 
-    for (const step of steps) addLog({ text: step, type: "info" });
+    addLog({
+      text: `Reading ${products.length} product${products.length === 1 ? "" : "s"} from your catalog`,
+      type: "info",
+    });
+    addLog({
+      text: "Querying the intelligence model and verifying live listings…",
+      type: "info",
+    });
 
-    // Detection now runs server-side and survives this tab closing — we kick it
-    // off, then poll for the competitors it persists.
+    // Detection runs server-side (survives this tab closing) and persists each
+    // competitor the moment it verifies it. We poll for those rows and stream
+    // them in as they land, finishing once results settle (quiescence) or we
+    // hit the timeout.
     const detection = await resultify(async () => {
       const { since } = await unwrapResult(
         Competitor.detectCompetitors({ products }),
       );
 
+      const seen = new Set<string>();
+      const collected: Competitor.Type[] = [];
+      const quiet = { since: Date.now() };
       const deadline = Date.now() + DETECTION_TIMEOUT;
+
       while (Date.now() < deadline) {
         await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL));
+
         const found = await Competitor.detectedSince({ since });
-        if (found.success && found.data.length > 0) return found.data;
+        if (!found.success) continue;
+
+        const fresh = found.data.filter((record) => !seen.has(record.id));
+        for (const record of fresh) {
+          seen.add(record.id);
+          collected.push(record);
+          addLog({ text: `Verified · ${record.title}`, type: "success" });
+        }
+        if (fresh.length > 0) quiet.since = Date.now();
+
+        // competitors have stopped arriving — detection has settled.
+        if (collected.length > 0 && Date.now() - quiet.since > QUIESCENCE)
+          return collected;
       }
-      return [] as Competitor.Type[];
+      return collected;
     });
 
     if (timer.current) {
@@ -136,9 +160,11 @@ export const AutoDetectTab = ({
     }
 
     addLog({
-      text: `${detection.data.length} competitors identified`,
+      text: `${detection.data.length} competitor${detection.data.length === 1 ? "" : "s"} identified`,
       type: "success",
     });
+    // refresh the server-rendered competitor list to include what just streamed in.
+    router.refresh();
     onSuccess?.(detection.data);
     toast.add({
       title: "Competitors found",

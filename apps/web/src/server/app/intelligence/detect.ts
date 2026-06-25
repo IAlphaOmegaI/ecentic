@@ -2,7 +2,7 @@ import { resultify } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { getBrandLogo } from "@/lib/logo";
-import { schema, withTransaction } from "../../database";
+import { schema } from "../../database";
 import * as AI from "../../utils/ai";
 import { Environment } from "../../utils/environment";
 import * as HTTP from "../../utils/http";
@@ -126,41 +126,43 @@ export const runDetection = async ({
   if (cleaned.length === 0)
     return { success: true as const, data: [] as Competitor.Type[] };
 
-  // Ground the candidates against the live web in parallel, keeping only those
-  // whose proposed page exists and names the brand. If anti-bot blocking defeats
-  // verification for ALL of them, fall back to the ungrounded set so the user is
-  // never left with zero competitors (no regression on today's behavior).
-  const verifications = await Promise.all(
-    cleaned.map((entry) => verify(entry)),
-  );
-  const verified = cleaned.filter((_entry, index) => verifications[index]);
-  const grounded = verified.length > 0 ? verified : cleaned;
+  const persist = (entry: (typeof cleaned)[number]) =>
+    Competitor.create(Environment.SERVER, {
+      ...entry,
+      userId: user,
+      selected: true,
+      image: getBrandLogo(entry.brand),
+    });
 
-  // Persist through the repository in a single transaction so the saved set is
-  // all-or-nothing — an interrupted run never leaves a partial set behind.
-  const created = await resultify(() =>
-    withTransaction((tx) =>
-      Promise.all(
-        grounded.map(async (entry) => {
-          const creation = await Competitor.create(
-            Environment.SERVER,
-            {
-              ...entry,
-              userId: user,
-              selected: true,
-              image: getBrandLogo(entry.brand),
-            },
-            { tx },
-          );
-          if (!creation.success) throw creation.error;
-          if (!creation.data)
-            throw new Error("Competitor creation returned no data");
-          return creation.data;
-        }),
-      ),
-    ),
-  );
-  if (!created.success) return created;
+  // Verify each candidate against the live web and persist it the moment it
+  // passes, so the client's detectedSince poll streams competitors in as they
+  // are confirmed. Persist is incremental (not one transaction): every saved row
+  // is an independently-verified, valid competitor, so an interrupted run leaves
+  // FEWER competitors — never a corrupt or partial-entity set.
+  const verified = (
+    await Promise.all(
+      cleaned.map(async (entry) => {
+        if (!(await verify(entry))) return null;
+        const creation = await persist(entry);
+        return creation.success ? creation.data : null;
+      }),
+    )
+  ).filter((record) => record != null);
 
-  return { success: true as const, data: created.data };
+  // Fallback: if grounding rejected every candidate (e.g. retailer anti-bot
+  // blocked all fetches), persist the ungrounded set so the user is never left
+  // with zero competitors.
+  const fallback =
+    verified.length > 0
+      ? []
+      : (
+          await Promise.all(
+            cleaned.map(async (entry) => {
+              const creation = await persist(entry);
+              return creation.success ? creation.data : null;
+            }),
+          )
+        ).filter((record) => record != null);
+
+  return { success: true as const, data: [...verified, ...fallback] };
 };

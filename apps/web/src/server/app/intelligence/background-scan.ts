@@ -212,26 +212,39 @@ const runScanForUser = async (
       tasks.slice(index * batchSize, index * batchSize + batchSize),
   );
 
+  // Persist and tally each batch the moment it finishes (rather than all at the
+  // end) so Scan.getProgress — which the client polls — reflects real live
+  // progress instead of jumping 0 -> 100%. A mid-run timeout leaves the scan
+  // "running" with the completed batches saved; the reaper/enqueue self-heal
+  // cleans it up.
   const results: Awaited<ReturnType<(typeof tasks)[number]>>[] = [];
 
   for (const batch of batches) {
     const batchResults = await Promise.all(batch.map((task) => task()));
+
+    const persisted = await Promise.all(
+      batchResults.map((result) =>
+        Simulation.create(Environment.SERVER, {
+          scanId: record.id,
+          ...result,
+        }),
+      ),
+    );
+    const failure = persisted.find((creation) => !creation.success);
+    if (failure && !failure.success) {
+      await Scan.update(Environment.SERVER, record.id, { status: "failed" });
+      return failure;
+    }
+
     results.push(...batchResults);
-  }
 
-  const persisted = await Promise.all(
-    results.map((result) =>
-      Simulation.create(Environment.SERVER, {
-        scanId: record.id,
-        ...result,
-      }),
-    ),
-  );
-
-  const failure = persisted.find((creation) => !creation.success);
-  if (failure && !failure.success) {
-    await Scan.update(Environment.SERVER, record.id, { status: "failed" });
-    return failure;
+    const won = results.filter((result) => result.winner === "product").length;
+    await Scan.update(Environment.SERVER, record.id, {
+      completedSimulations: results.length,
+      wins: won,
+      losses: results.length - won,
+      updatedAt: new Date(),
+    });
   }
 
   const wins = results.filter((result) => result.winner === "product").length;
