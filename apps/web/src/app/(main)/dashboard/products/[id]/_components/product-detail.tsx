@@ -1,7 +1,20 @@
 "use client";
 
-import { ArrowRightIcon, CheckIcon, XIcon } from "@zenncore/icons";
+import {
+  ArrowRightIcon,
+  CheckIcon,
+  CircleBoltIcon,
+  TrendUpIcon,
+  XIcon,
+} from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
+import { useAsyncAction } from "@zenncore/utils/hooks";
+import {
+  AlertDialog,
+  AlertDialogDescription,
+  AlertDialogPopup,
+  AlertDialogTitle,
+} from "@zenncore/web/components/alert-dialog";
 import { Button } from "@zenncore/web/components/button";
 import type { ColumnDef } from "@zenncore/web/components/data-table";
 import {
@@ -16,11 +29,14 @@ import {
   TabsList,
   TabsPanel,
 } from "@zenncore/web/components/tabs";
+import { useToastManager } from "@zenncore/web/components/toast";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState, useTransition } from "react";
 import { Spring } from "@/lib/animations";
+import * as Audit from "@/server/app/intelligence/audit";
 import * as Optimization from "@/server/app/optimization";
 import { Crosshair, SectionKicker, StatLabel } from "../../../_components/grid";
 
@@ -36,6 +52,7 @@ export type ProductDetailData = {
     quality: number;
   };
   winRate: number;
+  canPublish: boolean;
   models: Array<{
     model: string;
     label: string;
@@ -149,9 +166,6 @@ const Model = {
   Gemini: {
     logo: "/images/gemini.svg",
   },
-  Perplexity: {
-    logo: "/images/perplexity.svg",
-  },
 } as const;
 
 const rateColor = (rate: number) => {
@@ -184,21 +198,132 @@ const qualityFields = [
   { key: "structuredData", label: "Structured Data" },
 ] as const;
 
+const PublishListing = ({
+  product,
+  winRate,
+  canPublish,
+  label = "Apply fix to store",
+  className,
+}: {
+  product: ProductDetailData["product"];
+  winRate: number;
+  canPublish: boolean;
+  label?: string;
+  className?: string;
+}) => {
+  const router = useRouter();
+  const toast = useToastManager();
+  const [open, setOpen] = useState(false);
+
+  const [publish, isPending] = useAsyncAction(async () => {
+    const result = await Optimization.approveProductListing({
+      product: product.id,
+    });
+    if (!result.success) {
+      toast.add({
+        title: "Publish failed",
+        description: result.error.message,
+        type: "error",
+      });
+      return;
+    }
+    toast.add({
+      title: "Listing published",
+      description: "An AI-optimized listing was pushed to your store.",
+      type: "success",
+    });
+    setOpen(false);
+    router.refresh();
+  });
+
+  return (
+    <>
+      <Button
+        color="success"
+        className={cn("shrink-0", className)}
+        disabled={!canPublish}
+        onClick={() => setOpen(true)}
+      >
+        <TrendUpIcon className="size-4" />
+        {canPublish ? label : "Connect Shopify to apply"}
+      </Button>
+
+      <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialogPopup>
+          <AlertDialogTitle>Publish optimized listing?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Écentic generates an AI-optimized title and description for &ldquo;
+            {product.title}&rdquo; and writes it directly to your connected
+            store, replacing the live listing. Current win rate is {winRate}%.
+          </AlertDialogDescription>
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="outline"
+              color="neutral"
+              onClick={() => setOpen(false)}
+              disabled={isPending}
+            >
+              Cancel
+            </Button>
+            <Button
+              color="success"
+              onClick={() => publish()}
+              disabled={isPending}
+            >
+              {isPending ? "Publishing…" : "Publish to store"}
+            </Button>
+          </div>
+        </AlertDialogPopup>
+      </AlertDialog>
+    </>
+  );
+};
+
+const ApplyOptimization = ({
+  product,
+  winRate,
+  canPublish,
+}: {
+  product: ProductDetailData["product"];
+  winRate: number;
+  canPublish: boolean;
+}) => (
+  <div className="relative flex flex-col gap-4 border-accent-foreground border-b bg-emphasis p-5 sm:flex-row sm:items-center sm:justify-between">
+    <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+    <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+    <div className="flex items-start gap-3">
+      <CircleBoltIcon className="size-7 shrink-0 text-primary" />
+      <div>
+        <p className="font-semibold text-emphasis-foreground">
+          Close the gap automatically
+        </p>
+        <p className="mt-1 max-w-prose text-emphasis-foreground text-sm leading-relaxed">
+          Écentic rewrites this listing from the winning competitors&apos;
+          strengths and publishes it straight to your store — no manual edits.
+        </p>
+      </div>
+    </div>
+    <PublishListing
+      product={product}
+      winRate={winRate}
+      canPublish={canPublish}
+    />
+  </div>
+);
+
 export const ProductDetail = ({ data }: ProductDetail.Props) => {
-  const { product, models, competitors, simulations } = data;
+  const { product, winRate, canPublish, models, competitors, simulations } =
+    data;
 
   return (
     <Tabs defaultValue="overview">
-      <TabsList className="w-full border-0">
+      <TabsList className="w-full border-0 rounded-none">
         <TabsIndicator className="h-full" />
         <Tab value="overview" className="flex-1">
           Win Rate
         </Tab>
         <Tab value="replay" className="flex-1">
           Agent Replay
-        </Tab>
-        <Tab value="gaps" className="flex-1">
-          Data Gaps
         </Tab>
         <Tab value="battlecard" className="flex-1">
           Battlecard
@@ -216,20 +341,22 @@ export const ProductDetail = ({ data }: ProductDetail.Props) => {
         <ReplayTab simulations={simulations} product={product} />
       </TabsPanel>
 
-      <TabsPanel value="gaps">
-        <GapsTab product={product} />
-      </TabsPanel>
-
       <TabsPanel value="battlecard">
         <BattlecardTab
           product={product}
+          winRate={winRate}
+          canPublish={canPublish}
           competitors={competitors}
           simulations={simulations}
         />
       </TabsPanel>
 
       <TabsPanel value="optimize">
-        <OptimizeTab product={product} />
+        <OptimizeTab
+          product={product}
+          winRate={winRate}
+          canPublish={canPublish}
+        />
       </TabsPanel>
     </Tabs>
   );
@@ -247,7 +374,7 @@ const OverviewTab = ({
   models: ProductDetailData["models"];
   competitors: ProductDetailData["competitors"];
 }) => (
-  <>
+  <section className="border-accent-foreground border-t">
     <div className="p-4">
       <SectionKicker>01 — Performance</SectionKicker>
       <p className="mt-2 font-semibold text-foreground-rich text-lg">
@@ -340,7 +467,7 @@ const OverviewTab = ({
         </DataTableEmpty>
       </DataTable>
     </DataTableProvider>
-  </>
+  </section>
 );
 
 const replayModelLabel = (modelId: string) => {
@@ -351,8 +478,6 @@ const replayModelLabel = (modelId: string) => {
       return "Claude";
     case "gemini":
       return "Gemini";
-    case "perplexity":
-      return "Perplexity";
     default:
       return modelId;
   }
@@ -365,21 +490,19 @@ const ReplayTab = ({
   simulations: ProductDetailData["simulations"];
   product: ProductDetailData["product"];
 }) => {
-  const grouped = ["gpt4", "claude", "gemini", "perplexity"].flatMap(
-    (modelId) => {
-      const modelSimulations = simulations.filter(
-        (simulation) => simulation.model === modelId,
-      );
-      if (modelSimulations.length === 0) return [];
-      return [
-        {
-          model: modelId,
-          label: replayModelLabel(modelId),
-          simulations: modelSimulations,
-        },
-      ];
-    },
-  );
+  const grouped = ["gpt4", "claude", "gemini"].flatMap((modelId) => {
+    const modelSimulations = simulations.filter(
+      (simulation) => simulation.model === modelId,
+    );
+    if (modelSimulations.length === 0) return [];
+    return [
+      {
+        model: modelId,
+        label: replayModelLabel(modelId),
+        simulations: modelSimulations,
+      },
+    ];
+  });
 
   const [selected, setSelected] = useState(grouped[0]?.model ?? null);
 
@@ -492,70 +615,207 @@ const ReplayTab = ({
   );
 };
 
-const GapsTab = ({ product }: { product: ProductDetailData["product"] }) => (
-  <>
-    <div className="relative flex items-end justify-between border-accent-foreground border-y p-4">
-      <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-      <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-      <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-      <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
-      <div>
-        <SectionKicker>01 — Listing Health</SectionKicker>
-        <p className="mt-2 font-semibold text-foreground-rich text-lg">
-          Data Gaps
+const ListingCompleteness = ({
+  product,
+}: {
+  product: ProductDetailData["product"];
+}) => (
+  <div className="divide-y divide-accent-foreground border-accent-foreground border-b">
+    {qualityFields.map(({ key, label }) => {
+      const value = product[key];
+      const filled = (() => {
+        if (!value) return false;
+        if (key === "structuredData") return value !== "null";
+        return true;
+      })();
+
+      return (
+        <div
+          key={key}
+          className="flex items-center justify-between bg-background-rich px-4 py-4 transition-colors hover:bg-background"
+        >
+          <div className="flex items-center gap-3">
+            {filled ? (
+              <CheckIcon className="size-6 text-success" />
+            ) : (
+              <XIcon className="size-6 text-error" />
+            )}
+            <span className="font-medium text-foreground">{label}</span>
+          </div>
+          <span
+            className={cn(
+              "font-medium text-sm",
+              filled ? "text-success" : "text-error",
+            )}
+          >
+            {filled ? "Present" : "Missing"}
+          </span>
+        </div>
+      );
+    })}
+  </div>
+);
+
+const auditFieldLabels: Record<string, string> = {
+  title: "Title",
+  description: "Description",
+  price: "Price",
+  sku: "SKU",
+  structuredData: "Structured Data",
+  images: "Images",
+};
+
+const AuditSkeleton = () => (
+  <div className="divide-y divide-accent-foreground border-accent-foreground border-b">
+    {Object.keys(auditFieldLabels).map((key) => (
+      <div
+        key={key}
+        className="flex items-center justify-between bg-background-rich px-4 py-4"
+      >
+        <div className="h-4 w-40 animate-pulse bg-foreground/10" />
+        <div className="h-2 w-32 animate-pulse rounded-full bg-foreground/10" />
+      </div>
+    ))}
+  </div>
+);
+
+const ListingAudit = ({
+  product,
+}: {
+  product: ProductDetailData["product"];
+}) => {
+  const [audit, setAudit] = useState<Audit.Type | null>(null);
+  const [status, setStatus] = useState<"loading" | "ready" | "error">(
+    "loading",
+  );
+
+  useEffect(() => {
+    let active = true;
+    setStatus("loading");
+
+    void (async () => {
+      const result = await Audit.auditProduct({ product: product.id });
+      if (!active) return;
+      if (!result.success) {
+        setStatus("error");
+        return;
+      }
+      setAudit(result.data);
+      setStatus("ready");
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [product.id]);
+
+  // Fall back to the deterministic completeness checklist if the audit fails.
+  if (status === "error") return <ListingCompleteness product={product} />;
+  if (status === "loading" || !audit) return <AuditSkeleton />;
+
+  return (
+    <>
+      <div className="flex items-center justify-between border-accent-foreground border-b bg-background-rich px-4 py-3">
+        <SectionKicker>AI Content Quality</SectionKicker>
+        <p
+          className={cn(
+            "font-bold text-2xl tabular-nums tracking-[-0.02em]",
+            rateColor(audit.overall),
+          )}
+        >
+          {audit.overall}
+          <span className="font-medium text-foreground-dimmed text-sm">
+            /100
+          </span>
         </p>
       </div>
-      <p className="text-foreground-dimmed text-sm">
-        Quality score:{" "}
-        <span className={cn("font-semibold", rateColor(product.quality))}>
-          {product.quality}
-          <span className="font-normal text-foreground-dimmed">/100</span>
-        </span>
-      </p>
-    </div>
-    <div className="divide-y divide-accent-foreground">
-      {qualityFields.map(({ key, label }) => {
-        const value = product[key];
-        const filled = (() => {
-          if (!value) return false;
-          if (key === "structuredData") return value !== "null";
-          return true;
-        })();
 
-        return (
-          <div
-            key={key}
-            className="flex items-center justify-between bg-background-rich px-4 py-4 transition-colors hover:bg-background"
-          >
-            <div className="flex items-center gap-3">
-              {filled ? (
-                <CheckIcon className="size-6 text-success" />
-              ) : (
-                <XIcon className="size-6 text-error" />
-              )}
-              <span className="font-medium text-foreground">{label}</span>
-            </div>
-            <span
+      <div className="border-accent-foreground border-b bg-background-rich p-4">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <SectionKicker>Brand Positioning</SectionKicker>
+            <p className="mt-1 font-medium text-foreground">
+              {audit.positioning.audience}
+            </p>
+            <p className="text-foreground-dimmed text-sm">
+              {audit.positioning.position}
+            </p>
+          </div>
+          <div className="shrink-0 text-right">
+            <p
               className={cn(
-                "font-medium text-sm",
-                filled ? "text-success" : "text-error",
+                "font-bold text-3xl tabular-nums tracking-[-0.02em]",
+                rateColor(audit.positioning.score),
               )}
             >
-              {filled ? "Present" : "Missing"}
-            </span>
+              {audit.positioning.score}
+              <span className="font-medium text-foreground-dimmed text-base">
+                /100
+              </span>
+            </p>
+            <p className="text-foreground-dimmed text-xs">positioning</p>
           </div>
-        );
-      })}
-    </div>
-  </>
-);
+        </div>
+        <p className="mt-3 text-foreground-dimmed text-sm leading-relaxed">
+          {audit.positioning.reasoning}
+        </p>
+        <p className="mt-2 text-primary text-sm leading-relaxed">
+          → {audit.positioning.suggestion}
+        </p>
+      </div>
+
+      <div className="divide-y divide-accent-foreground border-accent-foreground border-b">
+        {audit.fields.map((field) => (
+          <div
+            key={field.key}
+            className="flex flex-col gap-2 bg-background-rich px-4 py-4 transition-colors hover:bg-background sm:flex-row sm:items-center sm:justify-between sm:gap-6"
+          >
+            <div className="min-w-0 flex-1">
+              <div className="flex items-baseline gap-2">
+                <span className="font-medium text-foreground">
+                  {auditFieldLabels[field.key] ?? field.key}
+                </span>
+                <span className="truncate text-foreground-dimmed text-xs">
+                  {field.verdict}
+                </span>
+              </div>
+              <p className="mt-1 text-foreground-dimmed text-sm leading-relaxed">
+                → {field.suggestion}
+              </p>
+            </div>
+            <div className="flex shrink-0 items-center gap-3 sm:w-44">
+              <div className="h-1.5 flex-1 rounded-full bg-accent-foreground">
+                <div
+                  className={cn("h-full rounded-full", barColor(field.score))}
+                  style={{ width: `${field.score}%` }}
+                />
+              </div>
+              <span
+                className={cn(
+                  "w-10 text-right font-semibold text-sm tabular-nums",
+                  rateColor(field.score),
+                )}
+              >
+                {field.score}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+};
 
 const BattlecardTab = ({
   product,
+  winRate,
+  canPublish,
   competitors,
   simulations,
 }: {
   product: ProductDetailData["product"];
+  winRate: number;
+  canPublish: boolean;
   competitors: ProductDetailData["competitors"];
   simulations: ProductDetailData["simulations"];
 }) => {
@@ -570,6 +830,11 @@ const BattlecardTab = ({
 
   return (
     <>
+      <ApplyOptimization
+        product={product}
+        winRate={winRate}
+        canPublish={canPublish}
+      />
       <div className="relative flex items-end justify-between border-accent-foreground border-y p-4">
         <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
         <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
@@ -700,8 +965,12 @@ const BattlecardTab = ({
 
 const OptimizeTab = ({
   product,
+  winRate,
+  canPublish,
 }: {
   product: ProductDetailData["product"];
+  winRate: number;
+  canPublish: boolean;
 }) => {
   const [isPending, startTransition] = useTransition();
   const [liveStructuredData, setLiveStructuredData] = useState<string | null>(
@@ -734,13 +1003,21 @@ const OptimizeTab = ({
           </p>
         </div>
         <p className="text-foreground-dimmed text-sm">
-          Quality:{" "}
+          Completeness:{" "}
           <span className={cn("font-semibold", rateColor(product.quality))}>
             {product.quality}
             <span className="font-normal text-foreground-dimmed">/100</span>
           </span>
         </p>
       </div>
+      <div className="bg-background-rich p-4">
+        <SectionKicker>AI Listing Audit</SectionKicker>
+        <p className="mt-1 text-foreground-dimmed text-sm">
+          Category-aware content-quality scores for the fields AI agents read —
+          plus how this listing is positioned for its audience.
+        </p>
+      </div>
+      <ListingAudit product={product} />
       <div className="grid grid-cols-1 gap-px bg-accent-foreground lg:grid-cols-2">
         <div className="bg-background-rich p-6">
           <p className="mb-2 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
@@ -786,15 +1063,28 @@ const OptimizeTab = ({
           )}
         </div>
 
-        <div className="bg-background-rich p-6">
-          <p className="mb-4 text-foreground leading-relaxed">
-            Improve your listing data to increase win rates across all AI
-            models.
+        <div className="flex flex-col items-start gap-4 bg-background-rich p-6">
+          <p className="text-foreground leading-relaxed">
+            Let Écentic rewrite this listing and publish the optimized version
+            straight to your store, or review every pending change in the
+            optimization queue first.
           </p>
-          <Button color="primary" render={<Link href="/dashboard/ucp" />}>
-            Generate Optimized Data
-            <ArrowRightIcon className="size-4" />
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            <PublishListing
+              product={product}
+              winRate={winRate}
+              canPublish={canPublish}
+              label="Optimize & publish"
+            />
+            <Button
+              variant="outline"
+              color="neutral"
+              render={<Link href="/dashboard/optimize" />}
+            >
+              Review queue
+              <ArrowRightIcon className="size-4" />
+            </Button>
+          </div>
         </div>
       </div>
     </>

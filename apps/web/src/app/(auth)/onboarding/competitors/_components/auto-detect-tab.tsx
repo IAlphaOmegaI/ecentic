@@ -1,8 +1,7 @@
 "use client";
 
-import { readStreamableValue } from "@ai-sdk/rsc";
 import { RadarIcon } from "@zenncore/icons";
-import { cn, unwrapResult } from "@zenncore/utils";
+import { cn, resultify, unwrapResult } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
@@ -18,6 +17,16 @@ type LogEntry = {
   elapsed: number;
   type: "info" | "success" | "error";
 };
+
+const steps = [
+  "Reading your product catalog",
+  "Mapping market categories and price tiers",
+  "Querying Amazon, Walmart, and Target signals",
+  "Running competitive intelligence model",
+] as const;
+
+const POLL_INTERVAL = 1500;
+const DETECTION_TIMEOUT = 90_000;
 
 export namespace AutoDetectTab {
   export type Props = {
@@ -64,6 +73,13 @@ export const AutoDetectTab = ({
     });
   }, [logs]);
 
+  useEffect(
+    () => () => {
+      if (timer.current) clearInterval(timer.current);
+    },
+    [],
+  );
+
   const [handleDetect, isDetecting] = useAsyncAction(async () => {
     setLogs([]);
     setElapsed(0);
@@ -73,38 +89,62 @@ export const AutoDetectTab = ({
       setElapsed(Date.now() - start.current);
     }, 100);
 
-    const { output } = await unwrapResult(
-      Competitor.detectCompetitors({ products }),
-    );
+    for (const step of steps) addLog({ text: step, type: "info" });
 
-    for await (const event of readStreamableValue(output)) {
-      if (!event) continue;
+    // Detection now runs server-side and survives this tab closing — we kick it
+    // off, then poll for the competitors it persists.
+    const detection = await resultify(async () => {
+      const { since } = await unwrapResult(
+        Competitor.detectCompetitors({ products }),
+      );
 
-      switch (event.kind) {
-        case "log":
-          addLog({ text: event.text, type: "info" });
-          break;
-        case "chunk":
-          addLog({ text: event.text, type: "info" });
-          break;
-        case "error":
-          addLog({ text: event.text, type: "error" });
-          return;
-        case "done":
-          addLog({
-            text: `${event.competitors.length} competitors identified`,
-            type: "success",
-          });
-          clearInterval(timer.current);
-          onSuccess?.(event.competitors);
-          toast.add({
-            title: "Competitors found",
-            description: `Found ${event.competitors.length} competitor products.`,
-            type: "success",
-          });
-          return;
+      const deadline = Date.now() + DETECTION_TIMEOUT;
+      while (Date.now() < deadline) {
+        await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL));
+        const found = await Competitor.detectedSince({ since });
+        if (found.success && found.data.length > 0) return found.data;
       }
+      return [] as Competitor.Type[];
+    });
+
+    if (timer.current) {
+      clearInterval(timer.current);
+      timer.current = null;
     }
+
+    if (!detection.success) {
+      addLog({ text: "Detection failed. Please try again.", type: "error" });
+      toast.add({
+        title: "Detection failed",
+        description: detection.error.message,
+        type: "error",
+      });
+      return;
+    }
+
+    if (detection.data.length === 0) {
+      addLog({
+        text: "No new competitors found. Please try again.",
+        type: "error",
+      });
+      toast.add({
+        title: "No competitors found",
+        description: "We couldn't identify new competitors. Please try again.",
+        type: "error",
+      });
+      return;
+    }
+
+    addLog({
+      text: `${detection.data.length} competitors identified`,
+      type: "success",
+    });
+    onSuccess?.(detection.data);
+    toast.add({
+      title: "Competitors found",
+      description: `Found ${detection.data.length} competitor product${detection.data.length !== 1 ? "s" : ""}.`,
+      type: "success",
+    });
   });
 
   return (

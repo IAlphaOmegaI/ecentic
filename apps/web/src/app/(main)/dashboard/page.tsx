@@ -399,15 +399,6 @@ const Performance = async () => {
                 products.length,
             ),
           },
-          {
-            label: "Perplexity",
-            rate: Math.round(
-              products.reduce(
-                (sum, p) => sum + (p.winRate.perplexity ?? 0),
-                0,
-              ) / products.length,
-            ),
-          },
         ]
       : [];
 

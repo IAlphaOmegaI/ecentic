@@ -11,14 +11,12 @@ const modelColors: Record<string, string> = {
   "GPT-4": "text-blue-500",
   Claude: "text-orange-500",
   Gemini: "text-green-500",
-  Perplexity: "text-teal-500",
 };
 
 const models = [
   { model: "GPT-4", logo: "/images/chatgpt.svg" },
   { model: "Claude", logo: "/images/claude.svg" },
   { model: "Gemini", logo: "/images/gemini.svg" },
-  { model: "Perplexity", logo: "/images/perplexity.svg" },
 ] as const;
 
 const formatElapsed = (index: number) => `${(index * 0.4).toFixed(1)}s`;
@@ -66,15 +64,15 @@ export const RunningPhase = ({
               Running simulation.
             </h1>
             <p className="font-light text-2xl text-foreground-dimmed">
-              GPT-4, Claude, Gemini & Perplexity are comparing your products
-              against competitors right now.
+              GPT-4, Claude & Gemini are comparing your products against
+              competitors right now.
             </p>
           </div>
         </Motion.Item>
 
         <Motion.Item className="border-accent-foreground border-b px-8">
           <motion.div
-            className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-x"
+            className="grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-x"
             variants={Stagger.Container(0.06)}
             initial="hidden"
             animate="visible"

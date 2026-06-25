@@ -1,0 +1,2 @@
+// Re-export of @zenncore/web@0.0.0 Table. Implementation is in the root _ds_bundle.js (window.ZennWeb).
+Object.assign(window, { Table: window.ZennWeb.Table });

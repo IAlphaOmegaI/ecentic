@@ -75,7 +75,7 @@ AI agents don't see ads, don't scroll, don't read marketing copy. They read stru
 |------|------|---------|
 | Overview | `/dashboard` | Overall win rate, products scanned, top performer, biggest opportunity, win rate by model, trend charts, recent activity, model drift alerts |
 | Products | `/dashboard/products` | Product catalog with search/filter; columns for win rate per model, gap vs competitor, data quality, optimization status |
-| Product Detail | `/dashboard/products/[id]` | Tabs: Win Rate (by model), Agent Replay (decision log), Attribute Gaps, Battlecard, Optimize (current vs. optimized listing) |
+| Product Detail | `/dashboard/products/[id]` | Tabs: Win Rate (by model + per-competitor table), Agent Replay (decision log), Battlecard (per-competitor reasoning), Optimize (listing completeness + current vs. optimized listing) |
 | Competitors | `/dashboard/competitors` | Brands tracked, win rate vs. each, attribute heatmap (W/tie/L), competitor alerts |
 | Optimize | `/dashboard/optimize` | Queue of pending optimizations; approve/dismiss; before/after win rates; auto-optimization settings |
 | Reports | `/dashboard/reports` | Downloadable reports (Win Rate Summary, Product Performance, Competitor Analysis, etc.); scheduled reports |
@@ -196,13 +196,16 @@ The main dashboard is the merchant's real-time scorecard. It should show:
 
 ### Product Detail (`/dashboard/products/[id]`)
 
-Five tabs:
+Four tabs:
 
-1. **Win Rate** — Win rate by model (bar chart), win/loss record vs. each competitor, trend over time
-2. **Agent Replay** — Step-by-step decision log from the most recent simulation. Shows what the agent read, what it compared, what tipped the decision. Filterable by model.
-3. **Attribute Gaps** — Side-by-side comparison of your product's attributes vs. the winning competitor's. Highlights missing fields, weaker values, and fields the agent weighted most heavily.
-4. **Battlecard** — Competitive summary: your strengths, their strengths, suggested changes with estimated impact.
-5. **Optimize** — Current listing vs. optimized listing (diff view). Accept, edit, or dismiss each suggestion. If auto-publish is on, shows publishing status.
+1. **Win Rate** — Win rate by model (per-model cards) and the win/loss record vs. each competitor. Trend over time is pending a win-rate snapshot table.
+2. **Agent Replay** — Step-by-step decision log from simulations, grouped and filterable by model. Shows what the agent compared, the scores, and the reasoning that tipped each decision.
+3. **Battlecard** — Per-competitor head-to-head: where this product won vs. lost against each rival, with the agent's reasoning. (The per-model lens lives in Agent Replay; this is the per-competitor lens.) Surfaces a one-click **"Apply fix to store"** action that AI-rewrites the listing and publishes it to the connected store.
+4. **Optimize** — Listing completeness (which agent-read fields are present/missing) plus the current listing. Two actions: **"Optimize & publish"** (generates an AI-optimized title/description and writes it directly to the store via `Optimization.approveProductListing` → `Store.publishProductListing`, gated to Shopify/WooCommerce) and **"Review queue"** (`/dashboard/optimize`). JSON-LD structured data can be generated inline.
+
+> **Apply-to-store wiring:** Both publish actions call the existing `Optimization.approveProductListing` server action, behind an `AlertDialog` confirmation (it writes to a live store). The button is disabled with a "Connect Shopify to apply" label unless `getDetail` reports `canPublish` (store platform is Shopify or WooCommerce). Publishing dispatches to `Shopify.updateProduct` / `WooCommerce.updateProduct` and records before/after win rates on the optimization row.
+
+> **Note:** A standalone "Attribute Gaps" tab was specified originally as a side-by-side of your attributes vs. the winning competitor's. The `competitor` table stores only title/description/price/brand/url — there are no structured attributes to compare — so that comparison isn't yet feasible. The listing-completeness checklist (your product's field coverage) was folded into the **Optimize** tab, where it is directly actionable. Restore a dedicated gaps view once competitor attributes are modeled.
 
 ### Competitors (`/dashboard/competitors`)
 

@@ -13,11 +13,17 @@ export namespace PrePhase {
   export type Props = {
     children: ReactNode;
     onRun: () => void;
+    canRun: boolean;
     isRunning: boolean;
   };
 }
 
-export const PrePhase = ({ children, onRun, isRunning }: PrePhase.Props) => (
+export const PrePhase = ({
+  children,
+  onRun,
+  canRun,
+  isRunning,
+}: PrePhase.Props) => (
   <motion.div
     key="pre"
     className="flex flex-1 flex-col overflow-y-auto"
@@ -46,7 +52,7 @@ export const PrePhase = ({ children, onRun, isRunning }: PrePhase.Props) => (
           color="primary"
           type="button"
           onClick={onRun}
-          disabled={isRunning}
+          disabled={!canRun || isRunning}
         >
           Run Simulation
           {isRunning ? (

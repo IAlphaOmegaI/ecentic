@@ -35,11 +35,33 @@ export const formatProduct = (product: Product.Type): string => {
   lines.push(product.sku ? `SKU: ${product.sku}` : "SKU: MISSING");
   lines.push(product.url ? `URL: ${product.url}` : "URL: MISSING");
 
-  if (product.structuredData) {
-    lines.push(`Structured data: ${product.structuredData.slice(0, 600)}`);
-  }
+  lines.push(
+    product.structuredData && product.structuredData !== "null"
+      ? `Structured data (JSON-LD): ${product.structuredData.slice(0, 600)}`
+      : "Structured data (JSON-LD): MISSING",
+  );
 
   return lines.join("\n");
+};
+
+// Deterministic UCP / agent-readability score (0-100): how reliably an AI
+// shopping agent can parse and trust this listing. Structured JSON-LD dominates
+// — it's the UCP mechanism — with the core agent-readable fields on top.
+export const computeUcpScore = (product: Product.Type): number => {
+  const structured = (() => {
+    const parsed = resultify(
+      () => JSON.parse(product.structuredData ?? "null") as unknown,
+    );
+    return parsed.success && parsed.data ? 60 : 0;
+  })();
+
+  const fields =
+    (product.description ? 10 : 0) +
+    (product.price ? 10 : 0) +
+    (product.sku ? 10 : 0) +
+    (parseImageCount(product.images) > 0 ? 10 : 0);
+
+  return structured + fields;
 };
 
 export const formatCompetitor = (competitor: Competitor.Type): string => {

@@ -114,12 +114,8 @@ const ProductDetailContent = async ({
             </Button>
             <Button
               color="primary"
-              render={<Link href="/dashboard/products" />}
+              render={<Link href="/dashboard/optimize" />}
             >
-              <RadarIcon className="size-4" />
-              Run Scan
-            </Button>
-            <Button color="primary" render={<Link href="/dashboard/ucp" />}>
               Optimize
               <ArrowRightIcon className="size-4" />
             </Button>

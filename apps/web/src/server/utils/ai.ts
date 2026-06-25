@@ -25,7 +25,7 @@ const repairText: RepairTextFunction = async ({ text }) => {
   return stripped.slice(start, end + 1);
 };
 
-const providerOptions = {
+export const providerOptions = {
   gateway: {
     byok: {
       azure: [

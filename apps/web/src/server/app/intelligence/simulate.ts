@@ -1,17 +1,19 @@
 "use server";
 
 import { resultify } from "@zenncore/utils";
-import { eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
+import { after } from "next/server";
 import { z } from "zod";
 import { withAuthentication } from "@/server/utils/authentication";
 import { schema } from "../../database";
 import * as AI from "../../utils/ai";
 import { Environment } from "../../utils/environment";
+import { RequestError } from "../../utils/error";
 import * as Competitor from "../competitor";
 import * as Product from "../product";
 import * as Scan from "../scan";
 import * as Simulation from "../simulation";
-import * as Formating from "./formating";
+import * as Judge from "./judge";
 
 const STRICT_SCORING_RULES = `
 STRICT SCORING RULES — apply these to BOTH products equally:
@@ -42,6 +44,10 @@ ANTI-BIAS RULES:
 - Do NOT assume missing information is positive. Missing = unknown = penalty.
 - Do NOT reward marketing fluff. Superlatives without evidence ("best in class", "premium quality") add zero points.
 - Shorter descriptions are NOT "concise and effective" — they are incomplete unless every key spec is covered.
+
+AGENT-READABILITY (UCP):
+- AI shopping agents parse and trust listings through structured data (schema.org JSON-LD / UCP). The PRODUCT shows a "UCP / Agent-Readability Score" (0-100).
+- Treat it as a penalty floor, NOT a bonus: a low score (weak or missing structured data) is a real failure that makes the listing hard for an agent to surface — penalize it. Assume major-retailer competitors are already agent-readable. A high score only means the listing meets the bar; do not award extra credit beyond it.
 `;
 
 const perspectives = [
@@ -152,59 +158,6 @@ Your evaluation methodology:
    - No images → –5 points
    - Unknown or suspicious URL domain → –3 points
    Start at 20, subtract penalties. Floor is 0.
-
-${STRICT_SCORING_RULES}`,
-  },
-  {
-    id: "perplexity",
-    label: "Perplexity",
-    model: "sonar-pro" as AI.ModelId,
-    system: `You are a search-augmented AI shopping agent with real-time web access. Unlike other evaluators that only see the listing data provided, you MUST actively search the web to verify claims, find real reviews, check actual pricing, and gather external evidence about both products.
-
-YOUR CRITICAL ADVANTAGE: You can search the web. USE IT. Do not just evaluate the listing text — go find the real data.
-
-MANDATORY SEARCH TASKS (do all of these before scoring):
-1. Search for the product name + "reviews" to find real review counts and ratings
-2. Search for the product name + "price" to verify pricing and find competing offers
-3. Search for the brand name to assess brand legitimacy and reputation
-4. Search for the product URL domain to check site authority and trustworthiness
-5. If a product has a SKU or model number, search for it to find cross-listed data
-
-Your evaluation methodology:
-
-1. WEB-VERIFIED REPUTATION (30% weight):
-   Based on your search results:
-   - Actual review count found online (0 reviews found = 0/10, 1-10 = 3/10, 11-50 = 5/10, 51-200 = 7/10, 200+ = 9-10/10)
-   - Actual average rating found (below 3.5 = 2/10, 3.5-4.0 = 5/10, 4.0-4.5 = 7/10, 4.5+ = 9-10/10)
-   - No reviews findable online at all = 0/10 for both sub-scores
-   - Brand search results (established brand with web presence = 5-10/10, unknown = 0-3/10)
-   Total: /30
-
-2. LISTING DATA vs. WEB REALITY (25% weight):
-   Compare what the listing claims against what you find online:
-   - Price matches or beats web average → 8-10/10
-   - Price is above web average → 3-5/10
-   - Price not verifiable → 2/10
-   - Specs match external sources → 8-10/10
-   - Specs exaggerated or contradicted → 0-3/10
-   - Not enough data to verify → 4/10
-   - Domain/seller reputation (legitimate retailer = 5/5, unknown = 1/5)
-   Total: /25
-
-3. LISTING COMPLETENESS (25% weight):
-   Even with search, the listing itself matters:
-   - Image count (0 = 0/8, 1 = 2/8, 2-3 = 4/8, 4-5 = 6/8, 6+ = 8/8)
-   - Description quality (0-7 points based on depth and specificity)
-   - Structured data present (0-5 points)
-   - SKU/model for cross-referencing (0-5 points)
-   Total: /25
-
-4. COMPETITIVE CONTEXT (20% weight):
-   Based on your search, how does each product rank in its market?
-   - Is this a category leader or an unknown entrant? → 0-7 points
-   - Are there significantly better alternatives at the same price? → 0-7 points
-   - Would a search-based recommendation engine surface this product? → 0-6 points
-   Total: /20
 
 ${STRICT_SCORING_RULES}`,
   },
@@ -343,24 +296,8 @@ export const runScan = withAuthentication(async (context) => {
             const parsing = await resultify(() =>
               AI.generate({
                 model: perspective.model,
-                system: perspective.system,
-                prompt: `A consumer is choosing between these two products. Perform a strict, evidence-based audit of each listing.
-
---- PRODUCT ---
-${Formating.formatProduct(product)}
-
---- COMPETITOR ---
-${Formating.formatCompetitor(competitor)}
-
-INSTRUCTIONS:
-1. Score each product 0-100 using your evaluation methodology. Apply all penalties for missing data — do NOT skip them.
-2. Be harsh. Most real-world listings score 30-55. A score above 70 requires exceptional completeness (6+ images, reviews, full specs, clear brand, structured data).
-3. Missing data is a FAILURE, not neutral. Every "MISSING" field in the listing above should trigger the corresponding penalty from your scoring rubric.
-4. Do NOT favor either listing based on its label ("PRODUCT" vs "COMPETITOR"). Evaluate purely on evidence.
-5. Pick a winner: use "product" if the PRODUCT listing wins, or "competitor" if the COMPETITOR listing wins.
-6. In your reasoning, cite the specific data points (or missing data points) that drove the decision. Be concrete — reference actual field values or their absence.
-7. In keyFactors, list the top 3-5 specific attributes or gaps that determined the outcome (e.g., "PRODUCT has 0 images vs COMPETITOR has 5", "COMPETITOR missing price", "Neither listing has reviews").
-8. Output ONLY the structured fields defined by the schema. Put all narrative analysis inside the "reasoning" field — do not emit any prose, markdown, or citations outside the object.`,
+                system: Judge.JUDGE_SYSTEM,
+                prompt: Judge.buildJudgePrompt(product, competitor),
                 schema: z.object({
                   winner: z
                     .enum(["product", "competitor"])
@@ -659,6 +596,81 @@ INSTRUCTIONS:
     },
   };
 }, "Simulation.runScan");
+
+// Durable counterpart to runScan: enqueues a scan and lets the background drain
+// (BackgroundScan.runPendingScans) run it to completion, so it finishes even if
+// the user leaves the page. The client polls Scan.getProgress for live state.
+export const enqueueScan = withAuthentication(async (context) => {
+  const user = context.session.user.id;
+
+  // idempotent — reuse an already in-flight scan instead of stacking duplicates.
+  const existing = await Scan.find(Environment.SERVER, {
+    where: and(
+      eq(schema.scan.userId, user),
+      inArray(schema.scan.status, ["pending", "running"]),
+    ),
+    orderBy: [{ column: schema.scan.createdAt, direction: "desc" }],
+    limit: 1,
+  });
+  if (existing.success && existing.data[0])
+    return {
+      success: true as const,
+      data: { scanId: existing.data[0].id },
+    };
+
+  const [products, competitors] = await Promise.all([
+    Product.find(Environment.SERVER, {
+      where: eq(schema.product.userId, user),
+    }),
+    Competitor.find(Environment.SERVER, {
+      where: eq(schema.competitor.userId, user),
+    }),
+  ]);
+  if (!products.success) return products;
+  if (!competitors.success) return competitors;
+
+  const selected = competitors.data.filter((record) => record.selected);
+  if (products.data.length === 0)
+    return {
+      success: false as const,
+      error: new RequestError("No products found"),
+    };
+  if (selected.length === 0)
+    return {
+      success: false as const,
+      error: new RequestError("No competitors selected"),
+    };
+
+  const totalSimulations =
+    products.data.length * selected.length * perspectives.length;
+
+  const scan = await Scan.create(Environment.SERVER, {
+    userId: user,
+    status: "pending",
+    totalSimulations,
+    completedSimulations: 0,
+    wins: 0,
+    losses: 0,
+  });
+  if (!scan.success) return scan;
+
+  // Kick the drain in a separate invocation so the scan starts right away
+  // instead of waiting for the next cron tick. Best-effort: if it fails (or the
+  // env is misconfigured), the every-minute cron is the backstop.
+  after(async () => {
+    await resultify(() =>
+      fetch(`${process.env.BETTER_AUTH_BASE_URL ?? ""}/api/cron/drain`, {
+        headers: { authorization: `Bearer ${process.env.CRON_SECRET ?? ""}` },
+        cache: "no-store",
+      }),
+    );
+  });
+
+  return {
+    success: true as const,
+    data: { scanId: scan.data.id },
+  };
+}, "Simulation.enqueueScan");
 
 export type TopFinding = {
   name: string;

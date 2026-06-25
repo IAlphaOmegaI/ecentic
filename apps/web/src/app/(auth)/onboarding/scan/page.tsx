@@ -30,11 +30,6 @@ const models = [
     description: "Price-quality ratio",
     logo: "/images/gemini.svg",
   },
-  {
-    model: "Perplexity",
-    description: "Search analysis",
-    logo: "/images/perplexity.svg",
-  },
 ] as const;
 
 export default async () => {
@@ -46,7 +41,7 @@ export default async () => {
   ]);
 
   const selected = competitors.filter((record) => record.selected);
-  const simulations = products.length * selected.length * 4;
+  const simulations = products.length * selected.length * 3;
 
   const estimation = (() => {
     switch (true) {
@@ -89,7 +84,11 @@ export default async () => {
   ] as const;
 
   return (
-    <ScanRunner simulations={simulations}>
+    <ScanRunner
+      simulations={simulations}
+      productCount={products.length}
+      selectedCompetitorCount={selected.length}
+    >
       <Motion.Stagger className="flex h-full flex-col overflow-y-auto border-accent-foreground border-b">
         <Motion.Item className="w-full border-accent-foreground border-b px-8">
           <div className="relative flex flex-col border-accent-foreground border-x p-6">
@@ -99,14 +98,14 @@ export default async () => {
               See who's winning.
             </h2>
             <p className="font-light text-2xl text-foreground-dimmed">
-              GPT-4, Claude, Gemini & Perplexity will simulate real shopping
-              queries across your products and competitors.
+              GPT-4, Claude & Gemini will simulate real shopping queries across
+              your products and competitors.
             </p>
           </div>
         </Motion.Item>
 
         <Motion.Item className="border-accent-foreground border-b px-8">
-          <div className="relative grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-x">
+          <div className="relative grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-x">
             <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
             {models.map((model) => (

@@ -16,6 +16,10 @@ import * as Simulation from "./simulation";
 export const { get, paginate, create, update, destroy, exists, count, find } =
   repository(schema.product);
 
+const stores = repository(schema.store);
+
+const PUBLISHABLE_PLATFORMS = new Set(["shopify", "woocommerce"]);
+
 export type Type = Document<typeof schema.product>;
 
 export const skimForCurrentUser = withAuthentication(async (context) => {
@@ -110,7 +114,6 @@ export const gatherIntelligence = dedupe(
           gpt4: computeModelWinRate(productSimulations, "gpt4"),
           claude: computeModelWinRate(productSimulations, "claude"),
           gemini: computeModelWinRate(productSimulations, "gemini"),
-          perplexity: computeModelWinRate(productSimulations, "perplexity"),
         },
         simulations: total,
         quality: computeDataQuality(product),
@@ -192,7 +195,6 @@ const Model = {
   GPT4: ["GPT-4", "gpt4"],
   Claude: ["Claude", "claude"],
   GEMINI: ["Gemini", "gemini"],
-  Perplexity: ["Perplexity", "perplexity"],
 } as const;
 
 export const getDetail = withAuthentication(
@@ -205,6 +207,15 @@ export const getDetail = withAuthentication(
 
     if (product.data.userId !== context.session.user.id)
       return { success: false, error: new Error("Not authorized") };
+
+    const store = product.data.storeId
+      ? await stores.get(Environment.SERVER, product.data.storeId)
+      : null;
+    const canPublish = Boolean(
+      store?.success &&
+        store.data &&
+        PUBLISHABLE_PLATFORMS.has(store.data.platform),
+    );
 
     const simulations = await Simulation.getForProducts(Environment.SERVER, {
       products: [id],
@@ -225,17 +236,13 @@ export const getDetail = withAuthentication(
       results.data.map((competitor) => [competitor.id, competitor]),
     );
 
-    const keys = Object.keys(Model);
-
-    const models = keys.map((key) => {
+    const models = Object.values(Model).map(([label, id]) => {
       const modelSimulations = simulations.data.filter(
-        (simulation) => simulation.model === key,
+        (simulation) => simulation.model === id,
       );
       const wins = modelSimulations.filter(
         (simulation) => simulation.winner === "product",
       ).length;
-
-      const [label, id] = Model[key as keyof typeof Model];
 
       return {
         model: id,
@@ -295,6 +302,7 @@ export const getDetail = withAuthentication(
           quality: computeDataQuality(product.data),
         },
         winRate,
+        canPublish,
         models,
         competitors,
         simulations: enriched,
