@@ -46,7 +46,7 @@ const TYPE_TAG_CLASSES =
   "rounded bg-background-dimmed px-1.5 py-0.5 font-semibold text-[10px] text-foreground-dimmed uppercase tracking-[0.06em]";
 
 const SUGGESTION_CARD_CLASSES =
-  "rounded-lg border border-accent-foreground bg-background-rich p-4 transition-[border-color,box-shadow] hover:border-primary/30 hover:shadow-sm";
+  "bg-background-rich p-5 transition-colors hover:bg-background";
 
 const SEVERITY_CLASSES = {
   high: "rounded bg-error/10 px-1.5 py-0.5 font-semibold text-[10px] text-error uppercase tracking-[0.06em]",
@@ -279,18 +279,16 @@ const DiagnosticsPanel = ({
         to listing text optimizations.
       </p>
     </div>
-    <div className="max-h-64 overflow-y-auto">
-      <div className="space-y-px bg-accent-foreground">
-        {insights.map((insight) => (
-          <InsightCard
-            key={`${insight.productId}-${insight.category}-${insight.message}`}
-            insight={insight}
-            productTitle={
-              products[insight.productId]?.title ?? "Unknown product"
-            }
-          />
-        ))}
-      </div>
+    <div className="space-y-px bg-accent-foreground">
+      {insights.map((insight) => (
+        <InsightCard
+          key={`${insight.productId}-${insight.category}-${insight.message}`}
+          insight={insight}
+          productTitle={
+            products[insight.productId]?.title ?? "Unknown product"
+          }
+        />
+      ))}
     </div>
   </div>
 );
@@ -431,7 +429,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
               {pending.length} pending suggestion
               {pending.length === 1 ? "" : "s"}
             </StatusPill>
-            <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
+            <h1 className="mt-3 font-bold text-3xl text-foreground-rich tracking-[-0.02em]">
               Optimization Center
             </h1>
             <p className="mt-1 text-foreground-dimmed text-sm">
@@ -475,6 +473,8 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
         <div className="relative mx-8 bg-background-rich">
           <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
           <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
           <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-3">
             <StatCard
               label="Low win-rate products"
@@ -530,18 +530,18 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
           </div>
 
           <Tabs defaultValue="pending">
-            <TabsList className="w-full border-0">
-              <TabsIndicator className="h-full" />
-              <Tab value="pending" className="flex-1">
+            <TabsList className="h-10 w-full rounded-md border-0 bg-background-dimmed p-1">
+              <TabsIndicator className="h-full rounded bg-primary" />
+              <Tab value="pending" className="flex-1 text-foreground-dimmed data-selected:text-background-rich">
                 Pending{" "}
                 <span className="ml-1.5 bg-current/15 px-1.5 py-0.5 font-medium text-sm tabular-nums">
                   {pending.length}
                 </span>
               </Tab>
-              <Tab value="published" className="flex-1">
+              <Tab value="published" className="flex-1 text-foreground-dimmed data-selected:text-background-rich">
                 Published
               </Tab>
-              <Tab value="dismissed" className="flex-1">
+              <Tab value="dismissed" className="flex-1 text-foreground-dimmed data-selected:text-background-rich">
                 Dismissed
               </Tab>
             </TabsList>
@@ -553,7 +553,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
                   description="Products from Shopify or WooCommerce with simulation win rate under 55% appear here. Run a scan, then approve to push AI-improved titles and descriptions to your store."
                 />
               ) : (
-                <div className="flex flex-col gap-3 border-accent-foreground border-t p-4">
+                <div className="space-y-px border-accent-foreground border-t bg-accent-foreground">
                   {pending.map((item) => (
                     <PendingCard
                       key={item.product.id}
@@ -576,7 +576,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
                   description="Approved changes are recorded here with estimated win-rate impact."
                 />
               ) : (
-                <div className="flex flex-col gap-3 border-accent-foreground border-t p-4">
+                <div className="space-y-px border-accent-foreground border-t bg-accent-foreground">
                   {published.map((record) => (
                     <PublishedCard
                       key={record.id}
@@ -594,7 +594,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
               {dismissed.length === 0 ? (
                 <EmptyState title="Nothing dismissed" />
               ) : (
-                <div className="flex flex-col gap-3 border-accent-foreground border-t p-4">
+                <div className="space-y-px border-accent-foreground border-t bg-accent-foreground">
                   {dismissed.map((record) => (
                     <DismissedCard
                       key={record.id}
