@@ -11,11 +11,10 @@ export default createTsdownConfig([
     entry: { "hooks/index": "./src/utils/hooks/index.ts" },
     outputOptions: { preserveModules: true, preserveModulesRoot: "src/utils" },
   },
-  // {
-  //   entry: {
-  //     "helpers/index": "./src/utils/helpers/index.ts",
-  //   },
-  // },
+  {
+    entry: { "types/index": "./src/utils/types/index.ts" },
+    outputOptions: { preserveModules: true, preserveModulesRoot: "src/utils" },
+  },
   // {
   //   entry: {
   //     "types/index": "./src/utils/types/index.ts",

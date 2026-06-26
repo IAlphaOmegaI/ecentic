@@ -88,7 +88,7 @@ export const CompetitorList = ({
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <Avatar className="size-9 rounded-none bg-primary/10">
+                    <Avatar className="aspect-square size-9 min-w-9 shrink-0 rounded-none bg-primary/10">
                       <AvatarImage
                         src={
                           record.image ??
@@ -98,7 +98,7 @@ export const CompetitorList = ({
                         alt={record.title}
                         className="object-contain"
                       />
-                      <AvatarFallback className="relative">
+                      <AvatarFallback className="relative size-full min-h-9 min-w-9">
                         <Image src="/images/fallback.png" alt="Fallback" fill />
                       </AvatarFallback>
                     </Avatar>

@@ -88,7 +88,12 @@
       "Bash(awk '/export const ContextMenuPopup/,/^};?$/' context-menu.tsx)",
       "Bash(awk '/export const ContextMenuItem /,/^};?$/' context-menu.tsx)",
       "Bash(./.ds-sync/node_modules/.bin/tailwindcss -i .design-sync/tailwind-input.css -o packages/web/dist/ds-tailwind.css)",
-      "Bash(grep -n *)"
+      "Bash(grep -n *)",
+      "Bash(sed 's/=$//')",
+      "Bash(bun scripts/_diagnose-detect.ts)",
+      "Bash(grep -rl \"elementStream\\\\|output: \\\\\"array\\\\\"\\\\|output: 'array'\" node_modules/ai/dist/index.d.ts)",
+      "Bash(cat apps/web/vercel.json)",
+      "Bash(grep -rn \"detect\" apps/web/vercel.json)"
     ]
   }
 }

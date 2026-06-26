@@ -1,8 +1,7 @@
 "use server";
 
-import { resultify, unique } from "@zenncore/utils";
-import { and, eq, gt } from "drizzle-orm";
-import { after } from "next/server";
+import { unique } from "@zenncore/utils";
+import { eq } from "drizzle-orm";
 import { cache as dedupe } from "react";
 import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
@@ -10,6 +9,7 @@ import { Environment } from "../utils/environment";
 import { NotFoundError, RequestError, UnauthorizedError } from "../utils/error";
 import type { Document } from "../utils/repository";
 import { repository } from "../utils/repository";
+import * as Detection from "./intelligence/detect";
 import * as Scan from "./scan";
 import * as Simulation from "./simulation";
 
@@ -60,7 +60,11 @@ export const toggleSelection = withAuthentication(
   "Competitor.toggleSelection",
 );
 
-export const detectCompetitors = withAuthentication(
+// Stream competitor detection back to the client. Runs in one request — the
+// model names real competitors and each is persisted and pushed the moment it
+// lands, so the UI fills in live. Returns a streamable the client reads with
+// readStreamableValue; see Detection.stream for the engine and event shape.
+export const streamDetection = withAuthentication(
   async (context, { products }: { products: string[] }) => {
     if (products.length === 0)
       return {
@@ -68,42 +72,12 @@ export const detectCompetitors = withAuthentication(
         error: new RequestError("No products selected"),
       };
 
-    const user = context.session.user.id;
-    const since = new Date();
-
-    // Run detection detached from this request (via the /api/detect drain) so it
-    // completes even if the user navigates away, and persists atomically. The
-    // client polls detectedSince for the result.
-    after(async () => {
-      await resultify(() =>
-        fetch(`${process.env.BETTER_AUTH_BASE_URL ?? ""}/api/detect`, {
-          method: "POST",
-          headers: {
-            authorization: `Bearer ${process.env.CRON_SECRET ?? ""}`,
-            "content-type": "application/json",
-          },
-          body: JSON.stringify({ user, products }),
-          cache: "no-store",
-        }),
-      );
-    });
-
-    return { success: true as const, data: { since } };
+    return {
+      success: true as const,
+      data: Detection.stream({ user: context.session.user.id, products }),
+    };
   },
-  "Competitor.detectCompetitors",
-);
-
-export const detectedSince = withAuthentication(
-  async (context, { since }: { since: Date }) => {
-    return find(Environment.SERVER, {
-      where: and(
-        eq(schema.competitor.userId, context.session.user.id),
-        gt(schema.competitor.createdAt, since),
-      ),
-      orderBy: [{ column: schema.competitor.createdAt, direction: "desc" }],
-    });
-  },
-  "Competitor.detectedSince",
+  "Competitor.streamDetection",
 );
 
 const aggregateBrands = (
