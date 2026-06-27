@@ -515,11 +515,11 @@ export const UcpManager = ({
 
       {/* Tabs */}
       <Tabs defaultValue="profile">
-        <TabsList>
-          <TabsIndicator />
-          <Tab value="profile">Merchant Profile</Tab>
-          <Tab value="products">Product Structured Data</Tab>
-          <Tab value="validate">Validate</Tab>
+        <TabsList className="h-10 rounded-md border-0 bg-background-dimmed p-1">
+          <TabsIndicator className="h-full rounded bg-primary" />
+          <Tab value="profile" className="flex-1 text-foreground-dimmed data-selected:text-background-rich">Merchant Profile</Tab>
+          <Tab value="products" className="flex-1 text-foreground-dimmed data-selected:text-background-rich">Product Structured Data</Tab>
+          <Tab value="validate" className="flex-1 text-foreground-dimmed data-selected:text-background-rich">Validate</Tab>
         </TabsList>
 
         {/* Profile tab */}

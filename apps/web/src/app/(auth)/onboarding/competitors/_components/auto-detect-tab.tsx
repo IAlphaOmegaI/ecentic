@@ -1,5 +1,6 @@
 "use client";
 
+import { readStreamableValue } from "@ai-sdk/rsc";
 import { RadarIcon } from "@zenncore/icons";
 import { cn, resultify, unwrapResult } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
@@ -18,12 +19,6 @@ type LogEntry = {
   elapsed: number;
   type: "info" | "success" | "error";
 };
-
-const POLL_INTERVAL = 1200;
-// Matches /api/detect maxDuration on Pro; quiescence usually finishes well before.
-const DETECTION_TIMEOUT = 120_000;
-// Stop once verified competitors have stopped arriving for this long.
-const QUIESCENCE = 5000;
 
 export namespace AutoDetectTab {
   export type Props = {
@@ -87,46 +82,34 @@ export const AutoDetectTab = ({
       setElapsed(Date.now() - start.current);
     }, 100);
 
-    addLog({
-      text: `Reading ${products.length} product${products.length === 1 ? "" : "s"} from your catalog`,
-      type: "info",
-    });
-    addLog({
-      text: "Querying the intelligence model and verifying live listings…",
-      type: "info",
-    });
-
-    // Detection runs server-side (survives this tab closing) and persists each
-    // competitor the moment it verifies it. We poll for those rows and stream
-    // them in as they land, finishing once results settle (quiescence) or we
-    // hit the timeout.
+    // Detection runs in one request and streams each competitor back the moment
+    // the model names and persists it, so the list fills in live. keepMounted on
+    // this tab's panel keeps the loop alive if the user switches tabs mid-run.
     const detection = await resultify(async () => {
-      const { since } = await unwrapResult(
-        Competitor.detectCompetitors({ products }),
+      const { output } = await unwrapResult(
+        Competitor.streamDetection({ products }),
       );
 
-      const seen = new Set<string>();
       const collected: Competitor.Type[] = [];
-      const quiet = { since: Date.now() };
-      const deadline = Date.now() + DETECTION_TIMEOUT;
+      for await (const event of readStreamableValue(output)) {
+        if (!event) continue;
 
-      while (Date.now() < deadline) {
-        await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL));
-
-        const found = await Competitor.detectedSince({ since });
-        if (!found.success) continue;
-
-        const fresh = found.data.filter((record) => !seen.has(record.id));
-        for (const record of fresh) {
-          seen.add(record.id);
-          collected.push(record);
-          addLog({ text: `Verified · ${record.title}`, type: "success" });
+        switch (event.kind) {
+          case "status":
+            addLog({ text: event.message, type: "info" });
+            break;
+          case "competitor":
+            collected.push(event.competitor);
+            addLog({
+              text: `Found · ${event.competitor.title}`,
+              type: "success",
+            });
+            break;
+          case "error":
+            throw new Error(event.message);
+          case "done":
+            break;
         }
-        if (fresh.length > 0) quiet.since = Date.now();
-
-        // competitors have stopped arriving — detection has settled.
-        if (collected.length > 0 && Date.now() - quiet.since > QUIESCENCE)
-          return collected;
       }
       return collected;
     });

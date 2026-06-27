@@ -334,18 +334,18 @@ export const ProductDetail = ({ data }: ProductDetail.Props) => {
 
   return (
     <Tabs defaultValue="overview">
-      <TabsList className="w-full border-0 rounded-none">
-        <TabsIndicator className="h-full" />
-        <Tab value="overview" className="flex-1">
+      <TabsList className="h-10 w-full rounded-md border-0 bg-background-dimmed p-1">
+        <TabsIndicator className="h-full rounded bg-primary" />
+        <Tab value="overview" className="flex-1 text-foreground-dimmed data-selected:text-background-rich">
           Win Rate
         </Tab>
-        <Tab value="replay" className="flex-1">
+        <Tab value="replay" className="flex-1 text-foreground-dimmed data-selected:text-background-rich">
           Agent Replay
         </Tab>
-        <Tab value="battlecard" className="flex-1">
+        <Tab value="battlecard" className="flex-1 text-foreground-dimmed data-selected:text-background-rich">
           Battlecard
         </Tab>
-        <Tab value="optimize" className="flex-1">
+        <Tab value="optimize" className="flex-1 text-foreground-dimmed data-selected:text-background-rich">
           Optimize
         </Tab>
       </TabsList>
@@ -879,60 +879,59 @@ const BattlecardTab = ({
 
           return (
             <div key={competitor.id} className="bg-background-rich">
-              <div className="grid grid-cols-[1fr_auto] items-start gap-4 border-accent-foreground border-b bg-background-rich p-4">
+              <div className="flex items-center justify-between gap-4 border-accent-foreground border-b px-5 py-4">
                 <div className="min-w-0">
-                  <p className="font-medium text-foreground">
+                  <p className="font-semibold text-foreground">
                     {competitor.title}
                   </p>
-                  <p className="mt-0.5 font-light text-foreground-dimmed">
+                  <p className="mt-0.5 text-foreground-dimmed text-sm">
                     vs. {product.title}
                   </p>
-                  <div className="mt-4 flex w-full items-center gap-2">
-                    <div className="h-1 flex-1 rounded-full bg-accent-foreground">
-                      <div
-                        className={cn(
-                          "h-full rounded-full",
-                          barColor(competitor.rate),
-                        )}
-                        style={{ width: `${competitor.rate}%` }}
-                      />
-                    </div>
-                    <span className="text-foreground-dimmed text-xs tabular-nums">
-                      {wins.length} W · {losses.length} L
-                    </span>
-                  </div>
                 </div>
-                <div className="text-right">
+                <div className="flex shrink-0 flex-col items-end gap-1">
                   <p
                     className={cn(
                       "font-bold text-3xl tabular-nums leading-none tracking-[-0.02em]",
                       rateColor(competitor.rate),
                     )}
                   >
-                    {competitor.rate}{" "}
-                    <span className="font-medium text-base text-foreground-dimmed">
+                    {competitor.rate}
+                    <span className="ml-0.5 font-medium text-lg text-foreground-dimmed">
                       %
                     </span>
                   </p>
-                  <p className="mt-1 text-foreground-dimmed text-xs">
+                  <p className="text-foreground-dimmed text-xs">
                     {total} sim{total !== 1 ? "s" : ""}
                   </p>
                 </div>
               </div>
 
+              <div className="border-accent-foreground border-b px-5 py-3">
+                <div className="flex items-center gap-3">
+                  <div className="h-2 flex-1 overflow-hidden rounded-full bg-accent-foreground">
+                    <div
+                      className={cn("h-full rounded-full", barColor(competitor.rate))}
+                      style={{ width: `${competitor.rate}%` }}
+                    />
+                  </div>
+                  <span className="shrink-0 text-foreground-dimmed text-xs tabular-nums">
+                    {wins.length} W · {losses.length} L
+                  </span>
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 divide-x divide-accent-foreground">
-                <div className="p-4">
-                  <div className="mb-2 flex items-center gap-2">
-                    <CheckIcon className="size-6 text-success" />
-                    <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+                <div className="p-5">
+                  <div className="mb-3 flex items-center gap-2">
+                    <span className="size-2 shrink-0 rounded-full bg-success" />
+                    <span className="font-semibold text-success text-xs uppercase tracking-[0.08em]">
                       Won · {wins.length}
                     </span>
                   </div>
                   {wins.length > 0 ? (
                     <div className="space-y-2">
                       {wins.map((simulation) => (
-                        <p key={simulation.id} className="text-foreground">
-                          -{" "}
+                        <p key={simulation.id} className="text-foreground-dimmed text-sm leading-relaxed">
                           {simulation.reasoning
                             ? simulation.reasoning.slice(0, 160) +
                               (simulation.reasoning.length > 160 ? "…" : "")
@@ -941,23 +940,22 @@ const BattlecardTab = ({
                       ))}
                     </div>
                   ) : (
-                    <p className="font-light text-foreground-dimmed text-xs italic">
+                    <p className="text-foreground-dimmed text-sm">
                       No wins recorded
                     </p>
                   )}
                 </div>
-                <div className="p-4">
-                  <div className="mb-2 flex items-center gap-2">
-                    <XIcon className="size-6 text-error" />
-                    <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+                <div className="p-5">
+                  <div className="mb-3 flex items-center gap-2">
+                    <span className="size-2 shrink-0 rounded-full bg-error" />
+                    <span className="font-semibold text-error text-xs uppercase tracking-[0.08em]">
                       Lost · {losses.length}
                     </span>
                   </div>
                   {losses.length > 0 ? (
                     <div className="space-y-2">
                       {losses.map((simulation) => (
-                        <p key={simulation.id} className="text-foreground">
-                          -{" "}
+                        <p key={simulation.id} className="text-foreground-dimmed text-sm leading-relaxed">
                           {simulation.reasoning
                             ? simulation.reasoning.slice(0, 160) +
                               (simulation.reasoning.length > 160 ? "…" : "")
@@ -966,7 +964,7 @@ const BattlecardTab = ({
                       ))}
                     </div>
                   ) : (
-                    <p className="font-light text-foreground-dimmed italic">
+                    <p className="text-foreground-dimmed text-sm">
                       No losses recorded
                     </p>
                   )}
