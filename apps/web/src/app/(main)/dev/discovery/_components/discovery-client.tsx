@@ -1,6 +1,6 @@
 "use client";
 
-import { LoaderIcon } from "@zenncore/icons";
+import { CheckIcon, CopyIcon, LoaderIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
@@ -10,7 +10,7 @@ import {
   type GenericForm,
   InferredForm,
 } from "@zenncore/web/components/inferred-form";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { z } from "zod";
 import * as Discovery from "@/server/app/intelligence/discovery";
 import {
@@ -217,11 +217,90 @@ const QuerySection = ({
   </section>
 );
 
+// Serialize a run into a plain-markdown report that can be pasted into another
+// AI model. Mirrors the on-screen layout: target verdict first, then the model's
+// ranked store list, with the target store flagged inline.
+const toMarkdown = (result: Discovery.DiscoveryRunResult): string => {
+  const modelNames =
+    result.queries[0]?.models.map((model) => model.modelLabel).join(", ") ?? "";
+
+  const lines: string[] = [
+    "# AI Discovery Report",
+    "",
+    `**Target store:** ${result.targetStore}`,
+    `**Models queried:** ${modelNames}`,
+    "",
+  ];
+
+  for (const query of result.queries) {
+    lines.push(`## Query: "${query.query}"`, "");
+
+    for (const model of query.models) {
+      if (model.status === "error") {
+        lines.push(
+          `### ${model.modelLabel} — failed`,
+          "",
+          `> ${model.error ?? "This model could not be reached."}`,
+          "",
+        );
+        continue;
+      }
+
+      const verdict =
+        model.targetRank === null
+          ? "target not suggested"
+          : `target ranked #${model.targetRank} of ${model.stores.length}`;
+      lines.push(`### ${model.modelLabel} — ${verdict}`, "");
+
+      if (model.targetReason) {
+        const label = model.targetIncluded
+          ? "Why it ranked here"
+          : "Why it was left out";
+        lines.push(`**${label}:** ${model.targetReason}`, "");
+      }
+
+      if (model.stores.length > 0) {
+        lines.push("Recommended stores:");
+        model.stores.forEach((store, index) => {
+          const name = store.isTarget ? `${store.name} (TARGET)` : store.name;
+          const domain = store.domain ? ` — ${store.domain}` : "";
+          lines.push(`${index + 1}. ${name}${domain}: ${store.reason}`);
+        });
+        lines.push("");
+      }
+    }
+  }
+
+  return `${lines.join("\n").trim()}\n`;
+};
+
 export const DiscoveryClient = () => {
   const [result, setResult] = useState<Discovery.DiscoveryRunResult | null>(
     null,
   );
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [showMarkdown, setShowMarkdown] = useState(false);
+
+  const markdown = useMemo(() => (result ? toMarkdown(result) : ""), [result]);
+
+  const handleCopy = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(markdown);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setShowMarkdown(true);
+      setError(
+        "Couldn’t copy automatically — select the markdown below instead.",
+      );
+    }
+  }, [markdown]);
+
+  const toggleMarkdown = useCallback(
+    () => setShowMarkdown((value) => !value),
+    [],
+  );
 
   const [run, isRunning] = useAsyncAction(
     async ({ targetStore, queries }: FormEntries<typeof formConfig>) => {
@@ -310,16 +389,53 @@ export const DiscoveryClient = () => {
               );
             default:
               return (
-                <div className="space-y-8">
-                  <div className="flex items-center gap-2">
-                    <SectionKicker>Target store</SectionKicker>
-                    <span className="font-mono font-semibold text-primary text-sm">
-                      {result.targetStore}
-                    </span>
+                <div className="space-y-6">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <SectionKicker>Target store</SectionKicker>
+                      <span className="font-mono font-semibold text-primary text-sm">
+                        {result.targetStore}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        className="text-xs"
+                        onClick={handleCopy}
+                        type="button"
+                        variant="outline"
+                      >
+                        {copied ? (
+                          <CheckIcon className="size-3.5" />
+                        ) : (
+                          <CopyIcon className="size-3.5" />
+                        )}
+                        {copied ? "Copied" : "Copy as Markdown"}
+                      </Button>
+                      <Button
+                        className="text-xs"
+                        onClick={toggleMarkdown}
+                        type="button"
+                        variant="ghost"
+                      >
+                        {showMarkdown ? "Hide markdown" : "View markdown"}
+                      </Button>
+                    </div>
                   </div>
-                  {result.queries.map((query) => (
-                    <QuerySection key={query.query} result={query} />
-                  ))}
+
+                  {showMarkdown && (
+                    <textarea
+                      aria-label="Discovery results as markdown"
+                      className="h-72 w-full resize-y rounded-lg border border-accent-foreground bg-background-dimmed p-3 font-mono text-foreground/80 text-xs"
+                      readOnly
+                      value={markdown}
+                    />
+                  )}
+
+                  <div className="space-y-8">
+                    {result.queries.map((query) => (
+                      <QuerySection key={query.query} result={query} />
+                    ))}
+                  </div>
                 </div>
               );
           }
