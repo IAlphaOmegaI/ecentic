@@ -85,18 +85,18 @@ export const GET = async () => {
               ],
             },
           ],
-          "dev.shopify.catalog.global": [
-            {
-              version: "2026-04-08",
-              spec: "https://shopify.dev/docs/agents/catalog/global-catalog",
-              schema:
-                "https://shopify.dev/ucp/schemas/2026-04-08/shopify_catalog_global.json",
-              extends: [
-                "dev.ucp.shopping.catalog.lookup",
-                "dev.ucp.shopping.catalog.search",
-              ],
-            },
-          ],
+          // "dev.shopify.catalog.global": [
+          //   {
+          //     version: "2026-04-08",
+          //     spec: "https://shopify.dev/docs/agents/catalog/global-catalog",
+          //     schema:
+          //       "https://shopify.dev/ucp/schemas/2026-04-08/shopify_catalog_global.json",
+          //     extends: [
+          //       "dev.ucp.shopping.catalog.lookup",
+          //       "dev.ucp.shopping.catalog.search",
+          //     ],
+          //   },
+          // ],
         },
         payment_handlers: {},
       },
