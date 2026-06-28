@@ -84,7 +84,7 @@ export const generateJson = withAuthentication(async (context) => {
     .join("\n");
 
   const ucpData = await generate({
-    system:
+    instructions:
       "You are a structured data expert. Generate a valid Universal Commerce Protocol (UCP) JSON for a merchant profile. The UCP is served at /.well-known/ucp and helps AI shopping agents understand a merchant's identity, policies, and catalog.",
     prompt: `Generate a UCP JSON for this merchant:
 
@@ -155,7 +155,7 @@ export const generateProductStructuredData = withAuthentication(
       return { success: false as const, error: new Error("Unauthorized") };
 
     const structured = await generate({
-      system:
+      instructions:
         "You are a structured data expert. Generate valid schema.org Product JSON-LD for an e-commerce product. This JSON helps AI shopping agents understand and recommend the product.",
       prompt: `Generate schema.org Product structured data for:
 Title: ${product.data.title}
@@ -210,7 +210,7 @@ export const generateAllProductStructuredData = withAuthentication(
       products.data.map(async (product) => {
         const structured = await resultify(() =>
           generate({
-            system:
+            instructions:
               "You are a structured data expert. Generate valid schema.org Product JSON-LD for an e-commerce product.",
             prompt: `Generate schema.org Product structured data for:
 Title: ${product.title}

@@ -157,7 +157,7 @@ const runPerspective = async (
   const generation = await resultify(() =>
     AI.generate({
       model: perspective.model,
-      system: DISCOVERY_SYSTEM,
+      instructions: DISCOVERY_SYSTEM,
       prompt: buildPrompt(targetStore, query),
       schema: suggestionSchema,
       schemaName: "StoreDiscovery",

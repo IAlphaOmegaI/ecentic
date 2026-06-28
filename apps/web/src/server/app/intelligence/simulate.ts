@@ -55,7 +55,7 @@ const perspectives = [
     id: "gpt4",
     label: "GPT-4",
     model: "gpt-4o" as AI.ModelId,
-    system: `You are a rigorous AI shopping agent performing a technical listing audit. You compare two product listings and recommend the one with stronger verifiable evidence. You are deliberately harsh — you represent a skeptical buyer who trusts data, not marketing.
+    instructions: `You are a rigorous AI shopping agent performing a technical listing audit. You compare two product listings and recommend the one with stronger verifiable evidence. You are deliberately harsh — you represent a skeptical buyer who trusts data, not marketing.
 
 Your evaluation methodology:
 
@@ -83,7 +83,7 @@ ${STRICT_SCORING_RULES}`,
     id: "claude",
     label: "Claude",
     model: "claude-sonnet-4-20250514" as AI.ModelId,
-    system: `You are a critical AI shopping analyst evaluating product listings for recommendation quality. You assess how well a listing enables an informed purchase decision. You are deliberately skeptical — vague claims and missing data are failures, not neutral.
+    instructions: `You are a critical AI shopping analyst evaluating product listings for recommendation quality. You assess how well a listing enables an informed purchase decision. You are deliberately skeptical — vague claims and missing data are failures, not neutral.
 
 Your evaluation methodology:
 
@@ -125,7 +125,7 @@ ${STRICT_SCORING_RULES}`,
     id: "gemini",
     label: "Gemini",
     model: "gemini-2.0-flash" as AI.ModelId,
-    system: `You are a value-optimization AI agent that evaluates product listings with extreme rigor. You determine which listing delivers more verifiable value per dollar. You punish vagueness and reward concrete, measurable data.
+    instructions: `You are a value-optimization AI agent that evaluates product listings with extreme rigor. You determine which listing delivers more verifiable value per dollar. You punish vagueness and reward concrete, measurable data.
 
 Your evaluation methodology:
 
@@ -296,7 +296,7 @@ export const runScan = withAuthentication(async (context) => {
             const parsing = await resultify(() =>
               AI.generate({
                 model: perspective.model,
-                system: Judge.JUDGE_SYSTEM,
+                instructions: Judge.JUDGE_SYSTEM,
                 prompt: Judge.buildJudgePrompt(product, competitor),
                 schema: z.object({
                   winner: z
@@ -517,7 +517,7 @@ export const runScan = withAuthentication(async (context) => {
         if (!worst) return null;
 
         return AI.generate({
-          system:
+          instructions:
             "You are an e-commerce optimization analyst. Given the reasons a product lost in AI shopping simulations, identify the specific missing attributes or weaknesses that caused the most losses. Be concise and actionable. Respond only with the structured fields — no prose outside the object.",
           prompt: `Product "${worst[1].title}" lost ${worst[1].count} out of ${results.length} total simulations.\n\nHere are the reasons it lost:\n${worst[1].reasons.slice(0, 10).join("\n---\n")}\n\nIdentify the top missing attributes and estimate what percentage of simulations these gaps cost.`,
           schema: z.object({

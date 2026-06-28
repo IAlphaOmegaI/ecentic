@@ -60,7 +60,7 @@ async function* bufferTextStream(
 }
 
 export type GenerateOptions<T extends z.ZodTypeAny> = {
-  system: string;
+  instructions: string;
   prompt: string;
   schema: T;
   model?: GatewayModelId;
@@ -85,7 +85,7 @@ export function generate<T extends z.ZodTypeAny>(
   options: GenerateOptions<T> & { stream?: boolean },
 ): Promise<z.infer<T>> | GenerateStreamResult<z.infer<T>> {
   const {
-    system,
+    instructions,
     prompt,
     schema,
     stream: s = false,
@@ -96,7 +96,7 @@ export function generate<T extends z.ZodTypeAny>(
 
   const settings = {
     model,
-    system,
+    instructions,
     prompt,
     schema,
     schemaName,

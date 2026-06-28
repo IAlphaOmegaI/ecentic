@@ -4,7 +4,7 @@ import { createMCPClient, type JSONRPCRequest } from "@ai-sdk/mcp";
 import { createStreamableValue } from "@ai-sdk/rsc";
 // import { UcpDiscoveryProfileSchema } from "@ucp-js/sdk";
 import { merge, resultify } from "@zenncore/utils";
-import { isLoopFinished, stepCountIs, streamText, tool } from "ai";
+import { isLoopFinished, isStepCount, streamText, tool } from "ai";
 import * as z from "zod";
 import {
   businessProfileSchema,
@@ -901,7 +901,7 @@ export const runFlowTester = async ({
       // 4. Run the agentic flow
       const agentResult = streamText({
         model: FLOW_TESTER_MODEL,
-        system: `You are a UCP (Universal Commerce Protocol) shopping agent running a live integration test against a ${shoppingTransport.toUpperCase()} endpoint.
+        instructions: `You are a UCP (Universal Commerce Protocol) shopping agent running a live integration test against a ${shoppingTransport.toUpperCase()} endpoint.
 
 CRITICAL ARGUMENT SHAPES — follow these exactly, do not add or remove top-level keys:
 
@@ -955,7 +955,7 @@ DON'T CALL the same tool again if the first one hasn't finished yet.
         providerOptions: gatewayOptions(),
       });
 
-      for await (const event of agentResult.fullStream) {
+      for await (const event of agentResult.stream) {
         switch (event.type) {
           case "text-delta":
             emit({ kind: "text", text: event.text });

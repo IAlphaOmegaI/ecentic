@@ -17,7 +17,7 @@ export const searchCompetitors = withAuthentication(
 
     const result = await resultify(() =>
       AI.generate({
-        system: `You are a competitive intelligence analyst for e-commerce. Given a brand name, product category, or search query, identify real products that would appear in AI shopping agent results.
+        instructions: `You are a competitive intelligence analyst for e-commerce. Given a brand name, product category, or search query, identify real products that would appear in AI shopping agent results.
 
 Rules:
 - Only return products you are confident are real, currently sold items. Use exact product names as they appear on retailers — do not paraphrase or invent.

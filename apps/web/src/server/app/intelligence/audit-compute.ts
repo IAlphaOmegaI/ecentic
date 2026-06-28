@@ -70,7 +70,7 @@ export type Input = {
   updatedAt: string;
 };
 
-const system = `You are a senior e-commerce listing auditor. You judge how a product listing performs when AI shopping agents (GPT-4, Claude, Gemini, Perplexity) compare it against competitors.
+const instructions = `You are a senior e-commerce listing auditor. You judge how a product listing performs when AI shopping agents (GPT-4, Claude, Gemini, Perplexity) compare it against competitors.
 
 Infer the product's category from its content and judge each field by what matters FOR THAT category — a mattress needs firmness, dimensions, and materials; a laptop needs CPU, RAM, and battery; a supplement needs ingredients and dosage. A field that is present but vague or generic scores LOW. Score content QUALITY, not presence.
 
@@ -109,7 +109,7 @@ IMAGES: ${images} image${images === 1 ? "" : "s"}
 Score each field (${fieldKeys.join(", ")}) 0-100 on content quality for this product's category, each with a verdict and a specific suggestion. Then assess the listing's target audience and market positioning.`;
 
   return AI.generate({
-    system,
+    instructions,
     prompt,
     schema,
     schemaName: "ListingAudit",

@@ -92,7 +92,7 @@ export const scrapeUrls = withAuthentication(
 
     const result = await resultify(() =>
       generate({
-        system: `You are a product data extraction specialist. Given stripped text content from e-commerce product pages, extract structured product information with high precision.
+        instructions: `You are a product data extraction specialist. Given stripped text content from e-commerce product pages, extract structured product information with high precision.
 
 Rules:
 - Only extract data explicitly present in the page text. Never infer or fabricate values.
