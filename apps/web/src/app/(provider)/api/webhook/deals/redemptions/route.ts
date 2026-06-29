@@ -4,7 +4,7 @@ import * as DealRedemption from "@/server/app/deal-redemption";
 import { Environment } from "@/server/utils/environment";
 
 /** Partner deal programs this webhook accepts redemptions for. */
-const MERCHANTS = ["ycombinator"] as const;
+const MERCHANTS = ["ycombinator", "techstars"] as const;
 
 const isMerchant = (value: string): boolean =>
   (MERCHANTS as readonly string[]).includes(value);

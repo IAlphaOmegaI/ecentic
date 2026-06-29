@@ -35,3 +35,24 @@ export const resolvePlanByPriceId = (priceId: string): PlanKey | null => {
   if (priceId === process.env.STRIPE_SUB_DOMINATE) return "dominate";
   return null;
 };
+
+/**
+ * Partner deal coupons. Each `coupon()` resolves a Stripe coupon id that
+ * encodes the discount terms (e.g. 50% off for 24 months). Create the coupon
+ * in Stripe, then point the env var at its id.
+ */
+export const DEALS = {
+  ycombinator: {
+    name: "Y Combinator",
+    coupon: () => process.env.STRIPE_DEAL_COUPON_YC,
+  },
+  techstars: {
+    name: "Techstars",
+    coupon: () => process.env.STRIPE_DEAL_COUPON_TECHSTARS,
+  },
+} as const;
+
+export type DealKey = keyof typeof DEALS;
+
+export const isDealKey = (value: string): value is DealKey =>
+  value === "ycombinator" || value === "techstars";

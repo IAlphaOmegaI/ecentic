@@ -1,6 +1,7 @@
 "use server";
 
 import { resultify, type UnwrapResult } from "@zenncore/utils";
+import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { schema } from "../database";
 import { withContext } from "../utils/context";
@@ -48,7 +49,24 @@ const isRateLimited = withContext(
   "DealRedemption.isRateLimited",
 );
 
-const { create } = repository(schema.dealRedemption);
+const { create, find } = repository(schema.dealRedemption);
+
+/** Most recent redemption recorded for an email, case-insensitive. */
+export const findByEmail = withContext(
+  async (_, { email }: { email: string }) => {
+    const rows = await find(Environment.SERVER, {
+      where: eq(
+        sql`lower(${schema.dealRedemption.email})`,
+        email.toLowerCase(),
+      ),
+      limit: 1,
+    });
+
+    if (!rows.success) return rows;
+    return { success: true as const, data: rows.data[0] ?? null };
+  },
+  "DealRedemption.findByEmail",
+);
 
 export const record = withContext(
   async (

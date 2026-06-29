@@ -15,12 +15,15 @@ import {
 import type { Document } from "../utils/repository";
 import { repository } from "../utils/repository";
 import {
+  DEALS,
+  isDealKey,
   isPlanKey,
   PLANS,
   type PlanKey,
   resolvePlanByPriceId,
   stripe,
 } from "../utils/stripe";
+import * as DealRedemption from "./deal-redemption";
 import * as User from "./user";
 
 export const { get, create, update, destroy, exists, find } = repository(
@@ -289,6 +292,24 @@ export const createCheckoutSessionForUser = withContext(
         error: new RequestError("APP_HOST is not configured"),
       };
 
+    // Auto-apply a partner deal coupon (e.g. 2 years 50% off) when this user's
+    // email matches a deal redemption we've verified and approved. Redemptions
+    // stay "pending" until their batch is checked, so only "approved" ones
+    // grant the discount.
+    const redemption = await DealRedemption.findByEmail(Environment.SERVER, {
+      email: user.data.email,
+    });
+
+    const deal = (() => {
+      if (!redemption.success || !redemption.data) return null;
+      if (redemption.data.status !== "approved") return null;
+      const { merchant } = redemption.data;
+      if (!isDealKey(merchant)) return null;
+      const coupon = DEALS[merchant].coupon();
+      if (!coupon) return null;
+      return { merchant, coupon };
+    })();
+
     const session = await resultify(() =>
       stripe().checkout.sessions.create({
         mode: "subscription",
@@ -296,11 +317,16 @@ export const createCheckoutSessionForUser = withContext(
         line_items: [{ price: priceId, quantity: 1 }],
         success_url: `${appHost}/dashboard/settings?checkout=success`,
         cancel_url: `${appHost}/?checkout=canceled#pricing`,
-        allow_promotion_codes: true,
+        // Stripe forbids `discounts` and `allow_promotion_codes` together.
+        ...(deal
+          ? { discounts: [{ coupon: deal.coupon }] }
+          : { allow_promotion_codes: true }),
         billing_address_collection: "auto",
         client_reference_id: id,
         subscription_data: {
-          metadata: { userId: id, plan: key },
+          metadata: deal
+            ? { userId: id, plan: key, deal: deal.merchant }
+            : { userId: id, plan: key },
         },
         metadata: { userId: id, plan: key },
       }),

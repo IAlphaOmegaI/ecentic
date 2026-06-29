@@ -2,7 +2,7 @@
 
 **Cursor transcript ID:** `1ebf99b2-336a-4f86-8769-264c641151e4`  
 **Exported:** 2026-05-04  
-**Repo context:** Écentic (`zenncore`)
+**Repo context:** ecentic (`zenncore`)
 
 This file merges the parent conversation plus nested agent transcripts from the session folder.
 
@@ -1184,7 +1184,7 @@ Exploring the Ecentic web app by reading the requested files.
 
 **Product description**
 
-Ecentic (styled **écentic**) is an e‑commerce optimization platform for the AI agent economy. It helps merchants win when AI shopping agents (GPT-4, Claude, Gemini, etc.) choose products for buyers. It simulates how these agents pick between your products and competitors, finds where your data is missing or weak, and then optimizes listings to get chosen first.
+Ecentic (styled **ecentic**) is an e‑commerce optimization platform for the AI agent economy. It helps merchants win when AI shopping agents (GPT-4, Claude, Gemini, etc.) choose products for buyers. It simulates how these agents pick between your products and competitors, finds where your data is missing or weak, and then optimizes listings to get chosen first.
 
 **Target audience**
 
@@ -1586,7 +1586,7 @@ Here is the technical summary of the Ecentic codebase:
 
 | App | Purpose |
 |-----|---------|
-| **web** | Next.js 16 web app (écentic) — AI shopping agent simulation, competitor analysis, product scanning |
+| **web** | Next.js 16 web app (ecentic) — AI shopping agent simulation, competitor analysis, product scanning |
 | **mobile** | Referenced in root scripts but package not found under current paths |
 
 ### Packages (`packages/`)
@@ -1641,7 +1641,7 @@ Includes `icons`, `utils`, `config`, `phone`, `inferred-form`, `data-table`.
 - **Providers:** `ThemeProvider` (custom), `ToastProvider`, `ToastList`
 - **Body:** `bg-background font-body tracking-[-4%] antialiased`
 - **Dev-only:** React Grab script
-- **Metadata:** Title “écentic — Infrastructure for the Agent Economy”
+- **Metadata:** Title “ecentic — Infrastructure for the Agent Economy”
 
 ---
 
