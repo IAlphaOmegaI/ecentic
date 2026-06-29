@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Plus } from "@/components/plus";
 
-const href = "https://eupresence.com/";
+const partnerHref = "https://eupresence.com/";
+const bundleHref = "/pricing#partnership";
 
 export const PartnershipBanner = () => (
   <section
@@ -30,7 +31,7 @@ export const PartnershipBanner = () => (
     <div className="relative z-10 flex flex-col items-start gap-6 md:flex-row md:items-start md:justify-between">
       <div className="flex items-start gap-4">
         <Link
-          href={href}
+          href={partnerHref}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Visit EU Presence"
@@ -50,16 +51,16 @@ export const PartnershipBanner = () => (
           </h2>
           <p className="mt-2 max-w-xl font-light text-foreground-dimmed text-lg md:text-xl">
             We've partnered with EU Presence to help you expand into the
-            European market — they handle company formation, hiring, and
-            compliance across all 27 EU member states, so your listings can go
-            live and sell to 448 million customers from day one.
+            European market — they handle representation and compliance across
+            all 27 EU member states while ecentic keeps you picked by AI agents.
+            Get both in one bundle, with 15% off.
           </p>
         </div>
       </div>
       <Button
         color="primary"
         className="shrink-0 self-start md:self-center"
-        render={<Link href={href} target="_blank" rel="noopener noreferrer" />}
+        render={<Link href={bundleHref} />}
       >
         <Image
           src="/images/eu.svg"
@@ -68,7 +69,7 @@ export const PartnershipBanner = () => (
           height={32}
           className="size-6"
         />
-        Enter the EU — for people and agents
+        See the EU bundle
         <ArrowRightIcon className="size-4" />
       </Button>
     </div>

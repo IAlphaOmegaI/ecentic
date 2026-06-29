@@ -84,7 +84,7 @@ export default async () => (
       />
       <Navbar />
       <Hero />
-      {/* <PartnershipBanner /> */}
+      <PartnershipBanner />
       <PartnersStrip />
       <DiscoveryShift />
       <BlindSpot />

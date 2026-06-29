@@ -1,4 +1,4 @@
-import { CheckIcon } from "@zenncore/icons";
+import { CheckIcon, ShieldCheckIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import Link from "next/link";
@@ -33,6 +33,13 @@ const dominate = {
   cta: "Start Dominating",
 };
 
+const guarantees = [
+  "No minimums",
+  "Month-to-month · cancel anytime",
+  "No setup fees",
+  "15% off with the EU Presence bundle",
+] as const;
+
 export const Pricing = () => (
   <section
     id="pricing"
@@ -48,6 +55,10 @@ export const Pricing = () => (
           Start free. <br />
           Pay when agents start picking you.
         </h2>
+        <p className="mt-4 max-w-xl font-light text-foreground-dimmed text-lg">
+          Modular plans — no seats, no hidden add-ons. Pay only for the products
+          you optimize and how much you automate.
+        </p>
       </div>
 
       <div className="relative mx-auto max-w-6xl border-accent-foreground border-t">
@@ -143,8 +154,15 @@ export const Pricing = () => (
             </PricingCTA>
           </div>
 
-          <div className="flex h-auto flex-col bg-primary p-6 text-white md:h-102">
-            <h2 className="font-body font-medium text-2xl">{dominate.name}</h2>
+          <div className="relative flex h-auto flex-col bg-primary p-6 text-white md:h-102">
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="font-body font-medium text-2xl">
+                {dominate.name}
+              </h2>
+              <span className="rounded-full bg-white/15 px-2.5 py-1 font-medium text-white text-xs uppercase tracking-tight">
+                Most picked
+              </span>
+            </div>
             <p className="font-body font-light text-lg text-white/70">
               {dominate.tagline}
             </p>
@@ -164,6 +182,17 @@ export const Pricing = () => (
               {dominate.cta}
             </PricingCTA>
           </div>
+        </div>
+
+        <div className="grid grid-cols-1 divide-y divide-accent-foreground border-accent-foreground border-b sm:grid-cols-2 sm:divide-x md:grid-cols-4 md:divide-y-0">
+          {guarantees.map((guarantee) => (
+            <div key={guarantee} className="flex items-center gap-2 p-4">
+              <ShieldCheckIcon className="size-4 shrink-0 text-primary" />
+              <p className="font-light text-foreground-dimmed text-sm">
+                {guarantee}
+              </p>
+            </div>
+          ))}
         </div>
 
         <div className="grid w-full border-accent-foreground border-x bg-background-dimmed md:grid-cols-3">

@@ -15,6 +15,7 @@ import {
   splitGridClassList,
   splitGridSectionClassList,
 } from "../_components/content";
+import { PartnershipBundle } from "../_components/partnership-bundle";
 import { Pricing } from "../_components/pricing";
 
 const description =
@@ -67,6 +68,11 @@ const faq = [
     question: "When should I talk to sales instead of self-serving?",
     answer:
       "Book a call if you run hundreds of SKUs across multiple stores, need UCP signing or SSO, or want a custom ROI estimate for your catalog size before committing. Everything else is faster to start on the free Scan plan.",
+  },
+  {
+    question: "What is the EU Presence bundle?",
+    answer:
+      "We partnered with EU Presence so you can go live in Europe and stay picked by AI agents in one engagement. The Compliance + AI Visibility bundle combines their GDPR representative, GPSR responsible person, and Privacy Center Plus with ecentic Dominate — billed together with a 15% bundle discount, no minimums, and no setup fees. Book a bundle call from the pricing page to set it up.",
   },
 ] as const;
 
@@ -132,6 +138,8 @@ export default () => {
 
       <Pricing />
 
+      <PartnershipBundle />
+
       <ContentPageSection
         number="01"
         title="How billing works"
@@ -144,7 +152,9 @@ When you are ready to act on the results, two paid plans cover most teams:
 - Compete at $149/mo for up to 100 products, daily simulations, and competitor battlecards
 - Dominate at $449/mo for up to 1000 products, continuous simulations, auto-optimization, drift alerts, and UCP generation
 
-Plans are billed monthly, so you can upgrade as your catalog and automation needs grow. Teams running hundreds of SKUs across multiple stores, or with security and signing requirements, move to a custom Enterprise plan.`}
+Plans are billed monthly, so you can upgrade as your catalog and automation needs grow. Teams running hundreds of SKUs across multiple stores, or with security and signing requirements, move to a custom Enterprise plan.
+
+Selling into Europe? The **Compliance + AI Visibility** bundle pairs ecentic Dominate with EU Presence's GDPR representative, GPSR responsible person, and Privacy Center — one invoice, 15% bundle discount, no setup fees.`}
         />
       </ContentPageSection>
 
