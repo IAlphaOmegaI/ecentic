@@ -489,7 +489,7 @@ export const runFreeForAll = async ({
 
       const agentResult = streamText({
         model: "anthropic/claude-sonnet-4.6",
-        system: `You are an autonomous AI shopping agent running a "free-for-all" buy decision. Every store below is an equal candidate — there is no home store and no competitors. A buyer has asked for something, and your job is to look at what every store actually offers and pick exactly ONE product you would buy.
+        instructions: `You are an autonomous AI shopping agent running a "free-for-all" buy decision. Every store below is an equal candidate — there is no home store and no competitors. A buyer has asked for something, and your job is to look at what every store actually offers and pick exactly ONE product you would buy.
 
 Decide however you genuinely would. There is no supplied rubric, scorecard, or list of factors to apply — use your own judgement about what matters for this specific request and these specific products.
 
@@ -534,7 +534,7 @@ Call search_catalogs with parameters derived from this request. Verify your top 
         providerOptions: gatewayOptions(),
       });
 
-      for await (const event of agentResult.fullStream) {
+      for await (const event of agentResult.stream) {
         switch (event.type) {
           case "tool-call": {
             switch (event.toolName) {

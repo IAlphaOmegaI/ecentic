@@ -108,7 +108,7 @@ const generateImprovedListing = withContext(
   ) => {
     const result = await resultify(() =>
       AI.generate({
-        system: `You improve e-commerce product listings so AI shopping agents choose this product more often.
+        instructions: `You improve e-commerce product listings so AI shopping agents choose this product more often.
 Output a clearer, spec-rich title and an HTML description (use <p>, <ul><li> where helpful).
 Do not invent specifications that contradict the original; you may reorganize and emphasize existing facts.
 Keep the title under 120 characters.`,
@@ -478,7 +478,7 @@ export const generateStructuredData = withAuthentication(
 
     const generated = await resultify(() =>
       AI.generate({
-        system: `You generate JSON-LD structured data (schema.org/Product) for e-commerce product pages to help AI shopping agents understand product details.
+        instructions: `You generate JSON-LD structured data (schema.org/Product) for e-commerce product pages to help AI shopping agents understand product details.
 Output a single valid JSON string. Include @context, @type, name, description, brand, sku, and offers (price, priceCurrency, availability).
 Do not invent specifications not present in the input.`,
         prompt: `Generate JSON-LD for this product:

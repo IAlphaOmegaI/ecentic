@@ -113,7 +113,7 @@ export const stream = ({
         model: "gpt-4o",
         output: "array",
         schema: candidate,
-        system: Judge.DETECTION_SYSTEM,
+        instructions: Judge.DETECTION_SYSTEM,
         prompt,
         providerOptions: AI.providerOptions,
         onError: () => {},
@@ -129,7 +129,7 @@ export const stream = ({
         for (const _attempt of [0, 1, 2]) {
           const generation = await resultify(() =>
             AI.generate({
-              system: Judge.DETECTION_SYSTEM,
+              instructions: Judge.DETECTION_SYSTEM,
               prompt,
               schema: z.object({ competitors: z.array(candidate) }),
             }),

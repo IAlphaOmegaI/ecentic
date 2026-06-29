@@ -284,6 +284,73 @@ export const resolveShoppingService = async (
   };
 };
 
+// MCP signals a tool execution error as result.isError === true with the message
+// in result.content[].text and no structuredContent — so it matches neither branch
+// of ucpMCPResponseSchema. Pull that text out before the envelope parse.
+const mcpToolErrorSchema = z.object({
+  result: z.looseObject({
+    isError: z.literal(true),
+    content: z.array(z.looseObject({ text: z.string().optional() })).optional(),
+  }),
+});
+
+const extractMcpToolError = (data: unknown): string | null => {
+  const parsed = mcpToolErrorSchema.safeParse(data);
+
+  if (!parsed.success) return null;
+
+  const text = (parsed.data.result.content ?? [])
+    .map((item) => item.text)
+    .filter((value): value is string => Boolean(value))
+    .join("; ");
+
+  return text || "Tool call failed";
+};
+
+// UCP error envelope shared by REST error bodies and JSON-RPC error.data:
+// { code, content, continue_url, retry_after }. Builds the best human message.
+const ucpErrorEnvelopeSchema = z.looseObject({
+  code: z.string().optional(),
+  content: z.string().optional(),
+  retry_after: z.number().optional(),
+});
+
+const formatUcpErrorEnvelope = (
+  envelope: unknown,
+  fallback: string,
+): string => {
+  const parsed = ucpErrorEnvelopeSchema.safeParse(envelope);
+
+  if (!parsed.success) return fallback;
+
+  const { code, content, retry_after } = parsed.data;
+  const prefix = code ? `[${code}] ` : "";
+  const retry =
+    retry_after === undefined ? "" : ` — retry after ${retry_after}s`;
+
+  return `${prefix}${content ?? fallback}${retry}`;
+};
+
+// Non-2xx REST responses: 424/422 carry a UCP error body; 429/401 may be header-only.
+const formatRestHttpError = (response: Response, body: unknown): string => {
+  const parsed = ucpErrorEnvelopeSchema.safeParse(body);
+  const envelope = parsed.success ? parsed.data : {};
+  const { status } = response;
+
+  if (status === 401) return envelope.content ?? "Unauthorized";
+
+  if (status === 429) {
+    const retryAfter = response.headers.get("retry-after");
+    return (
+      envelope.content ??
+      `Rate limit exceeded${retryAfter ? ` — retry after ${retryAfter}s` : ""}`
+    );
+  }
+
+  const prefix = envelope.code ? `[${envelope.code}] ` : "";
+  return `${prefix}${envelope.content ?? `Request failed (HTTP ${status})`}`;
+};
+
 const callMCP = async (
   endpoint: string,
   toolName: string,
@@ -328,6 +395,10 @@ const callMCP = async (
     return { error: { message: "Tool call response is not valid JSON" } };
   }
 
+  const mcpToolError = extractMcpToolError(dataResult.data);
+
+  if (mcpToolError) return { error: { message: mcpToolError } };
+
   const body = ucpMCPResponseSchema.safeParse(dataResult.data);
 
   if (!body.success) {
@@ -337,7 +408,15 @@ const callMCP = async (
     };
   }
 
-  return "error" in body.data ? { error: body.data.error } : body.data.result;
+  if ("error" in body.data) {
+    const { error } = body.data;
+    // Prefer the richer error.data.content / retry_after over the terse message.
+    return {
+      error: { message: formatUcpErrorEnvelope(error.data, error.message) },
+    };
+  }
+
+  return body.data.result;
 };
 
 const parseMcpToolResult = <T>(
@@ -381,13 +460,30 @@ const callRest = async (
   if (!response.success) return { error: "Network request failed" };
 
   const textResult = await resultify(() => response.data.text());
+  const rawBody = textResult.success ? textResult.data : "";
+
+  const responseBody = ((): unknown => {
+    try {
+      return JSON.parse(rawBody);
+    } catch {
+      return undefined;
+    }
+  })();
+
+  // Protocol/transport errors are signalled by the HTTP status (424 discovery
+  // failure, 422 version unsupported, 429 rate limit, 401 unauthorized). The body
+  // is optional, so format from status + headers + whatever UCP error body exists.
+  if (!response.data.ok) {
+    return { error: formatRestHttpError(response.data, responseBody) };
+  }
+
   if (!textResult.success) return { error: "Could not read response body" };
 
-  try {
-    return JSON.parse(textResult.data);
-  } catch {
-    return { error: "Response is not valid JSON", raw: textResult.data };
+  if (responseBody === undefined) {
+    return { error: "Response is not valid JSON", raw: rawBody };
   }
+
+  return responseBody;
 };
 
 const parseRestToolResult = <T>(

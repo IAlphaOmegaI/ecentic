@@ -2,7 +2,7 @@ import {
   convertToModelMessages,
   createUIMessageStream,
   createUIMessageStreamResponse,
-  stepCountIs,
+  isStepCount,
   streamText,
 } from "ai";
 import { headers } from "next/headers";
@@ -25,6 +25,8 @@ import {
 export const maxDuration = 60;
 
 const formatStreamError = (error: unknown): string => {
+  console.log("error", error);
+
   if (error instanceof z.ZodError) return z.prettifyError(error);
   return error instanceof Error ? error.message : "Unexpected error";
 };
@@ -87,7 +89,7 @@ export const POST = async (request: Request) => {
 
       const result = streamText({
         model: PLAYGROUND_MODEL,
-        system: buildChatSystemPrompt(
+        instructions: buildChatSystemPrompt(
           service.transport,
           service.endpoint,
           domain,
@@ -98,7 +100,7 @@ export const POST = async (request: Request) => {
         // Data parts (data-profile/data-error) are dropped by default.
         messages: await convertToModelMessages(messages),
         tools,
-        stopWhen: stepCountIs(20),
+        stopWhen: isStepCount(20),
         providerOptions: gatewayOptions(),
       });
 

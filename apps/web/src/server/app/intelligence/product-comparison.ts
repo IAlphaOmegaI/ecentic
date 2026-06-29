@@ -639,7 +639,7 @@ export const runStoreComparison = async ({
 
       const agentResult = streamText({
         model: "google/gemini-3-flash",
-        system: `You are an AI shopping agent evaluator. Simulate how autonomous shopping agents (GPT-4, Claude, Gemini, Perplexity, and similar) decide where to buy when a buyer asks for something — then explain whether the source merchant would win or lose against competitors as a group.
+        instructions: `You are an AI shopping agent evaluator. Simulate how autonomous shopping agents (GPT-4, Claude, Gemini, Perplexity, and similar) decide where to buy when a buyer asks for something — then explain whether the source merchant would win or lose against competitors as a group.
 
 This is not a store-by-store ranking. Frame everything as **my store vs competitors**: one side (the source store) against the combined competitor set. Do not rank competitors against each other or assign first/second/third place to individual stores.
 
@@ -714,7 +714,7 @@ Call search_catalogs with parameters derived from this request, then evaluate my
         providerOptions: gatewayOptions(),
       });
 
-      for await (const event of agentResult.fullStream) {
+      for await (const event of agentResult.stream) {
         switch (event.type) {
           case "tool-call": {
             if (event.toolName !== "search_catalogs") break;
