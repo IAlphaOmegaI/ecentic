@@ -408,6 +408,45 @@ export const blogPost = pgTable(
   (table) => [uniqueIndex("blog_post_slug_unique").on(table.slug)],
 );
 
+/**
+ * Partner deal redemptions (e.g. the Y Combinator founder deal).
+ * Public, unauthenticated capture — submitted from /yc and saved via the
+ * /api/webhook/deals/redemptions webhook. No user FK: redeemers may not have
+ * an account yet. `answers` keeps the full raw payload for forward
+ * compatibility as different merchants ask different questions.
+ */
+export const dealRedemption = pgTable(
+  "deal_redemption",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    /** Deal program the redemption belongs to, e.g. "ycombinator". */
+    merchant: text("merchant").notNull(),
+    companyName: text("companyName").notNull(),
+    /** YC batch tag, e.g. "Summer 2025". */
+    batch: text("batch"),
+    contactName: text("contactName").notNull(),
+    email: text("email").notNull(),
+    website: text("website"),
+    platform: text("platform"),
+    monthlyOrders: text("monthlyOrders"),
+    goal: text("goal"),
+    answers: jsonb("answers").$type<Record<string, unknown>>(),
+    status: text("status")
+      .$type<"pending" | "approved" | "rejected">()
+      .notNull()
+      .default("pending"),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("deal_redemption_merchant_created_idx").on(
+      table.merchant,
+      table.createdAt,
+    ),
+    index("deal_redemption_email_idx").on(table.email),
+  ],
+);
+
 /** Tables object for defineRelations and better-auth adapter */
 export const tables = {
   user,
@@ -427,6 +466,7 @@ export const tables = {
   subscription,
   agentApiKey,
   blogPost,
+  dealRedemption,
 };
 
 /** Relations */
@@ -562,4 +602,5 @@ export const relations = defineRelations(tables, (r) => ({
     }),
   },
   blogPost: {},
+  dealRedemption: {},
 }));
