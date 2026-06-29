@@ -18,7 +18,7 @@ import {
 import { Pricing } from "../_components/pricing";
 
 const description =
-  "écentic pricing: start free with a one-time AI agent scan, then move to Compete ($149/mo) or Dominate ($449/mo) when agents start picking you. Custom Enterprise plans available.";
+  "ecentic pricing: start free with a one-time AI agent scan, then move to Compete ($149/mo) or Dominate ($449/mo) when agents start picking you. Custom Enterprise plans available.";
 
 const plans = [
   {
@@ -75,7 +75,7 @@ export const metadata: Metadata = createMetadata({
   description,
   path: "/pricing",
   keywords: [
-    "écentic pricing",
+    "ecentic pricing",
     "AI ecommerce tool pricing",
     "product listing optimization pricing",
     "AI shopping agent software cost",
@@ -87,7 +87,7 @@ export default () => {
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
-      name: "écentic",
+      name: "ecentic",
       applicationCategory: "BusinessApplication",
       operatingSystem: "Web",
       description,
@@ -154,7 +154,7 @@ Plans are billed monthly, so you can upgrade as your catalog and automation need
         description="The core simulation, diagnosis, and optimization loop is the same on every tier. Paid plans add scale, automation, and protocol features."
       >
         <ContentPageRichText
-          content={`No matter where you start, écentic runs your products through the major AI shopping models, shows you why competitors get selected, and turns the findings into listing changes you can approve.
+          content={`No matter where you start, ecentic runs your products through the major AI shopping models, shows you why competitors get selected, and turns the findings into listing changes you can approve.
 
 The paid tiers expand that core loop in three directions:
 - Scale — more products, more frequent simulations, and more competitor coverage

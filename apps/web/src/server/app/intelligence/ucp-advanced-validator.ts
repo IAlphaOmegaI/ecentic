@@ -875,7 +875,7 @@ export const ratingSchema = z
     },
   );
 
-// TODO: écentic Enhancement:
+// TODO: ecentic Enhancement:
 // Spec defines `available`/`exists` semantics for option values; the variant-level
 const variantAvailabilitySchema = z
   .looseObject({
@@ -890,7 +890,7 @@ const variantAvailabilitySchema = z
       .describe(
         "Qualifies available with fulfillment state. Well-known values: in_stock, backorder, preorder, out_of_stock, discontinued.",
       ),
-    // écentic extension (not in spec):
+    // ecentic extension (not in spec):
     quantity: z.number().int().nonnegative().optional(),
     policy: z
       .enum(["in_stock", "out_of_stock", "preorder", "backorder"])
@@ -1136,7 +1136,7 @@ export const productSchema = z.looseObject({
     ),
 });
 
-// écentic Enhancement:
+// ecentic Enhancement:
 const refineProductIntegrity = (
   product: z.infer<typeof productSchema>,
   context: z.core.$RefinementCtx,
@@ -1167,7 +1167,7 @@ const refineProductIntegrity = (
   }
 };
 
-// écentic Enhancement:
+// ecentic Enhancement:
 // Each variant in a lookup_catalog response carries inputs[] correlating it back
 // to the request identifiers that resolved to it. Spec: variants without an
 // inputs entry MUST NOT appear in lookup responses.
@@ -1189,7 +1189,7 @@ const variantInputSchema = z
     "Maps a request identifier to the variant it resolved to, with match semantics.",
   );
 
-// écentic Enhancement:
+// ecentic Enhancement:
 // Lookup responses are stricter: every variant MUST carry an inputs[] entry
 // correlating it back to the request identifiers that resolved to it.
 const lookupVariantSchema = variantSchema.extend({

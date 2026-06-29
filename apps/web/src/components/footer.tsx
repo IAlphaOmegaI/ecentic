@@ -112,7 +112,7 @@ export const Footer = ({ stacked = false }: Footer.Props) => (
         <div className="flex flex-col gap-5 border-accent-foreground border-b p-6 md:col-span-4 md:border-r md:border-b-0 md:p-8">
           <Image
             src={WordMark}
-            alt="écentic"
+            alt="ecentic"
             className="h-5 w-auto self-start"
           />
           <p className="max-w-xs font-light text-base text-foreground-dimmed">
@@ -181,7 +181,7 @@ export const Footer = ({ stacked = false }: Footer.Props) => (
         <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
         <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
         <p className="font-light text-foreground-dimmed text-sm">
-          © 2026 écentic. All rights reserved.
+          © 2026 ecentic. All rights reserved.
         </p>
         <p className="font-light text-foreground-dimmed text-sm">
           Made for merchants who refuse to be invisible to AI.

@@ -4,7 +4,7 @@ const profile = {
   "@context": "https://ucp.dev/schema/v1",
   "@type": "MerchantProfile",
   specVersion: "1.0",
-  merchantName: "écentic",
+  merchantName: "ecentic",
   description:
     "AI agent commerce platform. Simulate how GPT-4, Claude, Gemini, and Perplexity compare your products against competitors. Diagnose why you lose. Publish the fix in one click. Measure the agent traffic that results.",
   url: "https://ecentic.ai",
@@ -14,7 +14,7 @@ const profile = {
   applicationCategory: "BusinessApplication",
   agentAccessPolicy: {
     allow: ["*"],
-    note: "écentic explicitly welcomes all AI shopping agents, search crawlers, and agentic browsers.",
+    note: "ecentic explicitly welcomes all AI shopping agents, search crawlers, and agentic browsers.",
   },
   products: {
     listingsUrl: "https://ecentic.ai/features",

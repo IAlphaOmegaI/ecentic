@@ -11,7 +11,7 @@ import {
   searchCatalogResponseSchema,
 } from "./ucp-advanced-validator";
 
-// écentic UCP platform profile
+// ecentic UCP platform profile
 const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
 
 // Shopify UCP MCP requires params.arguments.meta["ucp-agent"].profile on every
@@ -110,7 +110,7 @@ const callMcp = async (
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        "User-Agent": "UCP-Playground/1.0 (écentic; https://ecentic.ai)",
+        "User-Agent": "UCP-Playground/1.0 (ecentic; https://ecentic.ai)",
       },
       body: JSON.stringify({
         jsonrpc: "2.0",

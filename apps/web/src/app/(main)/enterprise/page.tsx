@@ -17,7 +17,7 @@ import { Plus } from "@/components/plus";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
-  title: "Enterprise — écentic",
+  title: "Enterprise — ecentic",
   description:
     "Agent-commerce intelligence for enterprise merchants. Multi-brand dashboards, API access, SSO, SOC 2 compliance, and a dedicated CSM. In conversation with Mastercard, Visa, Inditex, and Carrefour via Plug and Play.",
   path: "/enterprise",
@@ -90,7 +90,7 @@ const capabilities: readonly Capability[] = [
     icon: ShieldCheckIcon,
     title: "SSO",
     description:
-      "Okta, Google Workspace, and Azure AD supported. Provision and deprovision seats without touching écentic directly.",
+      "Okta, Google Workspace, and Azure AD supported. Provision and deprovision seats without touching ecentic directly.",
   },
   {
     icon: AwardIcon,
@@ -102,7 +102,7 @@ const capabilities: readonly Capability[] = [
     icon: CircleBoltIcon,
     title: "UCP signing service",
     description:
-      "écentic manages cryptographic signing of your UCP profile so AI agents can verify merchant identity without bespoke infra.",
+      "ecentic manages cryptographic signing of your UCP profile so AI agents can verify merchant identity without bespoke infra.",
   },
   {
     icon: BellIcon,

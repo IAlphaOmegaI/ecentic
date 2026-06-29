@@ -1,6 +1,6 @@
 import { createOgImage, ogImageContentType, ogImageSize } from "@/lib/og";
 
-export const alt = "AI Ecommerce Tools for Merchants — écentic";
+export const alt = "AI Ecommerce Tools for Merchants — ecentic";
 export const size = ogImageSize;
 export const contentType = ogImageContentType;
 

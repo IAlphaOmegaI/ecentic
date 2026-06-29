@@ -54,7 +54,7 @@ export default () => (
             Click <span className="font-medium text-primary">Add key</span>.
             Give it a description like &quot;Ecentic&quot;, set permissions to{" "}
             <span className="font-medium text-primary">Read/Write</span> if you
-            want écentic to push listing changes, or{" "}
+            want ecentic to push listing changes, or{" "}
             <span className="font-medium text-primary">Read</span> for
             sync-only, then click Generate.
           </li>

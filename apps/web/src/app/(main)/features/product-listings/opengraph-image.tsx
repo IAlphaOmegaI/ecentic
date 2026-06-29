@@ -1,6 +1,6 @@
 import { createOgImage, ogImageContentType, ogImageSize } from "@/lib/og";
 
-export const alt = "AI Product Listing Optimization — écentic";
+export const alt = "AI Product Listing Optimization — ecentic";
 export const size = ogImageSize;
 export const contentType = ogImageContentType;
 

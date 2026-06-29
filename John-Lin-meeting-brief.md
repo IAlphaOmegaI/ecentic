@@ -1,6 +1,6 @@
-# Meeting Brief — John Lin (taste.io) × écentic
+# Meeting Brief — John Lin (taste.io) × ecentic
 
-**Attendees:** You — Xhurian / "Juri" (founder, écentic — organizer & host) · John Lin (founder & CEO, taste.io)
+**Attendees:** You — Xhurian / "Juri" (founder, ecentic — organizer & host) · John Lin (founder & CEO, taste.io)
 **Purpose:** Exploratory — potential data/product partnership + tap his recommendation/personalization expertise. Not a fundraising pitch. You're driving this one.
 
 ---
@@ -22,27 +22,27 @@ If John says "taste layer for AI," he means his own consumer-preference graph �
 
 ---
 
-## Why he's relevant to écentic
+## Why he's relevant to ecentic
 
-écentic's thesis is that AI agents pick products based on structured data *and* buyer preference (your persona simulation: price-sensitive, quality-focused, convenience, eco-conscious). John has spent 8 years building exactly one thing: **modeling human preference and predicting choice.** That's the overlap.
+ecentic's thesis is that AI agents pick products based on structured data *and* buyer preference (your persona simulation: price-sensitive, quality-focused, convenience, eco-conscious). John has spent 8 years building exactly one thing: **modeling human preference and predicting choice.** That's the overlap.
 
 **What he can realistically offer — ranked by how concrete it is:**
 
-1. **Personalization / recommendation expertise (highest value, lowest friction).** He's a credible advisor on preference modeling, taste profiles, and why a recommender picks A over B. Directly useful for sharpening écentic's persona simulation and the "why did the agent choose this" diagnosis.
+1. **Personalization / recommendation expertise (highest value, lowest friction).** He's a credible advisor on preference modeling, taste profiles, and why a recommender picks A over B. Directly useful for sharpening ecentic's persona simulation and the "why did the agent choose this" diagnosis.
 2. **The "taste layer for AI agents" worldview.** He sits in the emerging preference-intelligence category (alongside Qloo, Tastewise). Useful read on where agent commerce + preference data is heading, and how buyers/agents will weigh subjective vs. spec-driven signals.
 3. **GTM / monetization peer learning.** Bootstrapped-ish to 875K users, three revenue lines, ran Reg CF crowdfunding. Good sounding board on freemium → paid, B2B data productization, and community-led growth.
-4. **A data partnership — promising but unproven.** His taste graph is **entertainment-centric, not product/e-commerce catalog data.** A literal "plug taste.io data into écentic simulations" integration is a stretch today. Treat as a "is there a there there?" exploration, not an assumed yes.
+4. **A data partnership — promising but unproven.** His taste graph is **entertainment-centric, not product/e-commerce catalog data.** A literal "plug taste.io data into ecentic simulations" integration is a stretch today. Treat as a "is there a there there?" exploration, not an assumed yes.
 
-**Be aware:** he's fundraising, so he may steer toward his round or look for what écentic can do for *him*. Keep it a two-way exploration.
+**Be aware:** he's fundraising, so he may steer toward his round or look for what ecentic can do for *him*. Keep it a two-way exploration.
 
 ---
 
 ## Suggested agenda (~30–40 min)
 
-1. **Intros & context (5 min)** — You frame écentic ("win every agent's cart") + why you wanted to talk to John specifically. Then hand off so John gives the taste.io snapshot.
+1. **Intros & context (5 min)** — You frame ecentic ("win every agent's cart") + why you wanted to talk to John specifically. Then hand off so John gives the taste.io snapshot.
 2. **Worldview exchange (10 min)** — How each of you sees agent commerce + preference data evolving. Where does subjective "taste" matter vs. raw specs when an agent buys? (This is the genuine intellectual overlap and builds rapport.)
-3. **Concrete overlap probe (10 min)** — Is there a data/product fit? Could taste-profile signals enrich écentic's persona simulations, or is écentic a future B2B customer/partner for his data arm? Be honest about the entertainment-vs-commerce gap.
-4. **Advisory question (5 min)** — Tap his recommendation expertise on 1–2 real écentic problems (e.g., making persona simulations behave like real buyers; surfacing *why* an agent ranks one listing over another).
+3. **Concrete overlap probe (10 min)** — Is there a data/product fit? Could taste-profile signals enrich ecentic's persona simulations, or is ecentic a future B2B customer/partner for his data arm? Be honest about the entertainment-vs-commerce gap.
+4. **Advisory question (5 min)** — Tap his recommendation expertise on 1–2 real ecentic problems (e.g., making persona simulations behave like real buyers; surfacing *why* an agent ranks one listing over another).
 5. **Next steps (5 min)** — Decide: advisor relationship, a scoped data experiment, intros, or "stay in touch." Assign an owner + a date.
 
 ---
@@ -64,6 +64,6 @@ If John says "taste layer for AI," he means his own consumer-preference graph �
 
 - [ ] Skim taste.io and its `/invest` page so you know his pitch and current narrative.
 - [ ] Decide the *one* outcome you want from this call (advisor? data experiment? intro?) and steer toward it.
-- [ ] Have écentic's one-liner + 2–3 market stats ready to open with.
+- [ ] Have ecentic's one-liner + 2–3 market stats ready to open with.
 - [ ] Prep your two real recommendation-expertise questions in advance (section 4) so you don't lose the advisory window.
 - [ ] Keep the three-Tastes distinction in your back pocket.

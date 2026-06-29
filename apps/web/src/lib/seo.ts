@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 
 export const seo = {
   host: "https://ecentic.ai",
-  name: "écentic",
-  title: "écentic",
+  name: "ecentic",
+  title: "ecentic",
   description:
     "Optimize product listings for AI shopping agents. Simulate GPT-4, Claude, Gemini, and Perplexity decisions, diagnose losses, and improve win rate.",
   links: [

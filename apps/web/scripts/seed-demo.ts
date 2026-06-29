@@ -103,7 +103,7 @@ const jsonLd = (product: {
     name: product.title,
     description: product.description,
     sku: product.sku,
-    brand: { "@type": "Brand", name: "Écentic" },
+    brand: { "@type": "Brand", name: "Ecentic" },
     offers: {
       "@type": "Offer",
       price: product.price,
@@ -113,7 +113,7 @@ const jsonLd = (product: {
   });
 
 // ---------------------------------------------------------------------------
-// Product catalog — consumer electronics & audio (the merchant: "Écentic")
+// Product catalog — consumer electronics & audio (the merchant: "Ecentic")
 //
 // `q` controls data-quality (which fields are filled): description, image
 // count and structured data. `win` is the target win-rate the seeded
@@ -137,7 +137,7 @@ type ProductSpec = {
 const DESC = {
   aura: "Reference-grade wireless headphones with adaptive active noise cancellation, 40mm graphene-coated drivers, and 40-hour battery life. Multipoint Bluetooth 5.4, USB-C fast charge (5 min = 5 hrs), and a detachable boom mic for calls. Includes hard travel case, 3.5mm cable, and a 2-year warranty.",
   pulse:
-    "Room-filling 360° smart speaker with dual 3-inch woofers and adaptive room tuning. Works with AirPlay 2, Spotify Connect, and Matter. Far-field voice control, stereo pairing, and a recycled-aluminium body. Setup in under a minute via the Écentic app.",
+    "Room-filling 360° smart speaker with dual 3-inch woofers and adaptive room tuning. Works with AirPlay 2, Spotify Connect, and Matter. Far-field voice control, stereo pairing, and a recycled-aluminium body. Setup in under a minute via the Ecentic app.",
   drift:
     "Compact ANC earbuds with 11mm dynamic drivers, six-mic call clarity, and 32 hours total playback with the wireless charging case. IPX5 sweat resistance, low-latency game mode, and customizable EQ in-app. Bluetooth 5.3 with multipoint.",
   volt: "100W GaN III charger with three USB-C and one USB-A port. Charges a laptop, tablet, and two phones at full speed simultaneously. Foldable prongs, smart power distribution, and travel-ready compact design. UL and CE certified.",
@@ -148,7 +148,7 @@ const DESC = {
   trek: "Lightweight over-ear headphones with 45-hour battery, 38mm drivers, and plush memory-foam earcups. Foldable design, USB-C charging, and built-in mic for calls. Tuned for balanced everyday listening.",
   spark:
     "8-in-1 USB-C hub with 4K HDMI, 100W power delivery passthrough, gigabit Ethernet, SD/microSD readers, and three USB-A 3.0 ports. Aluminium body stays cool under load. Plug-and-play, no drivers required.",
-  glow: "Smart LED bulbs (4-pack) with 16 million colours, tunable white, and Matter support. Works with Alexa, Google Home, and Apple Home. Schedules, scenes, and music sync via the Écentic app. 25,000-hour rated life.",
+  glow: "Smart LED bulbs (4-pack) with 16 million colours, tunable white, and Matter support. Works with Alexa, Google Home, and Apple Home. Schedules, scenes, and music sync via the Ecentic app. 25,000-hour rated life.",
   move: "Secure-fit fitness earbuds with ear hooks, IP68 rating, and 10mm bass drivers. 28 hours total battery, ambient mode for outdoor runs, and a quick-charge case. Sweatproof and built for movement.",
   arc: "Ergonomic wireless mouse with a silent click, 4000 DPI sensor, and USB-C rechargeable battery rated for 70 days. Multi-device switching across three computers.",
 };
@@ -156,7 +156,7 @@ const DESC = {
 const productSpecs: ProductSpec[] = [
   // --- Top performers: full data (6/6), high win-rate ---
   {
-    title: "Écentic Aura Pro Wireless ANC Headphones",
+    title: "Ecentic Aura Pro Wireless ANC Headphones",
     handle: "aura-pro",
     sku: "EC-AURA-PRO",
     price: 299,
@@ -168,7 +168,7 @@ const productSpecs: ProductSpec[] = [
     win: 76,
   },
   {
-    title: "Écentic Pulse 360 Smart Speaker",
+    title: "Ecentic Pulse 360 Smart Speaker",
     handle: "pulse-360",
     sku: "EC-PULSE-360",
     price: 179,
@@ -180,7 +180,7 @@ const productSpecs: ProductSpec[] = [
     win: 70,
   },
   {
-    title: "Écentic Drift Pro ANC Earbuds",
+    title: "Ecentic Drift Pro ANC Earbuds",
     handle: "drift-pro",
     sku: "EC-DRIFT-PRO",
     price: 149,
@@ -192,7 +192,7 @@ const productSpecs: ProductSpec[] = [
     win: 67,
   },
   {
-    title: "Écentic Volt 100W GaN Charger",
+    title: "Ecentic Volt 100W GaN Charger",
     handle: "volt-100w",
     sku: "EC-VOLT-100",
     price: 69,
@@ -204,7 +204,7 @@ const productSpecs: ProductSpec[] = [
     win: 64,
   },
   {
-    title: "Écentic Beam 4K Streaming Soundbar",
+    title: "Ecentic Beam 4K Streaming Soundbar",
     handle: "beam-4k",
     sku: "EC-BEAM-4K",
     price: 249,
@@ -216,7 +216,7 @@ const productSpecs: ProductSpec[] = [
     win: 62,
   },
   {
-    title: "Écentic Halo Qi2 Charging Pad",
+    title: "Ecentic Halo Qi2 Charging Pad",
     handle: "halo-qi2",
     sku: "EC-HALO-Q2",
     price: 49,
@@ -230,7 +230,7 @@ const productSpecs: ProductSpec[] = [
 
   // --- Good: missing structured data (5/6), solid win-rate ---
   {
-    title: "Écentic Nomad Waterproof Speaker",
+    title: "Ecentic Nomad Waterproof Speaker",
     handle: "nomad-spk",
     sku: "EC-NOMAD",
     price: 89,
@@ -242,7 +242,7 @@ const productSpecs: ProductSpec[] = [
     win: 58,
   },
   {
-    title: "Écentic Trek Over-Ear Headphones",
+    title: "Ecentic Trek Over-Ear Headphones",
     handle: "trek-oe",
     sku: "EC-TREK",
     price: 129,
@@ -254,7 +254,7 @@ const productSpecs: ProductSpec[] = [
     win: 55,
   },
   {
-    title: "Écentic Spark 8-in-1 USB-C Hub",
+    title: "Ecentic Spark 8-in-1 USB-C Hub",
     handle: "spark-hub",
     sku: "EC-SPARK-8",
     price: 59,
@@ -266,7 +266,7 @@ const productSpecs: ProductSpec[] = [
     win: 53,
   },
   {
-    title: "Écentic Glow Smart Bulbs (4-Pack)",
+    title: "Ecentic Glow Smart Bulbs (4-Pack)",
     handle: "glow-4pk",
     sku: "EC-GLOW-4",
     price: 39,
@@ -280,7 +280,7 @@ const productSpecs: ProductSpec[] = [
 
   // --- Fair: one extra field (4/6), mid win-rate ---
   {
-    title: "Écentic Move Fitness Earbuds",
+    title: "Ecentic Move Fitness Earbuds",
     handle: "move-fit",
     sku: "EC-MOVE",
     price: 79,
@@ -292,7 +292,7 @@ const productSpecs: ProductSpec[] = [
     win: 46,
   },
   {
-    title: "Écentic Arc Wireless Mouse",
+    title: "Ecentic Arc Wireless Mouse",
     handle: "arc-mouse",
     sku: "EC-ARC",
     price: 45,
@@ -304,7 +304,7 @@ const productSpecs: ProductSpec[] = [
     win: 43,
   },
   {
-    title: "Écentic Flux 65W Travel Adapter",
+    title: "Ecentic Flux 65W Travel Adapter",
     handle: "flux-65w",
     sku: "EC-FLUX-65",
     price: 39,
@@ -316,7 +316,7 @@ const productSpecs: ProductSpec[] = [
     win: 41,
   },
   {
-    title: "Écentic Tempo Alarm Speaker",
+    title: "Ecentic Tempo Alarm Speaker",
     handle: "tempo-alarm",
     sku: "EC-TEMPO",
     price: 59,
@@ -330,7 +330,7 @@ const productSpecs: ProductSpec[] = [
 
   // --- Fair/low: title+price+sku only (3/6) ---
   {
-    title: "Écentic Clip Mini Speaker",
+    title: "Ecentic Clip Mini Speaker",
     handle: "clip-mini",
     sku: "EC-CLIP",
     price: 29,
@@ -342,7 +342,7 @@ const productSpecs: ProductSpec[] = [
     win: 35,
   },
   {
-    title: "Écentic Lite Wired Earphones",
+    title: "Ecentic Lite Wired Earphones",
     handle: "lite-wired",
     sku: "EC-LITE",
     price: 19,
@@ -354,7 +354,7 @@ const productSpecs: ProductSpec[] = [
     win: 32,
   },
   {
-    title: "Écentic Dock USB-C Stand",
+    title: "Ecentic Dock USB-C Stand",
     handle: "dock-stand",
     sku: "EC-DOCK",
     price: 34,
@@ -366,7 +366,7 @@ const productSpecs: ProductSpec[] = [
     win: 30,
   },
   {
-    title: "Écentic Loop Lanyard Earbuds",
+    title: "Ecentic Loop Lanyard Earbuds",
     handle: "loop-buds",
     sku: "EC-LOOP",
     price: 49,
@@ -380,7 +380,7 @@ const productSpecs: ProductSpec[] = [
 
   // --- Poor: title + price only (2/6), needs attention ---
   {
-    title: "Écentic Pebble Bluetooth Speaker",
+    title: "Ecentic Pebble Bluetooth Speaker",
     handle: "pebble",
     sku: "",
     price: 24,
@@ -392,7 +392,7 @@ const productSpecs: ProductSpec[] = [
     win: 22,
   },
   {
-    title: "Écentic Snap Magnetic Mount",
+    title: "Ecentic Snap Magnetic Mount",
     handle: "snap-mount",
     sku: "",
     price: 18,
@@ -404,7 +404,7 @@ const productSpecs: ProductSpec[] = [
     win: 18,
   },
   {
-    title: "Écentic Mini Bluetooth Speaker",
+    title: "Ecentic Mini Bluetooth Speaker",
     handle: "mini-spk",
     sku: "",
     price: 22,
@@ -418,7 +418,7 @@ const productSpecs: ProductSpec[] = [
 
   // --- Extra mid/good products to round out the catalog ---
   {
-    title: "Écentic Surge 30W Car Charger",
+    title: "Ecentic Surge 30W Car Charger",
     handle: "surge-30w",
     sku: "EC-SURGE",
     price: 25,
@@ -431,7 +431,7 @@ const productSpecs: ProductSpec[] = [
     win: 57,
   },
   {
-    title: "Écentic Vista Webcam 2K",
+    title: "Ecentic Vista Webcam 2K",
     handle: "vista-2k",
     sku: "EC-VISTA-2K",
     price: 79,
@@ -444,7 +444,7 @@ const productSpecs: ProductSpec[] = [
     win: 52,
   },
   {
-    title: "Écentic Forge Mechanical Keyboard",
+    title: "Ecentic Forge Mechanical Keyboard",
     handle: "forge-kb",
     sku: "EC-FORGE",
     price: 119,
@@ -1183,7 +1183,7 @@ const seed = async () => {
       userId,
       storeId: String(between(60000000000, 69999999999)),
       platform: "shopify",
-      name: "Écentic",
+      name: "Ecentic",
       domain: DEMO_DOMAIN,
       status: "connected",
       trackerApiKey: `ec_live_${crypto.randomUUID().replace(/-/g, "")}`,
@@ -1508,7 +1508,7 @@ const seed = async () => {
     {
       "@context": "https://ucp.ai/schema",
       "@type": "Merchant",
-      name: "Écentic",
+      name: "Ecentic",
       description:
         "Premium consumer electronics and audio — headphones, speakers, chargers, and smart home devices designed for everyday life.",
       logo: `https://${domain}/logo.png`,
@@ -1540,7 +1540,7 @@ const seed = async () => {
   await db.insert(schema.ucpProfile).values({
     id: id(),
     userId,
-    merchantName: "Écentic",
+    merchantName: "Ecentic",
     description:
       "Premium consumer electronics and audio — headphones, speakers, chargers, and smart home devices designed for everyday life.",
     logoUrl: `https://${domain}/logo.png`,

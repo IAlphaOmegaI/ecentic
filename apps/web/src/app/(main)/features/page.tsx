@@ -18,7 +18,7 @@ import {
 } from "../_components/content";
 
 const description =
-  "AI ecommerce tools for product listing optimization, competitor analysis, and AI shopping visibility. See how écentic helps merchants win more carts.";
+  "AI ecommerce tools for product listing optimization, competitor analysis, and AI shopping visibility. See how ecentic helps merchants win more carts.";
 
 const workflows = [
   {
@@ -64,9 +64,9 @@ const faq = [
       "AI ecommerce tools need to help merchants structure product data, explain why listings lose, and improve pages that AI shopping systems compare in seconds. That is different from a generic dashboard or a copy generator that only rewrites descriptions.",
   },
   {
-    question: "Does écentic replace an ecommerce platform?",
+    question: "Does ecentic replace an ecommerce platform?",
     answer:
-      "No. écentic sits on top of an existing store stack. It connects to the catalog, runs simulations against competitors, and helps merchants publish clearer listing updates back into the platform they already use.",
+      "No. ecentic sits on top of an existing store stack. It connects to the catalog, runs simulations against competitors, and helps merchants publish clearer listing updates back into the platform they already use.",
   },
   {
     question: "Who should start with the features page first?",
@@ -114,7 +114,7 @@ export default () => {
       })),
       publisher: {
         "@type": "Organization",
-        name: "écentic",
+        name: "ecentic",
         url: absoluteUrl("/"),
       },
     },
@@ -146,7 +146,7 @@ export default () => {
         <ContentPageRichText
           content={`AI ecommerce tools are no longer only about writing faster copy or building one more dashboard. Merchants now need software that helps them understand how AI shopping systems compare products, why competitors are selected instead, and which listing changes are most likely to improve selection and conversion.
 
-écentic focuses on that operational layer. Instead of treating visibility as a vague brand metric, the platform helps teams simulate AI purchase decisions, inspect the reasons behind wins and losses, and turn those findings into product listing updates the team can actually approve and publish.
+ecentic focuses on that operational layer. Instead of treating visibility as a vague brand metric, the platform helps teams simulate AI purchase decisions, inspect the reasons behind wins and losses, and turn those findings into product listing updates the team can actually approve and publish.
 
 That makes this category especially useful for teams managing:
 - Large catalogs with uneven product data quality
@@ -189,13 +189,13 @@ The features below are the first content cluster we are building around that wor
 
       <ContentPageSection
         number="04"
-        title="How écentic fits inside the stack"
+        title="How ecentic fits inside the stack"
         description="If your team already has core ecommerce infrastructure, the fastest next step is usually the product listing page for your platform."
       >
         <ContentPageRichText
-          content={`écentic is best understood as a decision layer for agent commerce. It does not replace Shopify, WooCommerce, or the catalog system already running the business. It connects to the store, imports products, benchmarks them against competitors, and surfaces the updates that matter most.
+          content={`ecentic is best understood as a decision layer for agent commerce. It does not replace Shopify, WooCommerce, or the catalog system already running the business. It connects to the store, imports products, benchmarks them against competitors, and surfaces the updates that matter most.
 
-That positioning matters because many teams arrive on searches like "AI ecommerce tools" looking at several categories at once. They may compare copy generators, personalization products, search engines, analytics dashboards, and merchandising software in the same session. The job of this page is to show that écentic serves a narrower but increasingly important problem: helping merchants win product selection in AI-mediated buying flows.
+That positioning matters because many teams arrive on searches like "AI ecommerce tools" looking at several categories at once. They may compare copy generators, personalization products, search engines, analytics dashboards, and merchandising software in the same session. The job of this page is to show that ecentic serves a narrower but increasingly important problem: helping merchants win product selection in AI-mediated buying flows.
 
 If your team already has core ecommerce infrastructure in place, the fastest next step is usually to review the product listing optimization page and then move into the platform page that matches your store. From there, the comparison guide and blog provide the deeper research content buyers expect before they commit.`}
         />

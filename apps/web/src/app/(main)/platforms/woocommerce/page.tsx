@@ -67,9 +67,9 @@ const faq = [
       "Yes. The repository notes already document WooCommerce product update behavior and the requirements around REST credentials with read and write access, which supports an approve-and-publish style workflow.",
   },
   {
-    question: "How does écentic compare to other WooCommerce product plugins?",
+    question: "How does ecentic compare to other WooCommerce product plugins?",
     answer:
-      "Most WooCommerce product plugins help with catalog management or basic copy. écentic focuses specifically on understanding why products lose to competitors and turning that analysis into listing improvements that can be published back into the store.",
+      "Most WooCommerce product plugins help with catalog management or basic copy. ecentic focuses specifically on understanding why products lose to competitors and turning that analysis into listing improvements that can be published back into the store.",
   },
   {
     question:
@@ -177,7 +177,7 @@ The second is a competitive clarity problem. The team is not sure which products
 
 The third is a publishing friction problem. Good insights exist but they are slow to turn into live improvements because the review and publishing loop is disconnected from the store. For WooCommerce teams, a workflow that connects analysis to an approve-and-publish path inside the same store reduces the handoff cost significantly.
 
-Most merchants find that écentic addresses the second and third situations directly, which is where generic content tools tend to stop short.`}
+Most merchants find that ecentic addresses the second and third situations directly, which is where generic content tools tend to stop short.`}
         />
       </ContentPageSection>
 

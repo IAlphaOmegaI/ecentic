@@ -35,7 +35,7 @@ const handleCustomersDataRequest = (
     customer: payload.customer.id,
     data_stored: [],
     message:
-      "écentic does not collect or store any customer personal data. Only product catalog information is accessed via the Shopify Admin API.",
+      "ecentic does not collect or store any customer personal data. Only product catalog information is accessed via the Shopify Admin API.",
   });
 
 const handleCustomersRedact = (

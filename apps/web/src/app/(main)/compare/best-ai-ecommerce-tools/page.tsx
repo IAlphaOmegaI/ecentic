@@ -21,7 +21,7 @@ const description =
 
 const tools = [
   {
-    name: "écentic",
+    name: "ecentic",
     category: "Agent-commerce optimization",
     summary:
       "Best for merchants who need simulation, competitor diagnosis, and listing optimization tied to AI shopping selection.",
@@ -106,9 +106,9 @@ const faq = [
       "The cleanest way is to compare tools by category first. Decide whether the immediate problem is product content, onsite personalization, search relevance, analytics visibility, or AI shopping selection. Then compare vendors inside that category.",
   },
   {
-    question: "Where does écentic fit in a comparison like this?",
+    question: "Where does ecentic fit in a comparison like this?",
     answer:
-      "écentic fits in the agent-commerce optimization category. It is built for merchants who need to simulate AI shopping decisions, diagnose why competitors win, and improve product listings based on that competitive context.",
+      "ecentic fits in the agent-commerce optimization category. It is built for merchants who need to simulate AI shopping decisions, diagnose why competitors win, and improve product listings based on that competitive context.",
   },
   {
     question:
@@ -141,11 +141,11 @@ export default () => {
       url: absoluteUrl("/compare/best-ai-ecommerce-tools"),
       author: {
         "@type": "Organization",
-        name: "écentic",
+        name: "ecentic",
       },
       publisher: {
         "@type": "Organization",
-        name: "écentic",
+        name: "ecentic",
         url: absoluteUrl("/"),
       },
       mainEntityOfPage: absoluteUrl("/compare/best-ai-ecommerce-tools"),
@@ -279,7 +279,7 @@ Buyers usually get better results when they shortlist one tool per category firs
       </ContentPageSection>
 
       <ContentPageFooter
-        primary={{ href: "/sign-up", label: "Start with écentic" }}
+        primary={{ href: "/sign-up", label: "Start with ecentic" }}
         secondary={{ href: "/", label: "Back to home" }}
       />
     </ContentPageLayout>

@@ -64,7 +64,7 @@ const faq = [
   {
     question: "How is this different from using Shopify Magic alone?",
     answer:
-      "Shopify Magic helps with native content generation. écentic adds simulation, competitor benchmarking, diagnosis, and approval-ready optimization workflows so merchants can see why products lose and what to fix next.",
+      "Shopify Magic helps with native content generation. ecentic adds simulation, competitor benchmarking, diagnosis, and approval-ready optimization workflows so merchants can see why products lose and what to fix next.",
   },
   {
     question: "Can Shopify merchants publish changes back to the store?",
@@ -146,7 +146,7 @@ This page targets that decision point directly:
 
       <ContentPageSection
         number="02"
-        title="What the Shopify workflow looks like in écentic"
+        title="What the Shopify workflow looks like in ecentic"
         description="The workflow connects the catalog, surfaces competitive gaps, and makes improvements publishable back into Shopify."
       >
         <ContentPageRichText
@@ -172,9 +172,9 @@ For Shopify teams, the operational value usually comes from four things:
         <ContentPageRichText
           content={`Shopify-native AI tools are helpful when the team needs faster drafting. That can save time, especially for early-stage merchandising work. But many merchants eventually need a more deliberate workflow around product selection and competitive clarity.
 
-That is the gap écentic is designed to fill. The value is not only in rewriting text. It is in understanding whether the product page is easy for an AI shopping system to evaluate, whether another listing is communicating the buying decision more clearly, and whether the proposed changes are likely to improve the product's chance of being selected.
+That is the gap ecentic is designed to fill. The value is not only in rewriting text. It is in understanding whether the product page is easy for an AI shopping system to evaluate, whether another listing is communicating the buying decision more clearly, and whether the proposed changes are likely to improve the product's chance of being selected.
 
-In other words, Shopify-native generation helps merchants produce copy. écentic helps merchants evaluate, prioritize, and improve product listings with a direct tie back to competitive outcomes.
+In other words, Shopify-native generation helps merchants produce copy. ecentic helps merchants evaluate, prioritize, and improve product listings with a direct tie back to competitive outcomes.
 
 That distinction becomes more important when:
 - The catalog is large enough that manual review slows down every update

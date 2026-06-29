@@ -88,7 +88,7 @@ export const AgentTrafficLive = () => (
         <span className="relative size-2.5 rounded-full bg-primary" />
       </span>
       <p className="font-light text-primary text-xl">
-        Live agent traffic — écentic.ai, last 30 days
+        Live agent traffic — ecentic.ai, last 30 days
       </p>
     </div>
     <div className="grid gap-8 md:grid-cols-[1fr_1.4fr]">
@@ -97,7 +97,7 @@ export const AgentTrafficLive = () => (
           AI agents are already shopping your store.
         </h2>
         <p className="mt-4 font-light text-base text-foreground-dimmed md:text-lg">
-          écentic detects which models visit, when they crawl, and whether your
+          ecentic detects which models visit, when they crawl, and whether your
           listings pass their evaluation. Most merchants have no idea this is
           happening.
         </p>

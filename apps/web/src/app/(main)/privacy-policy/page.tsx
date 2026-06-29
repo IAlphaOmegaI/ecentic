@@ -11,7 +11,7 @@ import { renderInline } from "../_components/rich-text";
 export const metadata: Metadata = createMetadata({
   title: "Privacy Policy",
   description:
-    "How écentic collects, uses, and protects your data when using our e-commerce optimization platform.",
+    "How ecentic collects, uses, and protects your data when using our e-commerce optimization platform.",
   path: "/privacy-policy",
 });
 
@@ -43,7 +43,7 @@ We never sell, rent, or share your product data with third parties for their own
   {
     title: "Third-Party Services",
     number: "03",
-    content: `We use the following third-party services to operate écentic:
+    content: `We use the following third-party services to operate ecentic:
 - **AI Model Providers** (OpenAI, Anthropic, Google) — Product data is sent to AI models during simulations. Data is transmitted via encrypted API calls and is not retained by providers beyond the API request lifecycle per their data processing agreements.
 - **Sentry** — Error monitoring. May receive anonymized error context (no product data).
 - **PostHog** — Product analytics. Receives anonymized usage events (page views, feature interactions). No product catalog data is sent.
@@ -75,7 +75,7 @@ When you delete your account, all associated data is permanently deleted, includ
 - All simulation results, optimization history, and reports
 - Your UCP merchant profile
 
-When a Shopify merchant uninstalls the écentic app, we receive a \`shop/redact\` webhook and automatically delete all store data, products, and associated records for that shop.
+When a Shopify merchant uninstalls the ecentic app, we receive a \`shop/redact\` webhook and automatically delete all store data, products, and associated records for that shop.
 
 For GDPR data subject requests (access, rectification, erasure, portability), contact privacy@ecentic.ai.`,
   },
@@ -105,14 +105,14 @@ To exercise any of these rights, contact privacy@ecentic.ai.`,
     title: "Changes to This Policy",
     number: "08",
     content:
-      "We may update this privacy policy from time to time. Material changes will be communicated via email to the address associated with your account at least 30 days before taking effect. Continued use of écentic after changes take effect constitutes acceptance of the updated policy.",
+      "We may update this privacy policy from time to time. Material changes will be communicated via email to the address associated with your account at least 30 days before taking effect. Continued use of ecentic after changes take effect constitutes acceptance of the updated policy.",
   },
   {
     title: "Contact",
     number: "09",
     content: `For questions about this privacy policy or our data practices:
 - Email: privacy@ecentic.ai
-- Company: [zennit](https://www.zennit.dev) (écentic is a product of zennit)`,
+- Company: [zennit](https://www.zennit.dev) (ecentic is a product of zennit)`,
   },
 ] as const;
 
@@ -189,7 +189,7 @@ export default () => (
           </h1>
           <p className="mt-2 text-white">Last updated: March 15, 2026</p>
           <p className="mt-6 max-w-2xl text-lg text-white leading-relaxed">
-            écentic (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) is
+            ecentic (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) is
             committed to protecting the privacy of merchants who use our
             e-commerce optimization platform. This policy explains what data we
             collect, how we use it, and your rights.

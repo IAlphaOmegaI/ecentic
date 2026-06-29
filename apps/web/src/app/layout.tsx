@@ -19,8 +19,8 @@ const redHatDisplay = Red_Hat_Display({
 
 export const metadata: Metadata = {
   title: {
-    default: "écentic — Win Every AI Shopping Agent's Cart",
-    template: "%s | écentic",
+    default: "ecentic — Win Every AI Shopping Agent's Cart",
+    template: "%s | ecentic",
   },
   description:
     "Optimize product listings for AI shopping agents. Simulate GPT-4, Claude, Gemini, and Perplexity decisions, diagnose losses, and improve win rate.",
@@ -41,23 +41,23 @@ export const metadata: Metadata = {
     "product content optimization",
     "competitive intelligence ecommerce",
   ],
-  authors: [{ name: "écentic" }],
-  creator: "écentic",
-  publisher: "écentic",
+  authors: [{ name: "ecentic" }],
+  creator: "ecentic",
+  publisher: "ecentic",
   metadataBase: new URL("https://ecentic.ai"),
   alternates: {},
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://ecentic.ai",
-    siteName: "écentic",
-    title: "écentic — Win Every AI Shopping Agent's Cart",
+    siteName: "ecentic",
+    title: "ecentic — Win Every AI Shopping Agent's Cart",
     description:
       "Simulate how AI shopping agents choose your products, diagnose why they don't, and auto-optimize your listings. Built for the agent economy.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "écentic — Win Every AI Shopping Agent's Cart",
+    title: "ecentic — Win Every AI Shopping Agent's Cart",
     description:
       "Simulate how GPT-4, Claude, Gemini & Perplexity choose your products vs. competitors. Diagnose losses. Auto-optimize. Win every cart.",
     creator: "@ecentic",
@@ -133,7 +133,7 @@ export default ({ children }: PropsWithChildren) => {
             `}
             </Script>
           )}
-        <meta name="apple-mobile-web-app-title" content="écentic" />
+        <meta name="apple-mobile-web-app-title" content="ecentic" />
       </head>
       <body
         className={`${redHatDisplay.variable} overflow-x-hidden bg-background font-body antialiased`}

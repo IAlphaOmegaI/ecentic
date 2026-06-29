@@ -49,7 +49,7 @@ export const BlindSpot = () => (
         milliseconds. You don't know how often they pick you or how to change
         it.{" "}
         <span className="underline">
-          <span className="text-primary">écentic</span> fixes this.
+          <span className="text-primary">ecentic</span> fixes this.
         </span>
       </p>
     </div>
@@ -130,7 +130,7 @@ export const BlindSpot = () => (
 
       <div className="flex flex-col justify-between p-4">
         <p className="text-center font-light text-primary text-xl">
-          What Agents see after écentic
+          What Agents see after ecentic
         </p>
 
         <div className="flex flex-col items-center pt-6 pb-2 text-center">

@@ -3,7 +3,7 @@ import { createOgImage, ogImageContentType, ogImageSize } from "@/lib/og";
 import * as Blog from "@/server/app/blog";
 import { Environment } from "@/server/utils/environment";
 
-export const alt = "écentic blog post";
+export const alt = "ecentic blog post";
 export const size = ogImageSize;
 export const contentType = ogImageContentType;
 
@@ -16,7 +16,7 @@ export default async ({ params }: Props) => {
   );
 
   return createOgImage({
-    title: post?.title ?? "écentic blog",
+    title: post?.title ?? "ecentic blog",
     description: post?.description ?? "Agent commerce insights",
   });
 };

@@ -6,7 +6,7 @@ This document describes what Ecentic is, how it works, what has been built, and 
 
 ## What Ecentic Is
 
-Ecentic (styled **écentic**) is an e-commerce optimization platform for the AI agent economy. As AI shopping agents (GPT-4, Claude, Gemini, etc.) increasingly choose products on behalf of consumers, merchants need to ensure their listings are selected over competitors. Ecentic simulates these agent decisions, diagnoses why products win or lose, and auto-optimizes listings to get picked first.
+Ecentic (styled **ecentic**) is an e-commerce optimization platform for the AI agent economy. As AI shopping agents (GPT-4, Claude, Gemini, etc.) increasingly choose products on behalf of consumers, merchants need to ensure their listings are selected over competitors. Ecentic simulates these agent decisions, diagnoses why products win or lose, and auto-optimizes listings to get picked first.
 
 **Target audience:** E-commerce merchants, D2C brands, and teams selling through AI-powered shopping channels.
 
@@ -301,7 +301,7 @@ The autonomous features above require a background job system. Recommended appro
 ```
 /
 ├── apps/
-│   └── web/                          # Next.js app (écentic)
+│   └── web/                          # Next.js app (ecentic)
 │       ├── src/
 │       │   ├── app/                  # Next.js App Router pages
 │       │   │   ├── (auth)/           # Auth route group (sign-in, sign-up, verify, onboarding)

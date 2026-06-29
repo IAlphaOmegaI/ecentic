@@ -1,9 +1,9 @@
-# écentic — AI Agent Commerce Platform
+# ecentic — AI Agent Commerce Platform
 # https://ecentic.ai
 # llms.txt v1 — https://llmstxt.org/
 
 ## About
-écentic is an e-commerce optimization platform for the AI agent economy.
+ecentic is an e-commerce optimization platform for the AI agent economy.
 It simulates how AI shopping agents (GPT-4, Claude, Gemini, Perplexity) compare
 products against competitors, diagnoses why products win or lose, and auto-optimizes
 listings with one-click write-back to Shopify and WooCommerce.
@@ -21,12 +21,12 @@ listings with one-click write-back to Shopify and WooCommerce.
 - https://ecentic.ai/blog — Blog
 
 ## UCP Profile
-- https://ecentic.ai/.well-known/ucp — écentic's own Universal Commerce Profile
+- https://ecentic.ai/.well-known/ucp — ecentic's own Universal Commerce Profile
 
 ## Agent access policy
-écentic welcomes AI shopping agents, search crawlers, and agentic browsers.
+ecentic welcomes AI shopping agents, search crawlers, and agentic browsers.
 We do not block GPTBot, ClaudeBot, Google-Extended, PerplexityBot, or AppleBot-Extended.
-Merchants who use écentic publish structured /.well-known/ucp profiles to improve
+Merchants who use ecentic publish structured /.well-known/ucp profiles to improve
 AI agent readability of their product data.
 
 ## Contact

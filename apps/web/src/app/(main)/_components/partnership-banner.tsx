@@ -46,7 +46,7 @@ export const PartnershipBanner = () => (
         </Link>
         <div>
           <h2 className="font-medium text-3xl text-foreground md:text-4xl">
-            écentic × EU Presence
+            ecentic × EU Presence
           </h2>
           <p className="mt-2 max-w-xl font-light text-foreground-dimmed text-lg md:text-xl">
             We've partnered with EU Presence to help you expand into the

@@ -153,14 +153,14 @@ export const Navbar = () => {
       <div className="relative h-14 shrink-0 p-4 pr-12 sm:h-16">
         <Image
           src="/images/left-menu.svg"
-          alt="écentic"
+          alt="ecentic"
           fill
           className="absolute inset-0 object-cover"
         />
-        <Link href="/" aria-label="Go to the écentic homepage">
+        <Link href="/" aria-label="Go to the ecentic homepage">
           <Image
             src="/images/trademark.svg"
-            alt="écentic"
+            alt="ecentic"
             width={100}
             height={100}
             className="relative z-100 -mt-1.5 h-auto w-32 md:w-40"

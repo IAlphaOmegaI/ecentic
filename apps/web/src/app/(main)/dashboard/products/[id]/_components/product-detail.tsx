@@ -269,7 +269,7 @@ const PublishListing = ({
         <AlertDialogPopup>
           <AlertDialogTitle>Publish optimized listing?</AlertDialogTitle>
           <AlertDialogDescription>
-            Écentic generates an AI-optimized title and description for &ldquo;
+            Ecentic generates an AI-optimized title and description for &ldquo;
             {product.title}&rdquo; and writes it directly to your connected
             store, replacing the live listing. Current win rate is {winRate}%.
           </AlertDialogDescription>
@@ -315,7 +315,7 @@ const ApplyOptimization = ({
           Close the gap automatically
         </p>
         <p className="mt-1 max-w-prose text-emphasis-foreground text-sm leading-relaxed">
-          Écentic rewrites this listing from the winning competitors&apos;
+          Ecentic rewrites this listing from the winning competitors&apos;
           strengths and publishes it straight to your store — no manual edits.
         </p>
       </div>
@@ -1080,7 +1080,7 @@ const OptimizeTab = ({
 
         <div className="flex flex-col items-start gap-4 bg-background-rich p-6">
           <p className="text-foreground leading-relaxed">
-            Let Écentic rewrite this listing and publish the optimized version
+            Let Ecentic rewrite this listing and publish the optimized version
             straight to your store, or review every pending change in the
             optimization queue first.
           </p>

@@ -276,7 +276,7 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
                   Ready to win every AI agent's cart?
                 </p>
                 <p className="font-light text-foreground-dimmed">
-                  écentic auto-optimizes your listings. Free to start.
+                  ecentic auto-optimizes your listings. Free to start.
                 </p>
               </div>
               <div className="flex items-end p-6">

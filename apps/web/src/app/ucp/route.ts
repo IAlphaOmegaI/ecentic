@@ -4,7 +4,7 @@ const methodNotImplemented = (method: string) =>
   NextResponse.json(
     {
       error: "not_implemented",
-      message: `${method} is not implemented yet for the écentic UCP REST service.`,
+      message: `${method} is not implemented yet for the ecentic UCP REST service.`,
       docs: "/ucp/agent-profile",
       expectedEndpoints: [
         "/ucp/catalog/search",
@@ -24,7 +24,7 @@ export const GET = () => {
       transport: "rest",
       endpoint: "https://ecentic.ai/ucp",
       status: "placeholder",
-      note: "écentic UCP REST root route is available.",
+      note: "ecentic UCP REST root route is available.",
       docs: "https://ecentic.ai/ucp/agent-profile",
     },
     {

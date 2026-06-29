@@ -48,7 +48,7 @@ export default () => {
               <div className="lg:hidden">
                 <Image
                   src="/images/trademark.svg"
-                  alt="écentic"
+                  alt="ecentic"
                   width={100}
                   height={28}
                   className="h-auto w-24"

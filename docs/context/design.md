@@ -1,6 +1,6 @@
-# écentic — Design System & Visual Build Guide
+# ecentic — Design System & Visual Build Guide
 
-> **This is THE single source of truth for everything design‑related at écentic.** It merges the
+> **This is THE single source of truth for everything design‑related at ecentic.** It merges the
 > UI/UX *Design Refresh* mandate (precedence), the rendered landing‑page brand language (formerly
 > `DESIGN.pdf`), the codebase‑grounded style guide (formerly `style.md`), and the full dashboard
 > information architecture (formerly `dashboard.md`) into one document. Read it before building any
@@ -10,7 +10,7 @@
 
 ## 0. How to use this document (read first)
 
-You are building or refreshing the visual surface of **écentic** — an autonomous optimization
+You are building or refreshing the visual surface of **ecentic** — an autonomous optimization
 platform for the AI‑agent shopping economy. Your job is to produce **beautiful, consistent, on‑brand
 pages every time**. This document gives you the bones, the skin, and the recipes.
 
@@ -43,13 +43,13 @@ pages every time**. This document gives you the bones, the skin, and the recipes
 
 ---
 
-## 1. What écentic is (so your design decisions are correct)
+## 1. What ecentic is (so your design decisions are correct)
 
 AI shopping agents (GPT‑4, Claude, Gemini, Perplexity) increasingly decide what consumers buy. They
 ignore ads, branding, and emotional copy — they parse **structured product data**, compare specs, and
 pick a winner in milliseconds. If a merchant's data is incomplete, agents skip them.
 
-écentic imports a merchant's catalog, runs **simulated purchase decisions** across multiple models
+ecentic imports a merchant's catalog, runs **simulated purchase decisions** across multiple models
 against real competitors, **diagnoses** exactly why agents pick competitors, and **auto‑generates +
 publishes** optimized listings. Core loop:
 
@@ -63,7 +63,7 @@ publishes** optimized listings. Core loop:
   density legible and calm, never cramped.
 - **The feeling is "infrastructure for commerce."** Confident, precise, slightly austere. The blue is
   the only loud color; everything else is restrained grayscale.
-- **Language:** always "AI agents," never just "AI." Brand is **écentic** (lowercase, accented *é*).
+- **Language:** always "AI agents," never just "AI." Brand is **ecentic** (lowercase, accented *é*).
 
 ---
 
@@ -399,7 +399,7 @@ specs below describe composition and the surrounding skin, not overrides of base
 - **⌘K chip:** `bg-background-rich border border-accent-foreground rounded-sm text-[10px]` inside the field, right‑aligned.
 - **Plan badge** ("Dominate"): outlined‑primary `rounded-md font-semibold` button → billing.
 - **Avatar:** 32px primary→purple gradient circle.
-- Left: écentic logo → dashboard home. Right also holds the notification bell (unread count badge).
+- Left: ecentic logo → dashboard home. Right also holds the notification bell (unread count badge).
 
 ### 8.5 Tables
 
@@ -491,7 +491,7 @@ row share identical height/padding.
 
 ## 9. Visual motifs library (the brand language)
 
-These motifs carry écentic's identity. The landing reconstruction (§10) shows them in context; reuse
+These motifs carry ecentic's identity. The landing reconstruction (§10) shows them in context; reuse
 them deliberately.
 
 ### 9.1 Crosshair `+` corners & hatched bands
@@ -503,7 +503,7 @@ sphere/pearl** rising out of it. Meaning: *the product the agent reaches in and 
 two ways:
 - **Hero top corners:** die‑cut box flaps double as the crosshair corner markers.
 - **Footer CTA:** the full box + pearl, centered, as the closing brand image.
-This is écentic's primary illustration — favor it over generic stock imagery.
+This is ecentic's primary illustration — favor it over generic stock imagery.
 
 ### 9.3 Human‑vs‑Agent duality panel — *the core conceptual motif*
 A two‑cell `gap-px` comparison:
@@ -520,8 +520,8 @@ full‑bleed section, joined by a dotted connector and crosshair grid. Each node
 (magnifier / breakdown / lightning), title, one short paragraph.
 
 ### 9.5 Highlighted‑column comparison table
-A capability matrix where competitor columns get `—`/✓ and the **écentic column is tinted `primary`**
-and visually elevated. The "audits tell you what's broken, écentic fixes it" device.
+A capability matrix where competitor columns get `—`/✓ and the **ecentic column is tinted `primary`**
+and visually elevated. The "audits tell you what's broken, ecentic fixes it" device.
 
 ### 9.6 Circuit / topographic hero texture
 A faint, low‑contrast circuit‑line or topographic texture inside `bg-primary` blocks. Keep it whisper
@@ -539,13 +539,13 @@ it with a dot‑grid or other treatment.
 > binary. Build top to bottom with full‑bleed sections (§3.5), `gap-px` grids, and the motifs above.
 > Copy below is the reference copy (design is the deliverable; treat copy as illustrative content).
 
-**Header** — on the blue hero. Left: `écentic` wordmark (lowercase, accented *é*, small blue box
+**Header** — on the blue hero. Left: `ecentic` wordmark (lowercase, accented *é*, small blue box
 glyph). Center: rounded pill `Menu · 0%`. Right: `Get Started`. White text on blue.
 
 **1 · Hero** — `bg-primary`, full‑bleed, faint circuit texture (§9.6); box‑flap crosshair corners
 (§9.2).
 - h1 (white, Display): **"Win every agent's cart."**
-- Sub (`text-white/70`): "écentic simulates how AI shopping agents choose between your products and
+- Sub (`text-white/70`): "ecentic simulates how AI shopping agents choose between your products and
   competitors, then automatically rewrites your listings to get picked first. Not monitoring. Not
   auditing. Autonomous optimization."
 
@@ -574,8 +574,8 @@ economy."** 2×2 `gap-px` feature grid:
 - **UCP Readiness & Structured Data** (`</>`) — generate your `/.well-known/ucp` profile; extract attributes from images/descriptions.
 
 **5 · Comparison table** — `bg-background-rich` card. h2 **"Audits tell you what's broken. "** +
-`text-primary` "écentic fixes it." Columns: *Capabilities · Audit Tools · GEO Monitoring · écentic*
-(écentic column tinted `primary`, §9.5). Rows: AI‑ready check (✓/—/✓) · brand mentions in AI search
+`text-primary` "ecentic fixes it." Columns: *Capabilities · Audit Tools · GEO Monitoring · ecentic*
+(ecentic column tinted `primary`, §9.5). Rows: AI‑ready check (✓/—/✓) · brand mentions in AI search
 (—/✓/✓) · simulates agent purchasing (—/—/✓) · win rate vs specific competitors (—/—/✓) ·
 auto‑generates optimized listings (Partial/—/✓) · re‑optimizes when models update (—/—/✓).
 
@@ -586,7 +586,7 @@ picking you." Tier cards in a `gap-px` grid:
 - **Dominate — $449/mo** ("Win on autopilot") — **highlighted `bg-primary` card, white text**: up to 1,000 products · continuous simulations · auto‑optimization + one‑click publish · model‑drift alerts · UCP generation → `Start Dominating` (white bg / primary text).
 - **Enterprise** (full‑width row, `bg-background-dimmed`): "For teams that need custom limits, enterprise security, and dedicated support." → `Contact Sales` (outline).
 
-**7 · Footer CTA** — `bg-primary` gradient, full‑bleed. Large white `écentic` wordmark. "The next era
+**7 · Footer CTA** — `bg-primary` gradient, full‑bleed. Large white `ecentic` wordmark. "The next era
 of commerce isn't about who ranks #1 on Google." + emphasized "It's about who gets picked by the
 agent." → `Get your free Win Rate Report` (white bg / primary text). Below: the **box + pearl
 illustration** (§9.2).
@@ -714,7 +714,7 @@ Client components import server modules **type‑only**: `import type * as Produ
 - Always **"AI agents"**, never bare "AI", for the shopping agents.
 - No double dashes (`--`/`—`) inside sentences — restructure with commas/periods.
 - **"versus"**, not "vs.", in feature descriptions.
-- Brand is **écentic** (lowercase, accented *é* where Unicode is available).
+- Brand is **ecentic** (lowercase, accented *é* where Unicode is available).
 - Sentence case for UI labels and tabs (no ALL‑CAPS except section labels and stat labels).
 
 ---

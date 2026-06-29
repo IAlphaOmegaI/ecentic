@@ -37,7 +37,7 @@ const description =
   "AI ecommerce platform for product listing optimization, competitor analysis, and AI shopping visibility. Simulate decisions and improve win rate.";
 
 export const metadata: Metadata = createMetadata({
-  title: "écentic — Win Every AI Shopping Agent's Cart",
+  title: "ecentic — Win Every AI Shopping Agent's Cart",
   description,
   path: "/",
   keywords: [
@@ -100,10 +100,10 @@ export default async () => (
       <Testimonials />
       <Booking />
       {/* <DiscoveryPaths /> */}
-      <section aria-label="About écentic" className="sr-only">
+      <section aria-label="About ecentic" className="sr-only">
         <h2>Make every product easier for AI shopping agents to recommend</h2>
         <p>
-          écentic helps brands understand how AI shopping agents evaluate
+          ecentic helps brands understand how AI shopping agents evaluate
           product pages before they recommend an item to shoppers. Instead of
           guessing why one listing wins and another loses, teams can simulate
           how modern AI systems compare product titles, descriptions, pricing,

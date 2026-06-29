@@ -1,4 +1,4 @@
-# écentic — Website, Codebase & Unicorn Vision Plan
+# ecentic — Website, Codebase & Unicorn Vision Plan
 
 > Companion to `ecentic-a16z-research-brief.md`. Where that doc was about the pitch, this one is about the substrate the pitch rests on: what the site and the app need to say and do before a16z clicks through, and what the codebase needs to become for this to end in a $1B+ outcome.
 
@@ -256,7 +256,7 @@ The codebase already has `lib/seo.ts`, `sitemap.ts`, `robots.ts`, structured dat
 
 - Ship a `llms.txt` at the site root ([proposal](https://llmstxt.org/)) listing the canonical URLs for every page. The AI agents you're helping merchants win for — they're now reading these files. It's 90 minutes of work and it's a weirdly strong market signal.
 - Enable the `/.well-known/ucp` endpoint on ecentic.ai itself (not just as a feature for customers). Eat your own dog food. When an a16z partner pastes ecentic.ai into your own validator, they should see a ✓.
-- Write three flagship long-form pieces before the a16z application: (a) "How GPT-4, Claude, Gemini, and Perplexity actually evaluate product listings — a 10,000-product study", (b) "The agent traffic iceberg: what your Shopify analytics is missing", (c) "Why we built écentic for the UCP / ACP / TAP future". These are the three pieces a16z partners will Google when they see your name.
+- Write three flagship long-form pieces before the a16z application: (a) "How GPT-4, Claude, Gemini, and Perplexity actually evaluate product listings — a 10,000-product study", (b) "The agent traffic iceberg: what your Shopify analytics is missing", (c) "Why we built ecentic for the UCP / ACP / TAP future". These are the three pieces a16z partners will Google when they see your name.
 - Add `og:image` per page with a Vercel-OG-rendered summary card so every shared link looks like a product, not a default.
 
 ### 3.6 Conversion surface
@@ -284,7 +284,7 @@ These are the codebase changes that directly protect the pitch. Each has a defen
 
 **Public API (read-only to start).** Wrap the existing repository layer in a small REST or tRPC-over-HTTP surface at `/api/v1/*` with API-key auth. Answer to "what's the platform play": agencies and OEMs can query scan results programmatically, which unlocks the agency SKU and the Plug and Play partner distribution.
 
-**UCP signing service.** `server/app/intelligence/ucp-sign.ts` — you already emit the UCP JSON; add HTTP Message Signatures (RFC 9421 / Web Bot Auth style) so merchants can cryptographically sign their UCP profile with a key écentic manages. This is the wedge into the agent-authentication layer that matters for the Mastercard + Visa conversations. It is 2–3 weeks of crypto-careful work and it gives you a story no competitor has.
+**UCP signing service.** `server/app/intelligence/ucp-sign.ts` — you already emit the UCP JSON; add HTTP Message Signatures (RFC 9421 / Web Bot Auth style) so merchants can cryptographically sign their UCP profile with a key ecentic manages. This is the wedge into the agent-authentication layer that matters for the Mastercard + Visa conversations. It is 2–3 weeks of crypto-careful work and it gives you a story no competitor has.
 
 **Amazon SP-API spike.** Not a full integration, but enough of a spike to show the design. Answer to "how do you expand beyond Shopify": here's the architecture and here's our estimated ship date.
 
@@ -296,7 +296,7 @@ These are the moves that take the product from "smart optimizer" to "infrastruct
 
 **Model-specific evaluation frameworks as open benchmarks.** Your `compare.ts` has four distinct scoring rubrics per model. Publish them as an open methodology (`/methodology/scoring`), invite other researchers to extend, and run a quarterly public leaderboard of agent-selection behavior. This is how Common Crawl became infrastructure — Common Crawl is just a crawl, the moat is the network of researchers that standardize on it.
 
-**Write-back beyond Shopify / WooCommerce.** BigCommerce and Amazon are table stakes but the real unlock is *merchant-owned* surfaces — Shopify headless storefronts, custom Next.js commerce apps, Salesforce Commerce Cloud. Ship a `@ecentic/js` SDK that any storefront can drop in to accept écentic-generated metadata updates without needing a full platform integration. This turns the write-back moat from "platforms we're built on" to "any commerce surface".
+**Write-back beyond Shopify / WooCommerce.** BigCommerce and Amazon are table stakes but the real unlock is *merchant-owned* surfaces — Shopify headless storefronts, custom Next.js commerce apps, Salesforce Commerce Cloud. Ship a `@ecentic/js` SDK that any storefront can drop in to accept ecentic-generated metadata updates without needing a full platform integration. This turns the write-back moat from "platforms we're built on" to "any commerce surface".
 
 **UCP as a service.** Run a hosted `/.well-known/ucp` for merchants who don't want to host it themselves, with signing, rotation, and an audit log. Charge per verification. This is the Auth0 / Segment pattern: the value is the signing surface, not the data.
 
@@ -336,13 +336,13 @@ $1B outcomes in commerce infrastructure come from one of three shapes:
 - **Protocol** — you define or co-define the spec that the ecosystem converges on (Plaid, Twilio in the early days, Auth0).
 - **Marketplace / aggregator** — you aggregate supply or demand so efficiently that the other side has no choice but to transact through you (Faire, Instacart).
 
-écentic's path is *protocol*, not platform or marketplace. Don't pretend otherwise. The market is too big and too fast for écentic to become the Shopify of agentic commerce. It can absolutely become the *Plaid of agentic commerce* — the trust + measurement + optimization layer sitting between merchants and every AI shopping agent.
+ecentic's path is *protocol*, not platform or marketplace. Don't pretend otherwise. The market is too big and too fast for ecentic to become the Shopify of agentic commerce. It can absolutely become the *Plaid of agentic commerce* — the trust + measurement + optimization layer sitting between merchants and every AI shopping agent.
 
 ### 5.2 The three-chapter story
 
 **Chapter 1 (now → end of 2026): "Win every agent's cart" — the optimization wedge.** You are today. Merchant-side SaaS. Shopify-first. Scan → diagnose → optimize → measure. ARR target: ~$2–5M by end of 2026, mostly Compete-tier SMB and mid-market, with 2–3 Enterprise design-partners sourced from Plug and Play. This is the chapter a16z funds.
 
-**Chapter 2 (2027): "The measurement layer every agentic-commerce story is missing" — agent traffic as a standalone product.** Spin the agent-traffic tracking + UCP validator into a freemium product that doesn't require connecting a store. Every ecommerce operator wants to know who's crawling them; nobody is giving them that for free. Grow to hundreds of thousands of domains indexed, convert a fraction to paid écentic customers. ARR target: $20–40M. This is the chapter that compounds.
+**Chapter 2 (2027): "The measurement layer every agentic-commerce story is missing" — agent traffic as a standalone product.** Spin the agent-traffic tracking + UCP validator into a freemium product that doesn't require connecting a store. Every ecommerce operator wants to know who's crawling them; nobody is giving them that for free. Grow to hundreds of thousands of domains indexed, convert a fraction to paid ecentic customers. ARR target: $20–40M. This is the chapter that compounds.
 
 **Chapter 3 (2028 onward): "The signing + trust infrastructure for agent-to-merchant commerce" — UCP-as-a-service, Agent Simulation API, enterprise protocol tooling.** By this point the UCP / ACP / TAP protocols are live, Mastercard / Visa / Amazon / OpenAI are all shipping agent-commerce rails, and every merchant touching those rails needs a signing + validation + benchmark layer. You are that layer. You are also the place where *the agents themselves* come to benchmark — "does our model pick product A over product B the way a real buyer would?" becomes a question you answer for OpenAI, Anthropic, Google, Perplexity. ARR target: $100M+, with a platform-revenue mix (agent-side + merchant-side + data-side).
 
@@ -350,7 +350,7 @@ $1B outcomes in commerce infrastructure come from one of three shapes:
 
 a16z's public writing (Alex Rampell's "Apps Fund" thesis, Angela Strange's fintech infra posts, the "KYA" newsletter) converges on five metrics for a category like this:
 
-- **Magic moment → activation rate.** For écentic this is: installed Shopify app → ran first scan → saw per-model breakdown. Instrument it, hit 60%+.
+- **Magic moment → activation rate.** For ecentic this is: installed Shopify app → ran first scan → saw per-model breakdown. Instrument it, hit 60%+.
 - **Weekly active within paid cohort.** For a tool this should be 70%+. Weekly digest + agent-traffic alerts are the path.
 - **Net revenue retention (NRR).** Enterprise-adjacent SaaS needs 115%+ NRR. This is where the Compete → Dominate → Enterprise natural expansion lives.
 - **Net new logos per month.** At seed, 10–20 is the floor. At Series A, 40+.
@@ -432,4 +432,4 @@ Delete / defer:
 - [Red Bull Basement 2026 — Albania application portal](https://albaniatech.org/red-bull-basement-takes-you-to-silicon-valley/)
 - [Red Bull Basement World Final](https://www.redbull.com/int-en/events/red-bull-basement-world-final)
 - [Plug and Play Tech Center](https://www.plugandplaytechcenter.com/)
-- Companion research brief: `/Users/xhurianshaba/Documents/Claude/Projects/écentic/ecentic-a16z-research-brief.md`
+- Companion research brief: `/Users/xhurianshaba/Documents/Claude/Projects/ecentic/ecentic-a16z-research-brief.md`

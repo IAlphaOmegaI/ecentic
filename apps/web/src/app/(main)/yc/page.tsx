@@ -18,7 +18,7 @@ import {
 import { YcRedemptionForm } from "./_components/yc-redemption-form";
 
 const description =
-  "An exclusive écentic deal for Y Combinator founders: extended Dominate access, white-glove onboarding, and founder pricing. Redeem in under two minutes.";
+  "An exclusive ecentic deal for Y Combinator founders: extended Dominate access, white-glove onboarding, and founder pricing. Redeem in under two minutes.";
 
 const faq = [
   {
@@ -29,7 +29,7 @@ const faq = [
   {
     question: "What do I actually get?",
     answer:
-      "Extended access to écentic Dominate — continuous AI agent simulations across GPT-4, Claude, Gemini, and Perplexity, auto-optimization with one-click publish, drift alerts, and UCP generation — plus white-glove onboarding for your catalog and founder pricing when the deal period ends.",
+      "Extended access to ecentic Dominate — continuous AI agent simulations across GPT-4, Claude, Gemini, and Perplexity, auto-optimization with one-click publish, drift alerts, and UCP generation — plus white-glove onboarding for your catalog and founder pricing when the deal period ends.",
   },
   {
     question: "Do I need an account first?",
@@ -44,13 +44,13 @@ const faq = [
 ] as const;
 
 export const metadata: Metadata = createMetadata({
-  title: "écentic for Y Combinator — Redeem Your Founder Deal",
+  title: "ecentic for Y Combinator — Redeem Your Founder Deal",
   description,
   path: "/yc",
   keywords: [
     "Y Combinator deal",
     "YC startup deal",
-    "écentic YC",
+    "ecentic YC",
     "AI ecommerce tool for startups",
     "YC founder perks",
   ],
@@ -67,7 +67,7 @@ export default () => {
     {
       "@context": "https://schema.org",
       "@type": "Offer",
-      name: "écentic Y Combinator founder deal",
+      name: "ecentic Y Combinator founder deal",
       category: "Software deal",
       url: absoluteUrl("/yc"),
       description,
@@ -78,7 +78,7 @@ export default () => {
   return (
     <ContentPageLayout
       eyebrow="Y Combinator"
-      title="Your écentic deal, ready to redeem."
+      title="Your ecentic deal, ready to redeem."
       description={description}
     >
       <script
@@ -93,9 +93,9 @@ export default () => {
         description="Built for YC founders who would rather win AI agent recommendations than babysit a listings spreadsheet."
       >
         <ContentPageRichText
-          content={`Écentic shows you how AI shopping agents compare your products against competitors, diagnoses why you win or lose, and rewrites your listings to close the gap. The YC deal opens the full platform:
+          content={`Ecentic shows you how AI shopping agents compare your products against competitors, diagnoses why you win or lose, and rewrites your listings to close the gap. The YC deal opens the full platform:
 
-- Extended écentic Dominate — continuous simulations across GPT-4, Claude, Gemini, and Perplexity
+- Extended ecentic Dominate — continuous simulations across GPT-4, Claude, Gemini, and Perplexity
 - Auto-optimization with one-click publish and model drift alerts
 - UCP generation so agents can verify your catalog directly
 - White-glove onboarding for your catalog and founder pricing after the deal period
@@ -120,11 +120,11 @@ Redeem below and we'll verify your batch, then email your activation link within
         <ContentPageRichText
           content={`There is no procurement maze here — the whole point is to get you simulating fast.
 
-- Submit the form — company, batch, and what you want écentic to help you win
+- Submit the form — company, batch, and what you want ecentic to help you win
 - We verify your batch against the YC directory, usually the same day
 - You get an activation link and white-glove help importing your catalog
 
-Once your catalog is in, écentic runs it through the major AI shopping models, shows you why competitors get picked, and turns the findings into listing changes you can approve in one click.`}
+Once your catalog is in, ecentic runs it through the major AI shopping models, shows you why competitors get picked, and turns the findings into listing changes you can approve in one click.`}
         />
       </ContentPageSection>
 

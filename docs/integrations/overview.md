@@ -6,7 +6,7 @@
 
 ## Overview
 
-Écentic supports connecting to external product catalogs via four live integrations and has two planned providers on the roadmap.
+Ecentic supports connecting to external product catalogs via four live integrations and has two planned providers on the roadmap.
 
 | Provider | Mode | Status |
 |---|---|---|

@@ -1,8 +1,8 @@
 # Day One Capital — Meeting Prep & Agenda
 
 **Who:** Roland, Day One Capital (Budapest) · pre-seed/seed, CEE-focused, €500K–€2.5M checks
-**You:** Xhurian Shaba — écentic · raising €750K
-**One-liner:** écentic helps e-commerce brands win the cart when AI agents do the shopping — we simulate how ChatGPT, Gemini and Perplexity compare products, then auto-fix listings to win the sale.
+**You:** Xhurian Shaba — ecentic · raising €750K
+**One-liner:** ecentic helps e-commerce brands win the cart when AI agents do the shopping — we simulate how ChatGPT, Gemini and Perplexity compare products, then auto-fix listings to win the sale.
 
 > ⚠️ Name check: searches point to **Day One Capital**, not "DayZero." Confirm before you walk in.
 
@@ -27,7 +27,7 @@ This is a **screening meeting, not a closing meeting.** The win is earning the n
 
 1. **Warm open (2 min)** — rapport. One line on why you specifically wanted to meet Day One (AImotive / CEE-to-global).
 2. **The shift + the problem (4 min)** — AI agents now *buy*, not just recommend. Merchants are going invisible and can't see it happening.
-3. **What écentic does (4 min)** — connect store → simulate every AI shopper → auto-fix what's losing. One crisp walkthrough.
+3. **What ecentic does (4 min)** — connect store → simulate every AI shopper → auto-fix what's losing. One crisp walkthrough.
 4. **Why now (2 min)** — agent checkout went live across OpenAI, Google, Visa, Mastercard in the last 6 months.
 5. **Traction (4 min)** — paying pilots, real catalogs, real lift.
 6. **Why this team (2 min)** — ex-Shopify merchants since 2020, built before, AI + eng + sales.
@@ -56,7 +56,7 @@ Every simulation and fix is a labeled datapoint linking content → agent behavi
 We stage real buying sessions across agents, measure whether the merchant's product gets chosen vs. competitors, apply fixes, and re-run. Lift is the change in agent win rate, tracked through to revenue. [Have one concrete pilot number ready.]
 
 **"Walk me through traction."**
-Paying pilots with real catalogs: Dua Flavours (£10K+ MRR online) with écentic as the optimization layer; Avatid as a further design partner; enterprise pilots in discussion via Plug and Play (eBay, Carrefour, Inditex). Early but real — live merchants, real lift. [Be honest about scale; don't inflate.]
+Paying pilots with real catalogs: Dua Flavours (£10K+ MRR online) with ecentic as the optimization layer; Avatid as a further design partner; enterprise pilots in discussion via Plug and Play (eBay, Carrefour, Inditex). Early but real — live merchants, real lift. [Be honest about scale; don't inflate.]
 
 **"Go-to-market and CAC?"**
 Shopify App Store as primary channel — one-click install, self-serve, app-store discovery → ~4.6M merchants in reach at low CAC. Design-partner pilots now for proof; enterprise via partners.

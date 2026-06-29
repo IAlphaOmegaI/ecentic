@@ -7,7 +7,7 @@ const profile = {
   status: "success",
   merchant: {
     name: seo.name,
-    legalName: "écentic",
+    legalName: "ecentic",
     url: seo.host,
     logo: `${seo.host}/icons/icon-512.png`,
     description: seo.description,
@@ -23,7 +23,7 @@ const profile = {
         transport: "rest",
         endpoint: `${seo.host}/api/ucp`,
         description:
-          "écentic platform descriptor. Point AI shopping agents and crawlers here to discover how the écentic catalog simulation, diagnosis, and optimization services are exposed.",
+          "ecentic platform descriptor. Point AI shopping agents and crawlers here to discover how the ecentic catalog simulation, diagnosis, and optimization services are exposed.",
       },
     ],
     "ai.ecentic.simulation": [

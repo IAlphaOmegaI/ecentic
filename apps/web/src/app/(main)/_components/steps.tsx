@@ -9,7 +9,7 @@ export const Steps = () => (
             From invisible to chosen in three steps.
           </h2>
           <p className="font-light text-xl md:text-3xl">
-            Connect your store in one click. Then écentic runs the loop —
+            Connect your store in one click. Then ecentic runs the loop —
             simulate, diagnose, and ship the fix. Built exclusively for the AI
             agent economy.
           </p>
@@ -21,7 +21,7 @@ export const Steps = () => (
             <RobotIcon className="size-16" />
             <p className="font-medium text-4xl">Simulate</p>
             <p className="text-left font-light text-lg md:text-right">
-              écentic runs your products through GPT-4, Claude, Gemini &
+              ecentic runs your products through GPT-4, Claude, Gemini &
               Perplexity simultaneously. It maps exactly how each AI agent
               compares your listings against every competitor in your category,
               in real time.
@@ -37,7 +37,7 @@ export const Steps = () => (
             <p className="text-left font-light text-lg">
               See exactly where you are losing. Which attributes are missing,
               which competitors are winning, and which AI agents are rejecting
-              you. Every gap has a reason. écentic finds it.
+              you. Every gap has a reason. ecentic finds it.
             </p>
           </div>
           {/* Optimize — left col, content right-aligned toward center */}
@@ -46,7 +46,7 @@ export const Steps = () => (
             <CircleBoltIcon className="size-16" />
             <p className="font-medium text-4xl">Optimize</p>
             <p className="text-left font-light text-lg md:text-right">
-              We don't just suggest — écentic writes the fix and publishes it.
+              We don't just suggest — ecentic writes the fix and publishes it.
               Titles, descriptions, and structured data, rewritten for maximum
               AI agent selection. Approve in one click or set to auto-publish,
               continuously re-optimized as models evolve.

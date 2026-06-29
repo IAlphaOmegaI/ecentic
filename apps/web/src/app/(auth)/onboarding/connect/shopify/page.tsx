@@ -50,7 +50,7 @@ export default () => (
             no orders, no customers.
           </li>
           <li>
-            After you approve, Shopify allows écentic to read and write your
+            After you approve, Shopify allows ecentic to read and write your
             store's product data.
           </li>
         </ol>

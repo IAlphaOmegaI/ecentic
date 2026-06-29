@@ -1,6 +1,6 @@
 import { createOgImage, ogImageContentType, ogImageSize } from "@/lib/og";
 
-export const alt = "AI for WooCommerce — écentic";
+export const alt = "AI for WooCommerce — ecentic";
 export const size = ogImageSize;
 export const contentType = ogImageContentType;
 

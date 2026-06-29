@@ -36,7 +36,7 @@ import {
   updateCheckoutWithFulfillmentRequestSchema,
 } from "./ucp-advanced-validator";
 
-// écentic UCP platform profile
+// ecentic UCP platform profile
 const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
 
 // Gemini 3 requires thoughtSignature replay on multi-step tool loops; the gateway
@@ -173,7 +173,7 @@ const callMCP = async (
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        "User-Agent": "UCP-Flow-Tester/1.0 (écentic; https://ecentic.ai)",
+        "User-Agent": "UCP-Flow-Tester/1.0 (ecentic; https://ecentic.ai)",
       },
       body: JSON.stringify({
         jsonrpc: "2.0",
@@ -246,7 +246,7 @@ const callRest = async (
         "Content-Type": "application/json",
         Accept: "application/json",
         "UCP-Agent": `profile="${agentProfileUrl}"`,
-        "User-Agent": "UCP-Flow-Tester/1.0 (écentic; https://ecentic.ai)",
+        "User-Agent": "UCP-Flow-Tester/1.0 (ecentic; https://ecentic.ai)",
       },
       body: body !== undefined ? JSON.stringify(body) : undefined,
       signal: AbortSignal.timeout(12_000),

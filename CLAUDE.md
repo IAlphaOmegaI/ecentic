@@ -19,7 +19,7 @@ If code and docs disagree, follow documented intent unless the user explicitly a
 
 ## What This Is
 
-**Écentic** is an e-commerce optimization platform for the AI agent economy. It simulates how AI shopping agents (GPT-4, Claude, Gemini, Perplexity) compare products vs. competitors, diagnoses why products win or lose, and auto-optimizes listings. See `docs/context/idea.md` for full product spec and feature roadmap.
+**Ecentic** is an e-commerce optimization platform for the AI agent economy. It simulates how AI shopping agents (GPT-4, Claude, Gemini, Perplexity) compare products vs. competitors, diagnoses why products win or lose, and auto-optimizes listings. See `docs/context/idea.md` for full product spec and feature roadmap.
 
 ---
 

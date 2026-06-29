@@ -61,7 +61,7 @@ export default () => {
               <div className="lg:hidden">
                 <Image
                   src="/images/trademark.svg"
-                  alt="écentic"
+                  alt="ecentic"
                   width={100}
                   height={28}
                   className="h-auto w-24"
@@ -70,7 +70,7 @@ export default () => {
               </div>
               <div>
                 <h2 className="font-medium text-4xl text-foreground">
-                  Sign in to écentic
+                  Sign in to ecentic
                 </h2>
                 <p className="mt-1 font-light text-2xl text-foreground-dimmed">
                   Continue optimizing your product listings.

@@ -11,15 +11,15 @@ export const GET = async () => {
       title: "Core",
       description: "Product intent, pricing, and the landing story.",
       links: [
-        { path: "/", label: "écentic — Win Every AI Shopping Agent's Cart" },
-        { path: "/sign-up", label: "Create an écentic account" },
-        { path: "/sign-in", label: "Sign in to écentic" },
+        { path: "/", label: "ecentic — Win Every AI Shopping Agent's Cart" },
+        { path: "/sign-up", label: "Create an ecentic account" },
+        { path: "/sign-in", label: "Sign in to ecentic" },
       ],
     },
     {
       title: "Features",
       description:
-        "What écentic does: AI simulation, diagnosis, and product listing optimization.",
+        "What ecentic does: AI simulation, diagnosis, and product listing optimization.",
       links: [
         { path: "/features", label: "AI ecommerce tools for merchants" },
         {
@@ -30,7 +30,7 @@ export const GET = async () => {
     },
     {
       title: "Platforms",
-      description: "How écentic connects to the underlying commerce stack.",
+      description: "How ecentic connects to the underlying commerce stack.",
       links: [
         { path: "/platforms/shopify", label: "AI for Shopify stores" },
         { path: "/platforms/woocommerce", label: "AI for WooCommerce stores" },
@@ -70,7 +70,7 @@ export const GET = async () => {
       description:
         "Long-form guides on structured data, agent traffic, and catalog visibility.",
       links: [
-        { path: "/blog", label: "écentic blog — index" },
+        { path: "/blog", label: "ecentic blog — index" },
         ...posts.map((post) => ({
           path: `/blog/${post.slug}`,
           label: post.title,
@@ -84,7 +84,7 @@ export const GET = async () => {
     "",
     `> ${seo.description}`,
     "",
-    "écentic simulates how AI shopping agents — GPT-4, Claude, Gemini, Perplexity — evaluate product listings against competitors, diagnoses why a product wins or loses, and auto-optimizes catalog content so merchants capture agent-driven commerce.",
+    "ecentic simulates how AI shopping agents — GPT-4, Claude, Gemini, Perplexity — evaluate product listings against competitors, diagnoses why a product wins or loses, and auto-optimizes catalog content so merchants capture agent-driven commerce.",
     "",
     `- Site: ${seo.host}`,
     `- Sitemap: ${seo.host}/sitemap.xml`,

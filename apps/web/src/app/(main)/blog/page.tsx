@@ -57,12 +57,12 @@ export default async () => {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Blog",
-    name: "écentic Blog",
+    name: "ecentic Blog",
     description,
     url: "https://ecentic.ai/blog",
     publisher: {
       "@type": "Organization",
-      name: "écentic",
+      name: "ecentic",
       url: "https://ecentic.ai",
       logo: {
         "@type": "ImageObject",
@@ -79,7 +79,7 @@ export default async () => {
       keywords: post.tags.join(", "),
       author: {
         "@type": "Organization",
-        name: "écentic",
+        name: "ecentic",
       },
     })),
   };

@@ -53,7 +53,7 @@ export const Onboarding = ({
       >
         <Image
           src="/images/wordmark.svg"
-          alt="écentic"
+          alt="ecentic"
           width={120}
           height={32}
           className="h-auto w-28 brightness-0 invert"

@@ -52,17 +52,17 @@ export const generateMetadata = async ({
     openGraph: {
       type: "article",
       url,
-      title: `${post.title} | écentic`,
+      title: `${post.title} | ecentic`,
       description: post.description,
       publishedTime: toBlogIsoDate(post.publishedAt),
       modifiedTime: toBlogIsoDate(post.updatedAt),
-      authors: ["écentic"],
+      authors: ["ecentic"],
       section: post.category,
       tags: [...post.tags],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${post.title} | écentic`,
+      title: `${post.title} | ecentic`,
       description: post.description,
     },
   };
@@ -86,11 +86,11 @@ export default async ({ params }: BlogPageProps) => {
       dateModified: toBlogIsoDate(post.updatedAt),
       author: {
         "@type": "Organization",
-        name: "écentic",
+        name: "ecentic",
       },
       publisher: {
         "@type": "Organization",
-        name: "écentic",
+        name: "ecentic",
         url: "https://ecentic.ai",
         logo: {
           "@type": "ImageObject",

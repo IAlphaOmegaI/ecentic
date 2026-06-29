@@ -1,4 +1,4 @@
-# Shopify App Store Listing — écentic
+# Shopify App Store Listing — ecentic
 
 Copy-paste reference for the Shopify Partner Dashboard app listing form.
 
@@ -13,7 +13,7 @@ See how AI shopping agents rank your products, find attribute gaps, and optimize
 ## App Details (max 500 chars)
 
 ```
-AI shopping agents (GPT-4, Claude, Gemini, Perplexity) increasingly decide which products consumers buy. They ignore ads and branding — they compare structured data in milliseconds. écentic imports your Shopify catalog, runs simulations across multiple AI models, and reveals exactly why agents pick competitors over you. Identify missing attributes, track per-model win rates, and publish optimized titles and descriptions directly back to your store.
+AI shopping agents (GPT-4, Claude, Gemini, Perplexity) increasingly decide which products consumers buy. They ignore ads and branding — they compare structured data in milliseconds. ecentic imports your Shopify catalog, runs simulations across multiple AI models, and reveals exactly why agents pick competitors over you. Identify missing attributes, track per-model win rates, and publish optimized titles and descriptions directly back to your store.
 ```
 
 ## Features (3–5, max 80 chars each)
@@ -60,7 +60,7 @@ https://ecentic.ai/privacy
 read_products, write_products, read_script_tags, write_script_tags
 ```
 
-**Justification for `write_products`**: écentic generates optimized product titles and descriptions based on AI simulation results. When merchants approve an optimization (or have auto-publish enabled), the app pushes the updated listing content back to Shopify via the Admin API.
+**Justification for `write_products`**: ecentic generates optimized product titles and descriptions based on AI simulation results. When merchants approve an optimization (or have auto-publish enabled), the app pushes the updated listing content back to Shopify via the Admin API.
 
 ## Webhook Endpoints
 
@@ -118,12 +118,12 @@ This account has pre-seeded simulation data so you can see the full dashboard ex
 ## Feature Media
 
 - **Type**: Image (1600×900px, .png)
-- **Alt text**: "écentic dashboard showing AI agent win rates across GPT-4, Claude, Gemini, and Perplexity for an e-commerce product catalog"
+- **Alt text**: "ecentic dashboard showing AI agent win rates across GPT-4, Claude, Gemini, and Perplexity for an e-commerce product catalog"
 
 ## Desktop Screenshots (minimum 3, 1600×900px)
 
 1. **Dashboard Overview** — Win rate cards, model breakdown chart, trend line
-   - Alt: "écentic dashboard overview with overall win rate, per-model scores, and trend chart"
+   - Alt: "ecentic dashboard overview with overall win rate, per-model scores, and trend chart"
 
 2. **Product Detail — Agent Replay** — Decision log showing step-by-step agent reasoning
    - Alt: "AI agent decision replay showing attribute-by-attribute comparison between products"

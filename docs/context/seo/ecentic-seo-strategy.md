@@ -1,4 +1,4 @@
-# écentic.ai SEO Strategy: From Zero to Ranking
+# ecentic.ai SEO Strategy: From Zero to Ranking
 
 ## Critical Finding: Your Site Is Not Indexed
 
@@ -159,7 +159,7 @@ Add JSON-LD structured data to your homepage:
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "écentic",
+  "name": "ecentic",
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "Web",
   "description": "AI-powered ecommerce optimization platform for product listings, personalization, and search.",
@@ -172,7 +172,7 @@ Add JSON-LD structured data to your homepage:
   },
   "publisher": {
     "@type": "Organization",
-    "name": "écentic",
+    "name": "ecentic",
     "url": "https://www.ecentic.ai"
   }
 }
@@ -268,5 +268,5 @@ The original article was designed for local service businesses (plumbers, HVAC, 
 
 ---
 
-*Strategy built for écentic.ai — April 2026*
+*Strategy built for ecentic.ai — April 2026*
 *Adapted from the Sarvesh Shrivastava 20-prompt SEO system for SaaS*

@@ -94,7 +94,7 @@ const config = {
   goal: field({
     shape: "text",
     validator: z.string(),
-    label: "What do you want écentic to help you win? (optional)",
+    label: "What do you want ecentic to help you win? (optional)",
     placeholder: "e.g. Get recommended over our top competitor by AI agents",
     classList: { field: "col-span-2" },
   }),

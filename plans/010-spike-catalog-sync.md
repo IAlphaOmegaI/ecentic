@@ -21,7 +21,7 @@
 
 ## Why this matters
 
-Simulations are only as good as the catalog they run on, and the catalog is synced exactly once — at onboarding or manual trigger. Merchants add products, change prices, and retire items continuously; Écentic never notices, so scans compare stale data and new products are never simulated. The product spec (`docs/context/idea.md`, "Catalog Sync on Interval & Webhooks") promises a 12-hour scheduled re-sync, Shopify `products/create|update|delete` webhooks, and feed re-fetch. The schema is already prepared (`store.lastSyncedAt`, `schema.ts:93`) and an HMAC-verified Shopify webhook receiver already exists — it just only handles the three mandatory GDPR topics. This spike designs the sync layer on top of those existing rails.
+Simulations are only as good as the catalog they run on, and the catalog is synced exactly once — at onboarding or manual trigger. Merchants add products, change prices, and retire items continuously; Ecentic never notices, so scans compare stale data and new products are never simulated. The product spec (`docs/context/idea.md`, "Catalog Sync on Interval & Webhooks") promises a 12-hour scheduled re-sync, Shopify `products/create|update|delete` webhooks, and feed re-fetch. The schema is already prepared (`store.lastSyncedAt`, `schema.ts:93`) and an HMAC-verified Shopify webhook receiver already exists — it just only handles the three mandatory GDPR topics. This spike designs the sync layer on top of those existing rails.
 
 ## Current state (verified at planning time)
 

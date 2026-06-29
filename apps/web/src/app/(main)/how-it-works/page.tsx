@@ -18,12 +18,12 @@ import {
 import { Steps } from "../_components/steps";
 
 const description =
-  "How écentic works: simulate how GPT-4, Claude, Gemini, and Perplexity compare your products, diagnose why you lose, and optimize titles, descriptions, and structured data to win more AI-assisted carts.";
+  "How ecentic works: simulate how GPT-4, Claude, Gemini, and Perplexity compare your products, diagnose why you lose, and optimize titles, descriptions, and structured data to win more AI-assisted carts.";
 
 const steps = [
   {
     name: "Simulate",
-    text: "écentic runs your products through GPT-4, Claude, Gemini, and Perplexity at the same time, mapping exactly how each agent compares your listings against every competitor in your category.",
+    text: "ecentic runs your products through GPT-4, Claude, Gemini, and Perplexity at the same time, mapping exactly how each agent compares your listings against every competitor in your category.",
   },
   {
     name: "Diagnose",
@@ -31,15 +31,15 @@ const steps = [
   },
   {
     name: "Optimize",
-    text: "écentic rewrites titles, descriptions, and structured data for maximum agent selection. Approve in one click or set auto-publish, and listings stay re-optimized as models evolve.",
+    text: "ecentic rewrites titles, descriptions, and structured data for maximum agent selection. Approve in one click or set auto-publish, and listings stay re-optimized as models evolve.",
   },
 ] as const;
 
 const faq = [
   {
-    question: "How does écentic simulate AI shopping agents?",
+    question: "How does ecentic simulate AI shopping agents?",
     answer:
-      "écentic sends your product data through the major AI models the same way a shopping assistant would, then records how each one compares your listing against competitors. The result is a repeatable read on whether agents pick you, and why.",
+      "ecentic sends your product data through the major AI models the same way a shopping assistant would, then records how each one compares your listing against competitors. The result is a repeatable read on whether agents pick you, and why.",
   },
   {
     question: "What does the diagnosis actually tell me?",
@@ -75,7 +75,7 @@ export default () => {
     {
       "@context": "https://schema.org",
       "@type": "HowTo",
-      name: "How écentic optimizes products for AI shopping agents",
+      name: "How ecentic optimizes products for AI shopping agents",
       description,
       url: absoluteUrl("/how-it-works"),
       step: steps.map((step, index) => ({
@@ -115,7 +115,7 @@ export default () => {
         <ContentPageRichText
           content={`AI shopping agents do not read your store the way a human shopper does. They compare structured signals — titles, attributes, pricing, and trust markers — across every product in a category in seconds.
 
-écentic recreates that comparison. It runs your products through GPT-4, Claude, Gemini, and Perplexity at once and records the outcome for each model:
+ecentic recreates that comparison. It runs your products through GPT-4, Claude, Gemini, and Perplexity at once and records the outcome for each model:
 - Which competitor each agent prefers and why
 - Which attributes carried the most weight in the decision
 - How the same product performs across different models and shopping contexts`}
@@ -146,7 +146,7 @@ Each finding is tied to a concrete change, so the work moves from "why did we lo
         description="Approve the highest-impact changes and keep listings tuned as the models evolve."
       >
         <ContentPageRichText
-          content={`The final step converts the diagnosis into approval-ready listing updates. écentic rewrites titles, descriptions, and structured data for maximum agent selection and queues them for review.
+          content={`The final step converts the diagnosis into approval-ready listing updates. ecentic rewrites titles, descriptions, and structured data for maximum agent selection and queues them for review.
 
 You stay in control of how much is automated:
 - Review and publish each change in one click

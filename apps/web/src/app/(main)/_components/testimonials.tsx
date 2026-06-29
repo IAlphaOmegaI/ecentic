@@ -8,7 +8,7 @@ const testimonials = [
     role: "Head of Ecommerce",
     company: "Meridian Goods",
     rating: 5,
-    text: "We had no idea AI agents were comparing our listings against competitors until écentic showed us the simulation. Within a week we fixed three product titles and saw a measurable lift in agent-referred traffic.",
+    text: "We had no idea AI agents were comparing our listings against competitors until ecentic showed us the simulation. Within a week we fixed three product titles and saw a measurable lift in agent-referred traffic.",
   },
   {
     name: "Marcus Trejo",

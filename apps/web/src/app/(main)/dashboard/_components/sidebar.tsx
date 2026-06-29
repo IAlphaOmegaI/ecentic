@@ -16,7 +16,7 @@ export const Sidebar = async () => {
       <div className="flex h-14 items-center justify-center overflow-hidden border-accent-foreground border-b pr-22 pl-5">
         <Image
           src="/images/trademark.svg"
-          alt="écentic"
+          alt="ecentic"
           width={96}
           height={28}
           className="w-full"

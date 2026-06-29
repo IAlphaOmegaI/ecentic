@@ -1,4 +1,4 @@
-# écentic — €750K Use of Funds · 18-Month Operating Plan
+# ecentic — €750K Use of Funds · 18-Month Operating Plan
 
 **Raise:** €750K · **Runway:** 18 months · **Goal:** reach seed-ready (€450K ARR + 2 enterprise pilots live by Month 12, then raise)
 

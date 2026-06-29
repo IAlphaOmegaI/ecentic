@@ -18,7 +18,7 @@ import {
 } from "../_components/content";
 
 const description =
-  "Book a 15-minute écentic demo. We run your top products through GPT-4, Claude, Gemini, and Perplexity live, show you why you win or lose, and scope the highest-impact listing fixes.";
+  "Book a 15-minute ecentic demo. We run your top products through GPT-4, Claude, Gemini, and Perplexity live, show you why you win or lose, and scope the highest-impact listing fixes.";
 
 const faq = [
   {
@@ -48,7 +48,7 @@ export const metadata: Metadata = createMetadata({
   description,
   path: "/demo",
   keywords: [
-    "écentic demo",
+    "ecentic demo",
     "book AI ecommerce demo",
     "AI shopping agent demo",
     "product listing optimization demo",

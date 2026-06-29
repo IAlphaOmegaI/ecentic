@@ -156,7 +156,7 @@ className-only):
   `gen-entry.mjs`). `cfg.buildCmd` reproduces all of this; on a fresh clone
   also re-stage `.ds-sync` and re-install its deps (incl. Playwright + the
   Tailwind CLI).
-- Preview content (Écentic-domain copy) is tied to the current product; harmless
+- Preview content (Ecentic-domain copy) is tied to the current product; harmless
   if the product pivots, just less on-theme.
 - Brand font **Red Hat Display** is now loaded from **Google Fonts** via an
   `@import url(...)` at the top of `.design-sync/tailwind-input.css`, with

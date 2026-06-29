@@ -113,10 +113,10 @@ const columns = [
     ),
   },
   {
-    accessorKey: "écentic",
+    accessorKey: "ecentic",
     header: () => (
       <span className="flex w-full min-w-20 justify-center text-center text-lg text-primary md:min-w-32">
-        écentic
+        ecentic
       </span>
     ),
     cell: ({ row }: { row: { original: Capability } }) => (
@@ -132,7 +132,7 @@ export const Comparison = () => (
         <h2 className="text-center font-body text-3xl md:text-6xl">
           Audits tell you what's broken. <br />
           <span className="mt-1 text-primary">
-            écentic writes and ships the fix.
+            ecentic writes and ships the fix.
           </span>
         </h2>
       </div>

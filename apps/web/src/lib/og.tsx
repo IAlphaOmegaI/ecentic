@@ -21,7 +21,7 @@ export const ogImageSize = { width: 1200, height: 630 } as const;
 export const ogImageContentType = "image/png" as const;
 
 export const createOgImage = ({ title, description }: createOgImage.Params) => {
-  const displayTitle = truncate(title || "écentic", 110);
+  const displayTitle = truncate(title || "ecentic", 110);
   const displayDescription = truncate(
     description || "Infrastructure for the agent economy",
     180,
@@ -97,7 +97,7 @@ export const createOgImage = ({ title, description }: createOgImage.Params) => {
                 color: "#ffffff",
               }}
             >
-              écentic
+              ecentic
             </span>
           </div>
 

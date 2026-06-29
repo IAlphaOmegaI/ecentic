@@ -17,7 +17,7 @@ import {
 } from "../../_components/content";
 
 const description =
-  "AI product listing optimization for titles, descriptions, and structured product data. Learn how écentic helps merchants improve product visibility.";
+  "AI product listing optimization for titles, descriptions, and structured product data. Learn how ecentic helps merchants improve product visibility.";
 
 const nextSteps = [
   {
@@ -73,9 +73,9 @@ const faq = [
       "AI product descriptions focus on rewriting text faster. Full listing optimization improves titles, descriptions, structured attributes, and merchant trust signals together so the listing is easier for both buyers and AI shopping systems to evaluate.",
   },
   {
-    question: "How does écentic help with product listing optimization?",
+    question: "How does ecentic help with product listing optimization?",
     answer:
-      "écentic simulates how AI shopping agents compare products, shows why a competitor wins, and turns those findings into improved titles, descriptions, and listing updates merchants can approve and publish.",
+      "ecentic simulates how AI shopping agents compare products, shows why a competitor wins, and turns those findings into improved titles, descriptions, and listing updates merchants can approve and publish.",
   },
 ] as const;
 
@@ -166,11 +166,11 @@ This is why a dedicated AI product listing optimization workflow needs to connec
 
       <ContentPageSection
         number="03"
-        title="How écentic helps merchants improve listings"
+        title="How ecentic helps merchants improve listings"
         description="The workflow runs from simulation to diagnosis to an approval-ready listing update — without rebuilding your catalog from scratch."
       >
         <ContentPageRichText
-          content={`écentic approaches AI product listing optimization through a closed loop instead of a one-off content rewrite.
+          content={`ecentic approaches AI product listing optimization through a closed loop instead of a one-off content rewrite.
 
 The process starts with simulation. The platform runs AI shopping evaluations across your product and competitor listings so the team can see who wins and why.
 
