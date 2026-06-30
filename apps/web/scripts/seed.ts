@@ -2,6 +2,115 @@ import { db, schema } from "@/server/database";
 
 const posts = [
   {
+    slug: "ecentic-eu-presence-partnership-compliance-ai-visibility-bundle",
+    category: "Partnerships",
+    title: "ecentic × EU Presence: Compliance and AI Visibility in One Bundle",
+    description:
+      "We've partnered with EU Presence so merchants can enter the European market and stay picked by AI shopping agents in a single engagement. Here is what the partnership covers and why the two problems belong together.",
+    introduction:
+      "ecentic exists to keep your products winning when an AI agent does the comparing. But over the last year we kept hearing the same thing from merchants trying to grow into Europe: the blocker was not visibility, it was the legal gate. You cannot get picked by an agent in a market you are not allowed to sell in yet.\n\nThat is why we partnered with EU Presence. They handle the representation and compliance work that lets a non-EU brand sell to European consumers — a GDPR Article 27 representative, a GPSR responsible person for physical products, and a hosted privacy center. We keep your listings winning the agent comparison once you are live. Together, that is the full path into the European market in a single engagement.\n\nThis post covers what the partnership includes, why compliance and AI visibility are the same project more often than people assume, and how the Compliance + AI Visibility bundle is priced.",
+    publishedAt: "2026-06-30",
+    updatedAt: "2026-06-30",
+    readTime: "8 min",
+    thumbnailUrl: "/images/eu-flag.gif",
+    tags: [
+      "partnerships",
+      "EU Presence",
+      "GDPR",
+      "GPSR",
+      "EU market entry",
+      "AI shopping agents",
+    ],
+    takeaways: [
+      "ecentic and EU Presence have partnered to combine EU market entry and AI shopping-agent visibility in one engagement, billed on a single invoice.",
+      "Selling to EU consumers requires a local presence first: a GDPR Article 27 representative and, for physical products under the GPSR, an EU-based responsible person. Compliance is the gate that comes before discoverability.",
+      "The Compliance + AI Visibility bundle pairs EU Presence's GDPR representative, GPSR responsible person, and Privacy Center Plus with ecentic Dominate for $620.50/mo — a 15% discount that saves $109.50/mo, with no minimums and no setup fees.",
+      "Compliance and visibility reinforce each other: agents increasingly read trust and policy signals, so the same artifacts that keep you compliant also make you easier to recommend.",
+    ],
+    sections: [
+      {
+        number: "01",
+        title: "Why we partnered with EU Presence",
+        content: `ecentic is built around one question: when an AI shopping agent compares your product against the alternatives, do you win? We simulate that comparison across the major models, diagnose why competitors get selected, and turn the findings into listing changes you can approve.
+
+For merchants already selling in a market, that is the whole job. For merchants trying to expand into Europe, we kept running into a problem that sits upstream of anything we optimize. Before an agent can recommend you to a shopper in Berlin or Madrid, you have to be legally allowed to sell to that shopper at all. Non-EU brands need a registered representative and a compliant privacy posture, and most teams discover those requirements late and treat them as a separate, slow project.
+
+EU Presence does that work specifically for ecommerce brands. Partnering with them lets us hand merchants a single path: clear the legal gate and arrive agent-ready at the same time, instead of stitching together a compliance vendor, a privacy tool, and an optimization platform on three contracts and three timelines.
+
+- ecentic owns the visibility problem: getting picked by agents once you are live
+- EU Presence owns the access problem: the representation and compliance that let you sell into the EU
+- The partnership removes the gap between the two so expansion is one engagement, not three`,
+      },
+      {
+        number: "02",
+        title: "The two gates to selling in Europe",
+        content: `Selling to European consumers from outside the EU means clearing two gates, and they are easy to confuse for one.
+
+The first is legal presence. Under GDPR Article 27, a controller or processor outside the EU that handles the data of people in the EU generally must designate a representative established in a member state. Separately, the General Product Safety Regulation, which applies from December 2024, requires that physical consumer products have an EU-based responsible person before they can be placed on the market. These are not paperwork formalities; without them, marketplaces and payment providers can pull listings, and enforcement carries real penalties.
+
+The second gate is discoverability. Once you can legally sell, you still have to be chosen — increasingly by AI agents that compare products on attributes, price, reviews, and trust signals rather than by a human scrolling a storefront. Clearing the first gate does nothing for the second, which is the part ecentic handles.
+
+- GDPR Article 27 — an EU-established representative for your data processing
+- GPSR — an EU-based responsible person for physical consumer products, in force since December 2024
+- Discoverability — winning the agent comparison once you are legally on the market`,
+      },
+      {
+        number: "03",
+        title: "Why compliance and AI visibility belong together",
+        content: `It is tempting to treat compliance as a cost center you handle once and forget, separate from the growth work. With agent-mediated commerce, that separation is breaking down.
+
+Agents do not just read your title and price. They read your policy pages, your privacy disclosures, your returns and shipping terms, and the trust signals around your brand, because a recommendation carries some implicit accountability for whether the purchase goes well. A hosted privacy center, a clear data-subject-request process, and a consistent policy library are exactly the kind of structured, machine-readable trust signals that make a product safer to recommend.
+
+So the artifacts EU Presence puts in place to keep you compliant are also inputs ecentic can point to when an agent weighs whether to pick you. Compliance done well is not a tax on visibility — it is one of its ingredients. That is the real reason these two services bundle cleanly rather than just sharing an invoice.
+
+- Privacy, returns, and policy pages are trust signals agents weigh, not just legal documents
+- A consistent compliance posture reduces the reasons an agent has to skip you
+- The same work that keeps you on the market quietly improves how recommendable you are`,
+      },
+      {
+        number: "04",
+        title: "What's in the Compliance + AI Visibility bundle",
+        content: `The partnership is packaged as a single bundle so expansion is one decision and one invoice. It combines four services that would otherwise be bought separately.
+
+EU Presence contributes the GDPR Representative for representation across all 27 member states, the GPSR Representative (Growth) as your responsible person for consumer products, and Privacy Center Plus — a hosted trust hub with data-subject-request intake and a policy library. ecentic contributes Dominate: continuous agent simulations, auto-optimization with one-click publish, drift alerts, and UCP generation.
+
+Bought individually those total $730/mo. As a bundle they are $620.50/mo — a 15% discount that saves $109.50 every month. There are no minimums, no setup fees, and billing is month-to-month, so the bundle is something you can start and stop with your expansion plans rather than a long contract.
+
+- GDPR Representative — Article 27 representative across all 27 member states ($127/mo)
+- GPSR Representative (Growth) — responsible person for your consumer products ($97/mo)
+- Privacy Center Plus — hosted trust hub, DSR intake, and policy library ($57/mo)
+- ecentic Dominate — continuous simulations, auto-optimization, and UCP ($449/mo)
+- Bundled at $620.50/mo instead of $730/mo — save $109.50/mo, one invoice, one team`,
+      },
+      {
+        number: "05",
+        title: "What this means for ecentic customers",
+        content: `If you already run ecentic and Europe is on your roadmap, the practical change is that you no longer have to go source a compliance vendor before you can act on it. The bundle gives you a representative, a responsible person, and a privacy center alongside the optimization you already trust, on terms designed to match how ecommerce teams actually expand.
+
+If you are coming the other way — an EU Presence client who has handled compliance but never thought about agent visibility — the partnership means you are now a short step from being agent-ready in a channel that is growing fast. The same catalog you registered for the EU can be scanned, diagnosed, and optimized for how GPT-4, Claude, Gemini, and Perplexity compare you against competitors.
+
+Either way, the point is to collapse two timelines into one. Compliance and discoverability stop being sequential projects owned by different teams and become a single motion into the market.
+
+- Existing ecentic merchants: add EU market entry without a second vendor or contract
+- EU Presence clients: turn an already-compliant catalog into an agent-ready one
+- Both: one team and one invoice instead of three moving parts`,
+      },
+      {
+        number: "06",
+        title: "How to get started",
+        content: `The lowest-commitment starting point has not changed. Run a free Scan of your top products to see how agents rank you today, before deciding anything about Europe. That gives you a baseline win rate to weigh the expansion against.
+
+When you are ready to move on the EU specifically, the bundle is the fastest path. From the ecentic pricing page you can open the Compliance + AI Visibility bundle and book a bundle call, where EU Presence scopes the representation work and we line up the optimization side. Because billing is month-to-month with no setup fees, you can start it in step with your launch rather than ahead of it.
+
+If your situation is unusual — many SKUs across multiple stores, or specific regulatory questions about your product category — a call is also the right place to get a straight answer before you commit.
+
+- Start free with a Scan to baseline your current agent win rate
+- Open the Compliance + AI Visibility bundle on the pricing page and book a bundle call
+- Bring product-category and volume details so the EU scope is accurate from the start`,
+      },
+    ],
+  },
+  {
     slug: "morph-agentic-economy-report-500-billion-commerce-2028",
     category: "AI Commerce",
     title:
