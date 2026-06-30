@@ -4,15 +4,15 @@ import { resultify } from "@zenncore/utils";
 import { generateText, isStepCount, tool } from "ai";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { schema } from "../../database";
-import * as AI from "../../utils/ai";
-import { withAuthentication } from "../../utils/authentication";
-import { Environment } from "../../utils/environment";
-import { RequestError } from "../../utils/error";
-import * as Competitor from "../competitor";
-import * as Product from "../product";
-import * as Formating from "./formating";
-import * as Ucp from "./ucp";
+import { schema } from "../../../database";
+import * as AI from "../../../utils/ai";
+import { withAuthentication } from "../../../utils/authentication";
+import { Environment } from "../../../utils/environment";
+import { RequestError } from "../../../utils/error";
+import * as Competitor from "../../competitor";
+import * as Product from "../../product";
+import * as Formating from "../formating";
+import * as Ucp from "./profile";
 
 // A single consistent judge carries the lift measurement — the metric is the
 // delta between passes, so one model is cleaner (and cheaper) than the full

@@ -19,7 +19,7 @@ import {
   PLAYGROUND_MODEL,
   type PlaygroundUIMessage,
   resolveShoppingService,
-} from "@/server/app/intelligence/ucp-playground";
+} from "@/server/app/intelligence/ucp/playground";
 
 // Gemini multi-step tool loops against a live store can take a while.
 export const maxDuration = 60;

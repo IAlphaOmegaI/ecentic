@@ -15,7 +15,7 @@ import {
   runFreeForAll,
 } from "@/server/app/intelligence/free-for-all";
 import type { StoreDiscovery } from "@/server/app/intelligence/product-comparison";
-import type { productSchema } from "@/server/app/intelligence/ucp-advanced-validator";
+import type { productSchema } from "@/server/app/intelligence/ucp/advanced-validator";
 import { StatusPill } from "../../../dashboard/_components/grid";
 
 type FreeForAllLine = Exclude<FreeForAllEvent, { kind: "text" }>;

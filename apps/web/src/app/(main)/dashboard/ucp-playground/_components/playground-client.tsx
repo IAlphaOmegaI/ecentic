@@ -43,12 +43,12 @@ import type {
   lookupProductSchema,
   priceSchema,
   productSchema,
-} from "@/server/app/intelligence/ucp-advanced-validator";
+} from "@/server/app/intelligence/ucp/advanced-validator";
 import type {
   PlaygroundDataParts,
   PlaygroundUIMessage,
-} from "@/server/app/intelligence/ucp-playground";
-import { resolvePlaygroundStore } from "@/server/app/intelligence/ucp-playground-actions";
+} from "@/server/app/intelligence/ucp/playground";
+import { resolvePlaygroundStore } from "@/server/app/intelligence/ucp/playground-actions";
 import { SectionKicker, StatusPill } from "../../_components/grid";
 
 const connectFormConfig = {

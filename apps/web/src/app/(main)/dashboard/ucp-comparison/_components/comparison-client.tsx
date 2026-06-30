@@ -18,7 +18,7 @@ import {
   runStoreComparison,
   type StoreDiscovery,
 } from "@/server/app/intelligence/product-comparison";
-import type { productSchema } from "@/server/app/intelligence/ucp-advanced-validator";
+import type { productSchema } from "@/server/app/intelligence/ucp/advanced-validator";
 import { StatusPill } from "../../_components/grid";
 
 type ComparisonLine =
