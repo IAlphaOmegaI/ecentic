@@ -7,6 +7,7 @@ import {
   organizationSchema,
 } from "@/lib/seo";
 import {
+  ContentPageBadge,
   ContentPageFaqGrid,
   ContentPageFooter,
   ContentPageLayout,
@@ -18,7 +19,7 @@ import {
 import { YcRedemptionForm } from "./_components/yc-redemption-form";
 
 const description =
-  "An exclusive ecentic deal for Y Combinator founders: extended Dominate access, white-glove onboarding, and founder pricing. Redeem in under two minutes.";
+  "An exclusive ecentic deal for Y Combinator students: extended Dominate access, white-glove onboarding, and student pricing. Redeem in under two minutes.";
 
 const faq = [
   {
@@ -29,7 +30,7 @@ const faq = [
   {
     question: "What do I actually get?",
     answer:
-      "Extended access to ecentic Dominate — continuous AI agent simulations across GPT-4, Claude, Gemini, and Perplexity, auto-optimization with one-click publish, drift alerts, and UCP generation — plus white-glove onboarding for your catalog and founder pricing when the deal period ends.",
+      "Extended access to ecentic Dominate — continuous AI agent simulations across GPT-4, Claude, Gemini, and Perplexity, auto-optimization with one-click publish, drift alerts, and UCP generation — plus white-glove onboarding for your catalog and student pricing when the deal period ends.",
   },
   {
     question: "Do I need an account first?",
@@ -44,7 +45,7 @@ const faq = [
 ] as const;
 
 export const metadata: Metadata = createMetadata({
-  title: "ecentic for Y Combinator — Redeem Your Founder Deal",
+  title: "ecentic for Y Combinator — Redeem Your Student Deal",
   description,
   path: "/yc",
   keywords: [
@@ -52,7 +53,7 @@ export const metadata: Metadata = createMetadata({
     "YC startup deal",
     "ecentic YC",
     "AI ecommerce tool for startups",
-    "YC founder perks",
+    "YC student perks",
   ],
 });
 
@@ -67,11 +68,11 @@ export default () => {
     {
       "@context": "https://schema.org",
       "@type": "Offer",
-      name: "ecentic Y Combinator founder deal",
+      name: "ecentic Y Combinator student deal",
       category: "Software deal",
       url: absoluteUrl("/yc"),
       description,
-      eligibleCustomerType: "Y Combinator portfolio companies",
+      eligibleCustomerType: "Y Combinator students",
     },
   ];
 
@@ -79,6 +80,13 @@ export default () => {
     <ContentPageLayout
       eyebrow="Y Combinator"
       title="Your ecentic deal, ready to redeem."
+      badge={
+        <ContentPageBadge
+          logo="/partners/y-combinator.svg"
+          alt="Y Combinator"
+          label="Exclusive partner deal"
+        />
+      }
       description={description}
     >
       <script
@@ -90,7 +98,7 @@ export default () => {
       <ContentPageSection
         number="01"
         title="What's in the deal"
-        description="Built for YC founders who would rather win AI agent recommendations than babysit a listings spreadsheet."
+        description="Built for YC students who would rather win AI agent recommendations than babysit a listings spreadsheet."
       >
         <ContentPageRichText
           content={`Ecentic shows you how AI shopping agents compare your products against competitors, diagnoses why you win or lose, and rewrites your listings to close the gap. The YC deal opens the full platform:
@@ -98,7 +106,7 @@ export default () => {
 - Extended ecentic Dominate — continuous simulations across GPT-4, Claude, Gemini, and Perplexity
 - Auto-optimization with one-click publish and model drift alerts
 - UCP generation so agents can verify your catalog directly
-- White-glove onboarding for your catalog and founder pricing after the deal period
+- White-glove onboarding for your catalog and student pricing after the deal period
 
 Redeem below and we'll verify your batch, then email your activation link within one business day.`}
         />
@@ -115,7 +123,7 @@ Redeem below and we'll verify your batch, then email your activation link within
       <ContentPageSection
         number="03"
         title="How redemption works"
-        description="Three steps from form to live deal. Most founders are running their first simulation the same day."
+        description="Three steps from form to live deal. Most students are running their first simulation the same day."
       >
         <ContentPageRichText
           content={`There is no procurement maze here — the whole point is to get you simulating fast.
@@ -140,7 +148,7 @@ Once your catalog is in, ecentic runs it through the major AI shopping models, s
       <ContentPageFooter
         primary={{ href: "/sign-up", label: "Create your account" }}
         secondary={{ href: "/demo", label: "Book a demo" }}
-        note="YC founders only. We verify your batch before activating the deal."
+        note="YC students only. We verify your batch before activating the deal."
       />
     </ContentPageLayout>
   );

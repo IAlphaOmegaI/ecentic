@@ -2,6 +2,100 @@ import { db, schema } from "@/server/database";
 
 const posts = [
   {
+    slug: "ecentic-partner-deals-y-combinator-techstars",
+    category: "Announcements",
+    title:
+      "Ecentic for Y Combinator and Techstars: Startup Deals for the Agent Era",
+    description:
+      "Ecentic is opening exclusive deals for Y Combinator students and Techstars founders — extended Dominate access and 50% off for two years. Here is what the program means for startups and why we built it.",
+    introduction:
+      "We just opened two partner deals: one for Y Combinator students at /yc, and one for Techstars founders at /techstars. Both unlock extended access to ecentic Dominate plus 50% off for two years once the deal period ends, redeemable in about two minutes with no credit card.\n\nThe deals are intentionally narrow — verified members of each program only — but the reasoning behind them is broad. AI shopping agents are starting to choose products for shoppers, and the merchants who become machine-readable early will compound an advantage the rest of the market spends years catching up to. Early-stage startups are the clearest case: they are still deciding how their catalog is structured, named, and priced, so the cost of getting agent-readiness right is lowest before launch scale.\n\nThis post covers what is in the deal, what it means for the startups redeeming it, and why we decided to put ecentic in front of the YC and Techstars communities now rather than later.",
+    publishedAt: "2026-06-30",
+    updatedAt: "2026-06-30",
+    readTime: "6 min",
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=600&q=80",
+    tags: [
+      "Y Combinator deal",
+      "Techstars deal",
+      "startup deals",
+      "AI shopping agents",
+      "agent readiness",
+    ],
+    takeaways: [
+      "Ecentic now offers exclusive deals for Y Combinator students (/yc) and Techstars founders (/techstars), each redeemable in about two minutes.",
+      "The deal opens extended ecentic Dominate — continuous agent simulations, auto-optimization, drift alerts, and UCP generation — plus 50% off for two years after the deal period.",
+      "For startups, the value is timing: get machine-readable before agent traffic scales, when the cost of losing AI comparisons is lowest.",
+      "For ecentic, partnering with the two strongest startup networks is a repeatable way to reach merchants at the moment catalog and positioning decisions are made.",
+    ],
+    sections: [
+      {
+        number: "01",
+        title: "What we launched",
+        content: `Ecentic now has two dedicated partner pages. [The Y Combinator deal](/yc) is for YC students; [the Techstars deal](/techstars) is for Techstars founders. Both run the same flow: tell us who you are and what you want to win, we verify your batch or cohort against the program directory, and we email your activation link — usually the same day, never more than one business day.
+
+Verification is the gate. A redemption whose company domain matches the program's directory is approved automatically; everything else stays pending for a quick manual check. Only an approved redemption unlocks the discounted plan, so the deal stays exclusive to people actually in each program.
+
+- Two pages, one redemption flow — verify, then activate
+- Auto-approval for recognized program domains, manual review for the rest
+- No credit card required to redeem, and no procurement maze to get started`,
+      },
+      {
+        number: "02",
+        title: "What's actually in the deal",
+        content: `The deal opens the full ecentic Dominate platform, not a trimmed trial. Dominate is how merchants see themselves the way an AI shopping agent does — and then close the gap.
+
+**Continuous simulations** — see how GPT-4, Claude, Gemini, and Perplexity rank your products against competitors, and why.
+**Auto-optimization** — turn the findings into listing rewrites you approve with one click, with drift alerts when a model's behavior shifts.
+**UCP generation** — expose a Universal Commerce Protocol surface so agents can verify your catalog directly.
+**White-glove onboarding** — we help import and structure your catalog so the first simulation is meaningful.
+
+On top of that, redeemers keep 50% off for two years once the deal period ends — pricing that stays friendly through the runway-sensitive early stage.
+
+- Full platform access, not a capped demo
+- One-click publish keeps optimization from becoming a side project
+- 50% off for 24 months protects the budget while you are still proving the channel`,
+      },
+      {
+        number: "03",
+        title: "What it means for startups",
+        content: `The headline is not the discount — it is the timing. Agent-influenced commerce is still early, which is exactly why it is the right moment for a startup to get machine-readable. Once AI traffic scales, the merchants who win comparisons are the ones who structured their catalog correctly before it mattered.
+
+Early-stage startups have an advantage here that larger merchants do not: they have not yet hardcoded thousands of inconsistent listings. Titles, attributes, pricing logic, and trust signals are still malleable. Fixing them now is a catalog decision, not a migration project. Redeeming the deal turns that decision into a guided sprint instead of a guess.
+
+It also fits how founders actually work. The form takes two minutes, verification is same-day, and there is no sales call between you and your first simulation. Most redeemers are running their catalog through the major shopping models the same day they sign up.
+
+- Lock in agent-readiness while the cost of losing comparisons is still low
+- Treat catalog clarity as a foundation, not a future rework
+- Get from redemption to first simulation in a day, not a quarter`,
+      },
+      {
+        number: "04",
+        title: "Why we built it",
+        content: `We believe the next durable advantage in ecommerce belongs to merchants who are legible to machines — and that the merchants most able to act on that are the ones still building. Y Combinator and Techstars are where a large share of those merchants start. Meeting them there, at the moment they are choosing how their catalog works, is the most direct way to put agent-readiness on the roadmap before it becomes an emergency.
+
+It is also a deliberately repeatable program. The pieces — a verified allowlist, a partner coupon, and a self-serve redemption page — are the same regardless of which community we partner with next. Standing up a new deal is mostly a matter of pointing the verification at a new directory. That lets us extend the same offer to other accelerators and founder communities without rebuilding anything.
+
+And it keeps us honest about our own thesis. We argue that merchants should optimize for agent buyers before the volume arrives — see [our breakdown of the agentic economy forecast](/blog/morph-agentic-economy-report-500-billion-commerce-2028). Backing that claim with a real deal for early-stage merchants is how we put weight behind it.
+
+- Reach merchants while catalog and positioning decisions are still open
+- One reusable pattern — allowlist, coupon, redemption — across future partners
+- Aligns the offer with the agent-readiness case we make publicly`,
+      },
+      {
+        number: "05",
+        title: "How to redeem",
+        content: `If you are in either program, redemption is short. Open your program's page, submit the form with the email and company name the program has on file, and watch for the activation email.
+
+- YC students: redeem at [/yc](/yc) — we verify your batch against the YC directory
+- Techstars founders: redeem at [/techstars](/techstars) — we verify your cohort against the Techstars portfolio
+- Either way, use the domain your company is listed under to speed up auto-approval
+
+Once you are activated, import your catalog and run the first simulation. The point of the deal is to get you comparing — and winning — against competitors in AI shopping results while it is still cheap to start. If you are not in either program yet, you can still [create an account](/sign-up) and run ecentic on standard pricing.`,
+      },
+    ],
+  },
+  {
     slug: "morph-agentic-economy-report-500-billion-commerce-2028",
     category: "AI Commerce",
     title:

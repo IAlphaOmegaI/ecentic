@@ -65,9 +65,29 @@ export namespace ContentPageRichText {
   };
 }
 
+export const ContentPageBadge = ({
+  logo,
+  alt,
+  label,
+}: ContentPageBadge.Props) => (
+  <span className="inline-flex items-center gap-2.5 rounded-full bg-background-rich px-4 py-2 shadow-sm ring-1 ring-foreground-rich/5">
+    <Image src={logo} alt={alt} width={28} height={28} className="h-6 w-auto" />
+    <span className="font-medium text-foreground text-sm">{label}</span>
+  </span>
+);
+
+export namespace ContentPageBadge {
+  export type Props = {
+    logo: string;
+    alt: string;
+    label: string;
+  };
+}
+
 export const ContentPageLayout = ({
   eyebrow,
   title,
+  badge,
   meta,
   description,
   children,
@@ -85,6 +105,7 @@ export const ContentPageLayout = ({
           className="absolute aspect-auto h-full w-full object-contain object-right opacity-30 brightness-0 invert"
         />
         <div className="relative z-10 mx-auto max-w-6xl border-accent-foreground border-x px-8 pt-36 pb-16">
+          {badge && <div className="mb-6">{badge}</div>}
           <p className="mb-4 font-medium text-primary text-sm uppercase tracking-[0.2em]">
             {eyebrow}
           </p>
@@ -108,6 +129,7 @@ export namespace ContentPageLayout {
   export type Props = {
     eyebrow: string;
     title: string;
+    badge?: ReactNode;
     meta?: ReactNode;
     description: string;
     children: ReactNode;
