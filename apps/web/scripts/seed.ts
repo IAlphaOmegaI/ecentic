@@ -118,7 +118,7 @@ Once you are activated, import your catalog and run the first simulation. The po
     takeaways: [
       "ecentic and EU Presence have partnered to combine EU market entry and AI shopping-agent visibility in one engagement, billed on a single invoice.",
       "Selling to EU consumers requires a local presence first: a GDPR Article 27 representative and, for physical products under the GPSR, an EU-based responsible person. Compliance is the gate that comes before discoverability.",
-      "The Compliance + AI Visibility bundle pairs EU Presence's GDPR representative, GPSR responsible person, and Privacy Center Plus with ecentic Dominate for $620.50/mo — a 15% discount that saves $109.50/mo, with no minimums and no setup fees.",
+      "The Compliance + AI Visibility bundle pairs EU Presence's GDPR representative, GPSR responsible person, and Privacy Center Plus with ecentic Dominate for $584.00/mo — a 20% discount that saves $146.00/mo, with no minimums and no setup fees.",
       "Compliance and visibility reinforce each other: agents increasingly read trust and policy signals, so the same artifacts that keep you compliant also make you easier to recommend.",
     ],
     sections: [
@@ -168,13 +168,13 @@ So the artifacts EU Presence puts in place to keep you compliant are also inputs
 
 EU Presence contributes the GDPR Representative for representation across all 27 member states, the GPSR Representative (Growth) as your responsible person for consumer products, and Privacy Center Plus — a hosted trust hub with data-subject-request intake and a policy library. ecentic contributes Dominate: continuous agent simulations, auto-optimization with one-click publish, drift alerts, and UCP generation.
 
-Bought individually those total $730/mo. As a bundle they are $620.50/mo — a 15% discount that saves $109.50 every month. There are no minimums, no setup fees, and billing is month-to-month, so the bundle is something you can start and stop with your expansion plans rather than a long contract.
+Bought individually those total $730/mo. As a bundle they are $584.00/mo — a 20% discount that saves $146.00 every month. There are no minimums, no setup fees, and billing is month-to-month, so the bundle is something you can start and stop with your expansion plans rather than a long contract.
 
 - GDPR Representative — Article 27 representative across all 27 member states ($127/mo)
 - GPSR Representative (Growth) — responsible person for your consumer products ($97/mo)
 - Privacy Center Plus — hosted trust hub, DSR intake, and policy library ($57/mo)
 - ecentic Dominate — continuous simulations, auto-optimization, and UCP ($449/mo)
-- Bundled at $620.50/mo instead of $730/mo — save $109.50/mo, one invoice, one team`,
+- Bundled at $584.00/mo instead of $730/mo — save $146.00/mo, one invoice, one team`,
       },
       {
         number: "05",

@@ -37,7 +37,7 @@ const guarantees = [
   "No minimums",
   "Month-to-month · cancel anytime",
   "No setup fees",
-  "15% off with the EU Presence bundle",
+  "20% off with the EU Presence bundle",
 ] as const;
 
 export const Pricing = () => (

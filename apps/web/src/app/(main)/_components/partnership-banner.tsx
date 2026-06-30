@@ -53,7 +53,7 @@ export const PartnershipBanner = () => (
             We've partnered with EU Presence to help you expand into the
             European market — they handle representation and compliance across
             all 27 EU member states while ecentic keeps you picked by AI agents.
-            Get both in one bundle, with 15% off.
+            Get both in one bundle, with 20% off.
           </p>
         </div>
       </div>

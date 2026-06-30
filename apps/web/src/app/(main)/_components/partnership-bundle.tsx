@@ -31,7 +31,7 @@ const items = [
 ] as const;
 
 const regular = items.reduce((sum, item) => sum + item.price, 0);
-const discounted = regular * 0.85;
+const discounted = regular * 0.8;
 const saved = regular - discounted;
 
 const guarantees = [
@@ -144,7 +144,7 @@ export const PartnershipBundle = () => (
             <span className="font-medium text-foreground">
               Save ${saved.toFixed(2)}/mo
             </span>{" "}
-            with the 15% bundle discount.
+            with the 20% bundle discount.
           </p>
 
           <Button
@@ -158,7 +158,7 @@ export const PartnershipBundle = () => (
             <ArrowRightIcon className="size-4" />
           </Button>
           <p className="relative mt-3 text-center text-foreground-dimmed text-sm">
-            15% bundle discount applies automatically at 4+ items.
+            20% bundle discount applies automatically at 4+ items.
           </p>
         </div>
       </div>
