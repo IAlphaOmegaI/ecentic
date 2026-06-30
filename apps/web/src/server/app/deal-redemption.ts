@@ -7,6 +7,7 @@ import { schema } from "../database";
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { repository } from "../utils/repository";
+import * as DealAllowlist from "./deal-allowlist";
 
 const answers = z.object({
   companyName: z.string().min(1, "Company name is required"),
@@ -87,6 +88,16 @@ export const record = withContext(
     if (limited.data)
       return { success: false, error: new Error("Rate limited") };
 
+    // Auto-approve when the company's domain is on the merchant's directory
+    // allowlist; otherwise leave pending for manual batch verification.
+    const status = DealAllowlist.matches({
+      merchant,
+      email: payload.email,
+      website: payload.website,
+    })
+      ? "approved"
+      : "pending";
+
     const creation = await create(Environment.SERVER, {
       merchant,
       companyName: payload.companyName,
@@ -98,6 +109,7 @@ export const record = withContext(
       monthlyOrders: payload.monthlyOrders || null,
       goal: payload.goal?.trim() || null,
       answers: payload,
+      status,
     });
 
     if (!creation.success) return creation;
