@@ -10,7 +10,7 @@ import { withAuthentication } from "../utils/authentication";
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { type Document, repository } from "../utils/repository";
-import * as Ucp from "./intelligence/ucp";
+import * as Ucp from "./intelligence/ucp/profile";
 import * as Product from "./product";
 import * as Simulation from "./simulation";
 import * as Store from "./store";

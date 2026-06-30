@@ -1,6 +1,6 @@
 # UCP Advanced Validator — Constraint Backlog & Non-Schema Rules
 
-Companion notes for [`ucp-advanced-validator.ts`](./ucp-advanced-validator.ts).
+Companion notes for [`ucp-advanced-validator.ts`](./advanced-validator.ts).
 
 This file tracks UCP spec rules (Cart, Checkout, Discount, Buyer Consent,
 Fulfillment) against what Zod can actually enforce. Zod validates **one payload

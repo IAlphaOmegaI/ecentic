@@ -13,7 +13,7 @@ import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { type SubmitEvent, useState } from "react";
 import { Motion } from "@/components/motion";
-import * as UcpCheck from "@/server/app/intelligence/ucp-check";
+import * as UcpCheck from "@/server/app/intelligence/ucp/check";
 
 type JToken = {
   text: string;

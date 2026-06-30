@@ -12,7 +12,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { runFlowTester } from "@/server/app/intelligence/ucp-flow-tester";
+import { runFlowTester } from "@/server/app/intelligence/ucp/flow-tester";
 import { StatusPill } from "../../../dashboard/_components/grid";
 
 type LogLine =

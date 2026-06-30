@@ -4,15 +4,15 @@ import { resultify } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { formatPrice } from "@/lib/currency";
-import { schema } from "../../database";
-import { generate } from "../../utils/ai";
-import { withAuthentication } from "../../utils/authentication";
-import { Environment } from "../../utils/environment";
-import type { Document } from "../../utils/repository";
-import { repository } from "../../utils/repository";
-import * as Shopify from "../integration/shopify";
-import * as Product from "../product";
-import * as Store from "../store";
+import { schema } from "../../../database";
+import { generate } from "../../../utils/ai";
+import { withAuthentication } from "../../../utils/authentication";
+import { Environment } from "../../../utils/environment";
+import type { Document } from "../../../utils/repository";
+import { repository } from "../../../utils/repository";
+import * as Shopify from "../../integration/shopify";
+import * as Product from "../../product";
+import * as Store from "../../store";
 
 export const { get, create, update, find } = repository(schema.ucpProfile);
 

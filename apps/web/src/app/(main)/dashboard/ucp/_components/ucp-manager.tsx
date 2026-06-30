@@ -31,7 +31,7 @@ import type { ComponentProps, ReactElement } from "react";
 import { useCallback, useMemo, useState } from "react";
 import { UcpValidatorForm } from "@/app/(main)/ucp-validator/_components/ucp-validator-form";
 import { formatPrice } from "@/lib/currency";
-import type * as Ucp from "@/server/app/intelligence/ucp";
+import type * as Ucp from "@/server/app/intelligence/ucp/profile";
 import {
   generateAllProductStructuredData,
   generateJson,
@@ -39,7 +39,7 @@ import {
   publishProductsToShopify,
   publishProfileToShopify,
   saveProfile,
-} from "@/server/app/intelligence/ucp";
+} from "@/server/app/intelligence/ucp/profile";
 import type * as Product from "@/server/app/product";
 import { StatusPill } from "../../_components/grid";
 import { UcpAdvancedValidator } from "./ucp-advanced-validator";

@@ -1,6 +1,6 @@
 import { unwrapResult } from "@zenncore/utils";
 import { Suspense } from "react";
-import * as Ucp from "@/server/app/intelligence/ucp";
+import * as Ucp from "@/server/app/intelligence/ucp/profile";
 import * as Product from "@/server/app/product";
 import * as Store from "@/server/app/store";
 import { Environment } from "@/server/utils/environment";
