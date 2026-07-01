@@ -14,19 +14,6 @@ import { Environment } from "@/server/utils/environment";
 import { PLANS } from "@/server/utils/stripe";
 import { Utils } from "./mcp/utils";
 
-type JsonRpcRequest = {
-  jsonrpc?: string;
-  id?: number | string | null;
-  method?: string;
-  params?: Record<string, unknown>;
-};
-
-type JsonRpcError = {
-  code: number;
-  message: string;
-  data?: unknown;
-};
-
 type Actor = {
   user: {
     id: string;
@@ -38,47 +25,59 @@ type Actor = {
 const host = process.env.APP_HOST ?? "https://ecentic.ai";
 const endpoint = `${host}/api/mcp`;
 
-const response = (
-  id: JsonRpcRequest["id"],
-  result?: unknown,
-  error?: JsonRpcError,
-) =>
-  Response.json(
-    {
-      jsonrpc: "2.0",
-      id: id ?? null,
-      ...(error ? { error } : { result }),
-    },
-    {
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        "Cache-Control": "no-store",
+namespace JsonRpc {
+  export type Request = {
+    jsonrpc?: string;
+    id?: number | string | null;
+    method?: string;
+    params?: Record<string, unknown>;
+  };
+
+  export type Error = {
+    code: number;
+    message: string;
+    data?: unknown;
+  };
+
+  export const create = (id: Request["id"], result?: unknown, error?: Error) =>
+    Response.json(
+      {
+        jsonrpc: "2.0",
+        id: id ?? null,
+        ...(error ? { error } : { result }),
       },
-    },
-  );
+      {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          "Cache-Control": "no-store",
+        },
+      },
+    );
 
-const invalidParams = (id: JsonRpcRequest["id"], message: string) =>
-  response(id, undefined, { code: -32602, message });
+  export const invalidParams = (id: Request["id"], message: string) =>
+    create(id, undefined, { code: -32602, message });
 
-const methodNotFound = (id: JsonRpcRequest["id"], method?: string) =>
-  response(id, undefined, {
-    code: -32601,
-    message: `Method not found: ${method ?? "unknown"}`,
-  });
+  export const methodNotFound = (id: Request["id"], method?: string) =>
+    create(id, undefined, {
+      code: -32601,
+      message: `Method not found: ${method ?? "unknown"}`,
+    });
 
-const unauthorized = (id: JsonRpcRequest["id"]) =>
-  response(id, undefined, {
-    code: -32001,
-    message: "Authentication required",
-    data: {
-      hint: "Use Authorization: Bearer ecentic_sk_... or an authenticated session cookie.",
-    },
-  });
+  export const unauthorized = (id: Request["id"]) =>
+    create(id, undefined, {
+      code: -32001,
+      message: "Authentication required",
+      data: {
+        hint: "Use Authorization: Bearer ecentic_sk_... or an authenticated session cookie.",
+      },
+    });
+}
 
 const parse = async (
   request: Request,
 ): Promise<
-  { success: true; data: JsonRpcRequest } | { success: false; message: string }
+  | { success: true; data: JsonRpc.Request }
+  | { success: false; message: string }
 > => {
   const text = await resultify(() => request.text());
   if (!text.success) return { success: false, message: "Invalid JSON payload" };
@@ -89,7 +88,7 @@ const parse = async (
   if (typeof json.data !== "object" || json.data === null)
     return { success: false, message: "JSON-RPC body must be an object" };
 
-  return { success: true, data: json.data as JsonRpcRequest };
+  return { success: true, data: json.data as JsonRpc.Request };
 };
 
 const parseToolArgs = <T>(schema: z.ZodType<T>, value: unknown) => {
@@ -402,7 +401,7 @@ export const getRoute = async () =>
 export const handleRequest = async (request: Request) => {
   const payload = await parse(request);
   if (!payload.success)
-    return response(null, undefined, {
+    return JsonRpc.create(null, undefined, {
       code: -32700,
       message: payload.message,
     });
@@ -410,78 +409,82 @@ export const handleRequest = async (request: Request) => {
   const body = payload.data;
 
   if (body.jsonrpc !== "2.0")
-    return invalidParams(body.id, 'jsonrpc must be exactly "2.0"');
+    return JsonRpc.invalidParams(
+      body.id,
+      'jsonrpc must be exactly "2.0"',
+    );
 
   switch (body.method) {
     case "initialize":
-      return response(body.id, {
+      return JsonRpc.create(body.id, {
         protocolVersion: Utils.protocol.version,
         serverInfo: Utils.protocol.server,
         capabilities: { tools: {} },
       });
     case "tools/list":
-      return response(body.id, { tools: Utils.tools });
+      return JsonRpc.create(body.id, { tools: Utils.tools });
     case "tools/call": {
       const call = parseToolCall(body.params);
-      if (!call.success) return invalidParams(body.id, call.message);
+      if (!call.success)
+        return JsonRpc.invalidParams(body.id, call.message);
 
       const actor = await resolveActor(request);
 
       switch (call.data.name) {
         case "list_plans":
-          return response(body.id, listPlans());
+          return JsonRpc.create(body.id, listPlans());
         case "create_api_key": {
-          if (!actor) return unauthorized(body.id);
+          if (!actor) return JsonRpc.unauthorized(body.id);
           const creation = await createApiKey(actor, call.data.arguments);
           if ("error" in creation)
-            return response(body.id, undefined, creation.error);
-          return response(body.id, creation.result);
+            return JsonRpc.create(body.id, undefined, creation.error);
+          return JsonRpc.create(body.id, creation.result);
         }
         case "create_checkout": {
-          if (!actor) return unauthorized(body.id);
+          if (!actor) return JsonRpc.unauthorized(body.id);
           const checkout = await createCheckout(actor, call.data.arguments);
           if ("error" in checkout)
-            return response(body.id, undefined, checkout.error);
-          return response(body.id, checkout.result);
+            return JsonRpc.create(body.id, undefined, checkout.error);
+          return JsonRpc.create(body.id, checkout.result);
         }
         case "connect_shopify": {
           const connection = connectShopify(call.data.arguments);
           if ("error" in connection)
-            return response(body.id, undefined, connection.error);
-          return response(body.id, connection.result);
+            return JsonRpc.create(body.id, undefined, connection.error);
+          return JsonRpc.create(body.id, connection.result);
         }
         case "connect_woocommerce": {
-          if (!actor) return unauthorized(body.id);
+          if (!actor) return JsonRpc.unauthorized(body.id);
           const connection = await connectWooCommerce(
             actor,
             call.data.arguments,
           );
           if ("error" in connection)
-            return response(body.id, undefined, connection.error);
-          return response(body.id, connection.result);
+            return JsonRpc.create(body.id, undefined, connection.error);
+          return JsonRpc.create(body.id, connection.result);
         }
         case "connect_feed": {
-          if (!actor) return unauthorized(body.id);
+          if (!actor) return JsonRpc.unauthorized(body.id);
           const connection = await connectFeed(actor, call.data.arguments);
           if ("error" in connection)
-            return response(body.id, undefined, connection.error);
-          return response(body.id, connection.result);
+            return JsonRpc.create(body.id, undefined, connection.error);
+          return JsonRpc.create(body.id, connection.result);
         }
         case "get_onboarding_status": {
-          if (!actor) return unauthorized(body.id);
+          if (!actor) return JsonRpc.unauthorized(body.id);
           const status = await getOnboardingStatus(actor, call.data.arguments);
           if ("error" in status)
-            return response(body.id, undefined, status.error);
-          return response(body.id, status.result);
+            return JsonRpc.create(body.id, undefined, status.error);
+          return JsonRpc.create(body.id, status.result);
         }
         default:
-          return response(body.id, undefined, {
+          return JsonRpc.create(body.id, undefined, {
             code: -32601,
             message: `Tool not found: ${call.data.name}`,
           });
       }
     }
     default:
-      return methodNotFound(body.id, body.method);
+      return JsonRpc.methodNotFound(body.id, body.method);
   }
 };

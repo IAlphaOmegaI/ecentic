@@ -11,13 +11,11 @@ import {
   cancelCartRequestSchema,
   cancelCartResponseSchema,
   cancelCheckoutRequestSchema,
-  checkoutPaymentSchema,
   checkoutResponseSchema,
   checkoutWithFulfillmentResponseSchema,
   completeCheckoutWithFulfillmentResponseSchema,
   createCartRequestSchema,
   createCartResponseSchema,
-  createCheckoutWithFulfillmentRequestSchema,
   getCartRequestSchema,
   getCartResponseSchema,
   getCheckoutRequestSchema,
@@ -33,8 +31,8 @@ import {
   ucpMCPResponseSchema,
   updateCartRequestSchema,
   updateCartResponseSchema,
-  updateCheckoutWithFulfillmentRequestSchema,
-} from "./ucp-advanced-validator";
+} from "./advanced-validator";
+import * as Utils from "./utils";
 
 // ecentic UCP platform profile
 const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
@@ -289,68 +287,8 @@ const parseRestToolResult = <T>(
   return parsed.success ? parsed.data : { error: parsed.error };
 };
 
-// MCP §3A — checkout arguments: session id at top level; body nested under checkout
-const checkoutCurrencySchema = z
-  .string()
-  .regex(/^[A-Z]{3}$/, "currency must be a 3-letter ISO 4217 code")
-  .describe("ISO 4217 currency code (e.g., USD).");
-
-const checkoutMcpPayloadSchema =
-  createCheckoutWithFulfillmentRequestSchema.extend({
-    currency: checkoutCurrencySchema.optional(),
-  });
-
-const checkoutMcpUpdatePayloadSchema =
-  updateCheckoutWithFulfillmentRequestSchema.omit({ id: true }).extend({
-    currency: checkoutCurrencySchema.optional(),
-  });
-
-const createCheckoutMcpInputSchema = z
-  .object({
-    cart_id: z
-      .string()
-      .optional()
-      .describe(
-        "Cart ID to convert to checkout. Business MUST use cart contents (line_items, context, buyer) and MUST ignore overlapping fields in checkout payload.",
-      ),
-    checkout: checkoutMcpPayloadSchema
-      .optional()
-      .describe(
-        "Checkout body under arguments.checkout. Use alone for from-scratch create — omit cart_id.",
-      ),
-  })
-  .superRefine((input, context) => {
-    if (!input.cart_id && !input.checkout) {
-      context.addIssue({
-        code: "custom",
-        message: "Provide cart_id or checkout",
-      });
-    }
-    if (input.cart_id && input.checkout) {
-      context.addIssue({
-        code: "custom",
-        message: "Use cart_id alone OR checkout alone, not both",
-      });
-    }
-  });
-
-const updateCheckoutMcpInputSchema = z.object({
-  id: z.string().describe("Checkout session ID at arguments top level."),
-  checkout: checkoutMcpUpdatePayloadSchema.describe(
-    "Full replacement checkout body under arguments.checkout. Must not contain a session id.",
-  ),
-});
-
-const completeCheckoutMcpInputSchema = z.object({
-  id: z.string().describe("Checkout session ID at arguments top level."),
-  checkout: z
-    .object({
-      payment: checkoutPaymentSchema.describe(
-        "Payment instruments nested under arguments.checkout.payment.",
-      ),
-    })
-    .describe("Finalization payload under arguments.checkout."),
-});
+// Checkout argument shapes (create/update/complete) live in ./utils — shared with
+// the playground, consumed below as Utils.*
 
 const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
   search_catalog: tool({
@@ -475,7 +413,7 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
   create_checkout: tool({
     description:
       "Create a checkout session from scratch. Pass only checkout body nested under checkout — do not use cart_id (not supported by this business endpoint).",
-    inputSchema: createCheckoutMcpInputSchema,
+    inputSchema: Utils.createCheckoutMcpInputSchema,
     execute: async (input) => {
       const result = await callMCP(
         endpoint,
@@ -507,7 +445,7 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
   update_checkout: tool({
     description:
       "Replace checkout session state (full PUT). MCP shape: id at top level; full checkout body nested under checkout (no session id inside checkout).",
-    inputSchema: updateCheckoutMcpInputSchema,
+    inputSchema: Utils.updateCheckoutMcpInputSchema,
     execute: async (input) => {
       const result = await callMCP(
         endpoint,
@@ -523,7 +461,7 @@ const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
   complete_checkout: tool({
     description:
       "Place the order when status is ready_for_complete. MCP shape: id at top level; payment nested under checkout.payment. Do not use when status is requires_escalation.",
-    inputSchema: completeCheckoutMcpInputSchema,
+    inputSchema: Utils.completeCheckoutMcpInputSchema,
     execute: async (input) => {
       const result = await callMCP(
         endpoint,
@@ -697,7 +635,7 @@ const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
   create_checkout: tool({
     description:
       "Create a checkout session from scratch. Pass only checkout body nested under checkout — do not use cart_id.",
-    inputSchema: createCheckoutMcpInputSchema,
+    inputSchema: Utils.createCheckoutMcpInputSchema,
     execute: async ({ checkout }) => {
       const result = await callRest(
         endpoint,
@@ -728,7 +666,7 @@ const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
   update_checkout: tool({
     description:
       "Replace checkout session state (full PUT). id at top level; full checkout body nested under checkout (no session id inside checkout).",
-    inputSchema: updateCheckoutMcpInputSchema,
+    inputSchema: Utils.updateCheckoutMcpInputSchema,
     execute: async ({ id, checkout }) => {
       const result = await callRest(
         endpoint,
@@ -744,7 +682,7 @@ const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
   complete_checkout: tool({
     description:
       "Place the order when status is ready_for_complete. id at top level; payment nested under checkout.payment. Do not use when status is requires_escalation.",
-    inputSchema: completeCheckoutMcpInputSchema,
+    inputSchema: Utils.completeCheckoutMcpInputSchema,
     execute: async ({ id, checkout }) => {
       const result = await callRest(
         endpoint,

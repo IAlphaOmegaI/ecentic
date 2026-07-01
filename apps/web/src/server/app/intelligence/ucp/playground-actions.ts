@@ -6,7 +6,7 @@ import {
   AGENT_PROFILE,
   type PlaygroundDataParts,
   resolveShoppingService,
-} from "./ucp-playground";
+} from "./playground";
 
 export const resolvePlaygroundStore = async (
   storeUrl: string,

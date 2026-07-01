@@ -2,6 +2,209 @@ import { db, schema } from "@/server/database";
 
 const posts = [
   {
+    slug: "ecentic-partner-deals-y-combinator-techstars",
+    category: "Announcements",
+    title:
+      "Ecentic for Y Combinator and Techstars: Startup Deals for the Agent Era",
+    description:
+      "Ecentic is opening exclusive deals for Y Combinator students and Techstars founders — extended Dominate access and 50% off for two years. Here is what the program means for startups and why we built it.",
+    introduction:
+      "We just opened two partner deals: one for Y Combinator students at /yc, and one for Techstars founders at /techstars. Both unlock extended access to ecentic Dominate plus 50% off for two years once the deal period ends, redeemable in about two minutes with no credit card.\n\nThe deals are intentionally narrow — verified members of each program only — but the reasoning behind them is broad. AI shopping agents are starting to choose products for shoppers, and the merchants who become machine-readable early will compound an advantage the rest of the market spends years catching up to. Early-stage startups are the clearest case: they are still deciding how their catalog is structured, named, and priced, so the cost of getting agent-readiness right is lowest before launch scale.\n\nThis post covers what is in the deal, what it means for the startups redeeming it, and why we decided to put ecentic in front of the YC and Techstars communities now rather than later.",
+    publishedAt: "2026-06-30",
+    updatedAt: "2026-06-30",
+    readTime: "6 min",
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=600&q=80",
+    tags: [
+      "Y Combinator deal",
+      "Techstars deal",
+      "startup deals",
+      "AI shopping agents",
+      "agent readiness",
+    ],
+    takeaways: [
+      "Ecentic now offers exclusive deals for Y Combinator students (/yc) and Techstars founders (/techstars), each redeemable in about two minutes.",
+      "The deal opens extended ecentic Dominate — continuous agent simulations, auto-optimization, drift alerts, and UCP generation — plus 50% off for two years after the deal period.",
+      "For startups, the value is timing: get machine-readable before agent traffic scales, when the cost of losing AI comparisons is lowest.",
+      "For ecentic, partnering with the two strongest startup networks is a repeatable way to reach merchants at the moment catalog and positioning decisions are made.",
+    ],
+    sections: [
+      {
+        number: "01",
+        title: "What we launched",
+        content: `Ecentic now has two dedicated partner pages. [The Y Combinator deal](/yc) is for YC students; [the Techstars deal](/techstars) is for Techstars founders. Both run the same flow: tell us who you are and what you want to win, we verify your batch or cohort against the program directory, and we email your activation link — usually the same day, never more than one business day.
+
+Verification is the gate. A redemption whose company domain matches the program's directory is approved automatically; everything else stays pending for a quick manual check. Only an approved redemption unlocks the discounted plan, so the deal stays exclusive to people actually in each program.
+
+- Two pages, one redemption flow — verify, then activate
+- Auto-approval for recognized program domains, manual review for the rest
+- No credit card required to redeem, and no procurement maze to get started`,
+      },
+      {
+        number: "02",
+        title: "What's actually in the deal",
+        content: `The deal opens the full ecentic Dominate platform, not a trimmed trial. Dominate is how merchants see themselves the way an AI shopping agent does — and then close the gap.
+
+**Continuous simulations** — see how GPT-4, Claude, Gemini, and Perplexity rank your products against competitors, and why.
+**Auto-optimization** — turn the findings into listing rewrites you approve with one click, with drift alerts when a model's behavior shifts.
+**UCP generation** — expose a Universal Commerce Protocol surface so agents can verify your catalog directly.
+**White-glove onboarding** — we help import and structure your catalog so the first simulation is meaningful.
+
+On top of that, redeemers keep 50% off for two years once the deal period ends — pricing that stays friendly through the runway-sensitive early stage.
+
+- Full platform access, not a capped demo
+- One-click publish keeps optimization from becoming a side project
+- 50% off for 24 months protects the budget while you are still proving the channel`,
+      },
+      {
+        number: "03",
+        title: "What it means for startups",
+        content: `The headline is not the discount — it is the timing. Agent-influenced commerce is still early, which is exactly why it is the right moment for a startup to get machine-readable. Once AI traffic scales, the merchants who win comparisons are the ones who structured their catalog correctly before it mattered.
+
+Early-stage startups have an advantage here that larger merchants do not: they have not yet hardcoded thousands of inconsistent listings. Titles, attributes, pricing logic, and trust signals are still malleable. Fixing them now is a catalog decision, not a migration project. Redeeming the deal turns that decision into a guided sprint instead of a guess.
+
+It also fits how founders actually work. The form takes two minutes, verification is same-day, and there is no sales call between you and your first simulation. Most redeemers are running their catalog through the major shopping models the same day they sign up.
+
+- Lock in agent-readiness while the cost of losing comparisons is still low
+- Treat catalog clarity as a foundation, not a future rework
+- Get from redemption to first simulation in a day, not a quarter`,
+      },
+      {
+        number: "04",
+        title: "Why we built it",
+        content: `We believe the next durable advantage in ecommerce belongs to merchants who are legible to machines — and that the merchants most able to act on that are the ones still building. Y Combinator and Techstars are where a large share of those merchants start. Meeting them there, at the moment they are choosing how their catalog works, is the most direct way to put agent-readiness on the roadmap before it becomes an emergency.
+
+It is also a deliberately repeatable program. The pieces — a verified allowlist, a partner coupon, and a self-serve redemption page — are the same regardless of which community we partner with next. Standing up a new deal is mostly a matter of pointing the verification at a new directory. That lets us extend the same offer to other accelerators and founder communities without rebuilding anything.
+
+And it keeps us honest about our own thesis. We argue that merchants should optimize for agent buyers before the volume arrives — see [our breakdown of the agentic economy forecast](/blog/morph-agentic-economy-report-500-billion-commerce-2028). Backing that claim with a real deal for early-stage merchants is how we put weight behind it.
+
+- Reach merchants while catalog and positioning decisions are still open
+- One reusable pattern — allowlist, coupon, redemption — across future partners
+- Aligns the offer with the agent-readiness case we make publicly`,
+      },
+      {
+        number: "05",
+        title: "How to redeem",
+        content: `If you are in either program, redemption is short. Open your program's page, submit the form with the email and company name the program has on file, and watch for the activation email.
+
+- YC students: redeem at [/yc](/yc) — we verify your batch against the YC directory
+- Techstars founders: redeem at [/techstars](/techstars) — we verify your cohort against the Techstars portfolio
+- Either way, use the domain your company is listed under to speed up auto-approval
+
+Once you are activated, import your catalog and run the first simulation. The point of the deal is to get you comparing — and winning — against competitors in AI shopping results while it is still cheap to start. If you are not in either program yet, you can still [create an account](/sign-up) and run ecentic on standard pricing.`,
+      },
+    ],
+  },
+  {
+    slug: "ecentic-eu-presence-partnership-compliance-ai-visibility-bundle",
+    category: "Partnerships",
+    title: "ecentic × EU Presence: Compliance and AI Visibility in One Bundle",
+    description:
+      "We've partnered with EU Presence so merchants can enter the European market and stay picked by AI shopping agents in a single engagement. Here is what the partnership covers and why the two problems belong together.",
+    introduction:
+      "ecentic exists to keep your products winning when an AI agent does the comparing. But over the last year we kept hearing the same thing from merchants trying to grow into Europe: the blocker was not visibility, it was the legal gate. You cannot get picked by an agent in a market you are not allowed to sell in yet.\n\nThat is why we partnered with EU Presence. They handle the representation and compliance work that lets a non-EU brand sell to European consumers — a GDPR Article 27 representative, a GPSR responsible person for physical products, and a hosted privacy center. We keep your listings winning the agent comparison once you are live. Together, that is the full path into the European market in a single engagement.\n\nThis post covers what the partnership includes, why compliance and AI visibility are the same project more often than people assume, and how the Compliance + AI Visibility bundle is priced.",
+    publishedAt: "2026-06-30",
+    updatedAt: "2026-06-30",
+    readTime: "8 min",
+    thumbnailUrl: "/images/eu-flag.gif",
+    tags: [
+      "partnerships",
+      "EU Presence",
+      "GDPR",
+      "GPSR",
+      "EU market entry",
+      "AI shopping agents",
+    ],
+    takeaways: [
+      "ecentic and EU Presence have partnered to combine EU market entry and AI shopping-agent visibility in one engagement, billed on a single invoice.",
+      "Selling to EU consumers requires a local presence first: a GDPR Article 27 representative and, for physical products under the GPSR, an EU-based responsible person. Compliance is the gate that comes before discoverability.",
+      "The Compliance + AI Visibility bundle pairs EU Presence's GDPR representative, GPSR responsible person, and Privacy Center Plus with ecentic Dominate for $584.00/mo — a 20% discount that saves $146.00/mo, with no minimums and no setup fees.",
+      "Compliance and visibility reinforce each other: agents increasingly read trust and policy signals, so the same artifacts that keep you compliant also make you easier to recommend.",
+    ],
+    sections: [
+      {
+        number: "01",
+        title: "Why we partnered with EU Presence",
+        content: `ecentic is built around one question: when an AI shopping agent compares your product against the alternatives, do you win? We simulate that comparison across the major models, diagnose why competitors get selected, and turn the findings into listing changes you can approve.
+
+For merchants already selling in a market, that is the whole job. For merchants trying to expand into Europe, we kept running into a problem that sits upstream of anything we optimize. Before an agent can recommend you to a shopper in Berlin or Madrid, you have to be legally allowed to sell to that shopper at all. Non-EU brands need a registered representative and a compliant privacy posture, and most teams discover those requirements late and treat them as a separate, slow project.
+
+EU Presence does that work specifically for ecommerce brands. Partnering with them lets us hand merchants a single path: clear the legal gate and arrive agent-ready at the same time, instead of stitching together a compliance vendor, a privacy tool, and an optimization platform on three contracts and three timelines.
+
+- ecentic owns the visibility problem: getting picked by agents once you are live
+- EU Presence owns the access problem: the representation and compliance that let you sell into the EU
+- The partnership removes the gap between the two so expansion is one engagement, not three`,
+      },
+      {
+        number: "02",
+        title: "The two gates to selling in Europe",
+        content: `Selling to European consumers from outside the EU means clearing two gates, and they are easy to confuse for one.
+
+The first is legal presence. Under GDPR Article 27, a controller or processor outside the EU that handles the data of people in the EU generally must designate a representative established in a member state. Separately, the General Product Safety Regulation, which applies from December 2024, requires that physical consumer products have an EU-based responsible person before they can be placed on the market. These are not paperwork formalities; without them, marketplaces and payment providers can pull listings, and enforcement carries real penalties.
+
+The second gate is discoverability. Once you can legally sell, you still have to be chosen — increasingly by AI agents that compare products on attributes, price, reviews, and trust signals rather than by a human scrolling a storefront. Clearing the first gate does nothing for the second, which is the part ecentic handles.
+
+- GDPR Article 27 — an EU-established representative for your data processing
+- GPSR — an EU-based responsible person for physical consumer products, in force since December 2024
+- Discoverability — winning the agent comparison once you are legally on the market`,
+      },
+      {
+        number: "03",
+        title: "Why compliance and AI visibility belong together",
+        content: `It is tempting to treat compliance as a cost center you handle once and forget, separate from the growth work. With agent-mediated commerce, that separation is breaking down.
+
+Agents do not just read your title and price. They read your policy pages, your privacy disclosures, your returns and shipping terms, and the trust signals around your brand, because a recommendation carries some implicit accountability for whether the purchase goes well. A hosted privacy center, a clear data-subject-request process, and a consistent policy library are exactly the kind of structured, machine-readable trust signals that make a product safer to recommend.
+
+So the artifacts EU Presence puts in place to keep you compliant are also inputs ecentic can point to when an agent weighs whether to pick you. Compliance done well is not a tax on visibility — it is one of its ingredients. That is the real reason these two services bundle cleanly rather than just sharing an invoice.
+
+- Privacy, returns, and policy pages are trust signals agents weigh, not just legal documents
+- A consistent compliance posture reduces the reasons an agent has to skip you
+- The same work that keeps you on the market quietly improves how recommendable you are`,
+      },
+      {
+        number: "04",
+        title: "What's in the Compliance + AI Visibility bundle",
+        content: `The partnership is packaged as a single bundle so expansion is one decision and one invoice. It combines four services that would otherwise be bought separately.
+
+EU Presence contributes the GDPR Representative for representation across all 27 member states, the GPSR Representative (Growth) as your responsible person for consumer products, and Privacy Center Plus — a hosted trust hub with data-subject-request intake and a policy library. ecentic contributes Dominate: continuous agent simulations, auto-optimization with one-click publish, drift alerts, and UCP generation.
+
+Bought individually those total $730/mo. As a bundle they are $584.00/mo — a 20% discount that saves $146.00 every month. There are no minimums, no setup fees, and billing is month-to-month, so the bundle is something you can start and stop with your expansion plans rather than a long contract.
+
+- GDPR Representative — Article 27 representative across all 27 member states ($127/mo)
+- GPSR Representative (Growth) — responsible person for your consumer products ($97/mo)
+- Privacy Center Plus — hosted trust hub, DSR intake, and policy library ($57/mo)
+- ecentic Dominate — continuous simulations, auto-optimization, and UCP ($449/mo)
+- Bundled at $584.00/mo instead of $730/mo — save $146.00/mo, one invoice, one team`,
+      },
+      {
+        number: "05",
+        title: "What this means for ecentic customers",
+        content: `If you already run ecentic and Europe is on your roadmap, the practical change is that you no longer have to go source a compliance vendor before you can act on it. The bundle gives you a representative, a responsible person, and a privacy center alongside the optimization you already trust, on terms designed to match how ecommerce teams actually expand.
+
+If you are coming the other way — an EU Presence client who has handled compliance but never thought about agent visibility — the partnership means you are now a short step from being agent-ready in a channel that is growing fast. The same catalog you registered for the EU can be scanned, diagnosed, and optimized for how GPT-4, Claude, Gemini, and Perplexity compare you against competitors.
+
+Either way, the point is to collapse two timelines into one. Compliance and discoverability stop being sequential projects owned by different teams and become a single motion into the market.
+
+- Existing ecentic merchants: add EU market entry without a second vendor or contract
+- EU Presence clients: turn an already-compliant catalog into an agent-ready one
+- Both: one team and one invoice instead of three moving parts`,
+      },
+      {
+        number: "06",
+        title: "How to get started",
+        content: `The lowest-commitment starting point has not changed. Run a free Scan of your top products to see how agents rank you today, before deciding anything about Europe. That gives you a baseline win rate to weigh the expansion against.
+
+When you are ready to move on the EU specifically, the bundle is the fastest path. From the ecentic pricing page you can open the Compliance + AI Visibility bundle and book a bundle call, where EU Presence scopes the representation work and we line up the optimization side. Because billing is month-to-month with no setup fees, you can start it in step with your launch rather than ahead of it.
+
+If your situation is unusual — many SKUs across multiple stores, or specific regulatory questions about your product category — a call is also the right place to get a straight answer before you commit.
+
+- Start free with a Scan to baseline your current agent win rate
+- Open the Compliance + AI Visibility bundle on the pricing page and book a bundle call
+- Bring product-category and volume details so the EU scope is accurate from the start`,
+      },
+    ],
+  },
+  {
     slug: "morph-agentic-economy-report-500-billion-commerce-2028",
     category: "AI Commerce",
     title:

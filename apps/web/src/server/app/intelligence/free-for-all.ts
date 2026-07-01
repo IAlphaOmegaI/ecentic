@@ -10,7 +10,7 @@ import {
   getProductResponseSchema,
   searchCatalogRequestSchema,
   searchCatalogResponseSchema,
-} from "./ucp-advanced-validator";
+} from "./ucp/advanced-validator";
 
 // ecentic UCP platform profile
 const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";

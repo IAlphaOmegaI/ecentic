@@ -7,6 +7,7 @@ import {
   organizationSchema,
 } from "@/lib/seo";
 import {
+  ContentPageBadge,
   ContentPageFaqGrid,
   ContentPageFooter,
   ContentPageLayout,
@@ -79,6 +80,13 @@ export default () => {
     <ContentPageLayout
       eyebrow="Techstars"
       title="Your ecentic deal, ready to redeem."
+      badge={
+        <ContentPageBadge
+          logo="/partners/techstars.svg"
+          alt="Techstars"
+          label="Exclusive partner deal"
+        />
+      }
       description={description}
     >
       <script

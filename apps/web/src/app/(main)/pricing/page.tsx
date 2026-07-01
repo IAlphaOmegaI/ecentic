@@ -72,7 +72,7 @@ const faq = [
   {
     question: "What is the EU Presence bundle?",
     answer:
-      "We partnered with EU Presence so you can go live in Europe and stay picked by AI agents in one engagement. The Compliance + AI Visibility bundle combines their GDPR representative, GPSR responsible person, and Privacy Center Plus with ecentic Dominate — billed together with a 15% bundle discount, no minimums, and no setup fees. Book a bundle call from the pricing page to set it up.",
+      "We partnered with EU Presence so you can go live in Europe and stay picked by AI agents in one engagement. The Compliance + AI Visibility bundle combines their GDPR representative, GPSR responsible person, and Privacy Center Plus with ecentic Dominate — billed together with a 20% bundle discount, no minimums, and no setup fees. Book a bundle call from the pricing page to set it up.",
   },
 ] as const;
 
@@ -154,7 +154,7 @@ When you are ready to act on the results, two paid plans cover most teams:
 
 Plans are billed monthly, so you can upgrade as your catalog and automation needs grow. Teams running hundreds of SKUs across multiple stores, or with security and signing requirements, move to a custom Enterprise plan.
 
-Selling into Europe? The **Compliance + AI Visibility** bundle pairs ecentic Dominate with EU Presence's GDPR representative, GPSR responsible person, and Privacy Center — one invoice, 15% bundle discount, no setup fees.`}
+Selling into Europe? The **Compliance + AI Visibility** bundle pairs ecentic Dominate with EU Presence's GDPR representative, GPSR responsible person, and Privacy Center — one invoice, 20% bundle discount, no setup fees.`}
         />
       </ContentPageSection>
 
