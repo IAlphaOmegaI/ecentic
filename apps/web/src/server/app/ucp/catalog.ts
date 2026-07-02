@@ -502,7 +502,7 @@ export const productDetail = async ({
 }): Promise<CatalogResult> => {
   const store = context.store;
   const relevant = [CAPABILITY.CATALOG_LOOKUP];
-  const id = typeof payload.id === "string" ? payload.id : "";
+  const id = typeof payload.id === "string" ? payload.id : ""; 
 
   if (id === "") {
     return {
