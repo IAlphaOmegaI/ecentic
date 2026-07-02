@@ -76,7 +76,7 @@ export const Testimonials = () => (
       <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
       <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-      <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+      <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
       <div className="relative mx-auto flex flex-col items-center justify-between gap-4 p-6 md:flex-row md:items-start md:p-12">
         <h1 className="font-body text-3xl text-foreground md:text-5xl">
           Hear what they say.
@@ -90,18 +90,18 @@ export const Testimonials = () => (
       </div>
 
       <div className="relative mx-auto grid max-w-6xl gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-3">
-        <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 hidden md:flex" />
-        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+        <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
+        <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
         {testimonials.map((testimonial, index) => (
           <article
             key={testimonial.name}
             className="relative flex flex-col gap-4 bg-background p-6 md:p-8"
           >
             {index < testimonials.length - 1 && (
-              <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+              <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
             )}
             {index < testimonials.length - 1 && (
-              <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden md:flex" />
+              <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
             )}
             <Stars count={testimonial.rating} />
             <p className="flex-1 font-light text-foreground-dimmed text-lg leading-relaxed">

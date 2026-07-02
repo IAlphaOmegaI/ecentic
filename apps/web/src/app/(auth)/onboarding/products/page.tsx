@@ -12,7 +12,7 @@ export default async () => {
   await connection();
 
   const products = await unwrapResult(
-    Product.skimForCurrentUser(Environment.SERVER),
+    Product.skimForConnectedStore(Environment.SERVER),
   );
 
   if (products.length === 0)

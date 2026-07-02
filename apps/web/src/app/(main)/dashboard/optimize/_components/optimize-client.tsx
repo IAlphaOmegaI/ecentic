@@ -284,9 +284,7 @@ const DiagnosticsPanel = ({
         <InsightCard
           key={`${insight.productId}-${insight.category}-${insight.message}`}
           insight={insight}
-          productTitle={
-            products[insight.productId]?.title ?? "Unknown product"
-          }
+          productTitle={products[insight.productId]?.title ?? "Unknown product"}
         />
       ))}
     </div>
@@ -425,7 +423,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
       <div className="-mx-8 border-accent-foreground border-b">
         <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
           <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div>
             <StatusPill tone={pending.length > 0 ? "success" : "neutral"}>
               {pending.length} pending suggestion
@@ -474,7 +472,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
       <div className="-mx-8 border-accent-foreground border-b">
         <div className="relative mx-8 bg-background-rich">
           <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-3">
             <StatCard
               label="Low win-rate products"
@@ -504,7 +502,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
               <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
               <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
               <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-              <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+              <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
               <DiagnosticsPanel
                 insights={diagnostics.insights}
                 products={products}
@@ -521,7 +519,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
           <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
           <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div className="border-accent-foreground border-b p-4">
             <SectionKicker>{queueKicker} — Optimization Queue</SectionKicker>
             <p className="mt-2 font-semibold text-foreground-rich text-lg">
@@ -532,16 +530,25 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
           <Tabs defaultValue="pending">
             <TabsList className="h-10 w-full rounded-md border-0 bg-background-dimmed p-1">
               <TabsIndicator className="h-full rounded bg-primary" />
-              <Tab value="pending" className="flex-1 text-foreground-dimmed data-selected:text-background-rich">
+              <Tab
+                value="pending"
+                className="flex-1 text-foreground-dimmed data-selected:text-background-rich"
+              >
                 Pending{" "}
                 <span className="ml-1.5 bg-current/15 px-1.5 py-0.5 font-medium text-sm tabular-nums">
                   {pending.length}
                 </span>
               </Tab>
-              <Tab value="published" className="flex-1 text-foreground-dimmed data-selected:text-background-rich">
+              <Tab
+                value="published"
+                className="flex-1 text-foreground-dimmed data-selected:text-background-rich"
+              >
                 Published
               </Tab>
-              <Tab value="dismissed" className="flex-1 text-foreground-dimmed data-selected:text-background-rich">
+              <Tab
+                value="dismissed"
+                className="flex-1 text-foreground-dimmed data-selected:text-background-rich"
+              >
                 Dismissed
               </Tab>
             </TabsList>

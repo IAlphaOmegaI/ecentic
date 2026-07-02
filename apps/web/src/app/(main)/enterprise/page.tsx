@@ -126,7 +126,7 @@ export default () => (
         <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
         <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
         <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-        <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+        <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <p className="font-medium text-primary text-sm uppercase tracking-[0.2em]">
           Enterprise
         </p>
@@ -159,7 +159,7 @@ export default () => (
         <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
         <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
         <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-        <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+        <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <div className="px-8 py-10 md:py-12">
           <p className="font-medium text-primary text-sm uppercase tracking-[0.2em]">
             What's included
@@ -169,20 +169,20 @@ export default () => (
           </h2>
         </div>
         <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2 lg:grid-cols-3">
-          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 hidden lg:flex" />
-          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden lg:flex" />
-          <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2 hidden lg:flex" />
-          <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden lg:flex" />
+          <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 lg:flex" />
+          <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 lg:flex" />
+          <Plus className="bottom-0 left-0 hidden -translate-x-1/2 translate-y-1/2 lg:flex" />
+          <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 lg:flex" />
           {capabilities.map((capability, index) => (
             <div
               key={capability.title}
               className="relative flex flex-col gap-4 bg-background p-6 md:p-8"
             >
               {(index === 0 || index === 1) && (
-                <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden lg:flex" />
+                <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 lg:flex" />
               )}
               {(index === 3 || index === 4) && (
-                <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden lg:flex" />
+                <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 lg:flex" />
               )}
               <span className="flex size-9 items-center justify-center border border-accent-foreground bg-background text-primary">
                 <capability.icon className="size-5" />
@@ -205,7 +205,7 @@ export default () => (
         <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
         <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
         <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-        <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+        <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <div className="px-8 py-10 md:py-12">
           <p className="font-medium text-primary text-sm uppercase tracking-[0.2em]">
             Pipeline · Introduced via Plug and Play
@@ -219,20 +219,20 @@ export default () => (
           </p>
         </div>
         <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground sm:grid-cols-2">
-          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 hidden sm:flex" />
-          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden sm:flex" />
-          <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2 hidden sm:flex" />
-          <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden sm:flex" />
+          <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 sm:flex" />
+          <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 sm:flex" />
+          <Plus className="bottom-0 left-0 hidden -translate-x-1/2 translate-y-1/2 sm:flex" />
+          <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 sm:flex" />
           {pipeline.map((entry, index) => (
             <div
               key={entry.name}
               className="relative flex flex-col gap-3 bg-background p-6 md:p-8"
             >
               {index === 0 && (
-                <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden sm:flex" />
+                <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 sm:flex" />
               )}
               {index === 2 && (
-                <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden sm:flex" />
+                <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 sm:flex" />
               )}
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3">
@@ -262,7 +262,7 @@ export default () => (
         <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
         <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
         <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-        <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+        <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <h2 className="mx-auto max-w-xl font-body text-4xl text-foreground md:text-5xl">
           Ready to talk?
         </h2>

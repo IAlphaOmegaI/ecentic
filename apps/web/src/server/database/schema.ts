@@ -90,7 +90,9 @@ export const store = pgTable(
       .references(() => user.id, { onDelete: "cascade" }),
     /** External platform store id (Shopify numeric shop id). Only known for OAuth integrations. */
     storeId: text("storeId"),
-    platform: text("platform").notNull(),
+    platform: text("platform")
+      .$type<"shopify" | "shopify-public" | "woocommerce" | "feed" | "csv">()
+      .notNull(),
     name: text("name").notNull(),
     domain: text("domain").notNull(),
     feedUrl: text("feedUrl"),
@@ -108,22 +110,31 @@ export const store = pgTable(
   (table) => [index("store_user_idx").on(table.userId)],
 );
 
+/**
+ * Per-store platform credentials (1:1 with {@link store}). Only created for
+ * platforms that carry credentials — OAuth platforms (Shopify, and future ones
+ * like BigCommerce) and API-key platforms (WooCommerce). `shopify-public`,
+ * `feed`, and `csv` stores never get a row. The parent {@link store}'s
+ * `platform` determines which credential set is populated; columns are named by
+ * auth mechanism, not vendor, so platforms sharing a mechanism reuse them —
+ * mirrors the better-auth {@link account} table.
+ */
 export const store_account = pgTable("store_account", {
   id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
   storeId: text("storeId")
     .notNull()
     .unique()
     .references(() => store.id, { onDelete: "cascade" }),
-  accessToken: text("accessToken"), // shopify access token
-  accessTokenExpiresAt: timestamp("accessTokenExpiresAt", {
-    mode: "date",
-  }), // shopify access token expires at
-  refreshToken: text("refreshToken"), // shopify refresh token
-  refreshTokenExpiresAt: timestamp("refreshTokenExpiresAt", {
-    mode: "date",
-  }), // shopify refresh token expires at
-  // wooCommerceConsumerKey: text("wooCommerceConsumerKey"),
-  // wooCommerceConsumerSecret: text("wooCommerceConsumerSecret"),
+  // OAuth 2.0 credentials (e.g. Shopify, BigCommerce)
+  accessToken: text("accessToken"),
+  accessTokenExpiresAt: timestamp("accessTokenExpiresAt", { mode: "date" }),
+  refreshToken: text("refreshToken"),
+  refreshTokenExpiresAt: timestamp("refreshTokenExpiresAt", { mode: "date" }),
+  scope: text("scope"),
+  // API key/secret credentials (e.g. WooCommerce)
+  consumerKey: text("consumerKey"),
+  consumerSecret: text("consumerSecret"),
+  // General Store Account fields
   createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
 });

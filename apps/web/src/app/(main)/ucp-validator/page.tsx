@@ -106,7 +106,7 @@ export default () => (
         <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
         <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
         <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-        <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+        <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
 
         <div className="px-8 pt-16 pb-12 md:pb-16">
           <p className="font-medium text-primary text-sm uppercase tracking-[0.2em]">
@@ -127,19 +127,19 @@ export default () => (
         </div>
 
         <div className="relative grid border-accent-foreground border-t md:grid-cols-3">
-          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 hidden md:flex" />
-          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+          <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
+          <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
           {checks.map((check, index) => (
             <div
               key={check.title}
               className={`relative p-6 md:p-8 ${
                 index < checks.length - 1
-                  ? "border-accent-foreground border-b md:border-b-0 md:border-r"
+                  ? "border-accent-foreground border-b md:border-r md:border-b-0"
                   : ""
               }`}
             >
               {index < checks.length - 1 && (
-                <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+                <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
               )}
               <p className="font-medium text-foreground">{check.title}</p>
               <p className="mt-2 font-light text-foreground-dimmed text-sm leading-relaxed">
@@ -154,7 +154,7 @@ export default () => (
     <section className="relative -left-[calc(50vw-50%)] w-screen border-accent-foreground border-b">
       <div className="relative mx-auto max-w-6xl border-accent-foreground border-x">
         <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-        <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+        <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <UcpValidatorForm />
       </div>
     </section>

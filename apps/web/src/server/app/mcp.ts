@@ -76,8 +76,7 @@ namespace JsonRpc {
 const parse = async (
   request: Request,
 ): Promise<
-  | { success: true; data: JsonRpc.Request }
-  | { success: false; message: string }
+  { success: true; data: JsonRpc.Request } | { success: false; message: string }
 > => {
   const text = await resultify(() => request.text());
   if (!text.success) return { success: false, message: "Invalid JSON payload" };
@@ -409,10 +408,7 @@ export const handleRequest = async (request: Request) => {
   const body = payload.data;
 
   if (body.jsonrpc !== "2.0")
-    return JsonRpc.invalidParams(
-      body.id,
-      'jsonrpc must be exactly "2.0"',
-    );
+    return JsonRpc.invalidParams(body.id, 'jsonrpc must be exactly "2.0"');
 
   switch (body.method) {
     case "initialize":
@@ -425,8 +421,7 @@ export const handleRequest = async (request: Request) => {
       return JsonRpc.create(body.id, { tools: Utils.tools });
     case "tools/call": {
       const call = parseToolCall(body.params);
-      if (!call.success)
-        return JsonRpc.invalidParams(body.id, call.message);
+      if (!call.success) return JsonRpc.invalidParams(body.id, call.message);
 
       const actor = await resolveActor(request);
 

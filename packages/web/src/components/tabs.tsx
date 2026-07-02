@@ -22,7 +22,7 @@ export const TabsList = ({
   return (
     <TabsPrimitive.List
       className={createClassName(
-        "relative z-0 flex w-fit overflow-hidden rounded-lg bg-transparent border border-accent-foreground",
+        "relative z-0 flex w-fit overflow-hidden rounded-lg border border-accent-foreground bg-transparent",
         className,
       )}
       {...props}
@@ -38,7 +38,7 @@ export const Tab = ({ className, ...props }: Tab.Props): JSX.Element => {
   return (
     <TabsPrimitive.Tab
       className={createClassName(
-        "flex h-9 select-none items-center justify-center border-0 px-3 font-medium last:border-r-0 border-r border-accent-foreground text-foreground-dimmed outline-0 before:inset-x-0 before:inset-y-1 before:outline-primary before:-outline-offset-1 focus-visible:relative focus-visible:before:absolute focus-visible:before:outline-2 data-selected:text-white data-[active]:text-white",
+        "flex h-9 select-none items-center justify-center border-0 border-accent-foreground border-r px-3 font-medium text-foreground-dimmed outline-0 before:inset-x-0 before:inset-y-1 before:outline-primary before:-outline-offset-1 last:border-r-0 focus-visible:relative focus-visible:before:absolute focus-visible:before:outline-2 data-[active]:text-white data-selected:text-white",
         className,
       )}
       {...props}

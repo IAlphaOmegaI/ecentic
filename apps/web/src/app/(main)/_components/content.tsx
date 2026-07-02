@@ -159,18 +159,18 @@ export const ContentPageSection = ({
         classList?.grid,
       )}
     >
-      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 hidden md:flex" />
-      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
-      <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2 hidden md:flex" />
-      <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden md:flex" />
+      <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
+      <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
+      <Plus className="bottom-0 left-0 hidden -translate-x-1/2 translate-y-1/2 md:flex" />
+      <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
       <div
         className={cn(
           "relative flex flex-col bg-background-dimmed p-8",
           classList?.left,
         )}
       >
-        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
-        <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden md:flex" />
+        <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
+        <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
         <span className="mt-auto font-normal text-2xl text-primary">
           {number}
         </span>
@@ -307,7 +307,7 @@ export const ContentPageFooter = ({
       <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
       <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-      <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+      <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
       <div className="flex flex-wrap items-center gap-4">
         {secondary && (
           <Button color="accent" render={<Link href={secondary.href} />}>

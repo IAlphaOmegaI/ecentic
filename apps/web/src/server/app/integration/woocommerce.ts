@@ -1,5 +1,6 @@
 "use server";
 
+import { createHmac, randomBytes } from "node:crypto";
 import { resultify } from "@zenncore/utils";
 import { type TransactionScope, withTransaction } from "../../database";
 import { withAuthentication } from "../../utils/authentication";
@@ -9,6 +10,7 @@ import { NotFoundError, RequestError } from "../../utils/error";
 import * as HTTP from "../../utils/http";
 import * as Product from "../product";
 import * as Store from "../store";
+import * as StoreAccount from "../store-account";
 
 type Type = {
   id: number;
@@ -25,14 +27,127 @@ type Type = {
   images: { id: number; src: string; alt: string }[];
 };
 
+// RFC 3986 percent-encoding, as OAuth 1.0a requires — encodeURIComponent leaves
+// !*'() unescaped, so encode those too.
+const percentEncode = (value: string) =>
+  encodeURIComponent(value).replace(
+    /[!*'()]/g,
+    (character) => `%${character.charCodeAt(0).toString(16).toUpperCase()}`,
+  );
+
 const Utils = {
   credentials: (key: string, secret: string) =>
     `Basic ${Buffer.from(`${key}:${secret}`).toString("base64")}`,
   normalize: (url: string) => {
     const trimmed = url.replace(/\/+$/, "");
-    if (trimmed.startsWith("http")) return trimmed;
+    // Preserve an explicit scheme — http is needed for local dev stores like
+    // http://ecentic-test.local — and default bare domains to https.
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
     return `https://${trimmed}`;
   },
+  withQueryAuth: (url: string, key: string, secret: string) => {
+    const target = new URL(url);
+    target.searchParams.set("consumer_key", key);
+    target.searchParams.set("consumer_secret", secret);
+    return target.toString();
+  },
+  /**
+   * Signs a request with OAuth 1.0a one-legged auth and returns the URL with the
+   * `oauth_*` parameters (including the signature) appended to the query string.
+   * This is WooCommerce's required scheme over plain HTTP — it ignores Basic /
+   * key-secret auth on non-SSL requests.
+   *
+   * Mind the WooCommerce-specific quirks the signature depends on: wc/v3 signs
+   * with HMAC-SHA256, the HMAC key is `consumerSecret&` (secret + `&` + an empty
+   * token secret, per OAuth 1.0a), `oauth_version` is omitted, and the base URL
+   * is scheme + host + path with the query string excluded.
+   */
+  withOAuthSignature: (
+    url: string,
+    method: string,
+    consumerKey: string,
+    consumerSecret: string,
+  ) => {
+    const target = new URL(url);
+
+    const oauth: Record<string, string> = {
+      oauth_consumer_key: consumerKey,
+      oauth_nonce: randomBytes(16).toString("hex"),
+      oauth_signature_method: "HMAC-SHA256",
+      oauth_timestamp: Math.floor(Date.now() / 1000).toString(),
+    };
+
+    // Sign over the oauth params plus any existing query params (e.g. per_page).
+    const params: Record<string, string> = { ...oauth };
+    for (const [key, value] of target.searchParams) params[key] = value;
+
+    const parameterString = Object.entries(params)
+      .map(([key, value]) => [percentEncode(key), percentEncode(value)] as const)
+      .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+      .map(([key, value]) => `${key}=${value}`)
+      .join("&");
+
+    const baseString = [
+      method.toUpperCase(),
+      percentEncode(`${target.origin}${target.pathname}`),
+      percentEncode(parameterString),
+    ].join("&");
+
+    const signature = createHmac("sha256", `${consumerSecret}&`)
+      .update(baseString)
+      .digest("base64");
+
+    for (const [key, value] of Object.entries(oauth))
+      target.searchParams.set(key, value);
+    target.searchParams.set("oauth_signature", signature);
+
+    return target.toString();
+  },
+};
+
+/**
+ * Performs an authenticated WooCommerce REST request.
+ *
+ * Over HTTPS, sends the consumer key/secret via HTTP Basic Auth — WooCommerce's
+ * primary documented method. Many hosts (Apache + PHP-CGI/FastCGI on shared
+ * hosting) strip the `Authorization` header, which surfaces as a `401 "Consumer
+ * key is missing"` even for valid credentials, so on a 401 this retries once
+ * with the credentials as query-string parameters.
+ *
+ * Over plain HTTP, WooCommerce ignores key/secret auth altogether and requires
+ * OAuth 1.0a one-legged signing, so those requests are signed instead. This is
+ * mainly for local dev stores (e.g. http://ecentic-test.local).
+ */
+const authorizedRequest = async (
+  url: string,
+  consumerKey: string,
+  consumerSecret: string,
+  options: RequestInit = {},
+) => {
+  if (new URL(url).protocol === "http:") {
+    const signed = Utils.withOAuthSignature(
+      url,
+      options.method ?? "GET",
+      consumerKey,
+      consumerSecret,
+    );
+    return HTTP.request(signed, options);
+  }
+
+  const primary = await HTTP.request(url, {
+    ...options,
+    headers: {
+      ...options.headers,
+      Authorization: Utils.credentials(consumerKey, consumerSecret),
+    },
+  });
+
+  if (!primary.success || primary.data.status !== 401) return primary;
+
+  return HTTP.request(
+    Utils.withQueryAuth(url, consumerKey, consumerSecret),
+    options,
+  );
 };
 
 const fetchStoreCurrency = async (
@@ -40,15 +155,11 @@ const fetchStoreCurrency = async (
   consumerKey: string,
   consumerSecret: string,
 ): Promise<string | null> => {
-  const response = await HTTP.request(
+  const response = await authorizedRequest(
     `${domain}/wp-json/wc/v3/data/currencies/current`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: Utils.credentials(consumerKey, consumerSecret),
-        "Content-Type": "application/json",
-      },
-    },
+    consumerKey,
+    consumerSecret,
+    { method: "GET" },
   );
 
   if (!response.success) return null;
@@ -57,6 +168,41 @@ const fetchStoreCurrency = async (
   if (!parsed.success) return null;
 
   return parsed.data.code;
+};
+
+/**
+ * Resolves the WooCommerce consumer key/secret for a store from its
+ * {@link StoreAccount}. During {@link connect} the account row is created inside
+ * an uncommitted transaction, so callers pass its id (+ `tx`) to read it back;
+ * re-syncs omit both and look it up by store.
+ */
+const resolveCredentials = async (
+  storeId: string,
+  options: { storeAccount?: string; tx?: TransactionScope },
+): Promise<
+  | { success: true; consumerKey: string; consumerSecret: string }
+  | { success: false; error: Error }
+> => {
+  const account = options.storeAccount
+    ? await StoreAccount.get(
+        Environment.SERVER,
+        options.storeAccount,
+        options.tx ? { tx: options.tx } : undefined,
+      )
+    : await StoreAccount.getForStore(Environment.SERVER, { store: storeId });
+
+  if (!account.success) return { success: false, error: account.error };
+
+  const consumerKey = account.data?.consumerKey;
+  const consumerSecret = account.data?.consumerSecret;
+
+  if (!consumerKey || !consumerSecret)
+    return {
+      success: false,
+      error: new Error("Missing WooCommerce credentials"),
+    };
+
+  return { success: true, consumerKey, consumerSecret };
 };
 
 /**
@@ -69,10 +215,12 @@ export const syncWooCommerceCatalog = withContext(
     {
       user: userId,
       store: storeId,
+      storeAccount: storeAccountId,
       tx,
     }: {
       user: string;
       store: string;
+      storeAccount?: string;
       tx?: TransactionScope;
     },
   ) => {
@@ -88,13 +236,15 @@ export const syncWooCommerceCatalog = withContext(
         error: new Error("Store is not a WooCommerce store"),
       };
 
-    const { domain, consumerKey, consumerSecret } = store.data;
+    const { domain } = store.data;
 
-    if (!consumerKey || !consumerSecret)
-      return {
-        success: false,
-        error: new Error("Missing WooCommerce credentials"),
-      };
+    const resolved = await resolveCredentials(storeId, {
+      storeAccount: storeAccountId,
+      tx,
+    });
+    if (!resolved.success) return resolved;
+
+    const { consumerKey, consumerSecret } = resolved;
 
     const currency =
       (await fetchStoreCurrency(domain, consumerKey, consumerSecret)) ?? "USD";
@@ -114,15 +264,11 @@ export const syncWooCommerceCatalog = withContext(
     const maximum = 20;
 
     for (const page of Array.from({ length: maximum }, (_, i) => i + 1)) {
-      const response = await HTTP.request(
+      const response = await authorizedRequest(
         `${domain}/wp-json/wc/v3/products?per_page=${limit}&page=${page}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: Utils.credentials(consumerKey, consumerSecret),
-            "Content-Type": "application/json",
-          },
-        },
+        consumerKey,
+        consumerSecret,
+        { method: "GET" },
       );
 
       if (!response.success) break;
@@ -226,15 +372,11 @@ export const connectForUser = withContext(
   ) => {
     const host = Utils.normalize(domain);
 
-    const probe = await HTTP.request(
+    const probe = await authorizedRequest(
       `${host}/wp-json/wc/v3/products?per_page=1`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: Utils.credentials(consumerKey, consumerSecret),
-          "Content-Type": "application/json",
-        },
-      },
+      consumerKey,
+      consumerSecret,
+      { method: "GET" },
     );
 
     if (!probe.success)
@@ -245,7 +387,8 @@ export const connectForUser = withContext(
         ),
       };
 
-    if (!probe.data.ok)
+    if (!probe.data.ok) {
+      console.log(probe.data);
       return {
         success: false,
         error: new RequestError(
@@ -254,6 +397,7 @@ export const connectForUser = withContext(
             : `WooCommerce returned ${probe.data.status}`,
         ),
       };
+    }
 
     context.span.addBreadcrumb({
       category: "woocommerce.probe",
@@ -269,8 +413,6 @@ export const connectForUser = withContext(
             platform: "woocommerce",
             name: new URL(host).hostname,
             domain: host,
-            consumerKey,
-            consumerSecret,
             status: "connected",
           },
           { tx },
@@ -279,9 +421,25 @@ export const connectForUser = withContext(
         if (!store.success) throw store.error;
         if (!store.data) throw new Error("Store creation returned no data");
 
+        const storeAccount = await StoreAccount.create(
+          Environment.SERVER,
+          {
+            storeId: store.data.id,
+            consumerKey,
+            consumerSecret,
+            // TODO: also add scope
+          },
+          { tx },
+        );
+
+        if (!storeAccount.success) throw storeAccount.error;
+        if (!storeAccount.data)
+          throw new Error("Store account creation returned no data");
+
         const sync = await syncWooCommerceCatalog(Environment.SERVER, {
           user: id,
           store: store.data.id,
+          storeAccount: storeAccount.data.id,
           tx,
         });
 
@@ -345,13 +503,12 @@ export const updateProduct = withAuthentication(
         error: new Error("Store is not a WooCommerce store"),
       };
 
-    const { domain, consumerKey, consumerSecret } = store.data;
+    const { domain } = store.data;
 
-    if (!consumerKey || !consumerSecret)
-      return {
-        success: false,
-        error: new Error("Missing WooCommerce credentials"),
-      };
+    const resolved = await resolveCredentials(store.data.id, {});
+    if (!resolved.success) return resolved;
+
+    const { consumerKey, consumerSecret } = resolved;
 
     if (!product.data.externalId)
       return { success: false, error: new Error("Product has no external ID") };
@@ -368,12 +525,9 @@ export const updateProduct = withAuthentication(
 
     const url = `${domain}/wp-json/wc/v3/products/${product.data.externalId}`;
 
-    const response = await HTTP.request(url, {
+    const response = await authorizedRequest(url, consumerKey, consumerSecret, {
       method: "PUT",
-      headers: {
-        Authorization: Utils.credentials(consumerKey, consumerSecret),
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
 

@@ -29,7 +29,7 @@ export const Booking = () => (
       <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
       <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-      <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+      <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
       <div className="relative border-accent-foreground p-6 md:p-12">
         <p className="font-light text-primary text-xl">Book a call</p>
         <h2 className="mt-4 font-body text-3xl text-foreground md:text-6xl">

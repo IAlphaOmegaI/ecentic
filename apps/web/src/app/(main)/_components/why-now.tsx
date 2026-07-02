@@ -49,7 +49,7 @@ export const WhyNow = () => (
     <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
     <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
     <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-    <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+    <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
     <div className="p-4 md:p-8">
       <div className="mb-3 flex items-center gap-2 md:mb-5">
         <span className="relative flex size-4 shrink-0 items-center justify-center">
@@ -69,18 +69,18 @@ export const WhyNow = () => (
     </div>
 
     <div className="relative grid border-accent-foreground border-t md:grid-cols-4">
-      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 hidden md:flex" />
-      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+      <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
+      <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
       {milestones.map((milestone, index) => (
         <article
           key={milestone.brand}
           className={`relative flex flex-col gap-3 border-accent-foreground border-b p-4 md:border-b-0 md:p-6 ${index < milestones.length - 1 ? "md:border-r" : ""}`}
         >
           {index < milestones.length - 1 && (
-            <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+            <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
           )}
           {index < milestones.length - 1 && (
-            <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden md:flex" />
+            <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
           )}
           <div className="flex items-center justify-between">
             {milestone.logo ? (

@@ -36,12 +36,7 @@ import {
   Form,
 } from "./form";
 import { NumberField } from "./number-field";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSeparator,
-  InputOTPSlot,
-} from "./otp-input";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "./otp-input";
 import { Radio, RadioGroup } from "./radio";
 import {
   Select,

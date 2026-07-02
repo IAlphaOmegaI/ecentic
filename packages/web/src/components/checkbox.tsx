@@ -26,7 +26,7 @@ export const Checkbox = ({
         )}
       >
         <CheckIcon
-          className={cn("size-4 strokeWhite", classList?.indicator?.icon)}
+          className={cn("strokeWhite size-4", classList?.indicator?.icon)}
         />
       </CheckBoxPrimitive.Indicator>
     </CheckBoxPrimitive.Root>
