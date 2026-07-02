@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
-export const GET = async () => {
-  return NextResponse.json(
+export const GET = () =>
+  NextResponse.json(
     {
       ucp: {
         version: "2026-04-08",
@@ -110,4 +110,3 @@ export const GET = async () => {
       },
     },
   );
-};

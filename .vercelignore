@@ -1,0 +1,8 @@
+# Rebuilt/reinstalled by Vercel during the build — never upload these
+node_modules
+.next
+.turbo
+
+# Local tooling / agent scratch — not part of the app
+.claude
+claude-seo

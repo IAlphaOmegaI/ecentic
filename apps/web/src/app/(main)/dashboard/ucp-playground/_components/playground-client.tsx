@@ -574,15 +574,15 @@ export const PlaygroundClient = () => {
     async ({ storeUrl: domain }: FormEntries<typeof connectFormConfig>) => {
       setConnectError(null);
 
-      const result = await resolvePlaygroundStore(domain);
+      const resolution = await resolvePlaygroundStore({ store: domain });
 
-      if (!result.success) {
-        setConnectError(result.error);
+      if (!resolution.success) {
+        setConnectError(resolution.error.message);
         return;
       }
 
       setStoreUrl(domain);
-      setConnection(result.profile);
+      setConnection(resolution.data);
     },
   );
 

@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { Plus } from "@/components/plus";
+import {
+  absoluteUrl,
+  createBreadcrumbSchema,
+  createFaqSchema,
+  createMetadata,
+  organizationSchema,
+} from "@/lib/seo";
 import { UcpValidatorForm } from "./_components/ucp-validator-form";
 
 const checks = [
@@ -21,8 +29,72 @@ const checks = [
   },
 ] as const;
 
+const description =
+  "Free UCP Validator: check whether any storefront publishes a valid Universal Commerce Profile at /.well-known/ucp, validate its schema against the spec, and confirm AI shopping agents are allowed in robots.txt.";
+
+const faq = [
+  {
+    question: "What does the UCP Validator check?",
+    answer:
+      "It requests the public HTTPS domain, confirms /.well-known/ucp responds, parses the body as JSON, and reports UCP spec errors and warnings so you know the profile is well formed.",
+  },
+  {
+    question: "Where should a Universal Commerce Profile be published?",
+    answer:
+      "At /.well-known/ucp on your storefront's public HTTPS domain. The validator fetches that exact path and shows whether it is reachable.",
+  },
+  {
+    question: "Does it check whether AI shopping agents can read my store?",
+    answer:
+      "Yes. The validator reviews robots.txt so you can see whether major shopping and indexing bots are allowed to reach your Universal Commerce Profile without friction.",
+  },
+] as const;
+
+export const metadata: Metadata = createMetadata({
+  title: "UCP Validator — Free Universal Commerce Protocol Checker",
+  description,
+  path: "/ucp-validator",
+  keywords: [
+    "UCP validator",
+    "Universal Commerce Protocol",
+    "well-known ucp",
+    "commerce protocol checker",
+    "AI shopping agent access",
+    "robots.txt agent access",
+    "free UCP tool",
+  ],
+});
+
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "UCP Validator",
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    url: absoluteUrl("/ucp-validator"),
+    description,
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+  },
+  organizationSchema,
+  createBreadcrumbSchema([
+    { name: "Home", path: "/" },
+    { name: "UCP Validator", path: "/ucp-validator" },
+  ]),
+  createFaqSchema(faq),
+];
+
 export default () => (
   <main className="relative flex min-h-screen flex-col">
+    <script
+      type="application/ld+json"
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be rendered inline for search engines
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+    />
     <div className="relative -left-[calc(50vw-50%)] w-screen">
       <div className="mx-auto max-w-6xl border-accent-foreground border-x">
         <Navbar />

@@ -16,8 +16,8 @@ const methodNotImplemented = (method: string) =>
     { status: 501 },
   );
 
-export const GET = () => {
-  return NextResponse.json(
+export const GET = () =>
+  NextResponse.json(
     {
       service: "dev.ucp.shopping",
       version: "2026-04-08",
@@ -36,7 +36,6 @@ export const GET = () => {
       },
     },
   );
-};
 
 export const POST = () => methodNotImplemented("POST");
 export const PUT = () => methodNotImplemented("PUT");
