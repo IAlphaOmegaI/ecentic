@@ -93,7 +93,15 @@
       "Bash(bun scripts/_diagnose-detect.ts)",
       "Bash(grep -rl \"elementStream\\\\|output: \\\\\"array\\\\\"\\\\|output: 'array'\" node_modules/ai/dist/index.d.ts)",
       "Bash(cat apps/web/vercel.json)",
-      "Bash(grep -rn \"detect\" apps/web/vercel.json)"
+      "Bash(grep -rn \"detect\" apps/web/vercel.json)",
+      "Bash(python3 -c \"import json;d=json.load\\(open\\('20260323093337_listing_optimization/snapshot.json'\\)\\);print\\(list\\(d.keys\\(\\)\\)\\);print\\({k:d[k] for k in d if not isinstance\\(d[k],\\(dict,list\\)\\)}\\)\")",
+      "Bash(python3 -c ' *)",
+      "Bash(rg -n \"topFinding\" */migration.sql)",
+      "Bash(rg -l 'CREATE TABLE \"ucp_profile\"' drizzle/*/migration.sql)",
+      "Bash(rg -rln \"SELECT .*__drizzle_migrations|from .*__drizzle_migrations|folderMillis|created_at\" .)",
+      "Bash(rg -l \"IF NOT EXISTS\" drizzle/*/migration.sql)",
+      "Bash(bun /private/tmp/claude-501/-Users-alvipalloshi-Projects-ecentic/24cfbf23-e929-4999-855c-9f3079a75ff0/scratchpad/restore-track.mjs)",
+      "Bash(bun -e 'import{loadEnvConfig}from\"@next/env\";import postgres from\"postgres\";loadEnvConfig\\(process.cwd\\(\\)\\);const s=postgres\\(process.env.DATABASE_URL,{max:1}\\);const r=await s`SELECT count\\(*\\)::int c, min\\(id\\) mn, max\\(id\\) mx FROM drizzle.__drizzle_migrations`;console.log\\(JSON.stringify\\(r[0]\\)\\);await s.end\\(\\);')"
     ]
   }
 }

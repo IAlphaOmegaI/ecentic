@@ -1,1 +1,0 @@
-ALTER TABLE "scan" ALTER COLUMN "topFinding" SET DATA TYPE jsonb USING "topFinding"::jsonb;

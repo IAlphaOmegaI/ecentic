@@ -9,6 +9,7 @@ import { NotFoundError, RequestError } from "../../utils/error";
 import * as HTTP from "../../utils/http";
 import * as Product from "../product";
 import * as Store from "../store";
+import * as StoreAccount from "../store-account";
 
 type Type = {
   id: number;
@@ -60,6 +61,41 @@ const fetchStoreCurrency = async (
 };
 
 /**
+ * Resolves the WooCommerce consumer key/secret for a store from its
+ * {@link StoreAccount}. During {@link connect} the account row is created inside
+ * an uncommitted transaction, so callers pass its id (+ `tx`) to read it back;
+ * re-syncs omit both and look it up by store.
+ */
+const resolveCredentials = async (
+  storeId: string,
+  options: { storeAccount?: string; tx?: TransactionScope },
+): Promise<
+  | { success: true; consumerKey: string; consumerSecret: string }
+  | { success: false; error: Error }
+> => {
+  const account = options.storeAccount
+    ? await StoreAccount.get(
+        Environment.SERVER,
+        options.storeAccount,
+        options.tx ? { tx: options.tx } : undefined,
+      )
+    : await StoreAccount.getForStore(Environment.SERVER, { store: storeId });
+
+  if (!account.success) return { success: false, error: account.error };
+
+  const consumerKey = account.data?.consumerKey;
+  const consumerSecret = account.data?.consumerSecret;
+
+  if (!consumerKey || !consumerSecret)
+    return {
+      success: false,
+      error: new Error("Missing WooCommerce credentials"),
+    };
+
+  return { success: true, consumerKey, consumerSecret };
+};
+
+/**
  * Imports products from the WooCommerce REST API. Used by {@link connect}
  * (inside a transaction) and by {@link syncProducts} (authenticated).
  */
@@ -69,10 +105,12 @@ export const syncWooCommerceCatalog = withContext(
     {
       user: userId,
       store: storeId,
+      storeAccount: storeAccountId,
       tx,
     }: {
       user: string;
       store: string;
+      storeAccount?: string;
       tx?: TransactionScope;
     },
   ) => {
@@ -88,13 +126,15 @@ export const syncWooCommerceCatalog = withContext(
         error: new Error("Store is not a WooCommerce store"),
       };
 
-    const { domain, consumerKey, consumerSecret } = store.data;
+    const { domain } = store.data;
 
-    if (!consumerKey || !consumerSecret)
-      return {
-        success: false,
-        error: new Error("Missing WooCommerce credentials"),
-      };
+    const resolved = await resolveCredentials(storeId, {
+      storeAccount: storeAccountId,
+      tx,
+    });
+    if (!resolved.success) return resolved;
+
+    const { consumerKey, consumerSecret } = resolved;
 
     const currency =
       (await fetchStoreCurrency(domain, consumerKey, consumerSecret)) ?? "USD";
@@ -245,7 +285,8 @@ export const connectForUser = withContext(
         ),
       };
 
-    if (!probe.data.ok)
+    if (!probe.data.ok) {
+      console.log(probe.data);
       return {
         success: false,
         error: new RequestError(
@@ -254,6 +295,7 @@ export const connectForUser = withContext(
             : `WooCommerce returned ${probe.data.status}`,
         ),
       };
+    }
 
     context.span.addBreadcrumb({
       category: "woocommerce.probe",
@@ -269,8 +311,6 @@ export const connectForUser = withContext(
             platform: "woocommerce",
             name: new URL(host).hostname,
             domain: host,
-            consumerKey,
-            consumerSecret,
             status: "connected",
           },
           { tx },
@@ -279,9 +319,25 @@ export const connectForUser = withContext(
         if (!store.success) throw store.error;
         if (!store.data) throw new Error("Store creation returned no data");
 
+        const storeAccount = await StoreAccount.create(
+          Environment.SERVER,
+          {
+            storeId: store.data.id,
+            consumerKey,
+            consumerSecret,
+            // TODO: also add scope
+          },
+          { tx },
+        );
+
+        if (!storeAccount.success) throw storeAccount.error;
+        if (!storeAccount.data)
+          throw new Error("Store account creation returned no data");
+
         const sync = await syncWooCommerceCatalog(Environment.SERVER, {
           user: id,
           store: store.data.id,
+          storeAccount: storeAccount.data.id,
           tx,
         });
 
@@ -345,13 +401,12 @@ export const updateProduct = withAuthentication(
         error: new Error("Store is not a WooCommerce store"),
       };
 
-    const { domain, consumerKey, consumerSecret } = store.data;
+    const { domain } = store.data;
 
-    if (!consumerKey || !consumerSecret)
-      return {
-        success: false,
-        error: new Error("Missing WooCommerce credentials"),
-      };
+    const resolved = await resolveCredentials(store.data.id, {});
+    if (!resolved.success) return resolved;
+
+    const { consumerKey, consumerSecret } = resolved;
 
     if (!product.data.externalId)
       return { success: false, error: new Error("Product has no external ID") };
