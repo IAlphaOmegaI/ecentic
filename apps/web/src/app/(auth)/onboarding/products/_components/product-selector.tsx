@@ -32,8 +32,6 @@ import { Stagger, Table as TableAnimations } from "@/lib/animations";
 import { getCurrencySymbol, normalizePrice } from "@/lib/currency";
 import type * as Product from "@/server/app/product";
 
-const limit = 10;
-
 const parseImages = (images: string | null): string[] => {
   if (!images) return [];
 
@@ -108,6 +106,8 @@ export const ProductSelector = ({
 }: ProductSelector.Props) => {
   const router = useRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set());
+
+  const limit = Math.min(10, products.length);
 
   const toggleAll = () => {
     setSelected((previous) => {

@@ -1,7 +1,7 @@
 "use server";
 
 import { unique } from "@zenncore/utils";
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { cache as dedupe } from "react";
 import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
@@ -28,6 +28,34 @@ export const skimForCurrentUser = withAuthentication(async (context) => {
     limit: 10,
   });
 }, "Product.skimForCurrentUser");
+
+/**
+ * Products for the user's most-recently-connected store — the one just linked
+ * during onboarding. Scopes the onboarding product picker to that store so a
+ * previously-connected store's catalog doesn't bleed in. `find` defaults to
+ * `createdAt desc`, so limit 1 yields the newest store.
+ */
+export const skimForConnectedStore = withAuthentication(async (context) => {
+  const userId = context.session.user.id;
+
+  const latest = await stores.find(Environment.SERVER, {
+    where: eq(schema.store.userId, userId),
+    limit: 1,
+  });
+
+  if (!latest.success) return latest;
+
+  const store = latest.data[0];
+  if (!store) return { success: true as const, data: [] as Type[] };
+
+  return find(Environment.SERVER, {
+    where: and(
+      eq(schema.product.userId, userId),
+      eq(schema.product.storeId, store.id),
+    ),
+    limit: 10,
+  });
+}, "Product.skimForConnectedStore");
 
 const keys = [
   "title",
