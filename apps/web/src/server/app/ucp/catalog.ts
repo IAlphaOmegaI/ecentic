@@ -1,0 +1,493 @@
+/**
+ * UCP catalog operations (search / lookup / product) served from the synced
+ * `product` table — one advantage of hosting UCP centrally is that catalog
+ * reads never touch the store. Products are UCP-identified by their
+ * WooCommerce product id (`externalId`), matching what carts/checkout resolve
+ * and what the `/checkout-link/` hand-off expects.
+ *
+ * Synced WooCommerce products carry their full REST payload in `rawData`;
+ * variable products are represented as a single default variant until
+ * per-variation sync exists.
+ */
+
+import { db } from "@/server/database";
+import { toMinorUnits, ucpAmount } from "./money";
+import {
+  CAPABILITY,
+  contextualStorefrontUrl,
+  errorMessage,
+  type Negotiated,
+  type UcpMessage,
+  ucpBlock,
+  ucpEnvelope,
+} from "./protocol";
+
+type ProductRow = {
+  id: string;
+  storeId: string;
+  externalId: string | null;
+  title: string;
+  description: string | null;
+  price: string | null;
+  compareAtPrice: string | null;
+  currency: string | null;
+  images: string | null;
+  url: string | null;
+  sku: string | null;
+  status: string | null;
+  rawData: string | null;
+};
+
+type RawProduct = {
+  slug?: string;
+  type?: string;
+  stock_status?: string;
+  virtual?: boolean;
+  average_rating?: string;
+  rating_count?: number;
+  categories?: { id: number; name: string; slug: string }[];
+  tags?: { id: number; name: string; slug: string }[];
+  attributes?: { name: string; options?: string[] }[];
+};
+
+const MAX_LOOKUP_IDS = 100;
+const DEFAULT_PAGE_SIZE = 10;
+const MAX_PAGE_SIZE = 100;
+
+// ─── Row helpers ─────────────────────────────────────────────────────────────
+
+const parseRaw = (row: ProductRow): RawProduct => {
+  if (!row.rawData) return {};
+  try {
+    const parsed = JSON.parse(row.rawData);
+    return parsed && typeof parsed === "object" ? (parsed as RawProduct) : {};
+  } catch {
+    return {};
+  }
+};
+
+const parseImages = (row: ProductRow): string[] => {
+  if (!row.images) return [];
+  try {
+    const parsed = JSON.parse(row.images);
+    return Array.isArray(parsed)
+      ? parsed.filter((src): src is string => typeof src === "string")
+      : [];
+  } catch {
+    return [];
+  }
+};
+
+const stripHtml = (html: string): string =>
+  html
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+const availabilityStatus = (raw: RawProduct): string => {
+  switch (raw.stock_status) {
+    case "outofstock":
+      return "out_of_stock";
+    case "onbackorder":
+      return "backorder";
+    default:
+      return "in_stock";
+  }
+};
+
+/** Canonical UCP product id: the WooCommerce product id. */
+export const productUcpId = (row: ProductRow): string =>
+  row.externalId ?? row.id;
+
+const loadStoreProducts = async (storeId: string): Promise<ProductRow[]> => {
+  const rows = await db.query.product.findMany({
+    where: { storeId },
+  });
+  return rows.filter((row) => (row.status ?? "active") === "active");
+};
+
+export const findByUcpIds = async (
+  storeId: string,
+  ids: string[],
+): Promise<Map<string, ProductRow>> => {
+  const rows = await loadStoreProducts(storeId);
+  const matched = new Map<string, ProductRow>();
+  for (const id of ids) {
+    const row = rows.find(
+      (candidate) =>
+        productUcpId(candidate) === id ||
+        (candidate.sku !== null && candidate.sku === id),
+    );
+    if (row) matched.set(id, row);
+  }
+  return matched;
+};
+
+// ─── UCP product mapping ─────────────────────────────────────────────────────
+
+const buildVariant = (row: ProductRow): Record<string, unknown> => {
+  const currency = row.currency ?? "USD";
+  const price = toMinorUnits(row.price, currency) ?? 0;
+  const listPrice = toMinorUnits(row.compareAtPrice, currency);
+  const raw = parseRaw(row);
+  const status = availabilityStatus(raw);
+  const images = parseImages(row);
+
+  return {
+    id: productUcpId(row),
+    title: row.title,
+    description: row.description ? stripHtml(row.description) : row.title,
+    price: ucpAmount(price, currency),
+    ...(listPrice !== null && listPrice !== price
+      ? { list_price: ucpAmount(listPrice, currency) }
+      : {}),
+    availability: {
+      available: status === "in_stock" || status === "backorder",
+      status,
+    },
+    ...(row.sku ? { sku: row.sku } : {}),
+    ...(row.url ? { url: row.url } : {}),
+    ...(images.length > 0
+      ? { media: [{ type: "image", url: images[0], alt_text: row.title }] }
+      : {}),
+    requires: { shipping: raw.virtual !== true },
+  };
+};
+
+export const formatProduct = (row: ProductRow): Record<string, unknown> => {
+  const currency = row.currency ?? "USD";
+  const price = toMinorUnits(row.price, currency) ?? 0;
+  const listPrice = toMinorUnits(row.compareAtPrice, currency);
+  const raw = parseRaw(row);
+  const images = parseImages(row);
+  const plain = row.description ? stripHtml(row.description) : row.title;
+
+  const categories = (raw.categories ?? [])
+    .filter((category) => category?.name)
+    .map((category) => ({ value: category.name, taxonomy: "merchant" }));
+
+  const tags = (raw.tags ?? [])
+    .filter((tag) => tag?.name)
+    .map((tag) => tag.name);
+
+  const rating = (() => {
+    const value = Number.parseFloat(raw.average_rating ?? "");
+    if (!Number.isFinite(value) || value <= 0 || !raw.rating_count) return null;
+    return {
+      value,
+      scale_min: 0,
+      scale_max: 5,
+      count: raw.rating_count,
+    };
+  })();
+
+  return {
+    id: productUcpId(row),
+    handle: raw.slug ?? productUcpId(row),
+    title: row.title,
+    description: {
+      plain,
+      ...(row.description && row.description !== plain
+        ? { html: row.description }
+        : {}),
+    },
+    ...(row.url ? { url: row.url } : {}),
+    price_range: {
+      min: ucpAmount(price, currency),
+      max: ucpAmount(price, currency),
+    },
+    ...(listPrice !== null && listPrice !== price
+      ? {
+          list_price_range: {
+            min: ucpAmount(listPrice, currency),
+            max: ucpAmount(listPrice, currency),
+          },
+        }
+      : {}),
+    ...(categories.length > 0 ? { categories } : {}),
+    ...(images.length > 0
+      ? {
+          media: images.map((url) => ({
+            type: "image",
+            url,
+            alt_text: row.title,
+          })),
+        }
+      : {}),
+    variants: [buildVariant(row)],
+    ...(tags.length > 0 ? { tags } : {}),
+    ...(rating ? { rating } : {}),
+  };
+};
+
+// ─── Requests ────────────────────────────────────────────────────────────────
+
+type SearchFilters = {
+  categories?: string[];
+  price?: { min?: number; max?: number };
+  availability?: { in_stock?: boolean };
+};
+
+const matchesFilters = (row: ProductRow, filters: SearchFilters): boolean => {
+  const raw = parseRaw(row);
+  const currency = row.currency ?? "USD";
+
+  if (filters.categories && filters.categories.length > 0) {
+    const names = (raw.categories ?? []).map((category) =>
+      category.name.toLowerCase(),
+    );
+    if (
+      !filters.categories.some((wanted) => names.includes(wanted.toLowerCase()))
+    ) {
+      return false;
+    }
+  }
+
+  if (filters.price) {
+    const price = toMinorUnits(row.price, currency);
+    if (price === null) return false;
+    if (filters.price.min !== undefined && price < filters.price.min)
+      return false;
+    if (filters.price.max !== undefined && price > filters.price.max)
+      return false;
+  }
+
+  if (filters.availability?.in_stock) {
+    if (availabilityStatus(parseRaw(row)) === "out_of_stock") return false;
+  }
+
+  return true;
+};
+
+const searchScore = (row: ProductRow, query: string): number => {
+  const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
+  if (tokens.length === 0) return 1;
+  const title = row.title.toLowerCase();
+  const description = (row.description ?? "").toLowerCase();
+  const sku = (row.sku ?? "").toLowerCase();
+
+  const score = tokens.reduce((accumulated, token) => {
+    switch (true) {
+      case title.includes(token):
+        return accumulated + 3;
+      case sku === token:
+        return accumulated + 3;
+      case description.includes(token):
+        return accumulated + 1;
+      default:
+        return accumulated;
+    }
+  }, 0);
+
+  return score;
+};
+
+const decodeCursor = (cursor: string | undefined): number => {
+  if (!cursor) return 1;
+  try {
+    const parsed = JSON.parse(Buffer.from(cursor, "base64url").toString()) as {
+      page?: number;
+    };
+    return parsed.page && parsed.page > 0 ? parsed.page : 1;
+  } catch {
+    return 1;
+  }
+};
+
+const encodeCursor = (page: number): string =>
+  Buffer.from(JSON.stringify({ page })).toString("base64url");
+
+export type CatalogResult = {
+  status: number;
+  body: Record<string, unknown>;
+};
+
+/** `POST /catalog/search` */
+export const search = async ({
+  store,
+  negotiated,
+  payload,
+}: {
+  store: { id: string; domain: string };
+  negotiated: Negotiated | null;
+  payload: {
+    query?: string;
+    filters?: SearchFilters;
+    pagination?: { limit?: number; cursor?: string };
+  };
+}): Promise<CatalogResult> => {
+  const relevant = [CAPABILITY.CATALOG_SEARCH];
+  const query = (payload.query ?? "").trim();
+  const filters = payload.filters ?? {};
+  const hasFilters = Object.keys(filters).length > 0;
+
+  if (query === "" && !hasFilters) {
+    return {
+      status: 400,
+      body: {
+        ucp: ucpBlock(relevant, negotiated, "error"),
+        messages: [
+          errorMessage(
+            "invalid_request",
+            "Provide a query or at least one filter.",
+          ),
+        ],
+        continue_url: contextualStorefrontUrl(store.domain, "catalog.search"),
+      },
+    };
+  }
+
+  const rows = await loadStoreProducts(store.id);
+  const scored = rows
+    .filter((row) => matchesFilters(row, filters))
+    .map((row) => ({ row, score: searchScore(row, query) }))
+    .filter((entry) => entry.score > 0)
+    .sort((a, b) => b.score - a.score);
+
+  const limit = Math.min(
+    Math.max(payload.pagination?.limit ?? DEFAULT_PAGE_SIZE, 1),
+    MAX_PAGE_SIZE,
+  );
+  const page = decodeCursor(payload.pagination?.cursor);
+  const offset = (page - 1) * limit;
+  const slice = scored.slice(offset, offset + limit);
+  const hasNextPage = offset + limit < scored.length;
+
+  return {
+    status: 200,
+    body: ucpEnvelope(
+      {
+        products: slice.map((entry) => formatProduct(entry.row)),
+        pagination: {
+          has_next_page: hasNextPage,
+          total_count: scored.length,
+          ...(hasNextPage ? { cursor: encodeCursor(page + 1) } : {}),
+        },
+      },
+      relevant,
+      negotiated,
+    ),
+  };
+};
+
+/** `POST /catalog/lookup` — batch by id. */
+export const lookup = async ({
+  store,
+  negotiated,
+  payload,
+}: {
+  store: { id: string; domain: string };
+  negotiated: Negotiated | null;
+  payload: { ids?: unknown };
+}): Promise<CatalogResult> => {
+  const relevant = [CAPABILITY.CATALOG_LOOKUP];
+  const ids = [
+    ...new Set(
+      Array.isArray(payload.ids)
+        ? payload.ids.filter((id): id is string => typeof id === "string")
+        : [],
+    ),
+  ];
+
+  if (ids.length === 0) {
+    return {
+      status: 400,
+      body: {
+        ucp: ucpBlock(relevant, negotiated, "error"),
+        messages: [errorMessage("invalid_request", "Provide ids to look up.")],
+        continue_url: contextualStorefrontUrl(store.domain, "catalog.lookup"),
+      },
+    };
+  }
+
+  if (ids.length > MAX_LOOKUP_IDS) {
+    return {
+      status: 400,
+      body: {
+        ucp: ucpBlock(relevant, negotiated, "error"),
+        messages: [
+          errorMessage(
+            "request_too_large",
+            `Lookup supports at most ${MAX_LOOKUP_IDS} ids per request.`,
+          ),
+        ],
+        continue_url: contextualStorefrontUrl(store.domain, "catalog.lookup"),
+      },
+    };
+  }
+
+  const matched = await findByUcpIds(store.id, ids);
+  const messages: UcpMessage[] = ids
+    .filter((id) => !matched.has(id))
+    .map((id) =>
+      errorMessage("not_found", `No product matches "${id}".`, "recoverable"),
+    );
+
+  const products = [...new Set(matched.values())].map((row) =>
+    formatProduct(row),
+  );
+
+  return {
+    status: 200,
+    body: ucpEnvelope(
+      {
+        products,
+        ...(messages.length > 0 ? { messages } : {}),
+      },
+      relevant,
+      negotiated,
+    ),
+  };
+};
+
+/** `POST /catalog/product` — single product detail. */
+export const productDetail = async ({
+  store,
+  negotiated,
+  payload,
+}: {
+  store: { id: string; domain: string };
+  negotiated: Negotiated | null;
+  payload: { id?: unknown };
+}): Promise<CatalogResult> => {
+  const relevant = [CAPABILITY.CATALOG_LOOKUP];
+  const id = typeof payload.id === "string" ? payload.id : "";
+
+  if (id === "") {
+    return {
+      status: 400,
+      body: {
+        ucp: ucpBlock(relevant, negotiated, "error"),
+        messages: [errorMessage("invalid_request", "Provide a product id.")],
+        continue_url: contextualStorefrontUrl(store.domain, "catalog.product"),
+      },
+    };
+  }
+
+  const matched = await findByUcpIds(store.id, [id]);
+  const row = matched.get(id);
+
+  if (!row) {
+    // Miss is a business outcome: HTTP 200 with a UCP error envelope.
+    return {
+      status: 200,
+      body: {
+        ucp: ucpBlock(relevant, negotiated, "error"),
+        messages: [
+          errorMessage(
+            "not_found",
+            `No product matches "${id}".`,
+            "unrecoverable",
+          ),
+        ],
+        continue_url: contextualStorefrontUrl(store.domain, "catalog.product"),
+      },
+    };
+  }
+
+  return {
+    status: 200,
+    body: ucpEnvelope({ product: formatProduct(row) }, relevant, negotiated),
+  };
+};
