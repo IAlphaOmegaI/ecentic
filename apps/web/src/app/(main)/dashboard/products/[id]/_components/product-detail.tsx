@@ -336,16 +336,28 @@ export const ProductDetail = ({ data }: ProductDetail.Props) => {
     <Tabs defaultValue="overview">
       <TabsList className="h-10 w-full rounded-md border-0 bg-background-dimmed p-1">
         <TabsIndicator className="h-full rounded bg-primary" />
-        <Tab value="overview" className="flex-1 text-foreground-dimmed data-selected:text-background-rich">
+        <Tab
+          value="overview"
+          className="flex-1 text-foreground-dimmed data-selected:text-background-rich"
+        >
           Win Rate
         </Tab>
-        <Tab value="replay" className="flex-1 text-foreground-dimmed data-selected:text-background-rich">
+        <Tab
+          value="replay"
+          className="flex-1 text-foreground-dimmed data-selected:text-background-rich"
+        >
           Agent Replay
         </Tab>
-        <Tab value="battlecard" className="flex-1 text-foreground-dimmed data-selected:text-background-rich">
+        <Tab
+          value="battlecard"
+          className="flex-1 text-foreground-dimmed data-selected:text-background-rich"
+        >
           Battlecard
         </Tab>
-        <Tab value="optimize" className="flex-1 text-foreground-dimmed data-selected:text-background-rich">
+        <Tab
+          value="optimize"
+          className="flex-1 text-foreground-dimmed data-selected:text-background-rich"
+        >
           Optimize
         </Tab>
       </TabsList>
@@ -459,7 +471,7 @@ const OverviewTab = ({
       <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
       <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-      <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+      <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
       <div>
         <SectionKicker>02 — Competitive Landscape</SectionKicker>
         <p className="mt-2 font-semibold text-foreground-rich text-lg">
@@ -766,7 +778,7 @@ const ListingAudit = ({
               )}
             >
               {audit.positioning.score}
-              <span className="font-medium text-foreground-dimmed text-base">
+              <span className="font-medium text-base text-foreground-dimmed">
                 /100
               </span>
             </p>
@@ -856,7 +868,7 @@ const BattlecardTab = ({
         <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
         <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
         <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-        <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+        <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <div>
           <SectionKicker>01 — Battlecards</SectionKicker>
           <p className="mt-2 font-semibold text-foreground-rich text-lg">
@@ -896,7 +908,7 @@ const BattlecardTab = ({
                     )}
                   >
                     {competitor.rate}
-                    <span className="ml-0.5 font-medium text-lg text-foreground-dimmed">
+                    <span className="ml-0.5 font-medium text-foreground-dimmed text-lg">
                       %
                     </span>
                   </p>
@@ -910,7 +922,10 @@ const BattlecardTab = ({
                 <div className="flex items-center gap-3">
                   <div className="h-2 flex-1 overflow-hidden rounded-full bg-accent-foreground">
                     <div
-                      className={cn("h-full rounded-full", barColor(competitor.rate))}
+                      className={cn(
+                        "h-full rounded-full",
+                        barColor(competitor.rate),
+                      )}
                       style={{ width: `${competitor.rate}%` }}
                     />
                   </div>
@@ -931,7 +946,10 @@ const BattlecardTab = ({
                   {wins.length > 0 ? (
                     <div className="space-y-2">
                       {wins.map((simulation) => (
-                        <p key={simulation.id} className="text-foreground-dimmed text-sm leading-relaxed">
+                        <p
+                          key={simulation.id}
+                          className="text-foreground-dimmed text-sm leading-relaxed"
+                        >
                           {simulation.reasoning
                             ? simulation.reasoning.slice(0, 160) +
                               (simulation.reasoning.length > 160 ? "…" : "")
@@ -955,7 +973,10 @@ const BattlecardTab = ({
                   {losses.length > 0 ? (
                     <div className="space-y-2">
                       {losses.map((simulation) => (
-                        <p key={simulation.id} className="text-foreground-dimmed text-sm leading-relaxed">
+                        <p
+                          key={simulation.id}
+                          className="text-foreground-dimmed text-sm leading-relaxed"
+                        >
                           {simulation.reasoning
                             ? simulation.reasoning.slice(0, 160) +
                               (simulation.reasoning.length > 160 ? "…" : "")
@@ -1010,7 +1031,7 @@ const OptimizeTab = ({
         <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
         <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
         <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-        <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+        <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <div>
           <SectionKicker>01 — Optimization</SectionKicker>
           <p className="mt-2 font-semibold text-foreground-rich text-lg">

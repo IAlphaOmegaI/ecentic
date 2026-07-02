@@ -1,8 +1,4 @@
-import {
-  Crosshair,
-  SectionKicker,
-  StatusPill,
-} from "../../dashboard/_components/grid";
+import { Crosshair, SectionKicker } from "../../dashboard/_components/grid";
 import { FlowTester } from "./_components/flow-tester";
 
 export default () => (

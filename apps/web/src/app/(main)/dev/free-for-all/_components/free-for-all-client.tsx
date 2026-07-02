@@ -35,7 +35,7 @@ const summarise = (value: unknown, maxLen = 120): string => {
   return `${raw.slice(0, maxLen)}…`;
 };
 
-const productPrice = (
+const _productPrice = (
   product: z.infer<typeof productSchema>,
 ): number | undefined => {
   if (product.variants.length > 0) {

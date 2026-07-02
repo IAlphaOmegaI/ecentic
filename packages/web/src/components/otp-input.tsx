@@ -76,7 +76,7 @@ export const InputOTPSlot = ({
       data-slot="input-otp-slot"
       data-active={isActive}
       className={cn(
-        "relative flex items-center justify-center size-12 first:border-l border-y border-r border-accent-foreground text-base text-foreground outline-none transition-colors data-[active=true]:z-10 data-[active=true]:outline-offset-2 data-[active=true]:outline data-[active=true]:outline-primary aria-invalid:border-error data-[active=true]:aria-invalid:border-error",
+        "relative flex size-12 items-center justify-center border-accent-foreground border-y border-r text-base text-foreground outline-none transition-colors first:border-l aria-invalid:border-error data-[active=true]:z-10 data-[active=true]:outline data-[active=true]:outline-primary data-[active=true]:outline-offset-2 data-[active=true]:aria-invalid:border-error",
         className,
       )}
       {...props}
@@ -84,7 +84,7 @@ export const InputOTPSlot = ({
       {char}
       {hasFakeCaret && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <div className="animate-caret-blink bg-foreground h-4 w-px duration-1000" />
+          <div className="h-4 w-px animate-caret-blink bg-foreground duration-1000" />
         </div>
       )}
     </div>
@@ -102,7 +102,7 @@ export const InputOTPSeparator = ({
   return (
     <div
       data-slot="input-otp-separator"
-      className="[&_svg:not([class*='size-'])]:size-4 flex items-center"
+      className="flex items-center [&_svg:not([class*='size-'])]:size-4"
       {...props}
     >
       {children ?? <MinusIcon />}

@@ -93,7 +93,7 @@ export default async () => {
         <Motion.Item className="w-full border-accent-foreground border-b px-8">
           <div className="relative flex flex-col border-accent-foreground border-x p-6">
             <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+            <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <h2 className="font-medium text-4xl text-foreground">
               See who's winning.
             </h2>
@@ -107,7 +107,7 @@ export default async () => {
         <Motion.Item className="border-accent-foreground border-b px-8">
           <div className="relative grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-x">
             <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+            <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             {models.map((model) => (
               <div
                 key={model.model}
@@ -139,7 +139,7 @@ export default async () => {
             <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
             <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
             <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+            <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             {labels.map(({ label, value, icon: Icon, color }) => (
               <div key={label} className="bg-background-dimmed p-4">
                 <Icon className={cn("mb-6 size-12", color)} />

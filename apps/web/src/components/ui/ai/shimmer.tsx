@@ -4,7 +4,7 @@ import { cn } from "@zenncore/utils";
 import type { MotionProps } from "motion/react";
 import { motion } from "motion/react";
 import type { ComponentType, CSSProperties, ElementType, JSX } from "react";
-import { memo, useMemo } from "react";
+import { useMemo } from "react";
 
 type MotionHTMLProps = MotionProps & Record<string, unknown>;
 

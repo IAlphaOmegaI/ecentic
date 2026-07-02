@@ -181,7 +181,7 @@ export default () => (
           className="absolute aspect-auto h-full w-full object-contain object-right"
         />
         <div className="relative z-10 mx-auto max-w-6xl border-accent-foreground border-x px-8 pt-36 pb-16">
-          <p className="mb-4 font-medium text-white/60 text-sm uppercase tracking-[0.2em]">
+          <p className="mb-4 font-medium text-sm text-white/60 uppercase tracking-[0.2em]">
             Legal
           </p>
           <h1 className="font-semibold text-7xl text-white tracking-tight">
@@ -201,13 +201,13 @@ export default () => (
     {sections.map((section) => (
       <div key={section.number} className="border-accent-foreground border-b">
         <div className="relative mx-auto grid max-w-6xl grid-cols-1 gap-px border-accent-foreground border-x bg-accent-foreground md:grid-cols-[5fr_8fr]">
-          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 hidden md:flex" />
-          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
-          <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2 hidden md:flex" />
-          <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden md:flex" />
+          <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
+          <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
+          <Plus className="bottom-0 left-0 hidden -translate-x-1/2 translate-y-1/2 md:flex" />
+          <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
           <div className="relative flex flex-col bg-background-dimmed p-8">
-            <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
-            <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden md:flex" />
+            <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
+            <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
             <span className="mt-auto font-normal text-2xl text-primary">
               {section.number}
             </span>

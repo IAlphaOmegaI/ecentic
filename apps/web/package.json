@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.5",
-    "@ai-sdk/google": "^4.0.5",
+    "@ai-sdk/google": "^4.0.6",
     "@ai-sdk/mcp": "^2.0.5",
     "@ai-sdk/openai": "^4.0.5",
     "@ai-sdk/perplexity": "^4.0.4",
@@ -36,7 +36,7 @@
     "@streamdown/code": "^1.1.1",
     "@streamdown/math": "^1.0.2",
     "@streamdown/mermaid": "^1.0.2",
-    "@ucp-js/sdk": "^0.1.1",
+    "@ucp-js/sdk": "^0.4.0",
     "@upstash/redis": "^1.38.0",
     "@zenncore/icons": "workspace:*",
     "@zenncore/phone": "workspace:*",

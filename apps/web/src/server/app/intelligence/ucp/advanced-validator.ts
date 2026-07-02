@@ -152,7 +152,7 @@ const urlHostname = (value: string) => {
   }
 };
 
-const urlOriginMatchesNamespaceAuthority = (
+const _urlOriginMatchesNamespaceAuthority = (
   url: string,
   namespaceName: string,
 ) => {

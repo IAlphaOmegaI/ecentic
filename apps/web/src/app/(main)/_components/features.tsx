@@ -47,28 +47,28 @@ export const Features = () => (
       <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
       <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-      <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+      <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
       <div className="relative p-6 md:p-12">
         <h1 className="font-body text-3xl text-foreground md:text-5xl">
           Infrastructure for the agent economy.
         </h1>
       </div>
       <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2">
-        <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 hidden md:flex" />
-        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+        <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
+        <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
         {features.map((feature, index) => (
           <div
             key={feature.title}
             className="relative flex flex-col justify-end gap-2 bg-background-dimmed p-4 md:h-82"
           >
             {index === 0 && (
-              <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 hidden md:flex" />
+              <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
             )}
             {index === 0 && (
-              <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden md:flex" />
+              <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
             )}
             {index === 2 && (
-              <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2 hidden md:flex" />
+              <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
             )}
             <feature.icon className={cn(feature.color, "size-16")} />
             <h2 className="font-body font-medium text-2xl text-foreground md:text-4xl">

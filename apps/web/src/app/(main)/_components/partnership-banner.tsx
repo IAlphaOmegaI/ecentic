@@ -17,7 +17,7 @@ export const PartnershipBanner = () => (
     <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
     <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
     <div className="pointer-events-none absolute -top-24 -right-24 size-72 rounded-full bg-primary/10 blur-3xl" />
-    <div className="pointer-events-none absolute inset-y-0 left-0 z-0 h-full w-full overflow-hidden w-auto rounded-lg opacity-80 [mask-image:linear-gradient(to_right,black,transparent)]">
+    <div className="pointer-events-none absolute inset-y-0 left-0 z-0 h-full w-auto w-full overflow-hidden rounded-lg opacity-80 [mask-image:linear-gradient(to_right,black,transparent)]">
       <Image
         src="/images/eu-flag.gif"
         alt=""
@@ -25,7 +25,7 @@ export const PartnershipBanner = () => (
         unoptimized
         width={600}
         height={600}
-        className="absolute inset-0 -top-48 h-[250%] w-auto left-[calc(50%+48px)]  rotate-180"
+        className="absolute inset-0 -top-48 left-[calc(50%+48px)] h-[250%] w-auto rotate-180"
       />
     </div>
     <div className="relative z-10 flex flex-col items-start gap-6 md:flex-row md:items-start md:justify-between">

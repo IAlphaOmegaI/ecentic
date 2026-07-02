@@ -8,7 +8,7 @@
  */
 type SuccessResult<T> = 0 extends 1 & T
   ? { success: true; data: T }
-  : [T] extends [void]
+  : [T] extends [undefined]
     ? { success: true }
     : { success: true; data: T };
 

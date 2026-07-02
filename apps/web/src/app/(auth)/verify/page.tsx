@@ -43,7 +43,7 @@ export default () => {
           <Motion.Item className="w-full border-accent-foreground border-b px-8">
             <div className="relative flex flex-col gap-4 border-accent-foreground border-x p-6">
               <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-              <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+              <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
               <div className="lg:hidden">
                 <Image
                   src="/images/trademark.svg"
@@ -70,7 +70,7 @@ export default () => {
               <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
               <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
               <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-              <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+              <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
               <BellIcon className="size-24 text-primary" />
               <div className="flex flex-col items-center gap-2 text-center">
                 <p className="font-medium text-2xl text-primary">
@@ -90,7 +90,7 @@ export default () => {
               <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
               <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
               <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-              <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+              <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
               <p>
                 The link will expire in 24 hours. If it expires, you can request
                 a new one by signing up again.

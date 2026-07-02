@@ -1,10 +1,10 @@
 "use server";
 
-import { createMCPClient, type JSONRPCRequest } from "@ai-sdk/mcp";
+import type { JSONRPCRequest } from "@ai-sdk/mcp";
 import { createStreamableValue } from "@ai-sdk/rsc";
 // import { UcpDiscoveryProfileSchema } from "@ucp-js/sdk";
 import { merge, resultify } from "@zenncore/utils";
-import { isLoopFinished, isStepCount, streamText, tool } from "ai";
+import { isLoopFinished, streamText, tool } from "ai";
 import * as z from "zod";
 import {
   businessProfileSchema,
@@ -50,7 +50,7 @@ const formatUcpMessage = (message: z.infer<typeof messageSchema>): string => {
 const extractUcpToolError = (
   structuredContent: Record<string, unknown>,
 ): string | null => {
-  const ucp = structuredContent["ucp"];
+  const ucp = structuredContent.ucp;
   const ucpStatus =
     typeof ucp === "object" && ucp !== null && "status" in ucp
       ? ucp.status
@@ -58,7 +58,7 @@ const extractUcpToolError = (
 
   const messagesResult = z
     .array(messageSchema)
-    .safeParse(structuredContent["messages"]);
+    .safeParse(structuredContent.messages);
   const messages = messagesResult.success ? messagesResult.data : [];
   const errorMessages = messages.filter((message) => message.type === "error");
 
@@ -91,7 +91,7 @@ const parseUcpToolContent = <T>(
 // Shopify UCP MCP requires params.arguments.meta["ucp-agent"].profile on every
 // JSON-RPC message (initialize, tools/list, tools/call, notifications). The AI
 // SDK client does not send this by default, so we inject it at the fetch layer.
-const createUcpMcpFetch = (agentProfileUrl: string): typeof fetch => {
+const _createUcpMcpFetch = (agentProfileUrl: string): typeof fetch => {
   const ucpMcpFetch = async (
     input: RequestInfo | URL,
     init?: RequestInit,
@@ -279,8 +279,8 @@ const parseRestToolResult = <T>(
 
   const obj = result as Record<string, unknown>;
 
-  if ("error" in obj && typeof obj["error"] === "string") {
-    return { error: obj["error"] };
+  if ("error" in obj && typeof obj.error === "string") {
+    return { error: obj.error };
   }
 
   const parsed = parseUcpToolContent(obj, successSchema);

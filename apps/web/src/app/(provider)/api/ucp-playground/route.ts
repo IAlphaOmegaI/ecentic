@@ -13,7 +13,6 @@ import {
   buildChatSystemPrompt,
   buildMcpTools,
   buildRestTools,
-  compactToolHistory,
   gatewayOptions,
   normalizePlaygroundStoreDomain,
   PLAYGROUND_MODEL,

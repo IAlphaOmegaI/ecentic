@@ -150,7 +150,7 @@ export const ProductSelector = ({
       <Motion.Item className="px-8">
         <div className="relative border-accent-foreground border-x p-6">
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+          <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           {children}
           <div className="mt-4 inline-flex items-center border border-primary/20 bg-primary/5 px-3 py-1.5 text-primary text-sm">
             {selected.size} of {limit} products selected
@@ -161,7 +161,7 @@ export const ProductSelector = ({
       <Motion.Item className="flex-1 overflow-hidden border-accent-foreground border-y px-8">
         <div className="relative h-full overflow-auto border-accent-foreground border-x">
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+          <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div className="bg-background-rich">
             <Table>
               <TableHeader>
@@ -304,7 +304,7 @@ export const ProductSelector = ({
       <Motion.Item className="px-8">
         <div className="relative flex w-full items-center justify-between border-accent-foreground border-x p-6">
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+          <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <Button
             color="accent"
             type="button"

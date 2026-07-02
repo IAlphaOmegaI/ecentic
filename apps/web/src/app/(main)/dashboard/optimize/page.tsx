@@ -10,7 +10,7 @@ const OptimizeSkeleton = () => (
     <div className="-mx-8 border-accent-foreground border-b">
       <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
         <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-        <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+        <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <div>
           <div className="h-5 w-44 animate-pulse rounded-full bg-foreground/10" />
           <div className="mt-3 h-8 w-64 animate-pulse bg-foreground/10" />
@@ -26,7 +26,7 @@ const OptimizeSkeleton = () => (
     <div className="-mx-8 border-accent-foreground border-b">
       <div className="relative mx-8 bg-background-rich">
         <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-        <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+        <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-3">
           {(["a", "b", "c"] as const).map((key) => (
             <div
@@ -51,7 +51,7 @@ const OptimizeSkeleton = () => (
         <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
         <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
         <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-        <Crosshair className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+        <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <div className="border-accent-foreground border-b p-4">
           <div className="h-3 w-44 animate-pulse bg-foreground/10" />
           <div className="mt-2 h-6 w-56 animate-pulse bg-foreground/10" />

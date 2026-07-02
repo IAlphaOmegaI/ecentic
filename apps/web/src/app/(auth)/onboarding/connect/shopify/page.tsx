@@ -17,7 +17,7 @@ export default () => (
     <Motion.Item className="w-full border-accent-foreground border-b px-8">
       <div className="relative flex flex-col gap-4 border-accent-foreground border-x p-6">
         <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-        <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+        <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <Image src="/images/shopify.svg" alt="Shopify" width={64} height={64} />
         <div>
           <h2 className="font-medium text-4xl text-foreground">
@@ -33,7 +33,7 @@ export default () => (
     <Motion.Item className="w-full border-accent-foreground border-b px-8">
       <div className="relative border-accent-foreground border-x bg-background-dimmed p-6">
         <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-        <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+        <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <h3 className="font-medium text-foreground text-xl">How it works?</h3>
         <ol className="flex list-inside list-decimal flex-col gap-3 font-light text-foreground-dimmed">
           <li>
@@ -60,14 +60,14 @@ export default () => (
     <Motion.Item className="w-full flex-1 border-accent-foreground border-b px-8">
       <div className="relative h-full border-accent-foreground border-x p-6">
         <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-        <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+        <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <ShopifyForm />
       </div>
     </Motion.Item>
     <Motion.Item className="flex items-center justify-between border-accent-foreground px-8">
       <div className="relative flex w-full items-center justify-between border-accent-foreground border-x px-6 py-6">
         <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-        <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+        <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <Button
           color="accent"
           type="button"

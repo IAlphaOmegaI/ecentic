@@ -54,7 +54,7 @@ export const CompetitorReview = ({
       <Motion.Item className="border-accent-foreground border-b px-8">
         <div className="relative border-accent-foreground border-x p-6">
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+          <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           {children}
           <div className="mt-4 w-fit border border-primary/20 bg-primary/5 px-4 py-2.5 text-primary text-sm">
             {competitors.length} competitor products across {brands.size} brands
@@ -76,7 +76,7 @@ export const CompetitorReview = ({
           <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
           <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Plus className="bottom-0 right-0 translate-x-1/2 translate-y-1/2" />
+          <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <Button
             color="accent"
             type="button"
