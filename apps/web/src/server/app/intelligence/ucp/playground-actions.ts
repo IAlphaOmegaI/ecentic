@@ -1,34 +1,24 @@
 "use server";
 
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
-import {
-  AGENT_PROFILE,
-  type PlaygroundDataParts,
-  resolveShoppingService,
-} from "./playground";
+import { withAuthentication } from "@/server/utils/authentication";
+import { AGENT_PROFILE, resolveShoppingService } from "./playground";
 
-export const resolvePlaygroundStore = async (
-  storeUrl: string,
-): Promise<
-  | { success: true; profile: PlaygroundDataParts["profile"] }
-  | { success: false; error: string }
-> => {
-  const session = await auth.api.getSession({ headers: await headers() });
+export const resolvePlaygroundStore = withAuthentication(
+  async (_, { store }: { store: string }) => {
+    const service = await resolveShoppingService(store);
 
-  if (!session) return { success: false, error: "Unauthorized" };
+    if (!service.success)
+      return { success: false, error: new Error(service.error) };
 
-  const service = await resolveShoppingService(storeUrl);
-
-  if (!service.success) return { success: false, error: service.error };
-
-  return {
-    success: true,
-    profile: {
-      transport: service.transport,
-      endpoint: service.endpoint,
-      profileUrl: service.profileUrl,
-      agentProfileUrl: AGENT_PROFILE,
-    },
-  };
-};
+    return {
+      success: true,
+      data: {
+        transport: service.transport,
+        endpoint: service.endpoint,
+        profileUrl: service.profileUrl,
+        agentProfileUrl: AGENT_PROFILE,
+      },
+    };
+  },
+  "Playground.resolveStore",
+);
