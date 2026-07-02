@@ -21,6 +21,8 @@ import {
   ucpBlock,
   ucpEnvelope,
 } from "./protocol";
+import type { UcpStoreContext } from "./store-context";
+import * as WcCatalog from "./wc-catalog";
 
 type ProductRow = {
   id: string;
@@ -303,13 +305,17 @@ export type CatalogResult = {
   body: Record<string, unknown>;
 };
 
-/** `POST /catalog/search` */
+/**
+ * `POST /catalog/search`. Live-first: results come from the store's
+ * WooCommerce REST API v3 (current prices/stock, redis-cached); the synced
+ * `product` table only answers when the store is unreachable.
+ */
 export const search = async ({
-  store,
+  context,
   negotiated,
   payload,
 }: {
-  store: { id: string; domain: string };
+  context: UcpStoreContext;
   negotiated: Negotiated | null;
   payload: {
     query?: string;
@@ -317,6 +323,7 @@ export const search = async ({
     pagination?: { limit?: number; cursor?: string };
   };
 }): Promise<CatalogResult> => {
+  const store = context.store;
   const relevant = [CAPABILITY.CATALOG_SEARCH];
   const query = (payload.query ?? "").trim();
   const filters = payload.filters ?? {};
@@ -335,6 +342,38 @@ export const search = async ({
         ],
         continue_url: contextualStorefrontUrl(store.domain, "catalog.search"),
       },
+    };
+  }
+
+  const limitLive = Math.min(
+    Math.max(payload.pagination?.limit ?? DEFAULT_PAGE_SIZE, 1),
+    MAX_PAGE_SIZE,
+  );
+  const pageLive = decodeCursor(payload.pagination?.cursor);
+
+  const live = await WcCatalog.liveSearch({
+    context,
+    query,
+    filters,
+    page: pageLive,
+    limit: limitLive,
+  });
+
+  if (live) {
+    return {
+      status: 200,
+      body: ucpEnvelope(
+        {
+          products: live.products,
+          pagination: {
+            has_next_page: live.hasNextPage,
+            total_count: live.totalCount,
+            ...(live.hasNextPage ? { cursor: encodeCursor(pageLive + 1) } : {}),
+          },
+        },
+        relevant,
+        negotiated,
+      ),
     };
   }
 
@@ -371,16 +410,17 @@ export const search = async ({
   };
 };
 
-/** `POST /catalog/lookup` — batch by id. */
+/** `POST /catalog/lookup` — batch by id, live-first with synced fallback. */
 export const lookup = async ({
-  store,
+  context,
   negotiated,
   payload,
 }: {
-  store: { id: string; domain: string };
+  context: UcpStoreContext;
   negotiated: Negotiated | null;
   payload: { ids?: unknown };
 }): Promise<CatalogResult> => {
+  const store = context.store;
   const relevant = [CAPABILITY.CATALOG_LOOKUP];
   const ids = [
     ...new Set(
@@ -417,15 +457,24 @@ export const lookup = async ({
     };
   }
 
-  const matched = await findByUcpIds(store.id, ids);
-  const messages: UcpMessage[] = ids
-    .filter((id) => !matched.has(id))
-    .map((id) =>
-      errorMessage("not_found", `No product matches "${id}".`, "recoverable"),
-    );
+  const live = await WcCatalog.liveLookup({ context, ids });
 
-  const products = [...new Set(matched.values())].map((row) =>
-    formatProduct(row),
+  const { products, missing } = await (async () => {
+    if (live) {
+      return {
+        products: [...new Set(live.values())],
+        missing: ids.filter((id) => !live.has(id)),
+      };
+    }
+    const matched = await findByUcpIds(store.id, ids);
+    return {
+      products: [...new Set(matched.values())].map((row) => formatProduct(row)),
+      missing: ids.filter((id) => !matched.has(id)),
+    };
+  })();
+
+  const messages: UcpMessage[] = missing.map((id) =>
+    errorMessage("not_found", `No product matches "${id}".`, "recoverable"),
   );
 
   return {
@@ -441,16 +490,17 @@ export const lookup = async ({
   };
 };
 
-/** `POST /catalog/product` — single product detail. */
+/** `POST /catalog/product` — single detail with full variations, live-first. */
 export const productDetail = async ({
-  store,
+  context,
   negotiated,
   payload,
 }: {
-  store: { id: string; domain: string };
+  context: UcpStoreContext;
   negotiated: Negotiated | null;
   payload: { id?: unknown };
 }): Promise<CatalogResult> => {
+  const store = context.store;
   const relevant = [CAPABILITY.CATALOG_LOOKUP];
   const id = typeof payload.id === "string" ? payload.id : "";
 
@@ -465,26 +515,34 @@ export const productDetail = async ({
     };
   }
 
-  const matched = await findByUcpIds(store.id, [id]);
-  const row = matched.get(id);
+  // Miss is a business outcome: HTTP 200 with a UCP error envelope.
+  const notFound: CatalogResult = {
+    status: 200,
+    body: {
+      ucp: ucpBlock(relevant, negotiated, "error"),
+      messages: [
+        errorMessage(
+          "not_found",
+          `No product matches "${id}".`,
+          "unrecoverable",
+        ),
+      ],
+      continue_url: contextualStorefrontUrl(store.domain, "catalog.product"),
+    },
+  };
 
-  if (!row) {
-    // Miss is a business outcome: HTTP 200 with a UCP error envelope.
+  const live = await WcCatalog.liveProduct({ context, id });
+  if (live) {
+    if (live.status === "not_found") return notFound;
     return {
       status: 200,
-      body: {
-        ucp: ucpBlock(relevant, negotiated, "error"),
-        messages: [
-          errorMessage(
-            "not_found",
-            `No product matches "${id}".`,
-            "unrecoverable",
-          ),
-        ],
-        continue_url: contextualStorefrontUrl(store.domain, "catalog.product"),
-      },
+      body: ucpEnvelope({ product: live.product }, relevant, negotiated),
     };
   }
+
+  const matched = await findByUcpIds(store.id, [id]);
+  const row = matched.get(id);
+  if (!row) return notFound;
 
   return {
     status: 200,

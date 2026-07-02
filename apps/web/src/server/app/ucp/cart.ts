@@ -100,10 +100,7 @@ const buildSession = async ({
   payload: Record<string, unknown>;
   base: Pick<CartSession, "id" | "createdAt">;
 }): Promise<CartSession> => {
-  const resolved = await resolveLineItems(
-    context.store.id,
-    payload["line_items"],
-  );
+  const resolved = await resolveLineItems(context, payload["line_items"]);
   const discountCodes = parseDiscountCodes(payload["discounts"]);
 
   const priced = await priceSession({

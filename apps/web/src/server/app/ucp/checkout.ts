@@ -304,10 +304,7 @@ export const create = async ({
 
   const seed = await (async () => {
     if (cartId === "") {
-      const resolved = await resolveLineItems(
-        context.store.id,
-        payload["line_items"],
-      );
+      const resolved = await resolveLineItems(context, payload["line_items"]);
       return {
         lineItems: resolved.lineItems,
         messages: resolved.messages,
@@ -457,8 +454,7 @@ export const update = async ({
 
   const lineItems =
     payload["line_items"] !== undefined
-      ? (await resolveLineItems(context.store.id, payload["line_items"]))
-          .lineItems
+      ? (await resolveLineItems(context, payload["line_items"])).lineItems
       : existing.lineItems;
 
   const fulfillment = parseFulfillment(payload["fulfillment"]);

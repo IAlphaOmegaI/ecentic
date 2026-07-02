@@ -106,21 +106,21 @@ const matchRoute = (method: string, segments: string[]): Route | null => {
         operation: "catalog.search",
         signResponse: false,
         handle: ({ context, negotiated, payload }) =>
-          Catalog.search({ store: context.store, negotiated, payload }),
+          Catalog.search({ context, negotiated, payload }),
       };
     case method === "POST" && first === "catalog" && second === "lookup":
       return {
         operation: "catalog.lookup",
         signResponse: false,
         handle: ({ context, negotiated, payload }) =>
-          Catalog.lookup({ store: context.store, negotiated, payload }),
+          Catalog.lookup({ context, negotiated, payload }),
       };
     case method === "POST" && first === "catalog" && second === "product":
       return {
         operation: "catalog.product",
         signResponse: false,
         handle: ({ context, negotiated, payload }) =>
-          Catalog.productDetail({ store: context.store, negotiated, payload }),
+          Catalog.productDetail({ context, negotiated, payload }),
       };
     case method === "POST" && first === "carts" && segments.length === 1:
       return {

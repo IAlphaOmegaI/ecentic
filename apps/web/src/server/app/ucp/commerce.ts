@@ -1,7 +1,8 @@
 /**
  * Shared commerce logic for hosted UCP carts and checkout sessions: resolving
- * agent-supplied line items against the synced catalog, pricing sessions
- * through the store bridge, and shaping wire line items / totals / discounts.
+ * agent-supplied line items against the live wc/v3 catalog (synced table as
+ * fallback), pricing sessions through the store bridge, and shaping wire line
+ * items / totals / discounts.
  */
 
 import * as Bridge from "./bridge";
@@ -17,6 +18,7 @@ import {
   type SessionQuote,
 } from "./sessions";
 import type { UcpStoreContext } from "./store-context";
+import * as WcCatalog from "./wc-catalog";
 
 // ─── Payload parsing ─────────────────────────────────────────────────────────
 
@@ -128,7 +130,7 @@ export const parseFulfillment = (
  * implementation.
  */
 export const resolveLineItems = async (
-  storeId: string,
+  context: UcpStoreContext,
   payload: unknown,
 ): Promise<{ lineItems: SessionLineItem[]; messages: UcpMessage[] }> => {
   const messages: UcpMessage[] = [];
@@ -153,43 +155,77 @@ export const resolveLineItems = async (
       return true;
     });
 
-  const matched = await findByUcpIds(
-    storeId,
+  const synced = await findByUcpIds(
+    context.store.id,
     requested.map((entry) => entry.itemId),
   );
 
   const lineItems: SessionLineItem[] = [];
   for (const entry of requested) {
-    const row = matched.get(entry.itemId);
-    if (!row) {
-      messages.push(
-        warningMessage(
-          "item_unavailable",
-          `"${entry.itemId}" is not available and was removed.`,
-        ),
-      );
+    // Live catalog first (variant cache → wc/v3 lookup) so variation ids and
+    // current prices resolve; the synced table covers store outages.
+    const live = await WcCatalog.resolveLineItemSource({
+      context,
+      id: entry.itemId,
+    });
+    if (live) {
+      lineItems.push({
+        id: entry.id,
+        productId: "",
+        externalId: live.externalId,
+        title: live.title,
+        quantity: entry.quantity,
+        unitPrice: live.unitPrice,
+        ...(live.imageUrl ? { imageUrl: live.imageUrl } : {}),
+      });
       continue;
     }
 
-    const currency = row.currency ?? "USD";
-    const images = (() => {
-      try {
-        const parsed = JSON.parse(row.images ?? "[]");
-        return Array.isArray(parsed) ? parsed : [];
-      } catch {
-        return [];
-      }
-    })();
+    const row = synced.get(entry.itemId);
+    if (row) {
+      const currency = row.currency ?? "USD";
+      const images = (() => {
+        try {
+          const parsed = JSON.parse(row.images ?? "[]");
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
+        }
+      })();
 
-    lineItems.push({
-      id: entry.id,
-      productId: row.id,
-      externalId: productUcpId(row),
-      title: row.title,
-      quantity: entry.quantity,
-      unitPrice: toMinorUnits(row.price, currency) ?? 0,
-      ...(typeof images[0] === "string" ? { imageUrl: images[0] } : {}),
-    });
+      lineItems.push({
+        id: entry.id,
+        productId: row.id,
+        externalId: productUcpId(row),
+        title: row.title,
+        quantity: entry.quantity,
+        unitPrice: toMinorUnits(row.price, currency) ?? 0,
+        ...(typeof images[0] === "string" ? { imageUrl: images[0] } : {}),
+      });
+      continue;
+    }
+
+    // Numeric ids the catalog can't see yet (e.g. a fresh variation) are kept
+    // provisionally — the bridge quote is the authority and fills title/price
+    // or drops them as unavailable.
+    if (/^\d+$/.test(entry.itemId)) {
+      lineItems.push({
+        id: entry.id,
+        productId: "",
+        externalId: entry.itemId,
+        title: `Item ${entry.itemId}`,
+        quantity: entry.quantity,
+        unitPrice: 0,
+      });
+      continue;
+    }
+
+    messages.push(
+      warningMessage(
+        "item_unavailable",
+        `"${entry.itemId}" is not available and was removed.`,
+      ),
+    );
   }
 
   return { lineItems, messages };
@@ -269,6 +305,12 @@ export const priceSession = async ({
     return {
       ...lineItem,
       unitPrice: match.unit_price,
+      // The live cart is authoritative — it also fills in provisional items
+      // that were resolved by id only.
+      title: match.title || lineItem.title,
+      ...(lineItem.imageUrl || !match.image_url
+        ? {}
+        : { imageUrl: match.image_url }),
       totals: {
         subtotal: match.subtotal,
         discount: match.discount,
