@@ -78,11 +78,20 @@ export const fetchPlatformProfile = async (
       return null;
     }
   })();
-  if (
-    !parsed ||
-    parsed.protocol !== "https:" ||
-    PRIVATE_HOST_PATTERN.test(parsed.hostname)
-  ) {
+  // Spec: HTTPS-only, public hosts. In development, plain-HTTP/private
+  // profile URLs are allowed so local agent platforms can be tested —
+  // mirroring the connect flow's SSRF guard.
+  const allowed = (() => {
+    if (!parsed) return false;
+    if (process.env.NODE_ENV !== "production") {
+      return parsed.protocol === "https:" || parsed.protocol === "http:";
+    }
+    return (
+      parsed.protocol === "https:" &&
+      !PRIVATE_HOST_PATTERN.test(parsed.hostname)
+    );
+  })();
+  if (!allowed) {
     return {
       success: false,
       code: "invalid_profile_url",

@@ -28,14 +28,17 @@ export type SessionLineItem = {
   totals?: { subtotal: number; discount: number; total: number };
 };
 
+/** UCP Shipping Destination fields (the spec's postal-address vocabulary). */
 export type SessionAddress = {
-  street1?: string;
-  street2?: string;
-  city?: string;
-  state?: string;
+  street_address?: string;
+  extended_address?: string;
+  address_locality?: string;
+  address_region?: string;
   postal_code?: string;
-  country?: string;
-  name?: string;
+  address_country?: string;
+  first_name?: string;
+  last_name?: string;
+  phone_number?: string;
 };
 
 export type SessionBuyer = {
@@ -56,6 +59,9 @@ export type AppliedCoupon = {
   code: string;
   valid: boolean;
   amount: number;
+  title?: string;
+  discount_type?: string;
+  allocations?: { line_id: string; amount: number }[];
   reason?: string;
 };
 
@@ -107,6 +113,10 @@ export type CheckoutSession = {
   selectedShippingOptionId?: string;
   quote?: SessionQuote;
   messages: UcpMessage[];
+  /** Opaque payment instruments echoed back to the platform (never processed). */
+  instruments?: Record<string, unknown>[];
+  /** Cart this session was converted from (conversion cleared on cancel). */
+  cartId?: string;
   /** Agent platform state captured at creation for webhooks/signing. */
   agentProfileUrl?: string;
   webhookUrl?: string;

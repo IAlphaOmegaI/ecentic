@@ -10,6 +10,11 @@ Central navigation for product context, agent rules, and package/component docum
 - [AI agent commerce strategy](./context/strategy.md)
 - [Shopify app listing reference](./context/shopify.md)
 
+### If you are working on store integrations or hosted UCP
+
+- [Store integrations progress tracker](./integrations/overview.md)
+- [Hosted UCP — woo-ucp conformance](./integrations/woo-ucp-conformance.md) — how the backend UCP surface (`apps/web/src/server/app/ucp/`) maps to the woo-ucp reference, the thin-plugin bridge contract, known divergences, and deployment notes
+
 ### If you are planning billing or Shopify App Store pricing
 
 - [Pricing + Shopify Billing API](./tasks/shopify-billing-pricing.md) — how Partner Dashboard plans, Billing API charges, and Ecentic entitlements should align

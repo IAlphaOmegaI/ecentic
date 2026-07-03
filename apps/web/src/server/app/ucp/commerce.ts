@@ -7,7 +7,7 @@
 
 import * as Bridge from "./bridge";
 import { findByUcpIds, productUcpId } from "./catalog";
-import { displayAmount, toMinorUnits } from "./money";
+import { toMinorUnits } from "./money";
 import { errorMessage, type UcpMessage, warningMessage } from "./protocol";
 import {
   type AppliedCoupon,
@@ -55,17 +55,29 @@ export const parseDiscountCodes = (payload: unknown): string[] => {
   ];
 };
 
+/**
+ * Sanitizes a UCP Shipping Destination. Spec field names are canonical;
+ * common informal aliases are tolerated on input.
+ */
 const parseAddress = (source: Record<string, unknown>): SessionAddress => {
-  const pick = (key: string) =>
-    typeof source[key] === "string" ? (source[key] as string) : undefined;
+  const pick = (...keys: string[]) => {
+    for (const key of keys) {
+      if (typeof source[key] === "string" && source[key] !== "") {
+        return source[key] as string;
+      }
+    }
+    return undefined;
+  };
   return {
-    street1: pick("street1") ?? pick("address1") ?? pick("line1"),
-    street2: pick("street2") ?? pick("address2") ?? pick("line2"),
-    city: pick("city"),
-    state: pick("state") ?? pick("province"),
-    postal_code: pick("postal_code") ?? pick("zip"),
-    country: pick("country") ?? pick("country_code"),
-    name: pick("name"),
+    street_address: pick("street_address", "street1", "address1", "line1"),
+    extended_address: pick("extended_address", "street2", "address2", "line2"),
+    address_locality: pick("address_locality", "city"),
+    address_region: pick("address_region", "state", "province"),
+    postal_code: pick("postal_code", "zip"),
+    address_country: pick("address_country", "country", "country_code"),
+    first_name: pick("first_name"),
+    last_name: pick("last_name"),
+    phone_number: pick("phone_number"),
   };
 };
 
@@ -236,12 +248,12 @@ export const resolveLineItems = async (
 const toBridgeDestination = (
   destination: SessionAddress,
 ): Bridge.BridgeDestination => ({
-  country: destination.country,
-  state: destination.state,
+  country: destination.address_country,
+  state: destination.address_region,
   postcode: destination.postal_code,
-  city: destination.city,
-  address_1: destination.street1,
-  address_2: destination.street2,
+  city: destination.address_locality,
+  address_1: destination.street_address,
+  address_2: destination.extended_address,
 });
 
 /**
@@ -379,7 +391,7 @@ export const formatLineItem = (
     quantity: lineItem.quantity,
     totals: [
       { type: "subtotal", amount: subtotal },
-      ...(discount > 0 ? [{ type: "items_discount", amount: discount }] : []),
+      ...(discount > 0 ? [{ type: "items_discount", amount: -discount }] : []),
       { type: "total", amount: total },
     ],
   };
@@ -403,36 +415,98 @@ export const appliedDiscounts = (
   quote: SessionQuote | undefined,
 ): AppliedCoupon[] => (quote?.coupons ?? []).filter((coupon) => coupon.valid);
 
+/**
+ * Totals breakdown in minor units, mirroring the reference: `display_text` is
+ * a human label, discount rows carry negative amounts, and the estimated-cart
+ * variant defers taxes/shipping to checkout.
+ */
 export const buildTotals = ({
   lineItems,
-  currency,
   quote,
   shippingAmount,
+  variant = "checkout",
 }: {
   lineItems: SessionLineItem[];
-  currency: string;
   quote?: SessionQuote;
   shippingAmount?: number;
+  variant?: "cart" | "checkout";
 }): Record<string, unknown>[] => {
   const subtotal = sessionSubtotal(lineItems);
   const discount = sessionDiscountTotal(lineItems);
-  const tax = quote?.taxTotal ?? 0;
+  const tax = variant === "checkout" ? (quote?.taxTotal ?? 0) : 0;
   const fulfillment = shippingAmount ?? 0;
-  const total = subtotal - discount + fulfillment + tax;
-
-  const entry = (type: string, amount: number) => ({
-    type,
-    display_text: displayAmount(amount, currency),
-    amount,
-  });
+  const total = Math.max(0, subtotal - discount) + fulfillment + tax;
 
   return [
-    entry("subtotal", subtotal),
-    ...(discount > 0 ? [entry("discount", discount)] : []),
-    ...(shippingAmount !== undefined
-      ? [entry("fulfillment", fulfillment)]
+    { type: "subtotal", display_text: "Subtotal", amount: subtotal },
+    ...(discount > 0
+      ? [
+          {
+            type: "items_discount",
+            display_text: "Item Discounts",
+            amount: -discount,
+          },
+        ]
       : []),
-    ...(tax > 0 ? [entry("tax", tax)] : []),
-    entry("total", total),
+    ...(fulfillment > 0
+      ? [{ type: "fulfillment", display_text: "Shipping", amount: fulfillment }]
+      : []),
+    ...(tax > 0 ? [{ type: "tax", display_text: "Tax", amount: tax }] : []),
+    {
+      type: "total",
+      display_text:
+        variant === "cart"
+          ? "Estimated total (taxes calculated at checkout)"
+          : "Total",
+      amount: total,
+    },
   ];
+};
+
+/**
+ * The `discounts.applied` response entries, mirroring the reference shape:
+ * code, human title, computed amount, allocation method (from the coupon
+ * type), application priority, and per-line `allocations` as
+ * `$.line_items[N]` JSONPaths — the breakdown is computed store-side by
+ * WooCommerce's own discount calculator (`WC_Discounts`) over the live cart.
+ */
+export const appliedDiscountsResponse = (
+  quote: SessionQuote | undefined,
+  lineItems: SessionLineItem[] = [],
+): Record<string, unknown>[] =>
+  appliedDiscounts(quote).map((coupon, index) => {
+    const allocations = (coupon.allocations ?? [])
+      .map((allocation) => {
+        const lineIndex = lineItems.findIndex(
+          (lineItem) => lineItem.id === allocation.line_id,
+        );
+        if (lineIndex === -1) return null;
+        return {
+          path: `$.line_items[${lineIndex}]`,
+          amount: allocation.amount,
+        };
+      })
+      .filter((allocation) => allocation !== null);
+
+    return {
+      code: coupon.code,
+      ...(coupon.title ? { title: coupon.title } : {}),
+      amount: coupon.amount,
+      method: coupon.discount_type === "fixed_cart" ? "across" : "each",
+      priority: index + 1,
+      ...(allocations.length > 0 ? { allocations } : {}),
+    };
+  });
+
+/** Opaque payment instruments from a `payment` input object (echoed, never processed). */
+export const parseInstruments = (
+  payload: unknown,
+): Record<string, unknown>[] => {
+  if (!payload || typeof payload !== "object") return [];
+  const instruments = (payload as { instruments?: unknown }).instruments;
+  if (!Array.isArray(instruments)) return [];
+  return instruments.filter(
+    (instrument): instrument is Record<string, unknown> =>
+      !!instrument && typeof instrument === "object",
+  );
 };

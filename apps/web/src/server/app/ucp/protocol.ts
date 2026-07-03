@@ -137,16 +137,30 @@ export const errorMessage = (
   code: string,
   content: string,
   severity: UcpMessageSeverity = "recoverable",
+  path?: string,
 ): UcpMessage => ({
   type: "error",
   content_type: "plain",
   code,
   content,
   severity,
+  ...(path ? { path } : {}),
 });
 
-export const warningMessage = (code: string, content: string): UcpMessage => ({
+export const warningMessage = (
+  code: string,
+  content: string,
+  path?: string,
+): UcpMessage => ({
   type: "warning",
+  content_type: "plain",
+  code,
+  content,
+  ...(path ? { path } : {}),
+});
+
+export const infoMessage = (code: string, content: string): UcpMessage => ({
+  type: "info",
   content_type: "plain",
   code,
   content,
@@ -302,23 +316,29 @@ export const operationCapability = (operation: UcpOperation): string => {
 
 /**
  * Fallback web URL for a failed UCP operation — the most contextually relevant
- * storefront URL so an agent can hand the buyer off to the store. WooCommerce
- * default permalinks; the homepage is always a safe fallback.
+ * storefront URL so an agent can hand the buyer off to the store. Uses the
+ * store's real configured page URLs when the bridge has provided them (see
+ * store-info.ts); otherwise derives WooCommerce default permalinks.
  */
 export const contextualStorefrontUrl = (
   storeDomain: string,
   operation?: UcpOperation,
+  urls?: { home: string; cart: string; checkout: string; shop: string } | null,
 ): string => {
-  const home = `https://${storeDomain.replace(/^https?:\/\//, "").replace(/\/+$/, "")}/`;
+  // Preserve an explicit scheme (http is used by local dev stores); default
+  // bare domains to https.
+  const trimmed = storeDomain.replace(/\/+$/, "");
+  const origin = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+  const home = urls?.home || `${origin}/`;
   switch (operation) {
     case "checkout":
-      return `${home}checkout/`;
+      return urls?.checkout || `${origin}/checkout/`;
     case "cart":
-      return `${home}cart/`;
+      return urls?.cart || `${origin}/cart/`;
     case "catalog.search":
     case "catalog.lookup":
     case "catalog.product":
-      return `${home}shop/`;
+      return urls?.shop || `${origin}/shop/`;
     default:
       return home;
   }

@@ -6,6 +6,12 @@
 
 import { db } from "@/server/database";
 
+/** Store facts fetched over the bridge (see store-info.ts). */
+export type StorefrontInfo = {
+  links: { type: string; url: string; title?: string }[];
+  urls: { home: string; cart: string; checkout: string; shop: string };
+};
+
 export type UcpStoreContext = {
   store: {
     id: string;
@@ -17,6 +23,8 @@ export type UcpStoreContext = {
   };
   credentials: { consumerKey: string; consumerSecret: string } | null;
   bridgeSecret: string | null;
+  /** Loaded by the router for agent-facing operations; null when unreachable. */
+  storefront?: StorefrontInfo | null;
 };
 
 /**

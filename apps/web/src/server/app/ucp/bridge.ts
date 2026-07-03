@@ -62,7 +62,15 @@ export type BridgeQuoteResponse = {
     purchasable: boolean;
     in_stock: boolean;
   }[];
-  coupons: { code: string; valid: boolean; amount: number; reason?: string }[];
+  coupons: {
+    code: string;
+    valid: boolean;
+    amount: number;
+    title?: string;
+    discount_type?: string;
+    allocations?: { line_id: string; amount: number }[];
+    reason?: string;
+  }[];
   shipping_options: {
     id: string;
     title: string;
@@ -106,13 +114,20 @@ export type BridgeOrderEntity = {
   id: number;
   number: string;
   status: string;
+  label: string;
   checkout_id: string;
   permalink_url: string;
   currency: string;
+  /**
+   * Full reference order-entity line items: `item` (id/title/price/image_url),
+   * `quantity: {original, total, fulfilled}`, discount-aware `totals`, and the
+   * derived `status` (processing|partial|fulfilled|removed).
+   */
   line_items: Record<string, unknown>[];
   totals: { type: string; display_text: string; amount: number }[];
-  fulfillment?: Record<string, unknown>;
+  fulfillment?: { expectations: unknown[]; events: unknown[] };
   adjustments?: Record<string, unknown>[];
+  attribution?: Record<string, unknown>;
 };
 
 // ─── Calls ───────────────────────────────────────────────────────────────────
@@ -172,6 +187,21 @@ export const getOrder = async (
   orderId: string,
 ) =>
   get<BridgeOrderEntity>(credentials, `/orders/${encodeURIComponent(orderId)}`);
+
+export type BridgeStoreInfo = {
+  links: { type: string; url: string; title?: string }[];
+  urls: { home: string; cart: string; checkout: string; shop: string };
+  currency: string;
+  weight_unit: string;
+  dimension_unit: string;
+};
+
+/**
+ * Store facts only the WordPress install knows: configured legal pages,
+ * real storefront page URLs, and presentment units.
+ */
+export const getStoreInfo = async (credentials: BridgeCredentials) =>
+  get<BridgeStoreInfo>(credentials, "/store");
 
 /**
  * Pushes the hosted-UCP connection settings to the plugin after connect:

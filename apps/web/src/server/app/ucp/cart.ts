@@ -2,10 +2,16 @@
  * Hosted UCP cart sessions (`dev.ucp.shopping.cart` + the discount extension).
  * Carts hold resolved line items and estimated totals; tax and shipping are
  * checkout concerns. State lives in redis with the session TTL.
+ *
+ * Conformance with the reference (WOO_UCP_Cart): existence is binary on the
+ * wire — a missing/expired cart is a `not_found` business outcome at HTTP 200;
+ * a create whose every item is unavailable is an error outcome with no cart
+ * resource; PUT is a full replacement where absent sections retain the prior
+ * state; cancel returns the state one last time before deletion.
  */
 
 import {
-  appliedDiscounts,
+  appliedDiscountsResponse,
   buildTotals,
   formatLineItem,
   parseBuyer,
@@ -15,8 +21,10 @@ import {
 } from "./commerce";
 import {
   CAPABILITY,
+  contextualStorefrontUrl,
   errorMessage,
   type Negotiated,
+  type UcpMessage,
   ucpBlock,
   ucpEnvelope,
 } from "./protocol";
@@ -41,7 +49,7 @@ const formatCart = (
   context: UcpStoreContext,
   negotiated: Negotiated | null,
 ): Record<string, unknown> => {
-  const validCoupons = appliedDiscounts(session.quote);
+  const applied = appliedDiscountsResponse(session.quote, session.lineItems);
 
   return ucpEnvelope(
     {
@@ -49,28 +57,25 @@ const formatCart = (
       line_items: session.lineItems.map((lineItem) => formatLineItem(lineItem)),
       ...(session.context ? { context: session.context } : {}),
       ...(session.buyer ? { buyer: session.buyer } : {}),
-      ...(session.discountCodes.length > 0
+      ...(session.discountCodes.length > 0 || applied.length > 0
         ? {
             discounts: {
               codes: session.discountCodes,
-              applied: validCoupons.map((coupon) => ({
-                code: coupon.code,
-                amount: coupon.amount,
-              })),
+              applied,
             },
           }
         : {}),
       currency: session.currency,
       totals: buildTotals({
         lineItems: session.lineItems,
-        currency: session.currency,
         quote: session.quote,
+        variant: "cart",
       }),
       ...(session.messages.length > 0 ? { messages: session.messages } : {}),
       continue_url: checkoutLinkUrl(
         context.store.domain,
         session.lineItems,
-        validCoupons[0]?.code,
+        session.discountCodes[0],
       ),
       expires_at: session.expiresAt,
     },
@@ -79,57 +84,77 @@ const formatCart = (
   );
 };
 
-const notFound = (negotiated: Negotiated | null): CartResult => ({
-  status: 404,
+/** not_found business outcome — HTTP 200 with a UCP error envelope (cart spec). */
+const notFound = (
+  context: UcpStoreContext,
+  negotiated: Negotiated | null,
+): CartResult => ({
+  status: 200,
   body: {
-    ucp: ucpBlock(RELEVANT, negotiated, "error"),
+    ucp: ucpBlock([CAPABILITY.CART], negotiated, "error"),
     messages: [
-      errorMessage("not_found", "Cart not found or expired.", "unrecoverable"),
+      errorMessage(
+        "not_found",
+        "Cart not found or has expired.",
+        "unrecoverable",
+      ),
     ],
+    continue_url: contextualStorefrontUrl(
+      context.store.domain,
+      "cart",
+      context.storefront?.urls,
+    ),
   },
 });
 
-// ─── Operations ──────────────────────────────────────────────────────────────
+/** All-items-unavailable outcome on create — error envelope, no cart resource. */
+const allUnavailable = (
+  context: UcpStoreContext,
+  negotiated: Negotiated | null,
+  itemMessages: UcpMessage[],
+): CartResult => ({
+  status: 200,
+  body: {
+    ucp: ucpBlock([CAPABILITY.CART], negotiated, "error"),
+    messages: [
+      errorMessage(
+        "out_of_stock",
+        "All requested items are currently unavailable.",
+        "unrecoverable",
+      ),
+      ...itemMessages,
+    ],
+    continue_url: contextualStorefrontUrl(
+      context.store.domain,
+      "cart",
+      context.storefront?.urls,
+    ),
+  },
+});
 
-const buildSession = async ({
-  context,
-  payload,
-  base,
-}: {
-  context: UcpStoreContext;
-  payload: Record<string, unknown>;
-  base: Pick<CartSession, "id" | "createdAt">;
-}): Promise<CartSession> => {
-  const resolved = await resolveLineItems(context, payload["line_items"]);
-  const discountCodes = parseDiscountCodes(payload["discounts"]);
+// ─── Pricing ─────────────────────────────────────────────────────────────────
 
+const priceCart = async (
+  context: UcpStoreContext,
+  session: CartSession,
+): Promise<CartSession> => {
   const priced = await priceSession({
     context,
-    lineItems: resolved.lineItems,
-    discountCodes,
+    lineItems: session.lineItems,
+    discountCodes: session.discountCodes,
   });
 
-  const currency = priced.quote?.currency ?? "USD";
-
   return {
-    kind: "cart",
-    id: base.id,
-    store: context.store.id,
-    status: "active",
-    currency,
+    ...session,
     lineItems: priced.lineItems,
-    buyer: parseBuyer(payload["buyer"]),
-    context:
-      payload["context"] && typeof payload["context"] === "object"
-        ? (payload["context"] as Record<string, unknown>)
-        : undefined,
-    discountCodes,
     quote: priced.quote,
-    messages: [...resolved.messages, ...priced.messages],
-    createdAt: base.createdAt,
-    expiresAt: expiry(),
+    currency: priced.quote?.currency ?? session.currency,
+    messages: [...session.messages, ...priced.messages],
+    expiresAt: expiry(), // activity extends the cart
   };
 };
+
+// ─── Operations ──────────────────────────────────────────────────────────────
 
 /** `POST /carts` */
 export const create = async ({
@@ -141,16 +166,55 @@ export const create = async ({
   negotiated: Negotiated | null;
   payload: Record<string, unknown>;
 }): Promise<CartResult> => {
-  const session = await buildSession({
-    context,
-    payload,
-    base: { id: newCartId(), createdAt: new Date().toISOString() },
-  });
+  const rawItems = payload["line_items"];
+  if (!Array.isArray(rawItems) || rawItems.length === 0) {
+    return {
+      status: 400,
+      body: {
+        ucp: ucpBlock([CAPABILITY.CART], negotiated, "error"),
+        messages: [
+          errorMessage(
+            "field_required",
+            "line_items cannot be empty.",
+            "unrecoverable",
+            "$.line_items",
+          ),
+        ],
+        continue_url: contextualStorefrontUrl(
+          context.store.domain,
+          "cart",
+          context.storefront?.urls,
+        ),
+      },
+    };
+  }
 
+  const resolved = await resolveLineItems(context, rawItems);
+
+  const initial: CartSession = {
+    kind: "cart",
+    id: newCartId(),
+    store: context.store.id,
+    status: "active",
+    currency: "USD",
+    lineItems: resolved.lineItems,
+    buyer: parseBuyer(payload["buyer"]),
+    context:
+      payload["context"] && typeof payload["context"] === "object"
+        ? (payload["context"] as Record<string, unknown>)
+        : undefined,
+    discountCodes: parseDiscountCodes(payload["discounts"]),
+    messages: resolved.messages,
+    createdAt: new Date().toISOString(),
+    expiresAt: expiry(),
+  };
+
+  const session = await priceCart(context, initial);
+
+  // When every requested item is unavailable, return an error outcome and
+  // create no cart resource (the absent `id` is the secondary discriminator).
   if (session.lineItems.length === 0) {
-    session.messages.push(
-      errorMessage("cart_empty", "No purchasable line items were provided."),
-    );
+    return allUnavailable(context, negotiated, session.messages);
   }
 
   await saveCart(session);
@@ -168,11 +232,14 @@ export const get = async ({
   id: string;
 }): Promise<CartResult> => {
   const session = await getCart(context.store.id, id);
-  if (!session) return notFound(negotiated);
+  if (!session) return notFound(context, negotiated);
   return { status: 200, body: formatCart(session, context, negotiated) };
 };
 
-/** `PUT /carts/{id}` — full replacement of the cart's contents. */
+/**
+ * `PUT /carts/{id}` — full replacement: provided sections wholly supersede
+ * the prior state; absent sections are retained (reference semantics).
+ */
 export const update = async ({
   context,
   negotiated,
@@ -185,14 +252,34 @@ export const update = async ({
   payload: Record<string, unknown>;
 }): Promise<CartResult> => {
   const existing = await getCart(context.store.id, id);
-  if (!existing) return notFound(negotiated);
+  if (!existing) return notFound(context, negotiated);
 
-  const session = await buildSession({
-    context,
-    payload,
-    base: { id: existing.id, createdAt: existing.createdAt },
-  });
+  const resolved =
+    payload["line_items"] !== undefined
+      ? await resolveLineItems(context, payload["line_items"])
+      : { lineItems: existing.lineItems, messages: [] as UcpMessage[] };
 
+  const merged: CartSession = {
+    ...existing,
+    lineItems: resolved.lineItems,
+    buyer:
+      payload["buyer"] !== undefined
+        ? parseBuyer(payload["buyer"])
+        : existing.buyer,
+    context:
+      payload["context"] !== undefined &&
+      payload["context"] &&
+      typeof payload["context"] === "object"
+        ? (payload["context"] as Record<string, unknown>)
+        : existing.context,
+    discountCodes:
+      payload["discounts"] !== undefined
+        ? parseDiscountCodes(payload["discounts"])
+        : existing.discountCodes,
+    messages: resolved.messages,
+  };
+
+  const session = await priceCart(context, merged);
   await saveCart(session);
   return { status: 200, body: formatCart(session, context, negotiated) };
 };
@@ -208,8 +295,9 @@ export const cancel = async ({
   id: string;
 }): Promise<CartResult> => {
   const session = await getCart(context.store.id, id);
-  if (!session) return notFound(negotiated);
+  if (!session) return notFound(context, negotiated);
 
+  // Spec: business MUST return the cart state before deletion.
   const body = formatCart(session, context, negotiated);
   await deleteCart(context.store.id, id);
   return { status: 200, body };
@@ -225,4 +313,13 @@ export const markConverted = async (
   checkoutId: string,
 ) => {
   await saveCart({ ...session, convertedTo: checkoutId });
+};
+
+/** Internal: clears the cart → checkout link so the cart can be reused. */
+export const clearConversion = async (storeId: string, cartId: string) => {
+  const session = await getCart(storeId, cartId);
+  if (session?.convertedTo) {
+    const { convertedTo: _dropped, ...rest } = session;
+    await saveCart(rest as CartSession);
+  }
 };

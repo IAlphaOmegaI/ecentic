@@ -6,7 +6,10 @@
  * signing for checkout/order responses and idempotency result caching.
  */
 
+import { resultify } from "@zenncore/utils";
 import type { NextRequest } from "next/server";
+import { type GenericContext, withContext } from "../../utils/context";
+import { Environment } from "../../utils/environment";
 import * as Cart from "./cart";
 import * as Catalog from "./catalog";
 import * as Checkout from "./checkout";
@@ -30,6 +33,7 @@ import {
 import { isRateLimited } from "./rate-limit";
 import { signResponse, verifyRequest } from "./signatures";
 import { resolveStoreContext, type UcpStoreContext } from "./store-context";
+import { loadStorefrontInfo } from "./store-info";
 
 // ─── CORS ────────────────────────────────────────────────────────────────────
 
@@ -199,8 +203,8 @@ const matchRoute = (method: string, segments: string[]): Route | null => {
       return {
         operation: "checkout",
         signResponse: true,
-        handle: ({ context, negotiated, id }) =>
-          Checkout.complete({ context, negotiated, id }),
+        handle: ({ context, negotiated, payload, id }) =>
+          Checkout.complete({ context, negotiated, payload, id }),
       };
     case method === "POST" &&
       first === "checkout-sessions" &&
@@ -229,14 +233,20 @@ const matchRoute = (method: string, segments: string[]): Route | null => {
 
 // ─── Entry point ─────────────────────────────────────────────────────────────
 
-export const handleUcpRequest = async (
+const run = async (
+  span: GenericContext["span"],
   request: NextRequest,
   storeId: string,
   segments: string[],
 ): Promise<Response> => {
-  if (request.method === "OPTIONS") {
-    return new Response(null, { status: 204, headers: CORS_HEADERS });
-  }
+  span.addBreadcrumb({
+    category: "ucp.request",
+    data: {
+      "store.id": storeId,
+      "request.method": request.method,
+      "request.path": segments.join("/"),
+    },
+  });
 
   const context = await resolveStoreContext(storeId);
   if (!context) {
@@ -267,6 +277,10 @@ export const handleUcpRequest = async (
     return json(404, { code: "not_found", content: "Unknown UCP operation." });
   }
 
+  // Store facts from the plugin (legal links, real page URLs) — redis-cached;
+  // a bridge outage degrades to derived defaults.
+  context.storefront = await loadStorefrontInfo(context);
+
   const rawBody = await request.text();
   const payload = (() => {
     if (rawBody === "") return {} as Record<string, unknown>;
@@ -290,6 +304,7 @@ export const handleUcpRequest = async (
   const continueUrl = contextualStorefrontUrl(
     context.store.domain,
     route.operation,
+    context.storefront?.urls,
   );
 
   // RFC 9421 signature verification — verify-when-present.
@@ -373,7 +388,49 @@ export const handleUcpRequest = async (
 
   await idempotencyStore(idempotencyKey, result.status, result.body);
 
+  span.addBreadcrumb({
+    category: "ucp.request.result",
+    data: { operation: route.operation, "response.status": result.status },
+  });
+
   return route.signResponse
     ? signedJson(result.status, result.body)
     : json(result.status, result.body);
+};
+
+/**
+ * Sentry-instrumented dispatch: one span per agent-facing UCP request, with
+ * unexpected exceptions captured as Result failures instead of unhandled
+ * route errors.
+ */
+const dispatch = withContext(
+  async (
+    context,
+    request: NextRequest,
+    storeId: string,
+    segments: string[],
+  ) => {
+    return await resultify(() => run(context.span, request, storeId, segments));
+  },
+  "Ucp.request",
+);
+
+export const handleUcpRequest = async (
+  request: NextRequest,
+  storeId: string,
+  segments: string[],
+): Promise<Response> => {
+  // CORS preflight — not worth a Sentry span.
+  if (request.method === "OPTIONS") {
+    return new Response(null, { status: 204, headers: CORS_HEADERS });
+  }
+
+  const result = await dispatch(Environment.SERVER, request, storeId, segments);
+  if (!result.success) {
+    return json(500, {
+      code: "internal_error",
+      content: "An unexpected error occurred.",
+    });
+  }
+  return result.data;
 };

@@ -2,6 +2,7 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 import { type NextRequest, NextResponse as Response } from "next/server";
 import * as Orders from "@/server/app/ucp/orders";
 import { resolveStoreContext } from "@/server/app/ucp/store-context";
+import { Environment } from "@/server/utils/environment";
 
 /**
  * Order lifecycle events relayed by the store's thin plugin (WooCommerce
@@ -82,11 +83,14 @@ export const POST = async (
     return Response.json({ error: "Invalid payload" }, { status: 400 });
   }
 
-  const relay = await Orders.relayStoreEvent({
-    context,
+  const relay = await Orders.relayStoreEvent(Environment.SERVER, {
+    store: context,
     event,
     externalOrderId: String(orderId),
   });
 
-  return Response.json({ received: true, relayed: relay.relayed });
+  return Response.json({
+    received: true,
+    relayed: relay.success ? relay.data.relayed : false,
+  });
 };

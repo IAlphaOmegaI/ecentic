@@ -16,6 +16,7 @@ import {
   CAPABILITY,
   contextualStorefrontUrl,
   errorMessage,
+  infoMessage,
   type Negotiated,
   type UcpMessage,
   ucpBlock,
@@ -141,7 +142,7 @@ const buildVariant = (row: ProductRow): Record<string, unknown> => {
     title: row.title,
     description: row.description ? stripHtml(row.description) : row.title,
     price: ucpAmount(price, currency),
-    ...(listPrice !== null && listPrice !== price
+    ...(listPrice !== null && listPrice > price
       ? { list_price: ucpAmount(listPrice, currency) }
       : {}),
     availability: {
@@ -178,7 +179,7 @@ export const formatProduct = (row: ProductRow): Record<string, unknown> => {
     if (!Number.isFinite(value) || value <= 0 || !raw.rating_count) return null;
     return {
       value,
-      scale_min: 0,
+      scale_min: 1,
       scale_max: 5,
       count: raw.rating_count,
     };
@@ -199,7 +200,7 @@ export const formatProduct = (row: ProductRow): Record<string, unknown> => {
       min: ucpAmount(price, currency),
       max: ucpAmount(price, currency),
     },
-    ...(listPrice !== null && listPrice !== price
+    ...(listPrice !== null && listPrice > price
       ? {
           list_price_range: {
             min: ucpAmount(listPrice, currency),
@@ -225,17 +226,14 @@ export const formatProduct = (row: ProductRow): Record<string, unknown> => {
 
 // ─── Requests ────────────────────────────────────────────────────────────────
 
-type SearchFilters = {
-  categories?: string[];
-  price?: { min?: number; max?: number };
-  availability?: { in_stock?: boolean };
-};
-
-const matchesFilters = (row: ProductRow, filters: SearchFilters): boolean => {
+const matchesFilters = (
+  row: ProductRow,
+  filters: WcCatalog.CatalogFilters,
+): boolean => {
   const raw = parseRaw(row);
   const currency = row.currency ?? "USD";
 
-  if (filters.categories && filters.categories.length > 0) {
+  if (filters.categories.length > 0) {
     const names = (raw.categories ?? []).map((category) =>
       category.name.toLowerCase(),
     );
@@ -246,16 +244,14 @@ const matchesFilters = (row: ProductRow, filters: SearchFilters): boolean => {
     }
   }
 
-  if (filters.price) {
+  if (filters.priceMin !== null || filters.priceMax !== null) {
     const price = toMinorUnits(row.price, currency);
     if (price === null) return false;
-    if (filters.price.min !== undefined && price < filters.price.min)
-      return false;
-    if (filters.price.max !== undefined && price > filters.price.max)
-      return false;
+    if (filters.priceMin !== null && price < filters.priceMin) return false;
+    if (filters.priceMax !== null && price > filters.priceMax) return false;
   }
 
-  if (filters.availability?.in_stock) {
+  if (filters.inStock === true) {
     if (availabilityStatus(parseRaw(row)) === "out_of_stock") return false;
   }
 
@@ -305,6 +301,47 @@ export type CatalogResult = {
   body: Record<string, unknown>;
 };
 
+/** Normalizes the UCP Search Filters payload (prices stay in minor units). */
+const parseCatalogFilters = (payload: unknown): WcCatalog.CatalogFilters => {
+  const filters = WcCatalog.emptyFilters();
+  if (!payload || typeof payload !== "object") return filters;
+  const source = payload as {
+    categories?: unknown;
+    price?: { min?: unknown; max?: unknown };
+    availability?: { in_stock?: unknown };
+  };
+
+  if (Array.isArray(source.categories)) {
+    filters.categories = source.categories
+      .filter((value): value is string => typeof value === "string")
+      .filter((value) => value !== "");
+  }
+  if (typeof source.price?.min === "number") {
+    filters.priceMin = Math.trunc(source.price.min);
+  }
+  if (typeof source.price?.max === "number") {
+    filters.priceMax = Math.trunc(source.price.max);
+  }
+  if (typeof source.availability?.in_stock === "boolean") {
+    filters.inStock = source.availability.in_stock;
+  }
+  return filters;
+};
+
+/** Whether the parsed filters carry at least one recognized search input. */
+const hasSearchInput = (filters: WcCatalog.CatalogFilters): boolean =>
+  filters.categories.length > 0 ||
+  filters.priceMin !== null ||
+  filters.priceMax !== null ||
+  filters.inStock !== null;
+
+/** Advisory buyer context: only the currency is meaningful hosted-side. */
+const parseContextCurrency = (payload: unknown): string => {
+  if (!payload || typeof payload !== "object") return "";
+  const currency = (payload as { currency?: unknown }).currency;
+  return typeof currency === "string" ? currency.toUpperCase() : "";
+};
+
 /**
  * `POST /catalog/search`. Live-first: results come from the store's
  * WooCommerce REST API v3 (current prices/stock, redis-cached); the synced
@@ -319,17 +356,19 @@ export const search = async ({
   negotiated: Negotiated | null;
   payload: {
     query?: string;
-    filters?: SearchFilters;
+    filters?: unknown;
+    context?: unknown;
     pagination?: { limit?: number; cursor?: string };
   };
 }): Promise<CatalogResult> => {
   const store = context.store;
   const relevant = [CAPABILITY.CATALOG_SEARCH];
   const query = (payload.query ?? "").trim();
-  const filters = payload.filters ?? {};
-  const hasFilters = Object.keys(filters).length > 0;
+  const filters = parseCatalogFilters(payload.filters);
 
-  if (query === "" && !hasFilters) {
+  // Conformance: a valid request MUST carry at least one recognized input —
+  // a query or a filter. Filter-only (browse) requests are accepted.
+  if (query === "" && !hasSearchInput(filters)) {
     return {
       status: 400,
       body: {
@@ -340,7 +379,11 @@ export const search = async ({
             "Provide a query or at least one filter.",
           ),
         ],
-        continue_url: contextualStorefrontUrl(store.domain, "catalog.search"),
+        continue_url: contextualStorefrontUrl(
+          store.domain,
+          "catalog.search",
+          context.storefront?.urls,
+        ),
       },
     };
   }
@@ -355,6 +398,7 @@ export const search = async ({
     context,
     query,
     filters,
+    contextCurrency: parseContextCurrency(payload.context),
     page: pageLive,
     limit: limitLive,
   });
@@ -370,6 +414,7 @@ export const search = async ({
             total_count: live.totalCount,
             ...(live.hasNextPage ? { cursor: encodeCursor(pageLive + 1) } : {}),
           },
+          ...(live.messages.length > 0 ? { messages: live.messages } : {}),
         },
         relevant,
         negotiated,
@@ -418,14 +463,17 @@ export const lookup = async ({
 }: {
   context: UcpStoreContext;
   negotiated: Negotiated | null;
-  payload: { ids?: unknown };
+  payload: { ids?: unknown; filters?: unknown; context?: unknown };
 }): Promise<CatalogResult> => {
   const store = context.store;
   const relevant = [CAPABILITY.CATALOG_LOOKUP];
+  // Conformance: duplicate identifiers MUST be deduplicated (Batch Lookup).
   const ids = [
     ...new Set(
       Array.isArray(payload.ids)
-        ? payload.ids.filter((id): id is string => typeof id === "string")
+        ? payload.ids
+            .filter((id): id is string => typeof id === "string")
+            .filter((id) => id !== "")
         : [],
     ),
   ];
@@ -436,7 +484,11 @@ export const lookup = async ({
       body: {
         ucp: ucpBlock(relevant, negotiated, "error"),
         messages: [errorMessage("invalid_request", "Provide ids to look up.")],
-        continue_url: contextualStorefrontUrl(store.domain, "catalog.lookup"),
+        continue_url: contextualStorefrontUrl(
+          store.domain,
+          "catalog.lookup",
+          context.storefront?.urls,
+        ),
       },
     };
   }
@@ -452,30 +504,44 @@ export const lookup = async ({
             `Lookup supports at most ${MAX_LOOKUP_IDS} ids per request.`,
           ),
         ],
-        continue_url: contextualStorefrontUrl(store.domain, "catalog.lookup"),
+        continue_url: contextualStorefrontUrl(
+          store.domain,
+          "catalog.lookup",
+          context.storefront?.urls,
+        ),
       },
     };
   }
 
-  const live = await WcCatalog.liveLookup({ context, ids });
+  const live = await WcCatalog.liveLookup({
+    context,
+    ids,
+    filters: parseCatalogFilters(payload.filters),
+    contextCurrency: parseContextCurrency(payload.context),
+  });
 
-  const { products, missing } = await (async () => {
+  const { products, missing, extraMessages } = await (async () => {
     if (live) {
       return {
-        products: [...new Set(live.values())],
-        missing: ids.filter((id) => !live.has(id)),
+        products: live.products,
+        missing: live.missing,
+        extraMessages: live.messages,
       };
     }
     const matched = await findByUcpIds(store.id, ids);
     return {
       products: [...new Set(matched.values())].map((row) => formatProduct(row)),
       missing: ids.filter((id) => !matched.has(id)),
+      extraMessages: [] as UcpMessage[],
     };
   })();
 
-  const messages: UcpMessage[] = missing.map((id) =>
-    errorMessage("not_found", `No product matches "${id}".`, "recoverable"),
-  );
+  // Unresolved identifiers surface as info messages carrying the id itself,
+  // mirroring the reference implementation.
+  const messages: UcpMessage[] = [
+    ...extraMessages,
+    ...missing.map((id) => infoMessage("not_found", id)),
+  ];
 
   return {
     status: 200,
@@ -490,6 +556,32 @@ export const lookup = async ({
   };
 };
 
+/** Parses the agent's `selected: [{name, label, id?}]` option choices. */
+const parseSelected = (payload: unknown): WcCatalog.SelectedOption[] => {
+  if (!Array.isArray(payload)) return [];
+  return payload
+    .filter(
+      (entry): entry is { name: string; label: string; id?: string } =>
+        !!entry &&
+        typeof entry === "object" &&
+        typeof (entry as { name?: unknown }).name === "string" &&
+        typeof (entry as { label?: unknown }).label === "string",
+    )
+    .map((entry) => ({
+      name: entry.name,
+      label: entry.label,
+      ...(typeof entry.id === "string" ? { id: entry.id } : {}),
+    }));
+};
+
+/** Parses the buyer's option-name `preferences` (relaxation priority order). */
+const parsePreferences = (payload: unknown): string[] =>
+  Array.isArray(payload)
+    ? payload
+        .filter((entry): entry is string => typeof entry === "string")
+        .filter((entry) => entry !== "")
+    : [];
+
 /** `POST /catalog/product` — single detail with full variations, live-first. */
 export const productDetail = async ({
   context,
@@ -498,11 +590,17 @@ export const productDetail = async ({
 }: {
   context: UcpStoreContext;
   negotiated: Negotiated | null;
-  payload: { id?: unknown };
+  payload: {
+    id?: unknown;
+    selected?: unknown;
+    preferences?: unknown;
+    filters?: unknown;
+    context?: unknown;
+  };
 }): Promise<CatalogResult> => {
   const store = context.store;
   const relevant = [CAPABILITY.CATALOG_LOOKUP];
-  const id = typeof payload.id === "string" ? payload.id : ""; 
+  const id = typeof payload.id === "string" ? payload.id : "";
 
   if (id === "") {
     return {
@@ -510,7 +608,11 @@ export const productDetail = async ({
       body: {
         ucp: ucpBlock(relevant, negotiated, "error"),
         messages: [errorMessage("invalid_request", "Provide a product id.")],
-        continue_url: contextualStorefrontUrl(store.domain, "catalog.product"),
+        continue_url: contextualStorefrontUrl(
+          store.domain,
+          "catalog.product",
+          context.storefront?.urls,
+        ),
       },
     };
   }
@@ -527,16 +629,34 @@ export const productDetail = async ({
           "unrecoverable",
         ),
       ],
-      continue_url: contextualStorefrontUrl(store.domain, "catalog.product"),
+      continue_url: contextualStorefrontUrl(
+        store.domain,
+        "catalog.product",
+        context.storefront?.urls,
+      ),
     },
   };
 
-  const live = await WcCatalog.liveProduct({ context, id });
+  const live = await WcCatalog.liveProduct({
+    context,
+    id,
+    selected: parseSelected(payload.selected),
+    preferences: parsePreferences(payload.preferences),
+    filters: parseCatalogFilters(payload.filters),
+    contextCurrency: parseContextCurrency(payload.context),
+  });
   if (live) {
     if (live.status === "not_found") return notFound;
     return {
       status: 200,
-      body: ucpEnvelope({ product: live.product }, relevant, negotiated),
+      body: ucpEnvelope(
+        {
+          product: live.product,
+          ...(live.messages.length > 0 ? { messages: live.messages } : {}),
+        },
+        relevant,
+        negotiated,
+      ),
     };
   }
 

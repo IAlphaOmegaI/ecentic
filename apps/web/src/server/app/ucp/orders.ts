@@ -10,6 +10,9 @@
 
 import { randomUUID } from "node:crypto";
 import { resultify } from "@zenncore/utils";
+import { withContext } from "../../utils/context";
+import { Environment } from "../../utils/environment";
+import { RequestError } from "../../utils/error";
 import * as UcpOrderRecord from "../ucp-order";
 import * as Bridge from "./bridge";
 import {
@@ -34,7 +37,7 @@ const buildOrderEntity = (
 ): Record<string, unknown> => ({
   ucp: { ...ucpBlock(RELEVANT, negotiated, "success") },
   id: String(entity.id),
-  label: `Order #${entity.number}`,
+  label: entity.label || `Order #${entity.number}`,
   checkout_id: entity.checkout_id,
   permalink_url: entity.permalink_url,
   line_items: entity.line_items,
@@ -43,6 +46,9 @@ const buildOrderEntity = (
   totals: entity.totals,
   ...(entity.adjustments && entity.adjustments.length > 0
     ? { adjustments: entity.adjustments }
+    : {}),
+  ...(entity.attribution && Object.keys(entity.attribution).length > 0
+    ? { attribution: entity.attribution }
     : {}),
 });
 
@@ -110,94 +116,149 @@ export type OrderEventName = "order.created" | "order.updated";
 /**
  * Sends a signed order lifecycle webhook to the agent platform. Fetches a
  * fresh entity snapshot from the store, then POSTs it with Standard Webhooks
- * headers and an RFC 9421 signature. Failures are swallowed after recording —
- * webhooks are best-effort and never block the triggering flow.
+ * headers and an RFC 9421 signature. Callers fire-and-forget — a delivery
+ * failure is a Sentry-captured Result, never a blocked checkout.
  */
-export const sendOrderEvent = async ({
-  context,
-  event,
-  externalOrderId,
-  webhookUrl,
-  entity,
-}: {
-  context: UcpStoreContext;
-  event: OrderEventName;
-  externalOrderId: string;
-  webhookUrl: string;
-  entity?: Bridge.BridgeOrderEntity;
-}): Promise<{ success: boolean }> => {
-  if (!/^https:\/\//.test(webhookUrl)) return { success: false };
-
-  const snapshot = await (async () => {
-    if (entity) return entity;
-    if (!context.credentials) return null;
-    const fetched = await Bridge.getOrder(
-      {
-        domain: context.store.domain,
-        consumerKey: context.credentials.consumerKey,
-        consumerSecret: context.credentials.consumerSecret,
-      },
+export const sendOrderEvent = withContext(
+  async (
+    context,
+    {
+      store,
+      event,
       externalOrderId,
+      webhookUrl,
+      entity,
+    }: {
+      store: UcpStoreContext;
+      event: OrderEventName;
+      externalOrderId: string;
+      webhookUrl: string;
+      entity?: Bridge.BridgeOrderEntity;
+    },
+  ) => {
+    context.span.addBreadcrumb({
+      category: "ucp.order.webhook",
+      data: {
+        "store.id": store.store.id,
+        "order.external_id": externalOrderId,
+        event,
+      },
+    });
+
+    if (!/^https:\/\//.test(webhookUrl)) {
+      return {
+        success: false as const,
+        error: new RequestError("Order webhook target is not HTTPS"),
+      };
+    }
+
+    const snapshot = await (async () => {
+      if (entity) return entity;
+      if (!store.credentials) return null;
+      const fetched = await Bridge.getOrder(
+        {
+          domain: store.store.domain,
+          consumerKey: store.credentials.consumerKey,
+          consumerSecret: store.credentials.consumerSecret,
+        },
+        externalOrderId,
+      );
+      return fetched.success ? fetched.data : null;
+    })();
+
+    if (!snapshot) {
+      return {
+        success: false as const,
+        error: new RequestError(
+          "Could not fetch the order snapshot for the webhook",
+        ),
+      };
+    }
+
+    const body = JSON.stringify(buildOrderEntity(snapshot, null));
+
+    // The business identifies itself with its own discovery profile — the
+    // store's well-known URL, which proxies the hosted profile.
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      "UCP-Agent": `profile="${storefrontOrigin(store.store.domain)}/.well-known/ucp"; version="${UCP_VERSION}"`,
+      "Idempotency-Key": `evt_${randomUUID()}`,
+      "Webhook-Id": `msg_${randomUUID()}`,
+      "Webhook-Timestamp": String(Math.floor(Date.now() / 1000)),
+      "X-UCP-Event": event,
+    };
+
+    const signature = signRequest("POST", webhookUrl, body, headers);
+
+    const delivery = await resultify(() =>
+      fetch(webhookUrl, {
+        method: "POST",
+        headers: { ...headers, ...signature },
+        body,
+        signal: AbortSignal.timeout(10_000),
+      }),
     );
-    return fetched.success ? fetched.data : null;
-  })();
 
-  if (!snapshot) return { success: false };
+    if (!delivery.success) return delivery;
+    if (!delivery.data.ok) {
+      return {
+        success: false as const,
+        error: new RequestError("Order webhook delivery failed", {
+          statusCode: delivery.data.status,
+        }),
+      };
+    }
 
-  const body = JSON.stringify(buildOrderEntity(snapshot, null));
-
-  // The business identifies itself with its own discovery profile — the
-  // store's well-known URL, which proxies the hosted profile.
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    "UCP-Agent": `profile="${storefrontOrigin(context.store.domain)}/.well-known/ucp"; version="${UCP_VERSION}"`,
-    "Idempotency-Key": `evt_${randomUUID()}`,
-    "Webhook-Id": `msg_${randomUUID()}`,
-    "Webhook-Timestamp": String(Math.floor(Date.now() / 1000)),
-    "X-UCP-Event": event,
-  };
-
-  const signature = signRequest("POST", webhookUrl, body, headers);
-
-  const delivery = await resultify(() =>
-    fetch(webhookUrl, {
-      method: "POST",
-      headers: { ...headers, ...signature },
-      body,
-      signal: AbortSignal.timeout(10_000),
-    }),
-  );
-
-  return { success: delivery.success && delivery.data.ok };
-};
+    return { success: true as const, data: { delivered: true } };
+  },
+  "UcpOrders.sendEvent",
+);
 
 /**
  * Handles an order event relayed by the store plugin (order status changed).
  * Looks up the durable order record for the agent webhook target and fans the
  * event out. Unknown orders are ignored — only UCP-originated orders relay.
  */
-export const relayStoreEvent = async ({
-  context,
-  event,
-  externalOrderId,
-}: {
-  context: UcpStoreContext;
-  event: OrderEventName;
-  externalOrderId: string;
-}): Promise<{ relayed: boolean }> => {
-  const record = await UcpOrderRecord.getForStoreOrder({
-    store: context.store.id,
-    externalOrderId,
-  });
-
-  if (!record.success || !record.data?.webhookUrl) return { relayed: false };
-
-  const sent = await sendOrderEvent({
+export const relayStoreEvent = withContext(
+  async (
     context,
-    event,
-    externalOrderId,
-    webhookUrl: record.data.webhookUrl,
-  });
+    {
+      store,
+      event,
+      externalOrderId,
+    }: {
+      store: UcpStoreContext;
+      event: OrderEventName;
+      externalOrderId: string;
+    },
+  ) => {
+    context.span.addBreadcrumb({
+      category: "ucp.order.relay",
+      data: {
+        "store.id": store.store.id,
+        "order.external_id": externalOrderId,
+        event,
+      },
+    });
 
-  return { relayed: sent.success };
-};
+    const record = await UcpOrderRecord.getForStoreOrder({
+      store: store.store.id,
+      externalOrderId,
+    });
+    if (!record.success) return record;
+
+    if (!record.data?.webhookUrl) {
+      return { success: true as const, data: { relayed: false } };
+    }
+
+    const sent = await sendOrderEvent(Environment.SERVER, {
+      store,
+      event,
+      externalOrderId,
+      webhookUrl: record.data.webhookUrl,
+    });
+
+    return { success: true as const, data: { relayed: sent.success } };
+  },
+  "UcpOrders.relayStoreEvent",
+);

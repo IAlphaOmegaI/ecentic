@@ -4,10 +4,11 @@
  * (shipping options, tax, coupons) comes from the store bridge quote, and
  * completion materializes a real WooCommerce order through the bridge.
  *
- * Payment: no payment handlers are advertised, so instruments are finalized
- * by the buyer through the trusted UI — completion creates the order and the
- * response carries `order.payment_url` for the hand-off (the reference
- * implementation's "defer to trusted UI" path).
+ * Payment: no payment handlers are advertised, so collected instruments are
+ * echoed but never processed — an instrument referencing any handler is
+ * rejected at Complete (`payment_handler_unknown`), and payment is finalized
+ * by the buyer through the trusted UI (`order.payment_url`), keeping the
+ * store the Merchant of Record.
  */
 
 import { Environment } from "@/server/utils/environment";
@@ -15,25 +16,25 @@ import * as UcpOrder from "../ucp-order";
 import * as Bridge from "./bridge";
 import * as Cart from "./cart";
 import {
-  appliedDiscounts,
+  appliedDiscountsResponse,
   buildTotals,
   formatLineItem,
   parseBuyer,
   parseDiscountCodes,
   parseFulfillment,
+  parseInstruments,
   priceSession,
   resolveLineItems,
 } from "./commerce";
-import { displayAmount } from "./money";
 import { sendOrderEvent } from "./orders";
 import {
   CAPABILITY,
+  contextualStorefrontUrl,
   errorMessage,
   type Negotiated,
   orderWebhookUrl,
   type UcpMessage,
   ucpBlock,
-  ucpEnvelope,
 } from "./protocol";
 import {
   type CheckoutSession,
@@ -55,66 +56,90 @@ const RELEVANT = [
 
 export type CheckoutResult = { status: number; body: Record<string, unknown> };
 
-// ─── Status derivation ───────────────────────────────────────────────────────
-
 const TERMINAL_STATUSES: CheckoutStatus[] = ["completed", "canceled"];
 
+const isTerminal = (status: CheckoutStatus): boolean =>
+  TERMINAL_STATUSES.includes(status);
+
+// ─── Status derivation ───────────────────────────────────────────────────────
+
 /**
- * Derives the session status from its state: terminal statuses stick; a
- * session missing items, buyer contact, destination (when shippable), or a
- * viable shipping option is `incomplete` with recoverable messages telling the
- * agent what to supply; otherwise it is `ready_for_complete`.
+ * Derives the lifecycle status from the message stack, per the reference:
+ * any `requires_buyer_input`/`requires_buyer_review` error → requires_escalation;
+ * any error (or no line items) → incomplete; otherwise ready_for_complete.
+ */
+const deriveStatus = (
+  session: CheckoutSession,
+  messages: UcpMessage[],
+): CheckoutStatus => {
+  const errors = messages.filter((message) => message.type === "error");
+
+  if (
+    errors.some(
+      (message) =>
+        message.severity === "requires_buyer_input" ||
+        message.severity === "requires_buyer_review",
+    )
+  ) {
+    return "requires_escalation";
+  }
+  if (session.lineItems.length === 0) return "incomplete";
+  if (errors.length > 0) return "incomplete";
+  return "ready_for_complete";
+};
+
+/**
+ * Recomputes the session's requirement messages and status. Terminal statuses
+ * stick. Uses the reference's message codes and JSONPaths so platforms get
+ * the standard UX hooks.
  */
 const recompute = (session: CheckoutSession): CheckoutSession => {
-  if (TERMINAL_STATUSES.includes(session.status)) return session;
+  if (isTerminal(session.status)) return session;
 
   const messages: UcpMessage[] = session.messages.filter(
     (message) => message.type !== "error",
   );
 
+  if (!session.buyer?.email) {
+    messages.push(
+      errorMessage(
+        "field_required",
+        "Buyer email is required to place the order.",
+        "recoverable",
+        "$.buyer.email",
+      ),
+    );
+  }
+
   const requiresShipping = session.quote?.requiresShipping ?? true;
   const options = session.quote?.shippingOptions ?? [];
 
-  switch (true) {
-    case session.lineItems.length === 0:
-      messages.push(
-        errorMessage("cart_empty", "No purchasable line items in the session."),
-      );
-      break;
-    case !session.buyer?.email:
+  if (requiresShipping && session.lineItems.length > 0) {
+    if (!session.destination) {
       messages.push(
         errorMessage(
-          "missing_buyer_email",
-          "A buyer email is required to complete checkout.",
+          "field_required",
+          "A shipping address is required to calculate fulfillment options.",
+          "recoverable",
+          "$.fulfillment.methods[0].selected_destination_id",
         ),
       );
-      break;
-    case requiresShipping && !session.destination:
+    } else if (options.length === 0) {
       messages.push(
         errorMessage(
-          "missing_fulfillment_destination",
-          "A fulfillment destination is required for shippable items.",
+          "address_undeliverable",
+          "No shipping options are available for the provided address.",
+          "recoverable",
+          "$.fulfillment.methods[0].destinations[0]",
         ),
       );
-      break;
-    case requiresShipping && session.destination && options.length === 0:
-      messages.push(
-        errorMessage(
-          "no_shipping_options",
-          "No shipping options are available for the destination.",
-        ),
-      );
-      break;
-    default:
-      break;
+    }
   }
-
-  const hasBlockingError = messages.some((message) => message.type === "error");
 
   return {
     ...session,
     messages,
-    status: hasBlockingError ? "incomplete" : "ready_for_complete",
+    status: deriveStatus(session, messages),
   };
 };
 
@@ -128,56 +153,88 @@ const selectedShippingOption = (
   );
 };
 
+/**
+ * Maps a WooCommerce order status to the finer-grained UCP `order.status`
+ * vocabulary reported on a completed session — distinct from the session's
+ * own checkout-lifecycle status. Unknown statuses escalate for human review.
+ */
+const mapOrderStatus = (wcStatus: string): string => {
+  const status = wcStatus.startsWith("wc-") ? wcStatus.slice(3) : wcStatus;
+  switch (status) {
+    case "checkout-draft":
+      return "not_ready_for_payment";
+    case "pending":
+      return "ready_for_payment";
+    case "processing":
+    case "completed":
+      return "completed";
+    case "cancelled":
+    case "refunded":
+      return "canceled";
+    case "failed":
+      return "unrecoverable_errors";
+    default:
+      return "requires_escalation";
+  }
+};
+
 // ─── Formatting ──────────────────────────────────────────────────────────────
 
+/**
+ * The fulfillment response object (reference build_fulfillment): omitted for
+ * digital-only sessions; a bare `shipping` method advertising the requirement
+ * before an address arrives; destination + option groups once priced.
+ */
 const formatFulfillment = (
   session: CheckoutSession,
 ): Record<string, unknown> | null => {
-  const options = session.quote?.shippingOptions ?? [];
-  if (!session.destination && options.length === 0) return null;
+  const requiresShipping = session.quote?.requiresShipping ?? true;
+  if (!requiresShipping || session.lineItems.length === 0) return null;
 
   const lineItemIds = session.lineItems.map((lineItem) => lineItem.id);
-  const selected = selectedShippingOption(session);
-
-  return {
-    methods: [
-      {
-        id: "fulfillment-1",
-        type: "shipping",
-        line_item_ids: lineItemIds,
-        ...(session.destination
-          ? {
-              destinations: [{ id: "destination-1", ...session.destination }],
-              selected_destination_id: "destination-1",
-            }
-          : { destinations: [] }),
-        groups:
-          options.length > 0
-            ? [
-                {
-                  id: "group-1",
-                  line_item_ids: lineItemIds,
-                  ...(selected ? { selected_option_id: selected.id } : {}),
-                  options: options.map((option) => ({
-                    id: option.id,
-                    title: option.title,
-                    totals: [
-                      {
-                        type: "total",
-                        display_text: displayAmount(
-                          option.amount + option.tax,
-                          session.currency,
-                        ),
-                        amount: option.amount + option.tax,
-                      },
-                    ],
-                  })),
-                },
-              ]
-            : [],
-      },
-    ],
+  const method: Record<string, unknown> = {
+    id: "shipping",
+    type: "shipping",
+    line_item_ids: lineItemIds,
   };
+
+  if (!session.destination) {
+    return { methods: [method] };
+  }
+
+  const destination: Record<string, unknown> = { id: "dest_1" };
+  for (const [key, value] of Object.entries(session.destination)) {
+    if (value) destination[key] = value;
+  }
+  method["destinations"] = [destination];
+  method["selected_destination_id"] = "dest_1";
+
+  const options = session.quote?.shippingOptions ?? [];
+  if (options.length > 0) {
+    const selected = selectedShippingOption(session);
+    method["groups"] = [
+      {
+        id: "package_1",
+        line_item_ids: lineItemIds,
+        ...(selected ? { selected_option_id: selected.id } : {}),
+        options: options.map((option) => ({
+          id: option.id,
+          title: option.title,
+          totals: [{ type: "total", amount: option.amount + option.tax }],
+        })),
+      },
+    ];
+  }
+
+  return { methods: [method] };
+};
+
+/** Payment object: no handlers are advertised; collected instruments echo back. */
+const paymentObject = (
+  session: CheckoutSession,
+): Record<string, unknown> | null => {
+  if (!session.instruments || session.instruments.length === 0) return null;
+  return { handlers: {}, instruments: session.instruments };
 };
 
 const continueUrl = (
@@ -185,11 +242,10 @@ const continueUrl = (
   context: UcpStoreContext,
 ): string => {
   if (session.order?.payment_url) return session.order.payment_url;
-  const validCoupons = appliedDiscounts(session.quote);
   return checkoutLinkUrl(
     context.store.domain,
     session.lineItems,
-    validCoupons[0]?.code,
+    session.discountCodes[0],
   );
 };
 
@@ -198,69 +254,135 @@ const formatCheckout = (
   context: UcpStoreContext,
   negotiated: Negotiated | null,
 ): Record<string, unknown> => {
-  const validCoupons = appliedDiscounts(session.quote);
+  const applied = appliedDiscountsResponse(session.quote, session.lineItems);
   const shipping = selectedShippingOption(session);
   const fulfillment = formatFulfillment(session);
-  const terminal = TERMINAL_STATUSES.includes(session.status);
+  const payment = paymentObject(session);
+  const terminal = isTerminal(session.status);
 
-  return ucpEnvelope(
-    {
-      id: session.id,
-      status: session.status,
-      currency: session.currency,
-      line_items: session.lineItems.map((lineItem) => formatLineItem(lineItem)),
-      ...(session.buyer ? { buyer: session.buyer } : {}),
-      ...(session.context ? { context: session.context } : {}),
-      ...(fulfillment ? { fulfillment } : {}),
-      ...(session.discountCodes.length > 0
-        ? {
-            discounts: {
-              codes: session.discountCodes,
-              applied: validCoupons.map((coupon) => ({
-                code: coupon.code,
-                amount: coupon.amount,
-              })),
-            },
-          }
+  return {
+    ucp: ucpBlock(RELEVANT, negotiated, "success"),
+    id: session.id,
+    status: session.status,
+    currency: session.currency,
+    line_items: session.lineItems.map((lineItem) => formatLineItem(lineItem)),
+    ...(session.buyer ? { buyer: session.buyer } : {}),
+    ...(session.context ? { context: session.context } : {}),
+    ...(fulfillment ? { fulfillment } : {}),
+    ...(session.discountCodes.length > 0 || applied.length > 0
+      ? {
+          discounts: {
+            codes: session.discountCodes,
+            applied,
+          },
+        }
+      : {}),
+    totals: buildTotals({
+      lineItems: session.lineItems,
+      quote: session.quote,
+      ...(shipping !== undefined
+        ? { shippingAmount: shipping.amount + shipping.tax }
         : {}),
-      totals: buildTotals({
-        lineItems: session.lineItems,
-        currency: session.currency,
-        quote: session.quote,
-        ...(shipping !== undefined
-          ? { shippingAmount: shipping.amount + shipping.tax }
-          : {}),
-      }),
-      ...(session.messages.length > 0 ? { messages: session.messages } : {}),
-      ...(terminal ? {} : { continue_url: continueUrl(session, context) }),
-      expires_at: session.expiresAt,
-      ...(session.order ? { order: session.order } : {}),
-      ...(session.canceledAt
-        ? {
-            canceled_at: session.canceledAt,
-            cancel_reason: session.cancelReason,
-            ...(session.cancelNote ? { cancel_note: session.cancelNote } : {}),
-          }
-        : {}),
-    },
-    RELEVANT,
-    negotiated,
-  );
+    }),
+    ...(payment ? { payment } : {}),
+    ...(session.messages.length > 0 ? { messages: session.messages } : {}),
+    // Links are mandatory (privacy/terms): the store's configured legal pages
+    // arrive via the bridge store-info fetch; empty when none are configured.
+    links: context.storefront?.links ?? [],
+    // continue_url: MUST be present for requires_escalation; SHOULD be present
+    // for other non-terminal states; omitted for terminal states.
+    ...(terminal ? {} : { continue_url: continueUrl(session, context) }),
+    expires_at: session.expiresAt,
+    ...(session.order ? { order: session.order } : {}),
+    ...(session.status === "canceled"
+      ? {
+          canceled_at: session.canceledAt ?? new Date().toISOString(),
+          cancel_reason: session.cancelReason ?? null,
+          ...(session.cancelNote ? { cancel_note: session.cancelNote } : {}),
+        }
+      : {}),
+  };
 };
 
-const notFound = (negotiated: Negotiated | null): CheckoutResult => ({
-  status: 404,
+// ─── Error envelopes ─────────────────────────────────────────────────────────
+
+const errorEnvelope = (
+  negotiated: Negotiated | null,
+  messages: UcpMessage[],
+  continueTo: string | null,
+  status: number,
+): CheckoutResult => ({
+  status,
   body: {
     ucp: ucpBlock(RELEVANT, negotiated, "error"),
-    messages: [
+    messages,
+    ...(continueTo ? { continue_url: continueTo } : {}),
+  },
+});
+
+const notFound = (
+  context: UcpStoreContext,
+  negotiated: Negotiated | null,
+): CheckoutResult =>
+  errorEnvelope(
+    negotiated,
+    [
       errorMessage(
         "not_found",
-        "Checkout session not found or expired.",
+        "Checkout session not found or has expired.",
         "unrecoverable",
       ),
     ],
-  },
-});
+    contextualStorefrontUrl(
+      context.store.domain,
+      "checkout",
+      context.storefront?.urls,
+    ),
+    404,
+  );
+
+const immutable = (
+  negotiated: Negotiated | null,
+  status: CheckoutStatus,
+): CheckoutResult =>
+  errorEnvelope(
+    negotiated,
+    [
+      errorMessage(
+        "checkout_immutable",
+        status === "completed"
+          ? "Checkout session is already completed and cannot be modified."
+          : "Checkout session has been canceled and cannot be modified.",
+        "unrecoverable",
+      ),
+    ],
+    null,
+    409,
+  );
+
+/** All requested items unavailable on create — error outcome, no resource. */
+const allUnavailable = (
+  context: UcpStoreContext,
+  negotiated: Negotiated | null,
+  itemMessages: UcpMessage[],
+): CheckoutResult =>
+  errorEnvelope(
+    negotiated,
+    [
+      errorMessage(
+        "out_of_stock",
+        "All requested items are currently unavailable.",
+        "unrecoverable",
+      ),
+      ...itemMessages,
+    ],
+    contextualStorefrontUrl(
+      context.store.domain,
+      "checkout",
+      context.storefront?.urls,
+    ),
+    200,
+  );
 
 // ─── Pricing ─────────────────────────────────────────────────────────────────
 
@@ -302,69 +424,32 @@ export const create = async ({
   const cartId =
     typeof payload["cart_id"] === "string" ? payload["cart_id"] : "";
 
-  const seed = await (async () => {
-    if (cartId === "") {
-      const resolved = await resolveLineItems(context, payload["line_items"]);
-      return {
-        lineItems: resolved.lineItems,
-        messages: resolved.messages,
-        discountCodes: parseDiscountCodes(payload["discounts"]),
-        buyer: parseBuyer(payload["buyer"]),
-        existingCheckout: null,
-      };
-    }
-
-    const cart = await Cart.loadInternal(context.store.id, cartId);
-    if (!cart) return null;
-
-    // Idempotent conversion: creating a checkout from an already-converted
-    // cart returns the existing session.
-    if (cart.convertedTo) {
-      const existing = await getCheckout(context.store.id, cart.convertedTo);
-      if (existing) {
-        return {
-          lineItems: [],
-          messages: [],
-          discountCodes: [],
-          buyer: undefined,
-          existingCheckout: existing,
-        };
-      }
-    }
-
-    return {
-      lineItems: cart.lineItems,
-      messages: [],
-      discountCodes: cart.discountCodes,
-      buyer: cart.buyer ?? parseBuyer(payload["buyer"]),
-      existingCheckout: null,
-      cart,
-    };
-  })();
-
-  if (seed === null) {
-    return {
-      status: 404,
-      body: {
-        ucp: ucpBlock(RELEVANT, negotiated, "error"),
-        messages: [
-          errorMessage(
-            "not_found",
-            `Cart "${cartId}" not found or expired.`,
-            "unrecoverable",
-          ),
-        ],
-      },
-    };
+  if (cartId !== "") {
+    return createFromCart({ context, negotiated, payload, cartId });
   }
 
-  if (seed.existingCheckout) {
-    return {
-      status: 200,
-      body: formatCheckout(seed.existingCheckout, context, negotiated),
-    };
+  const rawItems = payload["line_items"];
+  if (!Array.isArray(rawItems) || rawItems.length === 0) {
+    return errorEnvelope(
+      negotiated,
+      [
+        errorMessage(
+          "field_required",
+          "line_items cannot be empty.",
+          "unrecoverable",
+          "$.line_items",
+        ),
+      ],
+      contextualStorefrontUrl(
+        context.store.domain,
+        "checkout",
+        context.storefront?.urls,
+      ),
+      400,
+    );
   }
 
+  const resolved = await resolveLineItems(context, rawItems);
   const fulfillment = parseFulfillment(payload["fulfillment"]);
 
   const initial: CheckoutSession = {
@@ -373,19 +458,17 @@ export const create = async ({
     store: context.store.id,
     status: "incomplete",
     currency: "USD",
-    lineItems: seed.lineItems,
-    buyer: seed.buyer ?? parseBuyer(payload["buyer"]),
+    lineItems: resolved.lineItems,
+    buyer: parseBuyer(payload["buyer"]),
     context:
       payload["context"] && typeof payload["context"] === "object"
         ? (payload["context"] as Record<string, unknown>)
         : undefined,
-    discountCodes:
-      seed.discountCodes.length > 0
-        ? seed.discountCodes
-        : parseDiscountCodes(payload["discounts"]),
+    discountCodes: parseDiscountCodes(payload["discounts"]),
     destination: fulfillment.destination,
     selectedShippingOptionId: fulfillment.selectedOptionId,
-    messages: seed.messages,
+    instruments: parseInstruments(payload["payment"]),
+    messages: resolved.messages,
     agentProfileUrl: negotiated?.profileUrl,
     webhookUrl: orderWebhookUrl(negotiated),
     attribution:
@@ -397,11 +480,103 @@ export const create = async ({
   };
 
   const session = await reprice(initial, context);
-  await saveCheckout(session);
 
-  if ("cart" in seed && seed.cart) {
-    await Cart.markConverted(seed.cart, session.id);
+  if (session.lineItems.length === 0) {
+    return allUnavailable(context, negotiated, session.messages);
   }
+
+  await saveCheckout(session);
+  return { status: 201, body: formatCheckout(session, context, negotiated) };
+};
+
+/**
+ * Cart → checkout conversion (reference create_from_cart): the cart contents
+ * initialise the session; a live non-terminal checkout for the same cart is
+ * returned instead of creating a conflicting one.
+ */
+const createFromCart = async ({
+  context,
+  negotiated,
+  payload,
+  cartId,
+}: {
+  context: UcpStoreContext;
+  negotiated: Negotiated | null;
+  payload: Record<string, unknown>;
+  cartId: string;
+}): Promise<CheckoutResult> => {
+  const cart = await Cart.loadInternal(context.store.id, cartId);
+  if (!cart) {
+    return errorEnvelope(
+      negotiated,
+      [
+        errorMessage(
+          "not_found",
+          "Cart not found or has expired.",
+          "unrecoverable",
+        ),
+      ],
+      contextualStorefrontUrl(
+        context.store.domain,
+        "checkout",
+        context.storefront?.urls,
+      ),
+      404,
+    );
+  }
+
+  // Idempotency: reuse the existing LIVE checkout for this cart; a terminal
+  // one no longer blocks a fresh conversion.
+  if (cart.convertedTo) {
+    const existing = await getCheckout(context.store.id, cart.convertedTo);
+    if (existing && !isTerminal(existing.status)) {
+      return {
+        status: 200,
+        body: formatCheckout(existing, context, negotiated),
+      };
+    }
+  }
+
+  const fulfillment = parseFulfillment(payload["fulfillment"]);
+
+  const initial: CheckoutSession = {
+    kind: "checkout",
+    id: newCheckoutId(),
+    store: context.store.id,
+    status: "incomplete",
+    currency: cart.currency,
+    lineItems: cart.lineItems,
+    buyer: cart.buyer ?? parseBuyer(payload["buyer"]),
+    context:
+      payload["context"] && typeof payload["context"] === "object"
+        ? (payload["context"] as Record<string, unknown>)
+        : cart.context,
+    // Carry forward the cart's discount codes (spec MUST); codes no longer
+    // valid at checkout surface as rejection warnings from the quote.
+    discountCodes: cart.discountCodes,
+    destination: fulfillment.destination,
+    selectedShippingOptionId: fulfillment.selectedOptionId,
+    instruments: parseInstruments(payload["payment"]),
+    messages: [],
+    cartId,
+    agentProfileUrl: negotiated?.profileUrl,
+    webhookUrl: orderWebhookUrl(negotiated),
+    attribution:
+      payload["attribution"] && typeof payload["attribution"] === "object"
+        ? (payload["attribution"] as Record<string, unknown>)
+        : undefined,
+    createdAt: new Date().toISOString(),
+    expiresAt: expiry(),
+  };
+
+  const session = await reprice(initial, context);
+
+  if (session.lineItems.length === 0) {
+    return allUnavailable(context, negotiated, session.messages);
+  }
+
+  await saveCheckout(session);
+  await Cart.markConverted(cart, session.id);
 
   return { status: 201, body: formatCheckout(session, context, negotiated) };
 };
@@ -417,11 +592,14 @@ export const get = async ({
   id: string;
 }): Promise<CheckoutResult> => {
   const session = await getCheckout(context.store.id, id);
-  if (!session) return notFound(negotiated);
+  if (!session) return notFound(context, negotiated);
   return { status: 200, body: formatCheckout(session, context, negotiated) };
 };
 
-/** `PUT /checkout-sessions/{id}` — updates the provided sections. */
+/**
+ * `PUT /checkout-sessions/{id}` — full replacement: provided sections wholly
+ * supersede the prior state; absent sections are retained.
+ */
 export const update = async ({
   context,
   negotiated,
@@ -434,34 +612,20 @@ export const update = async ({
   payload: Record<string, unknown>;
 }): Promise<CheckoutResult> => {
   const existing = await getCheckout(context.store.id, id);
-  if (!existing) return notFound(negotiated);
+  if (!existing) return notFound(context, negotiated);
+  if (isTerminal(existing.status))
+    return immutable(negotiated, existing.status);
 
-  if (TERMINAL_STATUSES.includes(existing.status)) {
-    return {
-      status: 409,
-      body: {
-        ucp: ucpBlock(RELEVANT, negotiated, "error"),
-        messages: [
-          errorMessage(
-            "session_terminal",
-            `Checkout session is ${existing.status} and can no longer be updated.`,
-            "unrecoverable",
-          ),
-        ],
-      },
-    };
-  }
-
-  const lineItems =
+  const resolved =
     payload["line_items"] !== undefined
-      ? (await resolveLineItems(context, payload["line_items"])).lineItems
-      : existing.lineItems;
+      ? await resolveLineItems(context, payload["line_items"])
+      : { lineItems: existing.lineItems, messages: [] as UcpMessage[] };
 
   const fulfillment = parseFulfillment(payload["fulfillment"]);
 
   const merged: CheckoutSession = {
     ...existing,
-    lineItems,
+    lineItems: resolved.lineItems,
     buyer:
       payload["buyer"] !== undefined
         ? parseBuyer(payload["buyer"])
@@ -479,8 +643,12 @@ export const update = async ({
     destination: fulfillment.destination ?? existing.destination,
     selectedShippingOptionId:
       fulfillment.selectedOptionId ?? existing.selectedShippingOptionId,
-    messages: [],
-    expiresAt: expiry(),
+    instruments:
+      payload["payment"] !== undefined
+        ? parseInstruments(payload["payment"])
+        : existing.instruments,
+    messages: resolved.messages,
+    expiresAt: expiry(), // activity extends the session
   };
 
   const session = await reprice(merged, context);
@@ -498,14 +666,15 @@ const toOrderAddress = (
   const put = (key: string, value: string | undefined) => {
     if (value) address[key] = value;
   };
-  put("first_name", buyer?.first_name);
-  put("last_name", buyer?.last_name);
-  put("address_1", destination?.street1);
-  put("address_2", destination?.street2);
-  put("city", destination?.city);
-  put("state", destination?.state);
+  put("first_name", destination?.first_name ?? buyer?.first_name);
+  put("last_name", destination?.last_name ?? buyer?.last_name);
+  put("address_1", destination?.street_address);
+  put("address_2", destination?.extended_address);
+  put("city", destination?.address_locality);
+  put("state", destination?.address_region);
   put("postcode", destination?.postal_code);
-  put("country", destination?.country);
+  put("country", destination?.address_country);
+  put("phone", destination?.phone_number ?? buyer?.phone_number);
   return address;
 };
 
@@ -514,58 +683,74 @@ export const complete = async ({
   context,
   negotiated,
   id,
+  payload,
 }: {
   context: UcpStoreContext;
   negotiated: Negotiated | null;
   id: string;
+  payload: Record<string, unknown>;
 }): Promise<CheckoutResult> => {
   const session = await getCheckout(context.store.id, id);
-  if (!session) return notFound(negotiated);
+  if (!session) return notFound(context, negotiated);
+  if (isTerminal(session.status)) return immutable(negotiated, session.status);
 
-  if (session.status === "completed") {
-    return { status: 200, body: formatCheckout(session, context, negotiated) };
+  // Late-bound instruments may arrive on Complete.
+  const withInstruments: CheckoutSession =
+    payload["payment"] !== undefined
+      ? { ...session, instruments: parseInstruments(payload["payment"]) }
+      : session;
+
+  if (withInstruments.status !== "ready_for_complete") {
+    // Re-evaluate so the caller sees exactly what is still outstanding.
+    return {
+      status: 200,
+      body: formatCheckout(withInstruments, context, negotiated),
+    };
   }
 
-  if (session.status !== "ready_for_complete") {
-    return {
-      status: 409,
-      body: {
-        ...formatCheckout(session, context, negotiated),
-        messages: [
-          ...session.messages,
-          errorMessage(
-            "not_ready",
-            `Checkout session is ${session.status}; it must be ready_for_complete.`,
-          ),
-        ],
-      },
-    };
+  // Validate collected instruments before anything irreversible: no payment
+  // handlers are advertised, so any instrument references an unknown handler.
+  if ((withInstruments.instruments ?? []).length > 0) {
+    return errorEnvelope(
+      negotiated,
+      [
+        errorMessage(
+          "payment_handler_unknown",
+          "The payment instrument references a payment handler this store does not support.",
+          "unrecoverable",
+          "payment.instruments",
+        ),
+      ],
+      continueUrl(withInstruments, context),
+      400,
+    );
   }
 
   if (!context.credentials) {
-    return {
-      status: 503,
-      body: {
-        ucp: ucpBlock(RELEVANT, negotiated, "error"),
-        messages: [
-          errorMessage(
-            "store_unavailable",
-            "The store connection is not configured for checkout.",
-            "unrecoverable",
-          ),
-        ],
-      },
-    };
+    return errorEnvelope(
+      negotiated,
+      [
+        errorMessage(
+          "order_failed",
+          "The store connection is not configured for checkout.",
+          "unrecoverable",
+        ),
+      ],
+      continueUrl(withInstruments, context),
+      500,
+    );
   }
 
   const inProgress: CheckoutSession = {
-    ...session,
+    ...withInstruments,
     status: "complete_in_progress",
   };
   await saveCheckout(inProgress);
 
-  const shipping = selectedShippingOption(session);
-  const validCoupons = appliedDiscounts(session.quote);
+  const shipping = selectedShippingOption(withInstruments);
+  const validCoupons = (withInstruments.quote?.coupons ?? []).filter(
+    (coupon) => coupon.valid,
+  );
 
   const created = await Bridge.createOrder(
     {
@@ -574,20 +759,22 @@ export const complete = async ({
       consumerSecret: context.credentials.consumerSecret,
     },
     {
-      checkout_id: session.id,
-      line_items: session.lineItems.map((lineItem) => ({
+      checkout_id: withInstruments.id,
+      line_items: withInstruments.lineItems.map((lineItem) => ({
         product_id: Number(lineItem.externalId),
         quantity: lineItem.quantity,
       })),
       coupon_codes: validCoupons.map((coupon) => coupon.code),
       billing: {
-        ...toOrderAddress(session.destination, session.buyer),
-        ...(session.buyer?.email ? { email: session.buyer.email } : {}),
-        ...(session.buyer?.phone_number
-          ? { phone: session.buyer.phone_number }
+        ...toOrderAddress(withInstruments.destination, withInstruments.buyer),
+        ...(withInstruments.buyer?.email
+          ? { email: withInstruments.buyer.email }
           : {}),
       },
-      shipping: toOrderAddress(session.destination, session.buyer),
+      shipping: toOrderAddress(
+        withInstruments.destination,
+        withInstruments.buyer,
+      ),
       ...(shipping
         ? {
             shipping_option: {
@@ -598,41 +785,44 @@ export const complete = async ({
           }
         : {}),
       buyer: {
-        first_name: session.buyer?.first_name,
-        last_name: session.buyer?.last_name,
-        email: session.buyer?.email,
-        phone: session.buyer?.phone_number,
+        first_name: withInstruments.buyer?.first_name,
+        last_name: withInstruments.buyer?.last_name,
+        email: withInstruments.buyer?.email,
+        phone: withInstruments.buyer?.phone_number,
       },
-      ...(session.attribution ? { attribution: session.attribution } : {}),
+      ...(withInstruments.attribution
+        ? { attribution: withInstruments.attribution }
+        : {}),
     },
   );
 
   if (!created.success) {
     const reverted: CheckoutSession = {
-      ...session,
+      ...withInstruments,
       status: "ready_for_complete",
       messages: [
-        ...session.messages,
+        ...withInstruments.messages,
         errorMessage(
-          "order_creation_failed",
+          "order_failed",
           "The store could not create the order. Retry shortly.",
+          "recoverable",
         ),
       ],
     };
     await saveCheckout(reverted);
     return {
-      status: 502,
+      status: 500,
       body: formatCheckout(reverted, context, negotiated),
     };
   }
 
   const completed: CheckoutSession = {
-    ...session,
+    ...withInstruments,
     status: "completed",
     order: {
       id: String(created.data.order.id),
       number: created.data.order.number,
-      status: created.data.order.status,
+      status: mapOrderStatus(created.data.order.status),
       permalink_url: created.data.order.permalink_url,
       payment_url: created.data.order.payment_url,
     },
@@ -645,16 +835,17 @@ export const complete = async ({
   await UcpOrder.create(Environment.SERVER, {
     storeId: context.store.id,
     externalOrderId: String(created.data.order.id),
-    checkoutId: session.id,
+    checkoutId: withInstruments.id,
     webhookUrl: completed.webhookUrl || orderWebhookUrl(negotiated) || null,
     agentProfileUrl: completed.agentProfileUrl ?? null,
   });
 
-  // Fire-and-forget `order.created` webhook to the agent platform.
+  // Fire-and-forget `order.created` webhook to the agent platform; delivery
+  // failures are Sentry-captured inside sendOrderEvent.
   const webhookTarget = completed.webhookUrl || orderWebhookUrl(negotiated);
   if (webhookTarget) {
-    void sendOrderEvent({
-      context,
+    void sendOrderEvent(Environment.SERVER, {
+      store: context,
       event: "order.created",
       externalOrderId: String(created.data.order.id),
       webhookUrl: webhookTarget,
@@ -677,28 +868,37 @@ export const cancel = async ({
   payload: Record<string, unknown>;
 }): Promise<CheckoutResult> => {
   const session = await getCheckout(context.store.id, id);
-  if (!session) return notFound(negotiated);
+  if (!session) return notFound(context, negotiated);
 
-  if (session.status === "completed") {
-    return {
-      status: 409,
-      body: {
-        ...formatCheckout(session, context, negotiated),
-        messages: [
-          errorMessage(
-            "session_terminal",
-            "A completed checkout session cannot be canceled.",
-            "unrecoverable",
-          ),
-        ],
-      },
-    };
+  if (isTerminal(session.status)) {
+    return errorEnvelope(
+      negotiated,
+      [
+        errorMessage(
+          "cancel_not_allowed",
+          session.status === "completed"
+            ? "Cannot cancel a completed checkout session."
+            : "Checkout session is already canceled.",
+          "unrecoverable",
+        ),
+      ],
+      null,
+      409,
+    );
   }
 
-  const reason =
+  const rawReason =
     typeof payload["reason"] === "string"
       ? payload["reason"]
       : "buyer_cancelled";
+  const reason = [
+    "buyer_cancelled",
+    "agent_error",
+    "timeout",
+    "other",
+  ].includes(rawReason)
+    ? rawReason
+    : "other";
   const note =
     typeof payload["note"] === "string" ? payload["note"] : undefined;
 
@@ -708,8 +908,14 @@ export const cancel = async ({
     canceledAt: new Date().toISOString(),
     cancelReason: reason,
     cancelNote: note,
+    messages: [],
   };
   await saveCheckout(canceled);
+
+  // Drop any cart → checkout link so the cart can be reused.
+  if (session.cartId) {
+    await Cart.clearConversion(context.store.id, session.cartId);
+  }
 
   return { status: 200, body: formatCheckout(canceled, context, negotiated) };
 };
