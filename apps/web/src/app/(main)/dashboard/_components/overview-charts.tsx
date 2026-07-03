@@ -13,6 +13,7 @@ import { Button } from "@zenncore/web/components/button";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import {
   Area,
   AreaChart,
@@ -195,6 +196,7 @@ export const OverviewCharts = ({
   trend,
   activity,
 }: OverviewCharts.Props) => {
+  const { store } = useParams<{ store: string }>();
   const data = trend.map((point) => point.winRate);
   const labels = trend.map((point) => formatRelativeTime(new Date(point.date)));
 
@@ -334,12 +336,15 @@ export const OverviewCharts = ({
           </div>
 
           <div className="flex items-center justify-between bg-background-rich p-4">
-            <Button color="accent" render={<Link href="/dashboard/optimize" />}>
+            <Button
+              color="accent"
+              render={<Link href={`/dashboard/${store}/optimize`} />}
+            >
               Optimizations
             </Button>
             <Button
               color="primary"
-              render={<Link href="/dashboard/products" />}
+              render={<Link href={`/dashboard/${store}/products`} />}
             >
               View all products <ArrowRightIcon className="size-4" />
             </Button>

@@ -1,7 +1,7 @@
 "use server";
 
 import { unique } from "@zenncore/utils";
-import { eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { cache as dedupe } from "react";
 import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
@@ -16,7 +16,56 @@ import * as Simulation from "./simulation";
 export const { get, paginate, create, update, destroy, exists, count, find } =
   repository(schema.competitor);
 
+const products = repository(schema.product);
+
 export type Type = Document<typeof schema.competitor>;
+
+/**
+ * Competitors relevant to a single store — derived, since competitors carry no
+ * storeId. A competitor "belongs" to a store when it appears in a simulation
+ * against one of that store's products. Returns the competitor rows plus the
+ * store-scoped simulations so callers can aggregate win rates from the same set.
+ */
+const collectForStore = async (userId: string, store: string) => {
+  const storeProducts = await products.find(Environment.SERVER, {
+    where: and(
+      eq(schema.product.userId, userId),
+      eq(schema.product.storeId, store),
+    ),
+  });
+  if (!storeProducts.success) return storeProducts;
+
+  const productIds = storeProducts.data.map((product) => product.id);
+  if (productIds.length === 0)
+    return {
+      success: true as const,
+      data: { competitors: [] as Type[], simulations: [] as Simulation.Type[] },
+    };
+
+  const simulations = await Simulation.getForProducts(Environment.SERVER, {
+    products: productIds,
+  });
+  if (!simulations.success) return simulations;
+
+  const competitorIds = unique(
+    simulations.data.map((simulation) => simulation.competitorId),
+  );
+  if (competitorIds.length === 0)
+    return {
+      success: true as const,
+      data: { competitors: [] as Type[], simulations: simulations.data },
+    };
+
+  const competitors = await find(Environment.SERVER, {
+    where: inArray(schema.competitor.id, competitorIds),
+  });
+  if (!competitors.success) return competitors;
+
+  return {
+    success: true as const,
+    data: { competitors: competitors.data, simulations: simulations.data },
+  };
+};
 
 export const skimForCurrentUser = withAuthentication(async (context) => {
   return find(Environment.SERVER, {
@@ -120,14 +169,31 @@ const aggregateBrands = (
 };
 
 export const gatherIntelligence = dedupe(
-  withAuthentication(async () => {
-    const [competitors, scan] = await Promise.all([
-      skimForCurrentUser(Environment.SERVER),
-      Scan.getLatest(Environment.SERVER),
-    ]);
-
-    if (!competitors.success) return competitors;
+  withAuthentication(async (context, { store }: { store?: string } = {}) => {
+    const scan = await Scan.getLatest(Environment.SERVER, { store });
     if (!scan.success) return scan;
+
+    if (store) {
+      const collected = await collectForStore(context.session.user.id, store);
+      if (!collected.success) return collected;
+
+      const brands = aggregateBrands(
+        collected.data.competitors,
+        collected.data.simulations,
+      );
+
+      return {
+        success: true,
+        data: {
+          brands,
+          competitors: collected.data.competitors.length,
+          scan: scan.data[0],
+        },
+      };
+    }
+
+    const competitors = await skimForCurrentUser(Environment.SERVER);
+    if (!competitors.success) return competitors;
 
     if (competitors.data.length === 0)
       return {
@@ -159,16 +225,39 @@ export const gatherIntelligence = dedupe(
 );
 
 export const gatherPaginatedIntelligence = withAuthentication(
-  async (context, { page, size }: { page: number; size: number }) => {
-    const [competitors, scan] = await Promise.all([
-      paginate(Environment.SERVER, page, size, {
-        where: eq(schema.competitor.userId, context.session.user.id),
-      }),
-      Scan.getLatest(Environment.SERVER),
-    ]);
-
-    if (!competitors.success) return competitors;
+  async (
+    context,
+    { page, size, store }: { page: number; size: number; store?: string },
+  ) => {
+    const scan = await Scan.getLatest(Environment.SERVER, { store });
     if (!scan.success) return scan;
+
+    if (store) {
+      const collected = await collectForStore(context.session.user.id, store);
+      if (!collected.success) return collected;
+
+      const allBrands = aggregateBrands(
+        collected.data.competitors,
+        collected.data.simulations,
+      );
+      const total = allBrands.length;
+      const offset = (page - 1) * size;
+      const brands = allBrands.slice(offset, offset + size);
+
+      return {
+        success: true,
+        data: {
+          brands,
+          scan: scan.data[0],
+          pagination: { total, page, size },
+        },
+      };
+    }
+
+    const competitors = await paginate(Environment.SERVER, page, size, {
+      where: eq(schema.competitor.userId, context.session.user.id),
+    });
+    if (!competitors.success) return competitors;
 
     const simulations = await Simulation.getForCompetitors(Environment.SERVER, {
       competitors: competitors.data.items.map((competitor) => competitor.id),

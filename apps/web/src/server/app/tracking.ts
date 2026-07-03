@@ -111,11 +111,12 @@ export type TrafficTimeSeriesPoint = {
   gemini: number;
 };
 
-export const getAgentTrafficTimeSeries = withAuthentication(async (context) => {
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+export const getAgentTrafficTimeSeries = withAuthentication(
+  async (context, { store }: { store?: string } = {}) => {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  const modelFamily = sql<string>`
+    const modelFamily = sql<string>`
       CASE
         WHEN ${schema.agentVisit.agentType} IN ('chatgpt-user','chatgpt-agent','gptbot','oai-searchbot','chatgpt-referral') THEN 'ChatGPT'
         WHEN ${schema.agentVisit.agentType} IN ('claude-user','claudebot','claude-searchbot','claude-referral') THEN 'Claude'
@@ -124,84 +125,91 @@ export const getAgentTrafficTimeSeries = withAuthentication(async (context) => {
       END
     `.as("model_family");
 
-  const day =
-    sql<string>`date_trunc('day', ${schema.agentVisit.createdAt})::date`.as(
-      "day",
+    const day =
+      sql<string>`date_trunc('day', ${schema.agentVisit.createdAt})::date`.as(
+        "day",
+      );
+
+    const result = await resultify(async () =>
+      db
+        .select({
+          day,
+          modelFamily,
+          count: count(),
+        })
+        .from(schema.agentVisit)
+        .where(
+          and(
+            eq(schema.agentVisit.userId, context.session.user.id),
+            gte(schema.agentVisit.createdAt, thirtyDaysAgo),
+            ...(store ? [eq(schema.agentVisit.storeId, store)] : []),
+          ),
+        )
+        .groupBy(day, modelFamily)
+        .orderBy(day),
     );
 
-  const result = await resultify(async () =>
-    db
-      .select({
-        day,
-        modelFamily,
-        count: count(),
-      })
-      .from(schema.agentVisit)
-      .where(
-        and(
-          eq(schema.agentVisit.userId, context.session.user.id),
-          gte(schema.agentVisit.createdAt, thirtyDaysAgo),
-        ),
-      )
-      .groupBy(day, modelFamily)
-      .orderBy(day),
-  );
+    if (!result.success) return result;
 
-  if (!result.success) return result;
+    const dates = Array.from({ length: 30 }, (_value, index) => {
+      const date = new Date();
+      date.setDate(date.getDate() - (29 - index));
+      return date.toISOString().split("T")[0] as string;
+    });
 
-  const dates = Array.from({ length: 30 }, (_value, index) => {
-    const date = new Date();
-    date.setDate(date.getDate() - (29 - index));
-    return date.toISOString().split("T")[0] as string;
-  });
+    const countFor = (date: string, family: string) =>
+      result.data.find((row) => row.day === date && row.modelFamily === family)
+        ?.count ?? 0;
 
-  const countFor = (date: string, family: string) =>
-    result.data.find((row) => row.day === date && row.modelFamily === family)
-      ?.count ?? 0;
+    const timeSeries: TrafficTimeSeriesPoint[] = dates.map((date) => ({
+      date,
+      chatgpt: countFor(date, "ChatGPT"),
+      claude: countFor(date, "Claude"),
+      gemini: countFor(date, "Gemini"),
+    }));
 
-  const timeSeries: TrafficTimeSeriesPoint[] = dates.map((date) => ({
-    date,
-    chatgpt: countFor(date, "ChatGPT"),
-    claude: countFor(date, "Claude"),
-    gemini: countFor(date, "Gemini"),
-  }));
+    return { success: true as const, data: timeSeries };
+  },
+  "Tracking.getAgentTrafficTimeSeries",
+);
 
-  return { success: true as const, data: timeSeries };
-}, "Tracking.getAgentTrafficTimeSeries");
+export const getAgentTrafficSummary = withAuthentication(
+  async (context, { store }: { store?: string } = {}) => {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-export const getAgentTrafficSummary = withAuthentication(async (context) => {
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const result = await resultify(async () =>
+      db
+        .select({
+          agentType: schema.agentVisit.agentType,
+          count: count(),
+        })
+        .from(schema.agentVisit)
+        .where(
+          and(
+            eq(schema.agentVisit.userId, context.session.user.id),
+            gte(schema.agentVisit.createdAt, thirtyDaysAgo),
+            ...(store ? [eq(schema.agentVisit.storeId, store)] : []),
+          ),
+        )
+        .groupBy(schema.agentVisit.agentType)
+        .orderBy(sql`count(*) desc`),
+    );
 
-  const result = await resultify(async () =>
-    db
-      .select({
-        agentType: schema.agentVisit.agentType,
-        count: count(),
-      })
-      .from(schema.agentVisit)
-      .where(
-        and(
-          eq(schema.agentVisit.userId, context.session.user.id),
-          gte(schema.agentVisit.createdAt, thirtyDaysAgo),
-        ),
-      )
-      .groupBy(schema.agentVisit.agentType)
-      .orderBy(sql`count(*) desc`),
-  );
+    if (!result.success) return result;
 
-  if (!result.success) return result;
+    const byAgentType = result.data.map((row) => ({
+      agentType: row.agentType,
+      label: AGENT_LABELS[row.agentType] ?? row.agentType,
+      count: row.count,
+    }));
 
-  const byAgentType = result.data.map((row) => ({
-    agentType: row.agentType,
-    label: AGENT_LABELS[row.agentType] ?? row.agentType,
-    count: row.count,
-  }));
+    const total30d = byAgentType.reduce((sum, entry) => sum + entry.count, 0);
 
-  const total30d = byAgentType.reduce((sum, entry) => sum + entry.count, 0);
-
-  return { success: true as const, data: { total30d, byAgentType } };
-}, "Tracking.getAgentTrafficSummary");
+    return { success: true as const, data: { total30d, byAgentType } };
+  },
+  "Tracking.getAgentTrafficSummary",
+);
 
 const { create } = repository(schema.agentVisit);
 

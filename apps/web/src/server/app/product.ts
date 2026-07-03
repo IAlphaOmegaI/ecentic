@@ -22,12 +22,20 @@ const PUBLISHABLE_PLATFORMS = new Set(["shopify", "woocommerce"]);
 
 export type Type = Document<typeof schema.product>;
 
-export const skimForCurrentUser = withAuthentication(async (context) => {
-  return find(Environment.SERVER, {
-    where: eq(schema.product.userId, context.session.user.id),
-    limit: 10,
-  });
-}, "Product.skimForCurrentUser");
+export const skimForCurrentUser = withAuthentication(
+  async (context, { store }: { store?: string } = {}) => {
+    return find(Environment.SERVER, {
+      where: store
+        ? and(
+            eq(schema.product.userId, context.session.user.id),
+            eq(schema.product.storeId, store),
+          )
+        : eq(schema.product.userId, context.session.user.id),
+      limit: 10,
+    });
+  },
+  "Product.skimForCurrentUser",
+);
 
 /**
  * Products for the user's most-recently-connected store — the one just linked
@@ -95,10 +103,10 @@ const computeModelWinRate = (
 };
 
 export const gatherIntelligence = dedupe(
-  withAuthentication(async () => {
+  withAuthentication(async (_context, { store }: { store?: string } = {}) => {
     const [products, scan] = await Promise.all([
-      skimForCurrentUser(Environment.SERVER),
-      Scan.getLatest(Environment.SERVER),
+      skimForCurrentUser(Environment.SERVER, { store }),
+      Scan.getLatest(Environment.SERVER, { store }),
     ]);
 
     if (!products.success) return products;
@@ -189,9 +197,14 @@ const enrichProduct = (product: Type, simulations: Simulation.Type[]) => {
 };
 
 export const paginateWithIntelligence = withAuthentication(
-  async (context, { page, size }: Pager) => {
+  async (context, { page, size, store }: Pager & { store?: string }) => {
     const result = await paginate(Environment.SERVER, page, size, {
-      where: eq(schema.product.userId, context.session.user.id),
+      where: store
+        ? and(
+            eq(schema.product.userId, context.session.user.id),
+            eq(schema.product.storeId, store),
+          )
+        : eq(schema.product.userId, context.session.user.id),
     });
 
     if (!result.success) return result;
@@ -226,7 +239,7 @@ const Model = {
 } as const;
 
 export const getDetail = withAuthentication(
-  async (context, { id }: { id: string }) => {
+  async (context, { id, store: storeId }: { id: string; store?: string }) => {
     const product = await get(Environment.SERVER, id);
 
     if (!product.success) return product;
@@ -235,6 +248,9 @@ export const getDetail = withAuthentication(
 
     if (product.data.userId !== context.session.user.id)
       return { success: false, error: new Error("Not authorized") };
+
+    if (storeId && product.data.storeId !== storeId)
+      return { success: false, error: new Error("Product not found") };
 
     const store = product.data.storeId
       ? await stores.get(Environment.SERVER, product.data.storeId)

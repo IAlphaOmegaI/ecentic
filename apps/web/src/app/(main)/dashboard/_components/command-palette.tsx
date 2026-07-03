@@ -12,27 +12,32 @@ import { formatPrice } from "@/lib/currency";
 import type * as Competitor from "@/server/app/competitor";
 import type * as Product from "@/server/app/product";
 
+// `segment` is relative to the current store; Settings is account-wide, so it
+// carries an absolute `href` instead.
 const navItems = [
-  { label: "Overview", href: "/dashboard" },
-  { label: "Products", href: "/dashboard/products" },
-  { label: "Competitors", href: "/dashboard/competitors" },
-  { label: "Simulations", href: "/dashboard/simulations" },
-  { label: "UCP & Structured Data", href: "/dashboard/ucp" },
-  { label: "Optimize", href: "/dashboard/optimize" },
+  { label: "Overview", segment: "" },
+  { label: "Products", segment: "/products" },
+  { label: "Competitors", segment: "/competitors" },
+  { label: "Simulations", segment: "/simulations" },
+  { label: "UCP & Structured Data", segment: "/ucp" },
+  { label: "Optimize", segment: "/optimize" },
   { label: "Settings", href: "/dashboard/settings" },
 ] as const;
 
 export namespace CommandPalette {
   export type Props = {
+    store: string;
     products: Product.Type[];
     competitors: Competitor.Type[];
   };
 }
 
 export const CommandPalette = ({
+  store,
   products,
   competitors,
 }: CommandPalette.Props) => {
+  const base = `/dashboard/${store}`;
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const ref = useRef<HTMLInputElement>(null);
@@ -124,7 +129,7 @@ export const CommandPalette = ({
               {matchedProducts.slice(0, 5).map((product) => (
                 <Link
                   key={product.id}
-                  href={`/dashboard/products/${product.id}`}
+                  href={`${base}/products/${product.id}`}
                   onClick={() => setOpen(false)}
                   className="flex items-center justify-between px-4 py-2.5 transition-colors hover:bg-accent-foreground"
                 >
@@ -154,7 +159,7 @@ export const CommandPalette = ({
               {matchedCompetitors.slice(0, 4).map((competitor) => (
                 <Link
                   key={competitor.id}
-                  href="/dashboard/competitors"
+                  href={`${base}/competitors`}
                   onClick={() => setOpen(false)}
                   className="flex items-center justify-between px-4 py-2.5 transition-colors hover:bg-accent-foreground"
                 >
@@ -181,17 +186,23 @@ export const CommandPalette = ({
               <p className="px-4 pt-3 pb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
                 Pages
               </p>
-              {matchedNav.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-accent-foreground"
-                >
-                  <ArrowRightIcon className="size-4 shrink-0 text-foreground-dimmed" />
-                  <span className="text-foreground text-sm">{item.label}</span>
-                </Link>
-              ))}
+              {matchedNav.map((item) => {
+                const href =
+                  "href" in item ? item.href : `${base}${item.segment}`;
+                return (
+                  <Link
+                    key={item.label}
+                    href={href}
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-accent-foreground"
+                  >
+                    <ArrowRightIcon className="size-4 shrink-0 text-foreground-dimmed" />
+                    <span className="text-foreground text-sm">
+                      {item.label}
+                    </span>
+                  </Link>
+                );
+              })}
             </div>
           )}
         </div>
