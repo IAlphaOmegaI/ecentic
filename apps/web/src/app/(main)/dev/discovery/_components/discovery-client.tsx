@@ -40,9 +40,8 @@ const MAX_QUERIES = 8;
 type RankTone = "success" | "warning" | "error";
 
 const rankTone = (rank: number | null, total: number): RankTone => {
+  if (rank === null) return "error";
   switch (true) {
-    case rank === null:
-      return "error";
     case rank <= 3:
       return "success";
     case total > 0 && rank <= Math.ceil(total / 2):

@@ -171,7 +171,9 @@ const columns = [
       </span>
     ),
   },
-] satisfies ColumnDef<ProductDetailData["competitors"][number]>[];
+] satisfies ColumnDef<
+  ProductDetailData["competitors"][number] & { _id: string }
+>[];
 
 const Model = {
   "GPT-4": {

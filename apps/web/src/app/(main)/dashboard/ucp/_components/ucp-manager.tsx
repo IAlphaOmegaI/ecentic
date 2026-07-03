@@ -55,9 +55,9 @@ const tokenizeJson = (json: string): JToken[] => {
   const tokens: JToken[] = [];
   let i = 0;
   while (i < json.length) {
-    if (/\s/.test(json[i])) {
+    if (/\s/.test(json[i]!)) {
       let text = "";
-      while (i < json.length && /\s/.test(json[i])) text += json[i++];
+      while (i < json.length && /\s/.test(json[i]!)) text += json[i++];
       tokens.push({ text, type: "space" });
       continue;
     }
@@ -71,13 +71,13 @@ const tokenizeJson = (json: string): JToken[] => {
       text += '"';
       i++;
       let j = i;
-      while (j < json.length && /\s/.test(json[j])) j++;
+      while (j < json.length && /\s/.test(json[j]!)) j++;
       tokens.push({ text, type: json[j] === ":" ? "key" : "string" });
       continue;
     }
-    if (/[-\d]/.test(json[i])) {
+    if (/[-\d]/.test(json[i]!)) {
       let text = "";
-      while (i < json.length && /[-\d.eE+]/.test(json[i])) text += json[i++];
+      while (i < json.length && /[-\d.eE+]/.test(json[i]!)) text += json[i++];
       tokens.push({ text, type: "number" });
       continue;
     }
@@ -92,7 +92,7 @@ const tokenizeJson = (json: string): JToken[] => {
       i += 4;
       continue;
     }
-    tokens.push({ text: json[i++], type: "punct" });
+    tokens.push({ text: json[i++]!, type: "punct" });
   }
   return tokens;
 };
@@ -557,7 +557,7 @@ export const UcpManager = ({
                       className="flex items-center gap-3 px-4 py-2.5"
                     >
                       {(() => {
-                        const Icon = definitionIcons[field.key];
+                        const Icon = definitionIcons[field.key]!;
                         return (
                           <Icon
                             className={cn(

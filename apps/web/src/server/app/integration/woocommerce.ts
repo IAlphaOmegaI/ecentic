@@ -82,7 +82,9 @@ const Utils = {
     for (const [key, value] of target.searchParams) params[key] = value;
 
     const parameterString = Object.entries(params)
-      .map(([key, value]) => [percentEncode(key), percentEncode(value)] as const)
+      .map(
+        ([key, value]) => [percentEncode(key), percentEncode(value)] as const,
+      )
       .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
       .map(([key, value]) => `${key}=${value}`)
       .join("&");
@@ -514,8 +516,8 @@ export const updateProduct = withAuthentication(
       return { success: false, error: new Error("Product has no external ID") };
 
     const body: Record<string, string> = {};
-    if (data.title !== undefined) body.name = data.title;
-    if (data.body_html !== undefined) body.description = data.body_html;
+    if (data.title !== undefined) body["name"] = data.title;
+    if (data.body_html !== undefined) body["description"] = data.body_html;
 
     if (Object.keys(body).length === 0)
       return {

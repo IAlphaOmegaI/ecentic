@@ -6,7 +6,7 @@ const parseArgs = (): { email: string; password: string; name: string } => {
   const args = new Map<string, string>();
   for (const arg of process.argv.slice(2)) {
     const match = arg.match(/^--([^=]+)=(.*)$/);
-    if (match) args.set(match[1], match[2]);
+    if (match) args.set(match[1]!, match[2]!);
   }
 
   const email = args.get("email");

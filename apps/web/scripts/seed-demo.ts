@@ -34,7 +34,7 @@ const parseArgs = () => {
   const args = new Map<string, string>();
   for (const arg of process.argv.slice(2)) {
     const match = arg.match(/^--([^=]+)=(.*)$/);
-    if (match) args.set(match[1], match[2]);
+    if (match) args.set(match[1]!, match[2]!);
   }
   return {
     email: args.get("email") ?? "contact@ecentic.ai",
@@ -1141,8 +1141,8 @@ const seed = async () => {
       let low = 0;
       let high = order.length - 1;
       while (low <= high) {
-        interleaved.push(order[low++].index);
-        if (low <= high) interleaved.push(order[high--].index);
+        interleaved.push(order[low++]!.index);
+        if (low <= high) interleaved.push(order[high--]!.index);
       }
       const rank: number[] = new Array(ranked.length);
       interleaved.forEach((index, position) => {
@@ -1155,7 +1155,7 @@ const seed = async () => {
         await db
           .update(schema.product)
           .set({
-            createdAt: daysAgo(0, rank[index] * 2 + 2),
+            createdAt: daysAgo(0, rank[index]! * 2 + 2),
             updatedAt: daysAgo(0, 1),
           })
           .where(eq(schema.product.id, entry.product.id));
@@ -1204,8 +1204,8 @@ const seed = async () => {
     let low = 0;
     let high = winOrder.length - 1;
     while (low <= high) {
-      interleaved.push(winOrder[low++].index);
-      if (low <= high) interleaved.push(winOrder[high--].index);
+      interleaved.push(winOrder[low++]!.index);
+      if (low <= high) interleaved.push(winOrder[high--]!.index);
     }
     const rank: number[] = new Array(specs.length);
     interleaved.forEach((specIndex, position) => {
@@ -1236,7 +1236,7 @@ const seed = async () => {
         status: "active",
         structuredData: structured,
         syncedAt: daysAgo(0, 3),
-        createdAt: daysAgo(0, rank[index] * 2 + 2),
+        createdAt: daysAgo(0, rank[index]! * 2 + 2),
         updatedAt: daysAgo(0, 1),
         win: spec.win,
       };
@@ -1383,7 +1383,7 @@ const seed = async () => {
   const latestLosses = latestTotal - latestWins;
 
   // Worst product drives the headline finding.
-  const worst = [...productRows].sort((a, b) => a.win - b.win)[0];
+  const worst = [...productRows].sort((a, b) => a.win - b.win)[0]!;
   const worstFinding = {
     name: worst.title,
     missingAttributes: [

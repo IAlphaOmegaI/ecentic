@@ -154,7 +154,7 @@ export const SignInForm = () => {
           type="button"
           onClick={() =>
             setProvider((previous) =>
-              previous === "shopify" ? "email" : "shopify",
+              previous === "shopify" ? "credential" : "shopify",
             )
           }
         >

@@ -92,14 +92,14 @@ const formatUcpMessage = (message: z.infer<typeof messageSchema>): string => {
 const extractUcpToolError = (
   structuredContent: Record<string, unknown>,
 ): string | null => {
-  const ucp = structuredContent.ucp;
+  const ucp = structuredContent["ucp"];
   const ucpStatus =
     typeof ucp === "object" && ucp !== null && "status" in ucp
       ? ucp.status
       : undefined;
   const messagesResult = z
     .array(messageSchema)
-    .safeParse(structuredContent.messages);
+    .safeParse(structuredContent["messages"]);
 
   const messages = messagesResult.success ? messagesResult.data : [];
   const errorMessages = messages.filter((message) => message.type === "error");
@@ -494,8 +494,8 @@ const parseRestToolResult = <T>(
 
   const obj = result as Record<string, unknown>;
 
-  if ("error" in obj && typeof obj.error === "string") {
-    throw new Error(obj.error);
+  if ("error" in obj && typeof obj["error"] === "string") {
+    throw new Error(obj["error"]);
   }
 
   return parseUcpToolContent(obj, successSchema);
@@ -835,7 +835,7 @@ export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
     description:
       "Cancel a cart session. Pass the cart id from create_cart at the top level.",
     inputSchema: cancelCartRequestSchema,
-    execute: async (_input) => {
+    execute: async ({ id }) => {
       const result = await callRest(
         endpoint,
         "DELETE",

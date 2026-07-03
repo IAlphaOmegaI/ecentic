@@ -52,7 +52,7 @@ const config = {
   }),
   source: field({
     shape: "select",
-    validator: z.literal(sources).optional(),
+    validator: z.literal(sources),
     label: "How did you hear?",
     classList: { field: "col-span-1" },
   }),

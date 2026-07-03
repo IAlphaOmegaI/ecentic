@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRightIcon, CheckIcon, XIcon } from "@zenncore/icons";
-import Button from "@zenncore/web/components/button";
+import { Button } from "@zenncore/web/components/button";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { Spring } from "@/lib/animations";

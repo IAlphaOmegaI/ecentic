@@ -1133,8 +1133,8 @@ export const checkUCPAdvanced = async (
     };
   }
 
-  const root = isObject(profile.ucp) ? profile.ucp : profile;
-  const servicesRaw = root.services;
+  const root = isObject(profile["ucp"]) ? profile["ucp"] : profile;
+  const servicesRaw = root["services"];
 
   const serviceEndpoints: Array<{
     name: string;
@@ -1148,8 +1148,8 @@ export const checkUCPAdvanced = async (
       if (!Array.isArray(entries)) continue;
       for (const entry of entries) {
         if (!isObject(entry)) continue;
-        const endpoint = entry.endpoint;
-        const transport = entry.transport;
+        const endpoint = entry["endpoint"];
+        const transport = entry["transport"];
         if (typeof endpoint === "string") {
           serviceEndpoints.push({
             name,

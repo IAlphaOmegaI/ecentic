@@ -59,7 +59,7 @@ const upsertFromStripeSubscription = withContext(
         : subscription.customer.id;
 
     const user =
-      (subscription.metadata?.userId as string | undefined) ??
+      (subscription.metadata?.["userId"] as string | undefined) ??
       fallbackUser ??
       null;
 

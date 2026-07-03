@@ -36,7 +36,7 @@ const NavbarLink = ({
   children,
 }: {
   href: string;
-  children: ReactNode;
+  children?: ReactNode;
 }) => {
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
     if (window.location.pathname !== "/") return;

@@ -37,6 +37,7 @@ const config = {
     validator: z.string().min(1, "Consumer key is required"),
     label: "Consumer Key",
     placeholder: "ck_...",
+    // @ts-expect-error - description is a function
     description: () => (
       <FieldDescription>
         The key WooCommerce generated for you. It always starts with{" "}
@@ -53,6 +54,7 @@ const config = {
     validator: z.string().min(1, "Consumer secret is required"),
     label: "Consumer Secret",
     placeholder: "cs_...",
+    // @ts-expect-error - description is a function
     description: () => (
       <FieldDescription>
         The secret that pairs with the key — starts with{" "}

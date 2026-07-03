@@ -157,7 +157,9 @@ export const withContext = <
 
     // span is passed as an overwrite to the base context so it wont be cached in the global cache. This is just a safety measure as normally each server function initiaties it's own server instance, and thus its own cache.
     const base = { ...(await define()), span };
-    const context = await enhance(base);
+    const context = (await enhance(base)) as
+      | { success: true; data: Context }
+      | { success: false; error: ContextError };
 
     if (!context.success) {
       Sentry.captureException(context.error);
@@ -287,7 +289,9 @@ export const pipe = <
 ): Enhancer<A, C, E1 | E2> => {
   return async (context: A) => {
     const result = await first(context);
-    if (!result.success) return result as Result<never, E1 | E2>;
-    return second(result.data as B) as Promise<Result<C, E1 | E2>>;
+    if (!result.success) return { success: false, error: result.error };
+    return second((result as { success: true; data: B }).data) as Promise<
+      Result<C, E1 | E2>
+    >;
   };
 };

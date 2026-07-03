@@ -12,6 +12,14 @@ jobs:
         with:
           bun-version: 1.3.12
       - run: bun install --frozen-lockfile
+      # Build @zenncore/* workspace packages: the app resolves them via their
+      # `dist/` output, and typecheck (plain `tsc`, no turbo `^build`) does not
+      # build them itself — without this the app sees hundreds of unresolved
+      # module errors.
+      - run: bun run build:packages
+      # Generate Next's typed routes + next-env.d.ts (`.next/types`, gitignored)
+      # so `PageProps`/`LayoutProps` and image-module types resolve under tsc.
+      - run: cd apps/web && bunx next typegen
       - run: cd apps/web && bun run typecheck
       - run: bunx biome ci apps/web/src
       - run: cd apps/web && bun test src

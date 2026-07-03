@@ -44,11 +44,11 @@ export const resolvePlanByPriceId = (priceId: string): PlanKey | null => {
 export const DEALS = {
   ycombinator: {
     name: "Y Combinator",
-    coupon: () => process.env.STRIPE_DEAL_COUPON_YC,
+    coupon: () => process.env["STRIPE_DEAL_COUPON_YC"],
   },
   techstars: {
     name: "Techstars",
-    coupon: () => process.env.STRIPE_DEAL_COUPON_TECHSTARS,
+    coupon: () => process.env["STRIPE_DEAL_COUPON_TECHSTARS"],
   },
 } as const;
 

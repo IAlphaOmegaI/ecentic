@@ -50,7 +50,7 @@ const formatUcpMessage = (message: z.infer<typeof messageSchema>): string => {
 const extractUcpToolError = (
   structuredContent: Record<string, unknown>,
 ): string | null => {
-  const ucp = structuredContent.ucp;
+  const ucp = structuredContent["ucp"];
   const ucpStatus =
     typeof ucp === "object" && ucp !== null && "status" in ucp
       ? ucp.status
@@ -58,7 +58,7 @@ const extractUcpToolError = (
 
   const messagesResult = z
     .array(messageSchema)
-    .safeParse(structuredContent.messages);
+    .safeParse(structuredContent["messages"]);
   const messages = messagesResult.success ? messagesResult.data : [];
   const errorMessages = messages.filter((message) => message.type === "error");
 
@@ -279,8 +279,8 @@ const parseRestToolResult = <T>(
 
   const obj = result as Record<string, unknown>;
 
-  if ("error" in obj && typeof obj.error === "string") {
-    return { error: obj.error };
+  if ("error" in obj && typeof obj["error"] === "string") {
+    return { error: obj["error"] };
   }
 
   const parsed = parseUcpToolContent(obj, successSchema);

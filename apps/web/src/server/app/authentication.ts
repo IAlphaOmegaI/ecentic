@@ -24,7 +24,7 @@ const setUserCookie = (
 ) =>
   jar.set(
     "user",
-    sign(JSON.stringify(user), process.env.BETTER_AUTH_SECRET as string),
+    sign(JSON.stringify(user), process.env["BETTER_AUTH_SECRET"] as string),
     {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -189,6 +189,7 @@ export const signOut = withContext(async (context) => {
 
   return {
     success: true,
+    data: null,
   };
 }, "Authentication.signOut");
 
@@ -215,7 +216,7 @@ export const resetPassword = withContext(
       };
     }
 
-    return { success: true };
+    return { success: true, data: null };
   },
   "Authentication.resetPassword",
 );
@@ -238,6 +239,7 @@ export const forgotPassword = withContext(
 
     return {
       success: true,
+      data: null,
     };
   },
   "Authentication.forgotPassword",
@@ -247,7 +249,7 @@ export const getProxiedCurrentUser = withContext(async (context) => {
   const jar = await cookies();
   const cached = jar.get("user")?.value;
   const payload = cached
-    ? verify(cached, process.env.BETTER_AUTH_SECRET as string)
+    ? verify(cached, process.env["BETTER_AUTH_SECRET"] as string)
     : null;
   const parsed =
     payload !== null ? resultify(() => JSON.parse(payload) as User.Type) : null;
@@ -298,7 +300,7 @@ export const changePassword = withAuthentication(
       };
     }
 
-    return { success: true };
+    return { success: true, data: null };
   },
   "Authentication.changePassword",
 );

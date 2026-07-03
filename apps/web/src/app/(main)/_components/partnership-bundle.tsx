@@ -11,16 +11,19 @@ const items = [
     name: "GDPR Representative",
     detail: "Article 27 representative across all 27 member states",
     price: 127,
+    highlighted: false,
   },
   {
     name: "GPSR Representative — Growth",
     detail: "Responsible person for your consumer products",
     price: 97,
+    highlighted: false,
   },
   {
     name: "Privacy Center Plus",
     detail: "Hosted trust hub, DSR intake, and policy library",
     price: 57,
+    highlighted: false,
   },
   {
     name: "ecentic Dominate",

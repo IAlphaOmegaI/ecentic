@@ -263,7 +263,7 @@ export const runDiscovery = withAuthentication(
         query,
         models: perspectives.map(
           (_perspective, pIndex) =>
-            settled[qIndex * perspectives.length + pIndex],
+            settled[qIndex * perspectives.length + pIndex]!,
         ),
       }),
     );

@@ -54,7 +54,7 @@ const productPrice = (product: z.infer<typeof productSchema>) => {
     return product.variants[0]?.price.amount;
   }
 
-  return product.price_range.min;
+  return product.price_range.min.amount;
 };
 
 const flushText = (
