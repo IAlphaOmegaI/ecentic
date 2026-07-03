@@ -10,9 +10,22 @@ import { redis } from "@/server/utils/durable";
 import * as Bridge from "./bridge";
 import type { StorefrontInfo, UcpStoreContext } from "./store-context";
 
-const STORE_INFO_CACHE_TTL = 3600;
+// Short enough that merchant setting changes (e.g. the require-signatures
+// toggle) apply within minutes.
+const STORE_INFO_CACHE_TTL = 300;
 
 const cacheKey = (storeId: string) => `ucp:wc:store:${storeId}`;
+
+/** Drops the cached store facts (called when the store reports a settings change). */
+export const invalidateStorefrontInfo = async (
+  storeId: string,
+): Promise<void> => {
+  try {
+    await redis.del(cacheKey(storeId));
+  } catch {
+    // Best-effort; the TTL still bounds staleness.
+  }
+};
 
 export const loadStorefrontInfo = async (
   context: UcpStoreContext,
@@ -38,6 +51,7 @@ export const loadStorefrontInfo = async (
   const info: StorefrontInfo = {
     links: (fetched.data.links ?? []).filter((link) => link?.type && link.url),
     urls: fetched.data.urls,
+    requireSignatures: fetched.data.require_signatures === true,
   };
 
   try {

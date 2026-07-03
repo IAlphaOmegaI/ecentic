@@ -307,7 +307,8 @@ const run = async (
     context.storefront?.urls,
   );
 
-  // RFC 9421 signature verification — verify-when-present.
+  // RFC 9421 signature verification — verify-when-present; mandatory when the
+  // merchant enabled "Require Signed Requests" in the plugin settings.
   const url = request.nextUrl;
   const verification = await verifyRequest(
     {
@@ -329,6 +330,20 @@ const run = async (
       verification.http,
       { code: verification.code, content: verification.content },
       verification.http === 401 ? { "WWW-Authenticate": "Signature" } : {},
+    );
+  }
+  if (
+    verification.status === "unsigned" &&
+    context.storefront?.requireSignatures
+  ) {
+    return json(
+      401,
+      {
+        code: "signature_missing",
+        content:
+          "This store requires signed requests (RFC 9421 HTTP Message Signatures).",
+      },
+      { "WWW-Authenticate": "Signature" },
     );
   }
 

@@ -10,6 +10,8 @@ import { db } from "@/server/database";
 export type StorefrontInfo = {
   links: { type: string; url: string; title?: string }[];
   urls: { home: string; cart: string; checkout: string; shop: string };
+  /** Merchant toggle: unsigned requests are rejected when true. */
+  requireSignatures: boolean;
 };
 
 export type UcpStoreContext = {

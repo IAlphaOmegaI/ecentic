@@ -194,6 +194,7 @@ export type BridgeStoreInfo = {
   currency: string;
   weight_unit: string;
   dimension_unit: string;
+  require_signatures?: boolean;
 };
 
 /**

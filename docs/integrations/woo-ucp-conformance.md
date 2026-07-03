@@ -46,10 +46,13 @@ Same order as the reference `pre_dispatch`:
 
 1. Rate limit (per store + agent identity, 120/min fixed window, `429` +
    `Retry-After`).
-2. RFC 9421 verification — verify-when-present; signer key resolved by
-   `keyid` from the agent profile's `signing_keys[]`, `Content-Digest`
-   checked against exact body bytes, base reconstructed from the live
-   request. ES256 + ES384 verification supported.
+2. RFC 9421 verification — verify-when-present, or mandatory when the
+   merchant enables the plugin's "Require Signed Requests" setting (surfaced
+   through the bridge store-info fetch; unsigned requests then get 401
+   `signature_missing`). Signer key resolved by `keyid` from the agent
+   profile's `signing_keys[]`, `Content-Digest` checked against exact body
+   bytes, base reconstructed from the live request. ES256 + ES384
+   verification supported.
 3. Idempotency replay — `Idempotency-Key` scoped per store + method + path;
    pending reservation 5 min, replayed result 48 h with
    `Idempotency-Replayed: true`, `409` on in-flight, fail-closed `503` when
@@ -241,7 +244,7 @@ Behavioral deltas:
   `/ucp-oauth/*`) was not ported.
 - **Store-level API key** (`X-UCP-Key`) was dropped — hosted access control
   is negotiation + optional signatures, matching the reference's default
-  open-access mode. `require_signatures` has no hosted toggle yet.
+  open-access mode.
 - **Browser hand-offs**: the reference's `/ucp-cart/{id}` and
   `/ucp-checkout/{id}` server hand-off pages were replaced by the stateless
   `/checkout-link/` and the order-pay URL, so no hand-off code remains in
@@ -263,7 +266,7 @@ minor units.
 | `POST /orders` | Completed checkout session → real order via `WC()->checkout()->create_order()`; returns order summary + totals |
 | `GET /orders/{id}` | UCP order entity snapshot (UCP-created orders only) |
 | `POST /connection` | Hosted-UCP settings push after connect: store id, bridge secret, events/profile/endpoint URLs |
-| `GET /store` | Store facts only WordPress knows (cached 1 h backend-side): configured privacy/terms pages (checkout `links`), real cart/checkout/shop page URLs (`continue_url` targets), currency and measurement units |
+| `GET /store` | Store facts only WordPress knows (cached 5 min backend-side): configured privacy/terms pages (checkout `links`), real cart/checkout/shop page URLs (`continue_url` targets), currency and measurement units, and the merchant's require-signatures toggle |
 
 Plugin → Ecentic events: `POST /api/ucp/stores/{store}/events` with
 `X-Ecentic-Timestamp` + `X-Ecentic-Signature: hex(hmac_sha256(bridgeSecret,

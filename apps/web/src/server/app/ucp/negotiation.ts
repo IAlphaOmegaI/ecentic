@@ -50,10 +50,14 @@ const PRIVATE_HOST_PATTERN =
   /^(localhost|127\.|10\.|0\.|169\.254\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|\[?::1\]?$|.*\.(local|internal|localhost)$)/i;
 
 const profileFetchAllowed = async (): Promise<boolean> => {
-  const key = "ucp:profile:fetches";
-  const count = await redis.incr(key);
-  if (count === 1) await redis.expire(key, DISCOVERY_WINDOW);
-  return count <= DISCOVERY_MAX;
+  try {
+    const key = "ucp:profile:fetches";
+    const count = await redis.incr(key);
+    if (count === 1) await redis.expire(key, DISCOVERY_WINDOW);
+    return count <= DISCOVERY_MAX;
+  } catch {
+    return true; // fail open — a redis outage shouldn't block negotiation
+  }
 };
 
 const cacheTtl = (response: Response): number => {
@@ -101,7 +105,13 @@ export const fetchPlatformProfile = async (
   }
 
   const cacheKey = `ucp:profile:${createHash("md5").update(url).digest("hex")}`;
-  const cached = await redis.get<Record<string, unknown>>(cacheKey);
+  const cached = await (async () => {
+    try {
+      return await redis.get<Record<string, unknown>>(cacheKey);
+    } catch {
+      return null; // redis outage → uncached fetch, not a failed request
+    }
+  })();
   if (cached && typeof cached === "object") {
     return { success: true, profile: cached };
   }
@@ -165,7 +175,11 @@ export const fetchPlatformProfile = async (
     };
   }
 
-  await redis.set(cacheKey, data, { ex: cacheTtl(response) });
+  try {
+    await redis.set(cacheKey, data, { ex: cacheTtl(response) });
+  } catch {
+    // Best-effort cache; the profile is already in hand.
+  }
   return { success: true, profile: data };
 };
 

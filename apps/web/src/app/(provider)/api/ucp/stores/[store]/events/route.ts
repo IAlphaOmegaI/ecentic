@@ -2,6 +2,7 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 import { type NextRequest, NextResponse as Response } from "next/server";
 import * as Orders from "@/server/app/ucp/orders";
 import { resolveStoreContext } from "@/server/app/ucp/store-context";
+import { invalidateStorefrontInfo } from "@/server/app/ucp/store-info";
 import { Environment } from "@/server/utils/environment";
 
 /**
@@ -75,6 +76,13 @@ export const POST = async (
 
   const event = payload?.event;
   const orderId = payload?.order_id;
+
+  // Settings changed on the store (e.g. the require-signatures toggle):
+  // drop the cached store facts so the next request re-fetches them.
+  if (event === "settings.updated") {
+    await invalidateStorefrontInfo(context.store.id);
+    return Response.json({ received: true, invalidated: true });
+  }
 
   if (
     (event !== "order.updated" && event !== "order.created") ||

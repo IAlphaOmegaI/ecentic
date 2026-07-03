@@ -7,10 +7,7 @@ import { withContext } from "../../utils/context";
 import { Environment } from "../../utils/environment";
 import { NotFoundError, RequestError } from "../../utils/error";
 import * as HTTP from "../../utils/http";
-import {
-  authorizedRequest,
-  normalizeStoreUrl,
-} from "../../utils/woocommerce";
+import { authorizedRequest, normalizeStoreUrl } from "../../utils/woocommerce";
 import * as Product from "../product";
 import * as Store from "../store";
 import * as StoreAccount from "../store-account";
@@ -28,6 +25,43 @@ type Type = {
   sale_price: string;
   status: string;
   images: { id: number; src: string; alt: string }[];
+  meta_data?: { id?: number; key: string; value: unknown }[];
+};
+
+/**
+ * Product meta keys the Ecentic WooCommerce bridge reads to render structured
+ * data into the storefront `<head>`. Underscore-prefixed so WooCommerce treats
+ * them as internal/hidden meta (mirrors Shopify's `ecentic` metafield namespace).
+ */
+const STRUCTURED_DATA_META_KEY = "_ecentic_structured_data";
+const AGENTIC_SUMMARY_META_KEY = "_ecentic_agentic_summary";
+
+// Compact agent-facing summary written alongside the full JSON-LD, matching the
+// `agentic_summary` metafield produced for Shopify.
+const buildAgenticSummary = (
+  structuredJson: string,
+  product: {
+    title: string;
+    sku: string | null;
+    price: string | null;
+    currency: string | null;
+  },
+): string => {
+  const name = (() => {
+    try {
+      const parsed = JSON.parse(structuredJson) as { name?: unknown };
+      return typeof parsed.name === "string" ? parsed.name : product.title;
+    } catch {
+      return product.title;
+    }
+  })();
+
+  return JSON.stringify({
+    name,
+    sku: product.sku,
+    price: product.price,
+    currency: product.currency,
+  });
 };
 
 const fetchStoreCurrency = async (
@@ -428,4 +462,85 @@ export const updateProduct = withAuthentication(
     return { success: true, data: updated };
   },
   "WooCommerce.updateProduct",
+);
+
+/**
+ * Writes schema.org Product JSON-LD to a WooCommerce product as protected
+ * `meta_data`, so the Ecentic bridge can render it into the storefront for AI
+ * shopping agents. Parallels {@link Shopify.pushProductUcpMetafields}.
+ */
+export const pushProductStructuredData = withContext(
+  async (
+    context,
+    {
+      product: id,
+      structuredJson,
+    }: { product: string; structuredJson: string },
+  ) => {
+    const product = await Product.get(Environment.SERVER, id);
+    if (!product.success) return product;
+    if (!product.data)
+      return { success: false as const, error: new NotFoundError("Product") };
+    if (!product.data.externalId)
+      return {
+        success: false as const,
+        error: new RequestError("Product has no external ID"),
+      };
+
+    const store = await Store.get(Environment.SERVER, product.data.storeId);
+    if (!store.success) return store;
+    if (!store.data)
+      return { success: false as const, error: new NotFoundError("Store") };
+    if (store.data.platform !== "woocommerce")
+      return {
+        success: false as const,
+        error: new RequestError("Store is not a WooCommerce store"),
+      };
+
+    const resolved = await resolveCredentials(store.data.id, {});
+    if (!resolved.success) return resolved;
+
+    const { consumerKey, consumerSecret } = resolved;
+    const { domain } = store.data;
+
+    const summary = buildAgenticSummary(structuredJson, {
+      title: product.data.title,
+      sku: product.data.sku,
+      price: product.data.price,
+      currency: product.data.currency,
+    });
+
+    const body = {
+      meta_data: [
+        { key: STRUCTURED_DATA_META_KEY, value: structuredJson },
+        { key: AGENTIC_SUMMARY_META_KEY, value: summary },
+      ],
+    };
+
+    const url = `${domain}/wp-json/wc/v3/products/${product.data.externalId}`;
+
+    const response = await authorizedRequest(url, consumerKey, consumerSecret, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.success) return response;
+
+    const parsed = await HTTP.parse<Type>(response);
+    if (!parsed.success) return parsed;
+
+    await Product.update(Environment.SERVER, id, {
+      structuredData: structuredJson,
+      syncedAt: new Date(),
+    });
+
+    context.span.addBreadcrumb({
+      category: "woocommerce.ucp.product.meta",
+      data: { "product.id": id, "store.id": store.data.id },
+    });
+
+    return { success: true as const, data: { written: 2 } };
+  },
+  "WooCommerce.pushProductStructuredData",
 );

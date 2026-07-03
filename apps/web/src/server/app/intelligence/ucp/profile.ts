@@ -11,6 +11,7 @@ import { Environment } from "../../../utils/environment";
 import type { Document } from "../../../utils/repository";
 import { repository } from "../../../utils/repository";
 import * as Shopify from "../../integration/shopify";
+import * as WooCommerce from "../../integration/woocommerce";
 import * as Product from "../../product";
 import * as Store from "../../store";
 
@@ -415,4 +416,74 @@ export const publishProductsToShopify = withAuthentication(
     };
   },
   "Ucp.publishProductsToShopify",
+);
+
+export const publishProductsToWooCommerce = withAuthentication(
+  async (context, { store: storeId }: { store: string }) => {
+    const userId = context.session.user.id;
+
+    const store = await Store.get(Environment.SERVER, storeId);
+    if (!store.success) return store;
+    if (!store.data)
+      return { success: false as const, error: new Error("Store not found") };
+    if (store.data.userId !== userId)
+      return { success: false as const, error: new Error("Not authorized") };
+    if (store.data.platform !== "woocommerce")
+      return {
+        success: false as const,
+        error: new Error(
+          "Product structured-data publishing is only supported for WooCommerce stores here",
+        ),
+      };
+
+    const products = await Product.find(Environment.SERVER, {
+      where: eq(schema.product.storeId, storeId),
+    });
+    if (!products.success) return products;
+
+    let pushed = 0;
+    const errors: string[] = [];
+
+    for (const product of products.data) {
+      if (!product.externalId) continue;
+
+      const structuredJson = await (async () => {
+        if (product.structuredData) return product.structuredData;
+        const generated = await generateProductStructuredData({
+          product: product.id,
+        });
+        if (!generated.success) return null;
+        return generated.data.json;
+      })();
+
+      if (!structuredJson) {
+        errors.push(`${product.title}: could not generate structured data`);
+        continue;
+      }
+
+      const result = await WooCommerce.pushProductStructuredData({
+        product: product.id,
+        structuredJson,
+      });
+
+      if (!result.success) {
+        errors.push(`${product.title}: ${result.error.message}`);
+        continue;
+      }
+
+      pushed += 1;
+    }
+
+    if (pushed === 0 && errors.length > 0)
+      return {
+        success: false as const,
+        error: new Error(errors.slice(0, 3).join("; ")),
+      };
+
+    return {
+      success: true as const,
+      data: { pushed, total: products.data.length, errors },
+    };
+  },
+  "Ucp.publishProductsToWooCommerce",
 );
