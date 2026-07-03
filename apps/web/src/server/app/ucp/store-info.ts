@@ -57,6 +57,18 @@ export const loadStorefrontInfo = async (
       typeof fetched.data.payment_handlers === "object"
         ? fetched.data.payment_handlers
         : {},
+    apiKey:
+      typeof fetched.data.api_key === "string" ? fetched.data.api_key : "",
+    allowedAgentProfiles: Array.isArray(fetched.data.allowed_agent_profiles)
+      ? fetched.data.allowed_agent_profiles.filter(
+          (entry): entry is string => typeof entry === "string" && entry !== "",
+        )
+      : [],
+    rateLimitPerMinute:
+      typeof fetched.data.rate_limit_per_minute === "number"
+        ? fetched.data.rate_limit_per_minute
+        : 120,
+    includeOutOfStock: fetched.data.include_out_of_stock === true,
   };
 
   try {

@@ -1051,8 +1051,10 @@ export const liveSearch = async ({
     }
   }
 
-  // In-stock-only by default; an explicit `in_stock: false` includes everything.
-  const inStockOnly = resolved.inStock !== false;
+  // Stock default is the merchant's call (plugin "Catalog Stock" setting,
+  // default in-stock-only); an explicit agent `in_stock` filter always wins.
+  const inStockOnly =
+    resolved.inStock ?? !(context.storefront?.includeOutOfStock === true);
 
   const params: Record<string, string> = {
     status: "publish",

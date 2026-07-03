@@ -44,25 +44,31 @@ store at its own `/.well-known/ucp` and are pointed at
 
 Same order as the reference `pre_dispatch`:
 
-1. Rate limit (per store + agent identity, 120/min fixed window, `429` +
-   `Retry-After`).
-2. RFC 9421 verification — verify-when-present, or mandatory when the
+1. Rate limit (per store + agent identity, merchant-tunable per-minute
+   fixed window — default 120, 0 = unlimited — `429` + `Retry-After`).
+2. Merchant access controls (plugin settings via store-info, invalidated
+   instantly on save): store-level API key (`X-UCP-Key` or
+   `Authorization: Bearer` → 401 `ucp_unauthorized` when set and absent;
+   the discovery profile stays public), identity binding
+   (`allowed_agent_profiles` — profile URLs or hosts; other platforms get
+   403 `platform_not_allowed`; empty = permissionless).
+3. RFC 9421 verification — verify-when-present, or mandatory when the
    merchant enables the plugin's "Require Signed Requests" setting (surfaced
    through the bridge store-info fetch; unsigned requests then get 401
    `signature_missing`). Signer key resolved by `keyid` from the agent
    profile's `signing_keys[]`, `Content-Digest` checked against exact body
    bytes, base reconstructed from the live request. ES256 + ES384
    verification supported.
-3. Idempotency replay — `Idempotency-Key` scoped per store + method + path;
+4. Idempotency replay — `Idempotency-Key` scoped per store + method + path;
    pending reservation 5 min, replayed result 48 h with
    `Idempotency-Replayed: true`, `409` on in-flight, fail-closed `503` when
    storage is down.
-4. Capability negotiation — `UCP-Agent: profile="…"` required
+5. Capability negotiation — `UCP-Agent: profile="…"` required
    (`invalid_profile_url` 400 without it), single-version support
    (`version_unsupported` 422), intersection with extension pruning,
    per-operation root-capability gate (`capabilities_incompatible` as an
    HTTP 200 business error).
-5. Operation, then response signing (`@status content-digest content-type`,
+6. Operation, then response signing (`@status content-digest content-type`,
    `created` param) for 2xx `checkout-sessions*` and `orders*` responses over
    the exact serialized bytes.
 
@@ -79,9 +85,9 @@ Ported behaviors (verified against a live store):
   recoverable); filter-only browse allowed; cursor pagination
   (base64url `{"page":N}`, default limit 10, max 100), `cursor` emitted only
   when a next page exists.
-- **In-stock-only by default**, matching the reference's
-  `include_out_of_stock=false` default; `availability.in_stock: false`
-  includes everything.
+- **Stock default is merchant-controlled** (plugin "Catalog Stock"
+  setting, default in-stock-only — the reference's `include_out_of_stock`);
+  an agent's explicit `availability.in_stock` filter always wins.
 - Category names/slugs resolve to term ids and push down to the WC query;
   unresolvable categories yield an empty result. Price bounds push down as
   `min_price`/`max_price`.
@@ -255,9 +261,6 @@ Behavioral deltas:
   one earlier).
 - **Identity linking** (`WOO_UCP_Auth`, `/.well-known/oauth-authorization-server`,
   `/ucp-oauth/*`) was not ported.
-- **Store-level API key** (`X-UCP-Key`) was dropped — hosted access control
-  is negotiation + optional signatures, matching the reference's default
-  open-access mode.
 - **Browser hand-offs**: the reference's `/ucp-cart/{id}` and
   `/ucp-checkout/{id}` server hand-off pages were replaced by the stateless
   `/checkout-link/` and the order-pay URL, so no hand-off code remains in
@@ -279,7 +282,7 @@ minor units.
 | `POST /orders` | Completed checkout session → real order via `WC()->checkout()->create_order()`; returns order summary + totals |
 | `GET /orders/{id}` | UCP order entity snapshot (UCP-created orders only) |
 | `POST /connection` | Hosted-UCP settings push after connect: store id, bridge secret, events/profile/endpoint URLs |
-| `GET /store` | Store facts only WordPress knows (cached 5 min backend-side, invalidated instantly on settings save): configured privacy/terms pages (checkout `links`), real cart/checkout/shop page URLs (`continue_url` targets), currency and measurement units, the require-signatures toggle, and the payment handler declarations |
+| `GET /store` | Store facts only WordPress knows (cached 5 min backend-side, invalidated instantly on settings save): configured privacy/terms pages (checkout `links`), real cart/checkout/shop page URLs (`continue_url` targets), currency and measurement units, the require-signatures toggle, the payment handler declarations, and the access/catalog policy (API key, allowed agent platforms, rate limit, include-out-of-stock) |
 | `POST /charge` | Processes one payment instrument for a UCP order through `woo_ucp_process_instrument` (WOO_UCP_Stripe by default) — returns `charged` (order paid), `escalate` (3DS continue_url), `failed` (mapped reason), or `defer`; payment secrets never leave the store |
 
 Plugin → Ecentic events: `POST /api/ucp/stores/{store}/events` with

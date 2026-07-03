@@ -14,6 +14,14 @@ export type StorefrontInfo = {
   requireSignatures: boolean;
   /** UCP payment handler declarations keyed by reverse-domain name. */
   paymentHandlers: Record<string, { id?: string }[]>;
+  /** Store-level API key (X-UCP-Key); "" = open access. */
+  apiKey: string;
+  /** Platform profile URLs/hosts authorized to transact; [] = permissionless. */
+  allowedAgentProfiles: string[];
+  /** Max requests per minute per agent identity; 0 = unlimited. */
+  rateLimitPerMinute: number;
+  /** Whether the catalog includes out-of-stock products by default. */
+  includeOutOfStock: boolean;
 };
 
 export type UcpStoreContext = {

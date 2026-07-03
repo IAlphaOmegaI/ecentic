@@ -197,6 +197,14 @@ export type BridgeStoreInfo = {
   require_signatures?: boolean;
   /** UCP payment handler declarations keyed by reverse-domain name. */
   payment_handlers?: Record<string, { id?: string }[]>;
+  /** Store-level API key (X-UCP-Key); "" = open access. */
+  api_key?: string;
+  /** Platform profile URLs/hosts authorized to transact; [] = permissionless. */
+  allowed_agent_profiles?: string[];
+  /** Max requests per minute per agent identity; 0 = unlimited. */
+  rate_limit_per_minute?: number;
+  /** Whether the catalog includes out-of-stock products by default. */
+  include_out_of_stock?: boolean;
 };
 
 /** Outcome of processing one payment instrument through the store's processor. */

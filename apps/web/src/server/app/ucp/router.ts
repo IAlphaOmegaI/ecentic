@@ -6,6 +6,7 @@
  * signing for checkout/order responses and idempotency result caching.
  */
 
+import { timingSafeEqual } from "node:crypto";
 import { resultify } from "@zenncore/utils";
 import type { NextRequest } from "next/server";
 import { type GenericContext, withContext } from "../../utils/context";
@@ -45,6 +46,59 @@ const CORS_HEADERS: Record<string, string> = {
   "Access-Control-Expose-Headers":
     "Signature, Signature-Input, Content-Digest, Idempotency-Replayed",
   "Access-Control-Max-Age": "86400",
+};
+
+// ─── Merchant access controls (plugin settings via store-info) ───────────────
+
+/** X-UCP-Key or `Authorization: Bearer …` must equal the store's API key. */
+const apiKeyMatches = (headers: Headers, requiredKey: string): boolean => {
+  const provided =
+    headers.get("x-ucp-key") ??
+    (() => {
+      const authorization = headers.get("authorization") ?? "";
+      return authorization.startsWith("Bearer ")
+        ? authorization.slice("Bearer ".length)
+        : "";
+    })();
+  if (!provided) return false;
+  const expected = Buffer.from(requiredKey);
+  const received = Buffer.from(provided);
+  return (
+    expected.length === received.length && timingSafeEqual(expected, received)
+  );
+};
+
+/**
+ * Identity binding: the agent's profile URL must match an allow-list entry —
+ * exact URL match, or host match when the entry is a bare host (or for the
+ * host of an entry that is itself a URL).
+ */
+const profileAllowed = (profileUrl: string, allowed: string[]): boolean => {
+  if (profileUrl === "") return false;
+  const host = (() => {
+    try {
+      return new URL(profileUrl).host.toLowerCase();
+    } catch {
+      return "";
+    }
+  })();
+
+  return allowed.some((entry) => {
+    if (entry === profileUrl) return true;
+    // Only parse entries with an explicit http(s) scheme as URLs — bare hosts
+    // with a port (e.g. "shop.example.com:8443") would otherwise be parsed as
+    // scheme:path and resolve to an empty host.
+    const entryHost = /^https?:\/\//i.test(entry)
+      ? (() => {
+          try {
+            return new URL(entry).host.toLowerCase();
+          } catch {
+            return "";
+          }
+        })()
+      : entry.toLowerCase();
+    return entryHost !== "" && entryHost === host;
+  });
 };
 
 const json = (
@@ -269,12 +323,48 @@ const run = async (
     });
   }
 
-  if (await isRateLimited({ store: storeId, headers: request.headers })) {
+  if (
+    await isRateLimited({
+      store: storeId,
+      headers: request.headers,
+      // Merchant-tunable (plugin settings); 0 disables.
+      ...(context.storefront
+        ? { maxPerMinute: context.storefront.rateLimitPerMinute }
+        : {}),
+    })
+  ) {
     return json(
       429,
       { code: "rate_limited", content: "Too many requests." },
       { "Retry-After": "60" },
     );
+  }
+
+  // Store-level API key (merchant-set shared secret) — the reference's
+  // check_api_key. The discovery profile above stays public.
+  const requiredApiKey = context.storefront?.apiKey ?? "";
+  if (
+    requiredApiKey !== "" &&
+    !apiKeyMatches(request.headers, requiredApiKey)
+  ) {
+    return json(401, {
+      code: "ucp_unauthorized",
+      content: "Invalid or missing API key.",
+    });
+  }
+
+  // Identity binding: when the merchant listed allowed agent platforms, the
+  // request's UCP-Agent profile (URL or its host) must be among them.
+  const allowedProfiles = context.storefront?.allowedAgentProfiles ?? [];
+  if (
+    allowedProfiles.length > 0 &&
+    !profileAllowed(agentProfileUrl(request.headers), allowedProfiles)
+  ) {
+    return json(403, {
+      code: "platform_not_allowed",
+      content:
+        "This store only transacts with an allow-listed set of agent platforms.",
+    });
   }
 
   const route = matchRoute(request.method, segments);

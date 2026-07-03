@@ -260,7 +260,8 @@ const continueUrl = (
 ): string => {
   if (session.escalationUrl) return session.escalationUrl;
   if (session.order?.payment_url) return session.order.payment_url;
-  if (session.pendingOrder?.payment_url) return session.pendingOrder.payment_url;
+  if (session.pendingOrder?.payment_url)
+    return session.pendingOrder.payment_url;
   return checkoutLinkUrl(
     context.store.domain,
     session.lineItems,
@@ -1123,9 +1124,10 @@ export const complete = async ({
         };
       }
       case "failed": {
-        const [code, severity] =
-          PAYMENT_ERROR_MAP[outcome.reason] ??
-          PAYMENT_ERROR_MAP["processing_error"];
+        const [code, severity] = PAYMENT_ERROR_MAP[outcome.reason] ?? [
+          "payment_failed",
+          "unrecoverable" as const,
+        ];
         const reverted: CheckoutSession = {
           ...withOrder,
           status: "ready_for_complete",
@@ -1141,9 +1143,7 @@ export const complete = async ({
               "payment.instruments",
             ),
           ],
-          severity === "recoverable"
-            ? continueUrl(reverted, context)
-            : null,
+          severity === "recoverable" ? continueUrl(reverted, context) : null,
           402,
         );
       }
