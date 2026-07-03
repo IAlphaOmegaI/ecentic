@@ -171,18 +171,37 @@ backorders) at product and variant level, empty lists omitted.
   and option `groups` (`package_1`) from the live shipping zones
   (free-shipping coupon rules included); cheapest option pre-selected,
   agent-selectable via `selected_option_id`.
-- Payment: collected `payment.instruments` are stored and echoed
-  (`payment: {handlers: {}, instruments}`); at Complete any instrument is
-  rejected with `payment_handler_unknown` (400) since no handlers are
-  advertised.
+- Payment handlers (reference parity): the Google Pay handler is advertised
+  in the discovery profile and checkout `payment.handlers` when the merchant
+  configures a Google Pay merchant id **and** a PSP gateway in the plugin
+  settings (declaration id `gpay-md5(mid)`, PAYMENT_GATEWAY tokenization).
+  At Complete, instruments are validated first: an unadvertised `handler_id`
+  → `payment_handler_unknown` 400; a credential bound to a different
+  checkout → `payment_binding_invalid` 409 (replay protection).
+- Processing: instruments are charged through the bridge `POST /charge`,
+  which runs the plugin's `woo_ucp_process_instrument` chain
+  (`WOO_UCP_Stripe` restored — charges Stripe PaymentMethod tokens via
+  PaymentIntents with the WC Stripe Gateway's key, which never leaves the
+  store; idempotent per checkout). Outcomes: charged → paid order
+  (`payment_complete`); 3DS → session `requires_escalation` with the
+  processor's authentication URL as `continue_url` and a
+  `requires_buyer_input` message — a later Complete finalizes once the order
+  is paid out-of-band; declined/failed → 402 with the reference's
+  `PAYMENT_ERROR_MAP` (`payment_declined`/`payment_failed`, matching
+  severities); no processor (Stripe toggle off) → defer, the order stays
+  payable through the trusted UI.
 - Complete: only from `ready_for_complete` (other non-terminal states
   re-evaluate and return 200 with what is outstanding); terminal sessions →
   `checkout_immutable` 409 (update and complete alike); cancel on a terminal
-  session → `cancel_not_allowed` 409. The order materialises through
-  `WC()->checkout()->create_order()` (no customer attribution,
-  `created_via=ucp`, `_ucp_checkout_id`/`_ucp_session_id`/`_ucp_attribution`
-  meta); `order.status` maps the WooCommerce status to the UCP vocabulary
-  (`pending` → `ready_for_payment`, `failed` → `unrecoverable_errors`, …).
+  session → `cancel_not_allowed` 409. The order materialises **before**
+  charging through `WC()->checkout()->create_order()` (no customer
+  attribution, `created_via=ucp`,
+  `_ucp_checkout_id`/`_ucp_session_id`/`_ucp_attribution` meta) and is
+  reused by retried Completes while it still awaits payment (the reference
+  ensure_order — declines never duplicate orders; `continue_url` then points
+  at its order-pay page); `order.status` maps the WooCommerce status to the
+  UCP vocabulary (`pending` → `ready_for_payment`, `failed` →
+  `unrecoverable_errors`, …).
 - A durable `ucp_order` row maps the Woo order to the checkout session and
   keeps the negotiated webhook target beyond the session TTL.
 
@@ -230,12 +249,6 @@ wc/v3 transport limitations (the reference read WC objects in-process):
 
 Behavioral deltas:
 
-- **Payments**: no payment handlers are advertised (the reference could
-  advertise Google Pay and optionally charge Stripe server-side). Collected
-  instruments are echoed but rejected at Complete (`payment_handler_unknown`);
-  the order is created unpaid and payment defers to the trusted UI via
-  `order.payment_url` — the reference's "no processor configured" path.
-  `WOO_UCP_Stripe` and the 3DS escalation loop were not ported.
 - **Cancel** does not cancel a WooCommerce order: hosted sessions only
   materialise an order at Complete, which is terminal, so there is never a
   pending UCP order to cancel (the reference's hand-off pages could create
@@ -266,7 +279,8 @@ minor units.
 | `POST /orders` | Completed checkout session → real order via `WC()->checkout()->create_order()`; returns order summary + totals |
 | `GET /orders/{id}` | UCP order entity snapshot (UCP-created orders only) |
 | `POST /connection` | Hosted-UCP settings push after connect: store id, bridge secret, events/profile/endpoint URLs |
-| `GET /store` | Store facts only WordPress knows (cached 5 min backend-side): configured privacy/terms pages (checkout `links`), real cart/checkout/shop page URLs (`continue_url` targets), currency and measurement units, and the merchant's require-signatures toggle |
+| `GET /store` | Store facts only WordPress knows (cached 5 min backend-side, invalidated instantly on settings save): configured privacy/terms pages (checkout `links`), real cart/checkout/shop page URLs (`continue_url` targets), currency and measurement units, the require-signatures toggle, and the payment handler declarations |
+| `POST /charge` | Processes one payment instrument for a UCP order through `woo_ucp_process_instrument` (WOO_UCP_Stripe by default) — returns `charged` (order paid), `escalate` (3DS continue_url), `failed` (mapped reason), or `defer`; payment secrets never leave the store |
 
 Plugin → Ecentic events: `POST /api/ucp/stores/{store}/events` with
 `X-Ecentic-Timestamp` + `X-Ecentic-Signature: hex(hmac_sha256(bridgeSecret,

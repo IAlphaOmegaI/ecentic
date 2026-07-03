@@ -195,7 +195,30 @@ export type BridgeStoreInfo = {
   weight_unit: string;
   dimension_unit: string;
   require_signatures?: boolean;
+  /** UCP payment handler declarations keyed by reverse-domain name. */
+  payment_handlers?: Record<string, { id?: string }[]>;
 };
+
+/** Outcome of processing one payment instrument through the store's processor. */
+export type BridgeChargeOutcome =
+  | { outcome: "charged"; order: BridgeOrderSummary }
+  | { outcome: "escalate"; continue_url: string; code: string; content: string }
+  | { outcome: "failed"; reason: string; message: string }
+  | { outcome: "defer" };
+
+/**
+ * Charges a collected instrument through the store's payment processor
+ * (`woo_ucp_process_instrument` chain — Stripe by default). Secrets stay in
+ * WordPress; only the opaque instrument and an outcome cross this boundary.
+ */
+export const chargeInstrument = async (
+  credentials: BridgeCredentials,
+  request: {
+    order_id: number;
+    checkout_id: string;
+    instrument: Record<string, unknown>;
+  },
+) => post<BridgeChargeOutcome>(credentials, "/charge", request);
 
 /**
  * Store facts only the WordPress install knows: configured legal pages,

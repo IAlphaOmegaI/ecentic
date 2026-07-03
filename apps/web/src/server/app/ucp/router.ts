@@ -253,13 +253,18 @@ const run = async (
     return json(404, { code: "not_found", content: "Unknown store." });
   }
 
+  // Store facts from the plugin (legal links, real page URLs, payment
+  // handlers, security toggles) — redis-cached; a bridge outage degrades to
+  // derived defaults.
+  context.storefront = await loadStorefrontInfo(context);
+
   // Discovery profile: public, unnegotiated, cacheable.
   if (
     request.method === "GET" &&
     (segments.length === 0 ||
       (segments.length === 1 && segments[0] === "profile"))
   ) {
-    return json(200, buildDiscoveryProfile(context.store), {
+    return json(200, buildDiscoveryProfile(context.store, context.storefront), {
       "Cache-Control": "public, max-age=300",
     });
   }
@@ -276,10 +281,6 @@ const run = async (
   if (!route) {
     return json(404, { code: "not_found", content: "Unknown UCP operation." });
   }
-
-  // Store facts from the plugin (legal links, real page URLs) — redis-cached;
-  // a bridge outage degrades to derived defaults.
-  context.storefront = await loadStorefrontInfo(context);
 
   const rawBody = await request.text();
   const payload = (() => {

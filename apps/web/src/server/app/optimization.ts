@@ -10,6 +10,8 @@ import { withAuthentication } from "../utils/authentication";
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { type Document, repository } from "../utils/repository";
+import * as Shopify from "./integration/shopify";
+import * as WooCommerce from "./integration/woocommerce";
 import * as Ucp from "./intelligence/ucp/profile";
 import * as Product from "./product";
 import * as Simulation from "./simulation";
@@ -77,6 +79,12 @@ export type DashboardData = {
   dismissed: Type[];
   products: Record<string, Product.Type>;
   shopifyStores: { id: string; name: string }[];
+  /**
+   * The store this dashboard is scoped to (when `listDashboard` is called with a
+   * `store`). Drives the "Optimize for Agents" action, which supports both
+   * Shopify and WooCommerce.
+   */
+  currentStore: { id: string; name: string; platform: string } | null;
   diagnostics: {
     lowWinRateCount: number;
     publishableCount: number;
@@ -323,6 +331,13 @@ export const listDashboard = withAuthentication(
       publishableProductIds.has(entry.product.id),
     ).length;
 
+    const currentStore = (() => {
+      if (!store) return null;
+      const match = storeById.get(store);
+      if (!match) return null;
+      return { id: match.id, name: match.name, platform: match.platform };
+    })();
+
     return {
       success: true,
       data: {
@@ -333,6 +348,7 @@ export const listDashboard = withAuthentication(
         shopifyStores: stores.data
           .filter((store) => store.platform === "shopify")
           .map((store) => ({ id: store.id, name: store.name })),
+        currentStore,
         diagnostics: {
           lowWinRateCount: lowWinRateEntries.length,
           publishableCount: publishableLowWinRateCount,
@@ -514,6 +530,78 @@ SKU: ${product.data.sku ?? "(unknown)"}`,
   "Optimization.generateStructuredData",
 );
 
+/**
+ * Publishes a product's schema.org JSON-LD to the connected store so AI agents
+ * reading the storefront can see it. Generates the structured data first if the
+ * product doesn't have it yet, then routes to the platform integration
+ * (Shopify metafields or WooCommerce product meta).
+ */
+export const publishProductStructuredData = withAuthentication(
+  async (context, { product: id }: { product: string }) => {
+    const user = context.session.user.id;
+
+    const productResult = await Product.get(Environment.SERVER, id);
+    if (!productResult.success) return productResult;
+    if (!productResult.data)
+      return { success: false as const, error: new Error("Product not found") };
+
+    const product = productResult.data;
+    if (product.userId !== user)
+      return { success: false as const, error: new Error("Not authorized") };
+
+    const storeResult = await Store.get(Environment.SERVER, product.storeId);
+    if (!storeResult.success) return storeResult;
+    if (!storeResult.data)
+      return { success: false as const, error: new Error("Store not found") };
+
+    const store = storeResult.data;
+
+    const structuredJson = await (async () => {
+      if (product.structuredData) return product.structuredData;
+      const generated = await Ucp.generateProductStructuredData({
+        product: id,
+      });
+      if (!generated.success) return null;
+      return generated.data.json;
+    })();
+
+    if (!structuredJson)
+      return {
+        success: false as const,
+        error: new Error("Could not generate structured data"),
+      };
+
+    const result = await (async () => {
+      switch (store.platform) {
+        case "shopify":
+        case "shopify-public":
+          return Shopify.pushProductUcpMetafields({
+            product: id,
+            structuredJson,
+          });
+        case "woocommerce":
+          return WooCommerce.pushProductStructuredData({
+            product: id,
+            structuredJson,
+          });
+        default:
+          return {
+            success: false as const,
+            error: new Error(
+              `Structured-data publishing is not supported for platform: ${store.platform}`,
+            ),
+          };
+      }
+    })();
+
+    if (!result.success) return result;
+
+    revalidatePath("/dashboard/[store]/products/[id]", "page");
+    return { success: true as const, data: { structuredData: structuredJson } };
+  },
+  "Optimization.publishProductStructuredData",
+);
+
 export const approveAllPending = withAuthentication(async (context) => {
   const userId = context.session.user.id;
 
@@ -603,27 +691,37 @@ export const optimizeStoreForAgents = withAuthentication(
       return { success: false as const, error: new Error("Store not found") };
     if (store.data.userId !== userId)
       return { success: false as const, error: new Error("Not authorized") };
-    if (
-      store.data.platform !== "shopify-public" &&
-      store.data.platform !== "shopify"
-    )
+    const isShopify =
+      store.data.platform === "shopify-public" ||
+      store.data.platform === "shopify";
+    const isWooCommerce = store.data.platform === "woocommerce";
+
+    if (!isShopify && !isWooCommerce)
       return {
         success: false as const,
         error: new Error(
-          "Agent optimization is only supported for connected Shopify stores",
+          "Agent optimization is only supported for connected Shopify and WooCommerce stores",
         ),
       };
 
     const errors: string[] = [];
 
-    const profile = await Ucp.publishProfileToShopify({ store: storeId });
-    if (!profile.success) {
+    // Shop-level UCP profile: Shopify gets it written to shop metafields;
+    // WooCommerce serves it through Ecentic's hosted `/.well-known/ucp` bridge,
+    // so there's nothing to push to the store here.
+    const profile = isShopify
+      ? await Ucp.publishProfileToShopify({ store: storeId })
+      : null;
+    if (profile && !profile.success) {
       errors.push(`UCP profile: ${profile.error.message}`);
     }
 
-    const products = await Ucp.publishProductsToShopify({ store: storeId });
+    // Product structured data (schema.org/Product JSON-LD).
+    const products = isShopify
+      ? await Ucp.publishProductsToShopify({ store: storeId })
+      : await Ucp.publishProductsToWooCommerce({ store: storeId });
     if (!products.success) {
-      errors.push(`Product metafields: ${products.error.message}`);
+      errors.push(`Product structured data: ${products.error.message}`);
     }
 
     const listings = await approveAllPending();
@@ -637,7 +735,7 @@ export const optimizeStoreForAgents = withAuthentication(
     return {
       success: true as const,
       data: {
-        profileWritten: profile.success ? profile.data.written : 0,
+        profileWritten: profile?.success ? profile.data.written : 0,
         productsPushed: products.success ? products.data.pushed : 0,
         productsTotal: products.success ? products.data.total : 0,
         listingsRewritten: listings.success ? listings.data.count : 0,

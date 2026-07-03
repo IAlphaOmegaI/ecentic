@@ -12,6 +12,8 @@ export type StorefrontInfo = {
   urls: { home: string; cart: string; checkout: string; shop: string };
   /** Merchant toggle: unsigned requests are rejected when true. */
   requireSignatures: boolean;
+  /** UCP payment handler declarations keyed by reverse-domain name. */
+  paymentHandlers: Record<string, { id?: string }[]>;
 };
 
 export type UcpStoreContext = {

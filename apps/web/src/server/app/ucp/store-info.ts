@@ -52,6 +52,11 @@ export const loadStorefrontInfo = async (
     links: (fetched.data.links ?? []).filter((link) => link?.type && link.url),
     urls: fetched.data.urls,
     requireSignatures: fetched.data.require_signatures === true,
+    paymentHandlers:
+      fetched.data.payment_handlers &&
+      typeof fetched.data.payment_handlers === "object"
+        ? fetched.data.payment_handlers
+        : {},
   };
 
   try {

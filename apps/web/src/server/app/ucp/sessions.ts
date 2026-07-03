@@ -113,10 +113,24 @@ export type CheckoutSession = {
   selectedShippingOptionId?: string;
   quote?: SessionQuote;
   messages: UcpMessage[];
-  /** Opaque payment instruments echoed back to the platform (never processed). */
+  /** Opaque payment instruments echoed back to the platform. */
   instruments?: Record<string, unknown>[];
   /** Cart this session was converted from (conversion cleared on cancel). */
   cartId?: string;
+  /**
+   * WooCommerce order materialised for this session before payment resolved —
+   * kept so a retried Complete (after a decline or 3DS) reuses it instead of
+   * creating a duplicate. Promoted to `order` on completion.
+   */
+  pendingOrder?: {
+    id: string;
+    number: string;
+    status: string;
+    permalink_url: string;
+    payment_url: string;
+  };
+  /** Processor-supplied authentication URL (e.g. a 3DS challenge). */
+  escalationUrl?: string;
   /** Agent platform state captured at creation for webhooks/signing. */
   agentProfileUrl?: string;
   webhookUrl?: string;

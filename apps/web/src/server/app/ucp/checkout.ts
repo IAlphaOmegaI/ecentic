@@ -229,19 +229,38 @@ const formatFulfillment = (
   return { methods: [method] };
 };
 
-/** Payment object: no handlers are advertised; collected instruments echo back. */
+/**
+ * Payment object: the store's advertised handlers (shared with the discovery
+ * profile) plus any collected instruments echoed back. Omitted when there is
+ * nothing to advertise, mirroring the reference payment_object.
+ */
 const paymentObject = (
   session: CheckoutSession,
+  context: UcpStoreContext,
 ): Record<string, unknown> | null => {
-  if (!session.instruments || session.instruments.length === 0) return null;
-  return { handlers: {}, instruments: session.instruments };
+  const handlers = context.storefront?.paymentHandlers ?? {};
+  const instruments = session.instruments ?? [];
+  if (Object.keys(handlers).length === 0 && instruments.length === 0) {
+    return null;
+  }
+  return {
+    handlers,
+    ...(instruments.length > 0 ? { instruments } : {}),
+  };
 };
 
+/**
+ * continue_url precedence, per the reference: a processor-supplied escalation
+ * URL (e.g. a 3DS challenge) → the order-pay page of an order awaiting
+ * payment → the stateless checkout-link.
+ */
 const continueUrl = (
   session: CheckoutSession,
   context: UcpStoreContext,
 ): string => {
+  if (session.escalationUrl) return session.escalationUrl;
   if (session.order?.payment_url) return session.order.payment_url;
+  if (session.pendingOrder?.payment_url) return session.pendingOrder.payment_url;
   return checkoutLinkUrl(
     context.store.domain,
     session.lineItems,
@@ -257,7 +276,7 @@ const formatCheckout = (
   const applied = appliedDiscountsResponse(session.quote, session.lineItems);
   const shipping = selectedShippingOption(session);
   const fulfillment = formatFulfillment(session);
-  const payment = paymentObject(session);
+  const payment = paymentObject(session, context);
   const terminal = isTerminal(session.status);
 
   return {
@@ -678,6 +697,246 @@ const toOrderAddress = (
   return address;
 };
 
+/** UCP failure code + severity for common processor failure reasons. */
+const PAYMENT_ERROR_MAP: Record<
+  string,
+  [string, "recoverable" | "unrecoverable"]
+> = {
+  declined: ["payment_declined", "recoverable"],
+  insufficient_funds: ["payment_declined", "recoverable"],
+  expired_card: ["payment_declined", "recoverable"],
+  invalid_card: ["payment_declined", "recoverable"],
+  network_error: ["payment_failed", "recoverable"],
+  processing_error: ["payment_failed", "unrecoverable"],
+};
+
+/**
+ * Valid handler ids for the store: the reverse-domain handler names plus
+ * every declaration `id`, per the reference advertised_handler_ids.
+ */
+const advertisedHandlerIds = (context: UcpStoreContext): string[] => {
+  const handlers = context.storefront?.paymentHandlers ?? {};
+  const ids: string[] = [];
+  for (const [name, declarations] of Object.entries(handlers)) {
+    ids.push(name);
+    for (const declaration of declarations ?? []) {
+      if (declaration?.id) ids.push(declaration.id);
+    }
+  }
+  return [...new Set(ids)];
+};
+
+/**
+ * The checkout binding (`checkout_id`) of an instrument, preferring the
+ * credential payload (covered by the handler's signature), then the
+ * instrument body. "" when absent.
+ */
+const instrumentBindingCheckoutId = (
+  instrument: Record<string, unknown>,
+): string => {
+  const credential =
+    instrument["credential"] && typeof instrument["credential"] === "object"
+      ? (instrument["credential"] as Record<string, unknown>)
+      : {};
+  const binding =
+    credential["binding"] && typeof credential["binding"] === "object"
+      ? (credential["binding"] as Record<string, unknown>)
+      : {};
+  const instrumentBinding =
+    instrument["binding"] && typeof instrument["binding"] === "object"
+      ? (instrument["binding"] as Record<string, unknown>)
+      : {};
+
+  for (const candidate of [
+    binding["checkout_id"],
+    credential["checkout_id"],
+    instrumentBinding["checkout_id"],
+  ]) {
+    if (typeof candidate === "string" && candidate !== "") return candidate;
+  }
+  return "";
+};
+
+/**
+ * Rejects instruments that cannot be processed before anything irreversible,
+ * per the reference: the handler must be one the store advertised, and a
+ * credential bound to a different checkout is a replay.
+ */
+const rejectUnprocessableInstruments = (
+  session: CheckoutSession,
+  context: UcpStoreContext,
+  negotiated: Negotiated | null,
+): CheckoutResult | null => {
+  const instruments = session.instruments ?? [];
+  if (instruments.length === 0) return null;
+
+  const validIds = advertisedHandlerIds(context);
+
+  for (const instrument of instruments) {
+    const handlerId =
+      typeof instrument["handler_id"] === "string"
+        ? instrument["handler_id"]
+        : "";
+    if (handlerId === "" || !validIds.includes(handlerId)) {
+      return errorEnvelope(
+        negotiated,
+        [
+          errorMessage(
+            "payment_handler_unknown",
+            "The payment instrument references a payment handler this store does not support.",
+            "unrecoverable",
+            "payment.instruments",
+          ),
+        ],
+        continueUrl(session, context),
+        400,
+      );
+    }
+
+    const boundTo = instrumentBindingCheckoutId(instrument);
+    if (boundTo !== "" && boundTo !== session.id) {
+      return errorEnvelope(
+        negotiated,
+        [
+          errorMessage(
+            "payment_binding_invalid",
+            "The payment credential is not bound to this checkout session.",
+            "unrecoverable",
+            "payment.instruments",
+          ),
+        ],
+        null,
+        409,
+      );
+    }
+  }
+
+  return null;
+};
+
+/** WooCommerce statuses that still await payment (WC's needs_payment set). */
+const AWAITING_PAYMENT_STATUSES = ["pending", "failed"];
+
+/**
+ * Returns the session's existing order if it still awaits payment, else
+ * materialises a fresh one through the bridge — the reference ensure_order,
+ * so a retried Complete (after a decline or 3DS) never duplicates orders.
+ */
+const ensureOrder = async (
+  session: CheckoutSession,
+  context: UcpStoreContext,
+  credentials: { consumerKey: string; consumerSecret: string },
+  negotiated: Negotiated | null,
+): Promise<
+  | { success: true; order: NonNullable<CheckoutSession["pendingOrder"]> }
+  | { success: false }
+> => {
+  const bridgeCredentials = {
+    domain: context.store.domain,
+    consumerKey: credentials.consumerKey,
+    consumerSecret: credentials.consumerSecret,
+  };
+
+  if (session.pendingOrder) {
+    const check = await Bridge.getOrder(
+      bridgeCredentials,
+      session.pendingOrder.id,
+    );
+    if (
+      check.success &&
+      AWAITING_PAYMENT_STATUSES.includes(check.data.status)
+    ) {
+      return { success: true, order: session.pendingOrder };
+    }
+  }
+
+  const shipping = selectedShippingOption(session);
+  const validCoupons = (session.quote?.coupons ?? []).filter(
+    (coupon) => coupon.valid,
+  );
+
+  const created = await Bridge.createOrder(bridgeCredentials, {
+    checkout_id: session.id,
+    line_items: session.lineItems.map((lineItem) => ({
+      product_id: Number(lineItem.externalId),
+      quantity: lineItem.quantity,
+    })),
+    coupon_codes: validCoupons.map((coupon) => coupon.code),
+    billing: {
+      ...toOrderAddress(session.destination, session.buyer),
+      ...(session.buyer?.email ? { email: session.buyer.email } : {}),
+    },
+    shipping: toOrderAddress(session.destination, session.buyer),
+    ...(shipping
+      ? {
+          shipping_option: {
+            id: shipping.id,
+            title: shipping.title,
+            amount: shipping.amount,
+          },
+        }
+      : {}),
+    buyer: {
+      first_name: session.buyer?.first_name,
+      last_name: session.buyer?.last_name,
+      email: session.buyer?.email,
+      phone: session.buyer?.phone_number,
+    },
+    ...(session.attribution ? { attribution: session.attribution } : {}),
+  });
+  if (!created.success) return { success: false };
+
+  const order = {
+    id: String(created.data.order.id),
+    number: created.data.order.number,
+    status: created.data.order.status,
+    permalink_url: created.data.order.permalink_url,
+    payment_url: created.data.order.payment_url,
+  };
+
+  // Durable order record right away — status-change relays and the webhook
+  // target must survive even if the session ends in escalation.
+  await UcpOrder.create(Environment.SERVER, {
+    storeId: context.store.id,
+    externalOrderId: order.id,
+    checkoutId: session.id,
+    webhookUrl: session.webhookUrl || orderWebhookUrl(negotiated) || null,
+    agentProfileUrl: session.agentProfileUrl ?? null,
+  });
+
+  return { success: true, order };
+};
+
+/** Marks the session completed and fires the order.created webhook. */
+const finalizeCompleted = async (
+  session: CheckoutSession,
+  order: NonNullable<CheckoutSession["pendingOrder"]>,
+  context: UcpStoreContext,
+  negotiated: Negotiated | null,
+): Promise<CheckoutSession> => {
+  const completed: CheckoutSession = {
+    ...session,
+    status: "completed",
+    order: { ...order, status: mapOrderStatus(order.status) },
+    pendingOrder: order,
+    escalationUrl: undefined,
+    messages: [],
+  };
+  await saveCheckout(completed);
+
+  const webhookTarget = completed.webhookUrl || orderWebhookUrl(negotiated);
+  if (webhookTarget) {
+    void sendOrderEvent(Environment.SERVER, {
+      store: context,
+      event: "order.created",
+      externalOrderId: order.id,
+      webhookUrl: webhookTarget,
+    });
+  }
+
+  return completed;
+};
+
 /** `POST /checkout-sessions/{id}/complete` */
 export const complete = async ({
   context,
@@ -700,7 +959,42 @@ export const complete = async ({
       ? { ...session, instruments: parseInstruments(payload["payment"]) }
       : session;
 
+  const bridgeCredentials = context.credentials
+    ? {
+        domain: context.store.domain,
+        consumerKey: context.credentials.consumerKey,
+        consumerSecret: context.credentials.consumerSecret,
+      }
+    : null;
+
   if (withInstruments.status !== "ready_for_complete") {
+    // A prior payment escalation (e.g. 3DS) may have been satisfied
+    // out-of-band since — if the order is now paid, close the loop.
+    if (
+      withInstruments.status === "requires_escalation" &&
+      withInstruments.pendingOrder &&
+      bridgeCredentials
+    ) {
+      const check = await Bridge.getOrder(
+        bridgeCredentials,
+        withInstruments.pendingOrder.id,
+      );
+      if (
+        check.success &&
+        !AWAITING_PAYMENT_STATUSES.includes(check.data.status)
+      ) {
+        const completed = await finalizeCompleted(
+          withInstruments,
+          { ...withInstruments.pendingOrder, status: check.data.status },
+          context,
+          negotiated,
+        );
+        return {
+          status: 200,
+          body: formatCheckout(completed, context, negotiated),
+        };
+      }
+    }
     // Re-evaluate so the caller sees exactly what is still outstanding.
     return {
       status: 200,
@@ -708,25 +1002,15 @@ export const complete = async ({
     };
   }
 
-  // Validate collected instruments before anything irreversible: no payment
-  // handlers are advertised, so any instrument references an unknown handler.
-  if ((withInstruments.instruments ?? []).length > 0) {
-    return errorEnvelope(
-      negotiated,
-      [
-        errorMessage(
-          "payment_handler_unknown",
-          "The payment instrument references a payment handler this store does not support.",
-          "unrecoverable",
-          "payment.instruments",
-        ),
-      ],
-      continueUrl(withInstruments, context),
-      400,
-    );
-  }
+  // Validate collected instruments before anything irreversible.
+  const rejected = rejectUnprocessableInstruments(
+    withInstruments,
+    context,
+    negotiated,
+  );
+  if (rejected) return rejected;
 
-  if (!context.credentials) {
+  if (!context.credentials || !bridgeCredentials) {
     return errorEnvelope(
       negotiated,
       [
@@ -747,56 +1031,13 @@ export const complete = async ({
   };
   await saveCheckout(inProgress);
 
-  const shipping = selectedShippingOption(withInstruments);
-  const validCoupons = (withInstruments.quote?.coupons ?? []).filter(
-    (coupon) => coupon.valid,
+  const ensured = await ensureOrder(
+    withInstruments,
+    context,
+    context.credentials,
+    negotiated,
   );
-
-  const created = await Bridge.createOrder(
-    {
-      domain: context.store.domain,
-      consumerKey: context.credentials.consumerKey,
-      consumerSecret: context.credentials.consumerSecret,
-    },
-    {
-      checkout_id: withInstruments.id,
-      line_items: withInstruments.lineItems.map((lineItem) => ({
-        product_id: Number(lineItem.externalId),
-        quantity: lineItem.quantity,
-      })),
-      coupon_codes: validCoupons.map((coupon) => coupon.code),
-      billing: {
-        ...toOrderAddress(withInstruments.destination, withInstruments.buyer),
-        ...(withInstruments.buyer?.email
-          ? { email: withInstruments.buyer.email }
-          : {}),
-      },
-      shipping: toOrderAddress(
-        withInstruments.destination,
-        withInstruments.buyer,
-      ),
-      ...(shipping
-        ? {
-            shipping_option: {
-              id: shipping.id,
-              title: shipping.title,
-              amount: shipping.amount,
-            },
-          }
-        : {}),
-      buyer: {
-        first_name: withInstruments.buyer?.first_name,
-        last_name: withInstruments.buyer?.last_name,
-        email: withInstruments.buyer?.email,
-        phone: withInstruments.buyer?.phone_number,
-      },
-      ...(withInstruments.attribution
-        ? { attribution: withInstruments.attribution }
-        : {}),
-    },
-  );
-
-  if (!created.success) {
+  if (!ensured.success) {
     const reverted: CheckoutSession = {
       ...withInstruments,
       status: "ready_for_complete",
@@ -810,48 +1051,113 @@ export const complete = async ({
       ],
     };
     await saveCheckout(reverted);
-    return {
-      status: 500,
-      body: formatCheckout(reverted, context, negotiated),
-    };
+    return { status: 500, body: formatCheckout(reverted, context, negotiated) };
   }
 
-  const completed: CheckoutSession = {
+  // Persist the order link before processing so a retry after a payment
+  // decline reuses this pending order instead of materialising a duplicate.
+  const withOrder: CheckoutSession = {
     ...withInstruments,
-    status: "completed",
-    order: {
-      id: String(created.data.order.id),
-      number: created.data.order.number,
-      status: mapOrderStatus(created.data.order.status),
-      permalink_url: created.data.order.permalink_url,
-      payment_url: created.data.order.payment_url,
-    },
-    messages: [],
+    status: "complete_in_progress",
+    pendingOrder: ensured.order,
   };
-  await saveCheckout(completed);
+  await saveCheckout(withOrder);
 
-  // Durable order record: maps the platform order back to this checkout and
-  // keeps the agent webhook target beyond the session TTL.
-  await UcpOrder.create(Environment.SERVER, {
-    storeId: context.store.id,
-    externalOrderId: String(created.data.order.id),
-    checkoutId: withInstruments.id,
-    webhookUrl: completed.webhookUrl || orderWebhookUrl(negotiated) || null,
-    agentProfileUrl: completed.agentProfileUrl ?? null,
-  });
-
-  // Fire-and-forget `order.created` webhook to the agent platform; delivery
-  // failures are Sentry-captured inside sendOrderEvent.
-  const webhookTarget = completed.webhookUrl || orderWebhookUrl(negotiated);
-  if (webhookTarget) {
-    void sendOrderEvent(Environment.SERVER, {
-      store: context,
-      event: "order.created",
-      externalOrderId: String(created.data.order.id),
-      webhookUrl: webhookTarget,
+  // Process collected instruments through the store's payment processor.
+  // Charged → paid order; escalate → 3DS hand-off; failed → mapped 402;
+  // defer → the buyer finalizes payment through the trusted UI.
+  const finalOrder = { ...ensured.order };
+  for (const instrument of withOrder.instruments ?? []) {
+    const charge = await Bridge.chargeInstrument(bridgeCredentials, {
+      order_id: Number(ensured.order.id),
+      checkout_id: withOrder.id,
+      instrument,
     });
+
+    if (!charge.success) {
+      const reverted: CheckoutSession = {
+        ...withOrder,
+        status: "ready_for_complete",
+        messages: [
+          ...withOrder.messages,
+          errorMessage(
+            "payment_failed",
+            "The store's payment processor could not be reached. Retry shortly.",
+            "recoverable",
+            "payment.instruments",
+          ),
+        ],
+      };
+      await saveCheckout(reverted);
+      return {
+        status: 502,
+        body: formatCheckout(reverted, context, negotiated),
+      };
+    }
+
+    const outcome = charge.data;
+    switch (outcome.outcome) {
+      case "charged": {
+        finalOrder.status = outcome.order.status;
+        break;
+      }
+      case "escalate": {
+        const escalated: CheckoutSession = {
+          ...withOrder,
+          status: "requires_escalation",
+          escalationUrl: outcome.continue_url,
+          messages: [
+            errorMessage(
+              outcome.code || "payment_authentication_required",
+              outcome.content ||
+                "Payment requires additional authentication to complete.",
+              "requires_buyer_input",
+              "payment.instruments",
+            ),
+          ],
+        };
+        await saveCheckout(escalated);
+        return {
+          status: 200,
+          body: formatCheckout(escalated, context, negotiated),
+        };
+      }
+      case "failed": {
+        const [code, severity] =
+          PAYMENT_ERROR_MAP[outcome.reason] ??
+          PAYMENT_ERROR_MAP["processing_error"];
+        const reverted: CheckoutSession = {
+          ...withOrder,
+          status: "ready_for_complete",
+        };
+        await saveCheckout(reverted);
+        return errorEnvelope(
+          negotiated,
+          [
+            errorMessage(
+              code,
+              outcome.message || "The payment could not be processed.",
+              severity,
+              "payment.instruments",
+            ),
+          ],
+          severity === "recoverable"
+            ? continueUrl(reverted, context)
+            : null,
+          402,
+        );
+      }
+      default:
+        break; // defer — payment finalized through the trusted UI
+    }
   }
 
+  const completed = await finalizeCompleted(
+    withOrder,
+    finalOrder,
+    context,
+    negotiated,
+  );
   return { status: 200, body: formatCheckout(completed, context, negotiated) };
 };
 
