@@ -218,6 +218,47 @@ export function repository<T extends TableWithId>(table: T) {
       `${capitalize(name)}.create`,
     ),
 
+    upsert: withContext(
+      async (
+        _,
+        data: Insertable<T>,
+        config: {
+          target: AnyColumn[];
+          set?: Partial<Insertable<T>>;
+        } & ExecuteOptions,
+      ) => {
+        const run = executor(config);
+        const target = asTable(table);
+        const { id: _id, ...rest } = data as Record<string, unknown>;
+        const set = config.set ?? rest;
+        const result = await resultify(async () =>
+          run
+            .insert(target)
+            .values(data as T["$inferInsert"])
+            .onConflictDoUpdate({ target: config.target, set })
+            .returning(),
+        );
+
+        if (!result.success) {
+          if (process.env.NODE_ENV === "development")
+            console.error(`Failed to upsert record on ${name}`, result.error);
+          return {
+            success: false,
+            error: new DatabaseError(
+              `Failed to upsert record on ${name}: ${result.error}. Args: ${JSON.stringify(data)}`,
+              { cause: result.error },
+            ),
+          };
+        }
+
+        const rows = (result as { success: true; data: Document<T>[] }).data;
+        const row = rows?.[0] as Document<T>;
+
+        return { success: true as const, data: row };
+      },
+      `${capitalize(name)}.upsert`,
+    ),
+
     update: withContext(
       async (
         _,

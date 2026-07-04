@@ -188,7 +188,7 @@ export const syncShopifyCatalog = withContext(
       all.map((item) => {
         const variant = item.variants[0];
 
-        return Product.create(
+        return Product.sync(
           Environment.SERVER,
           {
             storeId,
@@ -463,7 +463,9 @@ export const handleOAuthCallback = withContext(
           {
             storeId: creation.data.id,
             accessToken,
-            accessTokenExpiresAt: new Date(Date.now() + t.data.expires_in * 1000),
+            accessTokenExpiresAt: new Date(
+              Date.now() + t.data.expires_in * 1000,
+            ),
             refreshToken: t.data.refresh_token,
             refreshTokenExpiresAt: new Date(
               Date.now() + t.data.refresh_token_expires_in * 1000,
@@ -1122,7 +1124,7 @@ export const syncPublicCatalog = withContext(
       all.map((item) => {
         const variant = item.variants[0];
 
-        return Product.create(
+        return Product.sync(
           Environment.SERVER,
           {
             storeId,

@@ -201,7 +201,7 @@ export const syncWooCommerceCatalog = withContext(
 
     const results = await Promise.all(
       all.map((item) =>
-        Product.create(
+        Product.sync(
           Environment.SERVER,
           {
             storeId,

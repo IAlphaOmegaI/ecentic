@@ -137,7 +137,7 @@ export const syncProducts = withAuthentication(
 
     const results = await Promise.all(
       products.map((item) =>
-        Product.create(Environment.SERVER, {
+        Product.sync(Environment.SERVER, {
           storeId: id,
           userId: context.session.user.id,
           externalId: item.id || null,

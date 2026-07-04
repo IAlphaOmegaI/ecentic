@@ -320,11 +320,19 @@ export const listDashboard = withAuthentication(
       }
     }
 
+    // Records are fetched user-wide, but this dashboard is scoped to `store`
+    // (so `productById` only holds the current store's products). Keep only
+    // records whose product belongs to this store; otherwise the client can't
+    // resolve a title and renders "Unknown product".
     const published = records.data.filter(
-      (record) => record.status === "published",
+      (record) =>
+        record.status === "published" &&
+        productById[record.productId] !== undefined,
     );
     const dismissed = records.data.filter(
-      (record) => record.status === "dismissed",
+      (record) =>
+        record.status === "dismissed" &&
+        productById[record.productId] !== undefined,
     );
 
     const publishableLowWinRateCount = lowWinRateEntries.filter((entry) =>

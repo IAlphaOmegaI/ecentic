@@ -174,6 +174,10 @@ export const product = pgTable(
   (table) => [
     index("product_user_idx").on(table.userId),
     index("product_store_idx").on(table.storeId),
+    uniqueIndex("product_store_external_unique").on(
+      table.storeId,
+      table.externalId,
+    ),
   ],
 );
 

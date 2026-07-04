@@ -7,14 +7,45 @@ import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
 import { Environment } from "../utils/environment";
 import type { Pager } from "../utils/pagination";
-import type { Document } from "../utils/repository";
+import type { Document, ExecuteOptions, Insertable } from "../utils/repository";
 import { repository } from "../utils/repository";
 import * as Competitor from "./competitor";
 import * as Scan from "./scan";
 import * as Simulation from "./simulation";
 
-export const { get, paginate, create, update, destroy, exists, count, find } =
-  repository(schema.product);
+export const {
+  get,
+  paginate,
+  create,
+  update,
+  destroy,
+  exists,
+  count,
+  find,
+  upsert,
+} = repository(schema.product);
+
+/**
+ * Insert a synced product, or refresh the existing row when the store already
+ * has a product with the same `externalId`. Keyed on the store's
+ * `(storeId, externalId)` unique index so re-syncs update in place instead of
+ * duplicating the catalog — which keeps `product.id` stable and preserves the
+ * simulations/optimizations that reference it. Products without an `externalId`
+ * (some feed/CSV rows) always insert, since NULLs don't collide.
+ */
+export const sync = async (
+  environment: Environment,
+  data: Insertable<typeof schema.product>,
+  options?: ExecuteOptions,
+) =>
+  upsert(
+    environment,
+    { ...data, updatedAt: new Date() },
+    {
+      target: [schema.product.storeId, schema.product.externalId],
+      ...options,
+    },
+  );
 
 const stores = repository(schema.store);
 
