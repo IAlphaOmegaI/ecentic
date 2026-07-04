@@ -15,7 +15,6 @@ import { cn } from "@zenncore/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type * as Optimizations from "@/server/app/optimization";
-import type * as Products from "@/server/app/product";
 
 // Per-store items — `segment` is appended to `/dashboard/${store}` at render.
 const items = [
@@ -63,14 +62,14 @@ const items = [
 export namespace SidebarNav {
   export type Props = {
     store: string;
-    products: Products.Type[];
+    productCount: number;
     optimizations: Optimizations.Type[];
   };
 }
 
 export const SidebarNav = ({
   store,
-  products,
+  productCount,
   optimizations,
 }: SidebarNav.Props) => {
   const pathname = usePathname();
@@ -84,7 +83,7 @@ export const SidebarNav = ({
   const badgeFor = (item: (typeof items)[number]): string | undefined => {
     switch (true) {
       case item.label === "Products":
-        return `${products.length}`;
+        return `${productCount}`;
       case item.label === "Optimize":
         return `${optimizations.length}`;
       case "badge" in item && item.badge !== undefined:

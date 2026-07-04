@@ -438,27 +438,59 @@ export const handleOAuthCallback = withContext(
 
     const trackerApiKey = crypto.randomUUID();
 
+    const reconciliation = await Store.reconcileConnection(Environment.SERVER, {
+      userId,
+      domain: `https://${shopId}`,
+      storeId: String(shop.data.shop.id),
+    });
+    if (!reconciliation.success) return reconciliation;
+
+    if (reconciliation.data.kind === "claimed")
+      return {
+        success: false,
+        error: new RequestError(
+          "This store is already connected to another Ecentic account.",
+        ),
+      };
+
+    const existing =
+      reconciliation.data.kind === "owned" ? reconciliation.data.store : null;
+
     const transaction = await resultify(() =>
       withTransaction(async (tx) => {
-        const creation = await Store.create(
-          Environment.SERVER,
-          {
-            userId,
-            platform: "shopify",
-            name: shopId.replace(".myshopify.com", ""),
-            domain: `https://${shopId}`,
-            trackerApiKey,
-            storefrontHosts,
-            status: "connected",
-            storeId: String(shop.data.shop.id),
-          },
-          { tx },
-        );
+        const creation = existing
+          ? await Store.update(
+              Environment.SERVER,
+              existing.id,
+              {
+                platform: "shopify",
+                name: shopId.replace(".myshopify.com", ""),
+                domain: `https://${shopId}`,
+                storefrontHosts,
+                status: "connected",
+                storeId: String(shop.data.shop.id),
+              },
+              { tx },
+            )
+          : await Store.create(
+              Environment.SERVER,
+              {
+                userId,
+                platform: "shopify",
+                name: shopId.replace(".myshopify.com", ""),
+                domain: `https://${shopId}`,
+                trackerApiKey,
+                storefrontHosts,
+                status: "connected",
+                storeId: String(shop.data.shop.id),
+              },
+              { tx },
+            );
 
         if (!creation.success) throw creation.error;
         if (!creation.data) throw new Error("Store creation returned no data");
 
-        const storeAccount = await StoreAccount.create(
+        const storeAccount = await StoreAccount.sync(
           Environment.SERVER,
           {
             storeId: creation.data.id,
@@ -499,37 +531,42 @@ export const handleOAuthCallback = withContext(
 
     const store = transaction.data;
 
-    const origin = resolveTrackerPublicOrigin();
+    // On a fresh connect, install the storefront tracker script tag. On an
+    // owned reconnect the existing tag (and its tracker key) are still in place,
+    // so re-posting would just create a duplicate — skip it.
+    if (!existing) {
+      const origin = resolveTrackerPublicOrigin();
 
-    const probe =
-      process.env.ECENTIC_TRACKER_PROBE === "true" ? "&probe=1" : "";
+      const probe =
+        process.env.ECENTIC_TRACKER_PROBE === "true" ? "&probe=1" : "";
 
-    const src = `${origin}/tracker.js?sid=${encodeURIComponent(
-      store.id,
-    )}&k=${encodeURIComponent(trackerApiKey)}${probe}`;
+      const src = `${origin}/tracker.js?sid=${encodeURIComponent(
+        store.id,
+      )}&k=${encodeURIComponent(trackerApiKey)}${probe}`;
 
-    await HTTP.request(
-      `https://${shopId}/admin/api/${API_VERSION}/script_tags.json`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Shopify-Access-Token": accessToken,
-        },
-        body: JSON.stringify({
-          script_tag: {
-            event: "onload",
-            src,
-            display_scope: "all",
+      await HTTP.request(
+        `https://${shopId}/admin/api/${API_VERSION}/script_tags.json`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Shopify-Access-Token": accessToken,
           },
-        }),
-      },
-    );
+          body: JSON.stringify({
+            script_tag: {
+              event: "onload",
+              src,
+              display_scope: "all",
+            },
+          }),
+        },
+      );
 
-    context.span.addBreadcrumb({
-      category: "shopify.script_tag.installed",
-      data: { "store.id": store.id, shop: shopId },
-    });
+      context.span.addBreadcrumb({
+        category: "shopify.script_tag.installed",
+        data: { "store.id": store.id, shop: shopId },
+      });
+    }
 
     return { success: true, data: { storeId: store.id } };
   },
@@ -1206,20 +1243,50 @@ export const connectPublic = withAuthentication(
 
     const storefrontHosts = [normalizeHostname(host)];
 
+    const reconciliation = await Store.reconcileConnection(Environment.SERVER, {
+      userId: context.session.user.id,
+      domain: host,
+    });
+    if (!reconciliation.success) return reconciliation;
+
+    if (reconciliation.data.kind === "claimed")
+      return {
+        success: false,
+        error: new RequestError(
+          "This store is already connected to another Ecentic account.",
+        ),
+      };
+
+    const existing =
+      reconciliation.data.kind === "owned" ? reconciliation.data.store : null;
+
     const transaction = await resultify(() =>
       withTransaction(async (tx) => {
-        const store = await Store.create(
-          Environment.SERVER,
-          {
-            userId: context.session.user.id,
-            platform: "shopify-public",
-            name: new URL(host).hostname.replace(".myshopify.com", ""),
-            domain: host,
-            storefrontHosts,
-            status: "connected",
-          },
-          { tx },
-        );
+        const store = existing
+          ? await Store.update(
+              Environment.SERVER,
+              existing.id,
+              {
+                platform: "shopify-public",
+                name: new URL(host).hostname.replace(".myshopify.com", ""),
+                domain: host,
+                storefrontHosts,
+                status: "connected",
+              },
+              { tx },
+            )
+          : await Store.create(
+              Environment.SERVER,
+              {
+                userId: context.session.user.id,
+                platform: "shopify-public",
+                name: new URL(host).hostname.replace(".myshopify.com", ""),
+                domain: host,
+                storefrontHosts,
+                status: "connected",
+              },
+              { tx },
+            );
 
         if (!store.success) throw store.error;
         if (!store.data) throw new Error("Store creation returned no data");

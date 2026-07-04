@@ -8,11 +8,17 @@ import * as Product from "@/server/app/product";
 import { Environment } from "@/server/utils/environment";
 import { ProductSelector } from "./_components/product-selector";
 
-export default async () => {
+export default async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ connected?: string }>;
+}) => {
   await connection();
 
+  const { connected } = await searchParams;
+
   const products = await unwrapResult(
-    Product.skimForConnectedStore(Environment.SERVER),
+    Product.skimForConnectedStore(Environment.SERVER, { connected }),
   );
 
   if (products.length === 0)

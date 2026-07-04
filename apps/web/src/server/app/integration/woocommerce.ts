@@ -318,24 +318,53 @@ export const connectForUser = withContext(
       data: { "store.host": host },
     });
 
+    const reconciliation = await Store.reconcileConnection(Environment.SERVER, {
+      userId: id,
+      domain: host,
+    });
+    if (!reconciliation.success) return reconciliation;
+
+    if (reconciliation.data.kind === "claimed")
+      return {
+        success: false,
+        error: new RequestError(
+          "This store is already connected to another Ecentic account.",
+        ),
+      };
+
+    const existing =
+      reconciliation.data.kind === "owned" ? reconciliation.data.store : null;
+
     const transaction = await resultify(() =>
       withTransaction(async (tx) => {
-        const store = await Store.create(
-          Environment.SERVER,
-          {
-            userId: id,
-            platform: "woocommerce",
-            name: new URL(host).hostname,
-            domain: host,
-            status: "connected",
-          },
-          { tx },
-        );
+        const store = existing
+          ? await Store.update(
+              Environment.SERVER,
+              existing.id,
+              {
+                platform: "woocommerce",
+                name: new URL(host).hostname,
+                domain: host,
+                status: "connected",
+              },
+              { tx },
+            )
+          : await Store.create(
+              Environment.SERVER,
+              {
+                userId: id,
+                platform: "woocommerce",
+                name: new URL(host).hostname,
+                domain: host,
+                status: "connected",
+              },
+              { tx },
+            );
 
         if (!store.success) throw store.error;
         if (!store.data) throw new Error("Store creation returned no data");
 
-        const storeAccount = await StoreAccount.create(
+        const storeAccount = await StoreAccount.sync(
           Environment.SERVER,
           {
             storeId: store.data.id,

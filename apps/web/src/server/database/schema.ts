@@ -560,7 +560,7 @@ export const relations = defineRelations(tables, (r) => ({
     }),
     products: r.many.product(),
     storeAccount: r.one.store_account({
-      from: r.store.storeId,
+      from: r.store.id,
       to: r.store_account.storeId,
     }),
     agentVisits: r.many.agentVisit(),

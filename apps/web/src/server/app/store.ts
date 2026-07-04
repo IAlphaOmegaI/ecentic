@@ -1,11 +1,12 @@
 "use server";
 
-import { and, eq, gte, inArray, sql } from "drizzle-orm";
+import { and, eq, gte, inArray, or, sql } from "drizzle-orm";
 import { db, schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
+import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { NotFoundError } from "../utils/error";
-import type { Document } from "../utils/repository";
+import type { Document, ExecuteOptions } from "../utils/repository";
 import { repository } from "../utils/repository";
 import * as Feed from "./integration/feed";
 import * as Shopify from "./integration/shopify";
@@ -43,6 +44,76 @@ export const resolveForUser = withAuthentication(
     return { success: true as const, data: result.data };
   },
   "Store.resolveForUser",
+);
+
+/**
+ * Platforms that represent a persistent, externally-identifiable storefront —
+ * the ones a duplicate connection can be detected for. `csv` is excluded: its
+ * `domain` is just the uploaded filename, so two unrelated uploads could share
+ * one and must not be treated as the same store.
+ */
+const CONNECTABLE_PLATFORMS = [
+  "shopify",
+  "shopify-public",
+  "woocommerce",
+  "feed",
+] as const;
+
+export type Reconciliation =
+  | { kind: "new" }
+  | { kind: "owned"; store: Type }
+  | { kind: "claimed" };
+
+/**
+ * Decides how to handle a connect attempt for a storefront that may already
+ * exist in Ecentic. A store is identified by its normalized `domain` and, for
+ * OAuth platforms, its external `storeId`.
+ *
+ * - `new`     → nobody has it; create it.
+ * - `owned`   → the same user already connected it; refresh that row in place.
+ * - `claimed` → another account already connected it; the caller must reject.
+ */
+export const reconcileConnection = withContext(
+  async (
+    _,
+    {
+      userId,
+      domain,
+      storeId,
+    }: { userId: string; domain: string; storeId?: string | null },
+    options?: ExecuteOptions,
+  ) => {
+    const identity =
+      storeId != null && storeId !== ""
+        ? or(eq(schema.store.domain, domain), eq(schema.store.storeId, storeId))
+        : eq(schema.store.domain, domain);
+
+    const result = await find(
+      Environment.SERVER,
+      {
+        where: and(
+          identity,
+          inArray(schema.store.platform, [...CONNECTABLE_PLATFORMS]),
+        ),
+      },
+      options,
+    );
+
+    if (!result.success) return result;
+
+    const owned = result.data.find((store) => store.userId === userId);
+    if (owned)
+      return {
+        success: true as const,
+        data: { kind: "owned" as const, store: owned },
+      };
+
+    if (result.data.length > 0)
+      return { success: true as const, data: { kind: "claimed" as const } };
+
+    return { success: true as const, data: { kind: "new" as const } };
+  },
+  "Store.reconcileConnection",
 );
 
 export type Overview = Type & {

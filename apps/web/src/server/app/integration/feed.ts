@@ -78,6 +78,33 @@ export const connectForUser = withContext(
       return result.success ? result.data.hostname : "custom-feed";
     })();
 
+    const reconciliation = await Store.reconcileConnection(Environment.SERVER, {
+      userId: user,
+      domain: feedUrl,
+    });
+    if (!reconciliation.success) return reconciliation;
+
+    if (reconciliation.data.kind === "claimed")
+      return {
+        success: false,
+        error: new RequestError(
+          "This store is already connected to another Ecentic account.",
+        ),
+      };
+
+    if (reconciliation.data.kind === "owned") {
+      const refreshed = await Store.update(
+        Environment.SERVER,
+        reconciliation.data.store.id,
+        { platform: "feed", name: hostname, feedUrl, status: "connected" },
+      );
+      if (!refreshed.success) return refreshed;
+      return {
+        success: true as const,
+        data: refreshed.data ?? reconciliation.data.store,
+      };
+    }
+
     const store = await Store.create(Environment.SERVER, {
       userId: user,
       platform: "feed",

@@ -9,8 +9,8 @@ import { SidebarNav } from "./sidebar-nav";
 import { StoreSwitcher } from "./store-switcher";
 
 export const Sidebar = async ({ store }: { store: string }) => {
-  const [products, optimizations, stores] = await Promise.all([
-    unwrapResult(Products.skimForCurrentUser(Environment.SERVER, { store })),
+  const [productCount, optimizations, stores] = await Promise.all([
+    unwrapResult(Products.countForCurrentUser(Environment.SERVER, { store })),
     unwrapResult(Optimizations.listDashboard(Environment.SERVER, { store })),
     unwrapResult(Store.getForCurrentUser(Environment.SERVER)),
   ]);
@@ -36,7 +36,7 @@ export const Sidebar = async ({ store }: { store: string }) => {
 
       <SidebarNav
         store={store}
-        products={products}
+        productCount={productCount}
         optimizations={optimizations.published}
       />
     </aside>
