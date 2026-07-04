@@ -52,6 +52,23 @@ export const buildDiscoveryProfile = (
     ucp["payment_handlers"] = handlers;
   }
 
+  // Identity linking: the store hosts its own OAuth 2.0 authorization server
+  // (RFC 8414 metadata at {store}/.well-known/oauth-authorization-server);
+  // config.scopes declares which operations gate behind user authentication.
+  const identityScopes = storefront?.identityScopes ?? {};
+  if (Object.keys(identityScopes).length > 0) {
+    (ucp["capabilities"] as Record<string, unknown>)[
+      "dev.ucp.common.identity_linking"
+    ] = [
+      {
+        version: UCP_VERSION,
+        spec: "https://ucp.dev/2026-04-08/specification/identity-linking",
+        schema: "https://ucp.dev/2026-04-08/schemas/common/identity_linking.json",
+        config: { scopes: identityScopes },
+      },
+    ];
+  }
+
   // Publish the EC P-256 public signing key (JWK, RFC 7517) so platforms can
   // verify our RFC 9421 signatures. crv drives the algorithm (ES256).
   const signingKey = platformSigningKey();

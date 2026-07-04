@@ -20,6 +20,7 @@ import {
   idempotencyStore,
   idempotencyStoreKey,
 } from "./idempotency";
+import { enforceIdentityGate } from "./identity";
 import {
   agentProfileUrl,
   fetchPlatformProfile,
@@ -370,6 +371,22 @@ const run = async (
   const route = matchRoute(request.method, segments);
   if (!route) {
     return json(404, { code: "not_found", content: "Unknown UCP operation." });
+  }
+
+  // Identity linking: operations gated by the store's `config.scopes` need a
+  // valid user identity token (401 identity_required / 403 insufficient_scope
+  // with RFC 6750 Bearer challenges).
+  const identityRejection = await enforceIdentityGate(
+    context,
+    route.operation,
+    request.headers,
+  );
+  if (identityRejection) {
+    return json(
+      identityRejection.status,
+      identityRejection.body,
+      identityRejection.headers,
+    );
   }
 
   const rawBody = await request.text();

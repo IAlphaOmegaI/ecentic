@@ -34,7 +34,8 @@ records every known divergence.
 | `WOO_UCP_Orders` (entity + webhooks) | `ucp/orders.ts` — entity via bridge `GET /wc-ucp/v1/orders/{id}`; signed webhook fan-out from Ecentic; the plugin only relays status changes to `POST /api/ucp/stores/{store}/events` (HMAC) |
 | `WOO_UCP_Discounts` | Deleted — coupon math is WooCommerce's own, via the bridge quote's `WC()->cart->apply_coupon()` |
 | `WOO_UCP_Connect` | Unchanged plugin-side; Ecentic side is `ucp/connect.ts` + `api/integrations/woo/start\|callback` (OAuth code + PKCE, SSRF guard, atomic single-use state, reconnect idempotency) |
-| `WOO_UCP_Stripe`, `WOO_UCP_Auth` (identity linking) | Not ported — see "Not implemented" |
+| `WOO_UCP_Stripe` | Restored in the plugin unchanged; invoked through the bridge `POST /wc-ucp/v1/charge` so the Stripe secret never leaves the store |
+| `WOO_UCP_Auth` (identity linking) | Restored in the plugin, upgraded to the current spec (PKCE S256 enforced, RFC 9207 `iss`, client binding, revocation cascade); scope gates enforced by the hosted router via bridge introspection |
 
 The seam is the discovery profile's `endpoint` field: agents discover the
 store at its own `/.well-known/ucp` and are pointed at
@@ -232,6 +233,31 @@ backorders) at product and variant level, empty lists omitted.
   content-digest content-type`. HTTPS targets only; failures are
   Sentry-captured and never block the triggering flow.
 
+### `dev.ucp.common.identity_linking`
+
+- The store hosts its own OAuth 2.0 authorization server (`WOO_UCP_Auth`,
+  upgraded beyond the reference to the current spec): RFC 8414 metadata at
+  `{store}/.well-known/oauth-authorization-server` (S256-only PKCE,
+  `authorization_response_iss_parameter_supported`, `client_secret_basic` +
+  `none`), login + consent inside WordPress at `/ucp-oauth/authorize`
+  (nonce-protected consent, per-scope descriptions), token endpoint with
+  enforced PKCE, exact `redirect_uri` matching (RFC 8252 loopback-port
+  exception), client binding (`invalid_client`), and RFC 7009 revocation
+  where revoking a refresh token cascades to its access tokens. `iss` is
+  returned on every authorization response (RFC 9207).
+- Scope policy defaults to the B2C shape — `dev.ucp.shopping.order:read` /
+  `:manage` gated, guest checkout open — and is filterable
+  (`woo_ucp_identity_scopes`, e.g. add `dev.ucp.shopping.checkout:manage`
+  for the B2B no-guest-checkout shape).
+- The hosted profile advertises the capability with `config.scopes` (via
+  store-info), and the hosted router enforces the gates: no token → 401
+  `identity_required` + `WWW-Authenticate: Bearer realm="<issuer>"` (no
+  `error` param, RFC 6750 §3.1); invalid/expired token → 401 with
+  `error="invalid_token"`; valid token missing a scope → 403
+  `insufficient_scope` with the FULL required scope set in the challenge.
+  Tokens are validated through the bridge introspection route (redis-cached
+  60 s, so revocation propagates within a minute).
+
 ## Known divergences from the reference
 
 wc/v3 transport limitations (the reference read WC objects in-process):
@@ -259,8 +285,6 @@ Behavioral deltas:
   materialise an order at Complete, which is terminal, so there is never a
   pending UCP order to cancel (the reference's hand-off pages could create
   one earlier).
-- **Identity linking** (`WOO_UCP_Auth`, `/.well-known/oauth-authorization-server`,
-  `/ucp-oauth/*`) was not ported.
 - **Browser hand-offs**: the reference's `/ucp-cart/{id}` and
   `/ucp-checkout/{id}` server hand-off pages were replaced by the stateless
   `/checkout-link/` and the order-pay URL, so no hand-off code remains in
@@ -284,6 +308,7 @@ minor units.
 | `POST /connection` | Hosted-UCP settings push after connect: store id, bridge secret, events/profile/endpoint URLs |
 | `GET /store` | Store facts only WordPress knows (cached 5 min backend-side, invalidated instantly on settings save): configured privacy/terms pages (checkout `links`), real cart/checkout/shop page URLs (`continue_url` targets), currency and measurement units, the require-signatures toggle, the payment handler declarations, and the access/catalog policy (API key, allowed agent platforms, rate limit, include-out-of-stock) |
 | `POST /charge` | Processes one payment instrument for a UCP order through `woo_ucp_process_instrument` (WOO_UCP_Stripe by default) — returns `charged` (order paid), `escalate` (3DS continue_url), `failed` (mapped reason), or `defer`; payment secrets never leave the store |
+| `POST /tokens/introspect` | Resolves a user identity token issued by the store's OAuth server to its grant (active, user, scope, client) so the backend can enforce identity-linking scope gates |
 
 Plugin → Ecentic events: `POST /api/ucp/stores/{store}/events` with
 `X-Ecentic-Timestamp` + `X-Ecentic-Signature: hex(hmac_sha256(bridgeSecret,

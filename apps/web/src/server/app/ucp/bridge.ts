@@ -205,7 +205,27 @@ export type BridgeStoreInfo = {
   rate_limit_per_minute?: number;
   /** Whether the catalog includes out-of-stock products by default. */
   include_out_of_stock?: boolean;
+  /** Identity-linking scope policy (`{capability}:{scope}` → per-scope config). */
+  identity_linking?: { scopes?: Record<string, Record<string, unknown>> };
 };
+
+/** Grant behind a user identity token issued by the store's OAuth server. */
+export type BridgeIntrospection = {
+  active: boolean;
+  user_id?: number;
+  scope?: string;
+  client_id?: string;
+  expires?: number;
+};
+
+/**
+ * Resolves a Bearer user identity token to its grant via the store's OAuth
+ * server (WOO_UCP_Auth) — the validation half of identity linking.
+ */
+export const introspectToken = async (
+  credentials: BridgeCredentials,
+  token: string,
+) => post<BridgeIntrospection>(credentials, "/tokens/introspect", { token });
 
 /** Outcome of processing one payment instrument through the store's processor. */
 export type BridgeChargeOutcome =

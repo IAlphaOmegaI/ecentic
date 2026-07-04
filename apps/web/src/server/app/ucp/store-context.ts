@@ -22,6 +22,11 @@ export type StorefrontInfo = {
   rateLimitPerMinute: number;
   /** Whether the catalog includes out-of-stock products by default. */
   includeOutOfStock: boolean;
+  /**
+   * Identity-linking scope policy: `{capability}:{scope}` → per-scope config.
+   * Listing a scope gates its operations behind user authentication.
+   */
+  identityScopes: Record<string, Record<string, unknown>>;
 };
 
 export type UcpStoreContext = {

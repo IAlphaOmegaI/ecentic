@@ -69,6 +69,11 @@ export const loadStorefrontInfo = async (
         ? fetched.data.rate_limit_per_minute
         : 120,
     includeOutOfStock: fetched.data.include_out_of_stock === true,
+    identityScopes:
+      fetched.data.identity_linking?.scopes &&
+      typeof fetched.data.identity_linking.scopes === "object"
+        ? fetched.data.identity_linking.scopes
+        : {},
   };
 
   try {
