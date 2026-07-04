@@ -266,7 +266,7 @@ const PublishListing = ({
         onClick={() => setOpen(true)}
       >
         <TrendUpIcon className="size-4" />
-        {canPublish ? label : "Connect Shopify to apply"}
+        {canPublish ? label : "Connect Shopify or WooCommerce"}
       </Button>
 
       <AlertDialog open={open} onOpenChange={setOpen}>
@@ -1021,6 +1021,7 @@ const OptimizeTab = ({
   winRate: number;
   canPublish: boolean;
 }) => {
+  const toast = useToastManager();
   const [isPending, startTransition] = useTransition();
   const [liveStructuredData, setLiveStructuredData] = useState<string | null>(
     null,
@@ -1037,6 +1038,28 @@ const OptimizeTab = ({
         setLiveStructuredData(generation.data.structuredData);
     });
   };
+
+  const [publishStructured, isPublishingStructured] = useAsyncAction(
+    async () => {
+      const result = await Optimization.publishProductStructuredData({
+        product: product.id,
+      });
+      if (!result.success) {
+        toast.add({
+          title: "Publish failed",
+          description: result.error.message,
+          type: "error",
+        });
+        return;
+      }
+      setLiveStructuredData(result.data.structuredData);
+      toast.add({
+        title: "Structured data published",
+        description: "Schema.org JSON-LD was written to your store.",
+        type: "success",
+      });
+    },
+  );
 
   return (
     <>
@@ -1091,9 +1114,24 @@ const OptimizeTab = ({
             Structured Data
           </p>
           {structuredData ? (
-            <pre className="max-h-40 overflow-y-auto whitespace-pre-wrap rounded-md bg-background-dimmed p-3 font-mono text-foreground-dimmed text-xs leading-relaxed">
-              {structuredData}
-            </pre>
+            <div className="space-y-3">
+              <pre className="max-h-40 overflow-y-auto whitespace-pre-wrap rounded-md bg-background-dimmed p-3 font-mono text-foreground-dimmed text-xs leading-relaxed">
+                {structuredData}
+              </pre>
+              {canPublish && (
+                <Button
+                  type="button"
+                  color="accent"
+                  onClick={publishStructured}
+                  disabled={isPublishingStructured}
+                >
+                  {isPublishingStructured ? "Publishing…" : "Publish to store"}
+                  {!isPublishingStructured && (
+                    <ArrowRightIcon className="size-4" />
+                  )}
+                </Button>
+              )}
+            </div>
           ) : (
             <div className="space-y-3">
               <p className="text-error text-sm italic">

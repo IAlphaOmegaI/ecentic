@@ -389,12 +389,18 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
     router.refresh();
   });
 
-  const primaryShopifyStore = data.shopifyStores[0] ?? null;
+  const optimizableStore =
+    data.currentStore &&
+    ["shopify", "shopify-public", "woocommerce"].includes(
+      data.currentStore.platform,
+    )
+      ? data.currentStore
+      : null;
 
   const [handleOptimizeStore, isOptimizingStore] = useAsyncAction(async () => {
-    if (!primaryShopifyStore) return;
+    if (!optimizableStore) return;
     const result = await Optimization.optimizeStoreForAgents({
-      store: primaryShopifyStore.id,
+      store: optimizableStore.id,
     });
     if (!result.success) {
       toast.add({
@@ -409,7 +415,9 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
       result.data;
     toast.add({
       title: "Store optimized for AI agents",
-      description: `${profileWritten} UCP metafields, ${productsPushed}/${productsTotal} products, ${listingsRewritten} listings rewritten.`,
+      description: `${productsPushed}/${productsTotal} products published, ${listingsRewritten} listings rewritten${
+        profileWritten > 0 ? `, ${profileWritten} UCP metafields` : ""
+      }.`,
       type: result.data.errors.length > 0 ? "warning" : "success",
     });
     router.refresh();
@@ -446,7 +454,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            {primaryShopifyStore && (
+            {optimizableStore && (
               <Button
                 color="primary"
                 disabled={isOptimizingStore || busy}
@@ -457,7 +465,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
                 ) : (
                   <CheckIcon className="size-4" />
                 )}
-                Optimize {primaryShopifyStore.name} for Agents
+                Optimize {optimizableStore.name} for Agents
               </Button>
             )}
             <Button
