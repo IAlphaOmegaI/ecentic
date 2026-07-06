@@ -7,14 +7,45 @@ import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
 import { Environment } from "../utils/environment";
 import type { Pager } from "../utils/pagination";
-import type { Document } from "../utils/repository";
+import type { Document, ExecuteOptions, Insertable } from "../utils/repository";
 import { repository } from "../utils/repository";
 import * as Competitor from "./competitor";
 import * as Scan from "./scan";
 import * as Simulation from "./simulation";
 
-export const { get, paginate, create, update, destroy, exists, count, find } =
-  repository(schema.product);
+export const {
+  get,
+  paginate,
+  create,
+  update,
+  destroy,
+  exists,
+  count,
+  find,
+  upsert,
+} = repository(schema.product);
+
+/**
+ * Insert a synced product, or refresh the existing row when the store already
+ * has a product with the same `externalId`. Keyed on the store's
+ * `(storeId, externalId)` unique index so re-syncs update in place instead of
+ * duplicating the catalog — which keeps `product.id` stable and preserves the
+ * simulations/optimizations that reference it. Products without an `externalId`
+ * (some feed/CSV rows) always insert, since NULLs don't collide.
+ */
+export const sync = async (
+  environment: Environment,
+  data: Insertable<typeof schema.product>,
+  options?: ExecuteOptions,
+) =>
+  upsert(
+    environment,
+    { ...data, updatedAt: new Date() },
+    {
+      target: [schema.product.storeId, schema.product.externalId],
+      ...options,
+    },
+  );
 
 const stores = repository(schema.store);
 
@@ -22,40 +53,97 @@ const PUBLISHABLE_PLATFORMS = new Set(["shopify", "woocommerce"]);
 
 export type Type = Document<typeof schema.product>;
 
-export const skimForCurrentUser = withAuthentication(async (context) => {
-  return find(Environment.SERVER, {
-    where: eq(schema.product.userId, context.session.user.id),
-    limit: 10,
-  });
-}, "Product.skimForCurrentUser");
+export const skimForCurrentUser = withAuthentication(
+  async (context, { store }: { store?: string } = {}) => {
+    return find(Environment.SERVER, {
+      where: store
+        ? and(
+            eq(schema.product.userId, context.session.user.id),
+            eq(schema.product.storeId, store),
+          )
+        : eq(schema.product.userId, context.session.user.id),
+      limit: 10,
+    });
+  },
+  "Product.skimForCurrentUser",
+);
 
 /**
- * Products for the user's most-recently-connected store — the one just linked
- * during onboarding. Scopes the onboarding product picker to that store so a
- * previously-connected store's catalog doesn't bleed in. `find` defaults to
- * `createdAt desc`, so limit 1 yields the newest store.
+ * Total product count for the current user, optionally scoped to a store. Use
+ * this for count-only surfaces (e.g. the sidebar "Products" badge) instead of
+ * `skimForCurrentUser().length`, which caps at the 10-row preview limit and
+ * undercounts larger catalogs.
  */
-export const skimForConnectedStore = withAuthentication(async (context) => {
-  const userId = context.session.user.id;
+export const countForCurrentUser = withAuthentication(
+  async (context, { store }: { store?: string } = {}) => {
+    return count(
+      Environment.SERVER,
+      store
+        ? and(
+            eq(schema.product.userId, context.session.user.id),
+            eq(schema.product.storeId, store),
+          )
+        : eq(schema.product.userId, context.session.user.id),
+    );
+  },
+  "Product.countForCurrentUser",
+);
 
-  const latest = await stores.find(Environment.SERVER, {
-    where: eq(schema.store.userId, userId),
-    limit: 1,
-  });
+/**
+ * Maps the onboarding `?connected=` query value to the store platforms it can
+ * produce. A Shopify connect lands as either `shopify` (OAuth) or
+ * `shopify-public` (public storefront), so both must be considered.
+ */
+type StorePlatform = (typeof schema.store.$inferSelect)["platform"];
 
-  if (!latest.success) return latest;
+const CONNECTED_PLATFORMS: Record<string, StorePlatform[]> = {
+  shopify: ["shopify", "shopify-public"],
+  woocommerce: ["woocommerce"],
+};
 
-  const store = latest.data[0];
-  if (!store) return { success: true as const, data: [] as Type[] };
+/**
+ * Products for the store the user just connected during onboarding, scoping the
+ * product picker to that store so a previously-connected store's catalog doesn't
+ * bleed in.
+ *
+ * Prefer the `connected` platform from the redirect (`?connected=shopify`) when
+ * available: reconnecting a store issues a `Store.update` that preserves the
+ * original `createdAt`, so "newest store overall" can resolve to a different,
+ * older-platform store (e.g. a WooCommerce store connected after Shopify). When
+ * no platform is given (CSV/feed flows redirect without the param), fall back to
+ * the newest store — `find` defaults to `createdAt desc`, so limit 1 yields it.
+ */
+export const skimForConnectedStore = withAuthentication(
+  async (context, { connected }: { connected?: string } = {}) => {
+    const userId = context.session.user.id;
 
-  return find(Environment.SERVER, {
-    where: and(
-      eq(schema.product.userId, userId),
-      eq(schema.product.storeId, store.id),
-    ),
-    limit: 10,
-  });
-}, "Product.skimForConnectedStore");
+    const platforms = connected ? CONNECTED_PLATFORMS[connected] : undefined;
+
+    const latest = await stores.find(Environment.SERVER, {
+      where: platforms
+        ? and(
+            eq(schema.store.userId, userId),
+            inArray(schema.store.platform, platforms),
+          )
+        : eq(schema.store.userId, userId),
+      limit: 1,
+    });
+
+    if (!latest.success) return latest;
+
+    const store = latest.data[0];
+    if (!store) return { success: true as const, data: [] as Type[] };
+
+    return find(Environment.SERVER, {
+      where: and(
+        eq(schema.product.userId, userId),
+        eq(schema.product.storeId, store.id),
+      ),
+      limit: 10,
+    });
+  },
+  "Product.skimForConnectedStore",
+);
 
 const keys = [
   "title",
@@ -95,10 +183,23 @@ const computeModelWinRate = (
 };
 
 export const gatherIntelligence = dedupe(
-  withAuthentication(async () => {
+  withAuthentication(async (context, { store }: { store?: string } = {}) => {
+    const userId = context.session.user.id;
+
+    // Powers the store dashboard's aggregate stats (total products, win-rate
+    // averages, quality/optimization breakdowns), so it must cover the whole
+    // catalog — not the 10-row preview `skimForCurrentUser` returns, which would
+    // undercount totals and skew every average.
     const [products, scan] = await Promise.all([
-      skimForCurrentUser(Environment.SERVER),
-      Scan.getLatest(Environment.SERVER),
+      find(Environment.SERVER, {
+        where: store
+          ? and(
+              eq(schema.product.userId, userId),
+              eq(schema.product.storeId, store),
+            )
+          : eq(schema.product.userId, userId),
+      }),
+      Scan.getLatest(Environment.SERVER, { store }),
     ]);
 
     if (!products.success) return products;
@@ -189,9 +290,14 @@ const enrichProduct = (product: Type, simulations: Simulation.Type[]) => {
 };
 
 export const paginateWithIntelligence = withAuthentication(
-  async (context, { page, size }: Pager) => {
+  async (context, { page, size, store }: Pager & { store?: string }) => {
     const result = await paginate(Environment.SERVER, page, size, {
-      where: eq(schema.product.userId, context.session.user.id),
+      where: store
+        ? and(
+            eq(schema.product.userId, context.session.user.id),
+            eq(schema.product.storeId, store),
+          )
+        : eq(schema.product.userId, context.session.user.id),
     });
 
     if (!result.success) return result;
@@ -226,7 +332,7 @@ const Model = {
 } as const;
 
 export const getDetail = withAuthentication(
-  async (context, { id }: { id: string }) => {
+  async (context, { id, store: storeId }: { id: string; store?: string }) => {
     const product = await get(Environment.SERVER, id);
 
     if (!product.success) return product;
@@ -235,6 +341,9 @@ export const getDetail = withAuthentication(
 
     if (product.data.userId !== context.session.user.id)
       return { success: false, error: new Error("Not authorized") };
+
+    if (storeId && product.data.storeId !== storeId)
+      return { success: false, error: new Error("Product not found") };
 
     const store = product.data.storeId
       ? await stores.get(Environment.SERVER, product.data.storeId)

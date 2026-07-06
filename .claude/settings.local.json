@@ -101,7 +101,12 @@
       "Bash(rg -rln \"SELECT .*__drizzle_migrations|from .*__drizzle_migrations|folderMillis|created_at\" .)",
       "Bash(rg -l \"IF NOT EXISTS\" drizzle/*/migration.sql)",
       "Bash(bun /private/tmp/claude-501/-Users-alvipalloshi-Projects-ecentic/24cfbf23-e929-4999-855c-9f3079a75ff0/scratchpad/restore-track.mjs)",
-      "Bash(bun -e 'import{loadEnvConfig}from\"@next/env\";import postgres from\"postgres\";loadEnvConfig\\(process.cwd\\(\\)\\);const s=postgres\\(process.env.DATABASE_URL,{max:1}\\);const r=await s`SELECT count\\(*\\)::int c, min\\(id\\) mn, max\\(id\\) mx FROM drizzle.__drizzle_migrations`;console.log\\(JSON.stringify\\(r[0]\\)\\);await s.end\\(\\);')"
+      "Bash(bun -e 'import{loadEnvConfig}from\"@next/env\";import postgres from\"postgres\";loadEnvConfig\\(process.cwd\\(\\)\\);const s=postgres\\(process.env.DATABASE_URL,{max:1}\\);const r=await s`SELECT count\\(*\\)::int c, min\\(id\\) mn, max\\(id\\) mx FROM drizzle.__drizzle_migrations`;console.log\\(JSON.stringify\\(r[0]\\)\\);await s.end\\(\\);')",
+      "Bash(cat package.json)",
+      "Bash(cat tsconfig.json)",
+      "Bash(head -60 README.md)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(echo \"tsc-changed-files-errors: $?\")"
     ]
   }
 }

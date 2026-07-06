@@ -37,6 +37,9 @@ declare namespace NodeJS {
     readonly GOOGLE_CLIENT_ID: string;
     readonly GOOGLE_CLIENT_SECRET: string;
 
+    /** EC P-256 private key (PEM) signing hosted UCP responses/webhooks (RFC 9421). */
+    readonly UCP_SIGNING_PRIVATE_KEY?: string;
+
     readonly NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: string;
     readonly STRIPE_SECRET_KEY: string;
     readonly STRIPE_SUB_COMPETE: string;

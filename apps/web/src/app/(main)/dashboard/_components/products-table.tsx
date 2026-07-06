@@ -17,6 +17,7 @@ import {
 } from "@zenncore/web/components/data-table";
 import Image from "next/image";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import type { ReactNode } from "react";
 import { usePaginationChangeHandler } from "@/hooks/pagination";
 import { formatPrice } from "@/lib/currency";
@@ -73,13 +74,13 @@ const QualityBar = ({ score }: { score: number }) => {
   );
 };
 
-const columns: ColumnDef<ProductsTable.Row>[] = [
+const buildColumns = (store: string): ColumnDef<ProductsTable.Row>[] => [
   {
     accessorKey: "title",
     header: "Product",
     cell: ({ row }) => (
       <Link
-        href={`/dashboard/products/${row.original._id}`}
+        href={`/dashboard/${store}/products/${row.original._id}`}
         className="group flex items-center gap-2"
       >
         <Avatar className="size-9 min-w-9 rounded-md bg-background-dimmed">
@@ -165,7 +166,9 @@ const columns: ColumnDef<ProductsTable.Row>[] = [
         size="icon"
         color="accent"
         className="size-7"
-        render={<Link href={`/dashboard/products/${row.original._id}`} />}
+        render={
+          <Link href={`/dashboard/${store}/products/${row.original._id}`} />
+        }
       >
         <ArrowRightIcon className="size-4" />
       </Button>
@@ -182,6 +185,8 @@ export const ProductsTable = ({
   pageCount,
   ...props
 }: ProductsTable.Props) => {
+  const { store } = useParams<{ store: string }>();
+  const columns = buildColumns(store);
   const handlePaginationChange = usePaginationChangeHandler("products/");
   return (
     <>

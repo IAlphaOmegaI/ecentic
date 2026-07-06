@@ -8,10 +8,10 @@ import { CommandPalette } from "./command-palette";
 import { NotificationBell } from "./notification-bell";
 import { SubscriptionBadge } from "./subscription-badge";
 
-export const Topbar = async () => {
+export const Topbar = async ({ store }: { store: string }) => {
   const [user, products, competitors, subscription] = await Promise.all([
     unwrapResult(Authentication.getCurrentUser(Environment.SERVER)),
-    unwrapResult(Product.skimForCurrentUser(Environment.SERVER)),
+    unwrapResult(Product.skimForCurrentUser(Environment.SERVER, { store })),
     unwrapResult(Competitor.skimForCurrentUser(Environment.SERVER)),
     unwrapResult(Subscription.getCurrentSubscription(Environment.SERVER)),
   ]);
@@ -19,7 +19,11 @@ export const Topbar = async () => {
   return (
     <header className="flex h-14 shrink-0 items-center justify-between border-accent-foreground border-b bg-background-rich px-8">
       <div className="flex max-w-md flex-1 items-center gap-2">
-        <CommandPalette products={products} competitors={competitors} />
+        <CommandPalette
+          store={store}
+          products={products}
+          competitors={competitors}
+        />
       </div>
 
       <div className="flex items-center gap-3">

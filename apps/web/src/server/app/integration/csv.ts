@@ -81,7 +81,7 @@ export const syncProducts = withAuthentication(
           : { price: null, currency: null };
         const currency = item.currency || parsed.currency || "USD";
 
-        return Product.create(Environment.SERVER, {
+        return Product.sync(Environment.SERVER, {
           storeId: id,
           userId: context.session.user.id,
           externalId: item.id || null,

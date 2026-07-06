@@ -10,6 +10,8 @@ import { withAuthentication } from "../utils/authentication";
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { type Document, repository } from "../utils/repository";
+import * as Shopify from "./integration/shopify";
+import * as WooCommerce from "./integration/woocommerce";
 import * as Ucp from "./intelligence/ucp/profile";
 import * as Product from "./product";
 import * as Simulation from "./simulation";
@@ -77,6 +79,12 @@ export type DashboardData = {
   dismissed: Type[];
   products: Record<string, Product.Type>;
   shopifyStores: { id: string; name: string }[];
+  /**
+   * The store this dashboard is scoped to (when `listDashboard` is called with a
+   * `store`). Drives the "Optimize for Agents" action, which supports both
+   * Shopify and WooCommerce.
+   */
+  currentStore: { id: string; name: string; platform: string } | null;
   diagnostics: {
     lowWinRateCount: number;
     publishableCount: number;
@@ -165,176 +173,202 @@ const upsertRecord = withContext(
   "Optimization.upsertRecord",
 );
 
-export const listDashboard = withAuthentication(async (context) => {
-  const userId = context.session.user.id;
+export const listDashboard = withAuthentication(
+  async (context, { store }: { store?: string } = {}) => {
+    const userId = context.session.user.id;
 
-  const [products, stores, records] = await Promise.all([
-    Product.find(Environment.SERVER, {
-      where: eq(schema.product.userId, userId),
-    }),
-    Store.find(Environment.SERVER, {
-      where: eq(schema.store.userId, userId),
-    }),
-    find(Environment.SERVER, {
-      where: eq(schema.listingOptimization.userId, userId),
-      orderBy: [
-        { column: schema.listingOptimization.updatedAt, direction: "desc" },
-      ],
-    }),
-  ]);
+    const [products, stores, records] = await Promise.all([
+      Product.find(Environment.SERVER, {
+        where: store
+          ? and(
+              eq(schema.product.userId, userId),
+              eq(schema.product.storeId, store),
+            )
+          : eq(schema.product.userId, userId),
+      }),
+      Store.find(Environment.SERVER, {
+        where: eq(schema.store.userId, userId),
+      }),
+      find(Environment.SERVER, {
+        where: eq(schema.listingOptimization.userId, userId),
+        orderBy: [
+          { column: schema.listingOptimization.updatedAt, direction: "desc" },
+        ],
+      }),
+    ]);
 
-  if (!products.success) return products;
-  if (!stores.success) return stores;
-  if (!records.success) return records;
+    if (!products.success) return products;
+    if (!stores.success) return stores;
+    if (!records.success) return records;
 
-  const storeById = new Map(stores.data.map((store) => [store.id, store]));
-  const productById = Object.fromEntries(
-    products.data.map((product) => [product.id, product]),
-  );
-  const recordByProductId = new Map(
-    records.data.map((record) => [record.productId, record]),
-  );
-
-  const publishableProductIds = new Set(
-    products.data
-      .filter((product) => {
-        const store = storeById.get(product.storeId);
-        return store && PUBLISHABLE_PLATFORMS.has(store.platform);
-      })
-      .map((product) => product.id),
-  );
-
-  const fetched = await Simulation.getForProducts({
-    products: products.data.map((product) => product.id),
-  });
-  const simulations = fetched.success ? fetched.data : [];
-
-  const lowWinRateEntries = products.data
-    .map((product) => ({
-      product,
-      winRate: computeWinRate(product.id, simulations),
-    }))
-    .filter(
-      (
-        entry,
-      ): entry is {
-        product: (typeof products.data)[number];
-        winRate: number;
-      } => entry.winRate !== null && entry.winRate < WIN_RATE_THRESHOLD,
+    const storeById = new Map(stores.data.map((store) => [store.id, store]));
+    const productById = Object.fromEntries(
+      products.data.map((product) => [product.id, product]),
+    );
+    const recordByProductId = new Map(
+      records.data.map((record) => [record.productId, record]),
     );
 
-  const now = Date.now();
-  const pending: DashboardData["pending"] = [];
+    const publishableProductIds = new Set(
+      products.data
+        .filter((product) => {
+          const store = storeById.get(product.storeId);
+          return store && PUBLISHABLE_PLATFORMS.has(store.platform);
+        })
+        .map((product) => product.id),
+    );
 
-  for (const { product, winRate } of lowWinRateEntries) {
-    if (!publishableProductIds.has(product.id)) continue;
-
-    const record = recordByProductId.get(product.id);
-    if (record?.status === "dismissed") continue;
-
-    if (record?.status === "published" && record.publishedAt) {
-      if (now - record.publishedAt.getTime() < PUBLISH_COOLDOWN_MS) continue;
-    }
-
-    pending.push({
-      product,
-      winRate,
-      estimatedLift: estimateLift(winRate),
-      models: computeModels(product.id, simulations),
+    const fetched = await Simulation.getForProducts({
+      products: products.data.map((product) => product.id),
     });
-  }
+    const simulations = fetched.success ? fetched.data : [];
 
-  const insights: DiagnosticInsight[] = [];
+    const lowWinRateEntries = products.data
+      .map((product) => ({
+        product,
+        winRate: computeWinRate(product.id, simulations),
+      }))
+      .filter(
+        (
+          entry,
+        ): entry is {
+          product: (typeof products.data)[number];
+          winRate: number;
+        } => entry.winRate !== null && entry.winRate < WIN_RATE_THRESHOLD,
+      );
 
-  for (const { product, winRate } of lowWinRateEntries) {
-    const store = storeById.get(product.storeId);
-    const isPublishable = publishableProductIds.has(product.id);
-    const imageMissing = !product.images || product.images === "[]";
-    const titleShort = product.title.trim().length < 25;
-    const descriptionShort =
-      !product.description || product.description.trim().length < 140;
-    const structuredMissing = !product.structuredData;
+    const now = Date.now();
+    const pending: DashboardData["pending"] = [];
 
-    if (!isPublishable) {
-      insights.push({
-        productId: product.id,
+    for (const { product, winRate } of lowWinRateEntries) {
+      if (!publishableProductIds.has(product.id)) continue;
+
+      const record = recordByProductId.get(product.id);
+      if (record?.status === "dismissed") continue;
+
+      if (record?.status === "published" && record.publishedAt) {
+        if (now - record.publishedAt.getTime() < PUBLISH_COOLDOWN_MS) continue;
+      }
+
+      pending.push({
+        product,
         winRate,
-        category: "platform",
-        severity: "high",
-        message: `Store platform "${store?.platform ?? "unknown"}" does not support one-click publishing in Optimization Center.`,
-        recommendation:
-          "Use Shopify or WooCommerce for one-click publishing, or manually apply the recommended SEO/content fixes below.",
+        estimatedLift: estimateLift(winRate),
+        models: computeModels(product.id, simulations),
       });
     }
 
-    if (structuredMissing) {
-      insights.push({
-        productId: product.id,
-        winRate,
-        category: "structured_data",
-        severity: "high",
-        message: "Missing structured product data reduces AI agent confidence.",
-        recommendation:
-          "Generate schema markup from UCP & Structured Data and include key attributes (price, SKU, availability, brand).",
-      });
+    const insights: DiagnosticInsight[] = [];
+
+    for (const { product, winRate } of lowWinRateEntries) {
+      const store = storeById.get(product.storeId);
+      const isPublishable = publishableProductIds.has(product.id);
+      const imageMissing = !product.images || product.images === "[]";
+      const titleShort = product.title.trim().length < 25;
+      const descriptionShort =
+        !product.description || product.description.trim().length < 140;
+      const structuredMissing = !product.structuredData;
+
+      if (!isPublishable) {
+        insights.push({
+          productId: product.id,
+          winRate,
+          category: "platform",
+          severity: "high",
+          message: `Store platform "${store?.platform ?? "unknown"}" does not support one-click publishing in Optimization Center.`,
+          recommendation:
+            "Use Shopify or WooCommerce for one-click publishing, or manually apply the recommended SEO/content fixes below.",
+        });
+      }
+
+      if (structuredMissing) {
+        insights.push({
+          productId: product.id,
+          winRate,
+          category: "structured_data",
+          severity: "high",
+          message:
+            "Missing structured product data reduces AI agent confidence.",
+          recommendation:
+            "Generate schema markup from UCP & Structured Data and include key attributes (price, SKU, availability, brand).",
+        });
+      }
+
+      if (descriptionShort || titleShort) {
+        insights.push({
+          productId: product.id,
+          winRate,
+          category: "content",
+          severity: descriptionShort ? "high" : "medium",
+          message:
+            "Listing copy is too thin for strong AI shopping comparisons.",
+          recommendation:
+            "Expand description with concrete specs, use-case details, and trust signals (warranty, returns, certifications).",
+        });
+      }
+
+      if (imageMissing) {
+        insights.push({
+          productId: product.id,
+          winRate,
+          category: "seo",
+          severity: "medium",
+          message: "No product imagery available in synced listing data.",
+          recommendation:
+            "Add high-quality product images and ensure they are present in your catalog sync/feed.",
+        });
+      }
     }
 
-    if (descriptionShort || titleShort) {
-      insights.push({
-        productId: product.id,
-        winRate,
-        category: "content",
-        severity: descriptionShort ? "high" : "medium",
-        message: "Listing copy is too thin for strong AI shopping comparisons.",
-        recommendation:
-          "Expand description with concrete specs, use-case details, and trust signals (warranty, returns, certifications).",
-      });
-    }
+    // Records are fetched user-wide, but this dashboard is scoped to `store`
+    // (so `productById` only holds the current store's products). Keep only
+    // records whose product belongs to this store; otherwise the client can't
+    // resolve a title and renders "Unknown product".
+    const published = records.data.filter(
+      (record) =>
+        record.status === "published" &&
+        productById[record.productId] !== undefined,
+    );
+    const dismissed = records.data.filter(
+      (record) =>
+        record.status === "dismissed" &&
+        productById[record.productId] !== undefined,
+    );
 
-    if (imageMissing) {
-      insights.push({
-        productId: product.id,
-        winRate,
-        category: "seo",
-        severity: "medium",
-        message: "No product imagery available in synced listing data.",
-        recommendation:
-          "Add high-quality product images and ensure they are present in your catalog sync/feed.",
-      });
-    }
-  }
+    const publishableLowWinRateCount = lowWinRateEntries.filter((entry) =>
+      publishableProductIds.has(entry.product.id),
+    ).length;
 
-  const published = records.data.filter(
-    (record) => record.status === "published",
-  );
-  const dismissed = records.data.filter(
-    (record) => record.status === "dismissed",
-  );
+    const currentStore = (() => {
+      if (!store) return null;
+      const match = storeById.get(store);
+      if (!match) return null;
+      return { id: match.id, name: match.name, platform: match.platform };
+    })();
 
-  const publishableLowWinRateCount = lowWinRateEntries.filter((entry) =>
-    publishableProductIds.has(entry.product.id),
-  ).length;
-
-  return {
-    success: true,
-    data: {
-      pending,
-      published,
-      dismissed,
-      products: productById,
-      shopifyStores: stores.data
-        .filter((store) => store.platform === "shopify")
-        .map((store) => ({ id: store.id, name: store.name })),
-      diagnostics: {
-        lowWinRateCount: lowWinRateEntries.length,
-        publishableCount: publishableLowWinRateCount,
-        nonPublishableCount:
-          lowWinRateEntries.length - publishableLowWinRateCount,
-        insights: insights.slice(0, 24),
-      },
-    } satisfies DashboardData,
-  };
-}, "Optimization.listDashboard");
+    return {
+      success: true,
+      data: {
+        pending,
+        published,
+        dismissed,
+        products: productById,
+        shopifyStores: stores.data
+          .filter((store) => store.platform === "shopify")
+          .map((store) => ({ id: store.id, name: store.name })),
+        currentStore,
+        diagnostics: {
+          lowWinRateCount: lowWinRateEntries.length,
+          publishableCount: publishableLowWinRateCount,
+          nonPublishableCount:
+            lowWinRateEntries.length - publishableLowWinRateCount,
+          insights: insights.slice(0, 24),
+        },
+      } satisfies DashboardData,
+    };
+  },
+  "Optimization.listDashboard",
+);
 
 export const approveProductListing = withAuthentication(
   async (context, { product: id }: { product: string }) => {
@@ -402,9 +436,9 @@ export const approveProductListing = withAuthentication(
 
     if (!upserted.success) return upserted;
 
-    revalidatePath("/dashboard/optimize");
-    revalidatePath("/dashboard/products");
-    revalidatePath(`/dashboard/products/${id}`);
+    revalidatePath("/dashboard/[store]/optimize", "page");
+    revalidatePath("/dashboard/[store]/products", "page");
+    revalidatePath("/dashboard/[store]/products/[id]", "page");
 
     return { success: true, data: { product: id } };
   },
@@ -440,7 +474,7 @@ export const dismissSuggestion = withAuthentication(
 
     if (!upserted.success) return upserted;
 
-    revalidatePath("/dashboard/optimize");
+    revalidatePath("/dashboard/[store]/optimize", "page");
     return { success: true, data: { product: id } };
   },
   "Optimization.dismissSuggestion",
@@ -459,7 +493,7 @@ export const reconsiderSuggestion = withAuthentication(
     const destroyed = await destroy(Environment.SERVER, record.data.id);
     if (!destroyed.success) return destroyed;
 
-    revalidatePath("/dashboard/optimize");
+    revalidatePath("/dashboard/[store]/optimize", "page");
     return { success: true, data: { product: id } };
   },
   "Optimization.reconsiderSuggestion",
@@ -498,10 +532,82 @@ SKU: ${product.data.sku ?? "(unknown)"}`,
 
     if (!updated.success) return updated;
 
-    revalidatePath(`/dashboard/products/${id}`);
+    revalidatePath("/dashboard/[store]/products/[id]", "page");
     return { success: true, data: { structuredData: generated.data.json_ld } };
   },
   "Optimization.generateStructuredData",
+);
+
+/**
+ * Publishes a product's schema.org JSON-LD to the connected store so AI agents
+ * reading the storefront can see it. Generates the structured data first if the
+ * product doesn't have it yet, then routes to the platform integration
+ * (Shopify metafields or WooCommerce product meta).
+ */
+export const publishProductStructuredData = withAuthentication(
+  async (context, { product: id }: { product: string }) => {
+    const user = context.session.user.id;
+
+    const productResult = await Product.get(Environment.SERVER, id);
+    if (!productResult.success) return productResult;
+    if (!productResult.data)
+      return { success: false as const, error: new Error("Product not found") };
+
+    const product = productResult.data;
+    if (product.userId !== user)
+      return { success: false as const, error: new Error("Not authorized") };
+
+    const storeResult = await Store.get(Environment.SERVER, product.storeId);
+    if (!storeResult.success) return storeResult;
+    if (!storeResult.data)
+      return { success: false as const, error: new Error("Store not found") };
+
+    const store = storeResult.data;
+
+    const structuredJson = await (async () => {
+      if (product.structuredData) return product.structuredData;
+      const generated = await Ucp.generateProductStructuredData({
+        product: id,
+      });
+      if (!generated.success) return null;
+      return generated.data.json;
+    })();
+
+    if (!structuredJson)
+      return {
+        success: false as const,
+        error: new Error("Could not generate structured data"),
+      };
+
+    const result = await (async () => {
+      switch (store.platform) {
+        case "shopify":
+        case "shopify-public":
+          return Shopify.pushProductUcpMetafields({
+            product: id,
+            structuredJson,
+          });
+        case "woocommerce":
+          return WooCommerce.pushProductStructuredData({
+            product: id,
+            structuredJson,
+          });
+        default:
+          return {
+            success: false as const,
+            error: new Error(
+              `Structured-data publishing is not supported for platform: ${store.platform}`,
+            ),
+          };
+      }
+    })();
+
+    if (!result.success) return result;
+
+    revalidatePath("/dashboard/[store]/products/[id]", "page");
+    return { success: true as const, data: { structuredData: structuredJson } };
+  },
+  "Optimization.publishProductStructuredData",
 );
 
 export const approveAllPending = withAuthentication(async (context) => {
@@ -568,8 +674,8 @@ export const approveAllPending = withAuthentication(async (context) => {
     if (!result.success) errors.push(`${title}: ${result.error.message}`);
   }
 
-  revalidatePath("/dashboard/optimize");
-  revalidatePath("/dashboard/products");
+  revalidatePath("/dashboard/[store]/optimize", "page");
+  revalidatePath("/dashboard/[store]/products", "page");
 
   if (errors.length > 0)
     return {
@@ -593,27 +699,37 @@ export const optimizeStoreForAgents = withAuthentication(
       return { success: false as const, error: new Error("Store not found") };
     if (store.data.userId !== userId)
       return { success: false as const, error: new Error("Not authorized") };
-    if (
-      store.data.platform !== "shopify-public" &&
-      store.data.platform !== "shopify"
-    )
+    const isShopify =
+      store.data.platform === "shopify-public" ||
+      store.data.platform === "shopify";
+    const isWooCommerce = store.data.platform === "woocommerce";
+
+    if (!isShopify && !isWooCommerce)
       return {
         success: false as const,
         error: new Error(
-          "Agent optimization is only supported for connected Shopify stores",
+          "Agent optimization is only supported for connected Shopify and WooCommerce stores",
         ),
       };
 
     const errors: string[] = [];
 
-    const profile = await Ucp.publishProfileToShopify({ store: storeId });
-    if (!profile.success) {
+    // Shop-level UCP profile: Shopify gets it written to shop metafields;
+    // WooCommerce serves it through Ecentic's hosted `/.well-known/ucp` bridge,
+    // so there's nothing to push to the store here.
+    const profile = isShopify
+      ? await Ucp.publishProfileToShopify({ store: storeId })
+      : null;
+    if (profile && !profile.success) {
       errors.push(`UCP profile: ${profile.error.message}`);
     }
 
-    const products = await Ucp.publishProductsToShopify({ store: storeId });
+    // Product structured data (schema.org/Product JSON-LD).
+    const products = isShopify
+      ? await Ucp.publishProductsToShopify({ store: storeId })
+      : await Ucp.publishProductsToWooCommerce({ store: storeId });
     if (!products.success) {
-      errors.push(`Product metafields: ${products.error.message}`);
+      errors.push(`Product structured data: ${products.error.message}`);
     }
 
     const listings = await approveAllPending();
@@ -621,13 +737,13 @@ export const optimizeStoreForAgents = withAuthentication(
       errors.push(`Listing rewrites: ${listings.error.message}`);
     }
 
-    revalidatePath("/dashboard/optimize");
-    revalidatePath("/dashboard/ucp");
+    revalidatePath("/dashboard/[store]/optimize", "page");
+    revalidatePath("/dashboard/[store]/ucp", "page");
 
     return {
       success: true as const,
       data: {
-        profileWritten: profile.success ? profile.data.written : 0,
+        profileWritten: profile?.success ? profile.data.written : 0,
         productsPushed: products.success ? products.data.pushed : 0,
         productsTotal: products.success ? products.data.total : 0,
         listingsRewritten: listings.success ? listings.data.count : 0,

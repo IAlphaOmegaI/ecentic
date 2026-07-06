@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link, { useLinkStatus } from "next/link";
 import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
+import { OneClickConnect } from "./_components/one-click-connect";
 import { WooCommerceForm } from "./_components/woocommerce-form";
 
 export default () => (
@@ -29,9 +30,30 @@ export default () => (
             Connect WooCommerce
           </h2>
           <p className="mt-1 font-light text-2xl text-foreground-dimmed">
-            API key connection — store URL + consumer key.
+            One-click via the Ecentic plugin, or manually with API keys.
           </p>
         </div>
+      </div>
+    </Motion.Item>
+
+    <Motion.Item className="w-full border-accent-foreground border-b px-8">
+      <div className="relative flex flex-col gap-3 border-accent-foreground border-x p-6">
+        <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+        <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+        <h3 className="font-medium text-foreground text-xl">
+          One-click connect{" "}
+          <span className="font-light text-foreground-dimmed text-sm">
+            (recommended)
+          </span>
+        </h3>
+        <p className="font-light text-foreground-dimmed">
+          Enter your store URL and approve the connection from your WordPress
+          admin — no API keys to copy. If the Ecentic UCP plugin isn&apos;t
+          installed yet, we&apos;ll take you to your plugin screen first;
+          activating it resumes the connection automatically. This also enables
+          hosted UCP, making your store transactable by AI shopping agents.
+        </p>
+        <OneClickConnect />
       </div>
     </Motion.Item>
 
@@ -40,7 +62,7 @@ export default () => (
         <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
         <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <h3 className="font-medium text-foreground text-xl">
-          Where to find your API keys
+          Or connect manually — where to find your API keys
         </h3>
         <ol className="flex list-inside list-decimal flex-col gap-3 font-light text-foreground-dimmed">
           <li>

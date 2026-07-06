@@ -47,7 +47,8 @@
         "STRIPE_SUB_COMPETE",
         "STRIPE_SUB_DOMINATE",
         "STRIPE_DEAL_COUPON_YC",
-        "STRIPE_DEAL_COUPON_TECHSTARS"
+        "STRIPE_DEAL_COUPON_TECHSTARS",
+        "UCP_SIGNING_PRIVATE_KEY"
       ]
     },
     "typecheck": {

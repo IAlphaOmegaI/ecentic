@@ -15,89 +15,75 @@ import { cn } from "@zenncore/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type * as Optimizations from "@/server/app/optimization";
-import type * as Products from "@/server/app/product";
 
+// Per-store items — `segment` is appended to `/dashboard/${store}` at render.
 const items = [
-  {
-    icon: SquareChartIcon,
-    label: "Overview",
-    href: "/dashboard",
-    exact: true,
-  },
+  { icon: SquareChartIcon, label: "Overview", segment: "", exact: true },
   {
     icon: ShoppingCartIcon,
     label: "Products",
-    href: "/dashboard/products",
+    segment: "/products",
     exact: false,
   },
   {
     icon: ChartCircularIcon,
     label: "Competitors",
-    href: "/dashboard/competitors",
+    segment: "/competitors",
     exact: false,
   },
   {
     icon: RadarIcon,
     label: "Simulations",
-    href: "/dashboard/simulations",
+    segment: "/simulations",
     exact: false,
   },
-  {
-    icon: GaugeIcon,
-    label: "Optimize",
-    href: "/dashboard/optimize",
-    exact: false,
-  },
+  { icon: GaugeIcon, label: "Optimize", segment: "/optimize", exact: false },
   {
     icon: CodeIcon,
     label: "UCP & Data",
-    href: "/dashboard/ucp",
+    segment: "/ucp",
     exact: false,
     badge: "68%",
   },
   {
     icon: CircleBoltIcon,
     label: "UCP Playground",
-    href: "/dashboard/ucp-playground",
+    segment: "/ucp-playground",
     exact: false,
   },
   {
     icon: BarChartIcon,
     label: "UCP Comparison",
-    href: "/dashboard/ucp-comparison",
-    exact: false,
-  },
-  // {
-  //   icon: DownloadIcon,
-  //   label: "Reports",
-  //   href: "/dashboard/reports",
-  //   exact: false,
-  // },
-  {
-    icon: GearIcon,
-    label: "Settings",
-    href: "/dashboard/settings",
+    segment: "/ucp-comparison",
     exact: false,
   },
 ] as const;
 
 export namespace SidebarNav {
   export type Props = {
-    products: Products.Type[];
+    store: string;
+    productCount: number;
     optimizations: Optimizations.Type[];
   };
 }
 
-export const SidebarNav = ({ products, optimizations }: SidebarNav.Props) => {
+export const SidebarNav = ({
+  store,
+  productCount,
+  optimizations,
+}: SidebarNav.Props) => {
   const pathname = usePathname();
+  const base = `/dashboard/${store}`;
 
   const isActive = (href: string, exact: boolean) =>
-    exact ? pathname === href : pathname.startsWith(href);
+    exact
+      ? pathname === href
+      : pathname === href || pathname.startsWith(`${href}/`);
 
   const badgeFor = (item: (typeof items)[number]): string | undefined => {
     switch (true) {
       case item.label === "Products":
-        return `${products.length}`;
+        return `${productCount}`;
       case item.label === "Optimize":
         return `${optimizations.length}`;
       case "badge" in item && item.badge !== undefined:
@@ -110,12 +96,13 @@ export const SidebarNav = ({ products, optimizations }: SidebarNav.Props) => {
   return (
     <nav className="relative flex flex-1 flex-col">
       {items.map((item) => {
-        const active = isActive(item.href, item.exact);
+        const href = `${base}${item.segment}`;
+        const active = isActive(href, item.exact);
         const badge = badgeFor(item);
         return (
           <Link
-            key={item.href}
-            href={item.href}
+            key={item.label}
+            href={href}
             className={cn(
               "group relative flex items-center gap-2.5 overflow-hidden border-l-[3px] px-5 py-2.5 text-sm",
               active
@@ -152,6 +139,21 @@ export const SidebarNav = ({ products, optimizations }: SidebarNav.Props) => {
           </Link>
         );
       })}
+
+      <div className="mt-auto border-accent-foreground border-t">
+        <Link
+          href="/dashboard/settings"
+          className={cn(
+            "group relative flex items-center gap-2.5 overflow-hidden border-l-[3px] px-5 py-2.5 text-sm",
+            pathname.startsWith("/dashboard/settings")
+              ? "border-primary bg-primary/5 font-semibold text-primary"
+              : "border-transparent font-normal text-foreground-dimmed hover:bg-background hover:text-foreground",
+          )}
+        >
+          <GearIcon className="size-4 shrink-0" />
+          <span className="flex-1">Settings</span>
+        </Link>
+      </div>
     </nav>
   );
 };

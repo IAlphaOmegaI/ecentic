@@ -134,6 +134,12 @@ export const store_account = pgTable("store_account", {
   // API key/secret credentials (e.g. WooCommerce)
   consumerKey: text("consumerKey"),
   consumerSecret: text("consumerSecret"),
+  /**
+   * Shared secret minted at connect time for the hosted UCP bridge. The store
+   * plugin authenticates its calls to Ecentic (order events) with it, and
+   * Ecentic signs bridge calls back to the store with it.
+   */
+  bridgeSecret: text("bridgeSecret"),
   // General Store Account fields
   createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
@@ -168,6 +174,10 @@ export const product = pgTable(
   (table) => [
     index("product_user_idx").on(table.userId),
     index("product_store_idx").on(table.storeId),
+    uniqueIndex("product_store_external_unique").on(
+      table.storeId,
+      table.externalId,
+    ),
   ],
 );
 
@@ -420,6 +430,40 @@ export const blogPost = pgTable(
 );
 
 /**
+ * Orders created through the hosted UCP checkout on behalf of a store. Maps a
+ * platform order (e.g. a WooCommerce order id) back to the UCP checkout
+ * session that produced it, plus the agent platform's webhook target captured
+ * at checkout time so order lifecycle events can be fanned out long after the
+ * checkout session itself has expired.
+ */
+export const ucpOrder = pgTable(
+  "ucp_order",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    /** Order id on the source platform (WooCommerce order id). */
+    externalOrderId: text("externalOrderId").notNull(),
+    /** UCP checkout session id (`chk_...`) that produced the order. */
+    checkoutId: text("checkoutId").notNull(),
+    /** Agent platform webhook target negotiated at checkout time. */
+    webhookUrl: text("webhookUrl"),
+    /** Agent platform profile URL from the UCP-Agent header at checkout. */
+    agentProfileUrl: text("agentProfileUrl"),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("ucp_order_store_external_unique").on(
+      table.storeId,
+      table.externalOrderId,
+    ),
+    index("ucp_order_checkout_idx").on(table.checkoutId),
+  ],
+);
+
+/**
  * Partner deal redemptions (e.g. the Y Combinator founder deal).
  * Public, unauthenticated capture — submitted from /yc and saved via the
  * /api/webhook/deals/redemptions webhook. No user FK: redeemers may not have
@@ -478,6 +522,7 @@ export const tables = {
   agentApiKey,
   blogPost,
   dealRedemption,
+  ucpOrder,
 };
 
 /** Relations */
@@ -515,7 +560,7 @@ export const relations = defineRelations(tables, (r) => ({
     }),
     products: r.many.product(),
     storeAccount: r.one.store_account({
-      from: r.store.storeId,
+      from: r.store.id,
       to: r.store_account.storeId,
     }),
     agentVisits: r.many.agentVisit(),
@@ -614,4 +659,10 @@ export const relations = defineRelations(tables, (r) => ({
   },
   blogPost: {},
   dealRedemption: {},
+  ucpOrder: {
+    store: r.one.store({
+      from: r.ucpOrder.storeId,
+      to: r.store.id,
+    }),
+  },
 }));

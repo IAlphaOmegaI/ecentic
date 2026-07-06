@@ -5,11 +5,15 @@ import { Environment } from "@/server/utils/environment";
 import { AgentVisitsChart } from "./agent-visits-chart";
 import { SectionKicker } from "./grid";
 
-export const AgentVisitsPanel = async () => {
+export const AgentVisitsPanel = async ({ store }: { store: string }) => {
   await connection();
   const [summary, timeSeries] = await Promise.all([
-    unwrapResult(Tracking.getAgentTrafficSummary(Environment.SERVER)),
-    unwrapResult(Tracking.getAgentTrafficTimeSeries(Environment.SERVER)),
+    unwrapResult(
+      Tracking.getAgentTrafficSummary(Environment.SERVER, { store }),
+    ),
+    unwrapResult(
+      Tracking.getAgentTrafficTimeSeries(Environment.SERVER, { store }),
+    ),
   ]);
   const max = Math.max(1, ...summary.byAgentType.map((entry) => entry.count));
 

@@ -1,10 +1,12 @@
 "use server";
 
-import { eq } from "drizzle-orm";
-import { schema } from "../database";
+import { and, eq, gte, inArray, or, sql } from "drizzle-orm";
+import { db, schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
+import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
-import type { Document } from "../utils/repository";
+import { NotFoundError } from "../utils/error";
+import type { Document, ExecuteOptions } from "../utils/repository";
 import { repository } from "../utils/repository";
 import * as Feed from "./integration/feed";
 import * as Shopify from "./integration/shopify";
@@ -14,13 +16,192 @@ import * as Product from "./product";
 export const { get, paginate, create, update, destroy, exists, count, find } =
   repository(schema.store);
 
+const products = repository(schema.product);
+const simulations = repository(schema.simulation);
+
 export type Type = Document<typeof schema.store>;
 
 export const getForCurrentUser = withAuthentication(async (context) => {
   return find(Environment.SERVER, {
     where: eq(schema.store.userId, context.session.user.id),
+    orderBy: [{ column: schema.store.createdAt, direction: "desc" }],
   });
 }, "Store.getForCurrentUser");
+
+/**
+ * Loads a single store and asserts it belongs to the current user. Guards the
+ * per-store dashboard routes (`/dashboard/[store]/*`) so a user can't view
+ * another account's store by guessing its id.
+ */
+export const resolveForUser = withAuthentication(
+  async (context, { store }: { store: string }) => {
+    const result = await get(Environment.SERVER, store);
+    if (!result.success) return result;
+
+    if (!result.data || result.data.userId !== context.session.user.id)
+      return { success: false as const, error: new NotFoundError("Store") };
+
+    return { success: true as const, data: result.data };
+  },
+  "Store.resolveForUser",
+);
+
+/**
+ * Platforms that represent a persistent, externally-identifiable storefront —
+ * the ones a duplicate connection can be detected for. `csv` is excluded: its
+ * `domain` is just the uploaded filename, so two unrelated uploads could share
+ * one and must not be treated as the same store.
+ */
+const CONNECTABLE_PLATFORMS = [
+  "shopify",
+  "shopify-public",
+  "woocommerce",
+  "feed",
+] as const;
+
+export type Reconciliation =
+  | { kind: "new" }
+  | { kind: "owned"; store: Type }
+  | { kind: "claimed" };
+
+/**
+ * Decides how to handle a connect attempt for a storefront that may already
+ * exist in Ecentic. A store is identified by its normalized `domain` and, for
+ * OAuth platforms, its external `storeId`.
+ *
+ * - `new`     → nobody has it; create it.
+ * - `owned`   → the same user already connected it; refresh that row in place.
+ * - `claimed` → another account already connected it; the caller must reject.
+ */
+export const reconcileConnection = withContext(
+  async (
+    _,
+    {
+      userId,
+      domain,
+      storeId,
+    }: { userId: string; domain: string; storeId?: string | null },
+    options?: ExecuteOptions,
+  ) => {
+    const identity =
+      storeId != null && storeId !== ""
+        ? or(eq(schema.store.domain, domain), eq(schema.store.storeId, storeId))
+        : eq(schema.store.domain, domain);
+
+    const result = await find(
+      Environment.SERVER,
+      {
+        where: and(
+          identity,
+          inArray(schema.store.platform, [...CONNECTABLE_PLATFORMS]),
+        ),
+      },
+      options,
+    );
+
+    if (!result.success) return result;
+
+    const owned = result.data.find((store) => store.userId === userId);
+    if (owned)
+      return {
+        success: true as const,
+        data: { kind: "owned" as const, store: owned },
+      };
+
+    if (result.data.length > 0)
+      return { success: true as const, data: { kind: "claimed" as const } };
+
+    return { success: true as const, data: { kind: "new" as const } };
+  },
+  "Store.reconcileConnection",
+);
+
+export type Overview = Type & {
+  productCount: number;
+  simulations: number;
+  winRate: number;
+  agentVisits: number;
+};
+
+/**
+ * All of the current user's stores, each enriched with the headline metrics the
+ * `/dashboard` hub cards show: product count, overall win rate (derived from
+ * simulations on the store's products), simulation volume, and 30-day agent
+ * visits. Computed in a few bulk queries rather than one per store.
+ */
+export const overviewForCurrentUser = withAuthentication(async (context) => {
+  const userId = context.session.user.id;
+
+  const storeRows = await find(Environment.SERVER, {
+    where: eq(schema.store.userId, userId),
+    orderBy: [{ column: schema.store.createdAt, direction: "desc" }],
+  });
+  if (!storeRows.success) return storeRows;
+  if (storeRows.data.length === 0)
+    return { success: true as const, data: [] as Overview[] };
+
+  const productRows = await products.find(Environment.SERVER, {
+    where: eq(schema.product.userId, userId),
+  });
+  if (!productRows.success) return productRows;
+
+  const productIds = productRows.data.map((product) => product.id);
+
+  const simulationRows = productIds.length
+    ? await simulations.find(Environment.SERVER, {
+        where: inArray(schema.simulation.productId, productIds),
+      })
+    : { success: true as const, data: [] };
+  if (!simulationRows.success) return simulationRows;
+
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+  const visits = await db
+    .select({
+      storeId: schema.agentVisit.storeId,
+      count: sql<number>`count(*)::int`,
+    })
+    .from(schema.agentVisit)
+    .where(
+      and(
+        eq(schema.agentVisit.userId, userId),
+        gte(schema.agentVisit.createdAt, thirtyDaysAgo),
+      ),
+    )
+    .groupBy(schema.agentVisit.storeId);
+
+  const visitsByStore = new Map(visits.map((row) => [row.storeId, row.count]));
+
+  const data = storeRows.data.map((store) => {
+    const storeProductIds = new Set(
+      productRows.data
+        .filter((product) => product.storeId === store.id)
+        .map((product) => product.id),
+    );
+
+    const storeSimulations = simulationRows.data.filter((simulation) =>
+      storeProductIds.has(simulation.productId),
+    );
+
+    const wins = storeSimulations.filter(
+      (simulation) => simulation.winner === "product",
+    ).length;
+
+    return {
+      ...store,
+      productCount: storeProductIds.size,
+      simulations: storeSimulations.length,
+      winRate:
+        storeSimulations.length > 0
+          ? Math.round((wins / storeSimulations.length) * 100)
+          : 0,
+      agentVisits: visitsByStore.get(store.id) ?? 0,
+    } satisfies Overview;
+  });
+
+  return { success: true as const, data };
+}, "Store.overviewForCurrentUser");
 
 export const syncProducts = withAuthentication(
   async (_, { store: id }: { store: string }) => {

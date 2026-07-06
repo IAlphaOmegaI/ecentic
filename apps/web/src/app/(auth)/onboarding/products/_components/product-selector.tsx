@@ -105,7 +105,7 @@ export const ProductSelector = ({
   products,
 }: ProductSelector.Props) => {
   const router = useRouter();
-  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [selected, setSelected] = useState(new Set<string>());
 
   const limit = Math.min(10, products.length);
 

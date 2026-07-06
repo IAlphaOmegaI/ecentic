@@ -14,6 +14,8 @@ import * as Simulation from "./simulation";
 export const { get, paginate, create, update, destroy, exists, count, find } =
   repository(schema.scan);
 
+const products = repository(schema.product);
+
 export type Type = Document<typeof schema.scan>;
 
 export const getForCurrentUser = withAuthentication(async (context) => {
@@ -24,12 +26,72 @@ export const getForCurrentUser = withAuthentication(async (context) => {
 
 export const getLatest = dedupe(
   withAuthentication(
-    async (context, { limit }: { limit?: number } = { limit: 10 }) => {
-      return find(Environment.SERVER, {
-        where: eq(schema.scan.userId, context.session.user.id),
+    async (context, options: { limit?: number; store?: string } = {}) => {
+      const limit = options.limit ?? 10;
+      const { store } = options;
+
+      if (!store) {
+        return find(Environment.SERVER, {
+          where: eq(schema.scan.userId, context.session.user.id),
+          orderBy: [{ column: schema.scan.createdAt, direction: "desc" }],
+          limit,
+        });
+      }
+
+      // Scans have no storeId — they're account-wide runs. Scope to a store by
+      // keeping only scans that touched that store's products, and recompute
+      // wins/losses from just those products' simulations.
+      const storeProducts = await products.find(Environment.SERVER, {
+        where: and(
+          eq(schema.product.userId, context.session.user.id),
+          eq(schema.product.storeId, store),
+        ),
+      });
+      if (!storeProducts.success) return storeProducts;
+
+      const productIds = storeProducts.data.map((product) => product.id);
+      if (productIds.length === 0)
+        return { success: true as const, data: [] as Type[] };
+
+      const simulations = await Simulation.getForProducts(Environment.SERVER, {
+        products: productIds,
+      });
+      if (!simulations.success) return simulations;
+
+      const byScan = new Map<string, Simulation.Type[]>();
+      for (const simulation of simulations.data) {
+        const list = byScan.get(simulation.scanId) ?? [];
+        list.push(simulation);
+        byScan.set(simulation.scanId, list);
+      }
+
+      const scanIds = [...byScan.keys()];
+      if (scanIds.length === 0)
+        return { success: true as const, data: [] as Type[] };
+
+      const scans = await find(Environment.SERVER, {
+        where: inArray(schema.scan.id, scanIds),
         orderBy: [{ column: schema.scan.createdAt, direction: "desc" }],
         limit,
       });
+      if (!scans.success) return scans;
+
+      const rescoped = scans.data.map((scan) => {
+        const scanSimulations = byScan.get(scan.id) ?? [];
+        const wins = scanSimulations.filter(
+          (simulation) => simulation.winner === "product",
+        ).length;
+
+        return {
+          ...scan,
+          wins,
+          losses: scanSimulations.length - wins,
+          completedSimulations: scanSimulations.length,
+          totalSimulations: scanSimulations.length,
+        };
+      });
+
+      return { success: true as const, data: rescoped };
     },
     "Scan.getLatest",
   ),
