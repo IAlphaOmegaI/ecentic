@@ -49,11 +49,11 @@ const partners: Partner[] = [
 
 export const PartnersStrip = () => (
   <section
-    aria-label="Backed by and selected by"
+    aria-label="Backed by and built for"
     className="border-accent-foreground border-y py-10"
   >
     <p className="text-center font-light text-primary text-xl">
-      Backed by and selected by
+      Backed by and built for
     </p>
     <ul className="mt-8 flex flex-wrap items-center justify-center gap-10 md:gap-16">
       {partners.map((partner) => (

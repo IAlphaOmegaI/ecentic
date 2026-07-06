@@ -11,30 +11,29 @@ const features = [
   {
     icon: BarChartIcon,
     color: "text-blue-500",
-    title: "Agent Win Rate Dashboard",
+    title: "Your AI score",
     description:
-      "See how often each product in your catalog is selected by AI agents versus competitors, broken down by model across GPT-4, Claude, Gemini, and Perplexity.",
+      "See how often ChatGPT, Claude, Gemini, and Perplexity pick your products.",
   },
   {
     icon: ShieldCheckIcon,
     color: "text-green-500",
-    title: "Multi-Model Engine",
+    title: "Beat your competitors",
     description:
-      "Every product is tested across multiple AI agent models, each mapped to their unique selection logic and ranking biases.",
+      "Find out who agents recommend instead of you, and what they have that you don't.",
   },
   {
     icon: HammerIcon,
     color: "text-red-500",
-    title: "Competitor Battlecards",
+    title: "One-click fixes",
     description:
-      "Know exactly which competitor products are beating yours and on which specific attributes AI agents are choosing them over you.",
+      "Ecentic rewrites your titles, descriptions, and product data so agents choose you.",
   },
   {
     icon: CodeIcon,
     color: "text-purple-500",
-    title: "UCP Readiness & Structured Data",
-    description:
-      "Generate your structured merchant profile and extract missing attributes from images and descriptions. Fill the gaps your competitors have not filled yet.",
+    title: "Track the payoff",
+    description: "Watch AI-agent visits and revenue grow week over week.",
   },
 ] as const;
 
@@ -50,7 +49,7 @@ export const Features = () => (
       <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
       <div className="relative p-6 md:p-12">
         <h1 className="font-body text-3xl text-foreground md:text-5xl">
-          Infrastructure for the agent economy.
+          Everything you need to win the AI shopper.
         </h1>
       </div>
       <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2">

@@ -463,7 +463,9 @@ export const handleOAuthCallback = withContext(
           {
             storeId: creation.data.id,
             accessToken,
-            accessTokenExpiresAt: new Date(Date.now() + t.data.expires_in * 1000),
+            accessTokenExpiresAt: new Date(
+              Date.now() + t.data.expires_in * 1000,
+            ),
             refreshToken: t.data.refresh_token,
             refreshTokenExpiresAt: new Date(
               Date.now() + t.data.refresh_token_expires_in * 1000,

@@ -82,7 +82,9 @@ const Utils = {
     for (const [key, value] of target.searchParams) params[key] = value;
 
     const parameterString = Object.entries(params)
-      .map(([key, value]) => [percentEncode(key), percentEncode(value)] as const)
+      .map(
+        ([key, value]) => [percentEncode(key), percentEncode(value)] as const,
+      )
       .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
       .map(([key, value]) => `${key}=${value}`)
       .join("&");

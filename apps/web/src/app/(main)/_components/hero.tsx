@@ -1,41 +1,42 @@
-import { ArrowRightIcon } from "@zenncore/icons";
+import { TrendUpIcon } from "@zenncore/icons";
 import Image from "next/image";
-import Link from "next/link";
-import Background from "@/public/images/background.webp";
+import Dashboard from "@/public/screenshots/dashboard.png";
+import { InstallCta } from "./install-cta";
 
 export const Hero = () => (
-  <div className="relative -left-[calc(50vw-50%)] h-screen w-screen p-3">
-    <section className="relative flex size-full items-center justify-center overflow-hidden rounded-xl bg-primary">
+  <section className="flex flex-col items-center gap-6 px-4 py-20 text-center md:py-28">
+    <p className="font-body text-foreground-dimmed text-sm uppercase tracking-wide">
+      Built for Shopify &amp; WooCommerce
+    </p>
+
+    <h1 className="max-w-3xl font-body font-semibold text-4xl text-foreground-rich md:text-6xl">
+      Be the product AI recommends.
+    </h1>
+
+    <p className="max-w-2xl font-body text-foreground-dimmed text-lg">
+      Shoppers now ask ChatGPT, Gemini, and Perplexity what to buy. Ecentic
+      makes sure the answer is your product — and sends those buyers straight to
+      your store.
+    </p>
+
+    <p className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 font-medium text-primary text-sm">
+      <TrendUpIcon className="size-4" />
+      DUA Flavours grew AI-agent visits +15% and sales +12% — in 30 days.
+    </p>
+
+    <InstallCta className="justify-center" />
+
+    <p className="font-body text-foreground-dimmed text-sm">
+      2-minute setup · No credit card · See your free score first
+    </p>
+
+    <div className="mt-6 w-full max-w-4xl overflow-hidden rounded-2xl border border-accent-foreground">
       <Image
-        src={Background}
-        alt="Hero"
-        className="size-full object-cover"
+        src={Dashboard}
+        alt="Ecentic dashboard showing AI win rate"
         priority
-        sizes="calc(100vw - 24px)"
+        className="w-full"
       />
-      <div className="absolute bottom-6 left-6 z-20 flex max-w-[1200px] flex-col gap-4 text-white md:bottom-12 md:left-12">
-        <h1 className="font-semibold text-4xl sm:text-5xl md:text-[76px]">
-          40% of shoppers use AI agents to buy.{" "}
-          <span className="underline">Be what they find.</span>
-        </h1>
-        <p className="text-sm sm:text-base md:text-2xl">
-          Simulate how GPT-4, Claude, Gemini, and Perplexity compare your
-          products against competitors. Diagnose why you lose. Publish the fix
-          in one click. Measure the agent traffic that results.
-        </p>
-        <div className="mt-2 flex flex-col items-start gap-2">
-          <Link
-            href="/sign-up"
-            className="group inline-flex items-center gap-4 bg-white px-8 py-4 text-2xl text-primary transition-opacity hover:opacity-90"
-          >
-            Get your free diagnosis
-            <ArrowRightIcon className="size-6 transition-transform duration-300 group-hover:translate-x-1" />
-          </Link>
-          <span className="font-light text-sm text-white/60">
-            No credit card. See results in 2 minutes.
-          </span>
-        </div>
-      </div>
-    </section>
-  </div>
+    </div>
+  </section>
 );
