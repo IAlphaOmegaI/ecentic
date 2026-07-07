@@ -234,3 +234,21 @@ AZURE_RESOURCE_NAME
 AZURE_API_KEY
 NEXT_PUBLIC_SENTRY_DSN
 ```
+
+Billing (Stripe + performance fee):
+```
+STRIPE_SECRET_KEY
+STRIPE_WEBHOOK_SECRET
+STRIPE_SUB_COMPETE                        # recurring price id — Compete plan
+STRIPE_SUB_DOMINATE                       # recurring price id — Dominate plan
+APP_HOST                                  # e.g. https://ecentic.ai (checkout return + webhook origin)
+CRON_SECRET                               # Bearer secret for /api/cron/* (scan + billing)
+
+# Performance fee (metered usage layer). Unset until the Stripe Meter is created,
+# which keeps the fee dark: no metered line at checkout and nothing reported.
+STRIPE_METER_PERFORMANCE_FEE_EVENT        # Billing Meter event_name, e.g. "ecentic_performance_fee"
+STRIPE_PRICE_PERFORMANCE_FEE              # metered price id (unit = $0.01, so quantity = fee in cents)
+PERFORMANCE_FEE_RATE_BPS_DEFAULT=300      # 3%, overridable per subscription
+PERFORMANCE_FEE_CAP_CENTS_DEFAULT=50000   # $500 / period, overridable per subscription
+PERFORMANCE_FEE_ATTRIBUTION_WINDOW_DAYS=7 # AI-referral → order attribution window
+```

@@ -19,7 +19,6 @@ const useCalInit = () => {
           dark: { "cal-brand": brand },
         },
         hideEventTypeDetails: false,
-        layout: "month_view",
       });
     })();
   }, []);
@@ -55,8 +54,8 @@ export const BookingEmbed = () => {
     <Cal
       namespace={namespace}
       calLink={link}
-      config={{ layout: "month_view" }}
-      style={{ width: "100%", height: "100%", overflow: "scroll" }}
+      config={{ layout: "column_view", useSlotsViewOnSmallScreen: "true" }}
+      style={{ width: "100%", height: "100%", overflow: "auto" }}
     />
   );
 };

@@ -32,7 +32,7 @@ export const Booking = () => (
       <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
       <div className="relative border-accent-foreground p-6 md:p-12">
         <p className="font-light text-primary text-xl">Book a call</p>
-        <h2 className="mt-4 font-body text-3xl text-foreground md:text-6xl">
+        <h2 className="mt-4 font-body font-medium text-3xl text-foreground md:text-5xl">
           See your AI win rate, live in 15 minutes.
         </h2>
         <p className="mt-5 max-w-2xl font-body font-light text-foreground-dimmed text-lg">

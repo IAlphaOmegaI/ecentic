@@ -211,7 +211,31 @@ export const getAgentTrafficSummary = withAuthentication(
   "Tracking.getAgentTrafficSummary",
 );
 
-const { create } = repository(schema.agentVisit);
+const { create, find } = repository(schema.agentVisit);
+
+/**
+ * The most recent `*-referral` visit for a store inside the attribution window
+ * — a human who arrived from an AI answer. Used by the performance-fee
+ * attribution pipeline as the fallback signal when an order carries no explicit
+ * `_ecentic_ai_ref` cart attribute. Returns null when no such visit exists.
+ */
+export const findRecentReferralVisit = withContext(
+  async (_, { store, since }: { store: string; since: Date }) => {
+    const rows = await find(Environment.SERVER, {
+      where: and(
+        eq(schema.agentVisit.storeId, store),
+        eq(schema.agentVisit.agentCategory, "referral"),
+        gte(schema.agentVisit.createdAt, since),
+      ),
+      orderBy: [{ column: schema.agentVisit.createdAt, direction: "desc" }],
+      limit: 1,
+    });
+
+    if (!rows.success) return rows;
+    return { success: true as const, data: rows.data[0] ?? null };
+  },
+  "Tracking.findRecentReferralVisit",
+);
 
 export const recordAgentVisit = withContext(
   async (

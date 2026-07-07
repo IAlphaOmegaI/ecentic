@@ -1,3 +1,5 @@
+import { Counter } from "./counter";
+
 const stats = [
   {
     value: "+15%",
@@ -23,19 +25,18 @@ const stats = [
 
 export const Proof = () => (
   <section className="flex flex-col gap-10 px-4 py-16">
-    <h2 className="max-w-2xl font-body font-semibold text-2xl text-foreground-rich md:text-3xl">
+    <h2 className="max-w-5xl text-balance font-body font-medium text-3xl text-foreground md:text-5xl">
       AI is already sending shoppers. The only question is whether they land on
       you.
     </h2>
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      {stats.map((stat) => (
-        <div
-          key={stat.label}
-          className="flex flex-col gap-2 border-accent-foreground border-l pl-4"
-        >
-          <span className="font-body font-semibold text-4xl text-primary">
-            {stat.value}
-          </span>
+      {stats.map((stat, index) => (
+        <div key={stat.label} className="flex flex-col gap-2">
+          <Counter
+            value={stat.value}
+            delay={index * 0.1}
+            className="font-body font-semibold text-4xl text-primary"
+          />
           <span className="text-foreground">{stat.label}</span>
           <span className="text-foreground-dimmed text-xs">{stat.source}</span>
         </div>

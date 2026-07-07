@@ -103,6 +103,13 @@ export const store = pgTable(
      * Hostnames allowed for CORS on /api/tracking/agent-visit (primary domain + myshopify domain).
      */
     storefrontHosts: jsonb("storefrontHosts").$type<string[] | null>(),
+    /**
+     * Shopify app-subscription usage `lineItem.id` created by
+     * {@link Shopify.ensureUsageSubscription}. Present only once the merchant has
+     * approved a capped usage line for the performance fee; its presence routes
+     * this store's period-close reporting to Shopify Billing instead of Stripe.
+     */
+    shopifyUsageLineId: text("shopifyUsageLineId"),
     lastSyncedAt: timestamp("lastSyncedAt", { mode: "date" }),
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
     updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
@@ -373,9 +380,118 @@ export const subscription = pgTable("subscription", {
   currentPeriodEnd: timestamp("currentPeriodEnd", { mode: "date" }),
   cancelAtPeriodEnd: boolean("cancelAtPeriodEnd").notNull().default(false),
   canceledAt: timestamp("canceledAt", { mode: "date" }),
+  // --- performance fee config (additive usage layer on top of the base plan) ---
+  /** Master switch. While false the fee accrues (for observability) but is never reported to a rail. */
+  performanceFeeEnabled: boolean("performanceFeeEnabled")
+    .notNull()
+    .default(false),
+  /** Basis points applied to attributed order value. null → env default. */
+  performanceFeeRateBps: integer("performanceFeeRateBps"),
+  /** Per-period accrual cap in cents. null → env default. */
+  performanceFeeCapCents: integer("performanceFeeCapCents"),
+  /** Stripe subscription item id for the metered performance-fee price. */
+  stripePerformanceItemId: text("stripePerformanceItemId"),
   createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
 });
+
+/**
+ * Period accounting for the performance fee. One row per subscription per
+ * billing period; makes cap enforcement and idempotent reporting trivial —
+ * the period-close cron reports only `billedCents - reportedCents` to the rail.
+ */
+export const feePeriod = pgTable(
+  "fee_period",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    userId: text("userId")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    subscriptionId: text("subscriptionId")
+      .notNull()
+      .references(() => subscription.id, { onDelete: "cascade" }),
+    periodStart: timestamp("periodStart", { mode: "date" }).notNull(),
+    periodEnd: timestamp("periodEnd", { mode: "date" }).notNull(),
+    rateBps: integer("rateBps").notNull(),
+    capCents: integer("capCents").notNull(),
+    /** Pre-cap sum of attributed fees in the period. */
+    accruedCents: integer("accruedCents").notNull().default(0),
+    /** min(accruedCents, capCents). */
+    billedCents: integer("billedCents").notNull().default(0),
+    /** Amount already pushed to a rail; the reporting delta is billed − reported. */
+    reportedCents: integer("reportedCents").notNull().default(0),
+    rail: text("rail")
+      .$type<"stripe" | "shopify">()
+      .notNull()
+      .default("stripe"),
+    closedAt: timestamp("closedAt", { mode: "date" }),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("fee_period_sub_start_unique").on(
+      table.subscriptionId,
+      table.periodStart,
+    ),
+    index("fee_period_user_idx").on(table.userId),
+  ],
+);
+
+/**
+ * One row per order Ecentic attributes to AI-agent traffic it optimizes for.
+ * Idempotent on (store, order) so a retried `orders/paid` webhook can never
+ * double-count. `feeCents` is the pre-cap fee; the cap is applied per
+ * {@link feePeriod} at close, which also flips `billingStatus`.
+ */
+export const attributedConversion = pgTable(
+  "attributed_conversion",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    userId: text("userId")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    /** Platform order id (Shopify order GID/numeric). Unique per store. */
+    orderExternalId: text("orderExternalId").notNull(),
+    orderValueCents: integer("orderValueCents").notNull(),
+    currency: text("currency").notNull().default("USD"),
+    /** e.g. "chatgpt-referral" */
+    attributedAgentType: text("attributedAgentType").notNull(),
+    attributionMethod: text("attributionMethod")
+      .$type<"cart-attribute" | "utm" | "ucp">()
+      .notNull(),
+    /** The agent_visit that earned attribution, when resolved. */
+    visitId: text("visitId").references(() => agentVisit.id, {
+      onDelete: "set null",
+    }),
+    feeRateBps: integer("feeRateBps").notNull(),
+    /** Rate applied to order value, pre-cap. */
+    feeCents: integer("feeCents").notNull(),
+    /** "pending" → not reported; "reported"; "capped" (excluded by cap); "voided" (refund). */
+    billingStatus: text("billingStatus")
+      .$type<"pending" | "reported" | "capped" | "voided">()
+      .notNull()
+      .default("pending"),
+    feePeriodId: text("feePeriodId").references(() => feePeriod.id, {
+      onDelete: "set null",
+    }),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("attributed_conversion_store_order_unique").on(
+      table.storeId,
+      table.orderExternalId,
+    ),
+    index("attributed_conversion_user_created_idx").on(
+      table.userId,
+      table.createdAt,
+    ),
+    index("attributed_conversion_period_idx").on(table.feePeriodId),
+  ],
+);
 
 export const agentApiKey = pgTable(
   "agent_api_key",
@@ -519,6 +635,8 @@ export const tables = {
   agentTrafficDaily,
   listingOptimization,
   subscription,
+  feePeriod,
+  attributedConversion,
   agentApiKey,
   blogPost,
   dealRedemption,
@@ -649,6 +767,38 @@ export const relations = defineRelations(tables, (r) => ({
     user: r.one.user({
       from: r.subscription.userId,
       to: r.user.id,
+    }),
+    feePeriods: r.many.feePeriod(),
+  },
+  feePeriod: {
+    user: r.one.user({
+      from: r.feePeriod.userId,
+      to: r.user.id,
+    }),
+    subscription: r.one.subscription({
+      from: r.feePeriod.subscriptionId,
+      to: r.subscription.id,
+    }),
+    conversions: r.many.attributedConversion(),
+  },
+  attributedConversion: {
+    user: r.one.user({
+      from: r.attributedConversion.userId,
+      to: r.user.id,
+    }),
+    store: r.one.store({
+      from: r.attributedConversion.storeId,
+      to: r.store.id,
+    }),
+    visit: r.one.agentVisit({
+      from: r.attributedConversion.visitId,
+      to: r.agentVisit.id,
+      optional: true,
+    }),
+    feePeriod: r.one.feePeriod({
+      from: r.attributedConversion.feePeriodId,
+      to: r.feePeriod.id,
+      optional: true,
     }),
   },
   agentApiKey: {

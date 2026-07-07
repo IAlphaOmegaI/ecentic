@@ -48,9 +48,9 @@ export const Features = () => (
       <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
       <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
       <div className="relative p-6 md:p-12">
-        <h1 className="font-body text-3xl text-foreground md:text-5xl">
+        <h2 className="font-body font-medium text-3xl text-foreground md:text-5xl">
           Everything you need to win the AI shopper.
-        </h1>
+        </h2>
       </div>
       <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2">
         <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
