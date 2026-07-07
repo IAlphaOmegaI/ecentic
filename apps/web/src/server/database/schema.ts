@@ -371,7 +371,18 @@ export const subscription = pgTable("subscription", {
     .notNull()
     .unique()
     .references(() => user.id, { onDelete: "cascade" }),
-  stripeCustomerId: text("stripeCustomerId").notNull().unique(),
+  /**
+   * Which billing product this row represents. `subscription` = a flat
+   * Compete/Dominate Stripe subscription (no performance fee). `payg` =
+   * pay-as-you-go: free to start, no Stripe customer until a fee is owed, billed
+   * only via the performance fee. Free Scan users have no row at all.
+   */
+  billingMode: text("billingMode")
+    .$type<"payg" | "subscription">()
+    .notNull()
+    .default("subscription"),
+  /** Null for a pay-as-you-go account until the merchant adds a payment method. */
+  stripeCustomerId: text("stripeCustomerId").unique(),
   stripeSubscriptionId: text("stripeSubscriptionId").unique(),
   stripePriceId: text("stripePriceId"),
   plan: text("plan"),
@@ -380,8 +391,8 @@ export const subscription = pgTable("subscription", {
   currentPeriodEnd: timestamp("currentPeriodEnd", { mode: "date" }),
   cancelAtPeriodEnd: boolean("cancelAtPeriodEnd").notNull().default(false),
   canceledAt: timestamp("canceledAt", { mode: "date" }),
-  // --- performance fee config (additive usage layer on top of the base plan) ---
-  /** Master switch. While false the fee accrues (for observability) but is never reported to a rail. */
+  // --- performance fee config (pay-as-you-go only) ---
+  /** Whether the pay-as-you-go performance fee applies. False for subscriptions. */
   performanceFeeEnabled: boolean("performanceFeeEnabled")
     .notNull()
     .default(false),
@@ -389,8 +400,6 @@ export const subscription = pgTable("subscription", {
   performanceFeeRateBps: integer("performanceFeeRateBps"),
   /** Per-period accrual cap in cents. null → env default. */
   performanceFeeCapCents: integer("performanceFeeCapCents"),
-  /** Stripe subscription item id for the metered performance-fee price. */
-  stripePerformanceItemId: text("stripePerformanceItemId"),
   createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
 });
@@ -424,6 +433,15 @@ export const feePeriod = pgTable(
       .$type<"stripe" | "shopify">()
       .notNull()
       .default("stripe"),
+    /**
+     * `open` while accruing; `awaiting_payment` when a fee is owed but the rail
+     * isn't ready (no card / unapproved Shopify usage line); `reported` once
+     * pushed; `uncollectible` if collection is abandoned.
+     */
+    state: text("state")
+      .$type<"open" | "awaiting_payment" | "reported" | "uncollectible">()
+      .notNull()
+      .default("open"),
     closedAt: timestamp("closedAt", { mode: "date" }),
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
     updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),

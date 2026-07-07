@@ -19,7 +19,7 @@ import { PartnershipBundle } from "../_components/partnership-bundle";
 import { Pricing } from "../_components/pricing";
 
 const description =
-  "ecentic pricing: start free with a one-time AI agent scan, then move to Compete ($149/mo) or Dominate ($449/mo) when agents start picking you. Custom Enterprise plans available.";
+  "ecentic pricing: scan free, then pay-as-you-go — free to start, 3% only on AI-attributed orders (capped). Or a flat Compete/Dominate plan with no fee.";
 
 const plans = [
   {
@@ -29,16 +29,22 @@ const plans = [
       "Free one-time simulation for your top 10 products. No credit card, results in two minutes.",
   },
   {
+    name: "Pay-as-you-go",
+    price: "0",
+    description:
+      "Free to start with no card. Full features; pay a 3% fee only on orders AI agents drive, capped at $500/mo.",
+  },
+  {
     name: "Compete",
     price: "149",
     description:
-      "Up to 100 products, daily simulations, competitor battlecards, and manual optimization suggestions.",
+      "Flat monthly, no performance fee. Up to 100 products, daily simulations, competitor battlecards, and manual optimization suggestions.",
   },
   {
     name: "Dominate",
     price: "449",
     description:
-      "Up to 1000 products, continuous simulations, auto-optimization with one-click publish, drift alerts, and UCP generation.",
+      "Flat monthly, no performance fee. Up to 1000 products, continuous simulations, auto-optimization with one-click publish, drift alerts, and UCP generation.",
   },
   {
     name: "Enterprise",
@@ -60,14 +66,20 @@ const faq = [
       "Compete is for teams that want to understand where they lose: up to 100 products, daily simulations, and competitor battlecards with manual suggestions. Dominate adds scale and automation: up to 1000 products, continuous simulations, one-click or auto-published optimizations, model drift alerts, and UCP generation.",
   },
   {
-    question: "How does the 3% performance fee work?",
+    question:
+      "What is the difference between pay-as-you-go and a subscription?",
     answer:
-      "Paid plans (Compete and Dominate) add a 3% fee on orders we can attribute to AI-agent traffic we optimize for — an order counts only when it carries our attribution signal or follows a recent AI-referral visit to your store. You are never charged on your other sales, never per agent visit, and the fee is capped at $500 per month with a hard monthly limit, so there are no surprises. The free Scan plan has no performance fee.",
+      "Pay-as-you-go is free to start with no card and unlocks every feature — you only pay a 3% fee on orders we can attribute to AI-agent traffic we optimize for. A subscription (Compete or Dominate) is a flat monthly price with no performance fee, for teams that prefer predictable billing. Both run the same optimization loop; pick whichever pricing fits how you'd rather pay.",
+  },
+  {
+    question: "How does the pay-as-you-go performance fee work?",
+    answer:
+      "On pay-as-you-go you pay a 3% fee only on orders we can attribute to AI-agent traffic we optimize for — an order counts only when it carries our attribution signal or follows a recent AI-referral visit to your store. You are never charged on your other sales, never per agent visit, and the fee is capped at $500 per month. It is free to start with no card; we only ask for a payment method once a fee is actually due. Flat subscriptions and the free Scan have no performance fee.",
   },
   {
     question: "Can I change plans or cancel later?",
     answer:
-      "You can start on Scan, upgrade to Compete or Dominate when you are ready to act on the results, and move to Enterprise once you need custom limits or security. Plans are monthly, so you are never locked into a long contract to try the platform.",
+      "You can start on the free Scan, activate pay-as-you-go for ongoing optimization at no upfront cost, switch to a flat Compete or Dominate subscription when you want predictable billing, and move to Enterprise once you need custom limits or security. Nothing locks you into a long contract to try the platform.",
   },
   {
     question: "When should I talk to sales instead of self-serving?",
@@ -153,11 +165,11 @@ export default () => {
         <ContentPageRichText
           content={`Every account starts on the free Scan plan, which runs a one-time simulation of your top 10 products so you can see your Win Rate Report before paying anything.
 
-When you are ready to act on the results, two paid plans cover most teams:
-- Compete at $149/mo for up to 100 products, daily simulations, and competitor battlecards
-- Dominate at $449/mo for up to 1000 products, continuous simulations, auto-optimization, drift alerts, and UCP generation
+When you are ready for ongoing optimization, choose how you pay:
+- Pay-as-you-go — free to start with no card, full features, and a 3% fee only on orders AI agents drive (capped at $500/mo). You only pay when we sell.
+- A flat subscription with no performance fee: Compete at $149/mo for up to 100 products, daily simulations, and competitor battlecards; or Dominate at $449/mo for up to 1000 products, continuous simulations, auto-optimization, drift alerts, and UCP generation.
 
-Plans are billed monthly, so you can upgrade as your catalog and automation needs grow. Teams running hundreds of SKUs across multiple stores, or with security and signing requirements, move to a custom Enterprise plan.
+Both run the same optimization loop — pay-as-you-go aligns cost to results, subscriptions keep billing predictable. Teams running hundreds of SKUs across multiple stores, or with security and signing requirements, move to a custom Enterprise plan.
 
 Selling into Europe? The **Compliance + AI Visibility** bundle pairs ecentic Dominate with EU Presence's GDPR representative, GPSR responsible person, and Privacy Center — one invoice, 20% bundle discount, no setup fees.`}
         />

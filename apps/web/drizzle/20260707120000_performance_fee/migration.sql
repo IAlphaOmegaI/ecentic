@@ -1,17 +1,22 @@
--- Performance-fee pricing: an additive usage layer on top of the base plans.
--- Adds per-subscription fee config, a Shopify usage-line pointer on store, and
--- the two accounting tables (fee_period + attributed_conversion) the
--- attribution pipeline and period-close cron read/write.
+-- Pay-as-you-go billing: a standalone product beside flat subscriptions.
+--   * subscription.billingMode distinguishes "payg" (free to start, fee-only)
+--     from "subscription" (flat Compete/Dominate, no fee).
+--   * stripeCustomerId becomes nullable — a PAYG account has no Stripe customer
+--     until the first fee is owed and the merchant adds a payment method.
+--   * per-store Shopify usage-line pointer + the two accounting tables
+--     (fee_period, attributed_conversion) the attribution pipeline + cron use.
 
 ALTER TABLE "store" ADD COLUMN "shopifyUsageLineId" text;
+--> statement-breakpoint
+ALTER TABLE "subscription" ALTER COLUMN "stripeCustomerId" DROP NOT NULL;
+--> statement-breakpoint
+ALTER TABLE "subscription" ADD COLUMN "billingMode" text DEFAULT 'subscription' NOT NULL;
 --> statement-breakpoint
 ALTER TABLE "subscription" ADD COLUMN "performanceFeeEnabled" boolean DEFAULT false NOT NULL;
 --> statement-breakpoint
 ALTER TABLE "subscription" ADD COLUMN "performanceFeeRateBps" integer;
 --> statement-breakpoint
 ALTER TABLE "subscription" ADD COLUMN "performanceFeeCapCents" integer;
---> statement-breakpoint
-ALTER TABLE "subscription" ADD COLUMN "stripePerformanceItemId" text;
 --> statement-breakpoint
 CREATE TABLE "fee_period" (
 	"id" text PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -25,6 +30,7 @@ CREATE TABLE "fee_period" (
 	"billedCents" integer DEFAULT 0 NOT NULL,
 	"reportedCents" integer DEFAULT 0 NOT NULL,
 	"rail" text DEFAULT 'stripe' NOT NULL,
+	"state" text DEFAULT 'open' NOT NULL,
 	"closedAt" timestamp,
 	"createdAt" timestamp DEFAULT now() NOT NULL,
 	"updatedAt" timestamp DEFAULT now() NOT NULL

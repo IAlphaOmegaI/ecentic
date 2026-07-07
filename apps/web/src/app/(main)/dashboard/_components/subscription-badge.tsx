@@ -1,7 +1,4 @@
-type SubscriptionBadgeProps = {
-  plan: string | null;
-  status: string | null;
-};
+import type * as Subscription from "@/server/app/subscription";
 
 // Statuses where the subscription still grants plan access (mirrors billing-section).
 const ACTIVE_STATUSES = new Set([
@@ -23,21 +20,32 @@ const STATUS_NOTE: Record<string, string> = {
   paused: "Paused",
 };
 
-export const SubscriptionBadge = ({ plan, status }: SubscriptionBadgeProps) => {
+export const SubscriptionBadge = ({
+  subscription,
+}: {
+  subscription: Subscription.Type | null;
+}) => {
+  const isPayg = subscription?.billingMode === "payg";
+  const plan = subscription?.plan ?? null;
+  const status = subscription?.status ?? null;
+
   const hasActivePlan =
-    plan !== null && status !== null && ACTIVE_STATUSES.has(status);
+    !isPayg && plan !== null && status !== null && ACTIVE_STATUSES.has(status);
   const needsAttention = status !== null && ATTENTION_STATUSES.has(status);
   const isPremium =
     hasActivePlan && (status === "active" || status === "trialing");
 
   const label = (() => {
+    if (isPayg) return "Pay-as-you-go";
     if (!hasActivePlan) return "No plan";
-    const note = STATUS_NOTE[status];
+    const note = status ? STATUS_NOTE[status] : undefined;
     return note ? `${plan} · ${note}` : plan;
   })();
 
   const variantClassName = (() => {
     switch (true) {
+      case isPayg:
+        return "border-primary/40 bg-primary/10 text-primary";
       case isPremium:
         return "animate-gold-shine border-[hsl(42_78%_45%)] capitalize";
       case hasActivePlan && needsAttention:

@@ -4,10 +4,11 @@ import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { useRouter } from "next/navigation";
+import * as Payg from "@/server/app/billing/payg";
 import * as Subscription from "@/server/app/subscription";
 
 type Props = {
-  plan: "compete" | "dominate";
+  plan: "payg" | "compete" | "dominate";
   className?: string;
   children: React.ReactNode;
 };
@@ -17,22 +18,41 @@ export const PricingCTA = ({ plan, className, children }: Props) => {
   const toast = useToastManager();
 
   const [handleClick, isPending] = useAsyncAction(async () => {
-    const result = await Subscription.createCheckoutSession({ plan });
+    // Pay-as-you-go is free to start — activate the account and land on the
+    // dashboard; no Stripe checkout.
+    if (plan === "payg") {
+      const activation = await Payg.startPayAsYouGo();
+      if (!activation.success) {
+        if (activation.error.name === "unauthenticated-error") {
+          router.push(`/sign-in?next=${encodeURIComponent("/dashboard")}`);
+          return;
+        }
+        toast.add({
+          title: "Could not start pay-as-you-go",
+          description: activation.error.message,
+          type: "error",
+        });
+        return;
+      }
+      router.push("/dashboard");
+      return;
+    }
 
-    if (!result.success) {
-      if (result.error.name === "unauthenticated-error") {
+    const checkout = await Subscription.createCheckoutSession({ plan });
+    if (!checkout.success) {
+      if (checkout.error.name === "unauthenticated-error") {
         router.push(`/sign-in?next=${encodeURIComponent("/#pricing")}`);
         return;
       }
       toast.add({
         title: "Could not start checkout",
-        description: result.error.message,
+        description: checkout.error.message,
         type: "error",
       });
       return;
     }
 
-    window.location.href = result.data.url;
+    window.location.href = checkout.data.url;
   });
 
   return (

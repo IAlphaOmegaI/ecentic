@@ -1,5 +1,6 @@
 "use server";
 
+import { addMonths, startOfMonth } from "date-fns";
 import { and, asc, eq, gte, isNotNull, lt, ne, sql } from "drizzle-orm";
 import { db, schema } from "../../database";
 import { UserRole } from "../../database/validators";
@@ -18,6 +19,15 @@ const RATE_DEFAULT = Number(
 const CAP_DEFAULT = Number(
   process.env.PERFORMANCE_FEE_CAP_CENTS_DEFAULT ?? "50000",
 );
+
+/**
+ * Calendar-month window `[firstOfMonth, firstOfNextMonth)`. Pay-as-you-go has no
+ * Stripe subscription period to anchor to, so the fee cap resets monthly.
+ */
+const monthWindow = (now: Date) => {
+  const start = startOfMonth(now);
+  return { start, end: addMonths(start, 1) };
+};
 
 export const {
   create: createPeriod,
@@ -102,6 +112,7 @@ export const accruedForPeriod = withContext(
 );
 
 export type PeriodSummary = {
+  billingMode: "payg" | "subscription" | null;
   enabled: boolean;
   rateBps: number;
   capCents: number;
@@ -109,6 +120,9 @@ export type PeriodSummary = {
   billedCents: number;
   reportedCents: number;
   remainingCents: number;
+  amountOwedCents: number;
+  /** A fee is owed but no rail is ready yet — prompt the merchant to add a card. */
+  awaitingPayment: boolean;
   periodStart: Date | null;
   periodEnd: Date | null;
   conversions: {
@@ -124,10 +138,9 @@ export type PeriodSummary = {
 
 /**
  * Current-period performance-fee summary for the signed-in user, powering the
- * billing settings card: accrual vs cap, effective rate, period end, and the
- * most recent attributed orders. The window is the Stripe subscription's
- * current period; with no active period there is nothing to bill and the
- * summary is empty.
+ * billing settings card and the "add a payment method" prompt. The fee only
+ * exists for pay-as-you-go accounts and runs on calendar months; any other
+ * account gets an empty summary.
  */
 export const getCurrentPeriodSummary = withAuthentication(async (context) => {
   const user = context.session.user.id;
@@ -141,10 +154,9 @@ export const getCurrentPeriodSummary = withAuthentication(async (context) => {
   const subscription = subscriptions.data[0] ?? null;
   const rateBps = subscription?.performanceFeeRateBps ?? RATE_DEFAULT;
   const capCents = subscription?.performanceFeeCapCents ?? CAP_DEFAULT;
-  const start = subscription?.currentPeriodStart ?? null;
-  const end = subscription?.currentPeriodEnd ?? null;
 
   const empty: PeriodSummary = {
+    billingMode: subscription?.billingMode ?? null,
     enabled: subscription?.performanceFeeEnabled ?? false,
     rateBps,
     capCents,
@@ -152,13 +164,17 @@ export const getCurrentPeriodSummary = withAuthentication(async (context) => {
     billedCents: 0,
     reportedCents: 0,
     remainingCents: capCents,
-    periodStart: start,
-    periodEnd: end,
+    amountOwedCents: 0,
+    awaitingPayment: false,
+    periodStart: null,
+    periodEnd: null,
     conversions: [],
   };
 
-  if (!subscription || !start || !end)
+  if (subscription?.billingMode !== "payg")
     return { success: true as const, data: empty };
+
+  const { start, end } = monthWindow(new Date());
 
   const accrued = await accruedForPeriod(Environment.SERVER, {
     user,
@@ -198,18 +214,31 @@ export const getCurrentPeriodSummary = withAuthentication(async (context) => {
     .orderBy(sql`${schema.attributedConversion.createdAt} desc`)
     .limit(20);
 
+  const currentPeriod = period.data[0] ?? null;
   const billed = Math.min(accrued.data, capCents);
+  const reportedCents = currentPeriod?.reportedCents ?? 0;
+  const amountOwedCents = Math.max(billed - reportedCents, 0);
+
+  const rail = await resolveRail(user);
+  const awaitingPayment =
+    currentPeriod?.state === "awaiting_payment" ||
+    (rail.kind === "stripe" &&
+      amountOwedCents > 0 &&
+      !subscription.stripeCustomerId);
 
   return {
     success: true as const,
     data: {
+      billingMode: "payg" as const,
       enabled: subscription.performanceFeeEnabled,
       rateBps,
       capCents,
       accruedCents: accrued.data,
       billedCents: billed,
-      reportedCents: period.data[0]?.reportedCents ?? 0,
+      reportedCents,
       remainingCents: Math.max(capCents - billed, 0),
+      amountOwedCents,
+      awaitingPayment,
       periodStart: start,
       periodEnd: end,
       conversions,
@@ -340,21 +369,18 @@ const settleConversions = async ({
   await Promise.all(state.updates);
 };
 
+type PeriodState = "open" | "awaiting_payment" | "reported" | "uncollectible";
+
 /**
- * Reconciles one subscription's open period against its rail. Recomputes the
- * capped, billed amount, upserts the period row (preserving `reportedCents`),
- * reports only the not-yet-reported delta, then settles the conversions. Safe
- * to run repeatedly within a period — the delta is 0 once caught up.
+ * Reconciles one pay-as-you-go account's current month against its rail.
+ * Recomputes the capped, billed amount, upserts the period row (preserving
+ * `reportedCents`), then charges the not-yet-reported delta — or parks the
+ * period as `awaiting_payment` when no card / approved Shopify usage line is
+ * ready. Safe to run repeatedly within a month; the delta is 0 once caught up.
  */
-const closeSubscriptionPeriod = withContext(
+const closePaygPeriod = withContext(
   async (_, { subscription }: { subscription: Subscription.Type }) => {
-    const start = subscription.currentPeriodStart;
-    const end = subscription.currentPeriodEnd;
-    if (!start || !end)
-      return {
-        success: true as const,
-        data: { skipped: "no-period" as const },
-      };
+    const { start, end } = monthWindow(new Date());
 
     const rateBps = subscription.performanceFeeRateBps ?? RATE_DEFAULT;
     const capCents = subscription.performanceFeeCapCents ?? CAP_DEFAULT;
@@ -403,73 +429,91 @@ const closeSubscriptionPeriod = withContext(
     );
     if (!period.success) return period;
 
-    const reportedCents = period.data.reportedCents;
-    const delta = billed - reportedCents;
+    const description = `Ecentic performance fee (${start
+      .toISOString()
+      .slice(0, 10)})`;
+    const delta = billed - period.data.reportedCents;
 
-    if (delta > 0) {
-      const reported =
-        rail.kind === "shopify"
-          ? await Shopify.createUsageRecord(Environment.SERVER, {
-              store: rail.store,
-              cents: delta,
-              description: `Ecentic AI-attributed performance fee (${new Date(
-                start,
-              )
-                .toISOString()
-                .slice(0, 10)})`,
-            })
-          : await Subscription.reportPerformanceUsage(Environment.SERVER, {
-              customer: subscription.stripeCustomerId,
-              quantityCents: delta,
-            });
-      if (!reported.success) return reported;
-
+    // Persists the period's outcome (marking it reported bumps `reportedCents`
+    // to the billed total) and settles the conversions under it.
+    const finalize = async (state: PeriodState, reported: boolean) => {
       const closedAt = end.getTime() <= Date.now() ? new Date() : null;
       const updated = await updatePeriod(Environment.SERVER, period.data.id, {
-        reportedCents: billed,
+        state,
         closedAt,
+        ...(reported ? { reportedCents: billed } : {}),
         updatedAt: new Date(),
       });
       if (!updated.success) return updated;
+
+      await settleConversions({
+        user: subscription.userId,
+        start,
+        end,
+        capCents,
+        feePeriodId: period.data.id,
+      });
+
+      return {
+        success: true as const,
+        data: { accruedCents: accrued.data, billedCents: billed, state },
+      };
+    };
+
+    if (delta <= 0) return finalize(period.data.state, false);
+
+    if (rail.kind === "shopify") {
+      const usage = await Shopify.createUsageRecord(Environment.SERVER, {
+        store: rail.store,
+        cents: delta,
+        description,
+      });
+      if (!usage.success) return usage;
+      return finalize("reported", true);
     }
 
-    await settleConversions({
-      user: subscription.userId,
-      start,
-      end,
-      capCents,
-      feePeriodId: period.data.id,
-    });
+    // Stripe rail: charge the saved card, or park the period until one is added.
+    if (!subscription.stripeCustomerId)
+      return finalize("awaiting_payment", false);
 
-    return {
-      success: true as const,
-      data: {
-        accruedCents: accrued.data,
-        billedCents: billed,
-        reportedDeltaCents: Math.max(delta, 0),
-        rail: rail.kind,
-      },
-    };
+    const hasMethod = await Subscription.customerHasPaymentMethod(
+      Environment.SERVER,
+      { customer: subscription.stripeCustomerId },
+    );
+    if (!hasMethod.success) return hasMethod;
+    if (!hasMethod.data) return finalize("awaiting_payment", false);
+
+    const charge = await Subscription.chargePerformanceFee(Environment.SERVER, {
+      customer: subscription.stripeCustomerId,
+      cents: delta,
+      description,
+    });
+    if (!charge.success) return charge;
+    return finalize("reported", true);
   },
-  "PerformanceFee.closeSubscriptionPeriod",
+  "PerformanceFee.closePaygPeriod",
 );
 
 /**
  * Period-close entrypoint for the billing cron. Walks every fee-enabled
- * subscription and reconciles its open period against the right rail. Reports
- * the running billed delta capped per period, so it is safe to run daily.
+ * pay-as-you-go account and reconciles its current month against the right
+ * rail. Reports the running billed delta capped per month, so it is safe to run
+ * daily.
  */
 export const reportDuePeriods = withContext(
   async (_, { limit = 200 }: { limit?: number } = {}) => {
     const subscriptions = await Subscription.find(Environment.SERVER, {
-      where: eq(schema.subscription.performanceFeeEnabled, true),
+      where: and(
+        eq(schema.subscription.billingMode, "payg"),
+        eq(schema.subscription.performanceFeeEnabled, true),
+      ),
       limit,
     });
     if (!subscriptions.success) return subscriptions;
 
     const outcomes = await Promise.all(
       subscriptions.data.map((subscription) =>
-        closeSubscriptionPeriod(Environment.SERVER, { subscription }),
+        closePaygPeriod(Environment.SERVER, { subscription }),
       ),
     );
 

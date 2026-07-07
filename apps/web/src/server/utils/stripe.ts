@@ -31,16 +31,14 @@ export const isPlanKey = (value: string): value is PlanKey =>
   value === "compete" || value === "dominate";
 
 /**
- * Metered price for the AI-attributed performance fee, backed by a Stripe
- * Billing Meter. Reporting a meter event of `value = fee in cents` against a
- * $0.01-per-unit price charges exactly that many cents. Both env vars are unset
- * until the meter + price are created in Stripe, which keeps the fee dark: no
- * metered line is attached at checkout and nothing is ever reported.
+ * Which billing product an account is on. `subscription` = a flat Stripe plan
+ * (Compete/Dominate, no fee); `payg` = pay-as-you-go (free to start, billed only
+ * via the performance fee). Free Scan users have no billing row.
  */
-export const PERFORMANCE_FEE = {
-  eventName: () => process.env.STRIPE_METER_PERFORMANCE_FEE_EVENT,
-  priceId: () => process.env.STRIPE_PRICE_PERFORMANCE_FEE,
-} as const;
+export type BillingMode = "payg" | "subscription";
+
+export const isBillingMode = (value: string): value is BillingMode =>
+  value === "payg" || value === "subscription";
 
 export const resolvePlanByPriceId = (priceId: string): PlanKey | null => {
   if (priceId === process.env.STRIPE_SUB_COMPETE) return "compete";
