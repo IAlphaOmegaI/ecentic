@@ -1,31 +1,164 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
 import { resultify, type UnwrapResult } from "@zenncore/utils";
 import { eq, sql } from "drizzle-orm";
-import { z } from "zod";
 import { schema } from "../database";
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { repository } from "../utils/repository";
 import * as DealAllowlist from "./deal-allowlist";
 
-const answers = z.object({
-  companyName: z.string().min(1, "Company name is required"),
-  batch: z.string().min(1).optional(),
-  contactName: z.string().min(1, "Your name is required"),
-  email: z.string().email("Enter a valid email"),
-  website: z.string().url("Enter a valid URL").optional(),
-  platform: z.string().min(1).optional(),
-  monthlyOrders: z.string().min(1).optional(),
-  goal: z.string().optional(),
-});
+/**
+ * This webhook receives redemptions from two producers with different payload
+ * shapes: our own on-site forms (flat keys — companyName, contactName, email…)
+ * and partner deal programs like YC Bookface, whose payload carries the deal's
+ * custom-question answers and keys company/contact fields its own way. Rather
+ * than reject a foreign shape with a 422, we extract what we can, always keep
+ * the full raw payload in `answers`, and record everything as "pending" for
+ * manual review — a redemption is never dropped over shape. When the essentials
+ * can't be read, Sentry is notified with the payload's keys so the mapping below
+ * can be tightened to the real shape.
+ */
+
+/** Comparison key: lowercased, stripped of every non-alphanumeric character. */
+const canonical = (key: string): string =>
+  key.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
 
 /**
- * A zod `safeParse` result is structurally a `Result`, so `withContext`
- * surfaces it directly: `.success` reflects validation, `.data` the answers.
+ * Merge one level of nested objects up so `pick` sees them: `{ company: { name } }`
+ * exposes both `company name` (prefixed) and `name` (bare). Precedence, lowest to
+ * highest: bare nested, prefixed nested, then top-level keys — so an explicit
+ * top-level field always wins over a value lifted out of a nested object.
+ */
+const flatten = (source: Record<string, unknown>): Record<string, unknown> => {
+  const bare = Object.values(source)
+    .filter(isRecord)
+    .flatMap((value) => Object.entries(value));
+
+  const prefixed = Object.entries(source)
+    .filter(([, value]) => isRecord(value))
+    .flatMap(([key, value]) =>
+      Object.entries(value as Record<string, unknown>).map(
+        ([child, inner]) => [`${key} ${child}`, inner] as const,
+      ),
+    );
+
+  return {
+    ...Object.fromEntries(bare),
+    ...Object.fromEntries(prefixed),
+    ...source,
+  };
+};
+
+/** First non-empty string value among candidate keys, matched loosely. */
+const pick = (
+  source: Record<string, unknown>,
+  keys: readonly string[],
+): string | null => {
+  const index = Object.fromEntries(
+    Object.entries(source).map(([key, value]) => [canonical(key), value]),
+  );
+
+  const match = keys
+    .map((key) => index[canonical(key)])
+    .find(
+      (value): value is string =>
+        typeof value === "string" && value.trim().length > 0,
+    );
+
+  return match?.trim() ?? null;
+};
+
+/**
+ * Candidate keys per field, most specific first. Matching is punctuation- and
+ * case-insensitive, so the YC custom-question text doubles as an alias. These
+ * are best-effort — the raw payload is the source of truth in `answers`.
+ */
+const ALIASES = {
+  companyName: [
+    "companyName",
+    "company",
+    "startup",
+    "startupName",
+    "organization",
+    "org",
+  ],
+  contactName: [
+    "contactName",
+    "userName",
+    "fullName",
+    "founderName",
+    "name",
+    "founder",
+  ],
+  email: ["email", "workEmail", "contactEmail", "userEmail"],
+  website: [
+    "website",
+    "companyWebsite",
+    "companyUrl",
+    "storeUrl",
+    "siteUrl",
+    "url",
+    "site",
+  ],
+  batch: ["batch", "ycBatch", "cohort"],
+  platform: [
+    "platform",
+    "commercePlatform",
+    "What platform are you selling on?",
+  ],
+  monthlyOrders: ["monthlyOrders", "orders", "monthlyGmv", "gmv"],
+  goal: ["goal", "goals", "notes", "message", "objective"],
+} as const;
+
+/** Best-effort structured fields lifted out of an arbitrary redemption payload. */
+const normalize = (payload: Record<string, unknown>) => {
+  const source = flatten(payload);
+
+  const email = (() => {
+    const explicit = pick(source, ALIASES.email);
+    if (explicit && EMAIL.test(explicit)) return explicit;
+
+    // Fall back to the first email-looking value anywhere in the payload.
+    const scanned = Object.values(source).find(
+      (value): value is string =>
+        typeof value === "string" && EMAIL.test(value.trim()),
+    );
+    return scanned?.trim() ?? null;
+  })();
+
+  return {
+    companyName: pick(source, ALIASES.companyName),
+    contactName: pick(source, ALIASES.contactName),
+    email,
+    website: pick(source, ALIASES.website),
+    batch: pick(source, ALIASES.batch),
+    platform: pick(source, ALIASES.platform),
+    monthlyOrders: pick(source, ALIASES.monthlyOrders),
+    goal: pick(source, ALIASES.goal),
+  };
+};
+
+/**
+ * The payload is any JSON object; foreign shapes are normalized on the way in,
+ * so `parse` only guards against a body that isn't an object at all.
  */
 export const parse = withContext(
-  async (_, { payload }: { payload: unknown }) => answers.safeParse(payload),
+  async (_, { payload }: { payload: unknown }) => {
+    if (!isRecord(payload))
+      return {
+        success: false as const,
+        error: new Error("Payload must be a JSON object"),
+      };
+
+    return { success: true as const, data: payload };
+  },
   "DealRedemption.parse",
 );
 
@@ -88,26 +221,37 @@ export const record = withContext(
     if (limited.data)
       return { success: false, error: new Error("Rate limited") };
 
+    const fields = normalize(payload);
+
+    // Flag shapes we couldn't fully read so the mapping can be tightened. The
+    // raw payload is stored regardless, so this is a diagnostic, not a failure.
+    if (!fields.email || !fields.companyName)
+      Sentry.captureMessage("Deal redemption with unrecognized payload shape", {
+        level: "warning",
+        tags: { merchant },
+        extra: { keys: Object.keys(payload), extracted: fields },
+      });
+
     // Auto-approve when the company's domain is on the merchant's directory
     // allowlist; otherwise leave pending for manual batch verification.
     const status = DealAllowlist.matches({
       merchant,
-      email: payload.email,
-      website: payload.website,
+      email: fields.email ?? "",
+      website: fields.website,
     })
       ? "approved"
       : "pending";
 
     const creation = await create(Environment.SERVER, {
       merchant,
-      companyName: payload.companyName,
-      batch: payload.batch ?? null,
-      contactName: payload.contactName,
-      email: payload.email,
-      website: payload.website || null,
-      platform: payload.platform || null,
-      monthlyOrders: payload.monthlyOrders || null,
-      goal: payload.goal?.trim() || null,
+      companyName: fields.companyName ?? "Unknown",
+      batch: fields.batch,
+      contactName: fields.contactName ?? "Unknown",
+      email: fields.email ?? "unknown@redemption.invalid",
+      website: fields.website,
+      platform: fields.platform,
+      monthlyOrders: fields.monthlyOrders,
+      goal: fields.goal,
       answers: payload,
       status,
     });

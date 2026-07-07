@@ -99,10 +99,10 @@ const resolveCredentials = async (
 > => {
   const account = options.storeAccount
     ? await StoreAccount.get(
-        Environment.SERVER,
-        options.storeAccount,
-        options.tx ? { tx: options.tx } : undefined,
-      )
+      Environment.SERVER,
+      options.storeAccount,
+      options.tx ? { tx: options.tx } : undefined,
+    )
     : await StoreAccount.getForStore(Environment.SERVER, { store: storeId });
 
   if (!account.success) return { success: false, error: account.error };
@@ -339,27 +339,27 @@ export const connectForUser = withContext(
       withTransaction(async (tx) => {
         const store = existing
           ? await Store.update(
-              Environment.SERVER,
-              existing.id,
-              {
-                platform: "woocommerce",
-                name: new URL(host).hostname,
-                domain: host,
-                status: "connected",
-              },
-              { tx },
-            )
+            Environment.SERVER,
+            existing.id,
+            {
+              platform: "woocommerce",
+              name: new URL(host).hostname,
+              domain: host,
+              status: "connected",
+            },
+            { tx },
+          )
           : await Store.create(
-              Environment.SERVER,
-              {
-                userId: id,
-                platform: "woocommerce",
-                name: new URL(host).hostname,
-                domain: host,
-                status: "connected",
-              },
-              { tx },
-            );
+            Environment.SERVER,
+            {
+              userId: id,
+              platform: "woocommerce",
+              name: new URL(host).hostname,
+              domain: host,
+              status: "connected",
+            },
+            { tx },
+          );
 
         if (!store.success) throw store.error;
         if (!store.data) throw new Error("Store creation returned no data");

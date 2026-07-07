@@ -13,10 +13,9 @@ import { usePathname } from "next/navigation";
 import { type MouseEvent, type ReactNode, useEffect } from "react";
 
 const links = [
-  { href: "/features", label: "Features" },
+  { href: "/#how", label: "How it works" },
   { href: "/pricing", label: "Pricing" },
-  { href: "/#resources", label: "Resources" },
-  { href: "mailto:support@ecentic.ai", label: "Support" },
+  { href: "/blog", label: "Blog" },
 ] as const;
 
 const scrollToHash = (href: string) => {
@@ -92,7 +91,7 @@ const NavbarDesktop = () => (
         aria-hidden
       />
       <NavbarLink href="/sign-up">
-        Get Started{" "}
+        Install now{" "}
         <ArrowRightIcon className="size-6 transition-transform duration-300 group-hover:translate-x-1" />
       </NavbarLink>
     </div>
@@ -126,7 +125,7 @@ const NavbarMobile = () => (
             </SheetClose>
           ))}
           <SheetClose render={<NavbarLink href="/sign-up" />}>
-            Get Started
+            Install now
             <ArrowRightIcon className="size-6" />
           </SheetClose>
         </nav>

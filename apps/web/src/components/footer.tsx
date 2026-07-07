@@ -1,13 +1,8 @@
-import {
-  ArrowRightIcon,
-  InstagramIcon,
-  LinkedinIcon,
-  XTwitterIcon,
-} from "@zenncore/icons";
+import { InstagramIcon, LinkedinIcon, XTwitterIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
-import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import Link from "next/link";
+import { InstallCta } from "@/app/(main)/_components/install-cta";
 import WordMark from "@/public/images/wordmark.svg";
 import { Plus } from "./plus";
 
@@ -83,28 +78,16 @@ export const Footer = ({ stacked = false }: Footer.Props) => (
       {/* CTA band */}
       <div className="relative border-accent-foreground border-b p-6 md:p-12">
         <span className="font-light text-primary text-xl">
-          Win the agent's cart
+          Get picked by AI
         </span>
         <h2 className="mt-4 max-w-4xl font-body text-3xl text-foreground leading-tight tracking-tight md:text-5xl">
-          The next era of commerce isn't about who ranks #1 on Google.
-          <span className="text-primary">
-            {" "}
-            It's about who gets picked by the agent.
-          </span>
+          Ready to be the product agents recommend?
         </h2>
         <p className="mt-6 max-w-xl font-light text-foreground-dimmed text-lg">
-          See exactly how AI shopping agents rank your catalog — free, in
+          Install free on Shopify or WooCommerce and see your AI score in
           minutes.
         </p>
-        <Button
-          color="primary"
-          type="button"
-          className="group mt-8 w-fit px-6 py-3 font-medium text-base"
-          render={<Link href="/sign-up" />}
-        >
-          Get your free Win Rate Report
-          <ArrowRightIcon className="size-5 transition-transform duration-300 group-hover:translate-x-1" />
-        </Button>
+        <InstallCta className="mt-8" />
       </div>
 
       {/* Link grid */}

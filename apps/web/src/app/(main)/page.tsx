@@ -12,13 +12,11 @@ import {
   softwareApplicationSchema,
   websiteSchema,
 } from "@/lib/seo";
-import { BlindSpot } from "./_components/blind-spot";
 import { Booking } from "./_components/booking";
-import { DiscoveryShift } from "./_components/discovery-shift";
 import { Features } from "./_components/features";
 import { Hero } from "./_components/hero";
 import { PartnersStrip } from "./_components/partners-strip";
-import { PartnershipBanner } from "./_components/partnership-banner";
+import { Proof } from "./_components/proof";
 import { SmoothScroll } from "./_components/smooth-scroll";
 import { Steps } from "./_components/steps";
 import {
@@ -26,18 +24,16 @@ import {
   reviewSchemas,
   Testimonials,
 } from "./_components/testimonials";
-import { UCPCallout } from "./_components/ucp-callout";
-import { WhyNow } from "./_components/why-now";
 
 const Comparison = dynamic(() =>
   import("./_components/comparison").then((m) => m.Comparison),
 );
 
 const description =
-  "AI ecommerce platform for product listing optimization, competitor analysis, and AI shopping visibility. Simulate decisions and improve win rate.";
+  "Get picked by AI shopping agents. Ecentic optimizes your Shopify or WooCommerce listings so ChatGPT, Gemini, and Perplexity recommend you first.";
 
 export const metadata: Metadata = createMetadata({
-  title: "ecentic — Win Every AI Shopping Agent's Cart",
+  title: "ecentic — Be the product AI recommends",
   description,
   path: "/",
   keywords: [
@@ -84,15 +80,16 @@ export default async () => (
       />
       <Navbar />
       <Hero />
-      <PartnershipBanner />
+      {/* <PartnershipBanner /> */}
       <PartnersStrip />
-      <DiscoveryShift />
-      <BlindSpot />
-      <WhyNow />
+      {/* <DiscoveryShift /> */}
+      {/* <BlindSpot /> */}
+      {/* <WhyNow /> */}
+      <Proof />
       {/* <AgentTrafficLive /> */}
       <Steps />
       <Features />
-      <UCPCallout />
+      {/* <UCPCallout /> */}
       <Suspense>
         <Comparison />
       </Suspense>

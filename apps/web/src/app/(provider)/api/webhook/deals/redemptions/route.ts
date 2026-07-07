@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { resultify } from "@zenncore/utils";
 import { type NextRequest, NextResponse as Response } from "next/server";
 import * as DealRedemption from "@/server/app/deal-redemption";
@@ -28,46 +29,73 @@ export const POST = async (request: NextRequest) => {
       { status: 400, headers: corsHeaders },
     );
 
-  const body = await resultify(() => request.json() as Promise<unknown>);
+  // Turn any unexpected throw into an observable 500 rather than a platform 502.
+  const handled = await resultify(async () => {
+    const body = await resultify(() => request.json() as Promise<unknown>);
 
-  if (!body.success)
+    // Acknowledge empty or unparseable test pings without recording a row —
+    // partner "Send Test" buttons often POST no body and expect a 2xx.
+    if (!body.success) {
+      Sentry.captureMessage(
+        "Deal redemption webhook received an unparseable body",
+        {
+          level: "warning",
+          tags: { merchant },
+        },
+      );
+      return Response.json(
+        { received: true },
+        { status: 200, headers: corsHeaders },
+      );
+    }
+
+    const parsed = await DealRedemption.parse(Environment.SERVER, {
+      payload: body.data,
+    });
+
+    if (!parsed.success)
+      return Response.json(
+        { error: "Validation failed", message: parsed.error.message },
+        { status: 422, headers: corsHeaders },
+      );
+
+    const client =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+      "unknown";
+
+    const result = await DealRedemption.record(Environment.SERVER, {
+      merchant,
+      payload: parsed.data,
+      client,
+    });
+
+    if (!result.success) {
+      const rateLimited = result.error.message === "Rate limited";
+
+      return Response.json(
+        {
+          error: rateLimited
+            ? "Too many requests"
+            : "Failed to save redemption",
+        },
+        { status: rateLimited ? 429 : 500, headers: corsHeaders },
+      );
+    }
+
     return Response.json(
-      { error: "Invalid JSON body" },
-      { status: 400, headers: corsHeaders },
+      { received: true, id: result.data.id },
+      { status: 201, headers: corsHeaders },
     );
-
-  const parsed = await DealRedemption.parse(Environment.SERVER, {
-    payload: body.data,
   });
 
-  if (!parsed.success)
-    return Response.json(
-      { error: "Validation failed", message: parsed.error.message },
-      { status: 422, headers: corsHeaders },
-    );
+  if (handled.success) return handled.data;
 
-  const client =
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-
-  const result = await DealRedemption.record(Environment.SERVER, {
-    merchant,
-    payload: parsed.data,
-    client,
+  Sentry.captureException(handled.error, {
+    tags: { route: "deal-redemption-webhook", merchant },
   });
-
-  if (!result.success) {
-    const rateLimited = result.error.message === "Rate limited";
-
-    return Response.json(
-      {
-        error: rateLimited ? "Too many requests" : "Failed to save redemption",
-      },
-      { status: rateLimited ? 429 : 500, headers: corsHeaders },
-    );
-  }
 
   return Response.json(
-    { received: true, id: result.data.id },
-    { status: 201, headers: corsHeaders },
+    { error: "Internal error" },
+    { status: 500, headers: corsHeaders },
   );
 };
