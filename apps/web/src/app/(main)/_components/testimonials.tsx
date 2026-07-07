@@ -78,9 +78,9 @@ export const Testimonials = () => (
       <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
       <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
       <div className="relative mx-auto flex flex-col items-center justify-between gap-4 p-6 md:flex-row md:items-start md:p-12">
-        <h1 className="font-body text-3xl text-foreground md:text-5xl">
+        <h2 className="font-body font-medium text-3xl text-foreground md:text-5xl">
           Hear what they say.
-        </h1>
+        </h2>
         <div className="flex flex-col justify-center">
           <h3 className="flex items-center gap-2 font-semibold text-5xl text-foreground tabular-nums">
             {aggregateRating.ratingValue.toFixed(1)} / 5{" "}

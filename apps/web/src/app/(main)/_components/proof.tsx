@@ -25,7 +25,7 @@ const stats = [
 
 export const Proof = () => (
   <section className="flex flex-col gap-10 px-4 py-16">
-    <h2 className="max-w-2xl font-body font-semibold text-2xl text-foreground-rich md:text-3xl">
+    <h2 className="max-w-5xl text-balance font-body font-medium text-3xl text-foreground md:text-5xl">
       AI is already sending shoppers. The only question is whether they land on
       you.
     </h2>

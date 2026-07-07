@@ -80,7 +80,7 @@ export const Footer = ({ stacked = false }: Footer.Props) => (
         <span className="font-light text-primary text-xl">
           Get picked by AI
         </span>
-        <h2 className="mt-4 max-w-4xl font-body text-3xl text-foreground leading-tight tracking-tight md:text-5xl">
+        <h2 className="mt-4 max-w-4xl font-body font-medium text-3xl text-foreground leading-tight tracking-tight md:text-5xl">
           Ready to be the product agents recommend?
         </h2>
         <p className="mt-6 max-w-xl font-light text-foreground-dimmed text-lg">
