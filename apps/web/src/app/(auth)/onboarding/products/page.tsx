@@ -18,7 +18,7 @@ export default async ({
   const { connected } = await searchParams;
 
   const products = await unwrapResult(
-    Product.skimForConnectedStore(Environment.SERVER, { connected }),
+    Product.listForConnectedStore(Environment.SERVER, { connected }),
   );
 
   if (products.length === 0)

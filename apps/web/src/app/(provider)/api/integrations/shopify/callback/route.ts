@@ -5,6 +5,12 @@ import * as Shopify from "@/server/app/integration/shopify";
 import { Environment } from "@/server/utils/environment";
 import { verifyHmac } from "@/server/utils/shopify";
 
+// Sends the admin back to the Shopify connect screen with a machine-readable
+// reason instead of stranding them on this JSON endpoint. The connect UI maps
+// each reason to a human message. Mirrors the WooCommerce callback.
+const connectPage = (reason: string) =>
+  `${process.env.APP_HOST}/onboarding/connect/shopify?error=${reason}`;
+
 export const GET = async (request: NextRequest) => {
   if (!process.env.SHOPIFY_API_SECRET || !process.env.APP_HOST) {
     return Response.json(
@@ -20,16 +26,15 @@ export const GET = async (request: NextRequest) => {
   const state = params.get("state");
 
   if (!code || !shop || !state)
-    return Response.json({ error: "Missing parameters" }, { status: 400 });
+    return Response.redirect(connectPage("missing_parameters"));
 
   const jar = await cookies();
   const nonce = jar.get("shopify_nonce")?.value;
 
-  if (state !== nonce)
-    return Response.json({ error: "State mismatch" }, { status: 403 });
+  if (state !== nonce) return Response.redirect(connectPage("invalid_state"));
 
   if (!verifyHmac(params, process.env.SHOPIFY_API_SECRET))
-    return Response.json({ error: "Invalid HMAC" }, { status: 403 });
+    return Response.redirect(connectPage("invalid_hmac"));
 
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) return Response.redirect(`${process.env.APP_HOST}/sign-in`);
@@ -43,11 +48,12 @@ export const GET = async (request: NextRequest) => {
   jar.delete("shopify_nonce");
   jar.delete("shopify_shop");
 
-  if (!result.success)
-    return Response.json(
-      { error: "Failed to complete Shopify integration" },
-      { status: 502 },
-    );
+  if (!result.success) {
+    const reason = /already connected/i.test(result.error.message)
+      ? "already_connected"
+      : "integration_failed";
+    return Response.redirect(connectPage(reason));
+  }
 
   return Response.redirect(
     `${process.env.APP_HOST}/onboarding/products?connected=shopify`,

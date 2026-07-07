@@ -109,12 +109,13 @@ export const ProductSelector = ({
 
   const limit = Math.min(10, products.length);
 
-  const toggleAll = () => {
-    setSelected((previous) => {
-      if (previous.size === products.length) return new Set();
-      return new Set(products.slice(0, limit).map((product) => product.id));
-    });
-  };
+  // Select-all toggle removed — selection is per-row only.
+  // const toggleAll = () => {
+  //   setSelected((previous) => {
+  //     if (previous.size === products.length) return new Set();
+  //     return new Set(products.slice(0, limit).map((product) => product.id));
+  //   });
+  // };
 
   const toggleProduct = (id: string) => {
     setSelected((previous) => {
@@ -163,11 +164,22 @@ export const ProductSelector = ({
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div className="bg-background-rich">
-            <Table>
-              <TableHeader>
-                <TableRow>
+            {/* overflow-visible stops the <table> from becoming its own scroll
+                container, so the sticky header anchors to the outer
+                overflow-auto scroller instead. */}
+            <Table className="overflow-visible">
+              {/* Border via inset box-shadow on the cells (not `border-b`): with
+                  border-collapse, a collapsed thead border scrolls away with the
+                  body, whereas a cell box-shadow stays pinned to the sticky
+                  header. Background also lives on the cells so rows never show
+                  through the forced-transparent header row. */}
+              <TableHeader className="sticky top-0 z-10 [&_th]:bg-background-rich [&_th]:shadow-[inset_0_-1px_0_0_var(--color-accent-foreground)]">
+                <TableRow className="border-b-0">
+                  {/* Empty placeholder keeps the checkbox column aligned with
+                      the per-row selection cells now that the select-all toggle
+                      is removed. */}
                   <TableHead className="w-10 px-4 py-2">
-                    <button
+                    {/* <button
                       type="button"
                       onClick={toggleAll}
                       className={cn(
@@ -185,7 +197,7 @@ export const ProductSelector = ({
                             : "opacity-0",
                         )}
                       />
-                    </button>
+                    </button> */}
                   </TableHead>
                   {["Product", "Price", "Currency", "Status", "Quality"].map(
                     (header) => (

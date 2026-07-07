@@ -102,9 +102,11 @@ const CONNECTED_PLATFORMS: Record<string, StorePlatform[]> = {
 };
 
 /**
- * Products for the store the user just connected during onboarding, scoping the
- * product picker to that store so a previously-connected store's catalog doesn't
- * bleed in.
+ * Full product catalog for the store the user just connected during onboarding,
+ * scoping the product picker to that store so a previously-connected store's
+ * catalog doesn't bleed in. Returns the whole catalog (no preview cap) so the
+ * selector can offer every product to choose from — the free-tier scan limit is
+ * enforced separately in the picker.
  *
  * Prefer the `connected` platform from the redirect (`?connected=shopify`) when
  * available: reconnecting a store issues a `Store.update` that preserves the
@@ -113,7 +115,7 @@ const CONNECTED_PLATFORMS: Record<string, StorePlatform[]> = {
  * no platform is given (CSV/feed flows redirect without the param), fall back to
  * the newest store — `find` defaults to `createdAt desc`, so limit 1 yields it.
  */
-export const skimForConnectedStore = withAuthentication(
+export const listForConnectedStore = withAuthentication(
   async (context, { connected }: { connected?: string } = {}) => {
     const userId = context.session.user.id;
 
@@ -139,10 +141,9 @@ export const skimForConnectedStore = withAuthentication(
         eq(schema.product.userId, userId),
         eq(schema.product.storeId, store.id),
       ),
-      limit: 10,
     });
   },
-  "Product.skimForConnectedStore",
+  "Product.listForConnectedStore",
 );
 
 const keys = [

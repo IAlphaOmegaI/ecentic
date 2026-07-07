@@ -12,10 +12,29 @@ import {
   InferredForm,
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { z } from "zod";
 import { useCurrentUser } from "@/context/auth";
 import * as Shopify from "@/server/app/integration/shopify";
+
+// Shown when the callback reports a failure it doesn't have specific copy for
+// (including the generic `integration_failed` reason).
+const GENERIC_CONNECT_ERROR =
+  "We couldn't finish connecting your Shopify store. Please try again.";
+
+// Reasons the OAuth callback (`/api/integrations/shopify/callback`) can bounce
+// the admin back here with `?error=`, mapped to human-readable copy. Unknown
+// reasons fall back to GENERIC_CONNECT_ERROR.
+const ERROR_MESSAGES: Record<string, string> = {
+  missing_parameters:
+    "Shopify's response was missing required parameters. Start the connection again.",
+  invalid_state:
+    "The connection attempt expired or was already used. Start it again.",
+  invalid_hmac:
+    "We couldn't verify Shopify's response. Start the connection again.",
+  already_connected:
+    "This store is already connected to another Ecentic account. Sign in with that account, or contact support to move it.",
+};
 
 /**
  * Resolves a user-entered store value to a `*.myshopify.com` admin domain for
@@ -70,6 +89,11 @@ export const ShopifyForm = () => {
   const router = useRouter();
   const toast = useToastManager();
   const user = useCurrentUser();
+  const searchParameters = useSearchParams();
+  const errorCode = searchParameters.get("error");
+  const errorMessage = errorCode
+    ? (ERROR_MESSAGES[errorCode] ?? GENERIC_CONNECT_ERROR)
+    : null;
 
   const [handleSubmit, isPending] = useAsyncAction(
     async (data: FormEntries<typeof config>) => {
@@ -120,6 +144,11 @@ export const ShopifyForm = () => {
       onSubmit={handleSubmit}
       className="flex flex-col gap-4"
     >
+      {errorMessage && (
+        <p className="rounded-md border border-error/40 bg-error/10 px-3 py-2 font-light text-error text-sm">
+          {errorMessage}
+        </p>
+      )}
       <Button
         type="submit"
         color="primary"
