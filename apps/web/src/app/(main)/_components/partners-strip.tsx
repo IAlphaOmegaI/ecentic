@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Plus } from "@/components/plus";
 
 type Partner = {
   id: string;
@@ -50,8 +51,12 @@ const partners: Partner[] = [
 export const PartnersStrip = () => (
   <section
     aria-label="Backed by and built for"
-    className="border-accent-foreground border-y py-10"
+    className="relative border-accent-foreground border-y py-10"
   >
+    <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+    <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+    <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+    <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
     <p className="text-center font-light text-primary text-xl">
       Backed by and built for
     </p>

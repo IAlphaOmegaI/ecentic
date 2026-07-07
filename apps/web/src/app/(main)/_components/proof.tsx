@@ -1,3 +1,5 @@
+import { Counter } from "./counter";
+
 const stats = [
   {
     value: "+15%",
@@ -28,14 +30,13 @@ export const Proof = () => (
       you.
     </h2>
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      {stats.map((stat) => (
-        <div
-          key={stat.label}
-          className="flex flex-col gap-2 border-accent-foreground border-l pl-4"
-        >
-          <span className="font-body font-semibold text-4xl text-primary">
-            {stat.value}
-          </span>
+      {stats.map((stat, index) => (
+        <div key={stat.label} className="flex flex-col gap-2">
+          <Counter
+            value={stat.value}
+            delay={index * 0.1}
+            className="font-body font-semibold text-4xl text-primary"
+          />
           <span className="text-foreground">{stat.label}</span>
           <span className="text-foreground-dimmed text-xs">{stat.source}</span>
         </div>
