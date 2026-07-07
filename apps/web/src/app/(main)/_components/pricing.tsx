@@ -149,6 +149,14 @@ export const Pricing = () => (
                 </div>
               ))}
             </div>
+            <p className="mt-3 border-accent-foreground border-t pt-3 font-light text-foreground-dimmed text-sm">
+              <span className="font-medium text-foreground">
+                + 3% performance fee
+              </span>{" "}
+              on AI-attributed orders · capped at $500/mo. You only pay when an
+              agent buys because of an optimization we made — never on your
+              other sales.
+            </p>
             <PricingCTA plan="compete" className="mt-4 w-full md:mt-auto">
               {compete.cta}
             </PricingCTA>
@@ -178,6 +186,14 @@ export const Pricing = () => (
                 </div>
               ))}
             </div>
+            <p className="mt-3 border-white/20 border-t pt-3 font-light text-sm text-white/70">
+              <span className="font-medium text-white">
+                + 3% performance fee
+              </span>{" "}
+              on AI-attributed orders · capped at $500/mo. You only pay when an
+              agent buys because of an optimization we made — never on your
+              other sales.
+            </p>
             <PricingCTA plan="dominate" className="mt-4 w-full md:mt-auto">
               {dominate.cta}
             </PricingCTA>

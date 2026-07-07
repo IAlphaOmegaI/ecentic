@@ -2,6 +2,7 @@
 
 import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import { useState } from "react";
+import type * as PerformanceFee from "@/server/app/billing/performance-fee";
 import type * as Store from "@/server/app/store";
 import type * as Subscription from "@/server/app/subscription";
 import type * as User from "@/server/app/user";
@@ -17,6 +18,7 @@ export namespace SettingsClient {
     stores: Store.Type[];
     subscription: Subscription.Type | null;
     invoices: Subscription.InvoiceSummary[];
+    performanceFee: PerformanceFee.PeriodSummary | null;
   };
 }
 
@@ -25,6 +27,7 @@ export const SettingsClient = ({
   stores,
   subscription,
   invoices,
+  performanceFee,
 }: SettingsClient.Props) => {
   const [notifications, setNotifications] = useState({
     winRateDrop: true,
@@ -131,7 +134,11 @@ export const SettingsClient = ({
           value="billing"
           className="min-w-0 flex-1 bg-background-rich outline-none"
         >
-          <BillingSection subscription={subscription} invoices={invoices} />
+          <BillingSection
+            subscription={subscription}
+            invoices={invoices}
+            performanceFee={performanceFee}
+          />
         </TabsPanel>
       </Tabs>
     </div>

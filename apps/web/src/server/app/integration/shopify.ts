@@ -566,6 +566,32 @@ export const handleOAuthCallback = withContext(
         category: "shopify.script_tag.installed",
         data: { "store.id": store.id, shop: shopId },
       });
+
+      // Register the `orders/paid` webhook so the performance-fee attribution
+      // pipeline sees completed orders. Routes to the same handler as the GDPR
+      // topics; failures here must not fail the connect, so we don't unwrap.
+      await HTTP.request(
+        `https://${shopId}/admin/api/${API_VERSION}/webhooks.json`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Shopify-Access-Token": accessToken,
+          },
+          body: JSON.stringify({
+            webhook: {
+              topic: "orders/paid",
+              address: `${origin}/api/integrations/shopify/webhooks`,
+              format: "json",
+            },
+          }),
+        },
+      );
+
+      context.span.addBreadcrumb({
+        category: "shopify.webhook.registered",
+        data: { "store.id": store.id, shop: shopId, topic: "orders/paid" },
+      });
     }
 
     return { success: true, data: { storeId: store.id } };
@@ -1323,4 +1349,241 @@ export const syncPublicProducts = withAuthentication(
     });
   },
   "Shopify.syncPublicProducts",
+);
+
+// ---------------------------------------------------------------------------
+// Billing — Shopify usage records for the AI-attributed performance fee.
+//
+// Shopify-installed merchants must be charged through Shopify Billing, so the
+// performance fee is a capped usage line on an app subscription. These helpers
+// speak the GraphQL Admin API (the REST calls above pre-date billing); the
+// period-close cron routes here for stores that carry a `shopifyUsageLineId`.
+// ---------------------------------------------------------------------------
+
+const graphqlRequest = async <T>(
+  domain: string,
+  accessToken: string,
+  query: string,
+  variables: Record<string, unknown>,
+): Promise<{ success: true; data: T } | { success: false; error: Error }> => {
+  const response = await HTTP.request(
+    `${domain}/admin/api/${API_VERSION}/graphql.json`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Access-Token": accessToken,
+      },
+      body: JSON.stringify({ query, variables }),
+    },
+  );
+  if (!response.success) return response;
+
+  const parsed = await HTTP.parse<{
+    data: T;
+    errors?: { message: string }[];
+  }>(response);
+  if (!parsed.success) return parsed;
+
+  if (parsed.data.errors?.length)
+    return {
+      success: false,
+      error: new RequestError(
+        parsed.data.errors.map((entry) => entry.message).join("; "),
+      ),
+    };
+
+  return { success: true, data: parsed.data.data };
+};
+
+const APP_SUBSCRIPTION_CREATE = `#graphql
+  mutation CreateAppSubscription(
+    $name: String!
+    $returnUrl: URL!
+    $cappedAmount: MoneyInput!
+    $terms: String!
+  ) {
+    appSubscriptionCreate(
+      name: $name
+      returnUrl: $returnUrl
+      lineItems: [
+        { plan: { appUsagePricingDetails: { cappedAmount: $cappedAmount, terms: $terms } } }
+      ]
+    ) {
+      appSubscription {
+        id
+        lineItems {
+          id
+        }
+      }
+      confirmationUrl
+      userErrors {
+        field
+        message
+      }
+    }
+  }
+`;
+
+/**
+ * Creates (once) a capped usage line on a Shopify app subscription for this
+ * store's performance fee and persists the returned `lineItem.id` as
+ * `store.shopifyUsageLineId`. Returns a `confirmationUrl` the merchant must
+ * approve before usage records can be created — redirect them per the embedded
+ * app UX. Idempotent: a store that already has a usage line returns early.
+ */
+export const ensureUsageSubscription = withAuthentication(
+  async (
+    context,
+    {
+      store: id,
+      capCents,
+      currency = "USD",
+    }: { store: string; capCents: number; currency?: string },
+  ) => {
+    const store = await Store.get(Environment.SERVER, id);
+    if (!store.success) return store;
+    if (!store.data)
+      return { success: false, error: new RequestError("Store not found") };
+    if (store.data.userId !== context.session.user.id)
+      return { success: false, error: new RequestError("Not authorized") };
+    if (store.data.platform !== "shopify")
+      return {
+        success: false,
+        error: new RequestError("Store is not a Shopify store"),
+      };
+    if (store.data.shopifyUsageLineId)
+      return { success: true as const, data: { confirmationUrl: null } };
+
+    const resolved = await resolveAccessToken(store.data.id);
+    if (!resolved.success) return resolved;
+
+    const origin = resolveTrackerPublicOrigin();
+    const capAmount = (capCents / 100).toFixed(2);
+
+    const result = await graphqlRequest<{
+      appSubscriptionCreate: {
+        appSubscription: { id: string; lineItems: { id: string }[] } | null;
+        confirmationUrl: string | null;
+        userErrors: { field: string[] | null; message: string }[];
+      };
+    }>(store.data.domain, resolved.accessToken, APP_SUBSCRIPTION_CREATE, {
+      name: "Ecentic performance fee",
+      returnUrl: `${origin}/dashboard/settings?billing=connected`,
+      cappedAmount: { amount: capAmount, currencyCode: currency },
+      terms: `Up to ${capAmount} ${currency} per 30 days on AI-attributed orders`,
+    });
+    if (!result.success) return result;
+
+    const payload = result.data.appSubscriptionCreate;
+    if (payload.userErrors.length)
+      return {
+        success: false,
+        error: new RequestError(
+          payload.userErrors.map((entry) => entry.message).join("; "),
+        ),
+      };
+
+    const lineId = payload.appSubscription?.lineItems[0]?.id ?? null;
+    if (lineId)
+      await Store.update(Environment.SERVER, store.data.id, {
+        shopifyUsageLineId: lineId,
+        updatedAt: new Date(),
+      });
+
+    return {
+      success: true as const,
+      data: { confirmationUrl: payload.confirmationUrl },
+    };
+  },
+  "Shopify.ensureUsageSubscription",
+);
+
+const APP_USAGE_RECORD_CREATE = `#graphql
+  mutation CreateUsageRecord(
+    $subscriptionLineItemId: ID!
+    $price: MoneyInput!
+    $description: String!
+  ) {
+    appUsageRecordCreate(
+      subscriptionLineItemId: $subscriptionLineItemId
+      price: $price
+      description: $description
+    ) {
+      appUsageRecord {
+        id
+      }
+      userErrors {
+        field
+        message
+      }
+    }
+  }
+`;
+
+/**
+ * Reports a usage charge (in cents) against the store's capped usage line. The
+ * caller (period-close cron) has already clamped `cents` to the remaining cap
+ * delta, so a cap-exceeded `userError` is treated as terminal — surfaced as a
+ * failure rather than retried.
+ */
+export const createUsageRecord = withContext(
+  async (
+    _,
+    {
+      store: id,
+      cents,
+      currency = "USD",
+      description,
+    }: {
+      store: string;
+      cents: number;
+      currency?: string;
+      description: string;
+    },
+  ) => {
+    if (cents <= 0) return { success: true as const, data: { recordId: null } };
+
+    const store = await Store.get(Environment.SERVER, id);
+    if (!store.success) return store;
+    if (!store.data)
+      return { success: false, error: new RequestError("Store not found") };
+
+    const lineId = store.data.shopifyUsageLineId;
+    if (!lineId)
+      return {
+        success: false,
+        error: new RequestError("Store has no Shopify usage line"),
+      };
+
+    const resolved = await resolveAccessToken(store.data.id);
+    if (!resolved.success) return resolved;
+
+    const result = await graphqlRequest<{
+      appUsageRecordCreate: {
+        appUsageRecord: { id: string } | null;
+        userErrors: { field: string[] | null; message: string }[];
+      };
+    }>(store.data.domain, resolved.accessToken, APP_USAGE_RECORD_CREATE, {
+      subscriptionLineItemId: lineId,
+      price: { amount: (cents / 100).toFixed(2), currencyCode: currency },
+      description,
+    });
+    if (!result.success) return result;
+
+    const payload = result.data.appUsageRecordCreate;
+    if (payload.userErrors.length)
+      return {
+        success: false,
+        error: new RequestError(
+          payload.userErrors.map((entry) => entry.message).join("; "),
+        ),
+      };
+
+    return {
+      success: true as const,
+      data: { recordId: payload.appUsageRecord?.id ?? null },
+    };
+  },
+  "Shopify.createUsageRecord",
 );

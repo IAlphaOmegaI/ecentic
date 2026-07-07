@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { unwrapResult } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
 import { type NextRequest, NextResponse as Response } from "next/server";
+import * as Attribution from "@/server/app/billing/attribution";
 import * as Store from "@/server/app/store";
 import { schema } from "@/server/database";
 import { Environment } from "@/server/utils/environment";
@@ -50,6 +51,54 @@ const handleCustomersRedact = (
     shop,
     message: "No customer data stored. Nothing to redact.",
   });
+
+/**
+ * `orders/paid` → performance-fee attribution. Maps the shop to its Ecentic
+ * store, converts the order total to cents, flattens `note_attributes` (where
+ * the storefront tracker stamps `_ecentic_ai_ref`), and records an attributed
+ * conversion when a signal is present. Idempotent downstream on (store, order).
+ */
+const handleOrdersPaid = async (
+  shop: string,
+  payload: {
+    id: number;
+    current_total_price?: string;
+    total_price?: string;
+    currency?: string;
+    note_attributes?: { name: string; value: string }[];
+  },
+) => {
+  const stores = await unwrapResult(
+    Store.find(Environment.SERVER, {
+      where: eq(schema.store.domain, `https://${shop}`),
+      limit: 1,
+    }),
+  );
+
+  const store = stores[0];
+  if (!store) return Response.json({ shop, message: "No matching store." });
+
+  const amount = payload.current_total_price ?? payload.total_price ?? "0";
+  const orderValueCents = Math.round(Number.parseFloat(amount) * 100);
+
+  const noteAttributes = (payload.note_attributes ?? []).reduce<
+    Record<string, string>
+  >((accumulator, entry) => {
+    accumulator[entry.name] = entry.value;
+    return accumulator;
+  }, {});
+
+  await Attribution.recordOrderIfAttributed(Environment.SERVER, {
+    store: store.id,
+    user: store.userId,
+    orderExternalId: String(payload.id),
+    orderValueCents,
+    currency: payload.currency ?? "USD",
+    noteAttributes,
+  });
+
+  return Response.json({ shop, message: "Order processed." });
+};
 
 const handleShopRedact = async (
   shop: string,
@@ -103,6 +152,8 @@ export const POST = async (request: NextRequest) => {
       return handleCustomersRedact(shop, payload);
     case "shop/redact":
       return handleShopRedact(shop, payload);
+    case "orders/paid":
+      return handleOrdersPaid(shop, payload);
     default:
       return Response.json(
         { error: `Unknown topic: ${topic}` },

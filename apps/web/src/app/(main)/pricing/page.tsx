@@ -60,6 +60,11 @@ const faq = [
       "Compete is for teams that want to understand where they lose: up to 100 products, daily simulations, and competitor battlecards with manual suggestions. Dominate adds scale and automation: up to 1000 products, continuous simulations, one-click or auto-published optimizations, model drift alerts, and UCP generation.",
   },
   {
+    question: "How does the 3% performance fee work?",
+    answer:
+      "Paid plans (Compete and Dominate) add a 3% fee on orders we can attribute to AI-agent traffic we optimize for — an order counts only when it carries our attribution signal or follows a recent AI-referral visit to your store. You are never charged on your other sales, never per agent visit, and the fee is capped at $500 per month with a hard monthly limit, so there are no surprises. The free Scan plan has no performance fee.",
+  },
+  {
     question: "Can I change plans or cancel later?",
     answer:
       "You can start on Scan, upgrade to Compete or Dominate when you are ready to act on the results, and move to Enterprise once you need custom limits or security. Plans are monthly, so you are never locked into a long contract to try the platform.",

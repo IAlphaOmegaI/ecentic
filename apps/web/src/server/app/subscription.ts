@@ -18,6 +18,7 @@ import {
   DEALS,
   isDealKey,
   isPlanKey,
+  PERFORMANCE_FEE,
   PLANS,
   type PlanKey,
   resolvePlanByPriceId,
@@ -63,7 +64,18 @@ const upsertFromStripeSubscription = withContext(
       fallbackUser ??
       null;
 
-    const item = subscription.items.data[0];
+    // The base plan is the first non-metered line; the performance fee, when
+    // present, is a separate metered line matched by its configured price id.
+    const performancePriceId = PERFORMANCE_FEE.priceId();
+    const performanceItem = performancePriceId
+      ? subscription.items.data.find(
+          (entry) => entry.price.id === performancePriceId,
+        )
+      : undefined;
+    const item =
+      subscription.items.data.find(
+        (entry) => entry.price.id !== performancePriceId,
+      ) ?? subscription.items.data[0];
     const priceId = item?.price.id ?? null;
     const plan = priceId ? resolvePlanByPriceId(priceId) : null;
 
@@ -75,6 +87,10 @@ const upsertFromStripeSubscription = withContext(
       stripeSubscriptionId: subscription.id,
       stripePriceId: priceId,
       plan,
+      stripePerformanceItemId: performanceItem?.id ?? null,
+      // Only ever flip the fee ON from a metered line; never force it off here,
+      // so admin/Enterprise (Shopify-rail) overrides survive a later webhook.
+      ...(performanceItem ? { performanceFeeEnabled: true } : {}),
       status: subscription.status,
       currentPeriodStart: periodStartUnix
         ? new Date(periodStartUnix * 1000)
@@ -310,11 +326,19 @@ export const createCheckoutSessionForUser = withContext(
       return { merchant, coupon };
     })();
 
+    // When the metered performance-fee price is configured, attach it as a
+    // second line so base + usage share one subscription and one invoice. A
+    // metered line takes no quantity — usage is reported via meter events.
+    const performancePriceId = PERFORMANCE_FEE.priceId();
+
     const session = await resultify(() =>
       stripe().checkout.sessions.create({
         mode: "subscription",
         customer: customer.data,
-        line_items: [{ price: priceId, quantity: 1 }],
+        line_items: [
+          { price: priceId, quantity: 1 },
+          ...(performancePriceId ? [{ price: performancePriceId }] : []),
+        ],
         success_url: `${appHost}/dashboard/settings?checkout=success`,
         cancel_url: `${appHost}/?checkout=canceled#pricing`,
         // Stripe forbids `discounts` and `allow_promotion_codes` together.
@@ -454,6 +478,56 @@ export const createBillingPortalSession = withAuthentication(
     return { success: true as const, data: { url: session.data.url } };
   },
   "Subscription.createBillingPortalSession",
+);
+
+/**
+ * Reports metered performance-fee usage to Stripe as a Billing Meter event.
+ * `quantityCents` is the not-yet-reported billed delta for the open period; the
+ * cap is enforced by the caller (period-close cron), so this only ever reports
+ * up to `min(accrued, cap) - alreadyReported`. Called with the customer id, not
+ * the subscription item, because Billing Meters key on the customer.
+ */
+export const reportPerformanceUsage = withContext(
+  async (
+    _,
+    { customer, quantityCents }: { customer: string; quantityCents: number },
+  ) => {
+    if (quantityCents <= 0)
+      return { success: true as const, data: { reported: 0 } };
+
+    const eventName = PERFORMANCE_FEE.eventName();
+    if (!eventName)
+      return {
+        success: false as const,
+        error: new RequestError(
+          "Performance-fee meter event is not configured",
+        ),
+      };
+
+    const event = await resultify(() =>
+      stripe().billing.meterEvents.create({
+        event_name: eventName,
+        payload: {
+          stripe_customer_id: customer,
+          value: String(quantityCents),
+        },
+      }),
+    );
+
+    if (!event.success)
+      return {
+        success: false as const,
+        error: new RequestError(
+          "Failed to report performance-fee meter event",
+          {
+            cause: event.error,
+          },
+        ),
+      };
+
+    return { success: true as const, data: { reported: quantityCents } };
+  },
+  "Subscription.reportPerformanceUsage",
 );
 
 export const handleStripeEvent = withContext(

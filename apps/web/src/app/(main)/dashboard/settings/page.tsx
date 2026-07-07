@@ -2,6 +2,7 @@ import { unwrapResult } from "@zenncore/utils";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import * as Authentication from "@/server/app/authentication";
+import * as PerformanceFee from "@/server/app/billing/performance-fee";
 import * as Store from "@/server/app/store";
 import * as Subscription from "@/server/app/subscription";
 import { Environment } from "@/server/utils/environment";
@@ -35,17 +36,22 @@ const SettingsSkeleton = () => (
 
 const SettingsContent = async () => {
   await connection();
-  const [user, stores, subscriptionResult, invoicesResult] = await Promise.all([
-    unwrapResult(Authentication.getCurrentUser(Environment.SERVER)),
-    unwrapResult(Store.getForCurrentUser(Environment.SERVER)),
-    Subscription.getCurrentSubscription(Environment.SERVER),
-    Subscription.listInvoices(Environment.SERVER),
-  ]);
+  const [user, stores, subscriptionResult, invoicesResult, performanceResult] =
+    await Promise.all([
+      unwrapResult(Authentication.getCurrentUser(Environment.SERVER)),
+      unwrapResult(Store.getForCurrentUser(Environment.SERVER)),
+      Subscription.getCurrentSubscription(Environment.SERVER),
+      Subscription.listInvoices(Environment.SERVER),
+      PerformanceFee.getCurrentPeriodSummary(Environment.SERVER),
+    ]);
 
   const subscription = subscriptionResult.success
     ? subscriptionResult.data
     : null;
   const invoices = invoicesResult.success ? invoicesResult.data : [];
+  const performanceFee = performanceResult.success
+    ? performanceResult.data
+    : null;
 
   return (
     <SettingsClient
@@ -53,6 +59,7 @@ const SettingsContent = async () => {
       stores={stores}
       subscription={subscription}
       invoices={invoices}
+      performanceFee={performanceFee}
     />
   );
 };
