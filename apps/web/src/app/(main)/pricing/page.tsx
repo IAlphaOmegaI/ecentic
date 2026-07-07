@@ -146,6 +146,7 @@ export default () => {
       eyebrow="Pricing"
       title="Start free. Pay when agents start picking you."
       description={description}
+      hideHero
     >
       <script
         type="application/ld+json"
