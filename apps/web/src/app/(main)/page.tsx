@@ -13,6 +13,7 @@ import {
   websiteSchema,
 } from "@/lib/seo";
 import { Booking } from "./_components/booking";
+import { CaseStudy } from "./_components/case-study";
 import { Features } from "./_components/features";
 import { Hero } from "./_components/hero";
 import { PartnersStrip } from "./_components/partners-strip";
@@ -94,6 +95,7 @@ export default async () => (
         <Comparison />
       </Suspense>
       {/* <Pricing /> */}
+      <CaseStudy />
       <Testimonials />
       <Booking />
       {/* <DiscoveryPaths /> */}

@@ -64,10 +64,14 @@ export const Footer = ({ stacked = false }: Footer.Props) => (
   <section className="relative -left-[calc(50vw-50%)] w-screen">
     <div
       className={cn(
-        "relative mx-auto max-w-6xl border-accent-foreground",
+        "relative isolate mx-auto max-w-6xl border-accent-foreground",
         stacked ? "border-x" : "border-t",
       )}
     >
+      <div
+        aria-hidden
+        className="-z-10 pointer-events-none absolute inset-x-0 bottom-0 h-[500px] bg-radial-[at_50%_100%] from-primary/20 via-primary/5 to-transparent"
+      />
       {!stacked && (
         <>
           <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />

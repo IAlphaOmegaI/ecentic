@@ -3,14 +3,9 @@ import { Counter } from "./counter";
 
 const stats = [
   {
-    value: "+15%",
-    label: "AI-agent visits for DUA Flavours in 30 days",
-    source: "Ecentic customer",
-  },
-  {
-    value: "+12%",
-    label: "sales for DUA Flavours in 30 days",
-    source: "Ecentic customer",
+    value: "20%",
+    label: "of Cyber Week 2025 orders were influenced by AI ($67B)",
+    source: "Salesforce",
   },
   {
     value: "31%",
@@ -21,6 +16,11 @@ const stats = [
     value: "13%",
     label: "sales growth for stores built for AI agents (vs 2% without)",
     source: "Adobe / Bain",
+  },
+  {
+    value: "45%",
+    label: "of marketing leaders can't measure their AI visibility",
+    source: "Semrush, 2026",
   },
 ] as const;
 

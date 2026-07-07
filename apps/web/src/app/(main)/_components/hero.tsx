@@ -1,4 +1,3 @@
-import { TrendUpIcon } from "@zenncore/icons";
 import Image from "next/image";
 import Background from "@/public/images/background.webp";
 import Dashboard from "@/public/screenshots/dashboard.png";
@@ -32,11 +31,6 @@ export const Hero = () => (
       Shoppers now ask ChatGPT, Gemini, and Perplexity what to buy. Ecentic
       makes sure the answer is your product — and sends those buyers straight to
       your store.
-    </p>
-
-    <p className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 font-medium text-primary text-sm">
-      <TrendUpIcon className="size-4" />
-      DUA Flavours grew AI-agent visits +15% and sales +12% — in 30 days.
     </p>
 
     <InstallCta className="justify-center" />
