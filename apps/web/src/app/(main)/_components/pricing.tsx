@@ -79,7 +79,7 @@ export const Pricing = () => (
           <Plus className="bottom-0 left-0 hidden -translate-x-1/2 translate-y-1/2 md:flex" />
           <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
           {/* Scan */}
-          <div className="flex h-auto flex-col p-6 lg:h-102">
+          <div className="flex h-auto flex-col bg-background-rich p-6 lg:h-102">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="font-body font-medium text-2xl text-foreground">
@@ -139,7 +139,7 @@ export const Pricing = () => (
           </div>
 
           {/* Pay-as-you-go */}
-          <div className="flex h-auto flex-col p-6 lg:h-102">
+          <div className="flex h-auto flex-col bg-background-rich p-6 lg:h-102">
             <div className="flex items-center justify-between gap-2">
               <h2 className="font-body font-medium text-2xl text-foreground">
                 {payg.name}
@@ -177,7 +177,7 @@ export const Pricing = () => (
           </div>
 
           {/* Compete */}
-          <div className="flex h-auto flex-col p-6 lg:h-102">
+          <div className="flex h-auto flex-col bg-background-rich p-6 lg:h-102">
             <h2 className="font-body font-medium text-2xl text-foreground">
               {compete.name}
             </h2>
