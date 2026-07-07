@@ -1,4 +1,6 @@
 import { CheckIcon } from "@zenncore/icons";
+import Image from "next/image";
+import DuaLogo from "@/public/partners/dua-flavours.png";
 import { Plus } from "@/components/plus";
 import { Counter } from "./counter";
 
@@ -18,6 +20,11 @@ export const CaseStudy = () => (
         <div className="relative flex flex-col gap-4 p-6 md:p-12">
           <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
           <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
+          <Image
+            src={DuaLogo}
+            alt="DUA Flavours"
+            className="h-11 w-auto self-start"
+          />
           <p className="font-light text-primary text-xl">Customer story</p>
           <h2 className="font-body font-medium text-3xl text-foreground md:text-5xl">
             DUA Flavours went from skipped to picked — in 30 days.
