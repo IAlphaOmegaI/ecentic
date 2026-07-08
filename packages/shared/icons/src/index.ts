@@ -37,6 +37,7 @@ export * from "./icons/handle-y";
 export * from "./icons/instagram";
 export * from "./icons/linkedin";
 export * from "./icons/loader";
+export * from "./icons/log-out";
 export * from "./icons/menu";
 export * from "./icons/minus";
 export * from "./icons/phone";

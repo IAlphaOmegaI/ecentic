@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
+import { ArrowRightIcon, LoaderIcon, LogOutIcon } from "@zenncore/icons";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import {
@@ -10,6 +10,7 @@ import {
   InferredForm,
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
 import * as Authentication from "@/server/app/authentication";
 import * as User from "@/server/app/user";
@@ -76,6 +77,7 @@ const password = {
 } satisfies GenericForm;
 
 export const AccountSection = ({ user }: { user: User.Type }) => {
+  const router = useRouter();
   const toast = useToastManager();
 
   const [handleProfileSubmit, isProfilePending] = useAsyncAction(
@@ -120,6 +122,22 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
       toast.add({ title: "Password updated", type: "success" });
     },
   );
+
+  const [handleSignOut, isSignOutPending] = useAsyncAction(async () => {
+    const result = await Authentication.signOut();
+
+    if (!result.success) {
+      toast.add({
+        title: "Could not sign out",
+        description: result.error.message,
+        type: "error",
+      });
+      return;
+    }
+
+    router.replace("/sign-in");
+    router.refresh();
+  });
 
   return (
     <div className="divide-y divide-accent-foreground">
@@ -197,6 +215,34 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
               </div>
             </div>
           </InferredForm>
+        </div>
+      </div>
+
+      <div className="px-8">
+        <div className="flex justify-between border-accent-foreground border-x p-4">
+          <div>
+            <h3 className="font-semibold text-base text-foreground-rich">
+              Session
+            </h3>
+            <p className="mt-1 text-foreground-dimmed text-sm">
+              Sign out of this device. You will need to sign in again to access
+              your dashboard.
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            color="neutral"
+            className="shrink-0"
+            onClick={handleSignOut}
+            disabled={isSignOutPending}
+          >
+            {isSignOutPending ? (
+              <LoaderIcon className="size-4 animate-spin" />
+            ) : (
+              <LogOutIcon className="size-4" />
+            )}
+            {isSignOutPending ? "Signing out..." : "Sign Out"}
+          </Button>
         </div>
       </div>
 
