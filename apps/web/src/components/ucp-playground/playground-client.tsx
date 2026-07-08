@@ -1,7 +1,7 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { LoaderIcon, ShoppingCartIcon } from "@zenncore/icons";
+import { LoaderIcon, RobotIcon, ShoppingCartIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
@@ -27,7 +27,6 @@ import {
 import {
   Conversation,
   ConversationContent,
-  ConversationEmptyState,
   ConversationScrollButton,
 } from "@/components/ui/ai/conversation";
 import {
@@ -42,7 +41,7 @@ import {
   PromptInputSubmit,
   PromptInputTextarea,
 } from "@/components/ui/ai/prompt-input";
-import { Suggestion, Suggestions } from "@/components/ui/ai/suggestion";
+import { Suggestion } from "@/components/ui/ai/suggestion";
 import type {
   detailProductSchema,
   lookupProductSchema,
@@ -786,12 +785,38 @@ export const PlaygroundClient = ({
 
       {/* Conversation */}
       <Conversation className="min-h-0">
-        <ConversationContent>
+        <ConversationContent className="mx-auto min-h-full w-full max-w-3xl gap-6 px-4 py-6 sm:px-6">
           {isEmpty ? (
-            <ConversationEmptyState
-              description="Ask the agent to search the catalog, inspect a product, build a cart, or run checkout — one step at a time."
-              title="Start a UCP session"
-            />
+            <div className="flex flex-1 flex-col items-center justify-center gap-6 py-12 text-center">
+              <div className="flex size-12 items-center justify-center rounded-xl border border-accent-foreground bg-background-dimmed">
+                <RobotIcon className="size-6 text-primary" />
+              </div>
+              <div className="space-y-1.5">
+                <h2 className="font-semibold text-foreground-rich text-xl">
+                  What should the agent do?
+                </h2>
+                <p className="mx-auto max-w-md text-foreground-dimmed text-sm leading-relaxed">
+                  You&apos;re connected to{" "}
+                  <span className="font-mono text-foreground">
+                    {connectedHost}
+                  </span>
+                  . The agent runs live UCP calls — search the catalog, inspect
+                  a product, build a cart, or start a checkout.
+                </p>
+              </div>
+              {!isOutOfMessages && (
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  {starterSuggestions.map((suggestion) => (
+                    <Suggestion
+                      color="primary"
+                      key={suggestion}
+                      onClick={submit}
+                      suggestion={suggestion}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           ) : (
             messages.map((message, index) => (
               <Message from={message.role} key={message.id}>
@@ -809,47 +834,47 @@ export const PlaygroundClient = ({
       </Conversation>
 
       {/* Input */}
-      <div className="shrink-0 space-y-3 p-4">
-        {error && (
-          <ErrorView message={error.message || "Something went wrong"} />
-        )}
-        {isEmpty && !isOutOfMessages && (
-          <Suggestions>
-            {starterSuggestions.map((suggestion) => (
-              <Suggestion
-                key={suggestion}
-                onClick={submit}
-                suggestion={suggestion}
-              />
-            ))}
-          </Suggestions>
-        )}
-        {isOutOfMessages ? (
-          <MessageQuotaWall limit={messageLimit ?? 0} />
-        ) : (
-          <PromptInput className="flex flex-row" onSubmit={handleSubmit}>
-            <PromptInputBody className="flex items-center px-4 py-2">
-              <PromptInputTextarea
-                className="flex-1 p-0"
-                disabled={isGenerating}
-                onChange={handleTextChange}
-                placeholder="Ask the agent to run a UCP action…"
-                value={text}
-              />
-              <PromptInputSubmit
-                disabled={isGenerating ? false : !canSend}
-                onStop={stop}
-                status={status}
-              />
-            </PromptInputBody>
-          </PromptInput>
-        )}
-        {messageLimit !== undefined && !isOutOfMessages && (
-          <p className="text-center text-[11px] text-foreground-dimmed">
-            {remainingMessages} of {messageLimit} free message
-            {messageLimit === 1 ? "" : "s"} left in this playground.
-          </p>
-        )}
+      <div className="shrink-0 p-4 sm:px-6">
+        <div className="mx-auto w-full max-w-3xl space-y-3">
+          {error && (
+            <ErrorView message={error.message || "Something went wrong"} />
+          )}
+          {isOutOfMessages ? (
+            <MessageQuotaWall limit={messageLimit ?? 0} />
+          ) : (
+            <PromptInput onSubmit={handleSubmit}>
+              <PromptInputBody>
+                <PromptInputTextarea
+                  className="field-sizing-content max-h-48 px-4 pt-3.5 pb-1"
+                  disabled={isGenerating}
+                  onChange={handleTextChange}
+                  placeholder={`Ask the agent to shop ${connectedHost}…`}
+                  rows={1}
+                  value={text}
+                />
+                <div className="flex items-center justify-between gap-2 px-3 pt-1 pb-2.5">
+                  <span className="hidden text-[11px] text-foreground-dimmed sm:block">
+                    Enter to send · Shift + Enter for a new line
+                  </span>
+                  <PromptInputSubmit
+                    className="ml-auto"
+                    color="primary"
+                    disabled={isGenerating ? false : !canSend}
+                    onStop={stop}
+                    status={status}
+                    variant="default"
+                  />
+                </div>
+              </PromptInputBody>
+            </PromptInput>
+          )}
+          {messageLimit !== undefined && !isOutOfMessages && (
+            <p className="text-center text-[11px] text-foreground-dimmed">
+              {remainingMessages} of {messageLimit} free message
+              {messageLimit === 1 ? "" : "s"} left in this playground.
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
