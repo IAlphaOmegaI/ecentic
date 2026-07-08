@@ -183,7 +183,11 @@ const columns = [
       </span>
     ),
   },
-] satisfies ColumnDef<ProductDetailData["competitors"][number]>[];
+  // DataTableProvider adds `_id` to each row, so the columns must be typed for
+  // that row shape — not the bare competitor — or ColumnDef won't line up.
+] satisfies ColumnDef<
+  ProductDetailData["competitors"][number] & { _id: string }
+>[];
 
 const Model = {
   "GPT-4": {
@@ -345,8 +349,10 @@ const ApplyOptimization = ({
       />
       {reviewQueueHref && (
         <Button
+          // color="neutral" draws a blue-gray border (the neutral token is a
+          // cool/blue gray) — "accent" is the plain grid-gray outline.
           variant="outline"
-          color="neutral"
+          color="accent"
           render={<Link href={reviewQueueHref} />}
         >
           Review queue
@@ -369,7 +375,7 @@ export const ProductDetail = ({ data }: ProductDetail.Props) => {
           from the indicator. border-r-0 drops the base divider lines, which
           don't belong in a segmented control. */}
       <TabsList className="h-10 w-full rounded-md border-0 bg-background-dimmed p-1">
-        <TabsIndicator className="rounded" />
+        <TabsIndicator className="top-1 h-8 rounded" />
         <Tab value="overview" className="h-8 flex-1 border-r-0">
           Win Rate
         </Tab>

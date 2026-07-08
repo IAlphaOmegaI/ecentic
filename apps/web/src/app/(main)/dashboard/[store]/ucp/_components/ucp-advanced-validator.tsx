@@ -628,45 +628,56 @@ export const UcpAdvancedValidator = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="border-accent-foreground border-t bg-background-dimmed px-5 py-4">
-        <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-          Advanced endpoint & lifecycle testing
-        </p>
-        <p className="mt-1 text-foreground-dimmed text-xs">
-          Probes all service endpoints declared in the profile and simulates the
-          full AI agent checkout lifecycle — Create → Update → Complete →
-          Cancel. Makes live HTTP requests to the merchant server.
-        </p>
-      </div>
+      <div className="grid lg:grid-cols-2">
+        <div className="px-6 py-6 sm:px-8 sm:py-8">
+          <span className="font-medium text-[11px] text-foreground-dimmed uppercase tracking-[0.1em]">
+            Advanced testing
+          </span>
+          <h2 className="mt-2 font-bold text-foreground-rich text-xl tracking-[-0.02em]">
+            Endpoint & lifecycle tests
+          </h2>
+          <p className="mt-1.5 font-light text-foreground-dimmed text-sm">
+            Probes all service endpoints declared in the profile and simulates
+            the full AI agent checkout lifecycle — Create → Update → Complete →
+            Cancel.
+          </p>
+        </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="grid gap-px bg-accent-foreground sm:grid-cols-[minmax(0,1fr)_auto]"
-      >
-        <div className="bg-background-rich px-4 py-3">
-          <TextField
-            value={domain}
-            onValueChange={setDomain}
-            className="h-10 bg-background-rich"
-          >
-            <TextFieldInput
-              placeholder="yourdomain.com"
-              className="px-3 text-sm"
-              aria-label="Domain for advanced testing"
-            />
-          </TextField>
+        <div className="flex flex-col justify-center border-accent-foreground border-t px-6 py-6 sm:px-8 sm:py-8 lg:border-t-0 lg:border-l">
+          <form onSubmit={handleSubmit}>
+            <label
+              htmlFor="ucp-advanced-domain"
+              className="block font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
+            >
+              Domain
+            </label>
+            <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-stretch">
+              <TextField
+                value={domain}
+                onValueChange={setDomain}
+                className="flex-1"
+              >
+                <TextFieldInput
+                  id="ucp-advanced-domain"
+                  placeholder="yourdomain.com"
+                />
+              </TextField>
+              <Button
+                type="submit"
+                color="primary"
+                disabled={isChecking || !domain.trim()}
+                className="w-full shrink-0 sm:w-auto"
+              >
+                {isChecking ? "Testing…" : "Run advanced tests"}
+              </Button>
+            </div>
+            <p className="mt-2 font-light text-foreground-dimmed text-sm">
+              Makes live HTTP requests to the merchant server — probe inputs
+              may create test carts.
+            </p>
+          </form>
         </div>
-        <div className="flex items-center bg-background-rich px-4 py-3">
-          <Button
-            type="submit"
-            color="primary"
-            disabled={isChecking || !domain.trim()}
-            className="w-full justify-center py-2 text-sm sm:w-auto"
-          >
-            {isChecking ? "Testing…" : "Run advanced tests"}
-          </Button>
-        </div>
-      </form>
+      </div>
 
       {result && <AdvancedResults result={result} />}
     </div>

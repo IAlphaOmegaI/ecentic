@@ -1,9 +1,15 @@
 "use client";
 
 import {
+  BullseyeIcon,
+  CheckBadgeIcon,
   CheckCircleIcon,
   CodeIcon,
+  GaugeIcon,
+  RadarIcon,
+  RobotIcon,
   ShieldCheckIcon,
+  ShoppingCartIcon,
   XCircleIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
@@ -48,28 +54,53 @@ const ISSUE_CATEGORY_ORDER: UcpCheck.SpecIssueCategory[] = [
   "supported_versions",
 ];
 
-const notes = [
+const validationTargets = [
   {
-    title: "Use the public storefront domain",
-    detail:
-      "Enter the root domain only, like acme.com or www.acme.com. We always validate the HTTPS version.",
+    icon: ShieldCheckIcon,
+    label: "HTTPS & reachability",
+    detail: "Served over TLS and responding to live requests.",
   },
   {
-    title: "We validate the full UCP 2026-04-08 spec",
-    detail:
-      "Services, capabilities, payment handlers, signing keys (JWK / RFC 9421), supported versions and transports are all parsed and checked.",
+    icon: RadarIcon,
+    label: "Profile discovery",
+    detail: "The document is published at /.well-known/ucp.",
   },
   {
-    title: "robots.txt matters too",
-    detail:
-      "A valid profile can still be hard for agents to use if key crawlers are blocked higher up the stack.",
+    icon: CodeIcon,
+    label: "Services & transports",
+    detail: "REST, MCP and A2A surfaces agents negotiate against.",
+  },
+  {
+    icon: BullseyeIcon,
+    label: "Capabilities",
+    detail: "Cart, checkout and order flows the storefront declares.",
+  },
+  {
+    icon: ShoppingCartIcon,
+    label: "Payment handlers",
+    detail: "Tokenization endpoints and their declared versions.",
+  },
+  {
+    icon: CheckBadgeIcon,
+    label: "Signing keys",
+    detail: "Public JWKs for RFC 9421 request verification.",
+  },
+  {
+    icon: GaugeIcon,
+    label: "Supported versions",
+    detail: "Every protocol version the merchant still serves.",
+  },
+  {
+    icon: RobotIcon,
+    label: "robots.txt access",
+    detail: "Shopping and indexing agents are not blocked.",
   },
 ] as const;
 
 const toneClassList: Record<Tone, string> = {
   success: "border-primary/20 bg-primary/10 text-primary",
-  danger: "border-red-500/20 bg-red-500/10 text-red-500",
-  warning: "border-yellow-500/20 bg-yellow-500/10 text-yellow-500",
+  danger: "border-error/20 bg-error/10 text-error",
+  warning: "border-warning/20 bg-warning/10 text-warning",
   neutral: "border-accent-foreground bg-background text-foreground-dimmed",
 };
 
@@ -150,8 +181,8 @@ const SummaryCard = ({
         className={cn(
           "font-medium text-2xl text-foreground",
           tone === "success" && "text-primary",
-          tone === "danger" && "text-red-500",
-          tone === "warning" && "text-yellow-500",
+          tone === "danger" && "text-error",
+          tone === "warning" && "text-warning",
         )}
       >
         {value}
@@ -510,7 +541,7 @@ const SigningKeysSection = ({
     {!advertised ? (
       <div className="bg-background px-4 py-5">
         <div className="flex items-center gap-2">
-          <ShieldCheckIcon className="size-4 text-yellow-500" />
+          <ShieldCheckIcon className="size-4 text-warning" />
           <StatusChip label="signing_keys not advertised" tone="warning" />
         </div>
         <p className="mt-3 max-w-2xl font-light text-foreground-dimmed text-sm">
@@ -543,7 +574,7 @@ const SigningKeysSection = ({
                   <ShieldCheckIcon
                     className={cn(
                       "size-3.5",
-                      hasIssue ? "text-red-500" : "text-primary",
+                      hasIssue ? "text-error" : "text-primary",
                     )}
                   />
                   <p className="font-medium font-mono text-foreground text-sm">
@@ -733,7 +764,7 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
                     "inline-flex items-center px-2 py-1 font-mono text-xs",
                     result.isLatestVersion
                       ? "bg-primary/10 text-primary"
-                      : "bg-yellow-500/10 text-yellow-500",
+                      : "bg-warning/10 text-warning",
                   )}
                 >
                   v{result.ucpVersion}
@@ -990,53 +1021,55 @@ export const UcpValidatorForm = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="grid border-accent-foreground border-b lg:grid-cols-[minmax(0,1fr)_320px]">
-        <div className="border-accent-foreground px-8 py-8 lg:border-r">
-          <h2 className="font-body text-2xl text-foreground">
+      {/* Header + form — two columns so the panel width is actually used. */}
+      <div className="grid border-accent-foreground border-b lg:grid-cols-2">
+        <div className="px-6 py-6 sm:px-8 sm:py-8">
+          <span className="font-medium text-[11px] text-foreground-dimmed uppercase tracking-[0.1em]">
+            Live validation
+          </span>
+          <h2 className="mt-2 font-bold text-[1.75rem] text-foreground-rich tracking-[-0.02em]">
             Run a live validation
           </h2>
-          <p className="mt-2 max-w-2xl font-light text-foreground-dimmed">
+          <p className="mt-1.5 font-light text-foreground-dimmed text-sm">
             Paste a domain and we&apos;ll fetch the live{" "}
-            <span className="font-mono text-foreground text-sm">
+            <span className="font-mono text-foreground text-xs">
               /.well-known/ucp
             </span>{" "}
             document, parse every service, capability, payment handler and
             signing key, then validate it against the{" "}
-            <span className="font-mono text-foreground text-sm">
+            <span className="font-mono text-foreground text-xs">
               {LATEST_UCP_VERSION}
             </span>{" "}
             spec.
           </p>
+        </div>
 
-          <form onSubmit={handleSubmit} className="mt-8">
+        <div className="flex flex-col justify-center border-accent-foreground border-t px-6 py-6 sm:px-8 sm:py-8 lg:border-t-0 lg:border-l">
+          <form onSubmit={handleSubmit}>
             <label
               htmlFor="ucp-domain"
-              className="block font-medium text-foreground-dimmed text-xs uppercase tracking-[0.16em]"
+              className="block font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
             >
               Domain
             </label>
-            <div className="mt-3 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-stretch">
               <TextField
                 value={domain}
                 onValueChange={setDomain}
-                className="h-11 flex-1"
+                className="flex-1"
               >
-                <TextFieldInput
-                  id="ucp-domain"
-                  placeholder="yourdomain.com"
-                  className="px-4"
-                />
+                <TextFieldInput id="ucp-domain" placeholder="yourdomain.com" />
               </TextField>
               <Button
                 type="submit"
                 color="primary"
                 disabled={isChecking || !domain.trim()}
-                className="h-11 shrink-0 justify-center px-6"
+                className="w-full shrink-0 sm:w-auto"
               >
                 {isChecking ? "Checking..." : "Check domain"}
               </Button>
             </div>
-            <p className="mt-3 font-light text-foreground-dimmed text-sm">
+            <p className="mt-2 font-light text-foreground-dimmed text-sm">
               Root domain only —{" "}
               <span className="font-mono text-foreground">acme.com</span> or{" "}
               <span className="font-mono text-foreground">www.acme.com</span>.
@@ -1044,27 +1077,36 @@ export const UcpValidatorForm = () => {
             </p>
           </form>
         </div>
+      </div>
 
-        <div className="bg-background-dimmed px-8 py-8">
-          <p className="font-medium text-foreground-dimmed text-xs uppercase tracking-[0.16em]">
-            Before you run it
-          </p>
-          <div className="mt-5 flex flex-col gap-5">
-            {notes.map((note) => (
-              <div
-                key={note.title}
-                className="border-accent-foreground border-t pt-5 first:border-t-0 first:pt-0"
-              >
+      {/* What we validate — brutalist gap-px grid */}
+      <div className="px-6 pt-6 pb-3 sm:px-8">
+        <span className="font-medium text-[11px] text-foreground-dimmed uppercase tracking-[0.1em]">
+          What we validate
+        </span>
+      </div>
+      <div className="grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground sm:grid-cols-2 lg:grid-cols-4">
+        {validationTargets.map((target) => {
+          const Icon = target.icon;
+          return (
+            <div
+              key={target.label}
+              className="flex gap-4 bg-background-rich px-5 py-6"
+            >
+              <span className="flex size-10 shrink-0 items-center justify-center border border-accent-foreground bg-background text-primary">
+                <Icon className="size-5" />
+              </span>
+              <div>
                 <p className="font-medium text-foreground text-sm">
-                  {note.title}
+                  {target.label}
                 </p>
-                <p className="mt-1 font-light text-foreground-dimmed text-sm leading-relaxed">
-                  {note.detail}
+                <p className="mt-1 font-light text-foreground-dimmed text-xs leading-relaxed">
+                  {target.detail}
                 </p>
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+          );
+        })}
       </div>
 
       {result && <Results result={result} />}

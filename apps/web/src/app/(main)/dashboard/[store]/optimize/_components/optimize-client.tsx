@@ -598,7 +598,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
             {/* Tabs are h-8 to fit the list's 32px content box; the base h-9 was
                 clipping and sitting off-centre from the indicator. */}
             <TabsList className="h-10 w-full rounded-md border-0 bg-background-dimmed p-1">
-              <TabsIndicator className="rounded" />
+              <TabsIndicator className="top-1 h-8 rounded" />
               <Tab value="pending" className="h-8 flex-1 border-r-0">
                 Pending{" "}
                 <span className="ml-1.5 rounded-full bg-current/15 px-1.5 py-0.5 font-semibold text-[11px] tabular-nums">

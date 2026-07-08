@@ -25,7 +25,7 @@ export const OverviewDetails = ({
 }: OverviewDetails.Props) => (
   <Tabs defaultValue="products">
     <TabsList className="h-10 w-full rounded-md border-0 bg-background-dimmed p-1">
-      <TabsIndicator className="rounded" />
+      <TabsIndicator className="top-1 h-8 rounded" />
       <Tab value="products" className="h-8 flex-1 border-r-0">
         Top Products
       </Tab>
