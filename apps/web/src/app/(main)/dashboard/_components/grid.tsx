@@ -15,7 +15,11 @@ export const Crosshair = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export const SectionGutter = () => <div className="h-6 bg-grid-stripes" />;
+// design.md §3.4: hatch bands are intentional and slim — 16px tall at ~0.6
+// opacity, not a full-strength 24px stripe. Used app-wide, so one place.
+export const SectionGutter = () => (
+  <div className="h-4 bg-grid-stripes opacity-60" />
+);
 
 export const SectionKicker = ({ children }: PropsWithChildren) => {
   if (typeof children !== "string")

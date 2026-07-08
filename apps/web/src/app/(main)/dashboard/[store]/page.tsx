@@ -27,6 +27,7 @@ import {
 } from "../_components/grid";
 import { OverviewActions } from "../_components/overview-actions";
 import { OverviewCharts } from "../_components/overview-charts";
+import { OverviewDetails } from "../_components/overview-details";
 import { ProductsTable } from "../_components/products-table";
 
 export default async ({ params }: PageProps<"/dashboard/[store]">) => {
@@ -84,43 +85,31 @@ export default async ({ params }: PageProps<"/dashboard/[store]">) => {
 
         <SectionGutter />
 
+        {/* Top Products / Competitors / Agent Visits were three stacked
+            always-open panels — ~6 screens of scroll. Now one tabbed panel. */}
         <div className="-mx-8 border-accent-foreground border-t border-b">
           <div className="relative mx-8 bg-background-rich">
             <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
             <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <Suspense fallback={<TableSkeleton />}>
-              <TopProducts store={store} />
-            </Suspense>
-          </div>
-        </div>
-
-        <SectionGutter />
-
-        <div className="-mx-8 border-accent-foreground border-t border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <Suspense fallback={<CompetitorTableSkeleton />}>
-              <TopCompetitors store={store} />
-            </Suspense>
-          </div>
-        </div>
-
-        <SectionGutter />
-
-        <div className="-mx-8 border-accent-foreground border-t border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <Suspense fallback={<TableSkeleton />}>
-              <AgentVisitsPanel store={store} />
-            </Suspense>
+            <OverviewDetails
+              products={
+                <Suspense fallback={<TableSkeleton />}>
+                  <TopProducts store={store} />
+                </Suspense>
+              }
+              competitors={
+                <Suspense fallback={<CompetitorTableSkeleton />}>
+                  <TopCompetitors store={store} />
+                </Suspense>
+              }
+              agents={
+                <Suspense fallback={<TableSkeleton />}>
+                  <AgentVisitsPanel store={store} />
+                </Suspense>
+              }
+            />
           </div>
         </div>
       </div>

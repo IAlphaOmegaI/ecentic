@@ -10,6 +10,12 @@ import {
   XIcon,
 } from "@zenncore/icons";
 import { useAsyncAction } from "@zenncore/utils/hooks";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionPanel,
+  AccordionTrigger,
+} from "@zenncore/web/components/accordion";
 import { Button } from "@zenncore/web/components/button";
 import {
   Tab,
@@ -94,27 +100,51 @@ const EmptyState = ({
   </div>
 );
 
+// Collapses each diagnostic to one row: product + signal chips, with the
+// message/recommendation behind a disclosure. A low-win-rate product can
+// produce many insights, and printing all of them expanded was the swamp.
 const InsightCard = ({
+  value,
   insight,
   productTitle,
 }: {
+  value: string;
   insight: DashboardData["diagnostics"]["insights"][number];
   productTitle: string;
 }) => (
-  <div className="bg-background-rich p-5 transition-colors hover:bg-background">
-    <div className="mb-1 flex flex-wrap items-center gap-2">
-      <p className="font-medium text-foreground-rich">{productTitle}</p>
-      <span className={TYPE_TAG_CLASSES}>
-        {CATEGORY_LABELS[insight.category]}
+  <AccordionItem
+    value={value}
+    className="border-accent-foreground border-b bg-background-rich"
+  >
+    {/* The trigger is a <button>, so contents must be phrasing content. */}
+    <AccordionTrigger
+      className="items-center px-5 py-3.5 hover:bg-background-dimmed/40"
+      classList={{
+        trigger: {
+          icon: "size-4 shrink-0 text-foreground-dimmed group-data-panel-open:rotate-180",
+        },
+      }}
+    >
+      <span className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+        <span className="truncate font-medium text-foreground-rich">
+          {productTitle}
+        </span>
+        <span className={SEVERITY_CLASSES[insight.severity]}>
+          {insight.severity.toUpperCase()}
+        </span>
+        <span className={TYPE_TAG_CLASSES}>
+          {CATEGORY_LABELS[insight.category]}
+        </span>
+        <WinRateBadge rate={insight.winRate} />
       </span>
-      <span className={SEVERITY_CLASSES[insight.severity]}>
-        {insight.severity.toUpperCase()}
-      </span>
-      <WinRateBadge rate={insight.winRate} />
-    </div>
-    <p className="text-foreground-dimmed text-sm">{insight.message}</p>
-    <p className="mt-2 text-foreground text-sm">{insight.recommendation}</p>
-  </div>
+    </AccordionTrigger>
+    <AccordionPanel>
+      <div className="space-y-2 border-accent-foreground border-t px-5 py-4">
+        <p className="text-foreground-dimmed text-sm">{insight.message}</p>
+        <p className="text-foreground text-sm">{insight.recommendation}</p>
+      </div>
+    </AccordionPanel>
+  </AccordionItem>
 );
 
 const PendingCard = ({
@@ -134,30 +164,26 @@ const PendingCard = ({
   onApprove: (productId: string) => void;
   onDismiss: (productId: string) => void;
 }) => (
+  // One compact row: title + signal chips on the left, actions on the right.
+  // The old per-card explainer paragraph and "Models:" line were identical on
+  // every card — that boilerplate is what made the queue a wall of text.
   <div className={SUGGESTION_CARD_CLASSES}>
-    <div className="flex items-start justify-between gap-4">
-      <div>
-        <div className="flex flex-wrap items-center gap-2">
-          <p className="font-medium text-base text-foreground-rich">
-            {item.product.title}
-          </p>
-          <span className={TYPE_TAG_CLASSES}>Title + Description</span>
-        </div>
-        <div className="mt-2 flex flex-wrap items-center gap-2">
+    <div className="flex items-center justify-between gap-4">
+      <div className="min-w-0">
+        <p className="truncate font-medium text-base text-foreground-rich">
+          {item.product.title}
+        </p>
+        <div className="mt-1.5 flex flex-wrap items-center gap-2">
           <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 font-semibold text-[11px] text-success">
-            <TrendUpIcon className="size-3.5" />+{item.estimatedLift}% est. lift
+            <TrendUpIcon className="size-3.5" />+{item.estimatedLift}%
           </span>
           <WinRateBadge rate={item.winRate} />
-          <span className="text-foreground-dimmed text-xs">
-            Models: {item.models.join(", ")}
+          <span className={TYPE_TAG_CLASSES} title={item.models.join(", ")}>
+            Title + Description
           </span>
         </div>
-        <p className="mt-2 text-foreground-dimmed text-xs">
-          Approve generates an improved listing with AI, then publishes to your
-          store (Shopify or WooCommerce).
-        </p>
       </div>
-      <div className="flex shrink-0 flex-wrap items-center gap-2">
+      <div className="flex shrink-0 items-center gap-2">
         <Button
           color="accent"
           render={
@@ -287,15 +313,33 @@ const DiagnosticsPanel = ({
         to listing text optimizations.
       </p>
     </div>
-    <div className="space-y-px bg-accent-foreground">
-      {insights.map((insight) => (
-        <InsightCard
-          key={`${insight.productId}-${insight.category}-${insight.message}`}
-          insight={insight}
-          productTitle={products[insight.productId]?.title ?? "Unknown product"}
-        />
-      ))}
-    </div>
+    <Accordion
+      className="text-foreground"
+      // Auto-expand only the FIRST FEW high-severity insights — a bad store can
+      // have dozens, and opening them all just rebuilds the wall. Everything
+      // else stays a one-line row the user opens on demand.
+      defaultValue={insights
+        .filter((insight) => insight.severity === "high")
+        .slice(0, 2)
+        .map(
+          (insight) =>
+            `${insight.productId}-${insight.category}-${insight.message}`,
+        )}
+    >
+      {insights.map((insight) => {
+        const value = `${insight.productId}-${insight.category}-${insight.message}`;
+        return (
+          <InsightCard
+            key={value}
+            value={value}
+            insight={insight}
+            productTitle={
+              products[insight.productId]?.title ?? "Unknown product"
+            }
+          />
+        );
+      })}
+    </Accordion>
   </div>
 );
 
@@ -542,30 +586,29 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
             <p className="mt-2 font-semibold text-foreground-rich text-lg">
               Listing Suggestions
             </p>
+            {/* The per-card explainer lived here as boilerplate; it belongs once,
+                in the header. */}
+            <p className="mt-1 max-w-2xl text-foreground-dimmed text-sm">
+              Approve generates an AI-improved listing and publishes it to your
+              store (Shopify or WooCommerce).
+            </p>
           </div>
 
           <Tabs defaultValue="pending">
+            {/* Tabs are h-8 to fit the list's 32px content box; the base h-9 was
+                clipping and sitting off-centre from the indicator. */}
             <TabsList className="h-10 w-full rounded-md border-0 bg-background-dimmed p-1">
-              <TabsIndicator className="h-full rounded bg-primary" />
-              <Tab
-                value="pending"
-                className="flex-1 text-foreground-dimmed data-selected:text-background-rich"
-              >
+              <TabsIndicator className="rounded" />
+              <Tab value="pending" className="h-8 flex-1 border-r-0">
                 Pending{" "}
-                <span className="ml-1.5 bg-current/15 px-1.5 py-0.5 font-medium text-sm tabular-nums">
+                <span className="ml-1.5 rounded-full bg-current/15 px-1.5 py-0.5 font-semibold text-[11px] tabular-nums">
                   {pending.length}
                 </span>
               </Tab>
-              <Tab
-                value="published"
-                className="flex-1 text-foreground-dimmed data-selected:text-background-rich"
-              >
+              <Tab value="published" className="h-8 flex-1 border-r-0">
                 Published
               </Tab>
-              <Tab
-                value="dismissed"
-                className="flex-1 text-foreground-dimmed data-selected:text-background-rich"
-              >
+              <Tab value="dismissed" className="h-8 flex-1 border-r-0">
                 Dismissed
               </Tab>
             </TabsList>

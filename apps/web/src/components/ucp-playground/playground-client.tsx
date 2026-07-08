@@ -284,31 +284,42 @@ const ToolView = ({ part }: { part: ToolUIPart }) => {
         </StatusPill>
       </div>
       <div className="space-y-3 p-3">
-        <div>
-          <p className="mb-1 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-            Arguments
-          </p>
-          <pre className="overflow-x-auto text-foreground/80">
-            {formatJson(part.input)}
-          </pre>
-        </div>
-        {error ? (
+        {/* Errors stay visible; the raw arg/result JSON collapses so a multi-
+            step agent session isn't a wall of monospace blobs. Matches the
+            "Raw JSON" disclosure used by ProductsCard. */}
+        {error && (
           <div>
             <p className="mb-1 font-medium text-[10px] text-error uppercase tracking-[0.08em]">
               Error
             </p>
             <p className="wrap-break-word text-error">{error}</p>
           </div>
-        ) : output !== undefined ? (
-          <div>
-            <p className="mb-1 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-              Result
-            </p>
-            <pre className="max-h-64 overflow-auto text-foreground/80">
-              {formatJson(output)}
-            </pre>
+        )}
+        <details className="group">
+          <summary className="w-fit cursor-pointer list-none font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em] hover:text-foreground [&::-webkit-details-marker]:hidden">
+            Raw JSON
+          </summary>
+          <div className="mt-2 space-y-3">
+            <div>
+              <p className="mb-1 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+                Arguments
+              </p>
+              <pre className="overflow-x-auto text-foreground/80">
+                {formatJson(part.input)}
+              </pre>
+            </div>
+            {output !== undefined && (
+              <div>
+                <p className="mb-1 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+                  Result
+                </p>
+                <pre className="max-h-64 overflow-auto text-foreground/80">
+                  {formatJson(output)}
+                </pre>
+              </div>
+            )}
           </div>
-        ) : null}
+        </details>
       </div>
     </div>
   );

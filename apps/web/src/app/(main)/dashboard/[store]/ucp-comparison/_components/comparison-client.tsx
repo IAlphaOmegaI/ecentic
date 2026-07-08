@@ -74,6 +74,37 @@ const flushText = (
   });
 };
 
+// Renders the derived search params as readable chips (query / price / …)
+// instead of a raw JSON wall; nested/object values fall through to the
+// collapsed "Raw JSON" disclosure.
+const ParamChips = ({ params }: { params: unknown }) => {
+  if (typeof params !== "object" || params === null) return null;
+
+  const entries = Object.entries(params as Record<string, unknown>).filter(
+    ([, value]) => value != null && typeof value !== "object",
+  );
+
+  if (entries.length === 0) return null;
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {entries.map(([key, value]) => (
+        <span
+          key={key}
+          className="inline-flex items-center gap-1.5 rounded-full border border-accent-foreground bg-background px-2.5 py-1 text-xs"
+        >
+          <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.06em]">
+            {key}
+          </span>
+          <span className="font-medium text-foreground tabular-nums">
+            {String(value)}
+          </span>
+        </span>
+      ))}
+    </div>
+  );
+};
+
 const StoreCard = ({ store }: { store: StoreState }) => (
   <div
     className={cn(
@@ -497,9 +528,18 @@ export const ComparisonClient = () => {
               Parsed once from the buyer request and applied to every store.
             </p>
           </div>
-          <pre className="m-4 overflow-auto rounded-md bg-background-dimmed p-4 font-mono text-foreground text-xs leading-relaxed">
-            {JSON.stringify(searchParams, null, 2)}
-          </pre>
+          <div className="space-y-3 p-4">
+            <ParamChips params={searchParams} />
+            <details className="group">
+              <summary className="w-fit cursor-pointer list-none font-medium text-foreground-dimmed text-xs hover:text-foreground [&::-webkit-details-marker]:hidden">
+                <span className="group-open:hidden">Show raw JSON</span>
+                <span className="hidden group-open:inline">Hide raw JSON</span>
+              </summary>
+              <pre className="mt-2 overflow-auto rounded-md bg-background-dimmed p-4 font-mono text-foreground text-xs leading-relaxed">
+                {JSON.stringify(searchParams, null, 2)}
+              </pre>
+            </details>
+          </div>
         </div>
       )}
 
@@ -548,8 +588,13 @@ export const ComparisonClient = () => {
         </div>
       )}
 
-      <div className="rounded-lg border border-accent-foreground bg-background-rich">
-        <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
+      {/* The event log re-narrates what the StoreCards already show, so it
+          collapses by default and only auto-opens while a run streams. */}
+      <details
+        open={phase === "running"}
+        className="group rounded-lg border border-accent-foreground bg-background-rich"
+      >
+        <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 group-open:border-accent-foreground group-open:border-b [&::-webkit-details-marker]:hidden">
           <div className="flex items-center gap-3">
             <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
               Event Log
@@ -559,11 +604,16 @@ export const ComparisonClient = () => {
             )}
             {phase === "done" && <StatusPill tone="success">Done</StatusPill>}
             {phase === "error" && <StatusPill tone="error">Error</StatusPill>}
+            <span className="text-foreground-dimmed text-xs tabular-nums">
+              {lines.length} {lines.length === 1 ? "event" : "events"}
+            </span>
           </div>
           {lines.length > 0 && (
             <button
               type="button"
-              onClick={() => {
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
                 setLines([]);
                 setStores([]);
                 setSearchParams(null);
@@ -574,7 +624,7 @@ export const ComparisonClient = () => {
               Clear
             </button>
           )}
-        </div>
+        </summary>
 
         <div
           ref={logRef}
@@ -672,7 +722,7 @@ export const ComparisonClient = () => {
             </div>
           )}
         </div>
-      </div>
+      </details>
     </div>
   );
 };

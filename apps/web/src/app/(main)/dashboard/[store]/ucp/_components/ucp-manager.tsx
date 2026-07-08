@@ -3,6 +3,7 @@
 import {
   CheckBadgeIcon,
   CheckIcon,
+  ChevronDownIcon,
   CircleBoltIcon,
   CopyIcon,
   LoaderIcon,
@@ -673,19 +674,23 @@ export const UcpManager = ({
                 </pre>
               </div>
 
-              {/* Install instructions */}
-              <div className="overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
-                <div className="border-accent-foreground border-b px-4 py-2.5">
-                  <p className="font-medium text-base text-foreground">
-                    Install
-                  </p>
-                  <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
-                    Serve this JSON at{" "}
-                    <span className="font-mono">/.well-known/ucp</span> so AI
-                    agents can discover your merchant profile.
-                  </p>
-                </div>
-                <pre className="p-4 font-mono text-xs leading-relaxed">
+              {/* Install instructions — collapsed by default; it's a two-variant
+                  code reference the user reads once, not on every visit. */}
+              <details className="group overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-2.5 [&::-webkit-details-marker]:hidden">
+                  <div>
+                    <p className="font-medium text-base text-foreground">
+                      Install
+                    </p>
+                    <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
+                      Serve this JSON at{" "}
+                      <span className="font-mono">/.well-known/ucp</span> so AI
+                      agents can discover your merchant profile.
+                    </p>
+                  </div>
+                  <ChevronDownIcon className="size-4 shrink-0 text-foreground-dimmed transition-transform group-open:rotate-180" />
+                </summary>
+                <pre className="border-accent-foreground border-t p-4 font-mono text-xs leading-relaxed">
                   <span className="text-foreground-dimmed/50">
                     {"// Next.js — app/.well-known/ucp/route.ts\n"}
                   </span>
@@ -711,7 +716,7 @@ export const UcpManager = ({
                   <span className="text-green-400">{" /path/to/ucp.json"}</span>
                   <span className="text-foreground-dimmed/60">{";\n}"}</span>
                 </pre>
-              </div>
+              </details>
             </div>
           </div>
         </TabsPanel>
