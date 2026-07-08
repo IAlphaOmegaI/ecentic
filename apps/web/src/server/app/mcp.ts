@@ -283,10 +283,10 @@ const connectWooCommerce = async (actor: Actor, raw: unknown) => {
 
   return {
     result: createText({
-      storeId: connection.data.id,
-      platform: connection.data.platform,
-      domain: connection.data.domain,
-      status: connection.data.status,
+      storeId: connection.data.store.id,
+      platform: connection.data.store.platform,
+      domain: connection.data.store.domain,
+      status: connection.data.store.status,
     }),
   };
 };

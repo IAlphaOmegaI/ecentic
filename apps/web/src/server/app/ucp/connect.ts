@@ -260,7 +260,10 @@ export const completeConnect = withContext(
           store: store.id,
         });
 
-        return { success: true as const, data: store };
+        return {
+          success: true as const,
+          data: { store, reconnected: true },
+        };
       }
 
       return WooCommerce.connectForUser(Environment.SERVER, {
@@ -272,7 +275,8 @@ export const completeConnect = withContext(
     })();
     if (!storeResult.success) return storeResult;
 
-    const storeId = storeResult.data.id;
+    const storeId = storeResult.data.store.id;
+    const reconnected = storeResult.data.reconnected;
 
     // Mint the bridge secret and push the hosted-UCP settings to the plugin so
     // its /.well-known/ucp starts advertising this backend.
@@ -310,7 +314,7 @@ export const completeConnect = withContext(
       data: { "store.id": storeId, "bridge.configured": configured.success },
     });
 
-    return { success: true as const, data: { store: storeId } };
+    return { success: true as const, data: { store: storeId, reconnected } };
   },
   "UcpConnect.complete",
 );

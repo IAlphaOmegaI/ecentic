@@ -38,6 +38,15 @@ export const GET = async (request: NextRequest) => {
     return Response.redirect(connectPage("token_exchange"));
   }
 
+  // A reconnect only rotated this store's WooCommerce credentials. Re-running
+  // the onboarding product picker would let the admin select products they
+  // hadn't picked before, pushing them past their plan's product limit — so go
+  // straight to that store's dashboard.
+  if (completed.data.reconnected)
+    return Response.redirect(
+      `${process.env.APP_HOST}/dashboard/${completed.data.store}`,
+    );
+
   return Response.redirect(
     `${process.env.APP_HOST}/onboarding/products?connected=woocommerce`,
   );

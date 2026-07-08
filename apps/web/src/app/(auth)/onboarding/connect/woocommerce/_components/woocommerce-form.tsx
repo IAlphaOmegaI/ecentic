@@ -87,7 +87,14 @@ export const WooCommerceForm = () => {
         type: "success",
       });
 
-      router.push("/onboarding/products?connected=woocommerce");
+      // Reconnecting an already-onboarded store only refreshed its credentials.
+      // Skip the product picker — re-selecting would let the user exceed their
+      // plan's product limit — and go straight to that store's dashboard.
+      router.push(
+        result.data.reconnected
+          ? `/dashboard/${result.data.store.id}`
+          : "/onboarding/products?connected=woocommerce",
+      );
     },
   );
 
