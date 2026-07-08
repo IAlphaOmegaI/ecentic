@@ -75,11 +75,11 @@ export const Pricing = () => (
       <div className="relative mx-auto max-w-6xl border-accent-foreground border-t">
         <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
         <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
-        <div className="relative grid grid-cols-1 divide-y divide-accent-foreground border-accent-foreground border-b sm:grid-cols-2 sm:divide-x lg:grid-cols-4 lg:divide-y-0">
+        <div className="relative grid grid-cols-1 divide-y divide-accent-foreground border-accent-foreground border-b sm:grid-cols-2 sm:divide-x">
           <Plus className="bottom-0 left-0 hidden -translate-x-1/2 translate-y-1/2 md:flex" />
           <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
           {/* Scan */}
-          <div className="flex h-auto flex-col bg-background-rich p-6 lg:h-102">
+          <div className="flex h-auto flex-col bg-background-rich p-6 md:h-102">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="font-body font-medium text-2xl text-foreground">
@@ -131,7 +131,7 @@ export const Pricing = () => (
             <Button
               color="primary"
               type="button"
-              className="mt-4 w-full lg:mt-auto"
+              className="mt-4 w-full md:mt-auto"
               render={<Link href="/sign-up" />}
             >
               Scan your Shopify store
@@ -139,7 +139,7 @@ export const Pricing = () => (
           </div>
 
           {/* Pay-as-you-go */}
-          <div className="flex h-auto flex-col bg-background-rich p-6 lg:h-102">
+          <div className="flex h-auto flex-col bg-background-rich p-6 md:h-102">
             <div className="flex items-center justify-between gap-2">
               <h2 className="font-body font-medium text-2xl text-foreground">
                 {payg.name}
@@ -171,13 +171,13 @@ export const Pricing = () => (
                 </div>
               ))}
             </div>
-            <PricingCTA plan="payg" className="mt-4 w-full lg:mt-auto">
+            <PricingCTA plan="payg" className="mt-4 w-full md:mt-auto">
               {payg.cta}
             </PricingCTA>
           </div>
 
           {/* Compete */}
-          <div className="flex h-auto flex-col bg-background-rich p-6 lg:h-102">
+          <div className="flex h-auto flex-col bg-background-rich p-6 md:h-102">
             <h2 className="font-body font-medium text-2xl text-foreground">
               {compete.name}
             </h2>
@@ -201,12 +201,12 @@ export const Pricing = () => (
                 </div>
               ))}
             </div>
-            <PricingCTA plan="compete" className="mt-4 w-full lg:mt-auto">
+            <PricingCTA plan="compete" className="mt-4 w-full md:mt-auto">
               {compete.cta}
             </PricingCTA>
           </div>
 
-          <div className="relative flex h-auto flex-col bg-primary p-6 text-white lg:h-102">
+          <div className="relative flex h-auto flex-col bg-primary p-6 text-white md:h-102">
             <div className="flex items-center justify-between gap-2">
               <h2 className="font-body font-medium text-2xl">
                 {dominate.name}
@@ -233,7 +233,7 @@ export const Pricing = () => (
                 </div>
               ))}
             </div>
-            <PricingCTA plan="dominate" className="mt-4 w-full lg:mt-auto">
+            <PricingCTA plan="dominate" className="mt-4 w-full md:mt-auto">
               {dominate.cta}
             </PricingCTA>
           </div>
