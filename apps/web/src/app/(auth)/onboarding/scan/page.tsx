@@ -149,6 +149,14 @@ export default async () => {
             ))}
           </div>
         </Motion.Item>
+
+        {/* The Stagger fills its parent, so any space left under the stats grid
+            is free space *inside* it — this filler carries border-x through it
+            and keeps the rails unbroken down to the footer. min-h-0 collapses it
+            to zero once the content is tall enough to scroll. */}
+        <div className="min-h-0 flex-1 px-8">
+          <div className="h-full border-accent-foreground border-x" />
+        </div>
       </Motion.Stagger>
     </ScanRunner>
   );
