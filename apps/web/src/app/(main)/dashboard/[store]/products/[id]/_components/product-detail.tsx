@@ -10,6 +10,12 @@ import {
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import {
+  Accordion,
+  AccordionItem,
+  AccordionPanel,
+  AccordionTrigger,
+} from "@zenncore/web/components/accordion";
+import {
   AlertDialog,
   AlertDialogDescription,
   AlertDialogPopup,
@@ -39,7 +45,7 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { type ReactNode, useEffect, useState, useTransition } from "react";
 import { Spring } from "@/lib/animations";
 import * as Audit from "@/server/app/intelligence/audit";
 import * as Optimization from "@/server/app/optimization";
@@ -47,6 +53,7 @@ import {
   Crosshair,
   SectionKicker,
   StatLabel,
+  StatusPill,
 } from "../../../../_components/grid";
 
 export type ProductDetailData = {
@@ -304,31 +311,48 @@ const ApplyOptimization = ({
   product,
   winRate,
   canPublish,
+  publishLabel,
+  reviewQueueHref,
 }: {
   product: ProductDetailData["product"];
   winRate: number;
   canPublish: boolean;
+  publishLabel?: string;
+  reviewQueueHref?: string;
 }) => (
-  <div className="relative flex flex-col gap-4 border-accent-foreground border-b bg-emphasis p-5 sm:flex-row sm:items-center sm:justify-between">
+  <div className="relative flex flex-col gap-4 border-accent-foreground border-b bg-primary/5 p-5 sm:flex-row sm:items-center sm:justify-between">
     <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
     <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
     <div className="flex items-start gap-3">
       <CircleBoltIcon className="size-7 shrink-0 text-primary" />
       <div>
-        <p className="font-semibold text-emphasis-foreground">
+        <p className="font-semibold text-foreground-rich">
           Close the gap automatically
         </p>
-        <p className="mt-1 max-w-prose text-emphasis-foreground text-sm leading-relaxed">
+        <p className="mt-1 max-w-prose text-foreground-dimmed text-sm leading-relaxed">
           Ecentic rewrites this listing from the winning competitors&apos;
           strengths and publishes it straight to your store — no manual edits.
         </p>
       </div>
     </div>
-    <PublishListing
-      product={product}
-      winRate={winRate}
-      canPublish={canPublish}
-    />
+    <div className="flex shrink-0 flex-wrap items-center gap-2">
+      <PublishListing
+        product={product}
+        winRate={winRate}
+        canPublish={canPublish}
+        label={publishLabel}
+      />
+      {reviewQueueHref && (
+        <Button
+          variant="outline"
+          color="neutral"
+          render={<Link href={reviewQueueHref} />}
+        >
+          Review queue
+          <ArrowRightIcon className="size-4" />
+        </Button>
+      )}
+    </div>
   </div>
 );
 
@@ -339,30 +363,22 @@ export const ProductDetail = ({ data }: ProductDetail.Props) => {
 
   return (
     <Tabs defaultValue="overview">
+      {/* The list's p-1 leaves a 32px content box, so tabs must be h-8 — the
+          Tab base is h-9 and was overflowing (clipped) and sitting off-centre
+          from the indicator. border-r-0 drops the base divider lines, which
+          don't belong in a segmented control. */}
       <TabsList className="h-10 w-full rounded-md border-0 bg-background-dimmed p-1">
-        <TabsIndicator className="h-full rounded bg-primary" />
-        <Tab
-          value="overview"
-          className="flex-1 text-foreground-dimmed data-selected:text-background-rich"
-        >
+        <TabsIndicator className="rounded" />
+        <Tab value="overview" className="h-8 flex-1 border-r-0">
           Win Rate
         </Tab>
-        <Tab
-          value="replay"
-          className="flex-1 text-foreground-dimmed data-selected:text-background-rich"
-        >
+        <Tab value="replay" className="h-8 flex-1 border-r-0">
           Agent Replay
         </Tab>
-        <Tab
-          value="battlecard"
-          className="flex-1 text-foreground-dimmed data-selected:text-background-rich"
-        >
+        <Tab value="battlecard" className="h-8 flex-1 border-r-0">
           Battlecard
         </Tab>
-        <Tab
-          value="optimize"
-          className="flex-1 text-foreground-dimmed data-selected:text-background-rich"
-        >
+        <Tab value="optimize" className="h-8 flex-1 border-r-0">
           Optimize
         </Tab>
       </TabsList>
@@ -604,35 +620,37 @@ const ReplayTab = ({
 
       {active && (
         <div className="flex min-w-0 flex-1 flex-col p-4">
-          <div className="flex items-center gap-2 rounded-t-lg bg-emphasis-rich px-4 py-2">
-            <p className="font-mono text-accent text-xs">
+          <div className="flex items-center gap-2 rounded-t-lg border border-accent-foreground border-b-0 bg-background-dimmed px-4 py-2">
+            <p className="font-medium font-mono text-foreground-dimmed text-xs">
               {active.label} Decision Replay
             </p>
-            <span className="ml-auto font-mono text-accent text-xs">
+            <span className="ml-auto font-mono text-foreground-dimmed text-xs tabular-nums">
               {active.simulations.length} simulation
               {active.simulations.length !== 1 ? "s" : ""}
             </span>
           </div>
-          <div className="flex-1 rounded-b-lg bg-emphasis px-6 py-5 font-mono text-xs leading-relaxed">
-            <p className="font-bold text-accent-foreground">
+          <div className="flex-1 rounded-b-lg border border-accent-foreground bg-background-rich px-6 py-5 font-mono text-xs leading-relaxed">
+            <p className="font-semibold text-foreground-rich">
               Evaluating: {product.title}
             </p>
-            <div className="h-2" />
             {active.simulations.map((simulation) => (
-              <div key={simulation.id} className="mb-4">
-                <p className="text-accent-rich">
+              <div
+                key={simulation.id}
+                className="mt-4 border-accent-foreground border-t pt-4"
+              >
+                <p className="text-foreground-dimmed">
                   → vs. {simulation.competitorTitle}
                 </p>
-                <p className="text-accent">
+                <p className="text-foreground-dimmed tabular-nums">
                   Score: {simulation.productScore ?? "?"} vs{" "}
                   {simulation.competitorScore ?? "?"}
                 </p>
                 <p
                   className={cn(
-                    "font-bold",
+                    "mt-1 font-semibold",
                     simulation.winner === "product"
-                      ? "text-success-rich"
-                      : "text-warning-rich",
+                      ? "text-success"
+                      : "text-error",
                   )}
                 >
                   DECISION:{" "}
@@ -641,11 +659,10 @@ const ReplayTab = ({
                     : simulation.competitorTitle}
                 </p>
                 {simulation.reasoning && (
-                  <p className="mt-1 text-accent leading-relaxed">
+                  <p className="mt-1 text-foreground leading-relaxed">
                     REASONING: &quot;{simulation.reasoning}&quot;
                   </p>
                 )}
-                <div className="h-2" />
               </div>
             ))}
           </div>
@@ -846,6 +863,69 @@ const ListingAudit = ({
   );
 };
 
+// Won/Lost rendered identically apart from tone, so it lives in one place.
+const Outcome = ({
+  tone,
+  label,
+  simulations,
+  emptyLabel,
+}: {
+  tone: "success" | "error";
+  label: string;
+  simulations: ProductDetailData["simulations"];
+  emptyLabel: string;
+}) => (
+  <div
+    className={cn(
+      "p-5",
+      tone === "success" ? "bg-success/[0.04]" : "bg-error/[0.04]",
+    )}
+  >
+    <div className="mb-3 flex items-center gap-2">
+      <span
+        className={cn(
+          "size-2 shrink-0 rounded-full",
+          tone === "success" ? "bg-success" : "bg-error",
+        )}
+      />
+      <span
+        className={cn(
+          "font-semibold text-xs uppercase tracking-[0.08em]",
+          tone === "success" ? "text-success" : "text-error",
+        )}
+      >
+        {label} · {simulations.length}
+      </span>
+    </div>
+    {simulations.length > 0 ? (
+      <ol className="space-y-3">
+        {simulations.map((simulation, index) => (
+          <li key={simulation.id} className="flex gap-3">
+            {/* Numbered in mono, reusing SectionKicker's index motif — reads as
+                a findings list rather than a tinted left rule. Preflight strips
+                the native list marker, so this is the only number rendered. */}
+            <span
+              className={cn(
+                "shrink-0 font-mono font-semibold text-xs tabular-nums leading-relaxed",
+                tone === "success" ? "text-success" : "text-error",
+              )}
+            >
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            {/* line-clamp beats the old hardcoded .slice(0, 160) + "…" */}
+            <span className="line-clamp-3 text-foreground text-sm leading-relaxed">
+              {simulation.reasoning ??
+                `${label} with score ${simulation.productScore ?? "?"}`}
+            </span>
+          </li>
+        ))}
+      </ol>
+    ) : (
+      <p className="text-foreground-dimmed text-sm italic">{emptyLabel}</p>
+    )}
+  </div>
+);
+
 const BattlecardTab = ({
   product,
   winRate,
@@ -886,8 +966,15 @@ const BattlecardTab = ({
             Head-to-Head Results
           </p>
         </div>
+        <p className="text-foreground-dimmed text-sm">
+          {competitors.length} competitor{competitors.length !== 1 ? "s" : ""}
+        </p>
       </div>
-      <div className="space-y-px bg-accent-foreground">
+
+      {/* Every competitor used to print all of its win/loss reasoning inline,
+          so the tab scrolled for pages. Each one now collapses to a single
+          summary row and the reasoning sits behind a disclosure. */}
+      <Accordion className="text-foreground">
         {competitors.map((competitor) => {
           const competitorSimulations = simulations.filter(
             (simulation) => simulation.competitorId === competitor.id,
@@ -898,117 +985,125 @@ const BattlecardTab = ({
           const losses = competitorSimulations.filter(
             (simulation) => simulation.winner !== "product",
           );
-          const total = wins.length + losses.length;
 
           return (
-            <div key={competitor.id} className="bg-background-rich">
-              <div className="flex items-center justify-between gap-4 border-accent-foreground border-b px-5 py-4">
-                <div className="min-w-0">
-                  <p className="font-semibold text-foreground">
-                    {competitor.title}
-                  </p>
-                  <p className="mt-0.5 text-foreground-dimmed text-sm">
-                    vs. {product.title}
-                  </p>
-                </div>
-                <div className="flex shrink-0 flex-col items-end gap-1">
-                  <p
+            <AccordionItem
+              key={competitor.id}
+              value={competitor.id}
+              className="border-accent-foreground border-b bg-background-rich"
+            >
+              {/* The trigger is a <button>, so its contents must be phrasing
+                  content — spans, not divs. */}
+              <AccordionTrigger
+                className="items-center px-5 py-4 hover:bg-background-dimmed/40"
+                classList={{
+                  trigger: {
+                    icon: "size-4 shrink-0 text-foreground-dimmed group-data-panel-open:rotate-180",
+                  },
+                }}
+              >
+                <span className="flex min-w-0 flex-1 items-center gap-4">
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-semibold text-foreground">
+                      {competitor.title}
+                    </span>
+                    <span className="mt-0.5 block truncate font-normal text-foreground-dimmed text-sm">
+                      vs. {product.title}
+                    </span>
+                  </span>
+
+                  <span className="hidden w-28 shrink-0 sm:block">
+                    <span className="block h-1.5 overflow-hidden rounded-full bg-accent-foreground">
+                      <span
+                        className={cn(
+                          "block h-full rounded-full",
+                          barColor(competitor.rate),
+                        )}
+                        style={{ width: `${competitor.rate}%` }}
+                      />
+                    </span>
+                  </span>
+
+                  <span className="shrink-0 font-normal text-foreground-dimmed text-xs tabular-nums">
+                    {wins.length}W · {losses.length}L
+                  </span>
+
+                  <span
                     className={cn(
-                      "font-bold text-3xl tabular-nums leading-none tracking-[-0.02em]",
+                      "shrink-0 font-bold text-2xl tabular-nums leading-none tracking-[-0.02em]",
                       rateColor(competitor.rate),
                     )}
                   >
                     {competitor.rate}
-                    <span className="ml-0.5 font-medium text-foreground-dimmed text-lg">
+                    <span className="ml-0.5 font-medium text-foreground-dimmed text-sm">
                       %
                     </span>
-                  </p>
-                  <p className="text-foreground-dimmed text-xs">
-                    {total} sim{total !== 1 ? "s" : ""}
-                  </p>
-                </div>
-              </div>
-
-              <div className="border-accent-foreground border-b px-5 py-3">
-                <div className="flex items-center gap-3">
-                  <div className="h-2 flex-1 overflow-hidden rounded-full bg-accent-foreground">
-                    <div
-                      className={cn(
-                        "h-full rounded-full",
-                        barColor(competitor.rate),
-                      )}
-                      style={{ width: `${competitor.rate}%` }}
-                    />
-                  </div>
-                  <span className="shrink-0 text-foreground-dimmed text-xs tabular-nums">
-                    {wins.length} W · {losses.length} L
                   </span>
-                </div>
-              </div>
+                </span>
+              </AccordionTrigger>
 
-              <div className="grid grid-cols-2 divide-x divide-accent-foreground">
-                <div className="p-5">
-                  <div className="mb-3 flex items-center gap-2">
-                    <span className="size-2 shrink-0 rounded-full bg-success" />
-                    <span className="font-semibold text-success text-xs uppercase tracking-[0.08em]">
-                      Won · {wins.length}
-                    </span>
-                  </div>
-                  {wins.length > 0 ? (
-                    <div className="space-y-2">
-                      {wins.map((simulation) => (
-                        <p
-                          key={simulation.id}
-                          className="text-foreground-dimmed text-sm leading-relaxed"
-                        >
-                          {simulation.reasoning
-                            ? simulation.reasoning.slice(0, 160) +
-                              (simulation.reasoning.length > 160 ? "…" : "")
-                            : `Won with score ${simulation.productScore}`}
-                        </p>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-foreground-dimmed text-sm">
-                      No wins recorded
-                    </p>
-                  )}
+              <AccordionPanel>
+                <div className="grid grid-cols-1 divide-y divide-accent-foreground border-accent-foreground border-t sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+                  <Outcome
+                    tone="success"
+                    label="Won"
+                    simulations={wins}
+                    emptyLabel="No wins recorded"
+                  />
+                  <Outcome
+                    tone="error"
+                    label="Lost"
+                    simulations={losses}
+                    emptyLabel="No losses recorded"
+                  />
                 </div>
-                <div className="p-5">
-                  <div className="mb-3 flex items-center gap-2">
-                    <span className="size-2 shrink-0 rounded-full bg-error" />
-                    <span className="font-semibold text-error text-xs uppercase tracking-[0.08em]">
-                      Lost · {losses.length}
-                    </span>
-                  </div>
-                  {losses.length > 0 ? (
-                    <div className="space-y-2">
-                      {losses.map((simulation) => (
-                        <p
-                          key={simulation.id}
-                          className="text-foreground-dimmed text-sm leading-relaxed"
-                        >
-                          {simulation.reasoning
-                            ? simulation.reasoning.slice(0, 160) +
-                              (simulation.reasoning.length > 160 ? "…" : "")
-                            : `Lost with score ${simulation.productScore}`}
-                        </p>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-foreground-dimmed text-sm">
-                      No losses recorded
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
+              </AccordionPanel>
+            </AccordionItem>
           );
         })}
-      </div>
+      </Accordion>
     </>
   );
 };
+
+// Collapses a listing field to a row carrying its status, so the tab shows
+// what's wrong at a glance instead of three always-open content dumps.
+const ListingField = ({
+  label,
+  status,
+  tone,
+  children,
+}: {
+  label: string;
+  status: string;
+  tone: "success" | "error" | "neutral";
+  children: ReactNode;
+}) => (
+  <AccordionItem
+    value={label}
+    className="border-accent-foreground border-b bg-background-rich"
+  >
+    {/* The trigger is a <button>, so its contents must be phrasing content. */}
+    <AccordionTrigger
+      className="items-center px-5 py-4 hover:bg-background-dimmed/40"
+      classList={{
+        trigger: {
+          icon: "size-4 shrink-0 text-foreground-dimmed group-data-panel-open:rotate-180",
+        },
+      }}
+    >
+      <span className="flex min-w-0 flex-1 items-center justify-between gap-4">
+        <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+          {label}
+        </span>
+        <StatusPill tone={tone}>{status}</StatusPill>
+      </span>
+    </AccordionTrigger>
+    <AccordionPanel>
+      <div className="border-accent-foreground border-t p-5">{children}</div>
+    </AccordionPanel>
+  </AccordionItem>
+);
 
 const OptimizeTab = ({
   store,
@@ -1063,18 +1158,32 @@ const OptimizeTab = ({
 
   return (
     <>
-      <div className="relative flex items-end justify-between border-accent-foreground border-y p-4">
+      {/* The primary action used to sit in the right half of a 2-col grid,
+          beside a stray paragraph. It leads now. */}
+      <ApplyOptimization
+        product={product}
+        winRate={winRate}
+        canPublish={canPublish}
+        publishLabel="Optimize & publish"
+        reviewQueueHref={`/dashboard/${store}/optimize`}
+      />
+
+      <div className="relative flex items-end justify-between gap-4 border-accent-foreground border-b p-4">
         <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
         <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
         <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
         <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <div>
-          <SectionKicker>01 — Optimization</SectionKicker>
+          <SectionKicker>01 — AI Listing Audit</SectionKicker>
           <p className="mt-2 font-semibold text-foreground-rich text-lg">
             Optimize Listing
           </p>
+          <p className="mt-1 max-w-prose text-foreground-dimmed text-sm">
+            Category-aware content-quality scores for the fields AI agents read
+            — plus how this listing is positioned for its audience.
+          </p>
         </div>
-        <p className="text-foreground-dimmed text-sm">
+        <p className="shrink-0 text-foreground-dimmed text-sm">
           Completeness:{" "}
           <span className={cn("font-semibold", rateColor(product.quality))}>
             {product.quality}
@@ -1082,40 +1191,59 @@ const OptimizeTab = ({
           </span>
         </p>
       </div>
-      <div className="bg-background-rich p-4">
-        <SectionKicker>AI Listing Audit</SectionKicker>
-        <p className="mt-1 text-foreground-dimmed text-sm">
-          Category-aware content-quality scores for the fields AI agents read —
-          plus how this listing is positioned for its audience.
-        </p>
-      </div>
-      <ListingAudit product={product} />
-      <div className="grid grid-cols-1 gap-px bg-accent-foreground lg:grid-cols-2">
-        <div className="bg-background-rich p-6">
-          <p className="mb-2 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-            Title
-          </p>
-          <p className="text-foreground">{product.title}</p>
 
-          <p className="mt-6 mb-2 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-            Description
-          </p>
+      <ListingAudit product={product} />
+
+      <div className="relative border-accent-foreground border-y p-4">
+        <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+        <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+        <SectionKicker>02 — Current listing</SectionKicker>
+      </div>
+
+      {/* Same treatment as the battlecard. Each field collapses to a row with
+          its status, and anything that needs attention starts expanded — so the
+          fix is one click away without three content dumps (each with its own
+          nested scrollbar) sitting open by default. */}
+      <Accordion
+        className="text-foreground"
+        defaultValue={[
+          ...(product.description ? [] : ["Description"]),
+          ...(structuredData ? [] : ["Structured Data"]),
+        ]}
+      >
+        <ListingField
+          label="Title"
+          tone="neutral"
+          status={`${product.title.length} characters`}
+        >
+          <p className="text-foreground">{product.title}</p>
+        </ListingField>
+
+        <ListingField
+          label="Description"
+          tone={product.description ? "success" : "error"}
+          status={product.description ? "Present" : "Missing"}
+        >
           {product.description ? (
             <div
-              className="max-h-48 overflow-y-auto rounded-md bg-background-dimmed p-3 text-foreground text-sm leading-relaxed [&_ol]:mt-1 [&_ol]:list-decimal [&_ol]:pl-4 [&_p+p]:mt-2 [&_ul]:mt-1 [&_ul]:list-disc [&_ul]:pl-4"
+              className="text-foreground text-sm leading-relaxed [&_ol]:mt-1 [&_ol]:list-decimal [&_ol]:pl-4 [&_p+p]:mt-2 [&_ul]:mt-1 [&_ul]:list-disc [&_ul]:pl-4"
               // biome-ignore lint/security/noDangerouslySetInnerHtml: product description is HTML sourced from the user's own store
               dangerouslySetInnerHTML={{ __html: product.description }}
             />
           ) : (
             <p className="text-error text-sm italic">No description found</p>
           )}
+        </ListingField>
 
-          <p className="mt-6 mb-2 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-            Structured Data
-          </p>
+        <ListingField
+          label="Structured Data"
+          tone={structuredData ? "success" : "error"}
+          status={structuredData ? "Present" : "Missing"}
+        >
           {structuredData ? (
             <div className="space-y-3">
-              <pre className="max-h-40 overflow-y-auto whitespace-pre-wrap rounded-md bg-background-dimmed p-3 font-mono text-foreground-dimmed text-xs leading-relaxed">
+              {/* JSON-LD is genuinely unbounded, so this one keeps a cap. */}
+              <pre className="max-h-64 overflow-y-auto whitespace-pre-wrap border border-accent-foreground bg-background-dimmed p-3 font-mono text-foreground-dimmed text-xs leading-relaxed">
                 {structuredData}
               </pre>
               {canPublish && (
@@ -1148,32 +1276,8 @@ const OptimizeTab = ({
               </Button>
             </div>
           )}
-        </div>
-
-        <div className="flex flex-col items-start gap-4 bg-background-rich p-6">
-          <p className="text-foreground leading-relaxed">
-            Let Ecentic rewrite this listing and publish the optimized version
-            straight to your store, or review every pending change in the
-            optimization queue first.
-          </p>
-          <div className="flex flex-wrap items-center gap-2">
-            <PublishListing
-              product={product}
-              winRate={winRate}
-              canPublish={canPublish}
-              label="Optimize & publish"
-            />
-            <Button
-              variant="outline"
-              color="neutral"
-              render={<Link href={`/dashboard/${store}/optimize`} />}
-            >
-              Review queue
-              <ArrowRightIcon className="size-4" />
-            </Button>
-          </div>
-        </div>
-      </div>
+        </ListingField>
+      </Accordion>
     </>
   );
 };
