@@ -25,6 +25,7 @@ import {
   reviewSchemas,
   Testimonials,
 } from "./_components/testimonials";
+import { PartnershipBanner } from "./_components/partnership-banner";
 
 const Comparison = dynamic(() =>
   import("./_components/comparison").then((m) => m.Comparison),
@@ -81,12 +82,12 @@ export default async () => (
       />
       <Navbar />
       <Hero />
-      {/* <PartnershipBanner /> */}
+      <Proof />
       <PartnersStrip />
+      <PartnershipBanner />
       {/* <DiscoveryShift /> */}
       {/* <BlindSpot /> */}
       {/* <WhyNow /> */}
-      <Proof />
       {/* <AgentTrafficLive /> */}
       <Steps />
       <Features />

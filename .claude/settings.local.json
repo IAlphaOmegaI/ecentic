@@ -108,7 +108,8 @@
       "Bash(echo \"exit: $?\")",
       "Bash(echo \"tsc-changed-files-errors: $?\")",
       "Bash(awk 'NR==12{print length\\($0\\) \" chars: \" $0}' readme.txt)",
-      "Bash(awk 'NR==3{print}' readme.txt)"
+      "Bash(awk 'NR==3{print}' readme.txt)",
+      "Bash(../../node_modules/.bin/biome check *)"
     ]
   }
 }
