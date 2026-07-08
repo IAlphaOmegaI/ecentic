@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { cookies, headers } from "next/headers";
 import { render } from "react-email";
 import { Resend } from "resend";
+import { sanitizeRedirect } from "@/lib/redirect";
 import { VerifyEmail } from "@/public/templates/verify";
 import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
@@ -72,7 +73,10 @@ export const signInWithShopify = withContext(
         await context.auth.signInWithOAuth2({
           body: {
             providerId: "shopify",
-            callbackURL,
+            // Server actions are invocable directly, so the caller controls
+            // `callbackURL`. Re-validate here — Better Auth's originCheck does
+            // not run on `auth.api.*` calls (no `ctx.request`).
+            callbackURL: sanitizeRedirect(callbackURL, "/dashboard"),
             // `/onboarding/connect/shopify?shop=${encodeURIComponent(shop)}`
             // TODO: replace with /api/auth/shopify-proxy/authorize
             newUserCallbackURL: `/api/integrations/shopify/install?shop=${encodeURIComponent(shop)}`,
@@ -111,7 +115,7 @@ export const signInWithGoogle = withContext(
         await context.auth.signInSocial({
           body: {
             provider: "google",
-            callbackURL,
+            callbackURL: sanitizeRedirect(callbackURL, "/onboarding/connect"),
             newUserCallbackURL: "/complete-profile",
             disableRedirect: false,
           },

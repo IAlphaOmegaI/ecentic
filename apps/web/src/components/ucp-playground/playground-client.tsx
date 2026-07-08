@@ -65,7 +65,6 @@ const connectFormConfig = {
 } satisfies GenericForm;
 
 const starterSuggestions = [
-  "Search the catalog for coffee",
   "Show me details for the first product",
   "Add the first product to a new cart",
   "Start a checkout for the cart",

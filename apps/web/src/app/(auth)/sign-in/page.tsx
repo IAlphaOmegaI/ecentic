@@ -5,6 +5,7 @@ import { Button } from "@zenncore/web/components/button";
 import * as motion from "motion/react-client";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import { Plus } from "@/components/plus";
@@ -16,6 +17,17 @@ const points = [
   "Your agent simulations run continuously in the background",
   "Track your ranking improvements over time",
 ];
+
+const SignInFormSkeleton = () => (
+  <div className="flex flex-col gap-2">
+    <div className="h-10 w-full animate-pulse bg-foreground/10" />
+    <div className="h-10 w-full animate-pulse bg-foreground/10" />
+    <div className="my-2 h-px w-full bg-accent-foreground" />
+    <div className="h-10 w-full animate-pulse bg-foreground/10" />
+    <div className="h-10 w-full animate-pulse bg-foreground/10" />
+    <div className="mt-2 h-10 w-full animate-pulse bg-foreground/10" />
+  </div>
+);
 
 export default () => {
   // useEffect(() => {
@@ -84,7 +96,11 @@ export default () => {
               <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
               <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
               <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-              <SignInForm />
+              {/* SignInForm reads `?redirect=` via useSearchParams, which
+                  bails out of prerendering under `cacheComponents`. */}
+              <Suspense fallback={<SignInFormSkeleton />}>
+                <SignInForm />
+              </Suspense>
             </div>
           </Motion.Item>
 

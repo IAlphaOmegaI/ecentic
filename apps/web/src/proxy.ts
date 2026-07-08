@@ -2,72 +2,53 @@ import type { ProxyConfig, NextRequest as Request } from "next/server";
 import { NextResponse as Response } from "next/server";
 import * as Authentication from "@/server/app/authentication";
 
-const RouteAccess = {
-  PUBLIC: "public",
-  ADMINISTRATOR: "administrator",
-  USER: "user",
-} as const;
+type Route = string | RegExp;
 
-const system = [
-  "/llms.txt",
-  "/manifest.webmanifest",
-  "/browserconfig.xml",
-  /^\/opengraph-image(?:-[^/]+)?$/,
-  /^\/twitter-image(?:-[^/]+)?$/,
-  /^\/\.well-known(?:\/.*)?$/,
-] as const;
+// Routes that require an authenticated session. Everything not listed here is
+// public. This is deliberately a deny-list: a new marketing or docs page is
+// reachable the moment it exists, instead of silently becoming unreachable
+// until someone remembers to register it.
+const PROTECTED = [
+  /^\/dashboard(\/.*)?$/,
+  /^\/onboarding(\/.*)?$/,
+  "/complete-profile",
+] as const satisfies readonly Route[];
 
-const map = {
-  [RouteAccess.PUBLIC]: [
-    "/",
-    "/terms-and-conditions",
-    "/privacy-policy",
-    "/ucp/agent-profile",
-    "/sign-up",
-    "/sign-in",
-    ...system,
-    /^\/verify(\/.*)?$/,
-    /^\/share(\/.*)?$/,
-    /^\/blog(\/.*)?$/,
-    /^\/features(\/.*)?$/,
-    /^\/platforms(\/.*)?$/,
-    /^\/compare(\/.*)?$/,
-    "/pricing",
-    "/demo",
-    "/enterprise",
-    "/ucp-validator",
-    "/enterprise",
-    "/how-it-works",
-  ],
-  [RouteAccess.ADMINISTRATOR]: [/^\/.*/, "/sign-in"],
-  [RouteAccess.USER]: [
-    "/",
-    "/terms-and-conditions",
-    "/privacy-policy",
-    ...system,
-    /^\/share(\/.*)?$/,
-    /^\/blog(\/.*)?$/,
-    /^\/features(\/.*)?$/,
-    /^\/platforms(\/.*)?$/,
-    /^\/compare(\/.*)?$/,
-    /^\/onboarding(\/.*)?$/,
-    "/complete-profile",
-    "/pricing",
-    "/demo",
-    "/enterprise",
-    "/ucp-validator",
-    "/enterprise",
-    "/how-it-works",
-  ],
-} as const;
+// Protected *and* gated on role. Authenticated non-administrators are sent to
+// the dashboard rather than the sign-in page — they are signed in, just not
+// permitted here.
+const ADMINISTRATOR_ONLY = [
+  /^\/dev(\/.*)?$/,
+] as const satisfies readonly Route[];
+
+// Signed-in users have no business on these; bounce them to the dashboard.
+const AUTHENTICATION = [
+  "/sign-in",
+  "/sign-up",
+] as const satisfies readonly Route[];
+
+const matches = (pathname: string, routes: readonly Route[]) =>
+  routes.some((route) =>
+    typeof route === "string" ? route === pathname : route.test(pathname),
+  );
 
 const prefersMarkdown = (accept: string | null) =>
   accept != null && /\btext\/markdown\b/i.test(accept);
 
+const redirect = (request: Request, to: string, callbackUrl = "") => {
+  const next = new URL(to, request.nextUrl.origin);
+
+  // Never redirect a path to itself — that is an infinite loop, not a guard.
+  if (request.nextUrl.pathname === next.pathname) return Response.next();
+
+  // `searchParams.set` percent-encodes on write; pre-encoding double-escapes.
+  if (callbackUrl) next.searchParams.set("redirect", callbackUrl);
+
+  return Response.redirect(next.toString());
+};
+
 export const proxy = async (request: Request) => {
   const { pathname } = request.nextUrl;
-
-  if (process.env.NODE_ENV === "development") return Response.next();
 
   if (
     request.method === "GET" &&
@@ -79,45 +60,37 @@ export const proxy = async (request: Request) => {
     return Response.rewrite(url);
   }
 
+  const administratorOnly = matches(pathname, ADMINISTRATOR_ONLY);
+  const authenticationRoute = matches(pathname, AUTHENTICATION);
+  const requiresSession =
+    administratorOnly || authenticationRoute || matches(pathname, PROTECTED);
+
+  // Purely public route — skip the session lookup entirely rather than paying
+  // for a cookie verify (and possible database read) on every page view.
+  if (!requiresSession) return Response.next();
+
+  // Reads the signed `user` cookie first and only falls back to the session.
+  // The cookie is a one-hour cache and the session lives seven days, so it
+  // expires first — it cannot outlive a session that is still valid.
   const user = await Authentication.getProxiedCurrentUser();
-  const role = user.success ? (user.data?.role ?? "public") : "public";
 
-  const [access, redirectTo] = (() => {
-    switch (role) {
-      case "public": {
-        return [RouteAccess.PUBLIC, "/sign-in"];
-      }
-      case "administrator": {
-        return [RouteAccess.ADMINISTRATOR, "/sign-in"];
-      }
-      default: {
-        return [RouteAccess.USER, "/onboarding/connect"];
-      }
+  // Fail closed: an unreadable session must never grant access.
+  const account = user.success ? (user.data ?? null) : null;
+
+  switch (true) {
+    case authenticationRoute: {
+      return account ? redirect(request, "/dashboard") : Response.next();
     }
-  })();
-
-  if (!isAuthorized(pathname, access))
-    // const message = `Unauthorized access to ${pathname} under access ${access} redirecting to ${redirectTo}`;
-    return deny(request, redirectTo, pathname + request.nextUrl.search);
-
-  return Response.next();
-};
-
-type RouteAccess = (typeof RouteAccess)[keyof typeof RouteAccess];
-
-const deny = (request: Request, redirectTo = "/sign-in", callbackUrl = "") => {
-  const next = new URL(redirectTo, request.nextUrl.origin);
-  if (request.nextUrl.pathname === next.pathname) return Response.next();
-  if (callbackUrl)
-    next.searchParams.set("redirect", encodeURIComponent(callbackUrl));
-  return Response.redirect(next.toString());
-};
-
-const isAuthorized = (pathname: string, access: RouteAccess): boolean => {
-  return map[access].some((route) => {
-    if (typeof route === "string") return route === pathname;
-    return route.test(pathname);
-  });
+    case account === null: {
+      return redirect(request, "/sign-in", pathname + request.nextUrl.search);
+    }
+    case administratorOnly && account?.role !== "administrator": {
+      return redirect(request, "/dashboard");
+    }
+    default: {
+      return Response.next();
+    }
+  }
 };
 
 export const config = {

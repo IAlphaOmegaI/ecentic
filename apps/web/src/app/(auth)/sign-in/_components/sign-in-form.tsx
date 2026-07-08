@@ -13,10 +13,11 @@ import {
 import { useToastManager } from "@zenncore/web/components/toast";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { z } from "zod";
 import { Motion } from "@/components/motion";
+import { sanitizeRedirect } from "@/lib/redirect";
 import * as Authentication from "@/server/app/authentication";
 
 const credentialFormConfig = {
@@ -58,9 +59,14 @@ const shopifyFormConfig = {
 export const SignInForm = () => {
   const router = useRouter();
   const toast = useToastManager();
+  const searchParameters = useSearchParams();
   const [provider, setProvider] = useState<"credential" | "google" | "shopify">(
     "credential",
   );
+
+  // Set by the proxy when it bounces an unauthenticated request off a protected
+  // route. Each provider keeps its own fallback for the plain `/sign-in` case.
+  const requestedRedirect = searchParameters.get("redirect");
 
   const [handleSubmit, isPending] = useAsyncAction(
     async (
@@ -73,7 +79,10 @@ export const SignInForm = () => {
 
       if (data.type === "google") {
         const result = await Authentication.signInWithGoogle({
-          callbackURL: "/onboarding/connect",
+          callbackURL: sanitizeRedirect(
+            requestedRedirect,
+            "/onboarding/connect",
+          ),
         });
 
         if (!result.success) {
@@ -93,7 +102,7 @@ export const SignInForm = () => {
       if (data.type === "shopify") {
         const result = await Authentication.signInWithShopify({
           shop: data.data.shop,
-          callbackURL: "/dashboard",
+          callbackURL: sanitizeRedirect(requestedRedirect, "/dashboard"),
         });
 
         if (!result.success) {
@@ -121,7 +130,7 @@ export const SignInForm = () => {
         return;
       }
 
-      router.push("/onboarding/connect");
+      router.push(sanitizeRedirect(requestedRedirect, "/onboarding/connect"));
     },
   );
 
