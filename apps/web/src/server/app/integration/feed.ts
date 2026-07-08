@@ -88,7 +88,7 @@ export const connectForUser = withContext(
       return {
         success: false,
         error: new RequestError(
-          "This store is already connected to another Ecentic account.",
+          "This store is already connected to another écentic account.",
         ),
       };
 

@@ -5,6 +5,7 @@ import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
+import Link from "next/link";
 import * as Store from "@/server/app/store";
 
 const PLATFORM_BADGE: Record<string, { label: string; className: string }> = {
@@ -110,13 +111,13 @@ export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
       </div>
 
       <div className="p-4">
-        <button
-          type="button"
-          className="flex items-center gap-2 rounded-md border border-accent-foreground border-dashed px-4 py-2.5 text-foreground-dimmed text-sm transition-colors duration-150 hover:border-primary hover:text-primary"
+        <Link
+          href="/onboarding/connect"
+          className="flex w-fit items-center gap-2 rounded-md border border-accent-foreground border-dashed px-4 py-2.5 text-foreground-dimmed text-sm transition-colors duration-150 hover:border-primary hover:text-primary"
         >
           <PlusIcon className="size-4" />
           Connect another store
-        </button>
+        </Link>
       </div>
     </div>
   );

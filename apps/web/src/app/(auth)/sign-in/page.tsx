@@ -5,7 +5,6 @@ import { Button } from "@zenncore/web/components/button";
 import * as motion from "motion/react-client";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import { Plus } from "@/components/plus";
@@ -19,17 +18,17 @@ const points = [
 ];
 
 export default () => {
-  useEffect(() => {
-    (async () => {
-      const response = await fetch("/api/shopify/users", {
-        method: "GET",
-      });
+  // useEffect(() => {
+  //   (async () => {
+  //     const response = await fetch("/api/shopify/users", {
+  //       method: "GET",
+  //     });
 
-      const data = await response.json();
+  //     const data = await response.json();
 
-      console.log(data);
-    })();
-  }, []);
+  //     console.log(data);
+  //   })();
+  // }, []);
 
   return (
     <div className="flex h-screen overflow-hidden bg-primary">

@@ -33,7 +33,7 @@ const ERROR_MESSAGES: Record<string, string> = {
   invalid_hmac:
     "We couldn't verify Shopify's response. Start the connection again.",
   already_connected:
-    "This store is already connected to another Ecentic account. Sign in with that account, or contact support to move it.",
+    "This store is already connected to another écentic account. Sign in with that account, or contact support to move it.",
 };
 
 /**

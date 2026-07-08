@@ -449,7 +449,7 @@ export const handleOAuthCallback = withContext(
       return {
         success: false,
         error: new RequestError(
-          "This store is already connected to another Ecentic account.",
+          "This store is already connected to another écentic account.",
         ),
       };
 
@@ -1285,7 +1285,7 @@ export const connectPublic = withAuthentication(
       return {
         success: false,
         error: new RequestError(
-          "This store is already connected to another Ecentic account.",
+          "This store is already connected to another écentic account.",
         ),
       };
 

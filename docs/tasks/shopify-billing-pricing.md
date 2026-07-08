@@ -71,7 +71,7 @@ Subscribe to app subscription lifecycle events so your database stays in sync if
 
 ---
 
-## 5. Mapping Shopify shops to Ecentic accounts
+## 5. Mapping Shopify shops to écentic accounts
 
 Today, OAuth creates a **`store`** row linked to a **`user`**. Billing events arrive in the context of a **shop**.
 
