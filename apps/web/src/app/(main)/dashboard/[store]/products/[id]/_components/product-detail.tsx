@@ -49,6 +49,7 @@ import { type ReactNode, useEffect, useState, useTransition } from "react";
 import { Spring } from "@/lib/animations";
 import * as Audit from "@/server/app/intelligence/audit";
 import * as Optimization from "@/server/app/optimization";
+import { renderInline } from "../../../../../_components/rich-text";
 import {
   Crosshair,
   SectionKicker,
@@ -388,7 +389,7 @@ export const ProductDetail = ({ data }: ProductDetail.Props) => {
       </TabsPanel>
 
       <TabsPanel value="replay">
-        <ReplayTab simulations={simulations} product={product} />
+        <ReplayTab simulations={simulations} />
       </TabsPanel>
 
       <TabsPanel value="battlecard">
@@ -434,7 +435,14 @@ const OverviewTab = ({
         Win Rate by Model
       </p>
     </div>
-    <div className="relative grid grid-cols-2 gap-px border-accent-foreground border-t bg-accent-foreground lg:grid-cols-4">
+    {/* Size to the model count — a fixed 4-col grid left a phantom empty cell
+        with only 3 models. */}
+    <div
+      className="relative grid gap-px border-accent-foreground border-t bg-accent-foreground"
+      style={{
+        gridTemplateColumns: `repeat(${models.length}, minmax(0, 1fr))`,
+      }}
+    >
       <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
       {models.map(({ model, label, rate, wins, losses, total }) => {
@@ -541,10 +549,8 @@ const replayModelLabel = (modelId: string) => {
 
 const ReplayTab = ({
   simulations,
-  product,
 }: {
   simulations: ProductDetailData["simulations"];
-  product: ProductDetailData["product"];
 }) => {
   const grouped = ["gpt4", "claude", "gemini"].flatMap((modelId) => {
     const modelSimulations = simulations.filter(
@@ -585,10 +591,13 @@ const ReplayTab = ({
               type="button"
               onClick={() => setSelected(model)}
               className={cn(
-                "flex flex-col items-center gap-2 border-accent-foreground border-b px-4 py-5 transition-colors last:border-b-0",
+                // Selected state was bg-background-rich on bg-background-rich —
+                // invisible. Now a primary tint + left accent, and the logos
+                // stay full-colour (they were dimmed to 40% = gray on gray).
+                "flex flex-col items-center gap-2 border-accent-foreground border-b border-l-2 px-4 py-5 transition-colors last:border-b-0",
                 isSelected
-                  ? "bg-background-rich"
-                  : "bg-background-rich hover:bg-background",
+                  ? "border-l-primary bg-primary/5"
+                  : "border-l-transparent bg-background-rich hover:bg-background-dimmed",
               )}
             >
               {config?.logo && (
@@ -597,18 +606,13 @@ const ReplayTab = ({
                   alt={label}
                   width={20}
                   height={20}
-                  className={cn(
-                    "size-8 transition-opacity",
-                    !isSelected && "opacity-40",
-                  )}
+                  className="size-8"
                 />
               )}
               <span
                 className={cn(
                   "font-medium text-[10px] uppercase leading-tight tracking-[0.08em] transition-colors",
-                  isSelected
-                    ? "text-foreground-rich"
-                    : "text-foreground-dimmed",
+                  isSelected ? "text-primary" : "text-foreground-dimmed",
                 )}
               >
                 {label}
@@ -619,53 +623,89 @@ const ReplayTab = ({
       </div>
 
       {active && (
-        <div className="flex min-w-0 flex-1 flex-col p-4">
-          <div className="flex items-center gap-2 rounded-t-lg border border-accent-foreground border-b-0 bg-background-dimmed px-4 py-2">
-            <p className="font-medium font-mono text-foreground-dimmed text-xs">
+        <div className="flex min-w-0 flex-1 flex-col">
+          {/* Was a monospace terminal wall with raw **markdown**. Each matchup
+              is now a scannable row (competitor · score · verdict); the
+              reasoning collapses and renders its bold markup as real prose. */}
+          <div className="flex items-center justify-between gap-2 border-accent-foreground border-b bg-background-rich px-4 py-2.5">
+            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
               {active.label} Decision Replay
             </p>
-            <span className="ml-auto font-mono text-foreground-dimmed text-xs tabular-nums">
+            <span className="text-foreground-dimmed text-xs tabular-nums">
               {active.simulations.length} simulation
               {active.simulations.length !== 1 ? "s" : ""}
             </span>
           </div>
-          <div className="flex-1 rounded-b-lg border border-accent-foreground bg-background-rich px-6 py-5 font-mono text-xs leading-relaxed">
-            <p className="font-semibold text-foreground-rich">
-              Evaluating: {product.title}
-            </p>
-            {active.simulations.map((simulation) => (
-              <div
-                key={simulation.id}
-                className="mt-4 border-accent-foreground border-t pt-4"
-              >
-                <p className="text-foreground-dimmed">
-                  → vs. {simulation.competitorTitle}
-                </p>
-                <p className="text-foreground-dimmed tabular-nums">
-                  Score: {simulation.productScore ?? "?"} vs{" "}
-                  {simulation.competitorScore ?? "?"}
-                </p>
-                <p
-                  className={cn(
-                    "mt-1 font-semibold",
-                    simulation.winner === "product"
-                      ? "text-success"
-                      : "text-error",
-                  )}
+
+          <Accordion
+            className="text-foreground"
+            // Losses are the actionable matchups — auto-open the first couple.
+            defaultValue={active.simulations
+              .filter((simulation) => simulation.winner !== "product")
+              .slice(0, 2)
+              .map((simulation) => simulation.id)}
+          >
+            {active.simulations.map((simulation) => {
+              const won = simulation.winner === "product";
+              return (
+                <AccordionItem
+                  key={simulation.id}
+                  value={simulation.id}
+                  className="border-accent-foreground border-b bg-background-rich"
                 >
-                  DECISION:{" "}
-                  {simulation.winner === "product"
-                    ? product.title
-                    : simulation.competitorTitle}
-                </p>
-                {simulation.reasoning && (
-                  <p className="mt-1 text-foreground leading-relaxed">
-                    REASONING: &quot;{simulation.reasoning}&quot;
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
+                  <AccordionTrigger
+                    className="items-center px-4 py-3 hover:bg-background-dimmed/40"
+                    classList={{
+                      trigger: {
+                        icon: "size-4 shrink-0 text-foreground-dimmed group-data-panel-open:rotate-180",
+                      },
+                    }}
+                  >
+                    <span className="flex min-w-0 flex-1 items-center gap-3">
+                      <span className="min-w-0 flex-1 truncate font-medium text-foreground">
+                        vs. {simulation.competitorTitle}
+                      </span>
+                      <span className="shrink-0 font-mono text-foreground-dimmed text-xs tabular-nums">
+                        {simulation.productScore ?? "?"} —{" "}
+                        {simulation.competitorScore ?? "?"}
+                      </span>
+                      <span
+                        className={cn(
+                          "shrink-0 rounded-full px-2 py-0.5 font-semibold text-[10px] uppercase tracking-[0.06em]",
+                          won
+                            ? "bg-success/10 text-success"
+                            : "bg-error/10 text-error",
+                        )}
+                      >
+                        {won ? "Won" : "Lost"}
+                      </span>
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionPanel>
+                    <div className="border-accent-foreground border-t px-4 py-4">
+                      <p className="mb-2 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+                        {active.label}&apos;s reasoning
+                      </p>
+                      {simulation.reasoning ? (
+                        <p className="text-foreground text-sm leading-relaxed">
+                          {renderInline(simulation.reasoning, {
+                            strongClassName:
+                              "font-semibold text-foreground-rich",
+                          })}
+                        </p>
+                      ) : (
+                        <p className="text-foreground-dimmed text-sm italic">
+                          No reasoning recorded — decided by score (
+                          {simulation.productScore ?? "?"} vs{" "}
+                          {simulation.competitorScore ?? "?"}).
+                        </p>
+                      )}
+                    </div>
+                  </AccordionPanel>
+                </AccordionItem>
+              );
+            })}
+          </Accordion>
         </div>
       )}
     </div>

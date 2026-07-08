@@ -4,7 +4,6 @@ import {
   AwardIcon,
   BullseyeIcon,
   ClockIcon,
-  GaugeIcon,
   RadarIcon,
   ShoppingCartIcon,
   TrendDownIcon,
@@ -320,20 +319,33 @@ export const SimulationsClient = ({
             <SimulationComplete data={completedData} />
           ) : (
             <>
-              {/* Contiguous grid bands, edge to edge. No `p-4`/`space-y-4`
-                  islands — cells are separated by the gap-px seam. */}
-              <div className="grid grid-cols-2 gap-px bg-accent-foreground sm:grid-cols-4">
+              {/* Explicit, labeled progress bar. It used to be a bare blue seam
+                  between the bands — nobody read that as "progress". */}
+              <div className="border-accent-foreground border-b bg-background-rich px-4 py-3.5">
+                <div className="flex items-center justify-between">
+                  <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+                    Simulation Progress
+                  </p>
+                  <span className="font-mono font-semibold text-primary text-sm tabular-nums">
+                    {stats.progress}%
+                  </span>
+                </div>
+                <div className="mt-2 h-1.5 w-full bg-accent-foreground">
+                  <div
+                    className="h-full bg-primary transition-[width] duration-300"
+                    style={{ width: `${stats.progress}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Progress now lives in the labeled bar above, so the stat band
+                  is a clean 3-up (no phantom 4th cell). */}
+              <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-3">
                 <StatCell
                   label="Phase"
                   icon={<RadarIcon className="size-7.5 text-primary" />}
                   value={phase}
                   caption="current stage"
-                />
-                <StatCell
-                  label="Progress"
-                  icon={<GaugeIcon className="size-7.5 text-warning" />}
-                  value={`${stats.progress}%`}
-                  caption="of simulations run"
                 />
                 <StatCell
                   label="Wins / Losses"
@@ -351,18 +363,9 @@ export const SimulationsClient = ({
                 />
               </div>
 
-              {/* The seam *is* the progress bar: a 4px accent-foreground rule
-                  that fills with primary. Not a floating rounded pill. */}
-              <div className="h-1 w-full bg-accent-foreground">
-                <div
-                  className="h-full bg-primary transition-[width] duration-300"
-                  style={{ width: `${stats.progress}%` }}
-                />
-              </div>
-
-              {/* 3 models — a 4-col grid left a phantom cell showing the
-                  bg-accent-foreground grid background as an empty gray box. */}
-              <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-3">
+              {/* border-t separates the model band from the stats above (the
+                  progress seam that used to do that job moved up). */}
+              <div className="grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground sm:grid-cols-3">
                 {models.map(({ id, label, logo }) => (
                   <div
                     key={id}

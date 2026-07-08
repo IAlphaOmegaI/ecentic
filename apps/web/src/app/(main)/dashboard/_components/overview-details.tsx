@@ -14,10 +14,9 @@ import type { ReactNode } from "react";
  * Visits as three full-height panels — six-plus screens of scroll before the
  * user could act. They now share one tabbed panel; only the active one shows.
  *
- * Each panel's children are streamed server components (wrapped in Suspense on
- * the server), so this client wrapper just switches which one is visible.
- * keepMounted keeps all three in the DOM so switching is instant and their
- * Suspense boundaries can stream in independently.
+ * Structure matches the other dashboard tabs (product detail / optimize)
+ * exactly: TabsList is a DIRECT child of Tabs. Wrapping it in a div broke Base
+ * UI's active-indicator measurement (the pill spanned the whole bar).
  */
 export const OverviewDetails = ({
   products,
@@ -25,20 +24,18 @@ export const OverviewDetails = ({
   agents,
 }: OverviewDetails.Props) => (
   <Tabs defaultValue="products">
-    <div className="border-accent-foreground border-b p-4">
-      <TabsList className="h-10 w-full rounded-md border-0 bg-background-dimmed p-1">
-        <TabsIndicator className="rounded" />
-        <Tab value="products" className="h-8 flex-1 border-r-0">
-          Top Products
-        </Tab>
-        <Tab value="competitors" className="h-8 flex-1 border-r-0">
-          Competitors
-        </Tab>
-        <Tab value="agents" className="h-8 flex-1 border-r-0">
-          Agent Visits
-        </Tab>
-      </TabsList>
-    </div>
+    <TabsList className="h-10 w-full rounded-md border-0 bg-background-dimmed p-1">
+      <TabsIndicator className="rounded" />
+      <Tab value="products" className="h-8 flex-1 border-r-0">
+        Top Products
+      </Tab>
+      <Tab value="competitors" className="h-8 flex-1 border-r-0">
+        Competitors
+      </Tab>
+      <Tab value="agents" className="h-8 flex-1 border-r-0">
+        Agent Visits
+      </Tab>
+    </TabsList>
 
     <TabsPanel value="products" keepMounted>
       {products}
