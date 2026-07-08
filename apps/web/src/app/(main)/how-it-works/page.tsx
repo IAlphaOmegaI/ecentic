@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/json-ld";
 import {
   absoluteUrl,
   createBreadcrumbSchema,
@@ -99,11 +100,7 @@ export default () => {
       title="From invisible to chosen in three steps."
       description={description}
     >
-      <script
-        type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be rendered inline for search engines
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
+      <JsonLd schemas={structuredData} />
 
       <Steps />
 

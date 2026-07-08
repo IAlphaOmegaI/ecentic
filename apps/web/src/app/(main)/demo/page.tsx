@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { BookingEmbed } from "@/components/cal";
+import { JsonLd } from "@/components/json-ld";
 import {
   absoluteUrl,
   createBreadcrumbSchema,
@@ -79,11 +80,7 @@ export default () => {
       title="See your AI win rate, live in 15 minutes."
       description={description}
     >
-      <script
-        type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be rendered inline for search engines
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
+      <JsonLd schemas={structuredData} />
 
       <div className="border-accent-foreground border-b">
         <div className="mx-auto max-w-6xl border-accent-foreground border-x">

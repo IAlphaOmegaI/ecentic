@@ -11,6 +11,11 @@ Sentry.init({
   integrations: [Sentry.replayIntegration()],
   environment: process.env.NODE_ENV,
 
+  ignoreErrors: [
+    // Safari/extension structured-data parsers crashing on page JSON-LD — external code, not ours
+    /@context.*toLowerCase/,
+  ],
+
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
   tracesSampleRate: 0.1,
   // Enable logs to be sent to Sentry

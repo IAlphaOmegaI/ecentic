@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Footer } from "@/components/footer";
+import { JsonLd } from "@/components/json-ld";
 import { Navbar } from "@/components/navbar";
 import { Plus } from "@/components/plus";
 import {
@@ -90,11 +91,7 @@ const structuredData = [
 
 export default () => (
   <main className="relative flex min-h-screen flex-col">
-    <script
-      type="application/ld+json"
-      // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be rendered inline for search engines
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-    />
+    <JsonLd schemas={structuredData} />
     <div className="relative -left-[calc(50vw-50%)] w-screen">
       <div className="mx-auto max-w-6xl border-accent-foreground border-x">
         <Navbar />

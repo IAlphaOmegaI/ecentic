@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { Suspense } from "react";
+import { JsonLd } from "@/components/json-ld";
 import { Plus } from "@/components/plus";
 import { PlaygroundClient } from "@/components/ucp-playground/playground-client";
 import { auth } from "@/lib/auth";
@@ -120,11 +121,7 @@ export default () => (
     description={description}
     hideHero
   >
-    <script
-      type="application/ld+json"
-      // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be rendered inline for search engines
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-    />
+    <JsonLd schemas={structuredData} />
 
     <section className="relative -left-[calc(50vw-50%)] w-screen">
       <div className="relative mx-auto max-w-6xl border-accent-foreground border-x border-b">

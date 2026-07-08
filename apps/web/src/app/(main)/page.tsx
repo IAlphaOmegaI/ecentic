@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { Footer } from "@/components/footer";
+import { JsonLd } from "@/components/json-ld";
 import { Navbar } from "@/components/navbar";
 import {
   absoluteUrl,
@@ -17,6 +18,7 @@ import { CaseStudy } from "./_components/case-study";
 import { Features } from "./_components/features";
 import { Hero } from "./_components/hero";
 import { PartnersStrip } from "./_components/partners-strip";
+import { PartnershipBanner } from "./_components/partnership-banner";
 import { Proof } from "./_components/proof";
 import { SmoothScroll } from "./_components/smooth-scroll";
 import { Steps } from "./_components/steps";
@@ -25,7 +27,6 @@ import {
   reviewSchemas,
   Testimonials,
 } from "./_components/testimonials";
-import { PartnershipBanner } from "./_components/partnership-banner";
 
 const Comparison = dynamic(() =>
   import("./_components/comparison").then((m) => m.Comparison),
@@ -50,35 +51,31 @@ export const metadata: Metadata = createMetadata({
 export default async () => (
   <SmoothScroll>
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 border-accent-foreground border-x md:gap-12">
-      <script
-        type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be rendered inline for search engines
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([
-            organizationSchema,
-            websiteSchema,
-            {
-              ...softwareApplicationSchema,
-              aggregateRating: {
-                "@type": "AggregateRating",
-                ...aggregateRating,
-              },
-              review: reviewSchemas,
+      <JsonLd
+        schemas={[
+          organizationSchema,
+          websiteSchema,
+          {
+            ...softwareApplicationSchema,
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ...aggregateRating,
             },
-            {
-              "@context": "https://schema.org",
-              "@type": "WebPage",
-              name: "AI Ecommerce Platform for Product Visibility",
-              description,
-              url: absoluteUrl("/"),
-              about: [
-                "AI ecommerce platform",
-                "product listing optimization",
-                "AI shopping agents",
-              ],
-            },
-          ]),
-        }}
+            review: reviewSchemas,
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            name: "AI Ecommerce Platform for Product Visibility",
+            description,
+            url: absoluteUrl("/"),
+            about: [
+              "AI ecommerce platform",
+              "product listing optimization",
+              "AI shopping agents",
+            ],
+          },
+        ]}
       />
       <Navbar />
       <Hero />

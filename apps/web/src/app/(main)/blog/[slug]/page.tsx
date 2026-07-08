@@ -1,6 +1,7 @@
 import { unwrapResult } from "@zenncore/utils";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { JsonLd } from "@/components/json-ld";
 import * as Blog from "@/server/app/blog";
 import { Environment } from "@/server/utils/environment";
 import {
@@ -138,11 +139,7 @@ export default async ({ params }: BlogPageProps) => {
       }
       description={post.introduction}
     >
-      <script
-        type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be rendered inline for search engines
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
+      <JsonLd schemas={structuredData} />
 
       <EditorialSplitSection
         left={

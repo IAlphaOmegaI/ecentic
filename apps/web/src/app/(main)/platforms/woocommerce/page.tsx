@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/json-ld";
 import {
   absoluteUrl,
   createBreadcrumbSchema,
@@ -119,11 +120,7 @@ export default () => {
       title="AI for WooCommerce Stores That Need Cleaner Product Workflows"
       description={description}
     >
-      <script
-        type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be rendered inline for search engines
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
+      <JsonLd schemas={structuredData} />
 
       <ContentPageSection
         number="01"
