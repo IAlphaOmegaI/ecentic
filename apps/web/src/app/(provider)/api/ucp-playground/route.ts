@@ -19,6 +19,12 @@ import {
   type PlaygroundUIMessage,
   resolveShoppingService,
 } from "@/server/app/intelligence/ucp/playground";
+import {
+  ANONYMOUS_MESSAGE_LIMIT,
+  ANONYMOUS_MESSAGES_PER_MINUTE,
+  consumeAnonymousMessage,
+} from "@/server/app/intelligence/ucp/playground-limit";
+import { isRateLimited } from "@/server/app/ucp/rate-limit";
 
 // Gemini multi-step tool loops against a live store can take a while.
 export const maxDuration = 60;
@@ -39,8 +45,31 @@ type ChatRequestBody = {
 export const POST = async (request: Request) => {
   const session = await auth.api.getSession({ headers: await headers() });
 
+  // Anonymous visitors reach this from the public /ucp-playground page. Every
+  // message drives a multi-step model loop against a live store, so meter them:
+  // a per-minute burst guard plus a hard lifetime cap. Signed-in users pass
+  // through unmetered.
   if (!session) {
-    return new Response("Unauthorized", { status: 401 });
+    const throttled = await isRateLimited({
+      store: "playground",
+      headers: request.headers,
+      maxPerMinute: ANONYMOUS_MESSAGES_PER_MINUTE,
+    });
+
+    if (throttled) {
+      return new Response("Too many messages — slow down and try again.", {
+        status: 429,
+      });
+    }
+
+    const quota = await consumeAnonymousMessage(request.headers);
+
+    if (!quota.allowed) {
+      return new Response(
+        `You've used all ${ANONYMOUS_MESSAGE_LIMIT} free playground messages. Sign in to keep going.`,
+        { status: 429 },
+      );
+    }
   }
 
   const {

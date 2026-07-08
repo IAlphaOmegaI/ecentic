@@ -17,8 +17,13 @@ import {
   isToolUIPart,
   type ToolUIPart,
 } from "ai";
+import Link from "next/link";
 import { useCallback, useState } from "react";
 import { z } from "zod";
+import {
+  SectionKicker,
+  StatusPill,
+} from "@/app/(main)/dashboard/_components/grid";
 import {
   Conversation,
   ConversationContent,
@@ -49,7 +54,6 @@ import type {
   PlaygroundUIMessage,
 } from "@/server/app/intelligence/ucp/playground";
 import { resolvePlaygroundStore } from "@/server/app/intelligence/ucp/playground-actions";
-import { SectionKicker, StatusPill } from "../../../_components/grid";
 
 const connectFormConfig = {
   storeUrl: field({
@@ -169,6 +173,13 @@ type CartToolPart = ToolPart<
 type CartOutput = NonNullable<
   Extract<CartToolPart, { state: "output-available" }>["output"]
 >;
+
+const isCartToolPart = (
+  part: PlaygroundUIMessage["parts"][number],
+): part is CartToolPart =>
+  part.type === "tool-create_cart" ||
+  part.type === "tool-get_cart" ||
+  part.type === "tool-update_cart";
 
 const getCart = (output: CartOutput | undefined): UcpCart | null => {
   if (!output) return null;
@@ -429,13 +440,36 @@ const ToolLoading = ({ label }: { label: string }) => (
   </div>
 );
 
-const CartPart = ({ part }: { part: CartToolPart }) => {
+const cartLoadingLabel = (type: CartToolPart["type"]): string => {
+  switch (type) {
+    case "tool-create_cart":
+      return "Creating cart…";
+    case "tool-get_cart":
+      return "Loading cart…";
+    default:
+      return "Updating cart…";
+  }
+};
+
+const CartPart = ({
+  part,
+  isStreaming,
+}: {
+  part: CartToolPart;
+  isStreaming: boolean;
+}) => {
   if (part.state === "input-streaming" || part.state === "input-available") {
-    return <ToolLoading label="Updating cart…" />;
+    return <ToolLoading label={cartLoadingLabel(part.type)} />;
   }
   if (part.state === "output-error") {
     return <ErrorView message={part.errorText ?? "Cart operation failed"} />;
   }
+
+  // While the turn is still running a resolved cart can still be superseded — the
+  // agent reads with get_cart before writing with update_cart, and the write only
+  // appears after the model finishes generating its arguments. Hold the loader
+  // rather than flash the pre-update cart; the card renders once the turn settles.
+  if (isStreaming) return <ToolLoading label={cartLoadingLabel(part.type)} />;
 
   const output = part.state === "output-available" ? part.output : undefined;
 
@@ -485,9 +519,24 @@ const CatalogPart = ({ part }: { part: CatalogToolPart }) => {
   return <ProductsCard output={output} products={products} />;
 };
 
-const MessageParts = ({ message }: { message: PlaygroundUIMessage }) => {
+const MessageParts = ({
+  message,
+  isStreaming,
+}: {
+  message: PlaygroundUIMessage;
+  isStreaming: boolean;
+}) => {
   const hasVisibleContent = message.parts.some(
     (part) => part.type !== "step-start",
+  );
+
+  // A turn usually reads the cart (get_cart) before writing it (update_cart). Render
+  // only the last cart part — regardless of state — so the stale cart never shows:
+  // while the write is in flight you get its "Updating cart…" loader, then the final
+  // cart replaces it.
+  const lastCartIndex = message.parts.reduce(
+    (latest, part, index) => (isCartToolPart(part) ? index : latest),
+    -1,
   );
 
   return (
@@ -512,12 +561,11 @@ const MessageParts = ({ message }: { message: PlaygroundUIMessage }) => {
         ) {
           return <CatalogPart key={key} part={part} />;
         }
-        if (
-          part.type === "tool-create_cart" ||
-          part.type === "tool-get_cart" ||
-          part.type === "tool-update_cart"
-        ) {
-          return <CartPart key={key} part={part} />;
+        if (isCartToolPart(part)) {
+          // Superseded by a later cart part in this turn — skip the stale state.
+          if (index !== lastCartIndex) return null;
+
+          return <CartPart isStreaming={isStreaming} key={key} part={part} />;
         }
         if (isClassicToolUIPart(part)) {
           return <ToolView key={key} part={part} />;
@@ -529,15 +577,48 @@ const MessageParts = ({ message }: { message: PlaygroundUIMessage }) => {
   );
 };
 
+const MessageQuotaWall = ({ limit }: { limit: number }) => (
+  <div className="flex flex-col items-center gap-3 rounded-xl border border-accent-foreground bg-background-dimmed px-4 py-6 text-center">
+    <p className="font-medium text-foreground-rich text-sm">
+      You've used all {limit} free playground messages
+    </p>
+    <p className="max-w-sm text-foreground-dimmed text-xs">
+      Create an account to keep running UCP flows against your own store — no
+      message limit.
+    </p>
+    <Button color="primary" render={<Link href="/sign-up" />}>
+      Create free account
+    </Button>
+  </div>
+);
+
 const transport = new DefaultChatTransport<PlaygroundUIMessage>({
   api: "/api/ucp-playground",
 });
 
-export const PlaygroundClient = () => {
-  const [storeUrl, setStoreUrl] = useState("");
+type PlaygroundClientProps = {
+  /** Seeds the connect form — the store opened in the dashboard, if any. */
+  defaultStoreUrl?: string;
+  /** A store already resolved on the server, so the session starts connected. */
+  initialConnection?: PlaygroundDataParts["profile"] | null;
+  /**
+   * Caps how many messages the visitor may send. Set for anonymous visitors on
+   * the public playground; the API route enforces the same cap server-side.
+   */
+  messageLimit?: number;
+};
+
+export const PlaygroundClient = ({
+  defaultStoreUrl = "",
+  initialConnection = null,
+  messageLimit,
+}: PlaygroundClientProps) => {
+  const [storeUrl, setStoreUrl] = useState(
+    initialConnection ? defaultStoreUrl : "",
+  );
   const [connection, setConnection] = useState<
     PlaygroundDataParts["profile"] | null
-  >(null);
+  >(initialConnection);
   const [connectError, setConnectError] = useState<string | null>(null);
   const [text, setText] = useState("");
 
@@ -557,7 +638,19 @@ export const PlaygroundClient = () => {
   });
 
   const isGenerating = status === "submitted" || status === "streaming";
-  const canSend = text.trim().length > 0;
+
+  // Anonymous visitors get a fixed budget. Counting locally only keeps the UI
+  // honest within a session — the route's redis counter is the real gate.
+  const sentMessages = messages.filter(
+    (message) => message.role === "user",
+  ).length;
+  const remainingMessages =
+    messageLimit === undefined
+      ? Number.POSITIVE_INFINITY
+      : Math.max(0, messageLimit - sentMessages);
+  const isOutOfMessages = remainingMessages === 0;
+
+  const canSend = text.trim().length > 0 && !isOutOfMessages;
 
   const hostOf = (value: string): string => {
     try {
@@ -596,12 +689,12 @@ export const PlaygroundClient = () => {
   const submit = useCallback(
     (raw: string) => {
       const value = raw.trim();
-      if (!value || !storeUrl.trim() || isGenerating) return;
+      if (!value || !storeUrl.trim() || isGenerating || isOutOfMessages) return;
 
       sendMessage({ text: value }, { body: { storeUrl: storeUrl.trim() } });
       setText("");
     },
-    [sendMessage, storeUrl, isGenerating],
+    [sendMessage, storeUrl, isGenerating, isOutOfMessages],
   );
 
   const handleSubmit = useCallback(
@@ -634,6 +727,7 @@ export const PlaygroundClient = () => {
           <InferredForm
             className="flex flex-col gap-3"
             config={connectFormConfig}
+            defaultValues={{ storeUrl: defaultStoreUrl }}
             onSubmit={handleConnect}
           >
             <Button
@@ -689,10 +783,13 @@ export const PlaygroundClient = () => {
               title="Start a UCP session"
             />
           ) : (
-            messages.map((message) => (
+            messages.map((message, index) => (
               <Message from={message.role} key={message.id}>
                 <MessageContent>
-                  <MessageParts message={message} />
+                  <MessageParts
+                    isStreaming={isGenerating && index === messages.length - 1}
+                    message={message}
+                  />
                 </MessageContent>
               </Message>
             ))
@@ -706,7 +803,7 @@ export const PlaygroundClient = () => {
         {error && (
           <ErrorView message={error.message || "Something went wrong"} />
         )}
-        {isEmpty && (
+        {isEmpty && !isOutOfMessages && (
           <Suggestions>
             {starterSuggestions.map((suggestion) => (
               <Suggestion
@@ -717,22 +814,32 @@ export const PlaygroundClient = () => {
             ))}
           </Suggestions>
         )}
-        <PromptInput className="flex flex-row" onSubmit={handleSubmit}>
-          <PromptInputBody className="flex items-center px-4 py-2">
-            <PromptInputTextarea
-              className="flex-1 p-0"
-              disabled={isGenerating}
-              onChange={handleTextChange}
-              placeholder="Ask the agent to run a UCP action…"
-              value={text}
-            />
-            <PromptInputSubmit
-              disabled={isGenerating ? false : !canSend}
-              onStop={stop}
-              status={status}
-            />
-          </PromptInputBody>
-        </PromptInput>
+        {isOutOfMessages ? (
+          <MessageQuotaWall limit={messageLimit ?? 0} />
+        ) : (
+          <PromptInput className="flex flex-row" onSubmit={handleSubmit}>
+            <PromptInputBody className="flex items-center px-4 py-2">
+              <PromptInputTextarea
+                className="flex-1 p-0"
+                disabled={isGenerating}
+                onChange={handleTextChange}
+                placeholder="Ask the agent to run a UCP action…"
+                value={text}
+              />
+              <PromptInputSubmit
+                disabled={isGenerating ? false : !canSend}
+                onStop={stop}
+                status={status}
+              />
+            </PromptInputBody>
+          </PromptInput>
+        )}
+        {messageLimit !== undefined && !isOutOfMessages && (
+          <p className="text-center text-[11px] text-foreground-dimmed">
+            {remainingMessages} of {messageLimit} free message
+            {messageLimit === 1 ? "" : "s"} left in this playground.
+          </p>
+        )}
       </div>
     </div>
   );
