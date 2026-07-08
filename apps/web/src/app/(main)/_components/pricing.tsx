@@ -6,6 +6,18 @@ import { BookCall } from "@/components/cal";
 import { Plus } from "@/components/plus";
 import { PricingCTA } from "./pricing-cta";
 
+const payg = {
+  name: "Pay-as-you-go",
+  tagline: "Only pay when we sell",
+  features: [
+    "Full features unlocked",
+    "No card required to start",
+    "3% only on AI-attributed orders",
+    "Hard $500/mo cap — no surprises",
+  ],
+  cta: "Start free",
+};
+
 const compete = {
   name: "Compete",
   tagline: "Know your enemy",
@@ -46,8 +58,6 @@ export const Pricing = () => (
     className="relative -left-[calc(50vw-50%)] w-screen scroll-mt-[5.5rem]"
   >
     <div className="relative mx-auto max-w-6xl border-accent-foreground border-x border-b">
-      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
       <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
       <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
       <div className="relative border-accent-foreground p-6 md:p-12">
@@ -56,19 +66,20 @@ export const Pricing = () => (
           Pay when agents start picking you.
         </h2>
         <p className="mt-4 max-w-xl font-light text-foreground-dimmed text-lg">
-          Modular plans — no seats, no hidden add-ons. Pay only for the products
-          you optimize and how much you automate.
+          Scan for free, then go pay-as-you-go — no card, you only pay when an
+          AI agent buys because of us. Prefer predictable billing? Pick a flat
+          monthly plan with no performance fee.
         </p>
       </div>
 
       <div className="relative mx-auto max-w-6xl border-accent-foreground border-t">
         <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
         <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
-        <div className="relative grid grid-cols-1 divide-y divide-accent-foreground border-accent-foreground border-b md:grid-cols-3 md:divide-x md:divide-y-0">
+        <div className="relative grid grid-cols-1 divide-y divide-accent-foreground border-accent-foreground border-b sm:grid-cols-2 sm:divide-x">
           <Plus className="bottom-0 left-0 hidden -translate-x-1/2 translate-y-1/2 md:flex" />
           <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
           {/* Scan */}
-          <div className="flex h-auto flex-col p-6 md:h-102">
+          <div className="flex h-auto flex-col bg-background-rich p-6 md:h-102">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="font-body font-medium text-2xl text-foreground">
@@ -127,8 +138,46 @@ export const Pricing = () => (
             </Button>
           </div>
 
+          {/* Pay-as-you-go */}
+          <div className="flex h-auto flex-col bg-background-rich p-6 md:h-102">
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="font-body font-medium text-2xl text-foreground">
+                {payg.name}
+              </h2>
+              <span className="rounded-full bg-primary/10 px-2.5 py-1 font-medium text-primary text-xs uppercase tracking-tight">
+                Free to start
+              </span>
+            </div>
+            <p className="font-body font-light text-foreground-dimmed text-lg">
+              {payg.tagline}
+            </p>
+            <h3 className="mt-2 font-body font-medium text-4xl text-primary">
+              Free
+              <span className="font-light text-foreground-dimmed text-xl">
+                {" "}
+                to start
+              </span>
+            </h3>
+            <p className="mt-1 font-light text-foreground-dimmed text-sm">
+              then 3% of AI-attributed orders · capped $500/mo
+            </p>
+            <div className="mt-4">
+              {payg.features.map((f) => (
+                <div key={f} className="flex items-center gap-2">
+                  <CheckIcon className="size-4 text-primary" />
+                  <p className="font-body font-light text-foreground-dimmed">
+                    {f}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <PricingCTA plan="payg" className="mt-4 w-full md:mt-auto">
+              {payg.cta}
+            </PricingCTA>
+          </div>
+
           {/* Compete */}
-          <div className="flex h-auto flex-col p-6 md:h-102">
+          <div className="flex h-auto flex-col bg-background-rich p-6 md:h-102">
             <h2 className="font-body font-medium text-2xl text-foreground">
               {compete.name}
             </h2>
@@ -139,6 +188,9 @@ export const Pricing = () => (
               ${compete.price}
               <span className="font-light text-xl">/mo</span>
             </h3>
+            <p className="mt-1 font-light text-foreground-dimmed text-sm">
+              flat monthly · no performance fee
+            </p>
             <div className="mt-4">
               {compete.features.map((f) => (
                 <div key={f} className="flex items-center gap-2">
@@ -149,14 +201,6 @@ export const Pricing = () => (
                 </div>
               ))}
             </div>
-            <p className="mt-3 border-accent-foreground border-t pt-3 font-light text-foreground-dimmed text-sm">
-              <span className="font-medium text-foreground">
-                + 3% performance fee
-              </span>{" "}
-              on AI-attributed orders · capped at $500/mo. You only pay when an
-              agent buys because of an optimization we made — never on your
-              other sales.
-            </p>
             <PricingCTA plan="compete" className="mt-4 w-full md:mt-auto">
               {compete.cta}
             </PricingCTA>
@@ -178,6 +222,9 @@ export const Pricing = () => (
               ${dominate.price}
               <span className="font-light text-xl">/mo</span>
             </h3>
+            <p className="mt-1 font-light text-sm text-white/60">
+              flat monthly · no performance fee
+            </p>
             <div className="mt-4">
               {dominate.features.map((f) => (
                 <div key={f} className="flex items-center gap-2">
@@ -186,14 +233,6 @@ export const Pricing = () => (
                 </div>
               ))}
             </div>
-            <p className="mt-3 border-white/20 border-t pt-3 font-light text-sm text-white/70">
-              <span className="font-medium text-white">
-                + 3% performance fee
-              </span>{" "}
-              on AI-attributed orders · capped at $500/mo. You only pay when an
-              agent buys because of an optimization we made — never on your
-              other sales.
-            </p>
             <PricingCTA plan="dominate" className="mt-4 w-full md:mt-auto">
               {dominate.cta}
             </PricingCTA>

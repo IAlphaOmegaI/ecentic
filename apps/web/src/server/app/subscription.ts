@@ -18,7 +18,6 @@ import {
   DEALS,
   isDealKey,
   isPlanKey,
-  PERFORMANCE_FEE,
   PLANS,
   type PlanKey,
   resolvePlanByPriceId,
@@ -64,18 +63,7 @@ const upsertFromStripeSubscription = withContext(
       fallbackUser ??
       null;
 
-    // The base plan is the first non-metered line; the performance fee, when
-    // present, is a separate metered line matched by its configured price id.
-    const performancePriceId = PERFORMANCE_FEE.priceId();
-    const performanceItem = performancePriceId
-      ? subscription.items.data.find(
-          (entry) => entry.price.id === performancePriceId,
-        )
-      : undefined;
-    const item =
-      subscription.items.data.find(
-        (entry) => entry.price.id !== performancePriceId,
-      ) ?? subscription.items.data[0];
+    const item = subscription.items.data[0];
     const priceId = item?.price.id ?? null;
     const plan = priceId ? resolvePlanByPriceId(priceId) : null;
 
@@ -83,14 +71,14 @@ const upsertFromStripeSubscription = withContext(
     const periodEndUnix = item?.current_period_end ?? null;
 
     const payload = {
+      // A Stripe subscription is the flat product; the performance fee never
+      // rides it — pay-as-you-go is a separate billing mode.
+      billingMode: "subscription" as const,
+      performanceFeeEnabled: false,
       stripeCustomerId: customer,
       stripeSubscriptionId: subscription.id,
       stripePriceId: priceId,
       plan,
-      stripePerformanceItemId: performanceItem?.id ?? null,
-      // Only ever flip the fee ON from a metered line; never force it off here,
-      // so admin/Enterprise (Shopify-rail) overrides survive a later webhook.
-      ...(performanceItem ? { performanceFeeEnabled: true } : {}),
       status: subscription.status,
       currentPeriodStart: periodStartUnix
         ? new Date(periodStartUnix * 1000)
@@ -178,7 +166,7 @@ const syncFromStripe = withContext(
   "Subscription.syncFromStripe",
 );
 
-const ensureCustomer = withContext(
+export const ensureCustomer = withContext(
   async (
     context,
     {
@@ -236,8 +224,11 @@ export const getCurrentSubscription = withAuthentication(async (context) => {
   });
   if (!existing.success) return existing;
   if (!existing.data) return { success: true as const, data: null };
+
+  // Pay-as-you-go (and pre-checkout) rows have no Stripe customer to sync from —
+  // return the local row as-is.
   if (!existing.data.stripeCustomerId)
-    return { success: true as const, data: null };
+    return { success: true as const, data: existing.data };
 
   const synced = await syncFromStripe(Environment.SERVER, {
     user: context.session.user.id,
@@ -326,19 +317,11 @@ export const createCheckoutSessionForUser = withContext(
       return { merchant, coupon };
     })();
 
-    // When the metered performance-fee price is configured, attach it as a
-    // second line so base + usage share one subscription and one invoice. A
-    // metered line takes no quantity — usage is reported via meter events.
-    const performancePriceId = PERFORMANCE_FEE.priceId();
-
     const session = await resultify(() =>
       stripe().checkout.sessions.create({
         mode: "subscription",
         customer: customer.data,
-        line_items: [
-          { price: priceId, quantity: 1 },
-          ...(performancePriceId ? [{ price: performancePriceId }] : []),
-        ],
+        line_items: [{ price: priceId, quantity: 1 }],
         success_url: `${appHost}/dashboard/settings?checkout=success`,
         cancel_url: `${appHost}/?checkout=canceled#pricing`,
         // Stripe forbids `discounts` and `allow_promotion_codes` together.
@@ -378,6 +361,7 @@ export const createCheckoutSessionForUser = withContext(
     if (!existing.data) {
       await create(Environment.SERVER, {
         userId: id,
+        billingMode: "subscription",
         stripeCustomerId: customer.data,
         plan: key,
         status: "incomplete",
@@ -481,53 +465,110 @@ export const createBillingPortalSession = withAuthentication(
 );
 
 /**
- * Reports metered performance-fee usage to Stripe as a Billing Meter event.
- * `quantityCents` is the not-yet-reported billed delta for the open period; the
- * cap is enforced by the caller (period-close cron), so this only ever reports
- * up to `min(accrued, cap) - alreadyReported`. Called with the customer id, not
- * the subscription item, because Billing Meters key on the customer.
+ * Whether a pay-as-you-go customer has a saved card we can charge. A PAYG
+ * account has no Stripe customer (null) until the merchant adds one; the
+ * period-close cron uses this to choose between charging and `awaiting_payment`.
  */
-export const reportPerformanceUsage = withContext(
+export const customerHasPaymentMethod = withContext(
+  async (_, { customer }: { customer: string }) => {
+    const methods = await resultify(() =>
+      stripe().paymentMethods.list({ customer, type: "card", limit: 1 }),
+    );
+    if (!methods.success)
+      return {
+        success: false as const,
+        error: new RequestError("Failed to list payment methods", {
+          cause: methods.error,
+        }),
+      };
+
+    return { success: true as const, data: methods.data.data.length > 0 };
+  },
+  "Subscription.customerHasPaymentMethod",
+);
+
+/**
+ * Charges a pay-as-you-go performance fee as a one-off invoice against the
+ * customer's saved card. `cents` is the not-yet-reported billed delta for the
+ * period; the caller (cron) enforces the cap, so this only ever charges up to
+ * `min(accrued, cap) - alreadyReported`. Returns the invoice id.
+ */
+export const chargePerformanceFee = withContext(
   async (
     _,
-    { customer, quantityCents }: { customer: string; quantityCents: number },
+    {
+      customer,
+      cents,
+      currency = "usd",
+      description,
+    }: {
+      customer: string;
+      cents: number;
+      currency?: string;
+      description: string;
+    },
   ) => {
-    if (quantityCents <= 0)
-      return { success: true as const, data: { reported: 0 } };
+    if (cents <= 0) return { success: true as const, data: { invoice: null } };
 
-    const eventName = PERFORMANCE_FEE.eventName();
-    if (!eventName)
+    const methods = await resultify(() =>
+      stripe().paymentMethods.list({ customer, type: "card", limit: 1 }),
+    );
+    if (!methods.success)
       return {
         success: false as const,
-        error: new RequestError(
-          "Performance-fee meter event is not configured",
-        ),
+        error: new RequestError("Failed to list payment methods", {
+          cause: methods.error,
+        }),
       };
 
-    const event = await resultify(() =>
-      stripe().billing.meterEvents.create({
-        event_name: eventName,
-        payload: {
-          stripe_customer_id: customer,
-          value: String(quantityCents),
-        },
+    const method = methods.data.data[0];
+    if (!method)
+      return {
+        success: false as const,
+        error: new RequestError("Customer has no payment method on file"),
+      };
+
+    const item = await resultify(() =>
+      stripe().invoiceItems.create({
+        customer,
+        amount: cents,
+        currency,
+        description,
       }),
     );
-
-    if (!event.success)
+    if (!item.success)
       return {
         success: false as const,
-        error: new RequestError(
-          "Failed to report performance-fee meter event",
-          {
-            cause: event.error,
-          },
-        ),
+        error: new RequestError("Failed to create invoice item", {
+          cause: item.error,
+        }),
       };
 
-    return { success: true as const, data: { reported: quantityCents } };
+    // Gathers the pending invoice item above; `auto_advance` finalizes and
+    // charges the saved card automatically.
+    const invoice = await resultify(() =>
+      stripe().invoices.create({
+        customer,
+        collection_method: "charge_automatically",
+        default_payment_method: method.id,
+        auto_advance: true,
+        description,
+      }),
+    );
+    if (!invoice.success)
+      return {
+        success: false as const,
+        error: new RequestError("Failed to create invoice", {
+          cause: invoice.error,
+        }),
+      };
+
+    return {
+      success: true as const,
+      data: { invoice: invoice.data.id ?? null },
+    };
   },
-  "Subscription.reportPerformanceUsage",
+  "Subscription.chargePerformanceFee",
 );
 
 export const handleStripeEvent = withContext(

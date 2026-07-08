@@ -10,12 +10,16 @@ import {
   TrendUpIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
+import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
+import { useToastManager } from "@zenncore/web/components/toast";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link, { useLinkStatus } from "next/link";
+import { useRouter } from "next/navigation";
 import { Motion } from "@/components/motion";
 import { Spring, Stagger } from "@/lib/animations";
+import * as Payg from "@/server/app/billing/payg";
 import type * as Simulate from "@/server/app/intelligence/simulate";
 
 const models = [
@@ -67,6 +71,22 @@ export const CompletePhase = ({
         return "text-success";
     }
   })();
+
+  const router = useRouter();
+  const toast = useToastManager();
+
+  const [handleStartFree, isStartingFree] = useAsyncAction(async () => {
+    const activation = await Payg.startPayAsYouGo();
+    if (!activation.success) {
+      toast.add({
+        title: "Could not start pay-as-you-go",
+        description: activation.error.message,
+        type: "error",
+      });
+      return;
+    }
+    router.push("/dashboard");
+  });
 
   return (
     <motion.div
@@ -225,14 +245,19 @@ export const CompletePhase = ({
               >
                 <Share />
               </Button>
-              {/* <Button
-                variant="flat"
+              <Button
                 color="primary"
                 type="button"
-                render={<Link href="/onboarding/buy" />}
+                onClick={() => handleStartFree()}
+                disabled={isStartingFree}
               >
-                <Buy />
-              </Button> */}
+                {isStartingFree ? (
+                  <LoaderIcon className="size-4 animate-spin" />
+                ) : (
+                  <ShoppingCartIcon className="size-4" />
+                )}
+                Start free
+              </Button>
             </div>
           </div>
         </Motion.Item>
@@ -265,20 +290,6 @@ const Share = () => {
       ) : (
         <ShareIcon className="size-4" />
       )}
-    </>
-  );
-};
-
-const _Buy = () => {
-  const { pending } = useLinkStatus();
-  return (
-    <>
-      {pending ? (
-        <LoaderIcon className="size-4 animate-spin" />
-      ) : (
-        <ShoppingCartIcon className="size-4" />
-      )}
-      Buy Now
     </>
   );
 };

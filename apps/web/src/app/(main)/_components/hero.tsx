@@ -1,10 +1,18 @@
-import { TrendUpIcon } from "@zenncore/icons";
 import Image from "next/image";
+import Background from "@/public/images/background.webp";
 import Dashboard from "@/public/screenshots/dashboard.png";
 import { InstallCta } from "./install-cta";
 
 export const Hero = () => (
   <section className="relative isolate flex flex-col items-center gap-6 px-4 py-20 text-center md:py-28">
+    <Image
+      src={Background}
+      alt=""
+      aria-hidden
+      fill
+      sizes="100vw"
+      className="-z-20 pointer-events-none select-none object-contain object-top opacity-20 invert"
+    />
     <div
       aria-hidden
       className="-z-10 pointer-events-none absolute inset-x-0 top-0 h-[500px] bg-radial-[at_50%_0%] from-primary/25 via-primary/5 to-transparent"
@@ -23,11 +31,6 @@ export const Hero = () => (
       Shoppers now ask ChatGPT, Gemini, and Perplexity what to buy. Ecentic
       makes sure the answer is your product — and sends those buyers straight to
       your store.
-    </p>
-
-    <p className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 font-medium text-primary text-sm">
-      <TrendUpIcon className="size-4" />
-      DUA Flavours grew AI-agent visits +15% and sales +12% — in 30 days.
     </p>
 
     <InstallCta className="justify-center" />

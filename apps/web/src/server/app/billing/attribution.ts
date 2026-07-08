@@ -22,10 +22,9 @@ export const { create, find, update } = repository(schema.attributedConversion);
  * store inside the attribution window. No signal → no fee. Idempotent on
  * (store, order) so a retried `orders/paid` webhook never double-counts.
  *
- * The conversion is stored whenever the user has a subscription (a rail to bill),
- * regardless of whether the fee is switched on — accrual is observable while the
- * feature ships dark; the period-close cron is what gates actual charging on
- * `performanceFeeEnabled`.
+ * Only pay-as-you-go accounts accrue a fee (`performanceFeeEnabled`) — flat
+ * subscription and free Scan accounts are never charged, so their orders are
+ * ignored here.
  */
 export const recordOrderIfAttributed = withContext(
   async (
@@ -81,8 +80,7 @@ export const recordOrderIfAttributed = withContext(
 
     const config = await resolveFeeConfig(Environment.SERVER, { user });
     if (!config.success) return config;
-    if (!config.data.subscriptionId)
-      return { success: true as const, data: null };
+    if (!config.data.enabled) return { success: true as const, data: null };
 
     const feeCents = Math.round(
       (orderValueCents * config.data.rateBps) / 10_000,

@@ -36,10 +36,7 @@ export const Topbar = async ({ store }: { store: string }) => {
           {subscription?.plan ?? "No plan"}
         </Link> */}
 
-        <SubscriptionBadge
-          plan={subscription?.plan ?? null}
-          status={subscription?.status ?? null}
-        />
+        <SubscriptionBadge subscription={subscription} />
 
         <button
           type="button"

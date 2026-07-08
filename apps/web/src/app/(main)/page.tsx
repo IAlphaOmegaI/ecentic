@@ -13,6 +13,7 @@ import {
   websiteSchema,
 } from "@/lib/seo";
 import { Booking } from "./_components/booking";
+import { CaseStudy } from "./_components/case-study";
 import { Features } from "./_components/features";
 import { Hero } from "./_components/hero";
 import { PartnersStrip } from "./_components/partners-strip";
@@ -24,6 +25,7 @@ import {
   reviewSchemas,
   Testimonials,
 } from "./_components/testimonials";
+import { PartnershipBanner } from "./_components/partnership-banner";
 
 const Comparison = dynamic(() =>
   import("./_components/comparison").then((m) => m.Comparison),
@@ -80,12 +82,12 @@ export default async () => (
       />
       <Navbar />
       <Hero />
-      {/* <PartnershipBanner /> */}
+      <Proof />
       <PartnersStrip />
+      <PartnershipBanner />
       {/* <DiscoveryShift /> */}
       {/* <BlindSpot /> */}
       {/* <WhyNow /> */}
-      <Proof />
       {/* <AgentTrafficLive /> */}
       <Steps />
       <Features />
@@ -94,6 +96,7 @@ export default async () => (
         <Comparison />
       </Suspense>
       {/* <Pricing /> */}
+      <CaseStudy />
       <Testimonials />
       <Booking />
       {/* <DiscoveryPaths /> */}

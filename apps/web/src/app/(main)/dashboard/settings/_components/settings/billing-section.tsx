@@ -5,6 +5,7 @@ import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import * as Payg from "@/server/app/billing/payg";
 import type * as PerformanceFee from "@/server/app/billing/performance-fee";
 import * as Subscription from "@/server/app/subscription";
 
@@ -13,6 +14,8 @@ type Props = {
   invoices: Subscription.InvoiceSummary[];
   performanceFee: PerformanceFee.PeriodSummary | null;
 };
+
+type SubscriptionPlan = "compete" | "dominate";
 
 const PLAN_META = {
   compete: { label: "Compete Plan", price: 149 },
@@ -59,6 +62,9 @@ const formatAmount = (amountCents: number, currency: string) =>
     currency: currency.toUpperCase(),
   }).format(amountCents / 100);
 
+const formatRate = (rateBps: number) =>
+  (rateBps / 100).toFixed(rateBps % 100 === 0 ? 0 : 2);
+
 const ActivePlan = ({
   subscription,
   onManage,
@@ -69,10 +75,10 @@ const ActivePlan = ({
 }: {
   subscription: Subscription.Type;
   onManage: () => void;
-  onCheckout: (plan: "compete" | "dominate") => void;
+  onCheckout: (plan: SubscriptionPlan) => void;
   isManaging: boolean;
   isCheckingOut: boolean;
-  checkoutPlan: "compete" | "dominate" | null;
+  checkoutPlan: SubscriptionPlan | null;
 }) => {
   const planKey =
     subscription.plan === "compete" || subscription.plan === "dominate"
@@ -83,7 +89,7 @@ const ActivePlan = ({
   const statusClass =
     STATUS_STYLES[statusKey] ?? "bg-background-dimmed text-foreground-dimmed";
   const statusLabel = STATUS_LABELS[statusKey] ?? statusKey;
-  const upgradeTarget: "compete" | "dominate" | null =
+  const upgradeTarget: SubscriptionPlan | null =
     planKey === "compete" ? "dominate" : null;
 
   return (
@@ -146,57 +152,143 @@ const ActivePlan = ({
   );
 };
 
-const NoPlan = ({
+const PaygPlan = ({
+  summary,
   onCheckout,
   isCheckingOut,
   checkoutPlan,
 }: {
-  onCheckout: (plan: "compete" | "dominate") => void;
+  summary: PerformanceFee.PeriodSummary;
+  onCheckout: (plan: SubscriptionPlan) => void;
   isCheckingOut: boolean;
-  checkoutPlan: "compete" | "dominate" | null;
+  checkoutPlan: SubscriptionPlan | null;
+}) => (
+  <>
+    <div className="flex items-start justify-between">
+      <div>
+        <p className="font-semibold text-base text-foreground-rich">
+          Pay-as-you-go
+        </p>
+        <p className="mt-1 text-foreground-dimmed text-sm">
+          Free to start · you only pay when AI agents drive sales.
+        </p>
+      </div>
+      <span className={`${STATUS_PILL_CLASS_NAME} bg-success/10 text-success`}>
+        Active
+      </span>
+    </div>
+    <div className="mt-4 flex flex-col gap-2">
+      <div className="flex justify-between">
+        <span className="text-foreground-dimmed text-sm">Fee</span>
+        <span className="font-medium text-foreground text-sm">
+          {formatRate(summary.rateBps)}% on AI-attributed orders
+        </span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-foreground-dimmed text-sm">Monthly cap</span>
+        <span className="font-medium text-foreground text-sm">
+          {formatAmount(summary.capCents, "USD")}
+        </span>
+      </div>
+    </div>
+    <div className="mt-6">
+      <p className="text-foreground-dimmed text-sm">
+        Prefer predictable billing? Switch to a flat monthly plan (no
+        performance fee):
+      </p>
+      <div className="mt-3 flex flex-wrap gap-3">
+        <Button
+          color="neutral"
+          className="flex-1"
+          disabled={isCheckingOut}
+          onClick={() => onCheckout("compete")}
+        >
+          {isCheckingOut && checkoutPlan === "compete"
+            ? "Loading…"
+            : "Compete · $149/mo"}
+        </Button>
+        <Button
+          color="neutral"
+          className="flex-1"
+          disabled={isCheckingOut}
+          onClick={() => onCheckout("dominate")}
+        >
+          {isCheckingOut && checkoutPlan === "dominate"
+            ? "Loading…"
+            : "Dominate · $449/mo"}
+        </Button>
+      </div>
+    </div>
+  </>
+);
+
+const NoPlan = ({
+  onStartPayg,
+  onCheckout,
+  isStartingPayg,
+  isCheckingOut,
+  checkoutPlan,
+}: {
+  onStartPayg: () => void;
+  onCheckout: (plan: SubscriptionPlan) => void;
+  isStartingPayg: boolean;
+  isCheckingOut: boolean;
+  checkoutPlan: SubscriptionPlan | null;
 }) => (
   <>
     <div>
       <p className="font-semibold text-base text-foreground-rich">
-        No active plan
+        Choose how you pay
       </p>
       <p className="mt-1 text-foreground-dimmed text-sm">
-        Pick a plan to start running daily agent simulations.
+        Start free with pay-as-you-go, or pick a flat monthly subscription with
+        no performance fee.
       </p>
     </div>
-    <div className="mt-6 flex flex-wrap gap-3">
+    <div className="mt-6 flex flex-col gap-3">
       <Button
         color="primary"
-        className="flex-1"
-        disabled={isCheckingOut}
-        onClick={() => onCheckout("compete")}
+        className="w-full"
+        disabled={isStartingPayg}
+        onClick={onStartPayg}
       >
-        {isCheckingOut && checkoutPlan === "compete"
-          ? "Loading…"
-          : "Start Compete · $149/mo"}
+        {isStartingPayg ? "Loading…" : "Start Pay-as-you-go — free, no card"}
       </Button>
-      <Button
-        color="primary"
-        className="flex-1"
-        disabled={isCheckingOut}
-        onClick={() => onCheckout("dominate")}
-      >
-        {isCheckingOut && checkoutPlan === "dominate"
-          ? "Loading…"
-          : "Start Dominate · $449/mo"}
-      </Button>
+      <div className="flex flex-wrap gap-3">
+        <Button
+          color="neutral"
+          className="flex-1"
+          disabled={isCheckingOut}
+          onClick={() => onCheckout("compete")}
+        >
+          {isCheckingOut && checkoutPlan === "compete"
+            ? "Loading…"
+            : "Compete · $149/mo"}
+        </Button>
+        <Button
+          color="neutral"
+          className="flex-1"
+          disabled={isCheckingOut}
+          onClick={() => onCheckout("dominate")}
+        >
+          {isCheckingOut && checkoutPlan === "dominate"
+            ? "Loading…"
+            : "Dominate · $449/mo"}
+        </Button>
+      </div>
     </div>
   </>
 );
 
 const PerformanceFeeCard = ({
   summary,
+  onAddPayment,
+  isAddingPayment,
 }: {
   summary: PerformanceFee.PeriodSummary;
+  onAddPayment: () => void;
+  isAddingPayment: boolean;
 }) => {
-  const ratePercent = (summary.rateBps / 100).toFixed(
-    summary.rateBps % 100 === 0 ? 0 : 2,
-  );
   const usedPercent =
     summary.capCents > 0
       ? Math.min(
@@ -205,28 +297,60 @@ const PerformanceFeeCard = ({
         )
       : 0;
 
+  const pill = (() => {
+    switch (true) {
+      case summary.awaitingPayment:
+        return {
+          label: "Action needed",
+          className: "bg-warning/10 text-warning",
+        };
+      case summary.enabled:
+        return { label: "Active", className: "bg-success/10 text-success" };
+      default:
+        return {
+          label: "Off",
+          className: "bg-background-dimmed text-foreground-dimmed",
+        };
+    }
+  })();
+
   return (
     <div>
       <div className="flex items-center justify-between border-accent-foreground border-b bg-background-dimmed px-4 py-3">
         <p className="font-semibold text-foreground-rich text-sm">
           Performance Fee
         </p>
-        <span
-          className={`${STATUS_PILL_CLASS_NAME} ${
-            summary.enabled
-              ? "bg-success/10 text-success"
-              : "bg-background-dimmed text-foreground-dimmed"
-          }`}
-        >
-          {summary.enabled ? "Active" : "Off"}
+        <span className={`${STATUS_PILL_CLASS_NAME} ${pill.className}`}>
+          {pill.label}
         </span>
       </div>
       <div className="p-6">
         <p className="text-foreground-dimmed text-sm">
-          {ratePercent}% on AI-attributed orders · capped at{" "}
-          {formatAmount(summary.capCents, "USD")}/mo. You only pay when an agent
-          buys because of an optimization we made — never on your other sales.
+          {formatRate(summary.rateBps)}% on AI-attributed orders · capped at{" "}
+          {formatAmount(summary.capCents, "USD")}/mo. Free to start — you only
+          pay when an agent buys because of an optimization we made, never on
+          your other sales.
         </p>
+
+        {summary.awaitingPayment && (
+          <div className="mt-4 flex flex-col gap-3 border border-warning/30 bg-warning/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="font-semibold text-foreground-rich text-sm">
+                {formatAmount(summary.amountOwedCents, "USD")} due
+              </p>
+              <p className="mt-0.5 text-foreground-dimmed text-xs">
+                Add a payment method to settle this period's fee.
+              </p>
+            </div>
+            <Button
+              color="primary"
+              onClick={onAddPayment}
+              disabled={isAddingPayment}
+            >
+              {isAddingPayment ? "Loading…" : "Add a payment method"}
+            </Button>
+          </div>
+        )}
 
         <div className="mt-4">
           <div className="flex items-end justify-between">
@@ -308,12 +432,38 @@ export const BillingSection = ({
     window.location.href = result.data.url;
   });
 
-  const [checkoutPlan, setCheckoutPlan] = useState<
-    "compete" | "dominate" | null
-  >(null);
+  const [handleStartPayg, isStartingPayg] = useAsyncAction(async () => {
+    const activation = await Payg.startPayAsYouGo();
+    if (!activation.success) {
+      toast.add({
+        title: "Could not start pay-as-you-go",
+        description: activation.error.message,
+        type: "error",
+      });
+      return;
+    }
+    router.refresh();
+  });
+
+  const [handleAddPayment, isAddingPayment] = useAsyncAction(async () => {
+    const session = await Payg.createPaymentSetupSession();
+    if (!session.success) {
+      toast.add({
+        title: "Could not open payment setup",
+        description: session.error.message,
+        type: "error",
+      });
+      return;
+    }
+    window.location.href = session.data.url;
+  });
+
+  const [checkoutPlan, setCheckoutPlan] = useState<SubscriptionPlan | null>(
+    null,
+  );
 
   const [handleCheckout, isCheckingOut] = useAsyncAction(
-    async (plan: "compete" | "dominate") => {
+    async (plan: SubscriptionPlan) => {
       setCheckoutPlan(plan);
       try {
         const result = await Subscription.createCheckoutSession({ plan });
@@ -344,14 +494,10 @@ export const BillingSection = ({
     "paused",
   ]);
 
-  const hasActivePlan =
-    subscription !== null && activeStatuses.has(subscription.status);
-
-  const showPerformanceFee =
-    performanceFee !== null &&
-    (performanceFee.enabled ||
-      performanceFee.accruedCents > 0 ||
-      performanceFee.conversions.length > 0);
+  const isPayg = subscription?.billingMode === "payg";
+  const hasActiveSubscription =
+    subscription?.billingMode === "subscription" &&
+    activeStatuses.has(subscription.status);
 
   return (
     <div className="divide-y divide-accent-foreground">
@@ -362,27 +508,49 @@ export const BillingSection = ({
           </p>
         </div>
         <div className="p-6">
-          {hasActivePlan && subscription ? (
-            <ActivePlan
-              subscription={subscription}
-              onManage={() => handleManage()}
-              onCheckout={(plan) => handleCheckout(plan)}
-              isManaging={isManaging}
-              isCheckingOut={isCheckingOut}
-              checkoutPlan={checkoutPlan}
-            />
-          ) : (
-            <NoPlan
-              onCheckout={(plan) => handleCheckout(plan)}
-              isCheckingOut={isCheckingOut}
-              checkoutPlan={checkoutPlan}
-            />
-          )}
+          {(() => {
+            switch (true) {
+              case isPayg && performanceFee !== null:
+                return (
+                  <PaygPlan
+                    summary={performanceFee}
+                    onCheckout={(plan) => handleCheckout(plan)}
+                    isCheckingOut={isCheckingOut}
+                    checkoutPlan={checkoutPlan}
+                  />
+                );
+              case hasActiveSubscription && subscription !== null:
+                return (
+                  <ActivePlan
+                    subscription={subscription}
+                    onManage={() => handleManage()}
+                    onCheckout={(plan) => handleCheckout(plan)}
+                    isManaging={isManaging}
+                    isCheckingOut={isCheckingOut}
+                    checkoutPlan={checkoutPlan}
+                  />
+                );
+              default:
+                return (
+                  <NoPlan
+                    onStartPayg={() => handleStartPayg()}
+                    onCheckout={(plan) => handleCheckout(plan)}
+                    isStartingPayg={isStartingPayg}
+                    isCheckingOut={isCheckingOut}
+                    checkoutPlan={checkoutPlan}
+                  />
+                );
+            }
+          })()}
         </div>
       </div>
 
-      {showPerformanceFee && performanceFee && (
-        <PerformanceFeeCard summary={performanceFee} />
+      {isPayg && performanceFee !== null && (
+        <PerformanceFeeCard
+          summary={performanceFee}
+          onAddPayment={() => handleAddPayment()}
+          isAddingPayment={isAddingPayment}
+        />
       )}
 
       <div>

@@ -90,6 +90,7 @@ export const ContentPageLayout = ({
   badge,
   meta,
   description,
+  hideHero,
   children,
 }: ContentPageLayout.Props) => (
   <main className="flex min-h-screen flex-col">
@@ -97,28 +98,32 @@ export const ContentPageLayout = ({
       <Navbar />
     </div>
 
-    <div className="border-accent-foreground border-b p-4">
-      <div className="relative size-full overflow-hidden rounded-lg bg-primary">
-        <Image
-          src={Background}
-          alt={title}
-          className="absolute aspect-auto h-full w-full object-contain object-right opacity-30 brightness-0 invert"
-        />
-        <div className="relative z-10 mx-auto max-w-6xl border-accent-foreground border-x px-8 pt-36 pb-16">
-          {badge && <div className="mb-6">{badge}</div>}
-          <p className="mb-4 font-medium text-primary text-sm uppercase tracking-[0.2em]">
-            {eyebrow}
-          </p>
-          <h1 className="max-w-4xl font-semibold text-5xl text-white tracking-tight md:text-7xl">
-            {title}
-          </h1>
-          {meta && <div className="mt-2 text-white">{meta}</div>}
-          <p className="mt-6 max-w-3xl text-base text-white leading-relaxed md:text-lg">
-            {description}
-          </p>
+    {hideHero ? (
+      <div className="mx-auto h-20 w-full max-w-6xl border-accent-foreground border-x md:h-24" />
+    ) : (
+      <div className="border-accent-foreground border-b p-4">
+        <div className="relative size-full overflow-hidden rounded-lg bg-primary">
+          <Image
+            src={Background}
+            alt={title}
+            className="absolute aspect-auto h-full w-full object-contain object-right opacity-30 brightness-0 invert"
+          />
+          <div className="relative z-10 mx-auto max-w-6xl border-accent-foreground border-x px-8 pt-36 pb-16">
+            {badge && <div className="mb-6">{badge}</div>}
+            <p className="mb-4 font-medium text-primary text-sm uppercase tracking-[0.2em]">
+              {eyebrow}
+            </p>
+            <h1 className="max-w-4xl font-semibold text-5xl text-white tracking-tight md:text-7xl">
+              {title}
+            </h1>
+            {meta && <div className="mt-2 text-white">{meta}</div>}
+            <p className="mt-6 max-w-3xl text-base text-white leading-relaxed md:text-lg">
+              {description}
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    )}
 
     {children}
     <Footer stacked />
@@ -132,6 +137,7 @@ export namespace ContentPageLayout {
     badge?: ReactNode;
     meta?: ReactNode;
     description: string;
+    hideHero?: boolean;
     children: ReactNode;
   };
 }

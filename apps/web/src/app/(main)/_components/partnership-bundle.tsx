@@ -1,4 +1,5 @@
 import { ArrowRightIcon, CheckIcon, ShieldCheckIcon } from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,7 +7,14 @@ import { Plus } from "@/components/plus";
 
 const href = "https://eupresence.com/pricing#bundles";
 
-const items = [
+type BundleItem = {
+  name: string;
+  detail: string;
+  price: number;
+  highlighted?: boolean;
+};
+
+const items: BundleItem[] = [
   {
     name: "GDPR Representative",
     detail: "Article 27 representative across all 27 member states",
@@ -28,7 +36,7 @@ const items = [
     price: 449,
     highlighted: true,
   },
-] as const;
+];
 
 const regular = items.reduce((sum, item) => sum + item.price, 0);
 const discounted = regular * 0.8;
@@ -47,17 +55,17 @@ export const PartnershipBundle = () => (
     aria-label="ecentic × EU Presence bundle"
     className="relative -left-[calc(50vw-50%)] w-screen scroll-mt-[5.5rem]"
   >
-    <div className="relative mx-auto max-w-6xl border-accent-foreground border-x border-b bg-gradient-to-br from-primary/[0.06] via-background to-background">
+    <div className="relative mx-auto max-w-6xl border-accent-foreground border-x border-b">
       <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
       <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
       <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
 
-      <div className="grid grid-cols-1 divide-y divide-accent-foreground md:grid-cols-[7fr_5fr] md:divide-x md:divide-y-0">
+      <div className="grid grid-cols-1 md:grid-cols-[7fr_5fr] md:divide-x md:divide-accent-foreground">
         {/* Pitch */}
         <div className="flex flex-col p-6 md:p-12">
           <div className="flex items-center gap-3">
-            <span className="flex size-10 items-center justify-center rounded-lg border border-accent-foreground bg-background">
+            <span className="flex size-10 items-center justify-center rounded-lg border border-accent-foreground bg-background-rich">
               <Image
                 src="/partners/eu-presence.svg"
                 alt="EU Presence"
@@ -71,7 +79,7 @@ export const PartnershipBundle = () => (
             </p>
           </div>
 
-          <h2 className="mt-6 font-body text-3xl text-foreground md:text-5xl">
+          <h2 className="mt-6 font-body font-medium text-3xl text-foreground-rich md:text-5xl">
             Compliance + AI Visibility
           </h2>
           <p className="mt-4 max-w-lg font-light text-foreground-dimmed text-lg">
@@ -81,32 +89,38 @@ export const PartnershipBundle = () => (
             comparison.
           </p>
 
-          <ul className="mt-8 flex flex-col divide-y divide-accent-foreground border-accent-foreground border-y">
+          <ul className="mt-8 divide-y divide-accent-foreground overflow-hidden rounded-xl border border-accent-foreground">
             {items.map((item) => (
               <li
                 key={item.name}
-                className="flex items-start justify-between gap-4 py-3"
+                className={cn(
+                  "flex items-center justify-between gap-4 p-4",
+                  item.highlighted ? "bg-primary/5" : "bg-background-rich",
+                )}
               >
-                <div className="flex items-start gap-3">
-                  <CheckIcon className="mt-1 size-4 shrink-0 text-primary" />
+                <div className="flex items-center gap-3">
+                  <span
+                    className={cn(
+                      "flex size-6 shrink-0 items-center justify-center rounded-full",
+                      item.highlighted
+                        ? "bg-primary text-white"
+                        : "bg-primary/10 text-primary",
+                    )}
+                  >
+                    <CheckIcon className="size-3.5" />
+                  </span>
                   <div>
-                    <p
-                      className={
-                        item.highlighted
-                          ? "font-medium text-foreground"
-                          : "text-foreground"
-                      }
-                    >
-                      {item.name}
-                    </p>
+                    <p className="font-medium text-foreground">{item.name}</p>
                     <p className="font-light text-foreground-dimmed text-sm">
                       {item.detail}
                     </p>
                   </div>
                 </div>
-                <span className="shrink-0 font-light text-foreground-dimmed">
+                <span className="shrink-0 font-medium text-foreground tabular-nums">
                   ${item.price}
-                  <span className="text-sm">/mo</span>
+                  <span className="font-light text-foreground-dimmed text-sm">
+                    /mo
+                  </span>
                 </span>
               </li>
             ))}
@@ -116,7 +130,7 @@ export const PartnershipBundle = () => (
             {guarantees.map((guarantee) => (
               <li
                 key={guarantee}
-                className="flex items-center gap-1.5 rounded-full border border-accent-foreground bg-background px-3 py-1 text-foreground-dimmed text-sm"
+                className="flex items-center gap-1.5 rounded-full border border-accent-foreground bg-background-rich px-3 py-1 text-foreground text-sm"
               >
                 <ShieldCheckIcon className="size-3.5 text-primary" />
                 {guarantee}
@@ -126,26 +140,27 @@ export const PartnershipBundle = () => (
         </div>
 
         {/* Price + CTA */}
-        <div className="relative flex flex-col justify-center p-6 md:p-12">
-          <div className="pointer-events-none absolute -top-16 -right-16 size-56 rounded-full bg-primary/10 blur-3xl" />
-          <p className="relative font-medium text-foreground-dimmed text-sm uppercase tracking-tight">
+        <div className="relative flex flex-col justify-center overflow-hidden bg-background-dimmed p-6 md:p-12">
+          <div className="pointer-events-none absolute -top-20 -right-20 size-56 rounded-full bg-primary/15 blur-3xl" />
+          <p className="relative font-medium text-foreground-dimmed text-sm uppercase tracking-[0.18em]">
             Bundle price
           </p>
-          <div className="relative mt-2 flex items-end gap-3">
-            <span className="font-body font-medium text-6xl text-primary leading-none tracking-tight">
-              ${discounted.toFixed(2)}
+          <div className="relative mt-3 flex items-end gap-2">
+            <span className="font-body font-semibold text-6xl text-primary leading-none tracking-tight md:text-7xl">
+              ${discounted.toFixed(0)}
             </span>
-            <span className="mb-1 font-light text-foreground-dimmed text-xl">
+            <span className="mb-1.5 font-light text-foreground-dimmed text-xl">
               /mo
             </span>
           </div>
-          <p className="relative mt-3 text-foreground-dimmed">
-            <span className="line-through">${regular}/mo</span>{" "}
-            <span className="font-medium text-foreground">
-              Save ${saved.toFixed(2)}/mo
-            </span>{" "}
-            with the 20% bundle discount.
-          </p>
+          <div className="relative mt-4 flex flex-wrap items-center gap-2">
+            <span className="text-foreground-dimmed line-through">
+              ${regular}/mo
+            </span>
+            <span className="rounded-full bg-success/10 px-2.5 py-0.5 font-medium text-sm text-success">
+              Save ${saved.toFixed(0)}/mo · 20% off
+            </span>
+          </div>
 
           <Button
             color="primary"
