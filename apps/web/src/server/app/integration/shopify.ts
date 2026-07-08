@@ -594,7 +594,13 @@ export const handleOAuthCallback = withContext(
       });
     }
 
-    return { success: true, data: { storeId: store.id } };
+    // `reconnected` distinguishes a token refresh for a store this user already
+    // onboarded (`kind: "owned"`) from a first-time connect. Callers use it to
+    // skip the onboarding product picker on reconnects.
+    return {
+      success: true,
+      data: { storeId: store.id, reconnected: Boolean(existing) },
+    };
   },
   "Shopify.handleOAuthCallback",
 );

@@ -55,6 +55,15 @@ export const GET = async (request: NextRequest) => {
     return Response.redirect(connectPage(reason));
   }
 
+  // A reconnect only refreshed the access tokens for a store this user already
+  // onboarded. Sending them back through the onboarding product picker would let
+  // them select products they hadn't picked before, pushing them past their
+  // plan's product limit — so drop them straight into that store's dashboard.
+  if (result.data.reconnected)
+    return Response.redirect(
+      `${process.env.APP_HOST}/dashboard/${result.data.storeId}`,
+    );
+
   return Response.redirect(
     `${process.env.APP_HOST}/onboarding/products?connected=shopify`,
   );
