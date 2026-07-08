@@ -170,9 +170,10 @@ export const AutoDetectTab = ({
           >
             <Image
               src="/images/auto-detect.png"
-              alt="Competitors illustration"
+              alt=""
+              aria-hidden
               fill
-              className="object-contain opacity-30"
+              className="pointer-events-none select-none object-contain opacity-10"
             />
 
             <div className="relative z-20">

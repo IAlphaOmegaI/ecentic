@@ -1,21 +1,17 @@
 "use client";
 
+import { SearchIcon, XIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@zenncore/web/components/avatar";
 import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useState } from "react";
-import { formatPrice } from "@/lib/currency";
 import type * as Competitor from "@/server/app/competitor";
 import * as Search from "@/server/app/intelligence/search";
+import { CompetitorResults } from "./competitor-results";
 
 export namespace SearchTab {
   export type Props = {
@@ -68,52 +64,76 @@ export const SearchTab = ({
       <div className="relative border-accent-foreground border-b bg-background-dimmed p-4">
         <Image
           src="/images/websearch.png"
-          alt="Competitors illustration"
+          alt=""
+          aria-hidden
           fill
-          className="object-contain opacity-30"
+          className="pointer-events-none select-none object-contain opacity-10"
         />
         <div className="relative z-10">
           <label
             htmlFor="brandSearch"
-            className="mb-2 block font-medium text-foreground text-xs"
+            className="mb-2 block font-medium text-foreground text-sm"
           >
             Search by brand or category
           </label>
           <div className="flex gap-2">
-            <TextField value={query} onValueChange={setQuery}>
+            <TextField
+              value={query}
+              onValueChange={setQuery}
+              className="flex-1 bg-background-rich px-3"
+            >
+              <SearchIcon className="size-4 shrink-0 text-foreground-dimmed" />
               <TextFieldInput
                 id="brandSearch"
                 placeholder="e.g. SoundMax, wireless earbuds under $150..."
-                className="text-sm"
+                className="text-sm placeholder:text-foreground-dimmed/70"
                 onKeyDown={(event) => {
                   if (event.key === "Enter") handleSearch();
                 }}
               />
+              {query && (
+                <button
+                  type="button"
+                  aria-label="Clear search"
+                  onClick={() => setQuery(null)}
+                  className="shrink-0 text-foreground-dimmed transition-colors hover:text-foreground"
+                >
+                  <XIcon className="size-4" />
+                </button>
+              )}
             </TextField>
             <Button
               color="primary"
               type="button"
               onClick={() => handleSearch()}
               disabled={!query?.trim() || isSearching}
-              className="shrink-0 px-4 py-2 font-medium text-sm"
+              className="h-10 shrink-0 px-5 font-medium text-sm"
             >
               {isSearching ? "Searching..." : "Search"}
             </Button>
           </div>
 
           {productNames.length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-2">
-              {productNames.map((name) => (
-                <button
-                  key={name}
-                  type="button"
-                  onClick={() => handleSearch(name)}
-                  disabled={isSearching}
-                  className="border border-accent-foreground bg-background px-3 py-1.5 text-foreground-dimmed text-xs transition-colors hover:border-primary hover:text-primary disabled:opacity-50"
-                >
-                  {name}
-                </button>
-              ))}
+            <div className="mt-4 flex flex-col gap-2">
+              <span className="text-foreground-dimmed text-xs">
+                Or search one of your products
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {productNames.map((name) => (
+                  <button
+                    key={name}
+                    type="button"
+                    // Product titles are long; the pill truncates so the row
+                    // stays uniform, and the tooltip carries the full name.
+                    title={name}
+                    onClick={() => handleSearch(name)}
+                    disabled={isSearching}
+                    className="max-w-52 truncate rounded-full border border-accent-foreground bg-background-rich px-3 py-1 text-foreground-dimmed text-xs transition-colors hover:border-primary hover:bg-primary/5 hover:text-primary disabled:opacity-50"
+                  >
+                    {name}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -172,56 +192,12 @@ export const SearchTab = ({
             transition={{ duration: 0.2 }}
             className="flex min-h-0 flex-1 flex-col"
           >
-            <div className="min-h-0 flex-1 overflow-y-auto bg-background-rich">
-              {competitors.map((competitor) => (
-                <div
-                  key={competitor.id}
-                  className="flex items-start gap-3 border-accent-foreground border-b p-3 last:border-b-0"
-                >
-                  <Avatar className="size-10 shrink-0 rounded-none bg-primary/10">
-                    <AvatarImage
-                      src={competitor.image ?? "/images/fallback.png"}
-                      alt={competitor.title}
-                    />
-                    <AvatarFallback className="relative">
-                      <Image src="/images/fallback.png" alt="Fallback" fill />
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate font-medium text-foreground text-sm">
-                      {competitor.title}
-                    </p>
-                    <p className="text-foreground-dimmed text-xs">
-                      {[competitor.brand, competitor.source]
-                        .filter(Boolean)
-                        .join(" · ")}
-                    </p>
-                    {competitor.description && (
-                      <p className="mt-0.5 line-clamp-2 text-foreground-dimmed text-xs">
-                        {competitor.description}
-                      </p>
-                    )}
-                  </div>
-                  <p className="shrink-0 font-medium text-primary text-sm">
-                    {formatPrice(competitor.price, competitor.currency)}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            <div className="flex items-center justify-between border-accent-foreground border-t bg-background-dimmed px-4 py-2.5">
-              <span className="text-foreground-dimmed text-xs">
-                {competitors.length} competitor
-                {competitors.length !== 1 ? "s" : ""} found
-              </span>
-              <button
-                type="button"
-                onClick={() => setCompetitors([])}
-                className="text-foreground-dimmed text-xs transition-colors hover:text-foreground"
-              >
-                Clear
-              </button>
-            </div>
+            <CompetitorResults
+              competitors={competitors}
+              noun="competitor"
+              verb="found"
+              onClear={() => setCompetitors([])}
+            />
           </motion.div>
         )}
       </AnimatePresence>

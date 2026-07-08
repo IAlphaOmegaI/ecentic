@@ -66,7 +66,12 @@ export const ToastTitle = ({
 }: ToastTitle.Props): JSX.Element => {
   return (
     <ToastPrimitive.Title
-      className={createClassName("font-medium leading-5", className)}
+      className={createClassName(
+        // Explicit color: the title used to inherit from the portal container,
+        // which rendered it near-invisible against the toast's background.
+        "font-medium text-foreground-rich leading-5",
+        className,
+      )}
       {...props}
     />
   );
