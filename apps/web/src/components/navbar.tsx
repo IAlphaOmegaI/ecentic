@@ -14,6 +14,7 @@ import { type MouseEvent, type ReactNode, useEffect } from "react";
 
 const links = [
   { href: "/#how", label: "How it works" },
+  { href: "/resources", label: "Resources" },
   { href: "/pricing", label: "Pricing" },
   { href: "/blog", label: "Blog" },
 ] as const;
@@ -57,7 +58,7 @@ const NavbarLink = ({
 const NavbarDesktop = () => (
   <>
     <div className="relative hidden h-14 items-center justify-center gap-8 lg:flex">
-      <div className="absolute left-0 h-14 w-[75%] -translate-x-20 p-4">
+      <div className="absolute left-0 h-14 w-full -translate-x-24 p-4">
         <Image
           src="/images/right-menu.svg"
           alt=""

@@ -315,6 +315,136 @@ Finally, measure agent influence before it shows up cleanly in standard analytic
     ],
   },
   {
+    slug: "ai-economy-how-ai-is-reshaping-commerce",
+    category: "AI Commerce",
+    title: "The AI Economy: How AI Is Reshaping Commerce in 2026",
+    description:
+      "AI spending hit $318B in 2025 and AI-referred retail traffic now converts 42% better. What the AI economy and commerce shift mean for merchants in 2026.",
+    introduction:
+      "The AI economy stopped being a slide-deck projection somewhere in 2025. IDC measured $318 billion in AI infrastructure spending for the year — more than double 2024 — and forecasts $487 billion for 2026. Money at that scale is not an experiment; it is an economy being built, and every economy eventually needs somewhere to transact.\n\nCommerce is where that happens first. Salesforce tied $67 billion of Cyber Week 2025 spending to AI and agents — one-fifth of all global orders — and Adobe watched generative-AI-driven traffic to U.S. retail sites jump 693% year over year during the holidays. Then came the number that changes the conversation: by March 2026, Adobe measured AI-referred shoppers converting 42% better than everyone else. A year earlier they converted 38% worse.\n\nThis piece connects those two stories — the macro AI buildout and the commerce shift it is funding — and separates what is measurably happening from what is still hype. The short version: the demand side is real and accelerating, the autonomy side is early, and the gap between them is the most useful window a merchant will get.",
+    publishedAt: "2026-07-09",
+    updatedAt: "2026-07-09",
+    readTime: "11 min",
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80",
+    tags: [
+      "AI economy",
+      "agentic commerce",
+      "AI shopping agents",
+      "commerce shift",
+      "ecommerce strategy",
+    ],
+    takeaways: [
+      "The AI economy is now measurable: IDC counted $318 billion in AI infrastructure spending in 2025, forecasts $487 billion for 2026, and expects annual spend to pass $1 trillion by 2029.",
+      "Commerce is the consumer-facing edge of that economy — Salesforce tied $67 billion of Cyber Week 2025 spend to AI and agents (20% of global orders), and Adobe measured AI-referred retail traffic converting 42% better than other channels by March 2026.",
+      "The skeptics are right about autonomy: Forrester calls true autonomous purchasing rare, Adyen puts the market at 'version 0.5,' and Gartner predicts over 40% of agentic AI projects will be canceled by end of 2027.",
+      "The gap between converting AI-referred demand and immature autonomous checkout is the merchant's window — becoming machine-readable is cheapest before agent volume scales.",
+    ],
+    sections: [
+      {
+        number: "01",
+        title: "The AI economy is no longer a forecast",
+        content: `The AI economy became measurable in 2025. [IDC](https://www.idc.com/resource-center/blog/ai-infrastructure-spending-caps-historic-year-at-90-billion-in-q4-2025-2029-spending-to-eclipse-1-trillion/) counted $318 billion in AI infrastructure spending for the year — more than double 2024's $153 billion — and forecasts $487 billion for 2026, on a path that crosses $1 trillion annually by 2029. Few enterprise technology cycles have compounded that fast.
+
+The composition of the spending matters more than its size. [Gartner](https://www.gartner.com/en/newsroom/press-releases/2025-08-26-gartner-predicts-40-percent-of-enterprise-apps-will-feature-task-specific-ai-agents-by-2026-up-from-less-than-5-percent-in-2025) expects 40% of enterprise applications to include task-specific AI agents by the end of 2026, up from under 5% in 2025. That is a shift from software that answers to software that acts — agents that hold a task, evaluate options, and execute.
+
+An economy is defined by its actors, and AI systems are becoming actors rather than tools. When software can compare offers and complete a purchase, it stops being a productivity layer and becomes a participant in markets. Merchants meet that participant earlier than almost anyone else, because shopping is the most natural first delegation.
+
+- Read AI infrastructure spending the way broadband buildout preceded e-commerce: capacity first, behavior next
+- Watch agent adoption inside enterprise software, not just consumer chatbot usage
+- Expect the buying side of the economy to industrialize before most sellers adapt`,
+      },
+      {
+        number: "02",
+        title: "Commerce is where the AI economy meets consumers",
+        content: `The 2025 holiday season was the first real measurement of AI's demand side. [Salesforce](https://investor.salesforce.com/news/news-details/2025/Salesforce-Data-AI-and-Agents-Propel-Cyber-Week-to-Record-336-6B-in-Global-Spend/default.aspx) tied $67 billion of a record $336.6 billion in Cyber Week spend to AI and agents — 20% of all global orders — while [Adobe](https://news.adobe.com/news/2026/01/adobe-holiday-shopping-season) recorded $257.8 billion in U.S. holiday online spend with generative-AI-driven traffic up 693.4% year over year.
+
+That layer sits on top of the fastest-growing slice of retail. The [U.S. Census Bureau](https://www.census.gov/retail/mrts/www/data/pdf/ec_current.pdf) put e-commerce at 16.9% of total retail sales in Q1 2026 — $326.7 billion, growing 9.8% year over year against 3.9% for retail overall. AI is not creating a new market so much as re-routing discovery inside the one that already wins.
+
+The re-routing is the point. Shoppers increasingly ask an assistant instead of typing into a search box; the assistant compares products across merchants and returns a shortlist. Your product gets evaluated in that comparison whether or not anyone ever opens your storefront — which means visibility now happens in a place your analytics were never built to see.
+
+- Treat AI-influenced orders as a measured channel, not a future scenario
+- Assume your products are being compared in sessions you cannot observe
+- Anchor plans to the Census baseline: AI discovery rides the fastest-growing part of retail`,
+      },
+      {
+        number: "03",
+        title: "The conversion flip that ended the tire-kicker theory",
+        content: `For a year, the safe dismissal was that AI traffic browses but does not buy. That flipped. Adobe data reported by [TechCrunch](https://techcrunch.com/2026/04/16/ai-traffic-to-us-retailers-rose-393-in-q1-and-its-boosting-their-revenue-too/) shows AI-referred visitors converted 38% worse than average in March 2025 — and 42% better by March 2026, with 37% higher revenue per visit, while Q1 AI-sourced retail traffic grew another 393% year over year.
+
+Consumers explain the flip. A [survey of 1,009 U.S. consumers](https://searchengineland.com/new-data-77-use-ai-to-shop-nearly-1-in-3-wont-let-it-spend-475614) by Exploding Topics found 77.6% used AI for shopping in the past six months and 43.2% use AI shopping tools at least weekly. [Adobe's own consumer survey](https://techcrunch.com/2026/04/16/ai-traffic-to-us-retailers-rose-393-in-q1-and-its-boosting-their-revenue-too/) adds that 85% of consumers who shopped with AI said it improved the experience.
+
+The mechanics are simple: the assistant does the comparison before the click. A visitor who arrives from an AI referral has already narrowed the field, checked the specs, and often compared prices — so they convert like someone at the end of a funnel, because they are. The uncomfortable corollary is that losing happens upstream and invisibly: the merchant who loses the comparison never sees the session at all.
+
+- Treat AI referrals as bottom-of-funnel traffic and protect the pages they land on
+- Instrument AI visits separately — our [guide to tracking AI shopping traffic](/blog/how-to-track-ai-shopping-traffic-in-2026) covers the setup
+- Measure win rate at the product level, because that is where comparisons are decided`,
+      },
+      {
+        number: "04",
+        title: "Channel shifts compound quietly, then dominate",
+        content: `Commerce shifts look slow year to year and decisive in hindsight. U.S. e-commerce took roughly nine years to go from about 8% of retail in early 2017 to the [Census Bureau's](https://www.census.gov/retail/mrts/www/data/pdf/ec_current.pdf) 16.9% in Q1 2026. Mobile crossed quietly too: [Adobe](https://news.adobe.com/news/2026/01/adobe-holiday-shopping-season) counted 56.4% of holiday 2025 online transactions on smartphones, up from 54.5% a year earlier.
+
+No merchant experienced either shift as a single dramatic quarter. Share moved a point or two a year, the laggards lost gradually, and by the time the trend was undeniable, the winners had already spent years restructuring — mobile-first sites, warehouse networks, marketplace operations. The advantage never came from reacting to the share number; it came from rebuilding before the share number made the case.
+
+AI-mediated commerce is at the start of that curve with one difference worth respecting: switching costs. Moving from stores to websites required trust in online payment; moving to mobile required new devices. Moving from search to an assistant requires one sentence. Adoption curves built on zero switching cost can outrun their historical analogies — 693% growth in a single holiday season suggests this one might.
+
+- Judge the shift by its slope, not its current share of revenue
+- Copy the pattern of past winners: restructure before the trend is obvious
+- Discount analogies that assume friction — delegating shopping to an assistant has almost none`,
+      },
+      {
+        number: "05",
+        title: "The rails shipped before the volume arrived",
+        content: `In the four months between September 2025 and January 2026, every major AI surface gained a path to checkout. [Stripe and OpenAI](https://stripe.com/newsroom/news/stripe-openai-instant-checkout) put Instant Checkout inside ChatGPT, [Google](https://cloud.google.com/blog/products/ai-machine-learning/announcing-agents-to-payments-ap2-protocol) shipped its Agent Payments Protocol, and [Shopify and Google](https://www.shopify.com/news/ai-commerce-at-scale) launched the Universal Commerce Protocol at NRF 2026 — letting merchants sell inside ChatGPT, Microsoft Copilot, Google AI Mode, and the Gemini app. [Perplexity relaunched agentic shopping](https://www.cnbc.com/2025/11/19/perplexity-ai-online-shopping-paypal.html) free for U.S. users with PayPal handling settlement.
+
+What none of these announcements included is a transaction-volume figure — [Forrester](https://www.forrester.com/blogs/the-state-of-agentic-commerce-in-mid-2026/) notes that native agentic transactions remain largely unquantified. Rails before volume is exactly how infrastructure shifts look from the inside, and it is the reason the merchant window exists at all. For the protocol-by-protocol breakdown — identity, mandate, checkout, settlement, and where stablecoins fit — see our [analysis of the agentic economy forecast](/blog/morph-agentic-economy-report-500-billion-commerce-2028), and test your own agent surface with the [free UCP validator](/ucp-validator).
+
+- Map which protocols your platform already exposes before adding new channels
+- Expect multi-protocol readiness, not one winning standard
+- Use the rails-before-volume gap to fix catalog and checkout compatibility cheaply`,
+      },
+      {
+        number: "06",
+        title: "What the skeptics get right",
+        content: `The sharpest skepticism comes from people building the infrastructure. Adyen's head of agentic commerce told [PYMNTS](https://www.pymnts.com/news/artificial-intelligence/2026/adyen-on-agentic-commerce-the-ai-was-never-the-hard-part/) the market sits at "version 0.5" on a five-point maturity scale. [Gartner](https://www.gartner.com/en/newsroom/press-releases/2025-06-25-gartner-predicts-over-40-percent-of-agentic-ai-projects-will-be-canceled-by-end-of-2027) predicts more than 40% of agentic AI projects will be canceled by the end of 2027 and estimates only about 130 of the thousands of self-described agentic vendors are real.
+
+Consumers draw the same line. In the [Exploding Topics survey](https://searchengineland.com/new-data-77-use-ai-to-shop-nearly-1-in-3-wont-let-it-spend-475614), 31.2% of consumers would not authorize an AI agent to spend any money autonomously, and only 11.7% would approve purchases over $100. [Forrester's mid-2026 assessment](https://www.forrester.com/blogs/the-state-of-agentic-commerce-in-mid-2026/) matches: true autonomy is rare, and most value from answer engines today comes from comparison and guidance rather than native transactions.
+
+Hold both Gartner numbers at once — the same firm projects [AI agents intermediating $15 trillion of B2B purchases by 2028](https://www.digitalcommerce360.com/2025/11/28/gartner-ai-agents-15-trillion-in-b2b-purchases-by-2028/) while forecasting mass project cancellations. Both can be true. The vendor market is frothy and the autonomous-checkout future is further away than the demos suggest; meanwhile the demand shift — the AI-referral conversion premium Adobe measured — is already in the analytics. Overhyped as autonomy, underhyped as distribution.
+
+- Discount vendor claims; verify against your own traffic and win-rate data
+- Plan for assisted commerce now and autonomous commerce later
+- Let humans keep the wallet in your models — agents currently influence far more than they purchase
+- Watch the consumer authorization numbers as the real adoption gate for autonomous checkout`,
+      },
+      {
+        number: "07",
+        title: "What merchants should do with a shift this early",
+        content: `A shift this early rewards preparation over spend. The demand side is measurable today — AI-referred traffic converting 42% better — while autonomous checkout matures, which leaves a window where becoming machine-readable is cheap and losing comparisons is still invisible in your dashboards.
+
+Preparation is three moves. First, **measure**: add server-side detection so AI agent visits and AI-referred sessions show up as their own channel — the [tracking guide](/blog/how-to-track-ai-shopping-traffic-in-2026) walks through it. Second, **structure**: [Adyen estimates](https://www.pymnts.com/news/artificial-intelligence/2026/adyen-on-agentic-commerce-the-ai-was-never-the-hard-part/) agents need roughly three times more product attributes than a traditional listing, so audit titles, variants, offers, and policies against the [structured data checklist](/blog/structured-data-checklist-for-ecommerce-product-pages). Third, **simulate**: run your catalog through the models doing the comparing — GPT-4, Claude, Gemini, and Perplexity — and see whether you win or lose against competitors before real agent volume decides it for you. A [free ecentic Scan](/sign-up) shows exactly that.
+
+The pattern from every prior commerce shift holds: the share number will look small right up until it does not, and the merchants who compound the advantage are the ones who treated the early window as the cheap part.
+
+- Instrument AI traffic before it becomes a revenue line you cannot explain
+- Rebuild product data for machine readers — attributes, availability, and policies agents can parse
+- Simulate agent comparisons monthly and fix the losses while they are still free`,
+      },
+      {
+        number: "08",
+        title: "Frequently asked questions",
+        content: `**What is the AI economy?** The measurable economic activity created by AI systems acting as market participants — the infrastructure buildout ([IDC](https://www.idc.com/resource-center/blog/ai-infrastructure-spending-caps-historic-year-at-90-billion-in-q4-2025-2029-spending-to-eclipse-1-trillion/) counted $318 billion in 2025 spending), the enterprise agents executing tasks, and the commerce those agents increasingly influence.
+
+**How much commerce does AI actually influence today?** [Salesforce](https://investor.salesforce.com/news/news-details/2025/Salesforce-Data-AI-and-Agents-Propel-Cyber-Week-to-Record-336-6B-in-Global-Spend/default.aspx) tied $67 billion — 20% of global orders — to AI and agents during Cyber Week 2025, and [Adobe data](https://techcrunch.com/2026/04/16/ai-traffic-to-us-retailers-rose-393-in-q1-and-its-boosting-their-revenue-too/) showed AI-referred retail traffic converting 42% better than other traffic by March 2026. Native agent-completed checkout volume remains unquantified.
+
+**Is agentic commerce overhyped?** As autonomous checkout, largely yes — [Gartner](https://www.gartner.com/en/newsroom/press-releases/2025-06-25-gartner-predicts-over-40-percent-of-agentic-ai-projects-will-be-canceled-by-end-of-2027) expects over 40% of agentic AI projects to be canceled by end of 2027 and [Adyen](https://www.pymnts.com/news/artificial-intelligence/2026/adyen-on-agentic-commerce-the-ai-was-never-the-hard-part/) calls the market "version 0.5." As a discovery and comparison shift, no: the traffic, conversion, and order-influence numbers are already measured.
+
+**How do I prepare my store for AI shopping agents?** Track AI visits as their own channel, make product data machine-readable at the attribute level, and simulate how the major models rank you against competitors. A [free ecentic Scan](/sign-up) runs that simulation on your own catalog in minutes.`,
+      },
+    ],
+  },
+  {
     slug: "how-to-start-an-ecommerce-business-in-2026",
     category: "Getting Started",
     title: "How to Start an Ecommerce Business in 2026",

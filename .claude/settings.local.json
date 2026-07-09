@@ -121,7 +121,19 @@
       "Bash(grep -vE '\\\\.d\\\\.ts$|app/\\\\\\(main\\\\\\)')",
       "Bash(grep -vE '\\\\.d\\\\.ts$|src/app/|src/server/')",
       "Bash(grep -rnE '\\\\.map\\\\\\(\\\\\\(\\(.{1,4}\\),? ?\\(i\\)?\\\\\\) =>' apps/web/src/server --include='*.ts')",
-      "Bash(rg -U -n --glob 'apps/web/src/server/**/*.ts' 'if \\\\\\([^\\\\n]{1,60}\\\\\\) \\\\{\\\\n\\\\s+return [^\\\\n]{1,50};\\\\n\\\\s+\\\\}' -l)"
+      "Bash(rg -U -n --glob 'apps/web/src/server/**/*.ts' 'if \\\\\\([^\\\\n]{1,60}\\\\\\) \\\\{\\\\n\\\\s+return [^\\\\n]{1,50};\\\\n\\\\s+\\\\}' -l)",
+      "WebFetch(domain:www.census.gov)",
+      "WebFetch(domain:www.gartner.com)",
+      "WebFetch(domain:www.salesforce.com)",
+      "WebFetch(domain:news.adobe.com)",
+      "WebFetch(domain:www.forrester.com)",
+      "WebFetch(domain:www.ciodive.com)",
+      "WebFetch(domain:investor.salesforce.com)",
+      "Bash(grep -v '\\\\.d\\\\.ts$')",
+      "Bash(grep -vE 'ds-bundle|\\\\.design-sync|drizzle|icons|\\\\.svg$|\\\\.png$')",
+      "Bash(grep -rn \"sql\\\\`\" server/)",
+      "Bash(grep -rniE \"\\(access_token|apikey|api_key|password|secret|token\\)\\\\s*[:=]\\\\s*[\\\\\"'][A-Za-z0-9_+/=-]{16,}[\\\\\"']\" --include=\"*.ts\" --include=\"*.tsx\" server/ app/ lib/)",
+      "Bash(grep -viE \"process\\\\.env|placeholder|example|your_|xxxx|test-|mock|schema|z\\\\.|\\\\.string|Bearer \\\\$\")"
     ]
   }
 }
