@@ -8,6 +8,7 @@ import {
   GaugeIcon,
   GearIcon,
   RadarIcon,
+  SearchIcon,
   ShoppingCartIcon,
   SquareChartIcon,
 } from "@zenncore/icons";
@@ -35,6 +36,12 @@ const items = [
     icon: RadarIcon,
     label: "Simulations",
     segment: "/simulations",
+    exact: false,
+  },
+  {
+    icon: SearchIcon,
+    label: "AI Discovery",
+    segment: "/discovery",
     exact: false,
   },
   { icon: GaugeIcon, label: "Optimize", segment: "/optimize", exact: false },

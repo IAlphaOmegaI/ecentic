@@ -31,6 +31,64 @@ type Type = {
   images: { id: number; src: string }[];
 };
 
+type ShopifyShop = {
+  address1: string;
+  address2: string;
+  auto_configure_tax_inclusivity: boolean;
+  checkout_api_supported: boolean;
+  city: string;
+  country: string;
+  country_code: string;
+  country_name: string;
+  county_taxes: boolean;
+  created_at: string;
+  customer_email: string;
+  currency: string;
+  domain: string;
+  enabled_presentment_currencies: string[];
+  eligible_for_payments: boolean;
+  email: string;
+  finances: boolean;
+  force_ssl: boolean;
+  google_apps_domain: string | null;
+  google_apps_login_enabled: boolean | null;
+  has_discounts: boolean;
+  has_gift_cards: boolean;
+  has_storefront: boolean;
+  iana_timezone: string;
+  id: number;
+  latitude: number;
+  longitude: number;
+  money_format: string;
+  money_in_emails_format: string;
+  money_with_currency_format: string;
+  money_with_currency_in_emails_format: string;
+  multi_location_enabled: boolean;
+  myshopify_domain: string;
+  name: string;
+  password_enabled: boolean;
+  phone: string | null;
+  plan_display_name: string;
+  pre_launch_enabled: boolean;
+  plan_name: string;
+  primary_locale: string;
+  primary_location_id: number;
+  province: string;
+  province_code: string;
+  requires_extra_payments_agreement: boolean;
+  setup_required: boolean;
+  shop_owner: string;
+  source: string | null;
+  taxes_included: boolean | null;
+  tax_shipping: boolean | null;
+  timezone: string;
+  transactional_sms_disabled: boolean;
+  updated_at: string;
+  weight_unit: string;
+  zip: string;
+  marketing_sms_consent_enabled_at_checkout: boolean;
+};
+
 const API_VERSION = "2026-04";
 
 const storefrontHostsFromShop = (record: {
@@ -414,12 +472,7 @@ export const handleOAuthCallback = withContext(
     // console.log("response", await new Response(response.data.body).text());
 
     const shop = await HTTP.parse<{
-      shop: {
-        id: number;
-        domain: string;
-        myshopify_domain: string;
-        currency: string;
-      };
+      shop: ShopifyShop;
     }>(response);
 
     if (!shop.success) {
@@ -464,8 +517,8 @@ export const handleOAuthCallback = withContext(
               existing.id,
               {
                 platform: "shopify",
-                name: shopId.replace(".myshopify.com", ""),
-                domain: `https://${shopId}`,
+                name: shop.data.shop.name,
+                domain: shop.data.shop.domain,
                 storefrontHosts,
                 status: "connected",
                 storeId: String(shop.data.shop.id),

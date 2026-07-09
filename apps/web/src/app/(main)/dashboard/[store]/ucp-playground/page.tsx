@@ -37,6 +37,7 @@ const ConnectedPlayground = async ({ store }: { store: string }) => {
   return (
     <PlaygroundClient
       defaultStoreUrl={record.domain}
+      lockStore
       initialConnection={
         service.success
           ? {

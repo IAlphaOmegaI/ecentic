@@ -615,12 +615,18 @@ type PlaygroundClientProps = {
    * the public playground; the API route enforces the same cap server-side.
    */
   messageLimit?: number;
+  /**
+   * Hides the "Change store" control. Set in the dashboard, where the session is
+   * pinned to the store the URL is scoped to.
+   */
+  lockStore?: boolean;
 };
 
 export const PlaygroundClient = ({
   defaultStoreUrl = "",
   initialConnection = null,
   messageLimit,
+  lockStore = false,
 }: PlaygroundClientProps) => {
   const [storeUrl, setStoreUrl] = useState(
     initialConnection ? defaultStoreUrl : "",
@@ -774,13 +780,15 @@ export const PlaygroundClient = ({
             </span>
           </span>
         </SectionKicker>
-        <button
-          className="shrink-0 font-medium text-foreground-dimmed text-xs hover:text-foreground"
-          onClick={handleDisconnect}
-          type="button"
-        >
-          Change store
-        </button>
+        {!lockStore && (
+          <button
+            className="shrink-0 font-medium text-foreground-dimmed text-xs hover:text-foreground"
+            onClick={handleDisconnect}
+            type="button"
+          >
+            Change store
+          </button>
+        )}
       </div>
 
       {/* Conversation */}

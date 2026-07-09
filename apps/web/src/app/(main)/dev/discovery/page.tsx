@@ -1,5 +1,5 @@
+import { DiscoveryClient } from "@/components/discovery/discovery-client";
 import { Crosshair, StatusPill } from "../../dashboard/_components/grid";
-import { DiscoveryClient } from "./_components/discovery-client";
 
 export default () => (
   <div className="flex flex-col">
