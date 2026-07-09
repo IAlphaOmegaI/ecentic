@@ -109,7 +109,19 @@
       "Bash(echo \"tsc-changed-files-errors: $?\")",
       "Bash(awk 'NR==12{print length\\($0\\) \" chars: \" $0}' readme.txt)",
       "Bash(awk 'NR==3{print}' readme.txt)",
-      "Bash(../../node_modules/.bin/biome check *)"
+      "Bash(../../node_modules/.bin/biome check *)",
+      "Bash(grep -vE '\\\\.d\\\\.ts$|/drizzle/')",
+      "Bash(awk -F/ '{print $3\"/\"$4}')",
+      "Bash(grep -vE '\\\\.d\\\\.ts$')",
+      "Bash(awk -F/ '{print $4\"/\"$5}')",
+      "Bash(grep -E '\\\\.\\(ts|tsx\\)$')",
+      "Bash(awk -F/ '{print $5\"/\"$6}')",
+      "Bash(grep -vE '\\\\.d\\\\.ts$|\\\\\\(main\\\\\\)/dashboard/')",
+      "Bash(grep -vE '\\\\.d\\\\.ts$|/dist/')",
+      "Bash(grep -vE '\\\\.d\\\\.ts$|app/\\\\\\(main\\\\\\)')",
+      "Bash(grep -vE '\\\\.d\\\\.ts$|src/app/|src/server/')",
+      "Bash(grep -rnE '\\\\.map\\\\\\(\\\\\\(\\(.{1,4}\\),? ?\\(i\\)?\\\\\\) =>' apps/web/src/server --include='*.ts')",
+      "Bash(rg -U -n --glob 'apps/web/src/server/**/*.ts' 'if \\\\\\([^\\\\n]{1,60}\\\\\\) \\\\{\\\\n\\\\s+return [^\\\\n]{1,50};\\\\n\\\\s+\\\\}' -l)"
     ]
   }
 }
