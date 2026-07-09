@@ -198,16 +198,25 @@ export default () => (
       </div>
     </div>
 
-    {sections.map((section) => (
+    {sections.map((section, index) => (
       <div key={section.number} className="border-accent-foreground border-b">
         <div className="relative mx-auto grid max-w-6xl grid-cols-1 gap-px border-accent-foreground border-x bg-accent-foreground md:grid-cols-[5fr_8fr]">
+          {/* Each section marks its top corners; the next section owns the
+              shared line. Only the last section marks its bottom, since the
+              stacked site footer below has no top pluses. */}
           <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
           <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
-          <Plus className="bottom-0 left-0 hidden -translate-x-1/2 translate-y-1/2 md:flex" />
-          <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
+          {index === sections.length - 1 && (
+            <>
+              <Plus className="bottom-0 left-0 hidden -translate-x-1/2 translate-y-1/2 md:flex" />
+              <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
+            </>
+          )}
           <div className="relative flex flex-col bg-background-dimmed p-8">
             <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
-            <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
+            {index === sections.length - 1 && (
+              <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
+            )}
             <span className="mt-auto font-normal text-2xl text-primary">
               {section.number}
             </span>

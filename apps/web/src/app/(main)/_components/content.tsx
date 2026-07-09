@@ -165,10 +165,10 @@ export const ContentPageSection = ({
         classList?.grid,
       )}
     >
+      {/* Sections mark only their top corners — the bottom line is owned by
+          the next block (a following section or the ContentPageFooter). */}
       <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
       <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
-      <Plus className="bottom-0 left-0 hidden -translate-x-1/2 translate-y-1/2 md:flex" />
-      <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
       <div
         className={cn(
           "relative flex flex-col bg-background-dimmed p-8",
@@ -176,7 +176,6 @@ export const ContentPageSection = ({
         )}
       >
         <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
-        <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
         <span className="mt-auto font-normal text-2xl text-primary">
           {number}
         </span>

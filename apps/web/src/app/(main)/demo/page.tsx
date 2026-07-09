@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { BookingEmbed } from "@/components/cal";
 import { JsonLd } from "@/components/json-ld";
+import { Plus } from "@/components/plus";
 import {
   absoluteUrl,
   createBreadcrumbSchema,
@@ -83,7 +84,9 @@ export default () => {
       <JsonLd schemas={structuredData} />
 
       <div className="border-accent-foreground border-b">
-        <div className="mx-auto max-w-6xl border-accent-foreground border-x">
+        <div className="relative mx-auto max-w-6xl border-accent-foreground border-x">
+          <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
+          <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
           <div className="h-[680px] w-full bg-background">
             <BookingEmbed />
           </div>
