@@ -3,10 +3,16 @@
 import { CheckCircleIcon, XCircleIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionPanel,
+  AccordionTrigger,
+} from "@zenncore/web/components/accordion";
 import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { type SubmitEvent, useState } from "react";
+import { type ReactNode, type SubmitEvent, useState } from "react";
 import { Motion } from "@/components/motion";
 import * as UcpAdvancedCheck from "@/server/app/intelligence/ucp/advanced-check";
 
@@ -49,23 +55,6 @@ const Chip = ({ label, tone }: { label: string; tone: Tone }) => (
   >
     {label}
   </span>
-);
-
-const SectionHeading = ({
-  title,
-  description,
-}: {
-  title: string;
-  description?: string;
-}) => (
-  <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3 sm:px-5">
-    <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-      {title}
-    </p>
-    {description && (
-      <p className="mt-1 text-foreground-dimmed text-xs">{description}</p>
-    )}
-  </div>
 );
 
 const formatTransport = (transport: string | null) => {
@@ -442,47 +431,63 @@ const GradeCard = ({
   );
 };
 
+type ProbeSection = {
+  key: string;
+  title: string;
+  description: string;
+  failCount: number;
+  total: number;
+  body: ReactNode;
+};
+
+// Each probe group collapses to a row with a pass/fail chip; only groups with
+// failures auto-expand, so the user lands on what's broken instead of scrolling
+// every passing row.
 const AdvancedResults = ({
   result,
 }: {
   result: UcpAdvancedCheck.AdvancedCheckResult;
-}) => (
-  <Motion.Up className="border-accent-foreground border-t">
-    <GradeCard grade={result.grade} detail={result.gradeDetail} />
-
-    {result.endpointProbes.length > 0 && (
-      <div className="border-accent-foreground border-t">
-        <SectionHeading
-          title="Service endpoint probes"
-          description="Live HEAD request to each service endpoint declared in the UCP profile. Latency is measured from this server."
-        />
-        <div className="hidden border-accent-foreground border-b bg-background-dimmed px-4 py-2 sm:grid sm:grid-cols-[minmax(0,160px)_minmax(0,1fr)_80px_80px_80px]">
-          {["Service", "Endpoint", "Status", "Latency", "CORS"].map((h) => (
-            <p
-              key={h}
-              className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
-            >
-              {h}
-            </p>
-          ))}
-        </div>
-        <div className="divide-y divide-accent-foreground">
-          {result.endpointProbes.map((probe) => (
-            <EndpointProbeRow
-              key={`${probe.serviceName}-${probe.endpoint}`}
-              probe={probe}
-            />
-          ))}
-        </div>
-      </div>
-    )}
-
-    {result.mcpProbes.length > 0 && (
-      <div className="border-accent-foreground border-t">
-        <SectionHeading
-          title="MCP endpoints"
-          description="Probes MCP service endpoints via JSON-RPC initialize + tools/list. Shows the protocol version, server identity, and every tool the agent can call."
-        />
+}) => {
+  const sections: ProbeSection[] = [
+    result.endpointProbes.length > 0 && {
+      key: "endpoints",
+      title: "Service endpoint probes",
+      description:
+        "Live HEAD request to each service endpoint declared in the UCP profile. Latency is measured from this server.",
+      failCount: result.endpointProbes.filter((probe) => !probe.reachable)
+        .length,
+      total: result.endpointProbes.length,
+      body: (
+        <>
+          <div className="hidden border-accent-foreground border-b bg-background-dimmed px-4 py-2 sm:grid sm:grid-cols-[minmax(0,160px)_minmax(0,1fr)_80px_80px_80px]">
+            {["Service", "Endpoint", "Status", "Latency", "CORS"].map((h) => (
+              <p
+                key={h}
+                className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
+              >
+                {h}
+              </p>
+            ))}
+          </div>
+          <div className="divide-y divide-accent-foreground">
+            {result.endpointProbes.map((probe) => (
+              <EndpointProbeRow
+                key={`${probe.serviceName}-${probe.endpoint}`}
+                probe={probe}
+              />
+            ))}
+          </div>
+        </>
+      ),
+    },
+    result.mcpProbes.length > 0 && {
+      key: "mcp",
+      title: "MCP endpoints",
+      description:
+        "Probes MCP service endpoints via JSON-RPC initialize + tools/list. Shows the protocol version, server identity, and every tool the agent can call.",
+      failCount: result.mcpProbes.filter((probe) => !probe.reachable).length,
+      total: result.mcpProbes.length,
+      body: (
         <div className="divide-y divide-accent-foreground">
           {result.mcpProbes.map((probe) => (
             <McpProbeRow
@@ -491,15 +496,16 @@ const AdvancedResults = ({
             />
           ))}
         </div>
-      </div>
-    )}
-
-    {result.a2aProbes.length > 0 && (
-      <div className="border-accent-foreground border-t">
-        <SectionHeading
-          title="A2A endpoints"
-          description="Probes Agent-to-Agent service endpoints. Checks reachability, agent card presence at /.well-known/agent-card.json, and UCP extension header."
-        />
+      ),
+    },
+    result.a2aProbes.length > 0 && {
+      key: "a2a",
+      title: "A2A endpoints",
+      description:
+        "Probes Agent-to-Agent service endpoints. Checks reachability, agent card presence at /.well-known/agent-card.json, and UCP extension header.",
+      failCount: result.a2aProbes.filter((probe) => !probe.reachable).length,
+      total: result.a2aProbes.length,
+      body: (
         <div className="divide-y divide-accent-foreground">
           {result.a2aProbes.map((probe) => (
             <A2aProbeRow
@@ -508,15 +514,18 @@ const AdvancedResults = ({
             />
           ))}
         </div>
-      </div>
-    )}
-
-    {result.checkoutLifecycle.length > 0 && (
-      <div className="border-accent-foreground border-t">
-        <SectionHeading
-          title="Checkout lifecycle"
-          description="Simulates the cart → checkout session flow per UCP REST spec: POST /carts → PUT /carts/{id} → POST /checkout-sessions → complete → cancel. 400/422 responses are expected for probe inputs."
-        />
+      ),
+    },
+    result.checkoutLifecycle.length > 0 && {
+      key: "checkout",
+      title: "Checkout lifecycle",
+      description:
+        "Simulates the cart → checkout session flow per UCP REST spec: POST /carts → PUT /carts/{id} → POST /checkout-sessions → complete → cancel. 400/422 responses are expected for probe inputs.",
+      failCount: result.checkoutLifecycle.filter(
+        (step) => !step.skipped && !step.passed,
+      ).length,
+      total: result.checkoutLifecycle.filter((step) => !step.skipped).length,
+      body: (
         <div className="divide-y divide-accent-foreground">
           {LIFECYCLE_STEP_ORDER.map((stepKey) => {
             const step = result.checkoutLifecycle.find(
@@ -526,13 +535,15 @@ const AdvancedResults = ({
             return <LifecycleStepRow key={step.step} step={step} />;
           })}
         </div>
-      </div>
-    )}
+      ),
+    },
+  ].filter(Boolean) as ProbeSection[];
 
-    {result.endpointProbes.length === 0 &&
-      result.mcpProbes.length === 0 &&
-      result.a2aProbes.length === 0 &&
-      result.checkoutLifecycle.length === 0 && (
+  return (
+    <Motion.Up className="border-accent-foreground border-t">
+      <GradeCard grade={result.grade} detail={result.gradeDetail} />
+
+      {sections.length === 0 ? (
         <div className="border-accent-foreground border-t bg-background px-5 py-5">
           <p className="font-light text-foreground-dimmed text-sm">
             No service endpoints with URLs found in the UCP profile. Add{" "}
@@ -540,9 +551,54 @@ const AdvancedResults = ({
             to your services to enable live testing.
           </p>
         </div>
+      ) : (
+        <Accordion
+          className="text-foreground"
+          defaultValue={sections
+            .filter((section) => section.failCount > 0)
+            .map((section) => section.key)}
+        >
+          {sections.map((section) => (
+            <AccordionItem
+              key={section.key}
+              value={section.key}
+              className="border-accent-foreground border-t"
+            >
+              <AccordionTrigger
+                className="items-center bg-background-dimmed px-4 py-3 hover:bg-background-dimmed/70 sm:px-5"
+                classList={{
+                  trigger: {
+                    icon: "size-4 shrink-0 text-foreground-dimmed group-data-panel-open:rotate-180",
+                  },
+                }}
+              >
+                <span className="flex min-w-0 flex-1 items-center justify-between gap-3">
+                  <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+                    {section.title}
+                  </span>
+                  <Chip
+                    label={
+                      section.failCount > 0
+                        ? `${section.failCount} failing`
+                        : `${section.total} OK`
+                    }
+                    tone={section.failCount > 0 ? "danger" : "success"}
+                  />
+                </span>
+              </AccordionTrigger>
+              <AccordionPanel>
+                <p className="border-accent-foreground border-t bg-background-dimmed px-4 py-2 text-foreground-dimmed text-xs sm:px-5">
+                  {section.description}
+                </p>
+                {section.body}
+              </AccordionPanel>
+            </AccordionItem>
+          ))}
+        </Accordion>
       )}
-  </Motion.Up>
-);
+    </Motion.Up>
+  );
+};
 
 export const UcpAdvancedValidator = () => {
   const toast = useToastManager();
@@ -572,45 +628,56 @@ export const UcpAdvancedValidator = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="border-accent-foreground border-t bg-background-dimmed px-5 py-4">
-        <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-          Advanced endpoint & lifecycle testing
-        </p>
-        <p className="mt-1 text-foreground-dimmed text-xs">
-          Probes all service endpoints declared in the profile and simulates the
-          full AI agent checkout lifecycle — Create → Update → Complete →
-          Cancel. Makes live HTTP requests to the merchant server.
-        </p>
-      </div>
+      <div className="grid lg:grid-cols-2">
+        <div className="px-6 py-6 sm:px-8 sm:py-8">
+          <span className="font-medium text-[11px] text-foreground-dimmed uppercase tracking-[0.1em]">
+            Advanced testing
+          </span>
+          <h2 className="mt-2 font-bold text-foreground-rich text-xl tracking-[-0.02em]">
+            Endpoint & lifecycle tests
+          </h2>
+          <p className="mt-1.5 font-light text-foreground-dimmed text-sm">
+            Probes all service endpoints declared in the profile and simulates
+            the full AI agent checkout lifecycle — Create → Update → Complete →
+            Cancel.
+          </p>
+        </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="grid gap-px bg-accent-foreground sm:grid-cols-[minmax(0,1fr)_auto]"
-      >
-        <div className="bg-background-rich px-4 py-3">
-          <TextField
-            value={domain}
-            onValueChange={setDomain}
-            className="h-10 bg-background-rich"
-          >
-            <TextFieldInput
-              placeholder="yourdomain.com"
-              className="px-3 text-sm"
-              aria-label="Domain for advanced testing"
-            />
-          </TextField>
+        <div className="flex flex-col justify-center border-accent-foreground border-t px-6 py-6 sm:px-8 sm:py-8 lg:border-t-0 lg:border-l">
+          <form onSubmit={handleSubmit}>
+            <label
+              htmlFor="ucp-advanced-domain"
+              className="block font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
+            >
+              Domain
+            </label>
+            <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-stretch">
+              <TextField
+                value={domain}
+                onValueChange={setDomain}
+                className="flex-1"
+              >
+                <TextFieldInput
+                  id="ucp-advanced-domain"
+                  placeholder="yourdomain.com"
+                />
+              </TextField>
+              <Button
+                type="submit"
+                color="primary"
+                disabled={isChecking || !domain.trim()}
+                className="w-full shrink-0 sm:w-auto"
+              >
+                {isChecking ? "Testing…" : "Run advanced tests"}
+              </Button>
+            </div>
+            <p className="mt-2 font-light text-foreground-dimmed text-sm">
+              Makes live HTTP requests to the merchant server — probe inputs
+              may create test carts.
+            </p>
+          </form>
         </div>
-        <div className="flex items-center bg-background-rich px-4 py-3">
-          <Button
-            type="submit"
-            color="primary"
-            disabled={isChecking || !domain.trim()}
-            className="w-full justify-center py-2 text-sm sm:w-auto"
-          >
-            {isChecking ? "Testing…" : "Run advanced tests"}
-          </Button>
-        </div>
-      </form>
+      </div>
 
       {result && <AdvancedResults result={result} />}
     </div>

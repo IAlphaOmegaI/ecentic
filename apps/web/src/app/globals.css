@@ -10,6 +10,38 @@ html {
   scroll-padding-top: 5.5rem;
 }
 
+/* Native scrollbars, styled to match the design system's <ScrollArea>: a thin,
+   dimmed thumb over a transparent track. Base UI's ScrollArea hides the native
+   bar on its own viewport, so these rules never double up with it. Standard
+   properties (Firefox, Chromium 121+) first, then the -webkit- fallback. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-foreground-dimmed) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  /* content-box + a transparent border insets the thumb so it reads ~4px wide,
+     matching ScrollBar's `w-1`, while keeping a 10px grab target. */
+  background-color: var(--color-foreground-dimmed);
+  background-clip: content-box;
+  border: 3px solid transparent;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-foreground);
+}
+
 @utility bg-grid-stripes {
   background-image: repeating-linear-gradient(
     -45deg,

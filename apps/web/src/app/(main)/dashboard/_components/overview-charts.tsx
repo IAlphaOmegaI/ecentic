@@ -219,7 +219,14 @@ export const OverviewCharts = ({
           </div>
 
           {models.length > 0 ? (
-            <div className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-y px-4">
+            // Size to the model count instead of a hardcoded grid-cols-4 — with
+            // 3 models the 4th column was a phantom empty cell.
+            <div
+              className="grid divide-x divide-accent-foreground border-accent-foreground border-y px-4"
+              style={{
+                gridTemplateColumns: `repeat(${models.length}, minmax(0, 1fr))`,
+              }}
+            >
               {models.map(({ label, rate }) => {
                 return (
                   <div

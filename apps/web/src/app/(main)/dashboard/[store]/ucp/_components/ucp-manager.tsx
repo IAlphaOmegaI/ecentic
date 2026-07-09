@@ -55,29 +55,31 @@ const tokenizeJson = (json: string): JToken[] => {
   const tokens: JToken[] = [];
   let i = 0;
   while (i < json.length) {
-    if (/\s/.test(json[i])) {
+    if (/\s/.test(json.charAt(i))) {
       let text = "";
-      while (i < json.length && /\s/.test(json[i])) text += json[i++];
+      while (i < json.length && /\s/.test(json.charAt(i)))
+        text += json.charAt(i++);
       tokens.push({ text, type: "space" });
       continue;
     }
-    if (json[i] === '"') {
+    if (json.charAt(i) === '"') {
       let text = '"';
       i++;
-      while (i < json.length && json[i] !== '"') {
-        if (json[i] === "\\") text += json[i++];
-        text += json[i++];
+      while (i < json.length && json.charAt(i) !== '"') {
+        if (json.charAt(i) === "\\") text += json.charAt(i++);
+        text += json.charAt(i++);
       }
       text += '"';
       i++;
       let j = i;
-      while (j < json.length && /\s/.test(json[j])) j++;
-      tokens.push({ text, type: json[j] === ":" ? "key" : "string" });
+      while (j < json.length && /\s/.test(json.charAt(j))) j++;
+      tokens.push({ text, type: json.charAt(j) === ":" ? "key" : "string" });
       continue;
     }
-    if (/[-\d]/.test(json[i])) {
+    if (/[-\d]/.test(json.charAt(i))) {
       let text = "";
-      while (i < json.length && /[-\d.eE+]/.test(json[i])) text += json[i++];
+      while (i < json.length && /[-\d.eE+]/.test(json.charAt(i)))
+        text += json.charAt(i++);
       tokens.push({ text, type: "number" });
       continue;
     }
@@ -92,7 +94,7 @@ const tokenizeJson = (json: string): JToken[] => {
       i += 4;
       continue;
     }
-    tokens.push({ text: json[i++], type: "punct" });
+    tokens.push({ text: json.charAt(i++), type: "punct" });
   }
   return tokens;
 };
@@ -225,15 +227,51 @@ const definitionIcons: Record<string, FieldIconComponent> = {
 // ─── Definitions ────────────────────────────────────────────────────────────
 
 const definitions = [
-  { key: "merchantName" as const, label: "Merchant Name" },
-  { key: "description" as const, label: "Description" },
-  { key: "logoUrl" as const, label: "Logo URL" },
-  { key: "paymentMethods" as const, label: "Payment Methods" },
-  { key: "shippingPolicy" as const, label: "Shipping Policy" },
-  { key: "returnPolicy" as const, label: "Return Policy" },
-  { key: "contactEmail" as const, label: "Contact Email" },
-  { key: "sustainability" as const, label: "Sustainability" },
-  { key: "certifications" as const, label: "Certifications" },
+  {
+    key: "merchantName" as const,
+    label: "Merchant Name",
+    placeholder: "Acme Store",
+  },
+  {
+    key: "description" as const,
+    label: "Description",
+    placeholder: "Premium audio gear for modern homes",
+  },
+  {
+    key: "logoUrl" as const,
+    label: "Logo URL",
+    placeholder: "https://acme.store/logo.png",
+  },
+  {
+    key: "paymentMethods" as const,
+    label: "Payment Methods",
+    placeholder: "Visa, Mastercard, PayPal, Apple Pay",
+  },
+  {
+    key: "shippingPolicy" as const,
+    label: "Shipping Policy",
+    placeholder: "Free over $50 · 3–5 business days",
+  },
+  {
+    key: "returnPolicy" as const,
+    label: "Return Policy",
+    placeholder: "30-day free returns",
+  },
+  {
+    key: "contactEmail" as const,
+    label: "Contact Email",
+    placeholder: "support@acme.store",
+  },
+  {
+    key: "sustainability" as const,
+    label: "Sustainability",
+    placeholder: "Carbon-neutral shipping · recycled packaging",
+  },
+  {
+    key: "certifications" as const,
+    label: "Certifications",
+    placeholder: "B-Corp, ISO 9001",
+  },
 ] as const;
 
 type ProductRow = Product.Type & { _id: string };
@@ -515,31 +553,24 @@ export const UcpManager = ({
 
       {/* Tabs */}
       <Tabs defaultValue="profile">
-        <TabsList className="h-10 rounded-md border-0 bg-background-dimmed p-1">
-          <TabsIndicator className="h-full rounded bg-primary" />
-          <Tab
-            value="profile"
-            className="flex-1 text-foreground-dimmed data-selected:text-background-rich"
-          >
+        {/* w-full + h-8 tabs: the base Tab is h-9 in a 32px content box, so
+            without this the tabs clipped and the labels wrapped to two lines. */}
+        <TabsList className="h-10 w-full rounded-md border-0 bg-background-dimmed p-1">
+          <TabsIndicator className="top-1 h-8 rounded" />
+          <Tab value="profile" className="h-8 flex-1 border-r-0">
             Merchant Profile
           </Tab>
-          <Tab
-            value="products"
-            className="flex-1 text-foreground-dimmed data-selected:text-background-rich"
-          >
-            Product Structured Data
+          <Tab value="products" className="h-8 flex-1 border-r-0">
+            Product Data
           </Tab>
-          <Tab
-            value="validate"
-            className="flex-1 text-foreground-dimmed data-selected:text-background-rich"
-          >
+          <Tab value="validate" className="h-8 flex-1 border-r-0">
             Validate
           </Tab>
         </TabsList>
 
         {/* Profile tab */}
         <TabsPanel value="profile">
-          <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <div className="mt-4 flex flex-col gap-4">
             {/* Fields */}
             <div className="overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
               <div className="border-accent-foreground border-b px-4 py-2.5">
@@ -547,87 +578,90 @@ export const UcpManager = ({
                   Profile Fields
                 </p>
               </div>
-              <div className="divide-y divide-accent-foreground">
+              {/* 3×3 field grid — 9 fields, 3 columns, 3 rows, no phantom cell. */}
+              <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 lg:grid-cols-3">
                 {definitions.map((field) => {
                   const value = state[field.key];
                   const isComplete = Boolean(value);
+                  const Icon = definitionIcons[field.key] ?? StoreIcon;
                   return (
                     <div
                       key={field.key}
-                      className="flex items-center gap-3 px-4 py-2.5"
+                      className="flex flex-col gap-2 bg-background-rich p-4 transition-colors hover:bg-background"
                     >
-                      {(() => {
-                        const Icon = definitionIcons[field.key];
-                        return (
-                          <Icon
-                            className={cn(
-                              "size-3.5 shrink-0 transition-colors",
-                              isComplete
-                                ? "text-primary"
-                                : "text-foreground-dimmed/40",
-                            )}
-                          />
-                        );
-                      })()}
-                      <div className="flex min-w-0 flex-1 items-center gap-3">
+                      <div className="flex items-center gap-2">
+                        {/* icon = completion indicator */}
+                        <span
+                          className={cn(
+                            "flex size-5 shrink-0 items-center justify-center transition-colors",
+                            isComplete
+                              ? "text-primary"
+                              : "text-foreground-dimmed",
+                          )}
+                        >
+                          <Icon className="size-4" />
+                        </span>
                         <label
                           htmlFor={`ucp-field-${field.key}`}
-                          className="w-36 shrink-0 font-medium text-foreground-dimmed text-xs"
+                          className="font-medium text-foreground text-xs"
                         >
                           {field.label}
                         </label>
-                        <TextField
-                          value={value}
-                          onValueChange={(val) =>
-                            setState((prev) => ({ ...prev, [field.key]: val }))
-                          }
-                          className="h-7 flex-1 cursor-text border border-accent-foreground bg-background"
-                        >
-                          <TextFieldInput
-                            id={`ucp-field-${field.key}`}
-                            placeholder="—"
-                            className="px-2 text-xs"
-                          />
-                        </TextField>
+                        {isComplete && (
+                          <CheckIcon className="ml-auto size-3.5 text-primary" />
+                        )}
                       </div>
+                      <TextField
+                        value={value}
+                        onValueChange={(val) =>
+                          setState((prev) => ({ ...prev, [field.key]: val }))
+                        }
+                        className="bg-background"
+                      >
+                        <TextFieldInput
+                          id={`ucp-field-${field.key}`}
+                          placeholder={field.placeholder}
+                          className="text-sm"
+                        />
+                      </TextField>
                     </div>
                   );
                 })}
               </div>
-              <div className="flex items-center gap-2 border-accent-foreground border-t px-4 py-3">
+              <div className="flex flex-wrap items-center gap-2 border-accent-foreground border-t px-4 py-3">
+                <Button
+                  variant="outline"
+                  color="accent"
+                  onClick={handleGenerateJson}
+                  disabled={isGeneratingJson}
+                >
+                  <CircleBoltIcon className="size-4 text-primary" />
+                  {isGeneratingJson ? "Generating…" : "Generate with AI"}
+                </Button>
                 <Button
                   color="primary"
                   onClick={handleSave}
                   disabled={isSaving}
-                  className="px-4 py-1.5 text-xs"
                 >
-                  {isSaving ? "Saving..." : "Save"}
-                </Button>
-                <Button
-                  color="neutral"
-                  onClick={handleGenerateJson}
-                  disabled={isGeneratingJson}
-                  className="px-4 py-1.5 text-foreground-dimmed text-xs"
-                >
-                  {isGeneratingJson ? "Generating..." : "Generate with AI"}
+                  {isSaving ? "Saving…" : "Save"}
                 </Button>
                 {targetStore && (
                   <Button
-                    color="primary"
+                    color="success"
                     onClick={handlePublishProfile}
                     disabled={isPublishingProfile}
-                    className="px-4 py-1.5 text-xs"
                   >
                     {isPublishingProfile
-                      ? "Pushing..."
+                      ? "Pushing…"
                       : `Push to ${targetStore.name}`}
                   </Button>
                 )}
                 {generation && (
                   <Button
-                    color="neutral"
+                    variant="ghost"
+                    color="accent"
                     onClick={() => setGeneration(null)}
-                    className="ml-auto px-3 py-1.5 text-foreground-dimmed text-xs"
+                    className="ml-auto"
                   >
                     Reset
                   </Button>
@@ -635,25 +669,32 @@ export const UcpManager = ({
               </div>
             </div>
 
-            {/* Right column */}
-            <div className="flex flex-col gap-4">
+            {/* Preview + install sit as a 2-up row below the full-width form. */}
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               {/* JSON Preview */}
               <div className="overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
-                <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-2.5">
-                  <div className="flex items-center gap-2">
-                    <p className="font-medium text-base text-foreground">
-                      JSON Preview
+                <div className="flex items-start justify-between gap-3 px-4 py-2.5">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium text-base text-foreground">
+                        JSON Preview
+                      </p>
+                      {generation && (
+                        <span className="rounded-full bg-primary/10 px-2 py-0.5 font-semibold text-[11px] text-primary">
+                          AI-enhanced
+                        </span>
+                      )}
+                    </div>
+                    <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
+                      Live preview of your{" "}
+                      <span className="font-mono">/.well-known/ucp</span>{" "}
+                      document.
                     </p>
-                    {generation && (
-                      <span className="rounded-full bg-primary/10 px-2 py-0.5 font-semibold text-[11px] text-primary">
-                        AI-enhanced
-                      </span>
-                    )}
                   </div>
                   <button
                     type="button"
                     onClick={handleCopy}
-                    className="flex items-center gap-1 rounded px-2 py-1 font-medium text-foreground-dimmed text-xs transition-colors hover:bg-accent-foreground hover:text-foreground"
+                    className="flex shrink-0 items-center gap-1 rounded px-2 py-1 font-medium text-foreground-dimmed text-xs transition-colors hover:bg-accent-foreground hover:text-foreground"
                   >
                     {copied ? (
                       <>
@@ -668,14 +709,14 @@ export const UcpManager = ({
                     )}
                   </button>
                 </div>
-                <pre className="max-h-72 overflow-auto p-4 font-mono text-xs leading-relaxed">
+                <pre className="max-h-72 overflow-auto border-accent-foreground border-t p-4 font-mono text-xs leading-relaxed">
                   <JsonCode json={result} />
                 </pre>
               </div>
 
-              {/* Install instructions */}
+              {/* Install instructions — always visible. */}
               <div className="overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
-                <div className="border-accent-foreground border-b px-4 py-2.5">
+                <div className="px-4 py-2.5">
                   <p className="font-medium text-base text-foreground">
                     Install
                   </p>
@@ -685,7 +726,7 @@ export const UcpManager = ({
                     agents can discover your merchant profile.
                   </p>
                 </div>
-                <pre className="p-4 font-mono text-xs leading-relaxed">
+                <pre className="border-accent-foreground border-t p-4 font-mono text-xs leading-relaxed">
                   <span className="text-foreground-dimmed/50">
                     {"// Next.js — app/.well-known/ucp/route.ts\n"}
                   </span>

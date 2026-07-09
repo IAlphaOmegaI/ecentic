@@ -13,6 +13,7 @@ import {
   AvatarImage,
 } from "@zenncore/web/components/avatar";
 import { Button } from "@zenncore/web/components/button";
+import { ScrollArea } from "@zenncore/web/components/scroll-area";
 import {
   Table,
   TableBody,
@@ -160,26 +161,27 @@ export const ProductSelector = ({
       </Motion.Item>
 
       <Motion.Item className="flex-1 overflow-hidden border-accent-foreground border-y px-8">
-        <div className="relative h-full overflow-auto border-accent-foreground border-x">
+        <div className="relative h-full border-accent-foreground border-x">
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <div className="bg-background-rich">
-            {/* overflow-visible stops the <table> from becoming its own scroll
-                container, so the sticky header anchors to the outer
-                overflow-auto scroller instead. */}
-            <Table className="overflow-visible">
-              {/* Border via inset box-shadow on the cells (not `border-b`): with
+          <ScrollArea className="h-full">
+            <div className="bg-background-rich">
+              {/* overflow-visible stops the <table> from becoming its own scroll
+                container, so the sticky header anchors to the ScrollArea
+                viewport instead. */}
+              <Table className="overflow-visible">
+                {/* Border via inset box-shadow on the cells (not `border-b`): with
                   border-collapse, a collapsed thead border scrolls away with the
                   body, whereas a cell box-shadow stays pinned to the sticky
                   header. Background also lives on the cells so rows never show
                   through the forced-transparent header row. */}
-              <TableHeader className="sticky top-0 z-10 [&_th]:bg-background-rich [&_th]:shadow-[inset_0_-1px_0_0_var(--color-accent-foreground)]">
-                <TableRow className="border-b-0">
-                  {/* Empty placeholder keeps the checkbox column aligned with
+                <TableHeader className="sticky top-0 z-10 [&_th]:bg-background-rich [&_th]:shadow-[inset_0_-1px_0_0_var(--color-accent-foreground)]">
+                  <TableRow className="border-b-0">
+                    {/* Empty placeholder keeps the checkbox column aligned with
                       the per-row selection cells now that the select-all toggle
                       is removed. */}
-                  <TableHead className="w-10 px-4 py-2">
-                    {/* <button
+                    <TableHead className="w-10 px-4 py-2">
+                      {/* <button
                       type="button"
                       onClick={toggleAll}
                       className={cn(
@@ -198,118 +200,119 @@ export const ProductSelector = ({
                         )}
                       />
                     </button> */}
-                  </TableHead>
-                  {["Product", "Price", "Currency", "Status", "Quality"].map(
-                    (header) => (
-                      <TableHead key={header}>{header}</TableHead>
-                    ),
-                  )}
-                </TableRow>
-              </TableHeader>
-              <TableBody
-                render={
-                  <motion.tbody
-                    variants={Stagger.Container(0.04)}
-                    initial="hidden"
-                    animate="visible"
-                  />
-                }
-              >
-                {products.map((product) => {
-                  const isSelected = selected.has(product.id);
-                  const isDisabled = !isSelected && selected.size >= limit;
-                  const images = parseImages(product.images);
-                  const quality = computeDataQuality(product);
+                    </TableHead>
+                    {["Product", "Price", "Currency", "Status", "Quality"].map(
+                      (header) => (
+                        <TableHead key={header}>{header}</TableHead>
+                      ),
+                    )}
+                  </TableRow>
+                </TableHeader>
+                <TableBody
+                  render={
+                    <motion.tbody
+                      variants={Stagger.Container(0.04)}
+                      initial="hidden"
+                      animate="visible"
+                    />
+                  }
+                >
+                  {products.map((product) => {
+                    const isSelected = selected.has(product.id);
+                    const isDisabled = !isSelected && selected.size >= limit;
+                    const images = parseImages(product.images);
+                    const quality = computeDataQuality(product);
 
-                  return (
-                    <TableRow
-                      key={product.id}
-                      render={<motion.tr variants={TableAnimations.Row} />}
-                      onClick={() => !isDisabled && toggleProduct(product.id)}
-                      className={cn(
-                        "cursor-pointer last:border-b-0",
-                        isSelected
-                          ? "bg-primary/5"
-                          : isDisabled
-                            ? "cursor-not-allowed opacity-40"
-                            : "hover:bg-background-dimmed/50",
-                      )}
-                    >
-                      <TableCell className="w-10">
-                        <div
-                          className={cn(
-                            "flex size-4 items-center justify-center border transition-colors duration-150",
-                            isSelected
-                              ? "border-primary bg-primary"
-                              : "border-accent-foreground bg-background-rich",
-                          )}
-                        >
-                          <CheckIcon
+                    return (
+                      <TableRow
+                        key={product.id}
+                        render={<motion.tr variants={TableAnimations.Row} />}
+                        onClick={() => !isDisabled && toggleProduct(product.id)}
+                        className={cn(
+                          "cursor-pointer last:border-b-0",
+                          isSelected
+                            ? "bg-primary/5"
+                            : isDisabled
+                              ? "cursor-not-allowed opacity-40"
+                              : "hover:bg-background-dimmed/50",
+                        )}
+                      >
+                        <TableCell className="w-10">
+                          <div
                             className={cn(
-                              "size-2.5 text-white transition-opacity duration-150",
-                              isSelected ? "opacity-100" : "opacity-0",
+                              "flex size-4 items-center justify-center border transition-colors duration-150",
+                              isSelected
+                                ? "border-primary bg-primary"
+                                : "border-accent-foreground bg-background-rich",
                             )}
-                          />
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <Avatar className="size-9 min-w-9 rounded-none bg-primary/10">
-                            <AvatarImage
-                              src={images[0] ?? "/images/fallback.png"}
-                              alt={product.title}
+                          >
+                            <CheckIcon
+                              className={cn(
+                                "size-2.5 text-white transition-opacity duration-150",
+                                isSelected ? "opacity-100" : "opacity-0",
+                              )}
                             />
-                            <AvatarFallback className="relative">
-                              <Image
-                                src="/images/fallback.png"
-                                alt="Fallback"
-                                fill
-                              />
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <p className="font-medium text-foreground text-sm">
-                              {product.title}
-                            </p>
-                            {product.sku && (
-                              <p className="text-foreground-dimmed text-xs">
-                                {product.sku}
-                              </p>
-                            )}
                           </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {product.price
-                          ? normalizePrice(product.price)
-                          : "\u2014"}
-                      </TableCell>
-                      <TableCell className="text-foreground-dimmed">
-                        {product.currency
-                          ? getCurrencySymbol(product.currency)
-                          : "\u2014"}
-                      </TableCell>
-                      <TableCell>
-                        <span
-                          className={cn(
-                            "px-1.5 py-0.5 font-medium text-xs",
-                            product.status === "active"
-                              ? "bg-success/10 text-success"
-                              : "bg-foreground-dimmed/10 text-foreground-dimmed",
-                          )}
-                        >
-                          {product.status === "active" ? "Active" : "Draft"}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <QualityBadge score={quality} />
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <Avatar className="size-9 min-w-9 rounded-none bg-primary/10">
+                              <AvatarImage
+                                src={images[0] ?? "/images/fallback.png"}
+                                alt={product.title}
+                              />
+                              <AvatarFallback className="relative">
+                                <Image
+                                  src="/images/fallback.png"
+                                  alt="Fallback"
+                                  fill
+                                />
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <p className="font-medium text-foreground text-sm">
+                                {product.title}
+                              </p>
+                              {product.sku && (
+                                <p className="text-foreground-dimmed text-xs">
+                                  {product.sku}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {product.price
+                            ? normalizePrice(product.price)
+                            : "\u2014"}
+                        </TableCell>
+                        <TableCell className="text-foreground-dimmed">
+                          {product.currency
+                            ? getCurrencySymbol(product.currency)
+                            : "\u2014"}
+                        </TableCell>
+                        <TableCell>
+                          <span
+                            className={cn(
+                              "px-1.5 py-0.5 font-medium text-xs",
+                              product.status === "active"
+                                ? "bg-success/10 text-success"
+                                : "bg-foreground-dimmed/10 text-foreground-dimmed",
+                            )}
+                          >
+                            {product.status === "active" ? "Active" : "Draft"}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          <QualityBadge score={quality} />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+          </ScrollArea>
         </div>
       </Motion.Item>
 

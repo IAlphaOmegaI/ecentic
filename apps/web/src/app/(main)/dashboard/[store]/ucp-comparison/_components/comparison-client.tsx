@@ -18,7 +18,10 @@ import {
   runStoreComparison,
   type StoreDiscovery,
 } from "@/server/app/intelligence/product-comparison";
-import type { productSchema } from "@/server/app/intelligence/ucp/advanced-validator";
+import type {
+  priceSchema,
+  productSchema,
+} from "@/server/app/intelligence/ucp/advanced-validator";
 import { StatusPill } from "../../../_components/grid";
 
 type ComparisonLine =
@@ -49,12 +52,23 @@ const summarise = (value: unknown, maxLen = 120): string => {
   return `${raw.slice(0, maxLen)}…`;
 };
 
-const productPrice = (product: z.infer<typeof productSchema>) => {
-  if (product.variants.length > 0) {
-    return product.variants[0]?.price.amount;
-  }
+// UCP money amounts are ISO 4217 minor units (e.g. 24750 = $247.50).
+const formatMoney = (money: z.infer<typeof priceSchema>): string => {
+  const value = money.amount / 100;
 
-  return product.price_range.min;
+  try {
+    return new Intl.NumberFormat(undefined, {
+      style: "currency",
+      currency: money.currency,
+    }).format(value);
+  } catch {
+    return `${value.toFixed(2)} ${money.currency}`;
+  }
+};
+
+const productPrice = (product: z.infer<typeof productSchema>): string => {
+  const money = product.variants[0]?.price ?? product.price_range.min;
+  return formatMoney(money);
 };
 
 const flushText = (
@@ -74,106 +88,141 @@ const flushText = (
   });
 };
 
-const StoreCard = ({ store }: { store: StoreState }) => (
-  <div
-    className={cn(
-      "rounded-lg border bg-background-rich",
-      store.role === "source"
-        ? "border-primary/40"
-        : "border-accent-foreground",
-    )}
-  >
-    <div className="border-accent-foreground border-b px-4 py-3">
-      <div className="flex flex-wrap items-center gap-3">
+// Renders the derived search params as readable chips (query / price / …)
+// instead of a raw JSON wall; nested/object values fall through to the
+// collapsed "Raw JSON" disclosure.
+const ParamChips = ({ params }: { params: unknown }) => {
+  if (typeof params !== "object" || params === null) return null;
+
+  const entries = Object.entries(params as Record<string, unknown>).filter(
+    ([, value]) => value != null && typeof value !== "object",
+  );
+
+  if (entries.length === 0) return null;
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {entries.map(([key, value]) => (
         <span
-          className={cn(
-            "rounded-full px-2 py-0.5 font-semibold text-[11px] uppercase tracking-[0.05em]",
-            store.role === "source"
-              ? "bg-primary/10 text-primary"
-              : "bg-background-dimmed text-foreground-dimmed",
-          )}
+          key={key}
+          className="inline-flex items-center gap-1.5 border border-accent-foreground bg-background px-2.5 py-1 text-xs"
         >
-          {store.role === "source" ? "Your store" : "Competitor"}
-        </span>
-        <p className="font-medium text-foreground text-sm">
-          {store.discovery?.domain ?? store.url}
-        </p>
-        {store.discovery && (
-          <span
-            className={cn(
-              "rounded-full px-2 py-0.5 font-semibold text-[11px] uppercase tracking-[0.05em]",
-              store.discovery.transport === "mcp"
-                ? "bg-primary/10 text-primary"
-                : "bg-warning/10 text-warning",
-            )}
-          >
-            {store.discovery.transport}
+          <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.06em]">
+            {key}
           </span>
-        )}
-        <StatusPill
-          tone={(() => {
-            switch (true) {
-              case store.status === "done":
-                return "success";
-              case store.status === "error":
-                return "error";
-              case store.status === "discovering" ||
-                store.status === "searching":
-                return "primary";
-              default:
-                return "neutral";
-            }
-          })()}
-        >
-          {store.status}
-        </StatusPill>
-      </div>
-      {store.discovery?.endpoint && (
-        <p className="mt-1 font-mono text-foreground-dimmed text-xs">
-          {store.discovery.endpoint}
-        </p>
-      )}
+          <span className="font-medium text-foreground tabular-nums">
+            {String(value)}
+          </span>
+        </span>
+      ))}
     </div>
+  );
+};
 
-    <div className="p-4">
-      {store.error && (
-        <p className="font-mono text-error text-xs">{store.error}</p>
-      )}
+const storeStatusConfig: Record<
+  StoreState["status"],
+  { tone: "success" | "error" | "primary" | "neutral"; label: string }
+> = {
+  idle: { tone: "neutral", label: "Queued" },
+  discovering: { tone: "primary", label: "Resolving profile" },
+  searching: { tone: "primary", label: "Searching" },
+  done: { tone: "success", label: "Done" },
+  error: { tone: "error", label: "Error" },
+};
 
-      {!store.error &&
-        store.products.length === 0 &&
-        store.status === "done" && (
-          <p className="font-light text-foreground-dimmed text-xs">
-            No products returned for this search.
+// One column in the side-by-side gap-px grid — the source store leads with a
+// primary-tinted header so "your" column reads at a glance.
+const StoreCard = ({ store }: { store: StoreState }) => {
+  const isLoading =
+    store.status === "discovering" || store.status === "searching";
+  const shownProducts = store.products.slice(0, 8);
+
+  return (
+    <div className="flex flex-col bg-background-rich">
+      <div
+        className={cn(
+          "border-accent-foreground border-b px-4 py-3",
+          store.role === "source" ? "bg-primary/5" : "bg-background-dimmed",
+        )}
+      >
+        <div className="flex flex-wrap items-center gap-2">
+          <StatusPill tone={store.role === "source" ? "primary" : "neutral"}>
+            {store.role === "source" ? "Your store" : "Competitor"}
+          </StatusPill>
+          <p className="min-w-0 flex-1 truncate font-medium text-foreground text-sm">
+            {store.discovery?.domain ?? store.url}
+          </p>
+          {store.discovery && (
+            <StatusPill
+              tone={store.discovery.transport === "mcp" ? "primary" : "warning"}
+            >
+              {store.discovery.transport}
+            </StatusPill>
+          )}
+          <StatusPill tone={storeStatusConfig[store.status].tone}>
+            {storeStatusConfig[store.status].label}
+          </StatusPill>
+        </div>
+        {store.discovery?.endpoint && (
+          <p className="mt-1 truncate font-mono text-foreground-dimmed text-xs">
+            {store.discovery.endpoint}
+          </p>
+        )}
+      </div>
+
+      <div className="flex-1">
+        {store.error && (
+          <p className="px-4 py-4 font-mono text-error text-xs">
+            {store.error}
           </p>
         )}
 
-      {store.products.length > 0 && (
-        <ul className="space-y-2">
-          {store.products.slice(0, 8).map((product) => (
-            <li
-              key={product.id}
-              className="border-accent-foreground/40 border-b pb-2 last:border-0 last:pb-0"
-            >
-              <p className="font-medium text-foreground text-sm">
-                {product.title}
-              </p>
-              {productPrice(product) && (
-                <p className="mt-0.5 font-mono text-foreground-dimmed text-xs">
-                  {productPrice(product)}
-                </p>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
+        {!store.error &&
+          store.products.length === 0 &&
+          store.status === "done" && (
+            <p className="px-4 py-4 font-light text-foreground-dimmed text-sm">
+              No products returned for this search.
+            </p>
+          )}
 
-      {(store.status === "discovering" || store.status === "searching") && (
-        <span className="inline-block h-3 w-1.5 animate-pulse bg-primary/60" />
-      )}
+        {shownProducts.length > 0 && (
+          <ul className="divide-y divide-accent-foreground">
+            {shownProducts.map((product, index) => (
+              <li
+                key={product.id}
+                className="flex items-baseline gap-3 px-4 py-2.5"
+              >
+                <span className="w-5 shrink-0 font-mono text-[11px] text-foreground-dimmed tabular-nums">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <p className="min-w-0 flex-1 truncate font-medium text-foreground text-sm">
+                  {product.title}
+                </p>
+                <span className="shrink-0 font-mono text-foreground-dimmed text-xs tabular-nums">
+                  {productPrice(product)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {store.products.length > 8 && (
+          <p className="border-accent-foreground border-t px-4 py-2 text-[11px] text-foreground-dimmed">
+            +{store.products.length - 8} more returned but not shown.
+          </p>
+        )}
+
+        {isLoading && (
+          <div className="space-y-2 px-4 py-4">
+            <div className="h-3 w-3/4 animate-pulse bg-accent-foreground/40" />
+            <div className="h-3 w-1/2 animate-pulse bg-accent-foreground/30" />
+            <div className="h-3 w-2/3 animate-pulse bg-accent-foreground/20" />
+          </div>
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 type CompetitorInput = {
   id: string;
@@ -376,171 +425,195 @@ export const ComparisonClient = () => {
     .map((line) => line.text)
     .join("");
 
-  const sourceStore = stores.find((store) => store.role === "source");
-  const competitorStores = stores.filter(
-    (store) => store.role === "competitor",
-  );
-
   return (
-    <div className="space-y-4">
-      <div className="rounded-lg border border-accent-foreground bg-background-rich">
-        <div className="border-accent-foreground border-b px-4 py-3">
-          <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-            Your store
-          </p>
-          <p className="mt-1.5 text-foreground-dimmed text-sm">
-            The merchant catalog you want to evaluate against competitors.
-          </p>
-        </div>
-        <div className="px-4 py-3">
-          <TextField
-            value={sourceStoreUrl}
-            onValueChange={setSourceStoreUrl}
-            className="h-9 border-primary/30 bg-background-dimmed"
-          >
-            <TextFieldInput
-              placeholder="https://your-store.example.com"
-              className="px-3 font-mono text-sm"
-            />
-          </TextField>
-        </div>
-      </div>
+    <div className="flex flex-col">
+      {/* Setup — inputs left, competitor list right, like the validator header */}
+      <div className="grid lg:grid-cols-2">
+        <div className="flex flex-col gap-6 px-6 py-6 sm:px-8 sm:py-8">
+          <div>
+            <label
+              htmlFor="comparison-source"
+              className="block font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
+            >
+              Your store
+            </label>
+            <TextField
+              value={sourceStoreUrl}
+              onValueChange={setSourceStoreUrl}
+              className="mt-2"
+            >
+              <TextFieldInput
+                id="comparison-source"
+                placeholder="your-store.example.com"
+                className="font-mono"
+              />
+            </TextField>
+            <p className="mt-2 font-light text-foreground-dimmed text-sm">
+              The merchant catalog you want to evaluate against competitors.
+            </p>
+          </div>
 
-      <div className="rounded-lg border border-accent-foreground bg-background-rich">
-        <div className="border-accent-foreground border-b px-4 py-3">
-          <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-            Competitor stores
-          </p>
-          <p className="mt-1.5 text-foreground-dimmed text-sm">
-            Add one or more competitor domains. Each{" "}
-            <span className="font-mono">/.well-known/ucp</span> profile is
+          <div>
+            <label
+              htmlFor="comparison-query"
+              className="block font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
+            >
+              Buyer request
+            </label>
+            <TextField value={query} onValueChange={setQuery} className="mt-2">
+              <TextFieldInput
+                id="comparison-query"
+                placeholder='e.g. "wireless mouse under 200 ALL"'
+              />
+            </TextField>
+            <p className="mt-2 font-light text-foreground-dimmed text-sm">
+              Parsed once into search parameters, then run identically against
+              every store.
+            </p>
+          </div>
+        </div>
+
+        <div className="border-accent-foreground border-t px-6 py-6 sm:px-8 sm:py-8 lg:border-t-0 lg:border-l">
+          <div className="flex items-center justify-between">
+            <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+              Competitor stores
+            </span>
+            <span className="font-mono text-[11px] text-foreground-dimmed tabular-nums">
+              {validCompetitorCount}/5
+            </span>
+          </div>
+
+          <div className="mt-2 space-y-2">
+            {competitorInputs.map((input, index) => (
+              <div key={input.id} className="flex items-stretch gap-2">
+                <TextField
+                  value={input.url}
+                  onValueChange={(value) =>
+                    updateCompetitorUrl(input.id, value)
+                  }
+                  className="flex-1"
+                >
+                  <TextFieldInput
+                    placeholder={`competitor-${index + 1}.example.com`}
+                    className="font-mono"
+                  />
+                </TextField>
+                <Button
+                  variant="outline"
+                  color="accent"
+                  size="icon"
+                  onClick={() => removeCompetitor(input.id)}
+                  disabled={competitorInputs.length <= 1 || isRunning}
+                  className="h-auto shrink-0"
+                  aria-label={`Remove competitor ${index + 1}`}
+                >
+                  <XCircleIcon className="size-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
+
+          <Button
+            variant="outline"
+            color="accent"
+            onClick={addCompetitor}
+            disabled={isRunning || competitorInputs.length >= 5}
+            className="mt-2 w-full"
+          >
+            <PlusIcon className="size-4" />
+            Add competitor
+          </Button>
+          <p className="mt-2 font-light text-foreground-dimmed text-sm">
+            Each <span className="font-mono">/.well-known/ucp</span> profile is
             resolved, then <span className="font-mono">search_catalog</span>{" "}
             runs with the same derived parameters as your store.
           </p>
         </div>
+      </div>
 
-        <div className="space-y-2 px-4 py-3">
-          {competitorInputs.map((input, index) => (
-            <div
-              key={input.id}
-              className="flex flex-col gap-2 sm:flex-row sm:items-center"
-            >
-              <TextField
-                value={input.url}
-                onValueChange={(value) => updateCompetitorUrl(input.id, value)}
-                className="h-8 flex-1 border border-accent-foreground bg-background-dimmed"
-              >
-                <TextFieldInput
-                  placeholder={`https://competitor-${index + 1}.example.com`}
-                  className="px-3 font-mono text-sm"
-                />
-              </TextField>
-              <Button
-                color="neutral"
-                onClick={() => removeCompetitor(input.id)}
-                disabled={competitorInputs.length <= 1 || isRunning}
-                className="shrink-0 px-3 py-1.5 text-sm"
-              >
-                <XCircleIcon className="size-4" />
-              </Button>
-            </div>
-          ))}
-
-          <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center">
-            <Button
-              color="neutral"
-              onClick={addCompetitor}
-              disabled={isRunning || competitorInputs.length >= 5}
-              className="shrink-0 px-4 py-1.5 text-sm"
-            >
-              <PlusIcon className="size-4" />
-              Add competitor
-            </Button>
-
-            <TextField
-              value={query}
-              onValueChange={setQuery}
-              className="h-8 flex-1 border border-accent-foreground bg-background-dimmed"
-            >
-              <TextFieldInput
-                placeholder='Buyer request (e.g. "wireless mouse under 200 ALL")'
-                className="px-3 text-sm"
-              />
-            </TextField>
-
-            <Button
-              color="primary"
-              onClick={handleRun}
-              disabled={isRunning || !canCompare}
-              className="shrink-0 px-5 py-1.5 text-sm"
-            >
-              {isRunning ? (
-                <span className="flex items-center gap-2">
-                  <span className="inline-block size-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                  Comparing…
-                </span>
-              ) : (
-                "Compare"
-              )}
-            </Button>
-          </div>
-        </div>
+      {/* Action bar */}
+      <div className="flex flex-col gap-3 border-accent-foreground border-t px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+        <p className="font-light text-foreground-dimmed text-sm">
+          {canCompare
+            ? `One shared agent search across ${validCompetitorCount + 1} stores.`
+            : "Add your store and at least one competitor to run a comparison."}
+        </p>
+        <Button
+          color="primary"
+          onClick={handleRun}
+          disabled={isRunning || !canCompare}
+          className="w-full shrink-0 sm:w-auto"
+        >
+          {isRunning ? (
+            <span className="flex items-center gap-2">
+              <span className="inline-block size-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
+              Comparing…
+            </span>
+          ) : (
+            "Compare stores"
+          )}
+        </Button>
       </div>
 
       {searchParams !== null && (
-        <div className="rounded-lg border border-accent-foreground bg-background-rich">
-          <div className="border-accent-foreground border-b px-4 py-3">
+        <div className="border-accent-foreground border-t">
+          <div className="border-accent-foreground border-b bg-background-dimmed px-6 py-3 sm:px-8">
             <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-              Derived Search Parameters
+              Derived search parameters
             </p>
-            <p className="mt-1.5 text-foreground-dimmed text-sm">
+            <p className="mt-1 font-light text-foreground-dimmed text-xs">
               Parsed once from the buyer request and applied to every store.
             </p>
           </div>
-          <pre className="m-4 overflow-auto rounded-md bg-background-dimmed p-4 font-mono text-foreground text-xs leading-relaxed">
-            {JSON.stringify(searchParams, null, 2)}
-          </pre>
+          <div className="space-y-3 px-6 py-4 sm:px-8">
+            <ParamChips params={searchParams} />
+            <details className="group">
+              <summary className="w-fit cursor-pointer list-none font-medium text-foreground-dimmed text-xs hover:text-foreground [&::-webkit-details-marker]:hidden">
+                <span className="group-open:hidden">Show raw JSON</span>
+                <span className="hidden group-open:inline">Hide raw JSON</span>
+              </summary>
+              <pre className="mt-2 overflow-auto border border-accent-foreground bg-background-dimmed p-4 font-mono text-foreground text-xs leading-relaxed">
+                {JSON.stringify(searchParams, null, 2)}
+              </pre>
+            </details>
+          </div>
         </div>
       )}
 
+      {/* Side-by-side results — one gap-px grid, your store first */}
       {stores.length > 0 && (
-        <div className="space-y-4">
-          {sourceStore && (
-            <div>
-              <p className="mb-2 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-                Your store results
-              </p>
-              <StoreCard store={sourceStore} />
-            </div>
-          )}
-          {competitorStores.length > 0 && (
-            <div>
-              <p className="mb-2 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-                Competitor results
-              </p>
-              <div className="grid gap-4 lg:grid-cols-2">
-                {competitorStores.map((store) => (
-                  <StoreCard key={store.url} store={store} />
-                ))}
-              </div>
-            </div>
-          )}
+        <div className="border-accent-foreground border-t">
+          <div className="border-accent-foreground border-b bg-background-dimmed px-6 py-3 sm:px-8">
+            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+              Side-by-side results
+            </p>
+            <p className="mt-1 font-light text-foreground-dimmed text-xs">
+              Products each storefront returned for the same search, in the
+              order the agent received them.
+            </p>
+          </div>
+          <div className="grid gap-px bg-accent-foreground md:grid-cols-2">
+            {stores.map((store) => (
+              <StoreCard key={store.url} store={store} />
+            ))}
+            {stores.length % 2 === 1 && (
+              <div className="hidden bg-grid-stripes opacity-60 md:block" />
+            )}
+          </div>
         </div>
       )}
 
       {(summaryText || phase === "running") && (
-        <div className="rounded-lg border border-accent-foreground bg-background-rich">
-          <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
-            <div className="flex items-center gap-3">
-              <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-                Comparison Summary
-              </p>
-              {phase === "running" && !summaryText && (
-                <StatusPill tone="primary">Generating</StatusPill>
-              )}
-            </div>
+        <div className="border-accent-foreground border-t">
+          <div className="flex flex-wrap items-center gap-3 border-accent-foreground border-b bg-background-dimmed px-6 py-3 sm:px-8">
+            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+              Comparison summary
+            </p>
+            {phase === "running" && !summaryText && (
+              <StatusPill tone="primary">Generating</StatusPill>
+            )}
           </div>
-          <div className="m-4 rounded-md bg-background-dimmed p-4 font-mono text-foreground text-xs leading-relaxed">
+          <div className="max-w-3xl whitespace-pre-wrap px-6 py-5 text-foreground text-sm leading-relaxed sm:px-8">
             {summaryText || (
               <span className="inline-block h-3 w-1.5 animate-pulse bg-primary/60" />
             )}
@@ -548,47 +621,50 @@ export const ComparisonClient = () => {
         </div>
       )}
 
-      <div className="rounded-lg border border-accent-foreground bg-background-rich">
-        <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
-          <div className="flex items-center gap-3">
-            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-              Event Log
-            </p>
-            {phase === "running" && (
-              <StatusPill tone="primary">Live</StatusPill>
-            )}
-            {phase === "done" && <StatusPill tone="success">Done</StatusPill>}
-            {phase === "error" && <StatusPill tone="error">Error</StatusPill>}
-          </div>
-          {lines.length > 0 && (
-            <button
-              type="button"
-              onClick={() => {
-                setLines([]);
-                setStores([]);
-                setSearchParams(null);
-                setPhase("idle");
-              }}
-              className="font-medium text-foreground-dimmed text-xs hover:text-foreground"
-            >
-              Clear
-            </button>
-          )}
-        </div>
-
-        <div
-          ref={logRef}
-          className="m-4 max-h-80 min-h-40 overflow-y-auto rounded-md bg-background-dimmed p-4 font-mono text-xs"
+      {/* The event log re-narrates what the StoreCards already show, so it
+          stays hidden until a run starts, collapses by default, and only
+          auto-opens while a run streams. */}
+      {(lines.length > 0 || phase !== "idle") && (
+        <details
+          open={phase === "running"}
+          className="group border-accent-foreground border-t"
         >
-          {lines.length === 0 ? (
-            <p className="font-light text-foreground-dimmed/50 text-xs">
-              Add your store and at least one competitor, then press{" "}
-              <span className="font-medium text-foreground-dimmed">
-                Compare
-              </span>{" "}
-              to fetch UCP profiles and search each catalog.
-            </p>
-          ) : (
+          <summary className="flex cursor-pointer list-none items-center justify-between bg-background-dimmed px-6 py-3 sm:px-8 [&::-webkit-details-marker]:hidden">
+            <div className="flex items-center gap-3">
+              <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+                Event Log
+              </p>
+              {phase === "running" && (
+                <StatusPill tone="primary">Live</StatusPill>
+              )}
+              {phase === "done" && <StatusPill tone="success">Done</StatusPill>}
+              {phase === "error" && <StatusPill tone="error">Error</StatusPill>}
+              <span className="text-foreground-dimmed text-xs tabular-nums">
+                {lines.length} {lines.length === 1 ? "event" : "events"}
+              </span>
+            </div>
+            {lines.length > 0 && (
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  setLines([]);
+                  setStores([]);
+                  setSearchParams(null);
+                  setPhase("idle");
+                }}
+                className="font-medium text-foreground-dimmed text-xs hover:text-foreground"
+              >
+                Clear
+              </button>
+            )}
+          </summary>
+
+          <div
+            ref={logRef}
+            className="max-h-80 min-h-40 overflow-y-auto border-accent-foreground border-t px-6 py-4 font-mono text-xs sm:px-8"
+          >
             <div className="space-y-1.5 text-xs">
               {lines.map((line) => {
                 const lineKey = (() => {
@@ -670,9 +746,9 @@ export const ComparisonClient = () => {
                 }
               })}
             </div>
-          )}
-        </div>
-      </div>
+          </div>
+        </details>
+      )}
     </div>
   );
 };

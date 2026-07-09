@@ -1,5 +1,6 @@
 import {
   ArrowRightIcon,
+  CopyIcon,
   GaugeIcon,
   PlusIcon,
   RadarIcon,
@@ -122,11 +123,31 @@ const Stores = async () => {
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="grid grid-cols-2 gap-px border border-accent-foreground bg-accent-foreground lg:grid-cols-4">
-        <Aggregate label="Stores" value={`${stores.length}`} />
-        <Aggregate label="Products" value={`${totals.products}`} />
-        <Aggregate label="Avg Win Rate" value={`${averageWinRate}%`} />
-        <Aggregate label="Agent Visits · 30d" value={`${totals.agentVisits}`} />
+      <div className="relative grid grid-cols-2 gap-px border border-accent-foreground bg-accent-foreground lg:grid-cols-4">
+        <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+        <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+        <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+        <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+        <Aggregate
+          icon={<ShoppingCartIcon className="size-4 text-secondary" />}
+          label="Stores"
+          value={`${stores.length}`}
+        />
+        <Aggregate
+          icon={<CopyIcon className="size-4 text-warning" />}
+          label="Products"
+          value={`${totals.products}`}
+        />
+        <Aggregate
+          icon={<GaugeIcon className="size-4 text-primary" />}
+          label="Avg Win Rate"
+          value={`${averageWinRate}%`}
+        />
+        <Aggregate
+          icon={<RadarIcon className="size-4 text-success" />}
+          label="Agent Visits · 30d"
+          value={`${totals.agentVisits}`}
+        />
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -138,11 +159,24 @@ const Stores = async () => {
   );
 };
 
-const Aggregate = ({ label, value }: { label: string; value: string }) => (
+// Mirrors <Metric> below (icon + uppercase label, then value) so the aggregate
+// row and the per-store metrics read as one system.
+const Aggregate = ({
+  icon,
+  label,
+  value,
+}: {
+  icon: ReactNode;
+  label: string;
+  value: string;
+}) => (
   <div className="bg-background-rich p-5">
-    <p className="font-medium text-[11px] text-foreground-dimmed uppercase tracking-[0.1em]">
-      {label}
-    </p>
+    <div className="flex items-center gap-1.5 text-foreground-dimmed">
+      {icon}
+      <p className="font-medium text-[10px] uppercase tracking-[0.08em]">
+        {label}
+      </p>
+    </div>
     <p className="mt-2 font-bold text-3xl text-foreground-rich tabular-nums tracking-[-0.02em]">
       {value}
     </p>
@@ -155,6 +189,8 @@ const StoreCard = ({ store }: { store: Store.Overview }) => (
     className="group relative flex flex-col border border-accent-foreground bg-background-rich transition-colors hover:border-primary/40"
   >
     <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+    <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+    <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
     <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
 
     <div className="flex items-start justify-between gap-3 border-accent-foreground border-b p-5">
@@ -183,7 +219,7 @@ const StoreCard = ({ store }: { store: Store.Overview }) => (
         value={`${store.winRate}%`}
       />
       <Metric
-        icon={<ShoppingCartIcon className="size-4 text-warning" />}
+        icon={<CopyIcon className="size-4 text-warning" />}
         label="Products"
         value={`${store.productCount}`}
       />
@@ -255,8 +291,11 @@ const StoresSkeleton = () => (
     <div className="grid grid-cols-2 gap-px border border-accent-foreground bg-accent-foreground lg:grid-cols-4">
       {(["a", "b", "c", "d"] as const).map((key) => (
         <div key={key} className="bg-background-rich p-5">
-          <div className="h-3 w-20 animate-pulse bg-foreground/10" />
-          <div className="mt-3 h-8 w-16 animate-pulse bg-foreground/10" />
+          <div className="flex items-center gap-1.5">
+            <div className="size-4 animate-pulse bg-foreground/10" />
+            <div className="h-3 w-20 animate-pulse bg-foreground/10" />
+          </div>
+          <div className="mt-2 h-8 w-16 animate-pulse bg-foreground/10" />
         </div>
       ))}
     </div>

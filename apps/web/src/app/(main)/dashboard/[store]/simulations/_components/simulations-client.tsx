@@ -3,6 +3,7 @@
 import {
   AwardIcon,
   BullseyeIcon,
+  ClockIcon,
   RadarIcon,
   ShoppingCartIcon,
   TrendDownIcon,
@@ -13,7 +14,7 @@ import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { AutoDetectTab } from "@/app/(auth)/onboarding/competitors/_components/auto-detect-tab";
 import { useScanRunner } from "@/app/(auth)/onboarding/scan/_components/use-scan-runner";
 import type * as Competitor from "@/server/app/competitor";
@@ -64,6 +65,33 @@ export namespace SimulationsClient {
   };
 }
 
+/**
+ * The canonical grid cell used by the Discovery band: StatLabel (icon pinned
+ * top-right) over a big tabular value + caption. Sharp, no per-cell border —
+ * the surrounding `gap-px` over `bg-accent-foreground` is the seam. design.md §3.1
+ */
+const StatCell = ({
+  label,
+  icon,
+  value,
+  caption,
+}: {
+  label: string;
+  icon: ReactNode;
+  value: string;
+  caption: string;
+}) => (
+  <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+    <StatLabel label={label} icon={icon} />
+    <div>
+      <p className="font-bold text-4xl text-foreground-rich capitalize tabular-nums tracking-[-0.02em]">
+        {value}
+      </p>
+      <p className="mt-3 text-foreground-dimmed text-xs">{caption}</p>
+    </div>
+  </div>
+);
+
 export const SimulationsClient = ({
   productIds,
   productCount,
@@ -100,6 +128,18 @@ export const SimulationsClient = ({
         type: "error",
       }),
   });
+
+  // The live log had no auto-scroll, so new lines appeared off-screen while a
+  // simulation streamed. Pin it to the bottom as entries arrive.
+  const logRef = useRef<HTMLDivElement>(null);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: new log entries drive the scroll
+  useEffect(() => {
+    const container = logRef.current;
+    if (!container) return;
+
+    container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+  }, [logs]);
 
   const totalSimulations = useMemo(
     () => productCount * selectedCompetitorCount * 3,
@@ -278,132 +318,168 @@ export const SimulationsClient = ({
           {completedData ? (
             <SimulationComplete data={completedData} />
           ) : (
-            <div className="space-y-4 p-4">
-              <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-4">
-                <div className="bg-background-rich p-3 transition-colors hover:bg-background">
+            <>
+              {/* Explicit, labeled progress bar. It used to be a bare blue seam
+                  between the bands — nobody read that as "progress". */}
+              <div className="border-accent-foreground border-b bg-background-rich px-4 py-3.5">
+                <div className="flex items-center justify-between">
                   <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-                    Phase
+                    Simulation Progress
                   </p>
-                  <p className="mt-1 font-medium text-foreground-rich capitalize">
-                    {phase}
-                  </p>
-                </div>
-                <div className="bg-background-rich p-3 transition-colors hover:bg-background">
-                  <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-                    Progress
-                  </p>
-                  <p className="mt-1 font-medium text-foreground-rich tabular-nums">
+                  <span className="font-mono font-semibold text-primary text-sm tabular-nums">
                     {stats.progress}%
-                  </p>
+                  </span>
                 </div>
-                <div className="bg-background-rich p-3 transition-colors hover:bg-background">
-                  <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-                    Wins / Losses
-                  </p>
-                  <p className="mt-1 font-medium text-foreground-rich tabular-nums">
-                    {stats.wins} / {stats.losses}
-                  </p>
-                </div>
-                <div className="bg-background-rich p-3 transition-colors hover:bg-background">
-                  <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-                    Elapsed
-                  </p>
-                  <p className="mt-1 font-medium text-foreground-rich tabular-nums">
-                    {formatElapsed(elapsed)}
-                  </p>
+                <div className="mt-2 h-1.5 w-full bg-accent-foreground">
+                  <div
+                    className="h-full bg-primary transition-[width] duration-300"
+                    style={{ width: `${stats.progress}%` }}
+                  />
                 </div>
               </div>
 
-              <div className="h-1.5 w-full rounded-full bg-accent-foreground">
-                <div
-                  className="h-full rounded-full bg-primary transition-all"
-                  style={{ width: `${stats.progress}%` }}
+              {/* Progress now lives in the labeled bar above, so the stat band
+                  is a clean 3-up (no phantom 4th cell). */}
+              <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-3">
+                <StatCell
+                  label="Phase"
+                  icon={<RadarIcon className="size-7.5 text-primary" />}
+                  value={phase}
+                  caption="current stage"
+                />
+                <StatCell
+                  label="Wins / Losses"
+                  icon={<AwardIcon className="size-7.5 text-success" />}
+                  value={`${stats.wins} / ${stats.losses}`}
+                  caption="across all models"
+                />
+                <StatCell
+                  label="Elapsed"
+                  icon={
+                    <ClockIcon className="size-7.5 text-foreground-dimmed" />
+                  }
+                  value={formatElapsed(elapsed)}
+                  caption="since start"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-px bg-accent-foreground sm:grid-cols-4">
+              {/* border-t separates the model band from the stats above (the
+                  progress seam that used to do that job moved up). */}
+              <div className="grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground sm:grid-cols-3">
                 {models.map(({ id, label, logo }) => (
                   <div
                     key={id}
-                    className="flex flex-col bg-background-rich p-3 transition-colors hover:bg-background"
+                    className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background"
                   >
-                    <Image
-                      src={logo}
-                      alt={label}
-                      width={32}
-                      height={32}
-                      className="mb-2 size-8"
-                    />
-                    <p className="font-medium text-foreground-rich text-sm">
-                      {label}
-                    </p>
-                    <div className="mt-0.5 flex items-center gap-1.5">
-                      <span className="font-medium text-success text-xs">
-                        {modelStats[label]?.wins ?? 0}W
-                      </span>
-                      <span className="text-foreground-dimmed text-xs">·</span>
-                      <span className="font-medium text-error text-xs">
-                        {modelStats[label]?.losses ?? 0}L
-                      </span>
+                    {/* Logo left, status pinned right — mirrors StatLabel's
+                        icon placement in the Discovery cells. */}
+                    <div className="flex items-start justify-between gap-2">
+                      <Image
+                        src={logo}
+                        alt={label}
+                        width={32}
+                        height={32}
+                        className="size-8"
+                      />
+                      <StatusPill
+                        tone={(() => {
+                          switch (true) {
+                            case statuses[label] === "complete":
+                              return "success";
+                            case statuses[label] === "running":
+                              return "primary";
+                            default:
+                              return "neutral";
+                          }
+                        })()}
+                      >
+                        {(() => {
+                          switch (true) {
+                            case statuses[label] === "complete":
+                              return "Done";
+                            case statuses[label] === "running":
+                              return "Running";
+                            default:
+                              return "Queued";
+                          }
+                        })()}
+                      </StatusPill>
                     </div>
-                    <StatusPill
-                      tone={(() => {
-                        switch (true) {
-                          case statuses[label] === "complete":
-                            return "success";
-                          case statuses[label] === "running":
-                            return "primary";
-                          default:
-                            return "neutral";
-                        }
-                      })()}
-                      className="mt-2 self-start"
-                    >
-                      {(() => {
-                        switch (true) {
-                          case statuses[label] === "complete":
-                            return "Done";
-                          case statuses[label] === "running":
-                            return "Running";
-                          default:
-                            return "Queued";
-                        }
-                      })()}
-                    </StatusPill>
+                    <div>
+                      <p className="font-bold text-2xl text-foreground-rich tracking-[-0.02em]">
+                        {label}
+                      </p>
+                      <div className="mt-2 flex items-center gap-1.5 tabular-nums">
+                        <span className="font-medium text-success text-xs">
+                          {modelStats[label]?.wins ?? 0}W
+                        </span>
+                        <span className="text-foreground-dimmed text-xs">
+                          ·
+                        </span>
+                        <span className="font-medium text-error text-xs">
+                          {modelStats[label]?.losses ?? 0}L
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
 
-              <div className="max-h-72 overflow-y-auto rounded-md border border-accent-foreground bg-background-dimmed p-3">
-                {logs.length === 0 ? (
-                  <p className="text-foreground-dimmed text-sm">
-                    No logs yet. Start a simulation to see live output.
+              {/* Live output is a grid cell, not a rounded bordered panel.
+                  Radius is reserved for interactive/elevated elements —
+                  grid cells stay sharp. design.md §3.1 / §6 */}
+              <div className="relative border-accent-foreground border-t">
+                <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+                <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+                <div className="flex items-center justify-between border-accent-foreground border-b bg-background-rich px-5 py-3">
+                  <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+                    Live Output
                   </p>
-                ) : (
-                  <div className="space-y-1">
-                    {logs.map((entry) => (
-                      <div
-                        key={entry.id}
-                        className="flex items-baseline gap-2 text-sm"
-                      >
-                        <span
-                          className={cn(
-                            "shrink-0 font-medium",
-                            modelColors[entry.model] ??
-                              "text-foreground-dimmed",
-                          )}
+                  <span className="font-mono text-foreground-dimmed text-xs tabular-nums">
+                    {logs.length} {logs.length === 1 ? "line" : "lines"}
+                  </span>
+                </div>
+                <div
+                  ref={logRef}
+                  className="max-h-72 overflow-y-auto scroll-smooth bg-background-rich px-5 py-4"
+                >
+                  {logs.length === 0 ? (
+                    <p className="font-mono text-foreground-dimmed text-xs">
+                      No logs yet. Start a simulation to see live output.
+                    </p>
+                  ) : (
+                    <div className="space-y-1">
+                      {logs.map((entry) => (
+                        <div
+                          key={entry.id}
+                          className="flex items-baseline gap-2 font-mono text-xs"
                         >
-                          [{entry.model}]
-                        </span>
-                        <span className="text-foreground-dimmed leading-relaxed">
-                          {entry.message}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                          {/* Fixed width so every message starts on the same
+                              column instead of a ragged left edge. */}
+                          <span
+                            className={cn(
+                              "w-16 shrink-0 font-medium",
+                              modelColors[entry.model] ??
+                                "text-foreground-dimmed",
+                            )}
+                          >
+                            [{entry.model}]
+                          </span>
+                          {/* truncate + title: one clean line each, full text on
+                              hover, instead of ragged mid-word cuts. */}
+                          <span
+                            className="min-w-0 flex-1 truncate text-foreground"
+                            title={entry.message}
+                          >
+                            {entry.message}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
+            </>
           )}
         </div>
       </div>
@@ -436,7 +512,7 @@ const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
   })();
 
   return (
-    <div className="space-y-4 p-4">
+    <>
       <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
         <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
           <StatLabel
@@ -486,42 +562,52 @@ const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
 
       <div className="h-1 w-full bg-accent-foreground" />
 
-      <div className="grid grid-cols-2 gap-px bg-accent-foreground sm:grid-cols-4">
+      {/* 3 models — see note above: a 4-col grid leaves a phantom empty cell. */}
+      <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-3">
         {models.map(({ id, label, logo }) => {
           const rates = modelRates[id];
           const rate = rates?.rate ?? 0;
           return (
             <div
               key={id}
-              className="flex flex-col bg-background-rich p-4 transition-colors hover:bg-background"
+              className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background"
             >
-              <Image
-                src={logo}
-                alt={label}
-                width={32}
-                height={32}
-                className="mb-3 size-8"
-              />
-              <p className="font-medium text-foreground-rich">{label}</p>
-              <div className="mt-0.5 flex items-center gap-2">
-                <span className="font-medium text-sm text-success">
-                  {rates?.wins ?? 0} W
-                </span>
-                <span className="text-foreground-dimmed/30 text-sm">—</span>
-                <span className="font-medium text-error text-sm">
-                  {rates?.losses ?? 0} L
+              {/* Logo left, rate right — same cell language as the running state. */}
+              <div className="flex items-start justify-between gap-2">
+                <Image
+                  src={logo}
+                  alt={label}
+                  width={32}
+                  height={32}
+                  className="size-8"
+                />
+                <span className="font-bold text-foreground-rich text-xl tabular-nums tracking-[-0.02em]">
+                  {rate}
+                  <span className="ml-0.5 font-medium text-foreground-dimmed text-sm">
+                    %
+                  </span>
                 </span>
               </div>
-              <div className="mt-2 flex items-center gap-2">
-                <div className="h-1 flex-1 rounded-full bg-accent-foreground">
+              <div>
+                <p className="font-bold text-2xl text-foreground-rich tracking-[-0.02em]">
+                  {label}
+                </p>
+                <div className="mt-2 flex items-center gap-1.5 tabular-nums">
+                  <span className="font-medium text-success text-xs">
+                    {rates?.wins ?? 0}W
+                  </span>
+                  <span className="text-foreground-dimmed text-xs">·</span>
+                  <span className="font-medium text-error text-xs">
+                    {rates?.losses ?? 0}L
+                  </span>
+                </div>
+                {/* Sharp rule, matching the band seams. */}
+                <div className="mt-3 h-1 w-full bg-accent-foreground">
                   <div
-                    className="h-full rounded-full bg-primary"
+                    className="h-full bg-primary transition-[width] duration-300"
                     style={{ width: `${rate}%` }}
                   />
                 </div>
-                <span className="w-8 text-right text-foreground-dimmed text-xs tabular-nums">
-                  {rate}%
-                </span>
               </div>
             </div>
           );
@@ -529,7 +615,8 @@ const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
       </div>
 
       {topFinding && (
-        <TopFindingCallout className="rounded-md">
+        // A band, not a rounded island — it sits in the grid.
+        <TopFindingCallout className="border-accent-foreground border-t px-5 py-4">
           {topFinding.name} loses on{" "}
           <span className="font-semibold text-foreground-rich">
             {topFinding.missingAttributes.join(" and ")}
@@ -538,6 +625,6 @@ const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
           % of simulations.
         </TopFindingCallout>
       )}
-    </div>
+    </>
   );
 };

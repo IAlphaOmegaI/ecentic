@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { Motion } from "@/components/motion";
+import { Plus } from "@/components/plus";
 import { Spring, Stagger } from "@/lib/animations";
 
 const modelColors: Record<string, string> = {
@@ -59,7 +60,9 @@ export const RunningPhase = ({
         className="flex h-full flex-col overflow-hidden"
       >
         <Motion.Item className="border-accent-foreground border-b px-8">
-          <div className="border-accent-foreground border-x p-6">
+          <div className="relative border-accent-foreground border-x p-6">
+            <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+            <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <h1 className="font-medium text-4xl text-foreground">
               Running simulation.
             </h1>
@@ -72,11 +75,13 @@ export const RunningPhase = ({
 
         <Motion.Item className="border-accent-foreground border-b px-8">
           <motion.div
-            className="grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-x"
+            className="relative grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-x"
             variants={Stagger.Container(0.06)}
             initial="hidden"
             animate="visible"
           >
+            <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+            <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             {models.map(({ model, logo }) => {
               const status = statuses[model];
               const stats = modelStats[model];
@@ -145,7 +150,9 @@ export const RunningPhase = ({
         </Motion.Item>
 
         <Motion.Item className="flex min-h-0 flex-1 flex-col border-accent-foreground border-b px-8">
-          <div className="flex h-full w-full flex-col border-accent-foreground border-x bg-background-rich">
+          <div className="relative flex h-full w-full flex-col border-accent-foreground border-x bg-background-rich">
+            <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+            <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <div className="flex items-center justify-between border-accent-foreground p-4">
               <div className="flex items-center gap-2">
                 <motion.span

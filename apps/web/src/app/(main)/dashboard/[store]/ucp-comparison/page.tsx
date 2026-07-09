@@ -34,9 +34,7 @@ export default () => (
               Side-by-Side Catalog Search
             </h2>
           </div>
-          <div className="p-6">
-            <ComparisonClient />
-          </div>
+          <ComparisonClient />
         </div>
       </div>
     </div>

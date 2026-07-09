@@ -2,20 +2,15 @@
 
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@zenncore/web/components/avatar";
 import { Button } from "@zenncore/web/components/button";
 import { Textarea, TextareaInput } from "@zenncore/web/components/textarea";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useState } from "react";
-import { formatPrice } from "@/lib/currency";
 import type * as Competitor from "@/server/app/competitor";
 import * as Scrape from "@/server/app/intelligence/scrape";
+import { CompetitorResults } from "./competitor-results";
 
 export namespace UrlTab {
   export type Props = {
@@ -77,14 +72,15 @@ export const UrlTab = ({ className, onSuccess }: UrlTab.Props) => {
           >
             <Image
               src="/images/websearch.png"
-              alt="Competitors illustration"
+              alt=""
+              aria-hidden
               fill
-              className="object-contain opacity-30"
+              className="pointer-events-none select-none object-contain opacity-10"
             />
             <div className="relative z-20 flex h-full flex-col gap-4">
               <label
                 htmlFor="urls"
-                className="block font-medium text-foreground"
+                className="block font-medium text-foreground text-sm"
               >
                 Paste competitor product URLs (one per line)
               </label>
@@ -103,12 +99,11 @@ export const UrlTab = ({ className, onSuccess }: UrlTab.Props) => {
                 />
               </Textarea>
               <Button
-                variant="flat"
                 color="primary"
                 type="button"
                 onClick={handleScrape}
                 disabled={!url?.trim() || isScraping}
-                className="mt-auto px-4 py-2 font-medium"
+                className="mt-auto px-4 py-2 font-medium text-sm"
               >
                 {isScraping
                   ? "Extracting product data..."
@@ -149,56 +144,12 @@ export const UrlTab = ({ className, onSuccess }: UrlTab.Props) => {
               </Button>
             </div>
 
-            <div className="min-h-0 flex-1 overflow-y-auto bg-background-rich">
-              {competitors.map((competitor) => (
-                <div
-                  key={competitor.id}
-                  className="flex items-start gap-3 border-accent-foreground border-b p-3 last:border-b-0"
-                >
-                  <Avatar className="size-10 shrink-0 rounded-none bg-primary/10">
-                    <AvatarImage
-                      src={competitor.image ?? "/images/fallback.png"}
-                      alt={competitor.title}
-                    />
-                    <AvatarFallback className="relative">
-                      <Image src="/images/fallback.png" alt="Fallback" fill />
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate font-medium text-foreground text-sm">
-                      {competitor.title}
-                    </p>
-                    <p className="text-foreground-dimmed text-xs">
-                      {[competitor.brand, competitor.source]
-                        .filter(Boolean)
-                        .join(" · ")}
-                    </p>
-                    {competitor.description && (
-                      <p className="mt-0.5 line-clamp-2 text-foreground-dimmed text-xs">
-                        {competitor.description}
-                      </p>
-                    )}
-                  </div>
-                  <p className="shrink-0 font-medium text-primary text-sm">
-                    {formatPrice(competitor.price, competitor.currency)}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            <div className="flex items-center justify-between border-accent-foreground border-t bg-background-dimmed px-4 py-2.5">
-              <span className="text-foreground-dimmed text-xs">
-                {competitors.length} product
-                {competitors.length !== 1 ? "s" : ""} extracted
-              </span>
-              <button
-                type="button"
-                onClick={() => setCompetitors([])}
-                className="text-foreground-dimmed text-xs transition-colors hover:text-foreground"
-              >
-                Clear
-              </button>
-            </div>
+            <CompetitorResults
+              competitors={competitors}
+              noun="product"
+              verb="extracted"
+              onClear={() => setCompetitors([])}
+            />
           </motion.div>
         )}
       </AnimatePresence>
