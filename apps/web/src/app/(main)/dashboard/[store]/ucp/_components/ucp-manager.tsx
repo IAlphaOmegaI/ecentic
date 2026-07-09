@@ -494,7 +494,7 @@ export const UcpManager = ({
   return (
     <div className="space-y-4">
       {/* Score card */}
-      <div className="border border-accent-foreground bg-background-rich">
+      {/* <div className="border border-accent-foreground bg-background-rich">
         <div className="flex items-center gap-6 p-5">
           <div className="relative size-14 shrink-0">
             <svg
@@ -549,17 +549,17 @@ export const UcpManager = ({
             </p>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Tabs */}
-      <Tabs defaultValue="profile">
+      <Tabs defaultValue="products">
         {/* w-full + h-8 tabs: the base Tab is h-9 in a 32px content box, so
             without this the tabs clipped and the labels wrapped to two lines. */}
         <TabsList className="h-10 w-full rounded-md border-0 bg-background-dimmed p-1">
           <TabsIndicator className="top-1 h-8 rounded" />
-          <Tab value="profile" className="h-8 flex-1 border-r-0">
+          {/* <Tab value="profile" className="h-8 flex-1 border-r-0">
             Merchant Profile
-          </Tab>
+          </Tab> */}
           <Tab value="products" className="h-8 flex-1 border-r-0">
             Product Data
           </Tab>
