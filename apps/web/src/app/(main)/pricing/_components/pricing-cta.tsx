@@ -9,11 +9,12 @@ import * as Subscription from "@/server/app/subscription";
 
 type Props = {
   plan: "payg" | "compete" | "dominate";
+  color?: Button.Props["color"];
   className?: string;
   children: React.ReactNode;
 };
 
-export const PricingCTA = ({ plan, className, children }: Props) => {
+export const PricingCTA = ({ plan, color, className, children }: Props) => {
   const router = useRouter();
   const toast = useToastManager();
 
@@ -41,7 +42,7 @@ export const PricingCTA = ({ plan, className, children }: Props) => {
     const checkout = await Subscription.createCheckoutSession({ plan });
     if (!checkout.success) {
       if (checkout.error.name === "unauthenticated-error") {
-        router.push(`/sign-in?next=${encodeURIComponent("/#pricing")}`);
+        router.push(`/sign-in?next=${encodeURIComponent("/pricing#pricing")}`);
         return;
       }
       toast.add({
@@ -57,7 +58,7 @@ export const PricingCTA = ({ plan, className, children }: Props) => {
 
   return (
     <Button
-      color={plan === "dominate" ? "accent" : "primary"}
+      color={color ?? (plan === "dominate" ? "accent" : "primary")}
       type="button"
       className={className}
       onClick={() => handleClick()}

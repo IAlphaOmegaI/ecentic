@@ -133,7 +133,12 @@
       "Bash(grep -vE 'ds-bundle|\\\\.design-sync|drizzle|icons|\\\\.svg$|\\\\.png$')",
       "Bash(grep -rn \"sql\\\\`\" server/)",
       "Bash(grep -rniE \"\\(access_token|apikey|api_key|password|secret|token\\)\\\\s*[:=]\\\\s*[\\\\\"'][A-Za-z0-9_+/=-]{16,}[\\\\\"']\" --include=\"*.ts\" --include=\"*.tsx\" server/ app/ lib/)",
-      "Bash(grep -viE \"process\\\\.env|placeholder|example|your_|xxxx|test-|mock|schema|z\\\\.|\\\\.string|Bearer \\\\$\")"
+      "Bash(grep -viE \"process\\\\.env|placeholder|example|your_|xxxx|test-|mock|schema|z\\\\.|\\\\.string|Bearer \\\\$\")",
+      "PowerShell($env:Path = \"$env:USERPROFILE\\\\.bun\\\\bin;$env:Path\"; bun install)",
+      "Bash(openssl rand *)",
+      "Bash(echo \"secret1: $\\(openssl rand -base64 32\\)\")",
+      "Bash(echo \"secret2: $\\(openssl rand -base64 32\\)\")",
+      "PowerShell($env:Path = \"$env:USERPROFILE\\\\.bun\\\\bin;$env:Path\"; bun run dev:web)"
     ]
   }
 }
