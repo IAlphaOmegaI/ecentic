@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Plus } from "@/components/plus";
 
 const href = "https://eupresence.com/pricing#bundles";
+const partnerHref = "https://eupresence.com/";
 
 type BundleItem = {
   name: string;
@@ -58,31 +59,36 @@ export const PartnershipBundle = () => (
     <div className="relative mx-auto max-w-6xl border-accent-foreground border-x border-b">
       <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-      {/* Bottom corners are owned by the next section's top pluses (the FAQ
-          content section on the pricing page). */}
 
-      <div className="grid grid-cols-1 md:grid-cols-[7fr_5fr] md:divide-x md:divide-accent-foreground">
-        {/* Pitch */}
+      <div className="grid grid-cols-1 md:grid-cols-[7fr_5fr] md:items-stretch md:divide-x md:divide-accent-foreground">
         <div className="flex flex-col p-6 md:p-12">
-          <div className="flex items-center gap-3">
-            <span className="flex size-10 items-center justify-center rounded-lg border border-accent-foreground bg-background-rich">
+          <div className="flex items-start gap-4">
+            <Link
+              href={partnerHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Visit EU Presence"
+              className="flex size-14 shrink-0 items-center justify-center rounded-xl border border-accent-foreground bg-background shadow-sm transition-all hover:-translate-y-0.5"
+            >
               <Image
                 src="/partners/eu-presence.svg"
                 alt="EU Presence"
-                width={22}
-                height={22}
-                className="size-[22px]"
+                width={32}
+                height={32}
+                className="size-8"
               />
-            </span>
-            <p className="font-medium text-primary text-sm uppercase tracking-[0.18em]">
-              ecentic × EU Presence · Bundle
-            </p>
+            </Link>
+            <div>
+              <h2 className="font-medium text-3xl text-foreground md:text-4xl">
+                ecentic × EU Presence
+              </h2>
+              <p className="mt-2 font-body font-medium text-foreground-dimmed text-lg md:text-xl">
+                Compliance + AI Visibility
+              </p>
+            </div>
           </div>
 
-          <h2 className="mt-6 font-body font-medium text-3xl text-foreground-rich md:text-5xl">
-            Compliance + AI Visibility
-          </h2>
-          <p className="mt-4 max-w-lg font-light text-foreground-dimmed text-lg">
+          <p className="mt-6 max-w-lg font-light text-foreground-dimmed text-lg">
             Go live in the European market and stay picked by AI agents in one
             engagement. EU Presence handles representation and compliance across
             all 27 member states; ecentic keeps your listings winning the agent
@@ -139,42 +145,61 @@ export const PartnershipBundle = () => (
           </ul>
         </div>
 
-        {/* Price + CTA */}
-        <div className="relative flex flex-col justify-center overflow-hidden bg-background-dimmed p-6 md:p-12">
-          <div className="pointer-events-none absolute -top-20 -right-20 size-56 rounded-full bg-primary/15 blur-3xl" />
-          <p className="relative font-medium text-foreground-dimmed text-sm uppercase tracking-[0.18em]">
-            Bundle price
-          </p>
-          <div className="relative mt-3 flex items-end gap-2">
-            <span className="font-body font-semibold text-6xl text-primary leading-none tracking-tight md:text-7xl">
-              ${discounted.toFixed(0)}
-            </span>
-            <span className="mb-1.5 font-light text-foreground-dimmed text-xl">
-              /mo
-            </span>
+        <div className="relative flex h-full min-h-full flex-col justify-end overflow-hidden bg-background-dimmed p-6 md:p-12">
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-0 h-full w-full overflow-hidden opacity-80 [mask-image:linear-gradient(to_right,black,transparent)]">
+            <Image
+              src="/images/eu-flag.gif"
+              alt=""
+              aria-hidden
+              unoptimized
+              width={600}
+              height={600}
+              className="absolute inset-0 -top-48 left-[calc(50%+48px)] h-[250%] w-auto rotate-180"
+            />
           </div>
-          <div className="relative mt-4 flex flex-wrap items-center gap-2">
-            <span className="text-foreground-dimmed line-through">
-              ${regular}/mo
-            </span>
-            <span className="rounded-full bg-success/10 px-2.5 py-0.5 font-medium text-sm text-success">
-              Save ${saved.toFixed(0)}/mo · 20% off
-            </span>
-          </div>
+          <div className="relative z-10 flex w-full flex-col gap-4 border-accent-foreground border-t border-dashed pt-6">
+            <p className="font-medium text-foreground-dimmed text-sm">
+              Bundle price
+            </p>
+            <div className="flex items-end gap-2">
+              <span className="font-body font-semibold text-6xl text-primary leading-none tracking-tight md:text-7xl">
+                ${discounted.toFixed(0)}
+              </span>
+              <span className="mb-1.5 font-light text-foreground-dimmed text-xl">
+                /mo
+              </span>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-foreground-dimmed line-through">
+                ${regular}/mo
+              </span>
+              <span className="rounded-full bg-success/10 px-2.5 py-0.5 font-medium text-sm text-success">
+                Save ${saved.toFixed(0)}/mo · 20% off
+              </span>
+            </div>
 
-          <Button
-            color="primary"
-            className="relative mt-8 w-full"
-            render={
-              <Link href={href} target="_blank" rel="noopener noreferrer" />
-            }
-          >
-            Book a bundle call
-            <ArrowRightIcon className="size-4" />
-          </Button>
-          <p className="relative mt-3 text-center text-foreground-dimmed text-sm">
-            20% bundle discount applies automatically at 4+ items.
-          </p>
+            <Button
+              color="primary"
+              className="w-full"
+              render={
+                <Link href={href} target="_blank" rel="noopener noreferrer" />
+              }
+            >
+              <Image
+                src="/images/eu.svg"
+                alt=""
+                aria-hidden
+                width={24}
+                height={24}
+                className="size-5"
+              />
+              Book a bundle call
+              <ArrowRightIcon className="size-4" />
+            </Button>
+            <p className="text-center text-foreground-dimmed text-sm">
+              20% bundle discount applies automatically at 4+ items.
+            </p>
+          </div>
         </div>
       </div>
     </div>

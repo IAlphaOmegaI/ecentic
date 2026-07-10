@@ -88,6 +88,8 @@ const rows: readonly Row[] = [
   },
 ] as const;
 
+const compareCtaClassName = "mx-auto w-36";
+
 const CompareCell = ({ value }: { value: Cell }) => {
   switch (true) {
     case value === true:
@@ -111,11 +113,11 @@ export const Compare = () => (
       {/* Top corners are owned by the fee explainer's bottom pluses; bottom
           corners by the partnership bundle's top pluses. */}
       <div className="p-6 md:p-12">
-        <span className="font-normal text-2xl text-primary">02</span>
-        <h2 className="mt-2 font-body font-medium text-3xl text-foreground md:text-5xl">
+        <span className="font-normal text-3xl text-primary">02</span>
+        <h2 className="mt-2 font-body font-medium text-4xl text-foreground md:text-6xl">
           Compare plans
         </h2>
-        <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-lg">
+        <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-xl">
           The core loop is identical everywhere — paid tiers add scale,
           automation, and protocol features. Let the size of your catalog
           decide.
@@ -135,13 +137,13 @@ export const Compare = () => (
                 <th className="p-4 text-center font-body font-medium text-foreground text-lg">
                   Scan
                 </th>
-                <th className="p-4 text-center font-body font-medium text-foreground text-lg">
+                <th className="bg-primary/5 p-4 text-center font-body font-medium text-lg text-primary">
                   Pay-as-you-go
                 </th>
                 <th className="p-4 text-center font-body font-medium text-foreground text-lg">
                   Compete
                 </th>
-                <th className="bg-primary/5 p-4 text-center font-body font-medium text-lg text-primary">
+                <th className="p-4 text-center font-body font-medium text-foreground text-lg">
                   Dominate
                 </th>
               </tr>
@@ -158,13 +160,13 @@ export const Compare = () => (
                   <td className="p-4">
                     <CompareCell value={row.scan} />
                   </td>
-                  <td className="p-4">
+                  <td className="bg-primary/5 p-4">
                     <CompareCell value={row.payg} />
                   </td>
                   <td className="p-4">
                     <CompareCell value={row.compete} />
                   </td>
-                  <td className="bg-primary/5 p-4">
+                  <td className="p-4">
                     <CompareCell value={row.dominate} />
                   </td>
                 </tr>
@@ -174,18 +176,37 @@ export const Compare = () => (
               <tr>
                 <td className="p-4" />
                 <td className="p-4 text-center">
-                  <Button color="accent" render={<Link href="/sign-up" />}>
+                  <Button
+                    color="accent"
+                    className={compareCtaClassName}
+                    render={<Link href="/sign-up" />}
+                  >
                     Scan free
                   </Button>
                 </td>
-                <td className="p-4 text-center">
-                  <PricingCTA plan="payg">Start free</PricingCTA>
-                </td>
-                <td className="p-4 text-center">
-                  <PricingCTA plan="compete">Start</PricingCTA>
-                </td>
                 <td className="bg-primary/5 p-4 text-center">
-                  <PricingCTA plan="dominate" color="primary">
+                  <PricingCTA
+                    plan="payg"
+                    color="success"
+                    className={compareCtaClassName}
+                  >
+                    Start free
+                  </PricingCTA>
+                </td>
+                <td className="p-4 text-center">
+                  <PricingCTA
+                    plan="compete"
+                    className={compareCtaClassName}
+                  >
+                    Start
+                  </PricingCTA>
+                </td>
+                <td className="p-4 text-center">
+                  <PricingCTA
+                    plan="dominate"
+                    color="primary"
+                    className={compareCtaClassName}
+                  >
                     Start
                   </PricingCTA>
                 </td>
@@ -195,15 +216,22 @@ export const Compare = () => (
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 border-accent-foreground border-t bg-background-dimmed p-4 md:flex-row md:items-center md:justify-between md:px-12">
-        <p className="font-light text-foreground-dimmed text-sm">
-          Running hundreds of SKUs across multiple stores, or need UCP signing
-          and SSO? Enterprise adds custom limits and dedicated support.
-        </p>
-        <BookCall color="accent" className="w-full shrink-0 md:w-auto">
-          Talk to sales
-          <ArrowRightIcon className="size-4" />
-        </BookCall>
+      <div className="grid grid-cols-1 border-accent-foreground border-t md:grid-cols-3">
+        <div className="col-span-2 flex flex-col justify-center bg-background-dimmed p-6 md:px-12 md:py-8">
+          <h3 className="font-body font-medium text-2xl text-foreground">
+            Enterprise
+          </h3>
+          <p className="mt-1 max-w-xl font-body font-light text-foreground-dimmed text-lg">
+            Custom limits, enterprise security, UCP signing, multi-brand
+            dashboards, and dedicated support.
+          </p>
+        </div>
+        <div className="flex flex-col justify-end border-accent-foreground border-t bg-background-dimmed p-6 md:border-t-0 md:border-l md:p-8">
+          <BookCall color="primary" className="w-full">
+            Talk to sales
+            <ArrowRightIcon className="size-4" />
+          </BookCall>
+        </div>
       </div>
     </div>
   </section>

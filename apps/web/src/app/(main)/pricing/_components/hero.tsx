@@ -1,5 +1,6 @@
 import { CheckIcon } from "@zenncore/icons";
-import { Plus } from "@/components/plus";
+import Image from "next/image";
+import Background from "@/public/images/blog.png";
 
 const assurances = [
   "Free scan first",
@@ -8,37 +9,36 @@ const assurances = [
 ] as const;
 
 export const Hero = () => (
-  <section className="border-accent-foreground border-b">
-    <div className="relative mx-auto max-w-6xl border-accent-foreground border-x px-6 pt-10 pb-14 md:px-12 md:pt-16 md:pb-20">
-      <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-      <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-      <div
+  <section className="border-accent-foreground border-b p-4">
+    <div className="relative size-full overflow-hidden rounded-lg bg-primary">
+      <Image
+        src={Background}
+        alt=""
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-radial-[at_20%_0%] from-primary/15 via-primary/5 to-transparent"
+        className="absolute aspect-auto h-full w-full object-contain object-right opacity-30 brightness-0 invert"
       />
-      <p className="relative font-medium text-primary text-sm uppercase tracking-[0.2em]">
-        Pricing
-      </p>
-      <h1 className="relative mt-4 max-w-3xl font-body font-medium text-4xl text-foreground-rich md:text-6xl">
-        Start free. Pay when agents{" "}
-        <span className="text-primary">pick you.</span>
-      </h1>
-      <p className="relative mt-5 max-w-2xl font-light text-foreground-dimmed text-lg">
-        Scan your store for free, then choose how you pay: a small fee only on
-        orders AI agents drive, or a flat monthly plan with no fee. Same
-        optimization loop either way.
-      </p>
-      <ul className="relative mt-8 flex flex-wrap gap-2">
-        {assurances.map((assurance) => (
-          <li
-            key={assurance}
-            className="flex items-center gap-1.5 rounded-full border border-accent-foreground bg-background-rich px-3 py-1 text-foreground text-sm"
-          >
-            <CheckIcon className="size-3.5 text-primary" />
-            {assurance}
-          </li>
-        ))}
-      </ul>
+      <div className="relative z-10 mx-auto max-w-6xl border-accent-foreground border-x px-8 pt-36 pb-16">
+        <h1 className="max-w-3xl font-semibold text-5xl text-white tracking-tight md:text-7xl">
+          Start free. Pay when agents{" "}
+          <span className="text-white/80">pick you.</span>
+        </h1>
+        <p className="mt-6 max-w-2xl text-base text-white leading-relaxed md:text-lg">
+          Scan your store for free, then choose how you pay: a small fee only on
+          orders AI agents drive, or a flat monthly plan with no fee. Same
+          optimization loop either way.
+        </p>
+        <ul className="mt-8 flex flex-wrap gap-2">
+          {assurances.map((assurance) => (
+            <li
+              key={assurance}
+              className="flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm text-white"
+            >
+              <CheckIcon className="size-3.5 text-white/80" />
+              {assurance}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   </section>
 );

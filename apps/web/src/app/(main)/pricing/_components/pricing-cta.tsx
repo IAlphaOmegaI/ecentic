@@ -58,7 +58,7 @@ export const PricingCTA = ({ plan, color, className, children }: Props) => {
 
   return (
     <Button
-      color={color ?? (plan === "dominate" ? "accent" : "primary")}
+      color={color ?? (plan === "payg" ? "accent" : "primary")}
       type="button"
       className={className}
       onClick={() => handleClick()}

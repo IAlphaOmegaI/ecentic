@@ -148,6 +148,7 @@ export default () => {
       title="Start free. Pay when agents start picking you."
       description={description}
       hideHero
+      hideHeroSpacer={false}
     >
       <JsonLd schemas={structuredData} />
 
@@ -165,6 +166,7 @@ export default () => {
         number="03"
         title="Pricing FAQ"
         description="Common questions about plans, limits, and when to talk to sales."
+        gutter
         classList={{ body: "p-0" }}
       >
         <Faq items={faq} />
