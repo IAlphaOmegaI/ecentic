@@ -1,4 +1,5 @@
 import { RobotIcon, ShieldCheckIcon, ShoppingCartIcon } from "@zenncore/icons";
+import { SectionGutter } from "@/app/(main)/dashboard/_components/grid";
 import { Plus } from "@/components/plus";
 
 const steps = [
@@ -43,12 +44,14 @@ export const FeeExplainer = () => (
       <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
       <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
 
+      <SectionGutter />
+
       <div className="p-6 md:p-12">
-        <span className="font-normal text-2xl text-primary">01</span>
-        <h2 className="mt-2 max-w-2xl font-body font-medium text-3xl text-foreground md:text-5xl">
+        <span className="font-normal text-3xl text-primary">01</span>
+        <h2 className="mt-2 max-w-2xl font-body font-medium text-4xl text-foreground md:text-6xl">
           How the performance fee works
         </h2>
-        <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-lg">
+        <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-xl">
           On pay-as-you-go you only ever pay on orders we can attribute to
           AI-agent traffic we optimize for. Everything else is $0.
         </p>
@@ -76,10 +79,13 @@ export const FeeExplainer = () => (
         ))}
       </div>
 
-      <div className="border-accent-foreground border-t bg-background-dimmed p-4 md:px-12">
-        <p className="font-light text-foreground-dimmed text-sm">
-          Prefer predictable billing? Compete and Dominate are flat monthly with
-          no performance fee — both run the exact same optimization loop.
+      <div className="border-accent-foreground border-t bg-background-dimmed p-6 md:px-12 md:py-8">
+        <h3 className="font-body font-medium text-2xl text-foreground">
+          Prefer predictable billing?
+        </h3>
+        <p className="mt-1 max-w-3xl font-body font-light text-foreground-dimmed text-lg">
+          Compete and Dominate are flat monthly with no performance fee — both
+          run the exact same optimization loop.
         </p>
       </div>
     </div>

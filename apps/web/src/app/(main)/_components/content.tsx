@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { Plus } from "@/components/plus";
+import { SectionGutter } from "@/app/(main)/dashboard/_components/grid";
 import Background from "@/public/images/blog.png";
 import { renderInline } from "./rich-text";
 
@@ -91,6 +92,7 @@ export const ContentPageLayout = ({
   meta,
   description,
   hideHero,
+  hideHeroSpacer = true,
   children,
 }: ContentPageLayout.Props) => (
   <main className="flex min-h-screen flex-col">
@@ -99,7 +101,9 @@ export const ContentPageLayout = ({
     </div>
 
     {hideHero ? (
-      <div className="mx-auto h-20 w-full max-w-6xl border-accent-foreground border-x md:h-24" />
+      hideHeroSpacer ? (
+        <div className="mx-auto h-20 w-full max-w-6xl border-accent-foreground border-x md:h-24" />
+      ) : null
     ) : (
       <div className="border-accent-foreground border-b p-4">
         <div className="relative size-full overflow-hidden rounded-lg bg-primary">
@@ -138,6 +142,7 @@ export namespace ContentPageLayout {
     meta?: ReactNode;
     description: string;
     hideHero?: boolean;
+    hideHeroSpacer?: boolean;
     children: ReactNode;
   };
 }
@@ -156,9 +161,15 @@ export const ContentPageSection = ({
   title,
   description,
   children,
+  gutter,
   classList,
 }: ContentPageSection.Props) => (
   <div className={cn("border-accent-foreground border-b", classList?.root)}>
+    {gutter ? (
+      <div className="mx-auto max-w-6xl border-accent-foreground border-x">
+        <SectionGutter />
+      </div>
+    ) : null}
     <div
       className={cn(
         "relative mx-auto grid max-w-6xl grid-cols-1 gap-px border-accent-foreground border-x bg-accent-foreground md:grid-cols-[5fr_8fr]",
@@ -198,6 +209,7 @@ export namespace ContentPageSection {
     title: string;
     description?: string;
     children: ReactNode;
+    gutter?: boolean;
     classList?: ClassList<ClassListKey>;
   };
 }
