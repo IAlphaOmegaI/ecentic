@@ -58,8 +58,8 @@ export const PartnershipBundle = () => (
     <div className="relative mx-auto max-w-6xl border-accent-foreground border-x border-b">
       <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-      <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-      <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+      {/* Bottom corners are owned by the next section's top pluses (the FAQ
+          content section on the pricing page). */}
 
       <div className="grid grid-cols-1 md:grid-cols-[7fr_5fr] md:divide-x md:divide-accent-foreground">
         {/* Pitch */}

@@ -121,7 +121,25 @@
       "Bash(grep -vE '\\\\.d\\\\.ts$|app/\\\\\\(main\\\\\\)')",
       "Bash(grep -vE '\\\\.d\\\\.ts$|src/app/|src/server/')",
       "Bash(grep -rnE '\\\\.map\\\\\\(\\\\\\(\\(.{1,4}\\),? ?\\(i\\)?\\\\\\) =>' apps/web/src/server --include='*.ts')",
-      "Bash(rg -U -n --glob 'apps/web/src/server/**/*.ts' 'if \\\\\\([^\\\\n]{1,60}\\\\\\) \\\\{\\\\n\\\\s+return [^\\\\n]{1,50};\\\\n\\\\s+\\\\}' -l)"
+      "Bash(rg -U -n --glob 'apps/web/src/server/**/*.ts' 'if \\\\\\([^\\\\n]{1,60}\\\\\\) \\\\{\\\\n\\\\s+return [^\\\\n]{1,50};\\\\n\\\\s+\\\\}' -l)",
+      "WebFetch(domain:www.census.gov)",
+      "WebFetch(domain:www.gartner.com)",
+      "WebFetch(domain:www.salesforce.com)",
+      "WebFetch(domain:news.adobe.com)",
+      "WebFetch(domain:www.forrester.com)",
+      "WebFetch(domain:www.ciodive.com)",
+      "WebFetch(domain:investor.salesforce.com)",
+      "Bash(grep -v '\\\\.d\\\\.ts$')",
+      "Bash(grep -vE 'ds-bundle|\\\\.design-sync|drizzle|icons|\\\\.svg$|\\\\.png$')",
+      "Bash(grep -rn \"sql\\\\`\" server/)",
+      "Bash(grep -rniE \"\\(access_token|apikey|api_key|password|secret|token\\)\\\\s*[:=]\\\\s*[\\\\\"'][A-Za-z0-9_+/=-]{16,}[\\\\\"']\" --include=\"*.ts\" --include=\"*.tsx\" server/ app/ lib/)",
+      "Bash(grep -viE \"process\\\\.env|placeholder|example|your_|xxxx|test-|mock|schema|z\\\\.|\\\\.string|Bearer \\\\$\")",
+      "PowerShell($env:Path = \"$env:USERPROFILE\\\\.bun\\\\bin;$env:Path\"; bun install)",
+      "Bash(openssl rand *)",
+      "Bash(echo \"secret1: $\\(openssl rand -base64 32\\)\")",
+      "Bash(echo \"secret2: $\\(openssl rand -base64 32\\)\")",
+      "PowerShell($env:Path = \"$env:USERPROFILE\\\\.bun\\\\bin;$env:Path\"; bun run dev:web)",
+      "PowerShell($env:Path = \"$env:USERPROFILE\\\\.bun\\\\bin;$env:Path\"; Set-Location \"C:\\\\Users\\\\user\\\\Desktop\\\\Development\\\\ecentic\"; bunx biome check --write --unsafe \"apps/web/src/app/\\(main\\)/_components/content.tsx\" \"apps/web/src/app/\\(main\\)/blog/_components/editorial-page.tsx\" \"apps/web/src/app/\\(main\\)/privacy-policy/page.tsx\" \"apps/web/src/app/\\(main\\)/enterprise/page.tsx\" \"apps/web/src/app/\\(main\\)/demo/page.tsx\")"
     ]
   }
 }

@@ -122,10 +122,10 @@ export const EditorialSplitSection = ({
 }: EditorialSplitSection.Props) => (
   <div className={cn("border-accent-foreground border-b", className)}>
     <div className="relative mx-auto grid max-w-6xl grid-cols-1 gap-px border-accent-foreground border-x bg-accent-foreground md:grid-cols-[5fr_8fr]">
+      {/* Sections mark only their top corners — the bottom line is owned by
+          the next block (a following section or the EditorialFooter). */}
       <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
       <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
-      <Plus className="bottom-0 left-0 hidden -translate-x-1/2 translate-y-1/2 md:flex" />
-      <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
       <div
         className={cn(
           "relative flex flex-col overflow-hidden p-8",
@@ -144,7 +144,6 @@ export const EditorialSplitSection = ({
       >
         {thumbnail && <div className="absolute inset-0 bg-black/60" />}
         <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
-        <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
         <div className="relative z-10 flex flex-1 flex-col">{left}</div>
       </div>
       <div className={cn("bg-background p-8", rightClassName)}>{right}</div>

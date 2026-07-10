@@ -156,8 +156,7 @@ export default () => (
     {/* Capabilities */}
     <section className="relative -left-[calc(50vw-50%)] w-screen border-accent-foreground border-b">
       <div className="relative mx-auto max-w-6xl border-accent-foreground border-x">
-        <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+        {/* Top corners are owned by the hero's bottom pluses. */}
         <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
         <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <div className="px-8 py-10 md:py-12">
@@ -169,10 +168,9 @@ export default () => (
           </h2>
         </div>
         <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2 lg:grid-cols-3">
+          {/* Bottom corners are owned by the section container's pluses. */}
           <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 lg:flex" />
           <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 lg:flex" />
-          <Plus className="bottom-0 left-0 hidden -translate-x-1/2 translate-y-1/2 lg:flex" />
-          <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 lg:flex" />
           {capabilities.map((capability, index) => (
             <div
               key={capability.title}
@@ -202,8 +200,7 @@ export default () => (
     {/* Pipeline */}
     <section className="relative -left-[calc(50vw-50%)] w-screen border-accent-foreground border-b">
       <div className="relative mx-auto max-w-6xl border-accent-foreground border-x">
-        <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+        {/* Top corners are owned by the capabilities section's bottom pluses. */}
         <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
         <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <div className="px-8 py-10 md:py-12">
@@ -219,10 +216,9 @@ export default () => (
           </p>
         </div>
         <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground sm:grid-cols-2">
+          {/* Bottom corners are owned by the section container's pluses. */}
           <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 sm:flex" />
           <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 sm:flex" />
-          <Plus className="bottom-0 left-0 hidden -translate-x-1/2 translate-y-1/2 sm:flex" />
-          <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 sm:flex" />
           {pipeline.map((entry, index) => (
             <div
               key={entry.name}
@@ -259,8 +255,7 @@ export default () => (
     {/* CTA */}
     <section className="relative -left-[calc(50vw-50%)] w-screen border-accent-foreground border-b">
       <div className="relative mx-auto max-w-6xl border-accent-foreground border-x px-8 py-16 text-center md:py-24">
-        <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+        {/* Top corners are owned by the pipeline section's bottom pluses. */}
         <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
         <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <h2 className="mx-auto max-w-xl font-body text-4xl text-foreground md:text-5xl">

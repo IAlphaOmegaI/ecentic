@@ -8,16 +8,16 @@ import {
   organizationSchema,
 } from "@/lib/seo";
 import {
-  ContentPageFaqGrid,
   ContentPageFooter,
   ContentPageLayout,
-  ContentPageRichText,
   ContentPageSection,
-  splitGridClassList,
-  splitGridSectionClassList,
 } from "../_components/content";
 import { PartnershipBundle } from "../_components/partnership-bundle";
-import { Pricing } from "../_components/pricing";
+import { Compare } from "./_components/compare";
+import { Faq } from "./_components/faq";
+import { FeeExplainer } from "./_components/fee-explainer";
+import { Hero } from "./_components/hero";
+import { Plans } from "./_components/plans";
 
 const description =
   "ecentic pricing: scan free, then pay-as-you-go — free to start, 3% only on AI-attributed orders (capped). Or a flat Compete/Dominate plan with no fee.";
@@ -151,52 +151,23 @@ export default () => {
     >
       <JsonLd schemas={structuredData} />
 
-      <Pricing />
+      <Hero />
+
+      <Plans />
+
+      <FeeExplainer />
+
+      <Compare />
 
       <PartnershipBundle />
-
-      <ContentPageSection
-        number="01"
-        title="How billing works"
-        description="Pricing scales with how many products you optimize and how much you automate — not with seats or hidden add-ons."
-      >
-        <ContentPageRichText
-          content={`Every account starts on the free Scan plan, which runs a one-time simulation of your top 10 products so you can see your Win Rate Report before paying anything.
-
-When you are ready for ongoing optimization, choose how you pay:
-- Pay-as-you-go — free to start with no card, full features, and a 3% fee only on orders AI agents drive (capped at $500/mo). You only pay when we sell.
-- A flat subscription with no performance fee: Compete at $149/mo for up to 100 products, daily simulations, and competitor battlecards; or Dominate at $449/mo for up to 1000 products, continuous simulations, auto-optimization, drift alerts, and UCP generation.
-
-Both run the same optimization loop — pay-as-you-go aligns cost to results, subscriptions keep billing predictable. Teams running hundreds of SKUs across multiple stores, or with security and signing requirements, move to a custom Enterprise plan.
-
-Selling into Europe? The **Compliance + AI Visibility** bundle pairs ecentic Dominate with EU Presence's GDPR representative, GPSR responsible person, and Privacy Center — one invoice, 20% bundle discount, no setup fees.`}
-        />
-      </ContentPageSection>
-
-      <ContentPageSection
-        number="02"
-        title="What every plan includes"
-        description="The core simulation, diagnosis, and optimization loop is the same on every tier. Paid plans add scale, automation, and protocol features."
-      >
-        <ContentPageRichText
-          content={`No matter where you start, ecentic runs your products through the major AI shopping models, shows you why competitors get selected, and turns the findings into listing changes you can approve.
-
-The paid tiers expand that core loop in three directions:
-- Scale — more products, more frequent simulations, and more competitor coverage
-- Automation — one-click and auto-published optimizations instead of manual edits
-- Protocol — UCP generation and signing so agents can verify your catalog directly
-
-If you are comparing plans, the simplest path is to scan for free, read the diagnosis, and let the size of your catalog decide between Compete and Dominate.`}
-        />
-      </ContentPageSection>
 
       <ContentPageSection
         number="03"
         title="Pricing FAQ"
         description="Common questions about plans, limits, and when to talk to sales."
-        classList={splitGridSectionClassList}
+        classList={{ body: "p-0" }}
       >
-        <ContentPageFaqGrid items={faq} classList={splitGridClassList} />
+        <Faq items={faq} />
       </ContentPageSection>
 
       <ContentPageFooter
