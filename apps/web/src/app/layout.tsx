@@ -137,6 +137,7 @@ export default ({ children }: PropsWithChildren) => {
       </head>
       <body
         className={`${redHatDisplay.variable} overflow-x-hidden bg-background font-body antialiased`}
+        // suppressHydrationWarning
       >
         <Suspense>
           <PostHogProvider>
