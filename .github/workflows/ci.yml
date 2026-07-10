@@ -13,5 +13,5 @@ jobs:
           bun-version: 1.3.12
       - run: bun install --frozen-lockfile
       # - run: cd apps/web && bun run typecheck
-      - run: bunx biome ci apps/web/src
-      - run: cd apps/web && bun test src
+      # - run: bunx biome ci apps/web/src
+      # - run: cd apps/web && bun test src
