@@ -1,0 +1,26 @@
+name: Migrate (production)
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/web/drizzle/**"
+      - "apps/web/src/server/database/schema.ts"
+      - "apps/web/drizzle.config.ts"
+  workflow_dispatch:
+# Never run two migrations against production at once.
+concurrency:
+  group: migrate-production
+  cancel-in-progress: false
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.12
+      - run: bun install --frozen-lockfile
+      - run: cd apps/web && bun run db:migrate
+        env:
+          DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL_UNPOOLED }}
