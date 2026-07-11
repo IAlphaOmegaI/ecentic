@@ -27,9 +27,11 @@ const columns = [
   {
     title: "Resources",
     links: [
+      { href: "/resources", label: "Resources" },
       { href: "/blog", label: "Blog" },
       { href: "/compare/best-ai-ecommerce-tools", label: "Compare" },
       { href: "/ucp-validator", label: "UCP Validator" },
+      { href: "/ucp-playground", label: "UCP Playground" },
       { href: "/demo", label: "Book a demo" },
     ],
   },

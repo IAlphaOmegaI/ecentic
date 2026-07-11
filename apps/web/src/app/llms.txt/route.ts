@@ -41,6 +41,7 @@ export const GET = async () => {
       description:
         "Category comparisons and tooling for teams evaluating the space.",
       links: [
+        { path: "/resources", label: "Free tools and resources" },
         {
           path: "/compare/best-ai-ecommerce-tools",
           label: "Best AI tools for ecommerce — buyer's guide",
@@ -48,6 +49,10 @@ export const GET = async () => {
         {
           path: "/ucp-validator",
           label: "Universal Commerce Protocol (UCP) validator",
+        },
+        {
+          path: "/ucp-playground",
+          label: "UCP Playground — test AI shopping agents",
         },
       ],
     },
