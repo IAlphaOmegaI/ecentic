@@ -30,7 +30,7 @@ const faq = [
   {
     question: "Are the pipeline conversations signed deals?",
     answer:
-      "No. The conversations with Mastercard, Visa, Inditex, and Carrefour listed on this page are active pilot discussions introduced via Plug and Play Tirana — not signed commercial agreements. We list them for transparency on where the enterprise motion stands.",
+      "No. The conversations with Mastercard, Visa, Inditex, and Carrefour listed on this page are active pilot discussions introduced via Plug and Play Tirana, not signed commercial agreements. We list them for transparency on where the enterprise motion stands.",
   },
   {
     question: "What does onboarding look like for Enterprise?",
@@ -97,7 +97,7 @@ export default () => {
       <Compare />
 
       <ContentPageSection
-        number="03"
+        number="04"
         title="Enterprise FAQ"
         description="Common questions about Enterprise plans, security, and onboarding."
         gutter
@@ -109,7 +109,7 @@ export default () => {
       <ContentPageFooter
         primary={{ href: "/demo", label: "Book a demo" }}
         secondary={{ href: "/pricing", label: "View pricing" }}
-        note="Active pilot conversations — not signed deals."
+        note="Active pilot conversations, not signed deals · SOC 2 in progress · DPA on request"
       />
     </ContentPageLayout>
   );

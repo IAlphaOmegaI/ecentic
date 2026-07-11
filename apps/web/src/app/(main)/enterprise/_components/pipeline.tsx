@@ -39,12 +39,12 @@ export const Pipeline = () => (
       <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
 
       <div className="p-6 md:p-12">
-        <span className="font-normal text-3xl text-primary">01</span>
+        <span className="font-normal text-3xl text-primary">02</span>
         <h2 className="mt-2 font-body font-medium text-4xl text-foreground md:text-6xl">
           Enterprise conversations underway.
         </h2>
         <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-xl">
-          Active pilot conversations introduced via Plug and Play Tirana — not
+          Active pilot conversations introduced via Plug and Play Tirana, not
           signed deals. Full transparency on where the enterprise motion stands.
         </p>
         <div className="mt-6 flex items-center gap-3">
