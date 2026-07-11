@@ -510,16 +510,18 @@ export const generateStructuredData = withAuthentication(
     if (product.data.userId !== user)
       return { success: false, error: new Error("Not authorized") };
 
+    const productData = product.data;
+
     const generated = await resultify(() =>
       AI.generate({
         instructions: `You generate JSON-LD structured data (schema.org/Product) for e-commerce product pages to help AI shopping agents understand product details.
 Output a single valid JSON string. Include @context, @type, name, description, brand, sku, and offers (price, priceCurrency, availability).
 Do not invent specifications not present in the input.`,
         prompt: `Generate JSON-LD for this product:
-Title: ${product.data.title}
-Description: ${product.data.description ?? "(none)"}
-Price: ${product.data.price ?? "(unknown)"}${product.data.currency ? ` ${product.data.currency}` : ""}
-SKU: ${product.data.sku ?? "(unknown)"}`,
+Title: ${productData.title}
+Description: ${productData.description ?? "(none)"}
+Price: ${productData.price ?? "(unknown)"}${productData.currency ? ` ${productData.currency}` : ""}
+SKU: ${productData.sku ?? "(unknown)"}`,
         schema: z.object({ json_ld: z.string() }),
       }),
     );

@@ -37,9 +37,9 @@ const rankTone = (rank: number | null, total: number): RankTone => {
   switch (true) {
     case rank === null:
       return "error";
-    case rank <= 3:
+    case rank !== null && rank <= 3:
       return "success";
-    case total > 0 && rank <= Math.ceil(total / 2):
+    case rank !== null && total > 0 && rank <= Math.ceil(total / 2):
       return "warning";
     default:
       return "warning";

@@ -124,9 +124,11 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
   );
 
   const [handleSignOut, isSignOutPending] = useAsyncAction(async () => {
+    // On success the action redirects to /sign-in server-side and never returns
+    // a result, so only a failure lands here.
     const result = await Authentication.signOut();
 
-    if (!result.success) {
+    if (result && !result.success) {
       toast.add({
         title: "Could not sign out",
         description: result.error.message,
@@ -135,7 +137,6 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
       return;
     }
 
-    router.replace("/sign-in");
     router.refresh();
   });
 

@@ -22,6 +22,7 @@ type Type = {
   body_html: string;
   handle: string;
   status: string;
+  published_at: string | null;
   variants: {
     id: number;
     price: string;

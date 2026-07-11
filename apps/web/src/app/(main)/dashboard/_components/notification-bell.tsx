@@ -29,7 +29,7 @@ export const NotificationBell = () => (
       )}
     </PopoverTrigger>
 
-    <PopoverPositioner side="bottom" alignment="end" sideOffset={8}>
+    <PopoverPositioner side="bottom" align="end" sideOffset={8}>
       <PopoverPopup className="w-80 border border-accent-foreground bg-background-rich p-0 shadow-xl">
         <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
           <span className="font-medium text-foreground text-sm">

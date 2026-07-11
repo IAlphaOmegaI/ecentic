@@ -4,6 +4,7 @@ declare namespace NodeJS {
     readonly CI: string;
 
     readonly BETTER_AUTH_BASE_URL: string;
+    readonly BETTER_AUTH_SECRET: string;
 
     readonly NEXT_PUBLIC_SENTRY_DSN: string;
     readonly SENTRY_AUTH_TOKEN: string;
@@ -42,8 +43,17 @@ declare namespace NodeJS {
 
     readonly NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: string;
     readonly STRIPE_SECRET_KEY: string;
+    readonly STRIPE_WEBHOOK_SECRET: string;
     readonly STRIPE_SUB_COMPETE: string;
     readonly STRIPE_SUB_DOMINATE: string;
+    /** Stripe coupon ids for partner deals; unset disables the deal. */
+    readonly STRIPE_DEAL_COUPON_YC?: string;
+    readonly STRIPE_DEAL_COUPON_TECHSTARS?: string;
+
+    /** Pay-as-you-go performance fee overrides; code falls back to built-in defaults. */
+    readonly PERFORMANCE_FEE_RATE_BPS_DEFAULT?: string;
+    readonly PERFORMANCE_FEE_CAP_CENTS_DEFAULT?: string;
+    readonly PERFORMANCE_FEE_ATTRIBUTION_WINDOW_DAYS?: string;
 
     readonly npm_package_name: string;
     readonly npm_package_version: string;

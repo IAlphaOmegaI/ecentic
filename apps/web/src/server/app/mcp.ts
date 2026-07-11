@@ -109,8 +109,7 @@ const parseToolCall = (value: unknown) => {
 
   const params = value as Record<string, unknown>;
 
-  const name = params.name;
-  const argumentsValue = params.arguments;
+  const { name, arguments: argumentsValue } = params;
 
   if (typeof name !== "string" || !name.trim())
     return {

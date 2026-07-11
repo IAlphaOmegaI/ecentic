@@ -3,6 +3,7 @@
 import { resultify } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
 import { cookies, headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { render } from "react-email";
 import { Resend } from "resend";
 import { sanitizeRedirect } from "@/lib/redirect";
@@ -186,14 +187,20 @@ export const signOut = withContext(async (context) => {
       }),
   );
 
-  if (!result.success) return result;
-
+  // Clear the cache cookie unconditionally. If better-auth destroyed the session
+  // but then failed, an early return here would leave a signed `user` cookie
+  // behind and the proxy would keep treating the dead session as authenticated.
   const jar = await cookies();
   jar.delete("user");
 
-  return {
-    success: true,
-  };
+  if (!result.success) return result;
+
+  // Redirect from the action itself. Sign-out is invoked from the settings page,
+  // so without this Next re-renders that page's server components in the same
+  // response — and they require the session we just destroyed, which threw
+  // UnauthenticatedError on every sign-out. A redirect skips the re-render
+  // (and its Stripe/database fan-out) entirely.
+  redirect("/sign-in");
 }, "Authentication.signOut");
 
 export const getCurrentUser = withAuthentication(async (context) => {

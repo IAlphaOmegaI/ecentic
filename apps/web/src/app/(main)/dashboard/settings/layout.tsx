@@ -1,15 +1,19 @@
 import { ArrowLeftIcon } from "@zenncore/icons";
-import { unwrapResult } from "@zenncore/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { type PropsWithChildren, Suspense } from "react";
 import * as Authentication from "@/server/app/authentication";
 import { Environment } from "@/server/utils/environment";
 
 const UserBadge = async () => {
-  const user = await unwrapResult(
-    Authentication.getCurrentUser(Environment.SERVER),
-  );
+  // Sign-out runs as a server action on this page, so Next re-renders us in the
+  // same response with the session already destroyed. Redirect rather than throw.
+  const account = await Authentication.getCurrentUser(Environment.SERVER);
+
+  if (!account.success) redirect("/sign-in");
+
+  const user = account.data;
 
   return (
     <div className="flex items-center gap-2.5">

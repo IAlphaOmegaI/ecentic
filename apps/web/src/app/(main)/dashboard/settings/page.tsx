@@ -1,4 +1,5 @@
 import { unwrapResult } from "@zenncore/utils";
+import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import * as Authentication from "@/server/app/authentication";
@@ -36,9 +37,19 @@ const SettingsSkeleton = () => (
 
 const SettingsContent = async () => {
   await connection();
-  const [user, stores, subscriptionResult, invoicesResult, performanceResult] =
+
+  // Resolve the session before fanning out. A server action on this page can
+  // destroy the session and Next then re-renders us in the same response —
+  // sign-out does exactly that — so treat a missing session as "go sign in",
+  // not as an error. Checking first also skips the Stripe/database calls below,
+  // which would only fail anyway.
+  const account = await Authentication.getCurrentUser(Environment.SERVER);
+
+  if (!account.success) redirect("/sign-in");
+
+  const user = account.data;
+  const [stores, subscriptionResult, invoicesResult, performanceResult] =
     await Promise.all([
-      unwrapResult(Authentication.getCurrentUser(Environment.SERVER)),
       unwrapResult(Store.getForCurrentUser(Environment.SERVER)),
       Subscription.getCurrentSubscription(Environment.SERVER),
       Subscription.listInvoices(Environment.SERVER),
