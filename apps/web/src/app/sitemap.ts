@@ -81,6 +81,12 @@ export default async (): Promise<MetadataRoute.Sitemap> => {
       priority: 0.8,
     },
     {
+      url: `${seo.host}/resources`,
+      lastModified: new Date("2026-07-11"),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    },
+    {
       url: `${seo.host}/ucp-validator`,
       lastModified: new Date("2026-04-26"),
       changeFrequency: "monthly" as const,

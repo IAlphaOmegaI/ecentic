@@ -1,6 +1,5 @@
 import { ArrowRightIcon, CheckIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import Image from "next/image";
 import Link from "next/link";
 import { BookCall } from "@/components/cal";
 
@@ -9,13 +8,6 @@ const assurances = [
   "Custom API access",
   "Dedicated CSM",
   "SOC 2 in progress",
-] as const;
-
-const pipeline = [
-  { name: "Mastercard", src: "/partners/enterprise/mastercard.png" },
-  { name: "Visa", src: "/partners/enterprise/visa.png" },
-  { name: "Inditex", src: "/partners/enterprise/inditex.svg" },
-  { name: "Carrefour", src: "/partners/enterprise/carrefour.svg" },
 ] as const;
 
 export const Hero = () => (
@@ -57,33 +49,6 @@ export const Hero = () => (
             >
               <CheckIcon className="size-3.5 text-primary" />
               {assurance}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="flex flex-col gap-4 border-accent-foreground border-t px-8 py-6 md:flex-row md:items-center md:justify-between">
-        <div className="flex flex-col gap-1">
-          <p className="font-medium text-foreground-dimmed text-sm uppercase tracking-[0.18em]">
-            Pilot conversations underway
-          </p>
-          <p className="font-light text-foreground-dimmed text-sm">
-            Introduced via Plug and Play Tirana. Not signed deals.
-          </p>
-        </div>
-        <ul className="flex flex-wrap items-center gap-3">
-          {pipeline.map((partner) => (
-            <li
-              key={partner.name}
-              className="flex h-12 w-24 items-center justify-center rounded-lg border border-accent-foreground bg-background-rich px-3"
-            >
-              <Image
-                src={partner.src}
-                alt={partner.name}
-                width={96}
-                height={32}
-                className="max-h-6 w-auto object-contain"
-              />
             </li>
           ))}
         </ul>

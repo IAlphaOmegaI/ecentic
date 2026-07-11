@@ -16,7 +16,6 @@ import { Faq } from "../pricing/_components/faq";
 import { Capabilities } from "./_components/capabilities";
 import { Compare } from "./_components/compare";
 import { Hero } from "./_components/hero";
-import { Pipeline } from "./_components/pipeline";
 
 const description =
   "Agent-commerce intelligence for enterprise merchants. Multi-brand dashboards, API access, SSO, SOC 2 compliance, UCP signing, and a dedicated CSM.";
@@ -26,11 +25,6 @@ const faq = [
     question: "When should I choose Enterprise over Dominate?",
     answer:
       "Choose Enterprise when you run hundreds of SKUs across multiple brands or regions, need SSO or a DPA, want UCP signing managed for you, or need a dedicated CSM and custom API access. Dominate covers the full optimization loop for a single brand up to 1000 products.",
-  },
-  {
-    question: "Are the pipeline conversations signed deals?",
-    answer:
-      "No. The conversations with Mastercard, Visa, Inditex, and Carrefour listed on this page are active pilot discussions introduced via Plug and Play Tirana, not signed commercial agreements. We list them for transparency on where the enterprise motion stands.",
   },
   {
     question: "What does onboarding look like for Enterprise?",
@@ -92,12 +86,10 @@ export default () => {
 
       <Capabilities />
 
-      <Pipeline />
-
       <Compare />
 
       <ContentPageSection
-        number="04"
+        number="03"
         title="Enterprise FAQ"
         description="Common questions about Enterprise plans, security, and onboarding."
         gutter
@@ -109,7 +101,7 @@ export default () => {
       <ContentPageFooter
         primary={{ href: "/demo", label: "Book a demo" }}
         secondary={{ href: "/pricing", label: "View pricing" }}
-        note="Active pilot conversations, not signed deals · SOC 2 in progress · DPA on request"
+        note="SOC 2 in progress · DPA on request"
       />
     </ContentPageLayout>
   );
