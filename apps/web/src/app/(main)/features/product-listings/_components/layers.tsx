@@ -69,7 +69,7 @@ export const Layers = () => (
         {layers.map((layer) => (
           <div
             key={layer.title}
-            className="flex flex-col gap-2 bg-background-dimmed p-6 md:min-h-80 md:justify-end md:p-8"
+            className="flex flex-col gap-2 bg-background-dimmed p-6 md:p-8"
           >
             <p className="font-medium text-foreground-dimmed text-sm uppercase tracking-[0.18em]">
               {layer.layer}
