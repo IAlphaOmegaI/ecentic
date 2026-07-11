@@ -58,10 +58,8 @@ const upsertFromStripeSubscription = withContext(
         ? subscription.customer
         : subscription.customer.id;
 
-    const user =
-      (subscription.metadata?.userId as string | undefined) ??
-      fallbackUser ??
-      null;
+    // biome-ignore lint/complexity/useLiteralKeys: signature index property
+    const user = subscription.metadata["userId"] ?? fallbackUser ?? null;
 
     const item = subscription.items.data[0];
     const priceId = item?.price.id ?? null;
