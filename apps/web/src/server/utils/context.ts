@@ -13,7 +13,7 @@ import { upload } from "../app/storage";
 import { db } from "../database";
 import { redis } from "./durable";
 import { type Brand, Environment } from "./environment";
-import { ErrorProtocol } from "./error";
+import { ErrorProtocol, isExpected } from "./error";
 
 export type GenericContext = {
   environment: {
@@ -36,10 +36,12 @@ export type GenericContext = {
   };
 };
 
+// biome-ignore lint/suspicious/noExplicitAny: any is used to handle type errors when working with empty Results
+type AnyResult = Result<any, Error> | Result<void, Error>;
+
 export type ContextedAction<
   Context extends GenericContext = GenericContext,
-  // biome-ignore lint/suspicious/noExplicitAny: any is used to handle type errors when working with empty Results
-  Return extends Result<any, Error> = Result<any, Error>,
+  Return extends AnyResult = AnyResult,
 > = (context: Context, ...args: never[]) => Promise<Return>;
 
 export type InferredReturn<
@@ -160,7 +162,7 @@ export const withContext = <
     const context = await enhance(base);
 
     if (!context.success) {
-      Sentry.captureException(context.error);
+      if (!isExpected(context.error)) Sentry.captureException(context.error);
 
       span.recordException(context.error);
       span.setStatus({ code: 2, message: context.error.message });
@@ -178,22 +180,27 @@ export const withContext = <
       };
     }
 
+    const contextData = context.data as Context;
+
     return Sentry.withServerActionInstrumentation(
       name,
       { recordResponse: true, headers: await headers() },
       async () => {
-        const result = await fn(context.data as Context, ...args);
+        const result = await fn(contextData, ...args);
 
         if (!result.success) {
-          Sentry.captureException(result.error);
-          context.data.span.recordException(result.error);
+          // Expected failures (business rules like a store already claimed by
+          // another account) are shown to the user, not reported as defects.
+          if (!isExpected(result.error)) Sentry.captureException(result.error);
 
-          context.data.span.setStatus({
+          contextData.span.recordException(result.error);
+
+          contextData.span.setStatus({
             code: 2,
             message: result.error.message,
           });
 
-          context.data.span.end();
+          contextData.span.end();
 
           const error =
             environment === Environment.CLIENT
@@ -206,9 +213,9 @@ export const withContext = <
           };
         }
 
-        context.data.span.setStatus({ code: 1 });
+        contextData.span.setStatus({ code: 1 });
 
-        context.data.span.end();
+        contextData.span.end();
 
         return result as Result<
           ReturnSuccess,
@@ -287,7 +294,7 @@ export const pipe = <
 ): Enhancer<A, C, E1 | E2> => {
   return async (context: A) => {
     const result = await first(context);
-    if (!result.success) return result as Result<never, E1 | E2>;
+    if (!result.success) return result as { success: false; error: E1 | E2 };
     return second(result.data as B) as Promise<Result<C, E1 | E2>>;
   };
 };

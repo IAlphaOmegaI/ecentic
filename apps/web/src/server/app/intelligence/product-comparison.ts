@@ -504,7 +504,9 @@ export const unwrapMcpCatalogResult = async (
   const record = result as Record<string, unknown>;
   if ("error" in record) return record;
 
-  const content = record.content;
+  // biome-ignore lint/complexity/useLiteralKeys: index signature property
+  const content = record["content"];
+
   if (!Array.isArray(content)) return result;
 
   for (const part of content) {

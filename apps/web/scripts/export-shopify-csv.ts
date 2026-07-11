@@ -19,7 +19,11 @@ const parseArgs = () => {
   const args = new Map<string, string>();
   for (const arg of process.argv.slice(2)) {
     const match = arg.match(/^--([^=]+)=(.*)$/);
-    if (match) args.set(match[1], match[2]);
+
+    if (!match) continue;
+
+    const [, key, value] = match;
+    if (key !== undefined && value !== undefined) args.set(key, value);
   }
   return {
     email: args.get("email") ?? "contact@ecentic.ai",

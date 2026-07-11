@@ -1,6 +1,7 @@
 /**
  * Success shape for `Result<T>`.
- * - `void` only → no `data` (sync helpers with no return value).
+ * - `void` (or `undefined`, since `[undefined] extends [void]`) → `data` optional
+ *   (sync helpers with no return value can omit it, but reading `.data` stays legal).
  * - `any` / `unknown` / unions with `undefined` → always include `data`.
  *
  * Uses tuple wrapping so `T | undefined` does not distribute, and `0 extends 1 & T`
@@ -8,8 +9,9 @@
  */
 type SuccessResult<T> = 0 extends 1 & T
   ? { success: true; data: T }
-  : [T] extends [undefined]
-    ? { success: true }
+  : // biome-ignore lint/suspicious/noConfusingVoidType: void must be distinguished from undefined here — `[undefined] extends [void]` is true, so this also covers plain undefined
+    [T] extends [void]
+    ? { success: true; data?: T }
     : { success: true; data: T };
 
 export type Result<T = void, E = Error> =
@@ -71,12 +73,10 @@ export function resultify<
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: any is used to handle type errors when working with empty Results
-export type UnwrapResult<T extends Result<any>> = "data" extends keyof Extract<
-  T,
-  { success: true }
->
-  ? Extract<T, { success: true }>["data"]
-  : undefined;
+export type UnwrapResult<T extends Result<any> | Result<void>> =
+  "data" extends keyof Extract<T, { success: true }>
+    ? Extract<T, { success: true }>["data"]
+    : undefined;
 
 // Async overload
 // biome-ignore lint/suspicious/noExplicitAny: any is used to handle type errors when working with empty Results
@@ -109,7 +109,7 @@ export function unwrapResult<T extends Result<any> | Promise<Result<any>>>(
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: any is used to handle type errors when working with empty Results
-export type InferredError<T extends Result<any>> = Extract<
+export type InferredError<T extends Result<any> | Result<void>> = Extract<
   T,
   { success: false }
 >["error"];

@@ -24,9 +24,14 @@ export const exportWinRateSummary = withAuthentication(async () => {
 
   const latest = complete[0];
 
+  if (!latest) {
+    return { success: false as const, error: new NotFoundError("Scan") };
+  }
+
   const simulations = await Simulation.getForScan(Environment.SERVER, {
     scan: latest.id,
   });
+
   if (!simulations.success) return simulations;
 
   const models = [

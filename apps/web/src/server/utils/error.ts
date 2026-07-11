@@ -4,10 +4,21 @@ type Constructor<T extends EmptyObject = EmptyObject> = new (
   ...args: never[]
 ) => T;
 
+/**
+ * Names of errors that describe an anticipated business rule rather than a
+ * defect — see `isExpected`. Keyed by name because `error()` re-points instances
+ * at their parent's prototype (ruling out `instanceof` on the leaf class) and
+ * because the name is the one field that survives serialization to the client.
+ */
+const expected = new Set<string>();
+
 export const error = <Name extends string>(
   name: Name,
   parent: Constructor = Error,
+  options?: { expected?: boolean },
 ) => {
+  if (options?.expected) expected.add(name);
+
   const ErrorClass = class extends Error {
     override name: Name;
     statusCode?: number;
@@ -44,6 +55,16 @@ export class NotFoundError extends error("not-found-error", DatabaseError) {}
 
 export class RequestError extends error("request-error", Error) {}
 
+/**
+ * A well-formed request that conflicts with the current state of the system —
+ * e.g. connecting a store another account already owns. The user is told what
+ * happened and what to do about it; nothing is broken, so it is never reported
+ * to Sentry.
+ */
+export class ConflictError extends error("conflict-error", RequestError, {
+  expected: true,
+}) {}
+
 export class TimeoutError extends error("timeout-error", RequestError) {}
 
 export class ParseError extends error("parse-error", RequestError) {}
@@ -65,6 +86,14 @@ export class InvalidCredentialsError extends error(
   AuthenticationError,
 ) {}
 
+/**
+ * Whether an error is a failure the product anticipates and handles — a business
+ * rule the user can act on — rather than a defect. Expected errors still travel
+ * as failed `Result`s and still reach the user, but `withContext` does not report
+ * them to Sentry.
+ */
+export const isExpected = (error: Error) => expected.has(error.name);
+
 export namespace ErrorProtocol {
   export type SerializedError<E extends Error = Error> = {
     name: E["name"];
@@ -85,6 +114,7 @@ export namespace ErrorProtocol {
     [ValidationError.name]: ValidationError,
     [NotFoundError.name]: NotFoundError,
     [RequestError.name]: RequestError,
+    [ConflictError.name]: ConflictError,
     [TimeoutError.name]: TimeoutError,
     [ParseError.name]: ParseError,
     [UnauthenticatedError.name]: UnauthenticatedError,

@@ -34,7 +34,11 @@ const parseArgs = () => {
   const args = new Map<string, string>();
   for (const arg of process.argv.slice(2)) {
     const match = arg.match(/^--([^=]+)=(.*)$/);
-    if (match) args.set(match[1], match[2]);
+    if (!match) continue;
+
+    const [, key, value] = match;
+
+    if (key !== undefined && value !== undefined) args.set(key, value);
   }
   return {
     email: args.get("email") ?? "contact@ecentic.ai",
@@ -70,6 +74,18 @@ const chunk = <T>(items: T[], size: number): T[][] => {
   for (let index = 0; index < items.length; index += size)
     out.push(items.slice(index, index + size));
   return out;
+};
+
+// Indexed access that is impossible-by-construction to be out of bounds
+// (e.g. an index derived from the same array's own length). Fails loudly
+// instead of silently coercing to `undefined` under noUncheckedIndexedAccess.
+const at = <T>(items: readonly T[], index: number): T => {
+  const value = items[index];
+  if (value === undefined)
+    throw new Error(
+      `Expected index ${index} to exist (length ${items.length}).`,
+    );
+  return value;
 };
 
 const hostnameOf = (value: string): string => {
@@ -1141,8 +1157,8 @@ const seed = async () => {
       let low = 0;
       let high = order.length - 1;
       while (low <= high) {
-        interleaved.push(order[low++].index);
-        if (low <= high) interleaved.push(order[high--].index);
+        interleaved.push(at(order, low++).index);
+        if (low <= high) interleaved.push(at(order, high--).index);
       }
       const rank: number[] = new Array(ranked.length);
       interleaved.forEach((index, position) => {
@@ -1155,7 +1171,7 @@ const seed = async () => {
         await db
           .update(schema.product)
           .set({
-            createdAt: daysAgo(0, rank[index] * 2 + 2),
+            createdAt: daysAgo(0, at(rank, index) * 2 + 2),
             updatedAt: daysAgo(0, 1),
           })
           .where(eq(schema.product.id, entry.product.id));
@@ -1204,8 +1220,8 @@ const seed = async () => {
     let low = 0;
     let high = winOrder.length - 1;
     while (low <= high) {
-      interleaved.push(winOrder[low++].index);
-      if (low <= high) interleaved.push(winOrder[high--].index);
+      interleaved.push(at(winOrder, low++).index);
+      if (low <= high) interleaved.push(at(winOrder, high--).index);
     }
     const rank: number[] = new Array(specs.length);
     interleaved.forEach((specIndex, position) => {
@@ -1236,7 +1252,7 @@ const seed = async () => {
         status: "active",
         structuredData: structured,
         syncedAt: daysAgo(0, 3),
-        createdAt: daysAgo(0, rank[index] * 2 + 2),
+        createdAt: daysAgo(0, at(rank, index) * 2 + 2),
         updatedAt: daysAgo(0, 1),
         win: spec.win,
       };
@@ -1382,8 +1398,13 @@ const seed = async () => {
   const latestTotal = simulationRows.length;
   const latestLosses = latestTotal - latestWins;
 
-  // Worst product drives the headline finding.
-  const worst = [...productRows].sort((a, b) => a.win - b.win)[0];
+  // Worst product drives the headline finding. productRows is always
+  // non-empty by construction (attach mode exits earlier when a store has no
+  // products; create mode always seeds at least 3).
+  const worst = at(
+    [...productRows].sort((a, b) => a.win - b.win),
+    0,
+  );
   const worstFinding = {
     name: worst.title,
     missingAttributes: [

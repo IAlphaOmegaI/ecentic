@@ -49,9 +49,10 @@ export const GET = async (request: NextRequest) => {
   jar.delete("shopify_shop");
 
   if (!result.success) {
-    const reason = /already connected/i.test(result.error.message)
-      ? "already_connected"
-      : "integration_failed";
+    const reason =
+      result.error.name === "conflict-error"
+        ? "already_connected"
+        : "integration_failed";
     return Response.redirect(connectPage(reason));
   }
 

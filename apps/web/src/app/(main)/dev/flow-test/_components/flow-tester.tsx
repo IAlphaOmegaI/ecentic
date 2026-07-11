@@ -408,10 +408,18 @@ const CheckoutResult = ({ lines }: { lines: LogLine[] }) => {
   if (!raw || typeof raw !== "object" || "error" in raw) return null;
 
   const checkout = raw as Record<string, unknown>;
-  const status = typeof checkout.status === "string" ? checkout.status : null;
+
+  const status =
+    // biome-ignore lint/complexity/useLiteralKeys: index signature property
+    typeof checkout["status"] === "string" ? checkout["status"] : null;
   const continueUrl =
-    typeof checkout.continue_url === "string" ? checkout.continue_url : null;
-  const checkoutId = typeof checkout.id === "string" ? checkout.id : null;
+    // biome-ignore lint/complexity/useLiteralKeys: index signature property
+    typeof checkout["continue_url"] === "string"
+      ? // biome-ignore lint/complexity/useLiteralKeys: index signature property
+        checkout["continue_url"]
+      : null;
+  // biome-ignore lint/complexity/useLiteralKeys: index signature property
+  const checkoutId = typeof checkout["id"] === "string" ? checkout["id"] : null;
 
   return (
     <div className="rounded-lg border border-accent-foreground bg-background-rich">

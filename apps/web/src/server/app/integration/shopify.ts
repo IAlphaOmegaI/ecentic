@@ -6,7 +6,7 @@ import { type TransactionScope, withTransaction } from "../../database";
 import { withAuthentication } from "../../utils/authentication";
 import { withContext } from "../../utils/context";
 import { Environment } from "../../utils/environment";
-import { RequestError } from "../../utils/error";
+import { ConflictError, RequestError } from "../../utils/error";
 import * as HTTP from "../../utils/http";
 import {
   normalizeHostname,
@@ -502,7 +502,7 @@ export const handleOAuthCallback = withContext(
     if (reconciliation.data.kind === "claimed")
       return {
         success: false,
-        error: new RequestError(
+        error: new ConflictError(
           "This store is already connected to another écentic account.",
         ),
       };
@@ -1338,7 +1338,7 @@ export const connectPublic = withAuthentication(
     if (reconciliation.data.kind === "claimed")
       return {
         success: false,
-        error: new RequestError(
+        error: new ConflictError(
           "This store is already connected to another écentic account.",
         ),
       };

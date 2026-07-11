@@ -261,10 +261,14 @@ export const runDiscovery = withAuthentication(
     const queryResults: DiscoveryQueryResult[] = queries.map(
       (query, qIndex) => ({
         query,
-        models: perspectives.map(
-          (_perspective, pIndex) =>
-            settled[qIndex * perspectives.length + pIndex],
-        ),
+        models: perspectives
+          .map(
+            (_perspective, pIndex) =>
+              settled[qIndex * perspectives.length + pIndex],
+          )
+          .filter(
+            (model): model is DiscoveryModelResult => model !== undefined,
+          ),
       }),
     );
 
