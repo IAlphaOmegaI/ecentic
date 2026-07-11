@@ -16,6 +16,9 @@ Sentry.init({
     /@context.*toLowerCase/,
     // Browser extensions' internal postMessage RPC losing its target frame — external code, not ours
     /Object Not Found Matching Id:\d+, MethodName:\w+, ParamCount:\d+/,
+    // React's removeChild fails when a browser translate/reader-mode feature or extension
+    // mutates DOM nodes React also manages — external mutation, not an app bug
+    "The object can not be found here.",
   ],
 
   // Chatwoot widget's sdk.js posts to its bubble iframe before it's mounted
