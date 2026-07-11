@@ -139,7 +139,8 @@
       "Bash(echo \"secret1: $\\(openssl rand -base64 32\\)\")",
       "Bash(echo \"secret2: $\\(openssl rand -base64 32\\)\")",
       "PowerShell($env:Path = \"$env:USERPROFILE\\\\.bun\\\\bin;$env:Path\"; bun run dev:web)",
-      "PowerShell($env:Path = \"$env:USERPROFILE\\\\.bun\\\\bin;$env:Path\"; Set-Location \"C:\\\\Users\\\\user\\\\Desktop\\\\Development\\\\ecentic\"; bunx biome check --write --unsafe \"apps/web/src/app/\\(main\\)/_components/content.tsx\" \"apps/web/src/app/\\(main\\)/blog/_components/editorial-page.tsx\" \"apps/web/src/app/\\(main\\)/privacy-policy/page.tsx\" \"apps/web/src/app/\\(main\\)/enterprise/page.tsx\" \"apps/web/src/app/\\(main\\)/demo/page.tsx\")"
+      "PowerShell($env:Path = \"$env:USERPROFILE\\\\.bun\\\\bin;$env:Path\"; Set-Location \"C:\\\\Users\\\\user\\\\Desktop\\\\Development\\\\ecentic\"; bunx biome check --write --unsafe \"apps/web/src/app/\\(main\\)/_components/content.tsx\" \"apps/web/src/app/\\(main\\)/blog/_components/editorial-page.tsx\" \"apps/web/src/app/\\(main\\)/privacy-policy/page.tsx\" \"apps/web/src/app/\\(main\\)/enterprise/page.tsx\" \"apps/web/src/app/\\(main\\)/demo/page.tsx\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/how-it-works)"
     ]
   }
 }

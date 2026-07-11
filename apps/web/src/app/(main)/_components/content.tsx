@@ -166,8 +166,10 @@ export const ContentPageSection = ({
 }: ContentPageSection.Props) => (
   <div className={cn("border-accent-foreground border-b", classList?.root)}>
     {gutter ? (
-      <div className="mx-auto max-w-6xl border-accent-foreground border-x">
-        <SectionGutter />
+      <div className="border-accent-foreground border-b">
+        <div className="mx-auto max-w-6xl border-accent-foreground border-x">
+          <SectionGutter />
+        </div>
       </div>
     ) : null}
     <div
@@ -186,7 +188,6 @@ export const ContentPageSection = ({
           classList?.left,
         )}
       >
-        <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
         <span className="mt-auto font-normal text-2xl text-primary">
           {number}
         </span>
