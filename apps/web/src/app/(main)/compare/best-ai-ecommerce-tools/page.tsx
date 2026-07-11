@@ -7,93 +7,19 @@ import {
   createMetadata,
 } from "@/lib/seo";
 import {
-  ContentPageCardGrid,
-  ContentPageFaqGrid,
   ContentPageFooter,
   ContentPageLayout,
-  ContentPageRichText,
   ContentPageSection,
-  splitGridClassList,
-  splitGridSectionClassList,
 } from "../../_components/content";
+import { Faq } from "../../pricing/_components/faq";
+import { Bottleneck } from "./_components/bottleneck";
+import { Guide } from "./_components/guide";
+import { Hero } from "./_components/hero";
+import { RelatedPages } from "./_components/related";
+import { Tools, tools } from "./_components/tools";
 
 const description =
   "Best AI tools for ecommerce in 2026, organized by category so merchants can compare content, personalization, search, analytics, and agent-commerce workflows.";
-
-const tools = [
-  {
-    name: "ecentic",
-    category: "Agent-commerce optimization",
-    summary:
-      "Best for merchants who need simulation, competitor diagnosis, and listing optimization tied to AI shopping selection.",
-  },
-  {
-    name: "Hypotenuse AI",
-    category: "Product content generation",
-    summary:
-      "Best for teams focused on producing product descriptions and marketplace content faster across large catalogs.",
-  },
-  {
-    name: "Shopify Magic",
-    category: "Platform-native drafting",
-    summary:
-      "Best for Shopify merchants who want native AI assistance inside their existing store workflow.",
-  },
-  {
-    name: "Nosto",
-    category: "Personalization",
-    summary:
-      "Best for brands prioritizing onsite personalization, segmentation, and merchandising experiences.",
-  },
-  {
-    name: "Constructor",
-    category: "Search and discovery",
-    summary:
-      "Best for teams that need stronger ecommerce search relevance and product discovery infrastructure.",
-  },
-  {
-    name: "Bloomreach",
-    category: "Enterprise intelligence",
-    summary:
-      "Best for enterprise teams combining search, merchandising, marketing, and customer data workflows.",
-  },
-] as const;
-
-const internalLinks = [
-  {
-    href: "/features",
-    eyebrow: "Features",
-    title: "Review the core AI ecommerce tools workflow",
-    description:
-      "Use the features page if you want the product-led overview before diving into a specific platform or comparison path.",
-    label: "Open features page",
-    color: "primary",
-  },
-  {
-    href: "/features/product-listings",
-    eyebrow: "Product listings",
-    title: "Go deeper on AI product listing optimization",
-    description:
-      "This page is the best next step if better product content and clearer attributes are the main priority.",
-    label: "View listing workflow",
-  },
-  {
-    href: "/platforms/shopify",
-    eyebrow: "Shopify",
-    title: "See the Shopify-specific buying path",
-    description:
-      "Choose this page if your shortlist currently includes Shopify-native and Shopify-adjacent AI tools.",
-    label: "Open Shopify page",
-  },
-  {
-    href: "/platforms/woocommerce",
-    eyebrow: "WooCommerce",
-    title: "See the WooCommerce-specific buying path",
-    description:
-      "Use the WooCommerce page if you need a truthful supported-platform path instead of a generic comparison only.",
-    label: "Open WooCommerce page",
-  },
-] as const;
 
 const faq = [
   {
@@ -181,103 +107,37 @@ export default () => {
   return (
     <ContentPageLayout
       eyebrow="Comparison"
-      title="Best AI Tools for Ecommerce in 2026"
+      title="Best AI tools for ecommerce in 2026."
       description={description}
+      hideHero
+      hideHeroSpacer={false}
     >
       <JsonLd schemas={structuredData} />
 
-      <ContentPageSection
-        number="01"
-        title="How to use this comparison guide"
-        description="Comparing categories first makes the final vendor decision faster and less likely to end up on the wrong shortlist."
-      >
-        <ContentPageRichText
-          content={`The best AI tools for ecommerce in 2026 do not all solve the same problem. That is why this page compares categories before it compares brand names. A merchant choosing between a content generator, a personalization platform, a search product, and an agent-commerce workflow can easily end up with the wrong shortlist if everything is forced into one generic feature table.
+      <Hero />
 
-The better question is: what job are you hiring the tool to do right now?
+      <Guide />
 
-If the biggest issue is producing product content faster, the right category looks different from the team that needs stronger onsite personalization. And both of those buyers are different from the merchant trying to improve product selection in AI-mediated shopping flows.
+      <Tools />
 
-This guide is organized to make that distinction clearer:
-- Content generation tools for product descriptions and catalog scale
-- Platform-native AI for merchants staying close to their ecommerce stack
-- Personalization and merchandising tools for onsite conversion
-- Search and discovery infrastructure for product relevance
-- Agent-commerce optimization tools for AI shopping visibility and selection`}
-        />
-      </ContentPageSection>
+      <Bottleneck />
 
-      <ContentPageSection
-        number="02"
-        title="The categories most merchants compare"
-        description="Each category solves a different problem. The best shortlist usually starts with one tool per category."
-        classList={splitGridSectionClassList}
-      >
-        <div className="grid gap-px bg-accent-foreground md:grid-cols-2">
-          {tools.map((tool) => (
-            <article
-              key={tool.name}
-              className="flex flex-col gap-3 bg-background-dimmed p-6"
-            >
-              <p className="font-medium text-foreground text-sm uppercase tracking-[0.18em]">
-                {tool.category}
-              </p>
-              <h3 className="text-2xl text-foreground leading-tight">
-                {tool.name}
-              </h3>
-              <p className="text-foreground-dimmed leading-relaxed">
-                {tool.summary}
-              </p>
-            </article>
-          ))}
-        </div>
-      </ContentPageSection>
-
-      <ContentPageSection
-        number="03"
-        title="Where merchants usually make the wrong comparison"
-        description="The most useful evaluation narrows to the specific operational bottleneck first, not to the longest feature checklist."
-      >
-        <ContentPageRichText
-          content={`A common mistake is to compare every AI ecommerce product as though it were a copy tool. That makes some evaluations look simpler, but it also hides the real buying decision.
-
-If the team needs faster product descriptions, then a content generation tool may be enough. If the team needs better onsite conversion experiences, a personalization platform or search product may be the right category. But if the merchant wants to know why AI shopping systems keep preferring a competitor and how to improve the listing that loses, then the evaluation should move toward agent-commerce optimization instead.
-
-That distinction matters because each category creates value in a different part of the commerce stack:
-- Content generation improves production speed
-- Personalization improves onsite relevance
-- Search tools improve discovery and navigation
-- Analytics tools improve reporting visibility
-- Agent-commerce optimization improves the product selection workflow when AI systems compare competing listings
-
-Buyers usually get better results when they shortlist one tool per category first, then narrow the decision based on the operational bottleneck that matters most this quarter.`}
-        />
-      </ContentPageSection>
-
-      <ContentPageSection
-        number="04"
-        title="Explore the pages behind the shortlist"
-        description="Each page below goes deeper on a specific part of the decision — workflow, platform, or listing optimization."
-        classList={splitGridSectionClassList}
-      >
-        <ContentPageCardGrid
-          items={internalLinks}
-          classList={splitGridClassList}
-        />
-      </ContentPageSection>
+      <RelatedPages />
 
       <ContentPageSection
         number="05"
         title="Frequently asked questions"
         description="Common questions from merchants comparing AI ecommerce tools and platforms."
-        classList={splitGridSectionClassList}
+        gutter
+        classList={{ body: "p-0" }}
       >
-        <ContentPageFaqGrid items={faq} classList={splitGridClassList} />
+        <Faq items={faq} />
       </ContentPageSection>
 
       <ContentPageFooter
         primary={{ href: "/sign-up", label: "Start with ecentic" }}
         secondary={{ href: "/", label: "Back to home" }}
+        note="2-minute setup · No credit card · See your free score first"
       />
     </ContentPageLayout>
   );

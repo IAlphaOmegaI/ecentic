@@ -36,7 +36,7 @@ const columns = [
   {
     title: "Company",
     links: [
-      { href: "mailto:support@ecentic.ai", label: "Support" },
+      { href: "/support", label: "Support" },
       { href: "/privacy-policy", label: "Privacy Policy" },
     ],
   },
@@ -70,7 +70,7 @@ export const Footer = ({ stacked = false }: Footer.Props) => (
     >
       <div
         aria-hidden
-        className="-z-10 pointer-events-none absolute inset-x-0 bottom-0 h-[500px] bg-radial-[at_50%_100%] from-primary/20 via-primary/5 to-transparent"
+        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[500px] bg-radial-[at_50%_100%] from-primary/20 via-primary/5 to-transparent"
       />
       {!stacked && (
         <>

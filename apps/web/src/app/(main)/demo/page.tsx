@@ -10,14 +10,14 @@ import {
   organizationSchema,
 } from "@/lib/seo";
 import {
-  ContentPageFaqGrid,
   ContentPageFooter,
   ContentPageLayout,
-  ContentPageRichText,
   ContentPageSection,
-  splitGridClassList,
-  splitGridSectionClassList,
 } from "../_components/content";
+import { Faq } from "../pricing/_components/faq";
+import { Hero } from "./_components/hero";
+import { WhatWeCover } from "./_components/what-we-cover";
+import { WhoShouldBook } from "./_components/who-should-book";
 
 const description =
   "Book a 15-minute ecentic demo. We run your top products through GPT-4, Claude, Gemini, and Perplexity live, show you why you win or lose, and scope the highest-impact listing fixes.";
@@ -80,60 +80,35 @@ export default () => {
       eyebrow="Book a demo"
       title="See your AI win rate, live in 15 minutes."
       description={description}
+      hideHero
+      hideHeroSpacer={false}
     >
       <JsonLd schemas={structuredData} />
 
+      <Hero />
+
       <div className="border-accent-foreground border-b">
         <div className="relative mx-auto max-w-6xl border-accent-foreground border-x">
-          <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
-          <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
+          <Plus className="bottom-0 left-0 hidden -translate-x-1/2 translate-y-1/2 md:flex" />
+          <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
           <div className="h-[680px] w-full bg-background">
             <BookingEmbed />
           </div>
         </div>
       </div>
 
-      <ContentPageSection
-        number="01"
-        title="What we’ll cover"
-        description="A focused 15-minute working session, not a slide deck — you leave with something to act on."
-      >
-        <ContentPageRichText
-          content={`We keep the call short and practical. Bring a store URL or a few product links and we will do the rest live:
-- Run your top products through GPT-4, Claude, Gemini, and Perplexity while you watch
-- Show exactly why agents pick you or a competitor, attribute by attribute
-- Hand you the highest-impact listing changes to make first
-- Sketch what an ongoing optimization loop would look like for your catalog
+      <WhatWeCover />
 
-There is no procurement deck required to start, and no obligation to continue.`}
-        />
-      </ContentPageSection>
-
-      <ContentPageSection
-        number="02"
-        title="Who should book"
-        description="The call is most useful when you have a real catalog to look at and a reason to act on the results."
-      >
-        <ContentPageRichText
-          content={`A demo is the fastest path when you want a second set of eyes on the results rather than reading the report alone.
-
-It tends to help teams that are:
-- Managing large or competitive catalogs where missing attributes quietly cost selection
-- Evaluating agent-commerce optimization against content generators or analytics tools
-- Running multiple stores and weighing a custom Enterprise setup
-- Short on time and want the diagnosis explained in plain language
-
-If you would rather just see your numbers first, the free Scan plan runs the same simulation on your top 10 products in about two minutes.`}
-        />
-      </ContentPageSection>
+      <WhoShouldBook />
 
       <ContentPageSection
         number="03"
         title="Frequently asked questions"
         description="Common questions about the demo call."
-        classList={splitGridSectionClassList}
+        gutter
+        classList={{ body: "p-0" }}
       >
-        <ContentPageFaqGrid items={faq} classList={splitGridClassList} />
+        <Faq items={faq} />
       </ContentPageSection>
 
       <ContentPageFooter

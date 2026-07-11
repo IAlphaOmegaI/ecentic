@@ -8,15 +8,13 @@ import {
   organizationSchema,
 } from "@/lib/seo";
 import {
-  ContentPageFaqGrid,
   ContentPageFooter,
   ContentPageLayout,
-  ContentPageRichText,
   ContentPageSection,
-  splitGridClassList,
-  splitGridSectionClassList,
 } from "../_components/content";
-import { Steps } from "../_components/steps";
+import { Faq } from "../pricing/_components/faq";
+import { Hero } from "./_components/hero";
+import { Steps } from "./_components/steps";
 
 const description =
   "How ecentic works: simulate how GPT-4, Claude, Gemini, and Perplexity compare your products, diagnose why you lose, and optimize titles, descriptions, and structured data to win more AI-assisted carts.";
@@ -99,73 +97,29 @@ export default () => {
       eyebrow="How it works"
       title="From invisible to chosen in three steps."
       description={description}
+      hideHero
+      hideHeroSpacer={false}
     >
       <JsonLd schemas={structuredData} />
 
+      <Hero />
+
       <Steps />
-
-      <ContentPageSection
-        number="01"
-        title="Simulate"
-        description="See how every major AI shopping model compares your products against the competition, in real time."
-      >
-        <ContentPageRichText
-          content={`AI shopping agents do not read your store the way a human shopper does. They compare structured signals — titles, attributes, pricing, and trust markers — across every product in a category in seconds.
-
-ecentic recreates that comparison. It runs your products through GPT-4, Claude, Gemini, and Perplexity at once and records the outcome for each model:
-- Which competitor each agent prefers and why
-- Which attributes carried the most weight in the decision
-- How the same product performs across different models and shopping contexts`}
-        />
-      </ContentPageSection>
-
-      <ContentPageSection
-        number="02"
-        title="Diagnose"
-        description="Turn a win-or-lose result into a specific, fixable reason for every product."
-      >
-        <ContentPageRichText
-          content={`A score on its own does not help a merchandising team act. The diagnosis step explains the cause behind each loss in language your team can use.
-
-Most losses fall into a few patterns:
-- A title that does not carry the buying context an agent needs
-- Missing or inconsistent specifications and structured data
-- Weak trust signals compared to a competing product
-- A description that makes comparison harder instead of easier
-
-Each finding is tied to a concrete change, so the work moves from "why did we lose" to "here is exactly what to fix first".`}
-        />
-      </ContentPageSection>
-
-      <ContentPageSection
-        number="03"
-        title="Optimize"
-        description="Approve the highest-impact changes and keep listings tuned as the models evolve."
-      >
-        <ContentPageRichText
-          content={`The final step converts the diagnosis into approval-ready listing updates. ecentic rewrites titles, descriptions, and structured data for maximum agent selection and queues them for review.
-
-You stay in control of how much is automated:
-- Review and publish each change in one click
-- Enable auto-publish for products where the loop has earned trust
-- Re-run simulations continuously so listings stay optimized as models drift
-
-Because every change is tracked, you can measure the lift in win rate and the agent traffic that follows.`}
-        />
-      </ContentPageSection>
 
       <ContentPageSection
         number="04"
         title="Frequently asked questions"
         description="Common questions about the simulate, diagnose, and optimize loop."
-        classList={splitGridSectionClassList}
+        gutter
+        classList={{ body: "p-0" }}
       >
-        <ContentPageFaqGrid items={faq} classList={splitGridClassList} />
+        <Faq items={faq} />
       </ContentPageSection>
 
       <ContentPageFooter
         primary={{ href: "/sign-up", label: "Run your free scan" }}
         secondary={{ href: "/pricing", label: "See pricing" }}
+        note="First scan in about two minutes · No credit card"
       />
     </ContentPageLayout>
   );
