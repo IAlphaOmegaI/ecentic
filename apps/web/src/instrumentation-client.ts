@@ -14,6 +14,8 @@ Sentry.init({
   ignoreErrors: [
     // Safari/extension structured-data parsers crashing on page JSON-LD — external code, not ours
     /@context.*toLowerCase/,
+    // Browser extensions' internal postMessage RPC losing its target frame — external code, not ours
+    /Object Not Found Matching Id:\d+, MethodName:\w+, ParamCount:\d+/,
   ],
 
   // Chatwoot widget's sdk.js posts to its bubble iframe before it's mounted
