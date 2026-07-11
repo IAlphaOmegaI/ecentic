@@ -1,11 +1,18 @@
+import type { Icon } from "@zenncore/icons";
+import {
+  CheckCircleIcon,
+  CheckIcon,
+  ShareIcon,
+  ShieldCheckIcon,
+  XCircleIcon,
+} from "@zenncore/icons";
 import type { Metadata } from "next";
-import Image from "next/image";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { Plus } from "@/components/plus";
 import { createMetadata } from "@/lib/seo";
-import Background from "@/public/images/privacy-policy.png";
+import { ContentPageSection } from "../_components/content";
 import { renderInline } from "../_components/rich-text";
 
 export const metadata: Metadata = createMetadata({
@@ -14,6 +21,45 @@ export const metadata: Metadata = createMetadata({
     "How ecentic collects, uses, and protects your data when using our e-commerce optimization platform.",
   path: "/privacy-policy",
 });
+
+const assurances = [
+  "No shopper personal data",
+  "Essential cookies only",
+  "Encrypted in transit & at rest",
+] as const;
+
+type Summary = {
+  icon: Icon;
+  title: string;
+  description: string;
+};
+
+const summary: readonly Summary[] = [
+  {
+    icon: CheckCircleIcon,
+    title: "What we store",
+    description:
+      "Account basics and the product catalog data you connect: titles, descriptions, prices, images, SKUs.",
+  },
+  {
+    icon: XCircleIcon,
+    title: "What we never touch",
+    description:
+      "Shopper personal data, orders, and payment information. Our integrations use products-only scopes.",
+  },
+  {
+    icon: ShareIcon,
+    title: "Where data goes",
+    description:
+      "To AI providers during simulations only, over encrypted calls. Never sold or shared for marketing.",
+  },
+  {
+    icon: ShieldCheckIcon,
+    title: "What you control",
+    description:
+      "Delete your account and everything goes with it. GDPR requests: privacy@ecentic.ai.",
+  },
+] as const;
 
 const sections = [
   {
@@ -44,12 +90,12 @@ We never sell, rent, or share your product data with third parties for their own
     title: "Third-Party Services",
     number: "03",
     content: `We use the following third-party services to operate ecentic:
-- **AI Model Providers** (OpenAI, Anthropic, Google) — Product data is sent to AI models during simulations. Data is transmitted via encrypted API calls and is not retained by providers beyond the API request lifecycle per their data processing agreements.
-- **Sentry** — Error monitoring. May receive anonymized error context (no product data).
-- **PostHog** — Product analytics. Receives anonymized usage events (page views, feature interactions). No product catalog data is sent.
-- **Resend** — Transactional email delivery (verification codes, notifications). Receives only email addresses and message content.
-- **UploadThing** — File storage for uploaded assets. Stores only files you explicitly upload.
-- **Vercel** — Hosting infrastructure. Processes requests but does not independently store application data.`,
+- **AI Model Providers** (OpenAI, Anthropic, Google): Product data is sent to AI models during simulations. Data is transmitted via encrypted API calls and is not retained by providers beyond the API request lifecycle per their data processing agreements.
+- **Sentry**: Error monitoring. May receive anonymized error context (no product data).
+- **PostHog**: Product analytics. Receives anonymized usage events (page views, feature interactions). No product catalog data is sent.
+- **Resend**: Transactional email delivery (verification codes, notifications). Receives only email addresses and message content.
+- **UploadThing**: File storage for uploaded assets. Stores only files you explicitly upload.
+- **Vercel**: Hosting infrastructure. Processes requests but does not independently store application data.`,
   },
   {
     title: "Data Storage & Security",
@@ -83,8 +129,8 @@ For GDPR data subject requests (access, rectification, erasure, portability), co
     title: "Cookies",
     number: "06",
     content: `We use essential cookies only:
-- **Session cookies** — Maintain your authenticated session
-- **OAuth state cookies** — Short-lived (10 minutes) cookies used during Shopify OAuth flow to prevent CSRF attacks
+- **Session cookies**: Maintain your authenticated session
+- **OAuth state cookies**: Short-lived (10 minutes) cookies used during Shopify OAuth flow to prevent CSRF attacks
 
 We do not use advertising cookies or third-party tracking cookies.`,
   },
@@ -117,7 +163,7 @@ To exercise any of these rights, contact privacy@ecentic.ai.`,
 ] as const;
 
 const inlineOptions = {
-  linkClassName: "text-purple-700 underline-offset-2 hover:underline",
+  linkClassName: "text-primary underline-offset-2 hover:underline",
 } as const;
 
 const renderContent = (content: string): ReactNode => {
@@ -173,62 +219,66 @@ export default () => (
       <Navbar />
     </div>
 
-    <div className="border-accent-foreground border-b p-4">
-      <div className="relative size-full rounded-lg bg-primary">
-        <Image
-          src={Background}
-          alt="Privacy Policy"
-          className="absolute aspect-auto h-full w-full object-contain object-right"
-        />
-        <div className="relative z-10 mx-auto max-w-6xl border-accent-foreground border-x px-8 pt-36 pb-16">
-          <p className="mb-4 font-medium text-sm text-white/60 uppercase tracking-[0.2em]">
+    <section className="border-accent-foreground border-b">
+      <div className="relative mx-auto max-w-6xl border-accent-foreground border-x">
+        <div className="px-8 pt-36 pb-16">
+          <p className="mb-4 font-medium text-foreground-dimmed text-sm uppercase tracking-[0.2em]">
             Legal
           </p>
-          <h1 className="font-semibold text-7xl text-white tracking-tight">
-            Privacy Policy
+          <h1 className="max-w-3xl font-semibold text-5xl text-foreground-rich tracking-tight md:text-7xl">
+            Privacy <span className="text-primary">Policy.</span>
           </h1>
-          <p className="mt-2 text-white">Last updated: March 15, 2026</p>
-          <p className="mt-6 max-w-2xl text-lg text-white leading-relaxed">
+          <p className="mt-2 text-foreground-dimmed text-sm">
+            Last updated: March 15, 2026
+          </p>
+          <p className="mt-6 max-w-2xl text-base text-foreground-dimmed leading-relaxed md:text-lg">
             ecentic (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) is
             committed to protecting the privacy of merchants who use our
             e-commerce optimization platform. This policy explains what data we
             collect, how we use it, and your rights.
           </p>
+          <ul className="mt-8 flex flex-wrap gap-2">
+            {assurances.map((assurance) => (
+              <li
+                key={assurance}
+                className="flex items-center gap-1.5 rounded-full border border-accent-foreground bg-background-rich px-3 py-1 text-foreground text-sm"
+              >
+                <CheckIcon className="size-3.5 text-primary" />
+                {assurance}
+              </li>
+            ))}
+          </ul>
         </div>
-      </div>
-    </div>
 
-    {sections.map((section, index) => (
-      <div key={section.number} className="border-accent-foreground border-b">
-        <div className="relative mx-auto grid max-w-6xl grid-cols-1 gap-px border-accent-foreground border-x bg-accent-foreground md:grid-cols-[5fr_8fr]">
-          {/* Each section marks its top corners; the next section owns the
-              shared line. Only the last section marks its bottom, since the
-              stacked site footer below has no top pluses. */}
+        <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2 lg:grid-cols-4">
           <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
           <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
-          {index === sections.length - 1 && (
-            <>
-              <Plus className="bottom-0 left-0 hidden -translate-x-1/2 translate-y-1/2 md:flex" />
-              <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
-            </>
-          )}
-          <div className="relative flex flex-col bg-background-dimmed p-8">
-            <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
-            {index === sections.length - 1 && (
-              <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
-            )}
-            <span className="mt-auto font-normal text-2xl text-primary">
-              {section.number}
-            </span>
-            <h2 className="text-4xl text-foreground leading-snug">
-              {section.title}
-            </h2>
-          </div>
-          <div className="bg-background p-8">
-            {renderContent(section.content)}
-          </div>
+          {summary.map((item) => (
+            <div
+              key={item.title}
+              className="flex flex-col gap-2 bg-background-dimmed p-6"
+            >
+              <item.icon className="size-7 text-primary" />
+              <h2 className="mt-2 font-body font-medium text-foreground text-xl">
+                {item.title}
+              </h2>
+              <p className="font-light text-foreground-dimmed leading-relaxed">
+                {item.description}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
+    </section>
+
+    {sections.map((section) => (
+      <ContentPageSection
+        key={section.number}
+        number={section.number}
+        title={section.title}
+      >
+        {renderContent(section.content)}
+      </ContentPageSection>
     ))}
 
     <Footer stacked />
