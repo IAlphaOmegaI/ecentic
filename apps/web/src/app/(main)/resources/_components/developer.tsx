@@ -1,4 +1,5 @@
 import { ArrowRightIcon, CodeIcon } from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Link from "next/link";
 import { Plus } from "@/components/plus";
@@ -64,32 +65,35 @@ export const Developer = () => (
         <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
         <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
 
-        <div className="bg-background-dimmed p-6 md:p-8">
-          <RevealItem className="flex h-full flex-col gap-6">
+        <div className="flex flex-col bg-background-dimmed md:min-h-0">
+          <RevealItem className="flex flex-col gap-6 p-6 md:p-8">
             <CodeIcon className="size-8 text-primary" />
             <p className="font-body font-light text-foreground-dimmed text-lg leading-relaxed">
               Everything ecentic asks merchants to publish, it publishes itself.
               These are the same surfaces AI agents read when they discover a
               store, served live from this site.
             </p>
-            <div className="mt-auto">
-              <LlmsArt />
-            </div>
           </RevealItem>
+          <LlmsArt />
         </div>
 
         <div className="flex flex-col gap-px bg-accent-foreground">
-          <p className="bg-background-rich px-6 pt-6 pb-4 font-medium text-foreground-dimmed text-sm uppercase tracking-[0.18em] md:px-8">
+          <p className="bg-background-rich px-6 pt-6 pb-4 font-medium text-primary text-sm md:px-8">
             Public endpoints
           </p>
           {endpoints.map((endpoint) => (
             <div
               key={endpoint.path}
-              className="flex-1 bg-background-rich px-6 py-5 md:px-8"
+              className="flex flex-1 bg-background-rich px-6 py-5 md:px-8"
             >
-              <RevealItem className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <RevealItem className="flex h-full w-full flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div className="flex flex-col gap-1">
-                  <h3 className="font-body font-medium text-foreground text-xl">
+                  <h3
+                    className={cn(
+                      "font-medium text-foreground text-xl",
+                      /[./]/.test(endpoint.title) && "font-mono",
+                    )}
+                  >
                     {endpoint.title}
                   </h3>
                   <p className="font-light text-foreground-dimmed leading-relaxed">
@@ -102,7 +106,7 @@ export const Developer = () => (
                 </div>
                 <Button
                   color="accent"
-                  className="w-fit shrink-0"
+                  className="w-fit shrink-0 self-end sm:self-auto"
                   render={<Link href={endpoint.href} />}
                 >
                   Open

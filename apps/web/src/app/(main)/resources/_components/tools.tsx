@@ -68,14 +68,20 @@ const tools: readonly Tool[] = [
   },
 ] as const;
 
-const ToolArt = ({ art }: { art: Tool["art"] }) => {
+const ToolArt = ({
+  art,
+  className,
+}: {
+  art: Tool["art"];
+  className?: string;
+}) => {
   switch (art) {
     case "scan":
-      return <ScanArt />;
+      return <ScanArt className={className} />;
     case "ucp":
-      return <UcpArt />;
+      return <UcpArt className={className} />;
     case "playground":
-      return <PlaygroundArt />;
+      return <PlaygroundArt className={className} />;
     default: {
       const exhaustive: never = art;
       return exhaustive;
@@ -119,12 +125,15 @@ export const Tools = () => (
             >
               <div
                 className={cn(
-                  "flex items-center bg-background-dimmed p-6 md:p-10",
+                  "relative min-h-64 bg-background-dimmed md:min-h-72",
                   reversed && "md:order-2",
                 )}
               >
-                <RevealItem className="mx-auto w-full max-w-md">
-                  <ToolArt art={tool.art} />
+                <RevealItem className="h-full w-full">
+                  <ToolArt
+                    art={tool.art}
+                    className="h-full min-h-64 w-full md:min-h-72"
+                  />
                 </RevealItem>
               </div>
               <div
@@ -139,7 +148,7 @@ export const Tools = () => (
                 <RevealItem className="flex h-full flex-col gap-3">
                   <p
                     className={cn(
-                      "font-medium text-sm uppercase tracking-[0.18em]",
+                      "font-medium text-sm",
                       tool.highlighted ? "text-white/70" : "text-primary",
                     )}
                   >
