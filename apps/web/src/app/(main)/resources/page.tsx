@@ -33,7 +33,8 @@ const faq = [
       "No. The UCP Validator works without signing in. The UCP Playground gives anonymous visitors a limited number of free messages; create an account for unlimited sessions against your own connected store.",
   },
   {
-    question: "What is the difference between the UCP Validator and the Playground?",
+    question:
+      "What is the difference between the UCP Validator and the Playground?",
     answer:
       "The Validator checks whether a store publishes a valid /.well-known/ucp profile and whether agents can reach it. The Playground goes further: it drives a live AI shopping agent through catalog search, cart, and checkout against that store so you can see real tool calls and responses.",
   },
@@ -45,7 +46,7 @@ const faq = [
 ] as const;
 
 export const metadata: Metadata = createMetadata({
-  title: "Resources — Free Tools and Guides",
+  title: "Resources - Free Tools and Guides",
   description,
   path: "/resources",
   keywords: [
@@ -63,7 +64,7 @@ export default () => {
     {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
-      name: "Resources — Free Tools and Guides",
+      name: "Resources - Free Tools and Guides",
       description,
       url: absoluteUrl("/resources"),
     },
@@ -95,8 +96,8 @@ export default () => {
 
       <ContentPageSection
         number="04"
-        title="Resources FAQ"
-        description="Common questions about our free tools, guides, and public endpoints."
+        title="Questions before you start."
+        description="What is free, which tool fits your storefront, and where to begin."
         gutter
         classList={{ body: "p-0" }}
       >

@@ -1,17 +1,14 @@
-import { ArrowRightIcon } from "@zenncore/icons";
+import { ArrowRightIcon, CheckIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import Image from "next/image";
 import Link from "next/link";
 import { Plus } from "@/components/plus";
 import { ANONYMOUS_MESSAGE_LIMIT } from "@/server/app/intelligence/ucp/playground-limit";
-import chatgpt from "@/public/images/chatgpt.svg";
-import shopify from "@/public/images/shopify.svg";
-import ucp from "@/public/images/ucp.png";
-import woocommerce from "@/public/images/woocommerce.svg";
 import { PlaygroundArt, ScanArt, UcpArt } from "./resource-art";
+import { Reveal, RevealItem } from "./reveal";
 
 type Tool = {
+  number: string;
   category: string;
   title: string;
   description: string;
@@ -24,6 +21,7 @@ type Tool = {
 
 const tools: readonly Tool[] = [
   {
+    number: "Tool 01",
     category: "Win-rate simulation",
     title: "AI Agent Score Scan",
     description:
@@ -39,6 +37,7 @@ const tools: readonly Tool[] = [
     art: "scan",
   },
   {
+    number: "Tool 02",
     category: "Protocol check",
     title: "UCP Validator",
     description:
@@ -53,6 +52,7 @@ const tools: readonly Tool[] = [
     art: "ucp",
   },
   {
+    number: "Tool 03",
     category: "Agent sandbox",
     title: "UCP Playground",
     description:
@@ -68,18 +68,12 @@ const tools: readonly Tool[] = [
   },
 ] as const;
 
-const ToolArt = ({
-  art,
-  highlighted,
-}: {
-  art: Tool["art"];
-  highlighted?: boolean;
-}) => {
+const ToolArt = ({ art }: { art: Tool["art"] }) => {
   switch (art) {
     case "scan":
-      return <ScanArt highlighted={highlighted} />;
+      return <ScanArt />;
     case "ucp":
-      return <UcpArt highlighted={highlighted} />;
+      return <UcpArt />;
     case "playground":
       return <PlaygroundArt />;
     default: {
@@ -95,89 +89,109 @@ export const Tools = () => (
       <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
       <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
 
-      <div className="p-6 md:p-12">
-        <span className="font-normal text-3xl text-primary">01</span>
-        <h2 className="mt-2 font-body font-medium text-4xl text-foreground md:text-6xl">
-          Free tools you can use today.
-        </h2>
-        <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-xl">
-          Diagnose agent readiness, validate your commerce protocol surface, and
-          pressure-test a live storefront — without signing a contract.
-        </p>
-        <div className="mt-6 flex flex-wrap items-center gap-3">
-          <Image src={shopify} alt="Shopify" className="h-5 w-auto opacity-80" />
-          <Image
-            src={woocommerce}
-            alt="WooCommerce"
-            className="h-5 w-auto opacity-80"
-          />
-          <Image src={ucp} alt="Universal Commerce Protocol" className="h-5 w-auto" />
-          <Image src={chatgpt} alt="ChatGPT" className="size-5 opacity-80" />
-        </div>
-      </div>
+      <Reveal className="p-6 md:p-12">
+        <RevealItem>
+          <span className="font-normal text-3xl text-primary">01</span>
+        </RevealItem>
+        <RevealItem>
+          <h2 className="mt-2 max-w-3xl text-balance font-body font-medium text-4xl text-foreground md:text-6xl">
+            Three free tools, three questions answered.
+          </h2>
+        </RevealItem>
+        <RevealItem>
+          <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-xl">
+            Measure selection, check protocol readiness, or watch a live agent
+            work through a storefront. No credit card for any of them.
+          </p>
+        </RevealItem>
+      </Reveal>
 
-      <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground lg:grid-cols-3">
-        <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 lg:flex" />
-        <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 lg:flex" />
-        {tools.map((tool) => (
-          <article
-            key={tool.title}
-            className={cn(
-              "flex flex-col gap-5 p-6 md:p-8",
-              tool.highlighted
-                ? "bg-primary text-white"
-                : "bg-background-rich text-foreground",
-            )}
-          >
-            <ToolArt art={tool.art} highlighted={tool.highlighted} />
-            <p
-              className={cn(
-                "font-medium text-sm uppercase tracking-[0.18em]",
-                tool.highlighted ? "text-white/70" : "text-foreground-dimmed",
-              )}
+      <div className="relative flex flex-col gap-px border-accent-foreground border-t bg-accent-foreground">
+        <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
+        <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
+        {tools.map((tool, index) => {
+          const reversed = index % 2 === 1;
+
+          return (
+            <Reveal
+              key={tool.title}
+              className="grid grid-cols-1 gap-px md:grid-cols-2"
             >
-              {tool.category}
-            </p>
-            <div className="flex flex-1 flex-col gap-3">
-              <h3 className="font-body font-medium text-2xl">{tool.title}</h3>
-              <p
+              <div
                 className={cn(
-                  "font-light leading-relaxed",
-                  tool.highlighted ? "text-white/80" : "text-foreground-dimmed",
+                  "flex items-center bg-background-dimmed p-6 md:p-10",
+                  reversed && "md:order-2",
                 )}
               >
-                {tool.description}
-              </p>
-              <ul className="mt-1 flex flex-col gap-2">
-                {tool.features.map((feature) => (
-                  <li
-                    key={feature}
+                <RevealItem className="mx-auto w-full max-w-md">
+                  <ToolArt art={tool.art} />
+                </RevealItem>
+              </div>
+              <div
+                className={cn(
+                  "p-6 md:p-10",
+                  tool.highlighted
+                    ? "bg-primary text-white"
+                    : "bg-background-rich text-foreground",
+                  reversed && "md:order-1",
+                )}
+              >
+                <RevealItem className="flex h-full flex-col gap-3">
+                  <p
                     className={cn(
-                      "flex items-center gap-2 text-sm",
-                      tool.highlighted ? "text-white/80" : "text-foreground-dimmed",
+                      "font-medium text-sm uppercase tracking-[0.18em]",
+                      tool.highlighted ? "text-white/70" : "text-primary",
                     )}
                   >
-                    <span
-                      className={cn(
-                        "size-1.5 shrink-0 rounded-full",
-                        tool.highlighted ? "bg-white/60" : "bg-primary",
-                      )}
-                    />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <Button
-              color={tool.highlighted ? "accent" : "primary"}
-              className="w-full sm:w-auto"
-              render={<Link href={tool.href} />}
-            >
-              {tool.label}
-              <ArrowRightIcon className="size-4" />
-            </Button>
-          </article>
-        ))}
+                    {tool.number} · {tool.category}
+                  </p>
+                  <h3 className="mt-1 font-body font-medium text-3xl md:text-4xl">
+                    {tool.title}
+                  </h3>
+                  <p
+                    className={cn(
+                      "font-light text-lg leading-relaxed",
+                      tool.highlighted
+                        ? "text-white/80"
+                        : "text-foreground-dimmed",
+                    )}
+                  >
+                    {tool.description}
+                  </p>
+                  <ul className="mt-2 flex flex-col gap-2">
+                    {tool.features.map((feature) => (
+                      <li
+                        key={feature}
+                        className={cn(
+                          "flex items-center gap-2",
+                          tool.highlighted
+                            ? "text-white/80"
+                            : "text-foreground-dimmed",
+                        )}
+                      >
+                        <CheckIcon
+                          className={cn(
+                            "size-4 shrink-0",
+                            tool.highlighted ? "text-white/70" : "text-primary",
+                          )}
+                        />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                  <Button
+                    color={tool.highlighted ? "accent" : "primary"}
+                    className="mt-6 w-fit md:mt-auto"
+                    render={<Link href={tool.href} />}
+                  >
+                    {tool.label}
+                    <ArrowRightIcon className="size-4" />
+                  </Button>
+                </RevealItem>
+              </div>
+            </Reveal>
+          );
+        })}
       </div>
     </div>
   </section>
