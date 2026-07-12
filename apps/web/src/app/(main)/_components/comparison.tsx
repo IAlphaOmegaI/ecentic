@@ -119,8 +119,8 @@ const columns = [
   {
     accessorKey: "ecentic",
     header: () => (
-      <span className="flex w-full min-w-20 justify-center text-center text-lg text-primary md:min-w-32">
-        ecentic
+      <span className="flex w-full min-w-20 justify-center text-center text-lg text-primary lowercase md:min-w-32">
+        écentic
       </span>
     ),
     cell: ({ row }: { row: { original: Capability } }) => (

@@ -143,7 +143,10 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/how-it-works)",
       "Bash(curl -s http://localhost:3000/demo -o /tmp/demo.html -w \"%{http_code}\\\\n\")",
       "Read(//tmp/**)",
-      "Bash(curl -s http://localhost:3000/resources -o /tmp/res2.html -w \"%{http_code}\\\\n\")"
+      "Bash(curl -s http://localhost:3000/resources -o /tmp/res2.html -w \"%{http_code}\\\\n\")",
+      "Bash(rm -f .DS_Store)",
+      "Bash(grep -rnoE ''\\\\''\\(ucp_[a-z_]+\\)'\\\\''|\"\\(ucp_[a-z_]+\\)\"|\\\\$_GET\\\\['\\\\''ucp[a-z_]*'\\\\''\\\\]|get_query_var\\\\\\( '\\\\''[a-z_]+'\\\\'' \\\\\\)|check_admin_referer\\\\\\( '\\\\''[a-z_]+'\\\\'' \\\\\\)|wp_nonce_field\\\\\\( '\\\\''[a-z_]+'\\\\'' \\\\\\)' includes/ admin/ woo-ucp.php)",
+      "Bash(echo \"--- exit: $? \\(no lines above = my files are clean\\) ---\")"
     ]
   }
 }

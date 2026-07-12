@@ -16,7 +16,13 @@ export default async (): Promise<MetadataRoute.Sitemap> => {
     },
     {
       url: `${seo.host}/privacy-policy`,
-      lastModified: new Date("2025-01-01"),
+      lastModified: new Date("2026-07-12"),
+      changeFrequency: "yearly",
+      priority: 0.2,
+    },
+    {
+      url: `${seo.host}/terms`,
+      lastModified: new Date("2026-07-12"),
       changeFrequency: "yearly",
       priority: 0.2,
     },
