@@ -27,6 +27,7 @@ const endpoints = [
     label: "View profile",
     path: "/ucp/agent-profile",
     art: "ucp" as const,
+    highlighted: false,
   },
   {
     title: "MCP endpoint",
@@ -36,6 +37,7 @@ const endpoints = [
     label: "Open endpoint",
     path: "/api/mcp",
     art: "mcp" as const,
+    highlighted: false,
   },
   {
     title: "ecentic UCP profile",
@@ -45,6 +47,7 @@ const endpoints = [
     label: "View discovery",
     path: "/.well-known/ucp",
     art: "ucp" as const,
+    highlighted: false,
   },
 ] as const;
 
@@ -66,11 +69,15 @@ const EndpointArt = ({
           className={cn(
             "flex items-center gap-3 rounded-2xl border p-4",
             highlighted
-              ? "border-[#1572FA]/30 bg-[#1572FA]/10"
-              : "border-[#1572FA]/20 bg-[#1572FA]/8",
+              ? "border-primary/30 bg-primary/10"
+              : "border-primary/20 bg-primary/5",
           )}
         >
-          <Image src={ucp} alt="Universal Commerce Protocol" className="h-10 w-auto" />
+          <Image
+            src={ucp}
+            alt="Universal Commerce Protocol"
+            className="h-10 w-auto"
+          />
           <div>
             <p className="font-medium text-foreground text-sm">
               Universal Commerce Protocol
@@ -95,13 +102,12 @@ export const Developer = () => (
       <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
 
       <div className="p-6 md:p-12">
-        <span className="font-normal text-3xl text-primary">03</span>
-        <h2 className="mt-2 font-body font-medium text-4xl text-foreground md:text-6xl">
-          For builders and agents.
+        <h2 className="max-w-3xl text-balance font-body font-medium text-4xl text-foreground md:text-6xl">
+          Inspect the public surface directly.
         </h2>
         <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-xl">
-          Public protocol surfaces and machine-readable indexes for teams wiring
-          ecentic into agent workflows.
+          Machine-readable indexes, discovery profiles, and tool endpoints for
+          builders integrating agent workflows.
         </p>
       </div>
 
@@ -118,13 +124,20 @@ export const Developer = () => (
                 : "bg-background-rich text-foreground",
             )}
           >
-            <EndpointArt art={endpoint.art} highlighted={endpoint.highlighted} />
+            <EndpointArt
+              art={endpoint.art}
+              highlighted={endpoint.highlighted}
+            />
             <div className="flex flex-1 flex-col gap-3">
-              <h3 className="font-body font-medium text-2xl">{endpoint.title}</h3>
+              <h3 className="font-body font-medium text-2xl">
+                {endpoint.title}
+              </h3>
               <p
                 className={cn(
                   "font-light leading-relaxed",
-                  endpoint.highlighted ? "text-white/80" : "text-foreground-dimmed",
+                  endpoint.highlighted
+                    ? "text-white/80"
+                    : "text-foreground-dimmed",
                 )}
               >
                 {endpoint.description}
@@ -132,7 +145,9 @@ export const Developer = () => (
               <p
                 className={cn(
                   "font-mono text-sm",
-                  endpoint.highlighted ? "text-white/70" : "text-foreground-dimmed",
+                  endpoint.highlighted
+                    ? "text-white/70"
+                    : "text-foreground-dimmed",
                 )}
               >
                 {seo.host}

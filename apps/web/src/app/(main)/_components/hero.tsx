@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Background from "@/public/images/background.webp";
-import Dashboard from "@/public/screenshots/dashboard.png";
+import { HeroVideo } from "./hero-video";
 import { InstallCta } from "./install-cta";
 
 export const Hero = () => (
@@ -40,37 +40,7 @@ export const Hero = () => (
     </p>
 
     <div className="relative mt-6 w-full max-w-4xl">
-      <div className="overflow-hidden rounded-2xl border border-accent-foreground bg-background shadow-2xl shadow-primary/10">
-        <div className="relative flex items-center border-accent-foreground border-b bg-background-dimmed px-4 py-3">
-          <div className="absolute left-4 flex items-center gap-2">
-            <span className="size-3 rounded-full bg-red-400/70" />
-            <span className="size-3 rounded-full bg-yellow-400/70" />
-            <span className="size-3 rounded-full bg-green-400/70" />
-          </div>
-          <div className="mx-auto flex items-center gap-1.5 rounded-md border border-accent-foreground bg-background px-3 py-1 font-body text-foreground-dimmed text-xs">
-            <svg
-              aria-hidden
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="size-3"
-            >
-              <rect x="5" y="11" width="14" height="10" rx="2" />
-              <path d="M8 11V7a4 4 0 0 1 8 0v4" />
-            </svg>
-            app.ecentic.ai/dashboard
-          </div>
-        </div>
-        <Image
-          src={Dashboard}
-          alt="Ecentic dashboard showing AI win rate"
-          priority
-          className="w-full"
-        />
-      </div>
+      <HeroVideo />
     </div>
   </section>
 );

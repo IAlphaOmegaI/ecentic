@@ -1,765 +1,1435 @@
-# ecentic — Design System & Visual Build Guide
+# Ecentic design canon
 
-> **This is THE single source of truth for everything design‑related at ecentic.** It merges the
-> UI/UX *Design Refresh* mandate (precedence), the rendered landing‑page brand language (formerly
-> `DESIGN.pdf`), the codebase‑grounded style guide (formerly `style.md`), and the full dashboard
-> information architecture (formerly `dashboard.md`) into one document. Read it before building any
-> page, component, or section. If anything you build disagrees with this file, this file wins.
+> The single source of truth for visual design, interaction design, and page composition at Ecentic.
+> Read this before creating or revising any user-facing surface.
 
----
-
-## 0. How to use this document (read first)
-
-You are building or refreshing the visual surface of **ecentic** — an autonomous optimization
-platform for the AI‑agent shopping economy. Your job is to produce **beautiful, consistent, on‑brand
-pages every time**. This document gives you the bones, the skin, and the recipes.
-
-### The one‑line philosophy
-
-> **Same bones, new skin.** The brutalist grid is the structural DNA and is *non‑negotiable*. Everything
-> that surrounds the grid — typography, color application, spacing, component polish, iconography,
-> motion — must feel modern, precise, and engineered. Brutalist, but refined. Infrastructural, not
-> decorated.
-
-### Precedence order (resolve every conflict in this order)
-
-1. **The Design Refresh mandate** (§2, §5–§9) — the modernization direction. It wins.
-2. **Real `@zenncore` semantic tokens & classes** (§4) — the only vocabulary the code understands.
-   The refresh was authored in raw px/hex; this document has already translated that intent into
-   tokens. **Never** ship raw hex or `text-gray-*`.
-3. **Brand visual language** (§3, §10, §11) — the grid DNA, motifs, and page recipes.
-
-### Build checklist (run this for every page)
-
-1. **Shell** — `page.tsx` is a **server component** that exports real HTML (title, headings, layout). Not a thin wrapper around one client component. (§12)
-2. **Stream** — wrap each data region in `<Suspense fallback={<Skeleton/>}>` with a shape‑matched skeleton. (§12)
-3. **Scaffold the grid** — `gap-px` cells on `bg-accent-foreground`, `+` crosshair corners, hatched dividers, section numbering. (§3)
-4. **Apply tokens** — semantic only. Blue = `primary`. Borders = `accent-foreground`. (§4)
-5. **Set type** — pick the Display scale (marketing) or App scale (dashboard). (§5)
-6. **Drop in components** — use `@zenncore/web` primitives as‑is; never re‑style them. (§7, §8)
-7. **Add the skin** — radius/shadow on interactive & elevated elements only, 150ms transitions, focus rings, shimmer loads. Grid cells stay sharp. (§6)
-8. **Place a motif** if the surface calls for one (crosshair, hatch, human‑vs‑agent panel, the box). (§9)
-9. **QA** against the master Do/Don't checklist. (§15)
+This guide is derived from the strongest implemented patterns on the landing page, pricing, the
+store dashboard, product analytics, onboarding, and the shared footer. It deliberately does not
+canonize every detail currently in code. Where an implementation accident conflicts with this
+document, this document is the direction to follow.
 
 ---
 
-## 1. What ecentic is (so your design decisions are correct)
+## 0. The shortest useful version
 
-AI shopping agents (GPT‑4, Claude, Gemini, Perplexity) increasingly decide what consumers buy. They
-ignore ads, branding, and emotional copy — they parse **structured product data**, compare specs, and
-pick a winner in milliseconds. If a merchant's data is incomplete, agents skip them.
+Ecentic should feel like **refined commerce infrastructure**.
 
-ecentic imports a merchant's catalog, runs **simulated purchase decisions** across multiple models
-against real competitors, **diagnoses** exactly why agents pick competitors, and **auto‑generates +
-publishes** optimized listings. Core loop:
+It is editorial enough to explain a new market, technical enough to make machine commerce credible,
+and calm enough to carry dense operational data. Its visual signature is not a decorative style
+applied to ordinary cards. It comes from exposing the structure of the system:
+
+- vertical rails establish the page;
+- hard one-pixel seams reveal how information is assembled;
+- crosshairs register important intersections;
+- slim hatched gutters separate major systems;
+- primary blue signals action and strategic emphasis;
+- semantic color reports outcomes;
+- motion reveals progress, causality, and changing state.
+
+The recurring tension is intentional:
+
+> **Sharp structure, considered softness.**
+
+The canvas, rails, grids, cells, and section boundaries are sharp. Controls, status pills, media,
+progress tracks, and truly elevated panels may be rounded. Do not soften the whole interface.
+
+### The four-part philosophy
+
+1. **Rails** create continuity. Content belongs to a larger system instead of floating as isolated
+   cards.
+2. **Seams** make structure legible. Adjacent cells share a one-pixel gap rather than each drawing
+   its own box.
+3. **Signals** carry meaning. Blue means brand, action, selection, or strategic emphasis. Status
+   colors mean measurable outcomes, never decoration.
+4. **Reveals** explain change. Motion introduces hierarchy, progress, or live computation. It does
+   not perform for its own sake.
+
+### Product intent
+
+Ecentic helps merchants understand and improve how AI shopping agents evaluate their products. The
+core loop is:
 
 > **Simulate → Diagnose → Optimize → Publish → Repeat.**
 
-**What this means for design:**
+The user is usually a merchant or commerce operator who needs to answer three questions quickly:
 
-- **The human/agent duality is the central brand idea.** Pretty product photo vs. cold machine‑readable
-  JSON. Lean into that contrast (see the "What Humans See / What Agents See" motif, §9).
-- **Data density is a feature, not a problem.** Tables, scores, deltas, per‑model breakdowns. Make
-  density legible and calm, never cramped.
-- **The feeling is "infrastructure for commerce."** Confident, precise, slightly austere. The blue is
-  the only loud color; everything else is restrained grayscale.
-- **Language:** always "AI agents," never just "AI." Brand is **ecentic** (lowercase, accented *é*).
+1. Are AI agents choosing my products?
+2. Why am I winning or losing?
+3. What should happen next?
+
+Every composition should make one of those answers easier to see or act on.
 
 ---
 
-## 2. The Design Mandate (Keep / Fix) — *takes precedence*
+## 1. How to use this document
 
-### KEEP — non‑negotiable structural DNA
+Use this order for every new page:
 
-- Brutalist grid: `+` crosshair corner markers, hatched section dividers, hard 1px cell borders.
-- White / very‑light‑gray content temperature (`background` `#f5f5f5`, `background-rich` `#ffffff`).
-- Left sidebar navigation; top search bar + header bar layout.
-- Blue primary action color (`primary` `#1572fa` — keep the hue, the token already refines weight).
-- Data‑dense table layouts.
-- Section numbering convention ("01 — PERFORMANCE", "02 — CATALOG", …).
+1. Identify the surface mode: marketing, dashboard, or onboarding.
+2. Write the page's single primary job as a verb.
+3. Choose the correct shell and rail pattern.
+4. Establish hierarchy with type and spacing before adding decoration.
+5. Use semantic surfaces and `@zenncore` primitives.
+6. Add grid seams, crosshairs, or a hatch gutter only where they clarify structure.
+7. Add motion only where it explains entry, progress, or state change.
+8. Design loading, empty, error, disabled, hover, focus, and success states.
+9. Run the checklist in §20.
 
-### FIX — everything else (this is the refresh)
+### Precedence
 
-Typography hierarchy, color *application*, spacing rhythm, component polish, iconography (no emoji),
-and motion. The sections below specify exactly how.
+When sources disagree, use this order:
 
-### Same bones, new skin
+1. This design canon.
+2. Product intent in `docs/context/`.
+3. Engineering conventions in `docs/agents/`.
+4. Package contracts in `docs/web/` and `docs/shared/`.
+5. Existing implementation.
 
-You are modernizing the **aesthetics** without touching the **architecture**. Do not redesign the
-grid. Re‑skin what surrounds it.
-
----
-
-## 3. The Brutalist Grid DNA (the bones — do not change)
-
-### 3.1 The `gap-px` grid philosophy
-
-Grids of cards/cells never use explicit per‑cell borders. Use a 1px gap over an
-`accent-foreground` background so the gap *is* the seam:
-
-```tsx
-<div className="grid grid-cols-2 gap-px bg-accent-foreground">
-  <div className="bg-background-dimmed p-6">Cell 1</div>
-  <div className="bg-background-dimmed p-6">Cell 2</div>
-</div>
-```
-
-Sharp edges only. **No rounded corners on grid cells.** No explicit `border` between cells.
-
-### 3.2 Section borders & rails
-
-- Horizontal dividers between sections: `border-accent-foreground border-b` / `border-t`.
-- Vertical column dividers: `divide-x divide-accent-foreground` (or `border-r` on all but last).
-- Full section wrap: `border-accent-foreground border-y`.
-- Main container side rails: `border-accent-foreground border-x` on `<main>`.
-
-### 3.3 The `+` crosshair corner markers
-
-Small plus/crosshair glyphs that mark grid intersections — the signature brutalist tell. Keep them.
-Render lighter than before (use `text-foreground-dimmed` at reduced opacity, e.g. `/60`). They are
-decorative registration marks; never let them compete with content.
-
-### 3.4 The hatched section dividers (the `bg-grid-stripes` utility)
-
-The diagonal hatch is a real utility already in the codebase:
-
-```css
-/* -45° repeating 1px stripes in the border color, 8px tile */
-@utility bg-grid-stripes { /* accent-foreground stripes, 8px 8px */ }
-```
-
-**Refresh rules for hatch bands:**
-
-- Make them **intentional and slim** — band height **16px** (down from ~40px), `opacity ~0.6`.
-- Keep the `+` markers inside lighter.
-- A hatch band signals a deliberate seam between major sections — don't sprinkle them.
-
-### 3.5 Full‑bleed sections (landing)
-
-Sections that break past the `max-w-6xl` container:
-
-```tsx
-<section className="relative -left-[calc(50vw-50%)] w-screen border border-accent-foreground">
-  <div className="mx-auto max-w-6xl">{/* contained content */}</div>
-</section>
-```
-
-The hero uses this with `-z-1` so it sits behind the main container's `border-x` rails.
-
-### 3.6 Section numbering
-
-Major sections carry a monospace‑feeling index + label: **"01 — PERFORMANCE"**, **"02 — CATALOG"**.
-Keep the convention. Render the label as a section‑label bar (see §5.4), not a raw `■`.
+The last item is evidence, not authority. Preserve strong patterns; correct accidental drift.
 
 ---
 
-## 4. Design Tokens — the only vocabulary (`@zenncore`)
+## 2. Design territory
 
-> **Rule Zero — never override package styles.** Components from `@zenncore/web` (`Button`, `Table`,
-> `TableHead`, `TableCell`, `TableRow`, `DataTable`, `Tabs`, …) ship their own base styles and are the
-> source of truth. Do **not** pass `className` to change their padding/size/border/color. If a base
-> style is wrong, fix it in `packages/web/src/components/`, not at the call site. The only acceptable
-> `className` additions are layout (`w-full`, `mt-auto`) or an explicit one‑off the user requested.
+### Domain concepts
 
-**Never use raw colors** (`text-gray-500`, `bg-white`, `#hex`). Semantic tokens only. Every family has
-`{base}`, and most have `-dimmed`, `-rich`, and `-foreground` variants.
+The design belongs to the world of:
 
-### 4.1 Surfaces (backgrounds)
+- commerce infrastructure;
+- product catalogs and structured records;
+- machine inspection and registration marks;
+- competitive scorecards;
+- live agent decisions;
+- fulfillment loops and continuous optimization;
+- storefronts translated into machine-readable data.
 
-| Token | Value | Use |
-|---|---|---|
-| `bg-background` | `#f5f5f5` | Page background (body, dashboard main). |
-| `bg-background-dimmed` | `#e8e8e8` | Section fills, card backgrounds, grid cells, hover states. |
-| `bg-background-rich` | `#ffffff` | Table headers, elevated/white cards, the comparison table. |
-| `bg-primary` | `#1572fa` | Hero, Dominate pricing card, footer CTA, primary fills. |
-| `bg-emphasis` *(family)* | dark gray (oklch ~20%) | Dark surfaces: the replay terminal, code insets. |
+### Physical analogy
 
-### 4.2 Text
+If Ecentic were a physical space, it would be a bright operations room inside a modern fulfillment
+facility: pale work surfaces, precise registration marks, clipped reports, blue control lights,
+shipping-grid geometry, and live status displays. It would not be a dark cyberpunk terminal, a soft
+consumer wellness app, or a generic glassmorphic AI dashboard.
 
-| Token | Value | Use |
-|---|---|---|
-| `text-foreground-rich` | `#16181d` | Near‑black: strong headings, stat values, emphasis numbers. |
-| `text-foreground` | `#404040` | Primary body text, headings. |
-| `text-foreground-dimmed` | `#919191` | Secondary text, captions, stat labels, muted icons, crosshairs. |
-| `text-primary` | `#1572fa` | Brand accent, CTA labels, active states, links. |
-| `text-white` | — | Text on `bg-primary`/dark surfaces. |
-| `text-white/70`, `/60`, `/80` | — | Muted copy on blue (subtitles, feature lists). |
+### Color world
 
-### 4.3 Borders — one token, everywhere
+The palette comes from this environment:
 
-```
-border-accent-foreground   /* ≈ light gray; ALL grid borders, dividers, rails, hatch stripes */
-```
+- paper-white inspection surfaces;
+- warm-neutral structural gray;
+- graphite text and machine labels;
+- electric control blue;
+- restrained green, amber, and rose status signals;
+- dark slate only for media or machine-output insets.
 
-No `border-gray-200`, no `border-primary` on containers. `border-primary` appears only on specific
-`Button` outlines where the component requires it for CTA emphasis.
+### Signature
 
-### 4.4 Semantic status & data colors
+The signature is the **registered rail grid**: content held between vertical rails, divided by
+one-pixel seams, and marked with small crosshairs at consequential intersections.
 
-Use these for **meaning**, never for decoration. Map win‑rate and status here:
+It should be identifiable in at least five places across a full experience:
 
-| Meaning | Token | Value | Where |
-|---|---|---|---|
-| Brand / primary action | `primary` | `#1572fa` | CTAs, links, active nav, highlighted column/card. |
-| Win rate **high** (> 60%) | `success` | `#059669` | Win‑rate bars/text, "Stronger", positive deltas. |
-| Win rate **medium** (30–60%) | `warning` | `#d97706` | Mid win‑rate, "Weak", UCP score pill (amber). |
-| Win rate **low** (< 30%) | `error` | `#e11d48` | Low win‑rate, "Missing", FATAL/agent‑rejected, danger zone. |
-| Informational status | `info` | blue (oklch ~259) | Neutral status pills, "in progress". |
+- the main content rails;
+- a stat or feature grid;
+- a section boundary;
+- a progress or table region;
+- a closing footer or action band.
 
-Each has `-dimmed` (deep/tint‑bg), `-rich` (light), and `-foreground` (on‑color text) — e.g. a success
-pill is `bg-success-dimmed text-success` or `bg-success/10 text-success`.
+### Defaults we reject
 
-### 4.5 Premium / gold accent
+- Generic rounded cards floating on an empty page. Use connected cells, rails, or clear section
+  bands.
+- Decorative blue-purple AI gradients. Use a neutral system with one deliberate blue.
+- Three identical icon-title-description cards as a universal answer. Let information type determine
+  composition.
+- Oversized shadows as hierarchy. Use surface changes, seams, and spacing first.
+- Motion on everything. Animate only entry, progress, selection, or state.
+- A dashboard that treats all numbers equally. Lead with the decision-driving metric.
 
-For premium/UCP "shine" moments there is `animate-gold-shine` (an animated gold gradient clipped to
-text). Use sparingly — premium tier highlights, score celebrations. Default UCP status uses `warning`
-(amber), not gold.
+---
+
+## 3. Surface modes
+
+The brand has one system expressed in three modes.
+
+### 3.1 Marketing mode
+
+**Purpose:** explain the category, create conviction, and move visitors toward installation,
+pricing, or a conversation.
+
+**Feeling:** spacious, editorial, confident, and visually demonstrative.
+
+**Traits:**
+
+- centered `max-w-6xl` rail;
+- selective full-bleed sections;
+- large display type;
+- long vertical rhythm;
+- image or video used as evidence, not filler;
+- fewer but stronger calls to action;
+- asymmetric or split compositions mixed with `gap-px` grids.
+
+### 3.2 Dashboard mode
+
+**Purpose:** help a merchant assess performance, find the reason, and take the next action.
+
+**Feeling:** calm, dense, precise, and operational.
+
+**Traits:**
+
+- persistent store context and navigation;
+- `mx-8` inner rails;
+- compact page headers;
+- numbered section kickers;
+- connected stat and chart regions;
+- white data surfaces over a light-gray canvas;
+- semantic color tied to measurable status;
+- PPR and streaming with shape-matched skeletons.
+
+### 3.3 Onboarding mode
+
+**Purpose:** move a new merchant to a meaningful first result with minimal uncertainty.
+
+**Feeling:** guided, optimistic, progressive, and technically credible.
+
+**Traits:**
+
+- blue narrative panel plus light task workspace on large screens;
+- persistent four-step progress;
+- large instructional headings;
+- generous rails and clear footer navigation;
+- sharp selection grids;
+- live computation represented by logs and progress;
+- mobile progress condensed to dots and a step count.
+
+Do not flatten these modes into one universal page template. They share the same materials but use
+different density, scale, and rhythm.
+
+---
+
+## 4. Tokens and color
+
+All application code uses semantic tokens. Raw hex values below explain the palette; they are not
+permission to hardcode colors at call sites.
+
+### 4.1 Surfaces
+
+- `bg-background` (`#f5f5f5`): the page canvas and dashboard workspace.
+- `bg-background-dimmed` (`#e8e8e8`): structural cells, inset regions, quiet hover states, and
+  supporting panels.
+- `bg-background-rich` (`#ffffff`): data tables, chart panels, elevated content, and high-legibility
+  reading surfaces.
+- `bg-primary` (`#1572fa`): strategic hero blocks, selected pricing, primary actions, and the
+  onboarding narrative plane.
+- `bg-emphasis`: dark media, code, or terminal-like insets when darkness improves comprehension.
+
+Use one neutral hue family. Elevation is a small lightness change, not a jump into another color.
+
+### 4.2 Text hierarchy
+
+- `text-foreground-rich`: page titles, decisive values, high-emphasis labels.
+- `text-foreground`: default headings and body content.
+- `text-foreground-dimmed`: explanations, metadata, captions, placeholders, and inactive states.
+- `text-primary`: links, selected values, active navigation, and strategic emphasis.
+- `text-white` with `/60`, `/70`, `/80`, or `/90`: hierarchy on primary or emphasis surfaces.
+
+Do not use color to compensate for weak typography. Establish hierarchy with size, weight, spacing,
+and placement first.
+
+### 4.3 Borders
+
+Use `border-accent-foreground` for structural rails, seams, table boundaries, and hatch stripes.
+
+Use a semantic border only when the boundary itself communicates state:
+
+- `border-error/40` for a danger or validation region;
+- `border-primary/20` for a selected or informational callout;
+- focus rings from the control primitive.
+
+Do not color whole containers merely to make them more interesting.
+
+### 4.4 Status colors
+
+Status colors always pair with a number, icon, or text label.
+
+- `success`: a strong result, completed state, positive delta, or win rate of 60% and above.
+- `warning`: an intermediate result, attention state, or win rate from 30% through 59%.
+- `error`: a weak result, missing field, failed state, or win rate below 30%.
+- `info`: neutral progress or model information where primary blue would imply an action.
+
+Status colors are not a chart rainbow. A model may have a stable semantic identity in a comparative
+chart, but the interface must remain legible without color.
+
+### 4.5 Primary blue
+
+Primary blue is the only loud brand color. It may:
+
+- fill one major block;
+- identify one recommended or selected option;
+- mark active navigation;
+- carry a primary call to action;
+- highlight the Ecentic or pay-as-you-go column in a comparison;
+- fill progress that is not success/warning/error.
+
+It should not appear on every icon, every heading, and every border at once.
 
 ---
 
 ## 5. Typography
 
-**Font:** set via `font-body` on `<body>` and inherited everywhere (currently resolves to Red Hat
-Display via `--font-redhat-display`). Global letter‑spacing `tracking-[-4%]`. Use the `font-body`
-class — never hardcode a typeface.
+### 5.1 Typeface
 
-There are **two scales**. Pick by surface.
+Use `font-body`, currently Red Hat Display through `--font-redhat-display`. It gives the system an
+engineered but human tone and supports both large editorial display and compact operational UI.
 
-### 5.1 Display scale — marketing / landing
+Use `font-mono` only for:
 
-| Element | Classes | Notes |
-|---|---|---|
-| Hero h1 | `font-semibold text-4xl sm:text-5xl md:text-[76px]` | The one place `font-semibold` is right. |
-| Section h2 | `font-body text-3xl md:text-6xl` | **No** `font-medium`/`font-semibold` — natural `font-body` weight is correct. |
-| Card / feature title (grid) | `font-body font-medium text-2xl md:text-4xl` | |
-| Description / subtitle | `font-light text-foreground-dimmed text-lg` (or `md:text-2xl` near hero) | |
-| Small caption | `font-light text-foreground-dimmed text-sm` | |
+- timestamps and live logs;
+- machine-readable data;
+- section indices;
+- identifiers where character distinction matters;
+- aligned technical output.
 
-### 5.2 App scale — dashboard (refresh hierarchy, in tokens)
+Never introduce a page-local font.
 
-| Element | Intent (refresh) | Classes |
-|---|---|---|
-| Page title | 28px / 700 / tracking ‑0.02em | `text-[1.75rem] font-bold tracking-[-0.02em] text-foreground-rich` |
-| Page subtitle | 14px / 400 / secondary | `text-sm text-foreground-dimmed` |
-| Stat **label** | 10px / 500 / tracking 0.08em / ALL‑CAPS | `text-[10px] font-medium uppercase tracking-[0.08em] text-foreground-dimmed` |
-| Stat **value** | 36px / 700 / tracking ‑0.02em | `text-4xl font-bold tracking-[-0.02em] text-foreground-rich` |
-| Stat **value suffix** (`%`, `/100`) | 20px / 500 | `text-xl font-medium text-foreground-dimmed` |
-| Stat **delta / sub** | 12px / semantic color | `text-xs text-success` \| `text-error` \| `text-foreground-dimmed` |
+### 5.2 Weight philosophy
 
-> **Precedence note:** where the old style guide said dashboard titles were `font-medium text-3xl`, the
-> refresh wins: titles are **bold, 28px, tight tracking, `foreground-rich`**.
+- `font-light`: explanatory copy, subtitles, table body text, captions.
+- normal body weight: general reading text and restrained marketing headings.
+- `font-medium`: component titles, labels, prices, navigation, onboarding headings.
+- `font-semibold`: high-emphasis marketing moments, panel titles, table headers.
+- `font-bold`: dashboard page titles, primary metrics, score reveals.
 
-### 5.3 Tables
+Avoid the blunt regular/bold binary. Weight should reveal hierarchy before color does.
 
-- Cell text: `font-light text-foreground text-sm` (DataTable base handles it).
-- Header text: `font-medium text-foreground text-sm` (TableHead base handles it).
-- Do **not** add `text-sm`/padding to Table primitives at the call site.
+### 5.3 Marketing scale
 
-### 5.4 The section‑label bar (replaces the `■` square)
+Use this range, then adjust for line length and composition:
 
-The eyebrow that precedes a section title. Replace any `■` with a **3px × 14px primary rectangle bar**
-(`rounded-[2px]`) followed by ALL‑CAPS label text:
+- Primary hero: `text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight`.
+- Blue campaign or pricing hero: `text-5xl md:text-7xl font-semibold`.
+- Major section heading: `text-3xl md:text-5xl font-medium`; reserve `md:text-6xl` or
+  `md:text-[76px]` for one dominant statement, not every section.
+- Grid feature title: `text-2xl md:text-4xl font-medium`.
+- Lead description: `text-lg md:text-2xl font-light`.
+- Body description: `text-base` or `text-lg font-light`.
+- Caption: `text-sm font-light`.
+
+Keep marketing headings sentence case. Do not use uppercase eyebrows as a default. A short numbered
+section kicker may use uppercase when it behaves like technical metadata, not ad copy.
+
+Use `text-wrap: balance` for display headings and `text-wrap: pretty` for prose where available.
+Keep reading paragraphs to roughly 55–70 characters per line.
+
+### 5.4 Dashboard scale
+
+- Page title: `text-[28px] font-bold tracking-[-0.02em] text-foreground-rich`.
+- Page subtitle: `text-sm text-foreground-dimmed`.
+- Panel title: `text-lg font-semibold text-foreground-rich`.
+- Stat label: `text-[10px] font-medium uppercase tracking-[0.08em] text-foreground-dimmed`.
+- Stat value: `text-4xl font-bold tracking-[-0.02em] text-foreground-rich`.
+- Stat suffix: `text-xl font-medium text-foreground-dimmed`.
+- Stat delta: `text-xs` plus semantic color and a visible direction.
+- Section kicker: `text-[11px] font-medium uppercase text-foreground-dimmed`, with the index in
+  `font-mono font-semibold text-primary`.
+- Table header: `text-[11px] font-semibold uppercase tracking-[0.06em]`.
+- Table cell: `text-sm font-light text-foreground`.
+
+Dashboard titles must be consistent. Do not alternate between `text-3xl` and an arbitrary 28px value
+for equivalent page headers.
+
+### 5.5 Onboarding scale
+
+Onboarding sits between marketing and app typography:
+
+- Step title: `text-4xl font-medium text-foreground`.
+- Step lead: `text-2xl font-light text-foreground-dimmed`.
+- Narrative-panel headline: `text-5xl xl:text-6xl font-medium leading-none text-white`.
+- Narrative bullet: `text-sm font-light text-white/90`.
+- Secondary section heading: `text-xl font-medium text-foreground`.
+- Live-log heading: compact `font-medium`; use uppercase only when it reads as a machine panel label.
+
+The title should describe the action, not the software area: “Connect your store,” “Choose products,”
+“Add competitors,” “Run your first scan.”
+
+### 5.6 Numbers
+
+Large numbers should use tabular figures when values update or align vertically. Pair a number with:
+
+- its unit;
+- its comparison period;
+- its state or direction;
+- the action it should prompt, when applicable.
+
+A number without context is decoration.
+
+---
+
+## 6. Geometry, rails, and seams
+
+### 6.1 Marketing rail
+
+The default marketing shell is:
 
 ```tsx
-<div className="flex items-center gap-2">
-  <span className="h-[14px] w-[3px] rounded-[2px] bg-primary" />
-  <span className="text-[11px] font-medium uppercase tracking-[0.1em] text-foreground-dimmed">
-    01 — Performance
-  </span>
+<main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 border-accent-foreground border-x md:gap-12">
+  {/* sections */}
+</main>
+```
+
+Use `p-6 md:p-12` for major section interiors and `p-4` or `p-6` for grid cells.
+
+### 6.2 Full-bleed breakout
+
+Use a full-viewport breakout when a major idea needs to change the page's energy:
+
+```tsx
+<section className="relative -left-[calc(50vw-50%)] w-screen border-accent-foreground border-y">
+  <div className="mx-auto max-w-6xl border-accent-foreground border-x">
+    {/* contained content */}
+  </div>
+</section>
+```
+
+Do not make every section full bleed. The contrast only works when most content respects the rail.
+
+### 6.3 Dashboard rail
+
+Store-scoped pages use an inset rail inside the scrolling application shell:
+
+```tsx
+<div className="mx-8 border-accent-foreground border-x">
+  <div className="-mx-8 border-accent-foreground border-b">
+    <header className="relative mx-8 px-6 py-8">{/* ... */}</header>
+  </div>
+  {/* streamed sections */}
 </div>
 ```
 
-### 5.5 Weight rules
+The `mx-8` rail is a recurring alignment datum. Do not replace it with unrelated card margins on
+each section.
 
-| Weight | When |
-|---|---|
-| `font-light` | Descriptions, subtitles, secondary text, table cells. |
-| (none) | Landing section h2s (natural `font-body`). |
-| `font-medium` | Card titles, table headers, button text, prices, labels. |
-| `font-semibold` | Hero h1, large emphasis numbers (#1, scores). |
-| `font-bold` | Dashboard page titles, stat values, score numbers (72/100). |
+### 6.4 Onboarding rail
 
----
+The task pane uses `px-8` around a continuous inner `border-x` rail. Headers, work areas, and footer
+navigation align to the same vertical edges. Keep `min-h-0 flex-1 overflow-hidden` through the flex
+chain when an inner table or log panel needs to scroll.
 
-## 6. The "new skin" — radius, shadow, spacing, motion
+### 6.5 The seam grid
 
-This is the polish layer. **It never touches the grid.** Grid cells, section dividers, and rails stay
-sharp (`rounded-none`). Radius/shadow apply only to **interactive** and **elevated** elements
-(buttons, pills, chips, inputs, suggestion cards, progress bars, donuts, avatars).
-
-### 6.1 Radius scale
-
-| Token | Radius | Use |
-|---|---|---|
-| `rounded-sm` | 4px | ⌘K chip, progress bars, small tags. |
-| `rounded-md` | 6px | Buttons, plan badge, inputs. |
-| `rounded-lg` | 8px | Suggestion cards, panels, search field, segmented control. |
-| `rounded-xl` | 12px | Larger elevated cards, modals. |
-| `rounded-full` | — | Pills, badges, avatars, status dots, icon chips. |
-
-### 6.2 Shadow scale
-
-Keep shadows **whisper‑soft** — this is a light, flat, infrastructural UI, not Material.
-
-| Level | Use |
-|---|---|
-| `shadow-sm` | Active segmented‑control thumb, resting suggestion card. |
-| `shadow-md` | Hover lift on cards, dropdowns, popovers. |
-| (none) | Default for everything inside the grid. |
-
-### 6.3 Spacing rhythm
-
-**Landing:** section gaps `gap-8 md:gap-12`; section padding `p-4 md:p-8` or `p-6 md:p-12`; cell
-padding `p-4`/`p-6`.
-
-**Dashboard:** content wrapper `mx-8` with `border-x` rails; section separators = `h-8` spacer +
-`border-t border-accent-foreground` wrapper; full‑bleed borders via `-mx-8 border-b`; card padding
-`px-6 py-8`.
-
-**Tables:** cell padding `px-4 py-3` (base component). Row height ≈ **52px**. Don't add custom padding.
-
-### 6.4 Motion
-
-- **150ms ease** transitions on every interactive element (`button`, `a`, `[role="tab"]`,
-  `[role="menuitem"]` already wired globally; rows transition `background-color` in 100ms).
-- **Focus rings** on all inputs/controls: `focus-visible:ring-2 focus-visible:ring-primary/40`.
-- **Shimmer** loading on skeletons (not spinners) for content placeholders.
-- **Hover**: subtle `bg-background-dimmed` on rows/nav; `shadow-md` + `ring-1 ring-accent-foreground`
-  lift on suggestion cards.
-- Keep motion functional and quick. No bouncy, no long durations.
-
-### 6.5 Progress bars (unified)
-
-One style everywhere: track `bg-background-dimmed`, fill semantic (`bg-success`/`warning`/`error` or
-`bg-primary`), height ~4–6px, `rounded-sm`/`rounded-full`, 150ms width transition.
-
----
-
-## 7. Iconography
-
-- Family: **`@zenncore/icons`** (monoline SVG). One family only — never mix icon sets, never emoji.
-- Size **20×20**, stroke‑weight **1.5**, `currentColor`.
-- Default color **muted** (`text-foreground-dimmed`). Only color an icon `success`/`warning`/`error`
-  when it is itself a **status indicator**.
-- In stat cards, icons sit in a **36×36 rounded chip**: `bg-background-dimmed rounded-md` (or
-  `rounded-full`), icon centered, top‑right of the card.
-- Sidebar icons: **16px**, `currentColor`, inherit the nav item's state color.
-
-> Emoji are banned from the UI. Where older specs used 📉 ✅ ⚡ 🔒 (e.g. notification types), use the
-> matching monoline icon tinted by semantic color instead.
-
----
-
-## 8. Component specifications
-
-All of these are the refresh, expressed in real tokens. Build with `@zenncore/web` primitives; the
-specs below describe composition and the surrounding skin, not overrides of base styles.
-
-### 8.1 Stat card
-
-```
-┌─────────────────────────────┐
-│ LABEL                  [◧]   │  label: §5.2 stat label · chip: 36px §7
-│ 87%                          │  value §5.2 + suffix §5.2
-│ ▲ 4.2% vs last week          │  delta: text-xs, success/error
-└─────────────────────────────┘
-```
-
-- Container: grid cell (sharp, `bg-background-dimmed`, `p-6`) — or elevated `rounded-lg` card off‑grid.
-- Icon chip top‑right (§7). No emoji.
-- Delta uses a semantic arrow + color; neutral deltas `text-foreground-dimmed`.
-
-### 8.2 Page header
-
-```
-┌ 3px bar  01 — PERFORMANCE                                   [● Active] ┐
-│ Win Rate Overview                                                      │
-│ How AI agents rank your catalog against competitors, updated daily.    │
-```
-
-- Section‑label bar (§5.4) → Title (`text-[1.75rem] font-bold` …) → Subtitle (`text-sm text-foreground-dimmed`).
-- **Status pill:** tinted bg, semantic text, `text-[11px] font-semibold uppercase tracking-[0.05em]`,
-  `px-2 py-0.5 rounded-full` — e.g. `bg-success/10 text-success`.
-
-### 8.3 Navigation sidebar (240px, collapsible to 64px)
-
-- **Active item:** `border-l-[3px] border-primary` + `bg-primary/8` tint + `font-semibold text-primary`.
-- **Inactive:** `text-foreground-dimmed`; **hover:** `bg-background-dimmed`; 150ms transitions.
-- Icons 16px, `currentColor`.
-- **Badge counts:** `bg-primary/10 text-primary text-[11px] font-semibold rounded-full px-2`.
-- **UCP completeness badge:** amber — `bg-warning/10 text-warning`.
-- **User avatar:** primary→purple gradient, `rounded-full`, white bold initial.
-- Bottom: prominent "Run New Simulation" primary button; live "Simulation in progress… 67%" status;
-  free‑tier upgrade CTA.
-
-### 8.4 Top header bar (64px)
-
-- **Search:** `bg-background-rich`, `border border-accent-foreground`, `rounded-lg`, `h-9`, focus ring.
-  Position is fixed — center; keep the ⌘K affordance.
-- **⌘K chip:** `bg-background-rich border border-accent-foreground rounded-sm text-[10px]` inside the field, right‑aligned.
-- **Plan badge** ("Dominate"): outlined‑primary `rounded-md font-semibold` button → billing.
-- **Avatar:** 32px primary→purple gradient circle.
-- Left: ecentic logo → dashboard home. Right also holds the notification bell (unread count badge).
-
-### 8.5 Tables
-
-- Row height ~**52px**; zebra off; hover `bg-background-dimmed` (100ms).
-- Headers `text-[11px] font-semibold uppercase` muted; left‑aligned.
-- Inline **progress bars** 4px `rounded-sm` (win‑rate, data quality).
-- **Ghost row arrow:** a muted `→` chevron that appears on row hover, signaling drill‑in.
-- Win‑rate cells: colored bar + value using `success`/`warning`/`error`.
-- Never restyle `Table*`/`DataTable` via `className`/`classList` (Rule Zero).
-
-### 8.6 Tabs / segmented control
-
-- Container: `bg-background-dimmed rounded-lg p-1`.
-- Active thumb: `bg-background-rich shadow-sm rounded-md`.
-- Labels: sentence case, **no ALL‑CAPS**, `font-medium`. 150ms transition on the thumb.
-
-### 8.7 Agent‑replay terminal
-
-- Surface: dark slate (`bg-emphasis` family), `rounded-lg`, mono font.
-- Top **header bar** with traffic‑light affordance / run label.
-- Body: monospace decision log; **green** (`text-success`) for attribute wins, **red** (`text-error`)
-  for losses/`[not specified]`. Typewriter reveal on first run.
-
-```
-→ Read product: Pro Earbuds ($139)
-→ Read competitor: SoundMax X3 ($129)
-
-Evaluating attributes:
-  battery_life:
-    Pro Earbuds = [not specified]   ✕   (error)
-    SoundMax X3 = "8 hours"         ✓   (success)
-
-DECISION: Selected SoundMax X3
-```
-
-### 8.8 Forms / settings
-
-- Inputs: `rounded-md border-accent-foreground`, focus ring `ring-primary/40`.
-- Group sections with grid rails + section‑label bars.
-- **Danger zone:** wrapped block with `border-error/40` + `bg-error/5`, destructive button `error`.
-- Use `InferredForm` + `field()` — never inline `<input>` or hand‑rolled RHF registration.
-
-### 8.9 Tags & badges
-
-Pill containers (`rounded-full`, `text-[11px] font-semibold`, tinted bg + semantic text):
-
-- **Type** badges → `info`/neutral tint.
-- **Priority** (High/Med/Low) → `error`/`warning`/`foreground-dimmed`.
-- **Win‑rate** badges → `success`/`warning`/`error`.
-- **Status** (Missing/Weak/Stronger/Equal) → `error`/`warning`/`success`/`foreground-dimmed`.
-
-### 8.10 Optimize suggestion cards
-
-- `rounded-lg`, resting `shadow-sm`, hover `shadow-md` + `ring-1 ring-accent-foreground`.
-- **Model dots:** small `rounded-full` dots indicating which models flagged the suggestion.
-- **Button trio:** Approve & Publish (`primary` flat) · Edit (`outline`) · Dismiss (`ghost`) — identical heights.
-
-### 8.11 Charts
-
-- **Donut/competitor palette:** lead with `primary`, then a restrained tonal set (`primary-rich`,
-  `info`, `success`, `warning`) — never a rainbow. Keep grayscale for "other".
-- Bars/lines: `primary` for aggregate; semantic colors only where they carry win/loss meaning.
-- Recharts; tooltips on `bg-background-rich` with `border-accent-foreground` + `shadow-md`.
-
-### 8.12 Buttons (`@zenncore/web/components/button`)
-
-Never hand‑code buttons with `<Link>`/`<a>`/`<div>`. Use `render={<Link href="…" />}` for links.
-
-| Context | Variant | Color | Extra |
-|---|---|---|---|
-| Primary CTA (on white) | `flat` | `primary` | `w-full` if full‑width |
-| Primary CTA (on blue) | `flat` | `primary` | `bg-white text-primary border border-white/30` |
-| Secondary action | `outline` | `accent` | `border-primary text-primary` |
-| Ghost / icon‑only | `ghost` | `accent` | `size="icon"` |
-
-Never add `text-sm`/`text-lg`/`py-*`/`px-*` to buttons (the component sizes itself). All buttons in a
-row share identical height/padding.
-
-### 8.13 Loading, empty & error states
-
-- **Loading:** skeletons that match content shape (8 skeleton rows for tables, chart‑area blocks),
-  shimmer not spin; disabled buttons show an inline spinner; progress UI for > 5s operations.
-- **Empty:** every page has a designed empty state — monoline icon, headline, one‑line description,
-  primary CTA.
-- **Errors:** toast with retry; offline banner; per‑store sync error cards; show partial results if one
-  model fails; custom 404; optimistic updates revert on failure.
-
----
-
-## 9. Visual motifs library (the brand language)
-
-These motifs carry ecentic's identity. The landing reconstruction (§10) shows them in context; reuse
-them deliberately.
-
-### 9.1 Crosshair `+` corners & hatched bands
-The brutalist registration marks (§3.3) and slim diagonal seams (§3.4). The structural signature.
-
-### 9.2 The package / box motif — *the hero illustration*
-An **isometric opening cardboard box** rendered as `primary`‑blue line‑art, with a **glowing white
-sphere/pearl** rising out of it. Meaning: *the product the agent reaches in and picks.* It appears
-two ways:
-- **Hero top corners:** die‑cut box flaps double as the crosshair corner markers.
-- **Footer CTA:** the full box + pearl, centered, as the closing brand image.
-This is ecentic's primary illustration — favor it over generic stock imagery.
-
-### 9.3 Human‑vs‑Agent duality panel — *the core conceptual motif*
-A two‑cell `gap-px` comparison:
-- **"What Humans See":** a polished product card — photo, friendly title, marketing description, blue
-  "Add to Cart" button.
-- **"What Agents See":** a monospace JSON inset (`bg-background-dimmed`, `rounded-lg`) of the same
-  product, with missing fields **struck through in `error`** and annotated `// FATAL: Agent rejected`,
-  ending in a `RESULT:` line ("Dropped from consideration set…").
-Use it anywhere you contrast human perception with machine parsing.
-
-### 9.4 The closed‑loop diagonal stepper
-Three nodes — **Simulate → Diagnose → Optimize (Auto)** — staggered diagonally across a blue
-full‑bleed section, joined by a dotted connector and crosshair grid. Each node: monoline icon
-(magnifier / breakdown / lightning), title, one short paragraph.
-
-### 9.5 Highlighted‑column comparison table
-A capability matrix where competitor columns get `—`/✓ and the **ecentic column is tinted `primary`**
-and visually elevated. The "audits tell you what's broken, ecentic fixes it" device.
-
-### 9.6 Circuit / topographic hero texture
-A faint, low‑contrast circuit‑line or topographic texture inside `bg-primary` blocks. Keep it whisper
-‑low so white headline copy stays crisp.
-
-### 9.7 ASCII‑art illustration (kept)
-The Simulations page keeps its **ASCII‑art illustration** (explicit product decision). Do not replace
-it with a dot‑grid or other treatment.
-
----
-
-## 10. Landing / marketing page recipe (full reconstruction)
-
-> This reconstructs the canonical landing design (formerly `DESIGN.pdf`) so it survives without the
-> binary. Build top to bottom with full‑bleed sections (§3.5), `gap-px` grids, and the motifs above.
-> Copy below is the reference copy (design is the deliverable; treat copy as illustrative content).
-
-**Header** — on the blue hero. Left: `ecentic` wordmark (lowercase, accented *é*, small blue box
-glyph). Center: rounded pill `Menu · 0%`. Right: `Get Started`. White text on blue.
-
-**1 · Hero** — `bg-primary`, full‑bleed, faint circuit texture (§9.6); box‑flap crosshair corners
-(§9.2).
-- h1 (white, Display): **"Win every agent's cart."**
-- Sub (`text-white/70`): "ecentic simulates how AI shopping agents choose between your products and
-  competitors, then automatically rewrites your listings to get picked first. Not monitoring. Not
-  auditing. Autonomous optimization."
-
-**2 · The Blind Spot** — `bg-background`.
-- Eyebrow: `●` primary dot + "The Blind Spot".
-- h2: **"Your products are invisible to the buyers that matter most."**
-- Body: "AI agents are already shopping for your customers. They don't see ads or scroll your page.
-  They read data, compare specs, and choose in milliseconds. You don't know how often they pick you or
-  how to change it."
-- **Human‑vs‑Agent panel** (§9.3): left = "Pro Wireless Earbuds – Light" card + `Add to Cart · $139`;
-  right = JSON with `battery-life: null` and `warranty: null` struck through in `error`, `// FATAL`,
-  then `RESULT: Dropped from consideration set. Competitor chosen due to explicit spec verification.`
-
-**3 · Three steps** — `bg-primary`, full‑bleed. h2 (white) **"From blind to winning in three steps."**
-+ sub "A closed‑loop system designed exclusively for the AI agent economy." Then the **diagonal
-stepper** (§9.4): *Simulate* (run purchases across GPT‑4, Claude, Gemini, Perplexity vs real
-competitors) → *Diagnose* (per‑product attribute breakdown of why agents pick competitors) →
-*Optimize (Auto)* (auto‑generated titles/descriptions/structured data; one‑click or auto‑publish;
-re‑optimized as models drift).
-
-**4 · Infrastructure** — `bg-background-dimmed`, crosshair grid. h2 **"Infrastructure for the agent
-economy."** 2×2 `gap-px` feature grid:
-- **Agent Win Rate Dashboard** (bar icon, primary) — selection rate per product vs competitors, by model, daily.
-- **Multi‑Model Engine** (circle icon, success) — every product tested across 5+ agent models and their selection biases.
-- **Competitor Battlecards** — which competitor products beat yours, on which attributes.
-- **UCP Readiness & Structured Data** (`</>`) — generate your `/.well-known/ucp` profile; extract attributes from images/descriptions.
-
-**5 · Comparison table** — `bg-background-rich` card. h2 **"Audits tell you what's broken. "** +
-`text-primary` "ecentic fixes it." Columns: *Capabilities · Audit Tools · GEO Monitoring · ecentic*
-(ecentic column tinted `primary`, §9.5). Rows: AI‑ready check (✓/—/✓) · brand mentions in AI search
-(—/✓/✓) · simulates agent purchasing (—/—/✓) · win rate vs specific competitors (—/—/✓) ·
-auto‑generates optimized listings (Partial/—/✓) · re‑optimizes when models update (—/—/✓).
-
-**6 · Pricing** — `bg-background`, crosshair grid. h2 **"Start free."** + "Pay when agents start
-picking you." Tier cards in a `gap-px` grid:
-- **Scan — Free** ("See where you stand"): win rate for top 5 products · one‑time sim across 3 models · basic attributes → `Start Free Scan` (outline).
-- **Compete — $149/mo** ("Know your enemy"): up to 100 products · daily simulations · competitor battlecards · manual optimization suggestions → `Start Competing` (outline).
-- **Dominate — $449/mo** ("Win on autopilot") — **highlighted `bg-primary` card, white text**: up to 1,000 products · continuous simulations · auto‑optimization + one‑click publish · model‑drift alerts · UCP generation → `Start Dominating` (white bg / primary text).
-- **Enterprise** (full‑width row, `bg-background-dimmed`): "For teams that need custom limits, enterprise security, and dedicated support." → `Contact Sales` (outline).
-
-**7 · Footer CTA** — `bg-primary` gradient, full‑bleed. Large white `ecentic` wordmark. "The next era
-of commerce isn't about who ranks #1 on Google." + emphasized "It's about who gets picked by the
-agent." → `Get your free Win Rate Report` (white bg / primary text). Below: the **box + pearl
-illustration** (§9.2).
-
----
-
-## 11. Dashboard information architecture
-
-The logged‑in app. Every screen follows the PPR/streaming page pattern (§12), the grid DNA (§3), and
-the components in §8. (Stack note: this app is **Next.js 16 App Router + Better Auth + Drizzle/Postgres
-+ `@zenncore/web`** — ignore any legacy mention of shadcn/Clerk/Supabase in older briefs.)
-
-### 11.1 Shell
-
-- **Topbar (64px):** logo → home · centered global search + ⌘K · right: notification bell, plan badge, avatar dropdown (settings, billing, help, sign out). (§8.4)
-- **Sidebar (240px → 64px):** Overview · Products (badge: count) · Competitors · Optimize (badge: pending) · UCP & Data (badge: completeness %) · Reports · Settings. Bottom: Run New Simulation, live sim status, upgrade CTA. (§8.3)
-- **Responsive:** ≥1280 full sidebar · 768–1279 icon sidebar · <768 hamburger + bottom tabs.
-
-### 11.2 Overview (`/dashboard`)
-4 stat cards (Overall Win Rate + sparkline · Products Scanned `47/100` + ring · Top Performer · Biggest
-Opportunity) → Win‑Rate‑by‑Model horizontal bars (7/30/90/All) → Win‑Rate Trend line (per‑model +
-aggregate, optimization/drift annotations) → Top‑10 product win‑rate table (per‑model columns, gap,
-status, action) → Recent Activity feed → Quick Actions bar.
-
-### 11.3 Products (`/dashboard/products`)
-Data‑dense table: debounced search · category/win‑rate/model/status/store filters · sort · table/grid
-toggle · bulk actions. Columns: checkbox, 48px image, title+subtitle, price, win‑rate bar, GPT‑4,
-Claude, Gemini, Perplexity, competitor gap, data‑quality ring, last simulated, actions. Pagination
-25/50/100. "Add Products" modal (sync / CSV / manual).
-
-### 11.4 Product detail (`/dashboard/products/:id`) — 5 tabs (segmented control §8.6)
-Header: 200px image, title (editable for manual), price, category, SKU, large win‑rate + trend, store
-badge, actions.
-1. **Win Rate Overview** — trend line, per‑model breakdown cards, win‑rate‑by‑competitor bars (worst first).
-2. **Agent Decision Replay** — the terminal (§8.7): model tabs, run selector, diff/compare, red/green attribute highlighting.
-3. **Attribute Gap Analysis** — table: Attribute · Your Product · Top Competitor · Status (Missing/Weak/Stronger/Equal) · Impact (High/Med/Low). "Fix This" per row; data‑quality score vs category benchmark.
-4. **Competitor Battlecard** — per‑competitor: win‑rate bar, "You Win On" vs "They Win On", counter‑moves with estimated lift, "Apply All".
-5. **Optimization Panel** — side‑by‑side current vs optimized diff (additions `success`, removals `error`); Approve & Publish / Edit / Schedule / Dismiss / Auto‑publish toggle; optimization history + rollback.
-
-### 11.5 Competitors (`/dashboard/competitors`)
-Overview stats (tracked, W/L record, most dangerous). Competitor table (logo+name, products,
-your win rate, their strongest attr, your strongest attr, updated, actions). **Attribute heatmap**
-(rows = attributes, cols = competitors, cells `success`/`warning`/`error`). Alerts feed. Add flow
-(auto‑detect / URL / brand search).
-
-### 11.6 Optimize (`/dashboard/optimize`)
-Tabs: **Pending** (approval queue + bulk) · **In Progress** (publishing status) · **Published**
-(before→after win rates + rollback) · **Dismissed** (Reconsider). Auto‑optimization settings
-(Dominate): auto‑publish toggle, approval‑threshold slider, scope, frequency, safety rails. Suggestion
-cards per §8.10.
-
-### 11.7 UCP & Data (`/dashboard/ucp`)
-Merchant profile: completeness ring, JSON preview, editable fields, Deploy (`/.well-known/ucp`),
-live schema validation, regenerate **ghost** button, monogram avatars. Per‑product structured‑data
-table (complete/partial/missing, generate, bulk, JSON‑LD preview, install snippet). Attribute
-extraction (image → AI → review with confidence). UCP score pill = **amber `warning`**. Playground /
-comparison panels use `rounded-lg` cards with mono output insets.
-
-### 11.8 Reports (`/dashboard/reports`)
-Report catalog (Win Rate Summary, Product Performance, Competitor Analysis, Optimization Impact,
-Category Benchmark, Model Drift, UCP Compliance) → PDF/CSV, tier‑gated. Shareable public results page
-with auto OG image; scheduled email delivery.
-
-### 11.9 Settings (`/dashboard/settings`)
-Account · Team (Dominate+; roles owner/admin/editor/viewer) · Integrations (stores, API keys,
-webhooks) · Notifications (per‑channel toggles, quiet hours, digest) · Simulation Config (models,
-frequency, persona/competitor sensitivity). Danger zone per §8.8.
-
-### 11.10 Billing (`/dashboard/settings/billing`)
-Plan comparison (current highlighted) · usage card (`47/100`) · payment method · Stripe Checkout
-upgrade · downgrade retention offer · invoice history · Customer Portal link.
-
-### 11.11 Onboarding & auth (may be client‑heavy by design)
-Auth: sign‑in / sign‑up (email+password + Shopify OAuth preferred). Onboarding wizard with persistent
-progress: **Connect Store → Select Products → Add Competitors → Run Scan**, targeting a visible win‑rate
-"aha" within ~2 minutes. The first‑scan screen uses the replay terminal aesthetic (§8.7) with a live
-typewriter decision log, per‑model progress, and a big win‑rate reveal.
-
-### 11.12 Feature gating
-Never hide gated features — show them grayed/blurred with a lock icon + upgrade CTA so users always see
-what they're missing.
-
----
-
-## 12. Page build pattern (PPR + streaming)
-
-Every `page.tsx` is a **server component that exports real HTML** — layout, page title, headings — not a
-thin wrapper around a single client component.
-
-- **Static shell** in `page.tsx`: layout, section‑label, title, subtitle, headings (the initial HTML).
-- **Data** in **async server components** (same file or `_components/`), each wrapped in
-  `<Suspense fallback={<Skeleton/>}>` with a shape‑matched skeleton.
-- **Streaming:** shell first, then resolved async regions stream in.
-- Client components live in `_components/` next to their page.
+Connected grids use a one-pixel gap over the border color:
 
 ```tsx
-// server component
-import * as Products from "@/server/app/product";            // full namespace (server)
-import { unwrapResult } from "@zenncore/utils";
-import { Environment } from "@/server/utils/environment";
-
-const ProductsTable = async () => {
-  const products = await unwrapResult(Products.skimForCurrentUser(Environment.SERVER));
-  return /* … */;
-};
-
-export default function Page() {
-  return (
-    <main className="border-accent-foreground border-x">
-      {/* static shell: section-label bar + title + subtitle */}
-      <Suspense fallback={<ProductsTableSkeleton />}>
-        <ProductsTable />
-      </Suspense>
-    </main>
-  );
-}
+<div className="grid gap-px bg-accent-foreground md:grid-cols-2">
+  <article className="bg-background-rich p-6">{/* ... */}</article>
+  <article className="bg-background-rich p-6">{/* ... */}</article>
+</div>
 ```
 
-Client components import server modules **type‑only**: `import type * as Products from "@/server/app/product"`.
+Rules:
+
+- grid cells remain sharp;
+- cells do not each add their own border;
+- adjacent cells use a consistent surface family;
+- hover may shift a cell one surface step;
+- do not add shadows to cells inside a connected grid.
+
+### 6.6 Crosshairs
+
+Crosshairs are registration marks, not icons. They indicate a consequential intersection in the
+layout system.
+
+Use:
+
+- `Crosshair` from `dashboard/_components/grid.tsx` in dashboard compositions;
+- `Plus` from `components/plus.tsx` in marketing and onboarding.
+
+Place them at section corners with half-size translations so the mark centers on the seam. Keep them
+muted, `pointer-events-none`, and `aria-hidden`.
+
+Good placements:
+
+- the four corners of a major bordered band;
+- the transition from header to data grid;
+- the start and end of a footer system;
+- a progress rail intersection.
+
+Do not:
+
+- place one on every card;
+- use it as a bullet;
+- enlarge it into a decorative star;
+- let it overlap readable content.
+
+### 6.7 Hatched gutters
+
+`SectionGutter` is a 16px structural pause:
+
+```tsx
+<div className="h-4 bg-grid-stripes opacity-60" />
+```
+
+Use it between major dashboard systems or before a materially different pricing/content section.
+It is not a generic spacer. Marketing pages may use whitespace instead when a hatch would interrupt
+the editorial flow. Onboarding generally favors continuous rails and should use a hatch only at a
+true phase boundary.
+
+### 6.8 Section numbering
+
+Dashboard and technical content sections use:
+
+- `01 — Performance`
+- `02 — Catalog`
+- `03 — Traffic`
+- `04 — Insights`
+
+The index is primary, monospaced, and semibold. The label is muted and uppercase. Do not add a
+decorative rectangle before this implemented kicker. Marketing may use large standalone numerals
+when they participate in the composition, but ordinary marketing eyebrows remain sentence case.
 
 ---
 
-## 13. Language & copy rules
+## 7. Borders, radius, and depth
 
-- Always **"AI agents"**, never bare "AI", for the shopping agents.
-- No double dashes (`--`/`—`) inside sentences — restructure with commas/periods.
-- **"versus"**, not "vs.", in feature descriptions.
-- Brand is **ecentic** (lowercase, accented *é* where Unicode is available).
-- Sentence case for UI labels and tabs (no ALL‑CAPS except section labels and stat labels).
+### 7.1 Border-first hierarchy
+
+Ecentic is primarily a border-and-surface system, not a shadow system.
+
+- Structural rails: one pixel, `border-accent-foreground`.
+- Connected cells: one-pixel gap seam.
+- Reading/data surface: background shift plus border only when containment needs to be explicit.
+- Focus: component-provided focus ring.
+- Error or selection: semantic tint and border, with text or icon confirmation.
+
+Borders should be easy to find and easy to stop noticing.
+
+### 7.2 Radius eligibility
+
+Sharp by default:
+
+- page rails;
+- section wrappers;
+- grid cells;
+- table rows;
+- structural dividers;
+- onboarding platform tiles;
+- footer link columns.
+
+Rounded where the object is interactive, transient, inset, or materially separate:
+
+- `rounded-sm`: progress fills, key hints, compact tags;
+- `rounded-md`: buttons, inputs, small badges, avatars;
+- `rounded-lg`: search fields, tabs, log/code insets, popovers;
+- `rounded-xl`: a major elevated comparison or campaign panel;
+- `rounded-2xl`: cinematic media only when the media needs a distinct frame;
+- `rounded-full`: status dots, pills, avatar circles, continuous progress tracks.
+
+Never round a connected grid cell. Never use `rounded-xl` merely because a section looks empty.
+
+### 7.3 Shadows
+
+Use no shadow inside the structural grid.
+
+Permitted depth:
+
+- `shadow-sm`: selected tab thumb or resting elevated control;
+- `shadow-md`: dropdown, tooltip, popover, or hover lift on a genuinely separate card;
+- stronger shadow: modal or cinematic media only, and with restrained tint.
+
+If a surface can be distinguished through spacing, border, and lightness, it does not need a shadow.
 
 ---
 
-## 14. Accessibility (WCAG 2.1 AA)
+## 8. Backgrounds and imagery
 
-Keyboard navigable with visible focus rings; ARIA labels on icon buttons and charts; **color is never
-the sole state indicator** (pair win‑rate color with a number/label, pair status color with text);
-≥4.5:1 text contrast; screen‑reader announcements for live updates (simulation progress); skip‑nav
-link; correct heading hierarchy.
+### 8.1 Landing background
+
+The landing hero uses the hands artwork from `public/images/background.webp`:
+
+- fill the hero;
+- `object-top`;
+- approximately `opacity-20`;
+- `invert` over the light canvas;
+- keep it behind a restrained primary radial glow.
+
+The hands imply an agent-mediated handoff without resorting to robot imagery. Text must remain the
+dominant layer.
+
+### 8.2 Pricing and content hero texture
+
+Blue content heroes may use `public/images/blog.png`:
+
+- low opacity;
+- `brightness-0 invert`;
+- biased to the right so it does not fight the headline;
+- clipped inside the blue hero.
+
+Use the texture to give a large primary surface depth, not to decorate every blue block.
+
+### 8.3 Onboarding artwork
+
+The onboarding narrative panel uses `public/images/onboarding.png`:
+
+- bottom aligned;
+- inverted;
+- reduced opacity;
+- subordinate to the wordmark, headline, and benefit list.
+
+Hide the narrative panel below `lg`; the task pane must remain fully usable alone.
+
+### 8.4 Product film and media
+
+The landing product film uses `/videos/banner.mp4` in a dark emphasis frame. Media is evidence of the
+product, so it may receive stronger separation, a larger radius, and a controlled shadow than
+ordinary sections.
+
+Always provide:
+
+- a clear play affordance;
+- a poster or stable first frame;
+- captions where speech carries meaning;
+- keyboard access;
+- reduced-motion behavior;
+- an accessible dialog title when expanded.
+
+### 8.5 Imagery rules
+
+Prefer:
+
+- real product interface;
+- model/platform marks where identity matters;
+- merchant/product imagery from actual data;
+- the canonical background assets above.
+
+Avoid:
+
+- generic robots, glowing brains, or orbital AI art;
+- unrelated stock commerce photography;
+- decorative gradients with no informational role;
+- multiple ambient glows in one section;
+- imagery inside data-dense dashboard regions.
 
 ---
 
-## 15. Master Do / Don't checklist (final QA)
+## 9. Motion and interaction
 
-### Do not change (the bones)
-1. The `+` crosshair corner markers.
-2. The hatched divider bands (slimmer per §3.4 is fine).
-3. Hard 1px grid borders (`border-accent-foreground`).
-4. The section‑numbering system.
-5. Layout proportions and the sidebar/topbar structure.
-6. The white / light‑gray temperature.
-7. Data density.
-8. Search position + ⌘K affordance.
-9. Any data/content — this is design only.
-10. The ASCII‑art illustration on Simulations.
+### 9.1 Two motion layers
 
-### Do not do (implementation)
-1. No `className`/`classList` styling on `Table*`/`DataTable` (Rule Zero). Layout classes only.
-2. No raw colors (`text-gray-*`, `bg-white`, `#hex`) — semantic tokens only.
-3. No `font-medium` on landing section h2s — natural `font-body` weight.
-4. No hand‑coded buttons — use `<Button>` with `render={<Link/>}`.
-5. No rounded corners or shadows on grid cells/dividers — sharp `gap-px` only.
-6. No `text-sm`/`text-lg`/`py-*`/`px-*` on buttons — the component sizes itself.
-7. No emoji or mixed icon sets — `@zenncore/icons` monoline, semantic tint.
-8. No bouncy/long motion — 150ms ease, functional only.
-9. No raw `<input>` — `InferredForm` + `field()`.
-10. Don't duplicate spacing logic — use the `h-8` spacer + border‑wrapper pattern.
+**Layer one: control feedback**
 
-### Do (the skin)
-1. Lead with the refresh hierarchy: bold near‑black titles, clear stat hierarchy, section‑label bars.
-2. Monoline icons in 36px chips; muted by default, semantic only for status.
-3. Radius/shadow on interactive & elevated elements; grid stays sharp.
-4. 150ms transitions, focus rings, shimmer skeletons.
-5. One restrained palette: `primary` blue is the only loud color; `success`/`warning`/`error` carry meaning.
-6. Reach for a brand motif (box + pearl, human‑vs‑agent, crosshair, hatch) before generic imagery.
-7. Server‑component shells + Suspense streaming on every dashboard/app page.
-8. Beautiful, calm, dense, engineered. Same bones, new skin.
+- default duration: 150ms ease;
+- table row background: 100ms ease;
+- properties: color, background, border, shadow, opacity, and small transforms;
+- pressed state may scale subtly through the primitive;
+- focus remains immediate and visible.
+
+**Layer two: purposeful reveal**
+
+- used for section entry, sequential onboarding content, progress, changing numbers, or live logs;
+- may be longer than 150ms when the duration represents an understandable process;
+- use decelerating or gentle spring behavior;
+- preserve reading order;
+- never delay the primary action.
+
+### 9.2 Approved animation vocabulary
+
+Use only:
+
+- `Motion.Stagger` for ordered groups;
+- `Motion.Item` for children of a stagger;
+- `Motion.Up` for a single vertical reveal;
+- `Motion.Row` for table/list entry where motion adds comprehension.
+
+Do not import raw motion into server components. Client-only progress and presence transitions may
+use the established local implementation when a primitive cannot express the state, but should not
+create a new animation dialect.
+
+### 9.3 Motion behavior
+
+Use motion to show:
+
+- which onboarding step became active;
+- that a result is still being computed;
+- the order in which a scan discovers evidence;
+- that a progress value changed;
+- that a panel or row entered the current context.
+
+Do not use motion to:
+
+- make static cards hover continuously;
+- bounce professional controls;
+- slide every heading from a different direction;
+- animate layout dimensions when `transform` or `opacity` will do;
+- create scroll-jacking.
+
+### 9.4 Smooth scroll
+
+Native smooth scrolling is acceptable for page anchors. In a bounded log panel, scroll the
+`overflow-y-auto` container with `scrollTo`; do not use `scrollIntoView` on a sentinel when it may
+move ancestor or page scrollers.
+
+### 9.5 Reduced motion
+
+Respect `prefers-reduced-motion`:
+
+- remove nonessential entry transforms;
+- make number updates immediate;
+- keep progress understandable without animated interpolation;
+- do not autoplay expanded media with sound;
+- preserve focus and state feedback.
+
+---
+
+## 10. UX hierarchy and content
+
+### 10.1 One primary job
+
+Every page must have one dominant job:
+
+- landing: understand the promise and install or continue;
+- pricing: choose a payment model;
+- overview: assess store health and run the next simulation;
+- products: find products that need attention;
+- onboarding: complete the current step;
+- scan: understand progress, then receive the first meaningful result.
+
+Secondary actions should not visually compete with this job.
+
+### 10.2 Progressive disclosure
+
+Lead with the answer, then evidence, then detail:
+
+1. status or key result;
+2. short explanation;
+3. comparison or trend;
+4. drill-down;
+5. action.
+
+Tabs are appropriate when views answer related questions about the same entity. Do not use tabs to
+hide unrelated sections merely to reduce page length.
+
+### 10.3 Copy
+
+- Use “AI agents” when referring to shopping agents.
+- Brand is `ecentic` in lowercase.
+- Prefer plain, specific claims over category jargon.
+- Use sentence case for headings, buttons, tabs, and marketing labels.
+- Reserve uppercase for technical section kickers, stat labels, and machine-panel labels.
+- Avoid exclamation marks, “Oops,” and generic AI phrases such as “unlock,” “revolutionize,” or
+  “seamless.”
+- Name the action and consequence: “Run simulation,” “Approve and publish,” “Add products.”
+
+### 10.4 Density
+
+Data density is a feature when hierarchy is clear. Do not solve density by:
+
+- shrinking all text;
+- hiding important columns without an alternative;
+- placing every value in a separate card;
+- using color as the only grouping mechanism.
+
+Use alignment, shared baselines, fixed column roles, compact metadata, and progressive drill-down.
+
+---
+
+## 11. Core component doctrine
+
+### 11.1 Buttons and links
+
+Use `Button` from `@zenncore/web/components/button`. For navigation:
+
+```tsx
+<Button color="primary" render={<Link href="/onboarding/connect" />}>
+  Install now
+</Button>
+```
+
+Rules:
+
+- primary action: flat primary;
+- secondary action: accent outline;
+- tertiary action: ghost or text link;
+- destructive action: error color;
+- icon-only actions require an accessible label;
+- buttons in one row have equal height;
+- do not override primitive typography, padding, height, border, or color with `className`;
+- layout-only classes such as `w-full`, `mt-auto`, or responsive width are acceptable.
+
+### 11.2 Page header
+
+A dashboard header contains:
+
+1. optional status pill;
+2. page title;
+3. one-line subtitle;
+4. one primary action and, only when necessary, one secondary action.
+
+It lives inside the page rail with `px-6 py-8`. Crosshairs may mark its bottom corners where it meets
+the first data region.
+
+### 11.3 Stat grid
+
+A stat cell contains:
+
+- compact uppercase label;
+- decisive value and suffix;
+- comparison or explanation;
+- optional muted icon, only if it improves scanning.
+
+Stat cells are connected through `gap-px`, use `bg-background-rich`, and usually use `p-5` or `p-6`.
+Do not put each stat in a rounded shadow card.
+
+### 11.4 Tables
+
+Use `DataTableProvider` and `DataTable`; do not hand-build application tables.
+
+Table behavior:
+
+- approximately 52px rows;
+- no zebra striping;
+- white or rich surface;
+- muted uppercase headers;
+- one subtle row hover;
+- left-align labels and text;
+- right-align comparable numbers where it improves scanning;
+- use tabular figures;
+- show image, title, and key metadata as one product identity cell;
+- include a visible route or action affordance;
+- preserve useful columns through horizontal scrolling or a deliberate mobile representation.
+
+Never restyle `Table*` or `DataTable` primitives at call sites. Fix a primitive in the package if its
+base style is wrong.
+
+### 11.5 Progress and win rates
+
+Track:
+
+- neutral track: `bg-background-dimmed` or the local seam color;
+- fill: primary or semantic;
+- height: 4–6px;
+- radius: small or full;
+- width transition: purposeful, not theatrical.
+
+Always display the numeric value near the bar. Apply the shared thresholds from §4.4.
+
+### 11.6 Tabs
+
+Use `@zenncore/web/components/tabs`.
+
+Dashboard segmented tabs:
+
+- dimmed container;
+- small internal padding;
+- rich active thumb;
+- restrained radius;
+- medium sentence-case labels.
+
+Onboarding may use a sharper full-width tab rail when tabs represent alternate discovery methods.
+The indicator may align to the top or seam. This is a context exception, not a reason to create a
+new tab primitive.
+
+### 11.7 Status pills and badges
+
+Pills are compact metadata, not miniature calls to action.
+
+- pair tint with semantic text;
+- use `text-[11px]` or `text-xs`;
+- use medium or semibold weight;
+- include a readable label;
+- use `rounded-full` for continuous status and `rounded-sm/md` for categories or tags.
+
+### 11.8 Charts
+
+Charts should answer a named question. Every chart needs:
+
+- a specific title;
+- a time range or comparison context;
+- an accessible text summary;
+- semantic or restrained colors;
+- a rich tooltip with border and modest shadow;
+- an empty state;
+- no 3D effects or decorative gradients.
+
+Lead aggregate data with primary blue. Use status colors only where the plotted meaning is positive,
+intermediate, or negative.
+
+### 11.9 Forms
+
+Use `InferredForm` plus `field()` for forms. Use established `@zenncore/web` compound controls for
+isolated interactive fields.
+
+- labels remain visible;
+- helper text explains consequence, not obvious format;
+- validation appears next to the field;
+- errors use error tint, border, icon/text, and a recovery path;
+- keyboard focus is visible;
+- preserve entered data after recoverable failure;
+- group fields through rails and spacing before adding card shells.
+
+### 11.10 Live logs and machine output
+
+Live panels use:
+
+- compact header with status dot, label, and progress;
+- monospace timestamps or keys;
+- readable body text;
+- line-by-line reveal in causal order;
+- reduced opacity for older lines, never below accessible readability;
+- an internal scrolling container;
+- a clear complete/error state.
+
+Use a light `bg-background-rich` intelligence panel in onboarding to preserve continuity with the
+task workspace. Use `bg-emphasis` for replay/code output when contrast is essential to compare
+machine reasoning.
+
+### 11.11 Empty, loading, and error states
+
+**Loading**
+
+- shape-matched skeletons for streamed dashboard data;
+- inline spinner only inside a control performing a short action;
+- progress and live explanation for work longer than roughly five seconds;
+- avoid a page-level spinner.
+
+**Empty**
+
+- one relevant monoline icon or restrained illustration;
+- specific headline;
+- one sentence explaining why the state exists;
+- one primary next action.
+
+**Error**
+
+- state what failed;
+- preserve successful partial data;
+- offer retry or a direct recovery action;
+- use toast for transient action feedback and inline treatment for persistent field/region errors;
+- never rely on color alone.
+
+---
+
+## 12. Shared chrome
+
+### 12.1 Marketing navigation
+
+The marketing navbar is fixed and belongs to the centered rail. It contains:
+
+- Ecentic trademark/wordmark;
+- a concise desktop navigation;
+- one primary installation action;
+- a mobile sheet below the desktop breakpoint.
+
+Decorative SVG rail pieces may frame it, but they must not obscure the active page, focus state, or
+tap targets. Navbar text uses `font-body`; do not depend on an undefined `font-header` utility.
+
+### 12.2 Dashboard shell
+
+The store-scoped shell contains:
+
+- 240px desktop sidebar;
+- 56px topbar;
+- store switcher;
+- active navigation with a 3px primary left rail and light primary tint;
+- centered global search with keyboard hint;
+- notifications, subscription context, and account control.
+
+The current desktop shell is the baseline. New work must also provide a usable small-screen
+navigation; hiding the sidebar without a replacement is not acceptable.
+
+### 12.3 Footer
+
+The shared footer closes the same rail system rather than becoming a separate visual world.
+
+It contains:
+
+1. a CTA band with a restrained primary radial glow;
+2. the wordmark and brand statement;
+3. a concise navigation grid;
+4. social links in square bordered controls;
+5. a live system-status line;
+6. legal/copyright information;
+7. crosshairs at major outer intersections.
+
+Footer rules:
+
+- use a full-bleed outer wrapper with a `max-w-6xl` inner rail;
+- keep link columns sharp and border-connected;
+- use sentence-case CTA language;
+- uppercase is acceptable for tiny navigational column labels;
+- retain strong vertical spacing;
+- do not turn the footer into an oversized link farm;
+- the `stacked` variant continues an existing bordered page shell.
+
+---
+
+## 13. Route recipe: landing `/`
+
+### Job
+
+Explain why AI-agent selection matters and move a visitor toward installation or a product
+conversation.
+
+### Composition
+
+1. **Fixed navbar** inside the centered rail.
+2. **Light hero** with hands artwork, restrained primary glow, direct value proposition, installation
+   CTA, trust note, and product film.
+3. **Proof** as a full-bleed statement plus connected metric grid.
+4. **Partner evidence** through a compact logo strip and partnership banner.
+5. **Three-step loop** inside one dominant primary block.
+6. **Feature system** in a sharp 2×2 seam grid.
+7. **Comparison** using the data-table language rather than decorative cards.
+8. **Case study** with narrative and measurable outcomes.
+9. **Testimonials** with restrained rating evidence.
+10. **Booking** as the high-intent conversion region.
+11. **Shared footer**.
+
+### Design rules
+
+- Keep the hero light; reserve the large primary field for the process/steps section.
+- Use full bleed selectively for proof, process, or social evidence.
+- Do not reintroduce dormant sections merely because they exist in code.
+- Feature icons use `@zenncore/icons` and semantic tokens, not raw color utilities.
+- Maintain long-form breathing room with `gap-8 md:gap-12`.
+- Product video is the strongest elevated object and may receive the most depth.
+
+---
+
+## 14. Route recipe: pricing `/pricing`
+
+### Job
+
+Help a merchant understand the free scan, choose how to pay, and trust that the commercial model
+matches value delivered.
+
+### Composition
+
+1. **Primary hero** with low-contrast texture, headline, explanation, and assurance pills.
+2. **Free Scan** as an entry product and proof of immediate value.
+3. **Choose how you pay** with a connected three-column plan grid.
+4. **Fee explainer** after a hatch gutter, using numbered steps.
+5. **Comparison** with one intentionally emphasized column.
+6. **Enterprise/partnership band** for needs outside standard plans.
+7. **FAQ** in the shared split content layout.
+8. **Decision footer** with primary and secondary paths.
+
+### Emphasis
+
+The currently preferred pay-as-you-go model may own the primary-blue card. Do not hardcode
+“Dominate is always blue” into the system. Highlight the recommended commercial decision, not a
+specific historical tier.
+
+### Alignment rules
+
+- plan titles, prices, descriptions, feature-list starts, and CTA baselines align across columns;
+- one plan receives strong emphasis;
+- other plans remain rich or neutral surfaces;
+- enterprise uses a horizontal band instead of a fourth tower;
+- explain performance fees before asking for commitment;
+- comparison tables scroll horizontally when they cannot collapse without losing meaning.
+
+---
+
+## 15. Route recipe: store overview `/dashboard/[store]`
+
+### Job
+
+Give the merchant a real-time scorecard and the clearest next action.
+
+### Composition
+
+1. Header with active status, title, subtitle, and “Run simulation.”
+2. Four connected stat cells.
+3. `SectionGutter`.
+4. Performance region with model rates, trend, and recent activity.
+5. `SectionGutter`.
+6. Tabbed detail region for top products, competitors, and agent visits.
+
+### Hierarchy
+
+- the overall win rate is the leading metric;
+- values include comparison context;
+- recent activity supports the performance story rather than becoming a competing feed;
+- tabs keep related detail in one stable region;
+- the simulation action remains visible without dominating every section.
+
+### Rendering
+
+The page is a server component with a static header and section shell. Each data region is an async
+server component wrapped in `Suspense` with a shape-matched skeleton.
+
+---
+
+## 16. Route recipe: products `/dashboard/[store]/products`
+
+### Job
+
+Help the merchant find products that need attention, understand why, and drill into action.
+
+### Composition
+
+1. Header with last-scan context and “Add products.”
+2. Four connected catalog stat cells.
+3. `01 — Performance`: model rates, trend, quality distribution, optimization breakdown.
+4. `02 — Catalog`: paginated product table.
+5. `03 — Traffic`: agent visits and model/source breakdown.
+6. `04 — Insights`: scan findings and priority actions.
+
+Separate major regions with a 16px hatch gutter.
+
+### Product table
+
+The identity cell combines image, title, and supporting metadata. Performance columns use compact
+bars plus values. Quality and scan recency remain visible. Add search, filters, sorting, and bulk
+actions only when they have a real data contract and responsive plan; do not render dead controls.
+
+The page must work with wide data:
+
+- preserve the most decision-relevant columns;
+- allow horizontal scroll where necessary;
+- do not silently omit a model from the real table while showing it in a skeleton;
+- maintain consistent pagination language and page size.
+
+---
+
+## 17. Route recipe: onboarding `/onboarding/**`
+
+### Job
+
+Reach the first credible win-rate result quickly while teaching the user what the system is doing.
+
+### Flow
+
+1. **Catalog**: choose Shopify, WooCommerce, feed, CSV, or another supported connection.
+2. **Select products**: choose the catalog subset to evaluate.
+3. **Competitors**: auto-detect, search, add by URL, review, or intentionally skip to auto-match.
+4. **Run scan**: confirm inputs, observe progress, and receive the first result.
+
+Nested connect routes and competitor review belong to their parent step; the progress indicator
+continues to show four major steps.
+
+### Desktop shell
+
+- full-height split;
+- left narrative panel at roughly 55%;
+- right task workspace;
+- persistent progress rail at top;
+- page-specific action footer at bottom;
+- internal work area owns scrolling.
+
+### Mobile shell
+
+- hide the narrative panel;
+- replace full step labels with progress dots and “Step n of 4”;
+- preserve the task title, input context, and primary action;
+- avoid viewport-height assumptions that break mobile browser chrome.
+
+### Progress
+
+- active step uses a primary fill;
+- completed steps use primary text;
+- future steps are visibly muted;
+- connectors fill as steps complete;
+- transitions clarify movement but do not block navigation.
+
+### Scan phases
+
+**Pre-scan**
+
+- summarize selected products, competitors, and models;
+- make the start action unambiguous;
+- explain expected duration.
+
+**Running**
+
+- show per-model progress and win/loss counts;
+- maintain a light live-intelligence log;
+- reveal lines in causal order;
+- scroll only the log container;
+- announce progress to assistive technology.
+
+**Complete**
+
+- lead with the win rate or primary result;
+- show model-level outcomes;
+- identify one top finding;
+- provide the next action into the store dashboard.
+
+---
+
+## 18. Responsive behavior
+
+### Marketing
+
+- maintain side rails as long as they fit; reduce internal padding before removing structure;
+- stack 2-column grids below `md`;
+- keep full-bleed sections full bleed while their inner content respects page padding;
+- convert navigation to a sheet at `lg`;
+- allow wide comparison tables to scroll;
+- ensure media controls remain large enough to tap.
+
+### Dashboard
+
+- desktop uses the full sidebar and topbar;
+- tablet/small screens require an explicit navigation replacement, not a hidden sidebar alone;
+- stat grids move from 1 to 2 to 4 columns;
+- chart regions stack before labels or data become cramped;
+- tables preserve identity and primary metric first;
+- page rails may reduce from `mx-8`, but alignment remains consistent across all sections.
+
+### Onboarding
+
+- narrative panel appears at `lg`;
+- labeled stepper appears at `sm`;
+- task content is usable at the narrowest supported viewport;
+- footer actions wrap or stack without reversing their semantic order;
+- inner tables and logs scroll independently.
+
+### Touch and keyboard
+
+- minimum practical target is 40×40px, preferably 44×44px for isolated mobile controls;
+- no hover-only actions;
+- focus order follows visual order;
+- sticky or fixed chrome must not cover anchor targets or focused elements.
+
+---
+
+## 19. Accessibility and implementation architecture
+
+### Accessibility baseline
+
+- Meet WCAG 2.1 AA contrast.
+- Use one `h1` and a logical heading hierarchy.
+- Provide a skip-to-content link.
+- Show visible focus on every interactive element.
+- Pair color with a number, icon, shape, or label.
+- Label icon-only controls.
+- Give charts an accessible title and summary.
+- Announce live scan progress without reading every decorative update.
+- Preserve meaningful alt text; use empty alt only for truly decorative imagery.
+- Respect reduced motion.
+- Keep error messages specific and associated with the relevant field or region.
+
+### Next.js page architecture
+
+Outside auth and onboarding:
+
+- `page.tsx` is a server component that exports real HTML;
+- page title, description, and section structure are static shell content;
+- data fetching lives in async server components;
+- each async region is wrapped in `Suspense`;
+- skeletons match the eventual region;
+- client components are pushed down to the smallest interactive boundary.
+
+Onboarding and auth may be client-heavy, but static headings should remain server-rendered where the
+flow permits.
+
+### Package discipline
+
+- UI controls: `@zenncore/web`.
+- Icons: `@zenncore/icons`.
+- Tables: `DataTableProvider` plus `DataTable`.
+- Forms: `InferredForm` plus `field()`.
+- Class merging: `cn` from `@zenncore/utils`.
+- Motion: the approved `Motion` vocabulary.
+- Colors: semantic tokens only.
+
+---
+
+## 20. What not to copy from current code
+
+The following are implementation debt, not design patterns:
+
+- raw classes such as `text-blue-500`, `text-green-500`, `text-red-500`, or `bg-[#EEE]`;
+- an undefined `font-header` utility;
+- padding, height, text size, border, or color overrides on `Button`;
+- call-site restyling of `Table*` or `DataTable`;
+- a hidden mobile dashboard sidebar without replacement navigation;
+- inconsistent equivalent dashboard title sizes;
+- skeletons that describe columns absent from the rendered table;
+- `scrollIntoView` in bounded streaming logs;
+- raw inputs where an `@zenncore/web` control or `InferredForm` is appropriate;
+- decorative Unicode stars or emoji in place of the icon system;
+- model colors used without semantic tokens or non-color labels;
+- `animate-pulse` treated as the only loading strategy;
+- every exported animation primitive treated as approved product vocabulary;
+- dormant landing sections treated as part of the active page;
+- obsolete unscoped routes such as `/dashboard/products`; store pages use `/dashboard/[store]/*`;
+- hardcoded plan emphasis that no longer matches the commercial strategy.
+
+When improving an existing page, remove these patterns opportunistically within the requested scope.
+Do not preserve them for visual consistency.
+
+---
+
+## 21. Pre-design prompt
+
+Use this before designing or revising a page:
+
+> You are designing an Ecentic surface for commerce operators working in the AI-agent economy.
+> Start by naming the user's immediate context, the single action they must complete, and the
+> decision the page must make easier. Choose marketing, dashboard, or onboarding mode. Build the
+> composition from Ecentic's registered rail grid: continuous vertical rails, one-pixel seams,
+> connected `gap-px` cells, muted crosshairs at consequential intersections, and a 16px hatched
+> gutter only between genuinely different systems. Keep structural geometry sharp. Round only
+> controls, pills, media, progress, inset code/log panels, and genuinely elevated surfaces. Use Red
+> Hat Display through `font-body`; establish hierarchy with size, weight, tracking, and spacing
+> before color. Use the light neutral surface stack, one deliberate primary blue, and semantic
+> success/warning/error colors only for measurable meaning. Use `@zenncore/web`,
+> `@zenncore/icons`, `InferredForm`, and `DataTable`; never invent raw controls or colors. Use motion
+> only to reveal order, progress, selection, or live state, through `Motion.Stagger`,
+> `Motion.Item`, `Motion.Up`, or `Motion.Row`. Design responsive, keyboard, reduced-motion,
+> loading, empty, error, disabled, hover, focus, and success states. The result should feel like
+> refined commerce infrastructure: editorial when explaining, dense when operating, and guided
+> when onboarding.
+
+### Component checkpoint
+
+Before writing a component, answer:
+
+```text
+Human:
+What happened immediately before they reached this surface?
+
+Job:
+What single verb must they complete here?
+
+Decision:
+What should be clearer when they leave?
+
+Mode:
+Marketing, dashboard, or onboarding?
+
+Rails:
+Which existing shell and alignment datum does this continue?
+
+Hierarchy:
+What is primary, supporting, metadata, and optional detail?
+
+Surfaces:
+Which background level belongs to canvas, structure, data, and elevation?
+
+Geometry:
+What stays sharp? What is eligible for radius or shadow, and why?
+
+Signals:
+Where is blue meaningful? Which statuses need semantic color plus text?
+
+Motion:
+What state change requires explanation? If none, do not animate.
+
+States:
+Loading, empty, error, success, disabled, hover, focus, reduced motion?
+
+Responsive:
+What survives first on a narrow screen, and where does navigation move?
+```
+
+---
+
+## 22. Visual and UX QA
+
+### Intent
+
+- Can the page's primary job be stated as one verb?
+- Is the intended user and moment clear?
+- Does the page feel specific to commerce optimization for AI agents?
+- Would the composition still make sense if all decoration were removed?
+
+### Structure
+
+- Does the page continue the correct marketing, dashboard, or onboarding rail?
+- Are major edges aligned to a shared datum?
+- Are connected cells built with `gap-px` rather than doubled borders?
+- Are crosshairs marking real intersections rather than decorating cards?
+- Are hatch gutters limited to major system boundaries?
+- Do structural cells remain sharp?
+
+### Hierarchy and typography
+
+- Is there one unmistakable primary heading or result?
+- Are equivalent headings consistent in size and weight?
+- Is secondary copy visibly quieter without becoming inaccessible?
+- Are paragraphs kept to a readable line length?
+- Are labels sentence case except for technical metadata?
+- Are changing numbers tabular and contextualized?
+
+### Color and depth
+
+- Are all colors semantic tokens?
+- Is primary blue concentrated in action, selection, or strategic emphasis?
+- Do status colors carry measurable meaning and have a non-color cue?
+- Is the surface stack subtle and consistent?
+- Are shadows reserved for actual elevation?
+- Could any rounded container become a sharp section or connected cell?
+
+### Components
+
+- Are controls from `@zenncore/web`?
+- Are icons from `@zenncore/icons`, visually consistent, and necessary?
+- Are forms built with the established form system?
+- Are tables built with the data-table system?
+- Are primitive styles left intact at call sites?
+- Do all controls have hover, pressed, focus, and disabled states?
+
+### Motion
+
+- Does each animation explain order, progress, selection, or state?
+- Is motion drawn from the approved vocabulary?
+- Are transforms and opacity used instead of layout-thrashing properties?
+- Is reduced-motion behavior complete?
+- Do bounded logs scroll internally?
+
+### Responsive and accessibility
+
+- Is the page fully usable without the desktop sidebar or narrative panel?
+- Is navigation still available on small screens?
+- Do grids stack before content becomes cramped?
+- Are wide tables handled deliberately?
+- Is focus order logical and visible?
+- Are live updates announced appropriately?
+- Are touch targets practical?
+- Does contrast meet AA?
+
+### Data states and architecture
+
+- Does each streamed region have a shape-matched skeleton?
+- Is there a designed empty state with one next action?
+- Are errors specific and recoverable?
+- Is partial successful data preserved?
+- Does `page.tsx` render a real server shell outside onboarding/auth?
+- Are interactive client boundaries as small as practical?
+
+### Final craft tests
+
+- **Squint test:** hierarchy remains visible; no border or color shouts without reason.
+- **Swap test:** replacing the rail grid with generic rounded cards would visibly destroy the
+  identity.
+- **Signature test:** the registered rail system appears in multiple specific, useful places.
+- **Restraint test:** removing one glow, color, shadow, badge, or animation makes the page weaker,
+  not cleaner.
+- **Action test:** the user can identify what to do next within a few seconds.
+
+---
+
+## 23. Canonical source map
+
+Use these files as implementation references:
+
+- Tokens: `packages/shared/config/src/tailwind/globals.css`
+- App utilities and transitions: `apps/web/src/app/globals.css`
+- Root font: `apps/web/src/app/layout.tsx`
+- Marketing crosshair: `apps/web/src/components/plus.tsx`
+- Dashboard grid helpers: `apps/web/src/app/(main)/dashboard/_components/grid.tsx`
+- Approved motion wrapper: `apps/web/src/components/motion.tsx`
+- Marketing landing: `apps/web/src/app/(main)/page.tsx`
+- Pricing: `apps/web/src/app/(main)/pricing/page.tsx`
+- Shared content layout: `apps/web/src/app/(main)/_components/content.tsx`
+- Store overview: `apps/web/src/app/(main)/dashboard/[store]/page.tsx`
+- Store products: `apps/web/src/app/(main)/dashboard/[store]/products/page.tsx`
+- Dashboard shell: `apps/web/src/app/(main)/dashboard/[store]/layout.tsx`
+- Onboarding shell: `apps/web/src/app/(auth)/onboarding/_components/onboarding-layout.tsx`
+- Onboarding narrative panel: `apps/web/src/components/onboarding.tsx`
+- Footer: `apps/web/src/components/footer.tsx`
+
+These references show how the system is assembled. This document determines which patterns should be
+repeated and which should be corrected.
