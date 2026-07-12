@@ -15,6 +15,11 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 import * as WooCommerce from "@/server/app/integration/woocommerce";
 
+// `field()`'s `description` is typed as a plain `string` — it can't carry the
+// rich (JSX) copy below. `InferredFormField` already renders a `description`
+// slot for each field, so instead of forcing JSX through that string-typed
+// prop, the descriptions are rendered as sibling `FieldDescription` blocks
+// (see the manual, `renderFields={false}` layout in `WooCommerceForm` below).
 const config = {
   domain: field({
     shape: "text",
