@@ -33,13 +33,28 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 /**
  * Merge one level of nested objects up so `pick` sees them: `{ company: { name } }`
  * exposes both `company name` (prefixed) and `name` (bare). Precedence, lowest to
- * highest: bare nested, prefixed nested, then top-level keys — so an explicit
- * top-level field always wins over a value lifted out of a nested object.
+ * highest: bare nested, listed, prefixed nested, then top-level keys — so an
+ * explicit top-level field always wins over a value lifted out of a nested object.
  */
 const flatten = (source: Record<string, unknown>): Record<string, unknown> => {
   const bare = Object.values(source)
     .filter(isRecord)
     .flatMap((value) => Object.entries(value));
+
+  // Arrays of objects (YC sends `companies: [{ name, url… }]`) contribute their
+  // first entry prefixed only, never bare: a bare lift would expose the company's
+  // `name` where `contactName` looks for the founder's, and win by alias order.
+  const listed = Object.entries(source)
+    .filter(([, value]) => Array.isArray(value))
+    .flatMap(([key, value]) => {
+      const first = (value as unknown[]).find(isRecord);
+
+      return first
+        ? Object.entries(first).map(
+            ([child, inner]) => [`${key} ${child}`, inner] as const,
+          )
+        : [];
+    });
 
   const prefixed = Object.entries(source)
     .filter(([, value]) => isRecord(value))
@@ -51,6 +66,7 @@ const flatten = (source: Record<string, unknown>): Record<string, unknown> => {
 
   return {
     ...Object.fromEntries(bare),
+    ...Object.fromEntries(listed),
     ...Object.fromEntries(prefixed),
     ...source,
   };
@@ -83,6 +99,7 @@ const pick = (
 const ALIASES = {
   companyName: [
     "companyName",
+    "companies name",
     "company",
     "startup",
     "startupName",
@@ -102,12 +119,14 @@ const ALIASES = {
     "website",
     "companyWebsite",
     "companyUrl",
+    "companies url",
+    "companies website",
     "storeUrl",
     "siteUrl",
     "url",
     "site",
   ],
-  batch: ["batch", "ycBatch", "cohort"],
+  batch: ["batch", "ycBatch", "companies batch", "cohort"],
   platform: [
     "platform",
     "commercePlatform",
@@ -115,6 +134,12 @@ const ALIASES = {
   ],
   monthlyOrders: ["monthlyOrders", "orders", "monthlyGmv", "gmv"],
   goal: ["goal", "goals", "notes", "message", "objective"],
+} as const;
+
+/** Halves of a split name, for producers that never send it whole (YC). */
+const NAME_PARTS = {
+  first: ["firstName", "givenName"],
+  last: ["lastName", "familyName", "surname"],
 } as const;
 
 /** Best-effort structured fields lifted out of an arbitrary redemption payload. */
@@ -133,9 +158,22 @@ const normalize = (payload: Record<string, unknown>) => {
     return scanned?.trim() ?? null;
   })();
 
+  const contactName = (() => {
+    // A split name is authoritative when present: the bare `name` alias below
+    // can otherwise resolve to a *company's* name lifted out of a nested object.
+    const parts = [
+      pick(source, NAME_PARTS.first),
+      pick(source, NAME_PARTS.last),
+    ].filter((part) => part !== null);
+
+    if (parts.length > 0) return parts.join(" ");
+
+    return pick(source, ALIASES.contactName);
+  })();
+
   return {
     companyName: pick(source, ALIASES.companyName),
-    contactName: pick(source, ALIASES.contactName),
+    contactName,
     email,
     website: pick(source, ALIASES.website),
     batch: pick(source, ALIASES.batch),
@@ -225,7 +263,10 @@ export const record = withContext(
 
     // Flag shapes we couldn't fully read so the mapping can be tightened. The
     // raw payload is stored regardless, so this is a diagnostic, not a failure.
-    if (!fields.email || !fields.companyName)
+    // Only an unreadable email or contact name signals drift — a company name is
+    // legitimately absent whenever a founder redeems before registering one, so
+    // gating on it would fire on every such redemption.
+    if (!fields.email || !fields.contactName)
       Sentry.captureMessage("Deal redemption with unrecognized payload shape", {
         level: "warning",
         tags: { merchant },
