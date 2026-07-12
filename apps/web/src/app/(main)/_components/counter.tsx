@@ -1,7 +1,8 @@
 "use client";
 
+import NumberFlow from "@number-flow/react";
 import { cn } from "@zenncore/utils";
-import { animate, useInView, useReducedMotion } from "motion/react";
+import { useInView } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type CounterProps = {
@@ -21,44 +22,45 @@ const parse = (value: string) => {
   const suffix = match[3] ?? "";
   const fractional = number.split(".")[1] ?? "";
 
-  return { prefix, suffix, target: Number(number), decimals: fractional.length };
+  return {
+    prefix,
+    suffix,
+    target: Number(number),
+    decimals: fractional.length,
+  };
 };
+
+const TIMING = { duration: 1200, easing: "ease-out" } as const;
 
 export const Counter = ({ value, delay = 0, className }: CounterProps) => {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-15%" });
-  const reduceMotion = useReducedMotion();
   const parsed = useMemo(() => parse(value), [value]);
-  const [display, setDisplay] = useState(0);
+  const [started, setStarted] = useState(false);
 
   useEffect(() => {
-    if (!parsed || !inView) return;
+    if (!inView) return;
 
-    if (reduceMotion) {
-      setDisplay(parsed.target);
-      return;
-    }
+    const timeout = setTimeout(() => setStarted(true), delay * 1000);
 
-    const controls = animate(0, parsed.target, {
-      duration: 1.2,
-      delay,
-      ease: "easeOut",
-      onUpdate: (latest) => setDisplay(latest),
-    });
-
-    return () => controls.stop();
-  }, [parsed, inView, reduceMotion, delay]);
+    return () => clearTimeout(timeout);
+  }, [inView, delay]);
 
   if (!parsed) return <span className={className}>{value}</span>;
 
   return (
     <span ref={ref} className={cn("tabular-nums", className)}>
-      <span aria-hidden>
-        {parsed.prefix}
-        {display.toFixed(parsed.decimals)}
-        {parsed.suffix}
-      </span>
-      <span className="sr-only">{value}</span>
+      <NumberFlow
+        value={started ? parsed.target : 0}
+        prefix={parsed.prefix}
+        suffix={parsed.suffix}
+        format={{
+          minimumFractionDigits: parsed.decimals,
+          maximumFractionDigits: parsed.decimals,
+        }}
+        transformTiming={TIMING}
+        spinTiming={TIMING}
+      />
     </span>
   );
 };
