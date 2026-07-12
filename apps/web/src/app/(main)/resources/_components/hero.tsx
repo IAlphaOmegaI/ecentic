@@ -5,7 +5,7 @@ import Link from "next/link";
 import Background from "@/public/images/blog.png";
 import chatgpt from "@/public/images/chatgpt.svg";
 import shopify from "@/public/images/shopify.svg";
-import ucp from "@/public/images/ucp.svg";
+import ucp from "@/public/images/ucp.png";
 import woocommerce from "@/public/images/woocommerce.svg";
 
 const assurances = [
@@ -51,7 +51,7 @@ export const Hero = () => (
             className="w-full border-white/20 bg-white/10 px-5 py-2.5 text-base text-white hover:bg-white/20 sm:w-auto"
             render={<Link href="/ucp-validator" />}
           >
-            <Image src={ucp} alt="" className="size-4" />
+            <Image src={ucp} alt="" className="h-4 w-auto" />
             Validate UCP
           </Button>
         </div>
@@ -81,7 +81,7 @@ export const Hero = () => (
               WooCommerce
             </span>
             <span className="flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-sm text-white">
-              <Image src={ucp} alt="" className="size-4" />
+              <Image src={ucp} alt="" className="h-4 w-auto" />
               UCP
             </span>
             <span className="flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-sm text-white">

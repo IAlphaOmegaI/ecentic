@@ -6,7 +6,7 @@ import claude from "@/public/images/claude.svg";
 import gemini from "@/public/images/gemini.svg";
 import perplexity from "@/public/images/perplexity.svg";
 import shopify from "@/public/images/shopify.svg";
-import ucp from "@/public/images/ucp.svg";
+import ucp from "@/public/images/ucp.png";
 import woocommerce from "@/public/images/woocommerce.svg";
 
 const agents = [
@@ -143,7 +143,7 @@ export const UcpArt = ({ highlighted = false }: UcpArt.Props) => (
     />
     <div className="relative flex items-start justify-between gap-4">
       <div className="flex flex-col gap-3">
-        <Image src={ucp} alt="Universal Commerce Protocol" className="size-12" />
+        <Image src={ucp} alt="Universal Commerce Protocol" className="h-12 w-auto" />
         <div>
           <p
             className={cn(
@@ -201,7 +201,7 @@ export const PlaygroundArt = () => (
       className="pointer-events-none absolute inset-0 bg-radial-[at_100%_0%] from-primary/15 to-transparent"
     />
     <div className="relative flex items-center justify-between gap-3">
-      <Image src={ucp} alt="Universal Commerce Protocol" className="size-10" />
+      <Image src={ucp} alt="Universal Commerce Protocol" className="h-10 w-auto" />
       <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 font-medium text-primary text-xs">
         Live agent loop
       </span>

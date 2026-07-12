@@ -7,7 +7,7 @@ import { Plus } from "@/components/plus";
 import { ANONYMOUS_MESSAGE_LIMIT } from "@/server/app/intelligence/ucp/playground-limit";
 import chatgpt from "@/public/images/chatgpt.svg";
 import shopify from "@/public/images/shopify.svg";
-import ucp from "@/public/images/ucp.svg";
+import ucp from "@/public/images/ucp.png";
 import woocommerce from "@/public/images/woocommerce.svg";
 import { PlaygroundArt, ScanArt, UcpArt } from "./resource-art";
 
@@ -111,7 +111,7 @@ export const Tools = () => (
             alt="WooCommerce"
             className="h-5 w-auto opacity-80"
           />
-          <Image src={ucp} alt="Universal Commerce Protocol" className="size-5" />
+          <Image src={ucp} alt="Universal Commerce Protocol" className="h-5 w-auto" />
           <Image src={chatgpt} alt="ChatGPT" className="size-5 opacity-80" />
         </div>
       </div>
