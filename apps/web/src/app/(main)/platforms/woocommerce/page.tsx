@@ -12,6 +12,7 @@ import {
   ContentPageSection,
 } from "../../_components/content";
 import { Faq } from "../../pricing/_components/faq";
+import { AgentCommerce } from "./_components/agent-commerce";
 import { Evaluate } from "./_components/evaluate";
 import { Hero } from "./_components/hero";
 import { RelatedPages } from "./_components/related";
@@ -25,23 +26,33 @@ const faq = [
   {
     question: "What does AI for WooCommerce stores mean?",
     answer:
-      "For WooCommerce merchants, it means connecting the product catalog, understanding where listings lose to competitors, and improving product pages with a workflow that stays tied to the live store.",
+      "For WooCommerce merchants, it means connecting the product catalog, understanding where listings lose to competitors, and improving product pages with a workflow that stays tied to the live store. It increasingly also means letting AI shopping agents buy directly from the store, which is what the écentic plugin enables.",
   },
   {
     question: "Can WooCommerce stores publish optimized product updates?",
     answer:
-      "Yes. The repository notes already document WooCommerce product update behavior and the requirements around REST credentials with read and write access, which supports an approve-and-publish style workflow.",
+      "Yes. Approved rewrites are published straight back into WooCommerce over the REST API, using credentials with read and write access. You review every change before it goes live — nothing is published to your storefront without your approval.",
+  },
+  {
+    question: "Do I need the plugin, or can I connect with API keys?",
+    answer:
+      "Either works. The free écentic for WooCommerce plugin is the recommended path: you approve the connection inside wp-admin and it provisions the REST key for you, with no keys to copy. The plugin is also what makes the store transactable by AI agents. If you only want listing optimization, you can paste a WooCommerce REST key and secret instead.",
+  },
+  {
+    question: "What does the plugin do to my storefront?",
+    answer:
+      "Nothing visible. It adds a discovery URL at /.well-known/ucp, an identity-linking endpoint, and a private REST bridge that only ecentic can call with the key you issued. Your theme, storefront, and checkout are untouched, and agent orders are created through the same WooCommerce internals as any other order.",
   },
   {
     question: "How does ecentic compare to other WooCommerce product plugins?",
     answer:
-      "Most WooCommerce product plugins help with catalog management or basic copy. ecentic focuses specifically on understanding why products lose to competitors and turning that analysis into listing improvements that can be published back into the store.",
+      "Most WooCommerce product plugins help with catalog management or basic copy. ecentic focuses specifically on understanding why products lose to competitors, turning that analysis into listing improvements published back into the store, and making the store discoverable and transactable by AI shopping agents.",
   },
   {
     question:
       "What is the right next step after reviewing the WooCommerce page?",
     answer:
-      "Most merchants move from this page into the AI product listing optimization workflow, then into the comparison guide if they are still evaluating categories. From there, the blog provides the operational depth for teams ready to act.",
+      "Most merchants start with a free scan to see where their listings stand, then install the plugin to make the store agent-ready. If you are still comparing categories of tooling, the comparison guide is the better next stop.",
   },
 ] as const;
 
@@ -95,12 +106,14 @@ export default () => {
 
       <Workflow />
 
+      <AgentCommerce />
+
       <Evaluate />
 
       <RelatedPages />
 
       <ContentPageSection
-        number="05"
+        number="06"
         title="Frequently asked questions"
         description="Common questions from WooCommerce merchants evaluating AI optimization workflows."
         gutter

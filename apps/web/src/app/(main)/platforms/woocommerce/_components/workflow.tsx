@@ -21,7 +21,7 @@ const steps: readonly Step[] = [
     step: "Step 01",
     title: "Connect & import",
     description:
-      "Connect with REST credentials and the catalog imports during onboarding, no plugin sprawl or theme edits.",
+      "Install the free plugin and approve the connection in wp-admin — no API keys to copy. The catalog imports on connect, with no theme edits.",
   },
   {
     icon: BullseyeIcon,

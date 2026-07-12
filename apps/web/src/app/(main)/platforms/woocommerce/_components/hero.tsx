@@ -6,6 +6,7 @@ import woocommerce from "@/public/images/woocommerce.svg";
 
 const assurances = [
   "No platform migration",
+  "Free plugin on WordPress.org",
   "Approved updates publish via the REST API",
   "See your free score first",
 ] as const;
@@ -25,7 +26,8 @@ export const Hero = () => (
         <p className="mt-6 max-w-2xl text-base text-foreground-dimmed leading-relaxed md:text-lg">
           Import your catalog, see where listings lose to competitors in
           AI-mediated comparisons, and publish approved improvements back into
-          WooCommerce without changing platforms.
+          WooCommerce without changing platforms — then make the store
+          discoverable and transactable by AI shopping agents.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Button

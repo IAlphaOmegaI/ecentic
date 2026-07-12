@@ -82,8 +82,10 @@ export const beginConnect = withContext(
 
     // Plugin-installed probe: an installed plugin answers /.well-known/ucp
     // (200 once configured, 503 not_configured before connect); a bare
-    // WordPress 404s. Without the plugin, send the admin to install it —
-    // activation auto-resumes the connect flow.
+    // WordPress 404s. Without the plugin there is nothing to authorize against,
+    // so the admin has to install it and come back — the plugin deliberately
+    // does not phone home on activation (a WordPress.org requirement), so
+    // activating it resumes nothing on its own.
     const probe = await resultify(() =>
       fetch(`${normalized}/.well-known/ucp`, {
         headers: { Accept: "application/json" },
@@ -98,6 +100,7 @@ export const beginConnect = withContext(
         success: true as const,
         data: {
           next: "install" as const,
+          storeUrl: normalized,
           url: `${normalized}/wp-admin/plugin-install.php?tab=upload`,
         },
       };
@@ -126,7 +129,11 @@ export const beginConnect = withContext(
 
     return {
       success: true as const,
-      data: { next: "authorize" as const, url: authorize.toString() },
+      data: {
+        next: "authorize" as const,
+        storeUrl: normalized,
+        url: authorize.toString(),
+      },
     };
   },
   "UcpConnect.begin",

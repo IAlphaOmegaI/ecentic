@@ -48,10 +48,13 @@ export default () => (
         </h3>
         <p className="font-light text-foreground-dimmed">
           Enter your store URL and approve the connection from your WordPress
-          admin — no API keys to copy. If the Ecentic UCP plugin isn&apos;t
-          installed yet, we&apos;ll take you to your plugin screen first;
-          activating it resumes the connection automatically. This also enables
-          hosted UCP, making your store transactable by AI shopping agents.
+          admin — no API keys to copy. You&apos;ll need the free{" "}
+          <span className="font-medium text-foreground">
+            écentic for WooCommerce
+          </span>{" "}
+          plugin installed and activated first; if it isn&apos;t there yet,
+          we&apos;ll show you how to add it. This also enables hosted UCP,
+          making your store transactable by AI shopping agents.
         </p>
         <OneClickConnect />
       </div>
