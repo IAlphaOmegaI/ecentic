@@ -53,11 +53,25 @@ export const POST = async (request: NextRequest) => {
       payload: body.data,
     });
 
-    if (!parsed.success)
+    // A body that parsed as JSON but carries no object (`null`, a bare string, an
+    // empty array) holds no redemption to record. That is the caller's doing, so
+    // it is a warning rather than an error — but still worth seeing, in case a
+    // partner has silently changed the envelope they post.
+    if (!parsed.success) {
+      Sentry.captureMessage(
+        "Deal redemption webhook received a body with no object",
+        {
+          level: "warning",
+          tags: { merchant },
+          extra: { type: typeof body.data, body: body.data },
+        },
+      );
+
       return Response.json(
         { error: "Validation failed", message: parsed.error.message },
         { status: 422, headers: corsHeaders },
       );
+    }
 
     const client =
       request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??

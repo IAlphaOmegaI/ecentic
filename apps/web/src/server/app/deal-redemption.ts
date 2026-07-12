@@ -6,6 +6,7 @@ import { eq, sql } from "drizzle-orm";
 import { schema } from "../database";
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
+import { ValidationError } from "../utils/error";
 import { repository } from "../utils/repository";
 import * as DealAllowlist from "./deal-allowlist";
 
@@ -185,17 +186,23 @@ const normalize = (payload: Record<string, unknown>) => {
 
 /**
  * The payload is any JSON object; foreign shapes are normalized on the way in,
- * so `parse` only guards against a body that isn't an object at all.
+ * so `parse` only guards against a body that carries no object at all. A body
+ * that is *malformed* is the caller's doing, not a defect of ours, so it fails
+ * as a `ValidationError` — expected, and therefore never reported to Sentry.
  */
 export const parse = withContext(
   async (_, { payload }: { payload: unknown }) => {
-    if (!isRecord(payload))
+    // A producer may wrap the redemption in an array (`[{…}]`) or post a batch.
+    // Take the first object rather than rejecting: never drop one over shape.
+    const body = Array.isArray(payload) ? payload.find(isRecord) : payload;
+
+    if (!isRecord(body))
       return {
         success: false as const,
-        error: new Error("Payload must be a JSON object"),
+        error: new ValidationError("Payload must be a JSON object"),
       };
 
-    return { success: true as const, data: payload };
+    return { success: true as const, data: body };
   },
   "DealRedemption.parse",
 );
