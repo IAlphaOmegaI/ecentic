@@ -14,9 +14,7 @@ export const Hero = () => (
     <div className="relative mx-auto max-w-6xl border-accent-foreground border-x">
       <Motion.Stagger className="px-8 pt-36 pb-16">
         <Motion.Item>
-          <p className="mb-4 font-medium text-foreground-dimmed text-sm uppercase tracking-[0.2em]">
-            Resources
-          </p>
+          <p className="mb-4 font-medium text-primary text-sm">Resources</p>
         </Motion.Item>
         <Motion.Item>
           <h1 className="max-w-3xl font-semibold text-5xl text-foreground-rich tracking-tight md:text-7xl">

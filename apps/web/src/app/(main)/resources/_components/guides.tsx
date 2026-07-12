@@ -1,22 +1,13 @@
 import { ArrowRightIcon, FileIcon, SquareChartIcon } from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import Link from "next/link";
 import { Plus } from "@/components/plus";
-import chatgpt from "@/public/images/chatgpt.svg";
-import claude from "@/public/images/claude.svg";
-import gemini from "@/public/images/gemini.svg";
-import perplexity from "@/public/images/perplexity.svg";
 import shopify from "@/public/images/shopify.svg";
 import woocommerce from "@/public/images/woocommerce.svg";
+import { AgentLogoCarousel } from "./agent-logo-carousel";
 import { Reveal, RevealItem } from "./reveal";
-
-const agents = [
-  { name: "ChatGPT", logo: chatgpt },
-  { name: "Claude", logo: claude },
-  { name: "Gemini", logo: gemini },
-  { name: "Perplexity", logo: perplexity },
-] as const;
 
 const guides = [
   {
@@ -45,6 +36,8 @@ const guides = [
       "Install from the App Store, import your catalog, and publish approved listing updates back into Shopify.",
     href: "/platforms/shopify",
     label: "Open Shopify guide",
+    buttonClassName:
+      "border-[#5E8E3E] bg-[#5E8E3E] text-white shadow-none hover:bg-[#4E7A34]",
   },
   {
     logo: woocommerce,
@@ -54,6 +47,8 @@ const guides = [
       "Connect with REST API keys, run the same simulation loop, and publish improvements without changing platforms.",
     href: "/platforms/woocommerce",
     label: "Open WooCommerce guide",
+    buttonClassName:
+      "border-[#7F54B3] bg-[#7F54B3] text-white shadow-none hover:bg-[#6B4799]",
   },
 ] as const;
 
@@ -83,29 +78,14 @@ export const Guides = () => (
       <Reveal className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-[5fr_8fr]">
         <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
         <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
-        <div className="flex bg-background-dimmed p-6 md:p-10">
-          <RevealItem className="flex flex-col justify-center gap-4">
-            <p className="font-medium text-foreground-dimmed text-sm uppercase tracking-[0.18em]">
-              Simulated agents
-            </p>
-            <ul className="flex flex-wrap gap-2">
-              {agents.map((agent) => (
-                <li
-                  key={agent.name}
-                  className="flex items-center gap-2 rounded-full border border-accent-foreground bg-background px-3 py-1.5 text-foreground text-sm"
-                >
-                  <Image src={agent.logo} alt="" className="size-4" />
-                  {agent.name}
-                </li>
-              ))}
-            </ul>
+        <div className="flex h-full min-h-48 bg-background-dimmed p-6 md:min-h-0 md:p-10">
+          <RevealItem className="flex h-full min-h-36 w-full flex-1 items-center justify-center">
+            <AgentLogoCarousel />
           </RevealItem>
         </div>
         <div className="bg-background-rich p-6 md:p-10">
           <RevealItem className="flex flex-col items-start gap-3">
-            <p className="font-medium text-primary text-sm uppercase tracking-[0.18em]">
-              Product walkthrough
-            </p>
+            <p className="font-medium text-primary text-sm">Product walkthrough</p>
             <h3 className="font-body font-medium text-3xl text-foreground">
               How it works
             </h3>
@@ -137,11 +117,15 @@ export const Guides = () => (
           >
             <RevealItem className="flex h-full flex-col gap-4">
               {"logo" in guide ? (
-                <Image src={guide.logo} alt={guide.name} className="size-7" />
+                <Image
+                  src={guide.logo}
+                  alt={guide.name}
+                  className="h-12 w-auto self-start"
+                />
               ) : (
                 <guide.icon
                   aria-label={guide.name}
-                  className="size-7 text-primary"
+                  className="size-12 self-start text-primary"
                 />
               )}
               <div className="flex flex-1 flex-col gap-3">
@@ -152,14 +136,24 @@ export const Guides = () => (
                   {guide.description}
                 </p>
               </div>
-              <Button
-                color="accent"
-                className="w-fit"
-                render={<Link href={guide.href} />}
-              >
-                {guide.label}
-                <ArrowRightIcon className="size-4" />
-              </Button>
+              {"buttonClassName" in guide ? (
+                <Button
+                  className={cn("w-fit", guide.buttonClassName)}
+                  render={<Link href={guide.href} />}
+                >
+                  {guide.label}
+                  <ArrowRightIcon className="size-4" />
+                </Button>
+              ) : (
+                <Button
+                  color="accent"
+                  className="w-fit"
+                  render={<Link href={guide.href} />}
+                >
+                  {guide.label}
+                  <ArrowRightIcon className="size-4" />
+                </Button>
+              )}
             </RevealItem>
           </article>
         ))}
