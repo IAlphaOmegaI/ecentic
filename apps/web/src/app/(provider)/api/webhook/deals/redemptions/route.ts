@@ -31,18 +31,41 @@ export const POST = async (request: NextRequest) => {
 
   // Turn any unexpected throw into an observable 500 rather than a platform 502.
   const handled = await resultify(async () => {
-    const body = await resultify(() => request.json() as Promise<unknown>);
+    const raw = await resultify(() => request.text());
 
-    // Acknowledge empty or unparseable test pings without recording a row —
-    // partner "Send Test" buttons often POST no body and expect a 2xx.
+    // Read the body as text before parsing so an empty ping can be told apart
+    // from content we failed to parse — collapsing both into one "unparsable"
+    // event hides a partner posting a broken envelope behind the routine pings.
+    const content = raw.success ? raw.data.trim() : "";
+
+    // Partner "Send Test" buttons often POST no body and expect a 2xx. That is
+    // expected and carries nothing to record, so acknowledge it silently rather
+    // than raising a warning every time someone clicks the button.
+    if (content.length === 0)
+      return Response.json(
+        { received: true },
+        { status: 200, headers: corsHeaders },
+      );
+
+    const body = resultify(() => JSON.parse(content) as unknown);
+
+    // Content that is not JSON at all — form-encoded, truncated, an HTML error
+    // page. Unlike an empty ping this is a real integration break, so record the
+    // envelope that was actually sent instead of just the fact that it failed.
     if (!body.success) {
       Sentry.captureMessage(
-        "Deal redemption webhook received an unparseable body",
+        "Deal redemption webhook received an unparsable body",
         {
           level: "warning",
           tags: { merchant },
+          extra: {
+            body: content.slice(0, 1000),
+            length: content.length,
+            reason: body.error.message,
+          },
         },
       );
+
       return Response.json(
         { received: true },
         { status: 200, headers: corsHeaders },

@@ -11,7 +11,7 @@ export type ModelId = GatewayModelId;
 
 // Models occasionally wrap the JSON in markdown fences or surround it with
 // prose/citations (Perplexity's sonar-pro especially, and Gemini when it
-// "thinks out loud"). That makes the raw output unparseable and surfaces as
+// "thinks out loud"). That makes the raw output unparsable and surfaces as
 // NoObjectGeneratedError. Strip fences and extract the outermost `{ ... }` so
 // the SDK can parse and validate instead of throwing.
 const repairText: RepairTextFunction = async ({ text }) => {
