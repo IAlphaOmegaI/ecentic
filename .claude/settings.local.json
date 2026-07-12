@@ -142,7 +142,8 @@
       "PowerShell($env:Path = \"$env:USERPROFILE\\\\.bun\\\\bin;$env:Path\"; Set-Location \"C:\\\\Users\\\\user\\\\Desktop\\\\Development\\\\ecentic\"; bunx biome check --write --unsafe \"apps/web/src/app/\\(main\\)/_components/content.tsx\" \"apps/web/src/app/\\(main\\)/blog/_components/editorial-page.tsx\" \"apps/web/src/app/\\(main\\)/privacy-policy/page.tsx\" \"apps/web/src/app/\\(main\\)/enterprise/page.tsx\" \"apps/web/src/app/\\(main\\)/demo/page.tsx\")",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/how-it-works)",
       "Bash(curl -s http://localhost:3000/demo -o /tmp/demo.html -w \"%{http_code}\\\\n\")",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "Bash(curl -s http://localhost:3000/resources -o /tmp/res2.html -w \"%{http_code}\\\\n\")"
     ]
   }
 }

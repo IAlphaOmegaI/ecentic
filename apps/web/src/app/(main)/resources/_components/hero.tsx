@@ -1,39 +1,66 @@
-import { ArrowRightIcon } from "@zenncore/icons";
+import { ArrowRightIcon, CheckIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import Image from "next/image";
 import Link from "next/link";
-import Background from "@/public/images/blog.png";
+import { Motion } from "@/components/motion";
+
+const assurances = [
+  "No credit card",
+  "Validator works without an account",
+  "Results in about two minutes",
+] as const;
 
 export const Hero = () => (
-  <section className="border-accent-foreground border-b p-4">
-    <div className="relative size-full overflow-hidden rounded-lg bg-primary">
-      <Image
-        src={Background}
-        alt=""
-        aria-hidden
-        loading="eager"
-        className="absolute inset-y-0 right-0 h-full w-3/5 object-cover object-left opacity-25 brightness-0 invert"
-      />
-      <div className="relative z-10 mx-auto grid max-w-6xl border-accent-foreground border-x md:grid-cols-[8fr_5fr]">
-        <div className="flex min-h-[34rem] flex-col justify-end px-8 pt-24 pb-14 md:min-h-[38rem] md:px-12 md:py-20">
-          <h1 className="max-w-3xl text-balance font-semibold text-5xl text-white tracking-tight md:text-7xl">
-            Free tools for the agent commerce shift.
-          </h1>
-          <p className="mt-6 max-w-xl text-pretty font-light text-lg text-white/80 leading-relaxed">
-            Diagnose your catalog, validate your protocol surface, or inspect a
-            live agent workflow before you commit.
+  <section className="border-accent-foreground border-b">
+    <div className="relative mx-auto max-w-6xl border-accent-foreground border-x">
+      <Motion.Stagger className="px-8 pt-36 pb-16">
+        <Motion.Item>
+          <p className="mb-4 font-medium text-foreground-dimmed text-sm uppercase tracking-[0.2em]">
+            Resources
           </p>
+        </Motion.Item>
+        <Motion.Item>
+          <h1 className="max-w-3xl font-semibold text-5xl text-foreground-rich tracking-tight md:text-7xl">
+            Free tools and guides{" "}
+            <span className="text-primary">for agent commerce.</span>
+          </h1>
+        </Motion.Item>
+        <Motion.Item>
+          <p className="mt-6 max-w-2xl text-base text-foreground-dimmed leading-relaxed md:text-lg">
+            Diagnose your catalog, validate your protocol surface, or inspect a
+            live agent workflow before you commit to anything.
+          </p>
+        </Motion.Item>
+        <Motion.Item className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Button
-            color="accent"
-            className="mt-8 w-fit"
+            color="primary"
+            className="w-full px-5 py-2.5 text-base sm:w-auto"
             render={<Link href="/sign-up" />}
           >
             Scan your store free
             <ArrowRightIcon className="size-4" />
           </Button>
-        </div>
-        <div className="hidden border-white/20 border-l md:block" />
-      </div>
+          <Button
+            color="accent"
+            className="w-full px-5 py-2.5 text-base sm:w-auto"
+            render={<Link href="/ucp-validator" />}
+          >
+            Validate a store
+          </Button>
+        </Motion.Item>
+        <Motion.Item>
+          <ul className="mt-8 flex flex-wrap gap-2">
+            {assurances.map((assurance) => (
+              <li
+                key={assurance}
+                className="flex items-center gap-1.5 rounded-full border border-accent-foreground bg-background-rich px-3 py-1 text-foreground text-sm"
+              >
+                <CheckIcon className="size-3.5 text-primary" />
+                {assurance}
+              </li>
+            ))}
+          </ul>
+        </Motion.Item>
+      </Motion.Stagger>
     </div>
   </section>
 );

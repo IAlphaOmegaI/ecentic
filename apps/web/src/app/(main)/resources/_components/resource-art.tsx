@@ -1,5 +1,6 @@
 import { CodeIcon, FileIcon, SquareChartIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
+import * as motion from "motion/react-client";
 import Image, { type StaticImageData } from "next/image";
 import chatgpt from "@/public/images/chatgpt.svg";
 import claude from "@/public/images/claude.svg";
@@ -85,14 +86,18 @@ export const ScanArt = ({ highlighted = false }: ScanArt.Props) => (
       </div>
     </div>
     <div className="relative mt-4 flex items-end gap-3">
-      <span
+      <motion.span
+        initial={{ opacity: 0, scale: 0.8 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ type: "spring", stiffness: 320, damping: 22, delay: 0.2 }}
         className={cn(
           "font-bold text-5xl leading-none tracking-tight",
           highlighted ? "text-white" : "text-primary",
         )}
       >
         72
-      </span>
+      </motion.span>
       <div className="mb-1">
         <p
           className={cn(
@@ -118,9 +123,13 @@ export const ScanArt = ({ highlighted = false }: ScanArt.Props) => (
         highlighted ? "bg-white/15" : "bg-accent-foreground",
       )}
     >
-      <div
+      <motion.div
+        initial={{ width: 0 }}
+        whileInView={{ width: "72%" }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 1.1, ease: "easeOut", delay: 0.3 }}
         className={cn(
-          "h-full w-[72%] rounded-full",
+          "h-full rounded-full",
           highlighted ? "bg-white" : "bg-primary",
         )}
       />
@@ -149,11 +158,19 @@ export const UcpArt = ({ highlighted = false }: UcpArt.Props) => (
     />
     <div className="relative flex items-start justify-between gap-4">
       <div className="flex flex-col gap-3">
-        <Image
-          src={ucp}
-          alt="Universal Commerce Protocol"
-          className="h-12 w-auto"
-        />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.85 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ type: "spring", stiffness: 320, damping: 22 }}
+          className="w-fit"
+        >
+          <Image
+            src={ucp}
+            alt="Universal Commerce Protocol"
+            className="size-12 object-contain"
+          />
+        </motion.div>
         <div>
           <p
             className={cn(
@@ -181,9 +198,18 @@ export const UcpArt = ({ highlighted = false }: UcpArt.Props) => (
       />
     </div>
     <div className="relative mt-4 grid grid-cols-3 gap-2">
-      {["Discovery", "Catalog", "Checkout"].map((step) => (
-        <div
+      {["Discovery", "Catalog", "Checkout"].map((step, index) => (
+        <motion.div
           key={step}
+          initial={{ opacity: 0, y: 8 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{
+            type: "spring",
+            stiffness: 320,
+            damping: 26,
+            delay: 0.15 + index * 0.12,
+          }}
           className={cn(
             "rounded-md border px-2 py-2 text-center text-xs",
             highlighted
@@ -192,7 +218,7 @@ export const UcpArt = ({ highlighted = false }: UcpArt.Props) => (
           )}
         >
           {step}
-        </div>
+        </motion.div>
       ))}
     </div>
   </div>
@@ -214,7 +240,7 @@ export const PlaygroundArt = () => (
       <Image
         src={ucp}
         alt="Universal Commerce Protocol"
-        className="h-10 w-auto"
+        className="size-10 object-contain"
       />
       <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 font-medium text-primary text-xs">
         Live agent loop
@@ -225,18 +251,46 @@ export const PlaygroundArt = () => (
         { label: "search_catalog", tone: "text-primary" },
         { label: "create_cart", tone: "text-foreground" },
         { label: "create_checkout", tone: "text-foreground-dimmed" },
-      ].map((step) => (
-        <div
+      ].map((step, index) => (
+        <motion.div
           key={step.label}
+          initial={{ opacity: 0, x: -10 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{
+            type: "spring",
+            stiffness: 300,
+            damping: 26,
+            delay: 0.2 + index * 0.18,
+          }}
           className="flex items-center gap-2 rounded-md border border-accent-foreground bg-background-rich px-3 py-2"
         >
-          <span className="size-1.5 rounded-full bg-success" />
+          <motion.span
+            animate={{ opacity: [1, 0.35, 1] }}
+            transition={{
+              duration: 1.8,
+              repeat: Number.POSITIVE_INFINITY,
+              delay: index * 0.35,
+              ease: "easeInOut",
+            }}
+            className="size-1.5 rounded-full bg-success"
+          />
           <span className={step.tone}>{step.label}</span>
-        </div>
+        </motion.div>
       ))}
     </div>
   </div>
 );
+
+const llmsLines = [
+  { text: "# ecentic", tone: "text-primary" },
+  { text: "> AI agent commerce platform", tone: "text-foreground-dimmed" },
+  { text: "", tone: "text-foreground" },
+  { text: "## Core", tone: "text-success" },
+  { text: "- [Scan](/sign-up)", tone: "text-foreground" },
+  { text: "- [UCP Validator](/ucp-validator)", tone: "text-foreground" },
+  { text: "- [Blog](/blog)", tone: "text-foreground-dimmed" },
+] as const;
 
 export const LlmsArt = () => (
   <div className="relative overflow-hidden rounded-lg border border-accent-foreground bg-background-rich p-4">
@@ -245,27 +299,49 @@ export const LlmsArt = () => (
       className="pointer-events-none absolute inset-0 bg-radial-[at_0%_0%] from-success/10 to-transparent"
     />
     <div className="relative mb-3 flex items-center gap-2">
-      <span className="size-2.5 rounded-full bg-error/80" />
-      <span className="size-2.5 rounded-full bg-warning/80" />
-      <span className="size-2.5 rounded-full bg-success/80" />
+      {["bg-error/80", "bg-warning/80", "bg-success/80"].map((tone, index) => (
+        <motion.span
+          key={tone}
+          initial={{ opacity: 0, scale: 0.5 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{
+            type: "spring",
+            stiffness: 400,
+            damping: 20,
+            delay: index * 0.08,
+          }}
+          className={cn("size-2.5 rounded-full", tone)}
+        />
+      ))}
       <span className="ml-2 font-mono text-foreground-dimmed text-xs">
         llms.txt
       </span>
     </div>
     <pre className="relative overflow-hidden rounded-md border border-accent-foreground bg-background p-3 font-mono text-[11px] leading-relaxed">
-      <span className="text-primary"># ecentic</span>
-      {"\n"}
-      <span className="text-foreground-dimmed">
-        {"> AI agent commerce platform"}
-      </span>
-      {"\n\n"}
-      <span className="text-success">## Core</span>
-      {"\n"}
-      <span className="text-foreground">- [Scan](/sign-up)</span>
-      {"\n"}
-      <span className="text-foreground">- [UCP Validator](/ucp-validator)</span>
-      {"\n"}
-      <span className="text-foreground-dimmed">- [Blog](/blog)</span>
+      {llmsLines.map((line, index) => (
+        <motion.span
+          // biome-ignore lint/suspicious/noArrayIndexKey: static line list, order never changes
+          key={index}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.25, delay: 0.3 + index * 0.15 }}
+          className={cn("block", line.tone)}
+        >
+          {line.text || " "}
+        </motion.span>
+      ))}
+      <motion.span
+        aria-hidden
+        animate={{ opacity: [1, 0, 1] }}
+        transition={{
+          duration: 1,
+          repeat: Number.POSITIVE_INFINITY,
+          ease: "linear",
+        }}
+        className="mt-0.5 inline-block h-3 w-1.5 bg-foreground-dimmed"
+      />
     </pre>
   </div>
 );
