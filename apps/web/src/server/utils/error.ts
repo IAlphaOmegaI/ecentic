@@ -49,11 +49,18 @@ export class UniqueConstraintError extends error(
   DatabaseError,
 ) {}
 
-export class ValidationError extends error("validation-error", DatabaseError) {}
-
 export class NotFoundError extends error("not-found-error", DatabaseError) {}
 
 export class RequestError extends error("request-error", Error) {}
+
+/**
+ * Input that fails a business rule before it reaches the database — an empty
+ * selection, a malformed URL. The user is told what to correct, so it is never
+ * reported to Sentry.
+ */
+export class ValidationError extends error("validation-error", RequestError, {
+  expected: true,
+}) {}
 
 /**
  * A well-formed request that conflicts with the current state of the system —

@@ -6,7 +6,7 @@ import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
-import { RequestError } from "../utils/error";
+import { ValidationError } from "../utils/error";
 import type { Document } from "../utils/repository";
 import { repository } from "../utils/repository";
 import * as User from "./user";
@@ -52,7 +52,7 @@ export const createForUser = withContext(
     if (!label)
       return {
         success: false as const,
-        error: new RequestError("API key name is required"),
+        error: new ValidationError("API key name is required"),
       };
 
     const key = createRawApiKey();

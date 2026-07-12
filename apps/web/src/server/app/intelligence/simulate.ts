@@ -8,7 +8,7 @@ import { withAuthentication } from "@/server/utils/authentication";
 import { schema } from "../../database";
 import * as AI from "../../utils/ai";
 import { Environment } from "../../utils/environment";
-import { RequestError } from "../../utils/error";
+import { RequestError, ValidationError } from "../../utils/error";
 import * as Competitor from "../competitor";
 import * as Product from "../product";
 import * as Scan from "../scan";
@@ -659,7 +659,7 @@ export const enqueueScan = withAuthentication(async (context) => {
   if (selected.length === 0)
     return {
       success: false as const,
-      error: new RequestError("No competitors selected"),
+      error: new ValidationError("No competitors selected"),
     };
 
   const totalSimulations =

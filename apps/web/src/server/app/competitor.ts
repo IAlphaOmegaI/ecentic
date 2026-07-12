@@ -6,7 +6,11 @@ import { cache as dedupe } from "react";
 import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
 import { Environment } from "../utils/environment";
-import { NotFoundError, RequestError, UnauthorizedError } from "../utils/error";
+import {
+  NotFoundError,
+  UnauthorizedError,
+  ValidationError,
+} from "../utils/error";
 import type { Document } from "../utils/repository";
 import { repository } from "../utils/repository";
 import * as Detection from "./intelligence/detect";
@@ -118,7 +122,7 @@ export const streamDetection = withAuthentication(
     if (products.length === 0)
       return {
         success: false as const,
-        error: new RequestError("No products selected"),
+        error: new ValidationError("No products selected"),
       };
 
     return {
