@@ -11,6 +11,7 @@ import {
   NotFoundError,
   RequestError,
   UnauthenticatedError,
+  ValidationError,
 } from "../utils/error";
 import type { Document } from "../utils/repository";
 import { repository } from "../utils/repository";
@@ -523,7 +524,7 @@ export const chargePerformanceFee = withContext(
     if (!method)
       return {
         success: false as const,
-        error: new RequestError("Customer has no payment method on file"),
+        error: new ValidationError("Customer has no payment method on file"),
       };
 
     const item = await resultify(() =>

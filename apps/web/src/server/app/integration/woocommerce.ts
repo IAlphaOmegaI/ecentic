@@ -5,7 +5,12 @@ import { type TransactionScope, withTransaction } from "../../database";
 import { withAuthentication } from "../../utils/authentication";
 import { withContext } from "../../utils/context";
 import { Environment } from "../../utils/environment";
-import { ConflictError, NotFoundError, RequestError } from "../../utils/error";
+import {
+  ConflictError,
+  NotFoundError,
+  RequestError,
+  ValidationError,
+} from "../../utils/error";
 import * as HTTP from "../../utils/http";
 import { authorizedRequest, normalizeStoreUrl } from "../../utils/woocommerce";
 import * as Product from "../product";
@@ -469,7 +474,7 @@ export const updateProduct = withAuthentication(
     if (Object.keys(body).length === 0)
       return {
         success: false,
-        error: new RequestError("No fields to update"),
+        error: new ValidationError("No fields to update"),
       };
 
     const url = `${domain}/wp-json/wc/v3/products/${product.data.externalId}`;

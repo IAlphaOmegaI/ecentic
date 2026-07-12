@@ -4,7 +4,7 @@ import { resultify } from "@zenncore/utils";
 import { z } from "zod";
 import { withAuthentication } from "@/server/utils/authentication";
 import * as AI from "../../utils/ai";
-import { RequestError } from "../../utils/error";
+import { ValidationError } from "../../utils/error";
 
 // The AI shopping agents we simulate. The first three are the same Azure-gateway
 // models the scan engine uses (server/app/intelligence/simulate.ts); Perplexity
@@ -222,7 +222,7 @@ export const runDiscovery = withAuthentication(
     if (!targetStore) {
       return {
         success: false as const,
-        error: new RequestError("Enter a target store domain."),
+        error: new ValidationError("Enter a target store domain."),
       };
     }
 
@@ -241,7 +241,7 @@ export const runDiscovery = withAuthentication(
     if (queries.length === 0) {
       return {
         success: false as const,
-        error: new RequestError("Enter at least one shopping query."),
+        error: new ValidationError("Enter at least one shopping query."),
       };
     }
 
