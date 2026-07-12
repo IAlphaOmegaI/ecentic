@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Plus } from "@/components/plus";
 import { seo } from "@/lib/seo";
-import ucp from "@/public/images/ucp.svg";
+import ucp from "@/public/images/ucp.png";
 import { LlmsArt, McpArt } from "./resource-art";
 
 const endpoints = [
@@ -70,7 +70,7 @@ const EndpointArt = ({
               : "border-[#1572FA]/20 bg-[#1572FA]/8",
           )}
         >
-          <Image src={ucp} alt="Universal Commerce Protocol" className="size-10" />
+          <Image src={ucp} alt="Universal Commerce Protocol" className="h-10 w-auto" />
           <div>
             <p className="font-medium text-foreground text-sm">
               Universal Commerce Protocol
