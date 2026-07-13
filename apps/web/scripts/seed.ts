@@ -12,8 +12,7 @@ const posts = [
     publishedAt: "2026-06-30",
     updatedAt: "2026-07-01",
     readTime: "6 min",
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=600&q=80",
+    thumbnailUrl: "/images/blog/yc-techstars-deals.jpg",
     tags: [
       "Y Combinator deal",
       "Techstars deal",
@@ -103,7 +102,7 @@ Once you are activated, import your catalog and run the first simulation. The po
     publishedAt: "2026-06-30",
     updatedAt: "2026-07-01",
     readTime: "8 min",
-    thumbnailUrl: "/images/eu-flag.gif",
+    thumbnailUrl: "/images/blog/eu-presence-partnership.jpg",
     tags: [
       "partnerships",
       "EU Presence",
@@ -212,8 +211,7 @@ If your situation is unusual — many SKUs across multiple stores, or specific r
     publishedAt: "2026-06-04",
     updatedAt: "2026-07-01",
     readTime: "12 min",
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?auto=format&fit=crop&w=600&q=80",
+    thumbnailUrl: "/images/blog/morph-agentic-economy.jpg",
     tags: [
       "agentic commerce",
       "AI shopping agents",
@@ -325,8 +323,7 @@ Finally, measure agent influence before it shows up cleanly in standard analytic
     publishedAt: "2026-07-09",
     updatedAt: "2026-07-09",
     readTime: "11 min",
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80",
+    thumbnailUrl: "/images/blog/ai-economy-commerce.jpg",
     tags: [
       "AI economy",
       "agentic commerce",
@@ -455,8 +452,7 @@ The pattern from every prior commerce shift holds: the share number will look sm
     publishedAt: "2026-04-02",
     updatedAt: "2026-07-01",
     readTime: "15 min",
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=600&q=80",
+    thumbnailUrl: "/images/blog/start-ecommerce.jpg",
     tags: [
       "ecommerce strategy",
       "catalog setup",
@@ -579,8 +575,7 @@ Adopt that rhythm early and growth gets easier to manage. Instead of layering ch
     publishedAt: "2026-03-29",
     updatedAt: "2026-07-01",
     readTime: "16 min",
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80",
+    thumbnailUrl: "/images/blog/ecommerce-seo.jpg",
     tags: [
       "ecommerce SEO",
       "merchant listings",
@@ -702,8 +697,7 @@ A mature program connects search reporting to merchandising and product diagnost
     publishedAt: "2026-03-23",
     updatedAt: "2026-07-01",
     readTime: "15 min",
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80",
+    thumbnailUrl: "/images/blog/track-ai-traffic.jpg",
     tags: [
       "AI traffic",
       "analytics",
@@ -825,8 +819,7 @@ Over time, that workflow turns measurement into a product-improvement engine. Th
     publishedAt: "2026-03-16",
     updatedAt: "2026-07-01",
     readTime: "15 min",
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80",
+    thumbnailUrl: "/images/blog/structured-data.jpg",
     tags: [
       "structured data",
       "schema",
@@ -949,8 +942,7 @@ Tie recurring audits to business events, not only technical schedules. A new sea
     publishedAt: "2026-07-01",
     updatedAt: "2026-07-01",
     readTime: "8 min",
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80",
+    thumbnailUrl: "/images/blog/ecentic-vs-profound.jpg",
     tags: [
       "ecentic vs Profound",
       "Profound alternative",
@@ -1065,8 +1057,7 @@ Many teams will want both eventually: Profound to watch presence, ecentic to win
     publishedAt: "2026-07-01",
     updatedAt: "2026-07-01",
     readTime: "8 min",
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=600&q=80",
+    thumbnailUrl: "/images/blog/ecentic-vs-ecomtent.jpg",
     tags: [
       "ecentic vs Ecomtent",
       "Ecomtent alternative",
@@ -1179,8 +1170,7 @@ They can be complementary: generate strong baseline content with Ecomtent, then 
     publishedAt: "2026-07-01",
     updatedAt: "2026-07-01",
     readTime: "7 min",
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80",
+    thumbnailUrl: "/images/blog/ecentic-vs-alhena.jpg",
     tags: [
       "ecentic vs Alhena",
       "Alhena AI alternative",
@@ -1294,8 +1284,7 @@ They can complement each other — track visibility with Alhena, win the head-to
     publishedAt: "2026-07-01",
     updatedAt: "2026-07-01",
     readTime: "9 min",
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80",
+    thumbnailUrl: "/images/blog/best-ai-tools.jpg",
     tags: [
       "AI shopping agent optimization",
       "GEO tools",
