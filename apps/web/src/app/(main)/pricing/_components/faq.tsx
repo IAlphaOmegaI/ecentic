@@ -16,7 +16,7 @@ export const Faq = ({ items }: Faq.Props) => (
       <AccordionItem
         key={item.question}
         value={item.question}
-        className="border-accent-foreground px-6 first:border-t-0 md:px-8"
+        className="border-accent-foreground px-6 first:border-t-0 last:border-b-0 md:px-8"
       >
         <AccordionTrigger className="py-5 font-body text-foreground text-lg">
           {item.question}

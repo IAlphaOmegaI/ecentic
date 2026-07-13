@@ -12,10 +12,12 @@ import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useToastManager } from "@zenncore/web/components/toast";
+import Image from "next/image";
 import { type SubmitEvent, useState } from "react";
 import { Motion } from "@/components/motion";
 import { StatusPill } from "@/app/(main)/dashboard/_components/grid";
 import { Reveal, RevealItem } from "@/app/(main)/resources/_components/reveal";
+import ucp from "@/public/images/ucp.png";
 import * as UcpCheck from "@/server/app/intelligence/ucp/check";
 
 type JToken = {
@@ -95,6 +97,61 @@ const validationTargets = [
 
 const submitButtonClassName =
   "w-full shrink-0 sm:min-w-36 sm:w-36 justify-center";
+
+const previewHost = (value: string) => {
+  const trimmed = value.trim();
+  if (!trimmed) return "yourdomain.com";
+  return trimmed.replace(/^https?:\/\//, "").replace(/\/.*$/, "");
+};
+
+const DomainCheckPreview = ({ domain }: DomainCheckPreview.Props) => {
+  const host = previewHost(domain);
+
+  return (
+    <div className="relative flex h-full min-h-48 flex-col justify-center overflow-hidden">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-radial-[at_0%_100%] from-primary/15 to-transparent"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute top-0 right-0 h-32 w-32 bg-radial-[at_100%_0%] from-primary/10 to-transparent"
+      />
+      <div className="relative flex flex-col gap-5">
+        <div className="flex items-center gap-3">
+          <Image
+            src={ucp}
+            alt=""
+            aria-hidden
+            className="size-10 object-contain"
+          />
+          <div>
+            <p className="font-medium text-foreground text-sm">Live fetch</p>
+            <p className="mt-0.5 font-mono text-foreground-dimmed text-xs">
+              HTTPS · spec {LATEST_UCP_VERSION}
+            </p>
+          </div>
+        </div>
+        <pre className="overflow-x-auto rounded-md border border-accent-foreground bg-background-rich/80 p-4 font-mono text-foreground-dimmed text-xs leading-relaxed backdrop-blur-[2px] sm:text-sm">
+          {`GET /.well-known/ucp HTTP/1.1
+Host: ${host}
+Accept: application/json
+UCP-Agent: profile="https://ucp.dev/..."`}
+        </pre>
+        <p className="font-light text-foreground-dimmed text-sm leading-relaxed">
+          We request the public profile, parse services and capabilities, then
+          surface spec issues and agent access from robots.txt.
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export namespace DomainCheckPreview {
+  export type Props = {
+    domain: string;
+  };
+}
 
 const validationManifestArt = `GET /.well-known/ucp HTTP/1.1
 Host: store.example.com
@@ -1084,41 +1141,47 @@ export const UcpValidatorForm = ({
   return (
     <div className="flex flex-col">
       {hideIntro ? (
-        <div className="border-accent-foreground border-b px-6 py-6 sm:px-8 sm:py-8">
-          <form onSubmit={handleSubmit}>
-            <label
-              htmlFor="ucp-domain"
-              className="block font-medium text-foreground text-sm"
-            >
-              Domain
-            </label>
-            <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-stretch">
-              <TextField
-                value={domain}
-                onValueChange={setDomain}
-                className="flex-1"
+        <div className="grid grid-cols-1 gap-px bg-accent-foreground md:grid-cols-[5fr_8fr]">
+          <div className="bg-background-dimmed p-6 sm:p-8">
+            <DomainCheckPreview domain={domain} />
+          </div>
+          <div className="flex flex-col justify-center bg-background-rich px-6 py-6 sm:px-8 sm:py-8">
+            <form onSubmit={handleSubmit}>
+              <p className="font-medium text-primary text-sm">Check a domain</p>
+              <label
+                htmlFor="ucp-domain"
+                className="mt-3 block font-medium text-foreground text-sm"
               >
-                <TextFieldInput id="ucp-domain" placeholder="yourdomain.com" />
-              </TextField>
-              <Button
-                type="submit"
-                color="primary"
-                disabled={isChecking || !domain.trim()}
-                className={submitButtonClassName}
-              >
-                {isChecking ? "Checking..." : "Check domain"}
-              </Button>
-            </div>
-            <p className="mt-2 font-light text-foreground-dimmed text-sm">
-              Root domain only —{" "}
-              <span className="font-mono text-foreground">acme.com</span> or{" "}
-              <span className="font-mono text-foreground">www.acme.com</span>.
-              We always validate the HTTPS version.
-            </p>
-          </form>
+                Storefront domain
+              </label>
+              <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-stretch">
+                <TextField
+                  value={domain}
+                  onValueChange={setDomain}
+                  className="flex-1"
+                >
+                  <TextFieldInput id="ucp-domain" placeholder="yourdomain.com" />
+                </TextField>
+                <Button
+                  type="submit"
+                  color="primary"
+                  disabled={isChecking || !domain.trim()}
+                  className={submitButtonClassName}
+                >
+                  {isChecking ? "Checking..." : "Check domain"}
+                </Button>
+              </div>
+              <p className="mt-2 font-light text-foreground-dimmed text-sm">
+                Root domain only —{" "}
+                <span className="font-mono text-foreground">acme.com</span> or{" "}
+                <span className="font-mono text-foreground">www.acme.com</span>.
+                We always validate the HTTPS version.
+              </p>
+            </form>
+          </div>
         </div>
       ) : (
-        <div className="grid border-accent-foreground border-b lg:grid-cols-2">
+        <div className="grid lg:grid-cols-2">
           <div className="px-6 py-6 sm:px-8 sm:py-8">
             <p className="font-medium text-primary text-sm">Live validation</p>
             <h2 className="mt-2 font-body font-medium text-3xl text-foreground md:text-4xl">
