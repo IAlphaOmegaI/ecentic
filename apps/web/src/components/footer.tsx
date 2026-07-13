@@ -40,6 +40,7 @@ const columns = [
     links: [
       { href: "/support", label: "Support" },
       { href: "/privacy-policy", label: "Privacy Policy" },
+      { href: "/terms", label: "Terms of Service" },
     ],
   },
 ] as const;

@@ -23,7 +23,7 @@ export const metadata: Metadata = createMetadata({
 });
 
 const assurances = [
-  "No shopper personal data",
+  "Agent commerce is opt-in",
   "Essential cookies only",
   "Encrypted in transit & at rest",
 ] as const;
@@ -39,19 +39,19 @@ const summary: readonly Summary[] = [
     icon: CheckCircleIcon,
     title: "What we store",
     description:
-      "Account basics and the product catalog data you connect: titles, descriptions, prices, images, SKUs.",
+      "Account basics, the catalog you connect, and — only if you turn on agent commerce — the orders AI agents place.",
   },
   {
     icon: XCircleIcon,
     title: "What we never touch",
     description:
-      "Shopper personal data, orders, and payment information. Our integrations use products-only scopes.",
+      "Card details, payment gateway secrets, and customer passwords. Scans alone use products-only scopes.",
   },
   {
     icon: ShareIcon,
     title: "Where data goes",
     description:
-      "To AI providers during simulations only, over encrypted calls. Never sold or shared for marketing.",
+      "To AI providers during simulations, and to the agent platform an order came from. Never sold for marketing.",
   },
   {
     icon: ShieldCheckIcon,
@@ -70,9 +70,18 @@ const sections = [
 When you connect a Shopify, WooCommerce, or custom feed store, we access and store:
 - Product catalog data (titles, descriptions, prices, images, SKUs, handles, variant information)
 - Store domain and name
-- OAuth access tokens (encrypted at rest) required to read and write product data on your behalf
+- OAuth access tokens and API credentials required to read and write product data on your behalf
 
-We do NOT access or store any customer personal data, order data, payment information, or shoppers' personally identifiable information from your connected stores. Our Shopify integration requests only the \`read_products\` and \`write_products\` scopes.`,
+If you use only the scan and optimization product, that is the whole picture: we do not access or store customer personal data, order data, or payment information, and our Shopify integration requests only the \`read_products\` and \`write_products\` scopes.
+
+**Agent commerce (UCP).** If you additionally turn on agent commerce — by connecting a store through the écentic for WooCommerce plugin or our Shopify app, so that we serve the Universal Commerce Protocol surface on your behalf — we also receive:
+- Store policy needed to serve the protocol: currency, shipping options, tax configuration, legal page URLs, payment handler declarations, and your UCP settings
+- The orders AI shopping agents place in your store: line items, quantities, totals, and the shopper's name, email address, and shipping and billing address, all of which are required to create and fulfil the order in your store
+- Access tokens your store issues when one of your customers links their account to an AI assistant
+
+Agent commerce is off until you explicitly connect a store to it, and it stops the moment you revoke the credentials that store issued us.
+
+We never receive your payment gateway secrets or your customers' passwords, and shoppers' card details are never transmitted to or stored by ecentic — payments are charged by your own payment gateway, using credentials that stay on your own infrastructure.`,
   },
   {
     title: "How We Use Your Data",
@@ -84,23 +93,43 @@ We do NOT access or store any customer personal data, order data, payment inform
 - Generate your Universal Commerce Protocol (UCP) merchant profile
 - Display analytics, win rates, and reports within your dashboard
 
-We never sell, rent, or share your product data with third parties for their own marketing or commercial purposes.`,
+Where you have enabled agent commerce, store policy and order data are used exclusively to:
+- Serve the UCP protocol surface on your behalf: answer agent catalog searches, price carts against your live store, and run checkout sessions
+- Create the resulting order in your store and relay its status back to the agent platform that placed it
+- Attribute AI-agent referrals to orders, which is what your dashboard reports and, on pay-as-you-go, what your performance fee is calculated from
+
+We never sell, rent, or share your product data, store policy, or order data with third parties for their own marketing or commercial purposes.`,
+  },
+  {
+    title: "Shopper Data in Agent Checkouts",
+    number: "03",
+    content: `This section applies only to merchants who have enabled agent commerce.
+
+When an AI shopping agent completes a checkout, the shopper's contact and address details pass through the UCP surface we serve on your behalf, and the order is created in your own store. For that data, **you are the data controller and ecentic is your processor**: we handle it only to carry out the checkout you have asked us to serve, on your documented instructions.
+
+Concretely, this means we:
+- Use shopper details solely to price, create, and relay the order, and to pass fulfilment status back to the agent platform the shopper used
+- Never use shopper details to market to them, never build shopper profiles across merchants, and never sell or rent that data
+- Do not receive card numbers or payment credentials at any point — the charge is made by your own payment gateway
+
+You remain the seller and Merchant of Record, and your own store's privacy notice governs your relationship with the shopper. Requests from shoppers exercising their rights should be directed to you; we will assist you in responding to them, and you can reach us at privacy@ecentic.ai.`,
   },
   {
     title: "Third-Party Services",
-    number: "03",
+    number: "04",
     content: `We use the following third-party services to operate ecentic:
 - **AI Model Providers** (OpenAI, Anthropic, Google): Product data is sent to AI models during simulations. Data is transmitted via encrypted API calls and is not retained by providers beyond the API request lifecycle per their data processing agreements.
 - **Sentry**: Error monitoring. May receive anonymized error context (no product data).
 - **PostHog**: Product analytics. Receives anonymized usage events (page views, feature interactions). No product catalog data is sent.
 - **Resend**: Transactional email delivery (verification codes, notifications). Receives only email addresses and message content.
 - **UploadThing**: File storage for uploaded assets. Stores only files you explicitly upload.
-- **Vercel**: Hosting infrastructure. Processes requests but does not independently store application data.`,
+- **Vercel**: Hosting infrastructure. Processes requests but does not independently store application data.
+- **Stripe**: Billing for your ecentic subscription or performance fee. Receives your billing details and the amounts owed. Shoppers' payment details never pass through this — a shopper's card is charged by your own store's gateway, not ours.`,
   },
   {
     title: "Data Storage & Security",
-    number: "04",
-    content: `Your data is stored in a PostgreSQL database hosted on infrastructure with encryption at rest and in transit (TLS 1.2+). OAuth access tokens from Shopify and WooCommerce are stored encrypted.
+    number: "05",
+    content: `Your data is stored in a PostgreSQL database hosted on infrastructure with encryption at rest and in transit (TLS 1.2+).
 
 We implement standard security practices including:
 - HTTPS-only communication
@@ -111,15 +140,17 @@ We implement standard security practices including:
   },
   {
     title: "Data Retention & Deletion",
-    number: "05",
+    number: "06",
     content: `We retain your data for as long as your account is active. When you disconnect a store, the associated access tokens are immediately deleted. Product data imported from that store is retained for your simulation history unless you explicitly request deletion.
+
+Orders placed through agent commerce are retained while your account is active, because they are what your reports and — on pay-as-you-go — your performance fee are calculated from. Where we are required to keep billing records for tax or accounting purposes, we keep the order reference and amount, not the shopper's contact and address details.
 
 When you delete your account, all associated data is permanently deleted, including:
 - Your user profile and authentication credentials
 - All connected store records and access tokens
 - All imported product data
 - All simulation results, optimization history, and reports
-- Your UCP merchant profile
+- Your UCP merchant profile and any agent-placed order records, including shopper details
 
 When a Shopify merchant uninstalls the ecentic app, we receive a \`shop/redact\` webhook and automatically delete all store data, products, and associated records for that shop.
 
@@ -127,7 +158,7 @@ For GDPR data subject requests (access, rectification, erasure, portability), co
   },
   {
     title: "Cookies",
-    number: "06",
+    number: "07",
     content: `We use essential cookies only:
 - **Session cookies**: Maintain your authenticated session
 - **OAuth state cookies**: Short-lived (10 minutes) cookies used during Shopify OAuth flow to prevent CSRF attacks
@@ -136,7 +167,7 @@ We do not use advertising cookies or third-party tracking cookies.`,
   },
   {
     title: "Your Rights",
-    number: "07",
+    number: "08",
     content: `Depending on your jurisdiction, you may have the right to:
 - Access the personal data we hold about you
 - Request correction of inaccurate data
@@ -149,13 +180,13 @@ To exercise any of these rights, contact privacy@ecentic.ai.`,
   },
   {
     title: "Changes to This Policy",
-    number: "08",
+    number: "09",
     content:
       "We may update this privacy policy from time to time. Material changes will be communicated via email to the address associated with your account at least 30 days before taking effect. Continued use of ecentic after changes take effect constitutes acceptance of the updated policy.",
   },
   {
     title: "Contact",
-    number: "09",
+    number: "10",
     content: `For questions about this privacy policy or our data practices:
 - Email: privacy@ecentic.ai
 - Company: [zennit](https://www.zennit.dev) (ecentic is a product of zennit)`,
@@ -229,7 +260,7 @@ export default () => (
             Privacy <span className="text-primary">Policy.</span>
           </h1>
           <p className="mt-2 text-foreground-dimmed text-sm">
-            Last updated: March 15, 2026
+            Last updated: July 12, 2026
           </p>
           <p className="mt-6 max-w-2xl text-base text-foreground-dimmed leading-relaxed md:text-lg">
             ecentic (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) is

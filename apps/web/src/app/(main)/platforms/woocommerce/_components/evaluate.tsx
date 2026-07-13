@@ -43,7 +43,7 @@ export const Evaluate = () => (
       <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
 
       <div className="p-6 md:p-12">
-        <span className="font-normal text-3xl text-primary">03</span>
+        <span className="font-normal text-3xl text-primary">04</span>
         <h2 className="mt-2 font-body font-medium text-4xl text-foreground md:text-6xl">
           Find your catalog bottleneck first.
         </h2>
