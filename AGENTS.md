@@ -71,7 +71,7 @@ If code and docs disagree, prefer docs intent unless explicitly instructed other
 - Put UCP playground MCP checkout payload schema changes in `ucp-playground.ts`, not `ucp-advanced-validator.ts`.
 - For dashboard flex column layouts that should scroll internally, add `min-h-0 flex-1 overflow-hidden` on each `flex-1` ancestor in the height chain.
 - Use `@zenncore/web/components/tabs` for tab UIs instead of custom segmented button groups.
-- On marketing pages, avoid uppercase eyebrows and all-caps category labels; use sentence-case headings unless `docs/context/design.md` explicitly calls for caps (stat labels, numbered section kickers).
+- On marketing and content pages, avoid uppercase eyebrows and all-caps category labels; use sentence-case headings unless `docs/context/design.md` explicitly calls for caps (stat labels, numbered section kickers). Reserve `font-mono` for code-like strings (URLs, capability keys, HTTP snippets)—not regular labels or titles.
 - Separate major marketing sections with `SectionGutter` from `dashboard/_components/grid.tsx`.
 - Reserve `background.webp` hands artwork for the landing page’s light hero; use `blog.png` for blue content-page heroes unless the design canon specifies another treatment.
 

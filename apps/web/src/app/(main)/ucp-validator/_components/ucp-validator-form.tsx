@@ -1,15 +1,10 @@
 "use client";
 
 import {
-  BullseyeIcon,
-  CheckBadgeIcon,
   CheckCircleIcon,
+  CheckIcon,
   CodeIcon,
-  GaugeIcon,
-  RadarIcon,
-  RobotIcon,
   ShieldCheckIcon,
-  ShoppingCartIcon,
   XCircleIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
@@ -17,8 +12,12 @@ import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useToastManager } from "@zenncore/web/components/toast";
+import Image from "next/image";
 import { type SubmitEvent, useState } from "react";
 import { Motion } from "@/components/motion";
+import { StatusPill } from "@/app/(main)/dashboard/_components/grid";
+import { Reveal, RevealItem } from "@/app/(main)/resources/_components/reveal";
+import ucp from "@/public/images/ucp.png";
 import * as UcpCheck from "@/server/app/intelligence/ucp/check";
 
 type JToken = {
@@ -56,53 +55,198 @@ const ISSUE_CATEGORY_ORDER: UcpCheck.SpecIssueCategory[] = [
 
 const validationTargets = [
   {
-    icon: ShieldCheckIcon,
     label: "HTTPS & reachability",
     detail: "Served over TLS and responding to live requests.",
   },
   {
-    icon: RadarIcon,
     label: "Profile discovery",
-    detail: "The document is published at /.well-known/ucp.",
+    code: "/.well-known/ucp",
+    detail: "The live discovery document agents fetch on your domain.",
   },
   {
-    icon: CodeIcon,
     label: "Services & transports",
-    detail: "REST, MCP and A2A surfaces agents negotiate against.",
+    code: "REST · MCP · A2A",
+    detail: "Endpoint surfaces agents negotiate against.",
   },
   {
-    icon: BullseyeIcon,
     label: "Capabilities",
-    detail: "Cart, checkout and order flows the storefront declares.",
+    code: "dev.ucp.shopping.*",
+    detail: "Cart, checkout, and order flows the storefront declares.",
   },
   {
-    icon: ShoppingCartIcon,
     label: "Payment handlers",
+    code: "payment.handlers[]",
     detail: "Tokenization endpoints and their declared versions.",
   },
   {
-    icon: CheckBadgeIcon,
     label: "Signing keys",
-    detail: "Public JWKs for RFC 9421 request verification.",
+    code: "signing_keys · RFC 9421",
+    detail: "Public JWKs for HTTP message signature verification.",
   },
   {
-    icon: GaugeIcon,
     label: "Supported versions",
+    code: "supported_versions[]",
     detail: "Every protocol version the merchant still serves.",
   },
   {
-    icon: RobotIcon,
-    label: "robots.txt access",
+    label: "Agent access",
+    code: "robots.txt",
     detail: "Shopping and indexing agents are not blocked.",
   },
 ] as const;
 
+const submitButtonClassName =
+  "w-full shrink-0 sm:min-w-36 sm:w-36 justify-center";
+
+const previewHost = (value: string) => {
+  const trimmed = value.trim();
+  if (!trimmed) return "yourdomain.com";
+  return trimmed.replace(/^https?:\/\//, "").replace(/\/.*$/, "");
+};
+
+const DomainCheckPreview = ({ domain }: DomainCheckPreview.Props) => {
+  const host = previewHost(domain);
+
+  return (
+    <div className="relative flex h-full min-h-48 flex-col justify-center overflow-hidden">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-radial-[at_0%_100%] from-primary/15 to-transparent"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute top-0 right-0 h-32 w-32 bg-radial-[at_100%_0%] from-primary/10 to-transparent"
+      />
+      <div className="relative flex flex-col gap-5">
+        <div className="flex items-center gap-3">
+          <Image
+            src={ucp}
+            alt=""
+            aria-hidden
+            className="size-10 object-contain"
+          />
+          <div>
+            <p className="font-medium text-foreground text-sm">Live fetch</p>
+            <p className="mt-0.5 font-mono text-foreground-dimmed text-xs">
+              HTTPS · spec {LATEST_UCP_VERSION}
+            </p>
+          </div>
+        </div>
+        <pre className="overflow-x-auto rounded-md border border-accent-foreground bg-background-rich/80 p-4 font-mono text-foreground-dimmed text-xs leading-relaxed backdrop-blur-[2px] sm:text-sm">
+          {`GET /.well-known/ucp HTTP/1.1
+Host: ${host}
+Accept: application/json
+UCP-Agent: profile="https://ucp.dev/..."`}
+        </pre>
+        <p className="font-light text-foreground-dimmed text-sm leading-relaxed">
+          We request the public profile, parse services and capabilities, then
+          surface spec issues and agent access from robots.txt.
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export namespace DomainCheckPreview {
+  export type Props = {
+    domain: string;
+  };
+}
+
+const validationManifestArt = `GET /.well-known/ucp HTTP/1.1
+Host: store.example.com
+Accept: application/json
+UCP-Agent: profile="https://ucp.dev/..."
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "ucp": {
+    "version": "2026-04-08",
+    "services": {
+      "dev.ucp.shopping": [ ... ]
+    },
+    "capabilities": {
+      "dev.ucp.shopping.cart": [ ... ],
+      "dev.ucp.shopping.checkout": [ ... ]
+    },
+    "signing_keys": [ { "kty": "EC", ... } ],
+    "payment_handlers": { ... }
+  }
+}`;
+
+const ValidationTargetsSection = () => (
+  <div className="relative overflow-hidden border-accent-foreground border-t bg-primary/5">
+    <pre
+      aria-hidden
+      className="pointer-events-none absolute top-0 right-0 hidden h-40 max-w-lg overflow-hidden p-5 text-right font-mono text-sm text-primary/20 leading-snug whitespace-pre select-none md:block lg:h-48 lg:max-w-xl lg:text-base lg:text-primary/25"
+    >
+      {validationManifestArt}
+    </pre>
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-radial-[at_100%_0%] from-primary/15 via-transparent to-transparent md:h-48"
+    />
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/30 to-transparent"
+    />
+    <div className="relative">
+      <div className="px-6 pt-6 pb-3 sm:px-8">
+        <p className="font-medium text-primary text-sm">What we validate</p>
+      </div>
+      <Reveal className="relative grid grid-cols-2 gap-px border-accent-foreground border-t bg-accent-foreground lg:grid-cols-4">
+        {validationTargets.map((target) => (
+          <RevealItem
+            key={target.label}
+            className="flex flex-col gap-2 bg-background-rich/95 px-4 py-4 backdrop-blur-[2px] sm:px-5"
+          >
+            <div className="flex items-center gap-2">
+              <CheckIcon className="size-3.5 shrink-0 text-primary" />
+              <p className="font-medium text-foreground text-sm leading-snug">
+                {target.label}
+              </p>
+            </div>
+            {"code" in target && target.code ? (
+              <p className="truncate font-mono text-primary text-xs">
+                {target.code}
+              </p>
+            ) : null}
+          </RevealItem>
+        ))}
+      </Reveal>
+    </div>
+  </div>
+);
+
 const toneClassList: Record<Tone, string> = {
-  success: "border-primary/20 bg-primary/10 text-primary",
+  success: "border-success/20 bg-success/10 text-success",
   danger: "border-error/20 bg-error/10 text-error",
   warning: "border-warning/20 bg-warning/10 text-warning",
   neutral: "border-accent-foreground bg-background text-foreground-dimmed",
 };
+
+const statusPillTone = (tone: Tone): "success" | "warning" | "error" | "neutral" => {
+  switch (tone) {
+    case "success":
+      return "success";
+    case "danger":
+      return "error";
+    case "warning":
+      return "warning";
+    case "neutral":
+      return "neutral";
+    default: {
+      const exhaustive: never = tone;
+      return exhaustive;
+    }
+  }
+};
+
+const ValidationBadge = ({ label, tone }: { label: string; tone: Tone }) => (
+  <StatusPill tone={statusPillTone(tone)}>{label}</StatusPill>
+);
 
 const tokenColor: Record<JToken["type"], string> = {
   key: "text-blue-400",
@@ -133,17 +277,6 @@ const formatTransport = (transport: string | null): string => {
   }
 };
 
-const StatusChip = ({ label, tone }: { label: string; tone: Tone }) => (
-  <span
-    className={cn(
-      "inline-flex w-fit items-center border px-2.5 py-1 font-medium text-xs",
-      toneClassList[tone],
-    )}
-  >
-    {label}
-  </span>
-);
-
 const SectionHeading = ({
   title,
   description,
@@ -173,14 +306,12 @@ const SummaryCard = ({
   tone?: Tone;
 }) => (
   <div className="flex flex-col justify-between gap-3 bg-background-dimmed px-4 py-5">
-    <p className="font-medium text-foreground-dimmed text-xs uppercase tracking-[0.18em]">
-      {label}
-    </p>
+    <p className="font-medium text-primary text-sm">{label}</p>
     <div>
       <p
         className={cn(
           "font-medium text-2xl text-foreground",
-          tone === "success" && "text-primary",
+          tone === "success" && "text-success",
           tone === "danger" && "text-error",
           tone === "warning" && "text-warning",
         )}
@@ -225,7 +356,7 @@ const CheckRow = ({
         {detail ?? "—"}
       </p>
 
-      <StatusChip label={passed ? "Pass" : "Fail"} tone={tone} />
+      <ValidationBadge label={passed ? "Pass" : "Fail"} tone={tone} />
     </div>
   );
 };
@@ -369,11 +500,11 @@ const ServicesSection = ({
 
             <div className="grid gap-2">
               <div className="flex flex-wrap gap-2">
-                <StatusChip
+                <ValidationBadge
                   label={`Transport · ${formatTransport(service.transport)}`}
                   tone={service.transport ? "success" : "danger"}
                 />
-                <StatusChip
+                <ValidationBadge
                   label={`Version · ${service.version ?? "Missing"}`}
                   tone={service.version ? "success" : "danger"}
                 />
@@ -400,7 +531,7 @@ const ServicesSection = ({
               )}
             </div>
 
-            <StatusChip
+            <ValidationBadge
               label={service.recognized ? "Recognized" : "Custom"}
               tone={service.recognized ? "success" : "warning"}
             />
@@ -446,15 +577,15 @@ const CapabilitiesSection = ({
 
               <div className="grid gap-2">
                 <div className="flex flex-wrap gap-2">
-                  <StatusChip
+                  <ValidationBadge
                     label={`Version · ${capability.version ?? "Missing"}`}
                     tone={capability.version ? "success" : "danger"}
                   />
                   {capability.spec && (
-                    <StatusChip label="spec linked" tone="success" />
+                    <ValidationBadge label="spec linked" tone="success" />
                   )}
                   {capability.schema && (
-                    <StatusChip label="schema linked" tone="success" />
+                    <ValidationBadge label="schema linked" tone="success" />
                   )}
                 </div>
                 {configKeys.length > 0 && (
@@ -469,7 +600,7 @@ const CapabilitiesSection = ({
                 )}
               </div>
 
-              <StatusChip
+              <ValidationBadge
                 label={capability.recognized ? "Known" : "Custom"}
                 tone={capability.recognized ? "success" : "warning"}
               />
@@ -507,14 +638,14 @@ const PaymentHandlersSection = ({
               {handler.registryKey}
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
-              <StatusChip
+              <ValidationBadge
                 label={`Version · ${handler.version ?? "Missing"}`}
                 tone={handler.version ? "success" : "warning"}
               />
               {handler.id && (
-                <StatusChip label={`ID · ${handler.id}`} tone="success" />
+                <ValidationBadge label={`ID · ${handler.id}`} tone="success" />
               )}
-              <StatusChip
+              <ValidationBadge
                 label={handler.recognized ? "Known" : "Custom"}
                 tone={handler.recognized ? "success" : "warning"}
               />
@@ -542,7 +673,7 @@ const SigningKeysSection = ({
       <div className="bg-background px-4 py-5">
         <div className="flex items-center gap-2">
           <ShieldCheckIcon className="size-4 text-warning" />
-          <StatusChip label="signing_keys not advertised" tone="warning" />
+          <ValidationBadge label="signing_keys not advertised" tone="warning" />
         </div>
         <p className="mt-3 max-w-2xl font-light text-foreground-dimmed text-sm">
           The profile does not advertise any signing keys, so platforms cannot
@@ -553,7 +684,7 @@ const SigningKeysSection = ({
       </div>
     ) : signingKeys.length === 0 ? (
       <div className="bg-background px-4 py-5">
-        <StatusChip label="signing_keys is empty" tone="warning" />
+        <ValidationBadge label="signing_keys is empty" tone="warning" />
       </div>
     ) : (
       <div className="divide-y divide-accent-foreground">
@@ -574,7 +705,7 @@ const SigningKeysSection = ({
                   <ShieldCheckIcon
                     className={cn(
                       "size-3.5",
-                      hasIssue ? "text-error" : "text-primary",
+                      hasIssue ? "text-error" : "text-success",
                     )}
                   />
                   <p className="font-medium font-mono text-foreground text-sm">
@@ -589,27 +720,27 @@ const SigningKeysSection = ({
               </div>
 
               <div className="flex flex-wrap gap-2">
-                <StatusChip
+                <ValidationBadge
                   label={`kty · ${key.kty ?? "Missing"}`}
                   tone={key.kty ? "success" : "danger"}
                 />
-                <StatusChip
+                <ValidationBadge
                   label={`use · ${key.use ?? "Missing"}`}
                   tone={key.use === "sig" ? "success" : "warning"}
                 />
-                <StatusChip
+                <ValidationBadge
                   label={`alg · ${key.alg ?? "Missing"}`}
                   tone={key.alg ? "success" : "warning"}
                 />
                 {key.kty === "EC" && (
-                  <StatusChip
+                  <ValidationBadge
                     label={`crv · ${key.crv ?? "Missing"}`}
                     tone={key.crv ? "success" : "danger"}
                   />
                 )}
               </div>
 
-              <StatusChip
+              <ValidationBadge
                 label={hasIssue ? "Issues" : "Valid"}
                 tone={hasIssue ? "danger" : "success"}
               />
@@ -648,9 +779,9 @@ const SupportedVersionsSection = ({
             </p>
             <div className="flex flex-wrap gap-2">
               {version.isCurrent && (
-                <StatusChip label="Current" tone="success" />
+                <ValidationBadge label="Current" tone="success" />
               )}
-              <StatusChip
+              <ValidationBadge
                 label={version.isHttps ? "HTTPS" : "Insecure"}
                 tone={version.isHttps ? "success" : "danger"}
               />
@@ -685,7 +816,7 @@ const SpecIssuesSection = ({ issues }: { issues: UcpCheck.SpecIssue[] }) => {
 
       {issues.length === 0 ? (
         <div className="bg-background px-4 py-5">
-          <StatusChip label="No issues found" tone="success" />
+          <ValidationBadge label="No issues found" tone="success" />
           <p className="mt-3 max-w-2xl font-light text-foreground-dimmed text-sm">
             The current profile passed the validator without schema errors or
             warnings.
@@ -696,7 +827,7 @@ const SpecIssuesSection = ({ issues }: { issues: UcpCheck.SpecIssue[] }) => {
           {grouped.map((group) => (
             <div key={group.category} className="bg-background">
               <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
-                <p className="font-medium text-foreground text-xs uppercase tracking-[0.18em]">
+                <p className="font-medium text-foreground text-sm">
                   {ISSUE_CATEGORY_LABELS[group.category]} ·{" "}
                   <span className="text-foreground-dimmed">
                     {group.issues.length}
@@ -709,7 +840,7 @@ const SpecIssuesSection = ({ issues }: { issues: UcpCheck.SpecIssue[] }) => {
                     key={`${issue.severity}-${issue.field}-${issue.message}`}
                     className="grid gap-4 px-4 py-3 md:grid-cols-[auto_minmax(0,260px)_minmax(0,1fr)] md:items-start"
                   >
-                    <StatusChip
+                    <ValidationBadge
                       label={issue.severity === "error" ? "Error" : "Warning"}
                       tone={issue.severity === "error" ? "danger" : "warning"}
                     />
@@ -745,79 +876,65 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
 
   return (
     <Motion.Up className="border-accent-foreground border-t">
-      <div className="grid gap-px bg-accent-foreground xl:grid-cols-[minmax(0,1.35fr)_repeat(4,minmax(0,0.78fr))]">
-        <div className="bg-background px-4 py-5 sm:px-5">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div className="min-w-0">
-              <p className="font-medium text-foreground text-sm">
-                {result.domain}
-              </p>
-              <p className="mt-1 truncate font-mono text-foreground-dimmed text-xs">
-                {result.url}
-              </p>
-            </div>
-
-            <div className="flex shrink-0 flex-wrap items-center gap-2">
-              {result.ucpVersion && (
-                <span
-                  className={cn(
-                    "inline-flex items-center px-2 py-1 font-mono text-xs",
-                    result.isLatestVersion
-                      ? "bg-primary/10 text-primary"
-                      : "bg-warning/10 text-warning",
-                  )}
-                >
-                  v{result.ucpVersion}
-                  {!result.isLatestVersion && (
-                    <span className="ml-2 text-foreground-dimmed">
-                      (latest: {LATEST_UCP_VERSION})
-                    </span>
-                  )}
-                </span>
-              )}
-              {result.envelopeKind && (
-                <span className="inline-flex items-center bg-accent-foreground px-2 py-1 font-mono text-foreground-dimmed text-xs">
-                  {result.envelopeKind === "wrapped"
-                    ? "envelope: ucp{}"
-                    : "envelope: flat"}
-                </span>
-              )}
-              <StatusChip
-                label={overallPass ? "UCP Ready" : "Needs fixes"}
-                tone={overallPass ? "success" : "danger"}
-              />
-            </div>
+      <div className="border-accent-foreground border-b bg-background-rich px-6 py-6 sm:px-8">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div className="min-w-0">
+            <p className="font-medium text-foreground text-lg">{result.domain}</p>
+            <p className="mt-1 break-all font-mono text-foreground-dimmed text-sm">
+              {result.url}
+            </p>
           </div>
 
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
-            <div>
-              <p className="font-medium text-foreground-dimmed text-xs uppercase tracking-[0.18em]">
-                Response health
-              </p>
-              <p className="mt-1 font-light text-foreground-dimmed text-sm">
-                {result.error ??
-                  "Endpoint responded and the profile could be evaluated."}
-              </p>
-            </div>
-
-            <div>
-              <p className="font-medium text-foreground-dimmed text-xs uppercase tracking-[0.18em]">
-                Detected surface
-              </p>
-              <p className="mt-1 font-light text-foreground-dimmed text-sm">
-                {result.services.length} service
-                {result.services.length !== 1 ? "s" : ""},{" "}
-                {result.capabilities.length} capabilit
-                {result.capabilities.length !== 1 ? "ies" : "y"},{" "}
-                {result.paymentHandlers.length} payment handler
-                {result.paymentHandlers.length !== 1 ? "s" : ""},{" "}
-                {result.signingKeys.length} signing key
-                {result.signingKeys.length !== 1 ? "s" : ""}.
-              </p>
-            </div>
+          <div className="flex shrink-0 flex-wrap items-center gap-2">
+            {result.ucpVersion && (
+              <StatusPill
+                tone={result.isLatestVersion ? "success" : "warning"}
+                className="font-mono normal-case tracking-normal"
+              >
+                v{result.ucpVersion}
+                {!result.isLatestVersion && ` · latest ${LATEST_UCP_VERSION}`}
+              </StatusPill>
+            )}
+            {result.envelopeKind && (
+              <StatusPill tone="neutral" className="font-mono normal-case tracking-normal">
+                {result.envelopeKind === "wrapped"
+                  ? "envelope: ucp{}"
+                  : "envelope: flat"}
+              </StatusPill>
+            )}
+            <ValidationBadge
+              label={overallPass ? "UCP ready" : "Needs fixes"}
+              tone={overallPass ? "success" : "danger"}
+            />
           </div>
         </div>
 
+        <div className="mt-6 grid gap-6 md:grid-cols-2">
+          <div>
+            <p className="font-medium text-primary text-sm">Response health</p>
+            <p className="mt-1 font-light text-foreground-dimmed text-sm leading-relaxed">
+              {result.error ??
+                "Endpoint responded and the profile could be evaluated."}
+            </p>
+          </div>
+
+          <div>
+            <p className="font-medium text-primary text-sm">Detected surface</p>
+            <p className="mt-1 font-light text-foreground-dimmed text-sm leading-relaxed">
+              {result.services.length} service
+              {result.services.length !== 1 ? "s" : ""},{" "}
+              {result.capabilities.length} capabilit
+              {result.capabilities.length !== 1 ? "ies" : "y"},{" "}
+              {result.paymentHandlers.length} payment handler
+              {result.paymentHandlers.length !== 1 ? "s" : ""},{" "}
+              {result.signingKeys.length} signing key
+              {result.signingKeys.length !== 1 ? "s" : ""}.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-px bg-accent-foreground lg:grid-cols-4">
         <SummaryCard
           label="Latency"
           value={formatLatency(result.latencyMs)}
@@ -970,7 +1087,7 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
                 {bot.description}
               </p>
 
-              <StatusChip
+              <ValidationBadge
                 label={bot.allowed ? "Allowed" : "Blocked"}
                 tone={bot.allowed ? "success" : "danger"}
               />
@@ -994,7 +1111,9 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
   );
 };
 
-export const UcpValidatorForm = () => {
+export const UcpValidatorForm = ({
+  hideIntro = false,
+}: UcpValidatorForm.Props) => {
   const toast = useToastManager();
   const [domain, setDomain] = useState("");
   const [result, setResult] = useState<UcpCheck.UcpCheckResult | null>(null);
@@ -1021,95 +1140,115 @@ export const UcpValidatorForm = () => {
 
   return (
     <div className="flex flex-col">
-      {/* Header + form — two columns so the panel width is actually used. */}
-      <div className="grid border-accent-foreground border-b lg:grid-cols-2">
-        <div className="px-6 py-6 sm:px-8 sm:py-8">
-          <span className="font-medium text-[11px] text-foreground-dimmed uppercase tracking-[0.1em]">
-            Live validation
-          </span>
-          <h2 className="mt-2 font-bold text-[1.75rem] text-foreground-rich tracking-[-0.02em]">
-            Run a live validation
-          </h2>
-          <p className="mt-1.5 font-light text-foreground-dimmed text-sm">
-            Paste a domain and we&apos;ll fetch the live{" "}
-            <span className="font-mono text-foreground text-xs">
-              /.well-known/ucp
-            </span>{" "}
-            document, parse every service, capability, payment handler and
-            signing key, then validate it against the{" "}
-            <span className="font-mono text-foreground text-xs">
-              {LATEST_UCP_VERSION}
-            </span>{" "}
-            spec.
-          </p>
-        </div>
-
-        <div className="flex flex-col justify-center border-accent-foreground border-t px-6 py-6 sm:px-8 sm:py-8 lg:border-t-0 lg:border-l">
-          <form onSubmit={handleSubmit}>
-            <label
-              htmlFor="ucp-domain"
-              className="block font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
-            >
-              Domain
-            </label>
-            <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-stretch">
-              <TextField
-                value={domain}
-                onValueChange={setDomain}
-                className="flex-1"
+      {hideIntro ? (
+        <div className="grid grid-cols-1 gap-px bg-accent-foreground md:grid-cols-[5fr_8fr]">
+          <div className="bg-background-dimmed p-6 sm:p-8">
+            <DomainCheckPreview domain={domain} />
+          </div>
+          <div className="flex flex-col justify-center bg-background-rich px-6 py-6 sm:px-8 sm:py-8">
+            <form onSubmit={handleSubmit}>
+              <p className="font-medium text-primary text-sm">Check a domain</p>
+              <label
+                htmlFor="ucp-domain"
+                className="mt-3 block font-medium text-foreground text-sm"
               >
-                <TextFieldInput id="ucp-domain" placeholder="yourdomain.com" />
-              </TextField>
-              <Button
-                type="submit"
-                color="primary"
-                disabled={isChecking || !domain.trim()}
-                className="w-full shrink-0 sm:w-auto"
-              >
-                {isChecking ? "Checking..." : "Check domain"}
-              </Button>
-            </div>
-            <p className="mt-2 font-light text-foreground-dimmed text-sm">
-              Root domain only —{" "}
-              <span className="font-mono text-foreground">acme.com</span> or{" "}
-              <span className="font-mono text-foreground">www.acme.com</span>.
-              We always validate the HTTPS version.
-            </p>
-          </form>
-        </div>
-      </div>
-
-      {/* What we validate — brutalist gap-px grid */}
-      <div className="px-6 pt-6 pb-3 sm:px-8">
-        <span className="font-medium text-[11px] text-foreground-dimmed uppercase tracking-[0.1em]">
-          What we validate
-        </span>
-      </div>
-      <div className="grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground sm:grid-cols-2 lg:grid-cols-4">
-        {validationTargets.map((target) => {
-          const Icon = target.icon;
-          return (
-            <div
-              key={target.label}
-              className="flex gap-4 bg-background-rich px-5 py-6"
-            >
-              <span className="flex size-10 shrink-0 items-center justify-center border border-accent-foreground bg-background text-primary">
-                <Icon className="size-5" />
-              </span>
-              <div>
-                <p className="font-medium text-foreground text-sm">
-                  {target.label}
-                </p>
-                <p className="mt-1 font-light text-foreground-dimmed text-xs leading-relaxed">
-                  {target.detail}
-                </p>
+                Storefront domain
+              </label>
+              <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-stretch">
+                <TextField
+                  value={domain}
+                  onValueChange={setDomain}
+                  className="flex-1"
+                >
+                  <TextFieldInput id="ucp-domain" placeholder="yourdomain.com" />
+                </TextField>
+                <Button
+                  type="submit"
+                  color="primary"
+                  disabled={isChecking || !domain.trim()}
+                  className={submitButtonClassName}
+                >
+                  {isChecking ? "Checking..." : "Check domain"}
+                </Button>
               </div>
-            </div>
-          );
-        })}
-      </div>
+              <p className="mt-2 font-light text-foreground-dimmed text-sm">
+                Root domain only —{" "}
+                <span className="font-mono text-foreground">acme.com</span> or{" "}
+                <span className="font-mono text-foreground">www.acme.com</span>.
+                We always validate the HTTPS version.
+              </p>
+            </form>
+          </div>
+        </div>
+      ) : (
+        <div className="grid lg:grid-cols-2">
+          <div className="px-6 py-6 sm:px-8 sm:py-8">
+            <p className="font-medium text-primary text-sm">Live validation</p>
+            <h2 className="mt-2 font-body font-medium text-3xl text-foreground md:text-4xl">
+              Run a live validation
+            </h2>
+            <p className="mt-3 font-light text-foreground-dimmed text-lg leading-relaxed">
+              Paste a domain and we&apos;ll fetch the live{" "}
+              <span className="font-mono text-foreground text-sm">
+                /.well-known/ucp
+              </span>{" "}
+              document, parse every service, capability, payment handler and
+              signing key, then validate it against the{" "}
+              <span className="font-mono text-foreground text-sm">
+                {LATEST_UCP_VERSION}
+              </span>{" "}
+              spec.
+            </p>
+          </div>
+
+          <div className="flex flex-col justify-center border-accent-foreground border-t px-6 py-6 sm:px-8 sm:py-8 lg:border-t-0 lg:border-l">
+            <form onSubmit={handleSubmit}>
+              <label
+                htmlFor="ucp-domain"
+                className="block font-medium text-foreground text-sm"
+              >
+                Domain
+              </label>
+              <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-stretch">
+                <TextField
+                  value={domain}
+                  onValueChange={setDomain}
+                  className="flex-1"
+                >
+                  <TextFieldInput
+                    id="ucp-domain"
+                    placeholder="yourdomain.com"
+                  />
+                </TextField>
+                <Button
+                  type="submit"
+                  color="primary"
+                  disabled={isChecking || !domain.trim()}
+                  className={submitButtonClassName}
+                >
+                  {isChecking ? "Checking..." : "Check domain"}
+                </Button>
+              </div>
+              <p className="mt-2 font-light text-foreground-dimmed text-sm">
+                Root domain only —{" "}
+                <span className="font-mono text-foreground">acme.com</span> or{" "}
+                <span className="font-mono text-foreground">www.acme.com</span>.
+                We always validate the HTTPS version.
+              </p>
+            </form>
+          </div>
+        </div>
+      )}
+
+      <ValidationTargetsSection />
 
       {result && <Results result={result} />}
     </div>
   );
 };
+
+export namespace UcpValidatorForm {
+  export type Props = {
+    hideIntro?: boolean;
+  };
+}
