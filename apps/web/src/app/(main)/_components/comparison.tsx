@@ -67,13 +67,13 @@ const StatusCell = ({ status }: { status: Status }) => {
       return <CheckIcon className="mx-auto size-4 text-primary" />;
     case "partial":
       return (
-        <span className="font-body font-light text-foreground-dimmed text-lg text-center w-full flex items-center justify-center">
+        <span className="flex w-full items-center justify-center text-center font-body font-light text-foreground-dimmed text-lg">
           Partial
         </span>
       );
     case "no":
       return (
-        <span className="text-foreground-dimmed text-lg text-center w-full flex items-center justify-center">
+        <span className="flex w-full items-center justify-center text-center text-foreground-dimmed text-lg">
           —
         </span>
       );

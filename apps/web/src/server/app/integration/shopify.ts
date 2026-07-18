@@ -1507,7 +1507,10 @@ export const ensureUsageSubscription = withAuthentication(
       return { success: false, error: new RequestError("Store not found") };
     if (store.data.userId !== context.session.user.id)
       return { success: false, error: new RequestError("Not authorized") };
-    if (store.data.platform !== "shopify")
+    if (
+      store.data.platform !== "shopify" &&
+      store.data.platform !== "shopify-public"
+    )
       return {
         success: false,
         error: new RequestError("Store is not a Shopify store"),
