@@ -614,10 +614,9 @@ export const enqueueScan = withAuthentication(async (context) => {
   });
   const inflight = existing.success ? existing.data[0] : null;
 
-  // Self-heal a wedged scan instead of reusing it: a "running" whose worker died
-  // mid-run, or a "pending" the drain never picked up, would otherwise block this
-  // user's queue until a cron reaper fires — and locally (no cron) forever. Fail
-  // it and fall through to enqueue a fresh one; reuse only a genuinely-live scan.
+  // Self-heal a wedged scan: a "running" whose worker died mid-run, or a
+  // "pending" the drain never picked up, would otherwise block this user's
+  // queue until a cron reaper fires — and locally (no cron) forever.
   const stale = (() => {
     if (!inflight) return false;
     switch (inflight.status) {
@@ -630,14 +629,32 @@ export const enqueueScan = withAuthentication(async (context) => {
     }
   })();
 
+  const kickDrain = () =>
+    after(async () => {
+      await resultify(() =>
+        fetch(`${process.env.BETTER_AUTH_BASE_URL ?? ""}/api/cron/drain`, {
+          headers: { authorization: `Bearer ${process.env.CRON_SECRET ?? ""}` },
+          cache: "no-store",
+        }),
+      );
+    });
+
   if (inflight && !stale)
     return { success: true as const, data: { scanId: inflight.id } };
 
-  if (inflight)
-    await Scan.update(Environment.SERVER, inflight.id, {
-      status: "failed",
+  // Requeue and reuse the wedged scan rather than failing it: its persisted
+  // simulations let the drain resume from where it stopped instead of starting
+  // the whole scan over.
+  if (inflight) {
+    const requeued = await Scan.update(Environment.SERVER, inflight.id, {
+      status: "pending",
       updatedAt: new Date(),
     });
+    if (requeued.success) {
+      kickDrain();
+      return { success: true as const, data: { scanId: inflight.id } };
+    }
+  }
 
   const [products, competitors] = await Promise.all([
     Product.find(Environment.SERVER, {
@@ -678,14 +695,7 @@ export const enqueueScan = withAuthentication(async (context) => {
   // Kick the drain in a separate invocation so the scan starts right away
   // instead of waiting for the next cron tick. Best-effort: if it fails (or the
   // env is misconfigured), the every-minute cron is the backstop.
-  after(async () => {
-    await resultify(() =>
-      fetch(`${process.env.BETTER_AUTH_BASE_URL ?? ""}/api/cron/drain`, {
-        headers: { authorization: `Bearer ${process.env.CRON_SECRET ?? ""}` },
-        cache: "no-store",
-      }),
-    );
-  });
+  kickDrain();
 
   return {
     success: true as const,

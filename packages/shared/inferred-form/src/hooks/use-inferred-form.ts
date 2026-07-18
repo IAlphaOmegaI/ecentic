@@ -1,5 +1,10 @@
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { type DefaultValues, type FieldValues, useForm } from "react-hook-form";
+import {
+  type DefaultValues,
+  type FieldValues,
+  type Resolver,
+  useForm,
+} from "react-hook-form";
 import type { z } from "zod";
 import {
   type FormEntries,
@@ -48,8 +53,18 @@ export const useInferredForm = <
     ...passedDefaultValues,
   } as DefaultValues<z.infer<Schema>>;
 
-  const form = useForm<z.infer<Schema>>({
-    resolver: standardSchemaResolver(schema),
+  // The hook intentionally conflates the schema's input and output types
+  // (z.infer everywhere), so the resolver is pinned to the output type.
+  const resolver = standardSchemaResolver(schema) as Resolver<
+    z.infer<Schema>,
+    // biome-ignore lint/suspicious/noExplicitAny: any matches useForm's TContext default so the call resolves to the declared return type exactly
+    any,
+    z.infer<Schema>
+  >;
+
+  // biome-ignore lint/suspicious/noExplicitAny: any matches useForm's TContext default so the call resolves to the declared return type exactly
+  const form = useForm<z.infer<Schema>, any, z.infer<Schema>>({
+    resolver,
     defaultValues,
   });
 
