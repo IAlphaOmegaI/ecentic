@@ -78,6 +78,33 @@ export const skimForCurrentUser = withAuthentication(async (context) => {
   });
 }, "Competitor.skimForCurrentUser");
 
+/**
+ * Total and selected competitor counts for the current user. Use this for
+ * count surfaces (e.g. the simulation estimate) instead of measuring
+ * `skimForCurrentUser()`, which caps at a 10-row preview and undercounts.
+ */
+export const countForCurrentUser = withAuthentication(async (context) => {
+  const user = context.session.user.id;
+
+  const [total, selected] = await Promise.all([
+    count(Environment.SERVER, eq(schema.competitor.userId, user)),
+    count(
+      Environment.SERVER,
+      and(
+        eq(schema.competitor.userId, user),
+        eq(schema.competitor.selected, true),
+      ),
+    ),
+  ]);
+  if (!total.success) return total;
+  if (!selected.success) return selected;
+
+  return {
+    success: true as const,
+    data: { total: total.data, selected: selected.data },
+  };
+}, "Competitor.countForCurrentUser");
+
 export const removeForUser = withAuthentication(
   async (context, { id }: { id: string }) => {
     const record = await get(Environment.SERVER, id);

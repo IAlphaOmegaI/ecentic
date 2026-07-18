@@ -5,7 +5,7 @@ import { Button } from "@zenncore/web/components/button";
 import { useState } from "react";
 import { SimulationModal } from "./simulation-modal";
 
-export const OverviewActions = () => {
+export const OverviewActions = ({ store }: { store: string }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -20,7 +20,11 @@ export const OverviewActions = () => {
           Run Simulation
         </Button>
       </div>
-      <SimulationModal open={open} onClose={() => setOpen(false)} />
+      <SimulationModal
+        store={store}
+        open={open}
+        onClose={() => setOpen(false)}
+      />
     </>
   );
 };

@@ -53,12 +53,17 @@ const modelColors: Record<string, string> = Object.fromEntries(
 
 export namespace SimulationModal {
   export type Props = {
+    store: string;
     open: boolean;
     onClose: () => void;
   };
 }
 
-export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
+export const SimulationModal = ({
+  store,
+  open,
+  onClose,
+}: SimulationModal.Props) => {
   const toast = useToastManager();
   const target = useRef<HTMLDivElement>(null);
 
@@ -75,6 +80,7 @@ export const SimulationModal = ({ open, onClose }: SimulationModal.Props) => {
     isRunning,
     reset,
   } = useScanRunner({
+    store,
     onError: (text) =>
       toast.add({
         title: "Simulation failed",

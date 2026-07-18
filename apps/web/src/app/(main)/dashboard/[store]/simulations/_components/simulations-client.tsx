@@ -57,6 +57,7 @@ type LastScan = {
 
 export namespace SimulationsClient {
   export type Props = {
+    store: string;
     productIds: string[];
     productCount: number;
     competitorCount: number;
@@ -93,6 +94,7 @@ const StatCell = ({
 );
 
 export const SimulationsClient = ({
+  store,
   productIds,
   productCount,
   competitorCount: initialCompetitorCount,
@@ -121,6 +123,7 @@ export const SimulationsClient = ({
     isRunning,
     reset,
   } = useScanRunner({
+    store,
     onError: (text) =>
       toast.add({
         title: "Simulation failed",

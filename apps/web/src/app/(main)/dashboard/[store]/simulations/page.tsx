@@ -72,12 +72,14 @@ const LastRun = async ({ store }: { store: string }) => {
 const SimulationsData = async ({ store }: { store: string }) => {
   await connection();
 
-  const [products, competitors] = await Promise.all([
+  // Skims are 10-row previews (productIds feeds the detection tab); the counts
+  // driving the simulation estimate must be real, store-scoped totals so the
+  // estimate matches what the engine actually enqueues.
+  const [products, productCount, competitorCounts] = await Promise.all([
     unwrapResult(Product.skimForCurrentUser(Environment.SERVER, { store })),
-    unwrapResult(Competitor.skimForCurrentUser(Environment.SERVER)),
+    unwrapResult(Product.countForCurrentUser(Environment.SERVER, { store })),
+    unwrapResult(Competitor.countForCurrentUser(Environment.SERVER)),
   ]);
-
-  const selected = competitors.filter((record) => record.selected);
 
   const latestScans = await resultify(() =>
     unwrapResult(Scan.getLatest(Environment.SERVER, { limit: 1, store })),
@@ -103,10 +105,11 @@ const SimulationsData = async ({ store }: { store: string }) => {
 
   return (
     <SimulationsClient
+      store={store}
       productIds={products.map((record) => record.id)}
-      productCount={products.length}
-      competitorCount={competitors.length}
-      selectedCompetitorCount={selected.length}
+      productCount={productCount}
+      competitorCount={competitorCounts.total}
+      selectedCompetitorCount={competitorCounts.selected}
       lastScan={lastScan}
     />
   );

@@ -55,7 +55,7 @@ export default async ({ params }: PageProps<"/dashboard/[store]">) => {
                 How AI shopping agents rank your catalog against competitors.
               </p>
             </div>
-            <OverviewActions />
+            <OverviewActions store={store} />
           </div>
         </div>
 

@@ -1,7 +1,7 @@
 "use server";
 
 import { resultify } from "@zenncore/utils";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { schema } from "../../database";
 import { generate, type ModelId } from "../../utils/ai";
@@ -12,6 +12,7 @@ import * as Competitor from "../competitor";
 import * as Product from "../product";
 import * as Scan from "../scan";
 import * as Simulation from "../simulation";
+import * as Store from "../store";
 import * as User from "../user";
 import * as Judge from "./judge";
 
@@ -54,13 +55,25 @@ const CONCURRENCY = 12;
 // liveness to the stale reaper.
 const PROGRESS_WRITE_EVERY = 5;
 
+// `store` scopes the run to one store's products — the drain passes it from the
+// scan row, the daily cron passes each store in turn. Absent (legacy scans
+// enqueued before store scoping) the run stays account-wide.
 const runScanForUser = async (
   context: GenericContext,
-  { user, scan: existing }: { user: string; scan?: string },
+  {
+    user,
+    scan: existing,
+    store,
+  }: { user: string; scan?: string; store?: string },
 ) => {
   const [products, competitors] = await Promise.all([
     Product.find(Environment.SERVER, {
-      where: eq(schema.product.userId, user),
+      where: store
+        ? and(
+            eq(schema.product.userId, user),
+            eq(schema.product.storeId, store),
+          )
+        : eq(schema.product.userId, user),
     }),
     Competitor.find(Environment.SERVER, {
       where: eq(schema.competitor.userId, user),
@@ -117,6 +130,7 @@ const runScanForUser = async (
       })
     : await Scan.create(Environment.SERVER, {
         userId: user,
+        storeId: store ?? null,
         status: "running",
         totalSimulations,
         completedSimulations: 0,
@@ -401,15 +415,30 @@ export const runScanDaily = withContext(
       data: { "users.count": selected.length },
     });
 
+    // Scans are store-scoped, so each user gets one run per store, executed
+    // sequentially to keep the per-provider load bounded by the pool size.
     const results = await selected.reduce(
       async (previousPromise, user) => {
         const previous = await previousPromise;
-        const result = await runScanForUser(context, { user: user.id });
-        return [...previous, { user: user.id, result }];
+
+        const stores = await Store.find(Environment.SERVER, {
+          where: eq(schema.store.userId, user.id),
+        });
+        if (!stores.success) return previous;
+
+        return stores.data.reduce(async (userPromise, store) => {
+          const accumulated = await userPromise;
+          const result = await runScanForUser(context, {
+            user: user.id,
+            store: store.id,
+          });
+          return [...accumulated, { user: user.id, store: store.id, result }];
+        }, Promise.resolve(previous));
       },
       Promise.resolve(
         [] as {
           user: string;
+          store: string;
           result: Awaited<ReturnType<typeof runScanForUser>>;
         }[],
       ),
@@ -475,6 +504,7 @@ export const runPendingScans = withContext(
         const result = await runScanForUser(context, {
           user: scan.userId,
           scan: scan.id,
+          store: scan.storeId ?? undefined,
         });
 
         const completed =

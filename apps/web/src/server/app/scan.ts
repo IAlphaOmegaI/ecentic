@@ -116,18 +116,22 @@ export const findRunningForUser = withContext(
   "Scan.findRunningForUser",
 );
 
-export const getInFlight = withAuthentication(async (context) => {
-  const scans = await find(Environment.SERVER, {
-    where: and(
-      eq(schema.scan.userId, context.session.user.id),
-      inArray(schema.scan.status, ["pending", "running"]),
-    ),
-    orderBy: [{ column: schema.scan.createdAt, direction: "desc" }],
-    limit: 1,
-  });
-  if (!scans.success) return scans;
-  return { success: true as const, data: scans.data[0] ?? null };
-}, "Scan.getInFlight");
+export const getInFlight = withAuthentication(
+  async (context, options: { store?: string } = {}) => {
+    const scans = await find(Environment.SERVER, {
+      where: and(
+        eq(schema.scan.userId, context.session.user.id),
+        inArray(schema.scan.status, ["pending", "running"]),
+        options.store ? eq(schema.scan.storeId, options.store) : undefined,
+      ),
+      orderBy: [{ column: schema.scan.createdAt, direction: "desc" }],
+      limit: 1,
+    });
+    if (!scans.success) return scans;
+    return { success: true as const, data: scans.data[0] ?? null };
+  },
+  "Scan.getInFlight",
+);
 
 export const findStaleRunning = withContext(
   async (_context, { before }: { before: Date }) => {
