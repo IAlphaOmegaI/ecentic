@@ -362,7 +362,7 @@ export const publishProductsToShopify = withAuthentication(
     if (store.data.userId !== userId)
       return { success: false as const, error: new Error("Not authorized") };
     if (
-      store.data.platform !== "shopify-public" &&
+      store.data.platform !== "shopify-public" && 
       store.data.platform !== "shopify"
     )
       return {
