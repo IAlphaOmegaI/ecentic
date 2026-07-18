@@ -197,7 +197,7 @@ export const SimulationModal = ({
                     <div className="border-accent-foreground border-x p-6">
                       <Button
                         type="button"
-                        onClick={handleRun}
+                        onClick={() => handleRun()}
                         disabled={isRunning}
                         color="primary"
                         className="w-full"

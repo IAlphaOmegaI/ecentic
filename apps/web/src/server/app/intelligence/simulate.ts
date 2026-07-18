@@ -602,7 +602,20 @@ export const runScan = withAuthentication(async (context) => {
 // (BackgroundScan.runPendingScans) run it to completion, so it finishes even if
 // the user leaves the page. The client polls Scan.getProgress for live state.
 export const enqueueScan = withAuthentication(
-  async (context, { store }: { store: string }) => {
+  async (
+    context,
+    {
+      store,
+      products: productSelection,
+      competitors: competitorSelection,
+    }: {
+      store: string;
+      // Roster picked in the scan setup step. Absent side = everything (all
+      // store products / all currently-selected competitors).
+      products?: string[];
+      competitors?: string[];
+    },
+  ) => {
     const user = context.session.user.id;
 
     // Scans are store-scoped — assert the target store belongs to this user.
@@ -667,25 +680,39 @@ export const enqueueScan = withAuthentication(
       }
     }
 
+    // Resolve the roster through ownership-scoped queries — ids that aren't
+    // the user's (or the store's) simply drop out instead of being trusted.
     const [products, competitors] = await Promise.all([
       Product.find(Environment.SERVER, {
         where: and(
           eq(schema.product.userId, user),
           eq(schema.product.storeId, store),
+          productSelection?.length
+            ? inArray(schema.product.id, productSelection)
+            : undefined,
         ),
       }),
       Competitor.find(Environment.SERVER, {
-        where: eq(schema.competitor.userId, user),
+        where: and(
+          eq(schema.competitor.userId, user),
+          competitorSelection?.length
+            ? inArray(schema.competitor.id, competitorSelection)
+            : undefined,
+        ),
       }),
     ]);
     if (!products.success) return products;
     if (!competitors.success) return competitors;
 
-    const selected = competitors.data.filter((record) => record.selected);
+    // An explicit roster IS the selection; the account-level `selected` flag
+    // only drives the fallback when no roster was picked.
+    const selected = competitorSelection?.length
+      ? competitors.data
+      : competitors.data.filter((record) => record.selected);
     if (products.data.length === 0)
       return {
         success: false as const,
-        error: new RequestError("No products found"),
+        error: new RequestError("No products selected"),
       };
     if (selected.length === 0)
       return {
@@ -696,9 +723,14 @@ export const enqueueScan = withAuthentication(
     const totalSimulations =
       products.data.length * selected.length * perspectives.length;
 
+    // Freeze the resolved roster on the scan row so the drain (and any resumed
+    // invocation) runs exactly what the user saw in the setup step, immune to
+    // catalog or selection changes made while the scan is queued or running.
     const scan = await Scan.create(Environment.SERVER, {
       userId: user,
       storeId: store,
+      productIds: products.data.map((record) => record.id),
+      competitorIds: selected.map((record) => record.id),
       status: "pending",
       totalSimulations,
       completedSimulations: 0,

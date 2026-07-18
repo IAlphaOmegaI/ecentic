@@ -236,36 +236,43 @@ export const useScanRunner = (options: ScanRunnerOptions) => {
     [ingest, stopTimers],
   );
 
-  const handleRun = useCallback(async () => {
-    if (!store) {
-      onError.current?.("Connect a store before running simulations.");
-      return;
-    }
+  const handleRun = useCallback(
+    async (selection?: { products?: string[]; competitors?: string[] }) => {
+      if (!store) {
+        onError.current?.("Connect a store before running simulations.");
+        return;
+      }
 
-    stopTimers();
-    setPhase("running");
-    setLogs([]);
-    setStats(initialStats);
-    setStatuses(initialStatuses);
-    setModelStats({});
-    setWinRates({});
-    setTopFinding(null);
-    setCount(0);
-    setElapsed(0);
-    shown.current = 0;
-    start.current = Date.now();
-
-    const enqueue = await Simulate.enqueueScan({ store });
-    if (!enqueue.success) {
       stopTimers();
-      setPhase("pre");
-      onError.current?.(enqueue.error.message);
-      return;
-    }
+      setPhase("running");
+      setLogs([]);
+      setStats(initialStats);
+      setStatuses(initialStatuses);
+      setModelStats({});
+      setWinRates({});
+      setTopFinding(null);
+      setCount(0);
+      setElapsed(0);
+      shown.current = 0;
+      start.current = Date.now();
 
-    setScanId(enqueue.data.scanId);
-    poll(enqueue.data.scanId);
-  }, [poll, stopTimers, store]);
+      const enqueue = await Simulate.enqueueScan({
+        store,
+        products: selection?.products,
+        competitors: selection?.competitors,
+      });
+      if (!enqueue.success) {
+        stopTimers();
+        setPhase("pre");
+        onError.current?.(enqueue.error.message);
+        return;
+      }
+
+      setScanId(enqueue.data.scanId);
+      poll(enqueue.data.scanId);
+    },
+    [poll, stopTimers, store],
+  );
 
   // Resume an in-flight scan for this store started in a previous visit — the
   // background drain keeps it running while the user is away, so reopening the

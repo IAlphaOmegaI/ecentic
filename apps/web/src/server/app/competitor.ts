@@ -78,6 +78,41 @@ export const skimForCurrentUser = withAuthentication(async (context) => {
   });
 }, "Competitor.skimForCurrentUser");
 
+export type Candidate = {
+  id: string;
+  title: string;
+  brand: string | null;
+  price: string | null;
+  image: string | null;
+  selected: boolean;
+};
+
+/**
+ * Full (uncapped) competitor list trimmed to display fields, for selection
+ * surfaces like the scan setup roster.
+ */
+export const listForCurrentUser = withAuthentication(async (context) => {
+  const result = await find(Environment.SERVER, {
+    where: eq(schema.competitor.userId, context.session.user.id),
+    orderBy: [{ column: schema.competitor.title, direction: "asc" }],
+  });
+  if (!result.success) return result;
+
+  return {
+    success: true as const,
+    data: result.data.map(
+      (competitor): Candidate => ({
+        id: competitor.id,
+        title: competitor.title,
+        brand: competitor.brand,
+        price: competitor.price,
+        image: competitor.image,
+        selected: competitor.selected,
+      }),
+    ),
+  };
+}, "Competitor.listForCurrentUser");
+
 /**
  * Total and selected competitor counts for the current user. Use this for
  * count surfaces (e.g. the simulation estimate) instead of measuring

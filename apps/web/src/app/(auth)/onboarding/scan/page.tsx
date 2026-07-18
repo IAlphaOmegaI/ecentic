@@ -9,6 +9,7 @@ import Image from "next/image";
 import { connection } from "next/server";
 import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
+import { formatScanEstimate } from "@/lib/scan-estimate";
 import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
 import * as Store from "@/server/app/store";
@@ -53,19 +54,7 @@ export default async () => {
   ]);
 
   const simulations = productCount * competitorCounts.selected * 3;
-
-  const estimation = (() => {
-    switch (true) {
-      case simulations <= 30:
-        return "~15 sec";
-      case simulations <= 100:
-        return "~90 sec";
-      case simulations <= 300:
-        return "~1 min";
-      default:
-        return "~2 min";
-    }
-  })();
+  const estimation = formatScanEstimate(simulations);
 
   const labels = [
     {

@@ -222,6 +222,11 @@ export const scan = pgTable(
     storeId: text("storeId").references(() => store.id, {
       onDelete: "cascade",
     }),
+    // Per-scan roster picked before the run starts. Null means "everything":
+    // all of the store's products / all currently-selected competitors,
+    // resolved at drain time (cron scans and legacy rows).
+    productIds: jsonb("productIds").$type<string[]>(),
+    competitorIds: jsonb("competitorIds").$type<string[]>(),
     status: text("status")
       .$type<"pending" | "running" | "complete" | "failed">()
       .notNull()

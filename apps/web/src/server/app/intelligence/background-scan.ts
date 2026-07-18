@@ -1,8 +1,9 @@
 "use server";
 
 import { resultify } from "@zenncore/utils";
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
+import { SCAN_CONCURRENCY } from "@/lib/scan-estimate";
 import { schema } from "../../database";
 import { generate, type ModelId } from "../../utils/ai";
 import { type GenericContext, withContext } from "../../utils/context";
@@ -43,11 +44,11 @@ const comparisonSchema = z.object({
     .describe("Top attributes or gaps that determined the outcome"),
 });
 
-// Peak parallel judge tasks. Each task fires 2 model calls (the position swap),
-// and queue order interleaves the 3 models, so this keeps roughly
-// 2 * CONCURRENCY / 3 in-flight calls per provider — high enough to saturate
-// throughput, low enough to stay clear of per-provider rate limits.
-const CONCURRENCY = 12;
+// Peak parallel judge tasks (SCAN_CONCURRENCY, shared with the UI's time
+// estimate). Each task fires 2 model calls (the position swap), and queue order
+// interleaves the 3 models, so this keeps roughly 2 * SCAN_CONCURRENCY / 3
+// in-flight calls per provider — high enough to saturate throughput, low
+// enough to stay clear of per-provider rate limits.
 
 // Write scan counters every N completed simulations, not every one. The polling
 // client derives live progress from the persisted simulation rows anyway
@@ -57,33 +58,51 @@ const PROGRESS_WRITE_EVERY = 5;
 
 // `store` scopes the run to one store's products — the drain passes it from the
 // scan row, the daily cron passes each store in turn. Absent (legacy scans
-// enqueued before store scoping) the run stays account-wide.
+// enqueued before store scoping) the run stays account-wide. `roster` narrows
+// further to the products/competitors picked at enqueue time; an absent side
+// falls back to everything (all store products / all selected competitors).
 const runScanForUser = async (
   context: GenericContext,
   {
     user,
     scan: existing,
     store,
-  }: { user: string; scan?: string; store?: string },
+    roster,
+  }: {
+    user: string;
+    scan?: string;
+    store?: string;
+    roster?: { products?: string[]; competitors?: string[] };
+  },
 ) => {
   const [products, competitors] = await Promise.all([
     Product.find(Environment.SERVER, {
-      where: store
-        ? and(
-            eq(schema.product.userId, user),
-            eq(schema.product.storeId, store),
-          )
-        : eq(schema.product.userId, user),
+      where: and(
+        eq(schema.product.userId, user),
+        store ? eq(schema.product.storeId, store) : undefined,
+        roster?.products?.length
+          ? inArray(schema.product.id, roster.products)
+          : undefined,
+      ),
     }),
     Competitor.find(Environment.SERVER, {
-      where: eq(schema.competitor.userId, user),
+      where: and(
+        eq(schema.competitor.userId, user),
+        roster?.competitors?.length
+          ? inArray(schema.competitor.id, roster.competitors)
+          : undefined,
+      ),
     }),
   ]);
 
   if (!products.success) return products;
   if (!competitors.success) return competitors;
 
-  const selected = competitors.data.filter((competitor) => competitor.selected);
+  // An explicit roster IS the selection — the account-level `selected` flag
+  // only drives the fallback when no roster was picked.
+  const selected = roster?.competitors?.length
+    ? competitors.data
+    : competitors.data.filter((competitor) => competitor.selected);
 
   if (products.data.length === 0 || selected.length === 0)
     return {
@@ -303,7 +322,9 @@ const runScanForUser = async (
   };
 
   await Promise.all(
-    Array.from({ length: Math.min(CONCURRENCY, tasks.length) }, () => worker()),
+    Array.from({ length: Math.min(SCAN_CONCURRENCY, tasks.length) }, () =>
+      worker(),
+    ),
   );
 
   if (state.failure) {
@@ -505,6 +526,10 @@ export const runPendingScans = withContext(
           user: scan.userId,
           scan: scan.id,
           store: scan.storeId ?? undefined,
+          roster: {
+            products: scan.productIds ?? undefined,
+            competitors: scan.competitorIds ?? undefined,
+          },
         });
 
         const completed =

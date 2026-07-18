@@ -89,6 +89,59 @@ export const countForCurrentUser = withAuthentication(
   "Product.countForCurrentUser",
 );
 
+// `images` is a JSON-encoded string array; feed imports occasionally leave it
+// malformed, so parse defensively instead of trusting the column.
+const firstImage = (images: string | null) => {
+  try {
+    const parsed = JSON.parse(images ?? "[]");
+    return Array.isArray(parsed) && typeof parsed[0] === "string"
+      ? parsed[0]
+      : null;
+  } catch {
+    return null;
+  }
+};
+
+export type Candidate = {
+  id: string;
+  title: string;
+  price: string | null;
+  image: string | null;
+};
+
+/**
+ * Full (uncapped) product list trimmed to display fields, for selection
+ * surfaces like the scan setup roster. Use `paginateWithIntelligence` for the
+ * products table and `skimForCurrentUser` for 10-row previews.
+ */
+export const listForCurrentUser = withAuthentication(
+  async (context, { store }: { store?: string } = {}) => {
+    const result = await find(Environment.SERVER, {
+      where: store
+        ? and(
+            eq(schema.product.userId, context.session.user.id),
+            eq(schema.product.storeId, store),
+          )
+        : eq(schema.product.userId, context.session.user.id),
+      orderBy: [{ column: schema.product.title, direction: "asc" }],
+    });
+    if (!result.success) return result;
+
+    return {
+      success: true as const,
+      data: result.data.map(
+        (product): Candidate => ({
+          id: product.id,
+          title: product.title,
+          price: product.price,
+          image: firstImage(product.images),
+        }),
+      ),
+    };
+  },
+  "Product.listForCurrentUser",
+);
+
 /**
  * Maps the onboarding `?connected=` query value to the store platforms it can
  * produce. A Shopify connect lands as either `shopify` (OAuth) or
