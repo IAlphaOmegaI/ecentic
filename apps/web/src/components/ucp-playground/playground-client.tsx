@@ -127,6 +127,93 @@ const priceLabel = (product: UcpProduct): string | null => {
 const productImage = (product: UcpProduct): string | undefined =>
   product.media?.find((item) => item?.url)?.url;
 
+type UcpVariant = UcpProduct["variants"][number];
+
+type AvailabilityTone = "success" | "warning" | "error" | "muted";
+
+const availabilityDotClass: Record<AvailabilityTone, string> = {
+  success: "bg-success",
+  warning: "bg-warning",
+  error: "bg-error",
+  muted: "bg-foreground-dimmed/40",
+};
+
+const availabilityTextClass: Record<AvailabilityTone, string> = {
+  success: "text-success",
+  warning: "text-warning",
+  error: "text-error",
+  muted: "text-foreground-dimmed",
+};
+
+// Map a variant's availability to a short label + tone. Well-known status values
+// (in_stock, backorder, preorder, out_of_stock, discontinued) win; otherwise the
+// boolean `available` decides. `quantity` is an ecentic extension — appended when
+// present and positive.
+const variantAvailability = (
+  variant: UcpVariant,
+): { label: string; tone: AvailabilityTone } => {
+  const availability = variant.availability;
+
+  if (!availability) return { label: "—", tone: "muted" };
+
+  const quantity = availability.quantity;
+  const suffix =
+    typeof quantity === "number" && quantity > 0 ? ` · ${quantity} left` : "";
+
+  const base = ((): { label: string; tone: AvailabilityTone } => {
+    switch (availability.status) {
+      case "in_stock":
+        return { label: "In stock", tone: "success" };
+      case "backorder":
+        return { label: "Backorder", tone: "warning" };
+      case "preorder":
+        return { label: "Preorder", tone: "warning" };
+      case "out_of_stock":
+        return { label: "Out of stock", tone: "error" };
+      case "discontinued":
+        return { label: "Discontinued", tone: "error" };
+      default:
+        return availability.available
+          ? { label: "Available", tone: "success" }
+          : { label: "Unavailable", tone: "error" };
+    }
+  })();
+
+  return { label: `${base.label}${suffix}`, tone: base.tone };
+};
+
+const VariantList = ({ variants }: { variants: UcpVariant[] }) => (
+  <ul className="mt-2 space-y-1 border-accent-foreground border-t pt-2">
+    {variants.map((variant, index) => {
+      const { label, tone } = variantAvailability(variant);
+      return (
+        <li
+          className="flex items-center justify-between gap-2 text-[11px] leading-tight"
+          key={variant.id ?? index}
+        >
+          <span className="min-w-0 flex-1 truncate text-foreground-dimmed">
+            {variant.title}
+          </span>
+          <span className="flex shrink-0 items-center gap-1.5">
+            <span className="font-mono text-foreground/80">
+              {formatMoney(variant.price)}
+            </span>
+            <span className="flex items-center gap-1">
+              <span
+                className={cn(
+                  "size-1.5 shrink-0 rounded-full",
+                  availabilityDotClass[tone],
+                )}
+              />
+              <span className={availabilityTextClass[tone]}>{label}</span>
+            </span>
+          </span>
+        </li>
+      );
+    })}
+  </ul>
+);
+
 // A tool message part narrowed by its `tool-<name>` type literal, so part.output
 // carries that tool's zod-validated result instead of `unknown`.
 type ToolPart<Type extends PlaygroundUIMessage["parts"][number]["type"]> =
@@ -238,6 +325,9 @@ const ProductCard = ({ product }: { product: UcpProduct }) => {
             </span>
           )}
         </div>
+        {product.variants && product.variants.length > 0 && (
+          <VariantList variants={product.variants} />
+        )}
       </div>
     </div>
   );
