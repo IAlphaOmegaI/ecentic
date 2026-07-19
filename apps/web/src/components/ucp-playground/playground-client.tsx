@@ -129,6 +129,35 @@ const productImage = (product: UcpProduct): string | undefined =>
 
 type UcpVariant = UcpProduct["variants"][number];
 
+type UcpRating = NonNullable<UcpProduct["rating"]>;
+
+const formatRatingValue = (value: number): string =>
+  Number.isInteger(value) ? value.toString() : value.toFixed(1);
+
+// Aggregate rating as "★ 4.5 (120)". scale_max is shown only when it isn't the
+// conventional 5, so the common case stays terse.
+const Rating = ({
+  rating,
+  className,
+}: {
+  rating: UcpRating;
+  className?: string;
+}) => (
+  <span
+    className={cn(
+      "flex items-center gap-1 text-[11px] text-foreground-dimmed tabular-nums",
+      className,
+    )}
+  >
+    <span className="text-warning">★</span>
+    <span className="font-medium text-foreground/80">
+      {formatRatingValue(rating.value)}
+      {rating.scale_max !== 5 && `/${rating.scale_max}`}
+    </span>
+    {rating.count !== undefined && <span>({rating.count})</span>}
+  </span>
+);
+
 type AvailabilityTone = "success" | "warning" | "error" | "muted";
 
 const availabilityDotClass: Record<AvailabilityTone, string> = {
@@ -195,6 +224,12 @@ const VariantList = ({ variants }: { variants: UcpVariant[] }) => (
             {variant.title}
           </span>
           <span className="flex shrink-0 items-center gap-1.5">
+            {variant.rating && (
+              <span className="flex items-center gap-0.5 text-foreground-dimmed tabular-nums">
+                <span className="text-warning">★</span>
+                {formatRatingValue(variant.rating.value)}
+              </span>
+            )}
             <span className="font-mono text-foreground/80">
               {formatMoney(variant.price)}
             </span>
@@ -306,6 +341,7 @@ const ProductCard = ({ product }: { product: UcpProduct }) => {
         <p className="line-clamp-2 font-medium text-foreground-rich text-sm leading-tight">
           {product.title ?? "Untitled product"}
         </p>
+        {product.rating && <Rating className="mt-0.5" rating={product.rating} />}
         <div className="mt-auto flex items-end justify-between gap-2 pt-1">
           <span className="flex items-baseline gap-1.5">
             {price && (
