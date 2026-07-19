@@ -17,6 +17,7 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import Link, { useLinkStatus } from "next/link";
 import { useRouter } from "next/navigation";
+import { Counter } from "@/app/(main)/_components/counter";
 import { Motion } from "@/components/motion";
 import { Spring, Stagger } from "@/lib/animations";
 import * as Payg from "@/server/app/billing/payg";
@@ -196,7 +197,7 @@ export const CompletePhase = ({
                 <AwardIcon className="size-12 text-foreground" />
                 <div>
                   <p className={cn("font-medium text-2xl", color)}>
-                    {winRate}%
+                    <Counter value={`${winRate}%`} delay={0.45} />
                   </p>
                   <p className="font-light text-foreground-dimmed">Win rate</p>
                 </div>

@@ -1,7 +1,7 @@
 import { CheckIcon } from "@zenncore/icons";
 import { Plus } from "@/components/plus";
 import { UcpArt } from "@/app/(main)/resources/_components/resource-art";
-import { Reveal, RevealItem } from "@/app/(main)/resources/_components/reveal";
+import { Reveal, RevealItem } from "@/components/reveal";
 
 const checks = [
   {

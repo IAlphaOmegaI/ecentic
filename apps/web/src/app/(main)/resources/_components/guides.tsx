@@ -4,10 +4,10 @@ import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import Link from "next/link";
 import { Plus } from "@/components/plus";
+import { Reveal, RevealItem } from "@/components/reveal";
 import shopify from "@/public/images/shopify.svg";
 import woocommerce from "@/public/images/woocommerce.svg";
 import { AgentLogoCarousel } from "./agent-logo-carousel";
-import { Reveal, RevealItem } from "./reveal";
 
 const guides = [
   {

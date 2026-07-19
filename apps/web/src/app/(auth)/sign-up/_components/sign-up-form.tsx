@@ -10,11 +10,13 @@ import {
   InferredForm,
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
+import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { z } from "zod";
 import { Motion } from "@/components/motion";
+import { Spring } from "@/lib/animations";
 import * as Authentication from "@/server/app/authentication";
 
 const roles = [
@@ -206,27 +208,38 @@ export const SignUpForm = () => {
           )}
           Continue with Shopify
         </Button>
-        {provider === "shopify" && (
-          <InferredForm
-            config={shopifyFormConfig}
-            onSubmit={(data) => handleSubmit({ data, type: "shopify" })}
-            className="flex flex-col gap-2 pt-1"
-          >
-            <Button
-              type="submit"
-              color="primary"
-              disabled={isPending}
-              className="w-full"
+        <AnimatePresence initial={false}>
+          {provider === "shopify" && (
+            <motion.div
+              key="shopify-form"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={Spring.Snappy}
+              style={{ overflow: "hidden" }}
             >
-              {isPending ? (
-                <LoaderIcon className="size-4 animate-spin" />
-              ) : (
-                <ArrowRightIcon className="size-4" />
-              )}
-              Connect Shopify store
-            </Button>
-          </InferredForm>
-        )}
+              <InferredForm
+                config={shopifyFormConfig}
+                onSubmit={(data) => handleSubmit({ data, type: "shopify" })}
+                className="flex flex-col gap-2 pt-1"
+              >
+                <Button
+                  type="submit"
+                  color="primary"
+                  disabled={isPending}
+                  className="w-full"
+                >
+                  {isPending ? (
+                    <LoaderIcon className="size-4 animate-spin" />
+                  ) : (
+                    <ArrowRightIcon className="size-4" />
+                  )}
+                  Connect Shopify store
+                </Button>
+              </InferredForm>
+            </motion.div>
+          )}
+        </AnimatePresence>
         <div className="relative flex items-center gap-3">
           <div className="h-px flex-1 bg-accent-foreground" />
           <span className="font-light text-foreground-dimmed">or</span>

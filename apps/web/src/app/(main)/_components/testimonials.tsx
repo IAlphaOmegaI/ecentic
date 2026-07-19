@@ -1,6 +1,9 @@
 import { StarHandIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
+import * as motion from "motion/react-client";
 import { Plus } from "@/components/plus";
+import { Reveal } from "@/components/reveal";
+import { Stagger } from "@/lib/animations";
 
 const testimonials = [
   {
@@ -89,11 +92,12 @@ export const Testimonials = () => (
         </div>
       </div>
 
-      <div className="relative mx-auto grid max-w-6xl gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-3">
+      <Reveal className="relative mx-auto grid max-w-6xl gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-3">
         <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
         <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
         {testimonials.map((testimonial, index) => (
-          <article
+          <motion.article
+            variants={Stagger.Item}
             key={testimonial.name}
             className="relative flex flex-col gap-4 bg-background p-6 md:p-8"
           >
@@ -115,9 +119,9 @@ export const Testimonials = () => (
                 {testimonial.role}, {testimonial.company}
               </p>
             </div>
-          </article>
+          </motion.article>
         ))}
-      </div>
+      </Reveal>
     </div>
   </section>
 );

@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link, { useLinkStatus } from "next/link";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
-import { Fade } from "@/lib/animations";
+import { Fade, Spring } from "@/lib/animations";
 
 const points = [
   "Your email address has been confirmed",
@@ -64,7 +64,13 @@ export default () => {
 
           <Motion.Item className="w-full flex-1 border-accent-foreground border-b px-8">
             <div className="flex h-full flex-col items-center justify-center gap-6 border-accent-foreground border-x p-6">
-              <CheckBadgeIcon className="size-24 text-success" />
+              <motion.div
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ ...Spring.Bounce, delay: 0.35 }}
+              >
+                <CheckBadgeIcon className="size-24 text-success" />
+              </motion.div>
               <div className="flex flex-col items-center gap-2 text-center">
                 <p className="font-medium text-2xl text-success">
                   Successfully verified

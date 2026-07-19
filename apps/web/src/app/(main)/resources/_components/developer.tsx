@@ -3,9 +3,9 @@ import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Link from "next/link";
 import { Plus } from "@/components/plus";
+import { Reveal, RevealItem } from "@/components/reveal";
 import { seo } from "@/lib/seo";
 import { LlmsArt } from "./resource-art";
-import { Reveal, RevealItem } from "./reveal";
 
 const endpoints = [
   {

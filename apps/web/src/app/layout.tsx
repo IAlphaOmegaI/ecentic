@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import { Red_Hat_Display } from "next/font/google";
 import Script from "next/script";
 import { ToastList } from "@/components/ui/toast";
+import { MotionProvider } from "@/context/motion";
 import { ThemeProvider } from "@/context/theme";
 
 const PostHogProvider = dynamic(() =>
@@ -142,10 +143,12 @@ export default ({ children }: PropsWithChildren) => {
         <Suspense>
           <PostHogProvider>
             <ThemeProvider>
-              <ToastProvider>
-                <div className="isolate">{children}</div>
-                <ToastList types={["error", "success", "info"]} />
-              </ToastProvider>
+              <MotionProvider>
+                <ToastProvider>
+                  <div className="isolate">{children}</div>
+                  <ToastList types={["error", "success", "info"]} />
+                </ToastProvider>
+              </MotionProvider>
             </ThemeProvider>
           </PostHogProvider>
         </Suspense>

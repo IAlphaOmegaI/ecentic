@@ -6,6 +6,7 @@ import {
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Plus } from "@/components/plus";
+import { Reveal, RevealItem } from "@/components/reveal";
 
 const features = [
   {
@@ -52,11 +53,11 @@ export const Features = () => (
           Everything you need to win the AI shopper.
         </h2>
       </div>
-      <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2">
+      <Reveal className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2">
         <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
         <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
         {features.map((feature, index) => (
-          <div
+          <RevealItem
             key={feature.title}
             className="relative flex flex-col justify-end gap-2 bg-background-dimmed p-4 md:h-82"
           >
@@ -76,9 +77,9 @@ export const Features = () => (
             <p className="font-body font-light text-foreground-dimmed text-lg">
               {feature.description}
             </p>
-          </div>
+          </RevealItem>
         ))}
-      </div>
+      </Reveal>
     </div>
   </section>
 );

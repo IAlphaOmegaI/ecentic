@@ -2,6 +2,7 @@ import { CheckIcon } from "@zenncore/icons";
 import Image from "next/image";
 import DuaLogo from "@/public/partners/dua-flavours.png";
 import { Plus } from "@/components/plus";
+import { Reveal, RevealItem } from "@/components/reveal";
 import { Counter } from "./counter";
 
 const metrics = [
@@ -40,9 +41,9 @@ export const CaseStudy = () => (
           </p>
         </div>
 
-        <div className="grid divide-y divide-accent-foreground border-accent-foreground border-t md:grid-rows-2 md:border-t-0 md:border-l">
+        <Reveal className="grid divide-y divide-accent-foreground border-accent-foreground border-t md:grid-rows-2 md:border-t-0 md:border-l">
           {metrics.map((metric, index) => (
-            <div
+            <RevealItem
               key={metric.label}
               className="relative flex flex-col justify-center gap-1 bg-background-dimmed p-6 md:p-12"
             >
@@ -61,9 +62,9 @@ export const CaseStudy = () => (
               <p className="font-light text-foreground-dimmed text-sm">
                 in 30 days
               </p>
-            </div>
+            </RevealItem>
           ))}
-        </div>
+        </Reveal>
       </div>
     </div>
   </section>
