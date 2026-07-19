@@ -336,7 +336,11 @@ export const refreshAccessToken = withContext(
     if (!store.data)
       return { success: false, error: new Error("Store not found") };
 
-    const shopId = new URL(store.data.domain).hostname;
+    const shopId = new URL(
+      /^https?:\/\//.test(store.data.domain)
+        ? store.data.domain
+        : `https://${store.data.domain}`,
+    ).hostname;
 
     const tokenResponse = await HTTP.request(
       `https://${shopId}/admin/oauth/access_token`,
