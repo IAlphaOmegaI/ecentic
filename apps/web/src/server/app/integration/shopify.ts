@@ -92,6 +92,13 @@ type ShopifyShop = {
 
 const API_VERSION = "2026-04";
 
+// Store domains are persisted inconsistently — Shopify rows as a bare host
+// (`ecentic.myshopify.com`), other platforms with a scheme
+// (`https://shop.example.com`). `fetch`/`new URL` require an absolute URL, so a
+// bare host throws `Failed to parse URL from ...`. Collapse either shape to the
+// canonical host and force `https://`.
+const shopBaseUrl = (domain: string) => `https://${normalizeHostname(domain)}`;
+
 const storefrontHostsFromShop = (record: {
   domain: string;
   myshopify_domain: string;
@@ -107,7 +114,7 @@ const fetchShopCurrency = async (
   accessToken: string,
 ): Promise<string | null> => {
   const response = await HTTP.request(
-    `${domain}/admin/api/${API_VERSION}/shop.json`,
+    `${shopBaseUrl(domain)}/admin/api/${API_VERSION}/shop.json`,
     {
       method: "GET",
       headers: {
@@ -213,7 +220,7 @@ export const syncShopifyCatalog = withContext(
     const maximum = 10;
 
     let url: string | null =
-      `${domain}/admin/api/${API_VERSION}/products.json?limit=${limit}`;
+      `${shopBaseUrl(domain)}/admin/api/${API_VERSION}/products.json?limit=${limit}`;
 
     for (const _ of Array.from({ length: maximum })) {
       if (!url) break;
@@ -336,11 +343,7 @@ export const refreshAccessToken = withContext(
     if (!store.data)
       return { success: false, error: new Error("Store not found") };
 
-    const shopId = new URL(
-      /^https?:\/\//.test(store.data.domain)
-        ? store.data.domain
-        : `https://${store.data.domain}`,
-    ).hostname;
+    const shopId = normalizeHostname(store.data.domain);
 
     const tokenResponse = await HTTP.request(
       `https://${shopId}/admin/oauth/access_token`,
@@ -498,7 +501,7 @@ export const handleOAuthCallback = withContext(
 
     const reconciliation = await Store.reconcileConnection(Environment.SERVER, {
       userId,
-      domain: `https://${shopId}`,
+      domain: shopBaseUrl(shopId),
       storeId: String(shop.data.shop.id),
     });
     if (!reconciliation.success) return reconciliation;
@@ -523,7 +526,11 @@ export const handleOAuthCallback = withContext(
               {
                 platform: "shopify",
                 name: shop.data.shop.name,
-                domain: shop.data.shop.domain,
+                // Always the `*.myshopify.com` host, not `shop.domain` (which
+                // can be a custom primary domain the Admin API won't answer on).
+                // Matches the create path so a reconnect can't clobber the row
+                // with a bare/custom-domain value.
+                domain: shopBaseUrl(shopId),
                 storefrontHosts,
                 status: "connected",
                 storeId: String(shop.data.shop.id),
@@ -536,7 +543,7 @@ export const handleOAuthCallback = withContext(
                 userId,
                 platform: "shopify",
                 name: shopId.replace(".myshopify.com", ""),
-                domain: `https://${shopId}`,
+                domain: shopBaseUrl(shopId),
                 trackerApiKey,
                 storefrontHosts,
                 status: "connected",
@@ -683,7 +690,7 @@ const findExistingMetafield = async (
   key: string,
 ): Promise<number | null> => {
   const response = await HTTP.request(
-    `${domain}/admin/api/${API_VERSION}/${metafieldBasePath(
+    `${shopBaseUrl(domain)}/admin/api/${API_VERSION}/${metafieldBasePath(
       ownerPath,
     )}.json?namespace=${encodeURIComponent(namespace)}&key=${encodeURIComponent(key)}`,
     {
@@ -725,7 +732,7 @@ const upsertMetafield = async (
 
   if (existingId !== null) {
     return HTTP.request(
-      `${domain}/admin/api/${API_VERSION}/${ownerPath}/metafields/${existingId}.json`,
+      `${shopBaseUrl(domain)}/admin/api/${API_VERSION}/${ownerPath}/metafields/${existingId}.json`,
       {
         method: "PUT",
         headers: {
@@ -744,7 +751,7 @@ const upsertMetafield = async (
   }
 
   return HTTP.request(
-    `${domain}/admin/api/${API_VERSION}/${ownerPath}/metafields.json`,
+    `${shopBaseUrl(domain)}/admin/api/${API_VERSION}/${ownerPath}/metafields.json`,
     {
       method: "POST",
       headers: {
@@ -1116,7 +1123,7 @@ export const updateProduct = withAuthentication(
     if (!product.data.externalId)
       return { success: false, error: new Error("Product has no external ID") };
 
-    const url = `${domain}/admin/api/${API_VERSION}/products/${product.data.externalId}.json`;
+    const url = `${shopBaseUrl(domain)}/admin/api/${API_VERSION}/products/${product.data.externalId}.json`;
 
     const response = await HTTP.request(url, {
       method: "PUT",
@@ -1431,7 +1438,7 @@ const graphqlRequest = async <T>(
   variables: Record<string, unknown>,
 ): Promise<{ success: true; data: T } | { success: false; error: Error }> => {
   const response = await HTTP.request(
-    `${domain}/admin/api/${API_VERSION}/graphql.json`,
+    `${shopBaseUrl(domain)}/admin/api/${API_VERSION}/graphql.json`,
     {
       method: "POST",
       headers: {

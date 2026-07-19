@@ -245,6 +245,7 @@ export const publishProductListing = withAuthentication(
     },
   ) => {
     const product = await Product.get(Environment.SERVER, id);
+
     if (!product.success) return product;
 
     if (!product.data)
