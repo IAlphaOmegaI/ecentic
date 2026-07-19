@@ -9,6 +9,7 @@ Central navigation for product context, agent rules, and package/component docum
 - [Product + architecture handoff](./context/idea.md)
 - [AI agent commerce strategy](./context/strategy.md)
 - [Shopify app listing reference](./context/shopify.md)
+- [Agent visibility — ingestion paths and measurement](./context/agent-visibility.md) — which surfaces read what, feed/JSON-LD/catalog-rank modules
 
 ### If you are working on store integrations or hosted UCP
 

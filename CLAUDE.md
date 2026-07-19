@@ -252,4 +252,13 @@ CRON_SECRET                               # Bearer secret for /api/cron/* (scan 
 PERFORMANCE_FEE_RATE_BPS_DEFAULT=300      # 3%, overridable per account
 PERFORMANCE_FEE_CAP_CENTS_DEFAULT=50000   # $500 / month, overridable per account
 PERFORMANCE_FEE_ATTRIBUTION_WINDOW_DAYS=7 # AI-referral → order attribution window
+
+# Shopify Global Catalog MCP (optional — real agent-shelf rank measurement,
+# see docs/context/agent-visibility.md). Credentials from Dev Dashboard →
+# Catalogs → "Get an API key" (catalog keys, NOT the app's SHOPIFY_API_KEY).
+SHOPIFY_CATALOG_CLIENT_ID
+SHOPIFY_CATALOG_CLIENT_SECRET
+SHOPIFY_CATALOG_TOKEN_URL                 # default https://api.shopify.com/auth/access_token
+SHOPIFY_CATALOG_MCP_URL                   # default https://catalog.shopify.com/api/ucp/mcp
+UCP_AGENT_PROFILE_URL                     # default {APP_HOST}/ucp/agent-profile
 ```

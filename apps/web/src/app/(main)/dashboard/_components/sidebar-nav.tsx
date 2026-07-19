@@ -5,6 +5,7 @@ import {
   ChartCircularIcon,
   CircleBoltIcon,
   CodeIcon,
+  EyeIcon,
   GaugeIcon,
   GearIcon,
   RadarIcon,
@@ -45,6 +46,12 @@ const items = [
     exact: false,
   },
   { icon: GaugeIcon, label: "Optimize", segment: "/optimize", exact: false },
+  {
+    icon: EyeIcon,
+    label: "Visibility",
+    segment: "/visibility",
+    exact: false,
+  },
   {
     icon: CodeIcon,
     label: "UCP & Data",

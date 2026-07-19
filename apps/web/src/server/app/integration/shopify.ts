@@ -679,6 +679,143 @@ type ShopifyMetafield = {
 
 const UCP_NAMESPACE = "ucp";
 
+/**
+ * Metafield definitions for every `ucp` field this app writes. Definitions are
+ * what make the values visible outside the admin: `storefront: PUBLIC_READ`
+ * exposes them to Liquid (`product.metafields.ucp.*`) and the Storefront API,
+ * which is what lets a theme/app block render the JSON-LD into storefront HTML
+ * where crawling agents can actually read it. Without a definition the values
+ * sit in the backend and no AI surface ever sees them.
+ */
+const UCP_METAFIELD_DEFINITIONS: Record<
+  "PRODUCT" | "SHOP",
+  { key: string; name: string; type: string }[]
+> = {
+  PRODUCT: [
+    { key: "structured_data", name: "Structured data (JSON-LD)", type: "json" },
+    { key: "agentic_summary", name: "Agentic summary", type: "json" },
+  ],
+  SHOP: [
+    { key: "merchant_profile", name: "UCP merchant profile", type: "json" },
+    {
+      key: "merchant_name",
+      name: "Merchant name",
+      type: "single_line_text_field",
+    },
+    {
+      key: "description",
+      name: "Merchant description",
+      type: "multi_line_text_field",
+    },
+    { key: "logo_url", name: "Logo URL", type: "url" },
+    {
+      key: "payment_methods",
+      name: "Payment methods",
+      type: "list.single_line_text_field",
+    },
+    {
+      key: "shipping_policy",
+      name: "Shipping policy",
+      type: "multi_line_text_field",
+    },
+    {
+      key: "return_policy",
+      name: "Return policy",
+      type: "multi_line_text_field",
+    },
+    {
+      key: "contact_email",
+      name: "Contact email",
+      type: "single_line_text_field",
+    },
+    {
+      key: "sustainability",
+      name: "Sustainability",
+      type: "multi_line_text_field",
+    },
+    {
+      key: "certifications",
+      name: "Certifications",
+      type: "list.single_line_text_field",
+    },
+  ],
+};
+
+const METAFIELD_DEFINITION_CREATE = `#graphql
+  mutation CreateMetafieldDefinition($definition: MetafieldDefinitionInput!) {
+    metafieldDefinitionCreate(definition: $definition) {
+      createdDefinition {
+        id
+      }
+      userErrors {
+        code
+        field
+        message
+      }
+    }
+  }
+`;
+
+/** Shops whose definitions were already ensured this process lifetime. */
+const ensuredDefinitionOwners = new Set<string>();
+
+/**
+ * Idempotently creates the `ucp` metafield definitions for a shop. A `TAKEN`
+ * user error means the definition already exists (possibly created before this
+ * code shipped) and counts as success — existing values with a matching type
+ * are adopted by the definition. Best-effort: callers push values regardless.
+ */
+const ensureUcpMetafieldDefinitions = async (
+  domain: string,
+  accessToken: string,
+  ownerType: "PRODUCT" | "SHOP",
+): Promise<{ ensured: number; errors: string[] }> => {
+  const cacheKey = `${normalizeHostname(domain)}:${ownerType}`;
+  if (ensuredDefinitionOwners.has(cacheKey))
+    return { ensured: UCP_METAFIELD_DEFINITIONS[ownerType].length, errors: [] };
+
+  const errors: string[] = [];
+
+  for (const definition of UCP_METAFIELD_DEFINITIONS[ownerType]) {
+    const result = await graphqlRequest<{
+      metafieldDefinitionCreate: {
+        createdDefinition: { id: string } | null;
+        userErrors: { code: string; message: string }[];
+      };
+    }>(domain, accessToken, METAFIELD_DEFINITION_CREATE, {
+      definition: {
+        name: definition.name,
+        namespace: UCP_NAMESPACE,
+        key: definition.key,
+        type: definition.type,
+        ownerType,
+        access: { storefront: "PUBLIC_READ" },
+      },
+    });
+
+    if (!result.success) {
+      errors.push(`${definition.key}: ${result.error.message}`);
+      continue;
+    }
+
+    const blocking = result.data.metafieldDefinitionCreate.userErrors.filter(
+      (entry) => entry.code !== "TAKEN",
+    );
+    if (blocking.length > 0) {
+      errors.push(
+        `${definition.key}: ${blocking.map((entry) => entry.message).join(", ")}`,
+      );
+    }
+  }
+
+  if (errors.length === 0) ensuredDefinitionOwners.add(cacheKey);
+
+  return {
+    ensured: UCP_METAFIELD_DEFINITIONS[ownerType].length - errors.length,
+    errors,
+  };
+};
+
 const metafieldBasePath = (ownerPath: string) =>
   ownerPath ? `${ownerPath}/metafields` : "metafields";
 
@@ -943,6 +1080,12 @@ export const pushShopUcpMetafields = withContext(
     const { domain } = store.data;
     const { accessToken } = resolved;
 
+    const definitions = await ensureUcpMetafieldDefinitions(
+      domain,
+      accessToken,
+      "SHOP",
+    );
+
     const fields = buildShopMetafields({ profile, generatedJson });
     const errors: string[] = [];
 
@@ -973,6 +1116,8 @@ export const pushShopUcpMetafields = withContext(
         "store.id": storeId,
         "metafields.written": fields.length - errors.length,
         "metafields.errors": errors.length,
+        "definitions.ensured": definitions.ensured,
+        "definitions.errors": definitions.errors.length,
       },
     });
 
@@ -1031,6 +1176,12 @@ export const pushProductUcpMetafields = withContext(
     const { domain } = store.data;
     const { accessToken } = resolved;
 
+    const definitions = await ensureUcpMetafieldDefinitions(
+      domain,
+      accessToken,
+      "PRODUCT",
+    );
+
     const fields = buildProductMetafields({
       structuredJson,
       product: {
@@ -1062,6 +1213,8 @@ export const pushProductUcpMetafields = withContext(
         "product.id": productId,
         "metafields.written": fields.length - errors.length,
         "metafields.errors": errors.length,
+        "definitions.ensured": definitions.ensured,
+        "definitions.errors": definitions.errors.length,
       },
     });
 
