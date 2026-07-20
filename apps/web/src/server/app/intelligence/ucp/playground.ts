@@ -125,7 +125,7 @@ type UcpCallContext = {
 
 // The single user-facing message for any "the store sent something we can't
 // parse" failure. The real Zod detail + raw payload go to Sentry only.
-const GENERIC_UCP_PARSE_ERROR =
+export const GENERIC_UCP_PARSE_ERROR =
   "The store returned a response we couldn't process.";
 
 // Tools RETURN this instead of throwing on failure. Throwing from a tool's
@@ -134,7 +134,24 @@ const GENERIC_UCP_PARSE_ERROR =
 // that duplicates our own reportUcpSchemaMismatch. Returning an error result
 // keeps it a normal tool output: no unhandled capture, and the model sees the
 // error and can respond instead of blindly retrying.
-type UcpToolError = { error: string };
+//
+// `retryable: false` marks a deterministic failure (schema/format mismatch): the
+// store returns the same unparseable body for the same call, so re-calling can
+// never succeed. The route's prepareStep reads this to end the agent loop with a
+// final explanation instead of letting it re-call the failing tool up to the
+// step cap.
+type UcpToolError = { error: string; retryable?: false };
+
+// True for tool outputs that are non-retryable store-format failures. Matches
+// both the content parse mismatch and the MCP-envelope mismatch (which reaches
+// the loop as { error: GENERIC_UCP_PARSE_ERROR } without the marker). UCP-level
+// errors (out of stock, requires_escalation) and transient network failures are
+// deliberately NOT matched — those may legitimately change on retry.
+export const isNonRetryableToolError = (output: unknown): boolean =>
+  typeof output === "object" &&
+  output !== null &&
+  ((output as { error?: unknown }).error === GENERIC_UCP_PARSE_ERROR ||
+    (output as { retryable?: unknown }).retryable === false);
 
 // Report a schema mismatch to Sentry with the prettified Zod issues, the raw
 // payload, and the store/tool context — for debugging only, never the UI.
@@ -184,7 +201,7 @@ const parseUcpToolContent = <T>(
       context,
     );
 
-    return { error: GENERIC_UCP_PARSE_ERROR };
+    return { error: GENERIC_UCP_PARSE_ERROR, retryable: false };
   }
 
   return parsed.data;
@@ -324,7 +341,7 @@ export const resolveShoppingService = async (
 
   const shoppingServices = parsed.data.ucp.services["dev.ucp.shopping"];
   const mcpShoppingService = shoppingServices?.find(
-    (shoppingService) => shoppingService.transport === "mcp", 
+    (shoppingService) => shoppingService.transport === "mcp",
   );
   const restShoppingService = shoppingServices?.find(
     (shoppingService) => shoppingService.transport === "rest",
@@ -1068,6 +1085,7 @@ How to behave in this console:
 - Use ONLY IDs returned by earlier tool calls — never invent them. Previous tool calls and their results are included in the conversation; reuse their IDs (variant id, cart id, checkout id) when the user refers to "it", "that", or "the cart".
 - If you need an ID you don't have yet (e.g. the user says "add it to a cart" but nothing was looked up), search or look it up first, or ask the user to clarify.
 - If a tool call fails or ucp.status is error, stop and report the error details and which step failed — do not retry blindly.
+- If a tool returns "${GENERIC_UCP_PARSE_ERROR}" (a store-side format problem), do NOT call that tool again — it fails the same way every time. Tell the user the store's response could not be processed and which step failed, then stop.
 - The UI renders catalog results (search/lookup/product) and carts as rich visual cards the user can already see, so do NOT re-list products, variants, prices, or cart line items in your reply. After those tools, answer with a single short sentence (e.g. "Found a few carry-on options below." or "Added the Carry-On to your cart."). The card already shows images, prices, totals, and the cart link.
 - For results without a card (checkout, order), give a short plain-language summary: status, key IDs, and continue_url when present.
 - Do not call the same tool again while a previous call to it is still pending.`;

@@ -15,6 +15,7 @@ import {
   buildMcpTools,
   buildRestTools,
   gatewayOptions,
+  isNonRetryableToolError,
   normalizePlaygroundStoreDomain,
   PLAYGROUND_MODEL,
   type PlaygroundUIMessage,
@@ -139,6 +140,19 @@ export const POST = async (request: Request) => {
         // Data parts (data-profile/data-error) are dropped by default.
         messages: await convertToModelMessages(messages),
         tools,
+        // A parse/format error from the store is deterministic — re-calling the
+        // same tool can never succeed. When the previous step hit one, force a
+        // text-only step so the model explains the failure and the loop ends,
+        // instead of burning up to the step cap re-calling the failing tool.
+        prepareStep: ({ steps }) => {
+          const hitNonRetryable = steps
+            .at(-1)
+            ?.toolResults.some((toolResult) =>
+              isNonRetryableToolError(toolResult.output),
+            );
+
+          return hitNonRetryable ? { toolChoice: "none" } : {};
+        },
         stopWhen: isStepCount(20),
         providerOptions: gatewayOptions(),
       });
