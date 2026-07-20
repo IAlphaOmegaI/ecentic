@@ -4,12 +4,12 @@
  * Seeds competitors, a 30-day scan history with simulations, AI agent traffic,
  * listing optimizations, a UCP profile and an active subscription for a user.
  *
- * Two modes (auto-detected):
- *   - attach: a real OAuth Shopify store (one with a store_account write token)
- *     exists for the user. Analytics are layered onto its REAL synced products,
- *     so published optimizations write back to the live store. The fabricated
- *     placeholder store and any same-shop duplicate connections are removed.
- *   - create: no real store found — fabricates a demo store + products.
+ * Two modes (auto-detected unless --mode is passed):
+ *   - attach: a real store with a store_account write token exists and has
+ *     synced products. Analytics are layered onto those products so published
+ *     optimizations write back to the live store.
+ *   - create: no attachable store, empty catalog, or --mode=create — fabricates
+ *     a demo store + products. The real connected store (if any) is preserved.
  *
  * Idempotent and safe: re-running only wipes regenerated analytics + the
  * placeholder/duplicate store rows. It never deletes the target store, its
@@ -18,6 +18,7 @@
  * Usage:
  *   bun scripts/seed-demo.ts                        # auto-detect store, contact@ecentic.ai
  *   bun scripts/seed-demo.ts --store=<storeId>      # attach to a specific store
+ *   bun scripts/seed-demo.ts --mode=create          # fabricate demo store (e.g. pending catalog sync)
  *   bun scripts/seed-demo.ts --email=foo@bar.com --password=Secret123!
  */
 
@@ -46,6 +47,8 @@ const parseArgs = () => {
     password: args.get("password") ?? null,
     // target store id; when omitted the real OAuth store is auto-detected.
     store: args.get("store") ?? null,
+    // "create" | "attach" — omit for auto (attach when catalog has products).
+    mode: args.get("mode") ?? null,
     products: Number.parseInt(args.get("products") ?? "24", 10),
   };
 };
@@ -945,6 +948,7 @@ const seed = async () => {
     email,
     password,
     store: storeArg,
+    mode: modeArg,
     products: productCount,
   } = parseArgs();
 
@@ -1032,7 +1036,8 @@ const seed = async () => {
     : [];
   const tokened = new Set(accounts.map((account) => account.storeId));
 
-  const target = (() => {
+  const attachCandidate = (() => {
+    if (modeArg === "create") return null;
     if (storeArg) return stores.find((store) => store.id === storeArg) ?? null;
     return (
       stores.find(
@@ -1041,13 +1046,53 @@ const seed = async () => {
     );
   })();
 
-  if (storeArg && !target) {
+  if (storeArg && !attachCandidate) {
     console.error(`No store "${storeArg}" found for ${email}.`);
     process.exit(1);
   }
 
-  const mode = target ? "attach" : "create";
-  const targetHost = target ? hostnameOf(target.domain) : null;
+  if (modeArg === "attach" && !attachCandidate) {
+    console.error(
+      `--mode=attach requires a connected store with credentials for ${email}.`,
+    );
+    process.exit(1);
+  }
+
+  const attachProductCount =
+    attachCandidate === null
+      ? 0
+      : (
+          await db
+            .select({ id: schema.product.id })
+            .from(schema.product)
+            .where(eq(schema.product.storeId, attachCandidate.id))
+        ).length;
+
+  const mode = (() => {
+    if (modeArg === "create") return "create" as const;
+    if (modeArg === "attach") {
+      if (attachProductCount === 0) {
+        console.error(
+          `Store ${attachCandidate?.domain} has no products — sync the store first.`,
+        );
+        process.exit(1);
+      }
+      return "attach" as const;
+    }
+    if (attachCandidate && attachProductCount > 0) return "attach" as const;
+    if (attachCandidate && attachProductCount === 0) {
+      console.warn(
+        `Store ${attachCandidate.domain} has no products yet — fabricating demo store instead.`,
+      );
+      return "create" as const;
+    }
+    return "create" as const;
+  })();
+
+  // Never delete a real connected store during cleanup, even in create mode.
+  const preserveStoreId = attachCandidate?.id ?? null;
+  const attachTarget = mode === "attach" ? attachCandidate : null;
+  const targetHost = attachTarget ? hostnameOf(attachTarget.domain) : null;
 
   // --- Clean prior analytics (regenerated below) -------------------------
   // Safe by construction: never deletes the target store, its products, or its
@@ -1075,7 +1120,7 @@ const seed = async () => {
     .where(eq(schema.subscription.userId, userId));
 
   for (const store of stores) {
-    if (store.id === target?.id) continue; // never the target store
+    if (store.id === preserveStoreId) continue; // never a real connected store
     const isPlaceholder = store.domain.includes(DEMO_DOMAIN);
     // Same shop connected more than once: a redundant duplicate row. The shop
     // stays connected through the target, so removing the extra row is safe.
@@ -1093,26 +1138,19 @@ const seed = async () => {
   //   that published fixes write back to the live Shopify store.
   // create mode: fabricate a demo store + products (no real store found).
   const { storeId, domain, productRows } = await (async () => {
-    if (mode === "attach" && target) {
+    if (mode === "attach" && attachTarget) {
       const host = (() => {
         try {
-          return new URL(target.domain).hostname;
+          return new URL(attachTarget.domain).hostname;
         } catch {
-          return target.domain.replace(/^https?:\/\//, "");
+          return attachTarget.domain.replace(/^https?:\/\//, "");
         }
       })();
 
       const real = await db
         .select()
         .from(schema.product)
-        .where(eq(schema.product.storeId, target.id));
-
-      if (real.length === 0) {
-        console.error(
-          `Store ${target.domain} has no products — sync the store first.`,
-        );
-        process.exit(1);
-      }
+        .where(eq(schema.product.storeId, attachTarget.id));
 
       // Map curated win-rates back onto real products by title; fall back to a
       // data-quality estimate for anything not in the seeded catalog.
@@ -1180,7 +1218,7 @@ const seed = async () => {
       console.log(`Found ${real.length} real products on ${host}.`);
 
       return {
-        storeId: target.id,
+        storeId: attachTarget.id,
         domain: host,
         productRows: ranked.map(({ product, win }) => ({
           id: product.id,
