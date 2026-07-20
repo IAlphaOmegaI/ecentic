@@ -1,5 +1,5 @@
 import { Plus } from "@/components/plus";
-import { Reveal, RevealItem } from "@/app/(main)/resources/_components/reveal";
+import { Reveal, RevealItem } from "@/components/reveal";
 import { UcpValidatorForm } from "./ucp-validator-form";
 
 export const ValidatorSection = () => (

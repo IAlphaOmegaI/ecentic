@@ -25,10 +25,12 @@ import {
   TabsPanel,
 } from "@zenncore/web/components/tabs";
 import { useToastManager } from "@zenncore/web/components/toast";
+import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { useState } from "react";
+import { Spring } from "@/lib/animations";
 import type { DashboardData, Type } from "@/server/app/optimization";
 import * as Optimization from "@/server/app/optimization";
 import type * as Product from "@/server/app/product";
@@ -183,7 +185,12 @@ const PendingCard = ({
   // One compact row: title + signal chips on the left, actions on the right.
   // The old per-card explainer paragraph and "Models:" line were identical on
   // every card — that boilerplate is what made the queue a wall of text.
-  <div className={SUGGESTION_CARD_CLASSES}>
+  <motion.div
+    exit={{ opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }}
+    transition={Spring.Snappy}
+    style={{ overflow: "hidden" }}
+    className={SUGGESTION_CARD_CLASSES}
+  >
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="min-w-0">
         <p className="truncate font-medium text-base text-foreground-rich">
@@ -234,7 +241,7 @@ const PendingCard = ({
         </Button>
       </div>
     </div>
-  </div>
+  </motion.div>
 );
 
 const PublishedCard = ({
@@ -291,7 +298,12 @@ const DismissedCard = ({
   busyProductId: string | null;
   onReconsider: (productId: string) => void;
 }) => (
-  <div className={`${SUGGESTION_CARD_CLASSES} opacity-80`}>
+  <motion.div
+    exit={{ opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }}
+    transition={Spring.Snappy}
+    style={{ overflow: "hidden" }}
+    className={`${SUGGESTION_CARD_CLASSES} opacity-80`}
+  >
     <div className="flex items-center justify-between gap-4">
       <p className="min-w-0 truncate font-medium text-base text-foreground-rich">
         {productTitle}
@@ -310,7 +322,7 @@ const DismissedCard = ({
         )}
       </Button>
     </div>
-  </div>
+  </motion.div>
 );
 
 const DiagnosticsPanel = ({
@@ -652,18 +664,20 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
                 />
               ) : (
                 <div className="space-y-px bg-accent-foreground">
-                  {pending.map((item) => (
-                    <PendingCard
-                      key={item.product.id}
-                      store={store}
-                      item={item}
-                      busy={busy}
-                      selected={selected}
-                      isApprovePending={isApprovePending}
-                      onApprove={approveOne}
-                      onDismiss={dismissOne}
-                    />
-                  ))}
+                  <AnimatePresence initial={false}>
+                    {pending.map((item) => (
+                      <PendingCard
+                        key={item.product.id}
+                        store={store}
+                        item={item}
+                        busy={busy}
+                        selected={selected}
+                        isApprovePending={isApprovePending}
+                        onApprove={approveOne}
+                        onDismiss={dismissOne}
+                      />
+                    ))}
+                  </AnimatePresence>
                 </div>
               )}
             </TabsPanel>
@@ -700,18 +714,20 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
                 />
               ) : (
                 <div className="space-y-px bg-accent-foreground">
-                  {dismissed.map((record) => (
-                    <DismissedCard
-                      key={record.id}
-                      record={record}
-                      productTitle={
-                        products[record.productId]?.title ?? "Unknown product"
-                      }
-                      busy={busy}
-                      busyProductId={selected}
-                      onReconsider={reconsiderOne}
-                    />
-                  ))}
+                  <AnimatePresence initial={false}>
+                    {dismissed.map((record) => (
+                      <DismissedCard
+                        key={record.id}
+                        record={record}
+                        productTitle={
+                          products[record.productId]?.title ?? "Unknown product"
+                        }
+                        busy={busy}
+                        busyProductId={selected}
+                        onReconsider={reconsiderOne}
+                      />
+                    ))}
+                  </AnimatePresence>
                 </div>
               )}
             </TabsPanel>

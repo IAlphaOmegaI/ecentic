@@ -14,9 +14,10 @@ import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useToastManager } from "@zenncore/web/components/toast";
 import Image from "next/image";
 import { type SubmitEvent, useState } from "react";
-import { Motion } from "@/components/motion";
+import { AnimatePresence, motion } from "motion/react";
+import { Fade } from "@/lib/animations";
 import { StatusPill } from "@/app/(main)/dashboard/_components/grid";
-import { Reveal, RevealItem } from "@/app/(main)/resources/_components/reveal";
+import { Reveal, RevealItem } from "@/components/reveal";
 import ucp from "@/public/images/ucp.png";
 import * as UcpCheck from "@/server/app/intelligence/ucp/check";
 
@@ -875,7 +876,13 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
     allowedBotCount === result.robots.length;
 
   return (
-    <Motion.Up className="border-accent-foreground border-t">
+    <motion.div
+      variants={Fade.Up}
+      initial="hidden"
+      animate="visible"
+      exit={{ opacity: 0, transition: { duration: 0.15 } }}
+      className="border-accent-foreground border-t"
+    >
       <div className="border-accent-foreground border-b bg-background-rich px-6 py-6 sm:px-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0">
@@ -1107,7 +1114,7 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
           <JsonPreview data={result.data} />
         </div>
       )}
-    </Motion.Up>
+    </motion.div>
   );
 };
 
@@ -1117,6 +1124,7 @@ export const UcpValidatorForm = ({
   const toast = useToastManager();
   const [domain, setDomain] = useState("");
   const [result, setResult] = useState<UcpCheck.UcpCheckResult | null>(null);
+  const [run, setRun] = useState(0);
 
   const [handleCheck, isChecking] = useAsyncAction(async () => {
     const response = await UcpCheck.checkUCP(domain);
@@ -1131,6 +1139,7 @@ export const UcpValidatorForm = ({
     }
 
     setResult(response.data);
+    setRun((previous) => previous + 1);
   });
 
   const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
@@ -1242,7 +1251,9 @@ export const UcpValidatorForm = ({
 
       <ValidationTargetsSection />
 
-      {result && <Results result={result} />}
+      <AnimatePresence mode="wait" initial={false}>
+        {result && <Results key={run} result={result} />}
+      </AnimatePresence>
     </div>
   );
 };

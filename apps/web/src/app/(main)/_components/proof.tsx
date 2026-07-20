@@ -1,4 +1,5 @@
 import { Plus } from "@/components/plus";
+import { Reveal, RevealItem } from "@/components/reveal";
 import { Counter } from "./counter";
 
 const stats = [
@@ -37,11 +38,11 @@ export const Proof = () => (
           on you.
         </h2>
       </div>
-      <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2">
+      <Reveal className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2">
         <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
         <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
         {stats.map((stat, index) => (
-          <div
+          <RevealItem
             key={stat.label}
             className="relative flex flex-col justify-end gap-2 bg-background-dimmed p-6 md:h-64 md:p-8"
           >
@@ -61,9 +62,9 @@ export const Proof = () => (
             />
             <span className="text-foreground">{stat.label}</span>
             <span className="text-foreground-rich text-xs">{stat.source}</span>
-          </div>
+          </RevealItem>
         ))}
-      </div>
+      </Reveal>
     </div>
   </section>
 );

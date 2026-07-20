@@ -37,11 +37,11 @@ export type GenericContext = {
 };
 
 // biome-ignore lint/suspicious/noExplicitAny: any is used to handle type errors when working with empty Results
-type AnyResult = Result<any, Error> | Result<void, Error>;
+type GenericResult = Result<any, Error> | Result<void, Error>;
 
 export type ContextedAction<
   Context extends GenericContext = GenericContext,
-  Return extends AnyResult = AnyResult,
+  Return extends GenericResult = GenericResult,
 > = (context: Context, ...args: never[]) => Promise<Return>;
 
 export type InferredReturn<
@@ -101,10 +101,10 @@ export const withContext = <
   enhance: (
     base: GenericContext,
   ) => Promise<Result<Context, ContextError>> = async (context) =>
-    ({
-      success: true,
-      data: context as unknown as Context,
-    }) as Result<Context, ContextError>,
+      ({
+        success: true,
+        data: context as unknown as Context,
+      }) as Result<Context, ContextError>,
 ) => {
   type Return = InferredReturn<Context, T>;
 
@@ -113,8 +113,8 @@ export const withContext = <
   // Simplify ReturnError | never to ReturnError
   type CombinedError =
     IsEqual<ContextError, never> extends true
-      ? ReturnError
-      : ReturnError | ContextError;
+    ? ReturnError
+    : ReturnError | ContextError;
 
   type Handler = {
     (
@@ -129,8 +129,8 @@ export const withContext = <
       Result<
         ReturnSuccess,
         Env extends Brand<"client">
-          ? ErrorProtocol.SerializedError<CombinedError>
-          : CombinedError
+        ? ErrorProtocol.SerializedError<CombinedError>
+        : CombinedError
       >
     >;
   };
@@ -244,9 +244,9 @@ export type WithContextParams<
   Context extends GenericContext = GenericContext,
   T extends ContextedAction<Context> = ContextedAction<Context>,
 > = [
-  Parameters<typeof withContext<T, Context>>[0],
-  Parameters<typeof withContext<T, Context>>[1],
-];
+    Parameters<typeof withContext<T, Context>>[0],
+    Parameters<typeof withContext<T, Context>>[1],
+  ];
 
 type ContextEnhancer<
   Success extends GenericContext = GenericContext,
@@ -258,8 +258,8 @@ export const defineWithContext = <T extends ContextEnhancer>(enhancer: T) => {
 
   type EnhancedContext =
     UnwrapResult<Return> extends GenericContext
-      ? UnwrapResult<Return>
-      : GenericContext;
+    ? UnwrapResult<Return>
+    : GenericContext;
 
   type PotentialError = InferredError<Return>;
 

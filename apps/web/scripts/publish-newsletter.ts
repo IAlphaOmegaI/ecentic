@@ -6,11 +6,24 @@ import { db, schema } from "@/server/database";
 
 const AUDIENCE = "General";
 const SUBJECT =
-  "Startup deals for YC and Techstars, plus EU market entry with EU Presence";
-const NAME = "YC & Techstars deals + EU Presence partnership";
+  "ecentic is live on WooCommerce — let AI agents buy from your store";
+const NAME = "WooCommerce launch + last issue recap";
 
 // Recipients that are not ecentic users but should receive the newsletter.
-const EXTRAS = [{ email: "simona@foundergames.com", name: "Simona" }];
+const EXTRAS: { email: string; name?: string }[] = [
+  { email: "simona@foundergames.com", name: "Simona" },
+  { email: "mayank.tharad@salienceconsulting.ae", name: "Mayank Tharad" },
+  { email: "mp@badideas.fund" },
+  { email: "jan@adriaticinvestors.com", name: "Jan" },
+  { email: "john@taste.io", name: "John" },
+  { email: "jwaloncohen@salsify.com" },
+  { email: "christophe@upflex.com", name: "Christophe" },
+  { email: "sanyamv.iitd@gmail.com", name: "Sanyam" },
+  { email: "tawfikdigital93@gmail.com", name: "Tawfik" },
+  { email: "abhishek@purenutrition.in", name: "Abhishek" },
+  { email: "josip@lebesgue.io", name: "Josip" },
+  { email: "desireeshank@gmail.com", name: "Desiree Shank" },
+];
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -42,11 +55,11 @@ const publish = async () => {
   // Sequential on purpose — Resend caps requests at 10/s.
   const imports = [];
   for (const user of pending) {
-    const [firstName, ...rest] = user.name.split(" ");
+    const [firstName, ...rest] = (user.name ?? "").split(" ");
     const creation = await resend.contacts.create({
       audienceId: audience.id,
       email: user.email,
-      firstName,
+      firstName: firstName || undefined,
       lastName: rest.join(" ") || undefined,
       unsubscribed: false,
     });

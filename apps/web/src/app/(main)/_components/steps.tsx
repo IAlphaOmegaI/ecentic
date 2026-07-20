@@ -1,4 +1,5 @@
 import { CircleBoltIcon, FaceSearchIcon, RobotIcon } from "@zenncore/icons";
+import { Reveal, RevealItem } from "@/components/reveal";
 
 export const Steps = () => (
   <section
@@ -15,9 +16,9 @@ export const Steps = () => (
             Connect your store and Ecentic does the rest.
           </p>
         </div>
-        <div className="mt-8 grid w-full grid-cols-1 text-white md:mt-24 md:h-[1100px] md:grid-cols-2 md:grid-rows-3">
+        <Reveal className="mt-8 grid w-full grid-cols-1 text-white md:mt-24 md:h-[1100px] md:grid-cols-2 md:grid-rows-3">
           {/* Simulate — left col, content right-aligned toward center */}
-          <div className="relative col-start-1 row-start-1 flex flex-col items-start justify-end gap-y-2 overflow-hidden border-white border-b p-6 md:items-end md:border-r md:border-b-0 md:pr-8 md:pl-24">
+          <RevealItem className="relative col-start-1 row-start-1 flex flex-col items-start justify-end gap-y-2 overflow-hidden border-white border-b p-6 md:items-end md:border-r md:border-b-0 md:pr-8 md:pl-24">
             <div className="absolute top-1/2 -right-1/2 size-full scale-200 bg-radial from-white/50 via-55% via-white/0 to-white/0" />
             <RobotIcon className="size-16" />
             <p className="font-medium text-4xl">Connect your store</p>
@@ -25,11 +26,11 @@ export const Steps = () => (
               Install on Shopify or WooCommerce in about two minutes. No
               developer needed.
             </p>
-          </div>
+          </RevealItem>
           <div className="hidden md:block" />
           <div className="hidden border-white md:block md:border-t md:border-r" />
           {/* Diagnose — right col, content left-aligned toward center */}
-          <div className="relative flex flex-col items-start justify-end gap-y-2 overflow-hidden border-white border-b p-6 md:border-t md:border-b-0 md:pr-24 md:pl-8">
+          <RevealItem className="relative flex flex-col items-start justify-end gap-y-2 overflow-hidden border-white border-b p-6 md:border-t md:border-b-0 md:pr-24 md:pl-8">
             <div className="absolute bottom-1/2 -left-1/2 size-full scale-200 bg-radial from-white/50 via-55% via-white/0 to-white/0" />
             <FaceSearchIcon className="size-16" />
             <p className="font-medium text-4xl">See where you lose</p>
@@ -37,9 +38,9 @@ export const Steps = () => (
               Ecentic asks the top AI shopping agents to shop your catalog and
               shows you exactly which products they skip — and why.
             </p>
-          </div>
+          </RevealItem>
           {/* Optimize — left col, content right-aligned toward center */}
-          <div className="relative flex flex-col items-start justify-end gap-y-2 overflow-hidden border-white p-6 md:items-end md:border-t md:border-r md:pr-8 md:pl-24">
+          <RevealItem className="relative flex flex-col items-start justify-end gap-y-2 overflow-hidden border-white p-6 md:items-end md:border-t md:border-r md:pr-8 md:pl-24">
             <div className="absolute -right-1/2 bottom-1/2 size-full scale-200 bg-radial from-white/50 via-55% via-white/0 to-white/0" />
             <CircleBoltIcon className="size-16" />
             <p className="font-medium text-4xl">Get picked</p>
@@ -47,9 +48,9 @@ export const Steps = () => (
               One click rewrites your listings so agents recommend you first.
               Then watch your AI visits and sales climb.
             </p>
-          </div>
+          </RevealItem>
           <div className="hidden border-white md:block md:border-t" />
-        </div>
+        </Reveal>
       </div>
     </div>
   </section>
