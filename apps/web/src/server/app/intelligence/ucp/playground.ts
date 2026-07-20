@@ -1,4 +1,5 @@
 import type { JSONRPCRequest } from "@ai-sdk/mcp";
+import * as Sentry from "@sentry/nextjs";
 // import { UcpDiscoveryProfileSchema } from "@ucp-js/sdk";
 import { merge, resultify } from "@zenncore/utils";
 import {
@@ -111,15 +112,56 @@ const extractUcpToolError = (
   return null;
 };
 
+// Debug-only context attached to Sentry reports so a schema mismatch can be
+// traced back to the store endpoint and the specific tool that produced it.
+// `store` is the merchant domain (set once per request on the Sentry scope by
+// the route), so it is not threaded through here.
+type UcpCallContext = {
+  endpoint: string;
+  tool: string;
+  transport: "mcp" | "rest";
+};
+
 const parseUcpToolContent = <T>(
   structuredContent: Record<string, unknown>,
   successSchema: z.ZodType<T>,
+  context: UcpCallContext,
 ): T => {
   const ucpError = extractUcpToolError(structuredContent);
 
   if (ucpError) throw new Error(ucpError);
 
-  return successSchema.parse(structuredContent);
+  const parsed = successSchema.safeParse(structuredContent);
+
+  if (!parsed.success) {
+    // The full schema mismatch (which field failed + what the store actually
+    // returned) goes to Sentry for debugging only — never to the UI. A bare
+    // `.parse()` would throw a ZodError whose message is just "✖ Invalid
+    // input", and that message streams straight to the user via
+    // formatStreamError. So report the detail out-of-band and throw a generic,
+    // user-safe message instead.
+    Sentry.captureException(
+      new Error(
+        `UCP response did not match the expected schema:\n${z.prettifyError(
+          parsed.error,
+        )}\n\nReceived: ${JSON.stringify(structuredContent)}`,
+      ),
+      {
+        tags: { ucp_tool: context.tool, ucp_transport: context.transport },
+        contexts: {
+          ucp_tool: {
+            tool: context.tool,
+            endpoint: context.endpoint,
+            transport: context.transport,
+          },
+        },
+      },
+    );
+
+    throw new Error("The store returned a response we couldn't process.");
+  }
+
+  return parsed.data;
 };
 
 // Shopify UCP MCP requires params.arguments.meta["ucp-agent"].profile on every
@@ -353,6 +395,15 @@ const callMCP = async (
   args: Record<string, unknown>,
   agentProfileUrl: string,
 ) => {
+  // Carry the endpoint + tool alongside the payload so the parse layer can
+  // attach them to Sentry without threading extra args through every tool.
+  const context: UcpCallContext = {
+    endpoint,
+    tool: toolName,
+    transport: "mcp",
+  };
+  const wrap = <D>(data: D) => ({ data, context });
+
   const response = await resultify(() =>
     fetch(endpoint, {
       method: "POST",
@@ -383,49 +434,55 @@ const callMCP = async (
     }),
   );
 
-  if (!response.success) return { error: { message: "Tool call failed" } };
+  if (!response.success)
+    return wrap({ error: { message: "Tool call failed" } });
 
   const dataResult = await resultify(() => response.data.json());
 
   if (!dataResult.success) {
-    return { error: { message: "Tool call response is not valid JSON" } };
+    return wrap({ error: { message: "Tool call response is not valid JSON" } });
   }
 
   const mcpToolError = extractMcpToolError(dataResult.data);
 
-  if (mcpToolError) return { error: { message: mcpToolError } };
+  if (mcpToolError) return wrap({ error: { message: mcpToolError } });
 
   const body = ucpMCPResponseSchema.safeParse(dataResult.data);
 
   if (!body.success) {
     // TODO: for advanced(paid) version show the error and redirect user to fix it
-    return {
+    return wrap({
       error: { message: z.prettifyError(body.error) },
-    };
+    });
   }
 
   if ("error" in body.data) {
     const { error } = body.data;
     // Prefer the richer error.data.content / retry_after over the terse message.
-    return {
+    return wrap({
       error: { message: formatUcpErrorEnvelope(error.data, error.message) },
-    };
+    });
   }
 
-  return body.data.result;
+  return wrap(body.data.result);
 };
 
 const parseMcpToolResult = <T>(
-  result:
-    | { structuredContent: Record<string, unknown> }
-    | { error: { message: string } },
+  result: {
+    data:
+      | { structuredContent: Record<string, unknown> }
+      | { error: { message: string } };
+    context: UcpCallContext;
+  },
   successSchema: z.ZodType<T>,
 ): T => {
-  if ("error" in result) {
-    throw new Error(result.error.message);
+  const { data, context } = result;
+
+  if ("error" in data) {
+    throw new Error(data.error.message);
   }
 
-  return parseUcpToolContent(result.structuredContent, successSchema);
+  return parseUcpToolContent(data.structuredContent, successSchema, context);
 };
 
 const callRest = async (
@@ -434,8 +491,17 @@ const callRest = async (
   path: string,
   agentProfileUrl: string,
   body?: unknown,
-): Promise<unknown> => {
+): Promise<{ data: unknown; context: UcpCallContext }> => {
   const url = `${baseEndpoint.replace(/\/+$/, "")}${path}`;
+  // REST has no MCP-style tool name; label the call by its HTTP operation so
+  // Sentry still shows which endpoint/path produced a schema mismatch.
+  const context: UcpCallContext = {
+    endpoint: baseEndpoint,
+    tool: `${method} ${path}`,
+    transport: "rest",
+  };
+  const wrap = <D>(data: D) => ({ data, context });
+
   const response = await resultify(() =>
     fetch(url, {
       method,
@@ -451,9 +517,7 @@ const callRest = async (
     }),
   );
 
-  console.log("response", response);
-
-  if (!response.success) return { error: "Network request failed" };
+  if (!response.success) return wrap({ error: "Network request failed" });
 
   const textResult = await resultify(() => response.data.text());
   const rawBody = textResult.success ? textResult.data : "";
@@ -470,34 +534,37 @@ const callRest = async (
   // failure, 422 version unsupported, 429 rate limit, 401 unauthorized). The body
   // is optional, so format from status + headers + whatever UCP error body exists.
   if (!response.data.ok) {
-    return { error: formatRestHttpError(response.data, responseBody) };
+    return wrap({ error: formatRestHttpError(response.data, responseBody) });
   }
 
-  if (!textResult.success) return { error: "Could not read response body" };
+  if (!textResult.success)
+    return wrap({ error: "Could not read response body" });
 
   if (responseBody === undefined) {
-    return { error: "Response is not valid JSON", raw: rawBody };
+    return wrap({ error: "Response is not valid JSON", raw: rawBody });
   }
 
-  return responseBody;
+  return wrap(responseBody);
 };
 
 const parseRestToolResult = <T>(
-  result: unknown,
+  result: { data: unknown; context: UcpCallContext },
   successSchema: z.ZodType<T>,
 ): T => {
-  if (result === null || typeof result !== "object") {
+  const { data, context } = result;
+
+  if (data === null || typeof data !== "object") {
     throw new Error("Invalid response");
   }
 
-  const obj = result as Record<string, unknown>;
+  const obj = data as Record<string, unknown>;
   const { error } = obj;
 
   if ("error" in obj && typeof error === "string") {
     throw new Error(error);
   }
 
-  return parseUcpToolContent(obj, successSchema);
+  return parseUcpToolContent(obj, successSchema, context);
 };
 
 // Checkout argument shapes (create/update/complete) live in ./utils — shared with

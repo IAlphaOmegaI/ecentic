@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import {
   convertToModelMessages,
   createUIMessageStream,
@@ -84,6 +85,16 @@ export const POST = async (request: Request) => {
 
   const domain = normalizePlaygroundStoreDomain(storeUrl);
   const service = await resolveShoppingService(storeUrl);
+
+  // Tag every Sentry event raised while handling this request (e.g. a UCP tool
+  // schema mismatch reported from playground.ts) with the merchant domain so
+  // failures can be traced back to the specific store. Debug-only — not shown
+  // in the UI.
+  Sentry.getCurrentScope().setContext("ucp_store", {
+    domain,
+    endpoint: service.success ? service.endpoint : undefined,
+    transport: service.success ? service.transport : undefined,
+  });
 
   const stream = createUIMessageStream<PlaygroundUIMessage>({
     onError: formatStreamError,

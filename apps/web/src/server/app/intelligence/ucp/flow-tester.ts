@@ -80,7 +80,14 @@ const parseUcpToolContent = <T>(
   const parsed = successSchema.safeParse(structuredContent);
 
   if (!parsed.success) {
-    return { success: false, error: parsed.error.message };
+    // parsed.error.message is just "✖ Invalid input" — prettify the issues and
+    // attach the received content so the real mismatch is debuggable.
+    return {
+      success: false,
+      error: `UCP response did not match the expected schema:\n${z.prettifyError(
+        parsed.error,
+      )}\n\nReceived: ${JSON.stringify(structuredContent)}`,
+    };
   }
 
   return { success: true, data: parsed.data };
