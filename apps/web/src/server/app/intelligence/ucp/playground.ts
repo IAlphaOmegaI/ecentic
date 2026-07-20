@@ -324,7 +324,7 @@ export const resolveShoppingService = async (
 
   const shoppingServices = parsed.data.ucp.services["dev.ucp.shopping"];
   const mcpShoppingService = shoppingServices?.find(
-    (shoppingService) => shoppingService.transport === "mcp",
+    (shoppingService) => shoppingService.transport === "mcp", 
   );
   const restShoppingService = shoppingServices?.find(
     (shoppingService) => shoppingService.transport === "rest",
