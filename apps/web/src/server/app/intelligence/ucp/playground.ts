@@ -122,6 +122,40 @@ type UcpCallContext = {
   transport: "mcp" | "rest";
 };
 
+// The single user-facing message for any "the store sent something we can't
+// parse" failure. The real Zod detail + raw payload go to Sentry only.
+const GENERIC_UCP_PARSE_ERROR =
+  "The store returned a response we couldn't process.";
+
+// Report a schema mismatch to Sentry with the prettified Zod issues, the raw
+// payload, and the store/tool context — for debugging only, never the UI.
+// A bare `.parse()`/`prettifyError` yields just "✖ Invalid input" with no path
+// or payload, which is what kept surfacing with no way to see the real cause.
+const reportUcpSchemaMismatch = (
+  summary: string,
+  error: z.ZodError,
+  received: unknown,
+  context: UcpCallContext,
+): void => {
+  Sentry.captureException(
+    new Error(
+      `${summary}:\n${z.prettifyError(error)}\n\nReceived: ${JSON.stringify(
+        received,
+      )}`,
+    ),
+    {
+      tags: { ucp_tool: context.tool, ucp_transport: context.transport },
+      contexts: {
+        ucp_tool: {
+          tool: context.tool,
+          endpoint: context.endpoint,
+          transport: context.transport,
+        },
+      },
+    },
+  );
+};
+
 const parseUcpToolContent = <T>(
   structuredContent: Record<string, unknown>,
   successSchema: z.ZodType<T>,
@@ -134,31 +168,14 @@ const parseUcpToolContent = <T>(
   const parsed = successSchema.safeParse(structuredContent);
 
   if (!parsed.success) {
-    // The full schema mismatch (which field failed + what the store actually
-    // returned) goes to Sentry for debugging only — never to the UI. A bare
-    // `.parse()` would throw a ZodError whose message is just "✖ Invalid
-    // input", and that message streams straight to the user via
-    // formatStreamError. So report the detail out-of-band and throw a generic,
-    // user-safe message instead.
-    Sentry.captureException(
-      new Error(
-        `UCP response did not match the expected schema:\n${z.prettifyError(
-          parsed.error,
-        )}\n\nReceived: ${JSON.stringify(structuredContent)}`,
-      ),
-      {
-        tags: { ucp_tool: context.tool, ucp_transport: context.transport },
-        contexts: {
-          ucp_tool: {
-            tool: context.tool,
-            endpoint: context.endpoint,
-            transport: context.transport,
-          },
-        },
-      },
+    reportUcpSchemaMismatch(
+      "UCP tool result did not match the expected schema",
+      parsed.error,
+      structuredContent,
+      context,
     );
 
-    throw new Error("The store returned a response we couldn't process.");
+    throw new Error(GENERIC_UCP_PARSE_ERROR);
   }
 
   return parsed.data;
@@ -450,10 +467,17 @@ const callMCP = async (
   const body = ucpMCPResponseSchema.safeParse(dataResult.data);
 
   if (!body.success) {
-    // TODO: for advanced(paid) version show the error and redirect user to fix it
-    return wrap({
-      error: { message: z.prettifyError(body.error) },
-    });
+    // The store's JSON-RPC envelope didn't match ucpMCPResponseSchema. Previously
+    // this returned `prettifyError(body.error)` — just "✖ Invalid input" — which
+    // parseMcpToolResult then threw and the AI SDK reported to Sentry with no
+    // detail. Send the full mismatch + raw envelope to Sentry, surface generic.
+    reportUcpSchemaMismatch(
+      "UCP MCP envelope did not match the expected schema",
+      body.error,
+      dataResult.data,
+      context,
+    );
+    return wrap({ error: { message: GENERIC_UCP_PARSE_ERROR } });
   }
 
   if ("error" in body.data) {
