@@ -194,7 +194,9 @@
       "Bash(php -l includes/class-ucp-connect.php)",
       "Bash(grep -c 'in_array\\( $id, \\\\[ '\\\\''dashboard'\\\\'', '\\\\''plugins'\\\\'' \\\\]' includes/class-ucp-connect.php)",
       "Bash(curl -skL -o /dev/null -m10 -w \"  /.well-known/ucp        HTTP %{http_code}\\\\n\" https://ecentic-test.local/.well-known/ucp)",
-      "Bash(curl -skL -o /dev/null -m10 -w \"  /ucp-connect/authorize  HTTP %{http_code} \\(400=alive\\)\\\\n\" https://ecentic-test.local/ucp-connect/authorize)"
+      "Bash(curl -skL -o /dev/null -m10 -w \"  /ucp-connect/authorize  HTTP %{http_code} \\(400=alive\\)\\\\n\" https://ecentic-test.local/ucp-connect/authorize)",
+      "Bash(printf '\\\\n# Third-party SEO plugin \\(belongs in ~/.claude, not this repo\\)\\\\nclaude-seo/\\\\n')",
+      "Bash(rm -rf claude-seo)"
     ]
   }
 }
