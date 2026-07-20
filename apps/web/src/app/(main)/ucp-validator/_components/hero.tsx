@@ -28,9 +28,7 @@ export const Hero = () => (
             Check whether a storefront publishes a valid{" "}
             <span className="text-foreground">Universal Commerce Profile</span>{" "}
             at{" "}
-            <span className="font-mono text-foreground">
-              /.well-known/ucp
-            </span>{" "}
+            <span className="font-mono text-foreground">/.well-known/ucp</span>{" "}
             and whether shopping agents can read it without friction.
           </p>
         </Motion.Item>

@@ -63,7 +63,8 @@ export const buildDiscoveryProfile = (
       {
         version: UCP_VERSION,
         spec: "https://ucp.dev/2026-04-08/specification/identity-linking",
-        schema: "https://ucp.dev/2026-04-08/schemas/common/identity_linking.json",
+        schema:
+          "https://ucp.dev/2026-04-08/schemas/common/identity_linking.json",
         config: { scopes: identityScopes },
       },
     ];
