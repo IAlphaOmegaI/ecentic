@@ -127,33 +127,27 @@ type UcpCallContext = {
 const GENERIC_UCP_PARSE_ERROR =
   "The store returned a response we couldn't process.";
 
-// Report a schema mismatch to Sentry with the prettified Zod issues, the raw
-// payload, and the store/tool context — for debugging only, never the UI.
-// A bare `.parse()`/`prettifyError` yields just "✖ Invalid input" with no path
-// or payload, which is what kept surfacing with no way to see the real cause.
+// Report a schema mismatch to Sentry with the Zod issue tree and the store/tool
+// context — for debugging only, never the UI. A bare `.parse()` yields just
+// "✖ Invalid input" with no path, which is what kept surfacing with no way to
+// see which field actually failed. The treeified error is attached as
+// structured `extra` so Sentry renders it as a browsable tree keyed by field.
 const reportUcpSchemaMismatch = (
   summary: string,
   error: z.ZodError,
-  received: unknown,
   context: UcpCallContext,
 ): void => {
-  Sentry.captureException(
-    new Error(
-      `${summary}:\n${z.prettifyError(error)}\n\nReceived: ${JSON.stringify(
-        received,
-      )}`,
-    ),
-    {
-      tags: { ucp_tool: context.tool, ucp_transport: context.transport },
-      contexts: {
-        ucp_tool: {
-          tool: context.tool,
-          endpoint: context.endpoint,
-          transport: context.transport,
-        },
+  Sentry.captureException(new Error(summary), {
+    tags: { ucp_tool: context.tool, ucp_transport: context.transport },
+    contexts: {
+      ucp_tool: {
+        tool: context.tool,
+        endpoint: context.endpoint,
+        transport: context.transport,
       },
     },
-  );
+    extra: { validationErrors: z.treeifyError(error) },
+  });
 };
 
 const parseUcpToolContent = <T>(
@@ -171,7 +165,6 @@ const parseUcpToolContent = <T>(
     reportUcpSchemaMismatch(
       "UCP tool result did not match the expected schema",
       parsed.error,
-      structuredContent,
       context,
     );
 
@@ -474,7 +467,6 @@ const callMCP = async (
     reportUcpSchemaMismatch(
       "UCP MCP envelope did not match the expected schema",
       body.error,
-      dataResult.data,
       context,
     );
     return wrap({ error: { message: GENERIC_UCP_PARSE_ERROR } });
