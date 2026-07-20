@@ -196,7 +196,11 @@
       "Bash(curl -skL -o /dev/null -m10 -w \"  /.well-known/ucp        HTTP %{http_code}\\\\n\" https://ecentic-test.local/.well-known/ucp)",
       "Bash(curl -skL -o /dev/null -m10 -w \"  /ucp-connect/authorize  HTTP %{http_code} \\(400=alive\\)\\\\n\" https://ecentic-test.local/ucp-connect/authorize)",
       "Bash(printf '\\\\n# Third-party SEO plugin \\(belongs in ~/.claude, not this repo\\)\\\\nclaude-seo/\\\\n')",
-      "Bash(rm -rf claude-seo)"
+      "Bash(rm -rf claude-seo)",
+      "Bash(command -v claude)",
+      "Bash(claude --version)",
+      "Bash(claude plugin *)",
+      "Bash(grep -iA3 claude-seo)"
     ]
   }
 }
