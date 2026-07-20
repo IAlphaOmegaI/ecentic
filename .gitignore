@@ -61,3 +61,6 @@ ds-bundle/
 
 # Claude Code ephemeral agent worktrees (never commit)
 .claude/worktrees/
+
+# Third-party SEO plugin (belongs in ~/.claude, not this repo)
+claude-seo/
