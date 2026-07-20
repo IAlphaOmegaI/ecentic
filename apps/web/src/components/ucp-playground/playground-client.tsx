@@ -4,7 +4,7 @@ import { useChat } from "@ai-sdk/react";
 import { LoaderIcon, RobotIcon, ShoppingCartIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
-import { Button } from "@zenncore/web/components/button"; 
+import { Button } from "@zenncore/web/components/button";
 import {
   type FormEntries,
   field,
@@ -82,8 +82,17 @@ const formatJson = (value: unknown): string => {
   }
 };
 
-// Tools throw on failure, so the AI SDK surfaces errors as output-error parts
-// (part.errorText) — a successful (output-available) result is always valid.
+// Tools RETURN errors ({ error: string }) rather than throwing, so a failure
+// arrives as an output-available part whose output is { error }. The
+// output-error state (part.errorText) is still handled defensively for the rare
+// case a tool throws unexpectedly (e.g. a bug rather than a UCP/parse failure).
+const getReturnedError = (output: unknown): string | null =>
+  output !== null &&
+  typeof output === "object" &&
+  "error" in output &&
+  typeof (output as { error: unknown }).error === "string"
+    ? (output as { error: string }).error
+    : null;
 
 type UcpMoney = z.infer<typeof priceSchema>;
 
@@ -341,7 +350,9 @@ const ProductCard = ({ product }: { product: UcpProduct }) => {
         <p className="line-clamp-2 font-medium text-foreground-rich text-sm leading-tight">
           {product.title ?? "Untitled product"}
         </p>
-        {product.rating && <Rating className="mt-0.5" rating={product.rating} />}
+        {product.rating && (
+          <Rating className="mt-0.5" rating={product.rating} />
+        )}
         <div className="mt-auto flex items-end justify-between gap-2 pt-1">
           <span className="flex items-baseline gap-1.5">
             {price && (
@@ -392,8 +403,15 @@ const ProductGrid = ({ products }: { products: UcpProduct[] }) => (
 
 const ToolView = ({ part }: { part: ToolUIPart }) => {
   const name = getToolName(part);
-  const output = part.state === "output-available" ? part.output : undefined;
-  const error = part.state === "output-error" ? part.errorText : undefined;
+  const rawOutput = part.state === "output-available" ? part.output : undefined;
+  // A returned { error } is a failure, not a result — surface it as the error
+  // and don't also echo it under "Result".
+  const returnedError = getReturnedError(rawOutput);
+  const output = returnedError ? undefined : rawOutput;
+  const error =
+    part.state === "output-error"
+      ? part.errorText
+      : (returnedError ?? undefined);
   const pending =
     part.state === "input-streaming" || part.state === "input-available";
   const tone = error ? "error" : pending ? "primary" : "success";
@@ -600,6 +618,10 @@ const CartPart = ({
     return <ErrorView message={part.errorText ?? "Cart operation failed"} />;
   }
 
+  const returnedError =
+    part.state === "output-available" ? getReturnedError(part.output) : null;
+  if (returnedError) return <ErrorView message={returnedError} />;
+
   // While the turn is still running a resolved cart can still be superseded — the
   // agent reads with get_cart before writing with update_cart, and the write only
   // appears after the model finishes generating its arguments. Hold the loader
@@ -647,6 +669,9 @@ const CatalogPart = ({ part }: { part: CatalogToolPart }) => {
 
   const output = part.state === "output-available" ? part.output : undefined;
 
+  const returnedError = getReturnedError(output);
+  if (returnedError) return <ErrorView message={returnedError} />;
+
   const products = getProducts(output);
 
   if (products.length === 0) return <ToolView part={part} />;
@@ -661,9 +686,26 @@ const MessageParts = ({
   message: PlaygroundUIMessage;
   isStreaming: boolean;
 }) => {
-  const hasVisibleContent = message.parts.some(
-    (part) => part.type !== "step-start",
-  );
+  const lastPart = message.parts.at(-1);
+  // A tool that's mid-call renders its own labeled loader (CatalogPart/CartPart),
+  // so don't stack the generic dots on top of it.
+  const hasActiveToolLoader =
+    lastPart !== undefined &&
+    isToolUIPart(lastPart) &&
+    (lastPart.state === "input-streaming" ||
+      lastPart.state === "input-available");
+  const hasStreamingText =
+    lastPart?.type === "text" && (lastPart.text?.length ?? 0) > 0;
+  // Keep a pending indicator up during the gaps the per-part loaders don't cover:
+  // before the first step (only step-start), and — the gap that reads as "frozen"
+  // — between a tool result and the model's next call or its closing sentence.
+  // Yield only while a tool is actively executing (its own loader shows) or the
+  // answer text is already streaming in.
+  const showThinking =
+    message.role === "assistant" &&
+    isStreaming &&
+    !hasActiveToolLoader &&
+    !hasStreamingText;
 
   // A turn usually reads the cart (get_cart) before writing it (update_cart). Render
   // only the last cart part — regardless of state — so the stale cart never shows:
@@ -707,7 +749,7 @@ const MessageParts = ({
         }
         return null;
       })}
-      {message.role === "assistant" && !hasVisibleContent && <Thinking />}
+      {showThinking && <Thinking />}
     </>
   );
 };
@@ -962,6 +1004,18 @@ export const PlaygroundClient = ({
                 </MessageContent>
               </Message>
             ))
+          )}
+          {/* The assistant message only enters `messages` on the first stream
+              chunk (status → "streaming"). Until then — while the route resolves
+              the store profile and waits for the model's first token — the turn
+              sits in "submitted" with no assistant message to host the loader, so
+              show a standalone thinking indicator for that window. */}
+          {status === "submitted" && (
+            <Message from="assistant">
+              <MessageContent>
+                <Thinking />
+              </MessageContent>
+            </Message>
           )}
         </ConversationContent>
         <ConversationScrollButton />

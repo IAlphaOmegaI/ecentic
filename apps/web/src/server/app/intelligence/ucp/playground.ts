@@ -46,8 +46,7 @@ export const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
 // turns via convertToModelMessages and routed through the Vercel gateway, that
 // signature gets corrupted → 400 "Corrupted thought signature". 2.5-flash emits no
 // thought signatures and handles the UCP tool flow fine.
-export const PLAYGROUND_MODEL =
-  "google/gemini-2.5-flash" satisfies LanguageModel;
+export const PLAYGROUND_MODEL = "google/gemini-3-flash" satisfies LanguageModel;
 
 // Single source of truth for the tool argument shapes the agent must follow, so
 // they never drift from the tool definitions below.
@@ -70,9 +69,11 @@ update_cart:
 cancel_cart:
   { id: "<cart id from create_cart>" }
 create_checkout:
-  If a cart was created, convert it (preferred): { cart_id: "<cart id from create_cart>" } — omit the checkout body; the business uses the cart's line_items/buyer.
-  From scratch (no cart): { checkout: { buyer: { email, first_name, last_name }, line_items: [{ item: { id: "<variant_id>" }, quantity: 1 }], currency: "USD", fulfillment: { methods: [...] } } }
-  Pass cart_id OR checkout, never both.
+  The argument object has EXACTLY ONE top-level key — either cart_id OR checkout, never both.
+  • A cart already exists (whenever you have a cart_id — this is the normal case): { cart_id: "<cart id from create_cart>" }
+    Include ONLY cart_id. Do NOT add a "checkout" key — not even an empty {} or one with empty line_items. The business builds the checkout from the cart's line_items/buyer.
+  • No cart exists (build from scratch — this is the path when the user asks to check out directly with a product and no cart_id exists): { checkout: { buyer: { email, first_name, last_name }, line_items: [{ item: { id: "<variant_id>" }, quantity: 1 }], currency: "USD", fulfillment: { methods: [...] } } }
+    Include ONLY checkout (with a non-empty line_items). Do NOT add a "cart_id" key. Do NOT call create_cart first just to obtain a cart_id — call create_checkout directly with the checkout object.
 get_checkout:
   { id: "<checkout id from create_checkout>" }
 update_checkout:
@@ -127,37 +128,52 @@ type UcpCallContext = {
 const GENERIC_UCP_PARSE_ERROR =
   "The store returned a response we couldn't process.";
 
-// Report a schema mismatch to Sentry with the Zod issue tree and the store/tool
-// context — for debugging only, never the UI. A bare `.parse()` yields just
-// "✖ Invalid input" with no path, which is what kept surfacing with no way to
-// see which field actually failed. The treeified error is attached as
-// structured `extra` so Sentry renders it as a browsable tree keyed by field.
+// Tools RETURN this instead of throwing on failure. Throwing from a tool's
+// `execute` makes the AI SDK's Sentry integration auto-capture an unhandled
+// exception (mechanism auto.vercelai.channel) on every failed call — pure noise
+// that duplicates our own reportUcpSchemaMismatch. Returning an error result
+// keeps it a normal tool output: no unhandled capture, and the model sees the
+// error and can respond instead of blindly retrying.
+type UcpToolError = { error: string };
+
+// Report a schema mismatch to Sentry with the prettified Zod issues, the raw
+// payload, and the store/tool context — for debugging only, never the UI.
+// A bare `.parse()`/`prettifyError` yields just "✖ Invalid input" with no path
+// or payload, which is what kept surfacing with no way to see the real cause.
 const reportUcpSchemaMismatch = (
   summary: string,
   error: z.ZodError,
   context: UcpCallContext,
 ): void => {
-  Sentry.captureException(new Error(summary), {
-    tags: { ucp_tool: context.tool, ucp_transport: context.transport },
-    contexts: {
-      ucp_tool: {
-        tool: context.tool,
-        endpoint: context.endpoint,
-        transport: context.transport,
+  Sentry.captureException(
+    new Error(
+      `${summary}:\n${z.prettifyError(error)}\nValidation tree: ${JSON.stringify(
+        z.treeifyError(error),
+      )}`,
+    ),
+    {
+      tags: { ucp_tool: context.tool, ucp_transport: context.transport },
+      contexts: {
+        ucp_tool: {
+          tool: context.tool,
+          endpoint: context.endpoint,
+          transport: context.transport,
+        },
       },
-    }, 
-    extra: { validationErrors: z.treeifyError(error) },
-  });
+    },
+  );
 };
 
 const parseUcpToolContent = <T>(
   structuredContent: Record<string, unknown>,
   successSchema: z.ZodType<T>,
   context: UcpCallContext,
-): T => {
+): T | UcpToolError => {
+  // A UCP-level error (out of stock, rate limit, etc.) is a legitimate result
+  // the model should see and act on — return it, don't throw.
   const ucpError = extractUcpToolError(structuredContent);
 
-  if (ucpError) throw new Error(ucpError);
+  if (ucpError) return { error: ucpError };
 
   const parsed = successSchema.safeParse(structuredContent);
 
@@ -168,7 +184,7 @@ const parseUcpToolContent = <T>(
       context,
     );
 
-    throw new Error(GENERIC_UCP_PARSE_ERROR);
+    return { error: GENERIC_UCP_PARSE_ERROR };
   }
 
   return parsed.data;
@@ -491,11 +507,11 @@ const parseMcpToolResult = <T>(
     context: UcpCallContext;
   },
   successSchema: z.ZodType<T>,
-): T => {
+): T | UcpToolError => {
   const { data, context } = result;
 
   if ("error" in data) {
-    throw new Error(data.error.message);
+    return { error: data.error.message };
   }
 
   return parseUcpToolContent(data.structuredContent, successSchema, context);
@@ -566,18 +582,18 @@ const callRest = async (
 const parseRestToolResult = <T>(
   result: { data: unknown; context: UcpCallContext },
   successSchema: z.ZodType<T>,
-): T => {
+): T | UcpToolError => {
   const { data, context } = result;
 
   if (data === null || typeof data !== "object") {
-    throw new Error("Invalid response");
+    return { error: "Invalid response" };
   }
 
   const obj = data as Record<string, unknown>;
   const { error } = obj;
 
   if ("error" in obj && typeof error === "string") {
-    throw new Error(error);
+    return { error };
   }
 
   return parseUcpToolContent(obj, successSchema, context);
@@ -644,6 +660,7 @@ export const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
       cart: createCartRequestSchema,
     }),
     execute: async (input) => {
+      console.log("create_cart input", input);
       const result = await callMCP(
         endpoint,
         "create_cart",
@@ -679,6 +696,7 @@ export const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
       cart: updateCartRequestSchema.omit({ id: true }),
     }),
     execute: async (input) => {
+      console.log("update_cart input", input);
       const result = await callMCP(
         endpoint,
         "update_cart",
@@ -711,10 +729,11 @@ export const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
       "Create a checkout session. To convert an existing cart, pass cart_id (the cart id from create_cart) and omit checkout — the business uses the cart's line_items/buyer. Otherwise pass the checkout body to create from scratch. Provide cart_id OR checkout, never both.",
     inputSchema: Utils.createCheckoutMcpInputSchema,
     execute: async (input) => {
+      console.log("create_checkout input", input);
       const result = await callMCP(
         endpoint,
         "create_checkout",
-        input,
+        Utils.normalizeCreateCheckoutArgs(input),
         agentProfileUrl,
       );
 
@@ -938,7 +957,7 @@ export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
         "POST",
         "/checkouts",
         agentProfileUrl,
-        input,
+        Utils.normalizeCreateCheckoutArgs(input),
       );
       return parseRestToolResult(result, checkoutWithFulfillmentResponseSchema);
     },
@@ -1045,6 +1064,7 @@ ${UCP_ARGUMENT_SHAPES}
 
 How to behave in this console:
 - Do exactly what the user asks in their latest message — one action (or a small set of directly related actions) at a time. Do NOT run the whole search→cart→checkout flow unless the user explicitly asks you to.
+- When the user wants to check out (e.g. "checkout with the X", "buy X now", "check out with that product"), go straight to create_checkout — do NOT call create_cart first. If a cart already exists for what they want, pass its cart_id. Otherwise build the checkout from scratch by passing the checkout object with line_items (the variant id + quantity). Only call create_cart when the user explicitly asks to add something to a cart or to build/view a cart.
 - Use ONLY IDs returned by earlier tool calls — never invent them. Previous tool calls and their results are included in the conversation; reuse their IDs (variant id, cart id, checkout id) when the user refers to "it", "that", or "the cart".
 - If you need an ID you don't have yet (e.g. the user says "add it to a cart" but nothing was looked up), search or look it up first, or ask the user to clarify.
 - If a tool call fails or ucp.status is error, stop and report the error details and which step failed — do not retry blindly.
