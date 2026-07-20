@@ -186,7 +186,19 @@ export const withContext = <
       name,
       { recordResponse: true, headers: await headers() },
       async () => {
-        const result = await fn(contextData, ...args);
+        // A thrown exception (not a resultified failure) would otherwise escape
+        // past every `captureException` site below and vanish from Sentry.
+        // Normalize any throw into a failed `Result` so the reporting and the
+        // caller's Result contract both still hold.
+        const result = await (async () => {
+          try {
+            return await fn(contextData, ...args);
+          } catch (thrown) {
+            const error =
+              thrown instanceof Error ? thrown : new Error(String(thrown));
+            return { success: false as const, error };
+          }
+        })();
 
         if (!result.success) {
           // Expected failures (business rules like a store already claimed by

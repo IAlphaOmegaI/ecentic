@@ -312,7 +312,10 @@ export const publishProfileToShopify = withAuthentication(
       return { success: false as const, error: new Error("Store not found") };
     if (store.data.userId !== userId)
       return { success: false as const, error: new Error("Not authorized") };
-    if (store.data.platform !== "shopify-public")
+    if (
+      store.data.platform !== "shopify-public" &&
+      store.data.platform !== "shopify"
+    )
       return {
         success: false as const,
         error: new Error(
@@ -358,7 +361,10 @@ export const publishProductsToShopify = withAuthentication(
       return { success: false as const, error: new Error("Store not found") };
     if (store.data.userId !== userId)
       return { success: false as const, error: new Error("Not authorized") };
-    if (store.data.platform !== "shopify-public")
+    if (
+      store.data.platform !== "shopify-public" && 
+      store.data.platform !== "shopify"
+    )
       return {
         success: false as const,
         error: new Error(

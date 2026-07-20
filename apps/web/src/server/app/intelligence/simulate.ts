@@ -13,6 +13,7 @@ import * as Competitor from "../competitor";
 import * as Product from "../product";
 import * as Scan from "../scan";
 import * as Simulation from "../simulation";
+import * as Store from "../store";
 import * as Judge from "./judge";
 
 const STRICT_SCORING_RULES = `
@@ -600,98 +601,156 @@ export const runScan = withAuthentication(async (context) => {
 // Durable counterpart to runScan: enqueues a scan and lets the background drain
 // (BackgroundScan.runPendingScans) run it to completion, so it finishes even if
 // the user leaves the page. The client polls Scan.getProgress for live state.
-export const enqueueScan = withAuthentication(async (context) => {
-  const user = context.session.user.id;
+export const enqueueScan = withAuthentication(
+  async (
+    context,
+    {
+      store,
+      products: productSelection,
+      competitors: competitorSelection,
+    }: {
+      store: string;
+      // Roster picked in the scan setup step. Absent side = everything (all
+      // store products / all currently-selected competitors).
+      products?: string[];
+      competitors?: string[];
+    },
+  ) => {
+    const user = context.session.user.id;
 
-  // idempotent — reuse an already in-flight scan instead of stacking duplicates.
-  const existing = await Scan.find(Environment.SERVER, {
-    where: and(
-      eq(schema.scan.userId, user),
-      inArray(schema.scan.status, ["pending", "running"]),
-    ),
-    orderBy: [{ column: schema.scan.createdAt, direction: "desc" }],
-    limit: 1,
-  });
-  const inflight = existing.success ? existing.data[0] : null;
+    // Scans are store-scoped — assert the target store belongs to this user.
+    const ownership = await Store.resolveForUser(Environment.SERVER, { store });
+    if (!ownership.success) return ownership;
 
-  // Self-heal a wedged scan instead of reusing it: a "running" whose worker died
-  // mid-run, or a "pending" the drain never picked up, would otherwise block this
-  // user's queue until a cron reaper fires — and locally (no cron) forever. Fail
-  // it and fall through to enqueue a fresh one; reuse only a genuinely-live scan.
-  const stale = (() => {
-    if (!inflight) return false;
-    switch (inflight.status) {
-      case "running":
-        return Date.now() - inflight.updatedAt.getTime() > 10 * 60 * 1000;
-      case "pending":
-        return Date.now() - inflight.createdAt.getTime() > 5 * 60 * 1000;
-      default:
-        return false;
-    }
-  })();
-
-  if (inflight && !stale)
-    return { success: true as const, data: { scanId: inflight.id } };
-
-  if (inflight)
-    await Scan.update(Environment.SERVER, inflight.id, {
-      status: "failed",
-      updatedAt: new Date(),
+    // idempotent — reuse an already in-flight scan for THIS store instead of
+    // stacking duplicates. A scan for another store doesn't block this one; the
+    // drain's per-user guard serializes their execution.
+    const existing = await Scan.find(Environment.SERVER, {
+      where: and(
+        eq(schema.scan.userId, user),
+        eq(schema.scan.storeId, store),
+        inArray(schema.scan.status, ["pending", "running"]),
+      ),
+      orderBy: [{ column: schema.scan.createdAt, direction: "desc" }],
+      limit: 1,
     });
+    const inflight = existing.success ? existing.data[0] : null;
 
-  const [products, competitors] = await Promise.all([
-    Product.find(Environment.SERVER, {
-      where: eq(schema.product.userId, user),
-    }),
-    Competitor.find(Environment.SERVER, {
-      where: eq(schema.competitor.userId, user),
-    }),
-  ]);
-  if (!products.success) return products;
-  if (!competitors.success) return competitors;
+    // Self-heal a wedged scan: a "running" whose worker died mid-run, or a
+    // "pending" the drain never picked up, would otherwise block this user's
+    // queue until a cron reaper fires — and locally (no cron) forever.
+    const stale = (() => {
+      if (!inflight) return false;
+      switch (inflight.status) {
+        case "running":
+          return Date.now() - inflight.updatedAt.getTime() > 10 * 60 * 1000;
+        case "pending":
+          return Date.now() - inflight.createdAt.getTime() > 5 * 60 * 1000;
+        default:
+          return false;
+      }
+    })();
 
-  const selected = competitors.data.filter((record) => record.selected);
-  if (products.data.length === 0)
-    return {
-      success: false as const,
-      error: new RequestError("No products found"),
-    };
-  if (selected.length === 0)
-    return {
-      success: false as const,
-      error: new ValidationError("No competitors selected"),
-    };
+    const kickDrain = () =>
+      after(async () => {
+        await resultify(() =>
+          fetch(`${process.env.BETTER_AUTH_BASE_URL ?? ""}/api/cron/drain`, {
+            headers: {
+              authorization: `Bearer ${process.env.CRON_SECRET ?? ""}`,
+            },
+            cache: "no-store",
+          }),
+        );
+      });
 
-  const totalSimulations =
-    products.data.length * selected.length * perspectives.length;
+    if (inflight && !stale)
+      return { success: true as const, data: { scanId: inflight.id } };
 
-  const scan = await Scan.create(Environment.SERVER, {
-    userId: user,
-    status: "pending",
-    totalSimulations,
-    completedSimulations: 0,
-    wins: 0,
-    losses: 0,
-  });
-  if (!scan.success) return scan;
+    // Requeue and reuse the wedged scan rather than failing it: its persisted
+    // simulations let the drain resume from where it stopped instead of starting
+    // the whole scan over.
+    if (inflight) {
+      const requeued = await Scan.update(Environment.SERVER, inflight.id, {
+        status: "pending",
+        updatedAt: new Date(),
+      });
+      if (requeued.success) {
+        kickDrain();
+        return { success: true as const, data: { scanId: inflight.id } };
+      }
+    }
 
-  // Kick the drain in a separate invocation so the scan starts right away
-  // instead of waiting for the next cron tick. Best-effort: if it fails (or the
-  // env is misconfigured), the every-minute cron is the backstop.
-  after(async () => {
-    await resultify(() =>
-      fetch(`${process.env.BETTER_AUTH_BASE_URL ?? ""}/api/cron/drain`, {
-        headers: { authorization: `Bearer ${process.env.CRON_SECRET ?? ""}` },
-        cache: "no-store",
+    // Resolve the roster through ownership-scoped queries — ids that aren't
+    // the user's (or the store's) simply drop out instead of being trusted.
+    const [products, competitors] = await Promise.all([
+      Product.find(Environment.SERVER, {
+        where: and(
+          eq(schema.product.userId, user),
+          eq(schema.product.storeId, store),
+          productSelection?.length
+            ? inArray(schema.product.id, productSelection)
+            : undefined,
+        ),
       }),
-    );
-  });
+      Competitor.find(Environment.SERVER, {
+        where: and(
+          eq(schema.competitor.userId, user),
+          competitorSelection?.length
+            ? inArray(schema.competitor.id, competitorSelection)
+            : undefined,
+        ),
+      }),
+    ]);
+    if (!products.success) return products;
+    if (!competitors.success) return competitors;
 
-  return {
-    success: true as const,
-    data: { scanId: scan.data.id },
-  };
-}, "Simulation.enqueueScan");
+    // An explicit roster IS the selection; the account-level `selected` flag
+    // only drives the fallback when no roster was picked.
+    const selected = competitorSelection?.length
+      ? competitors.data
+      : competitors.data.filter((record) => record.selected);
+    if (products.data.length === 0)
+      return {
+        success: false as const,
+        error: new RequestError("No products selected"),
+      };
+    if (selected.length === 0)
+      return {
+        success: false as const,
+        error: new ValidationError("No competitors selected"),
+      };
+
+    const totalSimulations =
+      products.data.length * selected.length * perspectives.length;
+
+    // Freeze the resolved roster on the scan row so the drain (and any resumed
+    // invocation) runs exactly what the user saw in the setup step, immune to
+    // catalog or selection changes made while the scan is queued or running.
+    const scan = await Scan.create(Environment.SERVER, {
+      userId: user,
+      storeId: store,
+      productIds: products.data.map((record) => record.id),
+      competitorIds: selected.map((record) => record.id),
+      status: "pending",
+      totalSimulations,
+      completedSimulations: 0,
+      wins: 0,
+      losses: 0,
+    });
+    if (!scan.success) return scan;
+
+    // Kick the drain in a separate invocation so the scan starts right away
+    // instead of waiting for the next cron tick. Best-effort: if it fails (or the
+    // env is misconfigured), the every-minute cron is the backstop.
+    kickDrain();
+
+    return {
+      success: true as const,
+      data: { scanId: scan.data.id },
+    };
+  },
+  "Simulation.enqueueScan",
+);
 
 export type TopFinding = {
   name: string;

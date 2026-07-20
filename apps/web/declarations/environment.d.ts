@@ -55,6 +55,17 @@ declare namespace NodeJS {
     readonly PERFORMANCE_FEE_CAP_CENTS_DEFAULT?: string;
     readonly PERFORMANCE_FEE_ATTRIBUTION_WINDOW_DAYS?: string;
 
+    /**
+     * Shopify Global Catalog MCP credentials (Dev Dashboard → Catalog). Unset
+     * disables real agent-shelf rank measurement; see
+     * docs/context/agent-visibility.md.
+     */
+    readonly SHOPIFY_CATALOG_CLIENT_ID?: string;
+    readonly SHOPIFY_CATALOG_CLIENT_SECRET?: string;
+    readonly SHOPIFY_CATALOG_TOKEN_URL?: string;
+    readonly SHOPIFY_CATALOG_MCP_URL?: string;
+    readonly UCP_AGENT_PROFILE_URL?: string;
+
     readonly npm_package_name: string;
     readonly npm_package_version: string;
   }

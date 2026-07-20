@@ -82,8 +82,17 @@ const formatJson = (value: unknown): string => {
   }
 };
 
-// Tools throw on failure, so the AI SDK surfaces errors as output-error parts
-// (part.errorText) — a successful (output-available) result is always valid.
+// Tools RETURN errors ({ error: string }) rather than throwing, so a failure
+// arrives as an output-available part whose output is { error }. The
+// output-error state (part.errorText) is still handled defensively for the rare
+// case a tool throws unexpectedly (e.g. a bug rather than a UCP/parse failure).
+const getReturnedError = (output: unknown): string | null =>
+  output !== null &&
+  typeof output === "object" &&
+  "error" in output &&
+  typeof (output as { error: unknown }).error === "string"
+    ? (output as { error: string }).error
+    : null;
 
 type UcpMoney = z.infer<typeof priceSchema>;
 
@@ -126,6 +135,128 @@ const priceLabel = (product: UcpProduct): string | null => {
 
 const productImage = (product: UcpProduct): string | undefined =>
   product.media?.find((item) => item?.url)?.url;
+
+type UcpVariant = UcpProduct["variants"][number];
+
+type UcpRating = NonNullable<UcpProduct["rating"]>;
+
+const formatRatingValue = (value: number): string =>
+  Number.isInteger(value) ? value.toString() : value.toFixed(1);
+
+// Aggregate rating as "★ 4.5 (120)". scale_max is shown only when it isn't the
+// conventional 5, so the common case stays terse.
+const Rating = ({
+  rating,
+  className,
+}: {
+  rating: UcpRating;
+  className?: string;
+}) => (
+  <span
+    className={cn(
+      "flex items-center gap-1 text-[11px] text-foreground-dimmed tabular-nums",
+      className,
+    )}
+  >
+    <span className="text-warning">★</span>
+    <span className="font-medium text-foreground/80">
+      {formatRatingValue(rating.value)}
+      {rating.scale_max !== 5 && `/${rating.scale_max}`}
+    </span>
+    {rating.count !== undefined && <span>({rating.count})</span>}
+  </span>
+);
+
+type AvailabilityTone = "success" | "warning" | "error" | "muted";
+
+const availabilityDotClass: Record<AvailabilityTone, string> = {
+  success: "bg-success",
+  warning: "bg-warning",
+  error: "bg-error",
+  muted: "bg-foreground-dimmed/40",
+};
+
+const availabilityTextClass: Record<AvailabilityTone, string> = {
+  success: "text-success",
+  warning: "text-warning",
+  error: "text-error",
+  muted: "text-foreground-dimmed",
+};
+
+// Map a variant's availability to a short label + tone. Well-known status values
+// (in_stock, backorder, preorder, out_of_stock, discontinued) win; otherwise the
+// boolean `available` decides. `quantity` is an ecentic extension — appended when
+// present and positive.
+const variantAvailability = (
+  variant: UcpVariant,
+): { label: string; tone: AvailabilityTone } => {
+  const availability = variant.availability;
+
+  if (!availability) return { label: "—", tone: "muted" };
+
+  const quantity = availability.quantity;
+  const suffix =
+    typeof quantity === "number" && quantity > 0 ? ` · ${quantity} left` : "";
+
+  const base = ((): { label: string; tone: AvailabilityTone } => {
+    switch (availability.status) {
+      case "in_stock":
+        return { label: "In stock", tone: "success" };
+      case "backorder":
+        return { label: "Backorder", tone: "warning" };
+      case "preorder":
+        return { label: "Preorder", tone: "warning" };
+      case "out_of_stock":
+        return { label: "Out of stock", tone: "error" };
+      case "discontinued":
+        return { label: "Discontinued", tone: "error" };
+      default:
+        return availability.available
+          ? { label: "Available", tone: "success" }
+          : { label: "Unavailable", tone: "error" };
+    }
+  })();
+
+  return { label: `${base.label}${suffix}`, tone: base.tone };
+};
+
+const VariantList = ({ variants }: { variants: UcpVariant[] }) => (
+  <ul className="mt-2 space-y-1 border-accent-foreground border-t pt-2">
+    {variants.map((variant, index) => {
+      const { label, tone } = variantAvailability(variant);
+      return (
+        <li
+          className="flex items-center justify-between gap-2 text-[11px] leading-tight"
+          key={variant.id ?? index}
+        >
+          <span className="min-w-0 flex-1 truncate text-foreground-dimmed">
+            {variant.title}
+          </span>
+          <span className="flex shrink-0 items-center gap-1.5">
+            {variant.rating && (
+              <span className="flex items-center gap-0.5 text-foreground-dimmed tabular-nums">
+                <span className="text-warning">★</span>
+                {formatRatingValue(variant.rating.value)}
+              </span>
+            )}
+            <span className="font-mono text-foreground/80">
+              {formatMoney(variant.price)}
+            </span>
+            <span className="flex items-center gap-1">
+              <span
+                className={cn(
+                  "size-1.5 shrink-0 rounded-full",
+                  availabilityDotClass[tone],
+                )}
+              />
+              <span className={availabilityTextClass[tone]}>{label}</span>
+            </span>
+          </span>
+        </li>
+      );
+    })}
+  </ul>
+);
 
 // A tool message part narrowed by its `tool-<name>` type literal, so part.output
 // carries that tool's zod-validated result instead of `unknown`.
@@ -219,6 +350,9 @@ const ProductCard = ({ product }: { product: UcpProduct }) => {
         <p className="line-clamp-2 font-medium text-foreground-rich text-sm leading-tight">
           {product.title ?? "Untitled product"}
         </p>
+        {product.rating && (
+          <Rating className="mt-0.5" rating={product.rating} />
+        )}
         <div className="mt-auto flex items-end justify-between gap-2 pt-1">
           <span className="flex items-baseline gap-1.5">
             {price && (
@@ -238,6 +372,9 @@ const ProductCard = ({ product }: { product: UcpProduct }) => {
             </span>
           )}
         </div>
+        {product.variants && product.variants.length > 0 && (
+          <VariantList variants={product.variants} />
+        )}
       </div>
     </div>
   );
@@ -266,8 +403,15 @@ const ProductGrid = ({ products }: { products: UcpProduct[] }) => (
 
 const ToolView = ({ part }: { part: ToolUIPart }) => {
   const name = getToolName(part);
-  const output = part.state === "output-available" ? part.output : undefined;
-  const error = part.state === "output-error" ? part.errorText : undefined;
+  const rawOutput = part.state === "output-available" ? part.output : undefined;
+  // A returned { error } is a failure, not a result — surface it as the error
+  // and don't also echo it under "Result".
+  const returnedError = getReturnedError(rawOutput);
+  const output = returnedError ? undefined : rawOutput;
+  const error =
+    part.state === "output-error"
+      ? part.errorText
+      : (returnedError ?? undefined);
   const pending =
     part.state === "input-streaming" || part.state === "input-available";
   const tone = error ? "error" : pending ? "primary" : "success";
@@ -474,6 +618,10 @@ const CartPart = ({
     return <ErrorView message={part.errorText ?? "Cart operation failed"} />;
   }
 
+  const returnedError =
+    part.state === "output-available" ? getReturnedError(part.output) : null;
+  if (returnedError) return <ErrorView message={returnedError} />;
+
   // While the turn is still running a resolved cart can still be superseded — the
   // agent reads with get_cart before writing with update_cart, and the write only
   // appears after the model finishes generating its arguments. Hold the loader
@@ -521,6 +669,9 @@ const CatalogPart = ({ part }: { part: CatalogToolPart }) => {
 
   const output = part.state === "output-available" ? part.output : undefined;
 
+  const returnedError = getReturnedError(output);
+  if (returnedError) return <ErrorView message={returnedError} />;
+
   const products = getProducts(output);
 
   if (products.length === 0) return <ToolView part={part} />;
@@ -535,9 +686,26 @@ const MessageParts = ({
   message: PlaygroundUIMessage;
   isStreaming: boolean;
 }) => {
-  const hasVisibleContent = message.parts.some(
-    (part) => part.type !== "step-start",
-  );
+  const lastPart = message.parts.at(-1);
+  // A tool that's mid-call renders its own labeled loader (CatalogPart/CartPart),
+  // so don't stack the generic dots on top of it.
+  const hasActiveToolLoader =
+    lastPart !== undefined &&
+    isToolUIPart(lastPart) &&
+    (lastPart.state === "input-streaming" ||
+      lastPart.state === "input-available");
+  const hasStreamingText =
+    lastPart?.type === "text" && (lastPart.text?.length ?? 0) > 0;
+  // Keep a pending indicator up during the gaps the per-part loaders don't cover:
+  // before the first step (only step-start), and — the gap that reads as "frozen"
+  // — between a tool result and the model's next call or its closing sentence.
+  // Yield only while a tool is actively executing (its own loader shows) or the
+  // answer text is already streaming in.
+  const showThinking =
+    message.role === "assistant" &&
+    isStreaming &&
+    !hasActiveToolLoader &&
+    !hasStreamingText;
 
   // A turn usually reads the cart (get_cart) before writing it (update_cart). Render
   // only the last cart part — regardless of state — so the stale cart never shows:
@@ -581,7 +749,7 @@ const MessageParts = ({
         }
         return null;
       })}
-      {message.role === "assistant" && !hasVisibleContent && <Thinking />}
+      {showThinking && <Thinking />}
     </>
   );
 };
@@ -836,6 +1004,18 @@ export const PlaygroundClient = ({
                 </MessageContent>
               </Message>
             ))
+          )}
+          {/* The assistant message only enters `messages` on the first stream
+              chunk (status → "streaming"). Until then — while the route resolves
+              the store profile and waits for the model's first token — the turn
+              sits in "submitted" with no assistant message to host the loader, so
+              show a standalone thinking indicator for that window. */}
+          {status === "submitted" && (
+            <Message from="assistant">
+              <MessageContent>
+                <Thinking />
+              </MessageContent>
+            </Message>
           )}
         </ConversationContent>
         <ConversationScrollButton />

@@ -10,6 +10,7 @@ import { withAuthentication } from "../utils/authentication";
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { type Document, repository } from "../utils/repository";
+import { feedUrl } from "./feed-export";
 import * as Shopify from "./integration/shopify";
 import * as WooCommerce from "./integration/woocommerce";
 import * as Ucp from "./intelligence/ucp/profile";
@@ -749,6 +750,13 @@ export const optimizeStoreForAgents = withAuthentication(
         productsPushed: products.success ? products.data.pushed : 0,
         productsTotal: products.success ? products.data.total : 0,
         listingsRewritten: listings.success ? listings.data.count : 0,
+        /**
+         * Google Shopping–spec feed for this store — paste into Google
+         * Merchant Center (scheduled fetch) and the Perplexity Merchant
+         * Program. Both are ingestion gates the metafield pushes above cannot
+         * reach.
+         */
+        feedUrl: feedUrl(storeId),
         errors,
       },
     };

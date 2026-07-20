@@ -9,8 +9,10 @@ import Image from "next/image";
 import { connection } from "next/server";
 import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
+import { formatScanEstimate } from "@/lib/scan-estimate";
 import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
+import * as Store from "@/server/app/store";
 import { Environment } from "@/server/utils/environment";
 import { ScanRunner } from "./_components/scan-runner";
 
@@ -35,37 +37,35 @@ const models = [
 export default async () => {
   await connection();
 
-  const [products, competitors] = await Promise.all([
-    unwrapResult(Product.skimForCurrentUser(Environment.SERVER)),
-    unwrapResult(Competitor.skimForCurrentUser(Environment.SERVER)),
+  // Scans are store-scoped; onboarding targets the store the user just
+  // connected (their most recent one).
+  const stores = await unwrapResult(
+    Store.getForCurrentUser(Environment.SERVER),
+  );
+  const store = stores[0] ?? null;
+
+  const [productCount, competitorCounts] = await Promise.all([
+    store
+      ? unwrapResult(
+          Product.countForCurrentUser(Environment.SERVER, { store: store.id }),
+        )
+      : Promise.resolve(0),
+    unwrapResult(Competitor.countForCurrentUser(Environment.SERVER)),
   ]);
 
-  const selected = competitors.filter((record) => record.selected);
-  const simulations = products.length * selected.length * 3;
-
-  const estimation = (() => {
-    switch (true) {
-      case simulations <= 30:
-        return "~15 sec";
-      case simulations <= 100:
-        return "~90 sec";
-      case simulations <= 300:
-        return "~1 min";
-      default:
-        return "~2 min";
-    }
-  })();
+  const simulations = productCount * competitorCounts.selected * 3;
+  const estimation = formatScanEstimate(simulations);
 
   const labels = [
     {
       label: "Products",
-      value: products.length.toLocaleString(),
+      value: productCount.toLocaleString(),
       icon: PhotoIcon,
       color: "text-blue-500",
     },
     {
       label: "Competitors matched",
-      value: selected.length.toLocaleString(),
+      value: competitorCounts.selected.toLocaleString(),
       icon: CheckBadgeIcon,
       color: "text-orange-500",
     },
@@ -85,9 +85,10 @@ export default async () => {
 
   return (
     <ScanRunner
+      store={store?.id ?? null}
       simulations={simulations}
-      productCount={products.length}
-      selectedCompetitorCount={selected.length}
+      productCount={productCount}
+      selectedCompetitorCount={competitorCounts.selected}
     >
       <Motion.Stagger className="flex h-full flex-col overflow-y-auto border-accent-foreground border-b">
         <Motion.Item className="w-full border-accent-foreground border-b px-8">

@@ -217,6 +217,16 @@ export const scan = pgTable(
     userId: text("userId")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
+    // Scans are store-scoped: a run judges one store's products. Nullable
+    // because pre-scoping rows (and their history) were account-wide.
+    storeId: text("storeId").references(() => store.id, {
+      onDelete: "cascade",
+    }),
+    // Per-scan roster picked before the run starts. Null means "everything":
+    // all of the store's products / all currently-selected competitors,
+    // resolved at drain time (cron scans and legacy rows).
+    productIds: jsonb("productIds").$type<string[]>(),
+    competitorIds: jsonb("competitorIds").$type<string[]>(),
     status: text("status")
       .$type<"pending" | "running" | "complete" | "failed">()
       .notNull()
@@ -232,6 +242,7 @@ export const scan = pgTable(
   (table) => [
     index("scan_user_created_idx").on(table.userId, table.createdAt),
     index("scan_status_idx").on(table.status),
+    index("scan_store_idx").on(table.storeId),
   ],
 );
 

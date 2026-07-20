@@ -12,6 +12,7 @@ import { useScanRunner } from "./use-scan-runner";
 export namespace ScanRunner {
   export type Props = {
     children: ReactNode;
+    store: string | null;
     simulations: number;
     productCount: number;
     selectedCompetitorCount: number;
@@ -20,6 +21,7 @@ export namespace ScanRunner {
 
 export const ScanRunner = ({
   children,
+  store,
   simulations,
   productCount,
   selectedCompetitorCount,
@@ -39,6 +41,7 @@ export const ScanRunner = ({
     handleRun,
     isRunning,
   } = useScanRunner({
+    store,
     onError: (text) =>
       toast.add({ title: "Scan failed", description: text, type: "error" }),
   });

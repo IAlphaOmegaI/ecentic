@@ -44,7 +44,7 @@ AI agents don't see ads, don't scroll, don't read marketing copy. They read stru
 | **Win rate** | Percentage of simulations where an agent picks your product over a competitor |
 | **Agent cart** | A purchase decision made by an AI agent on behalf of a human buyer |
 | **Simulation** | A single matchup: one product vs. one competitor, evaluated by one AI model |
-| **Scan** | A batch of simulations across selected products and competitors |
+| **Scan** | A batch of simulations across a roster picked in the scan setup step: chosen products of one store vs. chosen competitors |
 | **Agent replay** | Step-by-step log of what the agent read and how it reached its decision |
 | **Battlecard** | Per-product comparison vs. a competitor — where you win, where you lose, suggested fixes |
 | **Model drift** | Changes in AI model behavior (e.g. GPT-4 update) that shift win rates |
@@ -358,8 +358,11 @@ The autonomous features above require a background job system. Recommended appro
   - id, userId (FK user), title, description, price, currency, image, url, source, brand
   - selected (boolean — included in scans), timestamps
 
-- **scan** — Batch simulation jobs
-  - id, userId (FK user), status (`pending` | `running` | `completed` | `failed`)
+- **scan** — Batch simulation jobs, scoped to one store's products
+  - id, userId (FK user), storeId (FK store, null on legacy account-wide runs),
+    status (`pending` | `running` | `completed` | `failed`)
+  - productIds / competitorIds (jsonb rosters frozen at enqueue; null = all
+    store products / all selected competitors, resolved at drain time)
   - totalSimulations, completedSimulations, wins, losses, topFinding, timestamps
 
 - **simulation** — Individual product-vs-competitor matchups

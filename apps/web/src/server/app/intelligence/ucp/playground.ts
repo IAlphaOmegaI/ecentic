@@ -1,4 +1,5 @@
 import type { JSONRPCRequest } from "@ai-sdk/mcp";
+import * as Sentry from "@sentry/nextjs";
 // import { UcpDiscoveryProfileSchema } from "@ucp-js/sdk";
 import { merge, resultify } from "@zenncore/utils";
 import {
@@ -45,8 +46,7 @@ export const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
 // turns via convertToModelMessages and routed through the Vercel gateway, that
 // signature gets corrupted → 400 "Corrupted thought signature". 2.5-flash emits no
 // thought signatures and handles the UCP tool flow fine.
-export const PLAYGROUND_MODEL =
-  "google/gemini-2.5-flash" satisfies LanguageModel;
+export const PLAYGROUND_MODEL = "google/gemini-3-flash" satisfies LanguageModel;
 
 // Single source of truth for the tool argument shapes the agent must follow, so
 // they never drift from the tool definitions below.
@@ -69,9 +69,11 @@ update_cart:
 cancel_cart:
   { id: "<cart id from create_cart>" }
 create_checkout:
-  If a cart was created, convert it (preferred): { cart_id: "<cart id from create_cart>" } — omit the checkout body; the business uses the cart's line_items/buyer.
-  From scratch (no cart): { checkout: { buyer: { email, first_name, last_name }, line_items: [{ item: { id: "<variant_id>" }, quantity: 1 }], currency: "USD", fulfillment: { methods: [...] } } }
-  Pass cart_id OR checkout, never both.
+  The argument object has EXACTLY ONE top-level key — either cart_id OR checkout, never both.
+  • A cart already exists (whenever you have a cart_id — this is the normal case): { cart_id: "<cart id from create_cart>" }
+    Include ONLY cart_id. Do NOT add a "checkout" key — not even an empty {} or one with empty line_items. The business builds the checkout from the cart's line_items/buyer.
+  • No cart exists (build from scratch — this is the path when the user asks to check out directly with a product and no cart_id exists): { checkout: { buyer: { email, first_name, last_name }, line_items: [{ item: { id: "<variant_id>" }, quantity: 1 }], currency: "USD", fulfillment: { methods: [...] } } }
+    Include ONLY checkout (with a non-empty line_items). Do NOT add a "cart_id" key. Do NOT call create_cart first just to obtain a cart_id — call create_checkout directly with the checkout object.
 get_checkout:
   { id: "<checkout id from create_checkout>" }
 update_checkout:
@@ -111,15 +113,81 @@ const extractUcpToolError = (
   return null;
 };
 
+// Debug-only context attached to Sentry reports so a schema mismatch can be
+// traced back to the store endpoint and the specific tool that produced it.
+// `store` is the merchant domain (set once per request on the Sentry scope by
+// the route), so it is not threaded through here.
+type UcpCallContext = {
+  endpoint: string;
+  tool: string;
+  transport: "mcp" | "rest";
+};
+
+// The single user-facing message for any "the store sent something we can't
+// parse" failure. The real Zod detail + raw payload go to Sentry only.
+const GENERIC_UCP_PARSE_ERROR =
+  "The store returned a response we couldn't process.";
+
+// Tools RETURN this instead of throwing on failure. Throwing from a tool's
+// `execute` makes the AI SDK's Sentry integration auto-capture an unhandled
+// exception (mechanism auto.vercelai.channel) on every failed call — pure noise
+// that duplicates our own reportUcpSchemaMismatch. Returning an error result
+// keeps it a normal tool output: no unhandled capture, and the model sees the
+// error and can respond instead of blindly retrying.
+type UcpToolError = { error: string };
+
+// Report a schema mismatch to Sentry with the prettified Zod issues, the raw
+// payload, and the store/tool context — for debugging only, never the UI.
+// A bare `.parse()`/`prettifyError` yields just "✖ Invalid input" with no path
+// or payload, which is what kept surfacing with no way to see the real cause.
+const reportUcpSchemaMismatch = (
+  summary: string,
+  error: z.ZodError,
+  context: UcpCallContext,
+): void => {
+  Sentry.captureException(
+    new Error(
+      `${summary}:\n${z.prettifyError(error)}\nValidation tree: ${JSON.stringify(
+        z.treeifyError(error),
+      )}`,
+    ),
+    {
+      tags: { ucp_tool: context.tool, ucp_transport: context.transport },
+      contexts: {
+        ucp_tool: {
+          tool: context.tool,
+          endpoint: context.endpoint,
+          transport: context.transport,
+        },
+      },
+    },
+  );
+};
+
 const parseUcpToolContent = <T>(
   structuredContent: Record<string, unknown>,
   successSchema: z.ZodType<T>,
-): T => {
+  context: UcpCallContext,
+): T | UcpToolError => {
+  // A UCP-level error (out of stock, rate limit, etc.) is a legitimate result
+  // the model should see and act on — return it, don't throw.
   const ucpError = extractUcpToolError(structuredContent);
 
-  if (ucpError) throw new Error(ucpError);
+  if (ucpError) return { error: ucpError };
 
-  return successSchema.parse(structuredContent);
+  const parsed = successSchema.safeParse(structuredContent);
+
+  if (!parsed.success) {
+    reportUcpSchemaMismatch(
+      "UCP tool result did not match the expected schema",
+      parsed.error,
+      context,
+    );
+
+    return { error: GENERIC_UCP_PARSE_ERROR };
+  }
+
+  return parsed.data;
 };
 
 // Shopify UCP MCP requires params.arguments.meta["ucp-agent"].profile on every
@@ -256,7 +324,7 @@ export const resolveShoppingService = async (
 
   const shoppingServices = parsed.data.ucp.services["dev.ucp.shopping"];
   const mcpShoppingService = shoppingServices?.find(
-    (shoppingService) => shoppingService.transport === "mcp",
+    (shoppingService) => shoppingService.transport === "mcp", 
   );
   const restShoppingService = shoppingServices?.find(
     (shoppingService) => shoppingService.transport === "rest",
@@ -353,6 +421,15 @@ const callMCP = async (
   args: Record<string, unknown>,
   agentProfileUrl: string,
 ) => {
+  // Carry the endpoint + tool alongside the payload so the parse layer can
+  // attach them to Sentry without threading extra args through every tool.
+  const context: UcpCallContext = {
+    endpoint,
+    tool: toolName,
+    transport: "mcp",
+  };
+  const wrap = <D>(data: D) => ({ data, context });
+
   const response = await resultify(() =>
     fetch(endpoint, {
       method: "POST",
@@ -383,49 +460,61 @@ const callMCP = async (
     }),
   );
 
-  if (!response.success) return { error: { message: "Tool call failed" } };
+  if (!response.success)
+    return wrap({ error: { message: "Tool call failed" } });
 
   const dataResult = await resultify(() => response.data.json());
 
   if (!dataResult.success) {
-    return { error: { message: "Tool call response is not valid JSON" } };
+    return wrap({ error: { message: "Tool call response is not valid JSON" } });
   }
 
   const mcpToolError = extractMcpToolError(dataResult.data);
 
-  if (mcpToolError) return { error: { message: mcpToolError } };
+  if (mcpToolError) return wrap({ error: { message: mcpToolError } });
 
   const body = ucpMCPResponseSchema.safeParse(dataResult.data);
 
   if (!body.success) {
-    // TODO: for advanced(paid) version show the error and redirect user to fix it
-    return {
-      error: { message: z.prettifyError(body.error) },
-    };
+    // The store's JSON-RPC envelope didn't match ucpMCPResponseSchema. Previously
+    // this returned `prettifyError(body.error)` — just "✖ Invalid input" — which
+    // parseMcpToolResult then threw and the AI SDK reported to Sentry with no
+    // detail. Send the full mismatch + raw envelope to Sentry, surface generic.
+    reportUcpSchemaMismatch(
+      "UCP MCP envelope did not match the expected schema",
+      body.error,
+      context,
+    );
+    return wrap({ error: { message: GENERIC_UCP_PARSE_ERROR } });
   }
 
   if ("error" in body.data) {
     const { error } = body.data;
     // Prefer the richer error.data.content / retry_after over the terse message.
-    return {
+    return wrap({
       error: { message: formatUcpErrorEnvelope(error.data, error.message) },
-    };
+    });
   }
 
-  return body.data.result;
+  return wrap(body.data.result);
 };
 
 const parseMcpToolResult = <T>(
-  result:
-    | { structuredContent: Record<string, unknown> }
-    | { error: { message: string } },
+  result: {
+    data:
+      | { structuredContent: Record<string, unknown> }
+      | { error: { message: string } };
+    context: UcpCallContext;
+  },
   successSchema: z.ZodType<T>,
-): T => {
-  if ("error" in result) {
-    throw new Error(result.error.message);
+): T | UcpToolError => {
+  const { data, context } = result;
+
+  if ("error" in data) {
+    return { error: data.error.message };
   }
 
-  return parseUcpToolContent(result.structuredContent, successSchema);
+  return parseUcpToolContent(data.structuredContent, successSchema, context);
 };
 
 const callRest = async (
@@ -434,8 +523,17 @@ const callRest = async (
   path: string,
   agentProfileUrl: string,
   body?: unknown,
-): Promise<unknown> => {
+): Promise<{ data: unknown; context: UcpCallContext }> => {
   const url = `${baseEndpoint.replace(/\/+$/, "")}${path}`;
+  // REST has no MCP-style tool name; label the call by its HTTP operation so
+  // Sentry still shows which endpoint/path produced a schema mismatch.
+  const context: UcpCallContext = {
+    endpoint: baseEndpoint,
+    tool: `${method} ${path}`,
+    transport: "rest",
+  };
+  const wrap = <D>(data: D) => ({ data, context });
+
   const response = await resultify(() =>
     fetch(url, {
       method,
@@ -451,9 +549,7 @@ const callRest = async (
     }),
   );
 
-  console.log("response", response);
-
-  if (!response.success) return { error: "Network request failed" };
+  if (!response.success) return wrap({ error: "Network request failed" });
 
   const textResult = await resultify(() => response.data.text());
   const rawBody = textResult.success ? textResult.data : "";
@@ -470,34 +566,37 @@ const callRest = async (
   // failure, 422 version unsupported, 429 rate limit, 401 unauthorized). The body
   // is optional, so format from status + headers + whatever UCP error body exists.
   if (!response.data.ok) {
-    return { error: formatRestHttpError(response.data, responseBody) };
+    return wrap({ error: formatRestHttpError(response.data, responseBody) });
   }
 
-  if (!textResult.success) return { error: "Could not read response body" };
+  if (!textResult.success)
+    return wrap({ error: "Could not read response body" });
 
   if (responseBody === undefined) {
-    return { error: "Response is not valid JSON", raw: rawBody };
+    return wrap({ error: "Response is not valid JSON", raw: rawBody });
   }
 
-  return responseBody;
+  return wrap(responseBody);
 };
 
 const parseRestToolResult = <T>(
-  result: unknown,
+  result: { data: unknown; context: UcpCallContext },
   successSchema: z.ZodType<T>,
-): T => {
-  if (result === null || typeof result !== "object") {
-    throw new Error("Invalid response");
+): T | UcpToolError => {
+  const { data, context } = result;
+
+  if (data === null || typeof data !== "object") {
+    return { error: "Invalid response" };
   }
 
-  const obj = result as Record<string, unknown>;
+  const obj = data as Record<string, unknown>;
   const { error } = obj;
 
   if ("error" in obj && typeof error === "string") {
-    throw new Error(error);
+    return { error };
   }
 
-  return parseUcpToolContent(obj, successSchema);
+  return parseUcpToolContent(obj, successSchema, context);
 };
 
 // Checkout argument shapes (create/update/complete) live in ./utils — shared with
@@ -561,6 +660,7 @@ export const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
       cart: createCartRequestSchema,
     }),
     execute: async (input) => {
+      console.log("create_cart input", input);
       const result = await callMCP(
         endpoint,
         "create_cart",
@@ -596,6 +696,7 @@ export const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
       cart: updateCartRequestSchema.omit({ id: true }),
     }),
     execute: async (input) => {
+      console.log("update_cart input", input);
       const result = await callMCP(
         endpoint,
         "update_cart",
@@ -628,10 +729,11 @@ export const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
       "Create a checkout session. To convert an existing cart, pass cart_id (the cart id from create_cart) and omit checkout — the business uses the cart's line_items/buyer. Otherwise pass the checkout body to create from scratch. Provide cart_id OR checkout, never both.",
     inputSchema: Utils.createCheckoutMcpInputSchema,
     execute: async (input) => {
+      console.log("create_checkout input", input);
       const result = await callMCP(
         endpoint,
         "create_checkout",
-        input,
+        Utils.normalizeCreateCheckoutArgs(input),
         agentProfileUrl,
       );
 
@@ -855,7 +957,7 @@ export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
         "POST",
         "/checkouts",
         agentProfileUrl,
-        input,
+        Utils.normalizeCreateCheckoutArgs(input),
       );
       return parseRestToolResult(result, checkoutWithFulfillmentResponseSchema);
     },
@@ -962,6 +1064,7 @@ ${UCP_ARGUMENT_SHAPES}
 
 How to behave in this console:
 - Do exactly what the user asks in their latest message — one action (or a small set of directly related actions) at a time. Do NOT run the whole search→cart→checkout flow unless the user explicitly asks you to.
+- When the user wants to check out (e.g. "checkout with the X", "buy X now", "check out with that product"), go straight to create_checkout — do NOT call create_cart first. If a cart already exists for what they want, pass its cart_id. Otherwise build the checkout from scratch by passing the checkout object with line_items (the variant id + quantity). Only call create_cart when the user explicitly asks to add something to a cart or to build/view a cart.
 - Use ONLY IDs returned by earlier tool calls — never invent them. Previous tool calls and their results are included in the conversation; reuse their IDs (variant id, cart id, checkout id) when the user refers to "it", "that", or "the cart".
 - If you need an ID you don't have yet (e.g. the user says "add it to a cart" but nothing was looked up), search or look it up first, or ask the user to clarify.
 - If a tool call fails or ucp.status is error, stop and report the error details and which step failed — do not retry blindly.
