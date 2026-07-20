@@ -145,7 +145,7 @@ const reportUcpSchemaMismatch = (
         endpoint: context.endpoint,
         transport: context.transport,
       },
-    },
+    }, 
     extra: { validationErrors: z.treeifyError(error) },
   });
 };
