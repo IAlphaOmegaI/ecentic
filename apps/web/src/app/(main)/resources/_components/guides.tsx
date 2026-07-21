@@ -85,7 +85,9 @@ export const Guides = () => (
         </div>
         <div className="bg-background-rich p-6 md:p-10">
           <RevealItem className="flex flex-col items-start gap-3">
-            <p className="font-medium text-primary text-sm">Product walkthrough</p>
+            <p className="font-medium text-primary text-sm">
+              Product walkthrough
+            </p>
             <h3 className="font-body font-medium text-3xl text-foreground">
               How it works
             </h3>

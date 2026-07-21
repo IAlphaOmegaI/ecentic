@@ -178,8 +178,8 @@ export const PlaygroundArt = ({ className }: PlaygroundArt.Props) => {
                   </span>
                 </div>
                 <p className="font-light text-foreground-dimmed text-xs leading-relaxed">
-                  Lightweight fit, 32-hour battery, and multipoint pairing.
-                  Top pick for the budget.
+                  Lightweight fit, 32-hour battery, and multipoint pairing. Top
+                  pick for the budget.
                 </p>
                 <span className="mt-1 w-fit rounded-full bg-primary px-3 py-1 font-medium text-white text-xs">
                   Buy now — $139

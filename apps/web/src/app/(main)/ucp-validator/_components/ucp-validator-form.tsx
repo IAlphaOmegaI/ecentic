@@ -12,12 +12,12 @@ import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useToastManager } from "@zenncore/web/components/toast";
+import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { type SubmitEvent, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
-import { Fade } from "@/lib/animations";
 import { StatusPill } from "@/app/(main)/dashboard/_components/grid";
 import { Reveal, RevealItem } from "@/components/reveal";
+import { Fade } from "@/lib/animations";
 import ucp from "@/public/images/ucp.png";
 import * as UcpCheck from "@/server/app/intelligence/ucp/check";
 
@@ -228,7 +228,9 @@ const toneClassList: Record<Tone, string> = {
   neutral: "border-accent-foreground bg-background text-foreground-dimmed",
 };
 
-const statusPillTone = (tone: Tone): "success" | "warning" | "error" | "neutral" => {
+const statusPillTone = (
+  tone: Tone,
+): "success" | "warning" | "error" | "neutral" => {
   switch (tone) {
     case "success":
       return "success";
@@ -886,7 +888,9 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
       <div className="border-accent-foreground border-b bg-background-rich px-6 py-6 sm:px-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0">
-            <p className="font-medium text-foreground text-lg">{result.domain}</p>
+            <p className="font-medium text-foreground text-lg">
+              {result.domain}
+            </p>
             <p className="mt-1 break-all font-mono text-foreground-dimmed text-sm">
               {result.url}
             </p>
@@ -903,7 +907,10 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
               </StatusPill>
             )}
             {result.envelopeKind && (
-              <StatusPill tone="neutral" className="font-mono normal-case tracking-normal">
+              <StatusPill
+                tone="neutral"
+                className="font-mono normal-case tracking-normal"
+              >
                 {result.envelopeKind === "wrapped"
                   ? "envelope: ucp{}"
                   : "envelope: flat"}
@@ -1169,7 +1176,10 @@ export const UcpValidatorForm = ({
                   onValueChange={setDomain}
                   className="flex-1"
                 >
-                  <TextFieldInput id="ucp-domain" placeholder="yourdomain.com" />
+                  <TextFieldInput
+                    id="ucp-domain"
+                    placeholder="yourdomain.com"
+                  />
                 </TextField>
                 <Button
                   type="submit"

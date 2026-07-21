@@ -672,8 +672,8 @@ export const UcpAdvancedValidator = () => {
               </Button>
             </div>
             <p className="mt-2 font-light text-foreground-dimmed text-sm">
-              Makes live HTTP requests to the merchant server — probe inputs
-              may create test carts.
+              Makes live HTTP requests to the merchant server — probe inputs may
+              create test carts.
             </p>
           </form>
         </div>

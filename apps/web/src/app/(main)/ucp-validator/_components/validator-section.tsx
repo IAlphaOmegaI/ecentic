@@ -19,8 +19,8 @@ export const ValidatorSection = () => (
         </RevealItem>
         <RevealItem>
           <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-xl">
-            Paste a domain and we fetch the live profile, parse every service and
-            capability, then report spec errors and agent access.
+            Paste a domain and we fetch the live profile, parse every service
+            and capability, then report spec errors and agent access.
           </p>
         </RevealItem>
       </Reveal>

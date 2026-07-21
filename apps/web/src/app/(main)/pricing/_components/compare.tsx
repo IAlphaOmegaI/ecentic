@@ -194,10 +194,7 @@ export const Compare = () => (
                   </PricingCTA>
                 </td>
                 <td className="p-4 text-center">
-                  <PricingCTA
-                    plan="compete"
-                    className={compareCtaClassName}
-                  >
+                  <PricingCTA plan="compete" className={compareCtaClassName}>
                     Start
                   </PricingCTA>
                 </td>

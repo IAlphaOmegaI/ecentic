@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadEnvConfig } from "@next/env";
@@ -61,7 +61,9 @@ async function repair() {
       FROM information_schema.columns
       WHERE table_schema = 'drizzle' AND table_name = '__drizzle_migrations'
     `;
-    const hasNameColumn = tableColumns.some((row) => row.column_name === "name");
+    const hasNameColumn = tableColumns.some(
+      (row) => row.column_name === "name",
+    );
     if (!hasNameColumn) {
       console.log(
         "[repair] drizzle.__drizzle_migrations is missing / not in the name-aware format — " +
@@ -75,20 +77,28 @@ async function repair() {
     `;
     const recorded = new Set(recordedRows.map((row) => row.name));
     if (recorded.size === 0) {
-      console.log("[repair] tracking table has no recorded migrations — nothing to repair");
+      console.log(
+        "[repair] tracking table has no recorded migrations — nothing to repair",
+      );
       return;
     }
 
     const migrations = readdirSync(migrationsDir)
       .filter((name) => existsSync(join(migrationsDir, name, "migration.sql")))
       .sort((a, b) => a.localeCompare(b));
-    const missing = migrations.filter((name) => name <= CUTOFF && !recorded.has(name));
+    const missing = migrations.filter(
+      (name) => name <= CUTOFF && !recorded.has(name),
+    );
 
     console.log(`[repair] ${recorded.size} migrations already recorded`);
-    console.log(`[repair] backfilling ${missing.length} already-applied migration(s) (<= ${CUTOFF})`);
+    console.log(
+      `[repair] backfilling ${missing.length} already-applied migration(s) (<= ${CUTOFF})`,
+    );
 
     for (const name of missing) {
-      const content = readFileSync(join(migrationsDir, name, "migration.sql")).toString();
+      const content = readFileSync(
+        join(migrationsDir, name, "migration.sql"),
+      ).toString();
       const hash = crypto.createHash("sha256").update(content).digest("hex");
       const createdAt = formatToMillis(name);
       await client`

@@ -239,7 +239,9 @@ export const UcpArt = ({ highlighted = false, className }: UcpArt.Props) => (
           }}
           className="pl-3"
         >
-          <span className={highlighted ? "text-white/40" : "text-foreground-dimmed"}>
+          <span
+            className={highlighted ? "text-white/40" : "text-foreground-dimmed"}
+          >
             -{" "}
           </span>
           <span className={highlighted ? "text-white/85" : "text-foreground"}>

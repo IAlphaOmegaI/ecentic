@@ -143,26 +143,26 @@ export const Newsletter = ({
                   The free écentic for WooCommerce plugin is now on
                   WordPress.org. It serves the Universal Commerce Protocol at
                   /.well-known/ucp on your own domain, so AI shopping agents
-                  discover your store at your address — not a third
-                  party&apos;s — and can complete the purchase instead of just
-                  recommending you.
+                  discover your store at your address — not a third party&apos;s
+                  — and can complete the purchase instead of just recommending
+                  you.
                 </Text>
                 <Text className="m-0 mb-4 text-[15px] text-foreground leading-6">
                   Quotes run against a live WooCommerce cart, so your tax
-                  tables, shipping zones, and coupons all apply. Agent
-                  checkouts create real orders through native WooCommerce
-                  internals, tagged created_via = ucp, and payment is charged
-                  by your own gateway — you stay Merchant of Record and
-                  credentials never leave your server. You keep the controls:
-                  switch the agent surface on or off, allow-list which agent
-                  platforms may transact, require signed (RFC 9421) requests,
-                  and rate-limit per agent.
+                  tables, shipping zones, and coupons all apply. Agent checkouts
+                  create real orders through native WooCommerce internals,
+                  tagged created_via = ucp, and payment is charged by your own
+                  gateway — you stay Merchant of Record and credentials never
+                  leave your server. You keep the controls: switch the agent
+                  surface on or off, allow-list which agent platforms may
+                  transact, require signed (RFC 9421) requests, and rate-limit
+                  per agent.
                 </Text>
                 <Text className="m-0 mb-4 text-[15px] text-foreground leading-6">
                   Setup takes about two minutes: install from wp-admin, approve
-                  the connection, and the plugin provisions the REST key for
-                  you — no keys to copy. Your theme, storefront, and checkout
-                  stay untouched.
+                  the connection, and the plugin provisions the REST key for you
+                  — no keys to copy. Your theme, storefront, and checkout stay
+                  untouched.
                 </Text>
                 <Button
                   className="mr-3 px-5 py-2.5 font-medium text-[15px] text-background-rich"
@@ -179,8 +179,7 @@ export const Newsletter = ({
                   Check if your store is agent-ready
                 </Button>
                 <Text className="m-0 mt-4 text-[13px] text-foreground-dimmed leading-5">
-                  Everything the plugin does — and what it never touches — is
-                  on{" "}
+                  Everything the plugin does — and what it never touches — is on{" "}
                   <Link
                     href={`${host}/platforms/woocommerce`}
                     className="text-primary"
@@ -223,8 +222,8 @@ export const Newsletter = ({
                   We also partnered with EU Presence on a Compliance + AI
                   Visibility bundle: their GDPR Article 27 representative, GPSR
                   responsible person, and hosted privacy center, paired with
-                  ecentic Dominate for $584/mo instead of $730/mo — one
-                  invoice, no minimums, month-to-month.
+                  ecentic Dominate for $584/mo instead of $730/mo — one invoice,
+                  no minimums, month-to-month.
                 </Text>
                 <Button
                   className="px-5 py-2.5 font-medium text-[15px] text-foreground"

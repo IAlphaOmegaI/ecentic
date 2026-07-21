@@ -58,8 +58,8 @@ export const Loop = () => (
         </h2>
         <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-xl">
           Visibility in AI-assisted shopping is not a brand metric. It is an
-          operational loop, and Ecentic runs all four steps for every product
-          in your catalog.
+          operational loop, and Ecentic runs all four steps for every product in
+          your catalog.
         </p>
       </div>
 

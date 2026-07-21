@@ -1,6 +1,6 @@
 import { CheckIcon } from "@zenncore/icons";
-import { Plus } from "@/components/plus";
 import { UcpArt } from "@/app/(main)/resources/_components/resource-art";
+import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
 
 const checks = [
@@ -38,8 +38,8 @@ export const Checks = () => (
         </RevealItem>
         <RevealItem>
           <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-xl">
-            A live fetch of your public profile, parsed against the UCP spec, with
-            agent access surfaced from robots.txt.
+            A live fetch of your public profile, parsed against the UCP spec,
+            with agent access surfaced from robots.txt.
           </p>
         </RevealItem>
       </Reveal>
