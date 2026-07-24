@@ -87,9 +87,14 @@ const formatUcpMessage = (message: z.infer<typeof messageSchema>): string => {
   return `${code}${message.content}${path}`;
 };
 
+// Standard UCP error codes meaning "this item cannot be bought". The same call
+// gets refused the same way every time, so they end the agent loop rather than
+// being retried — see isNonRetryableToolError.
+const UNAVAILABLE_ITEM_CODES = new Set(["out_of_stock", "item_unavailable"]);
+
 const extractUcpToolError = (
   structuredContent: Record<string, unknown>,
-): string | null => {
+): UcpToolError | null => {
   const { ucp, messages: rawMessages } = structuredContent;
   const ucpStatus =
     typeof ucp === "object" && ucp !== null && "status" in ucp
@@ -100,13 +105,18 @@ const extractUcpToolError = (
   const messages = messagesResult.success ? messagesResult.data : [];
   const errorMessages = messages.filter((message) => message.type === "error");
 
-  if (ucpStatus === "error" || errorMessages.length > 0) {
-    return errorMessages.length > 0
+  if (ucpStatus !== "error" && errorMessages.length === 0) return null;
+
+  const error =
+    errorMessages.length > 0
       ? errorMessages.map(formatUcpMessage).join("; ")
       : "UCP tool returned status: error";
-  }
 
-  return null;
+  return errorMessages.some((message) =>
+    UNAVAILABLE_ITEM_CODES.has(message.code),
+  )
+    ? { error, retryable: false }
+    : { error };
 };
 
 // Debug-only context attached to Sentry reports so a schema mismatch can be
@@ -138,16 +148,67 @@ export const GENERIC_UCP_PARSE_ERROR =
 // step cap.
 type UcpToolError = { error: string; retryable?: false };
 
-// True for tool outputs that are non-retryable store-format failures. Matches
-// both the content parse mismatch and the MCP-envelope mismatch (which reaches
-// the loop as { error: GENERIC_UCP_PARSE_ERROR } without the marker). UCP-level
-// errors (out of stock, requires_escalation) and transient network failures are
-// deliberately NOT matched — those may legitimately change on retry.
+// True for tool outputs that are non-retryable failures: store-format mismatches
+// (content parse + MCP envelope, the latter reaching the loop as
+// { error: GENERIC_UCP_PARSE_ERROR } without the marker) and a store refusing an
+// unavailable item. Both fail identically on a re-call with the same arguments.
+// Transient network failures and UCP states that can still change (e.g.
+// requires_escalation) are deliberately NOT matched.
 export const isNonRetryableToolError = (output: unknown): boolean =>
   typeof output === "object" &&
   output !== null &&
   ((output as { error?: unknown }).error === GENERIC_UCP_PARSE_ERROR ||
     (output as { retryable?: unknown }).retryable === false);
+
+// A UCP business answers an add-to-cart / checkout for a variant it cannot sell
+// with a 200 and a body that simply omits the rejected line item — often with a
+// warning rather than an error message. Taken at face value that renders as an
+// empty cart card and reads to the model as success, so the agent reports an item
+// it never added.
+export const UNAVAILABLE_ITEM_ERROR =
+  "The store did not accept that item — it is not available to purchase (out of stock).";
+
+// Detect that refusal: line items were requested and none came back. Returns the
+// error to surface instead of the empty cart/checkout, or null when the result is
+// fine (or is already an error — a UcpToolError has no line_items, so it fails the
+// shape check and passes through untouched). `retryable: false` because the same
+// variant is refused the same way every time: the route's prepareStep ends the
+// loop so the model tells the user the item is unavailable instead of re-adding it.
+const rejectedEveryItem = (
+  result: unknown,
+  requestedItems: number,
+): UcpToolError | null => {
+  if (requestedItems === 0) return null;
+
+  const parsed = z
+    .object({
+      line_items: z.array(z.unknown()),
+      messages: z.array(messageSchema).optional(),
+    })
+    .safeParse(result);
+
+  if (!parsed.success || parsed.data.line_items.length > 0) return null;
+
+  // Prefer the store's own wording (e.g. "out_of_stock") over the generic line.
+  const reason = (parsed.data.messages ?? [])
+    .filter((message) => message.type !== "info")
+    .map(formatUcpMessage)
+    .join("; ");
+
+  return {
+    error: reason
+      ? `${UNAVAILABLE_ITEM_ERROR} Store reported: ${reason}`
+      : UNAVAILABLE_ITEM_ERROR,
+    retryable: false,
+  };
+};
+
+// create_checkout takes a cart_id (items unknown here — the store reads them off
+// the cart) or a from-scratch checkout body whose line_items we can count.
+const requestedCheckoutItems = (input: {
+  cart_id?: string | undefined;
+  checkout?: { line_items?: unknown[] | undefined } | undefined;
+}): number => (input.cart_id ? 0 : (input.checkout?.line_items?.length ?? 0));
 
 // Report a schema mismatch to Sentry with the prettified Zod issues, the raw
 // payload, and the store/tool context — for debugging only, never the UI.
@@ -186,7 +247,7 @@ const parseUcpToolContent = <T>(
   // the model should see and act on — return it, don't throw.
   const ucpError = extractUcpToolError(structuredContent);
 
-  if (ucpError) return { error: ucpError };
+  if (ucpError) return ucpError;
 
   const parsed = successSchema.safeParse(structuredContent);
 
@@ -668,7 +729,9 @@ export const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
         agentProfileUrl,
       );
 
-      return parseMcpToolResult(result, createCartResponseSchema);
+      const cart = parseMcpToolResult(result, createCartResponseSchema);
+
+      return rejectedEveryItem(cart, input.cart.line_items.length) ?? cart;
     },
   }),
 
@@ -704,7 +767,9 @@ export const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
         agentProfileUrl,
       );
 
-      return parseMcpToolResult(result, updateCartResponseSchema);
+      const cart = parseMcpToolResult(result, updateCartResponseSchema);
+
+      return rejectedEveryItem(cart, input.cart.line_items.length) ?? cart;
     },
   }),
 
@@ -737,7 +802,14 @@ export const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
         agentProfileUrl,
       );
 
-      return parseMcpToolResult(result, checkoutWithFulfillmentResponseSchema);
+      const checkout = parseMcpToolResult(
+        result,
+        checkoutWithFulfillmentResponseSchema,
+      );
+
+      return (
+        rejectedEveryItem(checkout, requestedCheckoutItems(input)) ?? checkout
+      );
     },
   }),
 
@@ -894,7 +966,9 @@ export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
         agentProfileUrl,
         cart,
       );
-      return parseRestToolResult(result, createCartResponseSchema);
+      const created = parseRestToolResult(result, createCartResponseSchema);
+
+      return rejectedEveryItem(created, cart.line_items.length) ?? created;
     },
   }),
 
@@ -928,7 +1002,9 @@ export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
         agentProfileUrl,
         cart,
       );
-      return parseRestToolResult(result, updateCartResponseSchema);
+      const updated = parseRestToolResult(result, updateCartResponseSchema);
+
+      return rejectedEveryItem(updated, cart.line_items.length) ?? updated;
     },
   }),
 
@@ -959,7 +1035,14 @@ export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
         agentProfileUrl,
         Utils.normalizeCreateCheckoutArgs(input),
       );
-      return parseRestToolResult(result, checkoutWithFulfillmentResponseSchema);
+      const checkout = parseRestToolResult(
+        result,
+        checkoutWithFulfillmentResponseSchema,
+      );
+
+      return (
+        rejectedEveryItem(checkout, requestedCheckoutItems(input)) ?? checkout
+      );
     },
   }),
 
@@ -1065,6 +1148,9 @@ ${UCP_ARGUMENT_SHAPES}
 How to behave in this console:
 - Do exactly what the user asks in their latest message — one action (or a small set of directly related actions) at a time. Do NOT run the whole search→cart→checkout flow unless the user explicitly asks you to.
 - When the user wants to check out (e.g. "checkout with the X", "buy X now", "check out with that product"), go straight to create_checkout — do NOT call create_cart first. If a cart already exists for what they want, pass its cart_id. Otherwise build the checkout from scratch by passing the checkout object with line_items (the variant id + quantity). Only call create_cart when the user explicitly asks to add something to a cart or to build/view a cart.
+- Never try to buy something the store cannot sell. Before create_cart, update_cart or create_checkout, check the variant you are about to use: if its availability.available is false, or availability.status is out_of_stock or discontinued, do NOT call the tool. Reply that you cannot add it because that item is not available (out of stock), and offer the closest in-stock variant or product instead.
+- If you have no availability data for the variant the user wants, look it up (get_product or lookup_catalog) before adding it — do not assume it is in stock.
+- If a cart or checkout tool reports the item as unavailable — an out_of_stock / item_unavailable message, or "${UNAVAILABLE_ITEM_ERROR}" — do NOT call it again with that variant. Tell the user plainly that it cannot be added because it is out of stock, and suggest an available alternative.
 - Use ONLY IDs returned by earlier tool calls — never invent them. Previous tool calls and their results are included in the conversation; reuse their IDs (variant id, cart id, checkout id) when the user refers to "it", "that", or "the cart".
 - If you need an ID you don't have yet (e.g. the user says "add it to a cart" but nothing was looked up), search or look it up first, or ask the user to clarify.
 - If a tool call fails or ucp.status is error, stop and report the error details and which step failed — do not retry blindly.
