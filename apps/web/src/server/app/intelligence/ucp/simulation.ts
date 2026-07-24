@@ -20,9 +20,9 @@ import * as Ucp from "./profile";
 const MODEL = "gpt-4o" as AI.ModelId;
 
 // The tool-gathering step rides the playground's proven tool-calling path
-// (google/gemini-2.5-flash through the same gateway) — it only needs to fetch
-// and summarize the merchant's UCP data, not act as the judge.
-const GATHER_MODEL = "google/gemini-2.5-flash";
+// (gemini-2.5-flash, direct to Google) — it only needs to fetch and summarize the
+// merchant's UCP data, not act as the judge.
+const GATHER_MODEL = "gemini-2.5-flash";
 
 const verdict = z.object({
   winner: z.enum(["product", "competitor"]),
@@ -91,8 +91,7 @@ const gatherUcpIntel = async (product: Product.Type, merchant: string) => {
   });
 
   const result = await generateText({
-    model: GATHER_MODEL,
-    providerOptions: AI.providerOptions,
+    model: AI.model(GATHER_MODEL),
     instructions:
       "You are an AI shopping agent. Before judging a merchant's product you retrieve the merchant's UCP-published data the way a real agent would. Call fetchMerchantUcp once, then summarize in 4-6 bullet points the concrete, decision-relevant facts (policies, certifications, structured specs, guarantees) the UCP data reveals BEYOND a basic listing. If it is empty or adds nothing, say so plainly.",
     prompt: `Retrieve and summarize the UCP-published data for "${product.title}".`,

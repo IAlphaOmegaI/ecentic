@@ -14,7 +14,6 @@ import {
   buildChatSystemPrompt,
   buildMcpTools,
   buildRestTools,
-  gatewayOptions,
   isNonRetryableToolError,
   normalizePlaygroundStoreDomain,
   PLAYGROUND_MODEL,
@@ -154,7 +153,6 @@ export const POST = async (request: Request) => {
           return hitNonRetryable ? { toolChoice: "none" } : {};
         },
         stopWhen: isStepCount(20),
-        providerOptions: gatewayOptions(),
       });
 
       writer.merge(result.toUIMessageStream({ onError: formatStreamError }));

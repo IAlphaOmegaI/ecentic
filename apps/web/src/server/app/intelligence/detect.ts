@@ -110,12 +110,11 @@ export const stream = ({
     // Primary path: stream array elements as the model emits them.
     const streamed = await resultify(async () => {
       const generation = streamObject({
-        model: "gpt-4o",
+        model: AI.model("gpt-4o"),
         output: "array",
         schema: candidate,
         instructions: Judge.DETECTION_SYSTEM,
         prompt,
-        providerOptions: AI.providerOptions,
         onError: () => {},
       });
       for await (const entry of generation.elementStream) await persist(entry);

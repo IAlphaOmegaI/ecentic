@@ -4,6 +4,7 @@ import { createStreamableValue } from "@ai-sdk/rsc";
 import { resultify } from "@zenncore/utils";
 import { isLoopFinished, streamText, tool } from "ai";
 import * as z from "zod";
+import * as AI from "../../utils/ai";
 import type { StoreDiscovery } from "./product-comparison";
 import {
   businessProfileSchema,
@@ -14,19 +15,6 @@ import {
 
 // ecentic UCP platform profile
 const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
-
-const gatewayOptions = () => ({
-  gateway: {
-    byok: {
-      azure: [
-        {
-          apiKey: process.env.AZURE_API_KEY as string,
-          resourceName: process.env.AZURE_RESOURCE_NAME as string,
-        },
-      ],
-    },
-  },
-});
 
 // Accepts bare domains ("x.com") and full URLs ("https://x.com/"), returning a
 // canonical "https://x.com". Idempotent, so client-normalized input is unchanged.
@@ -488,7 +476,7 @@ export const runFreeForAll = async ({
       const tools = buildFreeForAllTools(storeCatalog, agentProfileUrl);
 
       const agentResult = streamText({
-        model: "anthropic/claude-sonnet-4.6",
+        model: AI.model("claude-sonnet-4-6"),
         instructions: `You are an autonomous AI shopping agent running a "free-for-all" buy decision. Every store below is an equal candidate — there is no home store and no competitors. A buyer has asked for something, and your job is to look at what every store actually offers and pick exactly ONE product you would buy.
 
 Decide however you genuinely would. There is no supplied rubric, scorecard, or list of factors to apply — use your own judgement about what matters for this specific request and these specific products.
@@ -531,7 +519,6 @@ Reference store domains, not internal endpoints. Produce one ordered ranking acr
 Call search_catalogs with parameters derived from this request. Verify your top contenders with get_product (the authoritative source for purchase decisions), then rank every product worth considering best-first across all stores, call rank_products with that ranking, and explain in your own words how you really decided.`,
         tools,
         stopWhen: isLoopFinished(),
-        providerOptions: gatewayOptions(),
       });
 
       for await (const event of agentResult.stream) {

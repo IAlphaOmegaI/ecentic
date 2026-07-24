@@ -205,7 +205,7 @@ const Feature = {
 | Framework | Next.js 16, React 19, React Compiler |
 | Database | PostgreSQL, Drizzle ORM 1.0 beta |
 | Auth | Better Auth 1.5 (email/password + Drizzle adapter) |
-| AI | Vercel AI SDK 6.0 + Azure AI |
+| AI | Vercel AI SDK (direct providers, no gateway) — Azure OpenAI + Anthropic + Google + Perplexity |
 | Email | Resend + React Email |
 | Storage | UploadThing |
 | Styling | Tailwind CSS 4 |
@@ -230,9 +230,18 @@ FROM_EMAIL
 SHOPIFY_API_KEY
 SHOPIFY_API_SECRET
 UPLOADTHING_TOKEN
-AZURE_RESOURCE_NAME
-AZURE_API_KEY
 NEXT_PUBLIC_SENTRY_DSN
+
+# AI providers — every model call goes DIRECT to its provider (no Vercel AI Gateway).
+# GPT → your Azure deployment; Claude/Gemini/Perplexity → their native APIs.
+# Resolution lives in apps/web/src/server/utils/ai.ts (`model(id)`); Azure is the default.
+AZURE_RESOURCE_NAME                       # subdomain only, e.g. "my-resource" (NOT the full URL)
+AZURE_API_KEY
+AZURE_API_VERSION                         # optional, defaults to "preview" (Azure v1 API surface)
+AZURE_DEPLOYMENT_GPT4O                    # your GPT deployment name, e.g. "gpt-5.3-chat"; "gpt-4o" logical id maps here
+ANTHROPIC_API_KEY
+GOOGLE_GENERATIVE_AI_API_KEY
+PERPLEXITY_API_KEY
 ```
 
 Billing. Three separate products: free **Scan** (one-time, no billing row),
