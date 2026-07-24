@@ -2,10 +2,9 @@ import type { UserRole } from "@/server/database/validators";
 import { type AuthenticatedContext, authenticate } from "./authentication";
 import {
   type ContextedAction,
-  defineWithContext,
   type Enhancer,
-  pipe,
   type WithContextParams,
+  withContext,
 } from "./context";
 import { UnauthorizedError } from "./error";
 
@@ -36,6 +35,6 @@ export const withAuthorization = <
   whitelist: UserRole[],
   ...args: WithContextParams<AuthenticatedContext, T>
 ) => {
-  const handler = defineWithContext(pipe(authenticate, authorize(whitelist)));
+  const handler = withContext.append(authenticate).append(authorize(whitelist));
   return handler(...args);
 };

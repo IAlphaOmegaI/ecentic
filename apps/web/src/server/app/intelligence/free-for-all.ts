@@ -2,7 +2,7 @@
 
 import { createStreamableValue } from "@ai-sdk/rsc";
 import { resultify } from "@zenncore/utils";
-import { isLoopFinished, streamText, tool } from "ai";
+import { isLoopFinished, tool } from "ai";
 import * as z from "zod";
 import * as AI from "../../utils/ai";
 import type { StoreDiscovery } from "./product-comparison";
@@ -475,8 +475,9 @@ export const runFreeForAll = async ({
 
       const tools = buildFreeForAllTools(storeCatalog, agentProfileUrl);
 
-      const agentResult = streamText({
-        model: AI.model("claude-sonnet-4-6"),
+      const agentResult = AI.streamText({
+        label: "free-for-all",
+        model: "claude-sonnet-4-6",
         instructions: `You are an autonomous AI shopping agent running a "free-for-all" buy decision. Every store below is an equal candidate — there is no home store and no competitors. A buyer has asked for something, and your job is to look at what every store actually offers and pick exactly ONE product you would buy.
 
 Decide however you genuinely would. There is no supplied rubric, scorecard, or list of factors to apply — use your own judgement about what matters for this specific request and these specific products.

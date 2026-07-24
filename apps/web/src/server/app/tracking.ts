@@ -6,7 +6,7 @@ import { z } from "zod";
 import * as Store from "../app/store";
 import { db, schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
-import { withContext } from "../utils/context";
+import { withContext, withDurable } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { repository } from "../utils/repository";
 import {
@@ -71,14 +71,16 @@ export const parse = withContext(
 const RATE_LIMIT_WINDOW = 3600;
 const RATE_LIMIT_MAX = 1000;
 
-const isRateLimited = withContext(async (ctx, { store }: { store: string }) => {
-  const key = `rate_limit:agent_visit:${store}`;
-  const count = await ctx.durable.redis.incr(key);
+const isRateLimited = withContext.append(withDurable)(
+  async (ctx, { store }: { store: string }) => {
+    const key = `rate_limit:agent_visit:${store}`;
+    const count = await ctx.durable.redis.incr(key);
 
-  if (count === 1) await ctx.durable.redis.expire(key, RATE_LIMIT_WINDOW);
+    if (count === 1) await ctx.durable.redis.expire(key, RATE_LIMIT_WINDOW);
 
-  return { success: true, data: count > RATE_LIMIT_MAX };
-});
+    return { success: true, data: count > RATE_LIMIT_MAX };
+  },
+);
 
 const AGENT_LABELS: Record<string, string> = {
   "chatgpt-user": "ChatGPT (user)",

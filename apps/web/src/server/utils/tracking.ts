@@ -1,7 +1,7 @@
 import { resultify } from "@zenncore/utils";
 import { and, eq, sql } from "drizzle-orm";
 import { schema } from "@/server/database";
-import { withContext } from "./context";
+import { withContext, withDurable } from "./context";
 import { DatabaseError } from "./error";
 
 /**
@@ -61,7 +61,7 @@ const NULL_RESOLUTION = {
   externalProductId: null,
 } as const;
 
-export const resolveProductFromPageUrl = withContext(
+export const resolveProductFromPageUrl = withContext.append(withDurable)(
   async (ctx, { store, pageUrl }: { store: string; pageUrl: string }) => {
     const parsed = resultify(() => new URL(pageUrl));
     if (!parsed.success) {

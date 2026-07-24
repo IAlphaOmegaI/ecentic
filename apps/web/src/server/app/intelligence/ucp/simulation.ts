@@ -1,7 +1,7 @@
 "use server";
 
 import { resultify } from "@zenncore/utils";
-import { generateText, isStepCount, tool } from "ai";
+import { isStepCount, tool } from "ai";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { schema } from "../../../database";
@@ -90,8 +90,9 @@ const gatherUcpIntel = async (product: Product.Type, merchant: string) => {
     execute: async () => payload,
   });
 
-  const result = await generateText({
-    model: AI.model(GATHER_MODEL),
+  const result = await AI.generateText({
+    label: "ucp.simulation.gather",
+    model: GATHER_MODEL,
     instructions:
       "You are an AI shopping agent. Before judging a merchant's product you retrieve the merchant's UCP-published data the way a real agent would. Call fetchMerchantUcp once, then summarize in 4-6 bullet points the concrete, decision-relevant facts (policies, certifications, structured specs, guarantees) the UCP data reveals BEYOND a basic listing. If it is empty or adds nothing, say so plainly.",
     prompt: `Retrieve and summarize the UCP-published data for "${product.title}".`,

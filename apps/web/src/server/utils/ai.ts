@@ -3,10 +3,13 @@ import { createAzure } from "@ai-sdk/azure";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { createPerplexity } from "@ai-sdk/perplexity";
 import { createStreamableValue } from "@ai-sdk/rsc";
+import * as Sentry from "@sentry/nextjs";
 import {
   generateObject,
   type LanguageModel,
   type RepairTextFunction,
+  generateText as sdkGenerateText,
+  streamText as sdkStreamText,
   streamObject,
 } from "ai";
 import type { z } from "zod";
@@ -103,6 +106,133 @@ export const model = (id: ModelId = "gpt-4o"): LanguageModel => {
   }
 };
 
+// ─── Instrumentation ────────────────────────────────────────────────────────
+// One place for all AI-call observability. `experimental_telemetry` is picked up
+// by Sentry's Vercel AI integration (enabled in instrumentation.ts) and emitted
+// as a `gen_ai.*` span with token usage, keyed by functionId `ai.<feature>`. The
+// `with*` context wrappers instrument the server action; this instruments the
+// model call itself. Every wrapper below routes through these.
+
+type StreamTextArgs = Parameters<typeof sdkStreamText>[0];
+type GenerateTextArgs = Parameters<typeof sdkGenerateText>[0];
+type TelemetryConfig = NonNullable<StreamTextArgs["experimental_telemetry"]>;
+type Usage = {
+  totalTokens?: number;
+  inputTokens?: number;
+  outputTokens?: number;
+};
+
+// `functionId` (`ai.<feature>`) is how Sentry's Vercel AI integration groups and
+// names the span for a call — that is our per-feature key.
+const telemetry = (
+  label: string,
+  extra?: TelemetryConfig,
+): TelemetryConfig => ({
+  isEnabled: true,
+  functionId: `ai.${label}`,
+  // Off by default so prompts/outputs never land in Sentry; override per call.
+  recordInputs: false,
+  recordOutputs: false,
+  ...extra,
+});
+
+const report = (label: string, error: unknown) =>
+  Sentry.captureException(error, { tags: { ai_feature: label } });
+
+const logUsage = (label: string, usage?: Usage) => {
+  if (!usage) return;
+  Sentry.logger?.info?.("ai.usage", {
+    feature: label,
+    tokens: usage.totalTokens,
+    input: usage.inputTokens,
+    output: usage.outputTokens,
+  });
+};
+
+// ─── Wrappers ───────────────────────────────────────────────────────────────
+// Thin, instrumented pass-throughs over the AI SDK. Each resolves `model`,
+// injects telemetry + an error-reporting `onError`, and RETURNS THE NATIVE SDK
+// RESULT unchanged so callers keep their own `.stream`/`.fullStream`/
+// `.toUIMessageStream()`/`.text` consumption. `label` names the feature span.
+
+const resolveModel = (id: ModelId | LanguageModel): LanguageModel =>
+  typeof id === "string" ? model(id) : id;
+
+export const streamText = (
+  options: Omit<StreamTextArgs, "model"> & {
+    model: ModelId | LanguageModel;
+    label: string;
+  },
+) => {
+  const {
+    model: id,
+    label,
+    experimental_telemetry,
+    onError,
+    ...rest
+  } = options;
+  return sdkStreamText({
+    ...rest,
+    model: resolveModel(id),
+    experimental_telemetry: telemetry(label, experimental_telemetry),
+    onError: (event) => {
+      report(label, event.error);
+      onError?.(event);
+    },
+  } as StreamTextArgs);
+};
+
+export const generateText = (
+  options: Omit<GenerateTextArgs, "model"> & {
+    model: ModelId | LanguageModel;
+    label: string;
+  },
+) => {
+  const { model: id, label, experimental_telemetry, ...rest } = options;
+  return sdkGenerateText({
+    ...rest,
+    model: resolveModel(id),
+    experimental_telemetry: telemetry(label, experimental_telemetry),
+  } as GenerateTextArgs).then(
+    (result) => {
+      logUsage(label, result.usage);
+      return result;
+    },
+    (error) => {
+      report(label, error);
+      throw error;
+    },
+  );
+};
+
+export type StreamArrayOptions<T extends z.ZodTypeAny> = {
+  label: string;
+  model?: ModelId;
+  schema: T;
+  instructions: string;
+  prompt: string;
+};
+
+// Streams schema-validated array elements as the model emits them (the AI SDK's
+// `output: "array"` mode) — exposes `elementStream`. Used by competitor detection.
+export const streamArray = <T extends z.ZodTypeAny>(
+  options: StreamArrayOptions<T>,
+) => {
+  const { label, model: id = "gpt-4o", schema, instructions, prompt } = options;
+  return streamObject({
+    model: model(id),
+    output: "array",
+    schema,
+    instructions,
+    prompt,
+    experimental_repairText: repairText,
+    experimental_telemetry: telemetry(label),
+    onError: (event) => {
+      report(label, event.error);
+    },
+  });
+};
+
 const BUFFER_LINE_THRESHOLD = 50;
 
 async function* bufferTextStream(
@@ -131,6 +261,7 @@ export type GenerateOptions<T extends z.ZodTypeAny> = {
   model?: ModelId;
   schemaName?: string;
   schemaDescription?: string;
+  label?: string;
 };
 
 export type GenerateStreamResult<T> = {
@@ -157,6 +288,7 @@ export function generate<T extends z.ZodTypeAny>(
     model: id = "gpt-4o",
     schemaName,
     schemaDescription,
+    label = schemaName ?? "generate",
   } = options;
 
   const settings = {
@@ -167,17 +299,31 @@ export function generate<T extends z.ZodTypeAny>(
     schemaName,
     schemaDescription,
     experimental_repairText: repairText,
+    experimental_telemetry: telemetry(label),
   };
 
   if (!s)
     return generateObject(settings).then(
-      (result) => result.object as z.infer<T>,
+      (result) => {
+        logUsage(label, result.usage);
+        return result.object as z.infer<T>;
+      },
+      (error) => {
+        report(label, error);
+        throw error;
+      },
     );
 
   // @note: errors during streaming surface on `result.object` (which we await
   // via resultify at the call site) rather than thrown — repairText still runs
   // before that rejects, so malformed output is recovered transparently.
-  const result = streamObject({ ...settings, onError: () => {} });
+  const result = streamObject({
+    ...settings,
+    onError: (event) => {
+      report(label, event.error);
+    },
+  });
+  result.usage.then((usage) => logUsage(label, usage)).catch(() => {});
 
   return {
     output: result.object as Promise<z.infer<T>>,
@@ -198,6 +344,7 @@ export const stream = <T>(
       });
       streamable.done();
     } catch (error) {
+      report("stream", error);
       streamable.error(error);
     }
   })();

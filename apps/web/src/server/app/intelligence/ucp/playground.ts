@@ -4,7 +4,6 @@ import * as Sentry from "@sentry/nextjs";
 import { merge, resultify } from "@zenncore/utils";
 import { type InferUITools, isToolUIPart, tool, type UIMessage } from "ai";
 import * as z from "zod";
-import * as AI from "../../../utils/ai";
 import {
   businessProfileSchema,
   cancelCartRequestSchema,
@@ -40,9 +39,9 @@ export const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
 // be replayed verbatim on follow-up requests; when tool calls are rebuilt across
 // turns via convertToModelMessages that signature can get corrupted → 400
 // "Corrupted thought signature". 2.5-flash emits no thought signatures and handles
-// the UCP tool flow fine. Resolved to a direct Google provider instance (not the
-// Vercel gateway) — see AI.model.
-export const PLAYGROUND_MODEL = AI.model("gemini-2.5-flash");
+// the UCP tool flow fine. A logical id — AI.streamText resolves it to a direct
+// Google provider instance (not the Vercel gateway).
+export const PLAYGROUND_MODEL = "gemini-2.5-flash";
 
 // Single source of truth for the tool argument shapes the agent must follow, so
 // they never drift from the tool definitions below.

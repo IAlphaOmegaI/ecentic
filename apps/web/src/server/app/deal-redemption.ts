@@ -4,7 +4,7 @@ import * as Sentry from "@sentry/nextjs";
 import { resultify, type UnwrapResult } from "@zenncore/utils";
 import { eq, sql } from "drizzle-orm";
 import { schema } from "../database";
-import { withContext } from "../utils/context";
+import { withContext, withDurable } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { ValidationError } from "../utils/error";
 import { repository } from "../utils/repository";
@@ -210,7 +210,7 @@ export const parse = withContext(
 const RATE_LIMIT_WINDOW = 3600;
 const RATE_LIMIT_MAX = 20;
 
-const isRateLimited = withContext(
+const isRateLimited = withContext.append(withDurable)(
   async (context, { client }: { client: string }) => {
     const key = `rate_limit:deal_redemption:${client}`;
     const count = await resultify(() => context.durable.redis.incr(key));

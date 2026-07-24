@@ -4,7 +4,7 @@ import type { JSONRPCRequest } from "@ai-sdk/mcp";
 import { createStreamableValue } from "@ai-sdk/rsc";
 // import { UcpDiscoveryProfileSchema } from "@ucp-js/sdk";
 import { merge, resultify } from "@zenncore/utils";
-import { isLoopFinished, streamText, tool } from "ai";
+import { isLoopFinished, tool } from "ai";
 import * as z from "zod";
 import * as AI from "../../../utils/ai";
 import {
@@ -832,8 +832,9 @@ export const runFlowTester = async ({
       const searchQuery = query?.trim() || "product";
 
       // 4. Run the agentic flow
-      const agentResult = streamText({
-        model: AI.model(FLOW_TESTER_MODEL),
+      const agentResult = AI.streamText({
+        label: "ucp.flow-tester",
+        model: FLOW_TESTER_MODEL,
         instructions: `You are a UCP (Universal Commerce Protocol) shopping agent running a live integration test against a ${shoppingTransport.toUpperCase()} endpoint.
 
 CRITICAL ARGUMENT SHAPES — follow these exactly, do not add or remove top-level keys:
