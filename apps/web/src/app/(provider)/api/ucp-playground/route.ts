@@ -4,7 +4,6 @@ import {
   createUIMessageStream,
   createUIMessageStreamResponse,
   isStepCount,
-  streamText,
 } from "ai";
 import { headers } from "next/headers";
 import * as z from "zod";
@@ -14,7 +13,6 @@ import {
   buildChatSystemPrompt,
   buildMcpTools,
   buildRestTools,
-  gatewayOptions,
   isNonRetryableToolError,
   normalizePlaygroundStoreDomain,
   PLAYGROUND_MODEL,
@@ -27,6 +25,7 @@ import {
   consumeAnonymousMessage,
 } from "@/server/app/intelligence/ucp/playground-limit";
 import { isRateLimited } from "@/server/app/ucp/rate-limit";
+import * as AI from "@/server/utils/ai";
 
 // Gemini multi-step tool loops against a live store can take a while.
 export const maxDuration = 60;
@@ -127,7 +126,8 @@ export const POST = async (request: Request) => {
           ? buildMcpTools(service.endpoint, agentProfileUrl)
           : buildRestTools(service.endpoint, agentProfileUrl);
 
-      const result = streamText({
+      const result = AI.streamText({
+        label: "ucp.playground",
         model: PLAYGROUND_MODEL,
         instructions: buildChatSystemPrompt(
           service.transport,
@@ -154,7 +154,6 @@ export const POST = async (request: Request) => {
           return hitNonRetryable ? { toolChoice: "none" } : {};
         },
         stopWhen: isStepCount(20),
-        providerOptions: gatewayOptions(),
       });
 
       writer.merge(result.toUIMessageStream({ onError: formatStreamError }));

@@ -2,13 +2,7 @@ import type { JSONRPCRequest } from "@ai-sdk/mcp";
 import * as Sentry from "@sentry/nextjs";
 // import { UcpDiscoveryProfileSchema } from "@ucp-js/sdk";
 import { merge, resultify } from "@zenncore/utils";
-import {
-  type InferUITools,
-  isToolUIPart,
-  type LanguageModel,
-  tool,
-  type UIMessage,
-} from "ai";
+import { type InferUITools, isToolUIPart, tool, type UIMessage } from "ai";
 import * as z from "zod";
 import {
   businessProfileSchema,
@@ -42,11 +36,12 @@ import * as Utils from "./utils";
 export const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
 
 // Gemini 3 attaches a thoughtSignature to each reasoning/tool-call step that must
-// be replayed verbatim on follow-up requests. Once tool calls are rebuilt across
-// turns via convertToModelMessages and routed through the Vercel gateway, that
-// signature gets corrupted → 400 "Corrupted thought signature". 2.5-flash emits no
-// thought signatures and handles the UCP tool flow fine.
-export const PLAYGROUND_MODEL = "google/gemini-3-flash" satisfies LanguageModel;
+// be replayed verbatim on follow-up requests; when tool calls are rebuilt across
+// turns via convertToModelMessages that signature can get corrupted → 400
+// "Corrupted thought signature". 2.5-flash emits no thought signatures and handles
+// the UCP tool flow fine. A logical id — AI.streamText resolves it to a direct
+// Google provider instance (not the Vercel gateway).
+export const PLAYGROUND_MODEL = "gemini-2.5-flash";
 
 // Single source of truth for the tool argument shapes the agent must follow, so
 // they never drift from the tool definitions below.
@@ -308,19 +303,6 @@ const _createUcpMcpFetch = (agentProfileUrl: string): typeof fetch => {
 
   return Object.assign(ucpMcpFetch, { preconnect: fetch.preconnect });
 };
-
-export const gatewayOptions = () => ({
-  gateway: {
-    byok: {
-      azure: [
-        {
-          apiKey: process.env.AZURE_API_KEY as string,
-          resourceName: process.env.AZURE_RESOURCE_NAME as string,
-        },
-      ],
-    },
-  },
-});
 
 export type PlaygroundTransport = "mcp" | "rest";
 

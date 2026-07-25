@@ -1,15 +1,8 @@
 import * as Sentry from "@sentry/nextjs";
 import type { Redis } from "@upstash/redis";
-import {
-  type InferredError,
-  type Result,
-  resultify,
-  type UnwrapResult,
-} from "@zenncore/utils";
+import type { InferredError, Result, UnwrapResult } from "@zenncore/utils";
 import type { IsEqual } from "@zenncore/utils/types";
 import { headers } from "next/headers";
-import type { UploadThingError } from "uploadthing/server";
-import { upload } from "../app/storage";
 import { db } from "../database";
 import { redis } from "./durable";
 import { type Brand, Environment } from "./environment";
@@ -24,12 +17,11 @@ export type GenericContext = {
     addBreadcrumb: (breadcrumb: Sentry.Breadcrumb) => void;
   };
   auth: typeof import("@/lib/auth").auth.api;
-  storage: {
-    upload: (
-      _slug: string,
-      options: { files: File[] },
-    ) => Promise<Result<{ ufsUrl: string }[], UploadThingError>>;
-  };
+};
+
+// Redis + db are an opt-in capability: actions that need them append `withDurable`
+// (below) instead of every action carrying durable infrastructure it never uses.
+export type DurableContext = GenericContext & {
   durable: {
     redis: Redis;
     db: typeof db;
@@ -68,14 +60,6 @@ const define = async () => {
     // span shouldn't be defined here, it should be defined in the function that uses the context so it wont be cached
     span: null!,
     auth: (await import("@/lib/auth")).auth.api,
-    storage: {
-      upload: async (_slug, options) =>
-        await resultify(() => upload(options.files)),
-    },
-    durable: {
-      redis,
-      db,
-    },
   };
   return cache;
 };
@@ -91,7 +75,7 @@ const define = async () => {
  * @returns The wrapped function. The function will have a type signature of `(...args)<Environment> => Result<T, Environment extends "client" ? ErrorProtocol.SerializedError : Error>` where `T` is inferred based on the input function, and `Error` will be an instance of `Error` or `ErrorProtocol.SerializedError` depending on the environment.
  *
  */
-export const withContext = <
+const withContextImpl = <
   T extends ContextedAction<Context>,
   Context extends GenericContext = GenericContext,
   ContextError extends Error = never,
@@ -240,12 +224,22 @@ export const withContext = <
   return handler as unknown as Handler;
 };
 
+// Chainable, instrumented context builder. `withContext.append(a).append(b)`
+// composes enhancers left-to-right and evolves the context type across the chain
+// — the fluent alternative to nesting `pipe(pipe(a, b), c)`. `Object.assign`
+// (not `withContext.append = …`) so tsc keeps the generic call signature.
+export const withContext = Object.assign(withContextImpl, {
+  append: <Out extends GenericContext, E extends Error>(
+    enhancer: Enhancer<GenericContext, Out, E>,
+  ) => builder(enhancer),
+});
+
 export type WithContextParams<
   Context extends GenericContext = GenericContext,
   T extends ContextedAction<Context> = ContextedAction<Context>,
 > = [
-  Parameters<typeof withContext<T, Context>>[0],
-  Parameters<typeof withContext<T, Context>>[1],
+  Parameters<typeof withContextImpl<T, Context>>[0],
+  Parameters<typeof withContextImpl<T, Context>>[1],
 ];
 
 type ContextEnhancer<
@@ -310,3 +304,56 @@ export const pipe = <
     return second(result.data as B) as Promise<Result<C, E1 | E2>>;
   };
 };
+
+/**
+ * A configured `withContext` that is *also* chainable: it wraps actions directly
+ * (like `defineWithContext`) and exposes `append` to layer on another enhancer,
+ * returning a freshly-typed builder so the context type evolves across the chain.
+ *
+ * The call signature mirrors what `defineWithContext(enhancer)` returns, but is
+ * written directly via `withContextImpl<A, Out, E>` (a valid instantiation)
+ * rather than `ReturnType<typeof defineWithContext<Enhancer<…, Out, …>>>` — the
+ * latter can't prove a *generic* `Out` satisfies the enhancer constraint (the
+ * `Result` void-branch makes `Out | undefined` look possible).
+ */
+type ContextBuilder<
+  Out extends GenericContext = GenericContext,
+  E extends Error = never,
+> = {
+  <A extends ContextedAction<Out>>(
+    action: A,
+    name?: string,
+  ): ReturnType<typeof withContextImpl<A, Out, E>>;
+  append: <Next extends GenericContext, E2 extends Error>(
+    enhancer: Enhancer<Out, Next, E2>,
+  ) => ContextBuilder<Next, E | E2>;
+};
+
+const builder = <Out extends GenericContext, E extends Error>(
+  enhancer: Enhancer<GenericContext, Out, E>,
+): ContextBuilder<Out, E> =>
+  Object.assign(
+    // Cast to a concrete-`Out` enhancer so `defineWithContext`'s constraint is
+    // satisfied; the runtime enhancer is unchanged and the result is re-typed.
+    defineWithContext(
+      enhancer as unknown as Enhancer<GenericContext, GenericContext, E>,
+    ),
+    {
+      append: <Next extends GenericContext, E2 extends Error>(
+        next: Enhancer<Out, Next, E2>,
+      ) => builder(pipe(enhancer, next)),
+    },
+  ) as unknown as ContextBuilder<Out, E>;
+
+/**
+ * Redis + db as an appendable capability. Actions that read `context.durable`
+ * opt in via `withContext.append(withDurable)`; the rest never carry it.
+ */
+export const withDurable: Enhancer<
+  GenericContext,
+  DurableContext,
+  never
+> = async (base) => ({
+  success: true,
+  data: { ...base, durable: { redis, db } },
+});

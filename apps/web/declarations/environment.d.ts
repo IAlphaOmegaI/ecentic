@@ -31,9 +31,16 @@ declare namespace NodeJS {
 
     readonly CRON_SECRET: string;
 
-    readonly AI_GATEWAY_API_KEY: string;
-    readonly AZURE_RESOURCE_NAME: string;
+    /** Azure OpenAI (ChatGPT) — the default provider for all GPT calls. */
+    readonly AZURE_RESOURCE_NAME: string; // subdomain only, e.g. "my-resource"
     readonly AZURE_API_KEY: string;
+    readonly AZURE_API_VERSION?: string; // defaults to "preview" (Azure v1 API surface)
+    readonly AZURE_DEPLOYMENT_GPT4O?: string; // your GPT deployment name (e.g. "gpt-5.3-chat")
+
+    /** Native provider keys — Claude/Gemini/Perplexity calls go direct, not via a gateway. */
+    readonly ANTHROPIC_API_KEY: string;
+    readonly GOOGLE_GENERATIVE_AI_API_KEY: string;
+    readonly PERPLEXITY_API_KEY: string;
 
     readonly GOOGLE_CLIENT_ID: string;
     readonly GOOGLE_CLIENT_SECRET: string;

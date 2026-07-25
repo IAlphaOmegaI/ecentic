@@ -21,12 +21,12 @@ const perspectives = [
   {
     id: "gemini",
     label: "Gemini",
-    model: "google/gemini-2.5-flash" as AI.ModelId,
+    model: "gemini-2.5-flash" as AI.ModelId,
   },
   {
     id: "perplexity",
     label: "Perplexity Sonar",
-    model: "perplexity/sonar" as AI.ModelId,
+    model: "sonar" as AI.ModelId,
   },
 ] as const;
 

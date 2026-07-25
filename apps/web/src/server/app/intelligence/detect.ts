@@ -1,5 +1,4 @@
 import { resultify } from "@zenncore/utils";
-import { streamObject } from "ai";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { getBrandLogo } from "@/lib/logo";
@@ -109,14 +108,12 @@ export const stream = ({
 
     // Primary path: stream array elements as the model emits them.
     const streamed = await resultify(async () => {
-      const generation = streamObject({
+      const generation = AI.streamArray({
+        label: "detect.competitors",
         model: "gpt-4o",
-        output: "array",
         schema: candidate,
         instructions: Judge.DETECTION_SYSTEM,
         prompt,
-        providerOptions: AI.providerOptions,
-        onError: () => {},
       });
       for await (const entry of generation.elementStream) await persist(entry);
     });

@@ -3,8 +3,9 @@
 import { createStreamableValue } from "@ai-sdk/rsc";
 // import { UcpDiscoveryProfileSchema } from "@ucp-js/sdk";
 import { resultify } from "@zenncore/utils";
-import { isLoopFinished, streamText, tool } from "ai";
+import { isLoopFinished, tool } from "ai";
 import * as z from "zod";
+import * as AI from "../../utils/ai";
 import {
   businessProfileSchema,
   searchCatalogRequestSchema,
@@ -68,19 +69,6 @@ const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
 //       return fetch(input, init);
 //     }
 //   };
-
-const gatewayOptions = () => ({
-  gateway: {
-    byok: {
-      azure: [
-        {
-          apiKey: process.env.AZURE_API_KEY as string,
-          resourceName: process.env.AZURE_RESOURCE_NAME as string,
-        },
-      ],
-    },
-  },
-});
 
 export type PlaygroundTransport = "mcp" | "rest";
 
@@ -639,8 +627,9 @@ export const runStoreComparison = async ({
 
       const tools = buildMcpTools(endpoints, agentProfileUrl);
 
-      const agentResult = streamText({
-        model: "google/gemini-3-flash",
+      const agentResult = AI.streamText({
+        label: "product-comparison",
+        model: "gemini-2.5-flash",
         instructions: `You are an AI shopping agent evaluator. Simulate how autonomous shopping agents (GPT-4, Claude, Gemini, Perplexity, and similar) decide where to buy when a buyer asks for something — then explain whether the source merchant would win or lose against competitors as a group.
 
 This is not a store-by-store ranking. Frame everything as **my store vs competitors**: one side (the source store) against the combined competitor set. Do not rank competitors against each other or assign first/second/third place to individual stores.
@@ -713,7 +702,6 @@ Write for a merchant asking: "Would an AI shopping agent buy from my store or fr
 Call search_catalogs with parameters derived from this request, then evaluate my store vs competitors: list every factor an AI shopping agent would weigh, say which side wins on each, and give a clear verdict on where the agent would buy and why.`,
         tools,
         stopWhen: isLoopFinished(),
-        providerOptions: gatewayOptions(),
       });
 
       for await (const event of agentResult.stream) {

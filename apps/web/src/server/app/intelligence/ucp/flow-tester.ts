@@ -4,8 +4,9 @@ import type { JSONRPCRequest } from "@ai-sdk/mcp";
 import { createStreamableValue } from "@ai-sdk/rsc";
 // import { UcpDiscoveryProfileSchema } from "@ucp-js/sdk";
 import { merge, resultify } from "@zenncore/utils";
-import { isLoopFinished, streamText, tool } from "ai";
+import { isLoopFinished, tool } from "ai";
 import * as z from "zod";
+import * as AI from "../../../utils/ai";
 import {
   businessProfileSchema,
   cancelCartRequestSchema,
@@ -37,9 +38,10 @@ import * as Utils from "./utils";
 // ecentic UCP platform profile
 const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
 
-// Gemini 3 requires thoughtSignature replay on multi-step tool loops; the gateway
-// path triggers SDK sentinel injection + warnings. 2.5-flash is sufficient here.
-const FLOW_TESTER_MODEL = "google/gemini-3-flash";
+// 2.5-flash handles this multi-step tool loop reliably; Gemini 3 needs
+// thoughtSignature replay across steps, which is fragile here. Routed direct to
+// Google (not the Vercel gateway) via AI.model below.
+const FLOW_TESTER_MODEL = "gemini-2.5-flash";
 
 const formatUcpMessage = (message: z.infer<typeof messageSchema>): string => {
   const path = message.path ? ` (${message.path})` : "";
@@ -134,19 +136,6 @@ const _createUcpMcpFetch = (agentProfileUrl: string): typeof fetch => {
 
   return Object.assign(ucpMcpFetch, { preconnect: fetch.preconnect });
 };
-
-const gatewayOptions = () => ({
-  gateway: {
-    byok: {
-      azure: [
-        {
-          apiKey: process.env.AZURE_API_KEY as string,
-          resourceName: process.env.AZURE_RESOURCE_NAME as string,
-        },
-      ],
-    },
-  },
-});
 
 export type UCPTransports = "mcp" | "rest";
 
@@ -843,7 +832,8 @@ export const runFlowTester = async ({
       const searchQuery = query?.trim() || "product";
 
       // 4. Run the agentic flow
-      const agentResult = streamText({
+      const agentResult = AI.streamText({
+        label: "ucp.flow-tester",
         model: FLOW_TESTER_MODEL,
         instructions: `You are a UCP (Universal Commerce Protocol) shopping agent running a live integration test against a ${shoppingTransport.toUpperCase()} endpoint.
 
@@ -896,7 +886,6 @@ DON'T CALL the same tool again if the first one hasn't finished yet.
         prompt: `Test the UCP ${shoppingTransport.toUpperCase()} endpoint at ${shoppingEndpoint} (store: ${domain}).`,
         tools,
         stopWhen: isLoopFinished(),
-        providerOptions: gatewayOptions(),
       });
 
       for await (const event of agentResult.stream) {
