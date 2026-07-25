@@ -1,4 +1,4 @@
-# Ecentic Docs Hub
+# ecentic Docs Hub
 
 Central navigation for product context, agent rules, and package/component documentation.
 
@@ -18,7 +18,7 @@ Central navigation for product context, agent rules, and package/component docum
 
 ### If you are planning billing or Shopify App Store pricing
 
-- [Pricing + Shopify Billing API](./tasks/shopify-billing-pricing.md) — how Partner Dashboard plans, Billing API charges, and Ecentic entitlements should align
+- [Pricing + Shopify Billing API](./tasks/shopify-billing-pricing.md) — how Partner Dashboard plans, Billing API charges, and ecentic entitlements should align
 
 ### If you are implementing or refactoring code
 

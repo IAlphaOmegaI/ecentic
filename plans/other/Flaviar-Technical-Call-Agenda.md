@@ -1,7 +1,7 @@
 # Flaviar — Technical Call Agenda
 
 **Date:** Monday, 20 July 2026
-**Ecentic:** Xhurian Shaba (CEO), + CTO
+**ecentic:** Xhurian Shaba (CEO), + CTO
 **Flaviar:** Adi Pal (CTO), Aljaz Vindis (Interim Chief Product Officer, incl. Design)
 **Intro from:** Jugoslav Petkovic (co-founder, Flaviar) — now BCC'd
 **Prior artifact:** AI-Agent Commerce Audit (sent 25 June, forwarded to CTO ~10 July)

@@ -4,7 +4,7 @@ Spike for plan 010. Investigation + recommendation only — no code. Written 202
 
 ## Problem
 
-Catalogs are synced once (onboarding or manual), then never again. Merchants add/change/remove products continuously; Ecentic never notices, so scans run on stale data and new products are never simulated. `docs/context/idea.md` (Catalog Sync on Interval & Webhooks) promises a 12-hour re-sync, Shopify `products/create|update|delete` webhooks, and feed re-fetch. The rails mostly exist — they're just not wired for ongoing sync.
+Catalogs are synced once (onboarding or manual), then never again. Merchants add/change/remove products continuously; ecentic never notices, so scans run on stale data and new products are never simulated. `docs/context/idea.md` (Catalog Sync on Interval & Webhooks) promises a 12-hour re-sync, Shopify `products/create|update|delete` webhooks, and feed re-fetch. The rails mostly exist — they're just not wired for ongoing sync.
 
 ## Facts established (with file:line)
 

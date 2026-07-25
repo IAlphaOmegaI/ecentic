@@ -1,6 +1,6 @@
 # Pricing + Shopify Billing API — Implementation Guide
 
-This document describes how **Ecentic** should handle **subscription pricing** when the app is **listed on the Shopify App Store**, in conjunction with Shopify’s **Billing API**. It is written for engineers and product owners planning billing work; it is not legal or tax advice.
+This document describes how **ecentic** should handle **subscription pricing** when the app is **listed on the Shopify App Store**, in conjunction with Shopify’s **Billing API**. It is written for engineers and product owners planning billing work; it is not legal or tax advice.
 
 **Canonical product tiers** (limits and features) live in [`docs/context/idea.md`](../context/idea.md#pricing-tiers).
 
@@ -20,9 +20,9 @@ This document describes how **Ecentic** should handle **subscription pricing** w
 |--------|------------|--------|
 | **Partner Dashboard plans** | Public (and optional private) plans shown on the App Store listing | Partner Dashboard → App → Distribution / Pricing |
 | **Shopify Billing API** | Actual charge creation, approval, renewal, cancellation for a given **shop** | Your backend using Admin API + webhooks |
-| **Ecentic entitlements** | What your app allows: product limits, simulation frequency, features | Your DB + server actions / middleware |
+| **ecentic entitlements** | What your app allows: product limits, simulation frequency, features | Your DB + server actions / middleware |
 
-**Rule:** A merchant should be able to read the listing, approve a charge in Shopify, and see the same tier and limits inside Ecentic without confusion.
+**Rule:** A merchant should be able to read the listing, approve a charge in Shopify, and see the same tier and limits inside ecentic without confusion.
 
 ---
 
@@ -65,7 +65,7 @@ Subscribe to app subscription lifecycle events so your database stays in sync if
 
 1. **Verify** the webhook (HMAC for REST-style payloads; follow Shopify’s docs for the delivery format you register).
 2. **Idempotent updates:** Same event may retry; key off Shopify subscription GID + status.
-3. **Map** Shopify subscription → **Ecentic user / store record**:
+3. **Map** Shopify subscription → **ecentic user / store record**:
    - Minimum: which `store` row (Shopify connection) is paid and until when.
    - If one user has multiple Shopify stores, decide whether **each store has its own subscription** (typical for Shopify) or whether you enforce one “account” subscription—**Billing API is per installation**, so “one subscription per shop” is the straightforward model.
 
@@ -81,7 +81,7 @@ Today, OAuth creates a **`store`** row linked to a **`user`**. Billing events ar
 - Store on `store` (or a dedicated `shopify_billing` table): `shopifySubscriptionId`, `planKey` (`scan` | `compete` | `dominate` | `enterprise`), `status`, `currentPeriodEnd`, `cancelAtPeriodEnd`, etc.
 - Enforce limits (product counts, simulation frequency) **per user** by aggregating across stores **or** per store—**pick one rule** and document it in product copy.
 
-**Edge case:** Merchant installs on two shops under one Ecentic user—either two subscriptions or a product decision to “link” shops under one paid seat (complex; usually defer).
+**Edge case:** Merchant installs on two shops under one ecentic user—either two subscriptions or a product decision to “link” shops under one paid seat (complex; usually defer).
 
 ---
 

@@ -1,6 +1,6 @@
-# Ecentic design canon
+# ecentic design canon
 
-> The single source of truth for visual design, interaction design, and page composition at Ecentic.
+> The single source of truth for visual design, interaction design, and page composition at ecentic.
 > Read this before creating or revising any user-facing surface.
 
 This guide is derived from the strongest implemented patterns on the landing page, pricing, the
@@ -12,7 +12,7 @@ document, this document is the direction to follow.
 
 ## 0. The shortest useful version
 
-Ecentic should feel like **refined commerce infrastructure**.
+ecentic should feel like **refined commerce infrastructure**.
 
 It is editorial enough to explain a new market, technical enough to make machine commerce credible,
 and calm enough to carry dense operational data. Its visual signature is not a decorative style
@@ -46,7 +46,7 @@ progress tracks, and truly elevated panels may be rounded. Do not soften the who
 
 ### Product intent
 
-Ecentic helps merchants understand and improve how AI shopping agents evaluate their products. The
+ecentic helps merchants understand and improve how AI shopping agents evaluate their products. The
 core loop is:
 
 > **Simulate → Diagnose → Optimize → Publish → Repeat.**
@@ -105,7 +105,7 @@ The design belongs to the world of:
 
 ### Physical analogy
 
-If Ecentic were a physical space, it would be a bright operations room inside a modern fulfillment
+If ecentic were a physical space, it would be a bright operations room inside a modern fulfillment
 facility: pale work surfaces, precise registration marks, clipped reports, blue control lights,
 shipping-grid geometry, and live status displays. It would not be a dark cyberpunk terminal, a soft
 consumer wellness app, or a generic glassmorphic AI dashboard.
@@ -267,7 +267,7 @@ Primary blue is the only loud brand color. It may:
 - identify one recommended or selected option;
 - mark active navigation;
 - carry a primary call to action;
-- highlight the Ecentic or pay-as-you-go column in a comparison;
+- highlight the ecentic or pay-as-you-go column in a comparison;
 - fill progress that is not success/warning/error.
 
 It should not appear on every icon, every heading, and every border at once.
@@ -492,7 +492,7 @@ when they participate in the composition, but ordinary marketing eyebrows remain
 
 ### 7.1 Border-first hierarchy
 
-Ecentic is primarily a border-and-surface system, not a shadow system.
+ecentic is primarily a border-and-surface system, not a shadow system.
 
 - Structural rails: one pixel, `border-accent-foreground`.
 - Connected cells: one-pixel gap seam.
@@ -913,7 +913,7 @@ machine reasoning.
 
 The marketing navbar is fixed and belongs to the centered rail. It contains:
 
-- Ecentic trademark/wordmark;
+- ecentic trademark/wordmark;
 - a concise desktop navigation;
 - one primary installation action;
 - a mobile sheet below the desktop breakpoint.
@@ -1265,10 +1265,10 @@ Do not preserve them for visual consistency.
 
 Use this before designing or revising a page:
 
-> You are designing an Ecentic surface for commerce operators working in the AI-agent economy.
+> You are designing an ecentic surface for commerce operators working in the AI-agent economy.
 > Start by naming the user's immediate context, the single action they must complete, and the
 > decision the page must make easier. Choose marketing, dashboard, or onboarding mode. Build the
-> composition from Ecentic's registered rail grid: continuous vertical rails, one-pixel seams,
+> composition from ecentic's registered rail grid: continuous vertical rails, one-pixel seams,
 > connected `gap-px` cells, muted crosshairs at consequential intersections, and a 16px hatched
 > gutter only between genuinely different systems. Keep structural geometry sharp. Round only
 > controls, pills, media, progress, inset code/log panels, and genuinely elevated surfaces. Use Red

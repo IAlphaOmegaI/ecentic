@@ -1,4 +1,4 @@
-# Ecentic design system (@zenncore/web) — how to build with it
+# ecentic design system (@zenncore/web) — how to build with it
 
 A React + Tailwind CSS v4 component library. Components ship **pre-styled** — you
 compose them and add layout; you do **not** restyle their internals.
@@ -58,7 +58,7 @@ buttons composed via the `render` prop) accept `color`
 and `variant` (`default`/`soft`/`outline`/`ghost`/`flat`). Compose an element as
 another via the `render` prop: `<DialogTrigger render={<Button color="primary">Open</Button>} />`.
 
-## Composition & layout — the Ecentic bordered-grid look
+## Composition & layout — the ecentic bordered-grid look
 
 The design system is more than the components: the signature look is a **bordered
 grid**. Build layouts as sections delimited by hairline borders, not floating

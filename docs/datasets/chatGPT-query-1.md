@@ -1,4 +1,4 @@
-Écentic ChatGPT dataset (query-1) 
+écentic ChatGPT dataset (query-1) 
 
 > ---
 

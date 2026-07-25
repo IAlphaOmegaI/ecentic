@@ -13,7 +13,7 @@
 ## 1. Objective
 
 Add a **usage layer on top of the existing subscriptions**: a **percentage performance fee
-with a monthly cap**, charged **only on orders Ecentic can attribute** to AI-agent traffic it
+with a monthly cap**, charged **only on orders ecentic can attribute** to AI-agent traffic it
 optimizes for. This is additive — the `compete` / `dominate` recurring price stays; the fee
 rides on the same invoice as a metered line.
 
@@ -31,7 +31,7 @@ Non-goals: charging per agent *visit*; charging on un-attributed sales; changing
 
 ## 2. Key decisions (read before coding)
 
-1. **Attribution is honest and observable.** Ecentic does not sit in the AI platform's
+1. **Attribution is honest and observable.** ecentic does not sit in the AI platform's
    checkout, so we attribute via signals we actually see: the `*-referral` `agentType`
    visits already recorded in `agent_visit` (a human arriving from an AI answer), plus a
    first-party attribution cookie and a Shopify **order webhook**. An order counts only if
@@ -232,7 +232,7 @@ const WINDOW_DAYS = Number(
 );
 
 /**
- * Called from the Shopify `orders/paid` webhook. Attributes the order to Ecentic
+ * Called from the Shopify `orders/paid` webhook. Attributes the order to ecentic
  * iff it carries our AI-ref cart attribute OR a matching recent `*-referral` visit
  * exists for the store within the attribution window. Idempotent on (store, order).
  */

@@ -1,13 +1,13 @@
 # Agent Visibility — Ingestion Paths and Measurement
 
-How product data actually reaches AI shopping surfaces, and which Ecentic
+How product data actually reaches AI shopping surfaces, and which ecentic
 module serves each path. This supersedes the earlier assumption that writing
 `ucp.*` metafields alone makes data agent-visible — unmapped backend metafields
 are not read by any agent surface.
 
 ## Ingestion paths (mid-2026)
 
-| Surface | What it reads | Ecentic module |
+| Surface | What it reads | ecentic module |
 |---|---|---|
 | ChatGPT Shopping | Shopify Catalog (auto for Shopify stores) or OpenAI Product Feed; page crawl for citations only | Catalog-extractable fields via `updateProduct` + storefront JSON-LD |
 | Shopify Catalog → ChatGPT/Perplexity/Copilot | Standard fields, taxonomy category metafields, mapped metafields (admin Catalog Mapping), attribute extraction from titles/descriptions | `integration/shopify.ts` (title/description push, `ucp` metafield definitions) |

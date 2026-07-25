@@ -1,11 +1,11 @@
 # Hosted UCP — Conformance with the woo-ucp Reference Implementation
 
-Ecentic serves the Universal Commerce Protocol (UCP `2026-04-08`) on behalf of
+ecentic serves the Universal Commerce Protocol (UCP `2026-04-08`) on behalf of
 connected WooCommerce stores. The wire behavior is a port of the **woo-ucp
 plugin's** in-WordPress implementation (the reference), split across two
 codebases:
 
-- **Ecentic backend** (`apps/web/src/server/app/ucp/`) — the entire protocol
+- **ecentic backend** (`apps/web/src/server/app/ucp/`) — the entire protocol
   surface: discovery, catalog, carts, checkout sessions, orders, capability
   negotiation, RFC 9421 signing, idempotency, rate limiting.
 - **Thin store plugin** (woo-ucp ≥ 2.0) — only what genuinely needs the Woo
@@ -13,7 +13,7 @@ codebases:
   hosted profile), the one-click connect flow, private `wc-ucp/v1` commerce
   primitives (live quote via the real `WC()->cart`, order materialisation via
   `WC()->checkout()->create_order()`, order snapshots), and order-status
-  events back to Ecentic.
+  events back to ecentic.
 
 This document tracks parity with the reference (the pre-2.0 woo-ucp classes,
 kept in that repo's git history, and its `conformance/UCP-*.md` notes) and
@@ -31,9 +31,9 @@ records every known divergence.
 | `WOO_UCP_Cart` (transients) | `ucp/cart.ts` + `ucp/sessions.ts` — redis sessions, same 60-min TTL semantics |
 | `WOO_UCP_Checkout` (transients + WC internals) | `ucp/checkout.ts` — redis sessions; totals/shipping/coupons come from the plugin bridge `POST /wc-ucp/v1/quote`, which runs the real `WC()->cart` |
 | `WOO_UCP_Checkout::create_wc_order` | Bridge `POST /wc-ucp/v1/orders` → `WC()->checkout()->create_order()` over the calculated cart (higher fidelity than the reference's manual `wc_create_order`) |
-| `WOO_UCP_Orders` (entity + webhooks) | `ucp/orders.ts` — entity via bridge `GET /wc-ucp/v1/orders/{id}`; signed webhook fan-out from Ecentic; the plugin only relays status changes to `POST /api/ucp/stores/{store}/events` (HMAC) |
+| `WOO_UCP_Orders` (entity + webhooks) | `ucp/orders.ts` — entity via bridge `GET /wc-ucp/v1/orders/{id}`; signed webhook fan-out from ecentic; the plugin only relays status changes to `POST /api/ucp/stores/{store}/events` (HMAC) |
 | `WOO_UCP_Discounts` | Deleted — coupon math is WooCommerce's own, via the bridge quote's `WC()->cart->apply_coupon()` |
-| `WOO_UCP_Connect` | Unchanged plugin-side; Ecentic side is `ucp/connect.ts` + `api/integrations/woo/start\|callback` (OAuth code + PKCE, SSRF guard, atomic single-use state, reconnect idempotency) |
+| `WOO_UCP_Connect` | Unchanged plugin-side; ecentic side is `ucp/connect.ts` + `api/integrations/woo/start\|callback` (OAuth code + PKCE, SSRF guard, atomic single-use state, reconnect idempotency) |
 | `WOO_UCP_Stripe` | Restored in the plugin unchanged; invoked through the bridge `POST /wc-ucp/v1/charge` so the Stripe secret never leaves the store |
 | `WOO_UCP_Auth` (identity linking) | Restored in the plugin, upgraded to the current spec (PKCE S256 enforced, RFC 9207 `iss`, client binding, revocation cascade); scope gates enforced by the hosted router via bridge introspection |
 
@@ -223,7 +223,7 @@ backorders) at product and variant level, empty lists omitted.
   and shipment-tracking `events`, refund `adjustments` (line refs,
   `occurred_at`, negative totals), labelled totals (with fees), and the
   `attribution` snapshot.
-- Webhooks: `order.created` fired by Ecentic on completion;
+- Webhooks: `order.created` fired by ecentic on completion;
   `order.updated` relayed from the plugin's
   `woocommerce_order_status_changed` hook through the HMAC-authenticated
   events endpoint. Deliveries carry Standard Webhooks headers
@@ -310,8 +310,8 @@ minor units.
 | `POST /charge` | Processes one payment instrument for a UCP order through `woo_ucp_process_instrument` (WOO_UCP_Stripe by default) — returns `charged` (order paid), `escalate` (3DS continue_url), `failed` (mapped reason), or `defer`; payment secrets never leave the store |
 | `POST /tokens/introspect` | Resolves a user identity token issued by the store's OAuth server to its grant (active, user, scope, client) so the backend can enforce identity-linking scope gates |
 
-Plugin → Ecentic events: `POST /api/ucp/stores/{store}/events` with
-`X-Ecentic-Timestamp` + `X-Ecentic-Signature: hex(hmac_sha256(bridgeSecret,
+Plugin → ecentic events: `POST /api/ucp/stores/{store}/events` with
+`X-ecentic-Timestamp` + `X-ecentic-Signature: hex(hmac_sha256(bridgeSecret,
 "{ts}.{body}"))`, 5-minute replay window.
 
 ## Deployment notes

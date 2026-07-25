@@ -64,30 +64,30 @@ All final copy in one place. `⚠️ CONFIRM` = ask the owner / leave a TODO.
 ### Hero
 - **Eyebrow:** `Built for Shopify & WooCommerce`
 - **H1:** `Be the product AI recommends.`
-- **Subhead:** `Shoppers now ask ChatGPT, Gemini, and Perplexity what to buy. Ecentic makes sure the answer is your product — and sends those buyers straight to your store.`
+- **Subhead:** `Shoppers now ask ChatGPT, Gemini, and Perplexity what to buy. ecentic makes sure the answer is your product — and sends those buyers straight to your store.`
 - **Result line (the star):** `DUA Flavours grew AI-agent visits +15% and sales +12% — in 30 days.` (Confirmed by the customer, with written permission to publish. Brand name is `DUA Flavours` — two words, `DUA` uppercase.)
 - **CTA buttons:** `Install on Shopify` and `Install on WooCommerce`
 - **Microcopy under CTA:** `2-minute setup · No credit card · See your free score first`
 
 ### Proof band (stat tiles) — all sources are real, keep attributions
-- Tile 1: value `+15%` — label `AI-agent visits for DUA Flavours in 30 days` — source `Ecentic customer`
-- Tile 2: value `+12%` — label `sales for DUA Flavours in 30 days` — source `Ecentic customer`
+- Tile 1: value `+15%` — label `AI-agent visits for DUA Flavours in 30 days` — source `ecentic customer`
+- Tile 2: value `+12%` — label `sales for DUA Flavours in 30 days` — source `ecentic customer`
 - Tile 3: value `31%` — label `higher conversion from AI-referred shoppers` — source `Salesforce, 2025`
 - Tile 4: value `13%` — label `sales growth for stores built for AI agents (vs 2% without)` — source `Adobe / Bain`
 - **Band heading (optional, above tiles):** `AI is already sending shoppers. The only question is whether they land on you.`
 
 ### How it works (Steps) — replaces existing Steps copy
 - **Section H2:** `Live in three steps.`
-- **Section subhead:** `Connect your store and Ecentic does the rest.`
+- **Section subhead:** `Connect your store and ecentic does the rest.`
 - Step 1 — title `Connect your store` — body `Install on Shopify or WooCommerce in about two minutes. No developer needed.`
-- Step 2 — title `See where you lose` — body `Ecentic asks the top AI shopping agents to shop your catalog and shows you exactly which products they skip — and why.`
+- Step 2 — title `See where you lose` — body `ecentic asks the top AI shopping agents to shop your catalog and shows you exactly which products they skip — and why.`
 - Step 3 — title `Get picked` — body `One click rewrites your listings so agents recommend you first. Then watch your AI visits and sales climb.`
 
 ### Features — replaces existing Features copy
 - **Section H2:** `Everything you need to win the AI shopper.`
 - Card 1 — title `Your AI score` — body `See how often ChatGPT, Claude, Gemini, and Perplexity pick your products.`
 - Card 2 — title `Beat your competitors` — body `Find out who agents recommend instead of you, and what they have that you don't.`
-- Card 3 — title `One-click fixes` — body `Ecentic rewrites your titles, descriptions, and product data so agents choose you.`
+- Card 3 — title `One-click fixes` — body `ecentic rewrites your titles, descriptions, and product data so agents choose you.`
 - Card 4 — title `Track the payoff` — body `Watch AI-agent visits and revenue grow week over week.`
 
 ### Navbar
@@ -192,7 +192,7 @@ export const Hero = () => (
     </h1>
 
     <p className="max-w-2xl text-foreground-dimmed text-lg">
-      Shoppers now ask ChatGPT, Gemini, and Perplexity what to buy. Ecentic makes
+      Shoppers now ask ChatGPT, Gemini, and Perplexity what to buy. ecentic makes
       sure the answer is your product — and sends those buyers straight to your store.
     </p>
 
@@ -210,7 +210,7 @@ export const Hero = () => (
     <div className="mt-6 w-full max-w-4xl overflow-hidden rounded-2xl border border-accent-foreground">
       <Image
         src={/* screenshot or background.webp */ undefined as never}
-        alt="Ecentic dashboard showing AI win rate"
+        alt="ecentic dashboard showing AI win rate"
         priority
         className="w-full"
       />
@@ -230,8 +230,8 @@ export const Hero = () => (
 
 ```tsx
 const stats = [
-  { value: "+15%", label: "AI-agent visits for DUA Flavours in 30 days", source: "Ecentic customer" },
-  { value: "+12%", label: "sales for DUA Flavours in 30 days", source: "Ecentic customer" },
+  { value: "+15%", label: "AI-agent visits for DUA Flavours in 30 days", source: "ecentic customer" },
+  { value: "+12%", label: "sales for DUA Flavours in 30 days", source: "ecentic customer" },
   { value: "31%", label: "higher conversion from AI-referred shoppers", source: "Salesforce, 2025" },
   { value: "13%", label: "sales growth for stores built for AI agents (vs 2% without)", source: "Adobe / Bain" },
 ] as const;
@@ -259,7 +259,7 @@ export const Proof = () => (
 **Edit file:** `apps/web/src/app/(main)/_components/steps.tsx`
 
 - Keep the existing layout/markup/icons. **Only swap the text** for the "How it works" copy in §2.
-- Change the section's heading to `Live in three steps.` and subhead to `Connect your store and Ecentic does the rest.`
+- Change the section's heading to `Live in three steps.` and subhead to `Connect your store and ecentic does the rest.`
 - Replace the three step titles/bodies (`Simulate/Diagnose/Optimize`) with `Connect your store` / `See where you lose` / `Get picked` and their bodies.
 - **Add `id="how"`** to the section's root element so the navbar `/#how` link scrolls here (if the section root doesn't already have an id).
 
@@ -316,7 +316,7 @@ New render order inside `<main>`:
 - Update the `Hero` import if you renamed anything (you didn't — same path).
 - Leave the JSON-LD `<script>` and `metadata`/`createMetadata` block untouched **except**: the page `<title>` and `description` can be simplified to match the new plain tone (optional):
   - title: `ecentic — Be the product AI recommends`
-  - description: `Get picked by AI shopping agents. Ecentic optimizes your Shopify or WooCommerce listings so ChatGPT, Gemini, and Perplexity recommend you first.`
+  - description: `Get picked by AI shopping agents. ecentic optimizes your Shopify or WooCommerce listings so ChatGPT, Gemini, and Perplexity recommend you first.`
   - Keep it ≤160 chars for the description.
 
 ---

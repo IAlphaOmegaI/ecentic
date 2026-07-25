@@ -1,6 +1,6 @@
 # Agentic Structured Data — Theme App Extension
 
-Renders the `ucp.*` metafields Ecentic writes into real storefront HTML as
+Renders the `ucp.*` metafields ecentic writes into real storefront HTML as
 `<script type="application/ld+json">` tags — the step that makes structured
 data visible to crawling AI agents (OAI-SearchBot, PerplexityBot, Googlebot).
 When the `ucp.structured_data` metafield is missing, the block falls back to

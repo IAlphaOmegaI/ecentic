@@ -1,12 +1,12 @@
-# Ecentic — Product & Architecture Handoff
+# ecentic — Product & Architecture Handoff
 
-This document describes what Ecentic is, how it works, what has been built, and what remains. It is written for AI agents or developers picking up the project.
+This document describes what ecentic is, how it works, what has been built, and what remains. It is written for AI agents or developers picking up the project.
 
 ---
 
-## What Ecentic Is
+## What ecentic Is
 
-Ecentic (styled **ecentic**) is an e-commerce optimization platform for the AI agent economy. As AI shopping agents (GPT-4, Claude, Gemini, etc.) increasingly choose products on behalf of consumers, merchants need to ensure their listings are selected over competitors. Ecentic simulates these agent decisions, diagnoses why products win or lose, and auto-optimizes listings to get picked first.
+ecentic (styled **ecentic**) is an e-commerce optimization platform for the AI agent economy. As AI shopping agents (GPT-4, Claude, Gemini, etc.) increasingly choose products on behalf of consumers, merchants need to ensure their listings are selected over competitors. ecentic simulates these agent decisions, diagnoses why products win or lose, and auto-optimizes listings to get picked first.
 
 **Target audience:** E-commerce merchants, D2C brands, and teams selling through AI-powered shopping channels.
 
@@ -86,7 +86,7 @@ AI agents don't see ads, don't scroll, don't read marketing copy. They read stru
 
 ## Autonomous Behavior — Zero Manual Input
 
-Ecentic's core differentiator is that it is **not a dashboard you check**. It is a closed-loop system that runs continuously in the background. Once a merchant connects their store and selects products/competitors, the system should require zero manual input going forward. Everything below should happen automatically.
+ecentic's core differentiator is that it is **not a dashboard you check**. It is a closed-loop system that runs continuously in the background. Once a merchant connects their store and selects products/competitors, the system should require zero manual input going forward. Everything below should happen automatically.
 
 ### 1. Scheduled Simulation Sweeps
 
@@ -146,7 +146,7 @@ Competitors are not static either. The system should:
 The Universal Commerce Protocol profile should be auto-generated and kept up-to-date:
 
 - Build the UCP JSON from the user's store data, product catalog, and business info.
-- Serve it at `/.well-known/ucp` either via a hosted endpoint (Ecentic provides a URL the merchant points to) or by generating the JSON file for the merchant to deploy.
+- Serve it at `/.well-known/ucp` either via a hosted endpoint (ecentic provides a URL the merchant points to) or by generating the JSON file for the merchant to deploy.
 - Re-generate whenever the catalog changes materially (new products, pricing shifts, business info updates).
 
 ### 7. Scheduled Reports & Alerts

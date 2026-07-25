@@ -1,6 +1,6 @@
-# Ecentic
+# ecentic
 
-Ecentic (styled as **ecentic**) is an e-commerce optimization platform for the AI agent economy.
+ecentic (styled as **ecentic**) is an e-commerce optimization platform for the AI agent economy.
 It helps merchants understand how AI shopping agents (such as GPT, Claude, and Gemini) evaluate product listings, identify why products lose to competitors, and optimize listings to improve agent-driven selection.
 
 ## What This Repository Contains
