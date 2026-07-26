@@ -1,8 +1,47 @@
 # Google Merchant Center — Hybrid Channel-Partner Integration
 
 > Status: Path 1 server-side implemented (link + supplemental overrides + diagnostics).
-> Path 2 (full API provisioning) is documented but not built.
+> **Validation spike 1 (Shopify) passed on a live account** — findings folded in below.
+> Spike 2 (WooCommerce) still open. Path 2 (full API provisioning) is documented but not built.
 > Everything targets **Merchant API v1** (v1beta is dead, Content API is sunsetting).
+
+## Spike 1 results (Shopify, live account) — facts replacing assumptions
+
+1. **Attribute-level merge works as designed.** Supplemental title +
+   `customLabel0` overrides appeared on the processed offer while description,
+   link, image, price, and availability kept flowing from the Shopify channel.
+2. **The primary's defaultRule does NOT pick up supplemental sources
+   automatically.** The Shopify primary ships `takeFromDataSources: [{self:
+   true}]`; the first insert returned 200 and merged nothing. An explicit
+   `dataSources.patch` setting `[supplemental, self]` made it work — and the
+   patch is accepted (Shopify does not lock rule editing on its source). The
+   rule patch is therefore a **mandatory provisioning sub-step with a hard
+   gate**, not a fallback: provisioning isn't complete until the primary's rule
+   shows our source first. It must be read-modify-write (PATCH replaces the
+   whole list), with watchdog coverage afterward — a merchant can reorder or
+   remove the source in Merchant Center and silently disable every override
+   while inserts keep returning 200.
+3. **Identifiers are quirkier than documented.** Feed label was
+   `USD_101961335098` (a Shopify-managed label, **not** a country code) and the
+   offer ID was `shopify_ZZ_{productId}_{variantId}`. Both must be read from
+   the live account per merchant and matched exactly — an insert with a wrong
+   triplet succeeds but creates an orphan instead of merging. Any code with a
+   `"US"` default is a latent bug.
+4. **Reprocessing is lazy — push ≠ live.** A rule change alone didn't touch the
+   processed product for hours; a fresh `productInputs:insert` forces
+   reprocessing of that offer. The reliable merge signal is
+   `productStatus.lastUpdateDate` advancing past the write, so merge-health
+   checks must be async, never assert-after-push. Dashboard consequence: the
+   honest lifecycle is *optimizing → applied, going live (may take a few
+   hours) → live on Google* — never "optimized ✓" at push time.
+5. **Google policy-validates overridden attributes as the merchant's own
+   data** (an all-caps test title immediately drew `title_all_caps`), so
+   optimization output gets a policy lint before push — a disapproval caused
+   by our rewrite is the worst failure mode this product has.
+
+Open (not contradicting anything): the same protocol against Google for
+WooCommerce — offer-ID format, feed-label convention, and whether its primary
+accepts the rule patch are unverified there.
 
 ---
 
@@ -86,24 +125,34 @@ Most Shopify merchants land here; many are already mid-setup.
    `providers/{ECENTIC_MCA_ID}`); the merchant approves the request in Merchant
    Center. UI warns what management access means before we send it.
 4. **Attach optimization:** create a supplemental data source on their account
-   via `dataSources.create`, then push attribute overrides with
-   `productInputs:insert` keyed to the primary feed's offer IDs.
+   via `dataSources.create`, **patch the primary's defaultRule to list our
+   source first** (spike 1: auto-pickup never happens; read-modify-write, hard
+   gate — provisioning is incomplete until the rule is confirmed), then push
+   attribute overrides with `productInputs:insert` keyed to the primary feed's
+   offer IDs.
 
    **Offer-ID matching — read, don't reconstruct.** Shopify's channel generates
-   IDs like `shopify_{country}_{productId}_{variantId}`. We do not attempt to
-   reproduce that scheme (guessing target country, enumerating variants from
-   `rawData`). Instead, with the management link active, we call
-   `accounts.products.list` on their account, read the **actual** offer IDs the
-   primary feed produced, and match them back to our products by the embedded
-   platform product id. One override is pushed per matching offer (variants of
-   one product share the optimized title/description).
+   IDs like `shopify_ZZ_{productId}_{variantId}` (spike 1 — the middle segment
+   is not a real country code). We do not attempt to reproduce that scheme.
+   Instead, with the management link active, we call `accounts.products.list`
+   on their account, read the **actual** offer IDs the primary feed produced,
+   and match them back to our products by the embedded platform product id.
+   One override is pushed per matching offer (variants of one product share
+   the optimized title/description).
 
    **Merge keys are more than the offer ID.** Supplemental data merges on
    `(offerId, contentLanguage, feedLabel)`. The supplemental data source is
-   created with `feedLabel`/`contentLanguage` copied from the channel's primary
-   data source. The primary data source's **default rule** must also include
-   our supplemental source — inspecting (and if needed patching) that rule is
-   part of validation spike 1.
+   created with `feedLabel`/`contentLanguage` **discovered from** the channel's
+   primary data source — never assumed (Shopify labels look like
+   `USD_101961335098`). A wrong triplet inserts successfully and merges
+   nothing.
+
+   **Push lifecycle.** Each pushed offer is tracked in
+   `google_merchant_offer`: override bodies are hashed (unchanged bodies are
+   skipped, so re-pushing is always safe), inserts land as `pending`, and an
+   async verification pass — gated on `productStatus.lastUpdateDate` advancing
+   past the push — flips them to `live`. Optimization output passes a policy
+   lint before any insert.
 5. **Diagnostics:** pull item issues, disapprovals, and account issues into the
    ecentic dashboard — this is the visible product surface.
 
@@ -158,10 +207,15 @@ different craft, different consent boundary.
 
 ## Monitoring (per merchant)
 
+- **Rule position** — is our supplemental source still first in the primary's
+  `takeFromDataSources`? A merchant reordering or removing it in Merchant
+  Center silently disables every override while inserts keep returning 200
+  (`checkRuleHealth` re-checks and repairs).
 - **Supplemental-feed merge health** — overrides actually appearing on offers.
-  Diff pushed override offer IDs against `products.list` results (are the
-  optimized titles live on the processed offers?), not just disapproval counts.
-  Offer-ID schemes silently change when a merchant changes markets or variants.
+  The verification pass diffs processed attributes for every `pending` offer,
+  gated on `lastUpdateDate`; `reprocessedWithoutMerge` results are the
+  rule-broke signal. Offer-ID schemes silently change when a merchant changes
+  markets or variants (verification flags rows whose offers vanished).
 - Disapproval and item-issue rates.
 - ToS state re-checks (`retrieveForApplication` flags new required versions).
 - Path 2 accounts: verification state via Site Verification `list`, with
@@ -177,13 +231,15 @@ different craft, different consent boundary.
 
 Manual — needs real accounts; the code in this repo is the harness for it.
 
-1. Test store with the Shopify Google channel installed → confirm a
+1. ~~Test store with the Shopify Google channel installed → confirm a
    supplemental data source merges attribute overrides onto the channel's
    feed; inspect the primary data source's default rule; nail the offer-ID
-   matching. **The entire hybrid rests on this one assumption.**
+   matching.~~ **Done — passed** (see "Spike 1 results" above; rule patch
+   promoted to a required provisioning step).
 2. Same check for Google for WooCommerce (its feed behavior is less
    standardized — this decides how often WooCommerce merchants land in
-   Path 2).
+   Path 2). Sharpened checklist from spike 1: offer-ID format, feed-label
+   convention, and whether its primary accepts the rule patch.
 3. Run one full `services:propose` → merchant-approve cycle and screenshot the
    linking UX for onboarding copy.
 
@@ -199,8 +255,9 @@ tier with feed experiments.
 
 | Piece | Where |
 |---|---|
-| OAuth + Merchant API v1 client | `apps/web/src/server/utils/google-merchant.ts` |
+| OAuth + Merchant API v1 client + policy lint | `apps/web/src/server/utils/google-merchant.ts` |
 | Credential/link state (1:1 with store) | `google_merchant_account` table, `apps/web/src/server/app/google-merchant-account.ts` |
-| Path 1 actions (connect, detect, propose, data source, push, diagnostics, merge health) | `apps/web/src/server/app/integration/google-merchant.ts` |
+| Offer push lifecycle (hash, pending → live) | `google_merchant_offer` table, `apps/web/src/server/app/google-merchant-offer.ts` |
+| Path 1 actions (connect, detect, propose, provision + rule gate, push, verify, rule watchdog, diagnostics) | `apps/web/src/server/app/integration/google-merchant.ts` |
 | OAuth routes | `apps/web/src/app/(provider)/api/integrations/google/{install,callback}/route.ts` |
 | Hosted feed (Perplexity + Path 2 scheduled fetch) | `apps/web/src/server/app/feed-export.ts` |

@@ -1,5 +1,6 @@
 "use server";
 
+import crypto from "node:crypto";
 import { and, eq } from "drizzle-orm";
 import { db, schema } from "../../database";
 import { withAuthentication } from "../../utils/authentication";
@@ -8,6 +9,7 @@ import { Environment } from "../../utils/environment";
 import { RequestError } from "../../utils/error";
 import * as GoogleMerchantAPI from "../../utils/google-merchant";
 import * as GoogleMerchantAccount from "../google-merchant-account";
+import * as GoogleMerchantOffer from "../google-merchant-offer";
 import * as Product from "../product";
 import * as Store from "../store";
 
@@ -357,11 +359,74 @@ export const checkLink = withAuthentication(
 );
 
 /**
- * Creates (once) our supplemental data source on the merchant's account, with
- * `feedLabel`/`contentLanguage` copied from the native plugin's primary feed —
- * supplemental data merges on (offerId, contentLanguage, feedLabel), not the
- * offer id alone. Also surfaces whether a primary product data source exists,
- * so the UI can hold the merchant on the "install the plugin" step.
+ * Guarantees the primary data source's defaultRule lists our supplemental
+ * source first (earlier entries win attribute conflicts). Spike 1: the Shopify
+ * channel's rule is `[{self: true}]` and never picks up new supplemental
+ * sources on its own — without this patch, inserts return 200 and merge
+ * nothing. Read-modify-write (the PATCH replaces the whole list, so existing
+ * entries are preserved behind ours), then re-read to confirm.
+ */
+const ensureDefaultRule = async (
+  accessToken: string,
+  {
+    primaryName,
+    supplementalName,
+  }: { primaryName: string; supplementalName: string },
+): Promise<
+  | { success: true; data: { patched: boolean; confirmed: boolean } }
+  | { success: false; error: Error }
+> => {
+  const primary = await GoogleMerchantAPI.getDataSource(
+    accessToken,
+    primaryName,
+  );
+  if (!primary.success) return primary;
+
+  const current =
+    primary.data.primaryProductDataSource?.defaultRule?.takeFromDataSources ??
+    [];
+
+  const isOurs = (reference: GoogleMerchantAPI.DataSourceReference) =>
+    reference.supplementalDataSourceName === supplementalName;
+
+  if (current[0] && isOurs(current[0]))
+    return { success: true, data: { patched: false, confirmed: true } };
+
+  const patched = await GoogleMerchantAPI.patchDataSourceDefaultRule(
+    accessToken,
+    {
+      name: primaryName,
+      takeFromDataSources: [
+        { supplementalDataSourceName: supplementalName },
+        ...current.filter((reference) => !isOurs(reference)),
+      ],
+    },
+  );
+  if (!patched.success) return patched;
+
+  const confirmation = await GoogleMerchantAPI.getDataSource(
+    accessToken,
+    primaryName,
+  );
+  if (!confirmation.success) return confirmation;
+
+  const confirmed = (() => {
+    const rule =
+      confirmation.data.primaryProductDataSource?.defaultRule
+        ?.takeFromDataSources ?? [];
+    return rule[0] !== undefined && isOurs(rule[0]);
+  })();
+
+  return { success: true, data: { patched: true, confirmed } };
+};
+
+/**
+ * Provisions (idempotently) our supplemental data source on the merchant's
+ * account, with `feedLabel`/`contentLanguage` discovered from the native
+ * plugin's primary feed — never assumed; Shopify's labels are strings like
+ * `USD_101961335098`, not country codes. Provisioning is complete only when
+ * the primary's defaultRule shows our source first ({@link ensureDefaultRule}
+ * is a hard gate, not a fallback), so re-calling this also repairs the rule.
  */
 export const ensureSupplementalDataSource = withAuthentication(
   async (context, { store: storeId }: { store: string }) => {
@@ -377,11 +442,6 @@ export const ensureSupplementalDataSource = withAuthentication(
         success: false,
         error: new RequestError("No Merchant Center account detected yet"),
       };
-    if (record.dataSourceName)
-      return {
-        success: true as const,
-        data: { dataSourceName: record.dataSourceName, created: false },
-      };
 
     const sources = await GoogleMerchantAPI.listDataSources(
       resolved.accessToken,
@@ -392,7 +452,7 @@ export const ensureSupplementalDataSource = withAuthentication(
     const primary = (sources.data.dataSources ?? []).find(
       (source) => source.primaryProductDataSource !== undefined,
     );
-    if (!primary)
+    if (!primary?.name)
       return {
         success: false,
         error: new RequestError(
@@ -400,33 +460,62 @@ export const ensureSupplementalDataSource = withAuthentication(
         ),
       };
 
-    const created = await GoogleMerchantAPI.createSupplementalDataSource(
-      resolved.accessToken,
-      {
-        accountId: record.googleAccountId,
-        displayName: SUPPLEMENTAL_DATA_SOURCE_NAME,
-        feedLabel: primary.primaryProductDataSource?.feedLabel ?? null,
-        contentLanguage:
-          primary.primaryProductDataSource?.contentLanguage ?? null,
-      },
-    );
-    if (!created.success) return created;
-    if (!created.data.name)
+    const supplemental = await (async (): Promise<
+      | { success: true; name: string; created: boolean }
+      | { success: false; error: Error }
+    > => {
+      if (record.dataSourceName)
+        return { success: true, name: record.dataSourceName, created: false };
+
+      const created = await GoogleMerchantAPI.createSupplementalDataSource(
+        resolved.accessToken,
+        {
+          accountId: record.googleAccountId as string,
+          displayName: SUPPLEMENTAL_DATA_SOURCE_NAME,
+          feedLabel: primary.primaryProductDataSource?.feedLabel ?? null,
+          contentLanguage:
+            primary.primaryProductDataSource?.contentLanguage ?? null,
+        },
+      );
+      if (!created.success) return created;
+      if (!created.data.name)
+        return {
+          success: false,
+          error: new RequestError("Data source creation returned no name"),
+        };
+      return { success: true, name: created.data.name, created: true };
+    })();
+    if (!supplemental.success) return supplemental;
+
+    const rule = await ensureDefaultRule(resolved.accessToken, {
+      primaryName: primary.name,
+      supplementalName: supplemental.name,
+    });
+    if (!rule.success) return rule;
+    if (!rule.data.confirmed)
       return {
         success: false,
-        error: new RequestError("Data source creation returned no name"),
+        error: new RequestError(
+          "Primary feed rule patch did not stick — the supplemental source is not first in takeFromDataSources",
+        ),
       };
 
     context.span.addBreadcrumb({
-      category: "google.datasource.created",
-      data: { "store.id": storeId, "datasource.name": created.data.name },
+      category: "google.datasource.provisioned",
+      data: {
+        "store.id": storeId,
+        "datasource.name": supplemental.name,
+        "datasource.created": supplemental.created,
+        "rule.patched": rule.data.patched,
+      },
     });
 
     const update = await GoogleMerchantAccount.update(
       Environment.SERVER,
       record.id,
       {
-        dataSourceName: created.data.name,
+        dataSourceName: supplemental.name,
+        primaryDataSourceName: primary.name,
         feedLabel: primary.primaryProductDataSource?.feedLabel ?? null,
         contentLanguage:
           primary.primaryProductDataSource?.contentLanguage ?? null,
@@ -436,10 +525,57 @@ export const ensureSupplementalDataSource = withAuthentication(
 
     return {
       success: true as const,
-      data: { dataSourceName: created.data.name, created: true },
+      data: {
+        dataSourceName: supplemental.name,
+        created: supplemental.created,
+        rulePatched: rule.data.patched,
+      },
     };
   },
   "GoogleMerchant.ensureSupplementalDataSource",
+);
+
+/**
+ * Rule-position watchdog: a merchant can reorder or remove our supplemental
+ * source in Merchant Center, silently disabling every override while inserts
+ * keep returning 200. Re-checks the primary's defaultRule and repairs it.
+ */
+export const checkRuleHealth = withAuthentication(
+  async (context, { store: storeId }: { store: string }) => {
+    const store = await ownedStore(storeId, context.session.user.id);
+    if (!store.success) return store;
+
+    const resolved = await resolveAccessToken(storeId);
+    if (!resolved.success) return resolved;
+
+    const { record } = resolved;
+    if (!record.primaryDataSourceName || !record.dataSourceName)
+      return {
+        success: false,
+        error: new RequestError("Data sources are not provisioned yet"),
+      };
+
+    const rule = await ensureDefaultRule(resolved.accessToken, {
+      primaryName: record.primaryDataSourceName,
+      supplementalName: record.dataSourceName,
+    });
+    if (!rule.success) return rule;
+
+    context.span.addBreadcrumb({
+      category: "google.rule.health",
+      data: {
+        "store.id": storeId,
+        "rule.repaired": rule.data.patched,
+        "rule.confirmed": rule.data.confirmed,
+      },
+    });
+
+    return {
+      success: true as const,
+      data: { repaired: rule.data.patched, healthy: rule.data.confirmed },
+    };
+  },
+  "GoogleMerchant.checkRuleHealth",
 );
 
 /**
@@ -454,11 +590,18 @@ const offerMatchesExternalId = (offerId: string, externalId: string) => {
   return offerId.split("_").includes(externalId);
 };
 
+const attributesHash = (attributes: GoogleMerchantAPI.ProductInputAttributes) =>
+  crypto.createHash("sha256").update(JSON.stringify(attributes)).digest("hex");
+
 /**
  * Pushes the store's published listing optimizations as attribute overrides
  * into the supplemental data source, one input per matching primary-feed
- * offer. Returns per-product match results so the UI can show which
- * optimizations are live on Google and which found no offer.
+ * offer. Idempotent by construction: each override body is hashed and offers
+ * whose last-pushed hash matches are skipped, so re-running is always safe.
+ * Overrides that fail the policy lint are never inserted — Google validates
+ * supplemental data as the merchant's own, and a disapproval caused by our
+ * rewrite is the worst failure mode this product has. Pushed offers land in
+ * `pending`; only {@link verifyOverrides} flips them to `live`.
  */
 export const pushOverrides = withAuthentication(
   async (context, { store: storeId }: { store: string }) => {
@@ -491,7 +634,14 @@ export const pushOverrides = withAuthentication(
     if (withExternalId.length === 0)
       return {
         success: true as const,
-        data: { pushed: 0, matchedProducts: 0, unmatchedProducts: 0 },
+        data: {
+          pushed: 0,
+          skippedUnchanged: 0,
+          matchedProducts: 0,
+          unmatchedProducts: 0,
+          policyBlocked: [],
+          errors: [],
+        },
       };
 
     const optimizations = await db.query.listingOptimization.findMany({
@@ -510,6 +660,15 @@ export const pushOverrides = withAuthentication(
       ]),
     );
 
+    const existingOffers = await GoogleMerchantOffer.find(Environment.SERVER, {
+      where: eq(schema.googleMerchantOffer.storeId, storeId),
+    });
+    if (!existingOffers.success) return existingOffers;
+
+    const existingByOfferId = new Map(
+      existingOffers.data.map((offer) => [offer.offerId, offer]),
+    );
+
     const offers = await GoogleMerchantAPI.listProducts(
       resolved.accessToken,
       record.googleAccountId,
@@ -517,8 +676,10 @@ export const pushOverrides = withAuthentication(
     if (!offers.success) return offers;
 
     let pushed = 0;
+    let skippedUnchanged = 0;
     let matchedProducts = 0;
     let unmatchedProducts = 0;
+    const policyBlocked: { productId: string; issues: string[] }[] = [];
     const errors: string[] = [];
 
     for (const product of withExternalId) {
@@ -526,6 +687,24 @@ export const pushOverrides = withAuthentication(
       if (!optimization) continue;
       if (!optimization.proposedTitle && !optimization.proposedDescription)
         continue;
+
+      const attributes: GoogleMerchantAPI.ProductInputAttributes = {
+        ...(optimization.proposedTitle
+          ? { title: optimization.proposedTitle }
+          : {}),
+        ...(optimization.proposedDescription
+          ? { description: optimization.proposedDescription }
+          : {}),
+      };
+
+      const lint = GoogleMerchantAPI.lintOverrideAttributes(attributes);
+      if (lint.length > 0) {
+        policyBlocked.push({
+          productId: product.id,
+          issues: lint.map((issue) => issue.code),
+        });
+        continue;
+      }
 
       const externalId = product.externalId as string;
       const matching = offers.data.filter(
@@ -542,28 +721,49 @@ export const pushOverrides = withAuthentication(
       }
       matchedProducts += 1;
 
+      const hash = attributesHash(attributes);
+
       for (const offer of matching) {
+        const offerId = offer.offerId as string;
+
+        const existing = existingByOfferId.get(offerId);
+        if (
+          existing &&
+          existing.attributesHash === hash &&
+          existing.status !== "error"
+        ) {
+          skippedUnchanged += 1;
+          continue;
+        }
+
         const insertion = await GoogleMerchantAPI.insertProductInput(
           resolved.accessToken,
           {
             accountId: record.googleAccountId,
             dataSourceName: record.dataSourceName,
-            offerId: offer.offerId as string,
+            offerId,
             contentLanguage: offer.contentLanguage as string,
             feedLabel: offer.feedLabel as string,
-            attributes: {
-              ...(optimization.proposedTitle
-                ? { title: optimization.proposedTitle }
-                : {}),
-              ...(optimization.proposedDescription
-                ? { description: optimization.proposedDescription }
-                : {}),
-            },
+            attributes,
           },
         );
 
+        const synced = await GoogleMerchantOffer.sync(Environment.SERVER, {
+          storeId,
+          productId: product.id,
+          offerId,
+          feedLabel: offer.feedLabel ?? null,
+          contentLanguage: offer.contentLanguage ?? null,
+          attributesHash: hash,
+          status: insertion.success ? "pending" : "error",
+          error: insertion.success ? null : insertion.error.message,
+          pushedAt: insertion.success ? new Date() : null,
+          verifiedAt: null,
+        });
+        if (!synced.success) return synced;
+
         if (!insertion.success) {
-          errors.push(`${offer.offerId}: ${insertion.error.message}`);
+          errors.push(`${offerId}: ${insertion.error.message}`);
           continue;
         }
         pushed += 1;
@@ -575,8 +775,10 @@ export const pushOverrides = withAuthentication(
       data: {
         "store.id": storeId,
         "overrides.pushed": pushed,
+        "overrides.skipped": skippedUnchanged,
         "products.matched": matchedProducts,
         "products.unmatched": unmatchedProducts,
+        "products.policy_blocked": policyBlocked.length,
         "overrides.errors": errors.length,
       },
     });
@@ -585,8 +787,10 @@ export const pushOverrides = withAuthentication(
       success: true as const,
       data: {
         pushed,
+        skippedUnchanged,
         matchedProducts,
         unmatchedProducts,
+        policyBlocked,
         errors: errors.slice(0, 10),
       },
     };
@@ -674,12 +878,17 @@ export const pullDiagnostics = withAuthentication(
 );
 
 /**
- * Merge health: are the overrides we pushed actually live on the processed
- * offers? Compares each published optimization's title against the processed
- * attribute value — a stronger signal than disapproval counts, since offer-id
- * schemes change silently when the merchant changes markets or variants.
+ * Async verification pass — push ≠ live. Google reprocesses lazily (hours),
+ * so this never asserts right after a push: for each `pending` offer it gates
+ * on `productStatus.lastUpdateDate` advancing past `pushedAt`, then diffs the
+ * processed title against the published optimization and flips the row to
+ * `live`. An offer that reprocessed WITHOUT picking up the override is the
+ * rule-broke-silently signal — reported as `reprocessedWithoutMerge` and left
+ * `pending` so the next pass (after {@link checkRuleHealth} repairs the rule
+ * and a re-push forces reprocessing) can settle it. Dashboard lifecycle this
+ * drives: optimizing → applied, going live (may take a few hours) → live.
  */
-export const checkMergeHealth = withAuthentication(
+export const verifyOverrides = withAuthentication(
   async (context, { store: storeId }: { store: string }) => {
     const store = await ownedStore(storeId, context.session.user.id);
     if (!store.success) return store;
@@ -694,24 +903,37 @@ export const checkMergeHealth = withAuthentication(
         error: new RequestError("No Merchant Center account detected yet"),
       };
 
-    const products = await Product.find(Environment.SERVER, {
-      where: eq(schema.product.storeId, storeId),
+    const pending = await GoogleMerchantOffer.find(Environment.SERVER, {
+      where: and(
+        eq(schema.googleMerchantOffer.storeId, storeId),
+        eq(schema.googleMerchantOffer.status, "pending"),
+      ),
     });
-    if (!products.success) return products;
+    if (!pending.success) return pending;
 
-    const withExternalId = products.data.filter(
-      (product) => product.externalId !== null,
+    if (pending.data.length === 0)
+      return {
+        success: true as const,
+        data: {
+          verified: 0,
+          awaitingReprocess: 0,
+          reprocessedWithoutMerge: 0,
+          missingOffers: 0,
+        },
+      };
+
+    const optimizations = await db.query.listingOptimization.findMany({
+      where: {
+        status: "published",
+        productId: { in: pending.data.map((offer) => offer.productId) },
+      },
+    });
+    const optimizationByProduct = new Map(
+      optimizations.map((optimization) => [
+        optimization.productId,
+        optimization,
+      ]),
     );
-
-    const optimizations =
-      withExternalId.length === 0
-        ? []
-        : await db.query.listingOptimization.findMany({
-            where: {
-              status: "published",
-              productId: { in: withExternalId.map((product) => product.id) },
-            },
-          });
 
     const offers = await GoogleMerchantAPI.listProducts(
       resolved.accessToken,
@@ -719,43 +941,101 @@ export const checkMergeHealth = withAuthentication(
     );
     if (!offers.success) return offers;
 
-    const externalIdByProduct = new Map(
-      withExternalId.map((product) => [product.id, product.externalId]),
+    const processedByOfferId = new Map(
+      offers.data
+        .filter((offer) => offer.offerId !== undefined)
+        .map((offer) => [offer.offerId as string, offer]),
     );
 
-    const results = optimizations
-      .filter((optimization) => optimization.proposedTitle)
-      .map((optimization) => {
-        const externalId = externalIdByProduct.get(optimization.productId);
-        if (!externalId)
-          return { productId: optimization.productId, applied: false };
+    let verified = 0;
+    let awaitingReprocess = 0;
+    let reprocessedWithoutMerge = 0;
+    let missingOffers = 0;
 
-        const applied = offers.data.some(
-          (offer) =>
-            offer.offerId !== undefined &&
-            offerMatchesExternalId(offer.offerId, externalId) &&
-            offer.attributes?.title === optimization.proposedTitle,
+    for (const row of pending.data) {
+      const processed = processedByOfferId.get(row.offerId);
+      if (!processed) {
+        // The plugin removed/re-keyed the offer (market or variant change) —
+        // the override now points at nothing.
+        missingOffers += 1;
+        const flagged = await GoogleMerchantOffer.update(
+          Environment.SERVER,
+          row.id,
+          { status: "error", error: "Offer no longer on the account" },
         );
-        return { productId: optimization.productId, applied };
-      });
+        if (!flagged.success) return flagged;
+        continue;
+      }
 
-    const applied = results.filter((result) => result.applied).length;
+      const lastUpdateDate = processed.productStatus?.lastUpdateDate ?? null;
+      const reprocessed =
+        lastUpdateDate !== null &&
+        row.pushedAt !== null &&
+        new Date(lastUpdateDate).getTime() > row.pushedAt.getTime();
+
+      if (!reprocessed) {
+        awaitingReprocess += 1;
+        if (lastUpdateDate !== row.lastUpdateDate) {
+          const stamped = await GoogleMerchantOffer.update(
+            Environment.SERVER,
+            row.id,
+            { lastUpdateDate },
+          );
+          if (!stamped.success) return stamped;
+        }
+        continue;
+      }
+
+      const optimization = optimizationByProduct.get(row.productId);
+      const merged =
+        optimization?.proposedTitle !== null &&
+        optimization?.proposedTitle !== undefined
+          ? processed.attributes?.title === optimization.proposedTitle
+          : processed.attributes?.description ===
+            optimization?.proposedDescription;
+
+      if (!merged) {
+        reprocessedWithoutMerge += 1;
+        const stamped = await GoogleMerchantOffer.update(
+          Environment.SERVER,
+          row.id,
+          { lastUpdateDate },
+        );
+        if (!stamped.success) return stamped;
+        continue;
+      }
+
+      verified += 1;
+      const flipped = await GoogleMerchantOffer.update(
+        Environment.SERVER,
+        row.id,
+        { status: "live", verifiedAt: new Date(), lastUpdateDate },
+      );
+      if (!flipped.success) return flipped;
+    }
 
     context.span.addBreadcrumb({
-      category: "google.merge.health",
+      category: "google.overrides.verified",
       data: {
         "store.id": storeId,
-        "overrides.applied": applied,
-        "overrides.total": results.length,
+        "overrides.verified": verified,
+        "overrides.awaiting": awaitingReprocess,
+        "overrides.unmerged": reprocessedWithoutMerge,
+        "overrides.missing": missingOffers,
       },
     });
 
     return {
       success: true as const,
-      data: { applied, total: results.length, results },
+      data: {
+        verified,
+        awaitingReprocess,
+        reprocessedWithoutMerge,
+        missingOffers,
+      },
     };
   },
-  "GoogleMerchant.checkMergeHealth",
+  "GoogleMerchant.verifyOverrides",
 );
 
 /** Removes the store's Google link and stored tokens. */

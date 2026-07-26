@@ -217,6 +217,19 @@ export const listAccountIssues = (accessToken: string, accountId: string) =>
     `/accounts/v1/accounts/${accountId}/issues`,
   );
 
+/**
+ * One entry of a primary data source's `defaultRule.takeFromDataSources`.
+ * Order is precedence: earlier sources win attribute conflicts. Spike 1 found
+ * the Shopify channel's rule is `[{self: true}]` and does NOT pick up new
+ * supplemental sources automatically — provisioning must patch our source in
+ * (first), read-modify-write, since PATCH replaces the whole list.
+ */
+export type DataSourceReference = {
+  self?: boolean;
+  primaryDataSourceName?: string;
+  supplementalDataSourceName?: string;
+};
+
 export type DataSource = {
   /** Resource name, `accounts/{account}/dataSources/{dataSource}`. */
   name?: string;
@@ -224,7 +237,7 @@ export type DataSource = {
   primaryProductDataSource?: {
     feedLabel?: string;
     contentLanguage?: string;
-    defaultRule?: { takeFromDataSources?: { primaryDataSource?: boolean }[] };
+    defaultRule?: { takeFromDataSources?: DataSourceReference[] };
   };
   supplementalProductDataSource?: {
     feedLabel?: string;
@@ -236,6 +249,33 @@ export const listDataSources = (accessToken: string, accountId: string) =>
   api<{ dataSources?: DataSource[] }>(
     accessToken,
     `/datasources/v1/accounts/${accountId}/dataSources`,
+  );
+
+/** Fetches one data source by full resource name (`accounts/{a}/dataSources/{d}`). */
+export const getDataSource = (accessToken: string, name: string) =>
+  api<DataSource>(accessToken, `/datasources/v1/${name}`);
+
+/**
+ * Replaces a primary data source's `defaultRule.takeFromDataSources`. Callers
+ * must read-modify-write: fetch the current rule, prepend/reorder, send the
+ * complete list — the PATCH replaces it wholesale.
+ */
+export const patchDataSourceDefaultRule = (
+  accessToken: string,
+  {
+    name,
+    takeFromDataSources,
+  }: { name: string; takeFromDataSources: DataSourceReference[] },
+) =>
+  api<DataSource>(
+    accessToken,
+    `/datasources/v1/${name}?updateMask=${encodeURIComponent("primaryProductDataSource.defaultRule")}`,
+    {
+      method: "PATCH",
+      body: {
+        primaryProductDataSource: { defaultRule: { takeFromDataSources } },
+      },
+    },
   );
 
 export const createSupplementalDataSource = (
@@ -280,6 +320,13 @@ export type ProductStatus = {
     description?: string;
     attribute?: string;
   }[];
+  /**
+   * RFC 3339 timestamp of the last reprocessing. Reprocessing is lazy (hours) —
+   * a push is only confirmed merged once this advances past the push time, so
+   * merge verification must be async, never assert-after-push. A fresh
+   * `productInputs:insert` is the lever that forces reprocessing of an offer.
+   */
+  lastUpdateDate?: string;
 };
 
 export type MerchantProduct = {
@@ -369,6 +416,78 @@ export const insertProductInput = (
       body: { offerId, contentLanguage, feedLabel, attributes },
     },
   );
+
+// ---------------------------------------------------------------------------
+// Pre-push policy lint
+// ---------------------------------------------------------------------------
+
+export type PolicyIssue = { code: string; message: string };
+
+const PROMOTIONAL_PATTERNS: { pattern: RegExp; code: string }[] = [
+  { pattern: /free shipping/i, code: "promotional_free_shipping" },
+  { pattern: /best price/i, code: "promotional_best_price" },
+  { pattern: /\d+\s*%\s*off/i, code: "promotional_percent_off" },
+  { pattern: /buy now/i, code: "promotional_call_to_action" },
+  { pattern: /!{2,}/, code: "repeated_exclamation" },
+];
+
+const TITLE_MAXIMUM_LENGTH = 150;
+const DESCRIPTION_MAXIMUM_LENGTH = 5000;
+const CAPS_RATIO_LIMIT = 0.5;
+
+/**
+ * Lints override attributes before push. Google policy-validates supplemental
+ * overrides exactly as if they were the merchant's own feed data — spike 1's
+ * test title drew a `title_all_caps` flag immediately. A disapproval caused by
+ * our own rewrite is the worst failure mode this product has, so anything
+ * flagged here must not be inserted.
+ */
+export const lintOverrideAttributes = (
+  attributes: ProductInputAttributes,
+): PolicyIssue[] => {
+  const issues: PolicyIssue[] = [];
+
+  const { title, description } = attributes;
+
+  if (title) {
+    if (title.length > TITLE_MAXIMUM_LENGTH)
+      issues.push({
+        code: "title_too_long",
+        message: `Title exceeds ${TITLE_MAXIMUM_LENGTH} characters`,
+      });
+
+    const letters = title.replace(/[^a-zA-Z]/g, "");
+    const uppercase = letters.replace(/[^A-Z]/g, "");
+    if (
+      letters.length > 10 &&
+      uppercase.length / letters.length > CAPS_RATIO_LIMIT
+    )
+      issues.push({
+        code: "title_all_caps",
+        message: "Title is mostly uppercase",
+      });
+
+    for (const { pattern, code } of PROMOTIONAL_PATTERNS) {
+      if (pattern.test(title))
+        issues.push({ code, message: `Title matches ${pattern}` });
+    }
+  }
+
+  if (description) {
+    if (description.length > DESCRIPTION_MAXIMUM_LENGTH)
+      issues.push({
+        code: "description_too_long",
+        message: `Description exceeds ${DESCRIPTION_MAXIMUM_LENGTH} characters`,
+      });
+
+    for (const { pattern, code } of PROMOTIONAL_PATTERNS) {
+      if (pattern.test(description))
+        issues.push({ code, message: `Description matches ${pattern}` });
+    }
+  }
+
+  return issues;
+};
 
 /** Extracts the numeric account id from an `accounts/{id}` resource name. */
 export const accountIdFromName = (name: string): string | null => {
