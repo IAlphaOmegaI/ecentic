@@ -23,9 +23,9 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.5",
-    "@turbo/gen": "^2.10.6",
+    "@turbo/gen": "^2.10.7",
     "babel-plugin-react-compiler": "^1.0.0",
-    "turbo": "^2.10.6"
+    "turbo": "^2.10.7"
   },
   "engines": {
     "node": ">=24"
