@@ -152,6 +152,56 @@ export const store_account = pgTable("store_account", {
   updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
 });
 
+/**
+ * Google Merchant Center link state and credentials (1:1 with {@link store}).
+ * Created when the merchant completes the "Connect Google" OAuth. Holds the
+ * merchant-consent OAuth tokens (scope `content`), the detected Merchant Center
+ * account, the accountManagement link lifecycle, and the supplemental data
+ * source our attribute overrides are pushed through. See
+ * docs/integrations/google-merchant-center.md.
+ */
+export const googleMerchantAccount = pgTable("google_merchant_account", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+  storeId: text("storeId")
+    .notNull()
+    .unique()
+    .references(() => store.id, { onDelete: "cascade" }),
+  // Merchant-consent OAuth (Google, scope https://www.googleapis.com/auth/content)
+  accessToken: text("accessToken"),
+  accessTokenExpiresAt: timestamp("accessTokenExpiresAt", { mode: "date" }),
+  refreshToken: text("refreshToken"),
+  scope: text("scope"),
+  /** Numeric Merchant Center account id, once detected via accounts.list. */
+  googleAccountId: text("googleAccountId"),
+  /**
+   * accountManagement service lifecycle: `unlinked` (no proposal sent),
+   * `proposed` (services:propose sent, awaiting merchant approval in Merchant
+   * Center), `active` (merchant approved — we can manage the account).
+   */
+  linkState: text("linkState")
+    .$type<"unlinked" | "proposed" | "active">()
+    .notNull()
+    .default("unlinked"),
+  /**
+   * `native` = Path 1, the store's Google plugin owns the primary feed and we
+   * only push supplemental overrides. `managed` = Path 2, ecentic provisioned
+   * the account and owns the primary feed.
+   */
+  path: text("path").$type<"native" | "managed">().notNull().default("native"),
+  /** Full resource name of our supplemental data source, once created. */
+  dataSourceName: text("dataSourceName"),
+  // Merge keys copied from the primary feed's data source — supplemental data
+  // merges on (offerId, contentLanguage, feedLabel), not offerId alone.
+  feedLabel: text("feedLabel"),
+  contentLanguage: text("contentLanguage"),
+  // Path 2 ToS consent log (termsOfService.accept requires logged consent).
+  tosVersion: text("tosVersion"),
+  tosAcceptedAt: timestamp("tosAcceptedAt", { mode: "date" }),
+  lastDiagnosticsAt: timestamp("lastDiagnosticsAt", { mode: "date" }),
+  createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+});
+
 export const product = pgTable(
   "product",
   {
@@ -655,6 +705,7 @@ export const tables = {
   verification,
   store,
   store_account,
+  googleMerchantAccount,
   product,
   competitor,
   scan,
@@ -709,6 +760,11 @@ export const relations = defineRelations(tables, (r) => ({
     storeAccount: r.one.store_account({
       from: r.store.id,
       to: r.store_account.storeId,
+    }),
+    googleMerchantAccount: r.one.googleMerchantAccount({
+      from: r.store.id,
+      to: r.googleMerchantAccount.storeId,
+      optional: true,
     }),
     agentVisits: r.many.agentVisit(),
     agentTrafficDaily: r.many.agentTrafficDaily(),
