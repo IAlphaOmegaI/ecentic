@@ -11,7 +11,7 @@ import { ThemeProvider } from "@/context/theme";
 
 const PostHogProvider = dynamic(() =>
   import("@/context/posthog").then((m) => m.PostHogProvider),
-);
+); 
 
 const redHatDisplay = Red_Hat_Display({
   subsets: ["latin"],
