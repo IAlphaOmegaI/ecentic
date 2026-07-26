@@ -627,7 +627,7 @@ export const runStoreComparison = async ({
 
       const tools = buildMcpTools(endpoints, agentProfileUrl);
 
-      const agentResult = AI.streamText({
+      const agentResult = AI.stream({
         label: "product-comparison",
         model: "gemini-2.5-flash",
         instructions: `You are an AI shopping agent evaluator. Simulate how autonomous shopping agents (GPT-4, Claude, Gemini, Perplexity, and similar) decide where to buy when a buyer asks for something — then explain whether the source merchant would win or lose against competitors as a group.

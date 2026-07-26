@@ -215,7 +215,7 @@ const runScanForUser = async (
                   model: perspective.model,
                   instructions: Judge.JUDGE_SYSTEM_AB,
                   prompt: ordering.prompt,
-                  schema: comparisonSchema,
+                  output: comparisonSchema,
                   schemaName: "ListingComparison",
                   schemaDescription:
                     "Evidence-based comparison of two product listings",
@@ -410,7 +410,7 @@ const runScanForUser = async (
       instructions:
         "You are an e-commerce optimization analyst. Given the reasons a product lost in AI shopping simulations, identify the specific missing attributes or weaknesses that caused the most losses. Be concise and actionable. Respond only with the structured fields — no prose outside the object.",
       prompt: `Product "${title}" lost ${worst[1].count} out of ${outcomes.length} total simulations.\n\nHere are the reasons it lost:\n${worst[1].reasons.slice(0, 10).join("\n---\n")}\n\nIdentify the top missing attributes and estimate what percentage of simulations these gaps cost.`,
-      schema: z.object({
+      output: z.object({
         name: z.string().describe("The product name"),
         missingAttributes: z
           .array(z.string())

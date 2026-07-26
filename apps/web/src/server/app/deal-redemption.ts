@@ -238,6 +238,10 @@ export const findByEmail = withContext(
         sql`lower(${schema.dealRedemption.email})`,
         email.toLowerCase(),
       ),
+      // Without an explicit order a bare `limit: 1` returns whichever row
+      // Postgres reaches first, so a founder who redeems twice could resolve to
+      // the stale row — and status is what gates the coupon at checkout.
+      orderBy: [{ column: schema.dealRedemption.createdAt, direction: "desc" }],
       limit: 1,
     });
 

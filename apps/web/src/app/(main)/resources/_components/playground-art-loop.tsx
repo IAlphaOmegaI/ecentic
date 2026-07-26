@@ -197,7 +197,7 @@ export const PlaygroundArt = ({ className }: PlaygroundArt.Props) => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.35, ease } }}
               transition={{ duration: 0.5, ease, delay: 0.1 }}
-              className="flex max-w-[90%] items-center gap-2 self-start rounded-2xl rounded-bl-sm border border-success/30 bg-success/10 px-4 py-2.5 text-sm text-foreground"
+              className="flex max-w-[90%] items-center gap-2 self-start rounded-2xl rounded-bl-sm border border-success/30 bg-success/10 px-4 py-2.5 text-foreground text-sm"
             >
               <ShoppingCartIcon className="size-4 shrink-0 text-success" />
               <span>Added to cart · 1 item · $139.00</span>

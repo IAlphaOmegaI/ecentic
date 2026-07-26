@@ -832,7 +832,7 @@ export const runFlowTester = async ({
       const searchQuery = query?.trim() || "product";
 
       // 4. Run the agentic flow
-      const agentResult = AI.streamText({
+      const agentResult = AI.stream({
         label: "ucp.flow-tester",
         model: FLOW_TESTER_MODEL,
         instructions: `You are a UCP (Universal Commerce Protocol) shopping agent running a live integration test against a ${shoppingTransport.toUpperCase()} endpoint.

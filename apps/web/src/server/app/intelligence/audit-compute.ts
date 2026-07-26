@@ -111,7 +111,7 @@ Score each field (${fieldKeys.join(", ")}) 0-100 on content quality for this pro
   return AI.generate({
     instructions,
     prompt,
-    schema,
+    output: schema,
     schemaName: "ListingAudit",
     schemaDescription:
       "Category-aware content-quality audit of a product listing with a positioning assessment",

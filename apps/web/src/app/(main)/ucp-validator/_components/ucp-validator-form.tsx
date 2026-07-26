@@ -181,7 +181,7 @@ const ValidationTargetsSection = () => (
   <div className="relative overflow-hidden border-accent-foreground border-t bg-primary/5">
     <pre
       aria-hidden
-      className="pointer-events-none absolute top-0 right-0 hidden h-40 max-w-lg overflow-hidden p-5 text-right font-mono text-sm text-primary/20 leading-snug whitespace-pre select-none md:block lg:h-48 lg:max-w-xl lg:text-base lg:text-primary/25"
+      className="pointer-events-none absolute top-0 right-0 hidden h-40 max-w-lg select-none overflow-hidden whitespace-pre p-5 text-right font-mono text-primary/20 text-sm leading-snug md:block lg:h-48 lg:max-w-xl lg:text-base lg:text-primary/25"
     >
       {validationManifestArt}
     </pre>

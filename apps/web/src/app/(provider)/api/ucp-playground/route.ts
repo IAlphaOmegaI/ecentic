@@ -126,7 +126,7 @@ export const POST = async (request: Request) => {
           ? buildMcpTools(service.endpoint, agentProfileUrl)
           : buildRestTools(service.endpoint, agentProfileUrl);
 
-      const result = AI.streamText({
+      const result = AI.stream({
         label: "ucp.playground",
         model: PLAYGROUND_MODEL,
         instructions: buildChatSystemPrompt(
