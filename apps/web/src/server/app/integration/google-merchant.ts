@@ -1073,8 +1073,8 @@ const runVerification = async (
     const merged =
       optimization?.proposedTitle !== null &&
       optimization?.proposedTitle !== undefined
-        ? processed.attributes?.title === optimization.proposedTitle
-        : processed.attributes?.description ===
+        ? processed.productAttributes?.title === optimization.proposedTitle
+        : processed.productAttributes?.description ===
           optimization?.proposedDescription;
 
     if (!merged) {
@@ -1162,6 +1162,8 @@ export type Status = {
   linkState: "unlinked" | "proposed" | "active";
   provisioned: boolean;
   offers: { pending: number; live: number; disapproved: number; error: number };
+  /** Stored error text of up to three errored offers, for the settings card. */
+  offerErrors: { offerId: string; error: string }[];
 };
 
 /**
@@ -1188,6 +1190,7 @@ export const getStatus = withAuthentication(
       linkState: "unlinked",
       provisioned: false,
       offers: { pending: 0, live: 0, disapproved: 0, error: 0 },
+      offerErrors: [],
     };
 
     const account = await GoogleMerchantAccount.find(Environment.SERVER, {
@@ -1206,6 +1209,14 @@ export const getStatus = withAuthentication(
     const offers = { pending: 0, live: 0, disapproved: 0, error: 0 };
     for (const offer of offerRows.data) offers[offer.status] += 1;
 
+    const offerErrors = offerRows.data
+      .filter((offer) => offer.status === "error" && offer.error !== null)
+      .slice(0, 3)
+      .map((offer) => ({
+        offerId: offer.offerId,
+        error: offer.error as string,
+      }));
+
     return {
       success: true,
       data: {
@@ -1216,6 +1227,7 @@ export const getStatus = withAuthentication(
         linkState: record.linkState,
         provisioned: record.dataSourceName !== null,
         offers,
+        offerErrors,
       },
     };
   },

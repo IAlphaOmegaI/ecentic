@@ -335,7 +335,8 @@ export type MerchantProduct = {
   offerId?: string;
   contentLanguage?: string;
   feedLabel?: string;
-  attributes?: {
+  /** v1 GA field name is `productAttributes` (`attributes` was v1beta). */
+  productAttributes?: {
     title?: string;
     description?: string;
     productTypes?: string[];
@@ -413,7 +414,13 @@ export const insertProductInput = (
     `/products/v1/accounts/${accountId}/productInputs:insert?dataSource=${encodeURIComponent(dataSourceName)}`,
     {
       method: "POST",
-      body: { offerId, contentLanguage, feedLabel, attributes },
+      // v1 GA field name is `productAttributes` (`attributes` was v1beta).
+      body: {
+        offerId,
+        contentLanguage,
+        feedLabel,
+        productAttributes: attributes,
+      },
     },
   );
 

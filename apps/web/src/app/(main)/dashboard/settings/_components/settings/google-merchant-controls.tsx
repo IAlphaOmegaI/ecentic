@@ -228,6 +228,14 @@ export const GoogleMerchantControls = ({
               {status.offers.error > 0 &&
                 ` · ${status.offers.error} need attention`}
             </p>
+            {status.offerErrors.map((offerError) => (
+              <p
+                key={offerError.offerId}
+                className="w-full text-warning text-xs"
+              >
+                {offerError.offerId}: {offerError.error}
+              </p>
+            ))}
             <Button
               color="neutral"
               disabled={isRunning}
