@@ -27,13 +27,17 @@
    the live account per merchant and matched exactly — an insert with a wrong
    triplet succeeds but creates an orphan instead of merging. Any code with a
    `"US"` default is a latent bug.
-4. **Reprocessing is lazy — push ≠ live.** A rule change alone didn't touch the
-   processed product for hours; a fresh `productInputs:insert` forces
-   reprocessing of that offer. The reliable merge signal is
-   `productStatus.lastUpdateDate` advancing past the write, so merge-health
-   checks must be async, never assert-after-push. Dashboard consequence: the
-   honest lifecycle is *optimizing → applied, going live (may take a few
-   hours) → live on Google* — never "optimized ✓" at push time.
+4. **Reprocessing is lazy for rule changes, near-instant for inserts — and
+   never compare Google's clock to ours.** A rule change alone didn't touch
+   the processed product for hours, but a `productInputs:insert` reprocessed
+   within seconds — and Google stamped `lastUpdateDate` ~1s *before* our
+   post-insert wall clock, so a `lastUpdateDate > pushedAt` gate can never
+   pass for insert-triggered reprocessing. Verification therefore (a) treats
+   the optimized attribute appearing on the processed offer as proof of merge
+   by itself, and (b) detects reprocessing by `lastUpdateDate` advancing past
+   the Google-clock baseline captured at push time. Merge-health checks stay
+   async; the honest dashboard lifecycle is *optimizing → applied, going live
+   → live on Google* — never "optimized ✓" at push time.
 5. **Google policy-validates overridden attributes as the merchant's own
    data** (an all-caps test title immediately drew `title_all_caps`), so
    optimization output gets a policy lint before push — a disapproval caused

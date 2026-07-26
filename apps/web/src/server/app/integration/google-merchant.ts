@@ -837,6 +837,10 @@ export const pushOverrides = withAuthentication(
           status: insertion.success ? "pending" : "error",
           error: insertion.success ? null : insertion.error.message,
           pushedAt: insertion.success ? new Date() : null,
+          // Google-clock baseline for verification: reprocessing is detected
+          // by this value advancing, never by comparing Google's clock to our
+          // own (which skews by more than the insert-to-reprocess latency).
+          lastUpdateDate: offer.productStatus?.lastUpdateDate ?? null,
           verifiedAt: null,
         });
         if (!synced.success) return synced;
@@ -1051,25 +1055,11 @@ const runVerification = async (
     }
 
     const lastUpdateDate = processed.productStatus?.lastUpdateDate ?? null;
-    const reprocessed =
-      lastUpdateDate !== null &&
-      row.pushedAt !== null &&
-      new Date(lastUpdateDate).getTime() > row.pushedAt.getTime();
-
-    if (!reprocessed) {
-      awaitingReprocess += 1;
-      if (lastUpdateDate !== row.lastUpdateDate) {
-        const stamped = await GoogleMerchantOffer.update(
-          Environment.SERVER,
-          row.id,
-          { lastUpdateDate },
-        );
-        if (!stamped.success) return stamped;
-      }
-      continue;
-    }
-
     const optimization = optimizationByProduct.get(row.productId);
+
+    // The processed attributes carrying our override IS the merge — flip to
+    // live on that evidence alone, no timestamp gate. Timestamps only decide
+    // how to classify a NOT-merged offer below.
     const merged =
       optimization?.proposedTitle !== null &&
       optimization?.proposedTitle !== undefined
@@ -1077,24 +1067,42 @@ const runVerification = async (
         : processed.productAttributes?.description ===
           optimization?.proposedDescription;
 
-    if (!merged) {
-      reprocessedWithoutMerge += 1;
-      const stamped = await GoogleMerchantOffer.update(
+    if (merged) {
+      verified += 1;
+      const flipped = await GoogleMerchantOffer.update(
         Environment.SERVER,
         row.id,
-        { lastUpdateDate },
+        { status: "live", verifiedAt: new Date(), lastUpdateDate },
       );
-      if (!stamped.success) return stamped;
+      if (!flipped.success) return flipped;
       continue;
     }
 
-    verified += 1;
-    const flipped = await GoogleMerchantOffer.update(
+    // Not merged: has Google even reprocessed since the push? Compare
+    // Google's clock against the Google-clock baseline captured at push time
+    // — never against our own `pushedAt`, which Google's processing
+    // timestamp can precede (observed live: an insert-triggered reprocess
+    // was stamped ~1s BEFORE our post-insert wall clock).
+    const baseline = row.lastUpdateDate;
+    const reprocessed =
+      lastUpdateDate !== null &&
+      (baseline !== null
+        ? new Date(lastUpdateDate).getTime() > new Date(baseline).getTime()
+        : row.pushedAt !== null &&
+          new Date(lastUpdateDate).getTime() > row.pushedAt.getTime());
+
+    if (!reprocessed) {
+      awaitingReprocess += 1;
+      continue;
+    }
+
+    reprocessedWithoutMerge += 1;
+    const stamped = await GoogleMerchantOffer.update(
       Environment.SERVER,
       row.id,
-      { status: "live", verifiedAt: new Date(), lastUpdateDate },
+      { lastUpdateDate },
     );
-    if (!flipped.success) return flipped;
+    if (!stamped.success) return stamped;
   }
 
   return {
