@@ -8,7 +8,38 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import Link from "next/link";
 import type * as GoogleMerchant from "@/server/app/integration/google-merchant";
 import * as Store from "@/server/app/store";
-import { GoogleMerchantControls } from "./google-merchant-controls";
+
+/** Compact Google Shopping state for the store row — management lives on the
+ * dedicated /dashboard/{store}/google-shopping page. */
+const googleSummary = (
+  status: GoogleMerchant.Status | null,
+): { label: string; className: string } => {
+  if (!status?.supported)
+    return {
+      label: "Coming soon",
+      className: "bg-foreground/5 text-foreground-dimmed",
+    };
+
+  switch (true) {
+    case !status.connected:
+      return {
+        label: "Not connected",
+        className: "bg-foreground/5 text-foreground-dimmed",
+      };
+    case status.provisioned:
+      return {
+        label: `Active · ${status.offers.live} live`,
+        className: "bg-success/10 text-success",
+      };
+    case status.linkState === "active":
+      return { label: "Linked", className: "bg-success/10 text-success" };
+    default:
+      return {
+        label: "Setup in progress",
+        className: "bg-warning/10 text-warning",
+      };
+  }
+};
 
 const PLATFORM_BADGE: Record<string, { label: string; className: string }> = {
   shopify: { label: "SH", className: "bg-[#96BF48] text-background-rich" },
@@ -110,10 +141,33 @@ export const IntegrationsSection = ({
                       </Button>
                     </div>
                   </div>
-                  <GoogleMerchantControls
-                    store={store}
-                    status={google[store.id] ?? null}
-                  />
+                  {(() => {
+                    const status = google[store.id] ?? null;
+                    const summary = googleSummary(status);
+                    return (
+                      <div className="mt-3 flex flex-wrap items-center gap-3 border-accent-foreground border-t pt-3">
+                        <span className="text-foreground-dimmed text-xs">
+                          Google Shopping
+                        </span>
+                        <span
+                          className={cn(
+                            "rounded-full px-2 py-0.5 font-semibold text-[11px] uppercase tracking-[0.05em]",
+                            summary.className,
+                          )}
+                        >
+                          {summary.label}
+                        </span>
+                        {status?.supported && (
+                          <Link
+                            href={`/dashboard/${store.id}/google-shopping`}
+                            className="text-primary text-xs hover:underline"
+                          >
+                            Manage →
+                          </Link>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
               );
             })}

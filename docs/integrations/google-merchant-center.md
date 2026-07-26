@@ -289,7 +289,7 @@ tier with feed experiments.
 | Path 1 actions (connect, detect, propose, provision + rule gate, push, verify, rule watchdog, diagnostics) | `apps/web/src/server/app/integration/google-merchant.ts` |
 | OAuth routes | `apps/web/src/app/(provider)/api/integrations/google/{install,callback}/route.ts` |
 | Maintenance cron (approval poll + rule watchdog + verification) | `apps/web/src/app/(provider)/api/cron/google-merchant/route.ts` (Bearer `CRON_SECRET`, ~10 min cadence) |
-| Settings UI (state machine + offer lifecycle) | `apps/web/src/app/(main)/dashboard/settings/_components/settings/google-merchant-controls.tsx` |
+| Google Shopping page (state machine + offer lifecycle + diagnostics) | `apps/web/src/app/(main)/dashboard/[store]/google-shopping/` (sidebar-nav entry; settings integrations row shows a compact status + Manage link) |
 | Hosted feed (Perplexity + Path 2 scheduled fetch) | `apps/web/src/server/app/feed-export.ts` |
 
 **Platform gate:** Path 1 actions accept `shopify`/`shopify-public` stores

@@ -9,6 +9,7 @@ import {
   GaugeIcon,
   GearIcon,
   RadarIcon,
+  RocketIcon,
   SearchIcon,
   ShoppingCartIcon,
   SquareChartIcon,
@@ -50,6 +51,12 @@ const items = [
     icon: EyeIcon,
     label: "Visibility",
     segment: "/visibility",
+    exact: false,
+  },
+  {
+    icon: RocketIcon,
+    label: "Google Shopping",
+    segment: "/google-shopping",
     exact: false,
   },
   {

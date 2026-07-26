@@ -4,10 +4,14 @@ import { auth } from "@/lib/auth";
 import * as GoogleMerchant from "@/server/app/integration/google-merchant";
 import { Environment } from "@/server/utils/environment";
 
-// Sends the merchant back to settings with a machine-readable reason instead
-// of stranding them on this JSON endpoint. Mirrors the Shopify callback.
-const settingsPage = (query: string) =>
-  `${process.env.APP_HOST}/dashboard/settings?${query}`;
+// Sends the merchant back to the store's Google Shopping page with a
+// machine-readable reason instead of stranding them on this JSON endpoint
+// (settings as fallback when the store cookie is gone). Mirrors the Shopify
+// callback.
+const settingsPage = (query: string, store?: string) =>
+  store
+    ? `${process.env.APP_HOST}/dashboard/${store}/google-shopping?${query}`
+    : `${process.env.APP_HOST}/dashboard/settings?${query}`;
 
 export const GET = async (request: NextRequest) => {
   if (!process.env.APP_HOST)
@@ -27,13 +31,13 @@ export const GET = async (request: NextRequest) => {
 
   // The merchant declining the Google consent screen arrives as ?error=...
   if (params.get("error"))
-    return Response.redirect(settingsPage("google=declined"));
+    return Response.redirect(settingsPage("google=declined", store));
 
   if (!code || !state || !store)
-    return Response.redirect(settingsPage("google=missing_parameters"));
+    return Response.redirect(settingsPage("google=missing_parameters", store));
 
   if (state !== nonce)
-    return Response.redirect(settingsPage("google=invalid_state"));
+    return Response.redirect(settingsPage("google=invalid_state", store));
 
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) return Response.redirect(`${process.env.APP_HOST}/sign-in`);
@@ -47,15 +51,16 @@ export const GET = async (request: NextRequest) => {
   jar.delete("google_nonce");
   jar.delete("google_store");
 
-  console.log("result", result);
-
   if (!result.success)
-    return Response.redirect(settingsPage("google=integration_failed"));
+    return Response.redirect(settingsPage("google=integration_failed", store));
 
   // `adopted` = exactly one Merchant Center account was visible and taken as
-  // the store's account. Otherwise the settings UI either offers a picker
-  // (several accounts) or holds on the "install the Google plugin" step (none).
+  // the store's account. Otherwise the Google Shopping page either offers a
+  // picker (several accounts) or holds on the "install the plugin" step (none).
   return Response.redirect(
-    settingsPage(result.data.adopted ? "google=connected" : "google=detect"),
+    settingsPage(
+      result.data.adopted ? "google=connected" : "google=detect",
+      store,
+    ),
   );
 };
