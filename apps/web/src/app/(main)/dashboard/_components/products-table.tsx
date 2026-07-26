@@ -186,8 +186,10 @@ export const ProductsTable = ({
   ...props
 }: ProductsTable.Props) => {
   const { store } = useParams<{ store: string }>();
+  const handlePaginationChange = usePaginationChangeHandler();
+
   const columns = buildColumns(store);
-  const handlePaginationChange = usePaginationChangeHandler("products/");
+
   return (
     <>
       <div className="flex items-end justify-between border-accent-foreground border-b p-4">

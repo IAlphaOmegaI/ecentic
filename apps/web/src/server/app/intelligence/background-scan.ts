@@ -56,6 +56,12 @@ const comparisonSchema = z.object({
 // liveness to the stale reaper.
 const PROGRESS_WRITE_EVERY = 5;
 
+// A simulation row that won't persist is dropped, not fatal — one unusable
+// value should cost that single comparison, not the whole run's model spend.
+// A run of them is a different animal: that is the database itself failing, so
+// bail out rather than judge every remaining pair into a void.
+const MAX_ROW_FAILURES = 5;
+
 // `store` scopes the run to one store's products — the drain passes it from the
 // scan row, the daily cron passes each store in turn. Absent (legacy scans
 // enqueued before store scoping) the run stays account-wide. `roster` narrows
@@ -286,6 +292,7 @@ const runScanForUser = async (
       Awaited<ReturnType<typeof Simulation.create>>,
       { success: false }
     > | null,
+    failures: 0,
   };
 
   const worker = async () => {
@@ -300,8 +307,24 @@ const runScanForUser = async (
         ...result,
       });
       if (!creation.success) {
-        state.failure = creation;
-        return;
+        state.failures += 1;
+        if (state.failures >= MAX_ROW_FAILURES) {
+          state.failure = creation;
+          return;
+        }
+
+        // withContext already reported the error to Sentry; the breadcrumb is
+        // what ties it back to the pair that produced it.
+        context.span.addBreadcrumb({
+          category: "scan.simulation.dropped",
+          data: {
+            "scan.id": record.id,
+            "product.id": result.productId,
+            "competitor.id": result.competitorId,
+            "simulation.model": result.model,
+          },
+        });
+        continue;
       }
 
       results.push(result);
@@ -347,6 +370,11 @@ const runScanForUser = async (
     (outcome) => outcome.winner === "product",
   ).length;
   const losses = outcomes.length - wins;
+
+  // Report what actually landed in the database, not what was planned — a
+  // dropped row leaves this short of `totalSimulations`. Clamped because a
+  // shrunken roster can leave stale judged rows behind from an earlier run.
+  const stored = Math.min(outcomes.length, totalSimulations);
 
   // Identify the biggest optimization opportunity, matching the streaming path
   // so durable scans still surface a "Top Finding".
@@ -406,7 +434,7 @@ const runScanForUser = async (
 
   const completion = await Scan.update(Environment.SERVER, record.id, {
     status: "complete",
-    completedSimulations: totalSimulations,
+    completedSimulations: stored,
     wins,
     losses,
     topFinding: finding,
@@ -415,7 +443,13 @@ const runScanForUser = async (
 
   context.span.addBreadcrumb({
     category: "scan.complete",
-    data: { "scan.id": record.id, "user.id": user, wins, losses },
+    data: {
+      "scan.id": record.id,
+      "user.id": user,
+      wins,
+      losses,
+      "simulations.dropped": state.failures,
+    },
   });
 
   return {
