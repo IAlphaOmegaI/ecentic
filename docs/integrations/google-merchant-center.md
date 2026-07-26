@@ -260,4 +260,10 @@ tier with feed experiments.
 | Offer push lifecycle (hash, pending → live) | `google_merchant_offer` table, `apps/web/src/server/app/google-merchant-offer.ts` |
 | Path 1 actions (connect, detect, propose, provision + rule gate, push, verify, rule watchdog, diagnostics) | `apps/web/src/server/app/integration/google-merchant.ts` |
 | OAuth routes | `apps/web/src/app/(provider)/api/integrations/google/{install,callback}/route.ts` |
+| Maintenance cron (approval poll + rule watchdog + verification) | `apps/web/src/app/(provider)/api/cron/google-merchant/route.ts` (Bearer `CRON_SECRET`, ~10 min cadence) |
+| Settings UI (state machine + offer lifecycle) | `apps/web/src/app/(main)/dashboard/settings/_components/settings/google-merchant-controls.tsx` |
 | Hosted feed (Perplexity + Path 2 scheduled fetch) | `apps/web/src/server/app/feed-export.ts` |
+
+**Platform gate:** Path 1 actions accept `shopify`/`shopify-public` stores
+only. WooCommerce surfaces as "coming soon" (settings UI + connect error)
+until spike 2 validates it; feed/CSV stores need Path 2.

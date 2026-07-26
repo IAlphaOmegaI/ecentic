@@ -6,7 +6,9 @@ import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
 import Link from "next/link";
+import type * as GoogleMerchant from "@/server/app/integration/google-merchant";
 import * as Store from "@/server/app/store";
+import { GoogleMerchantControls } from "./google-merchant-controls";
 
 const PLATFORM_BADGE: Record<string, { label: string; className: string }> = {
   shopify: { label: "SH", className: "bg-[#96BF48] text-background-rich" },
@@ -19,7 +21,13 @@ const PLATFORM_BADGE: Record<string, { label: string; className: string }> = {
   csv: { label: "CSV", className: "bg-accent-foreground text-background" },
 };
 
-export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
+export const IntegrationsSection = ({
+  stores,
+  google,
+}: {
+  stores: Store.Type[];
+  google: Record<string, GoogleMerchant.Status | null>;
+}) => {
   const toast = useToastManager();
 
   const [handleSync, isSyncing] = useAsyncAction(async (id: string) => {
@@ -69,40 +77,43 @@ export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
                 className: "bg-foreground-dimmed text-background",
               };
               return (
-                <div
-                  key={store.id}
-                  className="flex items-center justify-between px-4 py-4"
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={cn(
-                        "flex size-9 items-center justify-center rounded-md font-bold text-sm",
-                        badge.className,
-                      )}
-                    >
-                      {badge.label}
+                <div key={store.id} className="px-4 py-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={cn(
+                          "flex size-9 items-center justify-center rounded-md font-bold text-sm",
+                          badge.className,
+                        )}
+                      >
+                        {badge.label}
+                      </div>
+                      <div>
+                        <p className="font-medium text-foreground text-sm">
+                          {store.domain}
+                        </p>
+                        <p className="mt-0.5 text-foreground-dimmed text-xs capitalize">
+                          {store.platform} · {store.name}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium text-foreground text-sm">
-                        {store.domain}
-                      </p>
-                      <p className="mt-0.5 text-foreground-dimmed text-xs capitalize">
-                        {store.platform} · {store.name}
-                      </p>
+                    <div className="flex items-center gap-3">
+                      <span className="rounded-full bg-success/10 px-2 py-0.5 font-semibold text-[11px] text-success uppercase tracking-[0.05em]">
+                        Connected
+                      </span>
+                      <Button
+                        color="neutral"
+                        disabled={isSyncing}
+                        onClick={() => handleSync(store.id)}
+                      >
+                        {isSyncing ? "Syncing…" : "Sync Now"}
+                      </Button>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className="rounded-full bg-success/10 px-2 py-0.5 font-semibold text-[11px] text-success uppercase tracking-[0.05em]">
-                      Connected
-                    </span>
-                    <Button
-                      color="neutral"
-                      disabled={isSyncing}
-                      onClick={() => handleSync(store.id)}
-                    >
-                      {isSyncing ? "Syncing…" : "Sync Now"}
-                    </Button>
-                  </div>
+                  <GoogleMerchantControls
+                    store={store}
+                    status={google[store.id] ?? null}
+                  />
                 </div>
               );
             })}

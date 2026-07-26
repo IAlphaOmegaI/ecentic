@@ -148,6 +148,44 @@ ecentic supports connecting to external product catalogs via four live integrati
 
 ---
 
+## Channel Integrations
+
+### Google Merchant Center (Google Shopping)
+
+**Mode:** Hybrid channel partner — the store's native Google plugin owns the
+primary feed; ecentic links the merchant's account to our MCA
+(`accountManagement`) and pushes attribute overrides through a supplemental
+data source. Full spec + spike results: `google-merchant-center.md`.
+
+**Availability:** Shopify only (spike-validated on a live account).
+**WooCommerce: coming soon** — blocked on spike 2 (offer-ID format, feed-label
+convention, rule-patch acceptance unverified). Feed/CSV stores have no native
+Google plugin and would need Path 2 (not built).
+
+#### What's done
+
+- [x] Merchant OAuth (scope `content`) — install/callback routes, refresh-token storage on `google_merchant_account`
+- [x] Account detection (`accounts.list`) with adopt/poll/picker routing
+- [x] `services:propose` accountManagement link + approval polling
+- [x] Provisioning with hard rule gate — supplemental data source + primary `defaultRule` read-modify-write patch (spike 1: auto-pickup never happens)
+- [x] Override push — offer IDs read from the live account, policy lint before insert, hash-skip idempotency, `google_merchant_offer` lifecycle rows
+- [x] Async verification — `pending → live` gated on `productStatus.lastUpdateDate` advancing past the push (reprocessing is lazy: hours)
+- [x] Rule-position watchdog with auto-repair (`checkRuleHealth`)
+- [x] Maintenance cron — `/api/cron/google-merchant` (approval poll + rule watchdog + verification, Bearer `CRON_SECRET`)
+- [x] Settings UI — Google Shopping controls per store row (connect → detect → link → provision → push/verify), coming-soon state for unsupported platforms
+- [x] Diagnostics pull (account issues + item-level issues + disapproval counts)
+
+#### What's missing
+
+- [ ] WooCommerce support (spike 2 first)
+- [ ] Path 2 — full API provisioning for stores without the native plugin (`createAndConfigure`, verifySelf, ToS, site verification, claim)
+- [ ] Diagnostics dashboard surface (data is pulled; no dedicated UI beyond the settings card)
+- [ ] ToS re-check watchdog (`retrieveForApplication`)
+- [ ] Aggregate disapproval-rate alerting across merchants (partner reputation guard)
+- [ ] OAuth consent-screen verification for the `content` scope (external, weeks — submit early)
+
+---
+
 ## Roadmap Providers
 
 ### BigCommerce

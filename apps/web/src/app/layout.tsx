@@ -88,6 +88,9 @@ export const metadata: Metadata = {
     ],
     other: [{ rel: "mask-icon", url: "/images/logo.svg", color: "#1572fa" }],
   },
+  verification: {
+    google: "BPZoE9wenU7B37RID4Zs8k55_-bf7QJ1Is2_Ym85kio",
+  },
   manifest: "/manifest.webmanifest",
   other: {
     "msapplication-config": "/browserconfig.xml",

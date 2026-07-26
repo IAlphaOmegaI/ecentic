@@ -23,6 +23,21 @@ import * as Store from "../store";
 
 const SUPPLEMENTAL_DATA_SOURCE_NAME = "ecentic Optimizations";
 
+/**
+ * Path 1 is validated end-to-end on Shopify only (spike 1). WooCommerce waits
+ * on spike 2 — offer-ID format, feed-label convention, and whether Google for
+ * WooCommerce's primary accepts the rule patch are unverified — and other
+ * platforms have no native Google plugin at all (they'd need Path 2).
+ */
+const SUPPORTED_PLATFORMS = ["shopify", "shopify-public"];
+
+const unsupportedPlatformError = (platform: string) =>
+  new RequestError(
+    platform === "woocommerce"
+      ? "Google Shopping optimization for WooCommerce is coming soon"
+      : "Google Shopping optimization is currently available for Shopify stores only",
+  );
+
 const ownedStore = async (storeId: string, userId: string) => {
   const store = await Store.get(Environment.SERVER, storeId);
   if (!store.success) return store;
@@ -138,6 +153,12 @@ export const handleOAuthCallback = withContext(
 
     const store = await ownedStore(storeId, userId);
     if (!store.success) return store;
+
+    if (!SUPPORTED_PLATFORMS.includes(store.data.platform))
+      return {
+        success: false,
+        error: unsupportedPlatformError(store.data.platform),
+      };
 
     const redirectUri = `${process.env.APP_HOST}/api/integrations/google/callback`;
 
@@ -307,53 +328,65 @@ export const proposeLink = withAuthentication(
 );
 
 /**
- * Re-reads the account's services and promotes `proposed` → `active` once the
- * merchant has approved our accountManagement proposal in Merchant Center.
+ * Session-free core of {@link checkLink}: re-reads the account's services and
+ * promotes `proposed` → `active` once the merchant has approved our
+ * accountManagement proposal in Merchant Center. Shared with the approval
+ * poller in {@link runMaintenance}.
  */
+const reconcileLinkState = async (
+  accessToken: string,
+  record: GoogleMerchantAccount.Type,
+): Promise<
+  | { success: true; data: { linkState: "unlinked" | "proposed" | "active" } }
+  | { success: false; error: Error }
+> => {
+  const config = GoogleMerchantAPI.configuration();
+  if (!config)
+    return { success: false, error: GoogleMerchantAPI.notConfiguredError() };
+
+  if (!record.googleAccountId)
+    return {
+      success: false,
+      error: new RequestError("No Merchant Center account detected yet"),
+    };
+
+  const services = await GoogleMerchantAPI.listAccountServices(
+    accessToken,
+    record.googleAccountId,
+  );
+  if (!services.success) return services;
+
+  const active = (services.data.accountServices ?? []).some(
+    (service) =>
+      service.accountManagement !== undefined &&
+      service.provider === `providers/${config.advancedAccountId}` &&
+      service.handshake?.approvalState === "ESTABLISHED",
+  );
+
+  if (active && record.linkState !== "active") {
+    const update = await GoogleMerchantAccount.update(
+      Environment.SERVER,
+      record.id,
+      { linkState: "active" },
+    );
+    if (!update.success) return update;
+  }
+
+  return {
+    success: true,
+    data: { linkState: active ? "active" : record.linkState },
+  };
+};
+
 export const checkLink = withAuthentication(
   async (context, { store: storeId }: { store: string }) => {
-    const config = GoogleMerchantAPI.configuration();
-    if (!config)
-      return { success: false, error: GoogleMerchantAPI.notConfiguredError() };
-
     const store = await ownedStore(storeId, context.session.user.id);
     if (!store.success) return store;
 
     const resolved = await resolveAccessToken(storeId);
     if (!resolved.success) return resolved;
 
-    if (!resolved.record.googleAccountId)
-      return {
-        success: false,
-        error: new RequestError("No Merchant Center account detected yet"),
-      };
-
-    const services = await GoogleMerchantAPI.listAccountServices(
-      resolved.accessToken,
-      resolved.record.googleAccountId,
-    );
-    if (!services.success) return services;
-
-    const active = (services.data.accountServices ?? []).some(
-      (service) =>
-        service.accountManagement !== undefined &&
-        service.provider === `providers/${config.advancedAccountId}` &&
-        service.handshake?.approvalState === "ESTABLISHED",
-    );
-
-    if (active && resolved.record.linkState !== "active") {
-      const update = await GoogleMerchantAccount.update(
-        Environment.SERVER,
-        resolved.record.id,
-        { linkState: "active" },
-      );
-      if (!update.success) return update;
-    }
-
-    return {
-      success: true,
-      data: { linkState: active ? "active" : resolved.record.linkState },
-    };
+    return reconcileLinkState(resolved.accessToken, resolved.record);
   },
   "GoogleMerchant.checkLink",
 );
@@ -888,6 +921,147 @@ export const pullDiagnostics = withAuthentication(
  * and a re-push forces reprocessing) can settle it. Dashboard lifecycle this
  * drives: optimizing → applied, going live (may take a few hours) → live.
  */
+const runVerification = async (
+  accessToken: string,
+  record: GoogleMerchantAccount.Type,
+): Promise<
+  | {
+      success: true;
+      data: {
+        verified: number;
+        awaitingReprocess: number;
+        reprocessedWithoutMerge: number;
+        missingOffers: number;
+      };
+    }
+  | { success: false; error: Error }
+> => {
+  const { storeId } = record;
+  if (!record.googleAccountId)
+    return {
+      success: false,
+      error: new RequestError("No Merchant Center account detected yet"),
+    };
+
+  const pending = await GoogleMerchantOffer.find(Environment.SERVER, {
+    where: and(
+      eq(schema.googleMerchantOffer.storeId, storeId),
+      eq(schema.googleMerchantOffer.status, "pending"),
+    ),
+  });
+  if (!pending.success) return pending;
+
+  if (pending.data.length === 0)
+    return {
+      success: true as const,
+      data: {
+        verified: 0,
+        awaitingReprocess: 0,
+        reprocessedWithoutMerge: 0,
+        missingOffers: 0,
+      },
+    };
+
+  const optimizations = await db.query.listingOptimization.findMany({
+    where: {
+      status: "published",
+      productId: { in: pending.data.map((offer) => offer.productId) },
+    },
+  });
+  const optimizationByProduct = new Map(
+    optimizations.map((optimization) => [optimization.productId, optimization]),
+  );
+
+  const offers = await GoogleMerchantAPI.listProducts(
+    accessToken,
+    record.googleAccountId,
+  );
+  if (!offers.success) return offers;
+
+  const processedByOfferId = new Map(
+    offers.data
+      .filter((offer) => offer.offerId !== undefined)
+      .map((offer) => [offer.offerId as string, offer]),
+  );
+
+  let verified = 0;
+  let awaitingReprocess = 0;
+  let reprocessedWithoutMerge = 0;
+  let missingOffers = 0;
+
+  for (const row of pending.data) {
+    const processed = processedByOfferId.get(row.offerId);
+    if (!processed) {
+      // The plugin removed/re-keyed the offer (market or variant change) —
+      // the override now points at nothing.
+      missingOffers += 1;
+      const flagged = await GoogleMerchantOffer.update(
+        Environment.SERVER,
+        row.id,
+        { status: "error", error: "Offer no longer on the account" },
+      );
+      if (!flagged.success) return flagged;
+      continue;
+    }
+
+    const lastUpdateDate = processed.productStatus?.lastUpdateDate ?? null;
+    const reprocessed =
+      lastUpdateDate !== null &&
+      row.pushedAt !== null &&
+      new Date(lastUpdateDate).getTime() > row.pushedAt.getTime();
+
+    if (!reprocessed) {
+      awaitingReprocess += 1;
+      if (lastUpdateDate !== row.lastUpdateDate) {
+        const stamped = await GoogleMerchantOffer.update(
+          Environment.SERVER,
+          row.id,
+          { lastUpdateDate },
+        );
+        if (!stamped.success) return stamped;
+      }
+      continue;
+    }
+
+    const optimization = optimizationByProduct.get(row.productId);
+    const merged =
+      optimization?.proposedTitle !== null &&
+      optimization?.proposedTitle !== undefined
+        ? processed.attributes?.title === optimization.proposedTitle
+        : processed.attributes?.description ===
+          optimization?.proposedDescription;
+
+    if (!merged) {
+      reprocessedWithoutMerge += 1;
+      const stamped = await GoogleMerchantOffer.update(
+        Environment.SERVER,
+        row.id,
+        { lastUpdateDate },
+      );
+      if (!stamped.success) return stamped;
+      continue;
+    }
+
+    verified += 1;
+    const flipped = await GoogleMerchantOffer.update(
+      Environment.SERVER,
+      row.id,
+      { status: "live", verifiedAt: new Date(), lastUpdateDate },
+    );
+    if (!flipped.success) return flipped;
+  }
+
+  return {
+    success: true as const,
+    data: {
+      verified,
+      awaitingReprocess,
+      reprocessedWithoutMerge,
+      missingOffers,
+    },
+  };
+};
+
 export const verifyOverrides = withAuthentication(
   async (context, { store: storeId }: { store: string }) => {
     const store = await ownedStore(storeId, context.session.user.id);
@@ -896,144 +1070,24 @@ export const verifyOverrides = withAuthentication(
     const resolved = await resolveAccessToken(storeId);
     if (!resolved.success) return resolved;
 
-    const { record } = resolved;
-    if (!record.googleAccountId)
-      return {
-        success: false,
-        error: new RequestError("No Merchant Center account detected yet"),
-      };
-
-    const pending = await GoogleMerchantOffer.find(Environment.SERVER, {
-      where: and(
-        eq(schema.googleMerchantOffer.storeId, storeId),
-        eq(schema.googleMerchantOffer.status, "pending"),
-      ),
-    });
-    if (!pending.success) return pending;
-
-    if (pending.data.length === 0)
-      return {
-        success: true as const,
-        data: {
-          verified: 0,
-          awaitingReprocess: 0,
-          reprocessedWithoutMerge: 0,
-          missingOffers: 0,
-        },
-      };
-
-    const optimizations = await db.query.listingOptimization.findMany({
-      where: {
-        status: "published",
-        productId: { in: pending.data.map((offer) => offer.productId) },
-      },
-    });
-    const optimizationByProduct = new Map(
-      optimizations.map((optimization) => [
-        optimization.productId,
-        optimization,
-      ]),
-    );
-
-    const offers = await GoogleMerchantAPI.listProducts(
+    const verification = await runVerification(
       resolved.accessToken,
-      record.googleAccountId,
+      resolved.record,
     );
-    if (!offers.success) return offers;
-
-    const processedByOfferId = new Map(
-      offers.data
-        .filter((offer) => offer.offerId !== undefined)
-        .map((offer) => [offer.offerId as string, offer]),
-    );
-
-    let verified = 0;
-    let awaitingReprocess = 0;
-    let reprocessedWithoutMerge = 0;
-    let missingOffers = 0;
-
-    for (const row of pending.data) {
-      const processed = processedByOfferId.get(row.offerId);
-      if (!processed) {
-        // The plugin removed/re-keyed the offer (market or variant change) —
-        // the override now points at nothing.
-        missingOffers += 1;
-        const flagged = await GoogleMerchantOffer.update(
-          Environment.SERVER,
-          row.id,
-          { status: "error", error: "Offer no longer on the account" },
-        );
-        if (!flagged.success) return flagged;
-        continue;
-      }
-
-      const lastUpdateDate = processed.productStatus?.lastUpdateDate ?? null;
-      const reprocessed =
-        lastUpdateDate !== null &&
-        row.pushedAt !== null &&
-        new Date(lastUpdateDate).getTime() > row.pushedAt.getTime();
-
-      if (!reprocessed) {
-        awaitingReprocess += 1;
-        if (lastUpdateDate !== row.lastUpdateDate) {
-          const stamped = await GoogleMerchantOffer.update(
-            Environment.SERVER,
-            row.id,
-            { lastUpdateDate },
-          );
-          if (!stamped.success) return stamped;
-        }
-        continue;
-      }
-
-      const optimization = optimizationByProduct.get(row.productId);
-      const merged =
-        optimization?.proposedTitle !== null &&
-        optimization?.proposedTitle !== undefined
-          ? processed.attributes?.title === optimization.proposedTitle
-          : processed.attributes?.description ===
-            optimization?.proposedDescription;
-
-      if (!merged) {
-        reprocessedWithoutMerge += 1;
-        const stamped = await GoogleMerchantOffer.update(
-          Environment.SERVER,
-          row.id,
-          { lastUpdateDate },
-        );
-        if (!stamped.success) return stamped;
-        continue;
-      }
-
-      verified += 1;
-      const flipped = await GoogleMerchantOffer.update(
-        Environment.SERVER,
-        row.id,
-        { status: "live", verifiedAt: new Date(), lastUpdateDate },
-      );
-      if (!flipped.success) return flipped;
-    }
+    if (!verification.success) return verification;
 
     context.span.addBreadcrumb({
       category: "google.overrides.verified",
       data: {
         "store.id": storeId,
-        "overrides.verified": verified,
-        "overrides.awaiting": awaitingReprocess,
-        "overrides.unmerged": reprocessedWithoutMerge,
-        "overrides.missing": missingOffers,
+        "overrides.verified": verification.data.verified,
+        "overrides.awaiting": verification.data.awaitingReprocess,
+        "overrides.unmerged": verification.data.reprocessedWithoutMerge,
+        "overrides.missing": verification.data.missingOffers,
       },
     });
 
-    return {
-      success: true as const,
-      data: {
-        verified,
-        awaitingReprocess,
-        reprocessedWithoutMerge,
-        missingOffers,
-      },
-    };
+    return verification;
   },
   "GoogleMerchant.verifyOverrides",
 );
@@ -1050,4 +1104,157 @@ export const disconnect = withAuthentication(
     return GoogleMerchantAccount.destroy(Environment.SERVER, account.data.id);
   },
   "GoogleMerchant.disconnect",
+);
+
+export type Status = {
+  /** False for platforms Path 1 doesn't cover yet (WooCommerce, feed, CSV). */
+  supported: boolean;
+  connected: boolean;
+  googleAccountId: string | null;
+  linkState: "unlinked" | "proposed" | "active";
+  provisioned: boolean;
+  offers: { pending: number; live: number; disapproved: number; error: number };
+};
+
+/**
+ * Connection/link/offer summary for one store, driving the settings UI's
+ * Google Shopping card and its optimizing → going live → live lifecycle.
+ */
+export const getStatus = withAuthentication(
+  async (
+    context,
+    { store: storeId }: { store: string },
+  ): Promise<
+    { success: true; data: Status } | { success: false; error: Error }
+  > => {
+    const store = await ownedStore(storeId, context.session.user.id);
+    if (!store.success) return store;
+
+    const supported = SUPPORTED_PLATFORMS.includes(store.data.platform);
+
+    const empty: Status = {
+      supported,
+      connected: false,
+      googleAccountId: null,
+      linkState: "unlinked",
+      provisioned: false,
+      offers: { pending: 0, live: 0, disapproved: 0, error: 0 },
+    };
+
+    const account = await GoogleMerchantAccount.find(Environment.SERVER, {
+      where: eq(schema.googleMerchantAccount.storeId, storeId),
+    });
+    if (!account.success) return account;
+
+    const record = account.data[0];
+    if (!record) return { success: true, data: empty };
+
+    const offerRows = await GoogleMerchantOffer.find(Environment.SERVER, {
+      where: eq(schema.googleMerchantOffer.storeId, storeId),
+    });
+    if (!offerRows.success) return offerRows;
+
+    const offers = { pending: 0, live: 0, disapproved: 0, error: 0 };
+    for (const offer of offerRows.data) offers[offer.status] += 1;
+
+    return {
+      success: true,
+      data: {
+        supported,
+        connected: true,
+        googleAccountId: record.googleAccountId,
+        linkState: record.linkState,
+        provisioned: record.dataSourceName !== null,
+        offers,
+      },
+    };
+  },
+  "GoogleMerchant.getStatus",
+);
+
+/**
+ * Cron sweep over every linked store (Bearer-gated route at
+ * /api/cron/google-merchant): polls pending accountManagement approvals,
+ * repairs primary-feed rules that merchants reordered in Merchant Center, and
+ * runs the async override verification. Every step is idempotent, so the
+ * sweep is safe at any cadence; per-store failures are collected, never fatal
+ * to the rest of the sweep.
+ */
+export const runMaintenance = withContext(
+  async (context, _input: Record<string, never>) => {
+    const accounts = await GoogleMerchantAccount.find(Environment.SERVER, {});
+    if (!accounts.success) return accounts;
+
+    const summary = {
+      stores: accounts.data.length,
+      linksChecked: 0,
+      linksEstablished: 0,
+      rulesRepaired: 0,
+      verified: 0,
+      awaitingReprocess: 0,
+      reprocessedWithoutMerge: 0,
+      errors: [] as string[],
+    };
+
+    for (const record of accounts.data) {
+      const resolved = await resolveAccessToken(record.storeId);
+      if (!resolved.success) {
+        summary.errors.push(`${record.storeId}: ${resolved.error.message}`);
+        continue;
+      }
+
+      if (record.linkState === "proposed" && record.googleAccountId) {
+        summary.linksChecked += 1;
+        const link = await reconcileLinkState(resolved.accessToken, record);
+        if (!link.success) {
+          summary.errors.push(`${record.storeId}: ${link.error.message}`);
+        } else if (link.data.linkState === "active") {
+          summary.linksEstablished += 1;
+        }
+      }
+
+      if (record.primaryDataSourceName && record.dataSourceName) {
+        const rule = await ensureDefaultRule(resolved.accessToken, {
+          primaryName: record.primaryDataSourceName,
+          supplementalName: record.dataSourceName,
+        });
+        if (!rule.success) {
+          summary.errors.push(`${record.storeId}: ${rule.error.message}`);
+        } else if (rule.data.patched) {
+          summary.rulesRepaired += 1;
+        }
+      }
+
+      if (record.dataSourceName && record.googleAccountId) {
+        const verification = await runVerification(
+          resolved.accessToken,
+          record,
+        );
+        if (!verification.success) {
+          summary.errors.push(
+            `${record.storeId}: ${verification.error.message}`,
+          );
+        } else {
+          summary.verified += verification.data.verified;
+          summary.awaitingReprocess += verification.data.awaitingReprocess;
+          summary.reprocessedWithoutMerge +=
+            verification.data.reprocessedWithoutMerge;
+        }
+      }
+    }
+
+    context.span.addBreadcrumb({
+      category: "google.maintenance",
+      data: {
+        "stores.total": summary.stores,
+        "links.established": summary.linksEstablished,
+        "rules.repaired": summary.rulesRepaired,
+        "overrides.verified": summary.verified,
+        "errors.count": summary.errors.length,
+      },
+    });
+
+    return { success: true as const, data: summary };
+  },
+  "GoogleMerchant.runMaintenance",
 );

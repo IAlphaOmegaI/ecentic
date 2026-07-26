@@ -47,6 +47,8 @@ export const GET = async (request: NextRequest) => {
   jar.delete("google_nonce");
   jar.delete("google_store");
 
+  console.log("result", result);
+
   if (!result.success)
     return Response.redirect(settingsPage("google=integration_failed"));
 

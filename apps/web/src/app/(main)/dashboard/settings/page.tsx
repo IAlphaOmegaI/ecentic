@@ -4,6 +4,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import * as Authentication from "@/server/app/authentication";
 import * as PerformanceFee from "@/server/app/billing/performance-fee";
+import * as GoogleMerchant from "@/server/app/integration/google-merchant";
 import * as Store from "@/server/app/store";
 import * as Subscription from "@/server/app/subscription";
 import { Environment } from "@/server/utils/environment";
@@ -56,6 +57,16 @@ const SettingsContent = async () => {
       PerformanceFee.getCurrentPeriodSummary(Environment.SERVER),
     ]);
 
+  const googleEntries = await Promise.all(
+    stores.map(async (store) => {
+      const status = await GoogleMerchant.getStatus(Environment.SERVER, {
+        store: store.id,
+      });
+      return [store.id, status.success ? status.data : null] as const;
+    }),
+  );
+  const google = Object.fromEntries(googleEntries);
+
   const subscription = subscriptionResult.success
     ? subscriptionResult.data
     : null;
@@ -68,6 +79,7 @@ const SettingsContent = async () => {
     <SettingsClient
       user={user}
       stores={stores}
+      google={google}
       subscription={subscription}
       invoices={invoices}
       performanceFee={performanceFee}
