@@ -167,11 +167,13 @@ Most Shopify merchants land here; many are already mid-setup.
    the optimized title/description).
 
    **Merge keys are more than the offer ID.** Supplemental data merges on
-   `(offerId, contentLanguage, feedLabel)`. The supplemental data source is
-   created with `feedLabel`/`contentLanguage` **discovered from** the channel's
-   primary data source — never assumed (Shopify labels look like
-   `USD_101961335098`). A wrong triplet inserts successfully and merges
-   nothing.
+   `(offerId, contentLanguage, feedLabel)`. The supplemental data source
+   itself is created **bare** — `feedLabel`/`contentLanguage` are only legal
+   on file-input data sources and are rejected as unexpected fields on
+   API-input ones (spike 3). The triplet instead rides on every
+   `productInput`, copied from the live offer it targets — never assumed
+   (Shopify labels look like `USD_101961335098`). A wrong triplet inserts
+   successfully and merges nothing.
 
    **Push lifecycle.** Each pushed offer is tracked in
    `google_merchant_offer`: override bodies are hashed (unchanged bodies are

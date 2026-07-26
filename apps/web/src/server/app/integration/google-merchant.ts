@@ -421,7 +421,10 @@ const ensureDefaultRule = async (
     supplementalName,
   }: { primaryName: string; supplementalName: string },
 ): Promise<
-  | { success: true; data: { patched: boolean; confirmed: boolean } }
+  | {
+      success: true;
+      data: { patched: boolean; confirmed: boolean; observedRule: string };
+    }
   | { success: false; error: Error }
 > => {
   const primary = await GoogleMerchantAPI.getDataSource(
@@ -434,11 +437,24 @@ const ensureDefaultRule = async (
     primary.data.primaryProductDataSource?.defaultRule?.takeFromDataSources ??
     [];
 
+  // Match by dataSource id, not the full resource name — read-backs may
+  // normalize the account segment differently than the name we stored.
+  const supplementalId = supplementalName.split("/").pop();
   const isOurs = (reference: GoogleMerchantAPI.DataSourceReference) =>
-    reference.supplementalDataSourceName === supplementalName;
+    reference.supplementalDataSourceName?.split("/").pop() === supplementalId;
+
+  const ruleOf = (source: GoogleMerchantAPI.DataSource) =>
+    source.primaryProductDataSource?.defaultRule?.takeFromDataSources ?? [];
 
   if (current[0] && isOurs(current[0]))
-    return { success: true, data: { patched: false, confirmed: true } };
+    return {
+      success: true,
+      data: {
+        patched: false,
+        confirmed: true,
+        observedRule: JSON.stringify(current),
+      },
+    };
 
   const patched = await GoogleMerchantAPI.patchDataSourceDefaultRule(
     accessToken,
@@ -452,20 +468,38 @@ const ensureDefaultRule = async (
   );
   if (!patched.success) return patched;
 
+  // The PATCH response carries the updated resource — trust it first so a
+  // stale read-after-write can't fail a patch that actually landed.
+  const patchedRule = ruleOf(patched.data);
+  if (patchedRule[0] && isOurs(patchedRule[0]))
+    return {
+      success: true,
+      data: {
+        patched: true,
+        confirmed: true,
+        observedRule: JSON.stringify(patchedRule),
+      },
+    };
+
   const confirmation = await GoogleMerchantAPI.getDataSource(
     accessToken,
     primaryName,
   );
   if (!confirmation.success) return confirmation;
 
-  const confirmed = (() => {
-    const rule =
-      confirmation.data.primaryProductDataSource?.defaultRule
-        ?.takeFromDataSources ?? [];
-    return rule[0] !== undefined && isOurs(rule[0]);
-  })();
+  const confirmedRule = ruleOf(confirmation.data);
+  const confirmed = confirmedRule[0] !== undefined && isOurs(confirmedRule[0]);
 
-  return { success: true, data: { patched: true, confirmed } };
+  return {
+    success: true,
+    data: {
+      patched: true,
+      confirmed,
+      observedRule: JSON.stringify(
+        confirmedRule.length > 0 ? confirmedRule : patchedRule,
+      ),
+    },
+  };
 };
 
 /**
@@ -520,9 +554,6 @@ export const ensureSupplementalDataSource = withAuthentication(
         {
           accountId: record.googleAccountId as string,
           displayName: SUPPLEMENTAL_DATA_SOURCE_NAME,
-          feedLabel: primary.primaryProductDataSource?.feedLabel ?? null,
-          contentLanguage:
-            primary.primaryProductDataSource?.contentLanguage ?? null,
         },
       );
       if (!created.success) return created;
@@ -544,7 +575,7 @@ export const ensureSupplementalDataSource = withAuthentication(
       return {
         success: false,
         error: new RequestError(
-          "Primary feed rule patch did not stick — the supplemental source is not first in takeFromDataSources",
+          `Primary feed rule patch did not stick — the supplemental source is not first in takeFromDataSources. Observed rule: ${rule.data.observedRule}`,
         ),
       };
 

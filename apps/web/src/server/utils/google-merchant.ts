@@ -288,33 +288,23 @@ export const patchDataSourceDefaultRule = (
     },
   );
 
+/**
+ * Creates an API-input supplemental data source. `feedLabel`/`contentLanguage`
+ * MUST be unset here — the schema only allows (and requires) them for
+ * file-input data sources; API-input sources reject them as unexpected
+ * fields. The merge keys ride on each productInput instead, copied from the
+ * live offer they target.
+ */
 export const createSupplementalDataSource = (
   accessToken: string,
-  {
-    accountId,
-    displayName,
-    feedLabel,
-    contentLanguage,
-  }: {
-    accountId: string;
-    displayName: string;
-    feedLabel: string | null;
-    contentLanguage: string | null;
-  },
+  { accountId, displayName }: { accountId: string; displayName: string },
 ) =>
   api<DataSource>(
     accessToken,
     `/datasources/v1/accounts/${accountId}/dataSources`,
     {
       method: "POST",
-      body: {
-        displayName,
-        supplementalProductDataSource:
-          // Merge keys: supplemental data joins the primary feed on
-          // (offerId, contentLanguage, feedLabel). Omitting both makes the
-          // source valid for all targets of the primary feed.
-          feedLabel && contentLanguage ? { feedLabel, contentLanguage } : {},
-      },
+      body: { displayName, supplementalProductDataSource: {} },
     },
   );
 
