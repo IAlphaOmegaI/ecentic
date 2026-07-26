@@ -231,6 +231,13 @@ const { db } = await import("../../database");
 await db.insert(schema.simulation).values(results);
 ```
 
+`create`, `upsert` and `update` also strip NUL (`U+0000`) from every string in
+the payload, including inside arrays and `jsonb` objects. Postgres cannot store
+that byte in a text value at all — it rejects the whole statement with `invalid
+byte sequence for encoding "UTF8": 0x00` — and model output and scraped listings
+do occasionally contain one. A raw `db.insert(...)` skips that scrub, which is
+one more reason writes belong in the repository.
+
 ---
 
 ## 23b. Prefer `Object.fromEntries` + `.map()` Over Imperative Accumulation

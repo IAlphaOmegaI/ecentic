@@ -68,6 +68,44 @@ const capitalize = (value: string): string =>
 // biome-ignore lint/suspicious/noExplicitAny: tx and db share query API but have different nominal types
 const executor = (options?: ExecuteOptions): any => options?.tx ?? db;
 
+const isPlainObject = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" &&
+  value !== null &&
+  (Object.getPrototypeOf(value) === Object.prototype ||
+    Object.getPrototypeOf(value) === null);
+
+/**
+ * Strips NUL (U+0000) from every string reachable in a write payload.
+ *
+ * Postgres rejects 0x00 anywhere in a text value — `invalid byte sequence for
+ * encoding "UTF8": 0x00` — and it is not an escape we can encode around; the
+ * byte simply cannot be stored. Model output and scraped listings occasionally
+ * carry one (a judge once emitted it mid-sentence in a simulation `reasoning`,
+ * failing the insert and taking the whole scan down with it), so the safest
+ * place to drop it is the single choke point every write already passes
+ * through. Every other control character is legal and is left alone.
+ *
+ * Only strings, arrays and plain objects (jsonb payloads) are rebuilt — Date,
+ * Buffer and Drizzle's `sql` fragments carry behaviour a copy would lose, so
+ * they pass through untouched.
+ */
+const scrub = (value: unknown): unknown => {
+  switch (true) {
+    case typeof value === "string":
+      return value.replaceAll("\u0000", "");
+    case Array.isArray(value):
+      return value.map(scrub);
+    case isPlainObject(value):
+      return Object.fromEntries(
+        Object.entries(value).map(([key, entry]) => [key, scrub(entry)]),
+      );
+    default:
+      return value;
+  }
+};
+
+const scrubbed = <T>(data: T): T => scrub(data) as T;
+
 /**
  * Generic repository over a Drizzle table (CRUD + paginate/find).
  * Returns Result types for all operations. Use with schema.user, schema.session, etc.
@@ -192,7 +230,7 @@ export function repository<T extends TableWithId>(table: T) {
         const result = await resultify(async () =>
           run
             .insert(target)
-            .values(data as T["$inferInsert"])
+            .values(scrubbed(data) as T["$inferInsert"])
             .returning(),
         );
 
@@ -229,12 +267,13 @@ export function repository<T extends TableWithId>(table: T) {
       ) => {
         const run = executor(config);
         const target = asTable(table);
-        const { id: _id, ...rest } = data as Record<string, unknown>;
-        const set = config.set ?? rest;
+        const values = scrubbed(data);
+        const { id: _id, ...rest } = values as Record<string, unknown>;
+        const set = config.set ? scrubbed(config.set) : rest;
         const result = await resultify(async () =>
           run
             .insert(target)
-            .values(data as T["$inferInsert"])
+            .values(values as T["$inferInsert"])
             .onConflictDoUpdate({ target: config.target, set })
             .returning(),
         );
@@ -272,7 +311,7 @@ export function repository<T extends TableWithId>(table: T) {
           async () =>
             run
               .update(target)
-              .set(data as Partial<T["$inferInsert"]>)
+              .set(scrubbed(data) as Partial<T["$inferInsert"]>)
               .where(eq(target.id, id))
               .returning() as Promise<Document<T>[]>,
         );
