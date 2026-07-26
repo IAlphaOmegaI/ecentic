@@ -54,6 +54,21 @@ const ownedStore = async (storeId: string, userId: string) => {
   return { success: true as const, data: store.data };
 };
 
+type CandidateAccount = { id: string; name: string | null };
+
+/** Maps an accounts.list response to picker candidates ({id, name}). */
+const candidatesFromAccounts = (accounts: {
+  accounts?: GoogleMerchantAPI.MerchantAccount[];
+}): CandidateAccount[] =>
+  (accounts.accounts ?? [])
+    .map((account) => ({
+      id: GoogleMerchantAPI.accountIdFromName(account.name),
+      name: account.accountName ?? null,
+    }))
+    .filter(
+      (candidate): candidate is CandidateAccount => candidate.id !== null,
+    );
+
 const linkedAccount = async (storeId: string) => {
   const account = await GoogleMerchantAccount.find(Environment.SERVER, {
     where: eq(schema.googleMerchantAccount.storeId, storeId),
@@ -173,9 +188,7 @@ export const handleOAuthCallback = withContext(
     );
     if (!accounts.success) return accounts;
 
-    const detected = (accounts.data.accounts ?? [])
-      .map((account) => GoogleMerchantAPI.accountIdFromName(account.name))
-      .filter((id): id is string => id !== null);
+    const candidates = candidatesFromAccounts(accounts.data);
 
     const synced = await GoogleMerchantAccount.sync(Environment.SERVER, {
       storeId,
@@ -183,7 +196,9 @@ export const handleOAuthCallback = withContext(
       accessTokenExpiresAt: grant.data.accessTokenExpiresAt,
       refreshToken: grant.data.refreshToken,
       scope: grant.data.scope,
-      googleAccountId: detected.length === 1 ? detected[0] : null,
+      googleAccountId:
+        candidates.length === 1 ? (candidates[0]?.id ?? null) : null,
+      candidateAccounts: candidates,
       linkState: "unlinked",
       path: "native",
     });
@@ -191,12 +206,12 @@ export const handleOAuthCallback = withContext(
 
     context.span.addBreadcrumb({
       category: "google.oauth.exchange",
-      data: { "store.id": storeId, "accounts.detected": detected.length },
+      data: { "store.id": storeId, "accounts.detected": candidates.length },
     });
 
     return {
       success: true,
-      data: { accounts: detected, adopted: detected.length === 1 },
+      data: { accounts: candidates, adopted: candidates.length === 1 },
     };
   },
   "GoogleMerchant.handleOAuthCallback",
@@ -218,25 +233,22 @@ export const detectAccount = withAuthentication(
     const accounts = await GoogleMerchantAPI.listAccounts(resolved.accessToken);
     if (!accounts.success) return accounts;
 
-    const detected = (accounts.data.accounts ?? [])
-      .map((account) => GoogleMerchantAPI.accountIdFromName(account.name))
-      .filter((id): id is string => id !== null);
+    const candidates = candidatesFromAccounts(accounts.data);
 
-    if (detected.length === 1 && !resolved.record.googleAccountId) {
-      const update = await GoogleMerchantAccount.update(
-        Environment.SERVER,
-        resolved.record.id,
-        { googleAccountId: detected[0] },
-      );
-      if (!update.success) return update;
-    }
+    const adopted =
+      resolved.record.googleAccountId ??
+      (candidates.length === 1 ? (candidates[0]?.id ?? null) : null);
+
+    const update = await GoogleMerchantAccount.update(
+      Environment.SERVER,
+      resolved.record.id,
+      { candidateAccounts: candidates, googleAccountId: adopted },
+    );
+    if (!update.success) return update;
 
     return {
       success: true,
-      data: {
-        accounts: detected,
-        adopted: resolved.record.googleAccountId ?? detected[0] ?? null,
-      },
+      data: { accounts: candidates, adopted },
     };
   },
   "GoogleMerchant.detectAccount",
@@ -356,10 +368,13 @@ const reconcileLinkState = async (
   );
   if (!services.success) return services;
 
+  // The output-only provider may read back as `providers/{id}` or
+  // `accounts/{id}` (the API docs and validator disagree on the format), so
+  // match on the numeric id rather than the full resource name.
   const active = (services.data.accountServices ?? []).some(
     (service) =>
       service.accountManagement !== undefined &&
-      service.provider === `providers/${config.advancedAccountId}` &&
+      service.provider?.split("/").pop() === config.advancedAccountId &&
       service.handshake?.approvalState === "ESTABLISHED",
   );
 
@@ -1111,6 +1126,8 @@ export type Status = {
   supported: boolean;
   connected: boolean;
   googleAccountId: string | null;
+  /** Accounts visible to the Google login — the picker when several exist. */
+  candidateAccounts: { id: string; name: string | null }[];
   linkState: "unlinked" | "proposed" | "active";
   provisioned: boolean;
   offers: { pending: number; live: number; disapproved: number; error: number };
@@ -1136,6 +1153,7 @@ export const getStatus = withAuthentication(
       supported,
       connected: false,
       googleAccountId: null,
+      candidateAccounts: [],
       linkState: "unlinked",
       provisioned: false,
       offers: { pending: 0, live: 0, disapproved: 0, error: 0 },
@@ -1163,6 +1181,7 @@ export const getStatus = withAuthentication(
         supported,
         connected: true,
         googleAccountId: record.googleAccountId,
+        candidateAccounts: record.candidateAccounts ?? [],
         linkState: record.linkState,
         provisioned: record.dataSourceName !== null,
         offers,

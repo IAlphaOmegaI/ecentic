@@ -174,6 +174,15 @@ export const googleMerchantAccount = pgTable("google_merchant_account", {
   /** Numeric Merchant Center account id, once detected via accounts.list. */
   googleAccountId: text("googleAccountId"),
   /**
+   * All Merchant Center accounts visible to the connected Google login,
+   * refreshed at OAuth time and on every detect poll. Drives the account
+   * picker when more than one is visible (a Google login often carries
+   * several accounts; only the one the store's plugin created is right).
+   */
+  candidateAccounts: jsonb("candidateAccounts").$type<
+    { id: string; name: string | null }[] | null
+  >(),
+  /**
    * accountManagement service lifecycle: `unlinked` (no proposal sent),
    * `proposed` (services:propose sent, awaiting merchant approval in Merchant
    * Center), `active` (merchant approved — we can manage the account).

@@ -187,7 +187,17 @@ export const listAccountServices = (accessToken: string, accountId: string) =>
  * Proposes the accountManagement link from our MCA to the merchant's account.
  * The merchant approves the request inside Merchant Center — approval never
  * happens via API, which is the safeguard the relationship model relies on.
+ *
+ * Request shape (per the accounts_v1 discovery document): `provider` is a
+ * TOP-LEVEL sibling of `accountService` — `AccountService.provider` is
+ * output-only, so nesting it silently sends an empty provider. On format, the
+ * live validator demands `accounts/{account}` while the discovery description
+ * says `providers/123`; we send what the validator asks for. The output-only
+ * field may still read back as `providers/{id}`, so callers comparing it
+ * should match on the numeric id, not the full string.
  */
+export const providerName = (providerId: string) => `accounts/${providerId}`;
+
 export const proposeAccountManagement = (
   accessToken: string,
   { accountId, providerId }: { accountId: string; providerId: string },
@@ -198,8 +208,8 @@ export const proposeAccountManagement = (
     {
       method: "POST",
       body: {
-        provider: `providers/${providerId}`,
-        service: { accountManagement: {} },
+        provider: providerName(providerId),
+        accountService: { accountManagement: {} },
       },
     },
   );

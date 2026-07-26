@@ -43,6 +43,29 @@ Open (not contradicting anything): the same protocol against Google for
 WooCommerce — offer-ID format, feed-label convention, and whether its primary
 accepts the rule patch are unverified there.
 
+## Spike 3 results (services:propose, live) — facts replacing assumptions
+
+1. **Request shape:** `ProposeAccountServiceRequest` takes `provider` as a
+   TOP-LEVEL field next to `accountService` (`AccountService.provider` is
+   output-only — nesting it sends an empty provider). The live validator
+   accepts `accounts/{ECENTIC_MCA_ID}` for the provider reference (the
+   discovery description says `providers/123`; the read-back format is
+   ambiguous, so provider comparisons match on the numeric id).
+2. **Approval direction is inverted from the original plan.** We propose with
+   the *merchant's* credentials, so the account side has consented at propose
+   time and the pending approval sits with the **provider (our MCA)** — no
+   approval request ever appears in the merchant's dashboard. When the same
+   Google login administers both sides (test setup), the handshake jumps
+   straight to `ESTABLISHED`. For real merchants the proposal will sit
+   `PENDING` until **ecentic approves from the MCA side** via
+   `services.approve` with partner credentials (service account with admin on
+   the MCA) — the merchant already consented in our UI, so this should be
+   automatic in the maintenance cron. **Partner credentials + auto-approve are
+   the gating gap for real merchants.**
+3. The established link is visible under the merchant account's Settings →
+   People and access (the MCA listed with account-management access) and in
+   the MCA's managed-accounts list — not under "Linked accounts".
+
 ---
 
 ## Core architecture
@@ -120,10 +143,13 @@ Most Shopify merchants land here; many are already mid-setup.
    accept it; the plugin does account creation, verification, and claiming
    better than we can fight it. Detect completion by polling `accounts.list`
    with their OAuth (`detectAccount`).
-3. **Link:** propose an `accountManagement` service from our MCA to their
-   account (`accounts/{THEIR_ID}/services:propose`, provider
-   `providers/{ECENTIC_MCA_ID}`); the merchant approves the request in Merchant
-   Center. UI warns what management access means before we send it.
+3. **Link:** propose an `accountManagement` service on their account with
+   their credentials (`accounts/{THEIR_ID}/services:propose` — top-level
+   `provider: accounts/{ECENTIC_MCA_ID}` next to `accountService`, see spike 3).
+   The merchant consents in **our** UI before the propose fires (the UI warns
+   what management access means); the pending approval then sits on the
+   provider side, where ecentic auto-approves with partner credentials
+   (`services.approve` — not yet wired; test setups self-establish).
 4. **Attach optimization:** create a supplemental data source on their account
    via `dataSources.create`, **patch the primary's defaultRule to list our
    source first** (spike 1: auto-pickup never happens; read-modify-write, hard
@@ -165,7 +191,7 @@ provisioning. **Not yet implemented** — documented so the boundary is explicit
   credentials: account details, `user` array with
   `{userId, user: {accessRights: ["ADMIN"]}}` and
   `verificationMailSettings: {verificationMailMode: "SUPPRESS_VERIFICATION_MAIL"}`,
-  `service` array with `{accountManagement: {}, provider: "providers/{ECENTIC_MCA_ID}"}`.
+  `service` array with `{accountManagement: {}, provider: "accounts/{ECENTIC_MCA_ID}"}`.
   Then with merchant credentials, in order: `users/me:verifySelf`
   (PENDING → VERIFIED, replaces the email invite) →
   `accounts.updateBusinessInfo` setting `address.regionCode` (required before

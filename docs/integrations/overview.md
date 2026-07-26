@@ -177,6 +177,7 @@ Google plugin and would need Path 2 (not built).
 
 #### What's missing
 
+- [ ] Provider-side auto-approve of incoming link proposals (`services.approve` with partner/service-account credentials on the MCA) — **gating for real merchants**: merchant-credential proposals sit `PENDING` on our side; test setups self-establish only because the same login admins both accounts
 - [ ] WooCommerce support (spike 2 first)
 - [ ] Path 2 — full API provisioning for stores without the native plugin (`createAndConfigure`, verifySelf, ToS, site verification, claim)
 - [ ] Diagnostics dashboard surface (data is pulled; no dedicated UI beyond the settings card)

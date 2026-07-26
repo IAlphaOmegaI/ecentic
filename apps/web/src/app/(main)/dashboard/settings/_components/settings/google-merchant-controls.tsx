@@ -93,6 +93,38 @@ export const GoogleMerchantControls = ({
           </>
         );
 
+      case !status.googleAccountId && status.candidateAccounts.length > 0:
+        return (
+          <>
+            <Chip tone="warning">Choose Merchant Center account</Chip>
+            <p className="text-foreground-dimmed text-xs">
+              Your Google login can see several Merchant Center accounts — pick
+              the one the Google &amp; YouTube channel created for this store.
+            </p>
+            {status.candidateAccounts.map((candidate) => (
+              <Button
+                key={candidate.id}
+                color="neutral"
+                disabled={isRunning}
+                onClick={() =>
+                  run(
+                    () =>
+                      GoogleMerchant.selectAccount({
+                        store: store.id,
+                        account: candidate.id,
+                      }),
+                    "Merchant Center account selected",
+                  )
+                }
+              >
+                {candidate.name
+                  ? `${candidate.name} (${candidate.id})`
+                  : candidate.id}
+              </Button>
+            ))}
+          </>
+        );
+
       case !status.googleAccountId:
         return (
           <>
@@ -143,7 +175,11 @@ export const GoogleMerchantControls = ({
       case status.linkState === "proposed":
         return (
           <>
-            <Chip tone="warning">Awaiting approval in Merchant Center</Chip>
+            <Chip tone="warning">Establishing link</Chip>
+            <p className="text-foreground-dimmed text-xs">
+              Your link request is being processed — this usually completes
+              within a few minutes.
+            </p>
             <Button
               color="neutral"
               disabled={isRunning}
