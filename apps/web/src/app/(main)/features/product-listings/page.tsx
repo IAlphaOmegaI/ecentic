@@ -6,17 +6,26 @@ import {
   createFaqSchema,
   createMetadata,
 } from "@/lib/seo";
+import Art from "@/public/images/ascii/listing.png";
 import {
   ContentPageFooter,
   ContentPageLayout,
   ContentPageSection,
 } from "../../_components/content";
 import { Faq } from "../../pricing/_components/faq";
-import { Hero } from "./_components/hero";
 import { Layers } from "./_components/layers";
 import { NextSteps } from "./_components/next-steps";
 import { WhyListingsLose } from "./_components/why-listings-lose";
 import { Workflow } from "./_components/workflow";
+
+const assurances = [
+  "Titles, descriptions & structured data",
+  "Approval-ready rewrites",
+  "Publishes back to Shopify & WooCommerce",
+] as const;
+
+const intro =
+  "AI shopping systems compare your product data in seconds. Ecentic turns losing product pages into clearer buying inputs, for agents and for the high-intent shoppers they send you.";
 
 const description =
   "AI product listing optimization for titles, descriptions, and structured product data. Learn how ecentic helps merchants improve product visibility.";
@@ -83,14 +92,13 @@ export default () => {
   return (
     <ContentPageLayout
       eyebrow="Product Listings"
-      title="AI product listing optimization for pages that get picked."
-      description={description}
-      hideHero
-      hideHeroSpacer={false}
+      title="AI product listing optimization"
+      accent="for pages that get picked."
+      description={intro}
+      assurances={assurances}
+      art={Art}
     >
       <JsonLd schemas={structuredData} />
-
-      <Hero />
 
       <WhyListingsLose />
 

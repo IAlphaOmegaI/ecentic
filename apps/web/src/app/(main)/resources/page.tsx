@@ -1,4 +1,7 @@
+import { ArrowRightIcon } from "@zenncore/icons";
+import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { JsonLd } from "@/components/json-ld";
 import {
   absoluteUrl,
@@ -7,16 +10,23 @@ import {
   createMetadata,
   organizationSchema,
 } from "@/lib/seo";
+import Art from "@/public/images/ascii/toolbox.png";
 import {
   ContentPageFooter,
   ContentPageLayout,
   ContentPageSection,
 } from "../_components/content";
+import { bannerAction } from "../_components/page-banner";
 import { Faq } from "../pricing/_components/faq";
 import { Developer } from "./_components/developer";
 import { Guides } from "./_components/guides";
-import { Hero } from "./_components/hero";
 import { Tools } from "./_components/tools";
+
+const assurances = [
+  "No credit card",
+  "Validator works without an account",
+  "Results in about two minutes",
+] as const;
 
 const description =
   "Free ecentic resources for merchants and builders: AI Agent Score Scan, UCP Validator, UCP Playground, buyer guides, blog, and public agent API surfaces.";
@@ -79,14 +89,32 @@ export default () => {
   return (
     <ContentPageLayout
       eyebrow="Resources"
-      title="Free tools and guides for agent commerce."
-      description={description}
-      hideHero
-      hideHeroSpacer={false}
+      title="Free tools and guides"
+      accent="for agent commerce."
+      description="Diagnose your catalog, validate your protocol surface, or inspect a live agent workflow before you commit to anything."
+      assurances={assurances}
+      art={Art}
+      actions={
+        <>
+          <Button
+            color="accent"
+            className={bannerAction.lead}
+            render={<Link href="/sign-up" />}
+          >
+            Scan your store free
+            <ArrowRightIcon className="size-4" />
+          </Button>
+          <Button
+            variant="outline"
+            className={bannerAction.secondary}
+            render={<Link href="/ucp-validator" />}
+          >
+            Validate a store
+          </Button>
+        </>
+      }
     >
       <JsonLd schemas={structuredData} />
-
-      <Hero />
 
       <Tools />
 

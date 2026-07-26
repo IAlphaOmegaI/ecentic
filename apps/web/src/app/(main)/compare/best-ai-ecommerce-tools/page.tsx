@@ -6,6 +6,7 @@ import {
   createFaqSchema,
   createMetadata,
 } from "@/lib/seo";
+import Art from "@/public/images/ascii/scale.png";
 import {
   ContentPageFooter,
   ContentPageLayout,
@@ -14,9 +15,17 @@ import {
 import { Faq } from "../../pricing/_components/faq";
 import { Bottleneck } from "./_components/bottleneck";
 import { Guide } from "./_components/guide";
-import { Hero } from "./_components/hero";
 import { RelatedPages } from "./_components/related";
 import { Tools, tools } from "./_components/tools";
+
+const assurances = [
+  "Six tools across five categories",
+  "Category-first, not feature checklists",
+  "Updated for 2026",
+] as const;
+
+const intro =
+  "Not every AI ecommerce tool solves the same problem. This guide compares categories before brand names, so your shortlist starts from the job you are hiring the tool to do.";
 
 const description =
   "Best AI tools for ecommerce in 2026, organized by category so merchants can compare content, personalization, search, analytics, and agent-commerce workflows.";
@@ -107,14 +116,13 @@ export default () => {
   return (
     <ContentPageLayout
       eyebrow="Comparison"
-      title="Best AI tools for ecommerce in 2026."
-      description={description}
-      hideHero
-      hideHeroSpacer={false}
+      title="Best AI tools for ecommerce"
+      accent="in 2026."
+      description={intro}
+      assurances={assurances}
+      art={Art}
     >
       <JsonLd schemas={structuredData} />
-
-      <Hero />
 
       <Guide />
 

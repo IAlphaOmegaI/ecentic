@@ -1,13 +1,13 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { Plus } from "@/components/plus";
-import Background from "@/public/images/blog.png";
+import Art from "@/public/images/ascii/books.png";
+import { PageBanner } from "../../_components/page-banner";
 import { renderInline } from "../../_components/rich-text";
 
 export const EditorialRichText = ({ content }: EditorialRichText.Props) => {
@@ -75,27 +75,13 @@ export const EditorialLayout = ({
       <Navbar />
     </div>
 
-    <div className="border-accent-foreground border-b p-4">
-      <div className="relative size-full overflow-hidden rounded-lg bg-primary">
-        <Image
-          src={Background}
-          alt={title}
-          className="absolute aspect-auto h-full w-full object-contain object-right opacity-30 brightness-0 invert"
-        />
-        <div className="relative z-10 mx-auto max-w-6xl border-accent-foreground border-x px-8 pt-36 pb-16">
-          <p className="mb-4 font-medium text-primary text-sm uppercase tracking-[0.2em]">
-            {eyebrow}
-          </p>
-          <h1 className="max-w-4xl font-semibold text-5xl text-white tracking-tight md:text-7xl">
-            {title}
-          </h1>
-          {meta && <div className="mt-2 text-white">{meta}</div>}
-          <p className="mt-6 max-w-3xl text-base text-white leading-relaxed md:text-lg">
-            {description}
-          </p>
-        </div>
-      </div>
-    </div>
+    <PageBanner
+      eyebrow={eyebrow}
+      title={title}
+      meta={meta}
+      description={description}
+      art={Art}
+    />
 
     {children}
     <Footer stacked />

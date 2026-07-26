@@ -1,4 +1,7 @@
+import { ArrowRightIcon } from "@zenncore/icons";
+import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { JsonLd } from "@/components/json-ld";
 import {
   absoluteUrl,
@@ -7,15 +10,22 @@ import {
   createMetadata,
   organizationSchema,
 } from "@/lib/seo";
+import Art from "@/public/images/ascii/shield.png";
 import {
   ContentPageFooter,
   ContentPageLayout,
   ContentPageSection,
 } from "../_components/content";
+import { bannerAction } from "../_components/page-banner";
 import { Faq } from "../pricing/_components/faq";
 import { Checks } from "./_components/checks";
-import { Hero } from "./_components/hero";
 import { ValidatorSection } from "./_components/validator-section";
+
+const assurances = [
+  "Free to use",
+  "No account required",
+  "Live /.well-known/ucp fetch",
+] as const;
 
 const description =
   "Free UCP Validator: check whether any storefront publishes a valid Universal Commerce Profile at /.well-known/ucp, validate its schema against the spec, and confirm AI shopping agents are allowed in robots.txt.";
@@ -79,14 +89,32 @@ const structuredData = [
 export default () => (
   <ContentPageLayout
     eyebrow="Protocol check"
-    title="UCP Validator"
-    description={description}
-    hideHero
-    hideHeroSpacer={false}
+    title="UCP"
+    accent="Validator"
+    description="Check whether a storefront publishes a valid Universal Commerce Profile at /.well-known/ucp and whether shopping agents can read it without friction."
+    assurances={assurances}
+    art={Art}
+    actions={
+      <>
+        <Button
+          color="accent"
+          className={bannerAction.lead}
+          render={<Link href="#validate" />}
+        >
+          Validate a domain
+          <ArrowRightIcon className="size-4" />
+        </Button>
+        <Button
+          variant="outline"
+          className={bannerAction.secondary}
+          render={<Link href="/ucp-playground" />}
+        >
+          Open playground
+        </Button>
+      </>
+    }
   >
     <JsonLd schemas={structuredData} />
-
-    <Hero />
 
     <Checks />
 

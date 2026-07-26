@@ -9,15 +9,24 @@ import {
   createMetadata,
   organizationSchema,
 } from "@/lib/seo";
+import Art from "@/public/images/ascii/calendar.png";
 import {
   ContentPageFooter,
   ContentPageLayout,
   ContentPageSection,
 } from "../_components/content";
 import { Faq } from "../pricing/_components/faq";
-import { Hero } from "./_components/hero";
 import { WhatWeCover } from "./_components/what-we-cover";
 import { WhoShouldBook } from "./_components/who-should-book";
+
+const assurances = [
+  "15 minutes, not a slide deck",
+  "No account or catalog connection needed",
+  "No procurement deck required",
+] as const;
+
+const intro =
+  "We run your top products through GPT-4, Claude, Gemini, and Perplexity while you watch, show you why you win or lose, and scope the highest-impact listing fixes. Pick a slot below.";
 
 const description =
   "Book a 15-minute ecentic demo. We run your top products through GPT-4, Claude, Gemini, and Perplexity live, show you why you win or lose, and scope the highest-impact listing fixes.";
@@ -78,14 +87,13 @@ export default () => {
   return (
     <ContentPageLayout
       eyebrow="Book a demo"
-      title="See your AI win rate, live in 15 minutes."
-      description={description}
-      hideHero
-      hideHeroSpacer={false}
+      title="See your AI win rate,"
+      accent="live in 15 minutes."
+      description={intro}
+      assurances={assurances}
+      art={Art}
     >
       <JsonLd schemas={structuredData} />
-
-      <Hero />
 
       <div className="border-accent-foreground border-b">
         <div className="relative mx-auto max-w-6xl border-accent-foreground border-x">

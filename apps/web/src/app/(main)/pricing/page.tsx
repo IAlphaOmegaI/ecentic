@@ -7,6 +7,7 @@ import {
   createMetadata,
   organizationSchema,
 } from "@/lib/seo";
+import Art from "@/public/images/ascii/coins.png";
 import {
   ContentPageFooter,
   ContentPageLayout,
@@ -16,8 +17,13 @@ import { PartnershipBundle } from "../_components/partnership-bundle";
 import { Compare } from "./_components/compare";
 import { Faq } from "./_components/faq";
 import { FeeExplainer } from "./_components/fee-explainer";
-import { Hero } from "./_components/hero";
 import { Plans } from "./_components/plans";
+
+const assurances = [
+  "Free scan first",
+  "No card to start",
+  "Month-to-month · cancel anytime",
+] as const;
 
 const description =
   "ecentic pricing: scan free, then pay-as-you-go — free to start, 3% only on AI-attributed orders (capped). Or a flat Compete/Dominate plan with no fee.";
@@ -145,14 +151,13 @@ export default () => {
   return (
     <ContentPageLayout
       eyebrow="Pricing"
-      title="Start free. Pay when agents start picking you."
-      description={description}
-      hideHero
-      hideHeroSpacer={false}
+      title="Start free. Pay when agents"
+      accent="pick you."
+      description="Scan your store for free, then choose how you pay: a small fee only on orders AI agents drive, or a flat monthly plan with no fee. Same optimization loop either way."
+      assurances={assurances}
+      art={Art}
     >
       <JsonLd schemas={structuredData} />
-
-      <Hero />
 
       <Plans />
 

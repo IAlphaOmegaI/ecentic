@@ -1,4 +1,8 @@
+import { ArrowRightIcon } from "@zenncore/icons";
+import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import { JsonLd } from "@/components/json-ld";
 import {
   absoluteUrl,
@@ -6,17 +10,28 @@ import {
   createFaqSchema,
   createMetadata,
 } from "@/lib/seo";
+import Art from "@/public/images/ascii/bag.png";
+import shopify from "@/public/images/shopify.svg";
 import {
+  ContentPageBadge,
   ContentPageFooter,
   ContentPageLayout,
   ContentPageSection,
 } from "../../_components/content";
+import { bannerAction } from "../../_components/page-banner";
 import { Faq } from "../../pricing/_components/faq";
 import { Compare } from "./_components/compare";
-import { Hero } from "./_components/hero";
 import { RelatedPages } from "./_components/related";
 import { Why } from "./_components/why";
 import { Workflow } from "./_components/workflow";
+
+const SHOPIFY_APP_STORE_URL = "https://apps.shopify.com/ecentic-ai";
+
+const assurances = [
+  "2-minute install, no developer needed",
+  "Approved updates write back via the Admin API",
+  "See your free score first",
+] as const;
 
 const description =
   "AI for Shopify stores that need stronger product listings, clearer competitor analysis, and approved updates pushed back into Shopify.";
@@ -81,14 +96,40 @@ export default () => {
   return (
     <ContentPageLayout
       eyebrow="Shopify"
-      title="AI for Shopify stores that need more than automated copy."
-      description={description}
-      hideHero
-      hideHeroSpacer={false}
+      title="AI for Shopify stores that need"
+      accent="more than automated copy."
+      description="Connect your catalog, see why AI shopping agents pick competitors over you, and publish approved title and description updates straight back into Shopify."
+      assurances={assurances}
+      art={Art}
+      badge={
+        <ContentPageBadge
+          logo="/images/shopify.svg"
+          alt="Shopify"
+          label="Built for Shopify"
+        />
+      }
+      actions={
+        <>
+          <Button
+            color="accent"
+            className={bannerAction.lead}
+            render={<Link href={SHOPIFY_APP_STORE_URL} />}
+          >
+            <Image src={shopify} alt="" className="size-5" />
+            Install on Shopify
+          </Button>
+          <Button
+            variant="outline"
+            className={bannerAction.secondary}
+            render={<Link href="/how-it-works" />}
+          >
+            See how it works
+            <ArrowRightIcon className="size-4" />
+          </Button>
+        </>
+      }
     >
       <JsonLd schemas={structuredData} />
-
-      <Hero />
 
       <Why />
 
