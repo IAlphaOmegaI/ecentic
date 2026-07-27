@@ -68,7 +68,7 @@ const score = (
     model: MODEL,
     instructions: scoringSystem,
     prompt: scoringPrompt(product, competitor, ucpIntel),
-    schema: verdict,
+    output: verdict,
     schemaName: "ListingComparison",
   });
 
@@ -90,7 +90,7 @@ const gatherUcpIntel = async (product: Product.Type, merchant: string) => {
     execute: async () => payload,
   });
 
-  const result = await AI.generateText({
+  const result = await AI.generate({
     label: "ucp.simulation.gather",
     model: GATHER_MODEL,
     instructions:

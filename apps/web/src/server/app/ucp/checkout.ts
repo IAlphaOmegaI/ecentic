@@ -206,13 +206,13 @@ const formatFulfillment = (
   for (const [key, value] of Object.entries(session.destination)) {
     if (value) destination[key] = value;
   }
-  method["destinations"] = [destination];
-  method["selected_destination_id"] = "dest_1";
+  method.destinations = [destination];
+  method.selected_destination_id = "dest_1";
 
   const options = session.quote?.shippingOptions ?? [];
   if (options.length > 0) {
     const selected = selectedShippingOption(session);
-    method["groups"] = [
+    method.groups = [
       {
         id: "package_1",
         line_item_ids: lineItemIds,
@@ -441,14 +441,13 @@ export const create = async ({
   negotiated: Negotiated | null;
   payload: Record<string, unknown>;
 }): Promise<CheckoutResult> => {
-  const cartId =
-    typeof payload["cart_id"] === "string" ? payload["cart_id"] : "";
+  const cartId = typeof payload.cart_id === "string" ? payload.cart_id : "";
 
   if (cartId !== "") {
     return createFromCart({ context, negotiated, payload, cartId });
   }
 
-  const rawItems = payload["line_items"];
+  const rawItems = payload.line_items;
   if (!Array.isArray(rawItems) || rawItems.length === 0) {
     return errorEnvelope(
       negotiated,
@@ -470,7 +469,7 @@ export const create = async ({
   }
 
   const resolved = await resolveLineItems(context, rawItems);
-  const fulfillment = parseFulfillment(payload["fulfillment"]);
+  const fulfillment = parseFulfillment(payload.fulfillment);
 
   const initial: CheckoutSession = {
     kind: "checkout",
@@ -479,21 +478,21 @@ export const create = async ({
     status: "incomplete",
     currency: "USD",
     lineItems: resolved.lineItems,
-    buyer: parseBuyer(payload["buyer"]),
+    buyer: parseBuyer(payload.buyer),
     context:
-      payload["context"] && typeof payload["context"] === "object"
-        ? (payload["context"] as Record<string, unknown>)
+      payload.context && typeof payload.context === "object"
+        ? (payload.context as Record<string, unknown>)
         : undefined,
-    discountCodes: parseDiscountCodes(payload["discounts"]),
+    discountCodes: parseDiscountCodes(payload.discounts),
     destination: fulfillment.destination,
     selectedShippingOptionId: fulfillment.selectedOptionId,
-    instruments: parseInstruments(payload["payment"]),
+    instruments: parseInstruments(payload.payment),
     messages: resolved.messages,
     agentProfileUrl: negotiated?.profileUrl,
     webhookUrl: orderWebhookUrl(negotiated),
     attribution:
-      payload["attribution"] && typeof payload["attribution"] === "object"
-        ? (payload["attribution"] as Record<string, unknown>)
+      payload.attribution && typeof payload.attribution === "object"
+        ? (payload.attribution as Record<string, unknown>)
         : undefined,
     createdAt: new Date().toISOString(),
     expiresAt: expiry(),
@@ -557,7 +556,7 @@ const createFromCart = async ({
     }
   }
 
-  const fulfillment = parseFulfillment(payload["fulfillment"]);
+  const fulfillment = parseFulfillment(payload.fulfillment);
 
   const initial: CheckoutSession = {
     kind: "checkout",
@@ -566,24 +565,24 @@ const createFromCart = async ({
     status: "incomplete",
     currency: cart.currency,
     lineItems: cart.lineItems,
-    buyer: cart.buyer ?? parseBuyer(payload["buyer"]),
+    buyer: cart.buyer ?? parseBuyer(payload.buyer),
     context:
-      payload["context"] && typeof payload["context"] === "object"
-        ? (payload["context"] as Record<string, unknown>)
+      payload.context && typeof payload.context === "object"
+        ? (payload.context as Record<string, unknown>)
         : cart.context,
     // Carry forward the cart's discount codes (spec MUST); codes no longer
     // valid at checkout surface as rejection warnings from the quote.
     discountCodes: cart.discountCodes,
     destination: fulfillment.destination,
     selectedShippingOptionId: fulfillment.selectedOptionId,
-    instruments: parseInstruments(payload["payment"]),
+    instruments: parseInstruments(payload.payment),
     messages: [],
     cartId,
     agentProfileUrl: negotiated?.profileUrl,
     webhookUrl: orderWebhookUrl(negotiated),
     attribution:
-      payload["attribution"] && typeof payload["attribution"] === "object"
-        ? (payload["attribution"] as Record<string, unknown>)
+      payload.attribution && typeof payload.attribution === "object"
+        ? (payload.attribution as Record<string, unknown>)
         : undefined,
     createdAt: new Date().toISOString(),
     expiresAt: expiry(),
@@ -637,35 +636,33 @@ export const update = async ({
     return immutable(negotiated, existing.status);
 
   const resolved =
-    payload["line_items"] !== undefined
-      ? await resolveLineItems(context, payload["line_items"])
+    payload.line_items !== undefined
+      ? await resolveLineItems(context, payload.line_items)
       : { lineItems: existing.lineItems, messages: [] as UcpMessage[] };
 
-  const fulfillment = parseFulfillment(payload["fulfillment"]);
+  const fulfillment = parseFulfillment(payload.fulfillment);
 
   const merged: CheckoutSession = {
     ...existing,
     lineItems: resolved.lineItems,
     buyer:
-      payload["buyer"] !== undefined
-        ? parseBuyer(payload["buyer"])
-        : existing.buyer,
+      payload.buyer !== undefined ? parseBuyer(payload.buyer) : existing.buyer,
     context:
-      payload["context"] !== undefined &&
-      payload["context"] &&
-      typeof payload["context"] === "object"
-        ? (payload["context"] as Record<string, unknown>)
+      payload.context !== undefined &&
+      payload.context &&
+      typeof payload.context === "object"
+        ? (payload.context as Record<string, unknown>)
         : existing.context,
     discountCodes:
-      payload["discounts"] !== undefined
-        ? parseDiscountCodes(payload["discounts"])
+      payload.discounts !== undefined
+        ? parseDiscountCodes(payload.discounts)
         : existing.discountCodes,
     destination: fulfillment.destination ?? existing.destination,
     selectedShippingOptionId:
       fulfillment.selectedOptionId ?? existing.selectedShippingOptionId,
     instruments:
-      payload["payment"] !== undefined
-        ? parseInstruments(payload["payment"])
+      payload.payment !== undefined
+        ? parseInstruments(payload.payment)
         : existing.instruments,
     messages: resolved.messages,
     expiresAt: expiry(), // activity extends the session
@@ -736,22 +733,22 @@ const instrumentBindingCheckoutId = (
   instrument: Record<string, unknown>,
 ): string => {
   const credential =
-    instrument["credential"] && typeof instrument["credential"] === "object"
-      ? (instrument["credential"] as Record<string, unknown>)
+    instrument.credential && typeof instrument.credential === "object"
+      ? (instrument.credential as Record<string, unknown>)
       : {};
   const binding =
-    credential["binding"] && typeof credential["binding"] === "object"
-      ? (credential["binding"] as Record<string, unknown>)
+    credential.binding && typeof credential.binding === "object"
+      ? (credential.binding as Record<string, unknown>)
       : {};
   const instrumentBinding =
-    instrument["binding"] && typeof instrument["binding"] === "object"
-      ? (instrument["binding"] as Record<string, unknown>)
+    instrument.binding && typeof instrument.binding === "object"
+      ? (instrument.binding as Record<string, unknown>)
       : {};
 
   for (const candidate of [
-    binding["checkout_id"],
-    credential["checkout_id"],
-    instrumentBinding["checkout_id"],
+    binding.checkout_id,
+    credential.checkout_id,
+    instrumentBinding.checkout_id,
   ]) {
     if (typeof candidate === "string" && candidate !== "") return candidate;
   }
@@ -775,9 +772,7 @@ const rejectUnprocessableInstruments = (
 
   for (const instrument of instruments) {
     const handlerId =
-      typeof instrument["handler_id"] === "string"
-        ? instrument["handler_id"]
-        : "";
+      typeof instrument.handler_id === "string" ? instrument.handler_id : "";
     if (handlerId === "" || !validIds.includes(handlerId)) {
       return errorEnvelope(
         negotiated,
@@ -956,8 +951,8 @@ export const complete = async ({
 
   // Late-bound instruments may arrive on Complete.
   const withInstruments: CheckoutSession =
-    payload["payment"] !== undefined
-      ? { ...session, instruments: parseInstruments(payload["payment"]) }
+    payload.payment !== undefined
+      ? { ...session, instruments: parseInstruments(payload.payment) }
       : session;
 
   const bridgeCredentials = context.credentials
@@ -1194,9 +1189,7 @@ export const cancel = async ({
   }
 
   const rawReason =
-    typeof payload["reason"] === "string"
-      ? payload["reason"]
-      : "buyer_cancelled";
+    typeof payload.reason === "string" ? payload.reason : "buyer_cancelled";
   const reason = [
     "buyer_cancelled",
     "agent_error",
@@ -1205,8 +1198,7 @@ export const cancel = async ({
   ].includes(rawReason)
     ? rawReason
     : "other";
-  const note =
-    typeof payload["note"] === "string" ? payload["note"] : undefined;
+  const note = typeof payload.note === "string" ? payload.note : undefined;
 
   const canceled: CheckoutSession = {
     ...session,

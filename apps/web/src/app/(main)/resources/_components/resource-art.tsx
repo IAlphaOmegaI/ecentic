@@ -279,8 +279,8 @@ export const LlmsArt = () => (
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 z-10 h-112 bg-linear-to-b from-background-dimmed to-background-dimmed/0"
       />
-      <p className="relative px-6 pb-4 font-mono text-sm md:px-8 z-20">
-        <span className="bg-linear-to-r from-primary via-white to-primary bg-size-[200%_auto] bg-clip-text text-transparent animate-[gold-shine_3s_linear_infinite]">
+      <p className="relative z-20 px-6 pb-4 font-mono text-sm md:px-8">
+        <span className="animate-[gold-shine_3s_linear_infinite] bg-linear-to-r bg-size-[200%_auto] from-primary via-white to-primary bg-clip-text text-transparent">
           llms.txt
         </span>
         <motion.span
@@ -294,7 +294,7 @@ export const LlmsArt = () => (
           className="ml-0.5 inline-block h-4 w-1.5 translate-y-px bg-white/50"
         />
       </p>
-      <div className="relative flex-1 px-6 pb-5 md:px-8 md:pb-6 z-20">
+      <div className="relative z-20 flex-1 px-6 pb-5 md:px-8 md:pb-6">
         <pre className="font-mono text-sm leading-relaxed md:text-base">
           {llmsLines.map((line, index) => (
             <motion.span

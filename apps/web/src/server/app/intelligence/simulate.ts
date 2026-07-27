@@ -225,7 +225,7 @@ export const runScan = withAuthentication(async (context) => {
     };
   }
 
-  const stream = AI.stream<ScanEvent>(async (update) => {
+  const stream = AI.streamable<ScanEvent>(async (update) => {
     const selected = competitors.data.filter((record) => record.selected);
 
     if (products.data.length === 0) {
@@ -299,7 +299,7 @@ export const runScan = withAuthentication(async (context) => {
                 model: perspective.model,
                 instructions: Judge.JUDGE_SYSTEM,
                 prompt: Judge.buildJudgePrompt(product, competitor),
-                schema: z.object({
+                output: z.object({
                   winner: z
                     .enum(["product", "competitor"])
                     .describe(
@@ -521,7 +521,7 @@ export const runScan = withAuthentication(async (context) => {
           instructions:
             "You are an e-commerce optimization analyst. Given the reasons a product lost in AI shopping simulations, identify the specific missing attributes or weaknesses that caused the most losses. Be concise and actionable. Respond only with the structured fields — no prose outside the object.",
           prompt: `Product "${worst[1].title}" lost ${worst[1].count} out of ${results.length} total simulations.\n\nHere are the reasons it lost:\n${worst[1].reasons.slice(0, 10).join("\n---\n")}\n\nIdentify the top missing attributes and estimate what percentage of simulations these gaps cost.`,
-          schema: z.object({
+          output: z.object({
             name: z.string().describe("The product name"),
             missingAttributes: z
               .array(z.string())

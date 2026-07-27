@@ -306,7 +306,7 @@ export const UcpManager = ({
     () => definitions.filter(({ key }) => Boolean(state[key])).length,
     [state],
   );
-  const score = Math.round((filledCount / definitions.length) * 100);
+  const _score = Math.round((filledCount / definitions.length) * 100);
 
   const coveredCount = useMemo(
     () => products.filter((p) => Boolean(productData[p.id])).length,

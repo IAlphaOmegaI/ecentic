@@ -28,7 +28,7 @@ Rules:
 - If the query is a category, return the products most likely to appear in the top 10 results of an AI-powered shopping search.`,
         prompt: `Find 5-8 competitor products for: "${query}"\n\nReturn products an AI shopping agent would recommend for this search. Include brand, realistic price, primary retailer, and a one-line description of the product's competitive position.`,
 
-        schema: z.object({
+        output: z.object({
           competitors: z.array(
             z.object({
               title: z.string(),

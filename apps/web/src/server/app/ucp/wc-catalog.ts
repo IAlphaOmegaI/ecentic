@@ -412,25 +412,25 @@ const productMetadata = (
       )
       .map((attribute) => [attribute.name, attribute.options]),
   );
-  if (Object.keys(attributes).length > 0) meta["attributes"] = attributes;
+  if (Object.keys(attributes).length > 0) meta.attributes = attributes;
 
   // Variable products carry weight/dimensions per variant; simple products
   // surface them here.
   if (product.type !== "variable") {
     const weight = weightMeta(product.weight, units);
-    if (weight) meta["weight"] = weight;
+    if (weight) meta.weight = weight;
     const dimensions = dimensionsMeta(product.dimensions, units);
-    if (dimensions) meta["dimensions"] = dimensions;
+    if (dimensions) meta.dimensions = dimensions;
   }
 
-  if (product.shipping_class) meta["shipping_class"] = product.shipping_class;
-  if (product.brands?.[0]?.name) meta["brand"] = product.brands[0].name;
-  if (product.featured) meta["featured"] = true;
-  if (product.sold_individually) meta["sold_individually"] = true;
-  if (product.virtual) meta["virtual"] = true;
-  if (product.downloadable) meta["downloadable"] = true;
+  if (product.shipping_class) meta.shipping_class = product.shipping_class;
+  if (product.brands?.[0]?.name) meta.brand = product.brands[0].name;
+  if (product.featured) meta.featured = true;
+  if (product.sold_individually) meta.sold_individually = true;
+  if (product.virtual) meta.virtual = true;
+  if (product.downloadable) meta.downloadable = true;
   if (product.backorders && product.backorders !== "no") {
-    meta["backorders"] = product.backorders;
+    meta.backorders = product.backorders;
   }
 
   return meta;
@@ -443,14 +443,14 @@ const variantMetadata = (
 ): Record<string, unknown> => {
   const meta: Record<string, unknown> = {};
   const weight = weightMeta(variation.weight, units);
-  if (weight) meta["weight"] = weight;
+  if (weight) meta.weight = weight;
   const dimensions = dimensionsMeta(variation.dimensions, units);
-  if (dimensions) meta["dimensions"] = dimensions;
+  if (dimensions) meta.dimensions = dimensions;
   if (variation.backorders && variation.backorders !== "no") {
-    meta["backorders"] = variation.backorders;
+    meta.backorders = variation.backorders;
   }
-  if (variation.virtual) meta["virtual"] = true;
-  if (variation.downloadable) meta["downloadable"] = true;
+  if (variation.virtual) meta.virtual = true;
+  if (variation.downloadable) meta.downloadable = true;
   return meta;
 };
 
@@ -544,7 +544,7 @@ const variationMatches = (
       (attribute) =>
         attribute.name.toLowerCase() === selected.name.toLowerCase(),
     );
-    if (!axis || !axis.option) continue; // "Any" matches anything
+    if (!axis?.option) continue; // "Any" matches anything
     if (axis.option.toLowerCase() !== selected.label.toLowerCase()) {
       return false;
     }
@@ -711,15 +711,15 @@ const mapProduct = async (
       : [buildVariant({ mapping, product })];
 
   for (const variant of variants) {
-    const price = variant["price"] as { amount: number };
-    const media = variant["media"] as { url: string }[] | undefined;
+    const price = variant.price as { amount: number };
+    const media = variant.media as { url: string }[] | undefined;
     await rememberVariant(storeId, {
-      externalId: String(variant["id"]),
+      externalId: String(variant.id),
       parentId: String(product.id),
       title:
-        variant["title"] === "Default"
+        variant.title === "Default"
           ? product.name
-          : `${product.name} — ${variant["title"]}`,
+          : `${product.name} — ${variant.title}`,
       unitPrice: price.amount,
       ...(media?.[0]?.url
         ? { imageUrl: media[0].url }
@@ -730,7 +730,7 @@ const mapProduct = async (
   }
 
   const amounts = variants.map(
-    (variant) => (variant["price"] as { amount: number }).amount,
+    (variant) => (variant.price as { amount: number }).amount,
   );
   const minPrice = Math.min(...amounts);
   const maxPrice = Math.max(...amounts);

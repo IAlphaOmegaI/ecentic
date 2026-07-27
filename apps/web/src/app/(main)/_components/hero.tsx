@@ -11,11 +11,11 @@ export const Hero = () => (
       aria-hidden
       fill
       sizes="100vw"
-      className="-z-20 pointer-events-none select-none object-contain object-top opacity-20 invert"
+      className="pointer-events-none -z-20 select-none object-contain object-top opacity-20 invert"
     />
     <div
       aria-hidden
-      className="-z-10 pointer-events-none absolute inset-x-0 top-0 h-[500px] bg-radial-[at_50%_0%] from-primary/25 via-primary/5 to-transparent"
+      className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[500px] bg-radial-[at_50%_0%] from-primary/25 via-primary/5 to-transparent"
     />
     <p className="font-body text-foreground-dimmed text-sm uppercase tracking-wide">
       Built for Shopify &amp; WooCommerce

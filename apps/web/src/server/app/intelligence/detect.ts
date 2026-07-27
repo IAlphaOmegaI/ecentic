@@ -42,7 +42,7 @@ export const stream = ({
   user: string;
   products: string[];
 }) =>
-  AI.stream<DetectionEvent>(async (update) => {
+  AI.streamable<DetectionEvent>(async (update) => {
     const products = await Product.find(Environment.SERVER, {
       where: eq(schema.product.userId, user),
     });
@@ -108,10 +108,10 @@ export const stream = ({
 
     // Primary path: stream array elements as the model emits them.
     const streamed = await resultify(async () => {
-      const generation = AI.streamArray({
+      const generation = AI.stream({
         label: "detect.competitors",
         model: "gpt-4o",
-        schema: candidate,
+        output: z.array(candidate),
         instructions: Judge.DETECTION_SYSTEM,
         prompt,
       });
@@ -128,7 +128,7 @@ export const stream = ({
             AI.generate({
               instructions: Judge.DETECTION_SYSTEM,
               prompt,
-              schema: z.object({ competitors: z.array(candidate) }),
+              output: z.object({ competitors: z.array(candidate) }),
             }),
           );
           if (generation.success && generation.data.competitors.length > 0)

@@ -162,7 +162,7 @@ Rules:
 - For image: extract the primary product image URL if present. Return null if not clearly identifiable.
 - Output only the structured fields — no prose or markdown outside the object.`,
       prompt: `Extract the product from this page:\n\nURL: ${url}\nContent:\n${html}`,
-      schema: z.object({
+      output: z.object({
         title: z.string().describe("The main product title"),
         brand: z
           .string()
@@ -234,7 +234,7 @@ export const runCompare = withContext(
     _context,
     { urlA, urlB, prompt }: { urlA: string; urlB: string; prompt: string },
   ) => {
-    const stream = AI.stream<CompareEvent>(async (update) => {
+    const stream = AI.streamable<CompareEvent>(async (update) => {
       update({
         kind: "log",
         model: "System",
@@ -280,7 +280,7 @@ export const runCompare = withContext(
             message: "Evaluating listings...",
           });
 
-          const { output, textStream } = AI.generate({
+          const { output, textStream } = AI.stream({
             model: perspective.model,
             instructions: perspective.instructions,
             prompt: `A consumer says: "${prompt}"
@@ -301,7 +301,7 @@ INSTRUCTIONS:
 5. In your reasoning, cite the specific data points that drove the decision.
 6. In keyFactors, list the top 3-5 specific attributes or gaps that determined the outcome.
 7. Output ONLY the structured fields defined by the schema. Put all narrative analysis inside the "reasoning" field — do not emit any prose, markdown, or citations outside the object.`,
-            schema: z.object({
+            output: z.object({
               winner: z
                 .enum(["a", "b"])
                 .describe('"a" if PRODUCT A wins, "b" if PRODUCT B wins'),
@@ -329,7 +329,6 @@ INSTRUCTIONS:
             schemaName: "ListingComparison",
             schemaDescription:
               "Evidence-based audit comparing two product listings against a consumer preference",
-            stream: true,
           });
 
           const [, parse] = await Promise.all([

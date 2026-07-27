@@ -7,6 +7,7 @@ import {
   createMetadata,
   organizationSchema,
 } from "@/lib/seo";
+import Art from "@/public/images/ascii/handshake.png";
 import {
   ContentPageBadge,
   ContentPageFaqGrid,
@@ -80,7 +81,9 @@ export default () => {
   return (
     <ContentPageLayout
       eyebrow="Y Combinator"
-      title="Your ecentic deal, ready to redeem."
+      title="Your ecentic deal,"
+      accent="ready to redeem."
+      art={Art}
       badge={
         <ContentPageBadge
           logo="/partners/y-combinator.svg"

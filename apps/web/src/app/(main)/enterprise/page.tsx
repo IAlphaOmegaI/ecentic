@@ -1,4 +1,8 @@
+import { ArrowRightIcon } from "@zenncore/icons";
+import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
+import Link from "next/link";
+import { BookCall } from "@/components/cal";
 import { JsonLd } from "@/components/json-ld";
 import {
   absoluteUrl,
@@ -7,15 +11,23 @@ import {
   createMetadata,
   organizationSchema,
 } from "@/lib/seo";
+import Art from "@/public/images/ascii/tower.png";
 import {
   ContentPageFooter,
   ContentPageLayout,
   ContentPageSection,
 } from "../_components/content";
+import { bannerAction } from "../_components/page-banner";
 import { Faq } from "../pricing/_components/faq";
 import { Capabilities } from "./_components/capabilities";
 import { Compare } from "./_components/compare";
-import { Hero } from "./_components/hero";
+
+const assurances = [
+  "Multi-brand dashboards",
+  "Custom API access",
+  "Dedicated CSM",
+  "SOC 2 in progress",
+] as const;
 
 const description =
   "Agent-commerce intelligence for enterprise merchants. Multi-brand dashboards, API access, SSO, SOC 2 compliance, UCP signing, and a dedicated CSM.";
@@ -75,14 +87,28 @@ export default () => {
   return (
     <ContentPageLayout
       eyebrow="Enterprise"
-      title="Agent-commerce infrastructure at scale."
-      description={description}
-      hideHero
-      hideHeroSpacer={false}
+      title="Agent-commerce infrastructure"
+      accent="at scale."
+      description="Multi-brand dashboards, API access, UCP signing, and dedicated support for commerce teams running hundreds of SKUs across multiple platforms."
+      assurances={assurances}
+      art={Art}
+      actions={
+        <>
+          <BookCall color="accent" className={bannerAction.lead}>
+            Talk to sales
+            <ArrowRightIcon className="size-4" />
+          </BookCall>
+          <Button
+            variant="outline"
+            className={bannerAction.secondary}
+            render={<Link href="/pricing" />}
+          >
+            View pricing
+          </Button>
+        </>
+      }
     >
       <JsonLd schemas={structuredData} />
-
-      <Hero />
 
       <Capabilities />
 

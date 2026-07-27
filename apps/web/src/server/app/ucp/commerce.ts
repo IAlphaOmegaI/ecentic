@@ -92,25 +92,25 @@ export const parseFulfillment = (
   const source = payload as Record<string, unknown>;
 
   const direct =
-    source["destination"] && typeof source["destination"] === "object"
-      ? parseAddress(source["destination"] as Record<string, unknown>)
+    source.destination && typeof source.destination === "object"
+      ? parseAddress(source.destination as Record<string, unknown>)
       : undefined;
 
-  const methods = Array.isArray(source["methods"]) ? source["methods"] : [];
+  const methods = Array.isArray(source.methods) ? source.methods : [];
   const method =
     methods[0] && typeof methods[0] === "object"
       ? (methods[0] as Record<string, unknown>)
       : undefined;
-  const destinations = Array.isArray(method?.["destinations"])
-    ? (method?.["destinations"] as unknown[])
+  const destinations = Array.isArray(method?.destinations)
+    ? (method?.destinations as unknown[])
     : [];
   const fromMethods =
     destinations[0] && typeof destinations[0] === "object"
       ? parseAddress(destinations[0] as Record<string, unknown>)
       : undefined;
 
-  const groups = Array.isArray(method?.["groups"])
-    ? (method?.["groups"] as unknown[])
+  const groups = Array.isArray(method?.groups)
+    ? (method?.groups as unknown[])
     : [];
   const group =
     groups[0] && typeof groups[0] === "object"
@@ -118,9 +118,9 @@ export const parseFulfillment = (
       : undefined;
 
   const selectedOptionId = (() => {
-    const fromGroup = group?.["selected_option_id"];
+    const fromGroup = group?.selected_option_id;
     if (typeof fromGroup === "string") return fromGroup;
-    const direct = source["selected_option_id"];
+    const direct = source.selected_option_id;
     return typeof direct === "string" ? direct : undefined;
   })();
 
