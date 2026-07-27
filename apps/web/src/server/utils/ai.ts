@@ -40,7 +40,7 @@ export type ModelId =
 // "thinks out loud"). That makes the raw output unparsable and surfaces as
 // NoObjectGeneratedError. Strip fences and extract the outermost `{ ... }` so
 // the SDK can parse and validate instead of throwing.
-const repairText: RepairTextFunction = async ({ text }) => {
+export const repairText: RepairTextFunction = async ({ text }) => {
   const stripped = text
     .replace(/```json/gi, "")
     .replace(/```/g, "")
