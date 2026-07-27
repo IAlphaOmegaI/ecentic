@@ -17,7 +17,7 @@ const PROTECTED = [
 
 // Protected *and* gated on role. Authenticated non-administrators are sent to
 // the dashboard rather than the sign-in page — they are signed in, just not
-// permitted here.
+// permitted here.  
 const ADMINISTRATOR_ONLY = [
   /^\/dev(\/.*)?$/,
 ] as const satisfies readonly Route[];
