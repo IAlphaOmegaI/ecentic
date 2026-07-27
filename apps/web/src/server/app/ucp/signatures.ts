@@ -249,7 +249,7 @@ export const signRequest = (
   if (!raw) return {};
 
   output["Signature-Input"] = `${SIG_LABEL}=${params}`;
-  output["Signature"] = `${SIG_LABEL}=:${raw.toString("base64")}:`;
+  output.Signature = `${SIG_LABEL}=:${raw.toString("base64")}:`;
   return output;
 };
 
@@ -356,8 +356,8 @@ const findKey = (
   kid: string,
 ): PublicJwk | null => {
   const keys =
-    (profile["ucp"] as { signing_keys?: unknown } | undefined)?.signing_keys ??
-    profile["signing_keys"];
+    (profile.ucp as { signing_keys?: unknown } | undefined)?.signing_keys ??
+    profile.signing_keys;
   if (!Array.isArray(keys)) return null;
   for (const key of keys) {
     if (key && typeof key === "object" && (key as PublicJwk).kid === kid) {

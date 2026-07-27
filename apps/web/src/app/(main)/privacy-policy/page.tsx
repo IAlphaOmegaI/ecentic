@@ -1,7 +1,6 @@
 import type { Icon } from "@zenncore/icons";
 import {
   CheckCircleIcon,
-  CheckIcon,
   ShareIcon,
   ShieldCheckIcon,
   XCircleIcon,
@@ -10,9 +9,10 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
-import { Plus } from "@/components/plus";
 import { createMetadata } from "@/lib/seo";
+import Art from "@/public/images/ascii/gavel.png";
 import { ContentPageSection } from "../_components/content";
+import { PageBanner } from "../_components/page-banner";
 import { renderInline } from "../_components/rich-text";
 
 export const metadata: Metadata = createMetadata({
@@ -250,57 +250,43 @@ export default () => (
       <Navbar />
     </div>
 
-    <section className="border-accent-foreground border-b">
-      <div className="relative mx-auto max-w-6xl border-accent-foreground border-x">
-        <div className="px-8 pt-36 pb-16">
-          <p className="mb-4 font-medium text-foreground-dimmed text-sm uppercase tracking-[0.2em]">
-            Legal
-          </p>
-          <h1 className="max-w-3xl font-semibold text-5xl text-foreground-rich tracking-tight md:text-7xl">
-            Privacy <span className="text-primary">Policy.</span>
-          </h1>
-          <p className="mt-2 text-foreground-dimmed text-sm">
-            Last updated: July 12, 2026
-          </p>
-          <p className="mt-6 max-w-2xl text-base text-foreground-dimmed leading-relaxed md:text-lg">
-            ecentic (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) is
-            committed to protecting the privacy of merchants who use our
-            e-commerce optimization platform. This policy explains what data we
-            collect, how we use it, and your rights.
-          </p>
-          <ul className="mt-8 flex flex-wrap gap-2">
-            {assurances.map((assurance) => (
-              <li
-                key={assurance}
-                className="flex items-center gap-1.5 rounded-full border border-accent-foreground bg-background-rich px-3 py-1 text-foreground text-sm"
-              >
-                <CheckIcon className="size-3.5 text-primary" />
-                {assurance}
-              </li>
-            ))}
-          </ul>
-        </div>
+    <PageBanner
+      eyebrow="Legal"
+      title="Privacy"
+      accent="Policy."
+      meta="Last updated: July 12, 2026"
+      description={
+        "ecentic (“we”, “us”, “our”) is committed to protecting the privacy of merchants who use our e-commerce optimization platform. This policy explains what data we collect, how we use it, and your rights."
+      }
+      assurances={assurances}
+      art={Art}
+    />
 
-        <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2 lg:grid-cols-4">
-          <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
-          <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
-          {summary.map((item) => (
-            <div
-              key={item.title}
-              className="flex flex-col gap-2 bg-background-dimmed p-6"
-            >
-              <item.icon className="size-7 text-primary" />
-              <h2 className="mt-2 font-body font-medium text-foreground text-xl">
+    <ContentPageSection
+      number="00"
+      title="At a glance"
+      description="The short version, in plain language. Every line here is expanded in the numbered sections below."
+      classList={{ body: "p-0" }}
+    >
+      <div className="flex flex-col gap-px bg-accent-foreground">
+        {summary.map((item) => (
+          <div
+            key={item.title}
+            className="grid grid-cols-1 gap-2 bg-background px-6 py-5 md:grid-cols-[13rem_1fr] md:gap-8 md:px-8"
+          >
+            <div className="flex items-center gap-3">
+              <item.icon className="size-5 shrink-0 text-primary" />
+              <h3 className="font-body font-medium text-foreground text-lg">
                 {item.title}
-              </h2>
-              <p className="font-light text-foreground-dimmed leading-relaxed">
-                {item.description}
-              </p>
+              </h3>
             </div>
-          ))}
-        </div>
+            <p className="font-light text-foreground-dimmed leading-relaxed">
+              {item.description}
+            </p>
+          </div>
+        ))}
       </div>
-    </section>
+    </ContentPageSection>
 
     {sections.map((section) => (
       <ContentPageSection

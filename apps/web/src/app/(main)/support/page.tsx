@@ -21,6 +21,7 @@ import {
   createMetadata,
   organizationSchema,
 } from "@/lib/seo";
+import Art from "@/public/images/ascii/headset.png";
 import { ContentPageFooter, ContentPageLayout } from "../_components/content";
 
 const description =
@@ -134,41 +135,13 @@ export default () => {
   return (
     <ContentPageLayout
       eyebrow="Support"
-      title="We're here to help."
-      description={description}
-      hideHero
-      hideHeroSpacer={false}
+      title="We're here"
+      accent="to help."
+      description="Questions about your scan results, an integration, billing, or anything else: pick the channel that fits and we will take it from there."
+      assurances={assurances}
+      art={Art}
     >
       <JsonLd schemas={structuredData} />
-
-      <section className="border-accent-foreground border-b">
-        <div className="relative mx-auto max-w-6xl border-accent-foreground border-x">
-          <div className="px-8 pt-36 pb-16">
-            <p className="mb-4 font-medium text-foreground-dimmed text-sm uppercase tracking-[0.2em]">
-              Support
-            </p>
-            <h1 className="max-w-3xl font-semibold text-5xl text-foreground-rich tracking-tight md:text-7xl">
-              We&apos;re here <span className="text-primary">to help.</span>
-            </h1>
-            <p className="mt-6 max-w-2xl text-base text-foreground-dimmed leading-relaxed md:text-lg">
-              Questions about your scan results, an integration, billing, or
-              anything else: pick the channel that fits and we will take it from
-              there.
-            </p>
-            <ul className="mt-8 flex flex-wrap gap-2">
-              {assurances.map((assurance) => (
-                <li
-                  key={assurance}
-                  className="flex items-center gap-1.5 rounded-full border border-accent-foreground bg-background-rich px-3 py-1 text-foreground text-sm"
-                >
-                  <CheckIcon className="size-3.5 text-primary" />
-                  {assurance}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
 
       <section className="border-accent-foreground border-b">
         <div className="relative mx-auto max-w-6xl border-accent-foreground border-x">

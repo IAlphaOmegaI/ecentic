@@ -57,7 +57,7 @@ export const resolveStoreContext = async (
   const store = await db.query.store.findFirst({
     where: { id: storeId },
   });
-  if (!store || store.platform !== "woocommerce") return null;
+  if (store?.platform !== "woocommerce") return null;
 
   const account = await db.query.store_account.findFirst({
     where: { storeId: store.id },

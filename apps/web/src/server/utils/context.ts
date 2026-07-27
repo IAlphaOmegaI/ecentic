@@ -3,6 +3,7 @@ import type { Redis } from "@upstash/redis";
 import type { InferredError, Result, UnwrapResult } from "@zenncore/utils";
 import type { IsEqual } from "@zenncore/utils/types";
 import { headers } from "next/headers";
+import { unstable_rethrow } from "next/navigation";
 import { db } from "../database";
 import { redis } from "./durable";
 import { type Brand, Environment } from "./environment";
@@ -178,6 +179,13 @@ const withContextImpl = <
           try {
             return await fn(contextData, ...args);
           } catch (thrown) {
+            // Next signals control flow by throwing: `redirect()` and
+            // `notFound()` throw a plain Error carrying a `digest`, and under
+            // `cacheComponents` a dynamic read (`cookies()`, `headers()`) throws
+            // a prerender bailout. Catching those as failures would strand the
+            // navigation and break PPR, so hand them back to Next untouched.
+            unstable_rethrow(thrown);
+
             const error =
               thrown instanceof Error ? thrown : new Error(String(thrown));
             return { success: false as const, error };

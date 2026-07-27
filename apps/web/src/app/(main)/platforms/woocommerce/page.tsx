@@ -6,7 +6,9 @@ import {
   createFaqSchema,
   createMetadata,
 } from "@/lib/seo";
+import Art from "@/public/images/ascii/cart.png";
 import {
+  ContentPageBadge,
   ContentPageFooter,
   ContentPageLayout,
   ContentPageSection,
@@ -14,10 +16,16 @@ import {
 import { Faq } from "../../pricing/_components/faq";
 import { AgentCommerce } from "./_components/agent-commerce";
 import { Evaluate } from "./_components/evaluate";
-import { Hero } from "./_components/hero";
 import { RelatedPages } from "./_components/related";
 import { Why } from "./_components/why";
 import { Workflow } from "./_components/workflow";
+
+const assurances = [
+  "No platform migration",
+  "Free plugin on WordPress.org",
+  "Approved updates publish via the REST API",
+  "See your free score first",
+] as const;
 
 const description =
   "AI for WooCommerce stores that need product listing optimization, competitor analysis, and a clearer path from insights to updates.";
@@ -93,14 +101,20 @@ export default () => {
   return (
     <ContentPageLayout
       eyebrow="WooCommerce"
-      title="AI for WooCommerce stores that need cleaner product workflows."
-      description={description}
-      hideHero
-      hideHeroSpacer={false}
+      title="AI for WooCommerce stores that need"
+      accent="cleaner product workflows."
+      description="Import your catalog, see where listings lose to competitors in AI-mediated comparisons, and publish approved improvements back into WooCommerce without changing platforms."
+      assurances={assurances}
+      art={Art}
+      badge={
+        <ContentPageBadge
+          logo="/images/woocommerce.svg"
+          alt="WooCommerce"
+          label="Built for WooCommerce"
+        />
+      }
     >
       <JsonLd schemas={structuredData} />
-
-      <Hero />
 
       <Why />
 

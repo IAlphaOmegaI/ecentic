@@ -159,7 +159,7 @@ const runPerspective = async (
       model: perspective.model,
       instructions: DISCOVERY_SYSTEM,
       prompt: buildPrompt(targetStore, query),
-      schema: suggestionSchema,
+      output: suggestionSchema,
       schemaName: "StoreDiscovery",
       schemaDescription:
         "Stores an AI shopping agent would recommend for a shopper request, with a verdict on the target store",

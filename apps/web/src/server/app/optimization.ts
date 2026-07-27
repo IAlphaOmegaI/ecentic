@@ -128,7 +128,7 @@ Current description:
 ${input.description ?? "(none)"}
 
 Return an improved title and full HTML description for the product page.`,
-        schema: z.object({
+        output: z.object({
           title: z.string().min(1),
           description_html: z.string(),
         }),
@@ -523,7 +523,7 @@ Title: ${productData.title}
 Description: ${productData.description ?? "(none)"}
 Price: ${productData.price ?? "(unknown)"}${productData.currency ? ` ${productData.currency}` : ""}
 SKU: ${productData.sku ?? "(unknown)"}`,
-        schema: z.object({ json_ld: z.string() }),
+        output: z.object({ json_ld: z.string() }),
       }),
     );
 

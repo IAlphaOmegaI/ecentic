@@ -12,7 +12,7 @@ import {
   streamText as sdkStreamText,
   streamObject,
 } from "ai";
-import type { z } from "zod";
+import { z } from "zod";
 
 // Curated union of the model ids this app routes, per provider, with a
 // `(string & {})` escape hatch. Restores autocomplete + typo-catching (the old
@@ -115,7 +115,7 @@ export const model = (id: ModelId = "gpt-4o"): LanguageModel => {
 
 type StreamTextArgs = Parameters<typeof sdkStreamText>[0];
 type GenerateTextArgs = Parameters<typeof sdkGenerateText>[0];
-type TelemetryConfig = NonNullable<StreamTextArgs["experimental_telemetry"]>;
+type TelemetryConfig = NonNullable<StreamTextArgs["telemetry"]>;
 type Usage = {
   totalTokens?: number;
   inputTokens?: number;
@@ -131,6 +131,8 @@ const telemetry = (
   isEnabled: true,
   functionId: `ai.${label}`,
   // Off by default so prompts/outputs never land in Sentry; override per call.
+  // The privacy policy states Sentry receives no product data, and AI calls
+  // carry catalog content — keep these false unless that claim changes too.
   recordInputs: false,
   recordOutputs: false,
   ...extra,
@@ -150,88 +152,127 @@ const logUsage = (label: string, usage?: Usage) => {
 };
 
 // ─── Wrappers ───────────────────────────────────────────────────────────────
-// Thin, instrumented pass-throughs over the AI SDK. Each resolves `model`,
-// injects telemetry + an error-reporting `onError`, and RETURNS THE NATIVE SDK
-// RESULT unchanged so callers keep their own `.stream`/`.fullStream`/
-// `.toUIMessageStream()`/`.text` consumption. `label` names the feature span.
+// Two instrumented entry points over the AI SDK: `generate` (await the result)
+// and `stream` (consume it as it arrives). Both default to plain text and, in
+// text mode, RETURN THE NATIVE SDK RESULT unchanged so callers keep `.text`/
+// `.fullStream`/`.toUIMessageStream()` and can pass tools, messages, stopWhen,
+// etc. Pass `output: <zod schema>` for schema-validated structured output —
+// `z.array(...)` runs the SDK's array mode (per-element `elementStream` when
+// streaming), any other schema resolves the parsed value. `label` names the
+// feature span.
 
 const resolveModel = (id: ModelId | LanguageModel): LanguageModel =>
   typeof id === "string" ? model(id) : id;
 
-export const streamText = (
-  options: Omit<StreamTextArgs, "model"> & {
-    model: ModelId | LanguageModel;
-    label: string;
-  },
-) => {
-  const {
-    model: id,
-    label,
-    experimental_telemetry,
-    onError,
-    ...rest
-  } = options;
-  return sdkStreamText({
-    ...rest,
-    model: resolveModel(id),
-    experimental_telemetry: telemetry(label, experimental_telemetry),
-    onError: (event) => {
-      report(label, event.error);
-      onError?.(event);
-    },
-  } as StreamTextArgs);
+export type GenerateTextOptions = Omit<GenerateTextArgs, "model"> & {
+  model?: ModelId | LanguageModel;
+  label: string;
+  output?: undefined;
 };
 
-export const generateText = (
-  options: Omit<GenerateTextArgs, "model"> & {
-    model: ModelId | LanguageModel;
-    label: string;
-  },
+export type StreamTextOptions = Omit<StreamTextArgs, "model"> & {
+  model?: ModelId | LanguageModel;
+  label: string;
+  output?: undefined;
+};
+
+export type OutputOptions<T extends z.ZodTypeAny> = {
+  output: T;
+  instructions: string;
+  prompt: string;
+  model?: ModelId | LanguageModel;
+  schemaName?: string;
+  schemaDescription?: string;
+  label?: string;
+};
+
+const outputSettings = <T extends z.ZodTypeAny>(
+  options: OutputOptions<T>,
+  fallback: string,
 ) => {
-  const { model: id, label, experimental_telemetry, ...rest } = options;
-  return sdkGenerateText({
-    ...rest,
-    model: resolveModel(id),
-    experimental_telemetry: telemetry(label, experimental_telemetry),
-  } as GenerateTextArgs).then(
+  const {
+    output,
+    instructions,
+    prompt,
+    model: id = "gpt-4o",
+    schemaName,
+    schemaDescription,
+    label = schemaName ?? fallback,
+  } = options;
+  return {
+    label,
+    output,
+    settings: {
+      model: resolveModel(id),
+      instructions,
+      prompt,
+      schemaName,
+      schemaDescription,
+      experimental_repairText: repairText,
+      experimental_telemetry: telemetry(label),
+    },
+  };
+};
+
+export function generate<T extends z.ZodTypeAny>(
+  options: OutputOptions<T>,
+): Promise<z.infer<T>>;
+
+export function generate(
+  options: GenerateTextOptions,
+): ReturnType<typeof sdkGenerateText>;
+
+export function generate<T extends z.ZodTypeAny>(
+  options: OutputOptions<T> | GenerateTextOptions,
+) {
+  if (!options.output) {
+    const {
+      model: id = "gpt-4o",
+      label,
+      output: _output,
+      experimental_telemetry,
+      ...rest
+    } = options as GenerateTextOptions;
+    return sdkGenerateText({
+      ...rest,
+      model: resolveModel(id),
+      experimental_telemetry: telemetry(label, experimental_telemetry),
+    } as GenerateTextArgs).then(
+      (result) => {
+        logUsage(label, result.usage);
+        return result;
+      },
+      (error) => {
+        report(label, error);
+        throw error;
+      },
+    );
+  }
+
+  const { label, output, settings } = outputSettings(
+    options as OutputOptions<T>,
+    "generate",
+  );
+  const generation =
+    output instanceof z.ZodArray
+      ? generateObject({
+          ...settings,
+          output: "array",
+          schema: output.element as z.ZodTypeAny,
+        })
+      : generateObject({ ...settings, schema: output });
+
+  return generation.then(
     (result) => {
       logUsage(label, result.usage);
-      return result;
+      return result.object as z.infer<T>;
     },
     (error) => {
       report(label, error);
       throw error;
     },
   );
-};
-
-export type StreamArrayOptions<T extends z.ZodTypeAny> = {
-  label: string;
-  model?: ModelId;
-  schema: T;
-  instructions: string;
-  prompt: string;
-};
-
-// Streams schema-validated array elements as the model emits them (the AI SDK's
-// `output: "array"` mode) — exposes `elementStream`. Used by competitor detection.
-export const streamArray = <T extends z.ZodTypeAny>(
-  options: StreamArrayOptions<T>,
-) => {
-  const { label, model: id = "gpt-4o", schema, instructions, prompt } = options;
-  return streamObject({
-    model: model(id),
-    output: "array",
-    schema,
-    instructions,
-    prompt,
-    experimental_repairText: repairText,
-    experimental_telemetry: telemetry(label),
-    onError: (event) => {
-      report(label, event.error);
-    },
-  });
-};
+}
 
 const BUFFER_LINE_THRESHOLD = 50;
 
@@ -254,84 +295,84 @@ async function* bufferTextStream(
   if (buffer) yield buffer;
 }
 
-export type GenerateOptions<T extends z.ZodTypeAny> = {
-  instructions: string;
-  prompt: string;
-  schema: T;
-  model?: ModelId;
-  schemaName?: string;
-  schemaDescription?: string;
-  label?: string;
-};
-
-export type GenerateStreamResult<T> = {
-  output: Promise<T>;
+export type StreamOutputResult<T extends z.ZodTypeAny> = {
+  output: Promise<z.infer<T>>;
   textStream: AsyncIterable<string>;
+  elementStream: T extends z.ZodArray<infer Element extends z.ZodTypeAny>
+    ? AsyncIterable<z.infer<Element>>
+    : never;
 };
 
-export function generate<T extends z.ZodTypeAny>(
-  options: GenerateOptions<T> & { stream?: false },
-): Promise<z.infer<T>>;
+export function stream<T extends z.ZodTypeAny>(
+  options: OutputOptions<T>,
+): StreamOutputResult<T>;
 
-export function generate<T extends z.ZodTypeAny>(
-  options: GenerateOptions<T> & { stream: true },
-): GenerateStreamResult<z.infer<T>>;
+export function stream(
+  options: StreamTextOptions,
+): ReturnType<typeof sdkStreamText>;
 
-export function generate<T extends z.ZodTypeAny>(
-  options: GenerateOptions<T> & { stream?: boolean },
-): Promise<z.infer<T>> | GenerateStreamResult<z.infer<T>> {
-  const {
-    instructions,
-    prompt,
-    schema,
-    stream: s = false,
-    model: id = "gpt-4o",
-    schemaName,
-    schemaDescription,
-    label = schemaName ?? "generate",
-  } = options;
-
-  const settings = {
-    model: model(id),
-    instructions,
-    prompt,
-    schema,
-    schemaName,
-    schemaDescription,
-    experimental_repairText: repairText,
-    experimental_telemetry: telemetry(label),
-  };
-
-  if (!s)
-    return generateObject(settings).then(
-      (result) => {
-        logUsage(label, result.usage);
-        return result.object as z.infer<T>;
+export function stream<T extends z.ZodTypeAny>(
+  options: OutputOptions<T> | StreamTextOptions,
+) {
+  if (!options.output) {
+    const {
+      model: id = "gpt-4o",
+      label,
+      output: _output,
+      experimental_telemetry,
+      onError,
+      ...rest
+    } = options as StreamTextOptions;
+    return sdkStreamText({
+      ...rest,
+      model: resolveModel(id),
+      experimental_telemetry: telemetry(label, experimental_telemetry),
+      onError: (event) => {
+        report(label, event.error);
+        onError?.(event);
       },
-      (error) => {
-        report(label, error);
-        throw error;
-      },
-    );
+    } as StreamTextArgs);
+  }
 
-  // @note: errors during streaming surface on `result.object` (which we await
+  const { label, output, settings } = outputSettings(
+    options as OutputOptions<T>,
+    "stream",
+  );
+
+  // @note: errors during streaming surface on `result.output` (which we await
   // via resultify at the call site) rather than thrown — repairText still runs
   // before that rejects, so malformed output is recovered transparently.
-  const result = streamObject({
-    ...settings,
-    onError: (event) => {
-      report(label, event.error);
-    },
-  });
+  const result =
+    output instanceof z.ZodArray
+      ? streamObject({
+          ...settings,
+          output: "array",
+          schema: output.element as z.ZodTypeAny,
+          onError: (event) => {
+            report(label, event.error);
+          },
+        })
+      : streamObject({
+          ...settings,
+          schema: output,
+          onError: (event) => {
+            report(label, event.error);
+          },
+        });
   result.usage.then((usage) => logUsage(label, usage)).catch(() => {});
 
   return {
     output: result.object as Promise<z.infer<T>>,
     textStream: bufferTextStream(result.textStream),
-  };
+    // Lazy: the SDK only exposes `elementStream` in array mode; touching it
+    // eagerly in object mode would throw.
+    get elementStream() {
+      return result.elementStream;
+    },
+  } as unknown as StreamOutputResult<T>;
 }
 
-export const stream = <T>(
+export const streamable = <T>(
   callback: (update: (value: T) => void) => Promise<void>,
 ) => {
   const streamable = createStreamableValue<T>();

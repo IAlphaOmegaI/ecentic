@@ -7,14 +7,23 @@ import {
   createMetadata,
   organizationSchema,
 } from "@/lib/seo";
+import Art from "@/public/images/ascii/gears.png";
 import {
   ContentPageFooter,
   ContentPageLayout,
   ContentPageSection,
 } from "../_components/content";
 import { Faq } from "../pricing/_components/faq";
-import { Hero } from "./_components/hero";
 import { Steps } from "./_components/steps";
+
+const assurances = [
+  "First scan in about two minutes",
+  "Approval-ready rewrites",
+  "No developer needed",
+] as const;
+
+const intro =
+  "Ecentic simulates how AI shopping agents compare your products, explains why you lose in plain language, and rewrites your listings so the next comparison goes your way.";
 
 const description =
   "How ecentic works: simulate how GPT-4, Claude, Gemini, and Perplexity compare your products, diagnose why you lose, and optimize titles, descriptions, and structured data to win more AI-assisted carts.";
@@ -95,14 +104,13 @@ export default () => {
   return (
     <ContentPageLayout
       eyebrow="How it works"
-      title="From invisible to chosen in three steps."
-      description={description}
-      hideHero
-      hideHeroSpacer={false}
+      title="From invisible to chosen"
+      accent="in three steps."
+      description={intro}
+      assurances={assurances}
+      art={Art}
     >
       <JsonLd schemas={structuredData} />
-
-      <Hero />
 
       <Steps />
 

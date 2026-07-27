@@ -101,7 +101,7 @@ Certifications: ${profile.data[0]?.certifications ?? ""}
 
 Top products:
 ${productSummary || "No products yet"}`,
-    schema: z.object({
+    output: z.object({
       "@context": z.string(),
       "@type": z.literal("Merchant"),
       name: z.string(),
@@ -165,7 +165,7 @@ Price: ${formatPrice(product.data.price, product.data.currency)}
 Compare At: ${product.data.compareAtPrice ?? ""}
 SKU: ${product.data.sku ?? ""}
 URL: ${product.data.url ?? ""}`,
-      schema: z.object({
+      output: z.object({
         "@context": z.string(),
         "@type": z.literal("Product"),
         name: z.string(),
@@ -218,7 +218,7 @@ Title: ${product.title}
 Description: ${product.description ?? ""}
 Price: ${formatPrice(product.price, product.currency)}
 SKU: ${product.sku ?? ""}`,
-            schema: z.object({
+            output: z.object({
               "@context": z.string(),
               "@type": z.literal("Product"),
               name: z.string(),

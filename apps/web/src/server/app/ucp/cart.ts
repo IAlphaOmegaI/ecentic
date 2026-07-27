@@ -166,7 +166,7 @@ export const create = async ({
   negotiated: Negotiated | null;
   payload: Record<string, unknown>;
 }): Promise<CartResult> => {
-  const rawItems = payload["line_items"];
+  const rawItems = payload.line_items;
   if (!Array.isArray(rawItems) || rawItems.length === 0) {
     return {
       status: 400,
@@ -198,12 +198,12 @@ export const create = async ({
     status: "active",
     currency: "USD",
     lineItems: resolved.lineItems,
-    buyer: parseBuyer(payload["buyer"]),
+    buyer: parseBuyer(payload.buyer),
     context:
-      payload["context"] && typeof payload["context"] === "object"
-        ? (payload["context"] as Record<string, unknown>)
+      payload.context && typeof payload.context === "object"
+        ? (payload.context as Record<string, unknown>)
         : undefined,
-    discountCodes: parseDiscountCodes(payload["discounts"]),
+    discountCodes: parseDiscountCodes(payload.discounts),
     messages: resolved.messages,
     createdAt: new Date().toISOString(),
     expiresAt: expiry(),
@@ -255,26 +255,24 @@ export const update = async ({
   if (!existing) return notFound(context, negotiated);
 
   const resolved =
-    payload["line_items"] !== undefined
-      ? await resolveLineItems(context, payload["line_items"])
+    payload.line_items !== undefined
+      ? await resolveLineItems(context, payload.line_items)
       : { lineItems: existing.lineItems, messages: [] as UcpMessage[] };
 
   const merged: CartSession = {
     ...existing,
     lineItems: resolved.lineItems,
     buyer:
-      payload["buyer"] !== undefined
-        ? parseBuyer(payload["buyer"])
-        : existing.buyer,
+      payload.buyer !== undefined ? parseBuyer(payload.buyer) : existing.buyer,
     context:
-      payload["context"] !== undefined &&
-      payload["context"] &&
-      typeof payload["context"] === "object"
-        ? (payload["context"] as Record<string, unknown>)
+      payload.context !== undefined &&
+      payload.context &&
+      typeof payload.context === "object"
+        ? (payload.context as Record<string, unknown>)
         : existing.context,
     discountCodes:
-      payload["discounts"] !== undefined
-        ? parseDiscountCodes(payload["discounts"])
+      payload.discounts !== undefined
+        ? parseDiscountCodes(payload.discounts)
         : existing.discountCodes,
     messages: resolved.messages,
   };

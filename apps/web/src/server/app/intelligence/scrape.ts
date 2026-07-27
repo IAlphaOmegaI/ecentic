@@ -105,7 +105,7 @@ Rules:
 - For source: use the retailer/platform name (Amazon, Walmart, Etsy, etc.), not the URL.
 - If a page contains multiple products (e.g. a category page), extract only the primary/featured product.`,
         prompt: `Extract one product per page from these pages:\n\n${context}`,
-        schema: z.object({
+        output: z.object({
           products: z.array(
             z.object({
               title: z.string(),

@@ -1,5 +1,18 @@
 # Plan 004: Stop trusting the unsigned `user` cookie for route authorization — sign it, validate it, and bound its lifetime
 
+> **⛔ SUPERSEDED — do not execute.** This plan shipped (commit `907688d`) and
+> was later replaced wholesale. The `user` cookie it hardened no longer exists:
+> `signature.ts`, `setUserCookie`, and `getProxiedCurrentUser` are deleted, and
+> `proxy.ts` now authorizes from `auth.api.getSession()` backed by better-auth's
+> `session.cookieCache`.
+>
+> Kept for the record because its problem statement was right and defect #3
+> below ("Unbounded staleness") outlived the fix: a 1-hour `maxAge` bounds the
+> cookie but never ties it to the session, so the proxy still admitted dead
+> sessions for up to an hour after sign-out, revocation, or expiry. Better
+> Auth's cache closes that because its payload carries the session's own
+> `expiresAt` and sign-out expires it alongside the session token.
+
 > **Executor instructions**: Follow this plan step by step. Run every
 > verification command and confirm the expected result before moving to the
 > next step. If anything in the "STOP conditions" section occurs, stop and

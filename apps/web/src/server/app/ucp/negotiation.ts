@@ -297,7 +297,7 @@ export const negotiate = async ({
     };
   }
 
-  const ucp = fetched.profile["ucp"] as
+  const ucp = fetched.profile.ucp as
     | { version?: unknown; capabilities?: unknown }
     | undefined;
 

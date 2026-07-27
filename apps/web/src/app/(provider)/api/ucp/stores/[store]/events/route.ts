@@ -45,7 +45,7 @@ export const POST = async (
   const { store } = await routeContext.params;
 
   const context = await resolveStoreContext(store);
-  if (!context || !context.bridgeSecret) {
+  if (!context?.bridgeSecret) {
     return Response.json({ error: "Unknown store" }, { status: 404 });
   }
 

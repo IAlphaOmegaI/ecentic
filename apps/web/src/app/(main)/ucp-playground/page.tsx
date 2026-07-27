@@ -12,6 +12,7 @@ import {
   createMetadata,
   organizationSchema,
 } from "@/lib/seo";
+import Art from "@/public/images/ascii/robot.png";
 import { ANONYMOUS_MESSAGE_LIMIT } from "@/server/app/intelligence/ucp/playground-limit";
 import { ContentPageLayout } from "../_components/content";
 
@@ -117,9 +118,10 @@ const MeteredPlayground = async () => {
 export default () => (
   <ContentPageLayout
     eyebrow="Universal Commerce Protocol"
-    title="Point an AI shopping agent at any store."
+    title="Point an AI shopping agent"
+    accent="at any store."
     description={description}
-    hideHero
+    art={Art}
   >
     <JsonLd schemas={structuredData} />
 
@@ -127,15 +129,16 @@ export default () => (
       <div className="relative mx-auto max-w-6xl border-accent-foreground border-x border-b">
         <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
         <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+        {/* The banner now carries the h1, so this block drops to a section
+            heading rather than competing with it. */}
         <div className="relative border-accent-foreground p-6 md:p-12">
-          <h1 className="font-body text-3xl text-foreground md:text-6xl">
-            Point a real AI shopping agent <br />
-            at any UCP store.
-          </h1>
+          <h2 className="font-body text-3xl text-foreground md:text-5xl">
+            Watch it search, build a cart, <br />
+            and check out.
+          </h2>
           <p className="mt-4 max-w-xl font-light text-foreground-dimmed text-lg">
-            Watch it search the catalog, build a cart, and check out — every
-            tool call and response in the open. No account needed for your first{" "}
-            {ANONYMOUS_MESSAGE_LIMIT} messages.
+            Every tool call and response in the open. No account needed for your
+            first {ANONYMOUS_MESSAGE_LIMIT} messages.
           </p>
         </div>
 

@@ -7,6 +7,7 @@ import {
   createMetadata,
   organizationSchema,
 } from "@/lib/seo";
+import Art from "@/public/images/ascii/console.png";
 import {
   ContentPageFooter,
   ContentPageLayout,
@@ -14,9 +15,17 @@ import {
 } from "../_components/content";
 import { Faq } from "../pricing/_components/faq";
 import { Capabilities } from "./_components/capabilities";
-import { Hero } from "./_components/hero";
 import { Loop } from "./_components/loop";
 import { Workflows, workflows } from "./_components/workflows";
+
+const assurances = [
+  "Simulates ChatGPT, Claude, Gemini & Perplexity",
+  "One-click listing rewrites",
+  "Live agent traffic",
+] as const;
+
+const intro =
+  "Simulate how AI shopping agents compare your products, see exactly why competitors win, and publish the listing fixes that flip the result, all from one loop.";
 
 const description =
   "AI ecommerce tools for product listing optimization, competitor analysis, and AI shopping visibility. See how ecentic helps merchants win more carts.";
@@ -94,14 +103,13 @@ export default () => {
   return (
     <ContentPageLayout
       eyebrow="Features"
-      title="Every tool you need to win the AI shopper."
-      description={description}
-      hideHero
-      hideHeroSpacer={false}
+      title="Every tool you need to"
+      accent="win the AI shopper."
+      description={intro}
+      assurances={assurances}
+      art={Art}
     >
       <JsonLd schemas={structuredData} />
-
-      <Hero />
 
       <Loop />
 

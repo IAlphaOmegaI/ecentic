@@ -109,6 +109,23 @@ export const POST = async (request: NextRequest) => {
     if (!result.success) {
       const rateLimited = result.error.message === "Rate limited";
 
+      // Both branches drop a redemption on the floor and nothing downstream
+      // records it, so neither may stay silent. A failed write is our defect and
+      // is reported as an exception; a rate limit is expected under abuse but
+      // has also throttled a real partner delivery, so it is a warning carrying
+      // the client it was keyed on rather than an error.
+      if (rateLimited)
+        Sentry.captureMessage("Deal redemption rejected by rate limit", {
+          level: "warning",
+          tags: { route: "deal-redemption-webhook", merchant },
+          extra: { client },
+        });
+      else
+        Sentry.captureException(result.error, {
+          tags: { route: "deal-redemption-webhook", merchant },
+          extra: { client },
+        });
+
       return Response.json(
         {
           error: rateLimited

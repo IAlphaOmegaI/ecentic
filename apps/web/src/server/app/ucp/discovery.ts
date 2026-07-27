@@ -49,7 +49,7 @@ export const buildDiscoveryProfile = (
   // platform discovers here match what checkout returns.
   const handlers = storefront?.paymentHandlers ?? {};
   if (Object.keys(handlers).length > 0) {
-    ucp["payment_handlers"] = handlers;
+    ucp.payment_handlers = handlers;
   }
 
   // Identity linking: the store hosts its own OAuth 2.0 authorization server
@@ -57,7 +57,7 @@ export const buildDiscoveryProfile = (
   // config.scopes declares which operations gate behind user authentication.
   const identityScopes = storefront?.identityScopes ?? {};
   if (Object.keys(identityScopes).length > 0) {
-    (ucp["capabilities"] as Record<string, unknown>)[
+    (ucp.capabilities as Record<string, unknown>)[
       "dev.ucp.common.identity_linking"
     ] = [
       {
@@ -74,7 +74,7 @@ export const buildDiscoveryProfile = (
   // verify our RFC 9421 signatures. crv drives the algorithm (ES256).
   const signingKey = platformSigningKey();
   if (signingKey) {
-    ucp["signing_keys"] = [signingKey.publicJwk];
+    ucp.signing_keys = [signingKey.publicJwk];
   }
 
   return { ucp };

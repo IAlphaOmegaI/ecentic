@@ -475,7 +475,7 @@ export const runFreeForAll = async ({
 
       const tools = buildFreeForAllTools(storeCatalog, agentProfileUrl);
 
-      const agentResult = AI.streamText({
+      const agentResult = AI.stream({
         label: "free-for-all",
         model: "claude-sonnet-4-6",
         instructions: `You are an autonomous AI shopping agent running a "free-for-all" buy decision. Every store below is an equal candidate — there is no home store and no competitors. A buyer has asked for something, and your job is to look at what every store actually offers and pick exactly ONE product you would buy.

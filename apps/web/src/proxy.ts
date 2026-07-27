@@ -1,6 +1,7 @@
+import { resultify } from "@zenncore/utils";
 import type { ProxyConfig, NextRequest as Request } from "next/server";
 import { NextResponse as Response } from "next/server";
-import * as Authentication from "@/server/app/authentication";
+import { auth } from "@/lib/auth";
 
 type Route = string | RegExp;
 
@@ -69,22 +70,25 @@ export const proxy = async (request: Request) => {
   // for a cookie verify (and possible database read) on every page view.
   if (!requiresSession) return Response.next();
 
-  // Reads the signed `user` cookie first and only falls back to the session.
-  // The cookie is a one-hour cache and the session lives seven days, so it
-  // expires first — it cannot outlive a session that is still valid.
-  const user = await Authentication.getProxiedCurrentUser();
+  // Resolve the session the same way protected pages do, so the two can never
+  // disagree. `session.cookieCache` serves this from a signed cookie that
+  // carries the session's own expiry, so it costs a database read only once per
+  // cache window — and a dead session is never admitted.
+  const result = await resultify(() =>
+    auth.api.getSession({ headers: request.headers }),
+  );
 
   // Fail closed: an unreadable session must never grant access.
-  const account = user.success ? (user.data ?? null) : null;
+  const session = result.success ? result.data : null;
 
   switch (true) {
     case authenticationRoute: {
-      return account ? redirect(request, "/dashboard") : Response.next();
+      return session ? redirect(request, "/dashboard") : Response.next();
     }
-    case account === null: {
+    case session === null: {
       return redirect(request, "/sign-in", pathname + request.nextUrl.search);
     }
-    case administratorOnly && account?.role !== "administrator": {
+    case administratorOnly && session?.user.role !== "administrator": {
       return redirect(request, "/dashboard");
     }
     default: {
