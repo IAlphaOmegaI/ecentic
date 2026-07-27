@@ -9,6 +9,16 @@ import {
   GoogleShoppingManager,
 } from "./_components/google-shopping-client";
 
+const SectionBox = ({ children }: { children: React.ReactNode }) => (
+  <div className="-mx-8 border-accent-foreground border-b">
+    <div className="relative mx-8 bg-background-rich">
+      <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+      <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+      {children}
+    </div>
+  </div>
+);
+
 const ManagerSkeleton = () => (
   <div className="flex flex-col divide-y divide-accent-foreground">
     {(["a", "b"] as const).map((key) => (
@@ -21,12 +31,42 @@ const ManagerSkeleton = () => (
   </div>
 );
 
-const ManagerContent = async ({ store }: { store: string }) => {
+/**
+ * Manager + diagnostics off one status read. Diagnostics only exist once a
+ * Merchant Center account is detected for the store — before that every call
+ * behind the panel fails with "No Merchant Center account detected yet", so the
+ * whole section stays out of the DOM rather than offering a dead button.
+ */
+const ChannelSections = async ({ store }: { store: string }) => {
   await connection();
   const status = unwrapResult(
     await GoogleMerchant.getStatus(Environment.SERVER, { store }),
   );
-  return <GoogleShoppingManager store={store} status={status} />;
+
+  return (
+    <>
+      <SectionBox>
+        <GoogleShoppingManager store={store} status={status} />
+      </SectionBox>
+
+      {status.googleAccountId !== null && (
+        <>
+          <SectionGutter />
+          <SectionBox>
+            <div className="border-accent-foreground border-b p-4">
+              <p className="font-semibold text-foreground-dimmed text-xs uppercase tracking-[0.14em]">
+                Merchant Center diagnostics
+              </p>
+              <p className="mt-1 font-medium text-base text-foreground">
+                Why products are disapproved or limited on Google
+              </p>
+            </div>
+            <DiagnosticsPanel store={store} />
+          </SectionBox>
+        </>
+      )}
+    </>
+  );
 };
 
 export default async ({ params }: { params: Promise<{ store: string }> }) => {
@@ -54,33 +94,15 @@ export default async ({ params }: { params: Promise<{ store: string }> }) => {
           </div>
         </div>
 
-        <div className="-mx-8 border-accent-foreground border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <Suspense fallback={<ManagerSkeleton />}>
-              <ManagerContent store={store} />
-            </Suspense>
-          </div>
-        </div>
-
-        <SectionGutter />
-
-        <div className="-mx-8 border-accent-foreground border-t border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-            <div className="border-accent-foreground border-b p-4">
-              <p className="font-semibold text-foreground-dimmed text-xs uppercase tracking-[0.14em]">
-                Merchant Center diagnostics
-              </p>
-              <p className="mt-1 font-medium text-base text-foreground">
-                Why products are disapproved or limited on Google
-              </p>
-            </div>
-            <DiagnosticsPanel store={store} />
-          </div>
-        </div>
+        <Suspense
+          fallback={
+            <SectionBox>
+              <ManagerSkeleton />
+            </SectionBox>
+          }
+        >
+          <ChannelSections store={store} />
+        </Suspense>
       </div>
     </div>
   );
