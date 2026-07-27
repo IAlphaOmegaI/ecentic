@@ -16,7 +16,15 @@ export const PartnershipBanner = () => (
     <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
     <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
     <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-    <div className="pointer-events-none absolute -top-24 -right-24 size-72 rounded-full bg-primary/10 blur-3xl" />
+    {/* The glow sits 96px past the section's right edge. Clipping has to happen
+        on a wrapper rather than the section itself: the section's own corner
+        Plus markers overhang by design and `overflow-hidden` there would slice
+        them in half. Left unclipped this widened the layout viewport of the
+        whole landing page on narrow screens, which is what made every section
+        below look cropped on a phone. */}
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div className="absolute -top-24 -right-24 size-72 rounded-full bg-primary/10 blur-3xl" />
+    </div>
     <div className="pointer-events-none absolute inset-y-0 left-0 z-0 h-full w-auto w-full overflow-hidden rounded-lg opacity-80 [mask-image:linear-gradient(to_right,black,transparent)]">
       <Image
         src="/images/eu-flag.gif"
