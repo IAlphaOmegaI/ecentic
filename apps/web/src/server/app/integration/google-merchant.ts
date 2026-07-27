@@ -1,6 +1,7 @@
 "use server";
 
 import crypto from "node:crypto";
+import { resultify } from "@zenncore/utils";
 import { and, eq } from "drizzle-orm";
 import { db, schema } from "../../database";
 import { withAuthentication } from "../../utils/authentication";
@@ -312,6 +313,16 @@ export const proposeLink = withAuthentication(
         success: false,
         error: new RequestError("No Merchant Center account detected yet"),
       };
+
+    // Relink path: after a local-only disconnect (or a re-connect with the
+    // same Google account) the accountManagement service may still be
+    // established on Google — adopt it instead of proposing a duplicate.
+    const existing = await reconcileLinkState(
+      resolved.accessToken,
+      resolved.record,
+    );
+    if (existing.success && existing.data.linkState === "active")
+      return existing;
 
     const proposal = await GoogleMerchantAPI.proposeAccountManagement(
       resolved.accessToken,
@@ -1146,7 +1157,17 @@ export const verifyOverrides = withAuthentication(
   "GoogleMerchant.verifyOverrides",
 );
 
-/** Removes the store's Google link and stored tokens. */
+/**
+ * Full unlink: best-effort teardown of everything ecentic created on the
+ * merchant's Google account — remove our entry from the primary feed's rule,
+ * delete the supplemental data source (which removes its product inputs;
+ * ordering matters, a referenced supplemental cannot be deleted), reject the
+ * accountManagement service (reject works on established links) — then drop
+ * the local offer rows and credentials. Google-side failures degrade to
+ * warnings so a revoked token can never strand the local state; the merchant
+ * can always finish cleanup in Merchant Center. Reconnecting afterwards runs
+ * the normal flow from scratch.
+ */
 export const disconnect = withAuthentication(
   async (context, { store: storeId }: { store: string }) => {
     const store = await ownedStore(storeId, context.session.user.id);
@@ -1154,8 +1175,104 @@ export const disconnect = withAuthentication(
 
     const account = await linkedAccount(storeId);
     if (!account.success) return account;
+    const record = account.data;
 
-    return GoogleMerchantAccount.destroy(Environment.SERVER, account.data.id);
+    const warnings: string[] = [];
+
+    const resolved = await resolveAccessToken(storeId);
+    if (resolved.success) {
+      const { accessToken } = resolved;
+
+      if (record.primaryDataSourceName && record.dataSourceName) {
+        const primary = await GoogleMerchantAPI.getDataSource(
+          accessToken,
+          record.primaryDataSourceName,
+        );
+        if (primary.success) {
+          const current =
+            primary.data.primaryProductDataSource?.defaultRule
+              ?.takeFromDataSources ?? [];
+          const supplementalId = record.dataSourceName.split("/").pop();
+          const remaining = current.filter(
+            (reference) =>
+              reference.supplementalDataSourceName?.split("/").pop() !==
+              supplementalId,
+          );
+          if (remaining.length !== current.length) {
+            const patched = await GoogleMerchantAPI.patchDataSourceDefaultRule(
+              accessToken,
+              {
+                name: record.primaryDataSourceName,
+                takeFromDataSources:
+                  remaining.length > 0 ? remaining : [{ self: true }],
+              },
+            );
+            if (!patched.success)
+              warnings.push(`rule: ${patched.error.message}`);
+          }
+        } else {
+          warnings.push(`rule: ${primary.error.message}`);
+        }
+      }
+
+      if (record.dataSourceName) {
+        const deleted = await GoogleMerchantAPI.deleteDataSource(
+          accessToken,
+          record.dataSourceName,
+        );
+        if (!deleted.success)
+          warnings.push(`dataSource: ${deleted.error.message}`);
+      }
+
+      const config = GoogleMerchantAPI.configuration();
+      if (record.googleAccountId && config) {
+        const services = await GoogleMerchantAPI.listAccountServices(
+          accessToken,
+          record.googleAccountId,
+        );
+        if (services.success) {
+          const ours = (services.data.accountServices ?? []).find(
+            (service) =>
+              service.accountManagement !== undefined &&
+              service.provider?.split("/").pop() === config.advancedAccountId,
+          );
+          if (ours?.name) {
+            const rejected = await GoogleMerchantAPI.rejectAccountService(
+              accessToken,
+              ours.name,
+            );
+            if (!rejected.success)
+              warnings.push(`link: ${rejected.error.message}`);
+          }
+        } else {
+          warnings.push(`link: ${services.error.message}`);
+        }
+      }
+    } else {
+      warnings.push(
+        `google: ${resolved.error.message} — removed the local connection only`,
+      );
+    }
+
+    const offers = await resultify(() =>
+      db
+        .delete(schema.googleMerchantOffer)
+        .where(eq(schema.googleMerchantOffer.storeId, storeId)),
+    );
+    if (!offers.success) return offers;
+
+    const destroyed = await GoogleMerchantAccount.destroy(
+      Environment.SERVER,
+      record.id,
+    );
+    if (!destroyed.success) return destroyed;
+
+    context.span.addBreadcrumb({
+      category: "google.disconnected",
+      data: { "store.id": storeId, "warnings.count": warnings.length },
+    });
+
+    return { success: true as const, data: { warnings } };
   },
   "GoogleMerchant.disconnect",
 );

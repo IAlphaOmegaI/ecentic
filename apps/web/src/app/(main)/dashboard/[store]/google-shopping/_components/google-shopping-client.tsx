@@ -118,7 +118,7 @@ export const GoogleShoppingManager = ({
           >
             <p className="max-w-2xl text-foreground-dimmed text-sm">
               Sign in with the Google account that manages this store's Merchant
-              Center. Écentic only requests access to product listings (Content
+              Center. ecentic only requests access to product listings (Content
               API scope) — never your ads or personal data.
             </p>
             <a href={`/api/integrations/google/install?store=${store}`}>
@@ -174,7 +174,7 @@ export const GoogleShoppingManager = ({
             <p className="max-w-2xl text-foreground-dimmed text-sm">
               Install the Google &amp; YouTube channel in your store admin and
               finish its Google connection — it creates and verifies your
-              Merchant Center account, then Écentic detects it automatically.
+              Merchant Center account, then ecentic detects it automatically.
             </p>
             <Button
               color="neutral"
@@ -194,11 +194,11 @@ export const GoogleShoppingManager = ({
       case status.linkState === "unlinked":
         return (
           <Step
-            title="Link your account to Écentic"
+            title="Link your account to ecentic"
             chip={<Chip tone="warning">Step 3</Chip>}
           >
             <p className="max-w-2xl text-foreground-dimmed text-sm">
-              Écentic will request management access to your Merchant Center
+              ecentic will request management access to your Merchant Center
               account (account {status.googleAccountId}). This lets us attach an
               optimization feed and read diagnostics — you can revoke the access
               in Merchant Center at any time.
@@ -250,9 +250,9 @@ export const GoogleShoppingManager = ({
             chip={<Chip tone="warning">Step 4</Chip>}
           >
             <p className="max-w-2xl text-foreground-dimmed text-sm">
-              Creates Écentic's supplemental feed on your account and wires it
+              Creates ecentic's supplemental feed on your account and wires it
               into your primary product feed. Your store's plugin keeps owning
-              prices, stock, and images — Écentic only layers optimized titles
+              prices, stock, and images — ecentic only layers optimized titles
               and descriptions on top.
             </p>
             <Button
@@ -275,8 +275,32 @@ export const GoogleShoppingManager = ({
     }
   })();
 
+  const disconnectRow = status.connected ? (
+    <div className="flex flex-wrap items-center gap-3 p-4">
+      <Button
+        color="neutral"
+        disabled={isRunning}
+        onClick={() =>
+          run(() => GoogleMerchant.disconnect({ store }), "Google disconnected")
+        }
+      >
+        Disconnect Google
+      </Button>
+      <p className="text-foreground-dimmed text-xs">
+        Removes ecentic's optimization feed and management access from your
+        Merchant Center account. Your products and their Google listings stay —
+        only the ecentic overrides go away. You can reconnect any time.
+      </p>
+    </div>
+  ) : null;
+
   if (setup)
-    return <div className="divide-y divide-accent-foreground">{setup}</div>;
+    return (
+      <div className="divide-y divide-accent-foreground">
+        {setup}
+        {disconnectRow}
+      </div>
+    );
 
   return (
     <div className="flex flex-col divide-y divide-accent-foreground">
@@ -350,6 +374,7 @@ export const GoogleShoppingManager = ({
           Google re-checks policies on every override before it goes live.
         </p>
       </div>
+      {disconnectRow}
     </div>
   );
 };

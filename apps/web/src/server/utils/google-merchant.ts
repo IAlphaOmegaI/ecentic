@@ -214,6 +214,17 @@ export const proposeAccountManagement = (
     },
   );
 
+/**
+ * Rejects an account service by resource name
+ * (`accounts/{account}/services/{service}`). Works on both proposed and
+ * established services, so it doubles as the API-side unlink.
+ */
+export const rejectAccountService = (accessToken: string, name: string) =>
+  api<Record<string, never>>(accessToken, `/accounts/v1/${name}:reject`, {
+    method: "POST",
+    body: {},
+  });
+
 export type AccountIssue = {
   name?: string;
   title?: string;
@@ -264,6 +275,16 @@ export const listDataSources = (accessToken: string, accountId: string) =>
 /** Fetches one data source by full resource name (`accounts/{a}/dataSources/{d}`). */
 export const getDataSource = (accessToken: string, name: string) =>
   api<DataSource>(accessToken, `/datasources/v1/${name}`);
+
+/**
+ * Deletes a data source (and the product inputs it carries). A supplemental
+ * source cannot be deleted while a primary's rule still references it — the
+ * caller must unpatch the rule first.
+ */
+export const deleteDataSource = (accessToken: string, name: string) =>
+  api<Record<string, never>>(accessToken, `/datasources/v1/${name}`, {
+    method: "DELETE",
+  });
 
 /**
  * Replaces a primary data source's `defaultRule.takeFromDataSources`. Callers

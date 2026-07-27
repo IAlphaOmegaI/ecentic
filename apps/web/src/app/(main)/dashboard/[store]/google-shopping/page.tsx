@@ -46,10 +46,10 @@ export default async ({ params }: { params: Promise<{ store: string }> }) => {
               Optimized listings on Google, without touching your store
             </h1>
             <p className="mt-1 max-w-2xl text-foreground-dimmed text-sm">
-              Écentic layers your published listing optimizations over your
+              ecentic layers your published listing optimizations over your
               existing Google product feed as attribute overrides. Your store's
               Google plugin keeps owning prices, stock, and the product feed —
-              Écentic manages titles, descriptions, and diagnostics on top.
+              ecentic manages titles, descriptions, and diagnostics on top.
             </p>
           </div>
         </div>
