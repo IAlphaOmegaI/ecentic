@@ -170,6 +170,18 @@ export const listAccounts = (accessToken: string) =>
   api<{ accounts?: MerchantAccount[] }>(accessToken, "/accounts/v1/accounts");
 
 /**
+ * Lists sub-accounts of an account acting as provider. Doubles as the
+ * advanced-account probe: the Account resource carries no MCA flag, so "has
+ * sub-accounts" is the working signal that an account is an aggregator rather
+ * than a store (a store-less advanced account errors or returns empty here).
+ */
+export const listSubaccounts = (accessToken: string, accountId: string) =>
+  api<{ accounts?: MerchantAccount[] }>(
+    accessToken,
+    `/accounts/v1/accounts/${accountId}:listSubaccounts?pageSize=1`,
+  );
+
+/**
  * The account's registered store homepage — the identity signal that ties a
  * Merchant Center account to a storefront domain. Errors (including unset
  * homepages returning 404) are the caller's cue to treat the domain as

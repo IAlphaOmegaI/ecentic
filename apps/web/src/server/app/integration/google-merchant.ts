@@ -91,8 +91,10 @@ const detectCandidates = async (
   if (!accounts.success) return accounts;
 
   const hosts = storeHosts(store);
+  const advancedAccountId =
+    GoogleMerchantAPI.configuration()?.advancedAccountId;
 
-  const candidates = await Promise.all(
+  const probed = await Promise.all(
     (accounts.data.accounts ?? [])
       .map((account) => ({
         id: GoogleMerchantAPI.accountIdFromName(account.name),
@@ -102,24 +104,39 @@ const detectCandidates = async (
         (candidate): candidate is { id: string; name: string | null } =>
           candidate.id !== null,
       )
+      // ecentic's own MCA is visible to any login that administers it and can
+      // never be a store — never a candidate.
+      .filter((candidate) => candidate.id !== advancedAccountId)
       .map(async (candidate) => {
-        const homepage = await GoogleMerchantAPI.getHomepage(
-          accessToken,
-          candidate.id,
-        );
+        const [homepage, subaccounts] = await Promise.all([
+          GoogleMerchantAPI.getHomepage(accessToken, candidate.id),
+          GoogleMerchantAPI.listSubaccounts(accessToken, candidate.id),
+        ]);
         const domain =
           homepage.success && homepage.data.uri
             ? normalizeHostname(homepage.data.uri)
             : null;
         return {
-          ...candidate,
-          domain,
-          matchesStore: domain !== null && hosts.includes(domain),
+          candidate: {
+            ...candidate,
+            domain,
+            matchesStore: domain !== null && hosts.includes(domain),
+          },
+          // An account with sub-accounts is an advanced account (aggregator),
+          // not a store that can hold products. The probe erring means "not
+          // an aggregator" and keeps the candidate.
+          isAdvanced:
+            subaccounts.success && (subaccounts.data.accounts?.length ?? 0) > 0,
         };
       }),
   );
 
-  return { success: true, data: candidates };
+  return {
+    success: true,
+    data: probed
+      .filter((entry) => !entry.isAdvanced)
+      .map((entry) => entry.candidate),
+  };
 };
 
 /** The single account to auto-adopt, or null when the choice isn't safe. */
