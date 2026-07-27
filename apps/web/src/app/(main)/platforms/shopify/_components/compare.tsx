@@ -76,7 +76,11 @@ export const Compare = () => (
           <h3 className="mt-4 font-body font-medium text-2xl">
             Built for winning the comparison.
           </h3>
-          <p className="mt-2 font-body font-light text-lg text-white/75">
+          {/* Solid white is the ceiling on #1572fa at 4.36:1 — every tint below
+              it drops fast (/80 = 3.34, /75 = 3.11), and these are load-bearing
+              claims, not chrome. The check icons stay tinted: an icon answers to
+              the 3:1 non-text threshold, which /80 clears. */}
+          <p className="mt-2 font-body font-light text-lg text-white">
             The value is not only rewriting text. It is knowing whether your
             page is easy for an AI shopping system to evaluate, and whether the
             proposed change improves your chance of being selected.
@@ -85,7 +89,7 @@ export const Compare = () => (
             {ecenticStrengths.map((strength) => (
               <div key={strength} className="flex items-start gap-2">
                 <CheckIcon className="mt-1 size-4 shrink-0 text-white/80" />
-                <p className="font-body font-light text-white/80">{strength}</p>
+                <p className="font-body font-light text-white">{strength}</p>
               </div>
             ))}
           </div>
