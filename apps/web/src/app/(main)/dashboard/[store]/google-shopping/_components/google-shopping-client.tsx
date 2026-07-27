@@ -138,28 +138,45 @@ export const GoogleShoppingManager = ({
             <p className="max-w-2xl text-foreground-dimmed text-sm">
               Your Google login can see several Merchant Center accounts — pick
               the one the Google &amp; YouTube channel created for this store.
+              Accounts whose registered website doesn't match this store's
+              domain are flagged; linking one anyway is possible but usually
+              wrong.
             </p>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-col gap-2">
               {status.candidateAccounts.map((candidate) => (
-                <Button
+                <div
                   key={candidate.id}
-                  color="neutral"
-                  disabled={isRunning}
-                  onClick={() =>
-                    run(
-                      () =>
-                        GoogleMerchant.selectAccount({
-                          store,
-                          account: candidate.id,
-                        }),
-                      "Merchant Center account selected",
-                    )
-                  }
+                  className="flex flex-wrap items-center gap-3"
                 >
-                  {candidate.name
-                    ? `${candidate.name} (${candidate.id})`
-                    : candidate.id}
-                </Button>
+                  <Button
+                    color="neutral"
+                    disabled={isRunning}
+                    onClick={() =>
+                      run(
+                        () =>
+                          GoogleMerchant.selectAccount({
+                            store,
+                            account: candidate.id,
+                            force: candidate.matchesStore !== true,
+                          }),
+                        "Merchant Center account selected",
+                      )
+                    }
+                  >
+                    {candidate.name
+                      ? `${candidate.name} (${candidate.id})`
+                      : candidate.id}
+                  </Button>
+                  {candidate.matchesStore === true ? (
+                    <Chip tone="success">
+                      {candidate.domain} — matches this store
+                    </Chip>
+                  ) : (
+                    <Chip tone="warning">
+                      {candidate.domain ?? "no website set"} — link anyway
+                    </Chip>
+                  )}
+                </div>
               ))}
             </div>
           </Step>
@@ -488,9 +505,9 @@ export const DiagnosticsPanel = ({ store }: { store: string }) => {
               No issues reported — the account and its offers are healthy.
             </p>
           ) : (
-            diagnostics.itemIssues.slice(0, 25).map((issue, index) => (
+            diagnostics.itemIssues.slice(0, 25).map((issue) => (
               <div
-                key={`${issue.offerId}-${issue.code}-${index}`}
+                key={`${issue.offerId}:${issue.code}:${issue.attribute}`}
                 className="flex flex-col gap-1 p-4"
               >
                 <div className="flex flex-wrap items-center gap-2">

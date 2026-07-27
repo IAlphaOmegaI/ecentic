@@ -169,6 +169,18 @@ export type MerchantAccount = {
 export const listAccounts = (accessToken: string) =>
   api<{ accounts?: MerchantAccount[] }>(accessToken, "/accounts/v1/accounts");
 
+/**
+ * The account's registered store homepage — the identity signal that ties a
+ * Merchant Center account to a storefront domain. Errors (including unset
+ * homepages returning 404) are the caller's cue to treat the domain as
+ * unknown, not to fail the flow.
+ */
+export const getHomepage = (accessToken: string, accountId: string) =>
+  api<{ uri?: string; claimed?: boolean }>(
+    accessToken,
+    `/accounts/v1/accounts/${accountId}/homepage`,
+  );
+
 export type AccountService = {
   name?: string;
   provider?: string;

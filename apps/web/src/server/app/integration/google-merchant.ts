@@ -9,6 +9,7 @@ import { withContext } from "../../utils/context";
 import { Environment } from "../../utils/environment";
 import { RequestError } from "../../utils/error";
 import * as GoogleMerchantAPI from "../../utils/google-merchant";
+import { normalizeHostname } from "../../utils/tracking";
 import * as GoogleMerchantAccount from "../google-merchant-account";
 import * as GoogleMerchantOffer from "../google-merchant-offer";
 import * as Product from "../product";
@@ -55,20 +56,88 @@ const ownedStore = async (storeId: string, userId: string) => {
   return { success: true as const, data: store.data };
 };
 
-type CandidateAccount = { id: string; name: string | null };
+type CandidateAccount = {
+  id: string;
+  name: string | null;
+  /** Host of the account's registered homepage, null when unset/unreadable. */
+  domain: string | null;
+  /** Whether that homepage host matches one of the store's known hosts. */
+  matchesStore: boolean;
+};
 
-/** Maps an accounts.list response to picker candidates ({id, name}). */
-const candidatesFromAccounts = (accounts: {
-  accounts?: GoogleMerchantAPI.MerchantAccount[];
-}): CandidateAccount[] =>
-  (accounts.accounts ?? [])
-    .map((account) => ({
-      id: GoogleMerchantAPI.accountIdFromName(account.name),
-      name: account.accountName ?? null,
-    }))
-    .filter(
-      (candidate): candidate is CandidateAccount => candidate.id !== null,
-    );
+/** Every host this ecentic store is known by (primary domain + storefront hosts). */
+const storeHosts = (store: Store.Type): string[] => {
+  const hosts = new Set<string>();
+  hosts.add(normalizeHostname(store.domain));
+  for (const host of store.storefrontHosts ?? [])
+    hosts.add(normalizeHostname(host));
+  return [...hosts];
+};
+
+/**
+ * Lists the Merchant Center accounts visible to the token and enriches each
+ * with its registered homepage domain, matched against the ecentic store's
+ * hosts. The match verdict is the identity check that keeps a merchant with
+ * several accounts from linking the wrong one — auto-adoption requires it,
+ * and a mismatched manual pick requires explicit confirmation.
+ */
+const detectCandidates = async (
+  accessToken: string,
+  store: Store.Type,
+): Promise<
+  { success: true; data: CandidateAccount[] } | { success: false; error: Error }
+> => {
+  const accounts = await GoogleMerchantAPI.listAccounts(accessToken);
+  if (!accounts.success) return accounts;
+
+  const hosts = storeHosts(store);
+
+  const candidates = await Promise.all(
+    (accounts.data.accounts ?? [])
+      .map((account) => ({
+        id: GoogleMerchantAPI.accountIdFromName(account.name),
+        name: account.accountName ?? null,
+      }))
+      .filter(
+        (candidate): candidate is { id: string; name: string | null } =>
+          candidate.id !== null,
+      )
+      .map(async (candidate) => {
+        const homepage = await GoogleMerchantAPI.getHomepage(
+          accessToken,
+          candidate.id,
+        );
+        const domain =
+          homepage.success && homepage.data.uri
+            ? normalizeHostname(homepage.data.uri)
+            : null;
+        return {
+          ...candidate,
+          domain,
+          matchesStore: domain !== null && hosts.includes(domain),
+        };
+      }),
+  );
+
+  return { success: true, data: candidates };
+};
+
+/** The single account to auto-adopt, or null when the choice isn't safe. */
+const adoptableCandidate = (
+  candidates: CandidateAccount[],
+): CandidateAccount | null => {
+  const matching = candidates.filter((candidate) => candidate.matchesStore);
+  if (matching.length === 1) return matching[0] ?? null;
+  // No domain evidence at all and only one account visible: adopt it — a
+  // fresh plugin-created account may briefly lack a homepage.
+  if (
+    matching.length === 0 &&
+    candidates.length === 1 &&
+    candidates[0]?.domain === null
+  )
+    return candidates[0] ?? null;
+  return null;
+};
 
 const linkedAccount = async (storeId: string) => {
   const account = await GoogleMerchantAccount.find(Environment.SERVER, {
@@ -184,12 +253,13 @@ export const handleOAuthCallback = withContext(
     });
     if (!grant.success) return grant;
 
-    const accounts = await GoogleMerchantAPI.listAccounts(
+    const candidates = await detectCandidates(
       grant.data.accessToken,
+      store.data,
     );
-    if (!accounts.success) return accounts;
+    if (!candidates.success) return candidates;
 
-    const candidates = candidatesFromAccounts(accounts.data);
+    const adoptable = adoptableCandidate(candidates.data);
 
     const synced = await GoogleMerchantAccount.sync(Environment.SERVER, {
       storeId,
@@ -197,9 +267,8 @@ export const handleOAuthCallback = withContext(
       accessTokenExpiresAt: grant.data.accessTokenExpiresAt,
       refreshToken: grant.data.refreshToken,
       scope: grant.data.scope,
-      googleAccountId:
-        candidates.length === 1 ? (candidates[0]?.id ?? null) : null,
-      candidateAccounts: candidates,
+      googleAccountId: adoptable?.id ?? null,
+      candidateAccounts: candidates.data,
       linkState: "unlinked",
       path: "native",
     });
@@ -207,12 +276,16 @@ export const handleOAuthCallback = withContext(
 
     context.span.addBreadcrumb({
       category: "google.oauth.exchange",
-      data: { "store.id": storeId, "accounts.detected": candidates.length },
+      data: {
+        "store.id": storeId,
+        "accounts.detected": candidates.data.length,
+        "accounts.adopted": adoptable !== null,
+      },
     });
 
     return {
       success: true,
-      data: { accounts: candidates, adopted: candidates.length === 1 },
+      data: { accounts: candidates.data, adopted: adoptable !== null },
     };
   },
   "GoogleMerchant.handleOAuthCallback",
@@ -231,35 +304,44 @@ export const detectAccount = withAuthentication(
     const resolved = await resolveAccessToken(storeId);
     if (!resolved.success) return resolved;
 
-    const accounts = await GoogleMerchantAPI.listAccounts(resolved.accessToken);
-    if (!accounts.success) return accounts;
-
-    const candidates = candidatesFromAccounts(accounts.data);
+    const candidates = await detectCandidates(resolved.accessToken, store.data);
+    if (!candidates.success) return candidates;
 
     const adopted =
       resolved.record.googleAccountId ??
-      (candidates.length === 1 ? (candidates[0]?.id ?? null) : null);
+      adoptableCandidate(candidates.data)?.id ??
+      null;
 
     const update = await GoogleMerchantAccount.update(
       Environment.SERVER,
       resolved.record.id,
-      { candidateAccounts: candidates, googleAccountId: adopted },
+      { candidateAccounts: candidates.data, googleAccountId: adopted },
     );
     if (!update.success) return update;
 
     return {
       success: true,
-      data: { accounts: candidates, adopted },
+      data: { accounts: candidates.data, adopted },
     };
   },
   "GoogleMerchant.detectAccount",
 );
 
-/** Adopts one of several detected Merchant Center accounts for the store. */
+/**
+ * Adopts one of several detected Merchant Center accounts for the store.
+ * Identity check: the account's registered homepage domain must match one of
+ * the store's hosts — linking a mismatched account requires the caller to
+ * pass `force` (the UI shows the mismatch and asks for explicit
+ * confirmation). Never silent, mirroring the domain-conflict principle.
+ */
 export const selectAccount = withAuthentication(
   async (
     context,
-    { store: storeId, account: accountId }: { store: string; account: string },
+    {
+      store: storeId,
+      account: accountId,
+      force = false,
+    }: { store: string; account: string; force?: boolean },
   ) => {
     const store = await ownedStore(storeId, context.session.user.id);
     if (!store.success) return store;
@@ -267,14 +349,11 @@ export const selectAccount = withAuthentication(
     const resolved = await resolveAccessToken(storeId);
     if (!resolved.success) return resolved;
 
-    const accounts = await GoogleMerchantAPI.listAccounts(resolved.accessToken);
-    if (!accounts.success) return accounts;
+    const candidates = await detectCandidates(resolved.accessToken, store.data);
+    if (!candidates.success) return candidates;
 
-    const visible = (accounts.data.accounts ?? []).some(
-      (account) =>
-        GoogleMerchantAPI.accountIdFromName(account.name) === accountId,
-    );
-    if (!visible)
+    const candidate = candidates.data.find((entry) => entry.id === accountId);
+    if (!candidate)
       return {
         success: false,
         error: new RequestError(
@@ -282,10 +361,28 @@ export const selectAccount = withAuthentication(
         ),
       };
 
+    if (!candidate.matchesStore && !force)
+      return {
+        success: false,
+        error: new RequestError(
+          `This Merchant Center account's website (${candidate.domain ?? "not set"}) doesn't match this store (${normalizeHostname(store.data.domain)})`,
+        ),
+      };
+
+    context.span.addBreadcrumb({
+      category: "google.account.selected",
+      data: {
+        "store.id": storeId,
+        "google.account": accountId,
+        "domain.matches": candidate.matchesStore,
+        forced: force,
+      },
+    });
+
     return GoogleMerchantAccount.update(
       Environment.SERVER,
       resolved.record.id,
-      { googleAccountId: accountId },
+      { googleAccountId: accountId, candidateAccounts: candidates.data },
     );
   },
   "GoogleMerchant.selectAccount",
@@ -924,15 +1021,26 @@ export const pullDiagnostics = withAuthentication(
     if (!issues.success) return issues;
     if (!offers.success) return offers;
 
-    const itemIssues = offers.data.flatMap((offer) =>
-      (offer.productStatus?.itemLevelIssues ?? []).map((issue) => ({
-        offerId: offer.offerId ?? null,
-        code: issue.code ?? null,
-        severity: issue.severity ?? null,
-        description: issue.description ?? null,
-        attribute: issue.attribute ?? null,
-      })),
-    );
+    // Google repeats each issue once per reporting context (Shopping ads,
+    // free listings, …) — collapse to one row per (offer, code, attribute).
+    const itemIssues = [
+      ...new Map(
+        offers.data
+          .flatMap((offer) =>
+            (offer.productStatus?.itemLevelIssues ?? []).map((issue) => ({
+              offerId: offer.offerId ?? null,
+              code: issue.code ?? null,
+              severity: issue.severity ?? null,
+              description: issue.description ?? null,
+              attribute: issue.attribute ?? null,
+            })),
+          )
+          .map((issue) => [
+            `${issue.offerId}:${issue.code}:${issue.attribute}`,
+            issue,
+          ]),
+      ).values(),
+    ];
 
     const disapprovedOffers = offers.data.filter((offer) =>
       (offer.productStatus?.destinationStatuses ?? []).some(
@@ -1283,7 +1391,12 @@ export type Status = {
   connected: boolean;
   googleAccountId: string | null;
   /** Accounts visible to the Google login — the picker when several exist. */
-  candidateAccounts: { id: string; name: string | null }[];
+  candidateAccounts: {
+    id: string;
+    name: string | null;
+    domain?: string | null;
+    matchesStore?: boolean;
+  }[];
   linkState: "unlinked" | "proposed" | "active";
   provisioned: boolean;
   offers: { pending: number; live: number; disapproved: number; error: number };

@@ -180,7 +180,14 @@ export const googleMerchantAccount = pgTable("google_merchant_account", {
    * several accounts; only the one the store's plugin created is right).
    */
   candidateAccounts: jsonb("candidateAccounts").$type<
-    { id: string; name: string | null }[] | null
+    | {
+        id: string;
+        name: string | null;
+        /** Homepage host + store match verdict (absent on legacy rows). */
+        domain?: string | null;
+        matchesStore?: boolean;
+      }[]
+    | null
   >(),
   /**
    * accountManagement service lifecycle: `unlinked` (no proposal sent),
