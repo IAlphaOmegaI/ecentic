@@ -9,7 +9,6 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
-import { Plus } from "@/components/plus";
 import { createMetadata } from "@/lib/seo";
 import Art from "@/public/images/ascii/gavel.png";
 import { ContentPageSection } from "../_components/content";
@@ -263,28 +262,31 @@ export default () => (
       art={Art}
     />
 
-    <section className="border-accent-foreground border-b">
-      <div className="relative mx-auto max-w-6xl border-accent-foreground border-x">
-        <div className="relative grid grid-cols-1 gap-px bg-accent-foreground md:grid-cols-2 lg:grid-cols-4">
-          <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
-          <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
-          {summary.map((item) => (
-            <div
-              key={item.title}
-              className="flex flex-col gap-2 bg-background-dimmed p-6"
-            >
-              <item.icon className="size-7 text-primary" />
-              <h2 className="mt-2 font-body font-medium text-foreground text-xl">
+    <ContentPageSection
+      number="00"
+      title="At a glance"
+      description="The short version, in plain language. Every line here is expanded in the numbered sections below."
+      classList={{ body: "p-0" }}
+    >
+      <div className="flex flex-col gap-px bg-accent-foreground">
+        {summary.map((item) => (
+          <div
+            key={item.title}
+            className="grid grid-cols-1 gap-2 bg-background px-6 py-5 md:grid-cols-[13rem_1fr] md:gap-8 md:px-8"
+          >
+            <div className="flex items-center gap-3">
+              <item.icon className="size-5 shrink-0 text-primary" />
+              <h3 className="font-body font-medium text-foreground text-lg">
                 {item.title}
-              </h2>
-              <p className="font-light text-foreground-dimmed leading-relaxed">
-                {item.description}
-              </p>
+              </h3>
             </div>
-          ))}
-        </div>
+            <p className="font-light text-foreground-dimmed leading-relaxed">
+              {item.description}
+            </p>
+          </div>
+        ))}
       </div>
-    </section>
+    </ContentPageSection>
 
     {sections.map((section) => (
       <ContentPageSection

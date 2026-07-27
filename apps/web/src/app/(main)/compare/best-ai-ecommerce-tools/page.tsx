@@ -91,14 +91,16 @@ export default () => {
       "@type": "ItemList",
       name: "Best AI tools for ecommerce in 2026",
       numberOfItems: tools.length,
-      itemListOrder: "https://schema.org/ItemListOrderDescending",
+      // The page compares by category rather than ranking, so the list carries
+      // no order — claiming one would contradict what a reader actually sees.
+      itemListOrder: "https://schema.org/ItemListUnordered",
       itemListElement: tools.map((tool, index) => ({
         "@type": "ListItem",
         position: index + 1,
         item: {
           "@type": "SoftwareApplication",
           name: tool.name,
-          description: `${tool.category}. ${tool.summary}`,
+          description: `${tool.category}. Best at: ${tool.bestAt} Wrong pick when: ${tool.wrongPick}`,
           applicationCategory: "BusinessApplication",
         },
       })),
