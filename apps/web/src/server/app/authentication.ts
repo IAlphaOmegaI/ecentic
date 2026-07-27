@@ -13,27 +13,9 @@ import { withAuthentication } from "../utils/authentication";
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { InvalidCredentialsError } from "../utils/error";
-import { sign, verify } from "../utils/signature";
 import * as User from "./user";
 
 // TODO: use betterAuth client instead of server actions (default redirection)
-
-const USER_COOKIE_MAX_AGE = 60 * 60; // 1 hour
-
-const setUserCookie = (
-  jar: Awaited<ReturnType<typeof cookies>>,
-  user: User.Type,
-) =>
-  jar.set(
-    "user",
-    sign(JSON.stringify(user), process.env.BETTER_AUTH_SECRET as string),
-    {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: USER_COOKIE_MAX_AGE,
-    },
-  );
 
 const parseName = (fullName: string): { name: string; surname: string } => {
   const trimmed = fullName.trim();
@@ -170,10 +152,6 @@ export const signIn = withContext(
       data: { "user.id": result.data.user.id, "user.email": email },
     });
 
-    const jar = await cookies();
-
-    setUserCookie(jar, result.data.user as User.Type);
-
     return { success: true, data: result.data.user };
   },
   "Authentication.signIn",
@@ -187,12 +165,8 @@ export const signOut = withContext(async (context) => {
       }),
   );
 
-  // Clear the cache cookie unconditionally. If better-auth destroyed the session
-  // but then failed, an early return here would leave a signed `user` cookie
-  // behind and the proxy would keep treating the dead session as authenticated.
-  const jar = await cookies();
-  jar.delete("user");
-
+  // better-auth expires both the session token and its cookie cache here, so
+  // there is no cache of ours left to clear.
   if (!result.success) return result;
 
   // Redirect from the action itself. Sign-out is invoked from the settings page,
@@ -253,34 +227,6 @@ export const forgotPassword = withContext(
   },
   "Authentication.forgotPassword",
 );
-
-export const getProxiedCurrentUser = withContext(async (context) => {
-  const jar = await cookies();
-  const cached = jar.get("user")?.value;
-  const payload = cached
-    ? verify(cached, process.env.BETTER_AUTH_SECRET as string)
-    : null;
-  const parsed =
-    payload !== null ? resultify(() => JSON.parse(payload) as User.Type) : null;
-  if (parsed?.success) return { success: true, data: parsed.data };
-
-  const session = await context.auth.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) {
-    return { success: false, error: new Error("user-not-found") };
-  }
-
-  const user = await User.get(Environment.SERVER, session.user.id);
-  if (!user.success) return user;
-
-  if (!user.data) return { success: false, error: new Error("user-not-found") };
-
-  setUserCookie(jar, user.data);
-
-  return user;
-}, "Authentication.getProxiedCurrentUser");
 
 export const changePassword = withAuthentication(
   async (

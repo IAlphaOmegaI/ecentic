@@ -90,6 +90,17 @@ export const auth = betterAuth({
       generateId: false,
     },
   },
+  session: {
+    // Lets the proxy authorize from a signed cookie instead of reading the
+    // session table on every protected request. Unlike a hand-rolled cache this
+    // one embeds the session's own `expiresAt` and is rejected once past it, and
+    // sign-out expires it alongside the session token — so it can never outlive
+    // the session it describes.
+    cookieCache: {
+      enabled: true,
+      maxAge: 300,
+    },
+  },
   user: {
     modelName: "user",
     additionalFields: {
