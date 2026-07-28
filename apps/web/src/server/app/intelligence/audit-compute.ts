@@ -2,6 +2,7 @@ import { resultify } from "@zenncore/utils";
 import { cacheLife, cacheTag } from "next/cache";
 import { z } from "zod";
 import * as AI from "../../utils/ai";
+import type { PageSchemaStatus } from "./page-schema";
 
 export const fieldKeys = [
   "title",
@@ -64,6 +65,8 @@ export type Input = {
   currency: string | null;
   sku: string | null;
   structuredData: string | null;
+  /** Live check for schema.org Product markup on the public product page. */
+  pageSchema: PageSchemaStatus | "no-url";
   images: string | null;
   // Part of the cache key so the audit refreshes whenever the listing changes.
   product: string;
@@ -97,13 +100,21 @@ export const computeProductAudit = async (input: Input): Promise<Type> => {
 
   const images = countImages(input.images);
 
+  const pageSchemaDetail = {
+    found: "schema.org Product markup found on the live product page",
+    missing:
+      "NO schema.org Product markup on the live product page — agents reading the rendered HTML see no machine-readable product data",
+    unreachable: "live product page could not be fetched to verify markup",
+    "no-url": "no public product URL to verify markup on",
+  }[input.pageSchema];
+
   const prompt = `Audit this product listing.
 
 TITLE: ${input.title}
 DESCRIPTION: ${input.description ? input.description.slice(0, 1500) : "(missing)"}
 PRICE: ${input.price ? `${input.price} ${input.currency ?? ""}`.trim() : "(missing)"}
 SKU: ${input.sku ?? "(missing)"}
-STRUCTURED DATA (JSON-LD): ${input.structuredData ? "present" : "(missing)"}
+STRUCTURED DATA (JSON-LD): ${input.structuredData ? "present in synced data" : "(missing in synced data)"}; ${pageSchemaDetail}
 IMAGES: ${images} image${images === 1 ? "" : "s"}
 
 Score each field (${fieldKeys.join(", ")}) 0-100 on content quality for this product's category, each with a verdict and a specific suggestion. Then assess the listing's target audience and market positioning.`;

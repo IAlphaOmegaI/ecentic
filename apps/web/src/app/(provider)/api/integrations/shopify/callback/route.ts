@@ -45,8 +45,11 @@ export const GET = async (request: NextRequest) => {
     user: session.user.id,
   });
 
+  const returnTo = jar.get("shopify_return_to")?.value;
+
   jar.delete("shopify_nonce");
   jar.delete("shopify_shop");
+  jar.delete("shopify_return_to");
 
   if (!result.success) {
     const reason =
@@ -59,10 +62,13 @@ export const GET = async (request: NextRequest) => {
   // A reconnect only refreshed the access tokens for a store this user already
   // onboarded. Sending them back through the onboarding product picker would let
   // them select products they hadn't picked before, pushing them past their
-  // plan's product limit — so drop them straight into that store's dashboard.
+  // plan's product limit — so return them to the screen they started the
+  // reconnect from, falling back to that store's dashboard.
   if (result.data.reconnected)
     return Response.redirect(
-      `${process.env.APP_HOST}/dashboard/${result.data.storeId}`,
+      returnTo?.startsWith("/") && !returnTo.startsWith("//")
+        ? `${process.env.APP_HOST}${returnTo}`
+        : `${process.env.APP_HOST}/dashboard/${result.data.storeId}`,
     );
 
   return Response.redirect(

@@ -1175,8 +1175,15 @@ const OptimizeTab = ({
       const generation = await Optimization.generateStructuredData({
         product: product.id,
       });
-      if (generation.success)
-        setLiveStructuredData(generation.data.structuredData);
+      if (!generation.success) {
+        toast.add({
+          title: "Generation failed",
+          description: generation.error.message,
+          type: "error",
+        });
+        return;
+      }
+      setLiveStructuredData(generation.data.structuredData);
     });
   };
 
@@ -1185,6 +1192,8 @@ const OptimizeTab = ({
       const result = await Optimization.publishProductStructuredData({
         product: product.id,
       });
+
+      console.log("result", result);
       if (!result.success) {
         toast.add({
           title: "Publish failed",
@@ -1194,10 +1203,16 @@ const OptimizeTab = ({
         return;
       }
       setLiveStructuredData(result.data.structuredData);
+      const { themeEditorUrl } = result.data;
       toast.add({
         title: "Structured data published",
-        description: "Schema.org JSON-LD was written to your store.",
+        description:
+          "Schema.org JSON-LD was written to your store. To render it on the product page, enable the 'Agentic structured data' app embed in the theme editor and press Save.",
         type: "success",
+        ...(themeEditorUrl && {
+          actionLabel: "Open theme editor",
+          onAction: () => window.open(themeEditorUrl, "_blank"),
+        }),
       });
     },
   );

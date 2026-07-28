@@ -10,6 +10,7 @@ import { withAuthentication } from "../utils/authentication";
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { type Document, repository } from "../utils/repository";
+import { themeEmbedDeepLink } from "../utils/shopify";
 import { feedUrl } from "./feed-export";
 import * as Shopify from "./integration/shopify";
 import * as WooCommerce from "./integration/woocommerce";
@@ -607,8 +608,18 @@ export const publishProductStructuredData = withAuthentication(
 
     if (!result.success) return result;
 
+    // Metafields only render on the storefront once the theme app embed is
+    // enabled — hand the client a deep link that pre-activates it.
+    const themeEditorUrl =
+      store.platform === "shopify" || store.platform === "shopify-public"
+        ? themeEmbedDeepLink(store.domain)
+        : null;
+
     revalidatePath("/dashboard/[store]/products/[id]", "page");
-    return { success: true as const, data: { structuredData: structuredJson } };
+    return {
+      success: true as const,
+      data: { structuredData: structuredJson, themeEditorUrl },
+    };
   },
   "Optimization.publishProductStructuredData",
 );

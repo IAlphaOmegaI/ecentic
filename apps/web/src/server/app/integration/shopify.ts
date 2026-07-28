@@ -366,7 +366,17 @@ export const refreshAccessToken = withContext(
       refresh_token_expires_in: number;
     }>(tokenResponse);
 
-    if (!t.success) return t;
+    // Shopify answers a rejected refresh with an HTML error page, so the parse
+    // failure here means the stored refresh token (or the app credentials) are
+    // no longer valid — only a fresh OAuth install fixes that.
+    if (!t.success)
+      return {
+        success: false,
+        error: new Error(
+          "Shopify rejected the token refresh. Please reconnect your store (Settings → Integrations).",
+          { cause: t.error },
+        ),
+      };
 
     return StoreAccount.update(Environment.SERVER, storeAccount.data.id, {
       accessToken: t.data.access_token,
