@@ -158,7 +158,7 @@ const callMcp = async (
 //         "Content-Type": "application/json",
 //         Accept: "application/json",
 //         "UCP-Agent": `profile="${agentProfileUrl}"`,
-//         "User-Agent": "UCP-Playground/1.0 (Ecentic; https://ecentic.ai)",
+//         "User-Agent": "UCP-Playground/1.0 (ecentic; https://ecentic.ai)",
 //       },
 //       body: body !== undefined ? JSON.stringify(body) : undefined,
 //       signal: AbortSignal.timeout(12_000),

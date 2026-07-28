@@ -67,7 +67,7 @@ export type Input = {
   structuredData: string | null;
   /** Live check for schema.org Product markup on the public product page. */
   pageSchema: PageSchemaStatus;
-  /** Whether Ecentic's theme app embed rendered on that page. */
+  /** Whether ecentic's theme app embed rendered on that page. */
   pageEmbed: PageEmbedStatus;
   images: string | null;
   // Part of the cache key so the audit refreshes whenever the listing changes.
@@ -117,11 +117,11 @@ export const computeProductAudit = async (input: Input): Promise<Type> => {
       case input.pageEmbed === "unknown":
         return "";
       case input.pageSchema === "missing" && input.pageEmbed === "inactive":
-        return " — the Ecentic theme app embed is switched off, so published markup never reaches the page";
+        return " — the ecentic theme app embed is switched off, so published markup never reaches the page";
       case input.pageEmbed === "inactive":
-        return " — from the theme's own markup, not the Ecentic app embed";
+        return " — from the theme's own markup, not the ecentic app embed";
       default:
-        return " — rendered by the Ecentic app embed";
+        return " — rendered by the ecentic app embed";
     }
   })();
 

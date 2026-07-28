@@ -13,7 +13,7 @@ export const Steps = () => (
             Live in three steps.
           </h2>
           <p className="font-light text-xl md:text-3xl">
-            Connect your store and Ecentic does the rest.
+            Connect your store and ecentic does the rest.
           </p>
         </div>
         <Reveal className="mt-8 grid w-full grid-cols-1 text-white md:mt-24 md:h-[1100px] md:grid-cols-2 md:grid-rows-3">
@@ -35,7 +35,7 @@ export const Steps = () => (
             <FaceSearchIcon className="size-16" />
             <p className="font-medium text-4xl">See where you lose</p>
             <p className="text-left font-light text-lg">
-              Ecentic asks the top AI shopping agents to shop your catalog and
+              ecentic asks the top AI shopping agents to shop your catalog and
               shows you exactly which products they skip — and why.
             </p>
           </RevealItem>

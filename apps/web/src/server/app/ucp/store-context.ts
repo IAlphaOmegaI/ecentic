@@ -1,7 +1,7 @@
 /**
  * Resolves the tenant for a hosted UCP request: the store, its credentials,
  * and derived storefront URLs. Every agent-facing UCP route is scoped by the
- * Ecentic store id in the path.
+ * ecentic store id in the path.
  */
 
 import { db } from "@/server/database";

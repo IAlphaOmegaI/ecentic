@@ -9,9 +9,9 @@ import { Environment } from "@/server/utils/environment";
  * Order lifecycle events relayed by the store's thin plugin (WooCommerce
  * `woocommerce_order_status_changed`). Authenticated with the per-store
  * bridge secret minted at connect time: the plugin sends
- * `X-Ecentic-Signature: hex(hmac_sha256(bridgeSecret, "{timestamp}.{body}"))`
- * plus `X-Ecentic-Timestamp`; stale timestamps are rejected to stop replays.
- * Ecentic then fans the event out to the agent platform's webhook (signed per
+ * `X-ecentic-Signature: hex(hmac_sha256(bridgeSecret, "{timestamp}.{body}"))`
+ * plus `X-ecentic-Timestamp`; stale timestamps are rejected to stop replays.
+ * ecentic then fans the event out to the agent platform's webhook (signed per
  * RFC 9421) for orders created through the hosted checkout.
  */
 

@@ -66,7 +66,7 @@ export type Reconciliation =
 
 /**
  * Decides how to handle a connect attempt for a storefront that may already
- * exist in Ecentic. A store is identified by its normalized `domain` and, for
+ * exist in ecentic. A store is identified by its normalized `domain` and, for
  * OAuth platforms, its external `storeId`.
  *
  * - `new`     → nobody has it; create it.

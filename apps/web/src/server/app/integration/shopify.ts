@@ -1705,7 +1705,7 @@ export const ensureUsageSubscription = withAuthentication(
         userErrors: { field: string[] | null; message: string }[];
       };
     }>(store.data.domain, resolved.accessToken, APP_SUBSCRIPTION_CREATE, {
-      name: "Ecentic performance fee",
+      name: "ecentic performance fee",
       returnUrl: `${origin}/dashboard/settings?billing=connected`,
       cappedAmount: { amount: capAmount, currencyCode: currency },
       terms: `Up to ${capAmount} ${currency} per 30 days on AI-attributed orders`,

@@ -7,7 +7,7 @@ const FETCH_TIMEOUT_MS = 8000;
 export type PageSchemaStatus = "found" | "missing" | "unreachable" | "no-url";
 
 /**
- * Whether Ecentic's theme app embed rendered its own JSON-LD on the page.
+ * Whether ecentic's theme app embed rendered its own JSON-LD on the page.
  * `inactive` is the case merchants hit most: metafields are published, but the
  * embed is switched off in the theme editor, so nothing reaches the storefront.
  */

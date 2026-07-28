@@ -291,7 +291,7 @@ const PublishListing = ({
         <AlertDialogPopup>
           <AlertDialogTitle>Publish optimized listing?</AlertDialogTitle>
           <AlertDialogDescription>
-            Ecentic generates an AI-optimized title and description for &ldquo;
+            ecentic generates an AI-optimized title and description for &ldquo;
             {product.title}&rdquo; and writes it directly to your connected
             store, replacing the live listing. Current win rate is {winRate}%.
           </AlertDialogDescription>
@@ -341,7 +341,7 @@ const ApplyOptimization = ({
           Close the gap automatically
         </p>
         <p className="mt-1 max-w-prose text-foreground-dimmed text-sm leading-relaxed">
-          Ecentic rewrites this listing from the winning competitors&apos;
+          ecentic rewrites this listing from the winning competitors&apos;
           strengths and publishes it straight to your store — no manual edits.
         </p>
       </div>
@@ -1187,7 +1187,7 @@ const OptimizeTab = ({
   const structuredData = liveStructuredData ?? product.structuredData;
 
   // Three distinct facts, deliberately not conflated:
-  //  • `structuredData` — the JSON-LD Ecentic generated and holds.
+  //  • `structuredData` — the JSON-LD ecentic generated and holds.
   //  • `product.liveSchema` — whether the rendered storefront actually exposes
   //    product schema, which is what AI agents read.
   //  • `product.liveEmbed` — whether our app embed is the thing rendering it.
@@ -1199,7 +1199,7 @@ const OptimizeTab = ({
   const liveSchema = (() => {
     switch (true) {
       case product.liveSchema === "found" && product.liveEmbed === "active":
-        return { tone: "success" as const, label: "Live via Ecentic embed" };
+        return { tone: "success" as const, label: "Live via ecentic embed" };
       case product.liveSchema === "found":
         return { tone: "success" as const, label: "Detected on live page" };
       case product.liveSchema === "missing" && embedOff:
@@ -1393,8 +1393,8 @@ const OptimizeTab = ({
               </p>
               <p className="mt-1 text-foreground text-sm">
                 {embedOff
-                  ? "Ecentic published structured data for this product, but the “Agentic structured data” app embed is switched off in your theme — so nothing reaches the page and AI agents see no product data."
-                  : "Ecentic generated structured data for this product, but the live page doesn't expose valid schema.org Product markup — so AI agents can't read it. Re-publish below."}
+                  ? "ecentic published structured data for this product, but the “Agentic structured data” app embed is switched off in your theme — so nothing reaches the page and AI agents see no product data."
+                  : "ecentic generated structured data for this product, but the live page doesn't expose valid schema.org Product markup — so AI agents can't read it. Re-publish below."}
               </p>
               {embedOff && themeEditorUrl && (
                 <Button

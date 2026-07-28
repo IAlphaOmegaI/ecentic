@@ -47,7 +47,7 @@ const AuditContent = async ({ store }: { store: string }) => {
         </p>
         <p className="text-foreground-dimmed text-sm">
           agent-readiness across automated checks — measured against what AI
-          surfaces actually read, not Ecentic's own data
+          surfaces actually read, not ecentic's own data
         </p>
       </div>
 

@@ -28,7 +28,7 @@ export const Hero = () => (
     </h1>
 
     <p className="max-w-2xl font-body text-foreground-dimmed text-lg">
-      Shoppers now ask ChatGPT, Gemini, and Perplexity what to buy. Ecentic
+      Shoppers now ask ChatGPT, Gemini, and Perplexity what to buy. ecentic
       makes sure the answer is your product — and sends those buyers straight to
       your store.
     </p>

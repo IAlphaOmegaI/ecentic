@@ -736,7 +736,7 @@ export const optimizeStoreForAgents = withAuthentication(
     const errors: string[] = [];
 
     // Shop-level UCP profile: Shopify gets it written to shop metafields;
-    // WooCommerce serves it through Ecentic's hosted `/.well-known/ucp` bridge,
+    // WooCommerce serves it through ecentic's hosted `/.well-known/ucp` bridge,
     // so there's nothing to push to the store here.
     const profile = isShopify
       ? await Ucp.publishProfileToShopify({ store: storeId })

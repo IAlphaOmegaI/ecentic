@@ -101,7 +101,7 @@ export default () => {
         description="Built for Techstars founders who would rather win AI agent recommendations than babysit a listings spreadsheet."
       >
         <ContentPageRichText
-          content={`Ecentic shows you how AI shopping agents compare your products against competitors, diagnoses why you win or lose, and rewrites your listings to close the gap. The Techstars deal opens the full platform:
+          content={`ecentic shows you how AI shopping agents compare your products against competitors, diagnoses why you win or lose, and rewrites your listings to close the gap. The Techstars deal opens the full platform:
 
 - Extended ecentic Dominate — continuous simulations across GPT-4, Claude, Gemini, and Perplexity
 - Auto-optimization with one-click publish and model drift alerts

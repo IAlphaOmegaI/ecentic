@@ -2,7 +2,7 @@
 
 /**
  * Agent-readiness audit: verifies the store against the surfaces AI shopping
- * agents actually read, instead of scoring Ecentic's own database rows.
+ * agents actually read, instead of scoring ecentic's own database rows.
  * Checks are grouped by ingestion path — crawl access (robots.txt), rendered
  * structured data (storefront HTML), offer identity (GTIN/brand coverage for
  * cross-retailer clustering), and feed readiness (Merchant Center /
@@ -216,7 +216,7 @@ const checkRenderedStructuredData = async (
         key: "jsonld",
         label: "Structured data in rendered HTML",
         status: "pass",
-        detail: `schema.org Product JSON-LD found on ${withMarkup}/${results.length} sampled product pages, rendered by the Ecentic app embed.`,
+        detail: `schema.org Product JSON-LD found on ${withMarkup}/${results.length} sampled product pages, rendered by the ecentic app embed.`,
         ecenticEmbedDetected,
       };
 
@@ -226,7 +226,7 @@ const checkRenderedStructuredData = async (
       status: "pass",
       detail: `schema.org Product JSON-LD found on ${withMarkup}/${results.length} sampled product pages — but it is the theme's own markup, which is usually thinner (no GTIN, single offer, no variant detail).`,
       recommendation:
-        "Enable the Ecentic 'Agentic structured data' app embed for richer, agent-optimized markup on every product page. The link opens the theme editor with the embed pre-activated — press Save to apply.",
+        "Enable the ecentic 'Agentic structured data' app embed for richer, agent-optimized markup on every product page. The link opens the theme editor with the embed pre-activated — press Save to apply.",
       ecenticEmbedDetected,
     };
   }
@@ -237,7 +237,7 @@ const checkRenderedStructuredData = async (
     status: withMarkup === 0 ? "fail" : "warn",
     detail: `Product JSON-LD found on only ${withMarkup}/${results.length} sampled pages. Crawling agents (and Google's feed verification) read the rendered page, not backend metafields.`,
     recommendation:
-      "Enable the Ecentic 'Agentic structured data' app embed in the theme editor and press Save, or add Product JSON-LD to the theme.",
+      "Enable the ecentic 'Agentic structured data' app embed in the theme editor and press Save, or add Product JSON-LD to the theme.",
     ecenticEmbedDetected,
   };
 };
@@ -313,7 +313,7 @@ const MANUAL_CHECKS: ReadinessCheck[] = [
     label: "Google Merchant Center feed submitted",
     status: "manual",
     detail:
-      "Without a Merchant Center feed the store cannot enter Google's Shopping Graph or AI Mode. Add the Ecentic feed URL as a scheduled fetch, or use the Google & YouTube channel app.",
+      "Without a Merchant Center feed the store cannot enter Google's Shopping Graph or AI Mode. Add the ecentic feed URL as a scheduled fetch, or use the Google & YouTube channel app.",
   },
   {
     key: "perplexity-merchant",
@@ -361,7 +361,7 @@ export const auditStore = withAuthentication(
     // For Shopify stores the fix is one toggle away: deep-link straight into
     // the theme editor's App embeds panel. `activateAppId={api key}/{block
     // filename}` pre-activates the Agentic structured data embed so the
-    // merchant only has to hit Save. Shown whenever the Ecentic embed isn't
+    // merchant only has to hit Save. Shown whenever the ecentic embed isn't
     // detected — theme-generated markup passes the check but is thinner than
     // what the embed renders.
     const isShopify =

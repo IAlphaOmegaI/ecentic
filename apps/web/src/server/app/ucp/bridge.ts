@@ -3,9 +3,9 @@
  * (`/wp-json/wc-ucp/v1/...`). These are the commerce "primitives" that
  * genuinely need the Woo runtime — cart/tax/shipping math via the real
  * shipping zones and coupon engine, order materialization, and order entity
- * snapshots. Everything protocol-shaped lives here on the Ecentic side.
+ * snapshots. Everything protocol-shaped lives here on the ecentic side.
  *
- * Authentication rides on the WooCommerce REST API key Ecentic provisions
+ * Authentication rides on the WooCommerce REST API key ecentic provisions
  * during connect: the `wc-ucp` namespace starts with `wc-`, so WooCommerce
  * core applies its consumer key/secret authentication to these routes exactly
  * as it does for `wc/v3`.
@@ -257,7 +257,7 @@ export const getStoreInfo = async (credentials: BridgeCredentials) =>
 
 /**
  * Pushes the hosted-UCP connection settings to the plugin after connect:
- * the Ecentic store id, the bridge secret for plugin → Ecentic event calls,
+ * the ecentic store id, the bridge secret for plugin → ecentic event calls,
  * and the hosted profile/endpoint URLs the plugin advertises at
  * `/.well-known/ucp`.
  */

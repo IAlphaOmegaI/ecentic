@@ -53,7 +53,7 @@ const handleCustomersRedact = (
   });
 
 /**
- * `orders/paid` → performance-fee attribution. Maps the shop to its Ecentic
+ * `orders/paid` → performance-fee attribution. Maps the shop to its ecentic
  * store, converts the order total to cents, flattens `note_attributes` (where
  * the storefront tracker stamps `_ecentic_ai_ref`), and records an attributed
  * conversion when a signal is present. Idempotent downstream on (store, order).
