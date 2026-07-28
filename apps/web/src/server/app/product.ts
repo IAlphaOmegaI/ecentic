@@ -9,7 +9,12 @@ import { Environment } from "../utils/environment";
 import type { Pager } from "../utils/pagination";
 import type { Document, ExecuteOptions, Insertable } from "../utils/repository";
 import { repository } from "../utils/repository";
+import { themeEmbedDeepLink } from "../utils/shopify";
 import * as Competitor from "./competitor";
+import {
+  checkProductPageSchema,
+  NO_PAGE_URL,
+} from "./intelligence/page-schema";
 import * as Scan from "./scan";
 import * as Simulation from "./simulation";
 
@@ -399,6 +404,13 @@ export const getDetail = withAuthentication(
     if (storeId && product.data.storeId !== storeId)
       return { success: false, error: new Error("Product not found") };
 
+    // Live truth: whether AI agents actually see schema.org markup on the
+    // rendered storefront — distinct from the `structuredData` we generated and
+    // hold locally. Cached hourly, so this doesn't slow repeat loads.
+    const liveSchema = product.data.url
+      ? await checkProductPageSchema(product.data.url)
+      : NO_PAGE_URL;
+
     const store = product.data.storeId
       ? await stores.get(Environment.SERVER, product.data.storeId)
       : null;
@@ -407,6 +419,13 @@ export const getDetail = withAuthentication(
         store.data &&
         PUBLISHABLE_PLATFORMS.has(store.data.platform),
     );
+
+    // Only Shopify has an app embed to switch on, so only Shopify gets the
+    // deep link that fixes a `missing` + embed-off page in one click.
+    const themeEditorUrl =
+      store?.success && store.data && store.data.platform === "shopify"
+        ? themeEmbedDeepLink(store.data.domain)
+        : null;
 
     const simulations = await Simulation.getForProducts(Environment.SERVER, {
       products: [id],
@@ -492,9 +511,12 @@ export const getDetail = withAuthentication(
         product: {
           ...product.data,
           quality: computeDataQuality(product.data),
+          liveSchema: liveSchema.status,
+          liveEmbed: liveSchema.embed,
         },
         winRate,
         canPublish,
+        themeEditorUrl,
         models,
         competitors,
         simulations: enriched,

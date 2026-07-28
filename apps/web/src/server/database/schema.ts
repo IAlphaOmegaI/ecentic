@@ -143,8 +143,8 @@ export const store_account = pgTable("store_account", {
   consumerSecret: text("consumerSecret"),
   /**
    * Shared secret minted at connect time for the hosted UCP bridge. The store
-   * plugin authenticates its calls to Ecentic (order events) with it, and
-   * Ecentic signs bridge calls back to the store with it.
+   * plugin authenticates its calls to ecentic (order events) with it, and
+   * ecentic signs bridge calls back to the store with it.
    */
   bridgeSecret: text("bridgeSecret"),
   // General Store Account fields
@@ -467,7 +467,7 @@ export const feePeriod = pgTable(
 );
 
 /**
- * One row per order Ecentic attributes to AI-agent traffic it optimizes for.
+ * One row per order ecentic attributes to AI-agent traffic it optimizes for.
  * Idempotent on (store, order) so a retried `orders/paid` webhook can never
  * double-count. `feeCents` is the pre-cap fee; the cap is applied per
  * {@link feePeriod} at close, which also flips `billingStatus`.

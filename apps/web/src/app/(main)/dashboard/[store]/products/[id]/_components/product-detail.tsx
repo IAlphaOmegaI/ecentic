@@ -66,10 +66,16 @@ export type ProductDetailData = {
     currency: string | null;
     sku: string | null;
     structuredData: string | null;
+    /** Live check: does the rendered storefront actually expose product schema? */
+    liveSchema: "found" | "missing" | "unreachable" | "no-url";
+    /** Did our theme app embed render on that page, or is it switched off? */
+    liveEmbed: "active" | "inactive" | "unknown";
     quality: number;
   };
   winRate: number;
   canPublish: boolean;
+  /** Deep link that pre-activates the app embed in the theme editor. */
+  themeEditorUrl: string | null;
   models: Array<{
     model: string;
     label: string;
@@ -365,8 +371,15 @@ const ApplyOptimization = ({
 
 export const ProductDetail = ({ data }: ProductDetail.Props) => {
   const { store } = useParams<{ store: string }>();
-  const { product, winRate, canPublish, models, competitors, simulations } =
-    data;
+  const {
+    product,
+    winRate,
+    canPublish,
+    themeEditorUrl,
+    models,
+    competitors,
+    simulations,
+  } = data;
 
   return (
     <Tabs defaultValue="overview">
@@ -414,6 +427,7 @@ export const ProductDetail = ({ data }: ProductDetail.Props) => {
           product={product}
           winRate={winRate}
           canPublish={canPublish}
+          themeEditorUrl={themeEditorUrl}
         />
       </TabsPanel>
     </Tabs>
@@ -1156,11 +1170,13 @@ const OptimizeTab = ({
   product,
   winRate,
   canPublish,
+  themeEditorUrl,
 }: {
   store: string;
   product: ProductDetailData["product"];
   winRate: number;
   canPublish: boolean;
+  themeEditorUrl: string | null;
 }) => {
   const toast = useToastManager();
   const [isPending, startTransition] = useTransition();
@@ -1169,6 +1185,38 @@ const OptimizeTab = ({
   );
 
   const structuredData = liveStructuredData ?? product.structuredData;
+
+  // Three distinct facts, deliberately not conflated:
+  //  • `structuredData` — the JSON-LD Ecentic generated and holds.
+  //  • `product.liveSchema` — whether the rendered storefront actually exposes
+  //    product schema, which is what AI agents read.
+  //  • `product.liveEmbed` — whether our app embed is the thing rendering it.
+  //    A switched-off embed is the usual reason published markup never lands.
+  const embedOff = product.liveEmbed === "inactive";
+
+  console.log("product.liveSchema", product.liveSchema);
+
+  const liveSchema = (() => {
+    switch (true) {
+      case product.liveSchema === "found" && product.liveEmbed === "active":
+        return { tone: "success" as const, label: "Live via Ecentic embed" };
+      case product.liveSchema === "found":
+        return { tone: "success" as const, label: "Detected on live page" };
+      case product.liveSchema === "missing" && embedOff:
+        return { tone: "error" as const, label: "App embed is off" };
+      case product.liveSchema === "missing":
+        return { tone: "warning" as const, label: "Not on live page" };
+      case product.liveSchema === "unreachable":
+        return { tone: "neutral" as const, label: "Live page unreachable" };
+      default:
+        return { tone: "neutral" as const, label: "No public URL to check" };
+    }
+  })();
+
+  // Drift: we generated structured data but agents don't see it live — the
+  // exact "hidden in the store" case worth flagging.
+  const structuredDataDrift =
+    Boolean(structuredData) && product.liveSchema === "missing";
 
   const handleGenerateJsonLd = () => {
     startTransition(async () => {
@@ -1193,7 +1241,6 @@ const OptimizeTab = ({
         product: product.id,
       });
 
-      console.log("result", result);
       if (!result.success) {
         toast.add({
           title: "Publish failed",
@@ -1203,6 +1250,7 @@ const OptimizeTab = ({
         return;
       }
       setLiveStructuredData(result.data.structuredData);
+
       const { themeEditorUrl } = result.data;
       toast.add({
         title: "Structured data published",
@@ -1269,7 +1317,9 @@ const OptimizeTab = ({
         className="text-foreground"
         defaultValue={[
           ...(product.description ? [] : ["Description"]),
-          ...(structuredData ? [] : ["Structured Data"]),
+          ...(structuredData && product.liveSchema === "found"
+            ? []
+            : ["Structured Data"]),
         ]}
       >
         <ListingField
@@ -1296,11 +1346,70 @@ const OptimizeTab = ({
           )}
         </ListingField>
 
+        {/* The collapsed row reports the live page, not our database — a green
+            "Generated" beside a page with no markup is exactly the lie that
+            sent us looking here in the first place. */}
         <ListingField
           label="Structured Data"
-          tone={structuredData ? "success" : "error"}
-          status={structuredData ? "Present" : "Missing"}
+          tone={(() => {
+            switch (true) {
+              case product.liveSchema === "found":
+                return "success";
+              case Boolean(structuredData):
+                return "neutral";
+              default:
+                return "error";
+            }
+          })()}
+          status={(() => {
+            switch (true) {
+              case product.liveSchema === "found":
+                return "Live on page";
+              case Boolean(structuredData) && embedOff:
+                return "Generated — embed off";
+              case Boolean(structuredData):
+                return "Generated — not live";
+              default:
+                return "Not generated";
+            }
+          })()}
         >
+          <div className="mb-3 flex items-center justify-between gap-3 border-accent-foreground border-b pb-3">
+            <div className="flex items-center gap-2">
+              <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+                Live on store
+              </span>
+              <StatusPill tone={liveSchema.tone}>{liveSchema.label}</StatusPill>
+            </div>
+            <span className="text-[10px] text-foreground-dimmed">
+              what AI agents actually read
+            </span>
+          </div>
+
+          {structuredDataDrift && (
+            <div className="mb-3 border border-warning/30 bg-warning/5 p-3">
+              <p className="font-medium text-[10px] text-warning uppercase tracking-[0.08em]">
+                {embedOff ? "App embed is off" : "Out of sync"}
+              </p>
+              <p className="mt-1 text-foreground text-sm">
+                {embedOff
+                  ? "Ecentic published structured data for this product, but the “Agentic structured data” app embed is switched off in your theme — so nothing reaches the page and AI agents see no product data."
+                  : "Ecentic generated structured data for this product, but the live page doesn't expose valid schema.org Product markup — so AI agents can't read it. Re-publish below."}
+              </p>
+              {embedOff && themeEditorUrl && (
+                <Button
+                  type="button"
+                  color="accent"
+                  className="mt-3"
+                  onClick={() => window.open(themeEditorUrl, "_blank")}
+                >
+                  Enable app embed
+                  <ArrowRightIcon className="size-4" />
+                </Button>
+              )}
+            </div>
+          )}
+
           {structuredData ? (
             <div className="space-y-3">
               {/* JSON-LD is genuinely unbounded, so this one keeps a cap. */}

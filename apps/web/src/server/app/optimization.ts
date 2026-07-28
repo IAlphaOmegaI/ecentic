@@ -2,7 +2,7 @@
 
 import { resultify } from "@zenncore/utils";
 import { and, eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { z } from "zod";
 import { schema } from "../database";
 import * as AI from "../utils/ai";
@@ -14,6 +14,7 @@ import { themeEmbedDeepLink } from "../utils/shopify";
 import { feedUrl } from "./feed-export";
 import * as Shopify from "./integration/shopify";
 import * as WooCommerce from "./integration/woocommerce";
+import { pageSchemaTag } from "./intelligence/page-schema";
 import * as Ucp from "./intelligence/ucp/profile";
 import * as Product from "./product";
 import * as Simulation from "./simulation";
@@ -614,6 +615,12 @@ export const publishProductStructuredData = withAuthentication(
       store.platform === "shopify" || store.platform === "shopify-public"
         ? themeEmbedDeepLink(store.domain)
         : null;
+
+    // The live-page check is cached by URL and would otherwise keep reporting
+    // the pre-publish verdict for the rest of the hour. `updateTag` (not
+    // `revalidateTag`) so the render that follows this action reads the fresh
+    // check rather than one more stale hit.
+    if (product.url) updateTag(pageSchemaTag(product.url));
 
     revalidatePath("/dashboard/[store]/products/[id]", "page");
     return {

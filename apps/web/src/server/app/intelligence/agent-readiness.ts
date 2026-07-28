@@ -20,7 +20,7 @@ import { themeEmbedDeepLink } from "../../utils/shopify";
 import { buildGoogleFeed, extractCatalogFacts, feedUrl } from "../feed-export";
 import * as Product from "../product";
 import * as Store from "../store";
-import { hasSchemaOrgProduct } from "./page-schema";
+import { hasEcenticEmbed, hasSchemaOrgProduct } from "./page-schema";
 
 const PAGE_SAMPLE_SIZE = 3;
 const FETCH_TIMEOUT_MS = 8000;
@@ -164,10 +164,6 @@ const checkRobots = async (host: string): Promise<ReadinessCheck> => {
   };
 };
 
-// The app embed namespaces its Product entity with this @id fragment, so the
-// audit can tell Ecentic-rendered markup apart from the theme's own JSON-LD.
-const ECENTIC_EMBED_MARKER = "#ecentic-product";
-
 const checkRenderedStructuredData = async (
   urls: string[],
 ): Promise<ReadinessCheck & { ecenticEmbedDetected: boolean }> => {
@@ -198,7 +194,7 @@ const checkRenderedStructuredData = async (
     results.push({
       url,
       hasProductJsonLd: hasSchemaOrgProduct(html),
-      hasEcenticEmbed: html.includes(ECENTIC_EMBED_MARKER),
+      hasEcenticEmbed: hasEcenticEmbed(html),
     });
   }
 

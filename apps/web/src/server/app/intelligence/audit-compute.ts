@@ -2,7 +2,7 @@ import { resultify } from "@zenncore/utils";
 import { cacheLife, cacheTag } from "next/cache";
 import { z } from "zod";
 import * as AI from "../../utils/ai";
-import type { PageSchemaStatus } from "./page-schema";
+import type { PageEmbedStatus, PageSchemaStatus } from "./page-schema";
 
 export const fieldKeys = [
   "title",
@@ -66,7 +66,9 @@ export type Input = {
   sku: string | null;
   structuredData: string | null;
   /** Live check for schema.org Product markup on the public product page. */
-  pageSchema: PageSchemaStatus | "no-url";
+  pageSchema: PageSchemaStatus;
+  /** Whether Ecentic's theme app embed rendered on that page. */
+  pageEmbed: PageEmbedStatus;
   images: string | null;
   // Part of the cache key so the audit refreshes whenever the listing changes.
   product: string;
@@ -108,13 +110,28 @@ export const computeProductAudit = async (input: Input): Promise<Type> => {
     "no-url": "no public product URL to verify markup on",
   }[input.pageSchema];
 
+  // The distinction that decides the merchant's fix: nothing renders because
+  // our app embed never ran, versus nothing was ever generated to render.
+  const embedDetail = (() => {
+    switch (true) {
+      case input.pageEmbed === "unknown":
+        return "";
+      case input.pageSchema === "missing" && input.pageEmbed === "inactive":
+        return " — the Ecentic theme app embed is switched off, so published markup never reaches the page";
+      case input.pageEmbed === "inactive":
+        return " — from the theme's own markup, not the Ecentic app embed";
+      default:
+        return " — rendered by the Ecentic app embed";
+    }
+  })();
+
   const prompt = `Audit this product listing.
 
 TITLE: ${input.title}
 DESCRIPTION: ${input.description ? input.description.slice(0, 1500) : "(missing)"}
 PRICE: ${input.price ? `${input.price} ${input.currency ?? ""}`.trim() : "(missing)"}
 SKU: ${input.sku ?? "(missing)"}
-STRUCTURED DATA (JSON-LD): ${input.structuredData ? "present in synced data" : "(missing in synced data)"}; ${pageSchemaDetail}
+STRUCTURED DATA (JSON-LD): ${input.structuredData ? "present in synced data" : "(missing in synced data)"}; ${pageSchemaDetail}${embedDetail}
 IMAGES: ${images} image${images === 1 ? "" : "s"}
 
 Score each field (${fieldKeys.join(", ")}) 0-100 on content quality for this product's category, each with a verdict and a specific suggestion. Then assess the listing's target audience and market positioning.`;
