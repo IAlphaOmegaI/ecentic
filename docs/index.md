@@ -20,6 +20,10 @@ Central navigation for product context, agent rules, and package/component docum
 
 - [Pricing + Shopify Billing API](./tasks/shopify-billing-pricing.md) — how Partner Dashboard plans, Billing API charges, and ecentic entitlements should align
 
+### If you are working on AI-surface scraping / capture
+
+- [LLM surface scraping plan](./tasks/llm-surface-scraping.md) — ScrapeLLM adapter, capture envelope, `/dev/llm-scraping` sandbox, phased rollout to cycles + sentinel
+
 ### If you are implementing or refactoring code
 
 - [Agent checklist](./agents/AGENTS-checklist.md)

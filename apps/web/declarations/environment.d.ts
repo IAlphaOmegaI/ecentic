@@ -73,6 +73,13 @@ declare namespace NodeJS {
     readonly SHOPIFY_CATALOG_MCP_URL?: string;
     readonly UCP_AGENT_PROFILE_URL?: string;
 
+    /**
+     * ScrapeLLM — real AI-surface captures for the /dev/llm-scraping sandbox;
+     * unset makes every capture fail with a config error. See
+     * docs/tasks/llm-surface-scraping.md.
+     */
+    readonly SCRAPELLM_API_KEY?: string;
+
     readonly npm_package_name: string;
     readonly npm_package_version: string;
   }

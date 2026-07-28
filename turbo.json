@@ -61,7 +61,8 @@
         "SHOPIFY_CATALOG_CLIENT_SECRET",
         "SHOPIFY_CATALOG_TOKEN_URL",
         "SHOPIFY_CATALOG_MCP_URL",
-        "UCP_AGENT_PROFILE_URL"
+        "UCP_AGENT_PROFILE_URL",
+        "SCRAPELLM_API_KEY"
       ]
     },
     "typecheck": {
