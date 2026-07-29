@@ -139,7 +139,7 @@ app/
 └── sitemap.ts
 ```
 
-Client components live in `_components/` subdirectories next to their page.
+Page-specific components live in `_components/` subdirectories next to their page — **client and server components alike**, plus Suspense skeletons (`_components/skeletons.tsx`). The underscore keeps the folder out of routing. Only route-convention files (`page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`, `route.ts`) belong in the route folder itself.
 
 ### PPR and Streaming (dashboard and app screens)
 
@@ -147,6 +147,7 @@ Every `page.tsx` must be a **server component** that exports real HTML — not a
 
 - **Static shell** — Render in `page.tsx`: layout, page title, description, headings. This is the initial HTML.
 - **Data** — Fetch in **async server components** (same file or `_components/`). Wrap each in `<Suspense fallback={<Skeleton />}>` with a skeleton that matches the content shape.
+- **Skeletons** — Export them from `_components/skeletons.tsx` so `page.tsx` and `loading.tsx` share the exact same shapes and navigation lands without layout shift.
 - **Streaming** — The server sends the shell first, then streams in resolved async components so users see content as it loads.
 
 Onboarding/auth screens may be client-heavy by design; all other screens (dashboard, settings, lists, details) follow this pattern. See AGENTS.md §21b and §23f.

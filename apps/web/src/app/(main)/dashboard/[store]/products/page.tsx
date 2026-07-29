@@ -41,7 +41,7 @@ import {
   StatsSkeleton,
   TableSkeleton,
   TrafficSkeleton,
-} from "./skeletons";
+} from "./_components/skeletons";
 
 const emptyStatCards = [
   { label: "Total Products", icon: RadarIcon },

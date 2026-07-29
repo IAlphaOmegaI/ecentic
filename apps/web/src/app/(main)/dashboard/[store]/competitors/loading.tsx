@@ -4,7 +4,7 @@ import {
   InsightsSkeleton,
   LandscapeSkeleton,
   TableSkeleton,
-} from "./skeletons";
+} from "./_components/skeletons";
 
 // Mirrors the competitors page shell exactly — same chrome, static header
 // text, and per-section Suspense fallbacks — so navigation lands without shift.

@@ -1,5 +1,5 @@
 import { Crosshair, SectionKicker, StatusPill } from "../../_components/grid";
-import { UcpSectionSkeleton } from "./skeletons";
+import { UcpSectionSkeleton } from "./_components/skeletons";
 
 // Mirrors the UCP page's static shell so navigation renders the real header
 // instantly while the structured-data section streams in.

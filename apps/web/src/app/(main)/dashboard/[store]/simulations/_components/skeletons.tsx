@@ -1,4 +1,4 @@
-import { Crosshair, SectionGutter } from "../../_components/grid";
+import { Crosshair, SectionGutter } from "../../../_components/grid";
 
 const progressLabels = [
   "Phase",

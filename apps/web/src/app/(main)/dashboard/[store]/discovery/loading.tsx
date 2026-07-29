@@ -1,5 +1,5 @@
 import { Crosshair, StatusPill } from "../../_components/grid";
-import { DiscoverySkeleton } from "./skeletons";
+import { DiscoverySkeleton } from "./_components/skeletons";
 
 // Mirrors the discovery page shell so navigation lands without layout shift.
 export default () => (

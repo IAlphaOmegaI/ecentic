@@ -5,8 +5,8 @@ import * as AgentReadiness from "@/server/app/intelligence/agent-readiness";
 import * as CatalogRank from "@/server/app/intelligence/catalog-rank";
 import { Environment } from "@/server/utils/environment";
 import { Crosshair, SectionGutter, StatusPill } from "../../_components/grid";
+import { AuditSkeleton } from "./_components/skeletons";
 import { FeedUrlCard, RankChecker } from "./_components/visibility-client";
-import { AuditSkeleton } from "./skeletons";
 
 const CHECK_TONES = {
   pass: "success",

@@ -30,12 +30,12 @@ import {
   TopFindingCallout,
   WinRateBadge,
 } from "../../_components/grid";
-import { WinRateTiersChart } from "./_components/win-rate-tiers-chart";
 import {
   InsightsSkeleton,
   LandscapeSkeleton,
   TableSkeleton,
-} from "./skeletons";
+} from "./_components/skeletons";
+import { WinRateTiersChart } from "./_components/win-rate-tiers-chart";
 
 const emptyStatCards = [
   { label: "Brands Tracked", icon: RadarIcon },
