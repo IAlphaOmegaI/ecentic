@@ -1,6 +1,51 @@
 import { type Result, resultify } from "@zenncore/utils";
 import { ParseError, RequestError, TimeoutError } from "./error";
 
+/**
+ * Status for an error class that did not name one itself. Only the codes that
+ * are unambiguous from the class alone live here — anything else is a defect
+ * until proven otherwise, so the fallback is 500 rather than a guessed 4xx.
+ */
+const STATUS_BY_ERROR: Record<string, number> = {
+  "unauthenticated-error": 401,
+  "invalid-credentials": 401,
+  "unauthorized-error": 403,
+  "not-found-error": 404,
+  "conflict-error": 409,
+  "unique-constraint-error": 409,
+  "validation-error": 422,
+  "timeout-error": 504,
+};
+
+const statusFor = (error: Error & { statusCode?: number }) =>
+  error.statusCode ?? STATUS_BY_ERROR[error.name] ?? 500;
+
+/**
+ * Turns the `Result` a context-wrapped action returns into the JSON response a
+ * route handler owes its caller, so handlers stop hand-rolling the same
+ * success/error envelope and status mapping apiece.
+ *
+ * An error carrying its own `statusCode` wins over the class map — that is how
+ * an action pins an exact code (a webhook contract a partner already codes
+ * against) without inventing an error class per status.
+ */
+export const respond = <T>(
+  result: Result<T, Error>,
+  {
+    status,
+    headers,
+  }: { status?: number; headers?: Record<string, string> } = {},
+) =>
+  result.success
+    ? Response.json(
+        { success: true, data: result.data },
+        { status: status ?? 200, headers },
+      )
+    : Response.json(
+        { success: false, error: result.error.message },
+        { status: statusFor(result.error), headers },
+      );
+
 export const request = async (
   url: string,
   options: RequestInit,

@@ -7,12 +7,13 @@ import { redirect } from "next/navigation";
 import { render } from "react-email";
 import { Resend } from "resend";
 import { sanitizeRedirect } from "@/lib/redirect";
+import { ResetPasswordEmail } from "@/public/templates/reset-password";
 import { VerifyEmail } from "@/public/templates/verify";
 import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
-import { InvalidCredentialsError } from "../utils/error";
+import { InvalidCredentialsError, RequestError } from "../utils/error";
 import * as User from "./user";
 
 // TODO: use betterAuth client instead of server actions (default redirection)
@@ -186,17 +187,26 @@ export const getCurrentUser = withAuthentication(async (context) => {
 
 export const resetPassword = withContext(
   async (context, { token, password }: { token: string; password: string }) => {
-    const { status } = await context.auth.resetPassword({
-      body: {
-        token,
-        newPassword: password,
-      },
-    });
+    // Better Auth throws a `BAD_REQUEST` for a token that is unknown, already
+    // spent or past its hour — all of which are the same thing to the user, and
+    // none of which are defects worth a raw server-action throw.
+    const result = await resultify(
+      async () =>
+        await context.auth.resetPassword({
+          body: {
+            token,
+            newPassword: password,
+          },
+        }),
+    );
 
-    if (!status) {
+    if (!result.success || !result.data.status) {
       return {
         success: false,
-        error: new Error("reset-password-failed"),
+        error: new InvalidCredentialsError(
+          "This reset link is invalid or has expired. Request a new one.",
+          { cause: result.success ? undefined : result.error },
+        ),
       };
     }
 
@@ -207,23 +217,33 @@ export const resetPassword = withContext(
 
 export const forgotPassword = withContext(
   async (context, { email }: { email: string }) => {
-    const { status } = await context.auth.requestPasswordReset({
-      body: {
-        email,
-        redirectTo: "/",
-      },
-    });
+    // Better Auth mails a link to its own `/reset-password/:token` endpoint.
+    // That endpoint validates the token and then bounces to `redirectTo`,
+    // carrying the token in the query string — so this has to name the page
+    // that reads `?token=`, not the site root.
+    const result = await resultify(
+      async () =>
+        await context.auth.requestPasswordReset({
+          body: {
+            email,
+            redirectTo: "/reset-password",
+          },
+        }),
+    );
 
-    if (!status) {
+    if (!result.success) {
       return {
         success: false,
-        error: new Error("request-password-reset-failed"),
+        error: new RequestError("Could not send the reset link", {
+          cause: result.error,
+        }),
       };
     }
 
-    return {
-      success: true,
-    };
+    // Better Auth reports success for an unknown address too, and pads the
+    // timing to match. Passing that straight through is what keeps this from
+    // being an account-enumeration oracle — the caller must not branch on it.
+    return { success: true };
   },
   "Authentication.forgotPassword",
 );
@@ -361,6 +381,33 @@ export const sendVerificationEmail = async ({
     from: process.env.FROM_EMAIL ?? "onboarding@resend.dev",
     to,
     subject: "Verify your email address",
+    html,
+  });
+
+  if (result.error) throw result.error;
+};
+
+/**
+ * Sends the password reset email. Do not await in the caller to avoid timing attacks.
+ */
+export const sendResetPasswordEmail = async ({
+  to,
+  resetUrl,
+}: {
+  to: string;
+  resetUrl: string;
+}) => {
+  const html = await render(
+    ResetPasswordEmail({
+      resetUrl,
+      userEmail: to,
+    }),
+  );
+
+  const result = await resend.emails.send({
+    from: process.env.FROM_EMAIL ?? "onboarding@resend.dev",
+    to,
+    subject: "Reset your password",
     html,
   });
 
