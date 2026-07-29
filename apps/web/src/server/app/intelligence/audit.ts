@@ -6,7 +6,11 @@ import { Environment } from "@/server/utils/environment";
 import { NotFoundError } from "@/server/utils/error";
 import * as Product from "../product";
 import { computeProductAudit } from "./audit-compute";
-import { checkProductPageSchema, NO_PAGE_URL } from "./page-schema";
+import {
+  checkProductPageSchema,
+  NO_PAGE_URL,
+  resolveStructuredDataStatus,
+} from "./page-schema";
 
 export type { Type } from "./audit-compute";
 
@@ -27,8 +31,10 @@ export const auditProduct = withAuthentication(
 
     const audit = await resultify(() =>
       computeProductAudit({
-        pageSchema: pageSchema.status,
-        pageEmbed: pageSchema.embed,
+        structuredDataStatus: resolveStructuredDataStatus(
+          pageSchema,
+          Boolean(record.structuredData),
+        ),
         product: record.id,
         updatedAt: record.updatedAt.toISOString(),
         title: record.title,

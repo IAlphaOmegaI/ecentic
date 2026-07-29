@@ -43,6 +43,51 @@ const emptyStatCards = [
   { label: "Needs Attention", icon: BullseyeIcon },
 ] as const;
 
+/**
+ * Store-wide call-to-action: enabling the app embed adds structured data to
+ * every product page at once, so the nudge belongs here — not per product.
+ * Renders nothing while the embed is live (or for non-Shopify stores).
+ */
+const EmbedBanner = async ({ store }: { store: string }) => {
+  await connection();
+  const result = await Product.getStoreEmbedStatus(Environment.SERVER, {
+    store,
+  });
+  if (!result.success || !result.data.embedOff || !result.data.themeEditorUrl)
+    return null;
+
+  return (
+    <div className="-mx-8 border-accent-foreground border-b">
+      <div className="relative mx-8 flex flex-col gap-3 border-warning/30 bg-warning/5 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="font-medium text-sm text-warning">
+            Structured data is not reaching your product pages
+          </p>
+          <p className="mt-0.5 max-w-2xl text-foreground-dimmed text-sm">
+            The “Agentic structured data” app embed is off, so AI agents don't
+            see machine-readable data on your products. Enabling it once adds
+            structured data to every product in this store.
+          </p>
+        </div>
+        <Button
+          color="accent"
+          className="shrink-0"
+          render={
+            <a
+              href={result.data.themeEditorUrl}
+              target="_blank"
+              rel="noreferrer"
+            />
+          }
+        >
+          Enable app embed
+          <ArrowRightIcon className="size-4" />
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 export default async ({
   params,
   searchParams,
@@ -89,6 +134,10 @@ export default async ({
             </div>
           </div>
         </div>
+
+        <Suspense>
+          <EmbedBanner store={store} />
+        </Suspense>
 
         <div className="-mx-8 border-accent-foreground border-b">
           <div className="relative mx-8 bg-background-rich">

@@ -2,7 +2,7 @@ import { resultify } from "@zenncore/utils";
 import { cacheLife, cacheTag } from "next/cache";
 import { z } from "zod";
 import * as AI from "../../utils/ai";
-import type { PageEmbedStatus, PageSchemaStatus } from "./page-schema";
+import type { StructuredDataStatus } from "./page-schema";
 
 export const fieldKeys = [
   "title",
@@ -65,10 +65,8 @@ export type Input = {
   currency: string | null;
   sku: string | null;
   structuredData: string | null;
-  /** Live check for schema.org Product markup on the public product page. */
-  pageSchema: PageSchemaStatus;
-  /** Whether ecentic's theme app embed rendered on that page. */
-  pageEmbed: PageEmbedStatus;
+  /** Single live verdict for the product page's structured data. */
+  structuredDataStatus: StructuredDataStatus;
   images: string | null;
   // Part of the cache key so the audit refreshes whenever the listing changes.
   product: string;
@@ -103,27 +101,18 @@ export const computeProductAudit = async (input: Input): Promise<Type> => {
   const images = countImages(input.images);
 
   const pageSchemaDetail = {
-    found: "schema.org Product markup found on the live product page",
+    "ecentic-optimized":
+      "the ecentic app embed renders the published AI-optimized JSON-LD on the live page",
+    "ecentic-standard":
+      "the ecentic app embed renders default JSON-LD from live product data; no optimized version published yet",
+    "store-default":
+      "only the theme's own (usually thin) Product markup is on the live page — the ecentic app embed is off",
+    "ecentic-optimized_embed-off":
+      "optimized JSON-LD exists but the ecentic app embed is off, so NO ecentic markup reaches the live page",
     missing:
       "NO schema.org Product markup on the live product page — agents reading the rendered HTML see no machine-readable product data",
-    unreachable: "live product page could not be fetched to verify markup",
-    "no-url": "no public product URL to verify markup on",
-  }[input.pageSchema];
-
-  // The distinction that decides the merchant's fix: nothing renders because
-  // our app embed never ran, versus nothing was ever generated to render.
-  const embedDetail = (() => {
-    switch (true) {
-      case input.pageEmbed === "unknown":
-        return "";
-      case input.pageSchema === "missing" && input.pageEmbed === "inactive":
-        return " — the ecentic theme app embed is switched off, so published markup never reaches the page";
-      case input.pageEmbed === "inactive":
-        return " — from the theme's own markup, not the ecentic app embed";
-      default:
-        return " — rendered by the ecentic app embed";
-    }
-  })();
+    unreachable: "the live product page could not be fetched to verify markup",
+  }[input.structuredDataStatus];
 
   const prompt = `Audit this product listing.
 
@@ -131,7 +120,7 @@ TITLE: ${input.title}
 DESCRIPTION: ${input.description ? input.description.slice(0, 1500) : "(missing)"}
 PRICE: ${input.price ? `${input.price} ${input.currency ?? ""}`.trim() : "(missing)"}
 SKU: ${input.sku ?? "(missing)"}
-STRUCTURED DATA (JSON-LD): ${input.structuredData ? "present in synced data" : "(missing in synced data)"}; ${pageSchemaDetail}${embedDetail}
+STRUCTURED DATA (JSON-LD): ${input.structuredData ? "present in synced data" : "(missing in synced data)"}; ${pageSchemaDetail}
 IMAGES: ${images} image${images === 1 ? "" : "s"}
 
 Score each field (${fieldKeys.join(", ")}) 0-100 on content quality for this product's category, each with a verdict and a specific suggestion. Then assess the listing's target audience and market positioning.`;

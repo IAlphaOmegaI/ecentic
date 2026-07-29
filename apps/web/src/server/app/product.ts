@@ -14,6 +14,7 @@ import * as Competitor from "./competitor";
 import {
   checkProductPageSchema,
   NO_PAGE_URL,
+  resolveStructuredDataStatus,
 } from "./intelligence/page-schema";
 import * as Scan from "./scan";
 import * as Simulation from "./simulation";
@@ -511,8 +512,10 @@ export const getDetail = withAuthentication(
         product: {
           ...product.data,
           quality: computeDataQuality(product.data),
-          liveSchema: liveSchema.status,
-          liveEmbed: liveSchema.embed,
+          structuredDataStatus: resolveStructuredDataStatus(
+            liveSchema,
+            Boolean(product.data.structuredData),
+          ),
         },
         winRate,
         canPublish,
@@ -524,4 +527,51 @@ export const getDetail = withAuthentication(
     };
   },
   "Product.getDetail",
+);
+
+/**
+ * Store-level structured-data posture for the products list: whether the
+ * ecentic app embed renders on the storefront at all. Enabling the embed is a
+ * one-time, store-wide action, so the products page surfaces it once instead
+ * of per product. Sampled from one product page (check cached hourly by URL).
+ */
+export const getStoreEmbedStatus = withAuthentication(
+  async (context, { store: storeId }: { store: string }) => {
+    const store = await stores.get(Environment.SERVER, storeId);
+    if (!store.success) return store;
+    if (!store.data || store.data.userId !== context.session.user.id)
+      return { success: false as const, error: new Error("Store not found") };
+
+    if (
+      store.data.platform !== "shopify" &&
+      store.data.platform !== "shopify-public"
+    )
+      return {
+        success: true as const,
+        data: { embedOff: false, themeEditorUrl: null },
+      };
+
+    const products = await find(Environment.SERVER, {
+      where: eq(schema.product.storeId, storeId),
+      limit: 10,
+    });
+    if (!products.success) return products;
+
+    const sample = products.data.find((product) => product.url);
+    if (!sample?.url)
+      return {
+        success: true as const,
+        data: { embedOff: false, themeEditorUrl: null },
+      };
+
+    const check = await checkProductPageSchema(sample.url);
+    return {
+      success: true as const,
+      data: {
+        embedOff: check.embed === "inactive",
+        themeEditorUrl: themeEmbedDeepLink(store.data.domain),
+      },
+    };
+  },
+  "Product.getStoreEmbedStatus",
 );

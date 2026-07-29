@@ -66,10 +66,14 @@ export type ProductDetailData = {
     currency: string | null;
     sku: string | null;
     structuredData: string | null;
-    /** Live check: does the rendered storefront actually expose product schema? */
-    liveSchema: "found" | "missing" | "unreachable" | "no-url";
-    /** Did our theme app embed render on that page, or is it switched off? */
-    liveEmbed: "active" | "inactive" | "unknown";
+    /** Single live verdict for the product page's structured data. */
+    structuredDataStatus:
+      | "ecentic-optimized"
+      | "ecentic-standard"
+      | "store-default"
+      | "ecentic-optimized_embed-off"
+      | "missing"
+      | "unreachable";
     quality: number;
   };
   winRate: number;
@@ -1186,37 +1190,66 @@ const OptimizeTab = ({
 
   const structuredData = liveStructuredData ?? product.structuredData;
 
-  // Three distinct facts, deliberately not conflated:
-  //  • `structuredData` — the JSON-LD ecentic generated and holds.
-  //  • `product.liveSchema` — whether the rendered storefront actually exposes
-  //    product schema, which is what AI agents read.
-  //  • `product.liveEmbed` — whether our app embed is the thing rendering it.
-  //    A switched-off embed is the usual reason published markup never lands.
-  const embedOff = product.liveEmbed === "inactive";
+  const status = product.structuredDataStatus;
 
-  console.log("product.liveSchema", product.liveSchema);
+  // One verdict for what AI agents read on the live page, worst to best:
+  // missing / ecentic-optimized_embed-off → store-default → ecentic-standard
+  // → ecentic-optimized.
+  const liveStatus = {
+    "ecentic-optimized": {
+      tone: "success" as const,
+      label: "Optimized by ecentic",
+    },
+    "ecentic-standard": {
+      tone: "success" as const,
+      label: "ecentic standard",
+    },
+    "store-default": { tone: "neutral" as const, label: "Store default" },
+    "ecentic-optimized_embed-off": {
+      tone: "error" as const,
+      label: "Optimized — embed off",
+    },
+    missing: { tone: "error" as const, label: "No structured data" },
+    unreachable: { tone: "neutral" as const, label: "Page unreachable" },
+  }[status];
 
-  const liveSchema = (() => {
-    switch (true) {
-      case product.liveSchema === "found" && product.liveEmbed === "active":
-        return { tone: "success" as const, label: "Live via ecentic embed" };
-      case product.liveSchema === "found":
-        return { tone: "success" as const, label: "Detected on live page" };
-      case product.liveSchema === "missing" && embedOff:
-        return { tone: "error" as const, label: "App embed is off" };
-      case product.liveSchema === "missing":
-        return { tone: "warning" as const, label: "Not on live page" };
-      case product.liveSchema === "unreachable":
-        return { tone: "neutral" as const, label: "Live page unreachable" };
+  // Guidance per status: no structured data → enable the embed (a one-time,
+  // store-wide toggle); default markup (store's or ecentic's) → suggest the
+  // optimized version. Only `ecentic-optimized` needs nothing.
+  const embedNotice = (() => {
+    switch (status) {
+      case "ecentic-optimized_embed-off":
+        return {
+          intent: "problem" as const,
+          title: "App embed is off",
+          text: "Optimized structured data is published for this product, but the “Agentic structured data” app embed is off — no ecentic markup reaches the page. Enabling it once applies to every product in the store.",
+          showEnable: true,
+        };
+      case "missing":
+        return {
+          intent: "problem" as const,
+          title: "No structured data on the page",
+          text: "AI agents see no machine-readable product data. Enable the “Agentic structured data” app embed — one toggle adds structured data for every product in the store.",
+          showEnable: true,
+        };
+      case "store-default":
+        return {
+          intent: "problem" as const,
+          title: "Store default markup",
+          text: "Only the theme's own markup is live — usually thin (no GTIN, one offer, no variant detail). Enable the ecentic app embed (applies to all products), then publish optimized structured data below for this product.",
+          showEnable: true,
+        };
+      case "ecentic-standard":
+        return {
+          intent: "suggestion" as const,
+          title: "Using ecentic standard markup",
+          text: "The app embed renders default structured data from the live product content. Publish the AI-optimized version below to give agents richer, more competitive markup for this product.",
+          showEnable: false,
+        };
       default:
-        return { tone: "neutral" as const, label: "No public URL to check" };
+        return null;
     }
   })();
-
-  // Drift: we generated structured data but agents don't see it live — the
-  // exact "hidden in the store" case worth flagging.
-  const structuredDataDrift =
-    Boolean(structuredData) && product.liveSchema === "missing";
 
   const handleGenerateJsonLd = () => {
     startTransition(async () => {
@@ -1253,9 +1286,9 @@ const OptimizeTab = ({
 
       const { themeEditorUrl } = result.data;
       toast.add({
-        title: "Structured data published",
+        title: "Optimized structured data published",
         description:
-          "Schema.org JSON-LD was written to your store. To render it on the product page, enable the 'Agentic structured data' app embed in the theme editor and press Save.",
+          "Written to the ecentic.structured_data metafield — the app embed now renders it in place of the default product markup. If the embed is off, enable it in the theme editor and press Save.",
         type: "success",
         ...(themeEditorUrl && {
           actionLabel: "Open theme editor",
@@ -1317,9 +1350,9 @@ const OptimizeTab = ({
         className="text-foreground"
         defaultValue={[
           ...(product.description ? [] : ["Description"]),
-          ...(structuredData && product.liveSchema === "found"
-            ? []
-            : ["Structured Data"]),
+          // The goal state needs no attention; every other status has a next
+          // step waiting inside.
+          ...(status === "ecentic-optimized" ? [] : ["Structured Data"]),
         ]}
       >
         <ListingField
@@ -1351,52 +1384,42 @@ const OptimizeTab = ({
             sent us looking here in the first place. */}
         <ListingField
           label="Structured Data"
-          tone={(() => {
-            switch (true) {
-              case product.liveSchema === "found":
-                return "success";
-              case Boolean(structuredData):
-                return "neutral";
-              default:
-                return "error";
-            }
-          })()}
-          status={(() => {
-            switch (true) {
-              case product.liveSchema === "found":
-                return "Live on page";
-              case Boolean(structuredData) && embedOff:
-                return "Generated — embed off";
-              case Boolean(structuredData):
-                return "Generated — not live";
-              default:
-                return "Not generated";
-            }
-          })()}
+          tone={liveStatus.tone}
+          status={liveStatus.label}
         >
           <div className="mb-3 flex items-center justify-between gap-3 border-accent-foreground border-b pb-3">
             <div className="flex items-center gap-2">
               <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
                 Live on store
               </span>
-              <StatusPill tone={liveSchema.tone}>{liveSchema.label}</StatusPill>
+              <StatusPill tone={liveStatus.tone}>{liveStatus.label}</StatusPill>
             </div>
             <span className="text-[10px] text-foreground-dimmed">
               what AI agents actually read
             </span>
           </div>
 
-          {structuredDataDrift && (
-            <div className="mb-3 border border-warning/30 bg-warning/5 p-3">
-              <p className="font-medium text-[10px] text-warning uppercase tracking-[0.08em]">
-                {embedOff ? "App embed is off" : "Out of sync"}
+          {embedNotice && (
+            <div
+              className={cn(
+                "mb-3 border p-3",
+                embedNotice.intent === "problem"
+                  ? "border-warning/30 bg-warning/5"
+                  : "border-accent-foreground bg-background-dimmed",
+              )}
+            >
+              <p
+                className={cn(
+                  "font-medium text-[10px] uppercase tracking-[0.08em]",
+                  embedNotice.intent === "problem"
+                    ? "text-warning"
+                    : "text-foreground-dimmed",
+                )}
+              >
+                {embedNotice.title}
               </p>
-              <p className="mt-1 text-foreground text-sm">
-                {embedOff
-                  ? "ecentic published structured data for this product, but the “Agentic structured data” app embed is switched off in your theme — so nothing reaches the page and AI agents see no product data."
-                  : "ecentic generated structured data for this product, but the live page doesn't expose valid schema.org Product markup — so AI agents can't read it. Re-publish below."}
-              </p>
-              {embedOff && themeEditorUrl && (
+              <p className="mt-1 text-foreground text-sm">{embedNotice.text}</p>
+              {embedNotice.showEnable && themeEditorUrl && (
                 <Button
                   type="button"
                   color="accent"
@@ -1412,6 +1435,15 @@ const OptimizeTab = ({
 
           {structuredData ? (
             <div className="space-y-3">
+              <p className="text-foreground-dimmed text-sm">
+                The app embed already renders default structured data from the
+                live product content. Publishing writes this AI-optimized
+                version to the{" "}
+                <code className="font-mono text-xs">
+                  ecentic.structured_data
+                </code>{" "}
+                metafield, and the embed renders it instead of the default.
+              </p>
               {/* JSON-LD is genuinely unbounded, so this one keeps a cap. */}
               <pre className="max-h-64 overflow-y-auto whitespace-pre-wrap border border-accent-foreground bg-background-dimmed p-3 font-mono text-foreground-dimmed text-xs leading-relaxed">
                 {structuredData}
@@ -1423,7 +1455,9 @@ const OptimizeTab = ({
                   onClick={publishStructured}
                   disabled={isPublishingStructured}
                 >
-                  {isPublishingStructured ? "Publishing…" : "Publish to store"}
+                  {isPublishingStructured
+                    ? "Publishing…"
+                    : "Publish optimized structured data"}
                   {!isPublishingStructured && (
                     <ArrowRightIcon className="size-4" />
                   )}
@@ -1432,8 +1466,10 @@ const OptimizeTab = ({
             </div>
           ) : (
             <div className="space-y-3">
-              <p className="text-error text-sm italic">
-                No JSON-LD structured data found
+              <p className="text-foreground-dimmed text-sm">
+                No optimized structured data yet — the app embed renders the
+                default markup built from the live product content. Generate an
+                AI-optimized version to override it.
               </p>
               <Button
                 type="button"
@@ -1441,7 +1477,7 @@ const OptimizeTab = ({
                 onClick={handleGenerateJsonLd}
                 disabled={isPending}
               >
-                {isPending ? "Generating…" : "Generate JSON-LD"}
+                {isPending ? "Generating…" : "Generate optimized JSON-LD"}
                 {!isPending && <ArrowRightIcon className="size-4" />}
               </Button>
             </div>

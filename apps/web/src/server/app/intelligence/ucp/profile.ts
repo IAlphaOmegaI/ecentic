@@ -326,7 +326,7 @@ export const publishProfileToShopify = withAuthentication(
     const profile = await ensureProfileForUser(userId);
     if (!profile.success) return profile;
 
-    return Shopify.pushShopUcpMetafields({
+    return Shopify.pushShopMetafields({
       store: storeId,
       profile: {
         merchantName: profile.data.merchantName,
@@ -397,7 +397,7 @@ export const publishProductsToShopify = withAuthentication(
         continue;
       }
 
-      const result = await Shopify.pushProductUcpMetafields({
+      const result = await Shopify.pushProductMetafields({
         product: product.id,
         structuredJson,
       });

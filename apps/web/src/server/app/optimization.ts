@@ -544,28 +544,35 @@ SKU: ${productData.sku ?? "(unknown)"}`,
 );
 
 /**
- * Publishes a product's schema.org JSON-LD to the connected store so AI agents
- * reading the storefront can see it. Generates the structured data first if the
- * product doesn't have it yet, then routes to the platform integration
- * (Shopify metafields or WooCommerce product meta).
+ * Publishes a product's AI-optimized schema.org JSON-LD to the connected
+ * store. The app embed renders default markup from the live product data on
+ * its own; publishing writes the optimized version to the
+ * `ecentic.structured_data` metafield (WooCommerce: product meta), which the
+ * embed then renders instead of the default. Generates the structured data
+ * first if the product doesn't have it yet.
  */
 export const publishProductStructuredData = withAuthentication(
   async (context, { product: id }: { product: string }) => {
     const user = context.session.user.id;
-
     const productResult = await Product.get(Environment.SERVER, id);
+
     if (!productResult.success) return productResult;
-    if (!productResult.data)
+    if (!productResult.data) {
       return { success: false as const, error: new Error("Product not found") };
+    }
 
     const product = productResult.data;
-    if (product.userId !== user)
+
+    if (product.userId !== user) {
       return { success: false as const, error: new Error("Not authorized") };
+    }
 
     const storeResult = await Store.get(Environment.SERVER, product.storeId);
+
     if (!storeResult.success) return storeResult;
-    if (!storeResult.data)
+    if (!storeResult.data) {
       return { success: false as const, error: new Error("Store not found") };
+    }
 
     const store = storeResult.data;
 
@@ -588,7 +595,7 @@ export const publishProductStructuredData = withAuthentication(
       switch (store.platform) {
         case "shopify":
         case "shopify-public":
-          return Shopify.pushProductUcpMetafields({
+          return Shopify.pushProductMetafields({
             product: id,
             structuredJson,
           });
