@@ -17,6 +17,8 @@ export namespace SearchTab {
   export type Props = {
     onSuccess?: (competitors: Competitor.Type[]) => void;
     productNames: string[];
+    /** Store the found rivals are written against. */
+    store: string;
     className?: string;
   };
 }
@@ -24,6 +26,7 @@ export namespace SearchTab {
 export const SearchTab = ({
   onSuccess,
   productNames,
+  store,
   className,
 }: SearchTab.Props) => {
   const toast = useToastManager();
@@ -35,7 +38,7 @@ export const SearchTab = ({
       const term = manual ?? query;
       if (!term?.trim()) return;
 
-      const result = await Search.searchCompetitors({ query: term });
+      const result = await Search.searchCompetitors({ query: term, store });
 
       if (!result.success) {
         toast.add({

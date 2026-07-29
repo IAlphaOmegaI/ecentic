@@ -1,5 +1,5 @@
 "use client";
-import { XIcon } from "@zenncore/icons";
+import { LoaderIcon, XIcon } from "@zenncore/icons";
 import {
   Toast,
   ToastAction,
@@ -10,7 +10,7 @@ import {
   useToastManager,
 } from "@zenncore/web/components/toast";
 
-type ToastType = "success" | "error" | "info";
+type ToastType = "success" | "error" | "info" | "loading";
 
 type ToastData = {
   actionLabel?: string;
@@ -39,7 +39,12 @@ export const ToastList = ({ types }: ToastList.Props) => {
               toast={toast}
               className="rounded-none p-4 pr-8"
             >
-              <ToastTitle className="font-medium text-lg" />
+              <div className="flex items-center gap-2">
+                {toast.type === "loading" && (
+                  <LoaderIcon className="size-4 shrink-0 animate-spin text-foreground-dimmed" />
+                )}
+                <ToastTitle className="font-medium text-lg" />
+              </div>
               <ToastDescription className="mt-1" />
               {actionLabel && onAction && (
                 <ToastAction

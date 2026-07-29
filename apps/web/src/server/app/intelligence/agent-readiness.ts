@@ -2,7 +2,7 @@
 
 /**
  * Agent-readiness audit: verifies the store against the surfaces AI shopping
- * agents actually read, instead of scoring Ecentic's own database rows.
+ * agents actually read, instead of scoring ecentic's own database rows.
  * Checks are grouped by ingestion path — crawl access (robots.txt), rendered
  * structured data (storefront HTML), offer identity (GTIN/brand coverage for
  * cross-retailer clustering), and feed readiness (Merchant Center /
@@ -16,9 +16,11 @@ import { schema } from "../../database";
 import { withAuthentication } from "../../utils/authentication";
 import { Environment } from "../../utils/environment";
 import * as HTTP from "../../utils/http";
+import { themeEmbedDeepLink } from "../../utils/shopify";
 import { buildGoogleFeed, extractCatalogFacts, feedUrl } from "../feed-export";
 import * as Product from "../product";
 import * as Store from "../store";
+import { hasEcenticEmbed, hasSchemaOrgProduct } from "./page-schema";
 
 const PAGE_SAMPLE_SIZE = 3;
 const FETCH_TIMEOUT_MS = 8000;
@@ -47,6 +49,8 @@ export type ReadinessCheck = {
   status: "pass" | "warn" | "fail" | "manual";
   detail: string;
   recommendation?: string;
+  /** One-click follow-through for the recommendation, e.g. a Shopify admin deep link. */
+  action?: { label: string; url: string };
 };
 
 export type ReadinessReport = {
@@ -162,16 +166,21 @@ const checkRobots = async (host: string): Promise<ReadinessCheck> => {
 
 const checkRenderedStructuredData = async (
   urls: string[],
-): Promise<ReadinessCheck> => {
+): Promise<ReadinessCheck & { ecenticEmbedDetected: boolean }> => {
   if (urls.length === 0)
     return {
       key: "jsonld",
       label: "Structured data in rendered HTML",
       status: "warn",
       detail: "No synced product has a public URL to sample.",
+      ecenticEmbedDetected: false,
     };
 
-  const results: { url: string; hasProductJsonLd: boolean }[] = [];
+  const results: {
+    url: string;
+    hasProductJsonLd: boolean;
+    hasEcenticEmbed: boolean;
+  }[] = [];
 
   for (const url of urls) {
     const response = await HTTP.request(
@@ -182,14 +191,11 @@ const checkRenderedStructuredData = async (
     if (!response.success || !response.data.ok) continue;
 
     const html = await response.data.text();
-    const jsonLdBlocks =
-      html.match(
-        /<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi,
-      ) ?? [];
-    const hasProductJsonLd = jsonLdBlocks.some((block) =>
-      /"@type"\s*:\s*"?Product"?/.test(block),
-    );
-    results.push({ url, hasProductJsonLd });
+    results.push({
+      url,
+      hasProductJsonLd: hasSchemaOrgProduct(html),
+      hasEcenticEmbed: hasEcenticEmbed(html),
+    });
   }
 
   if (results.length === 0)
@@ -198,17 +204,32 @@ const checkRenderedStructuredData = async (
       label: "Structured data in rendered HTML",
       status: "warn",
       detail: "Sampled product pages could not be fetched.",
+      ecenticEmbedDetected: false,
     };
 
   const withMarkup = results.filter((entry) => entry.hasProductJsonLd).length;
+  const ecenticEmbedDetected = results.every((entry) => entry.hasEcenticEmbed);
 
-  if (withMarkup === results.length)
+  if (withMarkup === results.length) {
+    if (ecenticEmbedDetected)
+      return {
+        key: "jsonld",
+        label: "Structured data in rendered HTML",
+        status: "pass",
+        detail: `schema.org Product JSON-LD found on ${withMarkup}/${results.length} sampled product pages, rendered by the ecentic app embed.`,
+        ecenticEmbedDetected,
+      };
+
     return {
       key: "jsonld",
       label: "Structured data in rendered HTML",
       status: "pass",
-      detail: `schema.org Product JSON-LD found on ${withMarkup}/${results.length} sampled product pages.`,
+      detail: `schema.org Product JSON-LD found on ${withMarkup}/${results.length} sampled product pages — but it is the theme's own markup, which is usually thinner (no GTIN, single offer, no variant detail).`,
+      recommendation:
+        "Enable the ecentic 'Agentic structured data' app embed for richer, agent-optimized markup on every product page. The link opens the theme editor with the embed pre-activated — press Save to apply.",
+      ecenticEmbedDetected,
     };
+  }
 
   return {
     key: "jsonld",
@@ -216,7 +237,8 @@ const checkRenderedStructuredData = async (
     status: withMarkup === 0 ? "fail" : "warn",
     detail: `Product JSON-LD found on only ${withMarkup}/${results.length} sampled pages. Crawling agents (and Google's feed verification) read the rendered page, not backend metafields.`,
     recommendation:
-      "Enable the Ecentic 'Agentic structured data' app embed in the theme editor, or add Product JSON-LD to the theme.",
+      "Enable the ecentic 'Agentic structured data' app embed in the theme editor and press Save, or add Product JSON-LD to the theme.",
+    ecenticEmbedDetected,
   };
 };
 
@@ -291,7 +313,7 @@ const MANUAL_CHECKS: ReadinessCheck[] = [
     label: "Google Merchant Center feed submitted",
     status: "manual",
     detail:
-      "Without a Merchant Center feed the store cannot enter Google's Shopping Graph or AI Mode. Add the Ecentic feed URL as a scheduled fetch, or use the Google & YouTube channel app.",
+      "Without a Merchant Center feed the store cannot enter Google's Shopping Graph or AI Mode. Add the ecentic feed URL as a scheduled fetch, or use the Google & YouTube channel app.",
   },
   {
     key: "perplexity-merchant",
@@ -330,11 +352,34 @@ export const auditStore = withAuthentication(
       .filter((url): url is string => Boolean(url))
       .slice(0, PAGE_SAMPLE_SIZE);
 
-    const [robots, jsonLd, feed] = await Promise.all([
+    const [robots, jsonLdResult, feed] = await Promise.all([
       checkRobots(host),
       checkRenderedStructuredData(sampleUrls),
       buildGoogleFeed(storeId),
     ]);
+
+    // For Shopify stores the fix is one toggle away: deep-link straight into
+    // the theme editor's App embeds panel. `activateAppId={api key}/{block
+    // filename}` pre-activates the Agentic structured data embed so the
+    // merchant only has to hit Save. Shown whenever the ecentic embed isn't
+    // detected — theme-generated markup passes the check but is thinner than
+    // what the embed renders.
+    const isShopify =
+      store.data.platform === "shopify" ||
+      store.data.platform === "shopify-public";
+
+    const jsonLd: ReadinessCheck = (() => {
+      const { ecenticEmbedDetected, ...check } = jsonLdResult;
+      if (!isShopify || ecenticEmbedDetected) return check;
+
+      return {
+        ...check,
+        action: {
+          label: "Enable the app embed in the theme editor",
+          url: themeEmbedDeepLink(host),
+        },
+      };
+    })();
 
     const feedCheck: ReadinessCheck = (() => {
       if (!feed.success)

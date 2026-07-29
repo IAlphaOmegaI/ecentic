@@ -45,7 +45,7 @@ const Utils = {
 };
 
 export const scrapeUrls = withAuthentication(
-  async (ctx, { urls }: { urls: string[] }) => {
+  async (ctx, { urls, store }: { urls: string[]; store: string }) => {
     const valid = urls
       .filter((url) => resultify(() => new URL(url)).success)
       .slice(0, 10);
@@ -129,6 +129,7 @@ Rules:
         Competitor.create(Environment.SERVER, {
           ...product,
           userId: ctx.session.user.id,
+          storeId: store,
           url: valid[index] ?? null,
           selected: true,
         }),

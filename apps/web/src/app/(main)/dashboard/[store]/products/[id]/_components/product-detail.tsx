@@ -66,10 +66,20 @@ export type ProductDetailData = {
     currency: string | null;
     sku: string | null;
     structuredData: string | null;
+    /** Single live verdict for the product page's structured data. */
+    structuredDataStatus:
+      | "ecentic-optimized"
+      | "ecentic-standard"
+      | "store-default"
+      | "ecentic-optimized_embed-off"
+      | "missing"
+      | "unreachable";
     quality: number;
   };
   winRate: number;
   canPublish: boolean;
+  /** Deep link that pre-activates the app embed in the theme editor. */
+  themeEditorUrl: string | null;
   models: Array<{
     model: string;
     label: string;
@@ -285,7 +295,7 @@ const PublishListing = ({
         <AlertDialogPopup>
           <AlertDialogTitle>Publish optimized listing?</AlertDialogTitle>
           <AlertDialogDescription>
-            Ecentic generates an AI-optimized title and description for &ldquo;
+            ecentic generates an AI-optimized title and description for &ldquo;
             {product.title}&rdquo; and writes it directly to your connected
             store, replacing the live listing. Current win rate is {winRate}%.
           </AlertDialogDescription>
@@ -335,7 +345,7 @@ const ApplyOptimization = ({
           Close the gap automatically
         </p>
         <p className="mt-1 max-w-prose text-foreground-dimmed text-sm leading-relaxed">
-          Ecentic rewrites this listing from the winning competitors&apos;
+          ecentic rewrites this listing from the winning competitors&apos;
           strengths and publishes it straight to your store — no manual edits.
         </p>
       </div>
@@ -365,8 +375,15 @@ const ApplyOptimization = ({
 
 export const ProductDetail = ({ data }: ProductDetail.Props) => {
   const { store } = useParams<{ store: string }>();
-  const { product, winRate, canPublish, models, competitors, simulations } =
-    data;
+  const {
+    product,
+    winRate,
+    canPublish,
+    themeEditorUrl,
+    models,
+    competitors,
+    simulations,
+  } = data;
 
   return (
     <Tabs defaultValue="overview">
@@ -414,6 +431,7 @@ export const ProductDetail = ({ data }: ProductDetail.Props) => {
           product={product}
           winRate={winRate}
           canPublish={canPublish}
+          themeEditorUrl={themeEditorUrl}
         />
       </TabsPanel>
     </Tabs>
@@ -1156,11 +1174,13 @@ const OptimizeTab = ({
   product,
   winRate,
   canPublish,
+  themeEditorUrl,
 }: {
   store: string;
   product: ProductDetailData["product"];
   winRate: number;
   canPublish: boolean;
+  themeEditorUrl: string | null;
 }) => {
   const toast = useToastManager();
   const [isPending, startTransition] = useTransition();
@@ -1170,13 +1190,81 @@ const OptimizeTab = ({
 
   const structuredData = liveStructuredData ?? product.structuredData;
 
+  const status = product.structuredDataStatus;
+
+  // One verdict for what AI agents read on the live page, worst to best:
+  // missing / ecentic-optimized_embed-off → store-default → ecentic-standard
+  // → ecentic-optimized.
+  const liveStatus = {
+    "ecentic-optimized": {
+      tone: "success" as const,
+      label: "Optimized by ecentic",
+    },
+    "ecentic-standard": {
+      tone: "success" as const,
+      label: "ecentic standard",
+    },
+    "store-default": { tone: "neutral" as const, label: "Store default" },
+    "ecentic-optimized_embed-off": {
+      tone: "error" as const,
+      label: "Optimized — embed off",
+    },
+    missing: { tone: "error" as const, label: "No structured data" },
+    unreachable: { tone: "neutral" as const, label: "Page unreachable" },
+  }[status];
+
+  // Guidance per status: no structured data → enable the embed (a one-time,
+  // store-wide toggle); default markup (store's or ecentic's) → suggest the
+  // optimized version. Only `ecentic-optimized` needs nothing.
+  const embedNotice = (() => {
+    switch (status) {
+      case "ecentic-optimized_embed-off":
+        return {
+          intent: "problem" as const,
+          title: "App embed is off",
+          text: "Optimized structured data is published for this product, but the “Agentic structured data” app embed is off — no ecentic markup reaches the page. Enabling it once applies to every product in the store.",
+          showEnable: true,
+        };
+      case "missing":
+        return {
+          intent: "problem" as const,
+          title: "No structured data on the page",
+          text: "AI agents see no machine-readable product data. Enable the “Agentic structured data” app embed — one toggle adds structured data for every product in the store.",
+          showEnable: true,
+        };
+      case "store-default":
+        return {
+          intent: "problem" as const,
+          title: "Store default markup",
+          text: "Only the theme's own markup is live — usually thin (no GTIN, one offer, no variant detail). Enable the ecentic app embed (applies to all products), then publish optimized structured data below for this product.",
+          showEnable: true,
+        };
+      case "ecentic-standard":
+        return {
+          intent: "suggestion" as const,
+          title: "Using ecentic standard markup",
+          text: "The app embed renders default structured data from the live product content. Publish the AI-optimized version below to give agents richer, more competitive markup for this product.",
+          showEnable: false,
+        };
+      default:
+        return null;
+    }
+  })();
+
   const handleGenerateJsonLd = () => {
     startTransition(async () => {
       const generation = await Optimization.generateStructuredData({
         product: product.id,
       });
-      if (generation.success)
-        setLiveStructuredData(generation.data.structuredData);
+      if (!generation.success) {
+        toast.add({
+          title: "Generation failed",
+          description: generation.error.message,
+          type: "error",
+        });
+        return;
+      }
+      setLiveStructuredData(generation.data.structuredData);
     });
   };
 
@@ -1185,6 +1273,7 @@ const OptimizeTab = ({
       const result = await Optimization.publishProductStructuredData({
         product: product.id,
       });
+
       if (!result.success) {
         toast.add({
           title: "Publish failed",
@@ -1194,10 +1283,17 @@ const OptimizeTab = ({
         return;
       }
       setLiveStructuredData(result.data.structuredData);
+
+      const { themeEditorUrl } = result.data;
       toast.add({
-        title: "Structured data published",
-        description: "Schema.org JSON-LD was written to your store.",
+        title: "Optimized structured data published",
+        description:
+          "Written to the ecentic.structured_data metafield — the app embed now renders it in place of the default product markup. If the embed is off, enable it in the theme editor and press Save.",
         type: "success",
+        ...(themeEditorUrl && {
+          actionLabel: "Open theme editor",
+          onAction: () => window.open(themeEditorUrl, "_blank"),
+        }),
       });
     },
   );
@@ -1254,7 +1350,9 @@ const OptimizeTab = ({
         className="text-foreground"
         defaultValue={[
           ...(product.description ? [] : ["Description"]),
-          ...(structuredData ? [] : ["Structured Data"]),
+          // The goal state needs no attention; every other status has a next
+          // step waiting inside.
+          ...(status === "ecentic-optimized" ? [] : ["Structured Data"]),
         ]}
       >
         <ListingField
@@ -1281,13 +1379,71 @@ const OptimizeTab = ({
           )}
         </ListingField>
 
+        {/* The collapsed row reports the live page, not our database — a green
+            "Generated" beside a page with no markup is exactly the lie that
+            sent us looking here in the first place. */}
         <ListingField
           label="Structured Data"
-          tone={structuredData ? "success" : "error"}
-          status={structuredData ? "Present" : "Missing"}
+          tone={liveStatus.tone}
+          status={liveStatus.label}
         >
+          <div className="mb-3 flex items-center justify-between gap-3 border-accent-foreground border-b pb-3">
+            <div className="flex items-center gap-2">
+              <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+                Live on store
+              </span>
+              <StatusPill tone={liveStatus.tone}>{liveStatus.label}</StatusPill>
+            </div>
+            <span className="text-[10px] text-foreground-dimmed">
+              what AI agents actually read
+            </span>
+          </div>
+
+          {embedNotice && (
+            <div
+              className={cn(
+                "mb-3 border p-3",
+                embedNotice.intent === "problem"
+                  ? "border-warning/30 bg-warning/5"
+                  : "border-accent-foreground bg-background-dimmed",
+              )}
+            >
+              <p
+                className={cn(
+                  "font-medium text-[10px] uppercase tracking-[0.08em]",
+                  embedNotice.intent === "problem"
+                    ? "text-warning"
+                    : "text-foreground-dimmed",
+                )}
+              >
+                {embedNotice.title}
+              </p>
+              <p className="mt-1 text-foreground text-sm">{embedNotice.text}</p>
+              {embedNotice.showEnable && themeEditorUrl && (
+                <Button
+                  type="button"
+                  color="accent"
+                  className="mt-3"
+                  onClick={() => window.open(themeEditorUrl, "_blank")}
+                >
+                  Enable app embed
+                  <ArrowRightIcon className="size-4" />
+                </Button>
+              )}
+            </div>
+          )}
+
           {structuredData ? (
             <div className="space-y-3">
+              <p className="text-foreground-dimmed text-sm">
+                The app embed already renders default structured data from the
+                live product content. Publishing writes this AI-optimized
+                version to the{" "}
+                <code className="font-mono text-xs">
+                  ecentic.structured_data
+                </code>{" "}
+                metafield, and the embed renders it instead of the default.
+              </p>
               {/* JSON-LD is genuinely unbounded, so this one keeps a cap. */}
               <pre className="max-h-64 overflow-y-auto whitespace-pre-wrap border border-accent-foreground bg-background-dimmed p-3 font-mono text-foreground-dimmed text-xs leading-relaxed">
                 {structuredData}
@@ -1299,7 +1455,9 @@ const OptimizeTab = ({
                   onClick={publishStructured}
                   disabled={isPublishingStructured}
                 >
-                  {isPublishingStructured ? "Publishing…" : "Publish to store"}
+                  {isPublishingStructured
+                    ? "Publishing…"
+                    : "Publish optimized structured data"}
                   {!isPublishingStructured && (
                     <ArrowRightIcon className="size-4" />
                   )}
@@ -1308,8 +1466,10 @@ const OptimizeTab = ({
             </div>
           ) : (
             <div className="space-y-3">
-              <p className="text-error text-sm italic">
-                No JSON-LD structured data found
+              <p className="text-foreground-dimmed text-sm">
+                No optimized structured data yet — the app embed renders the
+                default markup built from the live product content. Generate an
+                AI-optimized version to override it.
               </p>
               <Button
                 type="button"
@@ -1317,7 +1477,7 @@ const OptimizeTab = ({
                 onClick={handleGenerateJsonLd}
                 disabled={isPending}
               >
-                {isPending ? "Generating…" : "Generate JSON-LD"}
+                {isPending ? "Generating…" : "Generate optimized JSON-LD"}
                 {!isPending && <ArrowRightIcon className="size-4" />}
               </Button>
             </div>

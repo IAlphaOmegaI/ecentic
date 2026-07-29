@@ -25,7 +25,7 @@ const assurances = [
 ] as const;
 
 const intro =
-  "AI shopping systems compare your product data in seconds. Ecentic turns losing product pages into clearer buying inputs, for agents and for the high-intent shoppers they send you.";
+  "AI shopping systems compare your product data in seconds. ecentic turns losing product pages into clearer buying inputs, for agents and for the high-intent shoppers they send you.";
 
 const description =
   "AI product listing optimization for titles, descriptions, and structured product data. Learn how ecentic helps merchants improve product visibility.";

@@ -2,14 +2,20 @@
 
 import { unique } from "@zenncore/utils";
 import { and, eq, inArray } from "drizzle-orm";
-import { cache as dedupe } from "react";
 import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
+import { dedupe } from "../utils/dedupe";
 import { Environment } from "../utils/environment";
 import type { Pager } from "../utils/pagination";
 import type { Document, ExecuteOptions, Insertable } from "../utils/repository";
 import { repository } from "../utils/repository";
+import { themeEmbedDeepLink } from "../utils/shopify";
 import * as Competitor from "./competitor";
+import {
+  checkProductPageSchema,
+  NO_PAGE_URL,
+  resolveStructuredDataStatus,
+} from "./intelligence/page-schema";
 import * as Scan from "./scan";
 import * as Simulation from "./simulation";
 
@@ -199,6 +205,45 @@ export const listForConnectedStore = withAuthentication(
   "Product.listForConnectedStore",
 );
 
+/**
+ * The store a product selection belongs to. Onboarding steps carry product ids
+ * in the URL rather than a store id, but competitors and scans are both
+ * store-scoped — this resolves one from the other so the rivals detected during
+ * onboarding land on the same catalog the products came from.
+ *
+ * Falls back to the newest store when the step is opened without a selection
+ * (the "Skip" path), matching how the rest of onboarding resolves its store.
+ * Returns null only when the account has no store at all.
+ */
+export const resolveStoreForSelection = withAuthentication(
+  async (context, { products: ids }: { products?: string[] } = {}) => {
+    const userId = context.session.user.id;
+
+    if (ids && ids.length > 0) {
+      const owned = await find(Environment.SERVER, {
+        where: and(
+          eq(schema.product.userId, userId),
+          inArray(schema.product.id, ids),
+        ),
+        limit: 1,
+      });
+      if (!owned.success) return owned;
+
+      const first = owned.data[0];
+      if (first) return { success: true as const, data: first.storeId };
+    }
+
+    const latest = await stores.find(Environment.SERVER, {
+      where: eq(schema.store.userId, userId),
+      limit: 1,
+    });
+    if (!latest.success) return latest;
+
+    return { success: true as const, data: latest.data[0]?.id ?? null };
+  },
+  "Product.resolveStoreForSelection",
+);
+
 const keys = [
   "title",
   "description",
@@ -221,7 +266,7 @@ const computeDataQuality = (product: Type): number => {
 };
 
 const computeModelWinRate = (
-  simulations: Simulation.Type[],
+  simulations: Simulation.Summary[],
   model: string,
 ): number => {
   const modelSimulations = simulations.filter(
@@ -244,22 +289,44 @@ export const gatherIntelligence = dedupe(
     // averages, quality/optimization breakdowns), so it must cover the whole
     // catalog — not the 10-row preview `skimForCurrentUser` returns, which would
     // undercount totals and skew every average.
-    const [products, scan] = await Promise.all([
-      find(Environment.SERVER, {
-        where: store
-          ? and(
-              eq(schema.product.userId, userId),
-              eq(schema.product.storeId, store),
-            )
-          : eq(schema.product.userId, userId),
-      }),
+    const [catalog, scan] = await Promise.all([
+      store
+        ? Simulation.getForStore(Environment.SERVER, { store })
+        : (async () => {
+            const products = await find(Environment.SERVER, {
+              where: eq(schema.product.userId, userId),
+            });
+            if (!products.success) return products;
+
+            if (products.data.length === 0)
+              return {
+                success: true as const,
+                data: {
+                  products: products.data,
+                  simulations: [] as Simulation.Summary[],
+                },
+              };
+
+            const simulations = await Simulation.getForProducts(
+              Environment.SERVER,
+              { products: products.data.map((product) => product.id) },
+            );
+            if (!simulations.success) return simulations;
+
+            return {
+              success: true as const,
+              data: { products: products.data, simulations: simulations.data },
+            };
+          })(),
       Scan.getLatest(Environment.SERVER, { store }),
     ]);
 
-    if (!products.success) return products;
+    if (!catalog.success) return catalog;
     if (!scan.success) return scan;
 
-    if (products.data.length === 0) {
+    const { products, simulations } = catalog.data;
+
+    if (products.length === 0) {
       return {
         success: true,
         data: {
@@ -270,14 +337,8 @@ export const gatherIntelligence = dedupe(
       };
     }
 
-    const simulations = await Simulation.getForProducts(Environment.SERVER, {
-      products: products.data.map((product) => product.id),
-    });
-
-    if (!simulations.success) return simulations;
-
-    const rows = products.data.map((product) => {
-      const productSimulations = simulations.data.filter(
+    const rows = products.map((product) => {
+      const productSimulations = simulations.filter(
         (simulation) => simulation.productId === product.id,
       );
 
@@ -308,7 +369,7 @@ export const gatherIntelligence = dedupe(
       success: true,
       data: {
         products: rows,
-        total: products.data.length,
+        total: products.length,
         scan: scan.data[0],
       },
     };
@@ -399,6 +460,13 @@ export const getDetail = withAuthentication(
     if (storeId && product.data.storeId !== storeId)
       return { success: false, error: new Error("Product not found") };
 
+    // Live truth: whether AI agents actually see schema.org markup on the
+    // rendered storefront — distinct from the `structuredData` we generated and
+    // hold locally. Cached hourly, so this doesn't slow repeat loads.
+    const liveSchema = product.data.url
+      ? await checkProductPageSchema(product.data.url)
+      : NO_PAGE_URL;
+
     const store = product.data.storeId
       ? await stores.get(Environment.SERVER, product.data.storeId)
       : null;
@@ -407,6 +475,13 @@ export const getDetail = withAuthentication(
         store.data &&
         PUBLISHABLE_PLATFORMS.has(store.data.platform),
     );
+
+    // Only Shopify has an app embed to switch on, so only Shopify gets the
+    // deep link that fixes a `missing` + embed-off page in one click.
+    const themeEditorUrl =
+      store?.success && store.data && store.data.platform === "shopify"
+        ? themeEmbedDeepLink(store.data.domain)
+        : null;
 
     const simulations = await Simulation.getForProducts(Environment.SERVER, {
       products: [id],
@@ -492,9 +567,14 @@ export const getDetail = withAuthentication(
         product: {
           ...product.data,
           quality: computeDataQuality(product.data),
+          structuredDataStatus: resolveStructuredDataStatus(
+            liveSchema,
+            Boolean(product.data.structuredData),
+          ),
         },
         winRate,
         canPublish,
+        themeEditorUrl,
         models,
         competitors,
         simulations: enriched,
@@ -502,4 +582,51 @@ export const getDetail = withAuthentication(
     };
   },
   "Product.getDetail",
+);
+
+/**
+ * Store-level structured-data posture for the products list: whether the
+ * ecentic app embed renders on the storefront at all. Enabling the embed is a
+ * one-time, store-wide action, so the products page surfaces it once instead
+ * of per product. Sampled from one product page (check cached hourly by URL).
+ */
+export const getStoreEmbedStatus = withAuthentication(
+  async (context, { store: storeId }: { store: string }) => {
+    const store = await stores.get(Environment.SERVER, storeId);
+    if (!store.success) return store;
+    if (!store.data || store.data.userId !== context.session.user.id)
+      return { success: false as const, error: new Error("Store not found") };
+
+    if (
+      store.data.platform !== "shopify" &&
+      store.data.platform !== "shopify-public"
+    )
+      return {
+        success: true as const,
+        data: { embedOff: false, themeEditorUrl: null },
+      };
+
+    const products = await find(Environment.SERVER, {
+      where: eq(schema.product.storeId, storeId),
+      limit: 10,
+    });
+    if (!products.success) return products;
+
+    const sample = products.data.find((product) => product.url);
+    if (!sample?.url)
+      return {
+        success: true as const,
+        data: { embedOff: false, themeEditorUrl: null },
+      };
+
+    const check = await checkProductPageSchema(sample.url);
+    return {
+      success: true as const,
+      data: {
+        embedOff: check.embed === "inactive",
+        themeEditorUrl: themeEmbedDeepLink(store.data.domain),
+      },
+    };
+  },
+  "Product.getStoreEmbedStatus",
 );

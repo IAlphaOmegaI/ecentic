@@ -429,7 +429,7 @@ const closePaygPeriod = withContext(
     );
     if (!period.success) return period;
 
-    const description = `Ecentic performance fee (${start
+    const description = `ecentic performance fee (${start
       .toISOString()
       .slice(0, 10)})`;
     const delta = billed - period.data.reportedCents;

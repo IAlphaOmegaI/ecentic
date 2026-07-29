@@ -148,6 +148,16 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
+    // Without this Better Auth refuses `requestPasswordReset` outright
+    // (`RESET_PASSWORD_DISABLED`), so the whole forgot-password flow hangs on
+    // it. `url` already points at Better Auth's own `/reset-password/:token`
+    // endpoint, which validates the token before handing off to our page.
+    sendResetPassword: async ({ user, url }) => {
+      void Authentication.sendResetPasswordEmail({
+        to: user.email,
+        resetUrl: url,
+      });
+    },
   },
   emailVerification: {
     autoSignInAfterVerification: true,

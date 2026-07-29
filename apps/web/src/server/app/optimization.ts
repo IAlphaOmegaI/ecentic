@@ -2,7 +2,7 @@
 
 import { resultify } from "@zenncore/utils";
 import { and, eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { z } from "zod";
 import { schema } from "../database";
 import * as AI from "../utils/ai";
@@ -10,9 +10,11 @@ import { withAuthentication } from "../utils/authentication";
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { type Document, repository } from "../utils/repository";
+import { themeEmbedDeepLink } from "../utils/shopify";
 import { feedUrl } from "./feed-export";
 import * as Shopify from "./integration/shopify";
 import * as WooCommerce from "./integration/woocommerce";
+import { pageSchemaTag } from "./intelligence/page-schema";
 import * as Ucp from "./intelligence/ucp/profile";
 import * as Product from "./product";
 import * as Simulation from "./simulation";
@@ -542,28 +544,35 @@ SKU: ${productData.sku ?? "(unknown)"}`,
 );
 
 /**
- * Publishes a product's schema.org JSON-LD to the connected store so AI agents
- * reading the storefront can see it. Generates the structured data first if the
- * product doesn't have it yet, then routes to the platform integration
- * (Shopify metafields or WooCommerce product meta).
+ * Publishes a product's AI-optimized schema.org JSON-LD to the connected
+ * store. The app embed renders default markup from the live product data on
+ * its own; publishing writes the optimized version to the
+ * `ecentic.structured_data` metafield (WooCommerce: product meta), which the
+ * embed then renders instead of the default. Generates the structured data
+ * first if the product doesn't have it yet.
  */
 export const publishProductStructuredData = withAuthentication(
   async (context, { product: id }: { product: string }) => {
     const user = context.session.user.id;
-
     const productResult = await Product.get(Environment.SERVER, id);
+
     if (!productResult.success) return productResult;
-    if (!productResult.data)
+    if (!productResult.data) {
       return { success: false as const, error: new Error("Product not found") };
+    }
 
     const product = productResult.data;
-    if (product.userId !== user)
+
+    if (product.userId !== user) {
       return { success: false as const, error: new Error("Not authorized") };
+    }
 
     const storeResult = await Store.get(Environment.SERVER, product.storeId);
+
     if (!storeResult.success) return storeResult;
-    if (!storeResult.data)
+    if (!storeResult.data) {
       return { success: false as const, error: new Error("Store not found") };
+    }
 
     const store = storeResult.data;
 
@@ -586,7 +595,7 @@ export const publishProductStructuredData = withAuthentication(
       switch (store.platform) {
         case "shopify":
         case "shopify-public":
-          return Shopify.pushProductUcpMetafields({
+          return Shopify.pushProductMetafields({
             product: id,
             structuredJson,
           });
@@ -607,8 +616,24 @@ export const publishProductStructuredData = withAuthentication(
 
     if (!result.success) return result;
 
+    // Metafields only render on the storefront once the theme app embed is
+    // enabled — hand the client a deep link that pre-activates it.
+    const themeEditorUrl =
+      store.platform === "shopify" || store.platform === "shopify-public"
+        ? themeEmbedDeepLink(store.domain)
+        : null;
+
+    // The live-page check is cached by URL and would otherwise keep reporting
+    // the pre-publish verdict for the rest of the hour. `updateTag` (not
+    // `revalidateTag`) so the render that follows this action reads the fresh
+    // check rather than one more stale hit.
+    if (product.url) updateTag(pageSchemaTag(product.url));
+
     revalidatePath("/dashboard/[store]/products/[id]", "page");
-    return { success: true as const, data: { structuredData: structuredJson } };
+    return {
+      success: true as const,
+      data: { structuredData: structuredJson, themeEditorUrl },
+    };
   },
   "Optimization.publishProductStructuredData",
 );
@@ -718,7 +743,7 @@ export const optimizeStoreForAgents = withAuthentication(
     const errors: string[] = [];
 
     // Shop-level UCP profile: Shopify gets it written to shop metafields;
-    // WooCommerce serves it through Ecentic's hosted `/.well-known/ucp` bridge,
+    // WooCommerce serves it through ecentic's hosted `/.well-known/ucp` bridge,
     // so there's nothing to push to the store here.
     const profile = isShopify
       ? await Ucp.publishProfileToShopify({ store: storeId })

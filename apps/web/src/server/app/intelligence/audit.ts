@@ -6,6 +6,11 @@ import { Environment } from "@/server/utils/environment";
 import { NotFoundError } from "@/server/utils/error";
 import * as Product from "../product";
 import { computeProductAudit } from "./audit-compute";
+import {
+  checkProductPageSchema,
+  NO_PAGE_URL,
+  resolveStructuredDataStatus,
+} from "./page-schema";
 
 export type { Type } from "./audit-compute";
 
@@ -18,8 +23,18 @@ export const auditProduct = withAuthentication(
 
     const record = product.data;
 
+    // Verify schema.org markup on the live product page — agents read the
+    // rendered HTML, not the synced structuredData column.
+    const pageSchema = record.url
+      ? await checkProductPageSchema(record.url)
+      : NO_PAGE_URL;
+
     const audit = await resultify(() =>
       computeProductAudit({
+        structuredDataStatus: resolveStructuredDataStatus(
+          pageSchema,
+          Boolean(record.structuredData),
+        ),
         product: record.id,
         updatedAt: record.updatedAt.toISOString(),
         title: record.title,

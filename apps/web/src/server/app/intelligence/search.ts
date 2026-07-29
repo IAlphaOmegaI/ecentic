@@ -8,7 +8,7 @@ import { Environment } from "../../utils/environment";
 import * as Competitor from "../competitor";
 
 export const searchCompetitors = withAuthentication(
-  async (context, { query }: { query: string }) => {
+  async (context, { query, store }: { query: string; store: string }) => {
     if (!query.trim())
       return {
         success: false,
@@ -51,6 +51,7 @@ Rules:
         Competitor.create(Environment.SERVER, {
           ...entry,
           userId: context.session.user.id,
+          storeId: store,
           selected: true,
         }),
       ),

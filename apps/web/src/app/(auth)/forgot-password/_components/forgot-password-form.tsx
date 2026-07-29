@@ -1,9 +1,8 @@
 "use client";
 
-import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
+import { ArrowRightIcon, CheckCircleIcon, LoaderIcon } from "@zenncore/icons";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
-import { FieldLabel } from "@zenncore/web/components/form";
 import {
   type FormEntries,
   field,
@@ -12,14 +11,10 @@ import {
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { z } from "zod";
 import { Motion } from "@/components/motion";
 import { Spring } from "@/lib/animations";
-import { sanitizeRedirect } from "@/lib/redirect";
 import * as Authentication from "@/server/app/authentication";
 
 const config = {
@@ -28,64 +23,18 @@ const config = {
     validator: z.string().email(),
     label: "Email",
     placeholder: "jane@acmestore.com",
-    description: "The email assosciated with your account.",
+    description: "The email associated with your account.",
   }),
 } satisfies GenericForm;
 
 export const ForgotPasswordForm = () => {
-  const router = useRouter();
   const toast = useToastManager();
-  const searchParameters = useSearchParams();
-
-  // Set by the proxy when it bounces an unauthenticated request off a protected
-  // route. Each provider keeps its own fallback for the plain `/sign-in` case.
-  const requestedRedirect = searchParameters.get("redirect");
+  // Holds the address the link went to, and doubles as the "sent" flag.
+  const [recipient, setRecipient] = useState<string | null>(null);
 
   const [handleSubmit, isPending] = useAsyncAction(
-    async (data: { data: FormEntries<typeof config> }) => {
-      if (data.type === "google") {
-        const result = await Authentication.signInWithGoogle({
-          callbackURL: sanitizeRedirect(
-            requestedRedirect,
-            "/onboarding/connect",
-          ),
-        });
-
-        if (!result.success) {
-          toast.add({
-            title: "Error",
-            description: result.error.message,
-            type: "error",
-          });
-
-          return;
-        }
-
-        window.location.href = result.data.url;
-        return;
-      }
-
-      if (data.type === "shopify") {
-        const result = await Authentication.signInWithShopify({
-          shop: data.data.shop,
-          callbackURL: sanitizeRedirect(requestedRedirect, "/dashboard"),
-        });
-
-        if (!result.success) {
-          toast.add({
-            title: "Error",
-            description: result.error.message,
-            type: "error",
-          });
-
-          return;
-        }
-
-        window.location.href = result.data.url;
-        return;
-      }
-
-      const result = await Authentication.signIn(data.data);
+    async ({ email }: FormEntries<typeof config>) => {
+      const result = await Authentication.forgotPassword({ email });
 
       if (!result.success) {
         toast.add({
@@ -93,123 +42,80 @@ export const ForgotPasswordForm = () => {
           description: result.error.message,
           type: "error",
         });
+
         return;
       }
 
-      router.push(sanitizeRedirect(requestedRedirect, "/onboarding/connect"));
+      // Deliberately unconditional: the action succeeds for an address that
+      // has no account too, and saying so here would leak who has one.
+      setRecipient(email);
     },
   );
 
   return (
-    <Motion.Stagger stagger={0.07} delay={0.18}>
-      <Motion.Item className="mb-4 flex flex-col gap-2">
-        <Button
-          variant="soft"
-          color="emphasis"
-          className="w-full"
-          type="button"
-          onClick={() => handleSubmit({ type: "google" })}
+    <AnimatePresence mode="wait" initial={false}>
+      {recipient ? (
+        <motion.div
+          key="sent"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={Spring.Snappy}
+          className="flex flex-col items-center gap-6 py-8 text-center"
         >
-          {provider === "google" && isPending ? (
-            <LoaderIcon className="size-4 animate-spin" />
-          ) : (
-            <Image
-              src="/images/google.svg"
-              alt="Google"
-              width={16}
-              height={16}
-            />
-          )}
-          Continue with Google
-        </Button>
-        <Button
-          variant="soft"
-          color="emphasis"
-          className="w-full"
-          type="button"
-          onClick={() =>
-            setProvider((previous) =>
-              previous === "shopify" ? "credential" : "shopify",
-            )
-          }
+          <CheckCircleIcon className="size-16 text-primary" />
+          <div className="flex flex-col gap-2">
+            <p className="font-medium text-2xl text-foreground">
+              Check your inbox
+            </p>
+            <p className="font-light text-foreground-dimmed text-lg">
+              If an account exists for{" "}
+              <span className="text-foreground">{recipient}</span>, a reset link
+              is on its way. It expires in one hour.
+            </p>
+          </div>
+          <Button
+            variant="soft"
+            color="emphasis"
+            type="button"
+            onClick={() => setRecipient(null)}
+          >
+            Use a different email
+          </Button>
+        </motion.div>
+      ) : (
+        <motion.div
+          key="request"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={Spring.Snappy}
         >
-          {provider === "shopify" && isPending ? (
-            <LoaderIcon className="size-4 animate-spin" />
-          ) : (
-            <Image
-              src="/images/shopify.svg"
-              alt="Shopify"
-              width={16}
-              height={16}
-              className="size-[16px]"
-            />
-          )}
-          Continue with Shopify
-        </Button>
-        <AnimatePresence initial={false}>
-          {provider === "shopify" && (
-            <motion.div
-              key="shopify-form"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={Spring.Snappy}
-              style={{ overflow: "hidden" }}
-            >
+          <Motion.Stagger stagger={0.07} delay={0.18}>
+            <Motion.Item>
               <InferredForm
-                config={shopifyFormConfig}
-                onSubmit={(data) => handleSubmit({ data, type: "shopify" })}
-                className="flex flex-col gap-2 pt-1"
+                config={config}
+                onSubmit={handleSubmit}
+                className="flex flex-col gap-3"
               >
                 <Button
                   type="submit"
                   color="primary"
                   disabled={isPending}
-                  className="w-full"
+                  className="mt-1 flex w-full"
                 >
+                  {isPending ? "Sending link..." : "Send reset link"}
                   {isPending ? (
                     <LoaderIcon className="size-4 animate-spin" />
                   ) : (
                     <ArrowRightIcon className="size-4" />
                   )}
-                  Connect Shopify store
                 </Button>
               </InferredForm>
-            </motion.div>
-          )}
-        </AnimatePresence>
-        <div className="relative mt-4 flex items-center gap-3">
-          <div className="h-px flex-1 bg-accent-foreground" />
-          <span className="font-light text-foreground-dimmed">or</span>
-          <div className="h-px flex-1 bg-accent-foreground" />
-        </div>
-      </Motion.Item>
-
-      <Motion.Item>
-        <InferredForm
-          config={config}
-          onSubmit={(data) => handleSubmit({ type: "credential", data })}
-          className="flex flex-col gap-3"
-        >
-          <Button
-            type="submit"
-            color="primary"
-            disabled={isPending}
-            className="mt-1 flex w-full"
-          >
-            {provider === "credential" && isPending
-              ? "Signing in..."
-              : provider === "google" && isPending
-                ? "Signing in with Google..."
-                : "Sign in"}
-            {provider === "credential" && isPending ? (
-              <LoaderIcon className="size-4 animate-spin" />
-            ) : (
-              <ArrowRightIcon className="size-4" />
-            )}
-          </Button>
-        </InferredForm>
-      </Motion.Item>
-    </Motion.Stagger>
+            </Motion.Item>
+          </Motion.Stagger>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };

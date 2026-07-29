@@ -444,6 +444,7 @@ export const SimulationsClient = ({
           </div>
           <AutoDetectTab
             products={productIds}
+            store={store}
             onSuccess={handleDetectionSuccess}
             className="h-[520px] border-0"
           />

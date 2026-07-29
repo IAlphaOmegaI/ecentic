@@ -30,7 +30,7 @@ export default () => (
             Connect WooCommerce
           </h2>
           <p className="mt-1 font-light text-2xl text-foreground-dimmed">
-            One-click via the Ecentic plugin, or manually with API keys.
+            One-click via the ecentic plugin, or manually with API keys.
           </p>
         </div>
       </div>
@@ -77,7 +77,7 @@ export default () => (
           </li>
           <li>
             Click <span className="font-medium text-primary">Add key</span>.
-            Give it a description like &quot;Ecentic&quot;, set permissions to{" "}
+            Give it a description like &quot;ecentic&quot;, set permissions to{" "}
             <span className="font-medium text-primary">Read/Write</span> if you
             want ecentic to push listing changes, or{" "}
             <span className="font-medium text-primary">Read</span> for

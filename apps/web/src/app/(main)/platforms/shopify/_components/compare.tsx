@@ -58,7 +58,7 @@ export const Compare = () => (
         </RevealItem>
         <RevealItem>
           <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-xl">
-            Native generation helps merchants produce copy. Ecentic helps
+            Native generation helps merchants produce copy. ecentic helps
             merchants evaluate, prioritize, and improve listings with a direct
             tie back to competitive outcomes.
           </p>

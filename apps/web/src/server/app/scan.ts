@@ -1,10 +1,10 @@
 "use server";
 
 import { and, eq, inArray, lt } from "drizzle-orm";
-import { cache as dedupe } from "react";
 import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
 import { withContext } from "../utils/context";
+import { dedupe } from "../utils/dedupe";
 import { Environment } from "../utils/environment";
 import { NotFoundError } from "../utils/error";
 import type { Document } from "../utils/repository";
@@ -13,8 +13,6 @@ import * as Simulation from "./simulation";
 
 export const { get, paginate, create, update, destroy, exists, count, find } =
   repository(schema.scan);
-
-const products = repository(schema.product);
 
 export type Type = Document<typeof schema.scan>;
 
@@ -38,28 +36,18 @@ export const getLatest = dedupe(
         });
       }
 
-      // Scans have no storeId — they're account-wide runs. Scope to a store by
-      // keeping only scans that touched that store's products, and recompute
-      // wins/losses from just those products' simulations.
-      const storeProducts = await products.find(Environment.SERVER, {
-        where: and(
-          eq(schema.product.userId, context.session.user.id),
-          eq(schema.product.storeId, store),
-        ),
+      // Legacy scans have no storeId, so scope by product membership instead:
+      // keep only scans that touched this store's products, and recompute
+      // wins/losses from just those products' simulations. The products +
+      // simulations pair comes from the deduped store fetch shared with the
+      // other dashboard aggregations.
+      const collected = await Simulation.getForStore(Environment.SERVER, {
+        store,
       });
-      if (!storeProducts.success) return storeProducts;
+      if (!collected.success) return collected;
 
-      const productIds = storeProducts.data.map((product) => product.id);
-      if (productIds.length === 0)
-        return { success: true as const, data: [] as Type[] };
-
-      const simulations = await Simulation.getForProducts(Environment.SERVER, {
-        products: productIds,
-      });
-      if (!simulations.success) return simulations;
-
-      const byScan = new Map<string, Simulation.Type[]>();
-      for (const simulation of simulations.data) {
+      const byScan = new Map<string, Simulation.Summary[]>();
+      for (const simulation of collected.data.simulations) {
         const list = byScan.get(simulation.scanId) ?? [];
         list.push(simulation);
         byScan.set(simulation.scanId, list);

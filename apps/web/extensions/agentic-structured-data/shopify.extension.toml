@@ -1,7 +1,0 @@
-api_version = "2026-04"
-
-[[extensions]]
-name = "Agentic structured data"
-handle = "agentic-structured-data"
-uid = "f2dc9c63-ac8e-1876-d3e7-31fa4719252f0215a9ab"
-type = "theme"

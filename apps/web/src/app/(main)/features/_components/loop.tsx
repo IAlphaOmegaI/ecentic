@@ -20,7 +20,7 @@ const steps: readonly Step[] = [
     step: "Step 01",
     title: "Simulate",
     description:
-      "Ecentic asks the top AI shopping agents to shop your catalog against real competitors, the same way buyers do.",
+      "ecentic asks the top AI shopping agents to shop your catalog against real competitors, the same way buyers do.",
   },
   {
     icon: FaceSearchIcon,
@@ -58,7 +58,7 @@ export const Loop = () => (
         </h2>
         <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-xl">
           Visibility in AI-assisted shopping is not a brand metric. It is an
-          operational loop, and Ecentic runs all four steps for every product in
+          operational loop, and ecentic runs all four steps for every product in
           your catalog.
         </p>
       </div>

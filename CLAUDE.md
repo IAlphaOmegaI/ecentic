@@ -139,7 +139,7 @@ app/
 └── sitemap.ts
 ```
 
-Client components live in `_components/` subdirectories next to their page.
+Page-specific components live in `_components/` subdirectories next to their page — **client and server components alike**, plus Suspense skeletons (`_components/skeletons.tsx`). The underscore keeps the folder out of routing. Only route-convention files (`page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`, `route.ts`) belong in the route folder itself.
 
 ### PPR and Streaming (dashboard and app screens)
 
@@ -147,6 +147,7 @@ Every `page.tsx` must be a **server component** that exports real HTML — not a
 
 - **Static shell** — Render in `page.tsx`: layout, page title, description, headings. This is the initial HTML.
 - **Data** — Fetch in **async server components** (same file or `_components/`). Wrap each in `<Suspense fallback={<Skeleton />}>` with a skeleton that matches the content shape.
+- **Skeletons** — Export them from `_components/skeletons.tsx` so `page.tsx` and `loading.tsx` share the exact same shapes and navigation lands without layout shift.
 - **Streaming** — The server sends the shell first, then streams in resolved async components so users see content as it loads.
 
 Onboarding/auth screens may be client-heavy by design; all other screens (dashboard, settings, lists, details) follow this pattern. See AGENTS.md §21b and §23f.
@@ -205,7 +206,7 @@ const Feature = {
 | Framework | Next.js 16, React 19, React Compiler |
 | Database | PostgreSQL, Drizzle ORM 1.0 beta |
 | Auth | Better Auth 1.5 (email/password + Drizzle adapter) |
-| AI | Vercel AI SDK (direct providers, no gateway) — Azure OpenAI + Anthropic + Google + Perplexity |
+| AI | Vercel AI SDK — GPT direct on Azure OpenAI; Claude + Gemini + Perplexity via the Vercel AI Gateway |
 | Email | Resend + React Email |
 | Storage | UploadThing |
 | Styling | Tailwind CSS 4 |
@@ -232,16 +233,16 @@ SHOPIFY_API_SECRET
 UPLOADTHING_TOKEN
 NEXT_PUBLIC_SENTRY_DSN
 
-# AI providers — every model call goes DIRECT to its provider (no Vercel AI Gateway).
-# GPT → your Azure deployment; Claude/Gemini/Perplexity → their native APIs.
-# Resolution lives in apps/web/src/server/utils/ai.ts (`model(id)`); Azure is the default.
+# AI providers — two rails, chosen by the SHAPE of the model argument in
+# apps/web/src/server/utils/ai.ts (`model(id)`):
+#   provider instance  → billed direct   → GPT on your Azure deployment (default)
+#   "provider/model"   → billed via gateway → Claude, Gemini, Perplexity
+# No per-vendor key is needed; the gateway covers everything Azure can't serve.
 AZURE_RESOURCE_NAME                       # subdomain only, e.g. "my-resource" (NOT the full URL)
 AZURE_API_KEY
 AZURE_API_VERSION                         # optional, defaults to "preview" (Azure v1 API surface)
 AZURE_DEPLOYMENT_GPT4O                    # your GPT deployment name, e.g. "gpt-5.3-chat"; "gpt-4o" logical id maps here
-ANTHROPIC_API_KEY
-GOOGLE_GENERATIVE_AI_API_KEY
-PERPLEXITY_API_KEY
+AI_GATEWAY_API_KEY                        # Vercel AI Gateway — Claude/Gemini/Perplexity calls
 ```
 
 Billing. Three separate products: free **Scan** (one-time, no billing row),

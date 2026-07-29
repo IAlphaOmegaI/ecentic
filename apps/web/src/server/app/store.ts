@@ -16,9 +16,6 @@ import * as Product from "./product";
 export const { get, paginate, create, update, destroy, exists, count, find } =
   repository(schema.store);
 
-const products = repository(schema.product);
-const simulations = repository(schema.simulation);
-
 export type Type = Document<typeof schema.store>;
 
 export const getForCurrentUser = withAuthentication(async (context) => {
@@ -66,7 +63,7 @@ export type Reconciliation =
 
 /**
  * Decides how to handle a connect attempt for a storefront that may already
- * exist in Ecentic. A store is identified by its normalized `domain` and, for
+ * exist in ecentic. A store is identified by its normalized `domain` and, for
  * OAuth platforms, its external `storeId`.
  *
  * - `new`     → nobody has it; create it.
@@ -127,75 +124,78 @@ export type Overview = Type & {
  * All of the current user's stores, each enriched with the headline metrics the
  * `/dashboard` hub cards show: product count, overall win rate (derived from
  * simulations on the store's products), simulation volume, and 30-day agent
- * visits. Computed in a few bulk queries rather than one per store.
+ * visits. Everything is aggregated in SQL — the hub only needs counts, so
+ * pulling full product/simulation rows across the wire for it would ship the
+ * whole catalog (and every simulation's reasoning prose) to count them.
  */
 export const overviewForCurrentUser = withAuthentication(async (context) => {
   const userId = context.session.user.id;
 
-  const storeRows = await find(Environment.SERVER, {
-    where: eq(schema.store.userId, userId),
-    orderBy: [{ column: schema.store.createdAt, direction: "desc" }],
-  });
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+  const [storeRows, productCounts, simulationStats, visits] = await Promise.all([
+    find(Environment.SERVER, {
+      where: eq(schema.store.userId, userId),
+      orderBy: [{ column: schema.store.createdAt, direction: "desc" }],
+    }),
+    db
+      .select({
+        storeId: schema.product.storeId,
+        count: sql<number>`count(*)::int`,
+      })
+      .from(schema.product)
+      .where(eq(schema.product.userId, userId))
+      .groupBy(schema.product.storeId),
+    db
+      .select({
+        storeId: schema.product.storeId,
+        total: sql<number>`count(*)::int`,
+        wins: sql<number>`count(*) filter (where ${schema.simulation.winner} = 'product')::int`,
+      })
+      .from(schema.simulation)
+      .innerJoin(
+        schema.product,
+        eq(schema.simulation.productId, schema.product.id),
+      )
+      .where(eq(schema.product.userId, userId))
+      .groupBy(schema.product.storeId),
+    db
+      .select({
+        storeId: schema.agentVisit.storeId,
+        count: sql<number>`count(*)::int`,
+      })
+      .from(schema.agentVisit)
+      .where(
+        and(
+          eq(schema.agentVisit.userId, userId),
+          gte(schema.agentVisit.createdAt, thirtyDaysAgo),
+        ),
+      )
+      .groupBy(schema.agentVisit.storeId),
+  ]);
   if (!storeRows.success) return storeRows;
   if (storeRows.data.length === 0)
     return { success: true as const, data: [] as Overview[] };
 
-  const productRows = await products.find(Environment.SERVER, {
-    where: eq(schema.product.userId, userId),
-  });
-  if (!productRows.success) return productRows;
-
-  const productIds = productRows.data.map((product) => product.id);
-
-  const simulationRows = productIds.length
-    ? await simulations.find(Environment.SERVER, {
-        where: inArray(schema.simulation.productId, productIds),
-      })
-    : { success: true as const, data: [] };
-  if (!simulationRows.success) return simulationRows;
-
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-  const visits = await db
-    .select({
-      storeId: schema.agentVisit.storeId,
-      count: sql<number>`count(*)::int`,
-    })
-    .from(schema.agentVisit)
-    .where(
-      and(
-        eq(schema.agentVisit.userId, userId),
-        gte(schema.agentVisit.createdAt, thirtyDaysAgo),
-      ),
-    )
-    .groupBy(schema.agentVisit.storeId);
-
+  const productCountByStore = new Map(
+    productCounts.map((row) => [row.storeId, row.count]),
+  );
+  const simulationStatsByStore = new Map(
+    simulationStats.map((row) => [row.storeId, row]),
+  );
   const visitsByStore = new Map(visits.map((row) => [row.storeId, row.count]));
 
   const data = storeRows.data.map((store) => {
-    const storeProductIds = new Set(
-      productRows.data
-        .filter((product) => product.storeId === store.id)
-        .map((product) => product.id),
-    );
-
-    const storeSimulations = simulationRows.data.filter((simulation) =>
-      storeProductIds.has(simulation.productId),
-    );
-
-    const wins = storeSimulations.filter(
-      (simulation) => simulation.winner === "product",
-    ).length;
+    const stats = simulationStatsByStore.get(store.id);
+    const total = stats?.total ?? 0;
+    const wins = stats?.wins ?? 0;
 
     return {
       ...store,
-      productCount: storeProductIds.size,
-      simulations: storeSimulations.length,
-      winRate:
-        storeSimulations.length > 0
-          ? Math.round((wins / storeSimulations.length) * 100)
-          : 0,
+      productCount: productCountByStore.get(store.id) ?? 0,
+      simulations: total,
+      winRate: total > 0 ? Math.round((wins / total) * 100) : 0,
       agentVisits: visitsByStore.get(store.id) ?? 0,
     } satisfies Overview;
   });

@@ -101,7 +101,7 @@ export const Capabilities = () => (
           Everything you need to get picked.
         </h2>
         <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-xl">
-          Not another dashboard or copy generator. Ecentic is a decision layer
+          Not another dashboard or copy generator. ecentic is a decision layer
           that sits on top of your store and turns agent insight into published
           listing updates.
         </p>

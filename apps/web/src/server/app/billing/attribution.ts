@@ -15,7 +15,7 @@ const WINDOW_DAYS = Number(
 export const { create, find, update } = repository(schema.attributedConversion);
 
 /**
- * Records an order as an AI-attributed conversion when we honestly can — Ecentic
+ * Records an order as an AI-attributed conversion when we honestly can — ecentic
  * is not in the AI platform's checkout, so attribution relies only on signals we
  * actually see: an explicit `_ecentic_ai_ref` cart attribute the storefront
  * tracker stamped, or, failing that, a recent `*-referral` agent visit for the

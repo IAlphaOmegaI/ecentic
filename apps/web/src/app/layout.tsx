@@ -170,7 +170,8 @@ export default ({ children }: PropsWithChildren) => {
       </head>
       <body
         className={`${redHatDisplay.variable} ${ltSuperior.variable} overflow-x-hidden bg-background font-body antialiased`}
-        // suppressHydrationWarning
+        // React Grab hydration errors
+        suppressHydrationWarning={process.env.NODE_ENV === "development"}
       >
         <Suspense>
           <PostHogProvider>
@@ -178,7 +179,7 @@ export default ({ children }: PropsWithChildren) => {
               <MotionProvider>
                 <ToastProvider>
                   <div className="isolate">{children}</div>
-                  <ToastList types={["error", "success", "info"]} />
+                  <ToastList types={["error", "success", "info", "loading"]} />
                 </ToastProvider>
               </MotionProvider>
             </ThemeProvider>
