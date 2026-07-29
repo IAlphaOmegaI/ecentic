@@ -195,6 +195,16 @@ export const competitor = pgTable(
     userId: text("userId")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
+    /**
+     * Competitors are store-scoped: the rivals a Shopify catalog is judged
+     * against are not the rivals a WooCommerce catalog is judged against, and
+     * {@link selected} is a per-store roster flag rather than an account-wide
+     * one. The same real-world rival appearing in two stores is two rows, the
+     * same way {@link product} duplicates across stores.
+     */
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
     title: text("title").notNull(),
     description: text("description"),
     price: text("price"),
@@ -207,7 +217,10 @@ export const competitor = pgTable(
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
     updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
   },
-  (table) => [index("competitor_user_idx").on(table.userId)],
+  (table) => [
+    index("competitor_user_idx").on(table.userId),
+    index("competitor_store_idx").on(table.storeId),
+  ],
 );
 
 export const scan = pgTable(

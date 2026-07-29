@@ -35,13 +35,17 @@ import * as Utils from "./utils";
 // ecentic UCP platform profile
 export const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
 
-// Gemini 3 attaches a thoughtSignature to each reasoning/tool-call step that must
-// be replayed verbatim on follow-up requests; when tool calls are rebuilt across
-// turns via convertToModelMessages that signature can get corrupted → 400
-// "Corrupted thought signature". 2.5-flash emits no thought signatures and handles
-// the UCP tool flow fine. A logical id — AI.stream resolves it to a direct
-// Google provider instance (not the Vercel gateway).
-export const PLAYGROUND_MODEL = "gemini-2.5-flash";
+// The playground drives one agent through the UCP tool flow — it demonstrates the
+// protocol, it does not compare vendors — so it has no reason to reach past the
+// provider we hold a first-party key for. `gpt-4o` resolves to the Azure
+// deployment (AZURE_DEPLOYMENT_GPT4O) and is billed to the Azure subscription
+// rather than to gateway credits.
+//
+// It also sidesteps the reason this used to pin 2.5-flash: Gemini 3 attaches a
+// thoughtSignature to each reasoning/tool-call step that must be replayed
+// verbatim, and rebuilding tool calls across turns via convertToModelMessages
+// could corrupt it → 400 "Corrupted thought signature".
+export const PLAYGROUND_MODEL = "gpt-4o";
 
 // Single source of truth for the tool argument shapes the agent must follow, so
 // they never drift from the tool definitions below.

@@ -71,7 +71,7 @@ export default async ({
             <div className="flex items-center gap-2">
               <Button
                 color="primary"
-                render={<Link href="/onboarding/competitors" />}
+                render={<Link href={`/dashboard/${store}/competitors/add`} />}
               >
                 <PlusIcon className="size-4" />
                 Add Competitor
@@ -453,7 +453,7 @@ const CompetitiveLandscape = async ({ store }: { store: string }) => {
           </Button>
           <Button
             color="primary"
-            render={<Link href="/onboarding/competitors" />}
+            render={<Link href={`/dashboard/${store}/competitors/add`} />}
           >
             Add Competitors <PlusIcon className="size-4" />
           </Button>

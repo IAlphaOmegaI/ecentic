@@ -1,7 +1,4 @@
-import { createAnthropic } from "@ai-sdk/anthropic";
 import { createAzure } from "@ai-sdk/azure";
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { createPerplexity } from "@ai-sdk/perplexity";
 import { createStreamableValue } from "@ai-sdk/rsc";
 import * as Sentry from "@sentry/nextjs";
 import {
@@ -21,15 +18,14 @@ export type ModelId =
   // Azure OpenAI (ChatGPT) — logical id; the real deployment resolves via env.
   | "gpt-4o"
   | "gpt-4"
-  // Anthropic (native)
+  // Anthropic — via gateway. `GATEWAY_ALIASES` maps these to its spelling.
   | "claude-sonnet-4-20250514"
   | "claude-sonnet-4-5"
   | "claude-sonnet-4-6"
-  // Google (native)
+  // Google — via gateway. 2.0-flash is absent: the gateway does not carry it.
   | "gemini-2.5-flash"
-  | "gemini-2.0-flash"
   | "gemini-3-flash-preview"
-  // Perplexity (native)
+  // Perplexity — via gateway; ids match its spelling as-is.
   | "sonar"
   | "sonar-pro"
   // Preserves literal autocomplete while still accepting any provider/deployment id.
@@ -51,10 +47,16 @@ export const repairText: RepairTextFunction = async ({ text }) => {
   return stripped.slice(start, end + 1);
 };
 
-// Every AI call goes DIRECT to the owning provider — never through the Vercel AI
-// Gateway. In the AI SDK a bare string model id is billed through the gateway; a
-// provider instance (below) is billed on that provider's own account: your Azure
-// subscription for ChatGPT, your Anthropic/Google/Perplexity keys for the rest.
+// Two billing rails, and which one you get is decided by the SHAPE of the model
+// argument, not by configuration: a provider instance calls that provider
+// directly on its own key, while a bare `provider/model` string is resolved by
+// the AI SDK's global provider — the Vercel AI Gateway — and billed to
+// AI_GATEWAY_API_KEY.
+//
+// GPT runs direct on Azure, the one provider with a first-party key here.
+// Everything Azure cannot serve (Claude, Gemini, Perplexity) goes through the
+// gateway, so no per-vendor key is needed. To move a vendor back onto its own
+// account later, give it a key and return a provider instance for its prefix.
 const azure = createAzure({
   resourceName: process.env.AZURE_RESOURCE_NAME,
   apiKey: process.env.AZURE_API_KEY,
@@ -62,9 +64,6 @@ const azure = createAzure({
   // features incl. structured outputs) — NOT the older date-based versions.
   apiVersion: process.env.AZURE_API_VERSION ?? "preview",
 });
-const anthropic = createAnthropic(); // reads ANTHROPIC_API_KEY at call time
-const google = createGoogleGenerativeAI(); // reads GOOGLE_GENERATIVE_AI_API_KEY
-const perplexity = createPerplexity(); // reads PERPLEXITY_API_KEY
 
 // Azure serves models under DEPLOYMENT names, which differ from the base model
 // name. Override via env when your deployment is named something other than the
@@ -72,9 +71,22 @@ const perplexity = createPerplexity(); // reads PERPLEXITY_API_KEY
 const deployment = (name: string) =>
   (name === "gpt-4o" && process.env.AZURE_DEPLOYMENT_GPT4O) || name;
 
-// Resolves a logical model id to a provider instance. ChatGPT on Azure is the
-// default; anything without a known provider prefix resolves there. Ids prefixed
-// or starting with claude*/gemini*/sonar* route to their native providers.
+// The gateway versions models with DOTS (`claude-sonnet-4.5`) where the native
+// APIs use dashes or a date suffix (`claude-sonnet-4-5`, `-20250514`). Only the
+// ids whose spelling actually differs need an entry; everything else is the
+// native id with a provider prefix bolted on.
+const GATEWAY_ALIASES: Record<string, string> = {
+  "claude-sonnet-4-20250514": "claude-sonnet-4",
+  "claude-sonnet-4-5": "claude-sonnet-4.5",
+  "claude-sonnet-4-6": "claude-sonnet-4.6",
+  "gemini-3-flash-preview": "gemini-3-flash",
+};
+
+// Resolves a logical model id to something `generateText`/`generateObject`
+// accepts. ChatGPT on Azure is the default, so an id with no recognised prefix
+// resolves to your Azure deployment as a provider instance (direct billing).
+// claude*/gemini*/sonar* return a `provider/model` STRING instead, which the AI
+// SDK routes through the gateway — that shape difference IS the routing.
 export const model = (id: ModelId = "gpt-4o"): LanguageModel => {
   const slash = id.indexOf("/");
   const provider =
@@ -96,11 +108,9 @@ export const model = (id: ModelId = "gpt-4o"): LanguageModel => {
 
   switch (provider) {
     case "anthropic":
-      return anthropic(name);
     case "google":
-      return google(name);
     case "perplexity":
-      return perplexity(name);
+      return `${provider}/${GATEWAY_ALIASES[name] ?? name}`;
     default:
       return azure(deployment(name));
   }

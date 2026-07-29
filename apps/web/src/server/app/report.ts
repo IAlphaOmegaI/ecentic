@@ -13,6 +13,7 @@ import * as Scan from "./scan";
 import * as Simulation from "./simulation";
 
 const optimizations = repository(schema.listingOptimization);
+const stores = repository(schema.store);
 
 export const exportWinRateSummary = withAuthentication(async () => {
   const scans = await Scan.getLatest(Environment.SERVER, { limit: 1000 });
@@ -165,24 +166,43 @@ export const exportProductPerformance = withAuthentication(async (context) => {
   };
 }, "Report.exportProductPerformance");
 
+// `/dashboard/reports` sits outside `[store]` and is account-wide by design, so
+// this export spans every store. Competitors are store-scoped, though, which
+// means one rival tracked in two stores is two rows with two different win
+// rates — the `store` column is what keeps those rows readable as distinct
+// rather than duplicated.
+const COMPETITOR_COLUMNS = [
+  "store",
+  "title",
+  "brand",
+  "source",
+  "simulations",
+  "winRateAgainstYou",
+];
+
 export const exportCompetitorAnalysis = withAuthentication(async (context) => {
-  const competitors = await Competitor.find(Environment.SERVER, {
-    where: eq(schema.competitor.userId, context.session.user.id),
-  });
+  const userId = context.session.user.id;
+
+  const [competitors, owned] = await Promise.all([
+    Competitor.find(Environment.SERVER, {
+      where: eq(schema.competitor.userId, userId),
+    }),
+    stores.find(Environment.SERVER, { where: eq(schema.store.userId, userId) }),
+  ]);
   if (!competitors.success) return competitors;
+  if (!owned.success) return owned;
 
   if (competitors.data.length === 0) {
     return {
       success: true as const,
       data: {
         filename: "competitor-analysis.csv",
-        content: serialize(
-          ["title", "brand", "source", "simulations", "winRateAgainstYou"],
-          [],
-        ),
+        content: serialize(COMPETITOR_COLUMNS, []),
       },
     };
   }
+
+  const storeNames = new Map(owned.data.map((store) => [store.id, store.name]));
 
   const simulations = await Simulation.getForCompetitors(Environment.SERVER, {
     competitors: competitors.data.map((competitor) => competitor.id),
@@ -201,6 +221,7 @@ export const exportCompetitorAnalysis = withAuthentication(async (context) => {
       total > 0 ? Math.round((competitorWins / total) * 100) : "";
 
     return [
+      storeNames.get(competitor.storeId) ?? competitor.storeId,
       competitor.title,
       competitor.brand ?? "",
       competitor.source ?? "",
@@ -213,10 +234,7 @@ export const exportCompetitorAnalysis = withAuthentication(async (context) => {
     success: true as const,
     data: {
       filename: "competitor-analysis.csv",
-      content: serialize(
-        ["title", "brand", "source", "simulations", "winRateAgainstYou"],
-        rows,
-      ),
+      content: serialize(COMPETITOR_COLUMNS, rows),
     },
   };
 }, "Report.exportCompetitorAnalysis");

@@ -50,7 +50,13 @@ export default async () => {
           Product.countForCurrentUser(Environment.SERVER, { store: store.id }),
         )
       : Promise.resolve(0),
-    unwrapResult(Competitor.countForCurrentUser(Environment.SERVER)),
+    store
+      ? unwrapResult(
+          Competitor.countForCurrentUser(Environment.SERVER, {
+            store: store.id,
+          }),
+        )
+      : Promise.resolve({ total: 0, selected: 0 }),
   ]);
 
   const simulations = productCount * competitorCounts.selected * 3;

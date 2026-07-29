@@ -205,6 +205,45 @@ export const listForConnectedStore = withAuthentication(
   "Product.listForConnectedStore",
 );
 
+/**
+ * The store a product selection belongs to. Onboarding steps carry product ids
+ * in the URL rather than a store id, but competitors and scans are both
+ * store-scoped — this resolves one from the other so the rivals detected during
+ * onboarding land on the same catalog the products came from.
+ *
+ * Falls back to the newest store when the step is opened without a selection
+ * (the "Skip" path), matching how the rest of onboarding resolves its store.
+ * Returns null only when the account has no store at all.
+ */
+export const resolveStoreForSelection = withAuthentication(
+  async (context, { products: ids }: { products?: string[] } = {}) => {
+    const userId = context.session.user.id;
+
+    if (ids && ids.length > 0) {
+      const owned = await find(Environment.SERVER, {
+        where: and(
+          eq(schema.product.userId, userId),
+          inArray(schema.product.id, ids),
+        ),
+        limit: 1,
+      });
+      if (!owned.success) return owned;
+
+      const first = owned.data[0];
+      if (first) return { success: true as const, data: first.storeId };
+    }
+
+    const latest = await stores.find(Environment.SERVER, {
+      where: eq(schema.store.userId, userId),
+      limit: 1,
+    });
+    if (!latest.success) return latest;
+
+    return { success: true as const, data: latest.data[0]?.id ?? null };
+  },
+  "Product.resolveStoreForSelection",
+);
+
 const keys = [
   "title",
   "description",

@@ -126,7 +126,7 @@ export default async ({
             </Button> */}
               <Button
                 color="primary"
-                render={<Link href="/onboarding/products" />}
+                render={<Link href={`/dashboard/${store}/products/add`} />}
               >
                 <PlusIcon className="size-4" />
                 Add Products

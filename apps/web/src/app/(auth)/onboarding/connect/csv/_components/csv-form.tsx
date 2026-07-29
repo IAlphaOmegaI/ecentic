@@ -12,60 +12,8 @@ import {
 import { useToastManager } from "@zenncore/web/components/toast";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
+import { parseCsvProducts } from "@/lib/csv";
 import * as CsvIntegration from "@/server/app/integration/csv";
-
-const parseCSV = (text: string): CsvIntegration.Type[] => {
-  const lines = text.trim().split(/\r?\n/);
-  if (lines.length < 2) return [];
-
-  const headers = (lines[0] ?? "")
-    .split(",")
-    .map((h) => h.trim().toLowerCase().replace(/['"]/g, ""));
-
-  return lines.slice(1).flatMap((line) => {
-    const values: string[] = [];
-    let current = "";
-    let inQuotes = false;
-
-    for (const char of line) {
-      if (char === '"') {
-        inQuotes = !inQuotes;
-      } else if (char === "," && !inQuotes) {
-        values.push(current.trim());
-        current = "";
-      } else {
-        current += char;
-      }
-    }
-    values.push(current.trim());
-
-    if (values.every((v) => v === "")) return [];
-
-    const row = Object.fromEntries(
-      headers.map((header, i) => [header, values[i] ?? ""]),
-    ) as CsvIntegration.Type & {
-      name?: string;
-      image_link?: string;
-      image_url?: string;
-      link?: string;
-    };
-
-    const title = row.title ?? row.name;
-    if (!title) return [];
-
-    return [
-      {
-        title,
-        description: row.description,
-        price: row.price,
-        image: row.image ?? row.image_link ?? row.image_url,
-        url: row.url ?? row.link,
-        sku: row.sku,
-        id: row.id,
-      },
-    ];
-  });
-};
 
 const config = {
   file: field({
@@ -101,7 +49,7 @@ export const CsvForm = () => {
       }
 
       const text = await file.text();
-      const products = parseCSV(text);
+      const products = parseCsvProducts(text);
 
       if (products.length === 0) {
         toast.add({

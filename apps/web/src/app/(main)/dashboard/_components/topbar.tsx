@@ -12,7 +12,7 @@ export const Topbar = async ({ store }: { store: string }) => {
   const [user, products, competitors, subscription] = await Promise.all([
     unwrapResult(Authentication.getCurrentUser(Environment.SERVER)),
     unwrapResult(Product.skimForCurrentUser(Environment.SERVER, { store })),
-    unwrapResult(Competitor.skimForCurrentUser(Environment.SERVER)),
+    unwrapResult(Competitor.skimForCurrentUser(Environment.SERVER, { store })),
     unwrapResult(Subscription.getCurrentSubscription(Environment.SERVER)),
   ]);
 

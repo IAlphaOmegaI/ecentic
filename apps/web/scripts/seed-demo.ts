@@ -1340,6 +1340,7 @@ const seed = async () => {
       competitorRows.push({
         id: competitorId,
         userId,
+        storeId,
         title: competitor.title,
         description: competitor.description,
         price: competitor.price.toFixed(2),

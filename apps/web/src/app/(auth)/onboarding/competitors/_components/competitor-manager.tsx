@@ -22,6 +22,11 @@ export namespace CompetitorManager {
     children: ReactNode;
     products: string[];
     productNames: string[];
+    /**
+     * Competitors are store-scoped, so every tab writes against this store —
+     * resolved from the selected products, not from "whichever store is newest".
+     */
+    store: string;
   };
 }
 
@@ -29,6 +34,7 @@ export const CompetitorManager = ({
   children,
   products,
   productNames,
+  store,
 }: CompetitorManager.Props) => {
   return (
     <Motion.Stagger className="flex h-full flex-1 flex-col overflow-hidden">
@@ -63,6 +69,7 @@ export const CompetitorManager = ({
             >
               <AutoDetectTab
                 products={products}
+                store={store}
                 className={"h-full flex-1 border-accent-foreground border-b"}
               />
             </TabsPanel>
@@ -71,7 +78,10 @@ export const CompetitorManager = ({
               value="url"
               className={"h-[calc(100%-(var(--spacing)*9))] flex-1 border-0"}
             >
-              <UrlTab className={"flex-1 border-accent-foreground border-b"} />
+              <UrlTab
+                store={store}
+                className={"flex-1 border-accent-foreground border-b"}
+              />
             </TabsPanel>
 
             <TabsPanel
@@ -80,6 +90,7 @@ export const CompetitorManager = ({
             >
               <SearchTab
                 productNames={productNames}
+                store={store}
                 className={"h-full flex-1 border-accent-foreground border-b"}
               />
             </TabsPanel>
@@ -109,7 +120,11 @@ export const CompetitorManager = ({
             <Button
               color="primary"
               type="button"
-              render={<Link href="/onboarding/competitors/review" />}
+              render={
+                <Link
+                  href={`/onboarding/competitors/review?store=${encodeURIComponent(store)}`}
+                />
+              }
             >
               <Next />
             </Button>

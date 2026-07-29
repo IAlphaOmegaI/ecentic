@@ -77,7 +77,7 @@ const SimulationsData = async ({ store }: { store: string }) => {
   const [products, skimmedProducts, competitors] = await Promise.all([
     unwrapResult(Product.listForCurrentUser(Environment.SERVER, { store })),
     unwrapResult(Product.skimForCurrentUser(Environment.SERVER, { store })),
-    unwrapResult(Competitor.listForCurrentUser(Environment.SERVER)),
+    unwrapResult(Competitor.listForCurrentUser(Environment.SERVER, { store })),
   ]);
 
   const latestScans = await resultify(() =>

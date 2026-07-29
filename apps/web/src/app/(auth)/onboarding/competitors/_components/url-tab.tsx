@@ -15,11 +15,13 @@ import { CompetitorResults } from "./competitor-results";
 export namespace UrlTab {
   export type Props = {
     onSuccess?: (competitors: Competitor.Type[]) => void;
+    /** Store the extracted rivals are written against. */
+    store: string;
     className?: string;
   };
 }
 
-export const UrlTab = ({ className, onSuccess }: UrlTab.Props) => {
+export const UrlTab = ({ className, onSuccess, store }: UrlTab.Props) => {
   const toast = useToastManager();
   const [url, setUrl] = useState<string | null>(null);
   const [competitors, setCompetitors] = useState<Competitor.Type[]>([]);
@@ -33,7 +35,7 @@ export const UrlTab = ({ className, onSuccess }: UrlTab.Props) => {
 
     if (urls.length === 0) return;
 
-    const result = await Scrape.scrapeUrls({ urls });
+    const result = await Scrape.scrapeUrls({ urls, store });
 
     if (!result.success) {
       toast.add({

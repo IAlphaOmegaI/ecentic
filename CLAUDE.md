@@ -205,7 +205,7 @@ const Feature = {
 | Framework | Next.js 16, React 19, React Compiler |
 | Database | PostgreSQL, Drizzle ORM 1.0 beta |
 | Auth | Better Auth 1.5 (email/password + Drizzle adapter) |
-| AI | Vercel AI SDK (direct providers, no gateway) — Azure OpenAI + Anthropic + Google + Perplexity |
+| AI | Vercel AI SDK — GPT direct on Azure OpenAI; Claude + Gemini + Perplexity via the Vercel AI Gateway |
 | Email | Resend + React Email |
 | Storage | UploadThing |
 | Styling | Tailwind CSS 4 |
@@ -232,16 +232,16 @@ SHOPIFY_API_SECRET
 UPLOADTHING_TOKEN
 NEXT_PUBLIC_SENTRY_DSN
 
-# AI providers — every model call goes DIRECT to its provider (no Vercel AI Gateway).
-# GPT → your Azure deployment; Claude/Gemini/Perplexity → their native APIs.
-# Resolution lives in apps/web/src/server/utils/ai.ts (`model(id)`); Azure is the default.
+# AI providers — two rails, chosen by the SHAPE of the model argument in
+# apps/web/src/server/utils/ai.ts (`model(id)`):
+#   provider instance  → billed direct   → GPT on your Azure deployment (default)
+#   "provider/model"   → billed via gateway → Claude, Gemini, Perplexity
+# No per-vendor key is needed; the gateway covers everything Azure can't serve.
 AZURE_RESOURCE_NAME                       # subdomain only, e.g. "my-resource" (NOT the full URL)
 AZURE_API_KEY
 AZURE_API_VERSION                         # optional, defaults to "preview" (Azure v1 API surface)
 AZURE_DEPLOYMENT_GPT4O                    # your GPT deployment name, e.g. "gpt-5.3-chat"; "gpt-4o" logical id maps here
-ANTHROPIC_API_KEY
-GOOGLE_GENERATIVE_AI_API_KEY
-PERPLEXITY_API_KEY
+AI_GATEWAY_API_KEY                        # Vercel AI Gateway — Claude/Gemini/Perplexity calls
 ```
 
 Billing. Three separate products: free **Scan** (one-time, no billing row),
