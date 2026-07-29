@@ -23,7 +23,12 @@
   --color-accent-rich: oklch(67% 0 0); /* Mid-tone */
   --color-accent-foreground: oklch(90% 0 0); /* Darker for contrast */
   /* primary shades - blue */
-  --color-primary-dimmed: #0a3480;
+  /* Dimmed is the dark tier for focus rings and large text on primary-adjacent
+     surfaces. Banner title accents no longer use it — they use LT Superior +
+     underline on solid white. #08214f clears the 3:1 large-text floor on
+     #1572fa (3.59:1) and improves checkbox focus rings on light backgrounds
+     (11.55:1 -> 14.37:1). */
+  --color-primary-dimmed: #08214f;
   --color-primary: #1572fa;
   --color-primary-rich: #5b9dff;
   /* secondary shades - purple */

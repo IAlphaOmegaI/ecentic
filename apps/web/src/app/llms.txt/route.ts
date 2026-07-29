@@ -3,7 +3,14 @@ import { seo } from "@/lib/seo";
 import * as Blog from "@/server/app/blog";
 import { Environment } from "@/server/utils/environment";
 
-export const GET = async () => {
+const prefersMarkdown = (accept: string | null) =>
+  accept != null && /\btext\/markdown\b/i.test(accept);
+
+/** Rough token estimate used by Markdown-for-Agents (`x-markdown-tokens`). */
+const estimateMarkdownTokens = (markdown: string) =>
+  Math.max(1, Math.ceil(markdown.length / 4));
+
+export const GET = async (request: Request) => {
   const posts = await unwrapResult(Blog.listPublished(Environment.SERVER));
 
   const sections = [
@@ -67,6 +74,22 @@ export const GET = async () => {
       links: [
         { path: "/api/mcp", label: "MCP endpoint (JSON-RPC tools)" },
         { path: "/ucp/agent-profile", label: "UCP agent profile" },
+        {
+          path: "/auth.md",
+          label: "auth.md — agent registration and credentials",
+        },
+        {
+          path: "/.well-known/oauth-protected-resource",
+          label: "OAuth Protected Resource Metadata (RFC 9728)",
+        },
+        {
+          path: "/.well-known/oauth-authorization-server",
+          label: "OAuth Authorization Server Metadata (RFC 8414)",
+        },
+        {
+          path: "/.well-known/mcp/server-card.json",
+          label: "MCP Server Card (SEP-1649)",
+        },
       ],
     },
 
@@ -93,8 +116,16 @@ export const GET = async () => {
     "",
     `- Site: ${seo.host}`,
     `- Sitemap: ${seo.host}/sitemap.xml`,
+    `- robots.txt (Content Signals): ${seo.host}/robots.txt`,
+    `- API catalog: ${seo.host}/.well-known/api-catalog`,
+    `- OAuth discovery: ${seo.host}/.well-known/oauth-authorization-server`,
+    `- OpenID configuration: ${seo.host}/.well-known/openid-configuration`,
     `- UCP profile: ${seo.host}/.well-known/ucp`,
     `- MCP endpoint: ${seo.host}/api/mcp`,
+    `- Agent skills: ${seo.host}/.well-known/agent-skills/index.json`,
+    `- auth.md: ${seo.host}/auth.md`,
+    `- OAuth Protected Resource: ${seo.host}/.well-known/oauth-protected-resource`,
+    `- MCP Server Card: ${seo.host}/.well-known/mcp/server-card.json`,
     "",
   ].join("\n");
 
@@ -107,10 +138,21 @@ export const GET = async () => {
     )
     .join("\n\n");
 
-  return new Response(`${preamble}\n${body}\n`, {
+  const markdown = `${preamble}\n${body}\n`;
+  const asMarkdown = prefersMarkdown(request.headers.get("accept"));
+
+  return new Response(markdown, {
     headers: {
-      "Content-Type": "text/plain; charset=utf-8",
+      // Direct `/llms.txt` stays text/plain (llmstxt.org); Accept negotiation
+      // (including proxy rewrite from `/`) returns text/markdown for agents.
+      "Content-Type": asMarkdown
+        ? "text/markdown; charset=utf-8"
+        : "text/plain; charset=utf-8",
+      Vary: "Accept",
       "Cache-Control": "public, max-age=3600, s-maxage=3600",
+      ...(asMarkdown
+        ? { "x-markdown-tokens": String(estimateMarkdownTokens(markdown)) }
+        : {}),
     },
   });
 };

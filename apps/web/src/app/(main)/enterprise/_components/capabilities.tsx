@@ -147,8 +147,11 @@ export const Capabilities = () => (
             <p
               className={cn(
                 "mt-2 font-body font-light text-lg",
+                // Solid white is the ceiling on the primary field (4.36:1);
+                // /70 measured 2.90:1. Icons below can stay tinted — they
+                // answer to the 3:1 non-text bar, which /80 clears at 3.34.
                 capability.highlighted
-                  ? "text-white/70"
+                  ? "text-white"
                   : "text-foreground-dimmed",
               )}
             >
@@ -174,7 +177,7 @@ export const Capabilities = () => (
                     className={cn(
                       "font-body font-light",
                       capability.highlighted
-                        ? "text-white/80"
+                        ? "text-white"
                         : "text-foreground-dimmed",
                     )}
                   >
@@ -198,7 +201,7 @@ export const Capabilities = () => (
             <h3 className="max-w-lg font-body font-medium text-3xl leading-tight md:text-4xl">
               Built for enterprise merchants running at scale.
             </h3>
-            <p className="max-w-lg font-light text-lg text-white/75">
+            <p className="max-w-lg font-light text-lg text-white">
               Custom limits, enterprise security, UCP signing, multi-brand
               dashboards, and dedicated support, scoped to your catalog and
               compliance needs.

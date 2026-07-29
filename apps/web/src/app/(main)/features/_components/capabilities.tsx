@@ -136,8 +136,11 @@ export const Capabilities = () => (
             <p
               className={cn(
                 "mt-2 font-body font-light text-lg",
+                // Solid white is the ceiling on the primary field (4.36:1);
+                // /70 measured 2.90:1. Icons below can stay tinted — they
+                // answer to the 3:1 non-text bar, which /80 clears at 3.34.
                 capability.highlighted
-                  ? "text-white/70"
+                  ? "text-white"
                   : "text-foreground-dimmed",
               )}
             >
@@ -163,7 +166,7 @@ export const Capabilities = () => (
                     className={cn(
                       "font-body font-light",
                       capability.highlighted
-                        ? "text-white/80"
+                        ? "text-white"
                         : "text-foreground-dimmed",
                     )}
                   >

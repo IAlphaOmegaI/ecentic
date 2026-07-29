@@ -96,7 +96,7 @@ export const Plans = () => (
               <h2 className="max-w-lg font-body font-medium text-3xl leading-tight md:text-4xl">
                 Scan your store. See your AI Agent Score.
               </h2>
-              <p className="max-w-lg font-light text-lg text-white/75">
+              <p className="max-w-lg font-light text-lg text-white">
                 A one-time simulation of your top 10 products across GPT-4,
                 Claude, Gemini, and Perplexity.
               </p>
@@ -110,7 +110,7 @@ export const Plans = () => (
                 Scan your store free
                 <ArrowRightIcon className="size-4" />
               </Button>
-              <p className="text-sm text-white/60">
+              <p className="text-sm text-white">
                 Results in about two minutes · Shopify or WooCommerce
               </p>
             </div>
@@ -184,7 +184,11 @@ export const Plans = () => (
             <p
               className={cn(
                 "font-medium text-sm",
-                plan.highlighted ? "text-white/60" : "text-foreground-dimmed",
+                // Text on the highlighted plan stays solid white: that is the
+                // ceiling on the primary field at 4.36:1, and the tints this
+                // used to carry measured 3.05 (/60) and 3.59 (/70). The check
+                // icon keeps its /80 — non-text answers to 3:1, cleared at 3.34.
+                plan.highlighted ? "text-white" : "text-foreground-dimmed",
               )}
             >
               {plan.category}
@@ -207,7 +211,7 @@ export const Plans = () => (
             <p
               className={cn(
                 "mt-1 font-body font-light text-lg",
-                plan.highlighted ? "text-white/70" : "text-foreground-dimmed",
+                plan.highlighted ? "text-white" : "text-foreground-dimmed",
               )}
             >
               {plan.tagline}
@@ -225,7 +229,7 @@ export const Plans = () => (
               <span
                 className={cn(
                   "font-light text-lg",
-                  plan.highlighted ? "text-white/70" : "text-foreground-dimmed",
+                  plan.highlighted ? "text-white" : "text-foreground-dimmed",
                 )}
               >
                 {plan.suffix}
@@ -234,7 +238,7 @@ export const Plans = () => (
             <p
               className={cn(
                 "mt-2 min-h-10 font-light text-sm",
-                plan.highlighted ? "text-white/60" : "text-foreground-dimmed",
+                plan.highlighted ? "text-white" : "text-foreground-dimmed",
               )}
             >
               {plan.note}
@@ -260,7 +264,7 @@ export const Plans = () => (
                     className={cn(
                       "font-body font-light",
                       plan.highlighted
-                        ? "text-white/80"
+                        ? "text-white"
                         : "text-foreground-dimmed",
                     )}
                   >

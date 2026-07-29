@@ -1,6 +1,11 @@
 import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
+// Keep in sync with `agentHomepageLinkHeader` in `src/lib/agent-discovery.ts`.
+// next.config cannot import that module (path aliases / Node resolution).
+const agentHomepageLinkHeader =
+  '</.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json", </llms.txt>; rel="describedby"; type="text/plain", </auth.md>; rel="service-doc"; type="text/markdown", </.well-known/oauth-authorization-server>; rel="oauth-authorization-server"; type="application/json", </.well-known/openid-configuration>; rel="openid-configuration"; type="application/json", </.well-known/oauth-protected-resource>; rel="oauth-protected-resource"; type="application/json", </.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json", </.well-known/agent-skills/index.json>; rel="service-desc"; type="application/json", </.well-known/ucp>; rel="service-desc"; type="application/json", </api/mcp>; rel="service-desc"; type="application/json", </resources>; rel="service-doc"; type="text/html"';
+
 export default withSentryConfig(
   {
     reactCompiler: true,
@@ -28,6 +33,10 @@ export default withSentryConfig(
           source: "/.well-known/ucp",
           destination: "/api/well-known/ucp",
         },
+        {
+          source: "/.well-known/api-catalog",
+          destination: "/api/well-known/api-catalog",
+        },
       ];
     },
     // Required to support PostHog trailing slash API requests
@@ -40,6 +49,30 @@ export default withSentryConfig(
         },
       ],
     },
+    // Markdown-for-Agents negotiates on Accept; CDN must vary HTML vs markdown.
+    // Homepage also advertises agent discovery Links (RFC 8288 / RFC 9727).
+    headers: async () => [
+      {
+        source: "/",
+        headers: [
+          { key: "Vary", value: "Accept" },
+          { key: "Link", value: agentHomepageLinkHeader },
+        ],
+      },
+      {
+        source: "/.well-known/agent-skills/:path*",
+        headers: [
+          {
+            key: "Access-Control-Allow-Origin",
+            value: "*",
+          },
+          {
+            key: "Cache-Control",
+            value: "public, max-age=3600, stale-while-revalidate=86400",
+          },
+        ],
+      },
+    ],
   } satisfies NextConfig,
   {
     org: "zennit-aw",

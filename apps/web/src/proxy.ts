@@ -2,8 +2,14 @@ import { resultify } from "@zenncore/utils";
 import type { ProxyConfig, NextRequest as Request } from "next/server";
 import { NextResponse as Response } from "next/server";
 import { auth } from "@/lib/auth";
+import { agentHomepageLinkHeader } from "@/lib/agent-discovery";
 
 type Route = string | RegExp;
+
+const withAgentDiscoveryLinks = (response: Response) => {
+  response.headers.append("Link", agentHomepageLinkHeader);
+  return response;
+};
 
 // Routes that require an authenticated session. Everything not listed here is
 // public. This is deliberately a deny-list: a new marketing or docs page is
@@ -50,15 +56,18 @@ const redirect = (request: Request, to: string, callbackUrl = "") => {
 
 export const proxy = async (request: Request) => {
   const { pathname } = request.nextUrl;
+  const isHomepage = pathname === "/";
 
   if (
     request.method === "GET" &&
-    pathname === "/" &&
+    isHomepage &&
     prefersMarkdown(request.headers.get("accept"))
   ) {
     const url = request.nextUrl.clone();
     url.pathname = "/llms.txt";
-    return Response.rewrite(url);
+    const response = withAgentDiscoveryLinks(Response.rewrite(url));
+    response.headers.set("Vary", "Accept");
+    return response;
   }
 
   const administratorOnly = matches(pathname, ADMINISTRATOR_ONLY);
@@ -68,7 +77,10 @@ export const proxy = async (request: Request) => {
 
   // Purely public route — skip the session lookup entirely rather than paying
   // for a cookie verify (and possible database read) on every page view.
-  if (!requiresSession) return Response.next();
+  if (!requiresSession) {
+    const response = Response.next();
+    return isHomepage ? withAgentDiscoveryLinks(response) : response;
+  }
 
   // Resolve the session the same way protected pages do, so the two can never
   // disagree. `session.cookieCache` serves this from a signed cookie that
