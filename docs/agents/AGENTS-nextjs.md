@@ -186,7 +186,7 @@ const products = await Products.skimForCurrentUser();
 
 ---
 
-## 23a. Always Use the Repository Pattern for DB Operations 
+## 23a. Always Use the Repository Pattern for DB Operations
 
 Never use raw `db.insert(...)`, `db.select(...)`, etc. directly in application code. Every table must have a repository file in `server/app/` using the `repository()` helper.
 
