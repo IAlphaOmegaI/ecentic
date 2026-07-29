@@ -1,5 +1,5 @@
 import { resultify } from "@zenncore/utils";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { getBrandLogo } from "@/lib/logo";
 import { schema } from "../../database";
@@ -38,13 +38,23 @@ export type DetectionEvent =
 export const stream = ({
   user,
   products: ids,
+  store,
 }: {
   user: string;
   products: string[];
+  /**
+   * Detected rivals are written against this store. Scoping the catalog read to
+   * it too means a product id from another store simply drops out of the
+   * selection instead of seeding competitors onto the wrong catalog.
+   */
+  store: string;
 }) =>
   AI.streamable<DetectionEvent>(async (update) => {
     const products = await Product.find(Environment.SERVER, {
-      where: eq(schema.product.userId, user),
+      where: and(
+        eq(schema.product.userId, user),
+        eq(schema.product.storeId, store),
+      ),
     });
     if (!products.success) {
       update({ kind: "error", message: "Could not read your catalog." });
@@ -97,6 +107,7 @@ export const stream = ({
         title,
         brand,
         userId: user,
+        storeId: store,
         selected: true,
         image: getBrandLogo(brand || title),
       });

@@ -1,9 +1,9 @@
 "use server";
 
 import { and, eq } from "drizzle-orm";
-import { cache as dedupe } from "react";
 import { schema } from "../database";
 import { withContext } from "../utils/context";
+import { dedupe } from "../utils/dedupe";
 import { Environment } from "../utils/environment";
 import { type Document, repository } from "../utils/repository";
 

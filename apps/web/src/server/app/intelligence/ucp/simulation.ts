@@ -2,7 +2,7 @@
 
 import { resultify } from "@zenncore/utils";
 import { isStepCount, tool } from "ai";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { schema } from "../../../database";
 import * as AI from "../../../utils/ai";
@@ -104,18 +104,27 @@ const gatherUcpIntel = async (product: Product.Type, merchant: string) => {
 };
 
 export const runUcpLift = withAuthentication(
-  async (context, { limit = 5 }: { limit?: number } = {}) => {
+  async (context, { store, limit = 5 }: { store: string; limit?: number }) => {
     const user = context.session.user.id;
 
+    // Lift is measured for one catalog against the rivals that catalog is
+    // actually judged on, so products and competitors are both store-scoped.
+    // The UCP profile stays account-level — `ucpProfile` carries no storeId.
     const [profiles, products, competitors] = await Promise.all([
       Ucp.find(Environment.SERVER, {
         where: eq(schema.ucpProfile.userId, user),
       }),
       Product.find(Environment.SERVER, {
-        where: eq(schema.product.userId, user),
+        where: and(
+          eq(schema.product.userId, user),
+          eq(schema.product.storeId, store),
+        ),
       }),
       Competitor.find(Environment.SERVER, {
-        where: eq(schema.competitor.userId, user),
+        where: and(
+          eq(schema.competitor.userId, user),
+          eq(schema.competitor.storeId, store),
+        ),
       }),
     ]);
     if (!profiles.success) return profiles;

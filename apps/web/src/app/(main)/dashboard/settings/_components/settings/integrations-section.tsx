@@ -61,31 +61,42 @@ export const IntegrationsSection = ({
 }) => {
   const toast = useToastManager();
 
-  const [handleSync, isSyncing] = useAsyncAction(async (id: string) => {
-    const result = await Store.syncProducts({ store: id });
-    if (!result.success) {
-      // const isExpired = result.error.message.includes(
-      //   "Shopify authorization has expired",
-      // );
-      // toast.add({
-      //   title: isExpired ? "Reconnect required" : "Sync failed",
-      //   description: isExpired
-      //     ? "Your Shopify authorization has expired. Please reconnect your store."
-      //     : undefined,
-      //   type: "error",
-      //   ...(isExpired && {
-      //     actionLabel: "Reconnect",
-      //     onAction: () => {
-      //       const shopId = new URL(domain).hostname;
-      //       window.location.href = `/api/integrations/shopify/install?shop=${encodeURIComponent(shopId)}`;
-      //     },
-      //   }),
-      // });
+  const [handleSync, isSyncing] = useAsyncAction(async (store: Store.Type) => {
+    await toast
+      .promise(
+        (async () => {
+          const result = await Store.syncProducts({ store: store.id });
+          if (!result.success) throw result.error;
+          return result.data;
+        })(),
+        {
+          loading: { title: "Syncing products…", description: store.domain },
+          success: { title: "Products synced", description: store.domain },
+          error: (error: unknown) => {
+            const message =
+              error instanceof Error ? error.message : "Something went wrong";
+            const needsReconnect =
+              (store.platform === "shopify" ||
+                store.platform === "shopify-public") &&
+              /reconnect your store|access token/i.test(message);
+            // Send the OAuth round-trip back to this exact screen.
+            const returnTo = `${window.location.pathname}${window.location.search}`;
 
-      toast.add({ title: "Sync failed", type: "error" });
-      return;
-    }
-    toast.add({ title: "Sync started", type: "success" });
+            return {
+              title: needsReconnect ? "Reconnect required" : "Sync failed",
+              description: message,
+              ...(needsReconnect && {
+                actionLabel: "Reconnect",
+                onAction: () => {
+                  window.location.href = `/api/integrations/shopify/install?shop=${encodeURIComponent(store.domain)}&return_to=${encodeURIComponent(returnTo)}`;
+                },
+              }),
+            };
+          },
+        },
+      )
+      // The rejection already surfaced through the error toast.
+      .catch(() => null);
   });
 
   return (
@@ -135,7 +146,7 @@ export const IntegrationsSection = ({
                       <Button
                         color="neutral"
                         disabled={isSyncing}
-                        onClick={() => handleSync(store.id)}
+                        onClick={() => handleSync(store)}
                       >
                         {isSyncing ? "Syncing…" : "Sync Now"}
                       </Button>
@@ -168,6 +179,18 @@ export const IntegrationsSection = ({
                       </div>
                     );
                   })()}
+                  <div className="flex items-center gap-3">
+                    <span className="rounded-full bg-success/10 px-2 py-0.5 font-semibold text-[11px] text-success uppercase tracking-[0.05em]">
+                      Connected
+                    </span>
+                    <Button
+                      color="neutral"
+                      disabled={isSyncing}
+                      onClick={() => handleSync(store)}
+                    >
+                      {isSyncing ? "Syncing…" : "Sync Now"}
+                    </Button>
+                  </div>
                 </div>
               );
             })}

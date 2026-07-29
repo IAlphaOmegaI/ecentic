@@ -118,7 +118,7 @@ const main = async () => {
       handle,
       product.title,
       product.description ?? "",
-      "Ecentic",
+      "ecentic",
       "Electronics > Audio",
       "Audio & Electronics",
       "demo, ecentic, audio",

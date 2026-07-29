@@ -30,18 +30,6 @@ const SignInFormSkeleton = () => (
 );
 
 export default () => {
-  // useEffect(() => {
-  //   (async () => {
-  //     const response = await fetch("/api/shopify/users", {
-  //       method: "GET",
-  //     });
-
-  //     const data = await response.json();
-
-  //     console.log(data);
-  //   })();
-  // }, []);
-
   return (
     <div className="flex h-screen overflow-hidden bg-primary">
       <Onboarding

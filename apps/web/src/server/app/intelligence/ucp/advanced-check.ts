@@ -6,7 +6,7 @@ const AGENT_HEADERS = {
   Accept: "application/json, */*",
   "Content-Type": "application/json",
   "UCP-Agent": 'profile="https://ecentic.ai/ucp-validator"',
-  "User-Agent": "UCP-Validator/1.0 (Ecentic; https://ecentic.ai)",
+  "User-Agent": "UCP-Validator/1.0 (ecentic; https://ecentic.ai)",
 } as const;
 
 export type EndpointProbeResult = {

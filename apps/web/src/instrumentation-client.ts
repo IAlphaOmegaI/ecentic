@@ -19,6 +19,12 @@ Sentry.init({
     // React's removeChild fails when a browser translate/reader-mode feature or extension
     // mutates DOM nodes React also manages — external mutation, not an app bug
     "The object can not be found here.",
+    // Meta's in-app browser (Instagram/Facebook) injects a native bridge that posts to
+    // window.webkit.messageHandlers on pagehide; it throws when the WKWebView bridge is
+    // absent — Meta's injected script, not ours. Matches both the iOS phrasing
+    // ("undefined is not an object (evaluating 'window.webkit.messageHandlers')") and
+    // the Chromium one ("Cannot read properties of undefined (reading 'messageHandlers')")
+    /messageHandlers/,
   ],
 
   // Chatwoot widget's sdk.js posts to its bubble iframe before it's mounted

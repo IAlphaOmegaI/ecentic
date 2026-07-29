@@ -71,6 +71,19 @@ export const GET = async (request: NextRequest) => {
     path: "/",
   });
 
+  // Where to send the user after a reconnect (e.g. back to Settings). Only
+  // app-relative paths are accepted so the callback can't be turned into an
+  // open redirect.
+  const returnTo = request.nextUrl.searchParams.get("return_to");
+  if (returnTo?.startsWith("/") && !returnTo.startsWith("//"))
+    jar.set("shopify_return_to", returnTo, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      maxAge: 600,
+      path: "/",
+    });
+
   const redirectUri = `${APP_HOST}/api/integrations/shopify/callback`;
 
   const url = new URL(`https://${domain}/admin/oauth/authorize`);

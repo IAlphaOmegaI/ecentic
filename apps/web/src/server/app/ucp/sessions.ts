@@ -15,7 +15,7 @@ export const SESSION_TTL_SECONDS = 60 * 60;
 export type SessionLineItem = {
   /** UCP line item id (`li_...`), stable across updates when the agent sends one. */
   id: string;
-  /** Ecentic product row id. */
+  /** ecentic product row id. */
   productId: string;
   /** WooCommerce product id. */
   externalId: string;

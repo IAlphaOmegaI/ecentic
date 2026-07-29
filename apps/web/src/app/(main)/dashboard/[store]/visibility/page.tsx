@@ -6,6 +6,7 @@ import * as CatalogRank from "@/server/app/intelligence/catalog-rank";
 import { Environment } from "@/server/utils/environment";
 import { Crosshair, SectionGutter, StatusPill } from "../../_components/grid";
 import { FeedUrlCard, RankChecker } from "./_components/visibility-client";
+import { AuditSkeleton } from "./skeletons";
 
 const CHECK_TONES = {
   pass: "success",
@@ -21,18 +22,6 @@ const CHECK_LABELS = {
   manual: "Manual",
 } as const;
 
-const AuditSkeleton = () => (
-  <div className="flex flex-col divide-y divide-accent-foreground">
-    {(["a", "b", "c", "d", "e"] as const).map((key) => (
-      <div key={key} className="flex flex-col gap-2 p-4">
-        <div className="h-4 w-56 animate-pulse bg-foreground/10" />
-        <div className="h-3 w-full animate-pulse bg-foreground/10" />
-        <div className="h-3 w-2/3 animate-pulse bg-foreground/10" />
-      </div>
-    ))}
-  </div>
-);
-
 const AuditContent = async ({ store }: { store: string }) => {
   await connection();
   const report = unwrapResult(
@@ -47,7 +36,7 @@ const AuditContent = async ({ store }: { store: string }) => {
         </p>
         <p className="text-foreground-dimmed text-sm">
           agent-readiness across automated checks — measured against what AI
-          surfaces actually read, not Ecentic's own data
+          surfaces actually read, not ecentic's own data
         </p>
       </div>
 
@@ -69,6 +58,16 @@ const AuditContent = async ({ store }: { store: string }) => {
               <p className="max-w-3xl text-foreground text-sm">
                 → {check.recommendation}
               </p>
+            )}
+            {check.action && (
+              <a
+                href={check.action.url}
+                target="_blank"
+                rel="noreferrer"
+                className="w-fit font-medium text-primary text-sm underline-offset-2 hover:underline"
+              >
+                {check.action.label} ↗
+              </a>
             )}
           </div>
         ))}

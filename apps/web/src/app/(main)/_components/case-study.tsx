@@ -31,13 +31,13 @@ export const CaseStudy = () => (
             DUA Flavours went from skipped to picked — in 30 days.
           </h2>
           <p className="max-w-xl font-light text-foreground-dimmed text-lg">
-            DUA Flavours connected their store, and Ecentic showed exactly which
+            DUA Flavours connected their store, and ecentic showed exactly which
             products AI agents were skipping — then rewrote the listings. Within
             a month, the agents started sending shoppers their way.
           </p>
           <p className="mt-auto flex items-center gap-2 pt-4 text-foreground-dimmed text-sm">
             <CheckIcon className="size-4 shrink-0 text-primary" />
-            Verified Ecentic customer · published with permission
+            Verified ecentic customer · published with permission
           </p>
         </div>
 

@@ -4,18 +4,11 @@ import { DiscoveryClient } from "@/components/discovery/discovery-client";
 import * as Store from "@/server/app/store";
 import { Environment } from "@/server/utils/environment";
 import { Crosshair, StatusPill } from "../../_components/grid";
+import { DiscoverySkeleton } from "./skeletons";
 
 type PageProps = {
   params: Promise<{ store: string }>;
 };
-
-const DiscoverySkeleton = () => (
-  <div className="flex flex-col gap-4 p-6 md:flex-row md:items-end">
-    <div className="h-4 w-40 animate-pulse bg-accent-foreground/30" />
-    <div className="h-9 flex-1 animate-pulse bg-accent-foreground/20" />
-    <div className="h-9 w-40 animate-pulse bg-accent-foreground/30" />
-  </div>
-);
 
 // Resolve the store the dashboard is scoped to and hand the discovery tool its
 // domain as the fixed target, so the merchant never retypes their own store —

@@ -366,7 +366,17 @@ export const refreshAccessToken = withContext(
       refresh_token_expires_in: number;
     }>(tokenResponse);
 
-    if (!t.success) return t;
+    // Shopify answers a rejected refresh with an HTML error page, so the parse
+    // failure here means the stored refresh token (or the app credentials) are
+    // no longer valid — only a fresh OAuth install fixes that.
+    if (!t.success)
+      return {
+        success: false,
+        error: new Error(
+          "Shopify rejected the token refresh. Please reconnect your store (Settings → Integrations).",
+          { cause: t.error },
+        ),
+      };
 
     return StoreAccount.update(Environment.SERVER, storeAccount.data.id, {
       accessToken: t.data.access_token,
@@ -678,64 +688,85 @@ type ShopifyMetafield = {
 };
 
 const UCP_NAMESPACE = "ucp";
+const ECENTIC_NAMESPACE = "ecentic";
 
 /**
- * Metafield definitions for every `ucp` field this app writes. Definitions are
+ * Metafield definitions for every field this app writes. Definitions are
  * what make the values visible outside the admin: `storefront: PUBLIC_READ`
- * exposes them to Liquid (`product.metafields.ucp.*`) and the Storefront API,
- * which is what lets a theme/app block render the JSON-LD into storefront HTML
- * where crawling agents can actually read it. Without a definition the values
- * sit in the backend and no AI surface ever sees them.
+ * exposes them to Liquid (`product.metafields.ecentic.*` / `.ucp.*`) and the
+ * Storefront API, which is what lets a theme/app block render the JSON-LD into
+ * storefront HTML where crawling agents can actually read it. Without a
+ * definition the values sit in the backend and no AI surface ever sees them.
+ *
+ * Naming convention: merchant-facing definition names are prefixed
+ * "ecentic: " so every field this app owns is recognizable in the admin.
  */
 const UCP_METAFIELD_DEFINITIONS: Record<
   "PRODUCT" | "SHOP",
-  { key: string; name: string; type: string }[]
+  {
+    key: string;
+    name: string;
+    type: string;
+    namespace?: string;
+    description?: string;
+  }[]
 > = {
   PRODUCT: [
-    { key: "structured_data", name: "Structured data (JSON-LD)", type: "json" },
-    { key: "agentic_summary", name: "Agentic summary", type: "json" },
+    {
+      namespace: ECENTIC_NAMESPACE,
+      key: "structured_data",
+      name: "ecentic: Structured Data (JSON-LD)",
+      description:
+        "AI-optimized schema.org Product JSON-LD published by ecentic. When set, the ecentic app embed renders it on the product page in place of the default markup built from the live product data.",
+      type: "json",
+    },
+    { key: "agentic_summary", name: "ecentic: Agentic Summary", type: "json" },
   ],
   SHOP: [
-    { key: "merchant_profile", name: "UCP merchant profile", type: "json" },
+    {
+      key: "merchant_profile",
+      name: "ecentic: Merchant Profile (UCP)",
+      type: "json",
+    },
     {
       key: "merchant_name",
-      name: "Merchant name",
+      name: "ecentic: Merchant Name",
       type: "single_line_text_field",
     },
     {
       key: "description",
-      name: "Merchant description",
+      name: "ecentic: Merchant Description",
       type: "multi_line_text_field",
     },
-    { key: "logo_url", name: "Logo URL", type: "url" },
+    { key: "logo_url", name: "ecentic: Logo URL", type: "url" },
     {
       key: "payment_methods",
-      name: "Payment methods",
+      name: "ecentic: Payment Methods",
       type: "list.single_line_text_field",
     },
     {
       key: "shipping_policy",
-      name: "Shipping policy",
+      name: "ecentic: Shipping Policy",
       type: "multi_line_text_field",
     },
     {
       key: "return_policy",
-      name: "Return policy",
+      name: "ecentic: Return Policy",
       type: "multi_line_text_field",
     },
     {
       key: "contact_email",
-      name: "Contact email",
+      name: "ecentic: Contact Email",
       type: "single_line_text_field",
     },
     {
       key: "sustainability",
-      name: "Sustainability",
+      name: "ecentic: Sustainability",
       type: "multi_line_text_field",
     },
     {
       key: "certifications",
-      name: "Certifications",
+      name: "ecentic: Certifications",
       type: "list.single_line_text_field",
     },
   ],
@@ -785,11 +816,14 @@ const ensureUcpMetafieldDefinitions = async (
     }>(domain, accessToken, METAFIELD_DEFINITION_CREATE, {
       definition: {
         name: definition.name,
-        namespace: UCP_NAMESPACE,
+        namespace: definition.namespace ?? UCP_NAMESPACE,
         key: definition.key,
         type: definition.type,
         ownerType,
         access: { storefront: "PUBLIC_READ" },
+        ...(definition.description && {
+          description: definition.description,
+        }),
       },
     });
 
@@ -1034,7 +1068,7 @@ const buildProductMetafields = (input: {
 
   return [
     {
-      namespace: UCP_NAMESPACE,
+      namespace: ECENTIC_NAMESPACE,
       key: "structured_data",
       type: "json",
       value: input.structuredJson,
@@ -1048,7 +1082,7 @@ const buildProductMetafields = (input: {
   ];
 };
 
-export const pushShopUcpMetafields = withContext(
+export const pushShopMetafields = withContext(
   async (
     context,
     {
@@ -1111,7 +1145,7 @@ export const pushShopUcpMetafields = withContext(
     }
 
     context.span.addBreadcrumb({
-      category: "shopify.ucp.shop.metafields",
+      category: "shopify.shop.metafields",
       data: {
         "store.id": storeId,
         "metafields.written": fields.length - errors.length,
@@ -1132,10 +1166,10 @@ export const pushShopUcpMetafields = withContext(
       data: { written: fields.length - errors.length, errors },
     };
   },
-  "Shopify.pushShopUcpMetafields",
+  "Shopify.pushShopMetafields",
 );
 
-export const pushProductUcpMetafields = withContext(
+export const pushProductMetafields = withContext(
   async (
     context,
     {
@@ -1208,7 +1242,7 @@ export const pushProductUcpMetafields = withContext(
     }
 
     context.span.addBreadcrumb({
-      category: "shopify.ucp.product.metafields",
+      category: "shopify.product.metafields",
       data: {
         "product.id": productId,
         "metafields.written": fields.length - errors.length,
@@ -1229,7 +1263,7 @@ export const pushProductUcpMetafields = withContext(
       data: { written: fields.length - errors.length, errors },
     };
   },
-  "Shopify.pushProductUcpMetafields",
+  "Shopify.pushProductMetafields",
 );
 
 export const updateProduct = withAuthentication(
@@ -1695,7 +1729,7 @@ export const ensureUsageSubscription = withAuthentication(
         userErrors: { field: string[] | null; message: string }[];
       };
     }>(store.data.domain, resolved.accessToken, APP_SUBSCRIPTION_CREATE, {
-      name: "Ecentic performance fee",
+      name: "ecentic performance fee",
       returnUrl: `${origin}/dashboard/settings?billing=connected`,
       cappedAmount: { amount: capAmount, currencyCode: currency },
       terms: `Up to ${capAmount} ${currency} per 30 days on AI-attributed orders`,

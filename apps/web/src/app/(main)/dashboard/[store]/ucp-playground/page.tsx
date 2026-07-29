@@ -8,20 +8,11 @@ import {
 import * as Store from "@/server/app/store";
 import { Environment } from "@/server/utils/environment";
 import { Crosshair, StatusPill } from "../../_components/grid";
+import { PlaygroundSkeleton } from "./skeletons";
 
 type PageProps = {
   params: Promise<{ store: string }>;
 };
-
-const PlaygroundSkeleton = () => (
-  <div className="flex flex-1 items-center justify-center p-8">
-    <div className="w-full max-w-md space-y-3">
-      <div className="h-4 w-40 animate-pulse bg-accent-foreground/30" />
-      <div className="h-9 w-full animate-pulse bg-accent-foreground/20" />
-      <div className="h-9 w-full animate-pulse bg-accent-foreground/30" />
-    </div>
-  </div>
-);
 
 // Resolve the store the dashboard is scoped to and hand the playground an
 // already-connected session, so the merchant never retypes their own domain.

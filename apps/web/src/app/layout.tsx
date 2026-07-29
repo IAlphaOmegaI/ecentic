@@ -11,7 +11,7 @@ import { ThemeProvider } from "@/context/theme";
 
 const PostHogProvider = dynamic(() =>
   import("@/context/posthog").then((m) => m.PostHogProvider),
-); 
+);
 
 const redHatDisplay = Red_Hat_Display({
   subsets: ["latin"],
@@ -141,7 +141,8 @@ export default ({ children }: PropsWithChildren) => {
       </head>
       <body
         className={`${redHatDisplay.variable} overflow-x-hidden bg-background font-body antialiased`}
-        // suppressHydrationWarning
+        // React Grab hydration errors
+        suppressHydrationWarning={process.env.NODE_ENV === "development"}
       >
         <Suspense>
           <PostHogProvider>
@@ -149,7 +150,7 @@ export default ({ children }: PropsWithChildren) => {
               <MotionProvider>
                 <ToastProvider>
                   <div className="isolate">{children}</div>
-                  <ToastList types={["error", "success", "info"]} />
+                  <ToastList types={["error", "success", "info", "loading"]} />
                 </ToastProvider>
               </MotionProvider>
             </ThemeProvider>

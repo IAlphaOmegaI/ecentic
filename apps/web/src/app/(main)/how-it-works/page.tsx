@@ -23,7 +23,7 @@ const assurances = [
 ] as const;
 
 const intro =
-  "Ecentic simulates how AI shopping agents compare your products, explains why you lose in plain language, and rewrites your listings so the next comparison goes your way.";
+  "ecentic simulates how AI shopping agents compare your products, explains why you lose in plain language, and rewrites your listings so the next comparison goes your way.";
 
 const description =
   "How ecentic works: simulate how GPT-4, Claude, Gemini, and Perplexity compare your products, diagnose why you lose, and optimize titles, descriptions, and structured data to win more AI-assisted carts.";

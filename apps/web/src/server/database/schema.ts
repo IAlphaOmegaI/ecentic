@@ -143,8 +143,8 @@ export const store_account = pgTable("store_account", {
   consumerSecret: text("consumerSecret"),
   /**
    * Shared secret minted at connect time for the hosted UCP bridge. The store
-   * plugin authenticates its calls to Ecentic (order events) with it, and
-   * Ecentic signs bridge calls back to the store with it.
+   * plugin authenticates its calls to ecentic (order events) with it, and
+   * ecentic signs bridge calls back to the store with it.
    */
   bridgeSecret: text("bridgeSecret"),
   // General Store Account fields
@@ -315,6 +315,16 @@ export const competitor = pgTable(
     userId: text("userId")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
+    /**
+     * Competitors are store-scoped: the rivals a Shopify catalog is judged
+     * against are not the rivals a WooCommerce catalog is judged against, and
+     * {@link selected} is a per-store roster flag rather than an account-wide
+     * one. The same real-world rival appearing in two stores is two rows, the
+     * same way {@link product} duplicates across stores.
+     */
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
     title: text("title").notNull(),
     description: text("description"),
     price: text("price"),
@@ -327,7 +337,10 @@ export const competitor = pgTable(
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
     updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
   },
-  (table) => [index("competitor_user_idx").on(table.userId)],
+  (table) => [
+    index("competitor_user_idx").on(table.userId),
+    index("competitor_store_idx").on(table.storeId),
+  ],
 );
 
 export const scan = pgTable(
@@ -587,7 +600,7 @@ export const feePeriod = pgTable(
 );
 
 /**
- * One row per order Ecentic attributes to AI-agent traffic it optimizes for.
+ * One row per order ecentic attributes to AI-agent traffic it optimizes for.
  * Idempotent on (store, order) so a retried `orders/paid` webhook can never
  * double-count. `feeCents` is the pre-cap fee; the cap is applied per
  * {@link feePeriod} at close, which also flips `billingStatus`.

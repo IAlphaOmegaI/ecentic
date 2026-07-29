@@ -21,11 +21,17 @@ export type PlaygroundModel = {
   note?: string;
 };
 
+// Labels name the vendor AND the rail it is billed on, because those diverged:
+// only Azure is a first-party account — everything else resolves through the
+// Vercel AI Gateway and is billed to AI_GATEWAY_API_KEY.
 export const PROVIDERS = {
-  azure: { label: "Azure OpenAI", accent: "text-primary" },
-  anthropic: { label: "Anthropic", accent: "text-warning" },
-  google: { label: "Google", accent: "text-success" },
-  perplexity: { label: "Perplexity", accent: "text-foreground-dimmed" },
+  azure: { label: "Azure OpenAI · direct", accent: "text-primary" },
+  anthropic: { label: "Anthropic · gateway", accent: "text-warning" },
+  google: { label: "Google · gateway", accent: "text-success" },
+  perplexity: {
+    label: "Perplexity · gateway",
+    accent: "text-foreground-dimmed",
+  },
 } as const satisfies Record<
   PlaygroundProvider,
   { label: string; accent: string }
@@ -64,7 +70,6 @@ export const MODELS: PlaygroundModel[] = [
     note: "preview",
   },
   { id: "gemini-2.5-flash", label: "Gemini 2.5 Flash", provider: "google" },
-  { id: "gemini-2.0-flash", label: "Gemini 2.0 Flash", provider: "google" },
   { id: "sonar", label: "Sonar", provider: "perplexity" },
   { id: "sonar-pro", label: "Sonar Pro", provider: "perplexity" },
 ];

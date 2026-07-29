@@ -31,16 +31,17 @@ declare namespace NodeJS {
 
     readonly CRON_SECRET: string;
 
-    /** Azure OpenAI (ChatGPT) — the default provider for all GPT calls. */
+    /** Azure OpenAI (ChatGPT) — every GPT call, billed direct to the subscription. */
     readonly AZURE_RESOURCE_NAME: string; // subdomain only, e.g. "my-resource"
     readonly AZURE_API_KEY: string;
     readonly AZURE_API_VERSION?: string; // defaults to "preview" (Azure v1 API surface)
     readonly AZURE_DEPLOYMENT_GPT4O?: string; // your GPT deployment name (e.g. "gpt-5.3-chat")
 
-    /** Native provider keys — Claude/Gemini/Perplexity calls go direct, not via a gateway. */
-    readonly ANTHROPIC_API_KEY: string;
-    readonly GOOGLE_GENERATIVE_AI_API_KEY: string;
-    readonly PERPLEXITY_API_KEY: string;
+    /**
+     * Vercel AI Gateway — every model Azure cannot serve (Claude, Gemini,
+     * Perplexity) resolves through it, so no per-vendor key is required.
+     */
+    readonly AI_GATEWAY_API_KEY: string;
 
     readonly GOOGLE_CLIENT_ID: string;
     readonly GOOGLE_CLIENT_SECRET: string;
@@ -72,6 +73,13 @@ declare namespace NodeJS {
     readonly SHOPIFY_CATALOG_TOKEN_URL?: string;
     readonly SHOPIFY_CATALOG_MCP_URL?: string;
     readonly UCP_AGENT_PROFILE_URL?: string;
+
+    /**
+     * ScrapeLLM — real AI-surface captures for the /dev/llm-scraping sandbox;
+     * unset makes every capture fail with a config error. See
+     * docs/tasks/llm-surface-scraping.md.
+     */
+    readonly SCRAPELLM_API_KEY?: string;
 
     readonly npm_package_name: string;
     readonly npm_package_version: string;

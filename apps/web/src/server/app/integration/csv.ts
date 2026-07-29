@@ -3,7 +3,7 @@
 import type { Result } from "@zenncore/utils";
 import { withAuthentication } from "../../utils/authentication";
 import { Environment } from "../../utils/environment";
-import { RequestError } from "../../utils/error";
+import { NotFoundError, RequestError } from "../../utils/error";
 import * as Product from "../product";
 import * as Store from "../store";
 
@@ -67,11 +67,23 @@ export const connect = withAuthentication(
   "Csv.connect",
 );
 
+/**
+ * Imports parsed CSV rows into an existing store. The store id no longer comes
+ * only from the row `connect` just created — the per-store "Add products"
+ * screen passes the store the merchant is looking at — so ownership is verified
+ * here rather than trusted from the caller.
+ */
 export const syncProducts = withAuthentication(
   async (
     context,
     { store: id, products }: { store: string; products: Type[] },
   ) => {
+    const target = await Store.get(Environment.SERVER, id);
+    if (!target.success) return target;
+
+    if (!target.data || target.data.userId !== context.session.user.id)
+      return { success: false, error: new NotFoundError("Store") };
+
     await Store.update(Environment.SERVER, id, { status: "syncing" });
 
     const results = await Promise.all(

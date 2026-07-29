@@ -1,6 +1,6 @@
 /**
  * UCP protocol constants, capability declarations, and response envelope
- * builders for the hosted UCP service Ecentic serves on behalf of connected
+ * builders for the hosted UCP service ecentic serves on behalf of connected
  * stores. Ported from the woo-ucp reference implementation so wire shapes stay
  * identical; the store plugin now only advertises this backend as its UCP
  * endpoint.

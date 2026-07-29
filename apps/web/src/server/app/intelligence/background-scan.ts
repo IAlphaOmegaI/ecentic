@@ -94,6 +94,7 @@ const runScanForUser = async (
     Competitor.find(Environment.SERVER, {
       where: and(
         eq(schema.competitor.userId, user),
+        store ? eq(schema.competitor.storeId, store) : undefined,
         roster?.competitors?.length
           ? inArray(schema.competitor.id, roster.competitors)
           : undefined,
@@ -104,8 +105,8 @@ const runScanForUser = async (
   if (!products.success) return products;
   if (!competitors.success) return competitors;
 
-  // An explicit roster IS the selection — the account-level `selected` flag
-  // only drives the fallback when no roster was picked.
+  // An explicit roster IS the selection — the store's `selected` flag only
+  // drives the fallback when no roster was picked.
   const selected = roster?.competitors?.length
     ? competitors.data
     : competitors.data.filter((competitor) => competitor.selected);

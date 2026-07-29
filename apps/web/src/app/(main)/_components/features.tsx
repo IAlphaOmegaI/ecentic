@@ -28,7 +28,7 @@ const features = [
     color: "text-red-500",
     title: "One-click fixes",
     description:
-      "Ecentic rewrites your titles, descriptions, and product data so agents choose you.",
+      "ecentic rewrites your titles, descriptions, and product data so agents choose you.",
   },
   {
     icon: CodeIcon,

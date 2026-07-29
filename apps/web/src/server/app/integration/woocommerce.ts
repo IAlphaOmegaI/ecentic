@@ -34,7 +34,7 @@ type Type = {
 };
 
 /**
- * Product meta keys the Ecentic WooCommerce bridge reads to render structured
+ * Product meta keys the ecentic WooCommerce bridge reads to render structured
  * data into the storefront `<head>`. Underscore-prefixed so WooCommerce treats
  * them as internal/hidden meta (mirrors Shopify's `ecentic` metafield namespace).
  */
@@ -506,7 +506,7 @@ export const updateProduct = withAuthentication(
 
 /**
  * Writes schema.org Product JSON-LD to a WooCommerce product as protected
- * `meta_data`, so the Ecentic bridge can render it into the storefront for AI
+ * `meta_data`, so the ecentic bridge can render it into the storefront for AI
  * shopping agents. Parallels {@link Shopify.pushProductUcpMetafields}.
  */
 export const pushProductStructuredData = withContext(

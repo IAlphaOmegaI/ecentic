@@ -24,6 +24,8 @@ export namespace AutoDetectTab {
   export type Props = {
     products: string[];
     onSuccess?: (competitors: Competitor.Type[]) => void;
+    /** Store the detected rivals are written against. */
+    store: string;
     className?: string;
   };
 }
@@ -31,6 +33,7 @@ export namespace AutoDetectTab {
 export const AutoDetectTab = ({
   products,
   onSuccess,
+  store,
   className,
 }: AutoDetectTab.Props) => {
   const toast = useToastManager();
@@ -87,7 +90,7 @@ export const AutoDetectTab = ({
     // this tab's panel keeps the loop alive if the user switches tabs mid-run.
     const detection = await resultify(async () => {
       const { output } = await unwrapResult(
-        Competitor.streamDetection({ products }),
+        Competitor.streamDetection({ products, store }),
       );
 
       const collected: Competitor.Type[] = [];

@@ -10,7 +10,7 @@ export const Steps = () => (
       icon={RobotIcon}
       title="Simulate"
       subheading="See how every major AI shopping model compares your products against the competition, in real time."
-      paragraph="AI shopping agents do not read your store the way a human shopper does. They compare structured signals like titles, attributes, pricing, and trust markers across every product in a category in seconds. Ecentic recreates that comparison by running your catalog through the top models at once and recording the outcome for each one."
+      paragraph="AI shopping agents do not read your store the way a human shopper does. They compare structured signals like titles, attributes, pricing, and trust markers across every product in a category in seconds. ecentic recreates that comparison by running your catalog through the top models at once and recording the outcome for each one."
       itemsLabel="What every scan tells you"
       items={[
         {
@@ -70,7 +70,7 @@ export const Steps = () => (
       icon={CircleBoltIcon}
       title="Optimize"
       subheading="Approve the highest-impact changes and keep listings tuned as the models evolve."
-      paragraph="The final step converts the diagnosis into approval-ready listing updates. Ecentic rewrites titles, descriptions, and structured data for maximum agent selection and queues them for review. Every change is tracked, so you can measure the lift in win rate and the agent traffic that follows."
+      paragraph="The final step converts the diagnosis into approval-ready listing updates. ecentic rewrites titles, descriptions, and structured data for maximum agent selection and queues them for review. Every change is tracked, so you can measure the lift in win rate and the agent traffic that follows."
       itemsLabel="You choose how much is automated"
       items={[
         {

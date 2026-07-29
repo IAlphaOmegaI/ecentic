@@ -4,7 +4,7 @@ const posts = [
   {
     slug: "ecentic-partner-deals-y-combinator-techstars",
     category: "Announcements",
-    title: "Ecentic Startup Deals for Y Combinator and Techstars",
+    title: "ecentic Startup Deals for Y Combinator and Techstars",
     description:
       "Y Combinator students and Techstars founders get extended ecentic Dominate plus 50% off for two years. See what the startup deal includes and how to redeem it.",
     introduction:
@@ -21,7 +21,7 @@ const posts = [
       "agent readiness",
     ],
     takeaways: [
-      "Ecentic offers exclusive deals for Y Combinator students (ecentic.ai/yc) and Techstars founders (ecentic.ai/techstars), each redeemable in about two minutes with no credit card.",
+      "ecentic offers exclusive deals for Y Combinator students (ecentic.ai/yc) and Techstars founders (ecentic.ai/techstars), each redeemable in about two minutes with no credit card.",
       "The deal opens extended ecentic Dominate — continuous agent simulations across GPT-4, Claude, Gemini, and Perplexity, auto-optimization, drift alerts, and UCP generation — plus 50% off for two years afterward.",
       "Timing is the real value: Salesforce attributed roughly $67 billion of Cyber Week 2025 spend to AI and agents, and becoming machine-readable costs least before agent traffic scales.",
       "Partnering with the two strongest startup networks is a repeatable way for us to reach merchants while their catalog and positioning decisions are still open.",

@@ -55,7 +55,7 @@ export const HeroVideo = () => (
         root: "z-50 m-0 w-[min(94vw,1400px)] max-w-none overflow-hidden rounded-xl border-white/15 bg-emphasis p-0 shadow-2xl duration-150 data-ending-style:scale-95 data-starting-style:scale-95 motion-reduce:transition-none",
       }}
     >
-      <DialogTitle className="sr-only">Ecentic product film</DialogTitle>
+      <DialogTitle className="sr-only">ecentic product film</DialogTitle>
       <DialogDescription className="sr-only">
         A video introduction to the ecentic platform.
       </DialogDescription>

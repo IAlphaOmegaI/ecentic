@@ -1,12 +1,12 @@
 /**
- * Ecentic side of the woo-ucp plugin's one-click connect: an OAuth 2.0
+ * ecentic side of the woo-ucp plugin's one-click connect: an OAuth 2.0
  * authorization-code flow with PKCE where the WooCommerce store is the
- * authorization + resource server and Ecentic is the client.
+ * authorization + resource server and ecentic is the client.
  *
- * Flow: the store admin lands on `/api/integrations/woo/start` → Ecentic
+ * Flow: the store admin lands on `/api/integrations/woo/start` → ecentic
  * mints state + PKCE and redirects to the store's `/ucp-connect/authorize` →
  * the admin approves inside wp-admin → the store redirects back to
- * `/api/integrations/woo/callback` with a one-time code → Ecentic exchanges
+ * `/api/integrations/woo/callback` with a one-time code → ecentic exchanges
  * it at the store's `/ucp-connect/token` (back-channel, form-encoded) for a
  * freshly minted WooCommerce REST API key, creates the store + syncs its
  * catalog, then pushes the hosted-UCP connection settings (store id, bridge
