@@ -1,42 +1,15 @@
-import { createHmac, timingSafeEqual } from "node:crypto";
-import { type NextRequest, NextResponse as Response } from "next/server";
-import * as Orders from "@/server/app/ucp/orders";
-import { resolveStoreContext } from "@/server/app/ucp/store-context";
-import { invalidateStorefrontInfo } from "@/server/app/ucp/store-info";
+import type { NextRequest } from "next/server";
+import * as Events from "@/server/app/ucp/events";
 import { Environment } from "@/server/utils/environment";
+import { respond } from "@/server/utils/http";
 
 /**
- * Order lifecycle events relayed by the store's thin plugin (WooCommerce
- * `woocommerce_order_status_changed`). Authenticated with the per-store
- * bridge secret minted at connect time: the plugin sends
+ * Order lifecycle events relayed by the store's thin plugin. The plugin sends
  * `X-ecentic-Signature: hex(hmac_sha256(bridgeSecret, "{timestamp}.{body}"))`
  * plus `X-ecentic-Timestamp`; stale timestamps are rejected to stop replays.
- * ecentic then fans the event out to the agent platform's webhook (signed per
- * RFC 9421) for orders created through the hosted checkout.
+ * Verification and fan-out live in `server/app/ucp/events` — this reads the
+ * request and nothing else.
  */
-
-const MAX_TIMESTAMP_SKEW_SECONDS = 300;
-
-const verifySignature = ({
-  secret,
-  timestamp,
-  body,
-  signature,
-}: {
-  secret: string;
-  timestamp: string;
-  body: string;
-  signature: string;
-}): boolean => {
-  const age = Math.abs(Date.now() / 1000 - Number(timestamp));
-  if (!Number.isFinite(age) || age > MAX_TIMESTAMP_SKEW_SECONDS) return false;
-
-  const expected = createHmac("sha256", secret)
-    .update(`${timestamp}.${body}`)
-    .digest("hex");
-  if (expected.length !== signature.length) return false;
-  return timingSafeEqual(Buffer.from(expected), Buffer.from(signature));
-};
 
 export const POST = async (
   request: NextRequest,
@@ -44,61 +17,15 @@ export const POST = async (
 ) => {
   const { store } = await routeContext.params;
 
-  const context = await resolveStoreContext(store);
-  if (!context?.bridgeSecret) {
-    return Response.json({ error: "Unknown store" }, { status: 404 });
-  }
-
-  const body = await request.text();
-  const signature = request.headers.get("x-ecentic-signature") ?? "";
-  const timestamp = request.headers.get("x-ecentic-timestamp") ?? "";
-
-  if (
-    signature === "" ||
-    timestamp === "" ||
-    !verifySignature({
-      secret: context.bridgeSecret,
-      timestamp,
-      body,
-      signature,
-    })
-  ) {
-    return Response.json({ error: "Invalid signature" }, { status: 401 });
-  }
-
-  const payload = (() => {
-    try {
-      return JSON.parse(body) as { event?: unknown; order_id?: unknown };
-    } catch {
-      return null;
-    }
-  })();
-
-  const event = payload?.event;
-  const orderId = payload?.order_id;
-
-  // Settings changed on the store (e.g. the require-signatures toggle):
-  // drop the cached store facts so the next request re-fetches them.
-  if (event === "settings.updated") {
-    await invalidateStorefrontInfo(context.store.id);
-    return Response.json({ received: true, invalidated: true });
-  }
-
-  if (
-    (event !== "order.updated" && event !== "order.created") ||
-    (typeof orderId !== "number" && typeof orderId !== "string")
-  ) {
-    return Response.json({ error: "Invalid payload" }, { status: 400 });
-  }
-
-  const relay = await Orders.relayStoreEvent(Environment.SERVER, {
-    store: context,
-    event,
-    externalOrderId: String(orderId),
+  const result = await Events.record(Environment.SERVER, {
+    store,
+    // Raw text: the bridge signature covers the bytes as sent.
+    body: await request.text(),
+    signature: request.headers.get("x-ecentic-signature") ?? "",
+    timestamp: request.headers.get("x-ecentic-timestamp") ?? "",
   });
 
-  return Response.json({
-    received: true,
-    relayed: relay.success ? relay.data.relayed : false,
-  });
+  // The plugin reads `received`/`relayed` off the body, so success answers go
+  // back unwrapped; errors take the shared status mapping.
+  return result.success ? Response.json(result.data) : respond(result);
 };
