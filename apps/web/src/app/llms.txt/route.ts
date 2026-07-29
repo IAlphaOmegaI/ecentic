@@ -121,6 +121,8 @@ export const GET = async (request: Request) => {
     `- OAuth discovery: ${seo.host}/.well-known/oauth-authorization-server`,
     `- OpenID configuration: ${seo.host}/.well-known/openid-configuration`,
     `- UCP profile: ${seo.host}/.well-known/ucp`,
+    `- ACP discovery: ${seo.host}/.well-known/acp.json`,
+    `- OpenAPI (MPP): ${seo.host}/openapi.json`,
     `- MCP endpoint: ${seo.host}/api/mcp`,
     `- Agent skills: ${seo.host}/.well-known/agent-skills/index.json`,
     `- auth.md: ${seo.host}/auth.md`,

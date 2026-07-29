@@ -25,6 +25,8 @@ export const agentHomepageLinks = [
   '</.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json"',
   '</.well-known/agent-skills/index.json>; rel="service-desc"; type="application/json"',
   '</.well-known/ucp>; rel="service-desc"; type="application/json"',
+  '</.well-known/acp.json>; rel="service-desc"; type="application/json"',
+  '</openapi.json>; rel="service-desc"; type="application/json"',
   '</api/mcp>; rel="service-desc"; type="application/json"',
   '</resources>; rel="service-doc"; type="text/html"',
 ] as const;
@@ -83,6 +85,48 @@ export const apiCatalogDocument = {
           href: `${seo.host}/ucp-validator`,
           type: "text/html",
         },
+        {
+          href: `${seo.host}/resources`,
+          type: "text/html",
+        },
+      ],
+      status: [
+        {
+          href: `${seo.host}/api/health`,
+          type: "application/json",
+        },
+      ],
+    },
+    {
+      anchor: `${seo.host}/.well-known/acp.json`,
+      "service-desc": [
+        {
+          href: `${seo.host}/.well-known/acp.json`,
+          type: "application/json",
+        },
+      ],
+      "service-doc": [
+        {
+          href: "https://agenticcommerce.dev",
+          type: "text/html",
+        },
+      ],
+      status: [
+        {
+          href: `${seo.host}/api/health`,
+          type: "application/json",
+        },
+      ],
+    },
+    {
+      anchor: `${seo.host}/openapi.json`,
+      "service-desc": [
+        {
+          href: `${seo.host}/openapi.json`,
+          type: "application/json",
+        },
+      ],
+      "service-doc": [
         {
           href: `${seo.host}/resources`,
           type: "text/html",
@@ -288,6 +332,263 @@ export const mcpServerCard = {
     "Authenticate with Authorization: Bearer ecentic_sk_…. Discover registration at /auth.md and OAuth Protected Resource Metadata at /.well-known/oauth-protected-resource.",
 };
 
+/** Keep in sync with `UCP_VERSION` in `server/app/ucp/protocol.ts`. */
+const ucpVersion = "2026-04-08";
+const ucpSpecBase = `https://ucp.dev/${ucpVersion}`;
+
+/**
+ * Universal Commerce Protocol business discovery profile.
+ * Served at `/.well-known/ucp` (and mirrored by the agent profile).
+ * @see https://ucp.dev/specification/overview/
+ */
+export const ucpDiscoveryProfile = {
+  ucp: {
+    version: ucpVersion,
+    services: {
+      "dev.ucp.shopping": [
+        {
+          version: ucpVersion,
+          spec: `${ucpSpecBase}/specification/overview`,
+          transport: "rest",
+          schema: `${ucpSpecBase}/services/shopping/rest.openapi.json`,
+          endpoint: `${host}/ucp`,
+        },
+        {
+          version: ucpVersion,
+          spec: "https://modelcontextprotocol.io/specification/2025-03-26",
+          transport: "mcp",
+          endpoint: `${host}/api/mcp`,
+        },
+      ],
+    },
+    capabilities: {
+      "dev.ucp.shopping.checkout": [{ version: ucpVersion }],
+      "dev.ucp.shopping.fulfillment": [
+        {
+          version: ucpVersion,
+          extends: ["dev.ucp.shopping.checkout", "dev.ucp.shopping.cart"],
+        },
+      ],
+      "dev.ucp.shopping.buyer_consent": [
+        {
+          version: ucpVersion,
+          extends: "dev.ucp.shopping.checkout",
+        },
+      ],
+      "dev.ucp.shopping.discount": [
+        {
+          version: ucpVersion,
+          extends: ["dev.ucp.shopping.checkout", "dev.ucp.shopping.cart"],
+        },
+      ],
+      "dev.ucp.shopping.cart": [
+        {
+          version: ucpVersion,
+          spec: `${ucpSpecBase}/specification/cart`,
+          schema: `${ucpSpecBase}/schemas/shopping/cart.json`,
+        },
+      ],
+      "dev.ucp.shopping.order": [
+        {
+          version: ucpVersion,
+          spec: `${ucpSpecBase}/specification/order`,
+          schema: `${ucpSpecBase}/schemas/shopping/order.json`,
+        },
+      ],
+      "dev.ucp.shopping.catalog.search": [
+        {
+          version: ucpVersion,
+          spec: `${ucpSpecBase}/specification/catalog/search`,
+          schema: `${ucpSpecBase}/schemas/shopping/catalog_search.json`,
+        },
+      ],
+      "dev.ucp.shopping.catalog.lookup": [
+        {
+          version: ucpVersion,
+          spec: `${ucpSpecBase}/specification/catalog/lookup`,
+          schema: `${ucpSpecBase}/schemas/shopping/catalog_lookup.json`,
+        },
+      ],
+    },
+    payment_handlers: {},
+    supported_versions: {
+      [ucpVersion]: `${host}/.well-known/ucp`,
+    },
+  },
+} as const;
+
+/**
+ * Agentic Commerce Protocol discovery document.
+ * @see https://github.com/agentic-commerce-protocol/agentic-commerce-protocol/blob/main/rfcs/rfc.discovery.md
+ */
+export const acpDiscoveryDocument = {
+  protocol: {
+    name: "acp",
+    version: "2026-01-30",
+    supported_versions: ["2026-01-30"],
+    documentation_url: "https://agenticcommerce.dev",
+  },
+  api_base_url: `${host}/api/acp`,
+  transports: ["rest", "mcp"],
+  capabilities: {
+    services: ["checkout", "orders", "carts"],
+    supported_currencies: ["usd"],
+    supported_locales: ["en-US"],
+  },
+} as const;
+
+/**
+ * Root OpenAPI document with MPP `x-payment-info` payment discovery.
+ * @see https://paymentauth.org/draft-payment-discovery-00.txt
+ */
+export const openApiDocument = {
+  openapi: "3.1.0",
+  info: {
+    title: "ecentic agent commerce API",
+    version: "1.0.0",
+    description:
+      "Agent-facing ecentic surfaces: MCP, UCP discovery, ACP checkout bootstrapping, and payable agent API access.",
+  },
+  servers: [{ url: host }],
+  "x-service-info": {
+    categories: ["developer-tools", "data"],
+    docs: {
+      homepage: `${host}/resources`,
+      apiReference: `${host}/.well-known/api-catalog`,
+      llms: `${host}/llms.txt`,
+    },
+  },
+  paths: {
+    "/api": {
+      get: {
+        summary: "Agent API root (x402 / MPP payable)",
+        operationId: "getAgentApiRoot",
+        description:
+          "Returns HTTP 402 Payment Required with x402 payment requirements unless a valid payment proof is supplied.",
+        "x-payment-info": {
+          intent: "charge",
+          method: "stripe",
+          amount: "0.01",
+          currency: "USD",
+          description: "Per-request access to the ecentic agent API root.",
+        },
+        responses: {
+          "200": {
+            description: "Paid access granted",
+            content: {
+              "application/json": {
+                schema: { type: "object", additionalProperties: true },
+              },
+            },
+          },
+          "402": {
+            description: "Payment Required (x402 / MPP challenge)",
+            content: {
+              "application/json": {
+                schema: { type: "object", additionalProperties: true },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/api/mcp": {
+      post: {
+        summary: "JSON-RPC MCP request",
+        operationId: "postMcp",
+        security: [{ bearerAuth: [] }],
+        responses: {
+          "200": {
+            description: "JSON-RPC response",
+            content: {
+              "application/json": {
+                schema: { type: "object", additionalProperties: true },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/.well-known/ucp": {
+      get: {
+        summary: "Universal Commerce Protocol discovery profile",
+        operationId: "getWellKnownUcp",
+        responses: {
+          "200": {
+            description: "UCP business profile",
+            content: {
+              "application/json": {
+                schema: { type: "object", additionalProperties: true },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/.well-known/acp.json": {
+      get: {
+        summary: "Agentic Commerce Protocol discovery document",
+        operationId: "getWellKnownAcp",
+        responses: {
+          "200": {
+            description: "ACP discovery document",
+            content: {
+              "application/json": {
+                schema: { type: "object", additionalProperties: true },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        description:
+          "Agent API key (ecentic_sk_…) or OAuth access token from the authorization server.",
+      },
+    },
+  },
+} as const;
+
+/** USDC on Base — used in the public x402 challenge when no override is set. */
+const x402UsdcBase = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
+
+/**
+ * x402 Payment Required body for unpaid agent API probes.
+ * @see https://x402.org
+ */
+export const x402PaymentRequired = (payTo: string) =>
+  ({
+    x402Version: 1,
+    error: "Payment required to access the ecentic agent API",
+    accepts: [
+      {
+        scheme: "exact",
+        network: "base",
+        maxAmountRequired: "10000",
+        resource: `${host}/api`,
+        description: "ecentic agent API access",
+        mimeType: "application/json",
+        payTo,
+        maxTimeoutSeconds: 60,
+        asset: x402UsdcBase,
+        extra: {
+          name: "USDC",
+          version: "2",
+          facilitator: "https://x402.org/facilitator",
+        },
+      },
+    ],
+  }) as const;
+
+export const resolveX402PayTo = () =>
+  process.env.X402_PAY_TO?.trim() ||
+  "0x0000000000000000000000000000000000000000";
+
 export const authMd = `# auth.md
 
 ecentic agent registration and credential guide.
@@ -321,6 +622,14 @@ GET ${host}/.well-known/oauth-authorization-server
 
 \`\`\`http
 GET ${host}/.well-known/mcp/server-card.json
+\`\`\`
+
+4. Commerce discovery:
+
+\`\`\`http
+GET ${host}/.well-known/ucp
+GET ${host}/.well-known/acp.json
+GET ${host}/openapi.json
 \`\`\`
 
 ## Register
@@ -376,7 +685,9 @@ Revoke unused keys from the merchant account (dashboard). Revoked or expired key
 - Site: ${host}
 - MCP endpoint: ${resource}
 - Agent skills: ${host}/.well-known/agent-skills/index.json
-- UCP agent profile: ${host}/ucp/agent-profile
+- UCP profile: ${host}/.well-known/ucp
+- ACP discovery: ${host}/.well-known/acp.json
+- OpenAPI (MPP): ${host}/openapi.json
 - llms.txt: ${host}/llms.txt
 `;
 

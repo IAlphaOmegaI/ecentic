@@ -81,6 +81,12 @@ declare namespace NodeJS {
      */
     readonly SCRAPELLM_API_KEY?: string;
 
+    /**
+     * x402 pay-to address (EVM) advertised in the `/api` Payment Required
+     * challenge. Unset falls back to the zero address for discovery only.
+     */
+    readonly X402_PAY_TO?: string;
+
     readonly npm_package_name: string;
     readonly npm_package_version: string;
   }
