@@ -2,9 +2,9 @@
 
 import { unique } from "@zenncore/utils";
 import { and, eq, inArray } from "drizzle-orm";
-import { cache as dedupe } from "react";
 import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
+import { dedupe } from "../utils/dedupe";
 import { Environment } from "../utils/environment";
 import type { Pager } from "../utils/pagination";
 import type { Document, ExecuteOptions, Insertable } from "../utils/repository";
@@ -266,7 +266,7 @@ const computeDataQuality = (product: Type): number => {
 };
 
 const computeModelWinRate = (
-  simulations: Simulation.Type[],
+  simulations: Simulation.Summary[],
   model: string,
 ): number => {
   const modelSimulations = simulations.filter(
@@ -289,22 +289,44 @@ export const gatherIntelligence = dedupe(
     // averages, quality/optimization breakdowns), so it must cover the whole
     // catalog — not the 10-row preview `skimForCurrentUser` returns, which would
     // undercount totals and skew every average.
-    const [products, scan] = await Promise.all([
-      find(Environment.SERVER, {
-        where: store
-          ? and(
-              eq(schema.product.userId, userId),
-              eq(schema.product.storeId, store),
-            )
-          : eq(schema.product.userId, userId),
-      }),
+    const [catalog, scan] = await Promise.all([
+      store
+        ? Simulation.getForStore(Environment.SERVER, { store })
+        : (async () => {
+            const products = await find(Environment.SERVER, {
+              where: eq(schema.product.userId, userId),
+            });
+            if (!products.success) return products;
+
+            if (products.data.length === 0)
+              return {
+                success: true as const,
+                data: {
+                  products: products.data,
+                  simulations: [] as Simulation.Summary[],
+                },
+              };
+
+            const simulations = await Simulation.getForProducts(
+              Environment.SERVER,
+              { products: products.data.map((product) => product.id) },
+            );
+            if (!simulations.success) return simulations;
+
+            return {
+              success: true as const,
+              data: { products: products.data, simulations: simulations.data },
+            };
+          })(),
       Scan.getLatest(Environment.SERVER, { store }),
     ]);
 
-    if (!products.success) return products;
+    if (!catalog.success) return catalog;
     if (!scan.success) return scan;
 
-    if (products.data.length === 0) {
+    const { products, simulations } = catalog.data;
+
+    if (products.length === 0) {
       return {
         success: true,
         data: {
@@ -315,14 +337,8 @@ export const gatherIntelligence = dedupe(
       };
     }
 
-    const simulations = await Simulation.getForProducts(Environment.SERVER, {
-      products: products.data.map((product) => product.id),
-    });
-
-    if (!simulations.success) return simulations;
-
-    const rows = products.data.map((product) => {
-      const productSimulations = simulations.data.filter(
+    const rows = products.map((product) => {
+      const productSimulations = simulations.filter(
         (simulation) => simulation.productId === product.id,
       );
 
@@ -353,7 +369,7 @@ export const gatherIntelligence = dedupe(
       success: true,
       data: {
         products: rows,
-        total: products.data.length,
+        total: products.length,
         scan: scan.data[0],
       },
     };

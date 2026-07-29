@@ -20,8 +20,6 @@ import * as Simulation from "./simulation";
 export const { get, paginate, create, update, destroy, exists, count, find } =
   repository(schema.competitor);
 
-const products = repository(schema.product);
-
 export type Type = Document<typeof schema.competitor>;
 
 /**
@@ -34,41 +32,24 @@ export type Type = Document<typeof schema.competitor>;
  * been judged yet.
  */
 const collectForStore = async (userId: string, store: string) => {
-  const [competitors, storeProducts] = await Promise.all([
+  const [competitors, collected] = await Promise.all([
     find(Environment.SERVER, {
       where: and(
         eq(schema.competitor.userId, userId),
         eq(schema.competitor.storeId, store),
       ),
     }),
-    products.find(Environment.SERVER, {
-      where: and(
-        eq(schema.product.userId, userId),
-        eq(schema.product.storeId, store),
-      ),
-    }),
+    Simulation.getForStore(Environment.SERVER, { store }),
   ]);
   if (!competitors.success) return competitors;
-  if (!storeProducts.success) return storeProducts;
-
-  const productIds = storeProducts.data.map((product) => product.id);
-  if (productIds.length === 0)
-    return {
-      success: true as const,
-      data: {
-        competitors: competitors.data,
-        simulations: [] as Simulation.Type[],
-      },
-    };
-
-  const simulations = await Simulation.getForProducts(Environment.SERVER, {
-    products: productIds,
-  });
-  if (!simulations.success) return simulations;
+  if (!collected.success) return collected;
 
   return {
     success: true as const,
-    data: { competitors: competitors.data, simulations: simulations.data },
+    data: {
+      competitors: competitors.data,
+      simulations: collected.data.simulations,
+    },
   };
 };
 
@@ -241,7 +222,7 @@ export const streamDetection = withAuthentication(
 
 const aggregateBrands = (
   competitors: Type[],
-  simulations: Simulation.Type[],
+  simulations: Simulation.Summary[],
 ) => {
   return unique(competitors.map((c) => c.brand ?? c.title)).flatMap((brand) => {
     const group = competitors.filter((c) => (c.brand ?? c.title) === brand);
