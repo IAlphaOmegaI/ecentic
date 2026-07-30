@@ -123,6 +123,7 @@ export const GET = async (request: Request) => {
     `- UCP profile: ${seo.host}/.well-known/ucp`,
     `- ACP discovery: ${seo.host}/.well-known/acp.json`,
     `- OpenAPI (MPP): ${seo.host}/openapi.json`,
+    `- x402 payable API root: ${seo.host}/api (HTTP 402 + PAYMENT-REQUIRED)`,
     `- MCP endpoint: ${seo.host}/api/mcp`,
     `- Agent skills: ${seo.host}/.well-known/agent-skills/index.json`,
     `- auth.md: ${seo.host}/auth.md`,

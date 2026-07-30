@@ -464,7 +464,7 @@ export const openApiDocument = {
         summary: "Agent API root (x402 / MPP payable)",
         operationId: "getAgentApiRoot",
         description:
-          "Returns HTTP 402 Payment Required with x402 payment requirements unless a valid payment proof is supplied.",
+          "Protected by @x402/next. Unpaid requests receive HTTP 402 with a PAYMENT-REQUIRED header (USDC exact scheme via the configured x402 facilitator). Valid PAYMENT-SIGNATURE unlocks the agent surface catalog.",
         "x-payment-info": {
           intent: "charge",
           method: "stripe",
@@ -553,41 +553,6 @@ export const openApiDocument = {
     },
   },
 } as const;
-
-/** USDC on Base — used in the public x402 challenge when no override is set. */
-const x402UsdcBase = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
-
-/**
- * x402 Payment Required body for unpaid agent API probes.
- * @see https://x402.org
- */
-export const x402PaymentRequired = (payTo: string) =>
-  ({
-    x402Version: 1,
-    error: "Payment required to access the ecentic agent API",
-    accepts: [
-      {
-        scheme: "exact",
-        network: "base",
-        maxAmountRequired: "10000",
-        resource: `${host}/api`,
-        description: "ecentic agent API access",
-        mimeType: "application/json",
-        payTo,
-        maxTimeoutSeconds: 60,
-        asset: x402UsdcBase,
-        extra: {
-          name: "USDC",
-          version: "2",
-          facilitator: "https://x402.org/facilitator",
-        },
-      },
-    ],
-  }) as const;
-
-export const resolveX402PayTo = () =>
-  process.env.X402_PAY_TO?.trim() ||
-  "0x0000000000000000000000000000000000000000";
 
 export const authMd = `# auth.md
 

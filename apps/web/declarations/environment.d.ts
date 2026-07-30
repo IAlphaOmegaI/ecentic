@@ -82,10 +82,18 @@ declare namespace NodeJS {
     readonly SCRAPELLM_API_KEY?: string;
 
     /**
-     * x402 pay-to address (EVM) advertised in the `/api` Payment Required
-     * challenge. Unset falls back to the zero address for discovery only.
+     * x402 pay-to address (EVM) for `/api` via `@x402/next`. Unset falls back
+     * to the zero address for discovery-only probes; set a real wallet before
+     * enabling settlement.
      */
     readonly X402_PAY_TO?: string;
+    /** Optional x402 facilitator URL; defaults to https://x402.org/facilitator. */
+    readonly X402_FACILITATOR_URL?: string;
+    /**
+     * Optional CAIP-2 network for x402 (e.g. eip155:84532 Base Sepolia,
+     * eip155:8453 Base mainnet). Must be supported by the configured facilitator.
+     */
+    readonly X402_NETWORK?: string;
 
     readonly npm_package_name: string;
     readonly npm_package_version: string;
