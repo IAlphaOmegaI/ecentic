@@ -70,7 +70,7 @@ const azure = createAzure({
   apiKey: process.env.AZURE_API_KEY,
   // The provider targets Azure's v1 API surface, which accepts "preview" (latest
   // features incl. structured outputs) — NOT the older date-based versions.
-  apiVersion: process.env.AZURE_API_VERSION ?? "preview",
+  apiVersion: process.env.AZURE_API_VERSION,
 });
 
 // Azure serves models under DEPLOYMENT names picked at deploy time, and those
