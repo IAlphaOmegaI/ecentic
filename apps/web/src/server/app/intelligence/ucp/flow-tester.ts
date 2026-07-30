@@ -38,10 +38,9 @@ import * as Utils from "./utils";
 // ecentic UCP platform profile
 const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
 
-// 2.5-flash handles this multi-step tool loop reliably; Gemini 3 needs
-// thoughtSignature replay across steps, which is fragile here. Routed direct to
-// Google (not the Vercel gateway) via AI.model below.
-const FLOW_TESTER_MODEL = "gemini-2.5-flash";
+// Keep the flow tester on the shared ChatGPT seat. It prefers the Azure
+// deployment named by AZURE_DEPLOYMENT_GPT and falls back to the gateway.
+const FLOW_TESTER_MODEL = "gpt";
 
 const formatUcpMessage = (message: z.infer<typeof messageSchema>): string => {
   const path = message.path ? ` (${message.path})` : "";

@@ -89,7 +89,7 @@ export const GET = async () => {
     "",
     `> ${seo.description}`,
     "",
-    "ecentic simulates how AI shopping agents — GPT-4, Claude, Gemini, Perplexity — evaluate product listings against competitors, diagnoses why a product wins or loses, and auto-optimizes catalog content so merchants capture agent-driven commerce.",
+    "ecentic simulates how AI shopping agents — ChatGPT, Claude, Gemini, Perplexity — evaluate product listings against competitors, diagnoses why a product wins or loses, and auto-optimizes catalog content so merchants capture agent-driven commerce.",
     "",
     `- Site: ${seo.host}`,
     `- Sitemap: ${seo.host}/sitemap.xml`,

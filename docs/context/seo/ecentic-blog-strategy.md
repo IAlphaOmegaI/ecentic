@@ -10,13 +10,13 @@ Grounded in `docs/context/idea.md` (product), `docs/context/strategy.md` (market
 
 1. **Own a category the competitors don't.** Every rival either *monitors* brand mentions in AI answers (Profound, Otterly, Peec) or *readies* product data for agents (Feedonomics, Yotpo Discover, Schema App). None run a **head-to-head simulation of a named competitor, diagnose why the agent picked them, and auto-rewrite + republish the listing to flip the verdict.** The blog should relentlessly own the phrase and concept: **winning the AI agent's cart**.
 2. **Turn the blog from generic to category-defining.** The 7 current posts are ~TOFU/generic ecommerce education (plus 2 announcements). They build baseline authority but do not claim ecentic's category or convert. Add a category pillar, a comparison cluster, and product-led middle-funnel content.
-3. **Weaponize the one asset no competitor can copy: your simulation data.** ecentic runs GPT-4/Claude/Gemini/Perplexity product face-offs. A recurring **"AI Shopping Agent Win-Rate Index"** (per-model selection bias, category win rates, which attributes flip a decision) is original research that earns links *and* AI citations — the single highest-leverage content bet.
+3. **Weaponize the one asset no competitor can copy: your simulation data.** ecentic runs ChatGPT/Claude/Gemini/Perplexity product face-offs. A recurring **"AI Shopping Agent Win-Rate Index"** (per-model selection bias, category win rates, which attributes flip a decision) is original research that earns links *and* AI citations — the single highest-leverage content bet.
 
 ---
 
 ## 1. Positioning: the category to own
 
-**Wedge (one sentence):** ecentic is the only platform that simulates how AI shopping agents choose between your product and a specific competitor, tells you exactly why you lose, and auto-fixes and republishes the listing to win — across GPT-4, Claude, Gemini, and Perplexity, on any store.
+**Wedge (one sentence):** ecentic is the only platform that simulates how AI shopping agents choose between your product and a specific competitor, tells you exactly why you lose, and auto-fixes and republishes the listing to win — across ChatGPT, Claude, Gemini, and Perplexity, on any store.
 
 **Category to own:** *Agentic commerce optimization* — or in plain merchant language, **"getting picked by AI shopping agents."** The GEO/AEO crowd is fighting over "brand visibility in AI answers." That is a different, more crowded job. ecentic's job is downstream of visibility: **conversion in the agent's decision.**
 
@@ -93,7 +93,7 @@ Context for urgency (use in intros): Semrush's 2026 AI Visibility Index analyzed
 Three content pillars + one recurring research stream. Each pillar page is a comprehensive hub; spokes link up to the hub and across to siblings.
 
 **Pillar A — "How to win AI shopping agents" (the category hub; flagship).**
-Spokes: how AI agents choose between products (informational, ties to simulation) · GPT-4 vs Claude vs Gemini vs Perplexity: how each picks products · AEO/GEO for product pages · how to get products recommended in ChatGPT/Perplexity shopping · "why isn't my product showing up in AI shopping results" · the win-the-cart playbook.
+Spokes: how AI agents choose between products (informational, ties to simulation) · ChatGPT vs Claude vs Gemini vs Perplexity: how each picks products · AEO/GEO for product pages · how to get products recommended in ChatGPT/Perplexity shopping · "why isn't my product showing up in AI shopping results" · the win-the-cart playbook.
 
 **Pillar B — "Make your catalog machine-readable" (agent readiness).**
 Spokes: Structured Data Checklist *(existing)* · product feeds for AI agents (feed vs agent-readiness) · UCP explained (honest: it's an open standard) · attribute completeness that changes an agent's decision · trust/review signals agents read.
@@ -116,7 +116,7 @@ Google rankings and AI citations are now one job, but citations need extra tacti
 - **Answer-first openers** (40–60 words, one sourced stat) so extractors can lift the passage. *(Already applied in the rewritten posts.)*
 - **Question-shaped H2s + FAQ blocks** matching the AI queries in §4 (AI assistants extract Q&A verbatim).
 - **Original numbers with a named source** — AI answers preferentially cite content with concrete, attributable statistics. Your own win-rate data (see §7) is ideal because it is unique and quotable.
-- **Entity clarity** — name the models (GPT-4, Claude, Gemini, Perplexity), protocols (UCP, ACP, AP2), and competitors explicitly so the content maps to how assistants understand the space.
+- **Entity clarity** — name the models (ChatGPT, Claude, Gemini, Perplexity), protocols (UCP, ACP, AP2), and competitors explicitly so the content maps to how assistants understand the space.
 - **Freshness** — the space shifts monthly; keep `updatedAt` current (dateModified) and refresh the market/research posts quarterly.
 
 **Priority queries to win (Google + AI):** how to optimize products for AI shopping agents · how do AI agents choose between products · why isn't my product showing up in AI shopping results · how to get recommended in ChatGPT / Perplexity shopping · AI product listing optimization for Shopify/WooCommerce · Profound / Ecomtent / Alhena alternative for ecommerce · GEO/AEO for ecommerce product pages · how to win the AI agent's cart.
@@ -162,7 +162,7 @@ Sequenced for category ownership + conversion first, breadth later. (P1 = do fir
 3. **[P1, Research]** "AI Shopping Agent Win-Rate Index — Q3 2026" — first proprietary-data drop.
 4. **[P1, Comparison]** "Best Tools to Optimize for AI Shopping Agents (2026)" — honest roundup incl. Profound/Ecomtent/Alhena.
 5. **[P2, Pillar A spoke]** "How AI Shopping Agents Actually Choose Between Products" — informational, cites your data + ACES/HBR.
-6. **[P2, Pillar A spoke]** "GPT-4 vs Claude vs Gemini vs Perplexity: How Each Picks Products."
+6. **[P2, Pillar A spoke]** "ChatGPT vs Claude vs Gemini vs Perplexity: How Each Picks Products."
 7. **[P2, Pillar A spoke]** "Why Your Product Isn't Showing Up in AI Shopping Results (and how to fix it)."
 8. **[P2, Pillar B spoke]** "Product Feeds vs Agent-Readiness: What AI Agents Actually Read."
 9. **[P2, Pillar B spoke]** "UCP Explained: The Open Standard for Agent Commerce (and how to get it right)."

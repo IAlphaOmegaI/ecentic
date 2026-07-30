@@ -30,7 +30,7 @@ export type DetectionEvent =
   | { kind: "error"; message: string };
 
 // Competitor detection as a single synchronous streaming pass — no detached
-// /api/detect hop, no URL grounding. gpt-4o reliably returns real, well-known
+// /api/detect hop, no URL grounding. ChatGPT reliably returns real, well-known
 // competitor brands; an earlier HTTP-grounding gate discarded most of them
 // because the model cannot guess exact retailer URLs (a real product on a
 // guessed-wrong Amazon ASIN 404s). We keep the model's set and stream each
@@ -121,7 +121,7 @@ export const stream = ({
     const streamed = await resultify(async () => {
       const generation = AI.stream({
         label: "detect.competitors",
-        model: "gpt-4o",
+        model: "gpt",
         output: z.array(candidate),
         instructions: Judge.DETECTION_SYSTEM,
         prompt,

@@ -35,7 +35,13 @@ declare namespace NodeJS {
     readonly AZURE_RESOURCE_NAME: string; // subdomain only, e.g. "my-resource"
     readonly AZURE_API_KEY: string;
     readonly AZURE_API_VERSION?: string; // defaults to "preview" (Azure v1 API surface)
-    readonly AZURE_DEPLOYMENT_GPT4O?: string; // your GPT deployment name (e.g. "gpt-5.3-chat")
+    /**
+     * Deployment serving the `gpt` seat on this resource, e.g. "gpt-5.3-chat".
+     * The name is the DEPLOYMENT's, not the model's. Unset means "no ChatGPT
+     * deployment here" and the seat resolves through the gateway instead, since
+     * a guessed deployment name only earns a 404 from Azure.
+     */
+    readonly AZURE_DEPLOYMENT_GPT?: string;
 
     /**
      * Vercel AI Gateway — every model Azure cannot serve (Claude, Gemini,

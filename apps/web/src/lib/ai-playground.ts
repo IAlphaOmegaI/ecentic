@@ -8,6 +8,7 @@ export const ENDPOINT = "/api/dev/ai-playground";
 
 export type PlaygroundProvider =
   | "azure"
+  | "openai"
   | "anthropic"
   | "google"
   | "perplexity";
@@ -26,6 +27,7 @@ export type PlaygroundModel = {
 // Vercel AI Gateway and is billed to AI_GATEWAY_API_KEY.
 export const PROVIDERS = {
   azure: { label: "Azure OpenAI · direct", accent: "text-primary" },
+  openai: { label: "OpenAI · gateway", accent: "text-primary" },
   anthropic: { label: "Anthropic · gateway", accent: "text-warning" },
   google: { label: "Google · gateway", accent: "text-success" },
   perplexity: {
@@ -41,30 +43,31 @@ export const PROVIDERS = {
 // same path production takes. `model()` in server/utils/ai routes by prefix and
 // accepts anything else too — unlisted ids go through the custom-id box.
 export const MODELS: PlaygroundModel[] = [
+  // The only ChatGPT id the product names. A specific version, when one is
+  // genuinely needed, goes through the custom-id box as `openai/<model>`.
   {
-    id: "gpt-4o",
-    label: "GPT-4o",
+    id: "gpt",
+    label: "ChatGPT",
     provider: "azure",
-    note: "resolves to AZURE_DEPLOYMENT_GPT4O",
+    note: "AZURE_DEPLOYMENT_GPT, else gateway",
   },
-  { id: "gpt-4", label: "GPT-4", provider: "azure" },
   {
-    id: "claude-sonnet-4-6",
+    id: "claude-sonnet-4.6",
     label: "Claude Sonnet 4.6",
     provider: "anthropic",
   },
   {
-    id: "claude-sonnet-4-5",
+    id: "claude-sonnet-4.5",
     label: "Claude Sonnet 4.5",
     provider: "anthropic",
   },
   {
-    id: "claude-sonnet-4-20250514",
+    id: "claude-sonnet-4",
     label: "Claude Sonnet 4",
     provider: "anthropic",
   },
   {
-    id: "gemini-3-flash-preview",
+    id: "gemini-3-flash",
     label: "Gemini 3 Flash",
     provider: "google",
     note: "preview",
@@ -74,13 +77,17 @@ export const MODELS: PlaygroundModel[] = [
   { id: "sonar-pro", label: "Sonar Pro", provider: "perplexity" },
 ];
 
-// Mirrors the prefix routing inside `model()` so a custom id is labelled with the
-// provider it will actually be billed to.
+// Mirrors the routing inside `model()` so a custom id is labelled with the rail
+// it will actually be billed to. The one id this cannot settle from the client is
+// `gpt`, whose rail depends on whether the server has a deployment named for it —
+// it is shown as direct, its preferred rail.
 export const providerOf = (id: string): PlaygroundProvider => {
   const slash = id.indexOf("/");
   const prefix = slash === -1 ? id : id.slice(0, slash);
 
   switch (true) {
+    case prefix === "azure" || id === "gpt":
+      return "azure";
     case prefix === "anthropic" || prefix.startsWith("claude"):
       return "anthropic";
     case prefix === "google" || prefix.startsWith("gemini"):
@@ -88,7 +95,7 @@ export const providerOf = (id: string): PlaygroundProvider => {
     case prefix === "perplexity" || prefix.startsWith("sonar"):
       return "perplexity";
     default:
-      return "azure";
+      return "openai";
   }
 };
 

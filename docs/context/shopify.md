@@ -13,13 +13,13 @@ See how AI shopping agents rank your products, find attribute gaps, and optimize
 ## App Details (max 500 chars)
 
 ```
-AI shopping agents (GPT-4, Claude, Gemini, Perplexity) increasingly decide which products consumers buy. They ignore ads and branding — they compare structured data in milliseconds. ecentic imports your Shopify catalog, runs simulations across multiple AI models, and reveals exactly why agents pick competitors over you. Identify missing attributes, track per-model win rates, and publish optimized titles and descriptions directly back to your store.
+AI shopping agents (ChatGPT, Claude, Gemini, Perplexity) increasingly decide which products consumers buy. They ignore ads and branding — they compare structured data in milliseconds. ecentic imports your Shopify catalog, runs simulations across multiple AI models, and reveals exactly why agents pick competitors over you. Identify missing attributes, track per-model win rates, and publish optimized titles and descriptions directly back to your store.
 ```
 
 ## Features (3–5, max 80 chars each)
 
 ```
-Feature 1: Simulate AI agent purchase decisions across GPT-4, Claude, Gemini & Perplexity
+Feature 1: Simulate AI agent purchase decisions across ChatGPT, Claude, Gemini & Perplexity
 Feature 2: Identify product attribute gaps that cause AI agents to skip your listings
 Feature 3: Publish optimized titles and descriptions back to your Shopify store
 Feature 4: Track win rates per AI model with competitor battlecards
@@ -90,7 +90,7 @@ To test this app:
 4. During onboarding Step 1 (Connect Store), your Shopify store will already be connected via the OAuth flow
 5. In Step 2 (Select Products), choose which imported products to include in simulations
 6. In Step 3 (Add Competitors), add competitor product URLs or enter them manually (title, price, brand, URL)
-7. In Step 4 (Run Scan), click "Run Simulation" to execute AI agent simulations across GPT-4, Claude, Gemini, and Perplexity
+7. In Step 4 (Run Scan), click "Run Simulation" to execute AI agent simulations across ChatGPT, Claude, Gemini, and Perplexity
 8. After the simulation completes, you'll see your overall win rate and be redirected to the dashboard
 
 Dashboard features to verify:
@@ -118,7 +118,7 @@ This account has pre-seeded simulation data so you can see the full dashboard ex
 ## Feature Media
 
 - **Type**: Image (1600×900px, .png)
-- **Alt text**: "ecentic dashboard showing AI agent win rates across GPT-4, Claude, Gemini, and Perplexity for an e-commerce product catalog"
+- **Alt text**: "ecentic dashboard showing AI agent win rates across ChatGPT, Claude, Gemini, and Perplexity for an e-commerce product catalog"
 
 ## Desktop Screenshots (minimum 3, 1600×900px)
 

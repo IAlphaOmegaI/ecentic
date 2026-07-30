@@ -12,21 +12,21 @@ import { ValidationError } from "../../utils/error";
 // failure (e.g. the gateway has no Perplexity route configured) surfaces as an
 // error row rather than failing the whole run.
 const perspectives = [
-  { id: "gpt4", label: "GPT-4o", model: "gpt-4o" as AI.ModelId },
+  { id: "gpt4", label: "ChatGPT", model: "gpt" as AI.ModelId },
   {
     id: "claude",
     label: "Claude Sonnet",
-    model: "claude-sonnet-4-20250514" as AI.ModelId,
+    model: "claude-sonnet-4" as AI.ModelId,
   },
   {
     id: "gemini",
     label: "Gemini",
-    model: "gemini-2.5-flash" as AI.ModelId,
+    model: "gemini-2.5-flash",
   },
   {
     id: "perplexity",
     label: "Perplexity Sonar",
-    model: "sonar" as AI.ModelId,
+    model: "sonar",
   },
 ] as const;
 

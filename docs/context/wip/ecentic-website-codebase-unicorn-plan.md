@@ -22,7 +22,7 @@ Everything below is the work it takes to get from here to there.
 
 The codebase audit surfaced fourteen shipped capabilities that are not sufficiently represented on the marketing site:
 
-**Multi-model simulation engine.** `server/app/intelligence/simulate.ts` + `compare.ts` run every product against every selected competitor across four model perspectives (GPT-4, Claude, Gemini, Perplexity) with *different evaluation frameworks per model* — GPT-4 weights rigor, Claude weights confidence signals, Gemini weights value optimization, Perplexity weights web-verified reputation. This is the defensible part of the product. The landing page gives it three bullets. It deserves a full section with a live demo widget.
+**Multi-model simulation engine.** `server/app/intelligence/simulate.ts` + `compare.ts` run every product against every selected competitor across four model perspectives (ChatGPT, Claude, Gemini, Perplexity) with *different evaluation frameworks per model* — ChatGPT weights rigor, Claude weights confidence signals, Gemini weights value optimization, Perplexity weights web-verified reputation. This is the defensible part of the product. The landing page gives it three bullets. It deserves a full section with a live demo widget.
 
 **One-click write-back to storefronts.** `server/app/optimization.ts` generates an improved title + HTML description + JSON-LD structured data, publishes to Shopify via Admin API PUT or WooCommerce via REST PUT, records `winRateBefore / estimatedLift / winRateAfter`, and enforces a 14-day cooldown. This is the "closed-loop" story a16z loves — diagnose → fix → measure lift. It is currently invisible on the site.
 
@@ -246,7 +246,7 @@ The code already enforces a 100-product cap and publishable-platform gating. The
 Current: "Win Every AI Shopping Agent's Cart" is fine, but the subheadline can do more work. Current subheadline (inferred from search snippets) is passive. Replace with something like:
 
 > **Win every AI shopping agent's cart.**
-> Simulate how GPT-4, Claude, Gemini, and Perplexity compare your products against competitors. Diagnose why you lose. Publish the fix in one click. Measure the agent traffic that results.
+> Simulate how ChatGPT, Claude, Gemini, and Perplexity compare your products against competitors. Diagnose why you lose. Publish the fix in one click. Measure the agent traffic that results.
 
 Four verbs — Simulate, Diagnose, Publish, Measure — map 1:1 to the four features and become the navigational spine of the whole site.
 
@@ -256,7 +256,7 @@ The codebase already has `lib/seo.ts`, `sitemap.ts`, `robots.ts`, structured dat
 
 - Ship a `llms.txt` at the site root ([proposal](https://llmstxt.org/)) listing the canonical URLs for every page. The AI agents you're helping merchants win for — they're now reading these files. It's 90 minutes of work and it's a weirdly strong market signal.
 - Enable the `/.well-known/ucp` endpoint on ecentic.ai itself (not just as a feature for customers). Eat your own dog food. When an a16z partner pastes ecentic.ai into your own validator, they should see a ✓.
-- Write three flagship long-form pieces before the a16z application: (a) "How GPT-4, Claude, Gemini, and Perplexity actually evaluate product listings — a 10,000-product study", (b) "The agent traffic iceberg: what your Shopify analytics is missing", (c) "Why we built ecentic for the UCP / ACP / TAP future". These are the three pieces a16z partners will Google when they see your name.
+- Write three flagship long-form pieces before the a16z application: (a) "How ChatGPT, Claude, Gemini, and Perplexity actually evaluate product listings — a 10,000-product study", (b) "The agent traffic iceberg: what your Shopify analytics is missing", (c) "Why we built ecentic for the UCP / ACP / TAP future". These are the three pieces a16z partners will Google when they see your name.
 - Add `og:image` per page with a Vercel-OG-rendered summary card so every shared link looks like a product, not a default.
 
 ### 3.6 Conversion surface

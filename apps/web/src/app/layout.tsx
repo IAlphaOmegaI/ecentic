@@ -24,13 +24,13 @@ export const metadata: Metadata = {
     template: "%s | ecentic",
   },
   description:
-    "Optimize product listings for AI shopping agents. Simulate GPT-4, Claude, Gemini, and Perplexity decisions, diagnose losses, and improve win rate.",
+    "Optimize product listings for AI shopping agents. Simulate ChatGPT, Claude, Gemini, and Perplexity decisions, diagnose losses, and improve win rate.",
   keywords: [
     "AI shopping agent optimization",
     "e-commerce AI optimization",
     "AI agent economy",
     "product listing optimization",
-    "GPT-4 shopping",
+    "ChatGPT shopping",
     "Claude shopping agent",
     "Gemini shopping",
     "win rate optimization",
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "ecentic — Win Every AI Shopping Agent's Cart",
     description:
-      "Simulate how GPT-4, Claude, Gemini & Perplexity choose your products vs. competitors. Diagnose losses. Auto-optimize. Win every cart.",
+      "Simulate how ChatGPT, Claude, Gemini & Perplexity choose your products vs. competitors. Diagnose losses. Auto-optimize. Win every cart.",
     creator: "@ecentic",
   },
   robots: {

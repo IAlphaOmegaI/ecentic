@@ -19,8 +19,7 @@ export const SimulationSection = ({
   onPersonaChange: (value: string) => void;
 }) => {
   const aiModels = [
-    { value: "gpt-4", label: "GPT-4", tier: "compete" },
-    { value: "gpt-4o", label: "GPT-4o", tier: "compete" },
+    { value: "gpt", label: "ChatGPT", tier: "compete" },
     {
       value: "claude-3-5-sonnet",
       label: "Claude 3.5 Sonnet",

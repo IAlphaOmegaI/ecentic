@@ -19,7 +19,7 @@ If code and docs disagree, follow documented intent unless the user explicitly a
 
 ## What This Is
 
-**ecentic** is an e-commerce optimization platform for the AI agent economy. It simulates how AI shopping agents (GPT-4, Claude, Gemini, Perplexity) compare products vs. competitors, diagnoses why products win or lose, and auto-optimizes listings. See `docs/context/idea.md` for full product spec and feature roadmap.
+**ecentic** is an e-commerce optimization platform for the AI agent economy. It simulates how AI shopping agents (ChatGPT, Claude, Gemini, Perplexity) compare products vs. competitors, diagnoses why products win or lose, and auto-optimizes listings. See `docs/context/idea.md` for full product spec and feature roadmap.
 
 ---
 
@@ -103,7 +103,7 @@ There are no automated tests in this codebase currently.
 - `integration/shopify.ts` — OAuth token exchange + product sync via Shopify Admin API
 - `integration/woocommerce.ts` — credential validation + paginated product fetch
 - `integration/feed.ts` — XML/JSON auto-detection + Google Shopping format parsing
-- `intelligence/simulate.ts` — AI simulation engine (GPT-4, Claude, Gemini, Perplexity perspectives)
+- `intelligence/simulate.ts` — AI simulation engine (ChatGPT, Claude, Gemini, Perplexity perspectives)
 
 ---
 
@@ -241,7 +241,10 @@ NEXT_PUBLIC_SENTRY_DSN
 AZURE_RESOURCE_NAME                       # subdomain only, e.g. "my-resource" (NOT the full URL)
 AZURE_API_KEY
 AZURE_API_VERSION                         # optional, defaults to "preview" (Azure v1 API surface)
-AZURE_DEPLOYMENT_GPT4O                    # your GPT deployment name, e.g. "gpt-5.3-chat"; "gpt-4o" logical id maps here
+AZURE_DEPLOYMENT_GPT                      # your ChatGPT DEPLOYMENT name, e.g. "gpt-5.3-chat" — the deployment's
+                                          # name, NOT the model's. The "gpt" seat maps here. Unset in an
+                                          # environment → "gpt" resolves to openai/gpt-5.3-chat on the gateway,
+                                          # because Azure 404s any deployment name it was not given.
 AI_GATEWAY_API_KEY                        # Vercel AI Gateway — Claude/Gemini/Perplexity calls
 ```
 

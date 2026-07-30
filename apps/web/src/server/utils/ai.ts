@@ -9,22 +9,26 @@ import {
   streamText as sdkStreamText,
   streamObject,
 } from "ai";
-import { z } from "zod"; 
+import { z } from "zod";
 
 // Curated union of the model ids this app routes, per provider, with a
 // `(string & {})` escape hatch. Restores autocomplete + typo-catching (the old
 // GatewayModelId perk) while still accepting any string the resolver can route.
 export type ModelId =
-  // Azure OpenAI (ChatGPT) — logical id; the real deployment resolves via env.
-  | "gpt-4o"
-  | "gpt-4"
-  // Anthropic — via gateway. `GATEWAY_ALIASES` maps these to its spelling.
-  | "claude-sonnet-4-20250514"
-  | "claude-sonnet-4-5"
-  | "claude-sonnet-4-6"
+  // OpenAI — `gpt` is the SEAT, not a model: it means "whichever ChatGPT model
+  // this environment serves", an Azure deployment where one is named and the
+  // gateway's equivalent everywhere else. It is the only ChatGPT id the product
+  // names, because a versioned id served from a deployment called something else
+  // is a label that lies. To pin a version deliberately, pass the provider's own
+  // spelling (`openai/<model>`) — the escape hatch below still accepts it.
+  | "gpt"
+  // Anthropic — via gateway, using the gateway's model spellings.
+  | "claude-sonnet-4"
+  | "claude-sonnet-4.5"
+  | "claude-sonnet-4.6"
   // Google — via gateway. 2.0-flash is absent: the gateway does not carry it.
   | "gemini-2.5-flash"
-  | "gemini-3-flash-preview"
+  | "gemini-3-flash"
   // Perplexity — via gateway; ids match its spelling as-is.
   | "sonar"
   | "sonar-pro"
@@ -53,10 +57,14 @@ export const repairText: RepairTextFunction = async ({ text }) => {
 // the AI SDK's global provider — the Vercel AI Gateway — and billed to
 // AI_GATEWAY_API_KEY.
 //
-// GPT runs direct on Azure, the one provider with a first-party key here.
+// ChatGPT prefers Azure, the one provider with a first-party key here.
 // Everything Azure cannot serve (Claude, Gemini, Perplexity) goes through the
 // gateway, so no per-vendor key is needed. To move a vendor back onto its own
 // account later, give it a key and return a provider instance for its prefix.
+//
+// "Cannot serve" includes ChatGPT itself wherever Azure has no deployment for
+// it — the direct rail is a preference, the gateway is the floor, and no feature
+// is allowed to die because one environment is missing a deployment name.
 const azure = createAzure({
   resourceName: process.env.AZURE_RESOURCE_NAME,
   apiKey: process.env.AZURE_API_KEY,
@@ -65,30 +73,49 @@ const azure = createAzure({
   apiVersion: process.env.AZURE_API_VERSION ?? "preview",
 });
 
-// Azure serves models under DEPLOYMENT names, which differ from the base model
-// name. Override via env when your deployment is named something other than the
-// base id.
-const deployment = (name: string) =>
-  (name === "gpt-4o" && process.env.AZURE_DEPLOYMENT_GPT4O) || name;
-
-// The gateway versions models with DOTS (`claude-sonnet-4.5`) where the native
-// APIs use dashes or a date suffix (`claude-sonnet-4-5`, `-20250514`). Only the
-// ids whose spelling actually differs need an entry; everything else is the
-// native id with a provider prefix bolted on.
-const GATEWAY_ALIASES: Record<string, string> = {
-  "claude-sonnet-4-20250514": "claude-sonnet-4",
-  "claude-sonnet-4-5": "claude-sonnet-4.5",
-  "claude-sonnet-4-6": "claude-sonnet-4.6",
-  "gemini-3-flash-preview": "gemini-3-flash",
+// Azure serves models under DEPLOYMENT names picked at deploy time, and those
+// rarely match the model's own name — this account serves `gpt-chat-latest`
+// under the deployment `gpt-5.3-chat`. So a seat is Azure-routable only when an
+// env var names its deployment. Guessing a name instead is what made every
+// ChatGPT call 404 with "The API deployment for this resource does not exist" in
+// an environment where the var was unset.
+//
+// Thunks, not values: read per call so the answer reflects the environment the
+// runtime actually has, not whatever existed when this module was first imported.
+const AZURE_DEPLOYMENTS: Record<string, () => string | undefined> = {
+  gpt: () => process.env.AZURE_DEPLOYMENT_GPT,
 };
 
-// Resolves a logical model id to something `generateText`/`generateObject`
-// accepts. ChatGPT on Azure is the default, so an id with no recognised prefix
-// resolves to your Azure deployment as a provider instance (direct billing).
-// claude*/gemini*/sonar* return a `provider/model` STRING instead, which the AI
-// SDK routes through the gateway — that shape difference IS the routing.
-export const model = (id: ModelId = "gpt-4o"): LanguageModel => {
+// Both halves are required before Azure can serve anything — without them the
+// provider builds a URL it cannot authenticate.
+const azureConfigured = () =>
+  Boolean(process.env.AZURE_RESOURCE_NAME && process.env.AZURE_API_KEY);
+
+const GATEWAY_OVERRIDES = {
+  // The `gpt` seat, pinned to the model our Azure deployment serves today
+  // (`gpt-chat-latest` is 5.3-chat) so both rails judge with the same model.
+  // Azure's alias rolls forward on its own schedule; this one moves when we
+  // change it, which is the point — a scan should be reproducible.
+  gpt: "gpt-5.3-chat",
+} satisfies Record<string, LanguageModel>;
+
+const gatewayModel = (provider: string, name: string) =>
+  `${provider}/${GATEWAY_OVERRIDES[name as keyof typeof GATEWAY_OVERRIDES] ?? name}`;
+
+// Resolves a model id to something `generateText`/`generateObject` accepts, by
+// three rules, in order:
+//
+//   1. `azure/<deployment>` — that prefix IS the request for the direct rail, so
+//      the name is taken at face value as a deployment on the resource.
+//   2. a seat with a deployment named for it (see AZURE_DEPLOYMENTS) — direct.
+//   3. everything else — a `provider/model` STRING, which the AI SDK hands to
+//      its global provider, the gateway. That shape difference IS the routing.
+//
+// No rule ever invents a deployment name, which is the whole lesson of the 404s:
+// Azure only answers to names it was given.
+export const model = (id: ModelId = "gpt"): LanguageModel => {
   const slash = id.indexOf("/");
+  const name = slash === -1 ? id : id.slice(slash + 1);
   const provider =
     slash !== -1
       ? id.slice(0, slash)
@@ -101,19 +128,16 @@ export const model = (id: ModelId = "gpt-4o"): LanguageModel => {
             case id.startsWith("sonar"):
               return "perplexity";
             default:
-              return "azure";
+              return "openai";
           }
         })();
-  const name = slash === -1 ? id : id.slice(slash + 1);
 
-  switch (provider) {
-    case "anthropic":
-    case "google":
-    case "perplexity":
-      return `${provider}/${GATEWAY_ALIASES[name] ?? name}`;
-    default:
-      return azure(deployment(name));
-  }
+  if (provider === "azure") return azure(name);
+
+  const deployment = azureConfigured()
+    ? AZURE_DEPLOYMENTS[name]?.()
+    : undefined;
+  return deployment ? azure(deployment) : gatewayModel(provider, name);
 };
 
 // ─── Instrumentation ────────────────────────────────────────────────────────
@@ -174,6 +198,52 @@ const logUsage = (label: string, usage?: Usage) => {
 const resolveModel = (id: ModelId | LanguageModel): LanguageModel =>
   typeof id === "string" ? model(id) : id;
 
+// A configured deployment can still vanish — renamed, deleted, or moved to
+// another resource — and the env var cannot prove otherwise until a call goes
+// out. Only Azure phrases a failure this way, so the message alone identifies a
+// call that went direct and can be retried on the other rail.
+const AZURE_MISSING_DEPLOYMENT = /deployment for this resource does not exist/i;
+
+const gatewayFallback = (
+  id: ModelId | LanguageModel,
+  error: unknown,
+): LanguageModel | null => {
+  if (typeof id !== "string") return null;
+  if (
+    !(error instanceof Error) ||
+    !AZURE_MISSING_DEPLOYMENT.test(error.message)
+  )
+    return null;
+  // Only OpenAI models ever reach Azure, so the equivalent is that provider's
+  // spelling of the same id — the `gpt` seat included, via GATEWAY_OVERRIDES.
+  const slash = id.indexOf("/");
+  return gatewayModel("openai", slash === -1 ? id : id.slice(slash + 1));
+};
+
+// One retry, on the gateway. Re-running the whole attempt is safe: the call
+// failed before generating anything, so there is no partial output to resume.
+// Awaited calls only — a stream has already been handed to its consumer by the
+// time the request fails, and swapping its source mid-flight is not worth it;
+// those surface the error to a user who can retry, unlike a background scan.
+const withAzureFallback = <T>(
+  id: ModelId | LanguageModel,
+  label: string,
+  attempt: (model: LanguageModel) => Promise<T>,
+): Promise<T> =>
+  attempt(resolveModel(id)).catch((error: unknown) => {
+    const fallback = gatewayFallback(id, error);
+    if (!fallback) throw error;
+
+    // Not an exception — the call is about to succeed — but the deployment is
+    // misconfigured and the spend moved rails, so it must stay visible.
+    Sentry.logger?.warn?.("ai.azure_deployment_missing", {
+      feature: label,
+      model: id,
+      fallback,
+    });
+    return attempt(fallback);
+  });
+
 export type GenerateTextOptions = Omit<GenerateTextArgs, "model"> & {
   model?: ModelId | LanguageModel;
   label: string;
@@ -204,16 +274,18 @@ const outputSettings = <T extends z.ZodTypeAny>(
     output,
     instructions,
     prompt,
-    model: id = "gpt-4o",
+    model: id = "gpt",
     schemaName,
     schemaDescription,
     label = schemaName ?? fallback,
   } = options;
+  // `id` travels beside the settings rather than resolved into them: each
+  // attempt supplies its own model so a retry can pick a different rail.
   return {
     label,
     output,
+    id,
     settings: {
-      model: resolveModel(id),
       instructions,
       prompt,
       schemaName,
@@ -237,17 +309,19 @@ export function generate<T extends z.ZodTypeAny>(
 ) {
   if (!options.output) {
     const {
-      model: id = "gpt-4o",
+      model: id = "gpt",
       label,
       output: _output,
       experimental_telemetry,
       ...rest
     } = options as GenerateTextOptions;
-    return sdkGenerateText({
-      ...rest,
-      model: resolveModel(id),
-      experimental_telemetry: telemetry(label, experimental_telemetry),
-    } as GenerateTextArgs).then(
+    return withAzureFallback(id, label, (model) =>
+      sdkGenerateText({
+        ...rest,
+        model,
+        experimental_telemetry: telemetry(label, experimental_telemetry),
+      } as GenerateTextArgs),
+    ).then(
       (result) => {
         logUsage(label, result.usage);
         return result;
@@ -259,18 +333,22 @@ export function generate<T extends z.ZodTypeAny>(
     );
   }
 
-  const { label, output, settings } = outputSettings(
+  const { label, output, id, settings } = outputSettings(
     options as OutputOptions<T>,
     "generate",
   );
-  const generation =
+  // `async` so the two generateObject shapes collapse into one awaited union
+  // instead of inferring the fallback's generic from whichever branch is first.
+  const generation = withAzureFallback(id, label, async (model) =>
     output instanceof z.ZodArray
       ? generateObject({
           ...settings,
+          model,
           output: "array",
           schema: output.element as z.ZodTypeAny,
         })
-      : generateObject({ ...settings, schema: output });
+      : generateObject({ ...settings, model, schema: output }),
+  );
 
   return generation.then(
     (result) => {
@@ -326,7 +404,7 @@ export function stream<T extends z.ZodTypeAny>(
 ) {
   if (!options.output) {
     const {
-      model: id = "gpt-4o",
+      model: id = "gpt",
       label,
       output: _output,
       experimental_telemetry,
@@ -344,7 +422,7 @@ export function stream<T extends z.ZodTypeAny>(
     } as StreamTextArgs);
   }
 
-  const { label, output, settings } = outputSettings(
+  const { label, output, id, settings } = outputSettings(
     options as OutputOptions<T>,
     "stream",
   );
@@ -356,6 +434,7 @@ export function stream<T extends z.ZodTypeAny>(
     output instanceof z.ZodArray
       ? streamObject({
           ...settings,
+          model: resolveModel(id),
           output: "array",
           schema: output.element as z.ZodTypeAny,
           onError: (event) => {
@@ -364,6 +443,7 @@ export function stream<T extends z.ZodTypeAny>(
         })
       : streamObject({
           ...settings,
+          model: resolveModel(id),
           schema: output,
           onError: (event) => {
             report(label, event.error);

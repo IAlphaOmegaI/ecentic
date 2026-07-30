@@ -36,8 +36,8 @@ ANTI-BIAS RULES:
 const perspectives = [
   {
     id: "gpt4",
-    label: "GPT-4",
-    model: "gpt-4o" as AI.ModelId,
+    label: "ChatGPT",
+    model: "gpt",
     instructions: `You are a rigorous AI shopping agent. You compare two product listings and recommend the one with stronger verifiable evidence. You are deliberately harsh — you represent a skeptical buyer who trusts data, not marketing.
 
 Evaluate on: specification completeness (30%), media evidence (25%), trust signals (25%), purchase readiness (20%).
@@ -47,7 +47,7 @@ ${SCORING_RULES}`,
   {
     id: "claude",
     label: "Claude",
-    model: "claude-sonnet-4-20250514" as AI.ModelId,
+    model: "claude-sonnet-4",
     instructions: `You are a critical AI shopping analyst. You assess how well a listing enables an informed purchase decision. You are deliberately skeptical — vague claims and missing data are failures.
 
 Evaluate on: information completeness (30%), buyer confidence (25%), competitive positioning (25%), purchase friction (20%).
@@ -57,7 +57,7 @@ ${SCORING_RULES}`,
   {
     id: "gemini",
     label: "Gemini",
-    model: "gemini-2.5-flash" as AI.ModelId,
+    model: "gemini-2.5-flash",
     instructions: `You are a value-optimization AI agent that evaluates product listings with extreme rigor. You determine which listing delivers more verifiable value per dollar.
 
 Evaluate on: evidence-based value (30%), visual evidence (25%), price-to-information ratio (25%), risk assessment (20%).
@@ -67,7 +67,7 @@ ${SCORING_RULES}`,
   {
     id: "perplexity",
     label: "Perplexity",
-    model: "sonar-pro" as AI.ModelId,
+    model: "sonar-pro",
     instructions: `You are a search-augmented AI shopping agent. You evaluate product listings by combining the provided data with your knowledge of brands, pricing, and market positioning.
 
 Evaluate on: web-verified reputation (30%), listing vs reality (25%), listing completeness (25%), competitive context (20%).

@@ -26,12 +26,12 @@ const intro =
   "ecentic simulates how AI shopping agents compare your products, explains why you lose in plain language, and rewrites your listings so the next comparison goes your way.";
 
 const description =
-  "How ecentic works: simulate how GPT-4, Claude, Gemini, and Perplexity compare your products, diagnose why you lose, and optimize titles, descriptions, and structured data to win more AI-assisted carts.";
+  "How ecentic works: simulate how ChatGPT, Claude, Gemini, and Perplexity compare your products, diagnose why you lose, and optimize titles, descriptions, and structured data to win more AI-assisted carts.";
 
 const steps = [
   {
     name: "Simulate",
-    text: "ecentic runs your products through GPT-4, Claude, Gemini, and Perplexity at the same time, mapping exactly how each agent compares your listings against every competitor in your category.",
+    text: "ecentic runs your products through ChatGPT, Claude, Gemini, and Perplexity at the same time, mapping exactly how each agent compares your listings against every competitor in your category.",
   },
   {
     name: "Diagnose",

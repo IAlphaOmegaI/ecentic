@@ -31,7 +31,7 @@ const WIN_RATE_THRESHOLD = 55;
 const PUBLISH_COOLDOWN_MS = 14 * 24 * 60 * 60 * 1000;
 
 const MODEL_LABELS: Record<string, string> = {
-  gpt4: "GPT-4",
+  gpt4: "ChatGPT",
   claude: "Claude",
   gemini: "Gemini",
   perplexity: "Perplexity",

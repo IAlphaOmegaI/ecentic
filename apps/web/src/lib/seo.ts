@@ -5,7 +5,7 @@ export const seo = {
   name: "ecentic",
   title: "ecentic",
   description:
-    "Optimize product listings for AI shopping agents. Simulate GPT-4, Claude, Gemini, and Perplexity decisions, diagnose losses, and improve win rate.",
+    "Optimize product listings for AI shopping agents. Simulate ChatGPT, Claude, Gemini, and Perplexity decisions, diagnose losses, and improve win rate.",
   links: [
     "https://x.com/ecentic_ai",
     "https://www.linkedin.com/company/ecentic/posts/?feedView=all",

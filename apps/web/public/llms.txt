@@ -4,7 +4,7 @@
 
 ## About
 ecentic is an e-commerce optimization platform for the AI agent economy.
-It simulates how AI shopping agents (GPT-4, Claude, Gemini, Perplexity) compare
+It simulates how AI shopping agents (ChatGPT, Claude, Gemini, Perplexity) compare
 products against competitors, diagnoses why products win or lose, and auto-optimizes
 listings with one-click write-back to Shopify and WooCommerce.
 

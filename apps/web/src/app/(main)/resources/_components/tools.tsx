@@ -25,7 +25,7 @@ const tools: readonly Tool[] = [
     category: "Win-rate simulation",
     title: "AI Agent Score Scan",
     description:
-      "Run a one-time simulation of your top 10 products across GPT-4, Claude, Gemini, and Perplexity. See where you win, where you lose, and what to fix first.",
+      "Run a one-time simulation of your top 10 products across ChatGPT, Claude, Gemini, and Perplexity. See where you win, where you lose, and what to fix first.",
     features: [
       "Top 10 products",
       "Four model perspectives",

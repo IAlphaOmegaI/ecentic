@@ -97,7 +97,7 @@ export const Plans = () => (
                 Scan your store. See your AI Agent Score.
               </h2>
               <p className="max-w-lg font-light text-lg text-white/75">
-                A one-time simulation of your top 10 products across GPT-4,
+                A one-time simulation of your top 10 products across ChatGPT,
                 Claude, Gemini, and Perplexity.
               </p>
             </div>

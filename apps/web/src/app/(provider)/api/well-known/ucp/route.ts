@@ -32,7 +32,7 @@ const profile = {
         transport: "rest",
         endpoint: `${seo.host}/api/ucp`,
         description:
-          "Multi-model simulation of how shopping agents compare product listings against competitors across GPT-4, Claude, Gemini, and Perplexity.",
+          "Multi-model simulation of how shopping agents compare product listings against competitors across ChatGPT, Claude, Gemini, and Perplexity.",
       },
     ],
   },

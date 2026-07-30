@@ -147,7 +147,7 @@ export const BlindSpot = () => (
 
         <div className="flex flex-col gap-2">
           {[
-            { model: "GPT-4", logo: "/images/chatgpt.svg", score: 89 },
+            { model: "ChatGPT", logo: "/images/chatgpt.svg", score: 89 },
             { model: "Claude", logo: "/images/claude.svg", score: 82 },
             { model: "Gemini", logo: "/images/gemini.svg", score: 81 },
             { model: "Perplexity", logo: "/images/perplexity.svg", score: 85 },
@@ -181,7 +181,7 @@ export const BlindSpot = () => (
         </div>
 
         <h1 className="text-center font-light text-2xl text-primary">
-          RESULT: Top pick across GPT-4, Claude, Gemini & Perplexity.
+          RESULT: Top pick across ChatGPT, Claude, Gemini & Perplexity.
         </h1>
       </div>
     </div>

@@ -6,7 +6,7 @@ const profile = {
   specVersion: "1.0",
   merchantName: "ecentic",
   description:
-    "AI agent commerce platform. Simulate how GPT-4, Claude, Gemini, and Perplexity compare your products against competitors. Diagnose why you lose. Publish the fix in one click. Measure the agent traffic that results.",
+    "AI agent commerce platform. Simulate how ChatGPT, Claude, Gemini, and Perplexity compare your products against competitors. Diagnose why you lose. Publish the fix in one click. Measure the agent traffic that results.",
   url: "https://ecentic.ai",
   logoUrl: "https://ecentic.ai/icons/icon-512.png",
   contactEmail: "support@ecentic.ai",
