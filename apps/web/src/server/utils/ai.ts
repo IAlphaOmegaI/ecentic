@@ -91,16 +91,14 @@ const AZURE_DEPLOYMENTS: Record<string, () => string | undefined> = {
 const azureConfigured = () =>
   Boolean(process.env.AZURE_RESOURCE_NAME && process.env.AZURE_API_KEY);
 
-const GATEWAY_OVERRIDES = {
-  // The `gpt` seat, pinned to the model our Azure deployment serves today
-  // (`gpt-chat-latest` is 5.3-chat) so both rails judge with the same model.
-  // Azure's alias rolls forward on its own schedule; this one moves when we
-  // change it, which is the point — a scan should be reproducible.
-  gpt: "gpt-5.3-chat",
-} satisfies Record<string, LanguageModel>;
+// The `gpt` seat is pinned to the model our Azure deployment serves today
+// (`gpt-chat-latest` is 5.3-chat) so both rails judge with the same model.
+// Azure's alias rolls forward on its own schedule; this one moves when we
+// change it, which is the point — a scan should be reproducible.
+const GPT_GATEWAY_MODEL = "gpt-5.3-chat";
 
 const gatewayModel = (provider: string, name: string) =>
-  `${provider}/${GATEWAY_OVERRIDES[name as keyof typeof GATEWAY_OVERRIDES] ?? name}`;
+  `${provider}/${name === "gpt" ? GPT_GATEWAY_MODEL : name}`;
 
 // Resolves a model id to something `generateText`/`generateObject` accepts, by
 // three rules, in order:
@@ -215,7 +213,7 @@ const gatewayFallback = (
   )
     return null;
   // Only OpenAI models ever reach Azure, so the equivalent is that provider's
-  // spelling of the same id — the `gpt` seat included, via GATEWAY_OVERRIDES.
+  // spelling of the same id — the `gpt` seat included, via GPT_GATEWAY_MODEL.
   const slash = id.indexOf("/");
   return gatewayModel("openai", slash === -1 ? id : id.slice(slash + 1));
 };
