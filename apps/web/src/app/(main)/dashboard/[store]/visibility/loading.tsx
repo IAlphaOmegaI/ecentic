@@ -1,5 +1,5 @@
 import { Crosshair, SectionGutter } from "../../_components/grid";
-import { AuditSkeleton } from "./skeletons";
+import { AuditSkeleton } from "./_components/skeletons";
 
 // Mirrors the visibility page shell so navigation lands without layout shift.
 export default () => (

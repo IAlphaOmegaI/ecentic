@@ -1,4 +1,4 @@
-import { PageSkeleton } from "./skeletons";
+import { PageSkeleton } from "./_components/skeletons";
 
 // Mirrors the product detail page shell — the same container and Suspense
 // fallback the page renders — so navigation lands without shift.

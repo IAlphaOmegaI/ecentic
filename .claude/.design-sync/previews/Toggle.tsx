@@ -42,14 +42,14 @@ export const ViewGroup = () => (
 export const AgentFilter = () => (
   <ToggleGroup
     multiple
-    defaultValue={["gpt-4", "claude"]}
+    defaultValue={["chatgpt", "claude"]}
     style={{ borderRadius: 8, gap: 2 }}
   >
     <Toggle
-      value="gpt-4"
+      value="chatgpt"
       style={{ width: "auto", padding: "0 12px", borderRadius: 6 }}
     >
-      GPT-4
+      ChatGPT
     </Toggle>
     <Toggle
       value="claude"

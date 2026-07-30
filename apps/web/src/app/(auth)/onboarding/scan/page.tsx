@@ -18,7 +18,7 @@ import { ScanRunner } from "./_components/scan-runner";
 
 const models = [
   {
-    model: "GPT-4",
+    model: "ChatGPT",
     description: "Spec-focused",
     logo: "/images/chatgpt.svg",
   },
@@ -105,8 +105,8 @@ export default async () => {
               See who's winning.
             </h2>
             <p className="font-light text-2xl text-foreground-dimmed">
-              GPT-4, Claude & Gemini will simulate real shopping queries across
-              your products and competitors.
+              ChatGPT, Claude & Gemini will simulate real shopping queries
+              across your products and competitors.
             </p>
           </div>
         </Motion.Item>

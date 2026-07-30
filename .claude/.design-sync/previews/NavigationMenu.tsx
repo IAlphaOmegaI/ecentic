@@ -45,7 +45,7 @@ export const Open = () => (
                     color: "var(--color-foreground-dimmed)",
                   }}
                 >
-                  See how GPT-4, Claude, Gemini and Perplexity rank you.
+                  See how ChatGPT, Claude, Gemini and Perplexity rank you.
                 </p>
               </NavigationMenuLink>
             </li>

@@ -4,7 +4,7 @@ import { DiscoveryClient } from "@/components/discovery/discovery-client";
 import * as Store from "@/server/app/store";
 import { Environment } from "@/server/utils/environment";
 import { Crosshair, StatusPill } from "../../_components/grid";
-import { DiscoverySkeleton } from "./skeletons";
+import { DiscoverySkeleton } from "./_components/skeletons";
 
 type PageProps = {
   params: Promise<{ store: string }>;

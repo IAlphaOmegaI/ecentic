@@ -1,5 +1,7 @@
-import { SquareChartIcon } from "@zenncore/icons";
-import { IndexSection } from "@/app/(main)/_components/index-section";
+import { cn } from "@zenncore/utils";
+import { Plus } from "@/components/plus";
+import { Reveal, RevealItem } from "@/components/reveal";
+import { ItemCycle } from "@/app/(main)/_components/item-cycle";
 
 const categories = [
   {
@@ -25,19 +27,80 @@ const categories = [
   },
 ] as const;
 
-const body = [
-  "A merchant choosing between a content generator, a personalization platform, a search product, and an agent-commerce workflow can easily end up with the wrong shortlist if everything is forced into one generic feature table.",
-  "The better question is: what job are you hiring the tool to do right now? Producing content faster, personalizing the storefront, and winning AI-mediated product selection are three different jobs with three different shortlists.",
-] as const;
-
 export const Guide = () => (
-  <IndexSection
-    number="01"
-    icon={SquareChartIcon}
-    title="How to use this guide."
-    description="Comparing categories first makes the final vendor decision faster and less likely to end up on the wrong shortlist."
-    body={body}
-    label="The five categories in this guide"
-    items={categories}
-  />
+  <section className="scroll-mt-24 border-accent-foreground border-b">
+    <div className="relative mx-auto max-w-6xl border-accent-foreground border-x">
+      <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+      <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+
+      <Reveal className="p-6 md:p-12">
+        <RevealItem>
+          <span className="font-normal text-3xl text-primary">01</span>
+        </RevealItem>
+        <RevealItem>
+          <h2 className="mt-2 max-w-3xl text-balance font-body font-medium text-4xl text-foreground md:text-6xl">
+            How to use this guide.
+          </h2>
+        </RevealItem>
+        <RevealItem>
+          <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-xl">
+            Comparing categories first makes the final vendor decision faster
+            and less likely to end up on the wrong shortlist.
+          </p>
+        </RevealItem>
+      </Reveal>
+
+      <Reveal className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-[5fr_8fr]">
+        <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
+        <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
+
+        <div className="flex flex-col bg-background-dimmed md:min-h-0">
+          <RevealItem className="flex flex-col gap-4 p-6 md:p-8">
+            <p className="font-body font-light text-foreground-dimmed text-lg leading-relaxed">
+              A merchant choosing between a content generator, a personalization
+              platform, a search product, and an agent-commerce workflow can
+              easily end up with the wrong shortlist if everything is forced
+              into one generic feature table.
+            </p>
+            <p className="font-body font-light text-foreground-dimmed text-lg leading-relaxed">
+              The better question is: what job are you hiring the tool to do
+              right now?
+            </p>
+          </RevealItem>
+          <ItemCycle items={categories} />
+        </div>
+
+        <div className="flex flex-col gap-px bg-accent-foreground">
+          <h3 className="bg-background-rich px-6 pt-6 pb-4 font-body font-medium text-3xl text-foreground md:px-8">
+            The five categories in this guide
+          </h3>
+          {categories.map((category, index) => (
+            <div
+              key={category.title}
+              className="grid grid-cols-[2.5rem_1fr] bg-background-rich px-6 py-5 md:grid-cols-[5rem_1fr] md:px-8"
+            >
+              <span className="font-normal text-lg text-primary tabular-nums">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <RevealItem className="flex flex-col gap-1">
+                <h4
+                  className={cn(
+                    "font-body font-medium text-xl",
+                    index === categories.length - 1
+                      ? "text-primary"
+                      : "text-foreground",
+                  )}
+                >
+                  {category.title}
+                </h4>
+                <p className="font-light text-foreground-dimmed leading-relaxed">
+                  {category.description}
+                </p>
+              </RevealItem>
+            </div>
+          ))}
+        </div>
+      </Reveal>
+    </div>
+  </section>
 );

@@ -298,10 +298,16 @@ export const createCheckoutSessionForUser = withContext(
         error: new RequestError("APP_HOST is not configured"),
       };
 
-    // Auto-apply a partner deal coupon (e.g. 2 years 50% off) when this user's
-    // email matches a deal redemption we've verified and approved. Redemptions
-    // stay "pending" until their batch is checked, so only "approved" ones
-    // grant the discount.
+    // Auto-apply a partner deal coupon when this user's email matches a deal
+    // redemption we've verified and approved. The terms belong to the Stripe
+    // coupon (see `DEALS`), not to this call site.
+    //
+    // Redemptions stay "pending" until someone approves them, and nothing here
+    // does that automatically: `DealAllowlist.matches` only fires on company
+    // domains, so a founder who redeems with a personal address is always left
+    // pending. Approval is a manual step today — until it happens, this resolves
+    // to `null` and the founder pays full price with no signal that a deal was
+    // ever owed to them.
     const redemption = await DealRedemption.findByEmail(Environment.SERVER, {
       email: user.data.email,
     });

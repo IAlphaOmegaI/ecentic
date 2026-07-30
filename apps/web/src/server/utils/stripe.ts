@@ -47,9 +47,14 @@ export const resolvePlanByPriceId = (priceId: string): PlanKey | null => {
 };
 
 /**
- * Partner deal coupons. Each `coupon()` resolves a Stripe coupon id that
- * encodes the discount terms (e.g. 50% off for 24 months). Create the coupon
- * in Stripe, then point the env var at its id.
+ * Partner deal coupons. Each `coupon()` resolves a Stripe coupon id; the terms
+ * are encoded in that Stripe object and nowhere else. Create the coupon in
+ * Stripe, then point the env var at its id.
+ *
+ * Deliberately not restated here. The previous version of this comment read
+ * "50% off for 24 months" while `yc-student-deal` was in fact 50% off for 12,
+ * and a stale figure in a comment is one copy-paste away from being quoted to a
+ * founder as a commitment. Read the terms from Stripe.
  */
 export const DEALS = {
   ycombinator: {

@@ -24,7 +24,7 @@ import * as Payg from "@/server/app/billing/payg";
 import type * as Simulate from "@/server/app/intelligence/simulate";
 
 const models = [
-  { id: "gpt4", label: "GPT-4", logo: "/images/chatgpt.svg" },
+  { id: "gpt4", label: "ChatGPT", logo: "/images/chatgpt.svg" },
   { id: "claude", label: "Claude", logo: "/images/claude.svg" },
   { id: "gemini", label: "Gemini", logo: "/images/gemini.svg" },
 ] as const;

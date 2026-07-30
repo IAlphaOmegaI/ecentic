@@ -1,4 +1,4 @@
-import { Crosshair, SectionGutter } from "../../../_components/grid";
+import { Crosshair, SectionGutter } from "../../../../_components/grid";
 
 // Suspense fallback for the product detail page, shared with loading.tsx so
 // the route-level skeleton and the streamed page render the exact same shapes.

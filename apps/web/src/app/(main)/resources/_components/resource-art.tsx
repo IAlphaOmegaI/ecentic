@@ -274,14 +274,10 @@ const llmsLines = [
 
 export const LlmsArt = () => (
   <div className="relative flex flex-1 flex-col">
-    {/* This used to be pulled up under the prose of a tall narrow column, where
-        a 448px wash only covered the block's top third. As a full-width band the
-        block is far shorter, so the fade shrinks to match or it bleaches the
-        whole terminal. */}
-    <div className="relative flex flex-1 flex-col bg-[#191919] pt-10">
+    <div className="relative -mt-16 flex flex-1 flex-col bg-[#191919] pt-16">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 z-10 h-24 bg-linear-to-b from-background-dimmed to-background-dimmed/0"
+        className="pointer-events-none absolute inset-x-0 top-0 z-10 h-112 bg-linear-to-b from-background-dimmed to-background-dimmed/0"
       />
       <p className="relative z-20 px-6 pb-4 font-mono text-sm md:px-8">
         <span className="animate-[gold-shine_3s_linear_infinite] bg-linear-to-r bg-size-[200%_auto] from-primary via-white to-primary bg-clip-text text-transparent">

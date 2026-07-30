@@ -54,8 +54,8 @@ AGENT-READABILITY (UCP):
 const perspectives = [
   {
     id: "gpt4",
-    label: "GPT-4",
-    model: "gpt-4o" as AI.ModelId,
+    label: "ChatGPT",
+    model: "gpt",
     instructions: `You are a rigorous AI shopping agent performing a technical listing audit. You compare two product listings and recommend the one with stronger verifiable evidence. You are deliberately harsh — you represent a skeptical buyer who trusts data, not marketing.
 
 Your evaluation methodology:
@@ -83,7 +83,7 @@ ${STRICT_SCORING_RULES}`,
   {
     id: "claude",
     label: "Claude",
-    model: "claude-sonnet-4-20250514" as AI.ModelId,
+    model: "claude-sonnet-4",
     instructions: `You are a critical AI shopping analyst evaluating product listings for recommendation quality. You assess how well a listing enables an informed purchase decision. You are deliberately skeptical — vague claims and missing data are failures, not neutral.
 
 Your evaluation methodology:
@@ -128,7 +128,7 @@ ${STRICT_SCORING_RULES}`,
     // 2.5, not 2.0: the gateway does not carry gemini-2.0-flash, and the durable
     // scan path (background-scan.ts) already judges on 2.5 — so this also stops
     // the two paths scoring the "Gemini" perspective on different models.
-    model: "gemini-2.5-flash" as AI.ModelId,
+    model: "gemini-2.5-flash",
     instructions: `You are a value-optimization AI agent that evaluates product listings with extreme rigor. You determine which listing delivers more verifiable value per dollar. You punish vagueness and reward concrete, measurable data.
 
 Your evaluation methodology:

@@ -1,4 +1,4 @@
-import { Crosshair, SectionGutter } from "../../_components/grid";
+import { Crosshair, SectionGutter } from "../../../_components/grid";
 
 const progressLabels = [
   "Phase",
@@ -6,7 +6,7 @@ const progressLabels = [
   "Wins / Losses",
   "Elapsed",
 ] as const;
-const modelLabels = ["GPT-4", "Claude", "Gemini", "Perplexity"] as const;
+const modelLabels = ["ChatGPT", "Claude", "Gemini", "Perplexity"] as const;
 
 export const SimulationsSkeleton = () => (
   <>

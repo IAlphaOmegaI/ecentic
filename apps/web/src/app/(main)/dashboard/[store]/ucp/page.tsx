@@ -5,8 +5,8 @@ import * as Product from "@/server/app/product";
 import * as Store from "@/server/app/store";
 import { Environment } from "@/server/utils/environment";
 import { Crosshair, SectionKicker, StatusPill } from "../../_components/grid";
+import { UcpSectionSkeleton } from "./_components/skeletons";
 import { UcpManager } from "./_components/ucp-manager";
-import { UcpSectionSkeleton } from "./skeletons";
 
 const UcpContent = async ({ store }: { store: string }) => {
   const [profile, products, stores] = await Promise.all([

@@ -1,5 +1,5 @@
 import { Crosshair } from "../../_components/grid";
-import { SimulationsSkeleton } from "./skeletons";
+import { SimulationsSkeleton } from "./_components/skeletons";
 
 // Mirrors the simulations page shell so navigation lands without layout shift.
 export default () => (

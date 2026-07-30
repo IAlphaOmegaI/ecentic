@@ -119,7 +119,7 @@ const buildColumns = (store: string): ColumnDef<ProductsTable.Row>[] => [
   },
   {
     accessorKey: "winRate.gpt4",
-    header: "GPT-4",
+    header: "ChatGPT",
     cell: ({ row }) => (
       <span className="text-foreground tabular-nums">
         {row.original.winRate.gpt4}%

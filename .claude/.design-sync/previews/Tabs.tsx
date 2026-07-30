@@ -21,7 +21,7 @@ export const Horizontal = () => (
         value="agents"
         style={{ padding: 16, color: "var(--color-foreground)" }}
       >
-        Simulated across GPT-4, Claude, Gemini and Perplexity.
+        Simulated across ChatGPT, Claude, Gemini and Perplexity.
       </TabsPanel>
       <TabsPanel
         value="competitors"

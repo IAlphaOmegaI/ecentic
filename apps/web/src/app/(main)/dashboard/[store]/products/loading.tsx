@@ -5,7 +5,7 @@ import {
   StatsSkeleton,
   TableSkeleton,
   TrafficSkeleton,
-} from "./skeletons";
+} from "./_components/skeletons";
 
 // Mirrors the products page shell exactly — same chrome, static header text,
 // and per-section Suspense fallbacks — so navigation lands without shift.

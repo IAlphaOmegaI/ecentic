@@ -6,7 +6,7 @@ This document describes what ecentic is, how it works, what has been built, and 
 
 ## What ecentic Is
 
-ecentic (styled **ecentic**) is an e-commerce optimization platform for the AI agent economy. As AI shopping agents (GPT-4, Claude, Gemini, etc.) increasingly choose products on behalf of consumers, merchants need to ensure their listings are selected over competitors. ecentic simulates these agent decisions, diagnoses why products win or lose, and auto-optimizes listings to get picked first.
+ecentic (styled **ecentic**) is an e-commerce optimization platform for the AI agent economy. As AI shopping agents (ChatGPT, Claude, Gemini, etc.) increasingly choose products on behalf of consumers, merchants need to ensure their listings are selected over competitors. ecentic simulates these agent decisions, diagnoses why products win or lose, and auto-optimizes listings to get picked first.
 
 **Target audience:** E-commerce merchants, D2C brands, and teams selling through AI-powered shopping channels.
 
@@ -22,7 +22,7 @@ AI agents don't see ads, don't scroll, don't read marketing copy. They read stru
 
 ### The Solution — Three Steps
 
-1. **Simulate** — Run AI agents (GPT-4, Claude, Gemini, Perplexity) against your products and competitors. Each agent scores both sides and picks a winner.
+1. **Simulate** — Run AI agents (ChatGPT, Claude, Gemini, Perplexity) against your products and competitors. Each agent scores both sides and picks a winner.
 2. **Diagnose** — See step-by-step agent reasoning (agent replay), attribute gaps, competitor battlecards, and per-model win rates.
 3. **Optimize (Auto)** — Generate optimized titles, descriptions, and structured data. One-click approve or auto-publish. Re-optimize when models change (drift detection).
 
@@ -47,7 +47,7 @@ AI agents don't see ads, don't scroll, don't read marketing copy. They read stru
 | **Scan** | A batch of simulations across a roster picked in the scan setup step: chosen products of one store vs. chosen competitors |
 | **Agent replay** | Step-by-step log of what the agent read and how it reached its decision |
 | **Battlecard** | Per-product comparison vs. a competitor — where you win, where you lose, suggested fixes |
-| **Model drift** | Changes in AI model behavior (e.g. GPT-4 update) that shift win rates |
+| **Model drift** | Changes in AI model behavior (e.g. ChatGPT update) that shift win rates |
 | **Data quality** | Completeness of product attributes for agent evaluation |
 | **UCP** | Universal Commerce Protocol — a merchant profile served at `/.well-known/ucp` so agents can discover and understand the merchant |
 | **Optimization status** | `unoptimized`, `pending`, `optimized` — tracks whether a product's listing has been improved |
@@ -93,7 +93,7 @@ ecentic's core differentiator is that it is **not a dashboard you check**. It is
 The system runs full simulation sweeps on a configurable interval (daily for Compete, continuous for Dominate). For each sweep:
 
 - Take every selected product and every selected competitor for that user.
-- For each `(product, competitor)` pair, run a simulation against every enabled model (GPT-4, Claude, Gemini, etc.).
+- For each `(product, competitor)` pair, run a simulation against every enabled model (ChatGPT, Claude, Gemini, etc.).
 - Each simulation is a structured AI call: provide both product listings to the model, ask it to act as a shopping agent evaluating both for a given purchase query, and return a winner, reasoning, and scores.
 - Write results to the `simulation` table, roll up into the `scan` record.
 - Compute updated win rates per product, per model, per competitor.
@@ -106,12 +106,12 @@ The system runs full simulation sweeps on a configurable interval (daily for Com
 
 ### 2. Model Drift Detection & Auto-Resimulation
 
-When a major AI model releases an update (e.g. GPT-4 → GPT-4.1, Claude 3.5 → Claude 4), the system should:
+When a major AI model releases an update (e.g. a new ChatGPT model, Claude 3.5 → Claude 4), the system should:
 
 - Detect the model change. This can be done via a model registry table that maps model identifiers to version hashes. A background job periodically checks provider APIs or a curated model changelog feed.
 - Automatically trigger a full re-simulation sweep across all users on affected models.
 - Compare new win rates to previous sweep results. If any product's win rate drops by more than a configurable threshold (e.g. 5%), flag it as a **drift alert**.
-- Send a notification (email + in-app) to the merchant: "GPT-4.1 was released. Your product X dropped from 78% to 61% win rate. We're auto-optimizing."
+- Send a notification (email + in-app) to the merchant: "A new ChatGPT model shipped. Your product X dropped from 78% to 61% win rate. We're auto-optimizing."
 - If the user is on Dominate tier with auto-publish enabled, immediately trigger the optimization engine (see below).
 
 ### 3. Auto-Optimization & Auto-Publish
@@ -177,7 +177,7 @@ Each persona modifies the system prompt for the AI agent simulation. Win rates a
 The main dashboard is the merchant's real-time scorecard. It should show:
 
 - **Headline metrics** (top row): Overall win rate (%), total products scanned, win rate trend (up/down arrow + delta vs. last period)
-- **Win rate by model**: Four cards (GPT-4, Claude, Gemini, Perplexity) each showing current win rate, change since last sweep, and a mini sparkline of the last 30 days
+- **Win rate by model**: Four cards (ChatGPT, Claude, Gemini, Perplexity) each showing current win rate, change since last sweep, and a mini sparkline of the last 30 days
 - **Top performer**: The product with the highest win rate, its score, and which models favor it
 - **Biggest opportunity**: The product with the largest gap between current win rate and estimated potential (based on optimization suggestions)
 - **Trend chart**: Line chart of overall win rate over time (7d / 30d / 90d toggle), with model-specific lines
@@ -188,7 +188,7 @@ The main dashboard is the merchant's real-time scorecard. It should show:
 ### Products (`/dashboard/products`)
 
 - **Table view**: Sortable/filterable table of all products
-- **Columns**: Title, price, category, overall win rate, GPT-4 %, Claude %, Gemini %, Perplexity %, gap vs. top competitor, data quality score (0-100 based on attribute completeness), optimization status badge, last scanned timestamp
+- **Columns**: Title, price, category, overall win rate, ChatGPT %, Claude %, Gemini %, Perplexity %, gap vs. top competitor, data quality score (0-100 based on attribute completeness), optimization status badge, last scanned timestamp
 - **Filters**: Category, optimization status (optimized/pending/unoptimized), win rate range, data quality range
 - **Search**: Full-text search across title, SKU, description
 - **Bulk actions**: Select multiple → run simulation, generate optimizations, export CSV
@@ -236,7 +236,7 @@ Sections:
 - **Team** — Invite members, assign roles (admin / viewer)
 - **Connected Stores** — List of stores with status, last synced, disconnect option, add new store
 - **Notifications** — Toggle: drift alerts, competitor alerts, weekly digest, optimization published, new product detected
-- **Simulation Config** — Models to include (GPT-4, Claude, Gemini, Perplexity — checkboxes), simulation frequency (daily / 12h / 6h / continuous), purchase personas enabled
+- **Simulation Config** — Models to include (ChatGPT, Claude, Gemini, Perplexity — checkboxes), simulation frequency (daily / 12h / 6h / continuous), purchase personas enabled
 - **Auto-Optimization** — Toggle auto-approve, toggle auto-publish to store, set win rate threshold for triggering optimization
 - **Billing** — Current plan, usage, upgrade/downgrade, payment method
 
@@ -367,7 +367,7 @@ The autonomous features above require a background job system. Recommended appro
 
 - **simulation** — Individual product-vs-competitor matchups
   - id, scanId (FK scan), productId (FK product), competitorId (FK competitor)
-  - model (e.g. `gpt-4`, `claude`, `gemini`), winner (`product` | `competitor`)
+  - model (the panel seat's stored id: `gpt4`, `claude`, `gemini`), winner (`product` | `competitor`)
   - reasoning (agent's explanation), productScore, competitorScore, createdAt
 
 ---
@@ -464,7 +464,7 @@ Custom error classes via factory: `DatabaseError`, `NotFoundError`, `RequestErro
 ### Critical Path (core product)
 
 1. **Better Auth route handler** — `/api/auth/[...all]/route.ts` is missing; auth endpoints won't work without it
-2. **AI simulation engine** — The scan/simulation tables exist but the actual AI agent logic (calling GPT-4, Claude, Gemini, Perplexity to compare products) is not implemented. This is the single most important piece. Needs: structured prompts per model, persona variants, scoring rubric, reasoning extraction.
+2. **AI simulation engine** — The scan/simulation tables exist but the actual AI agent logic (calling ChatGPT, Claude, Gemini, Perplexity to compare products) is not implemented. This is the single most important piece. Needs: structured prompts per model, persona variants, scoring rubric, reasoning extraction.
 3. **Background job system** — Cron-based or queue-based scheduler for running simulation sweeps, catalog syncs, drift detection, and auto-optimization without user input. See "Background Job Architecture" section above.
 4. **Dashboard with real data** — All dashboard pages currently render mock data; they need to query the actual database and display real simulation results, win rates, trends.
 

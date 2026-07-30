@@ -1,5 +1,5 @@
 import { Crosshair, StatusPill } from "../../_components/grid";
-import { PlaygroundSkeleton } from "./skeletons";
+import { PlaygroundSkeleton } from "./_components/skeletons";
 
 // Mirrors the playground page's static shell so navigation renders the real
 // header instantly while the connected playground streams in.

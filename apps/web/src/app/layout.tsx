@@ -4,6 +4,7 @@ import "./globals.css";
 import { ToastProvider } from "@zenncore/web/components/toast";
 import dynamic from "next/dynamic";
 import { Red_Hat_Display } from "next/font/google";
+import localFont from "next/font/local";
 import Script from "next/script";
 import { ToastList } from "@/components/ui/toast";
 import { MotionProvider } from "@/context/motion";
@@ -18,19 +19,46 @@ const redHatDisplay = Red_Hat_Display({
   variable: "--font-redhat-display",
 });
 
+const ltSuperior = localFont({
+  src: [
+    {
+      path: "../../public/fonts/LTSuperior/LTSuperior-Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/LTSuperior/LTSuperior-Medium.ttf",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/LTSuperior/LTSuperior-SemiBold.ttf",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/LTSuperior/LTSuperior-Bold.ttf",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  variable: "--font-lt-superior",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: {
     default: "ecentic — Win Every AI Shopping Agent's Cart",
     template: "%s | ecentic",
   },
   description:
-    "Optimize product listings for AI shopping agents. Simulate GPT-4, Claude, Gemini, and Perplexity decisions, diagnose losses, and improve win rate.",
+    "Optimize product listings for AI shopping agents. Simulate ChatGPT, Claude, Gemini, and Perplexity decisions, diagnose losses, and improve win rate.",
   keywords: [
     "AI shopping agent optimization",
     "e-commerce AI optimization",
     "AI agent economy",
     "product listing optimization",
-    "GPT-4 shopping",
+    "ChatGPT shopping",
     "Claude shopping agent",
     "Gemini shopping",
     "win rate optimization",
@@ -60,7 +88,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "ecentic — Win Every AI Shopping Agent's Cart",
     description:
-      "Simulate how GPT-4, Claude, Gemini & Perplexity choose your products vs. competitors. Diagnose losses. Auto-optimize. Win every cart.",
+      "Simulate how ChatGPT, Claude, Gemini & Perplexity choose your products vs. competitors. Diagnose losses. Auto-optimize. Win every cart.",
     creator: "@ecentic",
   },
   robots: {
@@ -137,10 +165,11 @@ export default ({ children }: PropsWithChildren) => {
             `}
             </Script>
           )}
+        <Script src="/webmcp.js" strategy="afterInteractive" />
         <meta name="apple-mobile-web-app-title" content="ecentic" />
       </head>
       <body
-        className={`${redHatDisplay.variable} overflow-x-hidden bg-background font-body antialiased`}
+        className={`${redHatDisplay.variable} ${ltSuperior.variable} overflow-x-hidden bg-background font-body antialiased`}
         // React Grab hydration errors
         suppressHydrationWarning={process.env.NODE_ENV === "development"}
       >

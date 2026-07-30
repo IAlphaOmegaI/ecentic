@@ -32,13 +32,13 @@ import {
 } from "../../../_components/grid";
 
 const models = [
-  { id: "gpt4", label: "GPT-4", logo: "/images/chatgpt.svg" },
+  { id: "gpt4", label: "ChatGPT", logo: "/images/chatgpt.svg" },
   { id: "claude", label: "Claude", logo: "/images/claude.svg" },
   { id: "gemini", label: "Gemini", logo: "/images/gemini.svg" },
 ] as const;
 
 const modelColors: Record<string, string> = {
-  "GPT-4": "text-primary",
+  ChatGPT: "text-primary",
   Claude: "text-warning",
   Gemini: "text-success",
   System: "text-foreground-dimmed",
@@ -524,8 +524,8 @@ export const SimulationsClient = ({
                 Win-Rate Simulation
               </h2>
               <p className="mt-1 text-foreground-dimmed text-sm">
-                Re-run product vs competitor simulations across GPT-4, Claude &
-                Gemini.
+                Re-run product vs competitor simulations across ChatGPT, Claude
+                & Gemini.
               </p>
             </div>
             <div className="flex items-center gap-2">

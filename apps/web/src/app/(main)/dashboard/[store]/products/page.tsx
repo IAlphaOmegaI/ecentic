@@ -41,7 +41,7 @@ import {
   StatsSkeleton,
   TableSkeleton,
   TrafficSkeleton,
-} from "./skeletons";
+} from "./_components/skeletons";
 
 const emptyStatCards = [
   { label: "Total Products", icon: RadarIcon },
@@ -407,7 +407,7 @@ const Performance = async ({ store }: { store: string }) => {
     products.length > 0
       ? [
           {
-            label: "GPT-4",
+            label: "ChatGPT",
             rate: Math.round(
               products.reduce((sum, p) => sum + p.winRate.gpt4, 0) /
                 products.length,

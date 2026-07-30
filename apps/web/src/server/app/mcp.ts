@@ -3,6 +3,7 @@
 import { resultify } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
 import type { z } from "zod";
+import { resourceMetadataWwwAuthenticate } from "@/lib/agent-discovery";
 import * as Agent from "@/server/app/agent";
 import * as Authentication from "@/server/app/authentication";
 import * as Feed from "@/server/app/integration/feed";
@@ -64,13 +65,28 @@ namespace JsonRpc {
     });
 
   export const unauthorized = (id: Request["id"]) =>
-    create(id, undefined, {
-      code: -32001,
-      message: "Authentication required",
-      data: {
-        hint: "Use Authorization: Bearer ecentic_sk_... or an authenticated session cookie.",
+    Response.json(
+      {
+        jsonrpc: "2.0",
+        id: id ?? null,
+        error: {
+          code: -32001,
+          message: "Authentication required",
+          data: {
+            hint: "Use Authorization: Bearer ecentic_sk_... or an authenticated session cookie.",
+            resource_metadata: `${host}/.well-known/oauth-protected-resource`,
+          },
+        },
       },
-    });
+      {
+        status: 401,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          "Cache-Control": "no-store",
+          "WWW-Authenticate": resourceMetadataWwwAuthenticate,
+        },
+      },
+    );
 }
 
 const parse = async (

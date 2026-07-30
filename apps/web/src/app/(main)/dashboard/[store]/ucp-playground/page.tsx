@@ -8,7 +8,7 @@ import {
 import * as Store from "@/server/app/store";
 import { Environment } from "@/server/utils/environment";
 import { Crosshair, StatusPill } from "../../_components/grid";
-import { PlaygroundSkeleton } from "./skeletons";
+import { PlaygroundSkeleton } from "./_components/skeletons";
 
 type PageProps = {
   params: Promise<{ store: string }>;

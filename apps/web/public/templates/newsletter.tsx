@@ -206,7 +206,7 @@ export const Newsletter = ({
                 <Text className="m-0 mb-4 text-[15px] text-foreground leading-6">
                   Y Combinator students and Techstars founders get extended
                   access to ecentic Dominate — continuous agent simulations
-                  across GPT-4, Claude, Gemini, and Perplexity, plus
+                  across ChatGPT, Claude, Gemini, and Perplexity, plus
                   auto-optimization — and 50% off for two years after the deal
                   period. Redemption takes about two minutes, no credit card:{" "}
                   <Link href={`${host}/yc`} className="text-primary">

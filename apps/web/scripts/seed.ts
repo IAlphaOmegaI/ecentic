@@ -22,7 +22,7 @@ const posts = [
     ],
     takeaways: [
       "ecentic offers exclusive deals for Y Combinator students (ecentic.ai/yc) and Techstars founders (ecentic.ai/techstars), each redeemable in about two minutes with no credit card.",
-      "The deal opens extended ecentic Dominate — continuous agent simulations across GPT-4, Claude, Gemini, and Perplexity, auto-optimization, drift alerts, and UCP generation — plus 50% off for two years afterward.",
+      "The deal opens extended ecentic Dominate — continuous agent simulations across ChatGPT, Claude, Gemini, and Perplexity, auto-optimization, drift alerts, and UCP generation — plus 50% off for two years afterward.",
       "Timing is the real value: Salesforce attributed roughly $67 billion of Cyber Week 2025 spend to AI and agents, and becoming machine-readable costs least before agent traffic scales.",
       "Partnering with the two strongest startup networks is a repeatable way for us to reach merchants while their catalog and positioning decisions are still open.",
     ],
@@ -43,7 +43,7 @@ Verification is the gate. A redemption whose company domain matches the program 
         title: "What's actually in the deal",
         content: `The deal opens the full ecentic Dominate platform, not a trimmed trial. Dominate shows a merchant how an AI shopping agent sees them — and then helps close the gap. Compared to standard [Dominate pricing](/pricing) at $449/mo, redeemers also keep 50% off for two years once the deal period ends.
 
-**Continuous simulations** show how GPT-4, Claude, Gemini, and Perplexity rank your products against competitors, and why.
+**Continuous simulations** show how ChatGPT, Claude, Gemini, and Perplexity rank your products against competitors, and why.
 **Auto-optimization** turns those findings into listing rewrites you approve with one click, with drift alerts when a model's behavior shifts.
 **UCP generation** exposes a Universal Commerce Protocol surface so agents can verify your catalog directly.
 **White-glove onboarding** helps you import and structure your catalog so the first simulation is meaningful.
@@ -177,7 +177,7 @@ Bought individually, those total $730/mo. Bundled, they are $584.00/mo — a 20%
         title: "What this means for ecentic customers",
         content: `If you already run ecentic and Europe is on your roadmap, the practical change is that you no longer have to source a compliance vendor before you can act. The bundle gives you a representative, a responsible person, and a privacy center alongside the optimization you already trust, on terms that match how ecommerce teams expand.
 
-If you are coming the other way — an EU Presence client who handled compliance but never thought about agent visibility — you are now a short step from being agent-ready in a fast-growing channel. The same catalog you registered for the EU can be scanned, diagnosed, and optimized for how GPT-4, Claude, Gemini, and Perplexity compare you against competitors.
+If you are coming the other way — an EU Presence client who handled compliance but never thought about agent visibility — you are now a short step from being agent-ready in a fast-growing channel. The same catalog you registered for the EU can be scanned, diagnosed, and optimized for how ChatGPT, Claude, Gemini, and Perplexity compare you against competitors.
 
 Either way, the goal is to collapse two timelines into one. Compliance and discoverability stop being sequential projects owned by different teams and become a single motion into the market.
 
@@ -307,7 +307,7 @@ Finally, measure agent influence before it shows up cleanly in standard analytic
 
 - Audit top SKUs for machine-readable titles, attributes, and structured data
 - Confirm checkout and feed compatibility with your platform's agent protocols
-- Simulate how GPT-4, Claude, Gemini, and Perplexity rank you against competitors
+- Simulate how ChatGPT, Claude, Gemini, and Perplexity rank you against competitors
 - Revisit pricing and trust signals where agents comparison-shop with perfect efficiency`,
       },
     ],
@@ -420,7 +420,7 @@ Hold both Gartner numbers at once — the same firm projects [AI agents intermed
         title: "What merchants should do with a shift this early",
         content: `A shift this early rewards preparation over spend. The demand side is measurable today — AI-referred traffic converting 42% better — while autonomous checkout matures, which leaves a window where becoming machine-readable is cheap and losing comparisons is still invisible in your dashboards.
 
-Preparation is three moves. First, **measure**: add server-side detection so AI agent visits and AI-referred sessions show up as their own channel — the [tracking guide](/blog/how-to-track-ai-shopping-traffic-in-2026) walks through it. Second, **structure**: [Adyen estimates](https://www.pymnts.com/news/artificial-intelligence/2026/adyen-on-agentic-commerce-the-ai-was-never-the-hard-part/) agents need roughly three times more product attributes than a traditional listing, so audit titles, variants, offers, and policies against the [structured data checklist](/blog/structured-data-checklist-for-ecommerce-product-pages). Third, **simulate**: run your catalog through the models doing the comparing — GPT-4, Claude, Gemini, and Perplexity — and see whether you win or lose against competitors before real agent volume decides it for you. A [free ecentic Scan](/sign-up) shows exactly that.
+Preparation is three moves. First, **measure**: add server-side detection so AI agent visits and AI-referred sessions show up as their own channel — the [tracking guide](/blog/how-to-track-ai-shopping-traffic-in-2026) walks through it. Second, **structure**: [Adyen estimates](https://www.pymnts.com/news/artificial-intelligence/2026/adyen-on-agentic-commerce-the-ai-was-never-the-hard-part/) agents need roughly three times more product attributes than a traditional listing, so audit titles, variants, offers, and policies against the [structured data checklist](/blog/structured-data-checklist-for-ecommerce-product-pages). Third, **simulate**: run your catalog through the models doing the comparing — ChatGPT, Claude, Gemini, and Perplexity — and see whether you win or lose against competitors before real agent volume decides it for you. A [free ecentic Scan](/sign-up) shows exactly that.
 
 The pattern from every prior commerce shift holds: the share number will look small right up until it does not, and the merchants who compound the advantage are the ones who treated the early window as the cheap part.
 
@@ -938,7 +938,7 @@ Tie recurring audits to business events, not only technical schedules. A new sea
     description:
       "ecentic vs Profound: Profound tracks your brand's visibility in AI answers; ecentic wins the AI agent's product decision. Which one does your store need?",
     introduction:
-      "Profound and ecentic both help you succeed in the AI era, but they solve different halves of the problem. Profound is a leading AI-visibility platform: it tracks whether AI search engines like ChatGPT, Perplexity, and Google AI Overviews mention your brand, and it is built for brands measuring share of voice across answers.\n\necentic works one step further down the funnel. It simulates how AI shopping agents choose between your product and a specific competitor, diagnoses why you lose, and rewrites and republishes the listing to win the pick — across GPT-4, Claude, Gemini, and Perplexity. Visibility gets you mentioned; ecentic is about getting bought.\n\nThis comparison lays out what each tool does well, where they differ, what they cost, and how to choose — including when Profound is the better fit.",
+      "Profound and ecentic both help you succeed in the AI era, but they solve different halves of the problem. Profound is a leading AI-visibility platform: it tracks whether AI search engines like ChatGPT, Perplexity, and Google AI Overviews mention your brand, and it is built for brands measuring share of voice across answers.\n\necentic works one step further down the funnel. It simulates how AI shopping agents choose between your product and a specific competitor, diagnoses why you lose, and rewrites and republishes the listing to win the pick — across ChatGPT, Claude, Gemini, and Perplexity. Visibility gets you mentioned; ecentic is about getting bought.\n\nThis comparison lays out what each tool does well, where they differ, what they cost, and how to choose — including when Profound is the better fit.",
     publishedAt: "2026-07-01",
     updatedAt: "2026-07-01",
     readTime: "8 min",
@@ -982,7 +982,7 @@ Its core strengths are measurement and coverage: prompt-level tracking of how of
       {
         number: "03",
         title: "Where ecentic is different",
-        content: `ecentic starts where visibility ends: the moment an agent compares two products and picks one. Instead of reporting whether you are mentioned, it runs the comparison itself — feeding your listing and a competitor's to GPT-4, Claude, Gemini, and Perplexity acting as shopping agents, and recording who each model picks and why.
+        content: `ecentic starts where visibility ends: the moment an agent compares two products and picks one. Instead of reporting whether you are mentioned, it runs the comparison itself — feeding your listing and a competitor's to ChatGPT, Claude, Gemini, and Perplexity acting as shopping agents, and recording who each model picks and why.
 
 That produces three things a visibility tracker does not: a per-model **win rate** against a named competitor, an **agent replay** showing the reasoning that tipped each decision, and a **battlecard** of the exact attribute gaps that lost the sale. Then it closes the loop — generating an optimized title, description, and structured data and publishing the change back to Shopify or WooCommerce, with a follow-up simulation to measure the lift.
 
@@ -999,7 +999,7 @@ The distinction matters because agent selection is not the same as human ranking
 
 - **Brand visibility in AI answers:** Profound yes · ecentic partial (it focuses on product selection, not brand share of voice)
 - **Product-vs-competitor purchase simulation:** ecentic yes · Profound no
-- **Per-model win rate (GPT-4 / Claude / Gemini / Perplexity):** ecentic yes · Profound no
+- **Per-model win rate (ChatGPT / Claude / Gemini / Perplexity):** ecentic yes · Profound no
 - **Attribute-gap battlecards:** ecentic yes · Profound no
 - **Auto-optimize and publish listings to Shopify/WooCommerce:** ecentic yes · Profound no
 - **Source and citation analysis for AI answers:** Profound yes · ecentic no
@@ -1067,7 +1067,7 @@ Many teams will want both eventually: Profound to watch presence, ecentic to win
     ],
     takeaways: [
       "Ecomtent is a generative engine optimization tool for product listings and imagery, built with a strong Amazon (Rufus/COSMO) focus, and it also supports Walmart, eBay, and Shopify.",
-      "ecentic simulates how AI agents pick between your product and a named competitor across GPT-4, Claude, Gemini, and Perplexity, then diagnoses and publishes the fix.",
+      "ecentic simulates how AI agents pick between your product and a named competitor across ChatGPT, Claude, Gemini, and Perplexity, then diagnoses and publishes the fix.",
       "The difference is content generation vs. competitive simulation: Ecomtent writes better listings; ecentic proves which changes win the agent's pick and republishes them.",
       "Choose Ecomtent for Amazon-first listing content at scale; choose ecentic for cross-agent win-rate optimization on Shopify or WooCommerce.",
     ],
@@ -1097,7 +1097,7 @@ That content-generation depth is real value. Rich, specification-forward listing
       {
         number: "03",
         title: "Where ecentic is different",
-        content: `ecentic is not primarily a content generator; it is a decision engine. Its starting question is not "what should this listing say" but "does this listing beat that competitor when an agent chooses — and if not, why." It runs your product and a named competitor through GPT-4, Claude, Gemini, and Perplexity as shopping agents and records the winner, the reasoning, and a per-model win rate.
+        content: `ecentic is not primarily a content generator; it is a decision engine. Its starting question is not "what should this listing say" but "does this listing beat that competitor when an agent chooses — and if not, why." It runs your product and a named competitor through ChatGPT, Claude, Gemini, and Perplexity as shopping agents and records the winner, the reasoning, and a per-model win rate.
 
 From there it works like Ecomtent in reverse. Instead of generating content and hoping it helps, it diagnoses the specific attribute gaps that lost the comparison, generates the fix, and publishes it to Shopify or WooCommerce — then re-simulates to confirm the win rate moved. Content generation is a step inside that loop, not the product.
 
@@ -1113,7 +1113,7 @@ The other difference is model coverage. Ecomtent optimizes largely for the Amazo
         content: `- **AI-optimized listing copy generation:** Ecomtent yes · ecentic yes (as part of the fix loop)
 - **AI product imagery and infographics:** Ecomtent yes · ecentic no
 - **Product-vs-competitor purchase simulation:** ecentic yes · Ecomtent no
-- **Per-model win rate across GPT-4/Claude/Gemini/Perplexity:** ecentic yes · Ecomtent no
+- **Per-model win rate across ChatGPT/Claude/Gemini/Perplexity:** ecentic yes · Ecomtent no
 - **Amazon Rufus/COSMO focus:** Ecomtent yes · ecentic no (cross-agent, Shopify/WooCommerce-first)
 - **Auto-publish to Shopify/WooCommerce and re-measure lift:** ecentic yes · Ecomtent partial (generates and pushes listing content, not a win-rate loop)
 - **UCP profile generation:** ecentic yes · Ecomtent no
@@ -1210,7 +1210,7 @@ For a merchant who wants a clear read on SKU-level presence and a prioritized li
       {
         number: "03",
         title: "Where ecentic is different",
-        content: `ecentic's difference from Alhena is the simulation and the loop. Alhena tells you a SKU's visibility and what to improve; ecentic runs the actual comparison — your product versus a named competitor — through GPT-4, Claude, Gemini, and Perplexity, and reports who wins, why, and by how much per model.
+        content: `ecentic's difference from Alhena is the simulation and the loop. Alhena tells you a SKU's visibility and what to improve; ecentic runs the actual comparison — your product versus a named competitor — through ChatGPT, Claude, Gemini, and Perplexity, and reports who wins, why, and by how much per model.
 
 That yields a competitor-specific verdict rather than a visibility score: an agent replay of the reasoning, a battlecard of the attribute gaps that lost the pick, and a per-model win rate. Then ecentic generates the fix and publishes it to Shopify or WooCommerce, re-simulating afterward to confirm the win rate moved. Recommendations become a closed loop instead of a to-do list.
 
@@ -1225,7 +1225,7 @@ It is a genuine difference in kind: tracking and advising versus simulating and 
         title: "Feature by feature",
         content: `- **SKU-level AI visibility tracking:** Alhena yes · ecentic partial (it measures win rate, not visibility share)
 - **Product-vs-competitor purchase simulation:** ecentic yes · Alhena no
-- **Per-model win rate (GPT-4/Claude/Gemini/Perplexity):** ecentic yes · Alhena no
+- **Per-model win rate (ChatGPT/Claude/Gemini/Perplexity):** ecentic yes · Alhena no
 - **Attribute-gap battlecards:** ecentic yes · Alhena no
 - **AEO recommendations:** Alhena yes · ecentic yes (as diagnosed fixes)
 - **Auto-publish to Shopify/WooCommerce and re-measure:** ecentic yes · Alhena partial (recommendations and fixes, not a win-rate loop)
@@ -1370,7 +1370,7 @@ These answer "are agents here, and who are they" — essential context, but not 
         title: "Win the cart: simulation and optimization",
         content: `The smallest category simulates whether an agent actually picks your product over a competitor — and, until recently, no commercial tool did this. The capability existed mainly in academia, in benchmarks like the ACES agentic-commerce simulator and research such as [Harvard Business Review's finding that traditional marketing does not work on AI shopping agents](https://hbr.org/2026/05/research-traditional-marketing-doesnt-work-on-ai-shopping-agents).
 
-This is where ecentic sits. It runs your product against a named competitor through GPT-4, Claude, Gemini, and Perplexity acting as shopping agents, reports a per-model win rate with the agent's reasoning, diagnoses the attribute gaps that lost the pick, and then generates and publishes the fix to Shopify or WooCommerce — re-simulating to confirm the lift. It also generates a Universal Commerce Protocol profile (an open Shopify and Google standard) so agents can verify your catalog.
+This is where ecentic sits. It runs your product against a named competitor through ChatGPT, Claude, Gemini, and Perplexity acting as shopping agents, reports a per-model win rate with the agent's reasoning, diagnoses the attribute gaps that lost the pick, and then generates and publishes the fix to Shopify or WooCommerce — re-simulating to confirm the lift. It also generates a Universal Commerce Protocol profile (an open Shopify and Google standard) so agents can verify your catalog.
 
 We build ecentic, so treat this section as informed but interested. The honest claim is narrow and checkable: among the tools above, the head-to-head simulation plus publish-and-re-measure loop is rare. You can test it free with a [Scan](/sign-up) or validate your agent surface with our [free UCP validator](/ucp-validator).
 

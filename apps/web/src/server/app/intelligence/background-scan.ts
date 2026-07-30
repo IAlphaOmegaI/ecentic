@@ -20,11 +20,11 @@ import * as Judge from "./judge";
 // The 4 models form a panel; they share one rubric (Judge.JUDGE_SYSTEM) — the
 // value is diversity of model, not divergence of instructions.
 const perspectives = [
-  { id: "gpt4", label: "GPT-4", model: "gpt-4o" as ModelId },
+  { id: "gpt4", label: "ChatGPT", model: "gpt" },
   {
     id: "claude",
     label: "Claude",
-    model: "claude-sonnet-4-20250514" as ModelId,
+    model: "claude-sonnet-4",
   },
   { id: "gemini", label: "Gemini", model: "gemini-2.5-flash" as ModelId },
 ];

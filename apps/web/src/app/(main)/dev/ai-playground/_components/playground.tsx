@@ -65,7 +65,7 @@ const DEFAULT_CONFIG: Config = {
   temperature: 0.7,
   topP: 1,
   maxOutputTokens: 1024,
-  models: ["gpt-4o", "claude-sonnet-4-6"],
+  models: ["gpt", "claude-sonnet-4.6"],
   custom: [],
 };
 

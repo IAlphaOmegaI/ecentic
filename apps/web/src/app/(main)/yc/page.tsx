@@ -32,7 +32,7 @@ const faq = [
   {
     question: "What do I actually get?",
     answer:
-      "Extended access to ecentic Dominate — continuous AI agent simulations across GPT-4, Claude, Gemini, and Perplexity, auto-optimization with one-click publish, drift alerts, and UCP generation — plus white-glove onboarding for your catalog and student pricing when the deal period ends.",
+      "Extended access to ecentic Dominate — continuous AI agent simulations across ChatGPT, Claude, Gemini, and Perplexity, auto-optimization with one-click publish, drift alerts, and UCP generation — plus white-glove onboarding for your catalog and student pricing when the deal period ends.",
   },
   {
     question: "Do I need an account first?",
@@ -103,7 +103,7 @@ export default () => {
         <ContentPageRichText
           content={`ecentic shows you how AI shopping agents compare your products against competitors, diagnoses why you win or lose, and rewrites your listings to close the gap. The YC deal opens the full platform:
 
-- Extended ecentic Dominate — continuous simulations across GPT-4, Claude, Gemini, and Perplexity
+- Extended ecentic Dominate — continuous simulations across ChatGPT, Claude, Gemini, and Perplexity
 - Auto-optimization with one-click publish and model drift alerts
 - UCP generation so agents can verify your catalog directly
 - White-glove onboarding for your catalog and student pricing after the deal period

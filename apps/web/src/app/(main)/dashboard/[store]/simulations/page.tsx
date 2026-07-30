@@ -8,7 +8,7 @@ import * as Scan from "@/server/app/scan";
 import { Environment } from "@/server/utils/environment";
 import { Crosshair, StatusPill } from "../../_components/grid";
 import { SimulationsClient } from "./_components/simulations-client";
-import { SimulationsSkeleton } from "./skeletons";
+import { SimulationsSkeleton } from "./_components/skeletons";
 
 export default async ({ params }: { params: Promise<{ store: string }> }) => {
   const { store } = await params;
