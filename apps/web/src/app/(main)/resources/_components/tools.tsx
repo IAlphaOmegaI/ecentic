@@ -149,7 +149,11 @@ export const Tools = () => (
                   <p
                     className={cn(
                       "font-medium text-sm",
-                      tool.highlighted ? "text-white/70" : "text-primary",
+                      // Solid white is the ceiling on the primary field
+                      // (4.36:1); /70 measured 2.90:1. The check icon below
+                      // stays tinted — non-text answers to 3:1, which /80
+                      // clears at 3.34.
+                      tool.highlighted ? "text-white" : "text-primary",
                     )}
                   >
                     {tool.number} · {tool.category}
@@ -161,7 +165,7 @@ export const Tools = () => (
                     className={cn(
                       "font-light text-lg leading-relaxed",
                       tool.highlighted
-                        ? "text-white/80"
+                        ? "text-white"
                         : "text-foreground-dimmed",
                     )}
                   >
@@ -174,14 +178,14 @@ export const Tools = () => (
                         className={cn(
                           "flex items-center gap-2",
                           tool.highlighted
-                            ? "text-white/80"
+                            ? "text-white"
                             : "text-foreground-dimmed",
                         )}
                       >
                         <CheckIcon
                           className={cn(
                             "size-4 shrink-0",
-                            tool.highlighted ? "text-white/70" : "text-primary",
+                            tool.highlighted ? "text-white/80" : "text-primary",
                           )}
                         />
                         {feature}

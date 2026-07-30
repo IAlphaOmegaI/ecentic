@@ -184,7 +184,7 @@ export default () => {
                 <p
                   className={
                     channel.highlighted
-                      ? "font-body font-light text-white/80"
+                      ? "font-body font-light text-white"
                       : "font-body font-light text-foreground-dimmed"
                   }
                 >

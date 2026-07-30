@@ -8,9 +8,7 @@ export default async ({ children }: { children: React.ReactNode }) => {
     Authentication.getCurrentUser(Environment.SERVER),
   );
 
-  if (user.company && user.jobTitle) {
-    redirect("/onboarding/connect");
-  }
+  if (user.company && user.jobTitle) redirect("/onboarding/connect");
 
-  return <>{children}</>;
+  return children;
 };

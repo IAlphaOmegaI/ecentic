@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "agent-commerce",
+      "type": "skill-md",
+      "description": "Connect a Shopify or WooCommerce store to ecentic, measure AI agent traffic, and improve agent-driven commerce readiness. Use when setting up agent tracking, UCP hosting, or catalog sync.",
+      "url": "/.well-known/agent-skills/agent-commerce/SKILL.md",
+      "digest": "sha256:ad2ccbb7446b0dc67ef9836060e9bb7704ca0cfaa4c43852607347129f0ccac9"
+    },
+    {
+      "name": "optimize-listings",
+      "type": "skill-md",
+      "description": "Optimize ecommerce product listings so AI shopping agents (ChatGPT, Claude, Gemini, Perplexity) recommend them. Use when improving titles, descriptions, attributes, or win rate against competitors.",
+      "url": "/.well-known/agent-skills/optimize-listings/SKILL.md",
+      "digest": "sha256:0bf31540026f66f6dbffe7c59e8a1d12202e6fbbfc77b8a83c3c6fb9709243f4"
+    },
+    {
+      "name": "validate-ucp",
+      "type": "skill-md",
+      "description": "Validate a storefront Universal Commerce Protocol (UCP) profile at /.well-known/ucp. Use when checking UCP reachability, schema correctness, or whether AI shopping agents can discover a merchant.",
+      "url": "/.well-known/agent-skills/validate-ucp/SKILL.md",
+      "digest": "sha256:cdd55068179c0c4490772ab52bc78ae308e695b021b8045a495bb4f170bb6871"
+    }
+  ]
+}

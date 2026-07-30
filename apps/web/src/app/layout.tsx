@@ -4,6 +4,7 @@ import "./globals.css";
 import { ToastProvider } from "@zenncore/web/components/toast";
 import dynamic from "next/dynamic";
 import { Red_Hat_Display } from "next/font/google";
+import localFont from "next/font/local";
 import Script from "next/script";
 import { ToastList } from "@/components/ui/toast";
 import { MotionProvider } from "@/context/motion";
@@ -16,6 +17,33 @@ const PostHogProvider = dynamic(() =>
 const redHatDisplay = Red_Hat_Display({
   subsets: ["latin"],
   variable: "--font-redhat-display",
+});
+
+const ltSuperior = localFont({
+  src: [
+    {
+      path: "../../public/fonts/LTSuperior/LTSuperior-Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/LTSuperior/LTSuperior-Medium.ttf",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/LTSuperior/LTSuperior-SemiBold.ttf",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/LTSuperior/LTSuperior-Bold.ttf",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  variable: "--font-lt-superior",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -137,10 +165,11 @@ export default ({ children }: PropsWithChildren) => {
             `}
             </Script>
           )}
+        <Script src="/webmcp.js" strategy="afterInteractive" />
         <meta name="apple-mobile-web-app-title" content="ecentic" />
       </head>
       <body
-        className={`${redHatDisplay.variable} overflow-x-hidden bg-background font-body antialiased`}
+        className={`${redHatDisplay.variable} ${ltSuperior.variable} overflow-x-hidden bg-background font-body antialiased`}
         // React Grab hydration errors
         suppressHydrationWarning={process.env.NODE_ENV === "development"}
       >

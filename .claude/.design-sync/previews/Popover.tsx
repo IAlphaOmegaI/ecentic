@@ -35,7 +35,7 @@ export const Open = () => (
         <PopoverTitle
           style={{ fontWeight: 600, color: "var(--color-foreground-rich)" }}
         >
-          GPT-4 ranked you 3rd
+          ChatGPT ranked you 3rd
         </PopoverTitle>
         <PopoverDescription
           style={{

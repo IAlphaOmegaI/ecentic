@@ -28,10 +28,10 @@ export const AgentGroup = () => (
     >
       Simulate against agents
     </span>
-    <CheckboxGroup defaultValue={["gpt-4", "claude"]}>
+    <CheckboxGroup defaultValue={["chatgpt", "claude"]}>
       <Row>
-        <Checkbox value="gpt-4" />
-        GPT-4
+        <Checkbox value="chatgpt" />
+        ChatGPT
       </Row>
       <Row>
         <Checkbox value="claude" />

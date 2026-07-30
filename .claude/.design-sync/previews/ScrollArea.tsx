@@ -1,15 +1,15 @@
 import { ScrollArea } from "@zenncore/web";
 
 const agents = [
-  "GPT-4 picked AcousticPro X3 over 3 competitors",
+  "ChatGPT picked AcousticPro X3 over 3 competitors",
   "Claude favored SoundForge Studio for studio use",
   "Gemini ranked EchoLab Mini #2 on value",
   "Perplexity flagged PulseWave Air missing specs",
-  "GPT-4 cited 4.7-star reviews as decisive",
+  "ChatGPT cited 4.7-star reviews as decisive",
   "Claude penalized vague shipping copy",
   "Gemini compared price-per-feature on Walmart",
   "Perplexity surfaced a cheaper Amazon variant",
-  "GPT-4 recommended bundling the carrying case",
+  "ChatGPT recommended bundling the carrying case",
   "Claude noted competitor's longer warranty",
   "Gemini weighted battery life heavily",
   "Perplexity questioned the return policy",

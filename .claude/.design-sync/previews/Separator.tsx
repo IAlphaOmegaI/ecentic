@@ -41,7 +41,7 @@ export const Vertical = () => (
   >
     <div style={{ textAlign: "center" }}>
       <div style={{ fontSize: 18, fontWeight: 600 }}>71%</div>
-      <div style={{ fontSize: 11, opacity: 0.7 }}>GPT-4</div>
+      <div style={{ fontSize: 11, opacity: 0.7 }}>ChatGPT</div>
     </div>
     <Separator
       className="h-8 w-px bg-accent-foreground"

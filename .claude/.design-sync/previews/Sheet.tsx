@@ -99,7 +99,7 @@ export const Open = () => (
           </div>
         </div>
         <div style={{ fontSize: 13, color: "var(--color-foreground-dimmed)" }}>
-          Claude and Perplexity now rank you above Anker; GPT-4 cites the
+          Claude and Perplexity now rank you above Anker; ChatGPT cites the
           battery spec as the deciding factor.
         </div>
       </div>

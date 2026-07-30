@@ -26,7 +26,7 @@ Families export each part as a top-level name — use `<AccordionItem>`, NOT
 <Accordion>
   <AccordionItem value="a">
     <AccordionTrigger>How do AI agents compare my products?</AccordionTrigger>
-    <AccordionPanel>We simulate GPT-4, Claude, Gemini and Perplexity…</AccordionPanel>
+    <AccordionPanel>We simulate ChatGPT, Claude, Gemini and Perplexity…</AccordionPanel>
   </AccordionItem>
 </Accordion>
 ```
@@ -112,7 +112,7 @@ import { Button } from "@zenncore/web/components/button";
 <div className="flex flex-col gap-4 rounded-md bg-background-rich p-6 text-foreground">
   <h2 className="font-medium text-lg text-foreground-rich">Run a simulation</h2>
   <p className="text-foreground-dimmed text-sm">
-    Compare this product against 8 competitors across GPT-4, Claude, Gemini and Perplexity.
+    Compare this product against 8 competitors across ChatGPT, Claude, Gemini and Perplexity.
   </p>
   <div className="flex gap-2">
     <Button variant="ghost" color="neutral">Cancel</Button>

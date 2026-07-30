@@ -42,7 +42,7 @@ export const Open = () => (
       <DialogDescription
         style={{ marginTop: 8, color: "var(--color-foreground)" }}
       >
-        We'll compare your product against 8 competitors across GPT-4, Claude,
+        We'll compare your product against 8 competitors across ChatGPT, Claude,
         Gemini and Perplexity. This uses 1 simulation credit.
       </DialogDescription>
       <div

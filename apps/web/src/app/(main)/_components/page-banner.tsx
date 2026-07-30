@@ -1,25 +1,30 @@
-import { CheckIcon } from "@zenncore/icons";
 import type { StaticImageData } from "next/image";
 import Image from "next/image";
 import type { ReactNode } from "react";
 
 /**
- * The single banner every secondary page opens with: a full-bleed primary slab
- * with the page's ASCII motif bleeding off the right edge.
+ * The single banner every secondary page opens with: a full-viewport primary
+ * slab with the page's ASCII motif bleeding off the right edge, content pinned
+ * to the bottom.
  *
- * Contrast on `bg-primary` (#1572fa) is the whole point of this component.
- * White sits at 4.4:1 against it, so anything tinted *toward* white — the old
- * `text-white/80` accent — collapses into the background. Every tier below
- * therefore steps away from the field rather than toward it: dimmed navy for
- * the accent, solid white for the assurance labels.
+ * Contrast on `bg-primary` (#1572fa) is the whole point of this component, and
+ * the numbers are unforgiving. The slab's luminance puts solid white at 4.36:1,
+ * so no white-based text clears the 4.5:1 AA bar at body sizes — white is the
+ * ceiling, not a safe default, and every tint below it falls away fast:
+ * /80 = 3.34, /75 = 3.11, /70 = 2.90, /60 = 2.51. Text therefore stays *solid*
+ * white and lets size, weight, and tracking carry the hierarchy that opacity
+ * used to fake.
  *
- * The rule constrains *text*, not surfaces. A translucent white plate behind a
- * solid-white label (see `bannerAction.secondary`) keeps the label at its full
- * 4.4:1 while letting the field read through — which is why the secondary
- * action can be frosted but its text can never be `text-white/70`.
+ * The title accent is the exception: LT Superior in solid white with an
+ * underline, so the trailing clause keeps the headline's color while shifting
+ * voice through typeface and underline instead of a second fill weight.
+ *
+ * The rule constrains *text*. A translucent white plate behind a solid-white
+ * label (see `bannerAction.secondary`) keeps the label at its full 4.36:1 while
+ * letting the field read through — which is why the secondary action can be
+ * frosted but its text can never be `text-white/70`.
  */
 export const PageBanner = ({
-  eyebrow,
   title,
   accent,
   description,
@@ -30,7 +35,7 @@ export const PageBanner = ({
   art,
 }: PageBanner.Props) => (
   <section className="border-accent-foreground border-b p-4">
-    <div className="relative size-full overflow-hidden rounded-lg bg-primary">
+    <div className="relative flex min-h-[calc(100dvh-2rem)] flex-col justify-end overflow-hidden rounded-lg bg-primary">
       {art && (
         // `brightness-0 invert` flattens the glyphs to white and keeps their
         // alpha; the left-edge mask stops the densest motifs from running under
@@ -43,44 +48,31 @@ export const PageBanner = ({
           className="pointer-events-none absolute inset-y-0 right-0 hidden h-full w-auto max-w-[55%] select-none object-contain object-right opacity-40 brightness-0 invert [mask-image:linear-gradient(to_right,transparent,black_40%)] md:block"
         />
       )}
-      <div className="relative z-10 mx-auto max-w-6xl border-white/20 border-x px-8 pt-36 pb-16">
+      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col justify-end border-white/20 border-x px-8 pt-24 pb-16">
         {badge && <div className="mb-6">{badge}</div>}
-        {eyebrow && (
-          <p className="mb-4 font-medium text-sm text-white/60 uppercase tracking-[0.2em]">
-            {eyebrow}
+        {assurances && (
+          // Quiet middot note above the title — same claims the landing hero
+          // carries under its CTA, moved up so they frame the headline instead
+          // of trailing the actions.
+          <p className="mb-4 max-w-2xl text-sm text-white">
+            {assurances.join(" · ")}
           </p>
         )}
         <h1 className="max-w-4xl font-semibold text-5xl text-white tracking-tight md:text-7xl">
           {title}
-          {accent && <span className="text-primary-dimmed"> {accent}</span>}
+          {accent && (
+            <span className="font-superior font-medium text-white underline decoration-2 underline-offset-[0.18em]">
+              {" "}
+              {accent}
+            </span>
+          )}
         </h1>
-        {meta && <div className="mt-4 text-sm text-white/70">{meta}</div>}
-        <p className="mt-6 max-w-2xl text-base text-white/75 leading-relaxed md:text-lg">
+        {meta && <div className="mt-4 text-sm text-white">{meta}</div>}
+        <p className="mt-6 max-w-2xl text-base text-white leading-relaxed md:text-lg">
           {description}
         </p>
         {actions && (
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">{actions}</div>
-        )}
-        {assurances && (
-          // A plain inline row, not pills. As opaque white capsules these were
-          // the brightest objects on the slab — a strip of stickers competing
-          // with the headline for first read, and the more a page listed the
-          // worse it got. At this size the claims carry themselves, so the
-          // chrome goes and the checks alone do the separating.
-          //
-          // Labels stay *solid* white per the contrast note above; only the
-          // icon steps back, and an icon answers to the 3:1 non-text threshold
-          // rather than 4.5:1. `gap-x-6` replaces the pill padding as the thing
-          // that keeps entries apart, so this still parses as a list when it
-          // wraps to a second line.
-          <ul className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 font-medium text-sm text-white">
-            {assurances.map((assurance) => (
-              <li key={assurance} className="flex items-center gap-2">
-                <CheckIcon className="size-3.5 shrink-0 text-white/70" />
-                {assurance}
-              </li>
-            ))}
-          </ul>
         )}
       </div>
     </div>
@@ -113,8 +105,9 @@ export namespace PageBanner {
   export type Props = {
     title: string;
     description: string;
-    /** Trailing clause of the headline, rendered in dimmed navy. */
+    /** Trailing clause of the headline, rendered in LT Superior with underline. */
     accent?: string;
+    /** Accepted for call-site compatibility; no longer rendered. */
     eyebrow?: string;
     badge?: ReactNode;
     meta?: ReactNode;

@@ -16,7 +16,7 @@ export const FAQ = () => (
         </AccordionTrigger>
         <AccordionPanel>
           <div style={{ paddingBottom: 12, color: "var(--color-foreground)" }}>
-            We simulate GPT-4, Claude, Gemini and Perplexity shopping for your
+            We simulate ChatGPT, Claude, Gemini and Perplexity shopping for your
             category, then score how often each agent recommends your listing
             over the 8 competitors we track.
           </div>

@@ -72,7 +72,7 @@ export const Open = () => (
             </div>
           </div>
           <div style={{ fontSize: 13, color: "var(--color-foreground)" }}>
-            $59.99 · 4.7★ (18,204 reviews). Wins 64% of GPT-4 and Perplexity
+            $59.99 · 4.7★ (18,204 reviews). Wins 64% of ChatGPT and Perplexity
             comparisons against your listing this week.
           </div>
           <div

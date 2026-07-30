@@ -50,7 +50,7 @@ export const CompetitorWinRates = () => (
         <TableRow>
           <TableHead>Competitor</TableHead>
           <TableHead>Marketplace</TableHead>
-          <TableHead>GPT-4</TableHead>
+          <TableHead>ChatGPT</TableHead>
           <TableHead>Claude</TableHead>
           <TableHead>Win Rate</TableHead>
         </TableRow>
