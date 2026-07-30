@@ -12,6 +12,7 @@ import * as GoogleMerchantAPI from "../../utils/google-merchant";
 import { normalizeHostname } from "../../utils/tracking";
 import * as GoogleMerchantAccount from "../google-merchant-account";
 import * as GoogleMerchantOffer from "../google-merchant-offer";
+import * as GoogleMerchantUcp from "../google-merchant-ucp";
 import * as Product from "../product";
 import * as Store from "../store";
 
@@ -171,17 +172,80 @@ const linkedAccount = async (storeId: string) => {
   return { success: true as const, data: record };
 };
 
-/**
- * Returns a live access token for the store's Google grant, refreshing (and
- * persisting) it when it expires within five minutes — same policy as the
- * Shopify token resolver.
- */
-const resolveAccessToken = async (
-  storeId: string,
-): Promise<
+type ResolvedToken =
   | { success: true; accessToken: string; record: GoogleMerchantAccount.Type }
-  | { success: false; error: Error }
-> => {
+  | { success: false; error: Error };
+
+const ACCESS_TOKEN_LIFETIME = 60 * 60 * 1000;
+const EXPIRY_BUFFER = 5 * 60 * 1000;
+/** How long after minting a token is trusted without a liveness probe. */
+const TRUSTED_MINT_AGE = 10 * 60 * 1000;
+
+/**
+ * Single refresh per store at a time. A page load fans several server actions
+ * out in parallel and each resolves a token — without this, every one of them
+ * minted its own access token from the same refresh grant, and whichever
+ * persist landed last decided which token the NEXT request would use.
+ */
+const refreshFlights = new Map<string, Promise<ResolvedToken>>();
+
+const refreshAndPersist = (
+  record: GoogleMerchantAccount.Type,
+  refreshToken: string,
+): Promise<ResolvedToken> => {
+  const inFlight = refreshFlights.get(record.storeId);
+  if (inFlight) return inFlight;
+
+  const flight = (async (): Promise<ResolvedToken> => {
+    const config = GoogleMerchantAPI.configuration();
+    if (!config)
+      return { success: false, error: GoogleMerchantAPI.notConfiguredError() };
+
+    const refreshed = await GoogleMerchantAPI.refreshAccessToken(config, {
+      refreshToken,
+    });
+    if (!refreshed.success) return refreshed;
+
+    const persisted = await GoogleMerchantAccount.update(
+      Environment.SERVER,
+      record.id,
+      {
+        accessToken: refreshed.data.accessToken,
+        accessTokenExpiresAt: refreshed.data.accessTokenExpiresAt,
+      },
+    );
+    if (!persisted.success) return persisted;
+
+    return {
+      success: true,
+      accessToken: refreshed.data.accessToken,
+      record: {
+        ...record,
+        accessToken: refreshed.data.accessToken,
+        accessTokenExpiresAt: refreshed.data.accessTokenExpiresAt,
+      },
+    };
+  })();
+
+  refreshFlights.set(record.storeId, flight);
+  void flight.finally(() => refreshFlights.delete(record.storeId));
+  return flight;
+};
+
+/**
+ * Returns a live access token for the store's Google grant. Expiry math alone
+ * is not trusted: Google has revoked a stored access token out-of-band
+ * (observed live — dead ~7 minutes after minting, expiry timestamp still an
+ * hour out, Merchant API answering 401 UNAUTHENTICATED). Policy:
+ *
+ * - unknown expiry counts as expired, never as forever-valid;
+ * - expiring within five minutes → refresh (single-flight per store);
+ * - within ten minutes of minting → trusted as-is;
+ * - older than that → cheap tokeninfo liveness probe, force-refresh when
+ *   Google says the token is dead (probe transport failures fail open — the
+ *   real API call surfaces genuine errors).
+ */
+const resolveAccessToken = async (storeId: string): Promise<ResolvedToken> => {
   const account = await linkedAccount(storeId);
   if (!account.success) return account;
 
@@ -192,12 +256,21 @@ const resolveAccessToken = async (
       error: new RequestError("Missing Google access token"),
     };
 
-  const isExpiring =
-    record.accessTokenExpiresAt &&
-    record.accessTokenExpiresAt.getTime() - Date.now() < 5 * 60 * 1000;
+  const remaining = (record.accessTokenExpiresAt?.getTime() ?? 0) - Date.now();
+  const needsRefresh = remaining < EXPIRY_BUFFER;
+  const isRecentlyMinted = remaining > ACCESS_TOKEN_LIFETIME - TRUSTED_MINT_AGE;
 
-  if (!isExpiring)
+  if (!needsRefresh && isRecentlyMinted)
     return { success: true, accessToken: record.accessToken, record };
+
+  if (!needsRefresh) {
+    const probe = await GoogleMerchantAPI.introspectAccessToken(
+      record.accessToken,
+    );
+    const alive = probe.success ? probe.data.valid : true;
+    if (alive)
+      return { success: true, accessToken: record.accessToken, record };
+  }
 
   if (!record.refreshToken)
     return {
@@ -207,30 +280,7 @@ const resolveAccessToken = async (
       ),
     };
 
-  const config = GoogleMerchantAPI.configuration();
-  if (!config)
-    return { success: false, error: GoogleMerchantAPI.notConfiguredError() };
-
-  const refreshed = await GoogleMerchantAPI.refreshAccessToken(config, {
-    refreshToken: record.refreshToken,
-  });
-  if (!refreshed.success) return refreshed;
-
-  const persisted = await GoogleMerchantAccount.update(
-    Environment.SERVER,
-    record.id,
-    {
-      accessToken: refreshed.data.accessToken,
-      accessTokenExpiresAt: refreshed.data.accessTokenExpiresAt,
-    },
-  );
-  if (!persisted.success) return persisted;
-
-  return {
-    success: true,
-    accessToken: refreshed.data.accessToken,
-    record: { ...record, accessToken: refreshed.data.accessToken },
-  };
+  return refreshAndPersist(record, record.refreshToken);
 };
 
 /**
@@ -794,8 +844,14 @@ const offerMatchesExternalId = (offerId: string, externalId: string) => {
   return offerId.split("_").includes(externalId);
 };
 
-const attributesHash = (attributes: GoogleMerchantAPI.ProductInputAttributes) =>
-  crypto.createHash("sha256").update(JSON.stringify(attributes)).digest("hex");
+/**
+ * Hash of the pushed input body for skip-if-unchanged idempotency. Callers
+ * pass the bare attributes object when no UCP custom attributes ride along —
+ * keeping those hashes byte-identical to pre-UCP pushes so enabling the
+ * feature does not re-push every unchanged offer.
+ */
+const attributesHash = (body: unknown) =>
+  crypto.createHash("sha256").update(JSON.stringify(body)).digest("hex");
 
 /**
  * Pushes the store's published listing optimizations as attribute overrides
@@ -843,7 +899,9 @@ export const pushOverrides = withAuthentication(
           skippedUnchanged: 0,
           matchedProducts: 0,
           unmatchedProducts: 0,
+          ucpProducts: 0,
           policyBlocked: [],
+          ucpWarnings: [],
           errors: [],
         },
       };
@@ -862,6 +920,15 @@ export const pushOverrides = withAuthentication(
         optimization.productId,
         optimization,
       ]),
+    );
+
+    const ucpRows = await GoogleMerchantUcp.find(Environment.SERVER, {
+      where: eq(schema.googleMerchantUcp.storeId, storeId),
+    });
+    if (!ucpRows.success) return ucpRows;
+
+    const ucpByProduct = new Map(
+      ucpRows.data.map((row) => [row.productId, row]),
     );
 
     const existingOffers = await GoogleMerchantOffer.find(Environment.SERVER, {
@@ -883,32 +950,67 @@ export const pushOverrides = withAuthentication(
     let skippedUnchanged = 0;
     let matchedProducts = 0;
     let unmatchedProducts = 0;
+    let ucpProducts = 0;
     const policyBlocked: { productId: string; issues: string[] }[] = [];
+    const ucpWarnings: { productId: string; issues: string[] }[] = [];
     const errors: string[] = [];
 
     for (const product of withExternalId) {
       const optimization = optimizationByProduct.get(product.id);
-      if (!optimization) continue;
-      if (!optimization.proposedTitle && !optimization.proposedDescription)
-        continue;
+      const ucp = ucpByProduct.get(product.id) ?? null;
+      const hasOverride = Boolean(
+        optimization?.proposedTitle || optimization?.proposedDescription,
+      );
+      // A product participates when it has a published override, UCP checkout
+      // settings, or both — one insert per offer carries everything, since an
+      // insert fully replaces the previous input in the supplemental source.
+      if (!hasOverride && !ucp) continue;
 
       const attributes: GoogleMerchantAPI.ProductInputAttributes = {
-        ...(optimization.proposedTitle
+        ...(optimization?.proposedTitle
           ? { title: optimization.proposedTitle }
           : {}),
-        ...(optimization.proposedDescription
+        ...(optimization?.proposedDescription
           ? { description: optimization.proposedDescription }
           : {}),
       };
 
+      const ucpAttributes: GoogleMerchantAPI.UcpAttributes | null = ucp
+        ? {
+            checkoutEligible: ucp.checkoutEligible,
+            noticeType: ucp.noticeType,
+            noticeMessage: ucp.noticeMessage,
+            merchantItemId: ucp.merchantItemId,
+          }
+        : null;
+
       const lint = GoogleMerchantAPI.lintOverrideAttributes(attributes);
-      if (lint.length > 0) {
+      const ucpLint = ucpAttributes
+        ? GoogleMerchantAPI.lintUcpAttributes(ucpAttributes, {
+            title: product.title,
+            description: product.description ?? undefined,
+          })
+        : { errors: [], warnings: [] };
+
+      if (lint.length > 0 || ucpLint.errors.length > 0) {
         policyBlocked.push({
           productId: product.id,
-          issues: lint.map((issue) => issue.code),
+          issues: [...lint, ...ucpLint.errors].map((issue) => issue.code),
         });
         continue;
       }
+
+      // Restricted-category heuristics warn but never block — the merchant
+      // knows their catalog; we surface the risk and push what they chose.
+      if (ucpLint.warnings.length > 0)
+        ucpWarnings.push({
+          productId: product.id,
+          issues: ucpLint.warnings.map((issue) => issue.code),
+        });
+
+      const customAttributes = ucpAttributes
+        ? GoogleMerchantAPI.buildUcpCustomAttributes(ucpAttributes)
+        : undefined;
 
       const externalId = product.externalId as string;
       const matching = offers.data.filter(
@@ -924,8 +1026,13 @@ export const pushOverrides = withAuthentication(
         continue;
       }
       matchedProducts += 1;
+      if (customAttributes) ucpProducts += 1;
 
-      const hash = attributesHash(attributes);
+      // Bare-attributes hash when no UCP settings ride along, so pre-UCP
+      // hashes stay valid and enabling the feature never mass re-pushes.
+      const hash = customAttributes
+        ? attributesHash({ attributes, customAttributes })
+        : attributesHash(attributes);
 
       for (const offer of matching) {
         const offerId = offer.offerId as string;
@@ -949,6 +1056,7 @@ export const pushOverrides = withAuthentication(
             contentLanguage: offer.contentLanguage as string,
             feedLabel: offer.feedLabel as string,
             attributes,
+            customAttributes,
           },
         );
 
@@ -986,6 +1094,7 @@ export const pushOverrides = withAuthentication(
         "overrides.skipped": skippedUnchanged,
         "products.matched": matchedProducts,
         "products.unmatched": unmatchedProducts,
+        "products.ucp": ucpProducts,
         "products.policy_blocked": policyBlocked.length,
         "overrides.errors": errors.length,
       },
@@ -998,7 +1107,9 @@ export const pushOverrides = withAuthentication(
         skippedUnchanged,
         matchedProducts,
         unmatchedProducts,
+        ucpProducts,
         policyBlocked,
+        ucpWarnings,
         errors: errors.slice(0, 10),
       },
     };
@@ -1096,6 +1207,682 @@ export const pullDiagnostics = withAuthentication(
   "GoogleMerchant.pullDiagnostics",
 );
 
+export type CurrentReturnPolicy = {
+  countries: string[];
+  /** null = no day-based window (lifetime, or no window at all). */
+  windowDays: number | null;
+  lifetime: boolean;
+  policyUrl: string | null;
+  returnMethods: string[];
+  itemConditions: string[];
+  customerPaysShipping: boolean;
+  processRefundDays: number | null;
+};
+
+export type UcpReadiness = {
+  /** null = homepage read failed (unset homepages 404) — treat as unknown. */
+  homepage: { claimed: boolean; uri: string | null } | null;
+  returnPolicy: {
+    configured: boolean;
+    count: number;
+    /** Some policy defines a return window (days after delivery / lifetime). */
+    hasWindow: boolean;
+    /** Some policy links to the full policy text. */
+    hasPolicyLink: boolean;
+    /** The default (unlabeled) policy, for prefilling the replace form. */
+    current: CurrentReturnPolicy | null;
+  };
+  customerSupport: {
+    configured: boolean;
+    methods: string[];
+    email: string | null;
+    uri: string | null;
+    phone: string | null;
+  };
+  offers: {
+    total: number;
+    approved: number;
+    disapproved: number;
+    /** Offers whose merged view already carries our `native_commerce` flag. */
+    checkoutAttributeLive: number;
+  };
+  ready: boolean;
+};
+
+/**
+ * Audits Google's UCP agentic-checkout prerequisites that are readable via
+ * the Merchant API (docs/integrations/google-ucp.md): claimed homepage,
+ * return policy with a window and a full-policy link, at least one customer
+ * support contact, and approved offers. Everything else on Google's checklist
+ * (waitlist, Google Pay handler, checkout rails) is not API-auditable — the
+ * UI renders those as static informational items.
+ */
+export const getUcpReadiness = withAuthentication(
+  async (context, { store: storeId }: { store: string }) => {
+    const store = await ownedStore(storeId, context.session.user.id);
+    if (!store.success) return store;
+
+    const resolved = await resolveAccessToken(storeId);
+    if (!resolved.success) return resolved;
+
+    const { record } = resolved;
+    if (!record.googleAccountId)
+      return {
+        success: false,
+        error: new RequestError("No Merchant Center account detected yet"),
+      };
+
+    const [homepage, returnPolicies, businessInfo, offers] = await Promise.all([
+      GoogleMerchantAPI.getHomepage(
+        resolved.accessToken,
+        record.googleAccountId,
+      ),
+      GoogleMerchantAPI.listReturnPolicies(
+        resolved.accessToken,
+        record.googleAccountId,
+      ),
+      GoogleMerchantAPI.getBusinessInfo(
+        resolved.accessToken,
+        record.googleAccountId,
+      ),
+      GoogleMerchantAPI.listProducts(
+        resolved.accessToken,
+        record.googleAccountId,
+      ),
+    ]);
+    if (!returnPolicies.success) return returnPolicies;
+    if (!businessInfo.success) return businessInfo;
+    if (!offers.success) return offers;
+
+    const policies = returnPolicies.data.onlineReturnPolicies ?? [];
+    const defaultPolicy = policies.find((policy) => !policy.label) ?? null;
+    const returnPolicy = {
+      configured: policies.length > 0,
+      count: policies.length,
+      hasWindow: policies.some(
+        (policy) =>
+          policy.policy?.type === "LIFETIME_RETURNS" ||
+          (policy.policy?.type === "NUMBER_OF_DAYS_AFTER_DELIVERY" &&
+            Boolean(policy.policy.days)),
+      ),
+      hasPolicyLink: policies.some((policy) => Boolean(policy.returnPolicyUri)),
+      current: defaultPolicy
+        ? {
+            countries: defaultPolicy.countries ?? [],
+            windowDays:
+              defaultPolicy.policy?.type === "NUMBER_OF_DAYS_AFTER_DELIVERY"
+                ? Number(defaultPolicy.policy.days) || null
+                : null,
+            lifetime: defaultPolicy.policy?.type === "LIFETIME_RETURNS",
+            policyUrl: defaultPolicy.returnPolicyUri ?? null,
+            returnMethods: defaultPolicy.returnMethods ?? [],
+            itemConditions: defaultPolicy.itemConditions ?? [],
+            customerPaysShipping:
+              defaultPolicy.returnShippingFee?.type ===
+              "CUSTOMER_PAYING_ACTUAL_FEE",
+            processRefundDays: defaultPolicy.processRefundDays ?? null,
+          }
+        : null,
+    };
+
+    const service = businessInfo.data.customerService;
+    const methods = [
+      ...(service?.uri ? ["website"] : []),
+      ...(service?.email ? ["email"] : []),
+      ...(service?.phone?.e164Number ? ["phone"] : []),
+    ];
+
+    const approved = offers.data.filter((offer) =>
+      (offer.productStatus?.destinationStatuses ?? []).some(
+        (destination) => (destination.approvedCountries ?? []).length > 0,
+      ),
+    ).length;
+    const disapproved = offers.data.filter((offer) =>
+      (offer.productStatus?.destinationStatuses ?? []).some(
+        (destination) => (destination.disapprovedCountries ?? []).length > 0,
+      ),
+    ).length;
+    const checkoutAttributeLive = offers.data.filter((offer) =>
+      (offer.customAttributes ?? []).some(
+        (attribute) => attribute.name === "native_commerce",
+      ),
+    ).length;
+
+    const readiness: UcpReadiness = {
+      homepage: homepage.success
+        ? {
+            claimed: homepage.data.claimed ?? false,
+            uri: homepage.data.uri ?? null,
+          }
+        : null,
+      returnPolicy,
+      customerSupport: {
+        configured: methods.length > 0,
+        methods,
+        email: service?.email ?? null,
+        uri: service?.uri ?? null,
+        phone: service?.phone?.e164Number ?? null,
+      },
+      offers: {
+        total: offers.data.length,
+        approved,
+        disapproved,
+        checkoutAttributeLive,
+      },
+      ready:
+        (homepage.success ? (homepage.data.claimed ?? false) : false) &&
+        returnPolicy.configured &&
+        returnPolicy.hasWindow &&
+        returnPolicy.hasPolicyLink &&
+        methods.length > 0 &&
+        approved > 0,
+    };
+
+    context.span.addBreadcrumb({
+      category: "google.ucp.readiness",
+      data: {
+        "store.id": storeId,
+        "ucp.ready": readiness.ready,
+        "ucp.return_policies": returnPolicy.count,
+        "ucp.support_methods": methods.length,
+        "ucp.offers.approved": approved,
+        "ucp.offers.checkout_attribute_live": checkoutAttributeLive,
+      },
+    });
+
+    return { success: true as const, data: readiness };
+  },
+  "GoogleMerchant.getUcpReadiness",
+);
+
+const E164_PATTERN = /^\+[1-9]\d{6,14}$/;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const COUNTRY_CODE_PATTERN = /^[A-Z]{2}$/;
+
+/**
+ * Writes the account's customer-service contact to Merchant Center — the
+ * "Contact Merchant" link on Google's order confirmation, and one of the UCP
+ * checkout prerequisites. At least one contact method is required (Google's
+ * own rule). The PATCH replaces the whole customerService object, so this is
+ * a full set, not a merge.
+ */
+export const setCustomerSupport = withAuthentication(
+  async (
+    context,
+    {
+      store: storeId,
+      email,
+      uri,
+      phone,
+    }: {
+      store: string;
+      email?: string | null;
+      uri?: string | null;
+      phone?: string | null;
+    },
+  ) => {
+    const store = await ownedStore(storeId, context.session.user.id);
+    if (!store.success) return store;
+
+    const resolved = await resolveAccessToken(storeId);
+    if (!resolved.success) return resolved;
+
+    const { record } = resolved;
+    if (!record.googleAccountId)
+      return {
+        success: false,
+        error: new RequestError("No Merchant Center account detected yet"),
+      };
+
+    const trimmedEmail = email?.trim() || null;
+    const trimmedUri = uri?.trim() || null;
+    const trimmedPhone = phone?.trim() || null;
+
+    if (!trimmedEmail && !trimmedUri && !trimmedPhone)
+      return {
+        success: false,
+        error: new RequestError(
+          "Provide at least one contact method — website, email, or phone",
+        ),
+      };
+    if (trimmedEmail && !EMAIL_PATTERN.test(trimmedEmail))
+      return {
+        success: false,
+        error: new RequestError("Enter a valid customer service email"),
+      };
+    if (trimmedUri && !/^https?:\/\//.test(trimmedUri))
+      return {
+        success: false,
+        error: new RequestError(
+          "The customer service URL must start with http:// or https://",
+        ),
+      };
+    if (trimmedPhone && !E164_PATTERN.test(trimmedPhone))
+      return {
+        success: false,
+        error: new RequestError(
+          "Enter the phone in international format, e.g. +15551234567",
+        ),
+      };
+
+    const updated = await GoogleMerchantAPI.updateCustomerService(
+      resolved.accessToken,
+      record.googleAccountId,
+      {
+        ...(trimmedEmail ? { email: trimmedEmail } : {}),
+        ...(trimmedUri ? { uri: trimmedUri } : {}),
+        ...(trimmedPhone ? { phone: { e164Number: trimmedPhone } } : {}),
+      },
+    );
+    if (!updated.success) return updated;
+
+    // Google's reads can lag the write by a moment. Hold the action until the
+    // contact is visible to the same read the readiness audit uses, so the
+    // client's post-submit refresh re-renders with the row already green.
+    for (const _ of Array.from({ length: 5 })) {
+      const visible = await GoogleMerchantAPI.getBusinessInfo(
+        resolved.accessToken,
+        record.googleAccountId,
+      );
+      const service = visible.success ? visible.data.customerService : null;
+      if (service?.email || service?.uri || service?.phone?.e164Number) break;
+      await new Promise((resolve) => setTimeout(resolve, 700));
+    }
+
+    context.span.addBreadcrumb({
+      category: "google.ucp.customer_support_set",
+      data: {
+        "store.id": storeId,
+        "support.email": Boolean(trimmedEmail),
+        "support.uri": Boolean(trimmedUri),
+        "support.phone": Boolean(trimmedPhone),
+      },
+    });
+
+    return { success: true as const, data: updated.data.customerService ?? {} };
+  },
+  "GoogleMerchant.setCustomerSupport",
+);
+
+/**
+ * Creates the account's default return policy from ecentic. Create-only by
+ * design: the Merchant API has no update/patch for return policies, so when
+ * an unlabeled policy already covers a requested country we refuse instead of
+ * silently deleting a merchant-authored policy — edits happen in Merchant
+ * Center. The content (window, URL, fees) is the merchant's input; ecentic
+ * only transports it.
+ */
+export const setReturnPolicy = withAuthentication(
+  async (
+    context,
+    {
+      store: storeId,
+      countries,
+      windowDays,
+      policyUrl,
+      returnMethods,
+      itemConditions,
+      customerPaysShipping,
+      processRefundDays,
+      replace,
+    }: {
+      store: string;
+      /** ISO 3166 2-letter codes, e.g. ["US"]. */
+      countries: string[];
+      /** null = lifetime returns. */
+      windowDays: number | null;
+      policyUrl: string;
+      returnMethods: ("BY_MAIL" | "IN_STORE" | "AT_A_KIOSK")[];
+      itemConditions: ("NEW" | "USED")[];
+      customerPaysShipping: boolean;
+      /** Days the business takes to process a refund (live-required). */
+      processRefundDays: number;
+      /**
+       * Delete conflicting default policies before creating. The API has no
+       * update — replace is the only edit mechanism, so it must be an
+       * explicit merchant choice, never a silent default.
+       */
+      replace?: boolean;
+    },
+  ) => {
+    const store = await ownedStore(storeId, context.session.user.id);
+    if (!store.success) return store;
+
+    const resolved = await resolveAccessToken(storeId);
+    if (!resolved.success) return resolved;
+
+    const { record } = resolved;
+    if (!record.googleAccountId)
+      return {
+        success: false,
+        error: new RequestError("No Merchant Center account detected yet"),
+      };
+
+    const normalizedCountries = countries.map((country) =>
+      country.trim().toUpperCase(),
+    );
+    if (
+      normalizedCountries.length === 0 ||
+      normalizedCountries.some((country) => !COUNTRY_CODE_PATTERN.test(country))
+    )
+      return {
+        success: false,
+        error: new RequestError(
+          "Countries must be 2-letter ISO codes, e.g. US, GB, DE",
+        ),
+      };
+    if (!/^https?:\/\//.test(policyUrl.trim()))
+      return {
+        success: false,
+        error: new RequestError(
+          "The return policy URL must start with http:// or https://",
+        ),
+      };
+    if (windowDays !== null && (windowDays < 1 || windowDays > 365))
+      return {
+        success: false,
+        error: new RequestError("Return window must be between 1 and 365 days"),
+      };
+    if (returnMethods.length === 0 || itemConditions.length === 0)
+      return {
+        success: false,
+        error: new RequestError(
+          "Pick at least one return method and one accepted item condition",
+        ),
+      };
+    if (processRefundDays < 1 || processRefundDays > 60)
+      return {
+        success: false,
+        error: new RequestError(
+          "Refund processing time must be between 1 and 60 days",
+        ),
+      };
+
+    const existing = await GoogleMerchantAPI.listReturnPolicies(
+      resolved.accessToken,
+      record.googleAccountId,
+    );
+    if (!existing.success) return existing;
+
+    const conflicting = (existing.data.onlineReturnPolicies ?? []).filter(
+      (policy) =>
+        !policy.label &&
+        (policy.countries ?? []).some((country) =>
+          normalizedCountries.includes(country),
+        ),
+    );
+    if (conflicting.length > 0 && !replace)
+      return {
+        success: false,
+        error: new RequestError(
+          `A default return policy already covers ${conflicting
+            .flatMap((policy) => policy.countries ?? [])
+            .join(
+              ", ",
+            )} — submit again with replace to overwrite it (the API cannot update policies in place)`,
+        ),
+      };
+
+    // Replace = delete-and-recreate, the only edit the API offers. Only ever
+    // reached on the merchant's explicit submit; the brief window without a
+    // policy closes when the create below lands.
+    for (const policy of conflicting) {
+      if (!policy.name) continue;
+      const deleted = await GoogleMerchantAPI.deleteReturnPolicy(
+        resolved.accessToken,
+        policy.name,
+      );
+      if (!deleted.success) return deleted;
+    }
+
+    // Free return shipping must be an explicit zero price (live validator);
+    // the currency rides along for display, taken from the store's catalog.
+    const firstProduct = await resultify(async () =>
+      db.query.product.findFirst({ where: { storeId } }),
+    );
+    const currencyCode =
+      (firstProduct.success ? firstProduct.data?.currency : null) ?? "USD";
+
+    const created = await GoogleMerchantAPI.createReturnPolicy(
+      resolved.accessToken,
+      record.googleAccountId,
+      {
+        countries: normalizedCountries,
+        policy:
+          windowDays === null
+            ? { type: "LIFETIME_RETURNS" }
+            : {
+                type: "NUMBER_OF_DAYS_AFTER_DELIVERY",
+                days: String(windowDays),
+              },
+        returnPolicyUri: policyUrl.trim(),
+        returnMethods,
+        itemConditions,
+        returnShippingFee: customerPaysShipping
+          ? { type: "CUSTOMER_PAYING_ACTUAL_FEE" }
+          : { type: "FIXED", fixedFee: { amountMicros: "0", currencyCode } },
+        processRefundDays,
+        // Who supplies the return label; download-and-print is the common
+        // default for BY_MAIL and accepted alongside the other methods.
+        returnLabelSource: "DOWNLOAD_AND_PRINT",
+      },
+    );
+    if (!created.success) return created;
+
+    // Google's list lags the create by a moment. Hold the action until the
+    // new policy is visible to the readiness audit's read, so the client's
+    // post-submit refresh re-renders with the row already green.
+    for (const _ of Array.from({ length: 5 })) {
+      const visible = await GoogleMerchantAPI.listReturnPolicies(
+        resolved.accessToken,
+        record.googleAccountId,
+      );
+      if (
+        visible.success &&
+        (visible.data.onlineReturnPolicies ?? []).some(
+          (policy) => policy.name === created.data.name,
+        )
+      )
+        break;
+      await new Promise((resolve) => setTimeout(resolve, 700));
+    }
+
+    context.span.addBreadcrumb({
+      category: "google.ucp.return_policy_created",
+      data: {
+        "store.id": storeId,
+        "policy.countries": normalizedCountries.join(","),
+        "policy.window_days": windowDays ?? "lifetime",
+      },
+    });
+
+    return { success: true as const, data: created.data };
+  },
+  "GoogleMerchant.setReturnPolicy",
+);
+
+export type UcpProduct = {
+  id: string;
+  title: string;
+  ucp: {
+    checkoutEligible: boolean;
+    noticeType: "legal_disclaimer" | "safety_warning" | "prop_65" | null;
+    noticeMessage: string | null;
+    merchantItemId: string | null;
+  } | null;
+  /** Restricted-category heuristic hits — pre-computed so the UI can warn
+   * before the merchant even toggles eligibility on. */
+  restrictedHints: string[];
+  offers: { live: number; pending: number; error: number };
+};
+
+/** The store's products with their UCP checkout settings and offer state. */
+export const getUcpProducts = withAuthentication(
+  async (context, { store: storeId }: { store: string }) => {
+    const store = await ownedStore(storeId, context.session.user.id);
+    if (!store.success) return store;
+
+    const [products, ucpRows, offerRows] = await Promise.all([
+      Product.find(Environment.SERVER, {
+        where: and(
+          eq(schema.product.storeId, storeId),
+          eq(schema.product.status, "active"),
+        ),
+      }),
+      GoogleMerchantUcp.find(Environment.SERVER, {
+        where: eq(schema.googleMerchantUcp.storeId, storeId),
+      }),
+      GoogleMerchantOffer.find(Environment.SERVER, {
+        where: eq(schema.googleMerchantOffer.storeId, storeId),
+      }),
+    ]);
+    if (!products.success) return products;
+    if (!ucpRows.success) return ucpRows;
+    if (!offerRows.success) return offerRows;
+
+    const ucpByProduct = new Map(
+      ucpRows.data.map((row) => [row.productId, row]),
+    );
+    const offersByProduct = new Map<string, UcpProduct["offers"]>();
+    for (const offer of offerRows.data) {
+      const counts = offersByProduct.get(offer.productId) ?? {
+        live: 0,
+        pending: 0,
+        error: 0,
+      };
+      switch (true) {
+        case offer.status === "live":
+          counts.live += 1;
+          break;
+        case offer.status === "pending":
+          counts.pending += 1;
+          break;
+        default:
+          counts.error += 1;
+      }
+      offersByProduct.set(offer.productId, counts);
+    }
+
+    const data: UcpProduct[] = products.data
+      .filter((product) => product.externalId !== null)
+      .map((product) => {
+        const ucp = ucpByProduct.get(product.id) ?? null;
+        const hints = GoogleMerchantAPI.lintUcpAttributes(
+          { checkoutEligible: true },
+          {
+            title: product.title,
+            description: product.description ?? undefined,
+          },
+        ).warnings.map((warning) => warning.code);
+
+        return {
+          id: product.id,
+          title: product.title,
+          ucp: ucp
+            ? {
+                checkoutEligible: ucp.checkoutEligible,
+                noticeType: ucp.noticeType,
+                noticeMessage: ucp.noticeMessage,
+                merchantItemId: ucp.merchantItemId,
+              }
+            : null,
+          restrictedHints: hints,
+          offers: offersByProduct.get(product.id) ?? {
+            live: 0,
+            pending: 0,
+            error: 0,
+          },
+        };
+      });
+
+    return { success: true as const, data };
+  },
+  "GoogleMerchant.getUcpProducts",
+);
+
+/**
+ * Saves a product's UCP checkout settings. Lint errors (malformed consumer
+ * notices) reject the save; restricted-category heuristics come back as
+ * warnings — the merchant's call, and the push surfaces them again. Settings
+ * reach Google on the next {@link pushOverrides} run.
+ */
+export const setUcpProduct = withAuthentication(
+  async (
+    context,
+    {
+      store: storeId,
+      product: productId,
+      checkoutEligible,
+      noticeType,
+      noticeMessage,
+      merchantItemId,
+    }: {
+      store: string;
+      product: string;
+      checkoutEligible: boolean;
+      noticeType?: "legal_disclaimer" | "safety_warning" | "prop_65" | null;
+      noticeMessage?: string | null;
+      merchantItemId?: string | null;
+    },
+  ) => {
+    const store = await ownedStore(storeId, context.session.user.id);
+    if (!store.success) return store;
+
+    const product = await Product.get(Environment.SERVER, productId);
+    if (!product.success) return product;
+    if (!product.data || product.data.storeId !== storeId)
+      return {
+        success: false,
+        error: new RequestError("Product not found in this store"),
+      };
+
+    const ucpAttributes: GoogleMerchantAPI.UcpAttributes = {
+      checkoutEligible,
+      noticeType: noticeType ?? null,
+      noticeMessage: noticeMessage ?? null,
+      merchantItemId: merchantItemId ?? null,
+    };
+
+    const lint = GoogleMerchantAPI.lintUcpAttributes(ucpAttributes, {
+      title: product.data.title,
+      description: product.data.description ?? undefined,
+    });
+    if (lint.errors.length > 0)
+      return {
+        success: false,
+        error: new RequestError(
+          lint.errors.map((issue) => issue.message).join("; "),
+        ),
+      };
+
+    const synced = await GoogleMerchantUcp.sync(Environment.SERVER, {
+      storeId,
+      productId,
+      checkoutEligible,
+      noticeType: noticeType ?? null,
+      noticeMessage: noticeMessage ?? null,
+      merchantItemId: merchantItemId ?? null,
+    });
+    if (!synced.success) return synced;
+
+    context.span.addBreadcrumb({
+      category: "google.ucp.product_saved",
+      data: {
+        "store.id": storeId,
+        "product.id": productId,
+        "ucp.eligible": checkoutEligible,
+        "ucp.warnings": lint.warnings.length,
+      },
+    });
+
+    return {
+      success: true as const,
+      data: { warnings: lint.warnings.map((issue) => issue.code) },
+    };
+  },
+  "GoogleMerchant.setUcpProduct",
+);
+
 /**
  * Async verification pass — push ≠ live. Google reprocesses lazily (hours),
  * so this never asserts right after a push: for each `pending` offer it gates
@@ -1158,6 +1945,13 @@ const runVerification = async (
     optimizations.map((optimization) => [optimization.productId, optimization]),
   );
 
+  const ucpRows = await GoogleMerchantUcp.find(Environment.SERVER, {
+    where: eq(schema.googleMerchantUcp.storeId, storeId),
+  });
+  if (!ucpRows.success) return ucpRows;
+
+  const ucpByProduct = new Map(ucpRows.data.map((row) => [row.productId, row]));
+
   const offers = await GoogleMerchantAPI.listProducts(
     accessToken,
     record.googleAccountId,
@@ -1192,16 +1986,39 @@ const runVerification = async (
 
     const lastUpdateDate = processed.productStatus?.lastUpdateDate ?? null;
     const optimization = optimizationByProduct.get(row.productId);
+    const ucp = ucpByProduct.get(row.productId);
 
-    // The processed attributes carrying our override IS the merge — flip to
-    // live on that evidence alone, no timestamp gate. Timestamps only decide
-    // how to classify a NOT-merged offer below.
-    const merged =
-      optimization?.proposedTitle !== null &&
-      optimization?.proposedTitle !== undefined
-        ? processed.productAttributes?.title === optimization.proposedTitle
-        : processed.productAttributes?.description ===
-          optimization?.proposedDescription;
+    // The processed attributes carrying our push IS the merge — flip to live
+    // on that evidence alone, no timestamp gate. Timestamps only decide how
+    // to classify a NOT-merged offer below. Each pushed piece contributes its
+    // own check (null = that piece wasn't pushed): the title/description
+    // override diffs against the optimization, and UCP settings look for our
+    // explicit `native_commerce(checkout_eligibility)` value in the merged
+    // custom attributes.
+    const overrideMerged = optimization?.proposedTitle
+      ? processed.productAttributes?.title === optimization.proposedTitle
+      : optimization?.proposedDescription
+        ? processed.productAttributes?.description ===
+          optimization.proposedDescription
+        : null;
+
+    const ucpMerged = ucp
+      ? (processed.customAttributes ?? []).some(
+          (attribute) =>
+            attribute.name === "native_commerce" &&
+            (attribute.groupValues ?? []).some(
+              (group) =>
+                group.name === "checkout_eligibility" &&
+                group.value?.toLowerCase() ===
+                  (ucp.checkoutEligible ? "true" : "false"),
+            ),
+        )
+      : null;
+
+    const checks = [overrideMerged, ucpMerged].filter(
+      (check) => check !== null,
+    );
+    const merged = checks.length > 0 && checks.every(Boolean);
 
     if (merged) {
       verified += 1;

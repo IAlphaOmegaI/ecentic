@@ -185,6 +185,30 @@ Google plugin and would need Path 2 (not built).
 - [ ] Aggregate disapproval-rate alerting across merchants (partner reputation guard)
 - [ ] OAuth consent-screen verification for the `content` scope (external, weeks — submit early)
 
+### Google UCP — Agentic Checkout (AI Mode / Gemini)
+
+**Mode:** Merchant readiness + feed attributes on top of the GMC integration;
+checkout rails belong to the platform (Shopify) or to ecentic's hosted UCP
+surface (WooCommerce, future). Full guide + automation map: `google-ucp.md`.
+
+**Availability:** readiness audit + eligibility push built (Shopify-gated,
+rides the GMC integration). Waitlist-gated by Google for actual checkout.
+
+#### What's done
+
+- [x] Merchant guide/checklist doc (`google-ucp.md`) — Merchant Center
+  settings, product restrictions, `native_commerce` / `consumer_notice` /
+  `merchant_item_id` attributes, ownership map, automation plan
+- [x] UCP readiness audit — `listReturnPolicies` + `getBusinessInfo` wrappers, `getUcpReadiness` action, readiness rows on the Google Shopping page with waitlist gating
+- [x] Readiness remediation from ecentic — `setCustomerSupport` (businessInfo PATCH, full-replace) and `setReturnPolicy` (default-policy create; create-only — the API has no return-policy update, existing policies stay merchant-owned), inline forms under the readiness rows
+- [x] Eligibility/notice push — `google_merchant_ucp` table (explicit per-product choice, default not eligible), `customAttributes` on `insertProductInput`, `lintUcpAttributes` (notice format errors + restricted-category warnings), hash coverage without mass re-push, per-product toggle + notice editor UI
+- [x] Merge verification — `runVerification` checks the merged product's `customAttributes` for our `native_commerce` value, so UCP-only pushes verify and a non-merging supplemental source is surfaced, not masked
+
+#### What's missing
+
+- [ ] `customAttributes` merge spike — first live push settles it (offers stay `pending`/`reprocessedWithoutMerge` if custom attributes don't merge through the `defaultRule`; fallback documented in `google-ucp.md`)
+- [ ] Google-specific hosted-UCP deltas for Woo — Google Pay payment handler, outbound order webhooks to Google, capability negotiation vs Google's UCP subset
+
 ---
 
 ## Roadmap Providers

@@ -22,7 +22,7 @@ type Diagnostics = Extract<
   { success: true }
 >["data"];
 
-const Chip = ({
+export const Chip = ({
   tone,
   children,
 }: {

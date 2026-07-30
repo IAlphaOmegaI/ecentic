@@ -133,6 +133,25 @@ export const refreshAccessToken = (
     refresh_token: refreshToken,
   });
 
+/**
+ * Liveness probe for a stored access token. Google can revoke an access token
+ * out-of-band — observed live: a token died ~7 minutes after minting while a
+ * sibling token from the same refresh grant kept working — so a persisted
+ * expiry timestamp alone cannot be trusted once a token is past its first
+ * minutes. Returns `valid: false` only on Google's explicit invalid-token
+ * answer; transport failures surface as errors so callers can fail open.
+ */
+export const introspectAccessToken = async (
+  accessToken: string,
+): Promise<Result<{ valid: boolean }, Error>> => {
+  const response = await HTTP.request(
+    `https://oauth2.googleapis.com/tokeninfo?access_token=${encodeURIComponent(accessToken)}`,
+    { method: "GET" },
+  );
+  if (!response.success) return response;
+  return { success: true, data: { valid: response.data.ok } };
+};
+
 // ---------------------------------------------------------------------------
 // Merchant API v1 wrappers
 // ---------------------------------------------------------------------------
@@ -191,6 +210,145 @@ export const getHomepage = (accessToken: string, accountId: string) =>
   api<{ uri?: string; claimed?: boolean }>(
     accessToken,
     `/accounts/v1/accounts/${accountId}/homepage`,
+  );
+
+export type OnlineReturnPolicy = {
+  name?: string;
+  label?: string;
+  countries?: string[];
+  policy?: {
+    type?:
+      | "NUMBER_OF_DAYS_AFTER_DELIVERY"
+      | "NO_RETURNS"
+      | "LIFETIME_RETURNS"
+      | string;
+    /** int64 comes over the wire as a string. */
+    days?: string;
+  };
+  returnPolicyUri?: string;
+  returnMethods?: string[];
+  itemConditions?: string[];
+  returnShippingFee?: { type?: string };
+  processRefundDays?: number;
+};
+
+/**
+ * Return policies configured on the account. Google's UCP checkout requires at
+ * least one policy with a window and a full-policy link — and on advanced
+ * accounts the policies must live on each sub-account, which is the account we
+ * link, so reading here audits the right place.
+ */
+export const listReturnPolicies = (accessToken: string, accountId: string) =>
+  api<{ onlineReturnPolicies?: OnlineReturnPolicy[] }>(
+    accessToken,
+    `/accounts/v1/accounts/${accountId}/onlineReturnPolicies`,
+  );
+
+export type ReturnPolicyInput = {
+  /** Omit for the account's default policy (applies to all products). */
+  label?: string;
+  /** ISO 3166 2-letter country codes. Required, immutable after create. */
+  countries: string[];
+  policy:
+    | { type: "NUMBER_OF_DAYS_AFTER_DELIVERY"; days: string }
+    | { type: "LIFETIME_RETURNS" };
+  /** Required — Google sanity-checks the policy against this URL. */
+  returnPolicyUri: string;
+  returnMethods: ("BY_MAIL" | "IN_STORE" | "AT_A_KIOSK")[];
+  itemConditions: ("NEW" | "USED")[];
+  /**
+   * Live validator: `FIXED` requires an explicit `fixedFee` — the discovery
+   * doc's "treated as free if not set" is wrong; free = amountMicros "0".
+   */
+  returnShippingFee:
+    | {
+        type: "FIXED";
+        fixedFee: { amountMicros: string; currencyCode: string };
+      }
+    | { type: "CUSTOMER_PAYING_ACTUAL_FEE" };
+  /** Marked optional in the discovery doc, required by the live validator. */
+  processRefundDays: number;
+  /** Marked optional in the discovery doc, required by the live validator. */
+  returnLabelSource:
+    | "DOWNLOAD_AND_PRINT"
+    | "IN_THE_PACKAGE"
+    | "CUSTOMER_RESPONSIBILITY";
+};
+
+/**
+ * Creates a return policy on the account. There is NO update/patch on this
+ * resource (create/delete only) — callers must treat existing policies as
+ * merchant-owned and never silently replace them. Field requirements are the
+ * LIVE validator's, not the discovery document's (verified 2026-07-30):
+ * `processRefundDays`, `returnLabelSource`, and `returnShippingFee.fixedFee`
+ * (when FIXED) are all effectively required despite being documented optional.
+ */
+/**
+ * Deletes a return policy by resource name
+ * (`accounts/{account}/onlineReturnPolicies/{id}`). With no update/patch on
+ * this resource, delete-and-recreate is the only edit mechanism — reserve it
+ * for explicit merchant-invoked replacement, never silent reconciliation.
+ */
+export const deleteReturnPolicy = (accessToken: string, name: string) =>
+  api<Record<string, never>>(accessToken, `/accounts/v1/${name}`, {
+    method: "DELETE",
+  });
+
+export const createReturnPolicy = (
+  accessToken: string,
+  accountId: string,
+  policy: ReturnPolicyInput,
+) =>
+  api<OnlineReturnPolicy>(
+    accessToken,
+    `/accounts/v1/accounts/${accountId}/onlineReturnPolicies`,
+    { method: "POST", body: policy },
+  );
+
+export type BusinessInfo = {
+  customerService?: {
+    email?: string;
+    uri?: string;
+    phone?: { e164Number?: string };
+  };
+};
+
+/**
+ * Business info — UCP checkout requires at least one customer-service contact
+ * (email, URL, or phone), which becomes the "Contact Merchant" link on
+ * Google's order confirmation page.
+ */
+export const getBusinessInfo = (accessToken: string, accountId: string) =>
+  api<BusinessInfo>(
+    accessToken,
+    `/accounts/v1/accounts/${accountId}/businessInfo`,
+  );
+
+/**
+ * Sets the account's customer-service contact (the "Contact Merchant" link on
+ * Google's order confirmation). PATCH with `updateMask=customer_service` —
+ * the whole customerService object is replaced, so callers send every field
+ * they want kept, not just the changed one.
+ */
+export const updateCustomerService = (
+  accessToken: string,
+  accountId: string,
+  customerService: {
+    email?: string;
+    uri?: string;
+    phone?: { e164Number: string };
+  },
+) =>
+  api<BusinessInfo>(
+    accessToken,
+    `/accounts/v1/accounts/${accountId}/businessInfo?updateMask=customer_service`,
+    {
+      method: "PATCH",
+      body: {
+        name: `accounts/${accountId}/businessInfo`,
+        customerService,
+      },
+    },
   );
 
 export type AccountService = {
@@ -374,6 +532,17 @@ export type ProductStatus = {
   lastUpdateDate?: string;
 };
 
+/**
+ * Merchant-provided attribute, either a flat `{name, value}` pair or a group
+ * with `groupValues` (exactly one of the two is set). UCP checkout data
+ * (`native_commerce`, `consumer_notice`, `merchant_item_id`) rides this shape.
+ */
+export type CustomAttribute = {
+  name: string;
+  value?: string;
+  groupValues?: CustomAttribute[];
+};
+
 export type MerchantProduct = {
   /** Resource name, `accounts/{account}/products/{product}`. */
   name?: string;
@@ -386,6 +555,8 @@ export type MerchantProduct = {
     description?: string;
     productTypes?: string[];
   };
+  /** Post-merge custom attributes — reading these back verifies a UCP push. */
+  customAttributes?: CustomAttribute[];
   productStatus?: ProductStatus;
 };
 
@@ -445,6 +616,7 @@ export const insertProductInput = (
     contentLanguage,
     feedLabel,
     attributes,
+    customAttributes,
   }: {
     accountId: string;
     dataSourceName: string;
@@ -452,6 +624,7 @@ export const insertProductInput = (
     contentLanguage: string;
     feedLabel: string;
     attributes: ProductInputAttributes;
+    customAttributes?: CustomAttribute[];
   },
 ) =>
   api<{ name?: string }>(
@@ -460,11 +633,13 @@ export const insertProductInput = (
     {
       method: "POST",
       // v1 GA field name is `productAttributes` (`attributes` was v1beta).
+      // `customAttributes` is its top-level sibling on ProductInput.
       body: {
         offerId,
         contentLanguage,
         feedLabel,
         productAttributes: attributes,
+        ...(customAttributes?.length ? { customAttributes } : {}),
       },
     },
   );
@@ -539,6 +714,152 @@ export const lintOverrideAttributes = (
   }
 
   return issues;
+};
+
+// ---------------------------------------------------------------------------
+// UCP (agentic checkout) attributes + lint
+// ---------------------------------------------------------------------------
+
+export const UCP_NOTICE_TYPES = [
+  "legal_disclaimer",
+  "safety_warning",
+  "prop_65",
+] as const;
+
+export type UcpNoticeType = (typeof UCP_NOTICE_TYPES)[number];
+
+export type UcpAttributes = {
+  checkoutEligible: boolean;
+  noticeType?: UcpNoticeType | null;
+  noticeMessage?: string | null;
+  /** Maps the feed offer id to the id the checkout endpoint expects. */
+  merchantItemId?: string | null;
+};
+
+const NOTICE_MESSAGE_MAXIMUM_LENGTH = 1000;
+
+/**
+ * Categories Google excludes from agentic checkout. Heuristics over the
+ * product's own text — a warning gate, not a hard block: the merchant knows
+ * their catalog better than a regex, but opting a subscription or
+ * age-restricted item into checkout is a policy strike we should catch first.
+ */
+const UCP_RESTRICTED_PATTERNS: { pattern: RegExp; code: string }[] = [
+  {
+    pattern: /\bsubscription\b|subscribe\s*&\s*save/i,
+    code: "ucp_subscription",
+  },
+  { pattern: /\bpre[- ]?order\b/i, code: "ucp_preorder" },
+  {
+    pattern: /personali[sz]ed|monogram|engrav|made to order/i,
+    code: "ucp_personalized",
+  },
+  {
+    pattern: /refurbished|final sale|\bpre[- ]owned\b|\bsecond[- ]hand\b/i,
+    code: "ucp_not_new_or_final_sale",
+  },
+  { pattern: /\bgift card\b|\be-?gift\b/i, code: "ucp_gifting" },
+  {
+    pattern: /alcohol|\bwine\b|\bbeer\b|whisk(e)?y|vodka|tobacco|\bcigar/i,
+    code: "ucp_age_restricted",
+  },
+  { pattern: /\brental\b|\blease\b|\bfor rent\b/i, code: "ucp_rental" },
+  {
+    pattern: /extended warranty|installation (required|included)/i,
+    code: "ucp_bundled_service",
+  },
+];
+
+/**
+ * Lints a product opted into UCP checkout eligibility. Restricted-category
+ * hits are warnings (surfaced, not blocking); malformed consumer notices are
+ * errors (Google rejects or, worse, displays them broken at checkout).
+ */
+export const lintUcpAttributes = (
+  ucp: UcpAttributes,
+  product: { title?: string; description?: string },
+): { errors: PolicyIssue[]; warnings: PolicyIssue[] } => {
+  const errors: PolicyIssue[] = [];
+  const warnings: PolicyIssue[] = [];
+
+  if (ucp.checkoutEligible) {
+    const text = `${product.title ?? ""}\n${product.description ?? ""}`;
+    for (const { pattern, code } of UCP_RESTRICTED_PATTERNS) {
+      if (pattern.test(text))
+        warnings.push({
+          code,
+          message: `Product text matches a checkout-restricted category (${pattern})`,
+        });
+    }
+  }
+
+  const { noticeType, noticeMessage } = ucp;
+  if ((noticeType && !noticeMessage) || (!noticeType && noticeMessage))
+    errors.push({
+      code: "ucp_notice_incomplete",
+      message: "Consumer notice needs both a type and a message",
+    });
+
+  if (noticeType && !UCP_NOTICE_TYPES.includes(noticeType))
+    errors.push({
+      code: "ucp_notice_type_invalid",
+      message: `Notice type must be one of ${UCP_NOTICE_TYPES.join(", ")}`,
+    });
+
+  if (noticeMessage) {
+    if (noticeMessage.length > NOTICE_MESSAGE_MAXIMUM_LENGTH)
+      errors.push({
+        code: "ucp_notice_too_long",
+        message: `Notice message exceeds ${NOTICE_MESSAGE_MAXIMUM_LENGTH} characters`,
+      });
+
+    const withoutAllowedTags = noticeMessage.replace(
+      /<\/?(b|i|br)\s*\/?>|<a\s+href="[^"]*"\s*>|<\/a>/gi,
+      "",
+    );
+    if (/<[^>]+>/.test(withoutAllowedTags))
+      errors.push({
+        code: "ucp_notice_disallowed_markup",
+        message: "Notice message may only contain <b>, <i>, <br>, and <a href>",
+      });
+  }
+
+  return { errors, warnings };
+};
+
+/**
+ * Assembles the UCP custom attributes for a productInput. Eligibility is
+ * always emitted explicitly (`true`/`false`) so flipping a product off pushes
+ * a hard `FALSE` instead of silently keeping the last `TRUE` on Google.
+ */
+export const buildUcpCustomAttributes = (
+  ucp: UcpAttributes,
+): CustomAttribute[] => {
+  const attributes: CustomAttribute[] = [
+    {
+      name: "native_commerce",
+      groupValues: [
+        {
+          name: "checkout_eligibility",
+          value: ucp.checkoutEligible ? "true" : "false",
+        },
+      ],
+    },
+  ];
+
+  if (ucp.noticeType && ucp.noticeMessage)
+    attributes.push({
+      name: "consumer_notice",
+      groupValues: [
+        { name: "notice_type", value: ucp.noticeType },
+        { name: "notice_message", value: ucp.noticeMessage },
+      ],
+    });
+
+  if (ucp.merchantItemId)
+    attributes.push({ name: "merchant_item_id", value: ucp.merchantItemId });
+
+  return attributes;
 };
 
 /** Extracts the numeric account id from an `accounts/{id}` resource name. */

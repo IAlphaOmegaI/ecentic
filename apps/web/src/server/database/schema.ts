@@ -272,6 +272,41 @@ export const googleMerchantOffer = pgTable(
   ],
 );
 
+/**
+ * Per-product agentic-checkout (UCP) settings, pushed to Google as custom
+ * attributes through the supplemental data source. A row existing means the
+ * merchant made an explicit choice for the product — its eligibility is then
+ * always pushed (`true` or a hard `false`); no row means we send nothing.
+ */
+export const googleMerchantUcp = pgTable(
+  "google_merchant_ucp",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    productId: text("productId")
+      .notNull()
+      .references(() => product.id, { onDelete: "cascade" }),
+    checkoutEligible: boolean("checkoutEligible").notNull().default(false),
+    noticeType: text("noticeType").$type<
+      "legal_disclaimer" | "safety_warning" | "prop_65"
+    >(),
+    noticeMessage: text("noticeMessage"),
+    /** Checkout-API product id when it differs from the feed offer id. */
+    merchantItemId: text("merchantItemId"),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("google_merchant_ucp_store_idx").on(table.storeId),
+    uniqueIndex("google_merchant_ucp_store_product_unique").on(
+      table.storeId,
+      table.productId,
+    ),
+  ],
+);
+
 export const product = pgTable(
   "product",
   {
@@ -790,6 +825,7 @@ export const tables = {
   store_account,
   googleMerchantAccount,
   googleMerchantOffer,
+  googleMerchantUcp,
   product,
   competitor,
   scan,
@@ -861,6 +897,16 @@ export const relations = defineRelations(tables, (r) => ({
     }),
     product: r.one.product({
       from: r.googleMerchantOffer.productId,
+      to: r.product.id,
+    }),
+  },
+  googleMerchantUcp: {
+    store: r.one.store({
+      from: r.googleMerchantUcp.storeId,
+      to: r.store.id,
+    }),
+    product: r.one.product({
+      from: r.googleMerchantUcp.productId,
       to: r.product.id,
     }),
   },

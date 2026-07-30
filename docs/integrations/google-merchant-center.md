@@ -4,6 +4,8 @@
 > **Validation spike 1 (Shopify) passed on a live account** — findings folded in below.
 > Spike 2 (WooCommerce) still open. Path 2 (full API provisioning) is documented but not built.
 > Everything targets **Merchant API v1** (v1beta is dead, Content API is sunsetting).
+> Building on top of this: **Google UCP agentic checkout** (readiness audit +
+> eligibility attributes through the same supplemental source) — `google-ucp.md`.
 
 ## Spike 1 results (Shopify, live account) — facts replacing assumptions
 
