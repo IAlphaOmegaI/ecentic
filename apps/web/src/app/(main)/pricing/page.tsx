@@ -43,13 +43,13 @@ const plans = [
   },
   {
     name: "Compete",
-    price: "149",
+    price: "14.90",
     description:
       "Flat monthly, no performance fee. Up to 100 products, daily simulations, competitor battlecards, and manual optimization suggestions.",
   },
   {
     name: "Dominate",
-    price: "449",
+    price: "44.90",
     description:
       "Flat monthly, no performance fee. Up to 1000 products, continuous simulations, auto-optimization with one-click publish, drift alerts, and UCP generation.",
   },
@@ -126,7 +126,7 @@ export default () => {
         "@type": "AggregateOffer",
         priceCurrency: "USD",
         lowPrice: "0",
-        highPrice: "449",
+        highPrice: "44.90",
         offerCount: plans.length,
         offers: plans
           .filter((plan) => plan.price !== "Custom")

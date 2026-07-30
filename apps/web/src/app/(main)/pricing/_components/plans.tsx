@@ -47,7 +47,7 @@ const plans: readonly Plan[] = [
     name: "Compete",
     category: "Flat monthly",
     tagline: "Know where you lose",
-    figure: "$149",
+    figure: "$14.90",
     suffix: "/mo",
     note: "Flat monthly · no performance fee.",
     features: [
@@ -63,7 +63,7 @@ const plans: readonly Plan[] = [
     name: "Dominate",
     category: "Flat monthly",
     tagline: "Win on autopilot",
-    figure: "$449",
+    figure: "$44.90",
     suffix: "/mo",
     note: "Flat monthly · no performance fee.",
     features: [

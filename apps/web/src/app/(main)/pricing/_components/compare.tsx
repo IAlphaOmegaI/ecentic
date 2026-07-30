@@ -20,8 +20,8 @@ const rows: readonly Row[] = [
     label: "Price",
     scan: "Free · one-time",
     payg: "3% of AI-attributed orders",
-    compete: "$149/mo",
-    dominate: "$449/mo",
+    compete: "$14.90/mo",
+    dominate: "$44.90/mo",
   },
   {
     label: "Performance fee",

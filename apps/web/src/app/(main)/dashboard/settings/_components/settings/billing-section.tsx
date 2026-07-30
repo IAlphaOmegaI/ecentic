@@ -18,8 +18,8 @@ type Props = {
 type SubscriptionPlan = "compete" | "dominate";
 
 const PLAN_META = {
-  compete: { label: "Compete Plan", price: 149 },
-  dominate: { label: "Dominate Plan", price: 449 },
+  compete: { label: "Compete Plan", price: "14.90" },
+  dominate: { label: "Dominate Plan", price: "44.90" },
 } as const;
 
 const STATUS_PILL_CLASS_NAME =
@@ -205,7 +205,7 @@ const PaygPlan = ({
         >
           {isCheckingOut && checkoutPlan === "compete"
             ? "Loading…"
-            : "Compete · $149/mo"}
+            : "Compete · $14.90/mo"}
         </Button>
         <Button
           color="neutral"
@@ -215,7 +215,7 @@ const PaygPlan = ({
         >
           {isCheckingOut && checkoutPlan === "dominate"
             ? "Loading…"
-            : "Dominate · $449/mo"}
+            : "Dominate · $44.90/mo"}
         </Button>
       </div>
     </div>
@@ -263,7 +263,7 @@ const NoPlan = ({
         >
           {isCheckingOut && checkoutPlan === "compete"
             ? "Loading…"
-            : "Compete · $149/mo"}
+            : "Compete · $14.90/mo"}
         </Button>
         <Button
           color="neutral"
@@ -273,7 +273,7 @@ const NoPlan = ({
         >
           {isCheckingOut && checkoutPlan === "dominate"
             ? "Loading…"
-            : "Dominate · $449/mo"}
+            : "Dominate · $44.90/mo"}
         </Button>
       </div>
     </div>
