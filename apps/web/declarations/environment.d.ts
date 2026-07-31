@@ -52,6 +52,23 @@ declare namespace NodeJS {
     readonly GOOGLE_CLIENT_ID: string;
     readonly GOOGLE_CLIENT_SECRET: string;
 
+    /**
+     * Google Merchant Center hybrid integration
+     * (docs/integrations/google-merchant-center.md). Unset disables the
+     * Google Shopping channel entirely.
+     */
+    readonly GOOGLE_MERCHANT_CLIENT_ID?: string;
+    readonly GOOGLE_MERCHANT_CLIENT_SECRET?: string;
+    readonly ECENTIC_MCA_ID?: string;
+    /**
+     * Refresh token for an admin of ecentic's OWN advanced account (MCA) —
+     * the provider side of link handshakes. Obtained once by running the
+     * merchant OAuth flow with that admin's Google login and copying the
+     * stored refresh token. Unset means link proposals from real merchants
+     * wait for manual approval in the MCA's Merchant Center UI.
+     */
+    readonly GOOGLE_MERCHANT_MCA_REFRESH_TOKEN?: string;
+
     /** EC P-256 private key (PEM) signing hosted UCP responses/webhooks (RFC 9421). */
     readonly UCP_SIGNING_PRIVATE_KEY?: string;
 

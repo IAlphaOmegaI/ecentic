@@ -118,8 +118,9 @@ export const GoogleShoppingManager = ({
           >
             <p className="max-w-2xl text-foreground-dimmed text-sm">
               Sign in with the Google account that manages this store's Merchant
-              Center. ecentic only requests access to product listings (Content
-              API scope) — never your ads or personal data.
+              Center. ecentic requests the Merchant Center content scope — it
+              manages your product listings, feeds, return policies, and store
+              contact info there, and never touches your ads or personal data.
             </p>
             <a href={`/api/integrations/google/install?store=${store}`}>
               <Button color="neutral" disabled={isRunning}>

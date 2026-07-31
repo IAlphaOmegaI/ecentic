@@ -25,7 +25,9 @@ export const GET = async (request: Request) => {
       { status: 401 },
     );
 
-  const result = await GoogleMerchant.runMaintenance(Environment.SERVER, {});
+  const result = await GoogleMerchant.runMaintenance(Environment.SERVER, {
+    secret,
+  });
 
   if (!result.success)
     return Response.json(

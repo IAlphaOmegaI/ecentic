@@ -1,4 +1,5 @@
-"use server";
+// Server-internal plumbing, deliberately NOT "use server" — see the note in
+// google-merchant-account.ts.
 
 import { schema } from "../database";
 import type { Environment } from "../utils/environment";

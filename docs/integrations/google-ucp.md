@@ -237,15 +237,17 @@ data source ecentic already provisions and pushes through:
    pre-UCP hashes for products without UCP rows — rollout never mass
    re-pushes.
 
-**Open spike (cheap, now surfaced by the pipeline itself):** spike 1 proved
-*`productAttributes`* merge from a supplemental source. `customAttributes`
-merge through the `defaultRule` is still unexercised. The built verification
-loop checks the merged product's `customAttributes` for our
-`native_commerce` value, so the first real push settles the spike: offers
-flip `live` if custom attributes merge, and stay `pending` /
-`reprocessedWithoutMerge` if they don't — at which point the fallback is
-pushing UCP attributes into the *primary* feed path or a file-input
-supplemental source, per Google's feed examples.
+**Spike RESOLVED (live, 2026-07-31): custom attributes DO merge** from the
+supplemental source through the `defaultRule` — with one critical catch:
+**Google's processed view normalizes them**. Underscores become spaces in
+names AND enum-ish values (`native_commerce` → `"native commerce"`,
+`safety_warning` → `"safety warning"`), and group members lose their group
+prefix (`notice_type` → `"type"`). Read-back comparisons must go through
+`normalizeCustomAttributeToken` / `customAttributeGroupMatches`
+(`server/utils/google-merchant.ts`) — the pushed spelling never matches
+verbatim. Also observed live: Shopify's own primary feed already publishes
+`merchant item id` (the ProductVariant GID) and `sku` as custom attributes
+per offer, so per-variant checkout ids exist without ecentic setting them.
 
 ### C. What ecentic cannot automate
 
@@ -281,9 +283,9 @@ integration:
 ## Sequencing
 
 1. ~~**Readiness audit** (A)~~ — built (no new consent, no new scope).
-2. **customAttributes merge spike** — run on the live test store: toggle one
-   product eligible, push, wait for reprocess, confirm the offer flips `live`
-   (the built verification does the merged-attribute check automatically).
+2. ~~**customAttributes merge spike**~~ — resolved live 2026-07-31: merge
+   works; Google normalizes attribute names/values in the processed view
+   (see the spike note above).
 3. ~~**Eligibility/notice push** (B)~~ — built (schema + pipeline + UI).
 4. **Woo/hosted-UCP-for-Google** (D) — only after GMC spike 2 and once
    Google's merchant-facing UCP program is open beyond the waitlist.

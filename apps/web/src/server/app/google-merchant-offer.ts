@@ -1,4 +1,5 @@
-"use server";
+// Server-internal plumbing, deliberately NOT "use server" — see the note in
+// google-merchant-account.ts.
 
 import { schema } from "../database";
 import type { Environment } from "../utils/environment";
@@ -21,8 +22,10 @@ export type Type = Document<typeof schema.googleMerchantOffer>;
 
 /**
  * Insert an offer's push record, or refresh it in place — keyed on the
- * (storeId, offerId) unique index so re-pushing an offer updates its lifecycle
- * row instead of failing the constraint.
+ * (storeId, offerKey) unique index (offerKey = the full Google identity
+ * `contentLanguage~feedLabel~offerId`) so re-pushing an offer updates its
+ * lifecycle row instead of failing the constraint, and multi-market offers
+ * sharing an offerId never overwrite each other.
  */
 export const sync = async (
   environment: Environment,
@@ -35,7 +38,7 @@ export const sync = async (
     {
       target: [
         schema.googleMerchantOffer.storeId,
-        schema.googleMerchantOffer.offerId,
+        schema.googleMerchantOffer.offerKey,
       ],
       ...options,
     },

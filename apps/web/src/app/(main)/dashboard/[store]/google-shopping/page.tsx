@@ -110,7 +110,8 @@ const UcpContent = async ({ store }: { store: string }) => {
   const returnPolicyOk =
     returnPolicy.configured &&
     returnPolicy.hasWindow &&
-    returnPolicy.hasPolicyLink;
+    returnPolicy.hasPolicyLink &&
+    returnPolicy.hasCost;
   const returnPolicyDetail = (() => {
     switch (true) {
       case !returnPolicy.configured:
@@ -119,8 +120,10 @@ const UcpContent = async ({ store }: { store: string }) => {
         return `${returnPolicy.count} policy(ies) found, but none defines a return window (days after delivery or lifetime).`;
       case !returnPolicy.hasPolicyLink:
         return `${returnPolicy.count} policy(ies) found, but none links to the full policy text.`;
+      case !returnPolicy.hasCost:
+        return `${returnPolicy.count} policy(ies) found, but none states the return shipping cost — required alongside window and link.`;
       default:
-        return `${returnPolicy.count} policy(ies) with a return window and a full-policy link.`;
+        return `${returnPolicy.count} policy(ies) with a return window, shipping cost, and a full-policy link.`;
     }
   })();
 
@@ -170,14 +173,18 @@ const UcpContent = async ({ store }: { store: string }) => {
       </div>
       <ReadinessRow
         ok={offers.total > 0 ? offers.approved > 0 : null}
-        title="Products approved for listings"
-        detail={`${offers.approved} of ${offers.total} offers approved${
+        title="Products approved for free listings"
+        detail={`${offers.approved} of ${offers.total} offers approved for free listings${
           offers.disapproved > 0
             ? `, ${offers.disapproved} disapproved (see diagnostics above)`
             : ""
         }.${
           offers.checkoutAttributeLive > 0
-            ? ` ${offers.checkoutAttributeLive} already carry the checkout-eligibility flag on Google.`
+            ? ` ${offers.checkoutAttributeLive} carry the checkout-eligibility flag on Google.`
+            : ""
+        }${
+          offers.ucpCheckoutApproved > 0
+            ? ` ${offers.ucpCheckoutApproved} are approved for agentic checkout itself.`
             : ""
         }`}
       />

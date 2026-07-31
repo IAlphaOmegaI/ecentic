@@ -6,6 +6,12 @@
 > Everything targets **Merchant API v1** (v1beta is dead, Content API is sunsetting).
 > Building on top of this: **Google UCP agentic checkout** (readiness audit +
 > eligibility attributes through the same supplemental source) — `google-ucp.md`.
+> Production-readiness audit fixes (identity triplet, `self` rule guarantee,
+> age-based re-push, stale-input deletion, provider-side approve, disapproved
+> tracking) verified live 2026-07-31 — checklist in `overview.md`. New live
+> fact: custom attributes merge from the supplemental source, but Google's
+> processed view NORMALIZES their names/values (underscores → spaces, group
+> prefixes dropped) — see `google-ucp.md` spike note.
 
 ## Spike 1 results (Shopify, live account) — facts replacing assumptions
 

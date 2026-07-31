@@ -42,10 +42,11 @@ export const GET = async (request: NextRequest) => {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) return Response.redirect(`${process.env.APP_HOST}/sign-in`);
 
+  // The action derives the user from the session itself — nothing
+  // identity-bearing crosses this boundary as a parameter.
   const result = await GoogleMerchant.handleOAuthCallback(Environment.SERVER, {
     code,
     store,
-    user: session.user.id,
   });
 
   jar.delete("google_nonce");

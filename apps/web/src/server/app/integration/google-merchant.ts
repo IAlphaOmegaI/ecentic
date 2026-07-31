@@ -284,26 +284,55 @@ const resolveAccessToken = async (storeId: string): Promise<ResolvedToken> => {
 };
 
 /**
+ * Access token for ecentic's OWN advanced account (MCA) — the provider side
+ * of the link handshake. Backed by the optional
+ * `GOOGLE_MERCHANT_MCA_REFRESH_TOKEN` env (a one-time OAuth grant by an MCA
+ * admin through the same client); absent env means provider-side approval
+ * falls back to the MCA's Merchant Center UI. Cached for the token lifetime.
+ */
+const providerTokenCache = { accessToken: null as string | null, expiresAt: 0 };
+
+const resolveProviderAccessToken = async (): Promise<string | null> => {
+  const refreshToken = process.env.GOOGLE_MERCHANT_MCA_REFRESH_TOKEN;
+  const config = GoogleMerchantAPI.configuration();
+  if (!refreshToken || !config) return null;
+
+  if (
+    providerTokenCache.accessToken &&
+    providerTokenCache.expiresAt - Date.now() > 5 * 60 * 1000
+  )
+    return providerTokenCache.accessToken;
+
+  const refreshed = await GoogleMerchantAPI.refreshAccessToken(config, {
+    refreshToken,
+  });
+  if (!refreshed.success) return null;
+
+  providerTokenCache.accessToken = refreshed.data.accessToken;
+  providerTokenCache.expiresAt = refreshed.data.accessTokenExpiresAt.getTime();
+  return refreshed.data.accessToken;
+};
+
+/**
  * OAuth callback: exchanges the code, persists the grant on the store's
  * `google_merchant_account` row, and detects the merchant's existing Merchant
  * Center accounts. Exactly one visible account → adopted immediately; zero →
  * the merchant still needs the native plugin (UI polls {@link detectAccount});
  * several → the UI offers a picker backed by {@link selectAccount}.
  */
-export const handleOAuthCallback = withContext(
+export const handleOAuthCallback = withAuthentication(
   async (
     context,
-    {
-      code,
-      store: storeId,
-      user: userId,
-    }: { code: string; store: string; user: string },
+    { code, store: storeId }: { code: string; store: string },
   ) => {
     const config = GoogleMerchantAPI.configuration();
     if (!config)
       return { success: false, error: GoogleMerchantAPI.notConfiguredError() };
 
-    const store = await ownedStore(storeId, userId);
+    // The user is the SESSION's, never a caller-supplied id — an exported
+    // server action is a public endpoint, and a trusted `user` parameter
+    // would let any caller bind a Google grant to someone else's store.
+    const store = await ownedStore(storeId, context.session.user.id);
     if (!store.success) return store;
 
     if (!SUPPORTED_PLATFORMS.includes(store.data.platform))
@@ -546,26 +575,59 @@ const reconcileLinkState = async (
   // The output-only provider may read back as `providers/{id}` or
   // `accounts/{id}` (the API docs and validator disagree on the format), so
   // match on the numeric id rather than the full resource name.
-  const active = (services.data.accountServices ?? []).some(
+  const ours = (services.data.accountServices ?? []).filter(
     (service) =>
       service.accountManagement !== undefined &&
-      service.provider?.split("/").pop() === config.advancedAccountId &&
-      service.handshake?.approvalState === "ESTABLISHED",
+      service.provider?.split("/").pop() === config.advancedAccountId,
+  );
+  const established = ours.some(
+    (service) => service.handshake?.approvalState === "ESTABLISHED",
+  );
+  const pending = ours.find(
+    (service) =>
+      service.name !== undefined &&
+      (service.handshake?.approvalState === "PENDING" ||
+        service.handshake?.approvalState === "WAITING"),
   );
 
-  if (active && record.linkState !== "active") {
+  // Merchant-credential proposals wait on the PROVIDER side of the handshake
+  // (spike 3) — approve with our MCA credentials when they're configured.
+  // Without them the link stays proposed until someone approves it from the
+  // MCA's Merchant Center UI.
+  const approved = await (async () => {
+    if (established || !pending?.name) return established;
+    const providerToken = await resolveProviderAccessToken();
+    if (!providerToken) return false;
+    const approval = await GoogleMerchantAPI.approveAccountService(
+      providerToken,
+      pending.name,
+    );
+    return approval.success;
+  })();
+
+  const linkState: "unlinked" | "proposed" | "active" = (() => {
+    switch (true) {
+      case established || approved:
+        return "active" as const;
+      case pending !== undefined:
+        return "proposed" as const;
+      // No trace of our service on Google: a previously-active link was
+      // revoked in Merchant Center — downgrade instead of lying "active".
+      default:
+        return "unlinked" as const;
+    }
+  })();
+
+  if (linkState !== record.linkState) {
     const update = await GoogleMerchantAccount.update(
       Environment.SERVER,
       record.id,
-      { linkState: "active" },
+      { linkState },
     );
     if (!update.success) return update;
   }
 
-  return {
-    success: true,
-    data: { linkState: active ? "active" : record.linkState },
-  };
+  return { success: true, data: { linkState } };
 };
 
 export const checkLink = withAuthentication(
@@ -621,7 +683,19 @@ const ensureDefaultRule = async (
   const ruleOf = (source: GoogleMerchantAPI.DataSource) =>
     source.primaryProductDataSource?.defaultRule?.takeFromDataSources ?? [];
 
-  if (current[0] && isOurs(current[0]))
+  const hasSelf = (references: GoogleMerchantAPI.DataSourceReference[]) =>
+    references.some((reference) => reference.self === true);
+
+  // A healthy rule needs BOTH: our source first (overrides win attribute
+  // conflicts) and `self` present anywhere. Google: "If `self` is missing
+  // from the list of take_from_data_sources, the API will ignore attributes
+  // from the primary data source itself" — a rule without self suppresses the
+  // merchant's whole primary feed, the worst state this integration can
+  // produce.
+  const isHealthy = (references: GoogleMerchantAPI.DataSourceReference[]) =>
+    references[0] !== undefined && isOurs(references[0]) && hasSelf(references);
+
+  if (isHealthy(current))
     return {
       success: true,
       data: {
@@ -638,6 +712,7 @@ const ensureDefaultRule = async (
       takeFromDataSources: [
         { supplementalDataSourceName: supplementalName },
         ...current.filter((reference) => !isOurs(reference)),
+        ...(hasSelf(current) ? [] : [{ self: true }]),
       ],
     },
   );
@@ -646,7 +721,7 @@ const ensureDefaultRule = async (
   // The PATCH response carries the updated resource — trust it first so a
   // stale read-after-write can't fail a patch that actually landed.
   const patchedRule = ruleOf(patched.data);
-  if (patchedRule[0] && isOurs(patchedRule[0]))
+  if (isHealthy(patchedRule))
     return {
       success: true,
       data: {
@@ -663,7 +738,7 @@ const ensureDefaultRule = async (
   if (!confirmation.success) return confirmation;
 
   const confirmedRule = ruleOf(confirmation.data);
-  const confirmed = confirmedRule[0] !== undefined && isOurs(confirmedRule[0]);
+  const confirmed = isHealthy(confirmedRule);
 
   return {
     success: true,
@@ -706,9 +781,12 @@ export const ensureSupplementalDataSource = withAuthentication(
     );
     if (!sources.success) return sources;
 
-    const primary = (sources.data.dataSources ?? []).find(
-      (source) => source.primaryProductDataSource !== undefined,
+    const primaries = (sources.data.dataSources ?? []).filter(
+      (source) =>
+        source.primaryProductDataSource !== undefined &&
+        source.name !== undefined,
     );
+    const primary = primaries[0];
     if (!primary?.name)
       return {
         success: false,
@@ -741,18 +819,26 @@ export const ensureSupplementalDataSource = withAuthentication(
     })();
     if (!supplemental.success) return supplemental;
 
-    const rule = await ensureDefaultRule(resolved.accessToken, {
-      primaryName: primary.name,
-      supplementalName: supplemental.name,
-    });
-    if (!rule.success) return rule;
-    if (!rule.data.confirmed)
-      return {
-        success: false,
-        error: new RequestError(
-          `Primary feed rule patch did not stick — the supplemental source is not first in takeFromDataSources. Observed rule: ${rule.data.observedRule}`,
-        ),
-      };
+    // Wire the supplemental source into EVERY primary feed, not just the
+    // first — a multi-market plugin setup runs one primary per market, and an
+    // unwired primary would silently never merge our overrides.
+    const rules = [];
+    for (const source of primaries) {
+      const rule = await ensureDefaultRule(resolved.accessToken, {
+        primaryName: source.name as string,
+        supplementalName: supplemental.name,
+      });
+      if (!rule.success) return rule;
+      if (!rule.data.confirmed)
+        return {
+          success: false,
+          error: new RequestError(
+            `Primary feed rule patch did not stick on ${source.name} — the supplemental source is not first in takeFromDataSources (with self preserved). Observed rule: ${rule.data.observedRule}`,
+          ),
+        };
+      rules.push(rule.data);
+    }
+    const rule = { data: { patched: rules.some((entry) => entry.patched) } };
 
     context.span.addBreadcrumb({
       category: "google.datasource.provisioned",
@@ -803,30 +889,56 @@ export const checkRuleHealth = withAuthentication(
     if (!resolved.success) return resolved;
 
     const { record } = resolved;
-    if (!record.primaryDataSourceName || !record.dataSourceName)
+    if (
+      !record.googleAccountId ||
+      !record.primaryDataSourceName ||
+      !record.dataSourceName
+    )
       return {
         success: false,
         error: new RequestError("Data sources are not provisioned yet"),
       };
 
-    const rule = await ensureDefaultRule(resolved.accessToken, {
-      primaryName: record.primaryDataSourceName,
-      supplementalName: record.dataSourceName,
-    });
-    if (!rule.success) return rule;
+    // Check EVERY primary feed live rather than only the stored one — the
+    // plugin can add market feeds after provisioning, and each needs the
+    // supplemental source wired in.
+    const sources = await GoogleMerchantAPI.listDataSources(
+      resolved.accessToken,
+      record.googleAccountId,
+    );
+    if (!sources.success) return sources;
+
+    const primaries = (sources.data.dataSources ?? []).filter(
+      (source) =>
+        source.primaryProductDataSource !== undefined &&
+        source.name !== undefined,
+    );
+
+    let repaired = false;
+    let healthy = true;
+    for (const source of primaries) {
+      const rule = await ensureDefaultRule(resolved.accessToken, {
+        primaryName: source.name as string,
+        supplementalName: record.dataSourceName,
+      });
+      if (!rule.success) return rule;
+      repaired = repaired || rule.data.patched;
+      healthy = healthy && rule.data.confirmed;
+    }
 
     context.span.addBreadcrumb({
       category: "google.rule.health",
       data: {
         "store.id": storeId,
-        "rule.repaired": rule.data.patched,
-        "rule.confirmed": rule.data.confirmed,
+        "rule.primaries": primaries.length,
+        "rule.repaired": repaired,
+        "rule.confirmed": healthy,
       },
     });
 
     return {
       success: true as const,
-      data: { repaired: rule.data.patched, healthy: rule.data.confirmed },
+      data: { repaired, healthy },
     };
   },
   "GoogleMerchant.checkRuleHealth",
@@ -842,6 +954,41 @@ export const checkRuleHealth = withAuthentication(
 const offerMatchesExternalId = (offerId: string, externalId: string) => {
   if (offerId === externalId) return true;
   return offerId.split("_").includes(externalId);
+};
+
+/**
+ * Google's full offer identity — offerId alone collides across markets and
+ * languages (same shopify_… id, different feedLabel per market feed).
+ */
+const offerKeyOf = ({
+  contentLanguage,
+  feedLabel,
+  offerId,
+}: {
+  contentLanguage?: string | null;
+  feedLabel?: string | null;
+  offerId: string;
+}) => `${contentLanguage ?? ""}~${feedLabel ?? ""}~${offerId}`;
+
+/**
+ * Google expires API product inputs that are not refreshed "at least every
+ * 30 days" — unchanged inputs must be re-inserted before that. 20 days keeps
+ * a 10-day cushion over the cron cadence.
+ */
+const INPUT_REFRESH_AGE = 20 * 24 * 60 * 60 * 1000;
+
+/**
+ * A pending offer whose insert is this old has either been rule-repaired
+ * after the fact or lost by Google — a fresh insert is the reprocessing
+ * lever either way (spike 1), and without it a repaired rule never converges.
+ */
+const PENDING_NUDGE_AGE = 48 * 60 * 60 * 1000;
+
+const needsRefresh = (offer: GoogleMerchantOffer.Type) => {
+  if (!offer.pushedAt) return true;
+  const age = Date.now() - offer.pushedAt.getTime();
+  if (age > INPUT_REFRESH_AGE) return true;
+  return offer.status === "pending" && age > PENDING_NUDGE_AGE;
 };
 
 /**
@@ -900,6 +1047,7 @@ export const pushOverrides = withAuthentication(
           matchedProducts: 0,
           unmatchedProducts: 0,
           ucpProducts: 0,
+          removedStale: 0,
           policyBlocked: [],
           ucpWarnings: [],
           errors: [],
@@ -936,8 +1084,8 @@ export const pushOverrides = withAuthentication(
     });
     if (!existingOffers.success) return existingOffers;
 
-    const existingByOfferId = new Map(
-      existingOffers.data.map((offer) => [offer.offerId, offer]),
+    const existingByKey = new Map(
+      existingOffers.data.map((offer) => [offer.offerKey, offer]),
     );
 
     const offers = await GoogleMerchantAPI.listProducts(
@@ -951,9 +1099,13 @@ export const pushOverrides = withAuthentication(
     let matchedProducts = 0;
     let unmatchedProducts = 0;
     let ucpProducts = 0;
+    let removedStale = 0;
     const policyBlocked: { productId: string; issues: string[] }[] = [];
     const ucpWarnings: { productId: string; issues: string[] }[] = [];
     const errors: string[] = [];
+    /** Products that still have something to push — rows outside this set are
+     * stale and their inputs get deleted below. */
+    const configuredProducts = new Set<string>();
 
     for (const product of withExternalId) {
       const optimization = optimizationByProduct.get(product.id);
@@ -965,6 +1117,7 @@ export const pushOverrides = withAuthentication(
       // settings, or both — one insert per offer carries everything, since an
       // insert fully replaces the previous input in the supplemental source.
       if (!hasOverride && !ucp) continue;
+      configuredProducts.add(product.id);
 
       const attributes: GoogleMerchantAPI.ProductInputAttributes = {
         ...(optimization?.proposedTitle
@@ -1036,12 +1189,21 @@ export const pushOverrides = withAuthentication(
 
       for (const offer of matching) {
         const offerId = offer.offerId as string;
+        const offerKey = offerKeyOf({
+          contentLanguage: offer.contentLanguage,
+          feedLabel: offer.feedLabel,
+          offerId,
+        });
 
-        const existing = existingByOfferId.get(offerId);
+        const existing = existingByKey.get(offerKey);
+        // Skip only when the body is unchanged AND the input is fresh —
+        // Google expires unrefreshed API inputs, and re-inserting is also the
+        // reprocessing lever for offers stuck pending after a rule repair.
         if (
           existing &&
           existing.attributesHash === hash &&
-          existing.status !== "error"
+          existing.status !== "error" &&
+          !needsRefresh(existing)
         ) {
           skippedUnchanged += 1;
           continue;
@@ -1064,8 +1226,12 @@ export const pushOverrides = withAuthentication(
           storeId,
           productId: product.id,
           offerId,
+          offerKey,
           feedLabel: offer.feedLabel ?? null,
           contentLanguage: offer.contentLanguage ?? null,
+          inputName: insertion.success
+            ? (insertion.data.name ?? existing?.inputName ?? null)
+            : (existing?.inputName ?? null),
           attributesHash: hash,
           status: insertion.success ? "pending" : "error",
           error: insertion.success ? null : insertion.error.message,
@@ -1086,6 +1252,35 @@ export const pushOverrides = withAuthentication(
       }
     }
 
+    // Stale cleanup: offer rows whose product no longer has any override or
+    // UCP configuration. Without productInputs.delete the last-pushed title
+    // or eligibility flag would sit on Google until the 30-day expiry.
+    for (const row of existingOffers.data) {
+      if (configuredProducts.has(row.productId)) continue;
+
+      if (row.inputName) {
+        const deleted = await GoogleMerchantAPI.deleteProductInput(
+          resolved.accessToken,
+          { name: row.inputName, dataSourceName: record.dataSourceName },
+        );
+        // A 404 means the input is already gone (expired or hand-deleted) —
+        // that is the desired end state, not a failure.
+        if (!deleted.success && !/404|not found/i.test(deleted.error.message)) {
+          errors.push(`${row.offerId}: cleanup — ${deleted.error.message}`);
+          continue;
+        }
+      }
+      // Rows pushed before inputName existed can't be deleted remotely; drop
+      // the row anyway — the orphan input expires on Google within 30 days.
+
+      const destroyed = await GoogleMerchantOffer.destroy(
+        Environment.SERVER,
+        row.id,
+      );
+      if (!destroyed.success) return destroyed;
+      removedStale += 1;
+    }
+
     context.span.addBreadcrumb({
       category: "google.overrides.pushed",
       data: {
@@ -1096,6 +1291,7 @@ export const pushOverrides = withAuthentication(
         "products.unmatched": unmatchedProducts,
         "products.ucp": ucpProducts,
         "products.policy_blocked": policyBlocked.length,
+        "overrides.removed_stale": removedStale,
         "overrides.errors": errors.length,
       },
     });
@@ -1108,6 +1304,7 @@ export const pushOverrides = withAuthentication(
         matchedProducts,
         unmatchedProducts,
         ucpProducts,
+        removedStale,
         policyBlocked,
         ucpWarnings,
         errors: errors.slice(0, 10),
@@ -1229,6 +1426,9 @@ export type UcpReadiness = {
     hasWindow: boolean;
     /** Some policy links to the full policy text. */
     hasPolicyLink: boolean;
+    /** Some policy states the return shipping cost — Google's UCP checklist
+     * requires cost alongside window and link. */
+    hasCost: boolean;
     /** The default (unlabeled) policy, for prefilling the replace form. */
     current: CurrentReturnPolicy | null;
   };
@@ -1241,8 +1441,13 @@ export type UcpReadiness = {
   };
   offers: {
     total: number;
+    /** Approved specifically for free listings — the UCP prerequisite. */
     approved: number;
+    /** Disapproved in free listings or the UCP checkout context. */
     disapproved: number;
+    /** Approved in FREE_LISTINGS_UCP_CHECKOUT — actually accepted into
+     * agentic checkout, the end state (attribute merge alone isn't it). */
+    ucpCheckoutApproved: number;
     /** Offers whose merged view already carries our `native_commerce` flag. */
     checkoutAttributeLive: number;
   };
@@ -1306,6 +1511,9 @@ export const getUcpReadiness = withAuthentication(
             Boolean(policy.policy.days)),
       ),
       hasPolicyLink: policies.some((policy) => Boolean(policy.returnPolicyUri)),
+      hasCost: policies.some((policy) =>
+        Boolean(policy.returnShippingFee?.type),
+      ),
       current: defaultPolicy
         ? {
             countries: defaultPolicy.countries ?? [],
@@ -1332,19 +1540,37 @@ export const getUcpReadiness = withAuthentication(
       ...(service?.phone?.e164Number ? ["phone"] : []),
     ];
 
-    const approved = offers.data.filter((offer) =>
-      (offer.productStatus?.destinationStatuses ?? []).some(
-        (destination) => (destination.approvedCountries ?? []).length > 0,
-      ),
-    ).length;
-    const disapproved = offers.data.filter((offer) =>
-      (offer.productStatus?.destinationStatuses ?? []).some(
-        (destination) => (destination.disapprovedCountries ?? []).length > 0,
-      ),
-    ).length;
+    // Context-specific counts: general free-listings approval is the UCP
+    // prerequisite; FREE_LISTINGS_UCP_CHECKOUT approval is the end state —
+    // an offer actually accepted into agentic checkout. Any-context approval
+    // (e.g. Shopping ads only) would overstate readiness.
+    const countByContext = (
+      contexts: string[],
+      field: "approvedCountries" | "disapprovedCountries",
+    ) =>
+      offers.data.filter((offer) =>
+        (offer.productStatus?.destinationStatuses ?? []).some(
+          (destination) =>
+            contexts.includes(destination.reportingContext ?? "") &&
+            (destination[field] ?? []).length > 0,
+        ),
+      ).length;
+
+    const approved = countByContext(["FREE_LISTINGS"], "approvedCountries");
+    const disapproved = countByContext(
+      ["FREE_LISTINGS", "FREE_LISTINGS_UCP_CHECKOUT"],
+      "disapprovedCountries",
+    );
+    const ucpCheckoutApproved = countByContext(
+      ["FREE_LISTINGS_UCP_CHECKOUT"],
+      "approvedCountries",
+    );
     const checkoutAttributeLive = offers.data.filter((offer) =>
       (offer.customAttributes ?? []).some(
-        (attribute) => attribute.name === "native_commerce",
+        (attribute) =>
+          // Google's processed view spells it "native commerce".
+          GoogleMerchantAPI.normalizeCustomAttributeToken(attribute.name) ===
+          "native commerce",
       ),
     ).length;
 
@@ -1367,6 +1593,7 @@ export const getUcpReadiness = withAuthentication(
         total: offers.data.length,
         approved,
         disapproved,
+        ucpCheckoutApproved,
         checkoutAttributeLive,
       },
       ready:
@@ -1374,6 +1601,7 @@ export const getUcpReadiness = withAuthentication(
         returnPolicy.configured &&
         returnPolicy.hasWindow &&
         returnPolicy.hasPolicyLink &&
+        returnPolicy.hasCost &&
         methods.length > 0 &&
         approved > 0,
     };
@@ -1386,6 +1614,7 @@ export const getUcpReadiness = withAuthentication(
         "ucp.return_policies": returnPolicy.count,
         "ucp.support_methods": methods.length,
         "ucp.offers.approved": approved,
+        "ucp.offers.ucp_checkout_approved": ucpCheckoutApproved,
         "ucp.offers.checkout_attribute_live": checkoutAttributeLive,
       },
     });
@@ -1624,8 +1853,10 @@ export const setReturnPolicy = withAuthentication(
       };
 
     // Replace = delete-and-recreate, the only edit the API offers. Only ever
-    // reached on the merchant's explicit submit; the brief window without a
-    // policy closes when the create below lands.
+    // reached on the merchant's explicit submit. The deleted bodies are kept
+    // so a failed create can restore them — never leave the merchant with no
+    // policy at all.
+    const removedPolicies: GoogleMerchantAPI.OnlineReturnPolicy[] = [];
     for (const policy of conflicting) {
       if (!policy.name) continue;
       const deleted = await GoogleMerchantAPI.deleteReturnPolicy(
@@ -1633,6 +1864,7 @@ export const setReturnPolicy = withAuthentication(
         policy.name,
       );
       if (!deleted.success) return deleted;
+      removedPolicies.push(policy);
     }
 
     // Free return shipping must be an explicit zero price (live validator);
@@ -1667,7 +1899,69 @@ export const setReturnPolicy = withAuthentication(
         returnLabelSource: "DOWNLOAD_AND_PRINT",
       },
     );
-    if (!created.success) return created;
+    if (!created.success) {
+      // Best-effort rollback of the replace: recreate what was deleted from
+      // the captured bodies so the merchant is not left without a policy.
+      const restoredAll = await (async () => {
+        for (const policy of removedPolicies) {
+          const restored = await GoogleMerchantAPI.createReturnPolicy(
+            resolved.accessToken,
+            record.googleAccountId as string,
+            {
+              countries: policy.countries ?? [],
+              policy:
+                policy.policy?.type === "LIFETIME_RETURNS"
+                  ? { type: "LIFETIME_RETURNS" }
+                  : {
+                      type: "NUMBER_OF_DAYS_AFTER_DELIVERY",
+                      days: policy.policy?.days ?? "30",
+                    },
+              returnPolicyUri: policy.returnPolicyUri ?? "",
+              returnMethods: (policy.returnMethods ?? [
+                "BY_MAIL",
+              ]) as GoogleMerchantAPI.ReturnPolicyInput["returnMethods"],
+              itemConditions: (policy.itemConditions ?? [
+                "NEW",
+              ]) as GoogleMerchantAPI.ReturnPolicyInput["itemConditions"],
+              returnShippingFee:
+                policy.returnShippingFee?.type === "CUSTOMER_PAYING_ACTUAL_FEE"
+                  ? { type: "CUSTOMER_PAYING_ACTUAL_FEE" }
+                  : {
+                      type: "FIXED",
+                      fixedFee: {
+                        amountMicros:
+                          policy.returnShippingFee?.fixedFee?.amountMicros ??
+                          "0",
+                        currencyCode:
+                          policy.returnShippingFee?.fixedFee?.currencyCode ??
+                          currencyCode,
+                      },
+                    },
+              processRefundDays: policy.processRefundDays ?? 14,
+              returnLabelSource:
+                (policy.returnLabelSource as
+                  | GoogleMerchantAPI.ReturnPolicyInput["returnLabelSource"]
+                  | undefined) ?? "DOWNLOAD_AND_PRINT",
+            },
+          );
+          if (!restored.success) return false;
+        }
+        return true;
+      })();
+
+      return {
+        success: false,
+        error: new RequestError(
+          removedPolicies.length === 0
+            ? created.error.message
+            : `${created.error.message} — ${
+                restoredAll
+                  ? "the previous policy was restored"
+                  : "the previous policy could NOT be fully restored; re-create it in Merchant Center"
+              }`,
+        ),
+      };
+    }
 
     // Google's list lags the create by a moment. Hold the action until the
     // new policy is visible to the readiness audit's read, so the client's
@@ -1905,6 +2199,7 @@ const runVerification = async (
         awaitingReprocess: number;
         reprocessedWithoutMerge: number;
         missingOffers: number;
+        disapproved: number;
       };
     }
   | { success: false; error: Error }
@@ -1932,6 +2227,7 @@ const runVerification = async (
         awaitingReprocess: 0,
         reprocessedWithoutMerge: 0,
         missingOffers: 0,
+        disapproved: 0,
       },
     };
 
@@ -1958,19 +2254,27 @@ const runVerification = async (
   );
   if (!offers.success) return offers;
 
-  const processedByOfferId = new Map(
+  const processedByKey = new Map(
     offers.data
       .filter((offer) => offer.offerId !== undefined)
-      .map((offer) => [offer.offerId as string, offer]),
+      .map((offer) => [
+        offerKeyOf({
+          contentLanguage: offer.contentLanguage,
+          feedLabel: offer.feedLabel,
+          offerId: offer.offerId as string,
+        }),
+        offer,
+      ]),
   );
 
   let verified = 0;
   let awaitingReprocess = 0;
   let reprocessedWithoutMerge = 0;
   let missingOffers = 0;
+  let disapproved = 0;
 
   for (const row of pending.data) {
-    const processed = processedByOfferId.get(row.offerId);
+    const processed = processedByKey.get(row.offerKey);
     if (!processed) {
       // The plugin removed/re-keyed the offer (market or variant change) —
       // the override now points at nothing.
@@ -1990,42 +2294,84 @@ const runVerification = async (
 
     // The processed attributes carrying our push IS the merge — flip to live
     // on that evidence alone, no timestamp gate. Timestamps only decide how
-    // to classify a NOT-merged offer below. Each pushed piece contributes its
-    // own check (null = that piece wasn't pushed): the title/description
-    // override diffs against the optimization, and UCP settings look for our
-    // explicit `native_commerce(checkout_eligibility)` value in the merged
-    // custom attributes.
-    const overrideMerged = optimization?.proposedTitle
-      ? processed.productAttributes?.title === optimization.proposedTitle
-      : optimization?.proposedDescription
+    // to classify a NOT-merged offer below. EVERY pushed piece contributes
+    // its own check (null = that piece wasn't pushed) and all present checks
+    // must pass: title AND description when both were overridden, and each
+    // UCP custom attribute we sent (eligibility value, consumer notice,
+    // checkout item id).
+    // Compare through Google's normalization (underscores → spaces, dropped
+    // group prefixes) — the pushed spelling never matches the processed view.
+    const normalized = GoogleMerchantAPI.normalizeCustomAttributeToken;
+    const merchantAttributes = processed.customAttributes ?? [];
+    const hasGroupValue = (
+      attributeName: string,
+      groupName: string,
+      expected: string,
+    ) =>
+      merchantAttributes.some(
+        (attribute) =>
+          normalized(attribute.name) === normalized(attributeName) &&
+          (attribute.groupValues ?? []).some(
+            (group) =>
+              GoogleMerchantAPI.customAttributeGroupMatches(
+                groupName,
+                group.name,
+              ) && normalized(group.value ?? "") === normalized(expected),
+          ),
+      );
+
+    const checks = [
+      optimization?.proposedTitle
+        ? processed.productAttributes?.title === optimization.proposedTitle
+        : null,
+      optimization?.proposedDescription
         ? processed.productAttributes?.description ===
           optimization.proposedDescription
-        : null;
-
-    const ucpMerged = ucp
-      ? (processed.customAttributes ?? []).some(
-          (attribute) =>
-            attribute.name === "native_commerce" &&
-            (attribute.groupValues ?? []).some(
-              (group) =>
-                group.name === "checkout_eligibility" &&
-                group.value?.toLowerCase() ===
-                  (ucp.checkoutEligible ? "true" : "false"),
-            ),
-        )
-      : null;
-
-    const checks = [overrideMerged, ucpMerged].filter(
-      (check) => check !== null,
-    );
+        : null,
+      ucp
+        ? hasGroupValue(
+            "native_commerce",
+            "checkout_eligibility",
+            ucp.checkoutEligible ? "true" : "false",
+          )
+        : null,
+      ucp?.noticeType && ucp.noticeMessage
+        ? hasGroupValue("consumer_notice", "notice_type", ucp.noticeType)
+        : null,
+      ucp?.merchantItemId
+        ? merchantAttributes.some(
+            (attribute) =>
+              normalized(attribute.name) === "merchant item id" &&
+              attribute.value === ucp.merchantItemId,
+          )
+        : null,
+    ].filter((check) => check !== null);
     const merged = checks.length > 0 && checks.every(Boolean);
 
     if (merged) {
-      verified += 1;
+      // Merged is necessary but not sufficient — a merged offer that Google
+      // then disapproves (in free listings or the UCP checkout context) must
+      // surface as needs-attention, not sit green.
+      const isDisapproved = (
+        processed.productStatus?.destinationStatuses ?? []
+      ).some(
+        (destination) =>
+          (destination.reportingContext === "FREE_LISTINGS" ||
+            destination.reportingContext === "FREE_LISTINGS_UCP_CHECKOUT") &&
+          (destination.disapprovedCountries ?? []).length > 0,
+      );
+
+      if (isDisapproved) disapproved += 1;
+      else verified += 1;
+
       const flipped = await GoogleMerchantOffer.update(
         Environment.SERVER,
         row.id,
-        { status: "live", verifiedAt: new Date(), lastUpdateDate },
+        {
+          status: isDisapproved ? "disapproved" : "live",
+          verifiedAt: new Date(),
+          lastUpdateDate,
+        },
       );
       if (!flipped.success) return flipped;
       continue;
@@ -2065,6 +2411,7 @@ const runVerification = async (
       awaitingReprocess,
       reprocessedWithoutMerge,
       missingOffers,
+      disapproved,
     },
   };
 };
@@ -2315,7 +2662,16 @@ export const getStatus = withAuthentication(
  * to the rest of the sweep.
  */
 export const runMaintenance = withContext(
-  async (context, _input: Record<string, never>) => {
+  async (context, { secret }: { secret: string }) => {
+    // Exported server actions are publicly invocable endpoints — the cron
+    // secret gates this one even though the cron route also checks it, so a
+    // direct action invocation can't sweep every merchant account at will.
+    if (!process.env.CRON_SECRET || secret !== process.env.CRON_SECRET)
+      return {
+        success: false as const,
+        error: new RequestError("Not authorized"),
+      };
+
     const accounts = await GoogleMerchantAccount.find(Environment.SERVER, {});
     if (!accounts.success) return accounts;
 
@@ -2323,8 +2679,10 @@ export const runMaintenance = withContext(
       stores: accounts.data.length,
       linksChecked: 0,
       linksEstablished: 0,
+      linksRevoked: 0,
       rulesRepaired: 0,
       verified: 0,
+      disapproved: 0,
       awaitingReprocess: 0,
       reprocessedWithoutMerge: 0,
       errors: [] as string[],
@@ -2337,25 +2695,52 @@ export const runMaintenance = withContext(
         continue;
       }
 
-      if (record.linkState === "proposed" && record.googleAccountId) {
+      // Reconcile both directions: proposed links may have established, and
+      // active links may have been revoked in Merchant Center.
+      if (
+        (record.linkState === "proposed" || record.linkState === "active") &&
+        record.googleAccountId
+      ) {
         summary.linksChecked += 1;
         const link = await reconcileLinkState(resolved.accessToken, record);
         if (!link.success) {
           summary.errors.push(`${record.storeId}: ${link.error.message}`);
-        } else if (link.data.linkState === "active") {
+        } else if (
+          link.data.linkState === "active" &&
+          record.linkState !== "active"
+        ) {
           summary.linksEstablished += 1;
+        } else if (
+          link.data.linkState !== "active" &&
+          record.linkState === "active"
+        ) {
+          summary.linksRevoked += 1;
         }
       }
 
-      if (record.primaryDataSourceName && record.dataSourceName) {
-        const rule = await ensureDefaultRule(resolved.accessToken, {
-          primaryName: record.primaryDataSourceName,
-          supplementalName: record.dataSourceName,
-        });
-        if (!rule.success) {
-          summary.errors.push(`${record.storeId}: ${rule.error.message}`);
-        } else if (rule.data.patched) {
-          summary.rulesRepaired += 1;
+      if (record.dataSourceName && record.googleAccountId) {
+        const sources = await GoogleMerchantAPI.listDataSources(
+          resolved.accessToken,
+          record.googleAccountId,
+        );
+        if (!sources.success) {
+          summary.errors.push(`${record.storeId}: ${sources.error.message}`);
+        } else {
+          for (const source of (sources.data.dataSources ?? []).filter(
+            (candidate) =>
+              candidate.primaryProductDataSource !== undefined &&
+              candidate.name !== undefined,
+          )) {
+            const rule = await ensureDefaultRule(resolved.accessToken, {
+              primaryName: source.name as string,
+              supplementalName: record.dataSourceName,
+            });
+            if (!rule.success) {
+              summary.errors.push(`${record.storeId}: ${rule.error.message}`);
+            } else if (rule.data.patched) {
+              summary.rulesRepaired += 1;
+            }
+          }
         }
       }
 
@@ -2370,6 +2755,7 @@ export const runMaintenance = withContext(
           );
         } else {
           summary.verified += verification.data.verified;
+          summary.disapproved += verification.data.disapproved;
           summary.awaitingReprocess += verification.data.awaitingReprocess;
           summary.reprocessedWithoutMerge +=
             verification.data.reprocessedWithoutMerge;

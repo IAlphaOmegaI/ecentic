@@ -247,8 +247,16 @@ export const googleMerchantOffer = pgTable(
       .notNull()
       .references(() => product.id, { onDelete: "cascade" }),
     offerId: text("offerId").notNull(),
+    /**
+     * Google's full offer identity `contentLanguage~feedLabel~offerId` — the
+     * uniqueness key. `offerId` alone collides across markets/languages.
+     */
+    offerKey: text("offerKey").notNull(),
     feedLabel: text("feedLabel"),
     contentLanguage: text("contentLanguage"),
+    /** The productInput resource name from the insert response — the handle
+     * `productInputs.delete` needs when this offer's config goes away. */
+    inputName: text("inputName"),
     /** SHA-256 of the last pushed override attributes body. */
     attributesHash: text("attributesHash"),
     status: text("status")
@@ -265,9 +273,9 @@ export const googleMerchantOffer = pgTable(
   },
   (table) => [
     index("google_merchant_offer_store_idx").on(table.storeId),
-    uniqueIndex("google_merchant_offer_store_offer_unique").on(
+    uniqueIndex("google_merchant_offer_store_offerkey_unique").on(
       table.storeId,
-      table.offerId,
+      table.offerKey,
     ),
   ],
 );

@@ -156,23 +156,50 @@ export const introspectAccessToken = async (
 // Merchant API v1 wrappers
 // ---------------------------------------------------------------------------
 
+/**
+ * Retries once per backoff step on rate limiting (429) and transient server
+ * errors (5xx) — Google's per-minute quota errors are expected during bulk
+ * pushes and resolve on their own. Everything else surfaces immediately;
+ * error MESSAGES are unstable per Google's error-handling guide, so callers
+ * branching on failures should match `ErrorInfo.reason` codes when present
+ * (embedded in the parsed error body), never prose.
+ */
+const RETRY_DELAYS_MS = [1000, 3000, 8000];
+
 const api = async <T>(
   accessToken: string,
   path: string,
   options: { method?: string; body?: unknown } = {},
 ): Promise<Result<T, Error>> => {
-  const response = await HTTP.request(`${MERCHANT_API_BASE}${path}`, {
-    method: options.method ?? "GET",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    ...(options.body === undefined
-      ? {}
-      : { body: JSON.stringify(options.body) }),
-  });
+  const attempt = () =>
+    HTTP.request(`${MERCHANT_API_BASE}${path}`, {
+      method: options.method ?? "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      ...(options.body === undefined
+        ? {}
+        : { body: JSON.stringify(options.body) }),
+    });
 
-  return HTTP.parse<T>(response);
+  const first = await attempt();
+  const retriable = (response: Awaited<ReturnType<typeof attempt>>) =>
+    response.success &&
+    (response.data.status === 429 || response.data.status >= 500);
+
+  if (!retriable(first)) return HTTP.parse<T>(first);
+
+  const latest = await (async () => {
+    for (const delay of RETRY_DELAYS_MS) {
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      const retried = await attempt();
+      if (!retriable(retried)) return retried;
+    }
+    return attempt();
+  })();
+
+  return HTTP.parse<T>(latest);
 };
 
 export type MerchantAccount = {
@@ -228,8 +255,12 @@ export type OnlineReturnPolicy = {
   returnPolicyUri?: string;
   returnMethods?: string[];
   itemConditions?: string[];
-  returnShippingFee?: { type?: string };
+  returnShippingFee?: {
+    type?: string;
+    fixedFee?: { amountMicros?: string; currencyCode?: string };
+  };
   processRefundDays?: number;
+  returnLabelSource?: string;
 };
 
 /**
@@ -367,8 +398,10 @@ export const listAccountServices = (accessToken: string, accountId: string) =>
 
 /**
  * Proposes the accountManagement link from our MCA to the merchant's account.
- * The merchant approves the request inside Merchant Center — approval never
- * happens via API, which is the safeguard the relationship model relies on.
+ * Because the proposal runs on the MERCHANT's credentials, the merchant side
+ * is already consented — the pending approval belongs to the PROVIDER (our
+ * MCA), via {@link approveAccountService} with provider credentials (spike 3;
+ * same-admin test setups self-establish, real merchants do not).
  *
  * Request shape (per the accounts_v1 discovery document): `provider` is a
  * TOP-LEVEL sibling of `accountService` — `AccountService.provider` is
@@ -403,6 +436,18 @@ export const proposeAccountManagement = (
  */
 export const rejectAccountService = (accessToken: string, name: string) =>
   api<Record<string, never>>(accessToken, `/accounts/v1/${name}:reject`, {
+    method: "POST",
+    body: {},
+  });
+
+/**
+ * Approves a pending account service by resource name
+ * (`accounts/{account}/services/{service}`). Must run with the PROVIDER'S
+ * (our MCA's) credentials — merchant-credential proposals wait on this side
+ * of the handshake.
+ */
+export const approveAccountService = (accessToken: string, name: string) =>
+  api<AccountService>(accessToken, `/accounts/v1/${name}:approve`, {
     method: "POST",
     body: {},
   });
@@ -543,6 +588,31 @@ export type CustomAttribute = {
   groupValues?: CustomAttribute[];
 };
 
+/**
+ * Google's PROCESSED view normalizes custom attributes (verified live
+ * 2026-07-31): underscores become spaces in names AND enum-ish values
+ * (`native_commerce` → "native commerce", `safety_warning` → "safety
+ * warning"), and group members lose their group prefix (`notice_type` →
+ * "type"). Any read-back comparison must normalize both sides — the pushed
+ * spelling never matches verbatim.
+ */
+export const normalizeCustomAttributeToken = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[_\s]+/g, " ")
+    .trim();
+
+/** Matches a processed group name against the pushed one, tolerating the
+ * dropped group prefix ("notice type" matches processed "type"). */
+export const customAttributeGroupMatches = (
+  pushedName: string,
+  processedName: string,
+) => {
+  const pushed = normalizeCustomAttributeToken(pushedName);
+  const processed = normalizeCustomAttributeToken(processedName);
+  return pushed === processed || pushed.endsWith(` ${processed}`);
+};
+
 export type MerchantProduct = {
   /** Resource name, `accounts/{account}/products/{product}`. */
   name?: string;
@@ -567,13 +637,16 @@ export type MerchantProduct = {
 export const listProducts = async (
   accessToken: string,
   accountId: string,
-  { maximumPages = 8 }: { maximumPages?: number } = {},
+  // 100 pages × 1000 (the API maximum page size) = a 100k-offer ceiling, a
+  // runaway guard rather than an expected bound — v1 expects pagination to
+  // continue until nextPageToken is absent.
+  { maximumPages = 100 }: { maximumPages?: number } = {},
 ): Promise<Result<MerchantProduct[], Error>> => {
   const all: MerchantProduct[] = [];
   let pageToken: string | null = null;
 
   for (const _ of Array.from({ length: maximumPages })) {
-    const query = new URLSearchParams({ pageSize: "250" });
+    const query = new URLSearchParams({ pageSize: "1000" });
     if (pageToken) query.set("pageToken", pageToken);
 
     const page: Result<
@@ -642,6 +715,22 @@ export const insertProductInput = (
         ...(customAttributes?.length ? { customAttributes } : {}),
       },
     },
+  );
+
+/**
+ * Deletes one product input from our supplemental data source — the cleanup
+ * lever when a product loses its override/UCP configuration. `name` is the
+ * input's own resource name as returned by the insert response
+ * (`accounts/{account}/productInputs/{id}`); never reconstructed.
+ */
+export const deleteProductInput = (
+  accessToken: string,
+  { name, dataSourceName }: { name: string; dataSourceName: string },
+) =>
+  api<Record<string, never>>(
+    accessToken,
+    `/products/v1/${name}?dataSource=${encodeURIComponent(dataSourceName)}`,
+    { method: "DELETE" },
   );
 
 // ---------------------------------------------------------------------------

@@ -185,6 +185,40 @@ Google plugin and would need Path 2 (not built).
 - [ ] Aggregate disapproval-rate alerting across merchants (partner reputation guard)
 - [ ] OAuth consent-screen verification for the `content` scope (external, weeks — submit early)
 
+#### Production-readiness gaps (external audit, independently verified 2026-07-31)
+
+Each item below was re-verified against the code, the v1 discovery documents,
+and Google's guides — not taken on the auditor's word. Severity-ordered.
+
+**Blocking — all fixed 2026-07-31**
+
+- [x] Server-action exposure: `handleOAuthCallback` now derives the user from the session (`withAuthentication`); `runMaintenance` requires the CRON secret as an argument; the google-merchant repository modules are no longer `"use server"` (server-internal plumbing only); `getForStore` checks store ownership and strips tokens from its return. `withContext` telemetry redacts secret-bearing argument keys (depth-capped, cycle-guarded — Drizzle query nodes are circular). REMAINING (codebase-wide, not Google-specific): the repository-CRUD-in-`"use server"` shape in other modules (`store-account.ts` etc.), and refresh-token encryption at rest.
+- [x] `services.approve` with provider credentials — `reconcileLinkState` auto-approves pending proposals when `GOOGLE_MERCHANT_MCA_REFRESH_TOKEN` is set (unset = approve manually in the MCA's Merchant Center UI), and downgrades `active` → `proposed`/`unlinked` when Google reports the link gone. Stale docstring fixed.
+- [x] `ensureDefaultRule` guarantees `{self: true}` in every rule it writes and treats a self-less rule as unhealthy; provisioning, the rule watchdog, and the cron wire the supplemental source into EVERY primary feed, not just the first.
+
+**High-priority correctness — all fixed 2026-07-31**
+
+- [x] Offer identity: `offerKey` = `contentLanguage~feedLabel~offerId` (migration `20260731120000`), uniqueness + all in-memory maps keyed by it.
+- [x] Age-based re-push: unchanged inputs re-insert after 20 days (Google expires at ~30); pending offers re-insert after 48h — also the reprocessing lever that unsticks repaired rules.
+- [x] Stale cleanup: `productInputs.delete` on products that lost their override + UCP config (`inputName` persisted from the insert response); orphan inputs from pre-`inputName` rows age out via the 30-day expiry.
+- [x] `listProducts`: pageSize 1000, full pagination (100-page runaway guard).
+- [x] Verification checks title AND description AND each pushed UCP attribute (eligibility value, notice, checkout item id); merged-but-disapproved offers get status `disapproved` (verified live — two test offers flipped `pending` → `disapproved` on real merchant-side disapprovals).
+
+**UCP-specific**
+
+- [x] Readiness counts `FREE_LISTINGS` (prerequisite) and `FREE_LISTINGS_UCP_CHECKOUT` (end state) specifically; return-cost audited alongside window and link.
+- [ ] Eligibility/notices/merchant_item_id are per ecentic product; Google's are per offer (variant). Mitigating fact (verified live): Shopify's own feed already publishes `merchant item id` per variant (the ProductVariant GID), so per-variant checkout ids exist without ecentic setting them. Single consumer notice stored; Google supports repeated groups.
+- [ ] Restricted categories warn but don't block — deliberate: regex heuristics can't hard-block safely ("wine rack"); Google's own `FREE_LISTINGS_UCP_CHECKOUT` disapprovals are the enforcement and now surface as offer status. Product-level `returns` attribute not audited.
+
+**Operational**
+
+- [x] Retry with backoff (1s/3s/8s) on 429/5xx in the API client.
+- [x] Return-policy replace: deleted bodies are captured and restored best-effort when the create fails.
+- [x] OAuth consent copy matches the real scope surface.
+- [ ] `details.metadata.REASON` parsing for error branching (messages are unstable per Google); update coalescing (products updatable ~twice/day).
+- [ ] `PRODUCT_STATUS_CHANGE` notification subscriptions (notifications_v1) as push-based verification; cron stays as fallback.
+- [ ] No integration tests over any of these flows (repo has no test infrastructure at all).
+
 ### Google UCP — Agentic Checkout (AI Mode / Gemini)
 
 **Mode:** Merchant readiness + feed attributes on top of the GMC integration;

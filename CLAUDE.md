@@ -283,4 +283,5 @@ UCP_AGENT_PROFILE_URL                     # default {APP_HOST}/ucp/agent-profile
 GOOGLE_MERCHANT_CLIENT_ID
 GOOGLE_MERCHANT_CLIENT_SECRET
 ECENTIC_MCA_ID                            # numeric Merchant Center advanced-account id
+GOOGLE_MERCHANT_MCA_REFRESH_TOKEN         # optional — MCA-admin grant; auto-approves incoming link proposals (unset = approve manually in the MCA's Merchant Center)
 ```
