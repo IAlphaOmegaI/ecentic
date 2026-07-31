@@ -32,7 +32,7 @@ const rows: Row[] = [
     title: "AcousticPro X3 Headphones",
     price: "$249.00",
     winRate: 72,
-    agent: "GPT-4",
+    agent: "ChatGPT",
     marketplace: "Amazon",
   },
   {

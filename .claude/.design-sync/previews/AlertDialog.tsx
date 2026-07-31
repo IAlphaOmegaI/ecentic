@@ -44,7 +44,7 @@ export const Open = () => (
         style={{ marginTop: 8, color: "var(--color-foreground)" }}
       >
         This competitor will be removed from all simulations. 142 days of agent
-        win-rate history against GPT-4, Claude, Gemini and Perplexity will be
+        win-rate history against ChatGPT, Claude, Gemini and Perplexity will be
         archived. This can't be undone.
       </AlertDialogDescription>
       <div

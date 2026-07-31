@@ -48,7 +48,7 @@ export const Palette = () => (
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading="Reports">
-          <CommandItem>GPT-4 win-rate report</CommandItem>
+          <CommandItem>ChatGPT win-rate report</CommandItem>
           <CommandItem>Perplexity visibility report</CommandItem>
         </CommandGroup>
       </CommandList>

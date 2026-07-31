@@ -26,7 +26,7 @@ type LogEntry = {
 };
 
 const modelBarColors: Record<string, string> = {
-  "GPT-4": "bg-blue-500",
+  ChatGPT: "bg-blue-500",
   Claude: "bg-orange-500",
   Gemini: "bg-green-500",
   Perplexity: "bg-teal-500",
@@ -34,7 +34,7 @@ const modelBarColors: Record<string, string> = {
 
 const getLogo = (label: string) => {
   switch (label) {
-    case "GPT-4":
+    case "ChatGPT":
       return "/images/chatgpt.svg";
     case "Claude":
       return "/images/claude.svg";

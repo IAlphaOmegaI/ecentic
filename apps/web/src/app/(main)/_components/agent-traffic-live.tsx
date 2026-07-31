@@ -16,7 +16,7 @@ type AgentModel = {
 
 const DEMO_AGENTS: AgentModel[] = [
   {
-    name: "ChatGPT / GPT-4",
+    name: "ChatGPT",
     category: "Agentic browser",
     visits: 3847,
     color: "bg-emerald-500",

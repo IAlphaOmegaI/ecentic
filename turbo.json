@@ -27,7 +27,7 @@
         "AZURE_API_KEY",
         "AZURE_BASE_URL",
         "AZURE_API_VERSION",
-        "AZURE_DEPLOYMENT_GPT4O",
+        "AZURE_DEPLOYMENT_GPT",
         "AI_GATEWAY_API_KEY",
         "APP_HOST",
         "ECENTIC_TRACKER_PUBLIC_ORIGIN",

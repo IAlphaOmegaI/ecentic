@@ -8,5 +8,5 @@ export default () =>
   createOgImage({
     title: "Win every AI shopping agent's cart.",
     description:
-      "Simulate how GPT-4, Claude, Gemini, and Perplexity choose your products, diagnose losses, and auto-optimize listings.",
+      "Simulate how ChatGPT, Claude, Gemini, and Perplexity choose your products, diagnose losses, and auto-optimize listings.",
   });

@@ -6,7 +6,7 @@ const expectations = [
   {
     title: "Live win-rate read",
     description:
-      "We run your top products through GPT-4, Claude, Gemini, and Perplexity while you watch.",
+      "We run your top products through ChatGPT, Claude, Gemini, and Perplexity while you watch.",
   },
   {
     title: "Why you win or lose",

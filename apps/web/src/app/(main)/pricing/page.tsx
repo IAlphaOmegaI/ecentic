@@ -65,7 +65,7 @@ const faq = [
   {
     question: "Is there really a free plan?",
     answer:
-      "Yes. The Scan plan runs a one-time simulation of your top 10 products across GPT-4, Claude, Gemini, and Perplexity and returns a Win Rate Report. It needs no credit card and takes about two minutes to set up.",
+      "Yes. The Scan plan runs a one-time simulation of your top 10 products across ChatGPT, Claude, Gemini, and Perplexity and returns a Win Rate Report. It needs no credit card and takes about two minutes to set up.",
   },
   {
     question: "What is the difference between Compete and Dominate?",

@@ -9,13 +9,13 @@ import { Plus } from "@/components/plus";
 import { Spring, Stagger } from "@/lib/animations";
 
 const modelColors: Record<string, string> = {
-  "GPT-4": "text-blue-500",
+  ChatGPT: "text-blue-500",
   Claude: "text-orange-500",
   Gemini: "text-green-500",
 };
 
 const models = [
-  { model: "GPT-4", logo: "/images/chatgpt.svg" },
+  { model: "ChatGPT", logo: "/images/chatgpt.svg" },
   { model: "Claude", logo: "/images/claude.svg" },
   { model: "Gemini", logo: "/images/gemini.svg" },
 ] as const;
@@ -67,7 +67,7 @@ export const RunningPhase = ({
               Running simulation.
             </h1>
             <p className="font-light text-2xl text-foreground-dimmed">
-              GPT-4, Claude & Gemini are comparing your products against
+              ChatGPT, Claude & Gemini are comparing your products against
               competitors right now.
             </p>
           </div>

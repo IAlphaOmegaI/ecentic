@@ -200,7 +200,7 @@ const columns = [
 >[];
 
 const Model = {
-  "GPT-4": {
+  ChatGPT: {
     logo: "/images/chatgpt.svg",
   },
   Claude: {
@@ -561,7 +561,7 @@ const OverviewTab = ({
 const replayModelLabel = (modelId: string) => {
   switch (modelId) {
     case "gpt4":
-      return "GPT-4";
+      return "ChatGPT";
     case "claude":
       return "Claude";
     case "gemini":

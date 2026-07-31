@@ -1,6 +1,6 @@
 ---
 name: optimize-listings
-description: Optimize ecommerce product listings so AI shopping agents (GPT-4, Claude, Gemini, Perplexity) recommend them. Use when improving titles, descriptions, attributes, or win rate against competitors.
+description: Optimize ecommerce product listings so AI shopping agents (ChatGPT, Claude, Gemini, Perplexity) recommend them. Use when improving titles, descriptions, attributes, or win rate against competitors.
 ---
 
 # Optimize Listings for AI Shopping Agents

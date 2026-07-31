@@ -16,13 +16,11 @@ import * as Ucp from "./profile";
 
 // A single consistent judge carries the lift measurement — the metric is the
 // delta between passes, so one model is cleaner (and cheaper) than the full
-// four-model fan-out. gpt-4o matches simulate.ts's proven scoring path.
-const MODEL = "gpt-4o" as AI.ModelId;
+// four-model fan-out. The `gpt` seat matches simulate.ts's proven scoring path.
+const MODEL = "gpt" as AI.ModelId;
 
-// The tool-gathering step rides the playground's proven tool-calling path
-// (gemini-2.5-flash, direct to Google) — it only needs to fetch and summarize the
-// merchant's UCP data, not act as the judge.
-const GATHER_MODEL = "gemini-2.5-flash";
+// Keep data gathering on the same Azure-first ChatGPT seat as the judge.
+const GATHER_MODEL = "gpt" as AI.ModelId;
 
 const verdict = z.object({
   winner: z.enum(["product", "competitor"]),
@@ -215,7 +213,7 @@ export const runUcpLift = withAuthentication(
     return {
       success: true as const,
       data: {
-        model: "GPT-4",
+        model: "ChatGPT",
         sampleSize: scored.length,
         baselineWinRate,
         ucpWinRate,

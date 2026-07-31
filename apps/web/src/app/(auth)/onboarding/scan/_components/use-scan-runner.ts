@@ -10,7 +10,7 @@ type LogEntry = { id: number; model: string; message: string; elapsed: number };
 type Stats = { wins: number; losses: number; progress: number };
 
 const modelMeta = [
-  { id: "gpt4", label: "GPT-4" },
+  { id: "gpt4", label: "ChatGPT" },
   { id: "claude", label: "Claude" },
   { id: "gemini", label: "Gemini" },
 ] as const;
@@ -18,7 +18,7 @@ const modelMeta = [
 const initialStats: Stats = { wins: 0, losses: 0, progress: 0 };
 
 const initialStatuses: Record<string, ModelStatus> = {
-  "GPT-4": "queued",
+  ChatGPT: "queued",
   Claude: "queued",
   Gemini: "queued",
 };

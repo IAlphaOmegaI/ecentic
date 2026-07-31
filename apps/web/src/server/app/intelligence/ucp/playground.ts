@@ -37,15 +37,16 @@ export const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
 
 // The playground drives one agent through the UCP tool flow — it demonstrates the
 // protocol, it does not compare vendors — so it has no reason to reach past the
-// provider we hold a first-party key for. `gpt-4o` resolves to the Azure
-// deployment (AZURE_DEPLOYMENT_GPT4O) and is billed to the Azure subscription
-// rather than to gateway credits.
+// provider we hold a first-party key for. The `gpt` seat resolves to the Azure
+// deployment named by AZURE_DEPLOYMENT_GPT and is billed to the Azure
+// subscription rather than to gateway credits — where that var is unset it falls
+// back to the same model on the gateway rather than failing.
 //
 // It also sidesteps the reason this used to pin 2.5-flash: Gemini 3 attaches a
 // thoughtSignature to each reasoning/tool-call step that must be replayed
 // verbatim, and rebuilding tool calls across turns via convertToModelMessages
 // could corrupt it → 400 "Corrupted thought signature".
-export const PLAYGROUND_MODEL = "gpt-4o";
+export const PLAYGROUND_MODEL = "gpt";
 
 // Single source of truth for the tool argument shapes the agent must follow, so
 // they never drift from the tool definitions below.

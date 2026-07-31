@@ -23,7 +23,7 @@ import { StatusPill, TopFindingCallout } from "./grid";
 const providers = [
   {
     id: "gpt4",
-    model: "GPT-4",
+    model: "ChatGPT",
     logo: "/images/chatgpt.svg",
     textColor: "text-primary",
     bgColor: "bg-primary",
@@ -158,7 +158,7 @@ export const SimulationModal = ({
                         AI Shopping Simulation
                       </p>
                       <p className="max-w-2xl font-light text-foreground-dimmed text-sm">
-                        Simulate how GPT-4, Claude & Gemini compare your
+                        Simulate how ChatGPT, Claude & Gemini compare your
                         products against your competitors and see who they pick.
                       </p>
                     </div>
@@ -260,57 +260,59 @@ export const SimulationModal = ({
 
                   <Motion.Item className="border-accent-foreground border-b px-8">
                     <div className="grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-x">
-                      {(["GPT-4", "Claude", "Gemini"] as const).map((model) => {
-                        const status = statuses[model];
-                        const provider = providers.find(
-                          (item) => item.model === model,
-                        );
-                        return (
-                          <div
-                            key={model}
-                            className="flex items-center justify-between bg-background-rich px-4 py-3"
-                          >
-                            <div className="flex items-center gap-2">
-                              {provider && (
-                                <Image
-                                  src={provider.logo}
-                                  alt={provider.model}
-                                  width={22}
-                                  height={22}
-                                />
-                              )}
-                              <span
-                                className={cn(
-                                  "font-medium text-sm",
-                                  modelColors[model],
+                      {(["ChatGPT", "Claude", "Gemini"] as const).map(
+                        (model) => {
+                          const status = statuses[model];
+                          const provider = providers.find(
+                            (item) => item.model === model,
+                          );
+                          return (
+                            <div
+                              key={model}
+                              className="flex items-center justify-between bg-background-rich px-4 py-3"
+                            >
+                              <div className="flex items-center gap-2">
+                                {provider && (
+                                  <Image
+                                    src={provider.logo}
+                                    alt={provider.model}
+                                    width={22}
+                                    height={22}
+                                  />
                                 )}
-                              >
-                                {model}
-                              </span>
+                                <span
+                                  className={cn(
+                                    "font-medium text-sm",
+                                    modelColors[model],
+                                  )}
+                                >
+                                  {model}
+                                </span>
+                              </div>
+                              <AnimatePresence mode="wait">
+                                <motion.span
+                                  key={status}
+                                  className={cn(
+                                    "font-medium text-xs",
+                                    status === "complete" && "text-success",
+                                    status === "running" && "text-primary",
+                                    status === "queued" &&
+                                      "text-foreground-dimmed/50",
+                                  )}
+                                  initial={{ opacity: 0, y: 3 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  exit={{ opacity: 0, y: -3 }}
+                                  transition={{ duration: 0.15 }}
+                                >
+                                  {status === "complete" && "Done"}
+                                  {status === "running" && "Running"}
+                                  {status === "queued" && "Queued"}
+                                </motion.span>
+                              </AnimatePresence>
                             </div>
-                            <AnimatePresence mode="wait">
-                              <motion.span
-                                key={status}
-                                className={cn(
-                                  "font-medium text-xs",
-                                  status === "complete" && "text-success",
-                                  status === "running" && "text-primary",
-                                  status === "queued" &&
-                                    "text-foreground-dimmed/50",
-                                )}
-                                initial={{ opacity: 0, y: 3 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -3 }}
-                                transition={{ duration: 0.15 }}
-                              >
-                                {status === "complete" && "Done"}
-                                {status === "running" && "Running"}
-                                {status === "queued" && "Queued"}
-                              </motion.span>
-                            </AnimatePresence>
-                          </div>
-                        );
-                      })}
+                          );
+                        },
+                      )}
                     </div>
                   </Motion.Item>
 

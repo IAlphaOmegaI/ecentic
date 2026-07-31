@@ -41,8 +41,7 @@ export const SettingsClient = ({
   });
 
   const [selectedModels, setSelectedModels] = useState([
-    "gpt-4",
-    "gpt-4o",
+    "gpt",
     "claude-3-5-sonnet",
   ]);
 

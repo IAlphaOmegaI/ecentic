@@ -382,8 +382,8 @@ export const DiscoveryClient = ({
             Add query
           </Button>
           <p className="mt-2 font-light text-foreground-dimmed text-sm">
-            Each query is sent to GPT-4o, Claude, Gemini and Perplexity, then we
-            rank the stores each one suggests.
+            Each query is sent to ChatGPT, Claude, Gemini and Perplexity, then
+            we rank the stores each one suggests.
           </p>
         </div>
       </div>
@@ -430,7 +430,7 @@ export const DiscoveryClient = ({
                 <div className="flex min-h-[24rem] flex-col items-center justify-center gap-3 text-foreground-dimmed">
                   <LoaderIcon className="size-6 animate-spin" />
                   <p className="text-sm">
-                    Querying GPT-4o, Claude, Gemini and Perplexity…
+                    Querying ChatGPT, Claude, Gemini and Perplexity…
                   </p>
                 </div>
               );

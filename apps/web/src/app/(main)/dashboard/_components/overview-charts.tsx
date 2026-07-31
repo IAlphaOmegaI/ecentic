@@ -39,7 +39,7 @@ type ActivityEntry = {
 };
 
 const modelBarColors: Record<string, string> = {
-  "GPT-4": "bg-primary",
+  ChatGPT: "bg-primary",
   Claude: "bg-warning",
   Gemini: "bg-success",
   Perplexity: "bg-info",
@@ -372,7 +372,7 @@ export namespace OverviewCharts {
 
 const getLogo = (label: string) => {
   switch (label) {
-    case "GPT-4":
+    case "ChatGPT":
       return "/images/chatgpt.svg";
     case "Claude":
       return "/images/claude.svg";

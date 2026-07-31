@@ -11,7 +11,7 @@
     {
       "name": "optimize-listings",
       "type": "skill-md",
-      "description": "Optimize ecommerce product listings so AI shopping agents (GPT-4, Claude, Gemini, Perplexity) recommend them. Use when improving titles, descriptions, attributes, or win rate against competitors.",
+      "description": "Optimize ecommerce product listings so AI shopping agents (ChatGPT, Claude, Gemini, Perplexity) recommend them. Use when improving titles, descriptions, attributes, or win rate against competitors.",
       "url": "/.well-known/agent-skills/optimize-listings/SKILL.md",
       "digest": "sha256:0bf31540026f66f6dbffe7c59e8a1d12202e6fbbfc77b8a83c3c6fb9709243f4"
     },

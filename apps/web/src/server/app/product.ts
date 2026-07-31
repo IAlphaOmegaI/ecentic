@@ -441,7 +441,7 @@ export const paginateWithIntelligence = withAuthentication(
 );
 
 const Model = {
-  GPT4: ["GPT-4", "gpt4"],
+  ChatGPT: ["ChatGPT", "gpt4"],
   Claude: ["Claude", "claude"],
   GEMINI: ["Gemini", "gemini"],
 } as const;

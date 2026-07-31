@@ -31,7 +31,7 @@ export const Open = () => (
       </SelectTrigger>
       <SelectPositioner>
         <SelectPopup style={popupStyle}>
-          <SelectItem value="gpt4">GPT-4</SelectItem>
+          <SelectItem value="gpt4">ChatGPT</SelectItem>
           <SelectItem value="claude">Claude</SelectItem>
           <SelectItem value="gemini">Gemini</SelectItem>
           <SelectItem value="perplexity">Perplexity</SelectItem>

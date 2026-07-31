@@ -109,21 +109,23 @@ export const ChartSkeleton = () => (
       </div>
 
       <div className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-y">
-        {(["GPT-4", "Claude", "Gemini", "Perplexity"] as const).map((model) => (
-          <div key={model} className="p-6">
-            <div className="flex w-full items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="size-8 animate-pulse bg-foreground/10" />
-                <div className="h-3.5 w-14 animate-pulse bg-foreground/10" />
+        {(["ChatGPT", "Claude", "Gemini", "Perplexity"] as const).map(
+          (model) => (
+            <div key={model} className="p-6">
+              <div className="flex w-full items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="size-8 animate-pulse bg-foreground/10" />
+                  <div className="h-3.5 w-14 animate-pulse bg-foreground/10" />
+                </div>
+                <div className="flex items-baseline gap-0.5">
+                  <div className="h-9 w-10 animate-pulse bg-foreground/10" />
+                  <div className="h-4 w-3 animate-pulse bg-foreground/10" />
+                </div>
               </div>
-              <div className="flex items-baseline gap-0.5">
-                <div className="h-9 w-10 animate-pulse bg-foreground/10" />
-                <div className="h-4 w-3 animate-pulse bg-foreground/10" />
-              </div>
+              <div className="mt-3 h-1 w-full animate-pulse bg-foreground/10" />
             </div>
-            <div className="mt-3 h-1 w-full animate-pulse bg-foreground/10" />
-          </div>
-        ))}
+          ),
+        )}
       </div>
 
       <div className="p-4">
@@ -246,7 +248,7 @@ export const TableSkeleton = () => (
             {[
               "Product",
               "Win Rate",
-              "GPT-4",
+              "ChatGPT",
               "Claude",
               "Gemini",
               "Perplexity",

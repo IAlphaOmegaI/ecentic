@@ -13,7 +13,7 @@ import { Environment } from "@/server/utils/environment";
 const models = [
   {
     id: "gpt4",
-    label: "GPT-4",
+    label: "ChatGPT",
     logo: "/images/chatgpt.svg",
     color: "bg-blue-500",
     textColor: "text-blue-500",
@@ -86,7 +86,7 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
           </>
         }
         points={[
-          "GPT-4, Claude, Gemini & Perplexity simulated real shopping comparisons",
+          "ChatGPT, Claude, Gemini & Perplexity simulated real shopping comparisons",
           "Every product was scored head-to-head against competitors",
           "This report shows exactly where you win — and where you lose",
         ]}

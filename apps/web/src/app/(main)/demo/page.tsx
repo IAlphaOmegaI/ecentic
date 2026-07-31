@@ -26,10 +26,10 @@ const assurances = [
 ] as const;
 
 const intro =
-  "We run your top products through GPT-4, Claude, Gemini, and Perplexity while you watch, show you why you win or lose, and scope the highest-impact listing fixes. Pick a slot below.";
+  "We run your top products through ChatGPT, Claude, Gemini, and Perplexity while you watch, show you why you win or lose, and scope the highest-impact listing fixes. Pick a slot below.";
 
 const description =
-  "Book a 15-minute ecentic demo. We run your top products through GPT-4, Claude, Gemini, and Perplexity live, show you why you win or lose, and scope the highest-impact listing fixes.";
+  "Book a 15-minute ecentic demo. We run your top products through ChatGPT, Claude, Gemini, and Perplexity live, show you why you win or lose, and scope the highest-impact listing fixes.";
 
 const faq = [
   {

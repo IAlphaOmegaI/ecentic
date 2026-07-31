@@ -103,7 +103,7 @@ export const TableSkeleton = () => (
               "Product",
               "Price",
               "Win Rate",
-              "GPT-4",
+              "ChatGPT",
               "Claude",
               "Gemini",
               "Perplexity",
