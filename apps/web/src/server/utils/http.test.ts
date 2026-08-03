@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
   ConflictError,
+  InvalidSignatureError,
   NotFoundError,
   UnauthenticatedError,
   UnauthorizedError,
@@ -33,6 +34,9 @@ describe("respond", () => {
 
   test.each([
     [new UnauthenticatedError("nope"), 401],
+    // Shopify requires a 401 from the mandatory compliance webhooks when the
+    // HMAC does not verify — this row is that contract.
+    [new InvalidSignatureError("nope"), 401],
     [new UnauthorizedError("nope"), 403],
     [new NotFoundError("nope"), 404],
     [new ConflictError("nope"), 409],

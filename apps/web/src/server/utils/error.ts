@@ -94,6 +94,21 @@ export class InvalidCredentialsError extends error(
 ) {}
 
 /**
+ * A public endpoint turned away a caller that failed its signature check — a
+ * webhook HMAC, a signed event. Unlike the other authentication failures this
+ * one is the control doing its job against traffic that was never trusted:
+ * forged posts, scanners, and Shopify's own app-review probe, which sends a
+ * deliberately invalid HMAC to confirm the endpoint answers 401. Nothing is
+ * broken, so it is never reported as a defect — endpoints that want a record
+ * capture it themselves at `warning`, with the delivery it arrived on.
+ */
+export class InvalidSignatureError extends error(
+  "invalid-signature",
+  AuthenticationError,
+  { expected: true },
+) {}
+
+/**
  * Whether an error is a failure the product anticipates and handles — a business
  * rule the user can act on — rather than a defect. Expected errors still travel
  * as failed `Result`s and still reach the user, but `withContext` does not report
@@ -126,6 +141,7 @@ export namespace ErrorProtocol {
     [ParseError.name]: ParseError,
     [UnauthenticatedError.name]: UnauthenticatedError,
     [UnauthorizedError.name]: UnauthorizedError,
+    [InvalidSignatureError.name]: InvalidSignatureError,
   };
 
   export const serialize = <E extends Error = Error>(

@@ -1,9 +1,10 @@
+import * as Sentry from "@sentry/nextjs";
 import { resultify } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
 import { schema } from "@/server/database";
 import { withContext } from "@/server/utils/context";
 import { Environment } from "@/server/utils/environment";
-import { UnauthenticatedError, ValidationError } from "@/server/utils/error";
+import { InvalidSignatureError, ValidationError } from "@/server/utils/error";
 import { verifyWebhookHmac } from "@/server/utils/shopify";
 import * as Attribution from "../billing/attribution";
 import * as Store from "../store";
@@ -147,11 +148,34 @@ export const handle = withContext(
 
     // Runs against the raw body, before anything parses it — the signature
     // covers the exact bytes Shopify sent.
-    if (!verifyWebhookHmac(body, signature, secret))
+    //
+    // A rejection here is the control working, not a defect: anyone can POST
+    // this URL, and Shopify's app review deliberately sends a bad HMAC to
+    // confirm the 401. So it is recorded at `warning` and returned as an
+    // expected error, which keeps `withContext` from also raising it as an
+    // exception. The one case that *is* ours still surfaces in the same issue —
+    // repeated rejections carrying a real `webhookId` are genuine deliveries
+    // signed with a secret this deployment no longer matches.
+    if (!verifyWebhookHmac(body, signature, secret)) {
+      // Fields ride in `extra`, not `tags`: every one of them comes off an
+      // unverified request, and an indexed tag would let a flood of forged
+      // headers pollute Sentry's tag cardinality.
+      Sentry.captureMessage("Shopify webhook failed HMAC verification", {
+        level: "warning",
+        tags: { route: "shopify-webhook" },
+        extra: {
+          shop,
+          topic,
+          webhookId: webhookId ?? "absent",
+          bodyBytes: body.length,
+        },
+      });
+
       return {
         success: false as const,
-        error: new UnauthenticatedError("Invalid HMAC signature"),
+        error: new InvalidSignatureError("Invalid HMAC signature"),
       };
+    }
 
     const payload = resultify(() => JSON.parse(body) as unknown);
 
