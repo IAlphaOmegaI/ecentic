@@ -106,14 +106,37 @@ const redactShop = async (shop: string) => {
 
 export const handle = withContext(
   async (
-    _context,
+    context,
     {
       shop,
       topic,
       signature,
       body,
-    }: { shop: string; topic: string; signature: string; body: string },
+      webhookId,
+    }: {
+      shop: string;
+      topic: string;
+      signature: string;
+      body: string;
+      webhookId?: string;
+    },
   ) => {
+    // Recorded before anything can fail, so a rejection below arrives in Sentry
+    // with the fields that tell a forged request apart from a real delivery we
+    // are dropping: Shopify reuses one `webhookId` across all retries of the
+    // same event, so a burst under a single id is our own signature check
+    // failing on genuine traffic, while lone unidentified hits are probes.
+    // Never the body — it is unverified at this point and may carry order data.
+    context.span.addBreadcrumb({
+      category: "shopify.webhook.received",
+      data: {
+        shop,
+        topic,
+        "webhook.id": webhookId ?? "absent",
+        "body.bytes": body.length,
+      },
+    });
+
     const secret = process.env.SHOPIFY_API_SECRET;
 
     if (!secret)
