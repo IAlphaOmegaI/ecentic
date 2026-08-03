@@ -48,10 +48,16 @@ const plans = [
       "Flat monthly, no performance fee. Up to 100 products, daily simulations, competitor battlecards, and manual optimization suggestions.",
   },
   {
-    name: "Dominate",
+    name: "Scale",
     price: "44.90",
     description:
-      "Flat monthly, no performance fee. Up to 1000 products, continuous simulations, auto-optimization with one-click publish, drift alerts, and UCP generation.",
+      "Flat monthly, no performance fee. Up to 1000 products, continuous simulations, auto-optimization with one-click publish, and competitor battlecards.",
+  },
+  {
+    name: "Dominate",
+    price: "149",
+    description:
+      "Everything in Scale plus model drift alerts and UCP generation. The tier partner deals (Y Combinator, Techstars) are redeemed against.",
   },
   {
     name: "Enterprise",
@@ -68,15 +74,15 @@ const faq = [
       "Yes. The Scan plan runs a one-time simulation of your top 10 products across GPT-4, Claude, Gemini, and Perplexity and returns a Win Rate Report. It needs no credit card and takes about two minutes to set up.",
   },
   {
-    question: "What is the difference between Compete and Dominate?",
+    question: "What is the difference between Compete, Scale, and Dominate?",
     answer:
-      "Compete is for teams that want to understand where they lose: up to 100 products, daily simulations, and competitor battlecards with manual suggestions. Dominate adds scale and automation: up to 1000 products, continuous simulations, one-click or auto-published optimizations, model drift alerts, and UCP generation.",
+      "Compete is for teams that want to understand where they lose: up to 100 products, daily simulations, and competitor battlecards with manual suggestions. Scale adds volume and automation: up to 1000 products, continuous simulations, and one-click or auto-published optimizations. Dominate adds the protocol layer on top of Scale — model drift alerts and UCP generation — and is the tier our partner deals with Y Combinator and Techstars are redeemed against.",
   },
   {
     question:
       "What is the difference between pay-as-you-go and a subscription?",
     answer:
-      "Pay-as-you-go is free to start with no card and unlocks every feature — you only pay a 3% fee on orders we can attribute to AI-agent traffic we optimize for. A subscription (Compete or Dominate) is a flat monthly price with no performance fee, for teams that prefer predictable billing. Both run the same optimization loop; pick whichever pricing fits how you'd rather pay.",
+      "Pay-as-you-go is free to start with no card and unlocks every feature — you only pay a 3% fee on orders we can attribute to AI-agent traffic we optimize for. A subscription (Compete, Scale, or Dominate) is a flat monthly price with no performance fee, for teams that prefer predictable billing. Both run the same optimization loop; pick whichever pricing fits how you'd rather pay.",
   },
   {
     question: "How does the pay-as-you-go performance fee work?",
@@ -86,7 +92,7 @@ const faq = [
   {
     question: "Can I change plans or cancel later?",
     answer:
-      "You can start on the free Scan, activate pay-as-you-go for ongoing optimization at no upfront cost, switch to a flat Compete or Dominate subscription when you want predictable billing, and move to Enterprise once you need custom limits or security. Nothing locks you into a long contract to try the platform.",
+      "You can start on the free Scan, activate pay-as-you-go for ongoing optimization at no upfront cost, switch to a flat Compete, Scale, or Dominate subscription when you want predictable billing, and move to Enterprise once you need custom limits or security. Nothing locks you into a long contract to try the platform.",
   },
   {
     question: "When should I talk to sales instead of self-serving?",
@@ -96,7 +102,7 @@ const faq = [
   {
     question: "What is the EU Presence bundle?",
     answer:
-      "We partnered with EU Presence so you can go live in Europe and stay picked by AI agents in one engagement. The Compliance + AI Visibility bundle combines their GDPR representative, GPSR responsible person, and Privacy Center Plus with ecentic Dominate — billed together with a 20% bundle discount, no minimums, and no setup fees. Book a bundle call from the pricing page to set it up.",
+      "We partnered with EU Presence so you can go live in Europe and stay picked by AI agents in one engagement. The Compliance + AI Visibility bundle combines their GDPR representative, GPSR responsible person, and Privacy Center Plus with ecentic Scale — billed together with a 20% bundle discount, no minimums, and no setup fees. Book a bundle call from the pricing page to set it up.",
   },
 ] as const;
 
@@ -126,7 +132,7 @@ export default () => {
         "@type": "AggregateOffer",
         priceCurrency: "USD",
         lowPrice: "0",
-        highPrice: "44.90",
+        highPrice: "149",
         offerCount: plans.length,
         offers: plans
           .filter((plan) => plan.price !== "Custom")

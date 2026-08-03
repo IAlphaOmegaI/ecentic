@@ -13,7 +13,7 @@ type Row = {
 const rows: readonly Row[] = [
   {
     label: "Price",
-    dominate: "$44.90/mo",
+    dominate: "$149/mo",
     enterprise: "Custom",
   },
   {

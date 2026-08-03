@@ -15,12 +15,53 @@ type Props = {
   performanceFee: PerformanceFee.PeriodSummary | null;
 };
 
-type SubscriptionPlan = "compete" | "dominate";
+type SubscriptionPlan = "compete" | "scale" | "dominate";
 
 const PLAN_META = {
-  compete: { label: "Compete Plan", price: "14.90" },
-  dominate: { label: "Dominate Plan", price: "44.90" },
+  compete: { name: "Compete", label: "Compete Plan", price: "14.90" },
+  scale: { name: "Scale", label: "Scale Plan", price: "44.90" },
+  dominate: { name: "Dominate", label: "Dominate Plan", price: "149" },
 } as const;
+
+/** Next tier up for the in-dashboard upgrade button; Dominate is the ceiling. */
+const UPGRADE_LADDER = {
+  compete: "scale",
+  scale: "dominate",
+  dominate: null,
+} as const satisfies Record<SubscriptionPlan, SubscriptionPlan | null>;
+
+/** Cheapest first. Explicit so the button order does not ride on key order. */
+const PLAN_ORDER = [
+  "compete",
+  "scale",
+  "dominate",
+] as const satisfies readonly SubscriptionPlan[];
+
+const PlanCheckoutButtons = ({
+  onCheckout,
+  isCheckingOut,
+  checkoutPlan,
+}: {
+  onCheckout: (plan: SubscriptionPlan) => void;
+  isCheckingOut: boolean;
+  checkoutPlan: SubscriptionPlan | null;
+}) => (
+  <div className="flex flex-wrap gap-3">
+    {PLAN_ORDER.map((plan) => (
+      <Button
+        key={plan}
+        color="neutral"
+        className="flex-1"
+        disabled={isCheckingOut}
+        onClick={() => onCheckout(plan)}
+      >
+        {isCheckingOut && checkoutPlan === plan
+          ? "Loading…"
+          : `${PLAN_META[plan].name} · $${PLAN_META[plan].price}/mo`}
+      </Button>
+    ))}
+  </div>
+);
 
 const STATUS_PILL_CLASS_NAME =
   "rounded-full px-2 py-0.5 font-semibold text-[11px] uppercase tracking-[0.05em]";
@@ -81,7 +122,9 @@ const ActivePlan = ({
   checkoutPlan: SubscriptionPlan | null;
 }) => {
   const planKey =
-    subscription.plan === "compete" || subscription.plan === "dominate"
+    subscription.plan === "compete" ||
+    subscription.plan === "scale" ||
+    subscription.plan === "dominate"
       ? subscription.plan
       : null;
   const meta = planKey ? PLAN_META[planKey] : null;
@@ -89,8 +132,9 @@ const ActivePlan = ({
   const statusClass =
     STATUS_STYLES[statusKey] ?? "bg-background-dimmed text-foreground-dimmed";
   const statusLabel = STATUS_LABELS[statusKey] ?? statusKey;
-  const upgradeTarget: SubscriptionPlan | null =
-    planKey === "compete" ? "dominate" : null;
+  const upgradeTarget: SubscriptionPlan | null = planKey
+    ? UPGRADE_LADDER[planKey]
+    : null;
 
   return (
     <>
@@ -141,7 +185,7 @@ const ActivePlan = ({
           >
             {isCheckingOut && checkoutPlan === upgradeTarget
               ? "Loading…"
-              : "Upgrade to Dominate"}
+              : `Upgrade to ${PLAN_META[upgradeTarget].name}`}
           </Button>
         )}
         <Button color="neutral" onClick={onManage} disabled={isManaging}>
@@ -196,27 +240,12 @@ const PaygPlan = ({
         Prefer predictable billing? Switch to a flat monthly plan (no
         performance fee):
       </p>
-      <div className="mt-3 flex flex-wrap gap-3">
-        <Button
-          color="neutral"
-          className="flex-1"
-          disabled={isCheckingOut}
-          onClick={() => onCheckout("compete")}
-        >
-          {isCheckingOut && checkoutPlan === "compete"
-            ? "Loading…"
-            : "Compete · $14.90/mo"}
-        </Button>
-        <Button
-          color="neutral"
-          className="flex-1"
-          disabled={isCheckingOut}
-          onClick={() => onCheckout("dominate")}
-        >
-          {isCheckingOut && checkoutPlan === "dominate"
-            ? "Loading…"
-            : "Dominate · $44.90/mo"}
-        </Button>
+      <div className="mt-3">
+        <PlanCheckoutButtons
+          onCheckout={onCheckout}
+          isCheckingOut={isCheckingOut}
+          checkoutPlan={checkoutPlan}
+        />
       </div>
     </div>
   </>
@@ -254,28 +283,11 @@ const NoPlan = ({
       >
         {isStartingPayg ? "Loading…" : "Start Pay-as-you-go — free, no card"}
       </Button>
-      <div className="flex flex-wrap gap-3">
-        <Button
-          color="neutral"
-          className="flex-1"
-          disabled={isCheckingOut}
-          onClick={() => onCheckout("compete")}
-        >
-          {isCheckingOut && checkoutPlan === "compete"
-            ? "Loading…"
-            : "Compete · $14.90/mo"}
-        </Button>
-        <Button
-          color="neutral"
-          className="flex-1"
-          disabled={isCheckingOut}
-          onClick={() => onCheckout("dominate")}
-        >
-          {isCheckingOut && checkoutPlan === "dominate"
-            ? "Loading…"
-            : "Dominate · $44.90/mo"}
-        </Button>
-      </div>
+      <PlanCheckoutButtons
+        onCheckout={onCheckout}
+        isCheckingOut={isCheckingOut}
+        checkoutPlan={checkoutPlan}
+      />
     </div>
   </>
 );

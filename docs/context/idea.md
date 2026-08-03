@@ -32,7 +32,8 @@ AI agents don't see ads, don't scroll, don't read marketing copy. They read stru
 |------|-------|--------|-------------|
 | Scan | Free | 10 products | One-time simulation across 3 models, basic attribute analysis |
 | Compete | $14.90/mo | 100 products | Daily simulations, competitor battlecards, manual suggestions |
-| Dominate | $44.90/mo | 1000 products | Continuous simulations, auto-optimization + one-click publish, model drift alerts, UCP generation |
+| Scale | $44.90/mo | 1000 products | Continuous simulations, auto-optimization + one-click publish |
+| Dominate | $149/mo | 1000 products | Everything in Scale, plus model drift alerts and UCP generation. The tier partner deals (YC, Techstars) are redeemed against |
 | Enterprise | Contact | Custom | Custom limits, enterprise security, dedicated support |
 
 ---

@@ -12,6 +12,7 @@ type Row = {
   scan: Cell;
   payg: Cell;
   compete: Cell;
+  scale: Cell;
   dominate: Cell;
 };
 
@@ -21,13 +22,15 @@ const rows: readonly Row[] = [
     scan: "Free · one-time",
     payg: "3% of AI-attributed orders",
     compete: "$14.90/mo",
-    dominate: "$44.90/mo",
+    scale: "$44.90/mo",
+    dominate: "$149/mo",
   },
   {
     label: "Performance fee",
     scan: "None",
     payg: "3% · capped at $500/mo",
     compete: "None",
+    scale: "None",
     dominate: "None",
   },
   {
@@ -35,6 +38,7 @@ const rows: readonly Row[] = [
     scan: "Top 10",
     payg: "Up to 1000",
     compete: "Up to 100",
+    scale: "Up to 1000",
     dominate: "Up to 1000",
   },
   {
@@ -42,6 +46,7 @@ const rows: readonly Row[] = [
     scan: "One-time",
     payg: "Continuous",
     compete: "Daily",
+    scale: "Continuous",
     dominate: "Continuous",
   },
   {
@@ -49,6 +54,7 @@ const rows: readonly Row[] = [
     scan: true,
     payg: true,
     compete: true,
+    scale: true,
     dominate: true,
   },
   {
@@ -56,6 +62,7 @@ const rows: readonly Row[] = [
     scan: false,
     payg: true,
     compete: true,
+    scale: true,
     dominate: true,
   },
   {
@@ -63,6 +70,7 @@ const rows: readonly Row[] = [
     scan: false,
     payg: "Automatic",
     compete: "Manual",
+    scale: "Automatic",
     dominate: "Automatic",
   },
   {
@@ -70,6 +78,7 @@ const rows: readonly Row[] = [
     scan: false,
     payg: true,
     compete: false,
+    scale: true,
     dominate: true,
   },
   {
@@ -77,6 +86,7 @@ const rows: readonly Row[] = [
     scan: false,
     payg: true,
     compete: false,
+    scale: false,
     dominate: true,
   },
   {
@@ -84,6 +94,7 @@ const rows: readonly Row[] = [
     scan: false,
     payg: true,
     compete: false,
+    scale: false,
     dominate: true,
   },
 ] as const;
@@ -128,7 +139,7 @@ export const Compare = () => (
         <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
         <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[48rem] border-collapse">
+          <table className="w-full min-w-[56rem] border-collapse">
             <thead>
               <tr className="border-accent-foreground border-b bg-background-dimmed">
                 <th className="w-1/3 p-4 text-left font-medium text-foreground-dimmed text-sm uppercase tracking-[0.18em]">
@@ -142,6 +153,9 @@ export const Compare = () => (
                 </th>
                 <th className="p-4 text-center font-body font-medium text-foreground text-lg">
                   Compete
+                </th>
+                <th className="p-4 text-center font-body font-medium text-foreground text-lg">
+                  Scale
                 </th>
                 <th className="p-4 text-center font-body font-medium text-foreground text-lg">
                   Dominate
@@ -165,6 +179,9 @@ export const Compare = () => (
                   </td>
                   <td className="p-4">
                     <CompareCell value={row.compete} />
+                  </td>
+                  <td className="p-4">
+                    <CompareCell value={row.scale} />
                   </td>
                   <td className="p-4">
                     <CompareCell value={row.dominate} />
@@ -195,6 +212,11 @@ export const Compare = () => (
                 </td>
                 <td className="p-4 text-center">
                   <PricingCTA plan="compete" className={compareCtaClassName}>
+                    Start
+                  </PricingCTA>
+                </td>
+                <td className="p-4 text-center">
+                  <PricingCTA plan="scale" className={compareCtaClassName}>
                     Start
                   </PricingCTA>
                 </td>

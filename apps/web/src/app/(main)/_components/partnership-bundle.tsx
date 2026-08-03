@@ -31,9 +31,12 @@ const items: BundleItem[] = [
     detail: "Hosted trust hub, DSR intake, and policy library",
     price: 57,
   },
+  // Carries Scale, not Dominate: Scale is the tier that kept this $44.90 price
+  // point when Dominate moved to $149. The bundle total is published on EU
+  // Presence's own pricing page, so the joint price cannot move without them.
   {
-    name: "ecentic Dominate",
-    detail: "Continuous agent simulations, auto-optimization, and UCP",
+    name: "ecentic Scale",
+    detail: "Continuous agent simulations and auto-optimization",
     price: 44.9,
     highlighted: true,
   },

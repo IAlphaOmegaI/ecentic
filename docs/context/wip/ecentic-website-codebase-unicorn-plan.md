@@ -234,11 +234,11 @@ This is a decent funnel. It's missing social proof, it's missing a dedicated "wh
 
 ### 3.3 Pricing page — sharpen the tiers
 
-The code already enforces a 100-product cap and publishable-platform gating. The current marketing pricing (Scan free / Compete $14.90 / Dominate $44.90 / Enterprise) is reasonable but can be sharper. Recommendations:
+The code already enforces a 100-product cap and publishable-platform gating. The current marketing pricing (Scan free / Compete $14.90 / Scale $44.90 / Dominate $149 / Enterprise) is reasonable but can be sharper. Recommendations:
 
 - **Scan (Free)** — keep. Its job is to qualify leads and fill the demo dashboard.
 - **Compete ($14.90/mo)** — add "weekly optimization digest" and "share-scan links" (both already partially in code).
-- **Dominate ($44.90/mo)** — add "unlimited scan frequency", "agent-traffic alerts", "team seats (3)".
+- **Dominate ($149/mo)** — add "unlimited scan frequency", "agent-traffic alerts", "team seats (3)".
 - **Enterprise (custom)** — explicit promises that match pipeline-logo expectations: "SSO, SOC 2 Type II, custom SLAs, multi-brand rollups, dedicated CSM, API access, UCP signing service". Don't promise what the code can't deliver in ≤90 days post-signing.
 
 ### 3.4 Hero copy — minor sharpening

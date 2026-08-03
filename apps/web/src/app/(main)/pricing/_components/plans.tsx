@@ -10,7 +10,7 @@ import woocommerce from "@/public/images/woocommerce.svg";
 import { PricingCTA } from "./pricing-cta";
 
 type Plan = {
-  id: "payg" | "compete" | "dominate";
+  id: "payg" | "compete" | "scale" | "dominate";
   name: string;
   category: string;
   tagline: string;
@@ -59,10 +59,10 @@ const plans: readonly Plan[] = [
     cta: "Start Competing",
   },
   {
-    id: "dominate",
-    name: "Dominate",
+    id: "scale",
+    name: "Scale",
     category: "Flat monthly",
-    tagline: "Win on autopilot",
+    tagline: "Optimize on autopilot",
     figure: "$44.90",
     suffix: "/mo",
     note: "Flat monthly · no performance fee.",
@@ -70,8 +70,23 @@ const plans: readonly Plan[] = [
       "Up to 1000 products",
       "Continuous simulations",
       "Auto-optimization + one-click publish",
+      "Competitor battlecards",
+    ],
+    cta: "Start Scaling",
+  },
+  {
+    id: "dominate",
+    name: "Dominate",
+    category: "Flat monthly",
+    tagline: "Own the agent shelf",
+    figure: "$149",
+    suffix: "/mo",
+    note: "Flat monthly · no performance fee.",
+    features: [
+      "Everything in Scale",
       "Model drift alerts",
       "UCP generation",
+      "Partner deal tier (YC, Techstars)",
     ],
     cta: "Start Dominating",
   },
@@ -168,7 +183,9 @@ export const Plans = () => (
         </p>
       </div>
 
-      <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-3">
+      {/* Four plans: two-up on tablet, one row of four once there is width for
+          it. Three columns would strand a single card on its own row. */}
+      <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2 xl:grid-cols-4">
         <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
         <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
         {plans.map((plan) => (
