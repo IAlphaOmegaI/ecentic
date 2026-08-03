@@ -31,10 +31,13 @@ const items: BundleItem[] = [
     detail: "Hosted trust hub, DSR intake, and policy library",
     price: 57,
   },
+  // Carries Scale, not Dominate: Scale is the tier that kept this $44.90 price
+  // point when Dominate moved to $149. The bundle total is published on EU
+  // Presence's own pricing page, so the joint price cannot move without them.
   {
-    name: "ecentic Dominate",
-    detail: "Continuous agent simulations, auto-optimization, and UCP",
-    price: 449,
+    name: "ecentic Scale",
+    detail: "Continuous agent simulations and auto-optimization",
+    price: 44.9,
     highlighted: true,
   },
 ];
@@ -42,6 +45,14 @@ const items: BundleItem[] = [
 const regular = items.reduce((sum, item) => sum + item.price, 0);
 const discounted = regular * 0.8;
 const saved = regular - discounted;
+
+/**
+ * Bundle line items are no longer whole dollars, so a bare `${amount}` would
+ * render "$44.9" and a `toFixed(0)` on the totals would quote a price we do not
+ * actually charge. Show cents only when there are cents.
+ */
+const format = (amount: number) =>
+  Number.isInteger(amount) ? `${amount}` : amount.toFixed(2);
 
 const guarantees = [
   "No minimums",
@@ -123,7 +134,7 @@ export const PartnershipBundle = () => (
                   </div>
                 </div>
                 <span className="shrink-0 font-medium text-foreground tabular-nums">
-                  ${item.price}
+                  ${format(item.price)}
                   <span className="font-light text-foreground-dimmed text-sm">
                     /mo
                   </span>
@@ -163,7 +174,7 @@ export const PartnershipBundle = () => (
             </p>
             <div className="flex items-end gap-2">
               <span className="font-body font-semibold text-6xl text-primary leading-none tracking-tight md:text-7xl">
-                ${discounted.toFixed(0)}
+                ${format(discounted)}
               </span>
               <span className="mb-1.5 font-light text-foreground-dimmed text-xl">
                 /mo
@@ -171,10 +182,10 @@ export const PartnershipBundle = () => (
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-foreground-dimmed line-through">
-                ${regular}/mo
+                ${format(regular)}/mo
               </span>
               <span className="rounded-full bg-success/10 px-2.5 py-0.5 font-medium text-sm text-success">
-                Save ${saved.toFixed(0)}/mo · 20% off
+                Save ${format(saved)}/mo · 20% off
               </span>
             </div>
 

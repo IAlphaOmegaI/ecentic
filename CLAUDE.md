@@ -250,14 +250,15 @@ AI_GATEWAY_API_KEY                        # Vercel AI Gateway — Claude/Gemini/
 
 Billing. Three separate products: free **Scan** (one-time, no billing row),
 **Pay-as-you-go** (free to start, no card until a fee is due, billed only via the
-performance fee), and flat **Subscription** (Compete/Dominate, no fee). The fee
+performance fee), and flat **Subscription** (Compete/Scale/Dominate, no fee). The fee
 never rides a subscription. PAYG runs on calendar months; the Stripe rail charges
 one-off invoices (Shopify-installed stores bill via Shopify usage records).
 ```
 STRIPE_SECRET_KEY
 STRIPE_WEBHOOK_SECRET
-STRIPE_SUB_COMPETE                        # recurring price id — Compete plan
-STRIPE_SUB_DOMINATE                       # recurring price id — Dominate plan
+STRIPE_SUB_COMPETE                        # recurring price id — Compete plan ($14.90/mo)
+STRIPE_SUB_SCALE                          # recurring price id — Scale plan ($44.90/mo)
+STRIPE_SUB_DOMINATE                       # recurring price id — Dominate plan ($149/mo, top tier)
 APP_HOST                                  # e.g. https://ecentic.ai (checkout return + webhook origin)
 CRON_SECRET                               # Bearer secret for /api/cron/* (scan + billing)
 

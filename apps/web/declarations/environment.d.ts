@@ -59,6 +59,7 @@ declare namespace NodeJS {
     readonly STRIPE_SECRET_KEY: string;
     readonly STRIPE_WEBHOOK_SECRET: string;
     readonly STRIPE_SUB_COMPETE: string;
+    readonly STRIPE_SUB_SCALE: string;
     readonly STRIPE_SUB_DOMINATE: string;
     /** Stripe coupon ids for partner deals; unset disables the deal. */
     readonly STRIPE_DEAL_COUPON_YC?: string;
