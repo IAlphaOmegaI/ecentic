@@ -74,11 +74,11 @@ const azure = createAzure({
 });
 
 // Azure serves models under DEPLOYMENT names picked at deploy time, and those
-// rarely match the model's own name — this account serves `gpt-chat-latest`
-// under the deployment `gpt-5.3-chat`. So a seat is Azure-routable only when an
-// env var names its deployment. Guessing a name instead is what made every
-// ChatGPT call 404 with "The API deployment for this resource does not exist" in
-// an environment where the var was unset.
+// need not match the model's own name — an earlier resource served
+// `gpt-chat-latest` under a deployment called `gpt-5.3-chat`. So a seat is
+// Azure-routable only when an env var names its deployment. Guessing a name
+// instead is what made every ChatGPT call 404 with "The API deployment for this
+// resource does not exist" in an environment where the var was unset.
 //
 // Thunks, not values: read per call so the answer reflects the environment the
 // runtime actually has, not whatever existed when this module was first imported.
@@ -91,11 +91,12 @@ const AZURE_DEPLOYMENTS: Record<string, () => string | undefined> = {
 const azureConfigured = () =>
   Boolean(process.env.AZURE_RESOURCE_NAME && process.env.AZURE_API_KEY);
 
-// The `gpt` seat is pinned to the model our Azure deployment serves today
-// (`gpt-chat-latest` is 5.3-chat) so both rails judge with the same model.
-// Azure's alias rolls forward on its own schedule; this one moves when we
-// change it, which is the point — a scan should be reproducible.
-const GPT_GATEWAY_MODEL = "gpt-5.3-chat";
+// The `gpt` seat's gateway spelling, pinned to whatever model AZURE_DEPLOYMENT_GPT
+// serves so both rails judge with the SAME model — otherwise a scan that falls
+// back to the gateway is scored by a different model under the same "ChatGPT"
+// label, which is the drift this seat exists to prevent. Keep the two in step:
+// repoint the Azure deployment, change this line in the same commit.
+const GPT_GATEWAY_MODEL = "gpt-5.4";
 
 const gatewayModel = (provider: string, name: string) =>
   `${provider}/${name === "gpt" ? GPT_GATEWAY_MODEL : name}`;
