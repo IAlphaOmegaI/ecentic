@@ -183,9 +183,8 @@ export const Plans = () => (
         </p>
       </div>
 
-      {/* Four plans: two-up on tablet, one row of four once there is width for
-          it. Three columns would strand a single card on its own row. */}
-      <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2 xl:grid-cols-4">
+      {/* Four plans: stack on mobile, 2×2 from tablet up. */}
+      <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2">
         <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
         <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
         {plans.map((plan) => (
