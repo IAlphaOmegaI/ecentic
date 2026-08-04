@@ -124,7 +124,7 @@ export const Compare = () => (
       {/* Top corners are owned by the fee explainer's bottom pluses; bottom
           corners by the partnership bundle's top pluses. */}
       <div className="p-6 md:p-12">
-        <span className="font-normal text-3xl text-primary">02</span>
+        <span className="font-normal text-3xl text-primary">03</span>
         <h2 className="mt-2 font-body font-medium text-4xl text-foreground md:text-6xl">
           Compare plans
         </h2>

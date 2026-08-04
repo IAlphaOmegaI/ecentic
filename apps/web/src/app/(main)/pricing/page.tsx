@@ -174,7 +174,7 @@ export default () => {
       <PartnershipBundle />
 
       <ContentPageSection
-        number="03"
+        number="04"
         title="Pricing FAQ"
         description="Common questions about plans, limits, and when to talk to sales."
         gutter

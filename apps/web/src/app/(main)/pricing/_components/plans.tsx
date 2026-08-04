@@ -180,17 +180,16 @@ export const Plans = () => (
 
       {/* Step two — pick a payment model */}
       <div className="p-6 md:p-12">
-        <h2 className="font-body font-medium text-3xl text-foreground md:text-5xl">
-          Choose how you pay.
+        <span className="font-normal text-3xl text-primary">01</span>
+        <h2 className="mt-2 max-w-2xl font-body font-medium text-4xl text-foreground md:text-6xl">
+          Choose how you pay
         </h2>
-        <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-lg">
+        <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-xl">
           Every plan runs the same simulate → diagnose → optimize loop. Start
           with pay-as-you-go and pay only on agent-driven orders, or pick a flat
-          monthly plan when you want predictable billing.
-        </p>
-        <p className="mt-3 max-w-2xl text-foreground-dimmed text-sm">
-          No minimums, month-to-month billing, and no setup fees. Save 20% with
-          the EU Presence bundle.
+          monthly plan when you want predictable billing. No minimums,
+          month-to-month, and no setup fees — save 20% with the EU Presence
+          bundle.
         </p>
       </div>
 
