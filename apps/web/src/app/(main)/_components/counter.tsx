@@ -21,7 +21,12 @@ const parse = (value: string) => {
   const suffix = match[3] ?? "";
   const fractional = number.split(".")[1] ?? "";
 
-  return { prefix, suffix, target: Number(number), decimals: fractional.length };
+  return {
+    prefix,
+    suffix,
+    target: Number(number),
+    decimals: fractional.length,
+  };
 };
 
 export const Counter = ({ value, delay = 0, className }: CounterProps) => {

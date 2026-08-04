@@ -4,11 +4,11 @@ import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import Link from "next/link";
 import { Plus } from "@/components/plus";
-import { ANONYMOUS_MESSAGE_LIMIT } from "@/server/app/intelligence/ucp/playground-limit";
 import chatgpt from "@/public/images/chatgpt.svg";
 import shopify from "@/public/images/shopify.svg";
 import ucp from "@/public/images/ucp.svg";
 import woocommerce from "@/public/images/woocommerce.svg";
+import { ANONYMOUS_MESSAGE_LIMIT } from "@/server/app/intelligence/ucp/playground-limit";
 import { PlaygroundArt, ScanArt, UcpArt } from "./resource-art";
 
 type Tool = {
@@ -105,13 +105,21 @@ export const Tools = () => (
           pressure-test a live storefront — without signing a contract.
         </p>
         <div className="mt-6 flex flex-wrap items-center gap-3">
-          <Image src={shopify} alt="Shopify" className="h-5 w-auto opacity-80" />
+          <Image
+            src={shopify}
+            alt="Shopify"
+            className="h-5 w-auto opacity-80"
+          />
           <Image
             src={woocommerce}
             alt="WooCommerce"
             className="h-5 w-auto opacity-80"
           />
-          <Image src={ucp} alt="Universal Commerce Protocol" className="size-5" />
+          <Image
+            src={ucp}
+            alt="Universal Commerce Protocol"
+            className="size-5"
+          />
           <Image src={chatgpt} alt="ChatGPT" className="size-5 opacity-80" />
         </div>
       </div>
@@ -154,7 +162,9 @@ export const Tools = () => (
                     key={feature}
                     className={cn(
                       "flex items-center gap-2 text-sm",
-                      tool.highlighted ? "text-white/80" : "text-foreground-dimmed",
+                      tool.highlighted
+                        ? "text-white/80"
+                        : "text-foreground-dimmed",
                     )}
                   >
                     <span

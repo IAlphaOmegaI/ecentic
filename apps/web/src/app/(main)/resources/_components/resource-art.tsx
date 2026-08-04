@@ -26,7 +26,11 @@ const LogoTile = ({
   className?: string;
 }) => (
   <span className="flex size-10 items-center justify-center rounded-xl border border-accent-foreground bg-background p-2 shadow-sm">
-    <Image src={src} alt={alt} className={cn("size-5 object-contain", className)} />
+    <Image
+      src={src}
+      alt={alt}
+      className={cn("size-5 object-contain", className)}
+    />
   </span>
 );
 
@@ -43,7 +47,9 @@ export const ScanArt = ({ highlighted = false }: ScanArt.Props) => (
       aria-hidden
       className={cn(
         "pointer-events-none absolute inset-0 bg-radial-[at_80%_0%]",
-        highlighted ? "from-white/20 to-transparent" : "from-primary/15 to-transparent",
+        highlighted
+          ? "from-white/20 to-transparent"
+          : "from-primary/15 to-transparent",
       )}
     />
     <div className="relative flex items-end justify-between gap-4">
@@ -143,7 +149,11 @@ export const UcpArt = ({ highlighted = false }: UcpArt.Props) => (
     />
     <div className="relative flex items-start justify-between gap-4">
       <div className="flex flex-col gap-3">
-        <Image src={ucp} alt="Universal Commerce Protocol" className="size-12" />
+        <Image
+          src={ucp}
+          alt="Universal Commerce Protocol"
+          className="size-12"
+        />
         <div>
           <p
             className={cn(
@@ -241,7 +251,9 @@ export const LlmsArt = () => (
     <pre className="relative overflow-hidden rounded-xl border border-accent-foreground bg-background p-3 font-mono text-[11px] leading-relaxed">
       <span className="text-primary"># ecentic</span>
       {"\n"}
-      <span className="text-foreground-dimmed">{"> AI agent commerce platform"}</span>
+      <span className="text-foreground-dimmed">
+        {"> AI agent commerce platform"}
+      </span>
       {"\n\n"}
       <span className="text-success">## Core</span>
       {"\n"}
@@ -275,9 +287,7 @@ export const McpArt = () => (
   </div>
 );
 
-export const GuideArt = ({
-  kind,
-}: GuideArt.Props) => {
+export const GuideArt = ({ kind }: GuideArt.Props) => {
   switch (kind) {
     case "how-it-works":
       return (
@@ -307,7 +317,9 @@ export const GuideArt = ({
             <FileIcon className="size-5 text-primary" />
           </span>
           <div>
-            <p className="font-medium text-foreground text-sm">Long-form guides</p>
+            <p className="font-medium text-foreground text-sm">
+              Long-form guides
+            </p>
             <p className="text-foreground-dimmed text-xs">
               Structured data, agent traffic, catalog visibility
             </p>
@@ -319,7 +331,9 @@ export const GuideArt = ({
         <div className="flex items-center gap-3 rounded-2xl border border-[#95BF47]/30 bg-[#95BF47]/10 p-4">
           <Image src={shopify} alt="Shopify" className="size-8" />
           <div>
-            <p className="font-medium text-foreground text-sm">Built for Shopify</p>
+            <p className="font-medium text-foreground text-sm">
+              Built for Shopify
+            </p>
             <p className="text-foreground-dimmed text-xs">
               Install, scan, and publish back via Admin API
             </p>
@@ -331,7 +345,9 @@ export const GuideArt = ({
         <div className="flex items-center gap-3 rounded-2xl border border-[#7F54B3]/30 bg-[#7F54B3]/10 p-4">
           <Image src={woocommerce} alt="WooCommerce" className="h-7 w-auto" />
           <div>
-            <p className="font-medium text-foreground text-sm">Built for WooCommerce</p>
+            <p className="font-medium text-foreground text-sm">
+              Built for WooCommerce
+            </p>
             <p className="text-foreground-dimmed text-xs">
               Connect REST keys and publish approved updates
             </p>

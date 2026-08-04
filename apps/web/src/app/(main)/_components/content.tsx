@@ -4,10 +4,10 @@ import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { SectionGutter } from "@/app/(main)/dashboard/_components/grid";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { Plus } from "@/components/plus";
-import { SectionGutter } from "@/app/(main)/dashboard/_components/grid";
 import Background from "@/public/images/blog.png";
 import { renderInline } from "./rich-text";
 

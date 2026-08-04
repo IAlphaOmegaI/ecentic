@@ -1,7 +1,7 @@
 import { CheckIcon } from "@zenncore/icons";
 import Image from "next/image";
-import DuaLogo from "@/public/partners/dua-flavours.png";
 import { Plus } from "@/components/plus";
+import DuaLogo from "@/public/partners/dua-flavours.png";
 import { Counter } from "./counter";
 
 const metrics = [
@@ -57,7 +57,9 @@ export const CaseStudy = () => (
                 delay={index * 0.15}
                 className="font-body font-bold text-6xl text-primary md:text-7xl"
               />
-              <p className="font-body text-foreground text-lg">{metric.label}</p>
+              <p className="font-body text-foreground text-lg">
+                {metric.label}
+              </p>
               <p className="font-light text-foreground-dimmed text-sm">
                 in 30 days
               </p>

@@ -70,7 +70,11 @@ const EndpointArt = ({
               : "border-[#1572FA]/20 bg-[#1572FA]/8",
           )}
         >
-          <Image src={ucp} alt="Universal Commerce Protocol" className="size-10" />
+          <Image
+            src={ucp}
+            alt="Universal Commerce Protocol"
+            className="size-10"
+          />
           <div>
             <p className="font-medium text-foreground text-sm">
               Universal Commerce Protocol
@@ -118,13 +122,20 @@ export const Developer = () => (
                 : "bg-background-rich text-foreground",
             )}
           >
-            <EndpointArt art={endpoint.art} highlighted={endpoint.highlighted} />
+            <EndpointArt
+              art={endpoint.art}
+              highlighted={endpoint.highlighted}
+            />
             <div className="flex flex-1 flex-col gap-3">
-              <h3 className="font-body font-medium text-2xl">{endpoint.title}</h3>
+              <h3 className="font-body font-medium text-2xl">
+                {endpoint.title}
+              </h3>
               <p
                 className={cn(
                   "font-light leading-relaxed",
-                  endpoint.highlighted ? "text-white/80" : "text-foreground-dimmed",
+                  endpoint.highlighted
+                    ? "text-white/80"
+                    : "text-foreground-dimmed",
                 )}
               >
                 {endpoint.description}
@@ -132,7 +143,9 @@ export const Developer = () => (
               <p
                 className={cn(
                   "font-mono text-sm",
-                  endpoint.highlighted ? "text-white/70" : "text-foreground-dimmed",
+                  endpoint.highlighted
+                    ? "text-white/70"
+                    : "text-foreground-dimmed",
                 )}
               >
                 {seo.host}
