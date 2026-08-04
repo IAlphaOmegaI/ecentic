@@ -17,28 +17,32 @@ import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
 import * as Scan from "@/server/app/scan";
 import { Environment } from "@/server/utils/environment";
-import { AgentVisitsPanel } from "../_components/agent-visits-panel";
+import { AgentVisitsPanel } from "../../_components/agent-visits-panel";
 import {
   ChartSkeleton,
   CompetitorTableSkeleton,
   StatsSkeleton,
   TableSkeleton,
-} from "../_components/chrome-skeletons";
-import { CompetitorsTable } from "../_components/competitors-table";
+} from "../../_components/chrome-skeletons";
+import { CompetitorsTable } from "../../_components/competitors-table";
 import {
   Crosshair,
   SectionGutter,
   StatLabel,
   StatusPill,
-} from "../_components/grid";
-import { OverviewActions } from "../_components/overview-actions";
-import { OverviewCharts } from "../_components/overview-charts";
-import { OverviewDetails } from "../_components/overview-details";
-import { ProductsTable } from "../_components/products-table";
+} from "../../_components/grid";
+import { OverviewActions } from "../../_components/overview-actions";
+import { OverviewCharts } from "../../_components/overview-charts";
+import { OverviewDetails } from "../../_components/overview-details";
+import { ProductsTable } from "../../_components/products-table";
 
-export default async ({ params }: PageProps<"/dashboard/[store]">) => {
-  const { store } = await params;
+type StoreParams = PageProps<"/dashboard/[store]">["params"];
 
+// Synchronous so the frame, heading and section borders prerender into the
+// static shell. `params` is request data — awaiting it here would strand the
+// whole page behind the route skeleton, so it is handed to the Suspense leaves
+// that actually need a store id.
+export default ({ params }: PageProps<"/dashboard/[store]">) => {
   return (
     <div className="flex flex-col">
       <div className="mx-8 border-accent-foreground border-x">
@@ -49,10 +53,10 @@ export default async ({ params }: PageProps<"/dashboard/[store]">) => {
             <div>
               <Suspense
                 fallback={
-                  <div className="h-4 w-56 animate-pulse bg-foreground/10" />
+                  <div className="h-5 w-42 animate-pulse rounded-full bg-foreground/10" />
                 }
               >
-                <LastUpdated store={store} />
+                <LastUpdated params={params} />
               </Suspense>
               <h1 className="mt-3 font-bold text-3xl text-foreground-rich tracking-[-0.02em]">
                 Overview
@@ -61,7 +65,7 @@ export default async ({ params }: PageProps<"/dashboard/[store]">) => {
                 How AI shopping agents rank your catalog against competitors.
               </p>
             </div>
-            <OverviewActions store={store} />
+            <OverviewActions params={params} />
           </div>
         </div>
 
@@ -70,7 +74,7 @@ export default async ({ params }: PageProps<"/dashboard/[store]">) => {
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <Suspense fallback={<StatsSkeleton />}>
-              <StatCards store={store} />
+              <StatCards params={params} />
             </Suspense>
           </div>
         </div>
@@ -84,7 +88,7 @@ export default async ({ params }: PageProps<"/dashboard/[store]">) => {
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <Suspense fallback={<ChartSkeleton />}>
-              <Performance store={store} />
+              <Performance params={params} />
             </Suspense>
           </div>
         </div>
@@ -102,17 +106,17 @@ export default async ({ params }: PageProps<"/dashboard/[store]">) => {
             <OverviewDetails
               products={
                 <Suspense fallback={<TableSkeleton />}>
-                  <TopProducts store={store} />
+                  <TopProducts params={params} />
                 </Suspense>
               }
               competitors={
                 <Suspense fallback={<CompetitorTableSkeleton />}>
-                  <TopCompetitors store={store} />
+                  <TopCompetitors params={params} />
                 </Suspense>
               }
               agents={
                 <Suspense fallback={<TableSkeleton />}>
-                  <AgentVisitsPanel store={store} />
+                  <AgentVisitsPanel params={params} />
                 </Suspense>
               }
             />
@@ -123,8 +127,9 @@ export default async ({ params }: PageProps<"/dashboard/[store]">) => {
   );
 };
 
-const LastUpdated = async ({ store }: { store: string }) => {
+const LastUpdated = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
   const data = await unwrapResult(
     Product.gatherIntelligence(Environment.SERVER, { store }),
   );
@@ -138,8 +143,9 @@ const LastUpdated = async ({ store }: { store: string }) => {
   );
 };
 
-const StatCards = async ({ store }: { store: string }) => {
+const StatCards = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
   const data = await unwrapResult(
     Product.gatherIntelligence(Environment.SERVER, { store }),
   );
@@ -328,8 +334,9 @@ const StatCards = async ({ store }: { store: string }) => {
   );
 };
 
-const Performance = async ({ store }: { store: string }) => {
+const Performance = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
   const [data, scans] = await Promise.all([
     unwrapResult(Product.gatherIntelligence(Environment.SERVER, { store })),
     unwrapResult(Scan.getLatest(Environment.SERVER, { store })),
@@ -394,8 +401,9 @@ const Performance = async ({ store }: { store: string }) => {
   return <OverviewCharts models={models} trend={trend} activity={activity} />;
 };
 
-const TopProducts = async ({ store }: { store: string }) => {
+const TopProducts = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
   const data = await unwrapResult(
     Product.gatherIntelligence(Environment.SERVER, { store }),
   );
@@ -422,8 +430,9 @@ const TopProducts = async ({ store }: { store: string }) => {
   );
 };
 
-const TopCompetitors = async ({ store }: { store: string }) => {
+const TopCompetitors = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
   const data = await unwrapResult(
     Competitor.gatherIntelligence(Environment.SERVER, { store }),
   );

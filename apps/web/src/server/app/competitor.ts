@@ -1,12 +1,22 @@
 "use server";
 
-import { unique } from "@zenncore/utils";
-import { and, eq } from "drizzle-orm";
-import { cache as dedupe } from "react";
-import { schema } from "../database";
+import { resultify, unique } from "@zenncore/utils";
+import {
+  and,
+  countDistinct,
+  count as countRows,
+  eq,
+  inArray,
+  max,
+  min,
+  sql,
+} from "drizzle-orm";
+import { db, schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
+import { dedupe } from "../utils/dedupe";
 import { Environment } from "../utils/environment";
 import {
+  DatabaseError,
   NotFoundError,
   UnauthorizedError,
   ValidationError,
@@ -21,37 +31,6 @@ export const { get, paginate, create, update, destroy, exists, count, find } =
   repository(schema.competitor);
 
 export type Type = Document<typeof schema.competitor>;
-
-/**
- * Every competitor belonging to a store, plus the simulations run against that
- * store's products so callers can aggregate win rates from the same set.
- *
- * Membership is now a column, not an inference: a competitor shows up here the
- * moment it is detected, rather than only once a scan has simulated it. The
- * simulations are still fetched by product, since a competitor may not have
- * been judged yet.
- */
-const collectForStore = async (userId: string, store: string) => {
-  const [competitors, collected] = await Promise.all([
-    find(Environment.SERVER, {
-      where: and(
-        eq(schema.competitor.userId, userId),
-        eq(schema.competitor.storeId, store),
-      ),
-    }),
-    Simulation.getForStore(Environment.SERVER, { store }),
-  ]);
-  if (!competitors.success) return competitors;
-  if (!collected.success) return collected;
-
-  return {
-    success: true as const,
-    data: {
-      competitors: competitors.data,
-      simulations: collected.data.simulations,
-    },
-  };
-};
 
 /**
  * Competitor scoping helper. Every read below takes an optional store: pass it
@@ -261,29 +240,36 @@ const aggregateBrands = (
 
 export const gatherIntelligence = dedupe(
   withAuthentication(async (context, { store }: { store?: string } = {}) => {
-    const scan = await Scan.getLatest(Environment.SERVER, { store });
-    if (!scan.success) return scan;
-
     if (store) {
-      const collected = await collectForStore(context.session.user.id, store);
-      if (!collected.success) return collected;
-
-      const brands = aggregateBrands(
-        collected.data.competitors,
-        collected.data.simulations,
-      );
+      // Three independent reads, so they go out together. The brand rollups are
+      // grouped by Postgres — this used to load every competitor and every
+      // simulation for the store and fold them in JavaScript, which is now the
+      // paginated path's job too.
+      const userId = context.session.user.id;
+      const [scan, aggregated, competitors] = await Promise.all([
+        Scan.getLatest(Environment.SERVER, { store }),
+        aggregateBrandsForStore(userId, store),
+        count(Environment.SERVER, scope(userId, store)),
+      ]);
+      if (!scan.success) return scan;
+      if (!aggregated.success) return aggregated;
+      if (!competitors.success) return competitors;
 
       return {
         success: true,
         data: {
-          brands,
-          competitors: collected.data.competitors.length,
+          brands: aggregated.data.brands,
+          competitors: competitors.data,
           scan: scan.data[0],
         },
       };
     }
 
-    const competitors = await skimForCurrentUser(Environment.SERVER);
+    const [scan, competitors] = await Promise.all([
+      Scan.getLatest(Environment.SERVER, { store }),
+      skimForCurrentUser(Environment.SERVER),
+    ]);
+    if (!scan.success) return scan;
     if (!competitors.success) return competitors;
 
     if (competitors.data.length === 0)
@@ -315,35 +301,126 @@ export const gatherIntelligence = dedupe(
   }, "Competitor.gatherIntelligence"),
 );
 
+// The brand a competitor rolls up under — its own brand, falling back to the
+// product title. Shared by the aggregate and its total so the two always group
+// on identical keys.
+const brandKey = sql<string>`coalesce(${schema.competitor.brand}, ${schema.competitor.title})`;
+
+/**
+ * One page of brand rollups, grouped and counted by Postgres.
+ *
+ * The previous implementation loaded every competitor and every simulation for
+ * the store, grouped them in JavaScript and sliced the array. Beyond the volume,
+ * the underlying read had no `ORDER BY`, so the slice boundaries were undefined
+ * and a brand could repeat on one page and vanish from the next. Grouping in SQL
+ * with an explicit order makes pagination well-defined as well as cheap.
+ */
+const aggregateBrandsForStore = async (
+  userId: string,
+  store: string,
+  pagination?: { page: number; size: number },
+) => {
+  // Simulations are scoped to this store's products, matching what
+  // `Simulation.getForStore` fed the in-memory aggregation: a competitor judged
+  // against another store's catalog must not count here.
+  const storeProducts = db
+    .select({ id: schema.product.id })
+    .from(schema.product)
+    .where(
+      and(eq(schema.product.userId, userId), eq(schema.product.storeId, store)),
+    );
+
+  const scope = and(
+    eq(schema.competitor.userId, userId),
+    eq(schema.competitor.storeId, store),
+  );
+
+  const result = await resultify(async () =>
+    Promise.all([
+      db
+        .select({
+          _id: min(schema.competitor.id),
+          brand: brandKey,
+          products: countDistinct(schema.competitor.id),
+          simulations: countRows(schema.simulation.id),
+          wins: sql<number>`count(${schema.simulation.id}) filter (where ${schema.simulation.winner} = 'product')`,
+          updatedAt: max(schema.competitor.updatedAt),
+        })
+        .from(schema.competitor)
+        .leftJoin(
+          schema.simulation,
+          and(
+            eq(schema.simulation.competitorId, schema.competitor.id),
+            inArray(schema.simulation.productId, storeProducts),
+          ),
+        )
+        .where(scope)
+        .groupBy(brandKey)
+        .orderBy(brandKey)
+        .$dynamic()
+        .limit(pagination ? pagination.size : Number.MAX_SAFE_INTEGER)
+        .offset(pagination ? (pagination.page - 1) * pagination.size : 0),
+      db
+        .select({ value: countDistinct(brandKey) })
+        .from(schema.competitor)
+        .where(scope),
+    ]),
+  );
+
+  if (!result.success)
+    return {
+      success: false as const,
+      error: new DatabaseError("Failed to aggregate competitor brands", {
+        cause: result.error,
+      }),
+    };
+
+  const [rows, totals] = result.data;
+
+  return {
+    success: true as const,
+    data: {
+      brands: rows.map((row) => ({
+        _id: row._id ?? row.brand,
+        brand: row.brand,
+        products: row.products,
+        winRate:
+          row.simulations > 0
+            ? Math.round((Number(row.wins) / row.simulations) * 100)
+            : 0,
+        simulations: row.simulations,
+        updatedAt: row.updatedAt ?? new Date(0),
+      })),
+      total: totals[0]?.value ?? 0,
+    },
+  };
+};
+
 export const gatherPaginatedIntelligence = withAuthentication(
   async (
     context,
     { page, size, store }: { page: number; size: number; store?: string },
   ) => {
-    const scan = await Scan.getLatest(Environment.SERVER, { store });
-    if (!scan.success) return scan;
-
     if (store) {
-      const collected = await collectForStore(context.session.user.id, store);
-      if (!collected.success) return collected;
-
-      const allBrands = aggregateBrands(
-        collected.data.competitors,
-        collected.data.simulations,
-      );
-      const total = allBrands.length;
-      const offset = (page - 1) * size;
-      const brands = allBrands.slice(offset, offset + size);
+      const [scan, paginated] = await Promise.all([
+        Scan.getLatest(Environment.SERVER, { store }),
+        aggregateBrandsForStore(context.session.user.id, store, { page, size }),
+      ]);
+      if (!scan.success) return scan;
+      if (!paginated.success) return paginated;
 
       return {
         success: true,
         data: {
-          brands,
+          brands: paginated.data.brands,
           scan: scan.data[0],
-          pagination: { total, page, size },
+          pagination: { total: paginated.data.total, page, size },
         },
       };
     }
+
+    const scan = await Scan.getLatest(Environment.SERVER, { store });
+    if (!scan.success) return scan;
 
     const competitors = await paginate(Environment.SERVER, page, size, {
       where: eq(schema.competitor.userId, context.session.user.id),

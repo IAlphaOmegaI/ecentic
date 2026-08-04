@@ -5,8 +5,13 @@ import { Environment } from "@/server/utils/environment";
 import { AgentVisitsChart } from "./agent-visits-chart";
 import { SectionKicker } from "./grid";
 
-export const AgentVisitsPanel = async ({ store }: { store: string }) => {
+export const AgentVisitsPanel = async ({
+  params,
+}: {
+  params: PageProps<"/dashboard/[store]">["params"];
+}) => {
   await connection();
+  const { store } = await params;
   const [summary, timeSeries] = await Promise.all([
     unwrapResult(
       Tracking.getAgentTrafficSummary(Environment.SERVER, { store }),

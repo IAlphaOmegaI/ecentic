@@ -6,6 +6,9 @@ import { respond } from "@/server/utils/http";
 const TOPIC_HEADER = "x-shopify-topic";
 const HMAC_HEADER = "x-shopify-hmac-sha256";
 const SHOP_HEADER = "x-shopify-shop-domain";
+// Stable across every retry of one event — not required, so its absence is
+// itself a signal rather than a reason to reject.
+const WEBHOOK_ID_HEADER = "x-shopify-webhook-id";
 
 export const POST = async (request: NextRequest) => {
   const signature = request.headers.get(HMAC_HEADER);
@@ -19,6 +22,7 @@ export const POST = async (request: NextRequest) => {
     shop,
     topic,
     signature,
+    webhookId: request.headers.get(WEBHOOK_ID_HEADER) ?? undefined,
     // Raw text, not `.json()`: the HMAC covers the bytes as sent, so the
     // payload can only be parsed after the signature has been checked.
     body: await request.text(),

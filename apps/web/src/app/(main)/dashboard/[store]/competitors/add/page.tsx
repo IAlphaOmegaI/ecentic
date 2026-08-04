@@ -14,9 +14,11 @@ import {
 } from "../../../_components/grid";
 import { AddCompetitors } from "./_components/add-competitors";
 
-export default async ({ params }: { params: Promise<{ store: string }> }) => {
-  const { store } = await params;
+type StoreParams = PageProps<"/dashboard/[store]/competitors/add">["params"];
 
+export default ({
+  params,
+}: PageProps<"/dashboard/[store]/competitors/add">) => {
   return (
     <div className="flex flex-col">
       <div className="mx-8 border-accent-foreground border-x">
@@ -27,10 +29,10 @@ export default async ({ params }: { params: Promise<{ store: string }> }) => {
             <div>
               <Suspense
                 fallback={
-                  <div className="h-4 w-56 animate-pulse bg-foreground/10" />
+                  <div className="h-5 w-56 animate-pulse rounded-full bg-foreground/10" />
                 }
               >
-                <RosterStatus store={store} />
+                <RosterStatus params={params} />
               </Suspense>
               <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
                 Add Competitors
@@ -40,13 +42,13 @@ export default async ({ params }: { params: Promise<{ store: string }> }) => {
                 belong to one store, so these never mix with your other stores.
               </p>
             </div>
-            <Button
-              color="accent"
-              render={<Link href={`/dashboard/${store}/competitors`} />}
+            <Suspense
+              fallback={
+                <div className="h-9 w-40 animate-pulse bg-foreground/10" />
+              }
             >
-              <ArrowLeftIcon className="size-4" />
-              Back to competitors
-            </Button>
+              <BackToCompetitors params={params} />
+            </Suspense>
           </div>
         </div>
 
@@ -59,7 +61,7 @@ export default async ({ params }: { params: Promise<{ store: string }> }) => {
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <Suspense fallback={<AddSkeleton />}>
-              <Sources store={store} />
+              <Sources params={params} />
             </Suspense>
           </div>
         </div>
@@ -68,8 +70,9 @@ export default async ({ params }: { params: Promise<{ store: string }> }) => {
   );
 };
 
-const RosterStatus = async ({ store }: { store: string }) => {
+const RosterStatus = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
   const counts = await unwrapResult(
     Competitor.countForCurrentUser(Environment.SERVER, { store }),
   );
@@ -83,8 +86,9 @@ const RosterStatus = async ({ store }: { store: string }) => {
   );
 };
 
-const Sources = async ({ store }: { store: string }) => {
+const Sources = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
 
   // Detection reasons about this store's catalog, and the roster shows what the
   // store already tracks — both scoped so nothing from another store leaks in.
@@ -127,3 +131,17 @@ const AddSkeleton = () => (
     </div>
   </div>
 );
+
+const BackToCompetitors = async ({ params }: { params: StoreParams }) => {
+  const { store } = await params;
+
+  return (
+    <Button
+      color="accent"
+      render={<Link href={`/dashboard/${store}/competitors`} />}
+    >
+      <ArrowLeftIcon className="size-4" />
+      Back to competitors
+    </Button>
+  );
+};

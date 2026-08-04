@@ -176,27 +176,30 @@ const checkRenderedStructuredData = async (
       ecenticEmbedDetected: false,
     };
 
-  const results: {
-    url: string;
-    hasProductJsonLd: boolean;
-    hasEcenticEmbed: boolean;
-  }[] = [];
+  // The sampled pages are independent storefront fetches, so they go out
+  // together. Serially this was up to PAGE_SAMPLE_SIZE × FETCH_TIMEOUT_MS of
+  // dead wait — and the audit already runs this alongside the robots and feed
+  // checks, so the slowest single page now bounds the whole group instead of
+  // their sum. Unreachable pages still drop out rather than failing the check.
+  const sampled = await Promise.all(
+    urls.map(async (url) => {
+      const response = await HTTP.request(
+        url,
+        { method: "GET", headers: { "User-Agent": "EcenticAudit/1.0" } },
+        { timeout: FETCH_TIMEOUT_MS },
+      );
+      if (!response.success || !response.data.ok) return null;
 
-  for (const url of urls) {
-    const response = await HTTP.request(
-      url,
-      { method: "GET", headers: { "User-Agent": "EcenticAudit/1.0" } },
-      { timeout: FETCH_TIMEOUT_MS },
-    );
-    if (!response.success || !response.data.ok) continue;
+      const html = await response.data.text();
+      return {
+        url,
+        hasProductJsonLd: hasSchemaOrgProduct(html),
+        hasEcenticEmbed: hasEcenticEmbed(html),
+      };
+    }),
+  );
 
-    const html = await response.data.text();
-    results.push({
-      url,
-      hasProductJsonLd: hasSchemaOrgProduct(html),
-      hasEcenticEmbed: hasEcenticEmbed(html),
-    });
-  }
+  const results = sampled.filter((entry) => entry !== null);
 
   if (results.length === 0)
     return {

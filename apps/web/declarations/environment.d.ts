@@ -36,7 +36,7 @@ declare namespace NodeJS {
     readonly AZURE_API_KEY: string;
     readonly AZURE_API_VERSION?: string; // defaults to "preview" (Azure v1 API surface)
     /**
-     * Deployment serving the `gpt` seat on this resource, e.g. "gpt-5.3-chat".
+     * Deployment serving the `gpt` seat on this resource, e.g. "gpt-5.4".
      * The name is the DEPLOYMENT's, not the model's. Unset means "no ChatGPT
      * deployment here" and the seat resolves through the gateway instead, since
      * a guessed deployment name only earns a 404 from Azure.

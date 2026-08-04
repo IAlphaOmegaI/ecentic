@@ -106,25 +106,36 @@ const hasOptimizedEmbed = (html: string): boolean =>
 
 // Cached per URL: agents read the rendered page, so the check fetches the live
 // storefront rather than trusting synced backend data. An hour of staleness is
-// fine for passive views — publishing revalidates `pageSchemaTag(url)` so the
-// merchant never sees a stale verdict right after acting.
+// fine for a verdict we actually reached — publishing revalidates
+// `pageSchemaTag(url)` so the merchant never sees a stale one right after
+// acting.
+//
+// A failed fetch is cached far more briefly. One timeout or 5xx would otherwise
+// pin "unreachable" to the merchant's audit for an hour with no way to clear it
+// short of publishing, even though their storefront came back seconds later.
 export const checkProductPageSchema = async (
   url: string,
 ): Promise<PageSchemaCheck> => {
-  // "use cache";
-  // cacheLife("hours");
-  // cacheTag(pageSchemaTag(url));
+  "use cache";
+  cacheTag(pageSchemaTag(url));
 
   const response = await HTTP.request(
     url,
     { method: "GET", headers: { "User-Agent": "EcenticAudit/1.0" } },
     { timeout: FETCH_TIMEOUT_MS },
   );
-  if (!response.success || !response.data.ok)
+  if (!response.success || !response.data.ok) {
+    cacheLife("minutes");
     return { status: "unreachable", embed: "unknown" };
+  }
 
   const body = await resultify(() => response.data.text());
-  if (!body.success) return { status: "unreachable", embed: "unknown" };
+  if (!body.success) {
+    cacheLife("minutes");
+    return { status: "unreachable", embed: "unknown" };
+  }
+
+  cacheLife("hours");
 
   const embed: PageEmbedStatus = (() => {
     switch (true) {

@@ -7,10 +7,13 @@ import {
   DialogTrigger,
 } from "@zenncore/web/components/dialog";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { formatPrice } from "@/lib/currency";
-import type * as Competitor from "@/server/app/competitor";
-import type * as Product from "@/server/app/product";
+import type * as CompetitorTypes from "@/server/app/competitor";
+import * as Competitor from "@/server/app/competitor";
+import type * as ProductTypes from "@/server/app/product";
+import * as Product from "@/server/app/product";
 
 // `segment` is relative to the current store; Settings is account-wide, so it
 // carries an absolute `href` instead.
@@ -24,23 +27,17 @@ const navItems = [
   { label: "Settings", href: "/dashboard/settings" },
 ] as const;
 
-export namespace CommandPalette {
-  export type Props = {
-    store: string;
-    products: Product.Type[];
-    competitors: Competitor.Type[];
-  };
-}
-
-export const CommandPalette = ({
-  store,
-  products,
-  competitors,
-}: CommandPalette.Props) => {
-  const base = `/dashboard/${store}`;
+/**
+ * The search box takes no props and does no work until it is opened.
+ *
+ * It used to receive the store's products and competitors from the server, so
+ * every dashboard page paid two queries and serialized both lists into the RSC
+ * payload for a dialog that is almost always closed — and the box itself could
+ * not paint until those queries returned. Now the trigger is static and the
+ * results load on open.
+ */
+export const CommandPalette = () => {
   const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState("");
-  const ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
@@ -52,33 +49,6 @@ export const CommandPalette = ({
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, []);
-
-  useEffect(() => {
-    if (!open) return;
-    setQuery("");
-    setTimeout(() => ref.current?.focus(), 50);
-  }, [open]);
-
-  const normalized = query.toLowerCase();
-
-  const matchedProducts = products.filter(
-    (product) =>
-      !normalized || product.title.toLowerCase().includes(normalized),
-  );
-
-  const matchedCompetitors = competitors.filter(
-    (competitor) =>
-      !normalized || competitor.title.toLowerCase().includes(normalized),
-  );
-
-  const matchedNav = navItems.filter(
-    (item) => !normalized || item.label.toLowerCase().includes(normalized),
-  );
-
-  const hasResults =
-    matchedProducts.length > 0 ||
-    matchedCompetitors.length > 0 ||
-    matchedNav.length > 0;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -99,123 +69,210 @@ export const CommandPalette = ({
             "bg-background/70 opacity-100 backdrop-blur-sm dark:opacity-100",
         }}
       >
-        <div className="flex items-center gap-3 border-accent-foreground border-b px-4 py-3.5">
-          <SearchIcon className="size-4 shrink-0 text-foreground-dimmed" />
-          <input
-            ref={ref}
-            type="text"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search products, competitors, pages..."
-            className="flex-1 bg-transparent text-foreground text-sm placeholder:text-foreground-dimmed/50 focus:outline-none"
-          />
-          <kbd className="shrink-0 border border-accent-foreground px-1.5 py-0.5 font-light text-foreground-dimmed text-xs">
-            esc
-          </kbd>
-        </div>
-
-        <div className="max-h-80 overflow-y-auto py-2">
-          {!hasResults && (
-            <p className="px-4 py-6 text-center font-light text-foreground-dimmed text-sm">
-              No results{query ? ` for "${query}"` : ""}
-            </p>
-          )}
-
-          {matchedProducts.length > 0 && (
-            <div>
-              <p className="px-4 pt-2 pb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-                Products
-              </p>
-              {matchedProducts.slice(0, 5).map((product) => (
-                <Link
-                  key={product.id}
-                  href={`${base}/products/${product.id}`}
-                  onClick={() => setOpen(false)}
-                  className="flex items-center justify-between px-4 py-2.5 transition-colors hover:bg-accent-foreground"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-6 shrink-0 items-center justify-center bg-primary/10 font-semibold text-primary text-xs">
-                      {product.title.slice(0, 2).toUpperCase()}
-                    </div>
-                    <span className="text-foreground text-sm">
-                      {product.title}
-                    </span>
-                  </div>
-                  {product.price && (
-                    <span className="font-light text-foreground-dimmed text-xs">
-                      {formatPrice(product.price, product.currency)}
-                    </span>
-                  )}
-                </Link>
-              ))}
-            </div>
-          )}
-
-          {matchedCompetitors.length > 0 && (
-            <div>
-              <p className="px-4 pt-3 pb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-                Competitors
-              </p>
-              {matchedCompetitors.slice(0, 4).map((competitor) => (
-                <Link
-                  key={competitor.id}
-                  href={`${base}/competitors`}
-                  onClick={() => setOpen(false)}
-                  className="flex items-center justify-between px-4 py-2.5 transition-colors hover:bg-accent-foreground"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-6 shrink-0 items-center justify-center bg-accent-foreground font-semibold text-foreground-dimmed text-xs">
-                      {competitor.title.slice(0, 2).toUpperCase()}
-                    </div>
-                    <span className="text-foreground text-sm">
-                      {competitor.title}
-                    </span>
-                  </div>
-                  {competitor.price && (
-                    <span className="font-light text-foreground-dimmed text-xs">
-                      {formatPrice(competitor.price, competitor.currency)}
-                    </span>
-                  )}
-                </Link>
-              ))}
-            </div>
-          )}
-
-          {matchedNav.length > 0 && (
-            <div>
-              <p className="px-4 pt-3 pb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-                Pages
-              </p>
-              {matchedNav.map((item) => {
-                const href =
-                  "href" in item ? item.href : `${base}${item.segment}`;
-                return (
-                  <Link
-                    key={item.label}
-                    href={href}
-                    onClick={() => setOpen(false)}
-                    className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-accent-foreground"
-                  >
-                    <ArrowRightIcon className="size-4 shrink-0 text-foreground-dimmed" />
-                    <span className="text-foreground text-sm">
-                      {item.label}
-                    </span>
-                  </Link>
-                );
-              })}
-            </div>
-          )}
-        </div>
-
-        <div className="flex items-center gap-4 border-accent-foreground border-t px-4 py-2">
-          <span className="font-light text-foreground-dimmed text-xs">
-            <kbd className="font-mono">↵</kbd> to open
-          </span>
-          <span className="font-light text-foreground-dimmed text-xs">
-            <kbd className="font-mono">esc</kbd> to close
-          </span>
-        </div>
+        {/* Mounted only while open, which is what defers the fetch — and what
+            resets the query between openings, as the old effect did. */}
+        {open && <Results onClose={() => setOpen(false)} />}
       </DialogPopup>
     </Dialog>
+  );
+};
+
+type Catalog = {
+  products: ProductTypes.Type[];
+  competitors: CompetitorTypes.Type[];
+};
+
+const Results = ({ onClose }: { onClose: () => void }) => {
+  // The palette only ever renders inside `/dashboard/[store]`, so the store id
+  // is already in the URL — reading it here keeps the trigger free of any
+  // server data, and this component never renders during the prerender.
+  const pathname = usePathname();
+  const store = pathname.split("/")[2] ?? "";
+  const base = `/dashboard/${store}`;
+
+  const [query, setQuery] = useState("");
+  const [catalog, setCatalog] = useState<Catalog | null>(null);
+  const ref = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => ref.current?.focus(), 50);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!store) return;
+
+    // Plain flag rather than an AbortController: server actions can't be
+    // aborted, so all this can do is drop a late response.
+    let cancelled = false;
+
+    (async () => {
+      // Sequential on purpose. Next serializes server actions, so `Promise.all`
+      // buys nothing here and only obscures the ordering.
+      const products = await Product.skimForCurrentUser({ store });
+      const competitors = await Competitor.skimForCurrentUser({ store });
+
+      if (cancelled) return;
+
+      setCatalog({
+        products: products.success ? products.data : [],
+        competitors: competitors.success ? competitors.data : [],
+      });
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [store]);
+
+  const normalized = query.toLowerCase();
+
+  const matchedProducts = (catalog?.products ?? []).filter(
+    (product) =>
+      !normalized || product.title.toLowerCase().includes(normalized),
+  );
+
+  const matchedCompetitors = (catalog?.competitors ?? []).filter(
+    (competitor) =>
+      !normalized || competitor.title.toLowerCase().includes(normalized),
+  );
+
+  const matchedNav = navItems.filter(
+    (item) => !normalized || item.label.toLowerCase().includes(normalized),
+  );
+
+  const hasResults =
+    matchedProducts.length > 0 ||
+    matchedCompetitors.length > 0 ||
+    matchedNav.length > 0;
+
+  // Until the catalog lands, an unmatched query means "not loaded yet", not
+  // "nothing there" — saying "No results" then would be a lie the user watches
+  // correct itself a moment later.
+  const loading = catalog === null;
+
+  return (
+    <>
+      <div className="flex items-center gap-3 border-accent-foreground border-b px-4 py-3.5">
+        <SearchIcon className="size-4 shrink-0 text-foreground-dimmed" />
+        <input
+          ref={ref}
+          type="text"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="Search products, competitors, pages..."
+          className="flex-1 bg-transparent text-foreground text-sm placeholder:text-foreground-dimmed/50 focus:outline-none"
+        />
+        <kbd className="shrink-0 border border-accent-foreground px-1.5 py-0.5 font-light text-foreground-dimmed text-xs">
+          esc
+        </kbd>
+      </div>
+
+      <div className="max-h-80 overflow-y-auto py-2">
+        {!hasResults && loading && (
+          <p className="px-4 py-6 text-center font-light text-foreground-dimmed text-sm">
+            Searching…
+          </p>
+        )}
+
+        {!hasResults && !loading && (
+          <p className="px-4 py-6 text-center font-light text-foreground-dimmed text-sm">
+            No results{query ? ` for "${query}"` : ""}
+          </p>
+        )}
+
+        {matchedProducts.length > 0 && (
+          <div>
+            <p className="px-4 pt-2 pb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+              Products
+            </p>
+            {matchedProducts.slice(0, 5).map((product) => (
+              <Link
+                key={product.id}
+                href={`${base}/products/${product.id}`}
+                onClick={onClose}
+                className="flex items-center justify-between px-4 py-2.5 transition-colors hover:bg-accent-foreground"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex size-6 shrink-0 items-center justify-center bg-primary/10 font-semibold text-primary text-xs">
+                    {product.title.slice(0, 2).toUpperCase()}
+                  </div>
+                  <span className="text-foreground text-sm">
+                    {product.title}
+                  </span>
+                </div>
+                {product.price && (
+                  <span className="font-light text-foreground-dimmed text-xs">
+                    {formatPrice(product.price, product.currency)}
+                  </span>
+                )}
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {matchedCompetitors.length > 0 && (
+          <div>
+            <p className="px-4 pt-3 pb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+              Competitors
+            </p>
+            {matchedCompetitors.slice(0, 4).map((competitor) => (
+              <Link
+                key={competitor.id}
+                href={`${base}/competitors`}
+                onClick={onClose}
+                className="flex items-center justify-between px-4 py-2.5 transition-colors hover:bg-accent-foreground"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex size-6 shrink-0 items-center justify-center bg-accent-foreground font-semibold text-foreground-dimmed text-xs">
+                    {competitor.title.slice(0, 2).toUpperCase()}
+                  </div>
+                  <span className="text-foreground text-sm">
+                    {competitor.title}
+                  </span>
+                </div>
+                {competitor.price && (
+                  <span className="font-light text-foreground-dimmed text-xs">
+                    {formatPrice(competitor.price, competitor.currency)}
+                  </span>
+                )}
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {matchedNav.length > 0 && (
+          <div>
+            <p className="px-4 pt-3 pb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+              Pages
+            </p>
+            {matchedNav.map((item) => {
+              const href =
+                "href" in item ? item.href : `${base}${item.segment}`;
+              return (
+                <Link
+                  key={item.label}
+                  href={href}
+                  onClick={onClose}
+                  className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-accent-foreground"
+                >
+                  <ArrowRightIcon className="size-4 shrink-0 text-foreground-dimmed" />
+                  <span className="text-foreground text-sm">{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      <div className="flex items-center gap-4 border-accent-foreground border-t px-4 py-2">
+        <span className="font-light text-foreground-dimmed text-xs">
+          <kbd className="font-mono">↵</kbd> to open
+        </span>
+        <span className="font-light text-foreground-dimmed text-xs">
+          <kbd className="font-mono">esc</kbd> to close
+        </span>
+      </div>
+    </>
   );
 };

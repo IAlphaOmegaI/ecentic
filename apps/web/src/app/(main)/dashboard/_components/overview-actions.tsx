@@ -2,10 +2,29 @@
 
 import { PlusIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import { useState } from "react";
+import { Suspense, use, useState } from "react";
 import { SimulationModal } from "./simulation-modal";
 
-export const OverviewActions = ({ store }: { store: string }) => {
+type StoreParams = PageProps<"/dashboard/[store]">["params"];
+
+// The modal is the only part that needs a store id, and it reads `params` with
+// `use()` behind its own boundary. That keeps the trigger button in the page's
+// static shell instead of popping in once the route params resolve.
+const StoreSimulationModal = ({
+  params,
+  open,
+  onClose,
+}: {
+  params: StoreParams;
+  open: boolean;
+  onClose: () => void;
+}) => {
+  const { store } = use(params);
+
+  return <SimulationModal store={store} open={open} onClose={onClose} />;
+};
+
+export const OverviewActions = ({ params }: { params: StoreParams }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -20,11 +39,13 @@ export const OverviewActions = ({ store }: { store: string }) => {
           Run Simulation
         </Button>
       </div>
-      <SimulationModal
-        store={store}
-        open={open}
-        onClose={() => setOpen(false)}
-      />
+      <Suspense fallback={null}>
+        <StoreSimulationModal
+          params={params}
+          open={open}
+          onClose={() => setOpen(false)}
+        />
+      </Suspense>
     </>
   );
 };

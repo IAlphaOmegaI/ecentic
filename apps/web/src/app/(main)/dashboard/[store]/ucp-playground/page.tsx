@@ -10,15 +10,14 @@ import { Environment } from "@/server/utils/environment";
 import { Crosshair, StatusPill } from "../../_components/grid";
 import { PlaygroundSkeleton } from "./_components/skeletons";
 
-type PageProps = {
-  params: Promise<{ store: string }>;
-};
+type StoreParams = PageProps<"/dashboard/[store]/ucp-playground">["params"];
 
 // Resolve the store the dashboard is scoped to and hand the playground an
 // already-connected session, so the merchant never retypes their own domain.
 // A store without a reachable UCP profile falls through to the connect form
 // with its domain prefilled.
-const ConnectedPlayground = async ({ store }: { store: string }) => {
+const ConnectedPlayground = async ({ params }: { params: StoreParams }) => {
+  const { store } = await params;
   const record = await unwrapResult(
     Store.resolveForUser(Environment.SERVER, { store }),
   );
@@ -43,9 +42,7 @@ const ConnectedPlayground = async ({ store }: { store: string }) => {
   );
 };
 
-export default async ({ params }: PageProps) => {
-  const { store } = await params;
-
+export default ({ params }: PageProps<"/dashboard/[store]/ucp-playground">) => {
   return (
     <div className="mx-8 flex h-full flex-col border-accent-foreground border-x pb-8">
       {/* Title */}
@@ -72,7 +69,7 @@ export default async ({ params }: PageProps) => {
           <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <Suspense fallback={<PlaygroundSkeleton />}>
-            <ConnectedPlayground store={store} />
+            <ConnectedPlayground params={params} />
           </Suspense>
         </div>
       </div>
