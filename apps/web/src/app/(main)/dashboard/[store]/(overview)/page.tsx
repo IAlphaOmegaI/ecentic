@@ -17,24 +17,24 @@ import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
 import * as Scan from "@/server/app/scan";
 import { Environment } from "@/server/utils/environment";
-import { AgentVisitsPanel } from "../_components/agent-visits-panel";
+import { AgentVisitsPanel } from "../../_components/agent-visits-panel";
 import {
   ChartSkeleton,
   CompetitorTableSkeleton,
   StatsSkeleton,
   TableSkeleton,
-} from "../_components/chrome-skeletons";
-import { CompetitorsTable } from "../_components/competitors-table";
+} from "../../_components/chrome-skeletons";
+import { CompetitorsTable } from "../../_components/competitors-table";
 import {
   Crosshair,
   SectionGutter,
   StatLabel,
   StatusPill,
-} from "../_components/grid";
-import { OverviewActions } from "../_components/overview-actions";
-import { OverviewCharts } from "../_components/overview-charts";
-import { OverviewDetails } from "../_components/overview-details";
-import { ProductsTable } from "../_components/products-table";
+} from "../../_components/grid";
+import { OverviewActions } from "../../_components/overview-actions";
+import { OverviewCharts } from "../../_components/overview-charts";
+import { OverviewDetails } from "../../_components/overview-details";
+import { ProductsTable } from "../../_components/products-table";
 
 type StoreParams = PageProps<"/dashboard/[store]">["params"];
 
