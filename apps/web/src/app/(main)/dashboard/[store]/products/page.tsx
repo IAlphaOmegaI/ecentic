@@ -43,6 +43,8 @@ import {
   TrafficSkeleton,
 } from "./_components/skeletons";
 
+type StoreParams = PageProps<"/dashboard/[store]/products">["params"];
+
 const emptyStatCards = [
   { label: "Total Products", icon: RadarIcon },
   { label: "Average Win Rate", icon: GaugeIcon },
@@ -55,8 +57,9 @@ const emptyStatCards = [
  * every product page at once, so the nudge belongs here — not per product.
  * Renders nothing while the embed is live (or for non-Shopify stores).
  */
-const EmbedBanner = async ({ store }: { store: string }) => {
+const EmbedBanner = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
   const result = await Product.getStoreEmbedStatus(Environment.SERVER, {
     store,
   });
@@ -95,14 +98,12 @@ const EmbedBanner = async ({ store }: { store: string }) => {
   );
 };
 
-export default async ({
+export default ({
   params,
   searchParams,
 }: SearchParamsProps<keyof Pager> & {
-  params: Promise<{ store: string }>;
+  params: PageProps<"/dashboard/[store]/products">["params"];
 }) => {
-  const { store } = await params;
-
   return (
     <div className="flex flex-col">
       <div className="mx-8 border-accent-foreground border-x">
@@ -113,10 +114,10 @@ export default async ({
             <div>
               <Suspense
                 fallback={
-                  <div className="h-4 w-56 animate-pulse bg-foreground/10" />
+                  <div className="h-5 w-56 animate-pulse rounded-full bg-foreground/10" />
                 }
               >
-                <LastScanned store={store} />
+                <LastScanned params={params} />
               </Suspense>
               <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
                 Products
@@ -131,19 +132,19 @@ export default async ({
               <DownloadIcon className="size-4" />
               Export
             </Button> */}
-              <Button
-                color="primary"
-                render={<Link href={`/dashboard/${store}/products/add`} />}
+              <Suspense
+                fallback={
+                  <div className="h-9 w-36 animate-pulse bg-foreground/10" />
+                }
               >
-                <PlusIcon className="size-4" />
-                Add Products
-              </Button>
+                <AddProductsAction params={params} />
+              </Suspense>
             </div>
           </div>
         </div>
 
         <Suspense>
-          <EmbedBanner store={store} />
+          <EmbedBanner params={params} />
         </Suspense>
 
         <div className="-mx-8 border-accent-foreground border-b">
@@ -151,7 +152,7 @@ export default async ({
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <Suspense fallback={<StatsSkeleton />}>
-              <StatCards store={store} />
+              <StatCards params={params} />
             </Suspense>
           </div>
         </div>
@@ -165,7 +166,7 @@ export default async ({
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <Suspense fallback={<ChartSkeleton />}>
-              <Performance store={store} />
+              <Performance params={params} />
             </Suspense>
           </div>
         </div>
@@ -179,7 +180,7 @@ export default async ({
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <Suspense fallback={<TableSkeleton />}>
-              <Products store={store} searchParams={searchParams} />
+              <Products params={params} searchParams={searchParams} />
             </Suspense>
           </div>
         </div>
@@ -193,7 +194,7 @@ export default async ({
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <Suspense fallback={<TrafficSkeleton />}>
-              <AgentTraffic store={store} />
+              <AgentTraffic params={params} />
             </Suspense>
           </div>
         </div>
@@ -207,7 +208,7 @@ export default async ({
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <Suspense fallback={<InsightsSkeleton />}>
-              <Insights store={store} />
+              <Insights params={params} />
             </Suspense>
           </div>
         </div>
@@ -216,8 +217,9 @@ export default async ({
   );
 };
 
-const LastScanned = async ({ store }: { store: string }) => {
+const LastScanned = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
   const data = await unwrapResult(
     Product.gatherIntelligence(Environment.SERVER, { store }),
   );
@@ -231,8 +233,9 @@ const LastScanned = async ({ store }: { store: string }) => {
   );
 };
 
-const StatCards = async ({ store }: { store: string }) => {
+const StatCards = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
   const data = await unwrapResult(
     Product.gatherIntelligence(Environment.SERVER, { store }),
   );
@@ -396,8 +399,9 @@ const StatCards = async ({ store }: { store: string }) => {
   );
 };
 
-const Performance = async ({ store }: { store: string }) => {
+const Performance = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
   const [{ products }, scans] = await Promise.all([
     unwrapResult(Product.gatherIntelligence(Environment.SERVER, { store })),
     unwrapResult(Scan.getLatest(Environment.SERVER, { store })),
@@ -546,13 +550,14 @@ const Performance = async ({ store }: { store: string }) => {
 };
 
 const Products = async ({
-  store,
+  params,
   searchParams,
 }: {
-  store: string;
+  params: StoreParams;
   searchParams: SearchParamsProps<keyof Pager>["searchParams"];
 }) => {
   await connection();
+  const { store } = await params;
   const { page, size } = await extractPaginationParams(searchParams);
   const { items, pagination } = await unwrapResult(
     Product.paginateWithIntelligence(Environment.SERVER, {
@@ -581,8 +586,9 @@ const Products = async ({
   );
 };
 
-const AgentTraffic = async ({ store }: { store: string }) => {
+const AgentTraffic = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
   const [summary, timeSeries] = await Promise.all([
     unwrapResult(
       Tracking.getAgentTrafficSummary(Environment.SERVER, { store }),
@@ -647,8 +653,9 @@ const AgentTraffic = async ({ store }: { store: string }) => {
   );
 };
 
-const Insights = async ({ store }: { store: string }) => {
+const Insights = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
   const scans = await unwrapResult(
     Scan.getLatest(Environment.SERVER, { store }),
   );
@@ -659,4 +666,18 @@ const Insights = async ({ store }: { store: string }) => {
   }));
 
   return <ScanInsightsCarousel scans={items} />;
+};
+
+const AddProductsAction = async ({ params }: { params: StoreParams }) => {
+  const { store } = await params;
+
+  return (
+    <Button
+      color="primary"
+      render={<Link href={`/dashboard/${store}/products/add`} />}
+    >
+      <PlusIcon className="size-4" />
+      Add Products
+    </Button>
+  );
 };

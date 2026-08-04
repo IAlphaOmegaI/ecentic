@@ -16,7 +16,7 @@ export default () => (
           <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div>
-            <div className="h-4 w-56 animate-pulse bg-foreground/10" />
+            <div className="h-5 w-56 animate-pulse rounded-full bg-foreground/10" />
             <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
               Competitors
             </h1>

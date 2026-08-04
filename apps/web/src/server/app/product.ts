@@ -265,6 +265,12 @@ const computeDataQuality = (product: Type): number => {
   return Math.round((filled / keys.length) * 100);
 };
 
+type Tally = { total: number; wins: number };
+
+// Mirrors `computeModelWinRate`: no simulations for that model reads as 0.
+const rateFromTally = (tally?: Tally): number =>
+  tally && tally.total > 0 ? Math.round((tally.wins / tally.total) * 100) : 0;
+
 const computeModelWinRate = (
   simulations: Simulation.Summary[],
   model: string,
@@ -289,42 +295,49 @@ export const gatherIntelligence = dedupe(
     // averages, quality/optimization breakdowns), so it must cover the whole
     // catalog — not the 10-row preview `skimForCurrentUser` returns, which would
     // undercount totals and skew every average.
-    const [catalog, scan] = await Promise.all([
-      store
-        ? Simulation.getForStore(Environment.SERVER, { store })
-        : (async () => {
-            const products = await find(Environment.SERVER, {
-              where: eq(schema.product.userId, userId),
-            });
-            if (!products.success) return products;
-
-            if (products.data.length === 0)
-              return {
-                success: true as const,
-                data: {
-                  products: products.data,
-                  simulations: [] as Simulation.Summary[],
-                },
-              };
-
-            const simulations = await Simulation.getForProducts(
-              Environment.SERVER,
-              { products: products.data.map((product) => product.id) },
-            );
-            if (!simulations.success) return simulations;
-
-            return {
-              success: true as const,
-              data: { products: products.data, simulations: simulations.data },
-            };
-          })(),
+    // The product rows are needed whole (quality scoring reads the listing
+    // itself), but the win rates are pure counting, so Postgres groups those
+    // into one row per (product, model) instead of shipping every simulation.
+    const [catalog, tallies, scan] = await Promise.all([
+      find(Environment.SERVER, {
+        where: store
+          ? and(
+              eq(schema.product.userId, userId),
+              eq(schema.product.storeId, store),
+            )
+          : eq(schema.product.userId, userId),
+      }),
+      Simulation.tallyByProductModel(Environment.SERVER, { store }),
       Scan.getLatest(Environment.SERVER, { store }),
     ]);
 
     if (!catalog.success) return catalog;
+    if (!tallies.success) return tallies;
     if (!scan.success) return scan;
 
-    const { products, simulations } = catalog.data;
+    const products = catalog.data;
+
+    // (product, model) tallies folded into a per-product view: an all-model
+    // total plus the per-model breakdown the dashboard shows.
+    const byProduct = new Map<
+      string,
+      { total: number; wins: number; models: Map<string, Tally> }
+    >();
+
+    for (const tally of tallies.data) {
+      const entry = byProduct.get(tally.productId) ?? {
+        total: 0,
+        wins: 0,
+        models: new Map<string, Tally>(),
+      };
+      const total = Number(tally.total);
+      const wins = Number(tally.wins);
+
+      entry.total += total;
+      entry.wins += wins;
+      entry.models.set(tally.model, { total, wins });
+      byProduct.set(tally.productId, entry);
+    }
 
     if (products.length === 0) {
       return {
@@ -338,14 +351,9 @@ export const gatherIntelligence = dedupe(
     }
 
     const rows = products.map((product) => {
-      const productSimulations = simulations.filter(
-        (simulation) => simulation.productId === product.id,
-      );
-
-      const wins = productSimulations.filter(
-        (simulation) => simulation.winner === "product",
-      ).length;
-      const total = productSimulations.length;
+      const entry = byProduct.get(product.id);
+      const total = entry?.total ?? 0;
+      const wins = entry?.wins ?? 0;
 
       return {
         _id: product.id,
@@ -355,9 +363,9 @@ export const gatherIntelligence = dedupe(
         sku: product.sku,
         winRate: {
           total: total > 0 ? Math.round((wins / total) * 100) : 0,
-          gpt4: computeModelWinRate(productSimulations, "gpt4"),
-          claude: computeModelWinRate(productSimulations, "claude"),
-          gemini: computeModelWinRate(productSimulations, "gemini"),
+          gpt4: rateFromTally(entry?.models.get("gpt4")),
+          claude: rateFromTally(entry?.models.get("claude")),
+          gemini: rateFromTally(entry?.models.get("gemini")),
         },
         simulations: total,
         quality: computeDataQuality(product),

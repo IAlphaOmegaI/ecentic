@@ -2,17 +2,17 @@ import type { Metadata } from "next";
 import { type PropsWithChildren, Suspense } from "react";
 import "./globals.css";
 import { ToastProvider } from "@zenncore/web/components/toast";
-import dynamic from "next/dynamic";
 import { Red_Hat_Display } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
 import { ToastList } from "@/components/ui/toast";
 import { MotionProvider } from "@/context/motion";
+// Imported directly rather than through `next/dynamic`. The provider is already
+// a client component, so the RSC boundary code-splits it anyway; routing it
+// through `dynamic()` from a server component only added a lazy boundary that
+// the App Shell prerender has to resolve, which broke instant-UI validation.
+import { PostHogProvider } from "@/context/posthog";
 import { ThemeProvider } from "@/context/theme";
-
-const PostHogProvider = dynamic(() =>
-  import("@/context/posthog").then((m) => m.PostHogProvider),
-);
 
 const redHatDisplay = Red_Hat_Display({
   subsets: ["latin"],

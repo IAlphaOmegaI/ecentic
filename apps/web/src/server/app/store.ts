@@ -134,46 +134,48 @@ export const overviewForCurrentUser = withAuthentication(async (context) => {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  const [storeRows, productCounts, simulationStats, visits] = await Promise.all([
-    find(Environment.SERVER, {
-      where: eq(schema.store.userId, userId),
-      orderBy: [{ column: schema.store.createdAt, direction: "desc" }],
-    }),
-    db
-      .select({
-        storeId: schema.product.storeId,
-        count: sql<number>`count(*)::int`,
-      })
-      .from(schema.product)
-      .where(eq(schema.product.userId, userId))
-      .groupBy(schema.product.storeId),
-    db
-      .select({
-        storeId: schema.product.storeId,
-        total: sql<number>`count(*)::int`,
-        wins: sql<number>`count(*) filter (where ${schema.simulation.winner} = 'product')::int`,
-      })
-      .from(schema.simulation)
-      .innerJoin(
-        schema.product,
-        eq(schema.simulation.productId, schema.product.id),
-      )
-      .where(eq(schema.product.userId, userId))
-      .groupBy(schema.product.storeId),
-    db
-      .select({
-        storeId: schema.agentVisit.storeId,
-        count: sql<number>`count(*)::int`,
-      })
-      .from(schema.agentVisit)
-      .where(
-        and(
-          eq(schema.agentVisit.userId, userId),
-          gte(schema.agentVisit.createdAt, thirtyDaysAgo),
-        ),
-      )
-      .groupBy(schema.agentVisit.storeId),
-  ]);
+  const [storeRows, productCounts, simulationStats, visits] = await Promise.all(
+    [
+      find(Environment.SERVER, {
+        where: eq(schema.store.userId, userId),
+        orderBy: [{ column: schema.store.createdAt, direction: "desc" }],
+      }),
+      db
+        .select({
+          storeId: schema.product.storeId,
+          count: sql<number>`count(*)::int`,
+        })
+        .from(schema.product)
+        .where(eq(schema.product.userId, userId))
+        .groupBy(schema.product.storeId),
+      db
+        .select({
+          storeId: schema.product.storeId,
+          total: sql<number>`count(*)::int`,
+          wins: sql<number>`count(*) filter (where ${schema.simulation.winner} = 'product')::int`,
+        })
+        .from(schema.simulation)
+        .innerJoin(
+          schema.product,
+          eq(schema.simulation.productId, schema.product.id),
+        )
+        .where(eq(schema.product.userId, userId))
+        .groupBy(schema.product.storeId),
+      db
+        .select({
+          storeId: schema.agentVisit.storeId,
+          count: sql<number>`count(*)::int`,
+        })
+        .from(schema.agentVisit)
+        .where(
+          and(
+            eq(schema.agentVisit.userId, userId),
+            gte(schema.agentVisit.createdAt, thirtyDaysAgo),
+          ),
+        )
+        .groupBy(schema.agentVisit.storeId),
+    ],
+  );
   if (!storeRows.success) return storeRows;
   if (storeRows.data.length === 0)
     return { success: true as const, data: [] as Overview[] };

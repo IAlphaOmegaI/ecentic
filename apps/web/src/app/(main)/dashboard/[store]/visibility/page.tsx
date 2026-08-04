@@ -8,6 +8,8 @@ import { Crosshair, SectionGutter, StatusPill } from "../../_components/grid";
 import { AuditSkeleton } from "./_components/skeletons";
 import { FeedUrlCard, RankChecker } from "./_components/visibility-client";
 
+type StoreParams = PageProps<"/dashboard/[store]/visibility">["params"];
+
 const CHECK_TONES = {
   pass: "success",
   warn: "warning",
@@ -22,8 +24,9 @@ const CHECK_LABELS = {
   manual: "Manual",
 } as const;
 
-const AuditContent = async ({ store }: { store: string }) => {
+const AuditContent = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
   const report = unwrapResult(
     await AgentReadiness.auditStore(Environment.SERVER, { store }),
   );
@@ -94,15 +97,14 @@ const AuditContent = async ({ store }: { store: string }) => {
   );
 };
 
-const RankSection = async ({ store }: { store: string }) => {
+const RankSection = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
   const configured = await CatalogRank.isCatalogConfigured();
   return <RankChecker store={store} configured={configured} />;
 };
 
-export default async ({ params }: { params: Promise<{ store: string }> }) => {
-  const { store } = await params;
-
+export default ({ params }: PageProps<"/dashboard/[store]/visibility">) => {
   return (
     <div className="flex flex-col">
       <div className="mx-8 border-accent-foreground border-x">
@@ -130,7 +132,7 @@ export default async ({ params }: { params: Promise<{ store: string }> }) => {
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <Suspense fallback={<AuditSkeleton />}>
-              <AuditContent store={store} />
+              <AuditContent params={params} />
             </Suspense>
           </div>
         </div>
@@ -150,7 +152,7 @@ export default async ({ params }: { params: Promise<{ store: string }> }) => {
               </p>
             </div>
             <Suspense fallback={<AuditSkeleton />}>
-              <RankSection store={store} />
+              <RankSection params={params} />
             </Suspense>
           </div>
         </div>

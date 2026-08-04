@@ -37,6 +37,8 @@ import {
 } from "./_components/skeletons";
 import { WinRateTiersChart } from "./_components/win-rate-tiers-chart";
 
+type StoreParams = PageProps<"/dashboard/[store]/competitors">["params"];
+
 const emptyStatCards = [
   { label: "Brands Tracked", icon: RadarIcon },
   { label: "Winning Against", icon: TrendUpIcon },
@@ -44,14 +46,12 @@ const emptyStatCards = [
   { label: "Total Simulations", icon: CheckBadgeIcon },
 ] as const;
 
-export default async ({
+export default ({
   params,
   searchParams,
 }: SearchParamsProps<keyof Pager> & {
-  params: Promise<{ store: string }>;
+  params: PageProps<"/dashboard/[store]/competitors">["params"];
 }) => {
-  const { store } = await params;
-
   return (
     <div className="flex flex-col">
       <div className="mx-8 border-accent-foreground border-x">
@@ -62,10 +62,10 @@ export default async ({
             <div>
               <Suspense
                 fallback={
-                  <div className="h-4 w-56 animate-pulse bg-foreground/10" />
+                  <div className="h-5 w-56 animate-pulse rounded-full bg-foreground/10" />
                 }
               >
-                <LastScanned store={store} />
+                <LastScanned params={params} />
               </Suspense>
               <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
                 Competitors
@@ -75,13 +75,13 @@ export default async ({
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <Button
-                color="primary"
-                render={<Link href={`/dashboard/${store}/competitors/add`} />}
+              <Suspense
+                fallback={
+                  <div className="h-9 w-36 animate-pulse bg-foreground/10" />
+                }
               >
-                <PlusIcon className="size-4" />
-                Add Competitor
-              </Button>
+                <AddCompetitorAction params={params} />
+              </Suspense>
             </div>
           </div>
         </div>
@@ -91,7 +91,7 @@ export default async ({
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <Suspense fallback={<StatsSkeleton />}>
-              <StatCards store={store} />
+              <StatCards params={params} />
             </Suspense>
           </div>
         </div>
@@ -105,7 +105,7 @@ export default async ({
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <Suspense fallback={<LandscapeSkeleton />}>
-              <CompetitiveLandscape store={store} />
+              <CompetitiveLandscape params={params} />
             </Suspense>
           </div>
         </div>
@@ -119,7 +119,7 @@ export default async ({
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <Suspense fallback={<TableSkeleton />}>
-              <Competitors store={store} searchParams={searchParams} />
+              <Competitors params={params} searchParams={searchParams} />
             </Suspense>
           </div>
         </div>
@@ -133,7 +133,7 @@ export default async ({
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <Suspense fallback={<InsightsSkeleton />}>
-              <Insights store={store} />
+              <Insights params={params} />
             </Suspense>
           </div>
         </div>
@@ -142,8 +142,9 @@ export default async ({
   );
 };
 
-const LastScanned = async ({ store }: { store: string }) => {
+const LastScanned = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
   const data = await unwrapResult(
     Competitor.gatherIntelligence(Environment.SERVER, { store }),
   );
@@ -157,8 +158,9 @@ const LastScanned = async ({ store }: { store: string }) => {
   );
 };
 
-const StatCards = async ({ store }: { store: string }) => {
+const StatCards = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
   const data = await unwrapResult(
     Competitor.gatherIntelligence(Environment.SERVER, { store }),
   );
@@ -331,8 +333,9 @@ const StatCards = async ({ store }: { store: string }) => {
   );
 };
 
-const CompetitiveLandscape = async ({ store }: { store: string }) => {
+const CompetitiveLandscape = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
   const data = await unwrapResult(
     Competitor.gatherIntelligence(Environment.SERVER, { store }),
   );
@@ -470,13 +473,14 @@ const CompetitiveLandscape = async ({ store }: { store: string }) => {
 };
 
 const Competitors = async ({
-  store,
+  params,
   searchParams,
 }: {
-  store: string;
+  params: StoreParams;
   searchParams: SearchParamsProps<keyof Pager>["searchParams"];
 }) => {
   await connection();
+  const { store } = await params;
   const { page, size } = await extractPaginationParams(searchParams);
   const data = await unwrapResult(
     Competitor.gatherPaginatedIntelligence(Environment.SERVER, {
@@ -504,8 +508,9 @@ const Competitors = async ({
   );
 };
 
-const Insights = async ({ store }: { store: string }) => {
+const Insights = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
   const [data, scans] = await Promise.all([
     unwrapResult(Competitor.gatherIntelligence(Environment.SERVER, { store })),
     unwrapResult(Scan.getLatest(Environment.SERVER, { store })),
@@ -653,5 +658,19 @@ const Insights = async ({ store }: { store: string }) => {
         </Button>
       </div>
     </div>
+  );
+};
+
+const AddCompetitorAction = async ({ params }: { params: StoreParams }) => {
+  const { store } = await params;
+
+  return (
+    <Button
+      color="primary"
+      render={<Link href={`/dashboard/${store}/competitors/add`} />}
+    >
+      <PlusIcon className="size-4" />
+      Add Competitor
+    </Button>
   );
 };

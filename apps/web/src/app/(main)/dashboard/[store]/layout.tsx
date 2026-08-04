@@ -1,17 +1,11 @@
 import { notFound } from "next/navigation";
-import { type PropsWithChildren, Suspense } from "react";
+import { Suspense } from "react";
 import * as Store from "@/server/app/store";
 import { Environment } from "@/server/utils/environment";
-import {
-  SidebarSkeleton,
-  TopbarSkeleton,
-} from "../_components/chrome-skeletons";
 import { Sidebar } from "../_components/sidebar";
 import { Topbar } from "../_components/topbar";
 
-type LayoutProps = PropsWithChildren<{
-  params: Promise<{ store: string }>;
-}>;
+type StoreParams = LayoutProps<"/dashboard/[store]">["params"];
 
 // Guard: a store id in the URL must belong to the signed-in user. Anything
 // else (deleted, wrong account, garbage) 404s instead of rendering a dashboard
@@ -21,30 +15,31 @@ type LayoutProps = PropsWithChildren<{
 // Streaming ahead of the verdict leaks nothing: every data component scopes
 // its queries by the session's user id, so a foreign store id can only ever
 // render empty sections before the 404 lands.
-const StoreGuard = async ({ store }: { store: string }) => {
+const StoreGuard = async ({ params }: { params: StoreParams }) => {
+  const { store } = await params;
   const resolved = await Store.resolveForUser(Environment.SERVER, { store });
   if (!resolved.success) notFound();
 
   return null;
 };
 
-export default async ({ children, params }: LayoutProps) => {
-  const { store } = await params;
-
-  return (
-    <>
-      <Suspense>
-        <StoreGuard store={store} />
-      </Suspense>
-      <Suspense fallback={<SidebarSkeleton />}>
-        <Sidebar store={store} />
-      </Suspense>
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <Suspense fallback={<TopbarSkeleton />}>
-          <Topbar store={store} />
-        </Suspense>
-        <main className="flex-1 overflow-y-auto">{children}</main>
-      </div>
-    </>
-  );
-};
+// Deliberately synchronous. `params` is request data, so awaiting it in the
+// layout body would push the entire dashboard — chrome *and* every page nested
+// under it — out of the prerendered shell, leaving all of `/dashboard/[store]/*`
+// to fall back to the parent skeleton.
+//
+// The chrome is synchronous for the same reason and owns the boundaries around
+// its own data-backed regions, so its frame, logo and search box prerender
+// while only the parts that need a query stream in.
+export default ({ children, params }: LayoutProps<"/dashboard/[store]">) => (
+  <>
+    <Suspense>
+      <StoreGuard params={params} />
+    </Suspense>
+    <Sidebar params={params} />
+    <div className="flex flex-1 flex-col overflow-hidden">
+      <Topbar />
+      <main className="flex-1 overflow-y-auto">{children}</main>
+    </div>
+  </>
+);

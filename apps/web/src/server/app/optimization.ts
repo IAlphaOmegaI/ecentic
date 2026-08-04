@@ -1,14 +1,15 @@
 "use server";
 
 import { resultify } from "@zenncore/utils";
-import { and, eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 import { revalidatePath, updateTag } from "next/cache";
 import { z } from "zod";
-import { schema } from "../database";
+import { db, schema } from "../database";
 import * as AI from "../utils/ai";
 import { withAuthentication } from "../utils/authentication";
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
+import { DatabaseError } from "../utils/error";
 import { type Document, repository } from "../utils/repository";
 import { themeEmbedDeepLink } from "../utils/shopify";
 import { feedUrl } from "./feed-export";
@@ -371,6 +372,52 @@ export const listDashboard = withAuthentication(
     };
   },
   "Optimization.listDashboard",
+);
+
+/**
+ * Just the published count, for the sidebar's Optimize badge.
+ *
+ * `listDashboard` can answer this too, but only after loading every product,
+ * store, optimization record and simulation the user owns and running the whole
+ * diagnostics pass — far too much work for one number, and it ran on every
+ * dashboard page because the sidebar lives in the shared layout.
+ */
+export const countPublished = withAuthentication(
+  async (context, { store }: { store?: string } = {}) => {
+    const userId = context.session.user.id;
+
+    // The join mirrors `listDashboard`'s filter: a published record only counts
+    // while its product is still one of this user's — and, when scoped, one of
+    // this store's — so the badge never promises rows the page cannot render.
+    const rows = await resultify(async () =>
+      db
+        .select({ value: count() })
+        .from(schema.listingOptimization)
+        .innerJoin(
+          schema.product,
+          eq(schema.product.id, schema.listingOptimization.productId),
+        )
+        .where(
+          and(
+            eq(schema.listingOptimization.userId, userId),
+            eq(schema.listingOptimization.status, "published"),
+            eq(schema.product.userId, userId),
+            store ? eq(schema.product.storeId, store) : undefined,
+          ),
+        ),
+    );
+
+    if (!rows.success)
+      return {
+        success: false as const,
+        error: new DatabaseError("Failed to count published optimizations", {
+          cause: rows.error,
+        }),
+      };
+
+    return { success: true as const, data: rows.data[0]?.value ?? 0 };
+  },
+  "Optimization.countPublished",
 );
 
 export const approveProductListing = withAuthentication(

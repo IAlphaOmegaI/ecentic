@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
 import { serialize } from "../utils/csv";
+import { dedupe } from "../utils/dedupe";
 import { Environment } from "../utils/environment";
 import { NotFoundError } from "../utils/error";
 import { repository } from "../utils/repository";
@@ -16,18 +17,12 @@ const optimizations = repository(schema.listingOptimization);
 const stores = repository(schema.store);
 
 export const exportWinRateSummary = withAuthentication(async () => {
-  const scans = await Scan.getLatest(Environment.SERVER, { limit: 1000 });
-  if (!scans.success) return scans;
+  const scan = await Scan.getLatestComplete(Environment.SERVER);
+  if (!scan.success) return scan;
 
-  const complete = scans.data.filter((scan) => scan.status === "complete");
-  if (complete.length === 0)
+  const latest = scan.data;
+  if (!latest)
     return { success: false as const, error: new NotFoundError("Scan") };
-
-  const latest = complete[0];
-
-  if (!latest) {
-    return { success: false as const, error: new NotFoundError("Scan") };
-  }
 
   const simulations = await Simulation.getForScan(Environment.SERVER, {
     scan: latest.id,
@@ -302,33 +297,39 @@ export const exportOptimizationImpact = withAuthentication(async (context) => {
   };
 }, "Report.exportOptimizationImpact");
 
-export const getAvailability = withAuthentication(async (context) => {
-  const userId = context.session.user.id;
+// Deduped: the reports page asks three separate Suspense leaves — the status
+// pill, the share button and the report grid — whether there is anything to
+// report on, and without this each one re-ran the whole four-query fan-out.
+export const getAvailability = dedupe(
+  withAuthentication(async (context) => {
+    const userId = context.session.user.id;
 
-  const [scans, products, competitors, records] = await Promise.all([
-    Scan.getLatest(Environment.SERVER, { limit: 1000 }),
-    Product.count(Environment.SERVER, eq(schema.product.userId, userId)),
-    Competitor.count(Environment.SERVER, eq(schema.competitor.userId, userId)),
-    optimizations.count(
-      Environment.SERVER,
-      eq(schema.listingOptimization.userId, userId),
-    ),
-  ]);
+    const [scan, products, competitors, records] = await Promise.all([
+      Scan.getLatestComplete(Environment.SERVER),
+      Product.count(Environment.SERVER, eq(schema.product.userId, userId)),
+      Competitor.count(
+        Environment.SERVER,
+        eq(schema.competitor.userId, userId),
+      ),
+      optimizations.count(
+        Environment.SERVER,
+        eq(schema.listingOptimization.userId, userId),
+      ),
+    ]);
 
-  if (!scans.success) return scans;
-  if (!products.success) return products;
-  if (!competitors.success) return competitors;
-  if (!records.success) return records;
+    if (!scan.success) return scan;
+    if (!products.success) return products;
+    if (!competitors.success) return competitors;
+    if (!records.success) return records;
 
-  const scan = scans.data.find((scan) => scan.status === "complete") ?? null;
-
-  return {
-    success: true as const,
-    data: {
-      scan,
-      products: products.data,
-      competitors: competitors.data,
-      optimizations: records.data,
-    },
-  };
-}, "Report.getAvailability");
+    return {
+      success: true as const,
+      data: {
+        scan: scan.data,
+        products: products.data,
+        competitors: competitors.data,
+        optimizations: records.data,
+      },
+    };
+  }, "Report.getAvailability"),
+);

@@ -217,6 +217,20 @@ export const ensureCustomer = withContext(
   "Subscription.ensureCustomer",
 );
 
+/**
+ * The stored subscription row, with no Stripe round trip.
+ *
+ * For passive surfaces — the topbar badge, anything that only reads plan and
+ * status. `getCurrentSubscription` reconciles against Stripe on every call,
+ * which is a remote request in the render path; in shared chrome that lands on
+ * every cold dashboard page load. Webhooks (`handleStripeEvent`) already keep
+ * this row current, so reconciliation belongs on billing surfaces that act on
+ * it, not on a badge that displays it.
+ */
+export const getStoredSubscription = withAuthentication(async (context) => {
+  return findByUser(Environment.SERVER, { user: context.session.user.id });
+}, "Subscription.getStoredSubscription");
+
 export const getCurrentSubscription = withAuthentication(async (context) => {
   const existing = await findByUser(Environment.SERVER, {
     user: context.session.user.id,

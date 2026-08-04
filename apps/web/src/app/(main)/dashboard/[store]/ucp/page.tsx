@@ -8,7 +8,10 @@ import { Crosshair, SectionKicker, StatusPill } from "../../_components/grid";
 import { UcpSectionSkeleton } from "./_components/skeletons";
 import { UcpManager } from "./_components/ucp-manager";
 
-const UcpContent = async ({ store }: { store: string }) => {
+type StoreParams = PageProps<"/dashboard/[store]/ucp">["params"];
+
+const UcpContent = async ({ params }: { params: StoreParams }) => {
+  const { store } = await params;
   const [profile, products, stores] = await Promise.all([
     unwrapResult(Ucp.getProfile(Environment.SERVER)),
     unwrapResult(Product.skimForCurrentUser(Environment.SERVER, { store })),
@@ -31,9 +34,7 @@ const UcpContent = async ({ store }: { store: string }) => {
   );
 };
 
-export default async ({ params }: { params: Promise<{ store: string }> }) => {
-  const { store } = await params;
-
+export default ({ params }: PageProps<"/dashboard/[store]/ucp">) => {
   return (
     <div className="flex flex-col">
       <div className="mx-8 border-accent-foreground border-x">
@@ -69,7 +70,7 @@ export default async ({ params }: { params: Promise<{ store: string }> }) => {
             </div>
             <div className="p-6">
               <Suspense fallback={<UcpSectionSkeleton />}>
-                <UcpContent store={store} />
+                <UcpContent params={params} />
               </Suspense>
             </div>
           </div>

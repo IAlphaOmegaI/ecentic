@@ -15,69 +15,71 @@ const navPlaceholders = [
   { key: "ucp-comparison", width: "w-30" },
 ] as const;
 
-export const SidebarSkeleton = () => (
-  <aside className="relative hidden w-60 flex-col overflow-hidden border-accent-foreground border-r bg-background-rich md:flex">
-    <div className="flex h-14 items-center justify-center overflow-hidden border-accent-foreground border-b pr-22 pl-5">
-      <div className="h-7 w-full animate-pulse bg-accent-foreground/30" />
-    </div>
-
-    <div className="border-accent-foreground border-b p-2">
-      <div className="flex w-full items-center gap-2.5 border border-accent-foreground bg-background px-2.5 py-2">
-        <div className="size-8 shrink-0 animate-pulse border border-accent-foreground bg-background-rich" />
-        <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-          <div className="h-3.5 w-24 animate-pulse bg-accent-foreground/30" />
-          <div className="h-2.5 w-16 animate-pulse bg-accent-foreground/30" />
-        </div>
-        <div className="size-4 shrink-0 animate-pulse bg-accent-foreground/30" />
+// The chrome renders its frame statically and streams each data-backed region
+// separately, so each region has its own placeholder. There is deliberately no
+// whole-sidebar or whole-topbar skeleton: the frame, logo, nav chrome, search
+// box and bell all prerender, so nothing ever needs to stand in for the lot.
+export const StoreSwitcherSkeleton = () => (
+  <div className="border-accent-foreground border-b p-2">
+    <div className="flex w-full items-center gap-2.5 border border-accent-foreground bg-background px-2.5 py-2">
+      <div className="size-8 shrink-0 animate-pulse border border-accent-foreground bg-background-rich" />
+      <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+        <div className="h-3.5 w-24 animate-pulse bg-accent-foreground/30" />
+        <div className="h-2.5 w-16 animate-pulse bg-accent-foreground/30" />
       </div>
+      <div className="size-4 shrink-0 animate-pulse bg-accent-foreground/30" />
     </div>
-
-    <nav className="relative flex flex-1 flex-col">
-      {navPlaceholders.map((item) => (
-        <div
-          key={item.key}
-          className="flex h-10 items-center gap-2.5 border-transparent border-l-[3px] px-5"
-        >
-          <div className="size-4 shrink-0 animate-pulse bg-accent-foreground/30" />
-          <div
-            className={`h-4 animate-pulse bg-accent-foreground/30 ${item.width}`}
-          />
-          {"badge" in item && item.badge && (
-            <div className="ml-auto h-4 w-7 animate-pulse rounded-full bg-accent-foreground/30" />
-          )}
-        </div>
-      ))}
-
-      <div className="mt-auto border-accent-foreground border-t">
-        <div className="flex h-10 items-center gap-2.5 border-transparent border-l-[3px] px-5">
-          <div className="size-4 shrink-0 animate-pulse bg-accent-foreground/30" />
-          <div className="h-4 w-16 animate-pulse bg-accent-foreground/30" />
-        </div>
-      </div>
-    </nav>
-  </aside>
+  </div>
 );
 
-export const TopbarSkeleton = () => (
-  <header className="flex h-14 shrink-0 items-center justify-between border-accent-foreground border-b bg-background-rich px-8">
-    <div className="flex max-w-md flex-1 items-center gap-2">
-      <div className="flex h-9 flex-1 items-center gap-2 rounded-lg border border-accent-foreground bg-background px-3">
+export const SidebarNavSkeleton = () => (
+  <nav className="relative flex flex-1 flex-col">
+    {navPlaceholders.map((item) => (
+      <div
+        key={item.key}
+        className="flex h-10 items-center gap-2.5 border-transparent border-l-[3px] px-5"
+      >
         <div className="size-4 shrink-0 animate-pulse bg-accent-foreground/30" />
-        <div className="h-4 w-24 animate-pulse bg-accent-foreground/30" />
-        <div className="ml-auto h-4 w-8 animate-pulse rounded bg-accent-foreground/30" />
+        <div
+          className={`h-4 animate-pulse bg-accent-foreground/30 ${item.width}`}
+        />
+        {"badge" in item && item.badge && (
+          <div className="ml-auto h-4 w-7 animate-pulse rounded-full bg-accent-foreground/30" />
+        )}
+      </div>
+    ))}
+
+    <div className="mt-auto border-accent-foreground border-t">
+      <div className="flex h-10 items-center gap-2.5 border-transparent border-l-[3px] px-5">
+        <div className="size-4 shrink-0 animate-pulse bg-accent-foreground/30" />
+        <div className="h-4 w-16 animate-pulse bg-accent-foreground/30" />
       </div>
     </div>
-    <div className="flex items-center gap-3">
-      <div className="flex size-8 items-center justify-center">
-        <div className="size-6 animate-pulse bg-accent-foreground/30" />
-      </div>
-      <div className="h-5 w-16 animate-pulse bg-accent-foreground/30" />
-      <div className="flex items-center gap-2.5">
-        <div className="size-8 animate-pulse rounded-md bg-accent-foreground/30" />
-        <div className="hidden h-4 w-28 animate-pulse bg-accent-foreground/30 md:block" />
-      </div>
-    </div>
-  </header>
+  </nav>
+);
+
+// A single nav badge, sized to the pill it replaces so the row never reflows.
+export const NavBadgeSkeleton = () => (
+  <span className="inline-block h-3 w-4 animate-pulse rounded-full bg-accent-foreground/30 align-middle" />
+);
+
+export const CommandPaletteSkeleton = () => (
+  <div className="flex h-9 flex-1 items-center gap-2 rounded-lg border border-accent-foreground bg-background px-3">
+    <div className="size-4 shrink-0 animate-pulse bg-accent-foreground/30" />
+    <div className="h-4 w-24 animate-pulse bg-accent-foreground/30" />
+    <div className="ml-auto h-4 w-8 animate-pulse rounded bg-accent-foreground/30" />
+  </div>
+);
+
+export const SubscriptionBadgeSkeleton = () => (
+  <div className="h-5 w-16 animate-pulse bg-accent-foreground/30" />
+);
+
+export const UserButtonSkeleton = () => (
+  <div className="flex items-center gap-2.5">
+    <div className="size-8 animate-pulse rounded-md bg-accent-foreground/30" />
+    <div className="hidden h-4 w-28 animate-pulse bg-accent-foreground/30 md:block" />
+  </div>
 );
 
 export const StatsSkeleton = () => (
@@ -325,7 +327,7 @@ export const PageSkeleton = () => (
           <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div>
-            <div className="h-4 w-56 animate-pulse bg-foreground/10" />
+            <div className="h-5 w-56 animate-pulse rounded-full bg-foreground/10" />
             <div className="mt-3 h-9 w-40 animate-pulse bg-foreground/10" />
             <div className="mt-1 h-5 w-80 max-w-full animate-pulse bg-foreground/10" />
           </div>
