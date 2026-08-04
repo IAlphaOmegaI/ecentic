@@ -23,7 +23,7 @@ export default () => (
         </div>
       </div>
 
-      <SectionGutter />
+      <SectionGutter /> 
 
       <div className="-mx-8 border-accent-foreground border-t border-b">
         <div className="relative mx-8 bg-background-rich">
