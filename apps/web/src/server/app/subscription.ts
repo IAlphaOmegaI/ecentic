@@ -19,12 +19,15 @@ import {
   DEALS,
   isDealKey,
   isPlanKey,
+  isPromoKey,
   PLANS,
   type PlanKey,
+  PROMOS,
   resolvePlanByPriceId,
   stripe,
 } from "../utils/stripe";
 import * as DealRedemption from "./deal-redemption";
+import * as PromoClaim from "./promo-claim";
 import * as User from "./user";
 
 export const { get, create, update, destroy, exists, find } = repository(
@@ -302,8 +305,12 @@ export const createCheckoutSessionForUser = withContext(
     // email matches a deal redemption we've verified and approved. Redemptions
     // stay "pending" until their batch is checked, so only "approved" ones
     // grant the discount.
+    // Read off the narrowed row once: the promo lookup below reads it from
+    // inside a closure, where TypeScript no longer holds the null check above.
+    const { email } = user.data;
+
     const redemption = await DealRedemption.findByEmail(Environment.SERVER, {
-      email: user.data.email,
+      email,
     });
 
     const deal = (() => {
@@ -316,6 +323,42 @@ export const createCheckoutSessionForUser = withContext(
       return { merchant, coupon };
     })();
 
+    // A launch promo is a single seat someone claimed by email before they had
+    // an account (see PromoClaim). Matching on the account's email is what makes
+    // the claim worth anything: claiming an address you don't control never
+    // reaches checkout. The seat discounts one plan only, so a claimer buying
+    // the other plan pays list.
+    const promo = await (async () => {
+      // A partner deal is the better offer and Stripe takes one coupon per
+      // checkout, so never let a promo displace one.
+      if (deal) return null;
+
+      const claim = await PromoClaim.findByEmail(Environment.SERVER, {
+        email,
+      });
+
+      if (!claim.success || !claim.data) return null;
+      if (!isPromoKey(claim.data.promo)) return null;
+
+      const entry = PROMOS[claim.data.promo];
+      if (entry.plan !== key) return null;
+
+      const coupon = entry.coupon();
+      if (!coupon) return null;
+
+      return { promo: claim.data.promo, coupon };
+    })();
+
+    const discount = deal ?? promo;
+
+    // Typed as a plain string map so the union of shapes below still satisfies
+    // Stripe's MetadataParam when spread.
+    const attribution: Record<string, string> = (() => {
+      if (deal) return { deal: deal.merchant };
+      if (promo) return { promo: promo.promo };
+      return {};
+    })();
+
     const session = await resultify(() =>
       stripe().checkout.sessions.create({
         mode: "subscription",
@@ -324,17 +367,15 @@ export const createCheckoutSessionForUser = withContext(
         success_url: `${appHost}/dashboard/settings?checkout=success`,
         cancel_url: `${appHost}/?checkout=canceled#pricing`,
         // Stripe forbids `discounts` and `allow_promotion_codes` together.
-        ...(deal
-          ? { discounts: [{ coupon: deal.coupon }] }
+        ...(discount
+          ? { discounts: [{ coupon: discount.coupon }] }
           : { allow_promotion_codes: true }),
         billing_address_collection: "auto",
         client_reference_id: id,
         subscription_data: {
-          metadata: deal
-            ? { userId: id, plan: key, deal: deal.merchant }
-            : { userId: id, plan: key },
+          metadata: { userId: id, plan: key, ...attribution },
         },
-        metadata: { userId: id, plan: key },
+        metadata: { userId: id, plan: key, ...attribution },
       }),
     );
 
@@ -615,6 +656,19 @@ export const handleStripeEvent = withContext(
           },
         );
         if (!upserted.success) return upserted;
+
+        // Stamp the promo seat as converted. Best-effort and idempotent: the
+        // subscription is already recorded, so a failure here costs a reporting
+        // field, never the customer's plan.
+        const promo =
+          // biome-ignore lint/complexity/useLiteralKeys: Stripe.Metadata is an index signature; TS requires bracket access
+          (session.metadata?.["promo"] as string | undefined) ?? null;
+
+        if (promo)
+          await PromoClaim.markRedeemed(Environment.SERVER, {
+            promo,
+            at: new Date(event.created * 1000),
+          });
 
         return { success: true as const, data: { handled: true } };
       }

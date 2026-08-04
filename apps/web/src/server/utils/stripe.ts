@@ -66,3 +66,50 @@ export type DealKey = keyof typeof DEALS;
 
 export const isDealKey = (value: string): value is DealKey =>
   value === "ycombinator" || value === "techstars";
+
+/**
+ * Launch promos. A partner DEAL is open to every verified member of its program;
+ * a promo is a *single seat* — the first email to claim it takes it and nobody
+ * else ever can (see `server/app/promo-claim.ts`).
+ *
+ * Everything the offer needs lives here so the checkout discount, the claim
+ * page's copy, and `scripts/create-promo-coupon.ts` cannot drift apart: the
+ * script derives the coupon's amount from these prices, and `plan` is the only
+ * plan the discount applies to — a claimer who buys Dominate instead pays list.
+ *
+ * `coupon()` resolves the Stripe coupon id; unset disables the promo, so the
+ * coupon must exist in Stripe before the env var is set.
+ */
+export const PROMOS = {
+  founding: {
+    name: "Founding offer",
+    plan: "compete",
+    couponId: "founding-99-3mo",
+    listCents: 14_900,
+    claimedCents: 9_900,
+    months: 3,
+    currency: "usd",
+    coupon: () => process.env.STRIPE_PROMO_COUPON_FOUNDING,
+  },
+} as const satisfies Record<
+  string,
+  {
+    name: string;
+    plan: PlanKey;
+    couponId: string;
+    listCents: number;
+    claimedCents: number;
+    months: number;
+    currency: string;
+    coupon: () => string | undefined;
+  }
+>;
+
+export type PromoKey = keyof typeof PROMOS;
+
+export const isPromoKey = (value: string): value is PromoKey =>
+  value === "founding";
+
+/** Fixed amount Stripe takes off each discounted invoice, in cents. */
+export const discountCents = (promo: PromoKey): number =>
+  PROMOS[promo].listCents - PROMOS[promo].claimedCents;

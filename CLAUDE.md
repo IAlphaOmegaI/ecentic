@@ -249,11 +249,21 @@ Billing. Three separate products: free **Scan** (one-time, no billing row),
 performance fee), and flat **Subscription** (Compete/Dominate, no fee). The fee
 never rides a subscription. PAYG runs on calendar months; the Stripe rail charges
 one-off invoices (Shopify-installed stores bill via Shopify usage records).
+
+Discounts come in two shapes. A partner **deal** (`DEALS` in `server/utils/stripe.ts`)
+is open to every verified member of its program — YC, Techstars — and is granted by
+an approved `deal_redemption` row. A **promo** (`PROMOS`) is a single seat: the first
+email to claim it at `/founding` takes it and nobody else can, enforced by the unique
+index on `promo_claim.promo` plus `max_redemptions: 1` on the Stripe coupon. Both are
+matched to a checkout by the account's email, and Stripe accepts one coupon per
+checkout, so a deal always wins over a promo. Create a promo's coupon with
+`bun scripts/create-promo-coupon.ts`.
 ```
 STRIPE_SECRET_KEY
 STRIPE_WEBHOOK_SECRET
 STRIPE_SUB_COMPETE                        # recurring price id — Compete plan
 STRIPE_SUB_DOMINATE                       # recurring price id — Dominate plan
+STRIPE_PROMO_COUPON_FOUNDING              # coupon id for the single-seat founding offer; unset disables it
 APP_HOST                                  # e.g. https://ecentic.ai (checkout return + webhook origin)
 CRON_SECRET                               # Bearer secret for /api/cron/* (scan + billing)
 

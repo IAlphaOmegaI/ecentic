@@ -647,6 +647,34 @@ export const dealRedemption = pgTable(
   ],
 );
 
+/**
+ * A launch promo seat, claimed by email (see `server/app/promo-claim.ts`).
+ * Public, unauthenticated capture — claimed from /founding before the claimer
+ * has an account, so there is no user FK; checkout matches on email instead.
+ *
+ * The unique index on `promo` is the offer's "first email wins" rule expressed
+ * where it cannot be raced: a second claim collides in Postgres rather than
+ * relying on application code to read-then-write.
+ */
+export const promoClaim = pgTable(
+  "promo_claim",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    /** Promo key, e.g. "founding". One row per promo, ever. */
+    promo: text("promo").notNull(),
+    /** Stored lowercased; checkout matches the account's email case-insensitively. */
+    email: text("email").notNull(),
+    /** Set when the claimer's checkout completes, so an unused seat is visible. */
+    redeemedAt: timestamp("redeemedAt", { mode: "date" }),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("promo_claim_promo_unique").on(table.promo),
+    index("promo_claim_email_idx").on(table.email),
+  ],
+);
+
 /** Tables object for defineRelations and better-auth adapter */
 export const tables = {
   user,
@@ -669,6 +697,7 @@ export const tables = {
   agentApiKey,
   blogPost,
   dealRedemption,
+  promoClaim,
   ucpOrder,
 };
 

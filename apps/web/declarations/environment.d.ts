@@ -56,6 +56,8 @@ declare namespace NodeJS {
     /** Stripe coupon ids for partner deals; unset disables the deal. */
     readonly STRIPE_DEAL_COUPON_YC?: string;
     readonly STRIPE_DEAL_COUPON_TECHSTARS?: string;
+    /** Stripe coupon id for the single-seat founding offer; unset disables it. */
+    readonly STRIPE_PROMO_COUPON_FOUNDING?: string;
 
     /** Pay-as-you-go performance fee overrides; code falls back to built-in defaults. */
     readonly PERFORMANCE_FEE_RATE_BPS_DEFAULT?: string;
