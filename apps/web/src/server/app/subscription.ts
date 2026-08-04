@@ -331,6 +331,10 @@ export const createCheckoutSessionForUser = withContext(
       if (redemption.data.status !== "approved") return null;
       const { merchant } = redemption.data;
       if (!isDealKey(merchant)) return null;
+      // The coupon is restricted in Stripe to the tier the deal was sold
+      // against, and Stripe hard-errors a checkout it cannot cover. Skipping it
+      // on any other tier degrades to list price instead of a failed checkout.
+      if (DEALS[merchant].plan !== key) return null;
       const coupon = DEALS[merchant].coupon();
       if (!coupon) return null;
       return { merchant, coupon };

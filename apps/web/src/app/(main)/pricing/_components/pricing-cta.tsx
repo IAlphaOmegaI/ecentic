@@ -8,7 +8,7 @@ import * as Payg from "@/server/app/billing/payg";
 import * as Subscription from "@/server/app/subscription";
 
 type Props = {
-  plan: "payg" | "compete" | "dominate";
+  plan: "payg" | "compete" | "scale" | "dominate";
   color?: Button.Props["color"];
   className?: string;
   children: React.ReactNode;
