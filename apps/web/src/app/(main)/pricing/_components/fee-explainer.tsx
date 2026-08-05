@@ -47,7 +47,7 @@ export const FeeExplainer = () => (
       <SectionGutter />
 
       <div className="p-6 md:p-12">
-        <span className="font-normal text-3xl text-primary">01</span>
+        <span className="font-normal text-3xl text-primary">02</span>
         <h2 className="mt-2 max-w-2xl font-body font-medium text-4xl text-foreground md:text-6xl">
           How the performance fee works
         </h2>
