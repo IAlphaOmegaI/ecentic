@@ -16,6 +16,7 @@ Central navigation for product context, agent rules, and package/component docum
 - [Store integrations progress tracker](./integrations/overview.md)
 - [Google UCP — agentic checkout guide](./integrations/google-ucp.md) — merchant checklist for checkout on Google AI surfaces + which steps ecentic automates
 - [Hosted UCP — woo-ucp conformance](./integrations/woo-ucp-conformance.md) — how the backend UCP surface (`apps/web/src/server/app/ucp/`) maps to the woo-ucp reference, the thin-plugin bridge contract, known divergences, and deployment notes
+- [Google OAuth verification — submission pack](./integrations/google-oauth-verification.md) — scope justification, console config, reviewer access + test credentials, demo-video shot list, and the privacy-policy row mapping for the `content` scope review
 
 ### If you are planning billing or Shopify App Store pricing
 
