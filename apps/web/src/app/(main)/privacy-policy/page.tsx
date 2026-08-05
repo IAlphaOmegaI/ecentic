@@ -13,7 +13,7 @@ import { createMetadata } from "@/lib/seo";
 import Art from "@/public/images/ascii/gavel.png";
 import { ContentPageSection } from "../_components/content";
 import { PageBanner } from "../_components/page-banner";
-import { renderInline } from "../_components/rich-text";
+import { renderInline } from "../_components/rich-text"; 
 
 export const metadata: Metadata = createMetadata({
   title: "Privacy Policy",
