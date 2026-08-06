@@ -48,6 +48,11 @@ export default withSentryConfig(
           protocol: "https",
           hostname: "d2qswj4ah2.ufs.sh",
         },
+        {
+          protocol: "https",
+          hostname: "csuxjmfbwmkxiegfpljm.supabase.co",
+          pathname: "/storage/v1/object/public/blog-images/**",
+        },
       ],
     },
     // Markdown-for-Agents negotiates on Accept; CDN must vary HTML vs markdown.

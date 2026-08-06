@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { type PropsWithChildren, Suspense } from "react";
 import "./globals.css";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { ToastProvider } from "@zenncore/web/components/toast";
 import { Red_Hat_Display } from "next/font/google";
 import localFont from "next/font/local";
@@ -138,6 +139,7 @@ export default ({ children }: PropsWithChildren) => {
           href="https://eu-assets.i.posthog.com"
           crossOrigin="anonymous"
         />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
         {process.env.NODE_ENV === "development" && (
           <Script
             src="//unpkg.com/react-grab/dist/index.global.js"
@@ -166,6 +168,14 @@ export default ({ children }: PropsWithChildren) => {
             </Script>
           )}
         <Script src="/webmcp.js" strategy="afterInteractive" />
+        {/* GA4 runs alongside PostHog — the two are independent. Pageviews on
+            client-side navigations come from GA4's enhanced measurement
+            ("page changes based on browser history events"), which reads the
+            App Router's pushState calls, so there is no manual pageview hook
+            here to double-count against. */}
+        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+        )}
         <meta name="apple-mobile-web-app-title" content="ecentic" />
       </head>
       <body

@@ -1,7 +1,9 @@
 import { resultify } from "@zenncore/utils";
+import { readingTimeMinutes } from "babylovegrowth-next-js-blog";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/json-ld";
+import * as BabyLoveGrowth from "@/server/app/babylovegrowth";
 import * as Blog from "@/server/app/blog-cache";
 import {
   EditorialFooter,
@@ -9,6 +11,8 @@ import {
   EditorialRichText,
   EditorialSplitSection,
 } from "../_components/editorial-page";
+import { TagList } from "../_components/tag-list";
+import "../blog-content.css";
 
 const formatter = new Intl.DateTimeFormat("en-US", {
   month: "long",
@@ -19,7 +23,7 @@ const formatter = new Intl.DateTimeFormat("en-US", {
 
 const normalize = (value: Date | string) => {
   if (value instanceof Date) return value;
-  return new Date(`${value}T00:00:00Z`);
+  return new Date(value.includes("T") ? value : `${value}T00:00:00Z`);
 };
 
 const formatBlogDate = (value: Date | string) =>
@@ -31,20 +35,57 @@ type BlogPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-// Prerender every published post at build so even the first request per slug
-// serves full HTML with no database dependency. Posts published after the
-// build still render on demand (`dynamicParams` default).
 export const generateStaticParams = async () => {
-  const posts = await Blog.listPublished();
-  return posts.map(({ slug }) => ({ slug }));
+  const [articles, posts] = await Promise.all([
+    BabyLoveGrowth.listArticles(),
+    Blog.listPublished(),
+  ]);
+
+  const slugs = new Set([
+    ...articles.map((article) => article.slug),
+    ...posts.map((post) => post.slug),
+  ]);
+
+  return [...slugs].map((slug) => ({ slug }));
 };
 
 export const generateMetadata = async ({
   params,
 }: BlogPageProps): Promise<Metadata> => {
   const { slug } = await params;
-  const result = await resultify(() => Blog.getPublishedBySlug(slug));
 
+  const blgResult = await resultify(() =>
+    BabyLoveGrowth.getArticleBySlug(slug),
+  );
+  if (blgResult.success && blgResult.data) {
+    const article = blgResult.data;
+    const url = `https://ecentic.ai/blog/${article.slug}`;
+    return {
+      title: article.title,
+      description: article.meta_description,
+      keywords: article.keywords,
+      alternates: { canonical: `/blog/${article.slug}` },
+      openGraph: {
+        type: "article",
+        url,
+        title: `${article.title} | ecentic`,
+        description: article.meta_description,
+        publishedTime: article.created_at,
+        modifiedTime: article.updated_at,
+        authors: ["ecentic"],
+        images: article.hero_image_url
+          ? [{ url: article.hero_image_url }]
+          : undefined,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: `${article.title} | ecentic`,
+        description: article.meta_description,
+      },
+    };
+  }
+
+  const result = await resultify(() => Blog.getPublishedBySlug(slug));
   if (!result.success || !result.data) return {};
 
   const post = result.data;
@@ -78,8 +119,89 @@ export const generateMetadata = async ({
 
 export default async ({ params }: BlogPageProps) => {
   const { slug } = await params;
-  const post = await Blog.getPublishedBySlug(slug);
+  const article = await BabyLoveGrowth.getArticleBySlug(slug);
 
+  if (article) {
+    const minutes = Math.max(
+      1,
+      readingTimeMinutes(article.content_markdown || article.content_html),
+    );
+
+    const structuredData = [
+      ...(article.jsonLd ? [article.jsonLd] : []),
+      ...(article.faqJsonLd ? [article.faqJsonLd] : []),
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: "https://ecentic.ai/",
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Blog",
+            item: "https://ecentic.ai/blog",
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: article.title,
+            item: `https://ecentic.ai/blog/${article.slug}`,
+          },
+        ],
+      },
+    ];
+
+    return (
+      <EditorialLayout
+        eyebrow={article.seedKeyword ?? "Guide"}
+        title={article.title}
+        meta={
+          <p>
+            Published: {formatBlogDate(article.created_at)} · {minutes} min read
+          </p>
+        }
+        description={article.meta_description || article.excerpt}
+      >
+        <JsonLd schemas={structuredData} />
+
+        <EditorialSplitSection
+          left={
+            <>
+              <span className="mt-auto font-normal text-2xl text-primary">
+                01
+              </span>
+              <h2 className="text-4xl text-foreground leading-snug">Article</h2>
+            </>
+          }
+          right={
+            <div className="flex flex-col gap-8">
+              <div
+                className="blog-content"
+                // biome-ignore lint/security/noDangerouslySetInnerHtml: BabyLoveGrowth article HTML is trusted CMS content
+                dangerouslySetInnerHTML={{ __html: article.content_html }}
+              />
+              <TagList
+                keywords={[article.seedKeyword ?? "", ...article.keywords]}
+              />
+            </div>
+          }
+        />
+
+        <EditorialFooter
+          primary={{ href: "/sign-up", label: "Get started" }}
+          secondary={{ href: "/blog", label: "Back to blog" }}
+          note="Use these guides to improve product clarity, then turn the highest-impact fixes into your next catalog sprint."
+        />
+      </EditorialLayout>
+    );
+  }
+
+  const post = await Blog.getPublishedBySlug(slug);
   if (!post) notFound();
 
   const structuredData = [

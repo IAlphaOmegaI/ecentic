@@ -23,6 +23,21 @@ declare namespace NodeJS {
     readonly NEXT_PUBLIC_CHATWOOT_BASE_URL: string;
     readonly NEXT_PUBLIC_CHATWOOT_WEBSITE_TOKEN: string;
 
+    /**
+     * GA4 measurement ID (G-XXXXXXXXXX), running alongside PostHog. Optional on
+     * purpose: unset omits the gtag script entirely, which is how local and
+     * preview traffic is kept out of the property.
+     */
+    readonly NEXT_PUBLIC_GA_MEASUREMENT_ID?: string;
+
+    /**
+     * BabyLoveGrowth blog integration key (Settings → Integrations → Next.js Blog).
+     * Server-only. Unset skips CMS articles and keeps the DB-backed editorial posts.
+     */
+    readonly BABYLOVEGROWTH_BLOG_API_KEY?: string;
+    /** Optional BabyLoveGrowth API base override (staging/local). */
+    readonly BABYLOVEGROWTH_BLOG_API_URL?: string;
+
     readonly ECENTIC_TRACKER_PROBE: string;
     readonly ECENTIC_TRACKER_PUBLIC_ORIGIN: string;
 

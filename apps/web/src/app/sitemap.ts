@@ -1,11 +1,21 @@
 import { resultify } from "@zenncore/utils";
 import type { MetadataRoute } from "next";
 import { seo } from "@/lib/seo";
+import * as BabyLoveGrowth from "@/server/app/babylovegrowth";
 import * as Blog from "@/server/app/blog-cache";
 
 export default async (): Promise<MetadataRoute.Sitemap> => {
-  const posts = await resultify(() => Blog.listPublished());
+  const [posts, blgEntries] = await Promise.all([
+    resultify(() => Blog.listPublished()),
+    resultify(() => BabyLoveGrowth.listSitemapEntries()),
+  ]);
   const blogs = posts.success ? posts.data : [];
+  const articles = blgEntries.success ? blgEntries.data : [];
+  const blgSlugs = new Set(articles.map((entry) => entry.slug));
+  const latestBlog =
+    articles[0]?.updated_at ??
+    blogs[0]?.updatedAt ??
+    new Date("2026-04-07");
 
   return [
     {
@@ -28,7 +38,7 @@ export default async (): Promise<MetadataRoute.Sitemap> => {
     },
     {
       url: `${seo.host}/blog`,
-      lastModified: blogs[0]?.updatedAt ?? new Date("2026-04-07"),
+      lastModified: latestBlog,
       changeFrequency: "weekly",
       priority: 0.8,
     },
@@ -104,11 +114,19 @@ export default async (): Promise<MetadataRoute.Sitemap> => {
       changeFrequency: "monthly" as const,
       priority: 0.7,
     },
-    ...blogs.map((post) => ({
-      url: `${seo.host}/blog/${post.slug}`,
-      lastModified: post.updatedAt,
+    ...articles.map((entry) => ({
+      url: `${seo.host}/blog/${entry.slug}`,
+      lastModified: new Date(entry.updated_at),
       changeFrequency: "monthly" as const,
       priority: 0.7,
     })),
+    ...blogs
+      .filter((post) => !blgSlugs.has(post.slug))
+      .map((post) => ({
+        url: `${seo.host}/blog/${post.slug}`,
+        lastModified: post.updatedAt,
+        changeFrequency: "monthly" as const,
+        priority: 0.7,
+      })),
   ];
 };
