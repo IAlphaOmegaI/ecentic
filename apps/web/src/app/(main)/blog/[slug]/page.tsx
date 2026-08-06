@@ -1,9 +1,8 @@
-import { unwrapResult } from "@zenncore/utils";
+import { resultify } from "@zenncore/utils";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/json-ld";
-import * as Blog from "@/server/app/blog";
-import { Environment } from "@/server/utils/environment";
+import * as Blog from "@/server/app/blog-cache";
 import {
   EditorialFooter,
   EditorialLayout,
@@ -32,11 +31,19 @@ type BlogPageProps = {
   params: Promise<{ slug: string }>;
 };
 
+// Prerender every published post at build so even the first request per slug
+// serves full HTML with no database dependency. Posts published after the
+// build still render on demand (`dynamicParams` default).
+export const generateStaticParams = async () => {
+  const posts = await Blog.listPublished();
+  return posts.map(({ slug }) => ({ slug }));
+};
+
 export const generateMetadata = async ({
   params,
 }: BlogPageProps): Promise<Metadata> => {
   const { slug } = await params;
-  const result = await Blog.getPublishedBySlug(Environment.SERVER, { slug });
+  const result = await resultify(() => Blog.getPublishedBySlug(slug));
 
   if (!result.success || !result.data) return {};
 
@@ -71,9 +78,7 @@ export const generateMetadata = async ({
 
 export default async ({ params }: BlogPageProps) => {
   const { slug } = await params;
-  const post = await unwrapResult(
-    Blog.getPublishedBySlug(Environment.SERVER, { slug }),
-  );
+  const post = await Blog.getPublishedBySlug(slug);
 
   if (!post) notFound();
 

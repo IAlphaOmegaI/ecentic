@@ -2,7 +2,7 @@
 
 import { readStreamableValue } from "@ai-sdk/rsc";
 import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
-import { cn, unwrapResult } from "@zenncore/utils";
+import { cn, resultify, unwrapResult } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
@@ -96,62 +96,74 @@ export const CompareForm = () => {
       setElapsed(Date.now() - start.current);
     }, 100);
 
-    const { output } = await unwrapResult(
-      Intelligence.runCompare({
-        urlA,
-        urlB,
-        prompt: prompt || "I want the best value for money",
-      }),
-    );
-
-    for await (const event of readStreamableValue(output)) {
-      if (!event) continue;
-
-      switch (event.kind) {
-        case "log":
-          addLog({ text: `[${event.model}] ${event.message}`, type: "info" });
-          break;
-        case "chunk":
-          break;
-        case "scrape_done":
-          setProductA(event.productA);
-          setProductB(event.productB);
-          addLog({
-            text: "Scraped both products successfully",
-            type: "success",
-          });
-          break;
-        case "progress":
-          setProgress({
-            completed: event.completed,
-            total: event.total,
-          });
-          break;
-        case "error":
-          addLog({ text: event.text, type: "error" });
-          if (timer.current) clearInterval(timer.current);
-          toast.add({
-            title: "Comparison failed",
-            description: event.text,
-            type: "error",
-          });
-          return;
-        case "done":
-          setProductA(event.productA);
-          setProductB(event.productB);
-          setResults(event.results);
-          setPhase("results");
-          if (timer.current) clearInterval(timer.current);
-          addLog({
-            text: `Comparison complete — ${event.results.length} models evaluated`,
-            type: "success",
-          });
-          break;
-      }
-
-      requestAnimationFrame(() =>
-        target.current?.scrollIntoView({ behavior: "smooth" }),
+    // The action settles with a `Result`, but the request carrying it can also
+    // fail outright (a network blip, a suspended tab) and reject — resultify
+    // folds both into one failure branch, so neither strands the running
+    // screen with the timer still going.
+    const comparison = await resultify(async () => {
+      const { output } = await unwrapResult(
+        Intelligence.runCompare({
+          urlA,
+          urlB,
+          prompt: prompt || "I want the best value for money",
+        }),
       );
+
+      for await (const event of readStreamableValue(output)) {
+        if (!event) continue;
+
+        switch (event.kind) {
+          case "log":
+            addLog({ text: `[${event.model}] ${event.message}`, type: "info" });
+            break;
+          case "chunk":
+            break;
+          case "scrape_done":
+            setProductA(event.productA);
+            setProductB(event.productB);
+            addLog({
+              text: "Scraped both products successfully",
+              type: "success",
+            });
+            break;
+          case "progress":
+            setProgress({
+              completed: event.completed,
+              total: event.total,
+            });
+            break;
+          case "error":
+            throw new Error(event.text);
+          case "done":
+            setProductA(event.productA);
+            setProductB(event.productB);
+            setResults(event.results);
+            setPhase("results");
+            addLog({
+              text: `Comparison complete — ${event.results.length} models evaluated`,
+              type: "success",
+            });
+            break;
+        }
+
+        requestAnimationFrame(() =>
+          target.current?.scrollIntoView({ behavior: "smooth" }),
+        );
+      }
+    });
+
+    if (timer.current) {
+      clearInterval(timer.current);
+      timer.current = null;
+    }
+
+    if (!comparison.success) {
+      setPhase("input");
+      toast.add({
+        title: "Comparison failed",
+        description: comparison.error.message,
+        type: "error",
+      });
     }
   });
 

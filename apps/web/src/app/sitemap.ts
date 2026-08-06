@@ -1,10 +1,10 @@
+import { resultify } from "@zenncore/utils";
 import type { MetadataRoute } from "next";
 import { seo } from "@/lib/seo";
-import * as Blog from "@/server/app/blog";
-import { Environment } from "@/server/utils/environment";
+import * as Blog from "@/server/app/blog-cache";
 
 export default async (): Promise<MetadataRoute.Sitemap> => {
-  const posts = await Blog.listPublished(Environment.SERVER);
+  const posts = await resultify(() => Blog.listPublished());
   const blogs = posts.success ? posts.data : [];
 
   return [
