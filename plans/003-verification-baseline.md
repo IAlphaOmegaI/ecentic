@@ -10,7 +10,7 @@
 > **Drift check (run first)**: `git diff --stat df39e96..HEAD -- apps/web/src/server/app/integration/feed.ts apps/web/package.json package.json .github`
 > If any in-scope file changed since this plan was written, compare the
 > "Current state" excerpts against the live code before proceeding; on a
-> mismatch, treat it as a STOP condition.
+> mismatch, treat it as a STOP condition. 
 
 ## Status
 
