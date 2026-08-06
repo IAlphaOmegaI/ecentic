@@ -28,7 +28,7 @@ const assurances = [
 ] as const;
 
 const description =
-  "AI for WooCommerce stores that need product listing optimization, competitor analysis, and a clearer path from insights to updates.";
+  "AI for WooCommerce stores that need product listing optimization, competitor analysis, and a clearer path from agent insights to published catalog updates.";
 
 const faq = [
   {
@@ -65,7 +65,7 @@ const faq = [
 ] as const;
 
 export const metadata: Metadata = createMetadata({
-  title: "AI for WooCommerce",
+  title: "AI for WooCommerce — Catalog Optimization",
   description,
   path: "/platforms/woocommerce",
   keywords: [
@@ -105,7 +105,7 @@ export default () => {
       accent="cleaner product workflows."
       description="Import your catalog, see where listings lose to competitors in AI-mediated comparisons, and publish approved improvements back into WooCommerce without changing platforms."
       assurances={assurances}
-      art={Art}
+      art={{ source: Art, alt: "ASCII-art illustration of a shopping cart" }}
       badge={
         <ContentPageBadge
           logo="/images/woocommerce.svg"

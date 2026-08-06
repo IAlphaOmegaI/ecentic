@@ -1,7 +1,6 @@
 import { ArrowRightIcon, CheckIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import type { StaticImageData } from "next/image";
 import Image from "next/image";
 import Link from "next/link";
 import { BookCall } from "@/components/cal";
@@ -12,6 +11,7 @@ import piggybank from "@/public/images/ascii/piggybank.png";
 import rocket from "@/public/images/ascii/rocket.png";
 import shopify from "@/public/images/shopify.svg";
 import woocommerce from "@/public/images/woocommerce.svg";
+import type { PageBanner } from "../../_components/page-banner";
 import { PricingCTA } from "./pricing-cta";
 
 type Plan = {
@@ -26,7 +26,7 @@ type Plan = {
   features: readonly string[];
   cta: string;
   /** ASCII motif, bled off the card's bottom-right corner. */
-  art: StaticImageData;
+  art: PageBanner.Art;
   highlighted?: boolean;
 };
 
@@ -47,7 +47,7 @@ const plans: readonly Plan[] = [
       "Hard $500/mo cap — no surprises",
     ],
     cta: "Start free",
-    art: piggybank,
+    art: { source: piggybank, alt: "ASCII-art illustration of a piggy bank" },
     highlighted: true,
   },
   {
@@ -65,7 +65,7 @@ const plans: readonly Plan[] = [
       "Manual optimization suggestions",
     ],
     cta: "Start Competing",
-    art: knight,
+    art: { source: knight, alt: "ASCII-art illustration of a chess knight" },
   },
   {
     id: "scale",
@@ -82,7 +82,10 @@ const plans: readonly Plan[] = [
       "Competitor battlecards",
     ],
     cta: "Start Scaling",
-    art: rocket,
+    art: {
+      source: rocket,
+      alt: "ASCII-art illustration of a launching rocket",
+    },
   },
   {
     id: "dominate",
@@ -99,7 +102,7 @@ const plans: readonly Plan[] = [
       "Partner deal tier (YC, Techstars)",
     ],
     cta: "Start Dominating",
-    art: crown,
+    art: { source: crown, alt: "ASCII-art illustration of a crown" },
   },
 ] as const;
 
@@ -226,9 +229,8 @@ export const Plans = () => (
                 card twice as wide there and the same value that grazes the edge
                 at one breakpoint shears the motif at the next. */}
             <Image
-              src={plan.art}
-              alt=""
-              aria-hidden
+              src={plan.art.source}
+              alt={plan.art.alt}
               className={cn(
                 "pointer-events-none absolute -right-3 -bottom-3 h-[46%] w-[92%] max-w-none select-none object-contain object-right-bottom brightness-0 [mask-image:linear-gradient(to_bottom,transparent,black_35%)]",
                 plan.highlighted ? "opacity-25 invert" : "opacity-25",

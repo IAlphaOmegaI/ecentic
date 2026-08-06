@@ -28,7 +28,7 @@ const assurances = [
 ] as const;
 
 const description =
-  "Free UCP Validator: check whether any storefront publishes a valid Universal Commerce Profile at /.well-known/ucp, validate its schema against the spec, and confirm AI shopping agents are allowed in robots.txt.";
+  "Free UCP Validator: check whether a storefront publishes a valid Universal Commerce Profile, validate its schema, and confirm AI agents pass robots.txt.";
 
 const faq = [
   {
@@ -49,7 +49,7 @@ const faq = [
 ] as const;
 
 export const metadata: Metadata = createMetadata({
-  title: "UCP Validator — Free Universal Commerce Protocol Checker",
+  title: "UCP Validator — Universal Commerce Protocol Check",
   description,
   path: "/ucp-validator",
   keywords: [
@@ -93,7 +93,7 @@ export default () => (
     accent="Validator"
     description="Check whether a storefront publishes a valid Universal Commerce Profile at /.well-known/ucp and whether shopping agents can read it without friction."
     assurances={assurances}
-    art={Art}
+    art={{ source: Art, alt: "ASCII-art illustration of a shield" }}
     actions={
       <>
         <Button

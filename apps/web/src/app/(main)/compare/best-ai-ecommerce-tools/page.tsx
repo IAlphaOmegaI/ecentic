@@ -55,7 +55,7 @@ const faq = [
 ] as const;
 
 export const metadata: Metadata = createMetadata({
-  title: "Best AI Tools for Ecommerce 2026",
+  title: "Best AI Ecommerce Tools in 2026 — Category Guide",
   description,
   path: "/compare/best-ai-ecommerce-tools",
   keywords: [
@@ -122,7 +122,7 @@ export default () => {
       accent="in 2026."
       description={intro}
       assurances={assurances}
-      art={Art}
+      art={{ source: Art, alt: "ASCII-art illustration of a balance scale" }}
     >
       <JsonLd schemas={structuredData} />
 

@@ -5,12 +5,17 @@ import { InstallCta } from "./install-cta";
 
 export const Hero = () => (
   <section className="relative isolate flex flex-col items-center gap-6 px-4 py-20 text-center md:py-28">
+    {/* Stays `alt=""`: unlike the per-page motifs this is a flat texture at 20%
+        opacity behind the headline, and naming it would only add noise to a
+        screen reader. `object-contain` caps the rendered width well under the
+        viewport, so `sizes` says so — left at `100vw` the browser fetched the
+        3840w candidate for an image that never paints above ~900px. */}
     <Image
       src={Background}
       alt=""
       aria-hidden
       fill
-      sizes="100vw"
+      sizes="(max-width: 768px) 100vw, 900px"
       className="pointer-events-none -z-20 select-none object-contain object-top opacity-20 invert"
     />
     <div

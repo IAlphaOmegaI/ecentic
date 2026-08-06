@@ -161,7 +161,7 @@ export default () => {
       accent="pick you."
       description="Scan your store for free, then choose how you pay: a small fee only on orders AI agents drive, or a flat monthly plan with no fee. Same optimization loop either way."
       assurances={assurances}
-      art={Art}
+      art={{ source: Art, alt: "ASCII-art illustration of stacked coins" }}
     >
       <JsonLd schemas={structuredData} />
 

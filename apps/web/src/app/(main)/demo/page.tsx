@@ -29,7 +29,7 @@ const intro =
   "We run your top products through ChatGPT, Claude, Gemini, and Perplexity while you watch, show you why you win or lose, and scope the highest-impact listing fixes. Pick a slot below.";
 
 const description =
-  "Book a 15-minute ecentic demo. We run your top products through ChatGPT, Claude, Gemini, and Perplexity live, show you why you win or lose, and scope the highest-impact listing fixes.";
+  "Book a 15-minute ecentic demo. We run your top products through ChatGPT, Claude, Gemini, and Perplexity live and scope your highest-impact listing fixes.";
 
 const faq = [
   {
@@ -91,7 +91,7 @@ export default () => {
       accent="live in 15 minutes."
       description={intro}
       assurances={assurances}
-      art={Art}
+      art={{ source: Art, alt: "ASCII-art illustration of a desk calendar" }}
     >
       <JsonLd schemas={structuredData} />
 

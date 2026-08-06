@@ -30,7 +30,7 @@ const assurances = [
 ] as const;
 
 const description =
-  "Agent-commerce intelligence for enterprise merchants. Multi-brand dashboards, API access, SSO, SOC 2 compliance, UCP signing, and a dedicated CSM.";
+  "Agent-commerce intelligence for enterprise merchants: multi-brand dashboards, API access, SSO, SOC 2 compliance, UCP signing, and a dedicated CSM team.";
 
 const faq = [
   {
@@ -91,7 +91,7 @@ export default () => {
       accent="at scale."
       description="Multi-brand dashboards, API access, UCP signing, and dedicated support for commerce teams running hundreds of SKUs across multiple platforms."
       assurances={assurances}
-      art={Art}
+      art={{ source: Art, alt: "ASCII-art illustration of an office tower" }}
       actions={
         <>
           <BookCall color="accent" className={bannerAction.lead}>

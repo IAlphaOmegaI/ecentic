@@ -25,7 +25,7 @@ import Art from "@/public/images/ascii/headset.png";
 import { ContentPageFooter, ContentPageLayout } from "../_components/content";
 
 const description =
-  "Get help with ecentic. Email support, a live walkthrough of your results, or a dedicated escalation path for Enterprise accounts.";
+  "Get help with ecentic: email support, a live walkthrough of your scan results, or a dedicated escalation path for Enterprise and agent-commerce accounts.";
 
 const assurances = [
   "Real humans on the other end",
@@ -104,7 +104,7 @@ const selfServe = [
 ] as const;
 
 export const metadata: Metadata = createMetadata({
-  title: "Support",
+  title: "Support — Help with Scans, Billing, and Agents",
   description,
   path: "/support",
   keywords: [
@@ -139,7 +139,7 @@ export default () => {
       accent="to help."
       description="Questions about your scan results, an integration, billing, or anything else: pick the channel that fits and we will take it from there."
       assurances={assurances}
-      art={Art}
+      art={{ source: Art, alt: "ASCII-art illustration of a support headset" }}
     >
       <JsonLd schemas={structuredData} />
 

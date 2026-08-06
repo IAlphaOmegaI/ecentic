@@ -28,7 +28,7 @@ const intro =
   "AI shopping systems compare your product data in seconds. ecentic turns losing product pages into clearer buying inputs, for agents and for the high-intent shoppers they send you.";
 
 const description =
-  "AI product listing optimization for titles, descriptions, and structured product data. Learn how ecentic helps merchants improve product visibility.";
+  "AI product listing optimization for titles, descriptions, and structured product data. See how ecentic helps merchants improve visibility with AI agents.";
 
 const faq = [
   {
@@ -55,7 +55,7 @@ const faq = [
 ] as const;
 
 export const metadata: Metadata = createMetadata({
-  title: "AI Product Listing Optimization",
+  title: "AI Product Listing Optimization for Merchants",
   description,
   path: "/features/product-listings",
   keywords: [
@@ -96,7 +96,10 @@ export default () => {
       accent="for pages that get picked."
       description={intro}
       assurances={assurances}
-      art={Art}
+      art={{
+        source: Art,
+        alt: "ASCII-art illustration of a product listing card",
+      }}
     >
       <JsonLd schemas={structuredData} />
 
