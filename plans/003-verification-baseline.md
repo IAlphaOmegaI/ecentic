@@ -222,4 +222,4 @@ Stop and report back (do not improvise) if:
 
 - This baseline covers pure logic only. The natural next layers, in order of value: (1) repository CRUD against a disposable Postgres (e.g. `DATABASE_URL` pointed at a local test DB), (2) route handlers (`api/tracking/agent-visit`, `api/cron/scan`) via direct `GET/POST` function invocation with mocked store actions. Both need the context wrapper to be import-safe outside Next — a refactor worth its own plan.
 - Plans 004 and 007 depend on this infra: 004 adds tests for cookie signing helpers, 007 adds entity-expansion tests to `feed-parsing.test.ts`.
-- Reviewer should scrutinize: the feed.ts diff is move-only; CI uses check-mode biome, not write-mode.
+- Reviewer should scrutinize: the feed.ts diff is move-only; CI uses check-mode biome, not write-mode. 
