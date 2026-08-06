@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as Simulate from "@/server/app/intelligence/simulate";
 import * as Scan from "@/server/app/scan";
@@ -24,6 +25,114 @@ const initialStatuses: Record<string, ModelStatus> = {
 };
 
 const POLL_INTERVAL = 1500;
+
+/**
+ * Consecutive polls that may fail before we stop and tell the user. A single
+ * miss is routine (a suspended tab, a dropped keep-alive, a deploy rotating the
+ * server mid-request) and the scan keeps draining server-side regardless, so
+ * one failure must not kill the run. Five straight misses — ~6s when requests
+ * fail instantly (the first tick fires at once, the rest each poll interval),
+ * longer when they fail slowly — means we are genuinely disconnected and the
+ * spinner would otherwise never resolve.
+ */
+const MAX_CONSECUTIVE_MISSES = 5;
+
+const TRANSPORT_MESSAGE =
+  "Lost connection to the server. Reload the page to pick the scan back up.";
+
+// A transport failure here does not prove the scan never started — the
+// response can be lost after the server created it. "Try again" is safe
+// regardless: `Simulation.enqueueScan` reuses this store's in-flight scan, so
+// a retry reattaches to whatever the lost response created instead of
+// stacking a duplicate.
+const ENQUEUE_TRANSPORT_MESSAGE =
+  "Couldn't reach the server to start the scan. Check your connection and try again.";
+
+/**
+ * Marks a failure of the request itself, as opposed to an error the server
+ * action deliberately returned. Server-side failures are already captured by
+ * the action wrappers, but a transport failure never reaches the server — the
+ * client is the only place it can be observed, so the give-up paths below
+ * report these (and only these) to Sentry.
+ */
+class TransportError extends Error {
+  constructor(message: string, options?: ErrorOptions) {
+    super(message, options);
+    this.name = "TransportError";
+  }
+}
+
+/**
+ * The `Result` a server action resolves to, spelled out structurally rather
+ * than as `Result<T>` — the latter's success branch is a conditional type, so
+ * behind a generic wrapper `data` degrades to optional and stops narrowing.
+ */
+type ActionResult<T> =
+  | { success: true; data: T }
+  | { success: false; error: Error };
+
+/**
+ * Server actions hand back a `Result`, but the fetch that carries them can
+ * still reject — Safari failing in-flight requests for a backgrounded tab, a
+ * network blip, a deploy swapping the server out mid-request. That rejection
+ * (`TypeError: Load failed` in Safari) escapes as an unhandled promise
+ * rejection wherever the call sits behind a bare `void`. Fold transport
+ * failures into the same shape the action already returns, so there is one
+ * thing to branch on and nothing left dangling.
+ *
+ * A single swallowed failure only leaves a breadcrumb — turning every blip
+ * into a Sentry event would recreate the noise this exists to remove. The
+ * call sites that actually give up capture the `TransportError` as an event,
+ * with the original rejection attached as its `cause`.
+ */
+const call = async <T>(
+  action: () => Promise<ActionResult<T>>,
+  transportMessage: string = TRANSPORT_MESSAGE,
+): Promise<ActionResult<T>> => {
+  try {
+    return await action();
+  } catch (caught) {
+    Sentry.addBreadcrumb({
+      category: "scan.transport",
+      level: "warning",
+      message: caught instanceof Error ? caught.message : String(caught),
+    });
+    return {
+      success: false,
+      error: new TransportError(transportMessage, { cause: caught }),
+    };
+  }
+};
+
+const RETRY_DELAY = 1000;
+
+const delay = (milliseconds: number) =>
+  new Promise<void>((resolve) => setTimeout(resolve, milliseconds));
+
+/**
+ * `call`, but transport failures get a few spaced attempts before the failure
+ * is returned. Only transport failures retry — an error the server actually
+ * returned is deterministic, and repeating the request would just replay it.
+ * Repeats are safe at both call sites because `Simulation.enqueueScan` is
+ * idempotent and `Scan.getInFlight` is a read.
+ */
+const callWithRetry = async <T>(
+  action: () => Promise<ActionResult<T>>,
+  {
+    attempts,
+    transportMessage,
+  }: { attempts: number; transportMessage?: string },
+): Promise<ActionResult<T>> => {
+  const result = await call(action, transportMessage);
+  if (
+    result.success ||
+    !(result.error instanceof TransportError) ||
+    attempts <= 1
+  )
+    return result;
+  await delay(RETRY_DELAY);
+  return callWithRetry(action, { attempts: attempts - 1, transportMessage });
+};
 
 const labelFor = (id: string) =>
   modelMeta.find((model) => model.id === id)?.label ?? id;
@@ -136,10 +245,18 @@ export const useScanRunner = (options: ScanRunnerOptions) => {
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
   const poller = useRef<ReturnType<typeof setInterval> | null>(null);
   const shown = useRef<number>(0);
+  const misses = useRef<number>(0);
+  // Monotonic run id, bumped by stopTimers(). Intervals can be cleared, but a
+  // request already in the air cannot — when its response lands after polling
+  // stopped (reset, a new run, give-up), comparing against this lets it
+  // recognize itself as stale and discard instead of writing over the next
+  // run's state.
+  const generation = useRef<number>(0);
   const onError = useRef(options?.onError);
   onError.current = options?.onError;
 
   const stopTimers = useCallback(() => {
+    generation.current += 1;
     if (timer.current) {
       clearInterval(timer.current);
       timer.current = null;
@@ -165,6 +282,7 @@ export const useScanRunner = (options: ScanRunnerOptions) => {
     setCount(0);
     setElapsed(0);
     shown.current = 0;
+    misses.current = 0;
   }, [stopTimers]);
 
   const ingest = useCallback((progress: Scan.Progress) => {
@@ -202,10 +320,48 @@ export const useScanRunner = (options: ScanRunnerOptions) => {
     (id: string) => {
       stopTimers();
 
-      const tick = async () => {
-        const progress = await Scan.getProgress({ id });
-        if (!progress.success) return;
+      misses.current = 0;
 
+      const run = generation.current;
+      // On the closure rather than a ref so each run tracks only its own
+      // requests. A response can take longer than POLL_INTERVAL to fail, and
+      // stacked slow requests would corrupt the miss counter.
+      const inFlight = { current: false };
+
+      const tick = async () => {
+        if (inFlight.current) return;
+        inFlight.current = true;
+        const progress = await call(() => Scan.getProgress({ id }));
+        inFlight.current = false;
+
+        // Polling stopped or restarted while this request was in the air — the
+        // response belongs to a run that no longer exists.
+        if (generation.current !== run) return;
+
+        if (!progress.success) {
+          // Only a transport failure can be the browser's doing — a
+          // backgrounded tab has its in-flight fetches failed out from under
+          // it. An error the server returned means the round-trip completed,
+          // so it counts regardless of visibility.
+          if (
+            progress.error instanceof TransportError &&
+            document.visibilityState === "hidden"
+          )
+            return;
+
+          misses.current += 1;
+          if (misses.current < MAX_CONSECUTIVE_MISSES) return;
+
+          stopTimers();
+          setPhase("pre");
+          if (progress.error instanceof TransportError) {
+            Sentry.captureException(progress.error);
+          }
+          onError.current?.(progress.error.message);
+          return;
+        }
+
+        misses.current = 0;
         ingest(progress.data);
 
         switch (progress.data.status) {
@@ -244,6 +400,7 @@ export const useScanRunner = (options: ScanRunnerOptions) => {
       }
 
       stopTimers();
+      const run = generation.current;
       setPhase("running");
       setLogs([]);
       setStats(initialStats);
@@ -256,14 +413,29 @@ export const useScanRunner = (options: ScanRunnerOptions) => {
       shown.current = 0;
       start.current = Date.now();
 
-      const enqueue = await Simulate.enqueueScan({
-        store,
-        products: selection?.products,
-        competitors: selection?.competitors,
-      });
+      // Two attempts: a lone blip on a user-initiated click should recover
+      // silently, and idempotent enqueue makes the repeat safe. Whatever still
+      // fails after that is persistent enough to surface — and to report.
+      const enqueue = await callWithRetry(
+        () =>
+          Simulate.enqueueScan({
+            store,
+            products: selection?.products,
+            competitors: selection?.competitors,
+          }),
+        { attempts: 2, transportMessage: ENQUEUE_TRANSPORT_MESSAGE },
+      );
+
+      // The user reset or restarted while enqueue was in the air — this run's
+      // outcome is no longer anyone's to act on.
+      if (generation.current !== run) return;
+
       if (!enqueue.success) {
         stopTimers();
         setPhase("pre");
+        if (enqueue.error instanceof TransportError) {
+          Sentry.captureException(enqueue.error);
+        }
         onError.current?.(enqueue.error.message);
         return;
       }
@@ -281,10 +453,25 @@ export const useScanRunner = (options: ScanRunnerOptions) => {
     if (!store) return;
 
     let active = true;
+    const run = generation.current;
 
     void (async () => {
-      const inFlight = await Scan.getInFlight({ store });
-      if (!active || !inFlight.success || !inFlight.data) return;
+      // A transport blip here would silently park a running scan behind the
+      // pre-scan screen, so the lookup gets a few tries. A failure after that
+      // only means we could not tell whether a scan was already running —
+      // there is nothing to resume and nothing to report. The generation check
+      // covers the user starting a run of their own mid-retry, which `active`
+      // (unmount only) would miss.
+      const inFlight = await callWithRetry(() => Scan.getInFlight({ store }), {
+        attempts: 3,
+      });
+      if (
+        !active ||
+        generation.current !== run ||
+        !inFlight.success ||
+        !inFlight.data
+      )
+        return;
 
       setScanId(inFlight.data.id);
       setPhase("running");

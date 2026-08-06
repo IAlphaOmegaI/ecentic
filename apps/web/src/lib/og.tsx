@@ -20,6 +20,10 @@ const truncate = (value: string, max: number) =>
 export const ogImageSize = { width: 1200, height: 630 } as const;
 export const ogImageContentType = "image/png" as const;
 
+// Satori has no calc(): the column's negative margins pull it past the frame's
+// horizontal rules, so its height is the full canvas minus those two hairlines.
+const columnHeight = ogImageSize.height - 2;
+
 export const createOgImage = ({ title, description }: createOgImage.Params) => {
   const displayTitle = truncate(title || "ecentic", 110);
   const displayDescription = truncate(
@@ -73,7 +77,7 @@ export const createOgImage = ({ title, description }: createOgImage.Params) => {
             flexDirection: "column",
             width: "100%",
             gap: 24,
-            height: "calc(100% + 88px)",
+            height: columnHeight,
             borderLeft: "1px solid white",
             borderRight: "1px solid white",
             margin: "-44px 0",
