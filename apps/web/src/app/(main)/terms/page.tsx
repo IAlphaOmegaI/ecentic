@@ -7,8 +7,15 @@ import {
 } from "@zenncore/icons";
 import type { Metadata } from "next";
 import { Footer } from "@/components/footer";
+import { JsonLd } from "@/components/json-ld";
 import { Navbar } from "@/components/navbar";
-import { createMetadata } from "@/lib/seo";
+import {
+  absoluteUrl,
+  createBreadcrumbSchema,
+  createMetadata,
+  organizationSchema,
+  seo,
+} from "@/lib/seo";
 import Art from "@/public/images/ascii/quill.png";
 import {
   ContentPageRichText,
@@ -16,12 +23,46 @@ import {
 } from "../_components/content";
 import { PageBanner } from "../_components/page-banner";
 
+const description =
+  "The terms that govern your use of ecentic: the Universal Commerce Protocol service, store integrations, billing, liability, and cancelling at any time.";
+
+// The banner prints the human date and the schema publishes the ISO one. They
+// are the same fact, so they are declared once — a legal page whose structured
+// data advertises a revision date the page itself no longer shows is worse than
+// having no date at all.
+const lastUpdated = {
+  display: "July 12, 2026",
+  iso: "2026-07-12",
+} as const;
+
 export const metadata: Metadata = createMetadata({
-  title: "Terms of Service",
-  description:
-    "The terms governing your use of ecentic, including the Universal Commerce Protocol service, store integrations, billing, and liability.",
+  title: "Terms of Service — Agent Commerce and UCP",
+  description,
   path: "/terms",
 });
+
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Terms of Service",
+    description,
+    url: absoluteUrl("/terms"),
+    inLanguage: "en",
+    isPartOf: {
+      "@type": "WebSite",
+      name: seo.name,
+      url: seo.host,
+    },
+    datePublished: lastUpdated.iso,
+    dateModified: lastUpdated.iso,
+  },
+  organizationSchema,
+  createBreadcrumbSchema([
+    { name: "Home", path: "/" },
+    { name: "Terms of Service", path: "/terms" },
+  ]),
+];
 
 const assurances = [
   "Cancel any time",
@@ -180,14 +221,19 @@ export default () => (
       <Navbar />
     </div>
 
+    <JsonLd schemas={structuredData} />
+
     <PageBanner
       eyebrow="Legal"
       title="Terms of"
       accent="Service."
-      meta="Last updated: July 12, 2026"
+      meta={`Last updated: ${lastUpdated.display}`}
       description="These terms govern your use of ecentic — the platform, the store integrations, and the hosted Universal Commerce Protocol surface that lets AI shopping agents discover and buy from your store."
       assurances={assurances}
-      art={Art}
+      art={{
+        source: Art,
+        alt: "ASCII-art illustration of a quill and inkwell",
+      }}
     />
 
     <ContentPageSection

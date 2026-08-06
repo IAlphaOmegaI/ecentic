@@ -29,14 +29,14 @@ const formatBlogDate = (value: Date | string) =>
 const toBlogIsoDate = (value: Date | string) => normalize(value).toISOString();
 
 const description =
-  "SEO, structured data, and AI commerce guides for merchants building modern ecommerce catalogs.";
+  "SEO, structured data, and AI commerce guides for merchants building modern ecommerce catalogs. Learn how to launch, optimize, and measure AI-driven traffic.";
 
 const introduction = `The ecommerce stack in 2026 is bigger than search rankings alone. Merchants now have to think about category intent, merchant listings, structured product data, and how AI shopping systems understand catalog quality.
 
 This blog focuses on the operator questions behind that shift: how to launch a store with better foundations, how to make products easier to compare, how to measure AI shopping traffic, and how to keep visibility tied to real commercial outcomes.`;
 
 export const metadata: Metadata = createMetadata({
-  title: "Blog",
+  title: "Ecommerce SEO and AI Commerce Guides for Merchants",
   description,
   path: "/blog",
   keywords: [

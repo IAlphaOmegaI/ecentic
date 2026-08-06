@@ -80,7 +80,7 @@ export const EditorialLayout = ({
       title={title}
       meta={meta}
       description={description}
-      art={Art}
+      art={{ source: Art, alt: "ASCII-art illustration of a stack of books" }}
     />
 
     {children}

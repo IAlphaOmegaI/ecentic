@@ -158,10 +158,10 @@ export const PartnershipBundle = () => (
 
         <div className="relative flex h-full min-h-full flex-col justify-end overflow-hidden bg-background-dimmed p-6 md:p-12">
           <div className="pointer-events-none absolute inset-y-0 left-0 z-0 h-full w-full overflow-hidden opacity-80 [mask-image:linear-gradient(to_right,black,transparent)]">
+            {/* See `partnership-banner`: animated WebP, not the 3.7MB GIF. */}
             <Image
-              src="/images/eu-flag.gif"
-              alt=""
-              aria-hidden
+              src="/images/eu-flag.webp"
+              alt="Animated flag of the European Union"
               unoptimized
               width={600}
               height={600}

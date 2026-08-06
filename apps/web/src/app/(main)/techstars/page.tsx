@@ -21,7 +21,7 @@ import {
 import { TechstarsRedemptionForm } from "./_components/techstars-redemption-form";
 
 const description =
-  "An exclusive ecentic deal for Techstars founders: extended Dominate access, white-glove onboarding, and founder pricing. Redeem in under two minutes.";
+  "An exclusive ecentic deal for Techstars founders: extended Dominate access, white-glove onboarding, and founder pricing. Redeem it in under two minutes.";
 
 const faq = [
   {
@@ -83,7 +83,7 @@ export default () => {
       eyebrow="Techstars"
       title="Your ecentic deal,"
       accent="ready to redeem."
-      art={Art}
+      art={{ source: Art, alt: "ASCII-art illustration of a handshake" }}
       badge={
         <ContentPageBadge
           logo="/partners/techstars.svg"

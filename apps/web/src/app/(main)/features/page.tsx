@@ -28,7 +28,7 @@ const intro =
   "Simulate how AI shopping agents compare your products, see exactly why competitors win, and publish the listing fixes that flip the result, all from one loop.";
 
 const description =
-  "AI ecommerce tools for product listing optimization, competitor analysis, and AI shopping visibility. See how ecentic helps merchants win more carts.";
+  "AI ecommerce tools for product listing optimization, competitor analysis, and AI shopping visibility. See how ecentic helps merchants win more carts today.";
 
 const faq = [
   {
@@ -55,7 +55,7 @@ const faq = [
 ] as const;
 
 export const metadata: Metadata = createMetadata({
-  title: "AI Ecommerce Tools for Merchants",
+  title: "AI Ecommerce Tools for Merchant Product Listings",
   description,
   path: "/features",
   keywords: [
@@ -107,7 +107,7 @@ export default () => {
       accent="win the AI shopper."
       description={intro}
       assurances={assurances}
-      art={Art}
+      art={{ source: Art, alt: "ASCII-art illustration of a control console" }}
     >
       <JsonLd schemas={structuredData} />
 

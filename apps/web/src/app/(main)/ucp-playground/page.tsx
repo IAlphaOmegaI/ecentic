@@ -35,7 +35,7 @@ const capabilities = [
 ] as const;
 
 const description =
-  "Free UCP Playground: drive a real AI shopping agent against any UCP-compliant storefront. Run catalog search, product lookup, cart, and checkout operations over MCP or REST and inspect every request and response.";
+  "Free UCP Playground: drive a real AI shopping agent against any UCP storefront. Run catalog search, cart, and checkout over MCP or REST and inspect calls.";
 
 const faq = [
   {
@@ -55,7 +55,7 @@ const faq = [
 ] as const;
 
 export const metadata: Metadata = createMetadata({
-  title: "UCP Playground — Test AI Shopping Agents Against Any Store",
+  title: "UCP Playground — Test AI Agents on Any Storefront",
   description,
   path: "/ucp-playground",
   keywords: [
@@ -121,7 +121,7 @@ export default () => (
     title="Point an AI shopping agent"
     accent="at any store."
     description={description}
-    art={Art}
+    art={{ source: Art, alt: "ASCII-art illustration of a robot" }}
   >
     <JsonLd schemas={structuredData} />
 

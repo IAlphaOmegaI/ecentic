@@ -56,7 +56,7 @@ const faq = [
 ] as const;
 
 export const metadata: Metadata = createMetadata({
-  title: "Resources - Free Tools and Guides",
+  title: "Free Agent Commerce Tools and Merchant Guides",
   description,
   path: "/resources",
   keywords: [
@@ -93,7 +93,7 @@ export default () => {
       accent="for agent commerce."
       description="Diagnose your catalog, validate your protocol surface, or inspect a live agent workflow before you commit to anything."
       assurances={assurances}
-      art={Art}
+      art={{ source: Art, alt: "ASCII-art illustration of an open toolbox" }}
       actions={
         <>
           <Button
