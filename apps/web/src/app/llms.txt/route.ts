@@ -1,7 +1,5 @@
-import { unwrapResult } from "@zenncore/utils";
 import { seo } from "@/lib/seo";
-import * as Blog from "@/server/app/blog";
-import { Environment } from "@/server/utils/environment";
+import * as Blog from "@/server/app/blog-cache";
 
 const prefersMarkdown = (accept: string | null) =>
   accept != null && /\btext\/markdown\b/i.test(accept);
@@ -11,7 +9,7 @@ const estimateMarkdownTokens = (markdown: string) =>
   Math.max(1, Math.ceil(markdown.length / 4));
 
 export const GET = async (request: Request) => {
-  const posts = await unwrapResult(Blog.listPublished(Environment.SERVER));
+  const posts = await Blog.listPublished();
 
   const sections = [
     {

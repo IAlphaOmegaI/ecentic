@@ -1,7 +1,5 @@
-import { unwrapResult } from "@zenncore/utils";
 import { createOgImage, ogImageContentType, ogImageSize } from "@/lib/og";
-import * as Blog from "@/server/app/blog";
-import { Environment } from "@/server/utils/environment";
+import * as Blog from "@/server/app/blog-cache";
 
 export const alt = "ecentic blog post";
 export const size = ogImageSize;
@@ -11,9 +9,7 @@ type Props = { params: Promise<{ slug: string }> };
 
 export default async ({ params }: Props) => {
   const { slug } = await params;
-  const post = await unwrapResult(
-    Blog.getPublishedBySlug(Environment.SERVER, { slug }),
-  );
+  const post = await Blog.getPublishedBySlug(slug);
 
   return createOgImage({
     title: post?.title ?? "ecentic blog",

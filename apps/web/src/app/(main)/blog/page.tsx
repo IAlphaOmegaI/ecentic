@@ -1,11 +1,9 @@
 import { ArrowRightIcon } from "@zenncore/icons";
-import { unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { createMetadata } from "@/lib/seo";
-import * as Blog from "@/server/app/blog";
-import { Environment } from "@/server/utils/environment";
+import * as Blog from "@/server/app/blog-cache";
 import {
   EditorialFooter,
   EditorialLayout,
@@ -51,7 +49,7 @@ export const metadata: Metadata = createMetadata({
 });
 
 export default async () => {
-  const posts = await unwrapResult(Blog.listPublished(Environment.SERVER));
+  const posts = await Blog.listPublished();
   const latest = posts[0] ?? null;
 
   const structuredData = {
