@@ -12,7 +12,7 @@ const client = postgres(process.env.DATABASE_URL, {
   // this shared client, and postgres.js queues (not errors) past `max`, so
   // leave headroom for parallel Suspense/`Promise.all` queries.
   max: 5,
-  idle_timeout: 20,
+  idle_timeout: 20, 
   // One production connect exceeded 10s (Sentry ECENTIC-CD). Neon documents
   // scale-to-zero resumes at ~500ms to a few seconds, so 15s adds margin over
   // any slow-but-recoverable connect without hanging uncached routes for long
