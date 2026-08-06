@@ -162,7 +162,13 @@ export default async () => {
                 <Button
                   color="primary"
                   className="self-start"
-                  render={<Link href={`/blog/${post.slug}`} />}
+                  render={
+                    // Full prefetch: the whole post page is URL-specific, so
+                    // the default prefetch only warms the near-empty [slug]
+                    // shell and the click waits a round trip. The targets are
+                    // prerendered static pages, so this costs a static fetch.
+                    <Link href={`/blog/${post.slug}`} prefetch={true} />
+                  }
                 >
                   Read article
                   <ArrowRightIcon className="size-4" />
