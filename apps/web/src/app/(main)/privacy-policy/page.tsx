@@ -70,7 +70,7 @@ const structuredData = [
 
 const assurances = [
   "Agent commerce is opt-in",
-  "Essential cookies only",
+  "No advertising cookies",
   "Encrypted in transit & at rest",
 ] as const;
 
@@ -199,6 +199,7 @@ You remain the seller and Merchant of Record, and your own store's privacy notic
 - **AI Model Providers** (Azure OpenAI, Anthropic, Google, Perplexity): The product catalog you sync from your store platform is sent to AI models during simulations and optimization. Data read from a connected Google Merchant Center account is never sent to them (see section 04). Data is transmitted via encrypted API calls and is not retained by providers beyond the API request lifecycle per their data processing agreements.
 - **Sentry**: Error monitoring. May receive anonymized error context (no product data).
 - **PostHog**: Product analytics. Receives anonymized usage events (page views, feature interactions). No product catalog data is sent.
+- **Google Analytics 4**: Website analytics. Receives page views and traffic sources. No product catalog data, store credentials, or account identifiers are sent.
 - **Resend**: Transactional email delivery (verification codes, notifications). Receives only email addresses and message content.
 - **UploadThing**: File storage for uploaded assets. Stores only files you explicitly upload.
 - **Vercel**: Hosting infrastructure. Processes requests but does not independently store application data.
@@ -238,11 +239,12 @@ For GDPR data subject requests (access, rectification, erasure, portability), co
   {
     title: "Cookies",
     number: "08",
-    content: `We use essential cookies only:
+    content: `We use essential and analytics cookies:
 - **Session cookies**: Maintain your authenticated session
 - **OAuth state cookies**: Short-lived (10 minutes) cookies used during Shopify OAuth flow to prevent CSRF attacks
+- **Analytics cookies**: Set by Google Analytics (\`_ga\`, \`_ga_*\`) and PostHog to measure page views and feature usage so we can improve the product. These are set **only after you accept** them in the cookie banner — decline and neither tool collects anything or stores a cookie.
 
-We do not use advertising cookies or third-party tracking cookies.`,
+You can change your answer at any time via **Cookie settings** in the footer. We do not use advertising cookies, and we do not use analytics data for ad targeting or share it with advertising networks.`,
   },
   {
     title: "Your Rights",
