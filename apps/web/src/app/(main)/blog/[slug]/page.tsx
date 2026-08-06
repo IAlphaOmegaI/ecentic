@@ -31,6 +31,14 @@ type BlogPageProps = {
   params: Promise<{ slug: string }>;
 };
 
+// Prerender every published post at build so even the first request per slug
+// serves full HTML with no database dependency. Posts published after the
+// build still render on demand (`dynamicParams` default).
+export const generateStaticParams = async () => {
+  const posts = await Blog.listPublished();
+  return posts.map(({ slug }) => ({ slug }));
+};
+
 export const generateMetadata = async ({
   params,
 }: BlogPageProps): Promise<Metadata> => {

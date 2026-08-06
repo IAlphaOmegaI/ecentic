@@ -29,7 +29,7 @@ The repo has zero automated tests and no CI. The only verification is `tsc --noE
 
 - **No test files exist**: `find apps/web/src packages -name "*.test.ts" -not -path "*/node_modules/*"` returns nothing.
 - **No CI**: there is no `.github/` directory.
-- **Toolchain**: Bun 1.3 (`packageManager: bun@1.3.12` in root `package.json`), Turborepo. Bun ships a built-in Jest-compatible test runner: `bun test` discovers `*.test.ts` recursively from cwd. No new devDependency is needed.
+- **Toolchain**: Bun 1.3 (`packageManager: bun@1.3.14` in root `package.json`), Turborepo. Bun ships a built-in Jest-compatible test runner: `bun test` discovers `*.test.ts` recursively from cwd. No new devDependency is needed.
 - **Why server actions can't be tested directly**: files under `apps/web/src/server/app/` start with `"use server"` and import `next/headers`, Better Auth, and Sentry through `server/utils/context.ts` — none of which load outside the Next.js runtime. Pure logic must be extracted to test it.
 - **The extraction target**: `apps/web/src/server/app/integration/feed.ts` (starts with a biome-ignore comment then `"use server"`). It contains module-local pure parsing logic this plan extracts:
   - `parsePrice` (~lines 20-50) — parses `"USD 29.99"` / symbol-prefixed price strings into `{ price, currency }`.
@@ -183,7 +183,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.3.12
+          bun-version: 1.3.14
       - run: bun install --frozen-lockfile
       - run: cd apps/web && bun run typecheck
       - run: bunx biome ci .
