@@ -63,18 +63,25 @@ export const FeeExplainer = () => (
         {steps.map((step) => (
           <div
             key={step.label}
-            className="flex flex-col gap-3 bg-background-rich p-6"
+            className="flex flex-col gap-4 bg-background-rich p-6"
           >
-            <div className="flex h-10 items-center">{step.visual}</div>
-            <p className="font-medium text-foreground-dimmed text-xs uppercase tracking-[0.18em]">
-              {step.label}
-            </p>
-            <h3 className="font-body font-medium text-foreground text-xl">
-              {step.title}
-            </h3>
-            <p className="font-body font-light text-foreground-dimmed">
-              {step.description}
-            </p>
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex h-10 items-center">{step.visual}</div>
+              <span
+                aria-hidden
+                className="font-normal text-3xl text-primary leading-none"
+              >
+                {step.label}
+              </span>
+            </div>
+            <div className="flex flex-col gap-2">
+              <h3 className="font-body font-medium text-foreground text-xl">
+                {step.title}
+              </h3>
+              <p className="font-body font-light text-foreground-dimmed">
+                {step.description}
+              </p>
+            </div>
           </div>
         ))}
       </div>

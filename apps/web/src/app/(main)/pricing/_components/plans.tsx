@@ -231,7 +231,7 @@ export const Plans = () => (
               aria-hidden
               className={cn(
                 "pointer-events-none absolute -right-3 -bottom-3 h-[46%] w-[92%] max-w-none select-none object-contain object-right-bottom brightness-0 [mask-image:linear-gradient(to_bottom,transparent,black_35%)]",
-                plan.highlighted ? "opacity-20 invert" : "opacity-10",
+                plan.highlighted ? "opacity-25 invert" : "opacity-25",
               )}
             />
             <div className="relative flex flex-1 flex-col">

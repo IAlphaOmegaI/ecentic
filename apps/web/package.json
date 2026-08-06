@@ -48,6 +48,7 @@
     "@zenncore/utils": "workspace:*",
     "@zenncore/web": "workspace:*",
     "ai": "^7.0.51",
+    "babylovegrowth-next-js-blog": "^0.2.2",
     "better-auth": "^1.6.25",
     "date-fns": "^4.4.0",
     "drizzle-kit": "^1.0.0-rc.4-ca0f029",

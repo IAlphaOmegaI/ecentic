@@ -2,16 +2,22 @@
 
 import { cn } from "@zenncore/utils";
 import { AnimatePresence, motion } from "motion/react";
+import type { StaticImageData } from "next/image";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const INTERVAL_MS = 2600;
+const EASE = [0.22, 1, 0.36, 1] as const;
 
-export const ItemCycle = ({
-  items,
-}: {
-  items: readonly { title: string; description: string }[];
-}) => {
+export type ItemCycleItem = {
+  title: string;
+  description: string;
+  logo?: StaticImageData | string;
+};
+
+export const ItemCycle = ({ items }: { items: readonly ItemCycleItem[] }) => {
   const [index, setIndex] = useState(0);
+  const hasLogos = items.some((entry) => entry.logo);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -30,16 +36,30 @@ export const ItemCycle = ({
         className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-linear-to-b from-background-dimmed to-background-dimmed/0"
       />
       {/* Fixed slot so title/description swaps never reflow the panel. */}
-      <div className="relative z-10 h-28 md:h-32">
+      <div
+        className={cn(
+          "relative z-10",
+          hasLogos ? "h-40 md:h-44" : "h-28 md:h-32",
+        )}
+      >
         <AnimatePresence mode="wait">
           <motion.div
             key={item.title}
             initial={{ opacity: 0, y: 14, filter: "blur(8px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: -10, filter: "blur(8px)" }}
-            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.45, ease: EASE }}
             className="absolute inset-x-0 top-0 flex flex-col gap-2"
           >
+            {item.logo ? (
+              <div className="mb-1 flex size-12 items-center justify-center rounded-lg bg-white p-2.5">
+                <Image
+                  src={item.logo}
+                  alt=""
+                  className="size-full object-contain"
+                />
+              </div>
+            ) : null}
             <p className="font-body font-medium text-2xl text-white leading-tight md:text-3xl">
               {item.title}
             </p>

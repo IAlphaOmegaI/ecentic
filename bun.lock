@@ -43,6 +43,7 @@
         "@zenncore/utils": "workspace:*",
         "@zenncore/web": "workspace:*",
         "ai": "^7.0.51",
+        "babylovegrowth-next-js-blog": "^0.2.2",
         "better-auth": "^1.6.25",
         "date-fns": "^4.4.0",
         "drizzle-kit": "^1.0.0-rc.4-ca0f029",
@@ -1111,6 +1112,8 @@
     "atomically": ["atomically@2.1.1", "", { "dependencies": { "stubborn-fs": "^2.0.0", "when-exit": "^2.1.4" } }, "sha512-P4w9o2dqARji6P7MHprklbfiArZAWvo07yW7qs3pdljb3BWr12FIB7W+p0zJiuiVsUpRO0iZn1kFFcpPegg0tQ=="],
 
     "babel-plugin-react-compiler": ["babel-plugin-react-compiler@1.0.0", "", { "dependencies": { "@babel/types": "^7.26.0" } }, "sha512-Ixm8tFfoKKIPYdCCKYTsqv+Fd4IJ0DQqMyEimo+pxUOMUR9cVPlwTrFt9Avu+3cb6Zp3mAzl+t1MrG2fxxKsxw=="],
+
+    "babylovegrowth-next-js-blog": ["babylovegrowth-next-js-blog@0.2.2", "", { "bin": { "babylovegrowth-next-js-blog": "bin/cli.mjs" } }, "sha512-Brll/U1HsG9X2vMxrmlH4XF7h+sda+v0GnnlFHxdFp1P8ubr7ZmYBHUlkkySvHgpnVWsSqFtyAUQ2foFT80VoA=="],
 
     "bail": ["bail@2.0.2", "", {}, "sha512-0xO6mYd7JB2YesxDKplafRpsiOzPt9V02ddPCLbY1xYGPOX24NTyN50qnUxgCPcSoYMhKpAuBTjQoRZCAkUDRw=="],
 

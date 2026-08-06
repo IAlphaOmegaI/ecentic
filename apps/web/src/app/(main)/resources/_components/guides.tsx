@@ -3,11 +3,42 @@ import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import Link from "next/link";
+import { ItemCycle } from "@/app/(main)/_components/item-cycle";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
+import chatgpt from "@/public/images/chatgpt.svg";
+import claude from "@/public/images/claude.svg";
+import gemini from "@/public/images/gemini.svg";
+import perplexity from "@/public/images/perplexity.svg";
 import shopify from "@/public/images/shopify.svg";
 import woocommerce from "@/public/images/woocommerce.svg";
-import { AgentLogoCarousel } from "./agent-logo-carousel";
+
+const paths = [
+  {
+    title: "ChatGPT",
+    description:
+      "Shopping queries that compare your listings against the rest of the category.",
+    logo: chatgpt,
+  },
+  {
+    title: "Claude",
+    description:
+      "Longer evaluations where specs, trust signals, and completeness decide the pick.",
+    logo: claude,
+  },
+  {
+    title: "Gemini",
+    description:
+      "Multimodal agents that weigh structured data as heavily as copy.",
+    logo: gemini,
+  },
+  {
+    title: "Perplexity",
+    description:
+      "Citation-heavy answers that reward verifiable product attributes.",
+    logo: perplexity,
+  },
+] as const;
 
 const guides = [
   {
@@ -75,15 +106,22 @@ export const Guides = () => (
         </RevealItem>
       </Reveal>
 
-      <Reveal className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-[5fr_8fr]">
+      <Reveal className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2">
         <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
         <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
-        <div className="flex h-full min-h-48 bg-background-dimmed p-6 md:min-h-0 md:p-10">
-          <RevealItem className="flex h-full min-h-36 w-full flex-1 items-center justify-center">
-            <AgentLogoCarousel />
+
+        <div className="flex flex-col bg-background-dimmed md:min-h-0">
+          <RevealItem className="flex flex-col gap-4 p-6 md:p-8">
+            <p className="font-body font-light text-foreground-dimmed text-lg leading-relaxed">
+              The same four agents that decide what to recommend also shape what
+              merchants need to learn first — how selection works, then how to
+              act on it for their stack.
+            </p>
           </RevealItem>
+          <ItemCycle items={paths} />
         </div>
-        <div className="bg-background-rich p-6 md:p-10">
+
+        <div className="flex h-full flex-col justify-between gap-6 bg-background-rich p-6 md:p-10">
           <RevealItem className="flex flex-col items-start gap-3">
             <p className="font-medium text-primary text-sm">
               Product walkthrough
@@ -96,6 +134,8 @@ export const Guides = () => (
               merchants who want to understand the product before they connect a
               store.
             </p>
+          </RevealItem>
+          <RevealItem>
             <Button
               color="primary"
               className="mt-2"
@@ -110,7 +150,7 @@ export const Guides = () => (
 
       <Reveal
         stagger={0.1}
-        className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground sm:grid-cols-2"
+        className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2"
       >
         {guides.map((guide) => (
           <article
