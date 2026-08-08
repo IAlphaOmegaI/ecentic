@@ -48,15 +48,18 @@ export const splitBlogHtmlByH2 = (html: string): BlogHtmlSection[] => {
 
   const extracted = matches
     .map((match, index) => {
+      const heading = match[0];
       const title = stripTags(match[1] ?? "") || "Article";
       const start = (match.index ?? 0) + match[0].length;
       const end =
         index + 1 < matches.length
           ? (matches[index + 1]?.index ?? withoutLeadingTitle.length)
           : withoutLeadingTitle.length;
+      const body = withoutLeadingTitle.slice(start, end).trim();
+      // Keep the heading in the article body as well as the left rail.
       return {
         title,
-        html: withoutLeadingTitle.slice(start, end).trim(),
+        html: [heading, body].filter(Boolean).join("\n").trim(),
       };
     })
     .filter((section) => {

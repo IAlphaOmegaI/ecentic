@@ -7,7 +7,7 @@ ecentic serves the UI in **English** (default, no URL prefix) and **Spanish** (`
 | Locale | URL prefix | Content source |
 |--------|------------|----------------|
 | `en` | none (`/blog/foo`) | BabyLoveGrowth API + local `blog_post` rows with `locale=en` |
-| `es` | `/es` (`/es/blog/foo`) | `blog_post` rows with `locale=es` only |
+| `es` | `/es` (`/es/blog/foo`) | **Same catalog / slugs as English.** Prefer `blog_post` `locale=es`; if missing, translate from the EN source on first request and store the row. Falls back to EN content if translate fails so the route never 404s for a real post. |
 
 Same slug is shared across locales. Spanish copies are **not** published back into BabyLoveGrowth.
 
