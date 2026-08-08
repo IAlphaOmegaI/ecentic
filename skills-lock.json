@@ -12,6 +12,31 @@
       "sourceType": "github",
       "skillPath": "skills/improve-animations/SKILL.md",
       "computedHash": "32f23d860467841f5b07cef198fb53efc70f2adaaa6144cf1a3434d782aed246"
+    },
+    "next-cache-components-adoption": {
+      "source": "vercel/next.js",
+      "sourceType": "github",
+      "skillPath": "skills/next-cache-components-adoption/SKILL.md",
+      "computedHash": "216eee49883e5348c2b639d0784c2540964f201ef5345be417c80c24f38332b8"
+    },
+    "next-cache-components-optimizer": {
+      "source": "vercel/next.js",
+      "sourceType": "github",
+      "skillPath": "skills/next-cache-components-optimizer/SKILL.md",
+      "computedHash": "1cfee6aacee598ee43cf149aafee54b7d0e940abca9456f60e5c4fdee17eabb5"
+    },
+    "next-dev-loop": {
+      "source": "vercel/next.js",
+      "ref": "canary",
+      "sourceType": "github",
+      "skillPath": "skills/next-dev-loop/SKILL.md",
+      "computedHash": "1fb1b47ed7186737df086aa198f86961f72691539f1c4507f60bbedf60a128be"
+    },
+    "next-partial-prefetching-adoption": {
+      "source": "vercel/next.js",
+      "sourceType": "github",
+      "skillPath": "skills/next-partial-prefetching-adoption/SKILL.md",
+      "computedHash": "22bd4266a18237fd8a570be51ab3f75f14de09ff8cb6569a4ff2697cc17bb590"
     }
   }
 }

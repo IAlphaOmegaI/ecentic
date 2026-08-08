@@ -17,7 +17,7 @@ import {
 import { cn } from "@zenncore/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type * as Optimizations from "@/server/app/optimization";
+import type { ReactNode } from "react";
 
 // Per-store items — `segment` is appended to `/dashboard/${store}` at render.
 const items = [
@@ -83,15 +83,16 @@ const items = [
 export namespace SidebarNav {
   export type Props = {
     store: string;
-    productCount: number;
-    optimizations: Optimizations.Type[];
+    /** Streamed in — see the Sidebar's per-region Suspense boundaries. */
+    productBadge: ReactNode;
+    optimizationBadge: ReactNode;
   };
 }
 
 export const SidebarNav = ({
   store,
-  productCount,
-  optimizations,
+  productBadge,
+  optimizationBadge,
 }: SidebarNav.Props) => {
   const pathname = usePathname();
   const base = `/dashboard/${store}`;
@@ -101,16 +102,19 @@ export const SidebarNav = ({
       ? pathname === href
       : pathname === href || pathname.startsWith(`${href}/`);
 
-  const badgeFor = (item: (typeof items)[number]): string | undefined => {
+  // Counts arrive as slots, so only the hardcoded percentage badges can be
+  // read as text for tone.
+  const staticBadgeFor = (item: (typeof items)[number]): string | undefined =>
+    "badge" in item && item.badge !== undefined ? item.badge : undefined;
+
+  const badgeFor = (item: (typeof items)[number]): ReactNode => {
     switch (true) {
       case item.label === "Products":
-        return `${productCount}`;
+        return productBadge;
       case item.label === "Optimize":
-        return `${optimizations.length}`;
-      case "badge" in item && item.badge !== undefined:
-        return item.badge;
+        return optimizationBadge;
       default:
-        return undefined;
+        return staticBadgeFor(item);
     }
   };
 
@@ -134,14 +138,18 @@ export const SidebarNav = ({
             <item.icon className="size-4 shrink-0" />
             <span className="flex flex-1 items-center gap-2 overflow-hidden whitespace-nowrap">
               <span className="flex-1">{item.label}</span>
-              {badge && (
+              {badge !== undefined && (
                 <span
                   className={cn(
                     "rounded-full px-1.5 py-px font-semibold text-[11px] tabular-nums",
                     (() => {
-                      const percentage = Number.parseFloat(badge);
+                      const text = staticBadgeFor(item);
+                      if (text === undefined)
+                        return "bg-primary/10 text-primary";
+
+                      const percentage = Number.parseFloat(text);
                       switch (true) {
-                        case Number.isNaN(percentage) || !badge.includes("%"):
+                        case Number.isNaN(percentage) || !text.includes("%"):
                           return "bg-primary/10 text-primary";
                         case percentage >= 80:
                           return "bg-success/10 text-success";

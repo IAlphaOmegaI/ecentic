@@ -10,9 +10,9 @@ import { Crosshair, StatusPill } from "../../_components/grid";
 import { SimulationsClient } from "./_components/simulations-client";
 import { SimulationsSkeleton } from "./_components/skeletons";
 
-export default async ({ params }: { params: Promise<{ store: string }> }) => {
-  const { store } = await params;
+type StoreParams = PageProps<"/dashboard/[store]/simulations">["params"];
 
+export default ({ params }: PageProps<"/dashboard/[store]/simulations">) => {
   return (
     <div className="flex flex-col">
       <div className="mx-8 border-accent-foreground border-x">
@@ -23,10 +23,10 @@ export default async ({ params }: { params: Promise<{ store: string }> }) => {
             <div>
               <Suspense
                 fallback={
-                  <div className="h-4 w-56 animate-pulse bg-foreground/10" />
+                  <div className="h-5 w-56 animate-pulse rounded-full bg-foreground/10" />
                 }
               >
-                <LastRun store={store} />
+                <LastRun params={params} />
               </Suspense>
               <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
                 Simulations
@@ -39,15 +39,16 @@ export default async ({ params }: { params: Promise<{ store: string }> }) => {
         </div>
 
         <Suspense fallback={<SimulationsSkeleton />}>
-          <SimulationsData store={store} />
+          <SimulationsData params={params} />
         </Suspense>
       </div>
     </div>
   );
 };
 
-const LastRun = async ({ store }: { store: string }) => {
+const LastRun = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
   const latestScans = await resultify(() =>
     unwrapResult(Scan.getLatest(Environment.SERVER, { limit: 1, store })),
   );
@@ -62,8 +63,9 @@ const LastRun = async ({ store }: { store: string }) => {
   );
 };
 
-const SimulationsData = async ({ store }: { store: string }) => {
+const SimulationsData = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
 
   // Full lists feed the scan-setup roster (pick products/competitors before a
   // run); the skim stays a 10-row preview for the detection tab only.

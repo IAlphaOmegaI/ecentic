@@ -41,7 +41,7 @@ Verification is the gate. A redemption whose company domain matches the program 
       {
         number: "02",
         title: "What's actually in the deal",
-        content: `The deal opens the full ecentic Dominate platform, not a trimmed trial. Dominate shows a merchant how an AI shopping agent sees them — and then helps close the gap. Compared to standard [Dominate pricing](/pricing) at $449/mo, redeemers also keep 50% off for two years once the deal period ends.
+        content: `The deal opens the full ecentic Dominate platform, not a trimmed trial. Dominate shows a merchant how an AI shopping agent sees them — and then helps close the gap. Compared to standard [Dominate pricing](/pricing) at $149/mo, redeemers also keep 50% off for the first 12 months once the deal period ends.
 
 **Continuous simulations** show how ChatGPT, Claude, Gemini, and Perplexity rank your products against competitors, and why.
 **Auto-optimization** turns those findings into listing rewrites you approve with one click, with drift alerts when a model's behavior shifts.
@@ -169,8 +169,8 @@ Bought individually, those total $730/mo. Bundled, they are $584.00/mo — a 20%
 - GDPR Representative — Article 27 representative across all 27 member states ($127/mo)
 - GPSR Representative (Growth) — responsible person for your consumer products ($97/mo)
 - Privacy Center Plus — hosted trust hub, DSR intake, and policy library ($57/mo)
-- ecentic Dominate — continuous simulations, auto-optimization, and UCP ($449/mo)
-- Bundled at $584.00/mo instead of $730/mo — save $146.00/mo, one invoice, one team`,
+- ecentic Scale — continuous simulations and auto-optimization ($44.90/mo)
+- Bundled at $260.72/mo instead of $325.90/mo — save $65.18/mo, one invoice, one team`,
       },
       {
         number: "05",
@@ -1012,12 +1012,12 @@ Read simply: Profound tells you how you appear in AI answers; ecentic changes ho
         title: "Pricing compared",
         content: `Profound publishes tiered pricing — at the time of writing, a Starter plan around $99/mo and a Growth plan around $399/mo billed yearly, with Enterprise custom and the ChatGPT Shopping view reserved for enterprise. Check [Profound's site](https://www.tryprofound.com/) for current numbers, since AI-tooling pricing moves quickly.
 
-ecentic starts free: a one-time Scan of up to 10 products across three models. [Compete is $149/mo](/pricing) for up to 100 products with daily simulations and competitor battlecards; Dominate is $449/mo for up to 1000 products with continuous simulations, auto-optimization and one-click publish, drift alerts, and UCP generation.
+ecentic starts free: a one-time Scan of up to 10 products across three models. [Compete is $14.90/mo](/pricing) for up to 100 products with daily simulations and competitor battlecards; Scale is $44.90/mo for up to 1000 products with continuous simulations and auto-optimization with one-click publish; Dominate is $149/mo and adds drift alerts and UCP generation.
 
 The prices are not really comparable line for line, because the products do different jobs. The useful question is which job you are paying to solve: measuring AI presence, or winning AI purchase decisions.
 
 - Profound: from ~$99/mo (Starter) to ~$399/mo (Growth), Enterprise custom
-- ecentic: free Scan, Compete $149/mo, Dominate $449/mo
+- ecentic: free Scan, Compete $14.90/mo, Scale $44.90/mo, Dominate $149/mo
 - Different jobs — price against the outcome you need`,
       },
       {
@@ -1125,12 +1125,12 @@ The pattern: Ecomtent is the stronger content and imagery factory; ecentic is th
         title: "Pricing compared",
         content: `Ecomtent publishes SKU-based tiers — at the time of writing, roughly Basic $165/mo, Pro $465/mo, and Agency $1,500/mo, scaling with catalog size. Confirm current pricing on [Ecomtent's site](https://www.ecomtent.ai/).
 
-ecentic starts with a free Scan of up to 10 products, then [Compete at $149/mo](/pricing) (100 products, daily simulations, battlecards) and Dominate at $449/mo (1000 products, continuous simulations, auto-optimization and one-click publish, drift alerts, UCP generation).
+ecentic starts with a free Scan of up to 10 products, then [Compete at $14.90/mo](/pricing) (100 products, daily simulations, battlecards), Scale at $44.90/mo (1000 products, continuous simulations, auto-optimization and one-click publish), and Dominate at $149/mo (adds drift alerts and UCP generation).
 
 If your catalog is large and Amazon-centric and you mostly need content produced, Ecomtent's per-SKU model may fit. If you want to know and improve win rates across AI models on Shopify or WooCommerce, ecentic prices around that outcome.
 
 - Ecomtent: ~$165 (Basic) to ~$1,500/mo (Agency), by SKU count
-- ecentic: free Scan, Compete $149/mo, Dominate $449/mo
+- ecentic: free Scan, Compete $14.90/mo, Scale $44.90/mo, Dominate $149/mo
 - Match the price to the job: content at scale vs. winning comparisons`,
       },
       {
@@ -1239,12 +1239,12 @@ In short: Alhena is broader across commerce AI; ecentic is deeper on the competi
         title: "Pricing compared",
         content: `Alhena does not publish standard pricing at the time of writing, so plan to request a quote; its scope spans visibility plus assistant and support products, which affects packaging. Check [Alhena's site](https://alhena.ai/) for current details.
 
-ecentic's pricing is public: a free Scan of up to 10 products, [Compete at $149/mo](/pricing) (100 products, daily simulations, battlecards), and Dominate at $449/mo (1000 products, continuous simulations, auto-optimization and one-click publish, drift alerts, UCP generation).
+ecentic's pricing is public: a free Scan of up to 10 products, [Compete at $14.90/mo](/pricing) (100 products, daily simulations, battlecards), Scale at $44.90/mo (1000 products, continuous simulations, auto-optimization and one-click publish), and Dominate at $149/mo (adds drift alerts and UCP generation).
 
 Because Alhena's pricing is quote-based and its suite is broader, a like-for-like number is not available. Compare on the job to be done: SKU visibility tracking within a wider suite, versus competitive simulation with a publish loop.
 
 - Alhena: quote-based; broader suite (visibility, assistant, support)
-- ecentic: free Scan, Compete $149/mo, Dominate $449/mo
+- ecentic: free Scan, Compete $14.90/mo, Scale $44.90/mo, Dominate $149/mo
 - Compare by outcome, since packaging differs`,
       },
       {

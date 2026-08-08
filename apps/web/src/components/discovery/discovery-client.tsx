@@ -1,7 +1,7 @@
 "use client";
 
 import { LoaderIcon, PlusIcon, XCircleIcon } from "@zenncore/icons";
-import { cn } from "@zenncore/utils";
+import { cn, resultify, unwrapResult } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
@@ -281,10 +281,17 @@ export const DiscoveryClient = ({
       return;
     }
 
-    const response = await Discovery.runDiscovery({
-      targetStore: target,
-      queries: parsed,
-    });
+    // unwrapResult throws on an action-level error and the request itself can
+    // reject on a network blip — resultify folds both into one failure branch
+    // instead of letting the rejection escape as an unhandled crash.
+    const response = await resultify(() =>
+      unwrapResult(
+        Discovery.runDiscovery({
+          targetStore: target,
+          queries: parsed,
+        }),
+      ),
+    );
 
     if (!response.success) {
       setError(response.error.message || "Something went wrong.");

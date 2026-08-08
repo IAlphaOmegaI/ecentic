@@ -38,20 +38,17 @@ export const getLatest = dedupe(
 
       // Legacy scans have no storeId, so scope by product membership instead:
       // keep only scans that touched this store's products, and recompute
-      // wins/losses from just those products' simulations. The products +
-      // simulations pair comes from the deduped store fetch shared with the
-      // other dashboard aggregations.
-      const collected = await Simulation.getForStore(Environment.SERVER, {
+      // wins/losses from just those products' simulations. Postgres does the
+      // grouping — this used to load every simulation row for the store and
+      // bucket them by scan in memory.
+      const tallies = await Simulation.tallyByScan(Environment.SERVER, {
         store,
       });
-      if (!collected.success) return collected;
+      if (!tallies.success) return tallies;
 
-      const byScan = new Map<string, Simulation.Summary[]>();
-      for (const simulation of collected.data.simulations) {
-        const list = byScan.get(simulation.scanId) ?? [];
-        list.push(simulation);
-        byScan.set(simulation.scanId, list);
-      }
+      const byScan = new Map(
+        tallies.data.map((tally) => [tally.scanId, tally]),
+      );
 
       const scanIds = [...byScan.keys()];
       if (scanIds.length === 0)
@@ -65,17 +62,16 @@ export const getLatest = dedupe(
       if (!scans.success) return scans;
 
       const rescoped = scans.data.map((scan) => {
-        const scanSimulations = byScan.get(scan.id) ?? [];
-        const wins = scanSimulations.filter(
-          (simulation) => simulation.winner === "product",
-        ).length;
+        const tally = byScan.get(scan.id);
+        const total = tally?.total ?? 0;
+        const wins = Number(tally?.wins ?? 0);
 
         return {
           ...scan,
           wins,
-          losses: scanSimulations.length - wins,
-          completedSimulations: scanSimulations.length,
-          totalSimulations: scanSimulations.length,
+          losses: total - wins,
+          completedSimulations: total,
+          totalSimulations: total,
         };
       });
 
@@ -83,6 +79,30 @@ export const getLatest = dedupe(
     },
     "Scan.getLatest",
   ),
+);
+
+/**
+ * The most recent completed scan for the signed-in user, resolved in SQL.
+ *
+ * Callers used to read `getLatest({ limit: 1000 })` and walk the array for the
+ * first `complete` row — a thousand rows fetched to answer a one-row question,
+ * and wrong besides once a user's completed scans all fall outside the newest
+ * thousand.
+ */
+export const getLatestComplete = dedupe(
+  withAuthentication(async (context) => {
+    const scans = await find(Environment.SERVER, {
+      where: and(
+        eq(schema.scan.userId, context.session.user.id),
+        eq(schema.scan.status, "complete"),
+      ),
+      orderBy: [{ column: schema.scan.createdAt, direction: "desc" }],
+      limit: 1,
+    });
+    if (!scans.success) return scans;
+
+    return { success: true as const, data: scans.data[0] ?? null };
+  }, "Scan.getLatestComplete"),
 );
 
 export const findPending = withContext(async (_context) => {

@@ -2,13 +2,11 @@ import {
   ArrowRightIcon,
   CopyIcon,
   GaugeIcon,
-  PlusIcon,
   RadarIcon,
   ShoppingCartIcon,
 } from "@zenncore/icons";
 import { unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import Image from "next/image";
 import Link from "next/link";
 import { connection } from "next/server";
 import { type ReactNode, Suspense } from "react";
@@ -16,8 +14,12 @@ import { formatRelativeTime } from "@/lib/date";
 import * as Authentication from "@/server/app/authentication";
 import * as Store from "@/server/app/store";
 import { Environment } from "@/server/utils/environment";
-import { Crosshair, StatusPill } from "./_components/grid";
-import { NotificationBell } from "./_components/notification-bell";
+import { Crosshair, StatusPill } from "../_components/grid";
+import {
+  HubShell,
+  StoresSkeleton,
+  UserBadgeSkeleton,
+} from "../_components/hub-shell";
 
 const PLATFORM_LABELS: Record<string, string> = {
   shopify: "Shopify",
@@ -28,52 +30,18 @@ const PLATFORM_LABELS: Record<string, string> = {
 };
 
 export default () => (
-  <div className="flex flex-1 flex-col overflow-hidden">
-    <header className="flex h-14 shrink-0 items-center justify-between border-accent-foreground border-b bg-background-rich px-8">
-      <Link href="/dashboard" aria-label="ecentic">
-        <Image
-          src="/images/trademark.svg"
-          alt="ecentic"
-          width={96}
-          height={28}
-          loading="eager"
-        />
-      </Link>
-      <div className="flex items-center gap-3">
-        <NotificationBell />
-        <Suspense fallback={<div className="size-8 bg-accent-foreground/30" />}>
-          <UserBadge />
-        </Suspense>
-      </div>
-    </header>
-
-    <main className="flex-1 overflow-y-auto">
-      <div className="mx-auto max-w-6xl px-6 py-10">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <StatusPill tone="neutral">Workspace</StatusPill>
-            <h1 className="mt-3 font-bold text-3xl text-foreground-rich tracking-[-0.02em]">
-              Your stores
-            </h1>
-            <p className="mt-1 text-foreground-dimmed text-sm">
-              Select a store to view how AI shopping agents rank its catalog, or
-              connect another.
-            </p>
-          </div>
-          <Button color="primary" render={<Link href="/onboarding/connect" />}>
-            <PlusIcon className="size-4" />
-            Connect a store
-          </Button>
-        </div>
-
-        <div className="mt-8">
-          <Suspense fallback={<StoresSkeleton />}>
-            <Stores />
-          </Suspense>
-        </div>
-      </div>
-    </main>
-  </div>
+  <HubShell
+    userBadge={
+      <Suspense fallback={<UserBadgeSkeleton />}>
+        <UserBadge />
+      </Suspense>
+    }
+    stores={
+      <Suspense fallback={<StoresSkeleton />}>
+        <Stores />
+      </Suspense>
+    }
+  />
 );
 
 const UserBadge = async () => {
@@ -283,48 +251,5 @@ const EmptyState = () => (
     <Button color="primary" render={<Link href="/onboarding/connect" />}>
       Connect a store <ArrowRightIcon className="size-4" />
     </Button>
-  </div>
-);
-
-const StoresSkeleton = () => (
-  <div className="flex flex-col gap-8">
-    <div className="grid grid-cols-2 gap-px border border-accent-foreground bg-accent-foreground lg:grid-cols-4">
-      {(["a", "b", "c", "d"] as const).map((key) => (
-        <div key={key} className="bg-background-rich p-5">
-          <div className="flex items-center gap-1.5">
-            <div className="size-4 animate-pulse bg-foreground/10" />
-            <div className="h-3 w-20 animate-pulse bg-foreground/10" />
-          </div>
-          <div className="mt-2 h-8 w-16 animate-pulse bg-foreground/10" />
-        </div>
-      ))}
-    </div>
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-      {(["a", "b", "c", "d"] as const).map((key) => (
-        <div
-          key={key}
-          className="border border-accent-foreground bg-background-rich"
-        >
-          <div className="flex items-center gap-3 border-accent-foreground border-b p-5">
-            <div className="size-11 animate-pulse bg-foreground/10" />
-            <div className="space-y-2">
-              <div className="h-5 w-32 animate-pulse bg-foreground/10" />
-              <div className="h-3 w-40 animate-pulse bg-foreground/10" />
-            </div>
-          </div>
-          <div className="grid grid-cols-3 divide-x divide-accent-foreground">
-            {(["x", "y", "z"] as const).map((cell) => (
-              <div key={cell} className="space-y-2 p-4">
-                <div className="h-3 w-14 animate-pulse bg-foreground/10" />
-                <div className="h-7 w-12 animate-pulse bg-foreground/10" />
-              </div>
-            ))}
-          </div>
-          <div className="border-accent-foreground border-t p-4">
-            <div className="h-4 w-24 animate-pulse bg-foreground/10" />
-          </div>
-        </div>
-      ))}
-    </div>
   </div>
 );

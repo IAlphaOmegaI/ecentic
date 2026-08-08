@@ -33,7 +33,7 @@ const Comparison = dynamic(() =>
 );
 
 const description =
-  "Get picked by AI shopping agents. ecentic optimizes your Shopify or WooCommerce listings so ChatGPT, Gemini, and Perplexity recommend you first.";
+  "Get picked by AI shopping agents. ecentic optimizes your Shopify or WooCommerce product listings so ChatGPT, Gemini, and Perplexity recommend you first.";
 
 export const metadata: Metadata = createMetadata({
   title: "ecentic — Be the product AI recommends",

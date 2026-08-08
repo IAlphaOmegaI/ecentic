@@ -1,18 +1,21 @@
 import type { Metadata } from "next";
 import { type PropsWithChildren, Suspense } from "react";
 import "./globals.css";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { ToastProvider } from "@zenncore/web/components/toast";
-import dynamic from "next/dynamic";
 import { Red_Hat_Display } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
+import { CookieConsent } from "@/components/cookie-consent";
 import { ToastList } from "@/components/ui/toast";
+import { ConsentProvider } from "@/context/consent";
 import { MotionProvider } from "@/context/motion";
+// Imported directly rather than through `next/dynamic`. The provider is already
+// a client component, so the RSC boundary code-splits it anyway; routing it
+// through `dynamic()` from a server component only added a lazy boundary that
+// the App Shell prerender has to resolve, which broke instant-UI validation.
+import { PostHogProvider } from "@/context/posthog";
 import { ThemeProvider } from "@/context/theme";
-
-const PostHogProvider = dynamic(() =>
-  import("@/context/posthog").then((m) => m.PostHogProvider),
-);
 
 const redHatDisplay = Red_Hat_Display({
   subsets: ["latin"],
@@ -138,6 +141,7 @@ export default ({ children }: PropsWithChildren) => {
           href="https://eu-assets.i.posthog.com"
           crossOrigin="anonymous"
         />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
         {process.env.NODE_ENV === "development" && (
           <Script
             src="//unpkg.com/react-grab/dist/index.global.js"
@@ -166,6 +170,35 @@ export default ({ children }: PropsWithChildren) => {
             </Script>
           )}
         <Script src="/webmcp.js" strategy="afterInteractive" />
+        {/* GA4 runs alongside PostHog — the two are independent. Pageviews on
+            client-side navigations come from GA4's enhanced measurement
+            ("page changes based on browser history events"), which reads the
+            App Router's pushState calls, so there is no manual pageview hook
+            here to double-count against. */}
+        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+          <>
+            {/* Consent Mode v2 defaults. This MUST execute before gtag.js, so
+                it is beforeInteractive while <GoogleAnalytics> stays on the
+                default afterInteractive — if gtag.js won the race it would set
+                cookies before hearing that storage is denied. Ad signals are
+                hard-coded denied and never updated; only analytics_storage is
+                flipped, by ConsentProvider. */}
+            <Script id="google-consent-default" strategy="beforeInteractive">
+              {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('consent', 'default', {
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+                analytics_storage: 'denied',
+                wait_for_update: 500
+              });
+            `}
+            </Script>
+            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+          </>
+        )}
         <meta name="apple-mobile-web-app-title" content="ecentic" />
       </head>
       <body
@@ -174,18 +207,23 @@ export default ({ children }: PropsWithChildren) => {
         suppressHydrationWarning={process.env.NODE_ENV === "development"}
       >
         <Suspense>
-          <PostHogProvider>
-            <ThemeProvider>
-              <MotionProvider>
-                <ToastProvider>
-                  <div className="isolate">{children}</div>
-                  <ToastList types={["error", "success", "info", "loading"]} />
-                </ToastProvider>
-              </MotionProvider>
-            </ThemeProvider>
-          </PostHogProvider>
+          <ConsentProvider>
+            <PostHogProvider>
+              <ThemeProvider>
+                <MotionProvider>
+                  <ToastProvider>
+                    <div className="isolate">{children}</div>
+                    <ToastList
+                      types={["error", "success", "info", "loading"]}
+                    />
+                    <CookieConsent />
+                  </ToastProvider>
+                </MotionProvider>
+              </ThemeProvider>
+            </PostHogProvider>
+          </ConsentProvider>
         </Suspense>
       </body>
     </html>
   );
-};
+}; 

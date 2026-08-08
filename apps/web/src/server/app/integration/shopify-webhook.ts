@@ -1,9 +1,10 @@
+import * as Sentry from "@sentry/nextjs";
 import { resultify } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
 import { schema } from "@/server/database";
 import { withContext } from "@/server/utils/context";
 import { Environment } from "@/server/utils/environment";
-import { UnauthenticatedError, ValidationError } from "@/server/utils/error";
+import { InvalidSignatureError, ValidationError } from "@/server/utils/error";
 import { verifyWebhookHmac } from "@/server/utils/shopify";
 import * as Attribution from "../billing/attribution";
 import * as Store from "../store";
@@ -106,14 +107,37 @@ const redactShop = async (shop: string) => {
 
 export const handle = withContext(
   async (
-    _context,
+    context,
     {
       shop,
       topic,
       signature,
       body,
-    }: { shop: string; topic: string; signature: string; body: string },
+      webhookId,
+    }: {
+      shop: string;
+      topic: string;
+      signature: string;
+      body: string;
+      webhookId?: string;
+    },
   ) => {
+    // Recorded before anything can fail, so a rejection below arrives in Sentry
+    // with the fields that tell a forged request apart from a real delivery we
+    // are dropping: Shopify reuses one `webhookId` across all retries of the
+    // same event, so a burst under a single id is our own signature check
+    // failing on genuine traffic, while lone unidentified hits are probes.
+    // Never the body — it is unverified at this point and may carry order data.
+    context.span.addBreadcrumb({
+      category: "shopify.webhook.received",
+      data: {
+        shop,
+        topic,
+        "webhook.id": webhookId ?? "absent",
+        "body.bytes": body.length,
+      },
+    });
+
     const secret = process.env.SHOPIFY_API_SECRET;
 
     if (!secret)
@@ -124,11 +148,34 @@ export const handle = withContext(
 
     // Runs against the raw body, before anything parses it — the signature
     // covers the exact bytes Shopify sent.
-    if (!verifyWebhookHmac(body, signature, secret))
+    //
+    // A rejection here is the control working, not a defect: anyone can POST
+    // this URL, and Shopify's app review deliberately sends a bad HMAC to
+    // confirm the 401. So it is recorded at `warning` and returned as an
+    // expected error, which keeps `withContext` from also raising it as an
+    // exception. The one case that *is* ours still surfaces in the same issue —
+    // repeated rejections carrying a real `webhookId` are genuine deliveries
+    // signed with a secret this deployment no longer matches.
+    if (!verifyWebhookHmac(body, signature, secret)) {
+      // Fields ride in `extra`, not `tags`: every one of them comes off an
+      // unverified request, and an indexed tag would let a flood of forged
+      // headers pollute Sentry's tag cardinality.
+      Sentry.captureMessage("Shopify webhook failed HMAC verification", {
+        level: "warning",
+        tags: { route: "shopify-webhook" },
+        extra: {
+          shop,
+          topic,
+          webhookId: webhookId ?? "absent",
+          bodyBytes: body.length,
+        },
+      });
+
       return {
         success: false as const,
-        error: new UnauthenticatedError("Invalid HMAC signature"),
+        error: new InvalidSignatureError("Invalid HMAC signature"),
       };
+    }
 
     const payload = resultify(() => JSON.parse(body) as unknown);
 

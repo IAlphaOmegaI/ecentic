@@ -122,8 +122,7 @@ const DomainCheckPreview = ({ domain }: DomainCheckPreview.Props) => {
         <div className="flex items-center gap-3">
           <Image
             src={ucp}
-            alt=""
-            aria-hidden
+            alt="Universal Commerce Protocol logo"
             className="size-10 object-contain"
           />
           <div>

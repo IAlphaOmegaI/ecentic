@@ -1,36 +1,28 @@
 "use client";
 
 import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
-import { useState } from "react";
-import type * as PerformanceFee from "@/server/app/billing/performance-fee";
-import type * as GoogleMerchant from "@/server/app/integration/google-merchant";
-import type * as Store from "@/server/app/store";
-import type * as Subscription from "@/server/app/subscription";
-import type * as User from "@/server/app/user";
-import { AccountSection } from "./settings/account-section";
-import { BillingSection } from "./settings/billing-section";
-import { IntegrationsSection } from "./settings/integrations-section";
+import { type ReactNode, useState } from "react";
 import { NotificationsSection } from "./settings/notifications-section";
 import { SimulationSection } from "./settings/simulation-section";
 
 export namespace SettingsClient {
+  /**
+   * The tab rail carries no data of its own, so it prerenders. Each panel that
+   * needs a query arrives as a slot on its own boundary — billing in particular
+   * reconciles against Stripe, and used to hold up the whole screen including
+   * the Account tab.
+   */
   export type Props = {
-    user: User.Type;
-    stores: Store.Type[];
-    google: Record<string, GoogleMerchant.Status | null>;
-    subscription: Subscription.Type | null;
-    invoices: Subscription.InvoiceSummary[];
-    performanceFee: PerformanceFee.PeriodSummary | null;
+    account: ReactNode;
+    integrations: ReactNode;
+    billing: ReactNode;
   };
 }
 
 export const SettingsClient = ({
-  user,
-  stores,
-  google,
-  subscription,
-  invoices,
-  performanceFee,
+  account,
+  integrations,
+  billing,
 }: SettingsClient.Props) => {
   const [notifications, setNotifications] = useState({
     winRateDrop: true,
@@ -86,7 +78,7 @@ export const SettingsClient = ({
           value="account"
           className="min-w-0 flex-1 bg-background-rich outline-none"
         >
-          <AccountSection user={user} />
+          {account}
         </TabsPanel>
 
         {/* <TabsPanel
@@ -100,7 +92,7 @@ export const SettingsClient = ({
           value="integrations"
           className="min-w-0 flex-1 bg-background-rich outline-none"
         >
-          <IntegrationsSection stores={stores} google={google} />
+          {integrations}
         </TabsPanel>
 
         <TabsPanel
@@ -136,11 +128,7 @@ export const SettingsClient = ({
           value="billing"
           className="min-w-0 flex-1 bg-background-rich outline-none"
         >
-          <BillingSection
-            subscription={subscription}
-            invoices={invoices}
-            performanceFee={performanceFee}
-          />
+          {billing}
         </TabsPanel>
       </Tabs>
     </div>

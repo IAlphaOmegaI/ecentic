@@ -8,23 +8,69 @@ import {
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/footer";
+import { JsonLd } from "@/components/json-ld";
 import { Navbar } from "@/components/navbar";
-import { createMetadata } from "@/lib/seo";
+import {
+  absoluteUrl,
+  createBreadcrumbSchema,
+  createMetadata,
+  organizationSchema,
+  seo,
+} from "@/lib/seo";
 import Art from "@/public/images/ascii/gavel.png";
 import { ContentPageSection } from "../_components/content";
 import { PageBanner } from "../_components/page-banner";
 import { renderInline } from "../_components/rich-text";
 
+const description =
+  "How ecentic collects, uses, and protects your data across scans, store integrations, and agent checkouts, plus your GDPR rights and how to exercise them.";
+
+// Declared once and shared with the banner below, so the ISO date crawlers read
+// can never drift from the date the page itself prints.
+const lastUpdated = {
+  display: "August 5, 2026",
+  iso: "2026-08-05",
+} as const;
+
 export const metadata: Metadata = createMetadata({
-  title: "Privacy Policy",
-  description:
-    "How ecentic collects, uses, and protects your data when using our e-commerce optimization platform.",
+  title: "Privacy Policy — Your Data and Agent Commerce",
+  description,
   path: "/privacy-policy",
 });
 
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Privacy Policy",
+    description,
+    url: absoluteUrl("/privacy-policy"),
+    inLanguage: "en",
+    isPartOf: {
+      "@type": "WebSite",
+      name: seo.name,
+      url: seo.host,
+    },
+    datePublished: lastUpdated.iso,
+    dateModified: lastUpdated.iso,
+  },
+  {
+    ...organizationSchema,
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "privacy",
+      email: "privacy@ecentic.ai",
+    },
+  },
+  createBreadcrumbSchema([
+    { name: "Home", path: "/" },
+    { name: "Privacy Policy", path: "/privacy-policy" },
+  ]),
+];
+
 const assurances = [
   "Agent commerce is opt-in",
-  "Essential cookies only",
+  "No advertising cookies",
   "Encrypted in transit & at rest",
 ] as const;
 
@@ -153,6 +199,7 @@ You remain the seller and Merchant of Record, and your own store's privacy notic
 - **AI Model Providers** (Azure OpenAI, Anthropic, Google, Perplexity): The product catalog you sync from your store platform is sent to AI models during simulations and optimization. Data read from a connected Google Merchant Center account is never sent to them (see section 04). Data is transmitted via encrypted API calls and is not retained by providers beyond the API request lifecycle per their data processing agreements.
 - **Sentry**: Error monitoring. May receive anonymized error context (no product data).
 - **PostHog**: Product analytics. Receives anonymized usage events (page views, feature interactions). No product catalog data is sent.
+- **Google Analytics 4**: Website analytics. Receives page views and traffic sources. No product catalog data, store credentials, or account identifiers are sent.
 - **Resend**: Transactional email delivery (verification codes, notifications). Receives only email addresses and message content.
 - **UploadThing**: File storage for uploaded assets. Stores only files you explicitly upload.
 - **Vercel**: Hosting infrastructure. Processes requests but does not independently store application data.
@@ -192,11 +239,12 @@ For GDPR data subject requests (access, rectification, erasure, portability), co
   {
     title: "Cookies",
     number: "08",
-    content: `We use essential cookies only:
+    content: `We use essential and analytics cookies:
 - **Session cookies**: Maintain your authenticated session
 - **OAuth state cookies**: Short-lived (10 minutes) cookies used during Shopify OAuth flow to prevent CSRF attacks
+- **Analytics cookies**: Set by Google Analytics (\`_ga\`, \`_ga_*\`) and PostHog to measure page views and feature usage so we can improve the product. These are set **only after you accept** them in the cookie banner — decline and neither tool collects anything or stores a cookie.
 
-We do not use advertising cookies or third-party tracking cookies.`,
+You can change your answer at any time via **Cookie settings** in the footer. We do not use advertising cookies, and we do not use analytics data for ad targeting or share it with advertising networks.`,
   },
   {
     title: "Your Rights",
@@ -283,16 +331,18 @@ export default () => (
       <Navbar />
     </div>
 
+    <JsonLd schemas={structuredData} />
+
     <PageBanner
       eyebrow="Legal"
       title="Privacy"
       accent="Policy."
-      meta="Last updated: August 5, 2026"
+      meta={`Last updated: ${lastUpdated.display}`}
       description={
         "ecentic (“we”, “us”, “our”) is committed to protecting the privacy of merchants who use our e-commerce optimization platform. This policy explains what data we collect, how we use it, and your rights."
       }
       assurances={assurances}
-      art={Art}
+      art={{ source: Art, alt: "ASCII-art illustration of a gavel" }}
     />
 
     <ContentPageSection

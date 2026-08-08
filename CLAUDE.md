@@ -235,29 +235,36 @@ NEXT_PUBLIC_SENTRY_DSN
 
 # AI providers — two rails, chosen by the SHAPE of the model argument in
 # apps/web/src/server/utils/ai.ts (`model(id)`):
-#   provider instance  → billed direct   → GPT on your Azure deployment (default)
-#   "provider/model"   → billed via gateway → Claude, Gemini, Perplexity
+#   provider instance  → billed direct   → ChatGPT, when AZURE_DEPLOYMENT_GPT names a deployment
+#   "provider/model"   → billed via gateway → Claude, Gemini, Perplexity — and ChatGPT wherever
+#                                              this environment has no Azure deployment for it
 # No per-vendor key is needed; the gateway covers everything Azure can't serve.
 AZURE_RESOURCE_NAME                       # subdomain only, e.g. "my-resource" (NOT the full URL)
 AZURE_API_KEY
-AZURE_API_VERSION                         # optional, defaults to "preview" (Azure v1 API surface)
-AZURE_DEPLOYMENT_GPT                      # your ChatGPT DEPLOYMENT name, e.g. "gpt-5.3-chat" — the deployment's
-                                          # name, NOT the model's. The "gpt" seat maps here. Unset in an
-                                          # environment → "gpt" resolves to openai/gpt-5.3-chat on the gateway,
-                                          # because Azure 404s any deployment name it was not given.
+AZURE_API_VERSION                         # optional. Unset → the AI SDK's own default, which is "v1" in
+                                          # @ai-sdk/azure 4.x despite its docstring claiming "preview".
+                                          # Both are accepted; set it explicitly rather than trust the default.
+AZURE_DEPLOYMENT_GPT                      # your ChatGPT DEPLOYMENT name, e.g. "gpt-5.4" — the deployment's
+                                          # name, NOT the model's (list them: curl "https://$AZURE_RESOURCE_NAME.openai.azure.com/openai/deployments?api-version=2023-03-15-preview"
+                                          # -H "api-key: $AZURE_API_KEY"). The "gpt" seat maps here. Unset in an
+                                          # environment → "gpt" resolves to GPT_GATEWAY_MODEL on the gateway,
+                                          # because Azure 404s any deployment name it was not given. Repoint the
+                                          # deployment and that constant together, or the rails judge with
+                                          # different models under one "ChatGPT" label.
 AI_GATEWAY_API_KEY                        # Vercel AI Gateway — Claude/Gemini/Perplexity calls
 ```
 
 Billing. Three separate products: free **Scan** (one-time, no billing row),
 **Pay-as-you-go** (free to start, no card until a fee is due, billed only via the
-performance fee), and flat **Subscription** (Compete/Dominate, no fee). The fee
+performance fee), and flat **Subscription** (Compete/Scale/Dominate, no fee). The fee
 never rides a subscription. PAYG runs on calendar months; the Stripe rail charges
 one-off invoices (Shopify-installed stores bill via Shopify usage records).
 ```
 STRIPE_SECRET_KEY
 STRIPE_WEBHOOK_SECRET
-STRIPE_SUB_COMPETE                        # recurring price id — Compete plan
-STRIPE_SUB_DOMINATE                       # recurring price id — Dominate plan
+STRIPE_SUB_COMPETE                        # recurring price id — Compete plan ($14.90/mo)
+STRIPE_SUB_SCALE                          # recurring price id — Scale plan ($44.90/mo)
+STRIPE_SUB_DOMINATE                       # recurring price id — Dominate plan ($149/mo, top tier)
 APP_HOST                                  # e.g. https://ecentic.ai (checkout return + webhook origin)
 CRON_SECRET                               # Bearer secret for /api/cron/* (scan + billing)
 

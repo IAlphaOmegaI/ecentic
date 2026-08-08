@@ -47,7 +47,7 @@ const faq = [
 ] as const;
 
 export const metadata: Metadata = createMetadata({
-  title: "ecentic for Y Combinator — Redeem Your Student Deal",
+  title: "ecentic for Y Combinator — Redeem Your Deal",
   description,
   path: "/yc",
   keywords: [
@@ -83,7 +83,7 @@ export default () => {
       eyebrow="Y Combinator"
       title="Your ecentic deal,"
       accent="ready to redeem."
-      art={Art}
+      art={{ source: Art, alt: "ASCII-art illustration of a handshake" }}
       badge={
         <ContentPageBadge
           logo="/partners/y-combinator.svg"

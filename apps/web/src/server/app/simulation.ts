@@ -1,7 +1,7 @@
 "use server";
 
 import { resultify } from "@zenncore/utils";
-import { and, eq, inArray } from "drizzle-orm";
+import { and, count as countRows, eq, inArray, sql } from "drizzle-orm";
 import { db, schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
 import { dedupe } from "../utils/dedupe";
@@ -23,6 +23,103 @@ export type Type = Document<typeof schema.simulation>;
  * should never pull each simulation's LLM paragraph over the wire.
  */
 export type Summary = Omit<Type, "reasoning">;
+
+/**
+ * The products a tally covers: the signed-in user's catalog, narrowed to one
+ * store when given. Kept as a subquery so the tallies never round-trip a list
+ * of product ids.
+ */
+const productScope = (userId: string, store?: string) =>
+  db
+    .select({ id: schema.product.id })
+    .from(schema.product)
+    .where(
+      store
+        ? and(
+            eq(schema.product.userId, userId),
+            eq(schema.product.storeId, store),
+          )
+        : eq(schema.product.userId, userId),
+    );
+
+// `count(*) filter (...)` counts winners in the same pass as the total, so a
+// tally costs one scan rather than a second query or a JS filter.
+const winsExpression = sql<number>`count(${schema.simulation.id}) filter (where ${schema.simulation.winner} = 'product')`;
+
+/**
+ * Per-product, per-model win tallies computed by Postgres.
+ *
+ * Callers used to pull every simulation row for the catalog and re-filter the
+ * whole array once per product per model — quadratic in the catalog, and
+ * thousands of rows over the wire to produce a handful of percentages. This
+ * returns one row per (product, model) pair instead.
+ */
+export const tallyByProductModel = dedupe(
+  withAuthentication(async (context, { store }: { store?: string } = {}) => {
+    const rows = await resultify(async () =>
+      db
+        .select({
+          productId: schema.simulation.productId,
+          model: schema.simulation.model,
+          total: countRows(schema.simulation.id),
+          wins: winsExpression,
+        })
+        .from(schema.simulation)
+        .where(
+          inArray(
+            schema.simulation.productId,
+            productScope(context.session.user.id, store),
+          ),
+        )
+        .groupBy(schema.simulation.productId, schema.simulation.model),
+    );
+
+    if (!rows.success)
+      return {
+        success: false as const,
+        error: new DatabaseError("Failed to tally simulations by product", {
+          cause: rows.error,
+        }),
+      };
+
+    return { success: true as const, data: rows.data };
+  }, "Simulation.tallyByProductModel"),
+);
+
+/**
+ * Per-scan win tallies for one store, for rescoping a scan's headline numbers
+ * to just the products that store owns.
+ */
+export const tallyByScan = dedupe(
+  withAuthentication(async (context, { store }: { store?: string } = {}) => {
+    const rows = await resultify(async () =>
+      db
+        .select({
+          scanId: schema.simulation.scanId,
+          total: countRows(schema.simulation.id),
+          wins: winsExpression,
+        })
+        .from(schema.simulation)
+        .where(
+          inArray(
+            schema.simulation.productId,
+            productScope(context.session.user.id, store),
+          ),
+        )
+        .groupBy(schema.simulation.scanId),
+    );
+
+    if (!rows.success)
+      return {
+        success: false as const,
+        error: new DatabaseError("Failed to tally simulations by scan", {
+          cause: rows.error,
+        }),
+      };
+
+    return { success: true as const, data: rows.data };
+  }, "Simulation.tallyByScan"),
+);
 
 export const getForScan = withAuthentication(
   async (_, { scan: id }: { scan: string }) => {

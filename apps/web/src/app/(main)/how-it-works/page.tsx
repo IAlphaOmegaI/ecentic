@@ -26,7 +26,7 @@ const intro =
   "ecentic simulates how AI shopping agents compare your products, explains why you lose in plain language, and rewrites your listings so the next comparison goes your way.";
 
 const description =
-  "How ecentic works: simulate how ChatGPT, Claude, Gemini, and Perplexity compare your products, diagnose why you lose, and optimize titles, descriptions, and structured data to win more AI-assisted carts.";
+  "How ecentic works: simulate how ChatGPT, Claude, Gemini, and Perplexity compare your products, diagnose why you lose, then optimize listings to win carts.";
 
 const steps = [
   {
@@ -108,7 +108,7 @@ export default () => {
       accent="in three steps."
       description={intro}
       assurances={assurances}
-      art={Art}
+      art={{ source: Art, alt: "ASCII-art illustration of interlocking gears" }}
     >
       <JsonLd schemas={structuredData} />
 

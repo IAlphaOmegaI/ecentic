@@ -15,6 +15,7 @@ export default withSentryConfig(
       ignoreBuildErrors: true,
     },
     cacheComponents: true,
+    partialPrefetching: true,
     rewrites: async () => {
       return [
         {
@@ -46,6 +47,11 @@ export default withSentryConfig(
         {
           protocol: "https",
           hostname: "d2qswj4ah2.ufs.sh",
+        },
+        {
+          protocol: "https",
+          hostname: "csuxjmfbwmkxiegfpljm.supabase.co",
+          pathname: "/storage/v1/object/public/blog-images/**",
         },
       ],
     },
@@ -83,6 +89,10 @@ export default withSentryConfig(
     authToken: process.env.SENTRY_AUTH_TOKEN,
     // Upload a larger set of source maps for prettier stack traces
     widenClientFileUpload: true,
-    tunnelRoute: "/monitoring",
+    // `tunnelRoute` is a rewrite to an external URL (Sentry's ingest endpoint), so every
+    // envelope is proxied through the dev server — which trips Node's 10-listener warning
+    // on the piped ServerResponse. Its only purpose is dodging ad-blockers, which is
+    // pointless on localhost, so it stays off outside production.
+    tunnelRoute: process.env.NODE_ENV === "production" ? "/monitoring" : undefined,
   },
 );

@@ -23,6 +23,21 @@ declare namespace NodeJS {
     readonly NEXT_PUBLIC_CHATWOOT_BASE_URL: string;
     readonly NEXT_PUBLIC_CHATWOOT_WEBSITE_TOKEN: string;
 
+    /**
+     * GA4 measurement ID (G-XXXXXXXXXX), running alongside PostHog. Optional on
+     * purpose: unset omits the gtag script entirely, which is how local and
+     * preview traffic is kept out of the property.
+     */
+    readonly NEXT_PUBLIC_GA_MEASUREMENT_ID?: string;
+
+    /**
+     * BabyLoveGrowth blog integration key (Settings → Integrations → Next.js Blog).
+     * Server-only. Unset skips CMS articles and keeps the DB-backed editorial posts.
+     */
+    readonly BABYLOVEGROWTH_BLOG_API_KEY?: string;
+    /** Optional BabyLoveGrowth API base override (staging/local). */
+    readonly BABYLOVEGROWTH_BLOG_API_URL?: string;
+
     readonly ECENTIC_TRACKER_PROBE: string;
     readonly ECENTIC_TRACKER_PUBLIC_ORIGIN: string;
 
@@ -36,7 +51,7 @@ declare namespace NodeJS {
     readonly AZURE_API_KEY: string;
     readonly AZURE_API_VERSION?: string; // defaults to "preview" (Azure v1 API surface)
     /**
-     * Deployment serving the `gpt` seat on this resource, e.g. "gpt-5.3-chat".
+     * Deployment serving the `gpt` seat on this resource, e.g. "gpt-5.4".
      * The name is the DEPLOYMENT's, not the model's. Unset means "no ChatGPT
      * deployment here" and the seat resolves through the gateway instead, since
      * a guessed deployment name only earns a 404 from Azure.
@@ -76,6 +91,7 @@ declare namespace NodeJS {
     readonly STRIPE_SECRET_KEY: string;
     readonly STRIPE_WEBHOOK_SECRET: string;
     readonly STRIPE_SUB_COMPETE: string;
+    readonly STRIPE_SUB_SCALE: string;
     readonly STRIPE_SUB_DOMINATE: string;
     /** Stripe coupon ids for partner deals; unset disables the deal. */
     readonly STRIPE_DEAL_COUPON_YC?: string;

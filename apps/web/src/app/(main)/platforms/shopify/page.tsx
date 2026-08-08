@@ -34,7 +34,7 @@ const assurances = [
 ] as const;
 
 const description =
-  "AI for Shopify stores that need stronger product listings, clearer competitor analysis, and approved updates pushed back into Shopify.";
+  "AI for Shopify stores that need stronger product listings, clearer competitor analysis, and approved updates pushed straight back into the Shopify Admin.";
 
 const faq = [
   {
@@ -60,7 +60,7 @@ const faq = [
 ] as const;
 
 export const metadata: Metadata = createMetadata({
-  title: "AI for Shopify Stores",
+  title: "AI for Shopify — Listing and Catalog Optimization",
   description,
   path: "/platforms/shopify",
   keywords: [
@@ -100,7 +100,7 @@ export default () => {
       accent="more than automated copy."
       description="Connect your catalog, see why AI shopping agents pick competitors over you, and publish approved title and description updates straight back into Shopify."
       assurances={assurances}
-      art={Art}
+      art={{ source: Art, alt: "ASCII-art illustration of a shopping bag" }}
       badge={
         <ContentPageBadge
           logo="/images/shopify.svg"

@@ -5,12 +5,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { BookCall } from "@/components/cal";
 import { Plus } from "@/components/plus";
+import crown from "@/public/images/ascii/crown.png";
+import knight from "@/public/images/ascii/knight.png";
+import piggybank from "@/public/images/ascii/piggybank.png";
+import rocket from "@/public/images/ascii/rocket.png";
 import shopify from "@/public/images/shopify.svg";
 import woocommerce from "@/public/images/woocommerce.svg";
+import type { PageBanner } from "../../_components/page-banner";
 import { PricingCTA } from "./pricing-cta";
 
 type Plan = {
-  id: "payg" | "compete" | "dominate";
+  id: "payg" | "compete" | "scale" | "dominate";
   name: string;
   category: string;
   tagline: string;
@@ -20,6 +25,8 @@ type Plan = {
   note: string;
   features: readonly string[];
   cta: string;
+  /** ASCII motif, bled off the card's bottom-right corner. */
+  art: PageBanner.Art;
   highlighted?: boolean;
 };
 
@@ -40,6 +47,7 @@ const plans: readonly Plan[] = [
       "Hard $500/mo cap — no surprises",
     ],
     cta: "Start free",
+    art: { source: piggybank, alt: "ASCII-art illustration of a piggy bank" },
     highlighted: true,
   },
   {
@@ -47,7 +55,7 @@ const plans: readonly Plan[] = [
     name: "Compete",
     category: "Flat monthly",
     tagline: "Know where you lose",
-    figure: "$149",
+    figure: "$14.90",
     suffix: "/mo",
     note: "Flat monthly · no performance fee.",
     features: [
@@ -57,23 +65,44 @@ const plans: readonly Plan[] = [
       "Manual optimization suggestions",
     ],
     cta: "Start Competing",
+    art: { source: knight, alt: "ASCII-art illustration of a chess knight" },
   },
   {
-    id: "dominate",
-    name: "Dominate",
+    id: "scale",
+    name: "Scale",
     category: "Flat monthly",
-    tagline: "Win on autopilot",
-    figure: "$449",
+    tagline: "Optimize on autopilot",
+    figure: "$44.90",
     suffix: "/mo",
     note: "Flat monthly · no performance fee.",
     features: [
       "Up to 1000 products",
       "Continuous simulations",
       "Auto-optimization + one-click publish",
+      "Competitor battlecards",
+    ],
+    cta: "Start Scaling",
+    art: {
+      source: rocket,
+      alt: "ASCII-art illustration of a launching rocket",
+    },
+  },
+  {
+    id: "dominate",
+    name: "Dominate",
+    category: "Flat monthly",
+    tagline: "Own the agent shelf",
+    figure: "$149",
+    suffix: "/mo",
+    note: "Flat monthly · no performance fee.",
+    features: [
+      "Everything in Scale",
       "Model drift alerts",
       "UCP generation",
+      "Partner deal tier (YC, Techstars)",
     ],
     cta: "Start Dominating",
+    art: { source: crown, alt: "ASCII-art illustration of a crown" },
   },
 ] as const;
 
@@ -154,134 +183,162 @@ export const Plans = () => (
 
       {/* Step two — pick a payment model */}
       <div className="p-6 md:p-12">
-        <h2 className="font-body font-medium text-3xl text-foreground md:text-5xl">
-          Choose how you pay.
+        <span className="font-normal text-3xl text-primary">01</span>
+        <h2 className="mt-2 max-w-2xl font-body font-medium text-4xl text-foreground md:text-6xl">
+          Choose how you pay
         </h2>
-        <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-lg">
+        <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-xl">
           Every plan runs the same simulate → diagnose → optimize loop. Start
           with pay-as-you-go and pay only on agent-driven orders, or pick a flat
-          monthly plan when you want predictable billing.
-        </p>
-        <p className="mt-3 max-w-2xl text-foreground-dimmed text-sm">
-          No minimums, month-to-month billing, and no setup fees. Save 20% with
-          the EU Presence bundle.
+          monthly plan when you want predictable billing. No minimums,
+          month-to-month, and no setup fees — save 20% with the EU Presence
+          bundle.
         </p>
       </div>
 
-      <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-3">
+      {/* Four plans: stack on mobile, 2×2 from tablet up. */}
+      <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2">
         <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
         <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
         {plans.map((plan) => (
           <div
             key={plan.id}
             className={cn(
-              "relative flex flex-col p-6 md:min-h-108 md:p-8",
+              "relative flex flex-col overflow-hidden p-6 md:min-h-108 md:p-8",
               plan.highlighted
                 ? "bg-primary text-white"
                 : "bg-background-rich text-foreground",
             )}
           >
-            <p
-              className={cn(
-                "font-medium text-sm",
-                // Text on the highlighted plan stays solid white: that is the
-                // ceiling on the primary field at 4.36:1, and the tints this
-                // used to carry measured 3.05 (/60) and 3.59 (/70). The check
-                // icon keeps its /80 — non-text answers to 3:1, cleared at 3.34.
-                plan.highlighted ? "text-white" : "text-foreground-dimmed",
-              )}
-            >
-              {plan.category}
-            </p>
-            <div className="mt-2 flex h-7 items-center justify-between gap-2">
-              <h3 className="font-body font-medium text-2xl">{plan.name}</h3>
-              {plan.badge && (
-                <span
-                  className={cn(
-                    "rounded-full px-2.5 py-1 font-medium text-xs uppercase tracking-tight",
-                    plan.highlighted
-                      ? "bg-white/15 text-white"
-                      : "bg-primary/10 text-primary",
-                  )}
-                >
-                  {plan.badge}
-                </span>
-              )}
-            </div>
-            <p
-              className={cn(
-                "mt-1 font-body font-light text-lg",
-                plan.highlighted ? "text-white" : "text-foreground-dimmed",
-              )}
-            >
-              {plan.tagline}
-            </p>
+            {/* The page's ASCII motif, per plan, anchored to the bottom-right
+                corner the way `PageBanner` anchors its art to the right edge.
+                The glyphs ship white on transparent, so `brightness-0` flattens
+                them to ink on the light cards and `invert` takes them back to
+                white on the primary one.
 
-            <div className="mt-6 flex items-baseline gap-2">
-              <span
+                The motifs are not a common aspect ratio — the crown and piggy
+                bank are landscape, the knight and rocket portrait — so the box
+                is fixed and `object-contain` fits each one inside it. Sizing on
+                width alone let the portrait pair overflow until only a sliver
+                survived the crop. The gradient dissolves the top of that box so
+                the motif fades out under the feature list rather than ending on
+                a hard edge.
+
+                The overhang is a fixed inset rather than a percentage translate:
+                the grid is 2-up from `md`, so a percentage is resolved against a
+                card twice as wide there and the same value that grazes the edge
+                at one breakpoint shears the motif at the next. */}
+            <Image
+              src={plan.art.source}
+              alt={plan.art.alt}
+              className={cn(
+                "pointer-events-none absolute -right-3 -bottom-3 h-[46%] w-[92%] max-w-none select-none object-contain object-right-bottom brightness-0 [mask-image:linear-gradient(to_bottom,transparent,black_35%)]",
+                plan.highlighted ? "opacity-25 invert" : "opacity-25",
+              )}
+            />
+            <div className="relative flex flex-1 flex-col">
+              <p
                 className={cn(
-                  "font-body font-medium text-5xl tracking-tight",
-                  !plan.highlighted && "text-primary",
-                )}
-              >
-                {plan.figure}
-              </span>
-              <span
-                className={cn(
-                  "font-light text-lg",
+                  "font-medium text-sm",
+                  // Text on the highlighted plan stays solid white: that is the
+                  // ceiling on the primary field at 4.36:1, and the tints this
+                  // used to carry measured 3.05 (/60) and 3.59 (/70). The check
+                  // icon keeps its /80 — non-text answers to 3:1, cleared at 3.34.
                   plan.highlighted ? "text-white" : "text-foreground-dimmed",
                 )}
               >
-                {plan.suffix}
-              </span>
-            </div>
-            <p
-              className={cn(
-                "mt-2 min-h-10 font-light text-sm",
-                plan.highlighted ? "text-white" : "text-foreground-dimmed",
-              )}
-            >
-              {plan.note}
-            </p>
-
-            <div
-              className={cn(
-                "mt-6 flex flex-col gap-2.5 border-t pt-6",
-                plan.highlighted
-                  ? "border-white/20"
-                  : "border-accent-foreground",
-              )}
-            >
-              {plan.features.map((feature) => (
-                <div key={feature} className="flex items-start gap-2">
-                  <CheckIcon
+                {plan.category}
+              </p>
+              <div className="mt-2 flex h-7 items-center justify-between gap-2">
+                <h3 className="font-body font-medium text-2xl">{plan.name}</h3>
+                {plan.badge && (
+                  <span
                     className={cn(
-                      "mt-1 size-4 shrink-0",
-                      plan.highlighted ? "text-white/80" : "text-primary",
-                    )}
-                  />
-                  <p
-                    className={cn(
-                      "font-body font-light",
+                      "rounded-full px-2.5 py-1 font-medium text-xs uppercase tracking-tight",
                       plan.highlighted
-                        ? "text-white"
-                        : "text-foreground-dimmed",
+                        ? "bg-white/15 text-white"
+                        : "bg-primary/10 text-primary",
                     )}
                   >
-                    {feature}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-6 md:mt-auto md:pt-6">
-              <PricingCTA
-                plan={plan.id}
-                color={plan.highlighted ? "accent" : "primary"}
-                className="w-full"
+                    {plan.badge}
+                  </span>
+                )}
+              </div>
+              <p
+                className={cn(
+                  "mt-1 font-body font-light text-lg",
+                  plan.highlighted ? "text-white" : "text-foreground-dimmed",
+                )}
               >
-                {plan.cta}
-              </PricingCTA>
+                {plan.tagline}
+              </p>
+
+              <div className="mt-6 flex items-baseline gap-2">
+                <span
+                  className={cn(
+                    "font-body font-medium text-5xl tracking-tight",
+                    !plan.highlighted && "text-primary",
+                  )}
+                >
+                  {plan.figure}
+                </span>
+                <span
+                  className={cn(
+                    "font-light text-lg",
+                    plan.highlighted ? "text-white" : "text-foreground-dimmed",
+                  )}
+                >
+                  {plan.suffix}
+                </span>
+              </div>
+              <p
+                className={cn(
+                  "mt-2 min-h-10 font-light text-sm",
+                  plan.highlighted ? "text-white" : "text-foreground-dimmed",
+                )}
+              >
+                {plan.note}
+              </p>
+
+              <div
+                className={cn(
+                  "mt-6 flex flex-col gap-2.5 border-t pt-6",
+                  plan.highlighted
+                    ? "border-white/20"
+                    : "border-accent-foreground",
+                )}
+              >
+                {plan.features.map((feature) => (
+                  <div key={feature} className="flex items-start gap-2">
+                    <CheckIcon
+                      className={cn(
+                        "mt-1 size-4 shrink-0",
+                        plan.highlighted ? "text-white/80" : "text-primary",
+                      )}
+                    />
+                    <p
+                      className={cn(
+                        "font-body font-light",
+                        plan.highlighted
+                          ? "text-white"
+                          : "text-foreground-dimmed",
+                      )}
+                    >
+                      {feature}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 md:mt-auto md:pt-6">
+                <PricingCTA
+                  plan={plan.id}
+                  color={plan.highlighted ? "accent" : "primary"}
+                  className="w-full"
+                >
+                  {plan.cta}
+                </PricingCTA>
+              </div>
             </div>
           </div>
         ))}

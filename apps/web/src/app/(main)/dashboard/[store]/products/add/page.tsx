@@ -16,9 +16,9 @@ import {
 } from "../../../_components/grid";
 import { AddProducts } from "./_components/add-products";
 
-export default async ({ params }: { params: Promise<{ store: string }> }) => {
-  const { store } = await params;
+type StoreParams = PageProps<"/dashboard/[store]/products/add">["params"];
 
+export default ({ params }: PageProps<"/dashboard/[store]/products/add">) => {
   return (
     <div className="flex flex-col">
       <div className="mx-8 border-accent-foreground border-x">
@@ -29,10 +29,10 @@ export default async ({ params }: { params: Promise<{ store: string }> }) => {
             <div>
               <Suspense
                 fallback={
-                  <div className="h-4 w-56 animate-pulse bg-foreground/10" />
+                  <div className="h-5 w-56 animate-pulse rounded-full bg-foreground/10" />
                 }
               >
-                <CatalogStatus store={store} />
+                <CatalogStatus params={params} />
               </Suspense>
               <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
                 Add Products
@@ -43,13 +43,13 @@ export default async ({ params }: { params: Promise<{ store: string }> }) => {
                 only.
               </p>
             </div>
-            <Button
-              color="accent"
-              render={<Link href={`/dashboard/${store}/products`} />}
+            <Suspense
+              fallback={
+                <div className="h-9 w-40 animate-pulse bg-foreground/10" />
+              }
             >
-              <ArrowLeftIcon className="size-4" />
-              Back to products
-            </Button>
+              <BackToProducts params={params} />
+            </Suspense>
           </div>
         </div>
 
@@ -62,7 +62,7 @@ export default async ({ params }: { params: Promise<{ store: string }> }) => {
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <Suspense fallback={<SourcesSkeleton />}>
-              <Sources store={store} />
+              <Sources params={params} />
             </Suspense>
           </div>
         </div>
@@ -71,8 +71,9 @@ export default async ({ params }: { params: Promise<{ store: string }> }) => {
   );
 };
 
-const CatalogStatus = async ({ store }: { store: string }) => {
+const CatalogStatus = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
   const [resolved, total] = await Promise.all([
     unwrapResult(Store.resolveForUser(Environment.SERVER, { store })),
     unwrapResult(Product.countForCurrentUser(Environment.SERVER, { store })),
@@ -88,8 +89,9 @@ const CatalogStatus = async ({ store }: { store: string }) => {
   );
 };
 
-const Sources = async ({ store }: { store: string }) => {
+const Sources = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const { store } = await params;
   // The layout already 404s an unowned store, but this component reads the row
   // itself — resolve through the ownership-checked path rather than a bare get.
   const resolved = await Store.resolveForUser(Environment.SERVER, { store });
@@ -115,3 +117,17 @@ const SourcesSkeleton = () => (
     <div className="h-9 w-32 animate-pulse bg-foreground/10" />
   </div>
 );
+
+const BackToProducts = async ({ params }: { params: StoreParams }) => {
+  const { store } = await params;
+
+  return (
+    <Button
+      color="accent"
+      render={<Link href={`/dashboard/${store}/products`} />}
+    >
+      <ArrowLeftIcon className="size-4" />
+      Back to products
+    </Button>
+  );
+};

@@ -1,7 +1,6 @@
-import { unwrapResult } from "@zenncore/utils";
 import { seo } from "@/lib/seo";
-import * as Blog from "@/server/app/blog";
-import { Environment } from "@/server/utils/environment";
+import * as BabyLoveGrowth from "@/server/app/babylovegrowth";
+import * as Blog from "@/server/app/blog-cache";
 
 const prefersMarkdown = (accept: string | null) =>
   accept != null && /\btext\/markdown\b/i.test(accept);
@@ -11,7 +10,23 @@ const estimateMarkdownTokens = (markdown: string) =>
   Math.max(1, Math.ceil(markdown.length / 4));
 
 export const GET = async (request: Request) => {
-  const posts = await unwrapResult(Blog.listPublished(Environment.SERVER));
+  const [articles, posts] = await Promise.all([
+    BabyLoveGrowth.listArticles(),
+    Blog.listPublished(),
+  ]);
+  const blgSlugs = new Set(articles.map((article) => article.slug));
+  const blogLinks = [
+    ...articles.map((article) => ({
+      path: `/blog/${article.slug}`,
+      label: article.title,
+    })),
+    ...posts
+      .filter((post) => !blgSlugs.has(post.slug))
+      .map((post) => ({
+        path: `/blog/${post.slug}`,
+        label: post.title,
+      })),
+  ];
 
   const sections = [
     {
@@ -99,10 +114,7 @@ export const GET = async (request: Request) => {
         "Long-form guides on structured data, agent traffic, and catalog visibility.",
       links: [
         { path: "/blog", label: "ecentic blog — index" },
-        ...posts.map((post) => ({
-          path: `/blog/${post.slug}`,
-          label: post.title,
-        })),
+        ...blogLinks,
       ],
     },
   ];

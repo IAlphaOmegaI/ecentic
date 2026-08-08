@@ -26,10 +26,12 @@ export const PartnershipBanner = () => (
       <div className="absolute -top-24 -right-24 size-72 rounded-full bg-primary/10 blur-3xl" />
     </div>
     <div className="pointer-events-none absolute inset-y-0 left-0 z-0 h-full w-auto w-full overflow-hidden rounded-lg opacity-80 [mask-image:linear-gradient(to_right,black,transparent)]">
+      {/* Animated WebP rather than the original GIF: same waving flag, 249KB
+          instead of 3.7MB. `unoptimized` is required either way — Next's
+          optimizer flattens an animation to its first frame. */}
       <Image
-        src="/images/eu-flag.gif"
-        alt=""
-        aria-hidden
+        src="/images/eu-flag.webp"
+        alt="Animated flag of the European Union"
         unoptimized
         width={600}
         height={600}

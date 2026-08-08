@@ -40,10 +40,16 @@ export const PageBanner = ({
         // `brightness-0 invert` flattens the glyphs to white and keeps their
         // alpha; the left-edge mask stops the densest motifs from running under
         // the description, which sits in the same horizontal band.
+        //
+        // The motif is described rather than hidden. It is the page's only
+        // illustration and identifies the section at a glance, so it earns a
+        // name in the accessibility tree and in image search — unlike the
+        // full-bleed background textures elsewhere, which stay `alt=""`.
+        // Pairing `art` and its description in one object keeps the two from
+        // drifting apart at the nineteen call sites.
         <Image
-          src={art}
-          alt=""
-          aria-hidden
+          src={art.source}
+          alt={art.alt}
           priority
           className="pointer-events-none absolute inset-y-0 right-0 hidden h-full w-auto max-w-[55%] select-none object-contain object-right opacity-40 brightness-0 invert [mask-image:linear-gradient(to_right,transparent,black_40%)] md:block"
         />
@@ -102,6 +108,12 @@ export const bannerAction = {
 } as const;
 
 export namespace PageBanner {
+  /** The page's ASCII motif and the description screen readers announce for it. */
+  export type Art = {
+    source: StaticImageData;
+    alt: string;
+  };
+
   export type Props = {
     title: string;
     description: string;
@@ -113,6 +125,6 @@ export namespace PageBanner {
     meta?: ReactNode;
     actions?: ReactNode;
     assurances?: readonly string[];
-    art?: StaticImageData;
+    art?: Art;
   };
 }
