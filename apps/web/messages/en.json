@@ -44,7 +44,11 @@
     "terms": "Terms of service",
     "platforms": "Platforms",
     "shopify": "Shopify",
-    "woocommerce": "WooCommerce"
+    "woocommerce": "WooCommerce",
+    "ctaEyebrow": "Get picked by AI",
+    "ctaTitle": "Ready to be the product agents recommend?",
+    "ctaDescription": "Install free on Shopify or WooCommerce and see your AI score in minutes.",
+    "status": "Built for the agent economy"
   },
   "Auth": {
     "signIn": "Sign in",
@@ -97,8 +101,13 @@
     "allPosts": "All posts"
   },
   "Marketing": {
-    "heroTitle": "Win every AI shopping agent's cart",
-    "heroDescription": "Simulate how ChatGPT, Claude, Gemini, and Perplexity choose products — then auto-optimize your listings.",
+    "metaTitle": "ecentic — Be the product AI recommends",
+    "metaDescription": "Get picked by AI shopping agents. ecentic optimizes your Shopify or WooCommerce product listings so ChatGPT, Gemini, and Perplexity recommend you first.",
+    "heroEyebrow": "Built for Shopify & WooCommerce",
+    "heroTitleLine1": "Be the product",
+    "heroTitleAccent": "AI recommends.",
+    "heroDescription": "Shoppers now ask ChatGPT, Gemini, and Perplexity what to buy. ecentic makes sure the answer is your product — and sends those buyers straight to your store.",
+    "heroProof": "2-minute setup · No credit card · See your free score first",
     "howItWorks": "How it works",
     "pricing": "Pricing",
     "features": "Features",
@@ -108,6 +117,7 @@
     "support": "Support"
   },
   "CookieConsent": {
+    "title": "Cookies on ecentic",
     "message": "We use cookies for analytics to improve ecentic. You can accept or decline.",
     "accept": "Accept",
     "decline": "Decline",

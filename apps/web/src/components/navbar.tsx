@@ -7,10 +7,9 @@ import {
   SheetPopup,
   SheetTrigger,
 } from "@zenncore/web/components/sheet";
-import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { type MouseEvent, type ReactNode, useEffect } from "react";
-import { LanguageSwitcher } from "@/components/language-switcher";
 import { Link, usePathname } from "@/i18n/navigation";
 
 const scrollToHash = (href: string) => {
@@ -33,7 +32,10 @@ const NavbarLink = ({
   children?: ReactNode;
 }) => {
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
-    if (window.location.pathname !== "/" && !window.location.pathname.endsWith("/es"))
+    if (
+      window.location.pathname !== "/" &&
+      !window.location.pathname.endsWith("/es")
+    )
       return;
     if (!scrollToHash(href)) return;
     event.preventDefault();
@@ -76,7 +78,6 @@ const NavbarDesktop = () => {
             {link.label}
           </NavbarLink>
         ))}
-        <LanguageSwitcher className="relative z-100" />
         <div className="absolute right-0 h-14 w-[75%] translate-x-20 p-4">
           <Image
             src="/images/left-menu.svg"
@@ -140,7 +141,6 @@ const NavbarMobile = () => {
                 {link.label}
               </SheetClose>
             ))}
-            <LanguageSwitcher />
             <SheetClose render={<NavbarLink href="/sign-up" />}>
               {translate("installNow")}
               <ArrowRightIcon className="size-6" />

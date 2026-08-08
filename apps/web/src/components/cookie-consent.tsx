@@ -26,7 +26,7 @@ export const CookieConsent = () => {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
           <div className="flex flex-col gap-1.5">
             <h2 className="font-header text-base text-foreground">
-              Cookies on ecentic
+              {translate("title")}
             </h2>
             <p className="text-foreground-dimmed text-sm">
               {translate("message")}{" "}

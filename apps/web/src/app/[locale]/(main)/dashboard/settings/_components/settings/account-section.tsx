@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowRightIcon, LoaderIcon, LogOutIcon } from "@zenncore/icons";
-import { useRouter } from "@/i18n/navigation";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import {
@@ -13,6 +12,7 @@ import {
 import { useToastManager } from "@zenncore/web/components/toast";
 import { z } from "zod";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { useRouter } from "@/i18n/navigation";
 import * as Authentication from "@/server/app/authentication";
 import * as User from "@/server/app/user";
 
@@ -152,7 +152,7 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
               Choose the language for the ecentic interface.
             </p>
           </div>
-          <LanguageSwitcher />
+          <LanguageSwitcher variant="inline" />
         </div>
       </div>
 
