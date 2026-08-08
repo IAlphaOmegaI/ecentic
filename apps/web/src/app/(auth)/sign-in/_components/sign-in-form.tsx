@@ -80,11 +80,11 @@ export const SignInForm = () => {
       setProvider(data.type);
 
       if (data.type === "google") {
+        // Existing users land on the dashboard (its empty state routes
+        // store-less accounts to onboarding); first-time Google users are
+        // routed to /complete-profile via `newUserCallbackURL` server-side.
         const result = await Authentication.signInWithGoogle({
-          callbackURL: sanitizeRedirect(
-            requestedRedirect,
-            "/onboarding/connect",
-          ),
+          callbackURL: sanitizeRedirect(requestedRedirect, "/dashboard"),
         });
 
         if (!result.success) {
