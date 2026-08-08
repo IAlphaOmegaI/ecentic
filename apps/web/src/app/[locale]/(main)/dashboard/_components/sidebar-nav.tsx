@@ -88,7 +88,7 @@ export const SidebarNav = ({
   optimizationBadge,
 }: SidebarNav.Props) => {
   const pathname = usePathname();
-  const translate = useTranslations("Dashboard");
+  const translate = useTranslations("dashboard");
   const base = `/dashboard/${store}`;
 
   const isActive = (href: string, exact: boolean) =>
@@ -118,7 +118,7 @@ export const SidebarNav = ({
         const href = `${base}${item.segment}`;
         const active = isActive(href, item.exact);
         const badge = badgeFor(item);
-        const label = translate(item.key);
+        const label = translate(`nav.${item.key}`);
         return (
           <Link
             key={item.key}
@@ -175,7 +175,7 @@ export const SidebarNav = ({
           )}
         >
           <GearIcon className="size-4 shrink-0" />
-          <span className="flex-1">{translate("settings")}</span>
+          <span className="flex-1">{translate("nav.settings")}</span>
         </Link>
       </div>
     </nav>

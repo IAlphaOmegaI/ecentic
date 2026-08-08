@@ -64,4 +64,15 @@ AZURE_DEPLOYMENT_GPT=
 
 ## UI messages
 
-Catalogs live in `apps/web/messages/{en,es}.json`. Shared chrome (nav, footer, auth, dashboard shell, blog labels) is wired through `next-intl`. Expand namespaces as remaining page copy is extracted.
+Catalogs live in `apps/web/messages/{en,es}.json`. Shared chrome (nav, footer, auth, dashboard shell, blog, home, cookie consent) is wired through `next-intl`. Expand namespaces as remaining page copy is extracted.
+
+### Translation key conventions
+
+1. **camelCase + dots** — All key segments are camelCase; hierarchy uses dots (`signIn.fields.email.label`). Top-level namespaces are camelCase (`nav`, `signIn`, `cookieConsent`), not PascalCase.
+2. **Namespace per route/feature** — e.g. `signIn`, `forgotPassword`, `home`, `blog`, `dashboard`, `general` (shared chrome only).
+3. **Actions are role-based** — Prefer `action.primary` / `action.secondary` / `action.tertiary` / `action.quaternary` over verb keys (`submit`, `cancel`, `installNow`). Use `quaternary` for the fourth / paired slot (e.g. close when primary is open, back when primary is continue) — never `primaryInverse`.
+4. **States** — Group under `states` (`states.pending.primary`, `states.success.primary`, `states.empty.primary`). Errors under `{feature}.error.*`.
+5. **Fields** — `{feature}.fields.{name}.label` (and related field keys as needed).
+6. **Legal / long-form** — When extracted, use `legal.termsAndConditions.sections.{n}.title|content` (numeric section ids) so the UI can loop over sections.
+
+Examples: `nav.action.primary`, `nav.menu.action.quaternary`, `cookieConsent.action.secondary`, `blog.states.empty.primary`, `signIn.fields.email.label`, `dashboard.nav.overview`.

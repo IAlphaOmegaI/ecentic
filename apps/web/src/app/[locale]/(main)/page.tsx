@@ -44,11 +44,11 @@ export const generateMetadata = async ({
 }: HomeProps): Promise<Metadata> => {
   const { locale: raw } = await params;
   const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
-  const translate = await getTranslations({ locale, namespace: "Marketing" });
+  const translate = await getTranslations({ locale, namespace: "home" });
 
   return createMetadata({
-    title: translate("metaTitle"),
-    description: translate("metaDescription"),
+    title: translate("meta.title"),
+    description: translate("meta.description"),
     path: localizePath("/", locale),
     keywords: [
       "AI ecommerce tools",
@@ -69,8 +69,8 @@ export default async ({ params }: HomeProps) => {
   // Do not wrap this tree in `"use cache"`: Navbar/Footer use next-intl
   // Link / getTranslations without an explicit locale, which reads headers()
   // via getRequestConfig and fails Cache Components prerender.
-  const translate = await getTranslations({ locale, namespace: "Marketing" });
-  const description = translate("metaDescription");
+  const translate = await getTranslations({ locale, namespace: "home" });
+  const description = translate("meta.description");
 
   return (
     <SmoothScroll>
@@ -90,7 +90,7 @@ export default async ({ params }: HomeProps) => {
             {
               "@context": "https://schema.org",
               "@type": "WebPage",
-              name: translate("metaTitle"),
+              name: translate("meta.title"),
               description,
               url: absoluteUrl(localizePath("/", locale)),
               inLanguage: locale,
@@ -116,7 +116,7 @@ export default async ({ params }: HomeProps) => {
         <Testimonials />
         <Booking />
         <section aria-label="About ecentic" className="sr-only">
-          <h2>{translate("metaTitle")}</h2>
+          <h2>{translate("meta.title")}</h2>
           <p>{description}</p>
         </section>
         <Footer />

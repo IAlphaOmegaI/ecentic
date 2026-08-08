@@ -54,7 +54,7 @@ export const generateMetadata = async ({
 }: BlogIndexProps): Promise<Metadata> => {
   const { locale: raw } = await params;
   const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
-  const translate = await getTranslations({ locale, namespace: "Blog" });
+  const translate = await getTranslations({ locale, namespace: "blog" });
 
   return createMetadata({
     title: translate("title"),
@@ -76,7 +76,7 @@ export default async ({ params }: BlogIndexProps) => {
   const locale = raw;
   setRequestLocale(locale);
 
-  const translate = await getTranslations({ locale, namespace: "Blog" });
+  const translate = await getTranslations({ locale, namespace: "blog" });
   const description = translate("description");
 
   // Same catalog for every locale: EN sources (BLG + local), with Spanish
@@ -266,7 +266,7 @@ export default async ({ params }: BlogIndexProps) => {
                   className="self-start"
                   render={<Link href={`/blog/${entry.slug}`} prefetch={true} />}
                 >
-                  {translate("readMore")}
+                  {translate("action.primary")}
                   <ArrowRightIcon className="size-4" />
                 </Button>
               </div>
@@ -283,13 +283,13 @@ export default async ({ params }: BlogIndexProps) => {
                 01
               </span>
               <h2 className="text-4xl text-foreground leading-snug">
-                {translate("noPosts")}
+                {translate("states.empty.primary")}
               </h2>
             </>
           }
           right={
             <p className="text-foreground-dimmed leading-relaxed">
-              {translate("noPosts")}
+              {translate("states.empty.primary")}
             </p>
           }
         />

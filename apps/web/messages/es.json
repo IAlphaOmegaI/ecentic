@@ -1,129 +1,209 @@
 {
-  "Common": {
-    "ecentic": "ecentic",
-    "loading": "Cargando…",
-    "save": "Guardar",
-    "cancel": "Cancelar",
-    "continue": "Continuar",
-    "back": "Atrás",
-    "next": "Siguiente",
-    "search": "Buscar",
-    "close": "Cerrar",
-    "error": "Algo salió mal",
-    "tryAgain": "Intentar de nuevo",
-    "learnMore": "Más información",
-    "getStarted": "Empezar",
-    "installNow": "Instalar ahora",
-    "language": "Idioma",
-    "english": "Inglés",
-    "spanish": "Español"
+  "general": {
+    "brand": "ecentic",
+    "search": {
+      "label": "Buscar"
+    },
+    "language": {
+      "label": "Idioma",
+      "english": "Inglés",
+      "spanish": "Español"
+    },
+    "states": {
+      "pending": {
+        "primary": "Cargando…"
+      }
+    },
+    "action": {
+      "primary": "Continuar",
+      "secondary": "Cancelar",
+      "tertiary": "Más información",
+      "quaternary": "Atrás"
+    },
+    "error": {
+      "default": "Algo salió mal",
+      "action": {
+        "primary": "Intentar de nuevo"
+      }
+    }
   },
-  "Nav": {
-    "howItWorks": "Cómo funciona",
-    "resources": "Recursos",
-    "pricing": "Precios",
-    "blog": "Blog",
-    "installNow": "Instalar ahora",
-    "openMenu": "Abrir menú de navegación",
-    "closeMenu": "Cerrar menú de navegación",
-    "siteNavigation": "Navegación del sitio",
+  "nav": {
+    "links": {
+      "howItWorks": "Cómo funciona",
+      "resources": "Recursos",
+      "pricing": "Precios",
+      "blog": "Blog"
+    },
+    "action": {
+      "primary": "Instalar ahora"
+    },
+    "menu": {
+      "label": "Navegación del sitio",
+      "action": {
+        "primary": "Abrir menú de navegación",
+        "quaternary": "Cerrar menú de navegación"
+      }
+    },
     "tagline": "Que te elijan los agentes de compras con IA.",
     "installHint": "Instala gratis. Ve tu puntuación de IA en minutos."
   },
-  "Footer": {
+  "footer": {
     "tagline": "Gana el carrito de cada agente de compras con IA.",
-    "product": "Producto",
-    "company": "Empresa",
-    "legal": "Legal",
-    "features": "Funciones",
-    "howItWorks": "Cómo funciona",
-    "pricing": "Precios",
-    "resources": "Recursos",
-    "blog": "Blog",
-    "enterprise": "Enterprise",
-    "demo": "Reservar una demo",
-    "support": "Soporte",
-    "privacy": "Política de privacidad",
-    "terms": "Términos de servicio",
-    "platforms": "Plataformas",
-    "shopify": "Shopify",
-    "woocommerce": "WooCommerce",
-    "ctaEyebrow": "Que te elija la IA",
-    "ctaTitle": "¿Listo para ser el producto que recomiendan los agentes?",
-    "ctaDescription": "Instálalo gratis en Shopify o WooCommerce y mira tu puntuación de IA en minutos.",
-    "status": "Hecho para la economía de agentes"
+    "status": "Hecho para la economía de agentes",
+    "columns": {
+      "product": "Producto",
+      "company": "Empresa",
+      "legal": "Legal",
+      "platforms": "Plataformas",
+      "resources": "Recursos"
+    },
+    "links": {
+      "features": "Funciones",
+      "howItWorks": "Cómo funciona",
+      "pricing": "Precios",
+      "resources": "Recursos",
+      "blog": "Blog",
+      "enterprise": "Enterprise",
+      "demo": "Reservar una demo",
+      "support": "Soporte",
+      "privacy": "Política de privacidad",
+      "terms": "Términos de servicio",
+      "shopify": "Shopify",
+      "woocommerce": "WooCommerce"
+    },
+    "cta": {
+      "eyebrow": "Que te elija la IA",
+      "title": "¿Listo para ser el producto que recomiendan los agentes?",
+      "description": "Instálalo gratis en Shopify o WooCommerce y mira tu puntuación de IA en minutos."
+    }
   },
-  "Auth": {
-    "signIn": "Iniciar sesión",
-    "signUp": "Registrarse",
-    "signOut": "Cerrar sesión",
-    "email": "Correo electrónico",
-    "password": "Contraseña",
-    "forgotPassword": "¿Olvidaste tu contraseña?",
-    "resetPassword": "Restablecer contraseña",
-    "verifyEmail": "Verificar correo",
-    "createAccount": "Crear cuenta",
-    "alreadyHaveAccount": "¿Ya tienes una cuenta?",
-    "dontHaveAccount": "¿No tienes una cuenta?",
-    "continueWithEmail": "Continuar con el correo",
-    "checkEmail": "Revisa tu correo",
-    "backToSignIn": "Volver a iniciar sesión"
+  "signIn": {
+    "action": {
+      "primary": "Iniciar sesión",
+      "secondary": "Continuar con el correo",
+      "tertiary": "¿Olvidaste tu contraseña?"
+    },
+    "fields": {
+      "email": {
+        "label": "Correo electrónico"
+      },
+      "password": {
+        "label": "Contraseña"
+      }
+    },
+    "prompt": {
+      "secondary": "¿No tienes una cuenta?"
+    }
   },
-  "Dashboard": {
-    "overview": "Resumen",
-    "products": "Productos",
-    "competitors": "Competidores",
-    "simulations": "Simulaciones",
-    "optimize": "Optimizar",
-    "visibility": "Visibilidad",
-    "discovery": "Descubrimiento",
-    "ucp": "UCP",
-    "ucpPlayground": "Playground UCP",
-    "ucpComparison": "Comparación UCP",
-    "reports": "Informes",
-    "settings": "Ajustes",
-    "billing": "Facturación",
-    "integrations": "Integraciones",
-    "stores": "Tiendas",
-    "addProduct": "Añadir producto",
-    "addCompetitor": "Añadir competidor",
-    "noStores": "Aún no hay tiendas",
-    "selectStore": "Selecciona una tienda",
-    "commandPalette": "Buscar comandos…"
+  "signUp": {
+    "title": "Registrarse",
+    "action": {
+      "primary": "Crear cuenta"
+    },
+    "prompt": {
+      "secondary": "¿Ya tienes una cuenta?"
+    }
   },
-  "Blog": {
+  "signOut": {
+    "action": {
+      "primary": "Cerrar sesión"
+    }
+  },
+  "forgotPassword": {
+    "action": {
+      "primary": "Restablecer contraseña",
+      "secondary": "Volver a iniciar sesión"
+    }
+  },
+  "verifyEmail": {
+    "action": {
+      "primary": "Verificar correo"
+    },
+    "states": {
+      "success": {
+        "primary": "Revisa tu correo"
+      }
+    }
+  },
+  "dashboard": {
+    "nav": {
+      "overview": "Resumen",
+      "products": "Productos",
+      "competitors": "Competidores",
+      "simulations": "Simulaciones",
+      "optimize": "Optimizar",
+      "visibility": "Visibilidad",
+      "discovery": "Descubrimiento",
+      "ucp": "UCP",
+      "ucpPlayground": "Playground UCP",
+      "ucpComparison": "Comparación UCP",
+      "reports": "Informes",
+      "settings": "Ajustes",
+      "billing": "Facturación",
+      "integrations": "Integraciones",
+      "stores": "Tiendas"
+    },
+    "products": {
+      "action": {
+        "primary": "Añadir producto"
+      }
+    },
+    "competitors": {
+      "action": {
+        "primary": "Añadir competidor"
+      }
+    },
+    "stores": {
+      "empty": "Aún no hay tiendas",
+      "select": "Selecciona una tienda"
+    },
+    "commandPalette": {
+      "placeholder": "Buscar comandos…"
+    }
+  },
+  "blog": {
     "title": "Blog",
     "description": "Guías e investigación para ganar con agentes de compras con IA.",
-    "readMore": "Leer más",
     "minRead": "{minutes} min de lectura",
     "tags": "Etiquetas",
     "published": "Publicado",
     "updated": "Actualizado",
-    "backToBlog": "Volver al blog",
-    "noPosts": "Aún no hay publicaciones.",
-    "allPosts": "Todas las publicaciones"
+    "allPosts": "Todas las publicaciones",
+    "states": {
+      "empty": {
+        "primary": "Aún no hay publicaciones."
+      }
+    },
+    "action": {
+      "primary": "Leer más",
+      "secondary": "Volver al blog"
+    }
   },
-  "Marketing": {
-    "metaTitle": "ecentic — Sé el producto que recomienda la IA",
-    "metaDescription": "Que te elijan los agentes de compras con IA. ecentic optimiza tus fichas de Shopify o WooCommerce para que ChatGPT, Gemini y Perplexity te recomienden primero.",
-    "heroEyebrow": "Hecho para Shopify y WooCommerce",
-    "heroTitleLine1": "Sé el producto",
-    "heroTitleAccent": "que recomienda la IA.",
-    "heroDescription": "Los compradores ya preguntan a ChatGPT, Gemini y Perplexity qué comprar. ecentic hace que la respuesta sea tu producto — y envía esos compradores a tu tienda.",
-    "heroProof": "Configuración en 2 minutos · Sin tarjeta · Primero tu puntuación gratis",
-    "howItWorks": "Cómo funciona",
-    "pricing": "Precios",
-    "features": "Funciones",
-    "enterprise": "Enterprise",
-    "resources": "Recursos",
-    "demo": "Reservar una demo",
-    "support": "Soporte"
+  "home": {
+    "meta": {
+      "title": "ecentic — Sé el producto que recomienda la IA",
+      "description": "Que te elijan los agentes de compras con IA. ecentic optimiza tus fichas de Shopify o WooCommerce para que ChatGPT, Gemini y Perplexity te recomienden primero."
+    },
+    "hero": {
+      "eyebrow": "Hecho para Shopify y WooCommerce",
+      "title": {
+        "primary": "Sé el producto",
+        "accent": "que recomienda la IA."
+      },
+      "description": "Los compradores ya preguntan a ChatGPT, Gemini y Perplexity qué comprar. ecentic hace que la respuesta sea tu producto — y envía esos compradores a tu tienda.",
+      "proof": "Configuración en 2 minutos · Sin tarjeta · Primero tu puntuación gratis"
+    },
+    "action": {
+      "primary": "Empezar"
+    }
   },
-  "CookieConsent": {
+  "cookieConsent": {
     "title": "Cookies en ecentic",
     "message": "Usamos cookies de analítica para mejorar ecentic. Puedes aceptar o rechazar.",
-    "accept": "Aceptar",
-    "decline": "Rechazar",
+    "action": {
+      "primary": "Aceptar",
+      "secondary": "Rechazar"
+    },
     "privacy": "Política de privacidad"
   }
 }

@@ -8,7 +8,7 @@ import { Plus } from "./plus";
 
 export const CookieConsent = () => {
   const { decision, isReady, accept, reject } = useConsent();
-  const translate = useTranslations("CookieConsent");
+  const translate = useTranslations("cookieConsent");
 
   if (!isReady || decision) return null;
 
@@ -42,10 +42,10 @@ export const CookieConsent = () => {
 
           <div className="flex shrink-0 gap-2">
             <Button color="accent" onClick={reject}>
-              {translate("decline")}
+              {translate("action.secondary")}
             </Button>
             <Button color="primary" onClick={accept}>
-              {translate("accept")}
+              {translate("action.primary")}
             </Button>
           </div>
         </div>

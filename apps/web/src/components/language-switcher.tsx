@@ -11,12 +11,12 @@ const OPTIONS = [
   {
     locale: "en" as const,
     Flag: UnitedStatesFlag,
-    labelKey: "english" as const,
+    labelKey: "language.english" as const,
   },
   {
     locale: "es" as const,
     Flag: SpainFlag,
-    labelKey: "spanish" as const,
+    labelKey: "language.spanish" as const,
   },
 ] as const;
 
@@ -27,7 +27,7 @@ export const LanguageSwitcher = ({
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
-  const translate = useTranslations("Common");
+  const translate = useTranslations("general");
 
   const switchLocale = (next: Locale) => {
     if (next === locale) return;
@@ -38,7 +38,7 @@ export const LanguageSwitcher = ({
     <fieldset
       className={cn("m-0 flex items-center gap-2 border-0 p-0", className)}
     >
-      <legend className="sr-only">{translate("language")}</legend>
+      <legend className="sr-only">{translate("language.label")}</legend>
       {OPTIONS.map(({ locale: option, Flag, labelKey }) => {
         const active = option === locale;
 

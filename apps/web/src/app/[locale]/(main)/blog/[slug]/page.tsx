@@ -136,7 +136,7 @@ export default async ({ params }: BlogPageProps) => {
   const locale = raw;
   setRequestLocale(locale);
 
-  const translate = await getTranslations({ locale, namespace: "Blog" });
+  const translate = await getTranslations({ locale, namespace: "blog" });
   const resolved = await unwrapResult(
     Blog.resolve(Environment.SERVER, { slug, locale }),
   );
@@ -202,7 +202,7 @@ export default async ({ params }: BlogPageProps) => {
 
         <EditorialFooter
           primary={{ href: "/sign-up", label: "Get started" }}
-          secondary={{ href: "/blog", label: translate("backToBlog") }}
+          secondary={{ href: "/blog", label: translate("action.secondary") }}
           note="Use these guides to improve product clarity, then turn the highest-impact fixes into your next catalog sprint."
         />
       </EditorialLayout>
@@ -245,7 +245,7 @@ export default async ({ params }: BlogPageProps) => {
         <HtmlArticleSections sections={sections} keywords={[...post.tags]} />
         <EditorialFooter
           primary={{ href: "/sign-up", label: "Get started" }}
-          secondary={{ href: "/blog", label: translate("backToBlog") }}
+          secondary={{ href: "/blog", label: translate("action.secondary") }}
           note={translate("description")}
         />
       </EditorialLayout>
@@ -351,7 +351,7 @@ export default async ({ params }: BlogPageProps) => {
 
       <EditorialFooter
         primary={{ href: "/sign-up", label: "Get started" }}
-        secondary={{ href: "/blog", label: translate("backToBlog") }}
+        secondary={{ href: "/blog", label: translate("action.secondary") }}
         note={translate("description")}
       />
     </EditorialLayout>

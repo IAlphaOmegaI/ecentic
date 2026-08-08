@@ -1,129 +1,209 @@
 {
-  "Common": {
-    "ecentic": "ecentic",
-    "loading": "Loading…",
-    "save": "Save",
-    "cancel": "Cancel",
-    "continue": "Continue",
-    "back": "Back",
-    "next": "Next",
-    "search": "Search",
-    "close": "Close",
-    "error": "Something went wrong",
-    "tryAgain": "Try again",
-    "learnMore": "Learn more",
-    "getStarted": "Get started",
-    "installNow": "Install now",
-    "language": "Language",
-    "english": "English",
-    "spanish": "Spanish"
+  "general": {
+    "brand": "ecentic",
+    "search": {
+      "label": "Search"
+    },
+    "language": {
+      "label": "Language",
+      "english": "English",
+      "spanish": "Spanish"
+    },
+    "states": {
+      "pending": {
+        "primary": "Loading…"
+      }
+    },
+    "action": {
+      "primary": "Continue",
+      "secondary": "Cancel",
+      "tertiary": "Learn more",
+      "quaternary": "Back"
+    },
+    "error": {
+      "default": "Something went wrong",
+      "action": {
+        "primary": "Try again"
+      }
+    }
   },
-  "Nav": {
-    "howItWorks": "How it works",
-    "resources": "Resources",
-    "pricing": "Pricing",
-    "blog": "Blog",
-    "installNow": "Install now",
-    "openMenu": "Open navigation menu",
-    "closeMenu": "Close navigation menu",
-    "siteNavigation": "Site navigation",
+  "nav": {
+    "links": {
+      "howItWorks": "How it works",
+      "resources": "Resources",
+      "pricing": "Pricing",
+      "blog": "Blog"
+    },
+    "action": {
+      "primary": "Install now"
+    },
+    "menu": {
+      "label": "Site navigation",
+      "action": {
+        "primary": "Open navigation menu",
+        "quaternary": "Close navigation menu"
+      }
+    },
     "tagline": "Get picked by AI shopping agents.",
     "installHint": "Install free. See your AI score in minutes."
   },
-  "Footer": {
+  "footer": {
     "tagline": "Win every AI shopping agent's cart.",
-    "product": "Product",
-    "company": "Company",
-    "legal": "Legal",
-    "features": "Features",
-    "howItWorks": "How it works",
-    "pricing": "Pricing",
-    "resources": "Resources",
-    "blog": "Blog",
-    "enterprise": "Enterprise",
-    "demo": "Book a demo",
-    "support": "Support",
-    "privacy": "Privacy policy",
-    "terms": "Terms of service",
-    "platforms": "Platforms",
-    "shopify": "Shopify",
-    "woocommerce": "WooCommerce",
-    "ctaEyebrow": "Get picked by AI",
-    "ctaTitle": "Ready to be the product agents recommend?",
-    "ctaDescription": "Install free on Shopify or WooCommerce and see your AI score in minutes.",
-    "status": "Built for the agent economy"
+    "status": "Built for the agent economy",
+    "columns": {
+      "product": "Product",
+      "company": "Company",
+      "legal": "Legal",
+      "platforms": "Platforms",
+      "resources": "Resources"
+    },
+    "links": {
+      "features": "Features",
+      "howItWorks": "How it works",
+      "pricing": "Pricing",
+      "resources": "Resources",
+      "blog": "Blog",
+      "enterprise": "Enterprise",
+      "demo": "Book a demo",
+      "support": "Support",
+      "privacy": "Privacy policy",
+      "terms": "Terms of service",
+      "shopify": "Shopify",
+      "woocommerce": "WooCommerce"
+    },
+    "cta": {
+      "eyebrow": "Get picked by AI",
+      "title": "Ready to be the product agents recommend?",
+      "description": "Install free on Shopify or WooCommerce and see your AI score in minutes."
+    }
   },
-  "Auth": {
-    "signIn": "Sign in",
-    "signUp": "Sign up",
-    "signOut": "Sign out",
-    "email": "Email",
-    "password": "Password",
-    "forgotPassword": "Forgot password?",
-    "resetPassword": "Reset password",
-    "verifyEmail": "Verify email",
-    "createAccount": "Create account",
-    "alreadyHaveAccount": "Already have an account?",
-    "dontHaveAccount": "Don't have an account?",
-    "continueWithEmail": "Continue with email",
-    "checkEmail": "Check your email",
-    "backToSignIn": "Back to sign in"
+  "signIn": {
+    "action": {
+      "primary": "Sign in",
+      "secondary": "Continue with email",
+      "tertiary": "Forgot password?"
+    },
+    "fields": {
+      "email": {
+        "label": "Email"
+      },
+      "password": {
+        "label": "Password"
+      }
+    },
+    "prompt": {
+      "secondary": "Don't have an account?"
+    }
   },
-  "Dashboard": {
-    "overview": "Overview",
-    "products": "Products",
-    "competitors": "Competitors",
-    "simulations": "Simulations",
-    "optimize": "Optimize",
-    "visibility": "Visibility",
-    "discovery": "Discovery",
-    "ucp": "UCP",
-    "ucpPlayground": "UCP Playground",
-    "ucpComparison": "UCP Comparison",
-    "reports": "Reports",
-    "settings": "Settings",
-    "billing": "Billing",
-    "integrations": "Integrations",
-    "stores": "Stores",
-    "addProduct": "Add product",
-    "addCompetitor": "Add competitor",
-    "noStores": "No stores yet",
-    "selectStore": "Select a store",
-    "commandPalette": "Search commands…"
+  "signUp": {
+    "title": "Sign up",
+    "action": {
+      "primary": "Create account"
+    },
+    "prompt": {
+      "secondary": "Already have an account?"
+    }
   },
-  "Blog": {
+  "signOut": {
+    "action": {
+      "primary": "Sign out"
+    }
+  },
+  "forgotPassword": {
+    "action": {
+      "primary": "Reset password",
+      "secondary": "Back to sign in"
+    }
+  },
+  "verifyEmail": {
+    "action": {
+      "primary": "Verify email"
+    },
+    "states": {
+      "success": {
+        "primary": "Check your email"
+      }
+    }
+  },
+  "dashboard": {
+    "nav": {
+      "overview": "Overview",
+      "products": "Products",
+      "competitors": "Competitors",
+      "simulations": "Simulations",
+      "optimize": "Optimize",
+      "visibility": "Visibility",
+      "discovery": "Discovery",
+      "ucp": "UCP",
+      "ucpPlayground": "UCP Playground",
+      "ucpComparison": "UCP Comparison",
+      "reports": "Reports",
+      "settings": "Settings",
+      "billing": "Billing",
+      "integrations": "Integrations",
+      "stores": "Stores"
+    },
+    "products": {
+      "action": {
+        "primary": "Add product"
+      }
+    },
+    "competitors": {
+      "action": {
+        "primary": "Add competitor"
+      }
+    },
+    "stores": {
+      "empty": "No stores yet",
+      "select": "Select a store"
+    },
+    "commandPalette": {
+      "placeholder": "Search commands…"
+    }
+  },
+  "blog": {
     "title": "Blog",
     "description": "Guides and research on winning AI shopping agents.",
-    "readMore": "Read more",
     "minRead": "{minutes} min read",
     "tags": "Tags",
     "published": "Published",
     "updated": "Updated",
-    "backToBlog": "Back to blog",
-    "noPosts": "No posts yet.",
-    "allPosts": "All posts"
+    "allPosts": "All posts",
+    "states": {
+      "empty": {
+        "primary": "No posts yet."
+      }
+    },
+    "action": {
+      "primary": "Read more",
+      "secondary": "Back to blog"
+    }
   },
-  "Marketing": {
-    "metaTitle": "ecentic — Be the product AI recommends",
-    "metaDescription": "Get picked by AI shopping agents. ecentic optimizes your Shopify or WooCommerce product listings so ChatGPT, Gemini, and Perplexity recommend you first.",
-    "heroEyebrow": "Built for Shopify & WooCommerce",
-    "heroTitleLine1": "Be the product",
-    "heroTitleAccent": "AI recommends.",
-    "heroDescription": "Shoppers now ask ChatGPT, Gemini, and Perplexity what to buy. ecentic makes sure the answer is your product — and sends those buyers straight to your store.",
-    "heroProof": "2-minute setup · No credit card · See your free score first",
-    "howItWorks": "How it works",
-    "pricing": "Pricing",
-    "features": "Features",
-    "enterprise": "Enterprise",
-    "resources": "Resources",
-    "demo": "Book a demo",
-    "support": "Support"
+  "home": {
+    "meta": {
+      "title": "ecentic — Be the product AI recommends",
+      "description": "Get picked by AI shopping agents. ecentic optimizes your Shopify or WooCommerce product listings so ChatGPT, Gemini, and Perplexity recommend you first."
+    },
+    "hero": {
+      "eyebrow": "Built for Shopify & WooCommerce",
+      "title": {
+        "primary": "Be the product",
+        "accent": "AI recommends."
+      },
+      "description": "Shoppers now ask ChatGPT, Gemini, and Perplexity what to buy. ecentic makes sure the answer is your product — and sends those buyers straight to your store.",
+      "proof": "2-minute setup · No credit card · See your free score first"
+    },
+    "action": {
+      "primary": "Get started"
+    }
   },
-  "CookieConsent": {
+  "cookieConsent": {
     "title": "Cookies on ecentic",
     "message": "We use cookies for analytics to improve ecentic. You can accept or decline.",
-    "accept": "Accept",
-    "decline": "Decline",
+    "action": {
+      "primary": "Accept",
+      "secondary": "Decline"
+    },
     "privacy": "Privacy policy"
   }
 }

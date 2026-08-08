@@ -37,13 +37,13 @@ const isLinkActive = (href: string, pathname: string) => {
 };
 
 const useNavLinks = () => {
-  const translate = useTranslations("Nav");
+  const translate = useTranslations("nav");
 
   return [
-    { href: "/#how", label: translate("howItWorks") },
-    { href: "/resources", label: translate("resources") },
-    { href: "/pricing", label: translate("pricing") },
-    { href: "/blog", label: translate("blog") },
+    { href: "/#how", label: translate("links.howItWorks") },
+    { href: "/resources", label: translate("links.resources") },
+    { href: "/pricing", label: translate("links.pricing") },
+    { href: "/blog", label: translate("links.blog") },
   ] as const;
 };
 
@@ -81,7 +81,7 @@ const NavbarLink = ({
 };
 
 const NavbarDesktop = () => {
-  const translate = useTranslations("Nav");
+  const translate = useTranslations("nav");
   const links = useNavLinks();
 
   return (
@@ -121,7 +121,7 @@ const NavbarDesktop = () => {
           aria-hidden
         />
         <NavbarLink href="/sign-up">
-          {translate("installNow")}{" "}
+          {translate("action.primary")}{" "}
           <ArrowRightIcon className="size-6 transition-transform duration-300 group-hover:translate-x-1" />
         </NavbarLink>
       </div>
@@ -130,8 +130,8 @@ const NavbarDesktop = () => {
 };
 
 const NavbarMobile = () => {
-  const translate = useTranslations("Nav");
-  const translateAuth = useTranslations("Auth");
+  const translate = useTranslations("nav");
+  const translateSignIn = useTranslations("signIn");
   const pathname = usePathname();
   const links = useNavLinks();
 
@@ -140,7 +140,7 @@ const NavbarMobile = () => {
       <Sheet>
         <SheetTrigger
           className="relative z-100 flex h-14 shrink-0 cursor-pointer items-center justify-center overflow-hidden p-4 pr-4 pl-12 text-primary transition-transform duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.97] sm:h-16"
-          aria-label={translate("openMenu")}
+          aria-label={translate("menu.action.primary")}
         >
           <Image
             src="/images/right-menu.svg"
@@ -163,7 +163,7 @@ const NavbarMobile = () => {
         >
           <SheetHeader className="border-accent-foreground border-b px-6 pt-6 pb-5 pr-16">
             <SheetTitle className="sr-only">
-              {translate("siteNavigation")}
+              {translate("menu.label")}
             </SheetTitle>
             <Image
               src="/images/trademark.svg"
@@ -238,7 +238,7 @@ const NavbarMobile = () => {
                     />
                   }
                 >
-                  {translate("installNow")}
+                  {translate("action.primary")}
                   <ArrowRightIcon className="size-5" />
                 </SheetClose>
                 <SheetClose
@@ -252,7 +252,7 @@ const NavbarMobile = () => {
                     />
                   }
                 >
-                  {translateAuth("signIn")}
+                  {translateSignIn("action.primary")}
                 </SheetClose>
               </SheetFooter>
             </Motion.Item>
