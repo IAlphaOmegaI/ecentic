@@ -9,7 +9,7 @@ import { Link } from "@/i18n/navigation";
 import { type Locale, routing } from "@/i18n/routing";
 import { createMetadata } from "@/lib/seo";
 import * as BabyLoveGrowth from "@/server/app/babylovegrowth";
-import * as Blog from "@/server/app/blog-cache";
+import * as Blog from "@/server/app/blog";
 import {
   EditorialFooter,
   EditorialLayout,

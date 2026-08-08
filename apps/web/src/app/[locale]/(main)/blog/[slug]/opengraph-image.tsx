@@ -1,7 +1,7 @@
 import { createOgImage, ogImageContentType, ogImageSize } from "@/lib/og";
 import { hasLocale } from "next-intl";
 import * as BabyLoveGrowth from "@/server/app/babylovegrowth";
-import * as Blog from "@/server/app/blog-cache";
+import * as Blog from "@/server/app/blog";
 import { routing } from "@/i18n/routing";
 
 export const alt = "ecentic blog post";

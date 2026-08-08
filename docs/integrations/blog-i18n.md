@@ -22,6 +22,12 @@ Same slug is shared across locales. Spanish copies are **not** published back in
 
 Unique on `(slug, locale)`.
 
+## Server module
+
+All blog server logic lives in `apps/web/src/server/app/blog.ts` (`withContext` / `withCron` for mutations; `"use cache"` Drizzle reads for public list/get — `headers()` from `withContext` is not allowed inside cache scopes).
+
+BabyLoveGrowth CMS client stays in `babylovegrowth.ts` (external API only).
+
 ## Auto-translate (Azure)
 
 When BabyLoveGrowth publishes an English article, configure their **Webhook** integration:
@@ -31,7 +37,7 @@ When BabyLoveGrowth publishes an English article, configure their **Webhook** in
 3. Bearer token: value of `BABYLOVEGROWTH_WEBHOOK_SECRET`
 4. Enable automatic publish
 
-The handler acknowledges immediately (200), then translates title / meta / HTML to Spanish with Azure (`AI.generate`, gpt seat) and upserts `blog_post` (`locale=es`, same slug).
+The handler acknowledges immediately (200), then `Blog.ingestPublish` translates title / meta / HTML to Spanish with Azure (`AI.generate`, gpt seat) and upserts `blog_post` (`locale=es`, same slug). First `/es/blog/[slug]` hit also calls `Blog.ensureSpanish` if the row is still missing.
 
 ### Backfill
 
@@ -42,7 +48,7 @@ curl -X POST https://<your-host>/api/cron/blog-translate-backfill \
   -H "Authorization: Bearer $CRON_SECRET"
 ```
 
-This also translates local EN editorial posts that lack an ES row.
+Runs `Blog.translateMissingSpanish` (BLG + local EN posts lacking an ES row).
 
 ## Env
 

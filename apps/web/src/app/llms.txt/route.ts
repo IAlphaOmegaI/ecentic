@@ -1,6 +1,6 @@
 import { seo } from "@/lib/seo";
 import * as BabyLoveGrowth from "@/server/app/babylovegrowth";
-import * as Blog from "@/server/app/blog-cache";
+import * as Blog from "@/server/app/blog";
 
 const prefersMarkdown = (accept: string | null) =>
   accept != null && /\btext\/markdown\b/i.test(accept);
