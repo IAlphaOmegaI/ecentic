@@ -8,7 +8,6 @@ import { Footer } from "@/components/footer";
 import { JsonLd } from "@/components/json-ld";
 import { Navbar } from "@/components/navbar";
 import { localizePath } from "@/i18n/locale";
-import type { Locale } from "@/i18n/routing";
 import { routing } from "@/i18n/routing";
 import {
   absoluteUrl,
@@ -67,12 +66,9 @@ export default async ({ params }: HomeProps) => {
   const locale = raw;
   setRequestLocale(locale);
 
-  return <HomePage locale={locale} />;
-};
-
-const HomePage = async ({ locale }: { locale: Locale }) => {
-  "use cache";
-
+  // Do not wrap this tree in `"use cache"`: Navbar/Footer use next-intl
+  // Link / getTranslations without an explicit locale, which reads headers()
+  // via getRequestConfig and fails Cache Components prerender.
   const translate = await getTranslations({ locale, namespace: "Marketing" });
   const description = translate("metaDescription");
 

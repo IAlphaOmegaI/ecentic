@@ -1,4 +1,8 @@
-"use server";
+// Not a `"use server"` module: this file exports cache tags, sync webhook
+// helpers, and `"use cache"` readers alongside withContext/withCron actions.
+// A file-level `"use server"` may only export async functions — mixing in
+// `BLOG_CACHE_TAG` / `parsePublishPayload` emptied the module's export surface
+// under Turbopack (PR #15 consolidate) and broke the production build.
 
 import { resultify } from "@zenncore/utils";
 import { and, desc, eq, ne } from "drizzle-orm";
@@ -377,25 +381,27 @@ export const resolve = withContext(
   "Blog.resolve",
 );
 
-/** English catalog slugs (BLG + local) — Spanish routes share this set. */
-export const listCatalogSlugs = withContext(async () => {
-  const [articles, english] = await Promise.all([
-    BabyLoveGrowth.listArticles(),
-    resultify(() =>
-      db
+/** English catalog slugs (BLG + local) — Spanish routes share this set.
+ * Plain async (no `withContext`): used from `generateStaticParams`, which
+ * cannot touch `headers()`. Fail soft so a DB blip never takes down the build. */
+export const listCatalogSlugs = async () => {
+  const articles = await BabyLoveGrowth.listArticles();
+
+  const englishRows = await (async () => {
+    try {
+      return await db
         .select({ slug: schema.blogPost.slug })
         .from(schema.blogPost)
-        .where(and(eq(schema.blogPost.locale, "en"), published)),
-    ),
-  ]);
+        .where(and(eq(schema.blogPost.locale, "en"), published));
+    } catch {
+      return [] as { slug: string }[];
+    }
+  })();
 
   const slugs = new Set(articles.map((article) => article.slug));
-  if (english.success) {
-    for (const row of english.data) slugs.add(row.slug);
-  }
-
-  return { success: true as const, data: [...slugs] };
-}, "Blog.listCatalogSlugs");
+  for (const row of englishRows) slugs.add(row.slug);
+  return [...slugs];
+};
 
 /** Cron: translate EN BLG + local posts missing a Spanish row. */
 export const translateMissingSpanish = withCron(async () => {

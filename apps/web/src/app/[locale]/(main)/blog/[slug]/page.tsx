@@ -45,9 +45,7 @@ type BlogPageProps = {
 };
 
 export const generateStaticParams = async () => {
-  const slugs = await unwrapResult(
-    Blog.listCatalogSlugs(Environment.SERVER),
-  );
+  const slugs = await Blog.listCatalogSlugs();
   return routing.locales.flatMap((locale) =>
     slugs.map((slug) => ({ locale, slug })),
   );

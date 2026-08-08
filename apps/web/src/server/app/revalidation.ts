@@ -1,6 +1,10 @@
 import { revalidateTag } from "next/cache";
 import { withCron } from "../utils/cron";
-import { BLOG_CACHE_TAG } from "./blog";
+
+// Keep in sync with `BLOG_CACHE_TAG` in `./blog` and `./babylovegrowth`.
+// Do not import from `./blog` — that module is large and pulling a constant
+// from it previously created a circular graph under Turbopack.
+const BLOG_CACHE_TAG = "blog";
 
 /**
  * On-demand cache purges for content written outside the running app — blog
