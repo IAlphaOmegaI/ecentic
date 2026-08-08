@@ -25,7 +25,10 @@
     "blog": "Blog",
     "installNow": "Instalar ahora",
     "openMenu": "Abrir menú de navegación",
-    "closeMenu": "Cerrar menú de navegación"
+    "closeMenu": "Cerrar menú de navegación",
+    "siteNavigation": "Navegación del sitio",
+    "tagline": "Que te elijan los agentes de compras con IA.",
+    "installHint": "Instala gratis. Ve tu puntuación de IA en minutos."
   },
   "Footer": {
     "tagline": "Gana el carrito de cada agente de compras con IA.",

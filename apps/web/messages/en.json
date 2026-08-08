@@ -25,7 +25,10 @@
     "blog": "Blog",
     "installNow": "Install now",
     "openMenu": "Open navigation menu",
-    "closeMenu": "Close navigation menu"
+    "closeMenu": "Close navigation menu",
+    "siteNavigation": "Site navigation",
+    "tagline": "Get picked by AI shopping agents.",
+    "installHint": "Install free. See your AI score in minutes."
   },
   "Footer": {
     "tagline": "Win every AI shopping agent's cart.",
