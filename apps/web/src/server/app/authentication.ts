@@ -99,7 +99,7 @@ export const signInWithGoogle = withContext(
         await context.auth.signInSocial({
           body: {
             provider: "google",
-            callbackURL: sanitizeRedirect(callbackURL, "/onboarding/connect"),
+            callbackURL: sanitizeRedirect(callbackURL, "/dashboard"),
             newUserCallbackURL: "/complete-profile",
             disableRedirect: false,
           },
