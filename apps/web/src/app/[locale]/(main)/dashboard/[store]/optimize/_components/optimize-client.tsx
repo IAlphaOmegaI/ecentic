@@ -42,6 +42,7 @@ import {
   StatusPill,
   WinRateBadge,
 } from "../../../_components/grid";
+import { OptimizationRoadmap } from "./optimization-roadmap";
 
 const CATEGORY_LABELS = {
   seo: "SEO",
@@ -328,13 +329,15 @@ const DismissedCard = ({
 const DiagnosticsPanel = ({
   insights,
   products,
+  kicker = "02 — Diagnostics",
 }: {
   insights: DashboardData["diagnostics"]["insights"];
   products: Record<string, Product.Type>;
+  kicker?: string;
 }) => (
   <div>
     <div className="border-accent-foreground border-b p-4">
-      <SectionKicker>01 — Diagnostics</SectionKicker>
+      <SectionKicker>{kicker}</SectionKicker>
       <p className="mt-2 font-semibold text-foreground-rich text-lg">
         Diagnostics for low win rate
       </p>
@@ -504,10 +507,12 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
     isDismissPending ||
     isReconsiderPending;
 
-  const { pending, published, dismissed, products, diagnostics } = data;
+  const { pending, published, dismissed, products, diagnostics, outlook } =
+    data;
 
   const hasDiagnostics = diagnostics.insights.length > 0;
-  const queueKicker = hasDiagnostics ? "02" : "01";
+  const diagnosticsKicker = "02";
+  const queueKicker = hasDiagnostics ? "03" : "02";
 
   return (
     <div className="flex flex-col">
@@ -573,6 +578,26 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
 
       <SectionGutter />
 
+      <div className="-mx-8 border-accent-foreground border-t border-b">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+          <OptimizationRoadmap
+            kicker="01 — What to expect"
+            baselineWinRate={outlook.baselineWinRate}
+            averageLift={outlook.averageLift}
+            pendingCount={pending.length}
+            publishedCount={published.length}
+            productCount={outlook.productCount}
+            startedAt={outlook.startedAt}
+          />
+        </div>
+      </div>
+
+      <SectionGutter />
+
       {hasDiagnostics && (
         <>
           <div className="-mx-8 border-accent-foreground border-t border-b">
@@ -584,6 +609,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
               <DiagnosticsPanel
                 insights={diagnostics.insights}
                 products={products}
+                kicker={`${diagnosticsKicker} — Diagnostics`}
               />
             </div>
           </div>

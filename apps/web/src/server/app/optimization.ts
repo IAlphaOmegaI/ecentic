@@ -95,6 +95,13 @@ export type DashboardData = {
     nonPublishableCount: number;
     insights: DiagnosticInsight[];
   };
+  /** Inputs for the personalized 6-month optimization outlook chart. */
+  outlook: {
+    baselineWinRate: number;
+    averageLift: number;
+    productCount: number;
+    startedAt: Date | null;
+  };
 };
 
 const findRecord = withContext(
@@ -350,6 +357,46 @@ export const listDashboard = withAuthentication(
       return { id: match.id, name: match.name, platform: match.platform };
     })();
 
+    const outlook = (() => {
+      const rates = products.data
+        .map((product) => computeWinRate(product.id, simulations))
+        .filter((rate): rate is number => rate !== null);
+
+      const baselineWinRate =
+        rates.length > 0
+          ? Math.round(
+              rates.reduce((sum, rate) => sum + rate, 0) / rates.length,
+            )
+          : 42;
+
+      const liftPool =
+        pending.length > 0
+          ? pending.map((item) => item.estimatedLift)
+          : published
+              .map((record) => record.estimatedLift)
+              .filter((lift): lift is number => lift !== null);
+
+      const averageLift =
+        liftPool.length > 0
+          ? Math.round(
+              liftPool.reduce((sum, lift) => sum + lift, 0) / liftPool.length,
+            )
+          : 12;
+
+      const startedAt = published.reduce<Date | null>((earliest, record) => {
+        if (!record.publishedAt) return earliest;
+        if (!earliest) return record.publishedAt;
+        return record.publishedAt < earliest ? record.publishedAt : earliest;
+      }, null);
+
+      return {
+        baselineWinRate,
+        averageLift,
+        productCount: products.data.length,
+        startedAt,
+      };
+    })();
+
     return {
       success: true,
       data: {
@@ -368,6 +415,7 @@ export const listDashboard = withAuthentication(
             lowWinRateEntries.length - publishableLowWinRateCount,
           insights: insights.slice(0, 24),
         },
+        outlook,
       } satisfies DashboardData,
     };
   },
