@@ -13,7 +13,7 @@ import {
   GoogleShoppingShell,
   ManagerSkeleton,
   SectionBox,
-} from "./_components/skeletons";
+} from "./_components/shell";
 import {
   CustomerSupportEditor,
   ReturnPolicyEditor,
