@@ -1,13 +1,14 @@
 import { resultify } from "@zenncore/utils";
 import { readingTimeMinutes } from "babylovegrowth-next-js-blog";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
 import type { Locale } from "@/i18n/routing";
 import { routing } from "@/i18n/routing";
+import { splitBlogHtmlByH2 } from "@/lib/blog-html";
 import * as BabyLoveGrowth from "@/server/app/babylovegrowth";
 import * as Blog from "@/server/app/blog-cache";
 import {
@@ -16,7 +17,7 @@ import {
   EditorialRichText,
   EditorialSplitSection,
 } from "../_components/editorial-page";
-import { TagList } from "../_components/tag-list";
+import { HtmlArticleSections } from "../_components/html-article-sections";
 import "../blog-content.css";
 
 const normalize = (value: Date | string) => {
@@ -182,43 +183,26 @@ export default async ({ params }: BlogPageProps) => {
         },
       ];
 
+      const sections = splitBlogHtmlByH2(article.content_html);
+
       return (
         <EditorialLayout
           eyebrow={article.seedKeyword ?? "Guide"}
           title={article.title}
           meta={
             <p>
-              {translate("published")}: {formatBlogDate(article.created_at, locale)}{" "}
-              · {translate("minRead", { minutes })}
+              {translate("published")}:{" "}
+              {formatBlogDate(article.created_at, locale)} ·{" "}
+              {translate("minRead", { minutes })}
             </p>
           }
           description={article.meta_description || article.excerpt}
         >
           <JsonLd schemas={structuredData} />
 
-          <EditorialSplitSection
-            left={
-              <>
-                <span className="mt-auto font-normal text-2xl text-primary">
-                  01
-                </span>
-                <h2 className="text-4xl text-foreground leading-snug">
-                  Article
-                </h2>
-              </>
-            }
-            right={
-              <div className="flex flex-col gap-8">
-                <div
-                  className="blog-content"
-                  // biome-ignore lint/security/noDangerouslySetInnerHtml: BabyLoveGrowth article HTML is trusted CMS content
-                  dangerouslySetInnerHTML={{ __html: article.content_html }}
-                />
-                <TagList
-                  keywords={[article.seedKeyword ?? "", ...article.keywords]}
-                />
-              </div>
-            }
+          <HtmlArticleSections
+            sections={sections}
+            keywords={[article.seedKeyword ?? "", ...article.keywords]}
           />
 
           <EditorialFooter
@@ -238,6 +222,7 @@ export default async ({ params }: BlogPageProps) => {
 
   if (post.contentHtml) {
     const minutes = Math.max(1, readingTimeMinutes(post.contentHtml));
+    const sections = splitBlogHtmlByH2(post.contentHtml);
     return (
       <EditorialLayout
         eyebrow={post.category}
@@ -265,28 +250,7 @@ export default async ({ params }: BlogPageProps) => {
             },
           ]}
         />
-        <EditorialSplitSection
-          left={
-            <>
-              <span className="mt-auto font-normal text-2xl text-primary">
-                01
-              </span>
-              <h2 className="text-4xl text-foreground leading-snug">
-                Article
-              </h2>
-            </>
-          }
-          right={
-            <div className="flex flex-col gap-8">
-              <div
-                className="blog-content"
-                // biome-ignore lint/security/noDangerouslySetInnerHtml: translated BLG HTML stored in our DB
-                dangerouslySetInnerHTML={{ __html: post.contentHtml }}
-              />
-              <TagList keywords={[...post.tags]} />
-            </div>
-          }
-        />
+        <HtmlArticleSections sections={sections} keywords={[...post.tags]} />
         <EditorialFooter
           primary={{ href: "/sign-up", label: "Get started" }}
           secondary={{ href: "/blog", label: translate("backToBlog") }}
