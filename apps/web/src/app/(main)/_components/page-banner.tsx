@@ -67,7 +67,7 @@ export const PageBanner = ({
         <h1 className="max-w-4xl font-semibold text-5xl text-white tracking-tight md:text-7xl">
           {title}
           {accent && (
-            <span className="font-superior font-medium text-white underline decoration-2 underline-offset-[0.18em]">
+            <span className="font-medium font-superior text-white underline decoration-2 underline-offset-[0.18em]">
               {" "}
               {accent}
             </span>

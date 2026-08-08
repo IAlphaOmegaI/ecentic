@@ -144,7 +144,7 @@ export const Compare = () => (
                 {String(index + 1).padStart(2, "0")}
               </span>
               <RevealItem className="flex flex-col gap-1">
-                <h4 className="font-body font-medium text-xl text-foreground">
+                <h4 className="font-body font-medium text-foreground text-xl">
                   {trigger.title}
                 </h4>
                 <p className="font-light text-foreground-dimmed leading-relaxed">

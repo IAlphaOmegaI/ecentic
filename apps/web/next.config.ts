@@ -93,6 +93,7 @@ export default withSentryConfig(
     // envelope is proxied through the dev server — which trips Node's 10-listener warning
     // on the piped ServerResponse. Its only purpose is dodging ad-blockers, which is
     // pointless on localhost, so it stays off outside production.
-    tunnelRoute: process.env.NODE_ENV === "production" ? "/monitoring" : undefined,
+    tunnelRoute:
+      process.env.NODE_ENV === "production" ? "/monitoring" : undefined,
   },
 );

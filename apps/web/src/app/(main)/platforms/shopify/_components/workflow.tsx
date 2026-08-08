@@ -6,8 +6,7 @@ import { ShopifyWorkflowCycle } from "./shopify-workflow-cycle";
 const outcomes = [
   {
     title: "Prioritize the right SKUs",
-    description:
-      "A cleaner way to decide which products need attention first.",
+    description: "A cleaner way to decide which products need attention first.",
   },
   {
     title: "See why pages lose",

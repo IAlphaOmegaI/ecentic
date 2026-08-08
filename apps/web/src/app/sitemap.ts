@@ -13,9 +13,7 @@ export default async (): Promise<MetadataRoute.Sitemap> => {
   const articles = blgEntries.success ? blgEntries.data : [];
   const blgSlugs = new Set(articles.map((entry) => entry.slug));
   const latestBlog =
-    articles[0]?.updated_at ??
-    blogs[0]?.updatedAt ??
-    new Date("2026-04-07");
+    articles[0]?.updated_at ?? blogs[0]?.updatedAt ?? new Date("2026-04-07");
 
   return [
     {

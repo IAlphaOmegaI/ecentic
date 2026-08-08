@@ -79,7 +79,7 @@ export const Evaluate = () => (
                 {String(index + 1).padStart(2, "0")}
               </span>
               <RevealItem className="flex flex-col gap-2">
-                <h4 className="font-body font-medium text-xl text-foreground">
+                <h4 className="font-body font-medium text-foreground text-xl">
                   {situation.title}
                 </h4>
                 <p className="font-light text-foreground-dimmed leading-relaxed">

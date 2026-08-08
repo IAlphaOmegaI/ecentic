@@ -242,7 +242,8 @@ export const agentDiscovery = {
   cors: {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, If-None-Match, Authorization",
+    "Access-Control-Allow-Headers":
+      "Content-Type, If-None-Match, Authorization",
     "Access-Control-Expose-Headers": "ETag, WWW-Authenticate",
   },
 } as const;

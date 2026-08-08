@@ -67,7 +67,9 @@ export default async ({ params }: TagPageProps) => {
                 {String(index + 1).padStart(2, "0")}
               </span>
               <div className="mt-auto flex flex-col gap-2">
-                <p className="text-white">{formatBlogDate(article.created_at)}</p>
+                <p className="text-white">
+                  {formatBlogDate(article.created_at)}
+                </p>
                 <p className="text-sm text-white/60">
                   {Math.max(1, readingTimeMinutes(article.excerpt))} min read
                 </p>

@@ -54,7 +54,8 @@ const controls = [
   },
   {
     title: "Allow-listed agents",
-    description: "Allow-list which agent platforms may transact with the store.",
+    description:
+      "Allow-list which agent platforms may transact with the store.",
   },
   {
     title: "Signed requests",
@@ -99,7 +100,11 @@ export const AgentCommerce = () => (
             <Button
               color="primary"
               render={
-                <a href={PLUGIN_URL} target="_blank" rel="noopener noreferrer" />
+                <a
+                  href={PLUGIN_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                />
               }
             >
               Get the WordPress plugin
@@ -144,9 +149,8 @@ export const AgentCommerce = () => (
         <div className="flex flex-col bg-background-dimmed md:min-h-0">
           <RevealItem className="flex flex-col gap-4 p-6 md:p-8">
             <p className="font-body font-light text-foreground-dimmed text-lg leading-relaxed">
-              Agent commerce does not hand the store over. You keep the
-              controls that decide who can buy, how fast, and under which
-              credentials.
+              Agent commerce does not hand the store over. You keep the controls
+              that decide who can buy, how fast, and under which credentials.
             </p>
           </RevealItem>
           <ItemCycle items={controls} />
@@ -165,7 +169,7 @@ export const AgentCommerce = () => (
                 {String(index + 1).padStart(2, "0")}
               </span>
               <RevealItem className="flex flex-col gap-1">
-                <h4 className="font-body font-medium text-xl text-foreground">
+                <h4 className="font-body font-medium text-foreground text-xl">
                   {control.title}
                 </h4>
                 <p className="font-light text-foreground-dimmed leading-relaxed">

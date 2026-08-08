@@ -112,10 +112,7 @@ export const GET = async (request: Request) => {
       title: "Blog",
       description:
         "Long-form guides on structured data, agent traffic, and catalog visibility.",
-      links: [
-        { path: "/blog", label: "ecentic blog — index" },
-        ...blogLinks,
-      ],
+      links: [{ path: "/blog", label: "ecentic blog — index" }, ...blogLinks],
     },
   ];
 
