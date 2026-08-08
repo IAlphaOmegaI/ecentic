@@ -1,12 +1,14 @@
 "use client";
 
 import { Button } from "@zenncore/web/components/button";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useConsent } from "@/context/consent";
+import { Link } from "@/i18n/navigation";
 import { Plus } from "./plus";
 
 export const CookieConsent = () => {
   const { decision, isReady, accept, reject } = useConsent();
+  const translate = useTranslations("CookieConsent");
 
   if (!isReady || decision) return null;
 
@@ -27,13 +29,12 @@ export const CookieConsent = () => {
               Cookies on ecentic
             </h2>
             <p className="text-foreground-dimmed text-sm">
-              We use analytics cookies to see how the site is used so we can
-              improve it. No advertising, no ad targeting. Read our{" "}
+              {translate("message")}{" "}
               <Link
                 href="/privacy-policy"
                 className="text-primary underline underline-offset-2"
               >
-                privacy policy
+                {translate("privacy")}
               </Link>
               .
             </p>
@@ -41,10 +42,10 @@ export const CookieConsent = () => {
 
           <div className="flex shrink-0 gap-2">
             <Button color="accent" onClick={reject}>
-              Decline
+              {translate("decline")}
             </Button>
             <Button color="primary" onClick={accept}>
-              Accept
+              {translate("accept")}
             </Button>
           </div>
         </div>

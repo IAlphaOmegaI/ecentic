@@ -1,10 +1,15 @@
 import { resultify } from "@zenncore/utils";
+import createMiddleware from "next-intl/middleware";
 import type { ProxyConfig, NextRequest as Request } from "next/server";
 import { NextResponse as Response } from "next/server";
+import { localeFromPathname, localizePath, stripLocalePrefix } from "@/i18n/locale";
+import { routing } from "@/i18n/routing";
 import { agentHomepageLinkHeader } from "@/lib/agent-discovery";
 import { auth } from "@/lib/auth";
 
 type Route = string | RegExp;
+
+const handleI18nRouting = createMiddleware(routing);
 
 const withAgentDiscoveryLinks = (response: Response) => {
   response.headers.append("Link", agentHomepageLinkHeader);
@@ -14,7 +19,8 @@ const withAgentDiscoveryLinks = (response: Response) => {
 // Routes that require an authenticated session. Everything not listed here is
 // public. This is deliberately a deny-list: a new marketing or docs page is
 // reachable the moment it exists, instead of silently becoming unreachable
-// until someone remembers to register it.
+// until someone remembers to register it. Paths are matched after the locale
+// prefix is stripped (`/es/dashboard` → `/dashboard`).
 const PROTECTED = [
   /^\/dashboard(\/.*)?$/,
   /^\/onboarding(\/.*)?$/,
@@ -56,7 +62,10 @@ const redirect = (request: Request, to: string, callbackUrl = "") => {
 
 export const proxy = async (request: Request) => {
   const { pathname } = request.nextUrl;
-  const isHomepage = pathname === "/";
+  const locale = localeFromPathname(pathname);
+  const pathnameWithoutLocale = stripLocalePrefix(pathname);
+  const isHomepage =
+    pathnameWithoutLocale === "/" || pathnameWithoutLocale === "";
 
   if (
     request.method === "GET" &&
@@ -70,17 +79,22 @@ export const proxy = async (request: Request) => {
     return response;
   }
 
-  const administratorOnly = matches(pathname, ADMINISTRATOR_ONLY);
-  const authenticationRoute = matches(pathname, AUTHENTICATION);
+  const administratorOnly = matches(pathnameWithoutLocale, ADMINISTRATOR_ONLY);
+  const authenticationRoute = matches(pathnameWithoutLocale, AUTHENTICATION);
   const requiresSession =
-    administratorOnly || authenticationRoute || matches(pathname, PROTECTED);
+    administratorOnly ||
+    authenticationRoute ||
+    matches(pathnameWithoutLocale, PROTECTED);
+
+  // Locale negotiation / rewrite first so downstream pages see `/[locale]/…`.
+  const internationalized = handleI18nRouting(request);
 
   // Purely public route — skip the session lookup entirely rather than paying
   // for a cookie verify (and possible database read) on every page view.
-  if (!requiresSession) {
-    const response = Response.next();
-    return isHomepage ? withAgentDiscoveryLinks(response) : response;
-  }
+  if (!requiresSession)
+    return isHomepage
+      ? withAgentDiscoveryLinks(internationalized)
+      : internationalized;
 
   // Resolve the session the same way protected pages do, so the two can never
   // disagree. `session.cookieCache` serves this from a signed cookie that
@@ -95,16 +109,22 @@ export const proxy = async (request: Request) => {
 
   switch (true) {
     case authenticationRoute: {
-      return session ? redirect(request, "/dashboard") : Response.next();
+      return session
+        ? redirect(request, localizePath("/dashboard", locale))
+        : internationalized;
     }
     case session === null: {
-      return redirect(request, "/sign-in", pathname + request.nextUrl.search);
+      return redirect(
+        request,
+        localizePath("/sign-in", locale),
+        pathnameWithoutLocale + request.nextUrl.search,
+      );
     }
     case administratorOnly && session?.user.role !== "administrator": {
-      return redirect(request, "/dashboard");
+      return redirect(request, localizePath("/dashboard", locale));
     }
     default: {
-      return Response.next();
+      return internationalized;
     }
   }
 };

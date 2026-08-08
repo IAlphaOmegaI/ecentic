@@ -562,6 +562,12 @@ export const blogPost = pgTable(
   {
     id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
     slug: text("slug").notNull(),
+    /** UI / content locale (`en` | `es`). Same slug may exist per locale. */
+    locale: text("locale").notNull().default("en"),
+    /** Origin of the row: editorial seed (`local`) or BabyLoveGrowth (`blg`). */
+    source: text("source").$type<"local" | "blg">().notNull().default("local"),
+    /** BabyLoveGrowth article id when `source = 'blg'`. */
+    externalId: text("externalId"),
     status: text("status").notNull().default("published"),
     category: text("category").notNull(),
     title: text("title").notNull(),
@@ -581,10 +587,19 @@ export const blogPost = pgTable(
         }[]
       >()
       .notNull(),
+    /** HTML body for BLG-sourced (and translated) articles. */
+    contentHtml: text("contentHtml"),
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
     updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
   },
-  (table) => [uniqueIndex("blog_post_slug_unique").on(table.slug)],
+  (table) => [
+    uniqueIndex("blog_post_slug_locale_unique").on(table.slug, table.locale),
+    index("blog_post_locale_status_published_idx").on(
+      table.locale,
+      table.status,
+      table.publishedAt,
+    ),
+  ],
 );
 
 /**
