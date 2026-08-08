@@ -8,17 +8,21 @@ import {
   slugify,
 } from "babylovegrowth-next-js-blog";
 import { cacheLife, cacheTag } from "next/cache";
-import { BLOG_CACHE_TAG } from "./blog-cache";
 
 /**
  * BabyLoveGrowth CMS reads, cached with `"use cache"`.
  * Route-level `export const revalidate` is incompatible with Cache Components,
  * so these wrappers own the cache lifetime. Purge via `Revalidation.revalidateBlog`.
  *
+ * Cache tag must stay `"blog"` — same as `Blog.BLOG_CACHE_TAG` (not imported
+ * from `./blog` to avoid a cycle: blog → babylovegrowth → blog).
+ *
  * The BLG API rate-limits to 2 req/s. Tags/sitemaps are derived from the
  * article list, fetches single-flight + retry on 429, and list helpers fail
  * soft so parallel prerenders never take down the build.
  */
+
+const BLOG_CACHE_TAG = "blog";
 
 const client = () =>
   new BlogClient({

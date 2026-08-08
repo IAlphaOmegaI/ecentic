@@ -1,6 +1,6 @@
 import { revalidateTag } from "next/cache";
 import { withCron } from "../utils/cron";
-import { BLOG_CACHE_TAG } from "./blog-cache";
+import { BLOG_CACHE_TAG } from "./blog";
 
 /**
  * On-demand cache purges for content written outside the running app — blog

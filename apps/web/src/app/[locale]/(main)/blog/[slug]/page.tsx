@@ -1,15 +1,16 @@
-import { resultify } from "@zenncore/utils";
+import { unwrapResult } from "@zenncore/utils";
 import { readingTimeMinutes } from "babylovegrowth-next-js-blog";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
 import type { Locale } from "@/i18n/routing";
 import { routing } from "@/i18n/routing";
 import { splitBlogHtmlByH2 } from "@/lib/blog-html";
-import * as BlogLocalize from "@/server/app/blog-localize";
+import * as Blog from "@/server/app/blog";
+import { Environment } from "@/server/utils/environment";
 import {
   EditorialFooter,
   EditorialLayout,
@@ -44,7 +45,9 @@ type BlogPageProps = {
 };
 
 export const generateStaticParams = async () => {
-  const slugs = await BlogLocalize.listCatalogSlugs();
+  const slugs = await unwrapResult(
+    Blog.listCatalogSlugs(Environment.SERVER),
+  );
   return routing.locales.flatMap((locale) =>
     slugs.map((slug) => ({ locale, slug })),
   );
@@ -57,13 +60,17 @@ export const generateMetadata = async ({
   const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
 
   // Metadata must not block on Azure translate — use stored ES or EN fallback.
-  const resolved = await resultify(() =>
-    BlogLocalize.resolveBlog(slug, locale, { translate: false }),
+  const resolved = await unwrapResult(
+    Blog.resolve(Environment.SERVER, {
+      slug,
+      locale,
+      translate: false,
+    }),
   );
-  if (!resolved.success || !resolved.data) return {};
+  if (!resolved) return {};
 
-  if (resolved.data.kind === "blg") {
-    const article = resolved.data.article;
+  if (resolved.kind === "blg") {
+    const article = resolved.article;
     const path = localizePath(`/blog/${article.slug}`, locale);
     return {
       title: article.title,
@@ -94,7 +101,7 @@ export const generateMetadata = async ({
     };
   }
 
-  const post = resolved.data.post;
+  const post = resolved.post;
   const path = localizePath(`/blog/${post.slug}`, locale);
 
   return {
@@ -132,7 +139,9 @@ export default async ({ params }: BlogPageProps) => {
   setRequestLocale(locale);
 
   const translate = await getTranslations({ locale, namespace: "Blog" });
-  const resolved = await BlogLocalize.resolveBlog(slug, locale);
+  const resolved = await unwrapResult(
+    Blog.resolve(Environment.SERVER, { slug, locale }),
+  );
   if (!resolved) notFound();
 
   if (resolved.kind === "blg") {

@@ -1,14 +1,14 @@
 import * as Sentry from "@sentry/nextjs";
 import { resultify } from "@zenncore/utils";
 import { after, type NextRequest, NextResponse as Response } from "next/server";
-import * as BabyLoveGrowthWebhook from "@/server/app/babylovegrowth-webhook";
+import * as Blog from "@/server/app/blog";
+import { Environment } from "@/server/utils/environment";
 
 export const POST = async (request: NextRequest) => {
   const authorization = request.headers.get("authorization");
-  const auth = BabyLoveGrowthWebhook.authorizeWebhook(authorization);
+  const auth = Blog.authorizeWebhook(authorization);
   if (!auth.success) {
-    const status =
-      auth.error.name === "unauthenticated-error" ? 401 : 500;
+    const status = auth.error.name === "unauthenticated-error" ? 401 : 500;
     return Response.json({ error: auth.error.message }, { status });
   }
 
@@ -24,15 +24,13 @@ export const POST = async (request: NextRequest) => {
   if (!body.success)
     return Response.json({ error: "Invalid JSON" }, { status: 400 });
 
-  const payload = BabyLoveGrowthWebhook.parsePayload(body.data);
+  const payload = Blog.parsePublishPayload(body.data);
   if (!payload.success)
     return Response.json({ error: payload.error.message }, { status: 400 });
 
   // BLG expects HTTP 200 within ~5s — translate on Azure after acknowledging.
   after(async () => {
-    const result = await BabyLoveGrowthWebhook.upsertSpanishTranslation(
-      payload.data,
-    );
+    const result = await Blog.ingestPublish(Environment.SERVER, payload.data);
     if (!result.success) {
       Sentry.captureException(result.error, {
         tags: { integration: "babylovegrowth-webhook" },
