@@ -76,7 +76,15 @@ const upsertSpanishRow = async (values: {
       .set(payload)
       .where(eq(schema.blogPost.id, row.id));
   } else {
-    await db.insert(schema.blogPost).values(payload);
+    const inserted = await resultify(() =>
+      db.insert(schema.blogPost).values(payload),
+    );
+    // Parallel first-hits can race the unique (slug, locale) index — re-read.
+    if (!inserted.success) {
+      const raced = await findPublished(values.slug, "es");
+      if (raced) return raced;
+      throw inserted.error;
+    }
   }
 
   revalidateTag(BLOG_CACHE_TAG, { expire: 0 });

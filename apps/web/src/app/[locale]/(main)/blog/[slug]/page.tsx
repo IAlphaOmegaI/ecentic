@@ -56,8 +56,9 @@ export const generateMetadata = async ({
   const { slug, locale: raw } = await params;
   const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
 
+  // Metadata must not block on Azure translate — use stored ES or EN fallback.
   const resolved = await resultify(() =>
-    BlogLocalize.resolveBlog(slug, locale),
+    BlogLocalize.resolveBlog(slug, locale, { translate: false }),
   );
   if (!resolved.success || !resolved.data) return {};
 
