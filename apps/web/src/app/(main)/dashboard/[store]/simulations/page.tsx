@@ -6,46 +6,26 @@ import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
 import * as Scan from "@/server/app/scan";
 import { Environment } from "@/server/utils/environment";
-import { Crosshair, StatusPill } from "../../_components/grid";
+import { StatusPillSkeleton } from "../../_components/chrome-skeletons";
+import { StatusPill } from "../../_components/grid";
+import { SimulationsShell, SimulationsSkeleton } from "./_components/shell";
 import { SimulationsClient } from "./_components/simulations-client";
-import { SimulationsSkeleton } from "./_components/skeletons";
 
 type StoreParams = PageProps<"/dashboard/[store]/simulations">["params"];
 
-export default ({ params }: PageProps<"/dashboard/[store]/simulations">) => {
-  return (
-    <div className="flex flex-col">
-      <div className="mx-8 border-accent-foreground border-x">
-        <div className="-mx-8 border-accent-foreground border-b">
-          <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <div>
-              <Suspense
-                fallback={
-                  <div className="h-5 w-56 animate-pulse rounded-full bg-foreground/10" />
-                }
-              >
-                <LastRun params={params} />
-              </Suspense>
-              <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
-                Simulations
-              </h1>
-              <p className="mt-1 text-foreground-dimmed text-sm">
-                Re-run competitor discovery and win-rate simulations anytime.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <Suspense fallback={<SimulationsSkeleton />}>
-          <SimulationsData params={params} />
-        </Suspense>
-      </div>
-    </div>
-  );
-};
-
+export default ({ params }: PageProps<"/dashboard/[store]/simulations">) => (
+  <SimulationsShell
+    statusPill={
+      <Suspense fallback={<StatusPillSkeleton />}>
+        <LastRun params={params} />
+      </Suspense>
+    }
+  >
+    <Suspense fallback={<SimulationsSkeleton />}>
+      <SimulationsData params={params} />
+    </Suspense>
+  </SimulationsShell>
+);
 const LastRun = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;

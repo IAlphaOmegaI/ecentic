@@ -1,6 +1,23 @@
-import { PageSkeleton } from "../../_components/chrome-skeletons";
+import {
+  ChartSkeleton,
+  CompetitorTableSkeleton,
+  StatsSkeleton,
+  StatusPillSkeleton,
+  TableSkeleton,
+} from "../../_components/chrome-skeletons";
+import { OverviewActionsSkeleton, OverviewShell } from "./_components/shell";
 
-// Covers navigations between a store's sub-pages: the sidebar and topbar
-// persist from the layout while the next page's payload streams in, so only
-// the content column needs a placeholder.
-export default () => <PageSkeleton />;
+// The frame the page renders, with the placeholder each streamed region shows.
+// Replaces a generic full-page skeleton, so a navigation now lands on the real
+// heading and the real tab rail rather than an anonymous block of grey.
+export default () => (
+  <OverviewShell
+    statusPill={<StatusPillSkeleton className="w-42" />}
+    actions={<OverviewActionsSkeleton />}
+    stats={<StatsSkeleton />}
+    performance={<ChartSkeleton />}
+    products={<TableSkeleton />}
+    competitors={<CompetitorTableSkeleton />}
+    agents={<TableSkeleton />}
+  />
+);

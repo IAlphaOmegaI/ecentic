@@ -19,29 +19,30 @@ import * as Scan from "@/server/app/scan";
 import * as Tracking from "@/server/app/tracking";
 import { Environment } from "@/server/utils/environment";
 import { extractPaginationParams, type Pager } from "@/server/utils/pagination";
-import { AgentVisitsChart } from "../../_components/agent-visits-chart";
+import { AgentVisitsChart } from "../../../_components/agent-visits-chart";
+import { StatusPillSkeleton } from "../../../_components/chrome-skeletons";
 import {
-  Crosshair,
-  SectionGutter,
   SectionKicker,
   StatLabel,
   StatusPill,
-} from "../../_components/grid";
-import { ProductsTable } from "../../_components/products-table";
+} from "../../../_components/grid";
+import { ProductsTable } from "../../../_components/products-table";
 import {
   OptimizationBreakdown,
   ProductsModelRates,
   ProductsWinRateTrend,
   QualityDistribution,
-} from "./_components/products-charts";
-import { ScanInsightsCarousel } from "./_components/scan-insights-carousel";
+} from "../_components/products-charts";
+import { ScanInsightsCarousel } from "../_components/scan-insights-carousel";
 import {
+  AddActionSkeleton,
   ChartSkeleton,
   InsightsSkeleton,
+  ProductsShell,
   StatsSkeleton,
   TableSkeleton,
   TrafficSkeleton,
-} from "./_components/skeletons";
+} from "../_components/shell";
 
 type StoreParams = PageProps<"/dashboard/[store]/products">["params"];
 
@@ -103,119 +104,50 @@ export default ({
   searchParams,
 }: SearchParamsProps<keyof Pager> & {
   params: PageProps<"/dashboard/[store]/products">["params"];
-}) => {
-  return (
-    <div className="flex flex-col">
-      <div className="mx-8 border-accent-foreground border-x">
-        <div className="-mx-8 border-accent-foreground border-b">
-          <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <div>
-              <Suspense
-                fallback={
-                  <div className="h-5 w-56 animate-pulse rounded-full bg-foreground/10" />
-                }
-              >
-                <LastScanned params={params} />
-              </Suspense>
-              <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
-                Products
-              </h1>
-              <p className="mt-1 text-foreground-dimmed text-sm">
-                How each product in your catalog performs across AI shopping
-                agents.
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              {/* <Button color="accent">
-              <DownloadIcon className="size-4" />
-              Export
-            </Button> */}
-              <Suspense
-                fallback={
-                  <div className="h-9 w-36 animate-pulse bg-foreground/10" />
-                }
-              >
-                <AddProductsAction params={params} />
-              </Suspense>
-            </div>
-          </div>
-        </div>
-
-        <Suspense>
-          <EmbedBanner params={params} />
-        </Suspense>
-
-        <div className="-mx-8 border-accent-foreground border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <Suspense fallback={<StatsSkeleton />}>
-              <StatCards params={params} />
-            </Suspense>
-          </div>
-        </div>
-
-        <SectionGutter />
-
-        <div className="-mx-8 border-accent-foreground border-t border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <Suspense fallback={<ChartSkeleton />}>
-              <Performance params={params} />
-            </Suspense>
-          </div>
-        </div>
-
-        <SectionGutter />
-
-        <div className="-mx-8 border-accent-foreground border-t border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <Suspense fallback={<TableSkeleton />}>
-              <Products params={params} searchParams={searchParams} />
-            </Suspense>
-          </div>
-        </div>
-
-        <SectionGutter />
-
-        <div className="-mx-8 border-accent-foreground border-t border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <Suspense fallback={<TrafficSkeleton />}>
-              <AgentTraffic params={params} />
-            </Suspense>
-          </div>
-        </div>
-
-        <SectionGutter />
-
-        <div className="-mx-8 border-accent-foreground border-t border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <Suspense fallback={<InsightsSkeleton />}>
-              <Insights params={params} />
-            </Suspense>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+}) => (
+  <ProductsShell
+    statusPill={
+      <Suspense fallback={<StatusPillSkeleton />}>
+        <LastScanned params={params} />
+      </Suspense>
+    }
+    action={
+      <Suspense fallback={<AddActionSkeleton />}>
+        <AddProductsAction params={params} />
+      </Suspense>
+    }
+    banner={
+      <Suspense>
+        <EmbedBanner params={params} />
+      </Suspense>
+    }
+    stats={
+      <Suspense fallback={<StatsSkeleton />}>
+        <StatCards params={params} />
+      </Suspense>
+    }
+    performance={
+      <Suspense fallback={<ChartSkeleton />}>
+        <Performance params={params} />
+      </Suspense>
+    }
+    table={
+      <Suspense fallback={<TableSkeleton />}>
+        <Products params={params} searchParams={searchParams} />
+      </Suspense>
+    }
+    traffic={
+      <Suspense fallback={<TrafficSkeleton />}>
+        <AgentTraffic params={params} />
+      </Suspense>
+    }
+    insights={
+      <Suspense fallback={<InsightsSkeleton />}>
+        <Insights params={params} />
+      </Suspense>
+    }
+  />
+);
 
 const LastScanned = async ({ params }: { params: StoreParams }) => {
   await connection();

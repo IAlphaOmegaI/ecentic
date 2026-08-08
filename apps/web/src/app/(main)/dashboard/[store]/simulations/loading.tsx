@@ -1,27 +1,10 @@
-import { Crosshair } from "../../_components/grid";
-import { SimulationsSkeleton } from "./_components/skeletons";
+import { StatusPillSkeleton } from "../../_components/chrome-skeletons";
+import { SimulationsShell, SimulationsSkeleton } from "./_components/shell";
 
-// Mirrors the simulations page shell so navigation lands without layout shift.
+// The frame the page renders, with the placeholders it shows while the latest
+// scan and the roster stream in.
 export default () => (
-  <div className="flex flex-col">
-    <div className="mx-8 border-accent-foreground border-x">
-      <div className="-mx-8 border-accent-foreground border-b">
-        <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
-          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <div>
-            <div className="h-5 w-56 animate-pulse rounded-full bg-foreground/10" />
-            <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
-              Simulations
-            </h1>
-            <p className="mt-1 text-foreground-dimmed text-sm">
-              Re-run competitor discovery and win-rate simulations anytime.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <SimulationsSkeleton />
-    </div>
-  </div>
+  <SimulationsShell statusPill={<StatusPillSkeleton />}>
+    <SimulationsSkeleton />
+  </SimulationsShell>
 );
