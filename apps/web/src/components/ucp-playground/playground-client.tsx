@@ -17,13 +17,13 @@ import {
   isToolUIPart,
   type ToolUIPart,
 } from "ai";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useCallback, useState } from "react";
 import { z } from "zod";
 import {
   SectionKicker,
   StatusPill,
-} from "@/app/(main)/dashboard/_components/grid";
+} from "@/app/[locale]/(main)/dashboard/_components/grid";
 import {
   Conversation,
   ConversationContent,

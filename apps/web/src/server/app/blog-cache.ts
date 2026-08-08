@@ -19,7 +19,7 @@ const latestFirst = [
   desc(schema.blogPost.updatedAt),
 ] as const;
 
-export const listPublished = async () => {
+export const listPublished = async (locale = "en") => {
   "use cache";
   cacheLife("hours");
   cacheTag(BLOG_CACHE_TAG);
@@ -27,19 +27,25 @@ export const listPublished = async () => {
   return db
     .select()
     .from(schema.blogPost)
-    .where(published)
+    .where(and(published, eq(schema.blogPost.locale, locale)))
     .orderBy(...latestFirst);
 };
 
-export const getPublishedBySlug = async (slug: string) => {
+export const getPublishedBySlug = async (slug: string, locale = "en") => {
   "use cache";
   cacheLife("hours");
-  cacheTag(BLOG_CACHE_TAG, `blog-${slug}`);
+  cacheTag(BLOG_CACHE_TAG, `blog-${slug}-${locale}`);
 
   const posts = await db
     .select()
     .from(schema.blogPost)
-    .where(and(published, eq(schema.blogPost.slug, slug)))
+    .where(
+      and(
+        published,
+        eq(schema.blogPost.slug, slug),
+        eq(schema.blogPost.locale, locale),
+      ),
+    )
     .limit(1);
 
   return posts[0] ?? null;

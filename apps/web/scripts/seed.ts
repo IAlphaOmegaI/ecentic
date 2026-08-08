@@ -1402,6 +1402,8 @@ const seed = async () => {
         .insert(schema.blogPost)
         .values({
           slug: post.slug,
+          locale: "en",
+          source: "local",
           status: "published",
           category: post.category,
           title: post.title,
@@ -1416,8 +1418,9 @@ const seed = async () => {
           updatedAt: new Date(`${post.updatedAt}T00:00:00Z`),
         })
         .onConflictDoUpdate({
-          target: schema.blogPost.slug,
+          target: [schema.blogPost.slug, schema.blogPost.locale],
           set: {
+            source: "local",
             status: "published",
             category: post.category,
             title: post.title,

@@ -12,7 +12,7 @@ const estimateMarkdownTokens = (markdown: string) =>
 export const GET = async (request: Request) => {
   const [articles, posts] = await Promise.all([
     BabyLoveGrowth.listArticles(),
-    Blog.listPublished(),
+    Blog.listPublished("en"),
   ]);
   const blgSlugs = new Set(articles.map((article) => article.slug));
   const blogLinks = [

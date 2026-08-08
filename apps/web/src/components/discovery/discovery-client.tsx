@@ -10,7 +10,7 @@ import {
   Crosshair,
   SectionKicker,
   StatusPill,
-} from "@/app/(main)/dashboard/_components/grid";
+} from "@/app/[locale]/(main)/dashboard/_components/grid";
 import * as Discovery from "@/server/app/intelligence/discovery";
 
 const MAX_QUERIES = 8;

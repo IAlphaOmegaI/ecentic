@@ -267,6 +267,8 @@ STRIPE_SUB_SCALE                          # recurring price id — Scale plan ($
 STRIPE_SUB_DOMINATE                       # recurring price id — Dominate plan ($149/mo, top tier)
 APP_HOST                                  # e.g. https://ecentic.ai (checkout return + webhook origin)
 CRON_SECRET                               # Bearer secret for /api/cron/* (scan + billing)
+BABYLOVEGROWTH_BLOG_API_KEY               # optional — BabyLoveGrowth Next.js Blog read key
+BABYLOVEGROWTH_WEBHOOK_SECRET             # optional — Bearer for /api/webhooks/babylovegrowth (EN→ES Azure translate)
 
 # Pay-as-you-go performance fee (one-off Stripe invoices, not metered).
 PERFORMANCE_FEE_RATE_BPS_DEFAULT=300      # 3%, overridable per account
