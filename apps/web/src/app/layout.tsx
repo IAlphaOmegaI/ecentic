@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { getLocale } from "next-intl/server";
 import { type PropsWithChildren, Suspense } from "react";
 import "./globals.css";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -7,7 +6,6 @@ import { ToastProvider } from "@zenncore/web/components/toast";
 import { Red_Hat_Display } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
-import { CookieConsent } from "@/components/cookie-consent";
 import { ToastList } from "@/components/ui/toast";
 import { ConsentProvider } from "@/context/consent";
 import { MotionProvider } from "@/context/motion";
@@ -133,17 +131,12 @@ export const metadata: Metadata = {
   category: "technology",
 };
 
-export default async ({ children }: PropsWithChildren) => {
-  const locale = await (async () => {
-    try {
-      return await getLocale();
-    } catch {
-      return routing.defaultLocale;
-    }
-  })();
-
+export default ({ children }: PropsWithChildren) => {
   return (
-    <html lang={locale} suppressHydrationWarning>
+    // Default locale on the static shell. Locale routes sync `lang` via
+    // `<HtmlLang>` inside `[locale]/layout` (root cannot await `getLocale()` —
+    // that blocks `/_not-found` prerender under Cache Components).
+    <html lang={routing.defaultLocale} suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://eu.i.posthog.com" />
         <link
@@ -226,7 +219,6 @@ export default async ({ children }: PropsWithChildren) => {
                     <ToastList
                       types={["error", "success", "info", "loading"]}
                     />
-                    <CookieConsent />
                   </ToastProvider>
                 </MotionProvider>
               </ThemeProvider>
