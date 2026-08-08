@@ -15,6 +15,7 @@ Central navigation for product context, agent rules, and package/component docum
 
 - [Store integrations progress tracker](./integrations/overview.md)
 - [Hosted UCP — woo-ucp conformance](./integrations/woo-ucp-conformance.md) — how the backend UCP surface (`apps/web/src/server/app/ucp/`) maps to the woo-ucp reference, the thin-plugin bridge contract, known divergences, and deployment notes
+- [Blog i18n (EN/ES + Azure translate)](./integrations/blog-i18n.md) — next-intl locales, `blog_post` locale columns, BabyLoveGrowth webhook → Azure Spanish translations
 
 ### If you are planning billing or Shopify App Store pricing
 

@@ -7,17 +7,11 @@ import {
   SheetPopup,
   SheetTrigger,
 } from "@zenncore/web/components/sheet";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { type MouseEvent, type ReactNode, useEffect } from "react";
-
-const links = [
-  { href: "/#how", label: "How it works" },
-  { href: "/resources", label: "Resources" },
-  { href: "/pricing", label: "Pricing" },
-  { href: "/blog", label: "Blog" },
-] as const;
+import { LanguageSwitcher } from "@/components/language-switcher";
+import { Link, usePathname } from "@/i18n/navigation";
 
 const scrollToHash = (href: string) => {
   const index = href.indexOf("#");
@@ -39,7 +33,8 @@ const NavbarLink = ({
   children?: ReactNode;
 }) => {
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
-    if (window.location.pathname !== "/") return;
+    if (window.location.pathname !== "/" && !window.location.pathname.endsWith("/es"))
+      return;
     if (!scrollToHash(href)) return;
     event.preventDefault();
   };
@@ -55,10 +50,45 @@ const NavbarLink = ({
   );
 };
 
-const NavbarDesktop = () => (
-  <>
-    <div className="relative hidden h-14 items-center justify-center gap-8 lg:flex">
-      <div className="absolute left-0 h-14 w-full -translate-x-24 p-4">
+const NavbarDesktop = () => {
+  const translate = useTranslations("Nav");
+  const links = [
+    { href: "/#how", label: translate("howItWorks") },
+    { href: "/resources", label: translate("resources") },
+    { href: "/pricing", label: translate("pricing") },
+    { href: "/blog", label: translate("blog") },
+  ] as const;
+
+  return (
+    <>
+      <div className="relative hidden h-14 items-center justify-center gap-8 lg:flex">
+        <div className="absolute left-0 h-14 w-full -translate-x-24 p-4">
+          <Image
+            src="/images/right-menu.svg"
+            alt=""
+            fill
+            className="absolute inset-0 object-cover"
+            aria-hidden
+          />
+        </div>
+        {links.map((link) => (
+          <NavbarLink key={link.href} href={link.href}>
+            {link.label}
+          </NavbarLink>
+        ))}
+        <LanguageSwitcher className="relative z-100" />
+        <div className="absolute right-0 h-14 w-[75%] translate-x-20 p-4">
+          <Image
+            src="/images/left-menu.svg"
+            alt=""
+            fill
+            className="absolute inset-0 object-cover"
+            aria-hidden
+          />
+        </div>
+      </div>
+
+      <div className="relative hidden h-14 shrink-0 p-4 pr-6 pl-12 sm:h-16 lg:block">
         <Image
           src="/images/right-menu.svg"
           alt=""
@@ -66,74 +96,61 @@ const NavbarDesktop = () => (
           className="absolute inset-0 object-cover"
           aria-hidden
         />
-      </div>
-      {links.map((link) => (
-        <NavbarLink key={link.href} href={link.href}>
-          {link.label}
+        <NavbarLink href="/sign-up">
+          {translate("installNow")}{" "}
+          <ArrowRightIcon className="size-6 transition-transform duration-300 group-hover:translate-x-1" />
         </NavbarLink>
-      ))}
-      <div className="absolute right-0 h-14 w-[75%] translate-x-20 p-4">
-        <Image
-          src="/images/left-menu.svg"
-          alt=""
-          fill
-          className="absolute inset-0 object-cover"
-          aria-hidden
-        />
       </div>
-    </div>
+    </>
+  );
+};
 
-    <div className="relative hidden h-14 shrink-0 p-4 pr-6 pl-12 sm:h-16 lg:block">
-      <Image
-        src="/images/right-menu.svg"
-        alt=""
-        fill
-        className="absolute inset-0 object-cover"
-        aria-hidden
-      />
-      <NavbarLink href="/sign-up">
-        Install now{" "}
-        <ArrowRightIcon className="size-6 transition-transform duration-300 group-hover:translate-x-1" />
-      </NavbarLink>
-    </div>
-  </>
-);
+const NavbarMobile = () => {
+  const translate = useTranslations("Nav");
+  const links = [
+    { href: "/#how", label: translate("howItWorks") },
+    { href: "/resources", label: translate("resources") },
+    { href: "/pricing", label: translate("pricing") },
+    { href: "/blog", label: translate("blog") },
+  ] as const;
 
-const NavbarMobile = () => (
-  <div className="relative flex h-14 items-center sm:h-16 lg:hidden">
-    <Sheet>
-      <SheetTrigger
-        className="relative z-100 flex h-16 shrink-0 cursor-pointer items-center justify-center overflow-auto p-4 pr-4 pl-12 text-primary"
-        aria-label="Open navigation menu"
-      >
-        <Image
-          src="/images/right-menu.svg"
-          alt=""
-          fill
-          className="absolute inset-0 object-cover object-left"
-          aria-hidden
-        />
-        <MenuIcon className="relative z-100 size-6" />
-      </SheetTrigger>
-      <SheetPopup side="right" className="bg-background">
-        <nav className="flex flex-col gap-6 p-6 pt-14">
-          {links.map((link) => (
-            <SheetClose
-              key={link.href}
-              render={<NavbarLink href={link.href} />}
-            >
-              {link.label}
+  return (
+    <div className="relative flex h-14 items-center sm:h-16 lg:hidden">
+      <Sheet>
+        <SheetTrigger
+          className="relative z-100 flex h-16 shrink-0 cursor-pointer items-center justify-center overflow-auto p-4 pr-4 pl-12 text-primary"
+          aria-label={translate("openMenu")}
+        >
+          <Image
+            src="/images/right-menu.svg"
+            alt=""
+            fill
+            className="absolute inset-0 object-cover object-left"
+            aria-hidden
+          />
+          <MenuIcon className="relative z-100 size-6" />
+        </SheetTrigger>
+        <SheetPopup side="right" className="bg-background">
+          <nav className="flex flex-col gap-6 p-6 pt-14">
+            {links.map((link) => (
+              <SheetClose
+                key={link.href}
+                render={<NavbarLink href={link.href} />}
+              >
+                {link.label}
+              </SheetClose>
+            ))}
+            <LanguageSwitcher />
+            <SheetClose render={<NavbarLink href="/sign-up" />}>
+              {translate("installNow")}
+              <ArrowRightIcon className="size-6" />
             </SheetClose>
-          ))}
-          <SheetClose render={<NavbarLink href="/sign-up" />}>
-            Install now
-            <ArrowRightIcon className="size-6" />
-          </SheetClose>
-        </nav>
-      </SheetPopup>
-    </Sheet>
-  </div>
-);
+          </nav>
+        </SheetPopup>
+      </Sheet>
+    </div>
+  );
+};
 
 export const Navbar = () => {
   const pathname = usePathname();

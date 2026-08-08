@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getLocale } from "next-intl/server";
 import { type PropsWithChildren, Suspense } from "react";
 import "./globals.css";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -16,6 +17,7 @@ import { MotionProvider } from "@/context/motion";
 // the App Shell prerender has to resolve, which broke instant-UI validation.
 import { PostHogProvider } from "@/context/posthog";
 import { ThemeProvider } from "@/context/theme";
+import { routing } from "@/i18n/routing";
 
 const redHatDisplay = Red_Hat_Display({
   subsets: ["latin"],
@@ -131,9 +133,17 @@ export const metadata: Metadata = {
   category: "technology",
 };
 
-export default ({ children }: PropsWithChildren) => {
+export default async ({ children }: PropsWithChildren) => {
+  const locale = await (async () => {
+    try {
+      return await getLocale();
+    } catch {
+      return routing.defaultLocale;
+    }
+  })();
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://eu.i.posthog.com" />
         <link
