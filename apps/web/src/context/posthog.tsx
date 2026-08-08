@@ -10,6 +10,12 @@ export const PostHogProvider = ({ children }: PropsWithChildren) => {
   const { decision, isReady } = useConsent();
 
   useEffect(() => {
+    // `posthog` is a module singleton, so it outlives this effect: StrictMode's
+    // double-invoke in dev and every Fast Refresh re-run would call init again
+    // on an already-initialized client. PostHog no-ops that and warns; skipping
+    // it keeps the console clean and the consent config below authoritative.
+    if (posthog.__loaded) return;
+
     posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
       api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
       person_profiles: "always",
