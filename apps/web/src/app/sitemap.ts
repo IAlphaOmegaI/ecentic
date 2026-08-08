@@ -43,8 +43,7 @@ export default async (): Promise<MetadataRoute.Sitemap> => {
       const pathname = path === "" ? "/" : path;
       return {
         url: `${seo.host}${localizePath(pathname, locale)}`,
-        lastModified:
-          path === "/blog" ? latestBlog : new Date("2026-07-12"),
+        lastModified: path === "/blog" ? latestBlog : new Date("2026-07-12"),
         changeFrequency: "weekly" as const,
         priority: path === "" ? 1 : path === "/blog" ? 0.8 : 0.7,
         alternates: {
@@ -87,23 +86,49 @@ export default async (): Promise<MetadataRoute.Sitemap> => {
       },
     }));
 
-  const spanishDb = spanish.map((post) => ({
-    url: `${seo.host}/es/blog/${post.slug}`,
-    lastModified: post.updatedAt,
-    changeFrequency: "monthly" as const,
-    priority: 0.7,
-    alternates: {
-      languages: {
-        en: `${seo.host}/blog/${post.slug}`,
-        es: `${seo.host}/es/blog/${post.slug}`,
-      },
-    },
-  }));
+  const spanishBySlug = new Map(spanish.map((post) => [post.slug, post]));
+
+  // Same slug set as English — ES routes are first-class even before a
+  // translated row exists (resolveBlog translates on demand).
+  const spanishCatalog = [
+    ...articles.map((entry) => {
+      const translated = spanishBySlug.get(entry.slug);
+      return {
+        url: `${seo.host}/es/blog/${entry.slug}`,
+        lastModified: new Date(translated?.updatedAt ?? entry.updated_at),
+        changeFrequency: "monthly" as const,
+        priority: 0.7,
+        alternates: {
+          languages: {
+            en: `${seo.host}/blog/${entry.slug}`,
+            es: `${seo.host}/es/blog/${entry.slug}`,
+          },
+        },
+      };
+    }),
+    ...blogs
+      .filter((post) => !blgSlugs.has(post.slug))
+      .map((post) => {
+        const translated = spanishBySlug.get(post.slug);
+        return {
+          url: `${seo.host}/es/blog/${post.slug}`,
+          lastModified: translated?.updatedAt ?? post.updatedAt,
+          changeFrequency: "monthly" as const,
+          priority: 0.7,
+          alternates: {
+            languages: {
+              en: `${seo.host}/blog/${post.slug}`,
+              es: `${seo.host}/es/blog/${post.slug}`,
+            },
+          },
+        };
+      }),
+  ];
 
   return [
     ...marketingEntries,
     ...englishArticles,
     ...englishDb,
-    ...spanishDb,
+    ...spanishCatalog,
   ];
 };

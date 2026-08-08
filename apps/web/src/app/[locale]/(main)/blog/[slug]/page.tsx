@@ -9,8 +9,7 @@ import { localizePath } from "@/i18n/locale";
 import type { Locale } from "@/i18n/routing";
 import { routing } from "@/i18n/routing";
 import { splitBlogHtmlByH2 } from "@/lib/blog-html";
-import * as BabyLoveGrowth from "@/server/app/babylovegrowth";
-import * as Blog from "@/server/app/blog-cache";
+import * as BlogLocalize from "@/server/app/blog-localize";
 import {
   EditorialFooter,
   EditorialLayout,
@@ -45,22 +44,10 @@ type BlogPageProps = {
 };
 
 export const generateStaticParams = async () => {
-  const [articles, english, spanish] = await Promise.all([
-    BabyLoveGrowth.listArticles(),
-    Blog.listPublished("en"),
-    Blog.listPublished("es"),
-  ]);
-
-  const englishSlugs = new Set([
-    ...articles.map((article) => article.slug),
-    ...english.map((post) => post.slug),
-  ]);
-  const spanishSlugs = new Set(spanish.map((post) => post.slug));
-
-  return [
-    ...[...englishSlugs].map((slug) => ({ locale: "en", slug })),
-    ...[...spanishSlugs].map((slug) => ({ locale: "es", slug })),
-  ];
+  const slugs = await BlogLocalize.listCatalogSlugs();
+  return routing.locales.flatMap((locale) =>
+    slugs.map((slug) => ({ locale, slug })),
+  );
 };
 
 export const generateMetadata = async ({
@@ -69,45 +56,44 @@ export const generateMetadata = async ({
   const { slug, locale: raw } = await params;
   const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
 
-  if (locale === "en") {
-    const blg = await resultify(() => BabyLoveGrowth.getArticleBySlug(slug));
-    if (blg.success && blg.data) {
-      const article = blg.data;
-      const path = `/blog/${article.slug}`;
-      return {
-        title: article.title,
+  const resolved = await resultify(() =>
+    BlogLocalize.resolveBlog(slug, locale),
+  );
+  if (!resolved.success || !resolved.data) return {};
+
+  if (resolved.data.kind === "blg") {
+    const article = resolved.data.article;
+    const path = localizePath(`/blog/${article.slug}`, locale);
+    return {
+      title: article.title,
+      description: article.meta_description,
+      keywords: article.keywords,
+      alternates: {
+        canonical: path,
+        languages: languageAlternates(article.slug),
+      },
+      openGraph: {
+        type: "article",
+        url: `https://ecentic.ai${path}`,
+        locale: locale === "es" ? "es_ES" : "en_US",
+        title: `${article.title} | ecentic`,
         description: article.meta_description,
-        keywords: article.keywords,
-        alternates: {
-          canonical: path,
-          languages: languageAlternates(article.slug),
-        },
-        openGraph: {
-          type: "article",
-          url: `https://ecentic.ai${path}`,
-          locale: "en_US",
-          title: `${article.title} | ecentic`,
-          description: article.meta_description,
-          publishedTime: article.created_at,
-          modifiedTime: article.updated_at,
-          authors: ["ecentic"],
-          images: article.hero_image_url
-            ? [{ url: article.hero_image_url }]
-            : undefined,
-        },
-        twitter: {
-          card: "summary_large_image",
-          title: `${article.title} | ecentic`,
-          description: article.meta_description,
-        },
-      };
-    }
+        publishedTime: article.created_at,
+        modifiedTime: article.updated_at,
+        authors: ["ecentic"],
+        images: article.hero_image_url
+          ? [{ url: article.hero_image_url }]
+          : undefined,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: `${article.title} | ecentic`,
+        description: article.meta_description,
+      },
+    };
   }
 
-  const result = await resultify(() => Blog.getPublishedBySlug(slug, locale));
-  if (!result.success || !result.data) return {};
-
-  const post = result.data;
+  const post = resolved.data.post;
   const path = localizePath(`/blog/${post.slug}`, locale);
 
   return {
@@ -145,79 +131,77 @@ export default async ({ params }: BlogPageProps) => {
   setRequestLocale(locale);
 
   const translate = await getTranslations({ locale, namespace: "Blog" });
+  const resolved = await BlogLocalize.resolveBlog(slug, locale);
+  if (!resolved) notFound();
 
-  if (locale === "en") {
-    const article = await BabyLoveGrowth.getArticleBySlug(slug);
-    if (article) {
-      const minutes = Math.max(
-        1,
-        readingTimeMinutes(article.content_markdown || article.content_html),
-      );
+  if (resolved.kind === "blg") {
+    const article = resolved.article;
+    const minutes = Math.max(
+      1,
+      readingTimeMinutes(article.content_markdown || article.content_html),
+    );
 
-      const structuredData = [
-        ...(article.jsonLd ? [article.jsonLd] : []),
-        ...(article.faqJsonLd ? [article.faqJsonLd] : []),
-        {
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          itemListElement: [
-            {
-              "@type": "ListItem",
-              position: 1,
-              name: "Home",
-              item: "https://ecentic.ai/",
-            },
-            {
-              "@type": "ListItem",
-              position: 2,
-              name: translate("title"),
-              item: "https://ecentic.ai/blog",
-            },
-            {
-              "@type": "ListItem",
-              position: 3,
-              name: article.title,
-              item: `https://ecentic.ai/blog/${article.slug}`,
-            },
-          ],
-        },
-      ];
+    const structuredData = [
+      ...(article.jsonLd ? [article.jsonLd] : []),
+      ...(article.faqJsonLd ? [article.faqJsonLd] : []),
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: "https://ecentic.ai/",
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: translate("title"),
+            item: `https://ecentic.ai${localizePath("/blog", locale)}`,
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: article.title,
+            item: `https://ecentic.ai${localizePath(`/blog/${article.slug}`, locale)}`,
+          },
+        ],
+      },
+    ];
 
-      const sections = splitBlogHtmlByH2(article.content_html);
+    const sections = splitBlogHtmlByH2(article.content_html);
 
-      return (
-        <EditorialLayout
-          eyebrow={article.seedKeyword ?? "Guide"}
-          title={article.title}
-          meta={
-            <p>
-              {translate("published")}:{" "}
-              {formatBlogDate(article.created_at, locale)} ·{" "}
-              {translate("minRead", { minutes })}
-            </p>
-          }
-          description={article.meta_description || article.excerpt}
-        >
-          <JsonLd schemas={structuredData} />
+    return (
+      <EditorialLayout
+        eyebrow={article.seedKeyword ?? "Guide"}
+        title={article.title}
+        meta={
+          <p>
+            {translate("published")}:{" "}
+            {formatBlogDate(article.created_at, locale)} ·{" "}
+            {translate("minRead", { minutes })}
+          </p>
+        }
+        description={article.meta_description || article.excerpt}
+      >
+        <JsonLd schemas={structuredData} />
 
-          <HtmlArticleSections
-            sections={sections}
-            keywords={[article.seedKeyword ?? "", ...article.keywords]}
-          />
+        <HtmlArticleSections
+          sections={sections}
+          keywords={[article.seedKeyword ?? "", ...article.keywords]}
+        />
 
-          <EditorialFooter
-            primary={{ href: "/sign-up", label: "Get started" }}
-            secondary={{ href: "/blog", label: translate("backToBlog") }}
-            note="Use these guides to improve product clarity, then turn the highest-impact fixes into your next catalog sprint."
-          />
-        </EditorialLayout>
-      );
-    }
+        <EditorialFooter
+          primary={{ href: "/sign-up", label: "Get started" }}
+          secondary={{ href: "/blog", label: translate("backToBlog") }}
+          note="Use these guides to improve product clarity, then turn the highest-impact fixes into your next catalog sprint."
+        />
+      </EditorialLayout>
+    );
   }
 
-  const post = await Blog.getPublishedBySlug(slug, locale);
-  if (!post) notFound();
-
+  const post = resolved.post;
   const path = localizePath(`/blog/${post.slug}`, locale);
 
   if (post.contentHtml) {
@@ -314,17 +298,22 @@ export default async ({ params }: BlogPageProps) => {
           </>
         }
         right={
-          <ul className="flex flex-col gap-3">
-            {post.takeaways.map((takeaway) => (
-              <li
-                key={takeaway}
-                className="flex gap-3 text-foreground-dimmed leading-relaxed"
-              >
-                <span className="mt-[0.45rem] size-1.5 shrink-0 rounded-full bg-primary" />
-                <span>{takeaway}</span>
-              </li>
-            ))}
-          </ul>
+          <div className="flex flex-col gap-5">
+            <h2 className="font-semibold text-2xl text-foreground leading-snug md:text-3xl">
+              Key takeaways
+            </h2>
+            <ul className="flex flex-col gap-3">
+              {post.takeaways.map((takeaway) => (
+                <li
+                  key={takeaway}
+                  className="flex gap-3 text-foreground-dimmed leading-relaxed"
+                >
+                  <span className="mt-[0.45rem] size-1.5 shrink-0 rounded-full bg-primary" />
+                  <span>{takeaway}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         }
       />
 
@@ -341,7 +330,14 @@ export default async ({ params }: BlogPageProps) => {
               </h2>
             </>
           }
-          right={<EditorialRichText content={section.content} />}
+          right={
+            <div className="flex flex-col gap-5">
+              <h2 className="font-semibold text-2xl text-foreground leading-snug md:text-3xl">
+                {section.title}
+              </h2>
+              <EditorialRichText content={section.content} />
+            </div>
+          }
         />
       ))}
 
