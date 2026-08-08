@@ -22,19 +22,15 @@ import {
   ChartSkeleton,
   CompetitorTableSkeleton,
   StatsSkeleton,
+  StatusPillSkeleton,
   TableSkeleton,
 } from "../../_components/chrome-skeletons";
 import { CompetitorsTable } from "../../_components/competitors-table";
-import {
-  Crosshair,
-  SectionGutter,
-  StatLabel,
-  StatusPill,
-} from "../../_components/grid";
+import { StatLabel, StatusPill } from "../../_components/grid";
 import { OverviewActions } from "../../_components/overview-actions";
 import { OverviewCharts } from "../../_components/overview-charts";
-import { OverviewDetails } from "../../_components/overview-details";
 import { ProductsTable } from "../../_components/products-table";
+import { OverviewShell } from "./_components/shell";
 
 type StoreParams = PageProps<"/dashboard/[store]">["params"];
 
@@ -42,90 +38,41 @@ type StoreParams = PageProps<"/dashboard/[store]">["params"];
 // static shell. `params` is request data — awaiting it here would strand the
 // whole page behind the route skeleton, so it is handed to the Suspense leaves
 // that actually need a store id.
-export default ({ params }: PageProps<"/dashboard/[store]">) => {
-  return (
-    <div className="flex flex-col">
-      <div className="mx-8 border-accent-foreground border-x">
-        <div className="-mx-8 border-accent-foreground border-b">
-          <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <div>
-              <Suspense
-                fallback={
-                  <div className="h-5 w-42 animate-pulse rounded-full bg-foreground/10" />
-                }
-              >
-                <LastUpdated params={params} />
-              </Suspense>
-              <h1 className="mt-3 font-bold text-3xl text-foreground-rich tracking-[-0.02em]">
-                Overview
-              </h1>
-              <p className="mt-1 text-foreground-dimmed text-sm">
-                How AI shopping agents rank your catalog against competitors.
-              </p>
-            </div>
-            <OverviewActions params={params} />
-          </div>
-        </div>
-
-        <div className="-mx-8 border-accent-foreground border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <Suspense fallback={<StatsSkeleton />}>
-              <StatCards params={params} />
-            </Suspense>
-          </div>
-        </div>
-
-        <SectionGutter />
-
-        <div className="-mx-8 border-accent-foreground border-t border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <Suspense fallback={<ChartSkeleton />}>
-              <Performance params={params} />
-            </Suspense>
-          </div>
-        </div>
-
-        <SectionGutter />
-
-        {/* Top Products / Competitors / Agent Visits were three stacked
-            always-open panels — ~6 screens of scroll. Now one tabbed panel. */}
-        <div className="-mx-8 border-accent-foreground border-t border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <OverviewDetails
-              products={
-                <Suspense fallback={<TableSkeleton />}>
-                  <TopProducts params={params} />
-                </Suspense>
-              }
-              competitors={
-                <Suspense fallback={<CompetitorTableSkeleton />}>
-                  <TopCompetitors params={params} />
-                </Suspense>
-              }
-              agents={
-                <Suspense fallback={<TableSkeleton />}>
-                  <AgentVisitsPanel params={params} />
-                </Suspense>
-              }
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+export default ({ params }: PageProps<"/dashboard/[store]">) => (
+  <OverviewShell
+    statusPill={
+      <Suspense fallback={<StatusPillSkeleton className="w-42" />}>
+        <LastUpdated params={params} />
+      </Suspense>
+    }
+    actions={<OverviewActions params={params} />}
+    stats={
+      <Suspense fallback={<StatsSkeleton />}>
+        <StatCards params={params} />
+      </Suspense>
+    }
+    performance={
+      <Suspense fallback={<ChartSkeleton />}>
+        <Performance params={params} />
+      </Suspense>
+    }
+    products={
+      <Suspense fallback={<TableSkeleton />}>
+        <TopProducts params={params} />
+      </Suspense>
+    }
+    competitors={
+      <Suspense fallback={<CompetitorTableSkeleton />}>
+        <TopCompetitors params={params} />
+      </Suspense>
+    }
+    agents={
+      <Suspense fallback={<TableSkeleton />}>
+        <AgentVisitsPanel params={params} />
+      </Suspense>
+    }
+  />
+);
 
 const LastUpdated = async ({ params }: { params: StoreParams }) => {
   await connection();

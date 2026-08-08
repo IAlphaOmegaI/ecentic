@@ -22,7 +22,7 @@ import {
   StatusPill,
 } from "../../../_components/grid";
 import { ProductDetail } from "./_components/product-detail";
-import { PageSkeleton } from "./_components/skeletons";
+import { PageSkeleton } from "./_components/shell";
 
 export default ({ params }: PageProps<"/dashboard/[store]/products/[id]">) => (
   <div className="flex flex-col">

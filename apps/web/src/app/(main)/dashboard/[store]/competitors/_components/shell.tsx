@@ -1,3 +1,99 @@
+import type { ReactNode } from "react";
+import { Crosshair, SectionGutter } from "../../../_components/grid";
+
+/**
+ * The page's static frame, rendered by both `page.tsx` and `loading.tsx`.
+ *
+ * Every region that needs a query is a slot; the heading, the section chrome
+ * and the gutters need no data and prerender. Keeping one copy is what lets a
+ * navigation land without shift and stops the two from drifting.
+ */
+export const CompetitorsShell = ({
+  statusPill,
+  action,
+  stats,
+  landscape,
+  table,
+  insights,
+}: {
+  statusPill: ReactNode;
+  action: ReactNode;
+  stats: ReactNode;
+  landscape: ReactNode;
+  table: ReactNode;
+  insights: ReactNode;
+}) => (
+  <div className="flex flex-col">
+    <div className="mx-8 border-accent-foreground border-x">
+      <div className="-mx-8 border-accent-foreground border-b">
+        <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+          <div>
+            {statusPill}
+            <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
+              Competitors
+            </h1>
+            <p className="mt-1 text-foreground-dimmed text-sm">
+              How AI shopping agents rank you against the brands you track.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">{action}</div>
+        </div>
+      </div>
+
+      <div className="-mx-8 border-accent-foreground border-b">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+          {stats}
+        </div>
+      </div>
+
+      <SectionGutter />
+
+      <div className="-mx-8 border-accent-foreground border-t border-b">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+          {landscape}
+        </div>
+      </div>
+
+      <SectionGutter />
+
+      <div className="-mx-8 border-accent-foreground border-t border-b">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+          {table}
+        </div>
+      </div>
+
+      <SectionGutter />
+
+      <div className="-mx-8 border-accent-foreground border-t border-b">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+          {insights}
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// Sized to the "Add Competitor" button it stands in for.
+export const AddActionSkeleton = () => (
+  <div className="h-9 w-36 animate-pulse bg-foreground/10" />
+);
+
 // Suspense fallbacks for the competitors page, shared with loading.tsx so the
 // route-level skeleton and the streamed page render the exact same shapes.
 

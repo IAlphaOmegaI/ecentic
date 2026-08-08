@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import * as Optimization from "@/server/app/optimization";
 import { Environment } from "@/server/utils/environment";
 import { OptimizeClient } from "./_components/optimize-client";
-import { OptimizeSkeleton } from "./_components/skeletons";
+import { OptimizeSkeleton } from "./_components/shell";
 
 type StoreParams = PageProps<"/dashboard/[store]/optimize">["params"];
 

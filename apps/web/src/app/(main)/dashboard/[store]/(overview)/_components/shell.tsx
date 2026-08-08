@@ -1,14 +1,37 @@
-import { StatsSkeleton } from "../../_components/chrome-skeletons";
-import { Crosshair, SectionGutter } from "../../_components/grid";
-import {
-  InsightsSkeleton,
-  LandscapeSkeleton,
-  TableSkeleton,
-} from "./_components/skeletons";
+import type { ReactNode } from "react";
+import { Crosshair, SectionGutter } from "../../../_components/grid";
+import { OverviewDetails } from "../../../_components/overview-details";
 
-// Mirrors the competitors page shell exactly — same chrome, static header
-// text, and per-section Suspense fallbacks — so navigation lands without shift.
-export default () => (
+// Sized to the "Run Simulation" button it stands in for.
+export const OverviewActionsSkeleton = () => (
+  <div className="h-9 w-40 animate-pulse bg-foreground/10" />
+);
+
+/**
+ * The page's static frame, rendered by both `page.tsx` and `loading.tsx`.
+ *
+ * Every region that needs a query is a slot; the heading, the section chrome
+ * and the tab rail need no data and prerender. The tabbed panel is rendered
+ * here rather than passed in whole, so the loading state shows the real tabs
+ * with placeholders inside them instead of a blank rectangle.
+ */
+export const OverviewShell = ({
+  statusPill,
+  actions,
+  stats,
+  performance,
+  products,
+  competitors,
+  agents,
+}: {
+  statusPill: ReactNode;
+  actions: ReactNode;
+  stats: ReactNode;
+  performance: ReactNode;
+  products: ReactNode;
+  competitors: ReactNode;
+  agents: ReactNode;
+}) => (
   <div className="flex flex-col">
     <div className="mx-8 border-accent-foreground border-x">
       <div className="-mx-8 border-accent-foreground border-b">
@@ -16,17 +39,15 @@ export default () => (
           <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div>
-            <div className="h-5 w-56 animate-pulse rounded-full bg-foreground/10" />
-            <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
-              Competitors
+            {statusPill}
+            <h1 className="mt-3 font-bold text-3xl text-foreground-rich tracking-[-0.02em]">
+              Overview
             </h1>
             <p className="mt-1 text-foreground-dimmed text-sm">
-              How AI shopping agents rank you against the brands you track.
+              How AI shopping agents rank your catalog against competitors.
             </p>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="h-9 w-36 animate-pulse bg-foreground/10" />
-          </div>
+          {actions}
         </div>
       </div>
 
@@ -34,7 +55,7 @@ export default () => (
         <div className="relative mx-8 bg-background-rich">
           <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <StatsSkeleton />
+          {stats}
         </div>
       </div>
 
@@ -46,31 +67,25 @@ export default () => (
           <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <LandscapeSkeleton />
+          {performance}
         </div>
       </div>
 
       <SectionGutter />
 
+      {/* Top Products / Competitors / Agent Visits were three stacked
+          always-open panels — ~6 screens of scroll. Now one tabbed panel. */}
       <div className="-mx-8 border-accent-foreground border-t border-b">
         <div className="relative mx-8 bg-background-rich">
           <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
           <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <TableSkeleton />
-        </div>
-      </div>
-
-      <SectionGutter />
-
-      <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="relative mx-8 bg-background-rich">
-          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <InsightsSkeleton />
+          <OverviewDetails
+            products={products}
+            competitors={competitors}
+            agents={agents}
+          />
         </div>
       </div>
     </div>

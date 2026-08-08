@@ -1,4 +1,4 @@
-import { OptimizeSkeleton } from "./_components/skeletons";
+import { OptimizeSkeleton } from "./_components/shell";
 
 // Mirrors the optimize page shell so navigation lands without layout shift.
 export default () => (

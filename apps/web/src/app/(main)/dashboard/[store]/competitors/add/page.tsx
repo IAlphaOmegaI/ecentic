@@ -7,68 +7,37 @@ import { Suspense } from "react";
 import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
 import { Environment } from "@/server/utils/environment";
-import {
-  Crosshair,
-  SectionGutter,
-  StatusPill,
-} from "../../../_components/grid";
+import { StatusPillSkeleton } from "../../../_components/chrome-skeletons";
+import { StatusPill } from "../../../_components/grid";
 import { AddCompetitors } from "./_components/add-competitors";
+import {
+  AddCompetitorsShell,
+  BackLinkSkeleton,
+  SourcesSkeleton,
+} from "./_components/shell";
 
 type StoreParams = PageProps<"/dashboard/[store]/competitors/add">["params"];
 
 export default ({
   params,
-}: PageProps<"/dashboard/[store]/competitors/add">) => {
-  return (
-    <div className="flex flex-col">
-      <div className="mx-8 border-accent-foreground border-x">
-        <div className="-mx-8 border-accent-foreground border-b">
-          <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <div>
-              <Suspense
-                fallback={
-                  <div className="h-5 w-56 animate-pulse rounded-full bg-foreground/10" />
-                }
-              >
-                <RosterStatus params={params} />
-              </Suspense>
-              <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
-                Add Competitors
-              </h1>
-              <p className="mt-1 text-foreground-dimmed text-sm">
-                The brands this store's catalog is judged against. Competitors
-                belong to one store, so these never mix with your other stores.
-              </p>
-            </div>
-            <Suspense
-              fallback={
-                <div className="h-9 w-40 animate-pulse bg-foreground/10" />
-              }
-            >
-              <BackToCompetitors params={params} />
-            </Suspense>
-          </div>
-        </div>
-
-        <SectionGutter />
-
-        <div className="-mx-8 border-accent-foreground border-t border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <Suspense fallback={<AddSkeleton />}>
-              <Sources params={params} />
-            </Suspense>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+}: PageProps<"/dashboard/[store]/competitors/add">) => (
+  <AddCompetitorsShell
+    statusPill={
+      <Suspense fallback={<StatusPillSkeleton />}>
+        <RosterStatus params={params} />
+      </Suspense>
+    }
+    action={
+      <Suspense fallback={<BackLinkSkeleton />}>
+        <BackToCompetitors params={params} />
+      </Suspense>
+    }
+  >
+    <Suspense fallback={<SourcesSkeleton />}>
+      <Sources params={params} />
+    </Suspense>
+  </AddCompetitorsShell>
+);
 
 const RosterStatus = async ({ params }: { params: StoreParams }) => {
   await connection();
@@ -107,7 +76,7 @@ const Sources = async ({ params }: { params: StoreParams }) => {
   );
 };
 
-const AddSkeleton = () => (
+const _AddSkeleton = () => (
   <div className="flex flex-col gap-px bg-accent-foreground">
     <div className="bg-background-rich">
       <div className="space-y-2 p-4">

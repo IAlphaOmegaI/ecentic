@@ -1,7 +1,7 @@
 import { cn } from "@zenncore/utils";
+import { ItemCycle } from "@/app/(main)/_components/item-cycle";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
-import { ItemCycle } from "@/app/(main)/_components/item-cycle";
 
 const categories = [
   {

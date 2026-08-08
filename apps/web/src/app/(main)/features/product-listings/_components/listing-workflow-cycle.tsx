@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  FaceSearchIcon,
-  RobotIcon,
-  UploadIcon,
-} from "@zenncore/icons";
+import { FaceSearchIcon, RobotIcon, UploadIcon } from "@zenncore/icons";
 import { VerticalStepCycle } from "@/app/(main)/_components/vertical-step-cycle";
 
 const steps = [

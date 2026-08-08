@@ -239,9 +239,7 @@ export default async () => {
                 <Button
                   color="primary"
                   className="self-start"
-                  render={
-                    <Link href={`/blog/${entry.slug}`} prefetch={true} />
-                  }
+                  render={<Link href={`/blog/${entry.slug}`} prefetch={true} />}
                 >
                   Read article
                   <ArrowRightIcon className="size-4" />

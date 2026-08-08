@@ -1,3 +1,118 @@
+import type { ReactNode } from "react";
+import { Crosshair, SectionGutter } from "../../../_components/grid";
+
+/**
+ * The page's static frame, rendered by both `page.tsx` and `loading.tsx`.
+ *
+ * Every region that needs a query is a slot; the heading, the section chrome
+ * and the gutters need no data and prerender. `banner` renders nothing until
+ * the embed status resolves, so it has no placeholder.
+ */
+export const ProductsShell = ({
+  statusPill,
+  action,
+  banner,
+  stats,
+  performance,
+  table,
+  traffic,
+  insights,
+}: {
+  statusPill: ReactNode;
+  action: ReactNode;
+  banner?: ReactNode;
+  stats: ReactNode;
+  performance: ReactNode;
+  table: ReactNode;
+  traffic: ReactNode;
+  insights: ReactNode;
+}) => (
+  <div className="flex flex-col">
+    <div className="mx-8 border-accent-foreground border-x">
+      <div className="-mx-8 border-accent-foreground border-b">
+        <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+          <div>
+            {statusPill}
+            <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
+              Products
+            </h1>
+            <p className="mt-1 text-foreground-dimmed text-sm">
+              How each product in your catalog performs across AI shopping
+              agents.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">{action}</div>
+        </div>
+      </div>
+
+      {banner}
+
+      <div className="-mx-8 border-accent-foreground border-b">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+          {stats}
+        </div>
+      </div>
+
+      <SectionGutter />
+
+      <div className="-mx-8 border-accent-foreground border-t border-b">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+          {performance}
+        </div>
+      </div>
+
+      <SectionGutter />
+
+      <div className="-mx-8 border-accent-foreground border-t border-b">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+          {table}
+        </div>
+      </div>
+
+      <SectionGutter />
+
+      <div className="-mx-8 border-accent-foreground border-t border-b">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+          {traffic}
+        </div>
+      </div>
+
+      <SectionGutter />
+
+      <div className="-mx-8 border-accent-foreground border-t border-b">
+        <div className="relative mx-8 bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+          {insights}
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// Sized to the "Add Products" button it stands in for.
+export const AddActionSkeleton = () => (
+  <div className="h-9 w-36 animate-pulse bg-foreground/10" />
+);
+
 // Suspense fallbacks for the products page, shared with loading.tsx so the
 // route-level skeleton and the streamed page render the exact same shapes.
 

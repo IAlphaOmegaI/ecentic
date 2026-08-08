@@ -48,9 +48,7 @@ const resolveToken = async () => {
   );
   const token = auth?.token;
   if (typeof token === "string" && token.length > 0) return token;
-  throw new Error(
-    "No Vercel token. Run `vercel login` or set VERCEL_TOKEN.",
-  );
+  throw new Error("No Vercel token. Run `vercel login` or set VERCEL_TOKEN.");
 };
 
 const resolveTeamId = async (token: string) => {

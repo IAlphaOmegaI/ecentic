@@ -1,7 +1,4 @@
-import {
-  jsonHeaders,
-  oauthAuthorizationServer,
-} from "@/lib/agent-discovery";
+import { jsonHeaders, oauthAuthorizationServer } from "@/lib/agent-discovery";
 
 /**
  * RFC 8414 OAuth 2.0 Authorization Server Metadata.

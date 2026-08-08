@@ -12,7 +12,7 @@ import { AccountSection } from "./_components/settings/account-section";
 import { BillingSection } from "./_components/settings/billing-section";
 import { IntegrationsSection } from "./_components/settings/integrations-section";
 import { SettingsClient } from "./_components/settings-client";
-import { PanelSkeleton, SettingsShell } from "./_components/settings-shell";
+import { PanelSkeleton, SettingsShell } from "./_components/shell";
 
 // Sign-out runs as a server action on this page, so Next re-renders these
 // panels in the same response with the session already destroyed. Redirect

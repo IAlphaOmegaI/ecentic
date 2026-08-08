@@ -1,8 +1,8 @@
 import { resultify } from "@zenncore/utils";
 import type { ProxyConfig, NextRequest as Request } from "next/server";
 import { NextResponse as Response } from "next/server";
-import { auth } from "@/lib/auth";
 import { agentHomepageLinkHeader } from "@/lib/agent-discovery";
+import { auth } from "@/lib/auth";
 
 type Route = string | RegExp;
 

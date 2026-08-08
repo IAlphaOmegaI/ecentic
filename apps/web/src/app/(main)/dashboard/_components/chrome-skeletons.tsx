@@ -19,6 +19,18 @@ const navPlaceholders = [
 // separately, so each region has its own placeholder. There is deliberately no
 // whole-sidebar or whole-topbar skeleton: the frame, logo, nav chrome, search
 // box and bell all prerender, so nothing ever needs to stand in for the lot.
+// Matches the real StatusPill's geometry, so a heading block does not shift
+// when the pill streams in.
+export const StatusPillSkeleton = ({
+  className = "w-56",
+}: {
+  className?: string;
+}) => (
+  <div
+    className={`h-5 animate-pulse rounded-full bg-foreground/10 ${className}`}
+  />
+);
+
 export const StoreSwitcherSkeleton = () => (
   <div className="border-accent-foreground border-b p-2">
     <div className="flex w-full items-center gap-2.5 border border-accent-foreground bg-background px-2.5 py-2">

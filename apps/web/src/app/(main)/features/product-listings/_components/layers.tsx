@@ -58,9 +58,9 @@ export const Layers = () => (
         </RevealItem>
         <RevealItem>
           <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-xl">
-            Rewriting descriptions is only one slice of the work. High-performing
-            listing optimization connects copy, data quality, and trust in the
-            same pass.
+            Rewriting descriptions is only one slice of the work.
+            High-performing listing optimization connects copy, data quality,
+            and trust in the same pass.
           </p>
         </RevealItem>
       </Reveal>
