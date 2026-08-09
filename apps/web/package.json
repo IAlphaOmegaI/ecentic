@@ -18,7 +18,8 @@
     "db:reset": "bun scripts/reset.ts",
     "db:seed": "bun scripts/seed.ts",
     "db:seed:demo": "bun scripts/seed-demo.ts",
-    "export:shopify": "bun scripts/export-shopify-csv.ts"
+    "export:shopify": "bun scripts/export-shopify-csv.ts",
+    "blog:backfill-english": "bun scripts/backfill-blog-english.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.36",

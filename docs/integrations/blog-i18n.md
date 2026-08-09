@@ -36,7 +36,20 @@ All blog server logic lives in `apps/web/src/server/app/blog.ts`:
 - Public pages use `resolve` only — no Azure on the render path
 - `Blog.ingestPublish` (webhook) upserts **EN + ES** and purges the `blog` tag
 
-BabyLoveGrowth CMS client stays in `babylovegrowth.ts` (external API only). Soft-failure `null` from transport errors is **not** cached for per-slug reads (that used to 404 English while Spanish still served from Postgres).
+BabyLoveGrowth CMS client stays in `babylovegrowth.ts` (external API only). All BLG HTTP is serialized (~550ms gap, max 2 req/s). Soft-failure `null` from transport errors is **not** returned for per-slug reads (that used to cache for days and 404 English while Spanish still served from Postgres) — failures rethrow after 429 retries.
+
+### English backfill (one-shot)
+
+Older posts published before the webhook wrote EN rows still force live BLG during `generateStaticParams` / SSG and can 429 the deploy. Run once against production Postgres:
+
+```bash
+cd apps/web
+# point DATABASE_URL at production, then:
+bun run blog:backfill-english -- --yes
+# optional: --limit=20 --max-rounds=100
+```
+
+Needs `DATABASE_URL` + `BABYLOVEGROWTH_BLOG_API_KEY`. No Azure. Then redeploy (or purge `blog`) so static `/blog/*` pages read Postgres.
 
 ### Locale switcher
 

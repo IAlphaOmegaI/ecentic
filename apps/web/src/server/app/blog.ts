@@ -418,3 +418,81 @@ export const ingestPublish = withContext(
   },
   "Blog.ingestPublish",
 );
+
+/**
+ * Persist missing English `blog_post` rows from BabyLoveGrowth (no Azure).
+ * Call from `blog:backfill-english` so SSG hits Postgres instead of live BLG
+ * (BLG caps at 2 req/s — parallel slug prerender otherwise 429s the build).
+ */
+export const backfillMissingEnglishCore = async (
+  options: { limit?: number } = {},
+) => {
+  const batchLimit =
+    typeof options.limit === "number" && options.limit > 0
+      ? Math.floor(options.limit)
+      : Number.POSITIVE_INFINITY;
+
+  const articles = await resultify(() => BabyLoveGrowth.listArticles());
+  if (!articles.success) return articles;
+
+  const existingEnglish = await find(Environment.SERVER, {
+    where: eq(schema.blogPost.locale, "en"),
+  });
+  if (!existingEnglish.success) return existingEnglish;
+
+  const englishSlugs = new Set(existingEnglish.data.map((row) => row.slug));
+  const missing = articles.data
+    .map((summary) => summary.slug)
+    .filter((slug) => !englishSlugs.has(slug));
+
+  const batch = missing.slice(0, batchLimit);
+  const upserted: string[] = [];
+  const failed: string[] = [];
+
+  for (const slug of batch) {
+    try {
+      const article = await BabyLoveGrowth.getArticleBySlug(slug);
+      if (!article) {
+        failed.push(slug);
+        console.error(`  ${slug}: BLG returned no published article`);
+        continue;
+      }
+
+      const description = article.meta_description || article.excerpt || "";
+      await upsertLocaleRow({
+        slug: article.slug,
+        locale: "en",
+        source: "blg",
+        externalId: String(article.id),
+        category: article.seedKeyword ?? "Guide",
+        title: article.title,
+        description,
+        introduction: description,
+        publishedAt: article.created_at.slice(0, 10),
+        readTime: estimateReadTime(article.content_html),
+        thumbnailUrl: article.hero_image_url || null,
+        tags: article.keywords,
+        takeaways: [],
+        contentHtml: article.content_html,
+      });
+
+      upserted.push(slug);
+      englishSlugs.add(slug);
+    } catch (error) {
+      failed.push(slug);
+      console.error(
+        `  ${slug}: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
+  }
+
+  return {
+    success: true as const,
+    data: {
+      upserted,
+      failed,
+      remaining: Math.max(0, missing.length - batch.length),
+      missingTotal: missing.length,
+    },
+  };
+};
