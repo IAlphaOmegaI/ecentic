@@ -24,6 +24,13 @@ import { cacheLife, cacheTag } from "next/cache";
 
 const BLOG_CACHE_TAG = "blog";
 
+/** Next Cache Components only — no-ops in Bun CLI / scripts. */
+const applyBlogCache = (...tags: string[]) => {
+  if (!process.env.__NEXT_USE_CACHE) return;
+  cacheLife("days");
+  cacheTag(...tags);
+};
+
 const client = () =>
   new BlogClient({
     apiKey: process.env.BABYLOVEGROWTH_BLOG_API_KEY,
@@ -77,8 +84,7 @@ const fetchAllArticles = (): Promise<BlogArticleSummary[]> => {
 
 export const listArticles = async (): Promise<BlogArticleSummary[]> => {
   "use cache";
-  cacheLife("days");
-  cacheTag(BLOG_CACHE_TAG);
+  applyBlogCache(BLOG_CACHE_TAG);
 
   if (!process.env.BABYLOVEGROWTH_BLOG_API_KEY) return [];
 
@@ -93,8 +99,7 @@ export const getArticleBySlug = async (
   slug: string,
 ): Promise<BlogArticle | null> => {
   "use cache";
-  cacheLife("days");
-  cacheTag(BLOG_CACHE_TAG, `blog-${slug}`);
+  applyBlogCache(BLOG_CACHE_TAG, `blog-${slug}`);
 
   if (!process.env.BABYLOVEGROWTH_BLOG_API_KEY) return null;
 
@@ -109,8 +114,7 @@ export const getArticleBySlug = async (
 
 export const listTags = async (): Promise<BlogTag[]> => {
   "use cache";
-  cacheLife("days");
-  cacheTag(BLOG_CACHE_TAG);
+  applyBlogCache(BLOG_CACHE_TAG);
 
   const articles = await listArticles();
   return deriveTags(articles);
@@ -120,8 +124,7 @@ export const listArticlesByTag = async (
   tagSlug: string,
 ): Promise<BlogArticleSummary[]> => {
   "use cache";
-  cacheLife("days");
-  cacheTag(BLOG_CACHE_TAG, `blog-tag-${tagSlug}`);
+  applyBlogCache(BLOG_CACHE_TAG, `blog-tag-${tagSlug}`);
 
   const articles = await listArticles();
   return articles.filter((article) =>
@@ -131,8 +134,7 @@ export const listArticlesByTag = async (
 
 export const listSitemapEntries = async (): Promise<BlogSitemapEntry[]> => {
   "use cache";
-  cacheLife("days");
-  cacheTag(BLOG_CACHE_TAG);
+  applyBlogCache(BLOG_CACHE_TAG);
 
   const articles = await listArticles();
   return articles.map((article) => ({

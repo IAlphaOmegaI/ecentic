@@ -462,14 +462,35 @@ export const translateMissingSpanishCore = async (
   const batch = missing.slice(0, batchLimit);
 
   for (const slug of batch) {
-    const ensured = await ensureSpanishCore(slug);
-    if (!ensured.success || !ensured.data) {
-      failed.push(slug);
-      continue;
-    }
+    try {
+      const ensured = await ensureSpanishCore(slug);
+      if (!ensured.success) {
+        failed.push(slug);
+        console.error(
+          `  ${slug}: ${
+            ensured.error instanceof Error
+              ? ensured.error.message
+              : String(ensured.error)
+          }`,
+        );
+        continue;
+      }
+      if (!ensured.data) {
+        failed.push(slug);
+        console.error(
+          `  ${slug}: no English/BLG source found to translate`,
+        );
+        continue;
+      }
 
-    translated.push(slug);
-    spanishSlugs.add(slug);
+      translated.push(slug);
+      spanishSlugs.add(slug);
+    } catch (error) {
+      failed.push(slug);
+      console.error(
+        `  ${slug}: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
   }
 
   if (translated.length > 0) purgeBlogCache();

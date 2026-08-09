@@ -82,7 +82,12 @@ const azure = createAzure({
 // Thunks, not values: read per call so the answer reflects the environment the
 // runtime actually has, not whatever existed when this module was first imported.
 const AZURE_DEPLOYMENTS: Record<string, () => string | undefined> = {
-  gpt: () => process.env.AZURE_DEPLOYMENT_GPT,
+  // Prefer `AZURE_DEPLOYMENT_GPT`. Some local/prod env files still use the
+  // older `AZURE_DEPLOYMENT_GPT4O` name for the same ChatGPT seat — without
+  // this fallback every `model: "gpt"` call skips Azure and hits the gateway
+  // (which fails hard when the gateway wallet is empty).
+  gpt: () =>
+    process.env.AZURE_DEPLOYMENT_GPT ?? process.env.AZURE_DEPLOYMENT_GPT4O,
 };
 
 // Both halves are required before Azure can serve anything — without them the

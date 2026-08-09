@@ -251,6 +251,7 @@ AZURE_DEPLOYMENT_GPT                      # your ChatGPT DEPLOYMENT name, e.g. "
                                           # because Azure 404s any deployment name it was not given. Repoint the
                                           # deployment and that constant together, or the rails judge with
                                           # different models under one "ChatGPT" label.
+                                          # Legacy alias: AZURE_DEPLOYMENT_GPT4O (same gpt seat) if GPT is unset.
 AI_GATEWAY_API_KEY                        # Vercel AI Gateway — Claude/Gemini/Perplexity calls
 ```
 
