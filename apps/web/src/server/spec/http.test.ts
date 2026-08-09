@@ -5,6 +5,7 @@ import {
   NotFoundError,
   UnauthenticatedError,
   UnauthorizedError,
+  UntrustedRequestError,
   ValidationError,
 } from "../utils/error";
 import { respond } from "../utils/http";
@@ -37,6 +38,9 @@ describe("respond", () => {
     // Shopify requires a 401 from the mandatory compliance webhooks when the
     // HMAC does not verify — this row is that contract.
     [new InvalidSignatureError("nope"), 401],
+    // The cron / on-demand-purge guard answers the same 401 for a bearer that
+    // does not match, so a rejected caller cannot tell the rails apart.
+    [new UntrustedRequestError("nope"), 401],
     [new UnauthorizedError("nope"), 403],
     [new NotFoundError("nope"), 404],
     [new ConflictError("nope"), 409],

@@ -109,6 +109,21 @@ export class InvalidSignatureError extends error(
 ) {}
 
 /**
+ * A public endpoint turned away a caller that presented the wrong shared secret
+ * — or none. The sibling of `InvalidSignatureError` for the rails that check a
+ * bearer token rather than a signature: `/api/cron/*` and the on-demand cache
+ * purge, whose URLs anyone can POST. Same reasoning, so same treatment — never a
+ * defect, and the guard records its own rejections at `warning` so a scanner
+ * finding the endpoint does not open an issue while a real caller failing auth
+ * is still visible.
+ */
+export class UntrustedRequestError extends error(
+  "untrusted-request",
+  AuthenticationError,
+  { expected: true },
+) {}
+
+/**
  * Whether an error is a failure the product anticipates and handles — a business
  * rule the user can act on — rather than a defect. Expected errors still travel
  * as failed `Result`s and still reach the user, but `withContext` does not report
@@ -142,6 +157,7 @@ export namespace ErrorProtocol {
     [UnauthenticatedError.name]: UnauthenticatedError,
     [UnauthorizedError.name]: UnauthorizedError,
     [InvalidSignatureError.name]: InvalidSignatureError,
+    [UntrustedRequestError.name]: UntrustedRequestError,
   };
 
   export const serialize = <E extends Error = Error>(
