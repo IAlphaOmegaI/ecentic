@@ -65,6 +65,20 @@ describe("isTransientConnectionError", () => {
     ).toBe(true);
   });
 
+  test("catches the connect that stalled while its siblings served", () => {
+    // ECENTIC-D9: one of four parallel dashboard reads needed a fresh
+    // connection and postgres.js gave up at `connect_timeout`, while the other
+    // three connected and returned in the same instant. The attempt never
+    // reached Postgres, so the retry this gates opens a new socket instead of
+    // failing the whole page. postgres.js builds this error itself
+    // (`Errors.connection`), with the unresolved host baked into the message.
+    const connectTimeout = Object.assign(
+      new Error("write CONNECT_TIMEOUT undefined:undefined"),
+      { code: "CONNECT_TIMEOUT", errno: "CONNECT_TIMEOUT" },
+    );
+    expect(isTransientConnectionError(drizzleError(connectTimeout))).toBe(true);
+  });
+
   test.each([
     ["ECONNRESET", true],
     ["EPIPE", true],
@@ -72,9 +86,10 @@ describe("isTransientConnectionError", () => {
     ["CONNECTION_CLOSED", true],
     ["CONNECTION_DESTROYED", true],
     ["CONNECTION_ENDED", true],
-    // Excluded on purpose: the database was unreachable for the full
-    // `connect_timeout`, so a retry mostly doubles the wait before failing.
-    ["CONNECT_TIMEOUT", false],
+    // Excluded after ECENTIC-CD ("unreachable, a retry doubles the wait"),
+    // re-admitted after ECENTIC-D9 stalled one connect while its three sibling
+    // reads served fine — see the isolated-stall test below.
+    ["CONNECT_TIMEOUT", true],
     // A real rejection from Postgres. Retrying replays it verbatim.
     ["23505", false],
     ["42P01", false],

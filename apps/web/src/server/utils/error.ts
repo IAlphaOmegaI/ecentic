@@ -137,14 +137,21 @@ export const isExpected = (error: Error) => expected.has(error.name);
  * `ETIMEDOUT`, `ECONNRESET` or `EPIPE`; postgres.js raises its own `CONNECTION_*`
  * codes when it notices the stream went away underneath a pending query.
  *
- * `CONNECT_TIMEOUT` is deliberately absent. That one means the database was
- * unreachable for the whole `connect_timeout` (ECENTIC-CD), so retrying it
- * mostly doubles how long the page hangs before failing anyway.
+ * `CONNECT_TIMEOUT` was excluded at first on the theory that it means the
+ * database was unreachable for the whole `connect_timeout` (ECENTIC-CD), so a
+ * retry could only double the hang before the same failure. ECENTIC-D9 broke
+ * the theory: one connect stalled past the full window while the three sibling
+ * reads in the same `Promise.all` connected and returned — the pooler was
+ * healthy and simply sat on one attempt. A timed-out connect never reached
+ * Postgres, so replaying it is as safe as the dead-socket replays above; the
+ * price is that a genuine outage now hangs for two `connect_timeout` windows
+ * instead of one before failing.
  */
 const TRANSIENT_CONNECTION_CODES: ReadonlySet<string> = new Set([
   "ECONNRESET",
   "EPIPE",
   "ETIMEDOUT",
+  "CONNECT_TIMEOUT",
   "CONNECTION_CLOSED",
   "CONNECTION_DESTROYED",
   "CONNECTION_ENDED",
