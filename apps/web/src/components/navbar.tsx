@@ -16,6 +16,7 @@ import {
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { type MouseEvent, type ReactNode, useEffect } from "react";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { Motion } from "@/components/motion";
 import { Link, usePathname } from "@/i18n/navigation";
 
@@ -112,13 +113,17 @@ const NavbarDesktop = () => {
         </div>
       </div>
 
-      <div className="relative hidden h-14 shrink-0 p-4 pr-6 pl-12 sm:h-16 lg:block">
+      <div className="relative hidden h-14 shrink-0 items-center gap-3 p-4 pr-6 pl-12 sm:h-16 lg:flex">
         <Image
           src="/images/right-menu.svg"
           alt=""
           fill
           className="absolute inset-0 object-cover"
           aria-hidden
+        />
+        <LanguageSwitcher
+          variant="nav"
+          className="relative z-100 h-9 border-transparent bg-transparent px-2 shadow-none hover:bg-background/60"
         />
         <NavbarLink href="/sign-up">
           {translate("action.primary")}{" "}
@@ -136,7 +141,11 @@ const NavbarMobile = () => {
   const links = useNavLinks();
 
   return (
-    <div className="relative flex h-14 items-center sm:h-16 lg:hidden">
+    <div className="relative flex h-14 items-center gap-1 sm:h-16 lg:hidden">
+      <LanguageSwitcher
+        variant="nav"
+        className="relative z-100 h-9 border-accent-foreground/60 bg-background/70 px-2"
+      />
       <Sheet>
         <SheetTrigger
           className="relative z-100 flex h-14 shrink-0 cursor-pointer items-center justify-center overflow-hidden p-4 pr-4 pl-12 text-primary transition-transform duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.97] sm:h-16"
@@ -161,7 +170,7 @@ const NavbarMobile = () => {
             },
           }}
         >
-          <SheetHeader className="border-accent-foreground border-b px-6 pt-6 pb-5 pr-16">
+          <SheetHeader className="items-start border-accent-foreground border-b px-6 pt-6 pr-16 pb-5 text-left">
             <SheetTitle className="sr-only">
               {translate("menu.label")}
             </SheetTitle>
@@ -170,9 +179,9 @@ const NavbarMobile = () => {
               alt="ecentic"
               width={120}
               height={32}
-              className="h-7 w-auto"
+              className="h-7 w-auto self-start"
             />
-            <SheetDescription className="mt-3 max-w-[16rem] font-light text-base text-foreground-dimmed leading-snug">
+            <SheetDescription className="mt-3 max-w-[16rem] text-left font-light text-base text-foreground-dimmed leading-snug">
               {translate("tagline")}
             </SheetDescription>
           </SheetHeader>
@@ -192,7 +201,7 @@ const NavbarMobile = () => {
                         <NavbarLink
                           href={link.href}
                           className={cn(
-                            "relative min-h-14 w-full gap-4 border-accent-foreground border-b px-6 py-4 text-xl font-medium transition-colors duration-150",
+                            "relative min-h-14 w-full gap-4 border-accent-foreground border-b px-6 py-4 font-medium text-xl transition-colors duration-150",
                             active
                               ? "bg-primary/5 text-primary"
                               : "text-foreground hover:bg-primary/5",
@@ -223,7 +232,7 @@ const NavbarMobile = () => {
             </nav>
 
             <Motion.Item className="mt-auto">
-              <SheetFooter className="mt-0 border-accent-foreground border-t p-6">
+              <SheetFooter className="mt-0 items-stretch border-accent-foreground border-t p-6">
                 <p className="mb-4 font-light text-foreground-dimmed text-sm leading-snug">
                   {translate("installHint")}
                 </p>
@@ -232,7 +241,10 @@ const NavbarMobile = () => {
                     <Link
                       href="/sign-up"
                       className={cn(
-                        buttonVariants({ color: "primary" }),
+                        buttonVariants({
+                          variant: "default",
+                          color: "primary",
+                        }),
                         "w-full justify-center px-5 py-3 text-base transition-transform duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.97]",
                       )}
                     />
@@ -246,8 +258,11 @@ const NavbarMobile = () => {
                     <Link
                       href="/sign-in"
                       className={cn(
-                        buttonVariants({ variant: "ghost" }),
-                        "mt-2 w-full justify-center px-5 py-3 text-base text-foreground",
+                        buttonVariants({
+                          variant: "outline",
+                          color: "neutral",
+                        }),
+                        "mt-2 w-full justify-center px-5 py-3 text-base",
                       )}
                     />
                   }

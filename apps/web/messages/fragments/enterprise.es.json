@@ -1,0 +1,185 @@
+{
+  "enterprise": {
+    "meta": {
+      "title": "Enterprise — Comercio con agentes a escala",
+      "description": "Inteligencia de comercio con agentes para comerciantes enterprise: paneles multimarca, acceso API, SSO, cumplimiento SOC 2, firma UCP y un equipo CSM dedicado."
+    },
+    "breadcrumb": {
+      "home": "Inicio",
+      "enterprise": "Enterprise"
+    },
+    "hero": {
+      "eyebrow": "Enterprise",
+      "title": {
+        "primary": "Infraestructura de comercio con agentes",
+        "accent": "a escala."
+      },
+      "description": "Paneles multimarca, acceso API, firma UCP y soporte dedicado para equipos de comercio que gestionan cientos de SKU en varias plataformas.",
+      "assurances": [
+        "Paneles multimarca",
+        "Acceso API personalizado",
+        "CSM dedicado",
+        "SOC 2 en curso"
+      ],
+      "art": {
+        "alt": "Ilustración ASCII de una torre de oficinas"
+      },
+      "action": {
+        "primary": "Hablar con ventas",
+        "secondary": "Ver precios"
+      }
+    },
+    "capabilities": {
+      "number": "01",
+      "title": "Todo lo de Dominate, más la capa enterprise.",
+      "description": "La capa de seguridad, escala y soporte que los equipos enterprise necesitan para ejecutar la optimización de comercio con agentes en varias marcas.",
+      "items": [
+        {
+          "title": "Agregados multimarca",
+          "description": "Un panel para cada marca y región. Agrega tasa de victoria, tráfico de agentes y mejora por optimización en una sola vista.",
+          "features": [
+            "Agregados de tasa de victoria entre marcas",
+            "Desglose de tráfico por región",
+            "Flujos de optimización compartidos"
+          ],
+          "highlighted": true
+        },
+        {
+          "title": "Acceso API",
+          "description": "API de solo lectura para acceder de forma programática a resultados de escaneo, tráfico de agentes y perfiles UCP.",
+          "features": [
+            "Exportaciones de escaneo y simulación",
+            "Endpoints de tráfico de agentes",
+            "Recuperación de perfiles UCP"
+          ]
+        },
+        {
+          "title": "SSO",
+          "description": "Compatible con Okta, Google Workspace y Azure AD. Provisiona puestos sin tocar ecentic directamente.",
+          "features": ["SAML + OIDC", "Acceso basado en roles", "Desaprovisionamiento automatizado"]
+        },
+        {
+          "title": "SOC 2 Type II",
+          "description": "Auditoría en curso. Opciones de residencia de datos, procesamiento conforme al GDPR y DPA bajo solicitud.",
+          "features": [
+            "DPA disponible",
+            "Opciones de residencia de datos en la UE",
+            "Soporte para revisión de seguridad"
+          ]
+        },
+        {
+          "title": "Servicio de firma UCP",
+          "description": "ecentic gestiona la firma criptográfica de tu perfil UCP para que los agentes puedan verificar la identidad del comerciante.",
+          "features": [
+            "Rotación de claves gestionada",
+            "Verificación de perfil",
+            "Sin infraestructura a medida"
+          ]
+        },
+        {
+          "title": "CSM dedicado",
+          "description": "Un customer success manager asignado, revisiones trimestrales de negocio y escalado directo a ingeniería.",
+          "features": [
+            "CSM asignado",
+            "Revisiones trimestrales de negocio",
+            "Ruta de escalado a ingeniería"
+          ]
+        }
+      ],
+      "cta": {
+        "badge": "Personalizado · hablar con ventas",
+        "title": "Diseñado para comerciantes enterprise que operan a escala.",
+        "description": "Límites personalizados, seguridad enterprise, firma UCP, paneles multimarca y soporte dedicado, adaptados a tu catálogo y necesidades de cumplimiento.",
+        "action": {
+          "primary": "Hablar con ventas"
+        }
+      },
+      "scoping": {
+        "label": "Cómo funciona el alcance",
+        "steps": [
+          {
+            "step": "01",
+            "title": "Llamada breve de descubrimiento",
+            "description": "Tamaño del catálogo, plataformas y necesidades de cumplimiento."
+          },
+          {
+            "step": "02",
+            "title": "Estimación de ROI personalizada",
+            "description": "Adaptada a tu número de SKU y tasas de victoria actuales."
+          },
+          {
+            "step": "03",
+            "title": "Cronograma de onboarding",
+            "description": "No hace falta un deck de procurement para empezar."
+          }
+        ]
+      }
+    },
+    "compare": {
+      "number": "02",
+      "title": "Dominate vs Enterprise",
+      "description": "Dominate ejecuta el ciclo completo de optimización para una sola marca. Enterprise añade seguridad, escala y soporte para equipos de comercio multimarca.",
+      "table": {
+        "feature": "Función",
+        "dominate": "Dominate",
+        "enterprise": "Enterprise"
+      },
+      "rows": [
+        { "label": "Precio", "dominate": "149 $/mes", "enterprise": "Personalizado" },
+        { "label": "Productos", "dominate": "Hasta 1000", "enterprise": "Límites personalizados" },
+        {
+          "label": "Simulaciones de agentes",
+          "dominate": "Continuas",
+          "enterprise": "Continuas + cadencia personalizada"
+        },
+        { "label": "Auto-optimización", "dominate": true, "enterprise": true },
+        { "label": "Generación UCP", "dominate": true, "enterprise": true },
+        { "label": "Servicio de firma UCP", "dominate": false, "enterprise": true },
+        { "label": "Agregados multimarca", "dominate": false, "enterprise": true },
+        { "label": "Acceso API", "dominate": false, "enterprise": true },
+        { "label": "SSO", "dominate": false, "enterprise": true },
+        { "label": "SOC 2 Type II", "dominate": false, "enterprise": "En curso" },
+        { "label": "CSM dedicado", "dominate": false, "enterprise": true }
+      ],
+      "cta": {
+        "title": "¿Listo para definir el alcance de Enterprise?",
+        "description": "Hacemos una llamada breve de descubrimiento, compartimos una estimación de ROI personalizada para el tamaño de tu catálogo y definimos un cronograma de onboarding.",
+        "action": {
+          "primary": "Contactar ventas enterprise"
+        }
+      }
+    },
+    "faqSection": {
+      "number": "03",
+      "title": "FAQ de Enterprise",
+      "description": "Preguntas habituales sobre planes Enterprise, seguridad y onboarding."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "¿Cuándo debo elegir Enterprise en lugar de Dominate?",
+          "answer": "Elige Enterprise cuando gestionas cientos de SKU en varias marcas o regiones, necesitas SSO o un DPA, quieres que gestionemos la firma UCP por ti, o necesitas un CSM dedicado y acceso API personalizado. Dominate cubre el ciclo completo de optimización para una sola marca con hasta 1000 productos."
+        },
+        {
+          "question": "¿Cómo es el onboarding de Enterprise?",
+          "answer": "Empezamos con una llamada breve de descubrimiento, compartimos una estimación de ROI personalizada para el tamaño de tu catálogo y definimos un cronograma de onboarding. No hace falta un deck de procurement para iniciar la conversación."
+        },
+        {
+          "question": "¿Está disponible SOC 2 hoy?",
+          "answer": "SOC 2 Type II está en curso. Las cuentas Enterprise pueden solicitar nuestro DPA, hablar de opciones de residencia de datos y revisar nuestra postura de seguridad durante el proceso de ventas."
+        },
+        {
+          "question": "¿Puede Enterprise conectarse a nuestro stack de datos existente?",
+          "answer": "Sí. Enterprise incluye acceso API de solo lectura para resultados de escaneo, tráfico de agentes y perfiles UCP, para que puedas integrar los datos de ecentic en tus propias herramientas de analítica e informes."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Reservar una demo",
+        "secondary": "Ver precios"
+      },
+      "note": "SOC 2 en curso · DPA bajo solicitud"
+    }
+  }
+}

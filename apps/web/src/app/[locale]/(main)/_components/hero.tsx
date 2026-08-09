@@ -41,7 +41,7 @@ export const Hero = async ({ locale }: Hero.Props) => {
         {translate("hero.description")}
       </p>
 
-      <InstallCta className="justify-center" />
+      <InstallCta locale={locale} className="justify-center" />
 
       <p className="font-body text-foreground-dimmed text-sm">
         {translate("hero.proof")}

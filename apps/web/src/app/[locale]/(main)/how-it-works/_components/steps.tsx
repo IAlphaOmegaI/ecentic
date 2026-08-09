@@ -1,94 +1,64 @@
 import { CircleBoltIcon, FaceSearchIcon, RobotIcon } from "@zenncore/icons";
+import { getTranslations } from "next-intl/server";
 import { AgentStrip } from "@/app/[locale]/(main)/_components/agent-strip";
+import type { IndexSection } from "@/app/[locale]/(main)/_components/index-section";
 import { StepSection } from "./step-section";
 
-export const Steps = () => (
-  <>
-    <StepSection
-      id="simulate"
-      number="01"
-      icon={RobotIcon}
-      title="Simulate"
-      subheading="See how every major AI shopping model compares your products against the competition, in real time."
-      paragraph="AI shopping agents do not read your store the way a human shopper does. They compare structured signals like titles, attributes, pricing, and trust markers across every product in a category in seconds. ecentic recreates that comparison by running your catalog through the top models at once and recording the outcome for each one."
-      itemsLabel="What every scan tells you"
-      items={[
-        {
-          title: "Who wins the cart",
-          description:
-            "Which competitor each agent prefers, and the reasoning behind every pick.",
-        },
-        {
-          title: "What carried the decision",
-          description:
-            "The attributes that weighed most in the comparison, from specifications to trust signals.",
-        },
-        {
-          title: "How models differ",
-          description:
-            "How the same product performs across different models and shopping contexts.",
-        },
-      ]}
-      accent={<AgentStrip label="Simulated agents" />}
-    />
+type StepCopy = {
+  number: string;
+  title: string;
+  subheading: string;
+  paragraph: string;
+  itemsLabel: string;
+  agentStripLabel?: string;
+  items: readonly IndexSection.Item[];
+};
 
-    <StepSection
-      id="diagnose"
-      number="02"
-      icon={FaceSearchIcon}
-      title="Diagnose"
-      subheading="Turn a win-or-lose result into a specific, fixable reason for every product."
-      paragraph="A score on its own does not help a merchandising team act. The diagnosis names the cause behind each loss in plain language and ties every finding to a concrete change, so the work moves from wondering why you lost to knowing exactly what to fix first."
-      itemsLabel="The patterns behind most losses"
-      items={[
-        {
-          title: "Weak titles",
-          description:
-            "The title does not carry the buying context an agent needs to shortlist you.",
-        },
-        {
-          title: "Missing specifications",
-          description:
-            "Missing or inconsistent attributes and structured data that agents rely on to compare.",
-        },
-        {
-          title: "Weak trust signals",
-          description:
-            "Fewer reviews, policies, or trust markers than the competing product that won.",
-        },
-        {
-          title: "Hard-to-compare descriptions",
-          description:
-            "Copy that makes comparison harder instead of easier, so agents move on.",
-        },
-      ]}
-    />
+export const Steps = async () => {
+  const translate = await getTranslations("howItWorks");
+  const simulate = translate.raw("steps.simulate") as StepCopy;
+  const diagnose = translate.raw("steps.diagnose") as StepCopy;
+  const optimize = translate.raw("steps.optimize") as StepCopy;
 
-    <StepSection
-      id="optimize"
-      number="03"
-      icon={CircleBoltIcon}
-      title="Optimize"
-      subheading="Approve the highest-impact changes and keep listings tuned as the models evolve."
-      paragraph="The final step converts the diagnosis into approval-ready listing updates. ecentic rewrites titles, descriptions, and structured data for maximum agent selection and queues them for review. Every change is tracked, so you can measure the lift in win rate and the agent traffic that follows."
-      itemsLabel="You choose how much is automated"
-      items={[
-        {
-          title: "One-click publish",
-          description:
-            "Review each rewrite and push it live to Shopify or WooCommerce in a single click.",
-        },
-        {
-          title: "Auto-publish",
-          description:
-            "Enable it for products where the loop has earned your trust.",
-        },
-        {
-          title: "Continuous re-optimization",
-          description:
-            "Simulations keep running, so listings stay tuned as the underlying models drift.",
-        },
-      ]}
-    />
-  </>
-);
+  return (
+    <>
+      <StepSection
+        id="simulate"
+        number={simulate.number}
+        icon={RobotIcon}
+        title={simulate.title}
+        subheading={simulate.subheading}
+        paragraph={simulate.paragraph}
+        itemsLabel={simulate.itemsLabel}
+        items={simulate.items}
+        accent={
+          <AgentStrip
+            label={simulate.agentStripLabel ?? "Simulated agents"}
+          />
+        }
+      />
+
+      <StepSection
+        id="diagnose"
+        number={diagnose.number}
+        icon={FaceSearchIcon}
+        title={diagnose.title}
+        subheading={diagnose.subheading}
+        paragraph={diagnose.paragraph}
+        itemsLabel={diagnose.itemsLabel}
+        items={diagnose.items}
+      />
+
+      <StepSection
+        id="optimize"
+        number={optimize.number}
+        icon={CircleBoltIcon}
+        title={optimize.title}
+        subheading={optimize.subheading}
+        paragraph={optimize.paragraph}
+        itemsLabel={optimize.itemsLabel}
+        items={optimize.items}
+      />
+    </>
+  );
+};

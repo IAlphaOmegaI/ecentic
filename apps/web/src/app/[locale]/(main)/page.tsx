@@ -26,9 +26,8 @@ import { Proof } from "./_components/proof";
 import { SmoothScroll } from "./_components/smooth-scroll";
 import { Steps } from "./_components/steps";
 import {
-  aggregateRating,
-  reviewSchemas,
   Testimonials,
+  getTestimonialData,
 } from "./_components/testimonials";
 
 const Comparison = dynamic(() =>
@@ -71,6 +70,7 @@ export default async ({ params }: HomeProps) => {
   // via getRequestConfig and fails Cache Components prerender.
   const translate = await getTranslations({ locale, namespace: "home" });
   const description = translate("meta.description");
+  const { aggregateRating, reviewSchemas } = await getTestimonialData(locale);
 
   return (
     <SmoothScroll>
@@ -104,17 +104,17 @@ export default async ({ params }: HomeProps) => {
         />
         <Navbar />
         <Hero locale={locale} />
-        <Proof />
-        <PartnersStrip />
-        <PartnershipBanner />
-        <Steps />
-        <Features />
+        <Proof locale={locale} />
+        <PartnersStrip locale={locale} />
+        <PartnershipBanner locale={locale} />
+        <Steps locale={locale} />
+        <Features locale={locale} />
         <Suspense>
           <Comparison />
         </Suspense>
-        <CaseStudy />
-        <Testimonials />
-        <Booking />
+        <CaseStudy locale={locale} />
+        <Testimonials locale={locale} />
+        <Booking locale={locale} />
         <section aria-label="About ecentic" className="sr-only">
           <h2>{translate("meta.title")}</h2>
           <p>{description}</p>

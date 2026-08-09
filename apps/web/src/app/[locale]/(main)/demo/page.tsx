@@ -1,4 +1,9 @@
 import type { Metadata } from "next";
+import { hasLocale } from "next-intl";
+import { notFound } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { localizePath } from "@/i18n/locale";
+import { routing } from "@/i18n/routing";
 import { BookingEmbed } from "@/components/cal";
 import { JsonLd } from "@/components/json-ld";
 import { Plus } from "@/components/plus";
@@ -19,79 +24,71 @@ import { Faq } from "../pricing/_components/faq";
 import { WhatWeCover } from "./_components/what-we-cover";
 import { WhoShouldBook } from "./_components/who-should-book";
 
-const assurances = [
-  "15 minutes, not a slide deck",
-  "No account or catalog connection needed",
-  "No procurement deck required",
-] as const;
+type DemoPageProps = {
+  params: Promise<{ locale: string }>;
+};
 
-const intro =
-  "We run your top products through ChatGPT, Claude, Gemini, and Perplexity while you watch, show you why you win or lose, and scope the highest-impact listing fixes. Pick a slot below.";
+type FaqItem = {
+  question: string;
+  answer: string;
+};
 
-const description =
-  "Book a 15-minute ecentic demo. We run your top products through ChatGPT, Claude, Gemini, and Perplexity live and scope your highest-impact listing fixes.";
+export const generateMetadata = async ({
+  params,
+}: DemoPageProps): Promise<Metadata> => {
+  const { locale: raw } = await params;
+  const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
+  const translate = await getTranslations({ locale, namespace: "demo" });
 
-const faq = [
-  {
-    question: "What happens on the call?",
-    answer:
-      "We run your top products through the major AI shopping models while you watch, walk through why agents pick you or a competitor, and leave you with the highest-impact listing changes to make first.",
-  },
-  {
-    question: "How long does the demo take?",
-    answer:
-      "Fifteen minutes. It is a focused working session, not a slide deck. If your team needs a deeper enterprise scoping call afterward, we will book that separately.",
-  },
-  {
-    question: "Do I need to prepare anything?",
-    answer:
-      "Just the store URL or a few product links you care about. You do not need to connect your catalog or create an account before the call.",
-  },
-  {
-    question: "Can I skip the call and just start?",
-    answer:
-      "Yes. The free Scan plan runs the same simulation on your top 10 products in about two minutes with no credit card. Book a call if you would rather have us walk through the results with you.",
-  },
-] as const;
+  return createMetadata({
+    title: translate("meta.title"),
+    description: translate("meta.description"),
+    path: localizePath("/demo", locale),
+    keywords: [
+      "ecentic demo",
+      "book AI ecommerce demo",
+      "AI shopping agent demo",
+      "product listing optimization demo",
+    ],
+  });
+};
 
-export const metadata: Metadata = createMetadata({
-  title: "Book a Demo — See Your AI Win Rate Live",
-  description,
-  path: "/demo",
-  keywords: [
-    "ecentic demo",
-    "book AI ecommerce demo",
-    "AI shopping agent demo",
-    "product listing optimization demo",
-  ],
-});
+export default async ({ params }: DemoPageProps) => {
+  const { locale: raw } = await params;
+  if (!hasLocale(routing.locales, raw)) notFound();
+  const locale = raw;
+  setRequestLocale(locale);
 
-export default () => {
+  const translate = await getTranslations({ locale, namespace: "demo" });
+  const description = translate("meta.description");
+  const assurances = translate.raw("hero.assurances") as readonly string[];
+  const faq = translate.raw("faq.items") as readonly FaqItem[];
+
   const structuredData = [
     {
       "@context": "https://schema.org",
       "@type": "WebPage",
-      name: "Book a Demo — See Your AI Win Rate Live",
+      name: translate("meta.title"),
       description,
-      url: absoluteUrl("/demo"),
-      isPartOf: absoluteUrl("/"),
+      url: absoluteUrl(localizePath("/demo", locale)),
+      isPartOf: absoluteUrl(localizePath("/", locale)),
     },
     organizationSchema,
     createBreadcrumbSchema([
-      { name: "Home", path: "/" },
-      { name: "Book a demo", path: "/demo" },
+      { name: translate("breadcrumb.home"), path: localizePath("/", locale) },
+      { name: translate("breadcrumb.demo"), path: localizePath("/demo", locale) },
     ]),
     createFaqSchema(faq),
   ];
 
   return (
     <ContentPageLayout
-      eyebrow="Book a demo"
-      title="See your AI win rate,"
-      accent="live in 15 minutes."
-      description={intro}
+      eyebrow={translate("hero.eyebrow")}
+      title={translate("hero.title.primary")}
+      accent={translate("hero.title.accent")}
+      description={translate("hero.description")}
       assurances={assurances}
-      art={{ source: Art, alt: "ASCII-art illustration of a desk calendar" }}
+      art={{ source: Art, alt: translate("hero.art.alt") }}
     >
       <JsonLd schemas={structuredData} />
 
@@ -110,9 +107,9 @@ export default () => {
       <WhoShouldBook />
 
       <ContentPageSection
-        number="03"
-        title="Frequently asked questions"
-        description="Common questions about the demo call."
+        number={translate("faqSection.number")}
+        title={translate("faqSection.title")}
+        description={translate("faqSection.description")}
         gutter
         classList={{ body: "p-0" }}
       >
@@ -120,9 +117,15 @@ export default () => {
       </ContentPageSection>
 
       <ContentPageFooter
-        primary={{ href: "/sign-up", label: "Start free instead" }}
-        secondary={{ href: "/pricing", label: "See pricing" }}
-        note="Prefer self-serve? Run your first scan with no credit card."
+        primary={{
+          href: "/sign-up",
+          label: translate("footer.action.primary"),
+        }}
+        secondary={{
+          href: "/pricing",
+          label: translate("footer.action.secondary"),
+        }}
+        note={translate("footer.note")}
       />
     </ContentPageLayout>
   );

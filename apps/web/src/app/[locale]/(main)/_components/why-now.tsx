@@ -1,113 +1,98 @@
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
+import type { Locale } from "@/i18n/routing";
 import { Plus } from "@/components/plus";
 
-type Milestone = {
-  brand: string;
-  logo?: string;
-  date: string;
-  title: string;
-  description: string;
+const milestoneKeys = ["visa", "google", "mastercard", "openai"] as const;
+
+const milestoneLogos: Record<
+  (typeof milestoneKeys)[number],
+  { brand: string; logo?: string }
+> = {
+  visa: { brand: "Visa", logo: "/images/visa.png" },
+  google: { brand: "Google", logo: "/images/google.svg" },
+  mastercard: { brand: "Mastercard", logo: "/images/mastercard.png" },
+  openai: { brand: "OpenAI", logo: "/images/chatgpt.svg" },
 };
 
-const milestones: Milestone[] = [
-  {
-    brand: "Visa",
-    date: "Oct 2025",
-    title: "Agent payments go live",
-    logo: "/images/visa.png",
-    description:
-      "Visa lets agents pay on a shopper's behalf — with Microsoft, Shopify, Stripe, and Worldpay.",
-  },
-  {
-    brand: "Google",
-    logo: "/images/google.svg",
-    date: "NRF 2026",
-    title: "Agentic shopping protocol",
-    description:
-      "Opened to the market with Shopify, Walmart, Target, Etsy, Visa, Mastercard, and PayPal endorsing.",
-  },
-  {
-    brand: "Mastercard",
-    date: "Live now",
-    logo: "/images/mastercard.png",
-    title: "Agent Pay merchant framework",
-    description:
-      "Agent-initiated checkout running across partner shops — payments built for AI buyers.",
-  },
-  {
-    brand: "OpenAI",
-    logo: "/images/chatgpt.svg",
-    date: "Live now",
-    title: "Checkout inside ChatGPT",
-    description:
-      "Buy without leaving the chat — Etsy, Coach, Kate Spade, Revolve, and URBN already in.",
-  },
-];
+export const WhyNow = async ({ locale }: WhyNow.Props) => {
+  const translate = await getTranslations({ locale, namespace: "home" });
 
-export const WhyNow = () => (
-  <section className="relative border-accent-foreground border-y bg-background-dimmed">
-    <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-    <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-    <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-    <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-    <div className="p-4 md:p-8">
-      <div className="mb-3 flex items-center gap-2 md:mb-5">
-        <span className="relative flex size-4 shrink-0 items-center justify-center">
-          <span className="absolute size-full animate-ping rounded-full bg-primary opacity-40" />
-          <span className="relative size-2.5 rounded-full bg-primary" />
-        </span>
-        <span className="font-light text-primary text-xl">Why now</span>
+  return (
+    <section className="relative border-accent-foreground border-y bg-background-dimmed">
+      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+      <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+      <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+      <div className="p-4 md:p-8">
+        <div className="mb-3 flex items-center gap-2 md:mb-5">
+          <span className="relative flex size-4 shrink-0 items-center justify-center">
+            <span className="absolute size-full animate-ping rounded-full bg-primary opacity-40" />
+            <span className="relative size-2.5 rounded-full bg-primary" />
+          </span>
+          <span className="font-light text-primary text-xl">
+            {translate("whyNow.eyebrow")}
+          </span>
+        </div>
+        <h2 className="mb-3 max-w-4xl font-body text-3xl text-foreground leading-none tracking-tight md:mb-5 md:text-6xl">
+          {translate("whyNow.title")}
+        </h2>
+        <p className="max-w-4xl font-light text-foreground-dimmed text-lg md:text-2xl">
+          {translate("whyNow.description")}
+        </p>
       </div>
-      <h2 className="mb-3 max-w-4xl font-body text-3xl text-foreground leading-none tracking-tight md:mb-5 md:text-6xl">
-        Six months ago, agents couldn't buy. Now they can.
-      </h2>
-      <p className="max-w-4xl font-light text-foreground-dimmed text-lg md:text-2xl">
-        This isn't a forecast. The biggest names in payments and AI shipped
-        agent checkout in the last two quarters. The cart is already moving —
-        the only question is whether agents pick you.
-      </p>
-    </div>
 
-    <div className="relative grid border-accent-foreground border-t md:grid-cols-4">
-      <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
-      <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
-      {milestones.map((milestone, index) => (
-        <article
-          key={milestone.brand}
-          className={`relative flex flex-col gap-3 border-accent-foreground border-b p-4 md:border-b-0 md:p-6 ${index < milestones.length - 1 ? "md:border-r" : ""}`}
-        >
-          {index < milestones.length - 1 && (
-            <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
-          )}
-          {index < milestones.length - 1 && (
-            <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
-          )}
-          <div className="flex items-center justify-between">
-            {milestone.logo ? (
-              <Image
-                src={milestone.logo}
-                alt={milestone.brand}
-                width={28}
-                height={28}
-                className="size-7 object-contain"
-              />
-            ) : (
-              <span className="font-semibold text-foreground text-xl">
-                {milestone.brand}
-              </span>
-            )}
-            <span className="border border-accent-foreground px-3 py-1 font-light text-foreground-dimmed text-xs">
-              {milestone.date}
-            </span>
-          </div>
-          <h3 className="font-medium text-foreground text-xl md:text-2xl">
-            {milestone.title}
-          </h3>
-          <p className="font-light text-base text-foreground-dimmed">
-            {milestone.description}
-          </p>
-        </article>
-      ))}
-    </div>
-  </section>
-);
+      <div className="relative grid border-accent-foreground border-t md:grid-cols-4">
+        <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
+        <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
+        {milestoneKeys.map((key, index) => {
+          const { brand, logo } = milestoneLogos[key];
+
+          return (
+            <article
+              key={key}
+              className={`relative flex flex-col gap-3 border-accent-foreground border-b p-4 md:border-b-0 md:p-6 ${index < milestoneKeys.length - 1 ? "md:border-r" : ""}`}
+            >
+              {index < milestoneKeys.length - 1 && (
+                <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
+              )}
+              {index < milestoneKeys.length - 1 && (
+                <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
+              )}
+              <div className="flex items-center justify-between">
+                {logo ? (
+                  <Image
+                    src={logo}
+                    alt={brand}
+                    width={28}
+                    height={28}
+                    className="size-7 object-contain"
+                  />
+                ) : (
+                  <span className="font-semibold text-foreground text-xl">
+                    {brand}
+                  </span>
+                )}
+                <span className="border border-accent-foreground px-3 py-1 font-light text-foreground-dimmed text-xs">
+                  {translate(`whyNow.milestones.${key}.date`)}
+                </span>
+              </div>
+              <h3 className="font-medium text-foreground text-xl md:text-2xl">
+                {translate(`whyNow.milestones.${key}.title`)}
+              </h3>
+              <p className="font-light text-base text-foreground-dimmed">
+                {translate(`whyNow.milestones.${key}.description`)}
+              </p>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
+};
+
+export namespace WhyNow {
+  export type Props = {
+    locale: Locale;
+  };
+}

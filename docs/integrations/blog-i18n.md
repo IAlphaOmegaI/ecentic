@@ -69,7 +69,7 @@ AZURE_DEPLOYMENT_GPT=
 
 ## UI messages
 
-Catalogs live in `apps/web/messages/{en,es}.json`. Shared chrome (nav, footer, auth, dashboard shell, blog, home, cookie consent) is wired through `next-intl`. Expand namespaces as remaining page copy is extracted.
+Catalogs live in `apps/web/messages/{en,es}.json`. Public chrome and marketing pages are wired through `next-intl` (`nav`, `footer`, `home`, `pricing`, `resources`, `howItWorks`, `features`, `productListings`, `enterprise`, `shopify`, `woocommerce`, `demo`, `support`, `legal`, `blog`, auth, dashboard shell, cookie consent, plus compare/UCP/partner landing shells). Optional fragment files under `apps/web/messages/fragments/` can be merged with `bun run` of `apps/web/scripts/merge-i18n-fragments.ts` when present.
 
 ### Translation key conventions
 

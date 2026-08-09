@@ -6,35 +6,30 @@ import {
   ShoppingCartIcon,
   UploadIcon,
 } from "@zenncore/icons";
+import { useTranslations } from "next-intl";
 import { VerticalStepCycle } from "@/app/[locale]/(main)/_components/vertical-step-cycle";
 
-const steps = [
-  {
-    icon: ShoppingCartIcon,
-    title: "Connect & import",
-    description:
-      "Install from the Shopify App Store and your catalog imports during onboarding, no theme edits required.",
-  },
-  {
-    icon: BullseyeIcon,
-    title: "Choose products",
-    description:
-      "Pick which items enter the optimization and simulation loop, from one hero product to the whole catalog.",
-  },
-  {
-    icon: FaceSearchIcon,
-    title: "Benchmark & diagnose",
-    description:
-      "Selected products are compared against competitors so you see where AI systems prefer another option, and why.",
-  },
-  {
-    icon: UploadIcon,
-    title: "Approve & write back",
-    description:
-      "Review the stronger version of each listing and publish approved changes back to Shopify through the Admin API.",
-  },
+const stepIcons = [
+  ShoppingCartIcon,
+  BullseyeIcon,
+  FaceSearchIcon,
+  UploadIcon,
 ] as const;
 
-export const ShopifyWorkflowCycle = () => (
-  <VerticalStepCycle steps={steps} layoutId="shopify-workflow-underline" />
-);
+export const ShopifyWorkflowCycle = () => {
+  const translate = useTranslations("shopify");
+  const steps = translate.raw("workflow.steps") as readonly {
+    title: string;
+    description: string;
+  }[];
+
+  return (
+    <VerticalStepCycle
+      steps={steps.map((step, index) => ({
+        ...step,
+        icon: stepIcons[index] ?? ShoppingCartIcon,
+      }))}
+      layoutId="shopify-workflow-underline"
+    />
+  );
+};

@@ -3,6 +3,7 @@
 import { SearchIcon, StarHandIcon } from "@zenncore/icons";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { Plus } from "@/components/plus";
 
@@ -32,12 +33,9 @@ const oldResults = [
 
 const ANSWER_IMAGE = "/images/products/sony-wh-1000xm5.webp";
 
-const SEARCH_QUERY = "best noise cancelling headphones";
-const QUESTION = "What are the best noise cancelling headphones?";
-
 type AgentPhase = "idle" | "typing" | "wait" | "thinking" | "answer";
 
-const useSearchLoop = () => {
+const useSearchLoop = (searchQuery: string) => {
   const [typed, setTyped] = useState(0);
   const [visibleResults, setVisibleResults] = useState(0);
 
@@ -50,22 +48,22 @@ const useSearchLoop = () => {
       setTyped(0);
       setVisibleResults(0);
 
-      let t = 700;
-      for (let i = 1; i <= SEARCH_QUERY.length; i++) {
-        const captured = i;
-        timeouts.push(setTimeout(() => setTyped(captured), t));
-        t += 45;
+      let time = 700;
+      for (let index = 1; index <= searchQuery.length; index++) {
+        const captured = index;
+        timeouts.push(setTimeout(() => setTyped(captured), time));
+        time += 45;
       }
 
-      t += 350;
-      for (let r = 1; r <= oldResults.length; r++) {
-        const captured = r;
-        timeouts.push(setTimeout(() => setVisibleResults(captured), t));
-        t += 380;
+      time += 350;
+      for (let result = 1; result <= oldResults.length; result++) {
+        const captured = result;
+        timeouts.push(setTimeout(() => setVisibleResults(captured), time));
+        time += 380;
       }
 
-      t += 2800;
-      timeouts.push(setTimeout(run, t));
+      time += 2800;
+      timeouts.push(setTimeout(run, time));
     };
 
     run();
@@ -74,12 +72,12 @@ const useSearchLoop = () => {
       cancelled = true;
       for (const id of timeouts) clearTimeout(id);
     };
-  }, []);
+  }, [searchQuery]);
 
-  return { typedText: SEARCH_QUERY.slice(0, typed), visibleResults };
+  return { typedText: searchQuery.slice(0, typed), visibleResults };
 };
 
-const useAgentLoop = () => {
+const useAgentLoop = (question: string) => {
   const [phase, setPhase] = useState<AgentPhase>("idle");
   const [questionTyped, setQuestionTyped] = useState(0);
 
@@ -92,22 +90,22 @@ const useAgentLoop = () => {
       setPhase("idle");
       setQuestionTyped(0);
 
-      let t = 700;
-      timeouts.push(setTimeout(() => setPhase("typing"), t));
+      let time = 700;
+      timeouts.push(setTimeout(() => setPhase("typing"), time));
 
-      for (let i = 1; i <= QUESTION.length; i++) {
-        const captured = i;
-        timeouts.push(setTimeout(() => setQuestionTyped(captured), t));
-        t += 32;
+      for (let index = 1; index <= question.length; index++) {
+        const captured = index;
+        timeouts.push(setTimeout(() => setQuestionTyped(captured), time));
+        time += 32;
       }
 
-      timeouts.push(setTimeout(() => setPhase("wait"), t));
-      t += 500;
-      timeouts.push(setTimeout(() => setPhase("thinking"), t));
-      t += 1300;
-      timeouts.push(setTimeout(() => setPhase("answer"), t));
-      t += 3400;
-      timeouts.push(setTimeout(run, t));
+      timeouts.push(setTimeout(() => setPhase("wait"), time));
+      time += 500;
+      timeouts.push(setTimeout(() => setPhase("thinking"), time));
+      time += 1300;
+      timeouts.push(setTimeout(() => setPhase("answer"), time));
+      time += 3400;
+      timeouts.push(setTimeout(run, time));
     };
 
     run();
@@ -116,14 +114,24 @@ const useAgentLoop = () => {
       cancelled = true;
       for (const id of timeouts) clearTimeout(id);
     };
-  }, []);
+  }, [question]);
 
-  return { phase, questionText: QUESTION.slice(0, questionTyped) };
+  return { phase, questionText: question.slice(0, questionTyped) };
 };
 
-const SearchEra = () => {
-  const { typedText, visibleResults } = useSearchLoop();
-  const countVisible = typedText.length === SEARCH_QUERY.length;
+const SearchEra = ({
+  searchQuery,
+  label,
+  resultsCount,
+  summary,
+}: {
+  searchQuery: string;
+  label: string;
+  resultsCount: string;
+  summary: string;
+}) => {
+  const { typedText, visibleResults } = useSearchLoop(searchQuery);
+  const countVisible = typedText.length === searchQuery.length;
 
   return (
     <div className="relative flex flex-col border-accent-foreground border-b p-4 md:border-r md:border-b-0 md:p-8">
@@ -131,7 +139,7 @@ const SearchEra = () => {
       <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
       <div className="mb-4 flex items-center gap-2 text-foreground-dimmed">
         <SearchIcon className="size-5" />
-        <span className="font-light text-lg">Before — the search era</span>
+        <span className="font-light text-lg">{label}</span>
       </div>
       <div className="flex flex-1 flex-col gap-3 rounded-lg border border-accent-foreground bg-background p-4">
         <div className="flex items-center gap-2 rounded-full border border-accent-foreground px-4 py-2 text-foreground-dimmed text-sm">
@@ -150,7 +158,7 @@ const SearchEra = () => {
           animate={{ opacity: countVisible ? 1 : 0 }}
           transition={{ duration: 0.3 }}
         >
-          About 123,000,000 results
+          {resultsCount}
         </motion.p>
         <div className="flex flex-1 flex-col gap-3">
           {oldResults.map((result, index) => (
@@ -190,15 +198,28 @@ const SearchEra = () => {
         </div>
       </div>
       <p className="mt-4 font-light text-base text-foreground-dimmed md:text-lg">
-        Ten results. You could rank, run ads, and earn the click. Visibility was
-        something you could buy and optimize for.
+        {summary}
       </p>
     </div>
   );
 };
 
-const AgentEra = () => {
-  const { phase, questionText } = useAgentLoop();
+const AgentEra = ({
+  question,
+  label,
+  answerTitle,
+  answerDescription,
+  buyNow,
+  summary,
+}: {
+  question: string;
+  label: string;
+  answerTitle: string;
+  answerDescription: string;
+  buyNow: string;
+  summary: string;
+}) => {
+  const { phase, questionText } = useAgentLoop(question);
   const showQuestion = phase !== "idle";
   const showCursor = phase === "typing";
   const showThinking = phase === "thinking";
@@ -214,7 +235,7 @@ const AgentEra = () => {
           height={20}
           className="size-5"
         />
-        <span className="font-light text-lg">Now — the agent era</span>
+        <span className="font-light text-lg">{label}</span>
       </div>
       <div className="flex min-h-[176px] flex-1 flex-col gap-3 rounded-lg border border-primary/40 bg-background p-4">
         <AnimatePresence>
@@ -289,18 +310,17 @@ const AgentEra = () => {
                 <div className="flex items-center gap-2">
                   <StarHandIcon className="size-4 text-primary" />
                   <span className="font-medium text-foreground text-sm">
-                    Sony WH-1000XM5 — $348
+                    {answerTitle}
                   </span>
                 </div>
                 <p className="font-light text-foreground-dimmed text-xs">
-                  Best overall. Industry-leading noise cancellation, excellent
-                  sound, all-day comfort.
+                  {answerDescription}
                 </p>
                 <button
                   type="button"
                   className="mt-1 w-fit rounded-full bg-primary px-3 py-1 font-medium text-white text-xs transition-opacity hover:opacity-90"
                 >
-                  Buy now — $348
+                  {buyNow}
                 </button>
               </div>
             </motion.div>
@@ -308,43 +328,63 @@ const AgentEra = () => {
         </AnimatePresence>
       </div>
       <p className="mt-4 font-light text-base text-foreground-dimmed md:text-lg">
-        One question. One answer. No ads, no scrolling, no second place. The
-        agent decides in milliseconds — and you never see it happen.
+        {summary}
       </p>
     </div>
   );
 };
 
-export const DiscoveryShift = () => (
-  <section className="relative border-accent-foreground border-y">
-    <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-    <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-    <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-    <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-    <div className="p-4 md:p-8">
-      <div className="mb-3 flex items-center gap-2 md:mb-5">
-        <span className="relative flex size-4 shrink-0 items-center justify-center">
-          <span className="absolute size-full animate-ping rounded-full bg-primary opacity-40" />
-          <span className="relative size-2.5 rounded-full bg-primary" />
-        </span>
-        <span className="font-light text-primary text-xl">The Shift</span>
-      </div>
-      <h2 className="mb-3 max-w-3xl font-body text-3xl text-foreground leading-none tracking-tight md:mb-5 md:text-6xl">
-        E-commerce just changed forever.
-      </h2>
-      <p className="max-w-4xl font-light text-foreground-dimmed text-lg md:text-2xl">
-        For 20 years shoppers got ten blue links and chose for themselves. Now
-        they ask one question and an AI agent hands back{" "}
-        <span className="text-foreground">a single answer</span>. You're the
-        pick — or you don't exist.
-      </p>
-    </div>
+export const DiscoveryShift = () => {
+  const translate = useTranslations("home");
 
-    <div className="relative grid border-accent-foreground border-t bg-background-dimmed md:grid-cols-2">
-      <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
-      <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
-      <SearchEra />
-      <AgentEra />
-    </div>
-  </section>
-);
+  return (
+    <section className="relative border-accent-foreground border-y">
+      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+      <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+      <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+      <div className="p-4 md:p-8">
+        <div className="mb-3 flex items-center gap-2 md:mb-5">
+          <span className="relative flex size-4 shrink-0 items-center justify-center">
+            <span className="absolute size-full animate-ping rounded-full bg-primary opacity-40" />
+            <span className="relative size-2.5 rounded-full bg-primary" />
+          </span>
+          <span className="font-light text-primary text-xl">
+            {translate("discoveryShift.eyebrow")}
+          </span>
+        </div>
+        <h2 className="mb-3 max-w-3xl font-body text-3xl text-foreground leading-none tracking-tight md:mb-5 md:text-6xl">
+          {translate("discoveryShift.title")}
+        </h2>
+        <p className="max-w-4xl font-light text-foreground-dimmed text-lg md:text-2xl">
+          {translate("discoveryShift.description.before")}
+          <span className="text-foreground">
+            {translate("discoveryShift.description.highlight")}
+          </span>
+          {translate("discoveryShift.description.after")}
+        </p>
+      </div>
+
+      <div className="relative grid border-accent-foreground border-t bg-background-dimmed md:grid-cols-2">
+        <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
+        <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
+        <SearchEra
+          searchQuery={translate("discoveryShift.searchEra.searchQuery")}
+          label={translate("discoveryShift.searchEra.label")}
+          resultsCount={translate("discoveryShift.searchEra.resultsCount")}
+          summary={translate("discoveryShift.searchEra.summary")}
+        />
+        <AgentEra
+          question={translate("discoveryShift.agentEra.question")}
+          label={translate("discoveryShift.agentEra.label")}
+          answerTitle={translate("discoveryShift.agentEra.answerTitle")}
+          answerDescription={translate(
+            "discoveryShift.agentEra.answerDescription",
+          )}
+          buyNow={translate("discoveryShift.agentEra.buyNow")}
+          summary={translate("discoveryShift.agentEra.summary")}
+        />
+      </div>
+    </section>
+  );
+};

@@ -1,4 +1,3 @@
-import type { Icon } from "@zenncore/icons";
 import {
   ArrowRightIcon,
   BarChartIcon,
@@ -11,7 +10,12 @@ import {
 } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
+import { hasLocale } from "next-intl";
+import { notFound } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { localizePath } from "@/i18n/locale";
+import { routing } from "@/i18n/routing";
 import { BookCall } from "@/components/cal";
 import { JsonLd } from "@/components/json-ld";
 import { Plus } from "@/components/plus";
@@ -24,122 +28,94 @@ import {
 import Art from "@/public/images/ascii/headset.png";
 import { ContentPageFooter, ContentPageLayout } from "../_components/content";
 
-const description =
-  "Get help with ecentic: email support, a live walkthrough of your scan results, or a dedicated escalation path for Enterprise and agent-commerce accounts.";
-
-const assurances = [
-  "Real humans on the other end",
-  "Free scan walkthroughs",
-  "Enterprise escalation path",
-] as const;
-
-type Channel = {
-  icon: Icon;
-  title: string;
-  description: string;
-  highlighted: boolean;
+type SupportPageProps = {
+  params: Promise<{ locale: string }>;
 };
 
-const channels: readonly Channel[] = [
-  {
-    icon: BellIcon,
-    title: "Email support",
-    description:
-      "The fastest way to reach us for account, billing, or integration questions. Include your store URL so we can look things up before replying.",
-    highlighted: true,
-  },
-  {
-    icon: PhoneIcon,
-    title: "Live walkthrough",
-    description:
-      "A 15-minute call where we run your products through the AI shopping models live and explain the results in plain language.",
-    highlighted: false,
-  },
-  {
-    icon: CircleBoltIcon,
-    title: "Enterprise escalation",
-    description:
-      "Enterprise accounts get a named CSM, quarterly reviews, and a direct engineering escalation path.",
-    highlighted: false,
-  },
-] as const;
+const channelIcons = {
+  email: BellIcon,
+  walkthrough: PhoneIcon,
+  enterprise: CircleBoltIcon,
+} as const;
 
-const selfServe = [
-  {
-    href: "/how-it-works",
-    icon: RobotIcon,
-    name: "How it works",
-    title: "Understand the simulate, diagnose, optimize loop",
-    description:
-      "The full explanation of what happens after you connect your store, step by step.",
-    label: "Read how it works",
-  },
-  {
-    href: "/features",
-    icon: BarChartIcon,
-    name: "Features",
-    title: "See every tool in the platform",
-    description:
-      "Win-rate scores, competitor gap analysis, listing rewrites, agent traffic, UCP profiles, and rescans.",
-    label: "Open features page",
-  },
-  {
-    href: "/pricing",
-    icon: FaceSearchIcon,
-    name: "Pricing",
-    title: "Compare plans, from the free scan up",
-    description:
-      "The free Scan, Pay-as-you-go, and the Compete and Dominate subscriptions explained side by side.",
-    label: "See pricing",
-  },
-  {
-    href: "/privacy-policy",
-    icon: CheckIcon,
-    name: "Privacy",
-    title: "Check what data we store and never store",
-    description:
-      "Products-only scopes, no shopper personal data, essential cookies only, and how deletion works.",
-    label: "Read the policy",
-  },
-] as const;
+const selfServeIcons = {
+  "/how-it-works": RobotIcon,
+  "/features": BarChartIcon,
+  "/pricing": FaceSearchIcon,
+  "/privacy-policy": CheckIcon,
+} as const;
 
-export const metadata: Metadata = createMetadata({
-  title: "Support — Help with Scans, Billing, and Agents",
-  description,
-  path: "/support",
-  keywords: [
-    "ecentic support",
-    "ecentic help",
-    "contact ecentic",
-    "AI ecommerce support",
-  ],
-});
+export const generateMetadata = async ({
+  params,
+}: SupportPageProps): Promise<Metadata> => {
+  const { locale: raw } = await params;
+  const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
+  const translate = await getTranslations({ locale, namespace: "support" });
 
-export default () => {
+  return createMetadata({
+    title: translate("meta.title"),
+    description: translate("meta.description"),
+    path: localizePath("/support", locale),
+    keywords: [
+      "ecentic support",
+      "ecentic help",
+      "contact ecentic",
+      "AI ecommerce support",
+    ],
+  });
+};
+
+export default async ({ params }: SupportPageProps) => {
+  const { locale: raw } = await params;
+  if (!hasLocale(routing.locales, raw)) notFound();
+  const locale = raw;
+  setRequestLocale(locale);
+
+  const translate = await getTranslations({ locale, namespace: "support" });
+  const description = translate("meta.description");
+  const assurances = translate.raw("hero.assurances") as readonly string[];
+  const channels = translate.raw("channels.items") as readonly {
+    id: keyof typeof channelIcons;
+    title: string;
+    description: string;
+    highlighted: boolean;
+    action: { primary: string };
+  }[];
+  const selfServe = translate.raw("selfServe.items") as readonly {
+    href: keyof typeof selfServeIcons;
+    name: string;
+    title: string;
+    description: string;
+    label: string;
+  }[];
+
   const structuredData = [
     {
       "@context": "https://schema.org",
       "@type": "ContactPage",
-      name: "Support",
+      name: translate("breadcrumb.support"),
       description,
-      url: absoluteUrl("/support"),
-      isPartOf: absoluteUrl("/"),
+      url: absoluteUrl(localizePath("/support", locale)),
+      isPartOf: absoluteUrl(localizePath("/", locale)),
     },
     organizationSchema,
     createBreadcrumbSchema([
-      { name: "Home", path: "/" },
-      { name: "Support", path: "/support" },
+      { name: translate("breadcrumb.home"), path: localizePath("/", locale) },
+      {
+        name: translate("breadcrumb.support"),
+        path: localizePath("/support", locale),
+      },
     ]),
   ];
 
   return (
     <ContentPageLayout
-      eyebrow="Support"
-      title="We're here"
-      accent="to help."
-      description="Questions about your scan results, an integration, billing, or anything else: pick the channel that fits and we will take it from there."
+      eyebrow={translate("hero.eyebrow")}
+      title={translate("hero.title.primary")}
+      accent={translate("hero.title.accent")}
+      description={translate("hero.description")}
       assurances={assurances}
-      art={{ source: Art, alt: "ASCII-art illustration of a support headset" }}
+      art={{ source: Art, alt: translate("hero.art.alt") }}
     >
       <JsonLd schemas={structuredData} />
 
@@ -149,77 +125,82 @@ export default () => {
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
 
           <div className="p-6 md:p-12">
-            <span className="font-normal text-3xl text-primary">01</span>
+            <span className="font-normal text-3xl text-primary">
+              {translate("channels.number")}
+            </span>
             <h2 className="mt-2 font-body font-medium text-4xl text-foreground md:text-6xl">
-              Pick your channel.
+              {translate("channels.title")}
             </h2>
             <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-xl">
-              Email for most things, a live call when you want the results
-              explained, and a direct path for Enterprise teams.
+              {translate("channels.description")}
             </p>
           </div>
 
           <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-3">
             <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
             <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
-            {channels.map((channel) => (
-              <div
-                key={channel.title}
-                className={
-                  channel.highlighted
-                    ? "flex flex-col gap-2 bg-primary p-6 text-white md:p-8"
-                    : "flex flex-col gap-2 bg-background-rich p-6 md:p-8"
-                }
-              >
-                <channel.icon
+            {channels.map((channel) => {
+              const IconComponent = channelIcons[channel.id];
+
+              return (
+                <div
+                  key={channel.id}
                   className={
                     channel.highlighted
-                      ? "size-8 text-white"
-                      : "size-8 text-primary"
-                  }
-                />
-                <h3 className="mt-2 font-body font-medium text-2xl">
-                  {channel.title}
-                </h3>
-                <p
-                  className={
-                    channel.highlighted
-                      ? "font-body font-light text-white"
-                      : "font-body font-light text-foreground-dimmed"
+                      ? "flex flex-col gap-2 bg-primary p-6 text-white md:p-8"
+                      : "flex flex-col gap-2 bg-background-rich p-6 md:p-8"
                   }
                 >
-                  {channel.description}
-                </p>
-                <div className="mt-6 md:mt-auto">
-                  {channel.title === "Email support" && (
-                    <Button
-                      color="accent"
-                      className="w-fit"
-                      render={<Link href="mailto:support@ecentic.ai" />}
-                    >
-                      support@ecentic.ai
-                      <ArrowRightIcon className="size-4" />
-                    </Button>
-                  )}
-                  {channel.title === "Live walkthrough" && (
-                    <BookCall color="primary" className="w-fit">
-                      Book a call
-                      <ArrowRightIcon className="size-4" />
-                    </BookCall>
-                  )}
-                  {channel.title === "Enterprise escalation" && (
-                    <Button
-                      color="primary"
-                      className="w-fit"
-                      render={<Link href="/enterprise" />}
-                    >
-                      See Enterprise
-                      <ArrowRightIcon className="size-4" />
-                    </Button>
-                  )}
+                  <IconComponent
+                    className={
+                      channel.highlighted
+                        ? "size-8 text-white"
+                        : "size-8 text-primary"
+                    }
+                  />
+                  <h3 className="mt-2 font-body font-medium text-2xl">
+                    {channel.title}
+                  </h3>
+                  <p
+                    className={
+                      channel.highlighted
+                        ? "font-body font-light text-white"
+                        : "font-body font-light text-foreground-dimmed"
+                    }
+                  >
+                    {channel.description}
+                  </p>
+                  <div className="mt-6 md:mt-auto">
+                    {channel.id === "email" && (
+                      <Button
+                        color="accent"
+                        className="w-fit"
+                        render={<Link href="mailto:support@ecentic.ai" />}
+                      >
+                        {channel.action.primary}
+                        <ArrowRightIcon className="size-4" />
+                      </Button>
+                    )}
+                    {channel.id === "walkthrough" && (
+                      <BookCall color="primary" className="w-fit">
+                        {channel.action.primary}
+                        <ArrowRightIcon className="size-4" />
+                      </BookCall>
+                    )}
+                    {channel.id === "enterprise" && (
+                      <Button
+                        color="primary"
+                        className="w-fit"
+                        render={<Link href="/enterprise" />}
+                      >
+                        {channel.action.primary}
+                        <ArrowRightIcon className="size-4" />
+                      </Button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -230,53 +211,65 @@ export default () => {
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
 
           <div className="p-6 md:p-12">
-            <span className="font-normal text-3xl text-primary">02</span>
+            <span className="font-normal text-3xl text-primary">
+              {translate("selfServe.number")}
+            </span>
             <h2 className="mt-2 font-body font-medium text-4xl text-foreground md:text-6xl">
-              Find it faster yourself.
+              {translate("selfServe.title")}
             </h2>
             <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-xl">
-              Most questions are already answered on these pages.
+              {translate("selfServe.description")}
             </p>
           </div>
 
           <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground sm:grid-cols-2">
             <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 sm:flex" />
             <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 sm:flex" />
-            {selfServe.map((entry) => (
-              <article
-                key={entry.href}
-                className="flex h-full flex-col gap-4 bg-background-rich p-6 md:p-8"
-              >
-                <entry.icon
-                  aria-label={entry.name}
-                  className="size-7 text-primary"
-                />
-                <div className="flex flex-1 flex-col gap-3">
-                  <h3 className="font-body font-medium text-2xl text-foreground leading-tight">
-                    {entry.title}
-                  </h3>
-                  <p className="font-light text-foreground-dimmed leading-relaxed">
-                    {entry.description}
-                  </p>
-                </div>
-                <Button
-                  color="accent"
-                  className="w-fit"
-                  render={<Link href={entry.href} />}
+            {selfServe.map((entry) => {
+              const IconComponent = selfServeIcons[entry.href];
+
+              return (
+                <article
+                  key={entry.href}
+                  className="flex h-full flex-col gap-4 bg-background-rich p-6 md:p-8"
                 >
-                  {entry.label}
-                  <ArrowRightIcon className="size-4" />
-                </Button>
-              </article>
-            ))}
+                  <IconComponent
+                    aria-label={entry.name}
+                    className="size-7 text-primary"
+                  />
+                  <div className="flex flex-1 flex-col gap-3">
+                    <h3 className="font-body font-medium text-2xl text-foreground leading-tight">
+                      {entry.title}
+                    </h3>
+                    <p className="font-light text-foreground-dimmed leading-relaxed">
+                      {entry.description}
+                    </p>
+                  </div>
+                  <Button
+                    color="accent"
+                    className="w-fit"
+                    render={<Link href={entry.href} />}
+                  >
+                    {entry.label}
+                    <ArrowRightIcon className="size-4" />
+                  </Button>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
 
       <ContentPageFooter
-        primary={{ href: "/sign-up", label: "Run your free scan" }}
-        secondary={{ href: "/", label: "Back to home" }}
-        note="2-minute setup · No credit card · See your free score first"
+        primary={{
+          href: "/sign-up",
+          label: translate("footer.action.primary"),
+        }}
+        secondary={{
+          href: "/",
+          label: translate("footer.action.secondary"),
+        }}
+        note={translate("footer.note")}
       />
     </ContentPageLayout>
   );

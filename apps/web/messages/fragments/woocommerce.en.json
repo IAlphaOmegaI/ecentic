@@ -1,0 +1,261 @@
+{
+  "woocommerce": {
+    "meta": {
+      "title": "AI for WooCommerce — Catalog Optimization",
+      "description": "AI for WooCommerce stores that need product listing optimization, competitor analysis, and a clearer path from agent insights to published catalog updates."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "woocommerce": "AI for WooCommerce"
+    },
+    "hero": {
+      "eyebrow": "WooCommerce",
+      "title": {
+        "primary": "AI for WooCommerce stores that need",
+        "accent": "cleaner product workflows."
+      },
+      "description": "Import your catalog, see where listings lose to competitors in AI-mediated comparisons, and publish approved improvements back into WooCommerce without changing platforms.",
+      "assurances": [
+        "No platform migration",
+        "Free plugin on WordPress.org",
+        "Approved updates publish via the REST API",
+        "See your free score first"
+      ],
+      "art": {
+        "alt": "ASCII-art illustration of a shopping cart"
+      },
+      "badge": {
+        "alt": "WooCommerce",
+        "label": "Built for WooCommerce"
+      }
+    },
+    "why": {
+      "number": "01",
+      "title": "Why WooCommerce merchants need a focused loop.",
+      "description": "WooCommerce operators usually need catalog-level insight, not just faster copy output.",
+      "paragraphs": [
+        "AI for WooCommerce stores is not only about faster content creation. WooCommerce catalogs change quickly, are managed by lean operators, and depend on clean product data to compete well.",
+        "That creates a practical need for a dedicated optimization loop. Merchants want to know which products are easiest to improve, which competitor keeps winning, and which listing details matter most before they spend time rewriting dozens of pages."
+      ],
+      "panelTitle": "Who this page is built for",
+      "audiences": [
+        {
+          "title": "Researching AI workflows",
+          "description": "WooCommerce operators evaluating what AI should actually do for product pages."
+        },
+        {
+          "title": "Staying on WooCommerce",
+          "description": "Teams that want better product visibility without changing ecommerce platforms."
+        },
+        {
+          "title": "Insight tied to updates",
+          "description": "Merchants who need competitor analysis connected directly to listing changes."
+        },
+        {
+          "title": "Diagnosis to publishing",
+          "description": "Buyers checking whether a workflow can move from analysis all the way to the live store."
+        }
+      ]
+    },
+    "workflow": {
+      "number": "02",
+      "title": "The WooCommerce workflow in ecentic.",
+      "description": "The workflow connects product data to competitor analysis, then to a publishing path back inside WooCommerce instead of another manual content handoff.",
+      "paragraph": "Install the plugin, import the catalog, benchmark the products that matter, then approve REST publish-backs — without leaving WooCommerce or rewriting the whole storefront.",
+      "panelTitle": "Connect, diagnose, publish",
+      "advantages": [
+        {
+          "title": "Uneven catalog data",
+          "description": "Product data spread across a large catalog with uneven consistency."
+        },
+        {
+          "title": "Diagnosis to publishing",
+          "description": "A faster path from competitive diagnosis to live updates."
+        },
+        {
+          "title": "Spec-led competition",
+          "description": "Competitors winning through clearer specifications and offer context."
+        },
+        {
+          "title": "Weekly repeatability",
+          "description": "A system operators can run every week, not a one-time rewrite project."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Connect & import",
+          "description": "Install the free plugin and approve the connection in wp-admin — no API keys to copy. The catalog imports on connect, with no theme edits."
+        },
+        {
+          "title": "Choose products",
+          "description": "Select which items enter the optimization loop, from a handful of hero products to the full catalog."
+        },
+        {
+          "title": "Benchmark & diagnose",
+          "description": "Products are compared against competitors, surfacing the changes that matter: title quality, description clarity, weak details."
+        },
+        {
+          "title": "Approve & publish",
+          "description": "Approved optimizations move back into WooCommerce through the documented REST update path, keeping insight tied to the live store."
+        }
+      ]
+    },
+    "agentCommerce": {
+      "number": "03",
+      "title": "Let AI agents buy, not just browse.",
+      "description": {
+        "before": "Optimized listings decide whether an agent recommends you. The Universal Commerce Protocol decides whether it can actually complete the purchase. The free ",
+        "pluginName": "écentic for WooCommerce",
+        "after": " plugin turns the second one on."
+      },
+      "action": {
+        "primary": "Get the WordPress plugin",
+        "secondary": "Check if your store is agent-ready"
+      },
+      "capabilities": [
+        {
+          "title": "Discovered at your own URL",
+          "description": "The plugin serves /.well-known/ucp on your domain, so agents find your store at your address — not a third party's."
+        },
+        {
+          "title": "Priced on a real cart",
+          "description": "Quotes run against a live WooCommerce cart, so your tax tables, shipping zones, coupons, and third-party pricing plugins all apply."
+        },
+        {
+          "title": "Orders land in WooCommerce",
+          "description": "Agent checkouts create real orders through native WooCommerce internals, tagged created_via = ucp so you can tell them apart."
+        },
+        {
+          "title": "You stay Merchant of Record",
+          "description": "Payment is charged by your own gateway, with credentials that never leave your server. ecentic is never party to the sale."
+        }
+      ],
+      "controlsParagraph": "Agent commerce does not hand the store over. You keep the controls that decide who can buy, how fast, and under which credentials.",
+      "controlsTitle": "What you still control",
+      "controls": [
+        {
+          "title": "On or off",
+          "description": "Turn the whole agent surface on or off from wp-admin."
+        },
+        {
+          "title": "Allow-listed agents",
+          "description": "Allow-list which agent platforms may transact with the store."
+        },
+        {
+          "title": "Signed requests",
+          "description": "Require signed (RFC 9421) requests, or set a store API key instead."
+        },
+        {
+          "title": "Rate limits & stock",
+          "description": "Rate-limit per agent, and include or exclude out-of-stock products."
+        }
+      ]
+    },
+    "evaluate": {
+      "number": "04",
+      "title": "Find your catalog bottleneck first.",
+      "description": "The right optimization tool depends on where the bottleneck actually sits. WooCommerce merchants usually face one of three situations.",
+      "paragraph": "Shortlist against the bottleneck you have today. Content speed, competitive clarity, and publishing friction each call for a different kind of tool — and only two of them are ecentic's job.",
+      "panelTitle": "Three situations to shortlist against",
+      "situations": [
+        {
+          "title": "Content production",
+          "description": "The catalog is growing faster than the team can write or review product copy. A content generation tool helps here, though it never answers which changes actually improve product selection.",
+          "fit": "A copy generator covers this",
+          "covered": false
+        },
+        {
+          "title": "Competitive clarity",
+          "description": "The team is not sure which products are losing to competitors or why. More copy does not fix this. What helps is simulating how products compare and surfacing the attributes making the difference.",
+          "fit": "Where ecentic fits",
+          "covered": true
+        },
+        {
+          "title": "Publishing friction",
+          "description": "Good insights exist but turn into live improvements slowly because review and publishing are disconnected from the store. An approve-and-publish path inside WooCommerce cuts the handoff cost.",
+          "fit": "Where ecentic fits",
+          "covered": true
+        }
+      ]
+    },
+    "related": {
+      "number": "05",
+      "title": "Keep exploring the platform cluster.",
+      "description": "Continue into listing optimization, platform comparison, or blog content from here.",
+      "items": [
+        {
+          "href": "/features/product-listings",
+          "name": "Workflow",
+          "title": "Start with AI product listing optimization",
+          "description": "Review the listing workflow first if your team wants the category-level explanation before jumping into WooCommerce specifics.",
+          "label": "View listing workflow",
+          "color": "primary"
+        },
+        {
+          "href": "/platforms/shopify",
+          "name": "Shopify",
+          "title": "Compare the Shopify path with the WooCommerce path",
+          "description": "Use the Shopify page if your team is evaluating platform fit or planning a multi-platform rollout.",
+          "label": "Open Shopify page",
+          "color": "accent"
+        },
+        {
+          "href": "/compare/best-ai-ecommerce-tools",
+          "name": "Comparison",
+          "title": "See how AI ecommerce categories fit different teams",
+          "description": "The guide helps buyers separate content generation, analytics, personalization, and agent-commerce optimization tools.",
+          "label": "Read comparison guide",
+          "color": "accent"
+        },
+        {
+          "href": "/blog",
+          "name": "Blog",
+          "title": "Use the blog for the operational SEO and data layer",
+          "description": "Read the guides on structured data, AI shopping traffic, and catalog clarity to support the WooCommerce workflow.",
+          "label": "Visit the blog",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "06",
+      "title": "Frequently asked questions",
+      "description": "Common questions from WooCommerce merchants evaluating AI optimization workflows."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "What does AI for WooCommerce stores mean?",
+          "answer": "For WooCommerce merchants, it means connecting the product catalog, understanding where listings lose to competitors, and improving product pages with a workflow that stays tied to the live store. It increasingly also means letting AI shopping agents buy directly from the store, which is what the écentic plugin enables."
+        },
+        {
+          "question": "Can WooCommerce stores publish optimized product updates?",
+          "answer": "Yes. Approved rewrites are published straight back into WooCommerce over the REST API, using credentials with read and write access. You review every change before it goes live — nothing is published to your storefront without your approval."
+        },
+        {
+          "question": "Do I need the plugin, or can I connect with API keys?",
+          "answer": "Either works. The free écentic for WooCommerce plugin is the recommended path: you approve the connection inside wp-admin and it provisions the REST key for you, with no keys to copy. The plugin is also what makes the store transactable by AI agents. If you only want listing optimization, you can paste a WooCommerce REST key and secret instead."
+        },
+        {
+          "question": "What does the plugin do to my storefront?",
+          "answer": "Nothing visible. It adds a discovery URL at /.well-known/ucp, an identity-linking endpoint, and a private REST bridge that only ecentic can call with the key you issued. Your theme, storefront, and checkout are untouched, and agent orders are created through the same WooCommerce internals as any other order."
+        },
+        {
+          "question": "How does ecentic compare to other WooCommerce product plugins?",
+          "answer": "Most WooCommerce product plugins help with catalog management or basic copy. ecentic focuses specifically on understanding why products lose to competitors, turning that analysis into listing improvements published back into the store, and making the store discoverable and transactable by AI shopping agents."
+        },
+        {
+          "question": "What is the right next step after reviewing the WooCommerce page?",
+          "answer": "Most merchants start with a free scan to see where their listings stand, then install the plugin to make the store agent-ready. If you are still comparing categories of tooling, the comparison guide is the better next stop."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Connect your WooCommerce store",
+        "secondary": "Back to features"
+      },
+      "note": "No platform migration · No credit card · See your free score first"
+    }
+  }
+}

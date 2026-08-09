@@ -1,8 +1,13 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
+import { hasLocale } from "next-intl";
 import Image from "next/image";
+import { notFound } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { localizePath } from "@/i18n/locale";
+import { routing } from "@/i18n/routing";
 import { JsonLd } from "@/components/json-ld";
 import {
   absoluteUrl,
@@ -27,59 +32,54 @@ import { Workflow } from "./_components/workflow";
 
 const SHOPIFY_APP_STORE_URL = "https://apps.shopify.com/ecentic-ai";
 
-const assurances = [
-  "2-minute install, no developer needed",
-  "Approved updates write back via the Admin API",
-  "See your free score first",
-] as const;
+type ShopifyPageProps = {
+  params: Promise<{ locale: string }>;
+};
 
-const description =
-  "AI for Shopify stores that need stronger product listings, clearer competitor analysis, and approved updates pushed straight back into the Shopify Admin.";
+type FaqItem = {
+  question: string;
+  answer: string;
+};
 
-const faq = [
-  {
-    question: "What does AI for Shopify stores mean in practice?",
-    answer:
-      "For Shopify merchants, it means connecting the catalog, understanding how products perform in AI-mediated comparisons, and turning those findings into approved listing updates that can be written back into Shopify.",
-  },
-  {
-    question: "How is this different from using Shopify Magic alone?",
-    answer:
-      "Shopify Magic helps with native content generation. ecentic adds simulation, competitor benchmarking, diagnosis, and approval-ready optimization workflows so merchants can see why products lose and what to fix next.",
-  },
-  {
-    question: "Can Shopify merchants publish changes back to the store?",
-    answer:
-      "Yes. The documented workflow includes pushing approved title and description updates back through the Shopify Admin API for merchants who want the optimization loop to stay connected to the live catalog.",
-  },
-  {
-    question: "When should Shopify teams move beyond native AI tools?",
-    answer:
-      "When the team needs to understand why a specific competitor keeps winning, which listing attributes matter most, and how to prioritize catalog improvements across a large number of SKUs. That is when a dedicated optimization workflow adds more value than built-in generation alone.",
-  },
-] as const;
+export const generateMetadata = async ({
+  params,
+}: ShopifyPageProps): Promise<Metadata> => {
+  const { locale: raw } = await params;
+  const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
+  const translate = await getTranslations({ locale, namespace: "shopify" });
 
-export const metadata: Metadata = createMetadata({
-  title: "AI for Shopify — Listing and Catalog Optimization",
-  description,
-  path: "/platforms/shopify",
-  keywords: [
-    "AI for Shopify stores",
-    "Shopify AI optimization",
-    "Shopify product listing optimization",
-    "Shopify Magic alternatives",
-    "AI ecommerce tools for Shopify",
-  ],
-});
+  return createMetadata({
+    title: translate("meta.title"),
+    description: translate("meta.description"),
+    path: localizePath("/platforms/shopify", locale),
+    keywords: [
+      "AI for Shopify stores",
+      "Shopify AI optimization",
+      "Shopify product listing optimization",
+      "Shopify Magic alternatives",
+      "AI ecommerce tools for Shopify",
+    ],
+  });
+};
 
-export default () => {
+export default async ({ params }: ShopifyPageProps) => {
+  const { locale: raw } = await params;
+  if (!hasLocale(routing.locales, raw)) notFound();
+  const locale = raw;
+  setRequestLocale(locale);
+
+  const translate = await getTranslations({ locale, namespace: "shopify" });
+  const description = translate("meta.description");
+  const assurances = translate.raw("hero.assurances") as readonly string[];
+  const faq = translate.raw("faq.items") as readonly FaqItem[];
+
   const structuredData = [
     {
       "@context": "https://schema.org",
       "@type": "WebPage",
-      name: "AI for Shopify Stores",
+      name: translate("breadcrumb.shopify"),
       description,
-      url: absoluteUrl("/platforms/shopify"),
+      url: absoluteUrl(localizePath("/platforms/shopify", locale)),
       about: [
         "AI for Shopify stores",
         "Shopify product listing optimization",
@@ -87,25 +87,28 @@ export default () => {
       ],
     },
     createBreadcrumbSchema([
-      { name: "Home", path: "/" },
-      { name: "AI for Shopify Stores", path: "/platforms/shopify" },
+      { name: translate("breadcrumb.home"), path: localizePath("/", locale) },
+      {
+        name: translate("breadcrumb.shopify"),
+        path: localizePath("/platforms/shopify", locale),
+      },
     ]),
     createFaqSchema(faq),
   ];
 
   return (
     <ContentPageLayout
-      eyebrow="Shopify"
-      title="AI for Shopify stores that need"
-      accent="more than automated copy."
-      description="Connect your catalog, see why AI shopping agents pick competitors over you, and publish approved title and description updates straight back into Shopify."
+      eyebrow={translate("hero.eyebrow")}
+      title={translate("hero.title.primary")}
+      accent={translate("hero.title.accent")}
+      description={translate("hero.description")}
       assurances={assurances}
-      art={{ source: Art, alt: "ASCII-art illustration of a shopping bag" }}
+      art={{ source: Art, alt: translate("hero.art.alt") }}
       badge={
         <ContentPageBadge
           logo="/images/shopify.svg"
-          alt="Shopify"
-          label="Built for Shopify"
+          alt={translate("hero.badge.alt")}
+          label={translate("hero.badge.label")}
         />
       }
       actions={
@@ -116,14 +119,14 @@ export default () => {
             render={<Link href={SHOPIFY_APP_STORE_URL} />}
           >
             <Image src={shopify} alt="" className="size-5" />
-            Install on Shopify
+            {translate("hero.action.primary")}
           </Button>
           <Button
             variant="outline"
             className={bannerAction.secondary}
             render={<Link href="/how-it-works" />}
           >
-            See how it works
+            {translate("hero.action.secondary")}
             <ArrowRightIcon className="size-4" />
           </Button>
         </>
@@ -140,9 +143,9 @@ export default () => {
       <RelatedPages />
 
       <ContentPageSection
-        number="05"
-        title="Frequently asked questions"
-        description="Common questions from Shopify merchants evaluating AI optimization workflows."
+        number={translate("faqSection.number")}
+        title={translate("faqSection.title")}
+        description={translate("faqSection.description")}
         gutter
         classList={{ body: "p-0" }}
       >
@@ -150,9 +153,15 @@ export default () => {
       </ContentPageSection>
 
       <ContentPageFooter
-        primary={{ href: "/sign-up", label: "Connect your Shopify store" }}
-        secondary={{ href: "/features", label: "Back to features" }}
-        note="2-minute install · No credit card · See your free score first"
+        primary={{
+          href: "/sign-up",
+          label: translate("footer.action.primary"),
+        }}
+        secondary={{
+          href: "/features",
+          label: translate("footer.action.secondary"),
+        }}
+        note={translate("footer.note")}
       />
     </ContentPageLayout>
   );

@@ -4,7 +4,6 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import type { PropsWithChildren } from "react";
 import { CookieConsent } from "@/components/cookie-consent";
 import { HtmlLang } from "@/components/html-lang";
-import { LanguageSwitcher } from "@/components/language-switcher";
 import { openGraphLocale } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
 
@@ -47,7 +46,6 @@ export default async ({ children, params }: LocaleLayoutProps) => {
     <NextIntlClientProvider locale={locale} messages={messages}>
       <HtmlLang locale={locale} />
       {children}
-      <LanguageSwitcher />
       {/* Must sit under NextIntlClientProvider — `useTranslations` / locale
           `Link` break if this stays in the root layout (e.g. `/_not-found`). */}
       <CookieConsent />

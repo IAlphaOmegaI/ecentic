@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf .turbo .next node_modules",
     "lint": "biome check --write --unsafe",
+    "i18n:check": "bun scripts/check-i18n-keys.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",

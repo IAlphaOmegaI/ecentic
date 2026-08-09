@@ -1,7 +1,7 @@
 import { InstagramIcon, LinkedinIcon, XTwitterIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { InstallCta } from "@/app/[locale]/(main)/_components/install-cta";
 import { Link } from "@/i18n/navigation";
 import WordMark from "@/public/images/wordmark.svg";
@@ -28,6 +28,7 @@ const socials = [
 
 export const Footer = async ({ stacked = false }: Footer.Props) => {
   const translate = await getTranslations("footer");
+  const locale = await getLocale();
 
   const columns = [
     {
@@ -100,7 +101,7 @@ export const Footer = async ({ stacked = false }: Footer.Props) => {
           <p className="mt-6 max-w-xl font-light text-foreground-dimmed text-lg">
             {translate("cta.description")}
           </p>
-          <InstallCta className="mt-8" />
+          <InstallCta locale={locale} className="mt-8" />
         </div>
 
         <div className="relative grid border-accent-foreground border-b md:grid-cols-12">

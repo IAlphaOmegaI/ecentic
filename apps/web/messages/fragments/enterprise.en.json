@@ -1,0 +1,185 @@
+{
+  "enterprise": {
+    "meta": {
+      "title": "Enterprise — Agent-Commerce at Scale",
+      "description": "Agent-commerce intelligence for enterprise merchants: multi-brand dashboards, API access, SSO, SOC 2 compliance, UCP signing, and a dedicated CSM team."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "enterprise": "Enterprise"
+    },
+    "hero": {
+      "eyebrow": "Enterprise",
+      "title": {
+        "primary": "Agent-commerce infrastructure",
+        "accent": "at scale."
+      },
+      "description": "Multi-brand dashboards, API access, UCP signing, and dedicated support for commerce teams running hundreds of SKUs across multiple platforms.",
+      "assurances": [
+        "Multi-brand dashboards",
+        "Custom API access",
+        "Dedicated CSM",
+        "SOC 2 in progress"
+      ],
+      "art": {
+        "alt": "ASCII-art illustration of an office tower"
+      },
+      "action": {
+        "primary": "Talk to sales",
+        "secondary": "View pricing"
+      }
+    },
+    "capabilities": {
+      "number": "01",
+      "title": "Everything in Dominate, plus the enterprise layer.",
+      "description": "The security, scale, and support layer enterprise teams need to run agent-commerce optimization across brands.",
+      "items": [
+        {
+          "title": "Multi-brand rollups",
+          "description": "One dashboard across every brand and region. Aggregate win-rate, agent traffic, and optimization lift in a single view.",
+          "features": [
+            "Cross-brand win-rate rollups",
+            "Regional traffic breakdowns",
+            "Shared optimization workflows"
+          ],
+          "highlighted": true
+        },
+        {
+          "title": "API access",
+          "description": "Read-only API for programmatic access to scan results, agent traffic, and UCP profiles.",
+          "features": [
+            "Scan + simulation exports",
+            "Agent traffic endpoints",
+            "UCP profile retrieval"
+          ]
+        },
+        {
+          "title": "SSO",
+          "description": "Okta, Google Workspace, and Azure AD supported. Provision seats without touching ecentic directly.",
+          "features": ["SAML + OIDC", "Role-based access", "Automated deprovisioning"]
+        },
+        {
+          "title": "SOC 2 Type II",
+          "description": "Audit in progress. Data residency options, GDPR-compliant processing, and a DPA on request.",
+          "features": [
+            "DPA available",
+            "EU data residency options",
+            "Security review support"
+          ]
+        },
+        {
+          "title": "UCP signing service",
+          "description": "ecentic manages cryptographic signing of your UCP profile so agents can verify merchant identity.",
+          "features": [
+            "Managed key rotation",
+            "Profile verification",
+            "No bespoke infra required"
+          ]
+        },
+        {
+          "title": "Dedicated CSM",
+          "description": "A named customer success manager, quarterly business reviews, and direct engineering escalation.",
+          "features": [
+            "Named CSM",
+            "Quarterly business reviews",
+            "Engineering escalation path"
+          ]
+        }
+      ],
+      "cta": {
+        "badge": "Custom · talk to sales",
+        "title": "Built for enterprise merchants running at scale.",
+        "description": "Custom limits, enterprise security, UCP signing, multi-brand dashboards, and dedicated support, scoped to your catalog and compliance needs.",
+        "action": {
+          "primary": "Talk to sales"
+        }
+      },
+      "scoping": {
+        "label": "How scoping works",
+        "steps": [
+          {
+            "step": "01",
+            "title": "Short discovery call",
+            "description": "Catalog size, platforms, and compliance needs."
+          },
+          {
+            "step": "02",
+            "title": "Custom ROI estimate",
+            "description": "Scoped to your SKU count and current win rates."
+          },
+          {
+            "step": "03",
+            "title": "Onboarding timeline",
+            "description": "No procurement deck required to begin."
+          }
+        ]
+      }
+    },
+    "compare": {
+      "number": "02",
+      "title": "Dominate vs Enterprise",
+      "description": "Dominate runs the full optimization loop for a single brand. Enterprise adds security, scale, and support for multi-brand commerce teams.",
+      "table": {
+        "feature": "Feature",
+        "dominate": "Dominate",
+        "enterprise": "Enterprise"
+      },
+      "rows": [
+        { "label": "Price", "dominate": "$149/mo", "enterprise": "Custom" },
+        { "label": "Products", "dominate": "Up to 1000", "enterprise": "Custom limits" },
+        {
+          "label": "Agent simulations",
+          "dominate": "Continuous",
+          "enterprise": "Continuous + custom cadence"
+        },
+        { "label": "Auto-optimization", "dominate": true, "enterprise": true },
+        { "label": "UCP generation", "dominate": true, "enterprise": true },
+        { "label": "UCP signing service", "dominate": false, "enterprise": true },
+        { "label": "Multi-brand rollups", "dominate": false, "enterprise": true },
+        { "label": "API access", "dominate": false, "enterprise": true },
+        { "label": "SSO", "dominate": false, "enterprise": true },
+        { "label": "SOC 2 Type II", "dominate": false, "enterprise": "In progress" },
+        { "label": "Dedicated CSM", "dominate": false, "enterprise": true }
+      ],
+      "cta": {
+        "title": "Ready to scope Enterprise?",
+        "description": "We run a short discovery call, share a custom ROI estimate for your catalog size, and scope an onboarding timeline.",
+        "action": {
+          "primary": "Contact enterprise sales"
+        }
+      }
+    },
+    "faqSection": {
+      "number": "03",
+      "title": "Enterprise FAQ",
+      "description": "Common questions about Enterprise plans, security, and onboarding."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "When should I choose Enterprise over Dominate?",
+          "answer": "Choose Enterprise when you run hundreds of SKUs across multiple brands or regions, need SSO or a DPA, want UCP signing managed for you, or need a dedicated CSM and custom API access. Dominate covers the full optimization loop for a single brand up to 1000 products."
+        },
+        {
+          "question": "What does onboarding look like for Enterprise?",
+          "answer": "We start with a short discovery call, share a custom ROI estimate for your catalog size, and scope an onboarding timeline. No procurement deck is required to begin the conversation."
+        },
+        {
+          "question": "Is SOC 2 available today?",
+          "answer": "SOC 2 Type II is in progress. Enterprise accounts can request our DPA, discuss data residency options, and review our security posture during the sales process."
+        },
+        {
+          "question": "Can Enterprise connect to our existing data stack?",
+          "answer": "Yes. Enterprise includes read-only API access for scan results, agent traffic, and UCP profiles so you can integrate ecentic data into your own analytics and reporting tools."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Book a demo",
+        "secondary": "View pricing"
+      },
+      "note": "SOC 2 in progress · DPA on request"
+    }
+  }
+}

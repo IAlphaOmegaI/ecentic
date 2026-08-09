@@ -1,0 +1,224 @@
+{
+  "shopify": {
+    "meta": {
+      "title": "AI for Shopify — Listing and Catalog Optimization",
+      "description": "AI for Shopify stores that need stronger product listings, clearer competitor analysis, and approved updates pushed straight back into the Shopify Admin."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "shopify": "AI for Shopify Stores"
+    },
+    "hero": {
+      "eyebrow": "Shopify",
+      "title": {
+        "primary": "AI for Shopify stores that need",
+        "accent": "more than automated copy."
+      },
+      "description": "Connect your catalog, see why AI shopping agents pick competitors over you, and publish approved title and description updates straight back into Shopify.",
+      "assurances": [
+        "2-minute install, no developer needed",
+        "Approved updates write back via the Admin API",
+        "See your free score first"
+      ],
+      "art": {
+        "alt": "ASCII-art illustration of a shopping bag"
+      },
+      "badge": {
+        "alt": "Shopify",
+        "label": "Built for Shopify"
+      },
+      "action": {
+        "primary": "Install on Shopify",
+        "secondary": "See how it works"
+      }
+    },
+    "why": {
+      "number": "01",
+      "title": "Why Shopify merchants outgrow native AI.",
+      "description": "Most Shopify merchants eventually hit a ceiling with native generation tools. This is what comes next.",
+      "paragraphs": [
+        "Most Shopify teams already have the basics: a storefront, a catalog, and a merchandising workflow. The real challenge is that product visibility now depends on more than theme design or ad performance. Titles, descriptions, attributes, and competitor context all shape whether a product feels easy to recommend.",
+        "The most useful AI workflow for Shopify stores goes beyond generation alone. Merchants need to know which products underperform, which competitor listing keeps winning, and which changes are worth shipping first."
+      ],
+      "panelTitle": "Who this decision point fits",
+      "audiences": [
+        {
+          "title": "Evaluating the category",
+          "description": "Teams researching AI for Shopify stores and deciding what belongs in the stack."
+        },
+        {
+          "title": "Complementing Shopify Magic",
+          "description": "Merchants looking for an alternative or complement to native content generation."
+        },
+        {
+          "title": "Tying changes to outcomes",
+          "description": "Operators who want listing improvements tied to measurable competitive results."
+        },
+        {
+          "title": "Closing the publishing loop",
+          "description": "Stores that need a tighter loop between catalog insight and what actually ships."
+        }
+      ]
+    },
+    "workflow": {
+      "number": "02",
+      "title": "The Shopify workflow in ecentic.",
+      "description": "The workflow connects the catalog, surfaces competitive gaps, and makes improvements publishable back into Shopify instead of one more disconnected document.",
+      "paragraph": "Connect the store, pick the products that matter, benchmark them against competitors, then approve write-backs through the Admin API — without leaving the Shopify catalog workflow.",
+      "panelTitle": "Connect, diagnose, publish",
+      "outcomes": [
+        {
+          "title": "Prioritize the right SKUs",
+          "description": "A cleaner way to decide which products need attention first."
+        },
+        {
+          "title": "See why pages lose",
+          "description": "Better visibility into why product pages lose to specific competitors."
+        },
+        {
+          "title": "Review before go-live",
+          "description": "Faster review of listing updates before they ship to the storefront."
+        },
+        {
+          "title": "Stay in Shopify",
+          "description": "A publishing path that fits the existing Shopify catalog workflow."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Connect & import",
+          "description": "Install from the Shopify App Store and your catalog imports during onboarding, no theme edits required."
+        },
+        {
+          "title": "Choose products",
+          "description": "Pick which items enter the optimization and simulation loop, from one hero product to the whole catalog."
+        },
+        {
+          "title": "Benchmark & diagnose",
+          "description": "Selected products are compared against competitors so you see where AI systems prefer another option, and why."
+        },
+        {
+          "title": "Approve & write back",
+          "description": "Review the stronger version of each listing and publish approved changes back to Shopify through the Admin API."
+        }
+      ]
+    },
+    "compare": {
+      "number": "03",
+      "title": "Where this fits alongside Shopify Magic.",
+      "description": "Native generation helps merchants produce copy. ecentic helps merchants evaluate, prioritize, and improve listings with a direct tie back to competitive outcomes.",
+      "shopifyMagic": {
+        "badge": "Shopify Magic",
+        "title": "Great for faster drafting.",
+        "description": "Native AI tools save time when the job is producing copy, especially for early-stage merchandising work.",
+        "strengths": [
+          "Native content generation inside the Shopify admin",
+          "Quick description drafts for early merchandising work",
+          "Fast copy variations when speed is the only goal"
+        ]
+      },
+      "ecentic": {
+        "badge": "ecentic on top of Shopify",
+        "title": "Built for winning the comparison.",
+        "description": "The value is not only rewriting text. It is knowing whether your page is easy for an AI shopping system to evaluate, and whether the proposed change improves your chance of being selected.",
+        "strengths": [
+          "Simulates how AI shopping agents compare your products",
+          "Benchmarks listings against the competitors that keep winning",
+          "Diagnoses why a page loses: missing data, weak positioning, unclear context",
+          "Turns findings into approval-ready updates published back to Shopify"
+        ]
+      },
+      "paragraph": "Generation alone is enough when speed is the only goal. The distinction starts to matter once the catalog, the competitors, or the review process get in the way.",
+      "triggersTitle": "When the distinction starts to matter",
+      "triggers": [
+        {
+          "title": "Catalog scale",
+          "description": "The catalog is large enough that manual review slows down every update."
+        },
+        {
+          "title": "Justifying changes",
+          "description": "The team needs to explain why a listing change matters before shipping it."
+        },
+        {
+          "title": "Clarity over price",
+          "description": "Competitors keep winning on product clarity rather than price alone."
+        },
+        {
+          "title": "Repeatable loops",
+          "description": "Merchandising leaders want a process instead of isolated one-off edits."
+        }
+      ]
+    },
+    "related": {
+      "number": "04",
+      "title": "Keep exploring the Shopify cluster.",
+      "description": "Continue into listing optimization, platform comparison, or blog content to build more context.",
+      "items": [
+        {
+          "href": "/features/product-listings",
+          "name": "Workflow",
+          "title": "Start with AI product listing optimization",
+          "description": "See how the listing workflow improves titles, descriptions, and structured product context before you publish.",
+          "label": "View listing workflow",
+          "color": "primary"
+        },
+        {
+          "href": "/compare/best-ai-ecommerce-tools",
+          "name": "Comparison",
+          "title": "Compare AI ecommerce tool categories before you commit",
+          "description": "Use the guide to understand when Shopify-native generation is enough and when a broader optimization loop adds value.",
+          "label": "Read comparison guide",
+          "color": "accent"
+        },
+        {
+          "href": "/blog",
+          "name": "Blog",
+          "title": "Read the supporting guides for AI traffic and structured data",
+          "description": "Use the blog for the operational details that reinforce your Shopify product page improvements over time.",
+          "label": "Visit the blog",
+          "color": "accent"
+        },
+        {
+          "href": "/features",
+          "name": "Features",
+          "title": "Review the wider AI ecommerce tools stack",
+          "description": "Step back into the main features page if your team is evaluating the whole workflow rather than one platform.",
+          "label": "Open features page",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "05",
+      "title": "Frequently asked questions",
+      "description": "Common questions from Shopify merchants evaluating AI optimization workflows."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "What does AI for Shopify stores mean in practice?",
+          "answer": "For Shopify merchants, it means connecting the catalog, understanding how products perform in AI-mediated comparisons, and turning those findings into approved listing updates that can be written back into Shopify."
+        },
+        {
+          "question": "How is this different from using Shopify Magic alone?",
+          "answer": "Shopify Magic helps with native content generation. ecentic adds simulation, competitor benchmarking, diagnosis, and approval-ready optimization workflows so merchants can see why products lose and what to fix next."
+        },
+        {
+          "question": "Can Shopify merchants publish changes back to the store?",
+          "answer": "Yes. The documented workflow includes pushing approved title and description updates back through the Shopify Admin API for merchants who want the optimization loop to stay connected to the live catalog."
+        },
+        {
+          "question": "When should Shopify teams move beyond native AI tools?",
+          "answer": "When the team needs to understand why a specific competitor keeps winning, which listing attributes matter most, and how to prioritize catalog improvements across a large number of SKUs. That is when a dedicated optimization workflow adds more value than built-in generation alone."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Connect your Shopify store",
+        "secondary": "Back to features"
+      },
+      "note": "2-minute install · No credit card · See your free score first"
+    }
+  }
+}

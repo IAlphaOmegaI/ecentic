@@ -1,4 +1,9 @@
 import type { Metadata } from "next";
+import { hasLocale } from "next-intl";
+import { notFound } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { localizePath } from "@/i18n/locale";
+import { routing } from "@/i18n/routing";
 import { JsonLd } from "@/components/json-ld";
 import {
   absoluteUrl,
@@ -16,66 +21,63 @@ import {
 import { Faq } from "../pricing/_components/faq";
 import { Capabilities } from "./_components/capabilities";
 import { Loop } from "./_components/loop";
-import { Workflows, workflows } from "./_components/workflows";
+import { Workflows } from "./_components/workflows";
 
-const assurances = [
-  "Simulates ChatGPT, Claude, Gemini & Perplexity",
-  "One-click listing rewrites",
-  "Live agent traffic",
-] as const;
+type FeaturesPageProps = {
+  params: Promise<{ locale: string }>;
+};
 
-const intro =
-  "Simulate how AI shopping agents compare your products, see exactly why competitors win, and publish the listing fixes that flip the result, all from one loop.";
+type FaqItem = {
+  question: string;
+  answer: string;
+};
 
-const description =
-  "AI ecommerce tools for product listing optimization, competitor analysis, and AI shopping visibility. See how ecentic helps merchants win more carts today.";
+type WorkflowItem = {
+  href: string;
+  title: string;
+};
 
-const faq = [
-  {
-    question:
-      "What makes AI ecommerce tools different from standard ecommerce software?",
-    answer:
-      "AI ecommerce tools need to help merchants structure product data, explain why listings lose, and improve pages that AI shopping systems compare in seconds. That is different from a generic dashboard or a copy generator that only rewrites descriptions.",
-  },
-  {
-    question: "Does ecentic replace an ecommerce platform?",
-    answer:
-      "No. ecentic sits on top of an existing store stack. It connects to the catalog, runs simulations against competitors, and helps merchants publish clearer listing updates back into the platform they already use.",
-  },
-  {
-    question: "Who should start with the features page first?",
-    answer:
-      "Teams evaluating AI ecommerce tools, agent-commerce workflows, or product listing optimization usually start here because it explains the full simulation, diagnosis, and optimization loop before they choose a platform-specific path.",
-  },
-  {
-    question: "Which pages should merchants read next?",
-    answer:
-      "Most merchants move from the features page to the AI product listing optimization page, then into a platform page such as Shopify or WooCommerce, and finally into comparison or blog content for deeper research.",
-  },
-] as const;
+export const generateMetadata = async ({
+  params,
+}: FeaturesPageProps): Promise<Metadata> => {
+  const { locale: raw } = await params;
+  const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
+  const translate = await getTranslations({ locale, namespace: "features" });
 
-export const metadata: Metadata = createMetadata({
-  title: "AI Ecommerce Tools for Merchant Product Listings",
-  description,
-  path: "/features",
-  keywords: [
-    "AI ecommerce tools",
-    "AI ecommerce platform",
-    "product listing optimization",
-    "AI shopping agents",
-    "agent commerce software",
-  ],
-});
+  return createMetadata({
+    title: translate("meta.title"),
+    description: translate("meta.description"),
+    path: localizePath("/features", locale),
+    keywords: [
+      "AI ecommerce tools",
+      "AI ecommerce platform",
+      "product listing optimization",
+      "AI shopping agents",
+      "agent commerce software",
+    ],
+  });
+};
 
-export default () => {
+export default async ({ params }: FeaturesPageProps) => {
+  const { locale: raw } = await params;
+  if (!hasLocale(routing.locales, raw)) notFound();
+  const locale = raw;
+  setRequestLocale(locale);
+
+  const translate = await getTranslations({ locale, namespace: "features" });
+  const description = translate("meta.description");
+  const assurances = translate.raw("hero.assurances") as readonly string[];
+  const faq = translate.raw("faq.items") as readonly FaqItem[];
+  const workflows = translate.raw("workflows.items") as readonly WorkflowItem[];
+
   const structuredData = [
     {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
-      name: "AI Ecommerce Tools for Merchants",
+      name: translate("meta.title"),
       description,
-      url: absoluteUrl("/features"),
-      isPartOf: absoluteUrl("/"),
+      url: absoluteUrl(localizePath("/features", locale)),
+      isPartOf: absoluteUrl(localizePath("/", locale)),
       about: [
         "AI ecommerce tools",
         "product listing optimization",
@@ -84,30 +86,33 @@ export default () => {
       hasPart: workflows.map((workflow) => ({
         "@type": "WebPage",
         name: workflow.title,
-        url: absoluteUrl(workflow.href),
+        url: absoluteUrl(localizePath(workflow.href, locale)),
       })),
       publisher: {
         "@type": "Organization",
         name: "ecentic",
-        url: absoluteUrl("/"),
+        url: absoluteUrl(localizePath("/", locale)),
       },
     },
     organizationSchema,
     createBreadcrumbSchema([
-      { name: "Home", path: "/" },
-      { name: "Features", path: "/features" },
+      { name: translate("breadcrumb.home"), path: localizePath("/", locale) },
+      {
+        name: translate("breadcrumb.features"),
+        path: localizePath("/features", locale),
+      },
     ]),
     createFaqSchema(faq),
   ];
 
   return (
     <ContentPageLayout
-      eyebrow="Features"
-      title="Every tool you need to"
-      accent="win the AI shopper."
-      description={intro}
+      eyebrow={translate("hero.eyebrow")}
+      title={translate("hero.title.primary")}
+      accent={translate("hero.title.accent")}
+      description={translate("hero.description")}
       assurances={assurances}
-      art={{ source: Art, alt: "ASCII-art illustration of a control console" }}
+      art={{ source: Art, alt: translate("hero.art.alt") }}
     >
       <JsonLd schemas={structuredData} />
 
@@ -118,9 +123,9 @@ export default () => {
       <Workflows />
 
       <ContentPageSection
-        number="04"
-        title="Frequently asked questions"
-        description="Common questions from merchants evaluating AI ecommerce tools."
+        number={translate("faqSection.number")}
+        title={translate("faqSection.title")}
+        description={translate("faqSection.description")}
         gutter
         classList={{ body: "p-0" }}
       >
@@ -128,9 +133,15 @@ export default () => {
       </ContentPageSection>
 
       <ContentPageFooter
-        primary={{ href: "/sign-up", label: "Get started" }}
-        secondary={{ href: "/", label: "Back to home" }}
-        note="2-minute setup · No credit card · See your free score first"
+        primary={{
+          href: "/sign-up",
+          label: translate("footer.action.primary"),
+        }}
+        secondary={{
+          href: "/",
+          label: translate("footer.action.secondary"),
+        }}
+        note={translate("footer.note")}
       />
     </ContentPageLayout>
   );

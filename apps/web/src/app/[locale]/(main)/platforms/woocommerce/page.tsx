@@ -1,4 +1,9 @@
 import type { Metadata } from "next";
+import { hasLocale } from "next-intl";
+import { notFound } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { localizePath } from "@/i18n/locale";
+import { routing } from "@/i18n/routing";
 import { JsonLd } from "@/components/json-ld";
 import {
   absoluteUrl,
@@ -20,71 +25,54 @@ import { RelatedPages } from "./_components/related";
 import { Why } from "./_components/why";
 import { Workflow } from "./_components/workflow";
 
-const assurances = [
-  "No platform migration",
-  "Free plugin on WordPress.org",
-  "Approved updates publish via the REST API",
-  "See your free score first",
-] as const;
+type WooCommercePageProps = {
+  params: Promise<{ locale: string }>;
+};
 
-const description =
-  "AI for WooCommerce stores that need product listing optimization, competitor analysis, and a clearer path from agent insights to published catalog updates.";
+type FaqItem = {
+  question: string;
+  answer: string;
+};
 
-const faq = [
-  {
-    question: "What does AI for WooCommerce stores mean?",
-    answer:
-      "For WooCommerce merchants, it means connecting the product catalog, understanding where listings lose to competitors, and improving product pages with a workflow that stays tied to the live store. It increasingly also means letting AI shopping agents buy directly from the store, which is what the écentic plugin enables.",
-  },
-  {
-    question: "Can WooCommerce stores publish optimized product updates?",
-    answer:
-      "Yes. Approved rewrites are published straight back into WooCommerce over the REST API, using credentials with read and write access. You review every change before it goes live — nothing is published to your storefront without your approval.",
-  },
-  {
-    question: "Do I need the plugin, or can I connect with API keys?",
-    answer:
-      "Either works. The free écentic for WooCommerce plugin is the recommended path: you approve the connection inside wp-admin and it provisions the REST key for you, with no keys to copy. The plugin is also what makes the store transactable by AI agents. If you only want listing optimization, you can paste a WooCommerce REST key and secret instead.",
-  },
-  {
-    question: "What does the plugin do to my storefront?",
-    answer:
-      "Nothing visible. It adds a discovery URL at /.well-known/ucp, an identity-linking endpoint, and a private REST bridge that only ecentic can call with the key you issued. Your theme, storefront, and checkout are untouched, and agent orders are created through the same WooCommerce internals as any other order.",
-  },
-  {
-    question: "How does ecentic compare to other WooCommerce product plugins?",
-    answer:
-      "Most WooCommerce product plugins help with catalog management or basic copy. ecentic focuses specifically on understanding why products lose to competitors, turning that analysis into listing improvements published back into the store, and making the store discoverable and transactable by AI shopping agents.",
-  },
-  {
-    question:
-      "What is the right next step after reviewing the WooCommerce page?",
-    answer:
-      "Most merchants start with a free scan to see where their listings stand, then install the plugin to make the store agent-ready. If you are still comparing categories of tooling, the comparison guide is the better next stop.",
-  },
-] as const;
+export const generateMetadata = async ({
+  params,
+}: WooCommercePageProps): Promise<Metadata> => {
+  const { locale: raw } = await params;
+  const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
+  const translate = await getTranslations({ locale, namespace: "woocommerce" });
 
-export const metadata: Metadata = createMetadata({
-  title: "AI for WooCommerce — Catalog Optimization",
-  description,
-  path: "/platforms/woocommerce",
-  keywords: [
-    "AI for WooCommerce",
-    "WooCommerce AI optimization",
-    "WooCommerce product listing optimization",
-    "AI ecommerce tools for WooCommerce",
-    "product listing optimization WooCommerce",
-  ],
-});
+  return createMetadata({
+    title: translate("meta.title"),
+    description: translate("meta.description"),
+    path: localizePath("/platforms/woocommerce", locale),
+    keywords: [
+      "AI for WooCommerce",
+      "WooCommerce AI optimization",
+      "WooCommerce product listing optimization",
+      "AI ecommerce tools for WooCommerce",
+      "product listing optimization WooCommerce",
+    ],
+  });
+};
 
-export default () => {
+export default async ({ params }: WooCommercePageProps) => {
+  const { locale: raw } = await params;
+  if (!hasLocale(routing.locales, raw)) notFound();
+  const locale = raw;
+  setRequestLocale(locale);
+
+  const translate = await getTranslations({ locale, namespace: "woocommerce" });
+  const description = translate("meta.description");
+  const assurances = translate.raw("hero.assurances") as readonly string[];
+  const faq = translate.raw("faq.items") as readonly FaqItem[];
+
   const structuredData = [
     {
       "@context": "https://schema.org",
       "@type": "WebPage",
-      name: "AI for WooCommerce",
+      name: translate("breadcrumb.woocommerce"),
       description,
-      url: absoluteUrl("/platforms/woocommerce"),
+      url: absoluteUrl(localizePath("/platforms/woocommerce", locale)),
       about: [
         "AI for WooCommerce",
         "WooCommerce product listing optimization",
@@ -92,25 +80,28 @@ export default () => {
       ],
     },
     createBreadcrumbSchema([
-      { name: "Home", path: "/" },
-      { name: "AI for WooCommerce", path: "/platforms/woocommerce" },
+      { name: translate("breadcrumb.home"), path: localizePath("/", locale) },
+      {
+        name: translate("breadcrumb.woocommerce"),
+        path: localizePath("/platforms/woocommerce", locale),
+      },
     ]),
     createFaqSchema(faq),
   ];
 
   return (
     <ContentPageLayout
-      eyebrow="WooCommerce"
-      title="AI for WooCommerce stores that need"
-      accent="cleaner product workflows."
-      description="Import your catalog, see where listings lose to competitors in AI-mediated comparisons, and publish approved improvements back into WooCommerce without changing platforms."
+      eyebrow={translate("hero.eyebrow")}
+      title={translate("hero.title.primary")}
+      accent={translate("hero.title.accent")}
+      description={translate("hero.description")}
       assurances={assurances}
-      art={{ source: Art, alt: "ASCII-art illustration of a shopping cart" }}
+      art={{ source: Art, alt: translate("hero.art.alt") }}
       badge={
         <ContentPageBadge
           logo="/images/woocommerce.svg"
-          alt="WooCommerce"
-          label="Built for WooCommerce"
+          alt={translate("hero.badge.alt")}
+          label={translate("hero.badge.label")}
         />
       }
     >
@@ -127,9 +118,9 @@ export default () => {
       <RelatedPages />
 
       <ContentPageSection
-        number="06"
-        title="Frequently asked questions"
-        description="Common questions from WooCommerce merchants evaluating AI optimization workflows."
+        number={translate("faqSection.number")}
+        title={translate("faqSection.title")}
+        description={translate("faqSection.description")}
         gutter
         classList={{ body: "p-0" }}
       >
@@ -137,9 +128,15 @@ export default () => {
       </ContentPageSection>
 
       <ContentPageFooter
-        primary={{ href: "/sign-up", label: "Connect your WooCommerce store" }}
-        secondary={{ href: "/features", label: "Back to features" }}
-        note="No platform migration · No credit card · See your free score first"
+        primary={{
+          href: "/sign-up",
+          label: translate("footer.action.primary"),
+        }}
+        secondary={{
+          href: "/features",
+          label: translate("footer.action.secondary"),
+        }}
+        note={translate("footer.note")}
       />
     </ContentPageLayout>
   );
