@@ -9,10 +9,10 @@ import {
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import { Link } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { Link } from "@/i18n/navigation";
 import type * as Simulate from "@/server/app/intelligence/simulate";
 import { SectionKicker } from "../../../_components/grid";
 
@@ -127,9 +127,7 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
           <p className="font-semibold text-foreground-rich text-lg">
             {translate("noFindingTitle")}
           </p>
-          <p className="text-foreground-dimmed">
-            {translate("noFindingHint")}
-          </p>
+          <p className="text-foreground-dimmed">{translate("noFindingHint")}</p>
         </div>
       )}
       <div className="flex items-center justify-between border-accent-foreground border-t p-4">

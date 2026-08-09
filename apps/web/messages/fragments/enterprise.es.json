@@ -56,7 +56,11 @@
         {
           "title": "SSO",
           "description": "Compatible con Okta, Google Workspace y Azure AD. Provisiona puestos sin tocar ecentic directamente.",
-          "features": ["SAML + OIDC", "Acceso basado en roles", "Desaprovisionamiento automatizado"]
+          "features": [
+            "SAML + OIDC",
+            "Acceso basado en roles",
+            "Desaprovisionamiento automatizado"
+          ]
         },
         {
           "title": "SOC 2 Type II",
@@ -125,8 +129,16 @@
         "enterprise": "Enterprise"
       },
       "rows": [
-        { "label": "Precio", "dominate": "149 $/mes", "enterprise": "Personalizado" },
-        { "label": "Productos", "dominate": "Hasta 1000", "enterprise": "Límites personalizados" },
+        {
+          "label": "Precio",
+          "dominate": "149 $/mes",
+          "enterprise": "Personalizado"
+        },
+        {
+          "label": "Productos",
+          "dominate": "Hasta 1000",
+          "enterprise": "Límites personalizados"
+        },
         {
           "label": "Simulaciones de agentes",
           "dominate": "Continuas",
@@ -134,11 +146,23 @@
         },
         { "label": "Auto-optimización", "dominate": true, "enterprise": true },
         { "label": "Generación UCP", "dominate": true, "enterprise": true },
-        { "label": "Servicio de firma UCP", "dominate": false, "enterprise": true },
-        { "label": "Agregados multimarca", "dominate": false, "enterprise": true },
+        {
+          "label": "Servicio de firma UCP",
+          "dominate": false,
+          "enterprise": true
+        },
+        {
+          "label": "Agregados multimarca",
+          "dominate": false,
+          "enterprise": true
+        },
         { "label": "Acceso API", "dominate": false, "enterprise": true },
         { "label": "SSO", "dominate": false, "enterprise": true },
-        { "label": "SOC 2 Type II", "dominate": false, "enterprise": "En curso" },
+        {
+          "label": "SOC 2 Type II",
+          "dominate": false,
+          "enterprise": "En curso"
+        },
         { "label": "CSM dedicado", "dominate": false, "enterprise": true }
       ],
       "cta": {

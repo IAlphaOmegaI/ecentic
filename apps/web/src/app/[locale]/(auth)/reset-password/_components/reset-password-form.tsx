@@ -10,12 +10,12 @@ import {
   InferredForm,
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { Link, useRouter } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { z } from "zod";
 import { Motion } from "@/components/motion";
+import { Link, useRouter } from "@/i18n/navigation";
 import * as Authentication from "@/server/app/authentication";
 
 const InvalidLink = ({

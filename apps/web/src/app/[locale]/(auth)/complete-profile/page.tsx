@@ -1,8 +1,8 @@
 "use client";
 
 import * as motion from "motion/react-client";
-import { useMessages, useTranslations } from "next-intl";
 import Image from "next/image";
+import { useMessages, useTranslations } from "next-intl";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import { Fade } from "@/lib/animations";

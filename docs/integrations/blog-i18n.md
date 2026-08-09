@@ -17,12 +17,12 @@ Metadata route files (`opengraph-image.tsx`) compile to Route Handlers, so they 
 
 | Locale | URL prefix | Content source |
 |--------|------------|----------------|
-| `en` | none (`/blog/foo`) | Prefer `blog_post` `locale=en` (BLG webhook + local editorial). Fall back to live BabyLoveGrowth API if no EN row yet. |
-| `es` | `/es` (`/es/blog/foo`) | Prefer `blog_post` `locale=es` (same slug). Fall back to EN row / BLG English until Spanish is written. |
+| `en` | none (`/blog/foo`) | `blog_post` `locale=en` (BabyLoveGrowth webhook or editorial). |
+| `es` | `/es` (`/es/blog/foo`) | `blog_post` `locale=es` (same slug). Fall back to EN row until Spanish is written. |
 
 Same slug is shared across locales. Spanish copies are **not** published back into BabyLoveGrowth.
 
-Pages are statically generated for every slug × locale and ISR'd via `revalidateTag("blog")` when the webhook (or editorial) writes rows.
+Index, tags, sitemap, `llms.txt`, OG images, and `generateStaticParams` / `Blog.resolve` read **Postgres only** — never live BabyLoveGrowth during prerender (multi-worker SSG would 429 their 2 req/s cap). Pages are fully static for every slug × locale; the webhook (or editorial write) purges `revalidateTag("blog")` so ISR regenerates from stored rows.
 
 ## Database
 
@@ -45,7 +45,7 @@ All blog server logic lives in `apps/web/src/server/app/blog.ts`:
 - Public pages use `resolve` only — no Azure on the render path
 - `Blog.ingestPublish` (webhook) upserts **EN + ES** and purges the `blog` tag
 
-BabyLoveGrowth CMS client stays in `babylovegrowth.ts` (external API only). Soft-failure `null` from transport errors is **not** cached for per-slug reads (that used to 404 English while Spanish still served from Postgres).
+BabyLoveGrowth CMS client stays in `babylovegrowth.ts` for optional admin/CMS reads. Public blog routes do not call it — catalog and bodies come from Postgres after the webhook writes.
 
 ### Locale switcher
 
@@ -62,12 +62,12 @@ When BabyLoveGrowth publishes an English article, configure their **Webhook** in
 
 The handler acknowledges immediately (200), then `Blog.ingestPublish`:
 
-1. Upserts `blog_post` `locale=en` from the payload (same slug)
-2. Translates title / meta / HTML to Spanish with Azure (`AI.generate`, gpt seat)
-3. Upserts `blog_post` `locale=es`
+1. Upserts `blog_post` `locale=en` from the payload (same slug) — **always**, even if step 2 fails
+2. Translates meta in one Azure call, then HTML in chunks (script/style blocks preserved; Markdown forbidden) so long posts are not truncated
+3. Upserts `blog_post` `locale=es` when translate succeeds (EN-only is still a success; ES failure is logged)
 4. Purges the `blog` cache tag so EN/ES static pages regenerate (ISR)
 
-Local / editorial posts: write both `en` and `es` rows when you publish (same slug).
+Local / editorial posts: write both `en` and `es` rows when you publish (same slug). Editorial Spanish should use translated `sections` (same shape as EN); BLG Spanish uses `contentHtml`.
 
 ## Env
 

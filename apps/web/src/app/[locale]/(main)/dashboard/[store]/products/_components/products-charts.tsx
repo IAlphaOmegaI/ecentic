@@ -117,56 +117,60 @@ export const QualityDistribution = ({
   const translate = useTranslations("dashboard.products.quality");
 
   return (
-  <div className="flex size-full flex-col p-4">
-    <div className="flex items-start justify-between">
-      <div>
-        <SectionKicker>{translate("kicker")}</SectionKicker>
-        <p className="mt-2 font-semibold text-foreground-rich text-lg">
-          {translate("distribution")}
-        </p>
-      </div>
-      <div className="text-right">
-        <span className="font-bold text-3xl text-foreground-rich tabular-nums tracking-[-0.02em]">
-          {averageQuality}
-          <span className="ml-0.5 font-medium text-foreground-dimmed text-lg">
-            %
-          </span>
-        </span>
-        <p className="text-foreground-dimmed text-xs">{translate("avgQuality")}</p>
-      </div>
-    </div>
-
-    <div className="mt-auto flex h-1 w-full overflow-hidden rounded-full bg-accent-foreground">
-      {segments.map((segment) => {
-        const width = total > 0 ? (segment.count / total) * 100 : 0;
-        if (width === 0) return null;
-
-        return (
-          <motion.div
-            key={segment.label}
-            className={cn("h-full", segment.color)}
-            initial={{ width: 0 }}
-            animate={{ width: `${width}%` }}
-            transition={{ ...Spring.Gentle, delay: 0.3 }}
-          />
-        );
-      })}
-    </div>
-
-    <div className="mt-4 grid grid-cols-3 gap-4">
-      {segments.map((segment) => (
-        <div key={segment.label} className="flex items-center gap-2">
-          <div className={cn("size-2 shrink-0 rounded-[2px]", segment.color)} />
-          <span className="text-foreground-dimmed text-xs">
-            {segment.label}
-          </span>
-          <span className="ml-auto font-semibold text-foreground-rich text-sm tabular-nums">
-            {segment.count}
-          </span>
+    <div className="flex size-full flex-col p-4">
+      <div className="flex items-start justify-between">
+        <div>
+          <SectionKicker>{translate("kicker")}</SectionKicker>
+          <p className="mt-2 font-semibold text-foreground-rich text-lg">
+            {translate("distribution")}
+          </p>
         </div>
-      ))}
+        <div className="text-right">
+          <span className="font-bold text-3xl text-foreground-rich tabular-nums tracking-[-0.02em]">
+            {averageQuality}
+            <span className="ml-0.5 font-medium text-foreground-dimmed text-lg">
+              %
+            </span>
+          </span>
+          <p className="text-foreground-dimmed text-xs">
+            {translate("avgQuality")}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-auto flex h-1 w-full overflow-hidden rounded-full bg-accent-foreground">
+        {segments.map((segment) => {
+          const width = total > 0 ? (segment.count / total) * 100 : 0;
+          if (width === 0) return null;
+
+          return (
+            <motion.div
+              key={segment.label}
+              className={cn("h-full", segment.color)}
+              initial={{ width: 0 }}
+              animate={{ width: `${width}%` }}
+              transition={{ ...Spring.Gentle, delay: 0.3 }}
+            />
+          );
+        })}
+      </div>
+
+      <div className="mt-4 grid grid-cols-3 gap-4">
+        {segments.map((segment) => (
+          <div key={segment.label} className="flex items-center gap-2">
+            <div
+              className={cn("size-2 shrink-0 rounded-[2px]", segment.color)}
+            />
+            <span className="text-foreground-dimmed text-xs">
+              {segment.label}
+            </span>
+            <span className="ml-auto font-semibold text-foreground-rich text-sm tabular-nums">
+              {segment.count}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
-  </div>
   );
 };
 

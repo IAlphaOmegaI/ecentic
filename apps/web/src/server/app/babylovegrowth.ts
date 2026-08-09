@@ -41,13 +41,43 @@ const client = () =>
 const isRateLimited = (error: unknown) =>
   error instanceof Error && /\b429\b/.test(error.message);
 
+/** BLG allows max 2 req/s per API key — serialize all HTTP through this gap. */
+const MIN_REQUEST_GAP_MS = 550;
+
+const globalForBlg = globalThis as typeof globalThis & {
+  __ecenticBlgArticles?: Promise<BlogArticleSummary[]>;
+  __ecenticBlgQueue?: Promise<unknown>;
+  __ecenticBlgLastAt?: number;
+};
+
+const withRateLimit = async <Data>(operation: () => Promise<Data>) => {
+  const previous = globalForBlg.__ecenticBlgQueue ?? Promise.resolve();
+  let release: (value: unknown) => void = () => {};
+  globalForBlg.__ecenticBlgQueue = new Promise((resolve) => {
+    release = resolve;
+  });
+
+  await previous.catch(() => undefined);
+
+  const elapsed = Date.now() - (globalForBlg.__ecenticBlgLastAt ?? 0);
+  const wait = Math.max(0, MIN_REQUEST_GAP_MS - elapsed);
+  if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait));
+
+  try {
+    globalForBlg.__ecenticBlgLastAt = Date.now();
+    return await operation();
+  } finally {
+    release(undefined);
+  }
+};
+
 const withRetry = async <Data>(
   operation: () => Promise<Data>,
   attempts = 8,
 ): Promise<Data> => {
   const run = async (remaining: number): Promise<Data> => {
     try {
-      return await operation();
+      return await withRateLimit(operation);
     } catch (error) {
       if (!isRateLimited(error) || remaining <= 1) throw error;
       const attempt = attempts - remaining + 1;
@@ -65,10 +95,6 @@ const articleKeywords = (article: BlogArticleSummary) =>
   [article.seedKeyword, ...article.keywords].filter(
     (keyword): keyword is string => Boolean(keyword?.trim()),
   );
-
-const globalForBlg = globalThis as typeof globalThis & {
-  __ecenticBlgArticles?: Promise<BlogArticleSummary[]>;
-};
 
 const fetchAllArticles = (): Promise<BlogArticleSummary[]> => {
   if (!globalForBlg.__ecenticBlgArticles) {
@@ -102,18 +128,9 @@ export const getArticleBySlug = async (
   applyBlogCache(BLOG_CACHE_TAG, `blog-${slug}`);
 
   if (!process.env.BABYLOVEGROWTH_BLOG_API_KEY) return null;
-
-  try {
-    const article = await withRetry(() => client().getArticleBySlug(slug));
-    if (!article?.published) return null;
-    return article;
-  } catch (error) {
-    // Do not return null on transport/rate-limit failures — a soft null is
-    // cached for `cacheLife("days")` and 404s English posts while Spanish
-    // (served from Postgres) still works. Let the error surface so the
-    // failed result is not stored as a permanent miss.
-    throw error;
-  }
+  const article = await withRetry(() => client().getArticleBySlug(slug));
+  if (!article?.published) return null;
+  return article;
 };
 
 export const listTags = async (): Promise<BlogTag[]> => {

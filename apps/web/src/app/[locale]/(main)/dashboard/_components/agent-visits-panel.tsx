@@ -1,6 +1,6 @@
 import { unwrapResult } from "@zenncore/utils";
-import { getTranslations } from "next-intl/server";
 import { connection } from "next/server";
+import { getTranslations } from "next-intl/server";
 import * as Tracking from "@/server/app/tracking";
 import { Environment } from "@/server/utils/environment";
 import { AgentVisitsChart } from "./agent-visits-chart";

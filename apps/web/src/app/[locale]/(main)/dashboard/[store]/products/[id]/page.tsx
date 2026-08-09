@@ -8,10 +8,10 @@ import {
 } from "@zenncore/icons";
 import { cn, unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import { Link } from "@/i18n/navigation";
-import { getTranslations } from "next-intl/server";
 import { connection } from "next/server";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
+import { Link } from "@/i18n/navigation";
 import { formatPrice } from "@/lib/currency";
 import { formatRelativeTime } from "@/lib/date";
 import * as Product from "@/server/app/product";

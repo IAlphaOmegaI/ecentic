@@ -5,9 +5,9 @@ import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import { useLinkStatus } from "next/link";
 import { useMessages, useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
 import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
 import { ShopifyForm } from "./_components/shopify-form";
 
 export default () => {
@@ -25,7 +25,12 @@ export default () => {
         <div className="relative flex flex-col gap-4 border-accent-foreground border-x p-6">
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <Image src="/images/shopify.svg" alt="Shopify" width={64} height={64} />
+          <Image
+            src="/images/shopify.svg"
+            alt="Shopify"
+            width={64}
+            height={64}
+          />
           <div>
             <h2 className="font-medium text-4xl text-foreground">
               {translate("shopify.title")}

@@ -46,7 +46,8 @@ const catalogs = files.map((file) => {
   return { locale, keys: flatten(raw) };
 });
 
-const reference = catalogs.find((catalog) => catalog.locale === "en") ?? catalogs[0];
+const reference =
+  catalogs.find((catalog) => catalog.locale === "en") ?? catalogs[0];
 if (!reference) {
   console.error("No message catalogs found in apps/web/messages/");
   process.exit(1);

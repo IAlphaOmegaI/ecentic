@@ -3,8 +3,8 @@ import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import { getMessages, getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
 import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
 
 const href = "https://eupresence.com/pricing#bundles";
 const partnerHref = "https://eupresence.com/";

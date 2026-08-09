@@ -1,8 +1,8 @@
 "use client";
 
 import { cn } from "@zenncore/utils";
-import { useLocale } from "next-intl";
 import Image from "next/image";
+import { useLocale } from "next-intl";
 import {
   Area,
   AreaChart,

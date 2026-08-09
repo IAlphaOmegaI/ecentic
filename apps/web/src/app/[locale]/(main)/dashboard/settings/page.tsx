@@ -1,8 +1,8 @@
 import { unwrapResult } from "@zenncore/utils";
-import { getLocale } from "next-intl/server";
-import { redirect } from "@/i18n/navigation";
 import { connection } from "next/server";
+import { getLocale } from "next-intl/server";
 import { Suspense } from "react";
+import { redirect } from "@/i18n/navigation";
 import * as Authentication from "@/server/app/authentication";
 import * as PerformanceFee from "@/server/app/billing/performance-fee";
 import * as Store from "@/server/app/store";
@@ -19,7 +19,8 @@ import { PanelSkeleton, SettingsShell } from "./_components/shell";
 // rather than throw, exactly as the layout's user badge does.
 const requireSession = async () => {
   const account = await Authentication.getCurrentUser(Environment.SERVER);
-  if (!account.success) redirect({ href: "/sign-in", locale: await getLocale() });
+  if (!account.success)
+    redirect({ href: "/sign-in", locale: await getLocale() });
 
   return account.data;
 };

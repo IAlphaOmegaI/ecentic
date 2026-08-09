@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
-import { useRouter } from "@/i18n/navigation";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { FieldDescription } from "@zenncore/web/components/form";
@@ -15,6 +14,7 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { z } from "zod";
+import { useRouter } from "@/i18n/navigation";
 import * as WooCommerce from "@/server/app/integration/woocommerce";
 
 export const WooCommerceForm = () => {
@@ -27,7 +27,9 @@ export const WooCommerceForm = () => {
       ({
         domain: field({
           shape: "text",
-          validator: z.string().min(1, translate("woocommerce.fields.domain.validation")),
+          validator: z
+            .string()
+            .min(1, translate("woocommerce.fields.domain.validation")),
           label: translate("woocommerce.fields.domain.label"),
           placeholder: translate("woocommerce.fields.domain.placeholder"),
           // @ts-expect-error - description is a function
@@ -62,7 +64,9 @@ export const WooCommerceForm = () => {
             .string()
             .min(1, translate("woocommerce.fields.consumerSecret.validation")),
           label: translate("woocommerce.fields.consumerSecret.label"),
-          placeholder: translate("woocommerce.fields.consumerSecret.placeholder"),
+          placeholder: translate(
+            "woocommerce.fields.consumerSecret.placeholder",
+          ),
           // @ts-expect-error - description is a function
           description: () => (
             <FieldDescription>

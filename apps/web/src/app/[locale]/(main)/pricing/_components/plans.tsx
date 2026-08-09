@@ -3,9 +3,9 @@ import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import { getMessages, getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
 import { BookCall } from "@/components/cal";
 import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
 import crown from "@/public/images/ascii/crown.png";
 import knight from "@/public/images/ascii/knight.png";
 import piggybank from "@/public/images/ascii/piggybank.png";
@@ -164,7 +164,9 @@ export const Plans = async () => {
                   {plan.category}
                 </p>
                 <div className="mt-2 flex h-7 items-center justify-between gap-2">
-                  <h3 className="font-body font-medium text-2xl">{plan.name}</h3>
+                  <h3 className="font-body font-medium text-2xl">
+                    {plan.name}
+                  </h3>
                   {plan.badge && (
                     <span
                       className={cn(
@@ -199,7 +201,9 @@ export const Plans = async () => {
                   <span
                     className={cn(
                       "font-light text-lg",
-                      plan.highlighted ? "text-white" : "text-foreground-dimmed",
+                      plan.highlighted
+                        ? "text-white"
+                        : "text-foreground-dimmed",
                     )}
                   >
                     {plan.suffix}

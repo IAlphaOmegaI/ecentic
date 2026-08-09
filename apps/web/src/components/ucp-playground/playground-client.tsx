@@ -17,7 +17,6 @@ import {
   isToolUIPart,
   type ToolUIPart,
 } from "ai";
-import { Link } from "@/i18n/navigation";
 import { useMessages, useTranslations } from "next-intl";
 import { useCallback, useMemo, useState } from "react";
 import { z } from "zod";
@@ -43,6 +42,7 @@ import {
   PromptInputTextarea,
 } from "@/components/ui/ai/prompt-input";
 import { Suggestion } from "@/components/ui/ai/suggestion";
+import { Link } from "@/i18n/navigation";
 import type {
   detailProductSchema,
   lookupProductSchema,
@@ -628,7 +628,9 @@ const ToolLoading = ({ label }: { label: string }) => (
 
 const cartLoadingLabel = (
   type: CartToolPart["type"],
-  translate: ReturnType<typeof useTranslations<"dashboard.ucpPlaygroundDashboard">>,
+  translate: ReturnType<
+    typeof useTranslations<"dashboard.ucpPlaygroundDashboard">
+  >,
 ): string => {
   switch (type) {
     case "tool-create_cart":
@@ -653,9 +655,7 @@ const CartPart = ({
   }
   if (part.state === "output-error") {
     return (
-      <ErrorView
-        message={part.errorText ?? translate("cart.states.failed")}
-      />
+      <ErrorView message={part.errorText ?? translate("cart.states.failed")} />
     );
   }
 
@@ -688,20 +688,20 @@ const ProductsCard = ({
   const translate = useTranslations("dashboard.ucpPlaygroundDashboard");
 
   return (
-  <div className="space-y-2">
-    <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-      {translate("catalog.productCount", { count: products.length })}
-    </p>
-    <ProductGrid products={products} translate={translate} />
-    <details className="group">
-      <summary className="cursor-pointer list-none text-[10px] text-foreground-dimmed uppercase tracking-[0.08em] hover:text-foreground">
-        {translate("tool.rawJson")}
-      </summary>
-      <pre className="mt-1 max-h-64 overflow-auto rounded-lg border border-accent-foreground bg-background-dimmed p-3 font-mono text-foreground/80 text-xs">
-        {formatJson(output)}
-      </pre>
-    </details>
-  </div>
+    <div className="space-y-2">
+      <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+        {translate("catalog.productCount", { count: products.length })}
+      </p>
+      <ProductGrid products={products} translate={translate} />
+      <details className="group">
+        <summary className="cursor-pointer list-none text-[10px] text-foreground-dimmed uppercase tracking-[0.08em] hover:text-foreground">
+          {translate("tool.rawJson")}
+        </summary>
+        <pre className="mt-1 max-h-64 overflow-auto rounded-lg border border-accent-foreground bg-background-dimmed p-3 font-mono text-foreground/80 text-xs">
+          {formatJson(output)}
+        </pre>
+      </details>
+    </div>
   );
 };
 
@@ -712,9 +712,7 @@ const CatalogPart = ({ part }: { part: CatalogToolPart }) => {
   }
   if (part.state === "output-error") {
     return (
-      <ErrorView
-        message={part.errorText ?? translate("catalog.failed")}
-      />
+      <ErrorView message={part.errorText ?? translate("catalog.failed")} />
     );
   }
 
@@ -725,7 +723,8 @@ const CatalogPart = ({ part }: { part: CatalogToolPart }) => {
 
   const products = getProducts(output);
 
-  if (products.length === 0) return <ToolView part={part} translate={translate} />;
+  if (products.length === 0)
+    return <ToolView part={part} translate={translate} />;
 
   return <ProductsCard output={output} products={products} />;
 };
@@ -859,7 +858,9 @@ export const PlaygroundClient = ({
       ({
         storeUrl: field({
           shape: "text",
-          validator: z.string().min(1, translate("connect.fields.storeUrl.validation")),
+          validator: z
+            .string()
+            .min(1, translate("connect.fields.storeUrl.validation")),
           label: translate("connect.fields.storeUrl.label"),
           placeholder: translate("connect.fields.storeUrl.placeholder"),
         }),
@@ -1097,9 +1098,7 @@ export const PlaygroundClient = ({
       <div className="shrink-0 p-4 sm:px-6">
         <div className="mx-auto w-full max-w-3xl space-y-3">
           {error && (
-            <ErrorView
-              message={error.message || translate("errors.generic")}
-            />
+            <ErrorView message={error.message || translate("errors.generic")} />
           )}
           {isOutOfMessages ? (
             <MessageQuotaWall limit={messageLimit ?? 0} />

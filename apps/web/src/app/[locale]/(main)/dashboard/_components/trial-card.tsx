@@ -2,8 +2,8 @@
 
 import { ArrowRightIcon, CheckIcon, XIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import { useMessages, useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "motion/react";
+import { useMessages, useTranslations } from "next-intl";
 import { useState } from "react";
 import { Spring } from "@/lib/animations";
 
@@ -84,7 +84,9 @@ export const TrialCard = () => {
                       }}
                     />
                     <span className="font-medium text-warning text-xs uppercase tracking-[0.2em]">
-                      {translate("modal.endingIn", { days: String(TRIAL_DAYS_LEFT) })}
+                      {translate("modal.endingIn", {
+                        days: String(TRIAL_DAYS_LEFT),
+                      })}
                     </span>
                   </div>
                   <h2 className="font-medium text-foreground text-xl leading-tight">

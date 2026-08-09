@@ -10,23 +10,41 @@ import {
   SelectValue,
 } from "@zenncore/web/components/select";
 import { hasLocale, useLocale, useTranslations } from "next-intl";
-import { SpainFlag } from "@/components/flags/spain-flag";
-import { UnitedStatesFlag } from "@/components/flags/united-states-flag";
+import Image from "next/image";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 
 const OPTIONS = [
   {
     locale: "en" as const,
-    Flag: UnitedStatesFlag,
+    flagSrc: "/images/united-states-flag.svg",
     labelKey: "language.english" as const,
   },
   {
     locale: "es" as const,
-    Flag: SpainFlag,
+    flagSrc: "/images/spain-flag.svg",
     labelKey: "language.spanish" as const,
   },
 ] as const;
+
+const FlagImage = ({
+  src,
+  alt,
+  className,
+}: {
+  src: string;
+  alt: string;
+  className?: string;
+}) => (
+  <Image
+    src={src}
+    alt={alt}
+    width={32}
+    height={32}
+    unoptimized
+    className={className}
+  />
+);
 
 export const LanguageSwitcher = ({
   variant = "nav",
@@ -45,7 +63,6 @@ export const LanguageSwitcher = ({
 
   const active =
     OPTIONS.find((option) => option.locale === locale) ?? OPTIONS[0];
-  const ActiveFlag = active.Flag;
 
   if (variant === "inline") {
     return (
@@ -53,7 +70,7 @@ export const LanguageSwitcher = ({
         className={cn("m-0 flex items-center gap-2 border-0 p-0", className)}
       >
         <legend className="sr-only">{translate("language.label")}</legend>
-        {OPTIONS.map(({ locale: option, Flag, labelKey }) => {
+        {OPTIONS.map(({ locale: option, flagSrc, labelKey }) => {
           const selected = option === locale;
 
           return (
@@ -70,7 +87,11 @@ export const LanguageSwitcher = ({
                 selected ? "opacity-100" : "opacity-40 hover:opacity-80",
               )}
             >
-              <Flag className="size-7" title={translate(labelKey)} />
+              <FlagImage
+                src={flagSrc}
+                alt={translate(labelKey)}
+                className="size-7"
+              />
             </button>
           );
         })}
@@ -79,10 +100,7 @@ export const LanguageSwitcher = ({
   }
 
   return (
-    <Select
-      value={locale}
-      onValueChange={switchLocale}
-    >
+    <Select value={locale} onValueChange={switchLocale}>
       <SelectTrigger
         aria-label={translate("language.label")}
         className={cn(
@@ -92,18 +110,23 @@ export const LanguageSwitcher = ({
           className,
         )}
       >
-        <ActiveFlag
+        <FlagImage
+          src={active.flagSrc}
+          alt={translate(active.labelKey)}
           className="size-5 shrink-0"
-          title={translate(active.labelKey)}
         />
         <SelectValue className="sr-only" />
       </SelectTrigger>
       <SelectPositioner align="end" side="bottom">
         <SelectPopup>
-          {OPTIONS.map(({ locale: option, Flag, labelKey }) => (
+          {OPTIONS.map(({ locale: option, flagSrc, labelKey }) => (
             <SelectItem key={option} value={option} label={translate(labelKey)}>
               <span className="flex items-center gap-2">
-                <Flag className="size-5 shrink-0" title={translate(labelKey)} />
+                <FlagImage
+                  src={flagSrc}
+                  alt={translate(labelKey)}
+                  className="size-5 shrink-0"
+                />
                 <span>{translate(labelKey)}</span>
               </span>
             </SelectItem>

@@ -1,8 +1,8 @@
 import { ArrowRightIcon, FaceSearchIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { getMessages, getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
 import { IndexSection } from "@/app/[locale]/(main)/_components/index-section";
+import { Link } from "@/i18n/navigation";
 
 export const WhoShouldBook = async () => {
   const translate = await getTranslations("demo");

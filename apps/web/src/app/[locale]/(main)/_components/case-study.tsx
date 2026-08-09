@@ -3,6 +3,7 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
+import type { Locale } from "@/i18n/routing";
 import DuaLogo from "@/public/partners/dua-flavours.png";
 import { Counter } from "./counter";
 

@@ -134,7 +134,9 @@ export const CompetitorsTable = ({
               <SectionKicker>{kicker}</SectionKicker>
             </div>
           )}
-          <p className="font-semibold text-foreground-rich text-lg">{resolvedTitle}</p>
+          <p className="font-semibold text-foreground-rich text-lg">
+            {resolvedTitle}
+          </p>
         </div>
         {action}
       </div>

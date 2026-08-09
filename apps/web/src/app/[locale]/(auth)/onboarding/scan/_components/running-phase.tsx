@@ -139,9 +139,12 @@ export const RunningPhase = ({
                       exit={{ opacity: 0, y: -3 }}
                       transition={{ duration: 0.15 }}
                     >
-                      {status === "complete" && translate("running.status.done")}
-                      {status === "running" && translate("running.status.running")}
-                      {status === "queued" && translate("running.status.queued")}
+                      {status === "complete" &&
+                        translate("running.status.done")}
+                      {status === "running" &&
+                        translate("running.status.running")}
+                      {status === "queued" &&
+                        translate("running.status.queued")}
                     </motion.span>
                   </AnimatePresence>
                 </motion.div>

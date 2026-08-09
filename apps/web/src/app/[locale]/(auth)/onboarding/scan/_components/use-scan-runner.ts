@@ -225,8 +225,7 @@ type ScanRunnerOptions = {
 export const useScanRunner = (options: ScanRunnerOptions) => {
   const { store, errorMessages: errorMessagesOption } = options;
   const errorMessages = {
-    transport:
-      errorMessagesOption?.transport ?? DEFAULT_TRANSPORT_MESSAGE,
+    transport: errorMessagesOption?.transport ?? DEFAULT_TRANSPORT_MESSAGE,
     enqueueTransport:
       errorMessagesOption?.enqueueTransport ??
       DEFAULT_ENQUEUE_TRANSPORT_MESSAGE,
@@ -406,7 +405,12 @@ export const useScanRunner = (options: ScanRunnerOptions) => {
       poller.current = setInterval(() => void tick(), POLL_INTERVAL);
       void tick();
     },
-    [ingest, stopTimers, errorMessages.transport, errorMessages.simulationFailed],
+    [
+      ingest,
+      stopTimers,
+      errorMessages.transport,
+      errorMessages.simulationFailed,
+    ],
   );
 
   const handleRun = useCallback(
@@ -460,7 +464,13 @@ export const useScanRunner = (options: ScanRunnerOptions) => {
       setScanId(enqueue.data.scanId);
       poll(enqueue.data.scanId);
     },
-    [poll, stopTimers, store, errorMessages.enqueueTransport, errorMessages.noStore],
+    [
+      poll,
+      stopTimers,
+      store,
+      errorMessages.enqueueTransport,
+      errorMessages.noStore,
+    ],
   );
 
   // Resume an in-flight scan for this store started in a previous visit — the

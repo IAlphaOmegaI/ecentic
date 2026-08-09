@@ -65,7 +65,9 @@ export const Capabilities = async () => {
                 <IconComponent
                   className={cn(
                     "size-8",
-                    "highlighted" in capability && capability.highlighted ? "text-white" : "text-primary",
+                    "highlighted" in capability && capability.highlighted
+                      ? "text-white"
+                      : "text-primary",
                   )}
                 />
                 <h3 className="mt-4 font-body font-medium text-2xl">

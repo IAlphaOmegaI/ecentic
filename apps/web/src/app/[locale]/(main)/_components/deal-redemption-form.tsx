@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
-import { useRouter } from "@/i18n/navigation";
 import { resultify } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
@@ -13,6 +12,7 @@ import {
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { z } from "zod";
+import { useRouter } from "@/i18n/navigation";
 
 const platforms = ["Shopify", "WooCommerce", "Custom / Headless", "Other"];
 

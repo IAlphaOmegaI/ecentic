@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
-import { useRouter } from "@/i18n/navigation";
 import { resultify } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
@@ -18,6 +17,7 @@ import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { z } from "zod";
 import { useCurrentUser } from "@/context/auth";
+import { useRouter } from "@/i18n/navigation";
 import * as Shopify from "@/server/app/integration/shopify";
 
 const resolveShopDomain = (shop: string): string | null => {
@@ -66,7 +66,9 @@ export const ShopifyForm = () => {
       ({
         shop: field({
           shape: "text",
-          validator: z.string().min(1, translate("shopify.fields.shop.validation")),
+          validator: z
+            .string()
+            .min(1, translate("shopify.fields.shop.validation")),
           label: translate("shopify.fields.shop.label"),
           placeholder: translate("shopify.fields.shop.placeholder"),
           // @ts-expect-error - description is a function

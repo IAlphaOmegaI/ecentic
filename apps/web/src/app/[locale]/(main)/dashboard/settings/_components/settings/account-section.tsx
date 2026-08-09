@@ -31,7 +31,9 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
       ({
         name: field({
           shape: "text",
-          validator: z.string().min(1, translate("profile.fields.name.validation")),
+          validator: z
+            .string()
+            .min(1, translate("profile.fields.name.validation")),
           label: translate("profile.fields.name.label"),
           classList: { field: "col-span-1", label: labelClassName },
         }),
@@ -45,13 +47,17 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
         }),
         email: field({
           shape: "text",
-          validator: z.string().email(translate("profile.fields.email.validation")),
+          validator: z
+            .string()
+            .email(translate("profile.fields.email.validation")),
           label: translate("profile.fields.email.label"),
           classList: { field: "col-span-2", label: labelClassName },
         }),
         role: field({
           shape: "select",
-          validator: z.literal(messages.dashboard.settings.account.profile.roles),
+          validator: z.literal(
+            messages.dashboard.settings.account.profile.roles,
+          ),
           label: translate("profile.fields.role.label"),
           classList: { field: "col-span-2", label: labelClassName },
         }),
@@ -92,7 +98,6 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
       }) satisfies GenericForm,
     [translate],
   );
-
 
   const [handleProfileSubmit, isProfilePending] = useAsyncAction(
     async (data: FormEntries<typeof profile>) => {
@@ -187,7 +192,9 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
               surname: user.surname,
               email: user.email,
               // @ts-expect-error - user.role is not typed
-              role: user.role ?? messages.dashboard.settings.account.profile.roles[0],
+              role:
+                user.role ??
+                messages.dashboard.settings.account.profile.roles[0],
             }}
             onSubmit={handleProfileSubmit}
             className="grid grid-cols-2 gap-4 border-accent-foreground border-x p-4"
@@ -297,7 +304,9 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
                   <p className="font-medium text-foreground text-sm">
                     {translate("danger.prompt")}
                   </p>
-                  <Button color="error">{translate("danger.action.primary")}</Button>
+                  <Button color="error">
+                    {translate("danger.action.primary")}
+                  </Button>
                 </div>
               </div>
             </div>

@@ -18,9 +18,7 @@ export const WhatWeCover = async () => {
       body={body}
       label={translate("whatWeCover.label")}
       items={items}
-      accent={
-        <AgentStrip label={translate("whatWeCover.agentStripLabel")} />
-      }
+      accent={<AgentStrip label={translate("whatWeCover.agentStripLabel")} />}
     />
   );
 };

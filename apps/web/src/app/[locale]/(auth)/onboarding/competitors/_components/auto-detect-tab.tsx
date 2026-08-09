@@ -1,7 +1,6 @@
 "use client";
 
 import { readStreamableValue } from "@ai-sdk/rsc";
-import { useRouter } from "@/i18n/navigation";
 import { RadarIcon } from "@zenncore/icons";
 import { cn, resultify, unwrapResult } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
@@ -11,6 +10,7 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "@/i18n/navigation";
 import { formatElapsed } from "@/lib/date";
 import * as Competitor from "@/server/app/competitor";
 

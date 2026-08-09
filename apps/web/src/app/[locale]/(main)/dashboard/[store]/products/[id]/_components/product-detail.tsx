@@ -43,10 +43,16 @@ import {
 import { useToastManager } from "@zenncore/web/components/toast";
 import { motion } from "motion/react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
-import { Link, useRouter } from "@/i18n/navigation";
 import { useParams } from "next/navigation";
-import { type ReactNode, useEffect, useMemo, useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
+import {
+  type ReactNode,
+  useEffect,
+  useMemo,
+  useState,
+  useTransition,
+} from "react";
+import { Link, useRouter } from "@/i18n/navigation";
 import { Spring } from "@/lib/animations";
 import * as Audit from "@/server/app/intelligence/audit";
 import * as Optimization from "@/server/app/optimization";
@@ -118,93 +124,95 @@ const columns = (
     {
       accessorKey: "title",
       header: table("competitor"),
-    cell: ({ row }) => (
-      <div className="flex items-center gap-2">
-        <Avatar className="size-9 shrink-0 rounded-md bg-background-dimmed">
-          <AvatarImage
-            src={row.original.image ?? "/images/fallback.png"}
-            alt={row.original.title}
-          />
-          <AvatarFallback className="relative">
-            <Image src="/images/fallback.png" alt="Fallback" fill />
-          </AvatarFallback>
-        </Avatar>
-        <div>
-          <p className="font-medium text-foreground">{row.original.title}</p>
-          {row.original.brand && (
-            <p className="font-light text-foreground-dimmed">
-              {row.original.brand}
-            </p>
-          )}
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <Avatar className="size-9 shrink-0 rounded-md bg-background-dimmed">
+            <AvatarImage
+              src={row.original.image ?? "/images/fallback.png"}
+              alt={row.original.title}
+            />
+            <AvatarFallback className="relative">
+              <Image src="/images/fallback.png" alt="Fallback" fill />
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <p className="font-medium text-foreground">{row.original.title}</p>
+            {row.original.brand && (
+              <p className="font-light text-foreground-dimmed">
+                {row.original.brand}
+              </p>
+            )}
+          </div>
         </div>
-      </div>
-    ),
-  },
+      ),
+    },
     {
       accessorKey: "rate",
       header: table("winRate"),
-    cell: ({ row }) => {
-      const rate = row.original.rate;
-      const color = (() => {
-        switch (true) {
-          case rate >= 60:
-            return { bar: "bg-success", text: "text-success" };
-          case rate >= 30:
-            return { bar: "bg-warning", text: "text-warning" };
-          default:
-            return { bar: "bg-error", text: "text-error" };
-        }
-      })();
-      return (
-        <div className="flex items-center gap-2">
-          <div className="h-1 w-20 rounded-full bg-accent-foreground">
-            <div
-              className={cn("h-full rounded-full", color.bar)}
-              style={{ width: `${rate}%` }}
-            />
+      cell: ({ row }) => {
+        const rate = row.original.rate;
+        const color = (() => {
+          switch (true) {
+            case rate >= 60:
+              return { bar: "bg-success", text: "text-success" };
+            case rate >= 30:
+              return { bar: "bg-warning", text: "text-warning" };
+            default:
+              return { bar: "bg-error", text: "text-error" };
+          }
+        })();
+        return (
+          <div className="flex items-center gap-2">
+            <div className="h-1 w-20 rounded-full bg-accent-foreground">
+              <div
+                className={cn("h-full rounded-full", color.bar)}
+                style={{ width: `${rate}%` }}
+              />
+            </div>
+            <span className={cn("font-medium tabular-nums", color.text)}>
+              {rate}%
+            </span>
           </div>
-          <span className={cn("font-medium tabular-nums", color.text)}>
-            {rate}%
-          </span>
-        </div>
-      );
+        );
+      },
     },
-  },
     {
       accessorKey: "wins",
       header: table("wins"),
-    cell: ({ row }) => (
-      <span className="font-medium text-success tabular-nums">
-        {row.original.wins}
-      </span>
-    ),
-  },
+      cell: ({ row }) => (
+        <span className="font-medium text-success tabular-nums">
+          {row.original.wins}
+        </span>
+      ),
+    },
     {
       accessorKey: "losses",
       header: table("losses"),
-    cell: ({ row }) => (
-      <span className="font-medium text-error tabular-nums">
-        {row.original.total - row.original.wins}
-      </span>
-    ),
-  },
+      cell: ({ row }) => (
+        <span className="font-medium text-error tabular-nums">
+          {row.original.total - row.original.wins}
+        </span>
+      ),
+    },
     {
       accessorKey: "total",
       header: table("total"),
-    cell: ({ row }) => (
-      <span className="font-light text-foreground-dimmed tabular-nums">
-        {row.original.total}
-      </span>
-    ),
-  },
-  // DataTableProvider adds `_id` to each row, so the columns must be typed for
-  // that row shape — not the bare competitor — or ColumnDef won't line up.
+      cell: ({ row }) => (
+        <span className="font-light text-foreground-dimmed tabular-nums">
+          {row.original.total}
+        </span>
+      ),
+    },
+    // DataTableProvider adds `_id` to each row, so the columns must be typed for
+    // that row shape — not the bare competitor — or ColumnDef won't line up.
   ] satisfies ColumnDef<
     ProductDetailData["competitors"][number] & { _id: string }
   >[];
 
 const qualityFields = (
-  fields: ReturnType<typeof useTranslations<"dashboard.products.detail.fields">>,
+  fields: ReturnType<
+    typeof useTranslations<"dashboard.products.detail.fields">
+  >,
 ) =>
   [
     { key: "title", label: fields("title") },
@@ -324,7 +332,9 @@ const PublishListing = ({
               onClick={() => publish()}
               disabled={isPending}
             >
-              {isPending ? translate("publishing") : translate("publishToStore")}
+              {isPending
+                ? translate("publishing")
+                : translate("publishToStore")}
             </Button>
           </div>
         </AlertDialogPopup>
@@ -470,110 +480,110 @@ const OverviewTab = ({
   const competitorColumns = useMemo(() => columns(table), [table]);
 
   return (
-  <section className="border-accent-foreground border-t">
-    <div className="p-4">
-      <SectionKicker>{shared("sections.performance")}</SectionKicker>
-      <p className="mt-2 font-semibold text-foreground-rich text-lg">
-        {shared("performance.winRateByModel")}
-      </p>
-    </div>
-    {/* Size to the model count — a fixed 4-col grid left a phantom empty cell
+    <section className="border-accent-foreground border-t">
+      <div className="p-4">
+        <SectionKicker>{shared("sections.performance")}</SectionKicker>
+        <p className="mt-2 font-semibold text-foreground-rich text-lg">
+          {shared("performance.winRateByModel")}
+        </p>
+      </div>
+      {/* Size to the model count — a fixed 4-col grid left a phantom empty cell
         with only 3 models. */}
-    <div
-      className="relative grid gap-px border-accent-foreground border-t bg-accent-foreground"
-      style={{
-        gridTemplateColumns: `repeat(${models.length}, minmax(0, 1fr))`,
-      }}
-    >
-      <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-      <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-      {models.map(({ model, label, rate, wins, losses, total }) => {
-        const config = Model[label as keyof typeof Model];
-        return (
-          <div
-            key={model}
-            className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background"
-          >
-            <StatLabel
-              label={label}
-              icon={
-                config?.logo && (
-                  <Image
-                    src={config.logo}
-                    alt={label}
-                    width={20}
-                    height={20}
-                    className="size-5 shrink-0"
-                  />
-                )
-              }
-            />
-            <div>
-              <p
-                className={cn(
-                  "font-bold text-4xl tabular-nums tracking-[-0.02em]",
-                  rateColor(rate),
-                )}
-              >
-                {rate}
-                <span className="ml-0.5 font-medium text-foreground-dimmed text-xl">
-                  %
-                </span>
-              </p>
-              <div className="mt-3">
-                <div className="h-1 w-full rounded-full bg-accent-foreground">
-                  <motion.div
-                    className={cn("h-full rounded-full", barColor(rate))}
-                    initial={{ width: 0 }}
-                    animate={{ width: `${rate}%` }}
-                    transition={{ ...Spring.Gentle, delay: 0.3 }}
-                  />
-                </div>
-                <div className="mt-2 flex justify-between text-foreground-dimmed text-xs">
-                  <span>
-                    {translate("wLTotal", { wins, losses })}
+      <div
+        className="relative grid gap-px border-accent-foreground border-t bg-accent-foreground"
+        style={{
+          gridTemplateColumns: `repeat(${models.length}, minmax(0, 1fr))`,
+        }}
+      >
+        <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+        <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+        {models.map(({ model, label, rate, wins, losses, total }) => {
+          const config = Model[label as keyof typeof Model];
+          return (
+            <div
+              key={model}
+              className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background"
+            >
+              <StatLabel
+                label={label}
+                icon={
+                  config?.logo && (
+                    <Image
+                      src={config.logo}
+                      alt={label}
+                      width={20}
+                      height={20}
+                      className="size-5 shrink-0"
+                    />
+                  )
+                }
+              />
+              <div>
+                <p
+                  className={cn(
+                    "font-bold text-4xl tabular-nums tracking-[-0.02em]",
+                    rateColor(rate),
+                  )}
+                >
+                  {rate}
+                  <span className="ml-0.5 font-medium text-foreground-dimmed text-xl">
+                    %
                   </span>
-                  <span>{translate("totalCount", { count: total })}</span>
+                </p>
+                <div className="mt-3">
+                  <div className="h-1 w-full rounded-full bg-accent-foreground">
+                    <motion.div
+                      className={cn("h-full rounded-full", barColor(rate))}
+                      initial={{ width: 0 }}
+                      animate={{ width: `${rate}%` }}
+                      transition={{ ...Spring.Gentle, delay: 0.3 }}
+                    />
+                  </div>
+                  <div className="mt-2 flex justify-between text-foreground-dimmed text-xs">
+                    <span>{translate("wLTotal", { wins, losses })}</span>
+                    <span>{translate("totalCount", { count: total })}</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        );
-      })}
-    </div>
-    <div className="relative flex items-end justify-between border-accent-foreground border-y p-4">
-      <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-      <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-      <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-      <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-      <div>
-        <SectionKicker>{shared("sections.competitiveLandscape")}</SectionKicker>
-        <p className="mt-2 font-semibold text-foreground-rich text-lg">
-          {translate("winRateVsCompetitor")}
-        </p>
+          );
+        })}
       </div>
-      <Button
-        color="primary"
-        render={<Link href={`/dashboard/${store}/competitors`} />}
-      >
-        {translate("viewAll")}
-        <ArrowRightIcon className="size-4" />
-      </Button>
-    </div>
-    <DataTableProvider
-      rows={competitors.map((row) => ({ _id: row.id, ...row }))}
-      columns={competitorColumns}
-      handler="client"
-    >
-      <DataTable className="border-b-0">
-        <DataTableEmpty>
-          <p className="p-6 text-center font-light text-foreground-dimmed text-sm">
-            {translate("noCompetitors")}
+      <div className="relative flex items-end justify-between border-accent-foreground border-y p-4">
+        <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+        <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+        <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+        <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+        <div>
+          <SectionKicker>
+            {shared("sections.competitiveLandscape")}
+          </SectionKicker>
+          <p className="mt-2 font-semibold text-foreground-rich text-lg">
+            {translate("winRateVsCompetitor")}
           </p>
-        </DataTableEmpty>
-      </DataTable>
-    </DataTableProvider>
-  </section>
+        </div>
+        <Button
+          color="primary"
+          render={<Link href={`/dashboard/${store}/competitors`} />}
+        >
+          {translate("viewAll")}
+          <ArrowRightIcon className="size-4" />
+        </Button>
+      </div>
+      <DataTableProvider
+        rows={competitors.map((row) => ({ _id: row.id, ...row }))}
+        columns={competitorColumns}
+        handler="client"
+      >
+        <DataTable className="border-b-0">
+          <DataTableEmpty>
+            <p className="p-6 text-center font-light text-foreground-dimmed text-sm">
+              {translate("noCompetitors")}
+            </p>
+          </DataTableEmpty>
+        </DataTable>
+      </DataTableProvider>
+    </section>
   );
 };
 
@@ -744,8 +754,7 @@ const ReplayTab = ({
                         <p className="text-foreground-dimmed text-sm italic">
                           {translate("noReasoning", {
                             productScore: simulation.productScore ?? "?",
-                            competitorScore:
-                              simulation.competitorScore ?? "?",
+                            competitorScore: simulation.competitorScore ?? "?",
                           })}
                         </p>
                       )}
@@ -770,40 +779,40 @@ const ListingCompleteness = ({
   const shared = useTranslations("dashboard.shared");
 
   return (
-  <div className="divide-y divide-accent-foreground border-accent-foreground border-b">
-    {qualityFields(fields).map(({ key, label }) => {
-      const value = product[key];
-      const filled = (() => {
-        if (!value) return false;
-        if (key === "structuredData") return value !== "null";
-        return true;
-      })();
+    <div className="divide-y divide-accent-foreground border-accent-foreground border-b">
+      {qualityFields(fields).map(({ key, label }) => {
+        const value = product[key];
+        const filled = (() => {
+          if (!value) return false;
+          if (key === "structuredData") return value !== "null";
+          return true;
+        })();
 
-      return (
-        <div
-          key={key}
-          className="flex items-center justify-between bg-background-rich px-4 py-4 transition-colors hover:bg-background"
-        >
-          <div className="flex items-center gap-3">
-            {filled ? (
-              <CheckIcon className="size-6 text-success" />
-            ) : (
-              <XIcon className="size-6 text-error" />
-            )}
-            <span className="font-medium text-foreground">{label}</span>
-          </div>
-          <span
-            className={cn(
-              "font-medium text-sm",
-              filled ? "text-success" : "text-error",
-            )}
+        return (
+          <div
+            key={key}
+            className="flex items-center justify-between bg-background-rich px-4 py-4 transition-colors hover:bg-background"
           >
-            {filled ? shared("present") : shared("missing")}
-          </span>
-        </div>
-      );
-    })}
-  </div>
+            <div className="flex items-center gap-3">
+              {filled ? (
+                <CheckIcon className="size-6 text-success" />
+              ) : (
+                <XIcon className="size-6 text-error" />
+              )}
+              <span className="font-medium text-foreground">{label}</span>
+            </div>
+            <span
+              className={cn(
+                "font-medium text-sm",
+                filled ? "text-success" : "text-error",
+              )}
+            >
+              {filled ? shared("present") : shared("missing")}
+            </span>
+          </div>
+        );
+      })}
+    </div>
   );
 };
 
@@ -1264,7 +1273,10 @@ const OptimizeTab = ({
       tone: "error" as const,
       label: translate("status.optimizedEmbedOff"),
     },
-    missing: { tone: "error" as const, label: translate("status.noStructuredData") },
+    missing: {
+      tone: "error" as const,
+      label: translate("status.noStructuredData"),
+    },
     unreachable: {
       tone: "neutral" as const,
       label: translate("status.pageUnreachable"),
@@ -1408,9 +1420,7 @@ const OptimizeTab = ({
           ...(product.description ? [] : [fields("description")]),
           // The goal state needs no attention; every other status has a next
           // step waiting inside.
-          ...(status === "ecentic-optimized"
-            ? []
-            : [fields("structuredData")]),
+          ...(status === "ecentic-optimized" ? [] : [fields("structuredData")]),
         ]}
       >
         <ListingField
@@ -1424,9 +1434,7 @@ const OptimizeTab = ({
         <ListingField
           label={fields("description")}
           tone={product.description ? "success" : "error"}
-          status={
-            product.description ? shared("present") : shared("missing")
-          }
+          status={product.description ? shared("present") : shared("missing")}
         >
           {product.description ? (
             <div

@@ -1,13 +1,13 @@
 import { ArrowRightIcon, TrendDownIcon, TrendUpIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import { getMessages, getTranslations } from "next-intl/server";
 import Image from "next/image";
-import { Link } from "@/i18n/navigation";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
+import { Link } from "@/i18n/navigation";
 import * as Scan from "@/server/app/scan";
 import { Environment } from "@/server/utils/environment";
 

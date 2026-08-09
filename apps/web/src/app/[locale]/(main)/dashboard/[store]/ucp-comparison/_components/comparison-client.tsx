@@ -669,13 +669,19 @@ export const ComparisonClient = () => {
                 {translate("eventLog.title")}
               </p>
               {phase === "running" && (
-                <StatusPill tone="primary">{translate("eventLog.live")}</StatusPill>
+                <StatusPill tone="primary">
+                  {translate("eventLog.live")}
+                </StatusPill>
               )}
               {phase === "done" && (
-                <StatusPill tone="success">{translate("eventLog.done")}</StatusPill>
+                <StatusPill tone="success">
+                  {translate("eventLog.done")}
+                </StatusPill>
               )}
               {phase === "error" && (
-                <StatusPill tone="error">{translate("eventLog.error")}</StatusPill>
+                <StatusPill tone="error">
+                  {translate("eventLog.error")}
+                </StatusPill>
               )}
               <span className="text-foreground-dimmed text-xs tabular-nums">
                 {translate("eventLog.events", { count: lines.length })}

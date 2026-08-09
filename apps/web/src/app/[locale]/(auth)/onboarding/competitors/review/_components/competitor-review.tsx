@@ -4,11 +4,11 @@ import { ArrowLeftIcon, ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { useLinkStatus } from "next/link";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
 import * as Competitor from "@/server/app/competitor";
 import { CompetitorList } from "../../_components/competitor-list";
 

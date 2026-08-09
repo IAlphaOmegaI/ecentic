@@ -109,11 +109,7 @@ export const CompetitorList = ({
                           className="object-contain"
                         />
                         <AvatarFallback className="relative size-full min-h-9 min-w-9">
-                          <Image
-                            src="/images/fallback.png"
-                            alt=""
-                            fill
-                          />
+                          <Image src="/images/fallback.png" alt="" fill />
                         </AvatarFallback>
                       </Avatar>
                       <div>

@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowRightIcon, DownloadIcon, LoaderIcon } from "@zenncore/icons";
-import { useRouter } from "@/i18n/navigation";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { FieldDescription } from "@zenncore/web/components/form";
@@ -14,15 +13,13 @@ import {
 import { useToastManager } from "@zenncore/web/components/toast";
 import { useTranslations } from "next-intl";
 import { z } from "zod";
+import { useRouter } from "@/i18n/navigation";
 import { parseCsvProducts } from "@/lib/csv";
 import * as Csv from "@/server/app/integration/csv";
 import * as Store from "@/server/app/store";
 import { SectionKicker } from "../../../../_components/grid";
 
-const PLATFORM_LABEL: Record<
-  Exclude<Store.Type["platform"], "csv">,
-  string
-> = {
+const PLATFORM_LABEL: Record<Exclude<Store.Type["platform"], "csv">, string> = {
   shopify: "Shopify",
   "shopify-public": "Shopify",
   woocommerce: "WooCommerce",
@@ -169,30 +166,30 @@ const CsvImport = ({ store, domain }: { store: string; domain: string }) => {
       mode: "single",
       accept: [".csv"],
       label: translate("fieldLabel"),
-    // @ts-expect-error - description is a function
-    description: () => (
-      <FieldDescription>
-        A header row plus one row per product. We read{" "}
-        <span className="font-medium text-foreground">title</span> (or{" "}
-        <span className="font-medium text-foreground">name</span>),{" "}
-        <span className="font-medium text-foreground">description</span>,{" "}
-        <span className="font-medium text-foreground">price</span>,{" "}
-        <span className="font-medium text-foreground">image</span>,{" "}
-        <span className="font-medium text-foreground">url</span>,{" "}
-        <span className="font-medium text-foreground">sku</span> and{" "}
-        <span className="font-medium text-foreground">id</span>. A row whose id
-        matches a product already in this store updates it instead of adding a
-        duplicate.
-      </FieldDescription>
-    ),
-    validator: z.file(),
-    classList: {
-      control: {
-        input: "h-auto p-10",
+      // @ts-expect-error - description is a function
+      description: () => (
+        <FieldDescription>
+          A header row plus one row per product. We read{" "}
+          <span className="font-medium text-foreground">title</span> (or{" "}
+          <span className="font-medium text-foreground">name</span>),{" "}
+          <span className="font-medium text-foreground">description</span>,{" "}
+          <span className="font-medium text-foreground">price</span>,{" "}
+          <span className="font-medium text-foreground">image</span>,{" "}
+          <span className="font-medium text-foreground">url</span>,{" "}
+          <span className="font-medium text-foreground">sku</span> and{" "}
+          <span className="font-medium text-foreground">id</span>. A row whose
+          id matches a product already in this store updates it instead of
+          adding a duplicate.
+        </FieldDescription>
+      ),
+      validator: z.file(),
+      classList: {
+        control: {
+          input: "h-auto p-10",
+        },
       },
-    },
-  }),
-} satisfies GenericForm;
+    }),
+  } satisfies GenericForm;
 
   const [handleImport, isImporting] = useAsyncAction(
     async (data: FormEntries<typeof config>) => {

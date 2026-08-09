@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
-import { useRouter } from "@/i18n/navigation";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { FieldDescription } from "@zenncore/web/components/form";
@@ -15,6 +14,7 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { z } from "zod";
+import { useRouter } from "@/i18n/navigation";
 import * as FeedIntegration from "@/server/app/integration/feed";
 import * as Store from "@/server/app/store";
 
@@ -28,7 +28,9 @@ export const FeedForm = () => {
       ({
         feedUrl: field({
           shape: "text",
-          validator: z.string().url(translate("feed.fields.feedUrl.validation")),
+          validator: z
+            .string()
+            .url(translate("feed.fields.feedUrl.validation")),
           label: translate("feed.fields.feedUrl.label"),
           placeholder: translate("feed.fields.feedUrl.placeholder"),
           // @ts-expect-error - description is a function

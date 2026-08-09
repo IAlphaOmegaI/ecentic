@@ -1,8 +1,8 @@
 import { ArrowLeftIcon } from "@zenncore/icons";
 import Image from "next/image";
 import { getLocale } from "next-intl/server";
-import { Link, redirect } from "@/i18n/navigation";
 import { type PropsWithChildren, Suspense } from "react";
+import { Link, redirect } from "@/i18n/navigation";
 import * as Authentication from "@/server/app/authentication";
 import { Environment } from "@/server/utils/environment";
 
@@ -11,7 +11,8 @@ const UserBadge = async () => {
   // same response with the session already destroyed. Redirect rather than throw.
   const account = await Authentication.getCurrentUser(Environment.SERVER);
 
-  if (!account.success) redirect({ href: "/sign-in", locale: await getLocale() });
+  if (!account.success)
+    redirect({ href: "/sign-in", locale: await getLocale() });
 
   const user = account.data;
 

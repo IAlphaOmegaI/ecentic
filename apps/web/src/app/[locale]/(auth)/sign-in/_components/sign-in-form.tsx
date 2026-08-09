@@ -12,13 +12,13 @@ import {
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
-import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { Link, useRouter } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { z } from "zod";
 import { Motion } from "@/components/motion";
+import { Link, useRouter } from "@/i18n/navigation";
 import { Spring } from "@/lib/animations";
 import { sanitizeRedirect } from "@/lib/redirect";
 import * as Authentication from "@/server/app/authentication";
@@ -69,9 +69,7 @@ export const SignInForm = () => {
       ({
         shop: field({
           shape: "text",
-          validator: z
-            .string()
-            .min(1, translate("fields.shop.validation")),
+          validator: z.string().min(1, translate("fields.shop.validation")),
           label: translate("fields.shop.label"),
           placeholder: translate("fields.shop.placeholder"),
         }),

@@ -1,18 +1,4 @@
-import type { SVGProps } from "react";
-
-export const SpainFlag = ({
-  title = "Spain",
-  ...props
-}: SVGProps<SVGSVGElement> & { title?: string }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="32"
-    height="32"
-    viewBox="0 0 32 32"
-    aria-hidden={title ? undefined : true}
-    {...props}
-  >
-    {title ? <title>{title}</title> : null}
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
     <path fill="#f1c142" d="M1 10H31V22H1z" />
     <path
       d="M5,4H27c2.208,0,4,1.792,4,4v3H1v-3c0-2.208,1.792-4,4-4Z"
@@ -49,4 +35,3 @@ export const SpainFlag = ({
       fill="#a0251e"
     />
   </svg>
-);

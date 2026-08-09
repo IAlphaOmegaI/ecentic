@@ -63,44 +63,46 @@ const StoreRow = ({
   const translate = useTranslations("dashboard.discovery");
 
   return (
-  <li
-    className={cn(
-      "flex gap-3 border-accent-foreground border-t px-3 py-2.5 first:border-t-0",
-      store.isTarget && "bg-primary/5",
-    )}
-  >
-    <span
+    <li
       className={cn(
-        "mt-px w-5 shrink-0 text-right font-mono font-semibold text-xs tabular-nums",
-        store.isTarget ? "text-primary" : "text-foreground-dimmed",
+        "flex gap-3 border-accent-foreground border-t px-3 py-2.5 first:border-t-0",
+        store.isTarget && "bg-primary/5",
       )}
     >
-      {rank}
-    </span>
-    <div className="min-w-0 flex-1">
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-        <span
-          className={cn(
-            "font-medium text-sm",
-            store.isTarget ? "text-primary" : "text-foreground-rich",
-          )}
-        >
-          {store.name}
-        </span>
-        {store.domain && (
-          <span className="font-mono text-[11px] text-foreground-dimmed lowercase">
-            {store.domain}
+      <span
+        className={cn(
+          "mt-px w-5 shrink-0 text-right font-mono font-semibold text-xs tabular-nums",
+          store.isTarget ? "text-primary" : "text-foreground-dimmed",
+        )}
+      >
+        {rank}
+      </span>
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+          <span
+            className={cn(
+              "font-medium text-sm",
+              store.isTarget ? "text-primary" : "text-foreground-rich",
+            )}
+          >
+            {store.name}
           </span>
-        )}
-        {store.isTarget && (
-          <StatusPill tone="primary">{translate("targetStore.yourStore")}</StatusPill>
-        )}
+          {store.domain && (
+            <span className="font-mono text-[11px] text-foreground-dimmed lowercase">
+              {store.domain}
+            </span>
+          )}
+          {store.isTarget && (
+            <StatusPill tone="primary">
+              {translate("targetStore.yourStore")}
+            </StatusPill>
+          )}
+        </div>
+        <p className="mt-0.5 text-foreground-dimmed text-xs leading-snug">
+          {store.reason}
+        </p>
       </div>
-      <p className="mt-0.5 text-foreground-dimmed text-xs leading-snug">
-        {store.reason}
-      </p>
-    </div>
-  </li>
+    </li>
   );
 };
 
@@ -112,61 +114,61 @@ const ModelColumn = ({
   const translate = useTranslations("dashboard.discovery.model");
 
   return (
-  <div className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
-    <div className="flex items-center justify-between gap-2 border-accent-foreground border-b bg-background-dimmed px-3 py-2">
-      <span className="font-semibold text-foreground-rich text-sm">
-        {result.modelLabel}
-      </span>
+    <div className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
+      <div className="flex items-center justify-between gap-2 border-accent-foreground border-b bg-background-dimmed px-3 py-2">
+        <span className="font-semibold text-foreground-rich text-sm">
+          {result.modelLabel}
+        </span>
+        {result.status === "error" ? (
+          <StatusPill tone="error">{translate("failed")}</StatusPill>
+        ) : (
+          <RankBadge rank={result.targetRank} total={result.stores.length} />
+        )}
+      </div>
+
       {result.status === "error" ? (
-        <StatusPill tone="error">{translate("failed")}</StatusPill>
+        <div className="flex items-start gap-2 p-3 text-error text-xs">
+          <span className="shrink-0">✕</span>
+          <span className="wrap-break-word font-mono">
+            {result.error ?? translate("unreachable")}
+          </span>
+        </div>
       ) : (
-        <RankBadge rank={result.targetRank} total={result.stores.length} />
+        <>
+          <div
+            className={cn(
+              "border-accent-foreground border-b px-3 py-2.5",
+              result.targetIncluded ? "bg-success/5" : "bg-error/5",
+            )}
+          >
+            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+              {result.targetIncluded
+                ? translate("whyRanked")
+                : translate("whyLeftOut")}
+            </p>
+            <p className="mt-1 text-foreground text-xs leading-snug">
+              {result.targetReason || translate("noExplanation")}
+            </p>
+          </div>
+          {result.stores.length > 0 ? (
+            <ol className="flex-1">
+              {result.stores.map((store, index) => (
+                <StoreRow
+                  // biome-ignore lint/suspicious/noArrayIndexKey: static ranked list, never reordered after render
+                  key={`${store.name}-${index}`}
+                  rank={index + 1}
+                  store={store}
+                />
+              ))}
+            </ol>
+          ) : (
+            <p className="px-3 py-4 text-center text-foreground-dimmed text-xs">
+              {translate("noStores")}
+            </p>
+          )}
+        </>
       )}
     </div>
-
-    {result.status === "error" ? (
-      <div className="flex items-start gap-2 p-3 text-error text-xs">
-        <span className="shrink-0">✕</span>
-        <span className="wrap-break-word font-mono">
-          {result.error ?? translate("unreachable")}
-        </span>
-      </div>
-    ) : (
-      <>
-        <div
-          className={cn(
-            "border-accent-foreground border-b px-3 py-2.5",
-            result.targetIncluded ? "bg-success/5" : "bg-error/5",
-          )}
-        >
-          <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-            {result.targetIncluded
-              ? translate("whyRanked")
-              : translate("whyLeftOut")}
-          </p>
-          <p className="mt-1 text-foreground text-xs leading-snug">
-            {result.targetReason || translate("noExplanation")}
-          </p>
-        </div>
-        {result.stores.length > 0 ? (
-          <ol className="flex-1">
-            {result.stores.map((store, index) => (
-              <StoreRow
-                // biome-ignore lint/suspicious/noArrayIndexKey: static ranked list, never reordered after render
-                key={`${store.name}-${index}`}
-                rank={index + 1}
-                store={store}
-              />
-            ))}
-          </ol>
-        ) : (
-          <p className="px-3 py-4 text-center text-foreground-dimmed text-xs">
-            {translate("noStores")}
-          </p>
-        )}
-      </>
-    )}
-  </div>
   );
 };
 
@@ -460,7 +462,9 @@ export const DiscoveryClient = ({
               return (
                 <div className="relative flex min-h-[24rem] flex-col items-center justify-center gap-2 text-center">
                   <Crosshair className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-                  <StatusPill tone="neutral">{translate("empty.status")}</StatusPill>
+                  <StatusPill tone="neutral">
+                    {translate("empty.status")}
+                  </StatusPill>
                   <p className="max-w-md text-foreground-dimmed text-sm">
                     {translate("empty.description")}
                   </p>
@@ -470,7 +474,9 @@ export const DiscoveryClient = ({
               return (
                 <div className="space-y-6">
                   <div className="flex items-center gap-2">
-                    <SectionKicker>{translate("results.targetStore")}</SectionKicker>
+                    <SectionKicker>
+                      {translate("results.targetStore")}
+                    </SectionKicker>
                     <span className="font-mono font-semibold text-primary text-sm">
                       {result.targetStore}
                     </span>

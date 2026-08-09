@@ -3,13 +3,13 @@
 import { ArrowLeftIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import * as motion from "motion/react-client";
-import { useMessages, useTranslations } from "next-intl";
 import Image from "next/image";
-import { Link } from "@/i18n/navigation";
+import { useMessages, useTranslations } from "next-intl";
 import { Suspense } from "react";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
 import { Fade } from "@/lib/animations";
 import { ResetPasswordForm } from "./_components/reset-password-form";
 

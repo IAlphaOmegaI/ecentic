@@ -1,11 +1,10 @@
 import { CircleBoltIcon, FaceSearchIcon, RobotIcon } from "@zenncore/icons";
 import { getMessages, getTranslations } from "next-intl/server";
 import { AgentStrip } from "@/app/[locale]/(main)/_components/agent-strip";
-import type { IndexSection } from "@/app/[locale]/(main)/_components/index-section";
 import { StepSection } from "./step-section";
 
 export const Steps = async () => {
-  const translate = await getTranslations("howItWorks");
+  const _translate = await getTranslations("howItWorks");
   const messages = await getMessages();
   const simulate = messages.howItWorks.steps.simulate;
   const diagnose = messages.howItWorks.steps.diagnose;
@@ -23,9 +22,7 @@ export const Steps = async () => {
         itemsLabel={simulate.itemsLabel}
         items={simulate.items}
         accent={
-          <AgentStrip
-            label={simulate.agentStripLabel ?? "Simulated agents"}
-          />
+          <AgentStrip label={simulate.agentStripLabel ?? "Simulated agents"} />
         }
       />
 

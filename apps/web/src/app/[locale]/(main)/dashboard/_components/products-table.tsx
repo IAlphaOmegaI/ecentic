@@ -16,11 +16,11 @@ import {
   DataTableProvider,
 } from "@zenncore/web/components/data-table";
 import Image from "next/image";
-import { Link } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { usePaginationChangeHandler } from "@/hooks/pagination";
+import { Link } from "@/i18n/navigation";
 import { formatPrice } from "@/lib/currency";
 import { formatRelativeTime } from "@/lib/date";
 import { SectionKicker } from "./grid";
@@ -218,7 +218,9 @@ export const ProductsTable = ({
               <SectionKicker>{kicker}</SectionKicker>
             </div>
           )}
-          <p className="font-semibold text-foreground-rich text-lg">{resolvedTitle}</p>
+          <p className="font-semibold text-foreground-rich text-lg">
+            {resolvedTitle}
+          </p>
         </div>
         {action}
       </div>

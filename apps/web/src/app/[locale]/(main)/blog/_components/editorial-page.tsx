@@ -1,11 +1,11 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import { Link } from "@/i18n/navigation";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
 import Art from "@/public/images/ascii/books.png";
 import { PageBanner } from "../../_components/page-banner";
 import { renderInline } from "../../_components/rich-text";

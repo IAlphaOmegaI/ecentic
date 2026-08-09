@@ -1,11 +1,11 @@
 "use client";
 
 import { useAsyncAction } from "@zenncore/utils/hooks";
-import { useRouter } from "@/i18n/navigation";
 import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { useRouter } from "@/i18n/navigation";
 import * as Payg from "@/server/app/billing/payg";
 import type * as PerformanceFee from "@/server/app/billing/performance-fee";
 import * as Subscription from "@/server/app/subscription";
@@ -194,7 +194,9 @@ const ActivePlan = ({
       <div className="flex items-start justify-between">
         <div>
           <p className="font-semibold text-base text-foreground-rich">
-            {planKey ? planLabel(planKey, translate) : translate("noActivePlan")}
+            {planKey
+              ? planLabel(planKey, translate)
+              : translate("noActivePlan")}
           </p>
           {planKey && (
             <p className="mt-1 font-bold text-2xl text-primary tracking-[-0.02em]">

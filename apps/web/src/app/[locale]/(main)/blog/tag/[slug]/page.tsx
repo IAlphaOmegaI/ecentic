@@ -1,11 +1,10 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import { readingTimeMinutes } from "babylovegrowth-next-js-blog";
 import type { Metadata } from "next";
-import { Link } from "@/i18n/navigation";
 import { notFound } from "next/navigation";
+import { Link } from "@/i18n/navigation";
 import { createMetadata } from "@/lib/seo";
-import * as BabyLoveGrowth from "@/server/app/babylovegrowth";
+import * as Blog from "@/server/app/blog";
 import {
   EditorialFooter,
   EditorialLayout,
@@ -19,8 +18,8 @@ const formatter = new Intl.DateTimeFormat("en-US", {
   timeZone: "UTC",
 });
 
-const formatBlogDate = (value: string) => {
-  const date = new Date(value);
+const formatBlogDate = (value: Date | string) => {
+  const date = value instanceof Date ? value : new Date(value);
   if (Number.isNaN(date.getTime())) return "";
   return formatter.format(date);
 };
@@ -42,7 +41,7 @@ export const generateMetadata = async ({
 
 export default async ({ params }: TagPageProps) => {
   const { slug } = await params;
-  const articles = await BabyLoveGrowth.listArticlesByTag(slug);
+  const articles = await Blog.listPublishedByTag(slug, "en");
 
   if (articles.length === 0) notFound();
 
@@ -60,7 +59,7 @@ export default async ({ params }: TagPageProps) => {
       {articles.map((article, index) => (
         <EditorialSplitSection
           key={article.slug}
-          thumbnail={article.hero_image_url || undefined}
+          thumbnail={article.thumbnailUrl || undefined}
           left={
             <>
               <span className="font-normal text-2xl text-white">
@@ -68,11 +67,9 @@ export default async ({ params }: TagPageProps) => {
               </span>
               <div className="mt-auto flex flex-col gap-2">
                 <p className="text-white">
-                  {formatBlogDate(article.created_at)}
+                  {formatBlogDate(article.publishedAt)}
                 </p>
-                <p className="text-sm text-white/60">
-                  {Math.max(1, readingTimeMinutes(article.excerpt))} min read
-                </p>
+                <p className="text-sm text-white/60">{article.readTime} read</p>
               </div>
             </>
           }
@@ -83,7 +80,7 @@ export default async ({ params }: TagPageProps) => {
                   {article.title}
                 </h2>
                 <p className="mt-4 max-w-3xl text-base text-foreground-dimmed leading-relaxed md:text-lg">
-                  {article.meta_description || article.excerpt}
+                  {article.description}
                 </p>
               </div>
               <Button

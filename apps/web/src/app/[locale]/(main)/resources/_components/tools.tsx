@@ -2,11 +2,11 @@ import { ArrowRightIcon, CheckIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import { getMessages, getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
+import { Link } from "@/i18n/navigation";
 import { ANONYMOUS_MESSAGE_LIMIT } from "@/server/app/intelligence/ucp/playground-limit";
-import enMessages from "../../../../../../messages/en.json";
+import type enMessages from "../../../../../../messages/en.json";
 import { PlaygroundArt, ScanArt, UcpArt } from "./resource-art";
 
 type ToolItem = (typeof enMessages)["resources"]["tools"]["items"][number];

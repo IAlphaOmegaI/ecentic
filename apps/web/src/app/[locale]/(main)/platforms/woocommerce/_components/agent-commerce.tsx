@@ -7,10 +7,10 @@ import {
 } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { getMessages, getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
 import { ItemCycle } from "@/app/[locale]/(main)/_components/item-cycle";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
+import { Link } from "@/i18n/navigation";
 
 const PLUGIN_URL = "https://wordpress.org/plugins/ecentic-for-woocommerce/";
 

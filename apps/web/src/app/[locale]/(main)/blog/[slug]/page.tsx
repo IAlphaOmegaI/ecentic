@@ -58,7 +58,7 @@ export const generateMetadata = async ({
   const { slug } = await params;
   const locale = await getLocale();
 
-  // Prefer stored rows (webhook writes EN + ES). Live BLG is fallback only.
+  // Prefer stored rows (webhook + ISR). No live BLG on the render path.
   const resolved = await unwrapResult(
     Blog.resolve({
       slug,
@@ -66,38 +66,6 @@ export const generateMetadata = async ({
     }),
   );
   if (!resolved) return {};
-
-  if (resolved.kind === "blg") {
-    const article = resolved.article;
-    const path = localizePath(`/blog/${article.slug}`, locale);
-    return {
-      title: article.title,
-      description: article.meta_description,
-      keywords: article.keywords,
-      alternates: {
-        canonical: path,
-        languages: languageAlternates(article.slug),
-      },
-      openGraph: {
-        type: "article",
-        url: `https://ecentic.ai${path}`,
-        locale: locale === "es" ? "es_ES" : "en_US",
-        title: `${article.title} | ecentic`,
-        description: article.meta_description,
-        publishedTime: article.created_at,
-        modifiedTime: article.updated_at,
-        authors: ["ecentic"],
-        images: article.hero_image_url
-          ? [{ url: article.hero_image_url }]
-          : undefined,
-      },
-      twitter: {
-        card: "summary_large_image",
-        title: `${article.title} | ecentic`,
-        description: article.meta_description,
-      },
-    };
-  }
 
   const post = resolved.post;
   const path = localizePath(`/blog/${post.slug}`, locale);
@@ -136,76 +104,9 @@ export default async ({ params }: BlogPageProps) => {
 
   const translate = await getTranslations("blog");
   // Static / ISR — locale rows are written by the BLG webhook (or editorial);
-  // `revalidateTag("blog")` regenerates these pages.
+  // `revalidateTag("blog")` regenerates these pages. No live BLG here.
   const resolved = await unwrapResult(Blog.resolve({ slug, locale }));
   if (!resolved) notFound();
-
-  if (resolved.kind === "blg") {
-    const article = resolved.article;
-    const minutes = Math.max(
-      1,
-      readingTimeMinutes(article.content_markdown || article.content_html),
-    );
-
-    const structuredData = [
-      ...(article.jsonLd ? [article.jsonLd] : []),
-      ...(article.faqJsonLd ? [article.faqJsonLd] : []),
-      {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        itemListElement: [
-          {
-            "@type": "ListItem",
-            position: 1,
-            name: "Home",
-            item: "https://ecentic.ai/",
-          },
-          {
-            "@type": "ListItem",
-            position: 2,
-            name: translate("title"),
-            item: `https://ecentic.ai${localizePath("/blog", locale)}`,
-          },
-          {
-            "@type": "ListItem",
-            position: 3,
-            name: article.title,
-            item: `https://ecentic.ai${localizePath(`/blog/${article.slug}`, locale)}`,
-          },
-        ],
-      },
-    ];
-
-    const sections = splitBlogHtmlByH2(article.content_html);
-
-    return (
-      <EditorialLayout
-        eyebrow={article.seedKeyword ?? "Guide"}
-        title={article.title}
-        meta={
-          <p>
-            {translate("published")}:{" "}
-            {formatBlogDate(article.created_at, locale)} ·{" "}
-            {translate("minRead", { minutes })}
-          </p>
-        }
-        description={article.meta_description || article.excerpt}
-      >
-        <JsonLd schemas={structuredData} />
-
-        <HtmlArticleSections
-          sections={sections}
-          keywords={[article.seedKeyword ?? "", ...article.keywords]}
-        />
-
-        <EditorialFooter
-          primary={{ href: "/sign-up", label: "Get started" }}
-          secondary={{ href: "/blog", label: translate("action.secondary") }}
-          note="Use these guides to improve product clarity, then turn the highest-impact fixes into your next catalog sprint."
-        />
-      </EditorialLayout>
-    );
-  }
 
   const post = resolved.post;
   const path = localizePath(`/blog/${post.slug}`, locale);

@@ -10,9 +10,9 @@ import {
   DialogTitle,
 } from "@zenncore/web/components/dialog";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { useScanRunner } from "@/app/[locale]/(auth)/onboarding/scan/_components/use-scan-runner";
 import { Motion } from "@/components/motion";
@@ -302,9 +302,12 @@ export const SimulationModal = ({
                                   exit={{ opacity: 0, y: -3 }}
                                   transition={{ duration: 0.15 }}
                                 >
-                                  {status === "complete" && translate("states.done")}
-                                  {status === "running" && translate("states.running")}
-                                  {status === "queued" && translate("states.queued")}
+                                  {status === "complete" &&
+                                    translate("states.done")}
+                                  {status === "running" &&
+                                    translate("states.running")}
+                                  {status === "queued" &&
+                                    translate("states.queued")}
                                 </motion.span>
                               </AnimatePresence>
                             </div>

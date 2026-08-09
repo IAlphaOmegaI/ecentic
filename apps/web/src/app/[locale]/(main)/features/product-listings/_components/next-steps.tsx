@@ -2,8 +2,8 @@ import { ArrowRightIcon, FileIcon, SquareChartIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import { getMessages, getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
 import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
 import shopify from "@/public/images/shopify.svg";
 import woocommerce from "@/public/images/woocommerce.svg";
 
@@ -48,39 +48,39 @@ export const NextSteps = async () => {
             const meta = nextStepMeta[index] ?? nextStepMeta[0];
 
             return (
-            <article
-              key={nextStep.href}
-              className="flex h-full flex-col gap-4 bg-background-rich p-6 md:p-8"
-            >
-              {"logo" in meta ? (
-                <Image
-                  src={meta.logo}
-                  alt={nextStep.name}
-                  className="size-7"
-                />
-              ) : (
-                <meta.icon
-                  aria-label={nextStep.name}
-                  className="size-7 text-primary"
-                />
-              )}
-              <div className="flex flex-1 flex-col gap-3">
-                <h3 className="font-body font-medium text-2xl text-foreground leading-tight">
-                  {nextStep.title}
-                </h3>
-                <p className="font-light text-foreground-dimmed leading-relaxed">
-                  {nextStep.description}
-                </p>
-              </div>
-              <Button
-                color={nextStep.color}
-                className="w-fit"
-                render={<Link href={nextStep.href} />}
+              <article
+                key={nextStep.href}
+                className="flex h-full flex-col gap-4 bg-background-rich p-6 md:p-8"
               >
-                {nextStep.label}
-                <ArrowRightIcon className="size-4" />
-              </Button>
-            </article>
+                {"logo" in meta ? (
+                  <Image
+                    src={meta.logo}
+                    alt={nextStep.name}
+                    className="size-7"
+                  />
+                ) : (
+                  <meta.icon
+                    aria-label={nextStep.name}
+                    className="size-7 text-primary"
+                  />
+                )}
+                <div className="flex flex-1 flex-col gap-3">
+                  <h3 className="font-body font-medium text-2xl text-foreground leading-tight">
+                    {nextStep.title}
+                  </h3>
+                  <p className="font-light text-foreground-dimmed leading-relaxed">
+                    {nextStep.description}
+                  </p>
+                </div>
+                <Button
+                  color={nextStep.color}
+                  className="w-fit"
+                  render={<Link href={nextStep.href} />}
+                >
+                  {nextStep.label}
+                  <ArrowRightIcon className="size-4" />
+                </Button>
+              </article>
             );
           })}
         </div>

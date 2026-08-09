@@ -1,10 +1,10 @@
 import { ArrowRightIcon, BoxMinusIcon } from "@zenncore/icons";
 import { unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import { getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
 import { connection } from "next/server";
+import { getTranslations } from "next-intl/server";
 import { Motion } from "@/components/motion";
+import { Link } from "@/i18n/navigation";
 import * as Product from "@/server/app/product";
 import { Environment } from "@/server/utils/environment";
 import { ProductSelector } from "./_components/product-selector";
@@ -38,8 +38,7 @@ export default async ({
             {translate("empty.description")}
           </p>
           <Button color="primary" render={<Link href="/onboarding/connect" />}>
-            {translate("empty.action")}{" "}
-            <ArrowRightIcon className="size-4" />
+            {translate("empty.action")} <ArrowRightIcon className="size-4" />
           </Button>
         </Motion.Item>
       </Motion.Stagger>
