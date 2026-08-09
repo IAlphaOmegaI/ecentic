@@ -127,20 +127,19 @@ const estimateReadTime = (html: string) => {
 };
 
 /** Translate EN → es-ES with Azure (gpt seat). Preserves HTML/URLs/`ecentic`. */
-export const translateArticle = withContext(
-  async (_context, input: TranslateArticleInput) => {
-    const tags = input.tags ?? [];
-    const takeaways = input.takeaways ?? [];
-    const category = input.category ?? "Guide";
-    const introduction = input.introduction ?? input.metaDescription;
+const translateArticleCore = async (input: TranslateArticleInput) => {
+  const tags = input.tags ?? [];
+  const takeaways = input.takeaways ?? [];
+  const category = input.category ?? "Guide";
+  const introduction = input.introduction ?? input.metaDescription;
 
-    return resultify(() =>
-      AI.generate({
-        label: "Blog.translateArticle",
-        model: "gpt",
-        output: translationSchema,
-        schemaName: "SpanishBlogTranslation",
-        instructions: `You translate ecommerce blog content from English to Spanish (es-ES).
+  return resultify(() =>
+    AI.generate({
+      label: "Blog.translateArticle",
+      model: "gpt",
+      output: translationSchema,
+      schemaName: "SpanishBlogTranslation",
+      instructions: `You translate ecommerce blog content from English to Spanish (es-ES).
 
 Rules:
 - Translate visible text only; preserve every HTML tag, attribute, URL, and script/style block exactly.
@@ -149,18 +148,21 @@ Rules:
 - Write natural Spanish suitable for merchants; do not invent new sections.
 - Return Spanish for title, metaDescription, introduction, contentHtml, category, tags, and takeaways.
 - tags and takeaways must keep the same count as the input arrays.`,
-        prompt: JSON.stringify({
-          title: input.title,
-          metaDescription: input.metaDescription,
-          introduction,
-          contentHtml: input.contentHtml,
-          category,
-          tags,
-          takeaways,
-        }),
+      prompt: JSON.stringify({
+        title: input.title,
+        metaDescription: input.metaDescription,
+        introduction,
+        contentHtml: input.contentHtml,
+        category,
+        tags,
+        takeaways,
       }),
-    );
-  },
+    }),
+  );
+};
+
+export const translateArticle = withContext(
+  async (_context, input: TranslateArticleInput) => translateArticleCore(input),
   "Blog.translateArticle",
 );
 
@@ -231,89 +233,92 @@ const upsertSpanishRow = async (values: {
   return findPublished(values.slug, "es");
 };
 
-/** Ensure a Spanish row exists for the EN slug (BLG or local editorial). */
-export const ensureSpanish = withContext(
-  async (_context, { slug }: { slug: string }) => {
-    const existing = await findPublished(slug, "es");
-    if (existing) return { success: true as const, data: existing };
+/**
+ * Ensure a Spanish row exists for the EN slug (BLG or local editorial).
+ * Plain async — safe to await from public RSC `resolve` (no `headers()`).
+ */
+const ensureSpanishCore = async (slug: string) => {
+  const existing = await findPublished(slug, "es");
+  if (existing) return { success: true as const, data: existing };
 
-    const article = await resultify(() =>
-      BabyLoveGrowth.getArticleBySlug(slug),
-    );
+  const article = await resultify(() => BabyLoveGrowth.getArticleBySlug(slug));
 
-    if (article.success && article.data) {
-      const translation = await translateArticle(Environment.SERVER, {
-        title: article.data.title,
-        metaDescription: article.data.meta_description,
-        contentHtml: article.data.content_html,
-        category: article.data.seedKeyword ?? "Guide",
-        tags: article.data.keywords,
-        introduction: article.data.meta_description,
-      });
-
-      if (!translation.success) return translation;
-
-      const row = await upsertSpanishRow({
-        slug,
-        source: "blg",
-        externalId: String(article.data.id),
-        category: translation.data.category,
-        title: translation.data.title,
-        description: translation.data.metaDescription,
-        introduction: translation.data.introduction,
-        publishedAt: article.data.created_at.slice(0, 10),
-        readTime: estimateReadTime(translation.data.contentHtml),
-        thumbnailUrl: article.data.hero_image_url || null,
-        tags: translation.data.tags,
-        takeaways: translation.data.takeaways,
-        contentHtml: translation.data.contentHtml,
-      });
-
-      return { success: true as const, data: row };
-    }
-
-    const english = await findPublished(slug, "en");
-    if (!english) return { success: true as const, data: null };
-
-    const html =
-      english.contentHtml ??
-      [
-        `<p>${english.introduction}</p>`,
-        ...english.sections.map(
-          (section) => `<h2>${section.title}</h2><div>${section.content}</div>`,
-        ),
-      ].join("\n");
-
-    const translation = await translateArticle(Environment.SERVER, {
-      title: english.title,
-      metaDescription: english.description,
-      contentHtml: html,
-      category: english.category,
-      tags: english.tags,
-      introduction: english.introduction,
-      takeaways: english.takeaways,
+  if (article.success && article.data) {
+    const translation = await translateArticleCore({
+      title: article.data.title,
+      metaDescription: article.data.meta_description,
+      contentHtml: article.data.content_html,
+      category: article.data.seedKeyword ?? "Guide",
+      tags: article.data.keywords,
+      introduction: article.data.meta_description,
     });
 
     if (!translation.success) return translation;
 
     const row = await upsertSpanishRow({
       slug,
-      source: english.source === "blg" ? "blg" : "local",
-      externalId: english.externalId,
+      source: "blg",
+      externalId: String(article.data.id),
       category: translation.data.category,
       title: translation.data.title,
       description: translation.data.metaDescription,
       introduction: translation.data.introduction,
-      publishedAt: english.publishedAt,
+      publishedAt: article.data.created_at.slice(0, 10),
       readTime: estimateReadTime(translation.data.contentHtml),
-      thumbnailUrl: english.thumbnailUrl,
+      thumbnailUrl: article.data.hero_image_url || null,
       tags: translation.data.tags,
       takeaways: translation.data.takeaways,
       contentHtml: translation.data.contentHtml,
     });
 
     return { success: true as const, data: row };
-  },
+  }
+
+  const english = await findPublished(slug, "en");
+  if (!english) return { success: true as const, data: null };
+
+  const html =
+    english.contentHtml ??
+    [
+      `<p>${english.introduction}</p>`,
+      ...english.sections.map(
+        (section) => `<h2>${section.title}</h2><div>${section.content}</div>`,
+      ),
+    ].join("\n");
+
+  const translation = await translateArticleCore({
+    title: english.title,
+    metaDescription: english.description,
+    contentHtml: html,
+    category: english.category,
+    tags: english.tags,
+    introduction: english.introduction,
+    takeaways: english.takeaways,
+  });
+
+  if (!translation.success) return translation;
+
+  const row = await upsertSpanishRow({
+    slug,
+    source: english.source === "blg" ? "blg" : "local",
+    externalId: english.externalId,
+    category: translation.data.category,
+    title: translation.data.title,
+    description: translation.data.metaDescription,
+    introduction: translation.data.introduction,
+    publishedAt: english.publishedAt,
+    readTime: estimateReadTime(translation.data.contentHtml),
+    thumbnailUrl: english.thumbnailUrl,
+    tags: translation.data.tags,
+    takeaways: translation.data.takeaways,
+    contentHtml: translation.data.contentHtml,
+  });
+
+  return { success: true as const, data: row };
+};
+
+export const ensureSpanish = withContext(
+  async (_context, { slug }: { slug: string }) => ensureSpanishCore(slug),
   "Blog.ensureSpanish",
 );
 
@@ -328,12 +333,13 @@ export type Resolved =
 
 /**
  * Same slug catalog for EN/ES. Prefer stored ES; fall back to EN so posts
- * never 404. Plain async (no `withContext`): public RSC pages cannot await
- * `headers()` from Sentry server-action instrumentation during prerender
- * (Sentry: `"use cache" called after prerender ended` on Blog.resolve).
+ * never 404. Plain async (no `withContext`): public RSC cannot touch
+ * `headers()` from Sentry server-action instrumentation during prerender.
  *
- * On-demand Spanish translate is scheduled with `after()` — never awaited
- * during render — so we never `revalidateTag` mid-RSC.
+ * When `translate` is true and the ES row is missing, await Azure translate
+ * + upsert (cache purge still deferred via `after`) so `/es/blog/[slug]`
+ * actually returns Spanish instead of baking the EN fallback into the
+ * prerendered page.
  */
 export const resolve = async ({
   slug,
@@ -358,9 +364,12 @@ export const resolve = async ({
       return { kind: "post" as const, post: existingSpanish };
 
     if (translate) {
-      after(() => {
-        void ensureSpanish(Environment.SERVER, { slug });
-      });
+      const spanish = await ensureSpanishCore(slug);
+      if (!spanish.success) {
+        // Translate failed — still serve EN below so the route never 500s.
+      } else if (spanish.data) {
+        return { kind: "post" as const, post: spanish.data };
+      }
     }
 
     const article = await BabyLoveGrowth.getArticleBySlug(slug);
@@ -517,7 +526,7 @@ export const ingestPublish = withContext(
         data: { skipped: true as const, reason: "non-english" as const },
       };
 
-    const translation = await translateArticle(Environment.SERVER, {
+    const translation = await translateArticleCore({
       title: payload.title,
       metaDescription: payload.metaDescription,
       contentHtml: payload.content_html,

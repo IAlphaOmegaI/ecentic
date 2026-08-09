@@ -7,7 +7,7 @@ ecentic serves the UI in **English** (default, no URL prefix) and **Spanish** (`
 | Locale | URL prefix | Content source |
 |--------|------------|----------------|
 | `en` | none (`/blog/foo`) | BabyLoveGrowth API + local `blog_post` rows with `locale=en` |
-| `es` | `/es` (`/es/blog/foo`) | **Same catalog / slugs as English.** Prefer `blog_post` `locale=es`; if missing, translate from the EN source on first request and store the row. Falls back to EN content if translate fails so the route never 404s for a real post. |
+| `es` | `/es` (`/es/blog/foo`) | **Same catalog / slugs as English.** Prefer `blog_post` `locale=es`; if missing, the post page awaits Azure translate on first request, stores the row, then renders Spanish. Falls back to EN content if translate fails so the route never 404s. Index titles stay EN until those rows exist (webhook/backfill or opening each post). |
 
 Same slug is shared across locales. Spanish copies are **not** published back into BabyLoveGrowth.
 
@@ -28,10 +28,15 @@ All blog server logic lives in `apps/web/src/server/app/blog.ts`:
 
 - `"use cache"` Drizzle reads for public list/get
 - plain `resolve` / `listCatalogSlugs` for RSC / `generateStaticParams` (no `withContext` — that awaits `headers()` for Sentry and breaks prerender)
+- `generateStaticParams` for `[slug]` prerenders **English only**; Spanish is on-demand so translate can run on first `/es` view
 - `withContext` / `withCron` for translate, ensureSpanish, ingest, backfill
 - cache purges via `after(() => revalidateTag(...))` so Spanish writes never call `revalidateTag` during render
 
 BabyLoveGrowth CMS client stays in `babylovegrowth.ts` (external API only).
+
+### Locale switcher
+
+Navbar language select calls `router.replace(pathname, { locale })` (next-intl). Same path, other locale — `/blog/foo` ↔ `/es/blog/foo`. Cookie `NEXT_LOCALE` then keeps that choice on bare `/blog/...` URLs.
 
 ## Auto-translate (Azure)
 
@@ -42,7 +47,7 @@ When BabyLoveGrowth publishes an English article, configure their **Webhook** in
 3. Bearer token: value of `BABYLOVEGROWTH_WEBHOOK_SECRET`
 4. Enable automatic publish
 
-The handler acknowledges immediately (200), then `Blog.ingestPublish` translates title / meta / HTML to Spanish with Azure (`AI.generate`, gpt seat) and upserts `blog_post` (`locale=es`, same slug). A first `/es/blog/[slug]` hit schedules `Blog.ensureSpanish` in `after()` (EN content is served immediately if the ES row is still missing).
+The handler acknowledges immediately (200), then `Blog.ingestPublish` translates title / meta / HTML to Spanish with Azure (`AI.generate`, gpt seat) and upserts `blog_post` (`locale=es`, same slug). A first `/es/blog/[slug]` hit also awaits translate when the row is still missing (first load can be slow; later loads hit the stored row).
 
 ### Backfill
 
