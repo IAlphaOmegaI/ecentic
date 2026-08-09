@@ -45,6 +45,7 @@
 
         "BABYLOVEGROWTH_BLOG_API_KEY",
         "BABYLOVEGROWTH_BLOG_API_URL",
+        "BABYLOVEGROWTH_WEBHOOK_SECRET",
 
         "NODE_ENV",
         "CI",

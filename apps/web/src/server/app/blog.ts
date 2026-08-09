@@ -59,7 +59,17 @@ export const listPublished = async (locale = "en") => {
     .orderBy(...latestFirst);
 };
 
-export const getPublishedBySlug = async (slug: string, locale = "en") => {
+/**
+ * Cached single-post read — the ONLY slug lookup page renders may use.
+ * An uncached query in a render path evicts the whole post body from the
+ * prerendered shell (`◐` instead of `○`); this happened once already when
+ * `resolve` used `findPublished`. May serve results up to an hour stale
+ * (until the `blog` tag purge lands), which is fine for public reads.
+ */
+export const getPublishedBySlug = async (
+  slug: string,
+  locale: "en" | "es" = "en",
+) => {
   "use cache";
   cacheLife("hours");
   cacheTag(BLOG_CACHE_TAG, `blog-${slug}-${locale}`);
@@ -79,6 +89,15 @@ export const getPublishedBySlug = async (slug: string, locale = "en") => {
   return posts[0] ?? null;
 };
 
+/**
+ * Uncached single-post read for the write/translate rail ONLY — call sites
+ * need answers the cache cannot give while the deferred `after()` tag purge
+ * is still pending: read-after-write (`upsertSpanishRow`), the race-loser
+ * re-read, and `ensureSpanishCore`'s exists check (a stale cached `null`
+ * there would buy a duplicate Azure translation). Never call from a page
+ * render path — use `getPublishedBySlug`, or the route loses its static
+ * shell. Do not merge the two: each is wrong for the other's call sites.
+ */
 const findPublished = async (slug: string, locale: "en" | "es") => {
   const posts = await db
     .select()
@@ -336,6 +355,10 @@ export type Resolved =
  * never 404. Plain async (no `withContext`): public RSC cannot touch
  * `headers()` from Sentry server-action instrumentation during prerender.
  *
+ * Read paths must go through `"use cache"` readers (`getPublishedBySlug`,
+ * `BabyLoveGrowth.getArticleBySlug`) — one uncached await here evicts the
+ * whole post body from the prerendered shell (`◐` instead of `○`).
+ *
  * When `translate` is true and the ES row is missing, await Azure translate
  * + upsert (cache purge still deferred via `after`) so `/es/blog/[slug]`
  * actually returns Spanish instead of baking the EN fallback into the
@@ -354,12 +377,12 @@ export const resolve = async ({
     if (locale === "en") {
       const article = await BabyLoveGrowth.getArticleBySlug(slug);
       if (article) return { kind: "blg" as const, article };
-      const post = await findPublished(slug, "en");
+      const post = await getPublishedBySlug(slug, "en");
       if (post) return { kind: "post" as const, post };
       return null;
     }
 
-    const existingSpanish = await findPublished(slug, "es");
+    const existingSpanish = await getPublishedBySlug(slug, "es");
     if (existingSpanish)
       return { kind: "post" as const, post: existingSpanish };
 
@@ -375,7 +398,7 @@ export const resolve = async ({
     const article = await BabyLoveGrowth.getArticleBySlug(slug);
     if (article) return { kind: "blg" as const, article };
 
-    const english = await findPublished(slug, "en");
+    const english = await getPublishedBySlug(slug, "en");
     if (english) return { kind: "post" as const, post: english };
 
     return null;
