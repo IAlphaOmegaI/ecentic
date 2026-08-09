@@ -113,7 +113,7 @@ const NavbarDesktop = () => {
         </div>
       </div>
 
-      <div className="relative hidden h-14 shrink-0 items-center gap-3 p-4 pr-6 pl-12 sm:h-16 lg:flex">
+      <div className="relative hidden h-14 shrink-0 items-center gap-8 p-4 pr-6 pl-12 sm:h-16 lg:flex">
         <Image
           src="/images/right-menu.svg"
           alt=""
@@ -121,10 +121,7 @@ const NavbarDesktop = () => {
           className="absolute inset-0 object-cover"
           aria-hidden
         />
-        <LanguageSwitcher
-          variant="nav"
-          className="relative z-100 h-9 border-transparent bg-transparent px-2 shadow-none hover:bg-background/60"
-        />
+        <LanguageSwitcher variant="nav" className="relative z-100 mr-2" />
         <NavbarLink href="/sign-up">
           {translate("action.primary")}{" "}
           <ArrowRightIcon className="size-6 transition-transform duration-300 group-hover:translate-x-1" />
@@ -141,11 +138,8 @@ const NavbarMobile = () => {
   const links = useNavLinks();
 
   return (
-    <div className="relative flex h-14 items-center gap-1 sm:h-16 lg:hidden">
-      <LanguageSwitcher
-        variant="nav"
-        className="relative z-100 h-9 border-accent-foreground/60 bg-background/70 px-2"
-      />
+    <div className="relative flex h-14 items-center gap-2 sm:h-16 lg:hidden">
+      <LanguageSwitcher variant="nav" className="relative z-100 mr-1" />
       <Sheet>
         <SheetTrigger
           className="relative z-100 flex h-14 shrink-0 cursor-pointer items-center justify-center overflow-hidden p-4 pr-4 pl-12 text-primary transition-transform duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.97] sm:h-16"

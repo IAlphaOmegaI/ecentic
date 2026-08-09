@@ -13,7 +13,6 @@ import { db, schema } from "../database";
 import * as AI from "../utils/ai";
 import { withContext } from "../utils/context";
 import { withCron } from "../utils/cron";
-import { Environment } from "../utils/environment";
 import { UnauthenticatedError } from "../utils/error";
 import { type Document, repository } from "../utils/repository";
 import * as BabyLoveGrowth from "./babylovegrowth";
@@ -28,11 +27,17 @@ export const BLOG_CACHE_TAG = "blog";
 
 const purgeBlogCache = () => {
   // `revalidateTag` is illegal during RSC render / prerender. Defer so
-  // ensureSpanish can run from page resolve via `after()` without crashing
-  // the route (Sentry: "used revalidateTag blog during render").
-  after(() => {
-    revalidateTag(BLOG_CACHE_TAG, { expire: 0 });
-  });
+  // Spanish upserts from webhook/backfill never crash the route (Sentry:
+  // "used revalidateTag blog during render").
+  // Outside a Next request (CLI scripts) `after` throws — skip; the script
+  // caller redeploys or hits `/api/revalidate/blog` separately.
+  try {
+    after(() => {
+      revalidateTag(BLOG_CACHE_TAG, { expire: 0 });
+    });
+  } catch {
+    // CLI / non-request context
+  }
 };
 
 const published = eq(schema.blogPost.status, "published");
@@ -363,11 +368,16 @@ export type Resolved =
  * + upsert (cache purge still deferred via `after`) so `/es/blog/[slug]`
  * actually returns Spanish instead of baking the EN fallback into the
  * prerendered page.
+ * Public pages pass `translate: false` so EN/ES are statically generated /
+ * ISR'd from cache. Spanish rows are written by the BLG webhook + backfill
+ * cron; those paths call `purgeBlogCache()` so `revalidateTag("blog")`
+ * regenerates the pages. Optional `translate: true` still awaits Azure for
+ * scripts / emergency fills.
  */
 export const resolve = async ({
   slug,
   locale,
-  translate = true,
+  translate = false,
 }: {
   slug: string;
   locale: "en" | "es";
@@ -382,17 +392,15 @@ export const resolve = async ({
       return null;
     }
 
+    // Cached read — invalidated by webhook/backfill `revalidateTag("blog")`.
     const existingSpanish = await getPublishedBySlug(slug, "es");
     if (existingSpanish)
       return { kind: "post" as const, post: existingSpanish };
 
     if (translate) {
       const spanish = await ensureSpanishCore(slug);
-      if (!spanish.success) {
-        // Translate failed — still serve EN below so the route never 500s.
-      } else if (spanish.data) {
+      if (spanish.success && spanish.data)
         return { kind: "post" as const, post: spanish.data };
-      }
     }
 
     const article = await BabyLoveGrowth.getArticleBySlug(slug);
@@ -426,8 +434,18 @@ export const listCatalogSlugs = async () => {
   return [...slugs];
 };
 
-/** Cron: translate EN BLG + local posts missing a Spanish row. */
-export const translateMissingSpanish = withCron(async () => {
+/**
+ * Translate EN BLG + local posts missing a Spanish row.
+ * Plain async — safe for CLI scripts (no cron `headers()` / `withCron`).
+ */
+export const translateMissingSpanishCore = async (
+  options: { limit?: number } = {},
+) => {
+  const batchLimit =
+    typeof options.limit === "number" && options.limit > 0
+      ? Math.floor(options.limit)
+      : Number.POSITIVE_INFINITY;
+
   const articles = await resultify(() => BabyLoveGrowth.listArticles());
   const blgList = articles.success ? articles.data : [];
 
@@ -444,21 +462,6 @@ export const translateMissingSpanish = withCron(async () => {
   const translated: string[] = [];
   const failed: string[] = [];
 
-  for (const summary of blgList) {
-    if (spanishSlugs.has(summary.slug)) continue;
-
-    const ensured = await ensureSpanish(Environment.SERVER, {
-      slug: summary.slug,
-    });
-    if (!ensured.success || !ensured.data) {
-      failed.push(summary.slug);
-      continue;
-    }
-
-    translated.push(summary.slug);
-    spanishSlugs.add(summary.slug);
-  }
-
   const localEnglish = await resultify(() =>
     db
       .select({ slug: schema.blogPost.slug })
@@ -472,30 +475,46 @@ export const translateMissingSpanish = withCron(async () => {
       ),
   );
 
-  if (localEnglish.success) {
-    for (const post of localEnglish.data) {
-      if (spanishSlugs.has(post.slug)) continue;
+  const missing = [
+    ...blgList.map((summary) => summary.slug),
+    ...(localEnglish.success ? localEnglish.data.map((post) => post.slug) : []),
+  ].filter((slug, index, list) => {
+    if (spanishSlugs.has(slug)) return false;
+    return list.indexOf(slug) === index;
+  });
 
-      const ensured = await ensureSpanish(Environment.SERVER, {
-        slug: post.slug,
-      });
-      if (!ensured.success || !ensured.data) {
-        failed.push(post.slug);
-        continue;
-      }
+  const batch = missing.slice(0, batchLimit);
 
-      translated.push(post.slug);
-      spanishSlugs.add(post.slug);
+  for (const slug of batch) {
+    const ensured = await ensureSpanishCore(slug);
+    if (!ensured.success || !ensured.data) {
+      failed.push(slug);
+      continue;
     }
+
+    translated.push(slug);
+    spanishSlugs.add(slug);
   }
 
   if (translated.length > 0) purgeBlogCache();
 
   return {
     success: true as const,
-    data: { translated, failed },
+    data: {
+      translated,
+      failed,
+      remaining: Math.max(0, missing.length - batch.length),
+      missingTotal: missing.length,
+    },
   };
-}, "Blog.translateMissingSpanish");
+};
+
+/** Cron wrapper around `translateMissingSpanishCore` (Bearer `CRON_SECRET`). */
+export const translateMissingSpanish = withCron(
+  async (_context, options: { limit?: number } = {}) =>
+    translateMissingSpanishCore(options),
+  "Blog.translateMissingSpanish",
+);
 
 const publishPayloadSchema = z.object({
   id: z.union([z.string(), z.number()]),

@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import {
+  getMessages,
+  getTranslations,
+  setRequestLocale,
+} from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
@@ -27,11 +31,6 @@ import { YcRedemptionForm } from "./_components/yc-redemption-form";
 
 type YcPageProps = {
   params: Promise<{ locale: string }>;
-};
-
-type FaqItem = {
-  question: string;
-  answer: string;
 };
 
 export const generateMetadata = async ({
@@ -62,8 +61,9 @@ export default async ({ params }: YcPageProps) => {
   setRequestLocale(locale);
 
   const translate = await getTranslations({ locale, namespace: "yc" });
+  const messages = await getMessages();
   const description = translate("meta.description");
-  const faq = translate.raw("faq.items") as readonly FaqItem[];
+  const faq = messages.yc.faq.items;
   const pagePath = localizePath("/yc", locale);
 
   const structuredData = [

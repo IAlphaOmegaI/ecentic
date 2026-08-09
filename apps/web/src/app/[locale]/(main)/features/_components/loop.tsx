@@ -4,18 +4,15 @@ import {
   RobotIcon,
   TrendUpIcon,
 } from "@zenncore/icons";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Plus } from "@/components/plus";
 
 const stepIcons = [RobotIcon, FaceSearchIcon, CircleBoltIcon, TrendUpIcon] as const;
 
 export const Loop = async () => {
   const translate = await getTranslations("features");
-  const steps = translate.raw("loop.steps") as readonly {
-    step: string;
-    title: string;
-    description: string;
-  }[];
+  const messages = await getMessages();
+  const steps = messages.features.loop.steps;
 
   return (
     <section className="border-accent-foreground border-b">

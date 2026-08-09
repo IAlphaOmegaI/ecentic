@@ -2,6 +2,7 @@
 
 import { PlusIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
+import { useTranslations } from "next-intl";
 import { Suspense, use, useState } from "react";
 import { SimulationModal } from "./simulation-modal";
 
@@ -25,18 +26,15 @@ const StoreSimulationModal = ({
 };
 
 export const OverviewActions = ({ params }: { params: StoreParams }) => {
+  const translate = useTranslations("dashboard.shared.action");
   const [open, setOpen] = useState(false);
 
   return (
     <>
       <div className="flex items-center gap-2">
-        {/* <Button color="accent">
-          <DownloadIcon className="size-4" />
-          Export
-        </Button> */}
         <Button color="primary" onClick={() => setOpen(true)}>
           <PlusIcon className="size-4" />
-          Run Simulation
+          {translate("runSimulation")}
         </Button>
       </div>
       <Suspense fallback={null}>

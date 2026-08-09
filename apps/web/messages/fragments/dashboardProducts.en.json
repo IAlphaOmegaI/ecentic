@@ -1,0 +1,200 @@
+{
+  "dashboard": {
+    "products": {
+      "title": "Products",
+      "description": "How each product in your catalog performs across AI shopping agents.",
+      "action": {
+        "primary": "Add product",
+        "addProducts": "Add Products"
+      },
+      "stats": {
+        "totalProducts": "Total Products",
+        "averageWinRate": "Average Win Rate",
+        "highPerformers": "High Performers",
+        "needsAttention": "Needs Attention",
+        "highPerformersHint": "products with ≥60% win rate",
+        "needsAttentionHint": "products below 30% win rate"
+      },
+      "embedBanner": {
+        "title": "Structured data is not reaching your product pages",
+        "description": "The “Agentic structured data” app embed is off, so AI agents don't see machine-readable data on your products. Enabling it once adds structured data to every product in this store.",
+        "action": "Enable app embed"
+      },
+      "quality": {
+        "good": "Good (≥75%)",
+        "fair": "Fair (50-74%)",
+        "poor": "Poor (<50%)",
+        "distribution": "Quality Distribution",
+        "avgQuality": "avg. quality",
+        "kicker": "01.1 — Quality"
+      },
+      "optimization": {
+        "readiness": "Product Readiness",
+        "optimized": "Optimized",
+        "pending": "Pending",
+        "unoptimized": "Unoptimized",
+        "kicker": "01.2 — Optimization"
+      },
+      "detail": {
+        "backToProducts": "Back to Products",
+        "optimize": "Optimize",
+        "noSimulationsYet": "No simulations run yet",
+        "winRate": "Win Rate",
+        "dataQuality": "Data Quality",
+        "simulationsRun": "Simulations Run",
+        "bestModel": "Best Model",
+        "winsSimulations": "{wins} wins · {simulations} simulations",
+        "listingCompleteness": "listing completeness score",
+        "acrossCompetitors": "across {count, plural, one {# competitor} other {# competitors}}",
+        "modelWinRate": "{model} win rate",
+        "tabs": {
+          "winRate": "Win Rate",
+          "agentReplay": "Agent Replay",
+          "battlecard": "Battlecard",
+          "optimize": "Optimize"
+        },
+        "overview": {
+          "winRateVsCompetitor": "Win rate vs. each competitor",
+          "viewAll": "View All",
+          "noCompetitors": "No competitors tracked yet.",
+          "wLTotal": "{wins} W · {losses} L",
+          "totalCount": "{count} total"
+        },
+        "replay": {
+          "empty": "No simulations yet. Run a scan to see agent decision replays.",
+          "decisionReplay": "{model} Decision Replay",
+          "simulationCount": "{count, plural, one {# simulation} other {# simulations}}",
+          "vsCompetitor": "vs. {title}",
+          "won": "Won",
+          "lost": "Lost",
+          "reasoning": "{model}'s reasoning",
+          "noReasoning": "No reasoning recorded — decided by score ({productScore} vs {competitorScore})."
+        },
+        "fields": {
+          "title": "Title",
+          "description": "Description",
+          "price": "Price",
+          "sku": "SKU",
+          "structuredData": "Structured Data",
+          "images": "Images"
+        },
+        "publish": {
+          "applyFix": "Apply fix to store",
+          "connectStore": "Connect Shopify or WooCommerce",
+          "dialogTitle": "Publish optimized listing?",
+          "dialogDescription": "ecentic generates an AI-optimized title and description for \"{title}\" and writes it directly to your connected store, replacing the live listing. Current win rate is {winRate}%.",
+          "publishing": "Publishing…",
+          "publishToStore": "Publish to store",
+          "failed": "Publish failed",
+          "successTitle": "Listing published",
+          "successDescription": "An AI-optimized listing was pushed to your store."
+        },
+        "applyOptimization": {
+          "title": "Close the gap automatically",
+          "description": "ecentic rewrites this listing from the winning competitors' strengths and publishes it straight to your store — no manual edits.",
+          "reviewQueue": "Review queue",
+          "optimizePublish": "Optimize & publish"
+        },
+        "battlecard": {
+          "empty": "No competitor data available. Run a scan to generate battlecards.",
+          "headToHead": "Head-to-Head Results",
+          "vsProduct": "vs. {title}",
+          "won": "Won",
+          "lost": "Lost",
+          "noWins": "No wins recorded",
+          "noLosses": "No losses recorded",
+          "kicker": "01 — Battlecards"
+        },
+        "audit": {
+          "aiContentQuality": "AI Content Quality",
+          "brandPositioning": "Brand Positioning",
+          "positioning": "positioning"
+        },
+        "optimizeTab": {
+          "title": "Optimize Listing",
+          "description": "Category-aware content-quality scores for the fields AI agents read — plus how this listing is positioned for its audience.",
+          "completeness": "Completeness:",
+          "currentListing": "02 — Current listing",
+          "characters": "{count} characters",
+          "noDescription": "No description found",
+          "liveOnStore": "Live on store",
+          "whatAgentsRead": "what AI agents actually read",
+          "enableAppEmbed": "Enable app embed",
+          "structuredDataHelp": "The app embed already renders default structured data from the live product content. Publishing writes this AI-optimized version to the {metafield} metafield, and the embed renders it instead of the default.",
+          "publishStructuredData": "Publish optimized structured data",
+          "publishing": "Publishing…",
+          "noStructuredDataYet": "No optimized structured data yet — the app embed renders the default markup built from the live product content. Generate an AI-optimized version to override it.",
+          "generateJsonLd": "Generate optimized JSON-LD",
+          "generating": "Generating…",
+          "generationFailed": "Generation failed",
+          "structuredDataPublished": "Optimized structured data published",
+          "structuredDataPublishedDescription": "Written to the ecentic.structured_data metafield — the app embed now renders it in place of the default product markup. If the embed is off, enable it in the theme editor and press Save.",
+          "openThemeEditor": "Open theme editor",
+          "listingAuditKicker": "01 — AI Listing Audit",
+          "status": {
+            "optimizedByEcentic": "Optimized by ecentic",
+            "ecenticStandard": "ecentic standard",
+            "storeDefault": "Store default",
+            "optimizedEmbedOff": "Optimized — embed off",
+            "noStructuredData": "No structured data",
+            "pageUnreachable": "Page unreachable"
+          },
+          "embedNotice": {
+            "embedOffTitle": "App embed is off",
+            "embedOffText": "Optimized structured data is published for this product, but the “Agentic structured data” app embed is off — no ecentic markup reaches the page. Enabling it once applies to every product in the store.",
+            "missingTitle": "No structured data on the page",
+            "missingText": "AI agents see no machine-readable product data. Enable the “Agentic structured data” app embed — one toggle adds structured data for every product in the store.",
+            "storeDefaultTitle": "Store default markup",
+            "storeDefaultText": "Only the theme's own markup is live — usually thin (no GTIN, one offer, no variant detail). Enable the ecentic app embed (applies to all products), then publish optimized structured data below for this product.",
+            "standardTitle": "Using ecentic standard markup",
+            "standardText": "The app embed renders default structured data from the live product content. Publish the AI-optimized version below to give agents richer, more competitive markup for this product."
+          }
+        }
+      },
+      "add": {
+        "title": "Add Products",
+        "description": "Bring more of your catalog in from the platform this store is connected to. Everything you add here belongs to this store only.",
+        "backToProducts": "Back to Products",
+        "catalogNeverSynced": "never synced",
+        "catalogSynced": "synced {time}",
+        "platformSync": {
+          "pullFrom": "Pull from {platform}",
+          "description": "Re-reads {domain} and adds every product that isn't in this store yet. Products already here are refreshed in place, so their scans and optimizations are kept.",
+          "syncing": "Syncing…",
+          "syncNow": "Sync now",
+          "toastLoading": "Syncing products…",
+          "toastSuccess": "Catalog synced",
+          "reconnectRequired": "Reconnect required",
+          "syncFailed": "Sync failed",
+          "reconnect": "Reconnect"
+        },
+        "csv": {
+          "title": "Upload a CSV",
+          "description": "This store was built from a file rather than a connected platform, so there's nothing upstream to pull from — upload another CSV to add to it.",
+          "fieldLabel": "Product CSV",
+          "importing": "Importing…",
+          "importCsv": "Import CSV",
+          "noFileTitle": "No file selected",
+          "noFileDescription": "Upload a CSV file first.",
+          "noProductsTitle": "No products found",
+          "noProductsDescription": "Check that your CSV has a header row with a title or name column.",
+          "importFailed": "Import failed",
+          "importSuccess": "{count, plural, one {# product imported} other {# products imported}}"
+        },
+        "platforms": {
+          "feed": "your product feed"
+        }
+      },
+      "insights": {
+        "scanResults": "Scan Results",
+        "simulationsCount": "{count} simulations",
+        "impact": "Impact",
+        "simsLost": "of sims lost",
+        "missingAttributes": "Missing Attributes",
+        "noFindingTitle": "No finding recorded for this scan.",
+        "noFindingHint": "Rerun the scan to see insights.",
+        "fixThis": "Fix this"
+      }
+    }
+  }
+}

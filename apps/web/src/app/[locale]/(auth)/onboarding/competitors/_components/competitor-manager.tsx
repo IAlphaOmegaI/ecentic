@@ -10,6 +10,7 @@ import {
   TabsPanel,
 } from "@zenncore/web/components/tabs";
 import { useLinkStatus } from "next/link";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { ReactNode } from "react";
 import { Motion } from "@/components/motion";
@@ -23,10 +24,6 @@ export namespace CompetitorManager {
     children: ReactNode;
     products: string[];
     productNames: string[];
-    /**
-     * Competitors are store-scoped, so every tab writes against this store —
-     * resolved from the selected products, not from "whichever store is newest".
-     */
     store: string;
   };
 }
@@ -37,6 +34,8 @@ export const CompetitorManager = ({
   productNames,
   store,
 }: CompetitorManager.Props) => {
+  const translate = useTranslations("onboarding.competitors");
+
   return (
     <Motion.Stagger className="flex h-full flex-1 flex-col overflow-hidden">
       <div className="border-accent-foreground border-b px-8">{children}</div>
@@ -51,18 +50,16 @@ export const CompetitorManager = ({
             <TabsList className={"w-full rounded-none border-x-0 border-t-0"}>
               <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
               <Tab value="auto" className={"flex-1"}>
-                Auto-detect
+                {translate("tabs.auto")}
               </Tab>
               <Tab value="url" className={"flex-1"}>
-                Paste URLs
+                {translate("tabs.url")}
               </Tab>
               <Tab value="search" className={"flex-1"}>
-                Search Brand
+                {translate("tabs.search")}
               </Tab>
             </TabsList>
 
-            {/* keepMounted: a detection stream in progress must survive
-                switching to another tab instead of being torn down/restarted. */}
             <TabsPanel
               value="auto"
               keepMounted
@@ -138,9 +135,11 @@ export const CompetitorManager = ({
 
 const Skip = () => {
   const { pending } = useLinkStatus();
+  const translate = useTranslations("onboarding.competitors.action");
+
   return (
     <>
-      Skip — auto-match{" "}
+      {translate("skip")}{" "}
       {pending ? (
         <LoaderIcon className="size-4 animate-spin" />
       ) : (
@@ -152,6 +151,8 @@ const Skip = () => {
 
 const Back = () => {
   const { pending } = useLinkStatus();
+  const translate = useTranslations("onboarding.competitors.action");
+
   return (
     <>
       {pending ? (
@@ -159,16 +160,18 @@ const Back = () => {
       ) : (
         <ArrowLeftIcon className="size-4" />
       )}
-      Back
+      {translate("back")}
     </>
   );
 };
 
 const Next = () => {
   const { pending } = useLinkStatus();
+  const translate = useTranslations("onboarding.competitors.action");
+
   return (
     <>
-      Next: Review
+      {translate("nextReview")}
       {pending ? (
         <LoaderIcon className="size-4 animate-spin" />
       ) : (

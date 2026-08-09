@@ -3,7 +3,11 @@ import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import {
+  getMessages,
+  getTranslations,
+  setRequestLocale,
+} from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
@@ -28,11 +32,6 @@ import { ValidatorSection } from "./_components/validator-section";
 
 type UcpValidatorPageProps = {
   params: Promise<{ locale: string }>;
-};
-
-type FaqItem = {
-  question: string;
-  answer: string;
 };
 
 export const generateMetadata = async ({
@@ -65,9 +64,10 @@ export default async ({ params }: UcpValidatorPageProps) => {
   setRequestLocale(locale);
 
   const translate = await getTranslations({ locale, namespace: "ucpValidator" });
+  const messages = await getMessages();
   const description = translate("meta.description");
-  const assurances = translate.raw("hero.assurances") as readonly string[];
-  const faq = translate.raw("faq.items") as readonly FaqItem[];
+  const assurances = messages.ucpValidator.hero.assurances;
+  const faq = messages.ucpValidator.faq.items;
   const pagePath = localizePath("/ucp-validator", locale);
 
   const structuredData = [

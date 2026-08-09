@@ -9,7 +9,7 @@ import {
   SquareChartIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { BookCall } from "@/components/cal";
 import { Plus } from "@/components/plus";
 
@@ -22,21 +22,11 @@ const capabilityIcons = [
   BellIcon,
 ] as const;
 
-type CapabilityItem = {
-  title: string;
-  description: string;
-  features: readonly string[];
-  highlighted?: boolean;
-};
-
 export const Capabilities = async () => {
   const translate = await getTranslations("enterprise");
-  const items = translate.raw("capabilities.items") as readonly CapabilityItem[];
-  const scopingSteps = translate.raw("capabilities.scoping.steps") as readonly {
-    step: string;
-    title: string;
-    description: string;
-  }[];
+  const messages = await getMessages();
+  const items = messages.enterprise.capabilities.items;
+  const scopingSteps = messages.enterprise.capabilities.scoping.steps;
 
   return (
     <section className="border-accent-foreground border-b">
@@ -67,7 +57,7 @@ export const Capabilities = async () => {
                 key={capability.title}
                 className={cn(
                   "flex flex-col p-6 md:min-h-96 md:p-8",
-                  capability.highlighted
+                  "highlighted" in capability && capability.highlighted
                     ? "bg-primary text-white"
                     : "bg-background-rich text-foreground",
                 )}
@@ -75,7 +65,7 @@ export const Capabilities = async () => {
                 <IconComponent
                   className={cn(
                     "size-8",
-                    capability.highlighted ? "text-white" : "text-primary",
+                    "highlighted" in capability && capability.highlighted ? "text-white" : "text-primary",
                   )}
                 />
                 <h3 className="mt-4 font-body font-medium text-2xl">
@@ -84,7 +74,7 @@ export const Capabilities = async () => {
                 <p
                   className={cn(
                     "mt-2 font-body font-light text-lg",
-                    capability.highlighted
+                    "highlighted" in capability && capability.highlighted
                       ? "text-white"
                       : "text-foreground-dimmed",
                   )}
@@ -94,7 +84,7 @@ export const Capabilities = async () => {
                 <div
                   className={cn(
                     "mt-6 flex flex-col gap-2.5 border-t pt-6 md:mt-auto",
-                    capability.highlighted
+                    "highlighted" in capability && capability.highlighted
                       ? "border-white/20"
                       : "border-accent-foreground",
                   )}
@@ -104,7 +94,7 @@ export const Capabilities = async () => {
                       <CheckIcon
                         className={cn(
                           "mt-1 size-4 shrink-0",
-                          capability.highlighted
+                          "highlighted" in capability && capability.highlighted
                             ? "text-white/80"
                             : "text-primary",
                         )}
@@ -112,7 +102,7 @@ export const Capabilities = async () => {
                       <p
                         className={cn(
                           "font-body font-light",
-                          capability.highlighted
+                          "highlighted" in capability && capability.highlighted
                             ? "text-white"
                             : "text-foreground-dimmed",
                         )}

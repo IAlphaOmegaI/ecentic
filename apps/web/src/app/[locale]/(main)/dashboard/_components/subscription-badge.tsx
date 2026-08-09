@@ -1,6 +1,6 @@
+import { getTranslations } from "next-intl/server";
 import type * as Subscription from "@/server/app/subscription";
 
-// Statuses where the subscription still grants plan access (mirrors billing-section).
 const ACTIVE_STATUSES = new Set([
   "active",
   "trialing",
@@ -9,22 +9,22 @@ const ACTIVE_STATUSES = new Set([
   "paused",
 ]);
 
-// Active but the payment needs the user's attention.
 const ATTENTION_STATUSES = new Set(["past_due", "unpaid"]);
 
-// Short suffix appended to the plan name when the status isn't a clean "active".
-const STATUS_NOTE: Record<string, string> = {
-  trialing: "Trial",
-  past_due: "Past due",
-  unpaid: "Unpaid",
-  paused: "Paused",
-};
+const STATUS_NOTE_KEYS = {
+  trialing: "trial",
+  past_due: "pastDue",
+  unpaid: "unpaid",
+  paused: "paused",
+} as const;
 
-export const SubscriptionBadge = ({
+export const SubscriptionBadge = async ({
   subscription,
 }: {
   subscription: Subscription.Type | null;
 }) => {
+  const translate = await getTranslations("dashboard.subscription");
+
   const isPayg = subscription?.billingMode === "payg";
   const plan = subscription?.plan ?? null;
   const status = subscription?.status ?? null;
@@ -36,9 +36,13 @@ export const SubscriptionBadge = ({
     hasActivePlan && (status === "active" || status === "trialing");
 
   const label = (() => {
-    if (isPayg) return "Pay-as-you-go";
-    if (!hasActivePlan) return "No plan";
-    const note = status ? STATUS_NOTE[status] : undefined;
+    if (isPayg) return translate("payAsYouGo");
+    if (!hasActivePlan) return translate("noPlan");
+    const noteKey =
+      status && status in STATUS_NOTE_KEYS
+        ? STATUS_NOTE_KEYS[status as keyof typeof STATUS_NOTE_KEYS]
+        : undefined;
+    const note = noteKey ? translate(`status.${noteKey}`) : undefined;
     return note ? `${plan} · ${note}` : plan;
   })();
 

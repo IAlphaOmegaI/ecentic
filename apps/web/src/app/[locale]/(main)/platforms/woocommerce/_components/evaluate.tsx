@@ -1,21 +1,13 @@
 import { cn } from "@zenncore/utils";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { ItemCycle } from "@/app/[locale]/(main)/_components/item-cycle";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
 
-type Situation = {
-  title: string;
-  description: string;
-  fit: string;
-  covered: boolean;
-};
-
 export const Evaluate = async () => {
   const translate = await getTranslations("woocommerce");
-  const situations = translate.raw(
-    "evaluate.situations",
-  ) as readonly Situation[];
+  const messages = await getMessages();
+  const situations = messages.woocommerce.evaluate.situations;
 
   return (
     <section className="scroll-mt-24 border-accent-foreground border-b">

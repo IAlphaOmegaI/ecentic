@@ -1,4 +1,5 @@
 import { unwrapResult } from "@zenncore/utils";
+import { getTranslations } from "next-intl/server";
 import { connection } from "next/server";
 import * as Tracking from "@/server/app/tracking";
 import { Environment } from "@/server/utils/environment";
@@ -12,6 +13,7 @@ export const AgentVisitsPanel = async ({
 }) => {
   await connection();
   const { store } = await params;
+  const translate = await getTranslations("dashboard.agentVisits");
   const [summary, timeSeries] = await Promise.all([
     unwrapResult(
       Tracking.getAgentTrafficSummary(Environment.SERVER, { store }),
@@ -26,19 +28,18 @@ export const AgentVisitsPanel = async ({
     <div className="bg-background-rich p-4">
       <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <SectionKicker>04 — Agent Traffic</SectionKicker>
+          <SectionKicker>{translate("kicker")}</SectionKicker>
           <p className="mt-2 font-semibold text-foreground-rich text-lg">
-            Visits by agent (last 30 days)
+            {translate("title")}
           </p>
           <p className="mt-1 text-foreground-dimmed text-sm">
-            From your ScriptTag tracker, browser-visible AI and referral signals
-            only.
+            {translate("description")}
           </p>
         </div>
         <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
           {summary.total30d}
           <span className="ml-1.5 font-medium text-foreground-dimmed text-xl">
-            total
+            {translate("total")}
           </span>
         </p>
       </div>
@@ -47,9 +48,7 @@ export const AgentVisitsPanel = async ({
 
       {summary.byAgentType.length === 0 ? (
         <p className="text-foreground-dimmed text-sm">
-          No AI agent visits recorded yet. Traffic appears when shoppers arrive
-          via AI referrers or user-agents your tracker recognizes, or when probe
-          mode is enabled.
+          {translate("states.empty")}
         </p>
       ) : (
         <ul className="flex flex-col gap-3">

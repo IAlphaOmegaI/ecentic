@@ -5,7 +5,7 @@ import {
   ShieldCheckIcon,
   SquareChartIcon,
 } from "@zenncore/icons";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
 
@@ -16,14 +16,10 @@ const layerIcons = [
   ShieldCheckIcon,
 ] as const;
 
-type Layer = {
-  title: string;
-  description: string;
-};
-
 export const Layers = async () => {
   const translate = await getTranslations("productListings");
-  const items = translate.raw("layers.items") as readonly Layer[];
+  const messages = await getMessages();
+  const items = messages.productListings.layers.items;
   const layers = items.map((item, index) => ({
     ...item,
     icon: layerIcons[index] as Icon,

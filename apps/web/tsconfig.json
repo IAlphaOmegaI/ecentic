@@ -6,12 +6,15 @@
         "name": "next"
       }
     ],
+    "allowArbitraryExtensions": true,
+    "resolveJsonModule": true,
     "paths": {
       "@/*": ["./src/*"],
       "@/public/*": ["./public/*"]
     }
   },
   "include": [
+    "global.ts",
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",

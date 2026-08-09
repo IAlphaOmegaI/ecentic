@@ -1,25 +1,17 @@
 import { ArrowRightIcon, CheckIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
 import { ANONYMOUS_MESSAGE_LIMIT } from "@/server/app/intelligence/ucp/playground-limit";
+import enMessages from "../../../../../../messages/en.json";
 import { PlaygroundArt, ScanArt, UcpArt } from "./resource-art";
 
-type ToolCopy = {
-  number: string;
-  category: string;
-  title: string;
-  description: string;
-  features: readonly string[];
-  action: {
-    primary: string;
-  };
-};
+type ToolItem = (typeof enMessages)["resources"]["tools"]["items"][number];
 
-type Tool = ToolCopy & {
+type Tool = ToolItem & {
   href: string;
   highlighted?: boolean;
   art: "scan" | "ucp" | "playground";
@@ -51,9 +43,10 @@ const ToolArt = ({
 
 export const Tools = async () => {
   const translate = await getTranslations("resources");
-  const items = translate.raw("tools.items") as readonly ToolCopy[];
+  const messages = await getMessages();
+  const items = messages.resources.tools.items;
 
-  const tools: readonly Tool[] = items.map((item, index) => ({
+  const tools = items.map((item, index) => ({
     ...item,
     href: toolHrefs[index] ?? "/sign-up",
     highlighted: index === 0,

@@ -9,6 +9,7 @@ import {
 import { cn, unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import { Link } from "@/i18n/navigation";
+import { getTranslations } from "next-intl/server";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { formatPrice } from "@/lib/currency";
@@ -61,6 +62,8 @@ const ProductDetailContent = async ({
 }: Pick<PageProps<"/dashboard/[store]/products/[id]">, "params">) => {
   await connection();
   const { id, store } = await params;
+  const translate = await getTranslations("dashboard.products.detail");
+  const shared = await getTranslations("dashboard.shared");
   const data = await unwrapResult(
     Product.getDetail(Environment.SERVER, { id, store }),
   );
@@ -84,7 +87,7 @@ const ProductDetailContent = async ({
   );
 
   const subtitle = [
-    product.sku && `SKU: ${product.sku}`,
+    product.sku && shared("sku", { sku: product.sku }),
     product.price && formatPrice(product.price, product.currency),
   ]
     .filter(Boolean)
@@ -99,8 +102,10 @@ const ProductDetailContent = async ({
           <div>
             <StatusPill tone={latestSimulatedAt ? "success" : "neutral"}>
               {latestSimulatedAt
-                ? `Live — updated ${formatRelativeTime(latestSimulatedAt)}`
-                : "No simulations run yet"}
+                ? shared("status.liveProductUpdated", {
+                    time: formatRelativeTime(latestSimulatedAt),
+                  })
+                : translate("noSimulationsYet")}
             </StatusPill>
             <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
               {product.title}
@@ -114,13 +119,13 @@ const ProductDetailContent = async ({
               render={<Link href={`/dashboard/${store}/products`} />}
             >
               <ChevronLeftIcon className="size-4" />
-              Back to Products
+              {translate("backToProducts")}
             </Button>
             <Button
               color="primary"
               render={<Link href={`/dashboard/${store}/optimize`} />}
             >
-              Optimize
+              {translate("optimize")}
               <ArrowRightIcon className="size-4" />
             </Button>
           </div>
@@ -134,7 +139,7 @@ const ProductDetailContent = async ({
           <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
             <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
               <StatLabel
-                label="Win Rate"
+                label={translate("winRate")}
                 icon={<GaugeIcon className="size-7.5 text-primary" />}
               />
               <div>
@@ -160,7 +165,10 @@ const ProductDetailContent = async ({
                     />
                   </div>
                   <p className="mt-2 text-foreground-dimmed text-xs">
-                    {totalWins} wins · {simulations.length} simulations
+                    {translate("winsSimulations", {
+                      wins: totalWins,
+                      simulations: simulations.length,
+                    })}
                   </p>
                 </div>
               </div>
@@ -168,7 +176,7 @@ const ProductDetailContent = async ({
 
             <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
               <StatLabel
-                label="Data Quality"
+                label={translate("dataQuality")}
                 icon={<BullseyeIcon className="size-7.5 text-error" />}
               />
               <div>
@@ -194,7 +202,7 @@ const ProductDetailContent = async ({
                     />
                   </div>
                   <p className="mt-2 text-foreground-dimmed text-xs">
-                    listing completeness score
+                    {translate("listingCompleteness")}
                   </p>
                 </div>
               </div>
@@ -202,7 +210,7 @@ const ProductDetailContent = async ({
 
             <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
               <StatLabel
-                label="Simulations Run"
+                label={translate("simulationsRun")}
                 icon={<RadarIcon className="size-7.5 text-warning" />}
               />
               <div>
@@ -210,15 +218,16 @@ const ProductDetailContent = async ({
                   {simulations.length}
                 </p>
                 <p className="mt-3 text-foreground-dimmed text-xs">
-                  across {competitors.length} competitor
-                  {competitors.length === 1 ? "" : "s"}
+                  {translate("acrossCompetitors", {
+                    count: competitors.length,
+                  })}
                 </p>
               </div>
             </div>
 
             <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
               <StatLabel
-                label="Best Model"
+                label={translate("bestModel")}
                 icon={<AwardIcon className="size-7.5 text-success" />}
               />
               {models.length > 0 ? (
@@ -235,13 +244,13 @@ const ProductDetailContent = async ({
                     </span>
                   </p>
                   <p className="mt-3 text-foreground-dimmed text-xs">
-                    {bestModel.label} win rate
+                    {translate("modelWinRate", { model: bestModel.label })}
                   </p>
                 </div>
               ) : (
                 <div className="flex flex-col items-center gap-2 pb-4">
                   <p className="font-light text-foreground-dimmed text-sm">
-                    No data yet
+                    {shared("stats.noDataYet")}
                   </p>
                 </div>
               )}

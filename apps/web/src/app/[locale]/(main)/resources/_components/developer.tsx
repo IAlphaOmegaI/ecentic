@@ -1,17 +1,12 @@
 import { ArrowRightIcon, CodeIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
 import { seo } from "@/lib/seo";
 import { LlmsArt } from "./resource-art";
-
-type EndpointCopy = {
-  title: string;
-  description: string;
-};
 
 const endpointRoutes = [
   { href: "/llms.txt", path: "/llms.txt" },
@@ -31,9 +26,8 @@ const endpointRoutes = [
 
 export const Developer = async () => {
   const translate = await getTranslations("resources");
-  const endpoints = translate.raw(
-    "developer.endpoints",
-  ) as readonly EndpointCopy[];
+  const messages = await getMessages();
+  const endpoints = messages.resources.developer.endpoints;
 
   return (
     <section className="scroll-mt-24 border-accent-foreground border-b">

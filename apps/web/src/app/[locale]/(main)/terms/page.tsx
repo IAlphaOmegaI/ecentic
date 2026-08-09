@@ -8,7 +8,7 @@ import {
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { Footer } from "@/components/footer";
 import { JsonLd } from "@/components/json-ld";
 import { Navbar } from "@/components/navbar";
@@ -30,21 +30,6 @@ import { PageBanner } from "../_components/page-banner";
 
 type TermsPageProps = {
   params: Promise<{ locale: string }>;
-};
-
-type LastUpdated = {
-  display: string;
-  iso: string;
-};
-
-type SummaryItem = {
-  title: string;
-  description: string;
-};
-
-type Section = {
-  title: string;
-  content: string;
 };
 
 const summaryIcons = [
@@ -75,28 +60,16 @@ export default async ({ params }: TermsPageProps) => {
   setRequestLocale(locale);
 
   const translate = await getTranslations({ locale, namespace: "legal" });
+  const messages = await getMessages();
   const description = translate("termsAndConditions.meta.description");
-  const lastUpdated = translate.raw(
-    "termsAndConditions.lastUpdated",
-  ) as LastUpdated;
-  const assurances = translate.raw(
-    "termsAndConditions.hero.assurances",
-  ) as readonly string[];
-  const summary = translate.raw(
-    "termsAndConditions.summary",
-  ) as readonly SummaryItem[];
-  const summarySection = translate.raw(
-    "termsAndConditions.summarySection",
-  ) as {
-    number: string;
-    title: string;
-    description: string;
-  };
-  const sections = translate.raw("termsAndConditions.sections") as Record<
-    string,
-    Section
+  const lastUpdated = messages.legal.termsAndConditions.lastUpdated;
+  const assurances = messages.legal.termsAndConditions.hero.assurances;
+  const summary = messages.legal.termsAndConditions.summary;
+  const summarySection = messages.legal.termsAndConditions.summarySection;
+  const sections = messages.legal.termsAndConditions.sections;
+  const sectionNumbers = Object.keys(sections).sort() as Array<
+    keyof typeof sections
   >;
-  const sectionNumbers = Object.keys(sections).sort();
 
   const structuredData = [
     {

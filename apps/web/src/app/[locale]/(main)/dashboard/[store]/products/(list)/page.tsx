@@ -11,6 +11,7 @@ import { cn, unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import type { SearchParamsProps } from "@zenncore/web/types";
 import { Link } from "@/i18n/navigation";
+import { getTranslations } from "next-intl/server";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { formatRelativeTime } from "@/lib/date";
@@ -46,11 +47,11 @@ import {
 
 type StoreParams = PageProps<"/dashboard/[store]/products">["params"];
 
-const emptyStatCards = [
-  { label: "Total Products", icon: RadarIcon },
-  { label: "Average Win Rate", icon: GaugeIcon },
-  { label: "High Performers", icon: TrendUpIcon },
-  { label: "Needs Attention", icon: BullseyeIcon },
+const emptyStatCardKeys = [
+  "totalProducts",
+  "averageWinRate",
+  "highPerformers",
+  "needsAttention",
 ] as const;
 
 /**
@@ -61,6 +62,7 @@ const emptyStatCards = [
 const EmbedBanner = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
+  const translate = await getTranslations("dashboard.products.embedBanner");
   const result = await Product.getStoreEmbedStatus(Environment.SERVER, {
     store,
   });
@@ -72,12 +74,10 @@ const EmbedBanner = async ({ params }: { params: StoreParams }) => {
       <div className="relative mx-8 flex flex-col gap-3 border-warning/30 bg-warning/5 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="font-medium text-sm text-warning">
-            Structured data is not reaching your product pages
+            {translate("title")}
           </p>
           <p className="mt-0.5 max-w-2xl text-foreground-dimmed text-sm">
-            The “Agentic structured data” app embed is off, so AI agents don't
-            see machine-readable data on your products. Enabling it once adds
-            structured data to every product in this store.
+            {translate("description")}
           </p>
         </div>
         <Button
@@ -91,7 +91,7 @@ const EmbedBanner = async ({ params }: { params: StoreParams }) => {
             />
           }
         >
-          Enable app embed
+          {translate("action")}
           <ArrowRightIcon className="size-4" />
         </Button>
       </div>
@@ -152,6 +152,7 @@ export default ({
 const LastScanned = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
+  const translate = await getTranslations("dashboard.shared.status");
   const data = await unwrapResult(
     Product.gatherIntelligence(Environment.SERVER, { store }),
   );
@@ -159,8 +160,10 @@ const LastScanned = async ({ params }: { params: StoreParams }) => {
   return (
     <StatusPill tone={data.scan?.updatedAt ? "success" : "neutral"}>
       {data.scan?.updatedAt
-        ? `Live — last scanned ${formatRelativeTime(data.scan.updatedAt)}`
-        : "No scans run yet"}
+        ? translate("liveLastScanned", {
+            time: formatRelativeTime(data.scan.updatedAt),
+          })
+        : translate("noScansYet")}
     </StatusPill>
   );
 };
@@ -168,27 +171,42 @@ const LastScanned = async ({ params }: { params: StoreParams }) => {
 const StatCards = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
+  const translate = await getTranslations("dashboard.products.stats");
+  const shared = await getTranslations("dashboard.shared.stats");
   const data = await unwrapResult(
     Product.gatherIntelligence(Environment.SERVER, { store }),
   );
   const { products } = data;
 
+  const statIcons = {
+    totalProducts: RadarIcon,
+    averageWinRate: GaugeIcon,
+    highPerformers: TrendUpIcon,
+    needsAttention: BullseyeIcon,
+  } as const;
+
   if (products.length === 0)
     return (
       <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
-        {emptyStatCards.map(({ label, icon: Icon }) => (
-          <div
-            key={label}
-            className="relative flex h-44 flex-col justify-between bg-background-rich p-5"
-          >
-            <StatLabel label={label} icon={<Icon className="size-7.5" />} />
-            <div className="flex flex-col items-center gap-2 pb-4">
-              <p className="font-light text-foreground-dimmed text-sm">
-                No data yet
-              </p>
+        {emptyStatCardKeys.map((key) => {
+          const Icon = statIcons[key];
+          return (
+            <div
+              key={key}
+              className="relative flex h-44 flex-col justify-between bg-background-rich p-5"
+            >
+              <StatLabel
+                label={translate(key)}
+                icon={<Icon className="size-7.5" />}
+              />
+              <div className="flex flex-col items-center gap-2 pb-4">
+                <p className="font-light text-foreground-dimmed text-sm">
+                  {shared("noDataYet")}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     );
 
@@ -233,7 +251,7 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
     <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
       <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
         <StatLabel
-          label="Total Products"
+          label={translate("totalProducts")}
           icon={<RadarIcon className="size-7.5 text-warning" />}
         />
         <div>
@@ -251,7 +269,7 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
               />
             </div>
             <p className="mt-2 text-foreground-dimmed text-xs">
-              {100 - products.length} slots remaining
+              {shared("slotsRemaining", { count: 100 - products.length })}
             </p>
           </div>
         </div>
@@ -259,7 +277,7 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
 
       <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
         <StatLabel
-          label="Average Win Rate"
+          label={translate("averageWinRate")}
           icon={<GaugeIcon className="size-7.5 text-primary" />}
         />
         <div>
@@ -286,13 +304,12 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
                 {trend}%
               </span>
               <span className="text-foreground-dimmed text-xs">
-                vs last scan
+                {shared("vsLastScan")}
               </span>
             </p>
           ) : (
             <p className="mt-3 text-foreground-dimmed text-xs">
-              across {products.length}{" "}
-              {products.length === 1 ? "product" : "products"}
+              {shared("acrossProducts", { count: products.length })}
             </p>
           )}
         </div>
@@ -300,7 +317,7 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
 
       <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
         <StatLabel
-          label="High Performers"
+          label={translate("highPerformers")}
           icon={<TrendUpIcon className="size-7.5 text-success" />}
         />
         <div>
@@ -308,14 +325,14 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
             {highPerformers}
           </p>
           <p className="mt-3 text-foreground-dimmed text-xs">
-            products with {"≥"}60% win rate
+            {translate("highPerformersHint")}
           </p>
         </div>
       </div>
 
       <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
         <StatLabel
-          label="Needs Attention"
+          label={translate("needsAttention")}
           icon={<BullseyeIcon className="size-7.5 text-error" />}
         />
         <div>
@@ -323,7 +340,7 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
             {needsAttention}
           </p>
           <p className="mt-3 text-foreground-dimmed text-xs">
-            products below 30% win rate
+            {translate("needsAttentionHint")}
           </p>
         </div>
       </div>
@@ -334,6 +351,8 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
 const Performance = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
+  const translate = await getTranslations("dashboard.products");
+  const shared = await getTranslations("dashboard.shared");
   const [{ products }, scans] = await Promise.all([
     unwrapResult(Product.gatherIntelligence(Environment.SERVER, { store })),
     unwrapResult(Scan.getLatest(Environment.SERVER, { store })),
@@ -396,17 +415,17 @@ const Performance = async ({ params }: { params: StoreParams }) => {
 
   const segments = [
     {
-      label: "Good (≥75%)",
+      label: translate("quality.good"),
       count: products.filter((p) => p.quality >= 75).length,
       color: "bg-success",
     },
     {
-      label: "Fair (50-74%)",
+      label: translate("quality.fair"),
       count: products.filter((p) => p.quality >= 50 && p.quality < 75).length,
       color: "bg-warning",
     },
     {
-      label: "Poor (<50%)",
+      label: translate("quality.poor"),
       count: products.filter((p) => p.quality < 50).length,
       color: "bg-error",
     },
@@ -431,13 +450,13 @@ const Performance = async ({ params }: { params: StoreParams }) => {
       <div className="flex flex-col bg-background-rich xl:col-span-2">
         <div className="flex items-start justify-between p-4">
           <div>
-            <SectionKicker>01 — Performance</SectionKicker>
+            <SectionKicker>{shared("sections.performance")}</SectionKicker>
             <p className="mt-2 font-semibold text-foreground-rich text-lg">
-              Win Rate by Model
+              {shared("performance.winRateByModel")}
             </p>
           </div>
           <p className="text-foreground-dimmed text-sm">
-            {totalSimulations} total simulations
+            {shared("count.totalSimulations", { count: totalSimulations })}
           </p>
         </div>
 
@@ -467,13 +486,13 @@ const Performance = async ({ params }: { params: StoreParams }) => {
             color="accent"
             render={<Link href={`/dashboard/${store}/optimize`} />}
           >
-            Optimizations
+            {shared("action.optimizations")}
           </Button>
           <Button
             color="primary"
             render={<Link href={`/dashboard/${store}/ucp`} />}
           >
-            UCP Manager <ArrowRightIcon className="size-4" />
+            {shared("action.ucpManager")} <ArrowRightIcon className="size-4" />
           </Button>
         </div>
       </div>
@@ -490,6 +509,7 @@ const Products = async ({
 }) => {
   await connection();
   const { store } = await params;
+  const translate = await getTranslations("dashboard.shared");
   const { page, size } = await extractPaginationParams(searchParams);
   const { items, pagination } = await unwrapResult(
     Product.paginateWithIntelligence(Environment.SERVER, {
@@ -508,10 +528,10 @@ const Products = async ({
       pageCount={pageCount}
       pageSize={pagination.size}
       pageIndex={pagination.page}
-      kicker="02 — Catalog"
+      kicker={translate("sections.catalog")}
       action={
         <p className="text-foreground-dimmed text-sm">
-          {pagination.total} products
+          {translate("count.products", { count: pagination.total })}
         </p>
       }
     />
@@ -521,6 +541,7 @@ const Products = async ({
 const AgentTraffic = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
+  const translate = await getTranslations("dashboard.shared");
   const [summary, timeSeries] = await Promise.all([
     unwrapResult(
       Tracking.getAgentTrafficSummary(Environment.SERVER, { store }),
@@ -536,18 +557,18 @@ const AgentTraffic = async ({ params }: { params: StoreParams }) => {
     <div className="bg-background-rich">
       <div className="flex flex-col gap-6 p-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <SectionKicker>03 — Traffic</SectionKicker>
+          <SectionKicker>{translate("sections.traffic")}</SectionKicker>
           <p className="mt-2 font-semibold text-foreground-rich text-lg">
-            AI Agent Visits to Products
+            {translate("agentVisits.title")}
           </p>
           <p className="mt-1 text-foreground-dimmed text-sm">
-            Browser-visible AI and referral signals from your ScriptTag tracker.
+            {translate("agentVisits.description")}
           </p>
         </div>
         <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
           {summary.total30d}
           <span className="ml-2 font-medium text-foreground-dimmed text-sm">
-            last 30d
+            {translate("count.last30d")}
           </span>
         </p>
       </div>
@@ -556,8 +577,7 @@ const AgentTraffic = async ({ params }: { params: StoreParams }) => {
 
       {summary.byAgentType.length === 0 ? (
         <p className="px-4 pb-4 text-foreground-dimmed text-sm">
-          No AI agent visits recorded yet. Traffic appears when shoppers arrive
-          via AI referrers or user-agents your tracker recognizes.
+          {translate("agentVisits.empty")}
         </p>
       ) : (
         <ul className="flex flex-col gap-3 px-4 pb-4">
@@ -602,6 +622,7 @@ const Insights = async ({ params }: { params: StoreParams }) => {
 
 const AddProductsAction = async ({ params }: { params: StoreParams }) => {
   const { store } = await params;
+  const translate = await getTranslations("dashboard.products.action");
 
   return (
     <Button
@@ -609,7 +630,7 @@ const AddProductsAction = async ({ params }: { params: StoreParams }) => {
       render={<Link href={`/dashboard/${store}/products/add`} />}
     >
       <PlusIcon className="size-4" />
-      Add Products
+      {translate("addProducts")}
     </Button>
   );
 };

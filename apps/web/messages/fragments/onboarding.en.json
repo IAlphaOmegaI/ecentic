@@ -1,0 +1,511 @@
+{
+  "onboarding": {
+    "layout": {
+      "steps": {
+        "catalog": "Catalog",
+        "products": "Select Products",
+        "competitors": "Competitors",
+        "scan": "Run Scan"
+      },
+      "stepProgress": "Step {current} of {total}",
+      "sidebar": {
+        "connect": {
+          "headline": { "line1": "Connect your", "line2": "catalog." },
+          "points": [
+            "Paste your store URL and we sync your products instantly",
+            "Works with Shopify, WooCommerce, and custom feeds",
+            "Your catalog stays live and always up to date"
+          ]
+        },
+        "shopify": {
+          "headline": { "line1": "Shopify", "line2": "OAuth." },
+          "points": [
+            "One-click authorization — we never see your password",
+            "Read-only access to your product catalog",
+            "Products stay in sync automatically"
+          ]
+        },
+        "woocommerce": {
+          "headline": { "line1": "WooCommerce", "line2": "API keys." },
+          "points": [
+            "Generate a REST API key in WooCommerce (read/write to publish listing updates from ecentic, or read-only for sync only)",
+            "Paste three fields and we handle the rest",
+            "Your credentials are encrypted and stored securely"
+          ]
+        },
+        "feed": {
+          "headline": { "line1": "Product", "line2": "feed." },
+          "points": [
+            "Works with Google Shopping XML and JSON feeds",
+            "We auto-detect the format and parse every product",
+            "Re-sync anytime to pick up changes"
+          ]
+        },
+        "products": {
+          "headline": { "line1": "Pick your", "line2": "best." },
+          "points": [
+            "Choose which products to run through AI agent simulations",
+            "Focus on your top sellers or most competitive SKUs",
+            "You can add more products any time"
+          ]
+        },
+        "competitors": {
+          "headline": { "line1": "Know your", "line2": "rivals." },
+          "points": [
+            "Add competitors so we benchmark you head-to-head",
+            "See exactly who agents pick over you and why",
+            "Track the gap and close it faster"
+          ]
+        },
+        "scan": {
+          "headline": { "line1": "See who's", "line2": "winning." },
+          "points": [
+            "ChatGPT, Claude, Gemini & Perplexity simulate real shopping queries",
+            "We score every product against your competitors",
+            "You'll know exactly what to fix before leaving this page"
+          ]
+        }
+      }
+    },
+    "connect": {
+      "page": {
+        "title": "Connect your store",
+        "description": "Start winning agent carts in 2 minutes."
+      },
+      "footer": {
+        "settingsHint": "You can connect more stores later in Settings.",
+        "backToPlatforms": "Back to platforms"
+      },
+      "action": {
+        "skip": "Skip for now"
+      },
+      "badges": {
+        "recommended": "Recommended",
+        "linkNow": "link now",
+        "comingSoon": "Coming soon"
+      },
+      "platforms": [
+        {
+          "id": "shopify",
+          "name": "Shopify",
+          "description": "Connect via OAuth"
+        },
+        {
+          "id": "woocommerce",
+          "name": "WooCommerce",
+          "description": "API key connection"
+        },
+        {
+          "id": "bigcommerce",
+          "name": "BigCommerce",
+          "description": "OAuth — full sync"
+        },
+        {
+          "id": "amazon",
+          "name": "Amazon Seller",
+          "description": "SP-API OAuth"
+        },
+        {
+          "id": "feed",
+          "name": "Custom Feed",
+          "description": "XML or JSON feed URL"
+        },
+        {
+          "id": "csv",
+          "name": "CSV Upload",
+          "description": "Drag & drop or browse"
+        }
+      ],
+      "shopify": {
+        "title": "Connect Shopify",
+        "description": "OAuth connection — we never see your Shopify password.",
+        "howItWorks": "How it works?",
+        "steps": [
+          "Enter your store domain below — this is the yourstore.myshopify.com URL you use to log into Shopify admin.",
+          "You'll be redirected to Shopify to authorize read-only access to your product catalog. We only request product scopes — no orders, no customers.",
+          "After you approve, Shopify allows ecentic to read and write your store's product data."
+        ],
+        "fields": {
+          "shop": {
+            "label": "Shop Domain",
+            "placeholder": "yourstore.myshopify.com",
+            "validation": "Shop domain is required",
+            "description": {
+              "beforeExample": "The subdomain you use to access Shopify admin. If your admin URL is",
+              "exampleAdmin": "acmestore.myshopify.com/admin",
+              "middle": ", enter",
+              "exampleHandle": "acmestore",
+              "orFull": "or the full",
+              "exampleDomain": "acmestore.myshopify.com"
+            }
+          }
+        },
+        "action": {
+          "primary": "Connect to Shopify",
+          "connecting": "Connecting..."
+        },
+        "errors": {
+          "generic": "We couldn't finish connecting your Shopify store. Please try again.",
+          "missing_parameters": "Shopify's response was missing required parameters. Start the connection again.",
+          "invalid_state": "The connection attempt expired or was already used. Start it again.",
+          "invalid_hmac": "We couldn't verify Shopify's response. Start the connection again.",
+          "already_connected": "This store is already connected to another écentic account. Sign in with that account, or contact support to move it."
+        },
+        "toast": {
+          "invalidDomain": {
+            "title": "Enter your myshopify.com domain",
+            "description": "OAuth needs your Shopify admin domain (e.g. yourstore.myshopify.com) or store handle — not a custom storefront URL."
+          },
+          "connectionFailed": "Connection failed",
+          "connected": {
+            "title": "Store connected",
+            "description": "Your catalog is synced and ready."
+          }
+        }
+      },
+      "woocommerce": {
+        "title": "Connect WooCommerce",
+        "description": "One-click via the ecentic plugin, or manually with API keys.",
+        "oneClick": {
+          "title": "One-click connect",
+          "recommended": "(recommended)",
+          "description": "Enter your store URL and approve the connection from your WordPress admin — no API keys to copy. You'll need the free écentic for WooCommerce plugin installed and activated first; if it isn't there yet, we'll show you how to add it. This also enables hosted UCP, making your store transactable by AI shopping agents.",
+          "placeholder": "https://yourstore.com",
+          "action": {
+            "connect": "Connect via plugin",
+            "tryAgain": "Try again"
+          },
+          "installRequired": {
+            "title": "We couldn't find the écentic plugin on {store}.",
+            "thatStore": "that store",
+            "steps": [
+              "Install écentic for WooCommerce from your WordPress admin and activate it.",
+              "Either come back here and press Connect again, or open WooCommerce → UCP (AI Agents) in wp-admin and click Connect to ecentic.ai."
+            ],
+            "openPluginScreen": "Open my plugin screen"
+          },
+          "errors": {
+            "missing_store_url": "Enter your store's URL to start the connection.",
+            "bad_store_url": "That doesn't look like a reachable public store URL. Check it and try again.",
+            "invalid_state": "The connection attempt expired or was already used. Start it again.",
+            "token_exchange": "The store approved the connection but the key exchange failed. Try reconnecting from the plugin's settings page."
+          }
+        },
+        "manual": {
+          "title": "Or connect manually — where to find your API keys",
+          "steps": [
+            "Log into your WordPress admin panel and go to WooCommerce → Settings → Advanced → REST API.",
+            "Click Add key. Give it a description like \"ecentic\", set permissions to Read/Write if you want ecentic to push listing changes, or Read for sync-only, then click Generate.",
+            "Copy the Consumer key (starts with ck_) and Consumer secret (starts with cs_). You won't be able to see the secret again, so paste it here right away."
+          ]
+        },
+        "fields": {
+          "domain": {
+            "label": "Store URL",
+            "placeholder": "https://yourstore.com",
+            "validation": "Store URL is required",
+            "description": {
+              "before": "The public URL of your WooCommerce store — for example",
+              "example": "https://acmestore.com",
+              "after": ". This is the homepage, not the WordPress admin URL."
+            }
+          },
+          "consumerKey": {
+            "label": "Consumer Key",
+            "placeholder": "ck_...",
+            "validation": "Consumer key is required",
+            "description": "The key WooCommerce generated for you. It always starts with ck_ followed by a long alphanumeric string. We use this to authenticate API requests (catalog sync needs read access; publishing optimised listings from the dashboard needs read/write on the key)."
+          },
+          "consumerSecret": {
+            "label": "Consumer Secret",
+            "placeholder": "cs_...",
+            "validation": "Consumer secret is required",
+            "description": "The secret that pairs with the key — starts with cs_. This is only shown once when you generate the key, so make sure to copy it before leaving WooCommerce."
+          }
+        },
+        "action": {
+          "primary": "Connect WooCommerce",
+          "connecting": "Connecting..."
+        },
+        "toast": {
+          "connectionFailed": "Connection failed",
+          "connected": {
+            "title": "Store connected",
+            "description": "Your catalog is synced and ready."
+          }
+        }
+      },
+      "feed": {
+        "title": "Connect a Product Feed",
+        "description": "We'll fetch and parse your feed automatically.",
+        "formats": {
+          "title": "Supported formats",
+          "googleShopping": {
+            "label": "Google Shopping XML",
+            "description": "— the most common format. If you use Google Merchant Center, you already have one. It's an RSS/Atom feed where each <item> contains g:title, g:price, g:image_link, etc."
+          },
+          "json": {
+            "label": "JSON",
+            "description": "— a simple array of product objects. We look for title, price, image, and url fields. Nested under a products or items key is fine too."
+          }
+        },
+        "fields": {
+          "feedUrl": {
+            "label": "Feed URL",
+            "placeholder": "https://yourstore.com/products.xml",
+            "validation": "Enter a valid URL",
+            "description": {
+              "before": "The publicly accessible URL that serves your product feed. For example:",
+              "example": "https://yourstore.com/feed/products.xml",
+              "after": "The URL must be reachable from the internet — localhost or private-network URLs won't work. We auto-detect whether it's XML or JSON based on the content."
+            }
+          }
+        },
+        "action": {
+          "primary": "Import Feed",
+          "importing": "Importing..."
+        },
+        "toast": {
+          "connectionFailed": "Connection failed",
+          "connected": {
+            "title": "Feed connected",
+            "description": "Importing products — this may take a moment."
+          }
+        }
+      },
+      "csv": {
+        "title": "Import a CSV",
+        "description": "Upload a spreadsheet export from any platform.",
+        "columns": {
+          "title": "Expected columns",
+          "required": "title or name — required",
+          "optional": "description, price, sku, image, url, id — optional",
+          "hint": "Column names are case-insensitive. Extra columns are ignored."
+        },
+        "fields": {
+          "file": {
+            "label": "Upload a CSV file",
+            "description": "Upload a CSV file to import your products."
+          }
+        },
+        "action": {
+          "primary": "Import CSV",
+          "importing": "Importing..."
+        },
+        "toast": {
+          "noFile": {
+            "title": "No file selected",
+            "description": "Upload a CSV file first."
+          },
+          "noProducts": {
+            "title": "No products found",
+            "description": "Check that your CSV has a header row with a title or name column."
+          },
+          "importFailed": "Import failed",
+          "imported": {
+            "title": "{count, plural, one {# product imported} other {# products imported}}",
+            "description": "Your catalog is ready."
+          }
+        }
+      }
+    },
+    "products": {
+      "empty": {
+        "title": "No products found",
+        "description": "Connect a store and sync your products to get started.",
+        "action": "Connect a store and sync products"
+      },
+      "page": {
+        "title": "Choose products to scan",
+        "freeLimit": "Free: 10 products",
+        "description": "Select the products you want to test against AI shopping agents. We recommend starting with your best sellers."
+      },
+      "selection": "{selected} of {limit} products selected",
+      "table": {
+        "headers": ["Product", "Price", "Currency", "Status", "Quality"]
+      },
+      "states": {
+        "active": "Active",
+        "draft": "Draft"
+      },
+      "quality": {
+        "good": "Good",
+        "partial": "Partial",
+        "poor": "Poor"
+      },
+      "action": {
+        "back": "Back",
+        "next": "Next: Add Competitors"
+      }
+    },
+    "competitors": {
+      "page": {
+        "title": "Who are your competitors?",
+        "description": "We'll test your products head-to-head against these competitors in AI agent simulations."
+      },
+      "tabs": {
+        "auto": "Auto-detect",
+        "url": "Paste URLs",
+        "search": "Search Brand"
+      },
+      "action": {
+        "back": "Back",
+        "skip": "Skip — auto-match",
+        "nextReview": "Next: Review"
+      },
+      "autoDetect": {
+        "title": "Auto-detect competitors",
+        "description": "We'll analyze your products and use AI to find the most relevant competitors in your market.",
+        "action": "Auto-detect competitors",
+        "scanning": "Live Intelligence Scan",
+        "complete": "Scan Complete",
+        "initializing": "Initializing intelligence scan...",
+        "analyzing": "Analyzing market signals",
+        "finishedIn": "Finished in {elapsed}",
+        "runAgain": "Run Again",
+        "foundLog": "Found · {title}",
+        "identified": "{count, plural, one {# competitor identified} other {# competitors identified}}",
+        "errors": {
+          "failed": "Detection failed. Please try again.",
+          "noneFound": "No new competitors found. Please try again."
+        },
+        "toast": {
+          "failed": "Detection failed",
+          "noneFound": {
+            "title": "No competitors found",
+            "description": "We couldn't identify new competitors. Please try again."
+          },
+          "found": {
+            "title": "Competitors found",
+            "description": "{count, plural, one {Found # competitor product.} other {Found # competitor products.}}"
+          }
+        }
+      },
+      "search": {
+        "label": "Search by brand or category",
+        "placeholder": "e.g. SoundMax, wireless earbuds under $150...",
+        "clearAria": "Clear search",
+        "action": {
+          "search": "Search",
+          "searching": "Searching..."
+        },
+        "productHint": "Or search one of your products",
+        "empty": "Search for a brand or product above to find competitors",
+        "loading": "Searching competitive landscape...",
+        "toast": {
+          "failed": "Search failed",
+          "found": {
+            "title": "Products found",
+            "description": "Found {count} competitor products."
+          }
+        }
+      },
+      "url": {
+        "label": "Paste competitor product URLs (one per line)",
+        "placeholder": "https://amazon.com/dp/B0XXXXX\nhttps://competitorstore.com/products/example\nhttps://amazon.com/dp/B0YYYYY",
+        "placeholderMore": "Paste more URLs to extract...",
+        "action": {
+          "extract": "Extract Product Data",
+          "extracting": "Extracting product data...",
+          "extractShort": "Extract",
+          "extractingShort": "Extracting..."
+        },
+        "toast": {
+          "failed": "Extraction failed",
+          "success": {
+            "title": "Products extracted",
+            "description": "Extracted {count} products from URLs."
+          }
+        }
+      },
+      "results": {
+        "countCompetitorFound": "{count, plural, one {# competitor found} other {# competitors found}}",
+        "countProductExtracted": "{count, plural, one {# product extracted} other {# products extracted}}",
+        "clear": "Clear"
+      },
+      "review": {
+        "title": "Review your competitors",
+        "description": "Select the competitors you'd like to include in your AI agent simulations.",
+        "summary": "{total} competitor products across {brands} brands — {selected} selected",
+        "table": {
+          "headers": ["Competitor", "Price", "Currency", "Brand"]
+        },
+        "action": {
+          "back": "Back",
+          "next": "Next: Run Scan"
+        }
+      }
+    },
+    "scan": {
+      "page": {
+        "title": "See who's winning.",
+        "description": "ChatGPT, Claude & Gemini will simulate real shopping queries across your products and competitors."
+      },
+      "models": [
+        { "model": "ChatGPT", "description": "Spec-focused" },
+        { "model": "Claude", "description": "Contextual analysis" },
+        { "model": "Gemini", "description": "Price-quality ratio" }
+      ],
+      "stats": {
+        "products": "Products",
+        "competitorsMatched": "Competitors matched",
+        "simulations": "Simulations to run",
+        "estimatedTime": "Estimated time"
+      },
+      "pre": {
+        "action": {
+          "back": "Back",
+          "run": "Run Simulation"
+        }
+      },
+      "running": {
+        "title": "Running simulation.",
+        "description": "ChatGPT, Claude & Gemini are comparing your products against competitors right now.",
+        "liveScan": "Live Intelligence Scan",
+        "initializing": "Initializing simulation engine...",
+        "progress": "Running simulations across {count} comparisons",
+        "status": {
+          "done": "Done",
+          "running": "Running",
+          "queued": "Queued"
+        }
+      },
+      "complete": {
+        "title": "Scan complete.",
+        "messages": {
+          "low": "AI agents are choosing your competitors most of the time. Let's fix that.",
+          "medium": "You're competitive, but there's significant room to win more. Let's see where.",
+          "high": "You're ahead of most competitors. Let's make sure you stay there."
+        },
+        "topFinding": "Top Finding",
+        "topFindingBody": "{name} loses on {attributes} — {impact} Costs you {percentage}% of simulations.",
+        "stats": {
+          "winRate": "Win rate",
+          "products": "Products",
+          "wins": "Wins",
+          "losses": "Losses"
+        },
+        "action": {
+          "back": "Back to scan",
+          "share": "Share",
+          "startFree": "Start free"
+        },
+        "toast": {
+          "paygFailed": "Could not start pay-as-you-go"
+        }
+      },
+      "toast": {
+        "failed": "Scan failed",
+        "transport": "Lost connection to the server. Reload the page to pick the scan back up.",
+        "enqueueTransport": "Couldn't reach the server to start the scan. Check your connection and try again.",
+        "simulationFailed": "Simulation failed. Please try again.",
+        "noStore": "Connect a store before running simulations.",
+        "missingData": {
+          "title": "Missing data",
+          "noProducts": "Add products before running simulations.",
+          "noCompetitors": "Select at least one competitor before running simulations."
+        }
+      }
+    }
+  }
+}

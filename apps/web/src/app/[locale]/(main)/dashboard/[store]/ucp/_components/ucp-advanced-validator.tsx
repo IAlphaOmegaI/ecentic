@@ -13,6 +13,7 @@ import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { type ReactNode, type SubmitEvent, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Motion } from "@/components/motion";
 import * as UcpAdvancedCheck from "@/server/app/intelligence/ucp/advanced-check";
 
@@ -36,12 +37,12 @@ const chipToneClasses: Record<Tone, string> = {
 
 const gradeConfig: Record<
   UcpAdvancedCheck.AdvancedGrade,
-  { tone: Tone; label: string; description: string }
+  { tone: Tone; label: string; descriptionKey: "A" | "B" | "C" | "F" }
 > = {
-  A: { tone: "success", label: "A", description: "Agent-ready" },
-  B: { tone: "warning", label: "B", description: "Mostly ready" },
-  C: { tone: "warning", label: "C", description: "Needs work" },
-  F: { tone: "danger", label: "F", description: "Critical issues" },
+  A: { tone: "success", label: "A", descriptionKey: "A" },
+  B: { tone: "warning", label: "B", descriptionKey: "B" },
+  C: { tone: "warning", label: "C", descriptionKey: "C" },
+  F: { tone: "danger", label: "F", descriptionKey: "F" },
 };
 
 const formatLatency = (ms: number | null) => (ms === null ? "—" : `${ms} ms`);
@@ -57,16 +58,21 @@ const Chip = ({ label, tone }: { label: string; tone: Tone }) => (
   </span>
 );
 
-const formatTransport = (transport: string | null) => {
+const formatTransport = (
+  transport: string | null,
+  translate: ReturnType<
+    typeof useTranslations<"dashboard.ucp.advancedValidator">
+  >,
+) => {
   switch (transport) {
     case "rest":
-      return "REST";
+      return translate("transport.rest");
     case "mcp":
-      return "MCP";
+      return translate("transport.mcp");
     case "a2a":
-      return "A2A";
+      return translate("transport.a2a");
     case "embedded":
-      return "Embedded";
+      return translate("transport.embedded");
     default:
       return transport ?? "—";
   }
@@ -76,7 +82,10 @@ const EndpointProbeRow = ({
   probe,
 }: {
   probe: UcpAdvancedCheck.EndpointProbeResult;
-}) => (
+}) => {
+  const translate = useTranslations("dashboard.ucp.advancedValidator");
+
+  return (
   <div className="grid gap-3 bg-background px-4 py-4 sm:grid-cols-[minmax(0,160px)_minmax(0,1fr)_80px_80px_80px] sm:items-center">
     <div>
       <p className="font-medium text-foreground text-sm">
@@ -99,11 +108,13 @@ const EndpointProbeRow = ({
     <div className="flex flex-wrap gap-1.5 sm:flex-col">
       <Chip
         label={
-          probe.httpStatus !== null ? `HTTP ${probe.httpStatus}` : "No response"
+          probe.httpStatus !== null
+            ? `HTTP ${probe.httpStatus}`
+            : translate("chips.noResponse")
         }
         tone={probe.reachable ? "success" : "danger"}
       />
-      <Chip label={formatTransport(probe.transport)} tone="neutral" />
+      <Chip label={formatTransport(probe.transport, translate)} tone="neutral" />
     </div>
 
     <div>
@@ -125,12 +136,13 @@ const EndpointProbeRow = ({
 
     <div>
       <Chip
-        label={probe.corsAllowed ? "CORS ✓" : "No CORS"}
+        label={probe.corsAllowed ? translate("chips.corsOk") : translate("chips.noCors")}
         tone={probe.corsAllowed ? "success" : "warning"}
       />
     </div>
   </div>
-);
+  );
+};
 
 const LIFECYCLE_STEP_ORDER: UcpAdvancedCheck.CheckoutStep[] = [
   "cors",
@@ -146,6 +158,7 @@ const LifecycleStepRow = ({
 }: {
   step: UcpAdvancedCheck.CheckoutStepResult;
 }) => {
+  const translate = useTranslations("dashboard.ucp.advancedValidator");
   const tone: Tone = step.skipped ? "skip" : step.passed ? "success" : "danger";
 
   return (
@@ -183,7 +196,13 @@ const LifecycleStepRow = ({
       </span>
 
       <Chip
-        label={step.skipped ? "Skipped" : step.passed ? "Pass" : "Fail"}
+        label={
+          step.skipped
+            ? translate("chips.skipped")
+            : step.passed
+              ? translate("chips.pass")
+              : translate("chips.fail")
+        }
         tone={tone}
       />
 
@@ -197,6 +216,7 @@ const McpToolTestRow = ({
 }: {
   test: UcpAdvancedCheck.McpToolTestResult;
 }) => {
+  const translate = useTranslations("dashboard.ucp.advancedValidator");
   const tone: Tone = !test.present
     ? "skip"
     : test.passed
@@ -240,7 +260,13 @@ const McpToolTestRow = ({
       </span>
 
       <Chip
-        label={!test.present ? "Missing" : test.passed ? "Pass" : "Fail"}
+        label={
+          !test.present
+            ? translate("chips.missing")
+            : test.passed
+              ? translate("chips.pass")
+              : translate("chips.fail")
+        }
         tone={tone}
       />
 
@@ -250,13 +276,14 @@ const McpToolTestRow = ({
 };
 
 const McpProbeRow = ({ probe }: { probe: UcpAdvancedCheck.McpProbeResult }) => {
+  const translate = useTranslations("dashboard.ucp.advancedValidator");
   const statusTone: Tone = probe.reachable ? "success" : "danger";
   const transportLabel =
     probe.transport === "http-json"
-      ? "Streamable HTTP"
+      ? translate("transport.streamableHttp")
       : probe.transport === "sse"
-        ? "SSE"
-        : "Unknown";
+        ? translate("transport.sse")
+        : translate("transport.unknown");
 
   return (
     <div className="bg-background">
@@ -278,7 +305,7 @@ const McpProbeRow = ({ probe }: { probe: UcpAdvancedCheck.McpProbeResult }) => {
             label={
               probe.httpStatus !== null
                 ? `HTTP ${probe.httpStatus}`
-                : "No response"
+                : translate("chips.noResponse")
             }
             tone={statusTone}
           />
@@ -305,16 +332,17 @@ const McpProbeRow = ({ probe }: { probe: UcpAdvancedCheck.McpProbeResult }) => {
 
         <div className="flex flex-wrap gap-1.5">
           <Chip
-            label={`${probe.tools.length} tool${probe.tools.length !== 1 ? "s" : ""} declared`}
+            label={translate("chips.toolsDeclared", { count: probe.tools.length })}
             tone={probe.tools.length > 0 ? "success" : "neutral"}
           />
-          {probe.hasSearch && <Chip label="Search" tone="success" />}
-          {probe.hasCheckout && <Chip label="Checkout" tone="success" />}
+          {probe.hasSearch && (
+            <Chip label={translate("chips.search")} tone="success" />
+          )}
+          {probe.hasCheckout && (
+            <Chip label={translate("chips.checkout")} tone="success" />
+          )}
           {probe.transport === "sse" && (
-            <Chip
-              label="SSE — tool calls require streaming client"
-              tone="warning"
-            />
+            <Chip label={translate("chips.sseWarning")} tone="warning" />
           )}
         </div>
       </div>
@@ -322,12 +350,20 @@ const McpProbeRow = ({ probe }: { probe: UcpAdvancedCheck.McpProbeResult }) => {
       {probe.toolTests.length > 0 && (
         <div className="border-accent-foreground border-t">
           <div className="hidden items-center gap-3 border-accent-foreground border-b bg-background-dimmed px-4 py-1.5 md:grid md:grid-cols-[28px_minmax(0,200px)_80px_90px_minmax(0,1fr)]">
-            {["", "Tool", "Latency", "Result", "Note"].map((h) => (
+            {(
+              [
+                "",
+                translate("headers.tool"),
+                translate("headers.latency"),
+                translate("headers.result"),
+                translate("headers.note"),
+              ] as const
+            ).map((header) => (
               <p
-                key={h}
+                key={header || "spacer"}
                 className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
               >
-                {h}
+                {header}
               </p>
             ))}
           </div>
@@ -343,6 +379,7 @@ const McpProbeRow = ({ probe }: { probe: UcpAdvancedCheck.McpProbeResult }) => {
 };
 
 const A2aProbeRow = ({ probe }: { probe: UcpAdvancedCheck.A2aProbeResult }) => {
+  const translate = useTranslations("dashboard.ucp.advancedValidator");
   const statusTone: Tone = probe.reachable ? "success" : "danger";
 
   return (
@@ -364,11 +401,11 @@ const A2aProbeRow = ({ probe }: { probe: UcpAdvancedCheck.A2aProbeResult }) => {
           label={
             probe.httpStatus !== null
               ? `HTTP ${probe.httpStatus}`
-              : "No response"
+              : translate("chips.noResponse")
           }
           tone={statusTone}
         />
-        <Chip label="A2A" tone="neutral" />
+        <Chip label={translate("transport.a2a")} tone="neutral" />
         {probe.agentName && <Chip label={probe.agentName} tone="neutral" />}
         <span
           className={cn(
@@ -388,12 +425,18 @@ const A2aProbeRow = ({ probe }: { probe: UcpAdvancedCheck.A2aProbeResult }) => {
 
       <div className="flex flex-wrap gap-1.5">
         <Chip
-          label={probe.agentCardFound ? "Agent card found" : "No agent card"}
+          label={
+            probe.agentCardFound
+              ? translate("chips.agentCardFound")
+              : translate("chips.noAgentCard")
+          }
           tone={probe.agentCardFound ? "success" : "warning"}
         />
         <Chip
           label={
-            probe.ucpExtensionPresent ? "UCP extension" : "No UCP extension"
+            probe.ucpExtensionPresent
+              ? translate("chips.ucpExtension")
+              : translate("chips.noUcpExtension")
           }
           tone={probe.ucpExtensionPresent ? "success" : "warning"}
         />
@@ -409,6 +452,7 @@ const GradeCard = ({
   grade: UcpAdvancedCheck.AdvancedGrade;
   detail: string;
 }) => {
+  const translate = useTranslations("dashboard.ucp.advancedValidator");
   const config = gradeConfig[grade];
 
   return (
@@ -423,7 +467,7 @@ const GradeCard = ({
       </div>
       <div>
         <p className="font-semibold text-base text-foreground-rich">
-          {config.description}
+          {translate(`grades.${config.descriptionKey}.description`)}
         </p>
         <p className="mt-1 text-foreground-dimmed text-sm">{detail}</p>
       </div>
@@ -448,24 +492,32 @@ const AdvancedResults = ({
 }: {
   result: UcpAdvancedCheck.AdvancedCheckResult;
 }) => {
+  const translate = useTranslations("dashboard.ucp.advancedValidator");
+  const endpointHeaders = [
+    translate("headers.service"),
+    translate("headers.endpoint"),
+    translate("headers.status"),
+    translate("headers.latency"),
+    translate("headers.cors"),
+  ] as const;
+
   const sections: ProbeSection[] = [
     result.endpointProbes.length > 0 && {
       key: "endpoints",
-      title: "Service endpoint probes",
-      description:
-        "Live HEAD request to each service endpoint declared in the UCP profile. Latency is measured from this server.",
+      title: translate("sections.endpoints.title"),
+      description: translate("sections.endpoints.description"),
       failCount: result.endpointProbes.filter((probe) => !probe.reachable)
         .length,
       total: result.endpointProbes.length,
       body: (
         <>
           <div className="hidden border-accent-foreground border-b bg-background-dimmed px-4 py-2 sm:grid sm:grid-cols-[minmax(0,160px)_minmax(0,1fr)_80px_80px_80px]">
-            {["Service", "Endpoint", "Status", "Latency", "CORS"].map((h) => (
+            {endpointHeaders.map((header) => (
               <p
-                key={h}
+                key={header}
                 className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
               >
-                {h}
+                {header}
               </p>
             ))}
           </div>
@@ -482,9 +534,8 @@ const AdvancedResults = ({
     },
     result.mcpProbes.length > 0 && {
       key: "mcp",
-      title: "MCP endpoints",
-      description:
-        "Probes MCP service endpoints via JSON-RPC initialize + tools/list. Shows the protocol version, server identity, and every tool the agent can call.",
+      title: translate("sections.mcp.title"),
+      description: translate("sections.mcp.description"),
       failCount: result.mcpProbes.filter((probe) => !probe.reachable).length,
       total: result.mcpProbes.length,
       body: (
@@ -500,9 +551,8 @@ const AdvancedResults = ({
     },
     result.a2aProbes.length > 0 && {
       key: "a2a",
-      title: "A2A endpoints",
-      description:
-        "Probes Agent-to-Agent service endpoints. Checks reachability, agent card presence at /.well-known/agent-card.json, and UCP extension header.",
+      title: translate("sections.a2a.title"),
+      description: translate("sections.a2a.description"),
       failCount: result.a2aProbes.filter((probe) => !probe.reachable).length,
       total: result.a2aProbes.length,
       body: (
@@ -518,9 +568,8 @@ const AdvancedResults = ({
     },
     result.checkoutLifecycle.length > 0 && {
       key: "checkout",
-      title: "Checkout lifecycle",
-      description:
-        "Simulates the cart → checkout session flow per UCP REST spec: POST /carts → PUT /carts/{id} → POST /checkout-sessions → complete → cancel. 400/422 responses are expected for probe inputs.",
+      title: translate("sections.checkout.title"),
+      description: translate("sections.checkout.description"),
       failCount: result.checkoutLifecycle.filter(
         (step) => !step.skipped && !step.passed,
       ).length,
@@ -546,9 +595,11 @@ const AdvancedResults = ({
       {sections.length === 0 ? (
         <div className="border-accent-foreground border-t bg-background px-5 py-5">
           <p className="font-light text-foreground-dimmed text-sm">
-            No service endpoints with URLs found in the UCP profile. Add{" "}
-            <span className="font-mono text-foreground">endpoint</span> fields
-            to your services to enable live testing.
+            {translate("emptyEndpoints")}
+            <span className="font-mono text-foreground">
+              {translate("emptyEndpointsField")}
+            </span>
+            {translate("emptyEndpointsSuffix")}
           </p>
         </div>
       ) : (
@@ -579,8 +630,10 @@ const AdvancedResults = ({
                   <Chip
                     label={
                       section.failCount > 0
-                        ? `${section.failCount} failing`
-                        : `${section.total} OK`
+                        ? translate("chips.failing", {
+                            count: section.failCount,
+                          })
+                        : translate("chips.ok", { total: section.total })
                     }
                     tone={section.failCount > 0 ? "danger" : "success"}
                   />
@@ -601,6 +654,7 @@ const AdvancedResults = ({
 };
 
 export const UcpAdvancedValidator = () => {
+  const translate = useTranslations("dashboard.ucp.advancedValidator");
   const toast = useToastManager();
   const [domain, setDomain] = useState("");
   const [result, setResult] =
@@ -611,7 +665,7 @@ export const UcpAdvancedValidator = () => {
 
     if (!response.success) {
       toast.add({
-        title: "Advanced check failed",
+        title: translate("toast.failed"),
         description: response.error,
         type: "error",
       });
@@ -631,15 +685,13 @@ export const UcpAdvancedValidator = () => {
       <div className="grid lg:grid-cols-2">
         <div className="px-6 py-6 sm:px-8 sm:py-8">
           <span className="font-medium text-[11px] text-foreground-dimmed uppercase tracking-[0.1em]">
-            Advanced testing
+            {translate("kicker")}
           </span>
           <h2 className="mt-2 font-bold text-foreground-rich text-xl tracking-[-0.02em]">
-            Endpoint & lifecycle tests
+            {translate("title")}
           </h2>
           <p className="mt-1.5 font-light text-foreground-dimmed text-sm">
-            Probes all service endpoints declared in the profile and simulates
-            the full AI agent checkout lifecycle — Create → Update → Complete →
-            Cancel.
+            {translate("description")}
           </p>
         </div>
 
@@ -649,7 +701,7 @@ export const UcpAdvancedValidator = () => {
               htmlFor="ucp-advanced-domain"
               className="block font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
             >
-              Domain
+              {translate("fields.domain.label")}
             </label>
             <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-stretch">
               <TextField
@@ -659,7 +711,7 @@ export const UcpAdvancedValidator = () => {
               >
                 <TextFieldInput
                   id="ucp-advanced-domain"
-                  placeholder="yourdomain.com"
+                  placeholder={translate("fields.domain.placeholder")}
                 />
               </TextField>
               <Button
@@ -668,12 +720,11 @@ export const UcpAdvancedValidator = () => {
                 disabled={isChecking || !domain.trim()}
                 className="w-full shrink-0 sm:w-auto"
               >
-                {isChecking ? "Testing…" : "Run advanced tests"}
+                {isChecking ? translate("action.running") : translate("action.primary")}
               </Button>
             </div>
             <p className="mt-2 font-light text-foreground-dimmed text-sm">
-              Makes live HTTP requests to the merchant server — probe inputs may
-              create test carts.
+              {translate("hint")}
             </p>
           </form>
         </div>

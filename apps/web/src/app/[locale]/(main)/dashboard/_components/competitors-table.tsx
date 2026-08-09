@@ -15,6 +15,7 @@ import {
   DataTableProvider,
 } from "@zenncore/web/components/data-table";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { usePaginationChangeHandler } from "@/hooks/pagination";
 import { formatRelativeTime } from "@/lib/date";
 import { SectionKicker } from "./grid";
@@ -44,10 +45,18 @@ const WinRateBar = ({ rate }: { rate: number }) => {
   );
 };
 
-const columns: ColumnDef<CompetitorsTable.Row>[] = [
+const buildColumns = (
+  fields: {
+    brand: string;
+    winRate: string;
+    simulations: string;
+    lastUpdated: string;
+  },
+  productCount: (count: number) => string,
+): ColumnDef<CompetitorsTable.Row>[] => [
   {
     accessorKey: "brand",
-    header: "Brand",
+    header: fields.brand,
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
         <Avatar className="size-9 rounded-md bg-background-dimmed">
@@ -64,8 +73,7 @@ const columns: ColumnDef<CompetitorsTable.Row>[] = [
             {row.original.brand}
           </p>
           <p className="text-foreground-dimmed text-sm">
-            {row.original.products}{" "}
-            {row.original.products === 1 ? "product" : "products"}
+            {productCount(row.original.products)}
           </p>
         </div>
       </div>
@@ -73,12 +81,12 @@ const columns: ColumnDef<CompetitorsTable.Row>[] = [
   },
   {
     accessorKey: "winRate",
-    header: "Win Rate",
+    header: fields.winRate,
     cell: ({ row }) => <WinRateBar rate={row.original.winRate} />,
   },
   {
     accessorKey: "simulations",
-    header: "Simulations",
+    header: fields.simulations,
     cell: ({ row }) => (
       <span className="text-foreground-dimmed tabular-nums">
         {row.original.simulations}
@@ -87,38 +95,35 @@ const columns: ColumnDef<CompetitorsTable.Row>[] = [
   },
   {
     accessorKey: "updatedAt",
-    header: "Last Updated",
+    header: fields.lastUpdated,
     cell: ({ row }) => (
       <span className="text-foreground-dimmed">
         {formatRelativeTime(new Date(row.original.updatedAt))}
       </span>
     ),
   },
-  // {
-  //   id: "actions",
-  //   header: undefined,
-  //   cell: ({ row }) => (
-  //     <Button
-  //
-  //       color="primary"
-  //       size="icon"
-  //       render={<Link href={`/dashboard/competitors/${row.original._id}`} />}
-  //     >
-  //       <ArrowRightIcon className="size-4" />
-  //     </Button>
-  //   ),
-  // },
 ];
 
 export const CompetitorsTable = ({
   rows,
   pageCount,
-  title = "Competitor Brands",
+  title,
   kicker,
   action,
   paginated = false,
 }: CompetitorsTable.Props) => {
+  const translate = useTranslations("dashboard.competitors.table");
   const handlePaginationChange = usePaginationChangeHandler();
+  const columns = buildColumns(
+    {
+      brand: translate("fields.brand"),
+      winRate: translate("fields.winRate"),
+      simulations: translate("fields.simulations"),
+      lastUpdated: translate("fields.lastUpdated"),
+    },
+    (count) => translate("productCount", { count }),
+  );
+  const resolvedTitle = title ?? translate("title");
 
   return (
     <>
@@ -129,7 +134,7 @@ export const CompetitorsTable = ({
               <SectionKicker>{kicker}</SectionKicker>
             </div>
           )}
-          <p className="font-semibold text-foreground-rich text-lg">{title}</p>
+          <p className="font-semibold text-foreground-rich text-lg">{resolvedTitle}</p>
         </div>
         {action}
       </div>
@@ -147,10 +152,10 @@ export const CompetitorsTable = ({
               <div className="flex flex-col items-center justify-center p-8 py-24 text-center">
                 <BoxMinusIcon className="mb-6 size-24" />
                 <p className="font-medium text-2xl text-foreground">
-                  No competitors tracked yet
+                  {translate("states.empty.primary")}
                 </p>
                 <p className="mt-1 text-foreground-dimmed text-lg">
-                  Add competitors to start analyzing your competitive landscape.
+                  {translate("states.empty.secondary")}
                 </p>
               </div>
             </DataTableEmpty>

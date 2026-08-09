@@ -1,16 +1,11 @@
 import { cn } from "@zenncore/utils";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Plus } from "@/components/plus";
 
 export const Tools = async () => {
   const translate = await getTranslations("compare");
-  const tools = translate.raw("tools.items") as readonly {
-    name: string;
-    category: string;
-    bestAt: string;
-    wrongPick: string;
-    us: boolean;
-  }[];
+  const messages = await getMessages();
+  const tools = messages.compare.tools.items;
 
   const columns = [
     { label: translate("tools.columns.tool"), className: "w-[18%]" },

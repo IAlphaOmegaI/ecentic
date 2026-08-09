@@ -9,11 +9,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@zenncore/web/components/select";
-import { useLocale, useTranslations } from "next-intl";
+import { hasLocale, useLocale, useTranslations } from "next-intl";
 import { SpainFlag } from "@/components/flags/spain-flag";
 import { UnitedStatesFlag } from "@/components/flags/united-states-flag";
 import { usePathname, useRouter } from "@/i18n/navigation";
-import type { Locale } from "@/i18n/routing";
+import { routing } from "@/i18n/routing";
 
 const OPTIONS = [
   {
@@ -32,13 +32,14 @@ export const LanguageSwitcher = ({
   variant = "nav",
   className,
 }: LanguageSwitcher.Props = {}) => {
-  const locale = useLocale() as Locale;
+  const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
   const translate = useTranslations("general");
 
-  const switchLocale = (next: Locale | null) => {
+  const switchLocale = (next: string | null) => {
     if (!next || next === locale) return;
+    if (!hasLocale(routing.locales, next)) return;
     router.replace(pathname, { locale: next });
   };
 
@@ -80,12 +81,14 @@ export const LanguageSwitcher = ({
   return (
     <Select
       value={locale}
-      onValueChange={(value) => switchLocale(value as Locale | null)}
+      onValueChange={switchLocale}
     >
       <SelectTrigger
         aria-label={translate("language.label")}
         className={cn(
-          "h-9 min-w-0 gap-1.5 border-accent-foreground bg-background/80 px-2 pr-1.5 text-sm backdrop-blur-sm",
+          "h-9 min-w-0 gap-1 border-0 bg-transparent px-1.5 pr-1 text-sm shadow-none",
+          "hover:bg-transparent focus-visible:border-0 active:bg-transparent",
+          "data-popup-open:border-0 data-popup-open:bg-transparent",
           className,
         )}
       >

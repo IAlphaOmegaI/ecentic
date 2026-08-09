@@ -6,7 +6,11 @@ import * as Authentication from "@/server/app/authentication";
 import { Environment } from "@/server/utils/environment";
 import { OnboardingLayout } from "./_components/onboarding-layout";
 
-export default async ({ children }: LayoutProps<"/onboarding">) => {
+type OnboardingLayoutProps = {
+  children: React.ReactNode;
+};
+
+export default async ({ children }: OnboardingLayoutProps) => {
   const user = await unwrapResult(
     Authentication.getCurrentUser(Environment.SERVER),
   );

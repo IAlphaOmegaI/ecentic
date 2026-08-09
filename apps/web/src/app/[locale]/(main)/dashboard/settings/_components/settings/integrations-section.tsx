@@ -6,6 +6,7 @@ import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import * as Store from "@/server/app/store";
 
 const PLATFORM_BADGE: Record<string, { label: string; className: string }> = {
@@ -20,6 +21,7 @@ const PLATFORM_BADGE: Record<string, { label: string; className: string }> = {
 };
 
 export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
+  const translate = useTranslations("dashboard.settings.integrations");
   const toast = useToastManager();
 
   const [handleSync, isSyncing] = useAsyncAction(async (store: Store.Type) => {
@@ -31,23 +33,32 @@ export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
           return result.data;
         })(),
         {
-          loading: { title: "Syncing products…", description: store.domain },
-          success: { title: "Products synced", description: store.domain },
+          loading: {
+            title: translate("toast.syncing"),
+            description: store.domain,
+          },
+          success: {
+            title: translate("toast.synced"),
+            description: store.domain,
+          },
           error: (error: unknown) => {
             const message =
-              error instanceof Error ? error.message : "Something went wrong";
+              error instanceof Error
+                ? error.message
+                : translate("toast.genericError");
             const needsReconnect =
               (store.platform === "shopify" ||
                 store.platform === "shopify-public") &&
               /reconnect your store|access token/i.test(message);
-            // Send the OAuth round-trip back to this exact screen.
             const returnTo = `${window.location.pathname}${window.location.search}`;
 
             return {
-              title: needsReconnect ? "Reconnect required" : "Sync failed",
+              title: needsReconnect
+                ? translate("toast.reconnectRequired")
+                : translate("toast.syncFailed"),
               description: message,
               ...(needsReconnect && {
-                actionLabel: "Reconnect",
+                actionLabel: translate("toast.reconnectAction"),
                 onAction: () => {
                   window.location.href = `/api/integrations/shopify/install?shop=${encodeURIComponent(store.domain)}&return_to=${encodeURIComponent(returnTo)}`;
                 },
@@ -56,7 +67,6 @@ export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
           },
         },
       )
-      // The rejection already surfaced through the error toast.
       .catch(() => null);
   });
 
@@ -65,12 +75,12 @@ export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
       <div>
         <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
           <p className="font-semibold text-foreground-rich text-sm">
-            Connected Stores
+            {translate("title")}
           </p>
         </div>
         {stores.length === 0 ? (
           <div className="p-6 text-foreground-dimmed text-sm">
-            No stores connected yet.
+            {translate("empty")}
           </div>
         ) : (
           <div className="divide-y divide-accent-foreground">
@@ -104,14 +114,16 @@ export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="rounded-full bg-success/10 px-2 py-0.5 font-semibold text-[11px] text-success uppercase tracking-[0.05em]">
-                      Connected
+                      {translate("connected")}
                     </span>
                     <Button
                       color="neutral"
                       disabled={isSyncing}
                       onClick={() => handleSync(store)}
                     >
-                      {isSyncing ? "Syncing…" : "Sync Now"}
+                      {isSyncing
+                        ? translate("action.syncing")
+                        : translate("action.sync")}
                     </Button>
                   </div>
                 </div>
@@ -127,7 +139,7 @@ export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
           className="flex w-fit items-center gap-2 rounded-md border border-accent-foreground border-dashed px-4 py-2.5 text-foreground-dimmed text-sm transition-colors duration-150 hover:border-primary hover:text-primary"
         >
           <PlusIcon className="size-4" />
-          Connect another store
+          {translate("action.connectAnother")}
         </Link>
       </div>
     </div>

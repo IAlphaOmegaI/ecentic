@@ -6,7 +6,7 @@ import {
   ShoppingCartIcon,
   UploadIcon,
 } from "@zenncore/icons";
-import { useTranslations } from "next-intl";
+import { useTranslations, useMessages } from "next-intl";
 import { VerticalStepCycle } from "@/app/[locale]/(main)/_components/vertical-step-cycle";
 
 const stepIcons = [
@@ -18,10 +18,8 @@ const stepIcons = [
 
 export const WooWorkflowCycle = () => {
   const translate = useTranslations("woocommerce");
-  const steps = translate.raw("workflow.steps") as readonly {
-    title: string;
-    description: string;
-  }[];
+  const messages = useMessages();
+  const steps = messages.woocommerce.workflow.steps;
 
   return (
     <VerticalStepCycle

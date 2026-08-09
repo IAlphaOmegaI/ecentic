@@ -3,7 +3,7 @@ import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { localizePath } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
@@ -29,11 +29,6 @@ import { Compare } from "./_components/compare";
 
 type EnterprisePageProps = {
   params: Promise<{ locale: string }>;
-};
-
-type FaqItem = {
-  question: string;
-  answer: string;
 };
 
 export const generateMetadata = async ({
@@ -63,9 +58,10 @@ export default async ({ params }: EnterprisePageProps) => {
   setRequestLocale(locale);
 
   const translate = await getTranslations({ locale, namespace: "enterprise" });
+  const messages = await getMessages();
   const description = translate("meta.description");
-  const assurances = translate.raw("hero.assurances") as readonly string[];
-  const faq = translate.raw("faq.items") as readonly FaqItem[];
+  const assurances = messages.enterprise.hero.assurances;
+  const faq = messages.enterprise.faq.items;
 
   const structuredData = [
     {

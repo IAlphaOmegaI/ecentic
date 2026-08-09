@@ -1,21 +1,12 @@
 import { ArrowRightIcon, CheckIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { BookCall } from "@/components/cal";
 import { Plus } from "@/components/plus";
 import { PricingCTA } from "./pricing-cta";
 
 type Cell = string | boolean;
-
-type CompareRow = {
-  label: string;
-  scan: Cell;
-  payg: Cell;
-  compete: Cell;
-  scale: Cell;
-  dominate: Cell;
-};
 
 const compareCtaClassName = "mx-auto w-36";
 
@@ -38,11 +29,9 @@ const CompareCell = ({ value }: { value: Cell }) => {
 
 export const Compare = async () => {
   const translate = await getTranslations("pricing");
-  const rows = translate.raw("compare.rows") as readonly CompareRow[];
-  const enterprise = translate.raw("plans.enterprise") as {
-    title: string;
-    description: string;
-  };
+  const messages = await getMessages();
+  const rows = messages.pricing.compare.rows;
+  const enterprise = messages.pricing.plans.enterprise;
 
   return (
     <section className="border-accent-foreground border-b">
