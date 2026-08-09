@@ -2,7 +2,6 @@ import { CheckIcon } from "@zenncore/icons";
 import { getTranslations } from "next-intl/server";
 import { BookingEmbed } from "@/components/cal";
 import { Plus } from "@/components/plus";
-import type { Locale } from "@/i18n/routing";
 
 const expectationKeys = ["winRate", "diagnosis", "optimizations"] as const;
 

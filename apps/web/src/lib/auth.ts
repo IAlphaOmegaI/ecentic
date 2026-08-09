@@ -5,8 +5,8 @@ import { nextCookies } from "better-auth/next-js";
 import { genericOAuth } from "better-auth/plugins";
 import { cookies } from "next/headers";
 import * as Authentication from "@/server/app/authentication";
-import { db, schema } from "@/server/database";
 import { verifyHmac } from "@/server/app/integration/shopify/hmac";
+import { db, schema } from "@/server/database";
 
 type ShopifyOnlineTokenResponse = {
   /** An API access token that can be used to access the shop's data. Your app should store the token somewhere to make authenticated requests for a shop's data. */

@@ -4,7 +4,6 @@ import * as motion from "motion/react-client";
 import { getTranslations } from "next-intl/server";
 import { Plus } from "@/components/plus";
 import { Reveal } from "@/components/reveal";
-import type { Locale } from "@/i18n/routing";
 import { Stagger } from "@/lib/animations";
 
 const testimonialKeys = ["sarah", "marcus", "priya"] as const;

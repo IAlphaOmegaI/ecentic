@@ -148,7 +148,7 @@ export const proxy = async (request: Request) => {
 //
 // Anchored with `$` so a slug that merely *contains* a dotted word — say
 // `/es/blog/why-node.js-wins` — still gets its locale rewrite.
-export const config = { 
+export const config = {
   matcher: [
     "/((?!monitoring|_next/static|_next/image|api|\\.well-known(?:/.*)?$|opengraph-image(?:-[^/]+)?$|twitter-image(?:-[^/]+)?$|.*\\.(?:js|mjs|css|txt|md|xml|json|webmanifest|ico|png|jpg|jpeg|gif|webp|avif|svg|mp4|webm|woff|woff2|ttf|otf)$).*)",
   ],
