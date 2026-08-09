@@ -1,5 +1,5 @@
 import { createHmac, randomBytes } from "node:crypto";
-import * as HTTP from "./http";
+import * as HTTP from "../../../utils/http";
 
 // RFC 3986 percent-encoding, as OAuth 1.0a requires — encodeURIComponent leaves
 // !*'() unescaped, so encode those too.

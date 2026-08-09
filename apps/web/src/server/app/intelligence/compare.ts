@@ -3,7 +3,6 @@
 import { resultify } from "@zenncore/utils";
 import { z } from "zod";
 import * as AI from "../../utils/ai";
-import { streamable } from "../../utils/ai-streamable";
 import { withContext } from "../../utils/context";
 import * as HTTP from "../../utils/http";
 
@@ -235,7 +234,7 @@ export const runCompare = withContext(
     _context,
     { urlA, urlB, prompt }: { urlA: string; urlB: string; prompt: string },
   ) => {
-    const stream = streamable<CompareEvent>(async (update) => {
+    const stream = AI.streamable<CompareEvent>(async (update) => {
       update({
         kind: "log",
         model: "System",

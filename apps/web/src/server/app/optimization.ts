@@ -11,7 +11,7 @@ import { withContext, withInstrumentation } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { DatabaseError } from "../utils/error";
 import { type Document, repository } from "../utils/repository";
-import { themeEmbedDeepLink } from "../utils/shopify";
+import { themeEmbedDeepLink } from "./integration/shopify/hmac";
 import { feedUrl } from "./feed-export";
 import * as Shopify from "./integration/shopify";
 import * as WooCommerce from "./integration/woocommerce";

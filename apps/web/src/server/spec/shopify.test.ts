@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { createHmac } from "node:crypto";
 import { resultify } from "@zenncore/utils";
-import { verifyWebhookHmac } from "./shopify";
+import { verifyWebhookHmac } from "../app/integration/shopify/hmac";
 
 const SECRET = "shpss_test_secret";
 

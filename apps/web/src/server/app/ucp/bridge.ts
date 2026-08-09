@@ -14,7 +14,7 @@
  */
 
 import * as HTTP from "@/server/utils/http";
-import { authorizedRequest } from "@/server/utils/woocommerce";
+import { authorizedRequest } from "@/server/app/integration/woocommerce/http";
 import { storefrontOrigin } from "./store-context";
 
 export type BridgeCredentials = {

@@ -16,7 +16,7 @@ import { schema } from "../../database";
 import { withAuthentication } from "../../utils/authentication";
 import { Environment } from "../../utils/environment";
 import * as HTTP from "../../utils/http";
-import { themeEmbedDeepLink } from "../../utils/shopify";
+import { themeEmbedDeepLink } from "../integration/shopify/hmac";
 import { buildGoogleFeed, extractCatalogFacts, feedUrl } from "../feed-export";
 import * as Product from "../product";
 import * as Store from "../store";

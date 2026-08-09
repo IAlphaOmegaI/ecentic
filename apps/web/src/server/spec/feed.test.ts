@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { resultify } from "@zenncore/utils";
-import { Parser, parsePrice } from "./feed";
+import { Parser, parsePrice } from "../app/parsers/feed";
 
 // ─── parsePrice ────────────────────────────────────────────────────────────
 

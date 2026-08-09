@@ -2,19 +2,19 @@
 
 import crypto from "node:crypto";
 import { resultify, unwrapResult } from "@zenncore/utils";
-import { type TransactionScope, withTransaction } from "../../database";
-import { withAuthentication } from "../../utils/authentication";
-import { withContext } from "../../utils/context";
-import { Environment } from "../../utils/environment";
-import { ConflictError, RequestError } from "../../utils/error";
-import * as HTTP from "../../utils/http";
+import { type TransactionScope, withTransaction } from "../../../database";
+import { withAuthentication } from "../../../utils/authentication";
+import { withContext } from "../../../utils/context";
+import { Environment } from "../../../utils/environment";
+import { ConflictError, RequestError } from "../../../utils/error";
+import * as HTTP from "../../../utils/http";
 import {
   normalizeHostname,
   resolveTrackerPublicOrigin,
-} from "../../utils/tracking";
-import * as Product from "../product";
-import * as Store from "../store";
-import * as StoreAccount from "../store-account";
+} from "../../../utils/tracking";
+import * as Product from "../../product";
+import * as Store from "../../store";
+import * as StoreAccount from "../../store-account";
 
 type Type = {
   id: number;

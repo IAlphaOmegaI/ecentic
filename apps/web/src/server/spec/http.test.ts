@@ -6,8 +6,8 @@ import {
   UnauthenticatedError,
   UnauthorizedError,
   ValidationError,
-} from "./error";
-import { respond } from "./http";
+} from "../utils/error";
+import { respond } from "../utils/http";
 
 const read = async (response: Response) => ({
   status: response.status,

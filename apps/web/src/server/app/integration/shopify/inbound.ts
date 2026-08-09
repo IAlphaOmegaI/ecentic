@@ -5,9 +5,9 @@ import { schema } from "@/server/database";
 import { withContext } from "@/server/utils/context";
 import { Environment } from "@/server/utils/environment";
 import { InvalidSignatureError, ValidationError } from "@/server/utils/error";
-import { verifyWebhookHmac } from "@/server/utils/shopify";
-import * as Attribution from "../billing/attribution";
-import * as Store from "../store";
+import * as Attribution from "../../billing/attribution";
+import * as Store from "../../store";
+import { verifyWebhookHmac } from "./hmac";
 
 /**
  * Shopify's mandatory GDPR topics plus `orders/paid` attribution.
@@ -162,7 +162,7 @@ export const handle = withContext(
       // headers pollute Sentry's tag cardinality.
       Sentry.captureMessage("Shopify webhook failed HMAC verification", {
         level: "warning",
-        tags: { route: "shopify-webhook" },
+        tags: { route: "shopify-inbound" },
         extra: {
           shop,
           topic,
@@ -223,5 +223,5 @@ export const handle = withContext(
         };
     }
   },
-  "ShopifyWebhook.handle",
+  "ShopifyInbound.handle",
 );
