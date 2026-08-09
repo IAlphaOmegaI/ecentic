@@ -2,7 +2,7 @@ import { ArrowRightIcon, FileIcon, SquareChartIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { ItemCycle } from "@/app/[locale]/(main)/_components/item-cycle";
 import { Plus } from "@/components/plus";
@@ -13,20 +13,6 @@ import gemini from "@/public/images/gemini.svg";
 import perplexity from "@/public/images/perplexity.svg";
 import shopify from "@/public/images/shopify.svg";
 import woocommerce from "@/public/images/woocommerce.svg";
-
-type AgentPath = {
-  title: string;
-  description: string;
-};
-
-type GuideCard = {
-  name: string;
-  title: string;
-  description: string;
-  action: {
-    primary: string;
-  };
-};
 
 const agentLogos = [chatgpt, claude, gemini, perplexity] as const;
 
@@ -49,8 +35,9 @@ const guideMeta = [
 
 export const Guides = async () => {
   const translate = await getTranslations("resources");
-  const agents = translate.raw("guides.agents") as readonly AgentPath[];
-  const cards = translate.raw("guides.cards") as readonly GuideCard[];
+  const messages = await getMessages();
+  const agents = messages.resources.guides.agents;
+  const cards = messages.resources.guides.cards;
 
   const paths = agents.map((agent, index) => ({
     ...agent,

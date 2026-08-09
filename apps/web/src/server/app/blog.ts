@@ -13,7 +13,6 @@ import { db, schema } from "../database";
 import * as AI from "../utils/ai";
 import { withContext } from "../utils/context";
 import { withCron } from "../utils/cron";
-import { Environment } from "../utils/environment";
 import { UnauthenticatedError } from "../utils/error";
 import { type Document, repository } from "../utils/repository";
 import * as BabyLoveGrowth from "./babylovegrowth";
@@ -404,75 +403,78 @@ export const listCatalogSlugs = async () => {
 };
 
 /** Cron: translate EN BLG + local posts missing a Spanish row. */
-export const translateMissingSpanish = withCron(async () => {
-  const articles = await resultify(() => BabyLoveGrowth.listArticles());
-  const blgList = articles.success ? articles.data : [];
+export const translateMissingSpanish = withCron(
+  async (_context, options: { limit?: number } = {}) => {
+    const batchLimit =
+      typeof options.limit === "number" && options.limit > 0
+        ? Math.floor(options.limit)
+        : Number.POSITIVE_INFINITY;
 
-  const existingSpanish = await resultify(() =>
-    db
-      .select({ slug: schema.blogPost.slug })
-      .from(schema.blogPost)
-      .where(eq(schema.blogPost.locale, "es")),
-  );
+    const articles = await resultify(() => BabyLoveGrowth.listArticles());
+    const blgList = articles.success ? articles.data : [];
 
-  if (!existingSpanish.success) return existingSpanish;
+    const existingSpanish = await resultify(() =>
+      db
+        .select({ slug: schema.blogPost.slug })
+        .from(schema.blogPost)
+        .where(eq(schema.blogPost.locale, "es")),
+    );
 
-  const spanishSlugs = new Set(existingSpanish.data.map((row) => row.slug));
-  const translated: string[] = [];
-  const failed: string[] = [];
+    if (!existingSpanish.success) return existingSpanish;
 
-  for (const summary of blgList) {
-    if (spanishSlugs.has(summary.slug)) continue;
+    const spanishSlugs = new Set(existingSpanish.data.map((row) => row.slug));
+    const translated: string[] = [];
+    const failed: string[] = [];
 
-    const ensured = await ensureSpanish(Environment.SERVER, {
-      slug: summary.slug,
-    });
-    if (!ensured.success || !ensured.data) {
-      failed.push(summary.slug);
-      continue;
-    }
-
-    translated.push(summary.slug);
-    spanishSlugs.add(summary.slug);
-  }
-
-  const localEnglish = await resultify(() =>
-    db
-      .select({ slug: schema.blogPost.slug })
-      .from(schema.blogPost)
-      .where(
-        and(
-          eq(schema.blogPost.locale, "en"),
-          eq(schema.blogPost.source, "local"),
-          ne(schema.blogPost.status, "draft"),
+    const localEnglish = await resultify(() =>
+      db
+        .select({ slug: schema.blogPost.slug })
+        .from(schema.blogPost)
+        .where(
+          and(
+            eq(schema.blogPost.locale, "en"),
+            eq(schema.blogPost.source, "local"),
+            ne(schema.blogPost.status, "draft"),
+          ),
         ),
-      ),
-  );
+    );
 
-  if (localEnglish.success) {
-    for (const post of localEnglish.data) {
-      if (spanishSlugs.has(post.slug)) continue;
+    const missing = [
+      ...blgList.map((summary) => summary.slug),
+      ...(localEnglish.success
+        ? localEnglish.data.map((post) => post.slug)
+        : []),
+    ].filter((slug, index, list) => {
+      if (spanishSlugs.has(slug)) return false;
+      return list.indexOf(slug) === index;
+    });
 
-      const ensured = await ensureSpanish(Environment.SERVER, {
-        slug: post.slug,
-      });
+    const batch = missing.slice(0, batchLimit);
+
+    for (const slug of batch) {
+      const ensured = await ensureSpanishCore(slug);
       if (!ensured.success || !ensured.data) {
-        failed.push(post.slug);
+        failed.push(slug);
         continue;
       }
 
-      translated.push(post.slug);
-      spanishSlugs.add(post.slug);
+      translated.push(slug);
+      spanishSlugs.add(slug);
     }
-  }
 
-  if (translated.length > 0) purgeBlogCache();
+    if (translated.length > 0) purgeBlogCache();
 
-  return {
-    success: true as const,
-    data: { translated, failed },
-  };
-}, "Blog.translateMissingSpanish");
+    return {
+      success: true as const,
+      data: {
+        translated,
+        failed,
+        remaining: Math.max(0, missing.length - batch.length),
+      },
+    };
+  },
+  "Blog.translateMissingSpanish",
+);
 
 const publishPayloadSchema = z.object({
   id: z.union([z.string(), z.number()]),

@@ -1,20 +1,11 @@
 import { ArrowRightIcon, FileIcon, SquareChartIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Plus } from "@/components/plus";
 import shopify from "@/public/images/shopify.svg";
 import woocommerce from "@/public/images/woocommerce.svg";
-
-type NextStepItem = {
-  href: string;
-  name: string;
-  title: string;
-  description: string;
-  label: string;
-  color: "primary" | "accent";
-};
 
 const nextStepMeta = [
   { logo: shopify },
@@ -25,7 +16,8 @@ const nextStepMeta = [
 
 export const NextSteps = async () => {
   const translate = await getTranslations("productListings");
-  const items = translate.raw("nextSteps.items") as readonly NextStepItem[];
+  const messages = await getMessages();
+  const items = messages.productListings.nextSteps.items;
   const nextSteps = items.map((item, index) => ({
     ...item,
     ...nextStepMeta[index],

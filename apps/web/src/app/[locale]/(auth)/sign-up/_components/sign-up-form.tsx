@@ -12,94 +12,96 @@ import {
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
+import { useMessages, useTranslations } from "next-intl";
 import Image from "next/image";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { z } from "zod";
 import { Motion } from "@/components/motion";
 import { Spring } from "@/lib/animations";
+import {
+  profileRoleValues,
+  profileSourceValues,
+} from "@/lib/auth-profile-options";
 import * as Authentication from "@/server/app/authentication";
-
-const roles = [
-  "Founder / CEO",
-  "Marketing Lead",
-  "E-commerce Manager",
-  "Agency",
-  "Developer",
-  "Other",
-];
-
-const sources = [
-  "Product Hunt",
-  "Twitter / X",
-  "LinkedIn",
-  "Google Search",
-  "Shopify App Store",
-  "Friend / Colleague",
-  "Newsletter",
-  "Podcast",
-  "Other",
-];
-
-const credentialFormConfig = {
-  fullName: field({
-    shape: "text",
-    validator: z.string().min(1),
-    label: "Full Name",
-    placeholder: "Jane Smith",
-    classList: { field: "col-span-1" },
-  }),
-  company: field({
-    shape: "text",
-    validator: z.string().min(1),
-    label: "Company / Brand",
-    placeholder: "Acme Store",
-    classList: { field: "col-span-1" },
-  }),
-  email: field({
-    shape: "text",
-    validator: z.string().email(),
-    label: "Email",
-    placeholder: "jane@acmestore.com",
-    classList: { field: "col-span-2" },
-  }),
-  password: field({
-    shape: "text",
-    type: "password",
-    validator: z.string().min(8),
-    label: "Password",
-    placeholder: "Min 8 characters",
-    classList: { field: "col-span-2" },
-  }),
-  role: field({
-    shape: "select",
-    validator: z.literal(roles),
-    label: "Your Role",
-    classList: { field: "col-span-1" },
-  }),
-  source: field({
-    shape: "select",
-    // @ts-expect-error - source is not typed
-    validator: z.literal(sources).optional(),
-    label: "How did you hear?",
-    classList: { field: "col-span-1" },
-  }),
-} satisfies GenericForm;
-
-const shopifyFormConfig = {
-  shop: field({
-    shape: "text",
-    validator: z.string().min(1, "Enter your store domain"),
-    label: "Shopify store domain",
-    placeholder: "mystore.myshopify.com",
-  }),
-} satisfies GenericForm;
 
 export const SignUpForm = () => {
   const router = useRouter();
   const toast = useToastManager();
+  const translate = useTranslations("signUp");
+  const translateAuthChrome = useTranslations("authChrome");
+  const messages = useMessages();
 
   const [provider, setProvider] = useState<"credential" | "google" | "shopify">(
     "credential",
+  );
+
+  const roleItems = messages.signUp.roles;
+  const sourceItems = messages.signUp.sources;
+
+  const credentialFormConfig = useMemo(
+    () =>
+      ({
+        fullName: field({
+          shape: "text",
+          validator: z.string().min(1),
+          label: translate("fields.fullName.label"),
+          placeholder: translate("fields.fullName.placeholder"),
+          classList: { field: "col-span-1" },
+        }),
+        company: field({
+          shape: "text",
+          validator: z.string().min(1),
+          label: translate("fields.company.label"),
+          placeholder: translate("fields.company.placeholder"),
+          classList: { field: "col-span-1" },
+        }),
+        email: field({
+          shape: "text",
+          validator: z.string().email(),
+          label: translate("fields.email.label"),
+          placeholder: translate("fields.email.placeholder"),
+          classList: { field: "col-span-2" },
+        }),
+        password: field({
+          shape: "text",
+          type: "password",
+          validator: z.string().min(8),
+          label: translate("fields.password.label"),
+          placeholder: translate("fields.password.placeholder"),
+          classList: { field: "col-span-2" },
+        }),
+        role: field({
+          shape: "select",
+          validator: z.literal(profileRoleValues),
+          label: translate("fields.role.label"),
+          items: roleItems,
+          classList: { field: "col-span-1" },
+        }),
+        source: field({
+          shape: "select",
+          // @ts-expect-error - source is not typed
+          validator: z.literal(profileSourceValues).optional(),
+          label: translate("fields.source.label"),
+          items: sourceItems,
+          classList: { field: "col-span-1" },
+        }),
+      }) satisfies GenericForm,
+    [roleItems, sourceItems, translate],
+  );
+
+  const shopifyFormConfig = useMemo(
+    () =>
+      ({
+        shop: field({
+          shape: "text",
+          validator: z
+            .string()
+            .min(1, translate("fields.shop.validation")),
+          label: translate("fields.shop.label"),
+          placeholder: translate("fields.shop.placeholder"),
+        }),
+      }) satisfies GenericForm,
+    [translate],
   );
 
   const [handleSubmit, isPending] = useAsyncAction(
@@ -128,7 +130,7 @@ export const SignUpForm = () => {
 
         if (!result.success) {
           toast.add({
-            title: "Error",
+            title: translateAuthChrome("toast.error.title"),
             description: result.error.message,
             type: "error",
           });
@@ -151,7 +153,7 @@ export const SignUpForm = () => {
 
       if (!result.success) {
         toast.add({
-          title: "Error",
+          title: translateAuthChrome("toast.error.title"),
           description: result.error.message,
           type: "error",
         });
@@ -161,6 +163,18 @@ export const SignUpForm = () => {
       router.push("/verify");
     },
   );
+
+  const submitLabel = (() => {
+    if (!isPending) {
+      return translate("action.primary");
+    }
+
+    if (provider === "credential") {
+      return translate("states.creatingAccount");
+    }
+
+    return translate("states.signingInWithGoogle");
+  })();
 
   return (
     <Motion.Stagger stagger={0.07} delay={0.18}>
@@ -182,7 +196,7 @@ export const SignUpForm = () => {
               height={16}
             />
           )}
-          Continue with Google
+          {translate("action.google")}
         </Button>
         <Button
           variant="soft"
@@ -206,7 +220,7 @@ export const SignUpForm = () => {
               className="size-[16px]"
             />
           )}
-          Continue with Shopify
+          {translate("action.shopify")}
         </Button>
         <AnimatePresence initial={false}>
           {provider === "shopify" && (
@@ -234,7 +248,7 @@ export const SignUpForm = () => {
                   ) : (
                     <ArrowRightIcon className="size-4" />
                   )}
-                  Connect Shopify store
+                  {translate("action.connectShopify")}
                 </Button>
               </InferredForm>
             </motion.div>
@@ -242,7 +256,9 @@ export const SignUpForm = () => {
         </AnimatePresence>
         <div className="relative flex items-center gap-3">
           <div className="h-px flex-1 bg-accent-foreground" />
-          <span className="font-light text-foreground-dimmed">or</span>
+          <span className="font-light text-foreground-dimmed">
+            {translateAuthChrome("divider")}
+          </span>
           <div className="h-px flex-1 bg-accent-foreground" />
         </div>
       </Motion.Item>
@@ -259,11 +275,7 @@ export const SignUpForm = () => {
             disabled={isPending}
             className="col-span-2 mt-1 flex w-full"
           >
-            {isPending
-              ? provider === "credential"
-                ? "Creating account..."
-                : "Signing in with Google..."
-              : "Create Account"}
+            {submitLabel}
             {provider === "credential" && isPending ? (
               <LoaderIcon className="size-4 animate-spin" />
             ) : (

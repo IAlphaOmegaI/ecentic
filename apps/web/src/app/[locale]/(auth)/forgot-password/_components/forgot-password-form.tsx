@@ -11,26 +11,33 @@ import {
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
+import { useTranslations } from "next-intl";
+import { useMemo, useState } from "react";
 import { z } from "zod";
 import { Motion } from "@/components/motion";
 import { Spring } from "@/lib/animations";
 import * as Authentication from "@/server/app/authentication";
 
-const config = {
-  email: field({
-    shape: "text",
-    validator: z.string().email(),
-    label: "Email",
-    placeholder: "jane@acmestore.com",
-    description: "The email associated with your account.",
-  }),
-} satisfies GenericForm;
-
 export const ForgotPasswordForm = () => {
   const toast = useToastManager();
+  const translate = useTranslations("forgotPassword");
+  const translateAuthChrome = useTranslations("authChrome");
   // Holds the address the link went to, and doubles as the "sent" flag.
   const [recipient, setRecipient] = useState<string | null>(null);
+
+  const config = useMemo(
+    () =>
+      ({
+        email: field({
+          shape: "text",
+          validator: z.string().email(),
+          label: translate("fields.email.label"),
+          placeholder: translate("fields.email.placeholder"),
+          description: translate("fields.email.description"),
+        }),
+      }) satisfies GenericForm,
+    [translate],
+  );
 
   const [handleSubmit, isPending] = useAsyncAction(
     async ({ email }: FormEntries<typeof config>) => {
@@ -38,7 +45,7 @@ export const ForgotPasswordForm = () => {
 
       if (!result.success) {
         toast.add({
-          title: "Error",
+          title: translateAuthChrome("toast.error.title"),
           description: result.error.message,
           type: "error",
         });
@@ -66,12 +73,15 @@ export const ForgotPasswordForm = () => {
           <CheckCircleIcon className="size-16 text-primary" />
           <div className="flex flex-col gap-2">
             <p className="font-medium text-2xl text-foreground">
-              Check your inbox
+              {translate("states.sent.title")}
             </p>
             <p className="font-light text-foreground-dimmed text-lg">
-              If an account exists for{" "}
-              <span className="text-foreground">{recipient}</span>, a reset link
-              is on its way. It expires in one hour.
+              {translate.rich("states.sent.description", {
+                email: recipient,
+                highlight: (chunks) => (
+                  <span className="text-foreground">{chunks}</span>
+                ),
+              })}
             </p>
           </div>
           <Button
@@ -80,7 +90,7 @@ export const ForgotPasswordForm = () => {
             type="button"
             onClick={() => setRecipient(null)}
           >
-            Use a different email
+            {translate("action.tertiary")}
           </Button>
         </motion.div>
       ) : (
@@ -104,7 +114,9 @@ export const ForgotPasswordForm = () => {
                   disabled={isPending}
                   className="mt-1 flex w-full"
                 >
-                  {isPending ? "Sending link..." : "Send reset link"}
+                  {isPending
+                    ? translate("states.sending")
+                    : translate("action.primary")}
                   {isPending ? (
                     <LoaderIcon className="size-4 animate-spin" />
                   ) : (

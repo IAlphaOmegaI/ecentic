@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
@@ -27,11 +27,6 @@ import { TechstarsRedemptionForm } from "./_components/techstars-redemption-form
 
 type TechstarsPageProps = {
   params: Promise<{ locale: string }>;
-};
-
-type FaqItem = {
-  question: string;
-  answer: string;
 };
 
 export const generateMetadata = async ({
@@ -62,8 +57,9 @@ export default async ({ params }: TechstarsPageProps) => {
   setRequestLocale(locale);
 
   const translate = await getTranslations({ locale, namespace: "techstars" });
+  const messages = await getMessages();
   const description = translate("meta.description");
-  const faq = translate.raw("faq.items") as readonly FaqItem[];
+  const faq = messages.techstars.faq.items;
   const pagePath = localizePath("/techstars", locale);
 
   const structuredData = [

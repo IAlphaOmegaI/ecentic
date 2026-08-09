@@ -8,7 +8,7 @@ import {
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/footer";
 import { JsonLd } from "@/components/json-ld";
@@ -29,21 +29,6 @@ import { renderInline } from "../_components/rich-text";
 
 type PrivacyPolicyPageProps = {
   params: Promise<{ locale: string }>;
-};
-
-type LastUpdated = {
-  display: string;
-  iso: string;
-};
-
-type SummaryItem = {
-  title: string;
-  description: string;
-};
-
-type Section = {
-  title: string;
-  content: string;
 };
 
 const summaryIcons = [
@@ -125,26 +110,16 @@ export default async ({ params }: PrivacyPolicyPageProps) => {
   setRequestLocale(locale);
 
   const translate = await getTranslations({ locale, namespace: "legal" });
+  const messages = await getMessages();
   const description = translate("privacyPolicy.meta.description");
-  const lastUpdated = translate.raw(
-    "privacyPolicy.lastUpdated",
-  ) as LastUpdated;
-  const assurances = translate.raw(
-    "privacyPolicy.hero.assurances",
-  ) as readonly string[];
-  const summary = translate.raw(
-    "privacyPolicy.summary",
-  ) as readonly SummaryItem[];
-  const summarySection = translate.raw("privacyPolicy.summarySection") as {
-    number: string;
-    title: string;
-    description: string;
-  };
-  const sections = translate.raw("privacyPolicy.sections") as Record<
-    string,
-    Section
+  const lastUpdated = messages.legal.privacyPolicy.lastUpdated;
+  const assurances = messages.legal.privacyPolicy.hero.assurances;
+  const summary = messages.legal.privacyPolicy.summary;
+  const summarySection = messages.legal.privacyPolicy.summarySection;
+  const sections = messages.legal.privacyPolicy.sections;
+  const sectionNumbers = Object.keys(sections).sort() as Array<
+    keyof typeof sections
   >;
-  const sectionNumbers = Object.keys(sections).sort();
 
   const structuredData = [
     {

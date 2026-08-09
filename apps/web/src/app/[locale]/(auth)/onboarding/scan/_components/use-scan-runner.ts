@@ -37,15 +37,10 @@ const POLL_INTERVAL = 1500;
  */
 const MAX_CONSECUTIVE_MISSES = 5;
 
-const TRANSPORT_MESSAGE =
+const DEFAULT_TRANSPORT_MESSAGE =
   "Lost connection to the server. Reload the page to pick the scan back up.";
 
-// A transport failure here does not prove the scan never started — the
-// response can be lost after the server created it. "Try again" is safe
-// regardless: `Simulation.enqueueScan` reuses this store's in-flight scan, so
-// a retry reattaches to whatever the lost response created instead of
-// stacking a duplicate.
-const ENQUEUE_TRANSPORT_MESSAGE =
+const DEFAULT_ENQUEUE_TRANSPORT_MESSAGE =
   "Couldn't reach the server to start the scan. Check your connection and try again.";
 
 /**
@@ -87,7 +82,7 @@ type ActionResult<T> =
  */
 const call = async <T>(
   action: () => Promise<ActionResult<T>>,
-  transportMessage: string = TRANSPORT_MESSAGE,
+  transportMessage: string = DEFAULT_TRANSPORT_MESSAGE,
 ): Promise<ActionResult<T>> => {
   try {
     return await action();
@@ -218,11 +213,30 @@ type ScanRunnerOptions = {
   // Scans are store-scoped; null means no store is connected yet, so nothing
   // can run or resume.
   store: string | null;
+  errorMessages?: {
+    transport: string;
+    enqueueTransport: string;
+    simulationFailed: string;
+    noStore: string;
+  };
   onError?: (text: string) => void;
 };
 
 export const useScanRunner = (options: ScanRunnerOptions) => {
-  const { store } = options;
+  const { store, errorMessages: errorMessagesOption } = options;
+  const errorMessages = {
+    transport:
+      errorMessagesOption?.transport ?? DEFAULT_TRANSPORT_MESSAGE,
+    enqueueTransport:
+      errorMessagesOption?.enqueueTransport ??
+      DEFAULT_ENQUEUE_TRANSPORT_MESSAGE,
+    simulationFailed:
+      errorMessagesOption?.simulationFailed ??
+      "Simulation failed. Please try again.",
+    noStore:
+      errorMessagesOption?.noStore ??
+      "Connect a store before running simulations.",
+  };
   const [phase, setPhase] = useState<ScanPhase>("pre");
   const [stats, setStats] = useState<Stats>(initialStats);
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -331,7 +345,10 @@ export const useScanRunner = (options: ScanRunnerOptions) => {
       const tick = async () => {
         if (inFlight.current) return;
         inFlight.current = true;
-        const progress = await call(() => Scan.getProgress({ id }));
+        const progress = await call(
+          () => Scan.getProgress({ id }),
+          errorMessages.transport,
+        );
         inFlight.current = false;
 
         // Polling stopped or restarted while this request was in the air — the
@@ -377,7 +394,7 @@ export const useScanRunner = (options: ScanRunnerOptions) => {
           case "failed":
             stopTimers();
             setPhase("pre");
-            onError.current?.("Simulation failed. Please try again.");
+            onError.current?.(errorMessages.simulationFailed);
             return;
         }
       };
@@ -389,13 +406,13 @@ export const useScanRunner = (options: ScanRunnerOptions) => {
       poller.current = setInterval(() => void tick(), POLL_INTERVAL);
       void tick();
     },
-    [ingest, stopTimers],
+    [ingest, stopTimers, errorMessages.transport, errorMessages.simulationFailed],
   );
 
   const handleRun = useCallback(
     async (selection?: { products?: string[]; competitors?: string[] }) => {
       if (!store) {
-        onError.current?.("Connect a store before running simulations.");
+        onError.current?.(errorMessages.noStore);
         return;
       }
 
@@ -423,7 +440,7 @@ export const useScanRunner = (options: ScanRunnerOptions) => {
             products: selection?.products,
             competitors: selection?.competitors,
           }),
-        { attempts: 2, transportMessage: ENQUEUE_TRANSPORT_MESSAGE },
+        { attempts: 2, transportMessage: errorMessages.enqueueTransport },
       );
 
       // The user reset or restarted while enqueue was in the air — this run's
@@ -443,7 +460,7 @@ export const useScanRunner = (options: ScanRunnerOptions) => {
       setScanId(enqueue.data.scanId);
       poll(enqueue.data.scanId);
     },
-    [poll, stopTimers, store],
+    [poll, stopTimers, store, errorMessages.enqueueTransport, errorMessages.noStore],
   );
 
   // Resume an in-flight scan for this store started in a previous visit — the

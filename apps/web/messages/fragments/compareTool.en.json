@@ -1,0 +1,52 @@
+{
+  "compareTool": {
+    "page": {
+      "title": "Compare two products",
+      "description": "See which product AI agents would recommend — and why."
+    },
+    "form": {
+      "productA": "Product A",
+      "productB": "Product B",
+      "urlHint": "Paste a product URL from any e-commerce site",
+      "placeholderA": "https://amazon.com/product/...",
+      "placeholderB": "https://shopify.com/products/...",
+      "prompt": {
+        "title": "What matters most to you?",
+        "description": "Tell us what you're looking for, and we'll compare the products based on your criteria.",
+        "placeholder": "e.g. I want the best noise-canceling headphones under $300 with long battery life..."
+      },
+      "defaultPrompt": "I want the best value for money",
+      "footer": "We'll run the comparison across 4 AI models.",
+      "action": {
+        "run": "Run comparison",
+        "comparing": "Comparing..."
+      }
+    },
+    "running": {
+      "title": "Comparing Products",
+      "modelsProgress": "{completed}/{total} models",
+      "scrapedSuccess": "Scraped both products successfully",
+      "completeLog": "Comparison complete — {count} models evaluated",
+      "footer": "Running AI comparison"
+    },
+    "results": {
+      "overallSplit": "Overall Split",
+      "byModel": "Results by Model",
+      "winner": "Winner",
+      "modelsChose": "models chose this",
+      "chose": "chose {letter}",
+      "finishedIn": "Finished in {elapsed}",
+      "action": {
+        "compareAgain": "Compare again",
+        "startOptimizing": "Start optimizing"
+      }
+    },
+    "toast": {
+      "missingUrls": {
+        "title": "Missing URLs",
+        "description": "Please enter both product URLs."
+      },
+      "failed": "Comparison failed"
+    }
+  }
+}

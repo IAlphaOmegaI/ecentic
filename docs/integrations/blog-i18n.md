@@ -51,14 +51,23 @@ The handler acknowledges immediately (200), then `Blog.ingestPublish` translates
 
 ### Backfill
 
-For articles published before the webhook was connected:
+For articles published before the webhook was connected (BLG catalog + local EN `blog_post` rows):
 
 ```bash
-curl -X POST https://<your-host>/api/cron/blog-translate-backfill \
-  -H "Authorization: Bearer $CRON_SECRET"
+# From apps/web — loops small batches against production until done
+bun run blog:backfill-spanish
+# or:
+bun scripts/backfill-blog-spanish.ts --host=https://ecentic.ai --limit=3
 ```
 
-Runs `Blog.translateMissingSpanish` (BLG + local EN posts lacking an ES row).
+Requires `CRON_SECRET` in the environment (same value as Vercel production). Each round POSTs `/api/cron/blog-translate-backfill?limit=…` so Azure translate stays under the serverless time budget.
+
+One-shot curl (may time out on a large backlog):
+
+```bash
+curl -X POST "https://ecentic.ai/api/cron/blog-translate-backfill?limit=3" \
+  -H "Authorization: Bearer $CRON_SECRET"
+```
 
 ## Env
 
@@ -75,6 +84,13 @@ AZURE_DEPLOYMENT_GPT=
 ## UI messages
 
 Catalogs live in `apps/web/messages/{en,es}.json`. Public chrome and marketing pages are wired through `next-intl` (`nav`, `footer`, `home`, `pricing`, `resources`, `howItWorks`, `features`, `productListings`, `enterprise`, `shopify`, `woocommerce`, `demo`, `support`, `legal`, `blog`, auth, dashboard shell, cookie consent, plus compare/UCP/partner landing shells). Optional fragment files under `apps/web/messages/fragments/` can be merged with `bun run` of `apps/web/scripts/merge-i18n-fragments.ts` when present.
+
+### TypeScript (next-intl AppConfig)
+
+`apps/web/global.ts` augments `next-intl` `AppConfig` with `Locale` and `Messages` from `messages/en.json`. The plugin’s `experimental.createMessagesDeclaration` regenerates `messages/en.d.json.ts` on `next typegen` / `next dev` (gitignored) so ICU argument literals stay precise.
+
+- String copy: `getTranslations` / `useTranslations` + `translate("key")` (typed keys).
+- Structured arrays/objects: `getMessages()` / `useMessages()` and read `messages.<namespace>.…` — **do not use `t.raw()`** for this (it stays `any` in next-intl even with AppConfig).
 
 ### Translation key conventions
 

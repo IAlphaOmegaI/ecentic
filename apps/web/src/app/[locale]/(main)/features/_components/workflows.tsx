@@ -1,19 +1,13 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Plus } from "@/components/plus";
 
 export const Workflows = async () => {
   const translate = await getTranslations("features");
-  const workflows = translate.raw("workflows.items") as readonly {
-    href: string;
-    eyebrow: string;
-    title: string;
-    description: string;
-    label: string;
-    color: "primary" | "accent";
-  }[];
+  const messages = await getMessages();
+  const workflows = messages.features.workflows.items;
 
   return (
     <section className="border-accent-foreground border-b">

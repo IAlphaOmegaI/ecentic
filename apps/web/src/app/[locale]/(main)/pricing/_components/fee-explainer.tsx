@@ -1,16 +1,12 @@
 import { RobotIcon, ShieldCheckIcon, ShoppingCartIcon } from "@zenncore/icons";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import { Plus } from "@/components/plus";
 
-type FeeStep = {
-  title: string;
-  description: string;
-};
-
 export const FeeExplainer = async () => {
   const translate = await getTranslations("pricing");
-  const steps = translate.raw("feeExplainer.steps") as readonly FeeStep[];
+  const messages = await getMessages();
+  const steps = messages.pricing.feeExplainer.steps;
   const labels = ["01", "02", "03", "04"] as const;
 
   return (

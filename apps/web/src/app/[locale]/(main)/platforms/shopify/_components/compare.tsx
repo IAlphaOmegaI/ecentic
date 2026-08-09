@@ -1,25 +1,17 @@
 import { CheckIcon } from "@zenncore/icons";
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { ItemCycle } from "@/app/[locale]/(main)/_components/item-cycle";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
 import shopify from "@/public/images/shopify.svg";
 
-type Trigger = {
-  title: string;
-  description: string;
-};
-
 export const Compare = async () => {
   const translate = await getTranslations("shopify");
-  const nativeStrengths = translate.raw(
-    "compare.shopifyMagic.strengths",
-  ) as readonly string[];
-  const ecenticStrengths = translate.raw(
-    "compare.ecentic.strengths",
-  ) as readonly string[];
-  const triggers = translate.raw("compare.triggers") as readonly Trigger[];
+  const messages = await getMessages();
+  const nativeStrengths = messages.shopify.compare.shopifyMagic.strengths;
+  const ecenticStrengths = messages.shopify.compare.ecentic.strengths;
+  const triggers = messages.shopify.compare.triggers;
 
   return (
     <section className="scroll-mt-24 border-accent-foreground border-b">

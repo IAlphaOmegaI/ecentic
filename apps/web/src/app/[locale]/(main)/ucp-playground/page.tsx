@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import {
+  getMessages,
+  getTranslations,
+  setRequestLocale,
+} from "next-intl/server";
 import { headers } from "next/headers";
 import { Suspense } from "react";
 import { JsonLd } from "@/components/json-ld";
@@ -23,11 +27,6 @@ import { ContentPageLayout } from "../_components/content";
 
 type UcpPlaygroundPageProps = {
   params: Promise<{ locale: string }>;
-};
-
-type FaqItem = {
-  question: string;
-  answer: string;
 };
 
 export const generateMetadata = async ({
@@ -86,17 +85,14 @@ export default async ({ params }: UcpPlaygroundPageProps) => {
     locale,
     namespace: "ucpPlayground",
   });
+  const messages = await getMessages();
   const description = translate("meta.description");
   const limit = String(ANONYMOUS_MESSAGE_LIMIT);
-  const faqItems = translate.raw("faq.items") as readonly FaqItem[];
-  const faq = faqItems.map((item) => ({
+  const faq = messages.ucpPlayground.faq.items.map((item) => ({
     question: item.question,
     answer: item.answer.replaceAll("{limit}", limit),
   }));
-  const capabilities = translate.raw("capabilities") as readonly {
-    title: string;
-    description: string;
-  }[];
+  const capabilities = messages.ucpPlayground.capabilities;
   const pagePath = localizePath("/ucp-playground", locale);
 
   const structuredData = [
