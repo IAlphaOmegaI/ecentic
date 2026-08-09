@@ -51,14 +51,23 @@ The handler acknowledges immediately (200), then `Blog.ingestPublish` translates
 
 ### Backfill
 
-For articles published before the webhook was connected:
+For articles published before the webhook was connected (BLG catalog + local EN `blog_post` rows):
 
 ```bash
-curl -X POST https://<your-host>/api/cron/blog-translate-backfill \
-  -H "Authorization: Bearer $CRON_SECRET"
+# From apps/web — loops small batches against production until done
+bun run blog:backfill-spanish
+# or:
+bun scripts/backfill-blog-spanish.ts --host=https://ecentic.ai --limit=3
 ```
 
-Runs `Blog.translateMissingSpanish` (BLG + local EN posts lacking an ES row).
+Requires `CRON_SECRET` in the environment (same value as Vercel production). Each round POSTs `/api/cron/blog-translate-backfill?limit=…` so Azure translate stays under the serverless time budget.
+
+One-shot curl (may time out on a large backlog):
+
+```bash
+curl -X POST "https://ecentic.ai/api/cron/blog-translate-backfill?limit=3" \
+  -H "Authorization: Bearer $CRON_SECRET"
+```
 
 ## Env
 
