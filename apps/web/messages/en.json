@@ -633,6 +633,35 @@
       },
       "table": {
         "title": "Product Catalog",
+        "filters": {
+          "addFilter": "Add filter",
+          "title": "Filter products",
+          "addCondition": "Add condition",
+          "removeCondition": "Remove condition",
+          "clear": "Clear",
+          "apply": "Apply filters",
+          "valuePlaceholder": "Value",
+          "missing": "{count, plural, one {# product} other {# products}} missing {field}",
+          "fields": {
+            "title": "Title",
+            "description": "Description",
+            "sku": "SKU",
+            "price": "Price",
+            "status": "Status",
+            "url": "URL"
+          },
+          "operators": {
+            "contains": "contains",
+            "notContains": "does not contain",
+            "is": "is",
+            "isNot": "is not",
+            "isEmpty": "is empty",
+            "isNotEmpty": "is not empty",
+            "equals": "equals",
+            "greaterThan": "greater than",
+            "lessThan": "less than"
+          }
+        },
         "fields": {
           "product": "Product",
           "price": "Price",

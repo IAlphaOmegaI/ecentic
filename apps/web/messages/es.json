@@ -602,6 +602,35 @@
       },
       "table": {
         "title": "Catálogo de productos",
+        "filters": {
+          "addFilter": "Añadir filtro",
+          "title": "Filtrar productos",
+          "addCondition": "Añadir condición",
+          "removeCondition": "Eliminar condición",
+          "clear": "Limpiar",
+          "apply": "Aplicar filtros",
+          "valuePlaceholder": "Valor",
+          "missing": "{count, plural, one {# producto} other {# productos}} sin {field}",
+          "fields": {
+            "title": "Título",
+            "description": "Descripción",
+            "sku": "SKU",
+            "price": "Precio",
+            "status": "Estado",
+            "url": "URL"
+          },
+          "operators": {
+            "contains": "contiene",
+            "notContains": "no contiene",
+            "is": "es",
+            "isNot": "no es",
+            "isEmpty": "está vacío",
+            "isNotEmpty": "no está vacío",
+            "equals": "igual a",
+            "greaterThan": "mayor que",
+            "lessThan": "menor que"
+          }
+        },
         "fields": {
           "product": "Producto",
           "price": "Precio",

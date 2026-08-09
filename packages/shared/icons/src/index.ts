@@ -1,3 +1,4 @@
+export * from "./icons/alert-circle";
 export * from "./icons/arrow-left";
 export * from "./icons/arrow-right";
 export * from "./icons/award";
@@ -30,6 +31,7 @@ export * from "./icons/eye";
 export * from "./icons/eye-closed";
 export * from "./icons/face-search";
 export * from "./icons/file";
+export * from "./icons/filter";
 export * from "./icons/gauge";
 export * from "./icons/gear";
 export * from "./icons/hammer";
