@@ -5,16 +5,17 @@
 // under Turbopack (PR #15 consolidate) and broke the production build.
 
 import { resultify } from "@zenncore/utils";
-import { and, desc, eq, ne } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 import { after } from "next/server";
 import { z } from "zod";
-import { db, schema } from "../database";
+import { schema } from "../database";
 import * as AI from "../utils/ai";
 import { withContext } from "../utils/context";
 import { withCron } from "../utils/cron";
+import { Environment } from "../utils/environment";
 import { UnauthenticatedError } from "../utils/error";
-import { type Document, repository } from "../utils/repository"; 
+import { type Document, repository } from "../utils/repository";
 import * as BabyLoveGrowth from "./babylovegrowth";
 
 export const { get, paginate, create, update, destroy, exists, count, find } =
@@ -42,26 +43,25 @@ const purgeBlogCache = () => {
 
 const published = eq(schema.blogPost.status, "published");
 
-const latestFirst = [
-  desc(schema.blogPost.publishedAt),
-  desc(schema.blogPost.updatedAt),
-] as const;
-
 /**
- * Public blog reads use `"use cache"`. The repository / `withContext` rail
- * awaits `headers()` for Sentry — forbidden inside a cache scope — so these
- * query Drizzle directly and throw on failure (keeps bad renders out of cache).
+ * Public blog reads use `"use cache"`. Repository helpers go through
+ * headers-free `withInstrumentation`, so these are safe inside a cache scope.
+ * Throw on failure so bad renders stay out of cache.
  */
 export const listPublished = async (locale = "en") => {
   "use cache";
   cacheLife("hours");
   cacheTag(BLOG_CACHE_TAG);
 
-  return db
-    .select()
-    .from(schema.blogPost)
-    .where(and(published, eq(schema.blogPost.locale, locale)))
-    .orderBy(...latestFirst);
+  const rows = await find(Environment.SERVER, {
+    where: and(published, eq(schema.blogPost.locale, locale)),
+    orderBy: [
+      { column: schema.blogPost.publishedAt, direction: "desc" },
+      { column: schema.blogPost.updatedAt, direction: "desc" },
+    ],
+  });
+  if (!rows.success) throw rows.error;
+  return rows.data;
 };
 
 /**
@@ -79,19 +79,17 @@ export const getPublishedBySlug = async (
   cacheLife("hours");
   cacheTag(BLOG_CACHE_TAG, `blog-${slug}-${locale}`);
 
-  const posts = await db
-    .select()
-    .from(schema.blogPost)
-    .where(
-      and(
-        published,
-        eq(schema.blogPost.slug, slug),
-        eq(schema.blogPost.locale, locale),
-      ),
-    )
-    .limit(1);
+  const posts = await find(Environment.SERVER, {
+    where: and(
+      published,
+      eq(schema.blogPost.slug, slug),
+      eq(schema.blogPost.locale, locale),
+    ),
+    limit: 1,
+  });
+  if (!posts.success) throw posts.error;
 
-  return posts[0] ?? null;
+  return posts.data[0] ?? null;
 };
 
 /**
@@ -104,18 +102,16 @@ export const getPublishedBySlug = async (
  * shell. Do not merge the two: each is wrong for the other's call sites.
  */
 const findPublished = async (slug: string, locale: "en" | "es") => {
-  const posts = await db
-    .select()
-    .from(schema.blogPost)
-    .where(
-      and(
-        published,
-        eq(schema.blogPost.slug, slug),
-        eq(schema.blogPost.locale, locale),
-      ),
-    )
-    .limit(1);
-  return posts[0] ?? null;
+  const posts = await find(Environment.SERVER, {
+    where: and(
+      published,
+      eq(schema.blogPost.slug, slug),
+      eq(schema.blogPost.locale, locale),
+    ),
+    limit: 1,
+  });
+  if (!posts.success) throw posts.error;
+  return posts.data[0] ?? null;
 };
 
 const translationSchema = z.object({
@@ -205,18 +201,16 @@ const upsertSpanishRow = async (values: {
   takeaways: readonly string[];
   contentHtml: string;
 }) => {
-  const existing = await db
-    .select({ id: schema.blogPost.id })
-    .from(schema.blogPost)
-    .where(
-      and(
-        eq(schema.blogPost.slug, values.slug),
-        eq(schema.blogPost.locale, "es"),
-      ),
-    )
-    .limit(1);
+  const existing = await find(Environment.SERVER, {
+    where: and(
+      eq(schema.blogPost.slug, values.slug),
+      eq(schema.blogPost.locale, "es"),
+    ),
+    limit: 1,
+  });
+  if (!existing.success) throw existing.error;
 
-  const row = existing[0];
+  const row = existing.data[0];
   const payload = {
     slug: values.slug,
     locale: "es" as const,
@@ -238,14 +232,10 @@ const upsertSpanishRow = async (values: {
   };
 
   if (row) {
-    await db
-      .update(schema.blogPost)
-      .set(payload)
-      .where(eq(schema.blogPost.id, row.id));
+    const updated = await update(Environment.SERVER, row.id, payload);
+    if (!updated.success) throw updated.error;
   } else {
-    const inserted = await resultify(() =>
-      db.insert(schema.blogPost).values(payload),
-    );
+    const inserted = await create(Environment.SERVER, payload);
     if (!inserted.success) {
       const raced = await findPublished(values.slug, "es");
       if (raced) return raced;
@@ -308,7 +298,7 @@ const ensureSpanishCore = async (slug: string) => {
       ...english.sections.map(
         (section) => `<h2>${section.title}</h2><div>${section.content}</div>`,
       ),
-    ].join("\n"); 
+    ].join("\n");
 
   const translation = await translateArticleCore({
     title: english.title,
@@ -418,19 +408,13 @@ export const resolve = async ({
 export const listCatalogSlugs = async () => {
   const articles = await BabyLoveGrowth.listArticles();
 
-  const englishRows = await (async () => {
-    try {
-      return await db
-        .select({ slug: schema.blogPost.slug })
-        .from(schema.blogPost)
-        .where(and(eq(schema.blogPost.locale, "en"), published));
-    } catch {
-      return [] as { slug: string }[];
-    }
-  })();
+  const englishRows = await find(Environment.SERVER, {
+    where: and(eq(schema.blogPost.locale, "en"), published),
+  });
+  const rows = englishRows.success ? englishRows.data : [];
 
   const slugs = new Set(articles.map((article) => article.slug));
-  for (const row of englishRows) slugs.add(row.slug);
+  for (const row of rows) slugs.add(row.slug);
   return [...slugs];
 };
 
@@ -449,12 +433,9 @@ export const translateMissingSpanishCore = async (
   const articles = await resultify(() => BabyLoveGrowth.listArticles());
   const blgList = articles.success ? articles.data : [];
 
-  const existingSpanish = await resultify(() =>
-    db
-      .select({ slug: schema.blogPost.slug })
-      .from(schema.blogPost)
-      .where(eq(schema.blogPost.locale, "es")),
-  );
+  const existingSpanish = await find(Environment.SERVER, {
+    where: eq(schema.blogPost.locale, "es"),
+  });
 
   if (!existingSpanish.success) return existingSpanish;
 
@@ -462,18 +443,13 @@ export const translateMissingSpanishCore = async (
   const translated: string[] = [];
   const failed: string[] = [];
 
-  const localEnglish = await resultify(() =>
-    db
-      .select({ slug: schema.blogPost.slug })
-      .from(schema.blogPost)
-      .where(
-        and(
-          eq(schema.blogPost.locale, "en"),
-          eq(schema.blogPost.source, "local"),
-          ne(schema.blogPost.status, "draft"),
-        ),
-      ),
-  );
+  const localEnglish = await find(Environment.SERVER, {
+    where: and(
+      eq(schema.blogPost.locale, "en"),
+      eq(schema.blogPost.source, "local"),
+      ne(schema.blogPost.status, "draft"),
+    ),
+  });
 
   const missing = [
     ...blgList.map((summary) => summary.slug),

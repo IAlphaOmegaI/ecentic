@@ -7,7 +7,7 @@ import { z } from "zod";
 import { db, schema } from "../database";
 import * as AI from "../utils/ai";
 import { withAuthentication } from "../utils/authentication";
-import { withContext } from "../utils/context";
+import { withContext, withInstrumentation } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { DatabaseError } from "../utils/error";
 import { type Document, repository } from "../utils/repository";
@@ -430,10 +430,8 @@ export const listDashboard = withAuthentication(
  * diagnostics pass — far too much work for one number, and it ran on every
  * dashboard page because the sidebar lives in the shared layout.
  */
-export const countPublished = withAuthentication(
-  async (context, { store }: { store?: string } = {}) => {
-    const userId = context.session.user.id;
-
+const countPublishedRows = withInstrumentation(
+  async (_, { user, store }: { user: string; store?: string }) => {
     // The join mirrors `listDashboard`'s filter: a published record only counts
     // while its product is still one of this user's — and, when scoped, one of
     // this store's — so the badge never promises rows the page cannot render.
@@ -447,9 +445,9 @@ export const countPublished = withAuthentication(
         )
         .where(
           and(
-            eq(schema.listingOptimization.userId, userId),
+            eq(schema.listingOptimization.userId, user),
             eq(schema.listingOptimization.status, "published"),
-            eq(schema.product.userId, userId),
+            eq(schema.product.userId, user),
             store ? eq(schema.product.storeId, store) : undefined,
           ),
         ),
@@ -464,6 +462,16 @@ export const countPublished = withAuthentication(
       };
 
     return { success: true as const, data: rows.data[0]?.value ?? 0 };
+  },
+  "Optimization.countPublishedRows",
+);
+
+export const countPublished = withAuthentication(
+  async (context, { store }: { store?: string } = {}) => {
+    return countPublishedRows(Environment.SERVER, {
+      user: context.session.user.id,
+      store,
+    });
   },
   "Optimization.countPublished",
 );

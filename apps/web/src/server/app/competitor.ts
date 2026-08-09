@@ -13,6 +13,7 @@ import {
 } from "drizzle-orm";
 import { db, schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
+import { withInstrumentation } from "../utils/context";
 import { dedupe } from "../utils/dedupe";
 import { Environment } from "../utils/environment";
 import {
@@ -248,7 +249,10 @@ export const gatherIntelligence = dedupe(
       const userId = context.session.user.id;
       const [scan, aggregated, competitors] = await Promise.all([
         Scan.getLatest(Environment.SERVER, { store }),
-        aggregateBrandsForStore(userId, store),
+        aggregateBrandsForStore(Environment.SERVER, {
+          user: userId,
+          store,
+        }),
         count(Environment.SERVER, scope(userId, store)),
       ]);
       if (!scan.success) return scan;
@@ -315,86 +319,96 @@ const brandKey = sql<string>`coalesce(${schema.competitor.brand}, ${schema.compe
  * and a brand could repeat on one page and vanish from the next. Grouping in SQL
  * with an explicit order makes pagination well-defined as well as cheap.
  */
-const aggregateBrandsForStore = async (
-  userId: string,
-  store: string,
-  pagination?: { page: number; size: number },
-) => {
-  // Simulations are scoped to this store's products, matching what
-  // `Simulation.getForStore` fed the in-memory aggregation: a competitor judged
-  // against another store's catalog must not count here.
-  const storeProducts = db
-    .select({ id: schema.product.id })
-    .from(schema.product)
-    .where(
-      and(eq(schema.product.userId, userId), eq(schema.product.storeId, store)),
+export const aggregateBrandsForStore = withInstrumentation(
+  async (
+    _,
+    {
+      user,
+      store,
+      pagination,
+    }: {
+      user: string;
+      store: string;
+      pagination?: { page: number; size: number };
+    },
+  ) => {
+    // Simulations are scoped to this store's products, matching what
+    // `Simulation.getForStore` fed the in-memory aggregation: a competitor judged
+    // against another store's catalog must not count here.
+    const storeProducts = db
+      .select({ id: schema.product.id })
+      .from(schema.product)
+      .where(
+        and(eq(schema.product.userId, user), eq(schema.product.storeId, store)),
+      );
+
+    const competitorScope = and(
+      eq(schema.competitor.userId, user),
+      eq(schema.competitor.storeId, store),
     );
 
-  const scope = and(
-    eq(schema.competitor.userId, userId),
-    eq(schema.competitor.storeId, store),
-  );
+    const result = await resultify(async () =>
+      Promise.all([
+        db
+          .select({
+            _id: min(schema.competitor.id),
+            brand: brandKey,
+            products: countDistinct(schema.competitor.id),
+            simulations: countRows(schema.simulation.id),
+            wins: sql<number>`count(${schema.simulation.id}) filter (where ${schema.simulation.winner} = 'product')`,
+            updatedAt: max(schema.competitor.updatedAt),
+          })
+          .from(schema.competitor)
+          .leftJoin(
+            schema.simulation,
+            and(
+              eq(schema.simulation.competitorId, schema.competitor.id),
+              inArray(schema.simulation.productId, storeProducts),
+            ),
+          )
+          .where(competitorScope)
+          .groupBy(brandKey)
+          .orderBy(brandKey)
+          .$dynamic()
+          .limit(pagination ? pagination.size : Number.MAX_SAFE_INTEGER)
+          .offset(pagination ? (pagination.page - 1) * pagination.size : 0),
+        db
+          .select({ value: countDistinct(brandKey) })
+          .from(schema.competitor)
+          .where(competitorScope),
+      ]),
+    );
 
-  const result = await resultify(async () =>
-    Promise.all([
-      db
-        .select({
-          _id: min(schema.competitor.id),
-          brand: brandKey,
-          products: countDistinct(schema.competitor.id),
-          simulations: countRows(schema.simulation.id),
-          wins: sql<number>`count(${schema.simulation.id}) filter (where ${schema.simulation.winner} = 'product')`,
-          updatedAt: max(schema.competitor.updatedAt),
-        })
-        .from(schema.competitor)
-        .leftJoin(
-          schema.simulation,
-          and(
-            eq(schema.simulation.competitorId, schema.competitor.id),
-            inArray(schema.simulation.productId, storeProducts),
-          ),
-        )
-        .where(scope)
-        .groupBy(brandKey)
-        .orderBy(brandKey)
-        .$dynamic()
-        .limit(pagination ? pagination.size : Number.MAX_SAFE_INTEGER)
-        .offset(pagination ? (pagination.page - 1) * pagination.size : 0),
-      db
-        .select({ value: countDistinct(brandKey) })
-        .from(schema.competitor)
-        .where(scope),
-    ]),
-  );
+    if (!result.success)
+      return {
+        success: false as const,
+        error: new DatabaseError("Failed to aggregate competitor brands", {
+          cause: result.error,
+        }),
+      };
 
-  if (!result.success)
+    const [rows, totals] = result.data;
+
     return {
-      success: false as const,
-      error: new DatabaseError("Failed to aggregate competitor brands", {
-        cause: result.error,
-      }),
+      success: true as const,
+      data: {
+        brands: rows.map((row) => ({
+          _id: row._id ?? row.brand,
+          brand: row.brand,
+          products: row.products,
+          winRate:
+            row.simulations > 0
+              ? Math.round((Number(row.wins) / row.simulations) * 100)
+              : 0,
+          simulations: row.simulations,
+          updatedAt: row.updatedAt ?? new Date(0),
+        })),
+        total: totals[0]?.value ?? 0,
+      },
     };
-
-  const [rows, totals] = result.data;
-
-  return {
-    success: true as const,
-    data: {
-      brands: rows.map((row) => ({
-        _id: row._id ?? row.brand,
-        brand: row.brand,
-        products: row.products,
-        winRate:
-          row.simulations > 0
-            ? Math.round((Number(row.wins) / row.simulations) * 100)
-            : 0,
-        simulations: row.simulations,
-        updatedAt: row.updatedAt ?? new Date(0),
-      })),
-      total: totals[0]?.value ?? 0,
-    },
-  };
-};
+  },
+  "Competitor.aggregateBrandsForStore",
+);
 
 export const gatherPaginatedIntelligence = withAuthentication(
   async (
@@ -404,7 +418,11 @@ export const gatherPaginatedIntelligence = withAuthentication(
     if (store) {
       const [scan, paginated] = await Promise.all([
         Scan.getLatest(Environment.SERVER, { store }),
-        aggregateBrandsForStore(context.session.user.id, store, { page, size }),
+        aggregateBrandsForStore(Environment.SERVER, {
+          user: context.session.user.id,
+          store,
+          pagination: { page, size },
+        }),
       ]);
       if (!scan.success) return scan;
       if (!paginated.success) return paginated;

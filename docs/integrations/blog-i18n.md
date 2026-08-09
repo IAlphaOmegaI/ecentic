@@ -28,8 +28,8 @@ Unique on `(slug, locale)`.
 
 All blog server logic lives in `apps/web/src/server/app/blog.ts`:
 
-- `"use cache"` Drizzle reads for public list/get (tagged `blog` for ISR)
-- plain `resolve` / `listCatalogSlugs` for RSC / `generateStaticParams` (no `withContext` — that awaits `headers()` for Sentry and breaks prerender)
+- `"use cache"` reads for public list/get via repository `find` (tagged `blog` for ISR) — safe because repository uses `withInstrumentation` (no `headers()`)
+- plain `resolve` / `listCatalogSlugs` for RSC / `generateStaticParams` (also repository / `withInstrumentation`)
 - `generateStaticParams` prerenders **every slug × en/es**; new posts after build still generate on first request (Cache Components — do not set `dynamicParams`)
 - Local CLI backfill (`bun run blog:backfill-spanish`) imports `Blog.translateMissingSpanishCore` under Bun — keep `@ai-sdk/rsc` / `createStreamableValue` out of `server/utils/ai.ts` (RSC-only helper lives in `ai-streamable.ts`) so Bun does not resolve the client RSC entry
 - Public pages use `resolve({ translate: false })` — no Azure during static generation

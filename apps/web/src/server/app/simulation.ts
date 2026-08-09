@@ -4,6 +4,7 @@ import { resultify } from "@zenncore/utils";
 import { and, count as countRows, eq, inArray, sql } from "drizzle-orm";
 import { db, schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
+import { withInstrumentation } from "../utils/context";
 import { dedupe } from "../utils/dedupe";
 import { Environment } from "../utils/environment";
 import { DatabaseError } from "../utils/error";
@@ -45,6 +46,41 @@ const productScope = (userId: string, store?: string) =>
 // `count(*) filter (...)` counts winners in the same pass as the total, so a
 // tally costs one scan rather than a second query or a JS filter.
 const winsExpression = sql<number>`count(${schema.simulation.id}) filter (where ${schema.simulation.winner} = 'product')`;
+
+/**
+ * Per-store win tallies for one user's catalog — hub cards derive win rate and
+ * simulation volume from these counts without loading simulation rows.
+ */
+export const winStatsByStoreForUser = withInstrumentation(
+  async (_, { user }: { user: string }) => {
+    const rows = await resultify(async () =>
+      db
+        .select({
+          storeId: schema.product.storeId,
+          total: sql<number>`count(*)::int`,
+          wins: sql<number>`count(*) filter (where ${schema.simulation.winner} = 'product')::int`,
+        })
+        .from(schema.simulation)
+        .innerJoin(
+          schema.product,
+          eq(schema.simulation.productId, schema.product.id),
+        )
+        .where(eq(schema.product.userId, user))
+        .groupBy(schema.product.storeId),
+    );
+
+    if (!rows.success)
+      return {
+        success: false as const,
+        error: new DatabaseError("Failed to tally simulation wins by store", {
+          cause: rows.error,
+        }),
+      };
+
+    return { success: true as const, data: rows.data };
+  },
+  "Simulation.winStatsByStoreForUser",
+);
 
 /**
  * Per-product, per-model win tallies computed by Postgres.

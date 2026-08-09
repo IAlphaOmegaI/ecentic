@@ -379,16 +379,19 @@ The autonomous features above require a background job system. Recommended appro
 
 All server actions are wrapped in context enhancers that provide typed, instrumented execution:
 
-- **`withContext(fn, name)`** — Base wrapper. Injects `GenericContext` (auth API, storage, environment info, Sentry span). Serializes errors for client consumption.
-- **`withAuthentication(fn, name)`** — Extends context with `session: { user, session }`. Returns `UnauthenticatedError` if no session.
-- **`withAuthorization(fn, name, roles)`** — Extends authentication with role checking.
+- **`withInstrumentation(fn, name)`** — Headers-free base. Injects `InstrumentedContext` (environment + Sentry span). Safe for repositories, `"use cache"`, and static generation.
+- **`withContext(fn, name)`** — Request rail: `withInstrumentation` + auth API + Sentry server-action instrumentation (`headers()`). Append further with `.append(enhancer)`.
+- **`withAuthentication(fn, name)`** — `withContext.append(authenticate)`. Adds `session: { user, session }`. Returns `UnauthenticatedError` if no session.
+- **`withAuthorization(roles)(fn, name)`** — `withContext.append(authenticate).append(authorize(roles))`.
 
 ### Repository Pattern
 
-`repository(schema.table)` returns typed CRUD methods that all use `withContext`:
+`repository(schema.table)` returns typed CRUD methods that all use `withInstrumentation` (not the request rail):
 - `get(id)`, `create(data)`, `update(id, data)`, `destroy(id)`
 - `find(options)`, `paginate(page, size, options)`
 - `exists(id)`, `count(where)`
+
+Cross-module data access uses namespace imports (`import * as Product from "@/server/app/product"`), not raw `db` calls.
 
 ### Server Action Modules
 

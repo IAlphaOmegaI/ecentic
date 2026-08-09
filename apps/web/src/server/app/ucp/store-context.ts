@@ -4,7 +4,11 @@
  * ecentic store id in the path.
  */
 
-import { db } from "@/server/database";
+import { eq } from "drizzle-orm";
+import { schema } from "@/server/database";
+import { Environment } from "@/server/utils/environment";
+import * as Store from "../store";
+import * as StoreAccount from "../store-account";
 
 /** Store facts fetched over the bridge (see store-info.ts). */
 export type StorefrontInfo = {
@@ -54,14 +58,20 @@ export const resolveStoreContext = async (
 ): Promise<UcpStoreContext | null> => {
   if (!/^[a-zA-Z0-9_-]+$/.test(storeId)) return null;
 
-  const store = await db.query.store.findFirst({
-    where: { id: storeId },
+  const stores = await Store.find(Environment.SERVER, {
+    where: eq(schema.store.id, storeId),
+    limit: 1,
   });
+  if (!stores.success) return null;
+
+  const store = stores.data[0];
   if (store?.platform !== "woocommerce") return null;
 
-  const account = await db.query.store_account.findFirst({
-    where: { storeId: store.id },
+  const accounts = await StoreAccount.find(Environment.SERVER, {
+    where: eq(schema.store_account.storeId, store.id),
+    limit: 1,
   });
+  const account = accounts.success ? accounts.data[0] : undefined;
 
   const credentials =
     account?.consumerKey && account?.consumerSecret

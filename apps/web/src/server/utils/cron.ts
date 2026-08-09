@@ -1,11 +1,5 @@
 import { headers } from "next/headers";
-import {
-  type ContextedAction,
-  defineWithContext,
-  type Enhancer,
-  type GenericContext,
-  type WithContextParams,
-} from "./context";
+import { type Enhancer, type GenericContext, withContext } from "./context";
 import { UnauthenticatedError } from "./error";
 
 /**
@@ -42,9 +36,4 @@ export const authorizeCron: Enhancer<
   return { success: true, data: base };
 };
 
-export const withCron = <T extends ContextedAction<GenericContext>>(
-  ...args: WithContextParams<GenericContext, T>
-) => {
-  const handler = defineWithContext(authorizeCron);
-  return handler(...args);
-};
+export const withCron = withContext.append(authorizeCron);

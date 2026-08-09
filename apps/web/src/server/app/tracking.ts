@@ -3,11 +3,15 @@
 import { resultify, type UnwrapResult } from "@zenncore/utils";
 import { and, count, eq, gte, sql } from "drizzle-orm";
 import { z } from "zod";
-import * as Store from "../app/store";
 import { db, schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
-import { withContext, withDurable } from "../utils/context";
+import {
+  withContext,
+  withDurable,
+  withInstrumentation,
+} from "../utils/context";
 import { Environment } from "../utils/environment";
+import { DatabaseError } from "../utils/error";
 import { repository } from "../utils/repository";
 import {
   isOriginAllowedForStore,
@@ -113,6 +117,41 @@ export type TrafficTimeSeriesPoint = {
   gemini: number;
 };
 
+/**
+ * Agent visit counts grouped by store for one user since a cutoff — hub cards
+ * show 30-day traffic without loading visit rows.
+ */
+export const countByStoreForUser = withInstrumentation(
+  async (_, { user, since }: { user: string; since: Date }) => {
+    const rows = await resultify(async () =>
+      db
+        .select({
+          storeId: schema.agentVisit.storeId,
+          count: sql<number>`count(*)::int`,
+        })
+        .from(schema.agentVisit)
+        .where(
+          and(
+            eq(schema.agentVisit.userId, user),
+            gte(schema.agentVisit.createdAt, since),
+          ),
+        )
+        .groupBy(schema.agentVisit.storeId),
+    );
+
+    if (!rows.success)
+      return {
+        success: false as const,
+        error: new DatabaseError("Failed to count agent visits by store", {
+          cause: rows.error,
+        }),
+      };
+
+    return { success: true as const, data: rows.data };
+  },
+  "Tracking.countByStoreForUser",
+);
+
 export const getAgentTrafficTimeSeries = withAuthentication(
   async (context, { store }: { store?: string } = {}) => {
     const thirtyDaysAgo = new Date();
@@ -151,7 +190,13 @@ export const getAgentTrafficTimeSeries = withAuthentication(
         .orderBy(day),
     );
 
-    if (!result.success) return result;
+    if (!result.success)
+      return {
+        success: false as const,
+        error: new DatabaseError("Failed to load agent traffic time series", {
+          cause: result.error,
+        }),
+      };
 
     const dates = Array.from({ length: 30 }, (_value, index) => {
       const date = new Date();
@@ -198,7 +243,13 @@ export const getAgentTrafficSummary = withAuthentication(
         .orderBy(sql`count(*) desc`),
     );
 
-    if (!result.success) return result;
+    if (!result.success)
+      return {
+        success: false as const,
+        error: new DatabaseError("Failed to load agent traffic summary", {
+          cause: result.error,
+        }),
+      };
 
     const byAgentType = result.data.map((row) => ({
       agentType: row.agentType,
@@ -214,6 +265,7 @@ export const getAgentTrafficSummary = withAuthentication(
 );
 
 const { create, find } = repository(schema.agentVisit);
+const stores = repository(schema.store);
 
 /**
  * The most recent `*-referral` visit for a store inside the attribution window
@@ -252,7 +304,7 @@ export const recordAgentVisit = withContext(
       origin: string | null;
     },
   ) => {
-    const store = await Store.get(Environment.SERVER, payload.storeId);
+    const store = await stores.get(Environment.SERVER, payload.storeId);
 
     if (!store.success) return store;
 

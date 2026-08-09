@@ -10,7 +10,7 @@ import {
 } from "drizzle-orm";
 import type { PgTableWithColumns } from "drizzle-orm/pg-core";
 import { db, type TransactionScope } from "@/server/database";
-import { withContext } from "./context";
+import { withInstrumentation } from "./context";
 import { DatabaseError } from "./error";
 
 /** Table type that has id and optional createdAt for default ordering */
@@ -114,7 +114,7 @@ export function repository<T extends TableWithId>(table: T) {
   const name = label(table);
 
   return {
-    get: withContext(
+    get: withInstrumentation(
       async (_, id: string, options?: ExecuteOptions) => {
         const run = executor(options);
         const target = asTable(table);
@@ -148,7 +148,7 @@ export function repository<T extends TableWithId>(table: T) {
       `${capitalize(name)}.get`,
     ),
 
-    paginate: withContext(
+    paginate: withInstrumentation(
       async (
         _,
         page: number,
@@ -223,7 +223,7 @@ export function repository<T extends TableWithId>(table: T) {
       `${capitalize(name)}.paginate`,
     ),
 
-    create: withContext(
+    create: withInstrumentation(
       async (_, data: Insertable<T>, options?: ExecuteOptions) => {
         const run = executor(options);
         const target = asTable(table);
@@ -256,7 +256,7 @@ export function repository<T extends TableWithId>(table: T) {
       `${capitalize(name)}.create`,
     ),
 
-    upsert: withContext(
+    upsert: withInstrumentation(
       async (
         _,
         data: Insertable<T>,
@@ -298,7 +298,7 @@ export function repository<T extends TableWithId>(table: T) {
       `${capitalize(name)}.upsert`,
     ),
 
-    update: withContext(
+    update: withInstrumentation(
       async (
         _,
         id: string,
@@ -342,7 +342,7 @@ export function repository<T extends TableWithId>(table: T) {
       `${capitalize(name)}.update`,
     ),
 
-    destroy: withContext(
+    destroy: withInstrumentation(
       async (_, id: string, options?: ExecuteOptions) => {
         const run = executor(options);
         const target = asTable(table);
@@ -375,7 +375,7 @@ export function repository<T extends TableWithId>(table: T) {
       `${capitalize(name)}.destroy`,
     ),
 
-    exists: withContext(
+    exists: withInstrumentation(
       async (_, id: string, options?: ExecuteOptions) => {
         const run = executor(options);
         const target = asTable(table);
@@ -411,7 +411,7 @@ export function repository<T extends TableWithId>(table: T) {
       `${capitalize(name)}.exists`,
     ),
 
-    count: withContext(
+    count: withInstrumentation(
       async (_, where?: SQL, options?: ExecuteOptions) => {
         const run = executor(options);
         const target = asTable(table);
@@ -441,7 +441,7 @@ export function repository<T extends TableWithId>(table: T) {
       `${capitalize(name)}.count`,
     ),
 
-    find: withContext(
+    find: withInstrumentation(
       async (
         _,
         findOptions: {

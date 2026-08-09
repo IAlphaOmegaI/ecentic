@@ -15,7 +15,8 @@
 
 import { createHash, randomBytes } from "node:crypto";
 import { resultify } from "@zenncore/utils";
-import { db } from "@/server/database";
+import { and, eq } from "drizzle-orm";
+import { schema } from "@/server/database";
 import { withContext } from "@/server/utils/context";
 import { redis } from "@/server/utils/durable";
 import { Environment } from "@/server/utils/environment";
@@ -24,6 +25,7 @@ import * as HTTP from "@/server/utils/http";
 import { isSafePublicHttpUrl } from "@/server/utils/ssrf";
 import { normalizeStoreUrl } from "@/server/utils/woocommerce";
 import * as WooCommerce from "../integration/woocommerce";
+import * as Store from "../store";
 import * as StoreAccount from "../store-account";
 import * as Bridge from "./bridge";
 import { appHost, ucpEndpointUrl, ucpProfileUrl } from "./store-context";
@@ -227,37 +229,33 @@ export const completeConnect = withContext(
 
     // Reconnects rotate the existing store's credentials instead of
     // duplicating the store (the plugin revokes the old WC key on re-issue).
-    const existing = await resultify(
-      async () =>
-        await db.query.store.findFirst({
-          where: {
-            userId: user,
-            domain: connectState.storeUrl,
-            platform: "woocommerce",
-          },
-        }),
-    );
+    const existing = await Store.find(Environment.SERVER, {
+      where: and(
+        eq(schema.store.userId, user),
+        eq(schema.store.domain, connectState.storeUrl),
+        eq(schema.store.platform, "woocommerce"),
+      ),
+      limit: 1,
+    });
 
     const storeResult = await (async () => {
-      if (existing.success && existing.data) {
-        const store = existing.data;
-        const account = await resultify(
-          async () =>
-            await db.query.store_account.findFirst({
-              where: { storeId: store.id },
-            }),
-        );
-        const saved =
-          account.success && account.data
-            ? await StoreAccount.update(Environment.SERVER, account.data.id, {
-                consumerKey: credentials.data.consumer_key,
-                consumerSecret: credentials.data.consumer_secret,
-              })
-            : await StoreAccount.create(Environment.SERVER, {
-                storeId: store.id,
-                consumerKey: credentials.data.consumer_key,
-                consumerSecret: credentials.data.consumer_secret,
-              });
+      if (existing.success && existing.data[0]) {
+        const store = existing.data[0];
+        const accounts = await StoreAccount.find(Environment.SERVER, {
+          where: eq(schema.store_account.storeId, store.id),
+          limit: 1,
+        });
+        const account = accounts.success ? accounts.data[0] : undefined;
+        const saved = account
+          ? await StoreAccount.update(Environment.SERVER, account.id, {
+              consumerKey: credentials.data.consumer_key,
+              consumerSecret: credentials.data.consumer_secret,
+            })
+          : await StoreAccount.create(Environment.SERVER, {
+              storeId: store.id,
+              consumerKey: credentials.data.consumer_key,
+              consumerSecret: credentials.data.consumer_secret,
+            });
         if (!saved.success) return saved;
 
         // Refresh the catalog with the new key; a failed sync isn't fatal to
@@ -289,12 +287,12 @@ export const completeConnect = withContext(
     // its /.well-known/ucp starts advertising this backend.
     const bridgeSecret = randomBytes(32).toString("base64url");
 
-    const account = await resultify(
-      async () =>
-        await db.query.store_account.findFirst({ where: { storeId } }),
-    );
-    if (account.success && account.data) {
-      await StoreAccount.update(Environment.SERVER, account.data.id, {
+    const accounts = await StoreAccount.find(Environment.SERVER, {
+      where: eq(schema.store_account.storeId, storeId),
+      limit: 1,
+    });
+    if (accounts.success && accounts.data[0]) {
+      await StoreAccount.update(Environment.SERVER, accounts.data[0].id, {
         bridgeSecret,
       });
     }
