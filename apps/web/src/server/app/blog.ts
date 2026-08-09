@@ -27,8 +27,8 @@ export const BLOG_CACHE_TAG = "blog";
 
 const purgeBlogCache = () => {
   // `revalidateTag` is illegal during RSC render / prerender. Defer so
-  // ensureSpanish can run from page resolve via `after()` without crashing
-  // the route (Sentry: "used revalidateTag blog during render").
+  // Spanish upserts from webhook/backfill never crash the route (Sentry:
+  // "used revalidateTag blog during render").
   after(() => {
     revalidateTag(BLOG_CACHE_TAG, { expire: 0 });
   });
@@ -335,15 +335,16 @@ export type Resolved =
  * never 404. Plain async (no `withContext`): public RSC cannot touch
  * `headers()` from Sentry server-action instrumentation during prerender.
  *
- * When `translate` is true and the ES row is missing, await Azure translate
- * + upsert (cache purge still deferred via `after`) so `/es/blog/[slug]`
- * actually returns Spanish instead of baking the EN fallback into the
- * prerendered page.
+ * Public pages pass `translate: false` so EN/ES are statically generated /
+ * ISR'd from cache. Spanish rows are written by the BLG webhook + backfill
+ * cron; those paths call `purgeBlogCache()` so `revalidateTag("blog")`
+ * regenerates the pages. Optional `translate: true` still awaits Azure for
+ * scripts / emergency fills.
  */
 export const resolve = async ({
   slug,
   locale,
-  translate = true,
+  translate = false,
 }: {
   slug: string;
   locale: "en" | "es";
@@ -353,28 +354,26 @@ export const resolve = async ({
     if (locale === "en") {
       const article = await BabyLoveGrowth.getArticleBySlug(slug);
       if (article) return { kind: "blg" as const, article };
-      const post = await findPublished(slug, "en");
+      const post = await getPublishedBySlug(slug, "en");
       if (post) return { kind: "post" as const, post };
       return null;
     }
 
-    const existingSpanish = await findPublished(slug, "es");
+    // Cached read — invalidated by webhook/backfill `revalidateTag("blog")`.
+    const existingSpanish = await getPublishedBySlug(slug, "es");
     if (existingSpanish)
       return { kind: "post" as const, post: existingSpanish };
 
     if (translate) {
       const spanish = await ensureSpanishCore(slug);
-      if (!spanish.success) {
-        // Translate failed — still serve EN below so the route never 500s.
-      } else if (spanish.data) {
+      if (spanish.success && spanish.data)
         return { kind: "post" as const, post: spanish.data };
-      }
     }
 
     const article = await BabyLoveGrowth.getArticleBySlug(slug);
     if (article) return { kind: "blg" as const, article };
 
-    const english = await findPublished(slug, "en");
+    const english = await getPublishedBySlug(slug, "en");
     if (english) return { kind: "post" as const, post: english };
 
     return null;
