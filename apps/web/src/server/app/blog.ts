@@ -308,7 +308,7 @@ const ensureSpanishCore = async (slug: string) => {
       ...english.sections.map(
         (section) => `<h2>${section.title}</h2><div>${section.content}</div>`,
       ),
-    ].join("\n");
+    ].join("\n"); 
 
   const translation = await translateArticleCore({
     title: english.title,
