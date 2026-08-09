@@ -435,8 +435,15 @@ const summaryContentHtml = (excerpt: string) => {
   return `<p>${escapeHtml(trimmed)}</p>`;
 };
 
-const hasFullBody = (contentHtml: string | null | undefined) =>
-  Boolean(contentHtml && contentHtml.replace(/<[^>]+>/g, " ").trim().length > 120);
+const hasFullBody = (contentHtml: string | null | undefined) => {
+  if (!contentHtml) return false;
+  const text = contentHtml
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  // Summary backfill wraps excerpt in a single <p>; real BLG bodies are much larger.
+  return text.length > 800;
+};
 
 /**
  * Persist missing English rows from BabyLoveGrowth.
