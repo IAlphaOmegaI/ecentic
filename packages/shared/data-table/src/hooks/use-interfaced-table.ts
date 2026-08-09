@@ -3,27 +3,68 @@
 import {
   type ColumnDef,
   type ColumnFiltersState,
+  columnFacetingFeature,
+  columnFilteringFeature,
+  columnVisibilityFeature,
+  createExpandedRowModel,
+  createFacetedRowModel,
+  createFacetedUniqueValues,
+  createPaginatedRowModel,
   type ExpandedState,
-  getCoreRowModel,
-  getExpandedRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
   type PaginationState,
+  rowExpandingFeature,
+  rowPaginationFeature,
+  rowSelectionFeature,
+  rowSortingFeature,
   type SortingState,
   type Table,
+  type TableFeatures,
+  tableFeatures,
   type Updater,
-  useReactTable,
+  useTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
 import type { TableRow } from "../utils/types/row";
 
+export type DataTableFeatures = Required<
+  Pick<
+    TableFeatures,
+    | "columnFacetingFeature"
+    | "columnFilteringFeature"
+    | "columnVisibilityFeature"
+    | "rowExpandingFeature"
+    | "rowPaginationFeature"
+    | "rowSelectionFeature"
+    | "rowSortingFeature"
+    | "expandedRowModel"
+    | "facetedRowModel"
+    | "facetedUniqueValues"
+    | "paginatedRowModel"
+  >
+>;
+
+// Sorting and filtering are state-only: their row models are intentionally not
+// registered because processing is always delegated (manual mode server-side,
+// no-op client-side). Selection and visibility carry no row models but gate the
+// row.getIsSelected/row.getVisibleCells APIs the DataTable component renders.
+const dataTableFeatures: DataTableFeatures = tableFeatures({
+  columnFacetingFeature,
+  columnFilteringFeature,
+  columnVisibilityFeature,
+  rowExpandingFeature,
+  rowPaginationFeature,
+  rowSelectionFeature,
+  rowSortingFeature,
+  expandedRowModel: createExpandedRowModel(),
+  facetedRowModel: createFacetedRowModel(),
+  facetedUniqueValues: createFacetedUniqueValues(),
+  paginatedRowModel: createPaginatedRowModel(),
+});
+
 export type UseDataTableConfigParams<T extends TableRow> = {
   rows: T[];
   // biome-ignore lint/suspicious/noExplicitAny: needed
-  columns: ColumnDef<T, any>[];
+  columns: ColumnDef<DataTableFeatures, T, any>[];
   onPaginationChange?: (pagination: PaginationState) => void;
   onSortingChange?: (sorting: SortingState) => void;
   onColumnsFilterChange?: (filter: ColumnFiltersState) => void;
@@ -54,7 +95,7 @@ const getUpdaterValue = <P>(updater: Updater<P>, previousState: P) => {
 const normalizePagination = (pagination: PaginationState) => {
   return {
     ...pagination,
-    // due to the nature of the tanstack useReactTable hook, we need to move to a 0 base index instead of 1 base that we use to interface with the client
+    // due to the nature of the tanstack useTable hook, we need to move to a 0 base index instead of 1 base that we use to interface with the client
     pageIndex: pagination.pageIndex - 1,
   };
 };
@@ -72,7 +113,7 @@ type DataTablePaginationState = {
 };
 
 type UseDataTableConfigReturn<T extends TableRow> = {
-  table: Table<T>;
+  table: Table<DataTableFeatures, T>;
   pagination: PaginationState & DataTablePaginationState;
 };
 
@@ -88,7 +129,7 @@ export const useDataTableConfig = <T extends TableRow>({
   pageSize = 20,
   ...params
 }: UseDataTableConfigParams<T>): UseDataTableConfigReturn<T> => {
-  // this is a special implementation as it is not a direct interface with the tanstack useReactTable hook, it uses 1-based indexing
+  // this is a special implementation as it is not a direct interface with the tanstack useTable hook, it uses 1-based indexing
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex,
     pageSize,
@@ -107,16 +148,10 @@ export const useDataTableConfig = <T extends TableRow>({
         Math.ceil(params.rowCount! / pageSize)
     : Math.ceil(rows.length / pageSize);
 
-  const table = useReactTable<T>({
+  const table = useTable<DataTableFeatures, T>({
+    features: dataTableFeatures,
     data: rows,
     columns,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: isServerSide ? getFilteredRowModel() : undefined,
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: isServerSide ? getSortedRowModel() : undefined,
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-    getExpandedRowModel: getExpandedRowModel(),
     manualPagination: isServerSide,
     manualSorting: isServerSide,
     manualFiltering: isServerSide,

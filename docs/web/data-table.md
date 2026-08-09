@@ -76,7 +76,7 @@ Empty state slot.
 ### Basic Data Table
 
 ```tsx
-import { createColumnHelper } from '@tanstack/react-table';
+import { createColumnHelper } from '@zenncore/web/components/data-table';
 
 type User = { _id: string; name: string; email: string };
 const columnHelper = createColumnHelper<User>();
@@ -118,7 +118,7 @@ const columns = [
 
 ## Notes
 
-- Built on `@tanstack/react-table` (v8)
+- Built on `@tanstack/react-table` (v9) — `ColumnDef` and `createColumnHelper` are re-exported pre-bound to the wrapper's feature set, so they keep the single-generic `ColumnDef<Row>` signature
 - Uses `DataTableProvider` from `@zenncore/data-table`
 - Flex rendering via `flexRender`
 - Supports row selection and expansion

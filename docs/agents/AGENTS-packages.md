@@ -158,7 +158,9 @@ import {
   DataTablePagination,
   DataTableProvider,
 } from "@zenncore/web/components";
-import { type ColumnDef } from "@tanstack/react-table";
+// ColumnDef is re-exported pre-bound to the data-table feature set — do not
+// import it from @tanstack/react-table (the raw v9 type requires a TFeatures generic).
+import type { ColumnDef } from "@zenncore/web/components/data-table";
 
 type Row = { _id: string; name: string; status: string };
 
