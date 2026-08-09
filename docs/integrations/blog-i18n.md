@@ -8,12 +8,12 @@ Locale for Server Components is resolved with `next/root-params` in `apps/web/sr
 
 | Locale | URL prefix | Content source |
 |--------|------------|----------------|
-| `en` | none (`/blog/foo`) | `blog_post` `locale=en` (webhook + `blog:backfill-english`). Live BLG is fallback only. |
+| `en` | none (`/blog/foo`) | `blog_post` `locale=en` only (webhook + `blog:backfill-english`). |
 | `es` | `/es` (`/es/blog/foo`) | `blog_post` `locale=es` (same slug). Fall back to EN row until Spanish is written. |
 
 Same slug is shared across locales. Spanish copies are **not** published back into BabyLoveGrowth.
 
-Index, tags, sitemap, `llms.txt`, and `generateStaticParams` read **Postgres only** (card/summary fields live on each `blog_post` row). Pages are statically generated for every slug × locale and ISR'd via `revalidateTag("blog")` when the webhook (or editorial) writes rows.
+Index, tags, sitemap, `llms.txt`, OG images, and `generateStaticParams` / `Blog.resolve` read **Postgres only** — never live BabyLoveGrowth during prerender (multi-worker SSG would 429 their 2 req/s cap). Pages are statically generated for every slug × locale and ISR'd via `revalidateTag("blog")` when the webhook (or editorial) writes rows.
 
 ## Database
 

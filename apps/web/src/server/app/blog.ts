@@ -238,22 +238,12 @@ const upsertLocaleRow = async (values: LocaleRowValues) => {
   return findPublished(values.slug, values.locale);
 };
 
-export type Resolved =
-  | {
-      kind: "blg";
-      article: NonNullable<
-        Awaited<ReturnType<typeof BabyLoveGrowth.getArticleBySlug>>
-      >;
-    }
-  | { kind: "post"; post: Type };
+export type Resolved = { kind: "post"; post: Type };
 
 /**
- * Same slug catalog for EN/ES. Prefer stored `blog_post` rows (BLG webhook
- * writes both locales; editorial writes EN and ES as you publish). Fall back
- * to the live BLG API only when no row exists yet. Plain async — no
- * `withContext` / `headers()` during prerender.
- *
- * Public pages never Azure-translate on the render path.
+ * Same slug catalog for EN/ES. Stored `blog_post` rows only — never live BLG.
+ * Public SSG uses many workers; per-process rate limits cannot stop a BLG
+ * stampede. Persist via webhook / `blog:backfill-english` instead.
  */
 export const resolve = async ({
   slug,
@@ -266,19 +256,10 @@ export const resolve = async ({
     const stored = await getPublishedBySlug(slug, locale);
     if (stored) return { kind: "post" as const, post: stored };
 
-    if (locale === "en") {
-      const article = await BabyLoveGrowth.getArticleBySlug(slug);
-      if (article) return { kind: "blg" as const, article };
-      return null;
+    if (locale === "es") {
+      const english = await getPublishedBySlug(slug, "en");
+      if (english) return { kind: "post" as const, post: english };
     }
-
-    // ES miss: never present live BLG English as Spanish. Prefer EN row so
-    // the page still resolves until a Spanish upsert lands.
-    const english = await getPublishedBySlug(slug, "en");
-    if (english) return { kind: "post" as const, post: english };
-
-    const article = await BabyLoveGrowth.getArticleBySlug(slug);
-    if (article) return { kind: "blg" as const, article };
 
     return null;
   });
