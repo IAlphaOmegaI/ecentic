@@ -37,6 +37,11 @@ declare namespace NodeJS {
     readonly BABYLOVEGROWTH_BLOG_API_KEY?: string;
     /** Optional BabyLoveGrowth API base override (staging/local). */
     readonly BABYLOVEGROWTH_BLOG_API_URL?: string;
+    /**
+     * Bearer secret for `POST /api/webhooks/babylovegrowth` (Settings →
+     * Publishing → Webhook). Used to auto-translate new EN articles to ES.
+     */
+    readonly BABYLOVEGROWTH_WEBHOOK_SECRET?: string;
 
     readonly ECENTIC_TRACKER_PROBE: string;
     readonly ECENTIC_TRACKER_PUBLIC_ORIGIN: string;

@@ -1,0 +1,85 @@
+{
+  "ucpValidator": {
+    "meta": {
+      "title": "Validador UCP — Comprobación del Universal Commerce Protocol",
+      "description": "Validador UCP gratuito: comprueba si una tienda publica un Universal Commerce Profile válido, valida su esquema y confirma que los agentes de IA pasan robots.txt."
+    },
+    "breadcrumb": {
+      "home": "Inicio",
+      "page": "Validador UCP"
+    },
+    "hero": {
+      "eyebrow": "Comprobación de protocolo",
+      "title": {
+        "primary": "UCP",
+        "accent": "Validador"
+      },
+      "description": "Comprueba si una tienda publica un Universal Commerce Profile válido en /.well-known/ucp y si los agentes de compra pueden leerlo sin fricción.",
+      "assurances": [
+        "Gratis",
+        "Sin cuenta",
+        "Fetch en vivo de /.well-known/ucp"
+      ],
+      "art": {
+        "alt": "Ilustración ASCII de un escudo"
+      },
+      "actions": {
+        "validate": "Validar un dominio",
+        "playground": "Abrir playground"
+      }
+    },
+    "checks": {
+      "number": "01",
+      "title": "Qué inspecciona el validador.",
+      "description": "Un fetch en vivo de tu perfil público, parseado contra la spec UCP, con el acceso de agentes visible desde robots.txt.",
+      "items": [
+        {
+          "title": "Alcanzabilidad del endpoint",
+          "description": "Solicitamos el dominio HTTPS público y confirmamos que /.well-known/ucp responde."
+        },
+        {
+          "title": "Higiene del esquema",
+          "description": "El cuerpo de la respuesta se parsea como JSON y se comprueba frente a errores y avisos de la spec UCP."
+        },
+        {
+          "title": "Acceso de agentes",
+          "description": "Se revisa robots.txt para ver si los bots principales de compras e indexación están bloqueados."
+        }
+      ]
+    },
+    "validator": {
+      "number": "02",
+      "title": "Ejecuta una validación en vivo.",
+      "description": "Pega un dominio y obtenemos el perfil en vivo, parseamos cada servicio y capacidad, y reportamos errores de spec y acceso de agentes."
+    },
+    "faqSection": {
+      "number": "03",
+      "title": "Preguntas antes de validar.",
+      "description": "Qué cubre el checker, dónde viven los perfiles y cómo se muestra el acceso de agentes."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "¿Qué comprueba el Validador UCP?",
+          "answer": "Solicita el dominio HTTPS público, confirma que /.well-known/ucp responde, parsea el cuerpo como JSON y reporta errores y avisos de la spec UCP para que sepas si el perfil está bien formado."
+        },
+        {
+          "question": "¿Dónde debe publicarse un Universal Commerce Profile?",
+          "answer": "En /.well-known/ucp del dominio HTTPS público de tu tienda. El validador obtiene exactamente esa ruta y muestra si es alcanzable."
+        },
+        {
+          "question": "¿Comprueba si los agentes de compra con IA pueden leer mi tienda?",
+          "answer": "Sí. El validador revisa robots.txt para que veas si los bots principales de compras e indexación pueden llegar a tu Universal Commerce Profile sin fricción."
+        }
+      ]
+    },
+    "footer": {
+      "primary": "Validar un dominio",
+      "secondary": "Todas las herramientas gratis",
+      "note": "Gratis · Sin cuenta · Fetch en vivo"
+    },
+    "structuredData": {
+      "name": "Validador UCP"
+    }
+  }
+}

@@ -251,6 +251,7 @@ AZURE_DEPLOYMENT_GPT                      # your ChatGPT DEPLOYMENT name, e.g. "
                                           # because Azure 404s any deployment name it was not given. Repoint the
                                           # deployment and that constant together, or the rails judge with
                                           # different models under one "ChatGPT" label.
+                                          # Legacy alias: AZURE_DEPLOYMENT_GPT4O (same gpt seat) if GPT is unset.
 AI_GATEWAY_API_KEY                        # Vercel AI Gateway — Claude/Gemini/Perplexity calls
 ```
 
@@ -267,6 +268,8 @@ STRIPE_SUB_SCALE                          # recurring price id — Scale plan ($
 STRIPE_SUB_DOMINATE                       # recurring price id — Dominate plan ($149/mo, top tier)
 APP_HOST                                  # e.g. https://ecentic.ai (checkout return + webhook origin)
 CRON_SECRET                               # Bearer secret for /api/cron/* (scan + billing)
+BABYLOVEGROWTH_BLOG_API_KEY               # optional — BabyLoveGrowth Next.js Blog read key
+BABYLOVEGROWTH_WEBHOOK_SECRET             # optional — Bearer for /api/webhooks/babylovegrowth (EN→ES Azure translate)
 
 # Pay-as-you-go performance fee (one-off Stripe invoices, not metered).
 PERFORMANCE_FEE_RATE_BPS_DEFAULT=300      # 3%, overridable per account

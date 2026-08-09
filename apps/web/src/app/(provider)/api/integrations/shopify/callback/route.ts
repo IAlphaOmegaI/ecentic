@@ -2,8 +2,8 @@ import { cookies, headers } from "next/headers";
 import { type NextRequest, NextResponse as Response } from "next/server";
 import { auth } from "@/lib/auth";
 import * as Shopify from "@/server/app/integration/shopify";
+import { verifyHmac } from "@/server/app/integration/shopify/hmac";
 import { Environment } from "@/server/utils/environment";
-import { verifyHmac } from "@/server/utils/shopify";
 
 // Sends the admin back to the Shopify connect screen with a machine-readable
 // reason instead of stranding them on this JSON endpoint. The connect UI maps

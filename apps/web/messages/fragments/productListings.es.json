@@ -1,0 +1,190 @@
+{
+  "productListings": {
+    "meta": {
+      "title": "Optimización de fichas de producto con IA para comerciantes",
+      "description": "Optimización de fichas de producto con IA para títulos, descripciones y datos estructurados de producto. Descubre cómo ecentic ayuda a los comerciantes a mejorar la visibilidad con agentes de IA."
+    },
+    "breadcrumb": {
+      "home": "Inicio",
+      "features": "Funciones",
+      "productListings": "Fichas de producto"
+    },
+    "hero": {
+      "eyebrow": "Fichas de producto",
+      "title": {
+        "primary": "Optimización de fichas de producto con IA",
+        "accent": "para páginas que son elegidas."
+      },
+      "description": "Los sistemas de compras con IA comparan tus datos de producto en segundos. ecentic convierte páginas de producto perdedoras en entradas de compra más claras, para agentes y para los compradores de alta intención que te envían.",
+      "assurances": [
+        "Títulos, descripciones y datos estructurados",
+        "Reescrituras listas para aprobar",
+        "Publica de vuelta en Shopify y WooCommerce"
+      ],
+      "art": {
+        "alt": "Ilustración ASCII de una ficha de producto"
+      }
+    },
+    "whyListingsLose": {
+      "number": "01",
+      "title": "Por qué las fichas tienen dificultades en compras mediadas por IA.",
+      "description": "La mayoría de problemas de catálogo vienen del mismo hueco: datos de producto pensados para que los humanos naveguen, no para que los sistemas de IA comparen.",
+      "paragraphs": [
+        "Los sistemas de compras con IA no navegan una página como lo hace un humano. Comparan títulos, descripciones, atributos estructurados, contexto de precio, detalles de compatibilidad y señales de confianza en una ventana de decisión comprimida. Si una ficha es más clara, más completa y más fácil de comparar, gana antes de que el comprador vea por qué.",
+        "La solución no es rellenar una página de palabras clave. Es hacer que la información del producto sea más fácil de recuperar, evaluar y confiar."
+      ],
+      "principlesTitle": "Qué hacen las fichas ganadoras",
+      "principles": [
+        {
+          "title": "Decir qué es el producto",
+          "description": "Y para quién es, en un lenguaje que compradores y modelos interpretan rápido."
+        },
+        {
+          "title": "Mostrar atributos comparados",
+          "description": "Los campos específicos de categoría que compradores y agentes ponderan con más frecuencia."
+        },
+        {
+          "title": "Mantener descripciones decisivas",
+          "description": "Centradas en la decisión en cuestión en lugar de relleno que oculta los detalles."
+        },
+        {
+          "title": "Mantener coherencia en todas partes",
+          "description": "Datos estructurados, datos de oferta y copy en página contando la misma historia."
+        }
+      ]
+    },
+    "layers": {
+      "number": "02",
+      "title": "Cuatro capas, mejoradas juntas.",
+      "description": "Reescribir descripciones es solo una parte del trabajo. La optimización de fichas de alto rendimiento conecta copy, calidad de datos y confianza en el mismo paso.",
+      "items": [
+        {
+          "title": "Identidad del producto",
+          "description": "El título lleva contexto de compra útil sin desorden: tipo de producto, diferenciador y el detalle de variante o compatibilidad que importa."
+        },
+        {
+          "title": "Explicación del producto",
+          "description": "La descripción facilita la comparación explicando qué importa más, cómo encaja el producto en el caso de uso y qué generaría dudas."
+        },
+        {
+          "title": "Integridad de atributos",
+          "description": "Dimensiones, materiales, campos de compatibilidad, detalles de garantía o unidades por pack faltantes debilitan silenciosamente un producto en categorías competitivas."
+        },
+        {
+          "title": "Confianza del comerciante",
+          "description": "Enlaces a políticas, cobertura de reseñas, precisión de disponibilidad y contexto de soporte claro refuerzan la oferta alrededor del producto."
+        }
+      ]
+    },
+    "workflow": {
+      "number": "03",
+      "title": "Un ciclo cerrado, no una reescritura puntual.",
+      "description": "El flujo va de simulación a diagnóstico a actualización de ficha lista para aprobar, sin reconstruir tu catálogo desde cero.",
+      "paragraph": "Simula quién gana, diagnostica las brechas y publica la corrección de vuelta en la tienda. El mismo ciclo funciona tanto si limpias un puñado de SKU prioritarios como si ejecutas operaciones continuas de catálogo.",
+      "panelTitle": "Simular, diagnosticar, publicar",
+      "audiences": [
+        {
+          "title": "Descubrimiento sin reescritura completa",
+          "description": "Mejora el descubrimiento de producto sin reescribir todo el catálogo de una vez."
+        },
+        {
+          "title": "Catálogos grandes e irregulares",
+          "description": "Cientos o miles de SKU donde la calidad de datos varía por categoría y antigüedad."
+        },
+        {
+          "title": "Categorías guiadas por especificaciones",
+          "description": "Victorias que dependen de especificaciones, compatibilidad y señales de confianza del comerciante."
+        },
+        {
+          "title": "Operaciones de contenido repetibles",
+          "description": "Equipos que necesitan un proceso para contenido de producto a escala, no ediciones puntuales."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Simular",
+          "description": "Las evaluaciones de compras con IA se ejecutan en tus productos y fichas de competidores, para que el equipo vea quién gana y por qué."
+        },
+        {
+          "title": "Diagnosticar",
+          "description": "Inspecciona brechas de atributos y las razones detrás de cada selección: datos faltantes, posicionamiento débil o contexto de producto incompleto."
+        },
+        {
+          "title": "Publicar",
+          "description": "Títulos, descripciones y datos de producto aprobados se envían directamente a plataformas compatibles en lugar de copiarse a mano."
+        }
+      ]
+    },
+    "nextSteps": {
+      "number": "04",
+      "title": "Dónde ir después de esta página.",
+      "description": "Pasa del flujo de fichas al contenido de plataforma o investigación que encaje con tu siguiente paso.",
+      "items": [
+        {
+          "href": "/platforms/shopify",
+          "name": "Shopify",
+          "title": "Ve el flujo para catálogos Shopify",
+          "description": "Conecta productos, referencia competidores y publica actualizaciones de fichas aprobadas de vuelta en Shopify.",
+          "label": "Abrir página de Shopify",
+          "color": "primary"
+        },
+        {
+          "href": "/platforms/woocommerce",
+          "name": "WooCommerce",
+          "title": "Ejecuta el mismo ciclo para productos WooCommerce",
+          "description": "Usa la ruta WooCommerce si tu equipo necesita mejoras de producto sin cambiar de plataforma.",
+          "label": "Abrir página de WooCommerce",
+          "color": "accent"
+        },
+        {
+          "href": "/compare/best-ai-ecommerce-tools",
+          "name": "Comparación",
+          "title": "Compara categorías de IA para ecommerce antes de comprar",
+          "description": "Usa la guía para separar generadores de contenido de herramientas de optimización de comercio con agentes.",
+          "label": "Leer guía de comparación",
+          "color": "accent"
+        },
+        {
+          "href": "/blog",
+          "name": "Blog",
+          "title": "Profundiza en datos estructurados, tráfico de IA y visibilidad de catálogo",
+          "description": "El blog convierte la optimización de fichas en listas de verificación operativas repetibles para comerciantes y equipos.",
+          "label": "Visitar el blog",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "05",
+      "title": "Preguntas frecuentes",
+      "description": "Preguntas habituales de comerciantes que investigan optimización de fichas de producto con IA."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "¿Qué es la optimización de fichas de producto con IA?",
+          "answer": "La optimización de fichas de producto con IA es el proceso de mejorar títulos, descripciones, atributos y contexto de producto de apoyo para que los sistemas de compras con IA y los compradores de alta intención puedan comparar la ficha con más confianza."
+        },
+        {
+          "question": "¿La optimización de fichas solo cambia el copy?",
+          "answer": "No. Un mejor copy ayuda, pero la optimización de fichas también incluye datos estructurados de producto, especificaciones más claras, contexto de categoría, detalles de confianza y la información de apoyo que ayuda a un sistema a evaluar la oferta."
+        },
+        {
+          "question": "¿Cuál es la diferencia entre descripciones de producto con IA y optimización completa de fichas?",
+          "answer": "Las descripciones de producto con IA se centran en reescribir texto más rápido. La optimización completa de fichas mejora títulos, descripciones, atributos estructurados y señales de confianza del comerciante juntos, para que la ficha sea más fácil de evaluar tanto para compradores como para sistemas de compras con IA."
+        },
+        {
+          "question": "¿Cómo ayuda ecentic con la optimización de fichas de producto?",
+          "answer": "ecentic simula cómo los agentes de compras con IA comparan productos, muestra por qué gana un competidor y convierte esos hallazgos en títulos, descripciones y actualizaciones de fichas mejoradas que los comerciantes pueden aprobar y publicar."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Empezar a optimizar fichas",
+        "secondary": "Volver a funciones"
+      },
+      "note": "Configuración en 2 minutos · Sin tarjeta · Ve tu puntuación gratis primero"
+    }
+  }
+}

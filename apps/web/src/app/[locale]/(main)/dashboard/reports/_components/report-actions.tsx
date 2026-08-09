@@ -1,0 +1,77 @@
+"use client";
+
+import { ArrowRightIcon, DownloadIcon } from "@zenncore/icons";
+import { Button } from "@zenncore/web/components/button";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { Link } from "@/i18n/navigation";
+import * as Report from "@/server/app/report";
+
+const actions = {
+  winRateSummary: Report.exportWinRateSummary,
+  productPerformance: Report.exportProductPerformance,
+  competitorAnalysis: Report.exportCompetitorAnalysis,
+  optimizationImpact: Report.exportOptimizationImpact,
+} as const;
+
+type ReportKey = keyof typeof actions;
+
+export const ReportDownload = ({
+  report,
+  disabled,
+}: {
+  report: ReportKey;
+  disabled?: boolean;
+}) => {
+  const translate = useTranslations("dashboard.reports.action");
+  const [pending, setPending] = useState(false);
+
+  const download = () => {
+    setPending(true);
+    void (async () => {
+      const generated = await actions[report]();
+      setPending(false);
+      if (!generated.success) return;
+      const blob = new Blob([generated.data.content], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = generated.data.filename;
+      anchor.click();
+      URL.revokeObjectURL(url);
+    })();
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={download}
+      disabled={disabled || pending}
+      className="flex flex-1 items-center justify-center gap-1.5 rounded-md border border-accent-foreground bg-background-dimmed/60 px-3 py-1.5 font-medium text-foreground text-xs transition-colors hover:bg-background disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      <DownloadIcon className="size-4" />
+      {pending ? "…" : translate("downloadCsv")}
+    </button>
+  );
+};
+
+export const ShareReport = ({ scan }: { scan: string | null }) => {
+  const translate = useTranslations("dashboard.reports.shareable");
+
+  if (scan)
+    return (
+      <Button
+        color="primary"
+        className="mt-3"
+        render={<Link href={`/share/${scan}`} target="_blank" />}
+      >
+        {translate("action.primary")} <ArrowRightIcon className="size-4" />
+      </Button>
+    );
+
+  return (
+    <Button color="primary" className="mt-3" disabled>
+      {translate("runScanFirst")} <ArrowRightIcon className="size-4" />
+    </Button>
+  );
+};

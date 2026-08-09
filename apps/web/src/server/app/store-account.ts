@@ -1,9 +1,9 @@
 "use server";
 
-import { resultify } from "@zenncore/utils";
-import { db, schema } from "../database";
+import { eq } from "drizzle-orm";
+import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
-import type { Environment } from "../utils/environment";
+import { Environment } from "../utils/environment";
 import type { Document, ExecuteOptions, Insertable } from "../utils/repository";
 import { repository } from "../utils/repository";
 
@@ -42,16 +42,13 @@ export const sync = async (
 
 export const getForStore = withAuthentication(
   async (_, { store: storeId }: { store: string }) => {
-    const result = await resultify(
-      async () =>
-        await db.query.store_account.findFirst({
-          where: { storeId },
-        }),
-    );
+    const rows = await find(Environment.SERVER, {
+      where: eq(schema.store_account.storeId, storeId),
+      limit: 1,
+    });
+    if (!rows.success) return rows;
 
-    if (!result.success) return result;
-
-    return { success: true as const, data: result.data };
+    return { success: true as const, data: rows.data[0] };
   },
   "StoreAccount.getForStore",
 );

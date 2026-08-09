@@ -1,7 +1,7 @@
 "use server";
 
-import { and, eq, gte, inArray, or, sql } from "drizzle-orm";
-import { db, schema } from "../database";
+import { and, eq, inArray, or } from "drizzle-orm";
+import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
@@ -12,6 +12,8 @@ import * as Feed from "./integration/feed";
 import * as Shopify from "./integration/shopify";
 import * as WooCommerce from "./integration/woocommerce";
 import * as Product from "./product";
+import * as Simulation from "./simulation";
+import * as Tracking from "./tracking";
 
 export const { get, paginate, create, update, destroy, exists, count, find } =
   repository(schema.store);
@@ -140,53 +142,30 @@ export const overviewForCurrentUser = withAuthentication(async (context) => {
         where: eq(schema.store.userId, userId),
         orderBy: [{ column: schema.store.createdAt, direction: "desc" }],
       }),
-      db
-        .select({
-          storeId: schema.product.storeId,
-          count: sql<number>`count(*)::int`,
-        })
-        .from(schema.product)
-        .where(eq(schema.product.userId, userId))
-        .groupBy(schema.product.storeId),
-      db
-        .select({
-          storeId: schema.product.storeId,
-          total: sql<number>`count(*)::int`,
-          wins: sql<number>`count(*) filter (where ${schema.simulation.winner} = 'product')::int`,
-        })
-        .from(schema.simulation)
-        .innerJoin(
-          schema.product,
-          eq(schema.simulation.productId, schema.product.id),
-        )
-        .where(eq(schema.product.userId, userId))
-        .groupBy(schema.product.storeId),
-      db
-        .select({
-          storeId: schema.agentVisit.storeId,
-          count: sql<number>`count(*)::int`,
-        })
-        .from(schema.agentVisit)
-        .where(
-          and(
-            eq(schema.agentVisit.userId, userId),
-            gte(schema.agentVisit.createdAt, thirtyDaysAgo),
-          ),
-        )
-        .groupBy(schema.agentVisit.storeId),
+      Product.countByStoreForUser(Environment.SERVER, { user: userId }),
+      Simulation.winStatsByStoreForUser(Environment.SERVER, { user: userId }),
+      Tracking.countByStoreForUser(Environment.SERVER, {
+        user: userId,
+        since: thirtyDaysAgo,
+      }),
     ],
   );
   if (!storeRows.success) return storeRows;
+  if (!productCounts.success) return productCounts;
+  if (!simulationStats.success) return simulationStats;
+  if (!visits.success) return visits;
   if (storeRows.data.length === 0)
     return { success: true as const, data: [] as Overview[] };
 
   const productCountByStore = new Map(
-    productCounts.map((row) => [row.storeId, row.count]),
+    productCounts.data.map((row) => [row.storeId, row.count]),
   );
   const simulationStatsByStore = new Map(
-    simulationStats.map((row) => [row.storeId, row]),
+    simulationStats.data.map((row) => [row.storeId, row]),
   );
-  const visitsByStore = new Map(visits.map((row) => [row.storeId, row.count]));
+  const visitsByStore = new Map(
+    visits.data.map((row) => [row.storeId, row.count]),
+  );
 
   const data = storeRows.data.map((store) => {
     const stats = simulationStatsByStore.get(store.id);

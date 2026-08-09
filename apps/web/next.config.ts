@@ -1,13 +1,23 @@
 import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
 
 // Keep in sync with `agentHomepageLinkHeader` in `src/lib/agent-discovery.ts`.
 // next.config cannot import that module (path aliases / Node resolution).
 const agentHomepageLinkHeader =
   '</.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json", </llms.txt>; rel="describedby"; type="text/plain", </auth.md>; rel="service-doc"; type="text/markdown", </.well-known/oauth-authorization-server>; rel="oauth-authorization-server"; type="application/json", </.well-known/openid-configuration>; rel="openid-configuration"; type="application/json", </.well-known/oauth-protected-resource>; rel="oauth-protected-resource"; type="application/json", </.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json", </.well-known/agent-skills/index.json>; rel="service-desc"; type="application/json", </.well-known/ucp>; rel="service-desc"; type="application/json", </.well-known/acp.json>; rel="service-desc"; type="application/json", </openapi.json>; rel="service-desc"; type="application/json", </api/mcp>; rel="service-desc"; type="application/json", </resources>; rel="service-doc"; type="text/html"';
 
+const withNextIntl = createNextIntlPlugin({
+  requestConfig: "./src/i18n/request.ts",
+  experimental: {
+    // Generates messages/en.d.json.ts so AppConfig.Messages keeps ICU
+    // argument literals (TS otherwise widens JSON strings).
+    createMessagesDeclaration: "./messages/en.json",
+  },
+});
+
 export default withSentryConfig(
-  {
+  withNextIntl({
     reactCompiler: true,
     typedRoutes: true,
     poweredByHeader: false,
@@ -16,6 +26,11 @@ export default withSentryConfig(
     },
     cacheComponents: true,
     partialPrefetching: true,
+    experimental: {
+      // Required so `app/global-not-found.tsx` works without a pass-through
+      // `app/layout.tsx` (locale segment is the root layout for root-params).
+      globalNotFound: true,
+    },
     rewrites: async () => {
       return [
         {
@@ -66,6 +81,13 @@ export default withSentryConfig(
         ],
       },
       {
+        source: "/es",
+        headers: [
+          { key: "Vary", value: "Accept" },
+          { key: "Link", value: agentHomepageLinkHeader },
+        ],
+      },
+      {
         source: "/.well-known/agent-skills/:path*",
         headers: [
           {
@@ -79,7 +101,7 @@ export default withSentryConfig(
         ],
       },
     ],
-  } satisfies NextConfig,
+  } satisfies NextConfig),
   {
     org: "zennit-aw",
     project: "ecentic",

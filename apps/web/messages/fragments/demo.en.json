@@ -1,0 +1,119 @@
+{
+  "demo": {
+    "meta": {
+      "title": "Book a Demo — See Your AI Win Rate Live",
+      "description": "Book a 15-minute ecentic demo. We run your top products through ChatGPT, Claude, Gemini, and Perplexity live and scope your highest-impact listing fixes."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "demo": "Book a demo"
+    },
+    "hero": {
+      "eyebrow": "Book a demo",
+      "title": {
+        "primary": "See your AI win rate,",
+        "accent": "live in 15 minutes."
+      },
+      "description": "We run your top products through ChatGPT, Claude, Gemini, and Perplexity while you watch, show you why you win or lose, and scope the highest-impact listing fixes. Pick a slot below.",
+      "assurances": [
+        "15 minutes, not a slide deck",
+        "No account or catalog connection needed",
+        "No procurement deck required"
+      ],
+      "art": {
+        "alt": "ASCII-art illustration of a desk calendar"
+      }
+    },
+    "whatWeCover": {
+      "number": "01",
+      "title": "What we'll cover.",
+      "description": "A focused 15-minute working session. You leave with something to act on.",
+      "body": [
+        "We keep the call short and practical. Bring a store URL or a few product links you care about and we do the rest live. There is no obligation to continue afterward."
+      ],
+      "label": "The agenda",
+      "agentStripLabel": "Simulated live on the call",
+      "items": [
+        {
+          "title": "Run the simulation live",
+          "description": "Your top products go through the major AI shopping models while you watch."
+        },
+        {
+          "title": "See why you win or lose",
+          "description": "Attribute by attribute, against the competitors agents actually pick."
+        },
+        {
+          "title": "Leave with fixes",
+          "description": "The highest-impact listing changes to make first."
+        },
+        {
+          "title": "Sketch the loop",
+          "description": "What an ongoing optimization loop would look like for your catalog."
+        }
+      ]
+    },
+    "whoShouldBook": {
+      "number": "02",
+      "title": "Who should book.",
+      "description": "The call is most useful when you have a real catalog to look at and a reason to act on the results.",
+      "body": [
+        "A demo is the fastest path when you want a second set of eyes on the results rather than reading the report alone.",
+        "Rather see your numbers first? The free Scan runs the same simulation on your top 10 products in about two minutes."
+      ],
+      "label": "The call helps most when you are",
+      "action": {
+        "primary": "Run the free scan"
+      },
+      "items": [
+        {
+          "title": "Managing competitive catalogs",
+          "description": "Large or competitive categories where missing attributes quietly cost selection."
+        },
+        {
+          "title": "Comparing tool categories",
+          "description": "Weighing agent-commerce optimization against content generators or analytics tools."
+        },
+        {
+          "title": "Running multiple stores",
+          "description": "Considering a custom Enterprise setup across brands."
+        },
+        {
+          "title": "Short on time",
+          "description": "You want the diagnosis explained in plain language, not another report to read."
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "03",
+      "title": "Frequently asked questions",
+      "description": "Common questions about the demo call."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "What happens on the call?",
+          "answer": "We run your top products through the major AI shopping models while you watch, walk through why agents pick you or a competitor, and leave you with the highest-impact listing changes to make first."
+        },
+        {
+          "question": "How long does the demo take?",
+          "answer": "Fifteen minutes. It is a focused working session, not a slide deck. If your team needs a deeper enterprise scoping call afterward, we will book that separately."
+        },
+        {
+          "question": "Do I need to prepare anything?",
+          "answer": "Just the store URL or a few product links you care about. You do not need to connect your catalog or create an account before the call."
+        },
+        {
+          "question": "Can I skip the call and just start?",
+          "answer": "Yes. The free Scan plan runs the same simulation on your top 10 products in about two minutes with no credit card. Book a call if you would rather have us walk through the results with you."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Start free instead",
+        "secondary": "See pricing"
+      },
+      "note": "Prefer self-serve? Run your first scan with no credit card."
+    }
+  }
+}

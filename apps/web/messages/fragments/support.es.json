@@ -1,0 +1,104 @@
+{
+  "support": {
+    "meta": {
+      "title": "Soporte — Ayuda con escaneos, facturación y agentes",
+      "description": "Obtén ayuda con ecentic: soporte por correo, un recorrido en vivo de tus resultados de escaneo o una ruta de escalado dedicada para cuentas Enterprise y comercio con agentes."
+    },
+    "breadcrumb": {
+      "home": "Inicio",
+      "support": "Soporte"
+    },
+    "hero": {
+      "eyebrow": "Soporte",
+      "title": {
+        "primary": "Estamos aquí",
+        "accent": "para ayudarte."
+      },
+      "description": "Preguntas sobre tus resultados de escaneo, una integración, la facturación o cualquier otra cosa: elige el canal que encaje y nosotros nos encargamos.",
+      "assurances": [
+        "Personas reales al otro lado",
+        "Recorridos gratis de escaneo",
+        "Ruta de escalado Enterprise"
+      ],
+      "art": {
+        "alt": "Ilustración ASCII de un auricular de soporte"
+      }
+    },
+    "channels": {
+      "number": "01",
+      "title": "Elige tu canal.",
+      "description": "Correo para la mayoría de cosas, una llamada en vivo cuando quieras que te expliquen los resultados, y una vía directa para equipos Enterprise.",
+      "items": [
+        {
+          "id": "email",
+          "title": "Soporte por correo",
+          "description": "La forma más rápida de contactarnos para preguntas de cuenta, facturación o integración. Incluye la URL de tu tienda para que podamos revisar antes de responder.",
+          "highlighted": true,
+          "action": {
+            "primary": "support@ecentic.ai"
+          }
+        },
+        {
+          "id": "walkthrough",
+          "title": "Recorrido en vivo",
+          "description": "Una llamada de 15 minutos donde ejecutamos tus productos en los modelos de compras con IA en vivo y explicamos los resultados en lenguaje claro.",
+          "highlighted": false,
+          "action": {
+            "primary": "Reservar una llamada"
+          }
+        },
+        {
+          "id": "enterprise",
+          "title": "Escalado Enterprise",
+          "description": "Las cuentas Enterprise tienen un CSM asignado, revisiones trimestrales y una ruta de escalado directa a ingeniería.",
+          "highlighted": false,
+          "action": {
+            "primary": "Ver Enterprise"
+          }
+        }
+      ]
+    },
+    "selfServe": {
+      "number": "02",
+      "title": "Encuéntralo más rápido tú mismo.",
+      "description": "La mayoría de preguntas ya están respondidas en estas páginas.",
+      "items": [
+        {
+          "href": "/how-it-works",
+          "name": "Cómo funciona",
+          "title": "Entiende el ciclo simular, diagnosticar, optimizar",
+          "description": "La explicación completa de qué pasa después de conectar tu tienda, paso a paso.",
+          "label": "Leer cómo funciona"
+        },
+        {
+          "href": "/features",
+          "name": "Funciones",
+          "title": "Ve cada herramienta de la plataforma",
+          "description": "Puntuaciones de tasa de victoria, análisis de brechas con competidores, reescrituras de fichas, tráfico de agentes, perfiles UCP y reescaneos.",
+          "label": "Abrir página de funciones"
+        },
+        {
+          "href": "/pricing",
+          "name": "Precios",
+          "title": "Compara planes, desde el escaneo gratis",
+          "description": "El escaneo gratis, Pay-as-you-go y las suscripciones Compete y Dominate explicadas lado a lado.",
+          "label": "Ver precios"
+        },
+        {
+          "href": "/privacy-policy",
+          "name": "Privacidad",
+          "title": "Consulta qué datos guardamos y cuáles nunca",
+          "description": "Alcances solo de productos, sin datos personales de compradores, solo cookies esenciales y cómo funciona la eliminación.",
+          "label": "Leer la política"
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Ejecuta tu escaneo gratis",
+        "secondary": "Volver al inicio"
+      },
+      "note": "Configuración en 2 minutos · Sin tarjeta · Ve tu puntuación gratis primero"
+    }
+  }
+}

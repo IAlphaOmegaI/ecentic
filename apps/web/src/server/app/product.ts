@@ -1,16 +1,18 @@
 "use server";
 
 import { unique } from "@zenncore/utils";
-import { and, eq, inArray } from "drizzle-orm";
-import { schema } from "../database";
+import { and, eq, inArray, sql } from "drizzle-orm";
+import { db, schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
+import { withInstrumentation } from "../utils/context";
 import { dedupe } from "../utils/dedupe";
 import { Environment } from "../utils/environment";
+import { DatabaseError } from "../utils/error";
 import type { Pager } from "../utils/pagination";
 import type { Document, ExecuteOptions, Insertable } from "../utils/repository";
-import { repository } from "../utils/repository";
-import { themeEmbedDeepLink } from "../utils/shopify";
+import { repository, resultifyRead } from "../utils/repository";
 import * as Competitor from "./competitor";
+import { themeEmbedDeepLink } from "./integration/shopify/hmac";
 import {
   checkProductPageSchema,
   NO_PAGE_URL,
@@ -93,6 +95,36 @@ export const countForCurrentUser = withAuthentication(
     );
   },
   "Product.countForCurrentUser",
+);
+
+/**
+ * Product counts grouped by store for one user — the dashboard hub card totals.
+ * Aggregation stays in SQL so callers never pull the full catalog just to count.
+ */
+export const countByStoreForUser = withInstrumentation(
+  async (_, { user }: { user: string }) => {
+    const rows = await resultifyRead(async () =>
+      db
+        .select({
+          storeId: schema.product.storeId,
+          count: sql<number>`count(*)::int`,
+        })
+        .from(schema.product)
+        .where(eq(schema.product.userId, user))
+        .groupBy(schema.product.storeId),
+    );
+
+    if (!rows.success)
+      return {
+        success: false as const,
+        error: new DatabaseError("Failed to count products by store", {
+          cause: rows.error,
+        }),
+      };
+
+    return { success: true as const, data: rows.data };
+  },
+  "Product.countByStoreForUser",
 );
 
 // `images` is a JSON-encoded string array; feed imports occasionally leave it
