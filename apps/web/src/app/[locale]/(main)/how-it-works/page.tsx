@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
@@ -23,16 +23,6 @@ import { Steps } from "./_components/steps";
 
 type HowItWorksPageProps = {
   params: Promise<{ locale: string }>;
-};
-
-type FaqItem = {
-  question: string;
-  answer: string;
-};
-
-type SchemaStep = {
-  name: string;
-  text: string;
 };
 
 export const generateMetadata = async ({
@@ -62,10 +52,11 @@ export default async ({ params }: HowItWorksPageProps) => {
   setRequestLocale(locale);
 
   const translate = await getTranslations({ locale, namespace: "howItWorks" });
+  const messages = await getMessages();
   const description = translate("meta.description");
-  const assurances = translate.raw("hero.assurances") as readonly string[];
-  const faq = translate.raw("faq.items") as readonly FaqItem[];
-  const steps = translate.raw("schema.steps") as readonly SchemaStep[];
+  const assurances = messages.howItWorks.hero.assurances;
+  const faq = messages.howItWorks.faq.items;
+  const steps = messages.howItWorks.schema.steps;
 
   const structuredData = [
     {

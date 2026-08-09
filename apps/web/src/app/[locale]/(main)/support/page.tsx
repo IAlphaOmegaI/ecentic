@@ -12,7 +12,7 @@ import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { localizePath } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
@@ -72,22 +72,11 @@ export default async ({ params }: SupportPageProps) => {
   setRequestLocale(locale);
 
   const translate = await getTranslations({ locale, namespace: "support" });
+  const messages = await getMessages();
   const description = translate("meta.description");
-  const assurances = translate.raw("hero.assurances") as readonly string[];
-  const channels = translate.raw("channels.items") as readonly {
-    id: keyof typeof channelIcons;
-    title: string;
-    description: string;
-    highlighted: boolean;
-    action: { primary: string };
-  }[];
-  const selfServe = translate.raw("selfServe.items") as readonly {
-    href: keyof typeof selfServeIcons;
-    name: string;
-    title: string;
-    description: string;
-    label: string;
-  }[];
+  const assurances = messages.support.hero.assurances;
+  const channels = messages.support.channels.items;
+  const selfServe = messages.support.selfServe.items;
 
   const structuredData = [
     {

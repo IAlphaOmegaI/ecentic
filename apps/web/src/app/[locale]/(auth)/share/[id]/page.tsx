@@ -1,6 +1,7 @@
 import { ArrowRightIcon, TrendDownIcon, TrendUpIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
+import { getMessages, getTranslations } from "next-intl/server";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { notFound } from "next/navigation";
@@ -41,9 +42,17 @@ const models = [
   },
 ] as const;
 
-export default async ({ params }: PageProps<"/share/[id]">) => {
+type SharePageProps = {
+  params: Promise<{ id: string; locale: string }>;
+};
+
+export default async ({ params }: SharePageProps) => {
   await connection();
   const { id } = await params;
+
+  const translate = await getTranslations("share");
+  const messages = await getMessages();
+  const sidebar = messages.share.sidebar;
 
   const result = await Scan.getShareData(Environment.SERVER, { id });
   if (!result.success) notFound();
@@ -67,29 +76,26 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
   const message = (() => {
     switch (true) {
       case winRate >= 60:
-        return "Ahead of most competitors.";
+        return translate("score.messages.high");
       case winRate >= 30:
-        return "Competitive, but room to grow.";
+        return translate("score.messages.medium");
       default:
-        return "AI agents are choosing competitors.";
+        return translate("score.messages.low");
     }
   })();
+
   return (
     <div className="flex h-screen overflow-hidden bg-primary">
       <Onboarding
         identifier="share"
         headline={
           <>
-            Your results
+            {sidebar.headline.line1}
             <br />
-            are in.
+            {sidebar.headline.line2}
           </>
         }
-        points={[
-          "ChatGPT, Claude, Gemini & Perplexity simulated real shopping comparisons",
-          "Every product was scored head-to-head against competitors",
-          "This report shows exactly where you win — and where you lose",
-        ]}
+        points={sidebar.points}
         image="/images/share.png"
         classList={{ image: "opacity-20" }}
       />
@@ -102,21 +108,19 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
           <Motion.Item className="border-accent-foreground border-b px-8">
             <div className="border-accent-foreground border-x p-6">
               <h2 className="font-medium text-4xl text-foreground">
-                How does your store stack up?
+                {translate("page.title")}
               </h2>
               <p className="mt-1 font-light text-2xl text-foreground-dimmed">
-                Get an in-depth look at how your store stacks up against the
-                competition.
+                {translate("page.description")}
               </p>
             </div>
           </Motion.Item>
           <Motion.Item className="border-accent-foreground border-b px-8">
             <div className="grid grid-cols-[1fr_1fr] gap-px border-accent-foreground border-x bg-accent-foreground">
-              {/* Score */}
               <div className="flex flex-col justify-between bg-background-dimmed px-6 py-8">
                 <div>
                   <p className="mb-1 font-light text-foreground-dimmed text-xs uppercase tracking-widest">
-                    AI Agent Score
+                    {translate("score.label")}
                   </p>
                   <p
                     className={cn(
@@ -146,7 +150,9 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
                     {message}
                   </p>
                   <p className="mt-1 font-light text-foreground-dimmed/50 text-xs">
-                    {scan.completedSimulations} simulations
+                    {translate("score.simulations", {
+                      count: String(scan.completedSimulations),
+                    })}
                   </p>
                   <div className="mt-4 flex gap-6">
                     <div className="flex items-center gap-2">
@@ -155,7 +161,7 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
                         {scan.wins}
                       </span>
                       <span className="font-light text-foreground-dimmed text-sm">
-                        Wins
+                        {translate("score.wins")}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -164,13 +170,12 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
                         {scan.losses}
                       </span>
                       <span className="font-light text-foreground-dimmed text-sm">
-                        Losses
+                        {translate("score.losses")}
                       </span>
                     </div>
                   </div>
                 </div>
               </div>
-              {/* Model cards 2x2 */}
               <div className="grid grid-cols-2 gap-px bg-accent-foreground">
                 {models.map((model) => {
                   const rates = modelRates[model.id];
@@ -229,7 +234,7 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
                 <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-[1fr_auto]">
                   <div className="bg-primary px-6 py-6">
                     <p className="mb-3 font-light text-white/60 text-xs uppercase tracking-widest">
-                      Impact
+                      {translate("finding.impact")}
                     </p>
                     <p className="font-light text-base text-white leading-relaxed">
                       {scan.topFinding.impactDescription}
@@ -240,22 +245,22 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
                       {scan.topFinding.lossPercentage}%
                     </span>
                     <p className="mt-2 font-light text-foreground-dimmed text-xs">
-                      of sims lost
+                      {translate("finding.simsLost")}
                     </p>
                   </div>
                 </div>
                 {scan.topFinding.missingAttributes.length > 0 && (
                   <div className="flex flex-col gap-3 border-accent-foreground border-t px-6 py-5">
                     <p className="font-light text-foreground-dimmed text-xs uppercase tracking-widest">
-                      Missing attributes
+                      {translate("finding.missingAttributes")}
                     </p>
                     <div className="flex flex-wrap gap-2">
-                      {scan.topFinding.missingAttributes.map((attr) => (
+                      {scan.topFinding.missingAttributes.map((attribute) => (
                         <span
-                          key={attr}
+                          key={attribute}
                           className="border border-primary/20 bg-primary/8 px-3 py-1 font-light text-primary text-sm"
                         >
-                          {attr}
+                          {attribute}
                         </span>
                       ))}
                     </div>
@@ -273,15 +278,15 @@ export default async ({ params }: PageProps<"/share/[id]">) => {
             <div className="grid border-accent-foreground border-x sm:grid-cols-[1fr_auto]">
               <div className="px-6 py-8">
                 <p className="font-body text-2xl text-foreground leading-snug">
-                  Ready to win every AI agent's cart?
+                  {translate("cta.title")}
                 </p>
                 <p className="font-light text-foreground-dimmed">
-                  ecentic auto-optimizes your listings. Free to start.
+                  {translate("cta.description")}
                 </p>
               </div>
               <div className="flex items-end p-6">
                 <Button color="primary" render={<Link href="/sign-up" />}>
-                  Start free
+                  {translate("cta.action")}
                   <ArrowRightIcon className="size-4" />
                 </Button>
               </div>

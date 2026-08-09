@@ -1,17 +1,13 @@
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { ItemCycle } from "@/app/[locale]/(main)/_components/item-cycle";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
 
-type Principle = {
-  title: string;
-  description: string;
-};
-
 export const WhyListingsLose = async () => {
   const translate = await getTranslations("productListings");
-  const paragraphs = translate.raw("whyListingsLose.paragraphs") as readonly string[];
-  const principles = translate.raw("whyListingsLose.principles") as readonly Principle[];
+  const messages = await getMessages();
+  const paragraphs = messages.productListings.whyListingsLose.paragraphs;
+  const principles = messages.productListings.whyListingsLose.principles;
 
   return (
     <section className="scroll-mt-24 border-accent-foreground border-b">

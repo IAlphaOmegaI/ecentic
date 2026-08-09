@@ -1,6 +1,6 @@
 import { ArrowRightIcon, BarChartIcon, CircleBoltIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Plus } from "@/components/plus";
@@ -16,14 +16,8 @@ const linkAssets = {
 
 export const RelatedPages = async () => {
   const translate = await getTranslations("compare");
-  const links = translate.raw("related.links") as readonly {
-    href: keyof typeof linkAssets;
-    name: string;
-    title: string;
-    description: string;
-    label: string;
-    color: "primary" | "accent";
-  }[];
+  const messages = await getMessages();
+  const links = messages.compare.related.links;
 
   return (
     <section className="border-accent-foreground border-b">

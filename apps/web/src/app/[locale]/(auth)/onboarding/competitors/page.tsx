@@ -1,5 +1,5 @@
 import { parseSearchParam, unwrapResult } from "@zenncore/utils";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import type { SearchParamsProps } from "@zenncore/web/types";
 import { connection } from "next/server";
@@ -12,20 +12,18 @@ export default async ({ searchParams }: SearchParamsProps<"products">) => {
   await connection();
 
   const params = await searchParams;
+  const translate = await getTranslations("onboarding.competitors.page");
 
   const products = parseSearchParam(params.products, "list", []);
 
-  // Competitors are store-scoped, so this step has to know which catalog it is
-  // detecting for. The selected products carry that — resolving from them keeps
-  // the rivals on the same store the products came from, rather than on
-  // whichever store happens to be newest.
   const store = await unwrapResult(
     Product.resolveStoreForSelection(Environment.SERVER, { products }),
   );
 
-  // No store means nothing has been connected yet; there is no catalog to find
-  // rivals for, so send the user back to the step that creates one.
-  if (!store) redirect({ href: "/onboarding/connect", locale: await getLocale() });
+  if (!store) {
+    redirect({ href: "/onboarding/connect", locale: await getLocale() });
+    return null;
+  }
 
   const skimmed = await Product.skimForCurrentUser(Environment.SERVER, {
     store,
@@ -42,11 +40,10 @@ export default async ({ searchParams }: SearchParamsProps<"products">) => {
     >
       <Motion.Item className="border-accent-foreground border-x p-6">
         <h2 className="font-medium text-4xl text-foreground">
-          Who are your competitors?
+          {translate("title")}
         </h2>
         <p className="mt-1 font-light text-2xl text-foreground-dimmed">
-          We'll test your products head-to-head against these competitors in AI
-          agent simulations.
+          {translate("description")}
         </p>
       </Motion.Item>
     </CompetitorManager>

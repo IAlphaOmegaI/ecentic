@@ -2,7 +2,7 @@ import { ArrowRightIcon, CheckIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { BookCall } from "@/components/cal";
 import { Plus } from "@/components/plus";
@@ -16,29 +16,6 @@ import type { PageBanner } from "../../_components/page-banner";
 import { PricingCTA } from "./pricing-cta";
 
 type PlanId = "payg" | "compete" | "scale" | "dominate";
-
-type PlanCopy = {
-  name: string;
-  category: string;
-  tagline: string;
-  badge?: string;
-  figure: string;
-  suffix: string;
-  note: string;
-  features: readonly string[];
-  action: {
-    primary: string;
-  };
-  art: {
-    alt: string;
-  };
-};
-
-type Plan = PlanCopy & {
-  id: PlanId;
-  art: PageBanner.Art;
-  highlighted?: boolean;
-};
 
 const planArt: Record<PlanId, PageBanner.Art> = {
   payg: { source: piggybank, alt: "" },
@@ -56,9 +33,10 @@ const planIds: readonly PlanId[] = [
 
 export const Plans = async () => {
   const translate = await getTranslations("pricing");
+  const messages = await getMessages();
 
-  const plans: readonly Plan[] = planIds.map((id) => {
-    const copy = translate.raw(`plans.${id}`) as PlanCopy;
+  const plans = planIds.map((id) => {
+    const copy = messages.pricing.plans[id];
     return {
       id,
       ...copy,
@@ -67,15 +45,11 @@ export const Plans = async () => {
         alt: copy.art.alt,
       },
       highlighted: id === "payg",
-      badge: id === "payg" ? copy.badge : undefined,
+      badge: id === "payg" && "badge" in copy ? copy.badge : undefined,
     };
   });
 
-  const enterprise = translate.raw("plans.enterprise") as {
-    title: string;
-    description: string;
-    action: { primary: string };
-  };
+  const enterprise = messages.pricing.plans.enterprise;
 
   return (
     <section id="pricing" className="scroll-mt-[5.5rem]">

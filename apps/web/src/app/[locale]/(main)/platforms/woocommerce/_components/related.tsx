@@ -7,19 +7,10 @@ import {
 } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Plus } from "@/components/plus";
 import shopify from "@/public/images/shopify.svg";
-
-type RelatedItem = {
-  href: string;
-  name: string;
-  title: string;
-  description: string;
-  label: string;
-  color: "primary" | "accent";
-};
 
 const relatedMeta: readonly (
   | { href: string; icon: Icon }
@@ -33,7 +24,8 @@ const relatedMeta: readonly (
 
 export const RelatedPages = async () => {
   const translate = await getTranslations("woocommerce");
-  const items = translate.raw("related.items") as readonly RelatedItem[];
+  const messages = await getMessages();
+  const items = messages.woocommerce.related.items;
   const related = items.map((item) => {
     const meta = relatedMeta.find((entry) => entry.href === item.href);
 

@@ -1,17 +1,13 @@
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { ItemCycle } from "@/app/[locale]/(main)/_components/item-cycle";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
 import { ListingWorkflowCycle } from "./listing-workflow-cycle";
 
-type Audience = {
-  title: string;
-  description: string;
-};
-
 export const Workflow = async () => {
   const translate = await getTranslations("productListings");
-  const audiences = translate.raw("workflow.audiences") as readonly Audience[];
+  const messages = await getMessages();
+  const audiences = messages.productListings.workflow.audiences;
 
   return (
     <section className="scroll-mt-24 border-accent-foreground border-b">

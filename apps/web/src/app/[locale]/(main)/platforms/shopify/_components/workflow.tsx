@@ -1,17 +1,13 @@
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { ItemCycle } from "@/app/[locale]/(main)/_components/item-cycle";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
 import { ShopifyWorkflowCycle } from "./shopify-workflow-cycle";
 
-type Outcome = {
-  title: string;
-  description: string;
-};
-
 export const Workflow = async () => {
   const translate = await getTranslations("shopify");
-  const outcomes = translate.raw("workflow.outcomes") as readonly Outcome[];
+  const messages = await getMessages();
+  const outcomes = messages.shopify.workflow.outcomes;
 
   return (
     <section className="scroll-mt-24 border-accent-foreground border-b">

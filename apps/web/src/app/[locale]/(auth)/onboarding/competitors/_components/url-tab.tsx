@@ -7,6 +7,7 @@ import { Textarea, TextareaInput } from "@zenncore/web/components/textarea";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import type * as Competitor from "@/server/app/competitor";
 import * as Scrape from "@/server/app/intelligence/scrape";
@@ -15,7 +16,6 @@ import { CompetitorResults } from "./competitor-results";
 export namespace UrlTab {
   export type Props = {
     onSuccess?: (competitors: Competitor.Type[]) => void;
-    /** Store the extracted rivals are written against. */
     store: string;
     className?: string;
   };
@@ -23,6 +23,7 @@ export namespace UrlTab {
 
 export const UrlTab = ({ className, onSuccess, store }: UrlTab.Props) => {
   const toast = useToastManager();
+  const translate = useTranslations("onboarding.competitors.url");
   const [url, setUrl] = useState<string | null>(null);
   const [competitors, setCompetitors] = useState<Competitor.Type[]>([]);
 
@@ -39,7 +40,7 @@ export const UrlTab = ({ className, onSuccess, store }: UrlTab.Props) => {
 
     if (!result.success) {
       toast.add({
-        title: "Extraction failed",
+        title: translate("toast.failed"),
         description: result.error.message,
         type: "error",
       });
@@ -50,8 +51,10 @@ export const UrlTab = ({ className, onSuccess, store }: UrlTab.Props) => {
     onSuccess?.(result.data);
     setUrl(null);
     toast.add({
-      title: "Products extracted",
-      description: `Extracted ${result.data.length} products from URLs.`,
+      title: translate("toast.success.title"),
+      description: translate("toast.success.description", {
+        count: String(result.data.length),
+      }),
       type: "success",
     });
   });
@@ -84,7 +87,7 @@ export const UrlTab = ({ className, onSuccess, store }: UrlTab.Props) => {
                 htmlFor="urls"
                 className="block font-medium text-foreground text-sm"
               >
-                Paste competitor product URLs (one per line)
+                {translate("label")}
               </label>
               <Textarea
                 value={url}
@@ -94,9 +97,7 @@ export const UrlTab = ({ className, onSuccess, store }: UrlTab.Props) => {
                 <TextareaInput
                   id="urls"
                   rows={6}
-                  placeholder={
-                    "https://amazon.com/dp/B0XXXXX\nhttps://competitorstore.com/products/example\nhttps://amazon.com/dp/B0YYYYY"
-                  }
+                  placeholder={translate("placeholder")}
                   className="font-mono text-sm"
                 />
               </Textarea>
@@ -108,8 +109,8 @@ export const UrlTab = ({ className, onSuccess, store }: UrlTab.Props) => {
                 className="mt-auto px-4 py-2 font-medium text-sm"
               >
                 {isScraping
-                  ? "Extracting product data..."
-                  : "Extract Product Data"}
+                  ? translate("action.extracting")
+                  : translate("action.extract")}
               </Button>
             </div>
           </motion.div>
@@ -130,7 +131,7 @@ export const UrlTab = ({ className, onSuccess, store }: UrlTab.Props) => {
               >
                 <TextareaInput
                   rows={2}
-                  placeholder="Paste more URLs to extract..."
+                  placeholder={translate("placeholderMore")}
                   className="font-mono text-sm"
                 />
               </Textarea>
@@ -142,7 +143,9 @@ export const UrlTab = ({ className, onSuccess, store }: UrlTab.Props) => {
                 disabled={!url?.trim() || isScraping}
                 className="shrink-0 self-end px-4 py-2 font-medium text-sm"
               >
-                {isScraping ? "Extracting..." : "Extract"}
+                {isScraping
+                  ? translate("action.extractingShort")
+                  : translate("action.extractShort")}
               </Button>
             </div>
 

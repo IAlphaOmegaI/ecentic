@@ -1,16 +1,14 @@
 import { ArrowRightIcon, FaceSearchIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { IndexSection } from "@/app/[locale]/(main)/_components/index-section";
 
 export const WhoShouldBook = async () => {
   const translate = await getTranslations("demo");
-  const body = translate.raw("whoShouldBook.body") as readonly string[];
-  const items = translate.raw("whoShouldBook.items") as readonly {
-    title: string;
-    description: string;
-  }[];
+  const messages = await getMessages();
+  const body = messages.demo.whoShouldBook.body;
+  const items = messages.demo.whoShouldBook.items;
 
   return (
     <IndexSection

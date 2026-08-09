@@ -1,15 +1,13 @@
 import { CircleBoltIcon } from "@zenncore/icons";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { AgentStrip } from "@/app/[locale]/(main)/_components/agent-strip";
 import { IndexSection } from "@/app/[locale]/(main)/_components/index-section";
 
 export const WhatWeCover = async () => {
   const translate = await getTranslations("demo");
-  const body = translate.raw("whatWeCover.body") as readonly string[];
-  const items = translate.raw("whatWeCover.items") as readonly {
-    title: string;
-    description: string;
-  }[];
+  const messages = await getMessages();
+  const body = messages.demo.whatWeCover.body;
+  const items = messages.demo.whatWeCover.items;
 
   return (
     <IndexSection

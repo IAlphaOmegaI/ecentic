@@ -1,15 +1,9 @@
 import { ArrowRightIcon, CheckIcon } from "@zenncore/icons";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { BookCall } from "@/components/cal";
 import { Plus } from "@/components/plus";
 
 type Cell = string | boolean;
-
-type Row = {
-  label: string;
-  dominate: Cell;
-  enterprise: Cell;
-};
 
 const CompareCell = ({ value }: { value: Cell }) => {
   switch (true) {
@@ -30,7 +24,8 @@ const CompareCell = ({ value }: { value: Cell }) => {
 
 export const Compare = async () => {
   const translate = await getTranslations("enterprise");
-  const rows = translate.raw("compare.rows") as readonly Row[];
+  const messages = await getMessages();
+  const rows = messages.enterprise.compare.rows;
 
   return (
     <section className="border-accent-foreground border-b">

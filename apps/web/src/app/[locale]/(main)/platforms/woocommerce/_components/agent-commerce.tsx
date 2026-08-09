@@ -1,4 +1,3 @@
-import type { Icon } from "@zenncore/icons";
 import {
   ArrowRightIcon,
   RadarIcon,
@@ -7,23 +6,13 @@ import {
   ShoppingCartIcon,
 } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { ItemCycle } from "@/app/[locale]/(main)/_components/item-cycle";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
 
 const PLUGIN_URL = "https://wordpress.org/plugins/ecentic-for-woocommerce/";
-
-type Capability = {
-  title: string;
-  description: string;
-};
-
-type Control = {
-  title: string;
-  description: string;
-};
 
 const capabilityIcons = [
   RadarIcon,
@@ -34,12 +23,9 @@ const capabilityIcons = [
 
 export const AgentCommerce = async () => {
   const translate = await getTranslations("woocommerce");
-  const capabilities = translate.raw(
-    "agentCommerce.capabilities",
-  ) as readonly Capability[];
-  const controls = translate.raw(
-    "agentCommerce.controls",
-  ) as readonly Control[];
+  const messages = await getMessages();
+  const capabilities = messages.woocommerce.agentCommerce.capabilities;
+  const controls = messages.woocommerce.agentCommerce.controls;
 
   return (
     <section className="scroll-mt-24 border-accent-foreground border-b">

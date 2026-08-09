@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { localizePath } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
 import { BookingEmbed } from "@/components/cal";
@@ -26,11 +26,6 @@ import { WhoShouldBook } from "./_components/who-should-book";
 
 type DemoPageProps = {
   params: Promise<{ locale: string }>;
-};
-
-type FaqItem = {
-  question: string;
-  answer: string;
 };
 
 export const generateMetadata = async ({
@@ -60,9 +55,10 @@ export default async ({ params }: DemoPageProps) => {
   setRequestLocale(locale);
 
   const translate = await getTranslations({ locale, namespace: "demo" });
+  const messages = await getMessages();
   const description = translate("meta.description");
-  const assurances = translate.raw("hero.assurances") as readonly string[];
-  const faq = translate.raw("faq.items") as readonly FaqItem[];
+  const assurances = messages.demo.hero.assurances;
+  const faq = messages.demo.faq.items;
 
   const structuredData = [
     {
