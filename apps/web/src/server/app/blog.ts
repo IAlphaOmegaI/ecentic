@@ -7,6 +7,7 @@
 import { resultify } from "@zenncore/utils";
 import { and, desc, eq, ne } from "drizzle-orm";
 import { cacheLife, cacheTag, revalidateTag } from "next/cache";
+import { after } from "next/server";
 import { z } from "zod";
 import { db, schema } from "../database";
 import * as AI from "../utils/ai";
@@ -24,6 +25,15 @@ export type Type = Document<typeof schema.blogPost>;
 
 /** Purged by `revalidateBlog` / Spanish writes. Keep in sync with BLG cache tags. */
 export const BLOG_CACHE_TAG = "blog";
+
+const purgeBlogCache = () => {
+  // `revalidateTag` is illegal during RSC render / prerender. Defer so
+  // ensureSpanish can run from page resolve via `after()` without crashing
+  // the route (Sentry: "used revalidateTag blog during render").
+  after(() => {
+    revalidateTag(BLOG_CACHE_TAG, { expire: 0 });
+  });
+};
 
 const published = eq(schema.blogPost.status, "published");
 
@@ -217,7 +227,7 @@ const upsertSpanishRow = async (values: {
     }
   }
 
-  revalidateTag(BLOG_CACHE_TAG, { expire: 0 });
+  purgeBlogCache();
   return findPublished(values.slug, "es");
 };
 
@@ -317,69 +327,50 @@ export type Resolved =
   | { kind: "post"; post: Type };
 
 /**
- * Same slug catalog for EN/ES. Prefer stored ES; optionally translate on demand;
- * fall back to EN source so real posts never 404.
+ * Same slug catalog for EN/ES. Prefer stored ES; fall back to EN so posts
+ * never 404. Plain async (no `withContext`): public RSC pages cannot await
+ * `headers()` from Sentry server-action instrumentation during prerender
+ * (Sentry: `"use cache" called after prerender ended` on Blog.resolve).
+ *
+ * On-demand Spanish translate is scheduled with `after()` — never awaited
+ * during render — so we never `revalidateTag` mid-RSC.
  */
-export const resolve = withContext(
-  async (
-    _context,
-    {
-      slug,
-      locale,
-      translate = true,
-    }: { slug: string; locale: "en" | "es"; translate?: boolean },
-  ) => {
+export const resolve = async ({
+  slug,
+  locale,
+  translate = true,
+}: {
+  slug: string;
+  locale: "en" | "es";
+  translate?: boolean;
+}) =>
+  resultify(async () => {
     if (locale === "en") {
       const article = await BabyLoveGrowth.getArticleBySlug(slug);
-      if (article)
-        return {
-          success: true as const,
-          data: { kind: "blg" as const, article },
-        };
+      if (article) return { kind: "blg" as const, article };
       const post = await findPublished(slug, "en");
-      if (post)
-        return {
-          success: true as const,
-          data: { kind: "post" as const, post },
-        };
-      return { success: true as const, data: null };
+      if (post) return { kind: "post" as const, post };
+      return null;
     }
 
     const existingSpanish = await findPublished(slug, "es");
     if (existingSpanish)
-      return {
-        success: true as const,
-        data: { kind: "post" as const, post: existingSpanish },
-      };
+      return { kind: "post" as const, post: existingSpanish };
 
     if (translate) {
-      const spanish = await ensureSpanish(Environment.SERVER, { slug });
-      if (!spanish.success) return spanish;
-      if (spanish.data)
-        return {
-          success: true as const,
-          data: { kind: "post" as const, post: spanish.data },
-        };
+      after(() => {
+        void ensureSpanish(Environment.SERVER, { slug });
+      });
     }
 
     const article = await BabyLoveGrowth.getArticleBySlug(slug);
-    if (article)
-      return {
-        success: true as const,
-        data: { kind: "blg" as const, article },
-      };
+    if (article) return { kind: "blg" as const, article };
 
     const english = await findPublished(slug, "en");
-    if (english)
-      return {
-        success: true as const,
-        data: { kind: "post" as const, post: english },
-      };
+    if (english) return { kind: "post" as const, post: english };
 
-    return { success: true as const, data: null };
-  },
-  "Blog.resolve",
-);
+    return null;
+  });
 
 /** English catalog slugs (BLG + local) — Spanish routes share this set.
  * Plain async (no `withContext`): used from `generateStaticParams`, which
@@ -466,7 +457,7 @@ export const translateMissingSpanish = withCron(async () => {
     }
   }
 
-  if (translated.length > 0) revalidateTag(BLOG_CACHE_TAG, { expire: 0 });
+  if (translated.length > 0) purgeBlogCache();
 
   return {
     success: true as const,

@@ -24,7 +24,12 @@ Unique on `(slug, locale)`.
 
 ## Server module
 
-All blog server logic lives in `apps/web/src/server/app/blog.ts` (`withContext` / `withCron` for mutations; `"use cache"` Drizzle reads for public list/get — `headers()` from `withContext` is not allowed inside cache scopes).
+All blog server logic lives in `apps/web/src/server/app/blog.ts`:
+
+- `"use cache"` Drizzle reads for public list/get
+- plain `resolve` / `listCatalogSlugs` for RSC / `generateStaticParams` (no `withContext` — that awaits `headers()` for Sentry and breaks prerender)
+- `withContext` / `withCron` for translate, ensureSpanish, ingest, backfill
+- cache purges via `after(() => revalidateTag(...))` so Spanish writes never call `revalidateTag` during render
 
 BabyLoveGrowth CMS client stays in `babylovegrowth.ts` (external API only).
 
@@ -37,7 +42,7 @@ When BabyLoveGrowth publishes an English article, configure their **Webhook** in
 3. Bearer token: value of `BABYLOVEGROWTH_WEBHOOK_SECRET`
 4. Enable automatic publish
 
-The handler acknowledges immediately (200), then `Blog.ingestPublish` translates title / meta / HTML to Spanish with Azure (`AI.generate`, gpt seat) and upserts `blog_post` (`locale=es`, same slug). First `/es/blog/[slug]` hit also calls `Blog.ensureSpanish` if the row is still missing.
+The handler acknowledges immediately (200), then `Blog.ingestPublish` translates title / meta / HTML to Spanish with Azure (`AI.generate`, gpt seat) and upserts `blog_post` (`locale=es`, same slug). A first `/es/blog/[slug]` hit schedules `Blog.ensureSpanish` in `after()` (EN content is served immediately if the ES row is still missing).
 
 ### Backfill
 

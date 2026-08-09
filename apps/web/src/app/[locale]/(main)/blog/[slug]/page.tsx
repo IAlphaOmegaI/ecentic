@@ -1,16 +1,15 @@
 import { unwrapResult } from "@zenncore/utils";
 import { readingTimeMinutes } from "babylovegrowth-next-js-blog";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
 import type { Locale } from "@/i18n/routing";
 import { routing } from "@/i18n/routing";
 import { splitBlogHtmlByH2 } from "@/lib/blog-html";
 import * as Blog from "@/server/app/blog";
-import { Environment } from "@/server/utils/environment";
 import {
   EditorialFooter,
   EditorialLayout,
@@ -59,7 +58,7 @@ export const generateMetadata = async ({
 
   // Metadata must not block on Azure translate — use stored ES or EN fallback.
   const resolved = await unwrapResult(
-    Blog.resolve(Environment.SERVER, {
+    Blog.resolve({
       slug,
       locale,
       translate: false,
@@ -137,9 +136,7 @@ export default async ({ params }: BlogPageProps) => {
   setRequestLocale(locale);
 
   const translate = await getTranslations({ locale, namespace: "blog" });
-  const resolved = await unwrapResult(
-    Blog.resolve(Environment.SERVER, { slug, locale }),
-  );
+  const resolved = await unwrapResult(Blog.resolve({ slug, locale }));
   if (!resolved) notFound();
 
   if (resolved.kind === "blg") {
