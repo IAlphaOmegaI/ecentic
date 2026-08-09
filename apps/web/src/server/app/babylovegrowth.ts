@@ -121,6 +121,14 @@ export const listArticles = async (): Promise<BlogArticleSummary[]> => {
   }
 };
 
+/** Uncached list that throws — for scripts/backfill (not soft-empty). */
+export const listArticlesStrict = async (): Promise<BlogArticleSummary[]> => {
+  if (!process.env.BABYLOVEGROWTH_BLOG_API_KEY) {
+    throw new Error("BABYLOVEGROWTH_BLOG_API_KEY is not configured");
+  }
+  return fetchAllArticles();
+};
+
 export const getArticleBySlug = async (
   slug: string,
 ): Promise<BlogArticle | null> => {

@@ -5,6 +5,7 @@
 // under Turbopack (PR #15 consolidate) and broke the production build.
 
 import { resultify } from "@zenncore/utils";
+import { slugify } from "babylovegrowth-next-js-blog";
 import { and, eq } from "drizzle-orm";
 import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 import { after } from "next/server";
@@ -282,18 +283,26 @@ export const resolve = async ({
     return null;
   });
 
-/** English catalog slugs (BLG + local) — Spanish routes share this set. */
+/** English catalog slugs from Postgres — public SSG must not depend on live BLG. */
 export const listCatalogSlugs = async () => {
-  const articles = await BabyLoveGrowth.listArticles();
-
   const englishRows = await find(Environment.SERVER, {
     where: and(eq(schema.blogPost.locale, "en"), published),
   });
-  const rows = englishRows.success ? englishRows.data : [];
+  if (!englishRows.success) throw englishRows.error;
+  return englishRows.data.map((row) => row.slug);
+};
 
-  const slugs = new Set(articles.map((article) => article.slug));
-  for (const row of rows) slugs.add(row.slug);
-  return [...slugs];
+/** Published posts whose category/tags slugify to `tagSlug`. */
+export const listPublishedByTag = async (
+  tagSlug: string,
+  locale: "en" | "es" = "en",
+) => {
+  const posts = await listPublished(locale);
+  return posts.filter((post) =>
+    [post.category, ...post.tags].some(
+      (keyword) => keyword.trim() && slugify(keyword) === tagSlug,
+    ),
+  );
 };
 
 const publishPayloadSchema = z.object({
@@ -342,6 +351,7 @@ export const parsePublishPayload = (body: unknown) => {
 /**
  * Persist EN from a BLG publish, Azure-translate to ES, upsert both rows
  * (same slug), purge the `blog` tag so static pages regenerate.
+ * English is always written first — ES translate failure does not roll EN back.
  */
 export const ingestPublish = withContext(
   async (_context, payload: PublishPayload) => {
@@ -361,7 +371,7 @@ export const ingestPublish = withContext(
     const thumbnailUrl = payload.heroImageUrl ?? null;
     const externalId = String(payload.id);
 
-    await upsertLocaleRow({
+    const english = await upsertLocaleRow({
       slug: payload.slug,
       locale: "en",
       source: "blg",
@@ -388,7 +398,19 @@ export const ingestPublish = withContext(
       takeaways: [],
     });
 
-    if (!translation.success) return translation;
+    if (!translation.success)
+      return {
+        success: true as const,
+        data: {
+          skipped: false as const,
+          id: english?.id,
+          action: "upserted-en-only" as const,
+          esError:
+            translation.error instanceof Error
+              ? translation.error.message
+              : String(translation.error),
+        },
+      };
 
     const spanish = await upsertLocaleRow({
       slug: payload.slug,
@@ -411,7 +433,7 @@ export const ingestPublish = withContext(
       success: true as const,
       data: {
         skipped: false as const,
-        id: spanish?.id,
+        id: spanish?.id ?? english?.id,
         action: "upserted" as const,
       },
     };
@@ -419,10 +441,26 @@ export const ingestPublish = withContext(
   "Blog.ingestPublish",
 );
 
+const escapeHtml = (value: string) =>
+  value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+
+const summaryContentHtml = (excerpt: string) => {
+  const trimmed = excerpt.trim();
+  if (!trimmed) return "";
+  return `<p>${escapeHtml(trimmed)}</p>`;
+};
+
+const hasFullBody = (contentHtml: string | null | undefined) =>
+  Boolean(contentHtml && contentHtml.replace(/<[^>]+>/g, " ").trim().length > 120);
+
 /**
- * Persist missing English `blog_post` rows from BabyLoveGrowth (no Azure).
- * Call from `blog:backfill-english` so SSG hits Postgres instead of live BLG
- * (BLG caps at 2 req/s — parallel slug prerender otherwise 429s the build).
+ * Persist missing English rows from BabyLoveGrowth.
+ * 1) Upsert card/summary fields from the list endpoint (one BLG call).
+ * 2) Fetch full HTML for thin/missing bodies (rate-limited ≤2 req/s).
  */
 export const backfillMissingEnglishCore = async (
   options: { limit?: number } = {},
@@ -432,7 +470,7 @@ export const backfillMissingEnglishCore = async (
       ? Math.floor(options.limit)
       : Number.POSITIVE_INFINITY;
 
-  const articles = await resultify(() => BabyLoveGrowth.listArticles());
+  const articles = await resultify(() => BabyLoveGrowth.listArticlesStrict());
   if (!articles.success) return articles;
 
   const existingEnglish = await find(Environment.SERVER, {
@@ -440,21 +478,58 @@ export const backfillMissingEnglishCore = async (
   });
   if (!existingEnglish.success) return existingEnglish;
 
-  const englishSlugs = new Set(existingEnglish.data.map((row) => row.slug));
-  const missing = articles.data
-    .map((summary) => summary.slug)
-    .filter((slug) => !englishSlugs.has(slug));
-
-  const batch = missing.slice(0, batchLimit);
+  const englishBySlug = new Map(
+    existingEnglish.data.map((row) => [row.slug, row] as const),
+  );
+  const summariesUpserted: string[] = [];
   const upserted: string[] = [];
   const failed: string[] = [];
 
-  for (const slug of batch) {
+  for (const summary of articles.data) {
+    if (englishBySlug.has(summary.slug)) continue;
+
     try {
-      const article = await BabyLoveGrowth.getArticleBySlug(slug);
+      const description = summary.meta_description || summary.excerpt || "";
+      const row = await upsertLocaleRow({
+        slug: summary.slug,
+        locale: "en",
+        source: "blg",
+        externalId: String(summary.id),
+        category: summary.seedKeyword ?? "Guide",
+        title: summary.title,
+        description,
+        introduction: description,
+        publishedAt: summary.created_at.slice(0, 10),
+        readTime: estimateReadTime(summary.excerpt),
+        thumbnailUrl: summary.hero_image_url || null,
+        tags: summary.keywords,
+        takeaways: [],
+        contentHtml: summaryContentHtml(summary.excerpt),
+      });
+      if (row) englishBySlug.set(summary.slug, row);
+      summariesUpserted.push(summary.slug);
+    } catch (error) {
+      failed.push(summary.slug);
+      console.error(
+        `  ${summary.slug} (summary): ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      );
+    }
+  }
+
+  const needFullBody = articles.data.filter((summary) => {
+    const row = englishBySlug.get(summary.slug);
+    return !hasFullBody(row?.contentHtml);
+  });
+  const batch = needFullBody.slice(0, batchLimit);
+
+  for (const summary of batch) {
+    try {
+      const article = await BabyLoveGrowth.getArticleBySlug(summary.slug);
       if (!article) {
-        failed.push(slug);
-        console.error(`  ${slug}: BLG returned no published article`);
+        failed.push(summary.slug);
+        console.error(`  ${summary.slug}: BLG returned no published article`);
         continue;
       }
 
@@ -476,12 +551,11 @@ export const backfillMissingEnglishCore = async (
         contentHtml: article.content_html,
       });
 
-      upserted.push(slug);
-      englishSlugs.add(slug);
+      upserted.push(summary.slug);
     } catch (error) {
-      failed.push(slug);
+      failed.push(summary.slug);
       console.error(
-        `  ${slug}: ${error instanceof Error ? error.message : String(error)}`,
+        `  ${summary.slug}: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   }
@@ -489,10 +563,11 @@ export const backfillMissingEnglishCore = async (
   return {
     success: true as const,
     data: {
+      summariesUpserted,
       upserted,
       failed,
-      remaining: Math.max(0, missing.length - batch.length),
-      missingTotal: missing.length,
+      remaining: Math.max(0, needFullBody.length - batch.length),
+      missingTotal: needFullBody.length,
     },
   };
 };

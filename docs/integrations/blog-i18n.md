@@ -8,12 +8,12 @@ Locale for Server Components is resolved with `next/root-params` in `apps/web/sr
 
 | Locale | URL prefix | Content source |
 |--------|------------|----------------|
-| `en` | none (`/blog/foo`) | Prefer `blog_post` `locale=en` (BLG webhook + local editorial). Fall back to live BabyLoveGrowth API if no EN row yet. |
-| `es` | `/es` (`/es/blog/foo`) | Prefer `blog_post` `locale=es` (same slug). Fall back to EN row / BLG English until Spanish is written. |
+| `en` | none (`/blog/foo`) | `blog_post` `locale=en` (webhook + `blog:backfill-english`). Live BLG is fallback only. |
+| `es` | `/es` (`/es/blog/foo`) | `blog_post` `locale=es` (same slug). Fall back to EN row until Spanish is written. |
 
 Same slug is shared across locales. Spanish copies are **not** published back into BabyLoveGrowth.
 
-Pages are statically generated for every slug × locale and ISR'd via `revalidateTag("blog")` when the webhook (or editorial) writes rows.
+Index, tags, sitemap, `llms.txt`, and `generateStaticParams` read **Postgres only** (card/summary fields live on each `blog_post` row). Pages are statically generated for every slug × locale and ISR'd via `revalidateTag("blog")` when the webhook (or editorial) writes rows.
 
 ## Database
 
@@ -40,7 +40,7 @@ BabyLoveGrowth CMS client stays in `babylovegrowth.ts` (external API only). All 
 
 ### English backfill (one-shot)
 
-Older posts published before the webhook wrote EN rows still force live BLG during `generateStaticParams` / SSG and can 429 the deploy. Run once against production Postgres:
+Older posts published before the webhook wrote EN rows still leave the catalog empty in Postgres. Run once against production:
 
 ```bash
 cd apps/web
@@ -49,7 +49,12 @@ bun run blog:backfill-english -- --yes
 # optional: --limit=20 --max-rounds=100
 ```
 
-Needs `DATABASE_URL` + `BABYLOVEGROWTH_BLOG_API_KEY`. No Azure. Then redeploy (or purge `blog`) so static `/blog/*` pages read Postgres.
+Needs `DATABASE_URL` + `BABYLOVEGROWTH_BLOG_API_KEY`. No Azure. The script:
+
+1. Upserts **summary/card** rows from BLG `listArticles` (one call) for any missing EN slug
+2. Fills full HTML via rate-limited `getArticleBySlug` for thin bodies
+
+Then redeploy (or purge `blog`) so static `/blog/*` pages read Postgres.
 
 ### Locale switcher
 
@@ -66,9 +71,9 @@ When BabyLoveGrowth publishes an English article, configure their **Webhook** in
 
 The handler acknowledges immediately (200), then `Blog.ingestPublish`:
 
-1. Upserts `blog_post` `locale=en` from the payload (same slug)
+1. Upserts `blog_post` `locale=en` from the payload (same slug) — **always**, even if step 2 fails
 2. Translates title / meta / HTML to Spanish with Azure (`AI.generate`, gpt seat)
-3. Upserts `blog_post` `locale=es`
+3. Upserts `blog_post` `locale=es` when translate succeeds (EN-only is still a success; ES failure is logged)
 4. Purges the `blog` cache tag so EN/ES static pages regenerate (ISR)
 
 Local / editorial posts: write both `en` and `es` rows when you publish (same slug).

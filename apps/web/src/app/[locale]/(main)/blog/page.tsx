@@ -1,6 +1,5 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import { readingTimeMinutes } from "babylovegrowth-next-js-blog";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations } from "next-intl/server";
@@ -8,7 +7,6 @@ import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
 import { type Locale, routing } from "@/i18n/routing";
 import { createMetadata } from "@/lib/seo";
-import * as BabyLoveGrowth from "@/server/app/babylovegrowth";
 import * as Blog from "@/server/app/blog";
 import {
   EditorialFooter,
@@ -78,10 +76,9 @@ export default async ({ params }: BlogIndexProps) => {
   const translate = await getTranslations({ locale, namespace: "blog" });
   const description = translate("description");
 
-  // Same catalog for every locale: prefer stored locale rows, then BLG, then
-  // the other locale's stored EN for Spanish overlays.
-  const [articles, englishPosts, spanishPosts] = await Promise.all([
-    BabyLoveGrowth.listArticles(),
+  // Catalog lives in Postgres (webhook + `blog:backfill-english`). Index cards
+  // are `blog_post` rows — not live BabyLoveGrowth list summaries.
+  const [englishPosts, spanishPosts] = await Promise.all([
     Blog.listPublished("en"),
     locale === "es" ? Blog.listPublished("es") : Promise.resolve([]),
   ]);
@@ -89,10 +86,6 @@ export default async ({ params }: BlogIndexProps) => {
   const spanishBySlug = new Map(
     spanishPosts.map((post) => [post.slug, post] as const),
   );
-  const englishBySlug = new Map(
-    englishPosts.map((post) => [post.slug, post] as const),
-  );
-  const blgSlugs = new Set(articles.map((article) => article.slug));
 
   const fromPost = (post: (typeof englishPosts)[number]): IndexEntry => ({
     slug: post.slug,
@@ -107,43 +100,19 @@ export default async ({ params }: BlogIndexProps) => {
     takeaway: post.takeaways[0] ?? post.description,
   });
 
-  const entries: IndexEntry[] = [
-    ...articles.map((article): IndexEntry => {
+  const entries: IndexEntry[] = englishPosts
+    .map((post): IndexEntry => {
       if (locale === "es") {
-        const spanish = spanishBySlug.get(article.slug);
+        const spanish = spanishBySlug.get(post.slug);
         if (spanish) return fromPost(spanish);
       }
-
-      const english = englishBySlug.get(article.slug);
-      if (english) return fromPost(english);
-
-      return {
-        slug: article.slug,
-        title: article.title,
-        description: article.meta_description || article.excerpt,
-        publishedAt: article.created_at,
-        updatedAt: article.updated_at,
-        thumbnailUrl: article.hero_image_url || null,
-        tags: article.keywords,
-        readTime: `${Math.max(1, readingTimeMinutes(article.excerpt))} min`,
-        category: article.seedKeyword ?? "Guide",
-        takeaway: article.excerpt,
-      };
-    }),
-    ...englishPosts
-      .filter((post) => !blgSlugs.has(post.slug))
-      .map((post): IndexEntry => {
-        if (locale === "es") {
-          const spanish = spanishBySlug.get(post.slug);
-          if (spanish) return fromPost(spanish);
-        }
-        return fromPost(post);
-      }),
-  ].sort(
-    (left, right) =>
-      normalize(right.publishedAt).getTime() -
-      normalize(left.publishedAt).getTime(),
-  );
+      return fromPost(post);
+    })
+    .sort(
+      (left, right) =>
+        normalize(right.publishedAt).getTime() -
+        normalize(left.publishedAt).getTime(),
+    );
 
   const latest = entries[0] ?? null;
   const blogPath = localizePath("/blog", locale);

@@ -36,6 +36,23 @@ export const POST = async (request: NextRequest) => {
         tags: { integration: "babylovegrowth-webhook" },
         extra: { slug: payload.data.slug, id: payload.data.id },
       });
+      return;
+    }
+
+    if (
+      result.data &&
+      "action" in result.data &&
+      result.data.action === "upserted-en-only"
+    ) {
+      Sentry.captureMessage("BLG webhook saved EN but ES translate failed", {
+        level: "warning",
+        tags: { integration: "babylovegrowth-webhook" },
+        extra: {
+          slug: payload.data.slug,
+          id: payload.data.id,
+          esError: result.data.esError,
+        },
+      });
     }
   });
 

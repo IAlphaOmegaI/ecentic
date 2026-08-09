@@ -89,17 +89,25 @@ const main = async () => {
       process.exit(1);
     }
 
-    const { upserted, failed, remaining, missingTotal } = result.data;
+    const { summariesUpserted, upserted, failed, remaining, missingTotal } =
+      result.data;
 
     if (round === 1) {
-      console.log(`Missing English rows at start of run: ${missingTotal}`);
+      console.log(`Bodies still needing full BLG fetch: ${missingTotal}`);
+    }
+
+    if (summariesUpserted.length > 0) {
+      console.log(
+        `Round ${round}: +${summariesUpserted.length} summaries from list`,
+      );
+      console.log(`  summaries: ${summariesUpserted.join(", ")}`);
     }
 
     for (const slug of upserted) allUpserted.push(slug);
     for (const slug of failed) allFailed.add(slug);
 
     console.log(
-      `Round ${round}: +${upserted.length} upserted, ${failed.length} failed, ${remaining} remaining`,
+      `Round ${round}: +${upserted.length} full bodies, ${failed.length} failed, ${remaining} remaining`,
     );
     if (upserted.length > 0) {
       console.log(`  ok: ${upserted.join(", ")}`);
@@ -110,7 +118,7 @@ const main = async () => {
 
     if (remaining === 0) break;
 
-    if (upserted.length === 0) {
+    if (upserted.length === 0 && summariesUpserted.length === 0) {
       console.error(
         "No progress this round (only failures). Check BLG API key / rate limits and re-run.",
       );
