@@ -4,6 +4,7 @@ import { BoxMinusIcon, TrendDownIcon, TrendUpIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { motion } from "motion/react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import {
   Area,
   AreaChart,
@@ -45,11 +46,13 @@ export namespace ProductsModelRates {
 }
 
 export const ProductsModelRates = ({ models }: ProductsModelRates.Props) => {
+  const shared = useTranslations("dashboard.shared.performance");
+
   if (models.length === 0)
     return (
       <p className="flex h-26 flex-col items-center justify-center gap-2 border-accent-foreground border-y px-4 text-foreground-dimmed">
         <BoxMinusIcon className="size-12" />
-        Run a simulation to see per-model performance.
+        {shared("noModelData")}
       </p>
     );
 
@@ -110,13 +113,16 @@ export const QualityDistribution = ({
   segments,
   total,
   averageQuality,
-}: QualityDistribution.Props) => (
+}: QualityDistribution.Props) => {
+  const translate = useTranslations("dashboard.products.quality");
+
+  return (
   <div className="flex size-full flex-col p-4">
     <div className="flex items-start justify-between">
       <div>
-        <SectionKicker>01.1 — Quality</SectionKicker>
+        <SectionKicker>{translate("kicker")}</SectionKicker>
         <p className="mt-2 font-semibold text-foreground-rich text-lg">
-          Quality Distribution
+          {translate("distribution")}
         </p>
       </div>
       <div className="text-right">
@@ -126,7 +132,7 @@ export const QualityDistribution = ({
             %
           </span>
         </span>
-        <p className="text-foreground-dimmed text-xs">avg. quality</p>
+        <p className="text-foreground-dimmed text-xs">{translate("avgQuality")}</p>
       </div>
     </div>
 
@@ -161,7 +167,8 @@ export const QualityDistribution = ({
       ))}
     </div>
   </div>
-);
+  );
+};
 
 export namespace OptimizationBreakdown {
   export type Props = {
@@ -178,18 +185,19 @@ export const OptimizationBreakdown = ({
   unoptimized,
   total,
 }: OptimizationBreakdown.Props) => {
+  const translate = useTranslations("dashboard.products.optimization");
   const segments = [
-    { label: "Optimized", count: optimized, color: "bg-success" },
-    { label: "Pending", count: pending, color: "bg-warning" },
-    { label: "Unoptimized", count: unoptimized, color: "bg-error" },
+    { label: translate("optimized"), count: optimized, color: "bg-success" },
+    { label: translate("pending"), count: pending, color: "bg-warning" },
+    { label: translate("unoptimized"), count: unoptimized, color: "bg-error" },
   ];
 
   return (
     <div className="flex h-full flex-col p-4">
       <div>
-        <SectionKicker>01.2 — Optimization</SectionKicker>
+        <SectionKicker>{translate("kicker")}</SectionKicker>
         <p className="mt-2 font-semibold text-foreground-rich text-lg">
-          Product Readiness
+          {translate("readiness")}
         </p>
       </div>
 
@@ -244,12 +252,14 @@ export const ProductsWinRateTrend = ({
   labels,
   change,
 }: ProductsWinRateTrend.Props) => {
+  const shared = useTranslations("dashboard.shared.performance");
+
   if (data.length < 2)
     return (
       <div className="flex h-64 min-h-64 flex-1 flex-col items-center justify-center gap-2 text-center text-foreground-dimmed">
         <TrendDownIcon className="size-24" />
-        Not enough data for trend. <br />
-        Run more simulations to see history.
+        {shared("notEnoughTrendData")} <br />
+        {shared("runMoreSimulationsHint")}
       </div>
     );
 
@@ -273,7 +283,7 @@ export const ProductsWinRateTrend = ({
     <div className="flex flex-1 flex-col">
       <div className="mb-4 flex items-center justify-between p-4">
         <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-          Win Rate Trend
+          {shared("winRateTrend")}
         </p>
         {change !== 0 && (
           <span

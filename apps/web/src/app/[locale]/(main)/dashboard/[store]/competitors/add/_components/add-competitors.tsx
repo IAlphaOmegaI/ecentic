@@ -7,6 +7,7 @@ import {
   TabsList,
   TabsPanel,
 } from "@zenncore/web/components/tabs";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { AutoDetectTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/auto-detect-tab";
 import { CompetitorList } from "@/app/[locale]/(auth)/onboarding/competitors/_components/competitor-list";
@@ -32,6 +33,7 @@ export const AddCompetitors = ({
   productNames,
   existing,
 }: AddCompetitors.Props) => {
+  const translate = useTranslations("dashboard.competitors.add");
   const [competitors, setCompetitors] = useState<Competitor.Type[]>(existing);
 
   // Each tab persists as it goes and reports back what it created, so the
@@ -71,13 +73,12 @@ export const AddCompetitors = ({
     <div className="flex flex-col gap-px bg-accent-foreground">
       <div className="bg-background-rich">
         <div className="p-4">
-          <SectionKicker>01 — Find</SectionKicker>
+          <SectionKicker>{translate("findKicker")}</SectionKicker>
           <p className="mt-2 font-semibold text-foreground-rich text-lg">
-            Add competitors to this store
+            {translate("title")}
           </p>
           <p className="mt-1 max-w-2xl text-foreground-dimmed text-sm">
-            Detect them from your catalog, paste product URLs, or search a
-            brand. Anything you add belongs to this store only.
+            {translate("description")}
           </p>
         </div>
 
@@ -85,13 +86,13 @@ export const AddCompetitors = ({
           <TabsList className="w-full rounded-none border-x-0">
             <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
             <Tab value="auto" className="flex-1">
-              Auto-detect
+              {translate("tabs.autoDetect")}
             </Tab>
             <Tab value="url" className="flex-1">
-              Paste URLs
+              {translate("tabs.pasteUrls")}
             </Tab>
             <Tab value="search" className="flex-1">
-              Search Brand
+              {translate("tabs.searchBrand")}
             </Tab>
           </TabsList>
 
@@ -128,24 +129,26 @@ export const AddCompetitors = ({
       <div className="bg-background-rich">
         <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <SectionKicker>02 — Roster</SectionKicker>
+            <SectionKicker>{translate("rosterKicker")}</SectionKicker>
             <p className="mt-2 font-semibold text-foreground-rich text-lg">
-              Tracked in this store
+              {translate("trackedTitle")}
             </p>
             <p className="mt-1 text-foreground-dimmed text-sm">
-              Only selected competitors are judged when a scan runs with no
-              explicit roster.
+              {translate("trackedDescription")}
             </p>
           </div>
           <p className="shrink-0 text-foreground-dimmed text-sm">
-            {competitors.length} across {brands.size}{" "}
-            {brands.size === 1 ? "brand" : "brands"} — {selected} selected
+            {translate("rosterSummary", {
+              total: competitors.length,
+              brands: brands.size,
+              selected,
+            })}
           </p>
         </div>
 
         {competitors.length === 0 ? (
           <p className="px-4 pb-6 text-foreground-dimmed text-sm">
-            No competitors tracked yet. Add some above and they'll appear here.
+            {translate("emptyRoster")}
           </p>
         ) : (
           <div className="h-105 px-4 pb-4">

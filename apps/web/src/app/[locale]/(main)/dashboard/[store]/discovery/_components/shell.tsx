@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { Crosshair, StatusPill } from "../../../_components/grid";
 
@@ -5,7 +8,10 @@ import { Crosshair, StatusPill } from "../../../_components/grid";
  * The page's static frame, rendered by both `page.tsx` and `loading.tsx` so the
  * header prerenders and the two can never drift apart.
  */
-export const DiscoveryShell = ({ children }: { children: ReactNode }) => (
+export const DiscoveryShell = ({ children }: { children: ReactNode }) => {
+  const translate = useTranslations("dashboard.discovery");
+
+  return (
   <div className="flex flex-col">
     <div className="mx-8 border-accent-foreground border-x">
       <div className="-mx-8 border-accent-foreground border-b">
@@ -14,15 +20,13 @@ export const DiscoveryShell = ({ children }: { children: ReactNode }) => (
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div>
             <StatusPill tone="neutral">
-              AI Visibility — Store discovery
+              {translate("statusPill")}
             </StatusPill>
             <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
-              AI Discovery
+              {translate("title")}
             </h1>
             <p className="mt-1 text-foreground-dimmed text-sm">
-              See which stores AI shopping agents recommend for a query — and
-              exactly why your store did or didn’t make the cut, and how it
-              ranked.
+              {translate("description")}
             </p>
           </div>
         </div>
@@ -37,7 +41,8 @@ export const DiscoveryShell = ({ children }: { children: ReactNode }) => (
       </div>
     </div>
   </div>
-);
+  );
+};
 
 export const DiscoverySkeleton = () => (
   <div className="flex flex-col gap-4 p-6 md:flex-row md:items-end">

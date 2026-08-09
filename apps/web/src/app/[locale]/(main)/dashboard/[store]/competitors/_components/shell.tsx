@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { Crosshair, SectionGutter } from "../../../_components/grid";
 
@@ -22,7 +25,10 @@ export const CompetitorsShell = ({
   landscape: ReactNode;
   table: ReactNode;
   insights: ReactNode;
-}) => (
+}) => {
+  const translate = useTranslations("dashboard.competitors");
+
+  return (
   <div className="flex flex-col">
     <div className="mx-8 border-accent-foreground border-x">
       <div className="-mx-8 border-accent-foreground border-b">
@@ -32,10 +38,10 @@ export const CompetitorsShell = ({
           <div>
             {statusPill}
             <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
-              Competitors
+              {translate("title")}
             </h1>
             <p className="mt-1 text-foreground-dimmed text-sm">
-              How AI shopping agents rank you against the brands you track.
+              {translate("description")}
             </p>
           </div>
           <div className="flex items-center gap-2">{action}</div>
@@ -87,7 +93,8 @@ export const CompetitorsShell = ({
       </div>
     </div>
   </div>
-);
+  );
+};
 
 // Sized to the "Add Competitor" button it stands in for.
 export const AddActionSkeleton = () => (

@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { Crosshair, SectionGutter } from "../../../_components/grid";
 
@@ -12,7 +15,10 @@ export const SimulationsShell = ({
 }: {
   statusPill: ReactNode;
   children: ReactNode;
-}) => (
+}) => {
+  const translate = useTranslations("dashboard.simulations");
+
+  return (
   <div className="flex flex-col">
     <div className="mx-8 border-accent-foreground border-x">
       <div className="-mx-8 border-accent-foreground border-b">
@@ -22,10 +28,10 @@ export const SimulationsShell = ({
           <div>
             {statusPill}
             <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
-              Simulations
+              {translate("title")}
             </h1>
             <p className="mt-1 text-foreground-dimmed text-sm">
-              Re-run competitor discovery and win-rate simulations anytime.
+              {translate("description")}
             </p>
           </div>
         </div>
@@ -34,17 +40,13 @@ export const SimulationsShell = ({
       {children}
     </div>
   </div>
-);
+  );
+};
 
-const progressLabels = [
-  "Phase",
-  "Progress",
-  "Wins / Losses",
-  "Elapsed",
-] as const;
-const modelLabels = ["ChatGPT", "Claude", "Gemini", "Perplexity"] as const;
+export const SimulationsSkeleton = () => {
+  const translate = useTranslations("dashboard.simulations.skeleton");
 
-export const SimulationsSkeleton = () => (
+  return (
   <>
     <div className="-mx-8 border-accent-foreground border-b">
       <div className="relative mx-8 bg-background-rich">
@@ -109,7 +111,14 @@ export const SimulationsSkeleton = () => (
         </div>
         <div className="space-y-4 p-4">
           <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-4">
-            {progressLabels.map((label) => (
+            {(
+              [
+                translate("phase"),
+                translate("progress"),
+                translate("winsLosses"),
+                translate("elapsed"),
+              ] as const
+            ).map((label) => (
               <div key={label} className="bg-background-rich p-3">
                 <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
                   {label}
@@ -120,7 +129,8 @@ export const SimulationsSkeleton = () => (
           </div>
           <div className="h-1.5 w-full rounded-full bg-accent-foreground" />
           <div className="grid grid-cols-2 gap-px bg-accent-foreground sm:grid-cols-4">
-            {modelLabels.map((label) => (
+            {(["ChatGPT", "Claude", "Gemini", "Perplexity"] as const).map(
+              (label) => (
               <div key={label} className="bg-background-rich p-3">
                 <div className="size-8 animate-pulse bg-foreground/10" />
                 <div className="mt-2 h-5 w-16 animate-pulse bg-foreground/10" />
@@ -136,4 +146,5 @@ export const SimulationsSkeleton = () => (
       </div>
     </div>
   </>
-);
+  );
+};

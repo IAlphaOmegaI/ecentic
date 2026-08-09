@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { Crosshair, SectionGutter } from "../../../_components/grid";
 import { OverviewDetails } from "../../../_components/overview-details";
@@ -31,7 +34,10 @@ export const OverviewShell = ({
   products: ReactNode;
   competitors: ReactNode;
   agents: ReactNode;
-}) => (
+}) => {
+  const translate = useTranslations("dashboard.overview");
+
+  return (
   <div className="flex flex-col">
     <div className="mx-8 border-accent-foreground border-x">
       <div className="-mx-8 border-accent-foreground border-b">
@@ -41,10 +47,10 @@ export const OverviewShell = ({
           <div>
             {statusPill}
             <h1 className="mt-3 font-bold text-3xl text-foreground-rich tracking-[-0.02em]">
-              Overview
+              {translate("title")}
             </h1>
             <p className="mt-1 text-foreground-dimmed text-sm">
-              How AI shopping agents rank your catalog against competitors.
+              {translate("description")}
             </p>
           </div>
           {actions}
@@ -90,4 +96,5 @@ export const OverviewShell = ({
       </div>
     </div>
   </div>
-);
+  );
+};

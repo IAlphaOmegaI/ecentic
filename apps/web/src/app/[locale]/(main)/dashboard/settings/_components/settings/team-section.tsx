@@ -9,49 +9,59 @@ import {
   InferredForm,
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
+import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { z } from "zod";
 import type * as User from "@/server/app/user";
 
 export const TeamSection = ({ user }: { user: User.Type }) => {
+  const translate = useTranslations("dashboard.settings.team");
   const toast = useToastManager();
 
   const [handleInviteSubmit] = useAsyncAction(
     async (_data: { email: string; role?: string }) => {
       toast.add({
-        title: "Invite sent",
-        description: "Team member invite is on its way.",
+        title: translate("toast.inviteSent.title"),
+        description: translate("toast.inviteSent.description"),
         type: "success",
       });
     },
   );
 
   const inviteConfig = useMemo(() => {
-    const inviteRoles = ["Editor", "Viewer", "Admin"] as const;
+    const inviteRoles = [
+      translate("roles.editor"),
+      translate("roles.viewer"),
+      translate("roles.admin"),
+    ] as const;
     return {
       email: field({
         shape: "text",
-        validator: z.string().email("Invalid email"),
-        label: "Email address",
-        placeholder: "colleague@company.com",
+        validator: z
+          .string()
+          .email(translate("fields.email.validation")),
+        label: translate("fields.email.label"),
+        placeholder: translate("fields.email.placeholder"),
         classList: { field: "flex-1" },
       }),
       role: field({
         shape: "select",
         validator: z.literal(inviteRoles),
-        label: "Role",
+        label: translate("fields.role.label"),
       }),
     } satisfies GenericForm;
-  }, []);
+  }, [translate]);
 
   return (
     <div className="divide-y divide-accent-foreground">
       <div>
         <div className="flex items-center justify-between border-accent-foreground border-b bg-background-dimmed px-4 py-3">
-          <p className="font-medium text-base text-foreground">Team Members</p>
+          <p className="font-medium text-base text-foreground">
+            {translate("title")}
+          </p>
           <Button color="primary" className="gap-1.5">
             <PlusIcon className="size-4" />
-            Invite Member
+            {translate("inviteMember")}
           </Button>
         </div>
         <div className="divide-y divide-accent-foreground">
@@ -59,12 +69,12 @@ export const TeamSection = ({ user }: { user: User.Type }) => {
             {
               name: `${user.name} ${user.surname}`,
               email: user.email,
-              role: "Owner",
+              role: translate("roles.owner"),
             },
             {
               name: "Marcus Johnson",
               email: "marcus@acmestore.com",
-              role: "Admin",
+              role: translate("roles.admin"),
             },
           ].map((member) => (
             <div
@@ -88,12 +98,12 @@ export const TeamSection = ({ user }: { user: User.Type }) => {
                 <span className="border border-accent-foreground px-2 py-0.5 text-foreground-dimmed text-sm">
                   {member.role}
                 </span>
-                {member.role !== "Owner" && (
+                {member.role !== translate("roles.owner") && (
                   <button
                     type="button"
                     className="font-light text-error text-sm hover:underline"
                   >
-                    Remove
+                    {translate("remove")}
                   </button>
                 )}
               </div>
@@ -105,7 +115,7 @@ export const TeamSection = ({ user }: { user: User.Type }) => {
       <div>
         <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
           <p className="font-medium text-base text-foreground">
-            Invite by Email
+            {translate("inviteByEmail")}
           </p>
         </div>
         <div className="p-6">
@@ -115,7 +125,7 @@ export const TeamSection = ({ user }: { user: User.Type }) => {
             className="flex items-end gap-3"
           >
             <Button type="submit" color="primary" className="shrink-0">
-              Send Invite
+              {translate("sendInvite")}
             </Button>
           </InferredForm>
         </div>

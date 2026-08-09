@@ -43,9 +43,10 @@ import {
 import { useToastManager } from "@zenncore/web/components/toast";
 import { motion } from "motion/react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useParams } from "next/navigation";
-import { type ReactNode, useEffect, useState, useTransition } from "react";
+import { type ReactNode, useEffect, useMemo, useState, useTransition } from "react";
 import { Spring } from "@/lib/animations";
 import * as Audit from "@/server/app/intelligence/audit";
 import * as Optimization from "@/server/app/optimization";
@@ -110,10 +111,13 @@ export type ProductDetailData = {
   }>;
 };
 
-const columns = [
-  {
-    accessorKey: "title",
-    header: "Competitor",
+const columns = (
+  table: ReturnType<typeof useTranslations<"dashboard.shared.table">>,
+) =>
+  [
+    {
+      accessorKey: "title",
+      header: table("competitor"),
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
         <Avatar className="size-9 shrink-0 rounded-md bg-background-dimmed">
@@ -136,9 +140,9 @@ const columns = [
       </div>
     ),
   },
-  {
-    accessorKey: "rate",
-    header: "Win Rate",
+    {
+      accessorKey: "rate",
+      header: table("winRate"),
     cell: ({ row }) => {
       const rate = row.original.rate;
       const color = (() => {
@@ -166,27 +170,27 @@ const columns = [
       );
     },
   },
-  {
-    accessorKey: "wins",
-    header: "Wins",
+    {
+      accessorKey: "wins",
+      header: table("wins"),
     cell: ({ row }) => (
       <span className="font-medium text-success tabular-nums">
         {row.original.wins}
       </span>
     ),
   },
-  {
-    accessorKey: "losses",
-    header: "Losses",
+    {
+      accessorKey: "losses",
+      header: table("losses"),
     cell: ({ row }) => (
       <span className="font-medium text-error tabular-nums">
         {row.original.total - row.original.wins}
       </span>
     ),
   },
-  {
-    accessorKey: "total",
-    header: "Total",
+    {
+      accessorKey: "total",
+      header: table("total"),
     cell: ({ row }) => (
       <span className="font-light text-foreground-dimmed tabular-nums">
         {row.original.total}
@@ -195,9 +199,20 @@ const columns = [
   },
   // DataTableProvider adds `_id` to each row, so the columns must be typed for
   // that row shape — not the bare competitor — or ColumnDef won't line up.
-] satisfies ColumnDef<
-  ProductDetailData["competitors"][number] & { _id: string }
->[];
+  ] satisfies ColumnDef<
+    ProductDetailData["competitors"][number] & { _id: string }
+  >[];
+
+const qualityFields = (
+  fields: ReturnType<typeof useTranslations<"dashboard.products.detail.fields">>,
+) =>
+  [
+    { key: "title", label: fields("title") },
+    { key: "description", label: fields("description") },
+    { key: "price", label: fields("price") },
+    { key: "sku", label: fields("sku") },
+    { key: "structuredData", label: fields("structuredData") },
+  ] as const;
 
 const Model = {
   ChatGPT: {
@@ -233,14 +248,6 @@ const barColor = (rate: number) => {
   }
 };
 
-const qualityFields = [
-  { key: "title", label: "Title" },
-  { key: "description", label: "Description" },
-  { key: "price", label: "Price" },
-  { key: "sku", label: "SKU" },
-  { key: "structuredData", label: "Structured Data" },
-] as const;
-
 const PublishListing = ({
   product,
   winRate,
@@ -254,9 +261,12 @@ const PublishListing = ({
   label?: string;
   className?: string;
 }) => {
+  const translate = useTranslations("dashboard.products.detail.publish");
+  const shared = useTranslations("dashboard.shared");
   const router = useRouter();
   const toast = useToastManager();
   const [open, setOpen] = useState(false);
+  const defaultLabel = translate("applyFix");
 
   const [publish, isPending] = useAsyncAction(async () => {
     const result = await Optimization.approveProductListing({
@@ -264,15 +274,15 @@ const PublishListing = ({
     });
     if (!result.success) {
       toast.add({
-        title: "Publish failed",
+        title: translate("failed"),
         description: result.error.message,
         type: "error",
       });
       return;
     }
     toast.add({
-      title: "Listing published",
-      description: "An AI-optimized listing was pushed to your store.",
+      title: translate("successTitle"),
+      description: translate("successDescription"),
       type: "success",
     });
     setOpen(false);
@@ -288,16 +298,17 @@ const PublishListing = ({
         onClick={() => setOpen(true)}
       >
         <TrendUpIcon className="size-4" />
-        {canPublish ? label : "Connect Shopify or WooCommerce"}
+        {canPublish ? (label ?? defaultLabel) : translate("connectStore")}
       </Button>
 
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogPopup>
-          <AlertDialogTitle>Publish optimized listing?</AlertDialogTitle>
+          <AlertDialogTitle>{translate("dialogTitle")}</AlertDialogTitle>
           <AlertDialogDescription>
-            ecentic generates an AI-optimized title and description for &ldquo;
-            {product.title}&rdquo; and writes it directly to your connected
-            store, replacing the live listing. Current win rate is {winRate}%.
+            {translate("dialogDescription", {
+              title: product.title,
+              winRate,
+            })}
           </AlertDialogDescription>
           <div className="flex justify-end gap-2">
             <Button
@@ -306,14 +317,14 @@ const PublishListing = ({
               onClick={() => setOpen(false)}
               disabled={isPending}
             >
-              Cancel
+              {shared("cancel")}
             </Button>
             <Button
               color="success"
               onClick={() => publish()}
               disabled={isPending}
             >
-              {isPending ? "Publishing…" : "Publish to store"}
+              {isPending ? translate("publishing") : translate("publishToStore")}
             </Button>
           </div>
         </AlertDialogPopup>
@@ -375,6 +386,7 @@ const ApplyOptimization = ({
 
 export const ProductDetail = ({ data }: ProductDetail.Props) => {
   const { store } = useParams<{ store: string }>();
+  const translate = useTranslations("dashboard.products.detail");
   const {
     product,
     winRate,
@@ -394,16 +406,16 @@ export const ProductDetail = ({ data }: ProductDetail.Props) => {
       <TabsList className="h-10 w-full rounded-md border-0 bg-background-dimmed p-1">
         <TabsIndicator className="top-1 h-8 rounded" />
         <Tab value="overview" className="h-8 flex-1 border-r-0">
-          Win Rate
+          {translate("tabs.winRate")}
         </Tab>
         <Tab value="replay" className="h-8 flex-1 border-r-0">
-          Agent Replay
+          {translate("tabs.agentReplay")}
         </Tab>
         <Tab value="battlecard" className="h-8 flex-1 border-r-0">
-          Battlecard
+          {translate("tabs.battlecard")}
         </Tab>
         <Tab value="optimize" className="h-8 flex-1 border-r-0">
-          Optimize
+          {translate("tabs.optimize")}
         </Tab>
       </TabsList>
 
@@ -451,12 +463,18 @@ const OverviewTab = ({
   store: string;
   models: ProductDetailData["models"];
   competitors: ProductDetailData["competitors"];
-}) => (
+}) => {
+  const translate = useTranslations("dashboard.products.detail.overview");
+  const shared = useTranslations("dashboard.shared");
+  const table = useTranslations("dashboard.shared.table");
+  const competitorColumns = useMemo(() => columns(table), [table]);
+
+  return (
   <section className="border-accent-foreground border-t">
     <div className="p-4">
-      <SectionKicker>01 — Performance</SectionKicker>
+      <SectionKicker>{shared("sections.performance")}</SectionKicker>
       <p className="mt-2 font-semibold text-foreground-rich text-lg">
-        Win Rate by Model
+        {shared("performance.winRateByModel")}
       </p>
     </div>
     {/* Size to the model count — a fixed 4-col grid left a phantom empty cell
@@ -513,9 +531,9 @@ const OverviewTab = ({
                 </div>
                 <div className="mt-2 flex justify-between text-foreground-dimmed text-xs">
                   <span>
-                    {wins} W · {losses} L
+                    {translate("wLTotal", { wins, losses })}
                   </span>
-                  <span>{total} total</span>
+                  <span>{translate("totalCount", { count: total })}</span>
                 </div>
               </div>
             </div>
@@ -529,34 +547,35 @@ const OverviewTab = ({
       <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
       <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
       <div>
-        <SectionKicker>02 — Competitive Landscape</SectionKicker>
+        <SectionKicker>{shared("sections.competitiveLandscape")}</SectionKicker>
         <p className="mt-2 font-semibold text-foreground-rich text-lg">
-          Win rate vs. each competitor
+          {translate("winRateVsCompetitor")}
         </p>
       </div>
       <Button
         color="primary"
         render={<Link href={`/dashboard/${store}/competitors`} />}
       >
-        View All
+        {translate("viewAll")}
         <ArrowRightIcon className="size-4" />
       </Button>
     </div>
     <DataTableProvider
       rows={competitors.map((row) => ({ _id: row.id, ...row }))}
-      columns={columns}
+      columns={competitorColumns}
       handler="client"
     >
       <DataTable className="border-b-0">
         <DataTableEmpty>
           <p className="p-6 text-center font-light text-foreground-dimmed text-sm">
-            No competitors tracked yet.
+            {translate("noCompetitors")}
           </p>
         </DataTableEmpty>
       </DataTable>
     </DataTableProvider>
   </section>
-);
+  );
+};
 
 const replayModelLabel = (modelId: string) => {
   switch (modelId) {
@@ -576,6 +595,7 @@ const ReplayTab = ({
 }: {
   simulations: ProductDetailData["simulations"];
 }) => {
+  const translate = useTranslations("dashboard.products.detail.replay");
   const grouped = ["gpt4", "claude", "gemini"].flatMap((modelId) => {
     const modelSimulations = simulations.filter(
       (simulation) => simulation.model === modelId,
@@ -596,7 +616,7 @@ const ReplayTab = ({
     return (
       <div className="border-accent-foreground border-t bg-background-rich p-8 text-center">
         <p className="font-light text-foreground-dimmed text-sm">
-          No simulations yet. Run a scan to see agent decision replays.
+          {translate("empty")}
         </p>
       </div>
     );
@@ -653,11 +673,12 @@ const ReplayTab = ({
               reasoning collapses and renders its bold markup as real prose. */}
           <div className="flex items-center justify-between gap-2 border-accent-foreground border-b bg-background-rich px-4 py-2.5">
             <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-              {active.label} Decision Replay
+              {translate("decisionReplay", { model: active.label })}
             </p>
             <span className="text-foreground-dimmed text-xs tabular-nums">
-              {active.simulations.length} simulation
-              {active.simulations.length !== 1 ? "s" : ""}
+              {translate("simulationCount", {
+                count: active.simulations.length,
+              })}
             </span>
           </div>
 
@@ -687,7 +708,9 @@ const ReplayTab = ({
                   >
                     <span className="flex min-w-0 flex-1 items-center gap-3">
                       <span className="min-w-0 flex-1 truncate font-medium text-foreground">
-                        vs. {simulation.competitorTitle}
+                        {translate("vsCompetitor", {
+                          title: simulation.competitorTitle,
+                        })}
                       </span>
                       <span className="shrink-0 font-mono text-foreground-dimmed text-xs tabular-nums">
                         {simulation.productScore ?? "?"} —{" "}
@@ -701,14 +724,14 @@ const ReplayTab = ({
                             : "bg-error/10 text-error",
                         )}
                       >
-                        {won ? "Won" : "Lost"}
+                        {won ? translate("won") : translate("lost")}
                       </span>
                     </span>
                   </AccordionTrigger>
                   <AccordionPanel>
                     <div className="border-accent-foreground border-t px-4 py-4">
                       <p className="mb-2 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-                        {active.label}&apos;s reasoning
+                        {translate("reasoning", { model: active.label })}
                       </p>
                       {simulation.reasoning ? (
                         <p className="text-foreground text-sm leading-relaxed">
@@ -719,9 +742,11 @@ const ReplayTab = ({
                         </p>
                       ) : (
                         <p className="text-foreground-dimmed text-sm italic">
-                          No reasoning recorded — decided by score (
-                          {simulation.productScore ?? "?"} vs{" "}
-                          {simulation.competitorScore ?? "?"}).
+                          {translate("noReasoning", {
+                            productScore: simulation.productScore ?? "?",
+                            competitorScore:
+                              simulation.competitorScore ?? "?",
+                          })}
                         </p>
                       )}
                     </div>
@@ -740,9 +765,13 @@ const ListingCompleteness = ({
   product,
 }: {
   product: ProductDetailData["product"];
-}) => (
+}) => {
+  const fields = useTranslations("dashboard.products.detail.fields");
+  const shared = useTranslations("dashboard.shared");
+
+  return (
   <div className="divide-y divide-accent-foreground border-accent-foreground border-b">
-    {qualityFields.map(({ key, label }) => {
+    {qualityFields(fields).map(({ key, label }) => {
       const value = product[key];
       const filled = (() => {
         if (!value) return false;
@@ -769,26 +798,27 @@ const ListingCompleteness = ({
               filled ? "text-success" : "text-error",
             )}
           >
-            {filled ? "Present" : "Missing"}
+            {filled ? shared("present") : shared("missing")}
           </span>
         </div>
       );
     })}
   </div>
-);
-
-const auditFieldLabels: Record<string, string> = {
-  title: "Title",
-  description: "Description",
-  price: "Price",
-  sku: "SKU",
-  structuredData: "Structured Data",
-  images: "Images",
+  );
 };
+
+const auditFieldKeys = [
+  "title",
+  "description",
+  "price",
+  "sku",
+  "structuredData",
+  "images",
+] as const;
 
 const AuditSkeleton = () => (
   <div className="divide-y divide-accent-foreground border-accent-foreground border-b">
-    {Object.keys(auditFieldLabels).map((key) => (
+    {auditFieldKeys.map((key) => (
       <div
         key={key}
         className="flex items-center justify-between bg-background-rich px-4 py-4"
@@ -805,6 +835,8 @@ const ListingAudit = ({
 }: {
   product: ProductDetailData["product"];
 }) => {
+  const auditCopy = useTranslations("dashboard.products.detail.audit");
+  const fields = useTranslations("dashboard.products.detail.fields");
   const [audit, setAudit] = useState<Audit.Type | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">(
     "loading",
@@ -837,7 +869,7 @@ const ListingAudit = ({
   return (
     <>
       <div className="flex items-center justify-between border-accent-foreground border-b bg-background-rich px-4 py-3">
-        <SectionKicker>AI Content Quality</SectionKicker>
+        <SectionKicker>{auditCopy("aiContentQuality")}</SectionKicker>
         <p
           className={cn(
             "font-bold text-2xl tabular-nums tracking-[-0.02em]",
@@ -854,7 +886,7 @@ const ListingAudit = ({
       <div className="border-accent-foreground border-b bg-background-rich p-4">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <SectionKicker>Brand Positioning</SectionKicker>
+            <SectionKicker>{auditCopy("brandPositioning")}</SectionKicker>
             <p className="mt-1 font-medium text-foreground">
               {audit.positioning.audience}
             </p>
@@ -874,7 +906,9 @@ const ListingAudit = ({
                 /100
               </span>
             </p>
-            <p className="text-foreground-dimmed text-xs">positioning</p>
+            <p className="text-foreground-dimmed text-xs">
+              {auditCopy("positioning")}
+            </p>
           </div>
         </div>
         <p className="mt-3 text-foreground-dimmed text-sm leading-relaxed">
@@ -894,7 +928,15 @@ const ListingAudit = ({
             <div className="min-w-0 flex-1">
               <div className="flex items-baseline gap-2">
                 <span className="font-medium text-foreground">
-                  {auditFieldLabels[field.key] ?? field.key}
+                  {fields(
+                    field.key as
+                      | "title"
+                      | "description"
+                      | "price"
+                      | "sku"
+                      | "structuredData"
+                      | "images",
+                  )}
                 </span>
                 <span className="truncate text-foreground-dimmed text-xs">
                   {field.verdict}
@@ -1003,11 +1045,14 @@ const BattlecardTab = ({
   competitors: ProductDetailData["competitors"];
   simulations: ProductDetailData["simulations"];
 }) => {
+  const translate = useTranslations("dashboard.products.detail.battlecard");
+  const shared = useTranslations("dashboard.shared");
+
   if (competitors.length === 0)
     return (
       <div className="border-accent-foreground border-t bg-background-rich p-8 text-center">
         <p className="font-light text-foreground-dimmed text-sm">
-          No competitor data available. Run a scan to generate battlecards.
+          {translate("empty")}
         </p>
       </div>
     );
@@ -1025,13 +1070,13 @@ const BattlecardTab = ({
         <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
         <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <div>
-          <SectionKicker>01 — Battlecards</SectionKicker>
+          <SectionKicker>{translate("kicker")}</SectionKicker>
           <p className="mt-2 font-semibold text-foreground-rich text-lg">
-            Head-to-Head Results
+            {translate("headToHead")}
           </p>
         </div>
         <p className="text-foreground-dimmed text-sm">
-          {competitors.length} competitor{competitors.length !== 1 ? "s" : ""}
+          {shared("count.competitors", { count: competitors.length })}
         </p>
       </div>
 
@@ -1072,7 +1117,7 @@ const BattlecardTab = ({
                       {competitor.title}
                     </span>
                     <span className="mt-0.5 block truncate font-normal text-foreground-dimmed text-sm">
-                      vs. {product.title}
+                      {translate("vsProduct", { title: product.title })}
                     </span>
                   </span>
 
@@ -1110,15 +1155,15 @@ const BattlecardTab = ({
                 <div className="grid grid-cols-1 divide-y divide-accent-foreground border-accent-foreground border-t sm:grid-cols-2 sm:divide-x sm:divide-y-0">
                   <Outcome
                     tone="success"
-                    label="Won"
+                    label={translate("won")}
                     simulations={wins}
-                    emptyLabel="No wins recorded"
+                    emptyLabel={translate("noWins")}
                   />
                   <Outcome
                     tone="error"
-                    label="Lost"
+                    label={translate("lost")}
                     simulations={losses}
-                    emptyLabel="No losses recorded"
+                    emptyLabel={translate("noLosses")}
                   />
                 </div>
               </AccordionPanel>
@@ -1182,6 +1227,13 @@ const OptimizeTab = ({
   canPublish: boolean;
   themeEditorUrl: string | null;
 }) => {
+  const translate = useTranslations("dashboard.products.detail.optimizeTab");
+  const fields = useTranslations("dashboard.products.detail.fields");
+  const applyOptimization = useTranslations(
+    "dashboard.products.detail.applyOptimization",
+  );
+  const publish = useTranslations("dashboard.products.detail.publish");
+  const shared = useTranslations("dashboard.shared");
   const toast = useToastManager();
   const [isPending, startTransition] = useTransition();
   const [liveStructuredData, setLiveStructuredData] = useState<string | null>(
@@ -1198,19 +1250,25 @@ const OptimizeTab = ({
   const liveStatus = {
     "ecentic-optimized": {
       tone: "success" as const,
-      label: "Optimized by ecentic",
+      label: translate("status.optimizedByEcentic"),
     },
     "ecentic-standard": {
       tone: "success" as const,
-      label: "ecentic standard",
+      label: translate("status.ecenticStandard"),
     },
-    "store-default": { tone: "neutral" as const, label: "Store default" },
+    "store-default": {
+      tone: "neutral" as const,
+      label: translate("status.storeDefault"),
+    },
     "ecentic-optimized_embed-off": {
       tone: "error" as const,
-      label: "Optimized — embed off",
+      label: translate("status.optimizedEmbedOff"),
     },
-    missing: { tone: "error" as const, label: "No structured data" },
-    unreachable: { tone: "neutral" as const, label: "Page unreachable" },
+    missing: { tone: "error" as const, label: translate("status.noStructuredData") },
+    unreachable: {
+      tone: "neutral" as const,
+      label: translate("status.pageUnreachable"),
+    },
   }[status];
 
   // Guidance per status: no structured data → enable the embed (a one-time,
@@ -1221,29 +1279,29 @@ const OptimizeTab = ({
       case "ecentic-optimized_embed-off":
         return {
           intent: "problem" as const,
-          title: "App embed is off",
-          text: "Optimized structured data is published for this product, but the “Agentic structured data” app embed is off — no ecentic markup reaches the page. Enabling it once applies to every product in the store.",
+          title: translate("embedNotice.embedOffTitle"),
+          text: translate("embedNotice.embedOffText"),
           showEnable: true,
         };
       case "missing":
         return {
           intent: "problem" as const,
-          title: "No structured data on the page",
-          text: "AI agents see no machine-readable product data. Enable the “Agentic structured data” app embed — one toggle adds structured data for every product in the store.",
+          title: translate("embedNotice.missingTitle"),
+          text: translate("embedNotice.missingText"),
           showEnable: true,
         };
       case "store-default":
         return {
           intent: "problem" as const,
-          title: "Store default markup",
-          text: "Only the theme's own markup is live — usually thin (no GTIN, one offer, no variant detail). Enable the ecentic app embed (applies to all products), then publish optimized structured data below for this product.",
+          title: translate("embedNotice.storeDefaultTitle"),
+          text: translate("embedNotice.storeDefaultText"),
           showEnable: true,
         };
       case "ecentic-standard":
         return {
           intent: "suggestion" as const,
-          title: "Using ecentic standard markup",
-          text: "The app embed renders default structured data from the live product content. Publish the AI-optimized version below to give agents richer, more competitive markup for this product.",
+          title: translate("embedNotice.standardTitle"),
+          text: translate("embedNotice.standardText"),
           showEnable: false,
         };
       default:
@@ -1258,7 +1316,7 @@ const OptimizeTab = ({
       });
       if (!generation.success) {
         toast.add({
-          title: "Generation failed",
+          title: translate("generationFailed"),
           description: generation.error.message,
           type: "error",
         });
@@ -1276,7 +1334,7 @@ const OptimizeTab = ({
 
       if (!result.success) {
         toast.add({
-          title: "Publish failed",
+          title: publish("failed"),
           description: result.error.message,
           type: "error",
         });
@@ -1286,12 +1344,11 @@ const OptimizeTab = ({
 
       const { themeEditorUrl } = result.data;
       toast.add({
-        title: "Optimized structured data published",
-        description:
-          "Written to the ecentic.structured_data metafield — the app embed now renders it in place of the default product markup. If the embed is off, enable it in the theme editor and press Save.",
+        title: translate("structuredDataPublished"),
+        description: translate("structuredDataPublishedDescription"),
         type: "success",
         ...(themeEditorUrl && {
-          actionLabel: "Open theme editor",
+          actionLabel: translate("openThemeEditor"),
           onAction: () => window.open(themeEditorUrl, "_blank"),
         }),
       });
@@ -1306,7 +1363,7 @@ const OptimizeTab = ({
         product={product}
         winRate={winRate}
         canPublish={canPublish}
-        publishLabel="Optimize & publish"
+        publishLabel={applyOptimization("optimizePublish")}
         reviewQueueHref={`/dashboard/${store}/optimize`}
       />
 
@@ -1316,17 +1373,16 @@ const OptimizeTab = ({
         <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
         <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <div>
-          <SectionKicker>01 — AI Listing Audit</SectionKicker>
+          <SectionKicker>{translate("listingAuditKicker")}</SectionKicker>
           <p className="mt-2 font-semibold text-foreground-rich text-lg">
-            Optimize Listing
+            {translate("title")}
           </p>
           <p className="mt-1 max-w-prose text-foreground-dimmed text-sm">
-            Category-aware content-quality scores for the fields AI agents read
-            — plus how this listing is positioned for its audience.
+            {translate("description")}
           </p>
         </div>
         <p className="shrink-0 text-foreground-dimmed text-sm">
-          Completeness:{" "}
+          {translate("completeness")}{" "}
           <span className={cn("font-semibold", rateColor(product.quality))}>
             {product.quality}
             <span className="font-normal text-foreground-dimmed">/100</span>
@@ -1339,7 +1395,7 @@ const OptimizeTab = ({
       <div className="relative border-accent-foreground border-y p-4">
         <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
         <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-        <SectionKicker>02 — Current listing</SectionKicker>
+        <SectionKicker>{translate("currentListing")}</SectionKicker>
       </div>
 
       {/* Same treatment as the battlecard. Each field collapses to a row with
@@ -1349,24 +1405,28 @@ const OptimizeTab = ({
       <Accordion
         className="text-foreground"
         defaultValue={[
-          ...(product.description ? [] : ["Description"]),
+          ...(product.description ? [] : [fields("description")]),
           // The goal state needs no attention; every other status has a next
           // step waiting inside.
-          ...(status === "ecentic-optimized" ? [] : ["Structured Data"]),
+          ...(status === "ecentic-optimized"
+            ? []
+            : [fields("structuredData")]),
         ]}
       >
         <ListingField
-          label="Title"
+          label={fields("title")}
           tone="neutral"
-          status={`${product.title.length} characters`}
+          status={translate("characters", { count: product.title.length })}
         >
           <p className="text-foreground">{product.title}</p>
         </ListingField>
 
         <ListingField
-          label="Description"
+          label={fields("description")}
           tone={product.description ? "success" : "error"}
-          status={product.description ? "Present" : "Missing"}
+          status={
+            product.description ? shared("present") : shared("missing")
+          }
         >
           {product.description ? (
             <div
@@ -1375,7 +1435,9 @@ const OptimizeTab = ({
               dangerouslySetInnerHTML={{ __html: product.description }}
             />
           ) : (
-            <p className="text-error text-sm italic">No description found</p>
+            <p className="text-error text-sm italic">
+              {translate("noDescription")}
+            </p>
           )}
         </ListingField>
 
@@ -1383,19 +1445,19 @@ const OptimizeTab = ({
             "Generated" beside a page with no markup is exactly the lie that
             sent us looking here in the first place. */}
         <ListingField
-          label="Structured Data"
+          label={fields("structuredData")}
           tone={liveStatus.tone}
           status={liveStatus.label}
         >
           <div className="mb-3 flex items-center justify-between gap-3 border-accent-foreground border-b pb-3">
             <div className="flex items-center gap-2">
               <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-                Live on store
+                {translate("liveOnStore")}
               </span>
               <StatusPill tone={liveStatus.tone}>{liveStatus.label}</StatusPill>
             </div>
             <span className="text-[10px] text-foreground-dimmed">
-              what AI agents actually read
+              {translate("whatAgentsRead")}
             </span>
           </div>
 
@@ -1426,7 +1488,7 @@ const OptimizeTab = ({
                   className="mt-3"
                   onClick={() => window.open(themeEditorUrl, "_blank")}
                 >
-                  Enable app embed
+                  {translate("enableAppEmbed")}
                   <ArrowRightIcon className="size-4" />
                 </Button>
               )}
@@ -1436,13 +1498,9 @@ const OptimizeTab = ({
           {structuredData ? (
             <div className="space-y-3">
               <p className="text-foreground-dimmed text-sm">
-                The app embed already renders default structured data from the
-                live product content. Publishing writes this AI-optimized
-                version to the{" "}
-                <code className="font-mono text-xs">
-                  ecentic.structured_data
-                </code>{" "}
-                metafield, and the embed renders it instead of the default.
+                {translate("structuredDataHelp", {
+                  metafield: "ecentic.structured_data",
+                })}
               </p>
               {/* JSON-LD is genuinely unbounded, so this one keeps a cap. */}
               <pre className="max-h-64 overflow-y-auto whitespace-pre-wrap border border-accent-foreground bg-background-dimmed p-3 font-mono text-foreground-dimmed text-xs leading-relaxed">
@@ -1456,8 +1514,8 @@ const OptimizeTab = ({
                   disabled={isPublishingStructured}
                 >
                   {isPublishingStructured
-                    ? "Publishing…"
-                    : "Publish optimized structured data"}
+                    ? translate("publishing")
+                    : translate("publishStructuredData")}
                   {!isPublishingStructured && (
                     <ArrowRightIcon className="size-4" />
                   )}
@@ -1467,9 +1525,7 @@ const OptimizeTab = ({
           ) : (
             <div className="space-y-3">
               <p className="text-foreground-dimmed text-sm">
-                No optimized structured data yet — the app embed renders the
-                default markup built from the live product content. Generate an
-                AI-optimized version to override it.
+                {translate("noStructuredDataYet")}
               </p>
               <Button
                 type="button"
@@ -1477,7 +1533,9 @@ const OptimizeTab = ({
                 onClick={handleGenerateJsonLd}
                 disabled={isPending}
               >
-                {isPending ? "Generating…" : "Generate optimized JSON-LD"}
+                {isPending
+                  ? translate("generating")
+                  : translate("generateJsonLd")}
                 {!isPending && <ArrowRightIcon className="size-4" />}
               </Button>
             </div>

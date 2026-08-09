@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { Crosshair, SectionGutter } from "../../../../_components/grid";
 
@@ -14,42 +17,44 @@ export const AddCompetitorsShell = ({
   statusPill: ReactNode;
   action: ReactNode;
   children: ReactNode;
-}) => (
-  <div className="flex flex-col">
-    <div className="mx-8 border-accent-foreground border-x">
-      <div className="-mx-8 border-accent-foreground border-b">
-        <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
-          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <div>
-            {statusPill}
-            <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
-              Add Competitors
-            </h1>
-            <p className="mt-1 text-foreground-dimmed text-sm">
-              The brands this store&apos;s catalog is judged against.
-              Competitors belong to one store, so these never mix with your
-              other stores.
-            </p>
+}) => {
+  const translate = useTranslations("dashboard.competitors.add");
+
+  return (
+    <div className="flex flex-col">
+      <div className="mx-8 border-accent-foreground border-x">
+        <div className="-mx-8 border-accent-foreground border-b">
+          <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
+            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+            <div>
+              {statusPill}
+              <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
+                {translate("shellTitle")}
+              </h1>
+              <p className="mt-1 text-foreground-dimmed text-sm">
+                {translate("shellDescription")}
+              </p>
+            </div>
+            {action}
           </div>
-          {action}
         </div>
-      </div>
 
-      <SectionGutter />
+        <SectionGutter />
 
-      <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="relative mx-8 bg-background-rich">
-          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          {children}
+        <div className="-mx-8 border-accent-foreground border-t border-b">
+          <div className="relative mx-8 bg-background-rich">
+            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+            {children}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 // Sized to the "Back to …" button it stands in for.
 export const BackLinkSkeleton = () => (

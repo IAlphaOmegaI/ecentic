@@ -1,0 +1,77 @@
+{
+  "dashboard": {
+    "competitors": {
+      "title": "Competidores",
+      "description": "Cómo te posicionan los agentes de compras con IA frente a las marcas que sigues.",
+      "action": {
+        "primary": "Añadir competidor",
+        "addCompetitor": "Añadir competidor",
+        "addCompetitors": "Añadir competidores"
+      },
+      "stats": {
+        "brandsTracked": "Marcas registradas",
+        "winningAgainst": "Ganando a",
+        "mostDangerous": "Más peligroso",
+        "totalSimulations": "Simulaciones totales",
+        "productsMonitored": "{count, plural, one {# producto} other {# productos}} monitorizados",
+        "sinceLastScan": "desde el último escaneo",
+        "averageWinRate": "{rate}% de tasa de victoria media",
+        "winRateAgainstThem": "tu tasa de victoria frente a ellos",
+        "acrossCompetitors": "en {count, plural, one {# competidor} other {# competidores}}"
+      },
+      "landscape": {
+        "kicker": "01 — Panorama",
+        "winRateByCompetitor": "Tasa de victoria por competidor",
+        "distribution": "Distribución",
+        "winRateTiers": "Niveles de tasa de victoria",
+        "simAbbrev": "{count} sim",
+        "tiers": {
+          "dominating": "Dominando (≥75%)",
+          "competitive": "Competitivo (50–74%)",
+          "atRisk": "En riesgo (30–49%)",
+          "losing": "Perdiendo (<30%)"
+        }
+      },
+      "table": {
+        "kickerAll": "02 — Todos los competidores"
+      },
+      "insights": {
+        "kicker": "03 — Inteligencia",
+        "summary": "Resumen competitivo",
+        "keyInsight": "Insight clave",
+        "optimizeLosing": "Optimizar listings perdedores",
+        "recentScanActivity": "Actividad reciente de escaneos",
+        "scanCompleted": "Escaneo completado — {wins}V / {losses}D",
+        "scanInProgress": "Escaneo en curso — {completed}/{total}",
+        "completedScans": "{count, plural, one {# escaneo completado} other {# escaneos completados}}",
+        "viewAllActivity": "Ver toda la actividad",
+        "headlines": {
+          "outrankAll": "Superas a los {count} competidor{plural} simulados (media {overall}% de tasa de victoria).",
+          "slimmestLead": "Tu ventaja más estrecha es frente a {brand} con {rate}%. Mantén los listings optimizados para defenderla.",
+          "biggestOpportunity": "{brand} gana el {lossRate}% de las comparaciones de agentes contra ti — tu mayor oportunidad.",
+          "holdMajority": "Tienes la mayoría frente a {winning} de {total} competidor{plural} (media {overall}%). Optimizar los productos que pierdes frente a {brand} mueve la aguja.",
+          "defaultHeadline": "Tienes la mayoría frente a {winning} de {total} competidor{plural} (media {overall}% de tasa de victoria).",
+          "focusOptimization": "Enfoca una optimización de listing en los productos que {brand} te gana.",
+          "toughestRival": "{toughest} es tu rival más duro con {toughestRate}%; lideras frente a {strongest} con {strongestRate}%."
+        }
+      },
+      "add": {
+        "title": "Añadir competidores a esta tienda",
+        "shellTitle": "Añadir competidores",
+        "shellDescription": "Las marcas contra las que se juzga el catálogo de esta tienda. Los competidores pertenecen a una sola tienda, así que nunca se mezclan con tus otras tiendas.",
+        "description": "Detéctalos desde tu catálogo, pega URLs de producto o busca una marca. Todo lo que añadas pertenece solo a esta tienda.",
+        "findKicker": "01 — Buscar",
+        "rosterKicker": "02 — Lista",
+        "trackedTitle": "Registrados en esta tienda",
+        "trackedDescription": "Solo los competidores seleccionados se evalúan cuando un escaneo se ejecuta sin lista explícita.",
+        "rosterSummary": "{total} en {brands, plural, one {# marca} other {# marcas}} — {selected} seleccionados",
+        "emptyRoster": "Aún no hay competidores registrados. Añade algunos arriba y aparecerán aquí.",
+        "tabs": {
+          "autoDetect": "Detección automática",
+          "pasteUrls": "Pegar URLs",
+          "searchBrand": "Buscar marca"
+        }
+      }
+    }
+  }
+}

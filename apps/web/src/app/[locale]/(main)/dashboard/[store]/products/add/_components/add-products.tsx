@@ -12,18 +12,21 @@ import {
   InferredForm,
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
+import { useTranslations } from "next-intl";
 import { z } from "zod";
 import { parseCsvProducts } from "@/lib/csv";
 import * as Csv from "@/server/app/integration/csv";
 import * as Store from "@/server/app/store";
 import { SectionKicker } from "../../../../_components/grid";
 
-const PLATFORM_LABEL: Record<Store.Type["platform"], string> = {
+const PLATFORM_LABEL: Record<
+  Exclude<Store.Type["platform"], "csv">,
+  string
+> = {
   shopify: "Shopify",
   "shopify-public": "Shopify",
   woocommerce: "WooCommerce",
-  feed: "your product feed",
-  csv: "CSV",
+  feed: "feed",
 };
 
 export namespace AddProducts {
@@ -74,7 +77,11 @@ const PlatformSync = ({
   platform: Exclude<Store.Type["platform"], "csv">;
 }) => {
   const toast = useToastManager();
+  const translate = useTranslations("dashboard.products.add.platformSync");
+  const platforms = useTranslations("dashboard.products.add.platforms");
   const returnToCatalog = useReturnToCatalog(store);
+  const platformLabel =
+    platform === "feed" ? platforms("feed") : PLATFORM_LABEL[platform];
 
   const [handleSync, isSyncing] = useAsyncAction(async () => {
     const synced = await toast
@@ -85,22 +92,23 @@ const PlatformSync = ({
           return result.data;
         })(),
         {
-          loading: { title: "Syncing products…", description: domain },
-          success: { title: "Catalog synced", description: domain },
+          loading: { title: translate("toastLoading"), description: domain },
+          success: { title: translate("toastSuccess"), description: domain },
           error: (error: unknown) => {
             const message =
               error instanceof Error ? error.message : "Something went wrong";
             const needsReconnect =
               (platform === "shopify" || platform === "shopify-public") &&
               /reconnect your store|access token/i.test(message);
-            // Send the OAuth round-trip back to this exact screen.
             const returnTo = `${window.location.pathname}${window.location.search}`;
 
             return {
-              title: needsReconnect ? "Reconnect required" : "Sync failed",
+              title: needsReconnect
+                ? translate("reconnectRequired")
+                : translate("syncFailed"),
               description: message,
               ...(needsReconnect && {
-                actionLabel: "Reconnect",
+                actionLabel: translate("reconnect"),
                 onAction: () => {
                   window.location.href = `/api/integrations/shopify/install?shop=${encodeURIComponent(domain)}&return_to=${encodeURIComponent(returnTo)}`;
                 },
@@ -120,14 +128,12 @@ const PlatformSync = ({
   return (
     <div className="flex flex-col gap-6 bg-background-rich p-6">
       <div>
-        <SectionKicker>01 — {PLATFORM_LABEL[platform]}</SectionKicker>
+        <SectionKicker>01 — {platformLabel}</SectionKicker>
         <p className="mt-2 font-semibold text-foreground-rich text-lg">
-          Pull from {PLATFORM_LABEL[platform]}
+          {translate("pullFrom", { platform: platformLabel })}
         </p>
         <p className="mt-1 max-w-2xl text-foreground-dimmed text-sm">
-          Re-reads {domain} and adds every product that isn't in this store yet.
-          Products already here are refreshed in place, so their scans and
-          optimizations are kept.
+          {translate("description", { domain })}
         </p>
       </div>
       <Button
@@ -138,12 +144,12 @@ const PlatformSync = ({
       >
         {isSyncing ? (
           <>
-            Syncing…
+            {translate("syncing")}
             <LoaderIcon className="size-4 animate-spin" />
           </>
         ) : (
           <>
-            Sync now
+            {translate("syncNow")}
             <DownloadIcon className="size-4" />
           </>
         )}
@@ -152,12 +158,17 @@ const PlatformSync = ({
   );
 };
 
-const config = {
-  file: field({
-    shape: "file",
-    mode: "single",
-    accept: [".csv"],
-    label: "Product CSV",
+const CsvImport = ({ store, domain }: { store: string; domain: string }) => {
+  const toast = useToastManager();
+  const translate = useTranslations("dashboard.products.add.csv");
+  const returnToCatalog = useReturnToCatalog(store);
+
+  const config = {
+    file: field({
+      shape: "file",
+      mode: "single",
+      accept: [".csv"],
+      label: translate("fieldLabel"),
     // @ts-expect-error - description is a function
     description: () => (
       <FieldDescription>
@@ -183,18 +194,14 @@ const config = {
   }),
 } satisfies GenericForm;
 
-const CsvImport = ({ store, domain }: { store: string; domain: string }) => {
-  const toast = useToastManager();
-  const returnToCatalog = useReturnToCatalog(store);
-
   const [handleImport, isImporting] = useAsyncAction(
     async (data: FormEntries<typeof config>) => {
       const file = data.file as File | null;
 
       if (!file) {
         toast.add({
-          title: "No file selected",
-          description: "Upload a CSV file first.",
+          title: translate("noFileTitle"),
+          description: translate("noFileDescription"),
           type: "error",
         });
         return;
@@ -204,9 +211,8 @@ const CsvImport = ({ store, domain }: { store: string; domain: string }) => {
 
       if (products.length === 0) {
         toast.add({
-          title: "No products found",
-          description:
-            "Check that your CSV has a header row with a title or name column.",
+          title: translate("noProductsTitle"),
+          description: translate("noProductsDescription"),
           type: "error",
         });
         return;
@@ -216,7 +222,7 @@ const CsvImport = ({ store, domain }: { store: string; domain: string }) => {
 
       if (!result.success) {
         toast.add({
-          title: "Import failed",
+          title: translate("importFailed"),
           description: result.error.message,
           type: "error",
         });
@@ -224,7 +230,7 @@ const CsvImport = ({ store, domain }: { store: string; domain: string }) => {
       }
 
       toast.add({
-        title: `${result.data} product${result.data === 1 ? "" : "s"} imported`,
+        title: translate("importSuccess", { count: result.data }),
         description: domain,
         type: "success",
       });
@@ -238,12 +244,10 @@ const CsvImport = ({ store, domain }: { store: string; domain: string }) => {
       <div>
         <SectionKicker>01 — CSV</SectionKicker>
         <p className="mt-2 font-semibold text-foreground-rich text-lg">
-          Upload a CSV
+          {translate("title")}
         </p>
         <p className="mt-1 max-w-2xl text-foreground-dimmed text-sm">
-          This store was built from a file rather than a connected platform, so
-          there's nothing upstream to pull from — upload another CSV to add to
-          it.
+          {translate("description")}
         </p>
       </div>
 
@@ -260,12 +264,12 @@ const CsvImport = ({ store, domain }: { store: string; domain: string }) => {
         >
           {isImporting ? (
             <>
-              Importing…
+              {translate("importing")}
               <LoaderIcon className="size-4 animate-spin" />
             </>
           ) : (
             <>
-              Import CSV
+              {translate("importCsv")}
               <ArrowRightIcon className="size-4" />
             </>
           )}

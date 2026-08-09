@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@zenncore/utils";
+import { useLocale } from "next-intl";
 import Image from "next/image";
 import {
   Area,
@@ -40,9 +41,9 @@ const MODELS = [
   },
 ];
 
-const formatDate = (date: string) => {
+const formatDate = (date: string, locale: string) => {
   const parsed = new Date(`${date}T00:00:00`);
-  return parsed.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  return parsed.toLocaleDateString(locale, { month: "short", day: "numeric" });
 };
 
 export namespace AgentVisitsChart {
@@ -56,6 +57,7 @@ export const AgentVisitsChart = ({
   data,
   className,
 }: AgentVisitsChart.Props) => {
+  const locale = useLocale();
   const maximum = Math.max(
     1,
     ...data.map((point) => point.chatgpt + point.claude + point.gemini),
@@ -93,7 +95,7 @@ export const AgentVisitsChart = ({
             />
             <XAxis
               dataKey="date"
-              tickFormatter={formatDate}
+              tickFormatter={(value: string) => formatDate(value, locale)}
               tick={{
                 fill: "var(--color-foreground-dimmed)",
                 fontSize: 11,
@@ -118,7 +120,7 @@ export const AgentVisitsChart = ({
                 return (
                   <div className="rounded-md border border-accent-foreground bg-background-rich px-3 py-2 shadow-md">
                     <p className="mb-1.5 text-foreground-dimmed text-xs">
-                      {formatDate(String(label))}
+                      {formatDate(String(label), locale)}
                     </p>
                     {MODELS.map((model) => {
                       const entry = payload.find(
