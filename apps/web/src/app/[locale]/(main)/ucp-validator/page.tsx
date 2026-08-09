@@ -1,13 +1,10 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { hasLocale } from "next-intl";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
-import { routing } from "@/i18n/routing";
 import {
   absoluteUrl,
   createBreadcrumbSchema,
@@ -26,19 +23,9 @@ import { Faq } from "../pricing/_components/faq";
 import { Checks } from "./_components/checks";
 import { ValidatorSection } from "./_components/validator-section";
 
-type UcpValidatorPageProps = {
-  params: Promise<{ locale: string }>;
-};
-
-export const generateMetadata = async ({
-  params,
-}: UcpValidatorPageProps): Promise<Metadata> => {
-  const { locale: raw } = await params;
-  const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
-  const translate = await getTranslations({
-    locale,
-    namespace: "ucpValidator",
-  });
+export const generateMetadata = async (): Promise<Metadata> => {
+  const locale = await getLocale();
+  const translate = await getTranslations("ucpValidator");
 
   return createMetadata({
     title: translate("meta.title"),
@@ -56,15 +43,10 @@ export const generateMetadata = async ({
   });
 };
 
-export default async ({ params }: UcpValidatorPageProps) => {
-  const { locale: raw } = await params;
-  if (!hasLocale(routing.locales, raw)) notFound();
-  const locale = raw;
+export default async () => {
+  const locale = await getLocale();
 
-  const translate = await getTranslations({
-    locale,
-    namespace: "ucpValidator",
-  });
+  const translate = await getTranslations("ucpValidator");
   const messages = await getMessages();
   const description = translate("meta.description");
   const assurances = messages.ucpValidator.hero.assurances;

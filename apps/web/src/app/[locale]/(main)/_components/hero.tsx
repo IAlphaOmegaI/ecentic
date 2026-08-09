@@ -1,12 +1,11 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import type { Locale } from "@/i18n/routing";
 import Background from "@/public/images/background.webp";
 import { HeroVideo } from "./hero-video";
 import { InstallCta } from "./install-cta";
 
-export const Hero = async ({ locale }: Hero.Props) => {
-  const translate = await getTranslations({ locale, namespace: "home" });
+export const Hero = async () => {
+  const translate = await getTranslations("home");
 
   return (
     <section className="relative isolate flex flex-col items-center gap-6 px-4 py-20 text-center md:py-28">
@@ -41,7 +40,7 @@ export const Hero = async ({ locale }: Hero.Props) => {
         {translate("hero.description")}
       </p>
 
-      <InstallCta locale={locale} className="justify-center" />
+      <InstallCta className="justify-center" />
 
       <p className="font-body text-foreground-dimmed text-sm">
         {translate("hero.proof")}
@@ -53,9 +52,3 @@ export const Hero = async ({ locale }: Hero.Props) => {
     </section>
   );
 };
-
-export namespace Hero {
-  export type Props = {
-    locale: Locale;
-  };
-}

@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { notFound } from "next/navigation";
-import { hasLocale } from "next-intl";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { JsonLd } from "@/components/json-ld";
 import { Plus } from "@/components/plus";
 import { PlaygroundClient } from "@/components/ucp-playground/playground-client";
 import { localizePath } from "@/i18n/locale";
-import { routing } from "@/i18n/routing";
 import { auth } from "@/lib/auth";
 import {
   absoluteUrl,
@@ -21,19 +18,9 @@ import Art from "@/public/images/ascii/robot.png";
 import { ANONYMOUS_MESSAGE_LIMIT } from "@/server/app/intelligence/ucp/playground-limit";
 import { ContentPageLayout } from "../_components/content";
 
-type UcpPlaygroundPageProps = {
-  params: Promise<{ locale: string }>;
-};
-
-export const generateMetadata = async ({
-  params,
-}: UcpPlaygroundPageProps): Promise<Metadata> => {
-  const { locale: raw } = await params;
-  const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
-  const translate = await getTranslations({
-    locale,
-    namespace: "ucpPlayground",
-  });
+export const generateMetadata = async (): Promise<Metadata> => {
+  const locale = await getLocale();
+  const translate = await getTranslations("ucpPlayground");
 
   return createMetadata({
     title: translate("meta.title"),
@@ -71,15 +58,10 @@ const MeteredPlayground = async () => {
   );
 };
 
-export default async ({ params }: UcpPlaygroundPageProps) => {
-  const { locale: raw } = await params;
-  if (!hasLocale(routing.locales, raw)) notFound();
-  const locale = raw;
+export default async () => {
+  const locale = await getLocale();
 
-  const translate = await getTranslations({
-    locale,
-    namespace: "ucpPlayground",
-  });
+  const translate = await getTranslations("ucpPlayground");
   const messages = await getMessages();
   const description = translate("meta.description");
   const limit = String(ANONYMOUS_MESSAGE_LIMIT);

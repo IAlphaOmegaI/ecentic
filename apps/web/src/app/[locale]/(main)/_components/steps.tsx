@@ -1,10 +1,9 @@
 import { CircleBoltIcon, FaceSearchIcon, RobotIcon } from "@zenncore/icons";
 import { getTranslations } from "next-intl/server";
-import type { Locale } from "@/i18n/routing";
 import { Reveal, RevealItem } from "@/components/reveal";
 
-export const Steps = async ({ locale }: Steps.Props) => {
-  const translate = await getTranslations({ locale, namespace: "home" });
+export const Steps = async () => {
+  const translate = await getTranslations("home");
 
   return (
     <section
@@ -61,9 +60,3 @@ export const Steps = async ({ locale }: Steps.Props) => {
     </section>
   );
 };
-
-export namespace Steps {
-  export type Props = {
-    locale: Locale;
-  };
-}

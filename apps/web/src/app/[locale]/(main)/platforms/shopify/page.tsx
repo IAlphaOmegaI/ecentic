@@ -2,13 +2,10 @@ import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
 import Image from "next/image";
-import { notFound } from "next/navigation";
-import { hasLocale } from "next-intl";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
-import { routing } from "@/i18n/routing";
 import {
   absoluteUrl,
   createBreadcrumbSchema,
@@ -32,16 +29,9 @@ import { Workflow } from "./_components/workflow";
 
 const SHOPIFY_APP_STORE_URL = "https://apps.shopify.com/ecentic-ai";
 
-type ShopifyPageProps = {
-  params: Promise<{ locale: string }>;
-};
-
-export const generateMetadata = async ({
-  params,
-}: ShopifyPageProps): Promise<Metadata> => {
-  const { locale: raw } = await params;
-  const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
-  const translate = await getTranslations({ locale, namespace: "shopify" });
+export const generateMetadata = async (): Promise<Metadata> => {
+  const locale = await getLocale();
+  const translate = await getTranslations("shopify");
 
   return createMetadata({
     title: translate("meta.title"),
@@ -57,12 +47,10 @@ export const generateMetadata = async ({
   });
 };
 
-export default async ({ params }: ShopifyPageProps) => {
-  const { locale: raw } = await params;
-  if (!hasLocale(routing.locales, raw)) notFound();
-  const locale = raw;
+export default async () => {
+  const locale = await getLocale();
 
-  const translate = await getTranslations({ locale, namespace: "shopify" });
+  const translate = await getTranslations("shopify");
   const messages = await getMessages();
   const description = translate("meta.description");
   const assurances = messages.shopify.hero.assurances;

@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { hasLocale } from "next-intl";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
-import { routing } from "@/i18n/routing";
 import {
   absoluteUrl,
   createBreadcrumbSchema,
@@ -25,16 +22,9 @@ import {
 } from "../_components/content";
 import { YcRedemptionForm } from "./_components/yc-redemption-form";
 
-type YcPageProps = {
-  params: Promise<{ locale: string }>;
-};
-
-export const generateMetadata = async ({
-  params,
-}: YcPageProps): Promise<Metadata> => {
-  const { locale: raw } = await params;
-  const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
-  const translate = await getTranslations({ locale, namespace: "yc" });
+export const generateMetadata = async (): Promise<Metadata> => {
+  const locale = await getLocale();
+  const translate = await getTranslations("yc");
 
   return createMetadata({
     title: translate("meta.title"),
@@ -50,12 +40,10 @@ export const generateMetadata = async ({
   });
 };
 
-export default async ({ params }: YcPageProps) => {
-  const { locale: raw } = await params;
-  if (!hasLocale(routing.locales, raw)) notFound();
-  const locale = raw;
+export default async () => {
+  const locale = await getLocale();
 
-  const translate = await getTranslations({ locale, namespace: "yc" });
+  const translate = await getTranslations("yc");
   const messages = await getMessages();
   const description = translate("meta.description");
   const faq = messages.yc.faq.items;

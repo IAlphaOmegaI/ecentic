@@ -2,7 +2,6 @@ import { StarHandIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import * as motion from "motion/react-client";
 import { getTranslations } from "next-intl/server";
-import type { Locale } from "@/i18n/routing";
 import { Plus } from "@/components/plus";
 import { Reveal } from "@/components/reveal";
 import { Stagger } from "@/lib/animations";
@@ -12,8 +11,8 @@ const ratings = { sarah: 5, marcus: 5, priya: 4 } as const;
 
 const stars = [1, 2, 3, 4, 5] as const;
 
-export const getTestimonialData = async (locale: Locale) => {
-  const translate = await getTranslations({ locale, namespace: "home" });
+export const getTestimonialData = async () => {
+  const translate = await getTranslations("home");
   const testimonials = testimonialKeys.map((key) => ({
     key,
     name: translate(`testimonials.items.${key}.name`),
@@ -76,9 +75,9 @@ const Stars = ({
   </div>
 );
 
-export const Testimonials = async ({ locale }: Testimonials.Props) => {
-  const translate = await getTranslations({ locale, namespace: "home" });
-  const { testimonials, aggregateRating } = await getTestimonialData(locale);
+export const Testimonials = async () => {
+  const translate = await getTranslations("home");
+  const { testimonials, aggregateRating } = await getTestimonialData();
 
   return (
     <section className="relative -left-[calc(50vw-50%)] -z-1 w-screen">
@@ -138,9 +137,3 @@ export const Testimonials = async ({ locale }: Testimonials.Props) => {
     </section>
   );
 };
-
-export namespace Testimonials {
-  export type Props = {
-    locale: Locale;
-  };
-}

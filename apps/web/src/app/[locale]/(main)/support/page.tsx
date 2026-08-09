@@ -10,15 +10,12 @@ import {
 } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { hasLocale } from "next-intl";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { BookCall } from "@/components/cal";
 import { JsonLd } from "@/components/json-ld";
 import { Plus } from "@/components/plus";
 import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
-import { routing } from "@/i18n/routing";
 import {
   absoluteUrl,
   createBreadcrumbSchema,
@@ -27,10 +24,6 @@ import {
 } from "@/lib/seo";
 import Art from "@/public/images/ascii/headset.png";
 import { ContentPageFooter, ContentPageLayout } from "../_components/content";
-
-type SupportPageProps = {
-  params: Promise<{ locale: string }>;
-};
 
 const channelIcons = {
   email: BellIcon,
@@ -45,12 +38,9 @@ const selfServeIcons = {
   "/privacy-policy": CheckIcon,
 } as const;
 
-export const generateMetadata = async ({
-  params,
-}: SupportPageProps): Promise<Metadata> => {
-  const { locale: raw } = await params;
-  const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
-  const translate = await getTranslations({ locale, namespace: "support" });
+export const generateMetadata = async (): Promise<Metadata> => {
+  const locale = await getLocale();
+  const translate = await getTranslations("support");
 
   return createMetadata({
     title: translate("meta.title"),
@@ -65,12 +55,10 @@ export const generateMetadata = async ({
   });
 };
 
-export default async ({ params }: SupportPageProps) => {
-  const { locale: raw } = await params;
-  if (!hasLocale(routing.locales, raw)) notFound();
-  const locale = raw;
+export default async () => {
+  const locale = await getLocale();
 
-  const translate = await getTranslations({ locale, namespace: "support" });
+  const translate = await getTranslations("support");
   const messages = await getMessages();
   const description = translate("meta.description");
   const assurances = messages.support.hero.assurances;

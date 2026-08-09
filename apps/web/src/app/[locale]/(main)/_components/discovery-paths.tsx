@@ -8,9 +8,8 @@ import {
 } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
-import type { Locale } from "@/i18n/routing";
 import type { ComponentType } from "react";
+import { Link } from "@/i18n/navigation";
 
 type Translate = (key: string) => string;
 
@@ -68,8 +67,8 @@ const Card = ({
   </article>
 );
 
-export const DiscoveryPaths = async ({ locale }: DiscoveryPaths.Props) => {
-  const translate = await getTranslations({ locale, namespace: "home" });
+export const DiscoveryPaths = async () => {
+  const translate = await getTranslations("home");
 
   return (
     <section
@@ -96,9 +95,3 @@ export const DiscoveryPaths = async ({ locale }: DiscoveryPaths.Props) => {
     </section>
   );
 };
-
-export namespace DiscoveryPaths {
-  export type Props = {
-    locale: Locale;
-  };
-}

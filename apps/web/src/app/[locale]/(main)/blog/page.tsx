@@ -2,11 +2,10 @@ import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { readingTimeMinutes } from "babylovegrowth-next-js-blog";
 import type { Metadata } from "next";
-import { hasLocale } from "next-intl";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
-import { type Locale, routing } from "@/i18n/routing";
+import type { Locale } from "@/i18n/routing";
 import { createMetadata } from "@/lib/seo";
 import * as BabyLoveGrowth from "@/server/app/babylovegrowth";
 import * as Blog from "@/server/app/blog";
@@ -45,16 +44,9 @@ type IndexEntry = {
   takeaway: string;
 };
 
-type BlogIndexProps = {
-  params: Promise<{ locale: string }>;
-};
-
-export const generateMetadata = async ({
-  params,
-}: BlogIndexProps): Promise<Metadata> => {
-  const { locale: raw } = await params;
-  const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
-  const translate = await getTranslations({ locale, namespace: "blog" });
+export const generateMetadata = async (): Promise<Metadata> => {
+  const locale = await getLocale();
+  const translate = await getTranslations("blog");
 
   return createMetadata({
     title: translate("title"),
@@ -70,12 +62,10 @@ export const generateMetadata = async ({
   });
 };
 
-export default async ({ params }: BlogIndexProps) => {
-  const { locale: raw } = await params;
-  if (!hasLocale(routing.locales, raw)) return null;
-  const locale = raw;
+export default async () => {
+  const locale = await getLocale();
 
-  const translate = await getTranslations({ locale, namespace: "blog" });
+  const translate = await getTranslations("blog");
   const description = translate("description");
 
   // Same catalog for every locale: prefer stored locale rows, then BLG, then

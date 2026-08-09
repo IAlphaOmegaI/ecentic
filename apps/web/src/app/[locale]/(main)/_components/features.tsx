@@ -6,7 +6,6 @@ import {
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { getTranslations } from "next-intl/server";
-import type { Locale } from "@/i18n/routing";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
 
@@ -17,8 +16,8 @@ const featureKeys = [
   { key: "track", icon: CodeIcon, color: "text-purple-500" },
 ] as const;
 
-export const Features = async ({ locale }: Features.Props) => {
-  const translate = await getTranslations({ locale, namespace: "home" });
+export const Features = async () => {
+  const translate = await getTranslations("home");
 
   return (
     <section
@@ -66,9 +65,3 @@ export const Features = async ({ locale }: Features.Props) => {
     </section>
   );
 };
-
-export namespace Features {
-  export type Props = {
-    locale: Locale;
-  };
-}

@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
-import { notFound } from "next/navigation";
-import { hasLocale } from "next-intl";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { Footer } from "@/components/footer";
 import { JsonLd } from "@/components/json-ld";
 import { Navbar } from "@/components/navbar";
 import { localizePath } from "@/i18n/locale";
-import { routing } from "@/i18n/routing";
 import {
   absoluteUrl,
   createMetadata,
@@ -31,16 +28,9 @@ const Comparison = dynamic(() =>
   import("./_components/comparison").then((module) => module.Comparison),
 );
 
-type HomeProps = {
-  params: Promise<{ locale: string }>;
-};
-
-export const generateMetadata = async ({
-  params,
-}: HomeProps): Promise<Metadata> => {
-  const { locale: raw } = await params;
-  const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
-  const translate = await getTranslations({ locale, namespace: "home" });
+export const generateMetadata = async (): Promise<Metadata> => {
+  const locale = await getLocale();
+  const translate = await getTranslations("home");
 
   return createMetadata({
     title: translate("meta.title"),
@@ -56,17 +46,15 @@ export const generateMetadata = async ({
   });
 };
 
-export default async ({ params }: HomeProps) => {
-  const { locale: raw } = await params;
-  if (!hasLocale(routing.locales, raw)) notFound();
-  const locale = raw;
+export default async () => {
+  const locale = await getLocale();
 
-  // Locale comes from `next/root-params` via `i18n/request.ts` — no
-  // `setRequestLocale`. Keep this tree outside a page-level `"use cache"`
-  // if children still need request-bound APIs beyond locale.
-  const translate = await getTranslations({ locale, namespace: "home" });
+  // Locale comes from `next/root-params` via `i18n/request.ts`, so children
+  // read it themselves instead of taking it as a prop. Keep this tree outside
+  // a page-level `"use cache"` if children still need request-bound APIs.
+  const translate = await getTranslations("home");
   const description = translate("meta.description");
-  const { aggregateRating, reviewSchemas } = await getTestimonialData(locale);
+  const { aggregateRating, reviewSchemas } = await getTestimonialData();
 
   return (
     <SmoothScroll>
@@ -99,18 +87,18 @@ export default async ({ params }: HomeProps) => {
           ]}
         />
         <Navbar />
-        <Hero locale={locale} />
-        <Proof locale={locale} />
-        <PartnersStrip locale={locale} />
-        <PartnershipBanner locale={locale} />
-        <Steps locale={locale} />
-        <Features locale={locale} />
+        <Hero />
+        <Proof />
+        <PartnersStrip />
+        <PartnershipBanner />
+        <Steps />
+        <Features />
         <Suspense>
           <Comparison />
         </Suspense>
-        <CaseStudy locale={locale} />
-        <Testimonials locale={locale} />
-        <Booking locale={locale} />
+        <CaseStudy />
+        <Testimonials />
+        <Booking />
         <section aria-label="About ecentic" className="sr-only">
           <h2>{translate("meta.title")}</h2>
           <p>{description}</p>

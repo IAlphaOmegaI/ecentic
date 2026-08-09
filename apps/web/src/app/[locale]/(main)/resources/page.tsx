@@ -1,13 +1,10 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { hasLocale } from "next-intl";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
-import { routing } from "@/i18n/routing";
 import {
   absoluteUrl,
   createBreadcrumbSchema,
@@ -27,16 +24,9 @@ import { Developer } from "./_components/developer";
 import { Guides } from "./_components/guides";
 import { Tools } from "./_components/tools";
 
-type ResourcesPageProps = {
-  params: Promise<{ locale: string }>;
-};
-
-export const generateMetadata = async ({
-  params,
-}: ResourcesPageProps): Promise<Metadata> => {
-  const { locale: raw } = await params;
-  const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
-  const translate = await getTranslations({ locale, namespace: "resources" });
+export const generateMetadata = async (): Promise<Metadata> => {
+  const locale = await getLocale();
+  const translate = await getTranslations("resources");
 
   return createMetadata({
     title: translate("meta.title"),
@@ -53,12 +43,10 @@ export const generateMetadata = async ({
   });
 };
 
-export default async ({ params }: ResourcesPageProps) => {
-  const { locale: raw } = await params;
-  if (!hasLocale(routing.locales, raw)) notFound();
-  const locale = raw;
+export default async () => {
+  const locale = await getLocale();
 
-  const translate = await getTranslations({ locale, namespace: "resources" });
+  const translate = await getTranslations("resources");
   const messages = await getMessages();
   const description = translate("meta.description");
   const assurances = messages.resources.hero.assurances;

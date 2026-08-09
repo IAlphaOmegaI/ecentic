@@ -1,8 +1,7 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
-import type { Locale } from "@/i18n/routing";
 import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
 
 type Partner = {
   id: string;
@@ -55,8 +54,8 @@ const partners: Partner[] = [
   },
 ];
 
-export const PartnersStrip = async ({ locale }: PartnersStrip.Props) => {
-  const translate = await getTranslations({ locale, namespace: "home" });
+export const PartnersStrip = async () => {
+  const translate = await getTranslations("home");
 
   return (
     <section
@@ -101,9 +100,3 @@ export const PartnersStrip = async ({ locale }: PartnersStrip.Props) => {
     </section>
   );
 };
-
-export namespace PartnersStrip {
-  export type Props = {
-    locale: Locale;
-  };
-}

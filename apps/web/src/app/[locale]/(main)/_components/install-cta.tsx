@@ -3,7 +3,6 @@ import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import type { Locale } from "@/i18n/routing";
 import shopify from "@/public/images/shopify.svg";
 import woocommerce from "@/public/images/woocommerce.svg";
 
@@ -24,8 +23,8 @@ const platforms = [
   },
 ] as const;
 
-export const InstallCta = async ({ locale, className }: InstallCta.Props) => {
-  const translate = await getTranslations({ locale, namespace: "home" });
+export const InstallCta = async ({ className }: InstallCta.Props) => {
+  const translate = await getTranslations("home");
 
   return (
     <div className={cn("flex flex-col gap-3 sm:flex-row", className)}>
@@ -46,7 +45,6 @@ export const InstallCta = async ({ locale, className }: InstallCta.Props) => {
 
 export namespace InstallCta {
   export type Props = {
-    locale: Locale;
     className?: string;
   };
 }

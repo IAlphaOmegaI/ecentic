@@ -1,13 +1,12 @@
 import { CheckIcon } from "@zenncore/icons";
 import { getTranslations } from "next-intl/server";
-import type { Locale } from "@/i18n/routing";
 import { BookingEmbed } from "@/components/cal";
 import { Plus } from "@/components/plus";
 
 const expectationKeys = ["winRate", "diagnosis", "optimizations"] as const;
 
-export const Booking = async ({ locale }: Booking.Props) => {
-  const translate = await getTranslations({ locale, namespace: "home" });
+export const Booking = async () => {
+  const translate = await getTranslations("home");
 
   return (
     <section
@@ -61,9 +60,3 @@ export const Booking = async ({ locale }: Booking.Props) => {
     </section>
   );
 };
-
-export namespace Booking {
-  export type Props = {
-    locale: Locale;
-  };
-}

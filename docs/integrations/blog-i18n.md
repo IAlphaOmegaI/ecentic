@@ -4,6 +4,15 @@ ecentic serves the UI in **English** (default, no URL prefix) and **Spanish** (`
 
 Locale for Server Components is resolved with `next/root-params` in `apps/web/src/i18n/request.ts`. The root layout is `app/[locale]/layout.tsx` (no `app/layout.tsx`). Do not call `setRequestLocale`.
 
+Because root params reach any depth of the tree, pages and components **do not take `locale`**:
+
+- Read it with `getLocale()` (from `next-intl/server`) only where a value is actually needed — `localizePath`, JSON-LD, `Intl.*` formatting.
+- Use the namespace form `getTranslations("pricing")`. The `getTranslations({ locale, namespace })` override exists for **Server Actions and Route Handlers only**, where `next/root-params` throws.
+- Do not re-validate the segment per page. `request.ts` calls `notFound()` on an unknown locale, so a page-level `hasLocale` guard is dead code.
+- `params` stays only for a page's *own* dynamic segments (`blog/[slug]` destructures `slug`, not `locale`).
+
+Metadata route files (`opengraph-image.tsx`) compile to Route Handlers, so they still read `locale` from `params`.
+
 ## Locales
 
 | Locale | URL prefix | Content source |

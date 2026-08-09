@@ -1,7 +1,6 @@
 import { CheckIcon } from "@zenncore/icons";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import type { Locale } from "@/i18n/routing";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
 import DuaLogo from "@/public/partners/dua-flavours.png";
@@ -9,8 +8,8 @@ import { Counter } from "./counter";
 
 const metricKeys = ["visits", "sales"] as const;
 
-export const CaseStudy = async ({ locale }: CaseStudy.Props) => {
-  const translate = await getTranslations({ locale, namespace: "home" });
+export const CaseStudy = async () => {
+  const translate = await getTranslations("home");
   const metrics = metricKeys.map((key) => ({
     key,
     value: translate(`caseStudy.metrics.${key}.value`),
@@ -79,9 +78,3 @@ export const CaseStudy = async ({ locale }: CaseStudy.Props) => {
     </section>
   );
 };
-
-export namespace CaseStudy {
-  export type Props = {
-    locale: Locale;
-  };
-}

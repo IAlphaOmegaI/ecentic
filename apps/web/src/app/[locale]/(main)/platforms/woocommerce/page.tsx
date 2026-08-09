@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { hasLocale } from "next-intl";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
-import { routing } from "@/i18n/routing";
 import {
   absoluteUrl,
   createBreadcrumbSchema,
@@ -25,16 +22,9 @@ import { RelatedPages } from "./_components/related";
 import { Why } from "./_components/why";
 import { Workflow } from "./_components/workflow";
 
-type WooCommercePageProps = {
-  params: Promise<{ locale: string }>;
-};
-
-export const generateMetadata = async ({
-  params,
-}: WooCommercePageProps): Promise<Metadata> => {
-  const { locale: raw } = await params;
-  const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
-  const translate = await getTranslations({ locale, namespace: "woocommerce" });
+export const generateMetadata = async (): Promise<Metadata> => {
+  const locale = await getLocale();
+  const translate = await getTranslations("woocommerce");
 
   return createMetadata({
     title: translate("meta.title"),
@@ -50,12 +40,10 @@ export const generateMetadata = async ({
   });
 };
 
-export default async ({ params }: WooCommercePageProps) => {
-  const { locale: raw } = await params;
-  if (!hasLocale(routing.locales, raw)) notFound();
-  const locale = raw;
+export default async () => {
+  const locale = await getLocale();
 
-  const translate = await getTranslations({ locale, namespace: "woocommerce" });
+  const translate = await getTranslations("woocommerce");
   const messages = await getMessages();
   const description = translate("meta.description");
   const assurances = messages.woocommerce.hero.assurances;

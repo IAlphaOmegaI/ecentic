@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import type { Locale } from "@/i18n/routing";
 import { Plus } from "@/components/plus";
 
 const milestoneKeys = ["visa", "google", "mastercard", "openai"] as const;
@@ -15,8 +14,8 @@ const milestoneLogos: Record<
   openai: { brand: "OpenAI", logo: "/images/chatgpt.svg" },
 };
 
-export const WhyNow = async ({ locale }: WhyNow.Props) => {
-  const translate = await getTranslations({ locale, namespace: "home" });
+export const WhyNow = async () => {
+  const translate = await getTranslations("home");
 
   return (
     <section className="relative border-accent-foreground border-y bg-background-dimmed">
@@ -90,9 +89,3 @@ export const WhyNow = async ({ locale }: WhyNow.Props) => {
     </section>
   );
 };
-
-export namespace WhyNow {
-  export type Props = {
-    locale: Locale;
-  };
-}

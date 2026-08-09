@@ -2,8 +2,7 @@ import { unwrapResult } from "@zenncore/utils";
 import { readingTimeMinutes } from "babylovegrowth-next-js-blog";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { hasLocale } from "next-intl";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
 import type { Locale } from "@/i18n/routing";
@@ -40,7 +39,7 @@ const languageAlternates = (slug: string) => ({
 });
 
 type BlogPageProps = {
-  params: Promise<{ locale: string; slug: string }>;
+  params: Promise<{ slug: string }>;
 };
 
 export const generateStaticParams = async () => {
@@ -56,8 +55,8 @@ export const generateStaticParams = async () => {
 export const generateMetadata = async ({
   params,
 }: BlogPageProps): Promise<Metadata> => {
-  const { slug, locale: raw } = await params;
-  const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
+  const { slug } = await params;
+  const locale = await getLocale();
 
   // Prefer stored rows (webhook writes EN + ES). Live BLG is fallback only.
   const resolved = await unwrapResult(
@@ -132,11 +131,10 @@ export const generateMetadata = async ({
 };
 
 export default async ({ params }: BlogPageProps) => {
-  const { slug, locale: raw } = await params;
-  if (!hasLocale(routing.locales, raw)) notFound();
-  const locale = raw;
+  const { slug } = await params;
+  const locale = await getLocale();
 
-  const translate = await getTranslations({ locale, namespace: "blog" });
+  const translate = await getTranslations("blog");
   // Static / ISR — locale rows are written by the BLG webhook (or editorial);
   // `revalidateTag("blog")` regenerates these pages.
   const resolved = await unwrapResult(Blog.resolve({ slug, locale }));

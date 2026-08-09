@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { hasLocale } from "next-intl";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
-import { routing } from "@/i18n/routing";
 import {
   absoluteUrl,
   createBreadcrumbSchema,
@@ -23,19 +20,9 @@ import { NextSteps } from "./_components/next-steps";
 import { WhyListingsLose } from "./_components/why-listings-lose";
 import { Workflow } from "./_components/workflow";
 
-type ProductListingsPageProps = {
-  params: Promise<{ locale: string }>;
-};
-
-export const generateMetadata = async ({
-  params,
-}: ProductListingsPageProps): Promise<Metadata> => {
-  const { locale: raw } = await params;
-  const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
-  const translate = await getTranslations({
-    locale,
-    namespace: "productListings",
-  });
+export const generateMetadata = async (): Promise<Metadata> => {
+  const locale = await getLocale();
+  const translate = await getTranslations("productListings");
 
   return createMetadata({
     title: translate("meta.title"),
@@ -51,15 +38,10 @@ export const generateMetadata = async ({
   });
 };
 
-export default async ({ params }: ProductListingsPageProps) => {
-  const { locale: raw } = await params;
-  if (!hasLocale(routing.locales, raw)) notFound();
-  const locale = raw;
+export default async () => {
+  const locale = await getLocale();
 
-  const translate = await getTranslations({
-    locale,
-    namespace: "productListings",
-  });
+  const translate = await getTranslations("productListings");
   const messages = await getMessages();
   const description = translate("meta.description");
   const assurances = messages.productListings.hero.assurances;

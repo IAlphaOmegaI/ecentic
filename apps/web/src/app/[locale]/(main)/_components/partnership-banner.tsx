@@ -2,15 +2,14 @@ import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
-import type { Locale } from "@/i18n/routing";
 import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
 
 const partnerHref = "https://eupresence.com/";
 const bundleHref = "/pricing#partnership";
 
-export const PartnershipBanner = async ({ locale }: PartnershipBanner.Props) => {
-  const translate = await getTranslations({ locale, namespace: "home" });
+export const PartnershipBanner = async () => {
+  const translate = await getTranslations("home");
 
   return (
     <section
@@ -79,9 +78,3 @@ export const PartnershipBanner = async ({ locale }: PartnershipBanner.Props) => 
     </section>
   );
 };
-
-export namespace PartnershipBanner {
-  export type Props = {
-    locale: Locale;
-  };
-}

@@ -1,12 +1,11 @@
 import { ArrowRightIcon, ShieldCheckIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
-import type { Locale } from "@/i18n/routing";
 import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
 
-export const UCPCallout = async ({ locale }: UCPCallout.Props) => {
-  const translate = await getTranslations({ locale, namespace: "home" });
+export const UCPCallout = async () => {
+  const translate = await getTranslations("home");
 
   return (
     <section className="relative border-accent-foreground border-y p-6">
@@ -38,9 +37,3 @@ export const UCPCallout = async ({ locale }: UCPCallout.Props) => {
     </section>
   );
 };
-
-export namespace UCPCallout {
-  export type Props = {
-    locale: Locale;
-  };
-}

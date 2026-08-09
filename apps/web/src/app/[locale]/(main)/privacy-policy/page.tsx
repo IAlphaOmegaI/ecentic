@@ -6,15 +6,12 @@ import {
   XCircleIcon,
 } from "@zenncore/icons";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { hasLocale } from "next-intl";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/footer";
 import { JsonLd } from "@/components/json-ld";
 import { Navbar } from "@/components/navbar";
 import { localizePath } from "@/i18n/locale";
-import { routing } from "@/i18n/routing";
 import {
   absoluteUrl,
   createBreadcrumbSchema,
@@ -26,10 +23,6 @@ import Art from "@/public/images/ascii/gavel.png";
 import { ContentPageSection } from "../_components/content";
 import { PageBanner } from "../_components/page-banner";
 import { renderInline } from "../_components/rich-text";
-
-type PrivacyPolicyPageProps = {
-  params: Promise<{ locale: string }>;
-};
 
 const summaryIcons = [
   CheckCircleIcon,
@@ -89,12 +82,9 @@ const renderContent = (content: string): ReactNode => {
   );
 };
 
-export const generateMetadata = async ({
-  params,
-}: PrivacyPolicyPageProps): Promise<Metadata> => {
-  const { locale: raw } = await params;
-  const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
-  const translate = await getTranslations({ locale, namespace: "legal" });
+export const generateMetadata = async (): Promise<Metadata> => {
+  const locale = await getLocale();
+  const translate = await getTranslations("legal");
 
   return createMetadata({
     title: translate("privacyPolicy.meta.title"),
@@ -103,12 +93,10 @@ export const generateMetadata = async ({
   });
 };
 
-export default async ({ params }: PrivacyPolicyPageProps) => {
-  const { locale: raw } = await params;
-  if (!hasLocale(routing.locales, raw)) notFound();
-  const locale = raw;
+export default async () => {
+  const locale = await getLocale();
 
-  const translate = await getTranslations({ locale, namespace: "legal" });
+  const translate = await getTranslations("legal");
   const messages = await getMessages();
   const description = translate("privacyPolicy.meta.description");
   const lastUpdated = messages.legal.privacyPolicy.lastUpdated;
