@@ -56,7 +56,11 @@
         {
           "title": "SSO",
           "description": "Okta, Google Workspace, and Azure AD supported. Provision seats without touching ecentic directly.",
-          "features": ["SAML + OIDC", "Role-based access", "Automated deprovisioning"]
+          "features": [
+            "SAML + OIDC",
+            "Role-based access",
+            "Automated deprovisioning"
+          ]
         },
         {
           "title": "SOC 2 Type II",
@@ -126,7 +130,11 @@
       },
       "rows": [
         { "label": "Price", "dominate": "$149/mo", "enterprise": "Custom" },
-        { "label": "Products", "dominate": "Up to 1000", "enterprise": "Custom limits" },
+        {
+          "label": "Products",
+          "dominate": "Up to 1000",
+          "enterprise": "Custom limits"
+        },
         {
           "label": "Agent simulations",
           "dominate": "Continuous",
@@ -134,11 +142,23 @@
         },
         { "label": "Auto-optimization", "dominate": true, "enterprise": true },
         { "label": "UCP generation", "dominate": true, "enterprise": true },
-        { "label": "UCP signing service", "dominate": false, "enterprise": true },
-        { "label": "Multi-brand rollups", "dominate": false, "enterprise": true },
+        {
+          "label": "UCP signing service",
+          "dominate": false,
+          "enterprise": true
+        },
+        {
+          "label": "Multi-brand rollups",
+          "dominate": false,
+          "enterprise": true
+        },
         { "label": "API access", "dominate": false, "enterprise": true },
         { "label": "SSO", "dominate": false, "enterprise": true },
-        { "label": "SOC 2 Type II", "dominate": false, "enterprise": "In progress" },
+        {
+          "label": "SOC 2 Type II",
+          "dominate": false,
+          "enterprise": "In progress"
+        },
         { "label": "Dedicated CSM", "dominate": false, "enterprise": true }
       ],
       "cta": {

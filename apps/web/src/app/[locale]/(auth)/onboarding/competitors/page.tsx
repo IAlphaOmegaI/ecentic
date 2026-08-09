@@ -1,9 +1,9 @@
 import { parseSearchParam, unwrapResult } from "@zenncore/utils";
-import { getLocale, getTranslations } from "next-intl/server";
-import { redirect } from "@/i18n/navigation";
 import type { SearchParamsProps } from "@zenncore/web/types";
 import { connection } from "next/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Motion } from "@/components/motion";
+import { redirect } from "@/i18n/navigation";
 import * as Product from "@/server/app/product";
 import { Environment } from "@/server/utils/environment";
 import { CompetitorManager } from "./_components/competitor-manager";

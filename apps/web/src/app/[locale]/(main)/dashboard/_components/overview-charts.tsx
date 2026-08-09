@@ -12,7 +12,6 @@ import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import { motion } from "motion/react";
 import Image from "next/image";
-import { Link } from "@/i18n/navigation";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
@@ -24,6 +23,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { Link } from "@/i18n/navigation";
 import { Spring } from "@/lib/animations";
 import { formatRelativeTime } from "@/lib/date";
 import type * as Simulate from "@/server/app/intelligence/simulate";
@@ -313,7 +313,9 @@ export const OverviewCharts = ({
         <div className="flex flex-col gap-px bg-accent-foreground">
           <div className="flex-1 bg-background-rich">
             <div className="mb-2 flex items-center justify-between px-4 pt-4">
-              <SectionKicker>{translate("kickers.recentActivity")}</SectionKicker>
+              <SectionKicker>
+                {translate("kickers.recentActivity")}
+              </SectionKicker>
             </div>
             {activity.length === 0 ? (
               <div className="flex size-full flex-col items-center items-center justify-center gap-2 p-4 text-center font-normal text-foreground-dimmed">
@@ -360,7 +362,8 @@ export const OverviewCharts = ({
               color="primary"
               render={<Link href={`/dashboard/${store}/products`} />}
             >
-              {translate("action.primary")} <ArrowRightIcon className="size-4" />
+              {translate("action.primary")}{" "}
+              <ArrowRightIcon className="size-4" />
             </Button>
           </div>
         </div>

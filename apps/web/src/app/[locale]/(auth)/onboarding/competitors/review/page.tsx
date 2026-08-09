@@ -1,7 +1,7 @@
 import { unwrapResult } from "@zenncore/utils";
+import type { SearchParamsProps } from "@zenncore/web/types";
 import { getLocale, getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
-import type { SearchParamsProps } from "@zenncore/web/types";
 import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
 import { Environment } from "@/server/utils/environment";

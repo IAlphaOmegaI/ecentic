@@ -2,9 +2,9 @@
 
 import { ArrowRightIcon, DownloadIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { Link } from "@/i18n/navigation";
 import * as Report from "@/server/app/report";
 
 const actions = {

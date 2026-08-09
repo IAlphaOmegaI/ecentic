@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { Link } from "@/i18n/navigation";
 import type { ReactNode } from "react";
+import { Link } from "@/i18n/navigation";
 import { Crosshair } from "./grid";
 import { HubShellCopy } from "./hub-shell-copy";
 import { NotificationBell } from "./notification-bell";

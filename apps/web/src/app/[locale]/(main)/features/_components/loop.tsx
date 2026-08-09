@@ -7,7 +7,12 @@ import {
 import { getMessages, getTranslations } from "next-intl/server";
 import { Plus } from "@/components/plus";
 
-const stepIcons = [RobotIcon, FaceSearchIcon, CircleBoltIcon, TrendUpIcon] as const;
+const stepIcons = [
+  RobotIcon,
+  FaceSearchIcon,
+  CircleBoltIcon,
+  TrendUpIcon,
+] as const;
 
 export const Loop = async () => {
   const translate = await getTranslations("features");

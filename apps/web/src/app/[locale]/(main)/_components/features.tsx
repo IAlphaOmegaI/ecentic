@@ -6,9 +6,9 @@ import {
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { getTranslations } from "next-intl/server";
-import type { Locale } from "@/i18n/routing";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
+import type { Locale } from "@/i18n/routing";
 
 const featureKeys = [
   { key: "aiScore", icon: BarChartIcon, color: "text-blue-500" },

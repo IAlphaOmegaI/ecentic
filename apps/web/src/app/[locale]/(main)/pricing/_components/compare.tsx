@@ -1,9 +1,9 @@
 import { ArrowRightIcon, CheckIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { getMessages, getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
 import { BookCall } from "@/components/cal";
 import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
 import { PricingCTA } from "./pricing-cta";
 
 type Cell = string | boolean;

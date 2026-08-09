@@ -1,7 +1,7 @@
 import { CircleBoltIcon, FaceSearchIcon, RobotIcon } from "@zenncore/icons";
 import { getTranslations } from "next-intl/server";
-import type { Locale } from "@/i18n/routing";
 import { Reveal, RevealItem } from "@/components/reveal";
+import type { Locale } from "@/i18n/routing";
 
 export const Steps = async ({ locale }: Steps.Props) => {
   const translate = await getTranslations({ locale, namespace: "home" });

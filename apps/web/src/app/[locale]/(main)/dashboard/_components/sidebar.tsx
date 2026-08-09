@@ -1,8 +1,8 @@
 import { unwrapResult } from "@zenncore/utils";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
 import { Suspense } from "react";
+import { Link } from "@/i18n/navigation";
 import * as Optimizations from "@/server/app/optimization";
 import * as Products from "@/server/app/product";
 import * as Store from "@/server/app/store";
@@ -101,7 +101,11 @@ const SidebarLogo = async () => {
 
   return (
     <div className="flex h-14 items-center justify-center overflow-hidden border-accent-foreground border-b pr-22 pl-5">
-      <Link href="/dashboard" aria-label={translate("allStores")} className="w-full">
+      <Link
+        href="/dashboard"
+        aria-label={translate("allStores")}
+        className="w-full"
+      >
         <Image
           src="/images/trademark.svg"
           alt="ecentic"

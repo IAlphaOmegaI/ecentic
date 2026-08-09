@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-import { Plus } from "@/components/plus";
 
 type Partner = {
   id: string;

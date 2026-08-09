@@ -121,7 +121,8 @@ const NavbarDesktop = () => {
           className="absolute inset-0 object-cover"
           aria-hidden
         />
-        <LanguageSwitcher variant="nav" className="relative z-100 mr-2" />
+        <LanguageSwitcher variant="nav" className="relative z-100 ml-2 -mr-6" />
+        <div className="h-full w-px bg-accent-foreground relative z-100" />
         <NavbarLink href="/sign-up">
           {translate("action.primary")}{" "}
           <ArrowRightIcon className="size-6 transition-transform duration-300 group-hover:translate-x-1" />

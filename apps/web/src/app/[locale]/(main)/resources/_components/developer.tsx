@@ -2,9 +2,9 @@ import { ArrowRightIcon, CodeIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import { getMessages, getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
+import { Link } from "@/i18n/navigation";
 import { seo } from "@/lib/seo";
 import { LlmsArt } from "./resource-art";
 

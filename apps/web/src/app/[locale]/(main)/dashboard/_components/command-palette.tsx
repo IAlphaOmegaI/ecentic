@@ -6,9 +6,9 @@ import {
   DialogPopup,
   DialogTrigger,
 } from "@zenncore/web/components/dialog";
-import { Link, usePathname } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
+import { Link, usePathname } from "@/i18n/navigation";
 import { formatPrice } from "@/lib/currency";
 import type * as CompetitorTypes from "@/server/app/competitor";
 import * as Competitor from "@/server/app/competitor";

@@ -1,8 +1,12 @@
 import { resultify } from "@zenncore/utils";
-import createMiddleware from "next-intl/middleware";
 import type { ProxyConfig, NextRequest as Request } from "next/server";
 import { NextResponse as Response } from "next/server";
-import { localeFromPathname, localizePath, stripLocalePrefix } from "@/i18n/locale";
+import createMiddleware from "next-intl/middleware";
+import {
+  localeFromPathname,
+  localizePath,
+  stripLocalePrefix,
+} from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
 import { agentHomepageLinkHeader } from "@/lib/agent-discovery";
 import { auth } from "@/lib/auth";

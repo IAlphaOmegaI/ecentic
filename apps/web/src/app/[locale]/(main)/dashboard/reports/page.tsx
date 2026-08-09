@@ -1,7 +1,7 @@
 import { DocumentPdfIcon, ShareIcon } from "@zenncore/icons";
 import { unwrapResult } from "@zenncore/utils";
-import { getTranslations } from "next-intl/server";
 import { connection } from "next/server";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { formatRelativeTime } from "@/lib/date";
 import * as Report from "@/server/app/report";

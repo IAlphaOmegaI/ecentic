@@ -5,9 +5,9 @@ import {
   SquareChartIcon,
 } from "@zenncore/icons";
 import { cn, unwrapResult } from "@zenncore/utils";
-import { getMessages, getTranslations } from "next-intl/server";
 import Image from "next/image";
 import { connection } from "next/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
 import { formatScanEstimate } from "@/lib/scan-estimate";
@@ -148,7 +148,9 @@ export default async () => {
               return (
                 <div key={key} className="bg-background-dimmed p-4">
                   <Icon className={cn("mb-6 size-12", statColors[key])} />
-                  <p className="font-medium text-2xl text-foreground">{value}</p>
+                  <p className="font-medium text-2xl text-foreground">
+                    {value}
+                  </p>
                   <p className="font-light text-foreground-dimmed">
                     {translate(`stats.${key}`)}
                   </p>

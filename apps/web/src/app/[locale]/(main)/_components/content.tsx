@@ -2,12 +2,12 @@ import { ArrowRightIcon } from "@zenncore/icons";
 import { type ClassList, cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
-import { Link } from "@/i18n/navigation";
 import type { ReactNode } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
 import { PageBanner } from "./page-banner";
 import { renderInline } from "./rich-text";
 

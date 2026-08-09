@@ -8,8 +8,8 @@ import {
 } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { getMessages, getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
 import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
 
 const relatedMeta: readonly {
   href: string;

@@ -5,9 +5,9 @@ import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import { useLinkStatus } from "next/link";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
 import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
 import { FeedForm } from "./_components/feed-form";
 
 export default () => {

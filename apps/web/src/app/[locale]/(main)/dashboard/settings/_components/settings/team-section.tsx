@@ -37,9 +37,7 @@ export const TeamSection = ({ user }: { user: User.Type }) => {
     return {
       email: field({
         shape: "text",
-        validator: z
-          .string()
-          .email(translate("fields.email.validation")),
+        validator: z.string().email(translate("fields.email.validation")),
         label: translate("fields.email.label"),
         placeholder: translate("fields.email.placeholder"),
         classList: { field: "flex-1" },

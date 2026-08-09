@@ -15,8 +15,8 @@ import {
   AccordionPanel,
   AccordionTrigger,
 } from "@zenncore/web/components/accordion";
-import { useMessages, useTranslations } from "next-intl";
 import Image from "next/image";
+import { useMessages, useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { useMemo } from "react";
 import {

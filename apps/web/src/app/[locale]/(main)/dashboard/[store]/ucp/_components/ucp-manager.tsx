@@ -629,7 +629,9 @@ export const UcpManager = ({
                   onClick={handleSave}
                   disabled={isSaving}
                 >
-                  {isSaving ? translate("action.saving") : translate("action.save")}
+                  {isSaving
+                    ? translate("action.saving")
+                    : translate("action.save")}
                 </Button>
                 {targetStore && (
                   <Button
@@ -683,7 +685,9 @@ export const UcpManager = ({
                     {copied ? (
                       <>
                         <CheckIcon className="size-3.5 text-primary" />
-                        <span className="text-primary">{translate("action.copied")}</span>
+                        <span className="text-primary">
+                          {translate("action.copied")}
+                        </span>
                       </>
                     ) : (
                       <>

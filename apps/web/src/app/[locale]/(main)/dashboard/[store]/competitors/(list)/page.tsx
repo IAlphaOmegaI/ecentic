@@ -10,10 +10,10 @@ import {
 import { cn, unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import type { SearchParamsProps } from "@zenncore/web/types";
-import { Link } from "@/i18n/navigation";
-import { getTranslations } from "next-intl/server";
 import { connection } from "next/server";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
+import { Link } from "@/i18n/navigation";
 import { formatRelativeTime } from "@/lib/date";
 import * as Competitor from "@/server/app/competitor";
 import * as Scan from "@/server/app/scan";
@@ -302,7 +302,9 @@ const CompetitiveLandscape = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
   const translate = await getTranslations("dashboard.competitors.landscape");
-  const competitorsAction = await getTranslations("dashboard.competitors.action");
+  const competitorsAction = await getTranslations(
+    "dashboard.competitors.action",
+  );
   const shared = await getTranslations("dashboard.shared");
   const data = await unwrapResult(
     Competitor.gatherIntelligence(Environment.SERVER, { store }),
@@ -482,7 +484,7 @@ const Insights = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
   const translate = await getTranslations("dashboard.competitors.insights");
-  const shared = await getTranslations("dashboard.shared");
+  const _shared = await getTranslations("dashboard.shared");
   const [data, scans] = await Promise.all([
     unwrapResult(Competitor.gatherIntelligence(Environment.SERVER, { store })),
     unwrapResult(Scan.getLatest(Environment.SERVER, { store })),

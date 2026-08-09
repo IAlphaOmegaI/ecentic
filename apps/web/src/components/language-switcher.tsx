@@ -79,10 +79,7 @@ export const LanguageSwitcher = ({
   }
 
   return (
-    <Select
-      value={locale}
-      onValueChange={switchLocale}
-    >
+    <Select value={locale} onValueChange={switchLocale}>
       <SelectTrigger
         aria-label={translate("language.label")}
         className={cn(

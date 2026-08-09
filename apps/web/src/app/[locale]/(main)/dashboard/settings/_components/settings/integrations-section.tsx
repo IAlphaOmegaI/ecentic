@@ -5,8 +5,8 @@ import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import * as Store from "@/server/app/store";
 
 const PLATFORM_BADGE: Record<string, { label: string; className: string }> = {

@@ -25,12 +25,12 @@ import {
   TabsPanel,
 } from "@zenncore/web/components/tabs";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { useMessages, useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "motion/react";
-import { Link, useRouter } from "@/i18n/navigation";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { useState } from "react";
+import { Link, useRouter } from "@/i18n/navigation";
 import { Spring } from "@/lib/animations";
 import type { DashboardData, Type } from "@/server/app/optimization";
 import * as Optimization from "@/server/app/optimization";
@@ -128,39 +128,39 @@ const InsightCard = ({
   const translate = useTranslations("dashboard.optimize");
 
   return (
-  <AccordionItem
-    value={value}
-    className="border-accent-foreground border-b bg-background-rich"
-  >
-    {/* The trigger is a <button>, so contents must be phrasing content. */}
-    <AccordionTrigger
-      className="items-center px-5 py-3.5 hover:bg-background-dimmed/40"
-      classList={{
-        trigger: {
-          icon: "size-4 shrink-0 text-foreground-dimmed group-data-panel-open:rotate-180",
-        },
-      }}
+    <AccordionItem
+      value={value}
+      className="border-accent-foreground border-b bg-background-rich"
     >
-      <span className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
-        <span className="truncate font-medium text-foreground-rich">
-          {productTitle}
+      {/* The trigger is a <button>, so contents must be phrasing content. */}
+      <AccordionTrigger
+        className="items-center px-5 py-3.5 hover:bg-background-dimmed/40"
+        classList={{
+          trigger: {
+            icon: "size-4 shrink-0 text-foreground-dimmed group-data-panel-open:rotate-180",
+          },
+        }}
+      >
+        <span className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+          <span className="truncate font-medium text-foreground-rich">
+            {productTitle}
+          </span>
+          <span className={SEVERITY_CLASSES[insight.severity]}>
+            {translate(`severity.${insight.severity}`)}
+          </span>
+          <span className={TYPE_TAG_CLASSES}>
+            {translate(`categories.${insight.category}`)}
+          </span>
+          <WinRateBadge rate={insight.winRate} />
         </span>
-        <span className={SEVERITY_CLASSES[insight.severity]}>
-          {translate(`severity.${insight.severity}`)}
-        </span>
-        <span className={TYPE_TAG_CLASSES}>
-          {translate(`categories.${insight.category}`)}
-        </span>
-        <WinRateBadge rate={insight.winRate} />
-      </span>
-    </AccordionTrigger>
-    <AccordionPanel>
-      <div className="space-y-2 border-accent-foreground border-t px-5 py-4">
-        <p className="text-foreground-dimmed text-sm">{insight.message}</p>
-        <p className="text-foreground text-sm">{insight.recommendation}</p>
-      </div>
-    </AccordionPanel>
-  </AccordionItem>
+      </AccordionTrigger>
+      <AccordionPanel>
+        <div className="space-y-2 border-accent-foreground border-t px-5 py-4">
+          <p className="text-foreground-dimmed text-sm">{insight.message}</p>
+          <p className="text-foreground text-sm">{insight.recommendation}</p>
+        </div>
+      </AccordionPanel>
+    </AccordionItem>
   );
 };
 
@@ -184,66 +184,66 @@ const PendingCard = ({
   const translate = useTranslations("dashboard.optimize");
 
   return (
-  // One compact row: title + signal chips on the left, actions on the right.
-  // The old per-card explainer paragraph and "Models:" line were identical on
-  // every card — that boilerplate is what made the queue a wall of text.
-  <motion.div
-    exit={{ opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }}
-    transition={Spring.Snappy}
-    style={{ overflow: "hidden" }}
-    className={SUGGESTION_CARD_CLASSES}
-  >
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <div className="min-w-0">
-        <p className="truncate font-medium text-base text-foreground-rich">
-          {item.product.title}
-        </p>
-        <div className="mt-1.5 flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 font-semibold text-[11px] text-success">
-            <TrendUpIcon className="size-3.5" />+{item.estimatedLift}%
-          </span>
-          <WinRateBadge rate={item.winRate} />
-          <span className={TYPE_TAG_CLASSES} title={item.models.join(", ")}>
-            {translate("listingType")}
-          </span>
+    // One compact row: title + signal chips on the left, actions on the right.
+    // The old per-card explainer paragraph and "Models:" line were identical on
+    // every card — that boilerplate is what made the queue a wall of text.
+    <motion.div
+      exit={{ opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }}
+      transition={Spring.Snappy}
+      style={{ overflow: "hidden" }}
+      className={SUGGESTION_CARD_CLASSES}
+    >
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <p className="truncate font-medium text-base text-foreground-rich">
+            {item.product.title}
+          </p>
+          <div className="mt-1.5 flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 font-semibold text-[11px] text-success">
+              <TrendUpIcon className="size-3.5" />+{item.estimatedLift}%
+            </span>
+            <WinRateBadge rate={item.winRate} />
+            <span className={TYPE_TAG_CLASSES} title={item.models.join(", ")}>
+              {translate("listingType")}
+            </span>
+          </div>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          <Button
+            variant="outline"
+            color="accent"
+            render={
+              <Link href={`/dashboard/${store}/products/${item.product.id}`} />
+            }
+          >
+            {translate("action.preview")}
+          </Button>
+          <Button
+            color="primary"
+            disabled={busy}
+            onClick={() => onApprove(item.product.id)}
+          >
+            {selected === item.product.id || isApprovePending ? (
+              <LoaderIcon className="size-4 animate-spin" />
+            ) : (
+              <CheckIcon className="size-4" />
+            )}
+            {translate("action.primary")}
+          </Button>
+          <Button
+            variant="ghost"
+            color="neutral"
+            size="icon"
+            className="text-foreground-dimmed hover:text-error"
+            disabled={busy}
+            onClick={() => onDismiss(item.product.id)}
+            aria-label={translate("dismissAriaLabel")}
+          >
+            <XIcon className="size-4" />
+          </Button>
         </div>
       </div>
-      <div className="flex shrink-0 items-center gap-2">
-        <Button
-          variant="outline"
-          color="accent"
-          render={
-            <Link href={`/dashboard/${store}/products/${item.product.id}`} />
-          }
-        >
-          {translate("action.preview")}
-        </Button>
-        <Button
-          color="primary"
-          disabled={busy}
-          onClick={() => onApprove(item.product.id)}
-        >
-          {selected === item.product.id || isApprovePending ? (
-            <LoaderIcon className="size-4 animate-spin" />
-          ) : (
-            <CheckIcon className="size-4" />
-          )}
-          {translate("action.primary")}
-        </Button>
-        <Button
-          variant="ghost"
-          color="neutral"
-          size="icon"
-          className="text-foreground-dimmed hover:text-error"
-          disabled={busy}
-          onClick={() => onDismiss(item.product.id)}
-          aria-label={translate("dismissAriaLabel")}
-        >
-          <XIcon className="size-4" />
-        </Button>
-      </div>
-    </div>
-  </motion.div>
+    </motion.div>
   );
 };
 
@@ -259,38 +259,38 @@ const PublishedCard = ({
   const translate = useTranslations("dashboard.optimize");
 
   return (
-  <div className={SUGGESTION_CARD_CLASSES}>
-    <div className="flex items-start justify-between gap-4">
-      <div className="min-w-0">
-        <p className="truncate font-medium text-base text-foreground-rich">
-          {productTitle}
-        </p>
-        <p className="mt-1 text-foreground-dimmed text-xs">
-          {translate("publishedAt", {
-            date: formatPublished(record.publishedAt),
-          })}
-        </p>
-        {record.winRateBefore !== null && record.winRateAfter !== null && (
+    <div className={SUGGESTION_CARD_CLASSES}>
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <p className="truncate font-medium text-base text-foreground-rich">
+            {productTitle}
+          </p>
           <p className="mt-1 text-foreground-dimmed text-xs">
-            {translate("winRateChange", {
-              before: record.winRateBefore,
-              after: record.winRateAfter,
+            {translate("publishedAt", {
+              date: formatPublished(record.publishedAt),
             })}
           </p>
-        )}
+          {record.winRateBefore !== null && record.winRateAfter !== null && (
+            <p className="mt-1 text-foreground-dimmed text-xs">
+              {translate("winRateChange", {
+                before: record.winRateBefore,
+                after: record.winRateAfter,
+              })}
+            </p>
+          )}
+        </div>
+        <Button
+          variant="outline"
+          color="accent"
+          className="shrink-0"
+          render={
+            <Link href={`/dashboard/${store}/products/${record.productId}`} />
+          }
+        >
+          {translate("action.viewProduct")}
+        </Button>
       </div>
-      <Button
-        variant="outline"
-        color="accent"
-        className="shrink-0"
-        render={
-          <Link href={`/dashboard/${store}/products/${record.productId}`} />
-        }
-      >
-        {translate("action.viewProduct")}
-      </Button>
     </div>
-  </div>
   );
 };
 
@@ -310,31 +310,31 @@ const DismissedCard = ({
   const translate = useTranslations("dashboard.optimize");
 
   return (
-  <motion.div
-    exit={{ opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }}
-    transition={Spring.Snappy}
-    style={{ overflow: "hidden" }}
-    className={`${SUGGESTION_CARD_CLASSES} opacity-80`}
-  >
-    <div className="flex items-center justify-between gap-4">
-      <p className="min-w-0 truncate font-medium text-base text-foreground-rich">
-        {productTitle}
-      </p>
-      <Button
-        variant="outline"
-        color="accent"
-        className="shrink-0"
-        disabled={busy}
-        onClick={() => onReconsider(record.productId)}
-      >
-        {busyProductId === record.productId ? (
-          <LoaderIcon className="size-4 animate-spin" />
-        ) : (
-          translate("action.reconsider")
-        )}
-      </Button>
-    </div>
-  </motion.div>
+    <motion.div
+      exit={{ opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }}
+      transition={Spring.Snappy}
+      style={{ overflow: "hidden" }}
+      className={`${SUGGESTION_CARD_CLASSES} opacity-80`}
+    >
+      <div className="flex items-center justify-between gap-4">
+        <p className="min-w-0 truncate font-medium text-base text-foreground-rich">
+          {productTitle}
+        </p>
+        <Button
+          variant="outline"
+          color="accent"
+          className="shrink-0"
+          disabled={busy}
+          onClick={() => onReconsider(record.productId)}
+        >
+          {busyProductId === record.productId ? (
+            <LoaderIcon className="size-4 animate-spin" />
+          ) : (
+            translate("action.reconsider")
+          )}
+        </Button>
+      </div>
+    </motion.div>
   );
 };
 
@@ -350,44 +350,45 @@ const DiagnosticsPanel = ({
   const translate = useTranslations("dashboard.optimize");
 
   return (
-  <div>
-    <div className="border-accent-foreground border-b p-4">
-      <SectionKicker>{kicker}</SectionKicker>
-      <p className="mt-2 font-semibold text-foreground-rich text-lg">
-        {translate("diagnostics.title")}
-      </p>
-      <p className="mt-1 text-foreground-dimmed text-sm">
-        {translate("diagnostics.description")}
-      </p>
+    <div>
+      <div className="border-accent-foreground border-b p-4">
+        <SectionKicker>{kicker}</SectionKicker>
+        <p className="mt-2 font-semibold text-foreground-rich text-lg">
+          {translate("diagnostics.title")}
+        </p>
+        <p className="mt-1 text-foreground-dimmed text-sm">
+          {translate("diagnostics.description")}
+        </p>
+      </div>
+      <Accordion
+        className="text-foreground"
+        // Auto-expand only the FIRST FEW high-severity insights — a bad store can
+        // have dozens, and opening them all just rebuilds the wall. Everything
+        // else stays a one-line row the user opens on demand.
+        defaultValue={insights
+          .filter((insight) => insight.severity === "high")
+          .slice(0, 2)
+          .map(
+            (insight) =>
+              `${insight.productId}-${insight.category}-${insight.message}`,
+          )}
+      >
+        {insights.map((insight) => {
+          const value = `${insight.productId}-${insight.category}-${insight.message}`;
+          return (
+            <InsightCard
+              key={value}
+              value={value}
+              insight={insight}
+              productTitle={
+                products[insight.productId]?.title ??
+                translate("unknownProduct")
+              }
+            />
+          );
+        })}
+      </Accordion>
     </div>
-    <Accordion
-      className="text-foreground"
-      // Auto-expand only the FIRST FEW high-severity insights — a bad store can
-      // have dozens, and opening them all just rebuilds the wall. Everything
-      // else stays a one-line row the user opens on demand.
-      defaultValue={insights
-        .filter((insight) => insight.severity === "high")
-        .slice(0, 2)
-        .map(
-          (insight) =>
-            `${insight.productId}-${insight.category}-${insight.message}`,
-        )}
-    >
-      {insights.map((insight) => {
-        const value = `${insight.productId}-${insight.category}-${insight.message}`;
-        return (
-          <InsightCard
-            key={value}
-            value={value}
-            insight={insight}
-            productTitle={
-              products[insight.productId]?.title ?? translate("unknownProduct")
-            }
-          />
-        );
-      })}
-    </Accordion>
-  </div>
   );
 };
 
@@ -515,9 +516,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
         total: productsTotal,
         rewritten: listingsRewritten,
         metafields:
-          profileWritten > 0
-            ? `, ${profileWritten} UCP metafields`
-            : "",
+          profileWritten > 0 ? `, ${profileWritten} UCP metafields` : "",
       }),
       type: result.data.errors.length > 0 ? "warning" : "success",
     });
@@ -568,7 +567,9 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
               ) : (
                 <CircleBoltIcon className="size-4" />
               )}
-              {translate("action.optimizeStore", { store: optimizableStore.name })}
+              {translate("action.optimizeStore", {
+                store: optimizableStore.name,
+              })}
             </Button>
           )}
         </div>
@@ -770,7 +771,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
                         record={record}
                         productTitle={
                           products[record.productId]?.title ??
-                        translate("unknownProduct")
+                          translate("unknownProduct")
                         }
                         busy={busy}
                         busyProductId={selected}

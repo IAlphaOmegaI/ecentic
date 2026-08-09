@@ -66,7 +66,9 @@ export const PlatformGrid = () => {
                 <UploadIcon className="size-14 text-foreground-dimmed transition-colors group-hover:text-primary" />
               </div>
             )}
-            <p className="font-medium text-foreground text-xl">{platform.name}</p>
+            <p className="font-medium text-foreground text-xl">
+              {platform.name}
+            </p>
             <p className="font-light text-foreground-dimmed text-sm">
               {platform.description}
             </p>

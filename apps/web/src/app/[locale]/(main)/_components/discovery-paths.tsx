@@ -8,9 +8,9 @@ import {
 } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { getTranslations } from "next-intl/server";
+import type { ComponentType } from "react";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-import type { ComponentType } from "react";
 
 type Translate = (key: string) => string;
 

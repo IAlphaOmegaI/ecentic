@@ -2,9 +2,9 @@ import { EyeClosedIcon, RobotIcon, SearchIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-import { Plus } from "@/components/plus";
 import Product from "@/public/images/product.png";
 
 const storyKeys = ["ask", "pick", "invisible"] as const;

@@ -12,8 +12,8 @@ import {
 import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { type ReactNode, type SubmitEvent, useState } from "react";
 import { useTranslations } from "next-intl";
+import { type ReactNode, type SubmitEvent, useState } from "react";
 import { Motion } from "@/components/motion";
 import * as UcpAdvancedCheck from "@/server/app/intelligence/ucp/advanced-check";
 
@@ -86,61 +86,68 @@ const EndpointProbeRow = ({
   const translate = useTranslations("dashboard.ucp.advancedValidator");
 
   return (
-  <div className="grid gap-3 bg-background px-4 py-4 sm:grid-cols-[minmax(0,160px)_minmax(0,1fr)_80px_80px_80px] sm:items-center">
-    <div>
-      <p className="font-medium text-foreground text-sm">
-        {probe.serviceLabel}
-      </p>
-      <p className="mt-0.5 break-all font-mono text-foreground-dimmed text-xs">
-        {probe.serviceName}
-      </p>
-    </div>
+    <div className="grid gap-3 bg-background px-4 py-4 sm:grid-cols-[minmax(0,160px)_minmax(0,1fr)_80px_80px_80px] sm:items-center">
+      <div>
+        <p className="font-medium text-foreground text-sm">
+          {probe.serviceLabel}
+        </p>
+        <p className="mt-0.5 break-all font-mono text-foreground-dimmed text-xs">
+          {probe.serviceName}
+        </p>
+      </div>
 
-    <div>
-      <p className="break-all font-mono text-foreground text-xs">
-        {probe.endpoint}
-      </p>
-      {probe.error && (
-        <p className="mt-1 font-light text-error text-xs">{probe.error}</p>
-      )}
-    </div>
-
-    <div className="flex flex-wrap gap-1.5 sm:flex-col">
-      <Chip
-        label={
-          probe.httpStatus !== null
-            ? `HTTP ${probe.httpStatus}`
-            : translate("chips.noResponse")
-        }
-        tone={probe.reachable ? "success" : "danger"}
-      />
-      <Chip label={formatTransport(probe.transport, translate)} tone="neutral" />
-    </div>
-
-    <div>
-      <span
-        className={cn(
-          "font-medium font-mono text-sm tabular-nums",
-          probe.latencyMs === null
-            ? "text-foreground-dimmed"
-            : probe.latencyMs < 400
-              ? "text-primary"
-              : probe.latencyMs < 1200
-                ? "text-warning"
-                : "text-error",
+      <div>
+        <p className="break-all font-mono text-foreground text-xs">
+          {probe.endpoint}
+        </p>
+        {probe.error && (
+          <p className="mt-1 font-light text-error text-xs">{probe.error}</p>
         )}
-      >
-        {formatLatency(probe.latencyMs)}
-      </span>
-    </div>
+      </div>
 
-    <div>
-      <Chip
-        label={probe.corsAllowed ? translate("chips.corsOk") : translate("chips.noCors")}
-        tone={probe.corsAllowed ? "success" : "warning"}
-      />
+      <div className="flex flex-wrap gap-1.5 sm:flex-col">
+        <Chip
+          label={
+            probe.httpStatus !== null
+              ? `HTTP ${probe.httpStatus}`
+              : translate("chips.noResponse")
+          }
+          tone={probe.reachable ? "success" : "danger"}
+        />
+        <Chip
+          label={formatTransport(probe.transport, translate)}
+          tone="neutral"
+        />
+      </div>
+
+      <div>
+        <span
+          className={cn(
+            "font-medium font-mono text-sm tabular-nums",
+            probe.latencyMs === null
+              ? "text-foreground-dimmed"
+              : probe.latencyMs < 400
+                ? "text-primary"
+                : probe.latencyMs < 1200
+                  ? "text-warning"
+                  : "text-error",
+          )}
+        >
+          {formatLatency(probe.latencyMs)}
+        </span>
+      </div>
+
+      <div>
+        <Chip
+          label={
+            probe.corsAllowed
+              ? translate("chips.corsOk")
+              : translate("chips.noCors")
+          }
+          tone={probe.corsAllowed ? "success" : "warning"}
+        />
+      </div>
     </div>
-  </div>
   );
 };
 
@@ -332,7 +339,9 @@ const McpProbeRow = ({ probe }: { probe: UcpAdvancedCheck.McpProbeResult }) => {
 
         <div className="flex flex-wrap gap-1.5">
           <Chip
-            label={translate("chips.toolsDeclared", { count: probe.tools.length })}
+            label={translate("chips.toolsDeclared", {
+              count: probe.tools.length,
+            })}
             tone={probe.tools.length > 0 ? "success" : "neutral"}
           />
           {probe.hasSearch && (
@@ -720,7 +729,9 @@ export const UcpAdvancedValidator = () => {
                 disabled={isChecking || !domain.trim()}
                 className="w-full shrink-0 sm:w-auto"
               >
-                {isChecking ? translate("action.running") : translate("action.primary")}
+                {isChecking
+                  ? translate("action.running")
+                  : translate("action.primary")}
               </Button>
             </div>
             <p className="mt-2 font-light text-foreground-dimmed text-sm">

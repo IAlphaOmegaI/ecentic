@@ -4,9 +4,9 @@ import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { useLinkStatus } from "next/link";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
 import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
 import { PlatformGrid } from "./_components/platform-grid";
 
 export default () => {

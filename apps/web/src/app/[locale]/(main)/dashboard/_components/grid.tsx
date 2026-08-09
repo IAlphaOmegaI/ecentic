@@ -82,12 +82,12 @@ export const TopFindingCallout = ({
   const resolvedLabel = label ?? translate("topFinding");
 
   return (
-  <div className={cn("bg-primary/5 px-4 py-3", className)}>
-    <p className="font-medium text-[10px] text-primary uppercase tracking-[0.08em]">
-      {resolvedLabel}
-    </p>
-    <p className="mt-1 max-w-3xl text-foreground text-sm">{children}</p>
-  </div>
+    <div className={cn("bg-primary/5 px-4 py-3", className)}>
+      <p className="font-medium text-[10px] text-primary uppercase tracking-[0.08em]">
+        {resolvedLabel}
+      </p>
+      <p className="mt-1 max-w-3xl text-foreground text-sm">{children}</p>
+    </div>
   );
 };
 
@@ -95,14 +95,14 @@ export const WinRateBadge = ({ rate }: { rate: number }) => {
   const translate = useTranslations("dashboard.grid");
 
   return (
-  <span
-    className={cn(
-      "whitespace-nowrap rounded px-1.5 py-0.5 font-semibold text-[10px] uppercase tabular-nums tracking-[0.06em]",
-      rate >= 50 ? "bg-success/10 text-success" : "bg-error/10 text-error",
-    )}
-  >
-    {translate("winRateBadge", { rate: String(rate) })}
-  </span>
+    <span
+      className={cn(
+        "whitespace-nowrap rounded px-1.5 py-0.5 font-semibold text-[10px] uppercase tabular-nums tracking-[0.06em]",
+        rate >= 50 ? "bg-success/10 text-success" : "bg-error/10 text-error",
+      )}
+    >
+      {translate("winRateBadge", { rate: String(rate) })}
+    </span>
   );
 };
 

@@ -1,11 +1,11 @@
 import { ArrowLeftIcon } from "@zenncore/icons";
 import { unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import { Link } from "@/i18n/navigation";
-import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
+import { Link } from "@/i18n/navigation";
 import { formatRelativeTime } from "@/lib/date";
 import * as Product from "@/server/app/product";
 import * as Store from "@/server/app/store";

@@ -26,10 +26,10 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import { useLinkStatus } from "next/link";
 import { useMessages, useTranslations } from "next-intl";
-import { Link, useRouter } from "@/i18n/navigation";
 import { type ReactNode, useState, useTransition } from "react";
 import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
+import { Link, useRouter } from "@/i18n/navigation";
 import { Stagger, Table as TableAnimations } from "@/lib/animations";
 import { getCurrencySymbol, normalizePrice } from "@/lib/currency";
 import type * as Product from "@/server/app/product";
@@ -230,11 +230,7 @@ export const ProductSelector = ({
                                 alt={product.title}
                               />
                               <AvatarFallback className="relative">
-                                <Image
-                                  src="/images/fallback.png"
-                                  alt=""
-                                  fill
-                                />
+                                <Image src="/images/fallback.png" alt="" fill />
                               </AvatarFallback>
                             </Avatar>
                             <div>

@@ -1485,11 +1485,7 @@
         },
         "frequency": {
           "title": "Frecuencia de simulación",
-          "options": [
-            "Solo manual",
-            "Diaria",
-            "Semanal"
-          ]
+          "options": ["Solo manual", "Diaria", "Semanal"]
         },
         "persona": {
           "title": "Persona de compra",
@@ -5587,13 +5583,7 @@
       },
       "selection": "{selected} de {limit} productos seleccionados",
       "table": {
-        "headers": [
-          "Producto",
-          "Precio",
-          "Moneda",
-          "Estado",
-          "Calidad"
-        ]
+        "headers": ["Producto", "Precio", "Moneda", "Estado", "Calidad"]
       },
       "states": {
         "active": "Activo",
@@ -5699,12 +5689,7 @@
         "description": "Selecciona los competidores que quieres incluir en tus simulaciones de agentes de IA.",
         "summary": "{total} productos competidores en {brands} marcas — {selected} seleccionados",
         "table": {
-          "headers": [
-            "Competidor",
-            "Precio",
-            "Moneda",
-            "Marca"
-          ]
+          "headers": ["Competidor", "Precio", "Moneda", "Marca"]
         },
         "action": {
           "back": "Atrás",

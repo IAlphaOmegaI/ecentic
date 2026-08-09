@@ -27,8 +27,8 @@ export const OneClickConnect = () => {
     }
   })();
 
-  const installSteps = messages.onboarding.connect.woocommerce.oneClick
-    .installRequired.steps;
+  const installSteps =
+    messages.onboarding.connect.woocommerce.oneClick.installRequired.steps;
 
   return (
     <div className="flex flex-col gap-3">
@@ -42,7 +42,9 @@ export const OneClickConnect = () => {
         <div className="flex flex-col gap-3 rounded-md border border-accent-foreground bg-background-dimmed px-4 py-3">
           <p className="font-medium text-foreground">
             {translate("woocommerce.oneClick.installRequired.title", {
-              store: storeUrl || translate("woocommerce.oneClick.installRequired.thatStore"),
+              store:
+                storeUrl ||
+                translate("woocommerce.oneClick.installRequired.thatStore"),
             })}
           </p>
           <ol className="flex list-inside list-decimal flex-col gap-2 font-light text-foreground-dimmed text-sm">
@@ -62,7 +64,9 @@ export const OneClickConnect = () => {
                 />
               }
             >
-              {translate("woocommerce.oneClick.installRequired.openPluginScreen")}
+              {translate(
+                "woocommerce.oneClick.installRequired.openPluginScreen",
+              )}
               <ArrowRightIcon className="size-4" />
             </Button>
           )}

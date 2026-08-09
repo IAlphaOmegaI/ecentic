@@ -1,7 +1,7 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { Switch } from "@zenncore/web/components/switch";
+import { useTranslations } from "next-intl";
 
 export const NotificationsSection = ({
   notifications,

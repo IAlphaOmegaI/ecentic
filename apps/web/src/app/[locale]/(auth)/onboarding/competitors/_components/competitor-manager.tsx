@@ -11,10 +11,10 @@ import {
 } from "@zenncore/web/components/tabs";
 import { useLinkStatus } from "next/link";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
 import type { ReactNode } from "react";
 import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
 import { AutoDetectTab } from "./auto-detect-tab";
 import { SearchTab } from "./search-tab";
 import { UrlTab } from "./url-tab";

@@ -1,9 +1,9 @@
 import { ArrowRightIcon, BarChartIcon, CircleBoltIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import { getMessages, getTranslations } from "next-intl/server";
 import Image from "next/image";
-import { Link } from "@/i18n/navigation";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
 import shopify from "@/public/images/shopify.svg";
 import woocommerce from "@/public/images/woocommerce.svg";
 
@@ -49,11 +49,7 @@ export const RelatedPages = async () => {
                 className="flex h-full flex-col gap-4 bg-background-rich p-6 md:p-8"
               >
                 {"logo" in asset ? (
-                  <Image
-                    src={asset.logo}
-                    alt={entry.name}
-                    className="size-7"
-                  />
+                  <Image src={asset.logo} alt={entry.name} className="size-7" />
                 ) : (
                   <asset.icon
                     aria-label={entry.name}

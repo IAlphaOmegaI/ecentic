@@ -1,15 +1,10 @@
+import { getTranslations } from "next-intl/server";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
 import type { Locale } from "@/i18n/routing";
-import { getTranslations } from "next-intl/server";
 import { Counter } from "./counter";
 
-const statKeys = [
-  "cyberWeek",
-  "conversion",
-  "growth",
-  "visibility",
-] as const;
+const statKeys = ["cyberWeek", "conversion", "growth", "visibility"] as const;
 
 export const Proof = async ({ locale }: Proof.Props) => {
   const translate = await getTranslations({ locale, namespace: "home" });
@@ -55,7 +50,9 @@ export const Proof = async ({ locale }: Proof.Props) => {
                 className="font-body font-bold text-5xl text-primary md:text-6xl"
               />
               <span className="text-foreground">{stat.label}</span>
-              <span className="text-foreground-rich text-xs">{stat.source}</span>
+              <span className="text-foreground-rich text-xs">
+                {stat.source}
+              </span>
             </RevealItem>
           ))}
         </Reveal>
