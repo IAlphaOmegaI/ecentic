@@ -113,7 +113,9 @@ export default async ({ params }: BlogPageProps) => {
 
   if (post.contentHtml) {
     const minutes = Math.max(1, readingTimeMinutes(post.contentHtml));
-    const sections = splitBlogHtmlByH2(post.contentHtml);
+    // Classify against the body's own language: a /es page falling back to the
+    // stored EN row still carries English headings.
+    const sections = splitBlogHtmlByH2(post.contentHtml, post.locale);
     return (
       <EditorialLayout
         eyebrow={post.category}
