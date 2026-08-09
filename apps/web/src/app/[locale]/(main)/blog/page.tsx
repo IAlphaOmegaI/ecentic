@@ -3,7 +3,7 @@ import { Button } from "@zenncore/web/components/button";
 import { readingTimeMinutes } from "babylovegrowth-next-js-blog";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
 import { type Locale, routing } from "@/i18n/routing";
@@ -74,7 +74,6 @@ export default async ({ params }: BlogIndexProps) => {
   const { locale: raw } = await params;
   if (!hasLocale(routing.locales, raw)) return null;
   const locale = raw;
-  setRequestLocale(locale);
 
   const translate = await getTranslations({ locale, namespace: "blog" });
   const description = translate("description");

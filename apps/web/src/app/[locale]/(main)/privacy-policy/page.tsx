@@ -6,9 +6,9 @@ import {
   XCircleIcon,
 } from "@zenncore/icons";
 import type { Metadata } from "next";
-import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
+import { hasLocale } from "next-intl";
+import { getMessages, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/footer";
 import { JsonLd } from "@/components/json-ld";
@@ -107,7 +107,6 @@ export default async ({ params }: PrivacyPolicyPageProps) => {
   const { locale: raw } = await params;
   if (!hasLocale(routing.locales, raw)) notFound();
   const locale = raw;
-  setRequestLocale(locale);
 
   const translate = await getTranslations({ locale, namespace: "legal" });
   const messages = await getMessages();

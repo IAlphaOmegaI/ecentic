@@ -1,16 +1,12 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
-import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import {
-  getMessages,
-  getTranslations,
-  setRequestLocale,
-} from "next-intl/server";
-import { Link } from "@/i18n/navigation";
+import { hasLocale } from "next-intl";
+import { getMessages, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
+import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import {
   absoluteUrl,
@@ -39,7 +35,10 @@ export const generateMetadata = async ({
 }: UcpValidatorPageProps): Promise<Metadata> => {
   const { locale: raw } = await params;
   const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
-  const translate = await getTranslations({ locale, namespace: "ucpValidator" });
+  const translate = await getTranslations({
+    locale,
+    namespace: "ucpValidator",
+  });
 
   return createMetadata({
     title: translate("meta.title"),
@@ -61,9 +60,11 @@ export default async ({ params }: UcpValidatorPageProps) => {
   const { locale: raw } = await params;
   if (!hasLocale(routing.locales, raw)) notFound();
   const locale = raw;
-  setRequestLocale(locale);
 
-  const translate = await getTranslations({ locale, namespace: "ucpValidator" });
+  const translate = await getTranslations({
+    locale,
+    namespace: "ucpValidator",
+  });
   const messages = await getMessages();
   const description = translate("meta.description");
   const assurances = messages.ucpValidator.hero.assurances;

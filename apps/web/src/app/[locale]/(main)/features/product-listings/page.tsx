@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
+import { hasLocale } from "next-intl";
+import { getMessages, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
@@ -32,7 +32,10 @@ export const generateMetadata = async ({
 }: ProductListingsPageProps): Promise<Metadata> => {
   const { locale: raw } = await params;
   const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
-  const translate = await getTranslations({ locale, namespace: "productListings" });
+  const translate = await getTranslations({
+    locale,
+    namespace: "productListings",
+  });
 
   return createMetadata({
     title: translate("meta.title"),
@@ -52,9 +55,11 @@ export default async ({ params }: ProductListingsPageProps) => {
   const { locale: raw } = await params;
   if (!hasLocale(routing.locales, raw)) notFound();
   const locale = raw;
-  setRequestLocale(locale);
 
-  const translate = await getTranslations({ locale, namespace: "productListings" });
+  const translate = await getTranslations({
+    locale,
+    namespace: "productListings",
+  });
   const messages = await getMessages();
   const description = translate("meta.description");
   const assurances = messages.productListings.hero.assurances;

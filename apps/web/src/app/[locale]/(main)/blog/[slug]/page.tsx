@@ -3,7 +3,7 @@ import { readingTimeMinutes } from "babylovegrowth-next-js-blog";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
 import type { Locale } from "@/i18n/routing";
@@ -52,9 +52,6 @@ export const generateStaticParams = async () => {
     slugs.map((slug) => ({ locale, slug })),
   );
 };
-
-/** New BLG slugs after build still generate on first request, then stay cached. */
-export const dynamicParams = true;
 
 export const generateMetadata = async ({
   params,
@@ -139,7 +136,6 @@ export default async ({ params }: BlogPageProps) => {
   const { slug, locale: raw } = await params;
   if (!hasLocale(routing.locales, raw)) notFound();
   const locale = raw;
-  setRequestLocale(locale);
 
   const translate = await getTranslations({ locale, namespace: "blog" });
   // Static / ISR path only — translations are written by webhook + backfill,
