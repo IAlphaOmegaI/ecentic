@@ -7,6 +7,7 @@ import { z } from "zod";
 import { withAuthentication } from "@/server/utils/authentication";
 import { schema } from "../../database";
 import * as AI from "../../utils/ai";
+import { streamable } from "../../utils/ai-streamable";
 import { Environment } from "../../utils/environment";
 import { RequestError, ValidationError } from "../../utils/error";
 import * as Competitor from "../competitor";
@@ -235,7 +236,7 @@ export const runScan = withAuthentication(
       };
     }
 
-    const stream = AI.streamable<ScanEvent>(async (update) => {
+    const stream = streamable<ScanEvent>(async (update) => {
       const selected = competitors.data.filter((record) => record.selected);
 
       if (products.data.length === 0) {

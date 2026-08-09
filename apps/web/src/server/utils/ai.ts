@@ -1,5 +1,4 @@
 import { createAzure } from "@ai-sdk/azure";
-import { createStreamableValue } from "@ai-sdk/rsc";
 import * as Sentry from "@sentry/nextjs";
 import {
   generateObject,
@@ -461,22 +460,6 @@ export function stream<T extends z.ZodTypeAny>(
   } as unknown as StreamOutputResult<T>;
 }
 
-export const streamable = <T>(
-  callback: (update: (value: T) => void) => Promise<void>,
-) => {
-  const streamable = createStreamableValue<T>();
-
-  // @note: needed like this, otherwise the streamable value is not updated correctly, do not use resultify here
-  (async () => {
-    try {
-      await callback((value) => {
-        streamable.update(value);
-      });
-      streamable.done();
-    } catch (error) {
-      report("stream", error);
-      streamable.error(error);
-    }
-  })();
-  return { output: streamable.value };
-};
+// RSC stream helper lives in `./ai-streamable` — do not re-export from here.
+// Bun CLI (and any non-`react-server` resolver) loads `@ai-sdk/rsc`'s client
+// entry, which does not export `createStreamableValue`.
