@@ -25,6 +25,11 @@ Sentry.init({
     // ("undefined is not an object (evaluating 'window.webkit.messageHandlers')") and
     // the Chromium one ("Cannot read properties of undefined (reading 'messageHandlers')")
     /messageHandlers/,
+    // Android twin of the above: Meta's in-app browser injects
+    // navigation_performance_logger_android, which posts to a Java bridge object on
+    // beforeunload. The WebView has already collected that object by then, so the
+    // bridge throws while the page unloads — Meta's injected script, not ours.
+    "Java object is gone",
   ],
 
   // Chatwoot widget's sdk.js posts to its bubble iframe before it's mounted
