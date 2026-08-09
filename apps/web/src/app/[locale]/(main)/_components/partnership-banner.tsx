@@ -62,7 +62,7 @@ export const PartnershipBanner = async () => {
         <Button
           color="primary"
           className="shrink-0 self-start md:self-center"
-          render={<Link href={bundleHref} />}
+          render={<Link href={bundleHref} />} 
         >
           <Image
             src="/images/eu.svg"
