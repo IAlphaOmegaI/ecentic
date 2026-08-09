@@ -52,23 +52,18 @@ The handler acknowledges immediately (200), then `Blog.ingestPublish` translates
 
 ### Backfill
 
-For articles published before the webhook was connected (BLG catalog + local EN `blog_post` rows):
+For articles published before the webhook was connected (BLG catalog + local EN `blog_post` rows), run the local script against the **production** database (no cron HTTP):
 
 ```bash
-# From apps/web — loops small batches against production until done
-bun run blog:backfill-spanish
-# or:
-bun scripts/backfill-blog-spanish.ts --host=https://ecentic.ai --limit=3
+cd apps/web
+# Point DATABASE_URL at production Postgres for this shell only, then:
+DATABASE_URL='postgresql://…prod…' bun run blog:backfill-spanish -- --yes
+# optional: --limit=5
 ```
 
-Requires `CRON_SECRET` in the environment (same value as Vercel production). Each round POSTs `/api/cron/blog-translate-backfill?limit=…` so Azure translate stays under the serverless time budget.
+Requires `BABYLOVEGROWTH_BLOG_API_KEY` + Azure gpt seat env in `.env.local`. Writes `locale=es` rows in-process via Azure. After it finishes, **redeploy** (or purge the blog cache) so static `/es/blog/*` pages regenerate.
 
-One-shot curl (may time out on a large backlog):
-
-```bash
-curl -X POST "https://ecentic.ai/api/cron/blog-translate-backfill?limit=3" \
-  -H "Authorization: Bearer $CRON_SECRET"
-```
+There is also `POST /api/cron/blog-translate-backfill` for scheduled runs; prefer the local script for one-shot prod fills.
 
 ## Env
 
