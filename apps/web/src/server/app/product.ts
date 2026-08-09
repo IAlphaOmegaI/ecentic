@@ -11,7 +11,7 @@ import { DatabaseError } from "../utils/error";
 import type { Pager } from "../utils/pagination";
 import type { Document, ExecuteOptions, Insertable } from "../utils/repository";
 import { repository } from "../utils/repository";
-import { themeEmbedDeepLink } from "../utils/shopify";
+import { themeEmbedDeepLink } from "./integration/shopify/hmac";
 import * as Competitor from "./competitor";
 import {
   checkProductPageSchema,

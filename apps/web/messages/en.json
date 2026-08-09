@@ -1843,7 +1843,11 @@
         },
         "frequency": {
           "title": "Simulation Frequency",
-          "options": ["Manual only", "Daily", "Weekly"]
+          "options": [
+            "Manual only",
+            "Daily",
+            "Weekly"
+          ]
         },
         "persona": {
           "title": "Purchase Persona",
@@ -3324,64 +3328,33 @@
       }
     },
     "capabilities": {
-      "number": "01",
+      "number": "02",
       "title": "Everything in Dominate, plus the enterprise layer.",
       "description": "The security, scale, and support layer enterprise teams need to run agent-commerce optimization across brands.",
       "items": [
         {
           "title": "Multi-brand rollups",
-          "description": "One dashboard across every brand and region. Aggregate win-rate, agent traffic, and optimization lift in a single view.",
-          "features": [
-            "Cross-brand win-rate rollups",
-            "Regional traffic breakdowns",
-            "Shared optimization workflows"
-          ],
-          "highlighted": true
+          "description": "One dashboard across every brand and region. Aggregate win-rate, agent traffic, and optimization lift in a single view."
         },
         {
           "title": "API access",
-          "description": "Read-only API for programmatic access to scan results, agent traffic, and UCP profiles.",
-          "features": [
-            "Scan + simulation exports",
-            "Agent traffic endpoints",
-            "UCP profile retrieval"
-          ]
+          "description": "Read-only API for programmatic access to scan results, agent traffic, and UCP profiles."
         },
         {
           "title": "SSO",
-          "description": "Okta, Google Workspace, and Azure AD supported. Provision seats without touching ecentic directly.",
-          "features": [
-            "SAML + OIDC",
-            "Role-based access",
-            "Automated deprovisioning"
-          ]
+          "description": "Okta, Google Workspace, and Azure AD supported. Provision seats without touching ecentic directly."
         },
         {
           "title": "SOC 2 Type II",
-          "description": "Audit in progress. Data residency options, GDPR-compliant processing, and a DPA on request.",
-          "features": [
-            "DPA available",
-            "EU data residency options",
-            "Security review support"
-          ]
+          "description": "Audit in progress. Data residency options, GDPR-compliant processing, and a DPA on request."
         },
         {
           "title": "UCP signing service",
-          "description": "ecentic manages cryptographic signing of your UCP profile so agents can verify merchant identity.",
-          "features": [
-            "Managed key rotation",
-            "Profile verification",
-            "No bespoke infra required"
-          ]
+          "description": "ecentic manages cryptographic signing of your UCP profile so agents can verify merchant identity."
         },
         {
           "title": "Dedicated CSM",
-          "description": "A named customer success manager, quarterly business reviews, and direct engineering escalation.",
-          "features": [
-            "Named CSM",
-            "Quarterly business reviews",
-            "Engineering escalation path"
-          ]
+          "description": "A named customer success manager, quarterly business reviews, and direct engineering escalation."
         }
       ],
       "cta": {
@@ -3392,30 +3365,26 @@
           "primary": "Talk to sales"
         }
       },
-      "scoping": {
-        "label": "How scoping works",
-        "steps": [
-          {
-            "step": "01",
-            "title": "Short discovery call",
-            "description": "Catalog size, platforms, and compliance needs."
-          },
-          {
-            "step": "02",
-            "title": "Custom ROI estimate",
-            "description": "Scoped to your SKU count and current win rates."
-          },
-          {
-            "step": "03",
-            "title": "Onboarding timeline",
-            "description": "No procurement deck required to begin."
-          }
-        ]
-      }
+      "scoping": [
+        {
+          "title": "Short discovery call",
+          "description": "Catalog size, platforms, and compliance needs."
+        },
+        {
+          "title": "Custom ROI estimate",
+          "description": "Scoped to your SKU count and current win rates."
+        },
+        {
+          "title": "Onboarding timeline",
+          "description": "No procurement deck required to begin."
+        }
+      ],
+      "paragraph": "We scope Enterprise around catalog size, platforms, and compliance needs — then share a custom ROI estimate before anyone writes a procurement deck.",
+      "panelTitle": "How scoping works"
     },
     "compare": {
-      "number": "02",
-      "title": "Dominate vs Enterprise",
+      "number": "03",
+      "title": "Where Dominate ends and Enterprise begins.",
       "description": "Dominate runs the full optimization loop for a single brand. Enterprise adds security, scale, and support for multi-brand commerce teams.",
       "table": {
         "feature": "Feature",
@@ -3485,10 +3454,50 @@
         "action": {
           "primary": "Contact enterprise sales"
         }
-      }
+      },
+      "dominate": {
+        "badge": "Dominate",
+        "title": "Full loop for one brand.",
+        "description": "Continuous simulations, auto-optimization, and UCP generation for a single catalog up to 1000 products.",
+        "strengths": [
+          "$149/mo with continuous agent simulations",
+          "Auto-optimization and UCP generation included",
+          "Best fit for a single brand up to 1000 products"
+        ]
+      },
+      "enterprise": {
+        "badge": "Enterprise",
+        "title": "Control plane for multi-brand teams.",
+        "description": "Everything in Dominate, plus multi-brand rollups, API access, SSO, managed UCP signing, and a dedicated CSM.",
+        "strengths": [
+          "Custom limits across brands and regions",
+          "SSO, API access, and UCP signing service",
+          "Named CSM with quarterly business reviews"
+        ]
+      },
+      "paragraph": "Stay on Dominate while one brand owns the loop. Move to Enterprise when brand count, security review, or reporting requirements need a shared layer.",
+      "triggersTitle": "When Enterprise becomes the clearer fit",
+      "triggers": [
+        {
+          "title": "Multiple brands or regions",
+          "description": "You need rollups across storefronts instead of separate Dominate seats."
+        },
+        {
+          "title": "SSO or DPA required",
+          "description": "Security or legal review blocks a self-serve plan until identity and contracts are covered."
+        },
+        {
+          "title": "Data must leave the UI",
+          "description": "Your analytics stack needs API access to scans, agent traffic, and UCP profiles."
+        },
+        {
+          "title": "A named owner matters",
+          "description": "You want a CSM, quarterly reviews, and a direct path into engineering."
+        }
+      ]
     },
     "faqSection": {
-      "number": "03",
+      "number": "04",
       "title": "Enterprise FAQ",
       "description": "Common questions about Enterprise plans, security, and onboarding."
     },
@@ -3518,6 +3527,34 @@
         "secondary": "View pricing"
       },
       "note": "SOC 2 in progress · DPA on request"
+    },
+    "why": {
+      "number": "01",
+      "title": "When a single-brand plan stops being enough.",
+      "description": "Enterprise is for teams that need one agent-commerce layer across brands, regions, and security requirements — not another self-serve seat.",
+      "paragraphs": [
+        "Dominate runs the full optimization loop for one brand. Enterprise adds the control plane: multi-brand rollups, SSO, API access, managed UCP signing, and a named CSM who owns the relationship.",
+        "The decision usually shows up when catalog size, brand count, or procurement requirements outgrow a flat monthly plan."
+      ],
+      "panelTitle": "Who this fits",
+      "audiences": [
+        {
+          "title": "Multi-brand operators",
+          "description": "Teams running several storefronts or regions who need one win-rate and agent-traffic view."
+        },
+        {
+          "title": "Security-led buyers",
+          "description": "Organizations that need SSO, a DPA, and a clear path toward SOC 2 Type II."
+        },
+        {
+          "title": "Platform / data teams",
+          "description": "Groups that want read-only API access into scans, agent traffic, and UCP profiles."
+        },
+        {
+          "title": "Commerce leadership",
+          "description": "Leaders who want a named CSM, quarterly reviews, and an engineering escalation path."
+        }
+      ]
     }
   },
   "features": {
@@ -5583,7 +5620,13 @@
       },
       "selection": "{selected} of {limit} products selected",
       "table": {
-        "headers": ["Product", "Price", "Currency", "Status", "Quality"]
+        "headers": [
+          "Product",
+          "Price",
+          "Currency",
+          "Status",
+          "Quality"
+        ]
       },
       "states": {
         "active": "Active",
@@ -5689,7 +5732,12 @@
         "description": "Select the competitors you'd like to include in your AI agent simulations.",
         "summary": "{total} competitor products across {brands} brands — {selected} selected",
         "table": {
-          "headers": ["Competitor", "Price", "Currency", "Brand"]
+          "headers": [
+            "Competitor",
+            "Price",
+            "Currency",
+            "Brand"
+          ]
         },
         "action": {
           "back": "Back",

@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server";
-import * as ShopifyWebhook from "@/server/app/integration/shopify-webhook";
+import * as ShopifyInbound from "@/server/app/integration/shopify/inbound";
 import { Environment } from "@/server/utils/environment";
 import { respond } from "@/server/utils/http";
 
@@ -18,7 +18,7 @@ export const POST = async (request: NextRequest) => {
   if (!signature || !topic || !shop)
     return Response.json({ error: "Missing webhook headers" }, { status: 400 });
 
-  const result = await ShopifyWebhook.handle(Environment.SERVER, {
+  const result = await ShopifyInbound.handle(Environment.SERVER, {
     shop,
     topic,
     signature,

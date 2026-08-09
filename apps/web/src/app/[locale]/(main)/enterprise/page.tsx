@@ -23,6 +23,7 @@ import { bannerAction } from "../_components/page-banner";
 import { Faq } from "../pricing/_components/faq";
 import { Capabilities } from "./_components/capabilities";
 import { Compare } from "./_components/compare";
+import { Why } from "./_components/why";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const locale = await getLocale();
@@ -94,6 +95,8 @@ export default async () => {
       }
     >
       <JsonLd schemas={structuredData} />
+
+      <Why />
 
       <Capabilities />
 

@@ -4,7 +4,6 @@ import { z } from "zod";
 import { getBrandLogo } from "@/lib/logo";
 import { schema } from "../../database";
 import * as AI from "../../utils/ai";
-import { streamable } from "../../utils/ai-streamable";
 import { Environment } from "../../utils/environment";
 import type * as Competitor from "../competitor";
 import { create } from "../competitor";
@@ -50,7 +49,7 @@ export const stream = ({
    */
   store: string;
 }) =>
-  streamable<DetectionEvent>(async (update) => {
+  AI.streamable<DetectionEvent>(async (update) => {
     const products = await Product.find(Environment.SERVER, {
       where: and(
         eq(schema.product.userId, user),
