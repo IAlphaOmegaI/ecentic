@@ -45,9 +45,10 @@ type BlogPageProps = {
 
 export const generateStaticParams = async () => {
   const slugs = await Blog.listCatalogSlugs();
-  return routing.locales.flatMap((locale) =>
-    slugs.map((slug) => ({ locale, slug })),
-  );
+  // Prerender English only. Spanish routes resolve on demand so the first
+  // `/es/blog/[slug]` hit can await Azure translate instead of freezing the
+  // EN fallback into a prerendered page (locale switch looked "broken").
+  return slugs.map((slug) => ({ locale: "en" as const, slug }));
 };
 
 export const generateMetadata = async ({
