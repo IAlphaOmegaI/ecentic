@@ -1,19 +1,15 @@
 import type { Metadata } from "next";
-import { hasLocale } from "next-intl";
-import { notFound } from "next/navigation";
-import {
-  getMessages,
-  getTranslations,
-  setRequestLocale,
-} from "next-intl/server";
 import { headers } from "next/headers";
+import { notFound } from "next/navigation";
+import { hasLocale } from "next-intl";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { JsonLd } from "@/components/json-ld";
 import { Plus } from "@/components/plus";
 import { PlaygroundClient } from "@/components/ucp-playground/playground-client";
-import { auth } from "@/lib/auth";
 import { localizePath } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
+import { auth } from "@/lib/auth";
 import {
   absoluteUrl,
   createBreadcrumbSchema,
@@ -79,7 +75,6 @@ export default async ({ params }: UcpPlaygroundPageProps) => {
   const { locale: raw } = await params;
   if (!hasLocale(routing.locales, raw)) notFound();
   const locale = raw;
-  setRequestLocale(locale);
 
   const translate = await getTranslations({
     locale,

@@ -26,6 +26,11 @@ export default withSentryConfig(
     },
     cacheComponents: true,
     partialPrefetching: true,
+    experimental: {
+      // Required so `app/global-not-found.tsx` works without a pass-through
+      // `app/layout.tsx` (locale segment is the root layout for root-params).
+      globalNotFound: true,
+    },
     rewrites: async () => {
       return [
         {

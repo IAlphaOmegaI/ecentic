@@ -2,6 +2,8 @@
 
 ecentic serves the UI in **English** (default, no URL prefix) and **Spanish** (`/es/...`) via `next-intl`.
 
+Locale for Server Components is resolved with `next/root-params` in `apps/web/src/i18n/request.ts`. The root layout is `app/[locale]/layout.tsx` (no `app/layout.tsx`). Do not call `setRequestLocale`.
+
 ## Locales
 
 | Locale | URL prefix | Content source |
@@ -28,7 +30,7 @@ All blog server logic lives in `apps/web/src/server/app/blog.ts`:
 
 - `"use cache"` Drizzle reads for public list/get (tagged `blog` for ISR)
 - plain `resolve` / `listCatalogSlugs` for RSC / `generateStaticParams` (no `withContext` — that awaits `headers()` for Sentry and breaks prerender)
-- `generateStaticParams` prerenders **every slug × en/es**; `dynamicParams` allows new posts after build
+- `generateStaticParams` prerenders **every slug × en/es**; new posts after build still generate on first request (Cache Components — do not set `dynamicParams`)
 - Public pages use `resolve({ translate: false })` — no Azure during static generation
 - `withContext` / `withCron` for translate, ensureSpanish, ingest, backfill
 - cache purges via `after(() => revalidateTag("blog"))` so Spanish writes regenerate static pages (ISR)

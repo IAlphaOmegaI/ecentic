@@ -1,14 +1,14 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
-import { hasLocale } from "next-intl";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
-import { localizePath } from "@/i18n/locale";
-import { routing } from "@/i18n/routing";
+import { hasLocale } from "next-intl";
+import { getMessages, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
+import { localizePath } from "@/i18n/locale";
+import { Link } from "@/i18n/navigation";
+import { routing } from "@/i18n/routing";
 import {
   absoluteUrl,
   createBreadcrumbSchema,
@@ -61,7 +61,6 @@ export default async ({ params }: ShopifyPageProps) => {
   const { locale: raw } = await params;
   if (!hasLocale(routing.locales, raw)) notFound();
   const locale = raw;
-  setRequestLocale(locale);
 
   const translate = await getTranslations({ locale, namespace: "shopify" });
   const messages = await getMessages();

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { Footer } from "@/components/footer";
 import { JsonLd } from "@/components/json-ld";
@@ -25,10 +25,7 @@ import { PartnershipBanner } from "./_components/partnership-banner";
 import { Proof } from "./_components/proof";
 import { SmoothScroll } from "./_components/smooth-scroll";
 import { Steps } from "./_components/steps";
-import {
-  Testimonials,
-  getTestimonialData,
-} from "./_components/testimonials";
+import { getTestimonialData, Testimonials } from "./_components/testimonials";
 
 const Comparison = dynamic(() =>
   import("./_components/comparison").then((module) => module.Comparison),
@@ -63,11 +60,10 @@ export default async ({ params }: HomeProps) => {
   const { locale: raw } = await params;
   if (!hasLocale(routing.locales, raw)) notFound();
   const locale = raw;
-  setRequestLocale(locale);
 
-  // Do not wrap this tree in `"use cache"`: Navbar/Footer use next-intl
-  // Link / getTranslations without an explicit locale, which reads headers()
-  // via getRequestConfig and fails Cache Components prerender.
+  // Locale comes from `next/root-params` via `i18n/request.ts` — no
+  // `setRequestLocale`. Keep this tree outside a page-level `"use cache"`
+  // if children still need request-bound APIs beyond locale.
   const translate = await getTranslations({ locale, namespace: "home" });
   const description = translate("meta.description");
   const { aggregateRating, reviewSchemas } = await getTestimonialData(locale);

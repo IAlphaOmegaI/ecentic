@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
+import { hasLocale } from "next-intl";
+import { getMessages, getTranslations } from "next-intl/server";
+import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
-import { JsonLd } from "@/components/json-ld";
 import {
   absoluteUrl,
   createBreadcrumbSchema,
@@ -52,7 +52,6 @@ export default async ({ params }: FeaturesPageProps) => {
   const { locale: raw } = await params;
   if (!hasLocale(routing.locales, raw)) notFound();
   const locale = raw;
-  setRequestLocale(locale);
 
   const translate = await getTranslations({ locale, namespace: "features" });
   const messages = await getMessages();

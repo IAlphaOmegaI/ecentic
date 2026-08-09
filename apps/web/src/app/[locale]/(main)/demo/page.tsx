@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
-import { localizePath } from "@/i18n/locale";
-import { routing } from "@/i18n/routing";
+import { hasLocale } from "next-intl";
+import { getMessages, getTranslations } from "next-intl/server";
 import { BookingEmbed } from "@/components/cal";
 import { JsonLd } from "@/components/json-ld";
 import { Plus } from "@/components/plus";
+import { localizePath } from "@/i18n/locale";
+import { routing } from "@/i18n/routing";
 import {
   absoluteUrl,
   createBreadcrumbSchema,
@@ -52,7 +52,6 @@ export default async ({ params }: DemoPageProps) => {
   const { locale: raw } = await params;
   if (!hasLocale(routing.locales, raw)) notFound();
   const locale = raw;
-  setRequestLocale(locale);
 
   const translate = await getTranslations({ locale, namespace: "demo" });
   const messages = await getMessages();
@@ -72,7 +71,10 @@ export default async ({ params }: DemoPageProps) => {
     organizationSchema,
     createBreadcrumbSchema([
       { name: translate("breadcrumb.home"), path: localizePath("/", locale) },
-      { name: translate("breadcrumb.demo"), path: localizePath("/demo", locale) },
+      {
+        name: translate("breadcrumb.demo"),
+        path: localizePath("/demo", locale),
+      },
     ]),
     createFaqSchema(faq),
   ];
