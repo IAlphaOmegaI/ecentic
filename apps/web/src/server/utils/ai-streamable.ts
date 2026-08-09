@@ -3,7 +3,7 @@ import * as Sentry from "@sentry/nextjs";
 
 /**
  * RSC-only stream helper. Kept out of `ai.ts` so CLI scripts (blog Spanish
- * backfill) can import `generate` under Bun without resolving `@ai-sdk/rsc`'s
+ * Bun CLI scripts can import `generate` without resolving `@ai-sdk/rsc`'s
  * client export (which has no `createStreamableValue` — that lives on the
  * `react-server` condition Next uses).
  */

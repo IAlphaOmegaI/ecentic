@@ -78,8 +78,8 @@ export default async ({ params }: BlogIndexProps) => {
   const translate = await getTranslations({ locale, namespace: "blog" });
   const description = translate("description");
 
-  // Same catalog for every locale: EN sources (BLG + local), with Spanish
-  // title/body overlays when a translated row exists.
+  // Same catalog for every locale: prefer stored locale rows, then BLG, then
+  // the other locale's stored EN for Spanish overlays.
   const [articles, englishPosts, spanishPosts] = await Promise.all([
     BabyLoveGrowth.listArticles(),
     Blog.listPublished("en"),
@@ -89,25 +89,33 @@ export default async ({ params }: BlogIndexProps) => {
   const spanishBySlug = new Map(
     spanishPosts.map((post) => [post.slug, post] as const),
   );
+  const englishBySlug = new Map(
+    englishPosts.map((post) => [post.slug, post] as const),
+  );
   const blgSlugs = new Set(articles.map((article) => article.slug));
+
+  const fromPost = (post: (typeof englishPosts)[number]): IndexEntry => ({
+    slug: post.slug,
+    title: post.title,
+    description: post.description,
+    publishedAt: post.publishedAt,
+    updatedAt: post.updatedAt,
+    thumbnailUrl: post.thumbnailUrl,
+    tags: post.tags,
+    readTime: post.readTime,
+    category: post.category,
+    takeaway: post.takeaways[0] ?? post.description,
+  });
 
   const entries: IndexEntry[] = [
     ...articles.map((article): IndexEntry => {
-      const spanish = spanishBySlug.get(article.slug);
-      if (spanish) {
-        return {
-          slug: spanish.slug,
-          title: spanish.title,
-          description: spanish.description,
-          publishedAt: spanish.publishedAt,
-          updatedAt: spanish.updatedAt,
-          thumbnailUrl: spanish.thumbnailUrl,
-          tags: spanish.tags,
-          readTime: spanish.readTime,
-          category: spanish.category,
-          takeaway: spanish.takeaways[0] ?? spanish.description,
-        };
+      if (locale === "es") {
+        const spanish = spanishBySlug.get(article.slug);
+        if (spanish) return fromPost(spanish);
       }
+
+      const english = englishBySlug.get(article.slug);
+      if (english) return fromPost(english);
 
       return {
         slug: article.slug,
@@ -125,20 +133,11 @@ export default async ({ params }: BlogIndexProps) => {
     ...englishPosts
       .filter((post) => !blgSlugs.has(post.slug))
       .map((post): IndexEntry => {
-        const spanish = spanishBySlug.get(post.slug);
-        const source = spanish ?? post;
-        return {
-          slug: source.slug,
-          title: source.title,
-          description: source.description,
-          publishedAt: source.publishedAt,
-          updatedAt: source.updatedAt,
-          thumbnailUrl: source.thumbnailUrl,
-          tags: source.tags,
-          readTime: source.readTime,
-          category: source.category,
-          takeaway: source.takeaways[0] ?? source.description,
-        };
+        if (locale === "es") {
+          const spanish = spanishBySlug.get(post.slug);
+          if (spanish) return fromPost(spanish);
+        }
+        return fromPost(post);
       }),
   ].sort(
     (left, right) =>

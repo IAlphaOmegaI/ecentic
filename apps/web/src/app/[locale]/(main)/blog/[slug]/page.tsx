@@ -45,9 +45,9 @@ type BlogPageProps = {
 
 export const generateStaticParams = async () => {
   const slugs = await Blog.listCatalogSlugs();
-  // Prerender every post in every locale. Spanish HTML comes from stored
-  // `blog_post` rows (webhook / backfill); missing ES falls back to EN and
-  // regenerates after `revalidateTag("blog")` when the translation lands.
+  // Prerender every post in every locale. Bodies come from stored
+  // `blog_post` rows (BLG webhook upserts EN + ES); missing locale falls
+  // back in `Blog.resolve` and regenerates after `revalidateTag("blog")`.
   return routing.locales.flatMap((locale) =>
     slugs.map((slug) => ({ locale, slug })),
   );
@@ -59,12 +59,11 @@ export const generateMetadata = async ({
   const { slug, locale: raw } = await params;
   const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
 
-  // Never Azure-translate during static generation — use stored ES or EN.
+  // Prefer stored rows (webhook writes EN + ES). Live BLG is fallback only.
   const resolved = await unwrapResult(
     Blog.resolve({
       slug,
       locale,
-      translate: false,
     }),
   );
   if (!resolved) return {};
@@ -138,11 +137,9 @@ export default async ({ params }: BlogPageProps) => {
   const locale = raw;
 
   const translate = await getTranslations({ locale, namespace: "blog" });
-  // Static / ISR path only — translations are written by webhook + backfill,
-  // then `revalidateTag("blog")` regenerates these pages.
-  const resolved = await unwrapResult(
-    Blog.resolve({ slug, locale, translate: false }),
-  );
+  // Static / ISR — locale rows are written by the BLG webhook (or editorial);
+  // `revalidateTag("blog")` regenerates these pages.
+  const resolved = await unwrapResult(Blog.resolve({ slug, locale }));
   if (!resolved) notFound();
 
   if (resolved.kind === "blg") {

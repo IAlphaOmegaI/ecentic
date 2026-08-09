@@ -40,7 +40,7 @@ export function resultify<
 ): Promise<Result<Awaited<ReturnType<T>>, E>> | Result<ReturnType<T>, E> {
   // Drizzle query builders are PromiseLike but not `instanceof Promise`.
   // Without this, `resultify(() => db.select()...)` returns the builder as
-  // `data` instead of awaiting rows (Bun CLI blog backfill, etc.).
+  // `data` instead of awaiting rows.
   const isThenable = (value: unknown): value is PromiseLike<unknown> =>
     typeof value === "object" &&
     value !== null &&

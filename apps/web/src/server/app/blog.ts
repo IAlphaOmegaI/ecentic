@@ -1,18 +1,17 @@
 // Not a `"use server"` module: this file exports cache tags, sync webhook
-// helpers, and `"use cache"` readers alongside withContext/withCron actions.
+// helpers, and `"use cache"` readers alongside withContext actions.
 // A file-level `"use server"` may only export async functions — mixing in
 // `BLOG_CACHE_TAG` / `parsePublishPayload` emptied the module's export surface
 // under Turbopack (PR #15 consolidate) and broke the production build.
 
 import { resultify } from "@zenncore/utils";
-import { and, eq, ne } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 import { after } from "next/server";
 import { z } from "zod";
 import { schema } from "../database";
 import * as AI from "../utils/ai";
 import { withContext } from "../utils/context";
-import { withCron } from "../utils/cron";
 import { Environment } from "../utils/environment";
 import { UnauthenticatedError } from "../utils/error";
 import { type Document, repository } from "../utils/repository";
@@ -23,21 +22,19 @@ export const { get, paginate, create, update, destroy, exists, count, find } =
 
 export type Type = Document<typeof schema.blogPost>;
 
-/** Purged by `revalidateBlog` / Spanish writes. Keep in sync with BLG cache tags. */
+/** Purged by `revalidateBlog` / locale upserts. Keep in sync with BLG cache tags. */
 export const BLOG_CACHE_TAG = "blog";
 
 const purgeBlogCache = () => {
   // `revalidateTag` is illegal during RSC render / prerender. Defer so
-  // Spanish upserts from webhook/backfill never crash the route (Sentry:
-  // "used revalidateTag blog during render").
-  // Outside a Next request (CLI scripts) `after` throws — skip; the script
-  // caller redeploys or hits `/api/revalidate/blog` separately.
+  // webhook upserts never crash the route (Sentry: "used revalidateTag blog
+  // during render"). Outside a Next request `after` throws — skip.
   try {
     after(() => {
       revalidateTag(BLOG_CACHE_TAG, { expire: 0 });
     });
   } catch {
-    // CLI / non-request context
+    // non-request context
   }
 };
 
@@ -93,13 +90,10 @@ export const getPublishedBySlug = async (
 };
 
 /**
- * Uncached single-post read for the write/translate rail ONLY — call sites
- * need answers the cache cannot give while the deferred `after()` tag purge
- * is still pending: read-after-write (`upsertSpanishRow`), the race-loser
- * re-read, and `ensureSpanishCore`'s exists check (a stale cached `null`
- * there would buy a duplicate Azure translation). Never call from a page
- * render path — use `getPublishedBySlug`, or the route loses its static
- * shell. Do not merge the two: each is wrong for the other's call sites.
+ * Uncached single-post read for the write rail ONLY — call sites need answers
+ * the cache cannot give while the deferred `after()` tag purge is still
+ * pending: read-after-write and race-loser re-reads. Never call from a page
+ * render path — use `getPublishedBySlug`.
  */
 const findPublished = async (slug: string, locale: "en" | "es") => {
   const posts = await find(Environment.SERVER, {
@@ -124,9 +118,7 @@ const translationSchema = z.object({
   takeaways: z.array(z.string()),
 });
 
-export type Translation = z.infer<typeof translationSchema>;
-
-export type TranslateArticleInput = {
+type TranslateArticleInput = {
   title: string;
   metaDescription: string;
   contentHtml: string;
@@ -181,13 +173,9 @@ Rules:
   );
 };
 
-export const translateArticle = withContext(
-  async (_context, input: TranslateArticleInput) => translateArticleCore(input),
-  "Blog.translateArticle",
-);
-
-const upsertSpanishRow = async (values: {
+type LocaleRowValues = {
   slug: string;
+  locale: "en" | "es";
   source: "local" | "blg";
   externalId?: string | null;
   category: string;
@@ -200,11 +188,13 @@ const upsertSpanishRow = async (values: {
   tags: readonly string[];
   takeaways: readonly string[];
   contentHtml: string;
-}) => {
+};
+
+const upsertLocaleRow = async (values: LocaleRowValues) => {
   const existing = await find(Environment.SERVER, {
     where: and(
       eq(schema.blogPost.slug, values.slug),
-      eq(schema.blogPost.locale, "es"),
+      eq(schema.blogPost.locale, values.locale),
     ),
     limit: 1,
   });
@@ -213,7 +203,7 @@ const upsertSpanishRow = async (values: {
   const row = existing.data[0];
   const payload = {
     slug: values.slug,
-    locale: "es" as const,
+    locale: values.locale,
     source: values.source,
     externalId: values.externalId ?? null,
     status: "published",
@@ -237,104 +227,15 @@ const upsertSpanishRow = async (values: {
   } else {
     const inserted = await create(Environment.SERVER, payload);
     if (!inserted.success) {
-      const raced = await findPublished(values.slug, "es");
+      const raced = await findPublished(values.slug, values.locale);
       if (raced) return raced;
       throw inserted.error;
     }
   }
 
   purgeBlogCache();
-  return findPublished(values.slug, "es");
+  return findPublished(values.slug, values.locale);
 };
-
-/**
- * Ensure a Spanish row exists for the EN slug (BLG or local editorial).
- * Plain async — safe to await from public RSC `resolve` (no `headers()`).
- */
-const ensureSpanishCore = async (slug: string) => {
-  const existing = await findPublished(slug, "es");
-  if (existing) return { success: true as const, data: existing };
-
-  const article = await resultify(() => BabyLoveGrowth.getArticleBySlug(slug));
-
-  if (article.success && article.data) {
-    const translation = await translateArticleCore({
-      title: article.data.title,
-      metaDescription: article.data.meta_description,
-      contentHtml: article.data.content_html,
-      category: article.data.seedKeyword ?? "Guide",
-      tags: article.data.keywords,
-      introduction: article.data.meta_description,
-    });
-
-    if (!translation.success) return translation;
-
-    const row = await upsertSpanishRow({
-      slug,
-      source: "blg",
-      externalId: String(article.data.id),
-      category: translation.data.category,
-      title: translation.data.title,
-      description: translation.data.metaDescription,
-      introduction: translation.data.introduction,
-      publishedAt: article.data.created_at.slice(0, 10),
-      readTime: estimateReadTime(translation.data.contentHtml),
-      thumbnailUrl: article.data.hero_image_url || null,
-      tags: translation.data.tags,
-      takeaways: translation.data.takeaways,
-      contentHtml: translation.data.contentHtml,
-    });
-
-    return { success: true as const, data: row };
-  }
-
-  const english = await findPublished(slug, "en");
-  if (!english) return { success: true as const, data: null };
-
-  const html =
-    english.contentHtml ??
-    [
-      `<p>${english.introduction}</p>`,
-      ...english.sections.map(
-        (section) => `<h2>${section.title}</h2><div>${section.content}</div>`,
-      ),
-    ].join("\n");
-
-  const translation = await translateArticleCore({
-    title: english.title,
-    metaDescription: english.description,
-    contentHtml: html,
-    category: english.category,
-    tags: english.tags,
-    introduction: english.introduction,
-    takeaways: english.takeaways,
-  });
-
-  if (!translation.success) return translation;
-
-  const row = await upsertSpanishRow({
-    slug,
-    source: english.source === "blg" ? "blg" : "local",
-    externalId: english.externalId,
-    category: translation.data.category,
-    title: translation.data.title,
-    description: translation.data.metaDescription,
-    introduction: translation.data.introduction,
-    publishedAt: english.publishedAt,
-    readTime: estimateReadTime(translation.data.contentHtml),
-    thumbnailUrl: english.thumbnailUrl,
-    tags: translation.data.tags,
-    takeaways: translation.data.takeaways,
-    contentHtml: translation.data.contentHtml,
-  });
-
-  return { success: true as const, data: row };
-};
-
-export const ensureSpanish = withContext(
-  async (_context, { slug }: { slug: string }) => ensureSpanishCore(slug),
-  "Blog.ensureSpanish",
-);
 
 export type Resolved =
   | {
@@ -346,65 +247,42 @@ export type Resolved =
   | { kind: "post"; post: Type };
 
 /**
- * Same slug catalog for EN/ES. Prefer stored ES; fall back to EN so posts
- * never 404. Plain async (no `withContext`): public RSC cannot touch
- * `headers()` from Sentry server-action instrumentation during prerender.
+ * Same slug catalog for EN/ES. Prefer stored `blog_post` rows (BLG webhook
+ * writes both locales; editorial writes EN and ES as you publish). Fall back
+ * to the live BLG API only when no row exists yet. Plain async — no
+ * `withContext` / `headers()` during prerender.
  *
- * Read paths must go through `"use cache"` readers (`getPublishedBySlug`,
- * `BabyLoveGrowth.getArticleBySlug`) — one uncached await here evicts the
- * whole post body from the prerendered shell (`◐` instead of `○`).
- *
- * When `translate` is true and the ES row is missing, await Azure translate
- * + upsert (cache purge still deferred via `after`) so `/es/blog/[slug]`
- * actually returns Spanish instead of baking the EN fallback into the
- * prerendered page.
- * Public pages pass `translate: false` so EN/ES are statically generated /
- * ISR'd from cache. Spanish rows are written by the BLG webhook + backfill
- * cron; those paths call `purgeBlogCache()` so `revalidateTag("blog")`
- * regenerates the pages. Optional `translate: true` still awaits Azure for
- * scripts / emergency fills.
+ * Public pages never Azure-translate on the render path.
  */
 export const resolve = async ({
   slug,
   locale,
-  translate = false,
 }: {
   slug: string;
   locale: "en" | "es";
-  translate?: boolean;
 }) =>
   resultify(async () => {
+    const stored = await getPublishedBySlug(slug, locale);
+    if (stored) return { kind: "post" as const, post: stored };
+
     if (locale === "en") {
       const article = await BabyLoveGrowth.getArticleBySlug(slug);
       if (article) return { kind: "blg" as const, article };
-      const post = await getPublishedBySlug(slug, "en");
-      if (post) return { kind: "post" as const, post };
       return null;
     }
 
-    // Cached read — invalidated by webhook/backfill `revalidateTag("blog")`.
-    const existingSpanish = await getPublishedBySlug(slug, "es");
-    if (existingSpanish)
-      return { kind: "post" as const, post: existingSpanish };
-
-    if (translate) {
-      const spanish = await ensureSpanishCore(slug);
-      if (spanish.success && spanish.data)
-        return { kind: "post" as const, post: spanish.data };
-    }
+    // ES miss: never present live BLG English as Spanish. Prefer EN row so
+    // the page still resolves until a Spanish upsert lands.
+    const english = await getPublishedBySlug(slug, "en");
+    if (english) return { kind: "post" as const, post: english };
 
     const article = await BabyLoveGrowth.getArticleBySlug(slug);
     if (article) return { kind: "blg" as const, article };
 
-    const english = await getPublishedBySlug(slug, "en");
-    if (english) return { kind: "post" as const, post: english };
-
     return null;
   });
 
-/** English catalog slugs (BLG + local) — Spanish routes share this set.
- * Plain async (no `withContext`): used from `generateStaticParams`, which
- * cannot touch `headers()`. Fail soft so a DB blip never takes down the build. */
+/** English catalog slugs (BLG + local) — Spanish routes share this set. */
 export const listCatalogSlugs = async () => {
   const articles = await BabyLoveGrowth.listArticles();
 
@@ -417,101 +295,6 @@ export const listCatalogSlugs = async () => {
   for (const row of rows) slugs.add(row.slug);
   return [...slugs];
 };
-
-/**
- * Translate EN BLG + local posts missing a Spanish row.
- * Plain async — safe for CLI scripts (no cron `headers()` / `withCron`).
- */
-export const translateMissingSpanishCore = async (
-  options: { limit?: number } = {},
-) => {
-  const batchLimit =
-    typeof options.limit === "number" && options.limit > 0
-      ? Math.floor(options.limit)
-      : Number.POSITIVE_INFINITY;
-
-  const articles = await resultify(() => BabyLoveGrowth.listArticles());
-  const blgList = articles.success ? articles.data : [];
-
-  const existingSpanish = await find(Environment.SERVER, {
-    where: eq(schema.blogPost.locale, "es"),
-  });
-
-  if (!existingSpanish.success) return existingSpanish;
-
-  const spanishSlugs = new Set(existingSpanish.data.map((row) => row.slug));
-  const translated: string[] = [];
-  const failed: string[] = [];
-
-  const localEnglish = await find(Environment.SERVER, {
-    where: and(
-      eq(schema.blogPost.locale, "en"),
-      eq(schema.blogPost.source, "local"),
-      ne(schema.blogPost.status, "draft"),
-    ),
-  });
-
-  const missing = [
-    ...blgList.map((summary) => summary.slug),
-    ...(localEnglish.success ? localEnglish.data.map((post) => post.slug) : []),
-  ].filter((slug, index, list) => {
-    if (spanishSlugs.has(slug)) return false;
-    return list.indexOf(slug) === index;
-  });
-
-  const batch = missing.slice(0, batchLimit);
-
-  for (const slug of batch) {
-    try {
-      const ensured = await ensureSpanishCore(slug);
-      if (!ensured.success) {
-        failed.push(slug);
-        console.error(
-          `  ${slug}: ${
-            ensured.error instanceof Error
-              ? ensured.error.message
-              : String(ensured.error)
-          }`,
-        );
-        continue;
-      }
-      if (!ensured.data) {
-        failed.push(slug);
-        console.error(
-          `  ${slug}: no English/BLG source found to translate`,
-        );
-        continue;
-      }
-
-      translated.push(slug);
-      spanishSlugs.add(slug);
-    } catch (error) {
-      failed.push(slug);
-      console.error(
-        `  ${slug}: ${error instanceof Error ? error.message : String(error)}`,
-      );
-    }
-  }
-
-  if (translated.length > 0) purgeBlogCache();
-
-  return {
-    success: true as const,
-    data: {
-      translated,
-      failed,
-      remaining: Math.max(0, missing.length - batch.length),
-      missingTotal: missing.length,
-    },
-  };
-};
-
-/** Cron wrapper around `translateMissingSpanishCore` (Bearer `CRON_SECRET`). */
-export const translateMissingSpanish = withCron(
-  async (_context, options: { limit?: number } = {}) =>
-    translateMissingSpanishCore(options),
-  "Blog.translateMissingSpanish",
-);
 
 const publishPayloadSchema = z.object({
   id: z.union([z.string(), z.number()]),
@@ -556,7 +339,10 @@ export const parsePublishPayload = (body: unknown) => {
   return { success: true as const, data: parsed.data };
 };
 
-/** Translate a BLG English publish into a Spanish `blog_post` (same slug). */
+/**
+ * Persist EN from a BLG publish, Azure-translate to ES, upsert both rows
+ * (same slug), purge the `blog` tag so static pages regenerate.
+ */
 export const ingestPublish = withContext(
   async (_context, payload: PublishPayload) => {
     if (payload.languageCode && payload.languageCode !== "en")
@@ -565,29 +351,57 @@ export const ingestPublish = withContext(
         data: { skipped: true as const, reason: "non-english" as const },
       };
 
+    const publishedAt = (payload.createdAt ?? new Date().toISOString()).slice(
+      0,
+      10,
+    );
+    const category = payload.seedKeyword ?? "Guide";
+    const tags = payload.keywords ?? [];
+    const description = payload.metaDescription;
+    const thumbnailUrl = payload.heroImageUrl ?? null;
+    const externalId = String(payload.id);
+
+    await upsertLocaleRow({
+      slug: payload.slug,
+      locale: "en",
+      source: "blg",
+      externalId,
+      category,
+      title: payload.title,
+      description,
+      introduction: description,
+      publishedAt,
+      readTime: estimateReadTime(payload.content_html),
+      thumbnailUrl,
+      tags,
+      takeaways: [],
+      contentHtml: payload.content_html,
+    });
+
     const translation = await translateArticleCore({
       title: payload.title,
-      metaDescription: payload.metaDescription,
+      metaDescription: description,
       contentHtml: payload.content_html,
-      category: payload.seedKeyword ?? "Guide",
-      tags: payload.keywords ?? [],
-      introduction: payload.metaDescription,
+      category,
+      tags,
+      introduction: description,
       takeaways: [],
     });
 
     if (!translation.success) return translation;
 
-    const row = await upsertSpanishRow({
+    const spanish = await upsertLocaleRow({
       slug: payload.slug,
+      locale: "es",
       source: "blg",
-      externalId: String(payload.id),
+      externalId,
       category: translation.data.category,
       title: translation.data.title,
       description: translation.data.metaDescription,
       introduction: translation.data.introduction,
-      publishedAt: (payload.createdAt ?? new Date().toISOString()).slice(0, 10),
+      publishedAt,
       readTime: estimateReadTime(translation.data.contentHtml),
-      thumbnailUrl: payload.heroImageUrl ?? null,
+      thumbnailUrl,
       tags: translation.data.tags,
       takeaways: translation.data.takeaways,
       contentHtml: translation.data.contentHtml,
@@ -597,7 +411,7 @@ export const ingestPublish = withContext(
       success: true as const,
       data: {
         skipped: false as const,
-        id: row?.id,
+        id: spanish?.id,
         action: "upserted" as const,
       },
     };

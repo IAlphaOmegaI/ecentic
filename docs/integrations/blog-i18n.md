@@ -8,10 +8,12 @@ Locale for Server Components is resolved with `next/root-params` in `apps/web/sr
 
 | Locale | URL prefix | Content source |
 |--------|------------|----------------|
-| `en` | none (`/blog/foo`) | BabyLoveGrowth API + local `blog_post` rows with `locale=en` |
-| `es` | `/es` (`/es/blog/foo`) | **Same catalog / slugs as English.** Prefer `blog_post` `locale=es`. Pages are statically generated for every slug (and ISR'd via `revalidateTag("blog")` when webhook/backfill writes). Missing ES rows fall back to EN until translation exists, then regenerate. |
+| `en` | none (`/blog/foo`) | Prefer `blog_post` `locale=en` (BLG webhook + local editorial). Fall back to live BabyLoveGrowth API if no EN row yet. |
+| `es` | `/es` (`/es/blog/foo`) | Prefer `blog_post` `locale=es` (same slug). Fall back to EN row / BLG English until Spanish is written. |
 
 Same slug is shared across locales. Spanish copies are **not** published back into BabyLoveGrowth.
+
+Pages are statically generated for every slug × locale and ISR'd via `revalidateTag("blog")` when the webhook (or editorial) writes rows.
 
 ## Database
 
@@ -28,15 +30,13 @@ Unique on `(slug, locale)`.
 
 All blog server logic lives in `apps/web/src/server/app/blog.ts`:
 
-- `"use cache"` reads for public list/get via repository `find` (tagged `blog` for ISR) — safe because repository uses `withInstrumentation` (no `headers()`)
-- plain `resolve` / `listCatalogSlugs` for RSC / `generateStaticParams` (also repository / `withInstrumentation`)
-- `generateStaticParams` prerenders **every slug × en/es**; new posts after build still generate on first request (Cache Components — do not set `dynamicParams`)
-- Local CLI backfill (`bun run blog:backfill-spanish`) imports `Blog.translateMissingSpanishCore` under Bun — keep `@ai-sdk/rsc` / `createStreamableValue` out of `server/utils/ai.ts` (RSC-only helper lives in `ai-streamable.ts`) so Bun does not resolve the client RSC entry
-- Public pages use `resolve({ translate: false })` — no Azure during static generation
-- `withContext` / `withCron` for translate, ensureSpanish, ingest, backfill
-- cache purges via `after(() => revalidateTag("blog"))` so Spanish writes regenerate static pages (ISR)
+- `"use cache"` reads for public list/get via repository `find` (tagged `blog` for ISR)
+- plain `resolve` / `listCatalogSlugs` for RSC / `generateStaticParams` (no `withContext` / `headers()`)
+- `generateStaticParams` prerenders **every slug × en/es** (Cache Components — do not set `dynamicParams`)
+- Public pages use `resolve` only — no Azure on the render path
+- `Blog.ingestPublish` (webhook) upserts **EN + ES** and purges the `blog` tag
 
-BabyLoveGrowth CMS client stays in `babylovegrowth.ts` (external API only).
+BabyLoveGrowth CMS client stays in `babylovegrowth.ts` (external API only). Soft-failure `null` from transport errors is **not** cached for per-slug reads (that used to 404 English while Spanish still served from Postgres).
 
 ### Locale switcher
 
@@ -51,22 +51,14 @@ When BabyLoveGrowth publishes an English article, configure their **Webhook** in
 3. Bearer token: value of `BABYLOVEGROWTH_WEBHOOK_SECRET`
 4. Enable automatic publish
 
-The handler acknowledges immediately (200), then `Blog.ingestPublish` translates title / meta / HTML to Spanish with Azure (`AI.generate`, gpt seat), upserts `blog_post` (`locale=es`, same slug), and purges the `blog` cache tag so EN/ES static pages regenerate (ISR). Existing posts without an ES row are filled by the backfill script/cron, which purges the same tag.
+The handler acknowledges immediately (200), then `Blog.ingestPublish`:
 
-### Backfill
+1. Upserts `blog_post` `locale=en` from the payload (same slug)
+2. Translates title / meta / HTML to Spanish with Azure (`AI.generate`, gpt seat)
+3. Upserts `blog_post` `locale=es`
+4. Purges the `blog` cache tag so EN/ES static pages regenerate (ISR)
 
-For articles published before the webhook was connected (BLG catalog + local EN `blog_post` rows), run the local script against the **production** database (no cron HTTP):
-
-```bash
-cd apps/web
-# Point DATABASE_URL at production Postgres for this shell only, then:
-DATABASE_URL='postgresql://…prod…' bun run blog:backfill-spanish -- --yes
-# optional: --limit=5
-```
-
-Requires `BABYLOVEGROWTH_BLOG_API_KEY` + Azure gpt seat env in `.env.local`. Writes `locale=es` rows in-process via Azure. After it finishes, **redeploy** (or purge the blog cache) so static `/es/blog/*` pages regenerate.
-
-There is also `POST /api/cron/blog-translate-backfill` for scheduled runs; prefer the local script for one-shot prod fills.
+Local / editorial posts: write both `en` and `es` rows when you publish (same slug).
 
 ## Env
 
@@ -77,7 +69,7 @@ BABYLOVEGROWTH_WEBHOOK_SECRET=
 # Azure gpt seat — same as the rest of the app
 AZURE_RESOURCE_NAME=
 AZURE_API_KEY=
-AZURE_DEPLOYMENT_GPT=
+AZURE_DEPLOYMENT_GPT=                 # or legacy AZURE_DEPLOYMENT_GPT4O
 ```
 
 ## UI messages

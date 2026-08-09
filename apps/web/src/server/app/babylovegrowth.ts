@@ -107,8 +107,12 @@ export const getArticleBySlug = async (
     const article = await withRetry(() => client().getArticleBySlug(slug));
     if (!article?.published) return null;
     return article;
-  } catch {
-    return null;
+  } catch (error) {
+    // Do not return null on transport/rate-limit failures — a soft null is
+    // cached for `cacheLife("days")` and 404s English posts while Spanish
+    // (served from Postgres) still works. Let the error surface so the
+    // failed result is not stored as a permanent miss.
+    throw error;
   }
 };
 
