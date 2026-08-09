@@ -1,6 +1,5 @@
 "use server";
 
-import { resultify } from "@zenncore/utils";
 import { and, count as countRows, eq, inArray, sql } from "drizzle-orm";
 import { db, schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
@@ -9,7 +8,7 @@ import { dedupe } from "../utils/dedupe";
 import { Environment } from "../utils/environment";
 import { DatabaseError } from "../utils/error";
 import type { Document } from "../utils/repository";
-import { repository } from "../utils/repository";
+import { repository, resultifyRead } from "../utils/repository";
 
 export const { get, paginate, create, update, destroy, exists, count, find } =
   repository(schema.simulation);
@@ -53,7 +52,7 @@ const winsExpression = sql<number>`count(${schema.simulation.id}) filter (where 
  */
 export const winStatsByStoreForUser = withInstrumentation(
   async (_, { user }: { user: string }) => {
-    const rows = await resultify(async () =>
+    const rows = await resultifyRead(async () =>
       db
         .select({
           storeId: schema.product.storeId,
@@ -92,7 +91,7 @@ export const winStatsByStoreForUser = withInstrumentation(
  */
 export const tallyByProductModel = dedupe(
   withAuthentication(async (context, { store }: { store?: string } = {}) => {
-    const rows = await resultify(async () =>
+    const rows = await resultifyRead(async () =>
       db
         .select({
           productId: schema.simulation.productId,
@@ -128,7 +127,7 @@ export const tallyByProductModel = dedupe(
  */
 export const tallyByScan = dedupe(
   withAuthentication(async (context, { store }: { store?: string } = {}) => {
-    const rows = await resultify(async () =>
+    const rows = await resultifyRead(async () =>
       db
         .select({
           scanId: schema.simulation.scanId,
@@ -215,7 +214,7 @@ export const getForStore = dedupe(
 
     // The async wrapper matters: `resultify` only awaits real Promise
     // instances, and Drizzle's query builder is a bare thenable.
-    const simulations = await resultify(async () =>
+    const simulations = await resultifyRead(async () =>
       db
         .select({
           id: schema.simulation.id,

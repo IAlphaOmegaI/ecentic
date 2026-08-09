@@ -10,10 +10,10 @@ import { withAuthentication } from "../utils/authentication";
 import { withContext, withInstrumentation } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { DatabaseError } from "../utils/error";
-import { type Document, repository } from "../utils/repository";
-import { themeEmbedDeepLink } from "./integration/shopify/hmac";
+import { type Document, repository, resultifyRead } from "../utils/repository";
 import { feedUrl } from "./feed-export";
 import * as Shopify from "./integration/shopify";
+import { themeEmbedDeepLink } from "./integration/shopify/hmac";
 import * as WooCommerce from "./integration/woocommerce";
 import { pageSchemaTag } from "./intelligence/page-schema";
 import * as Ucp from "./intelligence/ucp/profile";
@@ -435,7 +435,7 @@ const countPublishedRows = withInstrumentation(
     // The join mirrors `listDashboard`'s filter: a published record only counts
     // while its product is still one of this user's — and, when scoped, one of
     // this store's — so the badge never promises rows the page cannot render.
-    const rows = await resultify(async () =>
+    const rows = await resultifyRead(async () =>
       db
         .select({ value: count() })
         .from(schema.listingOptimization)

@@ -131,6 +131,49 @@ export class UntrustedRequestError extends error(
  */
 export const isExpected = (error: Error) => expected.has(error.name);
 
+/**
+ * Driver codes that mean the database connection died, not that Postgres
+ * rejected the query. Node reports a socket that stopped answering as
+ * `ETIMEDOUT`, `ECONNRESET` or `EPIPE`; postgres.js raises its own `CONNECTION_*`
+ * codes when it notices the stream went away underneath a pending query.
+ *
+ * `CONNECT_TIMEOUT` is deliberately absent. That one means the database was
+ * unreachable for the whole `connect_timeout` (ECENTIC-CD), so retrying it
+ * mostly doubles how long the page hangs before failing anyway.
+ */
+const TRANSIENT_CONNECTION_CODES: ReadonlySet<string> = new Set([
+  "ECONNRESET",
+  "EPIPE",
+  "ETIMEDOUT",
+  "CONNECTION_CLOSED",
+  "CONNECTION_DESTROYED",
+  "CONNECTION_ENDED",
+]);
+
+/**
+ * Whether a database failure was the connection dying rather than the query
+ * being rejected — the difference between "safe to run again" and "will fail
+ * identically forever". See `resultifyRead` in `repository.ts` for the retry
+ * this gates.
+ *
+ * Walks the `cause` chain instead of reading one fixed depth: Drizzle wraps
+ * driver failures in `DrizzleQueryError` and hangs the original on `cause`,
+ * while postgres.js hands Node's socket error straight through rather than
+ * wrapping it, so the code can sit at either level.
+ */
+export const isTransientConnectionError = (
+  error: unknown,
+  depth = 0,
+): boolean => {
+  if (!(error instanceof Error) || depth > 3) return false;
+
+  const { code } = error as Error & { code?: unknown };
+  if (typeof code === "string" && TRANSIENT_CONNECTION_CODES.has(code))
+    return true;
+
+  return isTransientConnectionError(error.cause, depth + 1);
+};
+
 export namespace ErrorProtocol {
   export type SerializedError<E extends Error = Error> = {
     name: E["name"];

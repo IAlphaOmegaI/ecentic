@@ -1,6 +1,6 @@
 "use server";
 
-import { resultify, unique } from "@zenncore/utils";
+import { unique } from "@zenncore/utils";
 import {
   and,
   countDistinct,
@@ -23,7 +23,7 @@ import {
   ValidationError,
 } from "../utils/error";
 import type { Document } from "../utils/repository";
-import { repository } from "../utils/repository";
+import { repository, resultifyRead } from "../utils/repository";
 import * as Detection from "./intelligence/detect";
 import * as Scan from "./scan";
 import * as Simulation from "./simulation";
@@ -347,7 +347,7 @@ export const aggregateBrandsForStore = withInstrumentation(
       eq(schema.competitor.storeId, store),
     );
 
-    const result = await resultify(async () =>
+    const result = await resultifyRead(async () =>
       Promise.all([
         db
           .select({

@@ -1,6 +1,6 @@
 "use server";
 
-import { resultify, unique } from "@zenncore/utils";
+import { unique } from "@zenncore/utils";
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { db, schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
@@ -10,9 +10,9 @@ import { Environment } from "../utils/environment";
 import { DatabaseError } from "../utils/error";
 import type { Pager } from "../utils/pagination";
 import type { Document, ExecuteOptions, Insertable } from "../utils/repository";
-import { repository } from "../utils/repository";
-import { themeEmbedDeepLink } from "./integration/shopify/hmac";
+import { repository, resultifyRead } from "../utils/repository";
 import * as Competitor from "./competitor";
+import { themeEmbedDeepLink } from "./integration/shopify/hmac";
 import {
   checkProductPageSchema,
   NO_PAGE_URL,
@@ -103,7 +103,7 @@ export const countForCurrentUser = withAuthentication(
  */
 export const countByStoreForUser = withInstrumentation(
   async (_, { user }: { user: string }) => {
-    const rows = await resultify(async () =>
+    const rows = await resultifyRead(async () =>
       db
         .select({
           storeId: schema.product.storeId,
