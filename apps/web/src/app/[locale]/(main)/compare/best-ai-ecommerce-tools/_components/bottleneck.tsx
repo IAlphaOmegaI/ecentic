@@ -1,16 +1,13 @@
 import { cn } from "@zenncore/utils";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
 
 export const Bottleneck = async () => {
   const translate = await getTranslations("compare");
-  const body = translate.raw("bottleneck.body") as readonly string[];
-  const mappings = translate.raw("bottleneck.mappings") as readonly {
-    title: string;
-    description: string;
-    emphasized?: boolean;
-  }[];
+  const messages = await getMessages();
+  const body = messages.compare.bottleneck.body;
+  const mappings = messages.compare.bottleneck.mappings;
 
   return (
     <section className="scroll-mt-24 border-accent-foreground border-b">
@@ -69,7 +66,9 @@ export const Bottleneck = async () => {
                   <h4
                     className={cn(
                       "font-body font-medium text-xl",
-                      mapping.emphasized ? "text-primary" : "text-foreground",
+                      "emphasized" in mapping && mapping.emphasized
+                        ? "text-primary"
+                        : "text-foreground",
                     )}
                   >
                     {mapping.title}

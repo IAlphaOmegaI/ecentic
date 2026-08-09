@@ -12,42 +12,33 @@ import {
 import { useToastManager } from "@zenncore/web/components/toast";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useMemo } from "react";
 import { z } from "zod";
 import { Motion } from "@/components/motion";
 import * as Authentication from "@/server/app/authentication";
 
-const config = {
-  password: field({
-    shape: "text",
-    type: "password",
-    validator: z.string().min(8),
-    label: "New password",
-    placeholder: "Min 8 characters",
-  }),
-  confirmation: field({
-    shape: "text",
-    type: "password",
-    validator: z.string().min(1),
-    label: "Confirm new password",
-    placeholder: "Re-enter your new password",
-  }),
-} satisfies GenericForm;
-
-const InvalidLink = ({ children }: { children: string }) => (
+const InvalidLink = ({
+  title,
+  description,
+  action,
+}: {
+  title: string;
+  description: string;
+  action: string;
+}) => (
   <div className="flex flex-col items-center gap-6 py-8 text-center">
     <XCircleIcon className="size-16 text-error" />
     <div className="flex flex-col gap-2">
-      <p className="font-medium text-2xl text-foreground">
-        This link no longer works
-      </p>
-      <p className="font-light text-foreground-dimmed text-lg">{children}</p>
+      <p className="font-medium text-2xl text-foreground">{title}</p>
+      <p className="font-light text-foreground-dimmed text-lg">{description}</p>
     </div>
     <Button
       color="primary"
       type="button"
       render={<Link href="/forgot-password" />}
     >
-      Request a new link <ArrowRightIcon className="size-4" />
+      {action} <ArrowRightIcon className="size-4" />
     </Button>
   </div>
 );
@@ -56,6 +47,29 @@ export const ResetPasswordForm = () => {
   const router = useRouter();
   const toast = useToastManager();
   const searchParameters = useSearchParams();
+  const translate = useTranslations("resetPassword");
+  const translateAuthChrome = useTranslations("authChrome");
+
+  const config = useMemo(
+    () =>
+      ({
+        password: field({
+          shape: "text",
+          type: "password",
+          validator: z.string().min(8),
+          label: translate("fields.password.label"),
+          placeholder: translate("fields.password.placeholder"),
+        }),
+        confirmation: field({
+          shape: "text",
+          type: "password",
+          validator: z.string().min(1),
+          label: translate("fields.confirmation.label"),
+          placeholder: translate("fields.confirmation.placeholder"),
+        }),
+      }) satisfies GenericForm,
+    [translate],
+  );
 
   // Better Auth's `/reset-password/:token` endpoint checks the token before it
   // ever reaches this page, then forwards it here — or replaces it with
@@ -71,7 +85,7 @@ export const ResetPasswordForm = () => {
 
       if (!result.success) {
         toast.add({
-          title: "Error",
+          title: translateAuthChrome("toast.error.title"),
           description: result.error.message,
           type: "error",
         });
@@ -80,8 +94,8 @@ export const ResetPasswordForm = () => {
       }
 
       toast.add({
-        title: "Password updated",
-        description: "Sign in with your new password.",
+        title: translate("toast.success.title"),
+        description: translate("toast.success.description"),
         type: "success",
       });
 
@@ -91,18 +105,20 @@ export const ResetPasswordForm = () => {
 
   if (error)
     return (
-      <InvalidLink>
-        Reset links expire after an hour and can only be used once. Ask for a
-        fresh one and it'll be in your inbox in a moment.
-      </InvalidLink>
+      <InvalidLink
+        title={translate("states.invalidLink.title")}
+        description={translate("states.invalidLink.expired")}
+        action={translate("action.secondary")}
+      />
     );
 
   if (!token)
     return (
-      <InvalidLink>
-        This page needs a reset link to work. Open the most recent one from your
-        email, or request another.
-      </InvalidLink>
+      <InvalidLink
+        title={translate("states.invalidLink.title")}
+        description={translate("states.invalidLink.missing")}
+        action={translate("action.secondary")}
+      />
     );
 
   return (
@@ -113,7 +129,7 @@ export const ResetPasswordForm = () => {
           extend={(schema) =>
             schema.refine((values) => values.password === values.confirmation, {
               path: ["confirmation"],
-              error: "Passwords do not match",
+              error: translate("validation.passwordsMismatch"),
             })
           }
           onSubmit={handleSubmit}
@@ -125,7 +141,9 @@ export const ResetPasswordForm = () => {
             disabled={isPending}
             className="mt-1 flex w-full"
           >
-            {isPending ? "Updating password..." : "Update password"}
+            {isPending
+              ? translate("states.updating")
+              : translate("action.primary")}
             {isPending ? (
               <LoaderIcon className="size-4 animate-spin" />
             ) : (

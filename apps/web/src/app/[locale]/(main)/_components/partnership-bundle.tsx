@@ -2,17 +2,12 @@ import { ArrowRightIcon, CheckIcon, ShieldCheckIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Plus } from "@/components/plus";
 
 const href = "https://eupresence.com/pricing#bundles";
 const partnerHref = "https://eupresence.com/";
-
-type BundleItem = {
-  name: string;
-  detail: string;
-};
 
 const prices = [127, 97, 57, 44.9] as const;
 const highlightedIndex = 3;
@@ -22,10 +17,9 @@ const format = (amount: number) =>
 
 export const PartnershipBundle = async () => {
   const translate = await getTranslations("pricing");
-  const items = translate.raw("partnershipBundle.items") as readonly BundleItem[];
-  const guarantees = translate.raw(
-    "partnershipBundle.guarantees",
-  ) as readonly string[];
+  const messages = await getMessages();
+  const items = messages.pricing.partnershipBundle.items;
+  const guarantees = messages.pricing.partnershipBundle.guarantees;
 
   const regular = prices.reduce((sum, price) => sum + price, 0);
   const discounted = regular * 0.8;

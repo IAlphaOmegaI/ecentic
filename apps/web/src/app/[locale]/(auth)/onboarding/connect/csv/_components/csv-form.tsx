@@ -11,29 +11,36 @@ import {
   InferredForm,
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
+import { useTranslations } from "next-intl";
+import { useMemo } from "react";
 import { z } from "zod";
 import { parseCsvProducts } from "@/lib/csv";
 import * as CsvIntegration from "@/server/app/integration/csv";
 
-const config = {
-  file: field({
-    shape: "file",
-    mode: "single",
-    accept: [".csv"],
-    label: "Upload a CSV file",
-    description: "Upload a CSV file to import your products.",
-    validator: z.file(),
-    classList: {
-      control: {
-        input: "h-auto p-10",
-      },
-    },
-  }),
-} satisfies GenericForm;
-
 export const CsvForm = () => {
   const router = useRouter();
   const toast = useToastManager();
+  const translate = useTranslations("onboarding.connect");
+
+  const config = useMemo(
+    () =>
+      ({
+        file: field({
+          shape: "file",
+          mode: "single",
+          accept: [".csv"],
+          label: translate("csv.fields.file.label"),
+          description: translate("csv.fields.file.description"),
+          validator: z.file(),
+          classList: {
+            control: {
+              input: "h-auto p-10",
+            },
+          },
+        }),
+      }) satisfies GenericForm,
+    [translate],
+  );
 
   const [handleSubmit, isPending] = useAsyncAction(
     async (data: FormEntries<typeof config>) => {
@@ -41,8 +48,8 @@ export const CsvForm = () => {
 
       if (!file) {
         toast.add({
-          title: "No file selected",
-          description: "Upload a CSV file first.",
+          title: translate("csv.toast.noFile.title"),
+          description: translate("csv.toast.noFile.description"),
           type: "error",
         });
         return;
@@ -53,9 +60,8 @@ export const CsvForm = () => {
 
       if (products.length === 0) {
         toast.add({
-          title: "No products found",
-          description:
-            "Check that your CSV has a header row with a title or name column.",
+          title: translate("csv.toast.noProducts.title"),
+          description: translate("csv.toast.noProducts.description"),
           type: "error",
         });
         return;
@@ -68,7 +74,7 @@ export const CsvForm = () => {
 
       if (!result.success) {
         toast.add({
-          title: "Import failed",
+          title: translate("csv.toast.importFailed"),
           description: result.error.message,
           type: "error",
         });
@@ -82,7 +88,7 @@ export const CsvForm = () => {
 
       if (!sync.success) {
         toast.add({
-          title: "Import failed",
+          title: translate("csv.toast.importFailed"),
           description: sync.error.message,
           type: "error",
         });
@@ -90,8 +96,8 @@ export const CsvForm = () => {
       }
 
       toast.add({
-        title: `${sync.data} product${sync.data !== 1 ? "s" : ""} imported`,
-        description: "Your catalog is ready.",
+        title: translate("csv.toast.imported.title", { count: sync.data }),
+        description: translate("csv.toast.imported.description"),
         type: "success",
       });
 
@@ -117,12 +123,12 @@ export const CsvForm = () => {
       >
         {isPending ? (
           <>
-            Importing...
+            {translate("csv.action.importing")}
             <LoaderIcon className="size-4 animate-spin" />
           </>
         ) : (
           <>
-            Import CSV
+            {translate("csv.action.primary")}
             <ArrowRightIcon className="size-4" />
           </>
         )}

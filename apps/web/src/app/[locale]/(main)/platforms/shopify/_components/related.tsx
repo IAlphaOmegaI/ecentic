@@ -7,18 +7,9 @@ import {
   SquareChartIcon,
 } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Plus } from "@/components/plus";
-
-type RelatedItem = {
-  href: string;
-  name: string;
-  title: string;
-  description: string;
-  label: string;
-  color: "primary" | "accent";
-};
 
 const relatedMeta: readonly {
   href: string;
@@ -32,7 +23,8 @@ const relatedMeta: readonly {
 
 export const RelatedPages = async () => {
   const translate = await getTranslations("shopify");
-  const items = translate.raw("related.items") as readonly RelatedItem[];
+  const messages = await getMessages();
+  const items = messages.shopify.related.items;
   const related = items.map((item) => ({
     ...item,
     icon: relatedMeta.find((meta) => meta.href === item.href)?.icon ?? FileIcon,

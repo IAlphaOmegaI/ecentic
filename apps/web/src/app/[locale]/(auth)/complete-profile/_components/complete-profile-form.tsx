@@ -11,56 +11,54 @@ import {
   InferredForm,
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
+import { useMessages, useTranslations } from "next-intl";
+import { useMemo } from "react";
 import { z } from "zod";
 import { Motion } from "@/components/motion";
+import {
+  profileRoleValues,
+  profileSourceValues,
+} from "@/lib/auth-profile-options";
 import * as User from "@/server/app/user";
-
-const roles = [
-  "Founder / CEO",
-  "Marketing Lead",
-  "E-commerce Manager",
-  "Agency",
-  "Developer",
-  "Other",
-];
-
-const sources = [
-  "Product Hunt",
-  "Twitter / X",
-  "LinkedIn",
-  "Google Search",
-  "Shopify App Store",
-  "Friend / Colleague",
-  "Newsletter",
-  "Podcast",
-  "Other",
-];
-
-const config = {
-  company: field({
-    shape: "text",
-    validator: z.string().min(1),
-    label: "Company / Brand",
-    placeholder: "Acme Store",
-    classList: { field: "col-span-2" },
-  }),
-  role: field({
-    shape: "select",
-    validator: z.literal(roles),
-    label: "Your Role",
-    classList: { field: "col-span-1" },
-  }),
-  source: field({
-    shape: "select",
-    validator: z.literal(sources).optional(),
-    label: "How did you hear?",
-    classList: { field: "col-span-1" },
-  }),
-} satisfies GenericForm;
 
 export const CompleteProfileForm = () => {
   const router = useRouter();
   const toast = useToastManager();
+  const translate = useTranslations("completeProfile");
+  const translateAuthChrome = useTranslations("authChrome");
+  const messages = useMessages();
+
+  const roleItems = messages.signUp.roles;
+  const sourceItems = messages.signUp.sources;
+
+  const config = useMemo(
+    () =>
+      ({
+        company: field({
+          shape: "text",
+          validator: z.string().min(1),
+          label: translate("fields.company.label"),
+          placeholder: translate("fields.company.placeholder"),
+          classList: { field: "col-span-2" },
+        }),
+        role: field({
+          shape: "select",
+          validator: z.literal(profileRoleValues),
+          label: translate("fields.role.label"),
+          items: roleItems,
+          classList: { field: "col-span-1" },
+        }),
+        source: field({
+          shape: "select",
+          // @ts-expect-error - source is not typed
+          validator: z.literal(profileSourceValues).optional(),
+          label: translate("fields.source.label"),
+          items: sourceItems,
+          classList: { field: "col-span-1" },
+        }),
+      }) satisfies GenericForm,
+    [roleItems, sourceItems, translate],
+  );
 
   const [handleSubmit, isPending] = useAsyncAction(
     async (data: FormEntries<typeof config>) => {
@@ -72,7 +70,7 @@ export const CompleteProfileForm = () => {
 
       if (!result.success) {
         toast.add({
-          title: "Error",
+          title: translateAuthChrome("toast.error.title"),
           description: result.error.message,
           type: "error",
         });
@@ -97,7 +95,9 @@ export const CompleteProfileForm = () => {
             disabled={isPending}
             className="col-span-2 mt-1 flex w-full"
           >
-            {isPending ? "Saving..." : "Continue"}
+            {isPending
+              ? translate("states.saving")
+              : translate("action.primary")}
             {isPending ? (
               <LoaderIcon className="size-4 animate-spin" />
             ) : (

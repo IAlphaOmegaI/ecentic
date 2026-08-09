@@ -6,7 +6,7 @@ import {
   ShoppingCartIcon,
   UploadIcon,
 } from "@zenncore/icons";
-import { useTranslations } from "next-intl";
+import { useTranslations, useMessages } from "next-intl";
 import { VerticalStepCycle } from "@/app/[locale]/(main)/_components/vertical-step-cycle";
 
 const stepIcons = [
@@ -18,10 +18,8 @@ const stepIcons = [
 
 export const ShopifyWorkflowCycle = () => {
   const translate = useTranslations("shopify");
-  const steps = translate.raw("workflow.steps") as readonly {
-    title: string;
-    description: string;
-  }[];
+  const messages = useMessages();
+  const steps = messages.shopify.workflow.steps;
 
   return (
     <VerticalStepCycle

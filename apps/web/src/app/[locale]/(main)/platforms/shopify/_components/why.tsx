@@ -1,17 +1,13 @@
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { ItemCycle } from "@/app/[locale]/(main)/_components/item-cycle";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
 
-type Audience = {
-  title: string;
-  description: string;
-};
-
 export const Why = async () => {
   const translate = await getTranslations("shopify");
-  const paragraphs = translate.raw("why.paragraphs") as readonly string[];
-  const audiences = translate.raw("why.audiences") as readonly Audience[];
+  const messages = await getMessages();
+  const paragraphs = messages.shopify.why.paragraphs;
+  const audiences = messages.shopify.why.audiences;
 
   return (
     <section className="scroll-mt-24 border-accent-foreground border-b">

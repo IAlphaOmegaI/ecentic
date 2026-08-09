@@ -3,6 +3,7 @@
 import { ArrowLeftIcon, ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { useLinkStatus } from "next/link";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { ReactNode } from "react";
 import { useState } from "react";
@@ -22,6 +23,7 @@ export const CompetitorReview = ({
   children,
   existing,
 }: CompetitorReview.Props) => {
+  const translate = useTranslations("onboarding.competitors.review");
   const [competitors, setCompetitors] = useState<Competitor.Type[]>(existing);
 
   const handleToggle = async (id: string) => {
@@ -58,8 +60,11 @@ export const CompetitorReview = ({
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           {children}
           <div className="mt-4 w-fit border border-primary/20 bg-primary/5 px-4 py-2.5 text-primary text-sm">
-            {competitors.length} competitor products across {brands.size} brands
-            — {selected} selected
+            {translate("summary", {
+              total: String(competitors.length),
+              brands: String(brands.size),
+              selected: String(selected),
+            })}
           </div>
         </div>
       </Motion.Item>
@@ -101,6 +106,8 @@ export const CompetitorReview = ({
 
 const Back = () => {
   const { pending } = useLinkStatus();
+  const translate = useTranslations("onboarding.competitors.review.action");
+
   return (
     <>
       {pending ? (
@@ -108,16 +115,18 @@ const Back = () => {
       ) : (
         <ArrowLeftIcon className="size-4" />
       )}
-      Back
+      {translate("back")}
     </>
   );
 };
 
 const Next = () => {
   const { pending } = useLinkStatus();
+  const translate = useTranslations("onboarding.competitors.review.action");
+
   return (
     <>
-      Next: Run Scan
+      {translate("next")}
       {pending ? (
         <LoaderIcon className="size-4 animate-spin" />
       ) : (

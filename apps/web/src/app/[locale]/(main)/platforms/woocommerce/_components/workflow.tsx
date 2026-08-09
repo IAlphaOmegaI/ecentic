@@ -1,17 +1,13 @@
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { ItemCycle } from "@/app/[locale]/(main)/_components/item-cycle";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
 import { WooWorkflowCycle } from "./woo-workflow-cycle";
 
-type Advantage = {
-  title: string;
-  description: string;
-};
-
 export const Workflow = async () => {
   const translate = await getTranslations("woocommerce");
-  const advantages = translate.raw("workflow.advantages") as readonly Advantage[];
+  const messages = await getMessages();
+  const advantages = messages.woocommerce.workflow.advantages;
 
   return (
     <section className="scroll-mt-24 border-accent-foreground border-b">

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
@@ -25,19 +25,6 @@ import { Tools } from "./_components/tools";
 
 type ComparePageProps = {
   params: Promise<{ locale: string }>;
-};
-
-type FaqItem = {
-  question: string;
-  answer: string;
-};
-
-type CompareTool = {
-  name: string;
-  category: string;
-  bestAt: string;
-  wrongPick: string;
-  us: boolean;
 };
 
 export const generateMetadata = async ({
@@ -68,10 +55,11 @@ export default async ({ params }: ComparePageProps) => {
   setRequestLocale(locale);
 
   const translate = await getTranslations({ locale, namespace: "compare" });
+  const messages = await getMessages();
   const description = translate("meta.description");
-  const assurances = translate.raw("hero.assurances") as readonly string[];
-  const faq = translate.raw("faq.items") as readonly FaqItem[];
-  const tools = translate.raw("tools.items") as readonly CompareTool[];
+  const assurances = messages.compare.hero.assurances;
+  const faq = messages.compare.faq.items;
+  const tools = messages.compare.tools.items;
   const pagePath = localizePath("/compare/best-ai-ecommerce-tools", locale);
 
   const structuredData = [

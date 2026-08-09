@@ -1,16 +1,14 @@
 import { cn } from "@zenncore/utils";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { ItemCycle } from "@/app/[locale]/(main)/_components/item-cycle";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
 
 export const Guide = async () => {
   const translate = await getTranslations("compare");
-  const body = translate.raw("guide.body") as readonly string[];
-  const categories = translate.raw("guide.categories") as readonly {
-    title: string;
-    description: string;
-  }[];
+  const messages = await getMessages();
+  const body = messages.compare.guide.body;
+  const categories = messages.compare.guide.categories;
 
   return (
     <section className="scroll-mt-24 border-accent-foreground border-b">

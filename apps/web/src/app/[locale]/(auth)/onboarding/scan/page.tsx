@@ -5,6 +5,7 @@ import {
   SquareChartIcon,
 } from "@zenncore/icons";
 import { cn, unwrapResult } from "@zenncore/utils";
+import { getMessages, getTranslations } from "next-intl/server";
 import Image from "next/image";
 import { connection } from "next/server";
 import { Motion } from "@/components/motion";
@@ -16,29 +17,33 @@ import * as Store from "@/server/app/store";
 import { Environment } from "@/server/utils/environment";
 import { ScanRunner } from "./_components/scan-runner";
 
-const models = [
-  {
-    model: "ChatGPT",
-    description: "Spec-focused",
-    logo: "/images/chatgpt.svg",
-  },
-  {
-    model: "Claude",
-    description: "Contextual analysis",
-    logo: "/images/claude.svg",
-  },
-  {
-    model: "Gemini",
-    description: "Price-quality ratio",
-    logo: "/images/gemini.svg",
-  },
-] as const;
+const modelLogos = {
+  ChatGPT: "/images/chatgpt.svg",
+  Claude: "/images/claude.svg",
+  Gemini: "/images/gemini.svg",
+} as const;
+
+const statIcons = {
+  products: PhotoIcon,
+  competitorsMatched: CheckBadgeIcon,
+  simulations: SquareChartIcon,
+  estimatedTime: ClockIcon,
+} as const;
+
+const statColors = {
+  products: "text-blue-500",
+  competitorsMatched: "text-orange-500",
+  simulations: "text-green-500",
+  estimatedTime: "text-red-500",
+} as const;
 
 export default async () => {
   await connection();
 
-  // Scans are store-scoped; onboarding targets the store the user just
-  // connected (their most recent one).
+  const translate = await getTranslations("onboarding.scan");
+  const messages = await getMessages();
+  const models = messages.onboarding.scan.models;
+
   const stores = await unwrapResult(
     Store.getForCurrentUser(Environment.SERVER),
   );
@@ -64,28 +69,20 @@ export default async () => {
 
   const labels = [
     {
-      label: "Products",
+      key: "products" as const,
       value: productCount.toLocaleString(),
-      icon: PhotoIcon,
-      color: "text-blue-500",
     },
     {
-      label: "Competitors matched",
+      key: "competitorsMatched" as const,
       value: competitorCounts.selected.toLocaleString(),
-      icon: CheckBadgeIcon,
-      color: "text-orange-500",
     },
     {
-      label: "Simulations to run",
+      key: "simulations" as const,
       value: simulations.toLocaleString(),
-      icon: SquareChartIcon,
-      color: "text-green-500",
     },
     {
-      label: "Estimated time",
+      key: "estimatedTime" as const,
       value: estimation,
-      icon: ClockIcon,
-      color: "text-red-500",
     },
   ] as const;
 
@@ -102,11 +99,10 @@ export default async () => {
             <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <h2 className="font-medium text-4xl text-foreground">
-              See who's winning.
+              {translate("page.title")}
             </h2>
             <p className="font-light text-2xl text-foreground-dimmed">
-              ChatGPT, Claude & Gemini will simulate real shopping queries
-              across your products and competitors.
+              {translate("page.description")}
             </p>
           </div>
         </Motion.Item>
@@ -121,7 +117,7 @@ export default async () => {
                 className="flex h-full flex-col bg-background-dimmed p-4"
               >
                 <Image
-                  src={model.logo}
+                  src={modelLogos[model.model as keyof typeof modelLogos]}
                   alt={model.model}
                   width={48}
                   height={48}
@@ -147,20 +143,21 @@ export default async () => {
             <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
             <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            {labels.map(({ label, value, icon: Icon, color }) => (
-              <div key={label} className="bg-background-dimmed p-4">
-                <Icon className={cn("mb-6 size-12", color)} />
-                <p className="font-medium text-2xl text-foreground">{value}</p>
-                <p className="font-light text-foreground-dimmed">{label}</p>
-              </div>
-            ))}
+            {labels.map(({ key, value }) => {
+              const Icon = statIcons[key];
+              return (
+                <div key={key} className="bg-background-dimmed p-4">
+                  <Icon className={cn("mb-6 size-12", statColors[key])} />
+                  <p className="font-medium text-2xl text-foreground">{value}</p>
+                  <p className="font-light text-foreground-dimmed">
+                    {translate(`stats.${key}`)}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         </Motion.Item>
 
-        {/* The Stagger fills its parent, so any space left under the stats grid
-            is free space *inside* it — this filler carries border-x through it
-            and keeps the rails unbroken down to the footer. min-h-0 collapses it
-            to zero once the content is tall enough to scroll. */}
         <div className="min-h-0 flex-1 px-8">
           <div className="h-full border-accent-foreground border-x" />
         </div>

@@ -1,15 +1,13 @@
 import { CheckIcon } from "@zenncore/icons";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { UcpArt } from "@/app/[locale]/(main)/resources/_components/resource-art";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
 
 export const Checks = async () => {
   const translate = await getTranslations("ucpValidator");
-  const checks = translate.raw("checks.items") as readonly {
-    title: string;
-    description: string;
-  }[];
+  const messages = await getMessages();
+  const checks = messages.ucpValidator.checks.items;
 
   return (
     <section className="border-accent-foreground border-b">

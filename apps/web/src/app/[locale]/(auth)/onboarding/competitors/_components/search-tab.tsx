@@ -8,6 +8,7 @@ import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import type * as Competitor from "@/server/app/competitor";
 import * as Search from "@/server/app/intelligence/search";
@@ -17,7 +18,6 @@ export namespace SearchTab {
   export type Props = {
     onSuccess?: (competitors: Competitor.Type[]) => void;
     productNames: string[];
-    /** Store the found rivals are written against. */
     store: string;
     className?: string;
   };
@@ -30,6 +30,7 @@ export const SearchTab = ({
   className,
 }: SearchTab.Props) => {
   const toast = useToastManager();
+  const translate = useTranslations("onboarding.competitors.search");
   const [query, setQuery] = useState<string | null>(null);
   const [competitors, setCompetitors] = useState<Competitor.Type[]>([]);
 
@@ -42,7 +43,7 @@ export const SearchTab = ({
 
       if (!result.success) {
         toast.add({
-          title: "Search failed",
+          title: translate("toast.failed"),
           description: result.error.message,
           type: "error",
         });
@@ -53,8 +54,10 @@ export const SearchTab = ({
       onSuccess?.(result.data);
       setQuery(null);
       toast.add({
-        title: "Products found",
-        description: `Found ${result.data.length} competitor products.`,
+        title: translate("toast.found.title"),
+        description: translate("toast.found.description", {
+          count: String(result.data.length),
+        }),
         type: "success",
       });
     },
@@ -77,7 +80,7 @@ export const SearchTab = ({
             htmlFor="brandSearch"
             className="mb-2 block font-medium text-foreground text-sm"
           >
-            Search by brand or category
+            {translate("label")}
           </label>
           <div className="flex gap-2">
             <TextField
@@ -88,7 +91,7 @@ export const SearchTab = ({
               <SearchIcon className="size-4 shrink-0 text-foreground-dimmed" />
               <TextFieldInput
                 id="brandSearch"
-                placeholder="e.g. SoundMax, wireless earbuds under $150..."
+                placeholder={translate("placeholder")}
                 className="text-sm placeholder:text-foreground-dimmed/70"
                 onKeyDown={(event) => {
                   if (event.key === "Enter") handleSearch();
@@ -97,7 +100,7 @@ export const SearchTab = ({
               {query && (
                 <button
                   type="button"
-                  aria-label="Clear search"
+                  aria-label={translate("clearAria")}
                   onClick={() => setQuery(null)}
                   className="shrink-0 text-foreground-dimmed transition-colors hover:text-foreground"
                 >
@@ -112,22 +115,22 @@ export const SearchTab = ({
               disabled={!query?.trim() || isSearching}
               className="h-10 shrink-0 px-5 font-medium text-sm"
             >
-              {isSearching ? "Searching..." : "Search"}
+              {isSearching
+                ? translate("action.searching")
+                : translate("action.search")}
             </Button>
           </div>
 
           {productNames.length > 0 && (
             <div className="mt-4 flex flex-col gap-2">
               <span className="text-foreground-dimmed text-xs">
-                Or search one of your products
+                {translate("productHint")}
               </span>
               <div className="flex flex-wrap gap-1.5">
                 {productNames.map((name) => (
                   <button
                     key={name}
                     type="button"
-                    // Product titles are long; the pill truncates so the row
-                    // stays uniform, and the tooltip carries the full name.
                     title={name}
                     onClick={() => handleSearch(name)}
                     disabled={isSearching}
@@ -153,7 +156,7 @@ export const SearchTab = ({
             className="flex flex-1 items-center justify-center p-8"
           >
             <p className="text-center text-foreground-dimmed text-sm">
-              Search for a brand or product above to find competitors
+              {translate("empty")}
             </p>
           </motion.div>
         )}
@@ -181,7 +184,7 @@ export const SearchTab = ({
               />
             ))}
             <span className="text-foreground-dimmed text-sm">
-              Searching competitive landscape...
+              {translate("loading")}
             </span>
           </motion.div>
         )}

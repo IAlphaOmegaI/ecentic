@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import {
+  getMessages,
+  getTranslations,
+  setRequestLocale,
+} from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
@@ -26,17 +30,6 @@ import { Plans } from "./_components/plans";
 
 type PricingPageProps = {
   params: Promise<{ locale: string }>;
-};
-
-type SchemaPlan = {
-  name: string;
-  price: string;
-  description: string;
-};
-
-type FaqItem = {
-  question: string;
-  answer: string;
 };
 
 export const generateMetadata = async ({
@@ -66,10 +59,11 @@ export default async ({ params }: PricingPageProps) => {
   setRequestLocale(locale);
 
   const translate = await getTranslations({ locale, namespace: "pricing" });
+  const messages = await getMessages();
   const description = translate("meta.description");
-  const assurances = translate.raw("hero.assurances") as readonly string[];
-  const faq = translate.raw("faq.items") as readonly FaqItem[];
-  const plans = translate.raw("schema.plans") as readonly SchemaPlan[];
+  const assurances = messages.pricing.hero.assurances;
+  const faq = messages.pricing.faq.items;
+  const plans = messages.pricing.schema.plans;
 
   const structuredData = [
     {
