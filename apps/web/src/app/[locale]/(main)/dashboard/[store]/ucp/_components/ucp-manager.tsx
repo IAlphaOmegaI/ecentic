@@ -27,7 +27,7 @@ import {
 } from "@zenncore/web/components/tabs";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useToastManager } from "@zenncore/web/components/toast";
-import type { ComponentProps, ReactElement } from "react";
+import { useTranslations } from "next-intl";
 import { useCallback, useMemo, useState } from "react";
 import { UcpValidatorForm } from "@/app/[locale]/(main)/ucp-validator/_components/ucp-validator-form";
 import { formatPrice } from "@/lib/currency";
@@ -226,52 +226,16 @@ const definitionIcons: Record<string, FieldIconComponent> = {
 
 // ─── Definitions ────────────────────────────────────────────────────────────
 
-const definitions = [
-  {
-    key: "merchantName" as const,
-    label: "Merchant Name",
-    placeholder: "Acme Store",
-  },
-  {
-    key: "description" as const,
-    label: "Description",
-    placeholder: "Premium audio gear for modern homes",
-  },
-  {
-    key: "logoUrl" as const,
-    label: "Logo URL",
-    placeholder: "https://acme.store/logo.png",
-  },
-  {
-    key: "paymentMethods" as const,
-    label: "Payment Methods",
-    placeholder: "Visa, Mastercard, PayPal, Apple Pay",
-  },
-  {
-    key: "shippingPolicy" as const,
-    label: "Shipping Policy",
-    placeholder: "Free over $50 · 3–5 business days",
-  },
-  {
-    key: "returnPolicy" as const,
-    label: "Return Policy",
-    placeholder: "30-day free returns",
-  },
-  {
-    key: "contactEmail" as const,
-    label: "Contact Email",
-    placeholder: "support@acme.store",
-  },
-  {
-    key: "sustainability" as const,
-    label: "Sustainability",
-    placeholder: "Carbon-neutral shipping · recycled packaging",
-  },
-  {
-    key: "certifications" as const,
-    label: "Certifications",
-    placeholder: "B-Corp, ISO 9001",
-  },
+const FIELD_KEYS = [
+  "merchantName",
+  "description",
+  "logoUrl",
+  "paymentMethods",
+  "shippingPolicy",
+  "returnPolicy",
+  "contactEmail",
+  "sustainability",
+  "certifications",
 ] as const;
 
 type ProductRow = Product.Type & { _id: string };
@@ -290,6 +254,7 @@ export const UcpManager = ({
   shopifyStores,
 }: UcpManager.Props) => {
   const toast = useToastManager();
+  const translate = useTranslations("dashboard.ucp.manager");
   const [state, setState] = useState<Ucp.Profile>(profile ?? {});
   const [generation, setGeneration] = useState<string | null>(
     profile?.generatedJson ?? null,
@@ -302,8 +267,18 @@ export const UcpManager = ({
   const [pending, setPending] = useState<Set<string>>(new Set());
   const [copied, setCopied] = useState(false);
 
+  const definitions = useMemo(
+    () =>
+      FIELD_KEYS.map((key) => ({
+        key,
+        label: translate(`fields.${key}.label`),
+        placeholder: translate(`fields.${key}.placeholder`),
+      })),
+    [translate],
+  );
+
   const filledCount = useMemo(
-    () => definitions.filter(({ key }) => Boolean(state[key])).length,
+    () => FIELD_KEYS.filter((key) => Boolean(state[key])).length,
     [state],
   );
   const _score = Math.round((filledCount / definitions.length) * 100);
@@ -365,15 +340,18 @@ export const UcpManager = ({
       const r = await publishProfileToShopify({ store: targetStore.id });
       if (!r.success) {
         toast.add({
-          title: "Could not push UCP to Shopify",
+          title: translate("toast.pushProfileFailed"),
           description: r.error.message,
           type: "error",
         });
         return;
       }
       toast.add({
-        title: "UCP profile pushed to Shopify",
-        description: `${r.data.written} metafield(s) written to ${targetStore.name} under namespace "ucp".`,
+        title: translate("toast.pushProfileSuccess"),
+        description: translate("toast.pushProfileSuccessDescription", {
+          written: r.data.written,
+          store: targetStore.name,
+        }),
         type: "success",
       });
     },
@@ -385,15 +363,19 @@ export const UcpManager = ({
       const r = await publishProductsToShopify({ store: targetStore.id });
       if (!r.success) {
         toast.add({
-          title: "Could not push product metafields",
+          title: translate("toast.pushProductsFailed"),
           description: r.error.message,
           type: "error",
         });
         return;
       }
       toast.add({
-        title: "Product structured data pushed",
-        description: `${r.data.pushed} of ${r.data.total} products updated on ${targetStore.name}.`,
+        title: translate("toast.pushProductsSuccess"),
+        description: translate("toast.pushProductsSuccessDescription", {
+          pushed: r.data.pushed,
+          total: r.data.total,
+          store: targetStore.name,
+        }),
         type: "success",
       });
     },
@@ -421,7 +403,7 @@ export const UcpManager = ({
     () => [
       {
         id: "product",
-        header: "Product",
+        header: translate("products.columnProduct"),
         cell: ({ row }) => {
           const product = row.original;
           return (
@@ -443,12 +425,14 @@ export const UcpManager = ({
       },
       {
         id: "status",
-        header: "Status",
+        header: translate("products.columnStatus"),
         cell: ({ row }) => {
           const hasData = Boolean(productData[row.original.id]);
           return (
             <StatusPill tone={hasData ? "success" : "neutral"}>
-              {hasData ? "Complete" : "Missing"}
+              {hasData
+                ? translate("products.statusComplete")
+                : translate("products.statusMissing")}
             </StatusPill>
           );
         },
@@ -476,11 +460,11 @@ export const UcpManager = ({
               {(() => {
                 switch (true) {
                   case isGenerating:
-                    return "Generating...";
+                    return translate("action.generatingAll");
                   case hasData:
-                    return "Regenerate";
+                    return translate("action.regenerate");
                   default:
-                    return "Generate";
+                    return translate("action.generateOne");
                 }
               })()}
             </Button>
@@ -488,7 +472,7 @@ export const UcpManager = ({
         },
       },
     ],
-    [productData, pending, handleGenerateProduct],
+    [productData, pending, handleGenerateProduct, translate],
   );
 
   return (
@@ -561,10 +545,10 @@ export const UcpManager = ({
             Merchant Profile
           </Tab> */}
           <Tab value="products" className="h-8 flex-1 border-r-0">
-            Product Data
+            {translate("products.tab")}
           </Tab>
           <Tab value="validate" className="h-8 flex-1 border-r-0">
-            Validate
+            {translate("products.validateTab")}
           </Tab>
         </TabsList>
 
@@ -575,7 +559,7 @@ export const UcpManager = ({
             <div className="overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
               <div className="border-accent-foreground border-b px-4 py-2.5">
                 <p className="font-medium text-base text-foreground">
-                  Profile Fields
+                  {translate("profile.fieldsTitle")}
                 </p>
               </div>
               {/* 3×3 field grid — 9 fields, 3 columns, 3 rows, no phantom cell. */}
@@ -636,14 +620,16 @@ export const UcpManager = ({
                   disabled={isGeneratingJson}
                 >
                   <CircleBoltIcon className="size-4 text-primary" />
-                  {isGeneratingJson ? "Generating…" : "Generate with AI"}
+                  {isGeneratingJson
+                    ? translate("action.generating")
+                    : translate("action.generateWithAi")}
                 </Button>
                 <Button
                   color="primary"
                   onClick={handleSave}
                   disabled={isSaving}
                 >
-                  {isSaving ? "Saving…" : "Save"}
+                  {isSaving ? translate("action.saving") : translate("action.save")}
                 </Button>
                 {targetStore && (
                   <Button
@@ -652,8 +638,8 @@ export const UcpManager = ({
                     disabled={isPublishingProfile}
                   >
                     {isPublishingProfile
-                      ? "Pushing…"
-                      : `Push to ${targetStore.name}`}
+                      ? translate("action.pushing")
+                      : translate("action.pushTo", { store: targetStore.name })}
                   </Button>
                 )}
                 {generation && (
@@ -663,7 +649,7 @@ export const UcpManager = ({
                     onClick={() => setGeneration(null)}
                     className="ml-auto"
                   >
-                    Reset
+                    {translate("action.reset")}
                   </Button>
                 )}
               </div>
@@ -677,18 +663,16 @@ export const UcpManager = ({
                   <div>
                     <div className="flex items-center gap-2">
                       <p className="font-medium text-base text-foreground">
-                        JSON Preview
+                        {translate("profile.jsonPreview")}
                       </p>
                       {generation && (
                         <span className="rounded-full bg-primary/10 px-2 py-0.5 font-semibold text-[11px] text-primary">
-                          AI-enhanced
+                          {translate("profile.aiEnhanced")}
                         </span>
                       )}
                     </div>
                     <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
-                      Live preview of your{" "}
-                      <span className="font-mono">/.well-known/ucp</span>{" "}
-                      document.
+                      {translate("profile.jsonPreviewDescription")}
                     </p>
                   </div>
                   <button
@@ -699,12 +683,12 @@ export const UcpManager = ({
                     {copied ? (
                       <>
                         <CheckIcon className="size-3.5 text-primary" />
-                        <span className="text-primary">Copied</span>
+                        <span className="text-primary">{translate("action.copied")}</span>
                       </>
                     ) : (
                       <>
                         <CopyIcon className="size-3.5" />
-                        Copy
+                        {translate("action.copy")}
                       </>
                     )}
                   </button>
@@ -718,12 +702,10 @@ export const UcpManager = ({
               <div className="overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
                 <div className="px-4 py-2.5">
                   <p className="font-medium text-base text-foreground">
-                    Install
+                    {translate("install.title")}
                   </p>
                   <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
-                    Serve this JSON at{" "}
-                    <span className="font-mono">/.well-known/ucp</span> so AI
-                    agents can discover your merchant profile.
+                    {translate("install.description")}
                   </p>
                 </div>
                 <pre className="border-accent-foreground border-t p-4 font-mono text-xs leading-relaxed">
@@ -774,7 +756,10 @@ export const UcpManager = ({
               <div className="flex items-center gap-4">
                 <div>
                   <p className="font-medium text-base text-foreground">
-                    {coveredCount} of {products.length} products covered
+                    {translate("products.coverage", {
+                      covered: coveredCount,
+                      total: products.length,
+                    })}
                   </p>
                   <div className="mt-1.5 h-0.5 w-28 bg-accent-foreground">
                     <div
@@ -791,7 +776,9 @@ export const UcpManager = ({
                   disabled={isGeneratingAll || products.length === 0}
                   className="px-4 py-1.5 text-xs"
                 >
-                  {isGeneratingAll ? "Generating..." : "Generate All"}
+                  {isGeneratingAll
+                    ? translate("action.generatingAll")
+                    : translate("action.generateAll")}
                 </Button>
                 {targetStore && (
                   <Button
@@ -801,8 +788,8 @@ export const UcpManager = ({
                     className="px-4 py-1.5 text-xs"
                   >
                     {isPublishingProducts
-                      ? "Pushing..."
-                      : `Push to ${targetStore.name}`}
+                      ? translate("action.pushing")
+                      : translate("action.pushTo", { store: targetStore.name })}
                   </Button>
                 )}
               </div>
@@ -829,8 +816,7 @@ export const UcpManager = ({
                   <DataTableEmpty>
                     <div className="p-10 text-center">
                       <p className="font-light text-foreground-dimmed text-sm">
-                        No products found. Connect a store and sync products
-                        first.
+                        {translate("products.empty")}
                       </p>
                     </div>
                   </DataTableEmpty>

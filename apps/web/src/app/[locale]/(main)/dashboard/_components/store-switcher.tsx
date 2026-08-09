@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@zenncore/web/components/dropdown-menu";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import type * as Store from "@/server/app/store";
 
 export namespace StoreSwitcher {
@@ -30,7 +31,10 @@ export const StoreSwitcher = ({
   store,
   current,
   stores,
-}: StoreSwitcher.Props) => (
+}: StoreSwitcher.Props) => {
+  const translate = useTranslations("dashboard.stores");
+
+  return (
   <div className="border-accent-foreground border-b p-2">
     <DropdownMenu>
       <DropdownMenuTrigger className="group flex w-full items-center gap-2.5 border border-accent-foreground bg-background px-2.5 py-2 text-left transition-colors hover:bg-background-dimmed">
@@ -39,7 +43,7 @@ export const StoreSwitcher = ({
         </div>
         <div className="flex min-w-0 flex-1 flex-col">
           <span className="truncate font-semibold text-foreground text-sm">
-            {current?.name ?? "Select store"}
+            {current?.name ?? translate("selectStore")}
           </span>
           <span className="truncate text-[11px] text-foreground-dimmed">
             {current?.domain ?? "—"}
@@ -88,7 +92,7 @@ export const StoreSwitcher = ({
           <span className="flex size-8 shrink-0 items-center justify-center">
             <ArrowLeftIcon className="size-4" />
           </span>
-          All stores
+          {translate("allStores")}
         </DropdownMenuItem>
         <DropdownMenuItem
           render={<Link href="/onboarding/connect" />}
@@ -97,9 +101,10 @@ export const StoreSwitcher = ({
           <span className="flex size-8 shrink-0 items-center justify-center">
             <PlusIcon className="size-4" />
           </span>
-          Connect a store
+          {translate("action.primary")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   </div>
-);
+  );
+};

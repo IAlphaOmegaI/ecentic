@@ -7,6 +7,7 @@ import {
   DialogTrigger,
 } from "@zenncore/web/components/dialog";
 import { Link, usePathname } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { formatPrice } from "@/lib/currency";
 import type * as CompetitorTypes from "@/server/app/competitor";
@@ -17,13 +18,13 @@ import * as Product from "@/server/app/product";
 // `segment` is relative to the current store; Settings is account-wide, so it
 // carries an absolute `href` instead.
 const navItems = [
-  { label: "Overview", segment: "" },
-  { label: "Products", segment: "/products" },
-  { label: "Competitors", segment: "/competitors" },
-  { label: "Simulations", segment: "/simulations" },
-  { label: "UCP & Structured Data", segment: "/ucp" },
-  { label: "Optimize", segment: "/optimize" },
-  { label: "Settings", href: "/dashboard/settings" },
+  { key: "overview", segment: "" },
+  { key: "products", segment: "/products" },
+  { key: "competitors", segment: "/competitors" },
+  { key: "simulations", segment: "/simulations" },
+  { key: "ucpStructuredData", segment: "/ucp" },
+  { key: "optimize", segment: "/optimize" },
+  { key: "settings", href: "/dashboard/settings" },
 ] as const;
 
 /**
@@ -37,6 +38,7 @@ const navItems = [
  */
 export const CommandPalette = () => {
   const [open, setOpen] = useState(false);
+  const translate = useTranslations("dashboard.commandPalette");
 
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
@@ -54,10 +56,10 @@ export const CommandPalette = () => {
       <DialogTrigger className="flex h-9 flex-1 items-center gap-2 rounded-lg border border-accent-foreground bg-background px-3 text-left transition-[border-color,box-shadow] hover:border-primary/40 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-primary/15">
         <SearchIcon className="size-4 shrink-0 text-foreground-dimmed" />
         <span className="font-light text-foreground-dimmed text-sm">
-          Search products, competitors...
+          {translate("trigger")}
         </span>
         <kbd className="ml-auto rounded border border-accent-foreground bg-background-rich px-1 py-px font-medium text-[10px] text-foreground-dimmed">
-          ⌘K
+          {translate("keyboardShortcut")}
         </kbd>
       </DialogTrigger>
 
@@ -82,10 +84,8 @@ type Catalog = {
 };
 
 const Results = ({ onClose }: { onClose: () => void }) => {
-  // The palette only ever renders inside `/dashboard/[store]`, so the store id
-  // is already in the URL — reading it here keeps the trigger free of any
-  // server data, and this component never renders during the prerender.
   const pathname = usePathname();
+  const translate = useTranslations("dashboard.commandPalette");
   const store = pathname.split("/")[2] ?? "";
   const base = `/dashboard/${store}`;
 
@@ -136,9 +136,10 @@ const Results = ({ onClose }: { onClose: () => void }) => {
       !normalized || competitor.title.toLowerCase().includes(normalized),
   );
 
-  const matchedNav = navItems.filter(
-    (item) => !normalized || item.label.toLowerCase().includes(normalized),
-  );
+  const matchedNav = navItems.filter((item) => {
+    const label = translate(`nav.${item.key}`);
+    return !normalized || label.toLowerCase().includes(normalized);
+  });
 
   const hasResults =
     matchedProducts.length > 0 ||
@@ -159,31 +160,33 @@ const Results = ({ onClose }: { onClose: () => void }) => {
           type="text"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search products, competitors, pages..."
+          placeholder={translate("placeholder")}
           className="flex-1 bg-transparent text-foreground text-sm placeholder:text-foreground-dimmed/50 focus:outline-none"
         />
         <kbd className="shrink-0 border border-accent-foreground px-1.5 py-0.5 font-light text-foreground-dimmed text-xs">
-          esc
+          {translate("keyboardEscape")}
         </kbd>
       </div>
 
       <div className="max-h-80 overflow-y-auto py-2">
         {!hasResults && loading && (
           <p className="px-4 py-6 text-center font-light text-foreground-dimmed text-sm">
-            Searching…
+            {translate("states.searching")}
           </p>
         )}
 
         {!hasResults && !loading && (
           <p className="px-4 py-6 text-center font-light text-foreground-dimmed text-sm">
-            No results{query ? ` for "${query}"` : ""}
+            {query
+              ? translate("states.emptyForQuery", { query })
+              : translate("states.empty")}
           </p>
         )}
 
         {matchedProducts.length > 0 && (
           <div>
             <p className="px-4 pt-2 pb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-              Products
+              {translate("sections.products")}
             </p>
             {matchedProducts.slice(0, 5).map((product) => (
               <Link
@@ -213,7 +216,7 @@ const Results = ({ onClose }: { onClose: () => void }) => {
         {matchedCompetitors.length > 0 && (
           <div>
             <p className="px-4 pt-3 pb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-              Competitors
+              {translate("sections.competitors")}
             </p>
             {matchedCompetitors.slice(0, 4).map((competitor) => (
               <Link
@@ -243,20 +246,21 @@ const Results = ({ onClose }: { onClose: () => void }) => {
         {matchedNav.length > 0 && (
           <div>
             <p className="px-4 pt-3 pb-1 font-medium text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-              Pages
+              {translate("sections.pages")}
             </p>
             {matchedNav.map((item) => {
               const href =
                 "href" in item ? item.href : `${base}${item.segment}`;
+              const label = translate(`nav.${item.key}`);
               return (
                 <Link
-                  key={item.label}
+                  key={item.key}
                   href={href}
                   onClick={onClose}
                   className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-accent-foreground"
                 >
                   <ArrowRightIcon className="size-4 shrink-0 text-foreground-dimmed" />
-                  <span className="text-foreground text-sm">{item.label}</span>
+                  <span className="text-foreground text-sm">{label}</span>
                 </Link>
               );
             })}
@@ -266,10 +270,11 @@ const Results = ({ onClose }: { onClose: () => void }) => {
 
       <div className="flex items-center gap-4 border-accent-foreground border-t px-4 py-2">
         <span className="font-light text-foreground-dimmed text-xs">
-          <kbd className="font-mono">↵</kbd> to open
+          <kbd className="font-mono">↵</kbd> {translate("hints.open")}
         </span>
         <span className="font-light text-foreground-dimmed text-xs">
-          <kbd className="font-mono">esc</kbd> to close
+          <kbd className="font-mono">{translate("keyboardEscape")}</kbd>{" "}
+          {translate("hints.close")}
         </span>
       </div>
     </>

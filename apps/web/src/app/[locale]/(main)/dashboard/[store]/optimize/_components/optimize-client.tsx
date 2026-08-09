@@ -25,6 +25,7 @@ import {
   TabsPanel,
 } from "@zenncore/web/components/tabs";
 import { useToastManager } from "@zenncore/web/components/toast";
+import { useMessages, useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "motion/react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useParams } from "next/navigation";
@@ -43,13 +44,6 @@ import {
   WinRateBadge,
 } from "../../../_components/grid";
 import { OptimizationRoadmap } from "./optimization-roadmap";
-
-const CATEGORY_LABELS = {
-  seo: "SEO",
-  content: "Content",
-  structured_data: "Structured data",
-  platform: "Platform",
-} as const;
 
 const TYPE_TAG_CLASSES =
   "rounded bg-background-dimmed px-1.5 py-0.5 font-semibold text-[10px] text-foreground-dimmed uppercase tracking-[0.06em]";
@@ -130,7 +124,10 @@ const InsightCard = ({
   value: string;
   insight: DashboardData["diagnostics"]["insights"][number];
   productTitle: string;
-}) => (
+}) => {
+  const translate = useTranslations("dashboard.optimize");
+
+  return (
   <AccordionItem
     value={value}
     className="border-accent-foreground border-b bg-background-rich"
@@ -149,10 +146,10 @@ const InsightCard = ({
           {productTitle}
         </span>
         <span className={SEVERITY_CLASSES[insight.severity]}>
-          {insight.severity.toUpperCase()}
+          {translate(`severity.${insight.severity}`)}
         </span>
         <span className={TYPE_TAG_CLASSES}>
-          {CATEGORY_LABELS[insight.category]}
+          {translate(`categories.${insight.category}`)}
         </span>
         <WinRateBadge rate={insight.winRate} />
       </span>
@@ -164,7 +161,8 @@ const InsightCard = ({
       </div>
     </AccordionPanel>
   </AccordionItem>
-);
+  );
+};
 
 const PendingCard = ({
   store,
@@ -182,7 +180,10 @@ const PendingCard = ({
   isApprovePending: boolean;
   onApprove: (productId: string) => void;
   onDismiss: (productId: string) => void;
-}) => (
+}) => {
+  const translate = useTranslations("dashboard.optimize");
+
+  return (
   // One compact row: title + signal chips on the left, actions on the right.
   // The old per-card explainer paragraph and "Models:" line were identical on
   // every card — that boilerplate is what made the queue a wall of text.
@@ -203,7 +204,7 @@ const PendingCard = ({
           </span>
           <WinRateBadge rate={item.winRate} />
           <span className={TYPE_TAG_CLASSES} title={item.models.join(", ")}>
-            Title + Description
+            {translate("listingType")}
           </span>
         </div>
       </div>
@@ -215,7 +216,7 @@ const PendingCard = ({
             <Link href={`/dashboard/${store}/products/${item.product.id}`} />
           }
         >
-          Preview
+          {translate("action.preview")}
         </Button>
         <Button
           color="primary"
@@ -227,7 +228,7 @@ const PendingCard = ({
           ) : (
             <CheckIcon className="size-4" />
           )}
-          Approve
+          {translate("action.primary")}
         </Button>
         <Button
           variant="ghost"
@@ -236,14 +237,15 @@ const PendingCard = ({
           className="text-foreground-dimmed hover:text-error"
           disabled={busy}
           onClick={() => onDismiss(item.product.id)}
-          aria-label="Dismiss suggestion"
+          aria-label={translate("dismissAriaLabel")}
         >
           <XIcon className="size-4" />
         </Button>
       </div>
     </div>
   </motion.div>
-);
+  );
+};
 
 const PublishedCard = ({
   store,
@@ -253,7 +255,10 @@ const PublishedCard = ({
   store: string;
   record: Type;
   productTitle: string;
-}) => (
+}) => {
+  const translate = useTranslations("dashboard.optimize");
+
+  return (
   <div className={SUGGESTION_CARD_CLASSES}>
     <div className="flex items-start justify-between gap-4">
       <div className="min-w-0">
@@ -261,14 +266,16 @@ const PublishedCard = ({
           {productTitle}
         </p>
         <p className="mt-1 text-foreground-dimmed text-xs">
-          Published {formatPublished(record.publishedAt)}
+          {translate("publishedAt", {
+            date: formatPublished(record.publishedAt),
+          })}
         </p>
         {record.winRateBefore !== null && record.winRateAfter !== null && (
           <p className="mt-1 text-foreground-dimmed text-xs">
-            Est. win rate: {record.winRateBefore}% →{" "}
-            <span className="font-medium text-success">
-              {record.winRateAfter}%
-            </span>
+            {translate("winRateChange", {
+              before: record.winRateBefore,
+              after: record.winRateAfter,
+            })}
           </p>
         )}
       </div>
@@ -280,11 +287,12 @@ const PublishedCard = ({
           <Link href={`/dashboard/${store}/products/${record.productId}`} />
         }
       >
-        View product
+        {translate("action.viewProduct")}
       </Button>
     </div>
   </div>
-);
+  );
+};
 
 const DismissedCard = ({
   record,
@@ -298,7 +306,10 @@ const DismissedCard = ({
   busy: boolean;
   busyProductId: string | null;
   onReconsider: (productId: string) => void;
-}) => (
+}) => {
+  const translate = useTranslations("dashboard.optimize");
+
+  return (
   <motion.div
     exit={{ opacity: 0, height: 0, paddingTop: 0, paddingBottom: 0 }}
     transition={Spring.Snappy}
@@ -319,31 +330,34 @@ const DismissedCard = ({
         {busyProductId === record.productId ? (
           <LoaderIcon className="size-4 animate-spin" />
         ) : (
-          "Reconsider"
+          translate("action.reconsider")
         )}
       </Button>
     </div>
   </motion.div>
-);
+  );
+};
 
 const DiagnosticsPanel = ({
   insights,
   products,
-  kicker = "02 — Diagnostics",
+  kicker,
 }: {
   insights: DashboardData["diagnostics"]["insights"];
   products: Record<string, Product.Type>;
   kicker?: string;
-}) => (
+}) => {
+  const translate = useTranslations("dashboard.optimize");
+
+  return (
   <div>
     <div className="border-accent-foreground border-b p-4">
       <SectionKicker>{kicker}</SectionKicker>
       <p className="mt-2 font-semibold text-foreground-rich text-lg">
-        Diagnostics for low win rate
+        {translate("diagnostics.title")}
       </p>
       <p className="mt-1 text-foreground-dimmed text-sm">
-        These recommendations cover SEO/data-quality/platform issues in addition
-        to listing text optimizations.
+        {translate("diagnostics.description")}
       </p>
     </div>
     <Accordion
@@ -367,16 +381,18 @@ const DiagnosticsPanel = ({
             value={value}
             insight={insight}
             productTitle={
-              products[insight.productId]?.title ?? "Unknown product"
+              products[insight.productId]?.title ?? translate("unknownProduct")
             }
           />
         );
       })}
     </Accordion>
   </div>
-);
+  );
+};
 
 export const OptimizeClient = ({ data }: { data: DashboardData }) => {
+  const translate = useTranslations("dashboard.optimize");
   const { store } = useParams<{ store: string }>();
   const router = useRouter();
   const toast = useToastManager();
@@ -393,7 +409,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
 
       if (!result.success) {
         toast.add({
-          title: "Publish failed",
+          title: translate("toast.publishFailed"),
           description: result.error.message,
           type: "error",
         });
@@ -401,8 +417,8 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
       }
 
       toast.add({
-        title: "Listing updated",
-        description: "Changes were pushed to your connected store.",
+        title: translate("toast.listingUpdated"),
+        description: translate("toast.listingUpdatedDescription"),
         type: "success",
       });
       router.refresh();
@@ -418,7 +434,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
       setSelected(null);
       if (!result.success) {
         toast.add({
-          title: "Dismiss failed",
+          title: translate("toast.dismissFailed"),
           description: result.error.message,
           type: "error",
         });
@@ -437,7 +453,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
       setSelected(null);
       if (!result.success) {
         toast.add({
-          title: "Could not restore",
+          title: translate("toast.restoreFailed"),
           description: result.error.message,
           type: "error",
         });
@@ -451,7 +467,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
     const result = await Optimization.approveAllPending();
     if (!result.success) {
       toast.add({
-        title: "Some updates failed",
+        title: translate("toast.someFailed"),
         description: result.error.message,
         type: "error",
       });
@@ -459,8 +475,10 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
       return;
     }
     toast.add({
-      title: "All pending listings updated",
-      description: `${result.data.count} product(s) published to your store.`,
+      title: translate("toast.allUpdated"),
+      description: translate("toast.allUpdatedDescription", {
+        count: result.data.count,
+      }),
       type: "success",
     });
     router.refresh();
@@ -481,7 +499,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
     });
     if (!result.success) {
       toast.add({
-        title: "Optimization failed",
+        title: translate("toast.optimizationFailed"),
         description: result.error.message,
         type: "error",
       });
@@ -491,10 +509,16 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
     const { profileWritten, productsPushed, productsTotal, listingsRewritten } =
       result.data;
     toast.add({
-      title: "Store optimized for AI agents",
-      description: `${productsPushed}/${productsTotal} products published, ${listingsRewritten} listings rewritten${
-        profileWritten > 0 ? `, ${profileWritten} UCP metafields` : ""
-      }.`,
+      title: translate("toast.storeOptimized"),
+      description: translate("toast.storeOptimizedDescription", {
+        published: productsPushed,
+        total: productsTotal,
+        rewritten: listingsRewritten,
+        metafields:
+          profileWritten > 0
+            ? `, ${profileWritten} UCP metafields`
+            : "",
+      }),
       type: result.data.errors.length > 0 ? "warning" : "success",
     });
     router.refresh();
@@ -511,8 +535,10 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
     data;
 
   const hasDiagnostics = diagnostics.insights.length > 0;
-  const diagnosticsKicker = "02";
-  const queueKicker = hasDiagnostics ? "03" : "02";
+  const diagnosticsKicker = translate("diagnostics.kicker", { index: "02" });
+  const queueKicker = hasDiagnostics
+    ? translate("queue.kicker", { index: "03" })
+    : translate("queue.kicker", { index: "02" });
 
   return (
     <div className="flex flex-col">
@@ -522,14 +548,13 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div>
             <StatusPill tone={pending.length > 0 ? "success" : "neutral"}>
-              {pending.length} pending suggestion
-              {pending.length === 1 ? "" : "s"}
+              {translate("statusPill", { count: pending.length })}
             </StatusPill>
             <h1 className="mt-3 font-bold text-3xl text-foreground-rich tracking-[-0.02em]">
-              Optimization Center
+              {translate("title")}
             </h1>
             <p className="mt-1 text-foreground-dimmed text-sm">
-              Approve AI-improved listings and push them straight to your store.
+              {translate("description")}
             </p>
           </div>
           {optimizableStore && (
@@ -543,7 +568,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
               ) : (
                 <CircleBoltIcon className="size-4" />
               )}
-              Optimize {optimizableStore.name} for Agents
+              {translate("action.optimizeStore", { store: optimizableStore.name })}
             </Button>
           )}
         </div>
@@ -555,21 +580,21 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-3">
             <StatCard
-              label="Low win-rate products"
+              label={translate("stats.lowWinRate.label")}
               value={diagnostics.lowWinRateCount}
-              detail="Losing most simulated agent match-ups against competitors."
+              detail={translate("stats.lowWinRate.detail")}
               icon={<TrendDownIcon className="size-7.5 text-error" />}
             />
             <StatCard
-              label="Auto-publish eligible"
+              label={translate("stats.publishable.label")}
               value={diagnostics.publishableCount}
-              detail="Fixable by rewriting the listing — approve to publish."
+              detail={translate("stats.publishable.detail")}
               icon={<CircleBoltIcon className="size-7.5 text-success" />}
             />
             <StatCard
-              label="Manual-fix only"
+              label={translate("stats.manualFix.label")}
               value={diagnostics.nonPublishableCount}
-              detail="Needs platform or data changes made by hand."
+              detail={translate("stats.manualFix.detail")}
               icon={<HammerIcon className="size-7.5 text-warning" />}
             />
           </div>
@@ -585,7 +610,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
           <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <OptimizationRoadmap
-            kicker="01 — What to expect"
+            kicker={translate("roadmap.kicker")}
             baselineWinRate={outlook.baselineWinRate}
             averageLift={outlook.averageLift}
             pendingCount={pending.length}
@@ -609,7 +634,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
               <DiagnosticsPanel
                 insights={diagnostics.insights}
                 products={products}
-                kicker={`${diagnosticsKicker} — Diagnostics`}
+                kicker={diagnosticsKicker}
               />
             </div>
           </div>
@@ -626,15 +651,12 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div className="flex flex-col gap-3 border-accent-foreground border-b p-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <SectionKicker>{queueKicker} — Optimization Queue</SectionKicker>
+              <SectionKicker>{queueKicker}</SectionKicker>
               <p className="mt-2 font-semibold text-foreground-rich text-lg">
-                Listing Suggestions
+                {translate("queue.title")}
               </p>
-              {/* The per-card explainer lived here as boilerplate; it belongs once,
-                  in the header. */}
               <p className="mt-1 max-w-2xl text-foreground-dimmed text-sm">
-                Approve generates an AI-improved listing and publishes it to
-                your store (Shopify or WooCommerce).
+                {translate("queue.description")}
               </p>
             </div>
             <Button
@@ -650,7 +672,7 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
               ) : (
                 <CheckIcon className="size-4" />
               )}
-              Approve All ({pending.length})
+              {translate("action.approveAll", { count: pending.length })}
             </Button>
           </div>
 
@@ -661,19 +683,19 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
               <TabsList className="h-10 w-full rounded-md border-0 bg-background-dimmed p-1">
                 <TabsIndicator className="top-1 h-8 rounded" />
                 <Tab value="pending" className="h-8 flex-1 border-r-0">
-                  Pending{" "}
+                  {translate("tabs.pending")}{" "}
                   <span className="ml-1.5 rounded-full bg-current/15 px-1.5 py-0.5 font-semibold text-[11px] tabular-nums">
                     {pending.length}
                   </span>
                 </Tab>
                 <Tab value="published" className="h-8 flex-1 border-r-0">
-                  Published{" "}
+                  {translate("tabs.published")}{" "}
                   <span className="ml-1.5 rounded-full bg-current/15 px-1.5 py-0.5 font-semibold text-[11px] tabular-nums">
                     {published.length}
                   </span>
                 </Tab>
                 <Tab value="dismissed" className="h-8 flex-1 border-r-0">
-                  Dismissed{" "}
+                  {translate("tabs.dismissed")}{" "}
                   <span className="ml-1.5 rounded-full bg-current/15 px-1.5 py-0.5 font-semibold text-[11px] tabular-nums">
                     {dismissed.length}
                   </span>
@@ -685,8 +707,8 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
               {pending.length === 0 ? (
                 <EmptyState
                   icon={<CircleBoltIcon className="size-5" />}
-                  title="No pending optimizations"
-                  description="Products from Shopify or WooCommerce with simulation win rate under 55% appear here. Run a scan, then approve to push AI-improved titles and descriptions to your store."
+                  title={translate("states.pendingEmpty.title")}
+                  description={translate("states.pendingEmpty.description")}
                 />
               ) : (
                 <div className="space-y-px bg-accent-foreground">
@@ -712,8 +734,8 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
               {published.length === 0 ? (
                 <EmptyState
                   icon={<CheckIcon className="size-5" />}
-                  title="No published optimizations yet"
-                  description="Approved changes are recorded here with estimated win-rate impact."
+                  title={translate("states.publishedEmpty.title")}
+                  description={translate("states.publishedEmpty.description")}
                 />
               ) : (
                 <div className="space-y-px bg-accent-foreground">
@@ -723,7 +745,8 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
                       store={store}
                       record={record}
                       productTitle={
-                        products[record.productId]?.title ?? "Unknown product"
+                        products[record.productId]?.title ??
+                        translate("unknownProduct")
                       }
                     />
                   ))}
@@ -735,8 +758,8 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
               {dismissed.length === 0 ? (
                 <EmptyState
                   icon={<XIcon className="size-5" />}
-                  title="Nothing dismissed"
-                  description="Suggestions you dismiss land here and can be restored any time."
+                  title={translate("states.dismissedEmpty.title")}
+                  description={translate("states.dismissedEmpty.description")}
                 />
               ) : (
                 <div className="space-y-px bg-accent-foreground">
@@ -746,7 +769,8 @@ export const OptimizeClient = ({ data }: { data: DashboardData }) => {
                         key={record.id}
                         record={record}
                         productTitle={
-                          products[record.productId]?.title ?? "Unknown product"
+                          products[record.productId]?.title ??
+                        translate("unknownProduct")
                         }
                         busy={busy}
                         busyProductId={selected}

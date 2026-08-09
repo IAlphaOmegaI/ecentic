@@ -1,9 +1,8 @@
-import { PlusIcon } from "@zenncore/icons";
-import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import type { ReactNode } from "react";
-import { Crosshair, StatusPill } from "./grid";
+import { Crosshair } from "./grid";
+import { HubShellCopy } from "./hub-shell-copy";
 import { NotificationBell } from "./notification-bell";
 
 /**
@@ -41,22 +40,7 @@ export const HubShell = ({
 
     <main className="flex-1 overflow-y-auto">
       <div className="mx-auto max-w-6xl px-6 py-10">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <StatusPill tone="neutral">Workspace</StatusPill>
-            <h1 className="mt-3 font-bold text-3xl text-foreground-rich tracking-[-0.02em]">
-              Your stores
-            </h1>
-            <p className="mt-1 text-foreground-dimmed text-sm">
-              Select a store to view how AI shopping agents rank its catalog, or
-              connect another.
-            </p>
-          </div>
-          <Button color="primary" render={<Link href="/onboarding/connect" />}>
-            <PlusIcon className="size-4" />
-            Connect a store
-          </Button>
-        </div>
+        <HubShellCopy />
 
         <div className="mt-8">{stores}</div>
       </div>

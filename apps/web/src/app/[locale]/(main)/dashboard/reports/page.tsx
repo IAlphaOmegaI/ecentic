@@ -1,5 +1,6 @@
 import { DocumentPdfIcon, ShareIcon } from "@zenncore/icons";
 import { unwrapResult } from "@zenncore/utils";
+import { getTranslations } from "next-intl/server";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { formatRelativeTime } from "@/lib/date";
@@ -13,44 +14,23 @@ import {
 } from "../_components/grid";
 import { ReportDownload, ShareReport } from "./_components/report-actions";
 
-const reports = [
-  {
-    _id: "winRateSummary" as const,
-    title: "Win Rate Summary",
-    description: "Overall performance across all products and models",
-    tier: "all",
-  },
-  {
-    _id: "productPerformance" as const,
-    title: "Product Performance",
-    description:
-      "Per-product detailed report with trends and competitor comparison",
-    tier: "compete",
-  },
-  {
-    _id: "competitorAnalysis" as const,
-    title: "Competitor Analysis",
-    description:
-      "Full competitive landscape with battlecards for all tracked brands",
-    tier: "compete",
-  },
-  {
-    _id: "optimizationImpact" as const,
-    title: "Optimization Impact",
-    description: "Before/after analysis of all published optimizations",
-    tier: "compete",
-  },
+const REPORT_IDS = [
+  "winRateSummary",
+  "productPerformance",
+  "competitorAnalysis",
+  "optimizationImpact",
 ] as const;
 
-const TierBadge = ({ tier }: { tier: string }) => {
+const TierBadge = async ({ tier }: { tier: string }) => {
+  const translate = await getTranslations("dashboard.reports.tiers");
   const config = (() => {
     switch (tier) {
       case "all":
-        return { label: "All plans", tone: "primary" as const };
+        return { label: translate("all"), tone: "primary" as const };
       case "compete":
-        return { label: "Compete+", tone: "neutral" as const };
+        return { label: translate("compete"), tone: "neutral" as const };
       case "dominate":
-        return { label: "Dominate+", tone: "warning" as const };
+        return { label: translate("dominate"), tone: "warning" as const };
       default:
         return { label: tier, tone: "primary" as const };
     }
@@ -59,105 +39,108 @@ const TierBadge = ({ tier }: { tier: string }) => {
   return <StatusPill tone={config.tone}>{config.label}</StatusPill>;
 };
 
-export default () => (
-  <div className="flex flex-col">
-    <div className="mx-8 border-accent-foreground border-x">
-      <div className="-mx-8 border-accent-foreground border-b">
-        <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
-          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <div>
-            <Suspense
-              fallback={
-                <div className="h-5 w-56 animate-pulse rounded-full bg-foreground/10" />
-              }
-            >
-              <DataStatus />
-            </Suspense>
-            <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
-              Reports & Exports
-            </h1>
-            <p className="mt-1 text-foreground-dimmed text-sm">
-              Download or schedule automated reports on your agent performance.
-            </p>
-          </div>
-        </div>
-      </div>
+export default async () => {
+  const translate = await getTranslations("dashboard.reports");
 
-      <div className="-mx-8 border-accent-foreground border-b">
-        <div className="relative mx-8 bg-background-rich">
-          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <div className="flex items-start gap-4 px-6 py-6 transition-colors hover:bg-background">
-            <ShareIcon className="size-8 shrink-0 text-primary" />
+  return (
+    <div className="flex flex-col">
+      <div className="mx-8 border-accent-foreground border-x">
+        <div className="-mx-8 border-accent-foreground border-b">
+          <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
+            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <div>
-              <p className="font-medium text-base text-foreground-rich">
-                Shareable Win Rate Report
-              </p>
-              <p className="mt-1 text-foreground-dimmed text-sm">
-                Generate a public URL for a beautifully formatted win rate
-                report — designed for sharing on Twitter, LinkedIn, or with your
-                team.
-              </p>
               <Suspense
                 fallback={
-                  <div className="mt-3 h-9 w-48 animate-pulse bg-foreground/10" />
+                  <div className="h-5 w-56 animate-pulse rounded-full bg-foreground/10" />
                 }
               >
-                <ShareButton />
+                <DataStatus />
               </Suspense>
+              <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
+                {translate("title")}
+              </h1>
+              <p className="mt-1 text-foreground-dimmed text-sm">
+                {translate("description")}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="-mx-8 border-accent-foreground border-b">
+          <div className="relative mx-8 bg-background-rich">
+            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+            <div className="flex items-start gap-4 px-6 py-6 transition-colors hover:bg-background">
+              <ShareIcon className="size-8 shrink-0 text-primary" />
+              <div>
+                <p className="font-medium text-base text-foreground-rich">
+                  {translate("shareable.title")}
+                </p>
+                <p className="mt-1 text-foreground-dimmed text-sm">
+                  {translate("shareable.description")}
+                </p>
+                <Suspense
+                  fallback={
+                    <div className="mt-3 h-9 w-48 animate-pulse bg-foreground/10" />
+                  }
+                >
+                  <ShareButton />
+                </Suspense>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <SectionGutter />
+
+        <div className="-mx-8 border-accent-foreground border-t border-b">
+          <div className="relative mx-8 bg-background-rich">
+            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+            <div className="border-accent-foreground border-b p-4">
+              <SectionKicker>{translate("library.kicker")}</SectionKicker>
+              <p className="mt-2 font-semibold text-foreground-rich text-lg">
+                {translate("library.title")}
+              </p>
+            </div>
+            <Suspense fallback={<ReportGridSkeleton />}>
+              <ReportGrid />
+            </Suspense>
+          </div>
+        </div>
+
+        <SectionGutter />
+
+        <div className="-mx-8 border-accent-foreground border-t border-b">
+          <div className="relative mx-8 bg-background-rich">
+            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+            <div className="border-accent-foreground border-b p-4">
+              <SectionKicker>{translate("automation.kicker")}</SectionKicker>
+              <p className="mt-2 font-semibold text-foreground-rich text-lg">
+                {translate("automation.title")}
+              </p>
+            </div>
+            <div className="px-6 py-6">
+              <p className="text-foreground-dimmed text-sm">
+                {translate("automation.comingSoon")}
+              </p>
             </div>
           </div>
         </div>
       </div>
-
-      <SectionGutter />
-
-      <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="relative mx-8 bg-background-rich">
-          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <div className="border-accent-foreground border-b p-4">
-            <SectionKicker>01 — Library</SectionKicker>
-            <p className="mt-2 font-semibold text-foreground-rich text-lg">
-              Available Reports
-            </p>
-          </div>
-          <Suspense fallback={<ReportGridSkeleton />}>
-            <ReportGrid />
-          </Suspense>
-        </div>
-      </div>
-
-      <SectionGutter />
-
-      <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="relative mx-8 bg-background-rich">
-          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <div className="border-accent-foreground border-b p-4">
-            <SectionKicker>02 — Automation</SectionKicker>
-            <p className="mt-2 font-semibold text-foreground-rich text-lg">
-              Scheduled Reports
-            </p>
-          </div>
-          <div className="px-6 py-6">
-            <p className="text-foreground-dimmed text-sm">
-              Scheduled reports and the weekly digest are coming soon.
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const DataStatus = async () => {
   await connection();
+  const translate = await getTranslations("dashboard.reports.dataStatus");
   const availability = await unwrapResult(
     Report.getAvailability(Environment.SERVER),
   );
@@ -165,8 +148,10 @@ const DataStatus = async () => {
   return (
     <StatusPill tone={availability.scan ? "success" : "neutral"}>
       {availability.scan
-        ? `Data as of ${formatRelativeTime(availability.scan.createdAt)}`
-        : "No completed scans yet"}
+        ? translate("asOf", {
+            time: formatRelativeTime(availability.scan.createdAt),
+          })
+        : translate("noScans")}
     </StatusPill>
   );
 };
@@ -181,6 +166,7 @@ const ShareButton = async () => {
 
 const ReportGrid = async () => {
   await connection();
+  const translate = await getTranslations("dashboard.reports");
   const availability = await unwrapResult(
     Report.getAvailability(Environment.SERVER),
   );
@@ -190,34 +176,42 @@ const ReportGrid = async () => {
 
   return (
     <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 xl:grid-cols-3">
-      {reports.map((report) => {
+      {REPORT_IDS.map((reportId) => {
+        const tier = (() => {
+          switch (reportId) {
+            case "winRateSummary":
+              return "all";
+            default:
+              return "compete";
+          }
+        })();
         const disabled = (() => {
           if (!hasScan) return true;
-          if (report._id === "optimizationImpact" && !hasOptimizations)
+          if (reportId === "optimizationImpact" && !hasOptimizations)
             return true;
           return false;
         })();
 
         return (
           <div
-            key={report._id}
+            key={reportId}
             className="flex flex-col rounded-lg border border-accent-foreground bg-background-rich p-4 transition-[border-color,box-shadow] hover:border-primary/30 hover:shadow-sm"
           >
             <div className="flex items-start justify-between">
               <DocumentPdfIcon className="size-8 text-foreground-dimmed" />
-              <TierBadge tier={report.tier} />
+              <TierBadge tier={tier} />
             </div>
             <div className="mt-3 flex-1">
               <p className="font-medium text-base text-foreground-rich">
-                {report.title}
+                {translate(`items.${reportId}.title`)}
               </p>
               <p className="mt-1 text-foreground-dimmed text-xs leading-relaxed">
-                {report.description}
+                {translate(`items.${reportId}.description`)}
               </p>
             </div>
             <div className="mt-4">
               <div className="flex gap-2">
-                <ReportDownload report={report._id} disabled={disabled} />
+                <ReportDownload report={reportId} disabled={disabled} />
               </div>
             </div>
           </div>

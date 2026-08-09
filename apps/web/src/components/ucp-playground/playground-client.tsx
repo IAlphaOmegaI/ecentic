@@ -18,7 +18,8 @@ import {
   type ToolUIPart,
 } from "ai";
 import { Link } from "@/i18n/navigation";
-import { useCallback, useState } from "react";
+import { useMessages, useTranslations } from "next-intl";
+import { useCallback, useMemo, useState } from "react";
 import { z } from "zod";
 import {
   SectionKicker,
@@ -54,20 +55,9 @@ import type {
 } from "@/server/app/intelligence/ucp/playground";
 import { resolvePlaygroundStore } from "@/server/app/intelligence/ucp/playground-actions";
 
-const connectFormConfig = {
-  storeUrl: field({
-    shape: "text",
-    validator: z.string().min(1, "Enter a store domain"),
-    label: "Store domain",
-    placeholder: "store.example.com",
-  }),
-} satisfies GenericForm;
-
-const starterSuggestions = [
-  "Show me details for the first product",
-  "Add the first product to a new cart",
-  "Start a checkout for the cart",
-];
+type PlaygroundTranslate = ReturnType<
+  typeof useTranslations<"dashboard.ucpPlaygroundDashboard">
+>;
 
 const isClassicToolUIPart = (
   part: PlaygroundUIMessage["parts"][number],
@@ -189,6 +179,7 @@ const availabilityTextClass: Record<AvailabilityTone, string> = {
 // present and positive.
 const variantAvailability = (
   variant: UcpVariant,
+  translate: PlaygroundTranslate,
 ): { label: string; tone: AvailabilityTone } => {
   const availability = variant.availability;
 
@@ -196,34 +187,42 @@ const variantAvailability = (
 
   const quantity = availability.quantity;
   const suffix =
-    typeof quantity === "number" && quantity > 0 ? ` · ${quantity} left` : "";
+    typeof quantity === "number" && quantity > 0
+      ? translate("availability.quantityLeft", { count: quantity })
+      : "";
 
   const base = ((): { label: string; tone: AvailabilityTone } => {
     switch (availability.status) {
       case "in_stock":
-        return { label: "In stock", tone: "success" };
+        return { label: translate("availability.inStock"), tone: "success" };
       case "backorder":
-        return { label: "Backorder", tone: "warning" };
+        return { label: translate("availability.backorder"), tone: "warning" };
       case "preorder":
-        return { label: "Preorder", tone: "warning" };
+        return { label: translate("availability.preorder"), tone: "warning" };
       case "out_of_stock":
-        return { label: "Out of stock", tone: "error" };
+        return { label: translate("availability.outOfStock"), tone: "error" };
       case "discontinued":
-        return { label: "Discontinued", tone: "error" };
+        return { label: translate("availability.discontinued"), tone: "error" };
       default:
         return availability.available
-          ? { label: "Available", tone: "success" }
-          : { label: "Unavailable", tone: "error" };
+          ? { label: translate("availability.available"), tone: "success" }
+          : { label: translate("availability.unavailable"), tone: "error" };
     }
   })();
 
   return { label: `${base.label}${suffix}`, tone: base.tone };
 };
 
-const VariantList = ({ variants }: { variants: UcpVariant[] }) => (
+const VariantList = ({
+  variants,
+  translate,
+}: {
+  variants: UcpVariant[];
+  translate: PlaygroundTranslate;
+}) => (
   <ul className="mt-2 space-y-1 border-accent-foreground border-t pt-2">
     {variants.map((variant, index) => {
-      const { label, tone } = variantAvailability(variant);
+      const { label, tone } = variantAvailability(variant, translate);
       return (
         <li
           className="flex items-center justify-between gap-2 text-[11px] leading-tight"
@@ -315,7 +314,13 @@ const getCart = (output: CartOutput | undefined): UcpCart | null => {
   return "line_items" in output ? output : null;
 };
 
-const ProductCard = ({ product }: { product: UcpProduct }) => {
+const ProductCard = ({
+  product,
+  translate,
+}: {
+  product: UcpProduct;
+  translate: PlaygroundTranslate;
+}) => {
   const image = productImage(product);
   const price = priceLabel(product);
   // On sale only when the compare-at (list) price is actually higher than the
@@ -342,13 +347,13 @@ const ProductCard = ({ product }: { product: UcpProduct }) => {
           />
         ) : (
           <div className="flex size-full items-center justify-center text-[10px] text-foreground-dimmed/40 uppercase tracking-[0.08em]">
-            No image
+            {translate("product.noImage")}
           </div>
         )}
       </div>
       <div className="flex flex-1 flex-col gap-1 p-3">
         <p className="line-clamp-2 font-medium text-foreground-rich text-sm leading-tight">
-          {product.title ?? "Untitled product"}
+          {product.title ?? translate("product.untitled")}
         </p>
         {product.rating && (
           <Rating className="mt-0.5" rating={product.rating} />
@@ -368,12 +373,12 @@ const ProductCard = ({ product }: { product: UcpProduct }) => {
           </span>
           {variantCount > 1 && (
             <span className="shrink-0 text-[10px] text-foreground-dimmed uppercase tracking-[0.06em]">
-              {variantCount} variants
+              {translate("product.variants", { count: variantCount })}
             </span>
           )}
         </div>
         {product.variants && product.variants.length > 0 && (
-          <VariantList variants={product.variants} />
+          <VariantList translate={translate} variants={product.variants} />
         )}
       </div>
     </div>
@@ -393,15 +398,31 @@ const ProductCard = ({ product }: { product: UcpProduct }) => {
   );
 };
 
-const ProductGrid = ({ products }: { products: UcpProduct[] }) => (
+const ProductGrid = ({
+  products,
+  translate,
+}: {
+  products: UcpProduct[];
+  translate: PlaygroundTranslate;
+}) => (
   <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
     {products.map((product, index) => (
-      <ProductCard key={product.id ?? index} product={product} />
+      <ProductCard
+        key={product.id ?? index}
+        product={product}
+        translate={translate}
+      />
     ))}
   </div>
 );
 
-const ToolView = ({ part }: { part: ToolUIPart }) => {
+const ToolView = ({
+  part,
+  translate,
+}: {
+  part: ToolUIPart;
+  translate: PlaygroundTranslate;
+}) => {
   const name = getToolName(part);
   const rawOutput = part.state === "output-available" ? part.output : undefined;
   // A returned { error } is a failure, not a result — surface it as the error
@@ -415,7 +436,11 @@ const ToolView = ({ part }: { part: ToolUIPart }) => {
   const pending =
     part.state === "input-streaming" || part.state === "input-available";
   const tone = error ? "error" : pending ? "primary" : "success";
-  const label = error ? "Failed" : pending ? "Running" : "Done";
+  const label = error
+    ? translate("tool.failed")
+    : pending
+      ? translate("tool.running")
+      : translate("tool.done");
 
   return (
     <div className="overflow-hidden rounded-lg border border-accent-foreground bg-background-dimmed font-mono text-xs">
@@ -433,19 +458,19 @@ const ToolView = ({ part }: { part: ToolUIPart }) => {
         {error && (
           <div>
             <p className="mb-1 font-medium text-[10px] text-error uppercase tracking-[0.08em]">
-              Error
+              {translate("tool.error")}
             </p>
             <p className="wrap-break-word text-error">{error}</p>
           </div>
         )}
         <details className="group">
           <summary className="w-fit cursor-pointer list-none font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em] hover:text-foreground [&::-webkit-details-marker]:hidden">
-            Raw JSON
+            {translate("tool.rawJson")}
           </summary>
           <div className="mt-2 space-y-3">
             <div>
               <p className="mb-1 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-                Arguments
+                {translate("tool.arguments")}
               </p>
               <pre className="overflow-x-auto text-foreground/80">
                 {formatJson(part.input)}
@@ -454,7 +479,7 @@ const ToolView = ({ part }: { part: ToolUIPart }) => {
             {output !== undefined && (
               <div>
                 <p className="mb-1 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-                  Result
+                  {translate("tool.result")}
                 </p>
                 <pre className="max-h-64 overflow-auto text-foreground/80">
                   {formatJson(output)}
@@ -483,7 +508,13 @@ const Thinking = () => (
   </div>
 );
 
-const CartView = ({ cart }: { cart: UcpCart }) => {
+const CartView = ({
+  cart,
+  translate,
+}: {
+  cart: UcpCart;
+  translate: PlaygroundTranslate;
+}) => {
   const currency = cart.currency ?? "USD";
   const lineItems = cart.line_items ?? [];
   const totalRow =
@@ -498,9 +529,11 @@ const CartView = ({ cart }: { cart: UcpCart }) => {
       <div className="flex items-center justify-between gap-2 border-accent-foreground border-b bg-background-dimmed px-4 py-2.5">
         <div className="flex items-center gap-2">
           <ShoppingCartIcon className="size-4 text-primary" />
-          <span className="font-medium text-foreground-rich text-sm">Cart</span>
+          <span className="font-medium text-foreground-rich text-sm">
+            {translate("cart.title")}
+          </span>
           <span className="text-foreground-dimmed text-xs">
-            {itemCount} item{itemCount === 1 ? "" : "s"}
+            {translate("cart.items", { count: itemCount })}
           </span>
         </div>
         {totalRow?.amount && (
@@ -593,14 +626,17 @@ const ToolLoading = ({ label }: { label: string }) => (
   </div>
 );
 
-const cartLoadingLabel = (type: CartToolPart["type"]): string => {
+const cartLoadingLabel = (
+  type: CartToolPart["type"],
+  translate: ReturnType<typeof useTranslations<"dashboard.ucpPlaygroundDashboard">>,
+): string => {
   switch (type) {
     case "tool-create_cart":
-      return "Creating cart…";
+      return translate("cart.states.creating");
     case "tool-get_cart":
-      return "Loading cart…";
+      return translate("cart.states.loading");
     default:
-      return "Updating cart…";
+      return translate("cart.states.updating");
   }
 };
 
@@ -611,11 +647,16 @@ const CartPart = ({
   part: CartToolPart;
   isStreaming: boolean;
 }) => {
+  const translate = useTranslations("dashboard.ucpPlaygroundDashboard");
   if (part.state === "input-streaming" || part.state === "input-available") {
-    return <ToolLoading label={cartLoadingLabel(part.type)} />;
+    return <ToolLoading label={cartLoadingLabel(part.type, translate)} />;
   }
   if (part.state === "output-error") {
-    return <ErrorView message={part.errorText ?? "Cart operation failed"} />;
+    return (
+      <ErrorView
+        message={part.errorText ?? translate("cart.states.failed")}
+      />
+    );
   }
 
   const returnedError =
@@ -626,14 +667,15 @@ const CartPart = ({
   // agent reads with get_cart before writing with update_cart, and the write only
   // appears after the model finishes generating its arguments. Hold the loader
   // rather than flash the pre-update cart; the card renders once the turn settles.
-  if (isStreaming) return <ToolLoading label={cartLoadingLabel(part.type)} />;
+  if (isStreaming)
+    return <ToolLoading label={cartLoadingLabel(part.type, translate)} />;
 
   const output = part.state === "output-available" ? part.output : undefined;
 
   const cart = getCart(output);
-  if (!cart) return <ToolView part={part} />;
+  if (!cart) return <ToolView part={part} translate={translate} />;
 
-  return <CartView cart={cart} />;
+  return <CartView cart={cart} translate={translate} />;
 };
 
 const ProductsCard = ({
@@ -642,29 +684,38 @@ const ProductsCard = ({
 }: {
   products: UcpProduct[];
   output: unknown;
-}) => (
+}) => {
+  const translate = useTranslations("dashboard.ucpPlaygroundDashboard");
+
+  return (
   <div className="space-y-2">
     <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-      {products.length} product{products.length === 1 ? "" : "s"}
+      {translate("catalog.productCount", { count: products.length })}
     </p>
-    <ProductGrid products={products} />
+    <ProductGrid products={products} translate={translate} />
     <details className="group">
       <summary className="cursor-pointer list-none text-[10px] text-foreground-dimmed uppercase tracking-[0.08em] hover:text-foreground">
-        Raw JSON
+        {translate("tool.rawJson")}
       </summary>
       <pre className="mt-1 max-h-64 overflow-auto rounded-lg border border-accent-foreground bg-background-dimmed p-3 font-mono text-foreground/80 text-xs">
         {formatJson(output)}
       </pre>
     </details>
   </div>
-);
+  );
+};
 
 const CatalogPart = ({ part }: { part: CatalogToolPart }) => {
+  const translate = useTranslations("dashboard.ucpPlaygroundDashboard");
   if (part.state === "input-streaming" || part.state === "input-available") {
-    return <ToolLoading label="Searching catalog…" />;
+    return <ToolLoading label={translate("catalog.searching")} />;
   }
   if (part.state === "output-error") {
-    return <ErrorView message={part.errorText ?? "Catalog request failed"} />;
+    return (
+      <ErrorView
+        message={part.errorText ?? translate("catalog.failed")}
+      />
+    );
   }
 
   const output = part.state === "output-available" ? part.output : undefined;
@@ -674,7 +725,7 @@ const CatalogPart = ({ part }: { part: CatalogToolPart }) => {
 
   const products = getProducts(output);
 
-  if (products.length === 0) return <ToolView part={part} />;
+  if (products.length === 0) return <ToolView part={part} translate={translate} />;
 
   return <ProductsCard output={output} products={products} />;
 };
@@ -686,6 +737,7 @@ const MessageParts = ({
   message: PlaygroundUIMessage;
   isStreaming: boolean;
 }) => {
+  const translate = useTranslations("dashboard.ucpPlaygroundDashboard");
   const lastPart = message.parts.at(-1);
   // A tool that's mid-call renders its own labeled loader (CatalogPart/CartPart),
   // so don't stack the generic dots on top of it.
@@ -745,7 +797,7 @@ const MessageParts = ({
           return <CartPart isStreaming={isStreaming} key={key} part={part} />;
         }
         if (isClassicToolUIPart(part)) {
-          return <ToolView key={key} part={part} />;
+          return <ToolView key={key} part={part} translate={translate} />;
         }
         return null;
       })}
@@ -754,20 +806,23 @@ const MessageParts = ({
   );
 };
 
-const MessageQuotaWall = ({ limit }: { limit: number }) => (
-  <div className="flex flex-col items-center gap-3 rounded-xl border border-accent-foreground bg-background-dimmed px-4 py-6 text-center">
-    <p className="font-medium text-foreground-rich text-sm">
-      You've used all {limit} free playground messages
-    </p>
-    <p className="max-w-sm text-foreground-dimmed text-xs">
-      Create an account to keep running UCP flows against your own store — no
-      message limit.
-    </p>
-    <Button color="primary" render={<Link href="/sign-up" />}>
-      Create free account
-    </Button>
-  </div>
-);
+const MessageQuotaWall = ({ limit }: { limit: number }) => {
+  const translate = useTranslations("dashboard.ucpPlaygroundDashboard");
+
+  return (
+    <div className="flex flex-col items-center gap-3 rounded-xl border border-accent-foreground bg-background-dimmed px-4 py-6 text-center">
+      <p className="font-medium text-foreground-rich text-sm">
+        {translate("quota.title", { limit })}
+      </p>
+      <p className="max-w-sm text-foreground-dimmed text-xs">
+        {translate("quota.description")}
+      </p>
+      <Button color="primary" render={<Link href="/sign-up" />}>
+        {translate("quota.action.primary")}
+      </Button>
+    </div>
+  );
+};
 
 const transport = new DefaultChatTransport<PlaygroundUIMessage>({
   api: "/api/ucp-playground",
@@ -796,6 +851,25 @@ export const PlaygroundClient = ({
   messageLimit,
   lockStore = false,
 }: PlaygroundClientProps) => {
+  const translate = useTranslations("dashboard.ucpPlaygroundDashboard");
+  const messagesCatalog = useMessages();
+
+  const connectFormConfig = useMemo(
+    () =>
+      ({
+        storeUrl: field({
+          shape: "text",
+          validator: z.string().min(1, translate("connect.fields.storeUrl.validation")),
+          label: translate("connect.fields.storeUrl.label"),
+          placeholder: translate("connect.fields.storeUrl.placeholder"),
+        }),
+      }) satisfies GenericForm,
+    [translate],
+  );
+
+  const starterSuggestions = messagesCatalog.dashboard.ucpPlaygroundDashboard
+    .session.suggestions as string[];
+
   const [storeUrl, setStoreUrl] = useState(
     initialConnection ? defaultStoreUrl : "",
   );
@@ -900,11 +974,10 @@ export const PlaygroundClient = ({
         <div className="w-full max-w-md space-y-4">
           <div className="space-y-1 text-center">
             <h2 className="font-semibold text-foreground-rich text-lg">
-              Connect a UCP store
+              {translate("connect.title")}
             </h2>
             <p className="text-foreground-dimmed text-sm">
-              Enter a store domain to resolve its UCP profile and start a
-              session.
+              {translate("connect.description")}
             </p>
           </div>
           <InferredForm
@@ -920,7 +993,9 @@ export const PlaygroundClient = ({
               type="submit"
             >
               {isConnecting && <LoaderIcon className="size-4 animate-spin" />}
-              {isConnecting ? "Connecting…" : "Connect"}
+              {isConnecting
+                ? translate("connect.action.connecting")
+                : translate("connect.action.primary")}
             </Button>
           </InferredForm>
           {connectError && <ErrorView message={connectError} />}
@@ -954,7 +1029,7 @@ export const PlaygroundClient = ({
             onClick={handleDisconnect}
             type="button"
           >
-            Change store
+            {translate("session.changeStore")}
           </button>
         )}
       </div>
@@ -969,15 +1044,12 @@ export const PlaygroundClient = ({
               </div>
               <div className="space-y-1.5">
                 <h2 className="font-semibold text-foreground-rich text-xl">
-                  What should the agent do?
+                  {translate("session.emptyTitle")}
                 </h2>
                 <p className="mx-auto max-w-md text-foreground-dimmed text-sm leading-relaxed">
-                  You&apos;re connected to{" "}
-                  <span className="font-mono text-foreground">
-                    {connectedHost}
-                  </span>
-                  . The agent runs live UCP calls — search the catalog, inspect
-                  a product, build a cart, or start a checkout.
+                  {translate("session.emptyDescription", {
+                    host: connectedHost ?? "",
+                  })}
                 </p>
               </div>
               {!isOutOfMessages && (
@@ -1025,7 +1097,9 @@ export const PlaygroundClient = ({
       <div className="shrink-0 p-4 sm:px-6">
         <div className="mx-auto w-full max-w-3xl space-y-3">
           {error && (
-            <ErrorView message={error.message || "Something went wrong"} />
+            <ErrorView
+              message={error.message || translate("errors.generic")}
+            />
           )}
           {isOutOfMessages ? (
             <MessageQuotaWall limit={messageLimit ?? 0} />
@@ -1036,13 +1110,15 @@ export const PlaygroundClient = ({
                   className="field-sizing-content max-h-48 px-4 pt-3.5 pb-1"
                   disabled={isGenerating}
                   onChange={handleTextChange}
-                  placeholder={`Ask the agent to shop ${connectedHost}…`}
+                  placeholder={translate("composer.placeholder", {
+                    host: connectedHost,
+                  })}
                   rows={1}
                   value={text}
                 />
                 <div className="flex items-center justify-between gap-2 px-3 pt-1 pb-2.5">
                   <span className="hidden text-[11px] text-foreground-dimmed sm:block">
-                    Enter to send · Shift + Enter for a new line
+                    {translate("composer.hint")}
                   </span>
                   <PromptInputSubmit
                     className="ml-auto"
@@ -1058,8 +1134,10 @@ export const PlaygroundClient = ({
           )}
           {messageLimit !== undefined && !isOutOfMessages && (
             <p className="text-center text-[11px] text-foreground-dimmed">
-              {remainingMessages} of {messageLimit} free message
-              {messageLimit === 1 ? "" : "s"} left in this playground.
+              {translate("composer.remaining", {
+                remaining: remainingMessages,
+                limit: messageLimit,
+              })}
             </p>
           )}
         </div>

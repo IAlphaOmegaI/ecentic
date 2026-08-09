@@ -405,22 +405,1628 @@
       "integrations": "Integrations",
       "stores": "Stores"
     },
+    "sidebar": {
+      "allStores": "All stores"
+    },
+    "stores": {
+      "empty": "No stores yet",
+      "select": "Select a store",
+      "selectStore": "Select store",
+      "allStores": "All stores",
+      "action": {
+        "primary": "Connect a store"
+      }
+    },
+    "hub": {
+      "workspace": "Workspace",
+      "title": "Your stores",
+      "description": "Select a store to view how AI shopping agents rank its catalog, or connect another.",
+      "action": {
+        "primary": "Connect a store"
+      },
+      "aggregates": {
+        "stores": "Stores",
+        "products": "Products",
+        "avgWinRate": "Avg Win Rate",
+        "agentVisits30d": "Agent Visits · 30d"
+      },
+      "storeCard": {
+        "winRate": "Win Rate",
+        "products": "Products",
+        "agents30d": "Agents 30d",
+        "synced": "Synced {time}",
+        "notSyncedYet": "Not synced yet",
+        "openDashboard": "Open dashboard",
+        "status": {
+          "connected": "connected"
+        }
+      },
+      "platforms": {
+        "shopify": "Shopify",
+        "woocommerce": "WooCommerce",
+        "feed": "Product Feed",
+        "csv": "CSV Import"
+      },
+      "empty": {
+        "title": "Connect your first store",
+        "description": "Link a store to import its products and start tracking how AI shopping agents compare them against competitors."
+      }
+    },
+    "commandPalette": {
+      "trigger": "Search products, competitors...",
+      "placeholder": "Search products, competitors, pages...",
+      "keyboardShortcut": "⌘K",
+      "keyboardEscape": "esc",
+      "states": {
+        "searching": "Searching…",
+        "empty": "No results",
+        "emptyForQuery": "No results for \"{query}\""
+      },
+      "sections": {
+        "products": "Products",
+        "competitors": "Competitors",
+        "pages": "Pages"
+      },
+      "hints": {
+        "open": "to open",
+        "close": "to close"
+      },
+      "nav": {
+        "overview": "Overview",
+        "products": "Products",
+        "competitors": "Competitors",
+        "simulations": "Simulations",
+        "ucpStructuredData": "UCP & Structured Data",
+        "optimize": "Optimize",
+        "settings": "Settings"
+      }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "ariaLabel": "Notifications",
+      "states": {
+        "empty": {
+          "primary": "No notifications",
+          "secondary": "You're all caught up. We'll let you know when something needs attention."
+        }
+      }
+    },
+    "subscription": {
+      "payAsYouGo": "Pay-as-you-go",
+      "noPlan": "No plan",
+      "status": {
+        "trial": "Trial",
+        "pastDue": "Past due",
+        "unpaid": "Unpaid",
+        "paused": "Paused"
+      }
+    },
+    "trial": {
+      "badge": "Free Trial",
+      "daysLeft": "{days}d left",
+      "upgradeHint": "Upgrade before it ends",
+      "modal": {
+        "endingIn": "Trial ending in {days} days",
+        "title": "Upgrade to Pro",
+        "description": "Keep full access to simulations, insights, and competitor intelligence.",
+        "progress": "Trial progress",
+        "daysUsed": "{used}/14 days used",
+        "featuresHeading": "Everything in Pro",
+        "pricePerMonth": "/month",
+        "action": {
+          "primary": "Upgrade Now",
+          "secondary": "Maybe later — {days} days remaining"
+        }
+      },
+      "features": [
+        "Unlimited AI simulations",
+        "All 3 model perspectives",
+        "Competitor auto-detection",
+        "UCP structured data export",
+        "Priority support"
+      ]
+    },
+    "simulation": {
+      "action": {
+        "primary": "Run Simulation",
+        "secondary": "Run Again",
+        "tertiary": "View Dashboard"
+      },
+      "title": {
+        "pre": "Run Simulation",
+        "running": "Simulation Running",
+        "complete": "Simulation Complete"
+      },
+      "states": {
+        "live": "Live",
+        "done": "Done",
+        "running": "Running",
+        "queued": "Queued",
+        "initializing": "Initializing simulation engine..."
+      },
+      "pre": {
+        "heading": "AI Shopping Simulation",
+        "description": "Simulate how ChatGPT, Claude & Gemini compare your products against your competitors and see who they pick."
+      },
+      "running": {
+        "heading": "Live Intelligence Scan",
+        "comparisons": "Running simulations across {count} comparisons"
+      },
+      "complete": {
+        "overallWinRate": "Overall Win Rate",
+        "completedIn": "Completed in {elapsed}",
+        "winRateByModel": "Win rate by model",
+        "stats": {
+          "wins": "Wins",
+          "losses": "Losses",
+          "products": "Products"
+        },
+        "results": {
+          "low": "AI agents are choosing your competitors most of the time. Let's fix that.",
+          "medium": "You're competitive, but there's significant room to win more.",
+          "high": "You're ahead of most competitors. Let's make sure you stay there."
+        },
+        "topFinding": "{name} loses on {attributes} — {impact} Costs you {lossPercentage}% of simulations."
+      },
+      "providers": {
+        "gpt4": {
+          "description": "Spec-first evaluation"
+        },
+        "claude": {
+          "description": "Value narrative analysis"
+        },
+        "gemini": {
+          "description": "Price-to-feature ratio"
+        }
+      },
+      "toast": {
+        "failed": {
+          "title": "Simulation failed"
+        }
+      }
+    },
+    "overview": {
+      "action": {
+        "primary": "Run Simulation"
+      },
+      "tabs": {
+        "products": "Top Products",
+        "competitors": "Competitors",
+        "agents": "Agent Visits",
+        "topProducts": "Top Products",
+        "agentVisits": "Agent Visits"
+      },
+      "charts": {
+        "kickers": {
+          "performance": "01 — Performance",
+          "recentActivity": "01.5 — Recent Activity"
+        },
+        "winRateByModel": "Win Rate by Model",
+        "winRateTrend": "Win Rate Trend",
+        "states": {
+          "noModels": "Run a simulation to see per-model performance.",
+          "noTrend": "Not enough data for trend.",
+          "noTrendHint": "Get started by running a simulation.",
+          "noActivity": "No activity yet. Run your first simulation to see results here."
+        },
+        "action": {
+          "primary": "View all products",
+          "secondary": "Optimizations"
+        }
+      },
+      "title": "Overview",
+      "description": "How AI shopping agents rank your catalog against competitors."
+    },
+    "agentVisits": {
+      "kicker": "04 — Agent Traffic",
+      "title": "Visits by agent (last 30 days)",
+      "description": "From your ScriptTag tracker, browser-visible AI and referral signals only.",
+      "total": "total",
+      "states": {
+        "empty": "No AI agent visits recorded yet. Traffic appears when shoppers arrive via AI referrers or user-agents your tracker recognizes, or when probe mode is enabled."
+      }
+    },
     "products": {
       "action": {
-        "primary": "Add product"
+        "primary": "Add product",
+        "addProducts": "Add Products"
+      },
+      "table": {
+        "title": "Product Catalog",
+        "fields": {
+          "product": "Product",
+          "price": "Price",
+          "winRate": "Win Rate",
+          "quality": "Quality",
+          "lastScan": "Last Scan"
+        },
+        "states": {
+          "empty": {
+            "primary": "No products found",
+            "secondary": "Import products and run a simulation to see win rates here."
+          }
+        }
+      },
+      "title": "Products",
+      "description": "How each product in your catalog performs across AI shopping agents.",
+      "stats": {
+        "totalProducts": "Total Products",
+        "averageWinRate": "Average Win Rate",
+        "highPerformers": "High Performers",
+        "needsAttention": "Needs Attention",
+        "highPerformersHint": "products with ≥60% win rate",
+        "needsAttentionHint": "products below 30% win rate"
+      },
+      "embedBanner": {
+        "title": "Structured data is not reaching your product pages",
+        "description": "The “Agentic structured data” app embed is off, so AI agents don't see machine-readable data on your products. Enabling it once adds structured data to every product in this store.",
+        "action": "Enable app embed"
+      },
+      "quality": {
+        "good": "Good (≥75%)",
+        "fair": "Fair (50-74%)",
+        "poor": "Poor (<50%)",
+        "distribution": "Quality Distribution",
+        "avgQuality": "avg. quality",
+        "kicker": "01.1 — Quality"
+      },
+      "optimization": {
+        "readiness": "Product Readiness",
+        "optimized": "Optimized",
+        "pending": "Pending",
+        "unoptimized": "Unoptimized",
+        "kicker": "01.2 — Optimization"
+      },
+      "detail": {
+        "backToProducts": "Back to Products",
+        "optimize": "Optimize",
+        "noSimulationsYet": "No simulations run yet",
+        "winRate": "Win Rate",
+        "dataQuality": "Data Quality",
+        "simulationsRun": "Simulations Run",
+        "bestModel": "Best Model",
+        "winsSimulations": "{wins} wins · {simulations} simulations",
+        "listingCompleteness": "listing completeness score",
+        "acrossCompetitors": "across {count, plural, one {# competitor} other {# competitors}}",
+        "modelWinRate": "{model} win rate",
+        "tabs": {
+          "winRate": "Win Rate",
+          "agentReplay": "Agent Replay",
+          "battlecard": "Battlecard",
+          "optimize": "Optimize"
+        },
+        "overview": {
+          "winRateVsCompetitor": "Win rate vs. each competitor",
+          "viewAll": "View All",
+          "noCompetitors": "No competitors tracked yet.",
+          "wLTotal": "{wins} W · {losses} L",
+          "totalCount": "{count} total"
+        },
+        "replay": {
+          "empty": "No simulations yet. Run a scan to see agent decision replays.",
+          "decisionReplay": "{model} Decision Replay",
+          "simulationCount": "{count, plural, one {# simulation} other {# simulations}}",
+          "vsCompetitor": "vs. {title}",
+          "won": "Won",
+          "lost": "Lost",
+          "reasoning": "{model}'s reasoning",
+          "noReasoning": "No reasoning recorded — decided by score ({productScore} vs {competitorScore})."
+        },
+        "fields": {
+          "title": "Title",
+          "description": "Description",
+          "price": "Price",
+          "sku": "SKU",
+          "structuredData": "Structured Data",
+          "images": "Images"
+        },
+        "publish": {
+          "applyFix": "Apply fix to store",
+          "connectStore": "Connect Shopify or WooCommerce",
+          "dialogTitle": "Publish optimized listing?",
+          "dialogDescription": "ecentic generates an AI-optimized title and description for \"{title}\" and writes it directly to your connected store, replacing the live listing. Current win rate is {winRate}%.",
+          "publishing": "Publishing…",
+          "publishToStore": "Publish to store",
+          "failed": "Publish failed",
+          "successTitle": "Listing published",
+          "successDescription": "An AI-optimized listing was pushed to your store."
+        },
+        "applyOptimization": {
+          "title": "Close the gap automatically",
+          "description": "ecentic rewrites this listing from the winning competitors' strengths and publishes it straight to your store — no manual edits.",
+          "reviewQueue": "Review queue",
+          "optimizePublish": "Optimize & publish"
+        },
+        "battlecard": {
+          "empty": "No competitor data available. Run a scan to generate battlecards.",
+          "headToHead": "Head-to-Head Results",
+          "vsProduct": "vs. {title}",
+          "won": "Won",
+          "lost": "Lost",
+          "noWins": "No wins recorded",
+          "noLosses": "No losses recorded",
+          "kicker": "01 — Battlecards"
+        },
+        "audit": {
+          "aiContentQuality": "AI Content Quality",
+          "brandPositioning": "Brand Positioning",
+          "positioning": "positioning"
+        },
+        "optimizeTab": {
+          "title": "Optimize Listing",
+          "description": "Category-aware content-quality scores for the fields AI agents read — plus how this listing is positioned for its audience.",
+          "completeness": "Completeness:",
+          "currentListing": "02 — Current listing",
+          "characters": "{count} characters",
+          "noDescription": "No description found",
+          "liveOnStore": "Live on store",
+          "whatAgentsRead": "what AI agents actually read",
+          "enableAppEmbed": "Enable app embed",
+          "structuredDataHelp": "The app embed already renders default structured data from the live product content. Publishing writes this AI-optimized version to the {metafield} metafield, and the embed renders it instead of the default.",
+          "publishStructuredData": "Publish optimized structured data",
+          "publishing": "Publishing…",
+          "noStructuredDataYet": "No optimized structured data yet — the app embed renders the default markup built from the live product content. Generate an AI-optimized version to override it.",
+          "generateJsonLd": "Generate optimized JSON-LD",
+          "generating": "Generating…",
+          "generationFailed": "Generation failed",
+          "structuredDataPublished": "Optimized structured data published",
+          "structuredDataPublishedDescription": "Written to the ecentic.structured_data metafield — the app embed now renders it in place of the default product markup. If the embed is off, enable it in the theme editor and press Save.",
+          "openThemeEditor": "Open theme editor",
+          "listingAuditKicker": "01 — AI Listing Audit",
+          "status": {
+            "optimizedByEcentic": "Optimized by ecentic",
+            "ecenticStandard": "ecentic standard",
+            "storeDefault": "Store default",
+            "optimizedEmbedOff": "Optimized — embed off",
+            "noStructuredData": "No structured data",
+            "pageUnreachable": "Page unreachable"
+          },
+          "embedNotice": {
+            "embedOffTitle": "App embed is off",
+            "embedOffText": "Optimized structured data is published for this product, but the “Agentic structured data” app embed is off — no ecentic markup reaches the page. Enabling it once applies to every product in the store.",
+            "missingTitle": "No structured data on the page",
+            "missingText": "AI agents see no machine-readable product data. Enable the “Agentic structured data” app embed — one toggle adds structured data for every product in the store.",
+            "storeDefaultTitle": "Store default markup",
+            "storeDefaultText": "Only the theme's own markup is live — usually thin (no GTIN, one offer, no variant detail). Enable the ecentic app embed (applies to all products), then publish optimized structured data below for this product.",
+            "standardTitle": "Using ecentic standard markup",
+            "standardText": "The app embed renders default structured data from the live product content. Publish the AI-optimized version below to give agents richer, more competitive markup for this product."
+          }
+        }
+      },
+      "add": {
+        "title": "Add Products",
+        "description": "Bring more of your catalog in from the platform this store is connected to. Everything you add here belongs to this store only.",
+        "backToProducts": "Back to Products",
+        "platformSync": {
+          "pullFrom": "Pull from {platform}",
+          "description": "Re-reads {domain} and adds every product that isn't in this store yet. Products already here are refreshed in place, so their scans and optimizations are kept.",
+          "syncing": "Syncing…",
+          "syncNow": "Sync now",
+          "toastLoading": "Syncing products…",
+          "toastSuccess": "Catalog synced",
+          "reconnectRequired": "Reconnect required",
+          "syncFailed": "Sync failed",
+          "reconnect": "Reconnect"
+        },
+        "csv": {
+          "title": "Upload a CSV",
+          "description": "This store was built from a file rather than a connected platform, so there's nothing upstream to pull from — upload another CSV to add to it.",
+          "fieldLabel": "Product CSV",
+          "importing": "Importing…",
+          "importCsv": "Import CSV",
+          "noFileTitle": "No file selected",
+          "noFileDescription": "Upload a CSV file first.",
+          "noProductsTitle": "No products found",
+          "noProductsDescription": "Check that your CSV has a header row with a title or name column.",
+          "importFailed": "Import failed",
+          "importSuccess": "{count, plural, one {# product imported} other {# products imported}}"
+        },
+        "platforms": {
+          "feed": "your product feed"
+        },
+        "catalogNeverSynced": "never synced",
+        "catalogSynced": "synced {time}"
+      },
+      "insights": {
+        "scanResults": "Scan Results",
+        "simulationsCount": "{count} simulations",
+        "impact": "Impact",
+        "simsLost": "of sims lost",
+        "missingAttributes": "Missing Attributes",
+        "noFindingTitle": "No finding recorded for this scan.",
+        "noFindingHint": "Rerun the scan to see insights.",
+        "fixThis": "Fix this"
       }
     },
     "competitors": {
       "action": {
-        "primary": "Add competitor"
+        "primary": "Add competitor",
+        "addCompetitor": "Add Competitor",
+        "addCompetitors": "Add Competitors"
+      },
+      "table": {
+        "title": "Competitor Brands",
+        "fields": {
+          "brand": "Brand",
+          "winRate": "Win Rate",
+          "simulations": "Simulations",
+          "lastUpdated": "Last Updated"
+        },
+        "productCount": "{count, plural, one {# product} other {# products}}",
+        "states": {
+          "empty": {
+            "primary": "No competitors tracked yet",
+            "secondary": "Add competitors to start analyzing your competitive landscape."
+          }
+        },
+        "kickerAll": "02 — All Competitors"
+      },
+      "title": "Competitors",
+      "description": "How AI shopping agents rank you against the brands you track.",
+      "stats": {
+        "brandsTracked": "Brands Tracked",
+        "winningAgainst": "Winning Against",
+        "mostDangerous": "Most Dangerous",
+        "totalSimulations": "Total Simulations",
+        "productsMonitored": "{count, plural, one {# product} other {# products}} monitored",
+        "sinceLastScan": "since last scan",
+        "averageWinRate": "{rate}% average win rate",
+        "winRateAgainstThem": "your win rate against them",
+        "acrossCompetitors": "across {count, plural, one {# competitor} other {# competitors}}"
+      },
+      "landscape": {
+        "kicker": "01 — Landscape",
+        "winRateByCompetitor": "Win Rate by Competitor",
+        "distribution": "Distribution",
+        "winRateTiers": "Win Rate Tiers",
+        "simAbbrev": "{count} sim",
+        "tiers": {
+          "dominating": "Dominating (≥75%)",
+          "competitive": "Competitive (50–74%)",
+          "atRisk": "At Risk (30–49%)",
+          "losing": "Losing (<30%)"
+        }
+      },
+      "insights": {
+        "kicker": "03 — Intelligence",
+        "summary": "Competitive Summary",
+        "keyInsight": "Key Insight",
+        "optimizeLosing": "Optimize losing listings",
+        "recentScanActivity": "Recent Scan Activity",
+        "scanCompleted": "Scan completed — {wins}W / {losses}L",
+        "scanInProgress": "Scan in progress — {completed}/{total}",
+        "completedScans": "{count, plural, one {# completed scan} other {# completed scans}}",
+        "viewAllActivity": "View all activity",
+        "headlines": {
+          "outrankAll": "You out-rank all {count} simulated competitor{plural} (avg {overall}% win rate).",
+          "slimmestLead": "Your slimmest lead is against {brand} at {rate}%. Keep listings optimized to defend it.",
+          "biggestOpportunity": "{brand} wins {lossRate}% of agent comparisons against you — your biggest opportunity.",
+          "holdMajority": "You hold the majority against {winning} of {total} competitor{plural} (avg {overall}%). Optimizing the products you lose to {brand} moves the needle most.",
+          "defaultHeadline": "You hold the majority against {winning} of {total} competitor{plural} (avg {overall}% win rate).",
+          "focusOptimization": "Focus a listing optimization on the products {brand} beats you on.",
+          "toughestRival": "{toughest} is your toughest rival at {toughestRate}%; you lead {strongest} at {strongestRate}%."
+        }
+      },
+      "add": {
+        "title": "Add competitors to this store",
+        "description": "Detect them from your catalog, paste product URLs, or search a brand. Anything you add belongs to this store only.",
+        "findKicker": "01 — Find",
+        "rosterKicker": "02 — Roster",
+        "trackedTitle": "Tracked in this store",
+        "trackedDescription": "Only selected competitors are judged when a scan runs with no explicit roster.",
+        "rosterSummary": "{total} across {brands, plural, one {# brand} other {# brands}} — {selected} selected",
+        "emptyRoster": "No competitors tracked yet. Add some above and they'll appear here.",
+        "tabs": {
+          "autoDetect": "Auto-detect",
+          "pasteUrls": "Paste URLs",
+          "searchBrand": "Search Brand"
+        },
+        "shellTitle": "Add Competitors",
+        "shellDescription": "The brands this store's catalog is judged against. Competitors belong to one store, so these never mix with your other stores."
       }
     },
-    "stores": {
-      "empty": "No stores yet",
-      "select": "Select a store"
+    "grid": {
+      "topFinding": "Top Finding",
+      "winRateBadge": "{rate}% win rate"
     },
-    "commandPalette": {
-      "placeholder": "Search commands…"
+    "shared": {
+      "status": {
+        "liveUpdated": "Live — updated {time}",
+        "liveLastScanned": "Live — last scanned {time}",
+        "liveProductUpdated": "Live — updated {time}",
+        "lastSimulation": "Last simulation {time}",
+        "noScansYet": "No scans run yet",
+        "noSimulationsYet": "No simulations run yet"
+      },
+      "stats": {
+        "noDataYet": "No data yet",
+        "overallWinRate": "Overall Win Rate",
+        "productsScanned": "Products Scanned",
+        "topPerformer": "Top Performer",
+        "biggestOpportunity": "Biggest Opportunity",
+        "vsLastScan": "vs last scan",
+        "acrossProducts": "across {count, plural, one {# product} other {# products}}",
+        "slotsRemaining": "{count} slots remaining",
+        "viewDetails": "View details",
+        "optimizeNow": "Optimize now"
+      },
+      "sections": {
+        "performance": "01 — Performance",
+        "performanceHalf": "01.5 — Recent Activity",
+        "catalog": "02 — Catalog",
+        "competitiveLandscape": "03 — Competitive Landscape",
+        "traffic": "03 — Traffic",
+        "insights": "04 — Insights",
+        "agentTraffic": "04 — Agent Traffic"
+      },
+      "performance": {
+        "winRateByModel": "Win Rate by Model",
+        "winRateTrend": "Win Rate Trend",
+        "noModelData": "Run a simulation to see per-model performance.",
+        "notEnoughTrendData": "Not enough data for trend.",
+        "runSimulationHint": "Get started by running a simulation.",
+        "runMoreSimulationsHint": "Run more simulations to see history."
+      },
+      "activity": {
+        "simulationComplete": "Simulation completed — {wins} wins, {losses} losses",
+        "simulationInProgress": "Simulation in progress — {completed}/{total}",
+        "noActivityTitle": "No activity yet. Run your",
+        "noActivityHint": "first simulation to see results here."
+      },
+      "action": {
+        "optimizations": "Optimizations",
+        "viewAllProducts": "View all products",
+        "viewAll": "View all",
+        "runSimulation": "Run Simulation",
+        "ucpManager": "UCP Manager"
+      },
+      "table": {
+        "product": "Product",
+        "price": "Price",
+        "winRate": "Win Rate",
+        "quality": "Quality",
+        "lastScan": "Last Scan",
+        "brand": "Brand",
+        "simulations": "Simulations",
+        "lastUpdated": "Last Updated",
+        "competitor": "Competitor",
+        "wins": "Wins",
+        "losses": "Losses",
+        "total": "Total",
+        "productWinRates": "Product Win Rates",
+        "productCatalog": "Product Catalog",
+        "competitorBrands": "Competitor Brands",
+        "topCompetitors": "Top Competitors"
+      },
+      "empty": {
+        "noProducts": "No products found",
+        "noProductsHint": "Import products and run a simulation to see win rates here.",
+        "noCompetitors": "No competitors tracked yet",
+        "noCompetitorsHint": "Add competitors to start analyzing your competitive landscape."
+      },
+      "count": {
+        "products": "{count, plural, one {# product} other {# products}}",
+        "competitors": "{count, plural, one {# competitor} other {# competitors}}",
+        "productSingular": "product",
+        "productsPlural": "products",
+        "competitorSingular": "competitor",
+        "competitorsPlural": "competitors",
+        "totalSimulations": "{count} total simulations",
+        "last30d": "last 30d"
+      },
+      "agentVisits": {
+        "title": "AI Agent Visits to Products",
+        "description": "Browser-visible AI and referral signals from your ScriptTag tracker.",
+        "panelTitle": "Visits by agent (last 30 days)",
+        "panelDescription": "From your ScriptTag tracker, browser-visible AI and referral signals only.",
+        "total": "total",
+        "empty": "No AI agent visits recorded yet. Traffic appears when shoppers arrive via AI referrers or user-agents your tracker recognizes.",
+        "emptyOverview": "No AI agent visits recorded yet. Traffic appears when shoppers arrive via AI referrers or user-agents your tracker recognizes, or when probe mode is enabled."
+      },
+      "present": "Present",
+      "missing": "Missing",
+      "cancel": "Cancel",
+      "sku": "SKU: {sku}"
+    },
+    "simulations": {
+      "title": "Simulations",
+      "description": "Re-run competitor discovery and win-rate simulations anytime.",
+      "stats": {
+        "productsSelected": "Products Selected",
+        "competitorsSelected": "Competitors Selected",
+        "estimatedSimulations": "Estimated Simulations",
+        "estimatedTime": "Estimated Time",
+        "pickedForScan": "picked for the next scan",
+        "productsCompetitorsModels": "products × competitors × 3 models",
+        "atCurrentSelection": "at the current selection"
+      },
+      "discovery": {
+        "kicker": "01 — Discovery",
+        "title": "Competitor Discovery",
+        "description": "Re-run AI competitor detection using your current products.",
+        "totalCompetitors": "Current total competitors: {count}"
+      },
+      "setup": {
+        "kicker": "02 — Scan Setup",
+        "title": "Choose What to Simulate",
+        "description": "Pick the products and competitors for the next run — the estimate updates as you select.",
+        "products": "Products",
+        "competitors": "Competitors",
+        "clearAll": "Clear all",
+        "selectAll": "Select all",
+        "nothingYet": "Nothing here yet.",
+        "estimate": "{products} products × {competitors} competitors × 3 models",
+        "estimateTotal": "{total} simulations · {duration}"
+      },
+      "run": {
+        "kicker": "03 — Simulation",
+        "title": "Win-Rate Simulation",
+        "description": "Re-run product vs competitor simulations across ChatGPT, Claude & Gemini.",
+        "reset": "Reset",
+        "runSimulation": "Run Simulation",
+        "progress": "Simulation Progress",
+        "phase": "Phase",
+        "winsLosses": "Wins / Losses",
+        "elapsed": "Elapsed",
+        "currentStage": "current stage",
+        "acrossAllModels": "across all models",
+        "sinceStart": "since start",
+        "liveOutput": "Live Output",
+        "lineCount": "{count, plural, one {# line} other {# lines}}",
+        "noLogsYet": "No logs yet. Start a simulation to see live output.",
+        "status": {
+          "done": "Done",
+          "running": "Running",
+          "queued": "Queued"
+        }
+      },
+      "complete": {
+        "winRate": "Win Rate",
+        "products": "Products",
+        "wins": "Wins",
+        "losses": "Losses",
+        "topFinding": "{name} loses on {attributes} — {impact} Costs you {loss}% of simulations."
+      },
+      "toast": {
+        "simulationFailed": "Simulation failed",
+        "nothingSelected": "Nothing selected",
+        "selectProduct": "Select at least one product for the scan.",
+        "selectCompetitor": "Select at least one competitor for the scan."
+      },
+      "skeleton": {
+        "phase": "Phase",
+        "progress": "Progress",
+        "winsLosses": "Wins / Losses",
+        "elapsed": "Elapsed"
+      }
+    },
+    "optimize": {
+      "statusPill": "{count, plural, one {# pending suggestion} other {# pending suggestions}}",
+      "title": "Optimization Center",
+      "description": "Approve AI-improved listings and push them straight to your store.",
+      "action": {
+        "optimizeStore": "Optimize {store} for Agents",
+        "preview": "Preview",
+        "primary": "Approve",
+        "approveAll": "Approve All ({count})",
+        "reconsider": "Reconsider",
+        "viewProduct": "View product"
+      },
+      "stats": {
+        "lowWinRate": {
+          "label": "Low win-rate products",
+          "detail": "Losing most simulated agent match-ups against competitors."
+        },
+        "publishable": {
+          "label": "Auto-publish eligible",
+          "detail": "Fixable by rewriting the listing — approve to publish."
+        },
+        "manualFix": {
+          "label": "Manual-fix only",
+          "detail": "Needs platform or data changes made by hand."
+        }
+      },
+      "categories": {
+        "seo": "SEO",
+        "content": "Content",
+        "structured_data": "Structured data",
+        "platform": "Platform"
+      },
+      "severity": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "listingType": "Title + Description",
+      "unknownProduct": "Unknown product",
+      "publishedAt": "Published {date}",
+      "winRateChange": "Est. win rate: {before}% → {after}%",
+      "dismissAriaLabel": "Dismiss suggestion",
+      "diagnostics": {
+        "kicker": "{index} — Diagnostics",
+        "title": "Diagnostics for low win rate",
+        "description": "These recommendations cover SEO/data-quality/platform issues in addition to listing text optimizations."
+      },
+      "queue": {
+        "kicker": "{index} — Optimization Queue",
+        "title": "Listing Suggestions",
+        "description": "Approve generates an AI-improved listing and publishes it to your store (Shopify or WooCommerce)."
+      },
+      "tabs": {
+        "pending": "Pending",
+        "published": "Published",
+        "dismissed": "Dismissed"
+      },
+      "states": {
+        "pendingEmpty": {
+          "title": "No pending optimizations",
+          "description": "Products from Shopify or WooCommerce with simulation win rate under 55% appear here. Run a scan, then approve to push AI-improved titles and descriptions to your store."
+        },
+        "publishedEmpty": {
+          "title": "No published optimizations yet",
+          "description": "Approved changes are recorded here with estimated win-rate impact."
+        },
+        "dismissedEmpty": {
+          "title": "Nothing dismissed",
+          "description": "Suggestions you dismiss land here and can be restored any time."
+        }
+      },
+      "roadmap": {
+        "kicker": "01 — What to expect",
+        "title": "Optimization outlook",
+        "description": "How agent win rate typically compounds over six months — from first publish lift (24–48h) to storefront traffic around day {trafficDays}, then catalog-wide compounding.",
+        "phaseLabel": "{title} phase",
+        "current": "Current",
+        "liftPoints": "+{points} pts",
+        "metrics": {
+          "ceiling": {
+            "label": "Projected ceiling",
+            "detail": "From {baseline}% today · +{delta} pts potential"
+          },
+          "simulationLift": {
+            "label": "First simulation lift",
+            "detail": "Re-scan after publish usually shows win-rate movement within 48 hours."
+          },
+          "trafficSignals": {
+            "label": "First traffic signals",
+            "detail": "Agent visits and attributed sales tend to show near the one-month mark."
+          }
+        },
+        "chart": {
+          "title": "Projected win rate",
+          "coverage": "Personalized from your catalog · {coverage}% coverage signal",
+          "today": "Today",
+          "weekZero": "Week 0",
+          "week": "Week {week}",
+          "winRate": "% win rate",
+          "listingsOptimized": "Listings optimized",
+          "surfacesLive": "Agent surfaces live",
+          "signalIntensity": "Signal intensity"
+        },
+        "phases": {
+          "foundation": {
+            "title": "Foundation",
+            "window": "Days 0–14",
+            "summary": "Scan, rewrite weak listings, and ship structured data so agents can read you. Simulation win rate moves first — usually within 24–48 hours of publish.",
+            "outcomes": [
+              "Approve pending listing rewrites (title + description)",
+              "Publish JSON-LD / feed-ready attributes on key SKUs",
+              "Re-scan confirms early win-rate lift vs competitors"
+            ]
+          },
+          "traction": {
+            "title": "Traction",
+            "window": "Weeks 2–6",
+            "summary": "Agent surfaces re-ingest your catalog (Shopify Catalog, Merchant Center, crawlers). First real visit and referral signals typically show around day 30.",
+            "outcomes": [
+              "ChatGPT / Claude / Gemini / Perplexity re-evaluate refreshed listings",
+              "Agent visit beacons and referral clicks start compounding",
+              "Customer case pattern: measurable visit + sales lift near 30 days"
+            ]
+          },
+          "compound": {
+            "title": "Compound",
+            "window": "Months 2–6",
+            "summary": "Catalog-wide coverage, competitor response loops, and model-drift re-optimization. Win rate approaches your estimated ceiling as more SKUs stay agent-ready.",
+            "outcomes": [
+              "Continuous sweeps catch drift when models update",
+              "Competitor listing changes trigger fresh battlecards",
+              "Sustained agent traffic and attributed revenue grow with coverage"
+            ]
+          }
+        }
+      },
+      "toast": {
+        "publishFailed": "Publish failed",
+        "listingUpdated": "Listing updated",
+        "listingUpdatedDescription": "Changes were pushed to your connected store.",
+        "dismissFailed": "Dismiss failed",
+        "restoreFailed": "Could not restore",
+        "someFailed": "Some updates failed",
+        "allUpdated": "All pending listings updated",
+        "allUpdatedDescription": "{count} product(s) published to your store.",
+        "optimizationFailed": "Optimization failed",
+        "storeOptimized": "Store optimized for AI agents",
+        "storeOptimizedDescription": "{published}/{total} products published, {rewritten} listings rewritten{metafields}."
+      }
+    },
+    "visibility": {
+      "eyebrow": "Agent Visibility",
+      "title": "Where AI shopping agents actually see this store",
+      "description": "Readiness checks run against the real ingestion surfaces — robots.txt, rendered storefront HTML, offer identity, and feeds — and live rank measurement in the Shopify Global Catalog that ChatGPT, Perplexity, and Copilot query.",
+      "rankSection": {
+        "eyebrow": "Live shelf position",
+        "title": "Rank this store in the Global Catalog for a buyer query"
+      },
+      "audit": {
+        "scoreDetail": "agent-readiness across automated checks — measured against what AI surfaces actually read, not ecentic's own data",
+        "checkStatus": {
+          "pass": "Pass",
+          "warn": "Warn",
+          "fail": "Fail",
+          "manual": "Manual"
+        },
+        "feed": {
+          "title": "Product feed ({count} items{skipped})",
+          "skipped": ", {count} skipped",
+          "description": "One URL for both Google Merchant Center and the Perplexity Merchant Program."
+        }
+      },
+      "feedUrl": {
+        "action": {
+          "primary": "Copy feed URL"
+        },
+        "toast": {
+          "title": "Feed URL copied",
+          "description": "Paste it into Google Merchant Center (scheduled fetch) and the Perplexity Merchant Program."
+        }
+      },
+      "rankChecker": {
+        "fields": {
+          "query": {
+            "label": "Buyer query",
+            "placeholder": "e.g. waterproof trail running shoes",
+            "validation": "Enter a buyer query"
+          },
+          "country": {
+            "label": "Market"
+          }
+        },
+        "action": {
+          "primary": "Check rank"
+        },
+        "credentialsMissing": {
+          "title": "Global Catalog credentials missing",
+          "description": "Set SHOPIFY_CATALOG_CLIENT_ID and SHOPIFY_CATALOG_CLIENT_SECRET (Dev Dashboard → Catalogs → Get an API key) to measure where this store ranks in the retrieval index AI shopping agents query."
+        },
+        "notFound": "Not found",
+        "resultNotFound": "this store did not appear in the top {total} live results for \"{query}\"",
+        "resultFound": "of {total} live results for \"{query}\"",
+        "you": "You",
+        "toast": {
+          "failed": "Rank check failed"
+        }
+      }
+    },
+    "discovery": {
+      "statusPill": "AI Visibility — Store discovery",
+      "title": "AI Discovery",
+      "description": "See which stores AI shopping agents recommend for a query — and exactly why your store did or didn't make the cut, and how it ranked.",
+      "targetStore": {
+        "label": "Target store",
+        "placeholder": "your-store.example.com",
+        "yourStore": "Your store",
+        "description": "The store we look for in each AI agent's recommendations."
+      },
+      "queries": {
+        "label": "Shopping queries",
+        "placeholders": [
+          "blue trainers under $80",
+          "waterproof hiking boots",
+          "gifts for runners"
+        ],
+        "anotherPlaceholder": "another shopping query",
+        "add": "Add query",
+        "removeAriaLabel": "Remove query {index}",
+        "description": "Each query is sent to ChatGPT, Claude, Gemini and Perplexity, then we rank the stores each one suggests."
+      },
+      "action": {
+        "primary": "Run discovery",
+        "running": "Asking AI…"
+      },
+      "hint": {
+        "ready": "Ask 4 AI models across {count, plural, one {# query} other {# queries}}.",
+        "notReady": "Enter a target store and at least one query to run discovery."
+      },
+      "errors": {
+        "targetRequired": "Enter a target store domain.",
+        "queryRequired": "Enter at least one shopping query.",
+        "generic": "Something went wrong."
+      },
+      "loading": "Querying ChatGPT, Claude, Gemini and Perplexity…",
+      "empty": {
+        "status": "No run yet",
+        "description": "Add one or more shopping queries above, then run discovery to see which stores AI agents recommend — and how your store compares."
+      },
+      "results": {
+        "targetStore": "Target store"
+      },
+      "model": {
+        "failed": "Failed",
+        "notSuggested": "Not suggested",
+        "ranked": "Ranked #{rank} of {total}",
+        "whyRanked": "Why your store ranked here",
+        "whyLeftOut": "Why your store was left out",
+        "noExplanation": "No explanation returned.",
+        "noStores": "No stores returned.",
+        "unreachable": "This model could not be reached."
+      }
+    },
+    "ucp": {
+      "statusPill": "Universal Commerce Protocol",
+      "title": "UCP & Structured Data",
+      "description": "Your merchant identity for AI shopping agents.",
+      "protocolKicker": "01 — Protocol",
+      "structuredDataTitle": "Structured Data",
+      "manager": {
+        "tabs": {
+          "profile": "Merchant Profile",
+          "products": "Product JSON-LD",
+          "validator": "Advanced Validator"
+        },
+        "fields": {
+          "merchantName": {
+            "label": "Merchant Name",
+            "placeholder": "Acme Store"
+          },
+          "description": {
+            "label": "Description",
+            "placeholder": "Premium audio gear for modern homes"
+          },
+          "logoUrl": {
+            "label": "Logo URL",
+            "placeholder": "https://acme.store/logo.png"
+          },
+          "paymentMethods": {
+            "label": "Payment Methods",
+            "placeholder": "Visa, Mastercard, PayPal, Apple Pay"
+          },
+          "shippingPolicy": {
+            "label": "Shipping Policy",
+            "placeholder": "Free over $50 · 3–5 business days"
+          },
+          "returnPolicy": {
+            "label": "Return Policy",
+            "placeholder": "30-day free returns"
+          },
+          "contactEmail": {
+            "label": "Contact Email",
+            "placeholder": "support@acme.store"
+          },
+          "sustainability": {
+            "label": "Sustainability",
+            "placeholder": "Carbon-neutral shipping · recycled packaging"
+          },
+          "certifications": {
+            "label": "Certifications",
+            "placeholder": "B-Corp, ISO 9001"
+          }
+        },
+        "action": {
+          "generate": "Generate JSON",
+          "save": "Save",
+          "copy": "Copy",
+          "copied": "Copied",
+          "publishShopify": "Publish to Shopify",
+          "generateAll": "Generate All",
+          "generateOne": "Generate",
+          "generateWithAi": "Generate with AI",
+          "generating": "Generating…",
+          "generatingAll": "Generating...",
+          "saveProfile": "Save Profile",
+          "saving": "Saving…",
+          "reset": "Reset",
+          "pushTo": "Push to {store}",
+          "pushing": "Pushing…",
+          "regenerate": "Regenerate"
+        },
+        "install": {
+          "title": "Install",
+          "description": "Serve this JSON at /.well-known/ucp so AI agents can discover your merchant profile."
+        },
+        "products": {
+          "tab": "Product Data",
+          "validateTab": "Validate",
+          "coverage": "{covered} of {total} products covered",
+          "columnProduct": "Product",
+          "columnStatus": "Status",
+          "statusComplete": "Complete",
+          "statusMissing": "Missing",
+          "empty": "No products found. Connect a store and sync products first."
+        },
+        "profile": {
+          "fieldsTitle": "Profile Fields",
+          "jsonPreview": "JSON Preview",
+          "aiEnhanced": "AI-enhanced",
+          "jsonPreviewDescription": "Live preview of your /.well-known/ucp document."
+        },
+        "toast": {
+          "pushProfileFailed": "Could not push UCP to Shopify",
+          "pushProfileSuccess": "UCP profile pushed to Shopify",
+          "pushProfileSuccessDescription": "{written} metafield(s) written to {store} under namespace \"ucp\".",
+          "pushProductsFailed": "Could not push product metafields",
+          "pushProductsSuccess": "Product structured data pushed",
+          "pushProductsSuccessDescription": "{pushed} of {total} products updated on {store}."
+        }
+      },
+      "advancedValidator": {
+        "kicker": "Advanced testing",
+        "title": "Endpoint & lifecycle tests",
+        "description": "Probes all service endpoints declared in the profile and simulates the full AI agent checkout lifecycle — Create → Update → Complete → Cancel.",
+        "fields": {
+          "domain": {
+            "label": "Domain",
+            "placeholder": "yourdomain.com"
+          }
+        },
+        "action": {
+          "primary": "Run advanced tests",
+          "running": "Testing…"
+        },
+        "hint": "Makes live HTTP requests to the merchant server — probe inputs may create test carts.",
+        "toast": {
+          "failed": "Advanced check failed"
+        },
+        "grades": {
+          "A": {
+            "description": "Agent-ready"
+          },
+          "B": {
+            "description": "Mostly ready"
+          },
+          "C": {
+            "description": "Needs work"
+          },
+          "F": {
+            "description": "Critical issues"
+          }
+        },
+        "transport": {
+          "rest": "REST",
+          "mcp": "MCP",
+          "a2a": "A2A",
+          "embedded": "Embedded",
+          "streamableHttp": "Streamable HTTP",
+          "sse": "SSE",
+          "unknown": "Unknown"
+        },
+        "chips": {
+          "noResponse": "No response",
+          "corsOk": "CORS ✓",
+          "noCors": "No CORS",
+          "skipped": "Skipped",
+          "pass": "Pass",
+          "fail": "Fail",
+          "missing": "Missing",
+          "search": "Search",
+          "checkout": "Checkout",
+          "failing": "{count} failing",
+          "ok": "{total} OK",
+          "toolsDeclared": "{count, plural, one {# tool declared} other {# tools declared}}",
+          "sseWarning": "SSE — tool calls require streaming client",
+          "agentCardFound": "Agent card found",
+          "noAgentCard": "No agent card",
+          "ucpExtension": "UCP extension",
+          "noUcpExtension": "No UCP extension"
+        },
+        "headers": {
+          "service": "Service",
+          "endpoint": "Endpoint",
+          "status": "Status",
+          "latency": "Latency",
+          "cors": "CORS",
+          "tool": "Tool",
+          "result": "Result",
+          "note": "Note"
+        },
+        "sections": {
+          "endpoints": {
+            "title": "Service endpoint probes",
+            "description": "Live HEAD request to each service endpoint declared in the UCP profile. Latency is measured from this server."
+          },
+          "mcp": {
+            "title": "MCP endpoints",
+            "description": "Probes MCP service endpoints via JSON-RPC initialize + tools/list. Shows the protocol version, server identity, and every tool the agent can call."
+          },
+          "a2a": {
+            "title": "A2A endpoints",
+            "description": "Probes Agent-to-Agent service endpoints. Checks reachability, agent card presence at /.well-known/agent-card.json, and UCP extension header."
+          },
+          "checkout": {
+            "title": "Checkout lifecycle",
+            "description": "Simulates the cart → checkout session flow per UCP REST spec: POST /carts → PUT /carts/{id} → POST /checkout-sessions → complete → cancel. 400/422 responses are expected for probe inputs."
+          }
+        },
+        "emptyEndpoints": "No service endpoints with URLs found in the UCP profile. Add ",
+        "emptyEndpointsSuffix": " fields to your services to enable live testing.",
+        "emptyEndpointsField": "endpoint"
+      }
+    },
+    "ucpComparison": {
+      "statusPill": "Sandbox — Multi-store comparison",
+      "title": "UCP Store Comparison",
+      "description": "Add your store and competitor stores, run the same catalog search on each, and see how your listings stack up in agent-mediated shopping.",
+      "sectionKicker": "01 — Comparison",
+      "sectionTitle": "Side-by-Side Catalog Search",
+      "sourceStore": {
+        "label": "Your store",
+        "placeholder": "your-store.example.com",
+        "description": "The merchant catalog you want to evaluate against competitors."
+      },
+      "buyerRequest": {
+        "label": "Buyer request",
+        "placeholder": "e.g. \"wireless mouse under 200 ALL\"",
+        "description": "Parsed once into search parameters, then run identically against every store."
+      },
+      "competitors": {
+        "label": "Competitor stores",
+        "placeholder": "competitor-{index}.example.com",
+        "add": "Add competitor",
+        "removeAriaLabel": "Remove competitor {index}",
+        "description": "Each /.well-known/ucp profile is resolved, then search_catalog runs with the same derived parameters as your store."
+      },
+      "action": {
+        "primary": "Compare stores",
+        "running": "Comparing…"
+      },
+      "hint": {
+        "ready": "One shared agent search across {count} stores.",
+        "notReady": "Add your store and at least one competitor to run a comparison."
+      },
+      "searchParams": {
+        "title": "Derived search parameters",
+        "description": "Parsed once from the buyer request and applied to every store.",
+        "showRaw": "Show raw JSON",
+        "hideRaw": "Hide raw JSON"
+      },
+      "results": {
+        "title": "Side-by-side results",
+        "description": "Products each storefront returned for the same search, in the order the agent received them.",
+        "yourStore": "Your store",
+        "competitor": "Competitor",
+        "noProducts": "No products returned for this search.",
+        "moreHidden": "+{count} more returned but not shown."
+      },
+      "summary": {
+        "title": "Comparison summary",
+        "generating": "Generating"
+      },
+      "eventLog": {
+        "title": "Event Log",
+        "live": "Live",
+        "done": "Done",
+        "error": "Error",
+        "events": "{count, plural, one {# event} other {# events}}",
+        "clear": "Clear",
+        "complete": "✓ comparison complete"
+      },
+      "storeStatus": {
+        "idle": "Queued",
+        "discovering": "Resolving profile",
+        "searching": "Searching",
+        "done": "Done",
+        "error": "Error"
+      }
+    },
+    "ucpPlaygroundDashboard": {
+      "statusPill": "Sandbox — UCP flow testing",
+      "title": "UCP Playground",
+      "description": "Test catalog search, product lookup, cart, and checkout operations against any UCP-compliant store.",
+      "connect": {
+        "title": "Connect a UCP store",
+        "description": "Enter a store domain to resolve its UCP profile and start a session.",
+        "fields": {
+          "storeUrl": {
+            "label": "Store domain",
+            "placeholder": "store.example.com",
+            "validation": "Enter a store domain"
+          }
+        },
+        "action": {
+          "primary": "Connect",
+          "connecting": "Connecting…"
+        }
+      },
+      "session": {
+        "changeStore": "Change store",
+        "emptyTitle": "What should the agent do?",
+        "emptyDescription": "You're connected to {host}. The agent runs live UCP calls — search the catalog, inspect a product, build a cart, or start a checkout.",
+        "suggestions": [
+          "Show me details for the first product",
+          "Add the first product to a new cart",
+          "Start a checkout for the cart"
+        ]
+      },
+      "product": {
+        "noImage": "No image",
+        "untitled": "Untitled product",
+        "variants": "{count} variants"
+      },
+      "tool": {
+        "failed": "Failed",
+        "running": "Running",
+        "done": "Done",
+        "error": "Error",
+        "arguments": "Arguments",
+        "result": "Result",
+        "rawJson": "Raw JSON"
+      },
+      "cart": {
+        "title": "Cart",
+        "items": "{count, plural, one {# item} other {# items}}",
+        "states": {
+          "creating": "Creating cart…",
+          "loading": "Loading cart…",
+          "updating": "Updating cart…",
+          "failed": "Cart operation failed"
+        }
+      },
+      "catalog": {
+        "searching": "Searching catalog…",
+        "failed": "Catalog request failed",
+        "productCount": "{count, plural, one {# product} other {# products}}"
+      },
+      "composer": {
+        "placeholder": "Ask the agent to shop {host}…",
+        "hint": "Enter to send · Shift + Enter for a new line",
+        "remaining": "{remaining} of {limit} free {limit, plural, one {message} other {messages}} left in this playground."
+      },
+      "quota": {
+        "title": "You've used all {limit} free playground messages",
+        "description": "Create an account to keep running UCP flows against your own store — no message limit.",
+        "action": {
+          "primary": "Create free account"
+        }
+      },
+      "availability": {
+        "outOfStock": "Out of stock",
+        "discontinued": "Discontinued",
+        "unavailable": "Unavailable",
+        "inStock": "In stock",
+        "backorder": "Backorder",
+        "preorder": "Preorder",
+        "available": "Available",
+        "quantityLeft": " · {count} left"
+      },
+      "errors": {
+        "generic": "Something went wrong"
+      }
+    },
+    "settings": {
+      "statusPill": "Account & workspace",
+      "title": "Settings",
+      "description": "Manage your account, integrations, and preferences.",
+      "tabs": {
+        "account": "Account",
+        "integrations": "Integrations",
+        "notifications": "Notifications",
+        "simulation": "Simulation",
+        "billing": "Billing"
+      },
+      "account": {
+        "language": {
+          "title": "Language",
+          "description": "Choose the language for the ecentic interface."
+        },
+        "profile": {
+          "title": "Profile",
+          "description": "Update your profile information.",
+          "fields": {
+            "name": {
+              "label": "First Name",
+              "validation": "Required"
+            },
+            "surname": {
+              "label": "Last Name",
+              "validation": "Required"
+            },
+            "email": {
+              "label": "Email",
+              "validation": "Invalid email"
+            },
+            "role": {
+              "label": "Role"
+            }
+          },
+          "roles": [
+            "Founder / CEO",
+            "Marketing Lead",
+            "E-commerce Manager",
+            "Agency",
+            "Developer",
+            "Other"
+          ],
+          "action": {
+            "primary": "Save Changes",
+            "saving": "Saving..."
+          }
+        },
+        "password": {
+          "title": "Change Password",
+          "description": "Use a strong password you do not reuse on other sites.",
+          "fields": {
+            "current": {
+              "label": "Current Password",
+              "validation": "Required"
+            },
+            "new": {
+              "label": "New Password",
+              "validation": "Minimum 8 characters"
+            },
+            "confirm": {
+              "label": "Confirm New Password",
+              "validation": "Minimum 8 characters"
+            }
+          },
+          "action": {
+            "primary": "Update Password",
+            "updating": "Updating..."
+          },
+          "toast": {
+            "mismatch": "Passwords do not match"
+          }
+        },
+        "session": {
+          "title": "Session",
+          "description": "Sign out of this device. You will need to sign in again to access your dashboard.",
+          "action": {
+            "primary": "Sign Out",
+            "signingOut": "Signing out..."
+          }
+        },
+        "danger": {
+          "title": "Danger Zone",
+          "description": "Permanently delete your account and all associated data. This action cannot be undone.",
+          "prompt": "Delete this account and all of its data.",
+          "action": {
+            "primary": "Delete Account"
+          }
+        },
+        "toast": {
+          "error": "Error",
+          "profileSaved": "Profile saved",
+          "passwordUpdated": "Password updated",
+          "signOutFailed": "Could not sign out"
+        }
+      },
+      "notifications": {
+        "title": "Email Notifications",
+        "items": {
+          "winRateDrop": {
+            "label": "Win Rate Drops",
+            "description": "Alert when any product drops >5%"
+          },
+          "simulationComplete": {
+            "label": "Simulation Complete",
+            "description": "When a simulation batch finishes"
+          },
+          "optimizationReady": {
+            "label": "Optimization Ready",
+            "description": "New optimization suggestions available"
+          },
+          "autoPub": {
+            "label": "Auto-Published",
+            "description": "When auto-optimization publishes changes"
+          },
+          "modelDrift": {
+            "label": "Model Drift Detected",
+            "description": "When an AI model updates its behavior"
+          },
+          "competitorUpdate": {
+            "label": "Competitor Updates",
+            "description": "When tracked competitor listings change"
+          },
+          "newCompetitor": {
+            "label": "New Competitors",
+            "description": "When a new competitor is detected"
+          },
+          "weeklyDigest": {
+            "label": "Weekly Digest",
+            "description": "Summary of the week's performance"
+          }
+        }
+      },
+      "simulation": {
+        "models": {
+          "title": "AI Models",
+          "dominateBadge": "Dominate+"
+        },
+        "frequency": {
+          "title": "Simulation Frequency",
+          "options": [
+            "Manual only",
+            "Daily",
+            "Weekly"
+          ]
+        },
+        "persona": {
+          "title": "Purchase Persona",
+          "options": [
+            "Budget-conscious shopper",
+            "Premium buyer",
+            "Technical researcher",
+            "Gift purchase",
+            "Custom..."
+          ]
+        }
+      },
+      "integrations": {
+        "title": "Connected Stores",
+        "empty": "No stores connected yet.",
+        "connected": "Connected",
+        "action": {
+          "sync": "Sync Now",
+          "syncing": "Syncing…",
+          "connectAnother": "Connect another store"
+        },
+        "toast": {
+          "syncing": "Syncing products…",
+          "synced": "Products synced",
+          "reconnectRequired": "Reconnect required",
+          "syncFailed": "Sync failed",
+          "reconnectAction": "Reconnect",
+          "genericError": "Something went wrong"
+        }
+      },
+      "billing": {
+        "currentPlan": "Current Plan",
+        "invoiceHistory": "Invoice History",
+        "noInvoices": "No invoices yet.",
+        "download": "Download",
+        "loading": "Loading…",
+        "monthly": "Monthly",
+        "perMonth": "/mo",
+        "billingCycle": "Billing cycle",
+        "endsOn": "Ends on",
+        "nextBillingDate": "Next billing date",
+        "cancelNotice": "Your plan is set to cancel at the end of the current period.",
+        "manageBilling": "Manage Billing",
+        "upgradeTo": "Upgrade to {plan}",
+        "noActivePlan": "No active plan",
+        "payAsYouGo": {
+          "title": "Pay-as-you-go",
+          "description": "Free to start · you only pay when AI agents drive sales.",
+          "active": "Active",
+          "fee": "Fee",
+          "feeDetail": "{rate}% on AI-attributed orders",
+          "monthlyCap": "Monthly cap",
+          "switchHint": "Prefer predictable billing? Switch to a flat monthly plan (no performance fee):"
+        },
+        "choosePlan": {
+          "title": "Choose how you pay",
+          "description": "Start free with pay-as-you-go, or pick a flat monthly subscription with no performance fee.",
+          "startPayg": "Start Pay-as-you-go — free, no card"
+        },
+        "performanceFee": {
+          "title": "Performance Fee",
+          "description": "{rate}% on AI-attributed orders · capped at {cap}/mo. Free to start — you only pay when an agent buys because of an optimization we made, never on your other sales.",
+          "actionNeeded": "Action needed",
+          "active": "Active",
+          "off": "Off",
+          "due": "{amount} due",
+          "dueHint": "Add a payment method to settle this period's fee.",
+          "addPayment": "Add a payment method",
+          "ofCap": "of {cap} cap this period",
+          "billedSoFar": "{amount} billed so far",
+          "resets": "Resets {date}",
+          "attributedOrders": "Attributed orders",
+          "order": "Order {id}"
+        },
+        "plans": {
+          "compete": "Compete",
+          "scale": "Scale",
+          "dominate": "Dominate",
+          "competeLabel": "Compete Plan",
+          "scaleLabel": "Scale Plan",
+          "dominateLabel": "Dominate Plan"
+        },
+        "status": {
+          "active": "Active",
+          "trialing": "Trial",
+          "pastDue": "Past Due",
+          "unpaid": "Unpaid",
+          "canceled": "Canceled",
+          "incomplete": "Incomplete",
+          "expired": "Expired",
+          "paused": "Paused"
+        },
+        "toast": {
+          "portalFailed": "Could not open billing portal",
+          "paygFailed": "Could not start pay-as-you-go",
+          "paymentSetupFailed": "Could not open payment setup",
+          "checkoutFailed": "Could not start checkout"
+        }
+      },
+      "team": {
+        "title": "Team Members",
+        "inviteMember": "Invite Member",
+        "inviteByEmail": "Invite by Email",
+        "sendInvite": "Send Invite",
+        "remove": "Remove",
+        "roles": {
+          "owner": "Owner",
+          "admin": "Admin",
+          "editor": "Editor",
+          "viewer": "Viewer"
+        },
+        "fields": {
+          "email": {
+            "label": "Email address",
+            "placeholder": "colleague@company.com",
+            "validation": "Invalid email"
+          },
+          "role": {
+            "label": "Role"
+          }
+        },
+        "toast": {
+          "inviteSent": {
+            "title": "Invite sent",
+            "description": "Team member invite is on its way."
+          }
+        }
+      }
+    },
+    "reports": {
+      "dataStatus": {
+        "asOf": "Data as of {time}",
+        "noScans": "No completed scans yet"
+      },
+      "title": "Reports & Exports",
+      "description": "Download or schedule automated reports on your agent performance.",
+      "shareable": {
+        "title": "Shareable Win Rate Report",
+        "description": "Generate a public URL for a beautifully formatted win rate report — designed for sharing on Twitter, LinkedIn, or with your team.",
+        "action": {
+          "primary": "Generate Shareable Report"
+        },
+        "runScanFirst": "Run a scan first"
+      },
+      "library": {
+        "kicker": "01 — Library",
+        "title": "Available Reports"
+      },
+      "automation": {
+        "kicker": "02 — Automation",
+        "title": "Scheduled Reports",
+        "comingSoon": "Scheduled reports and the weekly digest are coming soon."
+      },
+      "items": {
+        "winRateSummary": {
+          "title": "Win Rate Summary",
+          "description": "Overall performance across all products and models"
+        },
+        "productPerformance": {
+          "title": "Product Performance",
+          "description": "Per-product detailed report with trends and competitor comparison"
+        },
+        "competitorAnalysis": {
+          "title": "Competitor Analysis",
+          "description": "Full competitive landscape with battlecards for all tracked brands"
+        },
+        "optimizationImpact": {
+          "title": "Optimization Impact",
+          "description": "Before/after analysis of all published optimizations"
+        }
+      },
+      "tiers": {
+        "all": "All plans",
+        "compete": "Compete+",
+        "dominate": "Dominate+"
+      },
+      "action": {
+        "downloadCsv": "CSV"
+      }
     }
   },
   "blog": {

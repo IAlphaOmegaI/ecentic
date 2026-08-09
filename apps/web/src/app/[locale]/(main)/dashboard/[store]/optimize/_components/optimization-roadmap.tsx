@@ -15,8 +15,10 @@ import {
   AccordionPanel,
   AccordionTrigger,
 } from "@zenncore/web/components/accordion";
+import { useMessages, useTranslations } from "next-intl";
 import Image from "next/image";
 import type { ReactNode } from "react";
+import { useMemo } from "react";
 import {
   Area,
   AreaChart,
@@ -62,6 +64,16 @@ const PHASE_TONE: Record<
   compound: "success",
 };
 
+type PhaseMessages = Record<
+  RoadmapPhaseId,
+  {
+    title: string;
+    window: string;
+    summary: string;
+    outcomes: string[];
+  }
+>;
+
 export namespace OptimizationRoadmap {
   export type Props = {
     baselineWinRate: number;
@@ -99,21 +111,25 @@ const MetricCard = ({
 const ChartTooltip = ({
   active,
   payload,
+  phaseMessages,
+  translate,
 }: {
   active?: boolean;
   payload?: { payload: RoadmapWeek }[];
+  phaseMessages: PhaseMessages;
+  translate: ReturnType<typeof useTranslations<"dashboard.optimize.roadmap">>;
 }) => {
   if (!active || !payload?.[0]) return null;
 
   const point = payload[0].payload;
-  const phase = (() => {
+  const phaseTitle = (() => {
     switch (point.phaseId) {
       case "foundation":
-        return "Foundation";
+        return phaseMessages.foundation.title;
       case "traction":
-        return "Traction";
+        return phaseMessages.traction.title;
       case "compound":
-        return "Compound";
+        return phaseMessages.compound.title;
       default: {
         const exhaustive: never = point.phaseId;
         return exhaustive;
@@ -125,33 +141,41 @@ const ChartTooltip = ({
     <div className="min-w-52 rounded-md border border-accent-foreground bg-background-rich px-3 py-2.5 shadow-md">
       <div className="flex items-center justify-between gap-3">
         <span className="text-foreground-dimmed text-xs">
-          {point.week === 0 ? "Week 0" : `Week ${point.week}`}
+          {point.week === 0
+            ? translate("chart.weekZero")
+            : translate("chart.week", { week: point.week })}
         </span>
         <span className="rounded bg-primary/10 px-1.5 py-0.5 font-medium text-[10px] text-primary">
-          {phase}
+          {phaseTitle}
         </span>
       </div>
       <p className="mt-1.5 font-bold text-2xl text-foreground-rich tabular-nums tracking-[-0.02em]">
         {point.winRate}
         <span className="ml-0.5 font-medium text-foreground-dimmed text-sm">
-          % win rate
+          {translate("chart.winRate")}
         </span>
       </p>
       <dl className="mt-2 space-y-1 border-accent-foreground border-t pt-2 text-xs">
         <div className="flex justify-between gap-4">
-          <dt className="text-foreground-dimmed">Listings optimized</dt>
+          <dt className="text-foreground-dimmed">
+            {translate("chart.listingsOptimized")}
+          </dt>
           <dd className="font-medium text-foreground-rich tabular-nums">
             {point.listingsOptimized}
           </dd>
         </div>
         <div className="flex justify-between gap-4">
-          <dt className="text-foreground-dimmed">Agent surfaces live</dt>
+          <dt className="text-foreground-dimmed">
+            {translate("chart.surfacesLive")}
+          </dt>
           <dd className="font-medium text-foreground-rich tabular-nums">
             {point.surfacesLive}/4
           </dd>
         </div>
         <div className="flex justify-between gap-4">
-          <dt className="text-foreground-dimmed">Signal intensity</dt>
+          <dt className="text-foreground-dimmed">
+            {translate("chart.signalIntensity")}
+          </dt>
           <dd className="font-medium text-foreground-rich tabular-nums">
             {point.agentSignals}
           </dd>
@@ -177,10 +201,12 @@ const PhaseCard = ({
   phase,
   active,
   projection,
+  translate,
 }: {
   phase: RoadmapPhase;
   active: boolean;
   projection: RoadmapProjection;
+  translate: ReturnType<typeof useTranslations<"dashboard.optimize.roadmap">>;
 }) => {
   const week = projection.weeks.find((point) => point.week === phase.weekEnd);
   const liftAtPhase = week ? week.winRate - projection.baselineWinRate : 0;
@@ -213,7 +239,9 @@ const PhaseCard = ({
               <StatusPill tone={PHASE_TONE[phase.id]}>
                 {phase.window}
               </StatusPill>
-              {active && <StatusPill tone="primary">Current</StatusPill>}
+              {active && (
+                <StatusPill tone="primary">{translate("current")}</StatusPill>
+              )}
             </span>
             <span className="mt-0.5 block truncate text-foreground-dimmed text-xs">
               {phase.summary}
@@ -222,7 +250,8 @@ const PhaseCard = ({
         </span>
         {liftAtPhase > 0 && (
           <span className="mr-2 hidden shrink-0 items-center gap-1 font-medium text-success text-xs sm:inline-flex">
-            <TrendUpIcon className="size-3.5" />+{liftAtPhase} pts
+            <TrendUpIcon className="size-3.5" />
+            {translate("liftPoints", { points: liftAtPhase })}
           </span>
         )}
       </AccordionTrigger>
@@ -249,8 +278,13 @@ export const OptimizationRoadmap = ({
   publishedCount,
   productCount,
   startedAt,
-  kicker = "What to expect",
+  kicker,
 }: OptimizationRoadmap.Props) => {
+  const translate = useTranslations("dashboard.optimize.roadmap");
+  const messages = useMessages();
+  const phaseMessages = messages.dashboard.optimize.roadmap
+    .phases as PhaseMessages;
+
   const projection = buildOptimizationRoadmap({
     baselineWinRate,
     averageLift,
@@ -259,6 +293,25 @@ export const OptimizationRoadmap = ({
     productCount,
     startedAt: startedAt ? new Date(startedAt) : null,
   });
+
+  const translatedPhases = useMemo(
+    () =>
+      projection.phases.map((phase) => ({
+        ...phase,
+        title: phaseMessages[phase.id].title,
+        window: phaseMessages[phase.id].window,
+        summary: phaseMessages[phase.id].summary,
+        outcomes: phaseMessages[phase.id].outcomes,
+      })),
+    [projection.phases, phaseMessages],
+  );
+
+  const currentPhase = useMemo(() => {
+    const match = translatedPhases.find(
+      (phase) => phase.id === projection.currentPhase.id,
+    );
+    return match ?? translatedPhases[0];
+  }, [translatedPhases, projection.currentPhase.id]);
 
   const [minimum, maximum] = (() => {
     const lowest = Math.min(...projection.weeks.map((week) => week.winRate));
@@ -275,41 +328,44 @@ export const OptimizationRoadmap = ({
   return (
     <div>
       <div className="border-accent-foreground border-b p-4">
-        <SectionKicker>{kicker}</SectionKicker>
+        <SectionKicker>{kicker ?? translate("kicker")}</SectionKicker>
         <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="font-semibold text-foreground-rich text-lg">
-              Optimization outlook
+              {translate("title")}
             </p>
             <p className="mt-1 max-w-2xl text-foreground-dimmed text-sm">
-              How agent win rate typically compounds over six months — from
-              first publish lift (24–48h) to storefront traffic around day{" "}
-              {projection.firstTrafficDays}, then catalog-wide compounding.
+              {translate("description", {
+                trafficDays: projection.firstTrafficDays,
+              })}
             </p>
           </div>
           <StatusPill tone={PHASE_TONE[projection.currentPhase.id]}>
-            {projection.currentPhase.title} phase
+            {translate("phaseLabel", { title: currentPhase.title })}
           </StatusPill>
         </div>
       </div>
 
       <div className="grid grid-cols-1 gap-px border-accent-foreground border-b bg-accent-foreground sm:grid-cols-3">
         <MetricCard
-          label="Projected ceiling"
+          label={translate("metrics.ceiling.label")}
           value={`${projection.targetWinRate}%`}
-          detail={`From ${projection.baselineWinRate}% today · +${delta} pts potential`}
+          detail={translate("metrics.ceiling.detail", {
+            baseline: projection.baselineWinRate,
+            delta,
+          })}
           icon={<GaugeIcon className="size-7.5 text-primary" />}
         />
         <MetricCard
-          label="First simulation lift"
+          label={translate("metrics.simulationLift.label")}
           value={`${projection.firstSimulationDays}d`}
-          detail="Re-scan after publish usually shows win-rate movement within 48 hours."
+          detail={translate("metrics.simulationLift.detail")}
           icon={<ClockIcon className="size-7.5 text-warning" />}
         />
         <MetricCard
-          label="First traffic signals"
+          label={translate("metrics.trafficSignals.label")}
           value={`~${projection.firstTrafficDays}d`}
-          detail="Agent visits and attributed sales tend to show near the one-month mark."
+          detail={translate("metrics.trafficSignals.detail")}
           icon={<TrendUpIcon className="size-7.5 text-success" />}
         />
       </div>
@@ -317,11 +373,12 @@ export const OptimizationRoadmap = ({
       <div className="border-accent-foreground border-b p-4">
         <div className="mb-3 flex items-center justify-between gap-3">
           <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-            Projected win rate
+            {translate("chart.title")}
           </p>
           <p className="text-foreground-dimmed text-xs">
-            Personalized from your catalog · {projection.catalogCoverage}%
-            coverage signal
+            {translate("chart.coverage", {
+              coverage: projection.catalogCoverage,
+            })}
           </p>
         </div>
 
@@ -360,7 +417,12 @@ export const OptimizationRoadmap = ({
                   strokeDasharray: "4 4",
                   strokeOpacity: 0.8,
                 }}
-                content={<ChartTooltip />}
+                content={
+                  <ChartTooltip
+                    phaseMessages={phaseMessages}
+                    translate={translate}
+                  />
+                }
               />
               <ReferenceLine
                 x={projection.weeks[projection.todayWeek]?.label}
@@ -368,7 +430,7 @@ export const OptimizationRoadmap = ({
                 strokeDasharray="4 4"
                 strokeWidth={1.5}
                 label={{
-                  value: "Today",
+                  value: translate("chart.today"),
                   position: "insideTopRight",
                   fill: "var(--color-warning)",
                   fontSize: 11,
@@ -401,12 +463,13 @@ export const OptimizationRoadmap = ({
         defaultValue={[projection.currentPhase.id]}
         multiple
       >
-        {projection.phases.map((phase) => (
+        {translatedPhases.map((phase) => (
           <PhaseCard
             key={phase.id}
             phase={phase}
             active={phase.id === projection.currentPhase.id}
             projection={projection}
+            translate={translate}
           />
         ))}
       </Accordion>

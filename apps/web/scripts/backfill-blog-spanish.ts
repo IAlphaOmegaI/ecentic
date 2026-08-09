@@ -1,14 +1,15 @@
 /**
- * Backfill Spanish `blog_post` rows for existing BLG + local English posts.
- *
- * Hits the production (or any host) cron endpoint in small batches so Azure
- * translate does not blow the serverless time budget.
+ * Backfill Spanish `blog_post` rows against whatever DATABASE_URL is loaded
+ * (point it at production for a one-shot prod fill). Runs Azure translate
+ * locally — no cron HTTP / CRON_SECRET.
  *
  * Usage (from apps/web):
- *   bun scripts/backfill-blog-spanish.ts
- *   bun scripts/backfill-blog-spanish.ts --host=https://ecentic.ai --limit=3
+ *   # temporarily set DATABASE_URL to the production Postgres URL, then:
+ *   bun run blog:backfill-spanish
+ *   bun scripts/backfill-blog-spanish.ts --limit=5
  *
- * Requires `CRON_SECRET` in the environment (or apps/web/.env.local).
+ * Needs: DATABASE_URL, BABYLOVEGROWTH_BLOG_API_KEY, Azure gpt seat env.
+ * Afterward: redeploy (or purge blog cache) so static `/es/blog/*` pages regenerate.
  */
 
 import { loadEnvConfig } from "@next/env";
@@ -25,59 +26,91 @@ const parseArgs = () => {
   }
 
   return {
-    host: (args.get("host") ?? "https://ecentic.ai").replace(/\/$/, ""),
-    limit: Math.max(1, Number(args.get("limit") ?? 3)),
-    maxRounds: Math.max(1, Number(args.get("max-rounds") ?? 200)),
+    limit: Math.max(1, Number(args.get("limit") ?? 5)),
+    maxRounds: Math.max(1, Number(args.get("max-rounds") ?? 500)),
+    yes: process.argv.includes("--yes"),
   };
 };
 
-type BackfillData = {
-  translated: string[];
-  failed: string[];
-  remaining: number;
+const databaseHost = (url: string | undefined) => {
+  if (!url) return null;
+  try {
+    return new URL(url).host;
+  } catch {
+    return "(unparseable DATABASE_URL)";
+  }
 };
 
-type BackfillResponse =
-  | { success: true; data: BackfillData }
-  | { success: false; error: string };
-
 const main = async () => {
-  const { host, limit, maxRounds } = parseArgs();
-  const secret = process.env.CRON_SECRET;
+  const { limit, maxRounds, yes } = parseArgs();
+  const host = databaseHost(process.env.DATABASE_URL);
 
-  if (!secret) {
+  if (!host) {
+    console.error("DATABASE_URL is missing.");
+    process.exit(1);
+  }
+
+  const required = ["BABYLOVEGROWTH_BLOG_API_KEY"] as const;
+
+  const missingEnv = required.filter((key) => !process.env[key]);
+  if (missingEnv.length > 0) {
+    console.error(`Missing env: ${missingEnv.join(", ")}`);
+    process.exit(1);
+  }
+
+  if (
+    !process.env.AZURE_DEPLOYMENT_GPT &&
+    !process.env.AI_GATEWAY_API_KEY &&
+    !process.env.AZURE_API_KEY
+  ) {
     console.error(
-      "CRON_SECRET is missing. Set it in the environment or apps/web/.env.local.",
+      "Need Azure gpt seat (AZURE_*) and/or AI_GATEWAY_API_KEY for translate.",
     );
     process.exit(1);
   }
 
-  console.log(
-    `Backfilling Spanish blog rows via ${host} (limit=${limit}/round)`,
-  );
+  console.log(`Backfill target DB host: ${host}`);
+  console.log(`Batch size: ${limit}/round (Azure translate runs in-process)`);
+
+  if (!yes && /localhost|127\.0\.0\.1/i.test(host)) {
+    console.warn(
+      "This looks like a local database. Pass --yes to continue, or point DATABASE_URL at production.",
+    );
+    process.exit(1);
+  }
+
+  if (!yes) {
+    console.warn(
+      "About to write Spanish rows to the DB above. Re-run with --yes to confirm.",
+    );
+    process.exit(1);
+  }
+
+  // Dynamic import after env is loaded so db/ai pick up DATABASE_URL / Azure.
+  const Blog = await import("@/server/app/blog");
 
   const allTranslated: string[] = [];
   const allFailed = new Set<string>();
 
   for (let round = 1; round <= maxRounds; round += 1) {
-    const url = `${host}/api/cron/blog-translate-backfill?limit=${limit}`;
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${secret}` },
-    });
+    const result = await Blog.translateMissingSpanishCore({ limit });
 
-    const body = (await response.json()) as BackfillResponse;
-
-    if (!response.ok || !body.success) {
-      const message =
-        !body.success && typeof body.error === "string"
-          ? body.error
-          : `HTTP ${response.status}`;
-      console.error(`Round ${round} failed: ${message}`);
+    if (!result.success) {
+      console.error(
+        `Round ${round} failed:`,
+        result.error instanceof Error
+          ? result.error.message
+          : String(result.error),
+      );
       process.exit(1);
     }
 
-    const { translated, failed, remaining } = body.data;
+    const { translated, failed, remaining, missingTotal } = result.data;
+
+    if (round === 1) {
+      console.log(`Missing Spanish rows at start of run: ${missingTotal}`);
+    }
+
     for (const slug of translated) allTranslated.push(slug);
     for (const slug of failed) allFailed.add(slug);
 
@@ -85,7 +118,7 @@ const main = async () => {
       `Round ${round}: +${translated.length} translated, ${failed.length} failed, ${remaining} remaining`,
     );
     if (translated.length > 0) {
-      console.log(`  translated: ${translated.join(", ")}`);
+      console.log(`  ok: ${translated.join(", ")}`);
     }
     if (failed.length > 0) {
       console.log(`  failed: ${failed.join(", ")}`);
@@ -93,10 +126,9 @@ const main = async () => {
 
     if (remaining === 0) break;
 
-    // Same failures every round would loop forever — stop if we made no progress.
     if (translated.length === 0) {
       console.error(
-        "No progress this round (only failures). Fix Azure/BLG errors and re-run.",
+        "No progress this round (only failures). Check Azure / BLG and re-run.",
       );
       process.exit(1);
     }
@@ -107,8 +139,13 @@ const main = async () => {
   );
   if (allFailed.size > 0) {
     console.log(`Failed slugs: ${[...allFailed].join(", ")}`);
-    process.exit(1);
   }
+
+  console.log(
+    "Redeploy production (or call /api/revalidate/blog) so static /es/blog pages pick up the new rows.",
+  );
+
+  if (allFailed.size > 0) process.exit(1);
 };
 
 await main();

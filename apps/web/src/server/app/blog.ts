@@ -29,9 +29,15 @@ const purgeBlogCache = () => {
   // `revalidateTag` is illegal during RSC render / prerender. Defer so
   // Spanish upserts from webhook/backfill never crash the route (Sentry:
   // "used revalidateTag blog during render").
-  after(() => {
-    revalidateTag(BLOG_CACHE_TAG, { expire: 0 });
-  });
+  // Outside a Next request (CLI scripts) `after` throws — skip; the script
+  // caller redeploys or hits `/api/revalidate/blog` separately.
+  try {
+    after(() => {
+      revalidateTag(BLOG_CACHE_TAG, { expire: 0 });
+    });
+  } catch {
+    // CLI / non-request context
+  }
 };
 
 const published = eq(schema.blogPost.status, "published");
@@ -401,77 +407,85 @@ export const listCatalogSlugs = async () => {
   return [...slugs];
 };
 
-/** Cron: translate EN BLG + local posts missing a Spanish row. */
-export const translateMissingSpanish = withCron(
-  async (_context, options: { limit?: number } = {}) => {
-    const batchLimit =
-      typeof options.limit === "number" && options.limit > 0
-        ? Math.floor(options.limit)
-        : Number.POSITIVE_INFINITY;
+/**
+ * Translate EN BLG + local posts missing a Spanish row.
+ * Plain async — safe for CLI scripts (no cron `headers()` / `withCron`).
+ */
+export const translateMissingSpanishCore = async (
+  options: { limit?: number } = {},
+) => {
+  const batchLimit =
+    typeof options.limit === "number" && options.limit > 0
+      ? Math.floor(options.limit)
+      : Number.POSITIVE_INFINITY;
 
-    const articles = await resultify(() => BabyLoveGrowth.listArticles());
-    const blgList = articles.success ? articles.data : [];
+  const articles = await resultify(() => BabyLoveGrowth.listArticles());
+  const blgList = articles.success ? articles.data : [];
 
-    const existingSpanish = await resultify(() =>
-      db
-        .select({ slug: schema.blogPost.slug })
-        .from(schema.blogPost)
-        .where(eq(schema.blogPost.locale, "es")),
-    );
+  const existingSpanish = await resultify(() =>
+    db
+      .select({ slug: schema.blogPost.slug })
+      .from(schema.blogPost)
+      .where(eq(schema.blogPost.locale, "es")),
+  );
 
-    if (!existingSpanish.success) return existingSpanish;
+  if (!existingSpanish.success) return existingSpanish;
 
-    const spanishSlugs = new Set(existingSpanish.data.map((row) => row.slug));
-    const translated: string[] = [];
-    const failed: string[] = [];
+  const spanishSlugs = new Set(existingSpanish.data.map((row) => row.slug));
+  const translated: string[] = [];
+  const failed: string[] = [];
 
-    const localEnglish = await resultify(() =>
-      db
-        .select({ slug: schema.blogPost.slug })
-        .from(schema.blogPost)
-        .where(
-          and(
-            eq(schema.blogPost.locale, "en"),
-            eq(schema.blogPost.source, "local"),
-            ne(schema.blogPost.status, "draft"),
-          ),
+  const localEnglish = await resultify(() =>
+    db
+      .select({ slug: schema.blogPost.slug })
+      .from(schema.blogPost)
+      .where(
+        and(
+          eq(schema.blogPost.locale, "en"),
+          eq(schema.blogPost.source, "local"),
+          ne(schema.blogPost.status, "draft"),
         ),
-    );
+      ),
+  );
 
-    const missing = [
-      ...blgList.map((summary) => summary.slug),
-      ...(localEnglish.success
-        ? localEnglish.data.map((post) => post.slug)
-        : []),
-    ].filter((slug, index, list) => {
-      if (spanishSlugs.has(slug)) return false;
-      return list.indexOf(slug) === index;
-    });
+  const missing = [
+    ...blgList.map((summary) => summary.slug),
+    ...(localEnglish.success ? localEnglish.data.map((post) => post.slug) : []),
+  ].filter((slug, index, list) => {
+    if (spanishSlugs.has(slug)) return false;
+    return list.indexOf(slug) === index;
+  });
 
-    const batch = missing.slice(0, batchLimit);
+  const batch = missing.slice(0, batchLimit);
 
-    for (const slug of batch) {
-      const ensured = await ensureSpanishCore(slug);
-      if (!ensured.success || !ensured.data) {
-        failed.push(slug);
-        continue;
-      }
-
-      translated.push(slug);
-      spanishSlugs.add(slug);
+  for (const slug of batch) {
+    const ensured = await ensureSpanishCore(slug);
+    if (!ensured.success || !ensured.data) {
+      failed.push(slug);
+      continue;
     }
 
-    if (translated.length > 0) purgeBlogCache();
+    translated.push(slug);
+    spanishSlugs.add(slug);
+  }
 
-    return {
-      success: true as const,
-      data: {
-        translated,
-        failed,
-        remaining: Math.max(0, missing.length - batch.length),
-      },
-    };
-  },
+  if (translated.length > 0) purgeBlogCache();
+
+  return {
+    success: true as const,
+    data: {
+      translated,
+      failed,
+      remaining: Math.max(0, missing.length - batch.length),
+      missingTotal: missing.length,
+    },
+  };
+};
+
+/** Cron wrapper around `translateMissingSpanishCore` (Bearer `CRON_SECRET`). */
+export const translateMissingSpanish = withCron(
+  async (_context, options: { limit?: number } = {}) =>
+    translateMissingSpanishCore(options),
   "Blog.translateMissingSpanish",
 );
 

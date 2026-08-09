@@ -1,6 +1,7 @@
 "use client";
 
 import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
+import { useTranslations } from "next-intl";
 import { type ReactNode, useState } from "react";
 import { NotificationsSection } from "./settings/notifications-section";
 import { SimulationSection } from "./settings/simulation-section";
@@ -24,6 +25,7 @@ export const SettingsClient = ({
   integrations,
   billing,
 }: SettingsClient.Props) => {
+  const translate = useTranslations("dashboard.settings.tabs");
   const [notifications, setNotifications] = useState({
     winRateDrop: true,
     simulationComplete: true,
@@ -55,22 +57,16 @@ export const SettingsClient = ({
       >
         <TabsList className="flex w-full shrink-0 flex-col border-0 bg-background-rich md:w-44">
           <Tab value="account" className={className}>
-            Account
+            {translate("account")}
           </Tab>
-          {/* <Tab value="team" className={className}>
-              Team
-            </Tab> */}
           <Tab value="integrations" className={className}>
-            Integrations
+            {translate("integrations")}
           </Tab>
           <Tab value="notifications" className={className}>
-            Notifications
+            {translate("notifications")}
           </Tab>
-          {/* <Tab value="simulation" className={className}>
-              Simulation
-            </Tab> */}
           <Tab value="billing" className={className}>
-            Billing
+            {translate("billing")}
           </Tab>
         </TabsList>
 

@@ -8,6 +8,7 @@ import {
 import { unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import { Link } from "@/i18n/navigation";
+import { getTranslations } from "next-intl/server";
 import { connection } from "next/server";
 import { type ReactNode, Suspense } from "react";
 import { formatRelativeTime } from "@/lib/date";
@@ -20,14 +21,6 @@ import {
   StoresSkeleton,
   UserBadgeSkeleton,
 } from "../_components/hub-shell";
-
-const PLATFORM_LABELS: Record<string, string> = {
-  shopify: "Shopify",
-  "shopify-public": "Shopify",
-  woocommerce: "WooCommerce",
-  feed: "Product Feed",
-  csv: "CSV Import",
-};
 
 export default () => (
   <HubShell
@@ -66,11 +59,12 @@ const UserBadge = async () => {
 
 const Stores = async () => {
   await connection();
+  const translate = await getTranslations("dashboard.hub");
   const stores = await unwrapResult(
     Store.overviewForCurrentUser(Environment.SERVER),
   );
 
-  if (stores.length === 0) return <EmptyState />;
+  if (stores.length === 0) return <EmptyState translate={translate} />;
 
   const totals = stores.reduce(
     (accumulator, store) => ({
@@ -89,6 +83,22 @@ const Stores = async () => {
       ? Math.round((totals.wins / totals.simulations) * 100)
       : 0;
 
+  const platformLabel = (platform: string) => {
+    switch (platform) {
+      case "shopify":
+      case "shopify-public":
+        return translate("platforms.shopify");
+      case "woocommerce":
+        return translate("platforms.woocommerce");
+      case "feed":
+        return translate("platforms.feed");
+      case "csv":
+        return translate("platforms.csv");
+      default:
+        return platform;
+    }
+  };
+
   return (
     <div className="flex flex-col gap-8">
       <div className="relative grid grid-cols-2 gap-px border border-accent-foreground bg-accent-foreground lg:grid-cols-4">
@@ -98,29 +108,34 @@ const Stores = async () => {
         <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <Aggregate
           icon={<ShoppingCartIcon className="size-4 text-secondary" />}
-          label="Stores"
+          label={translate("aggregates.stores")}
           value={`${stores.length}`}
         />
         <Aggregate
           icon={<CopyIcon className="size-4 text-warning" />}
-          label="Products"
+          label={translate("aggregates.products")}
           value={`${totals.products}`}
         />
         <Aggregate
           icon={<GaugeIcon className="size-4 text-primary" />}
-          label="Avg Win Rate"
+          label={translate("aggregates.avgWinRate")}
           value={`${averageWinRate}%`}
         />
         <Aggregate
           icon={<RadarIcon className="size-4 text-success" />}
-          label="Agent Visits · 30d"
+          label={translate("aggregates.agentVisits30d")}
           value={`${totals.agentVisits}`}
         />
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {stores.map((store) => (
-          <StoreCard key={store.id} store={store} />
+          <StoreCard
+            key={store.id}
+            store={store}
+            translate={translate}
+            platformLabel={platformLabel(store.platform)}
+          />
         ))}
       </div>
     </div>
@@ -151,7 +166,17 @@ const Aggregate = ({
   </div>
 );
 
-const StoreCard = ({ store }: { store: Store.Overview }) => (
+type HubTranslate = Awaited<ReturnType<typeof getTranslations<"dashboard.hub">>>;
+
+const StoreCard = ({
+  store,
+  translate,
+  platformLabel,
+}: {
+  store: Store.Overview;
+  translate: HubTranslate;
+  platformLabel: string;
+}) => (
   <Link
     href={`/dashboard/${store.id}`}
     className="group relative flex flex-col border border-accent-foreground bg-background-rich transition-colors hover:border-primary/40"
@@ -171,29 +196,31 @@ const StoreCard = ({ store }: { store: Store.Overview }) => (
             {store.name}
           </p>
           <p className="truncate text-foreground-dimmed text-sm">
-            {PLATFORM_LABELS[store.platform] ?? store.platform} · {store.domain}
+            {platformLabel} · {store.domain}
           </p>
         </div>
       </div>
       <StatusPill tone={store.status === "connected" ? "success" : "neutral"}>
-        {store.status}
+        {store.status === "connected"
+          ? translate("storeCard.status.connected")
+          : store.status}
       </StatusPill>
     </div>
 
     <div className="grid grid-cols-3 divide-x divide-accent-foreground">
       <Metric
         icon={<GaugeIcon className="size-4 text-primary" />}
-        label="Win Rate"
+        label={translate("storeCard.winRate")}
         value={`${store.winRate}%`}
       />
       <Metric
         icon={<CopyIcon className="size-4 text-warning" />}
-        label="Products"
+        label={translate("storeCard.products")}
         value={`${store.productCount}`}
       />
       <Metric
         icon={<RadarIcon className="size-4 text-success" />}
-        label="Agents 30d"
+        label={translate("storeCard.agents30d")}
         value={`${store.agentVisits}`}
       />
     </div>
@@ -201,11 +228,13 @@ const StoreCard = ({ store }: { store: Store.Overview }) => (
     <div className="mt-auto flex items-center justify-between border-accent-foreground border-t p-4">
       <span className="text-foreground-dimmed text-xs">
         {store.lastSyncedAt
-          ? `Synced ${formatRelativeTime(store.lastSyncedAt)}`
-          : "Not synced yet"}
+          ? translate("storeCard.synced", {
+              time: formatRelativeTime(store.lastSyncedAt),
+            })
+          : translate("storeCard.notSyncedYet")}
       </span>
       <span className="inline-flex items-center gap-1 font-medium text-primary text-sm transition-colors group-hover:text-primary-rich">
-        Open dashboard
+        {translate("storeCard.openDashboard")}
         <ArrowRightIcon className="size-4 transition-transform group-hover:translate-x-0.5" />
       </span>
     </div>
@@ -234,22 +263,19 @@ const Metric = ({
   </div>
 );
 
-const EmptyState = () => (
+const EmptyState = ({ translate }: { translate: HubTranslate }) => (
   <div className="flex flex-col items-center gap-6 border border-accent-foreground border-dashed bg-background-rich px-6 py-16 text-center">
     <div className="flex size-16 items-center justify-center border border-accent-foreground bg-background-dimmed">
       <ShoppingCartIcon className="size-8 text-foreground-dimmed" />
     </div>
     <div className="max-w-md space-y-2">
       <h2 className="font-medium text-2xl text-foreground">
-        Connect your first store
+        {translate("empty.title")}
       </h2>
-      <p className="text-foreground-dimmed">
-        Link a store to import its products and start tracking how AI shopping
-        agents compare them against competitors.
-      </p>
+      <p className="text-foreground-dimmed">{translate("empty.description")}</p>
     </div>
     <Button color="primary" render={<Link href="/onboarding/connect" />}>
-      Connect a store <ArrowRightIcon className="size-4" />
+      {translate("action.primary")} <ArrowRightIcon className="size-4" />
     </Button>
   </div>
 );
