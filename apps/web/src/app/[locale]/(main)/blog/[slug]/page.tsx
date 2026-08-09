@@ -45,11 +45,16 @@ type BlogPageProps = {
 
 export const generateStaticParams = async () => {
   const slugs = await Blog.listCatalogSlugs();
-  // Prerender English only. Spanish routes resolve on demand so the first
-  // `/es/blog/[slug]` hit can await Azure translate instead of freezing the
-  // EN fallback into a prerendered page (locale switch looked "broken").
-  return slugs.map((slug) => ({ locale: "en" as const, slug }));
+  // Prerender every post in every locale. Spanish HTML comes from stored
+  // `blog_post` rows (webhook / backfill); missing ES falls back to EN and
+  // regenerates after `revalidateTag("blog")` when the translation lands.
+  return routing.locales.flatMap((locale) =>
+    slugs.map((slug) => ({ locale, slug })),
+  );
 };
+
+/** New BLG slugs after build still generate on first request, then stay cached. */
+export const dynamicParams = true;
 
 export const generateMetadata = async ({
   params,
@@ -57,7 +62,7 @@ export const generateMetadata = async ({
   const { slug, locale: raw } = await params;
   const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
 
-  // Metadata must not block on Azure translate — use stored ES or EN fallback.
+  // Never Azure-translate during static generation — use stored ES or EN.
   const resolved = await unwrapResult(
     Blog.resolve({
       slug,
@@ -137,7 +142,11 @@ export default async ({ params }: BlogPageProps) => {
   setRequestLocale(locale);
 
   const translate = await getTranslations({ locale, namespace: "blog" });
-  const resolved = await unwrapResult(Blog.resolve({ slug, locale }));
+  // Static / ISR path only — translations are written by webhook + backfill,
+  // then `revalidateTag("blog")` regenerates these pages.
+  const resolved = await unwrapResult(
+    Blog.resolve({ slug, locale, translate: false }),
+  );
   if (!resolved) notFound();
 
   if (resolved.kind === "blg") {
