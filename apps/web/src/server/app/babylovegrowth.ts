@@ -121,14 +121,6 @@ export const listArticles = async (): Promise<BlogArticleSummary[]> => {
   }
 };
 
-/** Uncached list that throws — for scripts/backfill (not soft-empty). */
-export const listArticlesStrict = async (): Promise<BlogArticleSummary[]> => {
-  if (!process.env.BABYLOVEGROWTH_BLOG_API_KEY) {
-    throw new Error("BABYLOVEGROWTH_BLOG_API_KEY is not configured");
-  }
-  return fetchAllArticles();
-};
-
 export const getArticleBySlug = async (
   slug: string,
 ): Promise<BlogArticle | null> => {
@@ -136,18 +128,9 @@ export const getArticleBySlug = async (
   applyBlogCache(BLOG_CACHE_TAG, `blog-${slug}`);
 
   if (!process.env.BABYLOVEGROWTH_BLOG_API_KEY) return null;
-
-  try {
-    const article = await withRetry(() => client().getArticleBySlug(slug));
-    if (!article?.published) return null;
-    return article;
-  } catch (error) {
-    // Do not return null on transport/rate-limit failures — a soft null is
-    // cached for `cacheLife("days")` and 404s English posts while Spanish
-    // (served from Postgres) still works. Serialize via `withRateLimit` and
-    // persist EN with `blog:backfill-english` so SSG rarely needs live BLG.
-    throw error;
-  }
+  const article = await withRetry(() => client().getArticleBySlug(slug));
+  if (!article?.published) return null;
+  return article;
 };
 
 export const listTags = async (): Promise<BlogTag[]> => {

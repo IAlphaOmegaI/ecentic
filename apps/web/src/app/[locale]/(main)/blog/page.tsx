@@ -76,8 +76,8 @@ export default async ({ params }: BlogIndexProps) => {
   const translate = await getTranslations({ locale, namespace: "blog" });
   const description = translate("description");
 
-  // Catalog lives in Postgres (webhook + `blog:backfill-english`). Index cards
-  // are `blog_post` rows — not live BabyLoveGrowth list summaries.
+  // Catalog lives in Postgres (webhook upserts). Index cards are `blog_post`
+  // rows — not live BabyLoveGrowth list summaries.
   const [englishPosts, spanishPosts] = await Promise.all([
     Blog.listPublished("en"),
     locale === "es" ? Blog.listPublished("es") : Promise.resolve([]),

@@ -16,7 +16,6 @@ import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { UnauthenticatedError } from "../utils/error";
 import { type Document, repository } from "../utils/repository";
-import * as BabyLoveGrowth from "./babylovegrowth";
 
 export const { get, paginate, create, update, destroy, exists, count, find } =
   repository(schema.blogPost);
@@ -109,15 +108,26 @@ const findPublished = async (slug: string, locale: "en" | "es") => {
   return posts.data[0] ?? null;
 };
 
-const translationSchema = z.object({
+const metaTranslationSchema = z.object({
   title: z.string(),
   metaDescription: z.string(),
   introduction: z.string(),
-  contentHtml: z.string(),
   category: z.string(),
   tags: z.array(z.string()),
   takeaways: z.array(z.string()),
 });
+
+const htmlChunkSchema = z.object({
+  html: z.string(),
+});
+
+const sectionSchema = z.object({
+  number: z.string(),
+  title: z.string(),
+  content: z.string(),
+});
+
+type BlogSection = z.infer<typeof sectionSchema>;
 
 type TranslateArticleInput = {
   title: string;
@@ -139,39 +149,231 @@ const estimateReadTime = (html: string) => {
   return `${minutes} min`;
 };
 
-/** Translate EN → es-ES with Azure (gpt seat). Preserves HTML/URLs/`ecentic`. */
+const plainTextLength = (html: string) =>
+  html
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim().length;
+
+const KEEP_TOKEN = (index: number) => `<!--ECENTIC_KEEP_${index}-->`;
+const KEEP_PATTERN = /<!--ECENTIC_KEEP_(\d+)-->/g;
+/** Soft ceiling so structured JSON + Spanish still fits model output. */
+const HTML_CHUNK_CHAR_LIMIT = 4_500;
+const MIN_TRANSLATION_LENGTH_RATIO = 0.55;
+
+const extractPreservedBlocks = (html: string) => {
+  const blocks: string[] = [];
+  const body = html.replace(
+    /<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi,
+    (match) => {
+      const index = blocks.length;
+      blocks.push(match);
+      return KEEP_TOKEN(index);
+    },
+  );
+
+  return {
+    body,
+    restore: (translated: string) =>
+      translated.replace(KEEP_PATTERN, (_match, digits: string) => {
+        const index = Number(digits);
+        return blocks[index] ?? "";
+      }),
+  };
+};
+
+const splitOversizedChunk = (chunk: string): string[] => {
+  if (chunk.length <= HTML_CHUNK_CHAR_LIMIT) return [chunk];
+
+  const paragraphs = chunk.split(/(?=<p\b)/i);
+  const pieces: string[] = [];
+  let buffer = "";
+
+  for (const paragraph of paragraphs) {
+    if (!paragraph) continue;
+    if (buffer && buffer.length + paragraph.length > HTML_CHUNK_CHAR_LIMIT) {
+      pieces.push(buffer);
+      buffer = paragraph;
+      continue;
+    }
+    buffer += paragraph;
+  }
+
+  if (buffer) pieces.push(buffer);
+  return pieces.length > 0 ? pieces : [chunk];
+};
+
+const chunkHtmlForTranslation = (html: string): string[] => {
+  if (html.length <= HTML_CHUNK_CHAR_LIMIT) return [html];
+
+  const parts = html.split(/(?=<h[1-6]\b)/i);
+  const chunks: string[] = [];
+  let current = "";
+
+  for (const part of parts) {
+    if (!part) continue;
+    if (current && current.length + part.length > HTML_CHUNK_CHAR_LIMIT) {
+      chunks.push(...splitOversizedChunk(current));
+      current = part;
+      continue;
+    }
+    current += part;
+  }
+
+  if (current) chunks.push(...splitOversizedChunk(current));
+  return chunks;
+};
+
+/** Models sometimes emit Markdown inside HTML — coerce common markers. */
+const demarkdownHtml = (html: string) =>
+  html
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    .replace(/__([^_]+)__/g, "<strong>$1</strong>")
+    .replace(/(?<![*\w])\*([^*]+)\*(?![*\w])/g, "<em>$1</em>");
+
+const alignStringArray = (
+  source: readonly string[],
+  translated: readonly string[],
+) => source.map((value, index) => translated[index] ?? value);
+
+const translateBrandRules = `Keep the product name "ecentic" untranslated (lowercase as written). Keep ChatGPT, Claude, Gemini, Perplexity, Shopify, and WooCommerce untranslated.`;
+
+const translateMetaCore = async (input: {
+  title: string;
+  metaDescription: string;
+  introduction: string;
+  category: string;
+  tags: readonly string[];
+  takeaways: readonly string[];
+}) => {
+  const meta = await AI.generate({
+    label: "Blog.translateArticleMeta",
+    model: "gpt",
+    output: metaTranslationSchema,
+    schemaName: "SpanishBlogMeta",
+    instructions: `You translate ecommerce blog metadata from English to Spanish (es-ES).
+
+Rules:
+- ${translateBrandRules}
+- Write natural Spanish for merchants; do not invent new fields.
+- tags and takeaways must keep the same count and order as the input arrays.
+- Never use Markdown.`,
+    prompt: JSON.stringify({
+      title: input.title,
+      metaDescription: input.metaDescription,
+      introduction: input.introduction,
+      category: input.category,
+      tags: input.tags,
+      takeaways: input.takeaways,
+    }),
+  });
+
+  return {
+    title: meta.title,
+    metaDescription: meta.metaDescription,
+    introduction: meta.introduction,
+    category: meta.category,
+    tags: alignStringArray(input.tags, meta.tags),
+    takeaways: alignStringArray(input.takeaways, meta.takeaways),
+  };
+};
+
+const translateHtmlChunk = async (
+  englishHtml: string,
+  attempt = 0,
+): Promise<string> => {
+  const translated = await AI.generate({
+    label: "Blog.translateHtmlChunk",
+    model: "gpt",
+    output: htmlChunkSchema,
+    schemaName: "SpanishBlogHtmlChunk",
+    instructions: `You translate ecommerce blog HTML from English to Spanish (es-ES).
+
+Rules:
+- Return ONLY Spanish HTML in html. Never Markdown (**bold**, _italic_, # headings, - lists as MD).
+- Preserve every HTML tag and attribute (same structure). Translate visible text nodes only.
+- Do not omit paragraphs, lists, tables, or links. Output length should be similar to the input.
+- Keep URLs and href/src/class/id/data-* values unchanged.
+- ${translateBrandRules}
+- Leave <!--ECENTIC_KEEP_N--> placeholders exactly as written.`,
+    prompt: englishHtml,
+  });
+
+  const html = demarkdownHtml(translated.html.trim());
+  const sourceLength = plainTextLength(englishHtml);
+  const targetLength = plainTextLength(html);
+
+  if (
+    sourceLength > 200 &&
+    targetLength < sourceLength * MIN_TRANSLATION_LENGTH_RATIO &&
+    attempt < 1
+  ) {
+    return translateHtmlChunk(englishHtml, attempt + 1);
+  }
+
+  return html;
+};
+
+/**
+ * Translate EN → es-ES with Azure (gpt seat).
+ * Meta is one call; HTML is chunked (scripts/styles preserved) so long BLG
+ * bodies are not truncated mid-article.
+ */
 const translateArticleCore = async (input: TranslateArticleInput) => {
   const tags = input.tags ?? [];
   const takeaways = input.takeaways ?? [];
   const category = input.category ?? "Guide";
   const introduction = input.introduction ?? input.metaDescription;
 
-  return resultify(() =>
-    AI.generate({
-      label: "Blog.translateArticle",
+  return resultify(async () => {
+    const meta = await translateMetaCore({
+      title: input.title,
+      metaDescription: input.metaDescription,
+      introduction,
+      category,
+      tags,
+      takeaways,
+    });
+
+    const preserved = extractPreservedBlocks(input.contentHtml);
+    const chunks = chunkHtmlForTranslation(preserved.body);
+    const translatedChunks: string[] = [];
+
+    for (const chunk of chunks) {
+      translatedChunks.push(await translateHtmlChunk(chunk));
+    }
+
+    return {
+      ...meta,
+      contentHtml: demarkdownHtml(preserved.restore(translatedChunks.join(""))),
+    };
+  });
+};
+
+/** Editorial posts store body in `sections` (plain text), not `contentHtml`. */
+const translateSectionsCore = async (sections: readonly BlogSection[]) => {
+  const translated: BlogSection[] = [];
+
+  for (const section of sections) {
+    const result = await AI.generate({
+      label: "Blog.translateSection",
       model: "gpt",
-      output: translationSchema,
-      schemaName: "SpanishBlogTranslation",
-      instructions: `You translate ecommerce blog content from English to Spanish (es-ES).
+      output: sectionSchema,
+      schemaName: "SpanishBlogSection",
+      instructions: `You translate one ecommerce blog section from English to Spanish (es-ES).
 
 Rules:
-- Translate visible text only; preserve every HTML tag, attribute, URL, and script/style block exactly.
-- Keep the product name "ecentic" untranslated (lowercase as written).
-- Keep brand names of AI products (ChatGPT, Claude, Gemini, Perplexity, Shopify, WooCommerce) untranslated.
-- Write natural Spanish suitable for merchants; do not invent new sections.
-- Return Spanish for title, metaDescription, introduction, contentHtml, category, tags, and takeaways.
-- tags and takeaways must keep the same count as the input arrays.`,
-      prompt: JSON.stringify({
-        title: input.title,
-        metaDescription: input.metaDescription,
-        introduction,
-        contentHtml: input.contentHtml,
-        category,
-        tags,
-        takeaways,
-      }),
-    }),
-  );
+- ${translateBrandRules}
+- Keep the same section number.
+- content is plain text (paragraphs separated by blank lines; lines starting with "- " are list items). Do not emit HTML tags.
+- Preserve existing **bold** / list markers only when the English source already uses them; do not invent Markdown.
+- Translate the full content — do not shorten or summarize.`,
+      prompt: JSON.stringify(section),
+    });
+    translated.push(result);
+  }
+
+  return translated;
 };
 
 type LocaleRowValues = {
@@ -188,7 +390,8 @@ type LocaleRowValues = {
   thumbnailUrl: string | null;
   tags: readonly string[];
   takeaways: readonly string[];
-  contentHtml: string;
+  sections?: readonly BlogSection[];
+  contentHtml: string | null;
 };
 
 const upsertLocaleRow = async (values: LocaleRowValues) => {
@@ -217,7 +420,7 @@ const upsertLocaleRow = async (values: LocaleRowValues) => {
     thumbnailUrl: values.thumbnailUrl,
     tags: values.tags,
     takeaways: values.takeaways,
-    sections: [] as const,
+    sections: values.sections ?? [],
     contentHtml: values.contentHtml,
     updatedAt: new Date(),
   };
@@ -243,7 +446,7 @@ export type Resolved = { kind: "post"; post: Type };
 /**
  * Same slug catalog for EN/ES. Stored `blog_post` rows only — never live BLG.
  * Public SSG uses many workers; per-process rate limits cannot stop a BLG
- * stampede. Persist via webhook / `blog:backfill-english` instead.
+ * stampede. Persist via the BabyLoveGrowth webhook (EN + Azure ES), then ISR.
  */
 export const resolve = async ({
   slug,
@@ -422,140 +625,103 @@ export const ingestPublish = withContext(
   "Blog.ingestPublish",
 );
 
-const escapeHtml = (value: string) =>
-  value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
-
-const summaryContentHtml = (excerpt: string) => {
-  const trimmed = excerpt.trim();
-  if (!trimmed) return "";
-  return `<p>${escapeHtml(trimmed)}</p>`;
-};
-
-const hasFullBody = (contentHtml: string | null | undefined) => {
-  if (!contentHtml) return false;
-  const text = contentHtml
-    .replace(/<[^>]+>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-  // Summary backfill wraps excerpt in a single <p>; real BLG bodies are much larger.
-  return text.length > 800;
-};
-
 /**
- * Persist missing English rows from BabyLoveGrowth.
- * 1) Upsert card/summary fields from the list endpoint (one BLG call).
- * 2) Fetch full HTML for thin/missing bodies (rate-limited ≤2 req/s).
+ * Rebuild Spanish from a stored English row (editorial sections or BLG HTML).
+ * Used to repair truncated / Markdown-contaminated ES after translate changes.
+ * Steady-state publishes go through `ingestPublish` (webhook) only.
  */
-export const backfillMissingEnglishCore = async (
-  options: { limit?: number } = {},
-) => {
-  const batchLimit =
-    typeof options.limit === "number" && options.limit > 0
-      ? Math.floor(options.limit)
-      : Number.POSITIVE_INFINITY;
+export const resyncSpanishFromEnglishCore = async (slug: string) => {
+  const english = await findPublished(slug, "en");
+  if (!english)
+    return {
+      success: false as const,
+      error: new Error(`No English row for slug: ${slug}`),
+    };
 
-  const articles = await resultify(() => BabyLoveGrowth.listArticlesStrict());
-  if (!articles.success) return articles;
+  const metaInput = {
+    title: english.title,
+    metaDescription: english.description,
+    introduction: english.introduction,
+    category: english.category,
+    tags: english.tags,
+    takeaways: english.takeaways,
+  };
 
-  const existingEnglish = await find(Environment.SERVER, {
-    where: eq(schema.blogPost.locale, "en"),
-  });
-  if (!existingEnglish.success) return existingEnglish;
+  if (english.sections.length > 0 && !english.contentHtml?.trim()) {
+    const meta = await resultify(() => translateMetaCore(metaInput));
+    if (!meta.success) return meta;
 
-  const englishBySlug = new Map(
-    existingEnglish.data.map((row) => [row.slug, row] as const),
-  );
-  const summariesUpserted: string[] = [];
-  const upserted: string[] = [];
-  const failed: string[] = [];
+    const sections = await resultify(() =>
+      translateSectionsCore([...english.sections]),
+    );
+    if (!sections.success) return sections;
 
-  for (const summary of articles.data) {
-    if (englishBySlug.has(summary.slug)) continue;
+    const bodyForReadTime = sections.data
+      .map((section) => `${section.title}\n${section.content}`)
+      .join("\n");
 
-    try {
-      const description = summary.meta_description || summary.excerpt || "";
-      const row = await upsertLocaleRow({
-        slug: summary.slug,
-        locale: "en",
-        source: "blg",
-        externalId: String(summary.id),
-        category: summary.seedKeyword ?? "Guide",
-        title: summary.title,
-        description,
-        introduction: description,
-        publishedAt: summary.created_at.slice(0, 10),
-        readTime: estimateReadTime(summary.excerpt),
-        thumbnailUrl: summary.hero_image_url || null,
-        tags: summary.keywords,
-        takeaways: [],
-        contentHtml: summaryContentHtml(summary.excerpt),
-      });
-      if (row) englishBySlug.set(summary.slug, row);
-      summariesUpserted.push(summary.slug);
-    } catch (error) {
-      failed.push(summary.slug);
-      console.error(
-        `  ${summary.slug} (summary): ${
-          error instanceof Error ? error.message : String(error)
-        }`,
-      );
-    }
+    const spanish = await upsertLocaleRow({
+      slug: english.slug,
+      locale: "es",
+      source: english.source,
+      externalId: english.externalId,
+      category: meta.data.category,
+      title: meta.data.title,
+      description: meta.data.metaDescription,
+      introduction: meta.data.introduction,
+      publishedAt: english.publishedAt,
+      readTime: estimateReadTime(bodyForReadTime),
+      thumbnailUrl: english.thumbnailUrl,
+      tags: meta.data.tags,
+      takeaways: meta.data.takeaways,
+      sections: sections.data,
+      contentHtml: null,
+    });
+
+    return {
+      success: true as const,
+      data: { slug, mode: "sections" as const, id: spanish?.id },
+    };
   }
 
-  const needFullBody = articles.data.filter((summary) => {
-    const row = englishBySlug.get(summary.slug);
-    return !hasFullBody(row?.contentHtml);
+  const contentHtml = english.contentHtml?.trim();
+  if (!contentHtml)
+    return {
+      success: false as const,
+      error: new Error(`English row has no body for slug: ${slug}`),
+    };
+
+  const translation = await translateArticleCore({
+    title: english.title,
+    metaDescription: english.description,
+    contentHtml,
+    category: english.category,
+    tags: english.tags,
+    introduction: english.introduction,
+    takeaways: english.takeaways,
   });
-  const batch = needFullBody.slice(0, batchLimit);
+  if (!translation.success) return translation;
 
-  for (const summary of batch) {
-    try {
-      const article = await BabyLoveGrowth.getArticleBySlug(summary.slug);
-      if (!article) {
-        failed.push(summary.slug);
-        console.error(`  ${summary.slug}: BLG returned no published article`);
-        continue;
-      }
-
-      const description = article.meta_description || article.excerpt || "";
-      await upsertLocaleRow({
-        slug: article.slug,
-        locale: "en",
-        source: "blg",
-        externalId: String(article.id),
-        category: article.seedKeyword ?? "Guide",
-        title: article.title,
-        description,
-        introduction: description,
-        publishedAt: article.created_at.slice(0, 10),
-        readTime: estimateReadTime(article.content_html),
-        thumbnailUrl: article.hero_image_url || null,
-        tags: article.keywords,
-        takeaways: [],
-        contentHtml: article.content_html,
-      });
-
-      upserted.push(summary.slug);
-    } catch (error) {
-      failed.push(summary.slug);
-      console.error(
-        `  ${summary.slug}: ${error instanceof Error ? error.message : String(error)}`,
-      );
-    }
-  }
+  const spanish = await upsertLocaleRow({
+    slug: english.slug,
+    locale: "es",
+    source: english.source,
+    externalId: english.externalId,
+    category: translation.data.category,
+    title: translation.data.title,
+    description: translation.data.metaDescription,
+    introduction: translation.data.introduction,
+    publishedAt: english.publishedAt,
+    readTime: estimateReadTime(translation.data.contentHtml),
+    thumbnailUrl: english.thumbnailUrl,
+    tags: translation.data.tags,
+    takeaways: translation.data.takeaways,
+    sections: [],
+    contentHtml: translation.data.contentHtml,
+  });
 
   return {
     success: true as const,
-    data: {
-      summariesUpserted,
-      upserted,
-      failed,
-      remaining: Math.max(0, needFullBody.length - batch.length),
-      missingTotal: needFullBody.length,
-    },
+    data: { slug, mode: "html" as const, id: spanish?.id },
   };
 };

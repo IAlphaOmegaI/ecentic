@@ -59,7 +59,7 @@ export const generateMetadata = async ({
   const { slug, locale: raw } = await params;
   const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
 
-  // Prefer stored rows (webhook + backfill). No live BLG on the render path.
+  // Prefer stored rows (webhook + ISR). No live BLG on the render path.
   const resolved = await unwrapResult(
     Blog.resolve({
       slug,

@@ -15,9 +15,7 @@ export default async ({ params }: Props) => {
 
   const post =
     (await Blog.getPublishedBySlug(slug, locale)) ??
-    (locale === "es"
-      ? await Blog.getPublishedBySlug(slug, "en")
-      : null);
+    (locale === "es" ? await Blog.getPublishedBySlug(slug, "en") : null);
 
   return createOgImage({
     title: post?.title ?? "ecentic blog",
