@@ -395,6 +395,7 @@
       "simulations": "Simulaciones",
       "optimize": "Optimizar",
       "visibility": "Visibilidad",
+      "googleShopping": "Google Shopping",
       "quality": "Calidad de datos",
       "brand": "Marca",
       "discovery": "Descubrimiento",
@@ -1188,6 +1189,273 @@
         "mpn-missing-without-gtin": {
           "title": "Sin GTIN ni MPN",
           "detail": "Proporciona un MPN cuando el producto no tenga GTIN — ChatGPT Shopping exige uno de los dos; el feed de Google marca identifier_exists como false en caso contrario."
+        }
+      }
+    },
+    "googleShopping": {
+      "eyebrow": "Canal · Google Shopping",
+      "title": "Fichas optimizadas en Google, sin tocar tu tienda",
+      "description": "ecentic superpone tus optimizaciones de ficha publicadas sobre tu feed de productos de Google como sustituciones de atributos. El plugin de Google de tu tienda sigue siendo el dueño de precios, stock y del feed de productos — ecentic gestiona títulos, descripciones y diagnósticos por encima.",
+      "toast": "Google Shopping",
+      "unsupported": {
+        "chip": "Próximamente",
+        "description": "La optimización de Google Shopping está disponible por ahora para tiendas Shopify. La compatibilidad con WooCommerce llegará pronto."
+      },
+      "setup": {
+        "step": "Paso {number, number}",
+        "connect": {
+          "title": "Conectar Google",
+          "description": "Inicia sesión con la cuenta de Google que gestiona el Merchant Center de esta tienda. ecentic solicita el permiso de contenido de Merchant Center — gestiona ahí tus fichas de producto, feeds, políticas de devolución y datos de contacto de la tienda, y nunca toca tus anuncios ni tus datos personales.",
+          "action": "Conectar Google"
+        },
+        "chooseAccount": {
+          "title": "Elige tu cuenta de Merchant Center",
+          "description": "Tu sesión de Google puede ver varias cuentas de Merchant Center — elige la que el canal de Google y YouTube creó para esta tienda. Las cuentas cuyo sitio web registrado no coincide con el dominio de esta tienda aparecen marcadas; vincular una igualmente es posible, pero suele ser un error.",
+          "matches": "{domain} — coincide con esta tienda",
+          "linkAnyway": "{domain} — vincular igualmente",
+          "noWebsite": "sin sitio web configurado",
+          "selected": "Cuenta de Merchant Center seleccionada"
+        },
+        "waitingAccount": {
+          "title": "Esperando tu cuenta de Merchant Center",
+          "description": "Instala el canal de Google y YouTube en el panel de tu tienda y termina su conexión con Google — crea y verifica tu cuenta de Merchant Center, y después ecentic la detecta automáticamente.",
+          "action": "Comprobar ahora",
+          "checked": "Comprobación de cuenta completada"
+        },
+        "link": {
+          "title": "Vincula tu cuenta con ecentic",
+          "description": "ecentic solicitará acceso de gestión a tu cuenta de Merchant Center (cuenta {account}). Esto nos permite adjuntar un feed de optimización y leer diagnósticos — puedes revocar el acceso en Merchant Center cuando quieras.",
+          "action": "Solicitar vinculación",
+          "requested": "Vinculación solicitada"
+        },
+        "linkPending": {
+          "title": "Estableciendo la vinculación",
+          "description": "Tu solicitud de vinculación se está procesando — normalmente se completa en unos minutos.",
+          "action": "Comprobar ahora",
+          "refreshed": "Estado de la vinculación actualizado"
+        },
+        "feed": {
+          "title": "Configura el feed de optimización",
+          "description": "Crea el feed complementario de ecentic en tu cuenta y lo conecta con tu feed de productos principal. El plugin de tu tienda sigue siendo el dueño de precios, stock e imágenes — ecentic solo superpone títulos y descripciones optimizados.",
+          "action": "Configurar feed de optimización",
+          "ready": "Feed de optimización listo"
+        }
+      },
+      "disconnect": {
+        "action": "Desconectar Google",
+        "description": "Elimina el feed de optimización de ecentic y el acceso de gestión de tu cuenta de Merchant Center. Tus productos y sus fichas en Google se mantienen — solo desaparecen las sustituciones de ecentic. Puedes volver a conectarlo cuando quieras.",
+        "done": "Google desconectado"
+      },
+      "stats": {
+        "live": "Activas en Google",
+        "pending": "Publicándose (puede tardar unas horas)",
+        "attention": "Requieren atención"
+      },
+      "actions": {
+        "push": "Enviar optimizaciones",
+        "pushed": "Optimizaciones enviadas — publicándose en Google",
+        "refresh": "Actualizar estado",
+        "refreshed": "Estado actualizado",
+        "wiring": "Comprobar conexión del feed",
+        "wiringChecked": "Conexión del feed comprobada",
+        "description": "Envía tus optimizaciones de ficha publicadas como sustituciones sobre las ofertas de Google correspondientes. Los elementos sin cambios se omiten automáticamente; Google revisa sus políticas en cada sustitución antes de publicarla."
+      },
+      "diagnostics": {
+        "eyebrow": "Diagnósticos de Merchant Center",
+        "title": "Por qué hay productos desaprobados o limitados en Google",
+        "toast": "Diagnósticos",
+        "action": "Obtener diagnósticos",
+        "pulling": "Obteniendo…",
+        "description": "Lee las incidencias de cuenta, las incidencias de artículo y las desaprobaciones directamente desde Merchant Center.",
+        "offers": "Ofertas en Google",
+        "disapproved": "Ofertas desaprobadas",
+        "accountIssues": "Incidencias de cuenta",
+        "issue": "Incidencia",
+        "accountIssue": "Incidencia de cuenta",
+        "empty": "Sin incidencias — la cuenta y sus ofertas están sanas.",
+        "attribute": "atributo: {attribute}"
+      },
+      "ucp": {
+        "eyebrow": "Pago agéntico (UCP)",
+        "title": "Vende directamente dentro de las superficies de IA de Google",
+        "description": "Google está desplegando el pago gestionado por agentes en AI Mode y Gemini. ecentic audita tus requisitos de Merchant Center y envía los atributos de elegibilidad de pago necesarios a través del feed de optimización que ya gestiona."
+      },
+      "readiness": {
+        "unknown": "Desconocido",
+        "ready": "Listo",
+        "actionNeeded": "Requiere acción",
+        "readinessError": "No se pudo leer la preparación del pago desde Merchant Center: {error}",
+        "productsError": "No se pudieron cargar los productos de la tienda: {error}",
+        "homepage": {
+          "title": "Sitio web de la tienda reclamado",
+          "fallback": "La página de inicio",
+          "claimed": "{uri} está verificada y reclamada.",
+          "unclaimed": "{uri} está configurada pero no reclamada — el plugin de Google de tu tienda suele encargarse de esto.",
+          "missing": "No hay ninguna página de inicio registrada en la cuenta de Merchant Center."
+        },
+        "returnPolicy": {
+          "title": "Política de devoluciones",
+          "link": "O gestiónala en Merchant Center",
+          "missing": "No hay política de devoluciones en la cuenta — es un requisito de Comerciante Responsable y se muestra en la pantalla de pago de Google. Crea una abajo y ecentic la escribe en Merchant Center.",
+          "noWindow": "{count, plural, one {# política encontrada} other {# políticas encontradas}}, pero ninguna define un plazo de devolución (días tras la entrega o de por vida).",
+          "noLink": "{count, plural, one {# política encontrada} other {# políticas encontradas}}, pero ninguna enlaza al texto completo de la política.",
+          "noCost": "{count, plural, one {# política encontrada} other {# políticas encontradas}}, pero ninguna indica el coste de envío de la devolución — obligatorio junto al plazo y el enlace.",
+          "ok": "{count, plural, one {# política} other {# políticas}} con plazo de devolución, coste de envío y enlace a la política completa."
+        },
+        "customerSupport": {
+          "title": "Contacto de atención al cliente",
+          "link": "O edítalo en Merchant Center",
+          "configured": "Configurado ({methods}) — se convierte en el enlace «Contactar con el comerciante» en la confirmación de pedido de Google.",
+          "missing": "No hay sitio web, correo ni teléfono de atención al cliente en la cuenta — configúralo aquí mismo y ecentic lo escribe en Merchant Center."
+        },
+        "offers": {
+          "title": "Productos aprobados para fichas gratuitas",
+          "approved": "{approved, number} de {total, number} ofertas aprobadas para fichas gratuitas.",
+          "disapproved": "{count, number} desaprobadas — consulta los diagnósticos de arriba.",
+          "checkoutFlag": "{count, number} llevan la marca de elegibilidad de pago en Google.",
+          "checkoutApproved": "{count, number} están aprobadas para el pago agéntico en sí."
+        },
+        "waitlist": {
+          "title": "Únete a la lista de espera de UCP de Google",
+          "link": "Abrir el formulario de la lista de espera",
+          "ready": "Merchant Center está listo — solicita el programa de pago agéntico. Google debe aprobar la integración antes de que el pago se active.",
+          "pending": "Disponible cuando las comprobaciones de arriba estén en verde. Google aprueba a cada comerciante antes de activar el pago."
+        },
+        "platform": {
+          "chip": "Lo gestiona Shopify",
+          "title": "Pagos, checkout y sincronización de pedidos",
+          "description": "El gestor de Google Pay, el perfil UCP, los endpoints de pago y los webhooks de pedidos son la parte de la integración que corresponde a tu plataforma de comercio — en las tiendas Shopify vienen con la propia infraestructura de pago agéntico de Shopify. ecentic prepara todo lo del lado de Merchant Center: la preparación de arriba y las marcas de elegibilidad de abajo."
+        },
+        "eligibility": {
+          "eyebrow": "Elegibilidad de pago por producto",
+          "description": "La elegibilidad está desactivada por defecto — Google trata las marcas ausentes como no elegibles. Las opciones de aquí viajan en la siguiente ejecución de «Enviar optimizaciones» como atributos `native_commerce` en el feed complementario."
+        }
+      },
+      "products": {
+        "empty": "Aún no hay productos sincronizados — sincroniza primero los productos de tu tienda.",
+        "restricted": "puede estar restringido: {hints}",
+        "live": "{count, number} activas",
+        "pending": "{count, number} pendientes",
+        "error": "{count, number} con error",
+        "enable": "Activar pago",
+        "disable": "Elegible ✓ — desactivar",
+        "notice": "Aviso…",
+        "close": "Cerrar",
+        "toast": "Elegibilidad de pago",
+        "enabled": "Marcado como elegible — envía las optimizaciones para mandarlo a Google",
+        "disabled": "Marcado como no elegible — envía las optimizaciones para mandar la exclusión",
+        "hints": {
+          "ucp_subscription": "suscripción",
+          "ucp_preorder": "reserva anticipada",
+          "ucp_personalized": "personalizado",
+          "ucp_not_new_or_final_sale": "no nuevo / venta final",
+          "ucp_gifting": "tarjeta regalo",
+          "ucp_age_restricted": "restringido por edad",
+          "ucp_rental": "alquiler",
+          "ucp_bundled_service": "servicio incluido"
+        }
+      },
+      "forms": {
+        "saving": "Guardando…",
+        "hide": "Ocultar",
+        "notice": {
+          "toast": "Ajustes de pago",
+          "saved": "Ajustes de pago guardados",
+          "save": "Guardar",
+          "type": {
+            "label": "Aviso al consumidor",
+            "items": {
+              "none": "Ninguno",
+              "legal_disclaimer": "Aviso legal",
+              "safety_warning": "Advertencia de seguridad",
+              "prop_65": "Proposición 65"
+            }
+          },
+          "message": {
+            "label": "Texto del aviso",
+            "placeholder": "p. ej. Este producto puede exponerte a sustancias químicas…",
+            "max": "Los textos de aviso están limitados a 1000 caracteres"
+          },
+          "itemId": {
+            "label": "ID de artículo para el pago (opcional)",
+            "placeholder": "Solo si difiere del ID del feed"
+          }
+        },
+        "support": {
+          "toast": "Atención al cliente",
+          "saved": "Contacto de atención al cliente guardado en Merchant Center",
+          "open": "Configurar contacto",
+          "update": "Actualizar contacto",
+          "save": "Guardar en Merchant Center",
+          "website": {
+            "label": "Sitio web de soporte",
+            "placeholder": "https://tu-tienda.com/contacto"
+          },
+          "email": {
+            "label": "Correo de soporte",
+            "placeholder": "soporte@tu-tienda.com"
+          },
+          "phone": {
+            "label": "Teléfono de soporte",
+            "placeholder": "+34600123456"
+          }
+        },
+        "returnPolicy": {
+          "toast": "Política de devoluciones",
+          "created": "Política de devoluciones creada en Merchant Center",
+          "replaced": "Política de devoluciones reemplazada en Merchant Center",
+          "open": "Crear política",
+          "update": "Actualizar política",
+          "submitCreate": "Crear política en Merchant Center",
+          "submitReplace": "Reemplazar política en Merchant Center",
+          "replaceNote": "La API de Google no puede editar una política de devoluciones en su sitio — al guardar se reemplaza la política predeterminada existente por esta.",
+          "countries": {
+            "label": "Países de venta",
+            "placeholder": "ES, US",
+            "invalid": "Códigos de país de 2 letras, separados por comas (p. ej. ES, US)"
+          },
+          "window": {
+            "label": "Plazo de devolución",
+            "items": {
+              "14": "14 días",
+              "30": "30 días",
+              "60": "60 días",
+              "90": "90 días",
+              "lifetime": "De por vida"
+            }
+          },
+          "policyUrl": {
+            "label": "URL de la página de política de devoluciones",
+            "placeholder": "https://tu-tienda.com/policies/returns",
+            "invalid": "Introduce la URL completa de tu página de política de devoluciones"
+          },
+          "methods": {
+            "label": "Métodos de devolución",
+            "items": {
+              "BY_MAIL": "Por correo",
+              "IN_STORE": "En tienda",
+              "AT_A_KIOSK": "En un punto de recogida"
+            }
+          },
+          "conditions": {
+            "label": "Estados aceptados",
+            "items": {
+              "NEW": "Nuevo",
+              "USED": "Usado"
+            }
+          },
+          "shipping": {
+            "label": "Coste de envío de la devolución",
+            "items": {
+              "free": "Devolución gratuita",
+              "customer": "El cliente paga el envío de la devolución"
+            }
+          },
+          "refundDays": {
+            "label": "Tiempo de procesamiento del reembolso (días)",
+            "min": "Al menos 1 día",
+            "max": "Como máximo 60 días"
+          }
         }
       }
     },

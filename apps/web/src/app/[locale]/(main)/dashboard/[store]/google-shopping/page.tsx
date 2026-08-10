@@ -1,5 +1,6 @@
 import { unwrapResult } from "@zenncore/utils";
 import { connection } from "next/server";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import * as GoogleMerchant from "@/server/app/integration/google-merchant";
 import { Environment } from "@/server/utils/environment";
@@ -26,6 +27,7 @@ const ReadinessRow = ({
   detail,
   href,
   linkLabel,
+  labels,
 }: {
   /** null = the check could not run — rendered as "Unknown", not as failure. */
   ok: boolean | null;
@@ -33,11 +35,12 @@ const ReadinessRow = ({
   detail: string;
   href?: string;
   linkLabel?: string;
+  labels: { unknown: string; ready: string; actionNeeded: string };
 }) => (
   <div className="flex flex-col gap-1 p-4">
     <div className="flex flex-wrap items-center gap-2">
       <Chip tone={ok === null ? "neutral" : ok ? "success" : "warning"}>
-        {ok === null ? "Unknown" : ok ? "Ready" : "Action needed"}
+        {ok === null ? labels.unknown : ok ? labels.ready : labels.actionNeeded}
       </Chip>
       <p className="font-medium text-foreground text-sm">{title}</p>
     </div>
@@ -52,7 +55,7 @@ const ReadinessRow = ({
             rel="noreferrer"
             className="text-primary underline underline-offset-2"
           >
-            {linkLabel ?? "Learn more"}
+            {linkLabel}
           </a>
         </>
       )}
@@ -68,6 +71,7 @@ const ReadinessRow = ({
  */
 const UcpContent = async ({ store }: { store: string }) => {
   await connection();
+  const translate = await getTranslations("dashboard.googleShopping.readiness");
   const [readiness, products] = await Promise.all([
     GoogleMerchant.getUcpReadiness(Environment.SERVER, { store }),
     GoogleMerchant.getUcpProducts(Environment.SERVER, { store }),
@@ -76,16 +80,21 @@ const UcpContent = async ({ store }: { store: string }) => {
   if (!readiness.success)
     return (
       <p className="p-4 text-foreground-dimmed text-sm">
-        Could not read checkout readiness from Merchant Center:{" "}
-        {readiness.error.message}
+        {translate("readinessError", { error: readiness.error.message })}
       </p>
     );
   if (!products.success)
     return (
       <p className="p-4 text-foreground-dimmed text-sm">
-        Could not load the store's products: {products.error.message}
+        {translate("productsError", { error: products.error.message })}
       </p>
     );
+
+  const labels = {
+    unknown: translate("unknown"),
+    ready: translate("ready"),
+    actionNeeded: translate("actionNeeded"),
+  };
 
   const { homepage, returnPolicy, customerSupport, offers, ready } =
     readiness.data;
@@ -98,52 +107,79 @@ const UcpContent = async ({ store }: { store: string }) => {
   const returnPolicyDetail = (() => {
     switch (true) {
       case !returnPolicy.configured:
-        return "No return policy on the account — a Merchant-of-Record requirement, shown on Google's checkout screen. Create one below and ecentic writes it to Merchant Center.";
+        return translate("returnPolicy.missing");
       case !returnPolicy.hasWindow:
-        return `${returnPolicy.count} policy(ies) found, but none defines a return window (days after delivery or lifetime).`;
+        return translate("returnPolicy.noWindow", {
+          count: returnPolicy.count,
+        });
       case !returnPolicy.hasPolicyLink:
-        return `${returnPolicy.count} policy(ies) found, but none links to the full policy text.`;
+        return translate("returnPolicy.noLink", { count: returnPolicy.count });
       case !returnPolicy.hasCost:
-        return `${returnPolicy.count} policy(ies) found, but none states the return shipping cost — required alongside window and link.`;
+        return translate("returnPolicy.noCost", { count: returnPolicy.count });
       default:
-        return `${returnPolicy.count} policy(ies) with a return window, shipping cost, and a full-policy link.`;
+        return translate("returnPolicy.ok", { count: returnPolicy.count });
     }
   })();
+
+  const offersDetail = [
+    translate("offers.approved", {
+      approved: offers.approved,
+      total: offers.total,
+    }),
+    offers.disapproved > 0 &&
+      translate("offers.disapproved", { count: offers.disapproved }),
+    offers.checkoutAttributeLive > 0 &&
+      translate("offers.checkoutFlag", { count: offers.checkoutAttributeLive }),
+    offers.ucpCheckoutApproved > 0 &&
+      translate("offers.checkoutApproved", {
+        count: offers.ucpCheckoutApproved,
+      }),
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <div className="flex flex-col divide-y divide-accent-foreground">
       <ReadinessRow
         ok={homepage?.claimed ?? null}
-        title="Store website claimed"
+        title={translate("homepage.title")}
+        labels={labels}
         detail={
           homepage
-            ? homepage.claimed
-              ? `${homepage.uri ?? "Homepage"} is verified and claimed.`
-              : `${homepage.uri ?? "The homepage"} is set but not claimed — your store's Google plugin normally handles this.`
-            : "No homepage is registered on the Merchant Center account."
+            ? translate(
+                homepage.claimed ? "homepage.claimed" : "homepage.unclaimed",
+                {
+                  uri: homepage.uri ?? translate("homepage.fallback"),
+                },
+              )
+            : translate("homepage.missing")
         }
       />
       <div>
         <ReadinessRow
           ok={returnPolicyOk}
-          title="Return policy"
+          title={translate("returnPolicy.title")}
           detail={returnPolicyDetail}
+          labels={labels}
           href="https://support.google.com/merchants/answer/14011730"
-          linkLabel="Or manage in Merchant Center"
+          linkLabel={translate("returnPolicy.link")}
         />
         <ReturnPolicyEditor store={store} current={returnPolicy.current} />
       </div>
       <div>
         <ReadinessRow
           ok={customerSupport.configured}
-          title="Customer support contact"
+          title={translate("customerSupport.title")}
+          labels={labels}
           detail={
             customerSupport.configured
-              ? `Set (${customerSupport.methods.join(", ")}) — becomes the "Contact Merchant" link on Google's order confirmation.`
-              : "No customer service website, email, or phone on the account — set it right here, ecentic writes it to Merchant Center."
+              ? translate("customerSupport.configured", {
+                  methods: customerSupport.methods.join(", "),
+                })
+              : translate("customerSupport.missing")
           }
           href="https://support.google.com/merchants/answer/13661344"
-          linkLabel="Or edit in Merchant Center"
+          linkLabel={translate("customerSupport.link")}
         />
         <CustomerSupportEditor
           store={store}
@@ -156,56 +192,36 @@ const UcpContent = async ({ store }: { store: string }) => {
       </div>
       <ReadinessRow
         ok={offers.total > 0 ? offers.approved > 0 : null}
-        title="Products approved for free listings"
-        detail={`${offers.approved} of ${offers.total} offers approved for free listings${
-          offers.disapproved > 0
-            ? `, ${offers.disapproved} disapproved (see diagnostics above)`
-            : ""
-        }.${
-          offers.checkoutAttributeLive > 0
-            ? ` ${offers.checkoutAttributeLive} carry the checkout-eligibility flag on Google.`
-            : ""
-        }${
-          offers.ucpCheckoutApproved > 0
-            ? ` ${offers.ucpCheckoutApproved} are approved for agentic checkout itself.`
-            : ""
-        }`}
+        title={translate("offers.title")}
+        detail={offersDetail}
+        labels={labels}
       />
       <ReadinessRow
         ok={ready ? true : null}
-        title="Join Google's UCP waitlist"
-        detail={
-          ready
-            ? "Merchant Center is ready — apply for the agentic checkout program. Google must approve the integration before checkout goes live."
-            : "Available once the checks above are green. Google approves each merchant before checkout goes live."
-        }
+        title={translate("waitlist.title")}
+        labels={labels}
+        detail={translate(ready ? "waitlist.ready" : "waitlist.pending")}
         href="https://support.google.com/merchants/contact/ucp_integration_interest"
-        linkLabel="Open the waitlist form"
+        linkLabel={translate("waitlist.link")}
       />
       <div className="flex flex-col gap-1 p-4">
         <div className="flex flex-wrap items-center gap-2">
-          <Chip tone="neutral">Handled by Shopify</Chip>
+          <Chip tone="neutral">{translate("platform.chip")}</Chip>
           <p className="font-medium text-foreground text-sm">
-            Payments, checkout, and order sync
+            {translate("platform.title")}
           </p>
         </div>
         <p className="max-w-3xl text-foreground-dimmed text-xs">
-          The Google Pay handler, UCP profile, checkout endpoints, and order
-          webhooks are your commerce platform's side of the integration — for
-          Shopify stores they ship with Shopify's own agentic checkout rails.
-          ecentic prepares everything Merchant Center-side: readiness above,
-          eligibility flags below.
+          {translate("platform.description")}
         </p>
       </div>
 
       <div className="border-accent-foreground bg-background-dimmed px-4 py-3">
         <p className="font-semibold text-foreground-dimmed text-xs uppercase tracking-[0.14em]">
-          Checkout eligibility per product
+          {translate("eligibility.eyebrow")}
         </p>
         <p className="mt-1 text-foreground-dimmed text-xs">
-          Eligibility defaults to off — Google treats missing flags as not
-          eligible. Choices here ride the next "Push optimizations" run as
-          `native_commerce` attributes on the supplemental feed.
+          {translate("eligibility.description")}
         </p>
       </div>
       <UcpProductsPanel store={store} products={products.data} />
@@ -226,6 +242,7 @@ const ChannelSections = async ({
 }) => {
   await connection();
   const { store } = await params;
+  const translate = await getTranslations("dashboard.googleShopping");
   const status = unwrapResult(
     await GoogleMerchant.getStatus(Environment.SERVER, { store }),
   );
@@ -242,10 +259,10 @@ const ChannelSections = async ({
           <SectionBox>
             <div className="border-accent-foreground border-b p-4">
               <p className="font-semibold text-foreground-dimmed text-xs uppercase tracking-[0.14em]">
-                Merchant Center diagnostics
+                {translate("diagnostics.eyebrow")}
               </p>
               <p className="mt-1 font-medium text-base text-foreground">
-                Why products are disapproved or limited on Google
+                {translate("diagnostics.title")}
               </p>
             </div>
             <DiagnosticsPanel store={store} />
@@ -259,16 +276,13 @@ const ChannelSections = async ({
           <SectionBox>
             <div className="border-accent-foreground border-b p-4">
               <p className="font-semibold text-foreground-dimmed text-xs uppercase tracking-[0.14em]">
-                Agentic checkout (UCP)
+                {translate("ucp.eyebrow")}
               </p>
               <p className="mt-1 font-medium text-base text-foreground">
-                Sell directly inside Google's AI surfaces
+                {translate("ucp.title")}
               </p>
               <p className="mt-1 max-w-2xl text-foreground-dimmed text-sm">
-                Google is rolling out agent-driven checkout in AI Mode and
-                Gemini. ecentic audits your Merchant Center prerequisites and
-                pushes the required checkout-eligibility attributes through the
-                optimization feed it already manages.
+                {translate("ucp.description")}
               </p>
             </div>
             <Suspense fallback={<ManagerSkeleton />}>

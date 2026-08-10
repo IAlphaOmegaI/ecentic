@@ -69,7 +69,7 @@ const items = [
   },
   {
     icon: RocketIcon,
-    label: "Google Shopping",
+    key: "googleShopping",
     segment: "/google-shopping",
     exact: false,
   },

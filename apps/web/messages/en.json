@@ -395,6 +395,7 @@
       "simulations": "Simulations",
       "optimize": "Optimize",
       "visibility": "Visibility",
+      "googleShopping": "Google Shopping",
       "quality": "Data Quality",
       "brand": "Brand",
       "discovery": "Discovery",
@@ -1546,6 +1547,273 @@
         "mpn-missing-without-gtin": {
           "title": "No GTIN and no MPN",
           "detail": "Provide an MPN when the product has no GTIN — ChatGPT Shopping requires one of the two; the Google feed marks identifier_exists false otherwise."
+        }
+      }
+    },
+    "googleShopping": {
+      "eyebrow": "Channel · Google Shopping",
+      "title": "Optimized listings on Google, without touching your store",
+      "description": "ecentic layers your published listing optimizations over your existing Google product feed as attribute overrides. Your store's Google plugin keeps owning prices, stock, and the product feed — ecentic manages titles, descriptions, and diagnostics on top.",
+      "toast": "Google Shopping",
+      "unsupported": {
+        "chip": "Coming soon",
+        "description": "Google Shopping optimization is currently available for Shopify stores. WooCommerce support is coming soon."
+      },
+      "setup": {
+        "step": "Step {number, number}",
+        "connect": {
+          "title": "Connect Google",
+          "description": "Sign in with the Google account that manages this store's Merchant Center. ecentic requests the Merchant Center content scope — it manages your product listings, feeds, return policies, and store contact info there, and never touches your ads or personal data.",
+          "action": "Connect Google"
+        },
+        "chooseAccount": {
+          "title": "Choose your Merchant Center account",
+          "description": "Your Google login can see several Merchant Center accounts — pick the one the Google & YouTube channel created for this store. Accounts whose registered website doesn't match this store's domain are flagged; linking one anyway is possible but usually wrong.",
+          "matches": "{domain} — matches this store",
+          "linkAnyway": "{domain} — link anyway",
+          "noWebsite": "no website set",
+          "selected": "Merchant Center account selected"
+        },
+        "waitingAccount": {
+          "title": "Waiting for your Merchant Center account",
+          "description": "Install the Google & YouTube channel in your store admin and finish its Google connection — it creates and verifies your Merchant Center account, then ecentic detects it automatically.",
+          "action": "Check now",
+          "checked": "Account check complete"
+        },
+        "link": {
+          "title": "Link your account to ecentic",
+          "description": "ecentic will request management access to your Merchant Center account (account {account}). This lets us attach an optimization feed and read diagnostics — you can revoke the access in Merchant Center at any time.",
+          "action": "Request link",
+          "requested": "Link requested"
+        },
+        "linkPending": {
+          "title": "Establishing link",
+          "description": "Your link request is being processed — this usually completes within a few minutes.",
+          "action": "Check now",
+          "refreshed": "Link status refreshed"
+        },
+        "feed": {
+          "title": "Set up the optimization feed",
+          "description": "Creates ecentic's supplemental feed on your account and wires it into your primary product feed. Your store's plugin keeps owning prices, stock, and images — ecentic only layers optimized titles and descriptions on top.",
+          "action": "Set up optimization feed",
+          "ready": "Optimization feed ready"
+        }
+      },
+      "disconnect": {
+        "action": "Disconnect Google",
+        "description": "Removes ecentic's optimization feed and management access from your Merchant Center account. Your products and their Google listings stay — only the ecentic overrides go away. You can reconnect any time.",
+        "done": "Google disconnected"
+      },
+      "stats": {
+        "live": "Live on Google",
+        "pending": "Going live (may take a few hours)",
+        "attention": "Need attention"
+      },
+      "actions": {
+        "push": "Push optimizations",
+        "pushed": "Optimizations pushed — going live on Google",
+        "refresh": "Refresh status",
+        "refreshed": "Status refreshed",
+        "wiring": "Check feed wiring",
+        "wiringChecked": "Feed wiring checked",
+        "description": "Pushes your published listing optimizations as overrides onto the matching Google offers. Unchanged items are skipped automatically; Google re-checks policies on every override before it goes live."
+      },
+      "diagnostics": {
+        "eyebrow": "Merchant Center diagnostics",
+        "title": "Why products are disapproved or limited on Google",
+        "toast": "Diagnostics",
+        "action": "Pull diagnostics",
+        "pulling": "Pulling…",
+        "description": "Reads account issues, item issues, and disapprovals straight from Merchant Center.",
+        "offers": "Offers on Google",
+        "disapproved": "Disapproved offers",
+        "accountIssues": "Account issues",
+        "issue": "Issue",
+        "accountIssue": "Account issue",
+        "empty": "No issues reported — the account and its offers are healthy.",
+        "attribute": "attribute: {attribute}"
+      },
+      "ucp": {
+        "eyebrow": "Agentic checkout (UCP)",
+        "title": "Sell directly inside Google's AI surfaces",
+        "description": "Google is rolling out agent-driven checkout in AI Mode and Gemini. ecentic audits your Merchant Center prerequisites and pushes the required checkout-eligibility attributes through the optimization feed it already manages."
+      },
+      "readiness": {
+        "unknown": "Unknown",
+        "ready": "Ready",
+        "actionNeeded": "Action needed",
+        "readinessError": "Could not read checkout readiness from Merchant Center: {error}",
+        "productsError": "Could not load the store's products: {error}",
+        "homepage": {
+          "title": "Store website claimed",
+          "fallback": "The homepage",
+          "claimed": "{uri} is verified and claimed.",
+          "unclaimed": "{uri} is set but not claimed — your store's Google plugin normally handles this.",
+          "missing": "No homepage is registered on the Merchant Center account."
+        },
+        "returnPolicy": {
+          "title": "Return policy",
+          "link": "Or manage in Merchant Center",
+          "missing": "No return policy on the account — a Merchant-of-Record requirement, shown on Google's checkout screen. Create one below and ecentic writes it to Merchant Center.",
+          "noWindow": "{count, plural, one {# policy} other {# policies}} found, but none defines a return window (days after delivery or lifetime).",
+          "noLink": "{count, plural, one {# policy} other {# policies}} found, but none links to the full policy text.",
+          "noCost": "{count, plural, one {# policy} other {# policies}} found, but none states the return shipping cost — required alongside window and link.",
+          "ok": "{count, plural, one {# policy} other {# policies}} with a return window, shipping cost, and a full-policy link."
+        },
+        "customerSupport": {
+          "title": "Customer support contact",
+          "link": "Or edit in Merchant Center",
+          "configured": "Set ({methods}) — becomes the \"Contact Merchant\" link on Google's order confirmation.",
+          "missing": "No customer service website, email, or phone on the account — set it right here, ecentic writes it to Merchant Center."
+        },
+        "offers": {
+          "title": "Products approved for free listings",
+          "approved": "{approved, number} of {total, number} offers approved for free listings.",
+          "disapproved": "{count, number} disapproved — see diagnostics above.",
+          "checkoutFlag": "{count, number} carry the checkout-eligibility flag on Google.",
+          "checkoutApproved": "{count, number} are approved for agentic checkout itself."
+        },
+        "waitlist": {
+          "title": "Join Google's UCP waitlist",
+          "link": "Open the waitlist form",
+          "ready": "Merchant Center is ready — apply for the agentic checkout program. Google must approve the integration before checkout goes live.",
+          "pending": "Available once the checks above are green. Google approves each merchant before checkout goes live."
+        },
+        "platform": {
+          "chip": "Handled by Shopify",
+          "title": "Payments, checkout, and order sync",
+          "description": "The Google Pay handler, UCP profile, checkout endpoints, and order webhooks are your commerce platform's side of the integration — for Shopify stores they ship with Shopify's own agentic checkout rails. ecentic prepares everything Merchant Center-side: readiness above, eligibility flags below."
+        },
+        "eligibility": {
+          "eyebrow": "Checkout eligibility per product",
+          "description": "Eligibility defaults to off — Google treats missing flags as not eligible. Choices here ride the next \"Push optimizations\" run as `native_commerce` attributes on the supplemental feed."
+        }
+      },
+      "products": {
+        "empty": "No synced products yet — sync your store's products first.",
+        "restricted": "may be restricted: {hints}",
+        "live": "{count, number} live",
+        "pending": "{count, number} pending",
+        "error": "{count, number} error",
+        "enable": "Enable checkout",
+        "disable": "Eligible ✓ — turn off",
+        "notice": "Notice…",
+        "close": "Close",
+        "toast": "Checkout eligibility",
+        "enabled": "Marked eligible — push optimizations to send it to Google",
+        "disabled": "Marked not eligible — push optimizations to send the opt-out",
+        "hints": {
+          "ucp_subscription": "subscription",
+          "ucp_preorder": "pre-order",
+          "ucp_personalized": "personalized",
+          "ucp_not_new_or_final_sale": "not new / final sale",
+          "ucp_gifting": "gift card",
+          "ucp_age_restricted": "age-restricted",
+          "ucp_rental": "rental",
+          "ucp_bundled_service": "bundled service"
+        }
+      },
+      "forms": {
+        "saving": "Saving…",
+        "hide": "Hide",
+        "notice": {
+          "toast": "Checkout settings",
+          "saved": "Checkout settings saved",
+          "save": "Save",
+          "type": {
+            "label": "Consumer notice",
+            "items": {
+              "none": "None",
+              "legal_disclaimer": "Legal disclaimer",
+              "safety_warning": "Safety warning",
+              "prop_65": "Proposition 65"
+            }
+          },
+          "message": {
+            "label": "Notice message",
+            "placeholder": "e.g. This product can expose you to chemicals…",
+            "max": "Notice messages are capped at 1000 characters"
+          },
+          "itemId": {
+            "label": "Checkout item ID (optional)",
+            "placeholder": "Only if it differs from the feed ID"
+          }
+        },
+        "support": {
+          "toast": "Customer support",
+          "saved": "Customer support contact saved to Merchant Center",
+          "open": "Set contact",
+          "update": "Update contact",
+          "save": "Save to Merchant Center",
+          "website": {
+            "label": "Support website",
+            "placeholder": "https://your-store.com/contact"
+          },
+          "email": {
+            "label": "Support email",
+            "placeholder": "support@your-store.com"
+          },
+          "phone": {
+            "label": "Support phone",
+            "placeholder": "+15551234567"
+          }
+        },
+        "returnPolicy": {
+          "toast": "Return policy",
+          "created": "Return policy created in Merchant Center",
+          "replaced": "Return policy replaced in Merchant Center",
+          "open": "Create policy",
+          "update": "Update policy",
+          "submitCreate": "Create policy in Merchant Center",
+          "submitReplace": "Replace policy in Merchant Center",
+          "replaceNote": "Google's API cannot edit a return policy in place — saving replaces the existing default policy with this one.",
+          "countries": {
+            "label": "Countries of sale",
+            "placeholder": "US, GB",
+            "invalid": "2-letter country codes, comma-separated (e.g. US, GB)"
+          },
+          "window": {
+            "label": "Return window",
+            "items": {
+              "14": "14 days",
+              "30": "30 days",
+              "60": "60 days",
+              "90": "90 days",
+              "lifetime": "Lifetime"
+            }
+          },
+          "policyUrl": {
+            "label": "Return policy page URL",
+            "placeholder": "https://your-store.com/policies/returns",
+            "invalid": "Enter the full URL of your return policy page"
+          },
+          "methods": {
+            "label": "Return methods",
+            "items": {
+              "BY_MAIL": "By mail",
+              "IN_STORE": "In store",
+              "AT_A_KIOSK": "At a kiosk"
+            }
+          },
+          "conditions": {
+            "label": "Accepted conditions",
+            "items": {
+              "NEW": "New",
+              "USED": "Used"
+            }
+          },
+          "shipping": {
+            "label": "Return shipping cost",
+            "items": {
+              "free": "Free return shipping",
+              "customer": "Customer pays return shipping"
+            }
+          },
+          "refundDays": {
+            "label": "Refund processing time (days)",
+            "min": "At least 1 day",
+            "max": "At most 60 days"
+          }
         }
       }
     },

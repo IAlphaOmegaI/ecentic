@@ -9,6 +9,7 @@ import {
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { useRouter } from "next/navigation";
+import { useMessages, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { z } from "zod";
 import * as GoogleMerchant from "@/server/app/integration/google-merchant";
@@ -20,6 +21,10 @@ import { Chip } from "./google-shopping-client";
  * next "Push optimizations" run, riding the same supplemental feed as the
  * listing overrides. Restricted-category hints are heuristics over the
  * product's own text: they warn, the merchant decides.
+ *
+ * Every select stores the API's own code as its value and takes its labels from
+ * the message catalog, so translating a label never changes what we send to
+ * Google.
  */
 
 const NOTICE_TYPES = [
@@ -28,17 +33,6 @@ const NOTICE_TYPES = [
   "safety_warning",
   "prop_65",
 ] as const;
-
-const NOTICE_LABELS: Record<string, string> = {
-  ucp_subscription: "subscription",
-  ucp_preorder: "pre-order",
-  ucp_personalized: "personalized",
-  ucp_not_new_or_final_sale: "not new / final sale",
-  ucp_gifting: "gift card",
-  ucp_age_restricted: "age-restricted",
-  ucp_rental: "rental",
-  ucp_bundled_service: "bundled service",
-};
 
 const ProductEditor = ({
   store,
@@ -50,6 +44,8 @@ const ProductEditor = ({
   onSaved: () => void;
 }) => {
   const toast = useToastManager();
+  const translate = useTranslations("dashboard.googleShopping.forms");
+  const messages = useMessages();
 
   const [handleSubmit, isSaving] = useAsyncAction(
     async (data: {
@@ -68,14 +64,14 @@ const ProductEditor = ({
 
       if (!result.success) {
         toast.add({
-          title: "Checkout settings",
+          title: translate("notice.toast"),
           description: result.error.message,
           type: "error",
         });
         return;
       }
 
-      toast.add({ title: "Checkout settings saved", type: "success" });
+      toast.add({ title: translate("notice.saved"), type: "success" });
       onSaved();
     },
   );
@@ -86,25 +82,24 @@ const ProductEditor = ({
         noticeType: field({
           shape: "select",
           validator: z.enum(NOTICE_TYPES),
-          label: "Consumer notice",
+          label: translate("notice.type.label"),
+          items: messages.dashboard.googleShopping.forms.notice.type.items,
         }),
         noticeMessage: field({
           shape: "text",
-          validator: z
-            .string()
-            .max(1000, "Notice messages are capped at 1000 characters"),
-          label: "Notice message",
-          placeholder: "e.g. This product can expose you to chemicals…",
+          validator: z.string().max(1000, translate("notice.message.max")),
+          label: translate("notice.message.label"),
+          placeholder: translate("notice.message.placeholder"),
           classList: { field: "flex-1" },
         }),
         merchantItemId: field({
           shape: "text",
           validator: z.string(),
-          label: "Checkout item ID (optional)",
-          placeholder: "Only if it differs from the feed ID",
+          label: translate("notice.itemId.label"),
+          placeholder: translate("notice.itemId.placeholder"),
         }),
       }) satisfies GenericForm,
-    [],
+    [translate, messages],
   );
 
   return (
@@ -124,7 +119,7 @@ const ProductEditor = ({
         className="shrink-0"
         disabled={isSaving}
       >
-        {isSaving ? "Saving…" : "Save"}
+        {isSaving ? translate("saving") : translate("notice.save")}
       </Button>
     </InferredForm>
   );
@@ -139,13 +134,14 @@ const Disclosure = ({
   label: string;
   children: React.ReactNode;
 }) => {
+  const translate = useTranslations("dashboard.googleShopping.forms");
   const [open, setOpen] = useState(false);
 
   return (
     <div className="flex flex-col gap-3 px-4 pb-4">
       <div>
         <Button color="neutral" onClick={() => setOpen((current) => !current)}>
-          {open ? "Hide" : label}
+          {open ? translate("hide") : label}
         </Button>
       </div>
       {open && children}
@@ -167,6 +163,7 @@ export const CustomerSupportEditor = ({
 }) => {
   const toast = useToastManager();
   const router = useRouter();
+  const translate = useTranslations("dashboard.googleShopping.forms");
 
   const [handleSubmit, isSaving] = useAsyncAction(
     async (data: { website: string; email: string; phone: string }) => {
@@ -179,7 +176,7 @@ export const CustomerSupportEditor = ({
 
       if (!result.success) {
         toast.add({
-          title: "Customer support",
+          title: translate("support.toast"),
           description: result.error.message,
           type: "error",
         });
@@ -187,7 +184,7 @@ export const CustomerSupportEditor = ({
       }
 
       toast.add({
-        title: "Customer support contact saved to Merchant Center",
+        title: translate("support.saved"),
         type: "success",
       });
       router.refresh();
@@ -200,30 +197,34 @@ export const CustomerSupportEditor = ({
         website: field({
           shape: "text",
           validator: z.string(),
-          label: "Support website",
-          placeholder: "https://your-store.com/contact",
+          label: translate("support.website.label"),
+          placeholder: translate("support.website.placeholder"),
           classList: { field: "flex-1" },
         }),
         email: field({
           shape: "text",
           validator: z.string(),
-          label: "Support email",
-          placeholder: "support@your-store.com",
+          label: translate("support.email.label"),
+          placeholder: translate("support.email.placeholder"),
         }),
         phone: field({
           shape: "text",
           validator: z.string(),
-          label: "Support phone",
-          placeholder: "+15551234567",
+          label: translate("support.phone.label"),
+          placeholder: translate("support.phone.placeholder"),
         }),
       }) satisfies GenericForm,
-    [],
+    [translate],
   );
 
   const configured = Boolean(current.email || current.uri || current.phone);
 
   return (
-    <Disclosure label={configured ? "Update contact" : "Set contact"}>
+    <Disclosure
+      label={
+        configured ? translate("support.update") : translate("support.open")
+      }
+    >
       <InferredForm
         config={config}
         defaultValues={{
@@ -240,48 +241,17 @@ export const CustomerSupportEditor = ({
           className="shrink-0"
           disabled={isSaving}
         >
-          {isSaving ? "Saving…" : "Save to Merchant Center"}
+          {isSaving ? translate("saving") : translate("support.save")}
         </Button>
       </InferredForm>
     </Disclosure>
   );
 };
 
-const RETURN_WINDOWS = [
-  "14 days",
-  "30 days",
-  "60 days",
-  "90 days",
-  "Lifetime",
-] as const;
-
-const RETURN_METHODS = ["By mail", "In store", "At a kiosk"] as const;
-const RETURN_METHOD_VALUES: Record<
-  (typeof RETURN_METHODS)[number],
-  "BY_MAIL" | "IN_STORE" | "AT_A_KIOSK"
-> = {
-  "By mail": "BY_MAIL",
-  "In store": "IN_STORE",
-  "At a kiosk": "AT_A_KIOSK",
-};
-const RETURN_METHOD_LABELS: Record<string, (typeof RETURN_METHODS)[number]> = {
-  BY_MAIL: "By mail",
-  IN_STORE: "In store",
-  AT_A_KIOSK: "At a kiosk",
-};
-
-const ITEM_CONDITIONS = ["New", "Used"] as const;
-const ITEM_CONDITION_VALUES: Record<
-  (typeof ITEM_CONDITIONS)[number],
-  "NEW" | "USED"
-> = { New: "NEW", Used: "USED" };
-const ITEM_CONDITION_LABELS: Record<string, (typeof ITEM_CONDITIONS)[number]> =
-  { NEW: "New", USED: "Used" };
-
-const RETURN_SHIPPING = [
-  "Free return shipping",
-  "Customer pays return shipping",
-] as const;
+const RETURN_WINDOWS = ["14", "30", "60", "90", "lifetime"] as const;
+const RETURN_METHODS = ["BY_MAIL", "IN_STORE", "AT_A_KIOSK"] as const;
+const ITEM_CONDITIONS = ["NEW", "USED"] as const;
+const RETURN_SHIPPING = ["free", "customer"] as const;
 
 /**
  * Creates or replaces the account's default return policy from ecentic. The
@@ -298,6 +268,8 @@ export const ReturnPolicyEditor = ({
 }) => {
   const toast = useToastManager();
   const router = useRouter();
+  const translate = useTranslations("dashboard.googleShopping.forms");
+  const messages = useMessages();
 
   const [handleSubmit, isSaving] = useAsyncAction(
     async (data: {
@@ -313,22 +285,18 @@ export const ReturnPolicyEditor = ({
         store,
         countries: data.countries.split(",").map((country) => country.trim()),
         windowDays:
-          data.window === "Lifetime" ? null : Number.parseInt(data.window, 10),
+          data.window === "lifetime" ? null : Number.parseInt(data.window, 10),
         policyUrl: data.policyUrl,
-        returnMethods: data.methods.map(
-          (method) => RETURN_METHOD_VALUES[method],
-        ),
-        itemConditions: data.conditions.map(
-          (condition) => ITEM_CONDITION_VALUES[condition],
-        ),
-        customerPaysShipping: data.shipping === "Customer pays return shipping",
+        returnMethods: data.methods,
+        itemConditions: data.conditions,
+        customerPaysShipping: data.shipping === "customer",
         processRefundDays: data.refundDays,
         replace: current !== null,
       });
 
       if (!result.success) {
         toast.add({
-          title: "Return policy",
+          title: translate("returnPolicy.toast"),
           description: result.error.message,
           type: "error",
         });
@@ -337,109 +305,119 @@ export const ReturnPolicyEditor = ({
 
       toast.add({
         title: current
-          ? "Return policy replaced in Merchant Center"
-          : "Return policy created in Merchant Center",
+          ? translate("returnPolicy.replaced")
+          : translate("returnPolicy.created"),
         type: "success",
       });
       router.refresh();
     },
   );
 
-  const config = useMemo(
-    () =>
-      ({
-        countries: field({
-          shape: "text",
-          validator: z
-            .string()
-            .regex(
-              /^[A-Za-z]{2}(\s*,\s*[A-Za-z]{2})*$/,
-              "2-letter country codes, comma-separated (e.g. US, GB)",
-            ),
-          label: "Countries of sale",
-          placeholder: "US, GB",
-        }),
-        window: field({
-          shape: "select",
-          validator: z.enum(RETURN_WINDOWS),
-          label: "Return window",
-        }),
-        policyUrl: field({
-          shape: "text",
-          validator: z
-            .string()
-            .regex(
-              /^https?:\/\/\S+\.\S+/,
-              "Enter the full URL of your return policy page",
-            ),
-          label: "Return policy page URL",
-          placeholder: "https://your-store.com/policies/returns",
-          classList: { field: "flex-1" },
-        }),
-        methods: field({
-          shape: "select",
-          validator: z.array(z.enum(RETURN_METHODS)),
-          multiple: true,
-          label: "Return methods",
-        }),
-        conditions: field({
-          shape: "select",
-          validator: z.array(z.enum(ITEM_CONDITIONS)),
-          multiple: true,
-          label: "Accepted conditions",
-        }),
-        shipping: field({
-          shape: "select",
-          validator: z.enum(RETURN_SHIPPING),
-          label: "Return shipping cost",
-        }),
-        refundDays: field({
-          shape: "number",
-          validator: z
-            .number()
-            .int()
-            .min(1, "At least 1 day")
-            .max(60, "At most 60 days"),
-          label: "Refund processing time (days)",
-        }),
-      }) satisfies GenericForm,
-    [],
-  );
+  const config = useMemo(() => {
+    const items = messages.dashboard.googleShopping.forms.returnPolicy;
+
+    return {
+      countries: field({
+        shape: "text",
+        validator: z
+          .string()
+          .regex(
+            /^[A-Za-z]{2}(\s*,\s*[A-Za-z]{2})*$/,
+            translate("returnPolicy.countries.invalid"),
+          ),
+        label: translate("returnPolicy.countries.label"),
+        placeholder: translate("returnPolicy.countries.placeholder"),
+      }),
+      window: field({
+        shape: "select",
+        validator: z.enum(RETURN_WINDOWS),
+        label: translate("returnPolicy.window.label"),
+        items: items.window.items,
+      }),
+      policyUrl: field({
+        shape: "text",
+        validator: z
+          .string()
+          .regex(
+            /^https?:\/\/\S+\.\S+/,
+            translate("returnPolicy.policyUrl.invalid"),
+          ),
+        label: translate("returnPolicy.policyUrl.label"),
+        placeholder: translate("returnPolicy.policyUrl.placeholder"),
+        classList: { field: "flex-1" },
+      }),
+      methods: field({
+        shape: "select",
+        validator: z.array(z.enum(RETURN_METHODS)),
+        multiple: true,
+        label: translate("returnPolicy.methods.label"),
+        items: items.methods.items,
+      }),
+      conditions: field({
+        shape: "select",
+        validator: z.array(z.enum(ITEM_CONDITIONS)),
+        multiple: true,
+        label: translate("returnPolicy.conditions.label"),
+        items: items.conditions.items,
+      }),
+      shipping: field({
+        shape: "select",
+        validator: z.enum(RETURN_SHIPPING),
+        label: translate("returnPolicy.shipping.label"),
+        items: items.shipping.items,
+      }),
+      refundDays: field({
+        shape: "number",
+        validator: z
+          .number()
+          .int()
+          .min(1, translate("returnPolicy.refundDays.min"))
+          .max(60, translate("returnPolicy.refundDays.max")),
+        label: translate("returnPolicy.refundDays.label"),
+      }),
+    } satisfies GenericForm;
+  }, [translate, messages]);
 
   const currentWindow = (() => {
     switch (true) {
       case current?.lifetime:
-        return "Lifetime" as const;
+        return "lifetime" as const;
       case RETURN_WINDOWS.includes(
-        `${current?.windowDays} days` as (typeof RETURN_WINDOWS)[number],
+        `${current?.windowDays}` as (typeof RETURN_WINDOWS)[number],
       ):
-        return `${current?.windowDays} days` as (typeof RETURN_WINDOWS)[number];
+        return `${current?.windowDays}` as (typeof RETURN_WINDOWS)[number];
       default:
-        return "30 days" as const;
+        return "30" as const;
     }
   })();
 
-  const currentMethods = (current?.returnMethods ?? [])
-    .map((method) => RETURN_METHOD_LABELS[method])
-    .filter((method) => method !== undefined);
-  const currentConditions = (current?.itemConditions ?? [])
-    .map((condition) => ITEM_CONDITION_LABELS[condition])
-    .filter((condition) => condition !== undefined);
+  const currentMethods = (current?.returnMethods ?? []).filter(
+    (method): method is (typeof RETURN_METHODS)[number] =>
+      RETURN_METHODS.includes(method as (typeof RETURN_METHODS)[number]),
+  );
+  const currentConditions = (current?.itemConditions ?? []).filter(
+    (condition): condition is (typeof ITEM_CONDITIONS)[number] =>
+      ITEM_CONDITIONS.includes(condition as (typeof ITEM_CONDITIONS)[number]),
+  );
 
   return (
-    <Disclosure label={current ? "Update policy" : "Create policy"}>
+    <Disclosure
+      label={
+        current
+          ? translate("returnPolicy.update")
+          : translate("returnPolicy.open")
+      }
+    >
       <InferredForm
         config={config}
         defaultValues={{
           countries: current?.countries.join(", ") || "US",
           window: currentWindow,
           policyUrl: current?.policyUrl ?? "",
-          methods: currentMethods.length > 0 ? currentMethods : ["By mail"],
+          methods: currentMethods.length > 0 ? currentMethods : ["BY_MAIL"],
           conditions:
-            currentConditions.length > 0 ? currentConditions : ["New"],
-          shipping: current?.customerPaysShipping
-            ? "Customer pays return shipping"
-            : "Free return shipping",
+            currentConditions.length > 0 ? currentConditions : ["NEW"],
+          shipping: current?.customerPaysShipping ? "customer" : "free",
           refundDays: current?.processRefundDays ?? 14,
         }}
         onSubmit={handleSubmit}
@@ -448,15 +426,14 @@ export const ReturnPolicyEditor = ({
         <div className="flex flex-col gap-2 sm:col-span-3">
           <Button type="submit" color="neutral" disabled={isSaving}>
             {isSaving
-              ? "Saving…"
+              ? translate("saving")
               : current
-                ? "Replace policy in Merchant Center"
-                : "Create policy in Merchant Center"}
+                ? translate("returnPolicy.submitReplace")
+                : translate("returnPolicy.submitCreate")}
           </Button>
           {current && (
             <p className="text-foreground-dimmed text-xs">
-              Google's API cannot edit a return policy in place — saving
-              replaces the existing default policy with this one.
+              {translate("returnPolicy.replaceNote")}
             </p>
           )}
         </div>
@@ -474,7 +451,14 @@ export const UcpProductsPanel = ({
 }) => {
   const toast = useToastManager();
   const router = useRouter();
+  const translate = useTranslations("dashboard.googleShopping.products");
+  const messages = useMessages();
   const [expanded, setExpanded] = useState<string | null>(null);
+
+  // Hints come from a heuristic that can name a category the catalog has no
+  // label for yet — fall back to the raw code rather than throwing on it.
+  const hints: Record<string, string> =
+    messages.dashboard.googleShopping.products.hints;
 
   const [toggle, isToggling] = useAsyncAction(
     async (product: GoogleMerchant.UcpProduct) => {
@@ -490,7 +474,7 @@ export const UcpProductsPanel = ({
 
       if (!result.success) {
         toast.add({
-          title: "Checkout eligibility",
+          title: translate("toast"),
           description: result.error.message,
           type: "error",
         });
@@ -498,9 +482,7 @@ export const UcpProductsPanel = ({
       }
 
       toast.add({
-        title: eligible
-          ? "Marked eligible — push optimizations to send it to Google"
-          : "Marked not eligible — push optimizations to send the opt-out",
+        title: eligible ? translate("enabled") : translate("disabled"),
         type: "success",
       });
       router.refresh();
@@ -509,9 +491,7 @@ export const UcpProductsPanel = ({
 
   if (products.length === 0)
     return (
-      <p className="p-4 text-foreground-dimmed text-sm">
-        No synced products yet — sync your store's products first.
-      </p>
+      <p className="p-4 text-foreground-dimmed text-sm">{translate("empty")}</p>
     );
 
   return (
@@ -527,27 +507,34 @@ export const UcpProductsPanel = ({
               </p>
               {product.restrictedHints.length > 0 && (
                 <Chip tone="warning">
-                  may be restricted:{" "}
-                  {product.restrictedHints
-                    .map((hint) => NOTICE_LABELS[hint] ?? hint)
-                    .join(", ")}
+                  {translate("restricted", {
+                    hints: product.restrictedHints
+                      .map((hint) => hints[hint] ?? hint)
+                      .join(", "),
+                  })}
                 </Chip>
               )}
               {product.offers.live > 0 && (
-                <Chip tone="success">{product.offers.live} live</Chip>
+                <Chip tone="success">
+                  {translate("live", { count: product.offers.live })}
+                </Chip>
               )}
               {product.offers.pending > 0 && (
-                <Chip tone="warning">{product.offers.pending} pending</Chip>
+                <Chip tone="warning">
+                  {translate("pending", { count: product.offers.pending })}
+                </Chip>
               )}
               {product.offers.error > 0 && (
-                <Chip tone="error">{product.offers.error} error</Chip>
+                <Chip tone="error">
+                  {translate("error", { count: product.offers.error })}
+                </Chip>
               )}
               <Button
                 color="neutral"
                 disabled={isToggling}
                 onClick={() => toggle(product)}
               >
-                {eligible ? "Eligible ✓ — turn off" : "Enable checkout"}
+                {eligible ? translate("disable") : translate("enable")}
               </Button>
               <Button
                 color="neutral"
@@ -557,7 +544,9 @@ export const UcpProductsPanel = ({
                   )
                 }
               >
-                {expanded === product.id ? "Close" : "Notice…"}
+                {expanded === product.id
+                  ? translate("close")
+                  : translate("notice")}
               </Button>
             </div>
 
