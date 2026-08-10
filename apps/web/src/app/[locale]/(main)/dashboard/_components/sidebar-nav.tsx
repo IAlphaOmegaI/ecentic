@@ -36,6 +36,12 @@ const items = [
     exact: false,
   },
   {
+    icon: ShieldCheckIcon,
+    key: "quality",
+    segment: "/quality",
+    exact: false,
+  },
+  {
     icon: ChartCircularIcon,
     key: "competitors",
     segment: "/competitors",
@@ -58,12 +64,6 @@ const items = [
     icon: EyeIcon,
     key: "visibility",
     segment: "/visibility",
-    exact: false,
-  },
-  {
-    icon: ShieldCheckIcon,
-    key: "quality",
-    segment: "/quality",
     exact: false,
   },
   {
