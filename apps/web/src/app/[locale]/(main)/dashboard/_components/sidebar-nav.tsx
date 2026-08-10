@@ -3,12 +3,12 @@
 import {
   BarChartIcon,
   ChartCircularIcon,
-  CheckBadgeIcon,
   CircleBoltIcon,
   CodeIcon,
   EyeIcon,
   GaugeIcon,
   GearIcon,
+  MegaphoneIcon,
   RadarIcon,
   RocketIcon,
   SearchIcon,
@@ -25,7 +25,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 const items = [
   { icon: SquareChartIcon, key: "overview", segment: "", exact: true },
   {
-    icon: CheckBadgeIcon,
+    icon: MegaphoneIcon,
     key: "brand",
     segment: "/brand",
     exact: false,

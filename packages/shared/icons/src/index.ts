@@ -62,4 +62,5 @@ export * from "./icons/upload";
 export * from "./icons/x";
 export * from "./icons/x-circle";
 export * from "./icons/x-twitter";
+export * from "./icons/megaphone";
 export type * from "./types";
