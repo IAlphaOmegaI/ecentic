@@ -1,6 +1,6 @@
 "use server";
 
-import { resultify, type UnwrapResult } from "@zenncore/utils";
+import type { UnwrapResult } from "@zenncore/utils";
 import { and, count, eq, gte, sql } from "drizzle-orm";
 import { z } from "zod";
 import { db, schema } from "../database";
@@ -12,7 +12,7 @@ import {
 } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { DatabaseError } from "../utils/error";
-import { repository } from "../utils/repository";
+import { repository, resultifyRead } from "../utils/repository";
 import {
   isOriginAllowedForStore,
   resolveProductFromPageUrl,
@@ -123,7 +123,7 @@ export type TrafficTimeSeriesPoint = {
  */
 export const countByStoreForUser = withInstrumentation(
   async (_, { user, since }: { user: string; since: Date }) => {
-    const rows = await resultify(async () =>
+    const rows = await resultifyRead(async () =>
       db
         .select({
           storeId: schema.agentVisit.storeId,
@@ -171,7 +171,7 @@ export const getAgentTrafficTimeSeries = withAuthentication(
         "day",
       );
 
-    const result = await resultify(async () =>
+    const result = await resultifyRead(async () =>
       db
         .select({
           day,
@@ -225,7 +225,7 @@ export const getAgentTrafficSummary = withAuthentication(
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    const result = await resultify(async () =>
+    const result = await resultifyRead(async () =>
       db
         .select({
           agentType: schema.agentVisit.agentType,

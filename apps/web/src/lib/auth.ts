@@ -5,8 +5,8 @@ import { nextCookies } from "better-auth/next-js";
 import { genericOAuth } from "better-auth/plugins";
 import { cookies } from "next/headers";
 import * as Authentication from "@/server/app/authentication";
-import { db, schema } from "@/server/database";
 import { verifyHmac } from "@/server/app/integration/shopify/hmac";
+import { db, schema } from "@/server/database";
 
 type ShopifyOnlineTokenResponse = {
   /** An API access token that can be used to access the shop's data. Your app should store the token somewhere to make authenticated requests for a shop's data. */
@@ -247,6 +247,10 @@ export const auth = betterAuth({
               id: associatedUser.id,
               email: associatedUser.email,
               name: `${associatedUser.first_name} ${associatedUser.last_name}`,
+              // Same required-field validation as Google above: without an
+              // explicit `surname` the first sign-in of a new Shopify user is
+              // rejected as `surname_is_required`.
+              surname: associatedUser.last_name,
               emailVerified: associatedUser.email_verified,
               role: associatedUser.account_owner ? "owner" : "administrator",
             };
@@ -260,6 +264,13 @@ export const auth = betterAuth({
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      // `surname` is a required additional field, and Better Auth validates the
+      // provider profile against it *before* `databaseHooks.user.create.before`
+      // runs — so a first-time Google signup fails with `surname_is_required`
+      // unless the profile carries the key itself. Google spells it
+      // `family_name`; a missing one falls through to the hook below, which
+      // derives the surname from the full name instead.
+      mapProfileToUser: ({ family_name }) => ({ surname: family_name ?? "" }),
     },
   },
 

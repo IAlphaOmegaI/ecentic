@@ -7,7 +7,40 @@ import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import type * as GoogleMerchant from "@/server/app/integration/google-merchant";
 import * as Store from "@/server/app/store";
+
+/** Compact Google Shopping state for the store row — management lives on the
+ * dedicated /dashboard/{store}/google-shopping page. */
+const googleSummary = (
+  status: GoogleMerchant.Status | null,
+): { label: string; className: string } => {
+  if (!status?.supported)
+    return {
+      label: "Coming soon",
+      className: "bg-foreground/5 text-foreground-dimmed",
+    };
+
+  switch (true) {
+    case !status.connected:
+      return {
+        label: "Not connected",
+        className: "bg-foreground/5 text-foreground-dimmed",
+      };
+    case status.provisioned:
+      return {
+        label: `Active · ${status.offers.live} live`,
+        className: "bg-success/10 text-success",
+      };
+    case status.linkState === "active":
+      return { label: "Linked", className: "bg-success/10 text-success" };
+    default:
+      return {
+        label: "Setup in progress",
+        className: "bg-warning/10 text-warning",
+      };
+  }
+};
 
 const PLATFORM_BADGE: Record<string, { label: string; className: string }> = {
   shopify: { label: "SH", className: "bg-[#96BF48] text-background-rich" },
@@ -20,7 +53,13 @@ const PLATFORM_BADGE: Record<string, { label: string; className: string }> = {
   csv: { label: "CSV", className: "bg-accent-foreground text-background" },
 };
 
-export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
+export const IntegrationsSection = ({
+  stores,
+  google,
+}: {
+  stores: Store.Type[];
+  google: Record<string, GoogleMerchant.Status | null>;
+}) => {
   const translate = useTranslations("dashboard.settings.integrations");
   const toast = useToastManager();
 
@@ -89,42 +128,65 @@ export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
                 label: store.platform.slice(0, 2).toUpperCase(),
                 className: "bg-foreground-dimmed text-background",
               };
+              const status = google[store.id] ?? null;
+              const summary = googleSummary(status);
+
               return (
-                <div
-                  key={store.id}
-                  className="flex items-center justify-between px-4 py-4"
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={cn(
-                        "flex size-9 items-center justify-center rounded-md font-bold text-sm",
-                        badge.className,
-                      )}
-                    >
-                      {badge.label}
+                <div key={store.id} className="px-4 py-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={cn(
+                          "flex size-9 items-center justify-center rounded-md font-bold text-sm",
+                          badge.className,
+                        )}
+                      >
+                        {badge.label}
+                      </div>
+                      <div>
+                        <p className="font-medium text-foreground text-sm">
+                          {store.domain}
+                        </p>
+                        <p className="mt-0.5 text-foreground-dimmed text-xs capitalize">
+                          {store.platform} · {store.name}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium text-foreground text-sm">
-                        {store.domain}
-                      </p>
-                      <p className="mt-0.5 text-foreground-dimmed text-xs capitalize">
-                        {store.platform} · {store.name}
-                      </p>
+                    <div className="flex items-center gap-3">
+                      <span className="rounded-full bg-success/10 px-2 py-0.5 font-semibold text-[11px] text-success uppercase tracking-[0.05em]">
+                        {translate("connected")}
+                      </span>
+                      <Button
+                        color="neutral"
+                        disabled={isSyncing}
+                        onClick={() => handleSync(store)}
+                      >
+                        {isSyncing
+                          ? translate("action.syncing")
+                          : translate("action.sync")}
+                      </Button>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className="rounded-full bg-success/10 px-2 py-0.5 font-semibold text-[11px] text-success uppercase tracking-[0.05em]">
-                      {translate("connected")}
+                  <div className="mt-3 flex flex-wrap items-center gap-3 border-accent-foreground border-t pt-3">
+                    <span className="text-foreground-dimmed text-xs">
+                      Google Shopping
                     </span>
-                    <Button
-                      color="neutral"
-                      disabled={isSyncing}
-                      onClick={() => handleSync(store)}
+                    <span
+                      className={cn(
+                        "rounded-full px-2 py-0.5 font-semibold text-[11px] uppercase tracking-[0.05em]",
+                        summary.className,
+                      )}
                     >
-                      {isSyncing
-                        ? translate("action.syncing")
-                        : translate("action.sync")}
-                    </Button>
+                      {summary.label}
+                    </span>
+                    {status?.supported && (
+                      <Link
+                        href={`/dashboard/${store.id}/google-shopping`}
+                        className="text-primary text-xs hover:underline"
+                      >
+                        Manage →
+                      </Link>
+                    )}
                   </div>
                 </div>
               );

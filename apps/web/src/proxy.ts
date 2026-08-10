@@ -133,8 +133,23 @@ export const proxy = async (request: Request) => {
   }
 };
 
+// Everything runs through the proxy except Next internals, the Sentry tunnel,
+// API and `.well-known` routes, Next's generated social images — and anything
+// whose path *ends* in one of the extensions below.
+//
+// That trailing-extension clause is not cosmetic: whatever reaches next-intl
+// gets rewritten to `/<locale>/…`, and no locale segment serves a file, so it
+// 404s. Naming files one by one is how `/tracker.js` (the storefront agent
+// tracker every Shopify ScriptTag points at), `/webmcp.js`, `/BingSiteAuth.xml`,
+// `/auth.md` and `/openapi.json` all ended up returning the 404 page in
+// production. The list is an allowlist of what should be publicly served — a
+// `public/` file with an extension outside it stays unreachable, which is the
+// intent for `templates/*.tsx` and `stubs/*.csv` (local artifacts, not assets).
+//
+// Anchored with `$` so a slug that merely *contains* a dotted word — say
+// `/es/blog/why-node.js-wins` — still gets its locale rewrite.
 export const config = {
   matcher: [
-    "/((?!monitoring|_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt|llms\\.txt|manifest\\.webmanifest|browserconfig\\.xml|\\.well-known(?:/.*)?$|opengraph-image(?:-[^/]+)?$|twitter-image(?:-[^/]+)?$|api|.*\\.(?:png|jpg|jpeg|webp|svg)).*)",
+    "/((?!monitoring|_next/static|_next/image|api|\\.well-known(?:/.*)?$|opengraph-image(?:-[^/]+)?$|twitter-image(?:-[^/]+)?$|.*\\.(?:js|mjs|css|txt|md|xml|json|webmanifest|ico|png|jpg|jpeg|gif|webp|avif|svg|mp4|webm|woff|woff2|ttf|otf)$).*)",
   ],
 } satisfies ProxyConfig;

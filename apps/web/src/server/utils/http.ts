@@ -10,6 +10,7 @@ const STATUS_BY_ERROR: Record<string, number> = {
   "unauthenticated-error": 401,
   "invalid-credentials": 401,
   "invalid-signature": 401,
+  "untrusted-request": 401,
   "unauthorized-error": 403,
   "not-found-error": 404,
   "conflict-error": 409,

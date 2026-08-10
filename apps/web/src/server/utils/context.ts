@@ -10,6 +10,42 @@ import { type Brand, Environment } from "./environment";
 import { ErrorProtocol, isExpected } from "./error";
 
 /**
+ * Secret-bearing argument names never reach telemetry — action arguments are
+ * shipped to Sentry as a span attribute, and values like OAuth authorization
+ * codes, tokens, and passwords must not be exfiltrated by observability.
+ */
+const SENSITIVE_ARGUMENT_PATTERN =
+  /code|token|secret|password|credential|authorization|apikey|api_key/i;
+
+// Depth-capped and cycle-guarded: arguments can carry rich runtime objects
+// (Drizzle query nodes are circular — column → table → column), and telemetry
+// needs a bounded sketch of them, not a faithful traversal.
+const REDACTION_MAXIMUM_DEPTH = 6;
+
+const redactArguments = (
+  value: unknown,
+  depth = 0,
+  seen = new WeakSet<object>(),
+): unknown => {
+  if (depth > REDACTION_MAXIMUM_DEPTH) return "[truncated]";
+  if (value === null || typeof value !== "object") return value;
+  if (seen.has(value)) return "[circular]";
+  seen.add(value);
+
+  if (Array.isArray(value))
+    return value.map((entry) => redactArguments(entry, depth + 1, seen));
+
+  return Object.fromEntries(
+    Object.entries(value as Record<string, unknown>).map(([key, entry]) => [
+      key,
+      SENSITIVE_ARGUMENT_PATTERN.test(key)
+        ? "[redacted]"
+        : redactArguments(entry, depth + 1, seen),
+    ]),
+  );
+};
+
+/**
  * Base context: environment + Sentry span. No request APIs, no auth.
  * Safe for repositories, `"use cache"`, `generateStaticParams`, and other
  * static / non-request rails.
@@ -150,7 +186,10 @@ const createShell = (options: ShellOptions) => {
 
       span.addBreadcrumb = Sentry.addBreadcrumb;
 
-      span.setAttribute("action.arguments", args);
+      span.setAttribute(
+        "action.arguments",
+        redactArguments(args) as typeof args,
+      );
 
       const base = { ...(await define()), span };
       const context = await enhance(base);

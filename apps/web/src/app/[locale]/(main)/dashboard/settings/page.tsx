@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { redirect } from "@/i18n/navigation";
 import * as Authentication from "@/server/app/authentication";
 import * as PerformanceFee from "@/server/app/billing/performance-fee";
+import * as GoogleMerchant from "@/server/app/integration/google-merchant";
 import * as Store from "@/server/app/store";
 import * as Subscription from "@/server/app/subscription";
 import { Environment } from "@/server/utils/environment";
@@ -39,7 +40,17 @@ const Integrations = async () => {
     Store.getForCurrentUser(Environment.SERVER),
   );
 
-  return <IntegrationsSection stores={stores} />;
+  const googleEntries = await Promise.all(
+    stores.map(async (store) => {
+      const status = await GoogleMerchant.getStatus(Environment.SERVER, {
+        store: store.id,
+      });
+      return [store.id, status.success ? status.data : null] as const;
+    }),
+  );
+  const google = Object.fromEntries(googleEntries);
+
+  return <IntegrationsSection stores={stores} google={google} />;
 };
 
 // The slow one: `getCurrentSubscription` reconciles against Stripe and the

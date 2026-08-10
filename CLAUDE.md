@@ -284,4 +284,14 @@ SHOPIFY_CATALOG_CLIENT_SECRET
 SHOPIFY_CATALOG_TOKEN_URL                 # default https://api.shopify.com/auth/access_token
 SHOPIFY_CATALOG_MCP_URL                   # default https://catalog.shopify.com/api/ucp/mcp
 UCP_AGENT_PROFILE_URL                     # default {APP_HOST}/ucp/agent-profile
+
+# Google Merchant Center — hybrid channel-partner integration
+# (docs/integrations/google-merchant-center.md). Merchant-consent OAuth client
+# (scope https://www.googleapis.com/auth/content) from the GCP project with the
+# Merchant API enabled; the MCA id is our advanced account that accountManagement
+# links are proposed from.
+GOOGLE_MERCHANT_CLIENT_ID
+GOOGLE_MERCHANT_CLIENT_SECRET
+ECENTIC_MCA_ID                            # numeric Merchant Center advanced-account id
+GOOGLE_MERCHANT_MCA_REFRESH_TOKEN         # optional — MCA-admin grant; auto-approves incoming link proposals (unset = approve manually in the MCA's Merchant Center)
 ```

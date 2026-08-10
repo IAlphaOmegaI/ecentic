@@ -11,7 +11,7 @@ import {
 import type { PgTableWithColumns } from "drizzle-orm/pg-core";
 import { db, type TransactionScope } from "@/server/database";
 import { withInstrumentation } from "./context";
-import { DatabaseError } from "./error";
+import { DatabaseError, isTransientConnectionError } from "./error";
 
 /** Table type that has id and optional createdAt for default ordering */
 type TableWithId =
@@ -68,6 +68,47 @@ const capitalize = (value: string): string =>
 // biome-ignore lint/suspicious/noExplicitAny: tx and db share query API but have different nominal types
 const executor = (options?: ExecuteOptions): any => options?.tx ?? db;
 
+/**
+ * `resultify` for reads, with one retry when the *connection* failed.
+ *
+ * Fluid compute freezes the instance between requests, and Neon's pooler drops
+ * its end of an idle socket while we are frozen. No RST reaches a frozen
+ * process, so postgres.js keeps the socket in its pool and the next request
+ * writes into a black hole until the kernel gives up — `write ETIMEDOUT`, with
+ * the query never reaching Postgres (ECENTIC-D5). `idle_timeout` cannot cover
+ * this: its timer is frozen too, and on thaw an incoming request can claim the
+ * connection before the overdue callback runs.
+ *
+ * postgres.js destroys a connection that errors, so the retry opens a fresh one.
+ * `query` is a thunk rather than a built query because a Drizzle builder is
+ * single-use — the retry has to rebuild it.
+ *
+ * Reads only, on purpose: an `ETIMEDOUT` on a write cannot be told apart from
+ * "the write landed but the response was lost", so replaying it risks
+ * duplicates. Once, on purpose: every dead-socket attempt costs a full kernel
+ * retransmit timeout, and a pool that lost two sockets to the same freeze is not
+ * worth making every user wait through twice.
+ *
+ * Exported for the aggregate reads in `server/app` (group-bys and joins the
+ * repository does not model) — those run raw `db.select` thunks and are exposed
+ * to the same dead socket as every repository read. Writes keep plain
+ * `resultify`.
+ */
+export const resultifyRead = async <T>(
+  query: () => Promise<T>,
+  options?: ExecuteOptions,
+) => {
+  const attempt = await resultify(query);
+
+  // Retrying inside a transaction is pointless and misleading: the failure has
+  // already aborted it, so the second attempt reports `current transaction is
+  // aborted` and buries the cause that actually explains the outage.
+  if (attempt.success || options?.tx) return attempt;
+  if (!isTransientConnectionError(attempt.error)) return attempt;
+
+  return resultify(query);
+};
+
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" &&
   value !== null &&
@@ -118,13 +159,14 @@ export function repository<T extends TableWithId>(table: T) {
       async (_, id: string, options?: ExecuteOptions) => {
         const run = executor(options);
         const target = asTable(table);
-        const result = await resultify(
+        const result = await resultifyRead(
           async () =>
             run
               .select()
               .from(target)
               .where(eq(target.id, id))
               .limit(1) as Promise<Document<T>[]>,
+          options,
         );
 
         if (!result.success) {
@@ -170,22 +212,28 @@ export function repository<T extends TableWithId>(table: T) {
             ? ([desc(target.createdAt)] as const)
             : ([desc(target.id)] as const);
 
-        const query = run
-          .select()
-          .from(target)
-          .where(where)
-          .orderBy(...order)
-          .offset(offset)
-          .limit(size);
-
-        const cQuery = run
-          .select({ count: sql<number>`count(*)::int` })
-          .from(target)
-          .where(where);
-
+        // Both queries are built inside their thunk rather than hoisted: a
+        // Drizzle builder is single-use, so a retry needs to rebuild it.
         const [result, count] = await Promise.all([
-          resultify(async () => (await query) as Document<T>[]),
-          resultify(async () => (await cQuery) as { count: number }[]),
+          resultifyRead(
+            async () =>
+              run
+                .select()
+                .from(target)
+                .where(where)
+                .orderBy(...order)
+                .offset(offset)
+                .limit(size) as Promise<Document<T>[]>,
+            options,
+          ),
+          resultifyRead(
+            async () =>
+              run
+                .select({ count: sql<number>`count(*)::int` })
+                .from(target)
+                .where(where) as Promise<{ count: number }[]>,
+            options,
+          ),
         ]);
 
         if (!result.success) {
@@ -379,13 +427,14 @@ export function repository<T extends TableWithId>(table: T) {
       async (_, id: string, options?: ExecuteOptions) => {
         const run = executor(options);
         const target = asTable(table);
-        const result = await resultify(
+        const result = await resultifyRead(
           async () =>
             run
               .select({ id: target.id })
               .from(target)
               .where(eq(target.id, id))
               .limit(1) as Promise<{ id: string }[]>,
+          options,
         );
 
         if (!result.success) {
@@ -415,12 +464,13 @@ export function repository<T extends TableWithId>(table: T) {
       async (_, where?: SQL, options?: ExecuteOptions) => {
         const run = executor(options);
         const target = asTable(table);
-        const result = await resultify(
+        const result = await resultifyRead(
           async () =>
             run
               .select({ count: sql<number>`count(*)::int` })
               .from(target)
               .where(where) as Promise<{ count: number }[]>,
+          options,
         );
 
         if (!result.success) {
@@ -465,7 +515,7 @@ export function repository<T extends TableWithId>(table: T) {
             ? ([desc(target.createdAt)] as const)
             : ([desc(target.id)] as const);
 
-        const result = await resultify(
+        const result = await resultifyRead(
           async () =>
             run
               .select()
@@ -474,6 +524,7 @@ export function repository<T extends TableWithId>(table: T) {
               .orderBy(...orderColumns)
               .offset(offset)
               .limit(limit) as Promise<Document<T>[]>,
+          options,
         );
 
         if (!result.success) {

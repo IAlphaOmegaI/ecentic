@@ -10,6 +10,7 @@ import {
   timestamp,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
+import type * as Brand from "@/server/app/intelligence/brand";
 import type * as Simulate from "@/server/app/intelligence/simulate";
 
 /**
@@ -152,6 +153,169 @@ export const store_account = pgTable("store_account", {
   updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
 });
 
+/**
+ * Google Merchant Center link state and credentials (1:1 with {@link store}).
+ * Created when the merchant completes the "Connect Google" OAuth. Holds the
+ * merchant-consent OAuth tokens (scope `content`), the detected Merchant Center
+ * account, the accountManagement link lifecycle, and the supplemental data
+ * source our attribute overrides are pushed through. See
+ * docs/integrations/google-merchant-center.md.
+ */
+export const googleMerchantAccount = pgTable("google_merchant_account", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+  storeId: text("storeId")
+    .notNull()
+    .unique()
+    .references(() => store.id, { onDelete: "cascade" }),
+  // Merchant-consent OAuth (Google, scope https://www.googleapis.com/auth/content)
+  accessToken: text("accessToken"),
+  accessTokenExpiresAt: timestamp("accessTokenExpiresAt", { mode: "date" }),
+  refreshToken: text("refreshToken"),
+  scope: text("scope"),
+  /** Numeric Merchant Center account id, once detected via accounts.list. */
+  googleAccountId: text("googleAccountId"),
+  /**
+   * All Merchant Center accounts visible to the connected Google login,
+   * refreshed at OAuth time and on every detect poll. Drives the account
+   * picker when more than one is visible (a Google login often carries
+   * several accounts; only the one the store's plugin created is right).
+   */
+  candidateAccounts: jsonb("candidateAccounts").$type<
+    | {
+        id: string;
+        name: string | null;
+        /** Homepage host + store match verdict (absent on legacy rows). */
+        domain?: string | null;
+        matchesStore?: boolean;
+      }[]
+    | null
+  >(),
+  /**
+   * accountManagement service lifecycle: `unlinked` (no proposal sent),
+   * `proposed` (services:propose sent, awaiting merchant approval in Merchant
+   * Center), `active` (merchant approved — we can manage the account).
+   */
+  linkState: text("linkState")
+    .$type<"unlinked" | "proposed" | "active">()
+    .notNull()
+    .default("unlinked"),
+  /**
+   * `native` = Path 1, the store's Google plugin owns the primary feed and we
+   * only push supplemental overrides. `managed` = Path 2, ecentic provisioned
+   * the account and owns the primary feed.
+   */
+  path: text("path").$type<"native" | "managed">().notNull().default("native"),
+  /** Full resource name of our supplemental data source, once created. */
+  dataSourceName: text("dataSourceName"),
+  /**
+   * Full resource name of the plugin's primary product data source. Its
+   * defaultRule must list our supplemental source first — auto-pickup does not
+   * happen (spike 1) — so provisioning patches it and the watchdog re-checks it.
+   */
+  primaryDataSourceName: text("primaryDataSourceName"),
+  // Merge keys discovered from the primary feed's data source — never assumed.
+  // Spike 1: Shopify feed labels are Shopify-managed strings like
+  // `USD_101961335098`, not country codes; supplemental data merges on
+  // (offerId, contentLanguage, feedLabel), not offerId alone.
+  feedLabel: text("feedLabel"),
+  contentLanguage: text("contentLanguage"),
+  // Path 2 ToS consent log (termsOfService.accept requires logged consent).
+  tosVersion: text("tosVersion"),
+  tosAcceptedAt: timestamp("tosAcceptedAt", { mode: "date" }),
+  lastDiagnosticsAt: timestamp("lastDiagnosticsAt", { mode: "date" }),
+  createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+});
+
+/**
+ * One row per primary-feed offer we push overrides onto. Offer IDs are read
+ * from the merchant's live account (spike 1: `shopify_ZZ_{productId}_{variantId}`
+ * — the plugin's scheme is quirkier than documented, never reconstruct it).
+ * Carries the push/verify lifecycle: Google reprocesses lazily (hours), so
+ * `pending` means "pushed, not yet confirmed merged" and only the async
+ * verification pass — gated on `productStatus.lastUpdateDate` advancing past
+ * `pushedAt` — flips a row to `live`. `attributesHash` makes re-pushing
+ * idempotent (unchanged bodies are skipped).
+ */
+export const googleMerchantOffer = pgTable(
+  "google_merchant_offer",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    productId: text("productId")
+      .notNull()
+      .references(() => product.id, { onDelete: "cascade" }),
+    offerId: text("offerId").notNull(),
+    /**
+     * Google's full offer identity `contentLanguage~feedLabel~offerId` — the
+     * uniqueness key. `offerId` alone collides across markets/languages.
+     */
+    offerKey: text("offerKey").notNull(),
+    feedLabel: text("feedLabel"),
+    contentLanguage: text("contentLanguage"),
+    /** The productInput resource name from the insert response — the handle
+     * `productInputs.delete` needs when this offer's config goes away. */
+    inputName: text("inputName"),
+    /** SHA-256 of the last pushed override attributes body. */
+    attributesHash: text("attributesHash"),
+    status: text("status")
+      .$type<"pending" | "live" | "disapproved" | "error">()
+      .notNull()
+      .default("pending"),
+    error: text("error"),
+    pushedAt: timestamp("pushedAt", { mode: "date" }),
+    verifiedAt: timestamp("verifiedAt", { mode: "date" }),
+    /** Google's `productStatus.lastUpdateDate` as last seen by verification. */
+    lastUpdateDate: text("lastUpdateDate"),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("google_merchant_offer_store_idx").on(table.storeId),
+    uniqueIndex("google_merchant_offer_store_offerkey_unique").on(
+      table.storeId,
+      table.offerKey,
+    ),
+  ],
+);
+
+/**
+ * Per-product agentic-checkout (UCP) settings, pushed to Google as custom
+ * attributes through the supplemental data source. A row existing means the
+ * merchant made an explicit choice for the product — its eligibility is then
+ * always pushed (`true` or a hard `false`); no row means we send nothing.
+ */
+export const googleMerchantUcp = pgTable(
+  "google_merchant_ucp",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    productId: text("productId")
+      .notNull()
+      .references(() => product.id, { onDelete: "cascade" }),
+    checkoutEligible: boolean("checkoutEligible").notNull().default(false),
+    noticeType: text("noticeType").$type<
+      "legal_disclaimer" | "safety_warning" | "prop_65"
+    >(),
+    noticeMessage: text("noticeMessage"),
+    /** Checkout-API product id when it differs from the feed offer id. */
+    merchantItemId: text("merchantItemId"),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("google_merchant_ucp_store_idx").on(table.storeId),
+    uniqueIndex("google_merchant_ucp_store_product_unique").on(
+      table.storeId,
+      table.productId,
+    ),
+  ],
+);
+
 export const product = pgTable(
   "product",
   {
@@ -256,6 +420,40 @@ export const scan = pgTable(
     index("scan_user_created_idx").on(table.userId, table.createdAt),
     index("scan_status_idx").on(table.status),
     index("scan_store_idx").on(table.storeId),
+  ],
+);
+
+/**
+ * One row per brand visibility analysis run (see
+ * {@link Brand.analyze}): 20 audited shopper queries + crawlability checks,
+ * distilled into a stored {@link Brand.Report}. History is kept — the
+ * dashboard reads the latest `complete` row per store.
+ */
+export const brandSnapshot = pgTable(
+  "brand_snapshot",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    userId: text("userId")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    status: text("status")
+      .$type<"running" | "complete" | "failed">()
+      .notNull()
+      .default("running"),
+    report: jsonb("report").$type<Brand.Report>(),
+    error: text("error"),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("brand_snapshot_store_created_idx").on(
+      table.storeId,
+      table.createdAt,
+    ),
+    index("brand_snapshot_user_idx").on(table.userId),
   ],
 );
 
@@ -683,10 +881,14 @@ export const tables = {
   verification,
   store,
   store_account,
+  googleMerchantAccount,
+  googleMerchantOffer,
+  googleMerchantUcp,
   product,
   competitor,
   scan,
   simulation,
+  brandSnapshot,
   ucpProfile,
   agentVisit,
   agentTrafficDaily,
@@ -738,8 +940,45 @@ export const relations = defineRelations(tables, (r) => ({
       from: r.store.id,
       to: r.store_account.storeId,
     }),
+    googleMerchantAccount: r.one.googleMerchantAccount({
+      from: r.store.id,
+      to: r.googleMerchantAccount.storeId,
+      optional: true,
+    }),
+    googleMerchantOffers: r.many.googleMerchantOffer(),
     agentVisits: r.many.agentVisit(),
     agentTrafficDaily: r.many.agentTrafficDaily(),
+    brandSnapshots: r.many.brandSnapshot(),
+  },
+  brandSnapshot: {
+    store: r.one.store({
+      from: r.brandSnapshot.storeId,
+      to: r.store.id,
+    }),
+    user: r.one.user({
+      from: r.brandSnapshot.userId,
+      to: r.user.id,
+    }),
+  },
+  googleMerchantOffer: {
+    store: r.one.store({
+      from: r.googleMerchantOffer.storeId,
+      to: r.store.id,
+    }),
+    product: r.one.product({
+      from: r.googleMerchantOffer.productId,
+      to: r.product.id,
+    }),
+  },
+  googleMerchantUcp: {
+    store: r.one.store({
+      from: r.googleMerchantUcp.storeId,
+      to: r.store.id,
+    }),
+    product: r.one.product({
+      from: r.googleMerchantUcp.productId,
+      to: r.product.id,
+    }),
   },
   product: {
     store: r.one.store({

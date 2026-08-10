@@ -19,9 +19,9 @@
  */
 
 import { createHash } from "node:crypto";
+import { authorizedRequest } from "@/server/app/integration/woocommerce/http";
 import { redis } from "@/server/utils/durable";
 import * as HTTP from "@/server/utils/http";
-import { authorizedRequest } from "@/server/app/integration/woocommerce/http";
 import { currencyExponent, toMinorUnits, ucpAmount } from "./money";
 import type { UcpMessage } from "./protocol";
 import { infoMessage } from "./protocol";

@@ -18,6 +18,7 @@ import { MotionProvider } from "@/context/motion";
 // the App Shell prerender has to resolve, which broke instant-UI validation.
 import { PostHogProvider } from "@/context/posthog";
 import { ThemeProvider } from "@/context/theme";
+import { THEME_INIT_SCRIPT } from "@/context/theme-script";
 import { openGraphLocale } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
 
@@ -154,6 +155,16 @@ export default async ({ children }: PropsWithChildren) => {
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
+        {/* First thing in <head> so the theme class is on <html> before the
+            first paint. Deliberately a plain inline script and not `next/script`:
+            every strategy but `beforeInteractive` appends to <body> from an
+            effect after hydration, which cannot prevent the flash it exists to
+            prevent — and injecting it at runtime puts a parse of this body on
+            the client's critical path. */}
+        <script
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: must be inline to run before paint
+          dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }}
+        />
         <link rel="preconnect" href="https://eu.i.posthog.com" />
         <link
           rel="preconnect"

@@ -395,6 +395,9 @@
       "simulations": "Simulaciones",
       "optimize": "Optimizar",
       "visibility": "Visibilidad",
+      "googleShopping": "Google Shopping",
+      "quality": "Calidad de datos",
+      "brand": "Marca",
       "discovery": "Descubrimiento",
       "ucp": "UCP",
       "ucpPlayground": "Playground UCP",
@@ -602,6 +605,35 @@
       },
       "table": {
         "title": "Catálogo de productos",
+        "filters": {
+          "addFilter": "Añadir filtro",
+          "title": "Filtrar productos",
+          "addCondition": "Añadir condición",
+          "removeCondition": "Eliminar condición",
+          "clear": "Limpiar",
+          "apply": "Aplicar filtros",
+          "valuePlaceholder": "Valor",
+          "missing": "{count, plural, one {# producto} other {# productos}} sin {field}",
+          "fields": {
+            "title": "Título",
+            "description": "Descripción",
+            "sku": "SKU",
+            "price": "Precio",
+            "status": "Estado",
+            "url": "URL"
+          },
+          "operators": {
+            "contains": "contiene",
+            "notContains": "no contiene",
+            "is": "es",
+            "isNot": "no es",
+            "isEmpty": "está vacío",
+            "isNotEmpty": "no está vacío",
+            "equals": "igual a",
+            "greaterThan": "mayor que",
+            "lessThan": "menor que"
+          }
+        },
         "fields": {
           "product": "Producto",
           "price": "Precio",
@@ -890,6 +922,541 @@
         "optimizationFailed": "Error de optimización",
         "storeOptimized": "Tienda optimizada para agentes de IA",
         "storeOptimizedDescription": "{published}/{total} productos publicados, {rewritten} fichas reescritas{metafields}."
+      }
+    },
+    "brand": {
+      "eyebrow": "Visibilidad de marca",
+      "title": "Cómo perciben y hablan de esta marca los motores de IA",
+      "description": "Consultas reales de compradores respondidas por motores de IA y auditadas: dónde aparece la marca, quién gana en su lugar y en qué fuentes confían los motores.",
+      "action": {
+        "refresh": "Actualizar datos de marca",
+        "run": "Ejecutar análisis de marca"
+      },
+      "toast": {
+        "failed": "El análisis de marca falló"
+      },
+      "tabs": {
+        "overview": "Resumen",
+        "queries": "Registro de consultas"
+      },
+      "empty": {
+        "title": "Aún no hay análisis de marca",
+        "description": "Ejecuta el primer análisis: 20 consultas de compradores respondidas por motores de IA y auditadas para ver dónde aparece esta marca. Tarda alrededor de un minuto."
+      },
+      "summary": {
+        "title": "Resumen diagnóstico",
+        "analyzed": "Analizado {time}",
+        "metrics": {
+          "mentionRate": "Mencionada en el {rate}% de las respuestas",
+          "unpromptedRate": "Encontrada sin nombrarla en el {rate}%",
+          "namedRate": "Reconocida al preguntar en el {rate}%"
+        }
+      },
+      "shape": {
+        "title": "Forma de visibilidad",
+        "dimensions": {
+          "find": "Descubrir",
+          "consider": "Considerar",
+          "evaluate": "Evaluar",
+          "support": "Soporte",
+          "presence": "Presencia",
+          "authority": "Autoridad"
+        },
+        "levels": {
+          "weak": "Débil",
+          "developing": "En desarrollo",
+          "strong": "Fuerte"
+        }
+      },
+      "findings": {
+        "title": "Hallazgos clave",
+        "description": "Observaciones respaldadas por evidencia sobre la visibilidad de la marca."
+      },
+      "crawlability": {
+        "title": "Rastreabilidad IA",
+        "ready": "Lista",
+        "issues": "Problemas",
+        "checks": {
+          "robots": "robots.txt",
+          "llms": "llms.txt",
+          "engines": "Motores"
+        }
+      },
+      "perception": {
+        "title": "Percepción de marca",
+        "strengths": "Fortalezas",
+        "concerns": "Preocupaciones"
+      },
+      "funnel": {
+        "title": "Diagnóstico del embudo"
+      },
+      "landscape": {
+        "competitors": "Quién gana en su lugar",
+        "competitorMentions": "{count} menciones",
+        "sources": "Fuentes en las que confía la IA",
+        "sourceCitations": "{count} citas"
+      },
+      "queries": {
+        "description": "Cada consulta auditada de la última ejecución, con el veredicto del motor.",
+        "headers": {
+          "query": "Consulta",
+          "dimension": "Dimensión",
+          "result": "Resultado",
+          "brands": "Marcas recomendadas",
+          "sources": "Fuentes"
+        },
+        "position": {
+          "top": "Primera opción",
+          "listed": "Mencionada",
+          "absent": "Ausente"
+        },
+        "branded": "con marca"
+      }
+    },
+    "quality": {
+      "eyebrow": "Calidad de datos",
+      "title": "Las reglas de feed que exige cada superficie de compra con IA",
+      "description": "Cada producto activo pasa por un único registro de reglas: comprobaciones universales que aplica cualquier agente de compra con IA, más los paquetes por plataforma — la especificación de datos de producto y los códigos de incidencia de Google Merchant Center, y la especificación de feed de OpenAI detrás de ChatGPT Shopping — con severidad por superficie y enlaces a la documentación oficial de cada hallazgo.",
+      "platform": {
+        "universal": "Todos los agentes de IA",
+        "google": "Google Merchant",
+        "chatgpt": "ChatGPT Shopping"
+      },
+      "severity": {
+        "blocker": "Desaprueba",
+        "warning": "Limita el rendimiento",
+        "info": "Aviso"
+      },
+      "status": {
+        "blocker": "Bloqueado",
+        "warning": "En riesgo",
+        "info": "Avisos",
+        "ready": "Listo"
+      },
+      "reference": "Docs",
+      "summary": {
+        "readyShare": "de {count, plural, one {# producto activo} other {# productos activos}} listos para el feed",
+        "blockers": "{count} bloqueados",
+        "warnings": "{count} en riesgo",
+        "ready": "{count} listos"
+      },
+      "issues": {
+        "eyebrow": "Incidencias principales",
+        "title": "Correcciones ordenadas por cuántos productos desbloquean",
+        "affected": "{count, plural, one {# producto} other {# productos}}",
+        "viewAffected": "Ver productos afectados",
+        "empty": "Sin violaciones de reglas en el catálogo — cada producto pasa las comprobaciones de ambas plataformas."
+      },
+      "products": {
+        "eyebrow": "Catálogo",
+        "title": "Hallazgos por producto",
+        "findings": "{count, plural, one {# hallazgo} other {# hallazgos}}",
+        "empty": "Aún no hay productos activos — sincroniza o añade productos para ejecutar las comprobaciones de calidad."
+      },
+      "rules": {
+        "id-duplicate": {
+          "title": "ID de producto duplicado",
+          "detail": "Dos o más productos comparten el mismo ID de feed; cada producto necesita un identificador único y estable o las filas posteriores sobrescriben en silencio a las anteriores."
+        },
+        "title-gimmick-symbols": {
+          "title": "Símbolos efectistas en el título",
+          "detail": "La puntuación repetida, los caracteres decorativos o los emoji se interpretan como spam en las comprobaciones editoriales de cualquier superficie."
+        },
+        "title-invalid-characters": {
+          "title": "Caracteres inválidos en el título",
+          "detail": "Los caracteres de uso privado o corruptos (mojibake) rompen la ingestión; recodifica el texto como UTF-8 limpio."
+        },
+        "brand-placeholder": {
+          "title": "Marca con valor de relleno",
+          "detail": "Valores como \"N/A\" o \"genérico\" se rechazan como marca; proporciona la marca real u omite el atributo."
+        },
+        "title-missing": {
+          "title": "Falta el título",
+          "detail": "Cada producto necesita un título en texto plano de 1–150 caracteres."
+        },
+        "title-too-long": {
+          "title": "Título de más de 150 caracteres",
+          "detail": "Google y ChatGPT Shopping limitan los títulos a 150 caracteres; los más largos se rechazan."
+        },
+        "title-all-caps": {
+          "title": "Título mayormente en mayúsculas",
+          "detail": "Los títulos en mayúsculas son marcados por las comprobaciones editoriales automáticas; usa mayúsculas solo en abreviaturas, códigos de país y divisas."
+        },
+        "title-promo-text": {
+          "title": "Texto promocional en el título",
+          "detail": "Frases como \"envío gratis\", \"oferta\" o \"mejor precio\" pertenecen a los atributos de envío y precio, no al título."
+        },
+        "title-html": {
+          "title": "Etiquetas HTML en el título",
+          "detail": "Los títulos deben ser texto plano; elimina el marcado heredado de la plataforma de origen."
+        },
+        "title-extra-whitespace": {
+          "title": "Espacios de más en el título",
+          "detail": "No se permiten espacios al inicio, al final ni repetidos en los títulos."
+        },
+        "title-repeated-words": {
+          "title": "Palabras repetidas en el título",
+          "detail": "Repetir la misma palabra se interpreta como keyword stuffing en las comprobaciones editoriales."
+        },
+        "description-missing": {
+          "title": "Falta la descripción",
+          "detail": "Ambas plataformas exigen una descripción; funcionan mejor 500–1.000 caracteres que describan solo el producto."
+        },
+        "description-too-long": {
+          "title": "Descripción de más de 5.000 caracteres",
+          "detail": "Las descripciones se limitan a 5.000 caracteres en ambas plataformas."
+        },
+        "description-identical-title": {
+          "title": "Descripción idéntica al título",
+          "detail": "La descripción debe aportar información más allá del título."
+        },
+        "description-promo-text": {
+          "title": "Texto promocional en la descripción",
+          "detail": "Elimina las frases promocionales — el precio, las ofertas y el envío se verifican contra atributos dedicados."
+        },
+        "id-too-long": {
+          "title": "ID de producto de más de 50 caracteres",
+          "detail": "Los ID del feed se limitan a 50 caracteres y deben mantenerse estables entre sincronizaciones."
+        },
+        "link-missing": {
+          "title": "Falta la URL del producto",
+          "detail": "Cada producto necesita una página pública en el dominio verificado."
+        },
+        "link-invalid": {
+          "title": "URL del producto inválida",
+          "detail": "La página de destino debe ser una URL http(s) completa de menos de 2.000 caracteres."
+        },
+        "link-ip-host": {
+          "title": "La URL del producto usa una dirección IP",
+          "detail": "Las páginas de destino deben usar un nombre de dominio, no una IP."
+        },
+        "link-credentials": {
+          "title": "Credenciales incrustadas en la URL",
+          "detail": "Las URL no deben incluir usuario ni contraseña; ChatGPT Shopping las rechaza directamente."
+        },
+        "image-missing": {
+          "title": "Falta la imagen del producto",
+          "detail": "Cada producto necesita al menos una imagen; sin ella el artículo se desaprueba."
+        },
+        "image-invalid-url": {
+          "title": "URL de imagen inválida",
+          "detail": "Los enlaces de imagen deben ser URL http(s) completas de menos de 2.000 caracteres que las plataformas puedan rastrear."
+        },
+        "image-too-many": {
+          "title": "Más de 10 imágenes adicionales",
+          "detail": "Google acepta hasta 10 imágenes adicionales por producto; las sobrantes se descartan."
+        },
+        "price-missing": {
+          "title": "Falta el precio",
+          "detail": "Cada producto necesita un precio; sin él el artículo se desaprueba."
+        },
+        "price-not-positive": {
+          "title": "Precio cero o negativo",
+          "detail": "Los precios deben ser mayores que cero y coincidir con la página de destino."
+        },
+        "currency-invalid": {
+          "title": "Código de divisa inválido",
+          "detail": "Los precios necesitan un código ISO 4217 de tres letras, p. ej. USD o EUR."
+        },
+        "sale-price-not-below": {
+          "title": "Precio de comparación no supera al precio actual",
+          "detail": "La oferta solo se muestra cuando el precio previo al descuento supera al precio actual; de lo contrario el tachado se ignora."
+        },
+        "brand-missing": {
+          "title": "Falta la marca",
+          "detail": "Los productos de marca deben llevar el atributo brand; su ausencia limita la agrupación en clústeres de producto entre minoristas."
+        },
+        "brand-too-long": {
+          "title": "Marca de más de 70 caracteres",
+          "detail": "Los valores de marca se limitan a 70 caracteres y no deben contener texto promocional."
+        },
+        "gtin-invalid": {
+          "title": "El código de barras no es un GTIN válido",
+          "detail": "El código de barras no pasa la validación de longitud o dígito de control; usa el GTIN-8, -12, -13 o -14 del fabricante."
+        },
+        "gtin-coupon-prefix": {
+          "title": "El GTIN usa un prefijo de cupón",
+          "detail": "Los prefijos 98–99 identifican cupones y se desaprueban; usa el GTIN del fabricante."
+        },
+        "gtin-restricted-prefix": {
+          "title": "El GTIN usa un prefijo restringido",
+          "detail": "Los prefijos 2, 02 y 04 están reservados para distribución restringida y productos de peso variable."
+        },
+        "gtin-missing": {
+          "title": "Falta el GTIN",
+          "detail": "Sin GTIN la oferta no puede unirse a los clústeres de producto entre minoristas, lo que limita el rendimiento en ambas superficies."
+        },
+        "mpn-missing-without-gtin": {
+          "title": "Sin GTIN ni MPN",
+          "detail": "Proporciona un MPN cuando el producto no tenga GTIN — ChatGPT Shopping exige uno de los dos; el feed de Google marca identifier_exists como false en caso contrario."
+        }
+      }
+    },
+    "googleShopping": {
+      "eyebrow": "Canal · Google Shopping",
+      "title": "Fichas optimizadas en Google, sin tocar tu tienda",
+      "description": "ecentic superpone tus optimizaciones de ficha publicadas sobre tu feed de productos de Google como sustituciones de atributos. El plugin de Google de tu tienda sigue siendo el dueño de precios, stock y del feed de productos — ecentic gestiona títulos, descripciones y diagnósticos por encima.",
+      "toast": "Google Shopping",
+      "unsupported": {
+        "chip": "Próximamente",
+        "description": "La optimización de Google Shopping está disponible por ahora para tiendas Shopify. La compatibilidad con WooCommerce llegará pronto."
+      },
+      "setup": {
+        "step": "Paso {number, number}",
+        "connect": {
+          "title": "Conectar Google",
+          "description": "Inicia sesión con la cuenta de Google que gestiona el Merchant Center de esta tienda. ecentic solicita el permiso de contenido de Merchant Center — gestiona ahí tus fichas de producto, feeds, políticas de devolución y datos de contacto de la tienda, y nunca toca tus anuncios ni tus datos personales.",
+          "action": "Conectar Google"
+        },
+        "chooseAccount": {
+          "title": "Elige tu cuenta de Merchant Center",
+          "description": "Tu sesión de Google puede ver varias cuentas de Merchant Center — elige la que el canal de Google y YouTube creó para esta tienda. Las cuentas cuyo sitio web registrado no coincide con el dominio de esta tienda aparecen marcadas; vincular una igualmente es posible, pero suele ser un error.",
+          "matches": "{domain} — coincide con esta tienda",
+          "linkAnyway": "{domain} — vincular igualmente",
+          "noWebsite": "sin sitio web configurado",
+          "selected": "Cuenta de Merchant Center seleccionada"
+        },
+        "waitingAccount": {
+          "title": "Esperando tu cuenta de Merchant Center",
+          "description": "Instala el canal de Google y YouTube en el panel de tu tienda y termina su conexión con Google — crea y verifica tu cuenta de Merchant Center, y después ecentic la detecta automáticamente.",
+          "action": "Comprobar ahora",
+          "checked": "Comprobación de cuenta completada"
+        },
+        "link": {
+          "title": "Vincula tu cuenta con ecentic",
+          "description": "ecentic solicitará acceso de gestión a tu cuenta de Merchant Center (cuenta {account}). Esto nos permite adjuntar un feed de optimización y leer diagnósticos — puedes revocar el acceso en Merchant Center cuando quieras.",
+          "action": "Solicitar vinculación",
+          "requested": "Vinculación solicitada"
+        },
+        "linkPending": {
+          "title": "Estableciendo la vinculación",
+          "description": "Tu solicitud de vinculación se está procesando — normalmente se completa en unos minutos.",
+          "action": "Comprobar ahora",
+          "refreshed": "Estado de la vinculación actualizado"
+        },
+        "feed": {
+          "title": "Configura el feed de optimización",
+          "description": "Crea el feed complementario de ecentic en tu cuenta y lo conecta con tu feed de productos principal. El plugin de tu tienda sigue siendo el dueño de precios, stock e imágenes — ecentic solo superpone títulos y descripciones optimizados.",
+          "action": "Configurar feed de optimización",
+          "ready": "Feed de optimización listo"
+        }
+      },
+      "disconnect": {
+        "action": "Desconectar Google",
+        "description": "Elimina el feed de optimización de ecentic y el acceso de gestión de tu cuenta de Merchant Center. Tus productos y sus fichas en Google se mantienen — solo desaparecen las sustituciones de ecentic. Puedes volver a conectarlo cuando quieras.",
+        "done": "Google desconectado"
+      },
+      "stats": {
+        "live": "Activas en Google",
+        "pending": "Publicándose (puede tardar unas horas)",
+        "attention": "Requieren atención"
+      },
+      "actions": {
+        "push": "Enviar optimizaciones",
+        "pushed": "Optimizaciones enviadas — publicándose en Google",
+        "refresh": "Actualizar estado",
+        "refreshed": "Estado actualizado",
+        "wiring": "Comprobar conexión del feed",
+        "wiringChecked": "Conexión del feed comprobada",
+        "description": "Envía tus optimizaciones de ficha publicadas como sustituciones sobre las ofertas de Google correspondientes. Los elementos sin cambios se omiten automáticamente; Google revisa sus políticas en cada sustitución antes de publicarla."
+      },
+      "diagnostics": {
+        "eyebrow": "Diagnósticos de Merchant Center",
+        "title": "Por qué hay productos desaprobados o limitados en Google",
+        "toast": "Diagnósticos",
+        "action": "Obtener diagnósticos",
+        "pulling": "Obteniendo…",
+        "description": "Lee las incidencias de cuenta, las incidencias de artículo y las desaprobaciones directamente desde Merchant Center.",
+        "offers": "Ofertas en Google",
+        "disapproved": "Ofertas desaprobadas",
+        "accountIssues": "Incidencias de cuenta",
+        "issue": "Incidencia",
+        "accountIssue": "Incidencia de cuenta",
+        "empty": "Sin incidencias — la cuenta y sus ofertas están sanas.",
+        "attribute": "atributo: {attribute}"
+      },
+      "ucp": {
+        "eyebrow": "Pago agéntico (UCP)",
+        "title": "Vende directamente dentro de las superficies de IA de Google",
+        "description": "Google está desplegando el pago gestionado por agentes en AI Mode y Gemini. ecentic audita tus requisitos de Merchant Center y envía los atributos de elegibilidad de pago necesarios a través del feed de optimización que ya gestiona."
+      },
+      "readiness": {
+        "unknown": "Desconocido",
+        "ready": "Listo",
+        "actionNeeded": "Requiere acción",
+        "readinessError": "No se pudo leer la preparación del pago desde Merchant Center: {error}",
+        "productsError": "No se pudieron cargar los productos de la tienda: {error}",
+        "homepage": {
+          "title": "Sitio web de la tienda reclamado",
+          "fallback": "La página de inicio",
+          "claimed": "{uri} está verificada y reclamada.",
+          "unclaimed": "{uri} está configurada pero no reclamada — el plugin de Google de tu tienda suele encargarse de esto.",
+          "missing": "No hay ninguna página de inicio registrada en la cuenta de Merchant Center."
+        },
+        "returnPolicy": {
+          "title": "Política de devoluciones",
+          "link": "O gestiónala en Merchant Center",
+          "missing": "No hay política de devoluciones en la cuenta — es un requisito de Comerciante Responsable y se muestra en la pantalla de pago de Google. Crea una abajo y ecentic la escribe en Merchant Center.",
+          "noWindow": "{count, plural, one {# política encontrada} other {# políticas encontradas}}, pero ninguna define un plazo de devolución (días tras la entrega o de por vida).",
+          "noLink": "{count, plural, one {# política encontrada} other {# políticas encontradas}}, pero ninguna enlaza al texto completo de la política.",
+          "noCost": "{count, plural, one {# política encontrada} other {# políticas encontradas}}, pero ninguna indica el coste de envío de la devolución — obligatorio junto al plazo y el enlace.",
+          "ok": "{count, plural, one {# política} other {# políticas}} con plazo de devolución, coste de envío y enlace a la política completa."
+        },
+        "customerSupport": {
+          "title": "Contacto de atención al cliente",
+          "link": "O edítalo en Merchant Center",
+          "configured": "Configurado ({methods}) — se convierte en el enlace «Contactar con el comerciante» en la confirmación de pedido de Google.",
+          "missing": "No hay sitio web, correo ni teléfono de atención al cliente en la cuenta — configúralo aquí mismo y ecentic lo escribe en Merchant Center."
+        },
+        "offers": {
+          "title": "Productos aprobados para fichas gratuitas",
+          "approved": "{approved, number} de {total, number} ofertas aprobadas para fichas gratuitas.",
+          "disapproved": "{count, number} desaprobadas — consulta los diagnósticos de arriba.",
+          "checkoutFlag": "{count, number} llevan la marca de elegibilidad de pago en Google.",
+          "checkoutApproved": "{count, number} están aprobadas para el pago agéntico en sí."
+        },
+        "waitlist": {
+          "title": "Únete a la lista de espera de UCP de Google",
+          "link": "Abrir el formulario de la lista de espera",
+          "ready": "Merchant Center está listo — solicita el programa de pago agéntico. Google debe aprobar la integración antes de que el pago se active.",
+          "pending": "Disponible cuando las comprobaciones de arriba estén en verde. Google aprueba a cada comerciante antes de activar el pago."
+        },
+        "platform": {
+          "chip": "Lo gestiona Shopify",
+          "title": "Pagos, checkout y sincronización de pedidos",
+          "description": "El gestor de Google Pay, el perfil UCP, los endpoints de pago y los webhooks de pedidos son la parte de la integración que corresponde a tu plataforma de comercio — en las tiendas Shopify vienen con la propia infraestructura de pago agéntico de Shopify. ecentic prepara todo lo del lado de Merchant Center: la preparación de arriba y las marcas de elegibilidad de abajo."
+        },
+        "eligibility": {
+          "eyebrow": "Elegibilidad de pago por producto",
+          "description": "La elegibilidad está desactivada por defecto — Google trata las marcas ausentes como no elegibles. Las opciones de aquí viajan en la siguiente ejecución de «Enviar optimizaciones» como atributos `native_commerce` en el feed complementario."
+        }
+      },
+      "products": {
+        "empty": "Aún no hay productos sincronizados — sincroniza primero los productos de tu tienda.",
+        "restricted": "puede estar restringido: {hints}",
+        "live": "{count, number} activas",
+        "pending": "{count, number} pendientes",
+        "error": "{count, number} con error",
+        "enable": "Activar pago",
+        "disable": "Elegible ✓ — desactivar",
+        "notice": "Aviso…",
+        "close": "Cerrar",
+        "toast": "Elegibilidad de pago",
+        "enabled": "Marcado como elegible — envía las optimizaciones para mandarlo a Google",
+        "disabled": "Marcado como no elegible — envía las optimizaciones para mandar la exclusión",
+        "hints": {
+          "ucp_subscription": "suscripción",
+          "ucp_preorder": "reserva anticipada",
+          "ucp_personalized": "personalizado",
+          "ucp_not_new_or_final_sale": "no nuevo / venta final",
+          "ucp_gifting": "tarjeta regalo",
+          "ucp_age_restricted": "restringido por edad",
+          "ucp_rental": "alquiler",
+          "ucp_bundled_service": "servicio incluido"
+        }
+      },
+      "forms": {
+        "saving": "Guardando…",
+        "hide": "Ocultar",
+        "notice": {
+          "toast": "Ajustes de pago",
+          "saved": "Ajustes de pago guardados",
+          "save": "Guardar",
+          "type": {
+            "label": "Aviso al consumidor",
+            "items": {
+              "none": "Ninguno",
+              "legal_disclaimer": "Aviso legal",
+              "safety_warning": "Advertencia de seguridad",
+              "prop_65": "Proposición 65"
+            }
+          },
+          "message": {
+            "label": "Texto del aviso",
+            "placeholder": "p. ej. Este producto puede exponerte a sustancias químicas…",
+            "max": "Los textos de aviso están limitados a 1000 caracteres"
+          },
+          "itemId": {
+            "label": "ID de artículo para el pago (opcional)",
+            "placeholder": "Solo si difiere del ID del feed"
+          }
+        },
+        "support": {
+          "toast": "Atención al cliente",
+          "saved": "Contacto de atención al cliente guardado en Merchant Center",
+          "open": "Configurar contacto",
+          "update": "Actualizar contacto",
+          "save": "Guardar en Merchant Center",
+          "website": {
+            "label": "Sitio web de soporte",
+            "placeholder": "https://tu-tienda.com/contacto"
+          },
+          "email": {
+            "label": "Correo de soporte",
+            "placeholder": "soporte@tu-tienda.com"
+          },
+          "phone": {
+            "label": "Teléfono de soporte",
+            "placeholder": "+34600123456"
+          }
+        },
+        "returnPolicy": {
+          "toast": "Política de devoluciones",
+          "created": "Política de devoluciones creada en Merchant Center",
+          "replaced": "Política de devoluciones reemplazada en Merchant Center",
+          "open": "Crear política",
+          "update": "Actualizar política",
+          "submitCreate": "Crear política en Merchant Center",
+          "submitReplace": "Reemplazar política en Merchant Center",
+          "replaceNote": "La API de Google no puede editar una política de devoluciones en su sitio — al guardar se reemplaza la política predeterminada existente por esta.",
+          "countries": {
+            "label": "Países de venta",
+            "placeholder": "ES, US",
+            "invalid": "Códigos de país de 2 letras, separados por comas (p. ej. ES, US)"
+          },
+          "window": {
+            "label": "Plazo de devolución",
+            "items": {
+              "14": "14 días",
+              "30": "30 días",
+              "60": "60 días",
+              "90": "90 días",
+              "lifetime": "De por vida"
+            }
+          },
+          "policyUrl": {
+            "label": "URL de la página de política de devoluciones",
+            "placeholder": "https://tu-tienda.com/policies/returns",
+            "invalid": "Introduce la URL completa de tu página de política de devoluciones"
+          },
+          "methods": {
+            "label": "Métodos de devolución",
+            "items": {
+              "BY_MAIL": "Por correo",
+              "IN_STORE": "En tienda",
+              "AT_A_KIOSK": "En un punto de recogida"
+            }
+          },
+          "conditions": {
+            "label": "Estados aceptados",
+            "items": {
+              "NEW": "Nuevo",
+              "USED": "Usado"
+            }
+          },
+          "shipping": {
+            "label": "Coste de envío de la devolución",
+            "items": {
+              "free": "Devolución gratuita",
+              "customer": "El cliente paga el envío de la devolución"
+            }
+          },
+          "refundDays": {
+            "label": "Tiempo de procesamiento del reembolso (días)",
+            "min": "Al menos 1 día",
+            "max": "Como máximo 60 días"
+          }
+        }
       }
     },
     "visibility": {
@@ -1485,11 +2052,7 @@
         },
         "frequency": {
           "title": "Frecuencia de simulación",
-          "options": [
-            "Solo manual",
-            "Diaria",
-            "Semanal"
-          ]
+          "options": ["Solo manual", "Diaria", "Semanal"]
         },
         "persona": {
           "title": "Persona de compra",
@@ -5620,13 +6183,7 @@
       },
       "selection": "{selected} de {limit} productos seleccionados",
       "table": {
-        "headers": [
-          "Producto",
-          "Precio",
-          "Moneda",
-          "Estado",
-          "Calidad"
-        ]
+        "headers": ["Producto", "Precio", "Moneda", "Estado", "Calidad"]
       },
       "states": {
         "active": "Activo",
@@ -5732,12 +6289,7 @@
         "description": "Selecciona los competidores que quieres incluir en tus simulaciones de agentes de IA.",
         "summary": "{total} productos competidores en {brands} marcas — {selected} seleccionados",
         "table": {
-          "headers": [
-            "Competidor",
-            "Precio",
-            "Moneda",
-            "Marca"
-          ]
+          "headers": ["Competidor", "Precio", "Moneda", "Marca"]
         },
         "action": {
           "back": "Atrás",

@@ -16,6 +16,7 @@
 import { createHash, randomBytes } from "node:crypto";
 import { resultify } from "@zenncore/utils";
 import { and, eq } from "drizzle-orm";
+import { normalizeStoreUrl } from "@/server/app/integration/woocommerce/http";
 import { schema } from "@/server/database";
 import { withContext } from "@/server/utils/context";
 import { redis } from "@/server/utils/durable";
@@ -23,7 +24,6 @@ import { Environment } from "@/server/utils/environment";
 import { RequestError, ValidationError } from "@/server/utils/error";
 import * as HTTP from "@/server/utils/http";
 import { isSafePublicHttpUrl } from "@/server/utils/ssrf";
-import { normalizeStoreUrl } from "@/server/app/integration/woocommerce/http";
 import * as WooCommerce from "../integration/woocommerce";
 import * as Store from "../store";
 import * as StoreAccount from "../store-account";

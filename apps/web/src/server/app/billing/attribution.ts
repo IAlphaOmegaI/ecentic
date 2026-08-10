@@ -1,12 +1,11 @@
 "use server";
 
-import { resultify } from "@zenncore/utils";
 import { and, eq, gte, lt, ne, sql } from "drizzle-orm";
 import { db, schema } from "../../database";
 import { withContext, withInstrumentation } from "../../utils/context";
 import { Environment } from "../../utils/environment";
 import { DatabaseError } from "../../utils/error";
-import { repository } from "../../utils/repository";
+import { repository, resultifyRead } from "../../utils/repository";
 import * as Subscription from "../subscription";
 import * as Tracking from "../tracking";
 
@@ -121,7 +120,7 @@ export const recordOrderIfAttributed = withContext(
  */
 export const sumFeesForPeriod = withInstrumentation(
   async (_, { user, start, end }: { user: string; start: Date; end: Date }) => {
-    const rows = await resultify(async () =>
+    const rows = await resultifyRead(async () =>
       db
         .select({
           total: sql<number>`coalesce(sum(${schema.attributedConversion.feeCents}), 0)`,

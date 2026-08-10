@@ -192,6 +192,8 @@ Never use raw `db.insert(...)`, `db.select(...)`, etc. directly in application c
 
 The **only files that should touch the DB** are the server action files that correspond directly to a model (e.g. `server/app/product.ts` owns the `product` table). All other files — pages, components, other server action files — must import the bundle and call its exported actions. This ensures `resultify`, Sentry, and other cross-cutting concerns are always applied.
 
+Within a model file, a query the repository cannot express (a group-by, a join, a `count(*) filter`) may call `db.select(...)` directly — but a **read-only** thunk must be wrapped in `resultifyRead` from `@/server/utils/repository`, not plain `resultify`, so it retries once when the pooled connection died under a Fluid freeze/thaw (see AGENTS-style §6). Repository methods retry internally; raw thunks only get this if they opt in. Writes never use `resultifyRead`.
+
 ```ts
 // ✅ Good — model file owns DB access via repository
 // server/app/content.ts

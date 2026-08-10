@@ -2,16 +2,16 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "crons": [
     {
-      "path": "/api/cron/scan",
-      "schedule": "0 3 * * *"
-    },
-    {
       "path": "/api/cron/billing",
       "schedule": "0 4 * * *"
     },
     {
       "path": "/api/cron/drain",
       "schedule": "* * * * *"
+    },
+    {
+      "path": "/api/cron/google-merchant",
+      "schedule": "*/10 * * * *"
     }
   ]
 }

@@ -1,5 +1,7 @@
 "use server";
 
+import { resultify } from "@zenncore/utils";
+import { headers } from "next/headers";
 import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
 import { Environment } from "../utils/environment";
@@ -37,7 +39,30 @@ export const completeProfile = withAuthentication(
       source?: string;
     },
   ) => {
-    return update(Environment.SERVER, context.session.user.id, data);
+    const result = await update(
+      Environment.SERVER,
+      context.session.user.id,
+      data,
+    );
+
+    if (!result.success) return result;
+
+    // The row is written, but `session.cookieCache` still holds a five-minute
+    // old copy of the user — so `/onboarding/connect` would read the empty
+    // `company`/`jobTitle` it was signed with and bounce straight back here.
+    // Reading the session with `disableCookieCache` re-reads the row and
+    // re-primes that cookie with the profile we just saved.
+    //
+    // Deliberately swallowed: the profile is already persisted, so a failed
+    // refresh should cost the user a five-minute wait, not a failed save.
+    await resultify(async () =>
+      context.auth.getSession({
+        headers: await headers(),
+        query: { disableCookieCache: true },
+      }),
+    );
+
+    return result;
   },
   "User.completeProfile",
 );

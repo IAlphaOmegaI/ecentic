@@ -3,13 +3,16 @@
 import {
   BarChartIcon,
   ChartCircularIcon,
+  CheckBadgeIcon,
   CircleBoltIcon,
   CodeIcon,
   EyeIcon,
   GaugeIcon,
   GearIcon,
   RadarIcon,
+  RocketIcon,
   SearchIcon,
+  ShieldCheckIcon,
   ShoppingCartIcon,
   SquareChartIcon,
 } from "@zenncore/icons";
@@ -22,9 +25,21 @@ import { Link, usePathname } from "@/i18n/navigation";
 const items = [
   { icon: SquareChartIcon, key: "overview", segment: "", exact: true },
   {
+    icon: CheckBadgeIcon,
+    key: "brand",
+    segment: "/brand",
+    exact: false,
+  },
+  {
     icon: ShoppingCartIcon,
     key: "products",
     segment: "/products",
+    exact: false,
+  },
+  {
+    icon: ShieldCheckIcon,
+    key: "quality",
+    segment: "/quality",
     exact: false,
   },
   {
@@ -50,6 +65,12 @@ const items = [
     icon: EyeIcon,
     key: "visibility",
     segment: "/visibility",
+    exact: false,
+  },
+  {
+    icon: RocketIcon,
+    key: "googleShopping",
+    segment: "/google-shopping",
     exact: false,
   },
   {
