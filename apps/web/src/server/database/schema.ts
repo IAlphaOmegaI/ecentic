@@ -10,6 +10,7 @@ import {
   timestamp,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
+import type * as Brand from "@/server/app/intelligence/brand";
 import type * as Simulate from "@/server/app/intelligence/simulate";
 
 /**
@@ -256,6 +257,40 @@ export const scan = pgTable(
     index("scan_user_created_idx").on(table.userId, table.createdAt),
     index("scan_status_idx").on(table.status),
     index("scan_store_idx").on(table.storeId),
+  ],
+);
+
+/**
+ * One row per brand visibility analysis run (see
+ * {@link Brand.analyze}): 20 audited shopper queries + crawlability checks,
+ * distilled into a stored {@link Brand.Report}. History is kept — the
+ * dashboard reads the latest `complete` row per store.
+ */
+export const brandSnapshot = pgTable(
+  "brand_snapshot",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    userId: text("userId")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    status: text("status")
+      .$type<"running" | "complete" | "failed">()
+      .notNull()
+      .default("running"),
+    report: jsonb("report").$type<Brand.Report>(),
+    error: text("error"),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("brand_snapshot_store_created_idx").on(
+      table.storeId,
+      table.createdAt,
+    ),
+    index("brand_snapshot_user_idx").on(table.userId),
   ],
 );
 
@@ -687,6 +722,7 @@ export const tables = {
   competitor,
   scan,
   simulation,
+  brandSnapshot,
   ucpProfile,
   agentVisit,
   agentTrafficDaily,
@@ -740,6 +776,17 @@ export const relations = defineRelations(tables, (r) => ({
     }),
     agentVisits: r.many.agentVisit(),
     agentTrafficDaily: r.many.agentTrafficDaily(),
+    brandSnapshots: r.many.brandSnapshot(),
+  },
+  brandSnapshot: {
+    store: r.one.store({
+      from: r.brandSnapshot.storeId,
+      to: r.store.id,
+    }),
+    user: r.one.user({
+      from: r.brandSnapshot.userId,
+      to: r.user.id,
+    }),
   },
   product: {
     store: r.one.store({

@@ -395,6 +395,7 @@
       "simulations": "Simulaciones",
       "optimize": "Optimizar",
       "visibility": "Visibilidad",
+      "brand": "Marca",
       "discovery": "Descubrimiento",
       "ucp": "UCP",
       "ucpPlayground": "Playground UCP",
@@ -919,6 +920,95 @@
         "optimizationFailed": "Error de optimización",
         "storeOptimized": "Tienda optimizada para agentes de IA",
         "storeOptimizedDescription": "{published}/{total} productos publicados, {rewritten} fichas reescritas{metafields}."
+      }
+    },
+    "brand": {
+      "eyebrow": "Visibilidad de marca",
+      "title": "Cómo perciben y hablan de esta marca los motores de IA",
+      "description": "Consultas reales de compradores respondidas por motores de IA y auditadas: dónde aparece la marca, quién gana en su lugar y en qué fuentes confían los motores. Hoy las auditorías las ejecuta ChatGPT — pronto habrá más motores.",
+      "action": {
+        "refresh": "Actualizar datos de marca",
+        "run": "Ejecutar análisis de marca"
+      },
+      "toast": {
+        "failed": "El análisis de marca falló"
+      },
+      "tabs": {
+        "overview": "Resumen",
+        "queries": "Registro de consultas"
+      },
+      "empty": {
+        "title": "Aún no hay análisis de marca",
+        "description": "Ejecuta el primer análisis: 20 consultas de compradores respondidas por ChatGPT y auditadas para ver dónde aparece esta marca. Tarda alrededor de un minuto."
+      },
+      "summary": {
+        "title": "Resumen diagnóstico",
+        "analyzed": "Analizado {time}",
+        "metrics": {
+          "mentionRate": "Mencionada en el {rate}% de las respuestas",
+          "unpromptedRate": "Encontrada sin nombrarla en el {rate}%",
+          "namedRate": "Reconocida al preguntar en el {rate}%"
+        }
+      },
+      "shape": {
+        "title": "Forma de visibilidad",
+        "dimensions": {
+          "find": "Descubrir",
+          "consider": "Considerar",
+          "evaluate": "Evaluar",
+          "support": "Soporte",
+          "presence": "Presencia",
+          "authority": "Autoridad"
+        },
+        "levels": {
+          "weak": "Débil",
+          "developing": "En desarrollo",
+          "strong": "Fuerte"
+        }
+      },
+      "findings": {
+        "title": "Hallazgos clave",
+        "description": "Observaciones respaldadas por evidencia sobre la visibilidad de la marca."
+      },
+      "crawlability": {
+        "title": "Rastreabilidad IA",
+        "ready": "Lista",
+        "issues": "Problemas",
+        "checks": {
+          "robots": "robots.txt",
+          "llms": "llms.txt",
+          "engines": "Motores"
+        }
+      },
+      "perception": {
+        "title": "Percepción de marca",
+        "strengths": "Fortalezas",
+        "concerns": "Preocupaciones"
+      },
+      "funnel": {
+        "title": "Diagnóstico del embudo"
+      },
+      "landscape": {
+        "competitors": "Quién gana en su lugar",
+        "competitorMentions": "{count} menciones",
+        "sources": "Fuentes en las que confía la IA",
+        "sourceCitations": "{count} citas"
+      },
+      "queries": {
+        "description": "Cada consulta auditada de la última ejecución, con el veredicto del motor.",
+        "headers": {
+          "query": "Consulta",
+          "dimension": "Dimensión",
+          "result": "Resultado",
+          "brands": "Marcas recomendadas",
+          "sources": "Fuentes"
+        },
+        "position": {
+          "top": "Primera opción",
+          "listed": "Mencionada",
+          "absent": "Ausente"
+        },
+        "branded": "con marca"
       }
     },
     "visibility": {

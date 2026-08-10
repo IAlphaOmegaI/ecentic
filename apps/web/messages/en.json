@@ -395,6 +395,7 @@
       "simulations": "Simulations",
       "optimize": "Optimize",
       "visibility": "Visibility",
+      "brand": "Brand",
       "discovery": "Discovery",
       "ucp": "UCP",
       "ucpPlayground": "UCP Playground",
@@ -1277,6 +1278,95 @@
         "optimizationFailed": "Optimization failed",
         "storeOptimized": "Store optimized for AI agents",
         "storeOptimizedDescription": "{published}/{total} products published, {rewritten} listings rewritten{metafields}."
+      }
+    },
+    "brand": {
+      "eyebrow": "Brand Visibility",
+      "title": "How AI engines perceive and discuss this brand",
+      "description": "Real shopper queries are answered by AI engines and audited: where the brand surfaces, who wins instead, and which sources the engines trust. ChatGPT runs today's audits — more engines are coming.",
+      "action": {
+        "refresh": "Refresh brand data",
+        "run": "Run brand analysis"
+      },
+      "toast": {
+        "failed": "Brand analysis failed"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "queries": "Query log"
+      },
+      "empty": {
+        "title": "No brand analysis yet",
+        "description": "Run the first analysis: 20 shopper queries answered by ChatGPT and audited for where this brand shows up. It takes about a minute."
+      },
+      "summary": {
+        "title": "Diagnostic summary",
+        "analyzed": "Analyzed {time}",
+        "metrics": {
+          "mentionRate": "Mentioned in {rate}% of responses",
+          "unpromptedRate": "Found without name in {rate}%",
+          "namedRate": "Named when asked in {rate}%"
+        }
+      },
+      "shape": {
+        "title": "Visibility shape",
+        "dimensions": {
+          "find": "Find",
+          "consider": "Consider",
+          "evaluate": "Evaluate",
+          "support": "Support",
+          "presence": "Presence",
+          "authority": "Authority"
+        },
+        "levels": {
+          "weak": "Weak",
+          "developing": "Developing",
+          "strong": "Strong"
+        }
+      },
+      "findings": {
+        "title": "Key findings",
+        "description": "Evidence-backed observations across the brand's visibility."
+      },
+      "crawlability": {
+        "title": "AI crawlability",
+        "ready": "Ready",
+        "issues": "Issues",
+        "checks": {
+          "robots": "robots.txt",
+          "llms": "llms.txt",
+          "engines": "Engines"
+        }
+      },
+      "perception": {
+        "title": "Brand perception",
+        "strengths": "Strengths",
+        "concerns": "Concerns"
+      },
+      "funnel": {
+        "title": "Funnel diagnosis"
+      },
+      "landscape": {
+        "competitors": "Who wins instead",
+        "competitorMentions": "{count} mentions",
+        "sources": "Sources AI trusts",
+        "sourceCitations": "{count} citations"
+      },
+      "queries": {
+        "description": "Every audited query from the latest run, with the engine's verdict.",
+        "headers": {
+          "query": "Query",
+          "dimension": "Dimension",
+          "result": "Result",
+          "brands": "Brands recommended",
+          "sources": "Sources"
+        },
+        "position": {
+          "top": "Top pick",
+          "listed": "Listed",
+          "absent": "Absent"
+        },
+        "branded": "branded"
       }
     },
     "visibility": {
