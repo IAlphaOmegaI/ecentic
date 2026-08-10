@@ -14,10 +14,17 @@ import { render } from "react-email";
 import { Resend } from "resend";
 import { DealApprovedEmail } from "../public/templates/deal-approved";
 import { db, schema } from "../src/server/database";
+import { DEALS, isDealKey, PLANS } from "../src/server/utils/stripe";
 
-const PROGRAM_NAMES: Record<string, string> = {
-  ycombinator: "Y Combinator",
-  techstars: "Techstars",
+/**
+ * Tier the merchant's coupon is restricted to, or `null` when it applies to every
+ * plan. Read from `DEALS` rather than restated here so the email can never
+ * disagree with the gate that actually decides whether the coupon is applied.
+ */
+const planNameFor = (merchant: string): string | null => {
+  if (!isDealKey(merchant)) return null;
+  const { plan } = DEALS[merchant];
+  return plan ? PLANS[plan].name : null;
 };
 
 const SUBJECT = "Your ecentic deal is ready";
@@ -62,7 +69,9 @@ const targets = recipients.map((email) => {
 const resend = isDryRun ? null : new Resend(process.env.RESEND_API_KEY);
 
 for (const target of targets) {
-  const programName = PROGRAM_NAMES[target.merchant] ?? target.merchant;
+  const programName = isDealKey(target.merchant)
+    ? DEALS[target.merchant].name
+    : target.merchant;
 
   // "Unknown" is what the webhook stores when a payload carries no readable
   // name; greeting a founder as "Hi Unknown" is worse than greeting them as
@@ -76,6 +85,7 @@ for (const target of targets) {
     contactName,
     userEmail: target.email,
     programName,
+    planName: planNameFor(target.merchant),
     signUpUrl: `${appHost}/sign-up`,
   });
 

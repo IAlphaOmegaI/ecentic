@@ -15,10 +15,10 @@ export const stripe = (): Stripe => {
 };
 
 /**
- * Flat subscription tiers, cheapest first. `Dominate` is the top tier and the
- * one partner deals are written against — the /yc page promises "extended
- * ecentic Dominate" by name, so renaming it breaks a published commitment.
- * `Scale` carries what Dominate used to at the old price point.
+ * Flat subscription tiers, cheapest first. `Dominate` is the top tier and the one
+ * the Techstars deal is written against by name, so renaming it breaks a
+ * published commitment. `Scale` carries what Dominate used to at the old price
+ * point. The YC deal is no longer tier-bound — see `DEALS`.
  */
 export const PLANS = {
   compete: {
