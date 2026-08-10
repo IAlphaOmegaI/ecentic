@@ -1,7 +1,8 @@
-import { unwrapResult } from "@zenncore/utils";
+import { cn, unwrapResult } from "@zenncore/utils";
 import { connection } from "next/server";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
+import { Link } from "@/i18n/navigation";
 import * as ListingQuality from "@/server/app/intelligence/listing-quality";
 import { Environment } from "@/server/utils/environment";
 import { StatusPill } from "../../_components/grid";
@@ -26,21 +27,72 @@ const SEVERITY_TONES = {
   info: "neutral",
 } as const;
 
+const RING_RADIUS = 28;
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
+
+const ScoreRing = ({ value }: { value: number }) => (
+  <div className="relative size-18 shrink-0">
+    <svg viewBox="0 0 64 64" className="size-full" role="presentation">
+      <circle
+        cx="32"
+        cy="32"
+        r={RING_RADIUS}
+        fill="none"
+        strokeWidth="6"
+        className="stroke-accent-foreground"
+      />
+      <circle
+        cx="32"
+        cy="32"
+        r={RING_RADIUS}
+        fill="none"
+        strokeWidth="6"
+        strokeLinecap="round"
+        strokeDasharray={`${(value / 100) * RING_CIRCUMFERENCE} ${RING_CIRCUMFERENCE}`}
+        transform="rotate(-90 32 32)"
+        className={cn(
+          "stroke-current transition-[stroke-dasharray] duration-600",
+          (() => {
+            switch (true) {
+              case value >= 80:
+                return "text-success";
+              case value >= 50:
+                return "text-warning";
+              default:
+                return "text-error";
+            }
+          })(),
+        )}
+      />
+    </svg>
+    <p className="absolute inset-0 flex items-center justify-center font-bold text-foreground-rich text-lg tabular-nums tracking-[-0.02em]">
+      {value}
+    </p>
+  </div>
+);
+
 const PlatformVerdicts = ({
+  universal,
   entries,
   labels,
 }: {
+  universal: ListingQuality.Severity | null;
   entries: {
     platform: ListingQuality.Platform;
     verdict: ListingQuality.Verdict;
   }[];
   labels: {
-    platform: (platform: ListingQuality.Platform) => string;
+    platform: (surface: ListingQuality.Surface) => string;
     severity: (severity: ListingQuality.Severity) => string;
     reference: string;
   };
 }) => (
   <div className="flex flex-wrap items-center gap-2">
+    {universal && (
+      <StatusPill tone={SEVERITY_TONES[universal]}>
+        {labels.platform("universal")} · {labels.severity(universal)}
+      </StatusPill>
+    )}
     {entries.map((entry) => (
       <span key={entry.platform} className="flex items-center gap-1.5">
         <StatusPill tone={SEVERITY_TONES[entry.verdict.severity]}>
@@ -74,37 +126,34 @@ const Summary = async ({ params }: { params: StoreParams }) => {
   );
 
   return (
-    <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2">
-      {ListingQuality.PLATFORMS.map((platform) => {
-        const summary = report.platforms[platform];
+    <div className="grid grid-cols-1 gap-px bg-accent-foreground md:grid-cols-3">
+      {ListingQuality.SURFACES.map((surface) => {
+        const summary = report.surfaces[surface];
         return (
           <div
-            key={platform}
+            key={surface}
             className="flex flex-col justify-between gap-6 bg-background-rich p-5"
           >
             <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-              {translate(`platform.${platform}`)}
+              {translate(`platform.${surface}`)}
             </p>
-            <div>
-              <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
-                {summary.readyShare}
-                <span className="ml-0.5 font-medium text-foreground-dimmed text-xl">
-                  %
-                </span>
-              </p>
-              <p className="mt-1 text-foreground-dimmed text-xs">
-                {translate("summary.readyShare", { count: report.total })}
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <StatusPill tone="error">
-                  {translate("summary.blockers", { count: summary.blockers })}
-                </StatusPill>
-                <StatusPill tone="warning">
-                  {translate("summary.warnings", { count: summary.warnings })}
-                </StatusPill>
-                <StatusPill tone="success">
-                  {translate("summary.ready", { count: summary.ready })}
-                </StatusPill>
+            <div className="flex items-center gap-6">
+              <ScoreRing value={summary.readyShare} />
+              <div>
+                <p className="text-foreground-dimmed text-xs">
+                  {translate("summary.readyShare", { count: report.total })}
+                </p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <StatusPill tone="error">
+                    {translate("summary.blockers", { count: summary.blockers })}
+                  </StatusPill>
+                  <StatusPill tone="warning">
+                    {translate("summary.warnings", { count: summary.warnings })}
+                  </StatusPill>
+                  <StatusPill tone="success">
+                    {translate("summary.ready", { count: summary.ready })}
+                  </StatusPill>
+                </div>
               </div>
             </div>
           </div>
@@ -131,29 +180,56 @@ const TopIssues = async ({ params }: { params: StoreParams }) => {
 
   return (
     <div className="divide-y divide-accent-foreground">
-      {report.topIssues.map((issue) => (
-        <div key={issue.rule} className="flex flex-col gap-1.5 p-4">
-          <div className="flex flex-wrap items-center gap-2">
-            <p className="font-medium text-foreground text-sm">
-              {translate(`rules.${issue.rule}.title`)}
+      {report.topIssues.map((issue) => {
+        const affected = report.products.filter((product) =>
+          product.findings.some((finding) => finding.rule === issue.rule),
+        );
+
+        return (
+          <div key={issue.rule} className="flex flex-col gap-1.5 p-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="font-medium text-foreground text-sm">
+                {translate(`rules.${issue.rule}.title`)}
+              </p>
+              <StatusPill tone="primary">
+                {translate("issues.affected", { count: issue.count })}
+              </StatusPill>
+            </div>
+            <p className="max-w-3xl text-foreground-dimmed text-sm">
+              {translate(`rules.${issue.rule}.detail`)}
             </p>
-            <StatusPill tone="primary">
-              {translate("issues.affected", { count: issue.count })}
-            </StatusPill>
+            <PlatformVerdicts
+              universal={issue.universal}
+              entries={issue.platforms}
+              labels={{
+                platform: (surface) => translate(`platform.${surface}`),
+                severity: (severity) => translate(`severity.${severity}`),
+                reference: translate("reference"),
+              }}
+            />
+            <details className="group mt-1">
+              <summary className="w-fit cursor-pointer list-none font-medium text-primary text-sm underline-offset-2 hover:underline">
+                <span className="mr-1 inline-block text-xs transition-transform group-open:rotate-90">
+                  ▸
+                </span>
+                {translate("issues.viewAffected")}
+              </summary>
+              <ul className="mt-2 flex max-h-64 flex-col gap-1 overflow-y-auto pl-4">
+                {affected.map((product) => (
+                  <li key={product.id}>
+                    <Link
+                      href={`/dashboard/${store}/products/${product.id}`}
+                      className="text-foreground text-sm underline-offset-2 hover:text-primary hover:underline"
+                    >
+                      {product.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </details>
           </div>
-          <p className="max-w-3xl text-foreground-dimmed text-sm">
-            {translate(`rules.${issue.rule}.detail`)}
-          </p>
-          <PlatformVerdicts
-            entries={issue.platforms}
-            labels={{
-              platform: (platform) => translate(`platform.${platform}`),
-              severity: (severity) => translate(`severity.${severity}`),
-              reference: translate("reference"),
-            }}
-          />
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };
@@ -178,13 +254,13 @@ const Products = async ({ params }: { params: StoreParams }) => {
       {report.products.map((product) => {
         const pills = (
           <span className="flex flex-wrap items-center gap-2">
-            {ListingQuality.PLATFORMS.map((platform) => (
+            {ListingQuality.SURFACES.map((surface) => (
               <StatusPill
-                key={platform}
-                tone={STATUS_TONES[product.status[platform]]}
+                key={surface}
+                tone={STATUS_TONES[product.status[surface]]}
               >
-                {translate(`platform.${platform}`)} ·{" "}
-                {translate(`status.${product.status[platform]}`)}
+                {translate(`platform.${surface}`)} ·{" "}
+                {translate(`status.${product.status[surface]}`)}
               </StatusPill>
             ))}
           </span>
@@ -239,9 +315,10 @@ const Products = async ({ params }: { params: StoreParams }) => {
                     {translate(`rules.${finding.rule}.detail`)}
                   </p>
                   <PlatformVerdicts
+                    universal={finding.universal}
                     entries={finding.platforms}
                     labels={{
-                      platform: (platform) => translate(`platform.${platform}`),
+                      platform: (surface) => translate(`platform.${surface}`),
                       severity: (severity) => translate(`severity.${severity}`),
                       reference: translate("reference"),
                     }}

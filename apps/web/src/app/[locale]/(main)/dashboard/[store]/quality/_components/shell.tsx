@@ -83,12 +83,17 @@ export const QualityShell = ({
 };
 
 export const SummarySkeleton = () => (
-  <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2">
-    {(["a", "b"] as const).map((key) => (
-      <div key={key} className="flex flex-col gap-4 bg-background-rich p-5">
+  <div className="grid grid-cols-1 gap-px bg-accent-foreground md:grid-cols-3">
+    {(["a", "b", "c"] as const).map((key) => (
+      <div key={key} className="flex flex-col gap-6 bg-background-rich p-5">
         <div className="h-4 w-40 animate-pulse rounded-full bg-foreground/10" />
-        <div className="h-10 w-24 animate-pulse bg-foreground/10" />
-        <div className="h-3 w-2/3 animate-pulse bg-foreground/10" />
+        <div className="flex items-center gap-6">
+          <div className="size-18 shrink-0 animate-pulse rounded-full bg-foreground/10" />
+          <div className="flex flex-1 flex-col gap-2">
+            <div className="h-3 w-2/3 animate-pulse bg-foreground/10" />
+            <div className="h-5 w-full animate-pulse rounded-full bg-foreground/10" />
+          </div>
+        </div>
       </div>
     ))}
   </div>

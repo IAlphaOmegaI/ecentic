@@ -1,7 +1,8 @@
 /**
  * Wires the pure listing-rule registry (`listing-rules.ts`) to a store's
  * synced catalog: builds the canonical listing per product, evaluates every
- * rule, and aggregates per-platform readiness for the Data Quality page.
+ * rule, and aggregates readiness per surface (universal + each platform) for
+ * the Data Quality page.
  */
 
 import { and, eq } from "drizzle-orm";
@@ -14,20 +15,22 @@ import * as Product from "../product";
 import * as Store from "../store";
 import {
   type Attribute,
+  catalogContextFor,
   evaluateListing,
   type Finding,
+  type Listing,
   type ListingStatus,
-  PLATFORMS,
-  type Platform,
   RULES,
   type RuleId,
   SEVERITY_RANK,
+  SURFACES,
+  type Surface,
   statusFor,
-  type Verdict,
 } from "./listing-rules";
 
 export type {
   Attribute,
+  CatalogContext,
   Finding,
   Listing,
   ListingStatus,
@@ -35,14 +38,17 @@ export type {
   Rule,
   RuleId,
   Severity,
+  Surface,
   Verdict,
 } from "./listing-rules";
 export {
+  catalogContextFor,
   evaluateListing,
   isValidGtin,
   PLATFORMS,
   RULE_IDS,
   RULES,
+  SURFACES,
 } from "./listing-rules";
 
 export type ListingReport = {
@@ -51,10 +57,10 @@ export type ListingReport = {
   image: string | null;
   link: string | null;
   findings: Finding[];
-  status: Record<Platform, ListingStatus>;
+  status: Record<Surface, ListingStatus>;
 };
 
-export type PlatformSummary = {
+export type SurfaceSummary = {
   blockers: number;
   warnings: number;
   ready: number;
@@ -65,13 +71,14 @@ export type TopIssue = {
   rule: RuleId;
   attribute: Attribute;
   count: number;
-  platforms: { platform: Platform; verdict: Verdict }[];
+  universal: Finding["universal"];
+  platforms: Finding["platforms"];
 };
 
 export type QualityReport = {
   products: ListingReport[];
   total: number;
-  platforms: Record<Platform, PlatformSummary>;
+  surfaces: Record<Surface, SurfaceSummary>;
   topIssues: TopIssue[];
 };
 
@@ -89,16 +96,19 @@ const parseImages = (images: string | null) => {
   }
 };
 
-/** Digs the raw (unvalidated) barcode out of the platform payload. */
+/**
+ * Digs the raw (unvalidated) barcode out of the platform payload. Spaces and
+ * dashes are stripped before validation, per GS1 formatting.
+ */
 const extractBarcode = (rawData: string | null) => {
   try {
     const parsed = JSON.parse(rawData ?? "null") as {
       variants?: { barcode?: unknown }[];
     } | null;
     const barcode = parsed?.variants?.[0]?.barcode;
-    return typeof barcode === "string" && barcode.trim().length > 0
-      ? barcode.trim()
-      : null;
+    if (typeof barcode !== "string") return null;
+    const normalized = barcode.replace(/[\s-]/g, "");
+    return normalized.length > 0 ? normalized : null;
   } catch {
     return null;
   }
@@ -112,7 +122,7 @@ const parseAmount = (value: string | null) => {
 
 /**
  * Runs the full rule registry over a store's active catalog and aggregates
- * per-platform readiness. Products are returned worst-first.
+ * readiness per surface. Products are returned worst-first.
  */
 export const auditListings = dedupe(
   withAuthentication(async (context, { store: storeId }: { store: string }) => {
@@ -131,36 +141,44 @@ export const auditListings = dedupe(
     });
     if (!products.success) return products;
 
-    const reports = products.data.map((product): ListingReport => {
-      const facts = extractCatalogFacts(product.rawData);
-      const images = parseImages(product.images);
+    const listings = products.data.map(
+      (
+        product,
+      ): { product: (typeof products.data)[number]; listing: Listing } => {
+        const facts = extractCatalogFacts(product.rawData);
+        return {
+          product,
+          listing: {
+            feedId: product.externalId ?? product.id,
+            title: product.title,
+            description: product.description,
+            link: product.url,
+            images: parseImages(product.images),
+            price: parseAmount(product.price),
+            compareAtPrice: parseAmount(product.compareAtPrice),
+            currency: product.currency,
+            brand: facts.brand,
+            barcode: extractBarcode(product.rawData) ?? facts.gtin,
+            mpn: facts.mpn,
+          },
+        };
+      },
+    );
 
-      const findings = evaluateListing({
-        feedId: product.externalId ?? product.id,
-        title: product.title,
-        description: product.description,
-        link: product.url,
-        images,
-        price: parseAmount(product.price),
-        compareAtPrice: parseAmount(product.compareAtPrice),
-        currency: product.currency,
-        brand: facts.brand,
-        barcode: extractBarcode(product.rawData) ?? facts.gtin,
-        mpn: facts.mpn,
-      });
+    const catalog = catalogContextFor(listings.map((entry) => entry.listing));
+
+    const reports = listings.map(({ product, listing }): ListingReport => {
+      const findings = evaluateListing(listing, catalog);
 
       return {
         id: product.id,
         title: product.title,
-        image: images[0] ?? null,
+        image: listing.images[0] ?? null,
         link: product.url,
         findings,
         status: Object.fromEntries(
-          PLATFORMS.map((platform) => [
-            platform,
-            statusFor(findings, platform),
-          ]),
-        ) as Record<Platform, ListingStatus>,
+          SURFACES.map((surface) => [surface, statusFor(findings, surface)]),
+        ) as Record<Surface, ListingStatus>,
       };
     });
 
@@ -174,19 +192,19 @@ export const auditListings = dedupe(
 
     const ordered = [...reports].sort((a, b) => weight(b) - weight(a));
 
-    const platforms = Object.fromEntries(
-      PLATFORMS.map((platform) => {
+    const surfaces = Object.fromEntries(
+      SURFACES.map((surface) => {
         const blockers = reports.filter(
-          (report) => report.status[platform] === "blocker",
+          (report) => report.status[surface] === "blocker",
         ).length;
         const warnings = reports.filter(
-          (report) => report.status[platform] === "warning",
+          (report) => report.status[surface] === "warning",
         ).length;
         const ready = reports.filter((report) =>
-          ["ready", "info"].includes(report.status[platform]),
+          ["ready", "info"].includes(report.status[surface]),
         ).length;
         return [
-          platform,
+          surface,
           {
             blockers,
             warnings,
@@ -195,25 +213,26 @@ export const auditListings = dedupe(
               reports.length > 0
                 ? Math.round((ready / reports.length) * 100)
                 : 0,
-          } satisfies PlatformSummary,
+          } satisfies SurfaceSummary,
         ];
       }),
-    ) as Record<Platform, PlatformSummary>;
+    ) as Record<Surface, SurfaceSummary>;
 
     const topIssues = RULES.flatMap((rule): TopIssue[] => {
       const count = reports.filter((report) =>
         report.findings.some((finding) => finding.rule === rule.id),
       ).length;
       if (count === 0) return [];
+      const finding = reports
+        .flatMap((report) => report.findings)
+        .find((entry) => entry.rule === rule.id);
       return [
         {
           rule: rule.id,
           attribute: rule.attribute,
           count,
-          platforms: PLATFORMS.flatMap((platform) => {
-            const verdict = rule.platforms[platform];
-            return verdict ? [{ platform, verdict }] : [];
-          }),
+          universal: finding?.universal ?? rule.universal,
+          platforms: finding?.platforms ?? [],
         },
       ];
     })
@@ -225,7 +244,7 @@ export const auditListings = dedupe(
       data: {
         products: ordered,
         total: reports.length,
-        platforms,
+        surfaces,
         topIssues,
       } satisfies QualityReport,
     };

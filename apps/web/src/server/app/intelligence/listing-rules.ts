@@ -1,21 +1,25 @@
 /**
- * Deterministic listing data-quality rules for the shopping surfaces that
- * ingest product feeds: Google Merchant Center (Shopping Graph → Google AI
- * Mode, also ingested by Perplexity) and ChatGPT Shopping (OpenAI product
- * feed spec).
+ * Deterministic listing data-quality rules for AI shopping surfaces.
  *
- * One registry serves every surface. Each rule is a shared check function
- * plus per-platform metadata — severity on that platform, the platform's
- * machine-readable issue code when one exists (Google `ItemLevelIssue`
- * codes; OpenAI only returns a bare accepted boolean), and the official
- * documentation URL. The OpenAI spec is deliberately a Google-feed superset,
- * so most checks run once and report per platform with different severities.
+ * One registry serves every surface. Each rule carries:
+ * - a shared check function run once against the canonical listing;
+ * - a `universal` severity when the rule applies to AI shopping agents in
+ *   general (feed-ingesting or storefront-reading), independent of any one
+ *   platform's enforcement;
+ * - per-platform verdicts for the surfaces with published enforcement —
+ *   Google Merchant Center (Shopping Graph → Google AI Mode, also ingested
+ *   by Perplexity) and ChatGPT Shopping (OpenAI product feed spec) — each
+ *   with its severity, machine-readable issue code when one exists (Google
+ *   `ItemLevelIssue` codes; OpenAI only returns a bare accepted boolean),
+ *   and the official documentation URL.
  *
  * Severity semantics:
  * - `blocker` — deterministic spec violation; the platform disapproves or
  *   rejects the item outright.
  * - `warning` — limited performance, or a heuristic for a rule whose
- *   threshold the platform does not publish (capitalization, promo text).
+ *   threshold the platform does not publish (capitalization, promo text,
+ *   keyword stuffing) — shipped as warnings until post-push reconciliation
+ *   confirms real disapprovals.
  * - `info` — advisory; worth fixing but no documented penalty.
  *
  * This module is pure — no server imports — so the registry can be evaluated
@@ -25,6 +29,10 @@
 
 export const PLATFORMS = ["google", "chatgpt"] as const;
 export type Platform = (typeof PLATFORMS)[number];
+
+/** Display surfaces: the universal (any-agent) tier plus each platform. */
+export const SURFACES = ["universal", ...PLATFORMS] as const;
+export type Surface = (typeof SURFACES)[number];
 
 export type Severity = "blocker" | "warning" | "info";
 
@@ -53,6 +61,27 @@ export type Listing = {
   mpn: string | null;
 };
 
+/**
+ * Catalog-level facts a per-listing check can't derive alone (uniqueness,
+ * variant consistency). Built once per catalog via {@link catalogContextFor}.
+ */
+export type CatalogContext = {
+  duplicateFeedIds: ReadonlySet<string>;
+};
+
+const EMPTY_CATALOG: CatalogContext = { duplicateFeedIds: new Set() };
+
+export const catalogContextFor = (listings: Listing[]): CatalogContext => {
+  const counts = new Map<string, number>();
+  for (const listing of listings)
+    counts.set(listing.feedId, (counts.get(listing.feedId) ?? 0) + 1);
+  return {
+    duplicateFeedIds: new Set(
+      [...counts].filter(([, count]) => count > 1).map(([feedId]) => feedId),
+    ),
+  };
+};
+
 export type Attribute =
   | "id"
   | "title"
@@ -69,18 +98,21 @@ export type Attribute =
  * translation keys (`dashboard.quality.rules.<id>`) statically checkable.
  */
 export const RULE_IDS = [
+  "id-duplicate",
+  "id-too-long",
   "title-missing",
   "title-too-long",
   "title-all-caps",
   "title-promo-text",
   "title-html",
+  "title-gimmick-symbols",
+  "title-invalid-characters",
   "title-extra-whitespace",
   "title-repeated-words",
   "description-missing",
   "description-too-long",
   "description-identical-title",
   "description-promo-text",
-  "id-too-long",
   "link-missing",
   "link-invalid",
   "link-ip-host",
@@ -94,6 +126,7 @@ export const RULE_IDS = [
   "sale-price-not-below",
   "brand-missing",
   "brand-too-long",
+  "brand-placeholder",
   "gtin-invalid",
   "gtin-coupon-prefix",
   "gtin-restricted-prefix",
@@ -106,9 +139,14 @@ export type RuleId = (typeof RULE_IDS)[number];
 export type Rule = {
   id: RuleId;
   attribute: Attribute;
+  /**
+   * Severity for AI shopping agents in general, or null when the rule only
+   * encodes one platform's quirk (e.g. Google's additional-image cap).
+   */
+  universal: Severity | null;
   platforms: Partial<Record<Platform, Verdict>>;
   /** Returns true when the listing violates the rule. */
-  check: (listing: Listing) => boolean;
+  check: (listing: Listing, catalog: CatalogContext) => boolean;
 };
 
 const google = (
@@ -131,6 +169,7 @@ const TITLE_MAX = 150;
 const DESCRIPTION_MAX = 5000;
 const ID_MAX = 50;
 const BRAND_MAX = 70;
+const URL_MAX = 2000;
 const ADDITIONAL_IMAGES_MAX = 10;
 
 /**
@@ -146,6 +185,27 @@ const HTML_TAG_PATTERN = /<\/?[a-z][^>]*>/i;
 
 const IP_HOST_PATTERN = /^\d{1,3}(\.\d{1,3}){3}$/;
 
+/** Repeated punctuation ("!!", "$$") or emoji — gimmick territory. */
+const GIMMICK_PATTERN = /([!?$%*€£¥])\1|\p{Extended_Pictographic}/u;
+
+/** Unicode private-use area + replacement char — corrupted or gamed text. */
+const INVALID_CHARACTER_PATTERN = /[\uE000-\uF8FF\uFFFD]/;
+
+/** Values that pretend to be a brand; both platforms reject them. */
+const BRAND_PLACEHOLDERS = new Set([
+  "n/a",
+  "na",
+  "none",
+  "null",
+  "unknown",
+  "generic",
+  "no brand",
+  "nobrand",
+  "unbranded",
+  "tbd",
+  "-",
+]);
+
 const parseUrl = (value: string) => {
   try {
     return new URL(value);
@@ -155,6 +215,7 @@ const parseUrl = (value: string) => {
 };
 
 const isWebUrl = (value: string) => {
+  if (value.length > URL_MAX) return false;
   const url = parseUrl(value);
   return (
     url !== null && (url.protocol === "https:" || url.protocol === "http:")
@@ -203,10 +264,35 @@ const validGtin = (listing: Listing) =>
     : null;
 
 export const RULES: Rule[] = [
+  // --- Identity ----------------------------------------------------------
+  {
+    id: "id-duplicate",
+    attribute: "id",
+    universal: "blocker",
+    platforms: {
+      google: google("blocker", null, 6324405),
+      chatgpt: chatgpt("blocker"),
+    },
+    check: (listing, catalog) => catalog.duplicateFeedIds.has(listing.feedId),
+  },
+  {
+    id: "id-too-long",
+    attribute: "id",
+    universal: "warning",
+    platforms: {
+      // ChatGPT caps IDs at 100 chars, Google at 50 — the check runs at the
+      // stricter limit, so the ChatGPT verdict stays a warning.
+      google: google("blocker", "text_value_too_long", 6324405),
+      chatgpt: chatgpt("warning"),
+    },
+    check: (listing) => listing.feedId.length > ID_MAX,
+  },
+
   // --- Title -------------------------------------------------------------
   {
     id: "title-missing",
     attribute: "title",
+    universal: "blocker",
     platforms: {
       google: google("blocker", "item_missing_required_attribute", 12157546),
       chatgpt: chatgpt("blocker"),
@@ -216,6 +302,7 @@ export const RULES: Rule[] = [
   {
     id: "title-too-long",
     attribute: "title",
+    universal: "blocker",
     platforms: {
       google: google("blocker", "text_value_too_long", 14989281),
       chatgpt: chatgpt("blocker"),
@@ -225,6 +312,7 @@ export const RULES: Rule[] = [
   {
     id: "title-all-caps",
     attribute: "title",
+    universal: "warning",
     platforms: {
       google: google("warning", null, 14987767),
       chatgpt: chatgpt("warning"),
@@ -234,6 +322,7 @@ export const RULES: Rule[] = [
   {
     id: "title-promo-text",
     attribute: "title",
+    universal: "warning",
     platforms: {
       google: google("warning", "non_product_data", 12470141),
       chatgpt: chatgpt("warning"),
@@ -243,18 +332,40 @@ export const RULES: Rule[] = [
   {
     id: "title-html",
     attribute: "title",
+    universal: "blocker",
     platforms: {
-      google: google("warning", "invalid_attribute_value", 6324415),
-      chatgpt: chatgpt("warning"),
+      google: google("blocker", "invalid_attribute_value", 6324415),
+      chatgpt: chatgpt("blocker"),
     },
     check: (listing) => HTML_TAG_PATTERN.test(listing.title),
   },
   {
+    id: "title-gimmick-symbols",
+    attribute: "title",
+    universal: "warning",
+    platforms: {
+      google: google("warning", null, 6150244),
+      chatgpt: chatgpt("warning"),
+    },
+    check: (listing) => GIMMICK_PATTERN.test(listing.title),
+  },
+  {
+    id: "title-invalid-characters",
+    attribute: "title",
+    universal: "blocker",
+    platforms: {
+      google: google("blocker", "private_range_chars_in_encoding", 160079),
+      chatgpt: chatgpt("blocker"),
+    },
+    check: (listing) => INVALID_CHARACTER_PATTERN.test(listing.title),
+  },
+  {
     id: "title-extra-whitespace",
     attribute: "title",
+    universal: "warning",
     platforms: {
-      google: google("info", null, 6324415),
-      chatgpt: chatgpt("info"),
+      google: google("blocker", null, 6324415),
+      chatgpt: chatgpt("warning"),
     },
     check: (listing) =>
       /\s{2,}/.test(listing.title) || listing.title !== listing.title.trim(),
@@ -262,9 +373,10 @@ export const RULES: Rule[] = [
   {
     id: "title-repeated-words",
     attribute: "title",
+    universal: "warning",
     platforms: {
-      google: google("info", null, 6150244),
-      chatgpt: chatgpt("info"),
+      google: google("warning", null, 6150244),
+      chatgpt: chatgpt("warning"),
     },
     check: (listing) => hasRepeatedWords(listing.title),
   },
@@ -273,6 +385,7 @@ export const RULES: Rule[] = [
   {
     id: "description-missing",
     attribute: "description",
+    universal: "blocker",
     platforms: {
       google: google("blocker", "item_missing_required_attribute", 6324468),
       chatgpt: chatgpt("blocker"),
@@ -282,6 +395,7 @@ export const RULES: Rule[] = [
   {
     id: "description-too-long",
     attribute: "description",
+    universal: "blocker",
     platforms: {
       google: google("blocker", "text_value_too_long", 6324468),
       chatgpt: chatgpt("blocker"),
@@ -291,9 +405,10 @@ export const RULES: Rule[] = [
   {
     id: "description-identical-title",
     attribute: "description",
+    universal: "warning",
     platforms: {
       google: google("warning", null, 15095391),
-      chatgpt: chatgpt("info"),
+      chatgpt: chatgpt("warning"),
     },
     check: (listing) =>
       listing.description !== null &&
@@ -304,6 +419,7 @@ export const RULES: Rule[] = [
   {
     id: "description-promo-text",
     attribute: "description",
+    universal: "warning",
     platforms: {
       google: google("warning", "non_product_data", 9957268),
       chatgpt: chatgpt("warning"),
@@ -312,21 +428,11 @@ export const RULES: Rule[] = [
       listing.description !== null && PROMO_PATTERN.test(listing.description),
   },
 
-  // --- Identifier --------------------------------------------------------
-  {
-    id: "id-too-long",
-    attribute: "id",
-    platforms: {
-      google: google("blocker", "text_value_too_long", 6324405),
-      chatgpt: chatgpt("warning"),
-    },
-    check: (listing) => listing.feedId.length > ID_MAX,
-  },
-
   // --- Link --------------------------------------------------------------
   {
     id: "link-missing",
     attribute: "link",
+    universal: "blocker",
     platforms: {
       google: google("blocker", "item_missing_required_attribute", 6324416),
       chatgpt: chatgpt("blocker"),
@@ -336,6 +442,7 @@ export const RULES: Rule[] = [
   {
     id: "link-invalid",
     attribute: "link",
+    universal: "blocker",
     platforms: {
       google: google("blocker", "invalid_url", 7052112),
       chatgpt: chatgpt("blocker"),
@@ -345,6 +452,7 @@ export const RULES: Rule[] = [
   {
     id: "link-ip-host",
     attribute: "link",
+    universal: "warning",
     platforms: {
       google: google("blocker", "invalid_url_with_ip", 6324416),
       chatgpt: chatgpt("warning"),
@@ -358,8 +466,9 @@ export const RULES: Rule[] = [
   {
     id: "link-credentials",
     attribute: "link",
+    universal: "blocker",
     platforms: {
-      google: google("warning", "invalid_url", 7052112),
+      google: google("blocker", "invalid_url", 7052112),
       chatgpt: chatgpt("blocker"),
     },
     check: (listing) => {
@@ -373,6 +482,7 @@ export const RULES: Rule[] = [
   {
     id: "image-missing",
     attribute: "image",
+    universal: "blocker",
     platforms: {
       google: google("blocker", "item_missing_required_attribute", 6324350),
       chatgpt: chatgpt("blocker"),
@@ -382,6 +492,7 @@ export const RULES: Rule[] = [
   {
     id: "image-invalid-url",
     attribute: "image",
+    universal: "blocker",
     platforms: {
       google: google("blocker", "invalid_url", 6324350),
       chatgpt: chatgpt("blocker"),
@@ -393,6 +504,7 @@ export const RULES: Rule[] = [
   {
     id: "image-too-many",
     attribute: "image",
+    universal: null,
     platforms: {
       google: google("warning", "attribute_has_too_many_values", 188494),
       chatgpt: chatgpt("info"),
@@ -404,6 +516,7 @@ export const RULES: Rule[] = [
   {
     id: "price-missing",
     attribute: "price",
+    universal: "blocker",
     platforms: {
       google: google("blocker", "item_missing_required_attribute", 12158687),
       chatgpt: chatgpt("blocker"),
@@ -413,6 +526,7 @@ export const RULES: Rule[] = [
   {
     id: "price-not-positive",
     attribute: "price",
+    universal: "blocker",
     platforms: {
       google: google("blocker", "invalid_price", 6324371),
       chatgpt: chatgpt("blocker"),
@@ -422,6 +536,7 @@ export const RULES: Rule[] = [
   {
     id: "currency-invalid",
     attribute: "price",
+    universal: "blocker",
     platforms: {
       google: google("blocker", "invalid_currency", 160637),
       chatgpt: chatgpt("blocker"),
@@ -432,6 +547,7 @@ export const RULES: Rule[] = [
   {
     id: "sale-price-not-below",
     attribute: "price",
+    universal: "info",
     platforms: {
       google: google("warning", "invalid_attribute_value", 6324471),
       chatgpt: chatgpt("info"),
@@ -446,6 +562,7 @@ export const RULES: Rule[] = [
   {
     id: "brand-missing",
     attribute: "brand",
+    universal: "warning",
     platforms: {
       google: google("warning", "item_missing_required_attribute", 6324351),
       chatgpt: chatgpt("warning"),
@@ -455,19 +572,33 @@ export const RULES: Rule[] = [
   {
     id: "brand-too-long",
     attribute: "brand",
+    universal: "blocker",
     platforms: {
       google: google("blocker", "invalid_attribute_value", 6324351),
-      chatgpt: chatgpt("warning"),
+      chatgpt: chatgpt("blocker"),
     },
     check: (listing) =>
       listing.brand !== null && listing.brand.length > BRAND_MAX,
   },
   {
+    id: "brand-placeholder",
+    attribute: "brand",
+    universal: "blocker",
+    platforms: {
+      google: google("blocker", "invalid_attribute_value", 6324351),
+      chatgpt: chatgpt("blocker"),
+    },
+    check: (listing) =>
+      listing.brand !== null &&
+      BRAND_PLACEHOLDERS.has(listing.brand.trim().toLowerCase()),
+  },
+  {
     id: "gtin-invalid",
     attribute: "gtin",
+    universal: "blocker",
     platforms: {
       google: google("blocker", "invalid_upc", 6239388),
-      chatgpt: chatgpt("warning"),
+      chatgpt: chatgpt("blocker"),
     },
     check: (listing) =>
       listing.barcode !== null && !isValidGtin(listing.barcode),
@@ -475,9 +606,10 @@ export const RULES: Rule[] = [
   {
     id: "gtin-coupon-prefix",
     attribute: "gtin",
+    universal: "warning",
     platforms: {
       google: google("blocker", "coupon_gtin", 6286302),
-      chatgpt: chatgpt("info"),
+      chatgpt: chatgpt("warning"),
     },
     check: (listing) => {
       const gtin = validGtin(listing);
@@ -487,9 +619,10 @@ export const RULES: Rule[] = [
   {
     id: "gtin-restricted-prefix",
     attribute: "gtin",
+    universal: "warning",
     platforms: {
       google: google("warning", "reserved_gtin", 7000684),
-      chatgpt: chatgpt("info"),
+      chatgpt: chatgpt("warning"),
     },
     check: (listing) => {
       const gtin = validGtin(listing);
@@ -499,6 +632,7 @@ export const RULES: Rule[] = [
   {
     id: "gtin-missing",
     attribute: "gtin",
+    universal: "warning",
     platforms: {
       google: google("warning", null, 15068757),
       chatgpt: chatgpt("info"),
@@ -508,9 +642,10 @@ export const RULES: Rule[] = [
   {
     id: "mpn-missing-without-gtin",
     attribute: "mpn",
+    universal: "warning",
     platforms: {
       google: google("warning", null, 6324482),
-      chatgpt: chatgpt("info"),
+      chatgpt: chatgpt("blocker"),
     },
     check: (listing) => listing.barcode === null && listing.mpn === null,
   },
@@ -519,13 +654,18 @@ export const RULES: Rule[] = [
 export type Finding = {
   rule: RuleId;
   attribute: Attribute;
+  universal: Severity | null;
   platforms: { platform: Platform; verdict: Verdict }[];
 };
 
-export const evaluateListing = (listing: Listing): Finding[] =>
-  RULES.filter((rule) => rule.check(listing)).map((rule) => ({
+export const evaluateListing = (
+  listing: Listing,
+  catalog: CatalogContext = EMPTY_CATALOG,
+): Finding[] =>
+  RULES.filter((rule) => rule.check(listing, catalog)).map((rule) => ({
     rule: rule.id,
     attribute: rule.attribute,
+    universal: rule.universal,
     platforms: PLATFORMS.flatMap((platform) => {
       const verdict = rule.platforms[platform];
       return verdict ? [{ platform, verdict }] : [];
@@ -542,18 +682,23 @@ export const SEVERITY_RANK: Record<Severity, number> = {
 
 export const statusFor = (
   findings: Finding[],
-  platform: Platform,
+  surface: Surface,
 ): ListingStatus => {
-  const worst = findings
-    .flatMap((finding) => finding.platforms)
-    .filter((entry) => entry.platform === platform)
-    .reduce<Severity | null>(
-      (current, entry) =>
-        current === null ||
-        SEVERITY_RANK[entry.verdict.severity] > SEVERITY_RANK[current]
-          ? entry.verdict.severity
-          : current,
-      null,
-    );
+  const severities = findings.flatMap((finding) =>
+    surface === "universal"
+      ? finding.universal
+        ? [finding.universal]
+        : []
+      : finding.platforms
+          .filter((entry) => entry.platform === surface)
+          .map((entry) => entry.verdict.severity),
+  );
+  const worst = severities.reduce<Severity | null>(
+    (current, severity) =>
+      current === null || SEVERITY_RANK[severity] > SEVERITY_RANK[current]
+        ? severity
+        : current,
+    null,
+  );
   return worst ?? "ready";
 };

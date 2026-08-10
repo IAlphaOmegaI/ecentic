@@ -1015,8 +1015,9 @@
     "quality": {
       "eyebrow": "Calidad de datos",
       "title": "Las reglas de feed que exige cada superficie de compra con IA",
-      "description": "Cada producto activo pasa por un único registro de reglas — la especificación de datos de producto y los códigos de incidencia de Google Merchant Center, más la especificación de feed de OpenAI detrás de ChatGPT Shopping — con severidad por plataforma y enlaces a la documentación oficial de cada hallazgo.",
+      "description": "Cada producto activo pasa por un único registro de reglas: comprobaciones universales que aplica cualquier agente de compra con IA, más los paquetes por plataforma — la especificación de datos de producto y los códigos de incidencia de Google Merchant Center, y la especificación de feed de OpenAI detrás de ChatGPT Shopping — con severidad por superficie y enlaces a la documentación oficial de cada hallazgo.",
       "platform": {
+        "universal": "Todos los agentes de IA",
         "google": "Google Merchant",
         "chatgpt": "ChatGPT Shopping"
       },
@@ -1042,6 +1043,7 @@
         "eyebrow": "Incidencias principales",
         "title": "Correcciones ordenadas por cuántos productos desbloquean",
         "affected": "{count, plural, one {# producto} other {# productos}}",
+        "viewAffected": "Ver productos afectados",
         "empty": "Sin violaciones de reglas en el catálogo — cada producto pasa las comprobaciones de ambas plataformas."
       },
       "products": {
@@ -1051,6 +1053,22 @@
         "empty": "Aún no hay productos activos — sincroniza o añade productos para ejecutar las comprobaciones de calidad."
       },
       "rules": {
+        "id-duplicate": {
+          "title": "ID de producto duplicado",
+          "detail": "Dos o más productos comparten el mismo ID de feed; cada producto necesita un identificador único y estable o las filas posteriores sobrescriben en silencio a las anteriores."
+        },
+        "title-gimmick-symbols": {
+          "title": "Símbolos efectistas en el título",
+          "detail": "La puntuación repetida, los caracteres decorativos o los emoji se interpretan como spam en las comprobaciones editoriales de cualquier superficie."
+        },
+        "title-invalid-characters": {
+          "title": "Caracteres inválidos en el título",
+          "detail": "Los caracteres de uso privado o corruptos (mojibake) rompen la ingestión; recodifica el texto como UTF-8 limpio."
+        },
+        "brand-placeholder": {
+          "title": "Marca con valor de relleno",
+          "detail": "Valores como \"N/A\" o \"genérico\" se rechazan como marca; proporciona la marca real u omite el atributo."
+        },
         "title-missing": {
           "title": "Falta el título",
           "detail": "Cada producto necesita un título en texto plano de 1–150 caracteres."
@@ -1105,7 +1123,7 @@
         },
         "link-invalid": {
           "title": "URL del producto inválida",
-          "detail": "La página de destino debe ser una URL http(s) completa."
+          "detail": "La página de destino debe ser una URL http(s) completa de menos de 2.000 caracteres."
         },
         "link-ip-host": {
           "title": "La URL del producto usa una dirección IP",
@@ -1121,7 +1139,7 @@
         },
         "image-invalid-url": {
           "title": "URL de imagen inválida",
-          "detail": "Los enlaces de imagen deben ser URL http(s) completas que las plataformas puedan rastrear."
+          "detail": "Los enlaces de imagen deben ser URL http(s) completas de menos de 2.000 caracteres que las plataformas puedan rastrear."
         },
         "image-too-many": {
           "title": "Más de 10 imágenes adicionales",
@@ -1169,7 +1187,7 @@
         },
         "mpn-missing-without-gtin": {
           "title": "Sin GTIN ni MPN",
-          "detail": "Proporciona un MPN cuando el producto no tenga GTIN; de lo contrario el feed marca identifier_exists como false."
+          "detail": "Proporciona un MPN cuando el producto no tenga GTIN — ChatGPT Shopping exige uno de los dos; el feed de Google marca identifier_exists como false en caso contrario."
         }
       }
     },

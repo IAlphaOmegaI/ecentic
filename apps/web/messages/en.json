@@ -1373,8 +1373,9 @@
     "quality": {
       "eyebrow": "Data Quality",
       "title": "Feed rules every AI shopping surface enforces",
-      "description": "Every active product runs through one rule registry — Google Merchant Center's product data specification and issue codes, plus the OpenAI product feed spec behind ChatGPT Shopping — with per-platform severity and links to the official documentation for every finding.",
+      "description": "Every active product runs through one rule registry: universal checks any AI shopping agent applies, plus the platform packs — Google Merchant Center's product data specification and issue codes, and the OpenAI product feed spec behind ChatGPT Shopping — with per-surface severity and links to the official documentation for every finding.",
       "platform": {
+        "universal": "All AI agents",
         "google": "Google Merchant",
         "chatgpt": "ChatGPT Shopping"
       },
@@ -1400,6 +1401,7 @@
         "eyebrow": "Top issues",
         "title": "Fixes ranked by how many products they unblock",
         "affected": "{count, plural, one {# product} other {# products}}",
+        "viewAffected": "View affected products",
         "empty": "No rule violations across the catalog — every listing passes both platforms' checks."
       },
       "products": {
@@ -1409,6 +1411,22 @@
         "empty": "No active products yet — sync or add products to run the quality checks."
       },
       "rules": {
+        "id-duplicate": {
+          "title": "Duplicate product ID",
+          "detail": "Two or more products share the same feed ID; every listing needs a unique, stable identifier or later rows silently overwrite earlier ones."
+        },
+        "title-gimmick-symbols": {
+          "title": "Gimmicky symbols in title",
+          "detail": "Repeated punctuation, decorative characters, or emoji read as spam to editorial checks on every surface."
+        },
+        "title-invalid-characters": {
+          "title": "Invalid characters in title",
+          "detail": "Private-use or corrupted (mojibake) characters break ingestion; re-encode the text as clean UTF-8."
+        },
+        "brand-placeholder": {
+          "title": "Placeholder brand value",
+          "detail": "Values like \"N/A\" or \"generic\" are rejected as brands; provide the real brand or omit the attribute."
+        },
         "title-missing": {
           "title": "Missing title",
           "detail": "Every listing needs a plain-text title of 1–150 characters."
@@ -1463,7 +1481,7 @@
         },
         "link-invalid": {
           "title": "Invalid product URL",
-          "detail": "The landing page must be a complete http(s) URL."
+          "detail": "The landing page must be a complete http(s) URL under 2,000 characters."
         },
         "link-ip-host": {
           "title": "Product URL uses an IP address",
@@ -1479,7 +1497,7 @@
         },
         "image-invalid-url": {
           "title": "Invalid image URL",
-          "detail": "Image links must be complete http(s) URLs the platforms can crawl."
+          "detail": "Image links must be complete http(s) URLs under 2,000 characters that the platforms can crawl."
         },
         "image-too-many": {
           "title": "More than 10 additional images",
@@ -1527,7 +1545,7 @@
         },
         "mpn-missing-without-gtin": {
           "title": "No GTIN and no MPN",
-          "detail": "Provide an MPN when the product has no GTIN; the feed marks identifier_exists false otherwise."
+          "detail": "Provide an MPN when the product has no GTIN — ChatGPT Shopping requires one of the two; the Google feed marks identifier_exists false otherwise."
         }
       }
     },
