@@ -7,7 +7,7 @@ import {
   TrendDownIcon,
   TrendUpIcon,
 } from "@zenncore/icons";
-import { cn, unwrapResult } from "@zenncore/utils";
+import { cn, parseSearchParam, unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import type { SearchParamsProps } from "@zenncore/web/types";
 import { connection } from "next/server";
@@ -15,6 +15,7 @@ import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { Link } from "@/i18n/navigation";
 import { formatRelativeTime } from "@/lib/date";
+import { MISSING_FIELD_CHIPS, parseProductFilters } from "@/lib/filters";
 import * as Product from "@/server/app/product";
 import * as Scan from "@/server/app/scan";
 import * as Tracking from "@/server/app/tracking";
@@ -34,6 +35,10 @@ import {
   ProductsWinRateTrend,
   QualityDistribution,
 } from "../_components/products-charts";
+import {
+  MissingFieldChip,
+  ProductsFilters,
+} from "../_components/products-filters";
 import { ScanInsightsCarousel } from "../_components/scan-insights-carousel";
 import {
   AddActionSkeleton,
@@ -102,7 +107,7 @@ const EmbedBanner = async ({ params }: { params: StoreParams }) => {
 export default ({
   params,
   searchParams,
-}: SearchParamsProps<keyof Pager> & {
+}: SearchParamsProps<keyof Pager | "filters"> & {
   params: PageProps<"/dashboard/[store]/products">["params"];
 }) => (
   <ProductsShell
@@ -132,9 +137,23 @@ export default ({
       </Suspense>
     }
     table={
-      <Suspense fallback={<TableSkeleton />}>
-        <Products params={params} searchParams={searchParams} />
-      </Suspense>
+      <div>
+        <div className="flex flex-wrap items-center gap-2 border-accent-foreground border-b p-4">
+          <Suspense
+            fallback={
+              <div className="h-9 w-28 animate-pulse bg-foreground/10" />
+            }
+          >
+            <ProductsFilters />
+          </Suspense>
+          <Suspense>
+            <MissingFields params={params} />
+          </Suspense>
+        </div>
+        <Suspense fallback={<TableSkeleton />}>
+          <Products params={params} searchParams={searchParams} />
+        </Suspense>
+      </div>
     }
     traffic={
       <Suspense fallback={<TrafficSkeleton />}>
@@ -500,22 +519,40 @@ const Performance = async ({ params }: { params: StoreParams }) => {
   );
 };
 
+const MissingFields = async ({ params }: { params: StoreParams }) => {
+  await connection();
+  const { store } = await params;
+  const counts = await unwrapResult(
+    Product.countMissingFields(Environment.SERVER, { store }),
+  );
+
+  return MISSING_FIELD_CHIPS.filter((field) => counts[field] > 0).map(
+    (field) => (
+      <MissingFieldChip key={field} field={field} count={counts[field]} />
+    ),
+  );
+};
+
 const Products = async ({
   params,
   searchParams,
 }: {
   params: StoreParams;
-  searchParams: SearchParamsProps<keyof Pager>["searchParams"];
+  searchParams: SearchParamsProps<keyof Pager | "filters">["searchParams"];
 }) => {
   await connection();
   const { store } = await params;
   const translate = await getTranslations("dashboard.shared");
   const { page, size } = await extractPaginationParams(searchParams);
+  const filters = parseProductFilters(
+    parseSearchParam((await searchParams).filters, "single", "") || undefined,
+  );
   const { items, pagination } = await unwrapResult(
     Product.paginateWithIntelligence(Environment.SERVER, {
       page,
       size,
       store,
+      filters,
     }),
   );
 

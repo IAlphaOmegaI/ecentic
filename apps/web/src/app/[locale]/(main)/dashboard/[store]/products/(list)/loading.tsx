@@ -2,6 +2,7 @@ import { StatusPillSkeleton } from "../../../_components/chrome-skeletons";
 import {
   AddActionSkeleton,
   ChartSkeleton,
+  FiltersSkeleton,
   InsightsSkeleton,
   ProductsShell,
   StatsSkeleton,
@@ -16,7 +17,12 @@ export default () => (
     action={<AddActionSkeleton />}
     stats={<StatsSkeleton />}
     performance={<ChartSkeleton />}
-    table={<TableSkeleton />}
+    table={
+      <div>
+        <FiltersSkeleton />
+        <TableSkeleton />
+      </div>
+    }
     traffic={<TrafficSkeleton />}
     insights={<InsightsSkeleton />}
   />

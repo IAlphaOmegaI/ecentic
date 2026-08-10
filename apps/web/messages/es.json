@@ -395,6 +395,8 @@
       "simulations": "Simulaciones",
       "optimize": "Optimizar",
       "visibility": "Visibilidad",
+      "quality": "Calidad de datos",
+      "brand": "Marca",
       "discovery": "Descubrimiento",
       "ucp": "UCP",
       "ucpPlayground": "Playground UCP",
@@ -602,6 +604,35 @@
       },
       "table": {
         "title": "Catálogo de productos",
+        "filters": {
+          "addFilter": "Añadir filtro",
+          "title": "Filtrar productos",
+          "addCondition": "Añadir condición",
+          "removeCondition": "Eliminar condición",
+          "clear": "Limpiar",
+          "apply": "Aplicar filtros",
+          "valuePlaceholder": "Valor",
+          "missing": "{count, plural, one {# producto} other {# productos}} sin {field}",
+          "fields": {
+            "title": "Título",
+            "description": "Descripción",
+            "sku": "SKU",
+            "price": "Precio",
+            "status": "Estado",
+            "url": "URL"
+          },
+          "operators": {
+            "contains": "contiene",
+            "notContains": "no contiene",
+            "is": "es",
+            "isNot": "no es",
+            "isEmpty": "está vacío",
+            "isNotEmpty": "no está vacío",
+            "equals": "igual a",
+            "greaterThan": "mayor que",
+            "lessThan": "menor que"
+          }
+        },
         "fields": {
           "product": "Producto",
           "price": "Precio",
@@ -890,6 +921,274 @@
         "optimizationFailed": "Error de optimización",
         "storeOptimized": "Tienda optimizada para agentes de IA",
         "storeOptimizedDescription": "{published}/{total} productos publicados, {rewritten} fichas reescritas{metafields}."
+      }
+    },
+    "brand": {
+      "eyebrow": "Visibilidad de marca",
+      "title": "Cómo perciben y hablan de esta marca los motores de IA",
+      "description": "Consultas reales de compradores respondidas por motores de IA y auditadas: dónde aparece la marca, quién gana en su lugar y en qué fuentes confían los motores.",
+      "action": {
+        "refresh": "Actualizar datos de marca",
+        "run": "Ejecutar análisis de marca"
+      },
+      "toast": {
+        "failed": "El análisis de marca falló"
+      },
+      "tabs": {
+        "overview": "Resumen",
+        "queries": "Registro de consultas"
+      },
+      "empty": {
+        "title": "Aún no hay análisis de marca",
+        "description": "Ejecuta el primer análisis: 20 consultas de compradores respondidas por motores de IA y auditadas para ver dónde aparece esta marca. Tarda alrededor de un minuto."
+      },
+      "summary": {
+        "title": "Resumen diagnóstico",
+        "analyzed": "Analizado {time}",
+        "metrics": {
+          "mentionRate": "Mencionada en el {rate}% de las respuestas",
+          "unpromptedRate": "Encontrada sin nombrarla en el {rate}%",
+          "namedRate": "Reconocida al preguntar en el {rate}%"
+        }
+      },
+      "shape": {
+        "title": "Forma de visibilidad",
+        "dimensions": {
+          "find": "Descubrir",
+          "consider": "Considerar",
+          "evaluate": "Evaluar",
+          "support": "Soporte",
+          "presence": "Presencia",
+          "authority": "Autoridad"
+        },
+        "levels": {
+          "weak": "Débil",
+          "developing": "En desarrollo",
+          "strong": "Fuerte"
+        }
+      },
+      "findings": {
+        "title": "Hallazgos clave",
+        "description": "Observaciones respaldadas por evidencia sobre la visibilidad de la marca."
+      },
+      "crawlability": {
+        "title": "Rastreabilidad IA",
+        "ready": "Lista",
+        "issues": "Problemas",
+        "checks": {
+          "robots": "robots.txt",
+          "llms": "llms.txt",
+          "engines": "Motores"
+        }
+      },
+      "perception": {
+        "title": "Percepción de marca",
+        "strengths": "Fortalezas",
+        "concerns": "Preocupaciones"
+      },
+      "funnel": {
+        "title": "Diagnóstico del embudo"
+      },
+      "landscape": {
+        "competitors": "Quién gana en su lugar",
+        "competitorMentions": "{count} menciones",
+        "sources": "Fuentes en las que confía la IA",
+        "sourceCitations": "{count} citas"
+      },
+      "queries": {
+        "description": "Cada consulta auditada de la última ejecución, con el veredicto del motor.",
+        "headers": {
+          "query": "Consulta",
+          "dimension": "Dimensión",
+          "result": "Resultado",
+          "brands": "Marcas recomendadas",
+          "sources": "Fuentes"
+        },
+        "position": {
+          "top": "Primera opción",
+          "listed": "Mencionada",
+          "absent": "Ausente"
+        },
+        "branded": "con marca"
+      }
+    },
+    "quality": {
+      "eyebrow": "Calidad de datos",
+      "title": "Las reglas de feed que exige cada superficie de compra con IA",
+      "description": "Cada producto activo pasa por un único registro de reglas: comprobaciones universales que aplica cualquier agente de compra con IA, más los paquetes por plataforma — la especificación de datos de producto y los códigos de incidencia de Google Merchant Center, y la especificación de feed de OpenAI detrás de ChatGPT Shopping — con severidad por superficie y enlaces a la documentación oficial de cada hallazgo.",
+      "platform": {
+        "universal": "Todos los agentes de IA",
+        "google": "Google Merchant",
+        "chatgpt": "ChatGPT Shopping"
+      },
+      "severity": {
+        "blocker": "Desaprueba",
+        "warning": "Limita el rendimiento",
+        "info": "Aviso"
+      },
+      "status": {
+        "blocker": "Bloqueado",
+        "warning": "En riesgo",
+        "info": "Avisos",
+        "ready": "Listo"
+      },
+      "reference": "Docs",
+      "summary": {
+        "readyShare": "de {count, plural, one {# producto activo} other {# productos activos}} listos para el feed",
+        "blockers": "{count} bloqueados",
+        "warnings": "{count} en riesgo",
+        "ready": "{count} listos"
+      },
+      "issues": {
+        "eyebrow": "Incidencias principales",
+        "title": "Correcciones ordenadas por cuántos productos desbloquean",
+        "affected": "{count, plural, one {# producto} other {# productos}}",
+        "viewAffected": "Ver productos afectados",
+        "empty": "Sin violaciones de reglas en el catálogo — cada producto pasa las comprobaciones de ambas plataformas."
+      },
+      "products": {
+        "eyebrow": "Catálogo",
+        "title": "Hallazgos por producto",
+        "findings": "{count, plural, one {# hallazgo} other {# hallazgos}}",
+        "empty": "Aún no hay productos activos — sincroniza o añade productos para ejecutar las comprobaciones de calidad."
+      },
+      "rules": {
+        "id-duplicate": {
+          "title": "ID de producto duplicado",
+          "detail": "Dos o más productos comparten el mismo ID de feed; cada producto necesita un identificador único y estable o las filas posteriores sobrescriben en silencio a las anteriores."
+        },
+        "title-gimmick-symbols": {
+          "title": "Símbolos efectistas en el título",
+          "detail": "La puntuación repetida, los caracteres decorativos o los emoji se interpretan como spam en las comprobaciones editoriales de cualquier superficie."
+        },
+        "title-invalid-characters": {
+          "title": "Caracteres inválidos en el título",
+          "detail": "Los caracteres de uso privado o corruptos (mojibake) rompen la ingestión; recodifica el texto como UTF-8 limpio."
+        },
+        "brand-placeholder": {
+          "title": "Marca con valor de relleno",
+          "detail": "Valores como \"N/A\" o \"genérico\" se rechazan como marca; proporciona la marca real u omite el atributo."
+        },
+        "title-missing": {
+          "title": "Falta el título",
+          "detail": "Cada producto necesita un título en texto plano de 1–150 caracteres."
+        },
+        "title-too-long": {
+          "title": "Título de más de 150 caracteres",
+          "detail": "Google y ChatGPT Shopping limitan los títulos a 150 caracteres; los más largos se rechazan."
+        },
+        "title-all-caps": {
+          "title": "Título mayormente en mayúsculas",
+          "detail": "Los títulos en mayúsculas son marcados por las comprobaciones editoriales automáticas; usa mayúsculas solo en abreviaturas, códigos de país y divisas."
+        },
+        "title-promo-text": {
+          "title": "Texto promocional en el título",
+          "detail": "Frases como \"envío gratis\", \"oferta\" o \"mejor precio\" pertenecen a los atributos de envío y precio, no al título."
+        },
+        "title-html": {
+          "title": "Etiquetas HTML en el título",
+          "detail": "Los títulos deben ser texto plano; elimina el marcado heredado de la plataforma de origen."
+        },
+        "title-extra-whitespace": {
+          "title": "Espacios de más en el título",
+          "detail": "No se permiten espacios al inicio, al final ni repetidos en los títulos."
+        },
+        "title-repeated-words": {
+          "title": "Palabras repetidas en el título",
+          "detail": "Repetir la misma palabra se interpreta como keyword stuffing en las comprobaciones editoriales."
+        },
+        "description-missing": {
+          "title": "Falta la descripción",
+          "detail": "Ambas plataformas exigen una descripción; funcionan mejor 500–1.000 caracteres que describan solo el producto."
+        },
+        "description-too-long": {
+          "title": "Descripción de más de 5.000 caracteres",
+          "detail": "Las descripciones se limitan a 5.000 caracteres en ambas plataformas."
+        },
+        "description-identical-title": {
+          "title": "Descripción idéntica al título",
+          "detail": "La descripción debe aportar información más allá del título."
+        },
+        "description-promo-text": {
+          "title": "Texto promocional en la descripción",
+          "detail": "Elimina las frases promocionales — el precio, las ofertas y el envío se verifican contra atributos dedicados."
+        },
+        "id-too-long": {
+          "title": "ID de producto de más de 50 caracteres",
+          "detail": "Los ID del feed se limitan a 50 caracteres y deben mantenerse estables entre sincronizaciones."
+        },
+        "link-missing": {
+          "title": "Falta la URL del producto",
+          "detail": "Cada producto necesita una página pública en el dominio verificado."
+        },
+        "link-invalid": {
+          "title": "URL del producto inválida",
+          "detail": "La página de destino debe ser una URL http(s) completa de menos de 2.000 caracteres."
+        },
+        "link-ip-host": {
+          "title": "La URL del producto usa una dirección IP",
+          "detail": "Las páginas de destino deben usar un nombre de dominio, no una IP."
+        },
+        "link-credentials": {
+          "title": "Credenciales incrustadas en la URL",
+          "detail": "Las URL no deben incluir usuario ni contraseña; ChatGPT Shopping las rechaza directamente."
+        },
+        "image-missing": {
+          "title": "Falta la imagen del producto",
+          "detail": "Cada producto necesita al menos una imagen; sin ella el artículo se desaprueba."
+        },
+        "image-invalid-url": {
+          "title": "URL de imagen inválida",
+          "detail": "Los enlaces de imagen deben ser URL http(s) completas de menos de 2.000 caracteres que las plataformas puedan rastrear."
+        },
+        "image-too-many": {
+          "title": "Más de 10 imágenes adicionales",
+          "detail": "Google acepta hasta 10 imágenes adicionales por producto; las sobrantes se descartan."
+        },
+        "price-missing": {
+          "title": "Falta el precio",
+          "detail": "Cada producto necesita un precio; sin él el artículo se desaprueba."
+        },
+        "price-not-positive": {
+          "title": "Precio cero o negativo",
+          "detail": "Los precios deben ser mayores que cero y coincidir con la página de destino."
+        },
+        "currency-invalid": {
+          "title": "Código de divisa inválido",
+          "detail": "Los precios necesitan un código ISO 4217 de tres letras, p. ej. USD o EUR."
+        },
+        "sale-price-not-below": {
+          "title": "Precio de comparación no supera al precio actual",
+          "detail": "La oferta solo se muestra cuando el precio previo al descuento supera al precio actual; de lo contrario el tachado se ignora."
+        },
+        "brand-missing": {
+          "title": "Falta la marca",
+          "detail": "Los productos de marca deben llevar el atributo brand; su ausencia limita la agrupación en clústeres de producto entre minoristas."
+        },
+        "brand-too-long": {
+          "title": "Marca de más de 70 caracteres",
+          "detail": "Los valores de marca se limitan a 70 caracteres y no deben contener texto promocional."
+        },
+        "gtin-invalid": {
+          "title": "El código de barras no es un GTIN válido",
+          "detail": "El código de barras no pasa la validación de longitud o dígito de control; usa el GTIN-8, -12, -13 o -14 del fabricante."
+        },
+        "gtin-coupon-prefix": {
+          "title": "El GTIN usa un prefijo de cupón",
+          "detail": "Los prefijos 98–99 identifican cupones y se desaprueban; usa el GTIN del fabricante."
+        },
+        "gtin-restricted-prefix": {
+          "title": "El GTIN usa un prefijo restringido",
+          "detail": "Los prefijos 2, 02 y 04 están reservados para distribución restringida y productos de peso variable."
+        },
+        "gtin-missing": {
+          "title": "Falta el GTIN",
+          "detail": "Sin GTIN la oferta no puede unirse a los clústeres de producto entre minoristas, lo que limita el rendimiento en ambas superficies."
+        },
+        "mpn-missing-without-gtin": {
+          "title": "Sin GTIN ni MPN",
+          "detail": "Proporciona un MPN cuando el producto no tenga GTIN — ChatGPT Shopping exige uno de los dos; el feed de Google marca identifier_exists como false en caso contrario."
+        }
       }
     },
     "visibility": {

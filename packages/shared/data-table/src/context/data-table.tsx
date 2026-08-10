@@ -4,6 +4,7 @@ import type { Table } from "@tanstack/react-table";
 import { createContext } from "@zenncore/utils/hooks";
 import type { Context, JSX, PropsWithChildren } from "react";
 import {
+  type DataTableFeatures,
   type UseDataTableConfigParams,
   useDataTableConfig,
 } from "../hooks/use-interfaced-table";
@@ -11,7 +12,7 @@ import type { Pagination } from "../utils/types/pagination";
 import type { TableRow } from "../utils/types/row";
 
 type DataTableContext<R extends TableRow> = {
-  table: Table<R>;
+  table: Table<DataTableFeatures, R>;
   pagination: Pagination;
 };
 

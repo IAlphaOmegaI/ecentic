@@ -395,6 +395,8 @@
       "simulations": "Simulations",
       "optimize": "Optimize",
       "visibility": "Visibility",
+      "quality": "Data Quality",
+      "brand": "Brand",
       "discovery": "Discovery",
       "ucp": "UCP",
       "ucpPlayground": "UCP Playground",
@@ -633,6 +635,35 @@
       },
       "table": {
         "title": "Product Catalog",
+        "filters": {
+          "addFilter": "Add filter",
+          "title": "Filter products",
+          "addCondition": "Add condition",
+          "removeCondition": "Remove condition",
+          "clear": "Clear",
+          "apply": "Apply filters",
+          "valuePlaceholder": "Value",
+          "missing": "{count, plural, one {# product} other {# products}} missing {field}",
+          "fields": {
+            "title": "Title",
+            "description": "Description",
+            "sku": "SKU",
+            "price": "Price",
+            "status": "Status",
+            "url": "URL"
+          },
+          "operators": {
+            "contains": "contains",
+            "notContains": "does not contain",
+            "is": "is",
+            "isNot": "is not",
+            "isEmpty": "is empty",
+            "isNotEmpty": "is not empty",
+            "equals": "equals",
+            "greaterThan": "greater than",
+            "lessThan": "less than"
+          }
+        },
         "fields": {
           "product": "Product",
           "price": "Price",
@@ -1248,6 +1279,274 @@
         "optimizationFailed": "Optimization failed",
         "storeOptimized": "Store optimized for AI agents",
         "storeOptimizedDescription": "{published}/{total} products published, {rewritten} listings rewritten{metafields}."
+      }
+    },
+    "brand": {
+      "eyebrow": "Brand Visibility",
+      "title": "How AI engines perceive and discuss this brand",
+      "description": "Real shopper queries are answered by AI engines and audited: where the brand surfaces, who wins instead, and which sources the engines trust.",
+      "action": {
+        "refresh": "Refresh brand data",
+        "run": "Run brand analysis"
+      },
+      "toast": {
+        "failed": "Brand analysis failed"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "queries": "Query log"
+      },
+      "empty": {
+        "title": "No brand analysis yet",
+        "description": "Run the first analysis: 20 shopper queries answered by AI engines and audited for where this brand shows up. It takes about a minute."
+      },
+      "summary": {
+        "title": "Diagnostic summary",
+        "analyzed": "Analyzed {time}",
+        "metrics": {
+          "mentionRate": "Mentioned in {rate}% of responses",
+          "unpromptedRate": "Found without name in {rate}%",
+          "namedRate": "Named when asked in {rate}%"
+        }
+      },
+      "shape": {
+        "title": "Visibility shape",
+        "dimensions": {
+          "find": "Find",
+          "consider": "Consider",
+          "evaluate": "Evaluate",
+          "support": "Support",
+          "presence": "Presence",
+          "authority": "Authority"
+        },
+        "levels": {
+          "weak": "Weak",
+          "developing": "Developing",
+          "strong": "Strong"
+        }
+      },
+      "findings": {
+        "title": "Key findings",
+        "description": "Evidence-backed observations across the brand's visibility."
+      },
+      "crawlability": {
+        "title": "AI crawlability",
+        "ready": "Ready",
+        "issues": "Issues",
+        "checks": {
+          "robots": "robots.txt",
+          "llms": "llms.txt",
+          "engines": "Engines"
+        }
+      },
+      "perception": {
+        "title": "Brand perception",
+        "strengths": "Strengths",
+        "concerns": "Concerns"
+      },
+      "funnel": {
+        "title": "Funnel diagnosis"
+      },
+      "landscape": {
+        "competitors": "Who wins instead",
+        "competitorMentions": "{count} mentions",
+        "sources": "Sources AI trusts",
+        "sourceCitations": "{count} citations"
+      },
+      "queries": {
+        "description": "Every audited query from the latest run, with the engine's verdict.",
+        "headers": {
+          "query": "Query",
+          "dimension": "Dimension",
+          "result": "Result",
+          "brands": "Brands recommended",
+          "sources": "Sources"
+        },
+        "position": {
+          "top": "Top pick",
+          "listed": "Listed",
+          "absent": "Absent"
+        },
+        "branded": "branded"
+      }
+    },
+    "quality": {
+      "eyebrow": "Data Quality",
+      "title": "Feed rules every AI shopping surface enforces",
+      "description": "Every active product runs through one rule registry: universal checks any AI shopping agent applies, plus the platform packs — Google Merchant Center's product data specification and issue codes, and the OpenAI product feed spec behind ChatGPT Shopping — with per-surface severity and links to the official documentation for every finding.",
+      "platform": {
+        "universal": "All AI agents",
+        "google": "Google Merchant",
+        "chatgpt": "ChatGPT Shopping"
+      },
+      "severity": {
+        "blocker": "Disapproves",
+        "warning": "Limits performance",
+        "info": "Advisory"
+      },
+      "status": {
+        "blocker": "Blocked",
+        "warning": "At risk",
+        "info": "Advisories",
+        "ready": "Ready"
+      },
+      "reference": "Docs",
+      "summary": {
+        "readyShare": "of {count, plural, one {# active product} other {# active products}} feed-ready",
+        "blockers": "{count} blocked",
+        "warnings": "{count} at risk",
+        "ready": "{count} ready"
+      },
+      "issues": {
+        "eyebrow": "Top issues",
+        "title": "Fixes ranked by how many products they unblock",
+        "affected": "{count, plural, one {# product} other {# products}}",
+        "viewAffected": "View affected products",
+        "empty": "No rule violations across the catalog — every listing passes both platforms' checks."
+      },
+      "products": {
+        "eyebrow": "Catalog",
+        "title": "Per-product findings",
+        "findings": "{count, plural, one {# finding} other {# findings}}",
+        "empty": "No active products yet — sync or add products to run the quality checks."
+      },
+      "rules": {
+        "id-duplicate": {
+          "title": "Duplicate product ID",
+          "detail": "Two or more products share the same feed ID; every listing needs a unique, stable identifier or later rows silently overwrite earlier ones."
+        },
+        "title-gimmick-symbols": {
+          "title": "Gimmicky symbols in title",
+          "detail": "Repeated punctuation, decorative characters, or emoji read as spam to editorial checks on every surface."
+        },
+        "title-invalid-characters": {
+          "title": "Invalid characters in title",
+          "detail": "Private-use or corrupted (mojibake) characters break ingestion; re-encode the text as clean UTF-8."
+        },
+        "brand-placeholder": {
+          "title": "Placeholder brand value",
+          "detail": "Values like \"N/A\" or \"generic\" are rejected as brands; provide the real brand or omit the attribute."
+        },
+        "title-missing": {
+          "title": "Missing title",
+          "detail": "Every listing needs a plain-text title of 1–150 characters."
+        },
+        "title-too-long": {
+          "title": "Title over 150 characters",
+          "detail": "Google and ChatGPT Shopping both cap titles at 150 characters; longer titles are rejected."
+        },
+        "title-all-caps": {
+          "title": "Title mostly capitalized",
+          "detail": "All-caps titles are flagged by automated editorial checks; capitalize only abbreviations, country codes, and currencies."
+        },
+        "title-promo-text": {
+          "title": "Promotional text in title",
+          "detail": "Phrases like \"free shipping\", \"sale\", or \"best price\" belong in shipping and price attributes, not the title."
+        },
+        "title-html": {
+          "title": "HTML tags in title",
+          "detail": "Titles must be plain text; remove markup left over from the source platform."
+        },
+        "title-extra-whitespace": {
+          "title": "Extra whitespace in title",
+          "detail": "Leading, trailing, or repeated spaces are not allowed in titles."
+        },
+        "title-repeated-words": {
+          "title": "Repeated words in title",
+          "detail": "Repeating the same word reads as keyword stuffing to editorial checks."
+        },
+        "description-missing": {
+          "title": "Missing description",
+          "detail": "Both platforms require a description; 500–1,000 characters describing only the product works best."
+        },
+        "description-too-long": {
+          "title": "Description over 5,000 characters",
+          "detail": "Descriptions are capped at 5,000 characters on both platforms."
+        },
+        "description-identical-title": {
+          "title": "Description identical to title",
+          "detail": "The description must add information beyond the title."
+        },
+        "description-promo-text": {
+          "title": "Promotional text in description",
+          "detail": "Remove promotion phrases — price, sale, and shipping claims are checked against dedicated attributes instead."
+        },
+        "id-too-long": {
+          "title": "Product ID over 50 characters",
+          "detail": "Feed IDs are capped at 50 characters and must stay stable across syncs."
+        },
+        "link-missing": {
+          "title": "Missing product URL",
+          "detail": "Every listing needs a public landing page on the verified domain."
+        },
+        "link-invalid": {
+          "title": "Invalid product URL",
+          "detail": "The landing page must be a complete http(s) URL under 2,000 characters."
+        },
+        "link-ip-host": {
+          "title": "Product URL uses an IP address",
+          "detail": "Landing pages must use a domain name, not a raw IP address."
+        },
+        "link-credentials": {
+          "title": "Credentials embedded in URL",
+          "detail": "URLs must not embed a username or password; ChatGPT Shopping rejects them outright."
+        },
+        "image-missing": {
+          "title": "Missing product image",
+          "detail": "Every listing needs at least one image; items without one are disapproved."
+        },
+        "image-invalid-url": {
+          "title": "Invalid image URL",
+          "detail": "Image links must be complete http(s) URLs under 2,000 characters that the platforms can crawl."
+        },
+        "image-too-many": {
+          "title": "More than 10 additional images",
+          "detail": "Google accepts up to 10 additional images per listing; extras are dropped."
+        },
+        "price-missing": {
+          "title": "Missing price",
+          "detail": "Every listing needs a price; items without one are disapproved."
+        },
+        "price-not-positive": {
+          "title": "Price is zero or negative",
+          "detail": "Prices must be greater than zero and match the landing page."
+        },
+        "currency-invalid": {
+          "title": "Invalid currency code",
+          "detail": "Prices need a three-letter ISO 4217 currency code, e.g. USD or EUR."
+        },
+        "sale-price-not-below": {
+          "title": "Compare-at price not above live price",
+          "detail": "A sale only renders when the pre-discount price exceeds the live price; otherwise the strikethrough is ignored."
+        },
+        "brand-missing": {
+          "title": "Missing brand",
+          "detail": "Branded products must carry the brand attribute; missing it limits matching into cross-retailer product clusters."
+        },
+        "brand-too-long": {
+          "title": "Brand over 70 characters",
+          "detail": "Brand values are capped at 70 characters and must not carry promotional text."
+        },
+        "gtin-invalid": {
+          "title": "Barcode is not a valid GTIN",
+          "detail": "The barcode fails GTIN length or check-digit validation; use the manufacturer's GTIN-8, -12, -13, or -14."
+        },
+        "gtin-coupon-prefix": {
+          "title": "GTIN uses a coupon prefix",
+          "detail": "Prefixes 98–99 identify coupons and are disapproved; use the manufacturer's GTIN."
+        },
+        "gtin-restricted-prefix": {
+          "title": "GTIN uses a restricted prefix",
+          "detail": "Prefixes 2, 02, and 04 are reserved for restricted distribution and variable-weight goods."
+        },
+        "gtin-missing": {
+          "title": "Missing GTIN",
+          "detail": "Without a GTIN the offer cannot join cross-retailer product clusters, which limits performance on both surfaces."
+        },
+        "mpn-missing-without-gtin": {
+          "title": "No GTIN and no MPN",
+          "detail": "Provide an MPN when the product has no GTIN — ChatGPT Shopping requires one of the two; the Google feed marks identifier_exists false otherwise."
+        }
       }
     },
     "visibility": {
