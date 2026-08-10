@@ -1283,7 +1283,7 @@
     "brand": {
       "eyebrow": "Brand Visibility",
       "title": "How AI engines perceive and discuss this brand",
-      "description": "Real shopper queries are answered by AI engines and audited: where the brand surfaces, who wins instead, and which sources the engines trust. ChatGPT runs today's audits — more engines are coming.",
+      "description": "Real shopper queries are answered by AI engines and audited: where the brand surfaces, who wins instead, and which sources the engines trust.",
       "action": {
         "refresh": "Refresh brand data",
         "run": "Run brand analysis"
@@ -1297,7 +1297,7 @@
       },
       "empty": {
         "title": "No brand analysis yet",
-        "description": "Run the first analysis: 20 shopper queries answered by ChatGPT and audited for where this brand shows up. It takes about a minute."
+        "description": "Run the first analysis: 20 shopper queries answered by AI engines and audited for where this brand shows up. It takes about a minute."
       },
       "summary": {
         "title": "Diagnostic summary",

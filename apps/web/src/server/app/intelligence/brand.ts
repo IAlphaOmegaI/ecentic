@@ -519,6 +519,7 @@ const buildReport = async (store: StoreRecord) => {
     )
     .join("\n");
 
+  // - Attribute perceptions to "AI engines" or "AI assistants" generically — never name ${ENGINE} or any other engine; which model ran the audit is internal.
   const synthesis = await AI.generate({
     label: "brand.synthesis",
     model: "gpt",

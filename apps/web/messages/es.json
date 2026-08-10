@@ -925,7 +925,7 @@
     "brand": {
       "eyebrow": "Visibilidad de marca",
       "title": "Cómo perciben y hablan de esta marca los motores de IA",
-      "description": "Consultas reales de compradores respondidas por motores de IA y auditadas: dónde aparece la marca, quién gana en su lugar y en qué fuentes confían los motores. Hoy las auditorías las ejecuta ChatGPT — pronto habrá más motores.",
+      "description": "Consultas reales de compradores respondidas por motores de IA y auditadas: dónde aparece la marca, quién gana en su lugar y en qué fuentes confían los motores.",
       "action": {
         "refresh": "Actualizar datos de marca",
         "run": "Ejecutar análisis de marca"
@@ -939,7 +939,7 @@
       },
       "empty": {
         "title": "Aún no hay análisis de marca",
-        "description": "Ejecuta el primer análisis: 20 consultas de compradores respondidas por ChatGPT y auditadas para ver dónde aparece esta marca. Tarda alrededor de un minuto."
+        "description": "Ejecuta el primer análisis: 20 consultas de compradores respondidas por motores de IA y auditadas para ver dónde aparece esta marca. Tarda alrededor de un minuto."
       },
       "summary": {
         "title": "Resumen diagnóstico",
