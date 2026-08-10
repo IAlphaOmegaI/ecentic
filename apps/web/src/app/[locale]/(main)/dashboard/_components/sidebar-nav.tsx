@@ -11,6 +11,7 @@ import {
   GearIcon,
   RadarIcon,
   SearchIcon,
+  ShieldCheckIcon,
   ShoppingCartIcon,
   SquareChartIcon,
 } from "@zenncore/icons";
@@ -57,6 +58,12 @@ const items = [
     icon: EyeIcon,
     key: "visibility",
     segment: "/visibility",
+    exact: false,
+  },
+  {
+    icon: ShieldCheckIcon,
+    key: "quality",
+    segment: "/quality",
     exact: false,
   },
   {

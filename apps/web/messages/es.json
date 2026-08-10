@@ -395,6 +395,7 @@
       "simulations": "Simulaciones",
       "optimize": "Optimizar",
       "visibility": "Visibilidad",
+      "quality": "Calidad de datos",
       "brand": "Marca",
       "discovery": "Descubrimiento",
       "ucp": "UCP",
@@ -1009,6 +1010,167 @@
           "absent": "Ausente"
         },
         "branded": "con marca"
+      }
+    },
+    "quality": {
+      "eyebrow": "Calidad de datos",
+      "title": "Las reglas de feed que exige cada superficie de compra con IA",
+      "description": "Cada producto activo pasa por un único registro de reglas — la especificación de datos de producto y los códigos de incidencia de Google Merchant Center, más la especificación de feed de OpenAI detrás de ChatGPT Shopping — con severidad por plataforma y enlaces a la documentación oficial de cada hallazgo.",
+      "platform": {
+        "google": "Google Merchant",
+        "chatgpt": "ChatGPT Shopping"
+      },
+      "severity": {
+        "blocker": "Desaprueba",
+        "warning": "Limita el rendimiento",
+        "info": "Aviso"
+      },
+      "status": {
+        "blocker": "Bloqueado",
+        "warning": "En riesgo",
+        "info": "Avisos",
+        "ready": "Listo"
+      },
+      "reference": "Docs",
+      "summary": {
+        "readyShare": "de {count, plural, one {# producto activo} other {# productos activos}} listos para el feed",
+        "blockers": "{count} bloqueados",
+        "warnings": "{count} en riesgo",
+        "ready": "{count} listos"
+      },
+      "issues": {
+        "eyebrow": "Incidencias principales",
+        "title": "Correcciones ordenadas por cuántos productos desbloquean",
+        "affected": "{count, plural, one {# producto} other {# productos}}",
+        "empty": "Sin violaciones de reglas en el catálogo — cada producto pasa las comprobaciones de ambas plataformas."
+      },
+      "products": {
+        "eyebrow": "Catálogo",
+        "title": "Hallazgos por producto",
+        "findings": "{count, plural, one {# hallazgo} other {# hallazgos}}",
+        "empty": "Aún no hay productos activos — sincroniza o añade productos para ejecutar las comprobaciones de calidad."
+      },
+      "rules": {
+        "title-missing": {
+          "title": "Falta el título",
+          "detail": "Cada producto necesita un título en texto plano de 1–150 caracteres."
+        },
+        "title-too-long": {
+          "title": "Título de más de 150 caracteres",
+          "detail": "Google y ChatGPT Shopping limitan los títulos a 150 caracteres; los más largos se rechazan."
+        },
+        "title-all-caps": {
+          "title": "Título mayormente en mayúsculas",
+          "detail": "Los títulos en mayúsculas son marcados por las comprobaciones editoriales automáticas; usa mayúsculas solo en abreviaturas, códigos de país y divisas."
+        },
+        "title-promo-text": {
+          "title": "Texto promocional en el título",
+          "detail": "Frases como \"envío gratis\", \"oferta\" o \"mejor precio\" pertenecen a los atributos de envío y precio, no al título."
+        },
+        "title-html": {
+          "title": "Etiquetas HTML en el título",
+          "detail": "Los títulos deben ser texto plano; elimina el marcado heredado de la plataforma de origen."
+        },
+        "title-extra-whitespace": {
+          "title": "Espacios de más en el título",
+          "detail": "No se permiten espacios al inicio, al final ni repetidos en los títulos."
+        },
+        "title-repeated-words": {
+          "title": "Palabras repetidas en el título",
+          "detail": "Repetir la misma palabra se interpreta como keyword stuffing en las comprobaciones editoriales."
+        },
+        "description-missing": {
+          "title": "Falta la descripción",
+          "detail": "Ambas plataformas exigen una descripción; funcionan mejor 500–1.000 caracteres que describan solo el producto."
+        },
+        "description-too-long": {
+          "title": "Descripción de más de 5.000 caracteres",
+          "detail": "Las descripciones se limitan a 5.000 caracteres en ambas plataformas."
+        },
+        "description-identical-title": {
+          "title": "Descripción idéntica al título",
+          "detail": "La descripción debe aportar información más allá del título."
+        },
+        "description-promo-text": {
+          "title": "Texto promocional en la descripción",
+          "detail": "Elimina las frases promocionales — el precio, las ofertas y el envío se verifican contra atributos dedicados."
+        },
+        "id-too-long": {
+          "title": "ID de producto de más de 50 caracteres",
+          "detail": "Los ID del feed se limitan a 50 caracteres y deben mantenerse estables entre sincronizaciones."
+        },
+        "link-missing": {
+          "title": "Falta la URL del producto",
+          "detail": "Cada producto necesita una página pública en el dominio verificado."
+        },
+        "link-invalid": {
+          "title": "URL del producto inválida",
+          "detail": "La página de destino debe ser una URL http(s) completa."
+        },
+        "link-ip-host": {
+          "title": "La URL del producto usa una dirección IP",
+          "detail": "Las páginas de destino deben usar un nombre de dominio, no una IP."
+        },
+        "link-credentials": {
+          "title": "Credenciales incrustadas en la URL",
+          "detail": "Las URL no deben incluir usuario ni contraseña; ChatGPT Shopping las rechaza directamente."
+        },
+        "image-missing": {
+          "title": "Falta la imagen del producto",
+          "detail": "Cada producto necesita al menos una imagen; sin ella el artículo se desaprueba."
+        },
+        "image-invalid-url": {
+          "title": "URL de imagen inválida",
+          "detail": "Los enlaces de imagen deben ser URL http(s) completas que las plataformas puedan rastrear."
+        },
+        "image-too-many": {
+          "title": "Más de 10 imágenes adicionales",
+          "detail": "Google acepta hasta 10 imágenes adicionales por producto; las sobrantes se descartan."
+        },
+        "price-missing": {
+          "title": "Falta el precio",
+          "detail": "Cada producto necesita un precio; sin él el artículo se desaprueba."
+        },
+        "price-not-positive": {
+          "title": "Precio cero o negativo",
+          "detail": "Los precios deben ser mayores que cero y coincidir con la página de destino."
+        },
+        "currency-invalid": {
+          "title": "Código de divisa inválido",
+          "detail": "Los precios necesitan un código ISO 4217 de tres letras, p. ej. USD o EUR."
+        },
+        "sale-price-not-below": {
+          "title": "Precio de comparación no supera al precio actual",
+          "detail": "La oferta solo se muestra cuando el precio previo al descuento supera al precio actual; de lo contrario el tachado se ignora."
+        },
+        "brand-missing": {
+          "title": "Falta la marca",
+          "detail": "Los productos de marca deben llevar el atributo brand; su ausencia limita la agrupación en clústeres de producto entre minoristas."
+        },
+        "brand-too-long": {
+          "title": "Marca de más de 70 caracteres",
+          "detail": "Los valores de marca se limitan a 70 caracteres y no deben contener texto promocional."
+        },
+        "gtin-invalid": {
+          "title": "El código de barras no es un GTIN válido",
+          "detail": "El código de barras no pasa la validación de longitud o dígito de control; usa el GTIN-8, -12, -13 o -14 del fabricante."
+        },
+        "gtin-coupon-prefix": {
+          "title": "El GTIN usa un prefijo de cupón",
+          "detail": "Los prefijos 98–99 identifican cupones y se desaprueban; usa el GTIN del fabricante."
+        },
+        "gtin-restricted-prefix": {
+          "title": "El GTIN usa un prefijo restringido",
+          "detail": "Los prefijos 2, 02 y 04 están reservados para distribución restringida y productos de peso variable."
+        },
+        "gtin-missing": {
+          "title": "Falta el GTIN",
+          "detail": "Sin GTIN la oferta no puede unirse a los clústeres de producto entre minoristas, lo que limita el rendimiento en ambas superficies."
+        },
+        "mpn-missing-without-gtin": {
+          "title": "Sin GTIN ni MPN",
+          "detail": "Proporciona un MPN cuando el producto no tenga GTIN; de lo contrario el feed marca identifier_exists como false."
+        }
       }
     },
     "visibility": {
