@@ -3306,7 +3306,7 @@
         },
         {
           "question": "¿Cuál es la diferencia entre Compete, Scale y Dominate?",
-          "answer": "Compete es para equipos que quieren entender dónde pierden: hasta 100 productos, simulaciones diarias y battlecards de competidores con sugerencias manuales. Scale añade volumen y automatización: hasta 1000 productos, simulaciones continuas y optimizaciones publicadas en un clic o automáticamente. Dominate añade la capa de protocolo sobre Scale — alertas de deriva de modelos y generación UCP — y es el nivel contra el que se canjean nuestros acuerdos con Y Combinator y Techstars."
+          "answer": "Compete es para equipos que quieren entender dónde pierden: hasta 100 productos, simulaciones diarias y battlecards de competidores con sugerencias manuales. Scale añade volumen y automatización: hasta 1000 productos, simulaciones continuas y optimizaciones publicadas en un clic o automáticamente. Dominate añade la capa de protocolo sobre Scale — alertas de deriva de modelos y generación UCP — y es el nivel contra el que se canjea nuestro acuerdo con Techstars. El acuerdo con Y Combinator se aplica a cualquiera de los tres."
         },
         {
           "question": "¿Cuál es la diferencia entre pago por uso y una suscripción?",
@@ -5716,7 +5716,7 @@
   "yc": {
     "meta": {
       "title": "ecentic para Y Combinator — Canjea tu oferta",
-      "description": "Una oferta exclusiva de ecentic para estudiantes de Y Combinator: acceso extendido a Dominate, onboarding personalizado y precio para estudiantes. Canjea en menos de dos minutos."
+      "description": "Una oferta exclusiva de ecentic para estudiantes de Y Combinator: acceso extendido en cualquier plan, onboarding personalizado y precio para estudiantes. Canjea en menos de dos minutos."
     },
     "breadcrumb": {
       "home": "Inicio",
@@ -5728,7 +5728,7 @@
         "primary": "Tu oferta ecentic,",
         "accent": "lista para canjear."
       },
-      "description": "Una oferta exclusiva de ecentic para estudiantes de Y Combinator: acceso extendido a Dominate, onboarding personalizado y precio para estudiantes. Canjea en menos de dos minutos.",
+      "description": "Una oferta exclusiva de ecentic para estudiantes de Y Combinator: acceso extendido en cualquier plan, onboarding personalizado y precio para estudiantes. Canjea en menos de dos minutos.",
       "art": {
         "alt": "Ilustración ASCII de un apretón de manos"
       },
@@ -5741,7 +5741,7 @@
       "number": "01",
       "title": "Qué incluye la oferta",
       "description": "Pensada para estudiantes de YC que prefieren ganar recomendaciones de agentes de IA antes que cuidar una hoja de cálculo de fichas.",
-      "content": "ecentic te muestra cómo los agentes de compra con IA comparan tus productos con los competidores, diagnostica por qué ganas o pierdes y reescribe tus fichas para cerrar la brecha. La oferta YC abre la plataforma completa:\n\n- ecentic Dominate extendido — simulaciones continuas en ChatGPT, Claude, Gemini y Perplexity\n- Auto-optimización con publicación en un clic y alertas de deriva de modelos\n- Generación UCP para que los agentes verifiquen tu catálogo directamente\n- Onboarding personalizado para tu catálogo y precio para estudiantes tras el periodo de la oferta\n\nCanjea abajo y verificaremos tu batch; luego te enviaremos el enlace de activación en un día laborable."
+      "content": "ecentic te muestra cómo los agentes de compra con IA comparan tus productos con los competidores, diagnostica por qué ganas o pierdes y reescribe tus fichas para cerrar la brecha. Tu descuento YC se aplica al plan que mejor te encaje — Compete, Scale o Dominate:\n\n- Simulaciones de agentes en ChatGPT, Claude, Gemini y Perplexity en todos los planes\n- Simulaciones continuas y auto-optimización con publicación en un clic desde Scale\n- Alertas de deriva de modelos y generación UCP en Dominate, para que los agentes verifiquen tu catálogo directamente\n- Onboarding personalizado para tu catálogo y precio para estudiantes tras el periodo de la oferta\n\nCanjea abajo y verificaremos tu batch; luego te enviaremos el enlace de activación en un día laborable."
     },
     "redeem": {
       "number": "02",
@@ -5767,7 +5767,7 @@
         },
         {
           "question": "¿Qué recibo exactamente?",
-          "answer": "Acceso extendido a ecentic Dominate — simulaciones continuas de agentes de IA en ChatGPT, Claude, Gemini y Perplexity, auto-optimización con publicación en un clic, alertas de deriva y generación UCP — más onboarding personalizado para tu catálogo y precio para estudiantes cuando termine el periodo de la oferta."
+          "answer": "Tu descuento de estudiante en el plan de ecentic que elijas — Compete, Scale o Dominate. Todos los planes ejecutan simulaciones de agentes de IA en ChatGPT, Claude, Gemini y Perplexity; Scale añade simulaciones continuas y auto-optimización con publicación en un clic; Dominate añade alertas de deriva de modelos y generación UCP. Todos incluyen onboarding personalizado para tu catálogo y precio para estudiantes cuando termine el periodo de la oferta."
         },
         {
           "question": "¿Necesito una cuenta antes?",

@@ -47,6 +47,13 @@ export namespace DealApprovedEmail {
     userEmail: string;
     /** Partner program name, e.g. "Y Combinator". */
     programName: string;
+    /**
+     * Tier the deal's coupon is restricted to, e.g. "Dominate", or `null` when it
+     * is valid on every plan. Mirrors `DEALS[merchant].plan` — telling a founder
+     * to pick one named tier is wrong for an unrestricted deal, and telling them
+     * "any plan" is wrong for a restricted one, where Stripe rejects the checkout.
+     */
+    planName: string | null;
     signUpUrl: string;
   };
 }
@@ -66,6 +73,7 @@ export const DealApprovedEmail = ({
   contactName,
   userEmail,
   programName,
+  planName,
   signUpUrl,
 }: DealApprovedEmail.Props) => (
   <Html>
@@ -110,7 +118,7 @@ export const DealApprovedEmail = ({
                   Your plan is ready
                 </Heading>
                 <Text className="m-0 mt-2 font-light text-[18px] text-foreground-dimmed leading-[1.4]">
-                  {programName} · ecentic Dominate
+                  {programName} · ecentic{planName ? ` ${planName}` : ""}
                 </Text>
               </Column>
               <Column
@@ -129,14 +137,16 @@ export const DealApprovedEmail = ({
               <Column className="px-6 py-6">
                 <Text className="m-0 mb-4 text-[15px] text-foreground leading-6">
                   Hi {contactName}, we verified your {programName} redemption —
-                  your ecentic Dominate deal is approved and waiting on your
-                  account.
+                  your ecentic deal is approved and waiting on your account.
                 </Text>
                 <Text className="m-0 mb-4 text-[15px] text-foreground leading-6">
                   Create your account using{" "}
                   <strong className="text-emphasis-dimmed">{userEmail}</strong>,
-                  then choose the Dominate plan. Your partner discount is
-                  applied automatically at checkout — there is no code to enter.
+                  then{" "}
+                  {planName
+                    ? `choose the ${planName} plan. Your partner discount is applied automatically at checkout`
+                    : "pick whichever plan fits you. Your partner discount is applied automatically at checkout, on any tier you choose"}
+                  {" — there is no code to enter."}
                 </Text>
                 <Text className="m-0 mb-6 text-[13px] text-foreground-dimmed leading-5">
                   Signing up with a different address will not find your deal,
@@ -168,14 +178,14 @@ export const DealApprovedEmail = ({
                   What you get
                 </Text>
                 <Text className="m-0 mb-2 text-[14px] text-foreground leading-5">
-                  · Continuous simulations across ChatGPT, Claude, Gemini, and
+                  · Agent simulations across ChatGPT, Claude, Gemini, and
                   Perplexity
                 </Text>
                 <Text className="m-0 mb-2 text-[14px] text-foreground leading-5">
-                  · Auto-optimization with one-click publish
+                  · Continuous simulations and one-click publish from Scale up
                 </Text>
                 <Text className="m-0 mb-2 text-[14px] text-foreground leading-5">
-                  · Model drift alerts and UCP generation
+                  · Model drift alerts and UCP generation on Dominate
                 </Text>
                 <Text className="m-0 text-[14px] text-foreground leading-5">
                   · White-glove onboarding for your catalog

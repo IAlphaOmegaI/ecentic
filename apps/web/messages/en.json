@@ -3306,7 +3306,7 @@
         },
         {
           "question": "What is the difference between Compete, Scale, and Dominate?",
-          "answer": "Compete is for teams that want to understand where they lose: up to 100 products, daily simulations, and competitor battlecards with manual suggestions. Scale adds volume and automation: up to 1000 products, continuous simulations, and one-click or auto-published optimizations. Dominate adds the protocol layer on top of Scale — model drift alerts and UCP generation — and is the tier our partner deals with Y Combinator and Techstars are redeemed against."
+          "answer": "Compete is for teams that want to understand where they lose: up to 100 products, daily simulations, and competitor battlecards with manual suggestions. Scale adds volume and automation: up to 1000 products, continuous simulations, and one-click or auto-published optimizations. Dominate adds the protocol layer on top of Scale — model drift alerts and UCP generation — and is the tier our Techstars deal is redeemed against. The Y Combinator deal applies to any of the three."
         },
         {
           "question": "What is the difference between pay-as-you-go and a subscription?",
@@ -5716,7 +5716,7 @@
   "yc": {
     "meta": {
       "title": "ecentic for Y Combinator — Redeem Your Deal",
-      "description": "An exclusive ecentic deal for Y Combinator students: extended Dominate access, white-glove onboarding, and student pricing. Redeem in under two minutes."
+      "description": "An exclusive ecentic deal for Y Combinator students: extended access on any plan, white-glove onboarding, and student pricing. Redeem in under two minutes."
     },
     "breadcrumb": {
       "home": "Home",
@@ -5728,7 +5728,7 @@
         "primary": "Your ecentic deal,",
         "accent": "ready to redeem."
       },
-      "description": "An exclusive ecentic deal for Y Combinator students: extended Dominate access, white-glove onboarding, and student pricing. Redeem in under two minutes.",
+      "description": "An exclusive ecentic deal for Y Combinator students: extended access on any plan, white-glove onboarding, and student pricing. Redeem in under two minutes.",
       "art": {
         "alt": "ASCII-art illustration of a handshake"
       },
@@ -5741,7 +5741,7 @@
       "number": "01",
       "title": "What's in the deal",
       "description": "Built for YC students who would rather win AI agent recommendations than babysit a listings spreadsheet.",
-      "content": "ecentic shows you how AI shopping agents compare your products against competitors, diagnoses why you win or lose, and rewrites your listings to close the gap. The YC deal opens the full platform:\n\n- Extended ecentic Dominate — continuous simulations across ChatGPT, Claude, Gemini, and Perplexity\n- Auto-optimization with one-click publish and model drift alerts\n- UCP generation so agents can verify your catalog directly\n- White-glove onboarding for your catalog and student pricing after the deal period\n\nRedeem below and we'll verify your batch, then email your activation link within one business day."
+      "content": "ecentic shows you how AI shopping agents compare your products against competitors, diagnoses why you win or lose, and rewrites your listings to close the gap. Your YC discount applies to whichever plan fits — Compete, Scale, or Dominate:\n\n- Agent simulations across ChatGPT, Claude, Gemini, and Perplexity on every plan\n- Continuous simulations and auto-optimization with one-click publish from Scale up\n- Model drift alerts and UCP generation on Dominate, so agents can verify your catalog directly\n- White-glove onboarding for your catalog and student pricing after the deal period\n\nRedeem below and we'll verify your batch, then email your activation link within one business day."
     },
     "redeem": {
       "number": "02",
@@ -5767,7 +5767,7 @@
         },
         {
           "question": "What do I actually get?",
-          "answer": "Extended access to ecentic Dominate — continuous AI agent simulations across ChatGPT, Claude, Gemini, and Perplexity, auto-optimization with one-click publish, drift alerts, and UCP generation — plus white-glove onboarding for your catalog and student pricing when the deal period ends."
+          "answer": "Your student discount on whichever ecentic plan you pick — Compete, Scale, or Dominate. Every plan runs AI agent simulations across ChatGPT, Claude, Gemini, and Perplexity; Scale adds continuous simulations and auto-optimization with one-click publish; Dominate adds model drift alerts and UCP generation. All of them include white-glove onboarding for your catalog and student pricing when the deal period ends."
         },
         {
           "question": "Do I need an account first?",
