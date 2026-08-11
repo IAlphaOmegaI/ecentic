@@ -1,10 +1,21 @@
 import type { MetadataRoute } from "next";
+import { cacheLife, cacheTag } from "next/cache";
 import { localizePath } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
 import { seo } from "@/lib/seo";
 import * as Blog from "@/server/app/blog";
 
 export default async (): Promise<MetadataRoute.Sitemap> => {
+  // Tag the route's own cache entry, not just the `listPublished` reads inside
+  // it. Those are already tagged, but their tags do not reach the metadata
+  // route's entry: after a publish + `blog` purge the pages regenerated while
+  // `sitemap.xml` kept serving the old set until the next deploy.
+  "use cache";
+  // Same lifetime as the `listPublished` reads it is built from — no reason for
+  // the sitemap to regenerate more often than the rows behind it.
+  cacheLife("hours");
+  cacheTag(Blog.BLOG_CACHE_TAG);
+
   const [blogs, spanish] = await Promise.all([
     Blog.listPublished("en"),
     Blog.listPublished("es"),

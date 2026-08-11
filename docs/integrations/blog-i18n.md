@@ -56,9 +56,19 @@ Navbar language select calls `router.replace(pathname, { locale })` (next-intl).
 When BabyLoveGrowth publishes an English article, configure their **Webhook** integration:
 
 1. Settings → Publishing → Webhook → Connect
-2. URL: `https://<your-host>/api/webhooks/babylovegrowth`
+2. URL: `https://<your-host>/api/webhooks/babylovegrowth` — **apex host, no `www`**.
+   `www.ecentic.ai` answers `POST` with a `307` to the apex; a sender that does
+   not follow redirects on `POST` drops the delivery silently and the post never
+   reaches Postgres. (Same failure the deals-redemption webhook hit.)
 3. Bearer token: value of `BABYLOVEGROWTH_WEBHOOK_SECRET`
 4. Enable automatic publish
+
+The payload is BabyLoveGrowth's published-article shape, which is **snake_case**
+for `meta_description`, `hero_image_url` and `created_at` (camelCase for
+`seedKeyword` / `keywords` / `languageCode`). `publishPayloadSchema` accepts both
+spellings and normalizes them; reading only camelCase still parsed — those fields
+are optional — and silently stored an empty description, no hero image, and
+today's date as `publishedAt`.
 
 The handler acknowledges immediately (200), then `Blog.ingestPublish`:
 
@@ -68,6 +78,23 @@ The handler acknowledges immediately (200), then `Blog.ingestPublish`:
 4. Purges the `blog` cache tag so EN/ES static pages regenerate (ISR)
 
 Local / editorial posts: write both `en` and `es` rows when you publish (same slug). Editorial Spanish should use translated `sections` (same shape as EN); BLG Spanish uses `contentHtml`.
+
+### Reconcile cron (webhook backstop)
+
+The webhook is the only write path for BLG posts, so one dropped delivery leaves
+a post permanently absent from Postgres — a 404 with nothing to notice it.
+`/api/cron/blog` (every 15 min, `Cron.reconcileBlogCatalog` → `Blog.reconcileCatalog`)
+diffs BLG's published catalog against stored rows and ingests whatever is missing
+either locale, through the same `ingestPublishCore` the webhook uses.
+
+- Reads BLG through `listArticlesFresh` / `getArticleFresh` — uncached, because
+  the `"use cache"` readers hold for days and would hide the very publish this
+  job exists to catch.
+- `limit: 1` per tick: one ingest Azure-translates a whole article. Posts with no
+  rows at all sort ahead of posts missing only ES, so a failing translation
+  cannot starve a brand-new post out of the site.
+- Handoff via `after()`, like `/api/cron/drain`, so the tick returns inside the
+  scheduler's window while the ingest runs under `maxDuration`.
 
 ## Env
 

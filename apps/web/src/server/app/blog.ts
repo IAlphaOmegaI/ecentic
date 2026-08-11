@@ -16,6 +16,9 @@ import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { UnauthenticatedError } from "../utils/error";
 import { type Document, repository } from "../utils/repository";
+// Safe one-way edge: `./babylovegrowth` deliberately does not import this
+// module (it re-declares `BLOG_CACHE_TAG` rather than pull it from here).
+import * as BabyLoveGrowth from "./babylovegrowth";
 
 export const { get, paginate, create, update, destroy, exists, count, find } =
   repository(schema.blogPost);
@@ -489,19 +492,45 @@ export const listPublishedByTag = async (
   );
 };
 
-const publishPayloadSchema = z.object({
-  id: z.union([z.string(), z.number()]),
-  title: z.string(),
-  slug: z.string(),
-  metaDescription: z.string().optional().default(""),
-  content_html: z.string(),
-  heroImageUrl: z.string().optional().nullable(),
-  languageCode: z.string().optional(),
-  createdAt: z.string().optional(),
-  content_markdown: z.string().optional(),
-  keywords: z.array(z.string()).optional(),
-  seedKeyword: z.string().optional().nullable(),
-});
+/**
+ * BabyLoveGrowth's article payload is snake_case for `meta_description`,
+ * `hero_image_url` and `created_at` (see `BlogArticleSummary` in the client
+ * package) and camelCase for the rest. Reading only the camelCase spellings
+ * still parsed — every one of those fields is optional — so a real delivery
+ * stored an empty description, no hero image, and today's date as
+ * `publishedAt`, silently. Both spellings are accepted and normalized here so
+ * `ingestPublish` keeps taking one shape.
+ */
+const publishPayloadSchema = z
+  .object({
+    id: z.union([z.string(), z.number()]),
+    title: z.string(),
+    slug: z.string(),
+    content_html: z.string(),
+    content_markdown: z.string().optional(),
+    languageCode: z.string().optional(),
+    keywords: z.array(z.string()).optional(),
+    seedKeyword: z.string().optional().nullable(),
+    meta_description: z.string().optional().nullable(),
+    metaDescription: z.string().optional().nullable(),
+    hero_image_url: z.string().optional().nullable(),
+    heroImageUrl: z.string().optional().nullable(),
+    created_at: z.string().optional(),
+    createdAt: z.string().optional(),
+  })
+  .transform((payload) => ({
+    id: payload.id,
+    title: payload.title,
+    slug: payload.slug,
+    content_html: payload.content_html,
+    content_markdown: payload.content_markdown,
+    languageCode: payload.languageCode,
+    keywords: payload.keywords,
+    seedKeyword: payload.seedKeyword,
+    metaDescription: payload.meta_description ?? payload.metaDescription ?? "",
+    heroImageUrl: payload.hero_image_url ?? payload.heroImageUrl ?? null,
+    createdAt: payload.created_at ?? payload.createdAt,
+  }));
 
 export type PublishPayload = z.infer<typeof publishPayloadSchema>;
 
@@ -537,93 +566,178 @@ export const parsePublishPayload = (body: unknown) => {
  * (same slug), purge the `blog` tag so static pages regenerate.
  * English is always written first — ES translate failure does not roll EN back.
  */
-export const ingestPublish = withContext(
-  async (_context, payload: PublishPayload) => {
-    if (payload.languageCode && payload.languageCode !== "en")
-      return {
-        success: true as const,
-        data: { skipped: true as const, reason: "non-english" as const },
-      };
+const ingestPublishCore = async (payload: PublishPayload) => {
+  if (payload.languageCode && payload.languageCode !== "en")
+    return {
+      success: true as const,
+      data: { skipped: true as const, reason: "non-english" as const },
+    };
 
-    const publishedAt = (payload.createdAt ?? new Date().toISOString()).slice(
-      0,
-      10,
-    );
-    const category = payload.seedKeyword ?? "Guide";
-    const tags = payload.keywords ?? [];
-    const description = payload.metaDescription;
-    const thumbnailUrl = payload.heroImageUrl ?? null;
-    const externalId = String(payload.id);
+  const publishedAt = (payload.createdAt ?? new Date().toISOString()).slice(
+    0,
+    10,
+  );
+  const category = payload.seedKeyword ?? "Guide";
+  const tags = payload.keywords ?? [];
+  const description = payload.metaDescription;
+  const thumbnailUrl = payload.heroImageUrl ?? null;
+  const externalId = String(payload.id);
 
-    const english = await upsertLocaleRow({
-      slug: payload.slug,
-      locale: "en",
-      source: "blg",
-      externalId,
-      category,
-      title: payload.title,
-      description,
-      introduction: description,
-      publishedAt,
-      readTime: estimateReadTime(payload.content_html),
-      thumbnailUrl,
-      tags,
-      takeaways: [],
-      contentHtml: payload.content_html,
-    });
+  const english = await upsertLocaleRow({
+    slug: payload.slug,
+    locale: "en",
+    source: "blg",
+    externalId,
+    category,
+    title: payload.title,
+    description,
+    introduction: description,
+    publishedAt,
+    readTime: estimateReadTime(payload.content_html),
+    thumbnailUrl,
+    tags,
+    takeaways: [],
+    contentHtml: payload.content_html,
+  });
 
-    const translation = await translateArticleCore({
-      title: payload.title,
-      metaDescription: description,
-      contentHtml: payload.content_html,
-      category,
-      tags,
-      introduction: description,
-      takeaways: [],
-    });
+  const translation = await translateArticleCore({
+    title: payload.title,
+    metaDescription: description,
+    contentHtml: payload.content_html,
+    category,
+    tags,
+    introduction: description,
+    takeaways: [],
+  });
 
-    if (!translation.success)
-      return {
-        success: true as const,
-        data: {
-          skipped: false as const,
-          id: english?.id,
-          action: "upserted-en-only" as const,
-          esError:
-            translation.error instanceof Error
-              ? translation.error.message
-              : String(translation.error),
-        },
-      };
-
-    const spanish = await upsertLocaleRow({
-      slug: payload.slug,
-      locale: "es",
-      source: "blg",
-      externalId,
-      category: translation.data.category,
-      title: translation.data.title,
-      description: translation.data.metaDescription,
-      introduction: translation.data.introduction,
-      publishedAt,
-      readTime: estimateReadTime(translation.data.contentHtml),
-      thumbnailUrl,
-      tags: translation.data.tags,
-      takeaways: translation.data.takeaways,
-      contentHtml: translation.data.contentHtml,
-    });
-
+  if (!translation.success)
     return {
       success: true as const,
       data: {
         skipped: false as const,
-        id: spanish?.id ?? english?.id,
-        action: "upserted" as const,
+        id: english?.id,
+        action: "upserted-en-only" as const,
+        esError:
+          translation.error instanceof Error
+            ? translation.error.message
+            : String(translation.error),
       },
     };
-  },
+
+  const spanish = await upsertLocaleRow({
+    slug: payload.slug,
+    locale: "es",
+    source: "blg",
+    externalId,
+    category: translation.data.category,
+    title: translation.data.title,
+    description: translation.data.metaDescription,
+    introduction: translation.data.introduction,
+    publishedAt,
+    readTime: estimateReadTime(translation.data.contentHtml),
+    thumbnailUrl,
+    tags: translation.data.tags,
+    takeaways: translation.data.takeaways,
+    contentHtml: translation.data.contentHtml,
+  });
+
+  return {
+    success: true as const,
+    data: {
+      skipped: false as const,
+      id: spanish?.id ?? english?.id,
+      action: "upserted" as const,
+    },
+  };
+};
+
+export const ingestPublish = withContext(
+  async (_context, payload: PublishPayload) => await ingestPublishCore(payload),
   "Blog.ingestPublish",
 );
+
+/**
+ * Catch-up for publishes the webhook never delivered. That webhook is the only
+ * write path for BLG posts, so a single dropped POST — a redirect the sender
+ * does not follow, a deploy mid-flight, a 500 — leaves the post permanently
+ * absent from Postgres and therefore 404 on the site, with nothing to notice it.
+ * This diffs BLG's published catalog against stored rows and ingests whatever is
+ * missing either locale, EN + ES, through the same path the webhook uses.
+ *
+ * `limit` is per tick on purpose: one ingest translates a whole article through
+ * Azure and runs for minutes, so the backlog is walked a post at a time rather
+ * than spending the route's `maxDuration` on a fan-out.
+ */
+export const reconcileCatalog = async ({
+  limit = 1,
+}: {
+  limit?: number;
+} = {}) =>
+  await resultify(async () => {
+    const stored = await find(Environment.SERVER, { where: published });
+    if (!stored.success) throw stored.error;
+
+    const storedLocales = stored.data.reduce((locales, row) => {
+      locales.set(
+        row.slug,
+        (locales.get(row.slug) ?? new Set()).add(row.locale),
+      );
+      return locales;
+    }, new Map<string, Set<string>>());
+
+    const catalog = await BabyLoveGrowth.listArticlesFresh();
+
+    const missing = catalog
+      .filter((article) => {
+        if (article.languageCode && article.languageCode !== "en") return false;
+        const locales = storedLocales.get(article.slug);
+        return !locales?.has("en") || !locales.has("es");
+      })
+      // A post with no rows at all is the 404; one missing only ES still
+      // renders, because `resolve` falls back to the English row. Repair the
+      // 404s first so a post whose translation keeps failing — which stays in
+      // this list, and at `limit: 1` would be picked every tick — cannot starve
+      // a newly published one out of the site entirely.
+      .sort(
+        (first, second) =>
+          Number(storedLocales.has(first.slug)) -
+          Number(storedLocales.has(second.slug)),
+      );
+
+    const ingested: string[] = [];
+    const partial: { slug: string; esError: string }[] = [];
+    const failed: { slug: string; error: string }[] = [];
+
+    for (const article of missing.slice(0, limit)) {
+      // The published-article shape is exactly what the webhook posts, so it
+      // goes through the same parse — one payload contract, not two.
+      const full = await BabyLoveGrowth.getArticleFresh(article.slug);
+      if (!full) {
+        failed.push({ slug: article.slug, error: "not published on BLG" });
+        continue;
+      }
+
+      const payload = parsePublishPayload(full);
+      if (!payload.success) {
+        failed.push({ slug: article.slug, error: payload.error.message });
+        continue;
+      }
+
+      const result = await ingestPublishCore(payload.data);
+      if (result.data.skipped) continue;
+
+      // EN landed, ES did not. The row stays missing a locale, so the next tick
+      // sees it again and retries the translation — no separate repair path.
+      if (result.data.action === "upserted-en-only") {
+        partial.push({ slug: article.slug, esError: result.data.esError });
+        continue;
+      }
+
+      ingested.push(article.slug);
+    }
+
+    return { candidates: missing.length, ingested, partial, failed };
+  });
 
 /**
  * Rebuild Spanish from a stored English row (editorial sections or BLG HTML).

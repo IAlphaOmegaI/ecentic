@@ -153,6 +153,29 @@ export const listArticlesByTag = async (
   );
 };
 
+/**
+ * Uncached catalog/article reads for the write rail — `Blog.reconcileCatalog`.
+ * The readers above hold for `cacheLife("days")` and `fetchAllArticles` memoizes
+ * on `globalThis` for the life of the lambda; a reconcile whose whole job is to
+ * notice a publish the webhook dropped must see BLG as it is right now, so it
+ * goes around both. Still rate-limited and retried like every other BLG call.
+ */
+export const listArticlesFresh = async (): Promise<BlogArticleSummary[]> => {
+  if (!process.env.BABYLOVEGROWTH_BLOG_API_KEY) return [];
+  return await withRetry(() =>
+    client().getAllArticles({ publishedOnly: true }),
+  );
+};
+
+export const getArticleFresh = async (
+  slug: string,
+): Promise<BlogArticle | null> => {
+  if (!process.env.BABYLOVEGROWTH_BLOG_API_KEY) return null;
+  const article = await withRetry(() => client().getArticleBySlug(slug));
+  if (!article?.published) return null;
+  return article;
+};
+
 export const listSitemapEntries = async (): Promise<BlogSitemapEntry[]> => {
   "use cache";
   applyBlogCache(BLOG_CACHE_TAG);
