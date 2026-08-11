@@ -60,6 +60,21 @@ const SectionTitle = ({
   </div>
 );
 
+export const FailedNote = async ({ error }: { error: string | null }) => {
+  const translate = await getTranslations("dashboard.brand.failed");
+
+  return (
+    <div className="-mx-8 border-accent-foreground border-b">
+      <div className="relative mx-8 bg-warning/5 px-6 py-4">
+        <p className="font-medium text-sm text-warning">{translate("title")}</p>
+        <p className="mt-1 text-foreground-dimmed text-xs">
+          {error ?? translate("description")}
+        </p>
+      </div>
+    </div>
+  );
+};
+
 export const BrandEmpty = async ({
   params,
 }: {

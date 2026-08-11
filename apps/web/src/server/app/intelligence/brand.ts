@@ -12,6 +12,7 @@
 
 import { resultify } from "@zenncore/utils";
 import { and, eq } from "drizzle-orm";
+import { after } from "next/server";
 import { z } from "zod";
 import { schema } from "../../database";
 import * as AI from "../../utils/ai";
@@ -576,10 +577,19 @@ ${queryLog}`,
 };
 
 /**
- * Runs the full brand visibility analysis for a store and persists it as a
- * {@link schema.brandSnapshot} row. Returns the completed snapshot. The run
- * takes on the order of a minute (20 audited queries + synthesis), so callers
- * should await it from an explicit user action, not a render path.
+ * A `running` row older than this is treated as dead (the background function
+ * was killed mid-run) rather than in flight — it stops blocking new runs and
+ * the page stops showing it as in progress.
+ */
+const RUNNING_STALE_MS = 10 * 60 * 1000;
+
+/**
+ * Starts a brand visibility analysis for a store and returns immediately with
+ * the `running` {@link schema.brandSnapshot} row. The run itself (20 audited
+ * queries + synthesis, on the order of a minute) executes via `after()` once
+ * the response is sent, so the user can navigate away; the row flips to
+ * `complete`/`failed` when it lands and the page polls for that. Starting
+ * while a fresh run is in flight returns that run instead of stacking another.
  */
 export const analyze = withAuthentication(
   async (context, { store: storeId }: { store: string }) => {
@@ -592,6 +602,29 @@ export const analyze = withAuthentication(
     if (!storeRecord || storeRecord.userId !== userId)
       return { success: false as const, error: new Error("Store not found") };
 
+    const existing = await BrandSnapshot.find(Environment.SERVER, {
+      where: and(
+        eq(schema.brandSnapshot.storeId, storeId),
+        eq(schema.brandSnapshot.userId, userId),
+        eq(schema.brandSnapshot.status, "running"),
+      ),
+      orderBy: [
+        { column: schema.brandSnapshot.createdAt, direction: "desc" as const },
+      ],
+      limit: 1,
+    });
+    if (!existing.success) return existing;
+
+    const inFlight = existing.data[0];
+    if (
+      inFlight &&
+      Date.now() - inFlight.createdAt.getTime() < RUNNING_STALE_MS
+    )
+      return {
+        success: true as const,
+        data: { snapshot: inFlight, alreadyRunning: true },
+      };
+
     const snapshot = await BrandSnapshot.create(Environment.SERVER, {
       userId,
       storeId,
@@ -599,26 +632,33 @@ export const analyze = withAuthentication(
     });
     if (!snapshot.success) return snapshot;
 
-    const report = await resultify(() =>
-      buildReport({
-        id: storeRecord.id,
-        name: storeRecord.name,
-        domain: storeRecord.domain,
-      }),
-    );
+    after(async () => {
+      const report = await resultify(() =>
+        buildReport({
+          id: storeRecord.id,
+          name: storeRecord.name,
+          domain: storeRecord.domain,
+        }),
+      );
 
-    if (!report.success) {
+      if (!report.success) {
+        await BrandSnapshot.update(Environment.SERVER, snapshot.data.id, {
+          status: "failed",
+          error: report.error.message,
+        });
+        return;
+      }
+
       await BrandSnapshot.update(Environment.SERVER, snapshot.data.id, {
-        status: "failed",
-        error: report.error.message,
+        status: "complete",
+        report: report.data,
       });
-      return report;
-    }
-
-    return BrandSnapshot.update(Environment.SERVER, snapshot.data.id, {
-      status: "complete",
-      report: report.data,
     });
+
+    return {
+      success: true as const,
+      data: { snapshot: snapshot.data, alreadyRunning: false },
+    };
   },
   "Brand.analyze",
 );

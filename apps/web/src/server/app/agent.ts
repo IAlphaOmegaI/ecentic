@@ -20,7 +20,6 @@ export type Type = Document<typeof schema.agentApiKey>;
 const hash = (value: string): string =>
   crypto.createHash("sha256").update(value).digest("hex");
 
-
 const createRawApiKey = () => {
   const secret = crypto.randomBytes(32).toString("base64url");
   const raw = `ecentic_sk_${secret}`;
@@ -57,7 +56,7 @@ export const createForUser = withContext(
       };
 
     const key = createRawApiKey();
-    x
+    
     const creation = await create(Environment.SERVER, {
       userId: user,
       name: label,

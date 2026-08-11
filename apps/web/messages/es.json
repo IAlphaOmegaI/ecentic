@@ -933,7 +933,12 @@
         "run": "Ejecutar análisis de marca"
       },
       "toast": {
-        "failed": "El análisis de marca falló"
+        "failed": "El análisis de marca falló",
+        "started": {
+          "title": "Análisis de marca iniciado",
+          "description": "Puedes seguir navegando — los resultados aparecerán aquí en alrededor de un minuto."
+        },
+        "alreadyRunning": "Ya hay un análisis en curso"
       },
       "tabs": {
         "overview": "Resumen",
@@ -1011,6 +1016,14 @@
           "absent": "Ausente"
         },
         "branded": "con marca"
+      },
+      "running": {
+        "title": "Análisis en curso",
+        "description": "ChatGPT está respondiendo y auditando 20 consultas de compradores. Puedes navegar a otra parte — los resultados llegarán aquí automáticamente."
+      },
+      "failed": {
+        "title": "El último análisis falló",
+        "description": "Vuelve a ejecutarlo desde el botón de arriba."
       }
     },
     "quality": {

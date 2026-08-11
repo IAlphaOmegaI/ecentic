@@ -1291,7 +1291,12 @@
         "run": "Run brand analysis"
       },
       "toast": {
-        "failed": "Brand analysis failed"
+        "failed": "Brand analysis failed",
+        "started": {
+          "title": "Brand analysis started",
+          "description": "You can keep browsing — results will appear here in about a minute."
+        },
+        "alreadyRunning": "An analysis is already running"
       },
       "tabs": {
         "overview": "Overview",
@@ -1369,6 +1374,14 @@
           "absent": "Absent"
         },
         "branded": "branded"
+      },
+      "running": {
+        "title": "Analysis in progress",
+        "description": "ChatGPT is answering and auditing 20 shopper queries. Feel free to navigate away — results land here automatically."
+      },
+      "failed": {
+        "title": "The last analysis failed",
+        "description": "Run it again from the button above."
       }
     },
     "quality": {

@@ -172,13 +172,13 @@ export default async ({ children }: PropsWithChildren) => {
           crossOrigin="anonymous"
         />
         <link rel="preconnect" href="https://www.googletagmanager.com" />
-        {process.env.NODE_ENV === "development" && (
+        {/* {process.env.NODE_ENV === "development" && (
           <Script
             src="//unpkg.com/react-grab/dist/index.global.js"
             crossOrigin="anonymous"
             strategy="beforeInteractive"
           />
-        )}
+        )} */}
         {process.env.NEXT_PUBLIC_CHATWOOT_BASE_URL &&
           process.env.NEXT_PUBLIC_CHATWOOT_WEBSITE_TOKEN && (
             <Script id="chatwoot-widget" strategy="afterInteractive">

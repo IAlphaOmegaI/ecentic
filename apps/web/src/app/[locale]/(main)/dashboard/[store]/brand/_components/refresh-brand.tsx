@@ -10,9 +10,12 @@ import { useRouter } from "@/i18n/navigation";
 import * as Brand from "@/server/app/intelligence/brand";
 
 /**
- * Kicks off a full brand analysis (~a minute of audited queries) and refreshes
- * the page once the snapshot lands. `params` arrives as the route's promise so
- * the trigger can sit in the static shell; `use()` resolves it client-side.
+ * Starts a background brand analysis. The action returns as soon as the run is
+ * queued (the audit itself continues server-side via `after()`), so this only
+ * spins briefly; the refreshed page then shows the in-progress banner, which
+ * polls and swaps in the report when it lands. `params` arrives as the route's
+ * promise so the trigger can sit in the static shell; `use()` resolves it
+ * client-side.
  */
 export const RefreshBrand = ({
   params,
@@ -38,6 +41,16 @@ export const RefreshBrand = ({
       return;
     }
 
+    if (result.data.alreadyRunning) {
+      toast.add({ title: translate("toast.alreadyRunning") });
+      return;
+    }
+
+    toast.add({
+      title: translate("toast.started.title"),
+      description: translate("toast.started.description"),
+      type: "success",
+    });
     router.refresh();
   });
 
