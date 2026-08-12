@@ -1,7 +1,5 @@
-/** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 "use client";
 import { useEventListener, useLocalStorage } from "@zenncore/web/hooks";
-import Script from "next/script";
 import {
   createContext,
   type PropsWithChildren,
@@ -158,47 +156,9 @@ export const ThemeProvider = ({ children }: PropsWithChildren) => {
     [theme, handleThemeChange, environment],
   );
 
+  // No theme script here: it has to run before the first paint, so the root
+  // layout renders `THEME_INIT_SCRIPT` inline into <head>. See ./theme-script.
   return (
-    <ThemeContext.Provider value={context}>
-      <ThemeScript />
-      {children}
-    </ThemeContext.Provider>
-  );
-};
-
-const ThemeScript = () => {
-  return (
-    <Script
-      id="theme"
-      dangerouslySetInnerHTML={{
-        __html: `(${(
-          () => {
-            const stored = (
-              localStorage.getItem("theme") ?? "light"
-            ).replaceAll('"', "");
-            const theme = ["light", "dark", "system"].includes(stored)
-              ? stored
-              : "light";
-
-            const element = document.documentElement;
-
-            if (!element) throw new Error("Document element not found");
-
-            const getSystemTheme = () =>
-              window.matchMedia("(prefers-color-scheme: dark)").matches
-                ? "dark"
-                : "light";
-
-            const resolved = theme === "system" ? getSystemTheme() : theme;
-
-            element.classList.remove("light", "dark");
-
-            element.classList.add(resolved);
-
-            element.style.colorScheme = resolved;
-          }
-        ).toString()})()`,
-      }}
-    />
+    <ThemeContext.Provider value={context}>{children}</ThemeContext.Provider>
   );
 };

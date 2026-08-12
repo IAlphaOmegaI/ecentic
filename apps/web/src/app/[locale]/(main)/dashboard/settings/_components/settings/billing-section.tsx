@@ -1,10 +1,11 @@
 "use client";
 
 import { useAsyncAction } from "@zenncore/utils/hooks";
-import { useRouter } from "@/i18n/navigation";
 import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { useRouter } from "@/i18n/navigation";
 import * as Payg from "@/server/app/billing/payg";
 import type * as PerformanceFee from "@/server/app/billing/performance-fee";
 import * as Subscription from "@/server/app/subscription";
@@ -17,10 +18,10 @@ type Props = {
 
 type SubscriptionPlan = "compete" | "scale" | "dominate";
 
-const PLAN_META = {
-  compete: { name: "Compete", label: "Compete Plan", price: "14.90" },
-  scale: { name: "Scale", label: "Scale Plan", price: "44.90" },
-  dominate: { name: "Dominate", label: "Dominate Plan", price: "149" },
+const PLAN_PRICES = {
+  compete: "14.90",
+  scale: "44.90",
+  dominate: "149",
 } as const;
 
 /** Next tier up for the in-dashboard upgrade button; Dominate is the ceiling. */
@@ -37,14 +38,76 @@ const PLAN_ORDER = [
   "dominate",
 ] as const satisfies readonly SubscriptionPlan[];
 
+type BillingTranslate = ReturnType<
+  typeof useTranslations<"dashboard.settings.billing">
+>;
+
+const planName = (plan: SubscriptionPlan, translate: BillingTranslate) => {
+  switch (plan) {
+    case "compete":
+      return translate("plans.compete");
+    case "scale":
+      return translate("plans.scale");
+    case "dominate":
+      return translate("plans.dominate");
+    default: {
+      const exhaustive: never = plan;
+      return exhaustive;
+    }
+  }
+};
+
+const planLabel = (plan: SubscriptionPlan, translate: BillingTranslate) => {
+  switch (plan) {
+    case "compete":
+      return translate("plans.competeLabel");
+    case "scale":
+      return translate("plans.scaleLabel");
+    case "dominate":
+      return translate("plans.dominateLabel");
+    default: {
+      const exhaustive: never = plan;
+      return exhaustive;
+    }
+  }
+};
+
+const subscriptionStatusLabel = (
+  statusKey: string,
+  translate: BillingTranslate,
+) => {
+  switch (statusKey) {
+    case "active":
+      return translate("status.active");
+    case "trialing":
+      return translate("status.trialing");
+    case "past_due":
+      return translate("status.pastDue");
+    case "unpaid":
+      return translate("status.unpaid");
+    case "canceled":
+      return translate("status.canceled");
+    case "incomplete":
+      return translate("status.incomplete");
+    case "incomplete_expired":
+      return translate("status.expired");
+    case "paused":
+      return translate("status.paused");
+    default:
+      return statusKey;
+  }
+};
+
 const PlanCheckoutButtons = ({
   onCheckout,
   isCheckingOut,
   checkoutPlan,
+  translate,
 }: {
   onCheckout: (plan: SubscriptionPlan) => void;
   isCheckingOut: boolean;
   checkoutPlan: SubscriptionPlan | null;
+  translate: BillingTranslate;
 }) => (
   <div className="flex flex-wrap gap-3">
     {PLAN_ORDER.map((plan) => (
@@ -56,8 +119,8 @@ const PlanCheckoutButtons = ({
         onClick={() => onCheckout(plan)}
       >
         {isCheckingOut && checkoutPlan === plan
-          ? "Loading…"
-          : `${PLAN_META[plan].name} · $${PLAN_META[plan].price}/mo`}
+          ? translate("loading")
+          : `${planName(plan, translate)} · $${PLAN_PRICES[plan]}${translate("perMonth")}`}
       </Button>
     ))}
   </div>
@@ -75,17 +138,6 @@ const STATUS_STYLES: Record<string, string> = {
   incomplete: "bg-background-dimmed text-foreground-dimmed",
   incomplete_expired: "bg-background-dimmed text-foreground-dimmed",
   paused: "bg-background-dimmed text-foreground-dimmed",
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  active: "Active",
-  trialing: "Trial",
-  past_due: "Past Due",
-  unpaid: "Unpaid",
-  canceled: "Canceled",
-  incomplete: "Incomplete",
-  incomplete_expired: "Expired",
-  paused: "Paused",
 };
 
 const formatDate = (date: Date | null) =>
@@ -113,6 +165,7 @@ const ActivePlan = ({
   isManaging,
   isCheckingOut,
   checkoutPlan,
+  translate,
 }: {
   subscription: Subscription.Type;
   onManage: () => void;
@@ -120,6 +173,7 @@ const ActivePlan = ({
   isManaging: boolean;
   isCheckingOut: boolean;
   checkoutPlan: SubscriptionPlan | null;
+  translate: BillingTranslate;
 }) => {
   const planKey =
     subscription.plan === "compete" ||
@@ -127,11 +181,10 @@ const ActivePlan = ({
     subscription.plan === "dominate"
       ? subscription.plan
       : null;
-  const meta = planKey ? PLAN_META[planKey] : null;
   const statusKey = subscription.status;
   const statusClass =
     STATUS_STYLES[statusKey] ?? "bg-background-dimmed text-foreground-dimmed";
-  const statusLabel = STATUS_LABELS[statusKey] ?? statusKey;
+  const statusLabel = subscriptionStatusLabel(statusKey, translate);
   const upgradeTarget: SubscriptionPlan | null = planKey
     ? UPGRADE_LADDER[planKey]
     : null;
@@ -141,13 +194,15 @@ const ActivePlan = ({
       <div className="flex items-start justify-between">
         <div>
           <p className="font-semibold text-base text-foreground-rich">
-            {meta?.label ?? "No active plan"}
+            {planKey
+              ? planLabel(planKey, translate)
+              : translate("noActivePlan")}
           </p>
-          {meta && (
+          {planKey && (
             <p className="mt-1 font-bold text-2xl text-primary tracking-[-0.02em]">
-              ${meta.price}
+              ${PLAN_PRICES[planKey]}
               <span className="font-medium text-foreground-dimmed text-sm">
-                /mo
+                {translate("perMonth")}
               </span>
             </p>
           )}
@@ -158,12 +213,18 @@ const ActivePlan = ({
       </div>
       <div className="mt-4 flex flex-col gap-2">
         <div className="flex justify-between">
-          <span className="text-foreground-dimmed text-sm">Billing cycle</span>
-          <span className="font-medium text-foreground text-sm">Monthly</span>
+          <span className="text-foreground-dimmed text-sm">
+            {translate("billingCycle")}
+          </span>
+          <span className="font-medium text-foreground text-sm">
+            {translate("monthly")}
+          </span>
         </div>
         <div className="flex justify-between">
           <span className="text-foreground-dimmed text-sm">
-            {subscription.cancelAtPeriodEnd ? "Ends on" : "Next billing date"}
+            {subscription.cancelAtPeriodEnd
+              ? translate("endsOn")
+              : translate("nextBillingDate")}
           </span>
           <span className="font-medium text-foreground text-sm">
             {formatDate(subscription.currentPeriodEnd)}
@@ -171,7 +232,7 @@ const ActivePlan = ({
         </div>
         {subscription.cancelAtPeriodEnd && (
           <p className="mt-1 text-foreground-dimmed text-sm">
-            Your plan is set to cancel at the end of the current period.
+            {translate("cancelNotice")}
           </p>
         )}
       </div>
@@ -184,12 +245,14 @@ const ActivePlan = ({
             onClick={() => onCheckout(upgradeTarget)}
           >
             {isCheckingOut && checkoutPlan === upgradeTarget
-              ? "Loading…"
-              : `Upgrade to ${PLAN_META[upgradeTarget].name}`}
+              ? translate("loading")
+              : translate("upgradeTo", {
+                  plan: planName(upgradeTarget, translate),
+                })}
           </Button>
         )}
         <Button color="neutral" onClick={onManage} disabled={isManaging}>
-          {isManaging ? "Loading…" : "Manage Billing"}
+          {isManaging ? translate("loading") : translate("manageBilling")}
         </Button>
       </div>
     </>
@@ -201,35 +264,43 @@ const PaygPlan = ({
   onCheckout,
   isCheckingOut,
   checkoutPlan,
+  translate,
 }: {
   summary: PerformanceFee.PeriodSummary;
   onCheckout: (plan: SubscriptionPlan) => void;
   isCheckingOut: boolean;
   checkoutPlan: SubscriptionPlan | null;
+  translate: BillingTranslate;
 }) => (
   <>
     <div className="flex items-start justify-between">
       <div>
         <p className="font-semibold text-base text-foreground-rich">
-          Pay-as-you-go
+          {translate("payAsYouGo.title")}
         </p>
         <p className="mt-1 text-foreground-dimmed text-sm">
-          Free to start · you only pay when AI agents drive sales.
+          {translate("payAsYouGo.description")}
         </p>
       </div>
       <span className={`${STATUS_PILL_CLASS_NAME} bg-success/10 text-success`}>
-        Active
+        {translate("payAsYouGo.active")}
       </span>
     </div>
     <div className="mt-4 flex flex-col gap-2">
       <div className="flex justify-between">
-        <span className="text-foreground-dimmed text-sm">Fee</span>
+        <span className="text-foreground-dimmed text-sm">
+          {translate("payAsYouGo.fee")}
+        </span>
         <span className="font-medium text-foreground text-sm">
-          {formatRate(summary.rateBps)}% on AI-attributed orders
+          {translate("payAsYouGo.feeDetail", {
+            rate: formatRate(summary.rateBps),
+          })}
         </span>
       </div>
       <div className="flex justify-between">
-        <span className="text-foreground-dimmed text-sm">Monthly cap</span>
+        <span className="text-foreground-dimmed text-sm">
+          {translate("payAsYouGo.monthlyCap")}
+        </span>
         <span className="font-medium text-foreground text-sm">
           {formatAmount(summary.capCents, "USD")}
         </span>
@@ -237,14 +308,14 @@ const PaygPlan = ({
     </div>
     <div className="mt-6">
       <p className="text-foreground-dimmed text-sm">
-        Prefer predictable billing? Switch to a flat monthly plan (no
-        performance fee):
+        {translate("payAsYouGo.switchHint")}
       </p>
       <div className="mt-3">
         <PlanCheckoutButtons
           onCheckout={onCheckout}
           isCheckingOut={isCheckingOut}
           checkoutPlan={checkoutPlan}
+          translate={translate}
         />
       </div>
     </div>
@@ -257,21 +328,22 @@ const NoPlan = ({
   isStartingPayg,
   isCheckingOut,
   checkoutPlan,
+  translate,
 }: {
   onStartPayg: () => void;
   onCheckout: (plan: SubscriptionPlan) => void;
   isStartingPayg: boolean;
   isCheckingOut: boolean;
   checkoutPlan: SubscriptionPlan | null;
+  translate: BillingTranslate;
 }) => (
   <>
     <div>
       <p className="font-semibold text-base text-foreground-rich">
-        Choose how you pay
+        {translate("choosePlan.title")}
       </p>
       <p className="mt-1 text-foreground-dimmed text-sm">
-        Start free with pay-as-you-go, or pick a flat monthly subscription with
-        no performance fee.
+        {translate("choosePlan.description")}
       </p>
     </div>
     <div className="mt-6 flex flex-col gap-3">
@@ -281,12 +353,15 @@ const NoPlan = ({
         disabled={isStartingPayg}
         onClick={onStartPayg}
       >
-        {isStartingPayg ? "Loading…" : "Start Pay-as-you-go — free, no card"}
+        {isStartingPayg
+          ? translate("loading")
+          : translate("choosePlan.startPayg")}
       </Button>
       <PlanCheckoutButtons
         onCheckout={onCheckout}
         isCheckingOut={isCheckingOut}
         checkoutPlan={checkoutPlan}
+        translate={translate}
       />
     </div>
   </>
@@ -296,10 +371,12 @@ const PerformanceFeeCard = ({
   summary,
   onAddPayment,
   isAddingPayment,
+  translate,
 }: {
   summary: PerformanceFee.PeriodSummary;
   onAddPayment: () => void;
   isAddingPayment: boolean;
+  translate: BillingTranslate;
 }) => {
   const usedPercent =
     summary.capCents > 0
@@ -313,14 +390,17 @@ const PerformanceFeeCard = ({
     switch (true) {
       case summary.awaitingPayment:
         return {
-          label: "Action needed",
+          label: translate("performanceFee.actionNeeded"),
           className: "bg-warning/10 text-warning",
         };
       case summary.enabled:
-        return { label: "Active", className: "bg-success/10 text-success" };
+        return {
+          label: translate("performanceFee.active"),
+          className: "bg-success/10 text-success",
+        };
       default:
         return {
-          label: "Off",
+          label: translate("performanceFee.off"),
           className: "bg-background-dimmed text-foreground-dimmed",
         };
     }
@@ -330,7 +410,7 @@ const PerformanceFeeCard = ({
     <div>
       <div className="flex items-center justify-between border-accent-foreground border-b bg-background-dimmed px-4 py-3">
         <p className="font-semibold text-foreground-rich text-sm">
-          Performance Fee
+          {translate("performanceFee.title")}
         </p>
         <span className={`${STATUS_PILL_CLASS_NAME} ${pill.className}`}>
           {pill.label}
@@ -338,20 +418,22 @@ const PerformanceFeeCard = ({
       </div>
       <div className="p-6">
         <p className="text-foreground-dimmed text-sm">
-          {formatRate(summary.rateBps)}% on AI-attributed orders · capped at{" "}
-          {formatAmount(summary.capCents, "USD")}/mo. Free to start — you only
-          pay when an agent buys because of an optimization we made, never on
-          your other sales.
+          {translate("performanceFee.description", {
+            rate: formatRate(summary.rateBps),
+            cap: formatAmount(summary.capCents, "USD"),
+          })}
         </p>
 
         {summary.awaitingPayment && (
           <div className="mt-4 flex flex-col gap-3 border border-warning/30 bg-warning/5 p-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="font-semibold text-foreground-rich text-sm">
-                {formatAmount(summary.amountOwedCents, "USD")} due
+                {translate("performanceFee.due", {
+                  amount: formatAmount(summary.amountOwedCents, "USD"),
+                })}
               </p>
               <p className="mt-0.5 text-foreground-dimmed text-xs">
-                Add a payment method to settle this period's fee.
+                {translate("performanceFee.dueHint")}
               </p>
             </div>
             <Button
@@ -359,7 +441,9 @@ const PerformanceFeeCard = ({
               onClick={onAddPayment}
               disabled={isAddingPayment}
             >
-              {isAddingPayment ? "Loading…" : "Add a payment method"}
+              {isAddingPayment
+                ? translate("loading")
+                : translate("performanceFee.addPayment")}
             </Button>
           </div>
         )}
@@ -370,7 +454,9 @@ const PerformanceFeeCard = ({
               {formatAmount(summary.billedCents, "USD")}
             </p>
             <p className="text-foreground-dimmed text-sm">
-              of {formatAmount(summary.capCents, "USD")} cap this period
+              {translate("performanceFee.ofCap", {
+                cap: formatAmount(summary.capCents, "USD"),
+              })}
             </p>
           </div>
           <div className="mt-2 h-2 w-full bg-accent-foreground">
@@ -381,16 +467,22 @@ const PerformanceFeeCard = ({
           </div>
           <div className="mt-2 flex justify-between text-foreground-dimmed text-xs">
             <span>
-              {formatAmount(summary.reportedCents, "USD")} billed so far
+              {translate("performanceFee.billedSoFar", {
+                amount: formatAmount(summary.reportedCents, "USD"),
+              })}
             </span>
-            <span>Resets {formatDate(summary.periodEnd)}</span>
+            <span>
+              {translate("performanceFee.resets", {
+                date: formatDate(summary.periodEnd),
+              })}
+            </span>
           </div>
         </div>
 
         {summary.conversions.length > 0 && (
           <div className="mt-6">
             <p className="font-semibold text-foreground-rich text-xs uppercase tracking-[0.05em]">
-              Attributed orders
+              {translate("performanceFee.attributedOrders")}
             </p>
             <div className="mt-2 divide-y divide-accent-foreground border-accent-foreground border-t">
               {summary.conversions.map((conversion) => (
@@ -400,7 +492,9 @@ const PerformanceFeeCard = ({
                 >
                   <div>
                     <p className="font-medium text-foreground text-sm">
-                      Order {conversion.orderExternalId}
+                      {translate("performanceFee.order", {
+                        id: conversion.orderExternalId,
+                      })}
                     </p>
                     <p className="mt-0.5 text-foreground-dimmed text-xs">
                       {formatAmount(
@@ -430,12 +524,13 @@ export const BillingSection = ({
 }: Props) => {
   const router = useRouter();
   const toast = useToastManager();
+  const translate = useTranslations("dashboard.settings.billing");
 
   const [handleManage, isManaging] = useAsyncAction(async () => {
     const result = await Subscription.createBillingPortalSession();
     if (!result.success) {
       toast.add({
-        title: "Could not open billing portal",
+        title: translate("toast.portalFailed"),
         description: result.error.message,
         type: "error",
       });
@@ -448,7 +543,7 @@ export const BillingSection = ({
     const activation = await Payg.startPayAsYouGo();
     if (!activation.success) {
       toast.add({
-        title: "Could not start pay-as-you-go",
+        title: translate("toast.paygFailed"),
         description: activation.error.message,
         type: "error",
       });
@@ -461,7 +556,7 @@ export const BillingSection = ({
     const session = await Payg.createPaymentSetupSession();
     if (!session.success) {
       toast.add({
-        title: "Could not open payment setup",
+        title: translate("toast.paymentSetupFailed"),
         description: session.error.message,
         type: "error",
       });
@@ -485,7 +580,7 @@ export const BillingSection = ({
             return;
           }
           toast.add({
-            title: "Could not start checkout",
+            title: translate("toast.checkoutFailed"),
             description: result.error.message,
             type: "error",
           });
@@ -516,7 +611,7 @@ export const BillingSection = ({
       <div>
         <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
           <p className="font-semibold text-foreground-rich text-sm">
-            Current Plan
+            {translate("currentPlan")}
           </p>
         </div>
         <div className="p-6">
@@ -529,6 +624,7 @@ export const BillingSection = ({
                     onCheckout={(plan) => handleCheckout(plan)}
                     isCheckingOut={isCheckingOut}
                     checkoutPlan={checkoutPlan}
+                    translate={translate}
                   />
                 );
               case hasActiveSubscription && subscription !== null:
@@ -540,6 +636,7 @@ export const BillingSection = ({
                     isManaging={isManaging}
                     isCheckingOut={isCheckingOut}
                     checkoutPlan={checkoutPlan}
+                    translate={translate}
                   />
                 );
               default:
@@ -550,6 +647,7 @@ export const BillingSection = ({
                     isStartingPayg={isStartingPayg}
                     isCheckingOut={isCheckingOut}
                     checkoutPlan={checkoutPlan}
+                    translate={translate}
                   />
                 );
             }
@@ -562,18 +660,19 @@ export const BillingSection = ({
           summary={performanceFee}
           onAddPayment={() => handleAddPayment()}
           isAddingPayment={isAddingPayment}
+          translate={translate}
         />
       )}
 
       <div>
         <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
           <p className="font-semibold text-foreground-rich text-sm">
-            Invoice History
+            {translate("invoiceHistory")}
           </p>
         </div>
         {invoices.length === 0 ? (
           <div className="px-4 py-6 text-foreground-dimmed text-sm">
-            No invoices yet.
+            {translate("noInvoices")}
           </div>
         ) : (
           <div className="divide-y divide-accent-foreground">
@@ -613,9 +712,9 @@ export const BillingSection = ({
                         href={invoice.pdfUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-primary text-sm transition-colors hover:text-primary-rich"
+                        className="text-primary-text text-sm transition-colors hover:text-primary-rich"
                       >
-                        Download
+                        {translate("download")}
                       </a>
                     )}
                   </div>

@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
-import { useRouter } from "@/i18n/navigation";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { FieldDescription } from "@zenncore/web/components/form";
@@ -12,34 +11,42 @@ import {
   InferredForm,
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
+import { useTranslations } from "next-intl";
+import { useMemo } from "react";
 import { z } from "zod";
+import { useRouter } from "@/i18n/navigation";
 import * as FeedIntegration from "@/server/app/integration/feed";
 import * as Store from "@/server/app/store";
-
-const config = {
-  feedUrl: field({
-    shape: "text",
-    validator: z.string().url("Enter a valid URL"),
-    label: "Feed URL",
-    placeholder: "https://yourstore.com/products.xml",
-    // @ts-expect-error - description is a function
-    description: () => (
-      <FieldDescription>
-        The publicly accessible URL that serves your product feed. For example:{" "}
-        <span className="font-medium text-foreground">
-          https://yourstore.com/feed/products.xml
-        </span>
-        . The URL must be reachable from the internet — localhost or
-        private-network URLs won&apos;t work. We auto-detect whether it&apos;s
-        XML or JSON based on the content.
-      </FieldDescription>
-    ),
-  }),
-} satisfies GenericForm;
 
 export const FeedForm = () => {
   const router = useRouter();
   const toast = useToastManager();
+  const translate = useTranslations("onboarding.connect");
+
+  const config = useMemo(
+    () =>
+      ({
+        feedUrl: field({
+          shape: "text",
+          validator: z
+            .string()
+            .url(translate("feed.fields.feedUrl.validation")),
+          label: translate("feed.fields.feedUrl.label"),
+          placeholder: translate("feed.fields.feedUrl.placeholder"),
+          // @ts-expect-error - description is a function
+          description: () => (
+            <FieldDescription>
+              {translate("feed.fields.feedUrl.description.before")}{" "}
+              <span className="font-medium text-foreground">
+                {translate("feed.fields.feedUrl.description.example")}
+              </span>
+              . {translate("feed.fields.feedUrl.description.after")}
+            </FieldDescription>
+          ),
+        }),
+      }) satisfies GenericForm,
+    [translate],
+  );
 
   const [handleSubmit, isPending] = useAsyncAction(
     async (data: FormEntries<typeof config>) => {
@@ -47,7 +54,7 @@ export const FeedForm = () => {
 
       if (!result.success) {
         toast.add({
-          title: "Connection failed",
+          title: translate("feed.toast.connectionFailed"),
           description: result.error.message,
           type: "error",
         });
@@ -55,8 +62,8 @@ export const FeedForm = () => {
       }
 
       toast.add({
-        title: "Feed connected",
-        description: "Importing products — this may take a moment.",
+        title: translate("feed.toast.connected.title"),
+        description: translate("feed.toast.connected.description"),
         type: "success",
       });
       void (async () => {
@@ -81,12 +88,12 @@ export const FeedForm = () => {
       >
         {isPending ? (
           <>
-            Importing...
+            {translate("feed.action.importing")}
             <LoaderIcon className="size-4 animate-spin" />
           </>
         ) : (
           <>
-            Import Feed
+            {translate("feed.action.primary")}
             <ArrowRightIcon className="size-4" />
           </>
         )}

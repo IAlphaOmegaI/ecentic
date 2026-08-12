@@ -5,27 +5,28 @@ import { Button } from "@zenncore/web/components/button";
 import * as motion from "motion/react-client";
 import Image from "next/image";
 import { useLinkStatus } from "next/link";
-import { Link } from "@/i18n/navigation";
+import { useMessages, useTranslations } from "next-intl";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
+import { Link } from "@/i18n/navigation";
 import { Fade, Spring } from "@/lib/animations";
 
-const points = [
-  "Your email address has been confirmed",
-  "Your account is ready to go",
-  "Sign in to start optimizing your listings",
-];
-
 export default () => {
+  const translate = useTranslations("verifyEmail");
+  const translateAuthChrome = useTranslations("authChrome");
+  const messages = useMessages();
+
   return (
     <div className="flex h-screen overflow-hidden bg-primary">
       <Onboarding
-        points={points}
+        points={messages.verifyEmail.states.success.points}
+        footer={translateAuthChrome("footer")}
+        imageAlt={translateAuthChrome("imageAlt")}
         headline={
           <>
-            You're
+            {translate("states.success.headline.primary")}
             <br />
-            verified.
+            {translate("states.success.headline.accent")}
           </>
         }
       />
@@ -54,10 +55,10 @@ export default () => {
               </div>
               <div>
                 <h2 className="font-medium text-4xl text-foreground">
-                  Email verified
+                  {translate("states.success.title")}
                 </h2>
                 <p className="mt-1 font-light text-2xl text-foreground-dimmed">
-                  You're all set. Sign in to get started.
+                  {translate("states.success.description")}
                 </p>
               </div>
             </div>
@@ -74,12 +75,10 @@ export default () => {
               </motion.div>
               <div className="flex flex-col items-center gap-2 text-center">
                 <p className="font-medium text-2xl text-success">
-                  Successfully verified
+                  {translate("states.success.confirmed.title")}
                 </p>
                 <p className="font-light text-foreground-dimmed text-lg">
-                  Your email address has been confirmed and your account is
-                  ready. Sign in to connect your store and start winning agent
-                  carts.
+                  {translate("states.success.confirmed.description")}
                 </p>
               </div>
             </div>
@@ -87,7 +86,7 @@ export default () => {
 
           <Motion.Item className="w-full px-8">
             <div className="flex items-center justify-between border-accent-foreground border-x p-6 font-light text-foreground-dimmed">
-              <p>Your account is ready.</p>
+              <p>{translate("states.success.prompt.ready")}</p>
               <Button
                 variant="flat"
                 color="primary"
@@ -105,10 +104,11 @@ export default () => {
 };
 
 const SignIn = () => {
+  const translate = useTranslations("verifyEmail");
   const { pending } = useLinkStatus();
   return (
     <>
-      Sign in to ecentic
+      {translate("states.success.prompt.signIn")}
       {pending ? (
         <LoaderIcon className="size-4 animate-spin" />
       ) : (

@@ -109,12 +109,77 @@ export class InvalidSignatureError extends error(
 ) {}
 
 /**
+ * A public endpoint turned away a caller that presented the wrong shared secret
+ * — or none. The sibling of `InvalidSignatureError` for the rails that check a
+ * bearer token rather than a signature: `/api/cron/*` and the on-demand cache
+ * purge, whose URLs anyone can POST. Same reasoning, so same treatment — never a
+ * defect, and the guard records its own rejections at `warning` so a scanner
+ * finding the endpoint does not open an issue while a real caller failing auth
+ * is still visible.
+ */
+export class UntrustedRequestError extends error(
+  "untrusted-request",
+  AuthenticationError,
+  { expected: true },
+) {}
+
+/**
  * Whether an error is a failure the product anticipates and handles — a business
  * rule the user can act on — rather than a defect. Expected errors still travel
  * as failed `Result`s and still reach the user, but `withContext` does not report
  * them to Sentry.
  */
 export const isExpected = (error: Error) => expected.has(error.name);
+
+/**
+ * Driver codes that mean the database connection died, not that Postgres
+ * rejected the query. Node reports a socket that stopped answering as
+ * `ETIMEDOUT`, `ECONNRESET` or `EPIPE`; postgres.js raises its own `CONNECTION_*`
+ * codes when it notices the stream went away underneath a pending query.
+ *
+ * `CONNECT_TIMEOUT` was excluded at first on the theory that it means the
+ * database was unreachable for the whole `connect_timeout` (ECENTIC-CD), so a
+ * retry could only double the hang before the same failure. ECENTIC-D9 broke
+ * the theory: one connect stalled past the full window while the three sibling
+ * reads in the same `Promise.all` connected and returned — the pooler was
+ * healthy and simply sat on one attempt. A timed-out connect never reached
+ * Postgres, so replaying it is as safe as the dead-socket replays above; the
+ * price is that a genuine outage now hangs for two `connect_timeout` windows
+ * instead of one before failing.
+ */
+const TRANSIENT_CONNECTION_CODES: ReadonlySet<string> = new Set([
+  "ECONNRESET",
+  "EPIPE",
+  "ETIMEDOUT",
+  "CONNECT_TIMEOUT",
+  "CONNECTION_CLOSED",
+  "CONNECTION_DESTROYED",
+  "CONNECTION_ENDED",
+]);
+
+/**
+ * Whether a database failure was the connection dying rather than the query
+ * being rejected — the difference between "safe to run again" and "will fail
+ * identically forever". See `resultifyRead` in `repository.ts` for the retry
+ * this gates.
+ *
+ * Walks the `cause` chain instead of reading one fixed depth: Drizzle wraps
+ * driver failures in `DrizzleQueryError` and hangs the original on `cause`,
+ * while postgres.js hands Node's socket error straight through rather than
+ * wrapping it, so the code can sit at either level.
+ */
+export const isTransientConnectionError = (
+  error: unknown,
+  depth = 0,
+): boolean => {
+  if (!(error instanceof Error) || depth > 3) return false;
+
+  const { code } = error as Error & { code?: unknown };
+  if (typeof code === "string" && TRANSIENT_CONNECTION_CODES.has(code))
+    return true;
+
+  return isTransientConnectionError(error.cause, depth + 1);
+};
 
 export namespace ErrorProtocol {
   export type SerializedError<E extends Error = Error> = {
@@ -142,6 +207,7 @@ export namespace ErrorProtocol {
     [UnauthenticatedError.name]: UnauthenticatedError,
     [UnauthorizedError.name]: UnauthorizedError,
     [InvalidSignatureError.name]: InvalidSignatureError,
+    [UntrustedRequestError.name]: UntrustedRequestError,
   };
 
   export const serialize = <E extends Error = Error>(

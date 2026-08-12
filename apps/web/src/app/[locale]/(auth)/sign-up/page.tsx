@@ -4,29 +4,30 @@ import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import * as motion from "motion/react-client";
 import Image from "next/image";
-import { Link } from "@/i18n/navigation";
+import { useMessages, useTranslations } from "next-intl";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
 import { Fade } from "@/lib/animations";
 import { SignUpForm } from "./_components/sign-up-form";
 
-const points = [
-  "Simulate how ChatGPT, Claude, Gemini & Perplexity pick products",
-  "Diagnose exactly why agents skip yours",
-  "Auto-optimize listings to win every cart",
-];
-
 export default () => {
+  const translate = useTranslations("signUp");
+  const translateAuthChrome = useTranslations("authChrome");
+  const messages = useMessages();
+
   return (
     <div className="flex h-screen overflow-hidden bg-primary">
       <Onboarding
-        points={points}
+        points={messages.signUp.sidebar.points}
+        footer={translateAuthChrome("footer")}
+        imageAlt={translateAuthChrome("imageAlt")}
         headline={
           <>
-            Win every
+            {translate("sidebar.headline.primary")}
             <br />
-            agent's cart.
+            {translate("sidebar.headline.accent")}
           </>
         }
       />
@@ -57,10 +58,10 @@ export default () => {
               </div>
               <div>
                 <h2 className="font-medium text-4xl text-foreground">
-                  Create your account
+                  {translate("title")}
                 </h2>
                 <p className="mt-1 font-light text-2xl text-foreground-dimmed">
-                  Start winning agent carts in 2 minutes.
+                  {translate("description")}
                 </p>
               </div>
             </div>
@@ -85,29 +86,23 @@ export default () => {
                 className="flex items-center gap-2"
                 render={<Link href="/sign-in" />}
               >
-                Sign in instead <ArrowRightIcon className="size-4" />
+                {translate("action.secondary")}{" "}
+                <ArrowRightIcon className="size-4" />
               </Button>
               <p className="w-1/2">
-                By creating an account you agree to our{" "}
-                <span className="text-foreground">Terms of Service</span> and{" "}
-                <span className="text-foreground">Privacy Policy</span>.
+                {translate.rich("prompt.terms", {
+                  termsLink: translate("prompt.termsLink"),
+                  privacyLink: translate("prompt.privacyLink"),
+                  terms: (chunks) => (
+                    <span className="text-foreground">{chunks}</span>
+                  ),
+                  privacy: (chunks) => (
+                    <span className="text-foreground">{chunks}</span>
+                  ),
+                })}
               </p>
             </div>
           </Motion.Item>
-
-          {/* <Motion.Item className="w-full px-8">
-            <div className="flex items-center justify-between border-accent-foreground border-x p-6 font-light text-foreground-dimmed">
-              <p>Already have an account? </p>
-              <Button
-                variant="outline"
-                color="accent"
-                type="button"
-                render={<Link href="/sign-in" />}
-              >
-                Sign in instead <ArrowRightIcon className="size-4" />
-              </Button>
-            </div>
-          </Motion.Item> */}
         </Motion.Stagger>
       </motion.div>
     </div>

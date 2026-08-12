@@ -9,7 +9,8 @@ export default async ({ children }: { children: React.ReactNode }) => {
     Authentication.getCurrentUser(Environment.SERVER),
   );
 
-  if (user.company && user.jobTitle) redirect({ href: "/onboarding/connect", locale: await getLocale() });
+  if (user.company && user.jobTitle)
+    redirect({ href: "/onboarding/connect", locale: await getLocale() });
 
   return children;
 };

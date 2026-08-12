@@ -1,12 +1,15 @@
 "use client";
 
 import {
-  type ColumnDef,
-  createColumnHelper,
+  type ColumnHelper,
+  createColumnHelper as createTanStackColumnHelper,
   flexRender,
   type PaginationState,
+  type RowData,
+  type ColumnDef as TanStackColumnDef,
 } from "@tanstack/react-table";
 import {
+  type DataTableFeatures,
   DataTableProvider,
   type TableRow as TableRowType,
   useDataTable,
@@ -31,13 +34,19 @@ import {
   TableRow,
 } from "./table";
 
-export {
-  type ColumnDef,
-  createColumnHelper,
-  DataTableProvider,
-  type PaginationState,
-  useDataTable,
-};
+export { DataTableProvider, type PaginationState, useDataTable };
+
+// Pre-bound to the wrapper's feature set so consumers keep the v8-style
+// ColumnDef<TData, TValue> signature instead of threading TFeatures everywhere.
+export type ColumnDef<
+  TData extends RowData,
+  TValue = unknown,
+> = TanStackColumnDef<DataTableFeatures, TData, TValue>;
+
+export const createColumnHelper = <TData extends RowData>(): ColumnHelper<
+  DataTableFeatures,
+  TData
+> => createTanStackColumnHelper<DataTableFeatures, TData>();
 
 type SlotComponent = ComponentType<{ children?: ReactNode | undefined }>;
 

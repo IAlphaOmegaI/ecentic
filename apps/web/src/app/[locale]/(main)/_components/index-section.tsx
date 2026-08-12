@@ -1,10 +1,10 @@
 import { ArrowRightIcon, type Icon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import { Link } from "@/i18n/navigation";
 import type { ReactNode } from "react";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
+import { Link } from "@/i18n/navigation";
 
 // These sections used to be a 5fr/8fr split: gray prose on the left, the list
 // on the right. The split did no work — both halves were prose, and the section
@@ -95,7 +95,7 @@ export const IndexSection = ({
               reveal={reveal}
               className="grid grid-cols-[2.5rem_1fr] border-accent-foreground border-b px-6 py-5 last:border-b-0 md:grid-cols-[5rem_1fr] md:px-8"
             >
-              <span className="font-normal text-lg text-primary tabular-nums">
+              <span className="font-normal text-lg text-primary-text tabular-nums">
                 {String(index + 1).padStart(2, "0")}
               </span>
               <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-8">

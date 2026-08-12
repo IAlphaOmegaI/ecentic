@@ -1,0 +1,52 @@
+{
+  "compareTool": {
+    "page": {
+      "title": "Comparar dos productos",
+      "description": "Mira qué producto recomendarían los agentes de IA, y por qué."
+    },
+    "form": {
+      "productA": "Producto A",
+      "productB": "Producto B",
+      "urlHint": "Pega una URL de producto de cualquier tienda online",
+      "placeholderA": "https://amazon.com/product/...",
+      "placeholderB": "https://shopify.com/products/...",
+      "prompt": {
+        "title": "¿Qué es lo más importante para ti?",
+        "description": "Cuéntanos qué buscas y compararemos los productos según tus criterios.",
+        "placeholder": "p. ej. Quiero los mejores auriculares con cancelación de ruido por menos de 300 $ y buena autonomía..."
+      },
+      "defaultPrompt": "Quiero la mejor relación calidad-precio",
+      "footer": "Ejecutaremos la comparación en 4 modelos de IA.",
+      "action": {
+        "run": "Ejecutar comparación",
+        "comparing": "Comparando..."
+      }
+    },
+    "running": {
+      "title": "Comparando productos",
+      "modelsProgress": "{completed}/{total} modelos",
+      "scrapedSuccess": "Ambos productos extraídos correctamente",
+      "completeLog": "Comparación completada — {count} modelos evaluados",
+      "footer": "Ejecutando comparación con IA"
+    },
+    "results": {
+      "overallSplit": "Reparto global",
+      "byModel": "Resultados por modelo",
+      "winner": "Ganador",
+      "modelsChose": "modelos eligieron este",
+      "chose": "eligió {letter}",
+      "finishedIn": "Terminado en {elapsed}",
+      "action": {
+        "compareAgain": "Comparar de nuevo",
+        "startOptimizing": "Empezar a optimizar"
+      }
+    },
+    "toast": {
+      "missingUrls": {
+        "title": "Faltan URLs",
+        "description": "Introduce ambas URLs de producto."
+      },
+      "failed": "Error en la comparación"
+    }
+  }
+}

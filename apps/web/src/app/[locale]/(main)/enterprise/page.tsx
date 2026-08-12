@@ -1,9 +1,11 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
-import { Link } from "@/i18n/navigation";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { BookCall } from "@/components/cal";
 import { JsonLd } from "@/components/json-ld";
+import { localizePath } from "@/i18n/locale";
+import { Link } from "@/i18n/navigation";
 import {
   absoluteUrl,
   createBreadcrumbSchema,
@@ -21,81 +23,65 @@ import { bannerAction } from "../_components/page-banner";
 import { Faq } from "../pricing/_components/faq";
 import { Capabilities } from "./_components/capabilities";
 import { Compare } from "./_components/compare";
+import { Why } from "./_components/why";
 
-const assurances = [
-  "Multi-brand dashboards",
-  "Custom API access",
-  "Dedicated CSM",
-  "SOC 2 in progress",
-] as const;
+export const generateMetadata = async (): Promise<Metadata> => {
+  const locale = await getLocale();
+  const translate = await getTranslations("enterprise");
 
-const description =
-  "Agent-commerce intelligence for enterprise merchants: multi-brand dashboards, API access, SSO, SOC 2 compliance, UCP signing, and a dedicated CSM team.";
+  return createMetadata({
+    title: translate("meta.title"),
+    description: translate("meta.description"),
+    path: localizePath("/enterprise", locale),
+    keywords: [
+      "enterprise ecommerce AI",
+      "AI agent commerce enterprise",
+      "multi-brand product optimization",
+      "agent traffic analytics enterprise",
+    ],
+  });
+};
 
-const faq = [
-  {
-    question: "When should I choose Enterprise over Dominate?",
-    answer:
-      "Choose Enterprise when you run hundreds of SKUs across multiple brands or regions, need SSO or a DPA, want UCP signing managed for you, or need a dedicated CSM and custom API access. Dominate covers the full optimization loop for a single brand up to 1000 products.",
-  },
-  {
-    question: "What does onboarding look like for Enterprise?",
-    answer:
-      "We start with a short discovery call, share a custom ROI estimate for your catalog size, and scope an onboarding timeline. No procurement deck is required to begin the conversation.",
-  },
-  {
-    question: "Is SOC 2 available today?",
-    answer:
-      "SOC 2 Type II is in progress. Enterprise accounts can request our DPA, discuss data residency options, and review our security posture during the sales process.",
-  },
-  {
-    question: "Can Enterprise connect to our existing data stack?",
-    answer:
-      "Yes. Enterprise includes read-only API access for scan results, agent traffic, and UCP profiles so you can integrate ecentic data into your own analytics and reporting tools.",
-  },
-] as const;
+export default async () => {
+  const locale = await getLocale();
 
-export const metadata: Metadata = createMetadata({
-  title: "Enterprise — Agent-Commerce at Scale",
-  description,
-  path: "/enterprise",
-  keywords: [
-    "enterprise ecommerce AI",
-    "AI agent commerce enterprise",
-    "multi-brand product optimization",
-    "agent traffic analytics enterprise",
-  ],
-});
+  const translate = await getTranslations("enterprise");
+  const messages = await getMessages();
+  const description = translate("meta.description");
+  const assurances = messages.enterprise.hero.assurances;
+  const faq = messages.enterprise.faq.items;
 
-export default () => {
   const structuredData = [
     {
       "@context": "https://schema.org",
       "@type": "WebPage",
-      name: "Enterprise — Agent-Commerce at Scale",
+      name: translate("meta.title"),
       description,
-      url: absoluteUrl("/enterprise"),
+      url: absoluteUrl(localizePath("/enterprise", locale)),
     },
     organizationSchema,
     createBreadcrumbSchema([
-      { name: "Home", path: "/" },
-      { name: "Enterprise", path: "/enterprise" },
+      { name: translate("breadcrumb.home"), path: localizePath("/", locale) },
+      {
+        name: translate("breadcrumb.enterprise"),
+        path: localizePath("/enterprise", locale),
+      },
     ]),
     createFaqSchema(faq),
   ];
 
   return (
     <ContentPageLayout
-      eyebrow="Enterprise"
-      title="Agent-commerce infrastructure"
-      accent="at scale."
-      description="Multi-brand dashboards, API access, UCP signing, and dedicated support for commerce teams running hundreds of SKUs across multiple platforms."
+      eyebrow={translate("hero.eyebrow")}
+      title={translate("hero.title.primary")}
+      accent={translate("hero.title.accent")}
+      description={translate("hero.description")}
       assurances={assurances}
-      art={{ source: Art, alt: "ASCII-art illustration of an office tower" }}
+      art={{ source: Art, alt: translate("hero.art.alt") }}
       actions={
         <>
           <BookCall color="accent" className={bannerAction.lead}>
-            Talk to sales
+            {translate("hero.action.primary")}
             <ArrowRightIcon className="size-4" />
           </BookCall>
           <Button
@@ -103,21 +89,23 @@ export default () => {
             className={bannerAction.secondary}
             render={<Link href="/pricing" />}
           >
-            View pricing
+            {translate("hero.action.secondary")}
           </Button>
         </>
       }
     >
       <JsonLd schemas={structuredData} />
 
+      <Why />
+
       <Capabilities />
 
       <Compare />
 
       <ContentPageSection
-        number="03"
-        title="Enterprise FAQ"
-        description="Common questions about Enterprise plans, security, and onboarding."
+        number={translate("faqSection.number")}
+        title={translate("faqSection.title")}
+        description={translate("faqSection.description")}
         gutter
         classList={{ body: "p-0" }}
       >
@@ -125,9 +113,15 @@ export default () => {
       </ContentPageSection>
 
       <ContentPageFooter
-        primary={{ href: "/demo", label: "Book a demo" }}
-        secondary={{ href: "/pricing", label: "View pricing" }}
-        note="SOC 2 in progress · DPA on request"
+        primary={{
+          href: "/demo",
+          label: translate("footer.action.primary"),
+        }}
+        secondary={{
+          href: "/pricing",
+          label: translate("footer.action.secondary"),
+        }}
+        note={translate("footer.note")}
       />
     </ContentPageLayout>
   );

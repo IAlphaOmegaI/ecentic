@@ -10,6 +10,7 @@ import {
   InferredForm,
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
+import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { z } from "zod";
 import * as CatalogRank from "@/server/app/intelligence/catalog-rank";
@@ -18,6 +19,7 @@ import { StatusPill } from "../../../_components/grid";
 const COUNTRIES = ["US", "GB", "DE", "FR", "IT", "ES", "NL", "CA"] as const;
 
 export const FeedUrlCard = ({ url }: { url: string }) => {
+  const translate = useTranslations("dashboard.visibility.feedUrl");
   const toast = useToastManager();
 
   return (
@@ -31,15 +33,14 @@ export const FeedUrlCard = ({ url }: { url: string }) => {
         onClick={async () => {
           await navigator.clipboard.writeText(url);
           toast.add({
-            title: "Feed URL copied",
-            description:
-              "Paste it into Google Merchant Center (scheduled fetch) and the Perplexity Merchant Program.",
+            title: translate("toast.title"),
+            description: translate("toast.description"),
             type: "success",
           });
         }}
       >
         <CopyIcon className="size-4" />
-        Copy feed URL
+        {translate("action.primary")}
       </Button>
     </div>
   );
@@ -52,6 +53,7 @@ export const RankChecker = ({
   store: string;
   configured: boolean;
 }) => {
+  const translate = useTranslations("dashboard.visibility.rankChecker");
   const toast = useToastManager();
   const [measurement, setMeasurement] =
     useState<CatalogRank.RankMeasurement | null>(null);
@@ -66,7 +68,7 @@ export const RankChecker = ({
 
       if (!result.success) {
         toast.add({
-          title: "Rank check failed",
+          title: translate("toast.failed"),
           description: result.error.message,
           type: "error",
         });
@@ -82,30 +84,28 @@ export const RankChecker = ({
       ({
         query: field({
           shape: "text",
-          validator: z.string().min(2, "Enter a buyer query"),
-          label: "Buyer query",
-          placeholder: "e.g. waterproof trail running shoes",
+          validator: z.string().min(2, translate("fields.query.validation")),
+          label: translate("fields.query.label"),
+          placeholder: translate("fields.query.placeholder"),
           classList: { field: "flex-1" },
         }),
         country: field({
           shape: "select",
           validator: z.enum(COUNTRIES),
-          label: "Market",
+          label: translate("fields.country.label"),
         }),
       }) satisfies GenericForm,
-    [],
+    [translate],
   );
 
   if (!configured) {
     return (
       <div className="flex flex-col gap-2 bg-background-rich p-5">
         <p className="font-medium text-base text-foreground-rich">
-          Global Catalog credentials missing
+          {translate("credentialsMissing.title")}
         </p>
         <p className="max-w-xl text-foreground-dimmed text-sm">
-          Set SHOPIFY_CATALOG_CLIENT_ID and SHOPIFY_CATALOG_CLIENT_SECRET (Dev
-          Dashboard → Catalogs → Get an API key) to measure where this store
-          ranks in the retrieval index AI shopping agents query.
+          {translate("credentialsMissing.description")}
         </p>
       </div>
     );
@@ -130,7 +130,7 @@ export const RankChecker = ({
             ) : (
               <BullseyeIcon className="size-4" />
             )}
-            Check rank
+            {translate("action.primary")}
           </Button>
         </InferredForm>
       </div>
@@ -139,12 +139,20 @@ export const RankChecker = ({
         <div className="flex flex-col">
           <div className="flex flex-wrap items-baseline gap-3 border-accent-foreground border-b bg-background-dimmed px-4 py-3">
             <p className="font-bold text-2xl text-foreground-rich tabular-nums">
-              {measurement.rank === null ? "Not found" : `#${measurement.rank}`}
+              {measurement.rank === null
+                ? translate("notFound")
+                : `#${measurement.rank}`}
             </p>
             <p className="text-foreground-dimmed text-sm">
               {measurement.rank === null
-                ? `this store did not appear in the top ${measurement.totalReturned} live results for "${measurement.query}"`
-                : `of ${measurement.totalReturned} live results for "${measurement.query}"`}
+                ? translate("resultNotFound", {
+                    total: measurement.totalReturned,
+                    query: measurement.query,
+                  })
+                : translate("resultFound", {
+                    total: measurement.totalReturned,
+                    query: measurement.query,
+                  })}
             </p>
           </div>
 
@@ -166,7 +174,7 @@ export const RankChecker = ({
                       href={offer.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="block truncate font-medium text-foreground text-sm hover:text-primary"
+                      className="block truncate font-medium text-foreground text-sm hover:text-primary-text"
                     >
                       {offer.title}
                     </a>
@@ -181,7 +189,9 @@ export const RankChecker = ({
                       .join(" · ")}
                   </p>
                 </div>
-                {offer.mine && <StatusPill tone="primary">You</StatusPill>}
+                {offer.mine && (
+                  <StatusPill tone="primary">{translate("you")}</StatusPill>
+                )}
               </div>
             ))}
           </div>

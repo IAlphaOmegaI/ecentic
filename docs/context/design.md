@@ -1417,7 +1417,7 @@ Use these files as implementation references:
 
 - Tokens: `packages/shared/config/src/tailwind/globals.css`
 - App utilities and transitions: `apps/web/src/app/globals.css`
-- Root font: `apps/web/src/app/layout.tsx`
+- Root font: `apps/web/src/app/[locale]/layout.tsx`
 - Marketing crosshair: `apps/web/src/components/plus.tsx`
 - Dashboard grid helpers: `apps/web/src/app/(main)/dashboard/_components/grid.tsx`
 - Approved motion wrapper: `apps/web/src/components/motion.tsx`

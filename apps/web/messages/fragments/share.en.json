@@ -1,0 +1,40 @@
+{
+  "share": {
+    "sidebar": {
+      "headline": {
+        "line1": "Your results",
+        "line2": "are in."
+      },
+      "points": [
+        "ChatGPT, Claude, Gemini & Perplexity simulated real shopping comparisons",
+        "Every product was scored head-to-head against competitors",
+        "This report shows where you win and where you lose"
+      ]
+    },
+    "page": {
+      "title": "How does your store stack up?",
+      "description": "Get an in-depth look at how your store stacks up against the competition."
+    },
+    "score": {
+      "label": "AI Agent Score",
+      "simulations": "{count} simulations",
+      "wins": "Wins",
+      "losses": "Losses",
+      "messages": {
+        "high": "Ahead of most competitors.",
+        "medium": "Competitive, but room to grow.",
+        "low": "AI agents are choosing competitors."
+      }
+    },
+    "finding": {
+      "impact": "Impact",
+      "simsLost": "of sims lost",
+      "missingAttributes": "Missing attributes"
+    },
+    "cta": {
+      "title": "Ready to win every AI agent's cart?",
+      "description": "ecentic auto-optimizes your listings. Free to start.",
+      "action": "Start free"
+    }
+  }
+}

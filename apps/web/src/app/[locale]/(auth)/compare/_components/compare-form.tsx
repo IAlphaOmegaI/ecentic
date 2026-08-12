@@ -10,8 +10,9 @@ import { Textarea, TextareaInput } from "@zenncore/web/components/textarea";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
+import { Link } from "@/i18n/navigation";
 import { Spring } from "@/lib/animations";
 import { formatElapsed } from "@/lib/date";
 import type * as Compare from "@/server/app/intelligence/compare";
@@ -49,6 +50,10 @@ const getLogo = (label: string) => {
 
 export const CompareForm = () => {
   const toast = useToastManager();
+  const translate = useTranslations("compareTool");
+  const translateForm = useTranslations("compareTool.form");
+  const translateRunning = useTranslations("compareTool.running");
+  const translateResults = useTranslations("compareTool.results");
 
   const [urlA, setUrlA] = useState("");
   const [urlB, setUrlB] = useState("");
@@ -76,8 +81,8 @@ export const CompareForm = () => {
   const [handleCompare, isRunning] = useAsyncAction(async () => {
     if (!urlA || !urlB) {
       toast.add({
-        title: "Missing URLs",
-        description: "Please enter both product URLs.",
+        title: translate("toast.missingUrls.title"),
+        description: translate("toast.missingUrls.description"),
         type: "error",
       });
       return;
@@ -105,7 +110,7 @@ export const CompareForm = () => {
         Intelligence.runCompare({
           urlA,
           urlB,
-          prompt: prompt || "I want the best value for money",
+          prompt: prompt || translate("form.defaultPrompt"),
         }),
       );
 
@@ -122,7 +127,7 @@ export const CompareForm = () => {
             setProductA(event.productA);
             setProductB(event.productB);
             addLog({
-              text: "Scraped both products successfully",
+              text: translate("running.scrapedSuccess"),
               type: "success",
             });
             break;
@@ -140,7 +145,9 @@ export const CompareForm = () => {
             setResults(event.results);
             setPhase("results");
             addLog({
-              text: `Comparison complete — ${event.results.length} models evaluated`,
+              text: translate("running.completeLog", {
+                count: String(event.results.length),
+              }),
               type: "success",
             });
             break;
@@ -160,7 +167,7 @@ export const CompareForm = () => {
     if (!comparison.success) {
       setPhase("input");
       toast.add({
-        title: "Comparison failed",
+        title: translate("toast.failed"),
         description: comparison.error.message,
         type: "error",
       });
@@ -191,16 +198,18 @@ export const CompareForm = () => {
           <div className="flex-1 px-8">
             <div className="grid h-full flex-1 grid-cols-1 gap-px border-accent-foreground border-x p-6 md:grid-cols-2">
               <ProductSide
-                label="Product A"
+                label={translate("form.productA")}
                 url={urlA}
                 onUrlChange={setUrlA}
-                placeholder="https://amazon.com/product/..."
+                placeholder={translate("form.placeholderA")}
+                hint={translate("form.urlHint")}
               />
               <ProductSide
-                label="Product B"
+                label={translate("form.productB")}
                 url={urlB}
                 onUrlChange={setUrlB}
-                placeholder="https://shopify.com/products/..."
+                placeholder={translate("form.placeholderB")}
+                hint={translate("form.urlHint")}
               />
             </div>
           </div>
@@ -208,16 +217,15 @@ export const CompareForm = () => {
           <div className="flex flex-col gap-4 border-accent-foreground border-t px-8">
             <div className="border-accent-foreground border-x p-6">
               <h3 className="font-medium text-2xl text-foreground">
-                What matters most to you?
+                {translateForm("prompt.title")}
               </h3>
               <p className="mb-4 font-light text-foreground-dimmed text-lg">
-                Tell us what you're looking for, and we'll compare the products
-                based on your criteria.
+                {translateForm("prompt.description")}
               </p>
               <Textarea value={prompt} onValueChange={setPrompt}>
                 <TextareaInput
                   rows={2}
-                  placeholder="e.g. I want the best noise-canceling headphones under $300 with long battery life..."
+                  placeholder={translateForm("prompt.placeholder")}
                 />
               </Textarea>
             </div>
@@ -225,7 +233,7 @@ export const CompareForm = () => {
           <div className="border-accent-foreground border-t px-8">
             <div className="flex w-full items-center justify-between border-accent-foreground border-x p-6">
               <p className="font-light text-foreground-dimmed text-sm">
-                We'll run the comparison across 4 AI models.
+                {translateForm("footer")}
               </p>
               <Button
                 color="primary"
@@ -235,12 +243,12 @@ export const CompareForm = () => {
               >
                 {isRunning ? (
                   <>
-                    Comparing...
+                    {translateForm("action.comparing")}
                     <LoaderIcon className="size-4 animate-spin" />
                   </>
                 ) : (
                   <>
-                    Run comparison
+                    {translateForm("action.run")}
                     <ArrowRightIcon className="size-4" />
                   </>
                 )}
@@ -271,12 +279,15 @@ export const CompareForm = () => {
                 className="inline-block size-1.5 rounded-full bg-primary"
               />
               <span className="font-medium text-foreground uppercase tracking-widest">
-                Comparing Products
+                {translateRunning("title")}
               </span>
             </div>
             <div className="flex items-center gap-4">
               <span className="text-foreground-dimmed text-sm">
-                {progress.completed}/{progress.total} models
+                {translateRunning("modelsProgress", {
+                  completed: String(progress.completed),
+                  total: String(progress.total),
+                })}
               </span>
               <span className="font-mono text-foreground-dimmed tabular-nums">
                 {formatElapsed(elapsed)}
@@ -298,8 +309,14 @@ export const CompareForm = () => {
 
           {productA && productB && (
             <div className="grid grid-cols-2 gap-px border-accent-foreground border-b bg-accent-foreground">
-              <ScrapedCard product={productA} label="Product A" />
-              <ScrapedCard product={productB} label="Product B" />
+              <ScrapedCard
+                product={productA}
+                label={translateForm("productA")}
+              />
+              <ScrapedCard
+                product={productB}
+                label={translateForm("productB")}
+              />
             </div>
           )}
 
@@ -351,7 +368,7 @@ export const CompareForm = () => {
               />
             ))}
             <span className="ml-1.5 font-light text-foreground-dimmed">
-              Running AI comparison
+              {translateRunning("footer")}
             </span>
           </div>
         </motion.div>
@@ -372,6 +389,8 @@ export const CompareForm = () => {
             results={results}
             elapsed={elapsed}
             onReset={handleReset}
+            translateForm={translateForm}
+            translateResults={translateResults}
           />
         </motion.div>
       )}
@@ -384,11 +403,13 @@ const ProductSide = ({
   url,
   onUrlChange,
   placeholder,
+  hint,
 }: {
   label: string;
   url: string;
   onUrlChange: (value: string) => void;
   placeholder: string;
+  hint: string;
 }) => (
   <div className="flex flex-col items-center justify-center gap-4 bg-background p-8">
     <div className="flex flex-col items-center gap-2">
@@ -396,7 +417,7 @@ const ProductSide = ({
         {label}
       </span>
       <p className="text-center font-light text-foreground-dimmed text-lg">
-        Paste a product URL from any e-commerce site
+        {hint}
       </p>
     </div>
     <TextField
@@ -449,12 +470,16 @@ const CompareResults = ({
   results,
   elapsed,
   onReset,
+  translateForm,
+  translateResults,
 }: {
   productA: Compare.ScrapedProduct;
   productB: Compare.ScrapedProduct;
   results: Compare.CompareResult[];
   elapsed: number;
   onReset: () => void;
+  translateForm: ReturnType<typeof useTranslations<"compareTool.form">>;
+  translateResults: ReturnType<typeof useTranslations<"compareTool.results">>;
 }) => {
   const winsA = results.filter((record) => record.winner === "a").length;
   const winsB = results.filter((record) => record.winner === "b").length;
@@ -472,23 +497,25 @@ const CompareResults = ({
       <div className="grid grid-cols-2 gap-px bg-accent-foreground">
         <ResultProductCard
           product={productA}
-          label="Product A"
+          label={translateForm("productA")}
           wins={winsA}
           total={totalModels}
           isWinner={overallWinner === "a"}
+          translateResults={translateResults}
         />
         <ResultProductCard
           product={productB}
-          label="Product B"
+          label={translateForm("productB")}
           wins={winsB}
           total={totalModels}
           isWinner={overallWinner === "b"}
+          translateResults={translateResults}
         />
       </div>
 
       <div className="border-accent-foreground border-b bg-background-dimmed p-4">
         <p className="mb-2 font-light text-foreground-dimmed uppercase tracking-widest">
-          Overall Split
+          {translateResults("overallSplit")}
         </p>
         <div className="flex h-8 w-full overflow-hidden">
           <motion.div
@@ -525,7 +552,7 @@ const CompareResults = ({
       <div className="border-accent-foreground border-b bg-background-dimmed">
         <div className="p-4">
           <p className="mb-4 font-light text-foreground-dimmed uppercase tracking-widest">
-            Results by Model
+            {translateResults("byModel")}
           </p>
         </div>
 
@@ -536,6 +563,7 @@ const CompareResults = ({
               result={record}
               productA={productA}
               productB={productB}
+              translateResults={translateResults}
             />
           ))}
         </div>
@@ -543,14 +571,14 @@ const CompareResults = ({
 
       <div className="flex items-center justify-between border-accent-foreground bg-background-dimmed p-4">
         <span className="font-light text-foreground-dimmed text-sm">
-          Finished in {formatElapsed(elapsed)}
+          {translateResults("finishedIn", { elapsed: formatElapsed(elapsed) })}
         </span>
         <div className="flex items-center gap-3">
           <Button color="accent" onClick={onReset}>
-            Compare again
+            {translateResults("action.compareAgain")}
           </Button>
           <Button color="primary" render={<Link href="/sign-up" />}>
-            Start optimizing
+            {translateResults("action.startOptimizing")}
             <ArrowRightIcon className="size-4" />
           </Button>
         </div>
@@ -565,12 +593,14 @@ const ResultProductCard = ({
   wins,
   total,
   isWinner,
+  translateResults,
 }: {
   product: Compare.ScrapedProduct;
   label: string;
   wins: number;
   total: number;
   isWinner: boolean;
+  translateResults: ReturnType<typeof useTranslations<"compareTool.results">>;
 }) => (
   <div
     className={cn(
@@ -608,13 +638,13 @@ const ResultProductCard = ({
     <div className="mt-auto flex items-center gap-2">
       {isWinner && (
         <span className="bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs uppercase tracking-widest">
-          Winner
+          {translateResults("winner")}
         </span>
       )}
       <span className="font-medium text-foreground tabular-nums">
         {wins}/{total}{" "}
         <span className="font-light text-foreground-dimmed">
-          models chose this
+          {translateResults("modelsChose")}
         </span>
       </span>
     </div>
@@ -625,10 +655,12 @@ const ModelResultCard = ({
   result,
   productA,
   productB,
+  translateResults,
 }: {
   result: Compare.CompareResult;
   productA: Compare.ScrapedProduct;
   productB: Compare.ScrapedProduct;
+  translateResults: ReturnType<typeof useTranslations<"compareTool.results">>;
 }) => {
   const maxScore = Math.max(result.scoreA, result.scoreB, 1);
 
@@ -644,7 +676,9 @@ const ModelResultCard = ({
         />
         <span className="font-medium text-foreground">{result.modelLabel}</span>
         <span className="ml-auto text-foreground-dimmed text-xs uppercase tracking-widest">
-          chose {result.winner === "a" ? "A" : "B"}
+          {translateResults("chose", {
+            letter: result.winner === "a" ? "A" : "B",
+          })}
         </span>
       </div>
 

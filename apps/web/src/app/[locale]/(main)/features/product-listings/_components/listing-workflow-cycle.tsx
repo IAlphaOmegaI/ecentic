@@ -1,29 +1,23 @@
 "use client";
 
 import { FaceSearchIcon, RobotIcon, UploadIcon } from "@zenncore/icons";
+import { useMessages, useTranslations } from "next-intl";
 import { VerticalStepCycle } from "@/app/[locale]/(main)/_components/vertical-step-cycle";
 
-const steps = [
-  {
-    icon: RobotIcon,
-    title: "Simulate",
-    description:
-      "AI shopping evaluations run across your products and competitor listings, so the team sees who wins and why.",
-  },
-  {
-    icon: FaceSearchIcon,
-    title: "Diagnose",
-    description:
-      "Inspect attribute gaps and the reasons behind each selection: missing data, weak positioning, or incomplete product context.",
-  },
-  {
-    icon: UploadIcon,
-    title: "Publish",
-    description:
-      "Approved titles, descriptions, and product data push straight back into supported platforms instead of being copied by hand.",
-  },
-] as const;
+const stepIcons = [RobotIcon, FaceSearchIcon, UploadIcon] as const;
 
-export const ListingWorkflowCycle = () => (
-  <VerticalStepCycle steps={steps} layoutId="listing-workflow-underline" />
-);
+export const ListingWorkflowCycle = () => {
+  const _translate = useTranslations("productListings");
+  const messages = useMessages();
+  const steps = messages.productListings.workflow.steps;
+
+  return (
+    <VerticalStepCycle
+      steps={steps.map((step, index) => ({
+        ...step,
+        icon: stepIcons[index] ?? RobotIcon,
+      }))}
+      layoutId="listing-workflow-underline"
+    />
+  );
+};

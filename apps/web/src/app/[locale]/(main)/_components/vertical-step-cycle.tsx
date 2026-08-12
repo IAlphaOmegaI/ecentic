@@ -46,7 +46,7 @@ export const VerticalStepCycle = ({
             className="flex max-w-xl flex-col gap-4"
           >
             <div className="flex items-center gap-3">
-              <span className="font-normal text-lg text-primary tabular-nums">
+              <span className="font-normal text-lg text-primary-text tabular-nums">
                 {String(index + 1).padStart(2, "0")}
               </span>
               <step.icon className="size-6 text-primary" />

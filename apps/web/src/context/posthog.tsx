@@ -20,6 +20,9 @@ export const PostHogProvider = ({ children }: PropsWithChildren) => {
       api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
       person_profiles: "always",
       enable_heatmaps: true,
+      // `surveys.js` is 33KB and measured 81.5% unused — nothing in this app
+      // creates a survey. Flip this back on the day one is launched.
+      disable_surveys: true,
       ui_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
       // Nothing is captured until the banner is answered. Without this, a
       // banner gating only GA4 would be telling visitors something untrue.

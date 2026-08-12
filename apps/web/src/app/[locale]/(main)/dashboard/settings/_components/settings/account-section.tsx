@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowRightIcon, LoaderIcon, LogOutIcon } from "@zenncore/icons";
-import { useRouter } from "@/i18n/navigation";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import {
@@ -11,74 +10,94 @@ import {
   InferredForm,
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
+import { useMessages, useTranslations } from "next-intl";
+import { useMemo } from "react";
 import { z } from "zod";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { useRouter } from "@/i18n/navigation";
 import * as Authentication from "@/server/app/authentication";
 import * as User from "@/server/app/user";
 
 const labelClassName = "font-medium text-sm text-foreground";
 
-const profile = {
-  name: field({
-    shape: "text",
-    validator: z.string().min(1, "Required"),
-    label: "First Name",
-    classList: { field: "col-span-1", label: labelClassName },
-  }),
-  surname: field({
-    shape: "text",
-    validator: z.string().min(1, "Required"),
-    label: "Last Name",
-    classList: { field: "col-span-1", label: labelClassName },
-  }),
-  email: field({
-    shape: "text",
-    validator: z.string().email("Invalid email"),
-    label: "Email",
-    classList: { field: "col-span-2", label: labelClassName },
-  }),
-  role: field({
-    shape: "select",
-    validator: z.literal([
-      "Founder / CEO",
-      "Marketing Lead",
-      "E-commerce Manager",
-      "Agency",
-      "Developer",
-      "Other",
-    ]),
-    label: "Role",
-    classList: { field: "col-span-2", label: labelClassName },
-  }),
-} satisfies GenericForm;
-
-const password = {
-  currentPassword: field({
-    shape: "text",
-    type: "password",
-    validator: z.string().min(1, "Required"),
-    label: "Current Password",
-    classList: { label: labelClassName },
-  }),
-  newPassword: field({
-    shape: "text",
-    type: "password",
-    validator: z.string().min(8, "Minimum 8 characters"),
-    label: "New Password",
-    classList: { label: labelClassName },
-  }),
-  confirmPassword: field({
-    shape: "text",
-    type: "password",
-    validator: z.string().min(8, "Minimum 8 characters"),
-    label: "Confirm New Password",
-    classList: { label: labelClassName },
-  }),
-} satisfies GenericForm;
-
 export const AccountSection = ({ user }: { user: User.Type }) => {
   const router = useRouter();
   const toast = useToastManager();
+  const translate = useTranslations("dashboard.settings.account");
+  const messages = useMessages();
+
+  const profile = useMemo(
+    () =>
+      ({
+        name: field({
+          shape: "text",
+          validator: z
+            .string()
+            .min(1, translate("profile.fields.name.validation")),
+          label: translate("profile.fields.name.label"),
+          classList: { field: "col-span-1", label: labelClassName },
+        }),
+        surname: field({
+          shape: "text",
+          validator: z
+            .string()
+            .min(1, translate("profile.fields.surname.validation")),
+          label: translate("profile.fields.surname.label"),
+          classList: { field: "col-span-1", label: labelClassName },
+        }),
+        email: field({
+          shape: "text",
+          validator: z
+            .string()
+            .email(translate("profile.fields.email.validation")),
+          label: translate("profile.fields.email.label"),
+          classList: { field: "col-span-2", label: labelClassName },
+        }),
+        role: field({
+          shape: "select",
+          validator: z.literal(
+            messages.dashboard.settings.account.profile.roles,
+          ),
+          label: translate("profile.fields.role.label"),
+          classList: { field: "col-span-2", label: labelClassName },
+        }),
+      }) satisfies GenericForm,
+    [messages, translate],
+  );
+
+  const password = useMemo(
+    () =>
+      ({
+        currentPassword: field({
+          shape: "text",
+          type: "password",
+          validator: z
+            .string()
+            .min(1, translate("password.fields.current.validation")),
+          label: translate("password.fields.current.label"),
+          classList: { label: labelClassName },
+        }),
+        newPassword: field({
+          shape: "text",
+          type: "password",
+          validator: z
+            .string()
+            .min(8, translate("password.fields.new.validation")),
+          label: translate("password.fields.new.label"),
+          classList: { label: labelClassName },
+        }),
+        confirmPassword: field({
+          shape: "text",
+          type: "password",
+          validator: z
+            .string()
+            .min(8, translate("password.fields.confirm.validation")),
+          label: translate("password.fields.confirm.label"),
+          classList: { label: labelClassName },
+        }),
+      }) satisfies GenericForm,
+    [translate],
+  );
 
   const [handleProfileSubmit, isProfilePending] = useAsyncAction(
     async (data: FormEntries<typeof profile>) => {
@@ -86,14 +105,14 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
 
       if (!result.success) {
         toast.add({
-          title: "Error",
+          title: translate("toast.error"),
           description: result.error.message,
           type: "error",
         });
         return;
       }
 
-      toast.add({ title: "Profile saved", type: "success" });
+      toast.add({ title: translate("toast.profileSaved"), type: "success" });
     },
   );
 
@@ -101,7 +120,7 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
     async (data: FormEntries<typeof password>) => {
       if (data.newPassword !== data.confirmPassword) {
         toast.add({
-          title: "Passwords do not match",
+          title: translate("password.toast.mismatch"),
           type: "error",
         });
         return;
@@ -113,13 +132,13 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
 
       if (!result.success) {
         toast.add({
-          title: "Error",
+          title: translate("toast.error"),
           description: result.error.message,
           type: "error",
         });
         return;
       }
-      toast.add({ title: "Password updated", type: "success" });
+      toast.add({ title: translate("toast.passwordUpdated"), type: "success" });
     },
   );
 
@@ -130,7 +149,7 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
 
     if (result && !result.success) {
       toast.add({
-        title: "Could not sign out",
+        title: translate("toast.signOutFailed"),
         description: result.error.message,
         type: "error",
       });
@@ -146,23 +165,23 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
         <div className="flex items-center justify-between border-accent-foreground border-x p-4">
           <div>
             <h3 className="font-semibold text-base text-foreground-rich">
-              Language
+              {translate("language.title")}
             </h3>
             <p className="mt-1 text-foreground-dimmed text-sm">
-              Choose the language for the ecentic interface.
+              {translate("language.description")}
             </p>
           </div>
-          <LanguageSwitcher />
+          <LanguageSwitcher variant="inline" />
         </div>
       </div>
 
       <div className="px-8">
         <div className="border-accent-foreground border-x p-4">
           <h3 className="font-semibold text-base text-foreground-rich">
-            Profile
+            {translate("profile.title")}
           </h3>
           <p className="mt-1 text-foreground-dimmed text-sm">
-            Update your profile information.
+            {translate("profile.description")}
           </p>
         </div>
         <div className="-mx-8 border-accent-foreground border-t px-8">
@@ -173,7 +192,9 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
               surname: user.surname,
               email: user.email,
               // @ts-expect-error - user.role is not typed
-              role: user.role ?? "Founder / CEO",
+              role:
+                user.role ??
+                messages.dashboard.settings.account.profile.roles[0],
             }}
             onSubmit={handleProfileSubmit}
             className="grid grid-cols-2 gap-4 border-accent-foreground border-x p-4"
@@ -185,7 +206,9 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
                   color="primary"
                   disabled={isProfilePending}
                 >
-                  {isProfilePending ? "Saving..." : "Save Changes"}
+                  {isProfilePending
+                    ? translate("profile.action.saving")
+                    : translate("profile.action.primary")}
                   {isProfilePending ? (
                     <LoaderIcon className="size-4 animate-spin" />
                   ) : (
@@ -201,10 +224,10 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
       <div className="px-8">
         <div className="border-accent-foreground border-x p-4">
           <h3 className="font-semibold text-base text-foreground-rich">
-            Change Password
+            {translate("password.title")}
           </h3>
           <p className="mt-1 text-foreground-dimmed text-sm">
-            Use a strong password you do not reuse on other sites.
+            {translate("password.description")}
           </p>
         </div>
         <div className="-mx-8 border-accent-foreground border-t px-8">
@@ -220,7 +243,9 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
                   color="primary"
                   disabled={isPasswordPending}
                 >
-                  {isPasswordPending ? "Updating..." : "Update Password"}
+                  {isPasswordPending
+                    ? translate("password.action.updating")
+                    : translate("password.action.primary")}
                   {isPasswordPending ? (
                     <LoaderIcon className="size-4 animate-spin" />
                   ) : (
@@ -237,11 +262,10 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
         <div className="flex justify-between border-accent-foreground border-x p-4">
           <div>
             <h3 className="font-semibold text-base text-foreground-rich">
-              Session
+              {translate("session.title")}
             </h3>
             <p className="mt-1 text-foreground-dimmed text-sm">
-              Sign out of this device. You will need to sign in again to access
-              your dashboard.
+              {translate("session.description")}
             </p>
           </div>
           <Button
@@ -256,17 +280,20 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
             ) : (
               <LogOutIcon className="size-4" />
             )}
-            {isSignOutPending ? "Signing out..." : "Sign Out"}
+            {isSignOutPending
+              ? translate("session.action.signingOut")
+              : translate("session.action.primary")}
           </Button>
         </div>
       </div>
 
       <div className="px-8">
         <div className="border-accent-foreground border-x p-4">
-          <h3 className="font-semibold text-base text-error">Danger Zone</h3>
+          <h3 className="font-semibold text-base text-error">
+            {translate("danger.title")}
+          </h3>
           <p className="mt-1 text-foreground-dimmed text-sm">
-            Permanently delete your account and all associated data. This action
-            cannot be undone.
+            {translate("danger.description")}
           </p>
         </div>
         <div className="-mx-8 border-accent-foreground border-t px-8">
@@ -275,9 +302,11 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
               <div className="p-4">
                 <div className="flex items-center justify-between gap-4 rounded-lg border border-error/20 bg-error/5 p-4">
                   <p className="font-medium text-foreground text-sm">
-                    Delete this account and all of its data.
+                    {translate("danger.prompt")}
                   </p>
-                  <Button color="error">Delete Account</Button>
+                  <Button color="error">
+                    {translate("danger.action.primary")}
+                  </Button>
                 </div>
               </div>
             </div>

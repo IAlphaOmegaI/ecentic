@@ -17,6 +17,7 @@ import {
 } from "@zenncore/web/components/table";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
+import { useMessages } from "next-intl";
 import { Stagger } from "@/lib/animations";
 import { getCurrencySymbol, normalizePrice } from "@/lib/currency";
 import { getBrandLogo } from "@/lib/logo";
@@ -35,6 +36,9 @@ export const CompetitorList = ({
   onToggle,
   onRemove,
 }: CompetitorList.Props) => {
+  const messages = useMessages();
+  const tableHeaders = messages.onboarding.competitors.review.table.headers;
+
   return (
     <div className="flex h-full flex-col">
       <div className="min-h-0 flex-1 overflow-auto border-accent-foreground border-x bg-background-rich">
@@ -42,7 +46,7 @@ export const CompetitorList = ({
           <TableHeader>
             <TableRow>
               <TableHead className="w-10 px-4 py-2" />
-              {["Competitor", "Price", "Currency", "Brand"].map((header) => (
+              {tableHeaders.map((header) => (
                 <TableHead key={header}>{header}</TableHead>
               ))}
               <TableHead className="w-10 px-4 py-2" />
@@ -105,11 +109,7 @@ export const CompetitorList = ({
                           className="object-contain"
                         />
                         <AvatarFallback className="relative size-full min-h-9 min-w-9">
-                          <Image
-                            src="/images/fallback.png"
-                            alt="Fallback"
-                            fill
-                          />
+                          <Image src="/images/fallback.png" alt="" fill />
                         </AvatarFallback>
                       </Avatar>
                       <div>
@@ -138,8 +138,8 @@ export const CompetitorList = ({
                   <TableCell>
                     <button
                       type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
+                      onClick={(event) => {
+                        event.stopPropagation();
                         onRemove(record.id);
                       }}
                       className="text-foreground-dimmed transition-colors hover:text-error"

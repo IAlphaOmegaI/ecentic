@@ -10,7 +10,10 @@
  * per-variation sync exists.
  */
 
-import { db } from "@/server/database";
+import { and, eq, isNull, or } from "drizzle-orm";
+import { schema } from "@/server/database";
+import { Environment } from "@/server/utils/environment";
+import * as Product from "../product";
 import { toMinorUnits, ucpAmount } from "./money";
 import {
   CAPABILITY,
@@ -25,21 +28,7 @@ import {
 import type { UcpStoreContext } from "./store-context";
 import * as WcCatalog from "./wc-catalog";
 
-type ProductRow = {
-  id: string;
-  storeId: string;
-  externalId: string | null;
-  title: string;
-  description: string | null;
-  price: string | null;
-  compareAtPrice: string | null;
-  currency: string | null;
-  images: string | null;
-  url: string | null;
-  sku: string | null;
-  status: string | null;
-  rawData: string | null;
-};
+type ProductRow = Product.Type;
 
 type RawProduct = {
   slug?: string;
@@ -104,10 +93,14 @@ export const productUcpId = (row: ProductRow): string =>
   row.externalId ?? row.id;
 
 const loadStoreProducts = async (storeId: string): Promise<ProductRow[]> => {
-  const rows = await db.query.product.findMany({
-    where: { storeId },
+  const rows = await Product.find(Environment.SERVER, {
+    where: and(
+      eq(schema.product.storeId, storeId),
+      or(eq(schema.product.status, "active"), isNull(schema.product.status)),
+    ),
   });
-  return rows.filter((row) => (row.status ?? "active") === "active");
+  if (!rows.success) return [];
+  return rows.data;
 };
 
 export const findByUcpIds = async (

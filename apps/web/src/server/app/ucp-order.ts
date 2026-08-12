@@ -1,5 +1,6 @@
-import { resultify } from "@zenncore/utils";
-import { db, schema } from "../database";
+import { and, eq } from "drizzle-orm";
+import { schema } from "../database";
+import { Environment } from "../utils/environment";
 import type { Document } from "../utils/repository";
 import { repository } from "../utils/repository";
 
@@ -15,10 +16,14 @@ export const getForStoreOrder = async ({
   store: string;
   externalOrderId: string;
 }) => {
-  return await resultify(
-    async () =>
-      await db.query.ucpOrder.findFirst({
-        where: { storeId, externalOrderId },
-      }),
-  );
+  const rows = await find(Environment.SERVER, {
+    where: and(
+      eq(schema.ucpOrder.storeId, storeId),
+      eq(schema.ucpOrder.externalOrderId, externalOrderId),
+    ),
+    limit: 1,
+  });
+  if (!rows.success) return rows;
+
+  return { success: true as const, data: rows.data[0] };
 };

@@ -1,0 +1,104 @@
+{
+  "support": {
+    "meta": {
+      "title": "Support — help with scans, billing, and agents",
+      "description": "Get help with ecentic: email support, a live walkthrough of your scan results, or a dedicated escalation path for Enterprise and agent-commerce accounts."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "support": "Support"
+    },
+    "hero": {
+      "eyebrow": "Support",
+      "title": {
+        "primary": "We're here",
+        "accent": "to help."
+      },
+      "description": "Questions about your scan results, an integration, billing, or anything else: pick the channel that fits and we will take it from there.",
+      "assurances": [
+        "Real humans on the other end",
+        "Free scan walkthroughs",
+        "Enterprise escalation path"
+      ],
+      "art": {
+        "alt": "ASCII-art illustration of a support headset"
+      }
+    },
+    "channels": {
+      "number": "01",
+      "title": "Pick your channel.",
+      "description": "Email for most things, a live call when you want the results explained, and a direct path for Enterprise teams.",
+      "items": [
+        {
+          "id": "email",
+          "title": "Email support",
+          "description": "The fastest way to reach us for account, billing, or integration questions. Include your store URL so we can look things up before replying.",
+          "highlighted": true,
+          "action": {
+            "primary": "support@ecentic.ai"
+          }
+        },
+        {
+          "id": "walkthrough",
+          "title": "Live walkthrough",
+          "description": "A 15-minute call where we run your products through the AI shopping models live and explain the results in plain language.",
+          "highlighted": false,
+          "action": {
+            "primary": "Book a call"
+          }
+        },
+        {
+          "id": "enterprise",
+          "title": "Enterprise escalation",
+          "description": "Enterprise accounts get a named CSM, quarterly reviews, and a direct engineering escalation path.",
+          "highlighted": false,
+          "action": {
+            "primary": "See Enterprise"
+          }
+        }
+      ]
+    },
+    "selfServe": {
+      "number": "02",
+      "title": "Find it faster yourself.",
+      "description": "Most questions are already answered on these pages.",
+      "items": [
+        {
+          "href": "/how-it-works",
+          "name": "How it works",
+          "title": "Understand the simulate, diagnose, optimize loop",
+          "description": "The full explanation of what happens after you connect your store, step by step.",
+          "label": "Read how it works"
+        },
+        {
+          "href": "/features",
+          "name": "Features",
+          "title": "See every tool in the platform",
+          "description": "Win-rate scores, competitor gap analysis, listing rewrites, agent traffic, UCP profiles, and rescans.",
+          "label": "Open features page"
+        },
+        {
+          "href": "/pricing",
+          "name": "Pricing",
+          "title": "Compare plans, from the free scan up",
+          "description": "The free Scan, Pay-as-you-go, and the Compete and Dominate subscriptions explained side by side.",
+          "label": "See pricing"
+        },
+        {
+          "href": "/privacy-policy",
+          "name": "Privacy",
+          "title": "Check what data we store and never store",
+          "description": "Products-only scopes, no shopper personal data, essential cookies only, and how deletion works.",
+          "label": "Read the policy"
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Run your free scan",
+        "secondary": "Back to home"
+      },
+      "note": "2-minute setup · No credit card · See your free score first"
+    }
+  }
+}

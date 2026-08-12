@@ -7,8 +7,8 @@ import * as Sentry from "@sentry/nextjs";
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
 
-  // Add optional integrations for additional features
-  integrations: [Sentry.replayIntegration()],
+  // Replay is added on idle, below — statically importing it here dragged the
+  // whole recorder into the eager client chunk.
   environment: process.env.NODE_ENV,
 
   ignoreErrors: [
@@ -25,6 +25,11 @@ Sentry.init({
     // ("undefined is not an object (evaluating 'window.webkit.messageHandlers')") and
     // the Chromium one ("Cannot read properties of undefined (reading 'messageHandlers')")
     /messageHandlers/,
+    // Android twin of the above: Meta's in-app browser injects
+    // navigation_performance_logger_android, which posts to a Java bridge object on
+    // beforeunload. The WebView has already collected that object by then, so the
+    // bridge throws while the page unloads — Meta's injected script, not ours.
+    "Java object is gone",
   ],
 
   // Chatwoot widget's sdk.js posts to its bubble iframe before it's mounted
@@ -48,5 +53,31 @@ Sentry.init({
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#sendDefaultPii
   sendDefaultPii: true,
 });
+
+/**
+ * Session Replay is the heaviest thing this page loads — ~182KB and ~1.25s of
+ * main-thread work, measured as the single largest script and a direct feeder of
+ * LCP render delay. None of that weight is needed to *detect* an error, only to
+ * replay one, so it waits for idle instead of racing the first paint.
+ *
+ * Deliberately loaded for every session rather than the 10% that
+ * `replaysSessionSampleRate` records: `replaysOnErrorSampleRate` is 1.0, so the
+ * recorder has to be armed everywhere or error replays quietly drop to a tenth.
+ * The sample rates still decide what gets sent; this only decides when the code
+ * arrives. The cost is the sliver before idle, which no longer has a replay.
+ */
+const loadReplay = () => {
+  Sentry.lazyLoadIntegration("replayIntegration")
+    .then((replayIntegration) => Sentry.addIntegration(replayIntegration()))
+    // Offline, blocked by an extension, or the CDN is down. Replay is a
+    // diagnostic; losing it must never surface to the person browsing.
+    .catch(() => undefined);
+};
+
+if (typeof window !== "undefined") {
+  if ("requestIdleCallback" in window)
+    window.requestIdleCallback(loadReplay, { timeout: 5000 });
+  else window.addEventListener("load", loadReplay, { once: true });
+}
 
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;

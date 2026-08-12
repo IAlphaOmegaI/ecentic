@@ -1,8 +1,10 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
-import { Link } from "@/i18n/navigation";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
+import { localizePath } from "@/i18n/locale";
+import { Link } from "@/i18n/navigation";
 import {
   absoluteUrl,
   createBreadcrumbSchema,
@@ -21,119 +23,117 @@ import { Faq } from "../pricing/_components/faq";
 import { Checks } from "./_components/checks";
 import { ValidatorSection } from "./_components/validator-section";
 
-const assurances = [
-  "Free to use",
-  "No account required",
-  "Live /.well-known/ucp fetch",
-] as const;
+export const generateMetadata = async (): Promise<Metadata> => {
+  const locale = await getLocale();
+  const translate = await getTranslations("ucpValidator");
 
-const description =
-  "Free UCP Validator: check whether a storefront publishes a valid Universal Commerce Profile, validate its schema, and confirm AI agents pass robots.txt.";
+  return createMetadata({
+    title: translate("meta.title"),
+    description: translate("meta.description"),
+    path: localizePath("/ucp-validator", locale),
+    keywords: [
+      "UCP validator",
+      "Universal Commerce Protocol",
+      "well-known ucp",
+      "commerce protocol checker",
+      "AI shopping agent access",
+      "robots.txt agent access",
+      "free UCP tool",
+    ],
+  });
+};
 
-const faq = [
-  {
-    question: "What does the UCP Validator check?",
-    answer:
-      "It requests the public HTTPS domain, confirms /.well-known/ucp responds, parses the body as JSON, and reports UCP spec errors and warnings so you know the profile is well formed.",
-  },
-  {
-    question: "Where should a Universal Commerce Profile be published?",
-    answer:
-      "At /.well-known/ucp on your storefront's public HTTPS domain. The validator fetches that exact path and shows whether it is reachable.",
-  },
-  {
-    question: "Does it check whether AI shopping agents can read my store?",
-    answer:
-      "Yes. The validator reviews robots.txt so you can see whether major shopping and indexing bots are allowed to reach your Universal Commerce Profile without friction.",
-  },
-] as const;
+export default async () => {
+  const locale = await getLocale();
 
-export const metadata: Metadata = createMetadata({
-  title: "UCP Validator — Universal Commerce Protocol Check",
-  description,
-  path: "/ucp-validator",
-  keywords: [
-    "UCP validator",
-    "Universal Commerce Protocol",
-    "well-known ucp",
-    "commerce protocol checker",
-    "AI shopping agent access",
-    "robots.txt agent access",
-    "free UCP tool",
-  ],
-});
+  const translate = await getTranslations("ucpValidator");
+  const messages = await getMessages();
+  const description = translate("meta.description");
+  const assurances = messages.ucpValidator.hero.assurances;
+  const faq = messages.ucpValidator.faq.items;
+  const pagePath = localizePath("/ucp-validator", locale);
 
-const structuredData = [
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    name: "UCP Validator",
-    applicationCategory: "BusinessApplication",
-    operatingSystem: "Web",
-    url: absoluteUrl("/ucp-validator"),
-    description,
-    offers: {
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "USD",
+  const structuredData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      name: translate("structuredData.name"),
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+      url: absoluteUrl(pagePath),
+      description,
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+      },
     },
-  },
-  organizationSchema,
-  createBreadcrumbSchema([
-    { name: "Home", path: "/" },
-    { name: "UCP Validator", path: "/ucp-validator" },
-  ]),
-  createFaqSchema(faq),
-];
+    organizationSchema,
+    createBreadcrumbSchema([
+      {
+        name: translate("breadcrumb.home"),
+        path: localizePath("/", locale),
+      },
+      { name: translate("breadcrumb.page"), path: pagePath },
+    ]),
+    createFaqSchema(faq),
+  ];
 
-export default () => (
-  <ContentPageLayout
-    eyebrow="Protocol check"
-    title="UCP"
-    accent="Validator"
-    description="Check whether a storefront publishes a valid Universal Commerce Profile at /.well-known/ucp and whether shopping agents can read it without friction."
-    assurances={assurances}
-    art={{ source: Art, alt: "ASCII-art illustration of a shield" }}
-    actions={
-      <>
-        <Button
-          color="accent"
-          className={bannerAction.lead}
-          render={<Link href="#validate" />}
-        >
-          Validate a domain
-          <ArrowRightIcon className="size-4" />
-        </Button>
-        <Button
-          variant="outline"
-          className={bannerAction.secondary}
-          render={<Link href="/ucp-playground" />}
-        >
-          Open playground
-        </Button>
-      </>
-    }
-  >
-    <JsonLd schemas={structuredData} />
-
-    <Checks />
-
-    <ValidatorSection />
-
-    <ContentPageSection
-      number="03"
-      title="Questions before you validate."
-      description="What the checker covers, where profiles live, and how agent access is surfaced."
-      gutter
-      classList={{ body: "p-0" }}
+  return (
+    <ContentPageLayout
+      eyebrow={translate("hero.eyebrow")}
+      title={translate("hero.title.primary")}
+      accent={translate("hero.title.accent")}
+      description={translate("hero.description")}
+      assurances={assurances}
+      art={{ source: Art, alt: translate("hero.art.alt") }}
+      actions={
+        <>
+          <Button
+            color="accent"
+            className={bannerAction.lead}
+            render={<Link href="#validate" />}
+          >
+            {translate("hero.actions.validate")}
+            <ArrowRightIcon className="size-4" />
+          </Button>
+          <Button
+            variant="outline"
+            className={bannerAction.secondary}
+            render={<Link href="/ucp-playground" />}
+          >
+            {translate("hero.actions.playground")}
+          </Button>
+        </>
+      }
     >
-      <Faq items={faq} />
-    </ContentPageSection>
+      <JsonLd schemas={structuredData} />
 
-    <ContentPageFooter
-      primary={{ href: "#validate", label: "Validate a domain" }}
-      secondary={{ href: "/resources", label: "All free tools" }}
-      note="Free · No account required · Live fetch"
-    />
-  </ContentPageLayout>
-);
+      <Checks />
+
+      <ValidatorSection />
+
+      <ContentPageSection
+        number={translate("faqSection.number")}
+        title={translate("faqSection.title")}
+        description={translate("faqSection.description")}
+        gutter
+        classList={{ body: "p-0" }}
+      >
+        <Faq items={faq} />
+      </ContentPageSection>
+
+      <ContentPageFooter
+        primary={{
+          href: "#validate",
+          label: translate("footer.primary"),
+        }}
+        secondary={{
+          href: "/resources",
+          label: translate("footer.secondary"),
+        }}
+        note={translate("footer.note")}
+      />
+    </ContentPageLayout>
+  );
+};

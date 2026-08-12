@@ -1,0 +1,198 @@
+{
+  "legal": {
+    "privacyPolicy": {
+      "meta": {
+        "title": "Privacy Policy — Your Data and Agent Commerce",
+        "description": "How ecentic collects, uses, and protects your data across scans, store integrations, and agent checkouts, plus your GDPR rights and how to exercise them."
+      },
+      "breadcrumb": {
+        "home": "Home",
+        "privacyPolicy": "Privacy Policy"
+      },
+      "lastUpdated": {
+        "display": "August 5, 2026",
+        "iso": "2026-08-05"
+      },
+      "hero": {
+        "eyebrow": "Legal",
+        "title": {
+          "primary": "Privacy",
+          "accent": "Policy."
+        },
+        "description": "ecentic (\"we\", \"us\", \"our\") is committed to protecting the privacy of merchants who use our e-commerce optimization platform. This policy explains what data we collect, how we use it, and your rights.",
+        "assurances": [
+          "Agent commerce is opt-in",
+          "No advertising cookies",
+          "Encrypted in transit & at rest"
+        ],
+        "art": {
+          "alt": "ASCII-art illustration of a gavel"
+        }
+      },
+      "summarySection": {
+        "number": "00",
+        "title": "At a glance",
+        "description": "The short version, in plain language. Every line here is expanded in the numbered sections below."
+      },
+      "summary": [
+        {
+          "title": "What we store",
+          "description": "Account basics, the catalog you connect, and — only if you turn on agent commerce — the orders AI agents place."
+        },
+        {
+          "title": "What we never touch",
+          "description": "Card details, payment gateway secrets, and customer passwords. Scans alone use products-only scopes."
+        },
+        {
+          "title": "Where data goes",
+          "description": "To AI providers during simulations, and to the agent platform an order came from. Never sold for marketing."
+        },
+        {
+          "title": "What you control",
+          "description": "Delete your account and everything goes with it. GDPR requests: privacy@ecentic.ai."
+        }
+      ],
+      "sections": {
+        "10": {
+          "title": "Changes to This Policy",
+          "content": "We may update this privacy policy from time to time. Material changes will be communicated via email to the address associated with your account at least 30 days before taking effect. Continued use of ecentic after changes take effect constitutes acceptance of the updated policy."
+        },
+        "11": {
+          "title": "Contact",
+          "content": "For questions about this privacy policy or our data practices:\n- Email: privacy@ecentic.ai\n- Company: [zennit](https://www.zennit.dev) (ecentic is a product of zennit)"
+        },
+        "01": {
+          "title": "Information We Collect",
+          "content": "When you create an account, we collect your name, email address, and password (hashed, never stored in plain text).\n\nWhen you connect a Shopify, WooCommerce, or custom feed store, we access and store:\n- Product catalog data (titles, descriptions, prices, images, SKUs, handles, variant information)\n- Store domain and name\n- OAuth access tokens and API credentials required to read and write product data on your behalf\n\nIf you use only the scan and optimization product, that is the whole picture: we do not access or store customer personal data, order data, or payment information, and our Shopify integration requests only the \\`read_products\\` and \\`write_products\\` scopes.\n\n**Agent commerce (UCP).** If you additionally turn on agent commerce — by connecting a store through the écentic for WooCommerce plugin or our Shopify app, so that we serve the Universal Commerce Protocol surface on your behalf — we also receive:\n- Store policy needed to serve the protocol: currency, shipping options, tax configuration, legal page URLs, payment handler declarations, and your UCP settings\n- The orders AI shopping agents place in your store: line items, quantities, totals, and the shopper's name, email address, and shipping and billing address, all of which are required to create and fulfil the order in your store\n- Access tokens your store issues when one of your customers links their account to an AI assistant\n\nAgent commerce is off until you explicitly connect a store to it, and it stops the moment you revoke the credentials that store issued us.\n\n**Google Merchant Center.** If you also connect a Google Merchant Center account, we receive the Merchant Center data set out in section 04, which covers our handling of Google user data in full.\n\nWe never receive your payment gateway secrets or your customers' passwords, and shoppers' card details are never transmitted to or stored by ecentic — payments are charged by your own payment gateway, using credentials that stay on your own infrastructure."
+        },
+        "02": {
+          "title": "How We Use Your Data",
+          "content": "Your product catalog data is used exclusively to:\n- Run AI agent simulations that evaluate how AI shopping models (ChatGPT, Claude, Gemini, Perplexity) compare your products against competitors\n- Generate optimization suggestions for product titles, descriptions, and structured data\n- Publish approved optimizations back to your connected store via the platform API\n- Generate your Universal Commerce Protocol (UCP) merchant profile\n- Display analytics, win rates, and reports within your dashboard\n\nWhere you have enabled agent commerce, store policy and order data are used exclusively to:\n- Serve the UCP protocol surface on your behalf: answer agent catalog searches, price carts against your live store, and run checkout sessions\n- Create the resulting order in your store and relay its status back to the agent platform that placed it\n- Attribute AI-agent referrals to orders, which is what your dashboard reports and, on pay-as-you-go, what your performance fee is calculated from\n\nWe never sell, rent, or share your product data, store policy, or order data with third parties for their own marketing or commercial purposes."
+        },
+        "03": {
+          "title": "Shopper Data in Agent Checkouts",
+          "content": "This section applies only to merchants who have enabled agent commerce.\n\nWhen an AI shopping agent completes a checkout, the shopper's contact and address details pass through the UCP surface we serve on your behalf, and the order is created in your own store. For that data, **you are the data controller and ecentic is your processor**: we handle it only to carry out the checkout you have asked us to serve, on your documented instructions.\n\nConcretely, this means we:\n- Use shopper details solely to price, create, and relay the order, and to pass fulfilment status back to the agent platform the shopper used\n- Never use shopper details to market to them, never build shopper profiles across merchants, and never sell or rent that data\n- Do not receive card numbers or payment credentials at any point — the charge is made by your own payment gateway\n\nYou remain the seller and Merchant of Record, and your own store's privacy notice governs your relationship with the shopper. Requests from shoppers exercising their rights should be directed to you; we will assist you in responding to them, and you can reach us at privacy@ecentic.ai."
+        },
+        "04": {
+          "title": "Google User Data (Merchant Center)",
+          "content": "This section applies only to merchants who connect a Google Merchant Center account, and describes our handling of Google user data under the [Google API Services User Data Policy](https://developers.google.com/terms/api-services-user-data-policy).\n\n**The access we request.** One scope: https://www.googleapis.com/auth/content — the single scope the Google Merchant API offers for reading and managing Merchant Center data. No narrower scope exists for these operations. Separately, if you choose to sign in to ecentic with Google, that sign-in receives your name, email address, and profile picture, used only to create and identify your ecentic account.\n\n**What we read.** From the Merchant Center account you connect:\n- The Merchant Center accounts your Google login can reach — account id and name — and each account's registered homepage, which we use to match the correct account to your store\n- Your product offers: offer ids, feed labels, content languages, titles, descriptions, product types, custom attributes, and each offer's processing status, item-level issues, and approval or disapproval state\n- Account-level issues and diagnostics\n- Your data source configuration, including your primary feed's default rule\n- Your online return policies and customer-service contact details, read to audit your readiness for agentic checkout\n\n**What we write.** Only on stores where you have connected Google and asked us to optimize:\n- A supplemental data source named \"ecentic Optimizations\" on your account, and an update to your primary feed's default rule so that source is read first\n- Product attribute overrides — titles, descriptions, product types, custom labels, GTINs, and agentic-checkout attributes — pushed into that supplemental data source alone. We never write to your primary feed; your Google plugin keeps ownership of price, availability, images, and links\n- Return policies and customer-service contact details, only when you enter and save them in the ecentic dashboard\n- An account-management link between your Merchant Center account and ecentic's advanced account, proposed only after you confirm it in our dashboard\n\n**How we use it.** Google user data is used exclusively to deliver the features you connected Google for: identifying and linking the correct Merchant Center account, publishing the optimizations you approve, confirming those optimizations merged onto your live offers, and showing you diagnostics, disapprovals, and checkout readiness in your dashboard. We do not use it for advertising, lending, credit decisions, or any purpose unrelated to those features.\n\n**How we share it.** We do not sell, rent, or transfer Google user data to data brokers, advertisers, or any third party for their own purposes. It is handled by the infrastructure providers that run ecentic — our hosting and database provider and our error-monitoring provider — acting solely as our processors under contract, and by no one else.\n\n**AI and machine learning.** Data read from your Merchant Center account is never sent to AI model providers, and is never used to develop, improve, or train AI or machine-learning models, ours or anyone else's. Our optimization suggestions are generated from the product catalog you sync from your store platform, not from Google's APIs, and are shown to you for approval before anything is written back. ecentic's use of information received from Google APIs adheres to the Google API Services User Data Policy, including the Limited Use requirements.\n\n**How we protect it.** Google OAuth tokens are held in our PostgreSQL database with encryption at rest, transmitted only over TLS, never exposed to your browser, and never written to logs or error reports. The OAuth flow is protected by a short-lived, httpOnly, secure state cookie, and Merchant Center data is readable only by the authenticated ecentic user who owns the connected store.\n\n**How long we keep it, and how to remove it.** We hold your Google tokens and the Merchant Center data we cache for as long as your store stays connected. Disconnecting Google in the ecentic dashboard removes our supplemental data source from your account, restores your primary feed's default rule, ends the account-management link, and immediately deletes your tokens and our records of pushed offers. Deleting your ecentic account deletes all of it. You can also revoke ecentic's access at any time from your [Google Account permissions page](https://myaccount.google.com/permissions); revoking there stops all further access, and any leftover data source can be removed in Merchant Center."
+        },
+        "05": {
+          "title": "Third-Party Services",
+          "content": "We use the following third-party services to operate ecentic:\n- **AI Model Providers** (Azure OpenAI, Anthropic, Google, Perplexity): The product catalog you sync from your store platform is sent to AI models during simulations and optimization. Data read from a connected Google Merchant Center account is never sent to them (see section 04). Data is transmitted via encrypted API calls and is not retained by providers beyond the API request lifecycle per their data processing agreements.\n- **Sentry**: Error monitoring. May receive anonymized error context (no product data).\n- **PostHog**: Product analytics. Receives anonymized usage events (page views, feature interactions). No product catalog data is sent.\n- **Google Analytics 4**: Website analytics. Receives page views and traffic sources. No product catalog data, store credentials, or account identifiers are sent.\n- **Resend**: Transactional email delivery (verification codes, notifications). Receives only email addresses and message content.\n- **UploadThing**: File storage for uploaded assets. Stores only files you explicitly upload.\n- **Vercel**: Hosting infrastructure. Processes requests but does not independently store application data.\n- **Stripe**: Billing for your ecentic subscription or performance fee. Receives your billing details and the amounts owed. Shoppers' payment details never pass through this — a shopper's card is charged by your own store's gateway, not ours."
+        },
+        "06": {
+          "title": "Data Storage & Security",
+          "content": "Your data is stored in a PostgreSQL database hosted on infrastructure with encryption at rest and in transit (TLS 1.2+).\n\nWe implement standard security practices including:\n- HTTPS-only communication\n- HMAC signature verification on all incoming Shopify webhooks\n- CSRF protection via state/nonce parameters on OAuth flows\n- Secure, httpOnly, sameSite cookies for session management\n- Password hashing via industry-standard algorithms (bcrypt/argon2)"
+        },
+        "07": {
+          "title": "Data Retention & Deletion",
+          "content": "We retain your data for as long as your account is active. When you disconnect a store, the associated access tokens are immediately deleted. Product data imported from that store is retained for your simulation history unless you explicitly request deletion.\n\nOrders placed through agent commerce are retained while your account is active, because they are what your reports and — on pay-as-you-go — your performance fee are calculated from. Where we are required to keep billing records for tax or accounting purposes, we keep the order reference and amount, not the shopper's contact and address details.\n\nWhen you delete your account, all associated data is permanently deleted, including:\n- Your user profile and authentication credentials\n- All connected store records and access tokens\n- All imported product data\n- All simulation results, optimization history, and reports\n- Your UCP merchant profile and any agent-placed order records, including shopper details\n- Your Google Merchant Center connection: OAuth tokens, the linked account reference, and our records of the offers we pushed\n\nWhen a Shopify merchant uninstalls the ecentic app, we receive a \\`shop/redact\\` webhook and automatically delete all store data, products, and associated records for that shop.\n\nFor GDPR data subject requests (access, rectification, erasure, portability), contact privacy@ecentic.ai."
+        },
+        "08": {
+          "title": "Cookies",
+          "content": "We use essential and analytics cookies:\n- **Session cookies**: Maintain your authenticated session\n- **OAuth state cookies**: Short-lived (10 minutes) cookies used during Shopify OAuth flow to prevent CSRF attacks\n- **Analytics cookies**: Set by Google Analytics (\\`_ga\\`, \\`_ga_*\\`) and PostHog to measure page views and feature usage so we can improve the product. These are set **only after you accept** them in the cookie banner — decline and neither tool collects anything or stores a cookie.\n\nYou can change your answer at any time via **Cookie settings** in the footer. We do not use advertising cookies, and we do not use analytics data for ad targeting or share it with advertising networks."
+        },
+        "09": {
+          "title": "Your Rights",
+          "content": "Depending on your jurisdiction, you may have the right to:\n- Access the personal data we hold about you\n- Request correction of inaccurate data\n- Request deletion of your data\n- Export your data in a portable format\n- Object to or restrict certain processing\n- Withdraw consent where processing is consent-based\n\nTo exercise any of these rights, contact privacy@ecentic.ai."
+        }
+      }
+    },
+    "termsAndConditions": {
+      "meta": {
+        "title": "Terms of Service — Agent Commerce and UCP",
+        "description": "The terms that govern your use of ecentic: the Universal Commerce Protocol service, store integrations, billing, liability, and cancelling at any time."
+      },
+      "breadcrumb": {
+        "home": "Home",
+        "terms": "Terms of Service"
+      },
+      "lastUpdated": {
+        "display": "July 12, 2026",
+        "iso": "2026-07-12"
+      },
+      "hero": {
+        "eyebrow": "Legal",
+        "title": {
+          "primary": "Terms of",
+          "accent": "Service."
+        },
+        "description": "These terms govern your use of ecentic — the platform, the store integrations, and the hosted Universal Commerce Protocol surface that lets AI shopping agents discover and buy from your store.",
+        "assurances": [
+          "Cancel any time",
+          "You stay Merchant of Record",
+          "Your data stays yours"
+        ],
+        "art": {
+          "alt": "ASCII-art illustration of a quill and inkwell"
+        }
+      },
+      "summarySection": {
+        "number": "00",
+        "title": "At a glance",
+        "description": "The short version, in plain language. Every line here is expanded in the numbered sections below."
+      },
+      "summary": [
+        {
+          "title": "What we do",
+          "description": "We make your catalog discoverable to AI shopping agents and serve the UCP protocol surface on your store's behalf."
+        },
+        {
+          "title": "What you keep",
+          "description": "Your catalog, your customers, your orders. You remain the seller and Merchant of Record on every transaction."
+        },
+        {
+          "title": "How billing works",
+          "description": "A free scan, pay-as-you-go with a capped performance fee, or a flat subscription. No fee rides a subscription."
+        },
+        {
+          "title": "How it ends",
+          "description": "Cancel or disconnect at any time. Revoking our store credentials cuts off all access immediately."
+        }
+      ],
+      "sections": {
+        "10": {
+          "title": "Governing Law and Contact",
+          "content": "These Terms are governed by the laws of the Republic of Kosovo, without regard to conflict-of-law rules. The courts of Prishtina have exclusive jurisdiction over any dispute arising out of or related to these Terms, subject to any mandatory consumer protections available to you locally.\n\nQuestions about these Terms:\n\n- Email: legal@ecentic.ai\n- Company: [zennit](https://www.zennit.dev) (ecentic is a product of zennit)"
+        },
+        "01": {
+          "title": "Agreement to These Terms",
+          "content": "These Terms of Service (\"Terms\") govern your access to and use of ecentic (the \"Service\"), operated by [zennit](https://www.zennit.dev). By creating an account, connecting a store, or installing one of our plugins or apps, you agree to these Terms.\n\nIf you are agreeing on behalf of a company, you represent that you have authority to bind that company, and \"you\" refers to that company.\n\nWe may update these Terms. If a change is material, we will notify you by email or in the product before it takes effect. Continuing to use the Service after a change takes effect means you accept the revised Terms."
+        },
+        "02": {
+          "title": "The Service",
+          "content": "ecentic helps merchants win in the AI agent economy. Depending on the plan and integrations you enable, the Service may:\n\n- Simulate how AI shopping assistants compare your products against competitors, and diagnose why a product wins or loses\n- Generate optimized product listings that you review and choose to publish back to your store\n- Serve the Universal Commerce Protocol (UCP) surface on your store's behalf — discovery, catalog search, cart and checkout sessions, payment handling, request signing, and order webhooks — so AI agents can transact with your store\n- Track visits and referrals from AI agents to your storefront\n\nOur UCP integrations (including the écentic for WooCommerce plugin and our Shopify app) connect your store to this hosted surface. What each integration reads and transmits is described in its own listing and in our [Privacy Policy](/privacy-policy).\n\nThe Service depends on third-party AI providers and agent platforms whose behavior we do not control. We do not guarantee that any agent will surface, recommend, or purchase your products, or that simulated outcomes will match real ones."
+        },
+        "03": {
+          "title": "Your Store, Your Data",
+          "content": "You retain all rights to your product catalog, your store content, and your customer and order data. Connecting a store grants us a limited licence to access and process that data solely to provide the Service to you.\n\nYou are responsible for:\n\n- Having the right to connect the store and share the data you connect\n- The accuracy of the catalog and store policy data you expose through the Service\n- Reviewing generated listing content before publishing it to your live store\n- Keeping your account credentials and API keys secure\n\nYou can revoke our access at any time by disconnecting the store or revoking the API credentials it issued us. Access ends immediately when you do."
+        },
+        "04": {
+          "title": "Agent Transactions and Merchant of Record",
+          "content": "When an AI agent places an order through the UCP surface, the order is created in your own store, through your own commerce platform, under your own terms of sale.\n\nYou remain the seller and the Merchant of Record for every such order. You are responsible for pricing, tax, fulfilment, returns, refunds, chargebacks, and customer support, exactly as you are for orders placed on your storefront. ecentic is not a party to the sale, does not take title to goods, and does not act as a payment processor or merchant of record.\n\nWhere you enable server-side payment processing, payments are charged through your own payment gateway using credentials that stay on your own infrastructure. Your relationship with that payment provider is governed by their terms, not ours."
+        },
+        "05": {
+          "title": "Acceptable Use",
+          "content": "You agree not to:\n\n- Use the Service to list, promote, or transact in goods you are not lawfully permitted to sell\n- Misrepresent your products, prices, availability, or business identity to AI agents or shoppers\n- Reverse engineer, resell, or provide the Service to third parties as your own\n- Attempt to gain unauthorized access to the Service, other merchants' data, or our infrastructure\n- Interfere with the Service, circumvent rate limits, or use it in a way that degrades it for others\n\nWe may suspend or terminate an account that violates these rules, or where we are required to do so by law or by a platform partner."
+        },
+        "06": {
+          "title": "Plans, Fees, and Billing",
+          "content": "We offer three separate products. Details and current prices are on the [pricing page](/pricing).\n\n- **Scan** — a free, one-time analysis. No card, no billing.\n- **Pay-as-you-go** — free to start, with no card required until a fee is actually due. You are billed only a performance fee on revenue we attribute to AI-agent referrals, within the attribution window and subject to a monthly cap.\n- **Subscription** — a flat monthly plan (Compete or Dominate). No performance fee ever applies to a subscription.\n\nThe performance fee never rides a subscription. Pay-as-you-go runs on calendar months. Where you installed through a commerce platform's own billing (for example Shopify), charges are made through that platform instead.\n\nFees are exclusive of taxes unless stated otherwise, and are non-refundable except where required by law. You may cancel at any time; cancellation takes effect at the end of the current billing period, and you keep access until then."
+        },
+        "07": {
+          "title": "Availability and Support",
+          "content": "We work to keep the Service — including the hosted UCP endpoints that agents call — available and correct, but we do not promise uninterrupted or error-free operation. We may change, suspend, or discontinue parts of the Service, and we will give reasonable notice before removing functionality you depend on.\n\nPlanned maintenance, third-party outages, and changes made by AI platforms or commerce platforms can all affect availability. Support channels and response expectations are described on our [support page](/support)."
+        },
+        "08": {
+          "title": "Disclaimers and Limitation of Liability",
+          "content": "The Service is provided \"as is\" and \"as available\", without warranties of any kind, whether express or implied, including merchantability, fitness for a particular purpose, and non-infringement. Simulations, win-rate figures, and optimization suggestions are estimates, not guarantees of commercial outcomes.\n\nTo the maximum extent permitted by law, ecentic and zennit are not liable for any indirect, incidental, special, consequential, or punitive damages, or for any lost profits, lost revenue, lost sales, or lost data, arising out of or related to the Service.\n\nTo the maximum extent permitted by law, our total aggregate liability arising out of or related to the Service is limited to the greater of (a) the amount you paid us in the twelve months before the event giving rise to the claim, or (b) one hundred euros (€100).\n\nNothing in these Terms excludes liability that cannot lawfully be excluded, including liability for fraud, or for death or personal injury caused by negligence."
+        },
+        "09": {
+          "title": "Termination",
+          "content": "You may stop using the Service and delete your account at any time. Deleting your account deletes the data associated with it, as described in our [Privacy Policy](/privacy-policy).\n\nWe may suspend or terminate your access if you materially breach these Terms, if your use puts the Service or other merchants at risk, or if we are required to do so by law.\n\nOn termination, your stores are disconnected, your hosted UCP surface stops being served, and any fees already incurred remain payable. Sections that by their nature should survive termination — including data ownership, disclaimers, limitation of liability, and governing law — survive it."
+        }
+      }
+    }
+  }
+}

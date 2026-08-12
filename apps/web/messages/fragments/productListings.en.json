@@ -1,0 +1,190 @@
+{
+  "productListings": {
+    "meta": {
+      "title": "AI product listing optimization for merchants",
+      "description": "AI product listing optimization for titles, descriptions, and structured product data. See how ecentic helps merchants improve visibility with AI agents."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "features": "Features",
+      "productListings": "Product Listings"
+    },
+    "hero": {
+      "eyebrow": "Product Listings",
+      "title": {
+        "primary": "AI product listing optimization",
+        "accent": "for pages that get picked."
+      },
+      "description": "AI shopping systems compare your product data in seconds. ecentic turns losing product pages into clearer buying inputs, for agents and for the high-intent shoppers they send you.",
+      "assurances": [
+        "Titles, descriptions & structured data",
+        "Approval-ready rewrites",
+        "Publishes back to Shopify & WooCommerce"
+      ],
+      "art": {
+        "alt": "ASCII-art illustration of a product listing card"
+      }
+    },
+    "whyListingsLose": {
+      "number": "01",
+      "title": "Why listings struggle in AI-mediated buying.",
+      "description": "Most catalog problems stem from the same gap: product data that was built for humans to browse, not for AI systems to compare.",
+      "paragraphs": [
+        "AI shopping systems do not browse a page the way a human does. They compare titles, descriptions, structured attributes, price context, compatibility details, and trust signals in a compressed decision window. If one listing is clearer, more complete, and easier to compare, it wins before the shopper ever sees why.",
+        "The fix is not stuffing a page with keywords. It is making product information easier to retrieve, evaluate, and trust."
+      ],
+      "principlesTitle": "What winning listings do",
+      "principles": [
+        {
+          "title": "State what the product is",
+          "description": "And who it is for, in language both shoppers and models parse quickly."
+        },
+        {
+          "title": "Surface compared attributes",
+          "description": "The category-specific fields buyers and agents weigh most often."
+        },
+        {
+          "title": "Keep descriptions decisive",
+          "description": "Focused on the decision at hand instead of filler that hides the details."
+        },
+        {
+          "title": "Stay coherent everywhere",
+          "description": "Structured data, offer data, and on-page copy telling the same story."
+        }
+      ]
+    },
+    "layers": {
+      "number": "02",
+      "title": "Four layers, improved together.",
+      "description": "Rewriting descriptions is only one slice of the work. High-performing listing optimization connects copy, data quality, and trust in the same pass.",
+      "items": [
+        {
+          "title": "Product identity",
+          "description": "The title carries useful buying context without clutter: product type, differentiator, and the variant or compatibility detail that matters."
+        },
+        {
+          "title": "Product explanation",
+          "description": "The description makes comparison easier by explaining what matters most, how the product fits the use case, and what would otherwise create doubt."
+        },
+        {
+          "title": "Attribute completeness",
+          "description": "Missing dimensions, materials, compatibility fields, warranty details, or pack counts quietly weaken a product in competitive categories."
+        },
+        {
+          "title": "Merchant trust",
+          "description": "Policy links, review coverage, availability accuracy, and clear support context reinforce the offer around the product itself."
+        }
+      ]
+    },
+    "workflow": {
+      "number": "03",
+      "title": "A closed loop, not a one-off rewrite.",
+      "description": "The workflow runs from simulation to diagnosis to an approval-ready listing update, without rebuilding your catalog from scratch.",
+      "paragraph": "Simulate who wins, diagnose the gaps, then publish the fix back into the store. The same loop works whether you are cleaning up a handful of priority SKUs or running continuous catalog ops.",
+      "panelTitle": "Simulate, diagnose, publish",
+      "audiences": [
+        {
+          "title": "Discovery without a full rewrite",
+          "description": "Improve product discovery without rewriting the whole catalog at once."
+        },
+        {
+          "title": "Large, uneven catalogs",
+          "description": "Hundreds or thousands of SKUs where data quality varies by category and age."
+        },
+        {
+          "title": "Spec-led categories",
+          "description": "Wins that turn on specifications, compatibility, and merchant trust signals."
+        },
+        {
+          "title": "Repeatable content ops",
+          "description": "Teams that need a process for product content at scale, not one-off edits."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Simulate",
+          "description": "AI shopping evaluations run across your products and competitor listings, so the team sees who wins and why."
+        },
+        {
+          "title": "Diagnose",
+          "description": "Inspect attribute gaps and the reasons behind each selection: missing data, weak positioning, or incomplete product context."
+        },
+        {
+          "title": "Publish",
+          "description": "Approved titles, descriptions, and product data push straight back into supported platforms instead of being copied by hand."
+        }
+      ]
+    },
+    "nextSteps": {
+      "number": "04",
+      "title": "Where to go after this page.",
+      "description": "Move from the listing workflow into the platform or research content that fits your next step.",
+      "items": [
+        {
+          "href": "/platforms/shopify",
+          "name": "Shopify",
+          "title": "See the workflow for Shopify catalogs",
+          "description": "Connect products, benchmark competitors, and publish approved listing updates back into Shopify.",
+          "label": "Open Shopify page",
+          "color": "primary"
+        },
+        {
+          "href": "/platforms/woocommerce",
+          "name": "WooCommerce",
+          "title": "Run the same loop for WooCommerce products",
+          "description": "Use the WooCommerce path if your team needs product improvements without changing platforms.",
+          "label": "Open WooCommerce page",
+          "color": "accent"
+        },
+        {
+          "href": "/compare/best-ai-ecommerce-tools",
+          "name": "Comparison",
+          "title": "Compare AI ecommerce categories before you buy",
+          "description": "Use the guide to separate content generators from agent-commerce optimization tools.",
+          "label": "Read comparison guide",
+          "color": "accent"
+        },
+        {
+          "href": "/blog",
+          "name": "Blog",
+          "title": "Go deeper on structured data, AI traffic, and catalog visibility",
+          "description": "The blog turns product listing optimization into repeatable operational checklists for merchants and teams.",
+          "label": "Visit the blog",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "05",
+      "title": "Frequently asked questions",
+      "description": "Common questions from merchants researching AI product listing optimization."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "What is AI product listing optimization?",
+          "answer": "AI product listing optimization is the process of improving titles, descriptions, attributes, and supporting product context so AI shopping systems and high-intent shoppers can compare the listing more confidently."
+        },
+        {
+          "question": "Does listing optimization only change copy?",
+          "answer": "No. Better copy helps, but product listing optimization also includes structured product data, clearer specifications, category context, trust details, and the supporting information that helps a system evaluate the offer."
+        },
+        {
+          "question": "What is the difference between AI product descriptions and full listing optimization?",
+          "answer": "AI product descriptions focus on rewriting text faster. Full listing optimization improves titles, descriptions, structured attributes, and merchant trust signals together so the listing is easier for both buyers and AI shopping systems to evaluate."
+        },
+        {
+          "question": "How does ecentic help with product listing optimization?",
+          "answer": "ecentic simulates how AI shopping agents compare products, shows why a competitor wins, and turns those findings into improved titles, descriptions, and listing updates merchants can approve and publish."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Start optimizing listings",
+        "secondary": "Back to features"
+      },
+      "note": "2-minute setup · No credit card · See your free score first"
+    }
+  }
+}

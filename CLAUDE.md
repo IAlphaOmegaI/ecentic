@@ -251,6 +251,7 @@ AZURE_DEPLOYMENT_GPT                      # your ChatGPT DEPLOYMENT name, e.g. "
                                           # because Azure 404s any deployment name it was not given. Repoint the
                                           # deployment and that constant together, or the rails judge with
                                           # different models under one "ChatGPT" label.
+                                          # Legacy alias: AZURE_DEPLOYMENT_GPT4O (same gpt seat) if GPT is unset.
 AI_GATEWAY_API_KEY                        # Vercel AI Gateway — Claude/Gemini/Perplexity calls
 ```
 
@@ -283,4 +284,14 @@ SHOPIFY_CATALOG_CLIENT_SECRET
 SHOPIFY_CATALOG_TOKEN_URL                 # default https://api.shopify.com/auth/access_token
 SHOPIFY_CATALOG_MCP_URL                   # default https://catalog.shopify.com/api/ucp/mcp
 UCP_AGENT_PROFILE_URL                     # default {APP_HOST}/ucp/agent-profile
+
+# Google Merchant Center — hybrid channel-partner integration
+# (docs/integrations/google-merchant-center.md). Merchant-consent OAuth client
+# (scope https://www.googleapis.com/auth/content) from the GCP project with the
+# Merchant API enabled; the MCA id is our advanced account that accountManagement
+# links are proposed from.
+GOOGLE_MERCHANT_CLIENT_ID
+GOOGLE_MERCHANT_CLIENT_SECRET
+ECENTIC_MCA_ID                            # numeric Merchant Center advanced-account id
+GOOGLE_MERCHANT_MCA_REFRESH_TOKEN         # optional — MCA-admin grant; auto-approves incoming link proposals (unset = approve manually in the MCA's Merchant Center)
 ```

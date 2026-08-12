@@ -1,0 +1,61 @@
+{
+  "ucpPlayground": {
+    "meta": {
+      "title": "UCP Playground — test AI agents on any storefront",
+      "description": "Free UCP Playground: drive a real AI shopping agent against any UCP storefront. Run catalog search, cart, and checkout over MCP or REST and inspect calls."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "page": "UCP Playground"
+    },
+    "hero": {
+      "eyebrow": "Universal Commerce Protocol",
+      "title": {
+        "primary": "Point an AI shopping agent",
+        "accent": "at any store."
+      },
+      "description": "Free UCP Playground: drive a real AI shopping agent against any UCP storefront. Run catalog search, cart, and checkout over MCP or REST and inspect calls.",
+      "art": {
+        "alt": "ASCII-art illustration of a robot"
+      }
+    },
+    "demo": {
+      "title": "Watch it search, build a cart, and check out.",
+      "titleLineBreak": "Watch it search, build a cart, <br />and check out.",
+      "description": "Every tool call and response in the open. No account needed for your first {limit} messages."
+    },
+    "capabilities": [
+      {
+        "title": "Catalog search & lookup",
+        "description": "Ask the agent to search a storefront's catalog or pull a single product, and inspect the exact UCP response."
+      },
+      {
+        "title": "Cart operations",
+        "description": "Create a cart, add line items, and watch totals resolve, using the same calls an AI shopping agent would make."
+      },
+      {
+        "title": "Checkout handoff",
+        "description": "Start a checkout against the live store and confirm the continue URL an agent would hand back to the shopper."
+      }
+    ],
+    "faq": {
+      "items": [
+        {
+          "question": "What is the UCP Playground?",
+          "answer": "A sandbox where an AI shopping agent runs live Universal Commerce Protocol operations against a storefront you choose. It resolves the store's /.well-known/ucp profile, picks its MCP or REST shopping endpoint, and shows every tool call and response."
+        },
+        {
+          "question": "Which stores can I test?",
+          "answer": "Any storefront that publishes a valid Universal Commerce Profile at /.well-known/ucp with a dev.ucp.shopping service. The playground prefers the MCP transport and falls back to REST."
+        },
+        {
+          "question": "Do I need an account?",
+          "answer": "No. Anyone can send up to {limit} messages for free. Create an account to run unlimited sessions against your own connected store."
+        }
+      ]
+    },
+    "structuredData": {
+      "name": "UCP Playground"
+    }
+  }
+}

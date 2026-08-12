@@ -15,10 +15,10 @@ export const stripe = (): Stripe => {
 };
 
 /**
- * Flat subscription tiers, cheapest first. `Dominate` is the top tier and the
- * one partner deals are written against — the /yc page promises "extended
- * ecentic Dominate" by name, so renaming it breaks a published commitment.
- * `Scale` carries what Dominate used to at the old price point.
+ * Flat subscription tiers, cheapest first. `Dominate` is the top tier and the one
+ * the Techstars deal is written against by name, so renaming it breaks a
+ * published commitment. `Scale` carries what Dominate used to at the old price
+ * point. The YC deal is no longer tier-bound — see `DEALS`.
  */
 export const PLANS = {
   compete: {
@@ -67,17 +67,22 @@ export const resolvePlanByPriceId = (priceId: string): PlanKey | null => {
  * and a stale figure in a comment is one copy-paste away from being quoted to a
  * founder as a commitment. Read the terms from Stripe.
  *
- * `plan` is the tier the deal was sold against — both partner pages promise
- * "extended ecentic Dominate" by name. The matching Stripe coupons are
- * restricted to that product, and Stripe rejects a checkout whose line item the
- * coupon does not cover, so the redemption is only applied when the founder
- * picks that tier. Without this gate a YC founder choosing Compete would hit a
- * hard checkout error instead of simply paying list price.
+ * `plan` is the tier a deal's coupon is *restricted* to in Stripe. Stripe rejects
+ * a checkout whose line item the coupon does not cover, so a restricted coupon
+ * must only be applied on its own tier — otherwise a founder picking any other
+ * plan hits a hard checkout error instead of simply paying list price.
+ *
+ * `null` means the coupon carries no `applies_to` and is therefore valid on every
+ * tier. YC is deliberately unrestricted: the redeemers are Startup School
+ * students, and gating a 50%-off coupon to the $149 Dominate tier priced the deal
+ * out of the cohort it was written for — someone happy to pay for Compete could
+ * not spend their deal at all. The /yc page still leads with Dominate; the deal
+ * now simply also works on the cheaper tiers.
  */
 export const DEALS = {
   ycombinator: {
     name: "Y Combinator",
-    plan: "dominate",
+    plan: null,
     coupon: () => process.env.STRIPE_DEAL_COUPON_YC,
   },
   techstars: {
@@ -87,7 +92,7 @@ export const DEALS = {
   },
 } as const satisfies Record<
   string,
-  { name: string; plan: PlanKey; coupon: () => string | undefined }
+  { name: string; plan: PlanKey | null; coupon: () => string | undefined }
 >;
 
 export type DealKey = keyof typeof DEALS;

@@ -1,22 +1,22 @@
-import { resultify } from "@zenncore/utils";
+import { unwrapResult } from "@zenncore/utils";
 import { readingTimeMinutes } from "babylovegrowth-next-js-blog";
 import type { Metadata } from "next";
-import { hasLocale } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { getLocale, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
 import type { Locale } from "@/i18n/routing";
 import { routing } from "@/i18n/routing";
-import * as BabyLoveGrowth from "@/server/app/babylovegrowth";
-import * as Blog from "@/server/app/blog-cache";
+import { splitBlogHtmlByH2 } from "@/lib/blog-html";
+import { brandedTitle } from "@/lib/seo";
+import * as Blog from "@/server/app/blog";
 import {
   EditorialFooter,
   EditorialLayout,
   EditorialRichText,
   EditorialSplitSection,
 } from "../_components/editorial-page";
-import { TagList } from "../_components/tag-list";
+import { HtmlArticleSections } from "../_components/html-article-sections";
 import "../blog-content.css";
 
 const normalize = (value: Date | string) => {
@@ -39,78 +39,59 @@ const languageAlternates = (slug: string) => ({
   es: `/es/blog/${slug}`,
 });
 
+/**
+ * A title tag is not an H1. Where the headline we want on the page is longer
+ * than the ~60 characters Google renders, the tag gets its own copy here rather
+ * than a truncation — keyed by slug, so it survives BLG re-ingesting the post.
+ */
+const BLOG_TITLE_TAGS: Record<string, Record<string, string>> = {
+  "ecentic-eu-presence-partnership-compliance-ai-visibility-bundle": {
+    en: "EU Presence Bundle: Compliance + AI Visibility",
+  },
+};
+
+// Keyed on the row's own locale rather than the requested one: a /es page
+// falling back to the stored EN row must not advertise a title its body never
+// uses, and a real ES row later just falls through to its own headline.
+const blogTitleTag = (post: { slug: string; title: string; locale: string }) =>
+  brandedTitle(BLOG_TITLE_TAGS[post.slug]?.[post.locale] ?? post.title);
+
 type BlogPageProps = {
-  params: Promise<{ locale: string; slug: string }>;
+  params: Promise<{ slug: string }>;
 };
 
 export const generateStaticParams = async () => {
-  const [articles, english, spanish] = await Promise.all([
-    BabyLoveGrowth.listArticles(),
-    Blog.listPublished("en"),
-    Blog.listPublished("es"),
-  ]);
-
-  const englishSlugs = new Set([
-    ...articles.map((article) => article.slug),
-    ...english.map((post) => post.slug),
-  ]);
-  const spanishSlugs = new Set(spanish.map((post) => post.slug));
-
-  return [
-    ...[...englishSlugs].map((slug) => ({ locale: "en", slug })),
-    ...[...spanishSlugs].map((slug) => ({ locale: "es", slug })),
-  ];
+  const slugs = await Blog.listCatalogSlugs();
+  // Prerender every post in every locale. Bodies come from stored
+  // `blog_post` rows (BLG webhook upserts EN + ES); missing locale falls
+  // back in `Blog.resolve` and regenerates after `revalidateTag("blog")`.
+  return routing.locales.flatMap((locale) =>
+    slugs.map((slug) => ({ locale, slug })),
+  );
 };
 
 export const generateMetadata = async ({
   params,
 }: BlogPageProps): Promise<Metadata> => {
-  const { slug, locale: raw } = await params;
-  const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
+  const { slug } = await params;
+  const locale = await getLocale();
 
-  if (locale === "en") {
-    const blg = await resultify(() => BabyLoveGrowth.getArticleBySlug(slug));
-    if (blg.success && blg.data) {
-      const article = blg.data;
-      const path = `/blog/${article.slug}`;
-      return {
-        title: article.title,
-        description: article.meta_description,
-        keywords: article.keywords,
-        alternates: {
-          canonical: path,
-          languages: languageAlternates(article.slug),
-        },
-        openGraph: {
-          type: "article",
-          url: `https://ecentic.ai${path}`,
-          locale: "en_US",
-          title: `${article.title} | ecentic`,
-          description: article.meta_description,
-          publishedTime: article.created_at,
-          modifiedTime: article.updated_at,
-          authors: ["ecentic"],
-          images: article.hero_image_url
-            ? [{ url: article.hero_image_url }]
-            : undefined,
-        },
-        twitter: {
-          card: "summary_large_image",
-          title: `${article.title} | ecentic`,
-          description: article.meta_description,
-        },
-      };
-    }
-  }
+  // Prefer stored rows (webhook + ISR). No live BLG on the render path.
+  const resolved = await unwrapResult(
+    Blog.resolve({
+      slug,
+      locale,
+    }),
+  );
+  if (!resolved) return {};
 
-  const result = await resultify(() => Blog.getPublishedBySlug(slug, locale));
-  if (!result.success || !result.data) return {};
-
-  const post = result.data;
+  const post = resolved.post;
   const path = localizePath(`/blog/${post.slug}`, locale);
 
   return {
-    title: post.title,
+    // `absolute` so the locale layout's `"%s | ecentic"` cannot re-append a
+    // suffix `brandedTitle` may have deliberately dropped.
+    title: { absolute: blogTitleTag(post) },
     description: post.description,
     keywords: [...post.tags],
     alternates: {
@@ -138,106 +119,23 @@ export const generateMetadata = async ({
 };
 
 export default async ({ params }: BlogPageProps) => {
-  const { slug, locale: raw } = await params;
-  if (!hasLocale(routing.locales, raw)) notFound();
-  const locale = raw;
-  setRequestLocale(locale);
+  const { slug } = await params;
+  const locale = await getLocale();
 
-  const translate = await getTranslations({ locale, namespace: "Blog" });
+  const translate = await getTranslations("blog");
+  // Static / ISR — locale rows are written by the BLG webhook (or editorial);
+  // `revalidateTag("blog")` regenerates these pages. No live BLG here.
+  const resolved = await unwrapResult(Blog.resolve({ slug, locale }));
+  if (!resolved) notFound();
 
-  if (locale === "en") {
-    const article = await BabyLoveGrowth.getArticleBySlug(slug);
-    if (article) {
-      const minutes = Math.max(
-        1,
-        readingTimeMinutes(article.content_markdown || article.content_html),
-      );
-
-      const structuredData = [
-        ...(article.jsonLd ? [article.jsonLd] : []),
-        ...(article.faqJsonLd ? [article.faqJsonLd] : []),
-        {
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          itemListElement: [
-            {
-              "@type": "ListItem",
-              position: 1,
-              name: "Home",
-              item: "https://ecentic.ai/",
-            },
-            {
-              "@type": "ListItem",
-              position: 2,
-              name: translate("title"),
-              item: "https://ecentic.ai/blog",
-            },
-            {
-              "@type": "ListItem",
-              position: 3,
-              name: article.title,
-              item: `https://ecentic.ai/blog/${article.slug}`,
-            },
-          ],
-        },
-      ];
-
-      return (
-        <EditorialLayout
-          eyebrow={article.seedKeyword ?? "Guide"}
-          title={article.title}
-          meta={
-            <p>
-              {translate("published")}: {formatBlogDate(article.created_at, locale)}{" "}
-              · {translate("minRead", { minutes })}
-            </p>
-          }
-          description={article.meta_description || article.excerpt}
-        >
-          <JsonLd schemas={structuredData} />
-
-          <EditorialSplitSection
-            left={
-              <>
-                <span className="mt-auto font-normal text-2xl text-primary">
-                  01
-                </span>
-                <h2 className="text-4xl text-foreground leading-snug">
-                  Article
-                </h2>
-              </>
-            }
-            right={
-              <div className="flex flex-col gap-8">
-                <div
-                  className="blog-content"
-                  // biome-ignore lint/security/noDangerouslySetInnerHtml: BabyLoveGrowth article HTML is trusted CMS content
-                  dangerouslySetInnerHTML={{ __html: article.content_html }}
-                />
-                <TagList
-                  keywords={[article.seedKeyword ?? "", ...article.keywords]}
-                />
-              </div>
-            }
-          />
-
-          <EditorialFooter
-            primary={{ href: "/sign-up", label: "Get started" }}
-            secondary={{ href: "/blog", label: translate("backToBlog") }}
-            note="Use these guides to improve product clarity, then turn the highest-impact fixes into your next catalog sprint."
-          />
-        </EditorialLayout>
-      );
-    }
-  }
-
-  const post = await Blog.getPublishedBySlug(slug, locale);
-  if (!post) notFound();
-
+  const post = resolved.post;
   const path = localizePath(`/blog/${post.slug}`, locale);
 
   if (post.contentHtml) {
     const minutes = Math.max(1, readingTimeMinutes(post.contentHtml));
+    // Classify against the body's own language: a /es page falling back to the
+    // stored EN row still carries English headings.
+    const sections = splitBlogHtmlByH2(post.contentHtml, post.locale);
     return (
       <EditorialLayout
         eyebrow={post.category}
@@ -265,31 +163,10 @@ export default async ({ params }: BlogPageProps) => {
             },
           ]}
         />
-        <EditorialSplitSection
-          left={
-            <>
-              <span className="mt-auto font-normal text-2xl text-primary">
-                01
-              </span>
-              <h2 className="text-4xl text-foreground leading-snug">
-                Article
-              </h2>
-            </>
-          }
-          right={
-            <div className="flex flex-col gap-8">
-              <div
-                className="blog-content"
-                // biome-ignore lint/security/noDangerouslySetInnerHtml: translated BLG HTML stored in our DB
-                dangerouslySetInnerHTML={{ __html: post.contentHtml }}
-              />
-              <TagList keywords={[...post.tags]} />
-            </div>
-          }
-        />
+        <HtmlArticleSections sections={sections} keywords={[...post.tags]} />
         <EditorialFooter
           primary={{ href: "/sign-up", label: "Get started" }}
-          secondary={{ href: "/blog", label: translate("backToBlog") }}
+          secondary={{ href: "/blog", label: translate("action.secondary") }}
           note={translate("description")}
         />
       </EditorialLayout>
@@ -341,7 +218,7 @@ export default async ({ params }: BlogPageProps) => {
       <EditorialSplitSection
         left={
           <>
-            <span className="mt-auto font-normal text-2xl text-primary">
+            <span className="font-normal text-2xl text-primary">
               00
             </span>
             <h2 className="text-4xl text-foreground leading-snug">
@@ -350,17 +227,22 @@ export default async ({ params }: BlogPageProps) => {
           </>
         }
         right={
-          <ul className="flex flex-col gap-3">
-            {post.takeaways.map((takeaway) => (
-              <li
-                key={takeaway}
-                className="flex gap-3 text-foreground-dimmed leading-relaxed"
-              >
-                <span className="mt-[0.45rem] size-1.5 shrink-0 rounded-full bg-primary" />
-                <span>{takeaway}</span>
-              </li>
-            ))}
-          </ul>
+          <div className="flex flex-col gap-5">
+            <h2 className="font-semibold text-2xl text-foreground leading-snug md:text-3xl">
+              Key takeaways
+            </h2>
+            <ul className="flex flex-col gap-3">
+              {post.takeaways.map((takeaway) => (
+                <li
+                  key={takeaway}
+                  className="flex gap-3 text-foreground-dimmed leading-relaxed"
+                >
+                  <span className="mt-[0.45rem] size-1.5 shrink-0 rounded-full bg-primary" />
+                  <span>{takeaway}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         }
       />
 
@@ -369,7 +251,7 @@ export default async ({ params }: BlogPageProps) => {
           key={section.number}
           left={
             <>
-              <span className="mt-auto font-normal text-2xl text-primary">
+              <span className="font-normal text-2xl text-primary">
                 {section.number}
               </span>
               <h2 className="text-4xl text-foreground leading-snug">
@@ -377,13 +259,20 @@ export default async ({ params }: BlogPageProps) => {
               </h2>
             </>
           }
-          right={<EditorialRichText content={section.content} />}
+          right={
+            <div className="flex flex-col gap-5">
+              <h2 className="font-semibold text-2xl text-foreground leading-snug md:text-3xl">
+                {section.title}
+              </h2>
+              <EditorialRichText content={section.content} />
+            </div>
+          }
         />
       ))}
 
       <EditorialFooter
         primary={{ href: "/sign-up", label: "Get started" }}
-        secondary={{ href: "/blog", label: translate("backToBlog") }}
+        secondary={{ href: "/blog", label: translate("action.secondary") }}
         note={translate("description")}
       />
     </EditorialLayout>

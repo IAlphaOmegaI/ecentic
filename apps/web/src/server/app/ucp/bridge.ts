@@ -13,8 +13,8 @@
  * All monetary amounts cross this boundary as integer minor units.
  */
 
+import { authorizedRequest } from "@/server/app/integration/woocommerce/http";
 import * as HTTP from "@/server/utils/http";
-import { authorizedRequest } from "@/server/utils/woocommerce";
 import { storefrontOrigin } from "./store-context";
 
 export type BridgeCredentials = {

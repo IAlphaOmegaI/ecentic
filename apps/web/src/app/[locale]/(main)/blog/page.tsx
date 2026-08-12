@@ -1,15 +1,12 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import { readingTimeMinutes } from "babylovegrowth-next-js-blog";
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
-import { hasLocale } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { getLocale, getTranslations } from "next-intl/server";
 import { localizePath } from "@/i18n/locale";
-import { routing, type Locale } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
+import type { Locale } from "@/i18n/routing";
 import { createMetadata } from "@/lib/seo";
-import * as BabyLoveGrowth from "@/server/app/babylovegrowth";
-import * as Blog from "@/server/app/blog-cache";
+import * as Blog from "@/server/app/blog";
 import {
   EditorialFooter,
   EditorialLayout,
@@ -45,16 +42,9 @@ type IndexEntry = {
   takeaway: string;
 };
 
-type BlogIndexProps = {
-  params: Promise<{ locale: string }>;
-};
-
-export const generateMetadata = async ({
-  params,
-}: BlogIndexProps): Promise<Metadata> => {
-  const { locale: raw } = await params;
-  const locale = hasLocale(routing.locales, raw) ? raw : routing.defaultLocale;
-  const translate = await getTranslations({ locale, namespace: "Blog" });
+export const generateMetadata = async (): Promise<Metadata> => {
+  const locale = await getLocale();
+  const translate = await getTranslations("blog");
 
   return createMetadata({
     title: translate("title"),
@@ -70,57 +60,49 @@ export const generateMetadata = async ({
   });
 };
 
-export default async ({ params }: BlogIndexProps) => {
-  const { locale: raw } = await params;
-  if (!hasLocale(routing.locales, raw)) return null;
-  const locale = raw;
-  setRequestLocale(locale);
+export default async () => {
+  const locale = await getLocale();
 
-  const translate = await getTranslations({ locale, namespace: "Blog" });
+  const translate = await getTranslations("blog");
   const description = translate("description");
 
-  const posts = await Blog.listPublished(locale);
-  const articles =
-    locale === "en" ? await BabyLoveGrowth.listArticles() : [];
+  // Catalog lives in Postgres (webhook upserts). Index cards are `blog_post`
+  // rows — not live BabyLoveGrowth list summaries.
+  const [englishPosts, spanishPosts] = await Promise.all([
+    Blog.listPublished("en"),
+    locale === "es" ? Blog.listPublished("es") : Promise.resolve([]),
+  ]);
 
-  const blgSlugs = new Set(articles.map((article) => article.slug));
-
-  const entries: IndexEntry[] = [
-    ...articles.map(
-      (article): IndexEntry => ({
-        slug: article.slug,
-        title: article.title,
-        description: article.meta_description || article.excerpt,
-        publishedAt: article.created_at,
-        updatedAt: article.updated_at,
-        thumbnailUrl: article.hero_image_url || null,
-        tags: article.keywords,
-        readTime: `${Math.max(1, readingTimeMinutes(article.excerpt))} min`,
-        category: article.seedKeyword ?? "Guide",
-        takeaway: article.excerpt,
-      }),
-    ),
-    ...posts
-      .filter((post) => locale !== "en" || !blgSlugs.has(post.slug))
-      .map(
-        (post): IndexEntry => ({
-          slug: post.slug,
-          title: post.title,
-          description: post.description,
-          publishedAt: post.publishedAt,
-          updatedAt: post.updatedAt,
-          thumbnailUrl: post.thumbnailUrl,
-          tags: post.tags,
-          readTime: post.readTime,
-          category: post.category,
-          takeaway: post.takeaways[0] ?? post.description,
-        }),
-      ),
-  ].sort(
-    (left, right) =>
-      normalize(right.publishedAt).getTime() -
-      normalize(left.publishedAt).getTime(),
+  const spanishBySlug = new Map(
+    spanishPosts.map((post) => [post.slug, post] as const),
   );
+
+  const fromPost = (post: (typeof englishPosts)[number]): IndexEntry => ({
+    slug: post.slug,
+    title: post.title,
+    description: post.description,
+    publishedAt: post.publishedAt,
+    updatedAt: post.updatedAt,
+    thumbnailUrl: post.thumbnailUrl,
+    tags: post.tags,
+    readTime: post.readTime,
+    category: post.category,
+    takeaway: post.takeaways[0] ?? post.description,
+  });
+
+  const entries: IndexEntry[] = englishPosts
+    .map((post): IndexEntry => {
+      if (locale === "es") {
+        const spanish = spanishBySlug.get(post.slug);
+        if (spanish) return fromPost(spanish);
+      }
+      return fromPost(post);
+    })
+    .sort(
+      (left, right) =>
+        normalize(right.publishedAt).getTime() -
+        normalize(left.publishedAt).getTime(),
+    );
 
   const latest = entries[0] ?? null;
   const blogPath = localizePath("/blog", locale);
@@ -241,7 +223,7 @@ export default async ({ params }: BlogIndexProps) => {
                   className="self-start"
                   render={<Link href={`/blog/${entry.slug}`} prefetch={true} />}
                 >
-                  {translate("readMore")}
+                  {translate("action.primary")}
                   <ArrowRightIcon className="size-4" />
                 </Button>
               </div>
@@ -258,13 +240,13 @@ export default async ({ params }: BlogIndexProps) => {
                 01
               </span>
               <h2 className="text-4xl text-foreground leading-snug">
-                {translate("noPosts")}
+                {translate("states.empty.primary")}
               </h2>
             </>
           }
           right={
             <p className="text-foreground-dimmed leading-relaxed">
-              {translate("noPosts")}
+              {translate("states.empty.primary")}
             </p>
           }
         />

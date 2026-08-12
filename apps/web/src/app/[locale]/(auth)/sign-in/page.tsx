@@ -4,19 +4,14 @@ import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import * as motion from "motion/react-client";
 import Image from "next/image";
-import { Link } from "@/i18n/navigation";
+import { useMessages, useTranslations } from "next-intl";
 import { Suspense } from "react";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
 import { Fade } from "@/lib/animations";
 import { SignInForm } from "./_components/sign-in-form";
-
-const points = [
-  "Pick up right where you left off",
-  "Your agent simulations run continuously in the background",
-  "Track your ranking improvements over time",
-];
 
 const SignInFormSkeleton = () => (
   <div className="flex flex-col gap-2">
@@ -30,15 +25,21 @@ const SignInFormSkeleton = () => (
 );
 
 export default () => {
+  const translate = useTranslations("signIn");
+  const translateAuthChrome = useTranslations("authChrome");
+  const messages = useMessages();
+
   return (
     <div className="flex h-screen overflow-hidden bg-primary">
       <Onboarding
-        points={points}
+        points={messages.signIn.sidebar.points}
+        footer={translateAuthChrome("footer")}
+        imageAlt={translateAuthChrome("imageAlt")}
         headline={
           <>
-            Hello
+            {translate("sidebar.headline.primary")}
             <br />
-            again.
+            {translate("sidebar.headline.accent")}
           </>
         }
       />
@@ -69,10 +70,10 @@ export default () => {
               </div>
               <div>
                 <h2 className="font-medium text-4xl text-foreground">
-                  Sign in to ecentic
+                  {translate("title")}
                 </h2>
                 <p className="mt-1 font-light text-2xl text-foreground-dimmed">
-                  Continue optimizing your product listings.
+                  {translate("description")}
                 </p>
               </div>
             </div>
@@ -96,13 +97,14 @@ export default () => {
             <div className="relative flex flex-row items-center justify-between border-accent-foreground border-x p-6 font-light text-foreground-dimmed">
               <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
               <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-              Don't have an account?{" "}
+              {translate("prompt.secondary")}{" "}
               <Button
                 color="accent"
                 type="button"
                 render={<Link href="/sign-up" />}
               >
-                Get started free <ArrowRightIcon className="size-4" />
+                {translate("action.quaternary")}{" "}
+                <ArrowRightIcon className="size-4" />
               </Button>
             </div>
           </Motion.Item>

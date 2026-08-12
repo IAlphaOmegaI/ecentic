@@ -1,6 +1,7 @@
 "use client";
 
 import { Switch } from "@zenncore/web/components/switch";
+import { useTranslations } from "next-intl";
 
 export const NotificationsSection = ({
   notifications,
@@ -29,66 +30,38 @@ export const NotificationsSection = ({
     checked: boolean,
   ) => void;
 }) => {
+  const translate = useTranslations("dashboard.settings.notifications");
+
   const rows = [
-    {
-      key: "winRateDrop" as const,
-      label: "Win Rate Drops",
-      description: "Alert when any product drops >5%",
-    },
-    {
-      key: "simulationComplete" as const,
-      label: "Simulation Complete",
-      description: "When a simulation batch finishes",
-    },
-    {
-      key: "optimizationReady" as const,
-      label: "Optimization Ready",
-      description: "New optimization suggestions available",
-    },
-    {
-      key: "autoPub" as const,
-      label: "Auto-Published",
-      description: "When auto-optimization publishes changes",
-    },
-    {
-      key: "modelDrift" as const,
-      label: "Model Drift Detected",
-      description: "When an AI model updates its behavior",
-    },
-    {
-      key: "competitorUpdate" as const,
-      label: "Competitor Updates",
-      description: "When tracked competitor listings change",
-    },
-    {
-      key: "newCompetitor" as const,
-      label: "New Competitors",
-      description: "When a new competitor is detected",
-    },
-    {
-      key: "weeklyDigest" as const,
-      label: "Weekly Digest",
-      description: "Summary of the week's performance",
-    },
+    "winRateDrop",
+    "simulationComplete",
+    "optimizationReady",
+    "autoPub",
+    "modelDrift",
+    "competitorUpdate",
+    "newCompetitor",
+    "weeklyDigest",
   ] as const;
 
   return (
     <div>
       <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
         <p className="font-semibold text-foreground-rich text-sm">
-          Email Notifications
+          {translate("title")}
         </p>
       </div>
       <div className="divide-y divide-accent-foreground">
-        {rows.map(({ key, label, description }) => (
+        {rows.map((key) => (
           <div
             key={key}
             className="flex items-center justify-between px-4 py-4"
           >
             <div>
-              <p className="font-medium text-[13px] text-foreground">{label}</p>
+              <p className="font-medium text-[13px] text-foreground">
+                {translate(`items.${key}.label`)}
+              </p>
               <p className="mt-0.5 text-foreground-dimmed text-xs">
-                {description}
+                {translate(`items.${key}.description`)}
               </p>
             </div>
             <Switch

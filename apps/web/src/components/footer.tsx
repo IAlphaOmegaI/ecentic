@@ -1,9 +1,8 @@
 import { InstagramIcon, LinkedinIcon, XTwitterIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
-import { getTranslations } from "next-intl/server";
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
 import { InstallCta } from "@/app/[locale]/(main)/_components/install-cta";
-import { LanguageSwitcher } from "@/components/language-switcher";
 import { Link } from "@/i18n/navigation";
 import WordMark from "@/public/images/wordmark.svg";
 import { CookieSettings } from "./cookie-settings";
@@ -28,43 +27,46 @@ const socials = [
 ] as const;
 
 export const Footer = async ({ stacked = false }: Footer.Props) => {
-  const translate = await getTranslations("Footer");
+  const translate = await getTranslations("footer");
 
   const columns = [
     {
-      title: translate("product"),
+      title: translate("columns.product"),
       links: [
-        { href: "/features", label: translate("features") },
-        { href: "/how-it-works", label: translate("howItWorks") },
-        { href: "/pricing", label: translate("pricing") },
+        { href: "/features", label: translate("links.features") },
+        { href: "/how-it-works", label: translate("links.howItWorks") },
+        { href: "/pricing", label: translate("links.pricing") },
         { href: "/features/product-listings", label: "Product Listings" },
       ],
     },
     {
-      title: translate("platforms"),
+      title: translate("columns.platforms"),
       links: [
-        { href: "/platforms/shopify", label: translate("shopify") },
-        { href: "/platforms/woocommerce", label: translate("woocommerce") },
-        { href: "/enterprise", label: translate("enterprise") },
+        { href: "/platforms/shopify", label: translate("links.shopify") },
+        {
+          href: "/platforms/woocommerce",
+          label: translate("links.woocommerce"),
+        },
+        { href: "/enterprise", label: translate("links.enterprise") },
       ],
     },
     {
-      title: translate("resources"),
+      title: translate("columns.resources"),
       links: [
-        { href: "/resources", label: translate("resources") },
-        { href: "/blog", label: translate("blog") },
+        { href: "/resources", label: translate("links.resources") },
+        { href: "/blog", label: translate("links.blog") },
         { href: "/compare/best-ai-ecommerce-tools", label: "Compare" },
         { href: "/ucp-validator", label: "UCP Validator" },
         { href: "/ucp-playground", label: "UCP Playground" },
-        { href: "/demo", label: translate("demo") },
+        { href: "/demo", label: translate("links.demo") },
       ],
     },
     {
-      title: translate("company"),
+      title: translate("columns.company"),
       links: [
-        { href: "/support", label: translate("support") },
-        { href: "/privacy-policy", label: translate("privacy") },
-        { href: "/terms", label: translate("terms") },
+        { href: "/support", label: translate("links.support") },
+        { href: "/privacy-policy", label: translate("links.privacy") },
+        { href: "/terms", label: translate("links.terms") },
       ],
     },
   ] as const;
@@ -90,14 +92,13 @@ export const Footer = async ({ stacked = false }: Footer.Props) => {
             className="pointer-events-none absolute inset-0 -z-10 bg-radial-[at_50%_100%] from-primary/20 via-primary/5 to-transparent"
           />
           <span className="font-light text-primary text-xl">
-            Get picked by AI
+            {translate("cta.eyebrow")}
           </span>
           <h2 className="mt-4 max-w-4xl font-body font-medium text-3xl text-foreground leading-tight tracking-tight md:text-5xl">
-            Ready to be the product agents recommend?
+            {translate("cta.title")}
           </h2>
           <p className="mt-6 max-w-xl font-light text-foreground-dimmed text-lg">
-            Install free on Shopify or WooCommerce and see your AI score in
-            minutes.
+            {translate("cta.description")}
           </p>
           <InstallCta className="mt-8" />
         </div>
@@ -126,14 +127,13 @@ export const Footer = async ({ stacked = false }: Footer.Props) => {
                 </a>
               ))}
             </div>
-            <LanguageSwitcher className="mt-2 self-start" />
             <div className="mt-auto flex items-center gap-2 pt-4">
               <span className="relative flex size-3 shrink-0 items-center justify-center">
                 <span className="absolute size-full animate-ping rounded-full bg-success opacity-40" />
                 <span className="relative size-1.5 rounded-full bg-success" />
               </span>
               <span className="font-light text-foreground-dimmed text-sm">
-                Built for the agent economy
+                {translate("status")}
               </span>
             </div>
           </div>

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
+import { localizePath } from "@/i18n/locale";
 import {
   absoluteUrl,
   createBreadcrumbSchema,
@@ -16,65 +18,44 @@ import { Faq } from "../../pricing/_components/faq";
 import { Bottleneck } from "./_components/bottleneck";
 import { Guide } from "./_components/guide";
 import { RelatedPages } from "./_components/related";
-import { Tools, tools } from "./_components/tools";
+import { Tools } from "./_components/tools";
 
-const assurances = [
-  "Six tools across five categories",
-  "Category-first, not feature checklists",
-  "Updated for 2026",
-] as const;
+export const generateMetadata = async (): Promise<Metadata> => {
+  const locale = await getLocale();
+  const translate = await getTranslations("compare");
 
-const intro =
-  "Not every AI ecommerce tool solves the same problem. This guide compares categories before brand names, so your shortlist starts from the job you are hiring the tool to do.";
+  return createMetadata({
+    title: translate("meta.title"),
+    description: translate("meta.description"),
+    path: localizePath("/compare/best-ai-ecommerce-tools", locale),
+    keywords: [
+      "best AI tools for ecommerce 2026",
+      "AI ecommerce software comparison",
+      "top ecommerce AI platforms",
+      "Shopify Magic alternatives",
+      "AI ecommerce tools",
+    ],
+  });
+};
 
-const description =
-  "Best AI tools for ecommerce in 2026, organized by category so merchants can compare content, personalization, search, analytics, and agent-commerce workflows.";
+export default async () => {
+  const locale = await getLocale();
 
-const faq = [
-  {
-    question: "What are the best AI tools for ecommerce in 2026?",
-    answer:
-      "The best AI tools for ecommerce in 2026 depend on the job to be done. Merchants usually compare product content tools, personalization platforms, search and discovery products, analytics software, and newer agent-commerce optimization tools.",
-  },
-  {
-    question: "How should merchants compare AI ecommerce software?",
-    answer:
-      "The cleanest way is to compare tools by category first. Decide whether the immediate problem is product content, onsite personalization, search relevance, analytics visibility, or AI shopping selection. Then compare vendors inside that category.",
-  },
-  {
-    question: "Where does ecentic fit in a comparison like this?",
-    answer:
-      "ecentic fits in the agent-commerce optimization category. It is built for merchants who need to simulate AI shopping decisions, diagnose why competitors win, and improve product listings based on that competitive context.",
-  },
-  {
-    question:
-      "Why is a category-based guide better than a giant feature checklist?",
-    answer:
-      "A category-based guide is easier to trust because it avoids pretending every tool solves the same problem. It helps buyers understand why a personalization platform, a copy generator, and an agent-commerce workflow should not be evaluated with the same rubric.",
-  },
-] as const;
+  const translate = await getTranslations("compare");
+  const messages = await getMessages();
+  const description = translate("meta.description");
+  const assurances = messages.compare.hero.assurances;
+  const faq = messages.compare.faq.items;
+  const tools = messages.compare.tools.items;
+  const pagePath = localizePath("/compare/best-ai-ecommerce-tools", locale);
 
-export const metadata: Metadata = createMetadata({
-  title: "Best AI Ecommerce Tools in 2026 — Category Guide",
-  description,
-  path: "/compare/best-ai-ecommerce-tools",
-  keywords: [
-    "best AI tools for ecommerce 2026",
-    "AI ecommerce software comparison",
-    "top ecommerce AI platforms",
-    "Shopify Magic alternatives",
-    "AI ecommerce tools",
-  ],
-});
-
-export default () => {
   const structuredData = [
     {
       "@context": "https://schema.org",
       "@type": "Article",
-      headline: "Best AI Tools for Ecommerce in 2026",
+      headline: translate("structuredData.articleHeadline"),
       description,
-      url: absoluteUrl("/compare/best-ai-ecommerce-tools"),
+      url: absoluteUrl(pagePath),
       author: {
         "@type": "Organization",
         name: "ecentic",
@@ -82,17 +63,15 @@ export default () => {
       publisher: {
         "@type": "Organization",
         name: "ecentic",
-        url: absoluteUrl("/"),
+        url: absoluteUrl(localizePath("/", locale)),
       },
-      mainEntityOfPage: absoluteUrl("/compare/best-ai-ecommerce-tools"),
+      mainEntityOfPage: absoluteUrl(pagePath),
     },
     {
       "@context": "https://schema.org",
       "@type": "ItemList",
-      name: "Best AI tools for ecommerce in 2026",
+      name: translate("structuredData.itemListName"),
       numberOfItems: tools.length,
-      // The page compares by category rather than ranking, so the list carries
-      // no order — claiming one would contradict what a reader actually sees.
       itemListOrder: "https://schema.org/ItemListUnordered",
       itemListElement: tools.map((tool, index) => ({
         "@type": "ListItem",
@@ -100,16 +79,23 @@ export default () => {
         item: {
           "@type": "SoftwareApplication",
           name: tool.name,
-          description: `${tool.category}. Best at: ${tool.bestAt} Wrong pick when: ${tool.wrongPick}`,
+          description: translate("structuredData.toolDescription", {
+            category: tool.category,
+            bestAt: tool.bestAt,
+            wrongPick: tool.wrongPick,
+          }),
           applicationCategory: "BusinessApplication",
         },
       })),
     },
     createBreadcrumbSchema([
-      { name: "Home", path: "/" },
       {
-        name: "Best AI Tools for Ecommerce in 2026",
-        path: "/compare/best-ai-ecommerce-tools",
+        name: translate("breadcrumb.home"),
+        path: localizePath("/", locale),
+      },
+      {
+        name: translate("breadcrumb.page"),
+        path: pagePath,
       },
     ]),
     createFaqSchema(faq),
@@ -117,12 +103,12 @@ export default () => {
 
   return (
     <ContentPageLayout
-      eyebrow="Comparison"
-      title="Best AI tools for ecommerce"
-      accent="in 2026."
-      description={intro}
+      eyebrow={translate("hero.eyebrow")}
+      title={translate("hero.title.primary")}
+      accent={translate("hero.title.accent")}
+      description={translate("hero.description")}
       assurances={assurances}
-      art={{ source: Art, alt: "ASCII-art illustration of a balance scale" }}
+      art={{ source: Art, alt: translate("hero.art.alt") }}
     >
       <JsonLd schemas={structuredData} />
 
@@ -135,9 +121,9 @@ export default () => {
       <RelatedPages />
 
       <ContentPageSection
-        number="05"
-        title="Frequently asked questions"
-        description="Common questions from merchants comparing AI ecommerce tools and platforms."
+        number={translate("faqSection.number")}
+        title={translate("faqSection.title")}
+        description={translate("faqSection.description")}
         gutter
         classList={{ body: "p-0" }}
       >
@@ -145,9 +131,15 @@ export default () => {
       </ContentPageSection>
 
       <ContentPageFooter
-        primary={{ href: "/sign-up", label: "Start with ecentic" }}
-        secondary={{ href: "/", label: "Back to home" }}
-        note="2-minute setup · No credit card · See your free score first"
+        primary={{
+          href: "/sign-up",
+          label: translate("footer.primary"),
+        }}
+        secondary={{
+          href: "/",
+          label: translate("footer.secondary"),
+        }}
+        note={translate("footer.note")}
       />
     </ContentPageLayout>
   );

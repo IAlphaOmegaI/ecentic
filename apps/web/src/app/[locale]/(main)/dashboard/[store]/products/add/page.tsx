@@ -1,10 +1,11 @@
 import { ArrowLeftIcon } from "@zenncore/icons";
 import { unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import { Link } from "@/i18n/navigation";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
+import { Link } from "@/i18n/navigation";
 import { formatRelativeTime } from "@/lib/date";
 import * as Product from "@/server/app/product";
 import * as Store from "@/server/app/store";
@@ -42,6 +43,8 @@ export default ({ params }: PageProps<"/dashboard/[store]/products/add">) => (
 const CatalogStatus = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
+  const translate = await getTranslations("dashboard.products.add");
+  const shared = await getTranslations("dashboard.shared");
   const [resolved, total] = await Promise.all([
     unwrapResult(Store.resolveForUser(Environment.SERVER, { store })),
     unwrapResult(Product.countForCurrentUser(Environment.SERVER, { store })),
@@ -49,10 +52,12 @@ const CatalogStatus = async ({ params }: { params: StoreParams }) => {
 
   return (
     <StatusPill tone={resolved.lastSyncedAt ? "success" : "neutral"}>
-      {`${total} ${total === 1 ? "product" : "products"} · `}
+      {`${shared("count.products", { count: total })} · `}
       {resolved.lastSyncedAt
-        ? `synced ${formatRelativeTime(resolved.lastSyncedAt)}`
-        : "never synced"}
+        ? translate("catalogSynced", {
+            time: formatRelativeTime(resolved.lastSyncedAt),
+          })
+        : translate("catalogNeverSynced")}
     </StatusPill>
   );
 };
@@ -76,6 +81,7 @@ const Sources = async ({ params }: { params: StoreParams }) => {
 
 const BackToProducts = async ({ params }: { params: StoreParams }) => {
   const { store } = await params;
+  const translate = await getTranslations("dashboard.products.add");
 
   return (
     <Button
@@ -83,7 +89,7 @@ const BackToProducts = async ({ params }: { params: StoreParams }) => {
       render={<Link href={`/dashboard/${store}/products`} />}
     >
       <ArrowLeftIcon className="size-4" />
-      Back to products
+      {translate("backToProducts")}
     </Button>
   );
 };

@@ -2,8 +2,9 @@
 
 import { ArrowRightIcon, DownloadIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { Link } from "@/i18n/navigation";
 import * as Report from "@/server/app/report";
 
 const actions = {
@@ -22,6 +23,7 @@ export const ReportDownload = ({
   report: ReportKey;
   disabled?: boolean;
 }) => {
+  const translate = useTranslations("dashboard.reports.action");
   const [pending, setPending] = useState(false);
 
   const download = () => {
@@ -48,12 +50,14 @@ export const ReportDownload = ({
       className="flex flex-1 items-center justify-center gap-1.5 rounded-md border border-accent-foreground bg-background-dimmed/60 px-3 py-1.5 font-medium text-foreground text-xs transition-colors hover:bg-background disabled:cursor-not-allowed disabled:opacity-50"
     >
       <DownloadIcon className="size-4" />
-      {pending ? "…" : "CSV"}
+      {pending ? "…" : translate("downloadCsv")}
     </button>
   );
 };
 
 export const ShareReport = ({ scan }: { scan: string | null }) => {
+  const translate = useTranslations("dashboard.reports.shareable");
+
   if (scan)
     return (
       <Button
@@ -61,13 +65,13 @@ export const ShareReport = ({ scan }: { scan: string | null }) => {
         className="mt-3"
         render={<Link href={`/share/${scan}`} target="_blank" />}
       >
-        Generate Shareable Report <ArrowRightIcon className="size-4" />
+        {translate("action.primary")} <ArrowRightIcon className="size-4" />
       </Button>
     );
 
   return (
     <Button color="primary" className="mt-3" disabled>
-      Run a scan first <ArrowRightIcon className="size-4" />
+      {translate("runScanFirst")} <ArrowRightIcon className="size-4" />
     </Button>
   );
 };

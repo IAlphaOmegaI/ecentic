@@ -1,17 +1,19 @@
 "use server";
 
 import { addMonths, startOfMonth } from "date-fns";
-import { and, asc, eq, gte, isNotNull, lt, ne, sql } from "drizzle-orm";
-import { db, schema } from "../../database";
+import { and, eq, isNotNull } from "drizzle-orm";
+import { schema } from "../../database";
 import { UserRole } from "../../database/validators";
 import { withAuthentication } from "../../utils/authentication";
 import { withAuthorization } from "../../utils/authorization";
-import { withContext } from "../../utils/context";
+import { withContext, withInstrumentation } from "../../utils/context";
 import { Environment } from "../../utils/environment";
 import { NotFoundError } from "../../utils/error";
 import { repository } from "../../utils/repository";
 import * as Shopify from "../integration/shopify";
+import * as Store from "../store";
 import * as Subscription from "../subscription";
+import * as Attribution from "./attribution";
 
 const RATE_DEFAULT = Number(
   process.env.PERFORMANCE_FEE_RATE_BPS_DEFAULT ?? "300",
@@ -90,23 +92,9 @@ export const resolveFeeConfig = withContext(
  * (once a conversion is stamped `reported`/`capped` it must still count toward
  * the cap). Refunds set `voided` and drop out here, lowering the accrual.
  */
-export const accruedForPeriod = withContext(
-  async (_, { user, start, end }: { user: string; start: Date; end: Date }) => {
-    const rows = await db
-      .select({
-        total: sql<number>`coalesce(sum(${schema.attributedConversion.feeCents}), 0)`,
-      })
-      .from(schema.attributedConversion)
-      .where(
-        and(
-          eq(schema.attributedConversion.userId, user),
-          ne(schema.attributedConversion.billingStatus, "voided"),
-          gte(schema.attributedConversion.createdAt, start),
-          lt(schema.attributedConversion.createdAt, end),
-        ),
-      );
-
-    return { success: true as const, data: Number(rows[0]?.total ?? 0) };
+export const accruedForPeriod = withInstrumentation(
+  async (_, input: { user: string; start: Date; end: Date }) => {
+    return Attribution.sumFeesForPeriod(Environment.SERVER, input);
   },
   "PerformanceFee.accruedForPeriod",
 );
@@ -192,27 +180,13 @@ export const getCurrentPeriodSummary = withAuthentication(async (context) => {
   });
   if (!period.success) return period;
 
-  const conversions = await db
-    .select({
-      id: schema.attributedConversion.id,
-      orderExternalId: schema.attributedConversion.orderExternalId,
-      orderValueCents: schema.attributedConversion.orderValueCents,
-      currency: schema.attributedConversion.currency,
-      attributedAgentType: schema.attributedConversion.attributedAgentType,
-      feeCents: schema.attributedConversion.feeCents,
-      createdAt: schema.attributedConversion.createdAt,
-    })
-    .from(schema.attributedConversion)
-    .where(
-      and(
-        eq(schema.attributedConversion.userId, user),
-        ne(schema.attributedConversion.billingStatus, "voided"),
-        gte(schema.attributedConversion.createdAt, start),
-        lt(schema.attributedConversion.createdAt, end),
-      ),
-    )
-    .orderBy(sql`${schema.attributedConversion.createdAt} desc`)
-    .limit(20);
+  const conversions = await Attribution.listForPeriod(Environment.SERVER, {
+    user,
+    start,
+    end,
+    limit: 20,
+  });
+  if (!conversions.success) return conversions;
 
   const currentPeriod = period.data[0] ?? null;
   const billed = Math.min(accrued.data, capCents);
@@ -220,9 +194,11 @@ export const getCurrentPeriodSummary = withAuthentication(async (context) => {
   const amountOwedCents = Math.max(billed - reportedCents, 0);
 
   const rail = await resolveRail(user);
+  if (!rail.success) return rail;
+
   const awaitingPayment =
     currentPeriod?.state === "awaiting_payment" ||
-    (rail.kind === "stripe" &&
+    (rail.data.kind === "stripe" &&
       amountOwedCents > 0 &&
       !subscription.stripeCustomerId);
 
@@ -241,7 +217,15 @@ export const getCurrentPeriodSummary = withAuthentication(async (context) => {
       awaitingPayment,
       periodStart: start,
       periodEnd: end,
-      conversions,
+      conversions: conversions.data.map((conversion) => ({
+        id: conversion.id,
+        orderExternalId: conversion.orderExternalId,
+        orderValueCents: conversion.orderValueCents,
+        currency: conversion.currency,
+        attributedAgentType: conversion.attributedAgentType,
+        feeCents: conversion.feeCents,
+        createdAt: conversion.createdAt,
+      })),
     } satisfies PeriodSummary,
   };
 }, "PerformanceFee.getCurrentPeriodSummary");
@@ -296,77 +280,23 @@ export const setConfig = withAuthorization(
  * user could in principle straddle both rails — we route to the first Shopify
  * store found, which is the common single-store case.
  */
-const resolveRail = async (
-  user: string,
-): Promise<{ kind: "stripe" } | { kind: "shopify"; store: string }> => {
-  const rows = await db
-    .select({ id: schema.store.id })
-    .from(schema.store)
-    .where(
-      and(
-        eq(schema.store.userId, user),
-        isNotNull(schema.store.shopifyUsageLineId),
-      ),
-    )
-    .limit(1);
+const resolveRail = async (user: string) => {
+  const stores = await Store.find(Environment.SERVER, {
+    where: and(
+      eq(schema.store.userId, user),
+      isNotNull(schema.store.shopifyUsageLineId),
+    ),
+    limit: 1,
+  });
+  if (!stores.success) return stores;
 
-  const store = rows[0];
-  if (store) return { kind: "shopify" as const, store: store.id };
-  return { kind: "stripe" as const };
-};
-
-/**
- * Stamps every non-voided conversion in the window with the fee period and its
- * cap outcome: rows within the running cap become `reported`, the overflow
- * becomes `capped`. Ordered oldest-first so the cap fills chronologically. Both
- * states still count toward accrual — only `voided` (refunds) drops out.
- */
-const settleConversions = async ({
-  user,
-  start,
-  end,
-  capCents,
-  feePeriodId,
-}: {
-  user: string;
-  start: Date;
-  end: Date;
-  capCents: number;
-  feePeriodId: string;
-}) => {
-  const rows = await db
-    .select({
-      id: schema.attributedConversion.id,
-      feeCents: schema.attributedConversion.feeCents,
-    })
-    .from(schema.attributedConversion)
-    .where(
-      and(
-        eq(schema.attributedConversion.userId, user),
-        ne(schema.attributedConversion.billingStatus, "voided"),
-        gte(schema.attributedConversion.createdAt, start),
-        lt(schema.attributedConversion.createdAt, end),
-      ),
-    )
-    .orderBy(asc(schema.attributedConversion.createdAt));
-
-  const now = new Date();
-  const state = rows.reduce(
-    (accumulator, row) => {
-      const cumulative = accumulator.cumulative + row.feeCents;
-      const status = cumulative <= capCents ? "reported" : "capped";
-      accumulator.updates.push(
-        db
-          .update(schema.attributedConversion)
-          .set({ billingStatus: status, feePeriodId, updatedAt: now })
-          .where(eq(schema.attributedConversion.id, row.id)),
-      );
-      return { cumulative, updates: accumulator.updates };
-    },
-    { cumulative: 0, updates: [] as Promise<unknown>[] },
-  );
-
-  await Promise.all(state.updates);
+  const store = stores.data[0];
+  if (store)
+    return {
+      success: true as const,
+      data: { kind: "shopify" as const, store: store.id },
+    };
+  return { success: true as const, data: { kind: "stripe" as const } };
 };
 
 type PeriodState = "open" | "awaiting_payment" | "reported" | "uncollectible";
@@ -399,6 +329,8 @@ const closePaygPeriod = withContext(
       };
 
     const rail = await resolveRail(subscription.userId);
+    if (!rail.success) return rail;
+
     const billed = Math.min(accrued.data, capCents);
 
     const period = await upsertPeriod(
@@ -412,7 +344,7 @@ const closePaygPeriod = withContext(
         capCents,
         accruedCents: accrued.data,
         billedCents: billed,
-        rail: rail.kind,
+        rail: rail.data.kind,
       },
       {
         target: [schema.feePeriod.subscriptionId, schema.feePeriod.periodStart],
@@ -422,7 +354,7 @@ const closePaygPeriod = withContext(
           capCents,
           accruedCents: accrued.data,
           billedCents: billed,
-          rail: rail.kind,
+          rail: rail.data.kind,
           updatedAt: new Date(),
         },
       },
@@ -446,13 +378,14 @@ const closePaygPeriod = withContext(
       });
       if (!updated.success) return updated;
 
-      await settleConversions({
+      const settled = await Attribution.settleForPeriod(Environment.SERVER, {
         user: subscription.userId,
         start,
         end,
         capCents,
         feePeriodId: period.data.id,
       });
+      if (!settled.success) return settled;
 
       return {
         success: true as const,
@@ -462,9 +395,9 @@ const closePaygPeriod = withContext(
 
     if (delta <= 0) return finalize(period.data.state, false);
 
-    if (rail.kind === "shopify") {
+    if (rail.data.kind === "shopify") {
       const usage = await Shopify.createUsageRecord(Environment.SERVER, {
-        store: rail.store,
+        store: rail.data.store,
         cents: delta,
         description,
       });

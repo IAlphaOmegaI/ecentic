@@ -1,0 +1,78 @@
+{
+  "yc": {
+    "meta": {
+      "title": "ecentic para Y Combinator — canjea tu oferta",
+      "description": "Una oferta exclusiva de ecentic para estudiantes de Y Combinator: acceso extendido en cualquier plan, onboarding personalizado y precio para estudiantes. Canjea en menos de dos minutos."
+    },
+    "breadcrumb": {
+      "home": "Inicio",
+      "page": "Y Combinator"
+    },
+    "hero": {
+      "eyebrow": "Y Combinator",
+      "title": {
+        "primary": "Tu oferta ecentic,",
+        "accent": "lista para canjear."
+      },
+      "description": "Una oferta exclusiva de ecentic para estudiantes de Y Combinator: acceso extendido en cualquier plan, onboarding personalizado y precio para estudiantes. Canjea en menos de dos minutos.",
+      "art": {
+        "alt": "Ilustración ASCII de un apretón de manos"
+      },
+      "badge": {
+        "alt": "Y Combinator",
+        "label": "Oferta exclusiva de partner"
+      }
+    },
+    "deal": {
+      "number": "01",
+      "title": "Qué incluye la oferta",
+      "description": "Pensada para estudiantes de YC que prefieren ganar recomendaciones de agentes de IA antes que cuidar una hoja de cálculo de fichas.",
+      "content": "ecentic te muestra cómo los agentes de compra con IA comparan tus productos con los competidores, diagnostica por qué ganas o pierdes y reescribe tus fichas para cerrar la brecha. Tu descuento YC se aplica al plan que mejor te encaje: Compete, Scale o Dominate.\n\n- Simulaciones de agentes en ChatGPT, Claude, Gemini y Perplexity en todos los planes\n- Simulaciones continuas y auto-optimización con publicación en un clic desde Scale\n- Alertas de deriva de modelos y generación UCP en Dominate, para que los agentes verifiquen tu catálogo directamente\n- Onboarding personalizado para tu catálogo y precio para estudiantes tras el periodo de la oferta\n\nCanjea abajo y verificaremos tu batch; luego te enviaremos el enlace de activación en un día laborable."
+    },
+    "redeem": {
+      "number": "02",
+      "title": "Canjea tu oferta",
+      "description": "Cuéntanos quién eres y qué quieres ganar. Verificamos tu batch de YC y activamos tu oferta. Sin tarjeta de crédito."
+    },
+    "howItWorks": {
+      "number": "03",
+      "title": "Cómo funciona el canje",
+      "description": "Tres pasos del formulario a la oferta activa. La mayoría de estudiantes ejecutan su primera simulación el mismo día.",
+      "content": "Aquí no hay laberinto de procurement. El objetivo es que empieces a simular rápido.\n\n- Envía el formulario con tu empresa, tu batch y qué quieres que ecentic te ayude a ganar\n- Verificamos tu batch contra el directorio de YC, normalmente el mismo día\n- Recibes un enlace de activación y ayuda personalizada para importar tu catálogo\n\nUna vez dentro tu catálogo, ecentic lo pasa por los principales modelos de compra con IA, te muestra por qué eligen a los competidores y convierte los hallazgos en cambios de ficha que puedes aprobar en un clic."
+    },
+    "faqSection": {
+      "number": "04",
+      "title": "FAQ de canje",
+      "description": "Elegibilidad, qué incluye y cuánto tardarás en estar activo."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "¿Quién puede acceder a esta oferta?",
+          "answer": "Cualquier empresa de un batch actual o pasado de Y Combinator. Verificamos tu batch contra el directorio de YC tras el envío, así que usa el email y nombre de empresa que YC tenga registrados para acelerar el proceso."
+        },
+        {
+          "question": "¿Qué recibo exactamente?",
+          "answer": "Tu descuento de estudiante en el plan de ecentic que elijas: Compete, Scale o Dominate. Todos los planes ejecutan simulaciones de agentes de IA en ChatGPT, Claude, Gemini y Perplexity; Scale añade simulaciones continuas y auto-optimización con publicación en un clic; Dominate añade alertas de deriva de modelos y generación UCP. Todos incluyen onboarding personalizado para tu catálogo y precio para estudiantes cuando termine el periodo de la oferta."
+        },
+        {
+          "question": "¿Necesito una cuenta antes?",
+          "answer": "No. Canjea la oferta aquí y te enviaremos los detalles de activación en un día laborable. Puedes crear tu cuenta ahora o esperar al enlace de activación; ambos llevan al mismo sitio."
+        },
+        {
+          "question": "¿Cuánto tarda el canje?",
+          "answer": "El formulario tarda unos dos minutos. La verificación suele ser el mismo día y nunca más de un día laborable. Recibirás un email en cuanto tu oferta esté activa."
+        }
+      ]
+    },
+    "footer": {
+      "primary": "Crea tu cuenta",
+      "secondary": "Reservar una demo",
+      "note": "Solo estudiantes YC. Verificamos tu batch antes de activar la oferta."
+    },
+    "structuredData": {
+      "offerName": "Oferta ecentic para estudiantes de Y Combinator",
+      "eligibleCustomerType": "Estudiantes de Y Combinator"
+    }
+  }
+}

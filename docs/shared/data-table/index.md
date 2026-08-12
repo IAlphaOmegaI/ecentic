@@ -113,7 +113,7 @@ type TableRow = {
 
 ```tsx
 import { DataTableProvider, useDataTable } from '@zenncore/data-table';
-import { createColumnHelper } from '@tanstack/react-table';
+import { createColumnHelper } from '@zenncore/web/components/data-table';
 
 type User = { _id: string; name: string; email: string };
 const columnHelper = createColumnHelper<User>();
@@ -163,7 +163,7 @@ function UserTable() {
 
 ## Notes
 
-- Built on `@tanstack/react-table` v8
+- Built on `@tanstack/react-table` v9 — the wrapper registers its own `tableFeatures` set (pagination, expansion, faceting, plus state-only sorting/filtering and the selection/visibility features the `DataTable` renderer needs) and exports it as `DataTableFeatures`
 - Provides pagination, sorting, row selection
 - Used by `@zenncore/web` DataTable component
 - Type-safe with generics

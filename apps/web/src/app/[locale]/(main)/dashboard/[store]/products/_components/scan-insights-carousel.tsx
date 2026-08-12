@@ -9,9 +9,10 @@ import {
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import { Link } from "@/i18n/navigation";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { Link } from "@/i18n/navigation";
 import type * as Simulate from "@/server/app/intelligence/simulate";
 import { SectionKicker } from "../../../_components/grid";
 
@@ -25,6 +26,7 @@ export type ScanInsight = {
 };
 
 const WinRateSummary = ({ wins, losses }: { wins: number; losses: number }) => {
+  const translate = useTranslations("dashboard.products.detail");
   const total = wins + losses;
   const rate = total > 0 ? Math.round((wins / total) * 100) : 0;
 
@@ -42,7 +44,7 @@ const WinRateSummary = ({ wins, losses }: { wins: number; losses: number }) => {
   return (
     <div>
       <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-        Win Rate
+        {translate("winRate")}
       </p>
       <div className="mt-2 flex items-baseline gap-3">
         <span
@@ -63,6 +65,7 @@ const WinRateSummary = ({ wins, losses }: { wins: number; losses: number }) => {
 
 const InsightCard = ({ scan }: { scan: ScanInsight }) => {
   const { store } = useParams<{ store: string }>();
+  const translate = useTranslations("dashboard.products.insights");
   const finding = scan.topFinding;
 
   return (
@@ -81,7 +84,7 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
             <div className="bg-background-rich p-6 transition-colors hover:bg-background">
               <RocketIcon className="size-7.5 text-error" />
               <p className="mt-4 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-                Impact
+                {translate("impact")}
               </p>
               <p className="mt-2 text-foreground leading-relaxed">
                 {finding.impactDescription}
@@ -95,7 +98,7 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
                 </span>
               </p>
               <p className="mt-2 text-foreground-dimmed text-xs">
-                of sims lost
+                {translate("simsLost")}
               </p>
             </div>
           </div>
@@ -103,7 +106,7 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
           {finding.missingAttributes.length > 0 && (
             <div className="flex flex-col gap-4 p-4">
               <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-                Missing Attributes
+                {translate("missingAttributes")}
               </p>
               <div className="flex flex-wrap gap-2">
                 {finding.missingAttributes.map((attribute) => (
@@ -122,11 +125,9 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
         <div className="flex flex-col items-center justify-center p-8">
           <BoxMinusIcon className="mb-2 size-24 text-foreground-dimmed" />
           <p className="font-semibold text-foreground-rich text-lg">
-            No finding recorded for this scan.
+            {translate("noFindingTitle")}
           </p>
-          <p className="text-foreground-dimmed">
-            Rerun the scan to see insights.
-          </p>
+          <p className="text-foreground-dimmed">{translate("noFindingHint")}</p>
         </div>
       )}
       <div className="flex items-center justify-between border-accent-foreground border-t p-4">
@@ -135,7 +136,7 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
           color="primary"
           render={<Link href={`/dashboard/${store}/optimize`} />}
         >
-          Fix this <ArrowRightIcon className="size-4" />
+          {translate("fixThis")} <ArrowRightIcon className="size-4" />
         </Button>
       </div>
     </div>
@@ -150,6 +151,8 @@ export namespace ScanInsightsCarousel {
 
 export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
   const [index, setIndex] = useState(0);
+  const translate = useTranslations("dashboard.products.insights");
+  const shared = useTranslations("dashboard.shared");
 
   const current = scans[index];
 
@@ -165,16 +168,18 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
     <div className="bg-background-rich">
       <div className="flex items-start justify-between border-accent-foreground border-b p-4">
         <div>
-          <SectionKicker>04 — Insights</SectionKicker>
+          <SectionKicker>{shared("sections.insights")}</SectionKicker>
           <p className="mt-2 font-semibold text-foreground-rich text-lg">
-            Scan Results
+            {translate("scanResults")}
           </p>
         </div>
 
         <div className="flex flex-col items-end gap-1">
-          <p className="font-medium text-primary text-sm">{formatted}</p>
+          <p className="font-medium text-primary-text text-sm">{formatted}</p>
           <p className="text-foreground-dimmed text-xs">
-            {current.completedSimulations} simulations
+            {translate("simulationsCount", {
+              count: current.completedSimulations,
+            })}
           </p>
         </div>
       </div>

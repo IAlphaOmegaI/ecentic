@@ -1,6 +1,7 @@
 "use client";
 
 import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
+import { useTranslations } from "next-intl";
 import { type ReactNode, useState } from "react";
 import { NotificationsSection } from "./settings/notifications-section";
 import { SimulationSection } from "./settings/simulation-section";
@@ -24,6 +25,7 @@ export const SettingsClient = ({
   integrations,
   billing,
 }: SettingsClient.Props) => {
+  const translate = useTranslations("dashboard.settings.tabs");
   const [notifications, setNotifications] = useState({
     winRateDrop: true,
     simulationComplete: true,
@@ -44,7 +46,7 @@ export const SettingsClient = ({
   const [persona, setPersona] = useState("Budget-conscious shopper");
 
   const className =
-    "h-auto w-full justify-start rounded-none border-0 border-accent-foreground border-b border-l-[3px] border-l-transparent p-4 text-left font-medium text-foreground-dimmed text-sm transition-colors duration-150 hover:bg-background hover:text-foreground data-selected:border-l-primary data-selected:bg-primary/5 data-selected:font-semibold data-selected:text-primary data-[active]:text-primary";
+    "h-auto w-full justify-start rounded-none border-0 border-accent-foreground border-b border-l-[3px] border-l-transparent p-4 text-left font-medium text-foreground-dimmed text-sm transition-colors duration-150 hover:bg-background hover:text-foreground data-selected:border-l-primary data-selected:bg-primary/5 data-selected:font-semibold data-selected:text-primary-text data-[active]:text-primary-text";
 
   return (
     <div className="flex gap-px bg-accent-foreground">
@@ -55,22 +57,16 @@ export const SettingsClient = ({
       >
         <TabsList className="flex w-full shrink-0 flex-col border-0 bg-background-rich md:w-44">
           <Tab value="account" className={className}>
-            Account
+            {translate("account")}
           </Tab>
-          {/* <Tab value="team" className={className}>
-              Team
-            </Tab> */}
           <Tab value="integrations" className={className}>
-            Integrations
+            {translate("integrations")}
           </Tab>
           <Tab value="notifications" className={className}>
-            Notifications
+            {translate("notifications")}
           </Tab>
-          {/* <Tab value="simulation" className={className}>
-              Simulation
-            </Tab> */}
           <Tab value="billing" className={className}>
-            Billing
+            {translate("billing")}
           </Tab>
         </TabsList>
 

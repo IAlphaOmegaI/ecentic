@@ -1,5 +1,6 @@
 import { unwrapResult } from "@zenncore/utils";
 import { connection } from "next/server";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import * as AgentReadiness from "@/server/app/intelligence/agent-readiness";
 import * as CatalogRank from "@/server/app/intelligence/catalog-rank";
@@ -17,15 +18,9 @@ const CHECK_TONES = {
   manual: "neutral",
 } as const;
 
-const CHECK_LABELS = {
-  pass: "Pass",
-  warn: "Warn",
-  fail: "Fail",
-  manual: "Manual",
-} as const;
-
 const AuditContent = async ({ params }: { params: StoreParams }) => {
   await connection();
+  const translate = await getTranslations("dashboard.visibility.audit");
   const { store } = await params;
   const report = unwrapResult(
     await AgentReadiness.auditStore(Environment.SERVER, { store }),
@@ -38,8 +33,7 @@ const AuditContent = async ({ params }: { params: StoreParams }) => {
           {report.score}%
         </p>
         <p className="text-foreground-dimmed text-sm">
-          agent-readiness across automated checks — measured against what AI
-          surfaces actually read, not ecentic's own data
+          {translate("scoreDetail")}
         </p>
       </div>
 
@@ -48,7 +42,7 @@ const AuditContent = async ({ params }: { params: StoreParams }) => {
           <div key={check.key} className="flex flex-col gap-1.5 p-4">
             <div className="flex flex-wrap items-center gap-2">
               <StatusPill tone={CHECK_TONES[check.status]}>
-                {CHECK_LABELS[check.status]}
+                {translate(`checkStatus.${check.status}`)}
               </StatusPill>
               <p className="font-medium text-foreground text-sm">
                 {check.label}
@@ -67,7 +61,7 @@ const AuditContent = async ({ params }: { params: StoreParams }) => {
                 href={check.action.url}
                 target="_blank"
                 rel="noreferrer"
-                className="w-fit font-medium text-primary text-sm underline-offset-2 hover:underline"
+                className="w-fit font-medium text-primary-text text-sm underline-offset-2 hover:underline"
               >
                 {check.action.label} ↗
               </a>
@@ -80,14 +74,18 @@ const AuditContent = async ({ params }: { params: StoreParams }) => {
         <div className="border-accent-foreground border-t">
           <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
             <p className="font-medium text-base text-foreground">
-              Product feed ({report.feed.itemCount} items
-              {report.feed.skippedCount > 0 &&
-                `, ${report.feed.skippedCount} skipped`}
-              )
+              {translate("feed.title", {
+                count: report.feed.itemCount,
+                skipped:
+                  report.feed.skippedCount > 0
+                    ? translate("feed.skipped", {
+                        count: report.feed.skippedCount,
+                      })
+                    : "",
+              })}
             </p>
             <p className="mt-0.5 text-foreground-dimmed text-xs">
-              One URL for both Google Merchant Center and the Perplexity
-              Merchant Program.
+              {translate("feed.description")}
             </p>
           </div>
           <FeedUrlCard url={report.feed.url} />

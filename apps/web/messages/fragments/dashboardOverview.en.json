@@ -1,0 +1,112 @@
+{
+  "dashboard": {
+    "shared": {
+      "status": {
+        "liveUpdated": "Live — updated {time}",
+        "liveLastScanned": "Live — last scanned {time}",
+        "liveProductUpdated": "Live — updated {time}",
+        "lastSimulation": "Last simulation {time}",
+        "noScansYet": "No scans run yet",
+        "noSimulationsYet": "No simulations run yet"
+      },
+      "stats": {
+        "noDataYet": "No data yet",
+        "overallWinRate": "Overall Win Rate",
+        "productsScanned": "Products Scanned",
+        "topPerformer": "Top Performer",
+        "biggestOpportunity": "Biggest Opportunity",
+        "vsLastScan": "vs last scan",
+        "acrossProducts": "across {count, plural, one {# product} other {# products}}",
+        "slotsRemaining": "{count} slots remaining",
+        "viewDetails": "View details",
+        "optimizeNow": "Optimize now"
+      },
+      "sections": {
+        "performance": "01 — Performance",
+        "performanceHalf": "01.5 — Recent Activity",
+        "catalog": "02 — Catalog",
+        "competitiveLandscape": "03 — Competitive Landscape",
+        "traffic": "03 — Traffic",
+        "insights": "04 — Insights",
+        "agentTraffic": "04 — Agent Traffic"
+      },
+      "performance": {
+        "winRateByModel": "Win Rate by Model",
+        "winRateTrend": "Win Rate Trend",
+        "noModelData": "Run a simulation to see per-model performance.",
+        "notEnoughTrendData": "Not enough data for trend.",
+        "runSimulationHint": "Get started by running a simulation.",
+        "runMoreSimulationsHint": "Run more simulations to see history."
+      },
+      "activity": {
+        "simulationComplete": "Simulation completed — {wins} wins, {losses} losses",
+        "simulationInProgress": "Simulation in progress — {completed}/{total}",
+        "noActivityTitle": "No activity yet. Run your",
+        "noActivityHint": "first simulation to see results here."
+      },
+      "action": {
+        "optimizations": "Optimizations",
+        "viewAllProducts": "View all products",
+        "viewAll": "View all",
+        "runSimulation": "Run Simulation",
+        "ucpManager": "UCP Manager"
+      },
+      "table": {
+        "product": "Product",
+        "price": "Price",
+        "winRate": "Win Rate",
+        "quality": "Quality",
+        "lastScan": "Last Scan",
+        "brand": "Brand",
+        "simulations": "Simulations",
+        "lastUpdated": "Last Updated",
+        "competitor": "Competitor",
+        "wins": "Wins",
+        "losses": "Losses",
+        "total": "Total",
+        "productWinRates": "Product Win Rates",
+        "productCatalog": "Product Catalog",
+        "competitorBrands": "Competitor Brands",
+        "topCompetitors": "Top Competitors"
+      },
+      "empty": {
+        "noProducts": "No products found",
+        "noProductsHint": "Import products and run a simulation to see win rates here.",
+        "noCompetitors": "No competitors tracked yet",
+        "noCompetitorsHint": "Add competitors to start analyzing your competitive landscape."
+      },
+      "count": {
+        "products": "{count, plural, one {# product} other {# products}}",
+        "competitors": "{count, plural, one {# competitor} other {# competitors}}",
+        "productSingular": "product",
+        "productsPlural": "products",
+        "competitorSingular": "competitor",
+        "competitorsPlural": "competitors",
+        "totalSimulations": "{count} total simulations",
+        "last30d": "last 30d"
+      },
+      "agentVisits": {
+        "title": "AI Agent Visits to Products",
+        "description": "Browser-visible AI and referral signals from your ScriptTag tracker.",
+        "panelTitle": "Visits by agent (last 30 days)",
+        "panelDescription": "From your ScriptTag tracker, browser-visible AI and referral signals only.",
+        "total": "total",
+        "empty": "No AI agent visits recorded yet. Traffic appears when shoppers arrive via AI referrers or user-agents your tracker recognizes.",
+        "emptyOverview": "No AI agent visits recorded yet. Traffic appears when shoppers arrive via AI referrers or user-agents your tracker recognizes, or when probe mode is enabled."
+      },
+      "present": "Present",
+      "missing": "Missing",
+      "cancel": "Cancel",
+      "sku": "SKU: {sku}"
+    },
+    "overview": {
+      "title": "Overview",
+      "description": "How AI shopping agents rank your catalog against competitors.",
+      "tabs": {
+        "topProducts": "Top Products",
+        "competitors": "Competitors",
+        "agentVisits": "Agent Visits"
+      }
+    }
+  }
+}

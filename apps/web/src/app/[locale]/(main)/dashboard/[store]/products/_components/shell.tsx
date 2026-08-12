@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { Crosshair, SectionGutter } from "../../../_components/grid";
 
@@ -26,87 +29,90 @@ export const ProductsShell = ({
   table: ReactNode;
   traffic: ReactNode;
   insights: ReactNode;
-}) => (
-  <div className="flex flex-col">
-    <div className="mx-8 border-accent-foreground border-x">
-      <div className="-mx-8 border-accent-foreground border-b">
-        <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
-          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <div>
-            {statusPill}
-            <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
-              Products
-            </h1>
-            <p className="mt-1 text-foreground-dimmed text-sm">
-              How each product in your catalog performs across AI shopping
-              agents.
-            </p>
+}) => {
+  const translate = useTranslations("dashboard.products");
+
+  return (
+    <div className="flex flex-col">
+      <div className="mx-8 border-accent-foreground border-x">
+        <div className="-mx-8 border-accent-foreground border-b">
+          <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
+            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+            <div>
+              {statusPill}
+              <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
+                {translate("title")}
+              </h1>
+              <p className="mt-1 text-foreground-dimmed text-sm">
+                {translate("description")}
+              </p>
+            </div>
+            <div className="flex items-center gap-2">{action}</div>
           </div>
-          <div className="flex items-center gap-2">{action}</div>
         </div>
-      </div>
 
-      {banner}
+        {banner}
 
-      <div className="-mx-8 border-accent-foreground border-b">
-        <div className="relative mx-8 bg-background-rich">
-          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          {stats}
+        <div className="-mx-8 border-accent-foreground border-b">
+          <div className="relative mx-8 bg-background-rich">
+            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+            {stats}
+          </div>
         </div>
-      </div>
 
-      <SectionGutter />
+        <SectionGutter />
 
-      <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="relative mx-8 bg-background-rich">
-          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          {performance}
+        <div className="-mx-8 border-accent-foreground border-t border-b">
+          <div className="relative mx-8 bg-background-rich">
+            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+            {performance}
+          </div>
         </div>
-      </div>
 
-      <SectionGutter />
+        <SectionGutter />
 
-      <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="relative mx-8 bg-background-rich">
-          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          {table}
+        <div className="-mx-8 border-accent-foreground border-t border-b">
+          <div className="relative mx-8 bg-background-rich">
+            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+            {table}
+          </div>
         </div>
-      </div>
 
-      <SectionGutter />
+        <SectionGutter />
 
-      <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="relative mx-8 bg-background-rich">
-          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          {traffic}
+        <div className="-mx-8 border-accent-foreground border-t border-b">
+          <div className="relative mx-8 bg-background-rich">
+            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+            {traffic}
+          </div>
         </div>
-      </div>
 
-      <SectionGutter />
+        <SectionGutter />
 
-      <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="relative mx-8 bg-background-rich">
-          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          {insights}
+        <div className="-mx-8 border-accent-foreground border-t border-b">
+          <div className="relative mx-8 bg-background-rich">
+            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+            {insights}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 // Sized to the "Add Products" button it stands in for.
 export const AddActionSkeleton = () => (
@@ -198,6 +204,15 @@ export const ChartSkeleton = () => (
         <div className="h-9 w-36 animate-pulse bg-foreground/10" />
       </div>
     </div>
+  </div>
+);
+
+// Mirrors the filter toolbar above the products table: the "Add filter"
+// trigger and one missing-attribute chip.
+export const FiltersSkeleton = () => (
+  <div className="flex flex-wrap items-center gap-2 border-accent-foreground border-b p-4">
+    <div className="h-9 w-28 animate-pulse bg-foreground/10" />
+    <div className="h-8 w-64 animate-pulse rounded-full bg-foreground/10" />
   </div>
 );
 
