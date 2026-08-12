@@ -19,7 +19,7 @@
         },
         "publishable": {
           "label": "Elegibles para auto-publicación",
-          "detail": "Se corrigen reescribiendo la ficha — aprueba para publicar."
+          "detail": "Se corrigen reescribiendo la ficha. Aprueba para publicar."
         },
         "manualFix": {
           "label": "Solo corrección manual",
@@ -74,7 +74,7 @@
       "roadmap": {
         "kicker": "01 — Qué esperar",
         "title": "Perspectiva de optimización",
-        "description": "Cómo suele acumularse la tasa de victoria de agentes en seis meses — desde el primer impulso tras publicar (24–48 h) hasta tráfico en la tienda alrededor del día {trafficDays}, y luego el efecto compuesto en todo el catálogo.",
+        "description": "Cómo suele acumularse la tasa de victoria de agentes en seis meses: primer impulso tras publicar en 24–48 h, tráfico en la tienda alrededor del día {trafficDays}, y luego el efecto compuesto en todo el catálogo.",
         "phaseLabel": "Fase {title}",
         "current": "Actual",
         "liftPoints": "+{points} pts",
@@ -107,7 +107,7 @@
           "foundation": {
             "title": "Fundación",
             "window": "Días 0–14",
-            "summary": "Escanea, reescribe fichas débiles y publica datos estructurados para que los agentes puedan leerte. La tasa de victoria en simulación se mueve primero — normalmente en 24–48 horas tras publicar.",
+            "summary": "Escanea, reescribe fichas débiles y publica datos estructurados para que los agentes puedan leerte. La tasa de victoria en simulación se mueve primero, normalmente en 24–48 horas tras publicar.",
             "outcomes": [
               "Aprueba reescrituras de ficha pendientes (título + descripción)",
               "Publica JSON-LD / atributos listos para feed en SKUs clave",
@@ -362,7 +362,7 @@
       "advancedValidator": {
         "kicker": "Pruebas avanzadas",
         "title": "Pruebas de endpoints y ciclo de vida",
-        "description": "Sondea todos los endpoints de servicio declarados en el perfil y simula el ciclo de vida completo de checkout de un agente de IA — Crear → Actualizar → Completar → Cancelar.",
+        "description": "Sondea todos los endpoints de servicio declarados en el perfil y simula el ciclo de vida completo de checkout de un agente de IA: Crear → Actualizar → Completar → Cancelar.",
         "fields": {
           "domain": {
             "label": "Dominio",
@@ -373,7 +373,7 @@
           "primary": "Ejecutar pruebas avanzadas",
           "running": "Probando…"
         },
-        "hint": "Realiza peticiones HTTP en vivo al servidor del comerciante — las entradas de prueba pueden crear carritos de test.",
+        "hint": "Realiza peticiones HTTP en vivo al servidor del comerciante. Las entradas de prueba pueden crear carritos de test.",
         "toast": {
           "failed": "Error en la comprobación avanzada"
         },
@@ -540,7 +540,7 @@
       "session": {
         "changeStore": "Cambiar tienda",
         "emptyTitle": "¿Qué debe hacer el agente?",
-        "emptyDescription": "Estás conectado a {host}. El agente ejecuta llamadas UCP en vivo — buscar en el catálogo, inspeccionar un producto, crear un carrito o iniciar un checkout.",
+        "emptyDescription": "Estás conectado a {host}. El agente ejecuta llamadas UCP en vivo: buscar en el catálogo, inspeccionar un producto, crear un carrito o iniciar un checkout.",
         "suggestions": [
           "Muéstrame detalles del primer producto",
           "Añade el primer producto a un carrito nuevo",
@@ -583,7 +583,7 @@
       },
       "quota": {
         "title": "Has usado los {limit} mensajes gratis del playground",
-        "description": "Crea una cuenta para seguir ejecutando flujos UCP contra tu propia tienda — sin límite de mensajes.",
+        "description": "Crea una cuenta para seguir ejecutando flujos UCP contra tu propia tienda, sin límite de mensajes.",
         "action": {
           "primary": "Crear cuenta gratis"
         }
@@ -801,11 +801,11 @@
         "choosePlan": {
           "title": "Elige cómo pagar",
           "description": "Empieza gratis con pago por uso, o elige una suscripción mensual fija sin comisión por rendimiento.",
-          "startPayg": "Empezar pago por uso — gratis, sin tarjeta"
+          "startPayg": "Empezar pago por uso (gratis, sin tarjeta)"
         },
         "performanceFee": {
           "title": "Comisión por rendimiento",
-          "description": "{rate}% en pedidos atribuidos a IA · tope {cap}/mes. Gratis para empezar — solo pagas cuando un agente compra por una optimización que hicimos, nunca por otras ventas.",
+          "description": "{rate}% en pedidos atribuidos a IA · tope {cap}/mes. Gratis para empezar. Solo pagas cuando un agente compra por una optimización que hicimos, nunca por otras ventas.",
           "actionNeeded": "Acción necesaria",
           "active": "Activo",
           "off": "Desactivado",
@@ -882,7 +882,7 @@
       "description": "Descarga o programa informes automatizados sobre el rendimiento de tus agentes.",
       "shareable": {
         "title": "Informe de tasa de victoria compartible",
-        "description": "Genera una URL pública para un informe de tasa de victoria con buen formato — pensado para compartir en Twitter, LinkedIn o con tu equipo.",
+        "description": "Genera una URL pública para tu informe de tasa de victoria, con formato listo para compartir en Twitter, LinkedIn o con tu equipo.",
         "action": {
           "primary": "Generar informe compartible"
         },

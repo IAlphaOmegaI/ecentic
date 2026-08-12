@@ -1,7 +1,7 @@
 {
   "ucpValidator": {
     "meta": {
-      "title": "UCP Validator — Universal Commerce Protocol Check",
+      "title": "UCP Validator — Universal Commerce Protocol check",
       "description": "Free UCP Validator: check whether a storefront publishes a valid Universal Commerce Profile, validate its schema, and confirm AI agents pass robots.txt."
     },
     "breadcrumb": {

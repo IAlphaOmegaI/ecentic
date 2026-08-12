@@ -119,13 +119,13 @@ export const DealRedemptionForm = ({
 
       if (!response.success || !response.data.ok) {
         const message = await (async () => {
-          if (!response.success) return "Network error — please try again.";
+          if (!response.success) return "Network error. Please try again.";
           const body = await resultify(
             () => response.data.json() as Promise<{ error?: string }>,
           );
           return body.success && body.data.error
             ? body.data.error
-            : "Something went wrong — please try again.";
+            : "Something went wrong. Please try again.";
         })();
 
         toast.add({

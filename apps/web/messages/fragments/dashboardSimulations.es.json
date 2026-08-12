@@ -21,7 +21,7 @@
       "setup": {
         "kicker": "02 — Configuración del escaneo",
         "title": "Elige qué simular",
-        "description": "Elige los productos y competidores para la próxima ejecución — la estimación se actualiza al seleccionar.",
+        "description": "Elige los productos y competidores para la próxima ejecución. La estimación se actualiza al seleccionar.",
         "products": "Productos",
         "competitors": "Competidores",
         "clearAll": "Limpiar todo",
@@ -57,7 +57,7 @@
         "products": "Productos",
         "wins": "Victorias",
         "losses": "Derrotas",
-        "topFinding": "{name} pierde en {attributes} — {impact} Te cuesta el {loss}% de las simulaciones."
+        "topFinding": "{name} pierde en {attributes}. {impact} Te cuesta el {loss}% de las simulaciones."
       },
       "toast": {
         "simulationFailed": "Error en la simulación",

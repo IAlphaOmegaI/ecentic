@@ -519,7 +519,7 @@
         "pricePerMonth": "/month",
         "action": {
           "primary": "Upgrade Now",
-          "secondary": "Maybe later — {days} days remaining"
+          "secondary": "Maybe later ({days} days remaining)"
         }
       },
       "features": [
@@ -570,7 +570,7 @@
           "medium": "You're competitive, but there's significant room to win more.",
           "high": "You're ahead of most competitors. Let's make sure you stay there."
         },
-        "topFinding": "{name} loses on {attributes} — {impact} Costs you {lossPercentage}% of simulations."
+        "topFinding": "{name} loses on {attributes}. {impact} Costs you {lossPercentage}% of simulations."
       },
       "providers": {
         "gpt4": {
@@ -692,7 +692,7 @@
       },
       "embedBanner": {
         "title": "Structured data is not reaching your product pages",
-        "description": "The “Agentic structured data” app embed is off, so AI agents don't see machine-readable data on your products. Enabling it once adds structured data to every product in this store.",
+        "description": "The \"Agentic structured data\" app embed is off, so AI agents don't see machine-readable data on your products. Turn it on once and every product in this store gets structured data.",
         "action": "Enable app embed"
       },
       "quality": {
@@ -743,7 +743,7 @@
           "won": "Won",
           "lost": "Lost",
           "reasoning": "{model}'s reasoning",
-          "noReasoning": "No reasoning recorded — decided by score ({productScore} vs {competitorScore})."
+          "noReasoning": "No reasoning recorded. Decided by score ({productScore} vs {competitorScore})."
         },
         "fields": {
           "title": "Title",
@@ -766,7 +766,7 @@
         },
         "applyOptimization": {
           "title": "Close the gap automatically",
-          "description": "ecentic rewrites this listing from the winning competitors' strengths and publishes it straight to your store — no manual edits.",
+          "description": "ecentic rewrites this listing from the winning competitors' strengths and publishes it straight to your store, with no manual edits from you.",
           "reviewQueue": "Review queue",
           "optimizePublish": "Optimize & publish"
         },
@@ -787,7 +787,7 @@
         },
         "optimizeTab": {
           "title": "Optimize Listing",
-          "description": "Category-aware content-quality scores for the fields AI agents read — plus how this listing is positioned for its audience.",
+          "description": "Category-aware content-quality scores for the fields AI agents read, plus how this listing is positioned for its audience.",
           "completeness": "Completeness:",
           "currentListing": "02 — Current listing",
           "characters": "{count} characters",
@@ -798,12 +798,12 @@
           "structuredDataHelp": "The app embed already renders default structured data from the live product content. Publishing writes this AI-optimized version to the {metafield} metafield, and the embed renders it instead of the default.",
           "publishStructuredData": "Publish optimized structured data",
           "publishing": "Publishing…",
-          "noStructuredDataYet": "No optimized structured data yet — the app embed renders the default markup built from the live product content. Generate an AI-optimized version to override it.",
+          "noStructuredDataYet": "No optimized structured data yet. The app embed renders the default markup built from the live product content. Generate an AI-optimized version to override it.",
           "generateJsonLd": "Generate optimized JSON-LD",
           "generating": "Generating…",
           "generationFailed": "Generation failed",
           "structuredDataPublished": "Optimized structured data published",
-          "structuredDataPublishedDescription": "Written to the ecentic.structured_data metafield — the app embed now renders it in place of the default product markup. If the embed is off, enable it in the theme editor and press Save.",
+          "structuredDataPublishedDescription": "Written to the ecentic.structured_data metafield. The app embed now renders it in place of the default product markup. If the embed is off, turn it on in the theme editor and press Save.",
           "openThemeEditor": "Open theme editor",
           "listingAuditKicker": "01 — AI Listing Audit",
           "status": {
@@ -816,11 +816,11 @@
           },
           "embedNotice": {
             "embedOffTitle": "App embed is off",
-            "embedOffText": "Optimized structured data is published for this product, but the “Agentic structured data” app embed is off — no ecentic markup reaches the page. Enabling it once applies to every product in the store.",
+            "embedOffText": "Optimized structured data is published for this product, but the \"Agentic structured data\" app embed is off, so no ecentic markup reaches the page. Turning it on once applies to every product in the store.",
             "missingTitle": "No structured data on the page",
-            "missingText": "AI agents see no machine-readable product data. Enable the “Agentic structured data” app embed — one toggle adds structured data for every product in the store.",
+            "missingText": "AI agents see no machine-readable product data. Turn on the \"Agentic structured data\" app embed. That one toggle adds structured data for every product in the store.",
             "storeDefaultTitle": "Store default markup",
-            "storeDefaultText": "Only the theme's own markup is live — usually thin (no GTIN, one offer, no variant detail). Enable the ecentic app embed (applies to all products), then publish optimized structured data below for this product.",
+            "storeDefaultText": "Only the theme's own markup is live, and it is usually thin: no GTIN, one offer, no variant detail. Turn on the ecentic app embed, which applies to all products, then publish optimized structured data below for this one.",
             "standardTitle": "Using ecentic standard markup",
             "standardText": "The app embed renders default structured data from the live product content. Publish the AI-optimized version below to give agents richer, more competitive markup for this product."
           }
@@ -843,7 +843,7 @@
         },
         "csv": {
           "title": "Upload a CSV",
-          "description": "This store was built from a file rather than a connected platform, so there's nothing upstream to pull from — upload another CSV to add to it.",
+          "description": "This store was built from a file rather than a connected platform, so there's nothing upstream to pull from. Upload another CSV to add to it.",
           "fieldLabel": "Product CSV",
           "importing": "Importing…",
           "importCsv": "Import CSV",
@@ -933,7 +933,7 @@
         "headlines": {
           "outrankAll": "You out-rank all {count} simulated competitor{plural} (avg {overall}% win rate).",
           "slimmestLead": "Your slimmest lead is against {brand} at {rate}%. Keep listings optimized to defend it.",
-          "biggestOpportunity": "{brand} wins {lossRate}% of agent comparisons against you — your biggest opportunity.",
+          "biggestOpportunity": "{brand} wins {lossRate}% of agent comparisons against you. That's your biggest opportunity.",
           "holdMajority": "You hold the majority against {winning} of {total} competitor{plural} (avg {overall}%). Optimizing the products you lose to {brand} moves the needle most.",
           "defaultHeadline": "You hold the majority against {winning} of {total} competitor{plural} (avg {overall}% win rate).",
           "focusOptimization": "Focus a listing optimization on the products {brand} beats you on.",
@@ -1082,7 +1082,7 @@
       "setup": {
         "kicker": "02 — Scan Setup",
         "title": "Choose What to Simulate",
-        "description": "Pick the products and competitors for the next run — the estimate updates as you select.",
+        "description": "Pick the products and competitors for the next run. The estimate updates as you select.",
         "products": "Products",
         "competitors": "Competitors",
         "clearAll": "Clear all",
@@ -1118,7 +1118,7 @@
         "products": "Products",
         "wins": "Wins",
         "losses": "Losses",
-        "topFinding": "{name} loses on {attributes} — {impact} Costs you {loss}% of simulations."
+        "topFinding": "{name} loses on {attributes}. {impact} Costs you {loss}% of simulations."
       },
       "toast": {
         "simulationFailed": "Simulation failed",
@@ -1152,7 +1152,7 @@
         },
         "publishable": {
           "label": "Auto-publish eligible",
-          "detail": "Fixable by rewriting the listing — approve to publish."
+          "detail": "Fixable by rewriting the listing. Approve to publish."
         },
         "manualFix": {
           "label": "Manual-fix only",
@@ -1207,7 +1207,7 @@
       "roadmap": {
         "kicker": "01 — What to expect",
         "title": "Optimization outlook",
-        "description": "How agent win rate typically compounds over six months — from first publish lift (24–48h) to storefront traffic around day {trafficDays}, then catalog-wide compounding.",
+        "description": "How agent win rate typically compounds over six months: first publish lift in 24–48h, storefront traffic around day {trafficDays}, then catalog-wide compounding.",
         "phaseLabel": "{title} phase",
         "current": "Current",
         "liftPoints": "+{points} pts",
@@ -1240,7 +1240,7 @@
           "foundation": {
             "title": "Foundation",
             "window": "Days 0–14",
-            "summary": "Scan, rewrite weak listings, and ship structured data so agents can read you. Simulation win rate moves first — usually within 24–48 hours of publish.",
+            "summary": "Scan, rewrite weak listings, and ship structured data so agents can read you. Simulation win rate moves first, usually within 24–48 hours of publish.",
             "outcomes": [
               "Approve pending listing rewrites (title + description)",
               "Publish JSON-LD / feed-ready attributes on key SKUs",
@@ -1286,7 +1286,7 @@
     "brand": {
       "eyebrow": "Brand Visibility",
       "title": "How AI engines perceive and discuss this brand",
-      "description": "Real shopper queries are answered by AI engines and audited: where the brand surfaces, who wins instead, and which sources the engines trust.",
+      "description": "We run real shopper queries through AI engines and audit the answers: where the brand surfaces, who wins instead, and which sources the engines trust.",
       "action": {
         "refresh": "Refresh brand data",
         "run": "Run brand analysis"
@@ -1295,7 +1295,7 @@
         "failed": "Brand analysis failed",
         "started": {
           "title": "Brand analysis started",
-          "description": "You can keep browsing — results will appear here in about a minute."
+          "description": "Keep browsing. Results appear here in about a minute."
         },
         "alreadyRunning": "An analysis is already running"
       },
@@ -1378,7 +1378,7 @@
       },
       "running": {
         "title": "Analysis in progress",
-        "description": "ChatGPT is answering and auditing 20 shopper queries. Feel free to navigate away — results land here automatically."
+        "description": "ChatGPT is answering and auditing 20 shopper queries. You can navigate away; results land here automatically."
       },
       "failed": {
         "title": "The last analysis failed",
@@ -1388,7 +1388,7 @@
     "quality": {
       "eyebrow": "Data Quality",
       "title": "Feed rules every AI shopping surface enforces",
-      "description": "Every active product runs through one rule registry: universal checks any AI shopping agent applies, plus the platform packs — Google Merchant Center's product data specification and issue codes, and the OpenAI product feed spec behind ChatGPT Shopping — with per-surface severity and links to the official documentation for every finding.",
+      "description": "Every active product runs through one rule registry: universal checks any AI shopping agent applies, plus platform packs for Google Merchant Center's product data specification and issue codes and the OpenAI product feed spec behind ChatGPT Shopping. Every finding carries per-surface severity and a link to the official documentation.",
       "platform": {
         "universal": "All AI agents",
         "google": "Google Merchant",
@@ -1417,13 +1417,13 @@
         "title": "Fixes ranked by how many products they unblock",
         "affected": "{count, plural, one {# product} other {# products}}",
         "viewAffected": "View affected products",
-        "empty": "No rule violations across the catalog — every listing passes both platforms' checks."
+        "empty": "No rule violations across the catalog. Every listing passes both platforms' checks."
       },
       "products": {
         "eyebrow": "Catalog",
         "title": "Per-product findings",
         "findings": "{count, plural, one {# finding} other {# findings}}",
-        "empty": "No active products yet — sync or add products to run the quality checks."
+        "empty": "No active products yet. Sync or add products to run the quality checks."
       },
       "rules": {
         "id-duplicate": {
@@ -1484,7 +1484,7 @@
         },
         "description-promo-text": {
           "title": "Promotional text in description",
-          "detail": "Remove promotion phrases — price, sale, and shipping claims are checked against dedicated attributes instead."
+          "detail": "Remove promotion phrases. Price, sale, and shipping claims are checked against dedicated attributes instead."
         },
         "id-too-long": {
           "title": "Product ID over 50 characters",
@@ -1560,14 +1560,14 @@
         },
         "mpn-missing-without-gtin": {
           "title": "No GTIN and no MPN",
-          "detail": "Provide an MPN when the product has no GTIN — ChatGPT Shopping requires one of the two; the Google feed marks identifier_exists false otherwise."
+          "detail": "Provide an MPN when the product has no GTIN. ChatGPT Shopping requires one of the two, and the Google feed marks identifier_exists false without them."
         }
       }
     },
     "googleShopping": {
       "eyebrow": "Channel · Google Shopping",
       "title": "Optimized listings on Google, without touching your store",
-      "description": "ecentic layers your published listing optimizations over your existing Google product feed as attribute overrides. Your store's Google plugin keeps owning prices, stock, and the product feed — ecentic manages titles, descriptions, and diagnostics on top.",
+      "description": "ecentic layers your published listing optimizations over your existing Google product feed as attribute overrides. Your store's Google plugin keeps owning prices, stock, and the product feed. ecentic manages titles, descriptions, and diagnostics on top.",
       "toast": "Google Shopping",
       "unsupported": {
         "chip": "Coming soon",
@@ -1577,12 +1577,12 @@
         "step": "Step {number, number}",
         "connect": {
           "title": "Connect Google",
-          "description": "Sign in with the Google account that manages this store's Merchant Center. ecentic requests the Merchant Center content scope — it manages your product listings, feeds, return policies, and store contact info there, and never touches your ads or personal data.",
+          "description": "Sign in with the Google account that manages this store's Merchant Center. ecentic requests the Merchant Center content scope. It manages your product listings, feeds, return policies, and store contact info there, and it never touches your ads or personal data.",
           "action": "Connect Google"
         },
         "chooseAccount": {
           "title": "Choose your Merchant Center account",
-          "description": "Your Google login can see several Merchant Center accounts — pick the one the Google & YouTube channel created for this store. Accounts whose registered website doesn't match this store's domain are flagged; linking one anyway is possible but usually wrong.",
+          "description": "Your Google login can see several Merchant Center accounts. Pick the one the Google & YouTube channel created for this store. Accounts whose registered website doesn't match this store's domain are flagged; you can link one anyway, but it is usually the wrong choice.",
           "matches": "{domain} — matches this store",
           "linkAnyway": "{domain} — link anyway",
           "noWebsite": "no website set",
@@ -1590,32 +1590,32 @@
         },
         "waitingAccount": {
           "title": "Waiting for your Merchant Center account",
-          "description": "Install the Google & YouTube channel in your store admin and finish its Google connection — it creates and verifies your Merchant Center account, then ecentic detects it automatically.",
+          "description": "Install the Google & YouTube channel in your store admin and finish its Google connection. That creates and verifies your Merchant Center account, and ecentic detects it automatically.",
           "action": "Check now",
           "checked": "Account check complete"
         },
         "link": {
           "title": "Link your account to ecentic",
-          "description": "ecentic will request management access to your Merchant Center account (account {account}). This lets us attach an optimization feed and read diagnostics — you can revoke the access in Merchant Center at any time.",
+          "description": "ecentic will request management access to your Merchant Center account (account {account}). This lets us attach an optimization feed and read diagnostics. You can revoke the access in Merchant Center at any time.",
           "action": "Request link",
           "requested": "Link requested"
         },
         "linkPending": {
           "title": "Establishing link",
-          "description": "Your link request is being processed — this usually completes within a few minutes.",
+          "description": "Your link request is being processed. This usually completes within a few minutes.",
           "action": "Check now",
           "refreshed": "Link status refreshed"
         },
         "feed": {
           "title": "Set up the optimization feed",
-          "description": "Creates ecentic's supplemental feed on your account and wires it into your primary product feed. Your store's plugin keeps owning prices, stock, and images — ecentic only layers optimized titles and descriptions on top.",
+          "description": "Creates ecentic's supplemental feed on your account and wires it into your primary product feed. Your store's plugin keeps owning prices, stock, and images. ecentic only layers optimized titles and descriptions on top.",
           "action": "Set up optimization feed",
           "ready": "Optimization feed ready"
         }
       },
       "disconnect": {
         "action": "Disconnect Google",
-        "description": "Removes ecentic's optimization feed and management access from your Merchant Center account. Your products and their Google listings stay — only the ecentic overrides go away. You can reconnect any time.",
+        "description": "Removes ecentic's optimization feed and management access from your Merchant Center account. Your products and their Google listings stay; only the ecentic overrides go away. You can reconnect any time.",
         "done": "Google disconnected"
       },
       "stats": {
@@ -1625,7 +1625,7 @@
       },
       "actions": {
         "push": "Push optimizations",
-        "pushed": "Optimizations pushed — going live on Google",
+        "pushed": "Optimizations pushed, going live on Google",
         "refresh": "Refresh status",
         "refreshed": "Status refreshed",
         "wiring": "Check feed wiring",
@@ -1644,7 +1644,7 @@
         "accountIssues": "Account issues",
         "issue": "Issue",
         "accountIssue": "Account issue",
-        "empty": "No issues reported — the account and its offers are healthy.",
+        "empty": "No issues reported. The account and its offers are healthy.",
         "attribute": "attribute: {attribute}"
       },
       "ucp": {
@@ -1662,49 +1662,49 @@
           "title": "Store website claimed",
           "fallback": "The homepage",
           "claimed": "{uri} is verified and claimed.",
-          "unclaimed": "{uri} is set but not claimed — your store's Google plugin normally handles this.",
+          "unclaimed": "{uri} is set but not claimed. Your store's Google plugin normally handles this.",
           "missing": "No homepage is registered on the Merchant Center account."
         },
         "returnPolicy": {
           "title": "Return policy",
           "link": "Or manage in Merchant Center",
-          "missing": "No return policy on the account — a Merchant-of-Record requirement, shown on Google's checkout screen. Create one below and ecentic writes it to Merchant Center.",
+          "missing": "No return policy on the account. Google requires one for Merchant of Record and shows it on the checkout screen. Create one below and ecentic writes it to Merchant Center.",
           "noWindow": "{count, plural, one {# policy} other {# policies}} found, but none defines a return window (days after delivery or lifetime).",
           "noLink": "{count, plural, one {# policy} other {# policies}} found, but none links to the full policy text.",
-          "noCost": "{count, plural, one {# policy} other {# policies}} found, but none states the return shipping cost — required alongside window and link.",
+          "noCost": "{count, plural, one {# policy} other {# policies}} found, but none states the return shipping cost, which is required alongside the window and link.",
           "ok": "{count, plural, one {# policy} other {# policies}} with a return window, shipping cost, and a full-policy link."
         },
         "customerSupport": {
           "title": "Customer support contact",
           "link": "Or edit in Merchant Center",
-          "configured": "Set ({methods}) — becomes the \"Contact Merchant\" link on Google's order confirmation.",
-          "missing": "No customer service website, email, or phone on the account — set it right here, ecentic writes it to Merchant Center."
+          "configured": "Set ({methods}). This becomes the \"Contact Merchant\" link on Google's order confirmation.",
+          "missing": "No customer service website, email, or phone on the account. Set it right here and ecentic writes it to Merchant Center."
         },
         "offers": {
           "title": "Products approved for free listings",
           "approved": "{approved, number} of {total, number} offers approved for free listings.",
-          "disapproved": "{count, number} disapproved — see diagnostics above.",
+          "disapproved": "{count, number} disapproved. See diagnostics above.",
           "checkoutFlag": "{count, number} carry the checkout-eligibility flag on Google.",
           "checkoutApproved": "{count, number} are approved for agentic checkout itself."
         },
         "waitlist": {
           "title": "Join Google's UCP waitlist",
           "link": "Open the waitlist form",
-          "ready": "Merchant Center is ready — apply for the agentic checkout program. Google must approve the integration before checkout goes live.",
+          "ready": "Merchant Center is ready. Apply for the agentic checkout program; Google must approve the integration before checkout goes live.",
           "pending": "Available once the checks above are green. Google approves each merchant before checkout goes live."
         },
         "platform": {
           "chip": "Handled by Shopify",
           "title": "Payments, checkout, and order sync",
-          "description": "The Google Pay handler, UCP profile, checkout endpoints, and order webhooks are your commerce platform's side of the integration — for Shopify stores they ship with Shopify's own agentic checkout rails. ecentic prepares everything Merchant Center-side: readiness above, eligibility flags below."
+          "description": "The Google Pay handler, UCP profile, checkout endpoints, and order webhooks are your commerce platform's side of the integration. For Shopify stores they ship with Shopify's own agentic checkout rails. ecentic prepares everything Merchant Center-side: readiness above, eligibility flags below."
         },
         "eligibility": {
           "eyebrow": "Checkout eligibility per product",
-          "description": "Eligibility defaults to off — Google treats missing flags as not eligible. Choices here ride the next \"Push optimizations\" run as `native_commerce` attributes on the supplemental feed."
+          "description": "Eligibility defaults to off, because Google treats missing flags as not eligible. Choices here ride the next \"Push optimizations\" run as `native_commerce` attributes on the supplemental feed."
         }
       },
       "products": {
-        "empty": "No synced products yet — sync your store's products first.",
+        "empty": "No synced products yet. Sync your store's products first.",
         "restricted": "may be restricted: {hints}",
         "live": "{count, number} live",
         "pending": "{count, number} pending",
@@ -1714,8 +1714,8 @@
         "notice": "Notice…",
         "close": "Close",
         "toast": "Checkout eligibility",
-        "enabled": "Marked eligible — push optimizations to send it to Google",
-        "disabled": "Marked not eligible — push optimizations to send the opt-out",
+        "enabled": "Marked eligible. Push optimizations to send it to Google",
+        "disabled": "Marked not eligible. Push optimizations to send the opt-out",
         "hints": {
           "ucp_subscription": "subscription",
           "ucp_preorder": "pre-order",
@@ -1780,7 +1780,7 @@
           "update": "Update policy",
           "submitCreate": "Create policy in Merchant Center",
           "submitReplace": "Replace policy in Merchant Center",
-          "replaceNote": "Google's API cannot edit a return policy in place — saving replaces the existing default policy with this one.",
+          "replaceNote": "Google's API cannot edit a return policy in place. Saving replaces the existing default policy with this one.",
           "countries": {
             "label": "Countries of sale",
             "placeholder": "US, GB",
@@ -1834,13 +1834,13 @@
     "visibility": {
       "eyebrow": "Agent Visibility",
       "title": "Where AI shopping agents actually see this store",
-      "description": "Readiness checks run against the real ingestion surfaces — robots.txt, rendered storefront HTML, offer identity, and feeds — and live rank measurement in the Shopify Global Catalog that ChatGPT, Perplexity, and Copilot query.",
+      "description": "Readiness checks run against the real ingestion surfaces: robots.txt, rendered storefront HTML, offer identity, and feeds. Rank is measured live in the Shopify Global Catalog that ChatGPT, Perplexity, and Copilot query.",
       "rankSection": {
         "eyebrow": "Live shelf position",
         "title": "Rank this store in the Global Catalog for a buyer query"
       },
       "audit": {
-        "scoreDetail": "agent-readiness across automated checks — measured against what AI surfaces actually read, not ecentic's own data",
+        "scoreDetail": "agent-readiness across automated checks, measured against what AI surfaces actually read rather than ecentic's own data",
         "checkStatus": {
           "pass": "Pass",
           "warn": "Warn",
@@ -1892,7 +1892,7 @@
     "discovery": {
       "statusPill": "AI Visibility — Store discovery",
       "title": "AI Discovery",
-      "description": "See which stores AI shopping agents recommend for a query — and exactly why your store did or didn't make the cut, and how it ranked.",
+      "description": "See which stores AI shopping agents recommend for a query, why your store did or didn't make the cut, and where it ranked.",
       "targetStore": {
         "label": "Target store",
         "placeholder": "your-store.example.com",
@@ -1927,7 +1927,7 @@
       "loading": "Querying ChatGPT, Claude, Gemini and Perplexity…",
       "empty": {
         "status": "No run yet",
-        "description": "Add one or more shopping queries above, then run discovery to see which stores AI agents recommend — and how your store compares."
+        "description": "Add one or more shopping queries above, then run discovery to see which stores AI agents recommend and how your store compares."
       },
       "results": {
         "targetStore": "Target store"
@@ -2043,7 +2043,7 @@
       "advancedValidator": {
         "kicker": "Advanced testing",
         "title": "Endpoint & lifecycle tests",
-        "description": "Probes all service endpoints declared in the profile and simulates the full AI agent checkout lifecycle — Create → Update → Complete → Cancel.",
+        "description": "Probes all service endpoints declared in the profile and simulates the full AI agent checkout lifecycle: Create → Update → Complete → Cancel.",
         "fields": {
           "domain": {
             "label": "Domain",
@@ -2054,7 +2054,7 @@
           "primary": "Run advanced tests",
           "running": "Testing…"
         },
-        "hint": "Makes live HTTP requests to the merchant server — probe inputs may create test carts.",
+        "hint": "Makes live HTTP requests to the merchant server. Probe inputs may create test carts.",
         "toast": {
           "failed": "Advanced check failed"
         },
@@ -2221,7 +2221,7 @@
       "session": {
         "changeStore": "Change store",
         "emptyTitle": "What should the agent do?",
-        "emptyDescription": "You're connected to {host}. The agent runs live UCP calls — search the catalog, inspect a product, build a cart, or start a checkout.",
+        "emptyDescription": "You're connected to {host}. The agent runs live UCP calls: search the catalog, inspect a product, build a cart, or start a checkout.",
         "suggestions": [
           "Show me details for the first product",
           "Add the first product to a new cart",
@@ -2264,7 +2264,7 @@
       },
       "quota": {
         "title": "You've used all {limit} free playground messages",
-        "description": "Create an account to keep running UCP flows against your own store — no message limit.",
+        "description": "Create an account to keep running UCP flows against your own store, with no message limit.",
         "action": {
           "primary": "Create free account"
         }
@@ -2482,11 +2482,11 @@
         "choosePlan": {
           "title": "Choose how you pay",
           "description": "Start free with pay-as-you-go, or pick a flat monthly subscription with no performance fee.",
-          "startPayg": "Start Pay-as-you-go — free, no card"
+          "startPayg": "Start Pay-as-you-go (free, no card)"
         },
         "performanceFee": {
           "title": "Performance Fee",
-          "description": "{rate}% on AI-attributed orders · capped at {cap}/mo. Free to start — you only pay when an agent buys because of an optimization we made, never on your other sales.",
+          "description": "{rate}% on AI-attributed orders · capped at {cap}/mo. Free to start. You only pay when an agent buys because of an optimization we made, never on your other sales.",
           "actionNeeded": "Action needed",
           "active": "Active",
           "off": "Off",
@@ -2563,7 +2563,7 @@
       "description": "Download or schedule automated reports on your agent performance.",
       "shareable": {
         "title": "Shareable Win Rate Report",
-        "description": "Generate a public URL for a beautifully formatted win rate report — designed for sharing on Twitter, LinkedIn, or with your team.",
+        "description": "Generate a public URL for your win rate report, formatted for sharing on Twitter, LinkedIn, or with your team.",
         "action": {
           "primary": "Generate Shareable Report"
         },
@@ -2635,7 +2635,7 @@
         "primary": "Be the product",
         "accent": "AI recommends."
       },
-      "description": "Shoppers now ask ChatGPT, Gemini, and Perplexity what to buy. ecentic makes sure the answer is your product — and sends those buyers straight to your store.",
+      "description": "Shoppers now ask ChatGPT, Gemini, and Perplexity what to buy. ecentic gets your product named in the answer, then sends those buyers to your store.",
       "proof": "2-minute setup · No credit card · See your free score first"
     },
     "action": {
@@ -2645,10 +2645,10 @@
       "seeEuBundle": "See the EU bundle",
       "bookBundleCall": "Book a bundle call",
       "checkStoreFree": "Check your store free",
-      "seeAiScoreFree": "See your AI agent score — it's free"
+      "seeAiScoreFree": "See your AI agent score, free"
     },
     "proof": {
-      "title": "AI is already sending shoppers. The only question is whether they land on you.",
+      "title": "AI is already sending shoppers somewhere. The question is whether it's to you.",
       "stats": {
         "cyberWeek": {
           "value": "20%",
@@ -2698,14 +2698,14 @@
       "euFlagAlt": "Animated flag of the European Union",
       "visitEuPresence": "Visit EU Presence",
       "title": "ecentic × EU Presence",
-      "description": "We've partnered with EU Presence to help you expand into the European market — they handle representation and compliance across all 27 EU member states while ecentic keeps you picked by AI agents. Get both in one bundle, with 20% off."
+      "description": "We've partnered with EU Presence so you can sell into Europe without building a compliance team. They handle representation across all 27 member states. We keep your listings winning with AI agents. Buy both together and take 20% off."
     },
     "partnershipBundle": {
       "ariaLabel": "ecentic × EU Presence bundle",
       "visitEuPresence": "Visit EU Presence",
       "title": "ecentic × EU Presence",
       "subtitle": "Compliance + AI Visibility",
-      "description": "Go live in the European market and stay picked by AI agents in one engagement. EU Presence handles representation and compliance across all 27 member states; ecentic keeps your listings winning the agent comparison.",
+      "description": "Buy it once and both sides are covered. EU Presence handles representation and compliance across all 27 member states, and ecentic keeps your listings winning the agent comparison.",
       "items": {
         "gdpr": {
           "name": "GDPR Representative",
@@ -2746,15 +2746,15 @@
       },
       "diagnose": {
         "title": "See where you lose",
-        "description": "ecentic asks the top AI shopping agents to shop your catalog and shows you exactly which products they skip — and why."
+        "description": "ecentic sends the top AI shopping agents through your catalog and shows you which products they skip, and why."
       },
       "optimize": {
         "title": "Get picked",
-        "description": "One click rewrites your listings so agents recommend you first. Then watch your AI visits and sales climb."
+        "description": "One click rewrites your listings so agents recommend you first. From there you watch the visits and sales it brings in."
       }
     },
     "features": {
-      "title": "Everything you need to win the AI shopper.",
+      "title": "What ecentic actually does.",
       "items": {
         "aiScore": {
           "title": "Your AI score",
@@ -2770,7 +2770,7 @@
         },
         "track": {
           "title": "Track the payoff",
-          "description": "Watch AI-agent visits and revenue grow week over week."
+          "description": "See AI-agent visits and revenue, week over week."
         }
       }
     },
@@ -2811,8 +2811,8 @@
     },
     "caseStudy": {
       "eyebrow": "Customer story",
-      "title": "DUA Flavours went from skipped to picked — in 30 days.",
-      "description": "DUA Flavours connected their store, and ecentic showed exactly which products AI agents were skipping — then rewrote the listings. Within a month, the agents started sending shoppers their way.",
+      "title": "DUA Flavours went from skipped to picked in 30 days.",
+      "description": "DUA Flavours connected their store. ecentic showed which products AI agents were skipping, rewrote those listings, and within a month the agents started sending shoppers their way.",
       "verified": "Verified ecentic customer · published with permission",
       "metrics": {
         "visits": {
@@ -2827,33 +2827,33 @@
       }
     },
     "testimonials": {
-      "title": "Hear what they say.",
+      "title": "What customers tell us.",
       "starsAria": "{count} out of 5 stars",
       "items": {
         "sarah": {
           "name": "Sarah Chen",
           "role": "Head of Ecommerce",
           "company": "Meridian Goods",
-          "text": "We had no idea AI agents were comparing our listings against competitors until ecentic showed us the simulation. Within a week we fixed three product titles and saw a measurable lift in agent-referred traffic."
+          "text": "We had no idea AI agents were comparing our listings against competitors until we saw the simulation. We fixed three product titles that week and agent-referred traffic went up."
         },
         "marcus": {
           "name": "Marcus Trejo",
           "role": "DTC Brand Manager",
           "company": "Olven Studio",
-          "text": "The competitor battlecards alone saved us hours of manual research. Now we know exactly which attributes to add so our products stop losing to cheaper alternatives in AI shopping results."
+          "text": "The battlecards saved us hours of manual research. Now we know which attributes to add so our products stop losing to cheaper alternatives in AI shopping results."
         },
         "priya": {
           "name": "Priya Nair",
           "role": "Shopify Store Owner",
           "company": "Leafwork",
-          "text": "I connected my store in two minutes and immediately saw which listings AI agents were ignoring. The optimization suggestions are specific and actionable — not generic SEO advice."
+          "text": "Connecting my store took two minutes and I could see straight away which listings AI agents were ignoring. The suggestions are things I can actually go do, not generic SEO advice."
         }
       }
     },
     "booking": {
       "eyebrow": "Book a call",
       "title": "See your AI win rate, live in 15 minutes.",
-      "description": "Pick a slot and we'll simulate how AI shopping agents compare your catalog against the competition — then show you exactly what to fix.",
+      "description": "Pick a slot and we'll run your catalog through the AI shopping agents while you watch, then show you what to fix.",
       "expectations": {
         "winRate": {
           "title": "Live win-rate read",
@@ -2865,15 +2865,15 @@
         },
         "optimizations": {
           "title": "Your first optimizations",
-          "description": "Leave with the highest-impact listing changes — no procurement deck required."
+          "description": "You leave with the listing changes worth making first, and nothing here has to go through procurement."
         }
       },
-      "footnote": "No card, no commitment — just a 15-minute look at how agents see your catalog. Pick a time on the right and you're booked."
+      "footnote": "No card and no commitment. It's a 15-minute look at how agents see your catalog. Pick a time on the right and you're booked."
     },
     "blindSpot": {
       "eyebrow": "The Blind Spot",
-      "title": "Your products are invisible to the buyers that matter most.",
-      "description": "AI agents are already shopping for your customers. They don't see ads or scroll your page. They read data, compare specs, and choose in milliseconds. You don't know how often they pick you or how to change it.",
+      "title": "Your products are invisible to the buyer doing the actual choosing.",
+      "description": "AI agents are already shopping for your customers. They don't see your ads and they don't scroll your page. They read data, compare specs, and pick in milliseconds. You have no idea how often they pick you, or what to do about it.",
       "descriptionAccent": "ecentic fixes this.",
       "story": {
         "ask": {
@@ -2882,7 +2882,7 @@
         },
         "pick": {
           "title": "The agent picks 3",
-          "description": "In milliseconds the AI compares structured data, trust signals, and spec depth — then names three products."
+          "description": "In milliseconds the AI compares structured data, trust signals, and spec depth, then names three products."
         },
         "invisible": {
           "title": "You're invisible",
@@ -2907,15 +2907,15 @@
           "result": "RESULT: Top pick across ChatGPT, Claude, Gemini & Perplexity."
         }
       },
-      "closing": "Every sale you're losing to a competitor right now, an AI agent made that call. Find out exactly where you stand."
+      "closing": "Some of the sales you lost this week, an AI agent made that call. Find out where you stand."
     },
     "discoveryShift": {
       "eyebrow": "The Shift",
-      "title": "E-commerce just changed forever.",
+      "title": "Shoppers stopped choosing. Agents started.",
       "description": {
         "before": "For 20 years shoppers got ten blue links and chose for themselves. Now they ask one question and an AI agent hands back ",
         "highlight": "a single answer",
-        "after": ". You're the pick — or you don't exist."
+        "after": ". You're the pick, or you don't exist."
       },
       "searchEra": {
         "label": "Before — the search era",
@@ -2929,7 +2929,7 @@
         "answerTitle": "Sony WH-1000XM5 — $348",
         "answerDescription": "Best overall. Industry-leading noise cancellation, excellent sound, all-day comfort.",
         "buyNow": "Buy now — $348",
-        "summary": "One question. One answer. No ads, no scrolling, no second place. The agent decides in milliseconds — and you never see it happen."
+        "summary": "One question. One answer. No ads, no scrolling, no second place. The agent decides in milliseconds and you never see it happen."
       }
     },
     "discoveryPaths": {
@@ -2938,13 +2938,13 @@
         "features": {
           "eyebrow": "Features",
           "title": "AI ecommerce tools for product visibility and conversion",
-          "description": "Explore the workflows merchants use to simulate AI shopping decisions, diagnose losses, and prioritize listing improvements.",
+          "description": "The workflows merchants use to simulate AI shopping decisions, find out where they lose, and decide which listings to fix first.",
           "label": "Explore features"
         },
         "productListings": {
           "eyebrow": "Product listings",
           "title": "AI product listing optimization for titles, descriptions, and data",
-          "description": "See how clearer product content, stronger attributes, and faster approvals improve comparison quality across AI shopping systems.",
+          "description": "See how clearer product content and stronger attributes change the way AI shopping systems compare you.",
           "label": "View listing page"
         },
         "shopify": {
@@ -2956,13 +2956,13 @@
         "compare": {
           "eyebrow": "Comparison",
           "title": "Best AI tools for ecommerce in 2026",
-          "description": "Use the comparison guide to understand when you need content generation, personalization, analytics, or agent-commerce optimization.",
+          "description": "A guide to when you need content generation, personalization, analytics, or agent-commerce optimization.",
           "label": "Read comparison guide"
         },
         "enterprise": {
           "eyebrow": "Enterprise",
           "title": "Multi-brand agent intelligence for enterprise merchants",
-          "description": "API access, SSO, SOC 2, UCP signing, and a dedicated CSM — for the teams running hundreds of SKUs across platforms.",
+          "description": "API access, SSO, SOC 2, UCP signing, and a dedicated CSM, for teams running hundreds of SKUs across platforms.",
           "label": "See enterprise plan"
         }
       }
@@ -2970,33 +2970,33 @@
     "whyNow": {
       "eyebrow": "Why now",
       "title": "Six months ago, agents couldn't buy. Now they can.",
-      "description": "This isn't a forecast. The biggest names in payments and AI shipped agent checkout in the last two quarters. The cart is already moving — the only question is whether agents pick you.",
+      "description": "This isn't a forecast. Visa, Mastercard, Google, and OpenAI all shipped agent checkout in the last two quarters. The carts are already moving. Your product is either in them or it isn't.",
       "milestones": {
         "visa": {
           "date": "Oct 2025",
           "title": "Agent payments go live",
-          "description": "Visa lets agents pay on a shopper's behalf — with Microsoft, Shopify, Stripe, and Worldpay."
+          "description": "Visa lets agents pay on a shopper's behalf, with Microsoft, Shopify, Stripe, and Worldpay."
         },
         "google": {
           "date": "NRF 2026",
           "title": "Agentic shopping protocol",
-          "description": "Opened to the market with Shopify, Walmart, Target, Etsy, Visa, Mastercard, and PayPal endorsing."
+          "description": "Opened to the market, with Shopify, Walmart, Target, Etsy, Visa, Mastercard, and PayPal behind it."
         },
         "mastercard": {
           "date": "Live now",
           "title": "Agent Pay merchant framework",
-          "description": "Agent-initiated checkout running across partner shops — payments built for AI buyers."
+          "description": "Agent-initiated checkout running across partner shops, with payments built for AI buyers."
         },
         "openai": {
           "date": "Live now",
           "title": "Checkout inside ChatGPT",
-          "description": "Buy without leaving the chat — Etsy, Coach, Kate Spade, Revolve, and URBN already in."
+          "description": "Buy without leaving the chat. Etsy, Coach, Kate Spade, Revolve, and URBN are already in."
         }
       }
     },
     "ucpCallout": {
       "title": "Is your store visible to AI agents?",
-      "description": "Check your store's UCP profile in 10 seconds — see whether GPTBot, ClaudeBot, Gemini, and Perplexity can read your listings without friction."
+      "description": "Check your store's UCP profile in 10 seconds and see whether GPTBot, ClaudeBot, Gemini, and Perplexity can read your listings."
     }
   },
   "cookieConsent": {
@@ -3010,8 +3010,8 @@
   },
   "pricing": {
     "meta": {
-      "title": "Pricing — Start Free, Pay When Agents Pick You",
-      "description": "ecentic pricing: scan free, then pay-as-you-go — free to start, 3% only on AI-attributed orders (capped). Or a flat Compete/Dominate plan with no fee."
+      "title": "Pricing — start free, pay when agents pick you",
+      "description": "ecentic pricing: scan free, then pay-as-you-go. Free to start, 3% only on AI-attributed orders, capped. Or a flat Compete/Dominate plan with no fee."
     },
     "breadcrumb": {
       "home": "Home",
@@ -3043,13 +3043,13 @@
       "proof": "Results in about two minutes · Shopify or WooCommerce",
       "sample": {
         "scoreLabel": "AI Agent Score",
-        "caption": "A sample Win Rate Report — yours shows exactly where agents skip you, and why."
+        "caption": "A sample Win Rate Report. Yours shows where agents skip you, and why."
       }
     },
     "choosePayment": {
       "number": "01",
       "title": "Choose how you pay",
-      "description": "Every plan runs the same simulate → diagnose → optimize loop. Start with pay-as-you-go and pay only on agent-driven orders, or pick a flat monthly plan when you want predictable billing. No minimums, month-to-month, and no setup fees — save 20% with the EU Presence bundle."
+      "description": "Every plan runs the same simulate → diagnose → optimize loop. Start with pay-as-you-go and pay only on agent-driven orders, or pick a flat monthly plan when you want predictable billing. No minimums, month-to-month, no setup fees. The EU Presence bundle takes 20% off."
     },
     "plans": {
       "payg": {
@@ -3059,12 +3059,12 @@
         "badge": "Free to start",
         "figure": "3%",
         "suffix": "on AI-attributed orders",
-        "note": "$0 until an agent drives a sale — no card to start, capped at $500/mo.",
+        "note": "$0 until an agent drives a sale. No card to start, capped at $500/mo.",
         "features": [
           "Everything in Dominate, from day one",
           "No credit card to start",
           "Pay only on orders AI agents drive",
-          "Hard $500/mo cap — no surprises"
+          "Hard $500/mo cap"
         ],
         "action": {
           "primary": "Start free"
@@ -3148,15 +3148,15 @@
       "steps": [
         {
           "title": "An agent recommends you",
-          "description": "A shopper asks ChatGPT, Gemini, or Perplexity what to buy — and your optimized listing wins the comparison."
+          "description": "A shopper asks ChatGPT, Gemini, or Perplexity what to buy, and your optimized listing wins the comparison."
         },
         {
-          "title": "They buy — a $120 order",
+          "title": "They buy: a $120 order",
           "description": "The order carries our attribution signal or follows a recent AI-referral visit to your store."
         },
         {
           "title": "We take 3% of that order",
-          "description": "Charged only on AI-attributed orders. Your other sales are never touched — and never per agent visit."
+          "description": "Charged only on AI-attributed orders. Your other sales are never touched, and you are never charged per agent visit."
         },
         {
           "title": "Fees stop at $500/mo",
@@ -3165,13 +3165,13 @@
       ],
       "billing": {
         "title": "Prefer predictable billing?",
-        "description": "Compete and Dominate are flat monthly with no performance fee — both run the exact same optimization loop."
+        "description": "Compete and Dominate are flat monthly with no performance fee. Both run the same optimization loop."
       }
     },
     "compare": {
       "number": "03",
       "title": "Compare plans",
-      "description": "The core loop is identical everywhere — paid tiers add scale, automation, and protocol features. Let the size of your catalog decide.",
+      "description": "The core loop is identical everywhere. Paid tiers add scale, automation, and protocol features. Let the size of your catalog decide.",
       "planHeader": "Plan",
       "rows": [
         {
@@ -3270,7 +3270,7 @@
       "ariaLabel": "ecentic × EU Presence bundle",
       "title": "ecentic × EU Presence",
       "subtitle": "Compliance + AI Visibility",
-      "description": "Go live in the European market and stay picked by AI agents in one engagement. EU Presence handles representation and compliance across all 27 member states; ecentic keeps your listings winning the agent comparison.",
+      "description": "Buy it once and both sides are covered. EU Presence handles representation and compliance across all 27 member states, and ecentic keeps your listings winning the agent comparison.",
       "items": [
         {
           "name": "GDPR Representative",
@@ -3320,15 +3320,15 @@
         },
         {
           "question": "What is the difference between Compete, Scale, and Dominate?",
-          "answer": "Compete is for teams that want to understand where they lose: up to 100 products, daily simulations, and competitor battlecards with manual suggestions. Scale adds volume and automation: up to 1000 products, continuous simulations, and one-click or auto-published optimizations. Dominate adds the protocol layer on top of Scale — model drift alerts and UCP generation — and is the tier our Techstars deal is redeemed against. The Y Combinator deal applies to any of the three."
+          "answer": "Compete is for teams that want to understand where they lose: up to 100 products, daily simulations, and competitor battlecards with manual suggestions. Scale adds volume and automation: up to 1000 products, continuous simulations, and one-click or auto-published optimizations. Dominate adds the protocol layer on top of Scale (model drift alerts and UCP generation) and is the tier our Techstars deal is redeemed against. The Y Combinator deal applies to any of the three."
         },
         {
           "question": "What is the difference between pay-as-you-go and a subscription?",
-          "answer": "Pay-as-you-go is free to start with no card and unlocks every feature — you only pay a 3% fee on orders we can attribute to AI-agent traffic we optimize for. A subscription (Compete, Scale, or Dominate) is a flat monthly price with no performance fee, for teams that prefer predictable billing. Both run the same optimization loop; pick whichever pricing fits how you'd rather pay."
+          "answer": "Pay-as-you-go is free to start with no card and unlocks every feature. You only pay a 3% fee on orders we can attribute to AI-agent traffic we optimize for. A subscription (Compete, Scale, or Dominate) is a flat monthly price with no performance fee, for teams that prefer predictable billing. Both run the same optimization loop; pick whichever pricing fits how you'd rather pay."
         },
         {
           "question": "How does the pay-as-you-go performance fee work?",
-          "answer": "On pay-as-you-go you pay a 3% fee only on orders we can attribute to AI-agent traffic we optimize for — an order counts only when it carries our attribution signal or follows a recent AI-referral visit to your store. You are never charged on your other sales, never per agent visit, and the fee is capped at $500 per month. It is free to start with no card; we only ask for a payment method once a fee is actually due. Flat subscriptions and the free Scan have no performance fee."
+          "answer": "On pay-as-you-go you pay a 3% fee only on orders we can attribute to AI-agent traffic we optimize for. An order counts only when it carries our attribution signal or follows a recent AI-referral visit to your store. You are never charged on your other sales, never per agent visit, and the fee is capped at $500 per month. It is free to start with no card; we only ask for a payment method once a fee is actually due. Flat subscriptions and the free Scan have no performance fee."
         },
         {
           "question": "Can I change plans or cancel later?",
@@ -3340,7 +3340,7 @@
         },
         {
           "question": "What is the EU Presence bundle?",
-          "answer": "We partnered with EU Presence so you can go live in Europe and stay picked by AI agents in one engagement. The Compliance + AI Visibility bundle combines their GDPR representative, GPSR responsible person, and Privacy Center Plus with ecentic Scale — billed together with a 20% bundle discount, no minimums, and no setup fees. Book a bundle call from the pricing page to set it up."
+          "answer": "We partnered with EU Presence so you can go live in Europe and stay picked by AI agents in one engagement. The Compliance + AI Visibility bundle combines their GDPR representative, GPSR responsible person, and Privacy Center Plus with ecentic Scale. It is billed together with a 20% bundle discount, no minimums, and no setup fees. Book a bundle call from the pricing page to set it up."
         }
       ]
     },
@@ -3396,7 +3396,7 @@
   },
   "resources": {
     "meta": {
-      "title": "Free Agent Commerce Tools and Merchant Guides",
+      "title": "Free agent-commerce tools and merchant guides",
       "description": "Free ecentic resources for merchants and builders: AI Agent Score Scan, UCP Validator, UCP Playground, buyer guides, blog, and public agent API surfaces."
     },
     "breadcrumb": {
@@ -3477,7 +3477,7 @@
       "number": "02",
       "title": "Learn the system, then choose your depth.",
       "description": "Begin with the product loop, compare the market, or go straight to platform-specific implementation.",
-      "agentsIntro": "The same four agents that decide what to recommend also shape what merchants need to learn first — how selection works, then how to act on it for their stack.",
+      "agentsIntro": "The same four agents that decide what to recommend also shape what merchants need to learn first: how selection works, then how to act on it for their stack.",
       "agents": [
         {
           "title": "ChatGPT",
@@ -3614,7 +3614,7 @@
   },
   "howItWorks": {
     "meta": {
-      "title": "How It Works — Simulate, Diagnose, Optimize",
+      "title": "How it works — simulate, diagnose, optimize",
       "description": "How ecentic works: simulate how ChatGPT, Claude, Gemini, and Perplexity compare your products, diagnose why you lose, then optimize listings to win carts."
     },
     "breadcrumb": {
@@ -3626,7 +3626,7 @@
       "steps": [
         {
           "name": "Simulate",
-          "text": "ecentic runs your products through ChatGPT, Claude, Gemini, and Perplexity at the same time, mapping exactly how each agent compares your listings against every competitor in your category."
+          "text": "ecentic runs your products through ChatGPT, Claude, Gemini, and Perplexity at the same time and records how each agent compares your listings against every competitor in your category."
         },
         {
           "name": "Diagnose",
@@ -3759,7 +3759,7 @@
   },
   "demo": {
     "meta": {
-      "title": "Book a Demo — See Your AI Win Rate Live",
+      "title": "Book a demo — see your AI win rate live",
       "description": "Book a 15-minute ecentic demo. We run your top products through ChatGPT, Claude, Gemini, and Perplexity live and scope your highest-impact listing fixes."
     },
     "breadcrumb": {
@@ -3876,7 +3876,7 @@
   },
   "enterprise": {
     "meta": {
-      "title": "Enterprise — Agent-Commerce at Scale",
+      "title": "Enterprise — agent commerce at scale",
       "description": "Agent-commerce intelligence for enterprise merchants: multi-brand dashboards, API access, SSO, SOC 2 compliance, UCP signing, and a dedicated CSM team."
     },
     "breadcrumb": {
@@ -3956,7 +3956,7 @@
           "description": "No procurement deck required to begin."
         }
       ],
-      "paragraph": "We scope Enterprise around catalog size, platforms, and compliance needs — then share a custom ROI estimate before anyone writes a procurement deck.",
+      "paragraph": "We scope Enterprise around catalog size, platforms, and compliance needs, then share a custom ROI estimate before anyone writes a procurement deck.",
       "panelTitle": "How scoping works"
     },
     "compare": {
@@ -4108,7 +4108,7 @@
     "why": {
       "number": "01",
       "title": "When a single-brand plan stops being enough.",
-      "description": "Enterprise is for teams that need one agent-commerce layer across brands, regions, and security requirements — not another self-serve seat.",
+      "description": "Enterprise is for teams that need one agent-commerce layer across brands, regions, and security requirements, rather than another self-serve seat.",
       "paragraphs": [
         "Dominate runs the full optimization loop for one brand. Enterprise adds the control plane: multi-brand rollups, SSO, API access, managed UCP signing, and a named CSM who owns the relationship.",
         "The decision usually shows up when catalog size, brand count, or procurement requirements outgrow a flat monthly plan."
@@ -4136,7 +4136,7 @@
   },
   "features": {
     "meta": {
-      "title": "AI Ecommerce Tools for Merchant Product Listings",
+      "title": "AI ecommerce tools for merchant product listings",
       "description": "AI ecommerce tools for product listing optimization, competitor analysis, and AI shopping visibility. See how ecentic helps merchants win more carts today."
     },
     "breadcrumb": {
@@ -4182,13 +4182,13 @@
         {
           "step": "Step 04",
           "title": "Track",
-          "description": "Watch your win rate, AI-agent visits, and attributed revenue climb week over week, then rescan and repeat."
+          "description": "Track your win rate, AI-agent visits, and attributed revenue week over week, then rescan and repeat."
         }
       ]
     },
     "capabilities": {
       "number": "02",
-      "title": "Everything you need to get picked.",
+      "title": "What it takes to get picked.",
       "description": "Not another dashboard or copy generator. ecentic is a decision layer that sits on top of your store and turns agent insight into published listing updates.",
       "items": [
         {
@@ -4518,7 +4518,7 @@
   },
   "productListings": {
     "meta": {
-      "title": "AI Product Listing Optimization for Merchants",
+      "title": "AI product listing optimization for merchants",
       "description": "AI product listing optimization for titles, descriptions, and structured product data. See how ecentic helps merchants improve visibility with AI agents."
     },
     "breadcrumb": {
@@ -4706,7 +4706,7 @@
   },
   "shopify": {
     "meta": {
-      "title": "AI for Shopify — Listing and Catalog Optimization",
+      "title": "AI for Shopify — listing and catalog optimization",
       "description": "AI for Shopify stores that need stronger product listings, clearer competitor analysis, and approved updates pushed straight back into the Shopify Admin."
     },
     "breadcrumb": {
@@ -4769,7 +4769,7 @@
       "number": "02",
       "title": "The Shopify workflow in ecentic.",
       "description": "The workflow connects the catalog, surfaces competitive gaps, and makes improvements publishable back into Shopify instead of one more disconnected document.",
-      "paragraph": "Connect the store, pick the products that matter, benchmark them against competitors, then approve write-backs through the Admin API — without leaving the Shopify catalog workflow.",
+      "paragraph": "Connect the store, pick the products that matter, benchmark them against competitors, then approve write-backs through the Admin API. You never leave the Shopify catalog workflow.",
       "panelTitle": "Connect, diagnose, publish",
       "outcomes": [
         {
@@ -4825,7 +4825,7 @@
       "ecentic": {
         "badge": "ecentic on top of Shopify",
         "title": "Built for winning the comparison.",
-        "description": "The value is not only rewriting text. It is knowing whether your page is easy for an AI shopping system to evaluate, and whether the proposed change improves your chance of being selected.",
+        "description": "Rewriting the text is the easy half. The useful half is knowing whether your page is easy for an AI shopping system to evaluate, and whether the proposed change improves your chance of being selected.",
         "strengths": [
           "Simulates how AI shopping agents compare your products",
           "Benchmarks listings against the competitors that keep winning",
@@ -4928,7 +4928,7 @@
   },
   "support": {
     "meta": {
-      "title": "Support — Help with Scans, Billing, and Agents",
+      "title": "Support — help with scans, billing, and agents",
       "description": "Get help with ecentic: email support, a live walkthrough of your scan results, or a dedicated escalation path for Enterprise and agent-commerce accounts."
     },
     "breadcrumb": {
@@ -5030,7 +5030,7 @@
   },
   "woocommerce": {
     "meta": {
-      "title": "AI for WooCommerce — Catalog Optimization",
+      "title": "AI for WooCommerce — catalog optimization",
       "description": "AI for WooCommerce stores that need product listing optimization, competitor analysis, and a clearer path from agent insights to published catalog updates."
     },
     "breadcrumb": {
@@ -5061,9 +5061,9 @@
     "why": {
       "number": "01",
       "title": "Why WooCommerce merchants need a focused loop.",
-      "description": "WooCommerce operators usually need catalog-level insight, not just faster copy output.",
+      "description": "WooCommerce operators usually need catalog-level insight more than they need faster copy output.",
       "paragraphs": [
-        "AI for WooCommerce stores is not only about faster content creation. WooCommerce catalogs change quickly, are managed by lean operators, and depend on clean product data to compete well.",
+        "Faster content creation is the smallest part of this. WooCommerce catalogs change quickly, they are run by lean teams, and they depend on clean product data to compete.",
         "That creates a practical need for a dedicated optimization loop. Merchants want to know which products are easiest to improve, which competitor keeps winning, and which listing details matter most before they spend time rewriting dozens of pages."
       ],
       "panelTitle": "Who this page is built for",
@@ -5090,7 +5090,7 @@
       "number": "02",
       "title": "The WooCommerce workflow in ecentic.",
       "description": "The workflow connects product data to competitor analysis, then to a publishing path back inside WooCommerce instead of another manual content handoff.",
-      "paragraph": "Install the plugin, import the catalog, benchmark the products that matter, then approve REST publish-backs — without leaving WooCommerce or rewriting the whole storefront.",
+      "paragraph": "Install the plugin, import the catalog, benchmark the products that matter, then approve REST publish-backs. You stay inside WooCommerce and you never rewrite the storefront.",
       "panelTitle": "Connect, diagnose, publish",
       "advantages": [
         {
@@ -5113,7 +5113,7 @@
       "steps": [
         {
           "title": "Connect & import",
-          "description": "Install the free plugin and approve the connection in wp-admin — no API keys to copy. The catalog imports on connect, with no theme edits."
+          "description": "Install the free plugin and approve the connection in wp-admin. There are no API keys to copy, the catalog imports on connect, and you never touch the theme."
         },
         {
           "title": "Choose products",
@@ -5131,7 +5131,7 @@
     },
     "agentCommerce": {
       "number": "03",
-      "title": "Let AI agents buy, not just browse.",
+      "title": "Let AI agents actually buy.",
       "description": {
         "before": "Optimized listings decide whether an agent recommends you. The Universal Commerce Protocol decides whether it can actually complete the purchase. The free ",
         "pluginName": "écentic for WooCommerce",
@@ -5144,7 +5144,7 @@
       "capabilities": [
         {
           "title": "Discovered at your own URL",
-          "description": "The plugin serves /.well-known/ucp on your domain, so agents find your store at your address — not a third party's."
+          "description": "The plugin serves /.well-known/ucp on your domain, so agents find your store at your address instead of a third party's."
         },
         {
           "title": "Priced on a real cart",
@@ -5184,7 +5184,7 @@
       "number": "04",
       "title": "Find your catalog bottleneck first.",
       "description": "The right optimization tool depends on where the bottleneck actually sits. WooCommerce merchants usually face one of three situations.",
-      "paragraph": "Shortlist against the bottleneck you have today. Content speed, competitive clarity, and publishing friction each call for a different kind of tool — and only two of them are ecentic's job.",
+      "paragraph": "Shortlist against the bottleneck you have today. Content speed, competitive clarity, and publishing friction each call for a different kind of tool, and only two of them are ecentic's job.",
       "panelTitle": "Three situations to shortlist against",
       "situations": [
         {
@@ -5259,7 +5259,7 @@
         },
         {
           "question": "Can WooCommerce stores publish optimized product updates?",
-          "answer": "Yes. Approved rewrites are published straight back into WooCommerce over the REST API, using credentials with read and write access. You review every change before it goes live — nothing is published to your storefront without your approval."
+          "answer": "Yes. Approved rewrites are published straight back into WooCommerce over the REST API, using credentials with read and write access. You review every change before it goes live, and nothing reaches your storefront without your approval."
         },
         {
           "question": "Do I need the plugin, or can I connect with API keys?",
@@ -5289,7 +5289,7 @@
   },
   "compare": {
     "meta": {
-      "title": "Best AI Ecommerce Tools in 2026 — Category Guide",
+      "title": "Best AI ecommerce tools in 2026 — category guide",
       "description": "Best AI tools for ecommerce in 2026, organized by category so merchants can compare content, personalization, search, analytics, and agent-commerce workflows."
     },
     "breadcrumb": {
@@ -5511,7 +5511,7 @@
   },
   "techstars": {
     "meta": {
-      "title": "ecentic for Techstars — Redeem Your Founder Deal",
+      "title": "ecentic for Techstars — redeem your founder deal",
       "description": "An exclusive ecentic deal for Techstars founders: extended Dominate access, white-glove onboarding, and founder pricing. Redeem it in under two minutes."
     },
     "breadcrumb": {
@@ -5537,18 +5537,18 @@
       "number": "01",
       "title": "What's in the deal",
       "description": "Built for Techstars founders who would rather win AI agent recommendations than babysit a listings spreadsheet.",
-      "content": "ecentic shows you how AI shopping agents compare your products against competitors, diagnoses why you win or lose, and rewrites your listings to close the gap. The Techstars deal opens the full platform:\n\n- Extended ecentic Dominate — continuous simulations across ChatGPT, Claude, Gemini, and Perplexity\n- Auto-optimization with one-click publish and model drift alerts\n- UCP generation so agents can verify your catalog directly\n- White-glove onboarding for your catalog and founder pricing after the deal period\n\nRedeem below and we'll verify your cohort, then email your activation link within one business day."
+      "content": "ecentic shows you how AI shopping agents compare your products against competitors, diagnoses why you win or lose, and rewrites your listings to close the gap. The Techstars deal opens the full platform:\n\n- Extended ecentic Dominate, with continuous simulations across ChatGPT, Claude, Gemini, and Perplexity\n- Auto-optimization with one-click publish and model drift alerts\n- UCP generation so agents can verify your catalog directly\n- White-glove onboarding for your catalog and founder pricing after the deal period\n\nRedeem below and we'll verify your cohort, then email your activation link within one business day."
     },
     "redeem": {
       "number": "02",
       "title": "Redeem your deal",
-      "description": "Tell us who you are and what you want to win. We verify your Techstars cohort and turn on your deal — no credit card required."
+      "description": "Tell us who you are and what you want to win. We verify your Techstars cohort and turn on your deal. No credit card required."
     },
     "howItWorks": {
       "number": "03",
       "title": "How redemption works",
       "description": "Three steps from form to live deal. Most founders are running their first simulation the same day.",
-      "content": "There is no procurement maze here — the whole point is to get you simulating fast.\n\n- Submit the form — company, cohort, and what you want ecentic to help you win\n- We verify your cohort against the Techstars portfolio, usually the same day\n- You get an activation link and white-glove help importing your catalog\n\nOnce your catalog is in, ecentic runs it through the major AI shopping models, shows you why competitors get picked, and turns the findings into listing changes you can approve in one click."
+      "content": "There is no procurement maze here. The whole point is to get you simulating fast.\n\n- Submit the form with your company, cohort, and what you want ecentic to help you win\n- We verify your cohort against the Techstars portfolio, usually the same day\n- You get an activation link and white-glove help importing your catalog\n\nOnce your catalog is in, ecentic runs it through the major AI shopping models, shows you why competitors get picked, and turns the findings into listing changes you can approve in one click."
     },
     "faqSection": {
       "number": "04",
@@ -5563,11 +5563,11 @@
         },
         {
           "question": "What do I actually get?",
-          "answer": "Extended access to ecentic Dominate — continuous AI agent simulations across ChatGPT, Claude, Gemini, and Perplexity, auto-optimization with one-click publish, drift alerts, and UCP generation — plus white-glove onboarding for your catalog and founder pricing when the deal period ends."
+          "answer": "Extended access to ecentic Dominate: continuous AI agent simulations across ChatGPT, Claude, Gemini, and Perplexity, auto-optimization with one-click publish, drift alerts, and UCP generation. It also includes white-glove onboarding for your catalog and founder pricing when the deal period ends."
         },
         {
           "question": "Do I need an account first?",
-          "answer": "No. Redeem the deal here and we'll email activation details within one business day. You can create your account now or wait for the activation link — both lead to the same place."
+          "answer": "No. Redeem the deal here and we'll email activation details within one business day. You can create your account now or wait for the activation link; both lead to the same place."
         },
         {
           "question": "How long does redemption take?",
@@ -5587,7 +5587,7 @@
   },
   "ucpPlayground": {
     "meta": {
-      "title": "UCP Playground — Test AI Agents on Any Storefront",
+      "title": "UCP Playground — test AI agents on any storefront",
       "description": "Free UCP Playground: drive a real AI shopping agent against any UCP storefront. Run catalog search, cart, and checkout over MCP or REST and inspect calls."
     },
     "breadcrumb": {
@@ -5617,7 +5617,7 @@
       },
       {
         "title": "Cart operations",
-        "description": "Create a cart, add line items, and watch totals resolve — the same calls an AI shopping agent would make."
+        "description": "Create a cart, add line items, and watch totals resolve, using the same calls an AI shopping agent would make."
       },
       {
         "title": "Checkout handoff",
@@ -5646,7 +5646,7 @@
   },
   "ucpValidator": {
     "meta": {
-      "title": "UCP Validator — Universal Commerce Protocol Check",
+      "title": "UCP Validator — Universal Commerce Protocol check",
       "description": "Free UCP Validator: check whether a storefront publishes a valid Universal Commerce Profile, validate its schema, and confirm AI agents pass robots.txt."
     },
     "breadcrumb": {
@@ -5729,7 +5729,7 @@
   },
   "yc": {
     "meta": {
-      "title": "ecentic for Y Combinator — Redeem Your Deal",
+      "title": "ecentic for Y Combinator — redeem your deal",
       "description": "An exclusive ecentic deal for Y Combinator students: extended access on any plan, white-glove onboarding, and student pricing. Redeem in under two minutes."
     },
     "breadcrumb": {
@@ -5755,18 +5755,18 @@
       "number": "01",
       "title": "What's in the deal",
       "description": "Built for YC students who would rather win AI agent recommendations than babysit a listings spreadsheet.",
-      "content": "ecentic shows you how AI shopping agents compare your products against competitors, diagnoses why you win or lose, and rewrites your listings to close the gap. Your YC discount applies to whichever plan fits — Compete, Scale, or Dominate:\n\n- Agent simulations across ChatGPT, Claude, Gemini, and Perplexity on every plan\n- Continuous simulations and auto-optimization with one-click publish from Scale up\n- Model drift alerts and UCP generation on Dominate, so agents can verify your catalog directly\n- White-glove onboarding for your catalog and student pricing after the deal period\n\nRedeem below and we'll verify your batch, then email your activation link within one business day."
+      "content": "ecentic shows you how AI shopping agents compare your products against competitors, diagnoses why you win or lose, and rewrites your listings to close the gap. Your YC discount applies to whichever plan fits: Compete, Scale, or Dominate.\n\n- Agent simulations across ChatGPT, Claude, Gemini, and Perplexity on every plan\n- Continuous simulations and auto-optimization with one-click publish from Scale up\n- Model drift alerts and UCP generation on Dominate, so agents can verify your catalog directly\n- White-glove onboarding for your catalog and student pricing after the deal period\n\nRedeem below and we'll verify your batch, then email your activation link within one business day."
     },
     "redeem": {
       "number": "02",
       "title": "Redeem your deal",
-      "description": "Tell us who you are and what you want to win. We verify your YC batch and turn on your deal — no credit card required."
+      "description": "Tell us who you are and what you want to win. We verify your YC batch and turn on your deal. No credit card required."
     },
     "howItWorks": {
       "number": "03",
       "title": "How redemption works",
       "description": "Three steps from form to live deal. Most students are running their first simulation the same day.",
-      "content": "There is no procurement maze here — the whole point is to get you simulating fast.\n\n- Submit the form — company, batch, and what you want ecentic to help you win\n- We verify your batch against the YC directory, usually the same day\n- You get an activation link and white-glove help importing your catalog\n\nOnce your catalog is in, ecentic runs it through the major AI shopping models, shows you why competitors get picked, and turns the findings into listing changes you can approve in one click."
+      "content": "There is no procurement maze here. The whole point is to get you simulating fast.\n\n- Submit the form with your company, batch, and what you want ecentic to help you win\n- We verify your batch against the YC directory, usually the same day\n- You get an activation link and white-glove help importing your catalog\n\nOnce your catalog is in, ecentic runs it through the major AI shopping models, shows you why competitors get picked, and turns the findings into listing changes you can approve in one click."
     },
     "faqSection": {
       "number": "04",
@@ -5781,11 +5781,11 @@
         },
         {
           "question": "What do I actually get?",
-          "answer": "Your student discount on whichever ecentic plan you pick — Compete, Scale, or Dominate. Every plan runs AI agent simulations across ChatGPT, Claude, Gemini, and Perplexity; Scale adds continuous simulations and auto-optimization with one-click publish; Dominate adds model drift alerts and UCP generation. All of them include white-glove onboarding for your catalog and student pricing when the deal period ends."
+          "answer": "Your student discount on whichever ecentic plan you pick: Compete, Scale, or Dominate. Every plan runs AI agent simulations across ChatGPT, Claude, Gemini, and Perplexity; Scale adds continuous simulations and auto-optimization with one-click publish; Dominate adds model drift alerts and UCP generation. All of them include white-glove onboarding for your catalog and student pricing when the deal period ends."
         },
         {
           "question": "Do I need an account first?",
-          "answer": "No. Redeem the deal here and we'll email activation details within one business day. You can create your account now or wait for the activation link — both lead to the same place."
+          "answer": "No. Redeem the deal here and we'll email activation details within one business day. You can create your account now or wait for the activation link; both lead to the same place."
         },
         {
           "question": "How long does redemption take?",
@@ -5806,7 +5806,7 @@
   "compareTool": {
     "page": {
       "title": "Compare two products",
-      "description": "See which product AI agents would recommend — and why."
+      "description": "See which product AI agents would recommend, and why."
     },
     "form": {
       "productA": "Product A",
@@ -5880,7 +5880,7 @@
             "line2": "OAuth."
           },
           "points": [
-            "One-click authorization — we never see your password",
+            "One-click authorization, and we never see your password",
             "Read-only access to your product catalog",
             "Products stay in sync automatically"
           ]
@@ -5993,11 +5993,11 @@
       ],
       "shopify": {
         "title": "Connect Shopify",
-        "description": "OAuth connection — we never see your Shopify password.",
+        "description": "OAuth connection. We never see your Shopify password.",
         "howItWorks": "How it works?",
         "steps": [
-          "Enter your store domain below — this is the yourstore.myshopify.com URL you use to log into Shopify admin.",
-          "You'll be redirected to Shopify to authorize read-only access to your product catalog. We only request product scopes — no orders, no customers.",
+          "Enter your store domain below. This is the yourstore.myshopify.com URL you use to log into Shopify admin.",
+          "You'll be redirected to Shopify to authorize read-only access to your product catalog. We only request product scopes, never orders or customers.",
           "After you approve, Shopify allows ecentic to read and write your store's product data."
         ],
         "fields": {
@@ -6029,7 +6029,7 @@
         "toast": {
           "invalidDomain": {
             "title": "Enter your myshopify.com domain",
-            "description": "OAuth needs your Shopify admin domain (e.g. yourstore.myshopify.com) or store handle — not a custom storefront URL."
+            "description": "OAuth needs your Shopify admin domain (e.g. yourstore.myshopify.com) or store handle, rather than a custom storefront URL."
           },
           "connectionFailed": "Connection failed",
           "connected": {
@@ -6044,7 +6044,7 @@
         "oneClick": {
           "title": "One-click connect",
           "recommended": "(recommended)",
-          "description": "Enter your store URL and approve the connection from your WordPress admin — no API keys to copy. You'll need the free écentic for WooCommerce plugin installed and activated first; if it isn't there yet, we'll show you how to add it. This also enables hosted UCP, making your store transactable by AI shopping agents.",
+          "description": "Enter your store URL and approve the connection from your WordPress admin. There are no API keys to copy. You'll need the free écentic for WooCommerce plugin installed and activated first; if it isn't there yet, we'll show you how to add it. This also enables hosted UCP, which makes your store transactable by AI shopping agents.",
           "placeholder": "https://yourstore.com",
           "action": {
             "connect": "Connect via plugin",
@@ -6067,7 +6067,7 @@
           }
         },
         "manual": {
-          "title": "Or connect manually — where to find your API keys",
+          "title": "Or connect manually: where to find your API keys",
           "steps": [
             "Log into your WordPress admin panel and go to WooCommerce → Settings → Advanced → REST API.",
             "Click Add key. Give it a description like \"ecentic\", set permissions to Read/Write if you want ecentic to push listing changes, or Read for sync-only, then click Generate.",
@@ -6080,7 +6080,7 @@
             "placeholder": "https://yourstore.com",
             "validation": "Store URL is required",
             "description": {
-              "before": "The public URL of your WooCommerce store — for example",
+              "before": "The public URL of your WooCommerce store, for example",
               "example": "https://acmestore.com",
               "after": ". This is the homepage, not the WordPress admin URL."
             }
@@ -6095,7 +6095,7 @@
             "label": "Consumer Secret",
             "placeholder": "cs_...",
             "validation": "Consumer secret is required",
-            "description": "The secret that pairs with the key — starts with cs_. This is only shown once when you generate the key, so make sure to copy it before leaving WooCommerce."
+            "description": "The secret that pairs with the key, starting with cs_. WooCommerce shows it only once when you generate the key, so copy it before you leave."
           }
         },
         "action": {
@@ -6117,11 +6117,11 @@
           "title": "Supported formats",
           "googleShopping": {
             "label": "Google Shopping XML",
-            "description": "— the most common format. If you use Google Merchant Center, you already have one. It's an RSS/Atom feed where each <item> contains g:title, g:price, g:image_link, etc."
+            "description": "is the most common format. If you use Google Merchant Center, you already have one. It's an RSS/Atom feed where each <item> contains g:title, g:price, g:image_link, etc."
           },
           "json": {
             "label": "JSON",
-            "description": "— a simple array of product objects. We look for title, price, image, and url fields. Nested under a products or items key is fine too."
+            "description": "is a simple array of product objects. We look for title, price, image, and url fields. Nested under a products or items key is fine too."
           }
         },
         "fields": {
@@ -6132,7 +6132,7 @@
             "description": {
               "before": "The publicly accessible URL that serves your product feed. For example:",
               "example": "https://yourstore.com/feed/products.xml",
-              "after": "The URL must be reachable from the internet — localhost or private-network URLs won't work. We auto-detect whether it's XML or JSON based on the content."
+              "after": "The URL must be reachable from the internet, so localhost and private-network URLs won't work. We auto-detect whether it's XML or JSON from the content."
             }
           }
         },
@@ -6144,7 +6144,7 @@
           "connectionFailed": "Connection failed",
           "connected": {
             "title": "Feed connected",
-            "description": "Importing products — this may take a moment."
+            "description": "Importing products. This may take a moment."
           }
         }
       },
@@ -6362,7 +6362,7 @@
           "high": "You're ahead of most competitors. Let's make sure you stay there."
         },
         "topFinding": "Top Finding",
-        "topFindingBody": "{name} loses on {attributes} — {impact} Costs you {percentage}% of simulations.",
+        "topFindingBody": "{name} loses on {attributes}. {impact} Costs you {percentage}% of simulations.",
         "stats": {
           "winRate": "Win rate",
           "products": "Products",
@@ -6401,7 +6401,7 @@
       "points": [
         "ChatGPT, Claude, Gemini & Perplexity simulated real shopping comparisons",
         "Every product was scored head-to-head against competitors",
-        "This report shows exactly where you win — and where you lose"
+        "This report shows where you win and where you lose"
       ]
     },
     "page": {

@@ -1,7 +1,7 @@
 {
   "features": {
     "meta": {
-      "title": "AI Ecommerce Tools for Merchant Product Listings",
+      "title": "AI ecommerce tools for merchant product listings",
       "description": "AI ecommerce tools for product listing optimization, competitor analysis, and AI shopping visibility. See how ecentic helps merchants win more carts today."
     },
     "breadcrumb": {
@@ -47,13 +47,13 @@
         {
           "step": "Step 04",
           "title": "Track",
-          "description": "Watch your win rate, AI-agent visits, and attributed revenue climb week over week, then rescan and repeat."
+          "description": "Track your win rate, AI-agent visits, and attributed revenue week over week, then rescan and repeat."
         }
       ]
     },
     "capabilities": {
       "number": "02",
-      "title": "Everything you need to get picked.",
+      "title": "What it takes to get picked.",
       "description": "Not another dashboard or copy generator. ecentic is a decision layer that sits on top of your store and turns agent insight into published listing updates.",
       "items": [
         {

@@ -1,7 +1,7 @@
 {
   "enterprise": {
     "meta": {
-      "title": "Enterprise — Agent-Commerce at Scale",
+      "title": "Enterprise — agent commerce at scale",
       "description": "Agent-commerce intelligence for enterprise merchants: multi-brand dashboards, API access, SSO, SOC 2 compliance, UCP signing, and a dedicated CSM team."
     },
     "breadcrumb": {
@@ -32,7 +32,7 @@
     "why": {
       "number": "01",
       "title": "When a single-brand plan stops being enough.",
-      "description": "Enterprise is for teams that need one agent-commerce layer across brands, regions, and security requirements — not another self-serve seat.",
+      "description": "Enterprise is for teams that need one agent-commerce layer across brands, regions, and security requirements, rather than another self-serve seat.",
       "paragraphs": [
         "Dominate runs the full optimization loop for one brand. Enterprise adds the control plane: multi-brand rollups, SSO, API access, managed UCP signing, and a named CSM who owns the relationship.",
         "The decision usually shows up when catalog size, brand count, or procurement requirements outgrow a flat monthly plan."
@@ -87,7 +87,7 @@
           "description": "A named customer success manager, quarterly business reviews, and direct engineering escalation."
         }
       ],
-      "paragraph": "We scope Enterprise around catalog size, platforms, and compliance needs — then share a custom ROI estimate before anyone writes a procurement deck.",
+      "paragraph": "We scope Enterprise around catalog size, platforms, and compliance needs, then share a custom ROI estimate before anyone writes a procurement deck.",
       "panelTitle": "How scoping works",
       "scoping": [
         {
