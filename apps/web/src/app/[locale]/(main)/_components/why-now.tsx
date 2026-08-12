@@ -29,7 +29,7 @@ export const WhyNow = async () => {
             <span className="absolute size-full animate-ping rounded-full bg-primary opacity-40" />
             <span className="relative size-2.5 rounded-full bg-primary" />
           </span>
-          <span className="font-light text-primary text-xl">
+          <span className="font-light text-primary-text text-xl">
             {translate("whyNow.eyebrow")}
           </span>
         </div>

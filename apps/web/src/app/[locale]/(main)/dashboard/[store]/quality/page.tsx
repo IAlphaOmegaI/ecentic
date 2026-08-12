@@ -208,7 +208,7 @@ const TopIssues = async ({ params }: { params: StoreParams }) => {
               }}
             />
             <details className="group mt-1">
-              <summary className="w-fit cursor-pointer list-none font-medium text-primary text-sm underline-offset-2 hover:underline">
+              <summary className="w-fit cursor-pointer list-none font-medium text-primary-text text-sm underline-offset-2 hover:underline">
                 <span className="mr-1 inline-block text-xs transition-transform group-open:rotate-90">
                   ▸
                 </span>
@@ -219,7 +219,7 @@ const TopIssues = async ({ params }: { params: StoreParams }) => {
                   <li key={product.id}>
                     <Link
                       href={`/dashboard/${store}/products/${product.id}`}
-                      className="text-foreground text-sm underline-offset-2 hover:text-primary hover:underline"
+                      className="text-foreground text-sm underline-offset-2 hover:text-primary-text hover:underline"
                     >
                       {product.title}
                     </Link>

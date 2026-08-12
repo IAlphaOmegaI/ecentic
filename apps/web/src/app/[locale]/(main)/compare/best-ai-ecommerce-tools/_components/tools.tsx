@@ -78,7 +78,7 @@ export const Tools = async () => {
                     >
                       {tool.name}
                       {tool.us && (
-                        <span className="ml-2 font-normal text-base text-primary">
+                        <span className="ml-2 font-normal text-base text-primary-text">
                           {translate("tools.usLabel")}
                         </span>
                       )}

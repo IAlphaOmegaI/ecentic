@@ -27,25 +27,29 @@ const redHatDisplay = Red_Hat_Display({
   variable: "--font-redhat-display",
 });
 
+// woff2, subset to latin + latin-ext: 1357KB of TTF became 135KB. TTF is a
+// desktop format and was costing ~170KB per weight over the wire even after
+// brotli. The `.ttf` originals stay on disk — `lib/og.tsx` feeds them to Satori,
+// which cannot read woff2 — they are simply no longer what browsers fetch.
 const ltSuperior = localFont({
   src: [
     {
-      path: "../../../public/fonts/LTSuperior/LTSuperior-Regular.ttf",
+      path: "../../../public/fonts/LTSuperior/LTSuperior-Regular.woff2",
       weight: "400",
       style: "normal",
     },
     {
-      path: "../../../public/fonts/LTSuperior/LTSuperior-Medium.ttf",
+      path: "../../../public/fonts/LTSuperior/LTSuperior-Medium.woff2",
       weight: "500",
       style: "normal",
     },
     {
-      path: "../../../public/fonts/LTSuperior/LTSuperior-SemiBold.ttf",
+      path: "../../../public/fonts/LTSuperior/LTSuperior-SemiBold.woff2",
       weight: "600",
       style: "normal",
     },
     {
-      path: "../../../public/fonts/LTSuperior/LTSuperior-Bold.ttf",
+      path: "../../../public/fonts/LTSuperior/LTSuperior-Bold.woff2",
       weight: "700",
       style: "normal",
     },
@@ -179,9 +183,13 @@ export default async ({ children }: PropsWithChildren) => {
             strategy="beforeInteractive"
           />
         )} */}
+        {/* `lazyOnload`, not `afterInteractive`: the widget pulls ~508KB
+            (including a 148KB stylesheet and its own copy of Vue) for a support
+            bubble almost nobody opens. Idle time is the right budget for that,
+            not the critical path. */}
         {process.env.NEXT_PUBLIC_CHATWOOT_BASE_URL &&
           process.env.NEXT_PUBLIC_CHATWOOT_WEBSITE_TOKEN && (
-            <Script id="chatwoot-widget" strategy="afterInteractive">
+            <Script id="chatwoot-widget" strategy="lazyOnload">
               {`
             (function(d,t) {
               var BASE_URL="${process.env.NEXT_PUBLIC_CHATWOOT_BASE_URL}";

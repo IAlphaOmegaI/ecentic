@@ -198,7 +198,7 @@ export const IntegrationsSection = ({
       <div className="p-4">
         <Link
           href="/onboarding/connect"
-          className="flex w-fit items-center gap-2 rounded-md border border-accent-foreground border-dashed px-4 py-2.5 text-foreground-dimmed text-sm transition-colors duration-150 hover:border-primary hover:text-primary"
+          className="flex w-fit items-center gap-2 rounded-md border border-accent-foreground border-dashed px-4 py-2.5 text-foreground-dimmed text-sm transition-colors duration-150 hover:border-primary hover:text-primary-text"
         >
           <PlusIcon className="size-4" />
           {translate("action.connectAnother")}

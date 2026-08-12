@@ -61,7 +61,7 @@ const AuditContent = async ({ params }: { params: StoreParams }) => {
                 href={check.action.url}
                 target="_blank"
                 rel="noreferrer"
-                className="w-fit font-medium text-primary text-sm underline-offset-2 hover:underline"
+                className="w-fit font-medium text-primary-text text-sm underline-offset-2 hover:underline"
               >
                 {check.action.label} ↗
               </a>

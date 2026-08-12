@@ -12,22 +12,28 @@ import {
 
 const source = "/videos/banner.mp4";
 
+// The trigger loops silently forever behind a "Play video" affordance, so it
+// has no use for the film's 70 seconds or its audio track. It gets a 15s, 960w,
+// soundless cut (357KB); the full 15.8MB film stays behind the dialog, where it
+// only downloads once someone actually asks for it. `autoPlay` overrides
+// `preload`, so whatever this element points at is fetched on load regardless.
+const loop = "/videos/banner-loop.mp4";
+
 export const HeroVideo = () => (
   <Dialog>
-    <DialogTrigger
-      aria-label="Watch the ecentic product film"
-      className="group relative h-auto w-full overflow-hidden rounded-2xl border border-accent-foreground bg-emphasis p-0 text-left shadow-2xl shadow-primary/10 outline-offset-4"
-    >
+    {/* No `aria-label`: the name derives from the visible text below, which is
+        what a voice-control user would say out loud. */}
+    <DialogTrigger className="group relative h-auto w-full overflow-hidden rounded-2xl border border-accent-foreground bg-emphasis p-0 text-left shadow-2xl shadow-primary/10 outline-offset-4">
       <video
         aria-hidden
         autoPlay
         loop
         muted
         playsInline
-        preload="metadata"
+        poster="/images/hero-poster.webp"
         className="aspect-video w-full object-cover transition-transform duration-150 group-hover:scale-[1.01] motion-reduce:transition-none"
       >
-        <source src={source} type="video/mp4" />
+        <source src={loop} type="video/mp4" />
       </video>
       <span
         aria-hidden

@@ -100,6 +100,18 @@ export default withSentryConfig(
           },
         ],
       },
+      {
+        // `public/` is served `max-age=0, must-revalidate`, so the hero loop was
+        // re-fetched on every visit. Safe to freeze because these are versioned
+        // by filename — a new cut ships as a new name, never a new body.
+        source: "/videos/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
     ],
   } satisfies NextConfig),
   {
@@ -111,6 +123,10 @@ export default withSentryConfig(
     authToken: process.env.SENTRY_AUTH_TOKEN,
     // Upload a larger set of source maps for prettier stack traces
     widenClientFileUpload: true,
+    // No `disableLogger`: deprecated in @sentry/nextjs 10, and its replacement
+    // (`webpack.treeshake.removeDebugLogging`) does nothing under Turbopack,
+    // which is what builds this app. It would only add a deprecation warning to
+    // every build in exchange for no bytes.
     // `tunnelRoute` is a rewrite to an external URL (Sentry's ingest endpoint), so every
     // envelope is proxied through the dev server — which trips Node's 10-listener warning
     // on the piped ServerResponse. Its only purpose is dodging ad-blockers, which is

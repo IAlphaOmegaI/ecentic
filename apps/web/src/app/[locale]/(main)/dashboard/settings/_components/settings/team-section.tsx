@@ -80,7 +80,7 @@ export const TeamSection = ({ user }: { user: User.Type }) => {
               className="flex items-center justify-between px-4 py-3"
             >
               <div className="flex items-center gap-3">
-                <div className="flex size-9 items-center justify-center bg-primary/10 font-medium text-base text-primary">
+                <div className="flex size-9 items-center justify-center bg-primary/10 font-medium text-base text-primary-text">
                   {member.name.charAt(0)}
                 </div>
                 <div>

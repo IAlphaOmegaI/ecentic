@@ -60,7 +60,7 @@ export const Why = async () => {
                 key={audience.title}
                 className="grid min-h-0 flex-1 grid-cols-[2.5rem_1fr] content-start bg-background-rich px-6 py-5 md:grid-cols-[5rem_1fr] md:px-8"
               >
-                <span className="font-normal text-lg text-primary tabular-nums">
+                <span className="font-normal text-lg text-primary-text tabular-nums">
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <RevealItem className="flex flex-col gap-1">
