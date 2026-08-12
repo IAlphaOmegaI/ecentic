@@ -198,7 +198,7 @@ export default async ({ params }: BlogPageProps) => {
       <EditorialSplitSection
         left={
           <>
-            <span className="mt-auto font-normal text-2xl text-primary">
+            <span className="font-normal text-2xl text-primary">
               00
             </span>
             <h2 className="text-4xl text-foreground leading-snug">
@@ -231,7 +231,7 @@ export default async ({ params }: BlogPageProps) => {
           key={section.number}
           left={
             <>
-              <span className="mt-auto font-normal text-2xl text-primary">
+              <span className="font-normal text-2xl text-primary">
                 {section.number}
               </span>
               <h2 className="text-4xl text-foreground leading-snug">
