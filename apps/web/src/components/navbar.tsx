@@ -139,21 +139,23 @@ const NavbarMobile = () => {
   const links = useNavLinks();
 
   return (
-    <div className="relative flex h-14 items-center gap-2 sm:h-16 lg:hidden">
-      <LanguageSwitcher variant="nav" className="relative z-100 mr-1" />
+    // Match desktop: language + menu share the right-menu.svg strip.
+    <div className="relative flex h-14 shrink-0 items-center gap-3 overflow-hidden p-4 pr-4 pl-12 sm:h-16 lg:hidden">
+      <Image
+        src="/images/right-menu.svg"
+        alt=""
+        fill
+        className="absolute inset-0 object-cover object-left"
+        aria-hidden
+      />
+      <LanguageSwitcher variant="nav" className="relative z-100" />
+      <div className="relative z-100 h-full w-px bg-accent-foreground" />
       <Sheet>
         <SheetTrigger
-          className="relative z-100 flex h-14 shrink-0 cursor-pointer items-center justify-center overflow-hidden p-4 pr-4 pl-12 text-primary transition-transform duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.97] sm:h-16"
+          className="relative z-100 flex cursor-pointer items-center justify-center text-primary transition-transform duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.97]"
           aria-label={translate("menu.action.primary")}
         >
-          <Image
-            src="/images/right-menu.svg"
-            alt=""
-            fill
-            className="absolute inset-0 object-cover object-left"
-            aria-hidden
-          />
-          <MenuIcon className="relative z-100 size-6" />
+          <MenuIcon className="size-6" />
         </SheetTrigger>
         <SheetPopup
           side="right"

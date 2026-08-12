@@ -103,8 +103,10 @@ export const LanguageSwitcher = ({
     <Select value={locale} onValueChange={switchLocale}>
       <SelectTrigger
         aria-label={translate("language.label")}
+        // Flag-only chrome so it sits on the menu SVG without a boxed select.
+        classList={{ icon: { root: "hidden" } }}
         className={cn(
-          "h-9 min-w-0 gap-1 border-0 bg-transparent px-1.5 pr-1 text-sm shadow-none",
+          "h-9 min-w-0 gap-0 border-0 bg-transparent px-1.5 shadow-none",
           "hover:bg-transparent focus-visible:border-0 active:bg-transparent",
           "data-popup-open:border-0 data-popup-open:bg-transparent",
           className,
@@ -115,7 +117,8 @@ export const LanguageSwitcher = ({
           alt={translate(active.labelKey)}
           className="size-5 shrink-0"
         />
-        <SelectValue className="sr-only" />
+        {/* Keep a Value node for a11y/selection, but never paint locale codes. */}
+        <SelectValue className="sr-only">{() => null}</SelectValue>
       </SelectTrigger>
       <SelectPositioner align="end" side="bottom">
         <SelectPopup>
