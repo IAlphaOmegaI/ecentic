@@ -426,7 +426,7 @@
       },
       "embedBanner": {
         "title": "Los datos estructurados no llegan a tus páginas de producto",
-        "description": "El app embed “Agentic structured data” está desactivado, así que los agentes de IA no ven datos legibles por máquina en tus productos. Activarlo una vez añade datos estructurados a todos los productos de esta tienda.",
+        "description": "El app embed \"Agentic structured data\" está desactivado, así que los agentes de IA no ven datos legibles por máquina en tus productos. Actívalo una vez y todos los productos de esta tienda tendrán datos estructurados.",
         "action": "Activar app embed"
       },
       "quality": {
@@ -477,7 +477,7 @@
           "won": "Ganado",
           "lost": "Perdido",
           "reasoning": "Razonamiento de {model}",
-          "noReasoning": "Sin razonamiento registrado — decidido por puntuación ({productScore} vs {competitorScore})."
+          "noReasoning": "Sin razonamiento registrado. Decidido por puntuación ({productScore} vs {competitorScore})."
         },
         "fields": {
           "title": "Título",
@@ -500,7 +500,7 @@
         },
         "applyOptimization": {
           "title": "Cierra la brecha automáticamente",
-          "description": "ecentic reescribe este listing a partir de las fortalezas de los competidores ganadores y lo publica directamente en tu tienda — sin ediciones manuales.",
+          "description": "ecentic reescribe este listing a partir de las fortalezas de los competidores ganadores y lo publica directamente en tu tienda, sin que tengas que editar nada a mano.",
           "reviewQueue": "Cola de revisión",
           "optimizePublish": "Optimizar y publicar"
         },
@@ -521,7 +521,7 @@
         },
         "optimizeTab": {
           "title": "Optimizar listing",
-          "description": "Puntuaciones de calidad de contenido según categoría para los campos que leen los agentes de IA — más cómo está posicionado este listing para su audiencia.",
+          "description": "Puntuaciones de calidad de contenido según categoría para los campos que leen los agentes de IA, más cómo está posicionado este listing para su audiencia.",
           "completeness": "Completitud:",
           "currentListing": "02 — Listing actual",
           "characters": "{count} caracteres",
@@ -532,12 +532,12 @@
           "structuredDataHelp": "El app embed ya renderiza datos estructurados por defecto del contenido del producto en vivo. Al publicar se escribe esta versión optimizada por IA en el metafield {metafield}, y el embed la renderiza en lugar de la predeterminada.",
           "publishStructuredData": "Publicar datos estructurados optimizados",
           "publishing": "Publicando…",
-          "noStructuredDataYet": "Aún no hay datos estructurados optimizados — el app embed renderiza el markup por defecto del contenido del producto en vivo. Genera una versión optimizada por IA para sustituirla.",
+          "noStructuredDataYet": "Aún no hay datos estructurados optimizados. El app embed renderiza el markup por defecto del contenido del producto en vivo. Genera una versión optimizada por IA para sustituirla.",
           "generateJsonLd": "Generar JSON-LD optimizado",
           "generating": "Generando…",
           "generationFailed": "Error al generar",
           "structuredDataPublished": "Datos estructurados optimizados publicados",
-          "structuredDataPublishedDescription": "Escrito en el metafield ecentic.structured_data — el app embed ahora lo renderiza en lugar del markup de producto por defecto. Si el embed está desactivado, actívalo en el editor de temas y pulsa Guardar.",
+          "structuredDataPublishedDescription": "Escrito en el metafield ecentic.structured_data. El app embed ahora lo renderiza en lugar del markup de producto por defecto. Si el embed está desactivado, actívalo en el editor de temas y pulsa Guardar.",
           "openThemeEditor": "Abrir editor de temas",
           "listingAuditKicker": "01 — Auditoría de listing con IA",
           "status": {
@@ -550,11 +550,11 @@
           },
           "embedNotice": {
             "embedOffTitle": "App embed desactivado",
-            "embedOffText": "Los datos estructurados optimizados están publicados para este producto, pero el app embed “Agentic structured data” está desactivado — ningún markup de ecentic llega a la página. Activarlo una vez aplica a todos los productos de la tienda.",
+            "embedOffText": "Los datos estructurados optimizados están publicados para este producto, pero el app embed \"Agentic structured data\" está desactivado, así que ningún markup de ecentic llega a la página. Activarlo una vez aplica a todos los productos de la tienda.",
             "missingTitle": "Sin datos estructurados en la página",
-            "missingText": "Los agentes de IA no ven datos de producto legibles por máquina. Activa el app embed “Agentic structured data” — un interruptor añade datos estructurados a todos los productos de la tienda.",
+            "missingText": "Los agentes de IA no ven datos de producto legibles por máquina. Activa el app embed \"Agentic structured data\". Ese único interruptor añade datos estructurados a todos los productos de la tienda.",
             "storeDefaultTitle": "Markup predeterminado de la tienda",
-            "storeDefaultText": "Solo está activo el markup del tema — suele ser escaso (sin GTIN, una oferta, sin detalle de variantes). Activa el app embed de ecentic (aplica a todos los productos) y luego publica datos estructurados optimizados abajo para este producto.",
+            "storeDefaultText": "Solo está activo el markup del tema, y suele ser escaso: sin GTIN, una oferta, sin detalle de variantes. Activa el app embed de ecentic, que aplica a todos los productos, y luego publica datos estructurados optimizados abajo para este.",
             "standardTitle": "Usando markup estándar de ecentic",
             "standardText": "El app embed renderiza datos estructurados por defecto del contenido del producto en vivo. Publica la versión optimizada por IA abajo para ofrecer a los agentes un markup más rico y competitivo para este producto."
           }
@@ -577,7 +577,7 @@
         },
         "csv": {
           "title": "Subir un CSV",
-          "description": "Esta tienda se creó desde un archivo y no desde una plataforma conectada, así que no hay origen upstream del que importar — sube otro CSV para ampliarla.",
+          "description": "Esta tienda se creó desde un archivo y no desde una plataforma conectada, así que no hay origen upstream del que importar. Sube otro CSV para ampliarla.",
           "fieldLabel": "CSV de productos",
           "importing": "Importando…",
           "importCsv": "Importar CSV",
@@ -712,7 +712,7 @@
         "headlines": {
           "outrankAll": "Superas a los {count} competidor{plural} simulados (media {overall}% de tasa de victoria).",
           "slimmestLead": "Tu ventaja más estrecha es frente a {brand} con {rate}%. Mantén los listings optimizados para defenderla.",
-          "biggestOpportunity": "{brand} gana el {lossRate}% de las comparaciones de agentes contra ti — tu mayor oportunidad.",
+          "biggestOpportunity": "{brand} gana el {lossRate}% de las comparaciones de agentes contra ti. Esa es tu mayor oportunidad.",
           "holdMajority": "Tienes la mayoría frente a {winning} de {total} competidor{plural} (media {overall}%). Optimizar los productos que pierdes frente a {brand} mueve la aguja.",
           "defaultHeadline": "Tienes la mayoría frente a {winning} de {total} competidor{plural} (media {overall}% de tasa de victoria).",
           "focusOptimization": "Enfoca una optimización de listing en los productos que {brand} te gana.",
@@ -794,7 +794,7 @@
         },
         "publishable": {
           "label": "Elegibles para auto-publicación",
-          "detail": "Se corrigen reescribiendo la ficha — aprueba para publicar."
+          "detail": "Se corrigen reescribiendo la ficha. Aprueba para publicar."
         },
         "manualFix": {
           "label": "Solo corrección manual",
@@ -849,7 +849,7 @@
       "roadmap": {
         "kicker": "01 — Qué esperar",
         "title": "Perspectiva de optimización",
-        "description": "Cómo suele acumularse la tasa de victoria de agentes en seis meses — desde el primer impulso tras publicar (24–48 h) hasta tráfico en la tienda alrededor del día {trafficDays}, y luego el efecto compuesto en todo el catálogo.",
+        "description": "Cómo suele acumularse la tasa de victoria de agentes en seis meses: primer impulso tras publicar en 24–48 h, tráfico en la tienda alrededor del día {trafficDays}, y luego el efecto compuesto en todo el catálogo.",
         "phaseLabel": "Fase {title}",
         "current": "Actual",
         "liftPoints": "+{points} pts",
@@ -882,7 +882,7 @@
           "foundation": {
             "title": "Fundación",
             "window": "Días 0–14",
-            "summary": "Escanea, reescribe fichas débiles y publica datos estructurados para que los agentes puedan leerte. La tasa de victoria en simulación se mueve primero — normalmente en 24–48 horas tras publicar.",
+            "summary": "Escanea, reescribe fichas débiles y publica datos estructurados para que los agentes puedan leerte. La tasa de victoria en simulación se mueve primero, normalmente en 24–48 horas tras publicar.",
             "outcomes": [
               "Aprueba reescrituras de ficha pendientes (título + descripción)",
               "Publica JSON-LD / atributos listos para feed en SKUs clave",
@@ -928,7 +928,7 @@
     "brand": {
       "eyebrow": "Visibilidad de marca",
       "title": "Cómo perciben y hablan de esta marca los motores de IA",
-      "description": "Consultas reales de compradores respondidas por motores de IA y auditadas: dónde aparece la marca, quién gana en su lugar y en qué fuentes confían los motores.",
+      "description": "Lanzamos consultas reales de compradores a los motores de IA y auditamos las respuestas: dónde aparece la marca, quién gana en su lugar y en qué fuentes confían los motores.",
       "action": {
         "refresh": "Actualizar datos de marca",
         "run": "Ejecutar análisis de marca"
@@ -937,7 +937,7 @@
         "failed": "El análisis de marca falló",
         "started": {
           "title": "Análisis de marca iniciado",
-          "description": "Puedes seguir navegando — los resultados aparecerán aquí en alrededor de un minuto."
+          "description": "Puedes seguir navegando. Los resultados aparecen aquí en alrededor de un minuto."
         },
         "alreadyRunning": "Ya hay un análisis en curso"
       },
@@ -1020,7 +1020,7 @@
       },
       "running": {
         "title": "Análisis en curso",
-        "description": "ChatGPT está respondiendo y auditando 20 consultas de compradores. Puedes navegar a otra parte — los resultados llegarán aquí automáticamente."
+        "description": "ChatGPT está respondiendo y auditando 20 consultas de compradores. Puedes navegar a otra parte; los resultados llegan aquí automáticamente."
       },
       "failed": {
         "title": "El último análisis falló",
@@ -1030,7 +1030,7 @@
     "quality": {
       "eyebrow": "Calidad de datos",
       "title": "Las reglas de feed que exige cada superficie de compra con IA",
-      "description": "Cada producto activo pasa por un único registro de reglas: comprobaciones universales que aplica cualquier agente de compra con IA, más los paquetes por plataforma — la especificación de datos de producto y los códigos de incidencia de Google Merchant Center, y la especificación de feed de OpenAI detrás de ChatGPT Shopping — con severidad por superficie y enlaces a la documentación oficial de cada hallazgo.",
+      "description": "Cada producto activo pasa por un único registro de reglas: comprobaciones universales que aplica cualquier agente de compra con IA, más los paquetes por plataforma de la especificación de datos de producto y los códigos de incidencia de Google Merchant Center y de la especificación de feed de OpenAI detrás de ChatGPT Shopping. Cada hallazgo lleva severidad por superficie y un enlace a la documentación oficial.",
       "platform": {
         "universal": "Todos los agentes de IA",
         "google": "Google Merchant",
@@ -1059,13 +1059,13 @@
         "title": "Correcciones ordenadas por cuántos productos desbloquean",
         "affected": "{count, plural, one {# producto} other {# productos}}",
         "viewAffected": "Ver productos afectados",
-        "empty": "Sin violaciones de reglas en el catálogo — cada producto pasa las comprobaciones de ambas plataformas."
+        "empty": "Sin violaciones de reglas en el catálogo. Cada producto pasa las comprobaciones de ambas plataformas."
       },
       "products": {
         "eyebrow": "Catálogo",
         "title": "Hallazgos por producto",
         "findings": "{count, plural, one {# hallazgo} other {# hallazgos}}",
-        "empty": "Aún no hay productos activos — sincroniza o añade productos para ejecutar las comprobaciones de calidad."
+        "empty": "Aún no hay productos activos. Sincroniza o añade productos para ejecutar las comprobaciones de calidad."
       },
       "rules": {
         "id-duplicate": {
@@ -1126,7 +1126,7 @@
         },
         "description-promo-text": {
           "title": "Texto promocional en la descripción",
-          "detail": "Elimina las frases promocionales — el precio, las ofertas y el envío se verifican contra atributos dedicados."
+          "detail": "Elimina las frases promocionales. El precio, las ofertas y el envío se verifican contra atributos dedicados."
         },
         "id-too-long": {
           "title": "ID de producto de más de 50 caracteres",
@@ -1202,14 +1202,14 @@
         },
         "mpn-missing-without-gtin": {
           "title": "Sin GTIN ni MPN",
-          "detail": "Proporciona un MPN cuando el producto no tenga GTIN — ChatGPT Shopping exige uno de los dos; el feed de Google marca identifier_exists como false en caso contrario."
+          "detail": "Proporciona un MPN cuando el producto no tenga GTIN. ChatGPT Shopping exige uno de los dos, y sin ellos el feed de Google marca identifier_exists como false."
         }
       }
     },
     "googleShopping": {
       "eyebrow": "Canal · Google Shopping",
       "title": "Fichas optimizadas en Google, sin tocar tu tienda",
-      "description": "ecentic superpone tus optimizaciones de ficha publicadas sobre tu feed de productos de Google como sustituciones de atributos. El plugin de Google de tu tienda sigue siendo el dueño de precios, stock y del feed de productos — ecentic gestiona títulos, descripciones y diagnósticos por encima.",
+      "description": "ecentic superpone tus optimizaciones de ficha publicadas sobre tu feed de productos de Google como sustituciones de atributos. El plugin de Google de tu tienda sigue siendo el dueño de precios, stock y del feed de productos. ecentic gestiona títulos, descripciones y diagnósticos por encima.",
       "toast": "Google Shopping",
       "unsupported": {
         "chip": "Próximamente",
@@ -1219,12 +1219,12 @@
         "step": "Paso {number, number}",
         "connect": {
           "title": "Conectar Google",
-          "description": "Inicia sesión con la cuenta de Google que gestiona el Merchant Center de esta tienda. ecentic solicita el permiso de contenido de Merchant Center — gestiona ahí tus fichas de producto, feeds, políticas de devolución y datos de contacto de la tienda, y nunca toca tus anuncios ni tus datos personales.",
+          "description": "Inicia sesión con la cuenta de Google que gestiona el Merchant Center de esta tienda. ecentic solicita el permiso de contenido de Merchant Center. Gestiona ahí tus fichas de producto, feeds, políticas de devolución y datos de contacto de la tienda, y nunca toca tus anuncios ni tus datos personales.",
           "action": "Conectar Google"
         },
         "chooseAccount": {
           "title": "Elige tu cuenta de Merchant Center",
-          "description": "Tu sesión de Google puede ver varias cuentas de Merchant Center — elige la que el canal de Google y YouTube creó para esta tienda. Las cuentas cuyo sitio web registrado no coincide con el dominio de esta tienda aparecen marcadas; vincular una igualmente es posible, pero suele ser un error.",
+          "description": "Tu sesión de Google puede ver varias cuentas de Merchant Center. Elige la que el canal de Google y YouTube creó para esta tienda. Las cuentas cuyo sitio web registrado no coincide con el dominio de esta tienda aparecen marcadas; puedes vincular una igualmente, pero suele ser un error.",
           "matches": "{domain} — coincide con esta tienda",
           "linkAnyway": "{domain} — vincular igualmente",
           "noWebsite": "sin sitio web configurado",
@@ -1232,32 +1232,32 @@
         },
         "waitingAccount": {
           "title": "Esperando tu cuenta de Merchant Center",
-          "description": "Instala el canal de Google y YouTube en el panel de tu tienda y termina su conexión con Google — crea y verifica tu cuenta de Merchant Center, y después ecentic la detecta automáticamente.",
+          "description": "Instala el canal de Google y YouTube en el panel de tu tienda y termina su conexión con Google. Eso crea y verifica tu cuenta de Merchant Center, y ecentic la detecta automáticamente.",
           "action": "Comprobar ahora",
           "checked": "Comprobación de cuenta completada"
         },
         "link": {
           "title": "Vincula tu cuenta con ecentic",
-          "description": "ecentic solicitará acceso de gestión a tu cuenta de Merchant Center (cuenta {account}). Esto nos permite adjuntar un feed de optimización y leer diagnósticos — puedes revocar el acceso en Merchant Center cuando quieras.",
+          "description": "ecentic solicitará acceso de gestión a tu cuenta de Merchant Center (cuenta {account}). Esto nos permite adjuntar un feed de optimización y leer diagnósticos. Puedes revocar el acceso en Merchant Center cuando quieras.",
           "action": "Solicitar vinculación",
           "requested": "Vinculación solicitada"
         },
         "linkPending": {
           "title": "Estableciendo la vinculación",
-          "description": "Tu solicitud de vinculación se está procesando — normalmente se completa en unos minutos.",
+          "description": "Tu solicitud de vinculación se está procesando. Normalmente se completa en unos minutos.",
           "action": "Comprobar ahora",
           "refreshed": "Estado de la vinculación actualizado"
         },
         "feed": {
           "title": "Configura el feed de optimización",
-          "description": "Crea el feed complementario de ecentic en tu cuenta y lo conecta con tu feed de productos principal. El plugin de tu tienda sigue siendo el dueño de precios, stock e imágenes — ecentic solo superpone títulos y descripciones optimizados.",
+          "description": "Crea el feed complementario de ecentic en tu cuenta y lo conecta con tu feed de productos principal. El plugin de tu tienda sigue siendo el dueño de precios, stock e imágenes. ecentic solo superpone títulos y descripciones optimizados.",
           "action": "Configurar feed de optimización",
           "ready": "Feed de optimización listo"
         }
       },
       "disconnect": {
         "action": "Desconectar Google",
-        "description": "Elimina el feed de optimización de ecentic y el acceso de gestión de tu cuenta de Merchant Center. Tus productos y sus fichas en Google se mantienen — solo desaparecen las sustituciones de ecentic. Puedes volver a conectarlo cuando quieras.",
+        "description": "Elimina el feed de optimización de ecentic y el acceso de gestión de tu cuenta de Merchant Center. Tus productos y sus fichas en Google se mantienen; solo desaparecen las sustituciones de ecentic. Puedes volver a conectarlo cuando quieras.",
         "done": "Google desconectado"
       },
       "stats": {
@@ -1267,7 +1267,7 @@
       },
       "actions": {
         "push": "Enviar optimizaciones",
-        "pushed": "Optimizaciones enviadas — publicándose en Google",
+        "pushed": "Optimizaciones enviadas, publicándose en Google",
         "refresh": "Actualizar estado",
         "refreshed": "Estado actualizado",
         "wiring": "Comprobar conexión del feed",
@@ -1286,7 +1286,7 @@
         "accountIssues": "Incidencias de cuenta",
         "issue": "Incidencia",
         "accountIssue": "Incidencia de cuenta",
-        "empty": "Sin incidencias — la cuenta y sus ofertas están sanas.",
+        "empty": "Sin incidencias. La cuenta y sus ofertas están sanas.",
         "attribute": "atributo: {attribute}"
       },
       "ucp": {
@@ -1304,49 +1304,49 @@
           "title": "Sitio web de la tienda reclamado",
           "fallback": "La página de inicio",
           "claimed": "{uri} está verificada y reclamada.",
-          "unclaimed": "{uri} está configurada pero no reclamada — el plugin de Google de tu tienda suele encargarse de esto.",
+          "unclaimed": "{uri} está configurada pero no reclamada. El plugin de Google de tu tienda suele encargarse de esto.",
           "missing": "No hay ninguna página de inicio registrada en la cuenta de Merchant Center."
         },
         "returnPolicy": {
           "title": "Política de devoluciones",
           "link": "O gestiónala en Merchant Center",
-          "missing": "No hay política de devoluciones en la cuenta — es un requisito de Comerciante Responsable y se muestra en la pantalla de pago de Google. Crea una abajo y ecentic la escribe en Merchant Center.",
+          "missing": "No hay política de devoluciones en la cuenta. Google la exige para Comerciante Responsable y la muestra en la pantalla de pago. Crea una abajo y ecentic la escribe en Merchant Center.",
           "noWindow": "{count, plural, one {# política encontrada} other {# políticas encontradas}}, pero ninguna define un plazo de devolución (días tras la entrega o de por vida).",
           "noLink": "{count, plural, one {# política encontrada} other {# políticas encontradas}}, pero ninguna enlaza al texto completo de la política.",
-          "noCost": "{count, plural, one {# política encontrada} other {# políticas encontradas}}, pero ninguna indica el coste de envío de la devolución — obligatorio junto al plazo y el enlace.",
+          "noCost": "{count, plural, one {# política encontrada} other {# políticas encontradas}}, pero ninguna indica el coste de envío de la devolución, obligatorio junto al plazo y el enlace.",
           "ok": "{count, plural, one {# política} other {# políticas}} con plazo de devolución, coste de envío y enlace a la política completa."
         },
         "customerSupport": {
           "title": "Contacto de atención al cliente",
           "link": "O edítalo en Merchant Center",
-          "configured": "Configurado ({methods}) — se convierte en el enlace «Contactar con el comerciante» en la confirmación de pedido de Google.",
-          "missing": "No hay sitio web, correo ni teléfono de atención al cliente en la cuenta — configúralo aquí mismo y ecentic lo escribe en Merchant Center."
+          "configured": "Configurado ({methods}). Esto se convierte en el enlace «Contactar con el comerciante» en la confirmación de pedido de Google.",
+          "missing": "No hay sitio web, correo ni teléfono de atención al cliente en la cuenta. Configúralo aquí mismo y ecentic lo escribe en Merchant Center."
         },
         "offers": {
           "title": "Productos aprobados para fichas gratuitas",
           "approved": "{approved, number} de {total, number} ofertas aprobadas para fichas gratuitas.",
-          "disapproved": "{count, number} desaprobadas — consulta los diagnósticos de arriba.",
+          "disapproved": "{count, number} desaprobadas. Consulta los diagnósticos de arriba.",
           "checkoutFlag": "{count, number} llevan la marca de elegibilidad de pago en Google.",
           "checkoutApproved": "{count, number} están aprobadas para el pago agéntico en sí."
         },
         "waitlist": {
           "title": "Únete a la lista de espera de UCP de Google",
           "link": "Abrir el formulario de la lista de espera",
-          "ready": "Merchant Center está listo — solicita el programa de pago agéntico. Google debe aprobar la integración antes de que el pago se active.",
+          "ready": "Merchant Center está listo. Solicita el programa de pago agéntico; Google debe aprobar la integración antes de que el pago se active.",
           "pending": "Disponible cuando las comprobaciones de arriba estén en verde. Google aprueba a cada comerciante antes de activar el pago."
         },
         "platform": {
           "chip": "Lo gestiona Shopify",
           "title": "Pagos, checkout y sincronización de pedidos",
-          "description": "El gestor de Google Pay, el perfil UCP, los endpoints de pago y los webhooks de pedidos son la parte de la integración que corresponde a tu plataforma de comercio — en las tiendas Shopify vienen con la propia infraestructura de pago agéntico de Shopify. ecentic prepara todo lo del lado de Merchant Center: la preparación de arriba y las marcas de elegibilidad de abajo."
+          "description": "El gestor de Google Pay, el perfil UCP, los endpoints de pago y los webhooks de pedidos son la parte de la integración que corresponde a tu plataforma de comercio. En las tiendas Shopify vienen con la propia infraestructura de pago agéntico de Shopify. ecentic prepara todo lo del lado de Merchant Center: la preparación de arriba y las marcas de elegibilidad de abajo."
         },
         "eligibility": {
           "eyebrow": "Elegibilidad de pago por producto",
-          "description": "La elegibilidad está desactivada por defecto — Google trata las marcas ausentes como no elegibles. Las opciones de aquí viajan en la siguiente ejecución de «Enviar optimizaciones» como atributos `native_commerce` en el feed complementario."
+          "description": "La elegibilidad está desactivada por defecto, porque Google trata las marcas ausentes como no elegibles. Las opciones de aquí viajan en la siguiente ejecución de «Enviar optimizaciones» como atributos `native_commerce` en el feed complementario."
         }
       },
       "products": {
-        "empty": "Aún no hay productos sincronizados — sincroniza primero los productos de tu tienda.",
+        "empty": "Aún no hay productos sincronizados. Sincroniza primero los productos de tu tienda.",
         "restricted": "puede estar restringido: {hints}",
         "live": "{count, number} activas",
         "pending": "{count, number} pendientes",
@@ -1356,8 +1356,8 @@
         "notice": "Aviso…",
         "close": "Cerrar",
         "toast": "Elegibilidad de pago",
-        "enabled": "Marcado como elegible — envía las optimizaciones para mandarlo a Google",
-        "disabled": "Marcado como no elegible — envía las optimizaciones para mandar la exclusión",
+        "enabled": "Marcado como elegible. Envía las optimizaciones para mandarlo a Google",
+        "disabled": "Marcado como no elegible. Envía las optimizaciones para mandar la exclusión",
         "hints": {
           "ucp_subscription": "suscripción",
           "ucp_preorder": "reserva anticipada",
@@ -1422,7 +1422,7 @@
           "update": "Actualizar política",
           "submitCreate": "Crear política en Merchant Center",
           "submitReplace": "Reemplazar política en Merchant Center",
-          "replaceNote": "La API de Google no puede editar una política de devoluciones en su sitio — al guardar se reemplaza la política predeterminada existente por esta.",
+          "replaceNote": "La API de Google no puede editar una política de devoluciones en su sitio. Al guardar se reemplaza la política predeterminada existente por esta.",
           "countries": {
             "label": "Países de venta",
             "placeholder": "ES, US",
@@ -1685,7 +1685,7 @@
       "advancedValidator": {
         "kicker": "Pruebas avanzadas",
         "title": "Pruebas de endpoints y ciclo de vida",
-        "description": "Sondea todos los endpoints de servicio declarados en el perfil y simula el ciclo de vida completo de checkout de un agente de IA — Crear → Actualizar → Completar → Cancelar.",
+        "description": "Sondea todos los endpoints de servicio declarados en el perfil y simula el ciclo de vida completo de checkout de un agente de IA: Crear → Actualizar → Completar → Cancelar.",
         "fields": {
           "domain": {
             "label": "Dominio",
@@ -1696,7 +1696,7 @@
           "primary": "Ejecutar pruebas avanzadas",
           "running": "Probando…"
         },
-        "hint": "Realiza peticiones HTTP en vivo al servidor del comerciante — las entradas de prueba pueden crear carritos de test.",
+        "hint": "Realiza peticiones HTTP en vivo al servidor del comerciante. Las entradas de prueba pueden crear carritos de test.",
         "toast": {
           "failed": "Error en la comprobación avanzada"
         },
@@ -1863,7 +1863,7 @@
       "session": {
         "changeStore": "Cambiar tienda",
         "emptyTitle": "¿Qué debe hacer el agente?",
-        "emptyDescription": "Estás conectado a {host}. El agente ejecuta llamadas UCP en vivo — buscar en el catálogo, inspeccionar un producto, crear un carrito o iniciar un checkout.",
+        "emptyDescription": "Estás conectado a {host}. El agente ejecuta llamadas UCP en vivo: buscar en el catálogo, inspeccionar un producto, crear un carrito o iniciar un checkout.",
         "suggestions": [
           "Muéstrame detalles del primer producto",
           "Añade el primer producto a un carrito nuevo",
@@ -1906,7 +1906,7 @@
       },
       "quota": {
         "title": "Has usado los {limit} mensajes gratis del playground",
-        "description": "Crea una cuenta para seguir ejecutando flujos UCP contra tu propia tienda — sin límite de mensajes.",
+        "description": "Crea una cuenta para seguir ejecutando flujos UCP contra tu propia tienda, sin límite de mensajes.",
         "action": {
           "primary": "Crear cuenta gratis"
         }
@@ -2124,11 +2124,11 @@
         "choosePlan": {
           "title": "Elige cómo pagar",
           "description": "Empieza gratis con pago por uso, o elige una suscripción mensual fija sin comisión por rendimiento.",
-          "startPayg": "Empezar pago por uso — gratis, sin tarjeta"
+          "startPayg": "Empezar pago por uso (gratis, sin tarjeta)"
         },
         "performanceFee": {
           "title": "Comisión por rendimiento",
-          "description": "{rate}% en pedidos atribuidos a IA · tope {cap}/mes. Gratis para empezar — solo pagas cuando un agente compra por una optimización que hicimos, nunca por otras ventas.",
+          "description": "{rate}% en pedidos atribuidos a IA · tope {cap}/mes. Gratis para empezar. Solo pagas cuando un agente compra por una optimización que hicimos, nunca por otras ventas.",
           "actionNeeded": "Acción necesaria",
           "active": "Activo",
           "off": "Desactivado",
@@ -2205,7 +2205,7 @@
       "description": "Descarga o programa informes automatizados sobre el rendimiento de tus agentes.",
       "shareable": {
         "title": "Informe de tasa de victoria compartible",
-        "description": "Genera una URL pública para un informe de tasa de victoria con buen formato — pensado para compartir en Twitter, LinkedIn o con tu equipo.",
+        "description": "Genera una URL pública para tu informe de tasa de victoria, con formato listo para compartir en Twitter, LinkedIn o con tu equipo.",
         "action": {
           "primary": "Generar informe compartible"
         },
@@ -2399,7 +2399,7 @@
       "setup": {
         "kicker": "02 — Configuración del escaneo",
         "title": "Elige qué simular",
-        "description": "Elige los productos y competidores para la próxima ejecución — la estimación se actualiza al seleccionar.",
+        "description": "Elige los productos y competidores para la próxima ejecución. La estimación se actualiza al seleccionar.",
         "products": "Productos",
         "competitors": "Competidores",
         "clearAll": "Limpiar todo",
@@ -2435,7 +2435,7 @@
         "products": "Productos",
         "wins": "Victorias",
         "losses": "Derrotas",
-        "topFinding": "{name} pierde en {attributes} — {impact} Te cuesta el {loss}% de las simulaciones."
+        "topFinding": "{name} pierde en {attributes}. {impact} Te cuesta el {loss}% de las simulaciones."
       },
       "toast": {
         "simulationFailed": "Error en la simulación",
@@ -2522,7 +2522,7 @@
         "pricePerMonth": "/mes",
         "action": {
           "primary": "Mejorar ahora",
-          "secondary": "Quizá más tarde — {days} días restantes"
+          "secondary": "Quizá más tarde ({days} días restantes)"
         }
       },
       "features": [
@@ -2573,7 +2573,7 @@
           "medium": "Eres competitivo, pero hay margen significativo para ganar más.",
           "high": "Vas por delante de la mayoría de competidores. Asegurémonos de que siga así."
         },
-        "topFinding": "{name} pierde en {attributes} — {impact} Te cuesta {lossPercentage}% de las simulaciones."
+        "topFinding": "{name} pierde en {attributes}. {impact} Te cuesta {lossPercentage}% de las simulaciones."
       },
       "providers": {
         "gpt4": {
@@ -2635,7 +2635,7 @@
         "primary": "Sé el producto",
         "accent": "que recomienda la IA."
       },
-      "description": "Los compradores ya preguntan a ChatGPT, Gemini y Perplexity qué comprar. ecentic hace que la respuesta sea tu producto — y envía esos compradores a tu tienda.",
+      "description": "Los compradores ya preguntan a ChatGPT, Gemini y Perplexity qué comprar. ecentic consigue que tu producto salga en la respuesta y envía a esos compradores a tu tienda.",
       "proof": "Configuración en 2 minutos · Sin tarjeta · Primero tu puntuación gratis"
     },
     "action": {
@@ -2645,10 +2645,10 @@
       "seeEuBundle": "Ver el bundle UE",
       "bookBundleCall": "Reservar llamada del bundle",
       "checkStoreFree": "Comprobar tu tienda gratis",
-      "seeAiScoreFree": "Ver tu puntuación de agentes IA — es gratis"
+      "seeAiScoreFree": "Ver tu puntuación de agentes IA, gratis"
     },
     "proof": {
-      "title": "La IA ya envía compradores. La única pregunta es si aterrizan en ti.",
+      "title": "La IA ya está enviando compradores a algún sitio. La pregunta es si es a ti.",
       "stats": {
         "cyberWeek": {
           "value": "20%",
@@ -2698,14 +2698,14 @@
       "euFlagAlt": "Bandera animada de la Unión Europea",
       "visitEuPresence": "Visitar EU Presence",
       "title": "ecentic × EU Presence",
-      "description": "Nos hemos aliado con EU Presence para ayudarte a expandirte al mercado europeo: ellos gestionan la representación y el cumplimiento en los 27 estados miembro mientras ecentic te mantiene elegido por los agentes de IA. Consigue ambos en un bundle, con un 20% de descuento."
+      "description": "Nos hemos aliado con EU Presence para que vendas en Europa sin montar un equipo de cumplimiento. Ellos gestionan la representación en los 27 estados miembro. Nosotros mantenemos tus fichas ganando con los agentes de IA. Contrata ambos juntos y te llevas un 20% de descuento."
     },
     "partnershipBundle": {
       "ariaLabel": "Bundle ecentic × EU Presence",
       "visitEuPresence": "Visitar EU Presence",
       "title": "ecentic × EU Presence",
       "subtitle": "Cumplimiento + visibilidad en IA",
-      "description": "Entra en el mercado europeo y sigue siendo elegido por agentes de IA en un solo acuerdo. EU Presence gestiona la representación y el cumplimiento en los 27 estados miembro; ecentic mantiene tus fichas ganando la comparación de agentes.",
+      "description": "Contrátalo una vez y cubres los dos lados. EU Presence gestiona la representación y el cumplimiento en los 27 estados miembro, y ecentic mantiene tus fichas ganando la comparación de agentes.",
       "items": {
         "gdpr": {
           "name": "GDPR Representative",
@@ -2746,15 +2746,15 @@
       },
       "diagnose": {
         "title": "Ve dónde pierdes",
-        "description": "ecentic pide a los principales agentes de compras con IA que exploren tu catálogo y te muestra exactamente qué productos omiten — y por qué."
+        "description": "ecentic pasa a los principales agentes de compra con IA por tu catálogo y te muestra qué productos omiten, y por qué."
       },
       "optimize": {
         "title": "Sé elegido",
-        "description": "Un clic reescribe tus fichas para que los agentes te recomienden primero. Luego observa cómo suben tus visitas y ventas de IA."
+        "description": "Un clic reescribe tus fichas para que los agentes te recomienden primero. A partir de ahí ves las visitas y las ventas que trae."
       }
     },
     "features": {
-      "title": "Todo lo que necesitas para ganar al comprador con IA.",
+      "title": "Lo que ecentic hace de verdad.",
       "items": {
         "aiScore": {
           "title": "Tu puntuación de IA",
@@ -2770,7 +2770,7 @@
         },
         "track": {
           "title": "Mide el resultado",
-          "description": "Observa cómo crecen semana a semana las visitas y los ingresos de agentes de IA."
+          "description": "Mira las visitas y los ingresos de agentes de IA, semana a semana."
         }
       }
     },
@@ -2811,8 +2811,8 @@
     },
     "caseStudy": {
       "eyebrow": "Historia de cliente",
-      "title": "DUA Flavours pasó de omitido a elegido — en 30 días.",
-      "description": "DUA Flavours conectó su tienda y ecentic mostró exactamente qué productos omitían los agentes de IA — y reescribió las fichas. En un mes, los agentes empezaron a enviar compradores.",
+      "title": "DUA Flavours pasó de omitido a elegido en 30 días.",
+      "description": "DUA Flavours conectó su tienda. ecentic mostró qué productos omitían los agentes de IA, reescribió esas fichas y en un mes los agentes empezaron a enviarles compradores.",
       "verified": "Cliente verificado de ecentic · publicado con permiso",
       "metrics": {
         "visits": {
@@ -2827,33 +2827,33 @@
       }
     },
     "testimonials": {
-      "title": "Lo que dicen.",
+      "title": "Lo que nos dicen los clientes.",
       "starsAria": "{count} de 5 estrellas",
       "items": {
         "sarah": {
           "name": "Sarah Chen",
           "role": "Directora de Ecommerce",
           "company": "Meridian Goods",
-          "text": "No teníamos ni idea de que los agentes de IA comparaban nuestras fichas con las de la competencia hasta que ecentic nos mostró la simulación. En una semana corregimos tres títulos de producto y vimos un aumento medible del tráfico referido por agentes."
+          "text": "No teníamos ni idea de que los agentes de IA comparaban nuestras fichas con las de la competencia hasta que vimos la simulación. Esa semana corregimos tres títulos de producto y el tráfico referido por agentes subió."
         },
         "marcus": {
           "name": "Marcus Trejo",
           "role": "Brand Manager DTC",
           "company": "Olven Studio",
-          "text": "Solo las battlecards de competidores nos ahorraron horas de investigación manual. Ahora sabemos exactamente qué atributos añadir para que nuestros productos dejen de perder frente a alternativas más baratas en resultados de compras con IA."
+          "text": "Las battlecards nos ahorraron horas de investigación manual. Ahora sabemos qué atributos añadir para que nuestros productos dejen de perder frente a alternativas más baratas en los resultados de compra con IA."
         },
         "priya": {
           "name": "Priya Nair",
           "role": "Propietaria de tienda Shopify",
           "company": "Leafwork",
-          "text": "Conecté mi tienda en dos minutos y al instante vi qué fichas ignoraban los agentes de IA. Las sugerencias de optimización son concretas y accionables — no consejos genéricos de SEO."
+          "text": "Conectar mi tienda me llevó dos minutos y enseguida vi qué fichas ignoraban los agentes de IA. Las sugerencias son cosas que puedo hacer de verdad, no consejos genéricos de SEO."
         }
       }
     },
     "booking": {
       "eyebrow": "Reserva una llamada",
       "title": "Mira tu tasa de victoria en IA, en vivo en 15 minutos.",
-      "description": "Elige una franja y simularemos cómo los agentes de compras con IA comparan tu catálogo con la competencia — y te mostraremos exactamente qué corregir.",
+      "description": "Elige una franja y pasaremos tu catálogo por los agentes de compra con IA mientras lo ves, y después te mostramos qué corregir.",
       "expectations": {
         "winRate": {
           "title": "Lectura en vivo de la tasa de victoria",
@@ -2865,15 +2865,15 @@
         },
         "optimizations": {
           "title": "Tus primeras optimizaciones",
-          "description": "Te vas con los cambios de ficha de mayor impacto — sin presentación de procurement."
+          "description": "Te vas con los cambios de ficha que más conviene hacer primero, y nada de esto tiene que pasar por procurement."
         }
       },
-      "footnote": "Sin tarjeta, sin compromiso — solo 15 minutos para ver cómo los agentes ven tu catálogo. Elige una hora a la derecha y quedas reservado."
+      "footnote": "Sin tarjeta y sin compromiso. Son 15 minutos para ver cómo los agentes ven tu catálogo. Elige una hora a la derecha y quedas reservado."
     },
     "blindSpot": {
       "eyebrow": "El punto ciego",
-      "title": "Tus productos son invisibles para los compradores que más importan.",
-      "description": "Los agentes de IA ya compran por tus clientes. No ven anuncios ni desplazan tu página. Leen datos, comparan especificaciones y eligen en milisegundos. No sabes con qué frecuencia te eligen ni cómo cambiarlo.",
+      "title": "Tus productos son invisibles para quien de verdad está eligiendo.",
+      "description": "Los agentes de IA ya compran por tus clientes. No ven tus anuncios y no desplazan tu página. Leen datos, comparan especificaciones y eligen en milisegundos. No tienes ni idea de con qué frecuencia te eligen, ni qué hacer al respecto.",
       "descriptionAccent": "ecentic lo soluciona.",
       "story": {
         "ask": {
@@ -2882,7 +2882,7 @@
         },
         "pick": {
           "title": "El agente elige 3",
-          "description": "En milisegundos la IA compara datos estructurados, señales de confianza y profundidad de especificaciones — y nombra tres productos."
+          "description": "En milisegundos la IA compara datos estructurados, señales de confianza y profundidad de especificaciones, y nombra tres productos."
         },
         "invisible": {
           "title": "Eres invisible",
@@ -2907,15 +2907,15 @@
           "result": "RESULTADO: Primera opción en ChatGPT, Claude, Gemini y Perplexity."
         }
       },
-      "closing": "Cada venta que pierdes ahora mismo frente a un competidor, un agente de IA tomó esa decisión. Descubre exactamente dónde estás."
+      "closing": "Algunas de las ventas que perdiste esta semana las decidió un agente de IA. Descubre dónde estás."
     },
     "discoveryShift": {
       "eyebrow": "El cambio",
-      "title": "El ecommerce acaba de cambiar para siempre.",
+      "title": "Los compradores dejaron de elegir. Los agentes empezaron.",
       "description": {
         "before": "Durante 20 años los compradores recibieron diez enlaces azules y eligieron por sí mismos. Ahora hacen una pregunta y un agente de IA devuelve ",
         "highlight": "una sola respuesta",
-        "after": ". Eres la elección — o no existes."
+        "after": ". Eres la elección, o no existes."
       },
       "searchEra": {
         "label": "Antes — la era de la búsqueda",
@@ -2929,7 +2929,7 @@
         "answerTitle": "Sony WH-1000XM5 — 348 $",
         "answerDescription": "Los mejores en general. Cancelación de ruido líder, excelente sonido, comodidad todo el día.",
         "buyNow": "Comprar ahora — 348 $",
-        "summary": "Una pregunta. Una respuesta. Sin anuncios, sin desplazamiento, sin segundo puesto. El agente decide en milisegundos — y tú nunca lo ves."
+        "summary": "Una pregunta. Una respuesta. Sin anuncios, sin desplazamiento, sin segundo puesto. El agente decide en milisegundos y tú nunca lo ves."
       }
     },
     "discoveryPaths": {
@@ -2938,13 +2938,13 @@
         "features": {
           "eyebrow": "Funciones",
           "title": "Herramientas de ecommerce con IA para visibilidad y conversión",
-          "description": "Explora los flujos que usan los comerciantes para simular decisiones de compra con IA, diagnosticar pérdidas y priorizar mejoras de fichas.",
+          "description": "Los flujos que usan los comerciantes para simular decisiones de compra con IA, ver dónde pierden y decidir qué fichas corregir primero.",
           "label": "Explorar funciones"
         },
         "productListings": {
           "eyebrow": "Fichas de producto",
           "title": "Optimización de fichas con IA para títulos, descripciones y datos",
-          "description": "Descubre cómo contenido más claro, atributos más sólidos y aprobaciones más rápidas mejoran la calidad de comparación en sistemas de compra con IA.",
+          "description": "Descubre cómo un contenido más claro y unos atributos más sólidos cambian la forma en que los sistemas de compra con IA te comparan.",
           "label": "Ver página de fichas"
         },
         "shopify": {
@@ -2956,13 +2956,13 @@
         "compare": {
           "eyebrow": "Comparativa",
           "title": "Las mejores herramientas de IA para ecommerce en 2026",
-          "description": "Usa la guía comparativa para entender cuándo necesitas generación de contenido, personalización, analítica u optimización para agentes de comercio.",
+          "description": "Una guía sobre cuándo necesitas generación de contenido, personalización, analítica u optimización para agentes de comercio.",
           "label": "Leer guía comparativa"
         },
         "enterprise": {
           "eyebrow": "Enterprise",
           "title": "Inteligencia de agentes multimarca para comerciantes enterprise",
-          "description": "Acceso API, SSO, SOC 2, firma UCP y un CSM dedicado — para equipos con cientos de SKU en varias plataformas.",
+          "description": "Acceso API, SSO, SOC 2, firma UCP y un CSM dedicado, para equipos con cientos de SKU en varias plataformas.",
           "label": "Ver plan enterprise"
         }
       }
@@ -2970,33 +2970,33 @@
     "whyNow": {
       "eyebrow": "Por qué ahora",
       "title": "Hace seis meses los agentes no podían comprar. Ahora sí.",
-      "description": "No es una previsión. Los mayores nombres en pagos e IA lanzaron checkout con agentes en los dos últimos trimestres. El carrito ya se mueve — la única pregunta es si los agentes te eligen.",
+      "description": "No es una previsión. Visa, Mastercard, Google y OpenAI lanzaron checkout con agentes en los dos últimos trimestres. Los carritos ya se mueven. Tu producto está en ellos o no lo está.",
       "milestones": {
         "visa": {
           "date": "Oct 2025",
           "title": "Los pagos con agentes entran en vivo",
-          "description": "Visa permite que los agentes paguen en nombre del comprador — con Microsoft, Shopify, Stripe y Worldpay."
+          "description": "Visa permite que los agentes paguen en nombre del comprador, con Microsoft, Shopify, Stripe y Worldpay."
         },
         "google": {
           "date": "NRF 2026",
           "title": "Protocolo de compras agénticas",
-          "description": "Abierto al mercado con Shopify, Walmart, Target, Etsy, Visa, Mastercard y PayPal respaldándolo."
+          "description": "Abierto al mercado, con Shopify, Walmart, Target, Etsy, Visa, Mastercard y PayPal detrás."
         },
         "mastercard": {
           "date": "En vivo ahora",
           "title": "Marco Agent Pay para comerciantes",
-          "description": "Checkout iniciado por agentes en tiendas partner — pagos diseñados para compradores IA."
+          "description": "Checkout iniciado por agentes en tiendas partner, con pagos diseñados para compradores de IA."
         },
         "openai": {
           "date": "En vivo ahora",
           "title": "Checkout dentro de ChatGPT",
-          "description": "Compra sin salir del chat — Etsy, Coach, Kate Spade, Revolve y URBN ya integrados."
+          "description": "Compra sin salir del chat. Etsy, Coach, Kate Spade, Revolve y URBN ya están dentro."
         }
       }
     },
     "ucpCallout": {
       "title": "¿Tu tienda es visible para agentes de IA?",
-      "description": "Comprueba el perfil UCP de tu tienda en 10 segundos — mira si GPTBot, ClaudeBot, Gemini y Perplexity pueden leer tus fichas sin fricción."
+      "description": "Comprueba el perfil UCP de tu tienda en 10 segundos y mira si GPTBot, ClaudeBot, Gemini y Perplexity pueden leer tus fichas."
     }
   },
   "cookieConsent": {
@@ -3010,8 +3010,8 @@
   },
   "pricing": {
     "meta": {
-      "title": "Precios — Empieza gratis, paga cuando te elijan los agentes",
-      "description": "Precios de ecentic: escaneo gratis, luego pago por uso — gratis al inicio, 3% solo en pedidos atribuidos a la IA (con tope). O un plan fijo Compete/Dominate sin comisión."
+      "title": "Precios — empieza gratis, paga cuando te elijan los agentes",
+      "description": "Precios de ecentic: escaneo gratis, luego pago por uso. Gratis al inicio, 3% solo en pedidos atribuidos a la IA, con tope. O un plan fijo Compete/Dominate sin comisión."
     },
     "breadcrumb": {
       "home": "Inicio",
@@ -3043,13 +3043,13 @@
       "proof": "Resultados en unos dos minutos · Shopify o WooCommerce",
       "sample": {
         "scoreLabel": "Puntuación de agente IA",
-        "caption": "Un informe de tasa de victoria de ejemplo — el tuyo muestra exactamente dónde te omiten los agentes y por qué."
+        "caption": "Un informe de tasa de victoria de ejemplo. El tuyo muestra dónde te omiten los agentes, y por qué."
       }
     },
     "choosePayment": {
       "number": "01",
       "title": "Elige cómo pagar",
-      "description": "Todos los planes ejecutan el mismo ciclo simular → diagnosticar → optimizar. Empieza con pago por uso y paga solo en pedidos impulsados por agentes, o elige un plan mensual fijo cuando quieras facturación predecible. Sin mínimos, mes a mes y sin cuotas de configuración — ahorra un 20% con el bundle EU Presence."
+      "description": "Todos los planes ejecutan el mismo ciclo simular → diagnosticar → optimizar. Empieza con pago por uso y paga solo en pedidos impulsados por agentes, o elige un plan mensual fijo cuando quieras facturación predecible. Sin mínimos, mes a mes y sin cuotas de configuración. El bundle EU Presence te quita un 20%."
     },
     "plans": {
       "payg": {
@@ -3059,12 +3059,12 @@
         "badge": "Gratis al inicio",
         "figure": "3%",
         "suffix": "en pedidos atribuidos a la IA",
-        "note": "0 $ hasta que un agente genere una venta — sin tarjeta al inicio, tope de 500 $/mes.",
+        "note": "0 $ hasta que un agente genere una venta. Sin tarjeta al inicio, tope de 500 $/mes.",
         "features": [
           "Todo lo de Dominate, desde el día uno",
           "Sin tarjeta de crédito para empezar",
           "Paga solo en pedidos que impulsen agentes de IA",
-          "Tope fijo de 500 $/mes — sin sorpresas"
+          "Tope fijo de 500 $/mes"
         ],
         "action": {
           "primary": "Empezar gratis"
@@ -3148,15 +3148,15 @@
       "steps": [
         {
           "title": "Un agente te recomienda",
-          "description": "Un comprador pregunta a ChatGPT, Gemini o Perplexity qué comprar — y tu ficha optimizada gana la comparación."
+          "description": "Un comprador pregunta a ChatGPT, Gemini o Perplexity qué comprar, y tu ficha optimizada gana la comparación."
         },
         {
-          "title": "Compra — un pedido de 120 $",
+          "title": "Compra: un pedido de 120 $",
           "description": "El pedido lleva nuestra señal de atribución o sigue a una visita reciente referida por IA a tu tienda."
         },
         {
           "title": "Nos llevamos el 3% de ese pedido",
-          "description": "Solo en pedidos atribuidos a la IA. Tus otras ventas nunca se tocan — y nunca por visita de agente."
+          "description": "Solo en pedidos atribuidos a la IA. Tus otras ventas nunca se tocan, y nunca se te cobra por visita de agente."
         },
         {
           "title": "Las comisiones se detienen en 500 $/mes",
@@ -3165,13 +3165,13 @@
       ],
       "billing": {
         "title": "¿Prefieres facturación predecible?",
-        "description": "Compete y Dominate son mensuales fijos sin comisión por rendimiento — ambos ejecutan el mismo ciclo de optimización."
+        "description": "Compete y Dominate son mensuales fijos sin comisión por rendimiento. Ambos ejecutan el mismo ciclo de optimización."
       }
     },
     "compare": {
       "number": "03",
       "title": "Comparar planes",
-      "description": "El ciclo principal es idéntico en todos — los planes de pago añaden escala, automatización y funciones de protocolo. Deja que el tamaño de tu catálogo decida.",
+      "description": "El ciclo principal es idéntico en todos. Los planes de pago añaden escala, automatización y funciones de protocolo. Deja que el tamaño de tu catálogo decida.",
       "planHeader": "Plan",
       "rows": [
         {
@@ -3270,7 +3270,7 @@
       "ariaLabel": "Bundle ecentic × EU Presence",
       "title": "ecentic × EU Presence",
       "subtitle": "Cumplimiento + visibilidad IA",
-      "description": "Lánzate en el mercado europeo y sigue siendo elegido por agentes de IA en un solo proyecto. EU Presence gestiona representación y cumplimiento en los 27 estados miembro; ecentic mantiene tus fichas ganando la comparación de agentes.",
+      "description": "Contrátalo una vez y cubres los dos lados. EU Presence gestiona la representación y el cumplimiento en los 27 estados miembro, y ecentic mantiene tus fichas ganando la comparación de agentes.",
       "items": [
         {
           "name": "Representante GDPR",
@@ -3320,15 +3320,15 @@
         },
         {
           "question": "¿Cuál es la diferencia entre Compete, Scale y Dominate?",
-          "answer": "Compete es para equipos que quieren entender dónde pierden: hasta 100 productos, simulaciones diarias y battlecards de competidores con sugerencias manuales. Scale añade volumen y automatización: hasta 1000 productos, simulaciones continuas y optimizaciones publicadas en un clic o automáticamente. Dominate añade la capa de protocolo sobre Scale — alertas de deriva de modelos y generación UCP — y es el nivel contra el que se canjea nuestro acuerdo con Techstars. El acuerdo con Y Combinator se aplica a cualquiera de los tres."
+          "answer": "Compete es para equipos que quieren entender dónde pierden: hasta 100 productos, simulaciones diarias y battlecards de competidores con sugerencias manuales. Scale añade volumen y automatización: hasta 1000 productos, simulaciones continuas y optimizaciones publicadas en un clic o automáticamente. Dominate añade la capa de protocolo sobre Scale (alertas de deriva de modelos y generación UCP) y es el nivel contra el que se canjea nuestro acuerdo con Techstars. El acuerdo con Y Combinator se aplica a cualquiera de los tres."
         },
         {
           "question": "¿Cuál es la diferencia entre pago por uso y una suscripción?",
-          "answer": "Pay-as-you-go es gratis al inicio sin tarjeta y desbloquea todas las funciones — solo pagas un 3% en pedidos que podamos atribuir al tráfico de agentes de IA que optimizamos. Una suscripción (Compete, Scale o Dominate) es un precio mensual fijo sin comisión por rendimiento, para equipos que prefieren facturación predecible. Ambos ejecutan el mismo ciclo de optimización; elige el modelo de pago que prefieras."
+          "answer": "Pago por uso es gratis al inicio, sin tarjeta, y desbloquea todas las funciones. Solo pagas un 3% en pedidos que podamos atribuir al tráfico de agentes de IA que optimizamos. Una suscripción (Compete, Scale o Dominate) es un precio mensual fijo sin comisión por rendimiento, para equipos que prefieren facturación predecible. Ambos ejecutan el mismo ciclo de optimización; elige el modelo de pago que prefieras."
         },
         {
           "question": "¿Cómo funciona la comisión por rendimiento en pago por uso?",
-          "answer": "Con pago por uso pagas un 3% solo en pedidos que podamos atribuir al tráfico de agentes de IA que optimizamos — un pedido cuenta solo si lleva nuestra señal de atribución o sigue a una visita reciente referida por IA a tu tienda. Nunca se te cobra por tus otras ventas, nunca por visita de agente, y la comisión tiene un tope de 500 $ al mes. Es gratis al inicio sin tarjeta; solo pedimos un método de pago cuando hay una comisión real. Las suscripciones fijas y el Scan gratis no tienen comisión por rendimiento."
+          "answer": "Con pago por uso pagas un 3% solo en pedidos que podamos atribuir al tráfico de agentes de IA que optimizamos. Un pedido cuenta solo si lleva nuestra señal de atribución o sigue a una visita reciente referida por IA a tu tienda. Nunca se te cobra por tus otras ventas, nunca por visita de agente, y la comisión tiene un tope de 500 $ al mes. Es gratis al inicio sin tarjeta; solo pedimos un método de pago cuando hay una comisión real. Las suscripciones fijas y el Scan gratis no tienen comisión por rendimiento."
         },
         {
           "question": "¿Puedo cambiar de plan o cancelar después?",
@@ -3340,7 +3340,7 @@
         },
         {
           "question": "¿Qué es el bundle EU Presence?",
-          "answer": "Nos hemos asociado con EU Presence para que puedas lanzarte en Europa y seguir siendo elegido por agentes de IA en un solo proyecto. El bundle Cumplimiento + visibilidad IA combina su representante GDPR, persona responsable GPSR y Privacy Center Plus con ecentic Scale — facturados juntos con un 20% de descuento en el bundle, sin mínimos ni cuotas de configuración. Reserva una llamada del bundle desde la página de precios para configurarlo."
+          "answer": "Nos hemos asociado con EU Presence para que puedas lanzarte en Europa y seguir siendo elegido por agentes de IA en un solo proyecto. El bundle Cumplimiento + visibilidad IA combina su representante GDPR, persona responsable GPSR y Privacy Center Plus con ecentic Scale. Se factura junto con un 20% de descuento en el bundle, sin mínimos ni cuotas de configuración. Reserva una llamada del bundle desde la página de precios para configurarlo."
         }
       ]
     },
@@ -3396,7 +3396,7 @@
   },
   "resources": {
     "meta": {
-      "title": "Herramientas gratuitas de comercio con agentes y guías para comerciantes",
+      "title": "Herramientas gratuitas y guías para comercio con agentes",
       "description": "Recursos gratuitos de ecentic para comerciantes y desarrolladores: escaneo de puntuación de agente IA, validador UCP, playground UCP, guías de compra, blog y superficies públicas de API para agentes."
     },
     "breadcrumb": {
@@ -3477,7 +3477,7 @@
       "number": "02",
       "title": "Aprende el sistema, luego elige profundidad.",
       "description": "Empieza con el ciclo del producto, compara el mercado o ve directo a la implementación por plataforma.",
-      "agentsIntro": "Los mismos cuatro agentes que deciden qué recomendar también marcan lo que los comerciantes deben aprender primero — cómo funciona la selección y luego cómo actuar para su stack.",
+      "agentsIntro": "Los mismos cuatro agentes que deciden qué recomendar también marcan lo que los comerciantes deben aprender primero: cómo funciona la selección y luego cómo actuar para su stack.",
       "agents": [
         {
           "title": "ChatGPT",
@@ -3614,7 +3614,7 @@
   },
   "howItWorks": {
     "meta": {
-      "title": "Cómo funciona — Simular, diagnosticar, optimizar",
+      "title": "Cómo funciona — simular, diagnosticar, optimizar",
       "description": "Cómo funciona ecentic: simula cómo ChatGPT, Claude, Gemini y Perplexity comparan tus productos, diagnostica por qué pierdes y optimiza fichas para ganar carritos."
     },
     "breadcrumb": {
@@ -3626,7 +3626,7 @@
       "steps": [
         {
           "name": "Simular",
-          "text": "ecentic ejecuta tus productos en ChatGPT, Claude, Gemini y Perplexity a la vez, mapeando exactamente cómo cada agente compara tus fichas con cada competidor de tu categoría."
+          "text": "ecentic ejecuta tus productos en ChatGPT, Claude, Gemini y Perplexity a la vez y registra cómo cada agente compara tus fichas con cada competidor de tu categoría."
         },
         {
           "name": "Diagnosticar",
@@ -3759,7 +3759,7 @@
   },
   "demo": {
     "meta": {
-      "title": "Reservar una demo — Ve tu tasa de victoria con IA en vivo",
+      "title": "Reservar una demo — ve tu tasa de victoria con IA en vivo",
       "description": "Reserva una demo de 15 minutos de ecentic. Ejecutamos tus productos principales en ChatGPT, Claude, Gemini y Perplexity en vivo y definimos las correcciones de fichas de mayor impacto."
     },
     "breadcrumb": {
@@ -3876,7 +3876,7 @@
   },
   "enterprise": {
     "meta": {
-      "title": "Enterprise — Comercio con agentes a escala",
+      "title": "Enterprise — comercio con agentes a escala",
       "description": "Inteligencia de comercio con agentes para comerciantes enterprise: paneles multimarca, acceso API, SSO, cumplimiento SOC 2, firma UCP y un equipo CSM dedicado."
     },
     "breadcrumb": {
@@ -3956,7 +3956,7 @@
           "description": "No hace falta un deck de procurement para empezar."
         }
       ],
-      "paragraph": "Definimos el alcance de Enterprise según el tamaño del catálogo, las plataformas y las necesidades de cumplimiento — y compartimos una estimación de ROI personalizada antes de escribir un deck de procurement.",
+      "paragraph": "Definimos el alcance de Enterprise según el tamaño del catálogo, las plataformas y las necesidades de cumplimiento, y compartimos una estimación de ROI personalizada antes de que nadie escriba un deck de procurement.",
       "panelTitle": "Cómo funciona el alcance"
     },
     "compare": {
@@ -4108,7 +4108,7 @@
     "why": {
       "number": "01",
       "title": "Cuando un plan de una sola marca deja de bastar.",
-      "description": "Enterprise es para equipos que necesitan una capa de comercio con agentes compartida entre marcas, regiones y requisitos de seguridad — no otro asiento self-serve.",
+      "description": "Enterprise es para equipos que necesitan una capa de comercio con agentes compartida entre marcas, regiones y requisitos de seguridad, no otro asiento self-serve.",
       "paragraphs": [
         "Dominate ejecuta el ciclo completo de optimización para una marca. Enterprise añade el plano de control: agregados multimarca, SSO, acceso API, firma UCP gestionada y un CSM asignado que posee la relación.",
         "La decisión suele aparecer cuando el tamaño del catálogo, el número de marcas o los requisitos de procurement superan un plan mensual fijo."
@@ -4136,7 +4136,7 @@
   },
   "features": {
     "meta": {
-      "title": "Herramientas de IA para ecommerce — Fichas de producto para comerciantes",
+      "title": "Herramientas de IA para las fichas de producto de tu tienda",
       "description": "Herramientas de IA para ecommerce: optimización de fichas de producto, análisis de competidores y visibilidad en compras con IA. Descubre cómo ecentic ayuda a los comerciantes a ganar más carritos hoy."
     },
     "breadcrumb": {
@@ -4182,13 +4182,13 @@
         {
           "step": "Paso 04",
           "title": "Seguir",
-          "description": "Observa cómo suben tu tasa de victoria, las visitas de agentes de IA y los ingresos atribuidos semana a semana, y vuelve a escanear y repetir."
+          "description": "Sigue tu tasa de victoria, las visitas de agentes de IA y los ingresos atribuidos semana a semana, y vuelve a escanear y repetir."
         }
       ]
     },
     "capabilities": {
       "number": "02",
-      "title": "Todo lo que necesitas para ser elegido.",
+      "title": "Lo que hace falta para que te elijan.",
       "description": "No es otro panel ni otro generador de copy. ecentic es una capa de decisión sobre tu tienda que convierte la información de agentes en actualizaciones de fichas publicadas.",
       "items": [
         {
@@ -4706,7 +4706,7 @@
   },
   "shopify": {
     "meta": {
-      "title": "IA para Shopify — Optimización de fichas y catálogo",
+      "title": "IA para Shopify — optimización de fichas y catálogo",
       "description": "IA para tiendas Shopify que necesitan fichas de producto más sólidas, análisis de competidores más claro y actualizaciones aprobadas enviadas directamente al Shopify Admin."
     },
     "breadcrumb": {
@@ -4769,7 +4769,7 @@
       "number": "02",
       "title": "El flujo Shopify en ecentic.",
       "description": "El flujo conecta el catálogo, expone brechas competitivas y hace que las mejoras sean publicables de vuelta en Shopify en lugar de otro documento desconectado.",
-      "paragraph": "Conecta la tienda, elige los productos que importan, referéncialos frente a competidores y aprueba escrituras de vuelta vía Admin API — sin salir del flujo de catálogo de Shopify.",
+      "paragraph": "Conecta la tienda, elige los productos que importan, referéncialos frente a competidores y aprueba escrituras de vuelta vía Admin API. No sales del flujo de catálogo de Shopify.",
       "panelTitle": "Conectar, diagnosticar, publicar",
       "outcomes": [
         {
@@ -4825,7 +4825,7 @@
       "ecentic": {
         "badge": "ecentic sobre Shopify",
         "title": "Diseñado para ganar la comparación.",
-        "description": "El valor no es solo reescribir texto. Es saber si tu página es fácil de evaluar para un sistema de compras con IA, y si el cambio propuesto mejora tu probabilidad de ser elegido.",
+        "description": "Reescribir el texto es la mitad fácil. La mitad útil es saber si tu página es fácil de evaluar para un sistema de compras con IA, y si el cambio propuesto mejora tu probabilidad de ser elegido.",
         "strengths": [
           "Simula cómo los agentes de compras con IA comparan tus productos",
           "Referencia fichas frente a los competidores que siguen ganando",
@@ -4928,7 +4928,7 @@
   },
   "support": {
     "meta": {
-      "title": "Soporte — Ayuda con escaneos, facturación y agentes",
+      "title": "Soporte — ayuda con escaneos, facturación y agentes",
       "description": "Obtén ayuda con ecentic: soporte por correo, un recorrido en vivo de tus resultados de escaneo o una ruta de escalado dedicada para cuentas Enterprise y comercio con agentes."
     },
     "breadcrumb": {
@@ -5030,7 +5030,7 @@
   },
   "woocommerce": {
     "meta": {
-      "title": "IA para WooCommerce — Optimización de catálogo",
+      "title": "IA para WooCommerce — optimización de catálogo",
       "description": "IA para tiendas WooCommerce que necesitan optimización de fichas de producto, análisis de competidores y una ruta más clara de la información de agentes a actualizaciones de catálogo publicadas."
     },
     "breadcrumb": {
@@ -5061,9 +5061,9 @@
     "why": {
       "number": "01",
       "title": "Por qué los comerciantes WooCommerce necesitan un ciclo enfocado.",
-      "description": "Los operadores WooCommerce suelen necesitar información a nivel de catálogo, no solo copy más rápido.",
+      "description": "Los operadores WooCommerce suelen necesitar información a nivel de catálogo más que copy más rápido.",
       "paragraphs": [
-        "La IA para tiendas WooCommerce no es solo crear contenido más rápido. Los catálogos WooCommerce cambian rápido, los gestionan operadores ágiles y dependen de datos de producto limpios para competir bien.",
+        "Crear contenido más rápido es la parte más pequeña de esto. Los catálogos WooCommerce cambian rápido, los llevan equipos reducidos y dependen de datos de producto limpios para competir.",
         "Eso crea una necesidad práctica de un ciclo de optimización dedicado. Los comerciantes quieren saber qué productos son más fáciles de mejorar, qué competidor sigue ganando y qué detalles de ficha importan más antes de dedicar tiempo a reescribir docenas de páginas."
       ],
       "panelTitle": "Para quién está pensada esta página",
@@ -5090,7 +5090,7 @@
       "number": "02",
       "title": "El flujo WooCommerce en ecentic.",
       "description": "El flujo conecta datos de producto con análisis de competidores y luego con una ruta de publicación de vuelta dentro de WooCommerce en lugar de otro traspaso manual de contenido.",
-      "paragraph": "Instala el plugin, importa el catálogo, referencia los productos que importan y aprueba publicaciones REST — sin salir de WooCommerce ni reescribir toda la tienda.",
+      "paragraph": "Instala el plugin, importa el catálogo, referencia los productos que importan y aprueba publicaciones REST. Te quedas dentro de WooCommerce y nunca reescribes la tienda.",
       "panelTitle": "Conectar, diagnosticar, publicar",
       "advantages": [
         {
@@ -5113,7 +5113,7 @@
       "steps": [
         {
           "title": "Conectar e importar",
-          "description": "Instala el plugin gratis y aprueba la conexión en wp-admin — sin claves API que copiar. El catálogo se importa al conectar, sin editar el tema."
+          "description": "Instala el plugin gratis y aprueba la conexión en wp-admin. No hay claves API que copiar, el catálogo se importa al conectar y nunca tocas el tema."
         },
         {
           "title": "Elegir productos",
@@ -5131,7 +5131,7 @@
     },
     "agentCommerce": {
       "number": "03",
-      "title": "Deja que los agentes de IA compren, no solo naveguen.",
+      "title": "Deja que los agentes de IA compren de verdad.",
       "description": {
         "before": "Las fichas optimizadas deciden si un agente te recomienda. El Universal Commerce Protocol decide si puede completar la compra. El plugin gratis ",
         "pluginName": "écentic for WooCommerce",
@@ -5144,7 +5144,7 @@
       "capabilities": [
         {
           "title": "Descubierto en tu propia URL",
-          "description": "El plugin sirve /.well-known/ucp en tu dominio, para que los agentes encuentren tu tienda en tu dirección — no la de un tercero."
+          "description": "El plugin sirve /.well-known/ucp en tu dominio, para que los agentes encuentren tu tienda en tu dirección y no en la de un tercero."
         },
         {
           "title": "Precio sobre un carrito real",
@@ -5184,7 +5184,7 @@
       "number": "04",
       "title": "Encuentra primero el cuello de botella de tu catálogo.",
       "description": "La herramienta de optimización adecuada depende de dónde esté realmente el cuello de botella. Los comerciantes WooCommerce suelen enfrentar una de tres situaciones.",
-      "paragraph": "Acota la lista según el cuello de botella que tienes hoy. Velocidad de contenido, claridad competitiva y fricción de publicación piden tipos distintos de herramienta — y solo dos son trabajo de ecentic.",
+      "paragraph": "Acota la lista según el cuello de botella que tienes hoy. Velocidad de contenido, claridad competitiva y fricción de publicación piden tipos distintos de herramienta, y solo dos son trabajo de ecentic.",
       "panelTitle": "Tres situaciones para acotar la lista",
       "situations": [
         {
@@ -5259,7 +5259,7 @@
         },
         {
           "question": "¿Pueden las tiendas WooCommerce publicar actualizaciones de producto optimizadas?",
-          "answer": "Sí. Las reescrituras aprobadas se publican directamente de vuelta en WooCommerce por REST API, con credenciales de lectura y escritura. Revisas cada cambio antes de que esté en vivo — nada se publica en tu tienda sin tu aprobación."
+          "answer": "Sí. Las reescrituras aprobadas se publican directamente de vuelta en WooCommerce por REST API, con credenciales de lectura y escritura. Revisas cada cambio antes de que esté en vivo, y nada llega a tu tienda sin tu aprobación."
         },
         {
           "question": "¿Necesito el plugin o puedo conectar con claves API?",
@@ -5289,7 +5289,7 @@
   },
   "compare": {
     "meta": {
-      "title": "Mejores herramientas de IA para ecommerce en 2026 — Guía por categorías",
+      "title": "Mejores herramientas de IA para ecommerce en 2026",
       "description": "Las mejores herramientas de IA para ecommerce en 2026, organizadas por categoría para que los comerciantes comparen contenido, personalización, búsqueda, analítica y flujos de agent-commerce."
     },
     "breadcrumb": {
@@ -5511,7 +5511,7 @@
   },
   "techstars": {
     "meta": {
-      "title": "ecentic para Techstars — Canjea tu oferta para founders",
+      "title": "ecentic para Techstars — canjea tu oferta para founders",
       "description": "Una oferta exclusiva de ecentic para founders de Techstars: acceso extendido a Dominate, onboarding personalizado y precio para founders. Canjéala en menos de dos minutos."
     },
     "breadcrumb": {
@@ -5537,18 +5537,18 @@
       "number": "01",
       "title": "Qué incluye la oferta",
       "description": "Pensada para founders de Techstars que prefieren ganar recomendaciones de agentes de IA antes que cuidar una hoja de cálculo de fichas.",
-      "content": "ecentic te muestra cómo los agentes de compra con IA comparan tus productos con los competidores, diagnostica por qué ganas o pierdes y reescribe tus fichas para cerrar la brecha. La oferta Techstars abre la plataforma completa:\n\n- ecentic Dominate extendido — simulaciones continuas en ChatGPT, Claude, Gemini y Perplexity\n- Auto-optimización con publicación en un clic y alertas de deriva de modelos\n- Generación UCP para que los agentes verifiquen tu catálogo directamente\n- Onboarding personalizado para tu catálogo y precio para founders tras el periodo de la oferta\n\nCanjea abajo y verificaremos tu cohorte; luego te enviaremos el enlace de activación en un día laborable."
+      "content": "ecentic te muestra cómo los agentes de compra con IA comparan tus productos con los competidores, diagnostica por qué ganas o pierdes y reescribe tus fichas para cerrar la brecha. La oferta Techstars abre la plataforma completa:\n\n- ecentic Dominate extendido, con simulaciones continuas en ChatGPT, Claude, Gemini y Perplexity\n- Auto-optimización con publicación en un clic y alertas de deriva de modelos\n- Generación UCP para que los agentes verifiquen tu catálogo directamente\n- Onboarding personalizado para tu catálogo y precio para founders tras el periodo de la oferta\n\nCanjea abajo y verificaremos tu cohorte; luego te enviaremos el enlace de activación en un día laborable."
     },
     "redeem": {
       "number": "02",
       "title": "Canjea tu oferta",
-      "description": "Cuéntanos quién eres y qué quieres ganar. Verificamos tu cohorte de Techstars y activamos tu oferta — sin tarjeta de crédito."
+      "description": "Cuéntanos quién eres y qué quieres ganar. Verificamos tu cohorte de Techstars y activamos tu oferta. Sin tarjeta de crédito."
     },
     "howItWorks": {
       "number": "03",
       "title": "Cómo funciona el canje",
       "description": "Tres pasos del formulario a la oferta activa. La mayoría de founders ejecutan su primera simulación el mismo día.",
-      "content": "Aquí no hay laberinto de procurement — el objetivo es que empieces a simular rápido.\n\n- Envía el formulario — empresa, cohorte y qué quieres que ecentic te ayude a ganar\n- Verificamos tu cohorte contra el portfolio de Techstars, normalmente el mismo día\n- Recibes un enlace de activación y ayuda personalizada para importar tu catálogo\n\nUna vez dentro tu catálogo, ecentic lo pasa por los principales modelos de compra con IA, te muestra por qué eligen a los competidores y convierte los hallazgos en cambios de ficha que puedes aprobar en un clic."
+      "content": "Aquí no hay laberinto de procurement. El objetivo es que empieces a simular rápido.\n\n- Envía el formulario con tu empresa, tu cohorte y qué quieres que ecentic te ayude a ganar\n- Verificamos tu cohorte contra el portfolio de Techstars, normalmente el mismo día\n- Recibes un enlace de activación y ayuda personalizada para importar tu catálogo\n\nUna vez dentro tu catálogo, ecentic lo pasa por los principales modelos de compra con IA, te muestra por qué eligen a los competidores y convierte los hallazgos en cambios de ficha que puedes aprobar en un clic."
     },
     "faqSection": {
       "number": "04",
@@ -5563,11 +5563,11 @@
         },
         {
           "question": "¿Qué recibo exactamente?",
-          "answer": "Acceso extendido a ecentic Dominate — simulaciones continuas de agentes de IA en ChatGPT, Claude, Gemini y Perplexity, auto-optimización con publicación en un clic, alertas de deriva y generación UCP — más onboarding personalizado para tu catálogo y precio para founders cuando termine el periodo de la oferta."
+          "answer": "Acceso extendido a ecentic Dominate: simulaciones continuas de agentes de IA en ChatGPT, Claude, Gemini y Perplexity, auto-optimización con publicación en un clic, alertas de deriva y generación UCP. También incluye onboarding personalizado para tu catálogo y precio para founders cuando termine el periodo de la oferta."
         },
         {
           "question": "¿Necesito una cuenta antes?",
-          "answer": "No. Canjea la oferta aquí y te enviaremos los detalles de activación en un día laborable. Puedes crear tu cuenta ahora o esperar al enlace de activación — ambos llevan al mismo sitio."
+          "answer": "No. Canjea la oferta aquí y te enviaremos los detalles de activación en un día laborable. Puedes crear tu cuenta ahora o esperar al enlace de activación; ambos llevan al mismo sitio."
         },
         {
           "question": "¿Cuánto tarda el canje?",
@@ -5587,7 +5587,7 @@
   },
   "ucpPlayground": {
     "meta": {
-      "title": "Playground UCP — Prueba agentes de IA en cualquier tienda",
+      "title": "Playground UCP — prueba agentes de IA en cualquier tienda",
       "description": "Playground UCP gratuito: conduce un agente de compra con IA real contra cualquier tienda UCP. Ejecuta búsqueda de catálogo, carrito y checkout por MCP o REST e inspecciona las llamadas."
     },
     "breadcrumb": {
@@ -5617,7 +5617,7 @@
       },
       {
         "title": "Operaciones de carrito",
-        "description": "Crea un carrito, añade líneas y observa cómo se resuelven los totales — las mismas llamadas que haría un agente de compra con IA."
+        "description": "Crea un carrito, añade líneas y observa cómo se resuelven los totales, con las mismas llamadas que haría un agente de compra con IA."
       },
       {
         "title": "Handoff de checkout",
@@ -5646,7 +5646,7 @@
   },
   "ucpValidator": {
     "meta": {
-      "title": "Validador UCP — Comprobación del Universal Commerce Protocol",
+      "title": "Validador UCP — comprobación del Universal Commerce Protocol",
       "description": "Validador UCP gratuito: comprueba si una tienda publica un Universal Commerce Profile válido, valida su esquema y confirma que los agentes de IA pasan robots.txt."
     },
     "breadcrumb": {
@@ -5729,7 +5729,7 @@
   },
   "yc": {
     "meta": {
-      "title": "ecentic para Y Combinator — Canjea tu oferta",
+      "title": "ecentic para Y Combinator — canjea tu oferta",
       "description": "Una oferta exclusiva de ecentic para estudiantes de Y Combinator: acceso extendido en cualquier plan, onboarding personalizado y precio para estudiantes. Canjea en menos de dos minutos."
     },
     "breadcrumb": {
@@ -5755,18 +5755,18 @@
       "number": "01",
       "title": "Qué incluye la oferta",
       "description": "Pensada para estudiantes de YC que prefieren ganar recomendaciones de agentes de IA antes que cuidar una hoja de cálculo de fichas.",
-      "content": "ecentic te muestra cómo los agentes de compra con IA comparan tus productos con los competidores, diagnostica por qué ganas o pierdes y reescribe tus fichas para cerrar la brecha. Tu descuento YC se aplica al plan que mejor te encaje — Compete, Scale o Dominate:\n\n- Simulaciones de agentes en ChatGPT, Claude, Gemini y Perplexity en todos los planes\n- Simulaciones continuas y auto-optimización con publicación en un clic desde Scale\n- Alertas de deriva de modelos y generación UCP en Dominate, para que los agentes verifiquen tu catálogo directamente\n- Onboarding personalizado para tu catálogo y precio para estudiantes tras el periodo de la oferta\n\nCanjea abajo y verificaremos tu batch; luego te enviaremos el enlace de activación en un día laborable."
+      "content": "ecentic te muestra cómo los agentes de compra con IA comparan tus productos con los competidores, diagnostica por qué ganas o pierdes y reescribe tus fichas para cerrar la brecha. Tu descuento YC se aplica al plan que mejor te encaje: Compete, Scale o Dominate.\n\n- Simulaciones de agentes en ChatGPT, Claude, Gemini y Perplexity en todos los planes\n- Simulaciones continuas y auto-optimización con publicación en un clic desde Scale\n- Alertas de deriva de modelos y generación UCP en Dominate, para que los agentes verifiquen tu catálogo directamente\n- Onboarding personalizado para tu catálogo y precio para estudiantes tras el periodo de la oferta\n\nCanjea abajo y verificaremos tu batch; luego te enviaremos el enlace de activación en un día laborable."
     },
     "redeem": {
       "number": "02",
       "title": "Canjea tu oferta",
-      "description": "Cuéntanos quién eres y qué quieres ganar. Verificamos tu batch de YC y activamos tu oferta — sin tarjeta de crédito."
+      "description": "Cuéntanos quién eres y qué quieres ganar. Verificamos tu batch de YC y activamos tu oferta. Sin tarjeta de crédito."
     },
     "howItWorks": {
       "number": "03",
       "title": "Cómo funciona el canje",
       "description": "Tres pasos del formulario a la oferta activa. La mayoría de estudiantes ejecutan su primera simulación el mismo día.",
-      "content": "Aquí no hay laberinto de procurement — el objetivo es que empieces a simular rápido.\n\n- Envía el formulario — empresa, batch y qué quieres que ecentic te ayude a ganar\n- Verificamos tu batch contra el directorio de YC, normalmente el mismo día\n- Recibes un enlace de activación y ayuda personalizada para importar tu catálogo\n\nUna vez dentro tu catálogo, ecentic lo pasa por los principales modelos de compra con IA, te muestra por qué eligen a los competidores y convierte los hallazgos en cambios de ficha que puedes aprobar en un clic."
+      "content": "Aquí no hay laberinto de procurement. El objetivo es que empieces a simular rápido.\n\n- Envía el formulario con tu empresa, tu batch y qué quieres que ecentic te ayude a ganar\n- Verificamos tu batch contra el directorio de YC, normalmente el mismo día\n- Recibes un enlace de activación y ayuda personalizada para importar tu catálogo\n\nUna vez dentro tu catálogo, ecentic lo pasa por los principales modelos de compra con IA, te muestra por qué eligen a los competidores y convierte los hallazgos en cambios de ficha que puedes aprobar en un clic."
     },
     "faqSection": {
       "number": "04",
@@ -5781,11 +5781,11 @@
         },
         {
           "question": "¿Qué recibo exactamente?",
-          "answer": "Tu descuento de estudiante en el plan de ecentic que elijas — Compete, Scale o Dominate. Todos los planes ejecutan simulaciones de agentes de IA en ChatGPT, Claude, Gemini y Perplexity; Scale añade simulaciones continuas y auto-optimización con publicación en un clic; Dominate añade alertas de deriva de modelos y generación UCP. Todos incluyen onboarding personalizado para tu catálogo y precio para estudiantes cuando termine el periodo de la oferta."
+          "answer": "Tu descuento de estudiante en el plan de ecentic que elijas: Compete, Scale o Dominate. Todos los planes ejecutan simulaciones de agentes de IA en ChatGPT, Claude, Gemini y Perplexity; Scale añade simulaciones continuas y auto-optimización con publicación en un clic; Dominate añade alertas de deriva de modelos y generación UCP. Todos incluyen onboarding personalizado para tu catálogo y precio para estudiantes cuando termine el periodo de la oferta."
         },
         {
           "question": "¿Necesito una cuenta antes?",
-          "answer": "No. Canjea la oferta aquí y te enviaremos los detalles de activación en un día laborable. Puedes crear tu cuenta ahora o esperar al enlace de activación — ambos llevan al mismo sitio."
+          "answer": "No. Canjea la oferta aquí y te enviaremos los detalles de activación en un día laborable. Puedes crear tu cuenta ahora o esperar al enlace de activación; ambos llevan al mismo sitio."
         },
         {
           "question": "¿Cuánto tarda el canje?",
@@ -5806,7 +5806,7 @@
   "compareTool": {
     "page": {
       "title": "Comparar dos productos",
-      "description": "Mira qué producto recomendarían los agentes de IA — y por qué."
+      "description": "Mira qué producto recomendarían los agentes de IA, y por qué."
     },
     "form": {
       "productA": "Producto A",
@@ -5880,7 +5880,7 @@
             "line2": "OAuth."
           },
           "points": [
-            "Autorización con un clic — nunca vemos tu contraseña",
+            "Autorización con un clic, y nunca vemos tu contraseña",
             "Acceso de solo lectura a tu catálogo de productos",
             "Los productos se sincronizan automáticamente"
           ]
@@ -5993,11 +5993,11 @@
       ],
       "shopify": {
         "title": "Conectar Shopify",
-        "description": "Conexión OAuth — nunca vemos tu contraseña de Shopify.",
+        "description": "Conexión OAuth. Nunca vemos tu contraseña de Shopify.",
         "howItWorks": "¿Cómo funciona?",
         "steps": [
-          "Introduce el dominio de tu tienda — la URL yourstore.myshopify.com que usas para entrar al admin de Shopify.",
-          "Serás redirigido a Shopify para autorizar acceso de solo lectura a tu catálogo. Solo pedimos permisos de productos — ni pedidos ni clientes.",
+          "Introduce el dominio de tu tienda. Es la URL yourstore.myshopify.com que usas para entrar al admin de Shopify.",
+          "Serás redirigido a Shopify para autorizar acceso de solo lectura a tu catálogo. Solo pedimos permisos de productos, nunca pedidos ni clientes.",
           "Tras aprobar, Shopify permite a ecentic leer y escribir los datos de productos de tu tienda."
         ],
         "fields": {
@@ -6029,7 +6029,7 @@
         "toast": {
           "invalidDomain": {
             "title": "Introduce tu dominio myshopify.com",
-            "description": "OAuth necesita el dominio admin de Shopify (p. ej. tutienda.myshopify.com) o el identificador de la tienda — no una URL de escaparate personalizada."
+            "description": "OAuth necesita el dominio admin de Shopify (p. ej. tutienda.myshopify.com) o el identificador de la tienda, no una URL de escaparate personalizada."
           },
           "connectionFailed": "Error de conexión",
           "connected": {
@@ -6044,7 +6044,7 @@
         "oneClick": {
           "title": "Conexión con un clic",
           "recommended": "(recomendado)",
-          "description": "Introduce la URL de tu tienda y aprueba la conexión desde el admin de WordPress — sin copiar claves API. Necesitas el plugin gratuito écentic for WooCommerce instalado y activado; si aún no está, te mostramos cómo añadirlo. También habilita UCP alojado, haciendo tu tienda transaccional para agentes de compra con IA.",
+          "description": "Introduce la URL de tu tienda y aprueba la conexión desde el admin de WordPress. No hay claves API que copiar. Necesitas el plugin gratuito écentic for WooCommerce instalado y activado; si aún no está, te mostramos cómo añadirlo. También habilita UCP alojado, que hace tu tienda transaccional para los agentes de compra con IA.",
           "placeholder": "https://tutienda.com",
           "action": {
             "connect": "Conectar vía plugin",
@@ -6067,7 +6067,7 @@
           }
         },
         "manual": {
-          "title": "O conecta manualmente — dónde encontrar tus claves API",
+          "title": "O conecta manualmente: dónde encontrar tus claves API",
           "steps": [
             "Entra al panel de WordPress y ve a WooCommerce → Ajustes → Avanzado → REST API.",
             "Haz clic en Añadir clave. Pon una descripción como \"ecentic\", permisos Lectura/Escritura si quieres que ecentic publique cambios en fichas, o Lectura solo para sincronizar, y genera.",
@@ -6080,7 +6080,7 @@
             "placeholder": "https://tutienda.com",
             "validation": "La URL de la tienda es obligatoria",
             "description": {
-              "before": "La URL pública de tu tienda WooCommerce — por ejemplo",
+              "before": "La URL pública de tu tienda WooCommerce, por ejemplo",
               "example": "https://acmestore.com",
               "after": ". Es la página de inicio, no la URL del admin de WordPress."
             }
@@ -6095,7 +6095,7 @@
             "label": "Consumer Secret",
             "placeholder": "cs_...",
             "validation": "El consumer secret es obligatorio",
-            "description": "El secreto que empareja con la clave — empieza por cs_. Solo se muestra una vez al generar la clave, así que cópialo antes de salir de WooCommerce."
+            "description": "El secreto que empareja con la clave, empieza por cs_. WooCommerce solo lo muestra una vez al generar la clave, así que cópialo antes de salir."
           }
         },
         "action": {
@@ -6117,11 +6117,11 @@
           "title": "Formatos compatibles",
           "googleShopping": {
             "label": "XML de Google Shopping",
-            "description": "— el formato más común. Si usas Google Merchant Center, ya tienes uno. Es un feed RSS/Atom donde cada <item> contiene g:title, g:price, g:image_link, etc."
+            "description": "es el formato más común. Si usas Google Merchant Center, ya tienes uno. Es un feed RSS/Atom donde cada <item> contiene g:title, g:price, g:image_link, etc."
           },
           "json": {
             "label": "JSON",
-            "description": "— un array simple de objetos producto. Buscamos title, price, image y url. Anidado bajo products o items también vale."
+            "description": "es un array simple de objetos producto. Buscamos title, price, image y url. Anidado bajo products o items también vale."
           }
         },
         "fields": {
@@ -6132,7 +6132,7 @@
             "description": {
               "before": "La URL pública que sirve tu feed de productos. Por ejemplo:",
               "example": "https://tutienda.com/feed/products.xml",
-              "after": "La URL debe ser accesible desde internet — localhost o redes privadas no funcionan. Detectamos XML o JSON según el contenido."
+              "after": "La URL debe ser accesible desde internet, así que localhost y las redes privadas no funcionan. Detectamos XML o JSON según el contenido."
             }
           }
         },
@@ -6144,7 +6144,7 @@
           "connectionFailed": "Error de conexión",
           "connected": {
             "title": "Feed conectado",
-            "description": "Importando productos — puede tardar un momento."
+            "description": "Importando productos. Puede tardar un momento."
           }
         }
       },
@@ -6362,7 +6362,7 @@
           "high": "Vas por delante de la mayoría de competidores. Asegurémonos de que siga así."
         },
         "topFinding": "Hallazgo principal",
-        "topFindingBody": "{name} pierde en {attributes} — {impact} Te cuesta el {percentage}% de las simulaciones.",
+        "topFindingBody": "{name} pierde en {attributes}. {impact} Te cuesta el {percentage}% de las simulaciones.",
         "stats": {
           "winRate": "Tasa de victoria",
           "products": "Productos",
@@ -6401,7 +6401,7 @@
       "points": [
         "ChatGPT, Claude, Gemini y Perplexity simularon comparaciones reales de compra",
         "Cada producto se puntuó cara a cara frente a competidores",
-        "Este informe muestra exactamente dónde ganas — y dónde pierdes"
+        "Este informe muestra dónde ganas y dónde pierdes"
       ]
     },
     "page": {

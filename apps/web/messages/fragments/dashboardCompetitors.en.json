@@ -48,7 +48,7 @@
         "headlines": {
           "outrankAll": "You out-rank all {count} simulated competitor{plural} (avg {overall}% win rate).",
           "slimmestLead": "Your slimmest lead is against {brand} at {rate}%. Keep listings optimized to defend it.",
-          "biggestOpportunity": "{brand} wins {lossRate}% of agent comparisons against you — your biggest opportunity.",
+          "biggestOpportunity": "{brand} wins {lossRate}% of agent comparisons against you. That's your biggest opportunity.",
           "holdMajority": "You hold the majority against {winning} of {total} competitor{plural} (avg {overall}%). Optimizing the products you lose to {brand} moves the needle most.",
           "defaultHeadline": "You hold the majority against {winning} of {total} competitor{plural} (avg {overall}% win rate).",
           "focusOptimization": "Focus a listing optimization on the products {brand} beats you on.",

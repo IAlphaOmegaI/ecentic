@@ -1,7 +1,7 @@
 {
   "features": {
     "meta": {
-      "title": "Herramientas de IA para ecommerce — Fichas de producto para comerciantes",
+      "title": "Herramientas de IA para las fichas de producto de tu tienda",
       "description": "Herramientas de IA para ecommerce: optimización de fichas de producto, análisis de competidores y visibilidad en compras con IA. Descubre cómo ecentic ayuda a los comerciantes a ganar más carritos hoy."
     },
     "breadcrumb": {
@@ -47,13 +47,13 @@
         {
           "step": "Paso 04",
           "title": "Seguir",
-          "description": "Observa cómo suben tu tasa de victoria, las visitas de agentes de IA y los ingresos atribuidos semana a semana, y vuelve a escanear y repetir."
+          "description": "Sigue tu tasa de victoria, las visitas de agentes de IA y los ingresos atribuidos semana a semana, y vuelve a escanear y repetir."
         }
       ]
     },
     "capabilities": {
       "number": "02",
-      "title": "Todo lo que necesitas para ser elegido.",
+      "title": "Lo que hace falta para que te elijan.",
       "description": "No es otro panel ni otro generador de copy. ecentic es una capa de decisión sobre tu tienda que convierte la información de agentes en actualizaciones de fichas publicadas.",
       "items": [
         {

@@ -10,7 +10,10 @@
       "stepProgress": "Step {current} of {total}",
       "sidebar": {
         "connect": {
-          "headline": { "line1": "Connect your", "line2": "catalog." },
+          "headline": {
+            "line1": "Connect your",
+            "line2": "catalog."
+          },
           "points": [
             "Paste your store URL and we sync your products instantly",
             "Works with Shopify, WooCommerce, and custom feeds",
@@ -18,15 +21,21 @@
           ]
         },
         "shopify": {
-          "headline": { "line1": "Shopify", "line2": "OAuth." },
+          "headline": {
+            "line1": "Shopify",
+            "line2": "OAuth."
+          },
           "points": [
-            "One-click authorization — we never see your password",
+            "One-click authorization, and we never see your password",
             "Read-only access to your product catalog",
             "Products stay in sync automatically"
           ]
         },
         "woocommerce": {
-          "headline": { "line1": "WooCommerce", "line2": "API keys." },
+          "headline": {
+            "line1": "WooCommerce",
+            "line2": "API keys."
+          },
           "points": [
             "Generate a REST API key in WooCommerce (read/write to publish listing updates from ecentic, or read-only for sync only)",
             "Paste three fields and we handle the rest",
@@ -34,7 +43,10 @@
           ]
         },
         "feed": {
-          "headline": { "line1": "Product", "line2": "feed." },
+          "headline": {
+            "line1": "Product",
+            "line2": "feed."
+          },
           "points": [
             "Works with Google Shopping XML and JSON feeds",
             "We auto-detect the format and parse every product",
@@ -42,7 +54,10 @@
           ]
         },
         "products": {
-          "headline": { "line1": "Pick your", "line2": "best." },
+          "headline": {
+            "line1": "Pick your",
+            "line2": "best."
+          },
           "points": [
             "Choose which products to run through AI agent simulations",
             "Focus on your top sellers or most competitive SKUs",
@@ -50,7 +65,10 @@
           ]
         },
         "competitors": {
-          "headline": { "line1": "Know your", "line2": "rivals." },
+          "headline": {
+            "line1": "Know your",
+            "line2": "rivals."
+          },
           "points": [
             "Add competitors so we benchmark you head-to-head",
             "See exactly who agents pick over you and why",
@@ -58,7 +76,10 @@
           ]
         },
         "scan": {
-          "headline": { "line1": "See who's", "line2": "winning." },
+          "headline": {
+            "line1": "See who's",
+            "line2": "winning."
+          },
           "points": [
             "ChatGPT, Claude, Gemini & Perplexity simulate real shopping queries",
             "We score every product against your competitors",
@@ -118,11 +139,11 @@
       ],
       "shopify": {
         "title": "Connect Shopify",
-        "description": "OAuth connection — we never see your Shopify password.",
+        "description": "OAuth connection. We never see your Shopify password.",
         "howItWorks": "How it works?",
         "steps": [
-          "Enter your store domain below — this is the yourstore.myshopify.com URL you use to log into Shopify admin.",
-          "You'll be redirected to Shopify to authorize read-only access to your product catalog. We only request product scopes — no orders, no customers.",
+          "Enter your store domain below. This is the yourstore.myshopify.com URL you use to log into Shopify admin.",
+          "You'll be redirected to Shopify to authorize read-only access to your product catalog. We only request product scopes, never orders or customers.",
           "After you approve, Shopify allows ecentic to read and write your store's product data."
         ],
         "fields": {
@@ -154,7 +175,7 @@
         "toast": {
           "invalidDomain": {
             "title": "Enter your myshopify.com domain",
-            "description": "OAuth needs your Shopify admin domain (e.g. yourstore.myshopify.com) or store handle — not a custom storefront URL."
+            "description": "OAuth needs your Shopify admin domain (e.g. yourstore.myshopify.com) or store handle, rather than a custom storefront URL."
           },
           "connectionFailed": "Connection failed",
           "connected": {
@@ -169,7 +190,7 @@
         "oneClick": {
           "title": "One-click connect",
           "recommended": "(recommended)",
-          "description": "Enter your store URL and approve the connection from your WordPress admin — no API keys to copy. You'll need the free écentic for WooCommerce plugin installed and activated first; if it isn't there yet, we'll show you how to add it. This also enables hosted UCP, making your store transactable by AI shopping agents.",
+          "description": "Enter your store URL and approve the connection from your WordPress admin. There are no API keys to copy. You'll need the free écentic for WooCommerce plugin installed and activated first; if it isn't there yet, we'll show you how to add it. This also enables hosted UCP, which makes your store transactable by AI shopping agents.",
           "placeholder": "https://yourstore.com",
           "action": {
             "connect": "Connect via plugin",
@@ -192,7 +213,7 @@
           }
         },
         "manual": {
-          "title": "Or connect manually — where to find your API keys",
+          "title": "Or connect manually: where to find your API keys",
           "steps": [
             "Log into your WordPress admin panel and go to WooCommerce → Settings → Advanced → REST API.",
             "Click Add key. Give it a description like \"ecentic\", set permissions to Read/Write if you want ecentic to push listing changes, or Read for sync-only, then click Generate.",
@@ -205,7 +226,7 @@
             "placeholder": "https://yourstore.com",
             "validation": "Store URL is required",
             "description": {
-              "before": "The public URL of your WooCommerce store — for example",
+              "before": "The public URL of your WooCommerce store, for example",
               "example": "https://acmestore.com",
               "after": ". This is the homepage, not the WordPress admin URL."
             }
@@ -220,7 +241,7 @@
             "label": "Consumer Secret",
             "placeholder": "cs_...",
             "validation": "Consumer secret is required",
-            "description": "The secret that pairs with the key — starts with cs_. This is only shown once when you generate the key, so make sure to copy it before leaving WooCommerce."
+            "description": "The secret that pairs with the key, starting with cs_. WooCommerce shows it only once when you generate the key, so copy it before you leave."
           }
         },
         "action": {
@@ -242,11 +263,11 @@
           "title": "Supported formats",
           "googleShopping": {
             "label": "Google Shopping XML",
-            "description": "— the most common format. If you use Google Merchant Center, you already have one. It's an RSS/Atom feed where each <item> contains g:title, g:price, g:image_link, etc."
+            "description": "is the most common format. If you use Google Merchant Center, you already have one. It's an RSS/Atom feed where each <item> contains g:title, g:price, g:image_link, etc."
           },
           "json": {
             "label": "JSON",
-            "description": "— a simple array of product objects. We look for title, price, image, and url fields. Nested under a products or items key is fine too."
+            "description": "is a simple array of product objects. We look for title, price, image, and url fields. Nested under a products or items key is fine too."
           }
         },
         "fields": {
@@ -257,7 +278,7 @@
             "description": {
               "before": "The publicly accessible URL that serves your product feed. For example:",
               "example": "https://yourstore.com/feed/products.xml",
-              "after": "The URL must be reachable from the internet — localhost or private-network URLs won't work. We auto-detect whether it's XML or JSON based on the content."
+              "after": "The URL must be reachable from the internet, so localhost and private-network URLs won't work. We auto-detect whether it's XML or JSON from the content."
             }
           }
         },
@@ -269,7 +290,7 @@
           "connectionFailed": "Connection failed",
           "connected": {
             "title": "Feed connected",
-            "description": "Importing products — this may take a moment."
+            "description": "Importing products. This may take a moment."
           }
         }
       },
@@ -442,9 +463,18 @@
         "description": "ChatGPT, Claude & Gemini will simulate real shopping queries across your products and competitors."
       },
       "models": [
-        { "model": "ChatGPT", "description": "Spec-focused" },
-        { "model": "Claude", "description": "Contextual analysis" },
-        { "model": "Gemini", "description": "Price-quality ratio" }
+        {
+          "model": "ChatGPT",
+          "description": "Spec-focused"
+        },
+        {
+          "model": "Claude",
+          "description": "Contextual analysis"
+        },
+        {
+          "model": "Gemini",
+          "description": "Price-quality ratio"
+        }
       ],
       "stats": {
         "products": "Products",
@@ -478,7 +508,7 @@
           "high": "You're ahead of most competitors. Let's make sure you stay there."
         },
         "topFinding": "Top Finding",
-        "topFindingBody": "{name} loses on {attributes} — {impact} Costs you {percentage}% of simulations.",
+        "topFindingBody": "{name} loses on {attributes}. {impact} Costs you {percentage}% of simulations.",
         "stats": {
           "winRate": "Win rate",
           "products": "Products",

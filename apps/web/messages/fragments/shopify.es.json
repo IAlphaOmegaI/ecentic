@@ -1,7 +1,7 @@
 {
   "shopify": {
     "meta": {
-      "title": "IA para Shopify — Optimización de fichas y catálogo",
+      "title": "IA para Shopify — optimización de fichas y catálogo",
       "description": "IA para tiendas Shopify que necesitan fichas de producto más sólidas, análisis de competidores más claro y actualizaciones aprobadas enviadas directamente al Shopify Admin."
     },
     "breadcrumb": {
@@ -64,7 +64,7 @@
       "number": "02",
       "title": "El flujo Shopify en ecentic.",
       "description": "El flujo conecta el catálogo, expone brechas competitivas y hace que las mejoras sean publicables de vuelta en Shopify en lugar de otro documento desconectado.",
-      "paragraph": "Conecta la tienda, elige los productos que importan, referéncialos frente a competidores y aprueba escrituras de vuelta vía Admin API — sin salir del flujo de catálogo de Shopify.",
+      "paragraph": "Conecta la tienda, elige los productos que importan, referéncialos frente a competidores y aprueba escrituras de vuelta vía Admin API. No sales del flujo de catálogo de Shopify.",
       "panelTitle": "Conectar, diagnosticar, publicar",
       "outcomes": [
         {
@@ -120,7 +120,7 @@
       "ecentic": {
         "badge": "ecentic sobre Shopify",
         "title": "Diseñado para ganar la comparación.",
-        "description": "El valor no es solo reescribir texto. Es saber si tu página es fácil de evaluar para un sistema de compras con IA, y si el cambio propuesto mejora tu probabilidad de ser elegido.",
+        "description": "Reescribir el texto es la mitad fácil. La mitad útil es saber si tu página es fácil de evaluar para un sistema de compras con IA, y si el cambio propuesto mejora tu probabilidad de ser elegido.",
         "strengths": [
           "Simula cómo los agentes de compras con IA comparan tus productos",
           "Referencia fichas frente a los competidores que siguen ganando",

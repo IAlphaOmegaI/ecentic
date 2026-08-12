@@ -1,7 +1,7 @@
 {
   "woocommerce": {
     "meta": {
-      "title": "IA para WooCommerce — Optimización de catálogo",
+      "title": "IA para WooCommerce — optimización de catálogo",
       "description": "IA para tiendas WooCommerce que necesitan optimización de fichas de producto, análisis de competidores y una ruta más clara de la información de agentes a actualizaciones de catálogo publicadas."
     },
     "breadcrumb": {
@@ -32,9 +32,9 @@
     "why": {
       "number": "01",
       "title": "Por qué los comerciantes WooCommerce necesitan un ciclo enfocado.",
-      "description": "Los operadores WooCommerce suelen necesitar información a nivel de catálogo, no solo copy más rápido.",
+      "description": "Los operadores WooCommerce suelen necesitar información a nivel de catálogo más que copy más rápido.",
       "paragraphs": [
-        "La IA para tiendas WooCommerce no es solo crear contenido más rápido. Los catálogos WooCommerce cambian rápido, los gestionan operadores ágiles y dependen de datos de producto limpios para competir bien.",
+        "Crear contenido más rápido es la parte más pequeña de esto. Los catálogos WooCommerce cambian rápido, los llevan equipos reducidos y dependen de datos de producto limpios para competir.",
         "Eso crea una necesidad práctica de un ciclo de optimización dedicado. Los comerciantes quieren saber qué productos son más fáciles de mejorar, qué competidor sigue ganando y qué detalles de ficha importan más antes de dedicar tiempo a reescribir docenas de páginas."
       ],
       "panelTitle": "Para quién está pensada esta página",
@@ -61,7 +61,7 @@
       "number": "02",
       "title": "El flujo WooCommerce en ecentic.",
       "description": "El flujo conecta datos de producto con análisis de competidores y luego con una ruta de publicación de vuelta dentro de WooCommerce en lugar de otro traspaso manual de contenido.",
-      "paragraph": "Instala el plugin, importa el catálogo, referencia los productos que importan y aprueba publicaciones REST — sin salir de WooCommerce ni reescribir toda la tienda.",
+      "paragraph": "Instala el plugin, importa el catálogo, referencia los productos que importan y aprueba publicaciones REST. Te quedas dentro de WooCommerce y nunca reescribes la tienda.",
       "panelTitle": "Conectar, diagnosticar, publicar",
       "advantages": [
         {
@@ -84,7 +84,7 @@
       "steps": [
         {
           "title": "Conectar e importar",
-          "description": "Instala el plugin gratis y aprueba la conexión en wp-admin — sin claves API que copiar. El catálogo se importa al conectar, sin editar el tema."
+          "description": "Instala el plugin gratis y aprueba la conexión en wp-admin. No hay claves API que copiar, el catálogo se importa al conectar y nunca tocas el tema."
         },
         {
           "title": "Elegir productos",
@@ -102,7 +102,7 @@
     },
     "agentCommerce": {
       "number": "03",
-      "title": "Deja que los agentes de IA compren, no solo naveguen.",
+      "title": "Deja que los agentes de IA compren de verdad.",
       "description": {
         "before": "Las fichas optimizadas deciden si un agente te recomienda. El Universal Commerce Protocol decide si puede completar la compra. El plugin gratis ",
         "pluginName": "écentic for WooCommerce",
@@ -115,7 +115,7 @@
       "capabilities": [
         {
           "title": "Descubierto en tu propia URL",
-          "description": "El plugin sirve /.well-known/ucp en tu dominio, para que los agentes encuentren tu tienda en tu dirección — no la de un tercero."
+          "description": "El plugin sirve /.well-known/ucp en tu dominio, para que los agentes encuentren tu tienda en tu dirección y no en la de un tercero."
         },
         {
           "title": "Precio sobre un carrito real",
@@ -155,7 +155,7 @@
       "number": "04",
       "title": "Encuentra primero el cuello de botella de tu catálogo.",
       "description": "La herramienta de optimización adecuada depende de dónde esté realmente el cuello de botella. Los comerciantes WooCommerce suelen enfrentar una de tres situaciones.",
-      "paragraph": "Acota la lista según el cuello de botella que tienes hoy. Velocidad de contenido, claridad competitiva y fricción de publicación piden tipos distintos de herramienta — y solo dos son trabajo de ecentic.",
+      "paragraph": "Acota la lista según el cuello de botella que tienes hoy. Velocidad de contenido, claridad competitiva y fricción de publicación piden tipos distintos de herramienta, y solo dos son trabajo de ecentic.",
       "panelTitle": "Tres situaciones para acotar la lista",
       "situations": [
         {
@@ -230,7 +230,7 @@
         },
         {
           "question": "¿Pueden las tiendas WooCommerce publicar actualizaciones de producto optimizadas?",
-          "answer": "Sí. Las reescrituras aprobadas se publican directamente de vuelta en WooCommerce por REST API, con credenciales de lectura y escritura. Revisas cada cambio antes de que esté en vivo — nada se publica en tu tienda sin tu aprobación."
+          "answer": "Sí. Las reescrituras aprobadas se publican directamente de vuelta en WooCommerce por REST API, con credenciales de lectura y escritura. Revisas cada cambio antes de que esté en vivo, y nada llega a tu tienda sin tu aprobación."
         },
         {
           "question": "¿Necesito el plugin o puedo conectar con claves API?",

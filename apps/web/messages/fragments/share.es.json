@@ -1,11 +1,14 @@
 {
   "share": {
     "sidebar": {
-      "headline": { "line1": "Tus resultados", "line2": "ya están." },
+      "headline": {
+        "line1": "Tus resultados",
+        "line2": "ya están."
+      },
       "points": [
         "ChatGPT, Claude, Gemini y Perplexity simularon comparaciones reales de compra",
         "Cada producto se puntuó cara a cara frente a competidores",
-        "Este informe muestra exactamente dónde ganas — y dónde pierdes"
+        "Este informe muestra dónde ganas y dónde pierdes"
       ]
     },
     "page": {

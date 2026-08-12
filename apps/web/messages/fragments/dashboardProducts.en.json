@@ -17,7 +17,7 @@
       },
       "embedBanner": {
         "title": "Structured data is not reaching your product pages",
-        "description": "The “Agentic structured data” app embed is off, so AI agents don't see machine-readable data on your products. Enabling it once adds structured data to every product in this store.",
+        "description": "The \"Agentic structured data\" app embed is off, so AI agents don't see machine-readable data on your products. Turn it on once and every product in this store gets structured data.",
         "action": "Enable app embed"
       },
       "quality": {
@@ -68,7 +68,7 @@
           "won": "Won",
           "lost": "Lost",
           "reasoning": "{model}'s reasoning",
-          "noReasoning": "No reasoning recorded — decided by score ({productScore} vs {competitorScore})."
+          "noReasoning": "No reasoning recorded. Decided by score ({productScore} vs {competitorScore})."
         },
         "fields": {
           "title": "Title",
@@ -91,7 +91,7 @@
         },
         "applyOptimization": {
           "title": "Close the gap automatically",
-          "description": "ecentic rewrites this listing from the winning competitors' strengths and publishes it straight to your store — no manual edits.",
+          "description": "ecentic rewrites this listing from the winning competitors' strengths and publishes it straight to your store, with no manual edits from you.",
           "reviewQueue": "Review queue",
           "optimizePublish": "Optimize & publish"
         },
@@ -112,7 +112,7 @@
         },
         "optimizeTab": {
           "title": "Optimize Listing",
-          "description": "Category-aware content-quality scores for the fields AI agents read — plus how this listing is positioned for its audience.",
+          "description": "Category-aware content-quality scores for the fields AI agents read, plus how this listing is positioned for its audience.",
           "completeness": "Completeness:",
           "currentListing": "02 — Current listing",
           "characters": "{count} characters",
@@ -123,12 +123,12 @@
           "structuredDataHelp": "The app embed already renders default structured data from the live product content. Publishing writes this AI-optimized version to the {metafield} metafield, and the embed renders it instead of the default.",
           "publishStructuredData": "Publish optimized structured data",
           "publishing": "Publishing…",
-          "noStructuredDataYet": "No optimized structured data yet — the app embed renders the default markup built from the live product content. Generate an AI-optimized version to override it.",
+          "noStructuredDataYet": "No optimized structured data yet. The app embed renders the default markup built from the live product content. Generate an AI-optimized version to override it.",
           "generateJsonLd": "Generate optimized JSON-LD",
           "generating": "Generating…",
           "generationFailed": "Generation failed",
           "structuredDataPublished": "Optimized structured data published",
-          "structuredDataPublishedDescription": "Written to the ecentic.structured_data metafield — the app embed now renders it in place of the default product markup. If the embed is off, enable it in the theme editor and press Save.",
+          "structuredDataPublishedDescription": "Written to the ecentic.structured_data metafield. The app embed now renders it in place of the default product markup. If the embed is off, turn it on in the theme editor and press Save.",
           "openThemeEditor": "Open theme editor",
           "listingAuditKicker": "01 — AI Listing Audit",
           "status": {
@@ -141,11 +141,11 @@
           },
           "embedNotice": {
             "embedOffTitle": "App embed is off",
-            "embedOffText": "Optimized structured data is published for this product, but the “Agentic structured data” app embed is off — no ecentic markup reaches the page. Enabling it once applies to every product in the store.",
+            "embedOffText": "Optimized structured data is published for this product, but the \"Agentic structured data\" app embed is off, so no ecentic markup reaches the page. Turning it on once applies to every product in the store.",
             "missingTitle": "No structured data on the page",
-            "missingText": "AI agents see no machine-readable product data. Enable the “Agentic structured data” app embed — one toggle adds structured data for every product in the store.",
+            "missingText": "AI agents see no machine-readable product data. Turn on the \"Agentic structured data\" app embed. That one toggle adds structured data for every product in the store.",
             "storeDefaultTitle": "Store default markup",
-            "storeDefaultText": "Only the theme's own markup is live — usually thin (no GTIN, one offer, no variant detail). Enable the ecentic app embed (applies to all products), then publish optimized structured data below for this product.",
+            "storeDefaultText": "Only the theme's own markup is live, and it is usually thin: no GTIN, one offer, no variant detail. Turn on the ecentic app embed, which applies to all products, then publish optimized structured data below for this one.",
             "standardTitle": "Using ecentic standard markup",
             "standardText": "The app embed renders default structured data from the live product content. Publish the AI-optimized version below to give agents richer, more competitive markup for this product."
           }
@@ -170,7 +170,7 @@
         },
         "csv": {
           "title": "Upload a CSV",
-          "description": "This store was built from a file rather than a connected platform, so there's nothing upstream to pull from — upload another CSV to add to it.",
+          "description": "This store was built from a file rather than a connected platform, so there's nothing upstream to pull from. Upload another CSV to add to it.",
           "fieldLabel": "Product CSV",
           "importing": "Importing…",
           "importCsv": "Import CSV",

@@ -2,7 +2,7 @@
   "compareTool": {
     "page": {
       "title": "Comparar dos productos",
-      "description": "Mira qué producto recomendarían los agentes de IA — y por qué."
+      "description": "Mira qué producto recomendarían los agentes de IA, y por qué."
     },
     "form": {
       "productA": "Producto A",

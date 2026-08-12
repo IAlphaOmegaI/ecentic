@@ -21,7 +21,7 @@
       "setup": {
         "kicker": "02 — Scan Setup",
         "title": "Choose What to Simulate",
-        "description": "Pick the products and competitors for the next run — the estimate updates as you select.",
+        "description": "Pick the products and competitors for the next run. The estimate updates as you select.",
         "products": "Products",
         "competitors": "Competitors",
         "clearAll": "Clear all",
@@ -57,7 +57,7 @@
         "products": "Products",
         "wins": "Wins",
         "losses": "Losses",
-        "topFinding": "{name} loses on {attributes} — {impact} Costs you {loss}% of simulations."
+        "topFinding": "{name} loses on {attributes}. {impact} Costs you {loss}% of simulations."
       },
       "toast": {
         "simulationFailed": "Simulation failed",

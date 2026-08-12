@@ -1,7 +1,7 @@
 {
   "enterprise": {
     "meta": {
-      "title": "Enterprise — Comercio con agentes a escala",
+      "title": "Enterprise — comercio con agentes a escala",
       "description": "Inteligencia de comercio con agentes para comerciantes enterprise: paneles multimarca, acceso API, SSO, cumplimiento SOC 2, firma UCP y un equipo CSM dedicado."
     },
     "breadcrumb": {
@@ -32,7 +32,7 @@
     "why": {
       "number": "01",
       "title": "Cuando un plan de una sola marca deja de bastar.",
-      "description": "Enterprise es para equipos que necesitan una capa de comercio con agentes compartida entre marcas, regiones y requisitos de seguridad — no otro asiento self-serve.",
+      "description": "Enterprise es para equipos que necesitan una capa de comercio con agentes compartida entre marcas, regiones y requisitos de seguridad, no otro asiento self-serve.",
       "paragraphs": [
         "Dominate ejecuta el ciclo completo de optimización para una marca. Enterprise añade el plano de control: agregados multimarca, SSO, acceso API, firma UCP gestionada y un CSM asignado que posee la relación.",
         "La decisión suele aparecer cuando el tamaño del catálogo, el número de marcas o los requisitos de procurement superan un plan mensual fijo."
@@ -87,7 +87,7 @@
           "description": "Un customer success manager asignado, revisiones trimestrales de negocio y escalado directo a ingeniería."
         }
       ],
-      "paragraph": "Definimos el alcance de Enterprise según el tamaño del catálogo, las plataformas y las necesidades de cumplimiento — y compartimos una estimación de ROI personalizada antes de escribir un deck de procurement.",
+      "paragraph": "Definimos el alcance de Enterprise según el tamaño del catálogo, las plataformas y las necesidades de cumplimiento, y compartimos una estimación de ROI personalizada antes de que nadie escriba un deck de procurement.",
       "panelTitle": "Cómo funciona el alcance",
       "scoping": [
         {
