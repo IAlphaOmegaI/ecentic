@@ -1,6 +1,7 @@
 {
   "general": {
     "brand": "ecentic",
+    "backdropAlt": "ASCII-art eagle emblem in the ecentic brand texture",
     "search": {
       "label": "Search"
     },

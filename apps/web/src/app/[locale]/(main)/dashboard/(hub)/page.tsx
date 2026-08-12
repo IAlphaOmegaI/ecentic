@@ -194,7 +194,7 @@ const StoreCard = ({
           <ShoppingCartIcon className="size-5 text-foreground-dimmed" />
         </div>
         <div className="min-w-0">
-          <p className="truncate font-semibold text-foreground-rich text-lg transition-colors group-hover:text-primary">
+          <p className="truncate font-semibold text-foreground-rich text-lg transition-colors group-hover:text-primary-text">
             {store.name}
           </p>
           <p className="truncate text-foreground-dimmed text-sm">
@@ -235,7 +235,7 @@ const StoreCard = ({
             })
           : translate("storeCard.notSyncedYet")}
       </span>
-      <span className="inline-flex items-center gap-1 font-medium text-primary text-sm transition-colors group-hover:text-primary-rich">
+      <span className="inline-flex items-center gap-1 font-medium text-primary-text text-sm transition-colors group-hover:text-primary-rich">
         {translate("storeCard.openDashboard")}
         <ArrowRightIcon className="size-4 transition-transform group-hover:translate-x-0.5" />
       </span>

@@ -15,6 +15,20 @@ export const seo = {
 
 export const absoluteUrl = (path = "/") => new URL(path, seo.host).toString();
 
+/**
+ * The `"%s | ecentic"` template in the locale layout costs 10 characters, which
+ * pushes any headline over ~50 past the ~60 Google renders — the suffix is then
+ * the first thing clipped, so it buys nothing and costs the tail of the title.
+ * Keep the brand only while the whole tag survives the cut.
+ */
+const TITLE_LIMIT = 60;
+const BRAND_SUFFIX = ` | ${seo.name}`;
+
+export const brandedTitle = (title: string) =>
+  title.length + BRAND_SUFFIX.length <= TITLE_LIMIT
+    ? `${title}${BRAND_SUFFIX}`
+    : title;
+
 export const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",

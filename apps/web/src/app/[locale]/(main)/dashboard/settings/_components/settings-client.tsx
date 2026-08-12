@@ -46,7 +46,7 @@ export const SettingsClient = ({
   const [persona, setPersona] = useState("Budget-conscious shopper");
 
   const className =
-    "h-auto w-full justify-start rounded-none border-0 border-accent-foreground border-b border-l-[3px] border-l-transparent p-4 text-left font-medium text-foreground-dimmed text-sm transition-colors duration-150 hover:bg-background hover:text-foreground data-selected:border-l-primary data-selected:bg-primary/5 data-selected:font-semibold data-selected:text-primary data-[active]:text-primary";
+    "h-auto w-full justify-start rounded-none border-0 border-accent-foreground border-b border-l-[3px] border-l-transparent p-4 text-left font-medium text-foreground-dimmed text-sm transition-colors duration-150 hover:bg-background hover:text-foreground data-selected:border-l-primary data-selected:bg-primary/5 data-selected:font-semibold data-selected:text-primary-text data-[active]:text-primary-text";
 
   return (
     <div className="flex gap-px bg-accent-foreground">

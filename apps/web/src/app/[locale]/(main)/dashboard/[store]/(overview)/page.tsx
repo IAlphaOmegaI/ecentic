@@ -248,7 +248,7 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
             </p>
             <Link
               href={`/dashboard/${store}/products/${top._id}`}
-              className="mt-3 inline-flex items-center gap-1 text-primary text-sm transition-colors hover:text-primary-rich"
+              className="mt-3 inline-flex items-center gap-1 text-primary-text text-sm transition-colors hover:text-primary-rich"
             >
               {translate("viewDetails")} <ArrowRightIcon className="size-4" />
             </Link>
@@ -274,7 +274,7 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
             </p>
             <Link
               href={`/dashboard/${store}/products/${opportunity._id}`}
-              className="mt-3 inline-flex items-center gap-1 text-primary text-sm transition-colors hover:text-primary-rich"
+              className="mt-3 inline-flex items-center gap-1 text-primary-text text-sm transition-colors hover:text-primary-rich"
             >
               {translate("optimizeNow")} <ArrowRightIcon className="size-4" />
             </Link>

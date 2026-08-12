@@ -58,7 +58,7 @@ export const Layers = async () => {
               className="flex flex-col gap-4 bg-background-dimmed p-6 md:min-h-72 md:p-8"
             >
               <div className="flex items-center justify-between">
-                <span className="font-normal text-lg text-primary tabular-nums">
+                <span className="font-normal text-lg text-primary-text tabular-nums">
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <layer.icon className="size-8 text-primary" />

@@ -1,7 +1,7 @@
 import { CheckIcon } from "@zenncore/icons";
 import { getTranslations } from "next-intl/server";
-import { BookingEmbed } from "@/components/cal";
 import { Plus } from "@/components/plus";
+import { DeferredBookingEmbed } from "./deferred-booking-embed";
 
 const expectationKeys = ["winRate", "diagnosis", "optimizations"] as const;
 
@@ -19,7 +19,7 @@ export const Booking = async () => {
         <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
         <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         <div className="relative border-accent-foreground p-6 md:p-12">
-          <p className="font-light text-primary text-xl">
+          <p className="font-light text-primary-text text-xl">
             {translate("booking.eyebrow")}
           </p>
           <h2 className="mt-4 font-body font-medium text-3xl text-foreground md:text-5xl">
@@ -53,7 +53,7 @@ export const Booking = async () => {
           </div>
 
           <div className="h-[620px] w-full overflow-hidden bg-background md:col-span-3">
-            <BookingEmbed />
+            <DeferredBookingEmbed />
           </div>
         </div>
       </div>

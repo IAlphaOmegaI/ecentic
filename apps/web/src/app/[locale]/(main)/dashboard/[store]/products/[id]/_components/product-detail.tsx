@@ -923,7 +923,7 @@ const ListingAudit = ({
         <p className="mt-3 text-foreground-dimmed text-sm leading-relaxed">
           {audit.positioning.reasoning}
         </p>
-        <p className="mt-2 text-primary text-sm leading-relaxed">
+        <p className="mt-2 text-primary-text text-sm leading-relaxed">
           → {audit.positioning.suggestion}
         </p>
       </div>

@@ -28,7 +28,10 @@ const partners: Partner[] = [
     id: "plug-and-play",
     name: "Plug and Play Tirana",
     href: "https://www.plugandplaytechcenter.com/locations/tirana/",
-    logo: "/partners/plug-and-play.svg",
+    // Not a vector despite the old `.svg`: it was a single 3602x680 raster
+    // base64'd into a pattern fill, so `next/image` passed all 177KB of it
+    // through untouched. As a real raster it optimises like the others.
+    logo: "/partners/plug-and-play.webp",
     captionKey: "plugAndPlay",
   },
   {
@@ -66,7 +69,7 @@ export const PartnersStrip = async () => {
       <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
       <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
       <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-      <p className="text-center font-light text-primary text-xl">
+      <p className="text-center font-light text-primary-text text-xl">
         {translate("partnersStrip.title")}
       </p>
       <ul className="mt-8 flex flex-wrap items-center justify-center gap-10 md:gap-16">

@@ -23,14 +23,21 @@ export const PartnershipBanner = async () => {
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -top-24 -right-24 size-72 rounded-full bg-primary/10 blur-3xl" />
       </div>
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-0 h-full w-auto w-full overflow-hidden rounded-lg opacity-80 [mask-image:linear-gradient(to_right,black,transparent)]">
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-0 h-full w-full overflow-hidden rounded-lg opacity-80 [mask-image:linear-gradient(to_right,black,transparent)]">
+        {/* Two things were squashing a 300x300 flag into a 410x965 box: `inset-0`
+            pinned `right: 0` against `w-auto`, and Tailwind's preflight caps
+            every `img` at `max-width: 100%`, so `w-auto` could never exceed the
+            parent while `h-[250%]` kept stretching. `top`/`left` are set
+            explicitly, so dropping the shorthand costs nothing; `max-w-none`
+            lets the width follow the height. The overflow-hidden parent and the
+            gradient mask crop it exactly as before. */}
         <Image
           src="/images/eu-flag.webp"
           alt={translate("partnershipBanner.euFlagAlt")}
           unoptimized
           width={600}
           height={600}
-          className="absolute inset-0 -top-48 left-[calc(50%+48px)] h-[250%] w-auto rotate-180"
+          className="absolute -top-48 left-[calc(50%+48px)] h-[250%] w-auto max-w-none rotate-180"
         />
       </div>
       <div className="relative z-10 flex flex-col items-start gap-6 md:flex-row md:items-start md:justify-between">

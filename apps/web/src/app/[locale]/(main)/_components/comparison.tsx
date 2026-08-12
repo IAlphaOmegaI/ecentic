@@ -136,7 +136,7 @@ export const Comparison = () => {
     {
       accessorKey: "ecentic",
       header: () => (
-        <span className="flex w-full min-w-20 justify-center text-center text-lg text-primary lowercase md:min-w-32">
+        <span className="flex w-full min-w-20 justify-center text-center text-lg text-primary-text lowercase md:min-w-32">
           {translate("comparison.table.ecentic")}
         </span>
       ),

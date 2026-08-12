@@ -35,7 +35,7 @@ export const BlindSpot = async () => {
             <span className="absolute size-full animate-ping rounded-full bg-primary opacity-40" />
             <span className="relative size-2.5 rounded-full bg-primary" />
           </span>
-          <span className="font-light text-primary text-xl">
+          <span className="font-light text-primary-text text-xl">
             {translate("blindSpot.eyebrow")}
           </span>
         </div>
@@ -83,7 +83,7 @@ export const BlindSpot = async () => {
       </div>
       <div className="grid border-accent-foreground border-b bg-background-dimmed md:grid-cols-3">
         <div className="flex flex-col items-center justify-center border-accent-foreground border-b p-4 md:border-r md:border-b-0">
-          <p className="font-light text-primary text-xl">
+          <p className="font-light text-primary-text text-xl">
             {translate("blindSpot.panels.humans.label")}
           </p>
           <Image src={Product} alt="Hero" className="w-full" />
@@ -105,10 +105,10 @@ export const BlindSpot = async () => {
         </div>
 
         <div className="flex flex-col items-center justify-between border-accent-foreground border-b p-4 md:border-t-0 md:border-r md:border-b-0">
-          <p className="font-light text-primary text-xl">
+          <p className="font-light text-primary-text text-xl">
             {translate("blindSpot.panels.agentsNow.label")}
           </p>
-          <p className="font-light font-mono text-primary text-xl">
+          <p className="font-light font-mono text-primary-text text-xl">
             {"{"}
             <br />
             "product": <span className="text-green-400">"Earbuds"</span>,<br />
@@ -133,7 +133,7 @@ export const BlindSpot = async () => {
         </div>
 
         <div className="flex flex-col justify-between p-4">
-          <p className="text-center font-light text-primary text-xl">
+          <p className="text-center font-light text-primary-text text-xl">
             {translate("blindSpot.panels.agentsAfter.label")}
           </p>
 
@@ -164,7 +164,7 @@ export const BlindSpot = async () => {
                     <span className="font-medium text-base text-foreground">
                       {model}
                     </span>
-                    <span className="font-semibold text-lg text-primary tabular-nums">
+                    <span className="font-semibold text-lg text-primary-text tabular-nums">
                       {score}%
                     </span>
                   </div>
