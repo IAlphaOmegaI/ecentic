@@ -44,13 +44,17 @@ const languageAlternates = (slug: string) => ({
  * than the ~60 characters Google renders, the tag gets its own copy here rather
  * than a truncation — keyed by slug, so it survives BLG re-ingesting the post.
  */
-const BLOG_TITLE_TAGS: Record<string, string> = {
-  "ecentic-eu-presence-partnership-compliance-ai-visibility-bundle":
-    "EU Presence Bundle: Compliance + AI Visibility",
+const BLOG_TITLE_TAGS: Record<string, Record<string, string>> = {
+  "ecentic-eu-presence-partnership-compliance-ai-visibility-bundle": {
+    en: "EU Presence Bundle: Compliance + AI Visibility",
+  },
 };
 
-const blogTitleTag = (post: { slug: string; title: string }) =>
-  brandedTitle(BLOG_TITLE_TAGS[post.slug] ?? post.title);
+// Keyed on the row's own locale rather than the requested one: a /es page
+// falling back to the stored EN row must not advertise a title its body never
+// uses, and a real ES row later just falls through to its own headline.
+const blogTitleTag = (post: { slug: string; title: string; locale: string }) =>
+  brandedTitle(BLOG_TITLE_TAGS[post.slug]?.[post.locale] ?? post.title);
 
 type BlogPageProps = {
   params: Promise<{ slug: string }>;
