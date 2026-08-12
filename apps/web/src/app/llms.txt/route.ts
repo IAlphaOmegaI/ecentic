@@ -1,6 +1,5 @@
 import { seo } from "@/lib/seo";
-import * as BabyLoveGrowth from "@/server/app/babylovegrowth";
-import * as Blog from "@/server/app/blog-cache";
+import * as Blog from "@/server/app/blog";
 
 const prefersMarkdown = (accept: string | null) =>
   accept != null && /\btext\/markdown\b/i.test(accept);
@@ -10,23 +9,11 @@ const estimateMarkdownTokens = (markdown: string) =>
   Math.max(1, Math.ceil(markdown.length / 4));
 
 export const GET = async (request: Request) => {
-  const [articles, posts] = await Promise.all([
-    BabyLoveGrowth.listArticles(),
-    Blog.listPublished("en"),
-  ]);
-  const blgSlugs = new Set(articles.map((article) => article.slug));
-  const blogLinks = [
-    ...articles.map((article) => ({
-      path: `/blog/${article.slug}`,
-      label: article.title,
-    })),
-    ...posts
-      .filter((post) => !blgSlugs.has(post.slug))
-      .map((post) => ({
-        path: `/blog/${post.slug}`,
-        label: post.title,
-      })),
-  ];
+  const posts = await Blog.listPublished("en");
+  const blogLinks = posts.map((post) => ({
+    path: `/blog/${post.slug}`,
+    label: post.title,
+  }));
 
   const sections = [
     {

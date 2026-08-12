@@ -13,6 +13,8 @@ export namespace Onboarding {
     headline: ReactNode;
     points: readonly string[];
     image?: string;
+    footer?: string;
+    imageAlt?: string;
     classList?: {
       image?: string;
     };
@@ -24,6 +26,8 @@ export const Onboarding = ({
   headline,
   points,
   image = "/images/onboarding.png",
+  footer = "Free to start. No credit card required.",
+  imageAlt = "onboarding background",
   classList = {},
 }: Onboarding.Props) => (
   <motion.aside
@@ -35,7 +39,7 @@ export const Onboarding = ({
     <div className="absolute inset-0 bg-primary" />
     <Image
       src={image}
-      alt="onboarding background"
+      alt={imageAlt}
       fill
       sizes="(max-width: 1023px) 0vw, (min-width: 2330px) 1280px, 55vw"
       className={cn(
@@ -99,9 +103,7 @@ export const Onboarding = ({
             ))}
           </motion.div>
         </AnimatePresence>
-        <p className="font-light text-sm text-white/50">
-          Free to start. No credit card required.
-        </p>
+        <p className="font-light text-sm text-white/50">{footer}</p>
       </div>
     </div>
   </motion.aside>

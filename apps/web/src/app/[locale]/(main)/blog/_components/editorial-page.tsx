@@ -1,11 +1,11 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import { Link } from "@/i18n/navigation";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
 import Art from "@/public/images/ascii/books.png";
 import { PageBanner } from "../../_components/page-banner";
 import { renderInline } from "../../_components/rich-text";
@@ -114,8 +114,10 @@ export const EditorialSplitSection = ({
       <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
       <div
         className={cn(
-          "relative flex flex-col overflow-hidden p-8",
-          thumbnail ? "bg-neutral-900" : "bg-background-dimmed",
+          // min-w-0 lets the 5fr track shrink when the right rail has wide
+          // <pre>/table content; without it the left column collapses to padding.
+          "relative flex min-w-0 flex-col p-8",
+          thumbnail ? "overflow-hidden bg-neutral-900" : "bg-background-dimmed",
           leftClassName,
         )}
         style={
@@ -130,9 +132,12 @@ export const EditorialSplitSection = ({
       >
         {thumbnail && <div className="absolute inset-0 bg-black/60" />}
         <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
-        <div className="relative z-10 flex flex-1 flex-col">{left}</div>
+        {/* Sticky keeps the section index readable while long tables/code scroll. */}
+        <div className="relative z-10 md:sticky md:top-28">{left}</div>
       </div>
-      <div className={cn("bg-background p-8", rightClassName)}>{right}</div>
+      <div className={cn("min-w-0 bg-background p-8", rightClassName)}>
+        {right}
+      </div>
     </div>
   </div>
 );

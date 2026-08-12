@@ -1,0 +1,185 @@
+{
+  "enterprise": {
+    "meta": {
+      "title": "Enterprise — comercio con agentes a escala",
+      "description": "Inteligencia de comercio con agentes para comerciantes enterprise: paneles multimarca, acceso API, SSO, cumplimiento SOC 2, firma UCP y un equipo CSM dedicado."
+    },
+    "breadcrumb": {
+      "home": "Inicio",
+      "enterprise": "Enterprise"
+    },
+    "hero": {
+      "eyebrow": "Enterprise",
+      "title": {
+        "primary": "Infraestructura de comercio con agentes",
+        "accent": "a escala."
+      },
+      "description": "Paneles multimarca, acceso API, firma UCP y soporte dedicado para equipos de comercio que gestionan cientos de SKU en varias plataformas.",
+      "assurances": [
+        "Paneles multimarca",
+        "Acceso API personalizado",
+        "CSM dedicado",
+        "SOC 2 en curso"
+      ],
+      "art": {
+        "alt": "Ilustración ASCII de una torre de oficinas"
+      },
+      "action": {
+        "primary": "Hablar con ventas",
+        "secondary": "Ver precios"
+      }
+    },
+    "why": {
+      "number": "01",
+      "title": "Cuando un plan de una sola marca deja de bastar.",
+      "description": "Enterprise es para equipos que necesitan una capa de comercio con agentes compartida entre marcas, regiones y requisitos de seguridad, no otro asiento self-serve.",
+      "paragraphs": [
+        "Dominate ejecuta el ciclo completo de optimización para una marca. Enterprise añade el plano de control: agregados multimarca, SSO, acceso API, firma UCP gestionada y un CSM asignado que posee la relación.",
+        "La decisión suele aparecer cuando el tamaño del catálogo, el número de marcas o los requisitos de procurement superan un plan mensual fijo."
+      ],
+      "panelTitle": "Para quién encaja",
+      "audiences": [
+        {
+          "title": "Operadores multimarca",
+          "description": "Equipos con varias tiendas o regiones que necesitan una sola vista de tasa de victoria y tráfico de agentes."
+        },
+        {
+          "title": "Compradores de seguridad",
+          "description": "Organizaciones que necesitan SSO, un DPA y un camino claro hacia SOC 2 Type II."
+        },
+        {
+          "title": "Equipos de plataforma / datos",
+          "description": "Grupos que quieren acceso API de solo lectura a escaneos, tráfico de agentes y perfiles UCP."
+        },
+        {
+          "title": "Liderazgo de comercio",
+          "description": "Líderes que quieren un CSM asignado, revisiones trimestrales y una ruta de escalado a ingeniería."
+        }
+      ]
+    },
+    "capabilities": {
+      "number": "02",
+      "title": "Todo lo de Dominate, más la capa enterprise.",
+      "description": "La capa de seguridad, escala y soporte que los equipos enterprise necesitan para ejecutar la optimización de comercio con agentes en varias marcas.",
+      "items": [
+        {
+          "title": "Agregados multimarca",
+          "description": "Un panel para cada marca y región. Agrega tasa de victoria, tráfico de agentes y mejora por optimización en una sola vista."
+        },
+        {
+          "title": "Acceso API",
+          "description": "API de solo lectura para acceder de forma programática a resultados de escaneo, tráfico de agentes y perfiles UCP."
+        },
+        {
+          "title": "SSO",
+          "description": "Compatible con Okta, Google Workspace y Azure AD. Provisiona puestos sin tocar ecentic directamente."
+        },
+        {
+          "title": "SOC 2 Type II",
+          "description": "Auditoría en curso. Opciones de residencia de datos, procesamiento conforme al GDPR y DPA bajo solicitud."
+        },
+        {
+          "title": "Servicio de firma UCP",
+          "description": "ecentic gestiona la firma criptográfica de tu perfil UCP para que los agentes puedan verificar la identidad del comerciante."
+        },
+        {
+          "title": "CSM dedicado",
+          "description": "Un customer success manager asignado, revisiones trimestrales de negocio y escalado directo a ingeniería."
+        }
+      ],
+      "paragraph": "Definimos el alcance de Enterprise según el tamaño del catálogo, las plataformas y las necesidades de cumplimiento, y compartimos una estimación de ROI personalizada antes de que nadie escriba un deck de procurement.",
+      "panelTitle": "Cómo funciona el alcance",
+      "scoping": [
+        {
+          "title": "Llamada breve de descubrimiento",
+          "description": "Tamaño del catálogo, plataformas y necesidades de cumplimiento."
+        },
+        {
+          "title": "Estimación de ROI personalizada",
+          "description": "Adaptada a tu número de SKU y tasas de victoria actuales."
+        },
+        {
+          "title": "Cronograma de onboarding",
+          "description": "No hace falta un deck de procurement para empezar."
+        }
+      ]
+    },
+    "compare": {
+      "number": "03",
+      "title": "Dónde termina Dominate y empieza Enterprise.",
+      "description": "Dominate ejecuta el ciclo completo de optimización para una sola marca. Enterprise añade seguridad, escala y soporte para equipos de comercio multimarca.",
+      "dominate": {
+        "badge": "Dominate",
+        "title": "Ciclo completo para una marca.",
+        "description": "Simulaciones continuas, auto-optimización y generación UCP para un solo catálogo de hasta 1000 productos.",
+        "strengths": [
+          "149 $/mes con simulaciones continuas de agentes",
+          "Auto-optimización y generación UCP incluidas",
+          "Ideal para una sola marca de hasta 1000 productos"
+        ]
+      },
+      "enterprise": {
+        "badge": "Enterprise",
+        "title": "Plano de control para equipos multimarca.",
+        "description": "Todo lo de Dominate, más agregados multimarca, acceso API, SSO, firma UCP gestionada y un CSM dedicado.",
+        "strengths": [
+          "Límites personalizados entre marcas y regiones",
+          "SSO, acceso API y servicio de firma UCP",
+          "CSM asignado con revisiones trimestrales"
+        ]
+      },
+      "paragraph": "Quédate en Dominate mientras una sola marca posee el ciclo. Pasa a Enterprise cuando el número de marcas, la revisión de seguridad o los requisitos de reporting necesitan una capa compartida.",
+      "triggersTitle": "Cuándo Enterprise encaja con más claridad",
+      "triggers": [
+        {
+          "title": "Varias marcas o regiones",
+          "description": "Necesitas agregados entre tiendas en lugar de asientos Dominate separados."
+        },
+        {
+          "title": "SSO o DPA obligatorios",
+          "description": "Seguridad o legal bloquean un plan self-serve hasta cubrir identidad y contratos."
+        },
+        {
+          "title": "Los datos deben salir de la UI",
+          "description": "Tu stack de analítica necesita acceso API a escaneos, tráfico de agentes y perfiles UCP."
+        },
+        {
+          "title": "Importa un propietario asignado",
+          "description": "Quieres un CSM, revisiones trimestrales y una ruta directa a ingeniería."
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "04",
+      "title": "FAQ de Enterprise",
+      "description": "Preguntas habituales sobre planes Enterprise, seguridad y onboarding."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "¿Cuándo debo elegir Enterprise en lugar de Dominate?",
+          "answer": "Elige Enterprise cuando gestionas cientos de SKU en varias marcas o regiones, necesitas SSO o un DPA, quieres que gestionemos la firma UCP por ti, o necesitas un CSM dedicado y acceso API personalizado. Dominate cubre el ciclo completo de optimización para una sola marca con hasta 1000 productos."
+        },
+        {
+          "question": "¿Cómo es el onboarding de Enterprise?",
+          "answer": "Empezamos con una llamada breve de descubrimiento, compartimos una estimación de ROI personalizada para el tamaño de tu catálogo y definimos un cronograma de onboarding. No hace falta un deck de procurement para iniciar la conversación."
+        },
+        {
+          "question": "¿Está disponible SOC 2 hoy?",
+          "answer": "SOC 2 Type II está en curso. Las cuentas Enterprise pueden solicitar nuestro DPA, hablar de opciones de residencia de datos y revisar nuestra postura de seguridad durante el proceso de ventas."
+        },
+        {
+          "question": "¿Puede Enterprise conectarse a nuestro stack de datos existente?",
+          "answer": "Sí. Enterprise incluye acceso API de solo lectura para resultados de escaneo, tráfico de agentes y perfiles UCP, para que puedas integrar los datos de ecentic en tus propias herramientas de analítica e informes."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Reservar una demo",
+        "secondary": "Ver precios"
+      },
+      "note": "SOC 2 en curso · DPA bajo solicitud"
+    }
+  }
+}

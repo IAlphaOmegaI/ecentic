@@ -15,6 +15,7 @@ import { Button } from "@zenncore/web/components/button";
 import { Checkbox } from "@zenncore/web/components/checkbox";
 import { useToastManager } from "@zenncore/web/components/toast";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { AutoDetectTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/auto-detect-tab";
 import { useScanRunner } from "@/app/[locale]/(auth)/onboarding/scan/_components/use-scan-runner";
@@ -122,6 +123,7 @@ const RosterList = ({
   onToggle: (id: string) => void;
   onToggleAll: () => void;
 }) => {
+  const translate = useTranslations("dashboard.simulations.setup");
   const allSelected = entries.length > 0 && selected.size === entries.length;
 
   return (
@@ -136,13 +138,13 @@ const RosterList = ({
           disabled={disabled || entries.length === 0}
           className="font-medium text-primary text-xs hover:underline disabled:pointer-events-none disabled:opacity-50"
         >
-          {allSelected ? "Clear all" : "Select all"}
+          {allSelected ? translate("clearAll") : translate("selectAll")}
         </button>
       </div>
       <div className="max-h-80 flex-1 overflow-y-auto">
         {entries.length === 0 ? (
           <p className="px-4 py-6 text-foreground-dimmed text-xs">
-            Nothing here yet.
+            {translate("nothingYet")}
           </p>
         ) : (
           entries.map((entry) => (
@@ -198,6 +200,8 @@ export const SimulationsClient = ({
   lastScan,
 }: SimulationsClient.Props) => {
   const toast = useToastManager();
+  const translate = useTranslations("dashboard.simulations");
+  const run = useTranslations("dashboard.simulations.run");
 
   // The roster for the next run. Detection can append competitors mid-session,
   // so the competitor list is state, not a prop echo. Defaults: every store
@@ -234,7 +238,7 @@ export const SimulationsClient = ({
     store,
     onError: (text) =>
       toast.add({
-        title: "Simulation failed",
+        title: translate("toast.simulationFailed"),
         description: text,
         type: "error",
       }),
@@ -291,11 +295,11 @@ export const SimulationsClient = ({
   const [runScan, isStartingScan] = useAsyncAction(async () => {
     if (!canRunWinRateScan) {
       toast.add({
-        title: "Nothing selected",
+        title: translate("toast.nothingSelected"),
         description:
           selectedProducts.size === 0
-            ? "Select at least one product for the scan."
-            : "Select at least one competitor for the scan.",
+            ? translate("toast.selectProduct")
+            : translate("toast.selectCompetitor"),
         type: "error",
       });
       return;
@@ -355,7 +359,7 @@ export const SimulationsClient = ({
           <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
             <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
               <StatLabel
-                label="Products Selected"
+                label={translate("stats.productsSelected")}
                 icon={<ShoppingCartIcon className="size-7.5 text-primary" />}
               />
               <div>
@@ -366,14 +370,14 @@ export const SimulationsClient = ({
                   </span>
                 </p>
                 <p className="mt-3 text-foreground-dimmed text-xs">
-                  picked for the next scan
+                  {translate("stats.pickedForScan")}
                 </p>
               </div>
             </div>
 
             <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
               <StatLabel
-                label="Competitors Selected"
+                label={translate("stats.competitorsSelected")}
                 icon={<BullseyeIcon className="size-7.5 text-error" />}
               />
               <div>
@@ -384,14 +388,14 @@ export const SimulationsClient = ({
                   </span>
                 </p>
                 <p className="mt-3 text-foreground-dimmed text-xs">
-                  picked for the next scan
+                  {translate("stats.pickedForScan")}
                 </p>
               </div>
             </div>
 
             <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
               <StatLabel
-                label="Estimated Simulations"
+                label={translate("stats.estimatedSimulations")}
                 icon={<RadarIcon className="size-7.5 text-warning" />}
               />
               <div>
@@ -399,14 +403,14 @@ export const SimulationsClient = ({
                   {totalSimulations}
                 </p>
                 <p className="mt-3 text-foreground-dimmed text-xs">
-                  products × competitors × 3 models
+                  {translate("stats.productsCompetitorsModels")}
                 </p>
               </div>
             </div>
 
             <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
               <StatLabel
-                label="Estimated Time"
+                label={translate("stats.estimatedTime")}
                 icon={<ClockIcon className="size-7.5 text-foreground-dimmed" />}
               />
               <div>
@@ -414,7 +418,7 @@ export const SimulationsClient = ({
                   {estimatedDuration}
                 </p>
                 <p className="mt-3 text-foreground-dimmed text-xs">
-                  at the current selection
+                  {translate("stats.atCurrentSelection")}
                 </p>
               </div>
             </div>
@@ -431,15 +435,17 @@ export const SimulationsClient = ({
           <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div className="border-accent-foreground border-b p-4">
-            <SectionKicker>01 — Discovery</SectionKicker>
+            <SectionKicker>{translate("discovery.kicker")}</SectionKicker>
             <h2 className="mt-2 font-semibold text-foreground-rich text-lg">
-              Competitor Discovery
+              {translate("discovery.title")}
             </h2>
             <p className="mt-1 text-foreground-dimmed text-sm">
-              Re-run AI competitor detection using your current products.
+              {translate("discovery.description")}
             </p>
             <p className="mt-2 text-foreground-dimmed text-xs">
-              Current total competitors: {competitorList.length}
+              {translate("discovery.totalCompetitors", {
+                count: competitorList.length,
+              })}
             </p>
           </div>
           <AutoDetectTab
@@ -460,18 +466,17 @@ export const SimulationsClient = ({
           <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div className="border-accent-foreground border-b p-4">
-            <SectionKicker>02 — Scan Setup</SectionKicker>
+            <SectionKicker>{translate("setup.kicker")}</SectionKicker>
             <h2 className="mt-2 font-semibold text-foreground-rich text-lg">
-              Choose What to Simulate
+              {translate("setup.title")}
             </h2>
             <p className="mt-1 text-foreground-dimmed text-sm">
-              Pick the products and competitors for the next run — the estimate
-              updates as you select.
+              {translate("setup.description")}
             </p>
           </div>
           <div className="grid grid-cols-1 gap-px bg-accent-foreground lg:grid-cols-2">
             <RosterList
-              label="Products"
+              label={translate("setup.products")}
               entries={products.map((product) => ({
                 id: product.id,
                 title: product.title,
@@ -484,7 +489,7 @@ export const SimulationsClient = ({
               onToggleAll={toggleAllProducts}
             />
             <RosterList
-              label="Competitors"
+              label={translate("setup.competitors")}
               entries={competitorList.map((competitor) => ({
                 id: competitor.id,
                 title: competitor.title,
@@ -499,11 +504,16 @@ export const SimulationsClient = ({
           </div>
           <div className="flex flex-wrap items-center justify-between gap-3 border-accent-foreground border-t px-4 py-3">
             <p className="text-foreground-dimmed text-xs">
-              {selectedProducts.size} products × {selectedCompetitors.size}{" "}
-              competitors × 3 models
+              {translate("setup.estimate", {
+                products: selectedProducts.size,
+                competitors: selectedCompetitors.size,
+              })}
             </p>
             <p className="font-medium text-foreground text-sm tabular-nums">
-              {totalSimulations} simulations · {estimatedDuration}
+              {translate("setup.estimateTotal", {
+                total: totalSimulations,
+                duration: estimatedDuration,
+              })}
             </p>
           </div>
         </div>
@@ -519,13 +529,12 @@ export const SimulationsClient = ({
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div className="flex items-center justify-between border-accent-foreground border-b p-4">
             <div>
-              <SectionKicker>03 — Simulation</SectionKicker>
+              <SectionKicker>{run("kicker")}</SectionKicker>
               <h2 className="mt-2 font-semibold text-foreground-rich text-lg">
-                Win-Rate Simulation
+                {run("title")}
               </h2>
               <p className="mt-1 text-foreground-dimmed text-sm">
-                Re-run product vs competitor simulations across ChatGPT, Claude
-                & Gemini.
+                {run("description")}
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -535,7 +544,7 @@ export const SimulationsClient = ({
                 onClick={reset}
                 disabled={isRunning || isStartingScan}
               >
-                Reset
+                {run("reset")}
               </Button>
               <Button
                 color="primary"
@@ -543,7 +552,7 @@ export const SimulationsClient = ({
                 onClick={runScan}
                 disabled={!canRunWinRateScan || isRunning || isStartingScan}
               >
-                Run Simulation
+                {run("runSimulation")}
               </Button>
             </div>
           </div>
@@ -557,9 +566,9 @@ export const SimulationsClient = ({
               <div className="border-accent-foreground border-b bg-background-rich px-4 py-3.5">
                 <div className="flex items-center justify-between">
                   <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-                    Simulation Progress
+                    {run("progress")}
                   </p>
-                  <span className="font-mono font-semibold text-primary text-sm tabular-nums">
+                  <span className="font-mono font-semibold text-primary-text text-sm tabular-nums">
                     {stats.progress}%
                   </span>
                 </div>
@@ -575,24 +584,24 @@ export const SimulationsClient = ({
                   is a clean 3-up (no phantom 4th cell). */}
               <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-3">
                 <StatCell
-                  label="Phase"
+                  label={run("phase")}
                   icon={<RadarIcon className="size-7.5 text-primary" />}
                   value={phase}
-                  caption="current stage"
+                  caption={run("currentStage")}
                 />
                 <StatCell
-                  label="Wins / Losses"
+                  label={run("winsLosses")}
                   icon={<AwardIcon className="size-7.5 text-success" />}
                   value={`${stats.wins} / ${stats.losses}`}
-                  caption="across all models"
+                  caption={run("acrossAllModels")}
                 />
                 <StatCell
-                  label="Elapsed"
+                  label={run("elapsed")}
                   icon={
                     <ClockIcon className="size-7.5 text-foreground-dimmed" />
                   }
                   value={formatElapsed(elapsed)}
-                  caption="since start"
+                  caption={run("sinceStart")}
                 />
               </div>
 
@@ -629,11 +638,11 @@ export const SimulationsClient = ({
                         {(() => {
                           switch (true) {
                             case statuses[label] === "complete":
-                              return "Done";
+                              return run("status.done");
                             case statuses[label] === "running":
-                              return "Running";
+                              return run("status.running");
                             default:
-                              return "Queued";
+                              return run("status.queued");
                           }
                         })()}
                       </StatusPill>
@@ -666,10 +675,10 @@ export const SimulationsClient = ({
                 <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
                 <div className="flex items-center justify-between border-accent-foreground border-b bg-background-rich px-5 py-3">
                   <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-                    Live Output
+                    {run("liveOutput")}
                   </p>
                   <span className="font-mono text-foreground-dimmed text-xs tabular-nums">
-                    {logs.length} {logs.length === 1 ? "line" : "lines"}
+                    {run("lineCount", { count: logs.length })}
                   </span>
                 </div>
                 <div
@@ -678,7 +687,7 @@ export const SimulationsClient = ({
                 >
                   {logs.length === 0 ? (
                     <p className="font-mono text-foreground-dimmed text-xs">
-                      No logs yet. Start a simulation to see live output.
+                      {run("noLogsYet")}
                     </p>
                   ) : (
                     <div className="space-y-1">
@@ -729,6 +738,7 @@ type SimulationCompleteData = {
 };
 
 const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
+  const translate = useTranslations("dashboard.simulations.complete");
   const { wins, losses, modelRates, topFinding, count } = data;
   const winRate =
     wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0;
@@ -749,7 +759,7 @@ const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
       <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
         <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
           <StatLabel
-            label="Win Rate"
+            label={translate("winRate")}
             icon={<AwardIcon className="size-7.5 text-success" />}
           />
           <p
@@ -766,7 +776,7 @@ const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
         </div>
         <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
           <StatLabel
-            label="Products"
+            label={translate("products")}
             icon={<ShoppingCartIcon className="size-7.5 text-primary" />}
           />
           <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
@@ -775,7 +785,7 @@ const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
         </div>
         <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
           <StatLabel
-            label="Wins"
+            label={translate("wins")}
             icon={<TrendUpIcon className="size-7.5 text-success" />}
           />
           <p className="font-bold text-4xl text-success tabular-nums tracking-[-0.02em]">
@@ -784,7 +794,7 @@ const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
         </div>
         <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
           <StatLabel
-            label="Losses"
+            label={translate("losses")}
             icon={<TrendDownIcon className="size-7.5 text-error" />}
           />
           <p className="font-bold text-4xl text-error tabular-nums tracking-[-0.02em]">
@@ -850,12 +860,12 @@ const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
       {topFinding && (
         // A band, not a rounded island — it sits in the grid.
         <TopFindingCallout className="border-accent-foreground border-t px-5 py-4">
-          {topFinding.name} loses on{" "}
-          <span className="font-semibold text-foreground-rich">
-            {topFinding.missingAttributes.join(" and ")}
-          </span>{" "}
-          — {topFinding.impactDescription} Costs you {topFinding.lossPercentage}
-          % of simulations.
+          {translate("topFinding", {
+            name: topFinding.name,
+            attributes: topFinding.missingAttributes.join(" and "),
+            impact: topFinding.impactDescription,
+            loss: topFinding.lossPercentage,
+          })}
         </TopFindingCallout>
       )}
     </>

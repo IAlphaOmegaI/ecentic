@@ -1,11 +1,11 @@
-"use cache";
-
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { Footer } from "@/components/footer";
 import { JsonLd } from "@/components/json-ld";
 import { Navbar } from "@/components/navbar";
+import { localizePath } from "@/i18n/locale";
 import {
   absoluteUrl,
   createMetadata,
@@ -22,108 +22,89 @@ import { PartnershipBanner } from "./_components/partnership-banner";
 import { Proof } from "./_components/proof";
 import { SmoothScroll } from "./_components/smooth-scroll";
 import { Steps } from "./_components/steps";
-import {
-  aggregateRating,
-  reviewSchemas,
-  Testimonials,
-} from "./_components/testimonials";
+import { getTestimonialData, Testimonials } from "./_components/testimonials";
 
 const Comparison = dynamic(() =>
-  import("./_components/comparison").then((m) => m.Comparison),
+  import("./_components/comparison").then((module) => module.Comparison),
 );
 
-const description =
-  "Get picked by AI shopping agents. ecentic optimizes your Shopify or WooCommerce product listings so ChatGPT, Gemini, and Perplexity recommend you first.";
+export const generateMetadata = async (): Promise<Metadata> => {
+  const locale = await getLocale();
+  const translate = await getTranslations("home");
 
-export const metadata: Metadata = createMetadata({
-  title: "ecentic — Be the product AI recommends",
-  description,
-  path: "/",
-  keywords: [
-    "AI ecommerce tools",
-    "AI ecommerce platform",
-    "AI product listing optimization",
-    "AI for Shopify stores",
-    "AI shopping agents",
-  ],
-});
+  return createMetadata({
+    title: translate("meta.title"),
+    description: translate("meta.description"),
+    path: localizePath("/", locale),
+    keywords: [
+      "AI ecommerce tools",
+      "AI ecommerce platform",
+      "AI product listing optimization",
+      "AI for Shopify stores",
+      "AI shopping agents",
+    ],
+  });
+};
 
-export default async () => (
-  <SmoothScroll>
-    <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 border-accent-foreground border-x md:gap-12">
-      <JsonLd
-        schemas={[
-          organizationSchema,
-          websiteSchema,
-          {
-            ...softwareApplicationSchema,
-            aggregateRating: {
-              "@type": "AggregateRating",
-              ...aggregateRating,
+export default async () => {
+  const locale = await getLocale();
+
+  // Locale comes from `next/root-params` via `i18n/request.ts`, so children
+  // read it themselves instead of taking it as a prop. Keep this tree outside
+  // a page-level `"use cache"` if children still need request-bound APIs.
+  const translate = await getTranslations("home");
+  const description = translate("meta.description");
+  const { aggregateRating, reviewSchemas } = await getTestimonialData();
+
+  return (
+    <SmoothScroll>
+      <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 border-accent-foreground border-x md:gap-12">
+        <JsonLd
+          schemas={[
+            organizationSchema,
+            websiteSchema,
+            {
+              ...softwareApplicationSchema,
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ...aggregateRating,
+              },
+              review: reviewSchemas,
             },
-            review: reviewSchemas,
-          },
-          {
-            "@context": "https://schema.org",
-            "@type": "WebPage",
-            name: "AI Ecommerce Platform for Product Visibility",
-            description,
-            url: absoluteUrl("/"),
-            about: [
-              "AI ecommerce platform",
-              "product listing optimization",
-              "AI shopping agents",
-            ],
-          },
-        ]}
-      />
-      <Navbar />
-      <Hero />
-      <Proof />
-      <PartnersStrip />
-      <PartnershipBanner />
-      {/* <DiscoveryShift /> */}
-      {/* <BlindSpot /> */}
-      {/* <WhyNow /> */}
-      {/* <AgentTrafficLive /> */}
-      <Steps />
-      <Features />
-      {/* <UCPCallout /> */}
-      <Suspense>
-        <Comparison />
-      </Suspense>
-      {/* <Pricing /> */}
-      <CaseStudy />
-      <Testimonials />
-      <Booking />
-      {/* <DiscoveryPaths /> */}
-      <section aria-label="About ecentic" className="sr-only">
-        <h2>Make every product easier for AI shopping agents to recommend</h2>
-        <p>
-          ecentic helps brands understand how AI shopping agents evaluate
-          product pages before they recommend an item to shoppers. Instead of
-          guessing why one listing wins and another loses, teams can simulate
-          how modern AI systems compare product titles, descriptions, pricing,
-          trust signals, and competitor alternatives. This creates a repeatable
-          process for improving product discovery, recommendation quality, and
-          conversion outcomes across channels where AI assistants now influence
-          purchase decisions.
-        </p>
-        <p>
-          The platform combines simulation, diagnostics, and optimization in one
-          workflow. Teams can connect stores, review product intelligence, track
-          competitor gaps, and prioritize the highest-impact listing updates.
-          These updates are built for real-world commerce teams that need clear
-          actions, measurable progress, and fast feedback loops. As agent-driven
-          shopping grows, this approach gives merchants a practical system to
-          keep listings competitive and increase win rate in AI-assisted carts.
-        </p>
-        <p>
-          Start in onboarding, connect your catalog, and move into dashboards
-          for products, competitors, reports, and optimization opportunities.
-        </p>
-      </section>
-      <Footer />
-    </main>
-  </SmoothScroll>
-);
+            {
+              "@context": "https://schema.org",
+              "@type": "WebPage",
+              name: translate("meta.title"),
+              description,
+              url: absoluteUrl(localizePath("/", locale)),
+              inLanguage: locale,
+              about: [
+                "AI ecommerce platform",
+                "product listing optimization",
+                "AI shopping agents",
+              ],
+            },
+          ]}
+        />
+        <Navbar />
+        <Hero />
+        <Proof />
+        <PartnersStrip />
+        <PartnershipBanner />
+        <Steps />
+        <Features />
+        <Suspense>
+          <Comparison />
+        </Suspense>
+        <CaseStudy />
+        <Testimonials />
+        <Booking />
+        <section aria-label="About ecentic" className="sr-only">
+          <h2>{translate("meta.title")}</h2>
+          <p>{description}</p>
+        </section>
+        <Footer />
+      </main>
+    </SmoothScroll>
+  );
+};

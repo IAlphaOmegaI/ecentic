@@ -16,10 +16,11 @@ import {
   DataTableProvider,
 } from "@zenncore/web/components/data-table";
 import Image from "next/image";
-import { Link } from "@/i18n/navigation";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { usePaginationChangeHandler } from "@/hooks/pagination";
+import { Link } from "@/i18n/navigation";
 import { formatPrice } from "@/lib/currency";
 import { formatRelativeTime } from "@/lib/date";
 import { SectionKicker } from "./grid";
@@ -74,10 +75,19 @@ const QualityBar = ({ score }: { score: number }) => {
   );
 };
 
-const buildColumns = (store: string): ColumnDef<ProductsTable.Row>[] => [
+const buildColumns = (
+  store: string,
+  fields: {
+    product: string;
+    price: string;
+    winRate: string;
+    quality: string;
+    lastScan: string;
+  },
+): ColumnDef<ProductsTable.Row>[] => [
   {
     accessorKey: "title",
-    header: "Product",
+    header: fields.product,
     cell: ({ row }) => (
       <Link
         href={`/dashboard/${store}/products/${row.original._id}`}
@@ -105,7 +115,7 @@ const buildColumns = (store: string): ColumnDef<ProductsTable.Row>[] => [
   },
   {
     accessorKey: "price",
-    header: "Price",
+    header: fields.price,
     cell: ({ row }) => (
       <span className="text-foreground tabular-nums">
         {formatPrice(row.original.price, row.original.currency)}
@@ -114,7 +124,7 @@ const buildColumns = (store: string): ColumnDef<ProductsTable.Row>[] => [
   },
   {
     accessorKey: "winRate.total",
-    header: "Win Rate",
+    header: fields.winRate,
     cell: ({ row }) => <WinRateBar rate={row.original.winRate.total} />,
   },
   {
@@ -146,12 +156,12 @@ const buildColumns = (store: string): ColumnDef<ProductsTable.Row>[] => [
   },
   {
     accessorKey: "quality",
-    header: "Quality",
+    header: fields.quality,
     cell: ({ row }) => <QualityBar score={row.original.quality} />,
   },
   {
     accessorKey: "updatedAt",
-    header: "Last Scan",
+    header: fields.lastScan,
     cell: ({ row }) => (
       <span className="whitespace-nowrap text-foreground-dimmed">
         {formatRelativeTime(row.original.updatedAt)}
@@ -178,7 +188,7 @@ const buildColumns = (store: string): ColumnDef<ProductsTable.Row>[] => [
 
 export const ProductsTable = ({
   rows,
-  title = "Product Catalog",
+  title,
   kicker,
   action,
   paginated,
@@ -186,9 +196,18 @@ export const ProductsTable = ({
   ...props
 }: ProductsTable.Props) => {
   const { store } = useParams<{ store: string }>();
+  const translate = useTranslations("dashboard.products.table");
   const handlePaginationChange = usePaginationChangeHandler();
 
-  const columns = buildColumns(store);
+  const columns = buildColumns(store, {
+    product: translate("fields.product"),
+    price: translate("fields.price"),
+    winRate: translate("fields.winRate"),
+    quality: translate("fields.quality"),
+    lastScan: translate("fields.lastScan"),
+  });
+
+  const resolvedTitle = title ?? translate("title");
 
   return (
     <>
@@ -199,7 +218,9 @@ export const ProductsTable = ({
               <SectionKicker>{kicker}</SectionKicker>
             </div>
           )}
-          <p className="font-semibold text-foreground-rich text-lg">{title}</p>
+          <p className="font-semibold text-foreground-rich text-lg">
+            {resolvedTitle}
+          </p>
         </div>
         {action}
       </div>
@@ -217,9 +238,11 @@ export const ProductsTable = ({
             <DataTableEmpty>
               <div className="p-8 text-center">
                 <BoxMinusIcon className="mx-auto mb-6 size-24" />
-                <p className="text-foreground text-lg">No products found</p>
+                <p className="text-foreground text-lg">
+                  {translate("states.empty.primary")}
+                </p>
                 <p className="mt-1 text-foreground-dimmed text-sm">
-                  Import products and run a simulation to see win rates here.
+                  {translate("states.empty.secondary")}
                 </p>
               </div>
             </DataTableEmpty>

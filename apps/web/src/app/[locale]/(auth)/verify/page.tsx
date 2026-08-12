@@ -5,28 +5,29 @@ import { Button } from "@zenncore/web/components/button";
 import * as motion from "motion/react-client";
 import Image from "next/image";
 import { useLinkStatus } from "next/link";
-import { Link } from "@/i18n/navigation";
+import { useMessages, useTranslations } from "next-intl";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
 import { Fade } from "@/lib/animations";
 
-const points = [
-  "We sent a verification link to your inbox",
-  "Click the link to confirm your email address",
-  "After verifying, you'll start onboarding",
-];
-
 export default () => {
+  const translate = useTranslations("verifyEmail");
+  const translateAuthChrome = useTranslations("authChrome");
+  const messages = useMessages();
+
   return (
     <div className="flex h-screen overflow-hidden bg-primary">
       <Onboarding
-        points={points}
+        points={messages.verifyEmail.sidebar.points}
+        footer={translateAuthChrome("footer")}
+        imageAlt={translateAuthChrome("imageAlt")}
         headline={
           <>
-            Check your
+            {translate("sidebar.headline.primary")}
             <br />
-            inbox.
+            {translate("sidebar.headline.accent")}
           </>
         }
       />
@@ -57,10 +58,10 @@ export default () => {
               </div>
               <div>
                 <h2 className="font-medium text-4xl text-foreground">
-                  Verification email sent
+                  {translate("title")}
                 </h2>
                 <p className="mt-1 font-light text-2xl text-foreground-dimmed">
-                  Check your inbox to continue.
+                  {translate("description")}
                 </p>
               </div>
             </div>
@@ -75,12 +76,10 @@ export default () => {
               <BellIcon className="size-24 text-primary" />
               <div className="flex flex-col items-center gap-2 text-center">
                 <p className="font-medium text-2xl text-primary">
-                  We've sent a verification link to your email address.
+                  {translate("states.pending.title")}
                 </p>
                 <p className="text-foreground-dimmed text-lg">
-                  Open your inbox and click the link to verify your account.
-                  Didn't receive it? Check your spam folder or try signing up
-                  again.
+                  {translate("states.pending.description")}
                 </p>
               </div>
             </div>
@@ -92,10 +91,7 @@ export default () => {
               <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
               <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
               <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-              <p>
-                The link will expire in 24 hours. If it expires, you can request
-                a new one by signing up again.
-              </p>
+              <p>{translate("states.pending.expiry")}</p>
             </div>
           </Motion.Item>
 
@@ -103,7 +99,7 @@ export default () => {
             <div className="relative flex items-center justify-between border-accent-foreground border-x p-6 font-light text-foreground-dimmed">
               <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
               <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-              <p>Want to use a different email?</p>
+              <p>{translate("prompt.differentEmail")}</p>
               <Button
                 color="accent"
                 type="button"
@@ -120,10 +116,11 @@ export default () => {
 };
 
 const BackToSignUp = () => {
+  const translate = useTranslations("verifyEmail");
   const { pending } = useLinkStatus();
   return (
     <>
-      Sign up again
+      {translate("action.signUpAgain")}
       {pending ? (
         <LoaderIcon className="size-4 animate-spin" />
       ) : (

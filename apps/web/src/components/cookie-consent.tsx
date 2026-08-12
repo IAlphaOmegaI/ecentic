@@ -8,7 +8,7 @@ import { Plus } from "./plus";
 
 export const CookieConsent = () => {
   const { decision, isReady, accept, reject } = useConsent();
-  const translate = useTranslations("CookieConsent");
+  const translate = useTranslations("cookieConsent");
 
   if (!isReady || decision) return null;
 
@@ -26,13 +26,13 @@ export const CookieConsent = () => {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
           <div className="flex flex-col gap-1.5">
             <h2 className="font-header text-base text-foreground">
-              Cookies on ecentic
+              {translate("title")}
             </h2>
             <p className="text-foreground-dimmed text-sm">
               {translate("message")}{" "}
               <Link
                 href="/privacy-policy"
-                className="text-primary underline underline-offset-2"
+                className="text-primary-text underline underline-offset-2"
               >
                 {translate("privacy")}
               </Link>
@@ -42,10 +42,10 @@ export const CookieConsent = () => {
 
           <div className="flex shrink-0 gap-2">
             <Button color="accent" onClick={reject}>
-              {translate("decline")}
+              {translate("action.secondary")}
             </Button>
             <Button color="primary" onClick={accept}>
-              {translate("accept")}
+              {translate("action.primary")}
             </Button>
           </div>
         </div>

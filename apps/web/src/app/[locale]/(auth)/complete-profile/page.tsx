@@ -2,27 +2,28 @@
 
 import * as motion from "motion/react-client";
 import Image from "next/image";
+import { useMessages, useTranslations } from "next-intl";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import { Fade } from "@/lib/animations";
 import { CompleteProfileForm } from "./_components/complete-profile-form";
 
-const points = [
-  "Help us personalize your experience",
-  "Takes less than 90 seconds",
-  "Start optimizing right after",
-];
-
 export default () => {
+  const translate = useTranslations("completeProfile");
+  const translateAuthChrome = useTranslations("authChrome");
+  const messages = useMessages();
+
   return (
     <div className="flex h-screen overflow-hidden bg-primary">
       <Onboarding
-        points={points}
+        points={messages.completeProfile.sidebar.points}
+        footer={translateAuthChrome("footer")}
+        imageAlt={translateAuthChrome("imageAlt")}
         headline={
           <>
-            Almost
+            {translate("sidebar.headline.primary")}
             <br />
-            there.
+            {translate("sidebar.headline.accent")}
           </>
         }
       />
@@ -51,10 +52,10 @@ export default () => {
               </div>
               <div>
                 <h2 className="font-medium text-4xl text-foreground">
-                  Complete your profile
+                  {translate("title")}
                 </h2>
                 <p className="mt-1 font-light text-2xl text-foreground-dimmed">
-                  Tell us a bit about yourself so we can tailor your experience.
+                  {translate("description")}
                 </p>
               </div>
             </div>

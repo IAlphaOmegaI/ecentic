@@ -182,6 +182,27 @@ try {
 - Don't exhaustively handle every error subtype unless necessary
 - Prefer returning/propagating over complex error classification
 
+**Exception — raw database reads.** A read-only `db.select(...)` thunk in a
+model file (an aggregate the repository doesn't express) uses `resultifyRead`
+from `@/server/utils/repository` instead of plain `resultify`. It is the same
+call shape, plus one retry when the pooled connection died underneath the query
+(Fluid compute freezes the instance; Neon reaps the idle socket; the next query
+hits a dead connection — Sentry ECENTIC-D5). Repository methods already retry
+internally. Writes keep plain `resultify` — replaying a write that may have
+landed risks duplicates.
+
+```ts
+// ✅ Good — read-only aggregate retries across a dead pooled connection
+const rows = await resultifyRead(async () =>
+  db.select({ count: sql<number>`count(*)::int` }).from(schema.product),
+);
+
+// ❌ Bad — plain resultify surfaces the dead socket to the user
+const rows = await resultify(async () =>
+  db.select({ count: sql<number>`count(*)::int` }).from(schema.product),
+);
+```
+
 ---
 
 ## 7. Early Returns

@@ -1,14 +1,14 @@
 "use server";
 
-import { resultify } from "@zenncore/utils";
 import { and, count as countRows, eq, inArray, sql } from "drizzle-orm";
 import { db, schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
+import { withInstrumentation } from "../utils/context";
 import { dedupe } from "../utils/dedupe";
 import { Environment } from "../utils/environment";
 import { DatabaseError } from "../utils/error";
 import type { Document } from "../utils/repository";
-import { repository } from "../utils/repository";
+import { repository, resultifyRead } from "../utils/repository";
 
 export const { get, paginate, create, update, destroy, exists, count, find } =
   repository(schema.simulation);
@@ -47,6 +47,41 @@ const productScope = (userId: string, store?: string) =>
 const winsExpression = sql<number>`count(${schema.simulation.id}) filter (where ${schema.simulation.winner} = 'product')`;
 
 /**
+ * Per-store win tallies for one user's catalog — hub cards derive win rate and
+ * simulation volume from these counts without loading simulation rows.
+ */
+export const winStatsByStoreForUser = withInstrumentation(
+  async (_, { user }: { user: string }) => {
+    const rows = await resultifyRead(async () =>
+      db
+        .select({
+          storeId: schema.product.storeId,
+          total: sql<number>`count(*)::int`,
+          wins: sql<number>`count(*) filter (where ${schema.simulation.winner} = 'product')::int`,
+        })
+        .from(schema.simulation)
+        .innerJoin(
+          schema.product,
+          eq(schema.simulation.productId, schema.product.id),
+        )
+        .where(eq(schema.product.userId, user))
+        .groupBy(schema.product.storeId),
+    );
+
+    if (!rows.success)
+      return {
+        success: false as const,
+        error: new DatabaseError("Failed to tally simulation wins by store", {
+          cause: rows.error,
+        }),
+      };
+
+    return { success: true as const, data: rows.data };
+  },
+  "Simulation.winStatsByStoreForUser",
+);
+
+/**
  * Per-product, per-model win tallies computed by Postgres.
  *
  * Callers used to pull every simulation row for the catalog and re-filter the
@@ -56,7 +91,7 @@ const winsExpression = sql<number>`count(${schema.simulation.id}) filter (where 
  */
 export const tallyByProductModel = dedupe(
   withAuthentication(async (context, { store }: { store?: string } = {}) => {
-    const rows = await resultify(async () =>
+    const rows = await resultifyRead(async () =>
       db
         .select({
           productId: schema.simulation.productId,
@@ -92,7 +127,7 @@ export const tallyByProductModel = dedupe(
  */
 export const tallyByScan = dedupe(
   withAuthentication(async (context, { store }: { store?: string } = {}) => {
-    const rows = await resultify(async () =>
+    const rows = await resultifyRead(async () =>
       db
         .select({
           scanId: schema.simulation.scanId,
@@ -179,7 +214,7 @@ export const getForStore = dedupe(
 
     // The async wrapper matters: `resultify` only awaits real Promise
     // instances, and Drizzle's query builder is a bare thenable.
-    const simulations = await resultify(async () =>
+    const simulations = await resultifyRead(async () =>
       db
         .select({
           id: schema.simulation.id,

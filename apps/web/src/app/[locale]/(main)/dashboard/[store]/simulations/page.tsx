@@ -1,5 +1,6 @@
 import { resultify, unwrapResult } from "@zenncore/utils";
 import { connection } from "next/server";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { formatRelativeTime } from "@/lib/date";
 import * as Competitor from "@/server/app/competitor";
@@ -29,6 +30,7 @@ export default ({ params }: PageProps<"/dashboard/[store]/simulations">) => (
 const LastRun = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
+  const translate = await getTranslations("dashboard.shared.status");
   const latestScans = await resultify(() =>
     unwrapResult(Scan.getLatest(Environment.SERVER, { limit: 1, store })),
   );
@@ -37,8 +39,10 @@ const LastRun = async ({ params }: { params: StoreParams }) => {
   return (
     <StatusPill tone={latestScan ? "success" : "neutral"}>
       {latestScan
-        ? `Last simulation ${formatRelativeTime(latestScan.createdAt)}`
-        : "No simulations run yet"}
+        ? translate("lastSimulation", {
+            time: formatRelativeTime(latestScan.createdAt),
+          })
+        : translate("noSimulationsYet")}
     </StatusPill>
   );
 };

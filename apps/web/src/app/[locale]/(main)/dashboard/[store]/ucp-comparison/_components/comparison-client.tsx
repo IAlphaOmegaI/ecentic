@@ -6,6 +6,7 @@ import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
+import { useTranslations } from "next-intl";
 import {
   type Dispatch,
   type SetStateAction,
@@ -119,23 +120,43 @@ const ParamChips = ({ params }: { params: unknown }) => {
   );
 };
 
-const storeStatusConfig: Record<
+const storeStatusTone: Record<
   StoreState["status"],
-  { tone: "success" | "error" | "primary" | "neutral"; label: string }
+  "success" | "error" | "primary" | "neutral"
 > = {
-  idle: { tone: "neutral", label: "Queued" },
-  discovering: { tone: "primary", label: "Resolving profile" },
-  searching: { tone: "primary", label: "Searching" },
-  done: { tone: "success", label: "Done" },
-  error: { tone: "error", label: "Error" },
+  idle: "neutral",
+  discovering: "primary",
+  searching: "primary",
+  done: "success",
+  error: "error",
 };
 
 // One column in the side-by-side gap-px grid — the source store leads with a
 // primary-tinted header so "your" column reads at a glance.
 const StoreCard = ({ store }: { store: StoreState }) => {
+  const translate = useTranslations("dashboard.ucpComparison");
   const isLoading =
     store.status === "discovering" || store.status === "searching";
   const shownProducts = store.products.slice(0, 8);
+
+  const statusLabel = (() => {
+    switch (store.status) {
+      case "idle":
+        return translate("storeStatus.idle");
+      case "discovering":
+        return translate("storeStatus.discovering");
+      case "searching":
+        return translate("storeStatus.searching");
+      case "done":
+        return translate("storeStatus.done");
+      case "error":
+        return translate("storeStatus.error");
+      default: {
+        const exhaustive: never = store.status;
+        return exhaustive;
+      }
+    }
+  })();
 
   return (
     <div className="flex flex-col bg-background-rich">
@@ -147,7 +168,9 @@ const StoreCard = ({ store }: { store: StoreState }) => {
       >
         <div className="flex flex-wrap items-center gap-2">
           <StatusPill tone={store.role === "source" ? "primary" : "neutral"}>
-            {store.role === "source" ? "Your store" : "Competitor"}
+            {store.role === "source"
+              ? translate("results.yourStore")
+              : translate("results.competitor")}
           </StatusPill>
           <p className="min-w-0 flex-1 truncate font-medium text-foreground text-sm">
             {store.discovery?.domain ?? store.url}
@@ -159,8 +182,8 @@ const StoreCard = ({ store }: { store: StoreState }) => {
               {store.discovery.transport}
             </StatusPill>
           )}
-          <StatusPill tone={storeStatusConfig[store.status].tone}>
-            {storeStatusConfig[store.status].label}
+          <StatusPill tone={storeStatusTone[store.status]}>
+            {statusLabel}
           </StatusPill>
         </div>
         {store.discovery?.endpoint && (
@@ -181,7 +204,7 @@ const StoreCard = ({ store }: { store: StoreState }) => {
           store.products.length === 0 &&
           store.status === "done" && (
             <p className="px-4 py-4 font-light text-foreground-dimmed text-sm">
-              No products returned for this search.
+              {translate("results.noProducts")}
             </p>
           )}
 
@@ -208,7 +231,9 @@ const StoreCard = ({ store }: { store: StoreState }) => {
 
         {store.products.length > 8 && (
           <p className="border-accent-foreground border-t px-4 py-2 text-[11px] text-foreground-dimmed">
-            +{store.products.length - 8} more returned but not shown.
+            {translate("results.moreHidden", {
+              count: store.products.length - 8,
+            })}
           </p>
         )}
 
@@ -235,6 +260,7 @@ const createCompetitorInput = (url = ""): CompetitorInput => ({
 });
 
 export const ComparisonClient = () => {
+  const translate = useTranslations("dashboard.ucpComparison");
   const [sourceStoreUrl, setSourceStoreUrl] = useState("");
   const [competitorInputs, setCompetitorInputs] = useState<CompetitorInput[]>([
     createCompetitorInput(),
@@ -435,7 +461,7 @@ export const ComparisonClient = () => {
               htmlFor="comparison-source"
               className="block font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
             >
-              Your store
+              {translate("sourceStore.label")}
             </label>
             <TextField
               value={sourceStoreUrl}
@@ -444,12 +470,12 @@ export const ComparisonClient = () => {
             >
               <TextFieldInput
                 id="comparison-source"
-                placeholder="your-store.example.com"
+                placeholder={translate("sourceStore.placeholder")}
                 className="font-mono"
               />
             </TextField>
             <p className="mt-2 font-light text-foreground-dimmed text-sm">
-              The merchant catalog you want to evaluate against competitors.
+              {translate("sourceStore.description")}
             </p>
           </div>
 
@@ -458,17 +484,16 @@ export const ComparisonClient = () => {
               htmlFor="comparison-query"
               className="block font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
             >
-              Buyer request
+              {translate("buyerRequest.label")}
             </label>
             <TextField value={query} onValueChange={setQuery} className="mt-2">
               <TextFieldInput
                 id="comparison-query"
-                placeholder='e.g. "wireless mouse under 200 ALL"'
+                placeholder={translate("buyerRequest.placeholder")}
               />
             </TextField>
             <p className="mt-2 font-light text-foreground-dimmed text-sm">
-              Parsed once into search parameters, then run identically against
-              every store.
+              {translate("buyerRequest.description")}
             </p>
           </div>
         </div>
@@ -476,7 +501,7 @@ export const ComparisonClient = () => {
         <div className="border-accent-foreground border-t px-6 py-6 sm:px-8 sm:py-8 lg:border-t-0 lg:border-l">
           <div className="flex items-center justify-between">
             <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-              Competitor stores
+              {translate("competitors.label")}
             </span>
             <span className="font-mono text-[11px] text-foreground-dimmed tabular-nums">
               {validCompetitorCount}/5
@@ -494,7 +519,9 @@ export const ComparisonClient = () => {
                   className="flex-1"
                 >
                   <TextFieldInput
-                    placeholder={`competitor-${index + 1}.example.com`}
+                    placeholder={translate("competitors.placeholder", {
+                      index: index + 1,
+                    })}
                     className="font-mono"
                   />
                 </TextField>
@@ -505,7 +532,9 @@ export const ComparisonClient = () => {
                   onClick={() => removeCompetitor(input.id)}
                   disabled={competitorInputs.length <= 1 || isRunning}
                   className="h-auto shrink-0"
-                  aria-label={`Remove competitor ${index + 1}`}
+                  aria-label={translate("competitors.removeAriaLabel", {
+                    index: index + 1,
+                  })}
                 >
                   <XCircleIcon className="size-4" />
                 </Button>
@@ -521,12 +550,10 @@ export const ComparisonClient = () => {
             className="mt-2 w-full"
           >
             <PlusIcon className="size-4" />
-            Add competitor
+            {translate("competitors.add")}
           </Button>
           <p className="mt-2 font-light text-foreground-dimmed text-sm">
-            Each <span className="font-mono">/.well-known/ucp</span> profile is
-            resolved, then <span className="font-mono">search_catalog</span>{" "}
-            runs with the same derived parameters as your store.
+            {translate("competitors.description")}
           </p>
         </div>
       </div>
@@ -535,8 +562,10 @@ export const ComparisonClient = () => {
       <div className="flex flex-col gap-3 border-accent-foreground border-t px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-8">
         <p className="font-light text-foreground-dimmed text-sm">
           {canCompare
-            ? `One shared agent search across ${validCompetitorCount + 1} stores.`
-            : "Add your store and at least one competitor to run a comparison."}
+            ? translate("hint.ready", {
+                count: validCompetitorCount + 1,
+              })
+            : translate("hint.notReady")}
         </p>
         <Button
           color="primary"
@@ -547,10 +576,10 @@ export const ComparisonClient = () => {
           {isRunning ? (
             <span className="flex items-center gap-2">
               <span className="inline-block size-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
-              Comparing…
+              {translate("action.running")}
             </span>
           ) : (
-            "Compare stores"
+            translate("action.primary")
           )}
         </Button>
       </div>
@@ -559,18 +588,22 @@ export const ComparisonClient = () => {
         <div className="border-accent-foreground border-t">
           <div className="border-accent-foreground border-b bg-background-dimmed px-6 py-3 sm:px-8">
             <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-              Derived search parameters
+              {translate("searchParams.title")}
             </p>
             <p className="mt-1 font-light text-foreground-dimmed text-xs">
-              Parsed once from the buyer request and applied to every store.
+              {translate("searchParams.description")}
             </p>
           </div>
           <div className="space-y-3 px-6 py-4 sm:px-8">
             <ParamChips params={searchParams} />
             <details className="group">
               <summary className="w-fit cursor-pointer list-none font-medium text-foreground-dimmed text-xs hover:text-foreground [&::-webkit-details-marker]:hidden">
-                <span className="group-open:hidden">Show raw JSON</span>
-                <span className="hidden group-open:inline">Hide raw JSON</span>
+                <span className="group-open:hidden">
+                  {translate("searchParams.showRaw")}
+                </span>
+                <span className="hidden group-open:inline">
+                  {translate("searchParams.hideRaw")}
+                </span>
               </summary>
               <pre className="mt-2 overflow-auto border border-accent-foreground bg-background-dimmed p-4 font-mono text-foreground text-xs leading-relaxed">
                 {JSON.stringify(searchParams, null, 2)}
@@ -585,11 +618,10 @@ export const ComparisonClient = () => {
         <div className="border-accent-foreground border-t">
           <div className="border-accent-foreground border-b bg-background-dimmed px-6 py-3 sm:px-8">
             <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-              Side-by-side results
+              {translate("results.title")}
             </p>
             <p className="mt-1 font-light text-foreground-dimmed text-xs">
-              Products each storefront returned for the same search, in the
-              order the agent received them.
+              {translate("results.description")}
             </p>
           </div>
           <div className="grid gap-px bg-accent-foreground md:grid-cols-2">
@@ -607,10 +639,12 @@ export const ComparisonClient = () => {
         <div className="border-accent-foreground border-t">
           <div className="flex flex-wrap items-center gap-3 border-accent-foreground border-b bg-background-dimmed px-6 py-3 sm:px-8">
             <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-              Comparison summary
+              {translate("summary.title")}
             </p>
             {phase === "running" && !summaryText && (
-              <StatusPill tone="primary">Generating</StatusPill>
+              <StatusPill tone="primary">
+                {translate("summary.generating")}
+              </StatusPill>
             )}
           </div>
           <div className="max-w-3xl whitespace-pre-wrap px-6 py-5 text-foreground text-sm leading-relaxed sm:px-8">
@@ -632,15 +666,25 @@ export const ComparisonClient = () => {
           <summary className="flex cursor-pointer list-none items-center justify-between bg-background-dimmed px-6 py-3 sm:px-8 [&::-webkit-details-marker]:hidden">
             <div className="flex items-center gap-3">
               <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-                Event Log
+                {translate("eventLog.title")}
               </p>
               {phase === "running" && (
-                <StatusPill tone="primary">Live</StatusPill>
+                <StatusPill tone="primary">
+                  {translate("eventLog.live")}
+                </StatusPill>
               )}
-              {phase === "done" && <StatusPill tone="success">Done</StatusPill>}
-              {phase === "error" && <StatusPill tone="error">Error</StatusPill>}
+              {phase === "done" && (
+                <StatusPill tone="success">
+                  {translate("eventLog.done")}
+                </StatusPill>
+              )}
+              {phase === "error" && (
+                <StatusPill tone="error">
+                  {translate("eventLog.error")}
+                </StatusPill>
+              )}
               <span className="text-foreground-dimmed text-xs tabular-nums">
-                {lines.length} {lines.length === 1 ? "event" : "events"}
+                {translate("eventLog.events", { count: lines.length })}
               </span>
             </div>
             {lines.length > 0 && (
@@ -656,7 +700,7 @@ export const ComparisonClient = () => {
                 }}
                 className="font-medium text-foreground-dimmed text-xs hover:text-foreground"
               >
-                Clear
+                {translate("eventLog.clear")}
               </button>
             )}
           </summary>
@@ -738,7 +782,7 @@ export const ComparisonClient = () => {
                   case "done":
                     return (
                       <p key={lineKey} className="text-primary">
-                        ✓ comparison complete
+                        {translate("eventLog.complete")}
                       </p>
                     );
                   default:

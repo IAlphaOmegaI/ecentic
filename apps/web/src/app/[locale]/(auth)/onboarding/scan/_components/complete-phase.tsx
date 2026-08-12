@@ -16,9 +16,10 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { useLinkStatus } from "next/link";
-import { Link, useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { Counter } from "@/app/[locale]/(main)/_components/counter";
 import { Motion } from "@/components/motion";
+import { Link, useRouter } from "@/i18n/navigation";
 import { Spring, Stagger } from "@/lib/animations";
 import * as Payg from "@/server/app/billing/payg";
 import type * as Simulate from "@/server/app/intelligence/simulate";
@@ -48,17 +49,18 @@ export const CompletePhase = ({
   products: finalProductCount,
   scanId,
 }: CompletePhase.Props) => {
+  const translate = useTranslations("onboarding.scan");
   const winRate =
     wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0;
 
   const message = (() => {
     switch (true) {
       case winRate < 30:
-        return "AI agents are choosing your competitors most of the time. Let's fix that.";
+        return translate("complete.messages.low");
       case winRate < 60:
-        return "You're competitive, but there's significant room to win more. Let's see where.";
+        return translate("complete.messages.medium");
       default:
-        return "You're ahead of most competitors. Let's make sure you stay there.";
+        return translate("complete.messages.high");
     }
   })();
 
@@ -80,7 +82,7 @@ export const CompletePhase = ({
     const activation = await Payg.startPayAsYouGo();
     if (!activation.success) {
       toast.add({
-        title: "Could not start pay-as-you-go",
+        title: translate("complete.toast.paygFailed"),
         description: activation.error.message,
         type: "error",
       });
@@ -105,7 +107,7 @@ export const CompletePhase = ({
         <Motion.Item className="border-accent-foreground border-b px-8">
           <div className="border-accent-foreground border-x p-6">
             <h1 className="font-medium text-4xl text-foreground">
-              Scan complete.
+              {translate("complete.title")}
             </h1>
             <p className="font-light text-2xl text-foreground-dimmed">
               {message}
@@ -176,15 +178,15 @@ export const CompletePhase = ({
           <Motion.Item className="border-accent-foreground border-b px-8">
             <div className="border-primary/20 border-x bg-primary/5 p-6">
               <p className="mb-1.5 font-medium text-primary uppercase tracking-widest">
-                Top Finding
+                {translate("complete.topFinding")}
               </p>
               <p className="font-light text-foreground">
-                {topFinding.name} loses on{" "}
-                <span className="font-medium text-foreground">
-                  {topFinding.missingAttributes.join(" and ")}
-                </span>{" "}
-                — {topFinding.impactDescription} Costs you{" "}
-                {topFinding.lossPercentage}% of simulations.
+                {translate("complete.topFindingBody", {
+                  name: topFinding.name,
+                  attributes: topFinding.missingAttributes.join(" and "),
+                  impact: topFinding.impactDescription,
+                  percentage: String(topFinding.lossPercentage),
+                })}
               </p>
             </div>
           </Motion.Item>
@@ -199,7 +201,9 @@ export const CompletePhase = ({
                   <p className={cn("font-medium text-2xl", color)}>
                     <Counter value={`${winRate}%`} delay={0.45} />
                   </p>
-                  <p className="font-light text-foreground-dimmed">Win rate</p>
+                  <p className="font-light text-foreground-dimmed">
+                    {translate("complete.stats.winRate")}
+                  </p>
                 </div>
               </div>
             </div>
@@ -209,21 +213,27 @@ export const CompletePhase = ({
                 <p className="font-medium text-2xl text-primary">
                   {finalProductCount}
                 </p>
-                <p className="font-light text-foreground-dimmed">Products</p>
+                <p className="font-light text-foreground-dimmed">
+                  {translate("complete.stats.products")}
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-2 bg-background-dimmed p-4">
               <TrendUpIcon className="size-12 text-success" />
               <div>
                 <p className="font-medium text-2xl text-success">{wins}</p>
-                <p className="font-light text-foreground-dimmed">Wins</p>
+                <p className="font-light text-foreground-dimmed">
+                  {translate("complete.stats.wins")}
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-2 bg-background-dimmed p-4">
               <TrendDownIcon className="size-12 text-error" />
               <div>
                 <p className="font-medium text-2xl text-error">{losses}</p>
-                <p className="font-light text-foreground-dimmed">Losses</p>
+                <p className="font-light text-foreground-dimmed">
+                  {translate("complete.stats.losses")}
+                </p>
               </div>
             </div>
           </div>
@@ -244,7 +254,7 @@ export const CompletePhase = ({
                 type="button"
                 render={<Link href={scanId ? `/share/${scanId}` : "#"} />}
               >
-                <Share />
+                <ShareButton />
               </Button>
               <Button
                 color="primary"
@@ -257,7 +267,7 @@ export const CompletePhase = ({
                 ) : (
                   <ShoppingCartIcon className="size-4" />
                 )}
-                Start free
+                {translate("complete.action.startFree")}
               </Button>
             </div>
           </div>
@@ -269,6 +279,8 @@ export const CompletePhase = ({
 
 const Back = () => {
   const { pending } = useLinkStatus();
+  const translate = useTranslations("onboarding.scan");
+
   return (
     <>
       {pending ? (
@@ -276,16 +288,18 @@ const Back = () => {
       ) : (
         <ArrowLeftIcon className="size-4" />
       )}
-      Back to scan
+      {translate("complete.action.back")}
     </>
   );
 };
 
-const Share = () => {
+const ShareButton = () => {
   const { pending } = useLinkStatus();
+  const translate = useTranslations("onboarding.scan");
+
   return (
     <>
-      Share
+      {translate("complete.action.share")}
       {pending ? (
         <LoaderIcon className="size-4 animate-spin" />
       ) : (

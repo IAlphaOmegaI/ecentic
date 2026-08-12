@@ -1,0 +1,188 @@
+{
+  "features": {
+    "meta": {
+      "title": "AI ecommerce tools for merchant product listings",
+      "description": "AI ecommerce tools for product listing optimization, competitor analysis, and AI shopping visibility. See how ecentic helps merchants win more carts today."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "features": "Features"
+    },
+    "hero": {
+      "eyebrow": "Features",
+      "title": {
+        "primary": "Every tool you need to",
+        "accent": "win the AI shopper."
+      },
+      "description": "Simulate how AI shopping agents compare your products, see exactly why competitors win, and publish the listing fixes that flip the result, all from one loop.",
+      "assurances": [
+        "Simulates ChatGPT, Claude, Gemini & Perplexity",
+        "One-click listing rewrites",
+        "Live agent traffic"
+      ],
+      "art": {
+        "alt": "ASCII-art illustration of a control console"
+      }
+    },
+    "loop": {
+      "number": "01",
+      "title": "One loop from invisible to recommended.",
+      "description": "Visibility in AI-assisted shopping is not a brand metric. It is an operational loop, and ecentic runs all four steps for every product in your catalog.",
+      "steps": [
+        {
+          "step": "Step 01",
+          "title": "Simulate",
+          "description": "ecentic asks the top AI shopping agents to shop your catalog against real competitors, the same way buyers do."
+        },
+        {
+          "step": "Step 02",
+          "title": "Diagnose",
+          "description": "See exactly which products agents skip, who they pick instead, and which missing attribute cost you the cart."
+        },
+        {
+          "step": "Step 03",
+          "title": "Optimize",
+          "description": "Approve rewritten titles, descriptions, and structured data, then publish them back to your store in one click."
+        },
+        {
+          "step": "Step 04",
+          "title": "Track",
+          "description": "Track your win rate, AI-agent visits, and attributed revenue week over week, then rescan and repeat."
+        }
+      ]
+    },
+    "capabilities": {
+      "number": "02",
+      "title": "What it takes to get picked.",
+      "description": "Not another dashboard or copy generator. ecentic is a decision layer that sits on top of your store and turns agent insight into published listing updates.",
+      "items": [
+        {
+          "title": "AI win-rate score",
+          "description": "See how often ChatGPT, Claude, Gemini, and Perplexity pick your products when a shopper asks what to buy.",
+          "features": [
+            "Per-agent win rates",
+            "Product-level scoring",
+            "Score history over time"
+          ],
+          "highlighted": true
+        },
+        {
+          "title": "Competitor gap analysis",
+          "description": "Find out who agents recommend instead of you, and exactly what their listing has that yours doesn't.",
+          "features": [
+            "Side-by-side comparisons",
+            "Missing-attribute detection",
+            "Category benchmarks"
+          ]
+        },
+        {
+          "title": "One-click listing rewrites",
+          "description": "Approval-ready rewrites of titles, descriptions, and structured product data, published straight back to your store.",
+          "features": [
+            "Approval-ready drafts",
+            "Shopify + WooCommerce write-back",
+            "Before / after lift tracking"
+          ]
+        },
+        {
+          "title": "Agent traffic analytics",
+          "description": "Know when an AI agent visits your store, which products it reads, and what revenue those visits turn into.",
+          "features": [
+            "AI-agent visit detection",
+            "Daily traffic rollups",
+            "Referral attribution"
+          ]
+        },
+        {
+          "title": "UCP profile",
+          "description": "A machine-readable merchant profile built on the Universal Commerce Protocol, so agents can trust and verify your store.",
+          "features": [
+            "Auto-generated profile",
+            "Structured product data",
+            "Agent-verifiable identity"
+          ]
+        },
+        {
+          "title": "Continuous rescans",
+          "description": "Scores go stale the moment a competitor updates a listing. Scheduled rescans keep every product benchmarked.",
+          "features": [
+            "Scheduled catalog scans",
+            "Win-rate change alerts",
+            "Regression detection"
+          ]
+        }
+      ]
+    },
+    "workflows": {
+      "number": "03",
+      "title": "Pick the path that matches your stack.",
+      "description": "Each path targets a specific part of the optimization loop: listing quality, platform fit, or competitive research.",
+      "items": [
+        {
+          "href": "/features/product-listings",
+          "eyebrow": "Product listings",
+          "title": "Improve titles, descriptions, and structured product data",
+          "description": "Turn losing product pages into clearer buying inputs for AI shopping agents and high-intent shoppers.",
+          "label": "View listing workflow",
+          "color": "primary"
+        },
+        {
+          "href": "/platforms/shopify",
+          "eyebrow": "Shopify",
+          "title": "Connect a Shopify catalog and publish approved updates",
+          "description": "Benchmark products, review why agents prefer competitors, and send approved listing changes back to Shopify.",
+          "label": "See Shopify page",
+          "color": "accent"
+        },
+        {
+          "href": "/platforms/woocommerce",
+          "eyebrow": "WooCommerce",
+          "title": "Run the same optimization loop for WooCommerce stores",
+          "description": "Import product data, compare against competitors, and manage listing improvements without rebuilding your stack.",
+          "label": "See WooCommerce page",
+          "color": "accent"
+        },
+        {
+          "href": "/compare/best-ai-ecommerce-tools",
+          "eyebrow": "Comparison",
+          "title": "Understand where agent-commerce optimization fits",
+          "description": "Use the buyer's guide to compare content generators, personalization tools, analytics platforms, and agent-focused workflows.",
+          "label": "Read the guide",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "04",
+      "title": "Frequently asked questions",
+      "description": "Common questions from merchants evaluating AI ecommerce tools."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "What makes AI ecommerce tools different from standard ecommerce software?",
+          "answer": "AI ecommerce tools need to help merchants structure product data, explain why listings lose, and improve pages that AI shopping systems compare in seconds. That is different from a generic dashboard or a copy generator that only rewrites descriptions."
+        },
+        {
+          "question": "Does ecentic replace an ecommerce platform?",
+          "answer": "No. ecentic sits on top of an existing store stack. It connects to the catalog, runs simulations against competitors, and helps merchants publish clearer listing updates back into the platform they already use."
+        },
+        {
+          "question": "Who should start with the features page first?",
+          "answer": "Teams evaluating AI ecommerce tools, agent-commerce workflows, or product listing optimization usually start here because it explains the full simulation, diagnosis, and optimization loop before they choose a platform-specific path."
+        },
+        {
+          "question": "Which pages should merchants read next?",
+          "answer": "Most merchants move from the features page to the AI product listing optimization page, then into a platform page such as Shopify or WooCommerce, and finally into comparison or blog content for deeper research."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Get started",
+        "secondary": "Back to home"
+      },
+      "note": "2-minute setup · No credit card · See your free score first"
+    }
+  }
+}

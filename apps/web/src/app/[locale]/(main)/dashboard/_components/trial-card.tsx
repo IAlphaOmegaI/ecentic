@@ -3,21 +3,17 @@
 import { ArrowRightIcon, CheckIcon, XIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { AnimatePresence, motion } from "motion/react";
+import { useMessages, useTranslations } from "next-intl";
 import { useState } from "react";
 import { Spring } from "@/lib/animations";
-
-const proFeatures = [
-  "Unlimited AI simulations",
-  "All 3 model perspectives",
-  "Competitor auto-detection",
-  "UCP structured data export",
-  "Priority support",
-] as const;
 
 const TRIAL_DAYS_LEFT = 7;
 
 export const TrialCard = () => {
   const [upgrade, setUpgrade] = useState(false);
+  const translate = useTranslations("dashboard.trial");
+  const messages = useMessages();
+  const proFeatures = messages.dashboard.trial.features;
 
   return (
     <>
@@ -31,11 +27,11 @@ export const TrialCard = () => {
             <div className="flex items-center gap-1.5">
               <span className="inline-block size-2 bg-warning" />
               <span className="font-medium text-warning text-xs uppercase tracking-[0.2em]">
-                Free Trial
+                {translate("badge")}
               </span>
             </div>
             <span className="font-mono text-foreground-dimmed text-xs tabular-nums">
-              {TRIAL_DAYS_LEFT}d left
+              {translate("daysLeft", { days: String(TRIAL_DAYS_LEFT) })}
             </span>
           </div>
           <div className="mb-2 h-1 w-full bg-accent-foreground">
@@ -48,7 +44,7 @@ export const TrialCard = () => {
           </div>
           <div className="flex items-center justify-between">
             <span className="font-light text-foreground-dimmed text-xs">
-              Upgrade before it ends
+              {translate("upgradeHint")}
             </span>
             <ArrowRightIcon className="size-4 text-warning transition-transform group-hover:translate-x-0.5" />
           </div>
@@ -76,7 +72,6 @@ export const TrialCard = () => {
               exit={{ opacity: 0, scale: 0.96, y: 8 }}
               transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
             >
-              {/* Header */}
               <div className="flex items-start justify-between border-accent-foreground border-b px-6 py-5">
                 <div>
                   <div className="mb-1 flex items-center gap-2">
@@ -89,15 +84,16 @@ export const TrialCard = () => {
                       }}
                     />
                     <span className="font-medium text-warning text-xs uppercase tracking-[0.2em]">
-                      Trial ending in {TRIAL_DAYS_LEFT} days
+                      {translate("modal.endingIn", {
+                        days: String(TRIAL_DAYS_LEFT),
+                      })}
                     </span>
                   </div>
                   <h2 className="font-medium text-foreground text-xl leading-tight">
-                    Upgrade to Pro
+                    {translate("modal.title")}
                   </h2>
                   <p className="mt-1 font-light text-foreground-dimmed text-sm">
-                    Keep full access to simulations, insights, and competitor
-                    intelligence.
+                    {translate("modal.description")}
                   </p>
                 </div>
                 <button
@@ -109,14 +105,15 @@ export const TrialCard = () => {
                 </button>
               </div>
 
-              {/* Trial progress */}
               <div className="border-accent-foreground border-b px-6 py-4">
                 <div className="mb-1.5 flex items-center justify-between">
                   <span className="font-light text-foreground-dimmed text-xs">
-                    Trial progress
+                    {translate("modal.progress")}
                   </span>
                   <span className="font-mono text-foreground-dimmed text-xs">
-                    {14 - TRIAL_DAYS_LEFT}/14 days used
+                    {translate("modal.daysUsed", {
+                      used: String(14 - TRIAL_DAYS_LEFT),
+                    })}
                   </span>
                 </div>
                 <div className="h-1.5 w-full bg-accent-foreground">
@@ -131,10 +128,9 @@ export const TrialCard = () => {
                 </div>
               </div>
 
-              {/* Features */}
               <div className="border-accent-foreground border-b px-6 py-5">
                 <p className="mb-3 font-medium text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-                  Everything in Pro
+                  {translate("modal.featuresHeading")}
                 </p>
                 <div className="grid grid-cols-1 gap-2">
                   {proFeatures.map((feature, index) => (
@@ -159,14 +155,13 @@ export const TrialCard = () => {
                 </div>
               </div>
 
-              {/* Pricing + CTA */}
               <div className="px-6 py-5">
                 <div className="mb-4 flex items-end gap-1.5">
                   <span className="font-semibold text-4xl text-foreground leading-none">
                     $99
                   </span>
                   <span className="mb-1 font-light text-foreground-dimmed text-sm">
-                    /month
+                    {translate("modal.pricePerMonth")}
                   </span>
                 </div>
 
@@ -176,14 +171,16 @@ export const TrialCard = () => {
                   className="mb-2 w-full py-3 font-medium text-sm transition-colors"
                   onClick={() => setUpgrade(false)}
                 >
-                  Upgrade Now
+                  {translate("modal.action.primary")}
                 </Button>
                 <button
                   type="button"
                   onClick={() => setUpgrade(false)}
                   className="w-full py-2 font-light text-foreground-dimmed text-xs transition-colors hover:text-foreground"
                 >
-                  Maybe later — {TRIAL_DAYS_LEFT} days remaining
+                  {translate("modal.action.secondary", {
+                    days: String(TRIAL_DAYS_LEFT),
+                  })}
                 </button>
               </div>
             </motion.div>

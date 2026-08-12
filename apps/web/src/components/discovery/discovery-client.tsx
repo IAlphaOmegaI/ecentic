@@ -5,6 +5,7 @@ import { cn, resultify, unwrapResult } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
+import { useMessages, useTranslations } from "next-intl";
 import { useState } from "react";
 import {
   Crosshair,
@@ -14,12 +15,6 @@ import {
 import * as Discovery from "@/server/app/intelligence/discovery";
 
 const MAX_QUERIES = 8;
-
-const QUERY_PLACEHOLDERS = [
-  "blue trainers under $80",
-  "waterproof hiking boots",
-  "gifts for runners",
-];
 
 type QueryInput = {
   id: string;
@@ -47,10 +42,13 @@ const rankTone = (rank: number | null, total: number): RankTone => {
 };
 
 const RankBadge = ({ rank, total }: { rank: number | null; total: number }) => {
+  const translate = useTranslations("dashboard.discovery.model");
   const tone = rankTone(rank, total);
   return (
     <StatusPill tone={tone}>
-      {rank === null ? "Not suggested" : `Ranked #${rank} of ${total}`}
+      {rank === null
+        ? translate("notSuggested")
+        : translate("ranked", { rank, total })}
     </StatusPill>
   );
 };
@@ -61,112 +59,125 @@ const StoreRow = ({
 }: {
   store: Discovery.DiscoveryStore;
   rank: number;
-}) => (
-  <li
-    className={cn(
-      "flex gap-3 border-accent-foreground border-t px-3 py-2.5 first:border-t-0",
-      store.isTarget && "bg-primary/5",
-    )}
-  >
-    <span
+}) => {
+  const translate = useTranslations("dashboard.discovery");
+
+  return (
+    <li
       className={cn(
-        "mt-px w-5 shrink-0 text-right font-mono font-semibold text-xs tabular-nums",
-        store.isTarget ? "text-primary" : "text-foreground-dimmed",
+        "flex gap-3 border-accent-foreground border-t px-3 py-2.5 first:border-t-0",
+        store.isTarget && "bg-primary/5",
       )}
     >
-      {rank}
-    </span>
-    <div className="min-w-0 flex-1">
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-        <span
-          className={cn(
-            "font-medium text-sm",
-            store.isTarget ? "text-primary" : "text-foreground-rich",
-          )}
-        >
-          {store.name}
-        </span>
-        {store.domain && (
-          <span className="font-mono text-[11px] text-foreground-dimmed lowercase">
-            {store.domain}
-          </span>
+      <span
+        className={cn(
+          "mt-px w-5 shrink-0 text-right font-mono font-semibold text-xs tabular-nums",
+          store.isTarget ? "text-primary" : "text-foreground-dimmed",
         )}
-        {store.isTarget && <StatusPill tone="primary">Your store</StatusPill>}
+      >
+        {rank}
+      </span>
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+          <span
+            className={cn(
+              "font-medium text-sm",
+              store.isTarget ? "text-primary" : "text-foreground-rich",
+            )}
+          >
+            {store.name}
+          </span>
+          {store.domain && (
+            <span className="font-mono text-[11px] text-foreground-dimmed lowercase">
+              {store.domain}
+            </span>
+          )}
+          {store.isTarget && (
+            <StatusPill tone="primary">
+              {translate("targetStore.yourStore")}
+            </StatusPill>
+          )}
+        </div>
+        <p className="mt-0.5 text-foreground-dimmed text-xs leading-snug">
+          {store.reason}
+        </p>
       </div>
-      <p className="mt-0.5 text-foreground-dimmed text-xs leading-snug">
-        {store.reason}
-      </p>
-    </div>
-  </li>
-);
+    </li>
+  );
+};
 
 const ModelColumn = ({
   result,
 }: {
   result: Discovery.DiscoveryModelResult;
-}) => (
-  <div className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
-    <div className="flex items-center justify-between gap-2 border-accent-foreground border-b bg-background-dimmed px-3 py-2">
-      <span className="font-semibold text-foreground-rich text-sm">
-        {result.modelLabel}
-      </span>
+}) => {
+  const translate = useTranslations("dashboard.discovery.model");
+
+  return (
+    <div className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
+      <div className="flex items-center justify-between gap-2 border-accent-foreground border-b bg-background-dimmed px-3 py-2">
+        <span className="font-semibold text-foreground-rich text-sm">
+          {result.modelLabel}
+        </span>
+        {result.status === "error" ? (
+          <StatusPill tone="error">{translate("failed")}</StatusPill>
+        ) : (
+          <RankBadge rank={result.targetRank} total={result.stores.length} />
+        )}
+      </div>
+
       {result.status === "error" ? (
-        <StatusPill tone="error">Failed</StatusPill>
+        <div className="flex items-start gap-2 p-3 text-error text-xs">
+          <span className="shrink-0">✕</span>
+          <span className="wrap-break-word font-mono">
+            {result.error ?? translate("unreachable")}
+          </span>
+        </div>
       ) : (
-        <RankBadge rank={result.targetRank} total={result.stores.length} />
+        <>
+          <div
+            className={cn(
+              "border-accent-foreground border-b px-3 py-2.5",
+              result.targetIncluded ? "bg-success/5" : "bg-error/5",
+            )}
+          >
+            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+              {result.targetIncluded
+                ? translate("whyRanked")
+                : translate("whyLeftOut")}
+            </p>
+            <p className="mt-1 text-foreground text-xs leading-snug">
+              {result.targetReason || translate("noExplanation")}
+            </p>
+          </div>
+          {result.stores.length > 0 ? (
+            <ol className="flex-1">
+              {result.stores.map((store, index) => (
+                <StoreRow
+                  // biome-ignore lint/suspicious/noArrayIndexKey: static ranked list, never reordered after render
+                  key={`${store.name}-${index}`}
+                  rank={index + 1}
+                  store={store}
+                />
+              ))}
+            </ol>
+          ) : (
+            <p className="px-3 py-4 text-center text-foreground-dimmed text-xs">
+              {translate("noStores")}
+            </p>
+          )}
+        </>
       )}
     </div>
-
-    {result.status === "error" ? (
-      <div className="flex items-start gap-2 p-3 text-error text-xs">
-        <span className="shrink-0">✕</span>
-        <span className="wrap-break-word font-mono">
-          {result.error ?? "This model could not be reached."}
-        </span>
-      </div>
-    ) : (
-      <>
-        <div
-          className={cn(
-            "border-accent-foreground border-b px-3 py-2.5",
-            result.targetIncluded ? "bg-success/5" : "bg-error/5",
-          )}
-        >
-          <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-            {result.targetIncluded
-              ? "Why your store ranked here"
-              : "Why your store was left out"}
-          </p>
-          <p className="mt-1 text-foreground text-xs leading-snug">
-            {result.targetReason || "No explanation returned."}
-          </p>
-        </div>
-        {result.stores.length > 0 ? (
-          <ol className="flex-1">
-            {result.stores.map((store, index) => (
-              <StoreRow
-                // biome-ignore lint/suspicious/noArrayIndexKey: static ranked list, never reordered after render
-                key={`${store.name}-${index}`}
-                rank={index + 1}
-                store={store}
-              />
-            ))}
-          </ol>
-        ) : (
-          <p className="px-3 py-4 text-center text-foreground-dimmed text-xs">
-            No stores returned.
-          </p>
-        )}
-      </>
-    )}
-  </div>
-);
+  );
+};
 
 const QuerySummaryChip = ({
   result,
 }: {
   result: Discovery.DiscoveryModelResult;
 }) => {
+  const translate = useTranslations("dashboard.discovery.model");
   const tone =
     result.status === "error"
       ? "neutral"
@@ -175,7 +186,7 @@ const QuerySummaryChip = ({
     result.status === "error"
       ? "—"
       : result.targetRank === null
-        ? "Not suggested"
+        ? translate("notSuggested")
         : `#${result.targetRank}`;
   return (
     <StatusPill tone={tone}>
@@ -226,6 +237,10 @@ export const DiscoveryClient = ({
   defaultTargetStore = "",
   lockStore = false,
 }: DiscoveryClientProps = {}) => {
+  const translate = useTranslations("dashboard.discovery");
+  const messages = useMessages();
+  const queryPlaceholders = messages.dashboard.discovery.queries.placeholders;
+
   const [result, setResult] = useState<Discovery.DiscoveryRunResult | null>(
     null,
   );
@@ -272,12 +287,12 @@ export const DiscoveryClient = ({
       .filter((value) => value.length > 0);
 
     if (!target) {
-      setError("Enter a target store domain.");
+      setError(translate("errors.targetRequired"));
       return;
     }
 
     if (parsed.length === 0) {
-      setError("Enter at least one shopping query.");
+      setError(translate("errors.queryRequired"));
       return;
     }
 
@@ -294,7 +309,7 @@ export const DiscoveryClient = ({
     );
 
     if (!response.success) {
-      setError(response.error.message || "Something went wrong.");
+      setError(response.error.message || translate("errors.generic"));
       return;
     }
 
@@ -311,14 +326,16 @@ export const DiscoveryClient = ({
               htmlFor="discovery-target"
               className="block font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
             >
-              Target store
+              {translate("targetStore.label")}
             </label>
             {lockStore ? (
               <div className="mt-2 flex items-center gap-2 border border-accent-foreground bg-background-dimmed px-3 py-2">
                 <span className="min-w-0 flex-1 truncate font-medium font-mono text-foreground text-sm">
                   {defaultTargetStore}
                 </span>
-                <StatusPill tone="primary">Your store</StatusPill>
+                <StatusPill tone="primary">
+                  {translate("targetStore.yourStore")}
+                </StatusPill>
               </div>
             ) : (
               <TextField
@@ -328,13 +345,13 @@ export const DiscoveryClient = ({
               >
                 <TextFieldInput
                   id="discovery-target"
-                  placeholder="your-store.example.com"
+                  placeholder={translate("targetStore.placeholder")}
                   className="font-mono"
                 />
               </TextField>
             )}
             <p className="mt-2 font-light text-foreground-dimmed text-sm">
-              The store we look for in each AI agent's recommendations.
+              {translate("targetStore.description")}
             </p>
           </div>
         </div>
@@ -342,7 +359,7 @@ export const DiscoveryClient = ({
         <div className="border-accent-foreground border-t px-6 py-6 sm:px-8 sm:py-8 lg:border-t-0 lg:border-l">
           <div className="flex items-center justify-between">
             <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-              Shopping queries
+              {translate("queries.label")}
             </span>
             <span className="font-mono text-[11px] text-foreground-dimmed tabular-nums">
               {validQueryCount}/{MAX_QUERIES}
@@ -359,7 +376,8 @@ export const DiscoveryClient = ({
                 >
                   <TextFieldInput
                     placeholder={
-                      QUERY_PLACEHOLDERS[index] ?? "another shopping query"
+                      queryPlaceholders[index] ??
+                      translate("queries.anotherPlaceholder")
                     }
                   />
                 </TextField>
@@ -370,7 +388,9 @@ export const DiscoveryClient = ({
                   onClick={() => removeQuery(input.id)}
                   disabled={queryInputs.length <= 1 || isRunning}
                   className="h-auto shrink-0"
-                  aria-label={`Remove query ${index + 1}`}
+                  aria-label={translate("queries.removeAriaLabel", {
+                    index: index + 1,
+                  })}
                 >
                   <XCircleIcon className="size-4" />
                 </Button>
@@ -386,11 +406,10 @@ export const DiscoveryClient = ({
             className="mt-2 w-full"
           >
             <PlusIcon className="size-4" />
-            Add query
+            {translate("queries.add")}
           </Button>
           <p className="mt-2 font-light text-foreground-dimmed text-sm">
-            Each query is sent to ChatGPT, Claude, Gemini and Perplexity, then
-            we rank the stores each one suggests.
+            {translate("queries.description")}
           </p>
         </div>
       </div>
@@ -399,8 +418,8 @@ export const DiscoveryClient = ({
       <div className="flex flex-col gap-3 border-accent-foreground border-t px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-8">
         <p className="font-light text-foreground-dimmed text-sm">
           {canRun
-            ? `Ask 4 AI models across ${validQueryCount} ${validQueryCount === 1 ? "query" : "queries"}.`
-            : "Enter a target store and at least one query to run discovery."}
+            ? translate("hint.ready", { count: validQueryCount })
+            : translate("hint.notReady")}
         </p>
         <Button
           color="primary"
@@ -411,10 +430,10 @@ export const DiscoveryClient = ({
           {isRunning ? (
             <span className="flex items-center gap-2">
               <LoaderIcon className="size-4 animate-spin" />
-              Asking AI…
+              {translate("action.running")}
             </span>
           ) : (
-            "Run discovery"
+            translate("action.primary")
           )}
         </Button>
       </div>
@@ -436,20 +455,18 @@ export const DiscoveryClient = ({
               return (
                 <div className="flex min-h-[24rem] flex-col items-center justify-center gap-3 text-foreground-dimmed">
                   <LoaderIcon className="size-6 animate-spin" />
-                  <p className="text-sm">
-                    Querying ChatGPT, Claude, Gemini and Perplexity…
-                  </p>
+                  <p className="text-sm">{translate("loading")}</p>
                 </div>
               );
             case result === null:
               return (
                 <div className="relative flex min-h-[24rem] flex-col items-center justify-center gap-2 text-center">
                   <Crosshair className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-                  <StatusPill tone="neutral">No run yet</StatusPill>
+                  <StatusPill tone="neutral">
+                    {translate("empty.status")}
+                  </StatusPill>
                   <p className="max-w-md text-foreground-dimmed text-sm">
-                    Add one or more shopping queries above, then run discovery
-                    to see which stores AI agents recommend — and how your store
-                    compares.
+                    {translate("empty.description")}
                   </p>
                 </div>
               );
@@ -457,7 +474,9 @@ export const DiscoveryClient = ({
               return (
                 <div className="space-y-6">
                   <div className="flex items-center gap-2">
-                    <SectionKicker>Target store</SectionKicker>
+                    <SectionKicker>
+                      {translate("results.targetStore")}
+                    </SectionKicker>
                     <span className="font-mono font-semibold text-primary text-sm">
                       {result.targetStore}
                     </span>

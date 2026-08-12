@@ -1,16 +1,35 @@
 "use server";
 
 import { unique } from "@zenncore/utils";
-import { and, eq, inArray } from "drizzle-orm";
-import { schema } from "../database";
+import {
+  type AnyColumn,
+  and,
+  eq,
+  ilike,
+  inArray,
+  isNotNull,
+  isNull,
+  notIlike,
+  or,
+  type SQL,
+  sql,
+} from "drizzle-orm";
+import {
+  MISSING_FIELD_CHIPS,
+  type ProductFilter,
+  sanitizeProductFilters,
+} from "@/lib/filters";
+import { db, schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
+import { withInstrumentation } from "../utils/context";
 import { dedupe } from "../utils/dedupe";
 import { Environment } from "../utils/environment";
+import { DatabaseError } from "../utils/error";
 import type { Pager } from "../utils/pagination";
 import type { Document, ExecuteOptions, Insertable } from "../utils/repository";
-import { repository } from "../utils/repository";
-import { themeEmbedDeepLink } from "../utils/shopify";
+import { repository, resultifyRead } from "../utils/repository";
 import * as Competitor from "./competitor";
+import { themeEmbedDeepLink } from "./integration/shopify/hmac";
 import {
   checkProductPageSchema,
   NO_PAGE_URL,
@@ -93,6 +112,84 @@ export const countForCurrentUser = withAuthentication(
     );
   },
   "Product.countForCurrentUser",
+);
+
+/**
+ * Product counts grouped by store for one user — the dashboard hub card totals.
+ * Aggregation stays in SQL so callers never pull the full catalog just to count.
+ */
+export const countByStoreForUser = withInstrumentation(
+  async (_, { user }: { user: string }) => {
+    const rows = await resultifyRead(async () =>
+      db
+        .select({
+          storeId: schema.product.storeId,
+          count: sql<number>`count(*)::int`,
+        })
+        .from(schema.product)
+        .where(eq(schema.product.userId, user))
+        .groupBy(schema.product.storeId),
+    );
+
+    if (!rows.success)
+      return {
+        success: false as const,
+        error: new DatabaseError("Failed to count products by store", {
+          cause: rows.error,
+        }),
+      };
+
+    return { success: true as const, data: rows.data };
+  },
+  "Product.countByStoreForUser",
+);
+
+/**
+ * How many products leave each listing attribute blank — the warning chips
+ * above the products table. One aggregate pass instead of a count query per
+ * attribute; a chip click applies the matching `isEmpty` filter.
+ */
+export const countMissingFields = withAuthentication(
+  async (context, { store }: { store?: string } = {}) => {
+    const missing = (column: AnyColumn) =>
+      sql<number>`count(*) filter (where ${column} is null or trim(${column}) = '')::int`;
+
+    const rows = await resultifyRead(async () =>
+      db
+        .select({
+          description: missing(schema.product.description),
+          sku: missing(schema.product.sku),
+          price: missing(schema.product.price),
+        })
+        .from(schema.product)
+        .where(
+          store
+            ? and(
+                eq(schema.product.userId, context.session.user.id),
+                eq(schema.product.storeId, store),
+              )
+            : eq(schema.product.userId, context.session.user.id),
+        ),
+    );
+
+    if (!rows.success)
+      return {
+        success: false as const,
+        error: new DatabaseError("Failed to count missing product fields", {
+          cause: rows.error,
+        }),
+      };
+
+    const counts = rows.data[0];
+
+    return {
+      success: true as const,
+      data: Object.fromEntries(
+        MISSING_FIELD_CHIPS.map((field) => [field, counts?.[field] ?? 0]),
+      ) as Record<(typeof MISSING_FIELD_CHIPS)[number], number>,
+    };
+  },
+  "Product.countMissingFields",
 );
 
 // `images` is a JSON-encoded string array; feed imports occasionally leave it
@@ -412,15 +509,93 @@ const enrichProduct = (product: Type, simulations: Simulation.Type[]) => {
   };
 };
 
+/**
+ * LIKE-escapes a user-supplied filter value: `%` and `_` are wildcards inside
+ * a pattern and `\` is the escape character itself, so all three are
+ * literalized before interpolation into a `%…%` pattern. Parameter binding
+ * already guards injection; this guards pattern semantics only.
+ */
+const likeEscape = (value: string) =>
+  value.replaceAll(/[\\%_]/g, (wildcard) => `\\${wildcard}`);
+
+/**
+ * `price` is stored as text (feeds deliver "24.90", "24,90" or junk), so
+ * numeric operators go through a guarded cast: anything that does not look
+ * like a decimal collapses to NULL, which every comparison then rejects.
+ */
+const numericPrice = sql`(case when trim(${schema.product.price}) ~ '^-?[0-9]+([.,][0-9]+)?$' then replace(trim(${schema.product.price}), ',', '.')::numeric else null end)`;
+
+const FILTER_COLUMNS = {
+  title: schema.product.title,
+  description: schema.product.description,
+  sku: schema.product.sku,
+  status: schema.product.status,
+  url: schema.product.url,
+} as const;
+
+const filterCondition = (filter: ProductFilter): SQL | undefined => {
+  if (filter.field === "price") {
+    const amount = Number(filter.value);
+
+    switch (filter.operator) {
+      case "equals":
+        return sql`${numericPrice} = ${amount}`;
+      case "greaterThan":
+        return sql`${numericPrice} > ${amount}`;
+      case "lessThan":
+        return sql`${numericPrice} < ${amount}`;
+      case "isEmpty":
+        return sql`${numericPrice} is null`;
+      case "isNotEmpty":
+        return sql`${numericPrice} is not null`;
+      default:
+        return undefined;
+    }
+  }
+
+  const column = FILTER_COLUMNS[filter.field];
+  const value = filter.value ?? "";
+
+  // NULL columns are folded into the negative operators on purpose: a product
+  // without a description "does not contain" and "is not" anything.
+  switch (filter.operator) {
+    case "contains":
+      return ilike(column, `%${likeEscape(value)}%`);
+    case "notContains":
+      return or(isNull(column), notIlike(column, `%${likeEscape(value)}%`));
+    case "is":
+      return ilike(column, likeEscape(value));
+    case "isNot":
+      return or(isNull(column), notIlike(column, likeEscape(value)));
+    case "isEmpty":
+      return or(isNull(column), sql`trim(${column}) = ''`);
+    case "isNotEmpty":
+      return and(isNotNull(column), sql`trim(${column}) <> ''`);
+    default:
+      return undefined;
+  }
+};
+
 export const paginateWithIntelligence = withAuthentication(
-  async (context, { page, size, store }: Pager & { store?: string }) => {
+  async (
+    context,
+    {
+      page,
+      size,
+      store,
+      filters,
+    }: Pager & { store?: string; filters?: ProductFilter[] },
+  ) => {
+    const conditions = [
+      eq(schema.product.userId, context.session.user.id),
+      ...(store ? [eq(schema.product.storeId, store)] : []),
+      ...sanitizeProductFilters(filters)
+        .map(filterCondition)
+        .filter((condition) => condition !== undefined),
+    ];
+
     const result = await paginate(Environment.SERVER, page, size, {
-      where: store
-        ? and(
-            eq(schema.product.userId, context.session.user.id),
-            eq(schema.product.storeId, store),
-          )
-        : eq(schema.product.userId, context.session.user.id),
+      where: and(...conditions),
     });
 
     if (!result.success) return result;

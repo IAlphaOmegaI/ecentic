@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
+import { localizePath } from "@/i18n/locale";
 import {
   absoluteUrl,
   createBreadcrumbSchema,
@@ -16,76 +18,40 @@ import {
 import { Faq } from "../pricing/_components/faq";
 import { Steps } from "./_components/steps";
 
-const assurances = [
-  "First scan in about two minutes",
-  "Approval-ready rewrites",
-  "No developer needed",
-] as const;
+export const generateMetadata = async (): Promise<Metadata> => {
+  const locale = await getLocale();
+  const translate = await getTranslations("howItWorks");
 
-const intro =
-  "ecentic simulates how AI shopping agents compare your products, explains why you lose in plain language, and rewrites your listings so the next comparison goes your way.";
+  return createMetadata({
+    title: translate("meta.title"),
+    description: translate("meta.description"),
+    path: localizePath("/how-it-works", locale),
+    keywords: [
+      "how AI ecommerce optimization works",
+      "AI shopping agent simulation",
+      "product listing optimization workflow",
+      "agent commerce optimization",
+    ],
+  });
+};
 
-const description =
-  "How ecentic works: simulate how ChatGPT, Claude, Gemini, and Perplexity compare your products, diagnose why you lose, then optimize listings to win carts.";
+export default async () => {
+  const locale = await getLocale();
 
-const steps = [
-  {
-    name: "Simulate",
-    text: "ecentic runs your products through ChatGPT, Claude, Gemini, and Perplexity at the same time, mapping exactly how each agent compares your listings against every competitor in your category.",
-  },
-  {
-    name: "Diagnose",
-    text: "See where you lose: which attributes are missing, which competitors win, and which models reject you. Every gap has a reason, and the diagnosis names it in plain language.",
-  },
-  {
-    name: "Optimize",
-    text: "ecentic rewrites titles, descriptions, and structured data for maximum agent selection. Approve in one click or set auto-publish, and listings stay re-optimized as models evolve.",
-  },
-] as const;
+  const translate = await getTranslations("howItWorks");
+  const messages = await getMessages();
+  const description = translate("meta.description");
+  const assurances = messages.howItWorks.hero.assurances;
+  const faq = messages.howItWorks.faq.items;
+  const steps = messages.howItWorks.schema.steps;
 
-const faq = [
-  {
-    question: "How does ecentic simulate AI shopping agents?",
-    answer:
-      "ecentic sends your product data through the major AI models the same way a shopping assistant would, then records how each one compares your listing against competitors. The result is a repeatable read on whether agents pick you, and why.",
-  },
-  {
-    question: "What does the diagnosis actually tell me?",
-    answer:
-      "It identifies the concrete reasons a product loses: a title that misses buying context, missing specifications, weak trust signals, or a competitor with clearer structured data. Each finding maps to a specific listing change.",
-  },
-  {
-    question: "Do I have to publish changes automatically?",
-    answer:
-      "No. Optimizations are approval-ready. You can review and publish in one click, or enable auto-publish for products where you trust the loop. Either way, changes are tracked so you can measure the impact on win rate.",
-  },
-  {
-    question: "How long before I see results?",
-    answer:
-      "The first scan runs in about two minutes and returns a Win Rate Report immediately. From there, daily or continuous simulations keep the diagnosis current as your catalog and the underlying models change.",
-  },
-] as const;
-
-export const metadata: Metadata = createMetadata({
-  title: "How It Works — Simulate, Diagnose, Optimize",
-  description,
-  path: "/how-it-works",
-  keywords: [
-    "how AI ecommerce optimization works",
-    "AI shopping agent simulation",
-    "product listing optimization workflow",
-    "agent commerce optimization",
-  ],
-});
-
-export default () => {
   const structuredData = [
     {
       "@context": "https://schema.org",
       "@type": "HowTo",
-      name: "How ecentic optimizes products for AI shopping agents",
+      name: translate("schema.name"),
       description,
-      url: absoluteUrl("/how-it-works"),
+      url: absoluteUrl(localizePath("/how-it-works", locale)),
       step: steps.map((step, index) => ({
         "@type": "HowToStep",
         position: index + 1,
@@ -95,29 +61,32 @@ export default () => {
     },
     organizationSchema,
     createBreadcrumbSchema([
-      { name: "Home", path: "/" },
-      { name: "How it works", path: "/how-it-works" },
+      { name: translate("breadcrumb.home"), path: localizePath("/", locale) },
+      {
+        name: translate("breadcrumb.howItWorks"),
+        path: localizePath("/how-it-works", locale),
+      },
     ]),
     createFaqSchema(faq),
   ];
 
   return (
     <ContentPageLayout
-      eyebrow="How it works"
-      title="From invisible to chosen"
-      accent="in three steps."
-      description={intro}
+      eyebrow={translate("hero.eyebrow")}
+      title={translate("hero.title.primary")}
+      accent={translate("hero.title.accent")}
+      description={translate("hero.description")}
       assurances={assurances}
-      art={{ source: Art, alt: "ASCII-art illustration of interlocking gears" }}
+      art={{ source: Art, alt: translate("hero.art.alt") }}
     >
       <JsonLd schemas={structuredData} />
 
       <Steps />
 
       <ContentPageSection
-        number="04"
-        title="Frequently asked questions"
-        description="Common questions about the simulate, diagnose, and optimize loop."
+        number={translate("faqSection.number")}
+        title={translate("faqSection.title")}
+        description={translate("faqSection.description")}
         gutter
         classList={{ body: "p-0" }}
       >
@@ -125,9 +94,15 @@ export default () => {
       </ContentPageSection>
 
       <ContentPageFooter
-        primary={{ href: "/sign-up", label: "Run your free scan" }}
-        secondary={{ href: "/pricing", label: "See pricing" }}
-        note="First scan in about two minutes · No credit card"
+        primary={{
+          href: "/sign-up",
+          label: translate("footer.action.primary"),
+        }}
+        secondary={{
+          href: "/pricing",
+          label: translate("footer.action.secondary"),
+        }}
+        note={translate("footer.note")}
       />
     </ContentPageLayout>
   );

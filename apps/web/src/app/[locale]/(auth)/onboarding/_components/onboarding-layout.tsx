@@ -9,126 +9,55 @@ import {
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { AnimatePresence, motion } from "motion/react";
+import { useMessages, useTranslations } from "next-intl";
 import { Onboarding } from "@/components/onboarding";
 import { Plus } from "@/components/plus";
 import { usePathname } from "@/i18n/navigation";
 import { Spring } from "@/lib/animations";
 
-const steps = [
+const stepPaths = [
   {
-    label: "Catalog",
+    key: "catalog",
     path: "/onboarding/connect",
     icon: ShoppingCartIcon,
   },
-  { label: "Select Products", path: "/onboarding/products", icon: PhotoIcon },
+  { key: "products", path: "/onboarding/products", icon: PhotoIcon },
   {
-    label: "Competitors",
+    key: "competitors",
     path: "/onboarding/competitors",
     icon: FaceSearchIcon,
   },
-  { label: "Run Scan", path: "/onboarding/scan", icon: CircleBoltIcon },
+  { key: "scan", path: "/onboarding/scan", icon: CircleBoltIcon },
 ] as const;
 
-const sidebar = {
-  "/onboarding/connect": {
-    headline: (
-      <>
-        Connect your
-        <br />
-        catalog.
-      </>
-    ),
-    points: [
-      "Paste your store URL and we sync your products instantly",
-      "Works with Shopify, WooCommerce, and custom feeds",
-      "Your catalog stays live and always up to date",
-    ],
-  },
-  "/onboarding/connect/shopify": {
-    headline: (
-      <>
-        Shopify
-        <br />
-        OAuth.
-      </>
-    ),
-    points: [
-      "One-click authorization — we never see your password",
-      "Read-only access to your product catalog",
-      "Products stay in sync automatically",
-    ],
-  },
-  "/onboarding/connect/woocommerce": {
-    headline: (
-      <>
-        WooCommerce
-        <br />
-        API keys.
-      </>
-    ),
-    points: [
-      "Generate a REST API key in WooCommerce (read/write to publish listing updates from ecentic, or read-only for sync only)",
-      "Paste three fields and we handle the rest",
-      "Your credentials are encrypted and stored securely",
-    ],
-  },
-  "/onboarding/connect/feed": {
-    headline: (
-      <>
-        Product
-        <br />
-        feed.
-      </>
-    ),
-    points: [
-      "Works with Google Shopping XML and JSON feeds",
-      "We auto-detect the format and parse every product",
-      "Re-sync anytime to pick up changes",
-    ],
-  },
-  "/onboarding/products": {
-    headline: (
-      <>
-        Pick your
-        <br />
-        best.
-      </>
-    ),
-    points: [
-      "Choose which products to run through AI agent simulations",
-      "Focus on your top sellers or most competitive SKUs",
-      "You can add more products any time",
-    ],
-  },
-  "/onboarding/competitors": {
-    headline: (
-      <>
-        Know your
-        <br />
-        rivals.
-      </>
-    ),
-    points: [
-      "Add competitors so we benchmark you head-to-head",
-      "See exactly who agents pick over you and why",
-      "Track the gap and close it faster",
-    ],
-  },
-  "/onboarding/scan": {
-    headline: (
-      <>
-        See who's
-        <br />
-        winning.
-      </>
-    ),
-    points: [
-      "ChatGPT, Claude, Gemini & Perplexity simulate real shopping queries",
-      "We score every product against your competitors",
-      "You'll know exactly what to fix before leaving this page",
-    ],
-  },
-} as const;
+type SidebarKey =
+  | "connect"
+  | "shopify"
+  | "woocommerce"
+  | "feed"
+  | "products"
+  | "competitors"
+  | "scan";
+
+const resolveSidebarKey = (pathname: string): SidebarKey => {
+  switch (true) {
+    case pathname.startsWith("/onboarding/connect/shopify"):
+      return "shopify";
+    case pathname.startsWith("/onboarding/connect/woocommerce"):
+      return "woocommerce";
+    case pathname.startsWith("/onboarding/connect/feed"):
+    case pathname.startsWith("/onboarding/connect/csv"):
+      return "feed";
+    case pathname.startsWith("/onboarding/products"):
+      return "products";
+    case pathname.startsWith("/onboarding/competitors"):
+      return "competitors";
+    case pathname.startsWith("/onboarding/scan"):
+      return "scan";
+    default:
+      return "connect";
+  }
+};
 
 export const OnboardingLayout = ({
   children,
@@ -136,17 +65,33 @@ export const OnboardingLayout = ({
   children: React.ReactNode;
 }) => {
   const pathname = usePathname();
+  const translate = useTranslations("onboarding.layout");
+  const messages = useMessages();
+
+  const steps = stepPaths.map((step) => ({
+    ...step,
+    label: translate(`steps.${step.key}`),
+  }));
+
   const current = steps.findIndex((step) => pathname.startsWith(step.path));
 
-  const content =
-    sidebar[pathname as keyof typeof sidebar] ?? sidebar["/onboarding/connect"];
+  const sidebarKey = resolveSidebarKey(pathname);
+  const sidebarContent = messages.onboarding.layout.sidebar[sidebarKey];
+
+  const headline = (
+    <>
+      {sidebarContent.headline.line1}
+      <br />
+      {sidebarContent.headline.line2}
+    </>
+  );
 
   return (
     <div className="flex h-screen bg-primary">
       <Onboarding
         identifier={pathname}
-        headline={content.headline}
-        points={content.points}
+        headline={headline}
+        points={sidebarContent.points}
       />
 
       <main className="flex h-full flex-1 flex-col overflow-hidden bg-background">
@@ -251,7 +196,10 @@ export const OnboardingLayout = ({
               ))}
             </div>
             <span className="whitespace-nowrap font-light text-foreground-dimmed text-sm">
-              Step {current + 1} of {steps.length}
+              {translate("stepProgress", {
+                current: String(current + 1),
+                total: String(steps.length),
+              })}
             </span>
           </div>
         </div>

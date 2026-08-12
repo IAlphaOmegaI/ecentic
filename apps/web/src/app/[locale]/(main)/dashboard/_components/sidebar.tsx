@@ -1,7 +1,8 @@
 import { unwrapResult } from "@zenncore/utils";
 import Image from "next/image";
-import { Link } from "@/i18n/navigation";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
+import { Link } from "@/i18n/navigation";
 import * as Optimizations from "@/server/app/optimization";
 import * as Products from "@/server/app/product";
 import * as Store from "@/server/app/store";
@@ -27,18 +28,24 @@ type StoreParams = LayoutProps<"/dashboard/[store]">["params"];
  */
 export const Sidebar = ({ params }: { params: StoreParams }) => (
   <aside className="relative hidden w-60 flex-col overflow-hidden border-accent-foreground border-r bg-background-rich md:flex">
-    <div className="flex h-14 items-center justify-center overflow-hidden border-accent-foreground border-b pr-22 pl-5">
-      <Link href="/dashboard" aria-label="All stores" className="w-full">
-        <Image
-          src="/images/trademark.svg"
-          alt="ecentic"
-          width={96}
-          height={28}
-          className="w-full"
-          loading="eager"
-        />
-      </Link>
-    </div>
+    <Suspense
+      fallback={
+        <div className="flex h-14 items-center justify-center overflow-hidden border-accent-foreground border-b pr-22 pl-5">
+          <Link href="/dashboard" className="w-full">
+            <Image
+              src="/images/trademark.svg"
+              alt="ecentic"
+              width={96}
+              height={28}
+              className="w-full"
+              loading="eager"
+            />
+          </Link>
+        </div>
+      }
+    >
+      <SidebarLogo />
+    </Suspense>
 
     <Suspense fallback={<StoreSwitcherSkeleton />}>
       <CurrentStoreSwitcher params={params} />
@@ -88,3 +95,26 @@ const ProductCount = async ({ store }: { store: string }) =>
 
 const OptimizationCount = async ({ store }: { store: string }) =>
   unwrapResult(Optimizations.countPublished(Environment.SERVER, { store }));
+
+const SidebarLogo = async () => {
+  const translate = await getTranslations("dashboard.sidebar");
+
+  return (
+    <div className="flex h-14 items-center justify-center overflow-hidden border-accent-foreground border-b pr-22 pl-5">
+      <Link
+        href="/dashboard"
+        aria-label={translate("allStores")}
+        className="w-full"
+      >
+        <Image
+          src="/images/trademark.svg"
+          alt="ecentic"
+          width={96}
+          height={28}
+          className="w-full"
+          loading="eager"
+        />
+      </Link>
+    </div>
+  );
+};

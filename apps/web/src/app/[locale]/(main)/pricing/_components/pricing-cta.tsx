@@ -1,9 +1,10 @@
 "use client";
 
 import { useAsyncAction } from "@zenncore/utils/hooks";
-import { useRouter } from "@/i18n/navigation";
 import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import * as Payg from "@/server/app/billing/payg";
 import * as Subscription from "@/server/app/subscription";
 
@@ -17,6 +18,8 @@ type Props = {
 export const PricingCTA = ({ plan, color, className, children }: Props) => {
   const router = useRouter();
   const toast = useToastManager();
+  const translate = useTranslations("pricing");
+  const general = useTranslations("general");
 
   const [handleClick, isPending] = useAsyncAction(async () => {
     // Pay-as-you-go is free to start — activate the account and land on the
@@ -29,7 +32,7 @@ export const PricingCTA = ({ plan, color, className, children }: Props) => {
           return;
         }
         toast.add({
-          title: "Could not start pay-as-you-go",
+          title: translate("error.payg.title"),
           description: activation.error.message,
           type: "error",
         });
@@ -46,7 +49,7 @@ export const PricingCTA = ({ plan, color, className, children }: Props) => {
         return;
       }
       toast.add({
-        title: "Could not start checkout",
+        title: translate("error.checkout.title"),
         description: checkout.error.message,
         type: "error",
       });
@@ -64,7 +67,7 @@ export const PricingCTA = ({ plan, color, className, children }: Props) => {
       onClick={() => handleClick()}
       disabled={isPending}
     >
-      {isPending ? "Loading…" : children}
+      {isPending ? general("states.pending.primary") : children}
     </Button>
   );
 };

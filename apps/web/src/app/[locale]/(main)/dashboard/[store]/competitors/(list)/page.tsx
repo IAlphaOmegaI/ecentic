@@ -10,9 +10,10 @@ import {
 import { cn, unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import type { SearchParamsProps } from "@zenncore/web/types";
-import { Link } from "@/i18n/navigation";
 import { connection } from "next/server";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
+import { Link } from "@/i18n/navigation";
 import { formatRelativeTime } from "@/lib/date";
 import * as Competitor from "@/server/app/competitor";
 import * as Scan from "@/server/app/scan";
@@ -42,12 +43,19 @@ import { WinRateTiersChart } from "../_components/win-rate-tiers-chart";
 
 type StoreParams = PageProps<"/dashboard/[store]/competitors">["params"];
 
-const emptyStatCards = [
-  { label: "Brands Tracked", icon: RadarIcon },
-  { label: "Winning Against", icon: TrendUpIcon },
-  { label: "Most Dangerous", icon: ShieldCheckIcon },
-  { label: "Total Simulations", icon: CheckBadgeIcon },
+const emptyStatCardKeys = [
+  "brandsTracked",
+  "winningAgainst",
+  "mostDangerous",
+  "totalSimulations",
 ] as const;
+
+const emptyStatCardIcons = {
+  brandsTracked: RadarIcon,
+  winningAgainst: TrendUpIcon,
+  mostDangerous: ShieldCheckIcon,
+  totalSimulations: CheckBadgeIcon,
+} as const;
 
 export default ({
   params,
@@ -92,6 +100,7 @@ export default ({
 const LastScanned = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
+  const translate = await getTranslations("dashboard.shared.status");
   const data = await unwrapResult(
     Competitor.gatherIntelligence(Environment.SERVER, { store }),
   );
@@ -99,8 +108,10 @@ const LastScanned = async ({ params }: { params: StoreParams }) => {
   return (
     <StatusPill tone={data.scan?.updatedAt ? "success" : "neutral"}>
       {data.scan?.updatedAt
-        ? `Live — last scanned ${formatRelativeTime(data.scan.updatedAt)}`
-        : "No scans run yet"}
+        ? translate("liveLastScanned", {
+            time: formatRelativeTime(data.scan.updatedAt),
+          })
+        : translate("noScansYet")}
     </StatusPill>
   );
 };
@@ -108,6 +119,8 @@ const LastScanned = async ({ params }: { params: StoreParams }) => {
 const StatCards = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
+  const translate = await getTranslations("dashboard.competitors.stats");
+  const shared = await getTranslations("dashboard.shared.stats");
   const data = await unwrapResult(
     Competitor.gatherIntelligence(Environment.SERVER, { store }),
   );
@@ -118,19 +131,25 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
   if (brands.length === 0)
     return (
       <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
-        {emptyStatCards.map(({ label, icon: Icon }) => (
-          <div
-            key={label}
-            className="relative flex h-44 flex-col justify-between bg-background-rich p-5"
-          >
-            <StatLabel label={label} icon={<Icon className="size-7.5" />} />
-            <div className="flex flex-col items-center gap-2 pb-4">
-              <p className="font-light text-foreground-dimmed text-sm">
-                No data yet
-              </p>
+        {emptyStatCardKeys.map((key) => {
+          const Icon = emptyStatCardIcons[key];
+          return (
+            <div
+              key={key}
+              className="relative flex h-44 flex-col justify-between bg-background-rich p-5"
+            >
+              <StatLabel
+                label={translate(key)}
+                icon={<Icon className="size-7.5" />}
+              />
+              <div className="flex flex-col items-center gap-2 pb-4">
+                <p className="font-light text-foreground-dimmed text-sm">
+                  {shared("noDataYet")}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     );
 
@@ -177,7 +196,7 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
     <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
       <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
         <StatLabel
-          label="Brands Tracked"
+          label={translate("brandsTracked")}
           icon={<RadarIcon className="size-7.5 text-warning" />}
         />
         <div>
@@ -185,15 +204,14 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
             {brands.length}
           </p>
           <p className="mt-3 text-foreground-dimmed text-xs">
-            {totalProducts} {totalProducts === 1 ? "product" : "products"}{" "}
-            monitored
+            {translate("productsMonitored", { count: totalProducts })}
           </p>
         </div>
       </div>
 
       <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
         <StatLabel
-          label="Winning Against"
+          label={translate("winningAgainst")}
           icon={<TrendUpIcon className="size-7.5 text-success" />}
         />
         <div>
@@ -220,7 +238,7 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
                 {trend}%
               </span>
               <span className="text-foreground-dimmed text-xs">
-                since last scan
+                {translate("sinceLastScan")}
               </span>
             </p>
           ) : (
@@ -234,7 +252,7 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
                 />
               </div>
               <p className="mt-2 text-foreground-dimmed text-xs">
-                {overallWinRate}% average win rate
+                {translate("averageWinRate", { rate: overallWinRate })}
               </p>
             </div>
           )}
@@ -243,7 +261,7 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
 
       <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
         <StatLabel
-          label="Most Dangerous"
+          label={translate("mostDangerous")}
           icon={<ShieldCheckIcon className="size-7.5 text-error" />}
         />
         <div>
@@ -257,14 +275,14 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
             </span>
           </p>
           <p className="mt-3 text-foreground-dimmed text-xs">
-            your win rate against them
+            {translate("winRateAgainstThem")}
           </p>
         </div>
       </div>
 
       <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
         <StatLabel
-          label="Total Simulations"
+          label={translate("totalSimulations")}
           icon={<CheckBadgeIcon className="size-7.5 text-warning" />}
         />
         <div>
@@ -272,7 +290,7 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
             {totalSimulations}
           </p>
           <p className="mt-3 text-foreground-dimmed text-xs">
-            across {brands.length} competitor{brands.length !== 1 ? "s" : ""}
+            {translate("acrossCompetitors", { count: brands.length })}
           </p>
         </div>
       </div>
@@ -283,6 +301,11 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
 const CompetitiveLandscape = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
+  const translate = await getTranslations("dashboard.competitors.landscape");
+  const competitorsAction = await getTranslations(
+    "dashboard.competitors.action",
+  );
+  const shared = await getTranslations("dashboard.shared");
   const data = await unwrapResult(
     Competitor.gatherIntelligence(Environment.SERVER, { store }),
   );
@@ -295,24 +318,24 @@ const CompetitiveLandscape = async ({ params }: { params: StoreParams }) => {
 
   const tiers = [
     {
-      label: "Dominating (≥75%)",
+      label: translate("tiers.dominating"),
       count: brands.filter((brand) => brand.winRate >= 75).length,
       color: "bg-primary",
     },
     {
-      label: "Competitive (50–74%)",
+      label: translate("tiers.competitive"),
       count: brands.filter((brand) => brand.winRate >= 50 && brand.winRate < 75)
         .length,
       color: "bg-info",
     },
     {
-      label: "At Risk (30–49%)",
+      label: translate("tiers.atRisk"),
       count: brands.filter((brand) => brand.winRate >= 30 && brand.winRate < 50)
         .length,
       color: "bg-warning",
     },
     {
-      label: "Losing (<30%)",
+      label: translate("tiers.losing"),
       count: brands.filter((brand) => brand.winRate < 30).length,
       color: "bg-error",
     },
@@ -328,13 +351,13 @@ const CompetitiveLandscape = async ({ params }: { params: StoreParams }) => {
       <div className="bg-background-rich xl:col-span-2">
         <div className="flex items-start justify-between p-4">
           <div>
-            <SectionKicker>01 — Landscape</SectionKicker>
+            <SectionKicker>{translate("kicker")}</SectionKicker>
             <p className="mt-2 font-semibold text-foreground-rich text-lg">
-              Win Rate by Competitor
+              {translate("winRateByCompetitor")}
             </p>
           </div>
           <p className="text-foreground-dimmed text-sm">
-            {totalSimulations} total simulations
+            {shared("count.totalSimulations", { count: totalSimulations })}
           </p>
         </div>
 
@@ -378,7 +401,7 @@ const CompetitiveLandscape = async ({ params }: { params: StoreParams }) => {
                   </span>
                 </div>
                 <span className="w-16 shrink-0 text-right text-foreground-dimmed text-sm tabular-nums">
-                  {brand.simulations} sim
+                  {translate("simAbbrev", { count: brand.simulations })}
                 </span>
               </div>
             );
@@ -390,10 +413,10 @@ const CompetitiveLandscape = async ({ params }: { params: StoreParams }) => {
         <div className="flex flex-1 flex-col bg-background-rich">
           <div className="p-4">
             <p className="font-medium text-[11px] text-foreground-dimmed uppercase tracking-[0.1em]">
-              Distribution
+              {translate("distribution")}
             </p>
             <p className="mt-2 font-semibold text-foreground-rich text-lg">
-              Win Rate Tiers
+              {translate("winRateTiers")}
             </p>
           </div>
 
@@ -405,13 +428,14 @@ const CompetitiveLandscape = async ({ params }: { params: StoreParams }) => {
             color="accent"
             render={<Link href={`/dashboard/${store}/optimize`} />}
           >
-            Optimizations
+            {shared("action.optimizations")}
           </Button>
           <Button
             color="primary"
             render={<Link href={`/dashboard/${store}/competitors/add`} />}
           >
-            Add Competitors <PlusIcon className="size-4" />
+            {competitorsAction("addCompetitors")}{" "}
+            <PlusIcon className="size-4" />
           </Button>
         </div>
       </div>
@@ -428,6 +452,8 @@ const Competitors = async ({
 }) => {
   await connection();
   const { store } = await params;
+  const translate = await getTranslations("dashboard.competitors.table");
+  const shared = await getTranslations("dashboard.shared");
   const { page, size } = await extractPaginationParams(searchParams);
   const data = await unwrapResult(
     Competitor.gatherPaginatedIntelligence(Environment.SERVER, {
@@ -444,11 +470,10 @@ const Competitors = async ({
       pageCount={data.pagination.total}
       pageIndex={page}
       rows={data.brands}
-      kicker="02 — All Competitors"
+      kicker={translate("kickerAll")}
       action={
         <p className="text-foreground-dimmed text-sm">
-          {data.pagination.total} competitor
-          {data.pagination.total !== 1 ? "s" : ""}
+          {shared("count.competitors", { count: data.pagination.total })}
         </p>
       }
     />
@@ -458,6 +483,8 @@ const Competitors = async ({
 const Insights = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
+  const translate = await getTranslations("dashboard.competitors.insights");
+  const _shared = await getTranslations("dashboard.shared");
   const [data, scans] = await Promise.all([
     unwrapResult(Competitor.gatherIntelligence(Environment.SERVER, { store })),
     unwrapResult(Scan.getLatest(Environment.SERVER, { store })),
@@ -486,21 +513,49 @@ const Insights = async ({ params }: { params: StoreParams }) => {
     switch (true) {
       case winning === scored.length:
         return {
-          headline: `You out-rank all ${scored.length} simulated competitor${plural} (avg ${overall}% win rate).`,
-          detail: `Your slimmest lead is against ${toughest.brand} at ${toughest.winRate}%. Keep listings optimized to defend it.`,
+          headline: translate("headlines.outrankAll", {
+            count: scored.length,
+            plural,
+            overall,
+          }),
+          detail: translate("headlines.slimmestLead", {
+            brand: toughest.brand,
+            rate: toughest.winRate,
+          }),
         };
       case toughest.winRate < 30:
         return {
-          headline: `${toughest.brand} wins ${100 - toughest.winRate}% of agent comparisons against you — your biggest opportunity.`,
-          detail: `You hold the majority against ${winning} of ${scored.length} competitor${plural} (avg ${overall}%). Optimizing the products you lose to ${toughest.brand} moves the needle most.`,
+          headline: translate("headlines.biggestOpportunity", {
+            brand: toughest.brand,
+            lossRate: 100 - toughest.winRate,
+          }),
+          detail: translate("headlines.holdMajority", {
+            winning,
+            total: scored.length,
+            plural,
+            overall,
+            brand: toughest.brand,
+          }),
         };
       default:
         return {
-          headline: `You hold the majority against ${winning} of ${scored.length} competitor${plural} (avg ${overall}% win rate).`,
+          headline: translate("headlines.defaultHeadline", {
+            winning,
+            total: scored.length,
+            plural,
+            overall,
+          }),
           detail:
             toughest._id === strongest._id
-              ? `Focus a listing optimization on the products ${toughest.brand} beats you on.`
-              : `${toughest.brand} is your toughest rival at ${toughest.winRate}%; you lead ${strongest.brand} at ${strongest.winRate}%.`,
+              ? translate("headlines.focusOptimization", {
+                  brand: toughest.brand,
+                })
+              : translate("headlines.toughestRival", {
+                  toughest: toughest.brand,
+                  toughestRate: toughest.winRate,
+                  strongest: strongest.brand,
+                  strongestRate: strongest.winRate,
+                }),
         };
     }
   })();
@@ -510,16 +565,16 @@ const Insights = async ({ params }: { params: StoreParams }) => {
   return (
     <div className="bg-background-rich">
       <div className="p-4">
-        <SectionKicker>03 — Intelligence</SectionKicker>
+        <SectionKicker>{translate("kicker")}</SectionKicker>
         <p className="mt-2 font-semibold text-foreground-rich text-lg">
-          Competitive Summary
+          {translate("summary")}
         </p>
       </div>
 
       {insight && (
         <div className="border-accent-foreground border-t bg-primary/5 p-4">
           <p className="font-medium text-[10px] text-primary uppercase tracking-[0.08em]">
-            Key Insight
+            {translate("keyInsight")}
           </p>
           <p className="mt-1 max-w-3xl font-medium text-base text-foreground-rich">
             {insight.headline}
@@ -532,7 +587,7 @@ const Insights = async ({ params }: { params: StoreParams }) => {
             className="mt-3"
             render={<Link href={`/dashboard/${store}/optimize`} />}
           >
-            Optimize losing listings <ArrowRightIcon className="size-4" />
+            {translate("optimizeLosing")} <ArrowRightIcon className="size-4" />
           </Button>
         </div>
       )}
@@ -547,7 +602,7 @@ const Insights = async ({ params }: { params: StoreParams }) => {
         <>
           <div className="border-accent-foreground border-t px-4 pt-4 pb-1">
             <p className="font-medium text-[11px] text-foreground-dimmed uppercase tracking-[0.1em]">
-              Recent Scan Activity
+              {translate("recentScanActivity")}
             </p>
           </div>
           <div className="flex flex-col gap-px border-accent-foreground border-t bg-accent-foreground">
@@ -573,8 +628,14 @@ const Insights = async ({ params }: { params: StoreParams }) => {
                     <div className="min-w-0">
                       <p className="font-medium text-foreground-rich text-sm">
                         {scan.status === "complete"
-                          ? `Scan completed — ${scan.wins}W / ${scan.losses}L`
-                          : `Scan in progress — ${scan.completedSimulations}/${scan.totalSimulations}`}
+                          ? translate("scanCompleted", {
+                              wins: scan.wins,
+                              losses: scan.losses,
+                            })
+                          : translate("scanInProgress", {
+                              completed: scan.completedSimulations,
+                              total: scan.totalSimulations,
+                            })}
                       </p>
                       {scan.topFinding && (
                         <p className="mt-0.5 truncate text-foreground-dimmed text-sm">
@@ -598,10 +659,10 @@ const Insights = async ({ params }: { params: StoreParams }) => {
 
       <div className="flex items-center justify-between border-accent-foreground border-t p-4">
         <p className="text-foreground-dimmed text-sm">
-          {completed.length} completed scan{completed.length !== 1 ? "s" : ""}
+          {translate("completedScans", { count: completed.length })}
         </p>
         <Button color="accent" render={<Link href={`/dashboard/${store}`} />}>
-          View all activity <ArrowRightIcon className="size-4" />
+          {translate("viewAllActivity")} <ArrowRightIcon className="size-4" />
         </Button>
       </div>
     </div>
@@ -610,6 +671,7 @@ const Insights = async ({ params }: { params: StoreParams }) => {
 
 const AddCompetitorAction = async ({ params }: { params: StoreParams }) => {
   const { store } = await params;
+  const translate = await getTranslations("dashboard.competitors.action");
 
   return (
     <Button
@@ -617,7 +679,7 @@ const AddCompetitorAction = async ({ params }: { params: StoreParams }) => {
       render={<Link href={`/dashboard/${store}/competitors/add`} />}
     >
       <PlusIcon className="size-4" />
-      Add Competitor
+      {translate("addCompetitor")}
     </Button>
   );
 };

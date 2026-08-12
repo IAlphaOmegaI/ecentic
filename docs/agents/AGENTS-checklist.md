@@ -12,7 +12,7 @@ Quick reference for all coding conventions. See linked sub-guides for details.
 - [ ] Use IIFEs for scoped computations and element rendering
 - [ ] Use `switch (true)` for multi-branch conditionals
 - [ ] Combine IIFE + `switch` for discriminated element rendering
-- [ ] Use `resultify` instead of `try/catch` for async operations
+- [ ] Use `resultify` instead of `try/catch` for async operations — but `resultifyRead` for raw read-only `db.select` thunks (retries a dead pooled connection; writes keep `resultify`)
 - [ ] Early returns for guard clauses
 - [ ] Omit `{}` for single-statement conditionals
 - [ ] Don't exhaustively handle every error case

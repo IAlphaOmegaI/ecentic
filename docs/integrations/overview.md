@@ -148,6 +148,103 @@ ecentic supports connecting to external product catalogs via four live integrati
 
 ---
 
+## Channel Integrations
+
+### Google Merchant Center (Google Shopping)
+
+**Mode:** Hybrid channel partner — the store's native Google plugin owns the
+primary feed; ecentic links the merchant's account to our MCA
+(`accountManagement`) and pushes attribute overrides through a supplemental
+data source. Full spec + spike results: `google-merchant-center.md`.
+
+**Availability:** Shopify only (spike-validated on a live account).
+**WooCommerce: coming soon** — blocked on spike 2 (offer-ID format, feed-label
+convention, rule-patch acceptance unverified). Feed/CSV stores have no native
+Google plugin and would need Path 2 (not built).
+
+#### What's done
+
+- [x] Merchant OAuth (scope `content`) — install/callback routes, refresh-token storage on `google_merchant_account`
+- [x] Account detection (`accounts.list`) with adopt/poll/picker routing
+- [x] `services:propose` accountManagement link + approval polling
+- [x] Provisioning with hard rule gate — supplemental data source + primary `defaultRule` read-modify-write patch (spike 1: auto-pickup never happens)
+- [x] Override push — offer IDs read from the live account, policy lint before insert, hash-skip idempotency, `google_merchant_offer` lifecycle rows
+- [x] Async verification — `pending → live` gated on `productStatus.lastUpdateDate` advancing past the push (reprocessing is lazy: hours)
+- [x] Rule-position watchdog with auto-repair (`checkRuleHealth`)
+- [x] Maintenance cron — `/api/cron/google-merchant` (approval poll + rule watchdog + verification, Bearer `CRON_SECRET`)
+- [x] Settings UI — Google Shopping controls per store row (connect → detect → link → provision → push/verify), coming-soon state for unsupported platforms
+- [x] Diagnostics pull (account issues + item-level issues + disapproval counts)
+
+#### What's missing
+
+- [ ] Provider-side auto-approve of incoming link proposals (`services.approve` with partner/service-account credentials on the MCA) — **gating for real merchants**: merchant-credential proposals sit `PENDING` on our side; test setups self-establish only because the same login admins both accounts
+- [ ] WooCommerce support (spike 2 first)
+- [ ] Path 2 — full API provisioning for stores without the native plugin (`createAndConfigure`, verifySelf, ToS, site verification, claim)
+- [ ] Diagnostics dashboard surface (data is pulled; no dedicated UI beyond the settings card)
+- [ ] ToS re-check watchdog (`retrieveForApplication`)
+- [ ] Aggregate disapproval-rate alerting across merchants (partner reputation guard)
+- [ ] OAuth consent-screen verification for the `content` scope (external, weeks — submit early)
+
+#### Production-readiness gaps (external audit, independently verified 2026-07-31)
+
+Each item below was re-verified against the code, the v1 discovery documents,
+and Google's guides — not taken on the auditor's word. Severity-ordered.
+
+**Blocking — all fixed 2026-07-31**
+
+- [x] Server-action exposure: `handleOAuthCallback` now derives the user from the session (`withAuthentication`); `runMaintenance` requires the CRON secret as an argument; the google-merchant repository modules are no longer `"use server"` (server-internal plumbing only); `getForStore` checks store ownership and strips tokens from its return. `withContext` telemetry redacts secret-bearing argument keys (depth-capped, cycle-guarded — Drizzle query nodes are circular). REMAINING (codebase-wide, not Google-specific): the repository-CRUD-in-`"use server"` shape in other modules (`store-account.ts` etc.), and refresh-token encryption at rest.
+- [x] `services.approve` with provider credentials — `reconcileLinkState` auto-approves pending proposals when `GOOGLE_MERCHANT_MCA_REFRESH_TOKEN` is set (unset = approve manually in the MCA's Merchant Center UI), and downgrades `active` → `proposed`/`unlinked` when Google reports the link gone. Stale docstring fixed.
+- [x] `ensureDefaultRule` guarantees `{self: true}` in every rule it writes and treats a self-less rule as unhealthy; provisioning, the rule watchdog, and the cron wire the supplemental source into EVERY primary feed, not just the first.
+
+**High-priority correctness — all fixed 2026-07-31**
+
+- [x] Offer identity: `offerKey` = `contentLanguage~feedLabel~offerId` (migration `20260731120000`), uniqueness + all in-memory maps keyed by it.
+- [x] Age-based re-push: unchanged inputs re-insert after 20 days (Google expires at ~30); pending offers re-insert after 48h — also the reprocessing lever that unsticks repaired rules.
+- [x] Stale cleanup: `productInputs.delete` on products that lost their override + UCP config (`inputName` persisted from the insert response); orphan inputs from pre-`inputName` rows age out via the 30-day expiry.
+- [x] `listProducts`: pageSize 1000, full pagination (100-page runaway guard).
+- [x] Verification checks title AND description AND each pushed UCP attribute (eligibility value, notice, checkout item id); merged-but-disapproved offers get status `disapproved` (verified live — two test offers flipped `pending` → `disapproved` on real merchant-side disapprovals).
+
+**UCP-specific**
+
+- [x] Readiness counts `FREE_LISTINGS` (prerequisite) and `FREE_LISTINGS_UCP_CHECKOUT` (end state) specifically; return-cost audited alongside window and link.
+- [ ] Eligibility/notices/merchant_item_id are per ecentic product; Google's are per offer (variant). Mitigating fact (verified live): Shopify's own feed already publishes `merchant item id` per variant (the ProductVariant GID), so per-variant checkout ids exist without ecentic setting them. Single consumer notice stored; Google supports repeated groups.
+- [ ] Restricted categories warn but don't block — deliberate: regex heuristics can't hard-block safely ("wine rack"); Google's own `FREE_LISTINGS_UCP_CHECKOUT` disapprovals are the enforcement and now surface as offer status. Product-level `returns` attribute not audited.
+
+**Operational**
+
+- [x] Retry with backoff (1s/3s/8s) on 429/5xx in the API client.
+- [x] Return-policy replace: deleted bodies are captured and restored best-effort when the create fails.
+- [x] OAuth consent copy matches the real scope surface.
+- [ ] `details.metadata.REASON` parsing for error branching (messages are unstable per Google); update coalescing (products updatable ~twice/day).
+- [ ] `PRODUCT_STATUS_CHANGE` notification subscriptions (notifications_v1) as push-based verification; cron stays as fallback.
+- [ ] No integration tests over any of these flows (repo has no test infrastructure at all).
+
+### Google UCP — Agentic Checkout (AI Mode / Gemini)
+
+**Mode:** Merchant readiness + feed attributes on top of the GMC integration;
+checkout rails belong to the platform (Shopify) or to ecentic's hosted UCP
+surface (WooCommerce, future). Full guide + automation map: `google-ucp.md`.
+
+**Availability:** readiness audit + eligibility push built (Shopify-gated,
+rides the GMC integration). Waitlist-gated by Google for actual checkout.
+
+#### What's done
+
+- [x] Merchant guide/checklist doc (`google-ucp.md`) — Merchant Center
+  settings, product restrictions, `native_commerce` / `consumer_notice` /
+  `merchant_item_id` attributes, ownership map, automation plan
+- [x] UCP readiness audit — `listReturnPolicies` + `getBusinessInfo` wrappers, `getUcpReadiness` action, readiness rows on the Google Shopping page with waitlist gating
+- [x] Readiness remediation from ecentic — `setCustomerSupport` (businessInfo PATCH, full-replace) and `setReturnPolicy` (default-policy create; create-only — the API has no return-policy update, existing policies stay merchant-owned), inline forms under the readiness rows
+- [x] Eligibility/notice push — `google_merchant_ucp` table (explicit per-product choice, default not eligible), `customAttributes` on `insertProductInput`, `lintUcpAttributes` (notice format errors + restricted-category warnings), hash coverage without mass re-push, per-product toggle + notice editor UI
+- [x] Merge verification — `runVerification` checks the merged product's `customAttributes` for our `native_commerce` value, so UCP-only pushes verify and a non-merging supplemental source is surfaced, not masked
+
+#### What's missing
+
+- [ ] `customAttributes` merge spike — first live push settles it (offers stay `pending`/`reprocessedWithoutMerge` if custom attributes don't merge through the `defaultRule`; fallback documented in `google-ucp.md`)
+- [ ] Google-specific hosted-UCP deltas for Woo — Google Pay payment handler, outbound order webhooks to Google, capability negotiation vs Google's UCP subset
+
+---
+
 ## Roadmap Providers
 
 ### BigCommerce

@@ -12,6 +12,7 @@ import {
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { useScanRunner } from "@/app/[locale]/(auth)/onboarding/scan/_components/use-scan-runner";
 import { Motion } from "@/components/motion";
@@ -27,7 +28,6 @@ const providers = [
     logo: "/images/chatgpt.svg",
     textColor: "text-primary",
     bgColor: "bg-primary",
-    description: "Spec-first evaluation",
   },
   {
     id: "claude",
@@ -35,7 +35,6 @@ const providers = [
     logo: "/images/claude.svg",
     textColor: "text-warning",
     bgColor: "bg-warning",
-    description: "Value narrative analysis",
   },
   {
     id: "gemini",
@@ -43,7 +42,6 @@ const providers = [
     logo: "/images/gemini.svg",
     textColor: "text-success",
     bgColor: "bg-success",
-    description: "Price-to-feature ratio",
   },
 ] as const;
 
@@ -65,6 +63,7 @@ export const SimulationModal = ({
   onClose,
 }: SimulationModal.Props) => {
   const toast = useToastManager();
+  const translate = useTranslations("dashboard.simulation");
   const target = useRef<HTMLDivElement>(null);
 
   const {
@@ -83,7 +82,7 @@ export const SimulationModal = ({
     store,
     onError: (text) =>
       toast.add({
-        title: "Simulation failed",
+        title: translate("toast.failed.title"),
         description: text,
         type: "error",
       }),
@@ -118,15 +117,15 @@ export const SimulationModal = ({
         <div className="flex shrink-0 items-center justify-between border-accent-foreground border-b px-6 py-3.5">
           <div className="flex items-center gap-3">
             <DialogTitle className="mt-0 mb-0 text-foreground text-sm">
-              {phase === "pre" && "Run Simulation"}
-              {phase === "running" && "Simulation Running"}
-              {phase === "complete" && "Simulation Complete"}
+              {phase === "pre" && translate("title.pre")}
+              {phase === "running" && translate("title.running")}
+              {phase === "complete" && translate("title.complete")}
             </DialogTitle>
             {phase === "running" && (
-              <StatusPill tone="primary">Live</StatusPill>
+              <StatusPill tone="primary">{translate("states.live")}</StatusPill>
             )}
             {phase === "complete" && (
-              <StatusPill tone="success">Done</StatusPill>
+              <StatusPill tone="success">{translate("states.done")}</StatusPill>
             )}
           </div>
           {closable && (
@@ -155,11 +154,10 @@ export const SimulationModal = ({
                   <Motion.Item className="border-accent-foreground border-b px-8">
                     <div className="border-accent-foreground border-x p-6">
                       <p className="mb-2 font-medium text-2xl text-foreground">
-                        AI Shopping Simulation
+                        {translate("pre.heading")}
                       </p>
                       <p className="max-w-2xl font-light text-foreground-dimmed text-sm">
-                        Simulate how ChatGPT, Claude & Gemini compare your
-                        products against your competitors and see who they pick.
+                        {translate("pre.description")}
                       </p>
                     </div>
                   </Motion.Item>
@@ -186,7 +184,7 @@ export const SimulationModal = ({
                             {provider.model}
                           </span>
                           <span className="font-light text-foreground-dimmed text-xs">
-                            {provider.description}
+                            {translate(`providers.${provider.id}.description`)}
                           </span>
                         </div>
                       ))}
@@ -202,7 +200,7 @@ export const SimulationModal = ({
                         color="primary"
                         className="w-full"
                       >
-                        Run Simulation
+                        {translate("action.primary")}
                       </Button>
                     </div>
                   </Motion.Item>
@@ -236,7 +234,7 @@ export const SimulationModal = ({
                           className="inline-block size-1.5 bg-primary"
                         />
                         <span className="font-medium text-foreground text-xs uppercase tracking-[0.2em]">
-                          Live Intelligence Scan
+                          {translate("running.heading")}
                         </span>
                       </div>
                       <div className="flex items-center gap-4">
@@ -304,9 +302,12 @@ export const SimulationModal = ({
                                   exit={{ opacity: 0, y: -3 }}
                                   transition={{ duration: 0.15 }}
                                 >
-                                  {status === "complete" && "Done"}
-                                  {status === "running" && "Running"}
-                                  {status === "queued" && "Queued"}
+                                  {status === "complete" &&
+                                    translate("states.done")}
+                                  {status === "running" &&
+                                    translate("states.running")}
+                                  {status === "queued" &&
+                                    translate("states.queued")}
                                 </motion.span>
                               </AnimatePresence>
                             </div>
@@ -353,7 +354,7 @@ export const SimulationModal = ({
                         })}
                         {logs.length === 0 && (
                           <p className="text-foreground-dimmed/50 text-xs">
-                            Initializing simulation engine...
+                            {translate("states.initializing")}
                           </p>
                         )}
                         <div ref={target} />
@@ -373,8 +374,9 @@ export const SimulationModal = ({
                           />
                         ))}
                         <span className="ml-1.5 font-light text-foreground-dimmed text-xs">
-                          Running simulations across {stats.wins + stats.losses}{" "}
-                          comparisons
+                          {translate("running.comparisons", {
+                            count: String(stats.wins + stats.losses),
+                          })}
                         </span>
                       </div>
                     </div>
@@ -425,17 +427,18 @@ const CompletePhaseModal = ({
   onClose,
   onRunAgain,
 }: CompletePhaseModalProps) => {
+  const translate = useTranslations("dashboard.simulation");
   const winRate =
     wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0;
 
   const resultMessage = (() => {
     switch (true) {
       case winRate < 30:
-        return "AI agents are choosing your competitors most of the time. Let's fix that.";
+        return translate("complete.results.low");
       case winRate < 60:
-        return "You're competitive, but there's significant room to win more.";
+        return translate("complete.results.medium");
       default:
-        return "You're ahead of most competitors. Let's make sure you stay there.";
+        return translate("complete.results.high");
     }
   })();
 
@@ -463,7 +466,7 @@ const CompletePhaseModal = ({
         <Motion.Up className="mb-6 grid grid-cols-[1fr_auto] gap-px border border-accent-foreground bg-background-rich">
           <div className="bg-background-rich px-6 py-6">
             <p className="mb-1 font-light text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-              Overall Win Rate
+              {translate("complete.overallWinRate")}
             </p>
             <motion.p
               className={cn(
@@ -480,15 +483,25 @@ const CompletePhaseModal = ({
               {resultMessage}
             </p>
             <p className="mt-1 font-light text-foreground-dimmed/60 text-xs">
-              Completed in {formatElapsed(elapsed)}
+              {translate("complete.completedIn", {
+                elapsed: formatElapsed(elapsed),
+              })}
             </p>
           </div>
           <div className="flex flex-col divide-y divide-accent-foreground bg-background-rich">
             {[
-              { label: "Wins", value: wins, color: "text-success" },
-              { label: "Losses", value: losses, color: "text-error" },
               {
-                label: "Products",
+                label: translate("complete.stats.wins"),
+                value: wins,
+                color: "text-success",
+              },
+              {
+                label: translate("complete.stats.losses"),
+                value: losses,
+                color: "text-error",
+              },
+              {
+                label: translate("complete.stats.products"),
                 value: finalProductCount,
                 color: "text-foreground",
               },
@@ -514,7 +527,7 @@ const CompletePhaseModal = ({
         <Motion.Up className="mb-4 border border-accent-foreground bg-background-rich">
           <div className="border-accent-foreground border-b px-4 py-3">
             <p className="font-medium text-foreground text-sm">
-              Win rate by model
+              {translate("complete.winRateByModel")}
             </p>
           </div>
           <div className="grid grid-cols-3 divide-x divide-accent-foreground">
@@ -562,12 +575,12 @@ const CompletePhaseModal = ({
         {topFinding && (
           <Motion.Up className="mb-6">
             <TopFindingCallout className="rounded-md">
-              {topFinding.name} loses on{" "}
-              <span className="font-semibold text-foreground-rich">
-                {topFinding.missingAttributes.join(" and ")}
-              </span>{" "}
-              — {topFinding.impactDescription} Costs you{" "}
-              {topFinding.lossPercentage}% of simulations.
+              {translate("complete.topFinding", {
+                name: topFinding.name,
+                attributes: topFinding.missingAttributes.join(" and "),
+                impact: topFinding.impactDescription,
+                lossPercentage: String(topFinding.lossPercentage),
+              })}
             </TopFindingCallout>
           </Motion.Up>
         )}
@@ -580,7 +593,7 @@ const CompletePhaseModal = ({
               color="primary"
               className="w-full"
             >
-              View Dashboard
+              {translate("action.tertiary")}
             </Button>
           </motion.div>
           <motion.div variants={Stagger.Item} className="flex-1">
@@ -590,7 +603,7 @@ const CompletePhaseModal = ({
               color="accent"
               className="w-full"
             >
-              Run Again
+              {translate("action.secondary")}
             </Button>
           </motion.div>
         </motion.div>

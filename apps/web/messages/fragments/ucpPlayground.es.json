@@ -1,0 +1,61 @@
+{
+  "ucpPlayground": {
+    "meta": {
+      "title": "Playground UCP — prueba agentes de IA en cualquier tienda",
+      "description": "Playground UCP gratuito: conduce un agente de compra con IA real contra cualquier tienda UCP. Ejecuta búsqueda de catálogo, carrito y checkout por MCP o REST e inspecciona las llamadas."
+    },
+    "breadcrumb": {
+      "home": "Inicio",
+      "page": "Playground UCP"
+    },
+    "hero": {
+      "eyebrow": "Universal Commerce Protocol",
+      "title": {
+        "primary": "Apunta un agente de compra con IA",
+        "accent": "a cualquier tienda."
+      },
+      "description": "Playground UCP gratuito: conduce un agente de compra con IA real contra cualquier tienda UCP. Ejecuta búsqueda de catálogo, carrito y checkout por MCP o REST e inspecciona las llamadas.",
+      "art": {
+        "alt": "Ilustración ASCII de un robot"
+      }
+    },
+    "demo": {
+      "title": "Míralo buscar, montar un carrito y hacer checkout.",
+      "titleLineBreak": "Míralo buscar, montar un carrito, <br />y hacer checkout.",
+      "description": "Cada llamada de herramienta y respuesta a la vista. Sin cuenta para tus primeros {limit} mensajes."
+    },
+    "capabilities": [
+      {
+        "title": "Búsqueda y consulta de catálogo",
+        "description": "Pide al agente que busque en el catálogo de una tienda o obtenga un producto concreto, e inspecciona la respuesta UCP exacta."
+      },
+      {
+        "title": "Operaciones de carrito",
+        "description": "Crea un carrito, añade líneas y observa cómo se resuelven los totales, con las mismas llamadas que haría un agente de compra con IA."
+      },
+      {
+        "title": "Handoff de checkout",
+        "description": "Inicia un checkout contra la tienda en vivo y confirma la URL de continuación que un agente devolvería al comprador."
+      }
+    ],
+    "faq": {
+      "items": [
+        {
+          "question": "¿Qué es el Playground UCP?",
+          "answer": "Un sandbox donde un agente de compra con IA ejecuta operaciones en vivo del Universal Commerce Protocol contra la tienda que elijas. Resuelve el perfil /.well-known/ucp de la tienda, elige su endpoint de compras MCP o REST, y muestra cada llamada de herramienta y respuesta."
+        },
+        {
+          "question": "¿Qué tiendas puedo probar?",
+          "answer": "Cualquier tienda que publique un Universal Commerce Profile válido en /.well-known/ucp con un servicio dev.ucp.shopping. El playground prefiere el transporte MCP y recurre a REST."
+        },
+        {
+          "question": "¿Necesito una cuenta?",
+          "answer": "No. Cualquiera puede enviar hasta {limit} mensajes gratis. Crea una cuenta para sesiones ilimitadas contra tu propia tienda conectada."
+        }
+      ]
+    },
+    "structuredData": {
+      "name": "Playground UCP"
+    }
+  }
+}

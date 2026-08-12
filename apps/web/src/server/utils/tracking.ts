@@ -1,7 +1,9 @@
 import { resultify } from "@zenncore/utils";
 import { and, eq, sql } from "drizzle-orm";
+import * as Product from "@/server/app/product";
 import { schema } from "@/server/database";
-import { withContext, withDurable } from "./context";
+import { withContext } from "./context";
+import { Environment } from "./environment";
 import { DatabaseError } from "./error";
 
 /**
@@ -61,8 +63,8 @@ const NULL_RESOLUTION = {
   externalProductId: null,
 } as const;
 
-export const resolveProductFromPageUrl = withContext.append(withDurable)(
-  async (ctx, { store, pageUrl }: { store: string; pageUrl: string }) => {
+export const resolveProductFromPageUrl = withContext(
+  async (_context, { store, pageUrl }: { store: string; pageUrl: string }) => {
     const parsed = resultify(() => new URL(pageUrl));
     if (!parsed.success) {
       return { success: true, data: NULL_RESOLUTION };
@@ -78,21 +80,13 @@ export const resolveProductFromPageUrl = withContext.append(withDurable)(
     const handle = decodeURIComponent(match[1]);
     const needle = `/products/${handle}`;
 
-    const result = await resultify(async () =>
-      ctx.durable.db
-        .select({
-          id: schema.product.id,
-          externalId: schema.product.externalId,
-        })
-        .from(schema.product)
-        .where(
-          and(
-            eq(schema.product.storeId, store),
-            sql`strpos(lower(${schema.product.url}), lower(${needle})) > 0`,
-          ),
-        )
-        .limit(1),
-    );
+    const result = await Product.find(Environment.SERVER, {
+      where: and(
+        eq(schema.product.storeId, store),
+        sql`strpos(lower(${schema.product.url}), lower(${needle})) > 0`,
+      ),
+      limit: 1,
+    });
 
     if (!result.success) {
       return {
@@ -104,7 +98,7 @@ export const resolveProductFromPageUrl = withContext.append(withDurable)(
       };
     }
 
-    const row = result.data?.[0];
+    const row = result.data[0];
     if (!row) return { success: true, data: NULL_RESOLUTION };
 
     return {

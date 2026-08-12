@@ -3,6 +3,7 @@
 import { cn } from "@zenncore/utils";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
@@ -39,6 +40,7 @@ export const RunningPhase = ({
   modelStats,
   logs,
 }: RunningPhase.Props) => {
+  const translate = useTranslations("onboarding.scan");
   const ref = useRef<HTMLDivElement>(null);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: logEntries triggers scroll-to-bottom on new entries
@@ -64,11 +66,10 @@ export const RunningPhase = ({
             <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <h1 className="font-medium text-4xl text-foreground">
-              Running simulation.
+              {translate("running.title")}
             </h1>
             <p className="font-light text-2xl text-foreground-dimmed">
-              ChatGPT, Claude & Gemini are comparing your products against
-              competitors right now.
+              {translate("running.description")}
             </p>
           </div>
         </Motion.Item>
@@ -138,9 +139,12 @@ export const RunningPhase = ({
                       exit={{ opacity: 0, y: -3 }}
                       transition={{ duration: 0.15 }}
                     >
-                      {status === "complete" && "Done"}
-                      {status === "running" && "Running"}
-                      {status === "queued" && "Queued"}
+                      {status === "complete" &&
+                        translate("running.status.done")}
+                      {status === "running" &&
+                        translate("running.status.running")}
+                      {status === "queued" &&
+                        translate("running.status.queued")}
                     </motion.span>
                   </AnimatePresence>
                 </motion.div>
@@ -165,7 +169,7 @@ export const RunningPhase = ({
                   className="inline-block size-1.5 rounded-full bg-primary"
                 />
                 <span className="font-medium text-foreground uppercase tracking-widest">
-                  Live Intelligence Scan
+                  {translate("running.liveScan")}
                 </span>
               </div>
               <span className="font-mono text-primary tabular-nums">
@@ -212,7 +216,7 @@ export const RunningPhase = ({
               })}
               {logs.length === 0 && (
                 <p className="text-foreground-dimmed/50">
-                  Initializing simulation engine...
+                  {translate("running.initializing")}
                 </p>
               )}
               <div ref={ref} />
@@ -233,7 +237,7 @@ export const RunningPhase = ({
                 />
               ))}
               <span className="ml-1.5 font-light text-foreground-dimmed">
-                Running simulations across {simulations} comparisons
+                {translate("running.progress", { count: String(simulations) })}
               </span>
             </div>
           </div>

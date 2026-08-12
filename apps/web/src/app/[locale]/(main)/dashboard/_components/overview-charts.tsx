@@ -12,8 +12,8 @@ import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import { motion } from "motion/react";
 import Image from "next/image";
-import { Link } from "@/i18n/navigation";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
   Area,
   AreaChart,
@@ -23,6 +23,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { Link } from "@/i18n/navigation";
 import { Spring } from "@/lib/animations";
 import { formatRelativeTime } from "@/lib/date";
 import type * as Simulate from "@/server/app/intelligence/simulate";
@@ -80,6 +81,8 @@ export namespace WinRateLineChart {
     data: number[];
     labels: string[];
     className?: string;
+    emptyPrimary: string;
+    emptySecondary: string;
   };
 }
 
@@ -87,6 +90,8 @@ const WinRateLineChart = ({
   data,
   labels,
   className = "h-20",
+  emptyPrimary,
+  emptySecondary,
 }: WinRateLineChart.Props) => {
   if (data.length < 2)
     return (
@@ -97,8 +102,8 @@ const WinRateLineChart = ({
         )}
       >
         <TrendDownIcon className="size-24" />
-        Not enough data for trend. <br />
-        Get started by running a simulation.
+        {emptyPrimary} <br />
+        {emptySecondary}
       </div>
     );
 
@@ -197,6 +202,7 @@ export const OverviewCharts = ({
   activity,
 }: OverviewCharts.Props) => {
   const { store } = useParams<{ store: string }>();
+  const translate = useTranslations("dashboard.overview.charts");
   const data = trend.map((point) => point.winRate);
   const labels = trend.map((point) => formatRelativeTime(new Date(point.date)));
 
@@ -211,9 +217,9 @@ export const OverviewCharts = ({
         <div className="flex flex-col bg-background-rich xl:col-span-2">
           <div className="flex items-start justify-between p-4">
             <div>
-              <SectionKicker>01 — Performance</SectionKicker>
+              <SectionKicker>{translate("kickers.performance")}</SectionKicker>
               <p className="mt-2 font-semibold text-foreground-rich text-lg">
-                Win Rate by Model
+                {translate("winRateByModel")}
               </p>
             </div>
           </div>
@@ -271,14 +277,14 @@ export const OverviewCharts = ({
           ) : (
             <p className="flex h-26 flex-col items-center justify-center gap-2 border-accent-foreground border-y px-4 text-foreground-dimmed">
               <BoxMinusIcon className="size-12" />
-              Run a simulation to see per-model performance.
+              {translate("states.noModels")}
             </p>
           )}
 
           <div className="flex flex-1 flex-col">
             <div className="mb-4 flex items-center justify-between p-4">
               <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-                Win Rate Trend
+                {translate("winRateTrend")}
               </p>
               {change !== 0 && (
                 <span
@@ -298,6 +304,8 @@ export const OverviewCharts = ({
               data={data}
               labels={labels}
               className="h-full flex-1 px-4 pb-4"
+              emptyPrimary={translate("states.noTrend")}
+              emptySecondary={translate("states.noTrendHint")}
             />
           </div>
         </div>
@@ -305,14 +313,15 @@ export const OverviewCharts = ({
         <div className="flex flex-col gap-px bg-accent-foreground">
           <div className="flex-1 bg-background-rich">
             <div className="mb-2 flex items-center justify-between px-4 pt-4">
-              <SectionKicker>01.5 — Recent Activity</SectionKicker>
+              <SectionKicker>
+                {translate("kickers.recentActivity")}
+              </SectionKicker>
             </div>
             {activity.length === 0 ? (
               <div className="flex size-full flex-col items-center items-center justify-center gap-2 p-4 text-center font-normal text-foreground-dimmed">
                 <BellIcon className="size-24" />
                 <p className="text-foreground-dimmed">
-                  No activity yet. Run your <br />
-                  first simulation to see results here.
+                  {translate("states.noActivity")}
                 </p>
               </div>
             ) : (
@@ -347,13 +356,14 @@ export const OverviewCharts = ({
               color="accent"
               render={<Link href={`/dashboard/${store}/optimize`} />}
             >
-              Optimizations
+              {translate("action.secondary")}
             </Button>
             <Button
               color="primary"
               render={<Link href={`/dashboard/${store}/products`} />}
             >
-              View all products <ArrowRightIcon className="size-4" />
+              {translate("action.primary")}{" "}
+              <ArrowRightIcon className="size-4" />
             </Button>
           </div>
         </div>

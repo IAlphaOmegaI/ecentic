@@ -13,57 +13,68 @@ import {
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { Link, useRouter } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useTranslations } from "next-intl";
+import { useMemo, useState } from "react";
 import { z } from "zod";
 import { Motion } from "@/components/motion";
+import { Link, useRouter } from "@/i18n/navigation";
 import { Spring } from "@/lib/animations";
 import { sanitizeRedirect } from "@/lib/redirect";
 import * as Authentication from "@/server/app/authentication";
-
-const credentialFormConfig = {
-  email: field({
-    shape: "text",
-    validator: z.string().email(),
-    label: "Email",
-    placeholder: "jane@acmestore.com",
-  }),
-  password: field({
-    shape: "text",
-    type: "password",
-    validator: z.string().min(1),
-    // @ts-expect-error - label is a function
-    label: () => (
-      <div className="flex items-center justify-between">
-        <FieldLabel>Password</FieldLabel>
-        <Link
-          href="/forgot-password"
-          className="self-end font-light text-primary text-sm hover:underline"
-        >
-          Forgot password?
-        </Link>
-      </div>
-    ),
-    placeholder: "Your password",
-  }),
-} satisfies GenericForm;
-
-const shopifyFormConfig = {
-  shop: field({
-    shape: "text",
-    validator: z.string().min(1, "Enter your store domain"),
-    label: "Shopify store domain",
-    placeholder: "mystore.myshopify.com",
-  }),
-} satisfies GenericForm;
 
 export const SignInForm = () => {
   const router = useRouter();
   const toast = useToastManager();
   const searchParameters = useSearchParams();
+  const translate = useTranslations("signIn");
+  const translateAuthChrome = useTranslations("authChrome");
   const [provider, setProvider] = useState<"credential" | "google" | "shopify">(
     "credential",
+  );
+
+  const credentialFormConfig = useMemo(
+    () =>
+      ({
+        email: field({
+          shape: "text",
+          validator: z.string().email(),
+          label: translate("fields.email.label"),
+          placeholder: translate("fields.email.placeholder"),
+        }),
+        password: field({
+          shape: "text",
+          type: "password",
+          validator: z.string().min(1),
+          // @ts-expect-error - label is a function
+          label: () => (
+            <div className="flex items-center justify-between">
+              <FieldLabel>{translate("fields.password.label")}</FieldLabel>
+              <Link
+                href="/forgot-password"
+                className="self-end font-light text-primary text-sm hover:underline"
+              >
+                {translate("action.tertiary")}
+              </Link>
+            </div>
+          ),
+          placeholder: translate("fields.password.placeholder"),
+        }),
+      }) satisfies GenericForm,
+    [translate],
+  );
+
+  const shopifyFormConfig = useMemo(
+    () =>
+      ({
+        shop: field({
+          shape: "text",
+          validator: z.string().min(1, translate("fields.shop.validation")),
+          label: translate("fields.shop.label"),
+          placeholder: translate("fields.shop.placeholder"),
+        }),
+      }) satisfies GenericForm,
+    [translate],
   );
 
   // Set by the proxy when it bounces an unauthenticated request off a protected
@@ -89,7 +100,7 @@ export const SignInForm = () => {
 
         if (!result.success) {
           toast.add({
-            title: "Error",
+            title: translateAuthChrome("toast.error.title"),
             description: result.error.message,
             type: "error",
           });
@@ -109,7 +120,7 @@ export const SignInForm = () => {
 
         if (!result.success) {
           toast.add({
-            title: "Error",
+            title: translateAuthChrome("toast.error.title"),
             description: result.error.message,
             type: "error",
           });
@@ -125,7 +136,7 @@ export const SignInForm = () => {
 
       if (!result.success) {
         toast.add({
-          title: "Error",
+          title: translateAuthChrome("toast.error.title"),
           description: result.error.message,
           type: "error",
         });
@@ -135,6 +146,18 @@ export const SignInForm = () => {
       router.push(sanitizeRedirect(requestedRedirect, "/onboarding/connect"));
     },
   );
+
+  const submitLabel = (() => {
+    if (provider === "credential" && isPending) {
+      return translate("states.signingIn");
+    }
+
+    if (provider === "google" && isPending) {
+      return translate("states.signingInWithGoogle");
+    }
+
+    return translate("action.primary");
+  })();
 
   return (
     <Motion.Stagger stagger={0.07} delay={0.18}>
@@ -156,7 +179,7 @@ export const SignInForm = () => {
               height={16}
             />
           )}
-          Continue with Google
+          {translate("action.google")}
         </Button>
         <Button
           variant="soft"
@@ -180,7 +203,7 @@ export const SignInForm = () => {
               className="size-[16px]"
             />
           )}
-          Continue with Shopify
+          {translate("action.shopify")}
         </Button>
         <AnimatePresence initial={false}>
           {provider === "shopify" && (
@@ -208,7 +231,7 @@ export const SignInForm = () => {
                   ) : (
                     <ArrowRightIcon className="size-4" />
                   )}
-                  Connect Shopify store
+                  {translate("action.connectShopify")}
                 </Button>
               </InferredForm>
             </motion.div>
@@ -216,7 +239,9 @@ export const SignInForm = () => {
         </AnimatePresence>
         <div className="relative mt-4 flex items-center gap-3">
           <div className="h-px flex-1 bg-accent-foreground" />
-          <span className="font-light text-foreground-dimmed">or</span>
+          <span className="font-light text-foreground-dimmed">
+            {translateAuthChrome("divider")}
+          </span>
           <div className="h-px flex-1 bg-accent-foreground" />
         </div>
       </Motion.Item>
@@ -233,11 +258,7 @@ export const SignInForm = () => {
             disabled={isPending}
             className="mt-1 flex w-full"
           >
-            {provider === "credential" && isPending
-              ? "Signing in..."
-              : provider === "google" && isPending
-                ? "Signing in with Google..."
-                : "Sign in"}
+            {submitLabel}
             {provider === "credential" && isPending ? (
               <LoaderIcon className="size-4 animate-spin" />
             ) : (

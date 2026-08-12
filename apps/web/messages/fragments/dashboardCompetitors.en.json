@@ -1,0 +1,77 @@
+{
+  "dashboard": {
+    "competitors": {
+      "title": "Competitors",
+      "description": "How AI shopping agents rank you against the brands you track.",
+      "action": {
+        "primary": "Add competitor",
+        "addCompetitor": "Add Competitor",
+        "addCompetitors": "Add Competitors"
+      },
+      "stats": {
+        "brandsTracked": "Brands Tracked",
+        "winningAgainst": "Winning Against",
+        "mostDangerous": "Most Dangerous",
+        "totalSimulations": "Total Simulations",
+        "productsMonitored": "{count, plural, one {# product} other {# products}} monitored",
+        "sinceLastScan": "since last scan",
+        "averageWinRate": "{rate}% average win rate",
+        "winRateAgainstThem": "your win rate against them",
+        "acrossCompetitors": "across {count, plural, one {# competitor} other {# competitors}}"
+      },
+      "landscape": {
+        "kicker": "01 — Landscape",
+        "winRateByCompetitor": "Win Rate by Competitor",
+        "distribution": "Distribution",
+        "winRateTiers": "Win Rate Tiers",
+        "simAbbrev": "{count} sim",
+        "tiers": {
+          "dominating": "Dominating (≥75%)",
+          "competitive": "Competitive (50–74%)",
+          "atRisk": "At Risk (30–49%)",
+          "losing": "Losing (<30%)"
+        }
+      },
+      "table": {
+        "kickerAll": "02 — All Competitors"
+      },
+      "insights": {
+        "kicker": "03 — Intelligence",
+        "summary": "Competitive Summary",
+        "keyInsight": "Key Insight",
+        "optimizeLosing": "Optimize losing listings",
+        "recentScanActivity": "Recent Scan Activity",
+        "scanCompleted": "Scan completed — {wins}W / {losses}L",
+        "scanInProgress": "Scan in progress — {completed}/{total}",
+        "completedScans": "{count, plural, one {# completed scan} other {# completed scans}}",
+        "viewAllActivity": "View all activity",
+        "headlines": {
+          "outrankAll": "You out-rank all {count} simulated competitor{plural} (avg {overall}% win rate).",
+          "slimmestLead": "Your slimmest lead is against {brand} at {rate}%. Keep listings optimized to defend it.",
+          "biggestOpportunity": "{brand} wins {lossRate}% of agent comparisons against you. That's your biggest opportunity.",
+          "holdMajority": "You hold the majority against {winning} of {total} competitor{plural} (avg {overall}%). Optimizing the products you lose to {brand} moves the needle most.",
+          "defaultHeadline": "You hold the majority against {winning} of {total} competitor{plural} (avg {overall}% win rate).",
+          "focusOptimization": "Focus a listing optimization on the products {brand} beats you on.",
+          "toughestRival": "{toughest} is your toughest rival at {toughestRate}%; you lead {strongest} at {strongestRate}%."
+        }
+      },
+      "add": {
+        "title": "Add competitors to this store",
+        "shellTitle": "Add Competitors",
+        "shellDescription": "The brands this store's catalog is judged against. Competitors belong to one store, so these never mix with your other stores.",
+        "description": "Detect them from your catalog, paste product URLs, or search a brand. Anything you add belongs to this store only.",
+        "findKicker": "01 — Find",
+        "rosterKicker": "02 — Roster",
+        "trackedTitle": "Tracked in this store",
+        "trackedDescription": "Only selected competitors are judged when a scan runs with no explicit roster.",
+        "rosterSummary": "{total} across {brands, plural, one {# brand} other {# brands}} — {selected} selected",
+        "emptyRoster": "No competitors tracked yet. Add some above and they'll appear here.",
+        "tabs": {
+          "autoDetect": "Auto-detect",
+          "pasteUrls": "Paste URLs",
+          "searchBrand": "Search Brand"
+        }
+      }
+    }
+  }
+}

@@ -25,10 +25,11 @@ import {
 import { motion } from "motion/react";
 import Image from "next/image";
 import { useLinkStatus } from "next/link";
-import { Link, useRouter } from "@/i18n/navigation";
+import { useMessages, useTranslations } from "next-intl";
 import { type ReactNode, useState, useTransition } from "react";
 import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
+import { Link, useRouter } from "@/i18n/navigation";
 import { Stagger, Table as TableAnimations } from "@/lib/animations";
 import { getCurrencySymbol, normalizePrice } from "@/lib/currency";
 import type * as Product from "@/server/app/product";
@@ -65,6 +66,8 @@ const computeDataQuality = (product: Product.Type): number => {
 };
 
 const QualityBadge = ({ score }: { score: number }) => {
+  const translate = useTranslations("onboarding.products.quality");
+
   const color = (() => {
     switch (true) {
       case score >= 75:
@@ -79,11 +82,11 @@ const QualityBadge = ({ score }: { score: number }) => {
   const label = (() => {
     switch (true) {
       case score >= 75:
-        return "Good";
+        return translate("good");
       case score >= 50:
-        return "Partial";
+        return translate("partial");
       default:
-        return "Poor";
+        return translate("poor");
     }
   })();
 
@@ -106,17 +109,12 @@ export const ProductSelector = ({
   products,
 }: ProductSelector.Props) => {
   const router = useRouter();
+  const translate = useTranslations("onboarding.products");
+  const messages = useMessages();
+  const tableHeaders = messages.onboarding.products.table.headers;
   const [selected, setSelected] = useState(new Set<string>());
 
   const limit = Math.min(10, products.length);
-
-  // Select-all toggle removed — selection is per-row only.
-  // const toggleAll = () => {
-  //   setSelected((previous) => {
-  //     if (previous.size === products.length) return new Set();
-  //     return new Set(products.slice(0, limit).map((product) => product.id));
-  //   });
-  // };
 
   const toggleProduct = (id: string) => {
     setSelected((previous) => {
@@ -155,7 +153,10 @@ export const ProductSelector = ({
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           {children}
           <div className="mt-4 inline-flex items-center border border-primary/20 bg-primary/5 px-3 py-1.5 text-primary text-sm">
-            {selected.size} of {limit} products selected
+            {translate("selection", {
+              selected: String(selected.size),
+              limit: String(limit),
+            })}
           </div>
         </div>
       </Motion.Item>
@@ -166,46 +167,13 @@ export const ProductSelector = ({
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <ScrollArea className="h-full">
             <div className="bg-background-rich">
-              {/* overflow-visible stops the <table> from becoming its own scroll
-                container, so the sticky header anchors to the ScrollArea
-                viewport instead. */}
               <Table className="overflow-visible">
-                {/* Border via inset box-shadow on the cells (not `border-b`): with
-                  border-collapse, a collapsed thead border scrolls away with the
-                  body, whereas a cell box-shadow stays pinned to the sticky
-                  header. Background also lives on the cells so rows never show
-                  through the forced-transparent header row. */}
                 <TableHeader className="sticky top-0 z-10 [&_th]:bg-background-rich [&_th]:shadow-[inset_0_-1px_0_0_var(--color-accent-foreground)]">
                   <TableRow className="border-b-0">
-                    {/* Empty placeholder keeps the checkbox column aligned with
-                      the per-row selection cells now that the select-all toggle
-                      is removed. */}
-                    <TableHead className="w-10 px-4 py-2">
-                      {/* <button
-                      type="button"
-                      onClick={toggleAll}
-                      className={cn(
-                        "flex size-4 cursor-pointer items-center justify-center border transition-colors duration-150",
-                        selected.size === products.length
-                          ? "border-primary bg-primary"
-                          : "border-accent-foreground bg-background-rich",
-                      )}
-                    >
-                      <CheckIcon
-                        className={cn(
-                          "size-2.5 text-white transition-opacity duration-150",
-                          selected.size === products.length
-                            ? "opacity-100"
-                            : "opacity-0",
-                        )}
-                      />
-                    </button> */}
-                    </TableHead>
-                    {["Product", "Price", "Currency", "Status", "Quality"].map(
-                      (header) => (
-                        <TableHead key={header}>{header}</TableHead>
-                      ),
-                    )}
+                    <TableHead className="w-10 px-4 py-2" />
+                    {tableHeaders.map((header) => (
+                      <TableHead key={header}>{header}</TableHead>
+                    ))}
                   </TableRow>
                 </TableHeader>
                 <TableBody
@@ -262,11 +230,7 @@ export const ProductSelector = ({
                                 alt={product.title}
                               />
                               <AvatarFallback className="relative">
-                                <Image
-                                  src="/images/fallback.png"
-                                  alt="Fallback"
-                                  fill
-                                />
+                                <Image src="/images/fallback.png" alt="" fill />
                               </AvatarFallback>
                             </Avatar>
                             <div>
@@ -300,7 +264,9 @@ export const ProductSelector = ({
                                 : "bg-foreground-dimmed/10 text-foreground-dimmed",
                             )}
                           >
-                            {product.status === "active" ? "Active" : "Draft"}
+                            {product.status === "active"
+                              ? translate("states.active")
+                              : translate("states.draft")}
                           </span>
                         </TableCell>
                         <TableCell>
@@ -334,7 +300,7 @@ export const ProductSelector = ({
             disabled={selected.size === 0}
             className="px-6 py-2"
           >
-            Next: Add Competitors
+            {translate("action.next")}
             {isPending ? (
               <LoaderIcon className="size-4 animate-spin" />
             ) : (
@@ -349,6 +315,8 @@ export const ProductSelector = ({
 
 const Back = () => {
   const { pending } = useLinkStatus();
+  const translate = useTranslations("onboarding.products.action");
+
   return (
     <>
       {pending ? (
@@ -356,7 +324,7 @@ const Back = () => {
       ) : (
         <ArrowLeftIcon className="size-4" />
       )}
-      Back
+      {translate("back")}
     </>
   );
 };

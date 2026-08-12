@@ -9,9 +9,10 @@ import {
 } from "@zenncore/icons";
 import { cn, unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import { Link } from "@/i18n/navigation";
 import { connection } from "next/server";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
+import { Link } from "@/i18n/navigation";
 import { formatRelativeTime } from "@/lib/date";
 import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
@@ -77,6 +78,7 @@ export default ({ params }: PageProps<"/dashboard/[store]">) => (
 const LastUpdated = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
+  const translate = await getTranslations("dashboard.shared.status");
   const data = await unwrapResult(
     Product.gatherIntelligence(Environment.SERVER, { store }),
   );
@@ -84,8 +86,10 @@ const LastUpdated = async ({ params }: { params: StoreParams }) => {
   return (
     <StatusPill tone={data.scan?.updatedAt ? "success" : "neutral"}>
       {data.scan?.updatedAt
-        ? `Live — updated ${formatRelativeTime(data.scan.updatedAt)}`
-        : "No scans run yet"}
+        ? translate("liveUpdated", {
+            time: formatRelativeTime(data.scan.updatedAt),
+          })
+        : translate("noScansYet")}
     </StatusPill>
   );
 };
@@ -93,6 +97,7 @@ const LastUpdated = async ({ params }: { params: StoreParams }) => {
 const StatCards = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
+  const translate = await getTranslations("dashboard.shared.stats");
   const data = await unwrapResult(
     Product.gatherIntelligence(Environment.SERVER, { store }),
   );
@@ -102,10 +107,10 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
     return (
       <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
         {[
-          { label: "Overall Win Rate", icon: GaugeIcon },
-          { label: "Products Scanned", icon: RadarIcon },
-          { label: "Top Performer", icon: AwardIcon },
-          { label: "Biggest Opportunity", icon: BullseyeIcon },
+          { label: translate("overallWinRate"), icon: GaugeIcon },
+          { label: translate("productsScanned"), icon: RadarIcon },
+          { label: translate("topPerformer"), icon: AwardIcon },
+          { label: translate("biggestOpportunity"), icon: BullseyeIcon },
         ].map(({ label, icon: Icon }) => (
           <div
             key={label}
@@ -114,7 +119,7 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
             <StatLabel label={label} icon={<Icon className="size-7.5" />} />
             <div className="flex flex-col items-center gap-2 pb-4">
               <p className="font-light text-foreground-dimmed text-sm">
-                No data yet
+                {translate("noDataYet")}
               </p>
             </div>
           </div>
@@ -163,7 +168,7 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
     <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
       <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
         <StatLabel
-          label="Overall Win Rate"
+          label={translate("overallWinRate")}
           icon={<GaugeIcon className="size-7.5 text-primary" />}
         />
         <div>
@@ -190,13 +195,12 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
                 {trend}%
               </span>
               <span className="text-foreground-dimmed text-xs">
-                vs last scan
+                {translate("vsLastScan")}
               </span>
             </p>
           ) : (
             <p className="mt-3 text-foreground-dimmed text-xs">
-              across {products.length}{" "}
-              {products.length === 1 ? "product" : "products"}
+              {translate("acrossProducts", { count: products.length })}
             </p>
           )}
         </div>
@@ -204,7 +208,7 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
 
       <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
         <StatLabel
-          label="Products Scanned"
+          label={translate("productsScanned")}
           icon={<RadarIcon className="size-7.5 text-warning" />}
         />
         <div>
@@ -222,7 +226,7 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
               />
             </div>
             <p className="mt-2 text-foreground-dimmed text-xs">
-              {100 - data.total} slots remaining
+              {translate("slotsRemaining", { count: 100 - data.total })}
             </p>
           </div>
         </div>
@@ -231,7 +235,7 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
       {top && (
         <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
           <StatLabel
-            label="Top Performer"
+            label={translate("topPerformer")}
             icon={<AwardIcon className="size-7.5 text-success" />}
           />
           <div>
@@ -244,9 +248,9 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
             </p>
             <Link
               href={`/dashboard/${store}/products/${top._id}`}
-              className="mt-3 inline-flex items-center gap-1 text-primary text-sm transition-colors hover:text-primary-rich"
+              className="mt-3 inline-flex items-center gap-1 text-primary-text text-sm transition-colors hover:text-primary-rich"
             >
-              View details <ArrowRightIcon className="size-4" />
+              {translate("viewDetails")} <ArrowRightIcon className="size-4" />
             </Link>
           </div>
         </div>
@@ -255,7 +259,7 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
       {opportunity && (
         <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
           <StatLabel
-            label="Biggest Opportunity"
+            label={translate("biggestOpportunity")}
             icon={<BullseyeIcon className="size-7.5 text-error" />}
           />
           <div>
@@ -270,9 +274,9 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
             </p>
             <Link
               href={`/dashboard/${store}/products/${opportunity._id}`}
-              className="mt-3 inline-flex items-center gap-1 text-primary text-sm transition-colors hover:text-primary-rich"
+              className="mt-3 inline-flex items-center gap-1 text-primary-text text-sm transition-colors hover:text-primary-rich"
             >
-              Optimize now <ArrowRightIcon className="size-4" />
+              {translate("optimizeNow")} <ArrowRightIcon className="size-4" />
             </Link>
           </div>
         </div>
@@ -284,6 +288,7 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
 const Performance = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
+  const translate = await getTranslations("dashboard.shared.activity");
   const [data, scans] = await Promise.all([
     unwrapResult(Product.gatherIntelligence(Environment.SERVER, { store })),
     unwrapResult(Scan.getLatest(Environment.SERVER, { store })),
@@ -339,8 +344,14 @@ const Performance = async ({ params }: { params: StoreParams }) => {
         : ("simulation_running" as const),
     message:
       scan.status === "complete"
-        ? `Simulation completed — ${scan.wins} wins, ${scan.losses} losses`
-        : `Simulation in progress — ${scan.completedSimulations}/${scan.totalSimulations}`,
+        ? translate("simulationComplete", {
+            wins: scan.wins,
+            losses: scan.losses,
+          })
+        : translate("simulationInProgress", {
+            completed: scan.completedSimulations,
+            total: scan.totalSimulations,
+          }),
     detail: scan.topFinding,
     timestamp: scan.createdAt.toISOString(),
   }));
@@ -351,6 +362,7 @@ const Performance = async ({ params }: { params: StoreParams }) => {
 const TopProducts = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
+  const translate = await getTranslations("dashboard.shared");
   const data = await unwrapResult(
     Product.gatherIntelligence(Environment.SERVER, { store }),
   );
@@ -363,14 +375,15 @@ const TopProducts = async ({ params }: { params: StoreParams }) => {
     <ProductsTable
       rows={sorted}
       pageCount={1}
-      kicker="02 — Catalog"
-      title="Product Win Rates"
+      kicker={translate("sections.catalog")}
+      title={translate("table.productWinRates")}
       action={
         <Button
           color="primary"
           render={<Link href={`/dashboard/${store}/products`} />}
         >
-          View all products <ArrowRightIcon className="size-4" />
+          {translate("action.viewAllProducts")}{" "}
+          <ArrowRightIcon className="size-4" />
         </Button>
       }
     />
@@ -380,6 +393,7 @@ const TopProducts = async ({ params }: { params: StoreParams }) => {
 const TopCompetitors = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
+  const translate = await getTranslations("dashboard.shared");
   const data = await unwrapResult(
     Competitor.gatherIntelligence(Environment.SERVER, { store }),
   );
@@ -387,15 +401,15 @@ const TopCompetitors = async ({ params }: { params: StoreParams }) => {
   return (
     <CompetitorsTable
       rows={data.brands}
-      kicker="03 — Competitive Landscape"
-      title="Top Competitors"
+      kicker={translate("sections.competitiveLandscape")}
+      title={translate("table.topCompetitors")}
       pageCount={1}
       action={
         <Button
           color="primary"
           render={<Link href={`/dashboard/${store}/competitors`} />}
         >
-          View all <ArrowRightIcon className="size-4" />
+          {translate("action.viewAll")} <ArrowRightIcon className="size-4" />
         </Button>
       }
     />

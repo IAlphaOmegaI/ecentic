@@ -1,7 +1,6 @@
 "use client";
 
 import { readStreamableValue } from "@ai-sdk/rsc";
-import { useRouter } from "@/i18n/navigation";
 import { RadarIcon } from "@zenncore/icons";
 import { cn, resultify, unwrapResult } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
@@ -9,7 +8,9 @@ import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "@/i18n/navigation";
 import { formatElapsed } from "@/lib/date";
 import * as Competitor from "@/server/app/competitor";
 
@@ -24,7 +25,6 @@ export namespace AutoDetectTab {
   export type Props = {
     products: string[];
     onSuccess?: (competitors: Competitor.Type[]) => void;
-    /** Store the detected rivals are written against. */
     store: string;
     className?: string;
   };
@@ -38,6 +38,7 @@ export const AutoDetectTab = ({
 }: AutoDetectTab.Props) => {
   const toast = useToastManager();
   const router = useRouter();
+  const translate = useTranslations("onboarding.competitors.autoDetect");
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [elapsed, setElapsed] = useState(0);
 
@@ -85,9 +86,6 @@ export const AutoDetectTab = ({
       setElapsed(Date.now() - start.current);
     }, 100);
 
-    // Detection runs in one request and streams each competitor back the moment
-    // the model names and persists it, so the list fills in live. keepMounted on
-    // this tab's panel keeps the loop alive if the user switches tabs mid-run.
     const detection = await resultify(async () => {
       const { output } = await unwrapResult(
         Competitor.streamDetection({ products, store }),
@@ -104,7 +102,7 @@ export const AutoDetectTab = ({
           case "competitor":
             collected.push(event.competitor);
             addLog({
-              text: `Found · ${event.competitor.title}`,
+              text: translate("foundLog", { title: event.competitor.title }),
               type: "success",
             });
             break;
@@ -123,9 +121,9 @@ export const AutoDetectTab = ({
     }
 
     if (!detection.success) {
-      addLog({ text: "Detection failed. Please try again.", type: "error" });
+      addLog({ text: translate("errors.failed"), type: "error" });
       toast.add({
-        title: "Detection failed",
+        title: translate("toast.failed"),
         description: detection.error.message,
         type: "error",
       });
@@ -133,28 +131,26 @@ export const AutoDetectTab = ({
     }
 
     if (detection.data.length === 0) {
-      addLog({
-        text: "No new competitors found. Please try again.",
-        type: "error",
-      });
+      addLog({ text: translate("errors.noneFound"), type: "error" });
       toast.add({
-        title: "No competitors found",
-        description: "We couldn't identify new competitors. Please try again.",
+        title: translate("toast.noneFound.title"),
+        description: translate("toast.noneFound.description"),
         type: "error",
       });
       return;
     }
 
     addLog({
-      text: `${detection.data.length} competitor${detection.data.length === 1 ? "" : "s"} identified`,
+      text: translate("identified", { count: detection.data.length }),
       type: "success",
     });
-    // refresh the server-rendered competitor list to include what just streamed in.
     router.refresh();
     onSuccess?.(detection.data);
     toast.add({
-      title: "Competitors found",
-      description: `Found ${detection.data.length} competitor product${detection.data.length !== 1 ? "s" : ""}.`,
+      title: translate("toast.found.title"),
+      description: translate("toast.found.description", {
+        count: detection.data.length,
+      }),
       type: "success",
     });
   });
@@ -181,11 +177,10 @@ export const AutoDetectTab = ({
 
             <div className="relative z-20">
               <h3 className="text-center font-medium text-2xl text-foreground">
-                Auto-detect competitors
+                {translate("title")}
               </h3>
               <p className="relative text-center text-foreground-dimmed text-lg">
-                We'll analyze your products and use AI to find <br />
-                the most relevant competitors in your market.
+                {translate("description")}
               </p>
             </div>
             <Button
@@ -194,7 +189,7 @@ export const AutoDetectTab = ({
               onClick={handleDetect}
               className="relative z-20 mt-4"
             >
-              Auto-detect competitors <RadarIcon />
+              {translate("action")} <RadarIcon />
             </Button>
           </motion.div>
         )}
@@ -227,7 +222,7 @@ export const AutoDetectTab = ({
                   />
                 )}
                 <span className="font-medium text-foreground uppercase tracking-widest">
-                  {isDetecting ? "Live Intelligence Scan" : "Scan Complete"}
+                  {isDetecting ? translate("scanning") : translate("complete")}
                 </span>
               </div>
               <span className="font-mono text-foreground-dimmed tabular-nums">
@@ -284,7 +279,7 @@ export const AutoDetectTab = ({
               })}
               {logs.length === 0 && (
                 <p className="text-foreground-dimmed/50">
-                  Initializing intelligence scan...
+                  {translate("initializing")}
                 </p>
               )}
             </div>
@@ -305,16 +300,16 @@ export const AutoDetectTab = ({
                   />
                 ))}
                 <span className="ml-1.5 font-light text-foreground-dimmed">
-                  Analyzing market signals
+                  {translate("analyzing")}
                 </span>
               </div>
             ) : (
               <div className="flex items-center justify-between border-accent-foreground border-t p-4">
                 <span className="font-light text-foreground-dimmed">
-                  Finished in {formatElapsed(elapsed)}
+                  {translate("finishedIn", { elapsed: formatElapsed(elapsed) })}
                 </span>
                 <Button onClick={handleDetect} color="accent">
-                  Run Again
+                  {translate("runAgain")}
                 </Button>
               </div>
             )}

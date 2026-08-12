@@ -1,9 +1,9 @@
 import { ArrowLeftIcon } from "@zenncore/icons";
 import { unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import { Link } from "@/i18n/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { Link } from "@/i18n/navigation";
 import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
 import { Environment } from "@/server/utils/environment";

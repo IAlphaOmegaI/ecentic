@@ -18,6 +18,20 @@ import { CheckIcon, CheckBadgeIcon, CursorGrowIcon } from "@zenncore/icons";
 
 Always verify an icon exists before importing — do not assume icons from other libraries exist here (e.g. `XMarkIcon` does not exist — use `XIcon`).
 
+### Adding a new icon
+
+Source new icons from Nucleo via the `mcp__nucleo__*` MCP tools (`nucleo_search` to find candidates, `nucleo_get` to fetch the SVG by id), then generate the component with the `icon` turbo generator — never hand-write an icon file.
+
+```bash
+bunx turbo gen icon -a "cart-shopping" '<svg ...>...</svg>'
+```
+
+This adds `packages/shared/icons/src/icons/{kebab-name}.tsx` and re-exports it from `index.ts`. The generator strips Nucleo editor metadata (`class`, `data-*`) and carries the source `viewBox`/`width`/`height` through automatically.
+
+Pick a style that renders in `currentColor`: `outline`, `glyph`, `outline-duo`, or `glyph-duo` (duo styles use `fillOpacity` for the secondary tone, matching the existing two-tone icons). Avoid the `colored`/glassmorphism styles (e.g. "Nucleo Glass" packs) — they rely on gradients, blur filters, and masks that don't survive the currentColor rewrite and will render with frozen colors instead of following `text-*` classes. If a colored icon is genuinely needed, add it as a raw SVG/image asset outside this generator, not as an `@zenncore/icons` component.
+
+After generating, spot-check the output against `git diff` — the transformer is a regex-based best-effort pass, not a full SVGR/SVGO pipeline, so unusual source SVGs may still need minor manual cleanup.
+
 ---
 
 ## 22b. Utilities — `@zenncore/utils`
@@ -158,7 +172,9 @@ import {
   DataTablePagination,
   DataTableProvider,
 } from "@zenncore/web/components";
-import { type ColumnDef } from "@tanstack/react-table";
+// ColumnDef is re-exported pre-bound to the data-table feature set — do not
+// import it from @tanstack/react-table (the raw v9 type requires a TFeatures generic).
+import type { ColumnDef } from "@zenncore/web/components/data-table";
 
 type Row = { _id: string; name: string; status: string };
 

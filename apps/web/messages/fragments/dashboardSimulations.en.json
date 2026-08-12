@@ -1,0 +1,76 @@
+{
+  "dashboard": {
+    "simulations": {
+      "title": "Simulations",
+      "description": "Re-run competitor discovery and win-rate simulations anytime.",
+      "stats": {
+        "productsSelected": "Products Selected",
+        "competitorsSelected": "Competitors Selected",
+        "estimatedSimulations": "Estimated Simulations",
+        "estimatedTime": "Estimated Time",
+        "pickedForScan": "picked for the next scan",
+        "productsCompetitorsModels": "products × competitors × 3 models",
+        "atCurrentSelection": "at the current selection"
+      },
+      "discovery": {
+        "kicker": "01 — Discovery",
+        "title": "Competitor Discovery",
+        "description": "Re-run AI competitor detection using your current products.",
+        "totalCompetitors": "Current total competitors: {count}"
+      },
+      "setup": {
+        "kicker": "02 — Scan Setup",
+        "title": "Choose What to Simulate",
+        "description": "Pick the products and competitors for the next run. The estimate updates as you select.",
+        "products": "Products",
+        "competitors": "Competitors",
+        "clearAll": "Clear all",
+        "selectAll": "Select all",
+        "nothingYet": "Nothing here yet.",
+        "estimate": "{products} products × {competitors} competitors × 3 models",
+        "estimateTotal": "{total} simulations · {duration}"
+      },
+      "run": {
+        "kicker": "03 — Simulation",
+        "title": "Win-Rate Simulation",
+        "description": "Re-run product vs competitor simulations across ChatGPT, Claude & Gemini.",
+        "reset": "Reset",
+        "runSimulation": "Run Simulation",
+        "progress": "Simulation Progress",
+        "phase": "Phase",
+        "winsLosses": "Wins / Losses",
+        "elapsed": "Elapsed",
+        "currentStage": "current stage",
+        "acrossAllModels": "across all models",
+        "sinceStart": "since start",
+        "liveOutput": "Live Output",
+        "lineCount": "{count, plural, one {# line} other {# lines}}",
+        "noLogsYet": "No logs yet. Start a simulation to see live output.",
+        "status": {
+          "done": "Done",
+          "running": "Running",
+          "queued": "Queued"
+        }
+      },
+      "complete": {
+        "winRate": "Win Rate",
+        "products": "Products",
+        "wins": "Wins",
+        "losses": "Losses",
+        "topFinding": "{name} loses on {attributes}. {impact} Costs you {loss}% of simulations."
+      },
+      "toast": {
+        "simulationFailed": "Simulation failed",
+        "nothingSelected": "Nothing selected",
+        "selectProduct": "Select at least one product for the scan.",
+        "selectCompetitor": "Select at least one competitor for the scan."
+      },
+      "skeleton": {
+        "phase": "Phase",
+        "progress": "Progress",
+        "winsLosses": "Wins / Losses",
+        "elapsed": "Elapsed"
+      }
+    }
+  }
+}

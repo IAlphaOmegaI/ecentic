@@ -2,13 +2,7 @@ import { headers } from "next/headers";
 import { cache } from "react";
 import type * as Session from "@/server/app/session";
 import type * as User from "@/server/app/user";
-import {
-  type ContextedAction,
-  defineWithContext,
-  type Enhancer,
-  type GenericContext,
-  type WithContextParams,
-} from "./context";
+import { type Enhancer, type GenericContext, withContext } from "./context";
 import { UnauthenticatedError } from "./error";
 
 export type AuthenticatedContext = GenericContext & {
@@ -23,7 +17,8 @@ export type AuthenticatedContext = GenericContext & {
  * `getSession` itself. The `cookieCache` in `lib/auth.ts` keeps most of those
  * off the database, but it expires every few minutes, and on the render that
  * misses it every caller would go to the session store at once. Keyed on the
- * auth API object, which `getBaseContext` memoises, so one read serves them all.
+ * auth API object, which `withAuth` attaches per call, so one read serves them
+ * all.
  *
  * Outside a request scope React hands back a fresh store per call, degrading to
  * no memoization rather than leaking a session between users.
@@ -60,11 +55,4 @@ export const authenticate: Enhancer<
   };
 };
 
-export const withAuthentication = <
-  T extends ContextedAction<AuthenticatedContext>,
->(
-  ...args: WithContextParams<AuthenticatedContext, T>
-) => {
-  const handler = defineWithContext(authenticate);
-  return handler(...args);
-};
+export const withAuthentication = withContext.append(authenticate);

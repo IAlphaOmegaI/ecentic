@@ -14,14 +14,13 @@ export const authorize = (
   return async (context) => {
     const current = context.session.user.role as UserRole;
 
-    if (!whitelist.includes(current)) {
+    if (!whitelist.includes(current))
       return {
         success: false,
         error: new UnauthorizedError(
           `Insufficient permissions. Required role(s): ${whitelist.join(", ")}`,
         ),
       };
-    }
 
     context.span.setAttribute("session.user.role", current);
 
@@ -34,7 +33,4 @@ export const withAuthorization = <
 >(
   whitelist: UserRole[],
   ...args: WithContextParams<AuthenticatedContext, T>
-) => {
-  const handler = withContext.append(authenticate).append(authorize(whitelist));
-  return handler(...args);
-};
+) => withContext.append(authenticate).append(authorize(whitelist))(...args);

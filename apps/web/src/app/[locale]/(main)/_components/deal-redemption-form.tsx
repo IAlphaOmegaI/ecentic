@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
-import { useRouter } from "@/i18n/navigation";
 import { resultify } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
@@ -13,6 +12,7 @@ import {
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { z } from "zod";
+import { useRouter } from "@/i18n/navigation";
 
 const platforms = ["Shopify", "WooCommerce", "Custom / Headless", "Other"];
 
@@ -119,13 +119,13 @@ export const DealRedemptionForm = ({
 
       if (!response.success || !response.data.ok) {
         const message = await (async () => {
-          if (!response.success) return "Network error — please try again.";
+          if (!response.success) return "Network error. Please try again.";
           const body = await resultify(
             () => response.data.json() as Promise<{ error?: string }>,
           );
           return body.success && body.data.error
             ? body.data.error
-            : "Something went wrong — please try again.";
+            : "Something went wrong. Please try again.";
         })();
 
         toast.add({

@@ -38,10 +38,19 @@ export function resultify<
 >(
   fn: T,
 ): Promise<Result<Awaited<ReturnType<T>>, E>> | Result<ReturnType<T>, E> {
+  // Drizzle query builders are PromiseLike but not `instanceof Promise`.
+  // Without this, `resultify(() => db.select()...)` returns the builder as
+  // `data` instead of awaiting rows.
+  const isThenable = (value: unknown): value is PromiseLike<unknown> =>
+    typeof value === "object" &&
+    value !== null &&
+    "then" in value &&
+    typeof (value as { then: unknown }).then === "function";
+
   try {
     const result = fn();
 
-    if (result instanceof Promise) {
+    if (result instanceof Promise || isThenable(result)) {
       const handler = async (): Promise<Result<Awaited<ReturnType<T>>, E>> => {
         try {
           const data = await result;

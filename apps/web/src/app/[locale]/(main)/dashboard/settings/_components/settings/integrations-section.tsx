@@ -5,8 +5,42 @@ import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import type * as GoogleMerchant from "@/server/app/integration/google-merchant";
 import * as Store from "@/server/app/store";
+
+/** Compact Google Shopping state for the store row — management lives on the
+ * dedicated /dashboard/{store}/google-shopping page. */
+const googleSummary = (
+  status: GoogleMerchant.Status | null,
+): { label: string; className: string } => {
+  if (!status?.supported)
+    return {
+      label: "Coming soon",
+      className: "bg-foreground/5 text-foreground-dimmed",
+    };
+
+  switch (true) {
+    case !status.connected:
+      return {
+        label: "Not connected",
+        className: "bg-foreground/5 text-foreground-dimmed",
+      };
+    case status.provisioned:
+      return {
+        label: `Active · ${status.offers.live} live`,
+        className: "bg-success/10 text-success",
+      };
+    case status.linkState === "active":
+      return { label: "Linked", className: "bg-success/10 text-success" };
+    default:
+      return {
+        label: "Setup in progress",
+        className: "bg-warning/10 text-warning",
+      };
+  }
+};
 
 const PLATFORM_BADGE: Record<string, { label: string; className: string }> = {
   shopify: { label: "SH", className: "bg-[#96BF48] text-background-rich" },
@@ -19,7 +53,14 @@ const PLATFORM_BADGE: Record<string, { label: string; className: string }> = {
   csv: { label: "CSV", className: "bg-accent-foreground text-background" },
 };
 
-export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
+export const IntegrationsSection = ({
+  stores,
+  google,
+}: {
+  stores: Store.Type[];
+  google: Record<string, GoogleMerchant.Status | null>;
+}) => {
+  const translate = useTranslations("dashboard.settings.integrations");
   const toast = useToastManager();
 
   const [handleSync, isSyncing] = useAsyncAction(async (store: Store.Type) => {
@@ -31,23 +72,32 @@ export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
           return result.data;
         })(),
         {
-          loading: { title: "Syncing products…", description: store.domain },
-          success: { title: "Products synced", description: store.domain },
+          loading: {
+            title: translate("toast.syncing"),
+            description: store.domain,
+          },
+          success: {
+            title: translate("toast.synced"),
+            description: store.domain,
+          },
           error: (error: unknown) => {
             const message =
-              error instanceof Error ? error.message : "Something went wrong";
+              error instanceof Error
+                ? error.message
+                : translate("toast.genericError");
             const needsReconnect =
               (store.platform === "shopify" ||
                 store.platform === "shopify-public") &&
               /reconnect your store|access token/i.test(message);
-            // Send the OAuth round-trip back to this exact screen.
             const returnTo = `${window.location.pathname}${window.location.search}`;
 
             return {
-              title: needsReconnect ? "Reconnect required" : "Sync failed",
+              title: needsReconnect
+                ? translate("toast.reconnectRequired")
+                : translate("toast.syncFailed"),
               description: message,
               ...(needsReconnect && {
-                actionLabel: "Reconnect",
+                actionLabel: translate("toast.reconnectAction"),
                 onAction: () => {
                   window.location.href = `/api/integrations/shopify/install?shop=${encodeURIComponent(store.domain)}&return_to=${encodeURIComponent(returnTo)}`;
                 },
@@ -56,7 +106,6 @@ export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
           },
         },
       )
-      // The rejection already surfaced through the error toast.
       .catch(() => null);
   });
 
@@ -65,12 +114,12 @@ export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
       <div>
         <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
           <p className="font-semibold text-foreground-rich text-sm">
-            Connected Stores
+            {translate("title")}
           </p>
         </div>
         {stores.length === 0 ? (
           <div className="p-6 text-foreground-dimmed text-sm">
-            No stores connected yet.
+            {translate("empty")}
           </div>
         ) : (
           <div className="divide-y divide-accent-foreground">
@@ -79,40 +128,65 @@ export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
                 label: store.platform.slice(0, 2).toUpperCase(),
                 className: "bg-foreground-dimmed text-background",
               };
+              const status = google[store.id] ?? null;
+              const summary = googleSummary(status);
+
               return (
-                <div
-                  key={store.id}
-                  className="flex items-center justify-between px-4 py-4"
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={cn(
-                        "flex size-9 items-center justify-center rounded-md font-bold text-sm",
-                        badge.className,
-                      )}
-                    >
-                      {badge.label}
+                <div key={store.id} className="px-4 py-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={cn(
+                          "flex size-9 items-center justify-center rounded-md font-bold text-sm",
+                          badge.className,
+                        )}
+                      >
+                        {badge.label}
+                      </div>
+                      <div>
+                        <p className="font-medium text-foreground text-sm">
+                          {store.domain}
+                        </p>
+                        <p className="mt-0.5 text-foreground-dimmed text-xs capitalize">
+                          {store.platform} · {store.name}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium text-foreground text-sm">
-                        {store.domain}
-                      </p>
-                      <p className="mt-0.5 text-foreground-dimmed text-xs capitalize">
-                        {store.platform} · {store.name}
-                      </p>
+                    <div className="flex items-center gap-3">
+                      <span className="rounded-full bg-success/10 px-2 py-0.5 font-semibold text-[11px] text-success uppercase tracking-[0.05em]">
+                        {translate("connected")}
+                      </span>
+                      <Button
+                        color="neutral"
+                        disabled={isSyncing}
+                        onClick={() => handleSync(store)}
+                      >
+                        {isSyncing
+                          ? translate("action.syncing")
+                          : translate("action.sync")}
+                      </Button>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className="rounded-full bg-success/10 px-2 py-0.5 font-semibold text-[11px] text-success uppercase tracking-[0.05em]">
-                      Connected
+                  <div className="mt-3 flex flex-wrap items-center gap-3 border-accent-foreground border-t pt-3">
+                    <span className="text-foreground-dimmed text-xs">
+                      Google Shopping
                     </span>
-                    <Button
-                      color="neutral"
-                      disabled={isSyncing}
-                      onClick={() => handleSync(store)}
+                    <span
+                      className={cn(
+                        "rounded-full px-2 py-0.5 font-semibold text-[11px] uppercase tracking-[0.05em]",
+                        summary.className,
+                      )}
                     >
-                      {isSyncing ? "Syncing…" : "Sync Now"}
-                    </Button>
+                      {summary.label}
+                    </span>
+                    {status?.supported && (
+                      <Link
+                        href={`/dashboard/${store.id}/google-shopping`}
+                        className="text-primary text-xs hover:underline"
+                      >
+                        Manage →
+                      </Link>
+                    )}
                   </div>
                 </div>
               );
@@ -124,10 +198,10 @@ export const IntegrationsSection = ({ stores }: { stores: Store.Type[] }) => {
       <div className="p-4">
         <Link
           href="/onboarding/connect"
-          className="flex w-fit items-center gap-2 rounded-md border border-accent-foreground border-dashed px-4 py-2.5 text-foreground-dimmed text-sm transition-colors duration-150 hover:border-primary hover:text-primary"
+          className="flex w-fit items-center gap-2 rounded-md border border-accent-foreground border-dashed px-4 py-2.5 text-foreground-dimmed text-sm transition-colors duration-150 hover:border-primary hover:text-primary-text"
         >
           <PlusIcon className="size-4" />
-          Connect another store
+          {translate("action.connectAnother")}
         </Link>
       </div>
     </div>

@@ -2,6 +2,8 @@
 
 import { Checkbox, CheckboxGroup } from "@zenncore/web/components/checkbox";
 import { Radio, RadioGroup } from "@zenncore/web/components/radio";
+import { useMessages, useTranslations } from "next-intl";
+import { useMemo } from "react";
 
 export const SimulationSection = ({
   selectedModels,
@@ -18,32 +20,36 @@ export const SimulationSection = ({
   persona: string;
   onPersonaChange: (value: string) => void;
 }) => {
-  const aiModels = [
-    { value: "gpt", label: "ChatGPT", tier: "compete" },
-    {
-      value: "claude-3-5-sonnet",
-      label: "Claude 3.5 Sonnet",
-      tier: "compete",
-    },
-    { value: "gemini-pro", label: "Gemini Pro", tier: "dominate" },
-    { value: "perplexity", label: "Perplexity", tier: "dominate" },
-  ] as const;
+  const translate = useTranslations("dashboard.settings.simulation");
+  const messages = useMessages();
 
-  const frequencyOptions = ["Manual only", "Daily", "Weekly"] as const;
+  const frequencyOptions = messages.dashboard.settings.simulation.frequency
+    .options as string[];
+  const personaOptions = messages.dashboard.settings.simulation.persona
+    .options as string[];
 
-  const personaOptions = [
-    "Budget-conscious shopper",
-    "Premium buyer",
-    "Technical researcher",
-    "Gift purchase",
-    "Custom...",
-  ] as const;
+  const aiModels = useMemo(
+    () =>
+      [
+        { value: "gpt", label: "ChatGPT", tier: "compete" as const },
+        {
+          value: "claude-3-5-sonnet",
+          label: "Claude 3.5 Sonnet",
+          tier: "compete" as const,
+        },
+        { value: "gemini-pro", label: "Gemini Pro", tier: "dominate" as const },
+        { value: "perplexity", label: "Perplexity", tier: "dominate" as const },
+      ] as const,
+    [],
+  );
 
   return (
     <div className="divide-y divide-accent-foreground">
       <div>
         <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
-          <p className="font-medium text-base text-foreground">AI Models</p>
+          <p className="font-medium text-base text-foreground">
+            {translate("models.title")}
+          </p>
         </div>
         <div className="p-6">
           <CheckboxGroup
@@ -56,7 +62,7 @@ export const SimulationSection = ({
                 <Checkbox value={model.value}>{model.label}</Checkbox>
                 {model.tier === "dominate" && (
                   <span className="bg-warning/10 px-1.5 py-0.5 text-sm text-warning">
-                    Dominate+
+                    {translate("models.dominateBadge")}
                   </span>
                 )}
               </div>
@@ -68,7 +74,7 @@ export const SimulationSection = ({
       <div>
         <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
           <p className="font-medium text-base text-foreground">
-            Simulation Frequency
+            {translate("frequency.title")}
           </p>
         </div>
         <div className="p-6">
@@ -89,7 +95,7 @@ export const SimulationSection = ({
       <div>
         <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
           <p className="font-medium text-base text-foreground">
-            Purchase Persona
+            {translate("persona.title")}
           </p>
         </div>
         <div className="p-6">
