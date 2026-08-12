@@ -8,6 +8,7 @@ import { localizePath } from "@/i18n/locale";
 import type { Locale } from "@/i18n/routing";
 import { routing } from "@/i18n/routing";
 import { splitBlogHtmlByH2 } from "@/lib/blog-html";
+import { brandedTitle } from "@/lib/seo";
 import * as Blog from "@/server/app/blog";
 import {
   EditorialFooter,
@@ -37,6 +38,19 @@ const languageAlternates = (slug: string) => ({
   en: `/blog/${slug}`,
   es: `/es/blog/${slug}`,
 });
+
+/**
+ * A title tag is not an H1. Where the headline we want on the page is longer
+ * than the ~60 characters Google renders, the tag gets its own copy here rather
+ * than a truncation — keyed by slug, so it survives BLG re-ingesting the post.
+ */
+const BLOG_TITLE_TAGS: Record<string, string> = {
+  "ecentic-eu-presence-partnership-compliance-ai-visibility-bundle":
+    "EU Presence Bundle: Compliance + AI Visibility",
+};
+
+const blogTitleTag = (post: { slug: string; title: string }) =>
+  brandedTitle(BLOG_TITLE_TAGS[post.slug] ?? post.title);
 
 type BlogPageProps = {
   params: Promise<{ slug: string }>;
@@ -71,7 +85,9 @@ export const generateMetadata = async ({
   const path = localizePath(`/blog/${post.slug}`, locale);
 
   return {
-    title: post.title,
+    // `absolute` so the locale layout's `"%s | ecentic"` cannot re-append a
+    // suffix `brandedTitle` may have deliberately dropped.
+    title: { absolute: blogTitleTag(post) },
     description: post.description,
     keywords: [...post.tags],
     alternates: {

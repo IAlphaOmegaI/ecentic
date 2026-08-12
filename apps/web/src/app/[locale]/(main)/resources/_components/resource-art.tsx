@@ -2,6 +2,7 @@ import { CodeIcon, FileIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import * as motion from "motion/react-client";
 import Image, { type StaticImageData } from "next/image";
+import { getTranslations } from "next-intl/server";
 import Background from "@/public/images/background.webp";
 import chatgpt from "@/public/images/chatgpt.svg";
 import claude from "@/public/images/claude.svg";
@@ -43,118 +44,127 @@ const agentScores = [
   { name: "Perplexity", logo: perplexity, score: 74, bar: "bg-purple-500" },
 ] as const;
 
-export const ScanArt = ({ highlighted = false, className }: ScanArt.Props) => (
-  <div
-    className={cn(
-      "relative h-full min-h-64 w-full overflow-hidden bg-background-dimmed",
-      className,
-    )}
-  >
-    <Image
-      src={Background}
-      alt=""
-      aria-hidden
-      fill
-      sizes="(max-width: 768px) 100vw, 400px"
-      className={cn(
-        "pointer-events-none select-none object-contain object-top",
-        highlighted ? "opacity-25 invert" : "opacity-35 invert",
-      )}
-    />
-    <div
-      aria-hidden
-      className={cn(
-        "pointer-events-none absolute inset-0 bg-radial-[at_50%_15%]",
-        highlighted
-          ? "from-white/5 to-transparent"
-          : "from-primary/5 to-transparent",
-      )}
-    />
-    <div className="relative flex h-full min-h-64 flex-col justify-center gap-6 px-6 py-8">
-      <div className="text-center">
-        <motion.span
-          initial={{ opacity: 0, scale: 0.85 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{
-            type: "spring",
-            stiffness: 280,
-            damping: 20,
-            delay: 0.1,
-          }}
-          className={cn(
-            "font-bold text-8xl leading-none tracking-tight md:text-9xl",
-            highlighted ? "text-white" : "text-primary",
-          )}
-        >
-          72
-        </motion.span>
-        <p
-          className={cn(
-            "mt-2 font-medium text-sm",
-            highlighted ? "text-white/80" : "text-foreground-dimmed",
-          )}
-        >
-          AI Agent Score
-        </p>
-        <p
-          className={cn(
-            "text-xs",
-            highlighted ? "text-white/60" : "text-foreground-dimmed",
-          )}
-        >
-          out of 100
-        </p>
-      </div>
+export const ScanArt = async ({
+  highlighted = false,
+  className,
+}: ScanArt.Props) => {
+  const translate = await getTranslations("general");
 
-      <ul className="flex flex-col gap-2.5">
-        {agentScores.map((agent, index) => (
-          <li key={agent.name} className="flex items-center gap-3">
-            <Image src={agent.logo} alt="" className="size-5 shrink-0" />
-            <div className="flex min-w-0 flex-1 flex-col gap-1">
-              <div className="flex items-center justify-between gap-2">
-                <span
+  return (
+    <div
+      className={cn(
+        "relative h-full min-h-64 w-full overflow-hidden bg-background-dimmed",
+        className,
+      )}
+    >
+      {/* `aria-hidden` keeps the motif out of the accessibility tree; the `alt`
+        is crawler-only copy, since audits read an empty one as missing. */}
+      <Image
+        src={Background}
+        alt={translate("backdropAlt")}
+        aria-hidden
+        fill
+        sizes="(max-width: 768px) 100vw, 400px"
+        className={cn(
+          "pointer-events-none select-none object-contain object-top",
+          highlighted ? "opacity-25 invert" : "opacity-35 invert",
+        )}
+      />
+      <div
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute inset-0 bg-radial-[at_50%_15%]",
+          highlighted
+            ? "from-white/5 to-transparent"
+            : "from-primary/5 to-transparent",
+        )}
+      />
+      <div className="relative flex h-full min-h-64 flex-col justify-center gap-6 px-6 py-8">
+        <div className="text-center">
+          <motion.span
+            initial={{ opacity: 0, scale: 0.85 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{
+              type: "spring",
+              stiffness: 280,
+              damping: 20,
+              delay: 0.1,
+            }}
+            className={cn(
+              "font-bold text-8xl leading-none tracking-tight md:text-9xl",
+              highlighted ? "text-white" : "text-primary",
+            )}
+          >
+            72
+          </motion.span>
+          <p
+            className={cn(
+              "mt-2 font-medium text-sm",
+              highlighted ? "text-white/80" : "text-foreground-dimmed",
+            )}
+          >
+            AI Agent Score
+          </p>
+          <p
+            className={cn(
+              "text-xs",
+              highlighted ? "text-white/60" : "text-foreground-dimmed",
+            )}
+          >
+            out of 100
+          </p>
+        </div>
+
+        <ul className="flex flex-col gap-2.5">
+          {agentScores.map((agent, index) => (
+            <li key={agent.name} className="flex items-center gap-3">
+              <Image src={agent.logo} alt="" className="size-5 shrink-0" />
+              <div className="flex min-w-0 flex-1 flex-col gap-1">
+                <div className="flex items-center justify-between gap-2">
+                  <span
+                    className={cn(
+                      "truncate font-medium text-xs",
+                      highlighted ? "text-white/90" : "text-foreground",
+                    )}
+                  >
+                    {agent.name}
+                  </span>
+                  <span
+                    className={cn(
+                      "shrink-0 font-semibold text-xs tabular-nums",
+                      highlighted ? "text-white" : "text-primary",
+                    )}
+                  >
+                    {agent.score}%
+                  </span>
+                </div>
+                <div
                   className={cn(
-                    "truncate font-medium text-xs",
-                    highlighted ? "text-white/90" : "text-foreground",
+                    "h-1.5 w-full overflow-hidden rounded-full",
+                    highlighted ? "bg-white/15" : "bg-accent-foreground",
                   )}
                 >
-                  {agent.name}
-                </span>
-                <span
-                  className={cn(
-                    "shrink-0 font-semibold text-xs tabular-nums",
-                    highlighted ? "text-white" : "text-primary",
-                  )}
-                >
-                  {agent.score}%
-                </span>
+                  <motion.div
+                    initial={{ width: 0 }}
+                    whileInView={{ width: `${agent.score}%` }}
+                    viewport={{ once: true, margin: "-40px" }}
+                    transition={{
+                      duration: 0.9,
+                      ease: [0.22, 1, 0.36, 1],
+                      delay: 0.25 + index * 0.1,
+                    }}
+                    className={cn("h-full rounded-full", agent.bar)}
+                  />
+                </div>
               </div>
-              <div
-                className={cn(
-                  "h-1.5 w-full overflow-hidden rounded-full",
-                  highlighted ? "bg-white/15" : "bg-accent-foreground",
-                )}
-              >
-                <motion.div
-                  initial={{ width: 0 }}
-                  whileInView={{ width: `${agent.score}%` }}
-                  viewport={{ once: true, margin: "-40px" }}
-                  transition={{
-                    duration: 0.9,
-                    ease: [0.22, 1, 0.36, 1],
-                    delay: 0.25 + index * 0.1,
-                  }}
-                  className={cn("h-full rounded-full", agent.bar)}
-                />
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export namespace ScanArt {
   export type Props = {

@@ -6,17 +6,20 @@ import { InstallCta } from "./install-cta";
 
 export const Hero = async () => {
   const translate = await getTranslations("home");
+  const translateGeneral = await getTranslations("general");
 
   return (
     <section className="relative isolate flex flex-col items-center gap-6 px-4 py-20 text-center md:py-28">
-      {/* Stays `alt=""`: unlike the per-page motifs this is a flat texture at 20%
-          opacity behind the headline, and naming it would only add noise to a
-          screen reader. `object-contain` caps the rendered width well under the
-          viewport, so `sizes` says so — left at `100vw` the browser fetched the
-          3840w candidate for an image that never paints above ~900px. */}
+      {/* `aria-hidden` keeps this out of the accessibility tree — it is a flat
+          texture at 20% opacity behind the headline, so a screen reader should
+          never announce it. The `alt` is therefore crawler-only copy: audits
+          read an empty one as missing, and agents get the motif named for free.
+          `object-contain` caps the rendered width well under the viewport, so
+          `sizes` says so — left at `100vw` the browser fetched the 3840w
+          candidate for an image that never paints above ~900px. */}
       <Image
         src={Background}
-        alt=""
+        alt={translateGeneral("backdropAlt")}
         aria-hidden
         fill
         sizes="(max-width: 768px) 100vw, 900px"
