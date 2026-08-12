@@ -32,7 +32,7 @@ export const CookieConsent = () => {
               {translate("message")}{" "}
               <Link
                 href="/privacy-policy"
-                className="text-primary underline underline-offset-2"
+                className="text-primary-text underline underline-offset-2"
               >
                 {translate("privacy")}
               </Link>

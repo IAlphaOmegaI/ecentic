@@ -121,15 +121,16 @@ export const PartnershipBundle = async () => {
 
           <div className="relative flex h-full min-h-full flex-col justify-end overflow-hidden bg-background-dimmed p-6 md:p-12">
             <div className="pointer-events-none absolute inset-y-0 left-0 z-0 h-full w-full overflow-hidden opacity-80 [mask-image:linear-gradient(to_right,black,transparent)]">
-              {/* See partnership-banner: `inset-0` pins `right: 0` and beats
-                  `w-auto`, distorting the square flag. */}
+              {/* See partnership-banner: `inset-0` and preflight's
+                  `img { max-width: 100% }` both fought `w-auto`, distorting the
+                  square flag. */}
               <Image
                 src="/images/eu-flag.webp"
                 alt={translate("partnershipBundle.flagAlt")}
                 unoptimized
                 width={600}
                 height={600}
-                className="-top-48 absolute left-[calc(50%+48px)] h-[250%] w-auto rotate-180"
+                className="absolute -top-48 left-[calc(50%+48px)] h-[250%] w-auto max-w-none rotate-180"
               />
             </div>
             <div className="relative z-10 flex w-full flex-col gap-4 border-accent-foreground border-t border-dashed pt-6">
