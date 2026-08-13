@@ -15,6 +15,7 @@ import {
 import * as Product from "../../product";
 import * as Store from "../../store";
 import * as StoreAccount from "../../store-account";
+import { redeemRefreshToken } from "./token";
 
 type Type = {
   id: number;
@@ -328,7 +329,7 @@ export const refreshAccessToken = withContext(
     if (!storeAccount.data?.refreshToken)
       return { success: false, error: new Error("No refresh token stored") };
 
-    const { refreshTokenExpiresAt } = storeAccount.data;
+    const { refreshToken, refreshTokenExpiresAt } = storeAccount.data;
 
     if (refreshTokenExpiresAt && refreshTokenExpiresAt.getTime() < Date.now())
       return {
@@ -345,45 +346,21 @@ export const refreshAccessToken = withContext(
 
     const shopId = normalizeHostname(store.data.domain);
 
-    const tokenResponse = await HTTP.request(
-      `https://${shopId}/admin/oauth/access_token`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          client_id: SHOPIFY_API_KEY,
-          client_secret: SHOPIFY_API_SECRET,
-          grant_type: "refresh_token",
-          refresh_token: storeAccount.data.refreshToken,
-        }),
-      },
-    );
+    const token = await redeemRefreshToken({
+      shop: shopId,
+      clientId: SHOPIFY_API_KEY,
+      clientSecret: SHOPIFY_API_SECRET,
+      refreshToken,
+    });
 
-    const t = await HTTP.parse<{
-      access_token: string;
-      expires_in: number;
-      refresh_token: string;
-      refresh_token_expires_in: number;
-    }>(tokenResponse);
-
-    // Shopify answers a rejected refresh with an HTML error page, so the parse
-    // failure here means the stored refresh token (or the app credentials) are
-    // no longer valid — only a fresh OAuth install fixes that.
-    if (!t.success)
-      return {
-        success: false,
-        error: new Error(
-          "Shopify rejected the token refresh. Please reconnect your store (Settings → Integrations).",
-          { cause: t.error },
-        ),
-      };
+    if (!token.success) return token;
 
     return StoreAccount.update(Environment.SERVER, storeAccount.data.id, {
-      accessToken: t.data.access_token,
-      accessTokenExpiresAt: new Date(Date.now() + t.data.expires_in * 1000),
-      refreshToken: t.data.refresh_token,
+      accessToken: token.data.access_token,
+      accessTokenExpiresAt: new Date(Date.now() + token.data.expires_in * 1000),
+      refreshToken: token.data.refresh_token,
       refreshTokenExpiresAt: new Date(
-        Date.now() + t.data.refresh_token_expires_in * 1000,
+        Date.now() + token.data.refresh_token_expires_in * 1000,
       ),
     });
   },
