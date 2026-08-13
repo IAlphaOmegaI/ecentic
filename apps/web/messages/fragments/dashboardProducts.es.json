@@ -17,7 +17,7 @@
       },
       "embedBanner": {
         "title": "Los datos estructurados no llegan a tus páginas de producto",
-        "description": "El app embed “Agentic structured data” está desactivado, así que los agentes de IA no ven datos legibles por máquina en tus productos. Activarlo una vez añade datos estructurados a todos los productos de esta tienda.",
+        "description": "El app embed \"Agentic structured data\" está desactivado, así que los agentes de IA no ven datos legibles por máquina en tus productos. Actívalo una vez y todos los productos de esta tienda tendrán datos estructurados.",
         "action": "Activar app embed"
       },
       "quality": {
@@ -68,7 +68,7 @@
           "won": "Ganado",
           "lost": "Perdido",
           "reasoning": "Razonamiento de {model}",
-          "noReasoning": "Sin razonamiento registrado — decidido por puntuación ({productScore} vs {competitorScore})."
+          "noReasoning": "Sin razonamiento registrado. Decidido por puntuación ({productScore} vs {competitorScore})."
         },
         "fields": {
           "title": "Título",
@@ -91,7 +91,7 @@
         },
         "applyOptimization": {
           "title": "Cierra la brecha automáticamente",
-          "description": "ecentic reescribe este listing a partir de las fortalezas de los competidores ganadores y lo publica directamente en tu tienda — sin ediciones manuales.",
+          "description": "ecentic reescribe este listing a partir de las fortalezas de los competidores ganadores y lo publica directamente en tu tienda, sin que tengas que editar nada a mano.",
           "reviewQueue": "Cola de revisión",
           "optimizePublish": "Optimizar y publicar"
         },
@@ -112,7 +112,7 @@
         },
         "optimizeTab": {
           "title": "Optimizar listing",
-          "description": "Puntuaciones de calidad de contenido según categoría para los campos que leen los agentes de IA — más cómo está posicionado este listing para su audiencia.",
+          "description": "Puntuaciones de calidad de contenido según categoría para los campos que leen los agentes de IA, más cómo está posicionado este listing para su audiencia.",
           "completeness": "Completitud:",
           "currentListing": "02 — Listing actual",
           "characters": "{count} caracteres",
@@ -123,12 +123,12 @@
           "structuredDataHelp": "El app embed ya renderiza datos estructurados por defecto del contenido del producto en vivo. Al publicar se escribe esta versión optimizada por IA en el metafield {metafield}, y el embed la renderiza en lugar de la predeterminada.",
           "publishStructuredData": "Publicar datos estructurados optimizados",
           "publishing": "Publicando…",
-          "noStructuredDataYet": "Aún no hay datos estructurados optimizados — el app embed renderiza el markup por defecto del contenido del producto en vivo. Genera una versión optimizada por IA para sustituirla.",
+          "noStructuredDataYet": "Aún no hay datos estructurados optimizados. El app embed renderiza el markup por defecto del contenido del producto en vivo. Genera una versión optimizada por IA para sustituirla.",
           "generateJsonLd": "Generar JSON-LD optimizado",
           "generating": "Generando…",
           "generationFailed": "Error al generar",
           "structuredDataPublished": "Datos estructurados optimizados publicados",
-          "structuredDataPublishedDescription": "Escrito en el metafield ecentic.structured_data — el app embed ahora lo renderiza en lugar del markup de producto por defecto. Si el embed está desactivado, actívalo en el editor de temas y pulsa Guardar.",
+          "structuredDataPublishedDescription": "Escrito en el metafield ecentic.structured_data. El app embed ahora lo renderiza en lugar del markup de producto por defecto. Si el embed está desactivado, actívalo en el editor de temas y pulsa Guardar.",
           "openThemeEditor": "Abrir editor de temas",
           "listingAuditKicker": "01 — Auditoría de listing con IA",
           "status": {
@@ -141,11 +141,11 @@
           },
           "embedNotice": {
             "embedOffTitle": "App embed desactivado",
-            "embedOffText": "Los datos estructurados optimizados están publicados para este producto, pero el app embed “Agentic structured data” está desactivado — ningún markup de ecentic llega a la página. Activarlo una vez aplica a todos los productos de la tienda.",
+            "embedOffText": "Los datos estructurados optimizados están publicados para este producto, pero el app embed \"Agentic structured data\" está desactivado, así que ningún markup de ecentic llega a la página. Activarlo una vez aplica a todos los productos de la tienda.",
             "missingTitle": "Sin datos estructurados en la página",
-            "missingText": "Los agentes de IA no ven datos de producto legibles por máquina. Activa el app embed “Agentic structured data” — un interruptor añade datos estructurados a todos los productos de la tienda.",
+            "missingText": "Los agentes de IA no ven datos de producto legibles por máquina. Activa el app embed \"Agentic structured data\". Ese único interruptor añade datos estructurados a todos los productos de la tienda.",
             "storeDefaultTitle": "Markup predeterminado de la tienda",
-            "storeDefaultText": "Solo está activo el markup del tema — suele ser escaso (sin GTIN, una oferta, sin detalle de variantes). Activa el app embed de ecentic (aplica a todos los productos) y luego publica datos estructurados optimizados abajo para este producto.",
+            "storeDefaultText": "Solo está activo el markup del tema, y suele ser escaso: sin GTIN, una oferta, sin detalle de variantes. Activa el app embed de ecentic, que aplica a todos los productos, y luego publica datos estructurados optimizados abajo para este.",
             "standardTitle": "Usando markup estándar de ecentic",
             "standardText": "El app embed renderiza datos estructurados por defecto del contenido del producto en vivo. Publica la versión optimizada por IA abajo para ofrecer a los agentes un markup más rico y competitivo para este producto."
           }
@@ -170,7 +170,7 @@
         },
         "csv": {
           "title": "Subir un CSV",
-          "description": "Esta tienda se creó desde un archivo y no desde una plataforma conectada, así que no hay origen upstream del que importar — sube otro CSV para ampliarla.",
+          "description": "Esta tienda se creó desde un archivo y no desde una plataforma conectada, así que no hay origen upstream del que importar. Sube otro CSV para ampliarla.",
           "fieldLabel": "CSV de productos",
           "importing": "Importando…",
           "importCsv": "Importar CSV",

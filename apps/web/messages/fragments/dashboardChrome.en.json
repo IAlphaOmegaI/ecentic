@@ -127,7 +127,7 @@
         "pricePerMonth": "/month",
         "action": {
           "primary": "Upgrade Now",
-          "secondary": "Maybe later — {days} days remaining"
+          "secondary": "Maybe later ({days} days remaining)"
         }
       },
       "features": [
@@ -178,7 +178,7 @@
           "medium": "You're competitive, but there's significant room to win more.",
           "high": "You're ahead of most competitors. Let's make sure you stay there."
         },
-        "topFinding": "{name} loses on {attributes} — {impact} Costs you {lossPercentage}% of simulations."
+        "topFinding": "{name} loses on {attributes}. {impact} Costs you {lossPercentage}% of simulations."
       },
       "providers": {
         "gpt4": {
@@ -299,7 +299,7 @@
         },
         "publishable": {
           "label": "Auto-publish eligible",
-          "detail": "Fixable by rewriting the listing — approve to publish."
+          "detail": "Fixable by rewriting the listing. Approve to publish."
         },
         "manualFix": {
           "label": "Manual-fix only",
@@ -354,7 +354,7 @@
       "roadmap": {
         "kicker": "01 — What to expect",
         "title": "Optimization outlook",
-        "description": "How agent win rate typically compounds over six months — from first publish lift (24–48h) to storefront traffic around day {trafficDays}, then catalog-wide compounding.",
+        "description": "How agent win rate typically compounds over six months: first publish lift in 24–48h, storefront traffic around day {trafficDays}, then catalog-wide compounding.",
         "phaseLabel": "{title} phase",
         "current": "Current",
         "liftPoints": "+{points} pts",
@@ -387,7 +387,7 @@
           "foundation": {
             "title": "Foundation",
             "window": "Days 0–14",
-            "summary": "Scan, rewrite weak listings, and ship structured data so agents can read you. Simulation win rate moves first — usually within 24–48 hours of publish.",
+            "summary": "Scan, rewrite weak listings, and ship structured data so agents can read you. Simulation win rate moves first, usually within 24–48 hours of publish.",
             "outcomes": [
               "Approve pending listing rewrites (title + description)",
               "Publish JSON-LD / feed-ready attributes on key SKUs",
@@ -433,13 +433,13 @@
     "visibility": {
       "eyebrow": "Agent Visibility",
       "title": "Where AI shopping agents actually see this store",
-      "description": "Readiness checks run against the real ingestion surfaces — robots.txt, rendered storefront HTML, offer identity, and feeds — and live rank measurement in the Shopify Global Catalog that ChatGPT, Perplexity, and Copilot query.",
+      "description": "Readiness checks run against the real ingestion surfaces: robots.txt, rendered storefront HTML, offer identity, and feeds. Rank is measured live in the Shopify Global Catalog that ChatGPT, Perplexity, and Copilot query.",
       "rankSection": {
         "eyebrow": "Live shelf position",
         "title": "Rank this store in the Global Catalog for a buyer query"
       },
       "audit": {
-        "scoreDetail": "agent-readiness across automated checks — measured against what AI surfaces actually read, not ecentic's own data",
+        "scoreDetail": "agent-readiness across automated checks, measured against what AI surfaces actually read rather than ecentic's own data",
         "checkStatus": {
           "pass": "Pass",
           "warn": "Warn",
@@ -491,7 +491,7 @@
     "discovery": {
       "statusPill": "AI Visibility — Store discovery",
       "title": "AI Discovery",
-      "description": "See which stores AI shopping agents recommend for a query — and exactly why your store did or didn't make the cut, and how it ranked.",
+      "description": "See which stores AI shopping agents recommend for a query, why your store did or didn't make the cut, and where it ranked.",
       "targetStore": {
         "label": "Target store",
         "placeholder": "your-store.example.com",
@@ -526,7 +526,7 @@
       "loading": "Querying ChatGPT, Claude, Gemini and Perplexity…",
       "empty": {
         "status": "No run yet",
-        "description": "Add one or more shopping queries above, then run discovery to see which stores AI agents recommend — and how your store compares."
+        "description": "Add one or more shopping queries above, then run discovery to see which stores AI agents recommend and how your store compares."
       },
       "results": {
         "targetStore": "Target store"
@@ -642,7 +642,7 @@
       "advancedValidator": {
         "kicker": "Advanced testing",
         "title": "Endpoint & lifecycle tests",
-        "description": "Probes all service endpoints declared in the profile and simulates the full AI agent checkout lifecycle — Create → Update → Complete → Cancel.",
+        "description": "Probes all service endpoints declared in the profile and simulates the full AI agent checkout lifecycle: Create → Update → Complete → Cancel.",
         "fields": {
           "domain": {
             "label": "Domain",
@@ -653,7 +653,7 @@
           "primary": "Run advanced tests",
           "running": "Testing…"
         },
-        "hint": "Makes live HTTP requests to the merchant server — probe inputs may create test carts.",
+        "hint": "Makes live HTTP requests to the merchant server. Probe inputs may create test carts.",
         "toast": {
           "failed": "Advanced check failed"
         },
@@ -820,7 +820,7 @@
       "session": {
         "changeStore": "Change store",
         "emptyTitle": "What should the agent do?",
-        "emptyDescription": "You're connected to {host}. The agent runs live UCP calls — search the catalog, inspect a product, build a cart, or start a checkout.",
+        "emptyDescription": "You're connected to {host}. The agent runs live UCP calls: search the catalog, inspect a product, build a cart, or start a checkout.",
         "suggestions": [
           "Show me details for the first product",
           "Add the first product to a new cart",
@@ -863,7 +863,7 @@
       },
       "quota": {
         "title": "You've used all {limit} free playground messages",
-        "description": "Create an account to keep running UCP flows against your own store — no message limit.",
+        "description": "Create an account to keep running UCP flows against your own store, with no message limit.",
         "action": {
           "primary": "Create free account"
         }
@@ -1081,11 +1081,11 @@
         "choosePlan": {
           "title": "Choose how you pay",
           "description": "Start free with pay-as-you-go, or pick a flat monthly subscription with no performance fee.",
-          "startPayg": "Start Pay-as-you-go — free, no card"
+          "startPayg": "Start Pay-as-you-go (free, no card)"
         },
         "performanceFee": {
           "title": "Performance Fee",
-          "description": "{rate}% on AI-attributed orders · capped at {cap}/mo. Free to start — you only pay when an agent buys because of an optimization we made, never on your other sales.",
+          "description": "{rate}% on AI-attributed orders · capped at {cap}/mo. Free to start. You only pay when an agent buys because of an optimization we made, never on your other sales.",
           "actionNeeded": "Action needed",
           "active": "Active",
           "off": "Off",
@@ -1162,7 +1162,7 @@
       "description": "Download or schedule automated reports on your agent performance.",
       "shareable": {
         "title": "Shareable Win Rate Report",
-        "description": "Generate a public URL for a beautifully formatted win rate report — designed for sharing on Twitter, LinkedIn, or with your team.",
+        "description": "Generate a public URL for your win rate report, formatted for sharing on Twitter, LinkedIn, or with your team.",
         "action": {
           "primary": "Generate Shareable Report"
         },

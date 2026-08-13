@@ -83,7 +83,7 @@ export const Guides = async () => {
 
           <div className="flex h-full flex-col justify-between gap-6 bg-background-rich p-6 md:p-10">
             <RevealItem className="flex flex-col items-start gap-3">
-              <p className="font-medium text-primary text-sm">
+              <p className="font-medium text-primary-text text-sm">
                 {translate("guides.walkthrough.eyebrow")}
               </p>
               <h3 className="font-body font-medium text-3xl text-foreground">

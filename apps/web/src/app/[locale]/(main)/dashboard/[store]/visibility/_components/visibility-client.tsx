@@ -174,7 +174,7 @@ export const RankChecker = ({
                       href={offer.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="block truncate font-medium text-foreground text-sm hover:text-primary"
+                      className="block truncate font-medium text-foreground text-sm hover:text-primary-text"
                     >
                       {offer.title}
                     </a>

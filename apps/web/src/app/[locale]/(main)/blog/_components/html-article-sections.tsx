@@ -15,7 +15,7 @@ export const HtmlArticleSections = ({
           key={`${section.number}-${section.title}`}
           left={
             <>
-              <span className="mt-auto font-normal text-2xl text-primary">
+              <span className="font-normal text-2xl text-primary">
                 {section.number}
               </span>
               <h2 className="text-4xl text-foreground leading-snug">

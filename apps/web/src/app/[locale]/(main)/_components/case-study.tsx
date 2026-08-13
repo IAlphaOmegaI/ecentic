@@ -32,7 +32,7 @@ export const CaseStudy = async () => {
               alt="DUA Flavours"
               className="h-11 w-auto self-start"
             />
-            <p className="font-light text-primary text-xl">
+            <p className="font-light text-primary-text text-xl">
               {translate("caseStudy.eyebrow")}
             </p>
             <h2 className="font-body font-medium text-3xl text-foreground md:text-5xl">

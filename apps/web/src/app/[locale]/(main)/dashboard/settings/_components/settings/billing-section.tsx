@@ -712,7 +712,7 @@ export const BillingSection = ({
                         href={invoice.pdfUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-primary text-sm transition-colors hover:text-primary-rich"
+                        className="text-primary-text text-sm transition-colors hover:text-primary-rich"
                       >
                         {translate("download")}
                       </a>

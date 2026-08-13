@@ -577,7 +577,7 @@ export const SimulationsClient = ({
                   <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
                     {run("progress")}
                   </p>
-                  <span className="font-mono font-semibold text-primary text-sm tabular-nums">
+                  <span className="font-mono font-semibold text-primary-text text-sm tabular-nums">
                     {stats.progress}%
                   </span>
                 </div>

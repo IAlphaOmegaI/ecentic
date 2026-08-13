@@ -10,7 +10,10 @@
       "stepProgress": "Paso {current} de {total}",
       "sidebar": {
         "connect": {
-          "headline": { "line1": "Conecta tu", "line2": "catálogo." },
+          "headline": {
+            "line1": "Conecta tu",
+            "line2": "catálogo."
+          },
           "points": [
             "Pega la URL de tu tienda y sincronizamos tus productos al instante",
             "Funciona con Shopify, WooCommerce y feeds personalizados",
@@ -18,15 +21,21 @@
           ]
         },
         "shopify": {
-          "headline": { "line1": "Shopify", "line2": "OAuth." },
+          "headline": {
+            "line1": "Shopify",
+            "line2": "OAuth."
+          },
           "points": [
-            "Autorización con un clic — nunca vemos tu contraseña",
+            "Autorización con un clic, y nunca vemos tu contraseña",
             "Acceso de solo lectura a tu catálogo de productos",
             "Los productos se sincronizan automáticamente"
           ]
         },
         "woocommerce": {
-          "headline": { "line1": "WooCommerce", "line2": "claves API." },
+          "headline": {
+            "line1": "WooCommerce",
+            "line2": "claves API."
+          },
           "points": [
             "Genera una clave REST API en WooCommerce (lectura/escritura para publicar actualizaciones desde ecentic, o solo lectura para sincronizar)",
             "Pega tres campos y nosotros nos encargamos del resto",
@@ -34,7 +43,10 @@
           ]
         },
         "feed": {
-          "headline": { "line1": "Feed de", "line2": "productos." },
+          "headline": {
+            "line1": "Feed de",
+            "line2": "productos."
+          },
           "points": [
             "Compatible con feeds XML y JSON de Google Shopping",
             "Detectamos el formato automáticamente y analizamos cada producto",
@@ -42,7 +54,10 @@
           ]
         },
         "products": {
-          "headline": { "line1": "Elige tus", "line2": "mejores." },
+          "headline": {
+            "line1": "Elige tus",
+            "line2": "mejores."
+          },
           "points": [
             "Elige qué productos someter a simulaciones de agentes de IA",
             "Enfócate en tus más vendidos o SKUs más competitivos",
@@ -50,7 +65,10 @@
           ]
         },
         "competitors": {
-          "headline": { "line1": "Conoce a tus", "line2": "rivales." },
+          "headline": {
+            "line1": "Conoce a tus",
+            "line2": "rivales."
+          },
           "points": [
             "Añade competidores para compararte cara a cara",
             "Ve exactamente a quién eligen los agentes en tu lugar y por qué",
@@ -58,7 +76,10 @@
           ]
         },
         "scan": {
-          "headline": { "line1": "Mira quién", "line2": "está ganando." },
+          "headline": {
+            "line1": "Mira quién",
+            "line2": "está ganando."
+          },
           "points": [
             "ChatGPT, Claude, Gemini y Perplexity simulan consultas reales de compra",
             "Puntuamos cada producto frente a tus competidores",
@@ -118,11 +139,11 @@
       ],
       "shopify": {
         "title": "Conectar Shopify",
-        "description": "Conexión OAuth — nunca vemos tu contraseña de Shopify.",
+        "description": "Conexión OAuth. Nunca vemos tu contraseña de Shopify.",
         "howItWorks": "¿Cómo funciona?",
         "steps": [
-          "Introduce el dominio de tu tienda — la URL yourstore.myshopify.com que usas para entrar al admin de Shopify.",
-          "Serás redirigido a Shopify para autorizar acceso de solo lectura a tu catálogo. Solo pedimos permisos de productos — ni pedidos ni clientes.",
+          "Introduce el dominio de tu tienda. Es la URL yourstore.myshopify.com que usas para entrar al admin de Shopify.",
+          "Serás redirigido a Shopify para autorizar acceso de solo lectura a tu catálogo. Solo pedimos permisos de productos, nunca pedidos ni clientes.",
           "Tras aprobar, Shopify permite a ecentic leer y escribir los datos de productos de tu tienda."
         ],
         "fields": {
@@ -154,7 +175,7 @@
         "toast": {
           "invalidDomain": {
             "title": "Introduce tu dominio myshopify.com",
-            "description": "OAuth necesita el dominio admin de Shopify (p. ej. tutienda.myshopify.com) o el identificador de la tienda — no una URL de escaparate personalizada."
+            "description": "OAuth necesita el dominio admin de Shopify (p. ej. tutienda.myshopify.com) o el identificador de la tienda, no una URL de escaparate personalizada."
           },
           "connectionFailed": "Error de conexión",
           "connected": {
@@ -169,7 +190,7 @@
         "oneClick": {
           "title": "Conexión con un clic",
           "recommended": "(recomendado)",
-          "description": "Introduce la URL de tu tienda y aprueba la conexión desde el admin de WordPress — sin copiar claves API. Necesitas el plugin gratuito écentic for WooCommerce instalado y activado; si aún no está, te mostramos cómo añadirlo. También habilita UCP alojado, haciendo tu tienda transaccional para agentes de compra con IA.",
+          "description": "Introduce la URL de tu tienda y aprueba la conexión desde el admin de WordPress. No hay claves API que copiar. Necesitas el plugin gratuito écentic for WooCommerce instalado y activado; si aún no está, te mostramos cómo añadirlo. También habilita UCP alojado, que hace tu tienda transaccional para los agentes de compra con IA.",
           "placeholder": "https://tutienda.com",
           "action": {
             "connect": "Conectar vía plugin",
@@ -192,7 +213,7 @@
           }
         },
         "manual": {
-          "title": "O conecta manualmente — dónde encontrar tus claves API",
+          "title": "O conecta manualmente: dónde encontrar tus claves API",
           "steps": [
             "Entra al panel de WordPress y ve a WooCommerce → Ajustes → Avanzado → REST API.",
             "Haz clic en Añadir clave. Pon una descripción como \"ecentic\", permisos Lectura/Escritura si quieres que ecentic publique cambios en fichas, o Lectura solo para sincronizar, y genera.",
@@ -205,7 +226,7 @@
             "placeholder": "https://tutienda.com",
             "validation": "La URL de la tienda es obligatoria",
             "description": {
-              "before": "La URL pública de tu tienda WooCommerce — por ejemplo",
+              "before": "La URL pública de tu tienda WooCommerce, por ejemplo",
               "example": "https://acmestore.com",
               "after": ". Es la página de inicio, no la URL del admin de WordPress."
             }
@@ -220,7 +241,7 @@
             "label": "Consumer Secret",
             "placeholder": "cs_...",
             "validation": "El consumer secret es obligatorio",
-            "description": "El secreto que empareja con la clave — empieza por cs_. Solo se muestra una vez al generar la clave, así que cópialo antes de salir de WooCommerce."
+            "description": "El secreto que empareja con la clave, empieza por cs_. WooCommerce solo lo muestra una vez al generar la clave, así que cópialo antes de salir."
           }
         },
         "action": {
@@ -242,11 +263,11 @@
           "title": "Formatos compatibles",
           "googleShopping": {
             "label": "XML de Google Shopping",
-            "description": "— el formato más común. Si usas Google Merchant Center, ya tienes uno. Es un feed RSS/Atom donde cada <item> contiene g:title, g:price, g:image_link, etc."
+            "description": "es el formato más común. Si usas Google Merchant Center, ya tienes uno. Es un feed RSS/Atom donde cada <item> contiene g:title, g:price, g:image_link, etc."
           },
           "json": {
             "label": "JSON",
-            "description": "— un array simple de objetos producto. Buscamos title, price, image y url. Anidado bajo products o items también vale."
+            "description": "es un array simple de objetos producto. Buscamos title, price, image y url. Anidado bajo products o items también vale."
           }
         },
         "fields": {
@@ -257,7 +278,7 @@
             "description": {
               "before": "La URL pública que sirve tu feed de productos. Por ejemplo:",
               "example": "https://tutienda.com/feed/products.xml",
-              "after": "La URL debe ser accesible desde internet — localhost o redes privadas no funcionan. Detectamos XML o JSON según el contenido."
+              "after": "La URL debe ser accesible desde internet, así que localhost y las redes privadas no funcionan. Detectamos XML o JSON según el contenido."
             }
           }
         },
@@ -269,7 +290,7 @@
           "connectionFailed": "Error de conexión",
           "connected": {
             "title": "Feed conectado",
-            "description": "Importando productos — puede tardar un momento."
+            "description": "Importando productos. Puede tardar un momento."
           }
         }
       },
@@ -442,9 +463,18 @@
         "description": "ChatGPT, Claude y Gemini simularán consultas reales de compra en tus productos y competidores."
       },
       "models": [
-        { "model": "ChatGPT", "description": "Enfoque en especificaciones" },
-        { "model": "Claude", "description": "Análisis contextual" },
-        { "model": "Gemini", "description": "Relación precio-calidad" }
+        {
+          "model": "ChatGPT",
+          "description": "Enfoque en especificaciones"
+        },
+        {
+          "model": "Claude",
+          "description": "Análisis contextual"
+        },
+        {
+          "model": "Gemini",
+          "description": "Relación precio-calidad"
+        }
       ],
       "stats": {
         "products": "Productos",
@@ -478,7 +508,7 @@
           "high": "Vas por delante de la mayoría de competidores. Asegurémonos de que siga así."
         },
         "topFinding": "Hallazgo principal",
-        "topFindingBody": "{name} pierde en {attributes} — {impact} Te cuesta el {percentage}% de las simulaciones.",
+        "topFindingBody": "{name} pierde en {attributes}. {impact} Te cuesta el {percentage}% de las simulaciones.",
         "stats": {
           "winRate": "Tasa de victoria",
           "products": "Productos",

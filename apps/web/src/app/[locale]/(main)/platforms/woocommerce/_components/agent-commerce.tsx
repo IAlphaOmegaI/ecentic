@@ -88,7 +88,7 @@ export const AgentCommerce = async () => {
                 className="flex flex-col gap-4 bg-background-dimmed p-6 md:min-h-72 md:p-8"
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-normal text-lg text-primary tabular-nums">
+                  <span className="font-normal text-lg text-primary-text tabular-nums">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <IconComponent className="size-8 text-primary" />
@@ -126,7 +126,7 @@ export const AgentCommerce = async () => {
                 key={control.title}
                 className="grid min-h-0 flex-1 grid-cols-[2.5rem_1fr] content-start bg-background-rich px-6 py-5 md:grid-cols-[5rem_1fr] md:px-8"
               >
-                <span className="font-normal text-lg text-primary tabular-nums">
+                <span className="font-normal text-lg text-primary-text tabular-nums">
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <RevealItem className="flex flex-col gap-1">

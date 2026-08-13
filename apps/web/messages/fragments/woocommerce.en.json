@@ -1,7 +1,7 @@
 {
   "woocommerce": {
     "meta": {
-      "title": "AI for WooCommerce — Catalog Optimization",
+      "title": "AI for WooCommerce — catalog optimization",
       "description": "AI for WooCommerce stores that need product listing optimization, competitor analysis, and a clearer path from agent insights to published catalog updates."
     },
     "breadcrumb": {
@@ -32,9 +32,9 @@
     "why": {
       "number": "01",
       "title": "Why WooCommerce merchants need a focused loop.",
-      "description": "WooCommerce operators usually need catalog-level insight, not just faster copy output.",
+      "description": "WooCommerce operators usually need catalog-level insight more than they need faster copy output.",
       "paragraphs": [
-        "AI for WooCommerce stores is not only about faster content creation. WooCommerce catalogs change quickly, are managed by lean operators, and depend on clean product data to compete well.",
+        "Faster content creation is the smallest part of this. WooCommerce catalogs change quickly, they are run by lean teams, and they depend on clean product data to compete.",
         "That creates a practical need for a dedicated optimization loop. Merchants want to know which products are easiest to improve, which competitor keeps winning, and which listing details matter most before they spend time rewriting dozens of pages."
       ],
       "panelTitle": "Who this page is built for",
@@ -61,7 +61,7 @@
       "number": "02",
       "title": "The WooCommerce workflow in ecentic.",
       "description": "The workflow connects product data to competitor analysis, then to a publishing path back inside WooCommerce instead of another manual content handoff.",
-      "paragraph": "Install the plugin, import the catalog, benchmark the products that matter, then approve REST publish-backs — without leaving WooCommerce or rewriting the whole storefront.",
+      "paragraph": "Install the plugin, import the catalog, benchmark the products that matter, then approve REST publish-backs. You stay inside WooCommerce and you never rewrite the storefront.",
       "panelTitle": "Connect, diagnose, publish",
       "advantages": [
         {
@@ -84,7 +84,7 @@
       "steps": [
         {
           "title": "Connect & import",
-          "description": "Install the free plugin and approve the connection in wp-admin — no API keys to copy. The catalog imports on connect, with no theme edits."
+          "description": "Install the free plugin and approve the connection in wp-admin. There are no API keys to copy, the catalog imports on connect, and you never touch the theme."
         },
         {
           "title": "Choose products",
@@ -102,7 +102,7 @@
     },
     "agentCommerce": {
       "number": "03",
-      "title": "Let AI agents buy, not just browse.",
+      "title": "Let AI agents actually buy.",
       "description": {
         "before": "Optimized listings decide whether an agent recommends you. The Universal Commerce Protocol decides whether it can actually complete the purchase. The free ",
         "pluginName": "écentic for WooCommerce",
@@ -115,7 +115,7 @@
       "capabilities": [
         {
           "title": "Discovered at your own URL",
-          "description": "The plugin serves /.well-known/ucp on your domain, so agents find your store at your address — not a third party's."
+          "description": "The plugin serves /.well-known/ucp on your domain, so agents find your store at your address instead of a third party's."
         },
         {
           "title": "Priced on a real cart",
@@ -155,7 +155,7 @@
       "number": "04",
       "title": "Find your catalog bottleneck first.",
       "description": "The right optimization tool depends on where the bottleneck actually sits. WooCommerce merchants usually face one of three situations.",
-      "paragraph": "Shortlist against the bottleneck you have today. Content speed, competitive clarity, and publishing friction each call for a different kind of tool — and only two of them are ecentic's job.",
+      "paragraph": "Shortlist against the bottleneck you have today. Content speed, competitive clarity, and publishing friction each call for a different kind of tool, and only two of them are ecentic's job.",
       "panelTitle": "Three situations to shortlist against",
       "situations": [
         {
@@ -230,7 +230,7 @@
         },
         {
           "question": "Can WooCommerce stores publish optimized product updates?",
-          "answer": "Yes. Approved rewrites are published straight back into WooCommerce over the REST API, using credentials with read and write access. You review every change before it goes live — nothing is published to your storefront without your approval."
+          "answer": "Yes. Approved rewrites are published straight back into WooCommerce over the REST API, using credentials with read and write access. You review every change before it goes live, and nothing reaches your storefront without your approval."
         },
         {
           "question": "Do I need the plugin, or can I connect with API keys?",

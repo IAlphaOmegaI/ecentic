@@ -1,7 +1,7 @@
 {
   "ucpPlayground": {
     "meta": {
-      "title": "UCP Playground — Test AI Agents on Any Storefront",
+      "title": "UCP Playground — test AI agents on any storefront",
       "description": "Free UCP Playground: drive a real AI shopping agent against any UCP storefront. Run catalog search, cart, and checkout over MCP or REST and inspect calls."
     },
     "breadcrumb": {
@@ -31,7 +31,7 @@
       },
       {
         "title": "Cart operations",
-        "description": "Create a cart, add line items, and watch totals resolve — the same calls an AI shopping agent would make."
+        "description": "Create a cart, add line items, and watch totals resolve, using the same calls an AI shopping agent would make."
       },
       {
         "title": "Checkout handoff",

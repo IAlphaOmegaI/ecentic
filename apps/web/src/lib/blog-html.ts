@@ -58,6 +58,13 @@ const stripTags = (value: string) =>
 const stripScripts = (html: string) =>
   html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "").trim();
 
+/** Keep wide CMS tables inside the right rail without blowing out the 5fr/8fr grid. */
+const wrapScrollableTables = (html: string) =>
+  html.replace(
+    /<table\b[\s\S]*?<\/table>/gi,
+    (table) => `<div class="blog-table-scroll">${table}</div>`,
+  );
+
 /**
  * Split BabyLoveGrowth (or other CMS) article HTML into editorial sections.
  * Each `<h2>` becomes a left-rail title; its following siblings become the
@@ -86,7 +93,13 @@ export const splitBlogHtmlByH2 = (
   if (matches.length === 0) {
     const trimmed = withoutLeadingTitle.trim();
     if (!trimmed) return [];
-    return [{ number: "01", title: structure.article, html: trimmed }];
+    return [
+      {
+        number: "01",
+        title: structure.article,
+        html: wrapScrollableTables(trimmed),
+      },
+    ];
   }
 
   const preface = withoutLeadingTitle.slice(0, matches[0]?.index ?? 0).trim();
@@ -101,6 +114,7 @@ export const splitBlogHtmlByH2 = (
           ? (matches[index + 1]?.index ?? withoutLeadingTitle.length)
           : withoutLeadingTitle.length;
       const body = withoutLeadingTitle.slice(start, end).trim();
+      // Keep the heading in the article body as well as the left rail.
       // Keep the heading in the article body as well as the left rail.
       return {
         title,
@@ -125,7 +139,7 @@ export const splitBlogHtmlByH2 = (
           {
             number: "00",
             title: takeaways.title,
-            html: leadHtml,
+            html: wrapScrollableTables(leadHtml),
           },
         ]
       : preface
@@ -133,14 +147,14 @@ export const splitBlogHtmlByH2 = (
             {
               number: "00",
               title: structure.introduction,
-              html: preface,
+              html: wrapScrollableTables(preface),
             },
           ]
         : []),
     ...body.map((section, index) => ({
       number: String(index + 1).padStart(2, "0"),
       title: section.title,
-      html: section.html,
+      html: wrapScrollableTables(section.html),
     })),
   ];
 };

@@ -16,7 +16,11 @@ export const Steps = async () => {
             <h2 className="font-body font-medium text-4xl sm:text-5xl md:text-[76px]">
               {translate("steps.title")}
             </h2>
-            <p className="font-light text-xl md:text-3xl">
+            {/* text-2xl, not text-xl: white on --color-primary is 4.35:1, which
+                clears WCAG's 3:1 large-text floor but not the 4.5:1 body floor.
+                24px is where "large" starts, so this reaches the bar the brand
+                blue can actually meet — the desktop size already did. */}
+            <p className="font-light text-2xl md:text-3xl">
               {translate("steps.description")}
             </p>
           </div>

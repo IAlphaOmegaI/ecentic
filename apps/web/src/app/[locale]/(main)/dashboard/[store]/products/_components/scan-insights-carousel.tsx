@@ -175,7 +175,7 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
         </div>
 
         <div className="flex flex-col items-end gap-1">
-          <p className="font-medium text-primary text-sm">{formatted}</p>
+          <p className="font-medium text-primary-text text-sm">{formatted}</p>
           <p className="text-foreground-dimmed text-xs">
             {translate("simulationsCount", {
               count: current.completedSimulations,

@@ -180,7 +180,7 @@ const ValidationTargetsSection = () => (
   <div className="relative overflow-hidden border-accent-foreground border-t bg-primary/5">
     <pre
       aria-hidden
-      className="pointer-events-none absolute top-0 right-0 hidden h-40 max-w-lg select-none overflow-hidden whitespace-pre p-5 text-right font-mono text-primary/20 text-sm leading-snug md:block lg:h-48 lg:max-w-xl lg:text-base lg:text-primary/25"
+      className="pointer-events-none absolute top-0 right-0 hidden h-40 max-w-lg select-none overflow-hidden whitespace-pre p-5 text-right font-mono text-primary-text/20 text-sm leading-snug md:block lg:h-48 lg:max-w-xl lg:text-base lg:text-primary-text/25"
     >
       {validationManifestArt}
     </pre>
@@ -194,7 +194,9 @@ const ValidationTargetsSection = () => (
     />
     <div className="relative">
       <div className="px-6 pt-6 pb-3 sm:px-8">
-        <p className="font-medium text-primary text-sm">What we validate</p>
+        <p className="font-medium text-primary-text text-sm">
+          What we validate
+        </p>
       </div>
       <Reveal className="relative grid grid-cols-2 gap-px border-accent-foreground border-t bg-accent-foreground lg:grid-cols-4">
         {validationTargets.map((target) => (
@@ -308,7 +310,7 @@ const SummaryCard = ({
   tone?: Tone;
 }) => (
   <div className="flex flex-col justify-between gap-3 bg-background-dimmed px-4 py-5">
-    <p className="font-medium text-primary text-sm">{label}</p>
+    <p className="font-medium text-primary-text text-sm">{label}</p>
     <div>
       <p
         className={cn(
@@ -924,7 +926,9 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
 
         <div className="mt-6 grid gap-6 md:grid-cols-2">
           <div>
-            <p className="font-medium text-primary text-sm">Response health</p>
+            <p className="font-medium text-primary-text text-sm">
+              Response health
+            </p>
             <p className="mt-1 font-light text-foreground-dimmed text-sm leading-relaxed">
               {result.error ??
                 "Endpoint responded and the profile could be evaluated."}
@@ -932,7 +936,9 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
           </div>
 
           <div>
-            <p className="font-medium text-primary text-sm">Detected surface</p>
+            <p className="font-medium text-primary-text text-sm">
+              Detected surface
+            </p>
             <p className="mt-1 font-light text-foreground-dimmed text-sm leading-relaxed">
               {result.services.length} service
               {result.services.length !== 1 ? "s" : ""},{" "}
@@ -1162,7 +1168,9 @@ export const UcpValidatorForm = ({
           </div>
           <div className="flex flex-col justify-center bg-background-rich px-6 py-6 sm:px-8 sm:py-8">
             <form onSubmit={handleSubmit}>
-              <p className="font-medium text-primary text-sm">Check a domain</p>
+              <p className="font-medium text-primary-text text-sm">
+                Check a domain
+              </p>
               <label
                 htmlFor="ucp-domain"
                 className="mt-3 block font-medium text-foreground text-sm"
@@ -1201,7 +1209,9 @@ export const UcpValidatorForm = ({
       ) : (
         <div className="grid lg:grid-cols-2">
           <div className="px-6 py-6 sm:px-8 sm:py-8">
-            <p className="font-medium text-primary text-sm">Live validation</p>
+            <p className="font-medium text-primary-text text-sm">
+              Live validation
+            </p>
             <h2 className="mt-2 font-body font-medium text-3xl text-foreground md:text-4xl">
               Run a live validation
             </h2>

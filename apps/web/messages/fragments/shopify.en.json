@@ -1,7 +1,7 @@
 {
   "shopify": {
     "meta": {
-      "title": "AI for Shopify — Listing and Catalog Optimization",
+      "title": "AI for Shopify — listing and catalog optimization",
       "description": "AI for Shopify stores that need stronger product listings, clearer competitor analysis, and approved updates pushed straight back into the Shopify Admin."
     },
     "breadcrumb": {
@@ -64,7 +64,7 @@
       "number": "02",
       "title": "The Shopify workflow in ecentic.",
       "description": "The workflow connects the catalog, surfaces competitive gaps, and makes improvements publishable back into Shopify instead of one more disconnected document.",
-      "paragraph": "Connect the store, pick the products that matter, benchmark them against competitors, then approve write-backs through the Admin API — without leaving the Shopify catalog workflow.",
+      "paragraph": "Connect the store, pick the products that matter, benchmark them against competitors, then approve write-backs through the Admin API. You never leave the Shopify catalog workflow.",
       "panelTitle": "Connect, diagnose, publish",
       "outcomes": [
         {
@@ -120,7 +120,7 @@
       "ecentic": {
         "badge": "ecentic on top of Shopify",
         "title": "Built for winning the comparison.",
-        "description": "The value is not only rewriting text. It is knowing whether your page is easy for an AI shopping system to evaluate, and whether the proposed change improves your chance of being selected.",
+        "description": "Rewriting the text is the easy half. The useful half is knowing whether your page is easy for an AI shopping system to evaluate, and whether the proposed change improves your chance of being selected.",
         "strengths": [
           "Simulates how AI shopping agents compare your products",
           "Benchmarks listings against the competitors that keep winning",

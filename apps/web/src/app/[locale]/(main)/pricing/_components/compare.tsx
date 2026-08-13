@@ -61,7 +61,7 @@ export const Compare = async () => {
                   <th className="p-4 text-center font-body font-medium text-foreground text-lg">
                     Scan
                   </th>
-                  <th className="bg-primary/5 p-4 text-center font-body font-medium text-lg text-primary">
+                  <th className="bg-primary/5 p-4 text-center font-body font-medium text-lg text-primary-text">
                     {translate("plans.payg.name")}
                   </th>
                   <th className="p-4 text-center font-body font-medium text-foreground text-lg">
