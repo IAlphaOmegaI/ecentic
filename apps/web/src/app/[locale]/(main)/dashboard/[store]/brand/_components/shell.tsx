@@ -9,8 +9,22 @@ import {
 } from "@zenncore/web/components/tabs";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { Crosshair, SectionGutter, Slot } from "../../../_components/grid";
+import {
+  Band,
+  PageHeader,
+  SectionGutter,
+  SectionHeader,
+  Slot,
+} from "../../../_components/grid";
 
+/**
+ * Header plus one slot.
+ *
+ * The content used to be wrapped in a `Band`, which broke the page rail and set
+ * four corner marks — and then every section inside broke out of it again with
+ * its own `-mx-8` seam. Sections are siblings on the rail now, the way the
+ * overview and visibility pages build theirs.
+ */
 export const BrandShell = ({
   actions,
   content,
@@ -23,26 +37,12 @@ export const BrandShell = ({
   return (
     <div className="flex flex-col">
       <div className="mx-8 border-accent-foreground border-x">
-        <div className="-mx-8 border-accent-foreground border-b">
-          <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <div>
-              <p className="font-semibold text-primary text-xs uppercase tracking-[0.14em]">
-                {translate("eyebrow")}
-              </p>
-              <h1 className="mt-2 font-bold text-2xl text-foreground-rich">
-                {translate("title")}
-              </h1>
-              <p className="mt-1 max-w-2xl text-foreground-dimmed text-sm">
-                {translate("description")}
-              </p>
-            </div>
-            {actions && (
-              <div className="flex shrink-0 items-center gap-3">{actions}</div>
-            )}
-          </div>
-        </div>
+        <PageHeader
+          context={translate("eyebrow")}
+          title={translate("title")}
+          description={translate("description")}
+          actions={actions}
+        />
         <Slot>{content}</Slot>
       </div>
     </div>
@@ -50,39 +50,66 @@ export const BrandShell = ({
 };
 
 /**
- * Tab chrome is client-side; both panels receive server-rendered nodes so the
+ * Tab chrome is client-side; every panel receives server-rendered nodes so the
  * report content itself stays on the server.
+ *
+ * Crawlability, perception, funnel and landscape used to stack open below the
+ * summary — six always-visible sections separated by hatch gutters. They are
+ * grouped into four tabs here by the question each answers, which is the same
+ * move the overview made on its three stacked panels.
  */
 export const BrandTabs = ({
-  overview,
+  findings,
+  perception,
+  crawlability,
   queries,
 }: {
-  overview: ReactNode;
+  findings: ReactNode;
+  perception: ReactNode;
+  crawlability: ReactNode;
   queries: ReactNode;
 }) => {
   const translate = useTranslations("dashboard.brand.tabs");
 
   return (
-    <Tabs defaultValue="overview">
-      <div className="-mx-8 border-accent-foreground border-b">
-        <div className="relative mx-8 px-6 py-3">
-          <TabsList className="h-10 w-full max-w-xs rounded-md border-0 bg-background-dimmed p-1">
+    <Tabs defaultValue="findings">
+      <Band marks="top">
+        <SectionHeader
+          kicker={translate("kicker")}
+          title={translate("title")}
+          description={translate("description")}
+        />
+        <div className="p-4">
+          {/* Same segmented rail as the overview's detail tabs — design.md §11.6. */}
+          <TabsList className="h-10 w-full max-w-xl rounded-md border-0 bg-background-dimmed p-1">
             <TabsIndicator className="top-1 h-8 rounded" />
-            <Tab value="overview" className="h-8 flex-1 border-r-0">
-              {translate("overview")}
+            <Tab value="findings" className="h-8 flex-1 border-r-0">
+              {translate("findings")}
+            </Tab>
+            <Tab value="perception" className="h-8 flex-1 border-r-0">
+              {translate("perception")}
+            </Tab>
+            <Tab value="crawlability" className="h-8 flex-1 border-r-0">
+              {translate("crawlability")}
             </Tab>
             <Tab value="queries" className="h-8 flex-1 border-r-0">
               {translate("queries")}
             </Tab>
           </TabsList>
         </div>
-      </div>
-      <TabsPanel value="overview" keepMounted>
-        {overview}
-      </TabsPanel>
-      <TabsPanel value="queries" keepMounted>
-        {queries}
-      </TabsPanel>
+        <TabsPanel value="findings" keepMounted>
+          {findings}
+        </TabsPanel>
+        <TabsPanel value="perception" keepMounted>
+          {perception}
+        </TabsPanel>
+        <TabsPanel value="crawlability" keepMounted>
+          {crawlability}
+        </TabsPanel>
+        <TabsPanel value="queries" keepMounted>
+          {queries}
+        </TabsPanel>
+      </Band>
     </Tabs>
   );
 };
@@ -101,32 +128,40 @@ const SkeletonCard = ({ lines }: { lines: readonly string[] }) => (
 
 const SHORT_CARD = ["a", "b", "c", "d"] as const;
 const TALL_CARD = ["a", "b", "c", "d", "e", "f"] as const;
+const STAT_CELLS = ["a", "b", "c", "d"] as const;
 
+/** Matches the report: a stat band, the summary pair, then the tabbed region. */
 export const BrandSkeleton = () => (
   <>
-    <div className="-mx-8 border-accent-foreground border-b">
-      <div className="relative mx-8 px-6 py-3">
-        <div className="h-10 w-full max-w-xs animate-pulse rounded-md bg-foreground/10" />
+    <Band>
+      <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
+        {STAT_CELLS.map((key) => (
+          <div
+            key={key}
+            className="flex flex-col justify-between gap-6 bg-background-rich p-5"
+          >
+            <div className="h-3 w-24 animate-pulse bg-foreground/10" />
+            <div className="flex flex-col gap-3">
+              <div className="h-9 w-20 animate-pulse bg-foreground/10" />
+              <div className="h-1 w-full animate-pulse rounded-full bg-foreground/10" />
+            </div>
+          </div>
+        ))}
       </div>
-    </div>
-    <div className="-mx-8 border-accent-foreground border-b">
-      <div className="relative mx-8 grid gap-px bg-accent-foreground lg:grid-cols-[1.6fr_1fr]">
+    </Band>
+    <SectionGutter />
+    <Band marks="top">
+      <div className="grid gap-px bg-accent-foreground lg:grid-cols-[1.6fr_1fr]">
         <SkeletonCard lines={TALL_CARD} />
         <SkeletonCard lines={TALL_CARD} />
       </div>
-    </div>
+    </Band>
     <SectionGutter />
-    <div className="-mx-8 border-accent-foreground border-t border-b">
-      <div className="relative mx-8">
-        <SkeletonCard lines={SHORT_CARD} />
+    <Band marks="top">
+      <div className="p-4">
+        <div className="h-10 w-full max-w-xl animate-pulse rounded-md bg-foreground/10" />
       </div>
-    </div>
-    <SectionGutter />
-    <div className="-mx-8 border-accent-foreground border-t border-b">
-      <div className="relative mx-8 grid gap-px bg-accent-foreground md:grid-cols-2">
-        <SkeletonCard lines={SHORT_CARD} />
-        <SkeletonCard lines={SHORT_CARD} />
-      </div>
-    </div>
+      <SkeletonCard lines={SHORT_CARD} />
+    </Band>
   </>
 );

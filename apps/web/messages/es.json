@@ -942,8 +942,13 @@
         "alreadyRunning": "Ya hay un análisis en curso"
       },
       "tabs": {
-        "overview": "Resumen",
-        "queries": "Registro de consultas"
+        "queries": "Registro de consultas",
+        "kicker": "02 — Evidencia",
+        "title": "Lo que dijeron realmente los motores",
+        "description": "Las respuestas auditadas detrás de las tasas anteriores: qué se encontró, cómo se describió la marca y en qué fuentes se apoyaron los motores.",
+        "findings": "Hallazgos",
+        "perception": "Percepción",
+        "crawlability": "Rastreabilidad"
       },
       "empty": {
         "title": "Aún no hay análisis de marca",
@@ -951,12 +956,7 @@
       },
       "summary": {
         "title": "Resumen diagnóstico",
-        "analyzed": "Analizado {time}",
-        "metrics": {
-          "mentionRate": "Mencionada en el {rate}% de las respuestas",
-          "unpromptedRate": "Encontrada sin nombrarla en el {rate}%",
-          "namedRate": "Reconocida al preguntar en el {rate}%"
-        }
+        "analyzed": "Analizado {time}"
       },
       "shape": {
         "title": "Forma de visibilidad",
@@ -994,13 +994,16 @@
         "concerns": "Preocupaciones"
       },
       "funnel": {
-        "title": "Diagnóstico del embudo"
+        "title": "Diagnóstico del embudo",
+        "description": "Dónde recogen los motores de IA la marca y dónde la dejan caer, a lo largo de las cuatro etapas del recorrido del comprador.",
+        "actions": "{count, plural, one {# acción} other {# acciones}}"
       },
       "landscape": {
         "competitors": "Quién gana en su lugar",
         "competitorMentions": "{count} menciones",
         "sources": "Fuentes en las que confía la IA",
-        "sourceCitations": "{count} citas"
+        "sourceCitations": "{count} citas",
+        "title": "Panorama competitivo"
       },
       "queries": {
         "description": "Cada consulta auditada de la última ejecución, con el veredicto del motor.",
@@ -1025,6 +1028,28 @@
       "failed": {
         "title": "El último análisis falló",
         "description": "Vuelve a ejecutarlo desde el botón de arriba."
+      },
+      "sections": {
+        "diagnosis": "01 — Diagnóstico",
+        "evidence": "02 — Evidencia"
+      },
+      "metrics": {
+        "mentionRate": {
+          "label": "Tasa de mención",
+          "detail": "de las respuestas auditadas mencionan la marca"
+        },
+        "unpromptedRate": {
+          "label": "Sin mencionarla",
+          "detail": "aparece sin nombrar la marca en la consulta"
+        },
+        "namedRate": {
+          "label": "Nombrada al preguntar",
+          "detail": "de las consultas de marca devuelven la marca"
+        },
+        "queries": {
+          "label": "Consultas auditadas",
+          "detail": "en la última ejecución"
+        }
       }
     },
     "quality": {
@@ -1049,23 +1074,25 @@
       },
       "reference": "Docs",
       "summary": {
-        "readyShare": "de {count, plural, one {# producto activo} other {# productos activos}} listos para el feed",
         "blockers": "{count} bloqueados",
         "warnings": "{count} en riesgo",
-        "ready": "{count} listos"
+        "ready": "{count} listos",
+        "totalLabel": "Productos auditados",
+        "totalDetail": "productos activos en la última auditoría"
       },
       "issues": {
-        "eyebrow": "Incidencias principales",
         "title": "Correcciones ordenadas por cuántos productos desbloquean",
         "affected": "{count, plural, one {# producto} other {# productos}}",
         "viewAffected": "Ver productos afectados",
         "empty": "Sin violaciones de reglas en el catálogo. Cada producto pasa las comprobaciones de ambas plataformas."
       },
       "products": {
-        "eyebrow": "Catálogo",
         "title": "Hallazgos por producto",
         "findings": "{count, plural, one {# hallazgo} other {# hallazgos}}",
-        "empty": "Aún no hay productos activos. Sincroniza o añade productos para ejecutar las comprobaciones de calidad."
+        "empty": "Aún no hay productos activos. Sincroniza o añade productos para ejecutar las comprobaciones de calidad.",
+        "headers": {
+          "product": "Producto"
+        }
       },
       "rules": {
         "id-duplicate": {
@@ -1204,6 +1231,10 @@
           "title": "Sin GTIN ni MPN",
           "detail": "Proporciona un MPN cuando el producto no tenga GTIN. ChatGPT Shopping exige uno de los dos, y sin ellos el feed de Google marca identifier_exists como false."
         }
+      },
+      "sections": {
+        "issues": "01 — Problemas",
+        "catalog": "02 — Catálogo"
       }
     },
     "googleShopping": {
@@ -1253,7 +1284,8 @@
           "description": "Crea el feed complementario de ecentic en tu cuenta y lo conecta con tu feed de productos principal. El plugin de tu tienda sigue siendo el dueño de precios, stock e imágenes. ecentic solo superpone títulos y descripciones optimizados.",
           "action": "Configurar feed de optimización",
           "ready": "Feed de optimización listo"
-        }
+        },
+        "label": "Configuración"
       },
       "disconnect": {
         "action": "Desconectar Google",
@@ -1262,8 +1294,9 @@
       },
       "stats": {
         "live": "Activas en Google",
-        "pending": "Publicándose (puede tardar unas horas)",
-        "attention": "Requieren atención"
+        "pending": "Publicándose",
+        "attention": "Requieren atención",
+        "pendingDetail": "Puede tardar unas horas"
       },
       "actions": {
         "push": "Enviar optimizaciones",
@@ -1346,6 +1379,11 @@
         }
       },
       "products": {
+        "summary": {
+          "catalog": "Productos en este catálogo",
+          "eligible": "Aptos para el pago",
+          "review": "Requieren revisión de categoría"
+        },
         "empty": "Aún no hay productos sincronizados. Sincroniza primero los productos de tu tienda.",
         "restricted": "puede estar restringido: {hints}",
         "live": "{count, number} activas",
@@ -1471,6 +1509,15 @@
             "max": "Como máximo 60 días"
           }
         }
+      },
+      "sections": {
+        "connection": "01 — Conexión",
+        "diagnostics": "02 — Diagnósticos",
+        "checkout": "03 — Pago agéntico"
+      },
+      "connection": {
+        "title": "Conexión con Merchant Center",
+        "description": "Vincula la cuenta de Merchant Center en la que ecentic escribe las sustituciones de optimización, y luego envíalas y verifícalas."
       }
     },
     "visibility": {
@@ -1479,7 +1526,8 @@
       "description": "Las comprobaciones de preparación se ejecutan contra las superficies de ingestión reales — robots.txt, HTML renderizado de la tienda, identidad de oferta y feeds — y medición de posición en vivo en el Shopify Global Catalog que consultan ChatGPT, Perplexity y Copilot.",
       "rankSection": {
         "eyebrow": "Posición en estantería en vivo",
-        "title": "Posiciona esta tienda en el Global Catalog para una consulta de comprador"
+        "title": "Posiciona esta tienda en el Global Catalog para una consulta de comprador",
+        "description": "Lanza una consulta de comprador contra el catálogo en vivo y observa dónde quedan las ofertas de esta tienda frente al resto."
       },
       "audit": {
         "scoreDetail": "preparación para agentes en comprobaciones automatizadas — medida contra lo que leen realmente las superficies de IA, no los datos propios de ecentic",
@@ -1493,6 +1541,13 @@
           "title": "Feed de productos ({count} artículos{skipped})",
           "skipped": ", {count} omitidos",
           "description": "Una URL para Google Merchant Center y el Perplexity Merchant Program."
+        },
+        "title": "Preparación para agentes",
+        "scoreLabel": "Puntuación de preparación",
+        "scoreStatus": {
+          "success": "Sólida",
+          "warning": "Mixta",
+          "error": "Débil"
         }
       },
       "feedUrl": {
@@ -1529,6 +1584,10 @@
         "toast": {
           "failed": "Error al comprobar posición"
         }
+      },
+      "sections": {
+        "readiness": "01 — Preparación",
+        "rank": "02 — Posición en estantería"
       }
     },
     "discovery": {

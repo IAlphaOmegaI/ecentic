@@ -1,3 +1,4 @@
+import { ArrowRightIcon, ShareIcon } from "@zenncore/icons";
 import { unwrapResult } from "@zenncore/utils";
 import { connection } from "next/server";
 import { getTranslations } from "next-intl/server";
@@ -5,11 +6,16 @@ import { Suspense } from "react";
 import * as AgentReadiness from "@/server/app/intelligence/agent-readiness";
 import * as CatalogRank from "@/server/app/intelligence/catalog-rank";
 import { Environment } from "@/server/utils/environment";
-import { StatusPill } from "../../_components/grid";
-import { AuditSkeleton, VisibilityShell } from "./_components/shell";
+import { SectionHeader, StatusPill } from "../../_components/grid";
+import {
+  AuditSkeleton,
+  RankSkeleton,
+  VisibilityShell,
+} from "./_components/shell";
 import { FeedUrlCard, RankChecker } from "./_components/visibility-client";
 
-type StoreParams = PageProps<"/dashboard/[store]/visibility">["params"];
+type StoreParams =
+  PageProps<"/[locale]/dashboard/[store]/visibility">["params"];
 
 const CHECK_TONES = {
   pass: "success",
@@ -18,78 +24,123 @@ const CHECK_TONES = {
   manual: "neutral",
 } as const;
 
+/** design.md §4.4 — the shared win-rate/score thresholds, not a local scale. */
+const scoreTone = (score: number) => {
+  switch (true) {
+    case score >= 60:
+      return "success" as const;
+    case score >= 30:
+      return "warning" as const;
+    default:
+      return "error" as const;
+  }
+};
+
+const SCORE_FILLS = {
+  success: "bg-success",
+  warning: "bg-warning",
+  error: "bg-error",
+} as const;
+
 const AuditContent = async ({ params }: { params: StoreParams }) => {
   await connection();
-  const translate = await getTranslations("dashboard.visibility.audit");
+  const translate = await getTranslations("dashboard.visibility");
   const { store } = await params;
   const report = unwrapResult(
     await AgentReadiness.auditStore(Environment.SERVER, { store }),
   );
 
+  const tone = scoreTone(report.score);
+
   return (
     <div className="flex flex-col">
-      <div className="flex flex-wrap items-baseline gap-3 border-accent-foreground border-b bg-background-dimmed px-4 py-3">
-        <p className="font-bold text-2xl text-foreground-rich tabular-nums">
-          {report.score}%
+      {/* The page's lead metric — design.md §10.2 leads with the answer. */}
+      <div className="flex flex-col gap-3 border-accent-foreground border-b p-4">
+        <div className="flex flex-wrap items-center gap-3">
+          <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+            {translate("audit.scoreLabel")}
+          </p>
+          <StatusPill tone={tone}>
+            {translate(`audit.scoreStatus.${tone}`)}
+          </StatusPill>
+        </div>
+        <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
+          {report.score}
+          <span className="ml-1 font-medium text-foreground-dimmed text-xl">
+            %
+          </span>
         </p>
-        <p className="text-foreground-dimmed text-sm">
-          {translate("scoreDetail")}
-        </p>
+        <div
+          className="h-1.5 w-full overflow-hidden rounded-full bg-background-dimmed"
+          role="img"
+          aria-label={translate("audit.scoreLabel")}
+        >
+          <div
+            className={`h-full rounded-full transition-[width] duration-500 ${SCORE_FILLS[tone]}`}
+            style={{ width: `${report.score}%` }}
+          />
+        </div>
       </div>
 
       <div className="divide-y divide-accent-foreground">
         {report.checks.map((check) => (
-          <div key={check.key} className="flex flex-col gap-1.5 p-4">
-            <div className="flex flex-wrap items-center gap-2">
+          <div
+            key={check.key}
+            className="flex flex-col gap-2 p-4 sm:grid sm:grid-cols-[9rem_1fr] sm:gap-4"
+          >
+            <div>
               <StatusPill tone={CHECK_TONES[check.status]}>
-                {translate(`checkStatus.${check.status}`)}
+                {translate(`audit.checkStatus.${check.status}`)}
               </StatusPill>
+            </div>
+            <div className="min-w-0">
               <p className="font-medium text-foreground text-sm">
                 {check.label}
               </p>
-            </div>
-            <p className="max-w-3xl text-foreground-dimmed text-sm">
-              {check.detail}
-            </p>
-            {check.recommendation && (
-              <p className="max-w-3xl text-foreground text-sm">
-                → {check.recommendation}
+              <p className="mt-1 max-w-3xl text-foreground-dimmed text-sm">
+                {check.detail}
               </p>
-            )}
-            {check.action && (
-              <a
-                href={check.action.url}
-                target="_blank"
-                rel="noreferrer"
-                className="w-fit font-medium text-primary-text text-sm underline-offset-2 hover:underline"
-              >
-                {check.action.label} ↗
-              </a>
-            )}
+              {check.recommendation && (
+                <p className="mt-2 flex max-w-3xl gap-2 text-foreground text-sm">
+                  <ArrowRightIcon
+                    aria-hidden
+                    className="mt-1 size-3.5 shrink-0 text-primary"
+                  />
+                  {check.recommendation}
+                </p>
+              )}
+              {check.action && (
+                <a
+                  href={check.action.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-2 inline-flex w-fit items-center gap-1.5 font-medium text-primary-text text-sm underline-offset-2 hover:underline"
+                >
+                  {check.action.label}
+                  <ShareIcon aria-hidden className="size-3.5" />
+                </a>
+              )}
+            </div>
           </div>
         ))}
       </div>
 
       {report.feed && (
-        <div className="border-accent-foreground border-t">
-          <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
-            <p className="font-medium text-base text-foreground">
-              {translate("feed.title", {
-                count: report.feed.itemCount,
-                skipped:
-                  report.feed.skippedCount > 0
-                    ? translate("feed.skipped", {
-                        count: report.feed.skippedCount,
-                      })
-                    : "",
-              })}
-            </p>
-            <p className="mt-0.5 text-foreground-dimmed text-xs">
-              {translate("feed.description")}
-            </p>
-          </div>
+        <>
+          <SectionHeader
+            title={translate("audit.feed.title", {
+              count: String(report.feed.itemCount),
+              skipped:
+                report.feed.skippedCount > 0
+                  ? translate("audit.feed.skipped", {
+                      count: String(report.feed.skippedCount),
+                    })
+                  : "",
+            })}
+            description={translate("audit.feed.description")}
+          />
           <FeedUrlCard url={report.feed.url} />
-        </div>
+        </>
       )}
     </div>
   );
@@ -102,7 +153,9 @@ const RankSection = async ({ params }: { params: StoreParams }) => {
   return <RankChecker store={store} configured={configured} />;
 };
 
-export default ({ params }: PageProps<"/dashboard/[store]/visibility">) => (
+export default ({
+  params,
+}: PageProps<"/[locale]/dashboard/[store]/visibility">) => (
   <VisibilityShell
     audit={
       <Suspense fallback={<AuditSkeleton />}>
@@ -110,7 +163,7 @@ export default ({ params }: PageProps<"/dashboard/[store]/visibility">) => (
       </Suspense>
     }
     rank={
-      <Suspense fallback={<AuditSkeleton />}>
+      <Suspense fallback={<RankSkeleton />}>
         <RankSection params={params} />
       </Suspense>
     }

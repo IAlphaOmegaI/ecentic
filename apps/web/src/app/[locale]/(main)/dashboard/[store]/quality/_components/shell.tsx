@@ -2,7 +2,12 @@
 
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { Crosshair, SectionGutter, Slot } from "../../../_components/grid";
+import {
+  Band,
+  PageHeader,
+  SectionGutter,
+  SectionHeader,
+} from "../../../_components/grid";
 
 export const QualityShell = ({
   summary,
@@ -18,93 +23,75 @@ export const QualityShell = ({
   return (
     <div className="flex flex-col">
       <div className="mx-8 border-accent-foreground border-x">
-        <div className="-mx-8 border-accent-foreground border-b">
-          <div className="relative mx-8 px-6 py-8">
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <p className="font-semibold text-primary text-xs uppercase tracking-[0.14em]">
-              {translate("eyebrow")}
-            </p>
-            <h1 className="mt-2 font-bold text-2xl text-foreground-rich">
-              {translate("title")}
-            </h1>
-            <p className="mt-1 max-w-2xl text-foreground-dimmed text-sm">
-              {translate("description")}
-            </p>
-          </div>
-        </div>
+        <PageHeader
+          context={translate("eyebrow")}
+          title={translate("title")}
+          description={translate("description")}
+        />
 
-        <div className="-mx-8 border-accent-foreground border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <Slot>{summary}</Slot>
-          </div>
-        </div>
+        <Band>{summary}</Band>
 
         <SectionGutter />
 
-        <div className="-mx-8 border-accent-foreground border-t border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-            <div className="border-accent-foreground border-b p-4">
-              <p className="font-semibold text-foreground-dimmed text-xs uppercase tracking-[0.14em]">
-                {translate("issues.eyebrow")}
-              </p>
-              <p className="mt-1 font-medium text-base text-foreground">
-                {translate("issues.title")}
-              </p>
-            </div>
-            <Slot>{issues}</Slot>
-          </div>
-        </div>
+        <Band marks="top">
+          {/* No description: the kicker already labels the section, and the
+            old "Top issues" eyebrow reads as a stray word under the title. */}
+          <SectionHeader
+            kicker={translate("sections.issues")}
+            title={translate("issues.title")}
+          />
+          {issues}
+        </Band>
 
         <SectionGutter />
 
-        <div className="-mx-8 border-accent-foreground border-t border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-            <div className="border-accent-foreground border-b p-4">
-              <p className="font-semibold text-foreground-dimmed text-xs uppercase tracking-[0.14em]">
-                {translate("products.eyebrow")}
-              </p>
-              <p className="mt-1 font-medium text-base text-foreground">
-                {translate("products.title")}
-              </p>
-            </div>
-            <Slot>{products}</Slot>
-          </div>
-        </div>
+        <Band marks="top">
+          <SectionHeader
+            kicker={translate("sections.catalog")}
+            title={translate("products.title")}
+          />
+          {products}
+        </Band>
       </div>
     </div>
   );
 };
 
+const STAT_CELLS = ["a", "b", "c", "d"] as const;
+const ROWS = ["a", "b", "c", "d", "e"] as const;
+
+/** Matches the four-cell stat band the summary renders. */
 export const SummarySkeleton = () => (
-  <div className="grid grid-cols-1 gap-px bg-accent-foreground md:grid-cols-3">
-    {(["a", "b", "c"] as const).map((key) => (
-      <div key={key} className="flex flex-col gap-6 bg-background-rich p-5">
-        <div className="h-4 w-40 animate-pulse rounded-full bg-foreground/10" />
-        <div className="flex items-center gap-6">
-          <div className="size-18 shrink-0 animate-pulse rounded-full bg-foreground/10" />
-          <div className="flex flex-1 flex-col gap-2">
-            <div className="h-3 w-2/3 animate-pulse bg-foreground/10" />
-            <div className="h-5 w-full animate-pulse rounded-full bg-foreground/10" />
-          </div>
+  <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
+    {STAT_CELLS.map((key) => (
+      <div
+        key={key}
+        className="flex flex-col justify-between gap-6 bg-background-rich p-5"
+      >
+        <div className="h-3 w-28 animate-pulse bg-foreground/10" />
+        <div className="flex flex-col gap-3">
+          <div className="h-9 w-20 animate-pulse bg-foreground/10" />
+          <div className="h-1 w-full animate-pulse rounded-full bg-foreground/10" />
+          <div className="h-4 w-2/3 animate-pulse rounded-full bg-foreground/10" />
         </div>
       </div>
     ))}
   </div>
 );
 
+/** Matches the issue and product rows: a measure column, then the detail. */
 export const RowsSkeleton = () => (
   <div className="flex flex-col divide-y divide-accent-foreground">
-    {(["a", "b", "c", "d", "e"] as const).map((key) => (
-      <div key={key} className="flex flex-col gap-2 p-4">
-        <div className="h-5 w-56 animate-pulse rounded-full bg-foreground/10" />
-        <div className="h-3 w-full animate-pulse bg-foreground/10" />
+    {ROWS.map((key) => (
+      <div
+        key={key}
+        className="flex flex-col gap-2 p-4 sm:grid sm:grid-cols-[9rem_1fr] sm:gap-4"
+      >
+        <div className="h-5 w-24 animate-pulse rounded-full bg-foreground/10" />
+        <div className="flex flex-col gap-2">
+          <div className="h-4 w-56 animate-pulse bg-foreground/10" />
+          <div className="h-3 w-full animate-pulse bg-foreground/10" />
+        </div>
       </div>
     ))}
   </div>

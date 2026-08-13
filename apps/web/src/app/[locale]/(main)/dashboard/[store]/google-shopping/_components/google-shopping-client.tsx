@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import * as GoogleMerchant from "@/server/app/integration/google-merchant";
+import { StatusPill } from "../../../_components/grid";
 
 /**
  * Full Google Shopping management surface for one store. Walks the Path 1
@@ -30,23 +31,7 @@ export const Chip = ({
   tone: "neutral" | "success" | "warning" | "error";
   children: React.ReactNode;
 }) => {
-  const className = {
-    neutral: "bg-foreground/5 text-foreground-dimmed",
-    success: "bg-success/10 text-success",
-    warning: "bg-warning/10 text-warning",
-    error: "bg-error/10 text-error",
-  }[tone];
-
-  return (
-    <span
-      className={cn(
-        "rounded-full px-2 py-0.5 font-semibold text-[11px] uppercase tracking-[0.05em]",
-        className,
-      )}
-    >
-      {children}
-    </span>
-  );
+  return <StatusPill tone={tone}>{children}</StatusPill>;
 };
 
 const Step = ({
@@ -58,7 +43,7 @@ const Step = ({
   chip: React.ReactNode;
   children?: React.ReactNode;
 }) => (
-  <div className="flex flex-col gap-2 p-4">
+  <div className="flex flex-col gap-3 p-5 sm:p-6">
     <div className="flex flex-wrap items-center gap-2">
       {chip}
       <p className="font-medium text-foreground text-sm">{title}</p>
@@ -108,6 +93,23 @@ export const GoogleShoppingManager = ({
         </p>
       </div>
     );
+
+  const currentStep = !status.connected
+    ? 1
+    : !status.googleAccountId
+      ? 2
+      : status.linkState !== "active"
+        ? 3
+        : !status.provisioned
+          ? 4
+          : 5;
+
+  const setupSteps = [
+    translate("setup.connect.title"),
+    translate("setup.chooseAccount.title"),
+    translate("setup.link.title"),
+    translate("setup.feed.title"),
+  ];
 
   const setup = (() => {
     switch (true) {
@@ -311,9 +313,13 @@ export const GoogleShoppingManager = ({
   })();
 
   const disconnectRow = status.connected ? (
-    <div className="flex flex-wrap items-center gap-3 p-4">
+    <div className="flex flex-col gap-3 bg-background-dimmed p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+      <p className="max-w-3xl text-foreground-dimmed text-xs leading-5">
+        {translate("disconnect.description")}
+      </p>
       <Button
         color="neutral"
+        className="shrink-0"
         disabled={isRunning}
         onClick={() =>
           run(
@@ -324,23 +330,69 @@ export const GoogleShoppingManager = ({
       >
         {translate("disconnect.action")}
       </Button>
-      <p className="text-foreground-dimmed text-xs">
-        {translate("disconnect.description")}
-      </p>
     </div>
   ) : null;
 
   if (setup)
     return (
-      <div className="divide-y divide-accent-foreground">
-        {setup}
-        {disconnectRow}
+      <div className="grid gap-px bg-accent-foreground lg:grid-cols-[16rem_minmax(0,1fr)]">
+        <div className="bg-background-dimmed p-5">
+          {/* Was the page eyebrow verbatim, which now sits in the header pill
+            — this column labels the step list, so it says so. */}
+          <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+            {translate("setup.label")}
+          </p>
+          <ol className="mt-4 grid grid-cols-4 gap-2 lg:grid-cols-1 lg:gap-0">
+            {setupSteps.map((label, index) => {
+              const number = index + 1;
+              const complete = number < currentStep;
+              const active = number === currentStep;
+
+              return (
+                <li
+                  key={label}
+                  className="relative flex min-w-0 items-center gap-3 py-2 lg:py-3"
+                  aria-current={active ? "step" : undefined}
+                >
+                  <span
+                    className={cn(
+                      "relative z-10 flex size-7 shrink-0 items-center justify-center rounded-full border font-semibold text-xs tabular-nums",
+                      complete &&
+                        "border-primary bg-primary text-primary-foreground",
+                      active &&
+                        "border-primary bg-background-rich text-primary",
+                      !complete &&
+                        !active &&
+                        "border-accent-rich text-foreground-dimmed",
+                    )}
+                  >
+                    {number}
+                  </span>
+                  <span
+                    className={cn(
+                      "hidden min-w-0 text-sm lg:block",
+                      active
+                        ? "font-medium text-foreground"
+                        : "text-foreground-dimmed",
+                    )}
+                  >
+                    {label}
+                  </span>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+        <div className="flex min-h-64 flex-col justify-between bg-background-rich">
+          {setup}
+          {disconnectRow}
+        </div>
       </div>
     );
 
   return (
     <div className="flex flex-col divide-y divide-accent-foreground">
-      <div className="flex flex-wrap items-center gap-6 bg-background-dimmed px-4 py-3">
+      <div className="grid gap-px bg-accent-foreground sm:grid-cols-3">
         <Stat
           label={translate("stats.live")}
           value={status.offers.live}
@@ -348,6 +400,7 @@ export const GoogleShoppingManager = ({
         />
         <Stat
           label={translate("stats.pending")}
+          detail={translate("stats.pendingDetail")}
           value={status.offers.pending}
           tone="warning"
         />
@@ -368,74 +421,98 @@ export const GoogleShoppingManager = ({
         </div>
       )}
 
-      <div className="flex flex-wrap items-center gap-3 p-4">
-        <Button
-          disabled={isRunning}
-          onClick={() =>
-            run(
-              () => GoogleMerchant.pushOverrides({ store }),
-              translate("actions.pushed"),
-            )
-          }
-        >
-          {translate("actions.push")}
-        </Button>
-        <Button
-          color="neutral"
-          disabled={isRunning}
-          onClick={() =>
-            run(
-              () => GoogleMerchant.verifyOverrides({ store }),
-              translate("actions.refreshed"),
-            )
-          }
-        >
-          {translate("actions.refresh")}
-        </Button>
-        <Button
-          color="neutral"
-          disabled={isRunning}
-          onClick={() =>
-            run(
-              () => GoogleMerchant.checkRuleHealth({ store }),
-              translate("actions.wiringChecked"),
-            )
-          }
-        >
-          {translate("actions.wiring")}
-        </Button>
-        <p className="w-full text-foreground-dimmed text-xs">
-          {translate("actions.description")}
-        </p>
+      <div className="grid gap-5 p-5 sm:p-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+        <div>
+          <p className="font-medium text-foreground text-sm">
+            {translate("actions.push")}
+          </p>
+          <p className="mt-1 max-w-3xl text-foreground-dimmed text-xs leading-5">
+            {translate("actions.description")}
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            disabled={isRunning}
+            onClick={() =>
+              run(
+                () => GoogleMerchant.pushOverrides({ store }),
+                translate("actions.pushed"),
+              )
+            }
+          >
+            {translate("actions.push")}
+          </Button>
+          <Button
+            color="neutral"
+            disabled={isRunning}
+            onClick={() =>
+              run(
+                () => GoogleMerchant.verifyOverrides({ store }),
+                translate("actions.refreshed"),
+              )
+            }
+          >
+            {translate("actions.refresh")}
+          </Button>
+          <Button
+            color="neutral"
+            disabled={isRunning}
+            onClick={() =>
+              run(
+                () => GoogleMerchant.checkRuleHealth({ store }),
+                translate("actions.wiringChecked"),
+              )
+            }
+          >
+            {translate("actions.wiring")}
+          </Button>
+        </div>
       </div>
       {disconnectRow}
     </div>
   );
 };
 
+const STAT_DOTS = {
+  success: "bg-success",
+  warning: "bg-warning",
+  error: "bg-error",
+} as const;
+
+/**
+ * A stat cell in the canonical dashboard form — design.md §11.3.
+ *
+ * The tone rides a dot beside the label rather than colouring the value: the
+ * value used to be painted success/warning/error outright, which rendered "0
+ * live on Google" in confident green and "0 need attention" in alarm red. The
+ * colour now describes what the row *is*, and the number stays legible on its
+ * own (§4.4 — status must read without colour).
+ */
 const Stat = ({
   label,
   value,
   tone,
+  detail,
 }: {
   label: string;
   value: number;
   tone: "success" | "warning" | "error";
+  detail?: string;
 }) => (
-  <div className="flex items-baseline gap-2">
-    <p
-      className={cn(
-        "font-bold text-2xl tabular-nums",
-        {
-          success: "text-success",
-          warning: "text-warning",
-          error: "text-error",
-        }[tone],
-      )}
-    >
+  <div className="flex flex-col gap-2 bg-background-rich p-5 sm:p-6">
+    <div className="flex items-center gap-2">
+      <span
+        aria-hidden
+        className={cn("size-1.5 shrink-0 rounded-full", STAT_DOTS[tone])}
+      />
+      <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+        {label}
+      </p>
+    </div>
+    <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
       {value}
     </p>
-    <p className="text-foreground-dimmed text-xs">{label}</p>
+    {detail && <p className="text-foreground-dimmed text-xs">{detail}</p>}
   </div>
 );
 
@@ -445,6 +522,42 @@ const SEVERITY_TONES: Record<string, "neutral" | "warning" | "error"> = {
   WARNING: "warning",
   DEMOTED: "warning",
 };
+
+/**
+ * One diagnostic finding.
+ *
+ * Shares the readiness-check rhythm used on the visibility page — severity in
+ * a fixed left column, the finding in the right — instead of the coloured
+ * `border-l-2` bars this panel used to draw, which were a fourth way of saying
+ * the same thing the chip already says.
+ */
+const IssueRow = ({
+  severity,
+  title,
+  detail,
+  fallbackLabel,
+}: {
+  severity?: string | null;
+  title: string;
+  detail?: string;
+  fallbackLabel: string;
+}) => (
+  <div className="flex flex-col gap-2 p-4 sm:grid sm:grid-cols-[9rem_1fr] sm:gap-4">
+    <div>
+      <Chip tone={SEVERITY_TONES[severity ?? ""] ?? "neutral"}>
+        {severity ?? fallbackLabel}
+      </Chip>
+    </div>
+    <div className="min-w-0">
+      <p className="font-medium text-foreground text-sm">{title}</p>
+      {detail && (
+        <p className="mt-1 max-w-3xl text-foreground-dimmed text-sm">
+          {detail}
+        </p>
+      )}
+    </div>
+  </div>
+);
 
 export const DiagnosticsPanel = ({ store }: { store: string }) => {
   const toast = useToastManager();
@@ -466,7 +579,7 @@ export const DiagnosticsPanel = ({ store }: { store: string }) => {
 
   return (
     <div className="flex flex-col divide-y divide-accent-foreground">
-      <div className="flex items-center gap-3 p-4">
+      <div className="grid gap-4 p-5 sm:p-6 lg:grid-cols-[auto_minmax(0,1fr)] lg:items-center">
         <Button color="neutral" disabled={isPulling} onClick={() => pull()}>
           {isPulling ? translate("pulling") : translate("action")}
         </Button>
@@ -477,7 +590,9 @@ export const DiagnosticsPanel = ({ store }: { store: string }) => {
 
       {diagnostics && (
         <>
-          <div className="flex flex-wrap items-center gap-6 bg-background-dimmed px-4 py-3">
+          {/* Same connected stat grid as the channel status above, rather
+            than a loose flex strip on a dimmed band. */}
+          <div className="grid gap-px bg-accent-foreground sm:grid-cols-3">
             <Stat
               label={translate("offers")}
               value={diagnostics.offerCount}
@@ -496,24 +611,13 @@ export const DiagnosticsPanel = ({ store }: { store: string }) => {
           </div>
 
           {diagnostics.accountIssues.map((issue) => (
-            <div
+            <IssueRow
               key={issue.name ?? issue.title}
-              className="flex flex-col gap-1 p-4"
-            >
-              <div className="flex flex-wrap items-center gap-2">
-                <Chip tone={SEVERITY_TONES[issue.severity ?? ""] ?? "neutral"}>
-                  {issue.severity ?? translate("issue")}
-                </Chip>
-                <p className="font-medium text-foreground text-sm">
-                  {issue.title ?? translate("accountIssue")}
-                </p>
-              </div>
-              {issue.detail && (
-                <p className="max-w-3xl text-foreground-dimmed text-sm">
-                  {issue.detail}
-                </p>
-              )}
-            </div>
+              severity={issue.severity}
+              title={issue.title ?? translate("accountIssue")}
+              detail={issue.detail ?? undefined}
+              fallbackLabel={translate("issue")}
+            />
           ))}
 
           {diagnostics.itemIssues.length === 0 &&
@@ -522,28 +626,21 @@ export const DiagnosticsPanel = ({ store }: { store: string }) => {
               {translate("empty")}
             </p>
           ) : (
-            diagnostics.itemIssues.slice(0, 25).map((issue) => (
-              <div
-                key={`${issue.offerId}:${issue.code}:${issue.attribute}`}
-                className="flex flex-col gap-1 p-4"
-              >
-                <div className="flex flex-wrap items-center gap-2">
-                  <Chip
-                    tone={SEVERITY_TONES[issue.severity ?? ""] ?? "neutral"}
-                  >
-                    {issue.severity ?? translate("issue")}
-                  </Chip>
-                  <p className="font-medium text-foreground text-sm">
-                    {issue.description ?? issue.code}
-                  </p>
-                </div>
-                <p className="text-foreground-dimmed text-xs">
-                  {issue.offerId}
-                  {issue.attribute &&
-                    ` · ${translate("attribute", { attribute: issue.attribute })}`}
-                </p>
-              </div>
-            ))
+            diagnostics.itemIssues
+              .slice(0, 25)
+              .map((issue) => (
+                <IssueRow
+                  key={`${issue.offerId}:${issue.code}:${issue.attribute}`}
+                  severity={issue.severity}
+                  title={issue.description ?? issue.code ?? translate("issue")}
+                  detail={`${issue.offerId}${
+                    issue.attribute
+                      ? ` · ${translate("attribute", { attribute: issue.attribute })}`
+                      : ""
+                  }`}
+                  fallbackLabel={translate("issue")}
+                />
+              ))
           )}
         </>
       )}

@@ -4,7 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import * as GoogleMerchant from "@/server/app/integration/google-merchant";
 import { Environment } from "@/server/utils/environment";
-import { SectionGutter } from "../../_components/grid";
+import { SectionGutter, SectionHeader } from "../../_components/grid";
 import {
   Chip,
   DiagnosticsPanel,
@@ -37,14 +37,17 @@ const ReadinessRow = ({
   linkLabel?: string;
   labels: { unknown: string; ready: string; actionNeeded: string };
 }) => (
-  <div className="flex flex-col gap-1 p-4">
-    <div className="flex flex-wrap items-center gap-2">
+  // Top-aligned: `mt-auto` pinned the detail to the bottom of a `min-h-36`
+  // cell, so neighbouring rows with different copy lengths left ragged gaps
+  // between title and detail. Titles and chips now line up across the grid.
+  <div className="flex flex-col gap-2 bg-background-rich p-5 sm:p-6">
+    <div className="flex flex-wrap items-start justify-between gap-3">
+      <p className="max-w-xs font-medium text-foreground text-sm">{title}</p>
       <Chip tone={ok === null ? "neutral" : ok ? "success" : "warning"}>
         {ok === null ? labels.unknown : ok ? labels.ready : labels.actionNeeded}
       </Chip>
-      <p className="font-medium text-foreground text-sm">{title}</p>
     </div>
-    <p className="max-w-3xl text-foreground-dimmed text-xs">
+    <p className="max-w-xl text-foreground-dimmed text-sm leading-5">
       {detail}
       {href && (
         <>
@@ -139,7 +142,7 @@ const UcpContent = async ({ store }: { store: string }) => {
     .join(" ");
 
   return (
-    <div className="flex flex-col divide-y divide-accent-foreground">
+    <div className="grid gap-px bg-accent-foreground md:grid-cols-2">
       <ReadinessRow
         ok={homepage?.claimed ?? null}
         title={translate("homepage.title")}
@@ -155,7 +158,7 @@ const UcpContent = async ({ store }: { store: string }) => {
             : translate("homepage.missing")
         }
       />
-      <div>
+      <div className="bg-background-rich">
         <ReadinessRow
           ok={returnPolicyOk}
           title={translate("returnPolicy.title")}
@@ -166,7 +169,7 @@ const UcpContent = async ({ store }: { store: string }) => {
         />
         <ReturnPolicyEditor store={store} current={returnPolicy.current} />
       </div>
-      <div>
+      <div className="bg-background-rich">
         <ReadinessRow
           ok={customerSupport.configured}
           title={translate("customerSupport.title")}
@@ -204,25 +207,23 @@ const UcpContent = async ({ store }: { store: string }) => {
         href="https://support.google.com/merchants/contact/ucp_integration_interest"
         linkLabel={translate("waitlist.link")}
       />
-      <div className="flex flex-col gap-1 p-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <Chip tone="neutral">{translate("platform.chip")}</Chip>
-          <p className="font-medium text-foreground text-sm">
+      <div className="flex flex-col gap-2 bg-background-rich p-5 sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <p className="max-w-xs font-medium text-foreground text-sm">
             {translate("platform.title")}
           </p>
+          <Chip tone="neutral">{translate("platform.chip")}</Chip>
         </div>
-        <p className="max-w-3xl text-foreground-dimmed text-xs">
+        <p className="max-w-xl text-foreground-dimmed text-sm leading-5">
           {translate("platform.description")}
         </p>
       </div>
 
-      <div className="border-accent-foreground bg-background-dimmed px-4 py-3">
-        <p className="font-semibold text-foreground-dimmed text-xs uppercase tracking-[0.14em]">
-          {translate("eligibility.eyebrow")}
-        </p>
-        <p className="mt-1 text-foreground-dimmed text-xs">
-          {translate("eligibility.description")}
-        </p>
+      <div className="col-span-full bg-background-rich">
+        <SectionHeader
+          title={translate("eligibility.eyebrow")}
+          description={translate("eligibility.description")}
+        />
       </div>
       <UcpProductsPanel store={store} products={products.data} />
     </div>
@@ -238,7 +239,7 @@ const UcpContent = async ({ store }: { store: string }) => {
 const ChannelSections = async ({
   params,
 }: {
-  params: PageProps<"/dashboard/[store]/google-shopping">["params"];
+  params: PageProps<"/[locale]/dashboard/[store]/google-shopping">["params"];
 }) => {
   await connection();
   const { store } = await params;
@@ -250,21 +251,23 @@ const ChannelSections = async ({
   return (
     <>
       <SectionBox>
+        <SectionHeader
+          kicker={translate("sections.connection")}
+          title={translate("connection.title")}
+          description={translate("connection.description")}
+        />
         <GoogleShoppingManager store={store} status={status} />
       </SectionBox>
 
       {status.googleAccountId !== null && (
         <>
           <SectionGutter />
-          <SectionBox>
-            <div className="border-accent-foreground border-b p-4">
-              <p className="font-semibold text-foreground-dimmed text-xs uppercase tracking-[0.14em]">
-                {translate("diagnostics.eyebrow")}
-              </p>
-              <p className="mt-1 font-medium text-base text-foreground">
-                {translate("diagnostics.title")}
-              </p>
-            </div>
+          <SectionBox marks="top">
+            <SectionHeader
+              kicker={translate("sections.diagnostics")}
+              title={translate("diagnostics.title")}
+              description={translate("diagnostics.eyebrow")}
+            />
             <DiagnosticsPanel store={store} />
           </SectionBox>
         </>
@@ -273,18 +276,12 @@ const ChannelSections = async ({
       {status.provisioned && (
         <>
           <SectionGutter />
-          <SectionBox>
-            <div className="border-accent-foreground border-b p-4">
-              <p className="font-semibold text-foreground-dimmed text-xs uppercase tracking-[0.14em]">
-                {translate("ucp.eyebrow")}
-              </p>
-              <p className="mt-1 font-medium text-base text-foreground">
-                {translate("ucp.title")}
-              </p>
-              <p className="mt-1 max-w-2xl text-foreground-dimmed text-sm">
-                {translate("ucp.description")}
-              </p>
-            </div>
+          <SectionBox marks="top">
+            <SectionHeader
+              kicker={translate("sections.checkout")}
+              title={translate("ucp.title")}
+              description={translate("ucp.description")}
+            />
             <Suspense fallback={<ManagerSkeleton />}>
               <UcpContent store={store} />
             </Suspense>
@@ -299,7 +296,7 @@ const ChannelSections = async ({
 // request data and is handed to the streamed leaf that actually needs a store.
 export default ({
   params,
-}: PageProps<"/dashboard/[store]/google-shopping">) => (
+}: PageProps<"/[locale]/dashboard/[store]/google-shopping">) => (
   <GoogleShoppingShell>
     <Suspense
       fallback={

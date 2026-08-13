@@ -146,11 +146,11 @@ export const RankChecker = ({
             <p className="text-foreground-dimmed text-sm">
               {measurement.rank === null
                 ? translate("resultNotFound", {
-                    total: measurement.totalReturned,
+                    total: String(measurement.totalReturned),
                     query: measurement.query,
                   })
                 : translate("resultFound", {
-                    total: measurement.totalReturned,
+                    total: String(measurement.totalReturned),
                     query: measurement.query,
                   })}
             </p>

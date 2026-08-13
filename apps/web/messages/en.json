@@ -1300,8 +1300,13 @@
         "alreadyRunning": "An analysis is already running"
       },
       "tabs": {
-        "overview": "Overview",
-        "queries": "Query log"
+        "queries": "Query log",
+        "kicker": "02 — Evidence",
+        "title": "What the engines actually said",
+        "description": "The audited answers behind the rates above — what was found, how the brand was described, and which sources the engines leaned on.",
+        "findings": "Findings",
+        "perception": "Perception",
+        "crawlability": "Crawlability"
       },
       "empty": {
         "title": "No brand analysis yet",
@@ -1309,12 +1314,7 @@
       },
       "summary": {
         "title": "Diagnostic summary",
-        "analyzed": "Analyzed {time}",
-        "metrics": {
-          "mentionRate": "Mentioned in {rate}% of responses",
-          "unpromptedRate": "Found without name in {rate}%",
-          "namedRate": "Named when asked in {rate}%"
-        }
+        "analyzed": "Analyzed {time}"
       },
       "shape": {
         "title": "Visibility shape",
@@ -1352,13 +1352,16 @@
         "concerns": "Concerns"
       },
       "funnel": {
-        "title": "Funnel diagnosis"
+        "title": "Funnel diagnosis",
+        "description": "Where AI engines pick the brand up and where they drop it, across the four stages of a shopper's journey.",
+        "actions": "{count, plural, one {# action} other {# actions}}"
       },
       "landscape": {
         "competitors": "Who wins instead",
         "competitorMentions": "{count} mentions",
         "sources": "Sources AI trusts",
-        "sourceCitations": "{count} citations"
+        "sourceCitations": "{count} citations",
+        "title": "Competitive landscape"
       },
       "queries": {
         "description": "Every audited query from the latest run, with the engine's verdict.",
@@ -1383,6 +1386,28 @@
       "failed": {
         "title": "The last analysis failed",
         "description": "Run it again from the button above."
+      },
+      "sections": {
+        "diagnosis": "01 — Diagnosis",
+        "evidence": "02 — Evidence"
+      },
+      "metrics": {
+        "mentionRate": {
+          "label": "Mention rate",
+          "detail": "of audited responses mention the brand"
+        },
+        "unpromptedRate": {
+          "label": "Unprompted",
+          "detail": "surfaced without the brand name in the query"
+        },
+        "namedRate": {
+          "label": "Named when asked",
+          "detail": "of branded queries return the brand"
+        },
+        "queries": {
+          "label": "Queries audited",
+          "detail": "in the latest run"
+        }
       }
     },
     "quality": {
@@ -1407,23 +1432,25 @@
       },
       "reference": "Docs",
       "summary": {
-        "readyShare": "of {count, plural, one {# active product} other {# active products}} feed-ready",
         "blockers": "{count} blocked",
         "warnings": "{count} at risk",
-        "ready": "{count} ready"
+        "ready": "{count} ready",
+        "totalLabel": "Products audited",
+        "totalDetail": "active products in the latest audit"
       },
       "issues": {
-        "eyebrow": "Top issues",
         "title": "Fixes ranked by how many products they unblock",
         "affected": "{count, plural, one {# product} other {# products}}",
         "viewAffected": "View affected products",
         "empty": "No rule violations across the catalog. Every listing passes both platforms' checks."
       },
       "products": {
-        "eyebrow": "Catalog",
         "title": "Per-product findings",
         "findings": "{count, plural, one {# finding} other {# findings}}",
-        "empty": "No active products yet. Sync or add products to run the quality checks."
+        "empty": "No active products yet. Sync or add products to run the quality checks.",
+        "headers": {
+          "product": "Product"
+        }
       },
       "rules": {
         "id-duplicate": {
@@ -1562,6 +1589,10 @@
           "title": "No GTIN and no MPN",
           "detail": "Provide an MPN when the product has no GTIN. ChatGPT Shopping requires one of the two, and the Google feed marks identifier_exists false without them."
         }
+      },
+      "sections": {
+        "issues": "01 — Issues",
+        "catalog": "02 — Catalog"
       }
     },
     "googleShopping": {
@@ -1611,7 +1642,8 @@
           "description": "Creates ecentic's supplemental feed on your account and wires it into your primary product feed. Your store's plugin keeps owning prices, stock, and images. ecentic only layers optimized titles and descriptions on top.",
           "action": "Set up optimization feed",
           "ready": "Optimization feed ready"
-        }
+        },
+        "label": "Setup"
       },
       "disconnect": {
         "action": "Disconnect Google",
@@ -1620,8 +1652,9 @@
       },
       "stats": {
         "live": "Live on Google",
-        "pending": "Going live (may take a few hours)",
-        "attention": "Need attention"
+        "pending": "Going live",
+        "attention": "Need attention",
+        "pendingDetail": "May take a few hours"
       },
       "actions": {
         "push": "Push optimizations",
@@ -1704,6 +1737,11 @@
         }
       },
       "products": {
+        "summary": {
+          "catalog": "Products in this catalog",
+          "eligible": "Eligible for checkout",
+          "review": "Need category review"
+        },
         "empty": "No synced products yet. Sync your store's products first.",
         "restricted": "may be restricted: {hints}",
         "live": "{count, number} live",
@@ -1829,6 +1867,15 @@
             "max": "At most 60 days"
           }
         }
+      },
+      "sections": {
+        "connection": "01 — Connection",
+        "diagnostics": "02 — Diagnostics",
+        "checkout": "03 — Agentic checkout"
+      },
+      "connection": {
+        "title": "Merchant Center connection",
+        "description": "Link the Merchant Center account ecentic writes optimization overrides into, then push and verify them."
       }
     },
     "visibility": {
@@ -1837,7 +1884,8 @@
       "description": "Readiness checks run against the real ingestion surfaces: robots.txt, rendered storefront HTML, offer identity, and feeds. Rank is measured live in the Shopify Global Catalog that ChatGPT, Perplexity, and Copilot query.",
       "rankSection": {
         "eyebrow": "Live shelf position",
-        "title": "Rank this store in the Global Catalog for a buyer query"
+        "title": "Rank this store in the Global Catalog for a buyer query",
+        "description": "Run a buyer query against the live catalog and see where this store's offers land against everyone else's."
       },
       "audit": {
         "scoreDetail": "agent-readiness across automated checks, measured against what AI surfaces actually read rather than ecentic's own data",
@@ -1851,6 +1899,13 @@
           "title": "Product feed ({count} items{skipped})",
           "skipped": ", {count} skipped",
           "description": "One URL for both Google Merchant Center and the Perplexity Merchant Program."
+        },
+        "title": "Agent readiness",
+        "scoreLabel": "Readiness score",
+        "scoreStatus": {
+          "success": "Strong",
+          "warning": "Mixed",
+          "error": "Weak"
         }
       },
       "feedUrl": {
@@ -1887,6 +1942,10 @@
         "toast": {
           "failed": "Rank check failed"
         }
+      },
+      "sections": {
+        "readiness": "01 — Readiness",
+        "rank": "02 — Shelf position"
       }
     },
     "discovery": {

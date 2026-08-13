@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { Crosshair } from "../../../_components/grid";
+import { Band, PageHeader } from "../../../_components/grid";
 
 /**
  * The channel page's static frame, rendered by both `page.tsx` and
@@ -18,46 +18,41 @@ export const GoogleShoppingShell = ({ children }: { children: ReactNode }) => {
   return (
     <div className="flex flex-col">
       <div className="mx-8 border-accent-foreground border-x">
-        <div className="-mx-8 border-accent-foreground border-b">
-          <div className="relative mx-8 px-6 py-8">
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <p className="font-semibold text-primary text-xs uppercase tracking-[0.14em]">
-              {translate("eyebrow")}
-            </p>
-            <h1 className="mt-2 font-bold text-2xl text-foreground-rich">
-              {translate("title")}
-            </h1>
-            <p className="mt-1 max-w-2xl text-foreground-dimmed text-sm">
-              {translate("description")}
-            </p>
-          </div>
-        </div>
-
+        <PageHeader
+          context={translate("eyebrow")}
+          title={translate("title")}
+          description={translate("description")}
+        />
         {children}
       </div>
     </div>
   );
 };
 
-export const SectionBox = ({ children }: { children: ReactNode }) => (
-  <div className="-mx-8 border-accent-foreground border-b">
-    <div className="relative mx-8 bg-background-rich">
-      <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-      <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-      {children}
-    </div>
-  </div>
-);
+export const SectionBox = ({
+  marks,
+  children,
+}: {
+  /** "top" for a band arriving after a hatch gutter — see `Band`. */
+  marks?: "top" | "bottom" | "both" | "none";
+  children: ReactNode;
+}) => <Band marks={marks}>{children}</Band>;
 
 export const ManagerSkeleton = () => (
-  <div className="flex flex-col divide-y divide-accent-foreground">
-    {(["a", "b"] as const).map((key) => (
-      <div key={key} className="flex flex-col gap-2 p-4">
-        <div className="h-4 w-56 animate-pulse bg-foreground/10" />
-        <div className="h-3 w-full max-w-2xl animate-pulse bg-foreground/10" />
-        <div className="h-9 w-40 animate-pulse bg-foreground/10" />
+  <div className="grid min-h-64 gap-px bg-accent-foreground lg:grid-cols-[16rem_minmax(0,1fr)]">
+    <div className="bg-background-dimmed p-5">
+      <div className="h-3 w-24 animate-pulse bg-foreground/10" />
+      <div className="mt-5 grid grid-cols-4 gap-2 lg:grid-cols-1">
+        {(["a", "b", "c", "d"] as const).map((key) => (
+          <div key={key} className="h-8 animate-pulse bg-foreground/10" />
+        ))}
       </div>
-    ))}
+    </div>
+    <div className="bg-background-rich p-5 sm:p-6">
+      <div className="h-4 w-56 animate-pulse bg-foreground/10" />
+      <div className="mt-3 h-3 w-full max-w-2xl animate-pulse bg-foreground/10" />
+      <div className="mt-2 h-3 w-4/5 max-w-xl animate-pulse bg-foreground/10" />
+      <div className="mt-6 h-9 w-40 animate-pulse bg-foreground/10" />
+    </div>
   </div>
 );

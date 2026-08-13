@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import {
@@ -494,75 +495,120 @@ export const UcpProductsPanel = ({
       <p className="p-4 text-foreground-dimmed text-sm">{translate("empty")}</p>
     );
 
+  const eligibleCount = products.filter(
+    (product) => product.ucp?.checkoutEligible ?? false,
+  ).length;
+
   return (
-    <div className="flex flex-col divide-y divide-accent-foreground">
-      {products.map((product) => {
-        const eligible = product.ucp?.checkoutEligible ?? false;
+    <div className="col-span-full bg-background-rich">
+      <div className="grid gap-px border-accent-foreground border-b bg-accent-foreground sm:grid-cols-3">
+        <div className="bg-background-rich p-5">
+          <p className="font-bold text-2xl text-foreground tabular-nums">
+            {products.length}
+          </p>
+          <p className="mt-1 text-foreground-dimmed text-xs">
+            {translate("summary.catalog")}
+          </p>
+        </div>
+        <div className="bg-background-rich p-5">
+          <p className="font-bold text-2xl text-primary tabular-nums">
+            {eligibleCount}
+          </p>
+          <p className="mt-1 text-foreground-dimmed text-xs">
+            {translate("summary.eligible")}
+          </p>
+        </div>
+        <div className="bg-background-rich p-5">
+          <p className="font-bold text-2xl text-warning tabular-nums">
+            {
+              products.filter((product) => product.restrictedHints.length > 0)
+                .length
+            }
+          </p>
+          <p className="mt-1 text-foreground-dimmed text-xs">
+            {translate("summary.review")}
+          </p>
+        </div>
+      </div>
 
-        return (
-          <div key={product.id} className="flex flex-col gap-2 p-4">
-            <div className="flex flex-wrap items-center gap-3">
-              <p className="min-w-0 flex-1 truncate font-medium text-foreground text-sm">
-                {product.title}
-              </p>
-              {product.restrictedHints.length > 0 && (
-                <Chip tone="warning">
-                  {translate("restricted", {
-                    hints: product.restrictedHints
-                      .map((hint) => hints[hint] ?? hint)
-                      .join(", "),
-                  })}
-                </Chip>
+      <div className="grid gap-px bg-accent-foreground lg:grid-cols-2">
+        {products.map((product) => {
+          const eligible = product.ucp?.checkoutEligible ?? false;
+
+          return (
+            <div
+              key={product.id}
+              className={cn(
+                "flex min-h-36 flex-col bg-background-rich p-5 sm:p-6",
+                eligible && "border-primary border-l-2",
               )}
-              {product.offers.live > 0 && (
-                <Chip tone="success">
-                  {translate("live", { count: product.offers.live })}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <p className="min-w-0 font-medium text-foreground text-sm leading-5">
+                  {product.title}
+                </p>
+                <Chip tone={eligible ? "success" : "neutral"}>
+                  {eligible ? translate("disable") : translate("enable")}
                 </Chip>
+              </div>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                {product.restrictedHints.length > 0 && (
+                  <Chip tone="warning">
+                    {translate("restricted", {
+                      hints: product.restrictedHints
+                        .map((hint) => hints[hint] ?? hint)
+                        .join(", "),
+                    })}
+                  </Chip>
+                )}
+                {product.offers.live > 0 && (
+                  <Chip tone="success">
+                    {translate("live", { count: product.offers.live })}
+                  </Chip>
+                )}
+                {product.offers.pending > 0 && (
+                  <Chip tone="warning">
+                    {translate("pending", { count: product.offers.pending })}
+                  </Chip>
+                )}
+                {product.offers.error > 0 && (
+                  <Chip tone="error">
+                    {translate("error", { count: product.offers.error })}
+                  </Chip>
+                )}
+              </div>
+              <div className="mt-auto flex flex-wrap items-center gap-2 pt-5">
+                <Button disabled={isToggling} onClick={() => toggle(product)}>
+                  {eligible ? translate("disable") : translate("enable")}
+                </Button>
+                <Button
+                  color="neutral"
+                  onClick={() =>
+                    setExpanded((current) =>
+                      current === product.id ? null : product.id,
+                    )
+                  }
+                >
+                  {expanded === product.id
+                    ? translate("close")
+                    : translate("notice")}
+                </Button>
+              </div>
+
+              {expanded === product.id && (
+                <ProductEditor
+                  store={store}
+                  product={product}
+                  onSaved={() => {
+                    setExpanded(null);
+                    router.refresh();
+                  }}
+                />
               )}
-              {product.offers.pending > 0 && (
-                <Chip tone="warning">
-                  {translate("pending", { count: product.offers.pending })}
-                </Chip>
-              )}
-              {product.offers.error > 0 && (
-                <Chip tone="error">
-                  {translate("error", { count: product.offers.error })}
-                </Chip>
-              )}
-              <Button
-                color="neutral"
-                disabled={isToggling}
-                onClick={() => toggle(product)}
-              >
-                {eligible ? translate("disable") : translate("enable")}
-              </Button>
-              <Button
-                color="neutral"
-                onClick={() =>
-                  setExpanded((current) =>
-                    current === product.id ? null : product.id,
-                  )
-                }
-              >
-                {expanded === product.id
-                  ? translate("close")
-                  : translate("notice")}
-              </Button>
             </div>
-
-            {expanded === product.id && (
-              <ProductEditor
-                store={store}
-                product={product}
-                onSaved={() => {
-                  setExpanded(null);
-                  router.refresh();
-                }}
-              />
-            )}
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { useRouter } from "@/i18n/navigation";
 import * as BrandSnapshot from "@/server/app/brand-snapshot";
+import { Band } from "../../../_components/grid";
 
 const POLL_INTERVAL_MS = 5000;
 
@@ -33,18 +34,19 @@ export const RunningBanner = ({ store }: { store: string }) => {
   }, [store, router]);
 
   return (
-    <div className="-mx-8 border-accent-foreground border-b">
-      <div className="relative mx-8 flex items-center gap-3 bg-primary/5 px-6 py-4">
-        <LoaderIcon className="size-4 shrink-0 animate-spin text-primary" />
-        <div>
-          <p className="font-medium text-foreground text-sm">
-            {translate("title")}
-          </p>
-          <p className="mt-0.5 text-foreground-dimmed text-xs">
-            {translate("description")}
-          </p>
-        </div>
+    <Band
+      surface={false}
+      className="flex items-center gap-3 bg-primary/5 px-6 py-4"
+    >
+      <LoaderIcon className="size-4 shrink-0 animate-spin text-primary" />
+      <div>
+        <p className="font-medium text-foreground text-sm">
+          {translate("title")}
+        </p>
+        <p className="mt-0.5 text-foreground-dimmed text-xs">
+          {translate("description")}
+        </p>
       </div>
-    </div>
+    </Band>
   );
 };
