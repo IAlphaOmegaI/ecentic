@@ -2,6 +2,11 @@
 // The added config here will be used whenever a users loads a page in their browser.
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
+// First import in the first module Next evaluates on the client: it has to be
+// in place before `app-index` tees the inlined Flight stream, which is the
+// opening move of hydration. See the module for why that tee can throw.
+import "@/lib/readable-stream-tee";
+
 import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
