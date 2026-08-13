@@ -1,4 +1,5 @@
 import { headers } from "next/headers";
+import { connection } from "next/server";
 import { cache } from "react";
 import type * as Session from "@/server/app/session";
 import type * as User from "@/server/app/user";
@@ -22,10 +23,21 @@ export type AuthenticatedContext = GenericContext & {
  *
  * Outside a request scope React hands back a fresh store per call, degrading to
  * no memoization rather than leaking a session between users.
+ *
+ * `connection()` defers the read to the dynamic stage. Better Auth compares the
+ * session's expiry against the clock on both paths it can take — the cookie
+ * cache and the session-store read — and under `partialPrefetching` the sync-IO
+ * validator treats a clock read as an error anywhere up to the runtime stage,
+ * which is where `headers()` alone would leave us. The read is inside the
+ * library, so it can't be annotated there; deferring the caller is the
+ * documented fix, and this rail is request-bound regardless. Only signed-in
+ * renders reach that code, so it never surfaces in a cookie-less `next build`.
  */
-const readSession = cache(async (api: GenericContext["auth"]) =>
-  api.getSession({ headers: await headers() }),
-);
+const readSession = cache(async (api: GenericContext["auth"]) => {
+  await connection();
+
+  return api.getSession({ headers: await headers() });
+});
 
 export const authenticate: Enhancer<
   GenericContext,

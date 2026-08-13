@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
+import { connection } from "next/server";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { JsonLd } from "@/components/json-ld";
@@ -49,6 +50,12 @@ const PlaygroundSkeleton = () => (
 );
 
 const MeteredPlayground = async () => {
+  // Same deferral as `readSession` in server/utils/authentication.ts: Better
+  // Auth's session check reads the clock, which trips the sync-IO validator
+  // when it runs in the runtime-prefetch stage. `connection()` holds this
+  // subtree for the dynamic render, where clock reads are allowed.
+  await connection();
+
   const session = await auth.api.getSession({ headers: await headers() });
 
   return (
