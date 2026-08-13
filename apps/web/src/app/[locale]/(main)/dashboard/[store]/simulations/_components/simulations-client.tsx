@@ -126,6 +126,12 @@ const RosterList = ({
   const translate = useTranslations("dashboard.simulations.setup");
   const allSelected = entries.length > 0 && selected.size === entries.length;
 
+  // Competitor logos are guessed from a brand name against a third-party
+  // service, so a dead or unknown host is normal. Without this the <img> stays
+  // mounted and renders the browser's broken-image glyph; tracking the failures
+  // lets the row fall back to the same neutral tile a null image gets.
+  const [failed, setFailed] = useState<ReadonlySet<string>>(new Set());
+
   return (
     <div className="flex flex-col bg-background-rich">
       <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
@@ -161,13 +167,16 @@ const RosterList = ({
                 onCheckedChange={() => onToggle(entry.id)}
                 disabled={disabled}
               />
-              {entry.image ? (
+              {entry.image && !failed.has(entry.id) ? (
                 // Catalog/competitor images come from arbitrary hosts, so
                 // next/image (which needs allow-listed domains) is out.
                 // biome-ignore lint/performance/noImgElement: arbitrary remote hosts
                 <img
                   src={entry.image}
                   alt=""
+                  onError={() =>
+                    setFailed((previous) => new Set(previous).add(entry.id))
+                  }
                   className="size-8 shrink-0 bg-background-dimmed object-cover"
                 />
               ) : (

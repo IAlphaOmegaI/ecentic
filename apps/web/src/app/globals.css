@@ -11,6 +11,10 @@ html {
   scroll-padding-top: 5.5rem;
 }
 
+/* nextjs-portal {
+  display: none;
+} */
+
 /* Native scrollbars, styled to match the design system's <ScrollArea>: a thin,
    dimmed thumb over a transparent track. Base UI's ScrollArea hides the native
    bar on its own viewport, so these rules never double up with it. Standard

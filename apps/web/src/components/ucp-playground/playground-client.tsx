@@ -55,6 +55,12 @@ import type {
 } from "@/server/app/intelligence/ucp/playground";
 import { resolvePlaygroundStore } from "@/server/app/intelligence/ucp/playground-actions";
 
+// TEMP(demo 2026-08-11): suppress every AI tool/chat error surface in the
+// transcript so a failing tool call renders as nothing rather than a red block.
+// Flip to false to restore the normal error UI. The connect-form error is
+// deliberately NOT gated — a store that fails to resolve must still say so.
+const HIDE_ERRORS_FOR_DEMO = false;
+
 type PlaygroundTranslate = ReturnType<
   typeof useTranslations<"dashboard.ucpPlaygroundDashboard">
 >;
@@ -433,6 +439,10 @@ const ToolView = ({
     part.state === "output-error"
       ? part.errorText
       : (returnedError ?? undefined);
+
+  // Drop the whole card rather than relabel a failure as "done".
+  if (error && HIDE_ERRORS_FOR_DEMO) return null;
+
   const pending =
     part.state === "input-streaming" || part.state === "input-available";
   const tone = error ? "error" : pending ? "primary" : "success";
@@ -654,6 +664,7 @@ const CartPart = ({
     return <ToolLoading label={cartLoadingLabel(part.type, translate)} />;
   }
   if (part.state === "output-error") {
+    if (HIDE_ERRORS_FOR_DEMO) return null;
     return (
       <ErrorView message={part.errorText ?? translate("cart.states.failed")} />
     );
@@ -661,7 +672,10 @@ const CartPart = ({
 
   const returnedError =
     part.state === "output-available" ? getReturnedError(part.output) : null;
-  if (returnedError) return <ErrorView message={returnedError} />;
+  if (returnedError) {
+    if (HIDE_ERRORS_FOR_DEMO) return null;
+    return <ErrorView message={returnedError} />;
+  }
 
   // While the turn is still running a resolved cart can still be superseded — the
   // agent reads with get_cart before writing with update_cart, and the write only
@@ -711,6 +725,7 @@ const CatalogPart = ({ part }: { part: CatalogToolPart }) => {
     return <ToolLoading label={translate("catalog.searching")} />;
   }
   if (part.state === "output-error") {
+    if (HIDE_ERRORS_FOR_DEMO) return null;
     return (
       <ErrorView message={part.errorText ?? translate("catalog.failed")} />
     );
@@ -719,7 +734,12 @@ const CatalogPart = ({ part }: { part: CatalogToolPart }) => {
   const output = part.state === "output-available" ? part.output : undefined;
 
   const returnedError = getReturnedError(output);
-  if (returnedError) return <ErrorView message={returnedError} />;
+  if (returnedError) {
+    // Return here rather than fall through — an empty product list would
+    // otherwise reach ToolView and re-surface the same error.
+    if (HIDE_ERRORS_FOR_DEMO) return null;
+    return <ErrorView message={returnedError} />;
+  }
 
   const products = getProducts(output);
 
@@ -778,7 +798,9 @@ const MessageParts = ({
           ) : null;
         }
         if (part.type === "data-error") {
+          // Keep the console trail even when the UI stays quiet.
           console.error(part.data);
+          if (HIDE_ERRORS_FOR_DEMO) return null;
           return <ErrorView key={key} message={part.data.message} />;
         }
 
@@ -1097,7 +1119,7 @@ export const PlaygroundClient = ({
       {/* Input */}
       <div className="shrink-0 p-4 sm:px-6">
         <div className="mx-auto w-full max-w-3xl space-y-3">
-          {error && (
+          {error && !HIDE_ERRORS_FOR_DEMO && (
             <ErrorView message={error.message || translate("errors.generic")} />
           )}
           {isOutOfMessages ? (

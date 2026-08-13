@@ -15,16 +15,27 @@
  * placeholder/duplicate store rows. It never deletes the target store, its
  * products, or its token.
  *
+ * --chrome-only seeds just the parts that can never be real (trend history,
+ * agent traffic, subscription) and leaves real competitors and the real scan
+ * untouched — the "real core, seeded chrome" demo, where the numbers a client
+ * scrutinises come from an actual simulation run.
+ *
+ * --theme picks the copy set for the seeded narrative. The fabricated catalog
+ * is consumer audio, so that is the default; attaching to a store in another
+ * vertical without passing a theme would describe, say, a supplement brand as
+ * an audio company in its UCP profile and listing rewrites.
+ *
  * Usage:
  *   bun scripts/seed-demo.ts                        # auto-detect store, contact@ecentic.ai
  *   bun scripts/seed-demo.ts --store=<storeId>      # attach to a specific store
  *   bun scripts/seed-demo.ts --mode=create          # fabricate demo store (e.g. pending catalog sync)
+ *   bun scripts/seed-demo.ts --store=<id> --chrome-only --theme=supplements
  *   bun scripts/seed-demo.ts --email=foo@bar.com --password=Secret123!
  */
 
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { and, eq, inArray } from "drizzle-orm";
+import { and, count, desc, eq, inArray, ne, sql } from "drizzle-orm";
 import { db, schema } from "@/server/database";
 
 // ---------------------------------------------------------------------------
@@ -33,9 +44,16 @@ import { db, schema } from "@/server/database";
 
 const parseArgs = () => {
   const args = new Map<string, string>();
+  const flags = new Set<string>();
   for (const arg of process.argv.slice(2)) {
     const match = arg.match(/^--([^=]+)=(.*)$/);
-    if (!match) continue;
+
+    // Valueless switches (--chrome-only) never match the key=value shape.
+    if (!match) {
+      const flag = arg.match(/^--([^=]+)$/);
+      if (flag?.[1] !== undefined) flags.add(flag[1]);
+      continue;
+    }
 
     const [, key, value] = match;
 
@@ -50,6 +68,10 @@ const parseArgs = () => {
     // "create" | "attach" — omit for auto (attach when catalog has products).
     mode: args.get("mode") ?? null,
     products: Number.parseInt(args.get("products") ?? "24", 10),
+    // Copy set for the seeded narrative — see the theme registry below.
+    theme: args.get("theme") ?? "electronics",
+    // Keep real competitors + the real scan; seed only the unfakeable chrome.
+    chromeOnly: flags.has("chrome-only"),
   };
 };
 
@@ -476,6 +498,75 @@ const productSpecs: ProductSpec[] = [
     win: 60,
   },
 ];
+
+// ---------------------------------------------------------------------------
+// Themes — the vertical-specific copy the seeded narrative speaks in.
+//
+// Everything here used to be inlined at its point of use, which was fine while
+// the only catalog was the fabricated audio one. Attach mode broke that: a
+// supplement store would be handed a UCP profile advertising RoHS-certified
+// headphones and listing rewrites suffixed "ANC, 40H Battery, USB-C". The copy
+// therefore travels with a theme, and attach mode against a different vertical
+// passes its own.
+// ---------------------------------------------------------------------------
+
+type Theme = {
+  merchantName: string;
+  description: string;
+  paymentMethods: string;
+  shippingPolicy: string;
+  returnPolicy: string;
+  contactEmail: string;
+  sustainability: string;
+  certifications: string;
+  topCategories: string[];
+  /** Collection path used for non-product agent-visit URLs. */
+  collectionSlug: string;
+  /** Appended to a product title to stand in for an optimized rewrite. */
+  optimizedTitleSuffix: string;
+  optimizedDescription: string;
+};
+
+const themes: Record<string, Theme> = {
+  electronics: {
+    merchantName: "ecentic",
+    description:
+      "Premium consumer electronics and audio — headphones, speakers, chargers, and smart home devices designed for everyday life.",
+    paymentMethods:
+      "Visa, Mastercard, American Express, Apple Pay, Shop Pay, PayPal",
+    shippingPolicy:
+      "Free 2-day shipping on orders over $50. Ships to US, CA, UK, EU.",
+    returnPolicy: "30-day free returns. 2-year warranty on all audio products.",
+    contactEmail: "contact@ecentic.ai",
+    sustainability:
+      "Recycled-aluminium bodies, plastic-free packaging, and a free trade-in recycling program.",
+    certifications: "FCC, CE, UL, RoHS",
+    topCategories: ["Headphones", "Speakers", "Chargers", "Smart Home"],
+    collectionSlug: "audio",
+    optimizedTitleSuffix: "ANC, 40H Battery, USB-C, 2-Year Warranty",
+    optimizedDescription:
+      "<p>Optimized listing with front-loaded specifications, expanded feature bullets, and schema.org structured data for AI shopping agents.</p><ul><li>Comprehensive technical specifications</li><li>Trust signals: warranty, returns, certifications</li><li>Six high-resolution product images</li></ul>",
+  },
+  supplements: {
+    merchantName: "Father Fuel",
+    description:
+      "Daily energy and focus formula for fathers, shift workers, and anyone replacing their energy-drink habit with something cleaner.",
+    paymentMethods:
+      "Visa, Mastercard, American Express, Apple Pay, Shop Pay, PayPal",
+    shippingPolicy: "Free US shipping on orders over $60. Ships to US.",
+    returnPolicy: "30-day money-back guarantee on every unopened tub.",
+    contactEmail: "support@fatherfuel.us",
+    sustainability:
+      "Recyclable tubs, no single-use sachets, and a refill program that ships in compostable pouches.",
+    certifications: "GMP, FDA-registered facility, Third-party lab tested",
+    topCategories: ["Energy", "Focus", "Daily Greens", "Bundles"],
+    collectionSlug: "father-fuel",
+    optimizedTitleSuffix:
+      "30 Servings, Sugar-Free Energy & Focus, Third-Party Tested",
+    optimizedDescription:
+      "<p>Optimized listing with the serving count, format, and key actives stated up front, plus schema.org structured data so AI shopping agents can parse the offer.</p><ul><li>Full supplement facts panel and per-serving actives</li><li>Trust signals: third-party testing, GMP facility, money-back guarantee</li><li>Servings per tub and cost per serving stated explicitly</li></ul>",
+  },
+};
 
 // ---------------------------------------------------------------------------
 // Competitor catalog — real, plausible products grouped by brand.
@@ -950,7 +1041,17 @@ const seed = async () => {
     store: storeArg,
     mode: modeArg,
     products: productCount,
+    theme: themeArg,
+    chromeOnly,
   } = parseArgs();
+
+  const theme = themes[themeArg];
+  if (!theme) {
+    console.error(
+      `Unknown --theme "${themeArg}". Available: ${Object.keys(themes).join(", ")}.`,
+    );
+    process.exit(1);
+  }
 
   // --- Resolve the target user -------------------------------------------
   const [user] = await db
@@ -1098,11 +1199,48 @@ const seed = async () => {
   // Safe by construction: never deletes the target store, its products, or its
   // token. Only user-scoped analytics + the placeholder and same-shop
   // duplicate store rows are removed.
-  console.log(`Clearing prior demo analytics (${mode} mode)...`);
-  await db.delete(schema.scan).where(eq(schema.scan.userId, userId)); // cascades simulations (scanId)
+  console.log(
+    `Clearing prior demo analytics (${mode} mode${chromeOnly ? ", chrome-only" : ""})...`,
+  );
+
+  // chrome-only keeps the real core intact: the newest completed scan is the
+  // genuine simulation run the demo is built on, and its competitors are the
+  // ones it judged against. Everything older is prior seeded history and is
+  // regenerated below.
+  const realScan = await (async () => {
+    if (!chromeOnly) return null;
+    const [latest] = await db
+      .select({ id: schema.scan.id, createdAt: schema.scan.createdAt })
+      .from(schema.scan)
+      .where(
+        and(eq(schema.scan.userId, userId), eq(schema.scan.status, "complete")),
+      )
+      .orderBy(desc(schema.scan.createdAt))
+      .limit(1);
+    return latest ?? null;
+  })();
+
+  if (chromeOnly && !realScan) {
+    console.error(
+      "--chrome-only needs a completed scan to build on; none found. Run a real scan first.",
+    );
+    process.exit(1);
+  }
+
   await db
-    .delete(schema.competitor)
-    .where(eq(schema.competitor.userId, userId)); // cascades simulations (competitorId)
+    .delete(schema.scan)
+    .where(
+      realScan
+        ? and(eq(schema.scan.userId, userId), ne(schema.scan.id, realScan.id))
+        : eq(schema.scan.userId, userId),
+    ); // cascades simulations (scanId)
+
+  // Competitors are real in chrome-only mode — the scan above referenced them.
+  if (!chromeOnly)
+    await db
+      .delete(schema.competitor)
+      .where(eq(schema.competitor.userId, userId)); // cascades simulations (competitorId)
+
   await db
     .delete(schema.agentVisit)
     .where(eq(schema.agentVisit.userId, userId));
@@ -1330,7 +1468,42 @@ const seed = async () => {
   let selectedIndex = 0;
   let secondaryIndex = 0;
 
-  for (const group of competitorBrands) {
+  // chrome-only: adopt the real competitors the scan already ran against.
+  // Strength is unknown for them and only shapes fabricated win probabilities,
+  // so it sits at the neutral midpoint — the historical trend below is the
+  // only consumer, and the real scan supplies the headline numbers.
+  if (chromeOnly) {
+    const existing = await db
+      .select()
+      .from(schema.competitor)
+      .where(
+        and(
+          eq(schema.competitor.userId, userId),
+          eq(schema.competitor.storeId, storeId),
+          eq(schema.competitor.selected, true),
+        ),
+      );
+
+    if (existing.length === 0) {
+      console.error(
+        "--chrome-only found no selected competitors for this store; add competitors and scan first.",
+      );
+      process.exit(1);
+    }
+
+    for (const competitor of existing)
+      selectedCompetitors.push({
+        id: competitor.id,
+        brand: competitor.brand ?? competitor.title,
+        strength: 0.5,
+      });
+
+    console.log(
+      `Adopted ${existing.length} real selected competitors (none fabricated).`,
+    );
+  }
+
+  for (const group of chromeOnly ? [] : competitorBrands) {
     group.products.forEach((competitor, indexInBrand) => {
       const selected = indexInBrand === 0;
       const competitorId = id();
@@ -1362,10 +1535,46 @@ const seed = async () => {
     });
   }
 
-  await db.insert(schema.competitor).values(competitorRows);
-  console.log(
-    `Inserted ${competitorRows.length} competitors (${selectedCompetitors.length} selected).`,
-  );
+  if (competitorRows.length > 0) {
+    await db.insert(schema.competitor).values(competitorRows);
+    console.log(
+      `Inserted ${competitorRows.length} competitors (${selectedCompetitors.length} selected).`,
+    );
+  }
+
+  // --- Win rates ---------------------------------------------------------
+  // chrome-only replaces the fabricated per-product win rates with the ones
+  // the real scan measured, so the trend line it climbs toward and the
+  // "worst product" the narrative names both match what the client sees.
+  const productWins = await (async () => {
+    if (!chromeOnly || !realScan) return productRows;
+
+    const tallies = await db
+      .select({
+        productId: schema.simulation.productId,
+        total: count(),
+        wins: count(
+          sql`case when ${schema.simulation.winner} = 'product' then 1 end`,
+        ),
+      })
+      .from(schema.simulation)
+      .where(eq(schema.simulation.scanId, realScan.id))
+      .groupBy(schema.simulation.productId);
+
+    const byProduct = new Map(
+      tallies.map((tally) => [
+        tally.productId,
+        Number(tally.total) === 0
+          ? 0
+          : Math.round((Number(tally.wins) / Number(tally.total)) * 100),
+      ]),
+    );
+
+    return productRows.map((product) => ({
+      ...product,
+      win: byProduct.get(product.id) ?? product.win,
+    }));
+  })();
 
   // --- Latest scan + simulations ----------------------------------------
   const models = ["gpt4", "claude", "gemini", "perplexity"] as const;
@@ -1375,6 +1584,21 @@ const seed = async () => {
     gemini: 0.02,
     perplexity: -0.03,
   };
+
+  // Seeded history must speak in the same model set the real scan produced, or
+  // the trend shows perspectives the latest scan has no rows for. Simulate's
+  // `perspectives` is currently gpt4/claude/gemini — Perplexity is named in the
+  // docs and in `models` above but is not implemented in the live scan path —
+  // so chrome-only reads the models actually present rather than assuming.
+  const historyModels = await (async () => {
+    if (!chromeOnly || !realScan) return [...models];
+    const rows = await db
+      .selectDistinct({ model: schema.simulation.model })
+      .from(schema.simulation)
+      .where(eq(schema.simulation.scanId, realScan.id));
+    const found = rows.map((row) => row.model).filter(Boolean);
+    return found.length > 0 ? found : [...models];
+  })();
 
   const reasonsWin = [
     "PRODUCT lists 6 images and full specifications; COMPETITOR provides fewer concrete details.",
@@ -1404,7 +1628,7 @@ const seed = async () => {
   const simulationRows: (typeof schema.simulation.$inferInsert)[] = [];
   let latestWins = 0;
 
-  for (const product of productRows) {
+  for (const product of chromeOnly ? [] : productWins) {
     for (const competitor of selectedCompetitors) {
       for (const model of models) {
         const probability = clamp(
@@ -1437,11 +1661,11 @@ const seed = async () => {
   const latestTotal = simulationRows.length;
   const latestLosses = latestTotal - latestWins;
 
-  // Worst product drives the headline finding. productRows is always
+  // Worst product drives the headline finding. productWins is always
   // non-empty by construction (attach mode exits earlier when a store has no
   // products; create mode always seeds at least 3).
   const worst = at(
-    [...productRows].sort((a, b) => a.win - b.win),
+    [...productWins].sort((a, b) => a.win - b.win),
     0,
   );
   const worstFinding = {
@@ -1456,44 +1680,122 @@ const seed = async () => {
     lossPercentage: clamp(100 - worst.win, 60, 88),
   };
 
-  await db.insert(schema.scan).values({
-    id: latestScanId,
-    userId,
-    status: "complete",
-    totalSimulations: latestTotal,
-    completedSimulations: latestTotal,
-    wins: latestWins,
-    losses: latestLosses,
-    topFinding: worstFinding,
-    createdAt: latestScanCreatedAt,
-    updatedAt: latestScanCreatedAt,
-  });
+  if (chromeOnly) {
+    console.log(
+      `Kept the real scan ${realScan?.id} and its simulations (nothing fabricated).`,
+    );
+  } else {
+    await db.insert(schema.scan).values({
+      id: latestScanId,
+      userId,
+      storeId,
+      status: "complete",
+      totalSimulations: latestTotal,
+      completedSimulations: latestTotal,
+      wins: latestWins,
+      losses: latestLosses,
+      topFinding: worstFinding,
+      createdAt: latestScanCreatedAt,
+      updatedAt: latestScanCreatedAt,
+    });
 
-  for (const part of chunk(simulationRows, 1000))
-    await db.insert(schema.simulation).values(part);
+    for (const part of chunk(simulationRows, 1000))
+      await db.insert(schema.simulation).values(part);
 
-  console.log(
-    `Inserted latest scan + ${simulationRows.length} simulations (${latestWins}W / ${latestLosses}L = ${Math.round((latestWins / latestTotal) * 100)}%).`,
-  );
+    console.log(
+      `Inserted latest scan + ${simulationRows.length} simulations (${latestWins}W / ${latestLosses}L = ${Math.round((latestWins / latestTotal) * 100)}%).`,
+    );
+  }
 
   // --- Historical scans (trend line) -------------------------------------
   // Status "complete" so the dashboard trend/activity/insights populate.
   // Climb to just under the latest scan so the trend line peaks at "now".
-  const historyRates = [30, 32, 34, 36, 38, 39, 40, 41, 42];
+  //
+  // Each history row carries a thin set of simulations. Scan.getLatest scopes
+  // a store's history through Simulation.tallyByScan — a scan with no
+  // simulations touching this store's products is filtered out — so bare rows
+  // were invisible on every store-scoped view and the trend showed one point.
+  // The fabricated climb ends just under the fabricated latest scan. Under
+  // chrome-only the latest scan is real, so the curve has to land on whatever
+  // it actually measured — otherwise a store the models rejected outright
+  // shows a healthy 42% history falling off a cliff to 0% "now".
+  const historyRates = await (async () => {
+    const climb = [30, 32, 34, 36, 38, 39, 40, 41, 42];
+    if (!chromeOnly || !realScan) return climb;
+
+    const [totals] = await db
+      .select({
+        total: count(),
+        wins: count(
+          sql`case when ${schema.simulation.winner} = 'product' then 1 end`,
+        ),
+      })
+      .from(schema.simulation)
+      .where(eq(schema.simulation.scanId, realScan.id));
+
+    const measured =
+      Number(totals?.total ?? 0) === 0
+        ? 0
+        : (Number(totals?.wins ?? 0) / Number(totals?.total ?? 1)) * 100;
+
+    // Approach the measured rate from a little below, so the line reads as
+    // "flat and stuck" rather than as an unexplained collapse.
+    return climb.map((_, index) =>
+      clamp(Math.round(measured - (climb.length - 1 - index) * 0.8), 0, 100),
+    );
+  })();
+
+  // The weakest listing headlines each historical finding. Under-45 is the
+  // interesting band, but a catalog can legitimately have nothing there (a
+  // small, well-filled one scores every product higher), and picking from an
+  // empty array yields undefined. Fall back to the weakest product there is.
+  const weakest = [...productWins].sort((a, b) => a.win - b.win);
+  const underperformers = weakest.filter((product) => product.win < 45);
+  const findingPool =
+    underperformers.length > 0 ? underperformers : [at(weakest, 0)];
+
+  const historySimulations: (typeof schema.simulation.$inferInsert)[] = [];
+
   const historyScans = historyRates.map((rate, index) => {
-    const total = between(900, 1200);
-    const wins = Math.round((rate / 100) * total);
+    const scanId = id();
     const createdAt = daysAgo(28 - index * 3, 4);
+
+    // One simulation per product per selected competitor, capped so a large
+    // catalog does not write tens of thousands of history rows.
+    const pairs = productWins.flatMap((product) =>
+      selectedCompetitors.map((competitor) => ({ product, competitor })),
+    );
+    const sampled = pairs.slice(0, 60);
+
+    const wonCount = sampled.reduce((total, { product, competitor }) => {
+      const productWon = Math.random() < rate / 100;
+      historySimulations.push({
+        id: id(),
+        scanId,
+        productId: product.id,
+        competitorId: competitor.id,
+        model: pick(historyModels),
+        winner: productWon ? "product" : "competitor",
+        reasoning: productWon ? pick(reasonsWin) : pick(reasonsLoss),
+        productScore: productWon ? between(58, 86) : between(28, 52),
+        competitorScore: productWon ? between(30, 55) : between(58, 84),
+        createdAt,
+      });
+      return total + (productWon ? 1 : 0);
+    }, 0);
+
     return {
-      id: id(),
+      id: scanId,
       userId,
+      storeId,
       status: "complete" as const,
-      totalSimulations: total,
-      completedSimulations: total,
-      wins,
-      losses: total - wins,
+      totalSimulations: sampled.length,
+      completedSimulations: sampled.length,
+      wins: wonCount,
+      losses: sampled.length - wonCount,
       topFinding: {
-        name: pick(productRows.filter((p) => p.win < 45)).title,
+        name: at(findingPool, Math.floor(Math.random() * findingPool.length))
+          .title,
         missingAttributes: pick([
           ["Product images", "Structured data"],
           ["Detailed specifications", "Customer reviews"],
@@ -1509,14 +1811,27 @@ const seed = async () => {
   });
 
   await db.insert(schema.scan).values(historyScans);
-  console.log(`Inserted ${historyScans.length} historical scans.`);
+  for (const part of chunk(historySimulations, 1000))
+    await db.insert(schema.simulation).values(part);
+  console.log(
+    `Inserted ${historyScans.length} historical scans + ${historySimulations.length} simulations.`,
+  );
 
   // --- Listing optimizations (published + dismissed) ---------------------
   // Pending suggestions are computed live from low-win-rate products, so we
   // only persist a few "published" (with before/after lift) and "dismissed".
-  const lowWinProducts = [...productRows].sort((a, b) => a.win - b.win);
-  const published = lowWinProducts.slice(2, 6); // skip the 2 worst (leave pending)
-  const dismissed = lowWinProducts.slice(6, 8);
+  //
+  // The split is proportional rather than fixed: the old slice(2,6)/slice(6,8)
+  // assumed a 24-product catalog and produced one published and zero dismissed
+  // rows on a small real one, leaving the Optimize tab effectively empty.
+  const lowWinProducts = [...productWins].sort((a, b) => a.win - b.win);
+  // Leave the worst pending so the tab has live suggestions to act on — but
+  // never reserve the whole catalog on a store with only a couple of products.
+  const pendingCount = Math.min(2, Math.max(0, lowWinProducts.length - 1));
+  const remaining = lowWinProducts.slice(pendingCount);
+  const publishedCount = Math.max(1, Math.ceil(remaining.length * 0.6));
+  const published = remaining.slice(0, publishedCount);
+  const dismissed = remaining.slice(publishedCount, publishedCount + 2);
 
   const optimizationRows: (typeof schema.listingOptimization.$inferInsert)[] =
     [];
@@ -1529,9 +1844,8 @@ const seed = async () => {
       userId,
       productId: product.id,
       status: "published",
-      proposedTitle: `${product.title} — ANC, 40H Battery, USB-C, 2-Year Warranty`,
-      proposedDescription:
-        "<p>Optimized listing with front-loaded specifications, expanded feature bullets, and schema.org structured data for AI shopping agents.</p><ul><li>Comprehensive technical specifications</li><li>Trust signals: warranty, returns, certifications</li><li>Six high-resolution product images</li></ul>",
+      proposedTitle: `${product.title} — ${theme.optimizedTitleSuffix}`,
+      proposedDescription: theme.optimizedDescription,
       winRateBefore: before,
       estimatedLift: lift,
       winRateAfter: clamp(before + lift, 0, 99),
@@ -1558,7 +1872,8 @@ const seed = async () => {
     });
   }
 
-  await db.insert(schema.listingOptimization).values(optimizationRows);
+  if (optimizationRows.length > 0)
+    await db.insert(schema.listingOptimization).values(optimizationRows);
   console.log(
     `Inserted ${optimizationRows.length} listing optimizations (${published.length} published, ${dismissed.length} dismissed).`,
   );
@@ -1568,29 +1883,18 @@ const seed = async () => {
     {
       "@context": "https://ucp.ai/schema",
       "@type": "Merchant",
-      name: "ecentic",
-      description:
-        "Premium consumer electronics and audio — headphones, speakers, chargers, and smart home devices designed for everyday life.",
+      name: theme.merchantName,
+      description: theme.description,
       logo: `https://${domain}/logo.png`,
-      paymentMethods: [
-        "Visa",
-        "Mastercard",
-        "American Express",
-        "Apple Pay",
-        "Shop Pay",
-        "PayPal",
-      ],
-      shippingPolicy:
-        "Free 2-day shipping on orders over $50. Ships to US, CA, UK, EU.",
-      returnPolicy:
-        "30-day free returns. 2-year warranty on all audio products.",
-      contact: { email: "contact@ecentic.ai" },
-      sustainability:
-        "Recycled-aluminium bodies, plastic-free packaging, and a free trade-in recycling program.",
-      certifications: ["FCC", "CE", "UL", "RoHS"],
+      paymentMethods: theme.paymentMethods.split(", "),
+      shippingPolicy: theme.shippingPolicy,
+      returnPolicy: theme.returnPolicy,
+      contact: { email: theme.contactEmail },
+      sustainability: theme.sustainability,
+      certifications: theme.certifications.split(", "),
       catalog: {
-        totalProducts: productRows.length,
-        topCategories: ["Headphones", "Speakers", "Chargers", "Smart Home"],
+        totalProducts: productWins.length,
+        topCategories: theme.topCategories,
       },
     },
     null,
@@ -1600,25 +1904,21 @@ const seed = async () => {
   await db.insert(schema.ucpProfile).values({
     id: id(),
     userId,
-    merchantName: "ecentic",
-    description:
-      "Premium consumer electronics and audio — headphones, speakers, chargers, and smart home devices designed for everyday life.",
+    merchantName: theme.merchantName,
+    description: theme.description,
     logoUrl: `https://${domain}/logo.png`,
-    paymentMethods:
-      "Visa, Mastercard, American Express, Apple Pay, Shop Pay, PayPal",
-    shippingPolicy:
-      "Free 2-day shipping on orders over $50. Ships to US, CA, UK, EU.",
-    returnPolicy: "30-day free returns. 2-year warranty on all audio products.",
-    contactEmail: "contact@ecentic.ai",
-    sustainability:
-      "Recycled-aluminium bodies, plastic-free packaging, and a free trade-in recycling program.",
-    certifications: "FCC, CE, UL, RoHS",
+    paymentMethods: theme.paymentMethods,
+    shippingPolicy: theme.shippingPolicy,
+    returnPolicy: theme.returnPolicy,
+    contactEmail: theme.contactEmail,
+    sustainability: theme.sustainability,
+    certifications: theme.certifications,
     generatedJson: ucpJson,
     autoUpdate: true,
     createdAt: daysAgo(40),
     updatedAt: daysAgo(0, 5),
   });
-  console.log("Inserted UCP profile.");
+  console.log(`Inserted UCP profile (${themeArg}).`);
 
   // --- Subscription ------------------------------------------------------
   await db.insert(schema.subscription).values({
@@ -1648,12 +1948,12 @@ const seed = async () => {
     const agent = pick(weightedAgents);
     // Bias toward recent days (square distribution) to show growth.
     const dayOffset = Math.floor(29 * (1 - Math.random() ** 2));
-    const product = Math.random() < 0.78 ? pick(productRows) : null;
+    const product = Math.random() < 0.78 ? pick(productWins) : null;
     const pageType = product ? "product" : pick(pageTypes);
     const pageUrl = product
       ? product.url
       : pageType === "collection"
-        ? `https://${domain}/collections/audio`
+        ? `https://${domain}/collections/${theme.collectionSlug}`
         : `https://${domain}/`;
     visitRows.push({
       id: id(),
