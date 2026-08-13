@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { Crosshair, SectionGutter } from "../../../../_components/grid";
+import { Crosshair, SectionGutter, Slot } from "../../../../_components/grid";
 
 /**
  * The page's static frame, rendered by both `page.tsx` and `loading.tsx`. The
@@ -28,7 +28,7 @@ export const AddProductsShell = ({
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <div>
-              {statusPill}
+              <Slot>{statusPill}</Slot>
               <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
                 {translate("title")}
               </h1>
@@ -36,7 +36,7 @@ export const AddProductsShell = ({
                 {translate("description")}
               </p>
             </div>
-            {action}
+            <Slot>{action}</Slot>
           </div>
         </div>
 

@@ -9,7 +9,7 @@ import {
 } from "@zenncore/web/components/tabs";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { Crosshair, SectionGutter } from "../../../_components/grid";
+import { Crosshair, SectionGutter, Slot } from "../../../_components/grid";
 
 export const BrandShell = ({
   actions,
@@ -43,7 +43,7 @@ export const BrandShell = ({
             )}
           </div>
         </div>
-        {content}
+        <Slot>{content}</Slot>
       </div>
     </div>
   );

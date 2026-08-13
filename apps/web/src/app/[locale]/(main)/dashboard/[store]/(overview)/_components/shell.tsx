@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { Crosshair, SectionGutter } from "../../../_components/grid";
+import { Crosshair, SectionGutter, Slot } from "../../../_components/grid";
 import { OverviewDetails } from "../../../_components/overview-details";
 
 // Sized to the "Run Simulation" button it stands in for.
@@ -45,7 +45,7 @@ export const OverviewShell = ({
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <div>
-              {statusPill}
+              <Slot>{statusPill}</Slot>
               <h1 className="mt-3 font-bold text-3xl text-foreground-rich tracking-[-0.02em]">
                 {translate("title")}
               </h1>
@@ -53,7 +53,7 @@ export const OverviewShell = ({
                 {translate("description")}
               </p>
             </div>
-            {actions}
+            <Slot>{actions}</Slot>
           </div>
         </div>
 
@@ -61,7 +61,7 @@ export const OverviewShell = ({
           <div className="relative mx-8 bg-background-rich">
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            {stats}
+            <Slot>{stats}</Slot>
           </div>
         </div>
 
@@ -73,7 +73,7 @@ export const OverviewShell = ({
             <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            {performance}
+            <Slot>{performance}</Slot>
           </div>
         </div>
 

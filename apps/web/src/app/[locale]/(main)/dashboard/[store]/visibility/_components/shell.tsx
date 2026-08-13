@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { Crosshair, SectionGutter } from "../../../_components/grid";
+import { Crosshair, SectionGutter, Slot } from "../../../_components/grid";
 
 export const VisibilityShell = ({
   audit,
@@ -36,7 +36,7 @@ export const VisibilityShell = ({
           <div className="relative mx-8 bg-background-rich">
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            {audit}
+            <Slot>{audit}</Slot>
           </div>
         </div>
 
@@ -54,7 +54,7 @@ export const VisibilityShell = ({
                 {translate("rankSection.title")}
               </p>
             </div>
-            {rank}
+            <Slot>{rank}</Slot>
           </div>
         </div>
       </div>

@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { Crosshair, SectionGutter } from "../../../_components/grid";
+import { Crosshair, SectionGutter, Slot } from "../../../_components/grid";
 
 export const QualityShell = ({
   summary,
@@ -38,7 +38,7 @@ export const QualityShell = ({
           <div className="relative mx-8 bg-background-rich">
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            {summary}
+            <Slot>{summary}</Slot>
           </div>
         </div>
 
@@ -56,7 +56,7 @@ export const QualityShell = ({
                 {translate("issues.title")}
               </p>
             </div>
-            {issues}
+            <Slot>{issues}</Slot>
           </div>
         </div>
 
@@ -74,7 +74,7 @@ export const QualityShell = ({
                 {translate("products.title")}
               </p>
             </div>
-            {products}
+            <Slot>{products}</Slot>
           </div>
         </div>
       </div>

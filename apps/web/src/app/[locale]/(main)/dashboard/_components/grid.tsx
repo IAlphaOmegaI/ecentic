@@ -24,6 +24,18 @@ export const SectionGutter = () => (
   <div className="h-4 bg-grid-stripes opacity-60" />
 );
 
+/**
+ * Renders a shell slot as an only child.
+ *
+ * Slots are built in `page.tsx` — a server component — so they reach the shell
+ * through the RSC payload, which strips the static key check React applies to
+ * children it sees at JSX time. Dropped in beside the corner marks they become
+ * an unchecked entry in a children array, and React warns about a missing key
+ * even though a shell's slots are fixed regions, not a list. An only child is
+ * never an array, so there is no key to miss.
+ */
+export const Slot = ({ children }: PropsWithChildren) => children;
+
 export const SectionKicker = ({ children }: PropsWithChildren) => {
   if (typeof children !== "string")
     return (

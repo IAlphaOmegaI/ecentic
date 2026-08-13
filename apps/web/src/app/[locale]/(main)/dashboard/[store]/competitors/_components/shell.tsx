@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { Crosshair, SectionGutter } from "../../../_components/grid";
+import { Crosshair, SectionGutter, Slot } from "../../../_components/grid";
 
 /**
  * The page's static frame, rendered by both `page.tsx` and `loading.tsx`.
@@ -36,7 +36,7 @@ export const CompetitorsShell = ({
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             <div>
-              {statusPill}
+              <Slot>{statusPill}</Slot>
               <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
                 {translate("title")}
               </h1>
@@ -52,7 +52,7 @@ export const CompetitorsShell = ({
           <div className="relative mx-8 bg-background-rich">
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            {stats}
+            <Slot>{stats}</Slot>
           </div>
         </div>
 
@@ -64,7 +64,7 @@ export const CompetitorsShell = ({
             <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            {landscape}
+            <Slot>{landscape}</Slot>
           </div>
         </div>
 
@@ -76,7 +76,7 @@ export const CompetitorsShell = ({
             <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            {table}
+            <Slot>{table}</Slot>
           </div>
         </div>
 
@@ -88,7 +88,7 @@ export const CompetitorsShell = ({
             <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
             <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
             <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            {insights}
+            <Slot>{insights}</Slot>
           </div>
         </div>
       </div>
