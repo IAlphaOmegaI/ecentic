@@ -8,6 +8,7 @@ import { schema } from "../../../database";
 import { generate } from "../../../utils/ai";
 import { withAuthentication } from "../../../utils/authentication";
 import { Environment } from "../../../utils/environment";
+import { isIntegrationAuthError } from "../../../utils/error";
 import type { Document } from "../../../utils/repository";
 import { repository } from "../../../utils/repository";
 import * as Shopify from "../../integration/shopify";
@@ -377,38 +378,58 @@ export const publishProductsToShopify = withAuthentication(
     });
     if (!products.success) return products;
 
-    let pushed = 0;
-    const errors: string[] = [];
+    const outcome = await (async () => {
+      let pushed = 0;
+      const errors: string[] = [];
 
-    for (const product of products.data) {
-      if (!product.externalId) continue;
+      for (const product of products.data) {
+        if (!product.externalId) continue;
 
-      const structuredJson = await (async () => {
-        if (product.structuredData) return product.structuredData;
-        const generated = await generateProductStructuredData({
+        const structuredJson = await (async () => {
+          if (product.structuredData) return product.structuredData;
+          const generated = await generateProductStructuredData({
+            product: product.id,
+          });
+          if (!generated.success) return null;
+          return generated.data.json;
+        })();
+
+        if (!structuredJson) {
+          errors.push(`${product.title}: could not generate structured data`);
+          continue;
+        }
+
+        const result = await Shopify.pushProductMetafields({
           product: product.id,
+          structuredJson,
         });
-        if (!generated.success) return null;
-        return generated.data.json;
-      })();
 
-      if (!structuredJson) {
-        errors.push(`${product.title}: could not generate structured data`);
-        continue;
+        if (!result.success) {
+          errors.push(`${product.title}: ${result.error.message}`);
+
+          // The store's authorization, not this product, is what failed —
+          // every remaining item would fail identically, and each one would pay
+          // the full token refresh-and-retry cost on its way there. Stop here
+          // and report it once.
+          if (isIntegrationAuthError(result.error))
+            return { pushed, errors, blocked: result.error };
+
+          continue;
+        }
+
+        pushed += 1;
       }
 
-      const result = await Shopify.pushProductMetafields({
-        product: product.id,
-        structuredJson,
-      });
+      return { pushed, errors, blocked: null };
+    })();
 
-      if (!result.success) {
-        errors.push(`${product.title}: ${result.error.message}`);
-        continue;
-      }
+    const { pushed, errors, blocked } = outcome;
 
-      pushed += 1;
-    }
+    // Surfaced bare rather than folded into the joined per-product string: it is
+    // one store-level fact, and keeping product titles out of the message lets
+    // Sentry group every store's occurrence of it together.
+    if (blocked && pushed === 0)
+      return { success: false as const, error: blocked };
 
     if (pushed === 0 && errors.length > 0)
       return {

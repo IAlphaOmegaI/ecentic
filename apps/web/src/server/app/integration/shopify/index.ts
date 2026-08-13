@@ -6,7 +6,11 @@ import { type TransactionScope, withTransaction } from "../../../database";
 import { withAuthentication } from "../../../utils/authentication";
 import { withContext } from "../../../utils/context";
 import { Environment } from "../../../utils/environment";
-import { ConflictError, RequestError } from "../../../utils/error";
+import {
+  ConflictError,
+  IntegrationAuthError,
+  RequestError,
+} from "../../../utils/error";
 import * as HTTP from "../../../utils/http";
 import {
   normalizeHostname,
@@ -319,7 +323,7 @@ export const refreshAccessToken = withContext(
     if (!SHOPIFY_API_KEY || !SHOPIFY_API_SECRET)
       return {
         success: false,
-        error: new Error("Shopify integration not configured"),
+        error: new IntegrationAuthError("Shopify integration not configured"),
       };
 
     const storeAccount = await StoreAccount.getForStore(Environment.SERVER, {
@@ -327,14 +331,17 @@ export const refreshAccessToken = withContext(
     });
     if (!storeAccount.success) return storeAccount;
     if (!storeAccount.data?.refreshToken)
-      return { success: false, error: new Error("No refresh token stored") };
+      return {
+        success: false,
+        error: new IntegrationAuthError("No refresh token stored"),
+      };
 
     const { refreshToken, refreshTokenExpiresAt } = storeAccount.data;
 
     if (refreshTokenExpiresAt && refreshTokenExpiresAt.getTime() < Date.now())
       return {
         success: false,
-        error: new Error(
+        error: new IntegrationAuthError(
           "Shopify authorization has expired. Please reconnect your store.",
         ),
       };
@@ -378,7 +385,10 @@ const resolveAccessToken = async (
 
   if (!storeAccount.success) return storeAccount;
   if (!storeAccount.data?.accessToken)
-    return { success: false, error: new Error("Missing Shopify access token") };
+    return {
+      success: false,
+      error: new IntegrationAuthError("Missing Shopify access token"),
+    };
 
   const { accessTokenExpiresAt, accessToken } = storeAccount.data;
   const isExpired =
@@ -394,7 +404,7 @@ const resolveAccessToken = async (
   if (!refreshed.data?.accessToken)
     return {
       success: false,
-      error: new Error("Missing access token after refresh"),
+      error: new IntegrationAuthError("Missing access token after refresh"),
     };
 
   return { success: true, accessToken: refreshed.data.accessToken };

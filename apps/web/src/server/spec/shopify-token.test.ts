@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import { redeemRefreshToken } from "../app/integration/shopify/token";
+import { isIntegrationAuthError } from "../utils/error";
 
 const GRANT = {
   shop: "ecentic.myshopify.com",
@@ -161,5 +162,24 @@ describe("redeemRefreshToken", () => {
     expect(result.success === false && result.error.message).not.toMatch(
       RECONNECT_PROMPT,
     );
+  });
+
+  // `publishProductsToShopify` loops over the whole catalog and breaks out on
+  // this predicate. If a failure here stopped answering to it, the loop would
+  // run the full retry ladder once per product instead of once per store.
+  describe("every failure is recognisable as store-scoped", () => {
+    test.each([
+      ["a dead grant (401)", () => json({ error: "invalid_request" }, 401)],
+      ["an edge outage (HTML 520)", () => html(520)],
+      ["an unexpected 400", () => json({ error: "invalid_grant" }, 400)],
+    ])("%s", async (_label, response) => {
+      stubFetch([response]);
+      const result = await redeemRefreshToken(GRANT, NO_DELAY);
+
+      expect(result.success).toBe(false);
+      expect(
+        result.success === false && isIntegrationAuthError(result.error),
+      ).toBe(true);
+    });
   });
 });

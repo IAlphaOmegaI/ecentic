@@ -32,14 +32,23 @@ export const error = <Name extends string>(
       Object.setPrototypeOf(this, parent.prototype);
     }
   };
-  // Set the static name property at runtime with the literal value
-  Object.defineProperty(ErrorClass, "name", {
+
+  // The wire name, reachable from the class rather than only from an instance.
+  //
+  // Deliberately NOT the static `name`: a `class Foo extends error("foo-error")`
+  // declaration gives Foo its own `name` own-property of `"Foo"`, shadowing
+  // anything set here, so `Foo.name` is `"Foo"` while `new Foo().name` is
+  // `"foo-error"`. Every class below is declared that way, so the static `name`
+  // is never the wire name and comparing against it silently matches nothing.
+  // `errorName` has no such auto-binding and is inherited by subclasses intact.
+  Object.defineProperty(ErrorClass, "errorName", {
     value: name,
     writable: false,
     enumerable: false,
     configurable: true,
   });
-  return ErrorClass as typeof ErrorClass & { readonly name: Name };
+
+  return ErrorClass as typeof ErrorClass & { readonly errorName: Name };
 };
 
 export class DatabaseError extends error("database-error" as const) {}
@@ -75,6 +84,21 @@ export class ConflictError extends error("conflict-error", RequestError, {
 export class TimeoutError extends error("timeout-error", RequestError) {}
 
 export class ParseError extends error("parse-error", RequestError) {}
+
+/**
+ * A store's platform authorization could not be resolved — the grant is dead, or
+ * the platform could not be reached to refresh it.
+ *
+ * Store-scoped by nature, which is the point of the class: a caller looping over
+ * a catalog gets the identical failure on every product, so it must stop on the
+ * first one instead of paying the whole refresh-and-retry cost per item. Callers
+ * branch on this class rather than on the message — the prose is user-facing
+ * copy and shifts, while the class is the contract.
+ */
+export class IntegrationAuthError extends error(
+  "integration-auth-error",
+  RequestError,
+) {}
 
 export class AuthenticationError extends error("authentication-error", Error) {}
 
@@ -130,6 +154,18 @@ export class UntrustedRequestError extends error(
  * them to Sentry.
  */
 export const isExpected = (error: Error) => expected.has(error.name);
+
+/**
+ * Whether a failure was the store's platform authorization rather than anything
+ * about the item being processed — see `IntegrationAuthError`. Matched by name
+ * for the same reason `isExpected` is: `error()` re-points instances at their
+ * parent's prototype, so `instanceof` on the leaf class is always false.
+ *
+ * Compared against `errorName`, never `IntegrationAuthError.name` — see the note
+ * in `error()` for why the static `name` is `"IntegrationAuthError"` here.
+ */
+export const isIntegrationAuthError = (error: Error) =>
+  error.name === IntegrationAuthError.errorName;
 
 /**
  * Driver codes that mean the database connection died, not that Postgres
@@ -195,19 +231,29 @@ export namespace ErrorProtocol {
     "~prototype"?: E;
   };
 
+  /**
+   * Wire name → class, for rebuilding an error that crossed to the client.
+   *
+   * Keyed by `errorName`, which is what `serialize` writes into `name`. The
+   * static `name` reads as the JavaScript class name (`"RequestError"`), so
+   * keying by it filled this map with keys no lookup could ever produce and
+   * every error deserialized as a bare `Error` — see the note in `error()`.
+   */
   const map = {
-    [DatabaseError.name]: DatabaseError,
-    [UniqueConstraintError.name]: UniqueConstraintError,
-    [ValidationError.name]: ValidationError,
-    [NotFoundError.name]: NotFoundError,
-    [RequestError.name]: RequestError,
-    [ConflictError.name]: ConflictError,
-    [TimeoutError.name]: TimeoutError,
-    [ParseError.name]: ParseError,
-    [UnauthenticatedError.name]: UnauthenticatedError,
-    [UnauthorizedError.name]: UnauthorizedError,
-    [InvalidSignatureError.name]: InvalidSignatureError,
-    [UntrustedRequestError.name]: UntrustedRequestError,
+    [DatabaseError.errorName]: DatabaseError,
+    [UniqueConstraintError.errorName]: UniqueConstraintError,
+    [ValidationError.errorName]: ValidationError,
+    [NotFoundError.errorName]: NotFoundError,
+    [RequestError.errorName]: RequestError,
+    [ConflictError.errorName]: ConflictError,
+    [TimeoutError.errorName]: TimeoutError,
+    [ParseError.errorName]: ParseError,
+    [IntegrationAuthError.errorName]: IntegrationAuthError,
+    [UnauthenticatedError.errorName]: UnauthenticatedError,
+    [UnauthorizedError.errorName]: UnauthorizedError,
+    [InvalidCredentialsError.errorName]: InvalidCredentialsError,
+    [InvalidSignatureError.errorName]: InvalidSignatureError,
+    [UntrustedRequestError.errorName]: UntrustedRequestError,
   };
 
   export const serialize = <E extends Error = Error>(

@@ -1,5 +1,5 @@
 import type { Result } from "@zenncore/utils";
-import { RequestError } from "../../../utils/error";
+import { IntegrationAuthError } from "../../../utils/error";
 import * as HTTP from "../../../utils/http";
 
 /**
@@ -96,11 +96,14 @@ export const redeemRefreshToken = async (
   // send the merchant through a reinstall.
   const { statusCode } = token.error as Error & { statusCode?: number };
 
+  // Both branches are `IntegrationAuthError`: either way the store's whole
+  // catalog is blocked on the same grant, so a caller looping over products
+  // stops on the first one rather than repeating this per item.
   return {
     success: false,
     error:
       statusCode === 401
-        ? new Error(
+        ? new IntegrationAuthError(
             "Shopify rejected the token refresh. Please reconnect your store (Settings → Integrations).",
             { cause: token.error },
           )
@@ -109,7 +112,7 @@ export const redeemRefreshToken = async (
           // /reconnect your store|access token/i. A transient failure must miss
           // that pattern, or the merchant is sent to reinstall over an outage
           // that resolves itself.
-          new RequestError(
+          new IntegrationAuthError(
             "Shopify could not be reached to refresh authorization. Please try again shortly.",
             { cause: token.error, statusCode },
           ),

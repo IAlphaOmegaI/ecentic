@@ -2,9 +2,14 @@ import { describe, expect, test } from "bun:test";
 import {
   ConflictError,
   DatabaseError,
+  ErrorProtocol,
+  IntegrationAuthError,
   InvalidSignatureError,
   isExpected,
+  isIntegrationAuthError,
   isTransientConnectionError,
+  NotFoundError,
+  RequestError,
   UnauthenticatedError,
   UntrustedRequestError,
   ValidationError,
@@ -34,6 +39,65 @@ describe("isExpected", () => {
       isExpected(new InvalidSignatureError("Invalid HMAC signature")),
     ).toBe(true);
     expect(isExpected(new UnauthenticatedError("Unauthorized"))).toBe(false);
+  });
+});
+
+type ErrorClass = {
+  readonly errorName: string;
+  readonly name: string;
+  new (message: string): Error;
+};
+
+describe("errorName", () => {
+  // The trap: `class Foo extends error("foo-error")` gives Foo its own static
+  // `name` of "Foo", shadowing the wire name. Code that compared against the
+  // static matched nothing — silently, since the types claimed otherwise.
+  test.each<[string, ErrorClass]>([
+    ["request-error", RequestError],
+    ["validation-error", ValidationError],
+    ["not-found-error", NotFoundError],
+    ["integration-auth-error", IntegrationAuthError],
+  ])("%s is reachable from the class, not shadowed by it", (wire, Class) => {
+    expect(Class.errorName).toBe(wire);
+    expect(new Class("boom").name).toBe(wire);
+    // The half that bites: the static `name` is the JS class name, not the wire
+    // name, so it must never be used as the identity.
+    expect(Class.name).not.toBe(wire);
+  });
+});
+
+describe("ErrorProtocol round-trip", () => {
+  const round = <E extends Error>(error: E) =>
+    ErrorProtocol.deserialize(ErrorProtocol.serialize(error));
+
+  test.each([
+    new RequestError("boom"),
+    new ValidationError("bad input"),
+    new ConflictError("already claimed"),
+    new IntegrationAuthError("reconnect"),
+  ])("preserves the name of %s across the client boundary", (error) => {
+    const revived = round(error);
+    expect(revived.name).toBe(error.name);
+    expect(revived.message).toBe(error.message);
+  });
+
+  // The payoff, and what the mis-keyed map cost: every error arrived on the
+  // client as a bare `Error` named "Error", so every name-based classifier
+  // answered false regardless of what was actually thrown.
+  test("a revived error still classifies", () => {
+    expect(isExpected(round(new ValidationError("bad")))).toBe(true);
+    expect(isExpected(round(new RequestError("boom")))).toBe(false);
+    expect(isIntegrationAuthError(round(new IntegrationAuthError("x")))).toBe(
+      true,
+    );
+    expect(isIntegrationAuthError(round(new RequestError("x")))).toBe(false);
+  });
+
+  test("an unrecognised name falls back to Error rather than throwing", () => {
+    const revived = round(
+      Object.assign(new Error("mystery"), { name: "from-a-newer-deploy" }),
+    );
+    expect(revived.message).toBe("mystery");
   });
 });
 
