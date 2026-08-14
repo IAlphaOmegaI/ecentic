@@ -1313,7 +1313,7 @@
         "description": "Run the first analysis: 20 shopper queries answered by AI engines and audited for where this brand shows up. It takes about a minute."
       },
       "summary": {
-        "title": "Diagnostic summary",
+        "title": "Summary",
         "analyzed": "Analyzed {time}"
       },
       "shape": {

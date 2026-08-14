@@ -955,7 +955,7 @@
         "description": "Ejecuta el primer análisis: 20 consultas de compradores respondidas por motores de IA y auditadas para ver dónde aparece esta marca. Tarda alrededor de un minuto."
       },
       "summary": {
-        "title": "Resumen diagnóstico",
+        "title": "Resumen",
         "analyzed": "Analizado {time}"
       },
       "shape": {
