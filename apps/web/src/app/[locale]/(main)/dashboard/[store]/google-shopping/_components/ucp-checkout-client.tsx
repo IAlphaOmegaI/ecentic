@@ -139,7 +139,9 @@ const Disclosure = ({
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="flex flex-col gap-3 px-4 pb-4">
+    // `@container` so the forms below track the card's width, not the
+    // viewport's — these cards sit in a half-width grid next to a sidebar.
+    <div className="@container flex flex-col gap-3 px-4 pb-4">
       <div>
         <Button color="neutral" onClick={() => setOpen((current) => !current)}>
           {open ? translate("hide") : label}
@@ -200,7 +202,7 @@ export const CustomerSupportEditor = ({
           validator: z.string(),
           label: translate("support.website.label"),
           placeholder: translate("support.website.placeholder"),
-          classList: { field: "flex-1" },
+          classList: { field: "@md:col-span-full @2xl:col-span-1" },
         }),
         email: field({
           shape: "text",
@@ -234,12 +236,12 @@ export const CustomerSupportEditor = ({
           phone: current.phone ?? "",
         }}
         onSubmit={handleSubmit}
-        className="flex flex-col gap-3 sm:flex-row sm:items-end"
+        className="grid @2xl:grid-cols-3 @md:grid-cols-2 grid-cols-1 gap-3"
       >
         <Button
           type="submit"
           color="neutral"
-          className="shrink-0"
+          className="col-span-full w-fit"
           disabled={isSaving}
         >
           {isSaving ? translate("saving") : translate("support.save")}
@@ -345,7 +347,7 @@ export const ReturnPolicyEditor = ({
           ),
         label: translate("returnPolicy.policyUrl.label"),
         placeholder: translate("returnPolicy.policyUrl.placeholder"),
-        classList: { field: "flex-1" },
+        classList: { field: "@md:col-span-full @2xl:col-span-1" },
       }),
       methods: field({
         shape: "select",
@@ -422,9 +424,9 @@ export const ReturnPolicyEditor = ({
           refundDays: current?.processRefundDays ?? 14,
         }}
         onSubmit={handleSubmit}
-        className="grid grid-cols-1 gap-3 sm:grid-cols-3"
+        className="grid @2xl:grid-cols-3 @md:grid-cols-2 grid-cols-1 gap-3"
       >
-        <div className="flex flex-col gap-2 sm:col-span-3">
+        <div className="col-span-full flex flex-col gap-2">
           <Button type="submit" color="neutral" disabled={isSaving}>
             {isSaving
               ? translate("saving")
