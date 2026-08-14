@@ -7,8 +7,18 @@ import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
 import type { Locale } from "@/i18n/routing";
 import { routing } from "@/i18n/routing";
-import { splitBlogHtmlByH2 } from "@/lib/blog-html";
-import { brandedTitle } from "@/lib/seo";
+import {
+  hasFaqSection,
+  isFaqSectionTitle,
+  splitBlogHtmlByH2,
+} from "@/lib/blog-html";
+import {
+  absoluteUrl,
+  brandedTitle,
+  createBreadcrumbSchema,
+  createFaqSchema,
+  seo,
+} from "@/lib/seo";
 import * as Blog from "@/server/app/blog";
 import {
   EditorialFooter,
@@ -16,6 +26,7 @@ import {
   EditorialRichText,
   EditorialSplitSection,
 } from "../_components/editorial-page";
+import { FaqSection } from "../_components/faq-section";
 import { HtmlArticleSections } from "../_components/html-article-sections";
 import "../blog-content.css";
 
@@ -33,6 +44,10 @@ const formatBlogDate = (value: Date | string, locale: Locale) =>
   }).format(normalize(value));
 
 const toBlogIsoDate = (value: Date | string) => normalize(value).toISOString();
+
+/** Left-rail index continuing a section list that may or may not open at `00`. */
+const nextSectionNumber = (sections: readonly { number: string }[]) =>
+  String(Number(sections.at(-1)?.number ?? "00") + 1).padStart(2, "0");
 
 const languageAlternates = (slug: string) => ({
   en: `/blog/${slug}`,
@@ -131,11 +146,67 @@ export default async ({ params }: BlogPageProps) => {
   const post = resolved.post;
   const path = localizePath(`/blog/${post.slug}`, locale);
 
+  // Answers are stored in the row's own language, so a /es page falling back to
+  // the English row publishes English answers — the same ones it renders.
+  const faqSchema = post.faqs.length > 0 ? [createFaqSchema(post.faqs)] : [];
+
+  /**
+   * BabyLoveGrowth also ships an article `jsonLd` graph, which we deliberately
+   * do not adopt: its breadcrumb points at `/<slug>` rather than `/blog/<slug>`,
+   * and it spells the brand "Ecentic". The pieces worth having are built here
+   * from our own row instead — including the hero image, which the stored
+   * `thumbnailUrl` has had all along.
+   */
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.description,
+    datePublished: toBlogIsoDate(post.publishedAt),
+    dateModified: toBlogIsoDate(post.updatedAt),
+    inLanguage: locale,
+    url: absoluteUrl(path),
+    mainEntityOfPage: absoluteUrl(path),
+    keywords: post.tags.join(", "),
+    articleSection: post.category,
+    ...(post.thumbnailUrl
+      ? {
+          image: {
+            "@type": "ImageObject",
+            url: post.thumbnailUrl.startsWith("http")
+              ? post.thumbnailUrl
+              : absoluteUrl(post.thumbnailUrl),
+          },
+        }
+      : {}),
+    author: { "@type": "Organization", name: "ecentic", url: seo.host },
+    publisher: {
+      "@type": "Organization",
+      name: "ecentic",
+      url: seo.host,
+      logo: {
+        "@type": "ImageObject",
+        url: absoluteUrl("/icons/icon-512.png"),
+      },
+    },
+  };
+
+  const breadcrumbSchema = createBreadcrumbSchema([
+    { name: "Blog", path: localizePath("/blog", locale) },
+    { name: post.title, path },
+  ]);
+
+  const structuredData = [articleSchema, breadcrumbSchema, ...faqSchema];
+
   if (post.contentHtml) {
     const minutes = Math.max(1, readingTimeMinutes(post.contentHtml));
     // Classify against the body's own language: a /es page falling back to the
     // stored EN row still carries English headings.
     const sections = splitBlogHtmlByH2(post.contentHtml, post.locale);
+    // Newer BabyLoveGrowth articles end in their own FAQ block; the stored
+    // pairs are that same block, so rendering them again would print it twice.
+    const showsFaq =
+      post.faqs.length > 0 && !hasFaqSection(sections, post.locale);
     return (
       <EditorialLayout
         eyebrow={post.category}
@@ -148,22 +219,15 @@ export default async ({ params }: BlogPageProps) => {
         }
         description={post.description}
       >
-        <JsonLd
-          schemas={[
-            {
-              "@context": "https://schema.org",
-              "@type": "BlogPosting",
-              headline: post.title,
-              description: post.description,
-              datePublished: toBlogIsoDate(post.publishedAt),
-              dateModified: toBlogIsoDate(post.updatedAt),
-              inLanguage: locale,
-              url: `https://ecentic.ai${path}`,
-              author: { "@type": "Organization", name: "ecentic" },
-            },
-          ]}
-        />
+        <JsonLd schemas={structuredData} />
         <HtmlArticleSections sections={sections} keywords={[...post.tags]} />
+        {showsFaq && (
+          <FaqSection
+            number={nextSectionNumber(sections)}
+            title={translate("faq.title")}
+            faqs={post.faqs}
+          />
+        )}
         <EditorialFooter
           primary={{ href: "/sign-up", label: "Get started" }}
           secondary={{ href: "/blog", label: translate("action.secondary") }}
@@ -173,33 +237,13 @@ export default async ({ params }: BlogPageProps) => {
     );
   }
 
-  const structuredData = [
-    {
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      headline: post.title,
-      description: post.description,
-      datePublished: toBlogIsoDate(post.publishedAt),
-      dateModified: toBlogIsoDate(post.updatedAt),
-      inLanguage: locale,
-      author: {
-        "@type": "Organization",
-        name: "ecentic",
-      },
-      publisher: {
-        "@type": "Organization",
-        name: "ecentic",
-        url: "https://ecentic.ai",
-        logo: {
-          "@type": "ImageObject",
-          url: "https://ecentic.ai/icons/icon-512.png",
-        },
-      },
-      mainEntityOfPage: `https://ecentic.ai${path}`,
-      keywords: post.tags.join(", "),
-      articleSection: post.category,
-    },
-  ];
+  // Editorial FAQs live in `post.faqs` and render as their own block below. A
+  // row still carrying the prose as a section — written before that column
+  // existed — must not print the same answers a second time, which is what lets
+  // the stored pairs land ahead of the code that reads them.
+  const sections = post.sections.filter(
+    (section) => !isFaqSectionTitle(section.title, post.locale),
+  );
 
   return (
     <EditorialLayout
@@ -218,9 +262,7 @@ export default async ({ params }: BlogPageProps) => {
       <EditorialSplitSection
         left={
           <>
-            <span className="font-normal text-2xl text-primary">
-              00
-            </span>
+            <span className="font-normal text-2xl text-primary">00</span>
             <h2 className="text-4xl text-foreground leading-snug">
               Key takeaways
             </h2>
@@ -246,7 +288,7 @@ export default async ({ params }: BlogPageProps) => {
         }
       />
 
-      {post.sections.map((section) => (
+      {sections.map((section) => (
         <EditorialSplitSection
           key={section.number}
           left={
@@ -269,6 +311,14 @@ export default async ({ params }: BlogPageProps) => {
           }
         />
       ))}
+
+      {post.faqs.length > 0 && (
+        <FaqSection
+          number={nextSectionNumber(sections)}
+          title={translate("faq.title")}
+          faqs={post.faqs}
+        />
+      )}
 
       <EditorialFooter
         primary={{ href: "/sign-up", label: "Get started" }}

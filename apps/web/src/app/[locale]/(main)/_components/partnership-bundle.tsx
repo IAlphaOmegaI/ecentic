@@ -9,7 +9,11 @@ import { Link } from "@/i18n/navigation";
 const href = "https://eupresence.com/pricing#bundles";
 const partnerHref = "https://eupresence.com/";
 
-const prices = [127, 97, 57, 44.9] as const;
+// Order matches `pricing.partnershipBundle.items`: GDPR representative, GPSR
+// responsible person, Privacy Center Plus, then ecentic's top tier — the bundle
+// carries Dominate, not a mid plan. Keep this in step with the blog post that
+// quotes the same math (`ecentic-eu-presence-partnership-…` in `seed.ts`).
+const prices = [127, 97, 57, 149] as const;
 const highlightedIndex = 3;
 
 const format = (amount: number) =>

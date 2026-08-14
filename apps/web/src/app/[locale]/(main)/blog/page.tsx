@@ -46,9 +46,14 @@ export const generateMetadata = async (): Promise<Metadata> => {
   const locale = await getLocale();
   const translate = await getTranslations("blog");
 
+  // `blog.title` / `blog.description` stay the visible H1 and standfirst (and
+  // the nav/breadcrumb label), so the search-facing copy lives in its own
+  // `meta` keys. The string here is unbranded: the locale layout's
+  // `"%s | ecentic"` template supplies the suffix, exactly as `brandedTitle`
+  // would for a title this short.
   return createMetadata({
-    title: translate("title"),
-    description: translate("description"),
+    title: translate("meta.title"),
+    description: translate("meta.description"),
     path: localizePath("/blog", locale),
     keywords: [
       "ecommerce SEO 2026",

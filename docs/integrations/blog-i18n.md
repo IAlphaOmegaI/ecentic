@@ -32,8 +32,44 @@ Index, tags, sitemap, `llms.txt`, OG images, and `generateStaticParams` / `Blog.
 - `source` — `local` | `blg`
 - `externalId` — BabyLoveGrowth article id when `source=blg`
 - `contentHtml` — HTML body for BLG-sourced / translated articles
+- `faqs` — `{ question, answer }[]` in the row's own locale
 
 Unique on `(slug, locale)`.
+
+## FAQs
+
+Every post carries Q&A pairs in `blog_post.faqs`, in the row's own language.
+They are always emitted as `FAQPage` JSON-LD (`createFaqSchema`, which strips the
+`**bold**` / `[label](href)` markup the editorial renderer accepts). Answers may
+use that markup; structured data gets the prose alone.
+
+Where they come from:
+
+- **BabyLoveGrowth** ships `faqJsonLd` on its newer articles and writes the same
+  block into `content_html`. `publishPayloadSchema` normalizes it; an absent
+  block parses to `undefined`, and `upsertLocaleRow` treats `undefined` as *keep
+  what is stored* (`[]` clears). Without that, the 15-minute reconcile would wipe
+  the hand-written pairs on the older BLG posts every time it re-ingested one.
+- **Editorial posts** own theirs in `scripts/seed.ts`, next to `takeaways`.
+- **Spanish** is translated with the rest of the metadata in `translateMetaCore`,
+  count- and order-aligned to English like `tags` and `takeaways`.
+
+The page renders a visible FAQ block only when the body has none of its own —
+`hasFaqSection` (in `lib/blog-html.ts`) checks the split section titles per
+locale, anchored so an ordinary heading that merely mentions FAQs is not mistaken
+for the block. A heading it misses costs a duplicated block on screen, never
+missing structured data.
+
+Editorial posts always render the block, and their own `sections` are filtered
+through `isFaqSectionTitle` first: FAQ prose used to live there, and rows written
+before the column existed still carry it. That filter is what makes a `faqs`
+write safe to land ahead of the code that reads it — both versions of the page
+show exactly one FAQ.
+
+`scripts/backfill-blog-faqs.ts` filled the column for rows written before it
+existed; it is re-runnable and standalone (importing `server/app/blog` from a Bun
+script pulls `server/utils/ai`, whose `@ai-sdk/rsc` and Sentry imports only
+resolve inside Next).
 
 ## Server module
 

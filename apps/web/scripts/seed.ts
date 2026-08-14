@@ -26,6 +26,28 @@ const posts = [
       "Timing is the real value: Salesforce attributed roughly $67 billion of Cyber Week 2025 spend to AI and agents, and becoming machine-readable costs least before agent traffic scales.",
       "Partnering with the two strongest startup networks is a repeatable way for us to reach merchants while their catalog and positioning decisions are still open.",
     ],
+    faqs: [
+      {
+        question: "Who is eligible for the ecentic startup deal?",
+        answer:
+          "Verified Y Combinator students and Techstars founders. Redemptions are checked against each program's directory, so submit the email and company name the program has on file. A company domain that matches is approved automatically; anything else goes to a quick manual review.",
+      },
+      {
+        question: "What does the deal include?",
+        answer:
+          "Extended access to ecentic Dominate — continuous simulations across ChatGPT, Claude, Gemini, and Perplexity, auto-optimization with one-click publish, drift alerts, and UCP generation — plus a 50% discount once the deal period ends. Standard [Dominate pricing](/pricing) is $149/mo.",
+      },
+      {
+        question: "How long does redemption take?",
+        answer:
+          "The form takes about two minutes and needs no credit card. Verification is usually same-day and never more than one business day, and the activation link arrives by email.",
+      },
+      {
+        question: "What if I'm not in Y Combinator or Techstars?",
+        answer:
+          "You can still [create an account](/sign-up) and run ecentic on standard pricing. The free Scan covers up to 10 products across three models, so you can read your win rate before paying anything.",
+      },
+    ],
     sections: [
       {
         number: "01",
@@ -41,7 +63,7 @@ Verification is the gate. A redemption whose company domain matches the program 
       {
         number: "02",
         title: "What's actually in the deal",
-        content: `The deal opens the full ecentic Dominate platform, not a trimmed trial. Dominate shows a merchant how an AI shopping agent sees them — and then helps close the gap. Compared to standard [Dominate pricing](/pricing) at $149/mo, redeemers also keep 50% off for the first 12 months once the deal period ends.
+        content: `The deal opens the full ecentic Dominate platform, not a trimmed trial. Dominate shows a merchant how an AI shopping agent sees them — and then helps close the gap. Compared to standard [Dominate pricing](/pricing) at $149/mo, redeemers also keep 50% off for two years once the deal period ends.
 
 **Continuous simulations** show how ChatGPT, Claude, Gemini, and Perplexity rank your products against competitors, and why.
 **Auto-optimization** turns those findings into listing rewrites you approve with one click, with drift alerts when a model's behavior shifts.
@@ -114,8 +136,32 @@ Once you are activated, import your catalog and run the first simulation. The po
     takeaways: [
       "ecentic and EU Presence have partnered to combine EU market entry and AI shopping-agent visibility in one engagement, billed on a single invoice.",
       "Selling to EU consumers requires a local presence first: a GDPR Article 27 representative and, for physical products under the GPSR, an EU-based responsible person. Compliance is the gate before discoverability.",
-      "The bundle pairs EU Presence's GDPR representative, GPSR responsible person, and Privacy Center Plus with ecentic Dominate for $584.00/mo — a 20% discount that saves $146.00/mo, with no minimums and no setup fees.",
+      "The bundle pairs EU Presence's GDPR representative, GPSR responsible person, and Privacy Center Plus with ecentic Dominate for $344.00/mo — a 20% discount that saves $86.00/mo, with no minimums and no setup fees.",
       "Compliance and visibility reinforce each other: agents increasingly read trust and policy signals, so the artifacts that keep you compliant also make you easier to recommend.",
+    ],
+    faqs: [
+      {
+        question:
+          "Do I need an EU representative to sell to European customers?",
+        answer:
+          "If you process the personal data of people in the EU from outside it, [GDPR Article 27](https://gdpr-info.eu/art-27-gdpr/) generally requires a representative established in a member state. Physical consumer products additionally need an EU-based responsible person under the General Product Safety Regulation, which has applied since 13 December 2024.",
+      },
+      {
+        question:
+          "What is the difference between a GDPR representative and a GPSR responsible person?",
+        answer:
+          "The GDPR representative is your point of contact for data-protection matters across all 27 member states. The GPSR responsible person is the accountable party for product safety before a physical product is placed on the EU market. Brands shipping physical goods into Europe generally need both.",
+      },
+      {
+        question: "Why bundle compliance with AI visibility?",
+        answer:
+          "Because agents read policy pages, privacy disclosures, and returns terms as trust signals, not only as legal documents. A hosted privacy center, a clear data-subject-request process, and a consistent policy library are the same machine-readable signals that make a product safer to recommend.",
+      },
+      {
+        question: "How is the bundle billed?",
+        answer:
+          "One invoice, month-to-month, at a 20% discount on the combined services, with no minimums and no setup fees — so it starts and stops with your expansion plans. Open it from the [pricing page](/pricing) to book a bundle call.",
+      },
     ],
     sections: [
       {
@@ -164,13 +210,13 @@ So the artifacts EU Presence puts in place to keep you compliant double as input
 
 EU Presence contributes the GDPR Representative for representation across all 27 member states, the GPSR Representative (Growth) as your responsible person for consumer products, and Privacy Center Plus — a hosted trust hub with data-subject-request intake and a policy library. ecentic contributes Dominate: continuous agent simulations, auto-optimization with one-click publish, drift alerts, and UCP generation.
 
-Bought individually, those total $730/mo. Bundled, they are $584.00/mo — a 20% discount that saves $146.00 every month. No minimums, no setup fees, and month-to-month billing, so the bundle starts and stops with your expansion plans instead of locking you into a contract.
+Bought individually, those total $430/mo. Bundled, they are $344.00/mo — a 20% discount that saves $86.00 every month. No minimums, no setup fees, and month-to-month billing, so the bundle starts and stops with your expansion plans instead of locking you into a contract.
 
 - GDPR Representative — Article 27 representative across all 27 member states ($127/mo)
 - GPSR Representative (Growth) — responsible person for your consumer products ($97/mo)
 - Privacy Center Plus — hosted trust hub, DSR intake, and policy library ($57/mo)
-- ecentic Scale — continuous simulations and auto-optimization ($44.90/mo)
-- Bundled at $260.72/mo instead of $325.90/mo — save $65.18/mo, one invoice, one team`,
+- ecentic Dominate — continuous simulations, auto-optimization, drift alerts, and UCP generation ($149/mo)
+- Bundled at $344.00/mo instead of $430/mo — save $86.00/mo, one invoice, one team`,
       },
       {
         number: "05",
@@ -224,6 +270,28 @@ If your situation is unusual — many SKUs across multiple stores, or specific r
       "Morph forecasts $500 billion in agent-influenced merchandise volume by 2028; McKinsey projects up to $1 trillion in U.S. retail and $3 to $5 trillion globally by 2030.",
       "Agent commerce runs on four layers — identity, mandate, checkout, and settlement — with MCP, ACP, AP2, and UCP as complementary standards, not competitors.",
       "Real transaction volume is still small: an a16z analysis put filtered x402 payments near $1.6 million over 30 days, which is exactly why merchants have time to get catalog-ready now.",
+    ],
+    faqs: [
+      {
+        question: "What does Morph's Agentic Economy report forecast?",
+        answer:
+          "$500 billion in agent-influenced global merchandise volume by 2028. [McKinsey](https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-agentic-commerce-opportunity-how-ai-agents-are-ushering-in-a-new-era-for-consumers-and-merchants) points the same direction with up to $1 trillion in U.S. retail and $3 to $5 trillion globally by 2030.",
+      },
+      {
+        question: "How much agent commerce is actually happening today?",
+        answer:
+          "Much less than the infrastructure suggests. An [a16z analysis](https://a16zcrypto.com/posts/article/ai-agent-payments-honest-number) found that once wash trades are filtered out of the widely-quoted $24 million x402 figure, genuine 30-day payment volume was closer to $1.6 million. The rails shipped ahead of the volume.",
+      },
+      {
+        question: "What are the four layers of the agentic payment stack?",
+        answer:
+          "Identity — can this agent be trusted. Mandate — has a human authorized this transaction. Checkout — can the agent settle price, shipping, tax, and returns. Settlement — how the money moves. MCP, AP2, ACP, and UCP sit across those layers as complementary standards rather than competitors.",
+      },
+      {
+        question: "What should a merchant do before agent volume arrives?",
+        answer:
+          "Audit top SKUs for machine-readable titles, attributes, and structured data, confirm an agent can complete a checkout through your platform's protocols, and simulate how the major models rank you against competitors. You can pressure-test your agent surface with the [free UCP validator](/ucp-validator).",
+      },
     ],
     sections: [
       {
@@ -337,6 +405,28 @@ Finally, measure agent influence before it shows up cleanly in standard analytic
       "The skeptics are right about autonomy: Forrester calls true autonomous purchasing rare, Adyen puts the market at 'version 0.5,' and Gartner predicts over 40% of agentic AI projects will be canceled by end of 2027.",
       "The gap between converting AI-referred demand and immature autonomous checkout is the merchant's window — becoming machine-readable is cheapest before agent volume scales.",
     ],
+    faqs: [
+      {
+        question: "What is the AI economy?",
+        answer:
+          "The measurable economic activity created by AI systems acting as market participants — the infrastructure buildout ([IDC](https://www.idc.com/resource-center/blog/ai-infrastructure-spending-caps-historic-year-at-90-billion-in-q4-2025-2029-spending-to-eclipse-1-trillion/) counted $318 billion in 2025 spending), the enterprise agents executing tasks, and the commerce those agents increasingly influence.",
+      },
+      {
+        question: "How much commerce does AI actually influence today?",
+        answer:
+          "[Salesforce](https://investor.salesforce.com/news/news-details/2025/Salesforce-Data-AI-and-Agents-Propel-Cyber-Week-to-Record-336-6B-in-Global-Spend/default.aspx) tied $67 billion — 20% of global orders — to AI and agents during Cyber Week 2025, and [Adobe data](https://techcrunch.com/2026/04/16/ai-traffic-to-us-retailers-rose-393-in-q1-and-its-boosting-their-revenue-too/) showed AI-referred retail traffic converting 42% better than other traffic by March 2026. Native agent-completed checkout volume remains unquantified.",
+      },
+      {
+        question: "Is agentic commerce overhyped?",
+        answer:
+          "As autonomous checkout, largely yes — [Gartner](https://www.gartner.com/en/newsroom/press-releases/2025-06-25-gartner-predicts-over-40-percent-of-agentic-ai-projects-will-be-canceled-by-end-of-2027) expects over 40% of agentic AI projects to be canceled by end of 2027 and [Adyen](https://www.pymnts.com/news/artificial-intelligence/2026/adyen-on-agentic-commerce-the-ai-was-never-the-hard-part/) calls the market version 0.5. As a discovery and comparison shift, no: the traffic, conversion, and order-influence numbers are already measured.",
+      },
+      {
+        question: "How do I prepare my store for AI shopping agents?",
+        answer:
+          "Track AI visits as their own channel, make product data machine-readable at the attribute level, and simulate how the major models rank you against competitors. A [free ecentic Scan](/sign-up) runs that simulation on your own catalog in minutes.",
+      },
+    ],
     sections: [
       {
         number: "01",
@@ -428,17 +518,6 @@ The pattern from every prior commerce shift holds: the share number will look sm
 - Rebuild product data for machine readers — attributes, availability, and policies agents can parse
 - Simulate agent comparisons monthly and fix the losses while they are still free`,
       },
-      {
-        number: "08",
-        title: "Frequently asked questions",
-        content: `**What is the AI economy?** The measurable economic activity created by AI systems acting as market participants — the infrastructure buildout ([IDC](https://www.idc.com/resource-center/blog/ai-infrastructure-spending-caps-historic-year-at-90-billion-in-q4-2025-2029-spending-to-eclipse-1-trillion/) counted $318 billion in 2025 spending), the enterprise agents executing tasks, and the commerce those agents increasingly influence.
-
-**How much commerce does AI actually influence today?** [Salesforce](https://investor.salesforce.com/news/news-details/2025/Salesforce-Data-AI-and-Agents-Propel-Cyber-Week-to-Record-336-6B-in-Global-Spend/default.aspx) tied $67 billion — 20% of global orders — to AI and agents during Cyber Week 2025, and [Adobe data](https://techcrunch.com/2026/04/16/ai-traffic-to-us-retailers-rose-393-in-q1-and-its-boosting-their-revenue-too/) showed AI-referred retail traffic converting 42% better than other traffic by March 2026. Native agent-completed checkout volume remains unquantified.
-
-**Is agentic commerce overhyped?** As autonomous checkout, largely yes — [Gartner](https://www.gartner.com/en/newsroom/press-releases/2025-06-25-gartner-predicts-over-40-percent-of-agentic-ai-projects-will-be-canceled-by-end-of-2027) expects over 40% of agentic AI projects to be canceled by end of 2027 and [Adyen](https://www.pymnts.com/news/artificial-intelligence/2026/adyen-on-agentic-commerce-the-ai-was-never-the-hard-part/) calls the market "version 0.5." As a discovery and comparison shift, no: the traffic, conversion, and order-influence numbers are already measured.
-
-**How do I prepare my store for AI shopping agents?** Track AI visits as their own channel, make product data machine-readable at the attribute level, and simulate how the major models rank you against competitors. A [free ecentic Scan](/sign-up) runs that simulation on your own catalog in minutes.`,
-      },
     ],
   },
   {
@@ -465,6 +544,30 @@ The pattern from every prior commerce shift holds: the share number will look sm
       "Treat product data and policies as launch requirements, not later cleanup.",
       "Build search, merchant, and AI readiness into the first version of the store.",
       "U.S. e-commerce reached 16.9% of all retail sales in Q1 2026 (U.S. Census Bureau), so measure product performance weekly and improve faster than you add channels.",
+    ],
+    faqs: [
+      {
+        question:
+          "How much does it cost to start an ecommerce business in 2026?",
+        answer:
+          "Costs vary widely, but the expensive part is rarely the platform. A disciplined launch on Shopify or WooCommerce can start for a few hundred dollars a month; the real investment is the time spent structuring a clean catalog and policies that hold up under traffic.",
+      },
+      {
+        question:
+          "Do I need to worry about AI shopping agents as a brand-new store?",
+        answer:
+          "Yes, and being new is an advantage. [Adobe](https://news.adobe.com/news/2026/01/adobe-holiday-shopping-season) measured a 693% year-over-year jump in generative-AI-driven retail traffic over the 2025 holiday season. Structuring your catalog for machine readers now costs far less than retrofitting thousands of listings later.",
+      },
+      {
+        question: "Which platform is best for a first store?",
+        answer:
+          "The one your team can maintain weekly without an engineer. Shopify and WooCommerce both work well when the product model is disciplined; the platform matters less than keeping one source of truth for product data.",
+      },
+      {
+        question: "How soon should I add SEO and structured data?",
+        answer:
+          "Before launch. Google's [ecommerce guidance](https://developers.google.com/search/docs/specialty/ecommerce/include-structured-data-relevant-to-ecommerce) treats product structured data as a prerequisite for appearing well in Search and Shopping, so it belongs in the first version of the store, not a later cleanup pass.",
+      },
     ],
     sections: [
       {
@@ -551,17 +654,6 @@ Adopt that rhythm early and growth gets easier to manage. Instead of layering ch
 - Turn customer questions into FAQ, comparison, and support content
 - Build repeatable merchandising reviews so launch momentum does not fade`,
       },
-      {
-        number: "07",
-        title: "Frequently asked questions",
-        content: `**How much does it cost to start an ecommerce business in 2026?** Costs vary widely, but the expensive part is rarely the platform. A disciplined launch on Shopify or WooCommerce can start for a few hundred dollars a month; the real investment is the time spent structuring a clean catalog and policies that hold up under traffic.
-
-**Do I need to worry about AI shopping agents as a brand-new store?** Yes, and being new is an advantage. [Adobe](https://news.adobe.com/news/2026/01/adobe-holiday-shopping-season) measured a 693% year-over-year jump in generative-AI-driven retail traffic over the 2025 holiday season. Structuring your catalog for machine readers now costs far less than retrofitting thousands of listings later.
-
-**Which platform is best for a first store?** The one your team can maintain weekly without an engineer. Shopify and WooCommerce both work well when the product model is disciplined; the platform matters less than keeping one source of truth for product data.
-
-**How soon should I add SEO and structured data?** Before launch. Google's [ecommerce guidance](https://developers.google.com/search/docs/specialty/ecommerce/include-structured-data-relevant-to-ecommerce) treats product structured data as a prerequisite for appearing well in Search and Shopping, so it belongs in the first version of the store, not a later cleanup pass.`,
-      },
     ],
   },
   {
@@ -588,6 +680,28 @@ Adopt that rhythm early and growth gets easier to manage. Instead of layering ch
       "Product titles, variants, offers, and policy signals need to be machine-readable and consistent across page, feed, and structured markup.",
       "Supporting content should answer comparison questions, not chase generic traffic.",
       "The strongest teams measure rankings, feed health, and product win rate together.",
+    ],
+    faqs: [
+      {
+        question: "Is ecommerce SEO still worth it with AI search?",
+        answer:
+          "More than ever. The same clean product data and structured markup that rank a page also make it citable in AI answers, and [AI Overviews already reach over 2.5 billion users a month](https://blog.google/alphabet/investor-presentation-june-2026/). SEO and AI visibility are now the same discipline, not competing ones.",
+      },
+      {
+        question: "What structured data matters most for ecommerce?",
+        answer:
+          "Product markup with Offer, price, and availability, per [Google's product structured data guidelines](https://developers.google.com/search/docs/appearance/structured-data/product), plus ProductGroup for variants. Start there before adding secondary types.",
+      },
+      {
+        question: "How often should I audit product data?",
+        answer:
+          "Monthly, and after every major catalog change — repricing, seasonal launches, feed migrations, or template updates. Offers and availability drift fastest, so tie the audit to commercial events, not only engineering releases.",
+      },
+      {
+        question: "Should I mark up my own customer reviews?",
+        answer:
+          "Only carefully. Google's [review snippet guidelines](https://developers.google.com/search/docs/appearance/structured-data/review-snippet) prohibit self-serving review markup for your own business, so use it where it genuinely applies and rely on independent review platforms for reputation signals.",
+      },
     ],
     sections: [
       {
@@ -673,17 +787,6 @@ A mature program connects search reporting to merchandising and product diagnost
 - Review which products earn visibility but fail to convert
 - Pair traffic metrics with competitive product diagnostics`,
       },
-      {
-        number: "07",
-        title: "Frequently asked questions",
-        content: `**Is ecommerce SEO still worth it with AI search?** More than ever. The same clean product data and structured markup that rank a page also make it citable in AI answers, and [AI Overviews already reach over 2.5 billion users a month](https://blog.google/alphabet/investor-presentation-june-2026/). SEO and AI visibility are now the same discipline, not competing ones.
-
-**What structured data matters most for ecommerce?** Product markup with Offer, price, and availability, per [Google's product structured data guidelines](https://developers.google.com/search/docs/appearance/structured-data/product), plus ProductGroup for variants. Start there before adding secondary types.
-
-**How often should I audit product data?** Monthly, and after every major catalog change — repricing, seasonal launches, feed migrations, or template updates. Offers and availability drift fastest, so tie the audit to commercial events, not only engineering releases.
-
-**Should I mark up my own customer reviews?** Only carefully. Google's [review snippet guidelines](https://developers.google.com/search/docs/appearance/structured-data/review-snippet) prohibit self-serving review markup for your own business, so use it where it genuinely applies and rely on independent review platforms for reputation signals.`,
-      },
     ],
   },
   {
@@ -710,6 +813,28 @@ A mature program connects search reporting to merchandising and product diagnost
       "Separate indexing, retrieval, and click-through traffic so the team does not mix intent levels.",
       "Verify AI crawlers by user-agent and published IP ranges, not user-agent strings alone.",
       "Adobe measured a 693% year-over-year rise in generative-AI-driven retail traffic over the 2025 holiday season, so the channel is worth measuring at the product level, not just in totals.",
+    ],
+    faqs: [
+      {
+        question: "How do I identify AI shopping traffic in my logs?",
+        answer:
+          "Match the documented user agents — [OpenAI's GPTBot and OAI-SearchBot](https://developers.openai.com/api/docs/bots), [PerplexityBot](https://docs.perplexity.ai/docs/resources/perplexity-crawlers), Google-Extended, and [Anthropic's ClaudeBot](https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler) — then verify each against the vendor's published IP ranges before trusting it.",
+      },
+      {
+        question: "Why can't Google Analytics track AI traffic well?",
+        answer:
+          "Many AI requests never execute page JavaScript, so a client-side tool never sees them. Server-side logs and CDN analytics catch the fetches and retrieval requests browser analytics miss.",
+      },
+      {
+        question: "Is AI shopping traffic actually meaningful yet?",
+        answer:
+          "It is growing fast: [Adobe](https://news.adobe.com/news/2026/01/adobe-holiday-shopping-season) recorded a 693% year-over-year rise in generative-AI-driven retail traffic over the 2025 holiday season, even as the absolute base stays modest. Measure it now so you can see the trend before it becomes a mainstream revenue line.",
+      },
+      {
+        question: "How do I stop a spoofed bot from skewing my numbers?",
+        answer:
+          "A user-agent string is easy to fake, so validate it against published IP ranges using the reverse-DNS method [Cloudflare documents](https://developers.cloudflare.com/bots/reference/bot-verification/ip-validation/). Only count requests that pass verification.",
+      },
     ],
     sections: [
       {
@@ -795,17 +920,6 @@ Over time, that workflow turns measurement into a product-improvement engine. Th
 - Refresh priority pages after major model or channel changes
 - Review performance changes after each content or feed update`,
       },
-      {
-        number: "07",
-        title: "Frequently asked questions",
-        content: `**How do I identify AI shopping traffic in my logs?** Match the documented user agents — [OpenAI's GPTBot and OAI-SearchBot](https://developers.openai.com/api/docs/bots), [PerplexityBot](https://docs.perplexity.ai/docs/resources/perplexity-crawlers), Google-Extended, and [Anthropic's ClaudeBot](https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler) — then verify each against the vendor's published IP ranges before trusting it.
-
-**Why can't Google Analytics track AI traffic well?** Many AI requests never execute page JavaScript, so a client-side tool never sees them. Server-side logs and CDN analytics catch the fetches and retrieval requests browser analytics miss.
-
-**Is AI shopping traffic actually meaningful yet?** It is growing fast: [Adobe](https://news.adobe.com/news/2026/01/adobe-holiday-shopping-season) recorded a 693% year-over-year rise in generative-AI-driven retail traffic over the 2025 holiday season, even as the absolute base stays modest. Measure it now so you can see the trend before it becomes a mainstream revenue line.
-
-**How do I stop a spoofed bot from skewing my numbers?** A user-agent string is easy to fake, so validate it against published IP ranges using the reverse-DNS method [Cloudflare documents](https://developers.cloudflare.com/bots/reference/bot-verification/ip-validation/). Only count requests that pass verification.`,
-      },
     ],
   },
   {
@@ -832,6 +946,30 @@ Over time, that workflow turns measurement into a product-improvement engine. Th
       "Variants, offers, and availability need extra attention because they drift most often.",
       "Merchant trust details and supporting content reinforce product understanding.",
       "A monthly audit tied to catalog changes is more valuable than a one-time implementation.",
+    ],
+    faqs: [
+      {
+        question:
+          "Which structured data types do ecommerce product pages need?",
+        answer:
+          "At minimum, [Product](https://developers.google.com/search/docs/appearance/structured-data/product) with an [Offer](https://schema.org/Offer) for price and availability. Add [ProductGroup](https://developers.google.com/search/docs/appearance/structured-data/product-variants) for variants, and BreadcrumbList and Organization to round out context.",
+      },
+      {
+        question: "Can I mark up data that is not shown on the page?",
+        answer:
+          "No. Google's [structured data guidelines](https://developers.google.com/search/docs/appearance/structured-data/sd-policies) require markup to represent visible content and warn against marking up information users cannot see, even if it is accurate. Doing so can disqualify rich results.",
+      },
+      {
+        question: "How often should I audit product schema?",
+        answer:
+          "Monthly, plus after any major catalog change — repricing, seasonal launches, theme updates, or feed migrations. Offers and availability drift fastest, so schedule checks around commercial events, not only code releases.",
+      },
+      {
+        question:
+          "Does structured data help with AI shopping, not just Google?",
+        answer:
+          "Yes. The same clean Product and Offer data that earns rich results makes your catalog easier for AI agents to read and compare. You can check how your product surface reads to agents with our [free UCP validator](/ucp-validator).",
+      },
     ],
     sections: [
       {
@@ -918,17 +1056,6 @@ Tie recurring audits to business events, not only technical schedules. A new sea
 - Compare storefront content to rendered structured data
 - Log recurring mismatches so the same issue does not return`,
       },
-      {
-        number: "07",
-        title: "Frequently asked questions",
-        content: `**Which structured data types do ecommerce product pages need?** At minimum, [Product](https://developers.google.com/search/docs/appearance/structured-data/product) with an [Offer](https://schema.org/Offer) for price and availability. Add [ProductGroup](https://developers.google.com/search/docs/appearance/structured-data/product-variants) for variants, and BreadcrumbList and Organization to round out context.
-
-**Can I mark up data that is not shown on the page?** No. Google's [structured data guidelines](https://developers.google.com/search/docs/appearance/structured-data/sd-policies) require markup to represent visible content and warn against marking up information users cannot see, even if it is accurate. Doing so can disqualify rich results.
-
-**How often should I audit product schema?** Monthly, plus after any major catalog change — repricing, seasonal launches, theme updates, or feed migrations. Offers and availability drift fastest, so schedule checks around commercial events, not only code releases.
-
-**Does structured data help with AI shopping, not just Google?** Yes. The same clean Product and Offer data that earns rich results makes your catalog easier for AI agents to read and compare. You can check how your product surface reads to agents with our [free UCP validator](/ucp-validator).`,
-      },
     ],
   },
   {
@@ -955,6 +1082,28 @@ Tie recurring audits to business events, not only technical schedules. A new sea
       "ecentic is an agentic-commerce optimizer: it simulates how AI agents pick between your product and a named competitor, then auto-optimizes the listing to win the sale.",
       "The core difference is monitoring brand mentions vs. winning the product decision — visibility vs. the cart.",
       "Choose Profound for brand-level share-of-voice across AI answers; choose ecentic to raise per-product win rates and publish fixes to Shopify or WooCommerce.",
+    ],
+    faqs: [
+      {
+        question: "Is ecentic a Profound alternative?",
+        answer:
+          "Only partly. They overlap in helping you succeed with AI, but Profound measures brand visibility in AI answers while ecentic optimizes whether agents pick your product. For brand share of voice, Profound; for product win rates and listing fixes, ecentic.",
+      },
+      {
+        question: "Does Profound optimize product listings?",
+        answer:
+          "Profound is built around brand visibility and answer analysis, and its ChatGPT Shopping view is an enterprise feature. It does not run product-vs-competitor purchase simulations or publish optimized listings back to your store the way ecentic does.",
+      },
+      {
+        question: "Can I use both together?",
+        answer:
+          "Yes, and many teams should. Use Profound to monitor how AI answers describe your brand, and ecentic to raise per-product win rates and push the fixes live. They cover different stages: visibility and conversion.",
+      },
+      {
+        question: "Which is better for a Shopify store?",
+        answer:
+          "ecentic connects to Shopify and WooCommerce and publishes optimized listings directly, which suits merchants focused on product sales. Profound suits brand and marketing teams tracking AI answer presence across a wider footprint.",
+      },
     ],
     sections: [
       {
@@ -1033,17 +1182,6 @@ Many teams will want both eventually: Profound to watch presence, ecentic to win
 - Winning product comparisons and publishing fixes → ecentic
 - Selling through AI channels on a budget → start with the win-rate tool`,
       },
-      {
-        number: "07",
-        title: "Frequently asked questions",
-        content: `**Is ecentic a Profound alternative?** Only partly. They overlap in helping you succeed with AI, but Profound measures brand visibility in AI answers while ecentic optimizes whether agents pick your product. For brand share of voice, Profound; for product win rates and listing fixes, ecentic.
-
-**Does Profound optimize product listings?** Profound is built around brand visibility and answer analysis, and its ChatGPT Shopping view is an enterprise feature. It does not run product-vs-competitor purchase simulations or publish optimized listings back to your store the way ecentic does.
-
-**Can I use both together?** Yes, and many teams should. Use Profound to monitor how AI answers describe your brand, and ecentic to raise per-product win rates and push the fixes live. They cover different stages: visibility and conversion.
-
-**Which is better for a Shopify store?** ecentic connects to Shopify and WooCommerce and publishes optimized listings directly, which suits merchants focused on product sales. Profound suits brand and marketing teams tracking AI answer presence across a wider footprint.`,
-      },
     ],
   },
   {
@@ -1070,6 +1208,28 @@ Many teams will want both eventually: Profound to watch presence, ecentic to win
       "ecentic simulates how AI agents pick between your product and a named competitor across ChatGPT, Claude, Gemini, and Perplexity, then diagnoses and publishes the fix.",
       "The difference is content generation vs. competitive simulation: Ecomtent writes better listings; ecentic proves which changes win the agent's pick and republishes them.",
       "Choose Ecomtent for Amazon-first listing content at scale; choose ecentic for cross-agent win-rate optimization on Shopify or WooCommerce.",
+    ],
+    faqs: [
+      {
+        question: "Is ecentic an Ecomtent alternative?",
+        answer:
+          "For cross-agent, competitor-aware optimization on Shopify and WooCommerce, yes. For Amazon-first listing-content and image generation at scale, Ecomtent remains purpose-built. They overlap on producing better listings but differ on simulation and model coverage.",
+      },
+      {
+        question: "Does ecentic generate listing content like Ecomtent?",
+        answer:
+          "Yes, but as a step in a loop. ecentic generates optimized titles, descriptions, and structured data to close a specific attribute gap that lost an agent comparison, then publishes and re-measures — rather than generating content as the end product.",
+      },
+      {
+        question: "Which is better for Amazon sellers?",
+        answer:
+          "Ecomtent is built around Amazon's Rufus and COSMO. ecentic is cross-agent and Shopify/WooCommerce-first, so Amazon-centric sellers may prefer Ecomtent, while multi-channel and Shopify merchants often prefer ecentic.",
+      },
+      {
+        question: "Do they work together?",
+        answer:
+          "Yes. A common pattern is to generate baseline content with Ecomtent, then use ecentic to simulate it against competitors across models and publish the version that wins.",
+      },
     ],
     sections: [
       {
@@ -1146,17 +1306,6 @@ They can be complementary: generate strong baseline content with Ecomtent, then 
 - Cross-agent win rates and publish-to-store → ecentic
 - Use both: generate with one, prove and publish with the other`,
       },
-      {
-        number: "07",
-        title: "Frequently asked questions",
-        content: `**Is ecentic an Ecomtent alternative?** For cross-agent, competitor-aware optimization on Shopify and WooCommerce, yes. For Amazon-first listing-content and image generation at scale, Ecomtent remains purpose-built. They overlap on producing better listings but differ on simulation and model coverage.
-
-**Does ecentic generate listing content like Ecomtent?** Yes, but as a step in a loop. ecentic generates optimized titles, descriptions, and structured data to close a specific attribute gap that lost an agent comparison, then publishes and re-measures — rather than generating content as the end product.
-
-**Which is better for Amazon sellers?** Ecomtent is built around Amazon's Rufus and COSMO. ecentic is cross-agent and Shopify/WooCommerce-first, so Amazon-centric sellers may prefer Ecomtent, while multi-channel and Shopify merchants often prefer ecentic.
-
-**Do they work together?** Yes. A common pattern is to generate baseline content with Ecomtent, then use ecentic to simulate it against competitors across models and publish the version that wins.`,
-      },
     ],
   },
   {
@@ -1183,6 +1332,28 @@ They can be complementary: generate strong baseline content with Ecomtent, then 
       "ecentic simulates how AI agents choose between your product and a named competitor across four models, then auto-optimizes and publishes the winning listing.",
       "The difference is SKU visibility tracking plus recommendations vs. head-to-head simulation plus a publish-and-re-measure loop.",
       "Choose Alhena for SKU-level visibility monitoring and recommendations; choose ecentic to raise per-competitor win rates and push fixes live to Shopify or WooCommerce.",
+    ],
+    faqs: [
+      {
+        question: "Is ecentic an Alhena AI alternative?",
+        answer:
+          "For competitive, simulation-based product optimization with a publish loop, yes. Alhena is stronger for SKU-level visibility tracking and as part of a broader assistant and support suite. They are both commerce-native but answer different questions.",
+      },
+      {
+        question: "Does Alhena simulate AI purchase decisions?",
+        answer:
+          "Alhena focuses on SKU-level AI visibility and AEO recommendations rather than running head-to-head, per-model purchase simulations against a named competitor, which is ecentic's core mechanic.",
+      },
+      {
+        question: "Which ties results to revenue better?",
+        answer:
+          "Alhena frames visibility around revenue, which helps prioritization. ecentic ties results to win rate and measured lift after publishing a fix, which is closer to a direct optimization outcome.",
+      },
+      {
+        question: "Can I use both?",
+        answer:
+          "Yes. Use Alhena to monitor SKU visibility and ecentic to win specific competitor comparisons and publish the fixes. They cover monitoring and action respectively.",
+      },
     ],
     sections: [
       {
@@ -1260,17 +1431,6 @@ They can complement each other — track visibility with Alhena, win the head-to
 - Competitive win rates and publish-to-store → ecentic
 - Complementary: track with one, win with the other`,
       },
-      {
-        number: "07",
-        title: "Frequently asked questions",
-        content: `**Is ecentic an Alhena AI alternative?** For competitive, simulation-based product optimization with a publish loop, yes. Alhena is stronger for SKU-level visibility tracking and as part of a broader assistant and support suite. They are both commerce-native but answer different questions.
-
-**Does Alhena simulate AI purchase decisions?** Alhena focuses on SKU-level AI visibility and AEO recommendations rather than running head-to-head, per-model purchase simulations against a named competitor, which is ecentic's core mechanic.
-
-**Which ties results to revenue better?** Alhena frames visibility around revenue, which helps prioritization. ecentic ties results to win rate and measured lift after publishing a fix, which is closer to a direct optimization outcome.
-
-**Can I use both?** Yes. Use Alhena to monitor SKU visibility and ecentic to win specific competitor comparisons and publish the fixes. They cover monitoring and action respectively.`,
-      },
     ],
   },
   {
@@ -1297,6 +1457,29 @@ They can complement each other — track visibility with Alhena, win the head-to
       "Semrush's 2026 AI Visibility Index found 45% of marketing leaders cannot accurately measure their brand's visibility in AI answers, which is why monitoring tools are crowded.",
       "Brand-visibility monitors (Profound, Otterly, and others) tell you if AI mentions you; they do not optimize the product decision.",
       "For winning head-to-head product comparisons across models and publishing fixes, simulation-and-optimization tools like ecentic are a distinct, smaller category.",
+    ],
+    faqs: [
+      {
+        question: "What is the best AI shopping agent optimization tool?",
+        answer:
+          "There is no single best — it depends on the job. For brand visibility in AI answers, a monitor like Profound; for listing content at scale, Ecomtent; for agent-readiness, Feedonomics or Schema App; for winning competitor comparisons, a simulation tool like ecentic. Most stores need one monitor and one optimizer.",
+      },
+      {
+        question:
+          "How is GEO/AEO different from agentic-commerce optimization?",
+        answer:
+          "GEO and AEO focus on being visible and cited in AI answers. Agentic-commerce optimization focuses on winning the agent's actual product decision. Visibility is the entry ticket; winning the comparison is the sale.",
+      },
+      {
+        question: "Do I need more than one tool?",
+        answer:
+          "Usually yes, but not four of the same kind. A common effective pairing is one measurement or visibility tool plus one optimization tool, so you can see agent attention and act on the product decisions that convert.",
+      },
+      {
+        question: "Where should a Shopify or WooCommerce merchant start?",
+        answer:
+          "Start with a free diagnostic. Run an [ecentic Scan](/sign-up) to see your win rate against a competitor, then layer a visibility monitor once you know which products need attention.",
+      },
     ],
     sections: [
       {
@@ -1378,17 +1561,6 @@ We build ecentic, so treat this section as informed but interested. The honest c
 - Mechanic: per-model simulation, battlecards, auto-publish, re-measure
 - Note: we make ecentic — verify the claim with a free Scan`,
       },
-      {
-        number: "07",
-        title: "How to choose (and FAQ)",
-        content: `**What is the best AI shopping agent optimization tool?** There is no single best — it depends on the job. For brand visibility in AI answers, a monitor like Profound; for listing content at scale, Ecomtent; for agent-readiness, Feedonomics or Schema App; for winning competitor comparisons, a simulation tool like ecentic. Most stores need one monitor and one optimizer.
-
-**How is GEO/AEO different from agentic-commerce optimization?** GEO and AEO focus on being visible and cited in AI answers. Agentic-commerce optimization focuses on winning the agent's actual product decision. Visibility is the entry ticket; winning the comparison is the sale.
-
-**Do I need more than one tool?** Usually yes, but not four of the same kind. A common effective pairing is one measurement or visibility tool plus one optimization tool, so you can see agent attention and act on the product decisions that convert.
-
-**Where should a Shopify or WooCommerce merchant start?** Start with a free diagnostic. Run an [ecentic Scan](/sign-up) to see your win rate against a competitor, then layer a visibility monitor once you know which products need attention.`,
-      },
     ],
   },
 ];
@@ -1415,6 +1587,7 @@ const seed = async () => {
           tags: [...post.tags],
           takeaways: [...post.takeaways],
           sections: [...post.sections],
+          faqs: [...post.faqs],
           updatedAt: new Date(`${post.updatedAt}T00:00:00Z`),
         })
         .onConflictDoUpdate({
@@ -1432,6 +1605,7 @@ const seed = async () => {
             tags: [...post.tags],
             takeaways: [...post.takeaways],
             sections: [...post.sections],
+            faqs: [...post.faqs],
             updatedAt: new Date(`${post.updatedAt}T00:00:00Z`),
           },
         }),

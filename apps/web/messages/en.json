@@ -2666,6 +2666,10 @@
     }
   },
   "blog": {
+    "meta": {
+      "title": "Blog: AI Shopping Agents & Optimization Guides",
+      "description": "Guides and research on AI shopping agents: how ChatGPT, Claude, Gemini, and Perplexity rank products, why listings lose, and what to change to win carts."
+    },
     "title": "Blog",
     "description": "Guides and research on winning AI shopping agents.",
     "minRead": "{minutes} min read",
@@ -2673,6 +2677,9 @@
     "published": "Published",
     "updated": "Updated",
     "allPosts": "All posts",
+    "faq": {
+      "title": "Frequently asked questions"
+    },
     "states": {
       "empty": {
         "primary": "No posts yet."
@@ -2778,9 +2785,9 @@
           "name": "Privacy Center Plus",
           "detail": "Hosted trust hub, DSR intake, and policy library"
         },
-        "ecenticScale": {
-          "name": "ecentic Scale",
-          "detail": "Continuous agent simulations and auto-optimization"
+        "ecenticDominate": {
+          "name": "ecentic Dominate",
+          "detail": "Continuous simulations, auto-optimization, drift alerts, and UCP generation"
         }
       },
       "guarantees": {
@@ -3344,8 +3351,8 @@
           "detail": "Hosted trust hub, DSR intake, and policy library"
         },
         {
-          "name": "ecentic Scale",
-          "detail": "Continuous agent simulations and auto-optimization"
+          "name": "ecentic Dominate",
+          "detail": "Continuous simulations, auto-optimization, drift alerts, and UCP generation"
         }
       ],
       "guarantees": [

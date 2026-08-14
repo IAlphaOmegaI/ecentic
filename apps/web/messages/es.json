@@ -2666,6 +2666,10 @@
     }
   },
   "blog": {
+    "meta": {
+      "title": "Blog: agentes de compras con IA y optimización",
+      "description": "Guías e investigación sobre agentes de compras con IA: cómo ChatGPT, Claude, Gemini y Perplexity eligen productos y qué cambiar para ganar más carritos."
+    },
     "title": "Blog",
     "description": "Guías e investigación para ganar con agentes de compras con IA.",
     "minRead": "{minutes} min de lectura",
@@ -2673,6 +2677,9 @@
     "published": "Publicado",
     "updated": "Actualizado",
     "allPosts": "Todas las publicaciones",
+    "faq": {
+      "title": "Preguntas frecuentes"
+    },
     "states": {
       "empty": {
         "primary": "Aún no hay publicaciones."
@@ -2778,9 +2785,9 @@
           "name": "Privacy Center Plus",
           "detail": "Centro de confianza alojado, gestión de solicitudes de datos y biblioteca de políticas"
         },
-        "ecenticScale": {
-          "name": "ecentic Scale",
-          "detail": "Simulaciones continuas de agentes y auto-optimización"
+        "ecenticDominate": {
+          "name": "ecentic Dominate",
+          "detail": "Simulaciones continuas, auto-optimización, alertas de deriva y generación de UCP"
         }
       },
       "guarantees": {
@@ -3344,8 +3351,8 @@
           "detail": "Centro de confianza alojado, gestión de solicitudes de datos y biblioteca de políticas"
         },
         {
-          "name": "ecentic Scale",
-          "detail": "Simulaciones continuas de agentes y auto-optimización"
+          "name": "ecentic Dominate",
+          "detail": "Simulaciones continuas, auto-optimización, alertas de deriva y generación de UCP"
         }
       ],
       "guarantees": [

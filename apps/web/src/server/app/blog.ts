@@ -111,6 +111,13 @@ const findPublished = async (slug: string, locale: "en" | "es") => {
   return posts.data[0] ?? null;
 };
 
+const faqSchema = z.object({
+  question: z.string(),
+  answer: z.string(),
+});
+
+export type Faq = z.infer<typeof faqSchema>;
+
 const metaTranslationSchema = z.object({
   title: z.string(),
   metaDescription: z.string(),
@@ -118,6 +125,7 @@ const metaTranslationSchema = z.object({
   category: z.string(),
   tags: z.array(z.string()),
   takeaways: z.array(z.string()),
+  faqs: z.array(faqSchema),
 });
 
 const htmlChunkSchema = z.object({
@@ -140,6 +148,7 @@ type TranslateArticleInput = {
   tags?: readonly string[];
   introduction?: string;
   takeaways?: readonly string[];
+  faqs?: readonly Faq[];
 };
 
 const estimateReadTime = (html: string) => {
@@ -239,7 +248,28 @@ const alignStringArray = (
   translated: readonly string[],
 ) => source.map((value, index) => translated[index] ?? value);
 
-const translateBrandRules = `Keep the product name "ecentic" untranslated (lowercase as written). Keep ChatGPT, Claude, Gemini, Perplexity, Shopify, and WooCommerce untranslated.`;
+/**
+ * Same contract as `alignStringArray`: the English array is authoritative for
+ * length and order, so a model that drops, merges, or invents a pair cannot
+ * change how many questions the Spanish row answers — only their wording.
+ */
+const alignFaqs = (source: readonly Faq[], translated: readonly Faq[]) =>
+  source.map((faq, index) => ({
+    question: translated[index]?.question ?? faq.question,
+    answer: translated[index]?.answer ?? faq.answer,
+  }));
+
+const translateBrandRules = `Keep the product name "ecentic" untranslated (lowercase as written). Keep ChatGPT, Claude, Gemini, Perplexity, Shopify, and WooCommerce untranslated. Never substitute a different product for one the source names — "ChatGPT" is never "GPT-4", and a plan name (Compete, Scale, Dominate) always keeps the price the source gave it.`;
+
+/**
+ * Prices are the one thing a translation cannot paraphrase. An earlier pass
+ * dropped the decimal separator and shifted every ecentic plan up a tier in
+ * Spanish — "$14.90/mo" became "149 $/mes", "$44.90" became "449 $", and
+ * Dominate inherited Scale's number — which is a wrong price on a live page,
+ * not a wording problem.
+ */
+const translateNumberRules =
+  "Copy every number exactly as the source gives it: prices, percentages, dates, counts. Only the decimal and thousands separators change for Spanish (14.90 → 14,90; 1,500 → 1.500). Never drop a separator, never round, and never drop or merge an item from a list of priced things.";
 
 const translateMetaCore = async (input: {
   title: string;
@@ -248,6 +278,7 @@ const translateMetaCore = async (input: {
   category: string;
   tags: readonly string[];
   takeaways: readonly string[];
+  faqs: readonly Faq[];
 }) => {
   const meta = await AI.generate({
     label: "Blog.translateArticleMeta",
@@ -258,8 +289,11 @@ const translateMetaCore = async (input: {
 
 Rules:
 - ${translateBrandRules}
+- ${translateNumberRules}
 - Write natural Spanish for merchants; do not invent new fields.
-- tags and takeaways must keep the same count and order as the input arrays.
+- title and metaDescription are search-result copy, not prose: title must be at most 60 characters and metaDescription at most 160. Spanish runs longer than English, so rewrite for the limit — drop a qualifier, use a shorter synonym — rather than translating literally and overflowing. Everything past those limits is truncated in the SERP.
+- tags, takeaways and faqs must keep the same count and order as the input arrays.
+- faqs entries are a reader-facing question and its answer; translate both, keep the question phrased as a question, and do not shorten the answer.
 - Never use Markdown.`,
     prompt: JSON.stringify({
       title: input.title,
@@ -268,6 +302,7 @@ Rules:
       category: input.category,
       tags: input.tags,
       takeaways: input.takeaways,
+      faqs: input.faqs,
     }),
   });
 
@@ -278,6 +313,7 @@ Rules:
     category: meta.category,
     tags: alignStringArray(input.tags, meta.tags),
     takeaways: alignStringArray(input.takeaways, meta.takeaways),
+    faqs: alignFaqs(input.faqs, meta.faqs),
   };
 };
 
@@ -298,6 +334,7 @@ Rules:
 - Do not omit paragraphs, lists, tables, or links. Output length should be similar to the input.
 - Keep URLs and href/src/class/id/data-* values unchanged.
 - ${translateBrandRules}
+- ${translateNumberRules}
 - Leave <!--ECENTIC_KEEP_N--> placeholders exactly as written.`,
     prompt: englishHtml,
   });
@@ -325,6 +362,7 @@ Rules:
 const translateArticleCore = async (input: TranslateArticleInput) => {
   const tags = input.tags ?? [];
   const takeaways = input.takeaways ?? [];
+  const faqs = input.faqs ?? [];
   const category = input.category ?? "Guide";
   const introduction = input.introduction ?? input.metaDescription;
 
@@ -336,6 +374,7 @@ const translateArticleCore = async (input: TranslateArticleInput) => {
       category,
       tags,
       takeaways,
+      faqs,
     });
 
     const preserved = extractPreservedBlocks(input.contentHtml);
@@ -367,6 +406,7 @@ const translateSectionsCore = async (sections: readonly BlogSection[]) => {
 
 Rules:
 - ${translateBrandRules}
+- ${translateNumberRules}
 - Keep the same section number.
 - content is plain text (paragraphs separated by blank lines; lines starting with "- " are list items). Do not emit HTML tags.
 - Preserve existing **bold** / list markers only when the English source already uses them; do not invent Markdown.
@@ -395,6 +435,13 @@ type LocaleRowValues = {
   takeaways: readonly string[];
   sections?: readonly BlogSection[];
   contentHtml: string | null;
+  /**
+   * `undefined` keeps whatever is stored; `[]` clears it. BabyLoveGrowth only
+   * ships `faqJsonLd` on its newer articles, and the reconcile cron re-ingests
+   * an older one every time it is missing a locale — writing the payload's
+   * absence through would erase the hand-written pairs those posts carry.
+   */
+  faqs?: readonly Faq[];
 };
 
 const upsertLocaleRow = async (values: LocaleRowValues) => {
@@ -425,6 +472,7 @@ const upsertLocaleRow = async (values: LocaleRowValues) => {
     takeaways: values.takeaways,
     sections: values.sections ?? [],
     contentHtml: values.contentHtml,
+    ...(values.faqs ? { faqs: values.faqs } : {}),
     updatedAt: new Date(),
   };
 
@@ -493,6 +541,37 @@ export const listPublishedByTag = async (
 };
 
 /**
+ * BabyLoveGrowth authors an FAQ block into the article body and ships the same
+ * pairs as ready-made `FAQPage` JSON-LD. Reading them off the payload is the
+ * only way to get the questions as data — recovering them from the rendered
+ * HTML means guessing at a translated heading, and a miss there is silent.
+ * Older articles have no `faqJsonLd` at all, which is why `undefined` (rather
+ * than `[]`) is what an absent block normalizes to.
+ */
+const faqJsonLdSchema = z.object({
+  mainEntity: z.array(
+    z.object({
+      name: z.string(),
+      acceptedAnswer: z.object({ text: z.string() }).nullish(),
+    }),
+  ),
+});
+
+const normalizeFaqJsonLd = (value: unknown) => {
+  const parsed = faqJsonLdSchema.safeParse(value);
+  if (!parsed.success) return undefined;
+
+  const faqs = parsed.data.mainEntity
+    .map((entry) => ({
+      question: entry.name.trim(),
+      answer: entry.acceptedAnswer?.text.trim() ?? "",
+    }))
+    .filter((faq) => faq.question && faq.answer);
+
+  return faqs.length > 0 ? faqs : undefined;
+};
+
+/**
  * BabyLoveGrowth's article payload is snake_case for `meta_description`,
  * `hero_image_url` and `created_at` (see `BlogArticleSummary` in the client
  * package) and camelCase for the rest. Reading only the camelCase spellings
@@ -517,6 +596,7 @@ const publishPayloadSchema = z
     heroImageUrl: z.string().optional().nullable(),
     created_at: z.string().optional(),
     createdAt: z.string().optional(),
+    faqJsonLd: z.unknown().optional(),
   })
   .transform((payload) => ({
     id: payload.id,
@@ -530,6 +610,7 @@ const publishPayloadSchema = z
     metaDescription: payload.meta_description ?? payload.metaDescription ?? "",
     heroImageUrl: payload.hero_image_url ?? payload.heroImageUrl ?? null,
     createdAt: payload.created_at ?? payload.createdAt,
+    faqs: normalizeFaqJsonLd(payload.faqJsonLd),
   }));
 
 export type PublishPayload = z.infer<typeof publishPayloadSchema>;
@@ -598,8 +679,12 @@ const ingestPublishCore = async (payload: PublishPayload) => {
     tags,
     takeaways: [],
     contentHtml: payload.content_html,
+    faqs: payload.faqs,
   });
 
+  // Spanish is translated from whatever English ended up with, not from the
+  // payload: a post BLG never sent `faqJsonLd` for still has hand-written pairs
+  // on its English row, and those deserve a Spanish rendering too.
   const translation = await translateArticleCore({
     title: payload.title,
     metaDescription: description,
@@ -608,6 +693,7 @@ const ingestPublishCore = async (payload: PublishPayload) => {
     tags,
     introduction: description,
     takeaways: [],
+    faqs: payload.faqs ?? english?.faqs ?? [],
   });
 
   if (!translation.success)
@@ -639,6 +725,7 @@ const ingestPublishCore = async (payload: PublishPayload) => {
     tags: translation.data.tags,
     takeaways: translation.data.takeaways,
     contentHtml: translation.data.contentHtml,
+    faqs: translation.data.faqs,
   });
 
   return {
@@ -759,6 +846,7 @@ export const resyncSpanishFromEnglishCore = async (slug: string) => {
     category: english.category,
     tags: english.tags,
     takeaways: english.takeaways,
+    faqs: english.faqs,
   };
 
   if (english.sections.length > 0 && !english.contentHtml?.trim()) {
@@ -790,6 +878,7 @@ export const resyncSpanishFromEnglishCore = async (slug: string) => {
       takeaways: meta.data.takeaways,
       sections: sections.data,
       contentHtml: null,
+      faqs: meta.data.faqs,
     });
 
     return {
@@ -813,6 +902,7 @@ export const resyncSpanishFromEnglishCore = async (slug: string) => {
     tags: english.tags,
     introduction: english.introduction,
     takeaways: english.takeaways,
+    faqs: english.faqs,
   });
   if (!translation.success) return translation;
 
@@ -832,6 +922,7 @@ export const resyncSpanishFromEnglishCore = async (slug: string) => {
     takeaways: translation.data.takeaways,
     sections: [],
     contentHtml: translation.data.contentHtml,
+    faqs: translation.data.faqs,
   });
 
   return {

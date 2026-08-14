@@ -62,6 +62,8 @@ declare namespace NodeJS {
      * a guessed deployment name only earns a 404 from Azure.
      */
     readonly AZURE_DEPLOYMENT_GPT?: string;
+    /** Legacy spelling of the same `gpt` seat; some env files still use it. */
+    readonly AZURE_DEPLOYMENT_GPT4O?: string;
 
     /**
      * Vercel AI Gateway — every model Azure cannot serve (Claude, Gemini,
