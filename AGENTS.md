@@ -1,17 +1,25 @@
 # AGENTS.md - Docs-First Engineering Guide
 
+This file is the **single source of truth for working in this repository** — for any AI agent or developer, regardless of tool/editor. Tool-specific files (for example `CLAUDE.md`) may layer habits on top, but never override or duplicate what is here.
+
 This repository uses `docs/` as the canonical source of truth for product context, implementation patterns, and package usage.
 
-Use this file as the entrypoint for any AI agent or developer, regardless of tool/editor.
+---
+
+## What This Is
+
+**ecentic** is an e-commerce optimization platform for the AI agent economy. It simulates how AI shopping agents (ChatGPT, Claude, Gemini, Perplexity) compare products vs. competitors, diagnoses why products win or lose, and auto-optimizes listings. See `docs/context/idea.md` for full product spec and feature roadmap.
 
 ---
 
 ## How To Work In This Repo
 
-1. Start with `docs/index.md` for navigation.
-2. Read `docs/context/` before making product or UX decisions.
-3. Read `docs/agents/` before implementing code.
-4. Read package-level docs in `docs/web/` and `docs/shared/` before building components.
+Read in this order before substantial work:
+
+1. `docs/index.md` - docs navigation hub.
+2. `docs/context/` - product context, before making product or UX decisions (`idea.md`, `strategy.md`, `shopify.md`).
+3. `docs/agents/` - coding rules, before implementing code.
+4. `docs/web/index.md` and `docs/shared/index.md` - component/package API references, before building components.
 
 If code and docs disagree, prefer docs intent unless explicitly instructed otherwise.
 
@@ -52,6 +60,286 @@ If code and docs disagree, prefer docs intent unless explicitly instructed other
 
 ---
 
+## Commands
+
+All commands use **Bun** as the package manager. Run from the monorepo root unless noted.
+
+```bash
+# Development
+bun run dev           # Start all apps (Turborepo)
+bun run dev:web       # Start only the Next.js web app
+
+# Build & type checking
+bun run build         # Build all packages
+bun run build:web     # Build only web app
+bun run typecheck     # tsc --noEmit across all packages
+
+# Linting (Biome)
+bun run lint          # biome check --write (root)
+cd apps/web && bun run lint  # biome check --write --unsafe (web only)
+
+# Database (run from apps/web/)
+bun run db:generate   # Generate Drizzle migration files
+bun run db:migrate    # Apply pending migrations
+bun run db:push       # Push schema directly (dev only)
+bun run db:studio     # Open Drizzle Studio UI
+bun run db:reset      # Reset database (scripts/reset.ts)
+```
+
+There are no automated tests in this codebase currently.
+
+---
+
+## Monorepo Structure
+
+```
+/
+├── apps/web/                 # Main Next.js 16 application
+│   ├── src/
+│   │   ├── app/              # Next.js App Router pages
+│   │   ├── components/       # Shared app-level components
+│   │   ├── server/           # All server-side code (actions, DB, utils)
+│   │   └── lib/              # Client-side utilities (auth client, mocks, animations)
+│   └── drizzle/              # Generated migration files
+├── packages/
+│   ├── web/                  # @zenncore/web — UI component library + Tailwind config
+│   ├── shared/
+│   │   ├── utils/            # @zenncore/utils — cn, resultify, Result type, hooks
+│   │   ├── inferred-form/    # @zenncore/inferred-form — schema-driven form builder
+│   │   ├── data-table/       # @zenncore/data-table — TanStack Table wrapper
+│   │   ├── icons/            # @zenncore/icons
+│   │   ├── phone/            # @zenncore/phone — phone input utilities
+│   │   └── config/           # @zenncore/config — shared TS/Tailwind/tsdown configs
+│   └── mobile/               # @zenncore/mobile (placeholder)
+└── docs/                     # Agent rules, product context, and package documentation
+```
+
+---
+
+## Server Architecture (`apps/web/src/server/`)
+
+### Three-layer structure:
+
+**1. Database** (`server/database/`)
+- Drizzle ORM + PostgreSQL via `postgres.js`
+- Schema in `schema.ts`: `user`, `session`, `account`, `verification`, `store`, `store_account` (Shopify OAuth tokens per store), `product`, `competitor`, `scan`, `simulation`, `ucpProfile`, `agentVisit`, `agentTrafficDaily`, `listingOptimization` (listing rewrites + win-rate lift tracking), `subscription` (Stripe billing state), `agentApiKey` (hashed agent API keys), `blogPost`
+- Relations defined alongside schema for typed joins
+- Config in `apps/web/drizzle.config.ts`
+
+**2. Utilities** (`server/utils/`)
+- **Context system**: `withInstrumentation()` → headers-free base (safe for repositories, `"use cache"`, and static/build paths); `withContext()` → adds request layers (auth API, Sentry, storage); `withAuthentication()` → adds `session`; `withAuthorization()` → adds role checks. Use the auth wrappers only on exported server actions; do not add explicit return type annotations on wrapped actions.
+- **Repository pattern**: `repository(schema.table)` returns typed `get`, `create`, `update`, `destroy`, `find`, `paginate`, `exists`, `count`. Prefer repository delegates over raw `db` calls.
+- **Error classes**: `DatabaseError`, `NotFoundError`, `RequestError`, `TimeoutError`, `ParseError`, `UnauthenticatedError`, `UnauthorizedError`, `InvalidCredentialsError`
+- **HTTP**: `request(url, options, { timeout })` → `Result<Response, Error>`; `parse<T>(response)` → `Result<T, Error>`
+
+**3. Server actions** (`server/app/`)
+- `authentication.ts` — signIn, signUp, signOut, verifyEmail, resetPassword, getCurrentUser
+- `store.ts`, `product.ts`, `competitor.ts`, `scan.ts`, `simulation.ts` — CRUD via repository
+- `storage.ts` — UploadThing storage integration
+- `tracking.ts` — AI agent visit tracking
+- `user.ts`, `session.ts` — user/session management
+- `integration/shopify.ts` — OAuth token exchange + product sync via Shopify Admin API
+- `integration/woocommerce.ts` — credential validation + paginated product fetch
+- `integration/feed.ts` — XML/JSON auto-detection + Google Shopping format parsing
+- `intelligence/simulate.ts` — AI simulation engine (ChatGPT, Claude, Gemini, Perplexity perspectives)
+
+---
+
+## App Router Structure (`apps/web/src/app/`)
+
+```
+app/
+├── (auth)/                       # Route group — sign-in, sign-up, onboarding
+│   ├── sign-in/
+│   ├── sign-up/
+│   └── onboarding/               # connect → products → competitors → scan
+├── (main)/                       # Route group — landing page + protected pages
+│   ├── page.tsx                  # Landing page
+│   ├── _components/              # Landing page components
+│   ├── privacy-policy/
+│   └── dashboard/                # Protected pages (PPR + streaming)
+│       ├── products/             # Product list + detail views
+│       ├── competitors/
+│       ├── reports/
+│       ├── optimize/
+│       ├── ucp/                  # Universal Commerce Protocol
+│       └── settings/
+├── (provider)/                   # Route group — API routes
+│   └── api/
+│       ├── auth/[...all]/        # Better Auth route handler
+│       ├── integrations/         # Shopify OAuth install + callback
+│       ├── cron/                 # Scheduled job endpoints
+│       └── tracking/             # Agent visit tracking endpoints
+├── layout.tsx
+├── globals.css
+├── manifest.ts
+├── robots.ts
+└── sitemap.ts
+```
+
+Page-specific components live in `_components/` subdirectories next to their page — **client and server components alike**, plus Suspense skeletons (`_components/skeletons.tsx`). The underscore keeps the folder out of routing. Only route-convention files (`page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`, `route.ts`) belong in the route folder itself.
+
+### PPR and Streaming (dashboard and app screens)
+
+Every `page.tsx` must be a **server component** that exports real HTML — not a thin wrapper around a single client component. Use **Partial Prerendering (PPR)** and streaming:
+
+- **Static shell** — Render in `page.tsx`: layout, page title, description, headings. This is the initial HTML.
+- **Data** — Fetch in **async server components** (same file or `_components/`). Wrap each in `<Suspense fallback={<Skeleton />}>` with a skeleton that matches the content shape.
+- **Skeletons** — Export them from `_components/skeletons.tsx` so `page.tsx` and `loading.tsx` share the exact same shapes and navigation lands without layout shift.
+- **Streaming** — The server sends the shell first, then streams in resolved async components so users see content as it loads.
+
+Onboarding/auth screens may be client-heavy by design; all other screens (dashboard, settings, lists, details) follow this pattern. See `docs/agents/AGENTS-nextjs.md`.
+
+---
+
+## Key Patterns
+
+### Error handling — `resultify` in actions, `unwrapResult` in server components
+```ts
+// In server actions / utilities — use resultify + manual checks
+import { resultify } from "@zenncore/utils";
+const result = await resultify(() => fetch(url));
+if (!result.success) return { success: false, error: result.error };
+return { success: true, data: result.data };
+
+// In server components (inside Suspense) — use unwrapResult, throws on error
+import { unwrapResult } from "@zenncore/utils";
+import { Environment } from "@/server/utils/environment";
+const products = await unwrapResult(Products.skimForCurrentUser(Environment.SERVER));
+```
+`@zenncore/utils` `Result<T>` uses a non-distributive void check so `T | undefined` and `any` success branches always include `data`. `resultify` awaits PromiseLike values (not only `instanceof Promise`) so Drizzle query builders are not returned as `data`.
+
+### Server module imports — namespace pattern
+```ts
+// Server components: full namespace (functions + types)
+import * as Products from "@/server/app/product";
+
+// Client components: type-only namespace (no server code bundled)
+import type * as Products from "@/server/app/product";
+```
+Prefer repository delegates (`Product.find(...)`) over ad hoc `db` calls when the repository exposes the operation.
+
+### Forms — use `InferredForm` + `field()`
+All forms are defined via Zod schema + `field()` descriptors. No inline `<input>` or manual react-hook-form registration.
+
+### Styling — semantic Tailwind tokens only
+Use `text-primary`, `bg-background`, `border-accent-foreground`, etc. Never raw colors like `text-gray-500` or `bg-white`.
+
+### Components — Namespace pattern
+```tsx
+const Feature = {
+  Root: ({ children }) => <div>{children}</div>,
+  Title: ({ children }) => <h2>{children}</h2>,
+};
+```
+
+### Animations — only `Motion.Row`, `Motion.Up`, `Motion.Item`, `Motion.Stagger`
+### Conditionals — `switch (true)` over long `if/else if` chains
+### Derived values — IIFE for scoped intermediate logic
+### Variables — `const` only, no `let`; no abbreviated names (`context` not `ctx`, `error` not `err`)
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 16, React 19, React Compiler |
+| Database | PostgreSQL, Drizzle ORM 1.0 beta |
+| Auth | Better Auth 1.5 (email/password + Drizzle adapter) |
+| AI | Vercel AI SDK — GPT direct on Azure OpenAI; Claude + Gemini + Perplexity via the Vercel AI Gateway |
+| Email | Resend + React Email |
+| Storage | UploadThing |
+| Styling | Tailwind CSS 4 |
+| Animations | Motion (Framer Motion fork) |
+| Charts | Recharts |
+| URL State | nuqs |
+| Monitoring | Sentry + PostHog |
+| Linting | Biome (no ESLint/Prettier) |
+| Build | Turborepo + Bun |
+| i18n | next-intl (`en` default, `es` at `/es/...`) |
+
+---
+
+## Environment Variables
+
+Required in `.env.local`:
+```
+DATABASE_URL
+BETTER_AUTH_SECRET
+BETTER_AUTH_BASE_URL        # e.g. http://localhost:3000
+RESEND_API_KEY
+FROM_EMAIL
+SHOPIFY_API_KEY
+SHOPIFY_API_SECRET
+UPLOADTHING_TOKEN
+NEXT_PUBLIC_SENTRY_DSN
+
+# AI providers — two rails, chosen by the SHAPE of the model argument in
+# apps/web/src/server/utils/ai.ts (`model(id)`):
+#   provider instance  → billed direct   → ChatGPT, when AZURE_DEPLOYMENT_GPT names a deployment
+#   "provider/model"   → billed via gateway → Claude, Gemini, Perplexity — and ChatGPT wherever
+#                                              this environment has no Azure deployment for it
+# No per-vendor key is needed; the gateway covers everything Azure can't serve.
+AZURE_RESOURCE_NAME                       # subdomain only, e.g. "my-resource" (NOT the full URL)
+AZURE_API_KEY
+AZURE_API_VERSION                         # optional. Unset → the AI SDK's own default, which is "v1" in
+                                          # @ai-sdk/azure 4.x despite its docstring claiming "preview".
+                                          # Both are accepted; set it explicitly rather than trust the default.
+AZURE_DEPLOYMENT_GPT                      # your ChatGPT DEPLOYMENT name, e.g. "gpt-5.4" — the deployment's
+                                          # name, NOT the model's (list them: curl "https://$AZURE_RESOURCE_NAME.openai.azure.com/openai/deployments?api-version=2023-03-15-preview"
+                                          # -H "api-key: $AZURE_API_KEY"). The "gpt" seat maps here. Unset in an
+                                          # environment → "gpt" resolves to GPT_GATEWAY_MODEL on the gateway,
+                                          # because Azure 404s any deployment name it was not given. Repoint the
+                                          # deployment and that constant together, or the rails judge with
+                                          # different models under one "ChatGPT" label.
+                                          # Legacy alias: AZURE_DEPLOYMENT_GPT4O (same gpt seat) if GPT is unset.
+AI_GATEWAY_API_KEY                        # Vercel AI Gateway — Claude/Gemini/Perplexity calls
+```
+
+Billing. Three separate products: free **Scan** (one-time, no billing row),
+**Pay-as-you-go** (free to start, no card until a fee is due, billed only via the
+performance fee), and flat **Subscription** (Compete/Scale/Dominate, no fee). The fee
+never rides a subscription. PAYG runs on calendar months; the Stripe rail charges
+one-off invoices (Shopify-installed stores bill via Shopify usage records).
+```
+STRIPE_SECRET_KEY
+STRIPE_WEBHOOK_SECRET
+STRIPE_SUB_COMPETE                        # recurring price id — Compete plan ($14.90/mo)
+STRIPE_SUB_SCALE                          # recurring price id — Scale plan ($44.90/mo)
+STRIPE_SUB_DOMINATE                       # recurring price id — Dominate plan ($149/mo, top tier)
+APP_HOST                                  # e.g. https://ecentic.ai (checkout return + webhook origin)
+CRON_SECRET                               # Bearer secret for /api/cron/* (scan + billing)
+BABYLOVEGROWTH_BLOG_API_KEY               # optional — BabyLoveGrowth Next.js Blog read key
+BABYLOVEGROWTH_WEBHOOK_SECRET             # optional — Bearer for /api/webhooks/babylovegrowth (EN→ES Azure translate)
+
+# Pay-as-you-go performance fee (one-off Stripe invoices, not metered).
+PERFORMANCE_FEE_RATE_BPS_DEFAULT=300      # 3%, overridable per account
+PERFORMANCE_FEE_CAP_CENTS_DEFAULT=50000   # $500 / month, overridable per account
+PERFORMANCE_FEE_ATTRIBUTION_WINDOW_DAYS=7 # AI-referral → order attribution window
+
+# Shopify Global Catalog MCP (optional — real agent-shelf rank measurement,
+# see docs/context/agent-visibility.md). Credentials from Dev Dashboard →
+# Catalogs → "Get an API key" (catalog keys, NOT the app's SHOPIFY_API_KEY).
+SHOPIFY_CATALOG_CLIENT_ID
+SHOPIFY_CATALOG_CLIENT_SECRET
+SHOPIFY_CATALOG_TOKEN_URL                 # default https://api.shopify.com/auth/access_token
+SHOPIFY_CATALOG_MCP_URL                   # default https://catalog.shopify.com/api/ucp/mcp
+UCP_AGENT_PROFILE_URL                     # default {APP_HOST}/ucp/agent-profile
+
+# Google Merchant Center — hybrid channel-partner integration
+# (docs/integrations/google-merchant-center.md). Merchant-consent OAuth client
+# (scope https://www.googleapis.com/auth/content) from the GCP project with the
+# Merchant API enabled; the MCA id is our advanced account that accountManagement
+# links are proposed from.
+GOOGLE_MERCHANT_CLIENT_ID
+GOOGLE_MERCHANT_CLIENT_SECRET
+ECENTIC_MCA_ID                            # numeric Merchant Center advanced-account id
+GOOGLE_MERCHANT_MCA_REFRESH_TOKEN         # optional — MCA-admin grant; auto-approves incoming link proposals (unset = approve manually in the MCA's Merchant Center)
+```
+
+---
+
 ## Delivery Expectations
 
 - Align implementation with documented product behavior and naming.
@@ -73,12 +361,12 @@ If code and docs disagree, prefer docs intent unless explicitly instructed other
 - Use `@zenncore/web/components/tabs` for tab UIs instead of custom segmented button groups.
 - On marketing and content pages, avoid uppercase eyebrows and all-caps category labels; use sentence-case headings unless `docs/context/design.md` explicitly calls for caps (stat labels, numbered section kickers). Prefer large primary section indexes (e.g. `text-3xl text-primary`) over tiny tracked uppercase step micro-labels. Reserve `font-mono` for code-like strings (URLs, capability keys, HTTP snippets)—not regular labels or titles. Prefer shared `ItemCycle` (optional logos) and animated vertical step/item cycles over `STEP`/`LAYER` eyebrow grids or one-off carousels for workflow/agent showcases; reuse across product-listings, Shopify, WooCommerce, and resources. Pricing plan cards stay a 2×2 grid—never a single-row xl 1×4.
 - Separate major marketing sections with `SectionGutter` from `dashboard/_components/grid.tsx`.
-- Reserve `background.webp` hands artwork for the landing page’s light hero; use `blog.png` for blue content-page heroes unless the design canon specifies another treatment. Marketing page banners should be full-height with end-aligned content, vertical border delimiters like other content pages, and badges/chips above the body copy (not above the title).
+- Reserve `background.webp` hands artwork for the landing page's light hero; use `blog.png` for blue content-page heroes unless the design canon specifies another treatment. Marketing page banners should be full-height with end-aligned content, vertical border delimiters like other content pages, and badges/chips above the body copy (not above the title).
 - When section shells already draw borders (`border-b`, `gap-px` grids), remove redundant inner borders on the last child or adjacent panels to avoid double lines (e.g. `last:border-b-0` on shared FAQ accordion items; no extra `border-b`/`border-t` between stacked validator panels). Stretch marketing split-panel stacks to fill row height (avoid leftover gray gaps); keep separators from crowding nearby text; omit decorative icons that only inflate section height.
 
 ## Learned Workspace Facts
 
-- If Postgres reports `relation "...\" does not exist`, run migrations from `apps/web` using `bun run db:migrate`. From the same app, `bun run db:push` syncs the Drizzle schema directly (dev convenience); `bun run db:migrate` applies versioned SQL migrations (prefer for production-style workflows).
+- If Postgres reports `relation "..." does not exist`, run migrations from `apps/web` using `bun run db:migrate`. From the same app, `bun run db:push` syncs the Drizzle schema directly (dev convenience); `bun run db:migrate` applies versioned SQL migrations (prefer for production-style workflows).
 - AI streaming server actions use `AI.stream<EventType>()` and return `{ output }`, consumed client-side with `readStreamableValue(output)` and `switch (event.kind)`. For Zod schemas passed to AI `generate()`, avoid `z.default()` and use `.optional()` for truly optional fields.
 - Site i18n uses `next-intl` with `en` (default, no prefix) and `es` (`/es/...`); catalogs in `apps/web/messages/{en,es}.json`; `apps/web/global.ts` AppConfig types messages from `en.json` (see `docs/integrations/blog-i18n.md`). Locale for RSC comes from `next/root-params` in `i18n/request.ts` — root layout lives at `app/[locale]/layout.tsx` (no pass-through `app/layout.tsx`); do not use `setRequestLocale`. Pass explicit `{ locale }` into next-intl server APIs from Server Actions / Route Handlers until root-params supports them. Blog posts share slugs across locales (`blog_post.locale`); BabyLoveGrowth webhook upserts **EN + ES** on publish (Azure translates meta + chunked HTML for ES — no Markdown). `Blog.resolve` / index / OG / sitemap are **Postgres-only** (no live BLG during SSG). Prerender every blog slug × locale via `generateStaticParams` and ISR/`revalidateTag("blog")` when the webhook writes—pages stay fully static; public resolve never runs Azure. Do not put file-level `"use server"` on modules that also export sync helpers/cache tags (breaks Turbopack); blog RSC helpers must not call `withContext`/`headers()`; avoid wrapping next-intl-using homepage trees in `"use cache"`. Do not cache soft-failure `null` from BLG per-slug fetches (404s English while Spanish still serves from Postgres).
 - Non-onboarding/auth pages are expected to follow PPR/streaming patterns with a server-rendered `page.tsx` shell and Suspense-wrapped async server components.
@@ -86,7 +374,7 @@ If code and docs disagree, prefer docs intent unless explicitly instructed other
 - For Shopify storefront ScriptTag `tracker.js`, beacons use the script origin with `Authorization: Bearer` and CORS; requests relative to the merchant domain never reach the app API. HTTPS storefronts cannot load `http://localhost` scripts (mixed content); set `ECENTIC_TRACKER_PUBLIC_ORIGIN` to a public HTTPS base URL (for example an ngrok tunnel) for ScriptTag `src`, and reconnect OAuth after that URL changes.
 - WooCommerce REST product updates must use `PUT` to `/wp-json/wc/v3/products/{numericId}` with no `.json` suffix after the id; publishing optimized listings requires REST API keys with read/write permissions (read-only keys work for sync but not `PUT` updates).
 - Local Next dev: after code or env changes, rely on hot reload or restart the dev server; remote hosting still needs redeploy when you change env or ship builds. `reactCompiler: true` in `apps/web/next.config.ts` requires `babel-plugin-react-compiler` in `apps/web` devDependencies.
-- Prefer repository delegates from the model files in `apps/web/src/server/app/` (for example `import * as Product` and `Product.find(...)`) instead of ad hoc `db` calls when the repository already exposes the operation; prefer repository `find` over `resultify` + `findFirst` when available. Raw read-only `db.select` thunks that remain (aggregates the repository cannot express) use `resultifyRead` from `@/server/utils/repository` — one retry across a dead pooled connection (Fluid freeze/thaw); writes keep plain `resultify`. `@zenncore/utils` `Result<T>` uses a non-distributive void check so `T | undefined` and `any` success branches always include `data`. `resultify` awaits PromiseLike values (not only `instanceof Promise`) so Drizzle query builders are not returned as `data`.
+- Prefer repository delegates from the model files in `apps/web/src/server/app/` (for example `import * as Product` and `Product.find(...)`) instead of ad hoc `db` calls when the repository already exposes the operation; prefer repository `find` over `resultify` + `findFirst` when available. Raw read-only `db.select` thunks that remain (aggregates the repository cannot express) use `resultifyRead` from `@/server/utils/repository` — one retry across a dead pooled connection (Fluid freeze/thaw); writes keep plain `resultify`.
 - Local Azure env may name the ChatGPT deployment `AZURE_DEPLOYMENT_GPT4O` while code prefers `AZURE_DEPLOYMENT_GPT`; `model("gpt")` accepts either so Azure is used when the gateway wallet is empty.
 - Server wrappers: `withInstrumentation` is the headers-free base (safe for repositories, `"use cache"`, and static/build paths); `withContext` / `withAuthentication` / `withAuthorization` append request/auth layers for exported server actions (`withAuthorization` for role-gated manager flows). Prefer repository/`withInstrumentation` helpers over raw `db` in `server/app`. Do not add explicit return type annotations on those wrappers so return types stay inferred.
 - UCP discovery is a plain HTTPS GET to `/.well-known/ucp` (no `UCP-Agent` header on discovery). Use the official UCP artwork at `apps/web/public/images/ucp.png`, not a custom placeholder SVG. Real profiles (2026-04-08) use array-based `services` with `transport` and object-keyed `capabilities`—do not use `@ucp-js/sdk` v0.1.0 `UcpDiscoveryProfileSchema` (stale); reuse `discoveryProfileSchema` from `ucp-advanced-validator.ts`. Service endpoints MUST be HTTPS with no trailing slash; capabilities use reverse-domain keys (`dev.ucp.shopping.*`) and capability `spec`/`schema` URL origins must match the namespace authority (first two segments reversed, e.g. `dev.ucp` → `ucp.dev`). REST calls use `UCP-Agent` (RFC 8941 `profile="..."`); Shopify MCP requires `arguments.meta["ucp-agent"].profile` on every JSON-RPC message (inject via `callMCP`/`transport.fetch` when using `createMCPClient`; wrappers typed as `typeof fetch` must forward `fetch.preconnect` under Bun). Prefer first-party HTTPS ecentic profiles (`/ucp/agent-profile`, `/ucp/agent-profiles/*`) with cacheable `Cache-Control` (not `no-store`); whitelist public `/ucp/*` in `proxy.ts` `RouteAccess.PUBLIC`. Agent `search_catalog`/`search_catalogs` args are flat top-level fields (`query`, `context`, `filters` with price in minor units)—not nested under `catalog`. Playground accepts bare store domains (`normalizePlaygroundStoreDomain` strips scheme/trailing slash; discovery uses `https://`). Put playground MCP checkout payload schema changes in `ucp-playground.ts`, not `ucp-advanced-validator.ts`. Playground smoke test: `search_catalog` → `lookup_catalog` → `get_product` → `create_cart` → `get_cart` → `update_cart` (`{ id, cart: { line_items } }`, keep `line_items[].id` from `get_cart`) → `create_checkout` from scratch with body nested under `checkout` only (no `cart_id` — not supported by this business endpoint) → `get_checkout` → `cancel_checkout` → `cancel_cart`; `update_checkout`/`complete_checkout` use top-level `id` plus nested `checkout`. On step failure (`{ error }`, `ucp.status: error`), stop immediately and summarize — do not call further tools. On `create_cart`/`create_checkout`, each line item needs only `item.id` + `quantity`; omit `line_items[].id` on create. Optional `cart.context` (`address_country`, `address_region`, `postal_code`). Cart and checkout IDs must come from prior tool results, not server-side state. UCP MCP business errors return HTTP 200 with `ucp.status: "error"` and `messages[]`—use `parseUcpToolContent`/`extractUcpToolError` before success-schema validation. Multi-store comparison (`/dashboard/ucp-comparison`): agent calls `search_catalogs` once; normalize store URLs (strip trailing slashes) when matching `store_profile`/`store_result` events and handle `store_result` so cards leave `discovering`/`searching`.
