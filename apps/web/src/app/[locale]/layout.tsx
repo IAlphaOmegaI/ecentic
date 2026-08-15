@@ -5,7 +5,7 @@ import { Red_Hat_Display } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
 import { NextIntlClientProvider } from "next-intl";
-import { getLocale, getMessages } from "next-intl/server";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { type PropsWithChildren, Suspense } from "react";
 import "../globals.css";
 import { CookieConsent } from "@/components/cookie-consent";
@@ -63,31 +63,19 @@ export const generateStaticParams = () =>
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const locale = await getLocale();
+  const translate = await getTranslations({
+    locale,
+    namespace: "general.meta",
+  });
+  const messages = await getMessages({ locale });
 
   return {
     title: {
-      default: "ecentic — Win Every AI Shopping Agent's Cart",
+      default: translate("title"),
       template: "%s | ecentic",
     },
-    description:
-      "Optimize product listings for AI shopping agents. Simulate ChatGPT, Claude, Gemini, and Perplexity decisions, diagnose losses, and improve win rate.",
-    keywords: [
-      "AI shopping agent optimization",
-      "e-commerce AI optimization",
-      "AI agent economy",
-      "product listing optimization",
-      "ChatGPT shopping",
-      "Claude shopping agent",
-      "Gemini shopping",
-      "win rate optimization",
-      "AI commerce platform",
-      "agent SEO",
-      "GEO generative engine optimization",
-      "Shopify AI optimization",
-      "WooCommerce AI",
-      "product content optimization",
-      "competitive intelligence ecommerce",
-    ],
+    description: translate("description"),
+    keywords: [...messages.general.meta.keywords],
     authors: [{ name: "ecentic" }],
     creator: "ecentic",
     publisher: "ecentic",
@@ -97,15 +85,13 @@ export const generateMetadata = async (): Promise<Metadata> => {
       locale: openGraphLocale(locale),
       url: "https://ecentic.ai",
       siteName: "ecentic",
-      title: "ecentic — Win Every AI Shopping Agent's Cart",
-      description:
-        "Simulate how AI shopping agents choose your products, diagnose why they don't, and auto-optimize your listings. Built for the agent economy.",
+      title: translate("title"),
+      description: translate("openGraphDescription"),
     },
     twitter: {
       card: "summary_large_image",
-      title: "ecentic — Win Every AI Shopping Agent's Cart",
-      description:
-        "Simulate how ChatGPT, Claude, Gemini & Perplexity choose your products vs. competitors. Diagnose losses. Auto-optimize. Win every cart.",
+      title: translate("title"),
+      description: translate("twitterDescription"),
       creator: "@ecentic",
     },
     robots: {

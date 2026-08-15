@@ -743,7 +743,11 @@
         },
         "frequency": {
           "title": "Simulation Frequency",
-          "options": ["Manual only", "Daily", "Weekly"]
+          "options": [
+            "Manual only",
+            "Daily",
+            "Weekly"
+          ]
         },
         "persona": {
           "title": "Purchase Persona",
@@ -772,6 +776,14 @@
           "syncFailed": "Sync failed",
           "reconnectAction": "Reconnect",
           "genericError": "Something went wrong"
+        },
+        "google": {
+          "comingSoon": "Coming soon",
+          "notConnected": "Not connected",
+          "active": "Active · {count, number} live",
+          "linked": "Linked",
+          "setupInProgress": "Setup in progress",
+          "manage": "Manage →"
         }
       },
       "billing": {

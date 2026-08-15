@@ -2,7 +2,10 @@ import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getLocale, getTranslations } from "next-intl/server";
+import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
+import type { Locale } from "@/i18n/routing";
 import { createMetadata } from "@/lib/seo";
 import * as Blog from "@/server/app/blog";
 import {
@@ -11,17 +14,15 @@ import {
   EditorialSplitSection,
 } from "../../_components/editorial-page";
 
-const formatter = new Intl.DateTimeFormat("en-US", {
-  month: "long",
-  day: "numeric",
-  year: "numeric",
-  timeZone: "UTC",
-});
-
-const formatBlogDate = (value: Date | string) => {
+const formatBlogDate = (value: Date | string, locale: Locale) => {
   const date = value instanceof Date ? value : new Date(value);
   if (Number.isNaN(date.getTime())) return "";
-  return formatter.format(date);
+  return new Intl.DateTimeFormat(locale === "es" ? "es-ES" : "en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(date);
 };
 
 type TagPageProps = {
@@ -32,29 +33,45 @@ export const generateMetadata = async ({
   params,
 }: TagPageProps): Promise<Metadata> => {
   const { slug } = await params;
+  const locale = await getLocale();
+  const translate = await getTranslations({ locale, namespace: "blog.tag" });
+
   return createMetadata({
-    title: `Articles tagged “${slug}”`,
-    description: `ecentic blog articles tagged ${slug}.`,
-    path: `/blog/tag/${slug}`,
+    title: translate("metaTitle", { slug }),
+    description: translate("metaDescription", { slug }),
+    path: localizePath(`/blog/tag/${slug}`, locale),
   });
 };
 
 export default async ({ params }: TagPageProps) => {
   const { slug } = await params;
-  const articles = await Blog.listPublishedByTag(slug, "en");
+  const locale = await getLocale();
+  const translate = await getTranslations("blog");
+
+  // Slugs are shared across locales, so the Spanish row is the same article in
+  // Spanish. Fall back to English whenever a translation has not landed yet —
+  // an English card beats an empty tag page.
+  const [englishPosts, spanishPosts] = await Promise.all([
+    Blog.listPublishedByTag(slug, "en"),
+    locale === "es" ? Blog.listPublishedByTag(slug, "es") : Promise.resolve([]),
+  ]);
+
+  const spanishBySlug = new Map(
+    spanishPosts.map((post) => [post.slug, post] as const),
+  );
+
+  const articles = englishPosts.map(
+    (post) => (locale === "es" && spanishBySlug.get(post.slug)) || post,
+  );
 
   if (articles.length === 0) notFound();
 
   return (
     <EditorialLayout
-      eyebrow="Tag"
+      eyebrow={translate("tag.eyebrow")}
       title={`#${slug}`}
-      meta={
-        <p>
-          {articles.length} {articles.length === 1 ? "article" : "articles"}
-        </p>
-      }
-      description={`Guides and notes tagged ${slug}.`}
+      meta={<p>{translate("tag.count", { count: articles.length })}</p>}
+      description={translate("tag.description", { slug })}
     >
       {articles.map((article, index) => (
         <EditorialSplitSection
@@ -67,9 +84,11 @@ export default async ({ params }: TagPageProps) => {
               </span>
               <div className="mt-auto flex flex-col gap-2">
                 <p className="text-white">
-                  {formatBlogDate(article.publishedAt)}
+                  {formatBlogDate(article.publishedAt, locale)}
                 </p>
-                <p className="text-sm text-white/60">{article.readTime} read</p>
+                <p className="text-sm text-white/60">
+                  {translate("tag.readSuffix", { readTime: article.readTime })}
+                </p>
               </div>
             </>
           }
@@ -88,7 +107,7 @@ export default async ({ params }: TagPageProps) => {
                 className="self-start"
                 render={<Link href={`/blog/${article.slug}`} prefetch={true} />}
               >
-                Read article
+                {translate("tag.action.primary")}
                 <ArrowRightIcon className="size-4" />
               </Button>
             </div>
@@ -97,9 +116,9 @@ export default async ({ params }: TagPageProps) => {
       ))}
 
       <EditorialFooter
-        primary={{ href: "/sign-up", label: "Get started" }}
-        secondary={{ href: "/blog", label: "All articles" }}
-        note="More guides for merchants improving search, shopping, and AI visibility."
+        primary={{ href: "/sign-up", label: translate("action.tertiary") }}
+        secondary={{ href: "/blog", label: translate("action.allArticles") }}
+        note={translate("tag.note")}
       />
     </EditorialLayout>
   );

@@ -38,8 +38,8 @@
       "insights": {
         "kicker": "03 — Inteligencia",
         "summary": "Resumen competitivo",
-        "keyInsight": "Insight clave",
-        "optimizeLosing": "Optimizar listings perdedores",
+        "keyInsight": "Hallazgo clave",
+        "optimizeLosing": "Optimizar fichas perdedoras",
         "recentScanActivity": "Actividad reciente de escaneos",
         "scanCompleted": "Escaneo completado — {wins}V / {losses}D",
         "scanInProgress": "Escaneo en curso — {completed}/{total}",
@@ -47,11 +47,11 @@
         "viewAllActivity": "Ver toda la actividad",
         "headlines": {
           "outrankAll": "Superas a los {count} competidor{plural} simulados (media {overall}% de tasa de victoria).",
-          "slimmestLead": "Tu ventaja más estrecha es frente a {brand} con {rate}%. Mantén los listings optimizados para defenderla.",
+          "slimmestLead": "Tu ventaja más estrecha es frente a {brand} con {rate}%. Mantén las fichas optimizadas para defenderla.",
           "biggestOpportunity": "{brand} gana el {lossRate}% de las comparaciones de agentes contra ti. Esa es tu mayor oportunidad.",
           "holdMajority": "Tienes la mayoría frente a {winning} de {total} competidor{plural} (media {overall}%). Optimizar los productos que pierdes frente a {brand} mueve la aguja.",
           "defaultHeadline": "Tienes la mayoría frente a {winning} de {total} competidor{plural} (media {overall}% de tasa de victoria).",
-          "focusOptimization": "Enfoca una optimización de listing en los productos que {brand} te gana.",
+          "focusOptimization": "Enfoca una optimización de ficha en los productos en los que {brand} te gana.",
           "toughestRival": "{toughest} es tu rival más duro con {toughestRate}%; lideras frente a {strongest} con {strongestRate}%."
         }
       },

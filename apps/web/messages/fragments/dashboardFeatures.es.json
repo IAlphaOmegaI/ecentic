@@ -130,7 +130,7 @@
             "summary": "Cobertura en todo el catálogo, bucles de respuesta a competidores y re-optimización por deriva de modelos. La tasa de victoria se acerca a tu techo estimado a medida que más SKUs permanecen listos para agentes.",
             "outcomes": [
               "Escaneos continuos detectan deriva cuando los modelos se actualizan",
-              "Cambios en fichas de competidores activan nuevos battlecards",
+              "Cambios en fichas de competidores activan nuevas battlecards",
               "Tráfico de agentes y ingresos atribuidos crecen con la cobertura"
             ]
           }
@@ -743,7 +743,11 @@
         },
         "frequency": {
           "title": "Frecuencia de simulación",
-          "options": ["Solo manual", "Diaria", "Semanal"]
+          "options": [
+            "Solo manual",
+            "Diaria",
+            "Semanal"
+          ]
         },
         "persona": {
           "title": "Persona de compra",
@@ -772,6 +776,14 @@
           "syncFailed": "Error de sincronización",
           "reconnectAction": "Reconectar",
           "genericError": "Algo salió mal"
+        },
+        "google": {
+          "comingSoon": "Próximamente",
+          "notConnected": "Sin conectar",
+          "active": "Activo · {count, number} publicados",
+          "linked": "Vinculado",
+          "setupInProgress": "Configuración en curso",
+          "manage": "Gestionar →"
         }
       },
       "billing": {
@@ -840,7 +852,7 @@
           "portalFailed": "No se pudo abrir el portal de facturación",
           "paygFailed": "No se pudo iniciar pago por uso",
           "paymentSetupFailed": "No se pudo abrir la configuración de pago",
-          "checkoutFailed": "No se pudo iniciar el checkout"
+          "checkoutFailed": "No se pudo iniciar el pago"
         }
       },
       "team": {

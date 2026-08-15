@@ -11,32 +11,39 @@ import type * as GoogleMerchant from "@/server/app/integration/google-merchant";
 import * as Store from "@/server/app/store";
 
 /** Compact Google Shopping state for the store row — management lives on the
- * dedicated /dashboard/{store}/google-shopping page. */
+ * dedicated /dashboard/{store}/google-shopping page. Takes the translator so the
+ * label follows the active locale instead of being pinned to English. */
 const googleSummary = (
   status: GoogleMerchant.Status | null,
+  translate: ReturnType<
+    typeof useTranslations<"dashboard.settings.integrations">
+  >,
 ): { label: string; className: string } => {
   if (!status?.supported)
     return {
-      label: "Coming soon",
+      label: translate("google.comingSoon"),
       className: "bg-foreground/5 text-foreground-dimmed",
     };
 
   switch (true) {
     case !status.connected:
       return {
-        label: "Not connected",
+        label: translate("google.notConnected"),
         className: "bg-foreground/5 text-foreground-dimmed",
       };
     case status.provisioned:
       return {
-        label: `Active · ${status.offers.live} live`,
+        label: translate("google.active", { count: status.offers.live }),
         className: "bg-success/10 text-success",
       };
     case status.linkState === "active":
-      return { label: "Linked", className: "bg-success/10 text-success" };
+      return {
+        label: translate("google.linked"),
+        className: "bg-success/10 text-success",
+      };
     default:
       return {
-        label: "Setup in progress",
+        label: translate("google.setupInProgress"),
         className: "bg-warning/10 text-warning",
       };
   }
@@ -129,7 +136,7 @@ export const IntegrationsSection = ({
                 className: "bg-foreground-dimmed text-background",
               };
               const status = google[store.id] ?? null;
-              const summary = googleSummary(status);
+              const summary = googleSummary(status, translate);
 
               return (
                 <div key={store.id} className="px-4 py-4">
@@ -184,7 +191,7 @@ export const IntegrationsSection = ({
                         href={`/dashboard/${store.id}/google-shopping`}
                         className="text-primary text-xs hover:underline"
                       >
-                        Manage →
+                        {translate("google.manage")}
                       </Link>
                     )}
                   </div>

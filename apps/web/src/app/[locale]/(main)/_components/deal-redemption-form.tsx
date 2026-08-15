@@ -11,6 +11,7 @@ import {
   InferredForm,
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
+import { useTranslations } from "next-intl";
 import { z } from "zod";
 import { useRouter } from "@/i18n/navigation";
 
@@ -45,13 +46,14 @@ export const DealRedemptionForm = ({
 }: Props) => {
   const router = useRouter();
   const toast = useToastManager();
+  const translate = useTranslations("dealRedemption");
 
   const config = {
     companyName: field({
       shape: "text",
-      validator: z.string().min(1, "Company name is required"),
-      label: "Company name",
-      placeholder: "Acme Inc.",
+      validator: z.string().min(1, translate("fields.companyName.required")),
+      label: translate("fields.companyName.label"),
+      placeholder: translate("fields.companyName.placeholder"),
       classList: { field: "col-span-2 md:col-span-1" },
     }),
     batch: field({
@@ -63,46 +65,46 @@ export const DealRedemptionForm = ({
     }),
     contactName: field({
       shape: "text",
-      validator: z.string().min(1, "Your name is required"),
-      label: "Your name",
-      placeholder: "Jane Founder",
+      validator: z.string().min(1, translate("fields.contactName.required")),
+      label: translate("fields.contactName.label"),
+      placeholder: translate("fields.contactName.placeholder"),
       classList: { field: "col-span-2 md:col-span-1" },
     }),
     email: field({
       shape: "text",
-      validator: z.string().email("Enter a valid email"),
-      label: "Work email",
-      placeholder: "jane@acme.com",
+      validator: z.string().email(translate("fields.email.invalid")),
+      label: translate("fields.email.label"),
+      placeholder: translate("fields.email.placeholder"),
       classList: { field: "col-span-2 md:col-span-1" },
     }),
     website: field({
       shape: "text",
-      validator: z.string().url("Enter a valid URL"),
-      label: "Store / website URL",
-      placeholder: "https://acme.com",
+      validator: z.string().url(translate("fields.website.invalid")),
+      label: translate("fields.website.label"),
+      placeholder: translate("fields.website.placeholder"),
       classList: { field: "col-span-2" },
     }),
     platform: field({
       shape: "select",
       // @ts-expect-error - optional literal union is not narrowed by the form types
       validator: z.literal(platforms).optional(),
-      label: "Commerce platform",
-      placeholder: "Select platform",
+      label: translate("fields.platform.label"),
+      placeholder: translate("fields.platform.placeholder"),
       classList: { field: "col-span-2 md:col-span-1" },
     }),
     monthlyOrders: field({
       shape: "select",
       // @ts-expect-error - optional literal union is not narrowed by the form types
       validator: z.literal(monthlyOrders).optional(),
-      label: "Monthly orders",
-      placeholder: "Select range",
+      label: translate("fields.monthlyOrders.label"),
+      placeholder: translate("fields.monthlyOrders.placeholder"),
       classList: { field: "col-span-2 md:col-span-1" },
     }),
     goal: field({
       shape: "text",
       validator: z.string(),
-      label: "What do you want ecentic to help you win? (optional)",
-      placeholder: "e.g. Get recommended over our top competitor by AI agents",
+      label: translate("fields.goal.label"),
+      placeholder: translate("fields.goal.placeholder"),
       classList: { field: "col-span-2" },
     }),
   } satisfies GenericForm;
@@ -119,17 +121,17 @@ export const DealRedemptionForm = ({
 
       if (!response.success || !response.data.ok) {
         const message = await (async () => {
-          if (!response.success) return "Network error. Please try again.";
+          if (!response.success) return translate("toast.networkError");
           const body = await resultify(
             () => response.data.json() as Promise<{ error?: string }>,
           );
           return body.success && body.data.error
             ? body.data.error
-            : "Something went wrong. Please try again.";
+            : translate("toast.genericError");
         })();
 
         toast.add({
-          title: "Redemption failed",
+          title: translate("toast.failedTitle"),
           description: message,
           type: "error",
         });
@@ -137,9 +139,8 @@ export const DealRedemptionForm = ({
       }
 
       toast.add({
-        title: "Redemption received",
-        description:
-          "We'll verify your batch and email you within 1 business day.",
+        title: translate("toast.successTitle"),
+        description: translate("toast.successDescription"),
         type: "success",
       });
       router.push(redirectTo);
@@ -161,7 +162,7 @@ export const DealRedemptionForm = ({
       >
         {isPending ? (
           <>
-            Redeeming...
+            {translate("action.pending")}
             <LoaderIcon className="size-4 animate-spin" />
           </>
         ) : (

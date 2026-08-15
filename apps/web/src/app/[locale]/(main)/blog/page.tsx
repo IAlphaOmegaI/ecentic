@@ -258,8 +258,8 @@ export default async () => {
       )}
 
       <EditorialFooter
-        primary={{ href: "/sign-up", label: "Get started" }}
-        secondary={{ href: "/", label: "Back to home" }}
+        primary={{ href: "/sign-up", label: translate("action.tertiary") }}
+        secondary={{ href: "/", label: translate("action.quaternary") }}
         note={translate("description")}
       />
     </EditorialLayout>

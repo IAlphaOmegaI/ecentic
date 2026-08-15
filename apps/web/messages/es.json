@@ -1,6 +1,29 @@
 {
   "general": {
     "brand": "ecentic",
+    "meta": {
+      "title": "ecentic — Gana el carrito de cada agente de compras con IA",
+      "description": "Optimiza tus fichas de producto para los agentes de compras con IA. Simula las decisiones de ChatGPT, Claude, Gemini y Perplexity, diagnostica por qué pierdes y mejora tu tasa de victoria.",
+      "openGraphDescription": "Simula cómo los agentes de compras con IA eligen tus productos, diagnostica por qué no lo hacen y optimiza tus fichas automáticamente. Creado para la economía de agentes.",
+      "twitterDescription": "Simula cómo ChatGPT, Claude, Gemini y Perplexity eligen tus productos frente a los de la competencia. Diagnostica pérdidas. Optimiza automáticamente. Gana cada carrito.",
+      "keywords": [
+        "optimización para agentes de compras con IA",
+        "optimización de comercio electrónico con IA",
+        "economía de agentes de IA",
+        "optimización de fichas de producto",
+        "compras con ChatGPT",
+        "agente de compras Claude",
+        "compras con Gemini",
+        "optimización de la tasa de victoria",
+        "plataforma de comercio con IA",
+        "SEO para agentes",
+        "GEO optimización para motores generativos",
+        "optimización de Shopify con IA",
+        "WooCommerce con IA",
+        "optimización de contenido de producto",
+        "inteligencia competitiva para ecommerce"
+      ]
+    },
     "backdropAlt": "Emblema de águila en arte ASCII con la textura de marca de ecentic",
     "search": {
       "label": "Buscar"
@@ -70,13 +93,16 @@
       "privacy": "Política de privacidad",
       "terms": "Términos de servicio",
       "shopify": "Shopify",
-      "woocommerce": "WooCommerce"
+      "woocommerce": "WooCommerce",
+      "productListings": "Fichas de producto"
     },
     "cta": {
       "eyebrow": "Que te elija la IA",
       "title": "¿Listo para ser el producto que recomiendan los agentes?",
       "description": "Instálalo gratis en Shopify o WooCommerce y mira tu puntuación de IA en minutos."
-    }
+    },
+    "copyright": "© 2026 ecentic. Todos los derechos reservados.",
+    "madeFor": "Hecho para comercios que se niegan a ser invisibles para la IA."
   },
   "authChrome": {
     "footer": "Gratis para empezar. No se requiere tarjeta de crédito.",
@@ -199,7 +225,7 @@
       "Google Search": "Búsqueda en Google",
       "Shopify App Store": "Shopify App Store",
       "Friend / Colleague": "Amigo / Colega",
-      "Newsletter": "Newsletter",
+      "Newsletter": "Boletín",
       "Podcast": "Podcast",
       "Other": "Otro"
     },
@@ -453,7 +479,7 @@
         "simulationsRun": "Simulaciones ejecutadas",
         "bestModel": "Mejor modelo",
         "winsSimulations": "{wins} victorias · {simulations} simulaciones",
-        "listingCompleteness": "puntuación de completitud del listing",
+        "listingCompleteness": "puntuación de completitud de la ficha",
         "acrossCompetitors": "en {count, plural, one {# competidor} other {# competidores}}",
         "modelWinRate": "tasa de victoria de {model}",
         "tabs": {
@@ -490,17 +516,17 @@
         "publish": {
           "applyFix": "Aplicar corrección en la tienda",
           "connectStore": "Conectar Shopify o WooCommerce",
-          "dialogTitle": "¿Publicar listing optimizado?",
-          "dialogDescription": "ecentic genera un título y descripción optimizados por IA para \"{title}\" y los escribe directamente en tu tienda conectada, reemplazando el listing en vivo. La tasa de victoria actual es {winRate}%.",
+          "dialogTitle": "¿Publicar la ficha optimizada?",
+          "dialogDescription": "ecentic genera un título y descripción optimizados por IA para \"{title}\" y los escribe directamente en tu tienda conectada, reemplazando la ficha publicada. La tasa de victoria actual es {winRate}%.",
           "publishing": "Publicando…",
           "publishToStore": "Publicar en la tienda",
           "failed": "Error al publicar",
-          "successTitle": "Listing publicado",
-          "successDescription": "Se ha enviado un listing optimizado por IA a tu tienda."
+          "successTitle": "Ficha publicada",
+          "successDescription": "Se ha enviado una ficha optimizada por IA a tu tienda."
         },
         "applyOptimization": {
           "title": "Cierra la brecha automáticamente",
-          "description": "ecentic reescribe este listing a partir de las fortalezas de los competidores ganadores y lo publica directamente en tu tienda, sin que tengas que editar nada a mano.",
+          "description": "ecentic reescribe esta ficha a partir de las fortalezas de los competidores ganadores y la publica directamente en tu tienda, sin que tengas que editar nada a mano.",
           "reviewQueue": "Cola de revisión",
           "optimizePublish": "Optimizar y publicar"
         },
@@ -520,10 +546,10 @@
           "positioning": "posicionamiento"
         },
         "optimizeTab": {
-          "title": "Optimizar listing",
-          "description": "Puntuaciones de calidad de contenido según categoría para los campos que leen los agentes de IA, más cómo está posicionado este listing para su audiencia.",
+          "title": "Optimizar ficha",
+          "description": "Puntuaciones de calidad de contenido según categoría para los campos que leen los agentes de IA, más cómo está posicionada esta ficha para su audiencia.",
           "completeness": "Completitud:",
-          "currentListing": "02 — Listing actual",
+          "currentListing": "02 — Ficha actual",
           "characters": "{count} caracteres",
           "noDescription": "No se encontró descripción",
           "liveOnStore": "En vivo en la tienda",
@@ -539,7 +565,7 @@
           "structuredDataPublished": "Datos estructurados optimizados publicados",
           "structuredDataPublishedDescription": "Escrito en el metafield ecentic.structured_data. El app embed ahora lo renderiza en lugar del markup de producto por defecto. Si el embed está desactivado, actívalo en el editor de temas y pulsa Guardar.",
           "openThemeEditor": "Abrir editor de temas",
-          "listingAuditKicker": "01 — Auditoría de listing con IA",
+          "listingAuditKicker": "01 — Auditoría de ficha con IA",
           "status": {
             "optimizedByEcentic": "Optimizado por ecentic",
             "ecenticStandard": "estándar ecentic",
@@ -601,7 +627,7 @@
         "simsLost": "de simulaciones perdidas",
         "missingAttributes": "Atributos ausentes",
         "noFindingTitle": "No hay hallazgo registrado para este escaneo.",
-        "noFindingHint": "Vuelve a ejecutar el escaneo para ver insights.",
+        "noFindingHint": "Vuelve a ejecutar el escaneo para ver los hallazgos.",
         "fixThis": "Corregir esto"
       },
       "table": {
@@ -702,8 +728,8 @@
       "insights": {
         "kicker": "03 — Inteligencia",
         "summary": "Resumen competitivo",
-        "keyInsight": "Insight clave",
-        "optimizeLosing": "Optimizar listings perdedores",
+        "keyInsight": "Hallazgo clave",
+        "optimizeLosing": "Optimizar fichas perdedoras",
         "recentScanActivity": "Actividad reciente de escaneos",
         "scanCompleted": "Escaneo completado — {wins}V / {losses}D",
         "scanInProgress": "Escaneo en curso — {completed}/{total}",
@@ -711,11 +737,11 @@
         "viewAllActivity": "Ver toda la actividad",
         "headlines": {
           "outrankAll": "Superas a los {count} competidor{plural} simulados (media {overall}% de tasa de victoria).",
-          "slimmestLead": "Tu ventaja más estrecha es frente a {brand} con {rate}%. Mantén los listings optimizados para defenderla.",
+          "slimmestLead": "Tu ventaja más estrecha es frente a {brand} con {rate}%. Mantén las fichas optimizadas para defenderla.",
           "biggestOpportunity": "{brand} gana el {lossRate}% de las comparaciones de agentes contra ti. Esa es tu mayor oportunidad.",
           "holdMajority": "Tienes la mayoría frente a {winning} de {total} competidor{plural} (media {overall}%). Optimizar los productos que pierdes frente a {brand} mueve la aguja.",
           "defaultHeadline": "Tienes la mayoría frente a {winning} de {total} competidor{plural} (media {overall}% de tasa de victoria).",
-          "focusOptimization": "Enfoca una optimización de listing en los productos que {brand} te gana.",
+          "focusOptimization": "Enfoca una optimización de ficha en los productos en los que {brand} te gana.",
           "toughestRival": "{toughest} es tu rival más duro con {toughestRate}%; lideras frente a {strongest} con {strongestRate}%."
         }
       },
@@ -747,7 +773,7 @@
       }
     },
     "commandPalette": {
-      "placeholder": "Buscar comandos…",
+      "placeholder": "Buscar productos, competidores, páginas…",
       "trigger": "Buscar productos, competidores…",
       "keyboardShortcut": "⌘K",
       "keyboardEscape": "esc",
@@ -905,7 +931,7 @@
             "summary": "Cobertura en todo el catálogo, bucles de respuesta a competidores y re-optimización por deriva de modelos. La tasa de victoria se acerca a tu techo estimado a medida que más SKUs permanecen listos para agentes.",
             "outcomes": [
               "Escaneos continuos detectan deriva cuando los modelos se actualizan",
-              "Cambios en fichas de competidores activan nuevos battlecards",
+              "Cambios en fichas de competidores activan nuevas battlecards",
               "Tráfico de agentes y ingresos atribuidos crecen con la cobertura"
             ]
           }
@@ -1072,7 +1098,7 @@
         "info": "Avisos",
         "ready": "Listo"
       },
-      "reference": "Docs",
+      "reference": "Documentación",
       "summary": {
         "blockers": "{count} bloqueados",
         "warnings": "{count} en riesgo",
@@ -1240,7 +1266,7 @@
     "googleShopping": {
       "eyebrow": "Canal · Google Shopping",
       "title": "Fichas optimizadas en Google, sin tocar tu tienda",
-      "description": "ecentic superpone tus optimizaciones de ficha publicadas sobre tu feed de productos de Google como sustituciones de atributos. El plugin de Google de tu tienda sigue siendo el dueño de precios, stock y del feed de productos. ecentic gestiona títulos, descripciones y diagnósticos por encima.",
+      "description": "ecentic superpone tus optimizaciones de ficha publicadas sobre tu feed de productos de Google como sustituciones de atributos. El plugin de Google de tu tienda sigue gestionando precios, stock y el feed de productos. ecentic gestiona títulos, descripciones y diagnósticos por encima.",
       "toast": "Google Shopping",
       "unsupported": {
         "chip": "Próximamente",
@@ -1281,7 +1307,7 @@
         },
         "feed": {
           "title": "Configura el feed de optimización",
-          "description": "Crea el feed complementario de ecentic en tu cuenta y lo conecta con tu feed de productos principal. El plugin de tu tienda sigue siendo el dueño de precios, stock e imágenes. ecentic solo superpone títulos y descripciones optimizados.",
+          "description": "ecentic crea su feed complementario en tu cuenta y lo conecta con tu feed de productos principal. El plugin de tu tienda sigue gestionando precios, stock e imágenes. ecentic solo superpone títulos y descripciones optimizados.",
           "action": "Configurar feed de optimización",
           "ready": "Feed de optimización listo"
         },
@@ -2125,7 +2151,11 @@
         },
         "frequency": {
           "title": "Frecuencia de simulación",
-          "options": ["Solo manual", "Diaria", "Semanal"]
+          "options": [
+            "Solo manual",
+            "Diaria",
+            "Semanal"
+          ]
         },
         "persona": {
           "title": "Persona de compra",
@@ -2154,6 +2184,14 @@
           "syncFailed": "Error de sincronización",
           "reconnectAction": "Reconectar",
           "genericError": "Algo salió mal"
+        },
+        "google": {
+          "comingSoon": "Próximamente",
+          "notConnected": "Sin conectar",
+          "active": "Activo · {count, number} publicados",
+          "linked": "Vinculado",
+          "setupInProgress": "Configuración en curso",
+          "manage": "Gestionar →"
         }
       },
       "billing": {
@@ -2222,7 +2260,7 @@
           "portalFailed": "No se pudo abrir el portal de facturación",
           "paygFailed": "No se pudo iniciar pago por uso",
           "paymentSetupFailed": "No se pudo abrir la configuración de pago",
-          "checkoutFailed": "No se pudo iniciar el checkout"
+          "checkoutFailed": "No se pudo iniciar el pago"
         }
       },
       "team": {
@@ -2333,7 +2371,7 @@
         "catalog": "02 — Catálogo",
         "competitiveLandscape": "03 — Panorama competitivo",
         "traffic": "03 — Tráfico",
-        "insights": "04 — Insights",
+        "insights": "04 — Hallazgos",
         "agentTraffic": "04 — Tráfico de agentes"
       },
       "performance": {
@@ -2574,7 +2612,7 @@
       "modal": {
         "endingIn": "La prueba termina en {days} días",
         "title": "Mejorar a Pro",
-        "description": "Mantén acceso completo a simulaciones, insights e inteligencia competitiva.",
+        "description": "Mantén acceso completo a simulaciones, hallazgos e inteligencia competitiva.",
         "progress": "Progreso de la prueba",
         "daysUsed": "{used}/14 días usados",
         "featuresHeading": "Todo en Pro",
@@ -2585,11 +2623,11 @@
         }
       },
       "features": [
-        "Unlimited AI simulations",
-        "All 3 model perspectives",
-        "Competitor auto-detection",
-        "UCP structured data export",
-        "Priority support"
+        "Simulaciones con IA ilimitadas",
+        "Las 3 perspectivas de modelo",
+        "Detección automática de competidores",
+        "Exportación de datos estructurados UCP",
+        "Soporte prioritario"
       ]
     },
     "simulation": {
@@ -2687,7 +2725,22 @@
     },
     "action": {
       "primary": "Leer más",
-      "secondary": "Volver al blog"
+      "secondary": "Volver al blog",
+      "tertiary": "Empezar",
+      "quaternary": "Volver al inicio",
+      "allArticles": "Todos los artículos"
+    },
+    "tag": {
+      "eyebrow": "Etiqueta",
+      "metaTitle": "Artículos etiquetados con «{slug}»",
+      "metaDescription": "Artículos del blog de ecentic etiquetados con {slug}.",
+      "description": "Guías y notas etiquetadas con {slug}.",
+      "count": "{count, plural, one {# artículo} other {# artículos}}",
+      "readSuffix": "{readTime} de lectura",
+      "action": {
+        "primary": "Leer artículo"
+      },
+      "note": "Más guías para comercios que mejoran su visibilidad en búsqueda, compras e IA."
     }
   },
   "home": {
@@ -3063,6 +3116,12 @@
     "ucpCallout": {
       "title": "¿Tu tienda es visible para agentes de IA?",
       "description": "Comprueba el perfil UCP de tu tienda en 10 segundos y mira si GPTBot, ClaudeBot, Gemini y Perplexity pueden leer tus fichas."
+    },
+    "heroVideo": {
+      "title": "Vídeo de producto de ecentic",
+      "description": "Una introducción en vídeo a la plataforma ecentic.",
+      "close": "Cerrar vídeo",
+      "fallback": "Tu navegador no admite vídeo incrustado."
     }
   },
   "cookieConsent": {
@@ -3115,7 +3174,7 @@
     "choosePayment": {
       "number": "01",
       "title": "Elige cómo pagar",
-      "description": "Todos los planes ejecutan el mismo ciclo simular → diagnosticar → optimizar. Empieza con pago por uso y paga solo en pedidos impulsados por agentes, o elige un plan mensual fijo cuando quieras facturación predecible. Sin mínimos, mes a mes y sin cuotas de configuración. El bundle EU Presence te quita un 20%."
+      "description": "Todos los planes ejecutan el mismo ciclo simular → diagnosticar → optimizar. Empieza con pago por uso y paga solo en pedidos impulsados por agentes, o elige un plan mensual fijo cuando quieras facturación predecible. Sin mínimos, mes a mes y sin cuotas de configuración. El paquete EU Presence aplica un 20% de descuento."
     },
     "plans": {
       "payg": {
@@ -3439,7 +3498,7 @@
         },
         {
           "name": "Enterprise",
-          "price": "Custom",
+          "price": "Personalizado",
           "description": "Límites personalizados, seguridad enterprise, firma UCP, paneles multimarca y soporte dedicado."
         }
       ]
@@ -4450,7 +4509,7 @@
         },
         "01": {
           "title": "Información que recopilamos",
-          "content": "Cuando creas una cuenta, recopilamos tu nombre, dirección de correo y contraseña (hasheada, nunca almacenada en texto plano).\n\nCuando conectas una tienda Shopify, WooCommerce o feed personalizado, accedemos y almacenamos:\n- Datos del catálogo de productos (títulos, descripciones, precios, imágenes, SKU, handles, información de variantes)\n- Dominio y nombre de la tienda\n- Tokens de acceso OAuth y credenciales API necesarias para leer y escribir datos de producto en tu nombre\n\nSi usas solo el producto de escaneo y optimización, ese es el panorama completo: no accedemos ni almacenamos datos personales de clientes, datos de pedidos ni información de pago, y nuestra integración Shopify solicita únicamente los alcances \\`read_products\\` y \\`write_products\\`.\n\n**Comercio con agentes (UCP).** Si además activas comercio con agentes — conectando una tienda mediante el plugin écentic for WooCommerce o nuestra app de Shopify, para que sirvamos la superficie del Universal Commerce Protocol en tu nombre — también recibimos:\n- Política de tienda necesaria para servir el protocolo: moneda, opciones de envío, configuración fiscal, URLs de páginas legales, declaraciones de manejadores de pago y tu configuración UCP\n- Los pedidos que colocan los agentes de compras con IA en tu tienda: líneas, cantidades, totales y el nombre, correo y direcciones de envío y facturación del comprador, todo ello necesario para crear y cumplir el pedido en tu tienda\n- Tokens de acceso que tu tienda emite cuando uno de tus clientes vincula su cuenta a un asistente de IA\n\nEl comercio con agentes está desactivado hasta que conectes explícitamente una tienda, y se detiene en el momento en que revoques las credenciales que esa tienda nos emitió.\n\n**Google Merchant Center.** Si también conectas una cuenta de Google Merchant Center, recibimos el conjunto de datos de Merchant Center descrito en la sección 04, que cubre por completo nuestro tratamiento de datos de usuario de Google.\n\nNunca recibimos los secretos de tu pasarela de pago ni las contraseñas de tus clientes, y los datos de tarjeta de los compradores nunca se transmiten ni almacenan en ecentic — los pagos los cobra tu propia pasarela, con credenciales que permanecen en tu propia infraestructura."
+          "content": "Cuando creas una cuenta, recopilamos tu nombre, dirección de correo y contraseña (hasheada, nunca almacenada en texto plano).\n\nCuando conectas una tienda Shopify, WooCommerce o feed personalizado, accedemos y almacenamos:\n- Datos del catálogo de productos (títulos, descripciones, precios, imágenes, SKU, handles, información de variantes)\n- Dominio y nombre de la tienda\n- Tokens de acceso OAuth y credenciales API necesarias para leer y escribir datos de producto en tu nombre\n\nSi usas solo el producto de escaneo y optimización, ese es el panorama completo: no accedemos ni almacenamos datos personales de clientes, datos de pedidos ni información de pago, y nuestra integración Shopify solicita únicamente los alcances \\`read_products\\` y \\`write_products\\`.\n\n**Comercio con agentes (UCP).** Si además activas comercio con agentes — conectando una tienda mediante el plugin écentic for WooCommerce o nuestra app de Shopify, para que sirvamos la superficie del Universal Commerce Protocol en tu nombre — también recibimos:\n- Política de tienda necesaria para servir el protocolo: moneda, opciones de envío, configuración fiscal, URLs de páginas legales, declaraciones de manejadores de pago y tu configuración UCP\n- Los pedidos que colocan los agentes de compras con IA en tu tienda: líneas, cantidades, totales y el nombre, correo y direcciones de envío y facturación del comprador, todo ello necesario para crear y gestionar el pedido en tu tienda\n- Tokens de acceso que tu tienda emite cuando uno de tus clientes vincula su cuenta a un asistente de IA\n\nEl comercio con agentes está desactivado hasta que conectes explícitamente una tienda, y se detiene en el momento en que revoques las credenciales que esa tienda nos emitió.\n\n**Google Merchant Center.** Si también conectas una cuenta de Google Merchant Center, recibimos el conjunto de datos de Merchant Center descrito en la sección 04, que cubre por completo nuestro tratamiento de datos de usuario de Google.\n\nNunca recibimos los secretos de tu pasarela de pago ni las contraseñas de tus clientes, y los datos de tarjeta de los compradores nunca se transmiten ni almacenan en ecentic — los pagos los cobra tu propia pasarela, con credenciales que permanecen en tu propia infraestructura."
         },
         "02": {
           "title": "Cómo usamos tus datos",
@@ -5462,7 +5521,7 @@
           "name": "Bloomreach",
           "category": "Inteligencia enterprise",
           "bestAt": "Gestionar búsqueda, merchandising y datos de campaña como un solo stack en una organización grande.",
-          "wrongPick": "Sois un equipo pequeño. El coste de implementación y onboarding supera el problema que tenéis hoy.",
+          "wrongPick": "Tu equipo es pequeño. El coste de implementación y puesta en marcha supera el problema que tienes hoy.",
           "us": false
         }
       ]
@@ -5791,6 +5850,219 @@
     },
     "structuredData": {
       "name": "Validador UCP"
+    },
+    "form": {
+      "preview": {
+        "logoAlt": "Logotipo de Universal Commerce Protocol",
+        "liveFetch": "Petición en vivo",
+        "note": "Solicitamos el perfil público, analizamos servicios y capacidades, y luego mostramos los problemas de especificación y el acceso de agentes según robots.txt."
+      },
+      "targets": {
+        "title": "Qué validamos",
+        "https": {
+          "label": "HTTPS y accesibilidad",
+          "detail": "Servido sobre TLS y respondiendo a peticiones en vivo."
+        },
+        "discovery": {
+          "label": "Descubrimiento del perfil",
+          "detail": "El documento de descubrimiento en vivo que los agentes obtienen de tu dominio."
+        },
+        "services": {
+          "label": "Servicios y transportes",
+          "detail": "Superficies de endpoint con las que negocian los agentes."
+        },
+        "capabilities": {
+          "label": "Capacidades",
+          "detail": "Flujos de carrito, pago y pedido que declara la tienda."
+        },
+        "paymentHandlers": {
+          "label": "Gestores de pago",
+          "detail": "Endpoints de tokenización y las versiones que declaran."
+        },
+        "signingKeys": {
+          "label": "Claves de firma",
+          "detail": "JWK públicas para verificar firmas de mensajes HTTP."
+        },
+        "supportedVersions": {
+          "label": "Versiones admitidas",
+          "detail": "Todas las versiones del protocolo que el comercio sigue sirviendo."
+        },
+        "agentAccess": {
+          "label": "Acceso de agentes",
+          "detail": "Los agentes de compra e indexación no están bloqueados."
+        }
+      },
+      "issueCategory": {
+        "envelope": "Envoltorio",
+        "version": "Versión",
+        "services": "Servicios",
+        "capabilities": "Capacidades",
+        "payment_handlers": "Gestores de pago",
+        "signing_keys": "Claves de firma",
+        "supported_versions": "Versiones admitidas",
+        "transport": "Transporte",
+        "security": "Seguridad"
+      },
+      "badge": {
+        "pass": "Correcto",
+        "fail": "Fallo",
+        "recognized": "Reconocido",
+        "custom": "Personalizado",
+        "known": "Conocida",
+        "issues": "Problemas",
+        "valid": "Válida",
+        "current": "Actual",
+        "https": "HTTPS",
+        "insecure": "Insegura",
+        "allowed": "Permitido",
+        "blocked": "Bloqueado",
+        "error": "Error",
+        "warning": "Advertencia",
+        "missing": "Ausente",
+        "unavailable": "No disponible",
+        "embedded": "Incrustado",
+        "specLinked": "spec enlazada",
+        "schemaLinked": "schema enlazado",
+        "ucpReady": "Listo para UCP",
+        "needsFixes": "Necesita correcciones",
+        "noIssuesFound": "Sin problemas",
+        "signingKeysNotAdvertised": "signing_keys no anunciadas",
+        "signingKeysEmpty": "signing_keys está vacío",
+        "missingKid": "(falta kid)",
+        "transport": "Transporte · {value}",
+        "version": "Versión · {value}",
+        "id": "ID · {value}",
+        "kty": "kty · {value}",
+        "use": "use · {value}",
+        "alg": "alg · {value}",
+        "crv": "crv · {value}",
+        "latestSuffix": " · última {version}",
+        "envelope": "envoltorio: {kind}",
+        "envelopeFlatKind": "plano"
+      },
+      "services": {
+        "title": "Servicios y transportes",
+        "description": "Superficies de endpoint con las que un agente puede negociar. Cada entrada se corresponde con una clave de servicio de dominio inverso en el perfil.",
+        "customNote": "Clave de servicio personalizada: no es uno de los identificadores de servicio UCP conocidos.",
+        "endpointLabel": "Endpoint:",
+        "schemaLabel": "Schema:"
+      },
+      "capabilities": {
+        "title": "Capacidades",
+        "description": "Flujos concretos que admite la tienda. Pedido, pago y carrito son obligatorios para los agentes transaccionales.",
+        "configLabel": "Configuración:"
+      },
+      "paymentHandlers": {
+        "title": "Gestores de pago",
+        "description": "Endpoints de tokenización declarados por el comercio. Cada gestor debe declarar una versión y los identificadores de gestor necesarios."
+      },
+      "signingKeys": {
+        "title": "Claves de firma y autenticación",
+        "description": "Las firmas de mensajes HTTP RFC 9421 son la base del onboarding sin permisos. Toda petición debe poder verificarse contra una JWK pública publicada aquí.",
+        "notAdvertisedBody": "El perfil no anuncia ninguna clave de firma, por lo que las plataformas no pueden verificar las firmas de mensajes HTTP RFC 9421 sin un intercambio de secretos fuera de banda. UCP lo permite, pero los agentes recurrirán a la autenticación tradicional (claves de API, OAuth, mTLS).",
+        "privateMaterial": "Contiene material privado: debe eliminarse.",
+        "publicJwk": "JWK pública"
+      },
+      "supportedVersions": {
+        "title": "Versiones admitidas",
+        "description": "URI de perfil para cada versión del protocolo que este comercio sigue sirviendo. Los agentes eligen la versión más alta que entienden."
+      },
+      "spec": {
+        "title": "Validación de la especificación",
+        "description": "{errors, plural, one {# error} other {# errores}}, {warnings, plural, one {# advertencia} other {# advertencias}} agrupados por área de la especificación.",
+        "noIssuesBody": "El perfil actual pasó el validador sin errores ni advertencias de esquema."
+      },
+      "results": {
+        "responseHealth": "Estado de la respuesta",
+        "responseHealthOk": "El endpoint respondió y se pudo evaluar el perfil.",
+        "detectedSurface": "Superficie detectada",
+        "detectedSurfaceValue": "{services, plural, one {# servicio} other {# servicios}}, {capabilities, plural, one {# capacidad} other {# capacidades}}, {handlers, plural, one {# gestor de pago} other {# gestores de pago}}, {keys, plural, one {# clave de firma} other {# claves de firma}}."
+      },
+      "summary": {
+        "latency": {
+          "label": "Latencia",
+          "unavailableDetail": "No pudimos medir un tiempo de respuesta en vivo.",
+          "detail": "Tiempo de respuesta del endpoint UCP."
+        },
+        "specErrors": {
+          "label": "Errores de especificación",
+          "noneDetail": "No se encontraron problemas de esquema bloqueantes.",
+          "someDetail": "Problemas bloqueantes que conviene corregir primero."
+        },
+        "capabilities": {
+          "label": "Capacidades",
+          "noneDetail": "No se declararon capacidades.",
+          "someDetail": "Capacidades reconocidas frente al total declarado."
+        },
+        "botAccess": {
+          "label": "Acceso de bots",
+          "detail": "Los principales bots de compra e indexación están permitidos en robots.txt."
+        }
+      },
+      "coreChecks": {
+        "title": "Comprobaciones básicas",
+        "description": "Estas comprobaciones confirman que el perfil público es accesible, seguro y legible por máquinas.",
+        "https": {
+          "label": "HTTPS",
+          "detail": "El dominio debe servirse mediante una conexión HTTPS segura."
+        },
+        "wellKnown": {
+          "label": "/.well-known/ucp existe",
+          "httpStatus": "HTTP {status}.",
+          "httpStatusNotJson": "HTTP {status} (el cuerpo no es JSON).",
+          "responded": "El endpoint respondió.",
+          "noResponse": "Sin respuesta en /.well-known/ucp."
+        },
+        "validJson": {
+          "label": "JSON válido",
+          "contentType": "Content-Type: {contentType}",
+          "contentTypeWithStatus": "Content-Type: {contentType} · HTTP {status}",
+          "invalid": "El cuerpo de la respuesta no es JSON válido."
+        },
+        "latency": {
+          "label": "Latencia del sitio web",
+          "unmeasured": "No se pudo medir la latencia porque el endpoint no respondió.",
+          "responded": "El endpoint UCP respondió en {latency}."
+        },
+        "version": {
+          "label": "Última versión del protocolo",
+          "latest": "El perfil declara {version}, la última versión publicada de UCP.",
+          "outdated": "El perfil declara {version}; la última es {latest}.",
+          "none": "No se declara ninguna versión en la raíz del perfil."
+        },
+        "signingKeys": {
+          "label": "Claves de firma anunciadas",
+          "published": "{count, plural, one {# JWK publicada} other {# JWK publicadas}} para la verificación RFC 9421.",
+          "none": "No se anuncian signing_keys: la verificación sin permisos no es posible."
+        }
+      },
+      "robots": {
+        "title": "Acceso de agentes de IA",
+        "description": "Según las reglas actuales de robots.txt del sitio."
+      },
+      "response": {
+        "title": "Respuesta UCP",
+        "description": "Vista previa del documento well-known en vivo, con JSON resaltado."
+      },
+      "toast": {
+        "failedTitle": "La comprobación falló"
+      },
+      "action": {
+        "checking": "Comprobando...",
+        "primary": "Comprobar dominio"
+      },
+      "panel": {
+        "checkADomain": "Comprueba un dominio",
+        "storefrontDomain": "Dominio de la tienda",
+        "domain": "Dominio",
+        "placeholder": "tudominio.com",
+        "rootDomainNote": "Solo dominio raíz: <code>acme.com</code> o <code>www.acme.com</code>. Siempre validamos la versión HTTPS."
+      },
+      "intro": {
+        "eyebrow": "Validación en vivo",
+        "title": "Ejecuta una validación en vivo",
+        "description": "Pega un dominio y obtendremos el documento <code>/.well-known/ucp</code> en vivo, analizaremos cada servicio, capacidad, gestor de pago y clave de firma, y luego lo validaremos contra la especificación <code>{version}</code>."
+      }
     }
   },
   "yc": {
@@ -6263,7 +6535,13 @@
       },
       "selection": "{selected} de {limit} productos seleccionados",
       "table": {
-        "headers": ["Producto", "Precio", "Moneda", "Estado", "Calidad"]
+        "headers": [
+          "Producto",
+          "Precio",
+          "Moneda",
+          "Estado",
+          "Calidad"
+        ]
       },
       "states": {
         "active": "Activo",
@@ -6369,7 +6647,12 @@
         "description": "Selecciona los competidores que quieres incluir en tus simulaciones de agentes de IA.",
         "summary": "{total} productos competidores en {brands} marcas — {selected} seleccionados",
         "table": {
-          "headers": ["Competidor", "Precio", "Moneda", "Marca"]
+          "headers": [
+            "Competidor",
+            "Precio",
+            "Moneda",
+            "Marca"
+          ]
         },
         "action": {
           "back": "Atrás",
@@ -6494,6 +6777,52 @@
       "title": "¿Listo para ganar el carrito de cada agente de IA?",
       "description": "ecentic optimiza tus fichas automáticamente. Gratis para empezar.",
       "action": "Empezar gratis"
+    }
+  },
+  "dealRedemption": {
+    "fields": {
+      "companyName": {
+        "label": "Nombre de la empresa",
+        "placeholder": "Acme Inc.",
+        "required": "El nombre de la empresa es obligatorio"
+      },
+      "contactName": {
+        "label": "Tu nombre",
+        "placeholder": "Jane Founder",
+        "required": "Tu nombre es obligatorio"
+      },
+      "email": {
+        "label": "Correo de trabajo",
+        "placeholder": "jane@acme.com",
+        "invalid": "Introduce un correo válido"
+      },
+      "website": {
+        "label": "URL de la tienda o sitio web",
+        "placeholder": "https://acme.com",
+        "invalid": "Introduce una URL válida"
+      },
+      "platform": {
+        "label": "Plataforma de comercio",
+        "placeholder": "Selecciona una plataforma"
+      },
+      "monthlyOrders": {
+        "label": "Pedidos mensuales",
+        "placeholder": "Selecciona un rango"
+      },
+      "goal": {
+        "label": "¿En qué quieres que ecentic te ayude a ganar? (opcional)",
+        "placeholder": "p. ej. Que los agentes de IA nos recomienden por encima de nuestro principal competidor"
+      }
+    },
+    "action": {
+      "pending": "Canjeando..."
+    },
+    "toast": {
+      "networkError": "Error de red. Inténtalo de nuevo.",
+      "genericError": "Algo salió mal. Inténtalo de nuevo.",
+      "failedTitle": "No se pudo canjear",
+      "successTitle": "Canje recibido",
+      "successDescription": "Verificaremos tu batch y te escribiremos en un plazo de 1 día laborable."
     }
   }
 }

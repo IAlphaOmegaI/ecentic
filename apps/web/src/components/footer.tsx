@@ -36,7 +36,10 @@ export const Footer = async ({ stacked = false }: Footer.Props) => {
         { href: "/features", label: translate("links.features") },
         { href: "/how-it-works", label: translate("links.howItWorks") },
         { href: "/pricing", label: translate("links.pricing") },
-        { href: "/features/product-listings", label: "Product Listings" },
+        {
+          href: "/features/product-listings",
+          label: translate("links.productListings"),
+        },
       ],
     },
     {
@@ -175,12 +178,12 @@ export const Footer = async ({ stacked = false }: Footer.Props) => {
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div className="flex items-center gap-4">
             <p className="font-light text-foreground-dimmed text-sm">
-              © 2026 ecentic. All rights reserved.
+              {translate("copyright")}
             </p>
             <CookieSettings />
           </div>
           <p className="font-light text-foreground-dimmed text-sm">
-            Made for merchants who refuse to be invisible to AI.
+            {translate("madeFor")}
           </p>
         </div>
       </div>

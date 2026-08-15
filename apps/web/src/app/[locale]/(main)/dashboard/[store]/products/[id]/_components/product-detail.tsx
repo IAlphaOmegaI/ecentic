@@ -355,44 +355,49 @@ const ApplyOptimization = ({
   canPublish: boolean;
   publishLabel?: string;
   reviewQueueHref?: string;
-}) => (
-  <div className="relative flex flex-col gap-4 border-accent-foreground border-b bg-primary/5 p-5 sm:flex-row sm:items-center sm:justify-between">
-    <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-    <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-    <div className="flex items-start gap-3">
-      <CircleBoltIcon className="size-7 shrink-0 text-primary" />
-      <div>
-        <p className="font-semibold text-foreground-rich">
-          Close the gap automatically
-        </p>
-        <p className="mt-1 max-w-prose text-foreground-dimmed text-sm leading-relaxed">
-          ecentic rewrites this listing from the winning competitors&apos;
-          strengths and publishes it straight to your store — no manual edits.
-        </p>
+}) => {
+  const translate = useTranslations(
+    "dashboard.products.detail.applyOptimization",
+  );
+
+  return (
+    <div className="relative flex flex-col gap-4 border-accent-foreground border-b bg-primary/5 p-5 sm:flex-row sm:items-center sm:justify-between">
+      <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+      <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+      <div className="flex items-start gap-3">
+        <CircleBoltIcon className="size-7 shrink-0 text-primary" />
+        <div>
+          <p className="font-semibold text-foreground-rich">
+            {translate("title")}
+          </p>
+          <p className="mt-1 max-w-prose text-foreground-dimmed text-sm leading-relaxed">
+            {translate("description")}
+          </p>
+        </div>
+      </div>
+      <div className="flex shrink-0 flex-wrap items-center gap-2">
+        <PublishListing
+          product={product}
+          winRate={winRate}
+          canPublish={canPublish}
+          label={publishLabel}
+        />
+        {reviewQueueHref && (
+          <Button
+            // color="neutral" draws a blue-gray border (the neutral token is a
+            // cool/blue gray) — "accent" is the plain grid-gray outline.
+            variant="outline"
+            color="accent"
+            render={<Link href={reviewQueueHref} />}
+          >
+            {translate("reviewQueue")}
+            <ArrowRightIcon className="size-4" />
+          </Button>
+        )}
       </div>
     </div>
-    <div className="flex shrink-0 flex-wrap items-center gap-2">
-      <PublishListing
-        product={product}
-        winRate={winRate}
-        canPublish={canPublish}
-        label={publishLabel}
-      />
-      {reviewQueueHref && (
-        <Button
-          // color="neutral" draws a blue-gray border (the neutral token is a
-          // cool/blue gray) — "accent" is the plain grid-gray outline.
-          variant="outline"
-          color="accent"
-          render={<Link href={reviewQueueHref} />}
-        >
-          Review queue
-          <ArrowRightIcon className="size-4" />
-        </Button>
-      )}
-    </div>
-  </div>
-);
+  );
+};
 
 export const ProductDetail = ({ data }: ProductDetail.Props) => {
   const { store } = useParams<{ store: string }>();

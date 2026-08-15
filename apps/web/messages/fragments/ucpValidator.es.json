@@ -80,6 +80,219 @@
     },
     "structuredData": {
       "name": "Validador UCP"
+    },
+    "form": {
+      "preview": {
+        "logoAlt": "Logotipo de Universal Commerce Protocol",
+        "liveFetch": "Petición en vivo",
+        "note": "Solicitamos el perfil público, analizamos servicios y capacidades, y luego mostramos los problemas de especificación y el acceso de agentes según robots.txt."
+      },
+      "targets": {
+        "title": "Qué validamos",
+        "https": {
+          "label": "HTTPS y accesibilidad",
+          "detail": "Servido sobre TLS y respondiendo a peticiones en vivo."
+        },
+        "discovery": {
+          "label": "Descubrimiento del perfil",
+          "detail": "El documento de descubrimiento en vivo que los agentes obtienen de tu dominio."
+        },
+        "services": {
+          "label": "Servicios y transportes",
+          "detail": "Superficies de endpoint con las que negocian los agentes."
+        },
+        "capabilities": {
+          "label": "Capacidades",
+          "detail": "Flujos de carrito, pago y pedido que declara la tienda."
+        },
+        "paymentHandlers": {
+          "label": "Gestores de pago",
+          "detail": "Endpoints de tokenización y las versiones que declaran."
+        },
+        "signingKeys": {
+          "label": "Claves de firma",
+          "detail": "JWK públicas para verificar firmas de mensajes HTTP."
+        },
+        "supportedVersions": {
+          "label": "Versiones admitidas",
+          "detail": "Todas las versiones del protocolo que el comercio sigue sirviendo."
+        },
+        "agentAccess": {
+          "label": "Acceso de agentes",
+          "detail": "Los agentes de compra e indexación no están bloqueados."
+        }
+      },
+      "issueCategory": {
+        "envelope": "Envoltorio",
+        "version": "Versión",
+        "services": "Servicios",
+        "capabilities": "Capacidades",
+        "payment_handlers": "Gestores de pago",
+        "signing_keys": "Claves de firma",
+        "supported_versions": "Versiones admitidas",
+        "transport": "Transporte",
+        "security": "Seguridad"
+      },
+      "badge": {
+        "pass": "Correcto",
+        "fail": "Fallo",
+        "recognized": "Reconocido",
+        "custom": "Personalizado",
+        "known": "Conocida",
+        "issues": "Problemas",
+        "valid": "Válida",
+        "current": "Actual",
+        "https": "HTTPS",
+        "insecure": "Insegura",
+        "allowed": "Permitido",
+        "blocked": "Bloqueado",
+        "error": "Error",
+        "warning": "Advertencia",
+        "missing": "Ausente",
+        "unavailable": "No disponible",
+        "embedded": "Incrustado",
+        "specLinked": "spec enlazada",
+        "schemaLinked": "schema enlazado",
+        "ucpReady": "Listo para UCP",
+        "needsFixes": "Necesita correcciones",
+        "noIssuesFound": "Sin problemas",
+        "signingKeysNotAdvertised": "signing_keys no anunciadas",
+        "signingKeysEmpty": "signing_keys está vacío",
+        "missingKid": "(falta kid)",
+        "transport": "Transporte · {value}",
+        "version": "Versión · {value}",
+        "id": "ID · {value}",
+        "kty": "kty · {value}",
+        "use": "use · {value}",
+        "alg": "alg · {value}",
+        "crv": "crv · {value}",
+        "latestSuffix": " · última {version}",
+        "envelope": "envoltorio: {kind}",
+        "envelopeFlatKind": "plano"
+      },
+      "services": {
+        "title": "Servicios y transportes",
+        "description": "Superficies de endpoint con las que un agente puede negociar. Cada entrada se corresponde con una clave de servicio de dominio inverso en el perfil.",
+        "customNote": "Clave de servicio personalizada: no es uno de los identificadores de servicio UCP conocidos.",
+        "endpointLabel": "Endpoint:",
+        "schemaLabel": "Schema:"
+      },
+      "capabilities": {
+        "title": "Capacidades",
+        "description": "Flujos concretos que admite la tienda. Pedido, pago y carrito son obligatorios para los agentes transaccionales.",
+        "configLabel": "Configuración:"
+      },
+      "paymentHandlers": {
+        "title": "Gestores de pago",
+        "description": "Endpoints de tokenización declarados por el comercio. Cada gestor debe declarar una versión y los identificadores de gestor necesarios."
+      },
+      "signingKeys": {
+        "title": "Claves de firma y autenticación",
+        "description": "Las firmas de mensajes HTTP RFC 9421 son la base del onboarding sin permisos. Toda petición debe poder verificarse contra una JWK pública publicada aquí.",
+        "notAdvertisedBody": "El perfil no anuncia ninguna clave de firma, por lo que las plataformas no pueden verificar las firmas de mensajes HTTP RFC 9421 sin un intercambio de secretos fuera de banda. UCP lo permite, pero los agentes recurrirán a la autenticación tradicional (claves de API, OAuth, mTLS).",
+        "privateMaterial": "Contiene material privado: debe eliminarse.",
+        "publicJwk": "JWK pública"
+      },
+      "supportedVersions": {
+        "title": "Versiones admitidas",
+        "description": "URI de perfil para cada versión del protocolo que este comercio sigue sirviendo. Los agentes eligen la versión más alta que entienden."
+      },
+      "spec": {
+        "title": "Validación de la especificación",
+        "description": "{errors, plural, one {# error} other {# errores}}, {warnings, plural, one {# advertencia} other {# advertencias}} agrupados por área de la especificación.",
+        "noIssuesBody": "El perfil actual pasó el validador sin errores ni advertencias de esquema."
+      },
+      "results": {
+        "responseHealth": "Estado de la respuesta",
+        "responseHealthOk": "El endpoint respondió y se pudo evaluar el perfil.",
+        "detectedSurface": "Superficie detectada",
+        "detectedSurfaceValue": "{services, plural, one {# servicio} other {# servicios}}, {capabilities, plural, one {# capacidad} other {# capacidades}}, {handlers, plural, one {# gestor de pago} other {# gestores de pago}}, {keys, plural, one {# clave de firma} other {# claves de firma}}."
+      },
+      "summary": {
+        "latency": {
+          "label": "Latencia",
+          "unavailableDetail": "No pudimos medir un tiempo de respuesta en vivo.",
+          "detail": "Tiempo de respuesta del endpoint UCP."
+        },
+        "specErrors": {
+          "label": "Errores de especificación",
+          "noneDetail": "No se encontraron problemas de esquema bloqueantes.",
+          "someDetail": "Problemas bloqueantes que conviene corregir primero."
+        },
+        "capabilities": {
+          "label": "Capacidades",
+          "noneDetail": "No se declararon capacidades.",
+          "someDetail": "Capacidades reconocidas frente al total declarado."
+        },
+        "botAccess": {
+          "label": "Acceso de bots",
+          "detail": "Los principales bots de compra e indexación están permitidos en robots.txt."
+        }
+      },
+      "coreChecks": {
+        "title": "Comprobaciones básicas",
+        "description": "Estas comprobaciones confirman que el perfil público es accesible, seguro y legible por máquinas.",
+        "https": {
+          "label": "HTTPS",
+          "detail": "El dominio debe servirse mediante una conexión HTTPS segura."
+        },
+        "wellKnown": {
+          "label": "/.well-known/ucp existe",
+          "httpStatus": "HTTP {status}.",
+          "httpStatusNotJson": "HTTP {status} (el cuerpo no es JSON).",
+          "responded": "El endpoint respondió.",
+          "noResponse": "Sin respuesta en /.well-known/ucp."
+        },
+        "validJson": {
+          "label": "JSON válido",
+          "contentType": "Content-Type: {contentType}",
+          "contentTypeWithStatus": "Content-Type: {contentType} · HTTP {status}",
+          "invalid": "El cuerpo de la respuesta no es JSON válido."
+        },
+        "latency": {
+          "label": "Latencia del sitio web",
+          "unmeasured": "No se pudo medir la latencia porque el endpoint no respondió.",
+          "responded": "El endpoint UCP respondió en {latency}."
+        },
+        "version": {
+          "label": "Última versión del protocolo",
+          "latest": "El perfil declara {version}, la última versión publicada de UCP.",
+          "outdated": "El perfil declara {version}; la última es {latest}.",
+          "none": "No se declara ninguna versión en la raíz del perfil."
+        },
+        "signingKeys": {
+          "label": "Claves de firma anunciadas",
+          "published": "{count, plural, one {# JWK publicada} other {# JWK publicadas}} para la verificación RFC 9421.",
+          "none": "No se anuncian signing_keys: la verificación sin permisos no es posible."
+        }
+      },
+      "robots": {
+        "title": "Acceso de agentes de IA",
+        "description": "Según las reglas actuales de robots.txt del sitio."
+      },
+      "response": {
+        "title": "Respuesta UCP",
+        "description": "Vista previa del documento well-known en vivo, con JSON resaltado."
+      },
+      "toast": {
+        "failedTitle": "La comprobación falló"
+      },
+      "action": {
+        "checking": "Comprobando...",
+        "primary": "Comprobar dominio"
+      },
+      "panel": {
+        "checkADomain": "Comprueba un dominio",
+        "storefrontDomain": "Dominio de la tienda",
+        "domain": "Dominio",
+        "placeholder": "tudominio.com",
+        "rootDomainNote": "Solo dominio raíz: <code>acme.com</code> o <code>www.acme.com</code>. Siempre validamos la versión HTTPS."
+      },
+      "intro": {
+        "eyebrow": "Validación en vivo",
+        "title": "Ejecuta una validación en vivo",
+        "description": "Pega un dominio y obtendremos el documento <code>/.well-known/ucp</code> en vivo, analizaremos cada servicio, capacidad, gestor de pago y clave de firma, y luego lo validaremos contra la especificación <code>{version}</code>."
+      }
     }
   }
 }

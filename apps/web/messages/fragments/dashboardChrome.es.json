@@ -69,7 +69,7 @@
       }
     },
     "commandPalette": {
-      "placeholder": "Buscar comandos…",
+      "placeholder": "Buscar productos, competidores, páginas…",
       "trigger": "Buscar productos, competidores…",
       "keyboardShortcut": "⌘K",
       "keyboardEscape": "esc",
@@ -227,7 +227,7 @@
             "summary": "Cobertura en todo el catálogo, bucles de respuesta a competidores y re-optimización por deriva de modelos. La tasa de victoria se acerca a tu techo estimado a medida que más SKUs permanecen listos para agentes.",
             "outcomes": [
               "Escaneos continuos detectan deriva cuando los modelos se actualizan",
-              "Cambios en fichas de competidores activan nuevos battlecards",
+              "Cambios en fichas de competidores activan nuevas battlecards",
               "Tráfico de agentes y ingresos atribuidos crecen con la cobertura"
             ]
           }
@@ -840,7 +840,11 @@
         },
         "frequency": {
           "title": "Frecuencia de simulación",
-          "options": ["Solo manual", "Diaria", "Semanal"]
+          "options": [
+            "Solo manual",
+            "Diaria",
+            "Semanal"
+          ]
         },
         "persona": {
           "title": "Persona de compra",
@@ -869,6 +873,14 @@
           "syncFailed": "Error de sincronización",
           "reconnectAction": "Reconectar",
           "genericError": "Algo salió mal"
+        },
+        "google": {
+          "comingSoon": "Próximamente",
+          "notConnected": "Sin conectar",
+          "active": "Activo · {count, number} publicados",
+          "linked": "Vinculado",
+          "setupInProgress": "Configuración en curso",
+          "manage": "Gestionar →"
         }
       },
       "billing": {
@@ -937,7 +949,7 @@
           "portalFailed": "No se pudo abrir el portal de facturación",
           "paygFailed": "No se pudo iniciar pago por uso",
           "paymentSetupFailed": "No se pudo abrir la configuración de pago",
-          "checkoutFailed": "No se pudo iniciar el checkout"
+          "checkoutFailed": "No se pudo iniciar el pago"
         }
       },
       "team": {
@@ -1086,7 +1098,7 @@
       "modal": {
         "endingIn": "La prueba termina en {days} días",
         "title": "Mejorar a Pro",
-        "description": "Mantén acceso completo a simulaciones, insights e inteligencia competitiva.",
+        "description": "Mantén acceso completo a simulaciones, hallazgos e inteligencia competitiva.",
         "progress": "Progreso de la prueba",
         "daysUsed": "{used}/14 días usados",
         "featuresHeading": "Todo en Pro",
@@ -1097,11 +1109,11 @@
         }
       },
       "features": [
-        "Unlimited AI simulations",
-        "All 3 model perspectives",
-        "Competitor auto-detection",
-        "UCP structured data export",
-        "Priority support"
+        "Simulaciones con IA ilimitadas",
+        "Las 3 perspectivas de modelo",
+        "Detección automática de competidores",
+        "Exportación de datos estructurados UCP",
+        "Soporte prioritario"
       ]
     },
     "simulation": {

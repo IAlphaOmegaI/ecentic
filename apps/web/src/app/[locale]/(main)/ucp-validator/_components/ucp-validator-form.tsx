@@ -14,6 +14,7 @@ import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { type SubmitEvent, useState } from "react";
 import { StatusPill } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import { Reveal, RevealItem } from "@/components/reveal";
@@ -28,19 +29,16 @@ type JToken = {
 
 type Tone = "success" | "danger" | "warning" | "neutral";
 
+/** Every sub-component here reads the same namespace; hoisting the type keeps
+ * the helpers that take a translator honest about which namespace they need. */
+type Translate = ReturnType<typeof useTranslations<"ucpValidator.form">>;
+
 const LATEST_UCP_VERSION = "2026-04-08";
 
-const ISSUE_CATEGORY_LABELS: Record<UcpCheck.SpecIssueCategory, string> = {
-  envelope: "Envelope",
-  version: "Version",
-  services: "Services",
-  capabilities: "Capabilities",
-  payment_handlers: "Payment handlers",
-  signing_keys: "Signing keys",
-  supported_versions: "Supported versions",
-  transport: "Transport",
-  security: "Security",
-};
+const issueCategoryLabel = (
+  category: UcpCheck.SpecIssueCategory,
+  translate: Translate,
+) => translate(`issueCategory.${category}`);
 
 const ISSUE_CATEGORY_ORDER: UcpCheck.SpecIssueCategory[] = [
   "envelope",
@@ -54,46 +52,17 @@ const ISSUE_CATEGORY_ORDER: UcpCheck.SpecIssueCategory[] = [
   "supported_versions",
 ];
 
+// Only the code samples are locale-independent; label and detail come from the
+// catalog under `targets.<key>`.
 const validationTargets = [
-  {
-    label: "HTTPS & reachability",
-    detail: "Served over TLS and responding to live requests.",
-  },
-  {
-    label: "Profile discovery",
-    code: "/.well-known/ucp",
-    detail: "The live discovery document agents fetch on your domain.",
-  },
-  {
-    label: "Services & transports",
-    code: "REST · MCP · A2A",
-    detail: "Endpoint surfaces agents negotiate against.",
-  },
-  {
-    label: "Capabilities",
-    code: "dev.ucp.shopping.*",
-    detail: "Cart, checkout, and order flows the storefront declares.",
-  },
-  {
-    label: "Payment handlers",
-    code: "payment.handlers[]",
-    detail: "Tokenization endpoints and their declared versions.",
-  },
-  {
-    label: "Signing keys",
-    code: "signing_keys · RFC 9421",
-    detail: "Public JWKs for HTTP message signature verification.",
-  },
-  {
-    label: "Supported versions",
-    code: "supported_versions[]",
-    detail: "Every protocol version the merchant still serves.",
-  },
-  {
-    label: "Agent access",
-    code: "robots.txt",
-    detail: "Shopping and indexing agents are not blocked.",
-  },
+  { key: "https" },
+  { key: "discovery", code: "/.well-known/ucp" },
+  { key: "services", code: "REST · MCP · A2A" },
+  { key: "capabilities", code: "dev.ucp.shopping.*" },
+  { key: "paymentHandlers", code: "payment.handlers[]" },
+  { key: "signingKeys", code: "signing_keys · RFC 9421" },
+  { key: "supportedVersions", code: "supported_versions[]" },
+  { key: "agentAccess", code: "robots.txt" },
 ] as const;
 
 const submitButtonClassName =
@@ -106,6 +75,7 @@ const previewHost = (value: string) => {
 };
 
 const DomainCheckPreview = ({ domain }: DomainCheckPreview.Props) => {
+  const translate = useTranslations("ucpValidator.form");
   const host = previewHost(domain);
 
   return (
@@ -122,11 +92,13 @@ const DomainCheckPreview = ({ domain }: DomainCheckPreview.Props) => {
         <div className="flex items-center gap-3">
           <Image
             src={ucp}
-            alt="Universal Commerce Protocol logo"
+            alt={translate("preview.logoAlt")}
             className="size-10 object-contain"
           />
           <div>
-            <p className="font-medium text-foreground text-sm">Live fetch</p>
+            <p className="font-medium text-foreground text-sm">
+              {translate("preview.liveFetch")}
+            </p>
             <p className="mt-0.5 font-mono text-foreground-dimmed text-xs">
               HTTPS · spec {LATEST_UCP_VERSION}
             </p>
@@ -139,8 +111,7 @@ Accept: application/json
 UCP-Agent: profile="https://ucp.dev/..."`}
         </pre>
         <p className="font-light text-foreground-dimmed text-sm leading-relaxed">
-          We request the public profile, parse services and capabilities, then
-          surface spec issues and agent access from robots.txt.
+          {translate("preview.note")}
         </p>
       </div>
     </div>
@@ -176,51 +147,55 @@ Content-Type: application/json
   }
 }`;
 
-const ValidationTargetsSection = () => (
-  <div className="relative overflow-hidden border-accent-foreground border-t bg-primary/5">
-    <pre
-      aria-hidden
-      className="pointer-events-none absolute top-0 right-0 hidden h-40 max-w-lg select-none overflow-hidden whitespace-pre p-5 text-right font-mono text-primary-text/20 text-sm leading-snug md:block lg:h-48 lg:max-w-xl lg:text-base lg:text-primary-text/25"
-    >
-      {validationManifestArt}
-    </pre>
-    <div
-      aria-hidden
-      className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-radial-[at_100%_0%] from-primary/15 via-transparent to-transparent md:h-48"
-    />
-    <div
-      aria-hidden
-      className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/30 to-transparent"
-    />
-    <div className="relative">
-      <div className="px-6 pt-6 pb-3 sm:px-8">
-        <p className="font-medium text-primary-text text-sm">
-          What we validate
-        </p>
+const ValidationTargetsSection = () => {
+  const translate = useTranslations("ucpValidator.form");
+
+  return (
+    <div className="relative overflow-hidden border-accent-foreground border-t bg-primary/5">
+      <pre
+        aria-hidden
+        className="pointer-events-none absolute top-0 right-0 hidden h-40 max-w-lg select-none overflow-hidden whitespace-pre p-5 text-right font-mono text-primary-text/20 text-sm leading-snug md:block lg:h-48 lg:max-w-xl lg:text-base lg:text-primary-text/25"
+      >
+        {validationManifestArt}
+      </pre>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-radial-[at_100%_0%] from-primary/15 via-transparent to-transparent md:h-48"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/30 to-transparent"
+      />
+      <div className="relative">
+        <div className="px-6 pt-6 pb-3 sm:px-8">
+          <p className="font-medium text-primary-text text-sm">
+            {translate("targets.title")}
+          </p>
+        </div>
+        <Reveal className="relative grid grid-cols-2 gap-px border-accent-foreground border-t bg-accent-foreground lg:grid-cols-4">
+          {validationTargets.map((target) => (
+            <RevealItem
+              key={target.key}
+              className="flex flex-col gap-2 bg-background-rich/95 px-4 py-4 backdrop-blur-[2px] sm:px-5"
+            >
+              <div className="flex items-center gap-2">
+                <CheckIcon className="size-3.5 shrink-0 text-primary" />
+                <p className="font-medium text-foreground text-sm leading-snug">
+                  {translate(`targets.${target.key}.label`)}
+                </p>
+              </div>
+              {"code" in target && target.code ? (
+                <p className="truncate font-mono text-primary text-xs">
+                  {target.code}
+                </p>
+              ) : null}
+            </RevealItem>
+          ))}
+        </Reveal>
       </div>
-      <Reveal className="relative grid grid-cols-2 gap-px border-accent-foreground border-t bg-accent-foreground lg:grid-cols-4">
-        {validationTargets.map((target) => (
-          <RevealItem
-            key={target.label}
-            className="flex flex-col gap-2 bg-background-rich/95 px-4 py-4 backdrop-blur-[2px] sm:px-5"
-          >
-            <div className="flex items-center gap-2">
-              <CheckIcon className="size-3.5 shrink-0 text-primary" />
-              <p className="font-medium text-foreground text-sm leading-snug">
-                {target.label}
-              </p>
-            </div>
-            {"code" in target && target.code ? (
-              <p className="truncate font-mono text-primary text-xs">
-                {target.code}
-              </p>
-            ) : null}
-          </RevealItem>
-        ))}
-      </Reveal>
     </div>
-  </div>
-);
+  );
+};
 
 const toneClassList: Record<Tone, string> = {
   success: "border-success/20 bg-success/10 text-success",
@@ -262,10 +237,16 @@ const tokenColor: Record<JToken["type"], string> = {
   space: "",
 };
 
-const formatLatency = (latencyMs: number | null): string =>
-  latencyMs === null ? "Unavailable" : `${latencyMs} ms`;
+const formatLatency = (
+  latencyMs: number | null,
+  translate: Translate,
+): string =>
+  latencyMs === null ? translate("badge.unavailable") : `${latencyMs} ms`;
 
-const formatTransport = (transport: string | null): string => {
+const formatTransport = (
+  transport: string | null,
+  translate: Translate,
+): string => {
   if (!transport) return "—";
   switch (transport) {
     case "rest":
@@ -275,7 +256,7 @@ const formatTransport = (transport: string | null): string => {
     case "a2a":
       return "A2A";
     case "embedded":
-      return "Embedded";
+      return translate("badge.embedded");
     default:
       return transport;
   }
@@ -336,6 +317,7 @@ const CheckRow = ({
   passed: boolean;
   detail?: string | null;
 }) => {
+  const translate = useTranslations("ucpValidator.form");
   const tone: Tone = passed ? "success" : "danger";
 
   return (
@@ -360,7 +342,10 @@ const CheckRow = ({
         {detail ?? "—"}
       </p>
 
-      <ValidationBadge label={passed ? "Pass" : "Fail"} tone={tone} />
+      <ValidationBadge
+        label={passed ? translate("badge.pass") : translate("badge.fail")}
+        tone={tone}
+      />
     </div>
   );
 };
@@ -470,13 +455,15 @@ const ServicesSection = ({
 }: {
   services: UcpCheck.ParsedService[];
 }) => {
+  const translate = useTranslations("ucpValidator.form");
+
   if (services.length === 0) return null;
 
   return (
     <div className="border-accent-foreground border-t">
       <SectionHeading
-        title="Services & transports"
-        description="Endpoint surfaces an agent can negotiate against. Each entry maps to a reverse-domain service key in the profile."
+        title={translate("services.title")}
+        description={translate("services.description")}
       />
       <div className="divide-y divide-accent-foreground">
         {services.map((service, index) => (
@@ -496,8 +483,7 @@ const ServicesSection = ({
               </p>
               {!service.recognized && (
                 <p className="mt-2 font-light text-foreground-dimmed text-xs">
-                  Custom service key — not one of the known UCP service
-                  identifiers.
+                  {translate("services.customNote")}
                 </p>
               )}
             </div>
@@ -505,18 +491,22 @@ const ServicesSection = ({
             <div className="grid gap-2">
               <div className="flex flex-wrap gap-2">
                 <ValidationBadge
-                  label={`Transport · ${formatTransport(service.transport)}`}
+                  label={translate("badge.transport", {
+                    value: formatTransport(service.transport, translate),
+                  })}
                   tone={service.transport ? "success" : "danger"}
                 />
                 <ValidationBadge
-                  label={`Version · ${service.version ?? "Missing"}`}
+                  label={translate("badge.version", {
+                    value: service.version ?? translate("badge.missing"),
+                  })}
                   tone={service.version ? "success" : "danger"}
                 />
               </div>
               {service.endpoint && (
                 <p className="break-all font-light text-foreground-dimmed text-xs">
                   <span className="font-medium text-foreground-dimmed">
-                    Endpoint:
+                    {translate("services.endpointLabel")}
                   </span>{" "}
                   <span className="font-mono text-foreground">
                     {service.endpoint}
@@ -526,7 +516,7 @@ const ServicesSection = ({
               {service.schema && (
                 <p className="break-all font-light text-foreground-dimmed text-xs">
                   <span className="font-medium text-foreground-dimmed">
-                    Schema:
+                    {translate("services.schemaLabel")}
                   </span>{" "}
                   <span className="font-mono text-foreground">
                     {service.schema}
@@ -536,7 +526,11 @@ const ServicesSection = ({
             </div>
 
             <ValidationBadge
-              label={service.recognized ? "Recognized" : "Custom"}
+              label={
+                service.recognized
+                  ? translate("badge.recognized")
+                  : translate("badge.custom")
+              }
               tone={service.recognized ? "success" : "warning"}
             />
           </div>
@@ -551,13 +545,15 @@ const CapabilitiesSection = ({
 }: {
   capabilities: UcpCheck.ParsedCapability[];
 }) => {
+  const translate = useTranslations("ucpValidator.form");
+
   if (capabilities.length === 0) return null;
 
   return (
     <div className="border-accent-foreground border-t">
       <SectionHeading
-        title="Capabilities"
-        description="Discrete flows the storefront supports. Order, checkout and cart are required for transactional agents."
+        title={translate("capabilities.title")}
+        description={translate("capabilities.description")}
       />
       <div className="divide-y divide-accent-foreground">
         {capabilities.map((capability, index) => {
@@ -582,20 +578,28 @@ const CapabilitiesSection = ({
               <div className="grid gap-2">
                 <div className="flex flex-wrap gap-2">
                   <ValidationBadge
-                    label={`Version · ${capability.version ?? "Missing"}`}
+                    label={translate("badge.version", {
+                      value: capability.version ?? translate("badge.missing"),
+                    })}
                     tone={capability.version ? "success" : "danger"}
                   />
                   {capability.spec && (
-                    <ValidationBadge label="spec linked" tone="success" />
+                    <ValidationBadge
+                      label={translate("badge.specLinked")}
+                      tone="success"
+                    />
                   )}
                   {capability.schema && (
-                    <ValidationBadge label="schema linked" tone="success" />
+                    <ValidationBadge
+                      label={translate("badge.schemaLinked")}
+                      tone="success"
+                    />
                   )}
                 </div>
                 {configKeys.length > 0 && (
                   <div className="font-light text-foreground-dimmed text-xs">
                     <span className="font-medium text-foreground-dimmed">
-                      Config:
+                      {translate("capabilities.configLabel")}
                     </span>{" "}
                     <span className="font-mono text-foreground">
                       {configKeys.join(", ")}
@@ -605,7 +609,11 @@ const CapabilitiesSection = ({
               </div>
 
               <ValidationBadge
-                label={capability.recognized ? "Known" : "Custom"}
+                label={
+                  capability.recognized
+                    ? translate("badge.known")
+                    : translate("badge.custom")
+                }
                 tone={capability.recognized ? "success" : "warning"}
               />
             </div>
@@ -621,13 +629,15 @@ const PaymentHandlersSection = ({
 }: {
   paymentHandlers: UcpCheck.ParsedPaymentHandler[];
 }) => {
+  const translate = useTranslations("ucpValidator.form");
+
   if (paymentHandlers.length === 0) return null;
 
   return (
     <div className="border-accent-foreground border-t">
       <SectionHeading
-        title="Payment handlers"
-        description="Tokenization endpoints declared by the merchant. Each handler must declare a version and any required handler IDs."
+        title={translate("paymentHandlers.title")}
+        description={translate("paymentHandlers.description")}
       />
       <div className="grid gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-3">
         {paymentHandlers.map((handler, index) => (
@@ -643,14 +653,23 @@ const PaymentHandlersSection = ({
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               <ValidationBadge
-                label={`Version · ${handler.version ?? "Missing"}`}
+                label={translate("badge.version", {
+                  value: handler.version ?? translate("badge.missing"),
+                })}
                 tone={handler.version ? "success" : "warning"}
               />
               {handler.id && (
-                <ValidationBadge label={`ID · ${handler.id}`} tone="success" />
+                <ValidationBadge
+                  label={translate("badge.id", { value: handler.id })}
+                  tone="success"
+                />
               )}
               <ValidationBadge
-                label={handler.recognized ? "Known" : "Custom"}
+                label={
+                  handler.recognized
+                    ? translate("badge.known")
+                    : translate("badge.custom")
+                }
                 tone={handler.recognized ? "success" : "warning"}
               />
             </div>
@@ -667,107 +686,128 @@ const SigningKeysSection = ({
 }: {
   signingKeys: UcpCheck.ParsedSigningKey[];
   advertised: boolean;
-}) => (
-  <div className="border-accent-foreground border-t">
-    <SectionHeading
-      title="Signing keys & authentication"
-      description="RFC 9421 HTTP Message Signatures are the basis of permissionless onboarding. Every request must be verifiable against a public JWK published here."
-    />
-    {!advertised ? (
-      <div className="bg-background px-4 py-5">
-        <div className="flex items-center gap-2">
-          <ShieldCheckIcon className="size-4 text-warning" />
-          <ValidationBadge label="signing_keys not advertised" tone="warning" />
-        </div>
-        <p className="mt-3 max-w-2xl font-light text-foreground-dimmed text-sm">
-          The profile does not advertise any signing keys, so platforms cannot
-          verify RFC 9421 HTTP message signatures without an out-of-band secret
-          exchange. UCP allows this, but agents will fall back to traditional
-          auth (API keys, OAuth, mTLS).
-        </p>
-      </div>
-    ) : signingKeys.length === 0 ? (
-      <div className="bg-background px-4 py-5">
-        <ValidationBadge label="signing_keys is empty" tone="warning" />
-      </div>
-    ) : (
-      <div className="divide-y divide-accent-foreground">
-        {signingKeys.map((key, index) => {
-          const hasIssue =
-            !key.kid ||
-            !key.kty ||
-            (key.kty === "EC" && !key.crv) ||
-            key.hasPrivateMaterial;
+}) => {
+  const translate = useTranslations("ucpValidator.form");
 
-          return (
-            <div
-              key={`${key.kid ?? `no-kid-${index}`}-${key.alg ?? key.kty ?? "unknown"}`}
-              className="grid gap-4 bg-background px-4 py-4 md:grid-cols-[minmax(0,260px)_minmax(0,1fr)_auto] md:items-start"
-            >
-              <div>
-                <div className="flex items-center gap-2">
-                  <ShieldCheckIcon
-                    className={cn(
-                      "size-3.5",
-                      hasIssue ? "text-error" : "text-success",
-                    )}
-                  />
-                  <p className="font-medium font-mono text-foreground text-sm">
-                    {key.kid ?? "(missing kid)"}
+  return (
+    <div className="border-accent-foreground border-t">
+      <SectionHeading
+        title={translate("signingKeys.title")}
+        description={translate("signingKeys.description")}
+      />
+      {!advertised ? (
+        <div className="bg-background px-4 py-5">
+          <div className="flex items-center gap-2">
+            <ShieldCheckIcon className="size-4 text-warning" />
+            <ValidationBadge
+              label={translate("badge.signingKeysNotAdvertised")}
+              tone="warning"
+            />
+          </div>
+          <p className="mt-3 max-w-2xl font-light text-foreground-dimmed text-sm">
+            {translate("signingKeys.notAdvertisedBody")}
+          </p>
+        </div>
+      ) : signingKeys.length === 0 ? (
+        <div className="bg-background px-4 py-5">
+          <ValidationBadge
+            label={translate("badge.signingKeysEmpty")}
+            tone="warning"
+          />
+        </div>
+      ) : (
+        <div className="divide-y divide-accent-foreground">
+          {signingKeys.map((key, index) => {
+            const hasIssue =
+              !key.kid ||
+              !key.kty ||
+              (key.kty === "EC" && !key.crv) ||
+              key.hasPrivateMaterial;
+
+            return (
+              <div
+                key={`${key.kid ?? `no-kid-${index}`}-${key.alg ?? key.kty ?? "unknown"}`}
+                className="grid gap-4 bg-background px-4 py-4 md:grid-cols-[minmax(0,260px)_minmax(0,1fr)_auto] md:items-start"
+              >
+                <div>
+                  <div className="flex items-center gap-2">
+                    <ShieldCheckIcon
+                      className={cn(
+                        "size-3.5",
+                        hasIssue ? "text-error" : "text-success",
+                      )}
+                    />
+                    <p className="font-medium font-mono text-foreground text-sm">
+                      {key.kid ?? translate("badge.missingKid")}
+                    </p>
+                  </div>
+                  <p className="mt-1 font-light text-foreground-dimmed text-xs">
+                    {key.hasPrivateMaterial
+                      ? translate("signingKeys.privateMaterial")
+                      : translate("signingKeys.publicJwk")}
                   </p>
                 </div>
-                <p className="mt-1 font-light text-foreground-dimmed text-xs">
-                  {key.hasPrivateMaterial
-                    ? "Contains private material — must be removed."
-                    : "Public JWK"}
-                </p>
-              </div>
 
-              <div className="flex flex-wrap gap-2">
-                <ValidationBadge
-                  label={`kty · ${key.kty ?? "Missing"}`}
-                  tone={key.kty ? "success" : "danger"}
-                />
-                <ValidationBadge
-                  label={`use · ${key.use ?? "Missing"}`}
-                  tone={key.use === "sig" ? "success" : "warning"}
-                />
-                <ValidationBadge
-                  label={`alg · ${key.alg ?? "Missing"}`}
-                  tone={key.alg ? "success" : "warning"}
-                />
-                {key.kty === "EC" && (
+                <div className="flex flex-wrap gap-2">
                   <ValidationBadge
-                    label={`crv · ${key.crv ?? "Missing"}`}
-                    tone={key.crv ? "success" : "danger"}
+                    label={translate("badge.kty", {
+                      value: key.kty ?? translate("badge.missing"),
+                    })}
+                    tone={key.kty ? "success" : "danger"}
                   />
-                )}
-              </div>
+                  <ValidationBadge
+                    label={translate("badge.use", {
+                      value: key.use ?? translate("badge.missing"),
+                    })}
+                    tone={key.use === "sig" ? "success" : "warning"}
+                  />
+                  <ValidationBadge
+                    label={translate("badge.alg", {
+                      value: key.alg ?? translate("badge.missing"),
+                    })}
+                    tone={key.alg ? "success" : "warning"}
+                  />
+                  {key.kty === "EC" && (
+                    <ValidationBadge
+                      label={translate("badge.crv", {
+                        value: key.crv ?? translate("badge.missing"),
+                      })}
+                      tone={key.crv ? "success" : "danger"}
+                    />
+                  )}
+                </div>
 
-              <ValidationBadge
-                label={hasIssue ? "Issues" : "Valid"}
-                tone={hasIssue ? "danger" : "success"}
-              />
-            </div>
-          );
-        })}
-      </div>
-    )}
-  </div>
-);
+                <ValidationBadge
+                  label={
+                    hasIssue
+                      ? translate("badge.issues")
+                      : translate("badge.valid")
+                  }
+                  tone={hasIssue ? "danger" : "success"}
+                />
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const SupportedVersionsSection = ({
   supportedVersions,
 }: {
   supportedVersions: UcpCheck.ParsedSupportedVersion[];
 }) => {
+  const translate = useTranslations("ucpValidator.form");
+
   if (supportedVersions.length === 0) return null;
 
   return (
     <div className="border-accent-foreground border-t">
       <SectionHeading
-        title="Supported versions"
-        description="Profile URIs for every protocol version this merchant still serves. Agents pick the highest version they understand."
+        title={translate("supportedVersions.title")}
+        description={translate("supportedVersions.description")}
       />
       <div className="divide-y divide-accent-foreground">
         {supportedVersions.map((version) => (
@@ -783,10 +823,17 @@ const SupportedVersionsSection = ({
             </p>
             <div className="flex flex-wrap gap-2">
               {version.isCurrent && (
-                <ValidationBadge label="Current" tone="success" />
+                <ValidationBadge
+                  label={translate("badge.current")}
+                  tone="success"
+                />
               )}
               <ValidationBadge
-                label={version.isHttps ? "HTTPS" : "Insecure"}
+                label={
+                  version.isHttps
+                    ? translate("badge.https")
+                    : translate("badge.insecure")
+                }
                 tone={version.isHttps ? "success" : "danger"}
               />
             </div>
@@ -798,6 +845,7 @@ const SupportedVersionsSection = ({
 };
 
 const SpecIssuesSection = ({ issues }: { issues: UcpCheck.SpecIssue[] }) => {
+  const translate = useTranslations("ucpValidator.form");
   const errorCount = issues.filter(
     (issue) => issue.severity === "error",
   ).length;
@@ -814,16 +862,21 @@ const SpecIssuesSection = ({ issues }: { issues: UcpCheck.SpecIssue[] }) => {
   return (
     <div className="border-accent-foreground border-t">
       <SectionHeading
-        title="Spec validation"
-        description={`${errorCount} error${errorCount !== 1 ? "s" : ""}, ${warningCount} warning${warningCount !== 1 ? "s" : ""} grouped by spec area.`}
+        title={translate("spec.title")}
+        description={translate("spec.description", {
+          errors: errorCount,
+          warnings: warningCount,
+        })}
       />
 
       {issues.length === 0 ? (
         <div className="bg-background px-4 py-5">
-          <ValidationBadge label="No issues found" tone="success" />
+          <ValidationBadge
+            label={translate("badge.noIssuesFound")}
+            tone="success"
+          />
           <p className="mt-3 max-w-2xl font-light text-foreground-dimmed text-sm">
-            The current profile passed the validator without schema errors or
-            warnings.
+            {translate("spec.noIssuesBody")}
           </p>
         </div>
       ) : (
@@ -832,7 +885,7 @@ const SpecIssuesSection = ({ issues }: { issues: UcpCheck.SpecIssue[] }) => {
             <div key={group.category} className="bg-background">
               <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-2">
                 <p className="font-medium text-foreground text-sm">
-                  {ISSUE_CATEGORY_LABELS[group.category]} ·{" "}
+                  {issueCategoryLabel(group.category, translate)} ·{" "}
                   <span className="text-foreground-dimmed">
                     {group.issues.length}
                   </span>
@@ -845,7 +898,11 @@ const SpecIssuesSection = ({ issues }: { issues: UcpCheck.SpecIssue[] }) => {
                     className="grid gap-4 px-4 py-3 md:grid-cols-[auto_minmax(0,260px)_minmax(0,1fr)] md:items-start"
                   >
                     <ValidationBadge
-                      label={issue.severity === "error" ? "Error" : "Warning"}
+                      label={
+                        issue.severity === "error"
+                          ? translate("badge.error")
+                          : translate("badge.warning")
+                      }
                       tone={issue.severity === "error" ? "danger" : "warning"}
                     />
                     <p className="break-all font-mono text-foreground-dimmed text-xs">
@@ -864,6 +921,7 @@ const SpecIssuesSection = ({ issues }: { issues: UcpCheck.SpecIssue[] }) => {
 };
 
 const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
+  const translate = useTranslations("ucpValidator.form");
   const errorCount = result.specIssues.filter(
     (issue) => issue.severity === "error",
   ).length;
@@ -904,7 +962,10 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
                 className="font-mono normal-case tracking-normal"
               >
                 v{result.ucpVersion}
-                {!result.isLatestVersion && ` · latest ${LATEST_UCP_VERSION}`}
+                {!result.isLatestVersion &&
+                  translate("badge.latestSuffix", {
+                    version: LATEST_UCP_VERSION,
+                  })}
               </StatusPill>
             )}
             {result.envelopeKind && (
@@ -912,13 +973,20 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
                 tone="neutral"
                 className="font-mono normal-case tracking-normal"
               >
-                {result.envelopeKind === "wrapped"
-                  ? "envelope: ucp{}"
-                  : "envelope: flat"}
+                {translate("badge.envelope", {
+                  kind:
+                    result.envelopeKind === "wrapped"
+                      ? "ucp{}"
+                      : translate("badge.envelopeFlatKind"),
+                })}
               </StatusPill>
             )}
             <ValidationBadge
-              label={overallPass ? "UCP ready" : "Needs fixes"}
+              label={
+                overallPass
+                  ? translate("badge.ucpReady")
+                  : translate("badge.needsFixes")
+              }
               tone={overallPass ? "success" : "danger"}
             />
           </div>
@@ -927,27 +995,24 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
         <div className="mt-6 grid gap-6 md:grid-cols-2">
           <div>
             <p className="font-medium text-primary-text text-sm">
-              Response health
+              {translate("results.responseHealth")}
             </p>
             <p className="mt-1 font-light text-foreground-dimmed text-sm leading-relaxed">
-              {result.error ??
-                "Endpoint responded and the profile could be evaluated."}
+              {result.error ?? translate("results.responseHealthOk")}
             </p>
           </div>
 
           <div>
             <p className="font-medium text-primary-text text-sm">
-              Detected surface
+              {translate("results.detectedSurface")}
             </p>
             <p className="mt-1 font-light text-foreground-dimmed text-sm leading-relaxed">
-              {result.services.length} service
-              {result.services.length !== 1 ? "s" : ""},{" "}
-              {result.capabilities.length} capabilit
-              {result.capabilities.length !== 1 ? "ies" : "y"},{" "}
-              {result.paymentHandlers.length} payment handler
-              {result.paymentHandlers.length !== 1 ? "s" : ""},{" "}
-              {result.signingKeys.length} signing key
-              {result.signingKeys.length !== 1 ? "s" : ""}.
+              {translate("results.detectedSurfaceValue", {
+                services: result.services.length,
+                capabilities: result.capabilities.length,
+                handlers: result.paymentHandlers.length,
+                keys: result.signingKeys.length,
+              })}
             </p>
           </div>
         </div>
@@ -955,34 +1020,34 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
 
       <div className="grid grid-cols-2 gap-px bg-accent-foreground lg:grid-cols-4">
         <SummaryCard
-          label="Latency"
-          value={formatLatency(result.latencyMs)}
+          label={translate("summary.latency.label")}
+          value={formatLatency(result.latencyMs, translate)}
           detail={
             result.latencyMs === null
-              ? "We could not measure a live response time."
-              : "Response time for the UCP endpoint."
+              ? translate("summary.latency.unavailableDetail")
+              : translate("summary.latency.detail")
           }
           tone={result.latencyMs === null ? "danger" : "success"}
         />
 
         <SummaryCard
-          label="Spec Errors"
+          label={translate("summary.specErrors.label")}
           value={String(errorCount)}
           detail={
             errorCount === 0
-              ? "No blocking schema issues found."
-              : "Blocking issues that should be fixed first."
+              ? translate("summary.specErrors.noneDetail")
+              : translate("summary.specErrors.someDetail")
           }
           tone={errorCount > 0 ? "danger" : "success"}
         />
 
         <SummaryCard
-          label="Capabilities"
+          label={translate("summary.capabilities.label")}
           value={`${recognizedCapabilities}/${result.capabilities.length || 0}`}
           detail={
             result.capabilities.length === 0
-              ? "No capabilities declared."
-              : "Recognized vs. total declared capabilities."
+              ? translate("summary.capabilities.noneDetail")
+              : translate("summary.capabilities.someDetail")
           }
           tone={(() => {
             switch (true) {
@@ -997,9 +1062,9 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
         />
 
         <SummaryCard
-          label="Bot Access"
+          label={translate("summary.botAccess.label")}
           value={`${allowedBotCount}/${result.robots.length}`}
-          detail="Major shopping and indexing bots allowed in robots.txt."
+          detail={translate("summary.botAccess.detail")}
           tone={
             allowedBotCount === result.robots.length ? "success" : "warning"
           }
@@ -1008,65 +1073,87 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
 
       <div className="border-accent-foreground border-t">
         <SectionHeading
-          title="Core checks"
-          description="These checks confirm that the public profile is reachable, secure, and machine-readable."
+          title={translate("coreChecks.title")}
+          description={translate("coreChecks.description")}
         />
 
         <div className="divide-y divide-accent-foreground">
           <CheckRow
-            label="HTTPS"
+            label={translate("coreChecks.https.label")}
             passed={result.https}
-            detail="The domain must be served over a secure HTTPS connection."
+            detail={translate("coreChecks.https.detail")}
           />
           <CheckRow
-            label="/.well-known/ucp exists"
+            label={translate("coreChecks.wellKnown.label")}
             passed={result.found}
             detail={
               result.found
                 ? result.httpStatus !== null
-                  ? `HTTP ${result.httpStatus}${result.valid ? "" : " (body is not JSON)"}.`
-                  : "Endpoint responded."
-                : (result.error ?? "No response at /.well-known/ucp.")
+                  ? result.valid
+                    ? translate("coreChecks.wellKnown.httpStatus", {
+                        status: String(result.httpStatus),
+                      })
+                    : translate("coreChecks.wellKnown.httpStatusNotJson", {
+                        status: String(result.httpStatus),
+                      })
+                  : translate("coreChecks.wellKnown.responded")
+                : (result.error ?? translate("coreChecks.wellKnown.noResponse"))
             }
           />
           <CheckRow
-            label="Valid JSON"
+            label={translate("coreChecks.validJson.label")}
             passed={result.valid}
             detail={
               result.valid
-                ? `Content-Type: ${result.contentType ?? "—"}${result.httpStatus !== null ? ` · HTTP ${result.httpStatus}` : ""}`
-                : (result.error ?? "Response body is not valid JSON.")
+                ? result.httpStatus !== null
+                  ? translate("coreChecks.validJson.contentTypeWithStatus", {
+                      contentType: result.contentType ?? "—",
+                      status: String(result.httpStatus),
+                    })
+                  : translate("coreChecks.validJson.contentType", {
+                      contentType: result.contentType ?? "—",
+                    })
+                : (result.error ?? translate("coreChecks.validJson.invalid"))
             }
           />
           <CheckRow
-            label="Website latency"
+            label={translate("coreChecks.latency.label")}
             passed={result.latencyMs !== null}
             detail={
               result.latencyMs === null
-                ? "Latency could not be measured because the endpoint did not respond."
-                : `The UCP endpoint responded in ${formatLatency(result.latencyMs)}.`
+                ? translate("coreChecks.latency.unmeasured")
+                : translate("coreChecks.latency.responded", {
+                    latency: formatLatency(result.latencyMs, translate),
+                  })
             }
           />
           <CheckRow
-            label="Latest protocol version"
+            label={translate("coreChecks.version.label")}
             passed={result.isLatestVersion}
             detail={
               result.ucpVersion
                 ? result.isLatestVersion
-                  ? `Profile declares ${result.ucpVersion} — the latest published UCP version.`
-                  : `Profile declares ${result.ucpVersion}; latest is ${LATEST_UCP_VERSION}.`
-                : "No version declared at the profile root."
+                  ? translate("coreChecks.version.latest", {
+                      version: result.ucpVersion,
+                    })
+                  : translate("coreChecks.version.outdated", {
+                      version: result.ucpVersion,
+                      latest: LATEST_UCP_VERSION,
+                    })
+                : translate("coreChecks.version.none")
             }
           />
           <CheckRow
-            label="Signing keys advertised"
+            label={translate("coreChecks.signingKeys.label")}
             passed={
               result.signingKeysAdvertised && result.signingKeys.length > 0
             }
             detail={
               result.signingKeysAdvertised
-                ? `${result.signingKeys.length} JWK${result.signingKeys.length !== 1 ? "s" : ""} published for RFC 9421 verification.`
-                : "No signing_keys advertised — permissionless verification not possible."
+                ? translate("coreChecks.signingKeys.published", {
+                    count: result.signingKeys.length,
+                  })
+                : translate("coreChecks.signingKeys.none")
             }
           />
         </div>
@@ -1083,8 +1170,8 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
 
       <div className="border-accent-foreground border-t">
         <SectionHeading
-          title="AI agent access"
-          description="Based on the current robots.txt rules for the site."
+          title={translate("robots.title")}
+          description={translate("robots.description")}
         />
 
         <div className="divide-y divide-accent-foreground">
@@ -1107,7 +1194,11 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
               </p>
 
               <ValidationBadge
-                label={bot.allowed ? "Allowed" : "Blocked"}
+                label={
+                  bot.allowed
+                    ? translate("badge.allowed")
+                    : translate("badge.blocked")
+                }
                 tone={bot.allowed ? "success" : "danger"}
               />
             </div>
@@ -1120,8 +1211,8 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
       {result.valid && result.data !== null && (
         <div className="border-accent-foreground border-t">
           <SectionHeading
-            title="UCP response"
-            description="Syntax-highlighted JSON preview of the live well-known document."
+            title={translate("response.title")}
+            description={translate("response.description")}
           />
           <JsonPreview data={result.data} />
         </div>
@@ -1133,6 +1224,7 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
 export const UcpValidatorForm = ({
   hideIntro = false,
 }: UcpValidatorForm.Props) => {
+  const translate = useTranslations("ucpValidator.form");
   const toast = useToastManager();
   const [domain, setDomain] = useState("");
   const [result, setResult] = useState<UcpCheck.UcpCheckResult | null>(null);
@@ -1143,7 +1235,7 @@ export const UcpValidatorForm = ({
 
     if (!response.success) {
       toast.add({
-        title: "Check failed",
+        title: translate("toast.failedTitle"),
         description: response.error,
         type: "error",
       });
@@ -1169,13 +1261,13 @@ export const UcpValidatorForm = ({
           <div className="flex flex-col justify-center bg-background-rich px-6 py-6 sm:px-8 sm:py-8">
             <form onSubmit={handleSubmit}>
               <p className="font-medium text-primary-text text-sm">
-                Check a domain
+                {translate("panel.checkADomain")}
               </p>
               <label
                 htmlFor="ucp-domain"
                 className="mt-3 block font-medium text-foreground text-sm"
               >
-                Storefront domain
+                {translate("panel.storefrontDomain")}
               </label>
               <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-stretch">
                 <TextField
@@ -1185,7 +1277,7 @@ export const UcpValidatorForm = ({
                 >
                   <TextFieldInput
                     id="ucp-domain"
-                    placeholder="yourdomain.com"
+                    placeholder={translate("panel.placeholder")}
                   />
                 </TextField>
                 <Button
@@ -1194,14 +1286,17 @@ export const UcpValidatorForm = ({
                   disabled={isChecking || !domain.trim()}
                   className={submitButtonClassName}
                 >
-                  {isChecking ? "Checking..." : "Check domain"}
+                  {isChecking
+                    ? translate("action.checking")
+                    : translate("action.primary")}
                 </Button>
               </div>
               <p className="mt-2 font-light text-foreground-dimmed text-sm">
-                Root domain only —{" "}
-                <span className="font-mono text-foreground">acme.com</span> or{" "}
-                <span className="font-mono text-foreground">www.acme.com</span>.
-                We always validate the HTTPS version.
+                {translate.rich("panel.rootDomainNote", {
+                  code: (chunks) => (
+                    <span className="font-mono text-foreground">{chunks}</span>
+                  ),
+                })}
               </p>
             </form>
           </div>
@@ -1210,22 +1305,20 @@ export const UcpValidatorForm = ({
         <div className="grid lg:grid-cols-2">
           <div className="px-6 py-6 sm:px-8 sm:py-8">
             <p className="font-medium text-primary-text text-sm">
-              Live validation
+              {translate("intro.eyebrow")}
             </p>
             <h2 className="mt-2 font-body font-medium text-3xl text-foreground md:text-4xl">
-              Run a live validation
+              {translate("intro.title")}
             </h2>
             <p className="mt-3 font-light text-foreground-dimmed text-lg leading-relaxed">
-              Paste a domain and we&apos;ll fetch the live{" "}
-              <span className="font-mono text-foreground text-sm">
-                /.well-known/ucp
-              </span>{" "}
-              document, parse every service, capability, payment handler and
-              signing key, then validate it against the{" "}
-              <span className="font-mono text-foreground text-sm">
-                {LATEST_UCP_VERSION}
-              </span>{" "}
-              spec.
+              {translate.rich("intro.description", {
+                version: LATEST_UCP_VERSION,
+                code: (chunks) => (
+                  <span className="font-mono text-foreground text-sm">
+                    {chunks}
+                  </span>
+                ),
+              })}
             </p>
           </div>
 
@@ -1235,7 +1328,7 @@ export const UcpValidatorForm = ({
                 htmlFor="ucp-domain"
                 className="block font-medium text-foreground text-sm"
               >
-                Domain
+                {translate("panel.domain")}
               </label>
               <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-stretch">
                 <TextField
@@ -1245,7 +1338,7 @@ export const UcpValidatorForm = ({
                 >
                   <TextFieldInput
                     id="ucp-domain"
-                    placeholder="yourdomain.com"
+                    placeholder={translate("panel.placeholder")}
                   />
                 </TextField>
                 <Button
@@ -1254,14 +1347,17 @@ export const UcpValidatorForm = ({
                   disabled={isChecking || !domain.trim()}
                   className={submitButtonClassName}
                 >
-                  {isChecking ? "Checking..." : "Check domain"}
+                  {isChecking
+                    ? translate("action.checking")
+                    : translate("action.primary")}
                 </Button>
               </div>
               <p className="mt-2 font-light text-foreground-dimmed text-sm">
-                Root domain only —{" "}
-                <span className="font-mono text-foreground">acme.com</span> or{" "}
-                <span className="font-mono text-foreground">www.acme.com</span>.
-                We always validate the HTTPS version.
+                {translate.rich("panel.rootDomainNote", {
+                  code: (chunks) => (
+                    <span className="font-mono text-foreground">{chunks}</span>
+                  ),
+                })}
               </p>
             </form>
           </div>

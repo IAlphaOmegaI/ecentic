@@ -44,7 +44,7 @@
         "simulationsRun": "Simulaciones ejecutadas",
         "bestModel": "Mejor modelo",
         "winsSimulations": "{wins} victorias · {simulations} simulaciones",
-        "listingCompleteness": "puntuación de completitud del listing",
+        "listingCompleteness": "puntuación de completitud de la ficha",
         "acrossCompetitors": "en {count, plural, one {# competidor} other {# competidores}}",
         "modelWinRate": "tasa de victoria de {model}",
         "tabs": {
@@ -81,17 +81,17 @@
         "publish": {
           "applyFix": "Aplicar corrección en la tienda",
           "connectStore": "Conectar Shopify o WooCommerce",
-          "dialogTitle": "¿Publicar listing optimizado?",
-          "dialogDescription": "ecentic genera un título y descripción optimizados por IA para \"{title}\" y los escribe directamente en tu tienda conectada, reemplazando el listing en vivo. La tasa de victoria actual es {winRate}%.",
+          "dialogTitle": "¿Publicar la ficha optimizada?",
+          "dialogDescription": "ecentic genera un título y descripción optimizados por IA para \"{title}\" y los escribe directamente en tu tienda conectada, reemplazando la ficha publicada. La tasa de victoria actual es {winRate}%.",
           "publishing": "Publicando…",
           "publishToStore": "Publicar en la tienda",
           "failed": "Error al publicar",
-          "successTitle": "Listing publicado",
-          "successDescription": "Se ha enviado un listing optimizado por IA a tu tienda."
+          "successTitle": "Ficha publicada",
+          "successDescription": "Se ha enviado una ficha optimizada por IA a tu tienda."
         },
         "applyOptimization": {
           "title": "Cierra la brecha automáticamente",
-          "description": "ecentic reescribe este listing a partir de las fortalezas de los competidores ganadores y lo publica directamente en tu tienda, sin que tengas que editar nada a mano.",
+          "description": "ecentic reescribe esta ficha a partir de las fortalezas de los competidores ganadores y la publica directamente en tu tienda, sin que tengas que editar nada a mano.",
           "reviewQueue": "Cola de revisión",
           "optimizePublish": "Optimizar y publicar"
         },
@@ -111,10 +111,10 @@
           "positioning": "posicionamiento"
         },
         "optimizeTab": {
-          "title": "Optimizar listing",
-          "description": "Puntuaciones de calidad de contenido según categoría para los campos que leen los agentes de IA, más cómo está posicionado este listing para su audiencia.",
+          "title": "Optimizar ficha",
+          "description": "Puntuaciones de calidad de contenido según categoría para los campos que leen los agentes de IA, más cómo está posicionada esta ficha para su audiencia.",
           "completeness": "Completitud:",
-          "currentListing": "02 — Listing actual",
+          "currentListing": "02 — Ficha actual",
           "characters": "{count} caracteres",
           "noDescription": "No se encontró descripción",
           "liveOnStore": "En vivo en la tienda",
@@ -130,7 +130,7 @@
           "structuredDataPublished": "Datos estructurados optimizados publicados",
           "structuredDataPublishedDescription": "Escrito en el metafield ecentic.structured_data. El app embed ahora lo renderiza en lugar del markup de producto por defecto. Si el embed está desactivado, actívalo en el editor de temas y pulsa Guardar.",
           "openThemeEditor": "Abrir editor de temas",
-          "listingAuditKicker": "01 — Auditoría de listing con IA",
+          "listingAuditKicker": "01 — Auditoría de ficha con IA",
           "status": {
             "optimizedByEcentic": "Optimizado por ecentic",
             "ecenticStandard": "estándar ecentic",
@@ -192,7 +192,7 @@
         "simsLost": "de simulaciones perdidas",
         "missingAttributes": "Atributos ausentes",
         "noFindingTitle": "No hay hallazgo registrado para este escaneo.",
-        "noFindingHint": "Vuelve a ejecutar el escaneo para ver insights.",
+        "noFindingHint": "Vuelve a ejecutar el escaneo para ver los hallazgos.",
         "fixThis": "Corregir esto"
       }
     }

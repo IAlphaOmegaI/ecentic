@@ -1,6 +1,29 @@
 {
   "general": {
     "brand": "ecentic",
+    "meta": {
+      "title": "ecentic — Win Every AI Shopping Agent's Cart",
+      "description": "Optimize product listings for AI shopping agents. Simulate ChatGPT, Claude, Gemini, and Perplexity decisions, diagnose losses, and improve win rate.",
+      "openGraphDescription": "Simulate how AI shopping agents choose your products, diagnose why they don't, and auto-optimize your listings. Built for the agent economy.",
+      "twitterDescription": "Simulate how ChatGPT, Claude, Gemini & Perplexity choose your products vs. competitors. Diagnose losses. Auto-optimize. Win every cart.",
+      "keywords": [
+        "AI shopping agent optimization",
+        "e-commerce AI optimization",
+        "AI agent economy",
+        "product listing optimization",
+        "ChatGPT shopping",
+        "Claude shopping agent",
+        "Gemini shopping",
+        "win rate optimization",
+        "AI commerce platform",
+        "agent SEO",
+        "GEO generative engine optimization",
+        "Shopify AI optimization",
+        "WooCommerce AI",
+        "product content optimization",
+        "competitive intelligence ecommerce"
+      ]
+    },
     "backdropAlt": "ASCII-art eagle emblem in the ecentic brand texture",
     "search": {
       "label": "Search"
@@ -70,13 +93,16 @@
       "privacy": "Privacy policy",
       "terms": "Terms of service",
       "shopify": "Shopify",
-      "woocommerce": "WooCommerce"
+      "woocommerce": "WooCommerce",
+      "productListings": "Product Listings"
     },
     "cta": {
       "eyebrow": "Get picked by AI",
       "title": "Ready to be the product agents recommend?",
       "description": "Install free on Shopify or WooCommerce and see your AI score in minutes."
-    }
+    },
+    "copyright": "© 2026 ecentic. All rights reserved.",
+    "madeFor": "Made for merchants who refuse to be invisible to AI."
   },
   "authChrome": {
     "footer": "Free to start. No credit card required.",
@@ -2483,7 +2509,11 @@
         },
         "frequency": {
           "title": "Simulation Frequency",
-          "options": ["Manual only", "Daily", "Weekly"]
+          "options": [
+            "Manual only",
+            "Daily",
+            "Weekly"
+          ]
         },
         "persona": {
           "title": "Purchase Persona",
@@ -2512,6 +2542,14 @@
           "syncFailed": "Sync failed",
           "reconnectAction": "Reconnect",
           "genericError": "Something went wrong"
+        },
+        "google": {
+          "comingSoon": "Coming soon",
+          "notConnected": "Not connected",
+          "active": "Active · {count, number} live",
+          "linked": "Linked",
+          "setupInProgress": "Setup in progress",
+          "manage": "Manage →"
         }
       },
       "billing": {
@@ -2687,7 +2725,22 @@
     },
     "action": {
       "primary": "Read more",
-      "secondary": "Back to blog"
+      "secondary": "Back to blog",
+      "tertiary": "Get started",
+      "quaternary": "Back to home",
+      "allArticles": "All articles"
+    },
+    "tag": {
+      "eyebrow": "Tag",
+      "metaTitle": "Articles tagged “{slug}”",
+      "metaDescription": "ecentic blog articles tagged {slug}.",
+      "description": "Guides and notes tagged {slug}.",
+      "count": "{count, plural, one {# article} other {# articles}}",
+      "readSuffix": "{readTime} read",
+      "action": {
+        "primary": "Read article"
+      },
+      "note": "More guides for merchants improving search, shopping, and AI visibility."
     }
   },
   "home": {
@@ -3063,6 +3116,12 @@
     "ucpCallout": {
       "title": "Is your store visible to AI agents?",
       "description": "Check your store's UCP profile in 10 seconds and see whether GPTBot, ClaudeBot, Gemini, and Perplexity can read your listings."
+    },
+    "heroVideo": {
+      "title": "ecentic product film",
+      "description": "A video introduction to the ecentic platform.",
+      "close": "Close video",
+      "fallback": "Your browser does not support embedded video."
     }
   },
   "cookieConsent": {
@@ -5791,6 +5850,219 @@
     },
     "structuredData": {
       "name": "UCP Validator"
+    },
+    "form": {
+      "preview": {
+        "logoAlt": "Universal Commerce Protocol logo",
+        "liveFetch": "Live fetch",
+        "note": "We request the public profile, parse services and capabilities, then surface spec issues and agent access from robots.txt."
+      },
+      "targets": {
+        "title": "What we validate",
+        "https": {
+          "label": "HTTPS & reachability",
+          "detail": "Served over TLS and responding to live requests."
+        },
+        "discovery": {
+          "label": "Profile discovery",
+          "detail": "The live discovery document agents fetch on your domain."
+        },
+        "services": {
+          "label": "Services & transports",
+          "detail": "Endpoint surfaces agents negotiate against."
+        },
+        "capabilities": {
+          "label": "Capabilities",
+          "detail": "Cart, checkout, and order flows the storefront declares."
+        },
+        "paymentHandlers": {
+          "label": "Payment handlers",
+          "detail": "Tokenization endpoints and their declared versions."
+        },
+        "signingKeys": {
+          "label": "Signing keys",
+          "detail": "Public JWKs for HTTP message signature verification."
+        },
+        "supportedVersions": {
+          "label": "Supported versions",
+          "detail": "Every protocol version the merchant still serves."
+        },
+        "agentAccess": {
+          "label": "Agent access",
+          "detail": "Shopping and indexing agents are not blocked."
+        }
+      },
+      "issueCategory": {
+        "envelope": "Envelope",
+        "version": "Version",
+        "services": "Services",
+        "capabilities": "Capabilities",
+        "payment_handlers": "Payment handlers",
+        "signing_keys": "Signing keys",
+        "supported_versions": "Supported versions",
+        "transport": "Transport",
+        "security": "Security"
+      },
+      "badge": {
+        "pass": "Pass",
+        "fail": "Fail",
+        "recognized": "Recognized",
+        "custom": "Custom",
+        "known": "Known",
+        "issues": "Issues",
+        "valid": "Valid",
+        "current": "Current",
+        "https": "HTTPS",
+        "insecure": "Insecure",
+        "allowed": "Allowed",
+        "blocked": "Blocked",
+        "error": "Error",
+        "warning": "Warning",
+        "missing": "Missing",
+        "unavailable": "Unavailable",
+        "embedded": "Embedded",
+        "specLinked": "spec linked",
+        "schemaLinked": "schema linked",
+        "ucpReady": "UCP ready",
+        "needsFixes": "Needs fixes",
+        "noIssuesFound": "No issues found",
+        "signingKeysNotAdvertised": "signing_keys not advertised",
+        "signingKeysEmpty": "signing_keys is empty",
+        "missingKid": "(missing kid)",
+        "transport": "Transport · {value}",
+        "version": "Version · {value}",
+        "id": "ID · {value}",
+        "kty": "kty · {value}",
+        "use": "use · {value}",
+        "alg": "alg · {value}",
+        "crv": "crv · {value}",
+        "latestSuffix": " · latest {version}",
+        "envelope": "envelope: {kind}",
+        "envelopeFlatKind": "flat"
+      },
+      "services": {
+        "title": "Services & transports",
+        "description": "Endpoint surfaces an agent can negotiate against. Each entry maps to a reverse-domain service key in the profile.",
+        "customNote": "Custom service key — not one of the known UCP service identifiers.",
+        "endpointLabel": "Endpoint:",
+        "schemaLabel": "Schema:"
+      },
+      "capabilities": {
+        "title": "Capabilities",
+        "description": "Discrete flows the storefront supports. Order, checkout and cart are required for transactional agents.",
+        "configLabel": "Config:"
+      },
+      "paymentHandlers": {
+        "title": "Payment handlers",
+        "description": "Tokenization endpoints declared by the merchant. Each handler must declare a version and any required handler IDs."
+      },
+      "signingKeys": {
+        "title": "Signing keys & authentication",
+        "description": "RFC 9421 HTTP Message Signatures are the basis of permissionless onboarding. Every request must be verifiable against a public JWK published here.",
+        "notAdvertisedBody": "The profile does not advertise any signing keys, so platforms cannot verify RFC 9421 HTTP message signatures without an out-of-band secret exchange. UCP allows this, but agents will fall back to traditional auth (API keys, OAuth, mTLS).",
+        "privateMaterial": "Contains private material — must be removed.",
+        "publicJwk": "Public JWK"
+      },
+      "supportedVersions": {
+        "title": "Supported versions",
+        "description": "Profile URIs for every protocol version this merchant still serves. Agents pick the highest version they understand."
+      },
+      "spec": {
+        "title": "Spec validation",
+        "description": "{errors, plural, one {# error} other {# errors}}, {warnings, plural, one {# warning} other {# warnings}} grouped by spec area.",
+        "noIssuesBody": "The current profile passed the validator without schema errors or warnings."
+      },
+      "results": {
+        "responseHealth": "Response health",
+        "responseHealthOk": "Endpoint responded and the profile could be evaluated.",
+        "detectedSurface": "Detected surface",
+        "detectedSurfaceValue": "{services, plural, one {# service} other {# services}}, {capabilities, plural, one {# capability} other {# capabilities}}, {handlers, plural, one {# payment handler} other {# payment handlers}}, {keys, plural, one {# signing key} other {# signing keys}}."
+      },
+      "summary": {
+        "latency": {
+          "label": "Latency",
+          "unavailableDetail": "We could not measure a live response time.",
+          "detail": "Response time for the UCP endpoint."
+        },
+        "specErrors": {
+          "label": "Spec Errors",
+          "noneDetail": "No blocking schema issues found.",
+          "someDetail": "Blocking issues that should be fixed first."
+        },
+        "capabilities": {
+          "label": "Capabilities",
+          "noneDetail": "No capabilities declared.",
+          "someDetail": "Recognized vs. total declared capabilities."
+        },
+        "botAccess": {
+          "label": "Bot Access",
+          "detail": "Major shopping and indexing bots allowed in robots.txt."
+        }
+      },
+      "coreChecks": {
+        "title": "Core checks",
+        "description": "These checks confirm that the public profile is reachable, secure, and machine-readable.",
+        "https": {
+          "label": "HTTPS",
+          "detail": "The domain must be served over a secure HTTPS connection."
+        },
+        "wellKnown": {
+          "label": "/.well-known/ucp exists",
+          "httpStatus": "HTTP {status}.",
+          "httpStatusNotJson": "HTTP {status} (body is not JSON).",
+          "responded": "Endpoint responded.",
+          "noResponse": "No response at /.well-known/ucp."
+        },
+        "validJson": {
+          "label": "Valid JSON",
+          "contentType": "Content-Type: {contentType}",
+          "contentTypeWithStatus": "Content-Type: {contentType} · HTTP {status}",
+          "invalid": "Response body is not valid JSON."
+        },
+        "latency": {
+          "label": "Website latency",
+          "unmeasured": "Latency could not be measured because the endpoint did not respond.",
+          "responded": "The UCP endpoint responded in {latency}."
+        },
+        "version": {
+          "label": "Latest protocol version",
+          "latest": "Profile declares {version} — the latest published UCP version.",
+          "outdated": "Profile declares {version}; latest is {latest}.",
+          "none": "No version declared at the profile root."
+        },
+        "signingKeys": {
+          "label": "Signing keys advertised",
+          "published": "{count, plural, one {# JWK} other {# JWKs}} published for RFC 9421 verification.",
+          "none": "No signing_keys advertised — permissionless verification not possible."
+        }
+      },
+      "robots": {
+        "title": "AI agent access",
+        "description": "Based on the current robots.txt rules for the site."
+      },
+      "response": {
+        "title": "UCP response",
+        "description": "Syntax-highlighted JSON preview of the live well-known document."
+      },
+      "toast": {
+        "failedTitle": "Check failed"
+      },
+      "action": {
+        "checking": "Checking...",
+        "primary": "Check domain"
+      },
+      "panel": {
+        "checkADomain": "Check a domain",
+        "storefrontDomain": "Storefront domain",
+        "domain": "Domain",
+        "placeholder": "yourdomain.com",
+        "rootDomainNote": "Root domain only — <code>acme.com</code> or <code>www.acme.com</code>. We always validate the HTTPS version."
+      },
+      "intro": {
+        "eyebrow": "Live validation",
+        "title": "Run a live validation",
+        "description": "Paste a domain and we'll fetch the live <code>/.well-known/ucp</code> document, parse every service, capability, payment handler and signing key, then validate it against the <code>{version}</code> spec."
+      }
     }
   },
   "yc": {
@@ -6263,7 +6535,13 @@
       },
       "selection": "{selected} of {limit} products selected",
       "table": {
-        "headers": ["Product", "Price", "Currency", "Status", "Quality"]
+        "headers": [
+          "Product",
+          "Price",
+          "Currency",
+          "Status",
+          "Quality"
+        ]
       },
       "states": {
         "active": "Active",
@@ -6369,7 +6647,12 @@
         "description": "Select the competitors you'd like to include in your AI agent simulations.",
         "summary": "{total} competitor products across {brands} brands — {selected} selected",
         "table": {
-          "headers": ["Competitor", "Price", "Currency", "Brand"]
+          "headers": [
+            "Competitor",
+            "Price",
+            "Currency",
+            "Brand"
+          ]
         },
         "action": {
           "back": "Back",
@@ -6494,6 +6777,52 @@
       "title": "Ready to win every AI agent's cart?",
       "description": "ecentic auto-optimizes your listings. Free to start.",
       "action": "Start free"
+    }
+  },
+  "dealRedemption": {
+    "fields": {
+      "companyName": {
+        "label": "Company name",
+        "placeholder": "Acme Inc.",
+        "required": "Company name is required"
+      },
+      "contactName": {
+        "label": "Your name",
+        "placeholder": "Jane Founder",
+        "required": "Your name is required"
+      },
+      "email": {
+        "label": "Work email",
+        "placeholder": "jane@acme.com",
+        "invalid": "Enter a valid email"
+      },
+      "website": {
+        "label": "Store / website URL",
+        "placeholder": "https://acme.com",
+        "invalid": "Enter a valid URL"
+      },
+      "platform": {
+        "label": "Commerce platform",
+        "placeholder": "Select platform"
+      },
+      "monthlyOrders": {
+        "label": "Monthly orders",
+        "placeholder": "Select range"
+      },
+      "goal": {
+        "label": "What do you want ecentic to help you win? (optional)",
+        "placeholder": "e.g. Get recommended over our top competitor by AI agents"
+      }
+    },
+    "action": {
+      "pending": "Redeeming..."
+    },
+    "toast": {
+      "networkError": "Network error. Please try again.",
+      "genericError": "Something went wrong. Please try again.",
+      "failedTitle": "Redemption failed",
+      "successTitle": "Redemption received",
+      "successDescription": "We'll verify your batch and email you within 1 business day."
     }
   }
 }
