@@ -787,6 +787,21 @@ export const blogPost = pgTable(
       .notNull(),
     /** HTML body for BLG-sourced (and translated) articles. */
     contentHtml: text("contentHtml"),
+    /**
+     * Q&A pairs in the row's own locale, rendered as `FAQPage` JSON-LD (and as
+     * a visible block on posts whose body has no FAQ of its own). BabyLoveGrowth
+     * ships these as `faqJsonLd` on newer articles; older BLG posts and
+     * editorial ones carry hand-written pairs instead.
+     */
+    faqs: jsonb("faqs")
+      .$type<
+        readonly {
+          question: string;
+          answer: string;
+        }[]
+      >()
+      .notNull()
+      .default([]),
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
     updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
   },

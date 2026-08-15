@@ -18,6 +18,8 @@ const STRUCTURE = {
   en: {
     skip: new Set(["table of contents", "recommended"]),
     takeaways: /^key takeaways?$/i,
+    faq: /^(faqs?|frequently asked questions)\b/i,
+    editorialFaq: /\b(faqs?|frequently asked questions)\b/i,
     introduction: "Introduction",
     article: "Article",
   },
@@ -30,6 +32,8 @@ const STRUCTURE = {
       "recomendados",
     ]),
     takeaways: /^(conclusiones?|puntos?|ideas?) clave$/i,
+    faq: /^(faqs?|preguntas\s+(m[áa]s\s+)?frecuentes)\b/i,
+    editorialFaq: /\b(faqs?|preguntas\s+(m[áa]s\s+)?frecuentes)\b/i,
     introduction: "Introducción",
     article: "Artículo",
   },
@@ -38,10 +42,48 @@ const STRUCTURE = {
   {
     skip: ReadonlySet<string>;
     takeaways: RegExp;
+    faq: RegExp;
+    editorialFaq: RegExp;
     introduction: string;
     article: string;
   }
 >;
+
+const structureFor = (locale: string) =>
+  isLocale(locale) ? STRUCTURE[locale] : STRUCTURE[routing.defaultLocale];
+
+/**
+ * Whether a CMS body already carries its own FAQ block. Only decides whether
+ * the page renders a *second*, visible one from `blog_post.faqs` — the stored
+ * pairs are what the `FAQPage` JSON-LD is built from either way, so a heading
+ * this misses costs a duplicated section on screen, never missing structured
+ * data. BabyLoveGrowth writes "FAQ"; its Spanish translations vary.
+ *
+ * Anchored on purpose: a CMS heading that merely mentions FAQs ("How to add FAQ
+ * schema") is an ordinary section, and matching it would hide the real block.
+ */
+export const hasFaqSection = (
+  sections: readonly BlogHtmlSection[],
+  locale: string = routing.defaultLocale,
+) =>
+  sections.some((section) =>
+    structureFor(locale).faq.test(section.title.trim()),
+  );
+
+/**
+ * The same question for an editorial post's own `sections`, where FAQ prose used
+ * to live before `blog_post.faqs` existed. Rows written back then still carry
+ * it, so the page drops the section rather than print the same answers twice —
+ * which is what lets the stored pairs land before the code that reads them.
+ *
+ * Unanchored, unlike `hasFaqSection`: these titles are ours and include forms
+ * like "How to choose (and FAQ)", and the section this hides is one whose
+ * content the `faqs` column already holds.
+ */
+export const isFaqSectionTitle = (
+  title: string,
+  locale: string = routing.defaultLocale,
+) => structureFor(locale).editorialFaq.test(title.trim());
 
 const stripTags = (value: string) =>
   value

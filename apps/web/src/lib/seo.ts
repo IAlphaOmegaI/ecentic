@@ -134,15 +134,28 @@ export namespace createBreadcrumbSchema {
   };
 }
 
+/**
+ * Blog answers are stored in the same lightweight markup the editorial renderer
+ * accepts (`**bold**`, `[label](href)`), so the raw string would put syntax
+ * characters in front of whatever quotes the answer. Structured data carries the
+ * prose alone; the page keeps the links.
+ */
+const withoutInlineMarkup = (value: string) =>
+  value
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/\s+/g, " ")
+    .trim();
+
 export const createFaqSchema = (items: readonly createFaqSchema.Item[]) => ({
   "@context": "https://schema.org",
   "@type": "FAQPage",
   mainEntity: items.map((item) => ({
     "@type": "Question",
-    name: item.question,
+    name: withoutInlineMarkup(item.question),
     acceptedAnswer: {
       "@type": "Answer",
-      text: item.answer,
+      text: withoutInlineMarkup(item.answer),
     },
   })),
 });
