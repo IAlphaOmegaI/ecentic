@@ -9,5 +9,9 @@
       "Bash(find /c/Users/35568/Desktop/ecentic -name tailwind* -type f)"
     ],
     "additionalDirectories": ["c:\\Users\\35568\\Desktop\\ecentic\\docs"]
-  }
+  },
+  "env": {
+    "MCP_TOOL_TIMEOUT": "1800000"
+  },
+  "enabledMcpjsonServers": ["codex"]
 }
