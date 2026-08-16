@@ -10,8 +10,5 @@
     ],
     "additionalDirectories": ["c:\\Users\\35568\\Desktop\\ecentic\\docs"]
   },
-  "env": {
-    "MCP_TOOL_TIMEOUT": "1800000"
-  },
   "enabledMcpjsonServers": ["codex"]
 }

@@ -11,15 +11,47 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Consulting Codex
 
-When a prompt says/means "consult with codex" (or similar), get a second opinion
-from Codex — always the `gpt-5.6-sol` model at `xhigh` (extra high) reasoning
-effort, always in a read-only sandbox: Codex is a consultant here, not an
-implementer, and must not edit files.
+Get second opinions from Codex — always the `gpt-5.6-sol` model at `xhigh`
+(extra high) reasoning effort, always in a read-only sandbox: Codex is a
+consultant here, not an implementer, and must not edit files.
 
-Consult at any point in the process, not only before finalising an answer —
-reach for it mid-task whenever you are unsure or not confident about something,
-stuck and need help, or want a second opinion on an approach before committing
-to it. Multiple consultations during one task are fine.
+A consultation starts one of two ways, with identical mechanics:
+
+- **User-requested** — the prompt says/means "consult with codex" (or
+  similar). Consulting is then mandatory: never silently skip it.
+- **Self-initiated** — no trigger phrase needed, but **not routine: the
+  default for ordinary work is no consultation.** Most tasks never warrant
+  one — routine implementation, anything you can settle yourself by reading
+  the code, docs, or tests, small refactors, questions with a clear
+  conventional answer. Self-initiate only when a decision is both **genuinely
+  uncertain** (you cannot resolve it with the sources at hand) and
+  **consequential** (being wrong is expensive — security-sensitive paths,
+  hard-to-reverse architecture, data integrity, filings) — or when you are
+  truly stuck after your own attempts. When those conditions hold, consult at
+  any point in the process, more than once in a hard task if needed — but each
+  consultation costs real time (5–15 minutes) and real tokens, so it is an
+  exception, not a habit.
+
+- **Standing checkpoints** — for work that meets the bar (multi-file features,
+  schema or migration changes, security-sensitive code, new architectural
+  patterns, anything expensive to reverse — not small fixes, UI tweaks,
+  refactors, or docs), two consultations are the **default**, not a judgment
+  call; skip a due checkpoint only for a stated reason,  never silently.
+
+1. **Before committing to a plan** — send the plan, its constraints, and the
+   alternatives you rejected; ask for flaws, risks, and better approaches
+   while changing course is still cheap. A flawed plan caught in ten minutes
+   saves the hours built on top of it.
+2. **After implementing, before reporting done** — send the intent and the
+   changed-file list (Codex reads the working tree, so uncommitted changes are
+   visible); ask for evidence-backed findings — hidden implications, gaps,
+   possible improvements — explicitly inviting low-confidence findings, since
+   coverage beats self-filtering at review time. This checkpoint exists
+   because post-implementation failures are blind spots: the uncertainty gate
+   above can never fire on them, and confidence is precisely when review
+   matters most. **One review pass per deliverable** — verify and apply the
+   resulting fixes yourself rather than re-submitting them to Codex, unless a
+   fix is itself large enough to meet the bar.
 
 **Primary transport — the codex MCP server** (registered in `.mcp.json`, where
 the model and effort are pinned):
@@ -35,9 +67,11 @@ the model and effort are pinned):
 - Independent questions fan out as parallel `mcp__codex__codex` calls in a
   single message.
 - The call blocks for the consultation's duration — typically 5–15 minutes at
-  `xhigh`; `MCP_TOOL_TIMEOUT` is raised to 30 minutes in
-  `.claude/settings.json` to accommodate this. Say the one-line status before
-  calling so the silence is explained.
+  `xhigh`. Long calls are safe by default (the MCP tool timeout defaults to
+  ~28 hours); the codex entry in `.mcp.json` sets a per-server `timeout` of
+  30 minutes purely as a runaway-spend cap — a consultation still running past
+  that is broken, not thorough. Say the one-line status before calling so the
+  silence is explained.
 
 **Fallback — only when the MCP tool is absent from the session:** use the
 `codex-consultant` subagent (`.claude/agents/codex-consultant.md`), which
@@ -61,6 +95,26 @@ Codex output is advisory, never authoritative:
   own analysis agrees.
 - If Codex conflicts with this repo's docs, the docs win (see `AGENTS.md`
   § How To Work In This Repo).
+
+Single round by default; escalate only when another round can change the
+outcome. After verifying Codex's answer, send a rebuttal via
+`mcp__codex__codex-reply` (same `threadId`) only when one of these holds:
+
+1. **Your verification contradicts a material claim** — send the evidence
+   (file:line, build output, installed-package source) and ask Codex to defend
+   or revise. Either outcome is a win: it concedes, or it surfaces what your
+   verification missed.
+2. **The disagreement is a judgment call the code cannot settle** (design
+   trade-off, migration strategy) — exchange reasoning once.
+3. **The answer missed or misread the question** — clarify it.
+
+Escalation rules: maximum **two** rebuttal rounds — a disagreement that
+survives them is a finding to report, not a debate to win. Positions change on
+**evidence only, never on assertion**: do not adopt a Codex claim because it is
+stated confidently, and treat a Codex concession that comes without new
+evidence as unresolved rather than as agreement. Escalation needs no user
+permission and stays invisible in the final answer unless the disagreement
+survives (per the reporting rules below).
 
 Report one answer, not the negotiation:
 
