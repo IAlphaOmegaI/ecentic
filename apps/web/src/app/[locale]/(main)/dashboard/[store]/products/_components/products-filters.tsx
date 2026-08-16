@@ -1,6 +1,13 @@
 "use client";
 
-import { AlertCircleIcon, FilterIcon, PlusIcon, XIcon } from "@zenncore/icons";
+import {
+  AlertCircleIcon,
+  FilterIcon,
+  LoaderIcon,
+  PlusIcon,
+  SearchIcon,
+  XIcon,
+} from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import {
@@ -19,7 +26,17 @@ import {
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useCallback, useState } from "react";
+import type { PropsWithChildren } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import {
   isProductFilterField,
   type MissingProductField,
@@ -36,6 +53,53 @@ import {
 
 const FIELDS = Object.keys(PRODUCT_FILTER_FIELDS) as ProductFilterField[];
 
+type ProductsQueryContext = {
+  pending: boolean;
+  startTransition: (callback: () => void) => void;
+};
+
+// The default is a pass-through, so the controls also work standalone.
+const ProductsQueryContext = createContext<ProductsQueryContext>({
+  pending: false,
+  startTransition: (callback) => callback(),
+});
+
+/**
+ * Shares one transition between the query controls (search, filter builder,
+ * missing-field chips) and the table region: while a query navigation is
+ * streaming its refetched rows, `pending` is true and the table can show it.
+ */
+export const ProductsQueryProvider = ({ children }: PropsWithChildren) => {
+  const [pending, startTransition] = useTransition();
+
+  const value = useMemo(() => ({ pending, startTransition }), [pending]);
+
+  return <ProductsQueryContext value={value}>{children}</ProductsQueryContext>;
+};
+
+/** Fades the table and overlays a spinner while a query refetch is pending. */
+export const ProductsQueryFade = ({ children }: PropsWithChildren) => {
+  const { pending } = useContext(ProductsQueryContext);
+
+  return (
+    <div className="relative">
+      <div
+        className={cn(
+          "transition-opacity duration-200",
+          pending && "pointer-events-none opacity-60",
+        )}
+      >
+        {children}
+      </div>
+      {pending && (
+        <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
+          <LoaderIcon className="size-6 animate-spin text-foreground-dimmed" />
+        </div>
+      )}
+    </div>
+  );
+};
+
 const useAppliedFilters = () => {
   const searchParams = useSearchParams();
 
@@ -45,6 +109,7 @@ const useAppliedFilters = () => {
 const useApplyFilters = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { startTransition } = useContext(ProductsQueryContext);
 
   return useCallback(
     (filters: ProductFilter[]) => {
@@ -56,9 +121,98 @@ const useApplyFilters = () => {
       // A different filter set has different page bounds — restart at page 1.
       parameters.delete("page");
 
-      router.push(`?${parameters.toString()}`);
+      startTransition(() => router.push(`?${parameters.toString()}`));
     },
-    [router, searchParams],
+    [router, searchParams, startTransition],
+  );
+};
+
+export const ProductsSearch = () => {
+  const translate = useTranslations("dashboard.products.table.search");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const applied = searchParams.get("search") ?? "";
+
+  const [value, setValue] = useState(applied);
+  const timeout = useRef<ReturnType<typeof setTimeout>>(undefined);
+  // The last term this input wrote to the URL, to tell the echo of our own
+  // apply apart from an external change (back/forward, a cleared param).
+  const lastApplied = useRef<string | null>(null);
+
+  // External URL changes reset the input and cancel any pending apply, so an
+  // abandoned draft is never re-applied over a navigation. The echo marker is
+  // consumed on match, so forward-navigating back to the same term still
+  // counts as external and restores the input.
+  useEffect(() => {
+    if (applied === lastApplied.current) {
+      lastApplied.current = null;
+      return;
+    }
+
+    clearTimeout(timeout.current);
+    setValue(applied);
+  }, [applied]);
+
+  useEffect(() => () => clearTimeout(timeout.current), []);
+
+  const { startTransition } = useContext(ProductsQueryContext);
+
+  const applySearch = useCallback(
+    (search: string) => {
+      lastApplied.current = search;
+
+      // Read the live URL instead of a render-time snapshot, so a filter
+      // applied while the debounce was pending is not overwritten.
+      const parameters = new URLSearchParams(window.location.search);
+
+      if (search) parameters.set("search", search);
+      else parameters.delete("search");
+      // A different search has different page bounds — restart at page 1.
+      parameters.delete("page");
+
+      startTransition(() =>
+        router.replace(`?${parameters.toString()}`, { scroll: false }),
+      );
+    },
+    [router, startTransition],
+  );
+
+  const handleValueChange = (next: string) => {
+    setValue(next);
+    clearTimeout(timeout.current);
+    timeout.current = setTimeout(() => applySearch(next.trim()), 400);
+  };
+
+  const handleClear = () => {
+    setValue("");
+    clearTimeout(timeout.current);
+    applySearch("");
+  };
+
+  return (
+    <TextField
+      value={value}
+      onValueChange={handleValueChange}
+      className="h-9 w-64 bg-background"
+    >
+      <SearchIcon className="size-4 shrink-0 text-foreground-dimmed" />
+      <TextFieldInput
+        placeholder={translate("placeholder")}
+        aria-label={translate("placeholder")}
+        maxLength={200}
+        className="text-sm placeholder:text-foreground-dimmed/70"
+      />
+      {value && (
+        <button
+          type="button"
+          aria-label={translate("clear")}
+          onClick={handleClear}
+          className="shrink-0 cursor-pointer text-foreground-dimmed transition-colors hover:text-foreground"
+        >
+          <XIcon className="size-4" />
+        </button>
+      )}
+    </TextField>
   );
 };
 

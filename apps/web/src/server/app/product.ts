@@ -583,12 +583,25 @@ export const paginateWithIntelligence = withAuthentication(
       page,
       size,
       store,
+      search,
       filters,
-    }: Pager & { store?: string; filters?: ProductFilter[] },
+    }: Pager & { store?: string; search?: string; filters?: ProductFilter[] },
   ) => {
+    // Server actions are callable with arbitrary arguments, so the search term
+    // is coerced and capped before it becomes a LIKE pattern.
+    const query = typeof search === "string" ? search.trim().slice(0, 200) : "";
+
     const conditions = [
       eq(schema.product.userId, context.session.user.id),
       ...(store ? [eq(schema.product.storeId, store)] : []),
+      ...(query
+        ? [
+            or(
+              ilike(schema.product.title, `%${likeEscape(query)}%`),
+              ilike(schema.product.sku, `%${likeEscape(query)}%`),
+            ),
+          ]
+        : []),
       ...sanitizeProductFilters(filters)
         .map(filterCondition)
         .filter((condition) => condition !== undefined),

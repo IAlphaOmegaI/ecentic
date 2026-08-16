@@ -14,7 +14,16 @@ import {
   DataTableEmpty,
   DataTablePagination,
   DataTableProvider,
+  useDataTable,
 } from "@zenncore/web/components/data-table";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@zenncore/web/components/dropdown-menu";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -88,6 +97,7 @@ const buildColumns = (
   {
     accessorKey: "title",
     header: fields.product,
+    enableHiding: false,
     cell: ({ row }) => (
       <Link
         href={`/dashboard/${store}/products/${row.original._id}`}
@@ -171,6 +181,10 @@ const buildColumns = (
   {
     id: "actions",
     header: undefined,
+    enableHiding: false,
+    // Absorbs the table's spare width so content columns pack to the left,
+    // keeping only the row action pinned to the right edge.
+    meta: { className: "w-full text-right" },
     cell: ({ row }) => (
       <Button
         size="icon"
@@ -186,12 +200,52 @@ const buildColumns = (
   },
 ];
 
+const ColumnsMenu = () => {
+  const { table } = useDataTable<ProductsTable.Row>();
+  const translate = useTranslations("dashboard.products.table.columns");
+
+  const columns = table
+    .getAllLeafColumns()
+    .filter((column) => column.getCanHide());
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger render={<Button variant="outline" color="accent" />}>
+        {translate("trigger")}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="end"
+        className="min-w-48 rounded-none border border-accent-foreground bg-background-rich p-1"
+      >
+        {columns.map((column) => (
+          <DropdownMenuCheckboxItem
+            key={column.id}
+            checked={column.getIsVisible()}
+            onCheckedChange={(checked) => column.toggleVisibility(checked)}
+            closeOnClick={false}
+          >
+            {typeof column.columnDef.header === "string"
+              ? column.columnDef.header
+              : column.id}
+          </DropdownMenuCheckboxItem>
+        ))}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => table.resetColumnVisibility()}>
+          {translate("reset")}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
 export const ProductsTable = ({
   rows,
   title,
   kicker,
   action,
   paginated,
+  columnsMenu,
+  filtered,
   pageCount,
   ...props
 }: ProductsTable.Props) => {
@@ -210,7 +264,15 @@ export const ProductsTable = ({
   const resolvedTitle = title ?? translate("title");
 
   return (
-    <>
+    <DataTableProvider
+      rows={rows}
+      columns={columns}
+      pageSize={20}
+      pageCount={pageCount}
+      onPaginationChange={paginated ? handlePaginationChange : undefined}
+      handler="server"
+      {...props}
+    >
       <div className="flex items-end justify-between border-accent-foreground border-b p-4">
         <div>
           {kicker && (
@@ -222,35 +284,36 @@ export const ProductsTable = ({
             {resolvedTitle}
           </p>
         </div>
-        {action}
+        <div className="flex items-center gap-3">
+          {action}
+          {columnsMenu && <ColumnsMenu />}
+        </div>
       </div>
       <div className="overflow-x-auto">
-        <DataTableProvider
-          rows={rows}
-          columns={columns}
-          pageSize={20}
-          pageCount={pageCount}
-          onPaginationChange={paginated ? handlePaginationChange : undefined}
-          handler="server"
-          {...props}
-        >
-          <DataTable className={cn(!paginated && "border-b-0")}>
-            <DataTableEmpty>
-              <div className="p-8 text-center">
-                <BoxMinusIcon className="mx-auto mb-6 size-24" />
-                <p className="text-foreground text-lg">
-                  {translate("states.empty.primary")}
-                </p>
-                <p className="mt-1 text-foreground-dimmed text-sm">
-                  {translate("states.empty.secondary")}
-                </p>
-              </div>
-            </DataTableEmpty>
-          </DataTable>
-          {paginated && <DataTablePagination />}
-        </DataTableProvider>
+        <DataTable className={cn(!paginated && "border-b-0")}>
+          <DataTableEmpty>
+            <div className="p-8 text-center">
+              <BoxMinusIcon className="mx-auto mb-6 size-24" />
+              <p className="text-foreground text-lg">
+                {translate(
+                  filtered
+                    ? "states.noMatches.primary"
+                    : "states.empty.primary",
+                )}
+              </p>
+              <p className="mt-1 text-foreground-dimmed text-sm">
+                {translate(
+                  filtered
+                    ? "states.noMatches.secondary"
+                    : "states.empty.secondary",
+                )}
+              </p>
+            </div>
+          </DataTableEmpty>
+        </DataTable>
+        {paginated && <DataTablePagination />}
       </div>
-    </>
+    </DataTableProvider>
   );
 };
 
@@ -264,6 +327,8 @@ export namespace ProductsTable {
     kicker?: string;
     action?: ReactNode;
     paginated?: boolean;
+    columnsMenu?: boolean;
+    filtered?: boolean;
     pageCount: number;
   };
 

@@ -38,6 +38,9 @@ import {
 import {
   MissingFieldChip,
   ProductsFilters,
+  ProductsQueryFade,
+  ProductsQueryProvider,
+  ProductsSearch,
 } from "../_components/products-filters";
 import { ScanInsightsCarousel } from "../_components/scan-insights-carousel";
 import {
@@ -107,7 +110,7 @@ const EmbedBanner = async ({ params }: { params: StoreParams }) => {
 export default ({
   params,
   searchParams,
-}: SearchParamsProps<keyof Pager | "filters"> & {
+}: SearchParamsProps<keyof Pager | "filters" | "search"> & {
   params: PageProps<"/dashboard/[store]/products">["params"];
 }) => (
   <ProductsShell
@@ -137,23 +140,34 @@ export default ({
       </Suspense>
     }
     table={
-      <div>
-        <div className="flex flex-wrap items-center gap-2 border-accent-foreground border-b p-4">
-          <Suspense
-            fallback={
-              <div className="h-9 w-28 animate-pulse bg-foreground/10" />
-            }
-          >
-            <ProductsFilters />
-          </Suspense>
-          <Suspense>
-            <MissingFields params={params} />
-          </Suspense>
+      <ProductsQueryProvider>
+        <div>
+          <div className="flex flex-wrap items-center gap-2 border-accent-foreground border-b p-4">
+            <Suspense
+              fallback={
+                <div className="h-9 w-64 animate-pulse bg-foreground/10" />
+              }
+            >
+              <ProductsSearch />
+            </Suspense>
+            <Suspense
+              fallback={
+                <div className="h-9 w-28 animate-pulse bg-foreground/10" />
+              }
+            >
+              <ProductsFilters />
+            </Suspense>
+            <Suspense>
+              <MissingFields params={params} />
+            </Suspense>
+          </div>
+          <ProductsQueryFade>
+            <Suspense fallback={<TableSkeleton />}>
+              <Products params={params} searchParams={searchParams} />
+            </Suspense>
+          </ProductsQueryFade>
         </div>
-        <Suspense fallback={<TableSkeleton />}>
-          <Products params={params} searchParams={searchParams} />
-        </Suspense>
-      </div>
+      </ProductsQueryProvider>
     }
     traffic={
       <Suspense fallback={<TrafficSkeleton />}>
@@ -538,12 +552,17 @@ const Products = async ({
   searchParams,
 }: {
   params: StoreParams;
-  searchParams: SearchParamsProps<keyof Pager | "filters">["searchParams"];
+  searchParams: SearchParamsProps<
+    keyof Pager | "filters" | "search"
+  >["searchParams"];
 }) => {
   await connection();
   const { store } = await params;
   const translate = await getTranslations("dashboard.shared");
   const { page, size } = await extractPaginationParams(searchParams);
+  const search =
+    parseSearchParam((await searchParams).search, "single", "").trim() ||
+    undefined;
   const filters = parseProductFilters(
     parseSearchParam((await searchParams).filters, "single", "") || undefined,
   );
@@ -552,6 +571,7 @@ const Products = async ({
       page,
       size,
       store,
+      search,
       filters,
     }),
   );
@@ -561,6 +581,8 @@ const Products = async ({
   return (
     <ProductsTable
       paginated
+      columnsMenu
+      filtered={Boolean(search) || filters.length > 0}
       rows={items}
       pageCount={pageCount}
       pageSize={pagination.size}

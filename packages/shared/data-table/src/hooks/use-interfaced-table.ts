@@ -26,6 +26,11 @@ import {
 import { useState } from "react";
 import type { TableRow } from "../utils/types/row";
 
+export type DataTableColumnMeta = {
+  /** Extra classes applied to this column's header and body cells. */
+  className?: string;
+};
+
 export type DataTableFeatures = Required<
   Pick<
     TableFeatures,
@@ -41,7 +46,9 @@ export type DataTableFeatures = Required<
     | "facetedUniqueValues"
     | "paginatedRowModel"
   >
->;
+> & {
+  columnMeta: DataTableColumnMeta;
+};
 
 // Sorting and filtering are state-only: their row models are intentionally not
 // registered because processing is always delegated (manual mode server-side,
@@ -59,6 +66,8 @@ const dataTableFeatures: DataTableFeatures = tableFeatures({
   facetedRowModel: createFacetedRowModel(),
   facetedUniqueValues: createFacetedUniqueValues(),
   paginatedRowModel: createPaginatedRowModel(),
+  // Type-only slot (ignored at runtime): types `columnDef.meta` for renderers.
+  columnMeta: {} as DataTableColumnMeta,
 });
 
 export type UseDataTableConfigParams<T extends TableRow> = {
@@ -134,6 +143,23 @@ export const useDataTableConfig = <T extends TableRow>({
     pageIndex,
     pageSize,
   });
+
+  // URL-driven consumers reset the page externally (applying a filter or
+  // search restarts at page 1); adopt changed incoming props without
+  // clobbering optimistic local state while a page change is in flight.
+  const [previousPageProps, setPreviousPageProps] = useState({
+    pageIndex,
+    pageSize,
+  });
+  // Object.is instead of !== so a NaN prop (unvalidated URL input) compares
+  // equal to itself rather than re-rendering forever.
+  if (
+    !Object.is(previousPageProps.pageIndex, pageIndex) ||
+    !Object.is(previousPageProps.pageSize, pageSize)
+  ) {
+    setPreviousPageProps({ pageIndex, pageSize });
+    setPagination({ pageIndex, pageSize });
+  }
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);

@@ -77,7 +77,10 @@ export const DataTable = <T extends TableRowType>({
                 return (
                   <TableHead
                     key={header.id}
-                    className={classList?.["header-cell"]}
+                    className={cn(
+                      classList?.["header-cell"],
+                      header.column.columnDef.meta?.className,
+                    )}
                   >
                     {header.isPlaceholder
                       ? null
@@ -101,7 +104,13 @@ export const DataTable = <T extends TableRowType>({
                 className={cn("hover:bg-background", classList?.["body-row"])}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className={classList?.["body-cell"]}>
+                  <TableCell
+                    key={cell.id}
+                    className={cn(
+                      classList?.["body-cell"],
+                      cell.column.columnDef.meta?.className,
+                    )}
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -110,7 +119,7 @@ export const DataTable = <T extends TableRowType>({
           : empty && (
               <TableRow>
                 <TableCell
-                  colSpan={table.getAllColumns().length}
+                  colSpan={table.getVisibleLeafColumns().length}
                   className="text-left"
                 >
                   {empty}

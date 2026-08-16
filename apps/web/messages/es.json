@@ -632,6 +632,14 @@
       },
       "table": {
         "title": "Catálogo de productos",
+        "search": {
+          "placeholder": "Buscar por título o SKU…",
+          "clear": "Borrar búsqueda"
+        },
+        "columns": {
+          "trigger": "Columnas",
+          "reset": "Restablecer columnas"
+        },
         "filters": {
           "addFilter": "Añadir filtro",
           "title": "Filtrar productos",
@@ -672,6 +680,10 @@
           "empty": {
             "primary": "No se encontraron productos",
             "secondary": "Importa productos y ejecuta una simulación para ver tasas de victoria aquí."
+          },
+          "noMatches": {
+            "primary": "Ningún producto coincide",
+            "secondary": "Prueba otra búsqueda o borra los filtros."
           }
         }
       }

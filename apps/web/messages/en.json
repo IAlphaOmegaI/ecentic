@@ -663,6 +663,14 @@
       },
       "table": {
         "title": "Product Catalog",
+        "search": {
+          "placeholder": "Search by title or SKU…",
+          "clear": "Clear search"
+        },
+        "columns": {
+          "trigger": "Columns",
+          "reset": "Reset to defaults"
+        },
         "filters": {
           "addFilter": "Add filter",
           "title": "Filter products",
@@ -703,6 +711,10 @@
           "empty": {
             "primary": "No products found",
             "secondary": "Import products and run a simulation to see win rates here."
+          },
+          "noMatches": {
+            "primary": "No products match",
+            "secondary": "Try a different search or clear your filters."
           }
         }
       },

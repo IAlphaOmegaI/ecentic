@@ -6,6 +6,19 @@ export type Pager = {
   size: number;
 };
 
+// URL input: a non-numeric or hostile value must not reach the OFFSET/LIMIT
+// query (NaN breaks it) or request an unbounded page size.
+const clampPaginationParam = (
+  raw: string,
+  fallback: number,
+  maximum: number,
+) => {
+  const parsed = Number.parseInt(raw, 10);
+
+  if (!Number.isFinite(parsed) || parsed < 1) return fallback;
+  return Math.min(parsed, maximum);
+};
+
 export const extractPaginationParams = async (
   searchParams: SearchParamsProps<keyof Pager>["searchParams"],
 ) => {
@@ -15,8 +28,8 @@ export const extractPaginationParams = async (
   const size = parseSearchParam(query.size, "single", "20");
 
   return {
-    page: Number.parseInt(page, 10),
-    size: Number.parseInt(size, 10),
+    page: clampPaginationParam(page, 1, Number.MAX_SAFE_INTEGER),
+    size: clampPaginationParam(size, 20, 100),
   };
 };
 
