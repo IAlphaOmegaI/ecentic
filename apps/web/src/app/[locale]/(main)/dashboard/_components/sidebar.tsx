@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import * as Optimizations from "@/server/app/optimization";
 import * as Products from "@/server/app/product";
 import * as Store from "@/server/app/store";
+import { unwrapEntitled } from "@/server/utils/entitlement";
 import { Environment } from "@/server/utils/environment";
 import {
   NavBadgeSkeleton,
@@ -93,8 +94,14 @@ const Navigation = async ({ params }: { params: StoreParams }) => {
 const ProductCount = async ({ store }: { store: string }) =>
   unwrapResult(Products.countForCurrentUser(Environment.SERVER, { store }));
 
+// Gated, and this is layout chrome: a throw here takes down the whole route —
+// paywall included — for exactly the accounts the paywall is meant to catch.
+// `unwrapEntitled` drops the badge instead, leaving the sidebar navigable so a
+// blocked account can still reach billing settings.
 const OptimizationCount = async ({ store }: { store: string }) =>
-  unwrapResult(Optimizations.countPublished(Environment.SERVER, { store }));
+  unwrapEntitled(
+    await Optimizations.countPublished(Environment.SERVER, { store }),
+  );
 
 const SidebarLogo = async () => {
   const translate = await getTranslations("dashboard.sidebar");

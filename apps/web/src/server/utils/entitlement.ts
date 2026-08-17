@@ -98,6 +98,15 @@ export const entitle: Enhancer<
 export const withSubscription = withAuthentication.append(entitle);
 
 /**
+ * Whether a failure was the billing gate rather than anything else. Keyed by
+ * name for the same reason `isExpected` is — see the note in `error()`. Use
+ * this when a gated read's success value can itself be `null` (an entitled
+ * account with nothing stored yet), which `unwrapEntitled` cannot tell apart.
+ */
+export const isSubscriptionRequired = (error: Error) =>
+  error.name === SubscriptionRequiredError.errorName;
+
+/**
  * `unwrapResult` for render-path reads of gated actions: resolves the missing
  * plan to `null` instead of throwing. Gated pages render beneath the paywall
  * overlay (`SubscriptionGate`), and there are no error boundaries under the

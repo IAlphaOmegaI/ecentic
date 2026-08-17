@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import * as Ucp from "@/server/app/intelligence/ucp/profile";
 import * as Product from "@/server/app/product";
 import * as Store from "@/server/app/store";
+import { isSubscriptionRequired } from "@/server/utils/entitlement";
 import { Environment } from "@/server/utils/environment";
 import { UcpSectionSkeleton, UcpShell } from "./_components/shell";
 import { UcpManager } from "./_components/ucp-manager";
@@ -11,11 +12,21 @@ type StoreParams = PageProps<"/dashboard/[store]/ucp">["params"];
 
 const UcpContent = async ({ params }: { params: StoreParams }) => {
   const { store } = await params;
-  const [profile, products, stores] = await Promise.all([
-    unwrapResult(Ucp.getProfile(Environment.SERVER)),
+  const [profileResult, products, stores] = await Promise.all([
+    Ucp.getProfile(Environment.SERVER),
     unwrapResult(Product.skimForCurrentUser(Environment.SERVER, { store })),
     unwrapResult(Store.getForCurrentUser(Environment.SERVER)),
   ]);
+
+  // Blocked accounts render nothing beneath the paywall overlay. An entitled
+  // account with no profile saved yet resolves to `null` too, so the two are
+  // told apart by the result rather than by the unwrapped value.
+  if (!profileResult.success) {
+    if (isSubscriptionRequired(profileResult.error)) return null;
+    throw profileResult.error;
+  }
+
+  const profile = profileResult.data;
 
   const shopifyStores = stores
     .filter(
