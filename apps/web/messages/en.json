@@ -2521,11 +2521,7 @@
         },
         "frequency": {
           "title": "Simulation Frequency",
-          "options": [
-            "Manual only",
-            "Daily",
-            "Weekly"
-          ]
+          "options": ["Manual only", "Daily", "Weekly"]
         },
         "persona": {
           "title": "Purchase Persona",
@@ -6555,13 +6551,7 @@
       },
       "selection": "{selected} of {limit} products selected",
       "table": {
-        "headers": [
-          "Product",
-          "Price",
-          "Currency",
-          "Status",
-          "Quality"
-        ]
+        "headers": ["Product", "Price", "Currency", "Status", "Quality"]
       },
       "states": {
         "active": "Active",
@@ -6667,12 +6657,7 @@
         "description": "Select the competitors you'd like to include in your AI agent simulations.",
         "summary": "{total} competitor products across {brands} brands — {selected} selected",
         "table": {
-          "headers": [
-            "Competitor",
-            "Price",
-            "Currency",
-            "Brand"
-          ]
+          "headers": ["Competitor", "Price", "Currency", "Brand"]
         },
         "action": {
           "back": "Back",
