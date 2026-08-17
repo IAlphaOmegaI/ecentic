@@ -6,7 +6,7 @@ import { z } from "zod";
 import { formatPrice } from "@/lib/currency";
 import { schema } from "../../../database";
 import { generate } from "../../../utils/ai";
-import { withAuthentication } from "../../../utils/authentication";
+import { withSubscription } from "../../../utils/entitlement";
 import { Environment } from "../../../utils/environment";
 import { isIntegrationAuthError } from "../../../utils/error";
 import type { Document } from "../../../utils/repository";
@@ -33,7 +33,7 @@ export type Profile = {
   autoUpdate?: boolean;
 };
 
-export const getProfile = withAuthentication(async (context) => {
+export const getProfile = withSubscription(async (context) => {
   const result = await find(Environment.SERVER, {
     where: eq(schema.ucpProfile.userId, context.session.user.id),
   });
@@ -43,31 +43,28 @@ export const getProfile = withAuthentication(async (context) => {
   return { success: true as const, data: result.data[0] ?? null };
 }, "Ucp.getProfile");
 
-export const saveProfile = withAuthentication(
-  async (context, data: Profile) => {
-    const existing = await find(Environment.SERVER, {
-      where: eq(schema.ucpProfile.userId, context.session.user.id),
-    });
+export const saveProfile = withSubscription(async (context, data: Profile) => {
+  const existing = await find(Environment.SERVER, {
+    where: eq(schema.ucpProfile.userId, context.session.user.id),
+  });
 
-    if (!existing.success) return existing;
+  if (!existing.success) return existing;
 
-    const profile = existing.data[0];
+  const profile = existing.data[0];
 
-    if (profile)
-      return update(Environment.SERVER, profile.id, {
-        ...data,
-        updatedAt: new Date(),
-      });
-
-    return create(Environment.SERVER, {
-      userId: context.session.user.id,
+  if (profile)
+    return update(Environment.SERVER, profile.id, {
       ...data,
+      updatedAt: new Date(),
     });
-  },
-  "Ucp.saveProfile",
-);
 
-export const generateJson = withAuthentication(async (context) => {
+  return create(Environment.SERVER, {
+    userId: context.session.user.id,
+    ...data,
+  });
+}, "Ucp.saveProfile");
+
+export const generateJson = withSubscription(async (context) => {
   const [profile, products] = await Promise.all([
     find(Environment.SERVER, {
       where: eq(schema.ucpProfile.userId, context.session.user.id),
@@ -144,7 +141,7 @@ ${productSummary || "No products yet"}`,
   return { success: true as const, data: { json: generatedJson } };
 }, "Ucp.generateJson");
 
-export const generateProductStructuredData = withAuthentication(
+export const generateProductStructuredData = withSubscription(
   async (context, { product: id }: { product: string }) => {
     const product = await Product.get(Environment.SERVER, id);
 
@@ -200,7 +197,7 @@ URL: ${product.data.url ?? ""}`,
   "Ucp.generateProductStructuredData",
 );
 
-export const generateAllProductStructuredData = withAuthentication(
+export const generateAllProductStructuredData = withSubscription(
   async (context) => {
     const products = await Product.find(Environment.SERVER, {
       where: eq(schema.product.userId, context.session.user.id),
@@ -303,7 +300,7 @@ const ensureProfileForUser = async (userId: string) => {
   return { success: true as const, data: refreshed.data[0] };
 };
 
-export const publishProfileToShopify = withAuthentication(
+export const publishProfileToShopify = withSubscription(
   async (context, { store: storeId }: { store: string }) => {
     const userId = context.session.user.id;
 
@@ -352,7 +349,7 @@ export const publishProfileToShopify = withAuthentication(
   "Ucp.publishProfileToShopify",
 );
 
-export const publishProductsToShopify = withAuthentication(
+export const publishProductsToShopify = withSubscription(
   async (context, { store: storeId }: { store: string }) => {
     const userId = context.session.user.id;
 
@@ -445,7 +442,7 @@ export const publishProductsToShopify = withAuthentication(
   "Ucp.publishProductsToShopify",
 );
 
-export const publishProductsToWooCommerce = withAuthentication(
+export const publishProductsToWooCommerce = withSubscription(
   async (context, { store: storeId }: { store: string }) => {
     const userId = context.session.user.id;
 

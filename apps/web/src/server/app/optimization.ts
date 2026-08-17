@@ -6,8 +6,8 @@ import { revalidatePath, updateTag } from "next/cache";
 import { z } from "zod";
 import { db, schema } from "../database";
 import * as AI from "../utils/ai";
-import { withAuthentication } from "../utils/authentication";
 import { withContext, withInstrumentation } from "../utils/context";
+import { withSubscription } from "../utils/entitlement";
 import { Environment } from "../utils/environment";
 import { DatabaseError } from "../utils/error";
 import { type Document, repository, resultifyRead } from "../utils/repository";
@@ -184,7 +184,7 @@ const upsertRecord = withContext(
   "Optimization.upsertRecord",
 );
 
-export const listDashboard = withAuthentication(
+export const listDashboard = withSubscription(
   async (context, { store }: { store?: string } = {}) => {
     const userId = context.session.user.id;
 
@@ -466,7 +466,7 @@ const countPublishedRows = withInstrumentation(
   "Optimization.countPublishedRows",
 );
 
-export const countPublished = withAuthentication(
+export const countPublished = withSubscription(
   async (context, { store }: { store?: string } = {}) => {
     return countPublishedRows(Environment.SERVER, {
       user: context.session.user.id,
@@ -476,7 +476,7 @@ export const countPublished = withAuthentication(
   "Optimization.countPublished",
 );
 
-export const approveProductListing = withAuthentication(
+export const approveProductListing = withSubscription(
   async (context, { product: id }: { product: string }) => {
     const user = context.session.user.id;
 
@@ -551,7 +551,7 @@ export const approveProductListing = withAuthentication(
   "Optimization.approveProductListing",
 );
 
-export const dismissSuggestion = withAuthentication(
+export const dismissSuggestion = withSubscription(
   async (context, { product: id }: { product: string }) => {
     const user = context.session.user.id;
 
@@ -586,7 +586,7 @@ export const dismissSuggestion = withAuthentication(
   "Optimization.dismissSuggestion",
 );
 
-export const reconsiderSuggestion = withAuthentication(
+export const reconsiderSuggestion = withSubscription(
   async (context, { product: id }: { product: string }) => {
     const user = context.session.user.id;
 
@@ -605,7 +605,7 @@ export const reconsiderSuggestion = withAuthentication(
   "Optimization.reconsiderSuggestion",
 );
 
-export const generateStructuredData = withAuthentication(
+export const generateStructuredData = withSubscription(
   async (context, { product: id }: { product: string }) => {
     const user = context.session.user.id;
 
@@ -654,7 +654,7 @@ SKU: ${productData.sku ?? "(unknown)"}`,
  * embed then renders instead of the default. Generates the structured data
  * first if the product doesn't have it yet.
  */
-export const publishProductStructuredData = withAuthentication(
+export const publishProductStructuredData = withSubscription(
   async (context, { product: id }: { product: string }) => {
     const user = context.session.user.id;
     const productResult = await Product.get(Environment.SERVER, id);
@@ -741,7 +741,7 @@ export const publishProductStructuredData = withAuthentication(
   "Optimization.publishProductStructuredData",
 );
 
-export const approveAllPending = withAuthentication(async (context) => {
+export const approveAllPending = withSubscription(async (context) => {
   const userId = context.session.user.id;
 
   const [productsResult, storesResult, recordsResult] = await Promise.all([
@@ -820,7 +820,7 @@ export const approveAllPending = withAuthentication(async (context) => {
   };
 }, "Optimization.approveAllPending");
 
-export const optimizeStoreForAgents = withAuthentication(
+export const optimizeStoreForAgents = withSubscription(
   async (context, { store: storeId }: { store: string }) => {
     const userId = context.session.user.id;
 

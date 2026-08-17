@@ -2713,6 +2713,14 @@
     "grid": {
       "topFinding": "Hallazgo principal",
       "winRateBadge": "{rate}% tasa de victoria"
+    },
+    "paywall": {
+      "kicker": "Plan requerido",
+      "title": "Elige un plan para desbloquear tu panel",
+      "description": "Tu escaneo gratuito está listo. Para seguir simulando, diagnosticando y optimizando cómo los agentes de IA clasifican tus productos, elige pago por uso o un plan mensual fijo.",
+      "compare": "Compara los planes en detalle",
+      "manage": "¿Ya tienes una suscripción o un problema de facturación?",
+      "manageAction": "Gestionar facturación"
     }
   },
   "blog": {

@@ -15,8 +15,8 @@
  * Plus a public UCP agent profile, served by this app at /ucp/agent-profile.
  */
 
-import { withAuthentication } from "../../utils/authentication";
 import { withContext } from "../../utils/context";
+import { withSubscription } from "../../utils/entitlement";
 import { Environment } from "../../utils/environment";
 import { RequestError } from "../../utils/error";
 import * as HTTP from "../../utils/http";
@@ -253,7 +253,7 @@ export type RankMeasurement = {
  * the 1-based position of the store's first product in the result list, null
  * when the store doesn't appear at all — which is itself the finding.
  */
-export const measureCatalogRank = withAuthentication(
+export const measureCatalogRank = withSubscription(
   async (
     context,
     input: {

@@ -2,7 +2,7 @@
 
 import { and, eq } from "drizzle-orm";
 import { schema } from "../database";
-import { withAuthentication } from "../utils/authentication";
+import { withSubscription } from "../utils/entitlement";
 import { Environment } from "../utils/environment";
 import type { Document } from "../utils/repository";
 import { repository } from "../utils/repository";
@@ -28,7 +28,7 @@ const isFresh = (snapshot: Type) =>
  * recent than the shown report. Scoped to the current user so a guessed store
  * id resolves to nothing.
  */
-export const overviewForStore = withAuthentication(
+export const overviewForStore = withSubscription(
   async (context, { store }: { store: string }) => {
     const result = await find(Environment.SERVER, {
       where: and(
@@ -67,7 +67,7 @@ export const overviewForStore = withAuthentication(
  * Lightweight poll target for the in-progress banner — a boolean instead of
  * full rows so polling every few seconds never ships a stored report.
  */
-export const isRunning = withAuthentication(
+export const isRunning = withSubscription(
   async (context, { store }: { store: string }) => {
     const result = await find(Environment.SERVER, {
       where: and(

@@ -1,7 +1,7 @@
 "use server";
 
 import { resultify } from "@zenncore/utils";
-import { withAuthentication } from "@/server/utils/authentication";
+import { withSubscription } from "@/server/utils/entitlement";
 import { Environment } from "@/server/utils/environment";
 import { NotFoundError } from "@/server/utils/error";
 import * as Product from "../product";
@@ -14,7 +14,7 @@ import {
 
 export type { Type } from "./audit-compute";
 
-export const auditProduct = withAuthentication(
+export const auditProduct = withSubscription(
   async (context, { product: id }: { product: string }) => {
     const product = await Product.get(Environment.SERVER, id);
     if (!product.success) return product;

@@ -1,0 +1,12 @@
+{
+  "dashboard": {
+    "paywall": {
+      "kicker": "Plan required",
+      "title": "Choose a plan to unlock your dashboard",
+      "description": "Your free scan is in. To keep simulating, diagnosing, and optimizing how AI agents rank your products, pick pay-as-you-go or a flat monthly plan.",
+      "compare": "Compare plans in detail",
+      "manage": "Already subscribed or having a billing issue?",
+      "manageAction": "Manage billing"
+    }
+  }
+}

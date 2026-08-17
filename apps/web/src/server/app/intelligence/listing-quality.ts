@@ -7,8 +7,8 @@
 
 import { and, eq } from "drizzle-orm";
 import { schema } from "../../database";
-import { withAuthentication } from "../../utils/authentication";
 import { dedupe } from "../../utils/dedupe";
+import { withSubscription } from "../../utils/entitlement";
 import { Environment } from "../../utils/environment";
 import { extractCatalogFacts } from "../feed-export";
 import * as Product from "../product";
@@ -125,7 +125,7 @@ const parseAmount = (value: string | null) => {
  * readiness per surface. Products are returned worst-first.
  */
 export const auditListings = dedupe(
-  withAuthentication(async (context, { store: storeId }: { store: string }) => {
+  withSubscription(async (context, { store: storeId }: { store: string }) => {
     const store = await Store.get(Environment.SERVER, storeId);
     if (!store.success) return store;
     if (!store.data)

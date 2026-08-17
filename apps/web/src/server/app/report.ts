@@ -2,9 +2,9 @@
 
 import { eq } from "drizzle-orm";
 import { schema } from "../database";
-import { withAuthentication } from "../utils/authentication";
 import { serialize } from "../utils/csv";
 import { dedupe } from "../utils/dedupe";
+import { withSubscription } from "../utils/entitlement";
 import { Environment } from "../utils/environment";
 import { NotFoundError } from "../utils/error";
 import { repository } from "../utils/repository";
@@ -16,7 +16,7 @@ import * as Simulation from "./simulation";
 const optimizations = repository(schema.listingOptimization);
 const stores = repository(schema.store);
 
-export const exportWinRateSummary = withAuthentication(async () => {
+export const exportWinRateSummary = withSubscription(async () => {
   const scan = await Scan.getLatestComplete(Environment.SERVER);
   if (!scan.success) return scan;
 
@@ -67,7 +67,7 @@ export const exportWinRateSummary = withAuthentication(async () => {
   };
 }, "Report.exportWinRateSummary");
 
-export const exportProductPerformance = withAuthentication(async (context) => {
+export const exportProductPerformance = withSubscription(async (context) => {
   const products = await Product.find(Environment.SERVER, {
     where: eq(schema.product.userId, context.session.user.id),
   });
@@ -175,7 +175,7 @@ const COMPETITOR_COLUMNS = [
   "winRateAgainstYou",
 ];
 
-export const exportCompetitorAnalysis = withAuthentication(async (context) => {
+export const exportCompetitorAnalysis = withSubscription(async (context) => {
   const userId = context.session.user.id;
 
   const [competitors, owned] = await Promise.all([
@@ -234,7 +234,7 @@ export const exportCompetitorAnalysis = withAuthentication(async (context) => {
   };
 }, "Report.exportCompetitorAnalysis");
 
-export const exportOptimizationImpact = withAuthentication(async (context) => {
+export const exportOptimizationImpact = withSubscription(async (context) => {
   const records = await optimizations.find(Environment.SERVER, {
     where: eq(schema.listingOptimization.userId, context.session.user.id),
   });
@@ -301,7 +301,7 @@ export const exportOptimizationImpact = withAuthentication(async (context) => {
 // pill, the share button and the report grid — whether there is anything to
 // report on, and without this each one re-ran the whole four-query fan-out.
 export const getAvailability = dedupe(
-  withAuthentication(async (context) => {
+  withSubscription(async (context) => {
     const userId = context.session.user.id;
 
     const [scan, products, competitors, records] = await Promise.all([

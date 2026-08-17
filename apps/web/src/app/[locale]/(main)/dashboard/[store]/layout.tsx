@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import * as Store from "@/server/app/store";
 import { Environment } from "@/server/utils/environment";
 import { Sidebar } from "../_components/sidebar";
+import { SubscriptionGate } from "../_components/subscription-gate";
 import { Topbar } from "../_components/topbar";
 
 type StoreParams = LayoutProps<"/dashboard/[store]">["params"];
@@ -39,7 +40,18 @@ export default ({ children, params }: LayoutProps<"/dashboard/[store]">) => (
     <Sidebar params={params} />
     <div className="flex flex-1 flex-col overflow-hidden">
       <Topbar />
-      <main className="flex-1 overflow-y-auto">{children}</main>
+      {/* The paywall streams in beside the content on its own boundary, same
+        rationale as StoreGuard above: awaiting the plan check here would push
+        every nested page out of the prerendered shell. It overlays the content
+        area only — chrome and settings stay reachable so a blocked account can
+        always fix its billing. Enforcement lives in `withSubscription` on the
+        feature actions; the overlay is the presentation of it. */}
+      <div className="relative flex-1 overflow-hidden">
+        <main className="h-full overflow-y-auto">{children}</main>
+        <Suspense>
+          <SubscriptionGate />
+        </Suspense>
+      </div>
     </div>
   </>
 );

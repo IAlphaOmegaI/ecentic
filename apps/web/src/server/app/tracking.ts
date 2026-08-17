@@ -4,12 +4,12 @@ import type { UnwrapResult } from "@zenncore/utils";
 import { and, count, eq, gte, sql } from "drizzle-orm";
 import { z } from "zod";
 import { db, schema } from "../database";
-import { withAuthentication } from "../utils/authentication";
 import {
   withContext,
   withDurable,
   withInstrumentation,
 } from "../utils/context";
+import { withSubscription } from "../utils/entitlement";
 import { Environment } from "../utils/environment";
 import { DatabaseError } from "../utils/error";
 import { repository, resultifyRead } from "../utils/repository";
@@ -152,7 +152,7 @@ export const countByStoreForUser = withInstrumentation(
   "Tracking.countByStoreForUser",
 );
 
-export const getAgentTrafficTimeSeries = withAuthentication(
+export const getAgentTrafficTimeSeries = withSubscription(
   async (context, { store }: { store?: string } = {}) => {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -220,7 +220,7 @@ export const getAgentTrafficTimeSeries = withAuthentication(
   "Tracking.getAgentTrafficTimeSeries",
 );
 
-export const getAgentTrafficSummary = withAuthentication(
+export const getAgentTrafficSummary = withSubscription(
   async (context, { store }: { store?: string } = {}) => {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);

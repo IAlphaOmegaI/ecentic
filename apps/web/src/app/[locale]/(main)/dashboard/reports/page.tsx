@@ -1,10 +1,10 @@
 import { DocumentPdfIcon, ShareIcon } from "@zenncore/icons";
-import { unwrapResult } from "@zenncore/utils";
 import { connection } from "next/server";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { formatRelativeTime } from "@/lib/date";
 import * as Report from "@/server/app/report";
+import { unwrapEntitled } from "@/server/utils/entitlement";
 import { Environment } from "@/server/utils/environment";
 import {
   Crosshair,
@@ -12,6 +12,7 @@ import {
   SectionKicker,
   StatusPill,
 } from "../_components/grid";
+import { SubscriptionGate } from "../_components/subscription-gate";
 import { ReportDownload, ShareReport } from "./_components/report-actions";
 
 const REPORT_IDS = [
@@ -43,7 +44,13 @@ export default async () => {
   const translate = await getTranslations("dashboard.reports");
 
   return (
-    <div className="flex flex-col">
+    <div className="relative flex flex-col">
+      {/* Streams past the content exactly like the [store] layout's gate — the
+        static shell above prerenders; the overlay lands when the plan check
+        resolves. */}
+      <Suspense>
+        <SubscriptionGate />
+      </Suspense>
       <div className="mx-8 border-accent-foreground border-x">
         <div className="-mx-8 border-accent-foreground border-b">
           <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
@@ -141,9 +148,12 @@ export default async () => {
 const DataStatus = async () => {
   await connection();
   const translate = await getTranslations("dashboard.reports.dataStatus");
-  const availability = await unwrapResult(
-    Report.getAvailability(Environment.SERVER),
+  // Renders beneath the paywall overlay for accounts without a plan — see
+  // `unwrapEntitled`.
+  const availability = unwrapEntitled(
+    await Report.getAvailability(Environment.SERVER),
   );
+  if (!availability) return null;
 
   return (
     <StatusPill tone={availability.scan ? "success" : "neutral"}>
@@ -158,18 +168,24 @@ const DataStatus = async () => {
 
 const ShareButton = async () => {
   await connection();
-  const availability = await unwrapResult(
-    Report.getAvailability(Environment.SERVER),
+  // Renders beneath the paywall overlay for accounts without a plan — see
+  // `unwrapEntitled`.
+  const availability = unwrapEntitled(
+    await Report.getAvailability(Environment.SERVER),
   );
+  if (!availability) return null;
   return <ShareReport scan={availability.scan?.id ?? null} />;
 };
 
 const ReportGrid = async () => {
   await connection();
   const translate = await getTranslations("dashboard.reports");
-  const availability = await unwrapResult(
-    Report.getAvailability(Environment.SERVER),
+  // Renders beneath the paywall overlay for accounts without a plan — see
+  // `unwrapEntitled`.
+  const availability = unwrapEntitled(
+    await Report.getAvailability(Environment.SERVER),
   );
+  if (!availability) return null;
 
   const hasScan = availability.scan !== null;
   const hasOptimizations = availability.optimizations > 0;
