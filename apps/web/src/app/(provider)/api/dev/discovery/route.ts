@@ -120,7 +120,7 @@ const guard = (request: Request, url: URL): Response | null => {
 export const GET = async (request: Request) => {
   const url = new URL(request.url);
   const denied = guard(request, url);
-  if (denied) return denied;
+  if (denied) return denied; 
 
   return run(url, {
     store: readString(
