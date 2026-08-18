@@ -3,7 +3,6 @@
 import {
   AlertCircleIcon,
   FilterIcon,
-  LoaderIcon,
   PlusIcon,
   SearchIcon,
   XIcon,
@@ -26,17 +25,8 @@ import {
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import type { PropsWithChildren } from "react";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  useTransition,
-} from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useQueryTransition } from "@/components/query-transition";
 import {
   isProductFilterField,
   type MissingProductField,
@@ -53,53 +43,6 @@ import {
 
 const FIELDS = Object.keys(PRODUCT_FILTER_FIELDS) as ProductFilterField[];
 
-type ProductsQueryContext = {
-  pending: boolean;
-  startTransition: (callback: () => void) => void;
-};
-
-// The default is a pass-through, so the controls also work standalone.
-const ProductsQueryContext = createContext<ProductsQueryContext>({
-  pending: false,
-  startTransition: (callback) => callback(),
-});
-
-/**
- * Shares one transition between the query controls (search, filter builder,
- * missing-field chips) and the table region: while a query navigation is
- * streaming its refetched rows, `pending` is true and the table can show it.
- */
-export const ProductsQueryProvider = ({ children }: PropsWithChildren) => {
-  const [pending, startTransition] = useTransition();
-
-  const value = useMemo(() => ({ pending, startTransition }), [pending]);
-
-  return <ProductsQueryContext value={value}>{children}</ProductsQueryContext>;
-};
-
-/** Fades the table and overlays a spinner while a query refetch is pending. */
-export const ProductsQueryFade = ({ children }: PropsWithChildren) => {
-  const { pending } = useContext(ProductsQueryContext);
-
-  return (
-    <div className="relative">
-      <div
-        className={cn(
-          "transition-opacity duration-200",
-          pending && "pointer-events-none opacity-60",
-        )}
-      >
-        {children}
-      </div>
-      {pending && (
-        <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
-          <LoaderIcon className="size-6 animate-spin text-foreground-dimmed" />
-        </div>
-      )}
-    </div>
-  );
-};
-
 const useAppliedFilters = () => {
   const searchParams = useSearchParams();
 
@@ -109,7 +52,7 @@ const useAppliedFilters = () => {
 const useApplyFilters = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { startTransition } = useContext(ProductsQueryContext);
+  const { startTransition } = useQueryTransition();
 
   return useCallback(
     (filters: ProductFilter[]) => {
@@ -155,7 +98,7 @@ export const ProductsSearch = () => {
 
   useEffect(() => () => clearTimeout(timeout.current), []);
 
-  const { startTransition } = useContext(ProductsQueryContext);
+  const { startTransition } = useQueryTransition();
 
   const applySearch = useCallback(
     (search: string) => {

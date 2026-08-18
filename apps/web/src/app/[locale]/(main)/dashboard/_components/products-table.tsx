@@ -251,6 +251,7 @@ export const ProductsTable = ({
 }: ProductsTable.Props) => {
   const { store } = useParams<{ store: string }>();
   const translate = useTranslations("dashboard.products.table");
+  const pagination = useTranslations("dashboard.shared.pagination");
   const handlePaginationChange = usePaginationChangeHandler();
 
   const columns = buildColumns(store, {
@@ -311,7 +312,18 @@ export const ProductsTable = ({
             </div>
           </DataTableEmpty>
         </DataTable>
-        {paginated && <DataTablePagination />}
+        {paginated && (
+          <DataTablePagination
+            labels={{
+              navigation: pagination("navigation"),
+              page: (page, pages) => pagination("page", { page, pages }),
+              firstPage: pagination("first"),
+              previousPage: pagination("previous"),
+              nextPage: pagination("next"),
+              lastPage: pagination("last"),
+            }}
+          />
+        )}
       </div>
     </DataTableProvider>
   );

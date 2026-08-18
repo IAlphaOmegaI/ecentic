@@ -139,16 +139,33 @@ export namespace DataTable {
   };
 }
 
-export const DataTablePagination = <T extends TableRowType>(): JSX.Element => {
+export const DataTablePagination = <T extends TableRowType>({
+  labels,
+}: DataTablePagination.Props = {}): JSX.Element => {
   const { pagination } = useDataTable<T>();
 
+  // The package has no i18n runtime, so consumers pass translated labels;
+  // the English defaults keep the component usable standalone.
+  const page =
+    labels?.page ??
+    ((pageIndex: number, pageCount: number) =>
+      `Page ${pageIndex} of ${pageCount}`);
+
+  const isFirstPage = pagination.pageIndex <= 1;
+  const isLastPage = pagination.pageIndex >= pagination.pageCount;
+
   return (
-    <Pagination>
-      <PaginationContent className="w-full p-4">
+    <Pagination aria-label={labels?.navigation}>
+      {/* Rendered as div > button so the controls are real, keyboard-reachable
+          buttons instead of clickable list items. */}
+      <PaginationContent render={<div />} className="w-full p-4">
         <div className="mr-auto text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-          Page {pagination.pageIndex} of {pagination.pageCount}
+          {page(pagination.pageIndex, pagination.pageCount)}
         </div>
         <PaginationItem
+          render={<button type="button" disabled={isFirstPage} />}
+          className="disabled:cursor-not-allowed disabled:opacity-50"
+          aria-label={labels?.firstPage ?? "First page"}
           onClick={() => {
             pagination.goToPage(1);
           }}
@@ -157,6 +174,8 @@ export const DataTablePagination = <T extends TableRowType>(): JSX.Element => {
         </PaginationItem>
         {pagination.pageIndex > 1 && (
           <PaginationItem
+            render={<button type="button" />}
+            aria-label={labels?.previousPage ?? "Previous page"}
             onClick={() => {
               pagination.goToPage(pagination.pageIndex - 1);
             }}
@@ -166,6 +185,8 @@ export const DataTablePagination = <T extends TableRowType>(): JSX.Element => {
         )}
         {pagination.pageIndex < pagination.pageCount && (
           <PaginationItem
+            render={<button type="button" />}
+            aria-label={labels?.nextPage ?? "Next page"}
             onClick={() => {
               pagination.goToPage(pagination.pageIndex + 1);
             }}
@@ -174,6 +195,9 @@ export const DataTablePagination = <T extends TableRowType>(): JSX.Element => {
           </PaginationItem>
         )}
         <PaginationItem
+          render={<button type="button" disabled={isLastPage} />}
+          aria-label={labels?.lastPage ?? "Last page"}
+          className="disabled:cursor-not-allowed disabled:opacity-50"
           onClick={() => {
             pagination.goToPage(pagination.pageCount);
           }}
@@ -184,3 +208,15 @@ export const DataTablePagination = <T extends TableRowType>(): JSX.Element => {
     </Pagination>
   );
 };
+export namespace DataTablePagination {
+  export type Props = {
+    labels?: {
+      navigation?: string;
+      page?: (pageIndex: number, pageCount: number) => ReactNode;
+      firstPage?: string;
+      previousPage?: string;
+      nextPage?: string;
+      lastPage?: string;
+    };
+  };
+}

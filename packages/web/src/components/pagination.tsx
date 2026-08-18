@@ -8,13 +8,16 @@ import { type Button, buttonVariants } from "./button";
 export const Pagination = ({
   render,
   className,
+  // A default instead of a hardcoded merge, so consumers can localize the
+  // navigation landmark's label.
+  "aria-label": ariaLabel = "pagination",
   ...props
 }: Pagination.Props): JSX.Element => {
   const element = useRender({
     defaultTagName: "nav",
     render,
     props: mergeProps<"nav">(props, {
-      "aria-label": "pagination",
+      "aria-label": ariaLabel,
       className: cn("mx-auto flex w-full justify-center", className),
     }),
   });

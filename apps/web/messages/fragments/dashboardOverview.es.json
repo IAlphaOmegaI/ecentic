@@ -97,7 +97,15 @@
       "present": "Presente",
       "missing": "Ausente",
       "cancel": "Cancelar",
-      "sku": "SKU: {sku}"
+      "sku": "SKU: {sku}",
+      "pagination": {
+        "navigation": "Paginación",
+        "page": "Página {page, number} de {pages, number}",
+        "first": "Primera página",
+        "previous": "Página anterior",
+        "next": "Página siguiente",
+        "last": "Última página"
+      }
     },
     "overview": {
       "title": "Resumen",

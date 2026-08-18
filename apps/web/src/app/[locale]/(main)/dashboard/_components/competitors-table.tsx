@@ -111,8 +111,10 @@ export const CompetitorsTable = ({
   kicker,
   action,
   paginated = false,
+  ...props
 }: CompetitorsTable.Props) => {
   const translate = useTranslations("dashboard.competitors.table");
+  const pagination = useTranslations("dashboard.shared.pagination");
   const handlePaginationChange = usePaginationChangeHandler();
   const columns = buildColumns(
     {
@@ -148,6 +150,7 @@ export const CompetitorsTable = ({
           pageSize={10}
           pageCount={pageCount}
           onPaginationChange={paginated ? handlePaginationChange : undefined}
+          {...props}
         >
           <DataTable className={cn(!paginated && "border-b-0")}>
             <DataTableEmpty>
@@ -162,7 +165,18 @@ export const CompetitorsTable = ({
               </div>
             </DataTableEmpty>
           </DataTable>
-          {paginated && <DataTablePagination />}
+          {paginated && (
+            <DataTablePagination
+              labels={{
+                navigation: pagination("navigation"),
+                page: (page, pages) => pagination("page", { page, pages }),
+                firstPage: pagination("first"),
+                previousPage: pagination("previous"),
+                nextPage: pagination("next"),
+                lastPage: pagination("last"),
+              }}
+            />
+          )}
         </DataTableProvider>
       </div>
     </>

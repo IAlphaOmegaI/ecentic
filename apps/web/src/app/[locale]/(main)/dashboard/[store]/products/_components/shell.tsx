@@ -236,7 +236,6 @@ export const TableSkeleton = () => (
               "ChatGPT",
               "Claude",
               "Gemini",
-              "Perplexity",
               "Quality",
               "Last Scan",
               "",

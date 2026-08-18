@@ -1,7 +1,7 @@
 "use client";
 
 import { type DebouncedFunction, debounce } from "es-toolkit/function";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useInsertionEffect, useMemo, useRef } from "react";
 
 type DebounceOptions = Parameters<typeof debounce>[2];
 
@@ -33,19 +33,31 @@ export const useDebounceCallback = <T extends (...args: any) => ReturnType<T>>(
   delay = 500,
   options?: DebounceOptions,
 ): DebouncedFunction<T> => {
+  // The latest render's callback, read at fire time: the debounced instance
+  // must survive re-renders (an inline callback changing identity every render
+  // would otherwise reset — or cancel — the pending timer on each keystroke).
+  // Insertion effects run before layout effects, so even a leading-edge fire
+  // from a layout effect sees the freshly committed callback.
+  const callbackRef = useRef(callback);
+  useInsertionEffect(() => {
+    callbackRef.current = callback;
+  }, [callback]);
+
   const debouncedCallback = useMemo(
-    () => debounce(callback, delay, options),
-    [callback, delay, options],
+    () =>
+      debounce(
+        ((...args) => callbackRef.current(...args)) as T,
+        delay,
+        options,
+      ),
+    [delay, options],
   );
-  const debouncedCallbackRef = useRef(debouncedCallback);
 
+  // Cancel the instance that was actually handed out — both when a new one
+  // replaces it and on unmount — so no pending invocation outlives its owner.
   useEffect(() => {
-    debouncedCallbackRef.current = debounce(callback, delay, options);
-  }, [callback, delay, options]);
-
-  useEffect(() => {
-    return () => debouncedCallbackRef.current.cancel();
-  }, []);
+    return () => debouncedCallback.cancel();
+  }, [debouncedCallback]);
 
   return debouncedCallback;
 };

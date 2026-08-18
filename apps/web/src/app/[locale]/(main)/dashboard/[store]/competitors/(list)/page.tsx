@@ -13,6 +13,10 @@ import type { SearchParamsProps } from "@zenncore/web/types";
 import { connection } from "next/server";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
+import {
+  QueryTransitionFade,
+  QueryTransitionProvider,
+} from "@/components/query-transition";
 import { Link } from "@/i18n/navigation";
 import { formatRelativeTime } from "@/lib/date";
 import * as Competitor from "@/server/app/competitor";
@@ -85,9 +89,13 @@ export default ({
       </Suspense>
     }
     table={
-      <Suspense fallback={<TableSkeleton />}>
-        <Competitors params={params} searchParams={searchParams} />
-      </Suspense>
+      <QueryTransitionProvider>
+        <QueryTransitionFade>
+          <Suspense fallback={<TableSkeleton />}>
+            <Competitors params={params} searchParams={searchParams} />
+          </Suspense>
+        </QueryTransitionFade>
+      </QueryTransitionProvider>
     }
     insights={
       <Suspense fallback={<InsightsSkeleton />}>
@@ -463,12 +471,17 @@ const Competitors = async ({
     }),
   );
 
+  const pageCount = Math.max(
+    1,
+    Math.ceil(data.pagination.total / data.pagination.size),
+  );
+
   return (
     <CompetitorsTable
       paginated
-      pageSize={size}
-      pageCount={data.pagination.total}
-      pageIndex={page}
+      pageSize={data.pagination.size}
+      pageCount={pageCount}
+      pageIndex={data.pagination.page}
       rows={data.brands}
       kicker={translate("kickerAll")}
       action={

@@ -13,6 +13,10 @@ import type { SearchParamsProps } from "@zenncore/web/types";
 import { connection } from "next/server";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
+import {
+  QueryTransitionFade,
+  QueryTransitionProvider,
+} from "@/components/query-transition";
 import { Link } from "@/i18n/navigation";
 import { formatRelativeTime } from "@/lib/date";
 import { MISSING_FIELD_CHIPS, parseProductFilters } from "@/lib/filters";
@@ -38,8 +42,6 @@ import {
 import {
   MissingFieldChip,
   ProductsFilters,
-  ProductsQueryFade,
-  ProductsQueryProvider,
   ProductsSearch,
 } from "../_components/products-filters";
 import { ScanInsightsCarousel } from "../_components/scan-insights-carousel";
@@ -140,7 +142,7 @@ export default ({
       </Suspense>
     }
     table={
-      <ProductsQueryProvider>
+      <QueryTransitionProvider>
         <div>
           <div className="flex flex-wrap items-center gap-2 border-accent-foreground border-b p-4">
             <Suspense
@@ -161,13 +163,13 @@ export default ({
               <MissingFields params={params} />
             </Suspense>
           </div>
-          <ProductsQueryFade>
+          <QueryTransitionFade>
             <Suspense fallback={<TableSkeleton />}>
               <Products params={params} searchParams={searchParams} />
             </Suspense>
-          </ProductsQueryFade>
+          </QueryTransitionFade>
         </div>
-      </ProductsQueryProvider>
+      </QueryTransitionProvider>
     }
     traffic={
       <Suspense fallback={<TrafficSkeleton />}>

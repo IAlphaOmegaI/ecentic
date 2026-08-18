@@ -138,34 +138,23 @@ export const useDataTableConfig = <T extends TableRow>({
   pageSize = 20,
   ...params
 }: UseDataTableConfigParams<T>): UseDataTableConfigReturn<T> => {
+  const isServerSide = params.handler === "server";
+
   // this is a special implementation as it is not a direct interface with the tanstack useTable hook, it uses 1-based indexing
-  const [pagination, setPagination] = useState<PaginationState>({
+  const [localPagination, setLocalPagination] = useState<PaginationState>({
     pageIndex,
     pageSize,
   });
 
-  // URL-driven consumers reset the page externally (applying a filter or
-  // search restarts at page 1); adopt changed incoming props without
-  // clobbering optimistic local state while a page change is in flight.
-  const [previousPageProps, setPreviousPageProps] = useState({
-    pageIndex,
-    pageSize,
-  });
-  // Object.is instead of !== so a NaN prop (unvalidated URL input) compares
-  // equal to itself rather than re-rendering forever.
-  if (
-    !Object.is(previousPageProps.pageIndex, pageIndex) ||
-    !Object.is(previousPageProps.pageSize, pageSize)
-  ) {
-    setPreviousPageProps({ pageIndex, pageSize });
-    setPagination({ pageIndex, pageSize });
-  }
+  // Server-handler tables are fully controlled by the incoming props: the
+  // consumer owns the page state (typically in the URL), so an external page
+  // reset (filter/search apply) can never race a locally-echoed page change.
+  // Client-handler tables own their pagination locally.
+  const pagination = isServerSide ? { pageIndex, pageSize } : localPagination;
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
-
-  const isServerSide = params.handler === "server";
 
   const pageCount = isServerSide
     ? "pageCount" in params
@@ -187,7 +176,7 @@ export const useDataTableConfig = <T extends TableRow>({
       // when we interface with the onPaginationChange callback, we will need to move to a 1 base index instead of 0 base that tanstack uses
       const newValue = { ...value, pageIndex: value.pageIndex + 1 };
 
-      setPagination(newValue);
+      if (!isServerSide) setLocalPagination(newValue);
       onPaginationChange?.(newValue);
     },
     onColumnFiltersChange: (updater) => {

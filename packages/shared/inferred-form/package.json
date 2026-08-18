@@ -14,7 +14,7 @@
     "@zenncore/utils": "workspace:*"
   },
   "peerDependencies": {
-    "@hookform/resolvers": "^5.9.0",
+    "@hookform/resolvers": "^5.9.1",
     "react": "catalog:",
     "react-hook-form": "catalog:",
     "zod": "catalog:"
