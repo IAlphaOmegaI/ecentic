@@ -18,6 +18,7 @@
         "UPLOADTHING_TOKEN",
         "BETTER_AUTH_BASE_URL",
         "CRON_SECRET",
+        "DEV_DISCOVERY_TOKEN",
         "RESEND_API_KEY",
         "FROM_EMAIL",
         "SHOPIFY_API_KEY",

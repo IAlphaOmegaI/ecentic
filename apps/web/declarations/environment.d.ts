@@ -51,6 +51,13 @@ declare namespace NodeJS {
 
     readonly CRON_SECRET: string;
 
+    /**
+     * Static access code for the headless `GET|POST /api/dev/discovery`
+     * report, pasted by hand into an AI chat. Unset falls back to the constant
+     * in `server/app/intelligence/discovery-report.ts`.
+     */
+    readonly DEV_DISCOVERY_TOKEN?: string;
+
     /** Azure OpenAI (ChatGPT) — every GPT call, billed direct to the subscription. */
     readonly AZURE_RESOURCE_NAME: string; // subdomain only, e.g. "my-resource"
     readonly AZURE_API_KEY: string;
