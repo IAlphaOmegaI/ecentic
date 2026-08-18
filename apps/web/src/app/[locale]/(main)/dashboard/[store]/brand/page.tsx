@@ -1,7 +1,7 @@
-import { unwrapResult } from "@zenncore/utils";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import * as BrandSnapshot from "@/server/app/brand-snapshot";
+import { unwrapEntitled } from "@/server/utils/entitlement";
 import { Environment } from "@/server/utils/environment";
 import { RefreshBrand } from "./_components/refresh-brand";
 import { BrandEmpty, BrandReport, FailedNote } from "./_components/report";
@@ -18,9 +18,12 @@ type StoreParams = PageProps<"/[locale]/dashboard/[store]/brand">["params"];
 const BrandContent = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
-  const overview = unwrapResult(
+  // Renders beneath the paywall overlay for accounts without a plan — see
+  // `unwrapEntitled`.
+  const overview = unwrapEntitled(
     await BrandSnapshot.overviewForStore(Environment.SERVER, { store }),
   );
+  if (!overview) return null;
 
   return (
     <>

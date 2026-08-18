@@ -743,11 +743,7 @@
         },
         "frequency": {
           "title": "Simulation Frequency",
-          "options": [
-            "Manual only",
-            "Daily",
-            "Weekly"
-          ]
+          "options": ["Manual only", "Daily", "Weekly"]
         },
         "persona": {
           "title": "Purchase Persona",

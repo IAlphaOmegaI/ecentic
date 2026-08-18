@@ -2529,11 +2529,7 @@
         },
         "frequency": {
           "title": "Simulation Frequency",
-          "options": [
-            "Manual only",
-            "Daily",
-            "Weekly"
-          ]
+          "options": ["Manual only", "Daily", "Weekly"]
         },
         "persona": {
           "title": "Purchase Persona",
@@ -2721,6 +2717,14 @@
       "action": {
         "downloadCsv": "CSV"
       }
+    },
+    "paywall": {
+      "kicker": "Plan required",
+      "title": "Choose a plan to unlock your dashboard",
+      "description": "Your free scan is in. To keep simulating, diagnosing, and optimizing how AI agents rank your products, pick pay-as-you-go or a flat monthly plan.",
+      "compare": "Compare plans in detail",
+      "manage": "Already subscribed or having a billing issue?",
+      "manageAction": "Manage billing"
     }
   },
   "blog": {
@@ -6555,13 +6559,7 @@
       },
       "selection": "{selected} of {limit} products selected",
       "table": {
-        "headers": [
-          "Product",
-          "Price",
-          "Currency",
-          "Status",
-          "Quality"
-        ]
+        "headers": ["Product", "Price", "Currency", "Status", "Quality"]
       },
       "states": {
         "active": "Active",
@@ -6667,12 +6665,7 @@
         "description": "Select the competitors you'd like to include in your AI agent simulations.",
         "summary": "{total} competitor products across {brands} brands — {selected} selected",
         "table": {
-          "headers": [
-            "Competitor",
-            "Price",
-            "Currency",
-            "Brand"
-          ]
+          "headers": ["Competitor", "Price", "Currency", "Brand"]
         },
         "action": {
           "back": "Back",

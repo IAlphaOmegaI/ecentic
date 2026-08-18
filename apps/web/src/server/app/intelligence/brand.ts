@@ -16,7 +16,7 @@ import { after } from "next/server";
 import { z } from "zod";
 import { schema } from "../../database";
 import * as AI from "../../utils/ai";
-import { withAuthentication } from "../../utils/authentication";
+import { withSubscription } from "../../utils/entitlement";
 import { Environment } from "../../utils/environment";
 import * as HTTP from "../../utils/http";
 import * as BrandSnapshot from "../brand-snapshot";
@@ -591,7 +591,7 @@ const RUNNING_STALE_MS = 10 * 60 * 1000;
  * `complete`/`failed` when it lands and the page polls for that. Starting
  * while a fresh run is in flight returns that run instead of stacking another.
  */
-export const analyze = withAuthentication(
+export const analyze = withSubscription(
   async (context, { store: storeId }: { store: string }) => {
     const userId = context.session.user.id;
 

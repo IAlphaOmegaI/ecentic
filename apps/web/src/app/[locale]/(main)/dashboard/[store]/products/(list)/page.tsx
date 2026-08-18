@@ -23,6 +23,7 @@ import { MISSING_FIELD_CHIPS, parseProductFilters } from "@/lib/filters";
 import * as Product from "@/server/app/product";
 import * as Scan from "@/server/app/scan";
 import * as Tracking from "@/server/app/tracking";
+import { unwrapEntitled } from "@/server/utils/entitlement";
 import { Environment } from "@/server/utils/environment";
 import { extractPaginationParams, type Pager } from "@/server/utils/pagination";
 import { AgentVisitsChart } from "../../../_components/agent-visits-chart";
@@ -603,14 +604,15 @@ const AgentTraffic = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
   const translate = await getTranslations("dashboard.shared");
-  const [summary, timeSeries] = await Promise.all([
-    unwrapResult(
-      Tracking.getAgentTrafficSummary(Environment.SERVER, { store }),
-    ),
-    unwrapResult(
-      Tracking.getAgentTrafficTimeSeries(Environment.SERVER, { store }),
-    ),
+  const [summaryResult, timeSeriesResult] = await Promise.all([
+    Tracking.getAgentTrafficSummary(Environment.SERVER, { store }),
+    Tracking.getAgentTrafficTimeSeries(Environment.SERVER, { store }),
   ]);
+  // Renders beneath the paywall overlay for accounts without a plan — see
+  // `unwrapEntitled`.
+  const summary = unwrapEntitled(summaryResult);
+  const timeSeries = unwrapEntitled(timeSeriesResult);
+  if (!summary || !timeSeries) return null;
 
   const max = Math.max(1, ...summary.byAgentType.map((entry) => entry.count));
 

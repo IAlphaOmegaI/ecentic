@@ -6,13 +6,14 @@ import {
   ShareIcon,
   ShoppingCartIcon,
 } from "@zenncore/icons";
-import { cn, unwrapResult } from "@zenncore/utils";
+import { cn } from "@zenncore/utils";
 import { connection } from "next/server";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { Suspense } from "react";
 import { Link } from "@/i18n/navigation";
 import * as ListingQuality from "@/server/app/intelligence/listing-quality";
+import { unwrapEntitled } from "@/server/utils/entitlement";
 import { Environment } from "@/server/utils/environment";
 import { StatCell, StatusPill } from "../../_components/grid";
 import {
@@ -151,9 +152,12 @@ const Summary = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
   const translate = await getTranslations("dashboard.quality");
-  const report = await unwrapResult(
-    ListingQuality.auditListings(Environment.SERVER, { store }),
+  // Renders beneath the paywall overlay for accounts without a plan — see
+  // `unwrapEntitled`.
+  const report = unwrapEntitled(
+    await ListingQuality.auditListings(Environment.SERVER, { store }),
   );
+  if (!report) return null;
 
   return (
     <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
@@ -203,9 +207,12 @@ const TopIssues = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
   const translate = await getTranslations("dashboard.quality");
-  const report = await unwrapResult(
-    ListingQuality.auditListings(Environment.SERVER, { store }),
+  // Renders beneath the paywall overlay for accounts without a plan — see
+  // `unwrapEntitled`.
+  const report = unwrapEntitled(
+    await ListingQuality.auditListings(Environment.SERVER, { store }),
   );
+  if (!report) return null;
 
   if (report.topIssues.length === 0)
     return (
@@ -282,9 +289,12 @@ const Products = async ({ params }: { params: StoreParams }) => {
   await connection();
   const { store } = await params;
   const translate = await getTranslations("dashboard.quality");
-  const report = await unwrapResult(
-    ListingQuality.auditListings(Environment.SERVER, { store }),
+  // Renders beneath the paywall overlay for accounts without a plan — see
+  // `unwrapEntitled`.
+  const report = unwrapEntitled(
+    await ListingQuality.auditListings(Environment.SERVER, { store }),
   );
+  if (!report) return null;
 
   if (report.products.length === 0)
     return (

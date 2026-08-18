@@ -81,6 +81,18 @@ export class ConflictError extends error("conflict-error", RequestError, {
   expected: true,
 }) {}
 
+/**
+ * The signed-in account has no billing plan that unlocks the requested feature
+ * — no flat subscription in good standing and no activated pay-as-you-go. The
+ * paywall and client toasts present it as a call to pick a plan, so it is a
+ * business rule the user can act on, never a defect.
+ */
+export class SubscriptionRequiredError extends error(
+  "subscription-required-error",
+  RequestError,
+  { expected: true },
+) {}
+
 export class TimeoutError extends error("timeout-error", RequestError) {}
 
 export class ParseError extends error("parse-error", RequestError) {}
@@ -246,6 +258,7 @@ export namespace ErrorProtocol {
     [NotFoundError.errorName]: NotFoundError,
     [RequestError.errorName]: RequestError,
     [ConflictError.errorName]: ConflictError,
+    [SubscriptionRequiredError.errorName]: SubscriptionRequiredError,
     [TimeoutError.errorName]: TimeoutError,
     [ParseError.errorName]: ParseError,
     [IntegrationAuthError.errorName]: IntegrationAuthError,

@@ -1,10 +1,10 @@
 import { ArrowRightIcon, ShareIcon } from "@zenncore/icons";
-import { unwrapResult } from "@zenncore/utils";
 import { connection } from "next/server";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import * as AgentReadiness from "@/server/app/intelligence/agent-readiness";
 import * as CatalogRank from "@/server/app/intelligence/catalog-rank";
+import { unwrapEntitled } from "@/server/utils/entitlement";
 import { Environment } from "@/server/utils/environment";
 import { SectionHeader, StatusPill } from "../../_components/grid";
 import {
@@ -46,9 +46,12 @@ const AuditContent = async ({ params }: { params: StoreParams }) => {
   await connection();
   const translate = await getTranslations("dashboard.visibility");
   const { store } = await params;
-  const report = unwrapResult(
+  // Renders beneath the paywall overlay for accounts without a plan — see
+  // `unwrapEntitled`.
+  const report = unwrapEntitled(
     await AgentReadiness.auditStore(Environment.SERVER, { store }),
   );
+  if (!report) return null;
 
   const tone = scoreTone(report.score);
 

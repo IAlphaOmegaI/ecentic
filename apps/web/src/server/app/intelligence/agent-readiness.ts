@@ -13,7 +13,7 @@
 
 import { and, eq } from "drizzle-orm";
 import { schema } from "../../database";
-import { withAuthentication } from "../../utils/authentication";
+import { withSubscription } from "../../utils/entitlement";
 import { Environment } from "../../utils/environment";
 import * as HTTP from "../../utils/http";
 import { buildGoogleFeed, extractCatalogFacts, feedUrl } from "../feed-export";
@@ -245,7 +245,7 @@ const MANUAL_CHECKS: ReadinessCheck[] = [
   },
 ];
 
-export const auditStore = withAuthentication(
+export const auditStore = withSubscription(
   async (context, { store: storeId }: { store: string }) => {
     const userId = context.session.user.id;
 

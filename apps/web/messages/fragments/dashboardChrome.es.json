@@ -840,11 +840,7 @@
         },
         "frequency": {
           "title": "Frecuencia de simulación",
-          "options": [
-            "Solo manual",
-            "Diaria",
-            "Semanal"
-          ]
+          "options": ["Solo manual", "Diaria", "Semanal"]
         },
         "persona": {
           "title": "Persona de compra",
