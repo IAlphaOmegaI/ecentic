@@ -24,32 +24,50 @@ export default async (): Promise<MetadataRoute.Sitemap> => {
   const spanishBySlug = new Map(spanish.map((post) => [post.slug, post]));
 
   const marketing = [
-    "",
-    "/privacy-policy",
-    "/terms",
-    "/blog",
-    "/features",
-    "/pricing",
-    "/how-it-works",
-    "/demo",
-    "/features/product-listings",
-    "/platforms/shopify",
-    "/platforms/woocommerce",
-    "/compare/best-ai-ecommerce-tools",
-    "/enterprise",
-    "/resources",
-    "/ucp-validator",
-    "/ucp-playground",
-  ] as const;
+    { path: "", changeFrequency: "weekly", priority: 1 },
+    { path: "/features", changeFrequency: "weekly", priority: 0.95 },
+    { path: "/pricing", changeFrequency: "weekly", priority: 0.95 },
+    { path: "/how-it-works", changeFrequency: "monthly", priority: 0.9 },
+    { path: "/demo", changeFrequency: "monthly", priority: 0.9 },
+    {
+      path: "/features/product-listings",
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    { path: "/platforms/shopify", changeFrequency: "monthly", priority: 0.85 },
+    {
+      path: "/platforms/woocommerce",
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    {
+      path: "/compare/best-ai-ecommerce-tools",
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    { path: "/blog", changeFrequency: "weekly", priority: 0.8 },
+    { path: "/enterprise", changeFrequency: "monthly", priority: 0.8 },
+    { path: "/resources", changeFrequency: "weekly", priority: 0.8 },
+    { path: "/ucp-validator", changeFrequency: "monthly", priority: 0.7 },
+    { path: "/ucp-playground", changeFrequency: "monthly", priority: 0.7 },
+    { path: "/privacy-policy", changeFrequency: "yearly", priority: 0.3 },
+    { path: "/terms", changeFrequency: "yearly", priority: 0.3 },
+  ] as const satisfies ReadonlyArray<{
+    path: string;
+    changeFrequency: NonNullable<
+      MetadataRoute.Sitemap[number]["changeFrequency"]
+    >;
+    priority: number;
+  }>;
 
   const marketingEntries = routing.locales.flatMap((locale) =>
-    marketing.map((path) => {
+    marketing.map(({ path, changeFrequency, priority }) => {
       const pathname = path === "" ? "/" : path;
       return {
         url: `${seo.host}${localizePath(pathname, locale)}`,
         lastModified: path === "/blog" ? latestBlog : new Date("2026-07-12"),
-        changeFrequency: "weekly" as const,
-        priority: path === "" ? 1 : path === "/blog" ? 0.8 : 0.7,
+        changeFrequency,
+        priority,
         alternates: {
           languages: Object.fromEntries(
             routing.locales.map((alternate) => [
@@ -66,7 +84,7 @@ export default async (): Promise<MetadataRoute.Sitemap> => {
     url: `${seo.host}/blog/${post.slug}`,
     lastModified: post.updatedAt,
     changeFrequency: "monthly" as const,
-    priority: 0.7,
+    priority: 0.72,
     alternates: {
       languages: {
         en: `${seo.host}/blog/${post.slug}`,
@@ -83,7 +101,7 @@ export default async (): Promise<MetadataRoute.Sitemap> => {
       url: `${seo.host}/es/blog/${post.slug}`,
       lastModified: translated?.updatedAt ?? post.updatedAt,
       changeFrequency: "monthly" as const,
-      priority: 0.7,
+      priority: 0.72,
       alternates: {
         languages: {
           en: `${seo.host}/blog/${post.slug}`,
