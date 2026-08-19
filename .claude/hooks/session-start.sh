@@ -96,7 +96,7 @@ if ! printf '%s' "$GITLAB_PAT" | glab auth login \
   exit 0
 fi
 
-glab config set -h "$GITLAB_HOSTNAME" git_protocol https > /dev/null 2>&1 || true
+glab config set --host "$GITLAB_HOSTNAME" git_protocol https > /dev/null 2>&1 || true
 
 # `glab auth login` stores the token without checking it, so confirm against the API.
 GITLAB_USERNAME="$(glab api user 2>/dev/null | grep -oE '"username":"[^"]+"' | head -1 | cut -d'"' -f4 || true)"
