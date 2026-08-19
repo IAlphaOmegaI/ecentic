@@ -106,7 +106,7 @@ export default async (): Promise<MetadataRoute.Sitemap> => {
         languages: {
           en: `${seo.host}/blog/${post.slug}`,
           es: `${seo.host}/es/blog/${post.slug}`,
-        },
+        }, 
       },
     };
   });
