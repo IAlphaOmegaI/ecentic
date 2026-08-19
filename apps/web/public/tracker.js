@@ -7,7 +7,7 @@
     {
       pattern: "Perplexity-User",
       type: "perplexity-user",
-      category: "user-action",
+      category: "user-action", 
     },
     {
       pattern: "ChatGPT-Agent",
