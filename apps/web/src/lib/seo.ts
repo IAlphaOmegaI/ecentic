@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { localizePath, stripLocalePrefix } from "@/i18n/locale";
+import { routing } from "@/i18n/routing";
 
 export const seo = {
   host: "https://ecentic.ai",
@@ -82,12 +84,25 @@ export const createMetadata = ({
   keywords = [],
   type = "website",
 }: createMetadata.Props): Metadata => {
+  // Hreflang lives in each page's head (and only there): the sitemap stays
+  // namespace-free so browsers render it with the plain XML tree view.
+  const basePath = stripLocalePrefix(path);
+
   return {
     title,
     description,
     keywords: [...keywords],
     alternates: {
       canonical: path,
+      languages: {
+        ...Object.fromEntries(
+          routing.locales.map((locale) => [
+            locale,
+            localizePath(basePath, locale),
+          ]),
+        ),
+        "x-default": basePath,
+      },
     },
     openGraph: {
       type,

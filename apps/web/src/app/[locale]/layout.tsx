@@ -129,12 +129,9 @@ export const generateMetadata = async (): Promise<Metadata> => {
       "msapplication-tap-highlight": "no",
     },
     category: "technology",
-    alternates: {
-      languages: {
-        en: "/",
-        es: "/es",
-      },
-    },
+    // No `alternates` here: pages own their hreflang (`createMetadata` /
+    // the blog post page). A layout-level homepage pair would leak onto any
+    // page without page-level alternates, mislabeling it as the homepage.
   };
 };
 

@@ -50,6 +50,9 @@ export default async (): Promise<MetadataRoute.Sitemap> => {
     { path: "/resources", changeFrequency: "weekly", priority: 0.8 },
     { path: "/ucp-validator", changeFrequency: "monthly", priority: 0.7 },
     { path: "/ucp-playground", changeFrequency: "monthly", priority: 0.7 },
+    { path: "/support", changeFrequency: "monthly", priority: 0.6 },
+    { path: "/yc", changeFrequency: "monthly", priority: 0.5 },
+    { path: "/techstars", changeFrequency: "monthly", priority: 0.5 },
     { path: "/privacy-policy", changeFrequency: "yearly", priority: 0.3 },
     { path: "/terms", changeFrequency: "yearly", priority: 0.3 },
   ] as const satisfies ReadonlyArray<{
@@ -60,6 +63,10 @@ export default async (): Promise<MetadataRoute.Sitemap> => {
     priority: number;
   }>;
 
+  // No `alternates` here on purpose: hreflang ships in each page's head (see
+  // `createMetadata`). Sitemap alternates render as `xhtml:link` entries whose
+  // XHTML namespace makes browsers display the file as running text instead of
+  // the plain XML document tree.
   const marketingEntries = routing.locales.flatMap((locale) =>
     marketing.map(({ path, changeFrequency, priority }) => {
       const pathname = path === "" ? "/" : path;
@@ -68,14 +75,6 @@ export default async (): Promise<MetadataRoute.Sitemap> => {
         lastModified: path === "/blog" ? latestBlog : new Date("2026-07-12"),
         changeFrequency,
         priority,
-        alternates: {
-          languages: Object.fromEntries(
-            routing.locales.map((alternate) => [
-              alternate,
-              `${seo.host}${localizePath(pathname, alternate)}`,
-            ]),
-          ),
-        },
       };
     }),
   );
@@ -85,12 +84,6 @@ export default async (): Promise<MetadataRoute.Sitemap> => {
     lastModified: post.updatedAt,
     changeFrequency: "monthly" as const,
     priority: 0.72,
-    alternates: {
-      languages: {
-        en: `${seo.host}/blog/${post.slug}`,
-        es: `${seo.host}/es/blog/${post.slug}`,
-      },
-    },
   }));
 
   // Same slug set as English — ES routes are first-class even before a
@@ -102,12 +95,6 @@ export default async (): Promise<MetadataRoute.Sitemap> => {
       lastModified: translated?.updatedAt ?? post.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.72,
-      alternates: {
-        languages: {
-          en: `${seo.host}/blog/${post.slug}`,
-          es: `${seo.host}/es/blog/${post.slug}`,
-        }, 
-      },
     };
   });
 
