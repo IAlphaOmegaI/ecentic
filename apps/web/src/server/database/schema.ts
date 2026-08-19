@@ -60,6 +60,10 @@ export const account = pgTable(
       .references(() => user.id, { onDelete: "cascade" }),
     accountId: text("accountId").notNull(),
     providerId: text("providerId").notNull(),
+    // Better Auth 1.7+ keys external identities by (issuer, accountId).
+    // Synthetic issuers: `local:credential` for password accounts,
+    // `local:oauth:<providerId>` for OAuth providers without their own issuer.
+    issuer: text("issuer").notNull(),
     accessToken: text("accessToken"),
     refreshToken: text("refreshToken"),
     idToken: text("idToken"),
@@ -70,7 +74,13 @@ export const account = pgTable(
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
     updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
   },
-  (table) => [index("account_user_idx").on(table.userId)],
+  (table) => [
+    index("account_user_idx").on(table.userId),
+    uniqueIndex("account_issuer_accountId_uidx").on(
+      table.issuer,
+      table.accountId,
+    ),
+  ],
 );
 
 export const verification = pgTable("verification", {

@@ -54,9 +54,12 @@ export const signInWithShopify = withContext(
 
     const result = await resultify(
       async () =>
-        await context.auth.signInWithOAuth2({
+        // Better Auth 1.7 folded generic OAuth into the social-provider
+        // path: `signInWithOAuth2` is gone and generic providers sign in
+        // through `signInSocial` with their provider id.
+        await context.auth.signInSocial({
           body: {
-            providerId: "shopify",
+            provider: "shopify",
             // Server actions are invocable directly, so the caller controls
             // `callbackURL`. Re-validate here — Better Auth's originCheck does
             // not run on `auth.api.*` calls (no `ctx.request`).

@@ -52,7 +52,9 @@ const shopifyCallbackValidationPlugin = {
     before: [
       {
         matcher: (ctx) => {
-          const shopifyCallbackUrl = `${process.env.APP_HOST}/api/auth/oauth2/callback/shopify`;
+          // Better Auth 1.7 moved generic OAuth callbacks onto the social
+          // provider path (`/callback/:id`, previously `/oauth2/callback/:id`).
+          const shopifyCallbackUrl = `${process.env.APP_HOST}/api/auth/callback/shopify`;
 
           return ctx.request?.url?.startsWith(shopifyCallbackUrl) ?? false;
         },
@@ -136,8 +138,12 @@ export const auth = betterAuth({
             data: {
               ...user,
               name,
+              // Fall back to the full name for single-part names (same
+              // semantics as `parseName` in authentication.ts) — without it
+              // a provider profile with no surname and a one-word name
+              // derives `undefined` and trips the NOT NULL constraint.
               // biome-ignore lint/complexity/useLiteralKeys: index signature property
-              surname: user["surname"] || surname,
+              surname: user["surname"] || surname || name,
               role: role ?? "user",
             },
           };
@@ -169,13 +175,16 @@ export const auth = betterAuth({
     },
   },
   plugins: [
-    nextCookies(),
     genericOAuth({
       config: [
         {
           providerId: "shopify",
           clientId: process.env.SHOPIFY_API_KEY,
           clientSecret: process.env.SHOPIFY_API_SECRET,
+          // Shopify's admin OAuth doesn't support PKCE and the custom
+          // `getToken` below never sends a code_verifier — without this,
+          // 1.7's default-on PKCE adds challenge params Shopify can't honor.
+          pkce: false,
           authorizationUrl: `${process.env.APP_HOST}/api/auth/shopify-proxy/authorize`,
           authorizationUrlParams: {
             grant_options: "per-user",
@@ -255,10 +264,31 @@ export const auth = betterAuth({
               role: associatedUser.account_owner ? "owner" : "administrator",
             };
           },
+
+          // Better Auth 1.7 forwards only the standard OAuth fields
+          // (email, name, image, emailVerified) from `getUserInfo` into user
+          // creation; app-specific fields must pass through
+          // `mapProfileToUser`. Without this the required-`surname`
+          // validation rejects first-time Shopify sign-ups and `role` falls
+          // back to "user" instead of owner/administrator.
+          mapProfileToUser: (profile) => {
+            // biome-ignore lint/complexity/useLiteralKeys: index signature property
+            const surname = profile["surname"];
+            // biome-ignore lint/complexity/useLiteralKeys: index signature property
+            const role = profile["role"];
+
+            return {
+              surname: typeof surname === "string" ? surname.trim() : "",
+              role: typeof role === "string" ? role : undefined,
+            };
+          },
         },
       ],
     }),
     shopifyCallbackValidationPlugin,
+    // Better Auth requires `nextCookies` to run after every other plugin's
+    // hooks so it can flush cookies set by them — keep it last.
+    nextCookies(),
   ],
   socialProviders: {
     google: {

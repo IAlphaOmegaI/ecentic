@@ -247,7 +247,7 @@ const Feature = {
 |-------|-----------|
 | Framework | Next.js 16, React 19, React Compiler |
 | Database | PostgreSQL, Drizzle ORM 1.0 beta |
-| Auth | Better Auth 1.5 (email/password + Drizzle adapter) |
+| Auth | Better Auth 1.7 (email/password + Drizzle adapter) |
 | AI | Vercel AI SDK — GPT direct on Azure OpenAI; Claude + Gemini + Perplexity via the Vercel AI Gateway |
 | Email | Resend + React Email |
 | Storage | UploadThing |

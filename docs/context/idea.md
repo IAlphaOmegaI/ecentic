@@ -340,7 +340,7 @@ The autonomous features above require a background job system. Recommended appro
 
 - **user** — id, name, surname, email, emailVerified, image, role, timestamps
 - **session** — id, userId (FK user), token, expiresAt, timestamps
-- **account** — id, userId (FK user), providerId, accountId, accessToken, refreshToken, timestamps
+- **account** — id, userId (FK user), providerId, issuer, accountId (unique on issuer + accountId), accessToken, refreshToken, timestamps
 - **verification** — id, identifier, value, expiresAt, timestamps
 
 ### Business Tables
