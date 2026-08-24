@@ -101,6 +101,7 @@ There are no automated tests in this codebase currently.
 │   │   ├── server/           # All server-side code (actions, DB, utils)
 │   │   └── lib/              # Client-side utilities (auth client, mocks, animations)
 │   └── drizzle/              # Generated migration files
+├── apps/cli/                 # @ecentic/cli — published npm CLI for the public agent API
 ├── packages/
 │   ├── web/                  # @zenncore/web — UI component library + Tailwind config
 │   ├── shared/

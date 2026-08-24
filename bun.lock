@@ -11,6 +11,19 @@
         "turbo": "^2.10.11",
       },
     },
+    "apps/cli": {
+      "name": "@ecentic/cli",
+      "version": "0.1.0",
+      "bin": {
+        "ecentic": "./dist/cli.mjs",
+      },
+      "devDependencies": {
+        "@types/node": "catalog:",
+        "bun-types": "^1.3.14",
+        "tsdown": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/web": {
       "name": "web",
       "version": "0.1.0",
@@ -80,19 +93,6 @@
         "bun-types": "^1.4.0",
         "tailwindcss": "^4.3.3",
         "typescript": "^6.0.3",
-      },
-    },
-    "packages/cli": {
-      "name": "@ecentic/cli",
-      "version": "0.1.0",
-      "bin": {
-        "ecentic": "./dist/cli.mjs",
-      },
-      "devDependencies": {
-        "@types/node": "catalog:",
-        "bun-types": "^1.3.14",
-        "tsdown": "catalog:",
-        "typescript": "catalog:",
       },
     },
     "packages/shared/config": {
@@ -358,7 +358,7 @@
 
     "@drizzle-team/brocli": ["@drizzle-team/brocli@0.12.0", "", {}, "sha512-mlUE+rZ8CatQekLhnaiN91Iemdd+e2gFKooGlnRB3oPTL3VghLfX24dx7HrzMNeC1JrIB/0kpsfyty3f5HNfxQ=="],
 
-    "@ecentic/cli": ["@ecentic/cli@workspace:packages/cli"],
+    "@ecentic/cli": ["@ecentic/cli@workspace:apps/cli"],
 
     "@effect/platform": ["@effect/platform@0.90.3", "", { "dependencies": { "@opentelemetry/semantic-conventions": "^1.33.0", "find-my-way-ts": "^0.1.6", "msgpackr": "^1.11.4", "multipasta": "^0.2.7" }, "peerDependencies": { "effect": "^3.17.7" } }, "sha512-XvQ37yzWQKih4Du2CYladd1i/MzqtgkTPNCaN6Ku6No4CK83hDtXIV/rP03nEoBg2R3Pqgz6gGWmE2id2G81HA=="],
 

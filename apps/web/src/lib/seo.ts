@@ -36,11 +36,11 @@ export const brandedTitle = (title: string) =>
  *
  * `contactPoint` and `address` are here because verification tooling reads them
  * to decide whether a business is real, and an Organization node without either
- * scores as an unverifiable claim. Every value is one the site already
- * publishes: the addresses appear in the privacy policy and terms, and the
- * locality and country are the jurisdiction those terms name. No street address
- * is published anywhere on the site, so none is invented here — a fabricated
- * one is worse than an absent one.
+ * scores as an unverifiable claim. `address` is the registered business address
+ * of zennit, the company behind ecentic, and matches the one published in the
+ * terms — tooling that cross-checks structured data against page content needs
+ * to find the same address in both places. No postal code is published for it,
+ * so none is invented — a fabricated component is worse than an absent one.
  */
 export const organizationSchema = {
   "@context": "https://schema.org",
@@ -59,8 +59,10 @@ export const organizationSchema = {
   },
   address: {
     "@type": "PostalAddress",
-    addressLocality: "Prishtina",
-    addressCountry: "XK",
+    streetAddress:
+      "Pallatet Merkaj, Hyrja 1, Dera 12, Rruga Muhamed Deliu, Qesarakë",
+    addressLocality: "Tiranë",
+    addressCountry: "AL",
   },
   contactPoint: [
     {

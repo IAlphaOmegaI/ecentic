@@ -2170,7 +2170,11 @@
         },
         "frequency": {
           "title": "Frecuencia de simulación",
-          "options": ["Solo manual", "Diaria", "Semanal"]
+          "options": [
+            "Solo manual",
+            "Diaria",
+            "Semanal"
+          ]
         },
         "persona": {
           "title": "Persona de compra",
@@ -4634,7 +4638,7 @@
       "sections": {
         "10": {
           "title": "Ley aplicable y contacto",
-          "content": "Estos Términos se rigen por las leyes de la República de Kosovo, sin tener en cuenta normas de conflicto de leyes. Los tribunales de Pristina tienen jurisdicción exclusiva sobre cualquier disputa derivada de o relacionada con estos Términos, sin perjuicio de las protecciones obligatorias al consumidor que puedan aplicarte localmente.\n\nPreguntas sobre estos Términos:\n\n- Correo: legal@ecentic.ai\n- Empresa: [zennit](https://www.zennit.dev) (ecentic es un producto de zennit)"
+          "content": "Estos Términos se rigen por las leyes de la República de Albania, sin tener en cuenta normas de conflicto de leyes. Los tribunales de Tirana tienen jurisdicción exclusiva sobre cualquier disputa derivada de o relacionada con estos Términos, sin perjuicio de las protecciones obligatorias al consumidor que puedan aplicarte localmente.\n\nPreguntas sobre estos Términos:\n\n- Correo: legal@ecentic.ai\n- Empresa: [zennit](https://www.zennit.dev) (ecentic es un producto de zennit)\n- Dirección: Pallatet Merkaj, Hyrja 1, Dera 12, Rruga Muhamed Deliu, Qesarakë, Tiranë, Albania"
         },
         "01": {
           "title": "Aceptación de estos términos",
@@ -6569,7 +6573,13 @@
       },
       "selection": "{selected} de {limit} productos seleccionados",
       "table": {
-        "headers": ["Producto", "Precio", "Moneda", "Estado", "Calidad"]
+        "headers": [
+          "Producto",
+          "Precio",
+          "Moneda",
+          "Estado",
+          "Calidad"
+        ]
       },
       "states": {
         "active": "Activo",
@@ -6675,7 +6685,12 @@
         "description": "Selecciona los competidores que quieres incluir en tus simulaciones de agentes de IA.",
         "summary": "{total} productos competidores en {brands} marcas — {selected} seleccionados",
         "table": {
-          "headers": ["Competidor", "Precio", "Moneda", "Marca"]
+          "headers": [
+            "Competidor",
+            "Precio",
+            "Moneda",
+            "Marca"
+          ]
         },
         "action": {
           "back": "Atrás",
@@ -6980,7 +6995,11 @@
         "title": "Errores de la API",
         "accent": "de ecentic.",
         "description": "Cada fallo de la API de ecentic es un documento de problema tipado, no una página HTML. El código es el contrato: es estable, legible por máquinas y seguro para tomar decisiones.",
-        "assurances": ["RFC 9457", "Códigos estables", "Pistas de resolución"],
+        "assurances": [
+          "RFC 9457",
+          "Códigos estables",
+          "Pistas de resolución"
+        ],
         "art": {
           "alt": "Ilustración en ASCII de un escudo"
         },

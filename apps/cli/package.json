@@ -1,7 +1,7 @@
 {
   "name": "@ecentic/cli",
   "version": "0.1.0",
-  "description": "Official command line interface for the ecentic agent API \u2014 discovery, plans, skills, health, and MCP tool calls.",
+  "description": "Official command line interface for the ecentic agent API — discovery, plans, skills, health, and MCP tool calls.",
   "keywords": [
     "ecentic",
     "cli",
@@ -14,8 +14,8 @@
   "homepage": "https://ecentic.ai/docs",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zennit-dev/ecentic",
-    "directory": "packages/cli"
+    "url": "git+https://github.com/IAlphaOmegaI/ecentic.git",
+    "directory": "apps/cli"
   },
   "bugs": "https://ecentic.ai/support",
   "license": "MIT",
@@ -25,13 +25,15 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "engines": {
     "node": ">=20"
   },
   "scripts": {
     "build": "tsdown",
+    "prepublishOnly": "tsdown",
     "dev": "tsdown --watch",
     "test": "bun test src",
     "typecheck": "tsc --noEmit",
