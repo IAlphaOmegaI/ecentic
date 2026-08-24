@@ -5,7 +5,15 @@ const empty = z.object({}).strict();
 export const Utils = {
   protocol: {
     version: "2025-03-26",
+    /**
+     * Versions this server will echo back on `initialize`. `2025-06-18` dropped
+     * JSON-RPC batching; accepting a batch from a client on that version is
+     * harmless because it never sends one, so one dispatcher serves both.
+     */
+    supportedVersions: ["2025-06-18", "2025-03-26", "2024-11-05"],
     server: { name: "ecentic-mcp", version: "0.2.0" },
+    instructions:
+      "ecentic measures and improves how AI shopping agents rank a merchant's products against competitors. Use these tools to read the public plan catalog, connect a Shopify, WooCommerce, or product-feed store, mint an agent API key, and read onboarding status. `list_plans` needs no credential; everything touching a merchant account needs `Authorization: Bearer ecentic_sk_...`. Full guidance: https://ecentic.ai/.well-known/agent-instructions.md",
   },
   schema: {
     empty,

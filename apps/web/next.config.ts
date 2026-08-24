@@ -40,6 +40,21 @@ export default withSentryConfig(
       { source: "/developer", destination: "/docs", permanent: true },
       { source: "/api-docs", destination: "/docs", permanent: true },
       { source: "/documentation", destination: "/docs", permanent: true },
+      // Predictable developer-resource URLs. `/docs/webhooks` is a redirect
+      // rather than a page because ecentic receives webhooks but publishes no
+      // outbound ones — a page would be documentation for a feature that does
+      // not exist.
+      { source: "/docs/api", destination: "/docs#endpoints", permanent: false },
+      {
+        source: "/docs/openapi",
+        destination: "/openapi.json",
+        permanent: false,
+      },
+      {
+        source: "/docs/webhooks",
+        destination: "/docs#webhooks",
+        permanent: false,
+      },
     ],
     rewrites: async () => {
       return [
@@ -97,6 +112,12 @@ export default withSentryConfig(
           { key: "Link", value: agentHomepageLinkHeader },
         ],
       },
+      // The MCP GET answers `405` for `Accept: text/event-stream` and `200`
+      // otherwise, so its representation varies by `Accept`. A route handler
+      // cannot emit this itself — the App Router writes its own `Vary` over
+      // anything set in the handler body — so it is declared one layer out.
+      { source: "/mcp", headers: [{ key: "Vary", value: "Accept" }] },
+      { source: "/api/mcp", headers: [{ key: "Vary", value: "Accept" }] },
       {
         source: "/.well-known/agent-skills/:path*",
         headers: [

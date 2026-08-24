@@ -1,6 +1,7 @@
 ---
 name: agent-commerce
 description: Connect a Shopify or WooCommerce store to ecentic, measure AI agent traffic, and improve agent-driven commerce readiness. Use when setting up agent tracking, UCP hosting, or catalog sync.
+when_to_use: Use when connecting a Shopify, WooCommerce, or feed-backed store to ecentic, hosting a UCP profile for it, or measuring which AI assistants visit its catalog.
 ---
 
 # Agent Commerce with ecentic
@@ -13,6 +14,13 @@ ecentic helps merchants win AI-agent-driven carts: connect the catalog, simulate
 - Publishing or hosting a Universal Commerce Protocol profile
 - Measuring which AI agents visit the storefront
 - Evaluating MCP tools exposed at https://ecentic.ai/api/mcp
+
+## When not to use
+
+- Optimizing listing copy or attributes — that is [optimize-listings](https://ecentic.ai/.well-known/agent-skills/optimize-listings/SKILL.md)
+- Validating another merchant's UCP profile — that is [validate-ucp](https://ecentic.ai/.well-known/agent-skills/validate-ucp/SKILL.md)
+- Building or hosting a storefront; ecentic connects to one the merchant already runs
+- Order fulfilment, inventory management, or ad campaigns
 
 ## Workflow
 

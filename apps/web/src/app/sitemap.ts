@@ -49,6 +49,12 @@ export default async (): Promise<MetadataRoute.Sitemap> => {
     { path: "/enterprise", changeFrequency: "monthly", priority: 0.8 },
     { path: "/resources", changeFrequency: "weekly", priority: 0.8 },
     { path: "/docs", changeFrequency: "monthly", priority: 0.8 },
+    { path: "/docs/mcp", changeFrequency: "monthly", priority: 0.7 },
+    {
+      path: "/docs/authentication",
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
     { path: "/docs/errors", changeFrequency: "monthly", priority: 0.6 },
     { path: "/docs/rate-limits", changeFrequency: "monthly", priority: 0.6 },
     { path: "/docs/versioning", changeFrequency: "monthly", priority: 0.6 },

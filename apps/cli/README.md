@@ -26,6 +26,8 @@ ecentic api                       # index of the public API
 ecentic discovery                 # every protocol and machine-readable document
 ecentic plans                     # public plan catalog
 ecentic skills                    # published agent skills
+ecentic onboarding                # zero-auth guarantees, each with a verify URL
+ecentic sandbox                   # sandbox description, limits, and caveats
 ecentic health                    # service health
 ecentic openapi                   # OpenAPI 3.1 document
 
@@ -35,6 +37,17 @@ ecentic mcp tools/call '{"name":"list_plans","arguments":{}}'
 
 ```bash
 ecentic plans | jq '.plans[] | {key, price}'
+```
+
+## Try it without an account
+
+The sandbox returns the exact response shape of a real simulation, computed
+deterministically from the request. Nothing is stored, nothing is billed, and no
+model is called — the scores are synthetic and measure nothing.
+
+```bash
+ecentic simulate '{"product":{"title":"Alpine Down Jacket","priceCents":24900},
+                   "competitors":[{"title":"Summit Puffer","priceCents":21900}]}'
 ```
 
 ## Authentication

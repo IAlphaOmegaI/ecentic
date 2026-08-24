@@ -135,11 +135,99 @@ describe("OpenAPI document", () => {
     const problem = openApiDocument.components.schemas.Problem;
     expect(problem.required).toContain("code");
     expect(problem.properties.code.enum.length).toBeGreaterThan(5);
-    expect(
-      openApiDocument.components.responses.RateLimited.content[
-        "application/problem+json"
-      ].schema.$ref,
-    ).toBe("#/components/schemas/Problem");
+  });
+
+  /**
+   * The regression this guards: every error response used to be a
+   * response-level `$ref` into `components.responses`. Readiness tooling and
+   * function-calling extractors resolve a `$ref` inside a schema but not one at
+   * the response level, so the document scored as "error schema defined but not
+   * consistently referenced" — the schema existed and nothing appeared to use
+   * it. Each error response now carries its own `content` block.
+   */
+  test("every documented failure carries a typed body", () => {
+    const failures = operations().flatMap(({ path, method, operation }) =>
+      Object.entries(operation.responses)
+        .filter(([status]) => status.startsWith("4") || status.startsWith("5"))
+        .map(([status, response]) => ({
+          where: `${method} ${path} ${status}`,
+          path,
+          response: response as {
+            content?: Record<string, { schema?: { $ref?: string } }>;
+          },
+        })),
+    );
+
+    expect(failures.length).toBeGreaterThanOrEqual(13);
+
+    for (const { where, response } of failures) {
+      const media = Object.values(response.content ?? {});
+      expect(media.length, where).toBeGreaterThan(0);
+      for (const entry of media) expect(entry.schema?.$ref, where).toBeString();
+    }
+  });
+
+  /**
+   * Two failures answer in another protocol's shape by design — the x402
+   * challenge on `/api` and the JSON-RPC error envelope on the MCP POST. Every
+   * other failure is the one shared RFC 9457 `Problem`, under both media types
+   * so an extractor that only looks for `application/json` still sees it typed.
+   */
+  test("failures outside x402 and JSON-RPC are the shared Problem", () => {
+    const PROTOCOL_SHAPED = new Set(["get /api 402", "post /api/mcp 401"]);
+
+    for (const { path, method, operation } of operations())
+      for (const [status, response] of Object.entries(operation.responses)) {
+        if (!status.startsWith("4") && !status.startsWith("5")) continue;
+        const where = `${method} ${path} ${status}`;
+        if (PROTOCOL_SHAPED.has(where)) continue;
+
+        const content =
+          (
+            response as {
+              content?: Record<string, { schema?: { $ref?: string } }>;
+            }
+          ).content ?? {};
+        expect(Object.keys(content), where).toContain(
+          "application/problem+json",
+        );
+        expect(Object.keys(content), where).toContain("application/json");
+        for (const entry of Object.values(content))
+          expect(entry.schema?.$ref, where).toBe(
+            "#/components/schemas/Problem",
+          );
+      }
+  });
+
+  /**
+   * "13/13 operationIds, 3/13 typed schemas" — ten operations declared no
+   * inputs at all, so nothing could be turned into a function signature. Every
+   * operation now states at least one typed parameter or a typed request body.
+   */
+  test("every operation exposes a typed input schema", () => {
+    // These three serve one fixed document and genuinely take no input.
+    // Inventing a parameter to lift the count would be documentation that
+    // lies, which costs an agent more than a missing schema does.
+    const INPUTLESS = new Set([
+      "get /.well-known/mcp.json",
+      "get /.well-known/ucp",
+      "get /.well-known/acp.json",
+    ]);
+
+    for (const { path, method, operation } of operations()) {
+      if (INPUTLESS.has(`${method} ${path}`)) continue;
+      const typed = operation as {
+        parameters?: { schema?: unknown }[];
+        requestBody?: { content?: Record<string, { schema?: unknown }> };
+      };
+      const parameters = typed.parameters ?? [];
+      const bodies = Object.values(typed.requestBody?.content ?? {});
+      expect(
+        parameters.some((parameter) => parameter.schema !== undefined) ||
+          bodies.some((body) => body.schema !== undefined),
+        `${method} ${path}`,
+      ).toBe(true);
+    }
   });
 
   test("declares a versioning policy with a deprecation signal", () => {
@@ -148,7 +236,14 @@ describe("OpenAPI document", () => {
     expect(versioning.current).toBe("v1");
     expect(versioning.sunsetHeader).toBe("Sunset");
     expect(versioning.minimumNoticeDays).toBeGreaterThanOrEqual(90);
-    expect(openApiDocument.components.parameters.ApiVersion.in).toBe("header");
+    // Inlined at each operation rather than kept in `components.parameters`,
+    // for the same reason the error responses are.
+    expect(
+      openApiDocument.paths["/api/v1"].get.parameters.some(
+        (parameter) =>
+          parameter.name === "API-Version" && parameter.in === "header",
+      ),
+    ).toBe(true);
   });
 
   test("versions the REST surface in the path", () => {

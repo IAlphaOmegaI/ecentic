@@ -6873,7 +6873,9 @@
       "docs": "Docs",
       "errors": "Errors",
       "rateLimits": "Rate limits",
-      "versioning": "Versioning"
+      "versioning": "Versioning",
+      "mcp": "MCP server",
+      "authentication": "Authentication"
     },
     "hero": {
       "title": "ecentic developer",
@@ -7128,6 +7130,130 @@
         "title": "What is not versioned",
         "description": "Discovery documents track their own protocol's version instead.",
         "body": "The `.well-known` discovery documents are versioned by the protocol they implement, not by the ecentic API version — the UCP profile carries a UCP version, the MCP server card carries a protocol version, and so on. Reading the version from inside the document is always correct; inferring it from the ecentic API version is not."
+      }
+    },
+    "mcpPage": {
+      "meta": {
+        "title": "ecentic MCP server",
+        "description": "How to connect an MCP client to the ecentic MCP server: Streamable HTTP transport, the handshake, the tool catalog, authentication, and the errors it returns."
+      },
+      "hero": {
+        "title": "ecentic MCP",
+        "accent": "server.",
+        "description": "Claude, ChatGPT, and any Model Context Protocol client can call ecentic natively over JSON-RPC 2.0. This page is the connection reference: the endpoint, the transport, the handshake, and every tool it exposes.",
+        "assurances": [
+          "Streamable HTTP",
+          "JSON-RPC 2.0",
+          "7 tools"
+        ],
+        "art": {
+          "alt": "ASCII-art illustration of a robot"
+        },
+        "action": {
+          "primary": "Back to docs",
+          "secondary": "Open the server manifest"
+        }
+      },
+      "connect": {
+        "number": "01",
+        "title": "Connect",
+        "description": "One endpoint, two paths, no session to manage.",
+        "body": "The server is reachable at `/mcp` and at `/api/mcp`. Both are the same handler; the bare path exists because most clients and scanners probe it first.\n\nThe transport is Streamable HTTP. Every request is a `POST` carrying JSON-RPC 2.0, and every response arrives on that same POST. ecentic opens no server-initiated stream, so a `GET` with `Accept: text/event-stream` answers `405` rather than hanging your client on a stream that will never emit.\n\nThere is no session. ecentic issues no `Mcp-Session-Id`, and `DELETE` — the session-termination verb — answers `405` for the same reason. Nothing needs to be torn down."
+      },
+      "handshake": {
+        "number": "02",
+        "title": "Handshake",
+        "description": "Initialize, then send the initialized notification.",
+        "body": "`initialize` returns the negotiated protocol version, the server identity, its capabilities, and an `instructions` string describing what ecentic is for. If you ask for a version ecentic speaks, you get that version back; anything else falls back to the version it advertises.\n\nThe `notifications/initialized` message that follows is a JSON-RPC **notification** — it has no `id` and draws no reply. ecentic answers it with `202 Accepted` and an empty body, as the transport requires. A server that answers a notification with a JSON-RPC error breaks the handshake, so this is the one exchange worth checking first when a client will not connect.",
+        "supported": "Protocol versions accepted on initialize"
+      },
+      "tools": {
+        "number": "03",
+        "title": "Tools",
+        "description": "What the server exposes, and which calls need a key.",
+        "columns": {
+          "tool": "Tool",
+          "authentication": "Auth",
+          "summary": "What it does"
+        },
+        "items": {
+          "listPlans": "Returns the public plan catalog with prices, billing mode, and performance-fee terms.",
+          "createApiKey": "Mints a long-lived agent API key on the caller's account. Shown once.",
+          "createCheckout": "Opens a Stripe checkout session for a subscription plan.",
+          "connectShopify": "Starts the Shopify OAuth install for a shop domain.",
+          "connectWooCommerce": "Connects a WooCommerce store with REST consumer credentials.",
+          "connectFeed": "Connects a product feed by URL, auto-detecting XML or JSON.",
+          "getOnboardingStatus": "Reports which onboarding steps the account has completed."
+        },
+        "none": "none",
+        "bearer": "bearer"
+      },
+      "authentication": {
+        "number": "04",
+        "title": "Authentication",
+        "description": "Read-only tools are open; anything touching an account takes a bearer key.",
+        "body": "Send `Authorization: Bearer ecentic_sk_…` on tool calls that change account state. A call that needs a credential and does not have one returns HTTP 401 with a `WWW-Authenticate` header naming the Protected Resource Metadata document, so a client can re-run discovery from the failure itself.\n\nKeys are self-serve: create an account, then mint one from the dashboard or by calling `create_api_key` over an authenticated session. No sales contact is involved at any point.",
+        "linkLabel": "Registration and credentials"
+      },
+      "errors": {
+        "number": "05",
+        "title": "Errors",
+        "description": "Two error surfaces, and which one you are looking at.",
+        "body": "A **JSON-RPC error** — an unknown method, bad params, a tool that refused — arrives as HTTP 200 with an `error` member, exactly as JSON-RPC specifies. Branch on `error.code`.\n\nA **transport error** — a method the endpoint does not offer — arrives as an RFC 9457 problem document with `Content-Type: application/problem+json` and a machine-readable `code`. That is the same error model the REST surface uses.\n\nThe one exception is 401: it carries the JSON-RPC envelope so a client already parsing JSON-RPC does not need a second parser, plus the `WWW-Authenticate` header for discovery."
+      },
+      "footer": {
+        "note": "Every claim on this page is checkable: the manifest, the server card, and the OpenAPI document all describe the same endpoint."
+      }
+    },
+    "authenticationPage": {
+      "meta": {
+        "title": "ecentic API authentication",
+        "description": "How to authenticate with the ecentic API: which surfaces are public, how to mint an agent API key, how bearer tokens are sent, and what a 401 tells you."
+      },
+      "hero": {
+        "title": "ecentic API",
+        "accent": "authentication.",
+        "description": "Public discovery needs no credential at all. Anything that reads or changes a merchant account takes a bearer key you mint yourself — no sales call, no manual provisioning.",
+        "assurances": [
+          "Self-serve keys",
+          "Bearer tokens",
+          "OAuth metadata"
+        ],
+        "art": {
+          "alt": "ASCII-art illustration of a shield"
+        },
+        "action": {
+          "primary": "Back to docs",
+          "secondary": "Read auth.md"
+        }
+      },
+      "open": {
+        "number": "01",
+        "title": "What needs no key",
+        "description": "Discovery is open, deliberately.",
+        "body": "Every endpoint under `/api/v1` answers without an `Authorization` header, as do the well-known discovery documents, the OpenAPI document, and the MCP `list_plans` tool. An agent can learn the whole shape of the API — endpoints, plans, protocols, skills, rate limits, error codes — before anyone has created an account.\n\nThe sandbox is open too: `POST /api/v1/sandbox/simulation` returns the exact response shape of a real simulation, computed from synthetic scoring, so a client can be written and tested with no credential at all."
+      },
+      "keys": {
+        "number": "02",
+        "title": "Minting a key",
+        "description": "Two self-serve routes, both under your control.",
+        "body": "Create an account, then mint a key either from the dashboard or by calling the `create_api_key` MCP tool from an authenticated session. Keys look like `ecentic_sk_…`, are long-lived, and are shown exactly once — ecentic stores only a hash, so a lost key is replaced rather than recovered.\n\nRotate by minting a new key and revoking the old one. Nothing about the process requires contacting a human.",
+        "linkLabel": "Full registration guide"
+      },
+      "sending": {
+        "number": "03",
+        "title": "Sending a key",
+        "description": "One header, everywhere.",
+        "body": "Send the key as a bearer token on every protected request. The same header works on the REST surface and on MCP tool calls.\n\nDo not put the key in a query string: query strings end up in logs, proxies, and referrer headers, and ecentic will not read one from there."
+      },
+      "failures": {
+        "number": "04",
+        "title": "When it fails",
+        "description": "A 401 tells you where to go next.",
+        "body": "A missing or invalid credential returns HTTP 401 with a `WWW-Authenticate` header naming the Protected Resource Metadata document (RFC 9728). Following it leads to the authorization server metadata (RFC 8414), so a client that hits a 401 can discover how to authenticate without a human reading documentation.\n\nOn the REST surface the body is an RFC 9457 problem with `code: \"unauthenticated\"`. On the MCP endpoint it is a JSON-RPC error with code `-32001` and a `resource_metadata` hint in `error.data`."
+      },
+      "footer": {
+        "note": "Credentials are never required to evaluate ecentic — only to act on a merchant account."
       }
     }
   }

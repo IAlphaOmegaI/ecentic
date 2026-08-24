@@ -174,3 +174,42 @@ describe("output", () => {
     expect(formatRateLimit(new Headers())).toBeNull();
   });
 });
+
+describe("sandbox", () => {
+  test("simulate posts the payload to the sandbox endpoint", () => {
+    const result = plan([
+      "simulate",
+      '{"product":{"title":"A"},"competitors":[{"title":"B"}]}',
+    ]);
+    expect(result.kind).toBe("request");
+    if (result.kind !== "request") return;
+    expect(result.method).toBe("POST");
+    expect(result.url).toBe("https://ecentic.ai/api/v1/sandbox/simulation");
+    expect(result.headers["Content-Type"]).toBe("application/json");
+    expect(JSON.parse(result.body ?? "{}")).toEqual({
+      product: { title: "A" },
+      competitors: [{ title: "B" }],
+    });
+  });
+
+  test("simulate without a payload is a usage error", () => {
+    const result = plan(["simulate"]);
+    expect(result.kind).toBe("error");
+  });
+
+  test("simulate with unparseable JSON is a usage error", () => {
+    const result = plan(["simulate", "{nope"]);
+    expect(result.kind).toBe("error");
+    if (result.kind !== "error") return;
+    expect(result.message).toContain("Could not parse payload");
+  });
+
+  test("onboarding and sandbox are listed commands", () => {
+    for (const name of ["onboarding", "sandbox"]) {
+      const result = plan([name]);
+      expect(result.kind, name).toBe("request");
+      if (result.kind !== "request") continue;
+      expect(result.url).toBe(`https://ecentic.ai/api/v1/${name}`);
+    }
+  });
+});

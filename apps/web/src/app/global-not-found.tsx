@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
-import { seo } from "@/lib/seo";
+import { notFoundMarkdown, RECOVERY_LINKS } from "@/lib/not-found";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Not found | ecentic",
   description:
     "This page could not be found. Recovery links to the ecentic sitemap, llms.txt, developer docs, and API catalog.",
+  // Points a Markdown-reading agent at the few-hundred-byte version of this
+  // page instead of the 15KB of HTML around the same six links.
+  alternates: { types: { "text/markdown": "/404.md" } },
 };
 
 /**
@@ -21,54 +24,11 @@ export const metadata: Metadata = {
  * lets it correct itself on the next request. The same list is repeated as a
  * literal Markdown block because agents read the raw HTML, and a `<pre>` of
  * Markdown survives every stripper that would otherwise leave them with
- * unanchored link text.
+ * unanchored link text — and is served on its own at `/404.md` for a client
+ * that would rather not parse 15KB of page to find six links.
  */
 
-const recovery = [
-  {
-    href: "/",
-    label: "Homepage",
-    description: "What ecentic does, and who it is for.",
-  },
-  {
-    href: "/docs",
-    label: "Developer documentation",
-    description: "API reference, authentication, errors, MCP, and webhooks.",
-  },
-  {
-    href: "/sitemap.xml",
-    label: "Sitemap",
-    description: "Every indexable page, in both locales.",
-  },
-  {
-    href: "/llms.txt",
-    label: "llms.txt",
-    description: "The site map written for language models.",
-  },
-  {
-    href: "/.well-known/api-catalog",
-    label: "API catalog",
-    description: "RFC 9727 linkset of every machine-facing surface.",
-  },
-  {
-    href: "/openapi.json",
-    label: "OpenAPI document",
-    description: "Typed request and response schemas for the public API.",
-  },
-];
-
-const markdown = [
-  "# 404 — Not found",
-  "",
-  "The requested path does not exist on ecentic.ai. Try one of these instead:",
-  "",
-  ...recovery.map(
-    (link) =>
-      `- [${link.label}](${seo.host}${link.href}) — ${link.description}`,
-  ),
-  "",
-  "API paths under /api answer with RFC 9457 application/problem+json.",
-].join("\n");
+const markdown = notFoundMarkdown();
 
 export default () => {
   return (
@@ -89,7 +49,7 @@ export default () => {
 
           <nav aria-label="Recovery links">
             <ul className="flex flex-col gap-3">
-              {recovery.map((link) => (
+              {RECOVERY_LINKS.map((link) => (
                 <li key={link.href} className="flex flex-col">
                   <a
                     href={link.href}

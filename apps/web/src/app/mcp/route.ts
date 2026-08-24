@@ -1,4 +1,5 @@
 import * as MCP from "@/server/app/mcp";
+import { mcpMethodNotAllowed } from "@/server/utils/mcp-http";
 
 /**
  * `/mcp` alias for the MCP endpoint at `/api/mcp`.
@@ -20,10 +21,9 @@ export const POST = async (request: Request) => MCP.handleRequest(request);
  * there is nothing to terminate and the spec's answer is 405.
  */
 export const DELETE = () =>
-  new Response(null, {
-    status: 405,
-    headers: { Allow: "POST, OPTIONS", "Cache-Control": "no-store" },
-  });
+  mcpMethodNotAllowed(
+    "ecentic issues no Mcp-Session-Id, so there is no session to terminate.",
+  );
 
 export const OPTIONS = () =>
   new Response(null, {

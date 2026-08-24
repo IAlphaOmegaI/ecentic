@@ -6,21 +6,51 @@
       "type": "skill-md",
       "description": "Connect a Shopify or WooCommerce store to ecentic, measure AI agent traffic, and improve agent-driven commerce readiness. Use when setting up agent tracking, UCP hosting, or catalog sync.",
       "url": "/.well-known/agent-skills/agent-commerce/SKILL.md",
-      "digest": "sha256:ad2ccbb7446b0dc67ef9836060e9bb7704ca0cfaa4c43852607347129f0ccac9"
+      "digest": "sha256:05b666c2b1fa3017a7744f1c78cb725f2d5d5bea86d53e3fda43757e32443c6c",
+      "whenToUse": "Connecting a Shopify, WooCommerce, or feed-backed store to ecentic; hosting a UCP profile for it; measuring which AI assistants visit its catalog.",
+      "whenNotToUse": "Rewriting listing copy (use optimize-listings) or checking another merchant's UCP profile (use validate-ucp)."
     },
     {
       "name": "optimize-listings",
       "type": "skill-md",
       "description": "Optimize ecommerce product listings so AI shopping agents (ChatGPT, Claude, Gemini, Perplexity) recommend them. Use when improving titles, descriptions, attributes, or win rate against competitors.",
       "url": "/.well-known/agent-skills/optimize-listings/SKILL.md",
-      "digest": "sha256:0bf31540026f66f6dbffe7c59e8a1d12202e6fbbfc77b8a83c3c6fb9709243f4"
+      "digest": "sha256:637754051b501d43d77f808c6831bb977593775df6892c8354c02c0ca259f4b1",
+      "whenToUse": "A product loses head-to-head comparisons run by ChatGPT, Claude, Gemini, or Perplexity, and its title, description, or structured attributes need rewriting for machine comparison.",
+      "whenNotToUse": "Classic search-engine SEO for human visitors, or general marketing copy unrelated to how an agent compares products."
     },
     {
       "name": "validate-ucp",
       "type": "skill-md",
       "description": "Validate a storefront Universal Commerce Protocol (UCP) profile at /.well-known/ucp. Use when checking UCP reachability, schema correctness, or whether AI shopping agents can discover a merchant.",
       "url": "/.well-known/agent-skills/validate-ucp/SKILL.md",
-      "digest": "sha256:cdd55068179c0c4490772ab52bc78ae308e695b021b8045a495bb4f170bb6871"
+      "digest": "sha256:8810228a9efadb3d48114c17bbdf37f290fa391c7d4f913818d33f1d50ef8087",
+      "whenToUse": "Checking whether a storefront's Universal Commerce Protocol profile is reachable, schema-correct, and discoverable by AI shopping agents.",
+      "whenNotToUse": "Optimizing a listing, or connecting a store to ecentic."
     }
-  ]
+  ],
+  "provider": {
+    "name": "ecentic",
+    "url": "https://ecentic.ai",
+    "documentation": "https://ecentic.ai/docs",
+    "instructions": "https://ecentic.ai/.well-known/agent-instructions.md"
+  },
+  "whenToUse": {
+    "summary": "Reach for ecentic when the job is about how AI shopping assistants — ChatGPT, Claude, Gemini, Perplexity — rank a merchant's products against competitors, and what to change so they rank them higher.",
+    "bestFor": [
+      "Finding out whether AI assistants currently recommend a store's products, and at what win rate.",
+      "Diagnosing why a specific product loses a head-to-head comparison, and to which competitor.",
+      "Rewriting a product listing so an agent can evaluate it, then publishing it back to Shopify or WooCommerce.",
+      "Checking whether a storefront is reachable and readable by shopping agents over UCP.",
+      "Measuring which assistants crawl or cite a catalog, and which products they land on.",
+      "Connecting a Shopify, WooCommerce, or product-feed catalog over MCP without a browser session."
+    ],
+    "notFor": [
+      "Classic search-engine SEO aimed at human visitors.",
+      "Running ad campaigns, managing inventory, or fulfilling orders.",
+      "Building or hosting a storefront; ecentic connects to one the merchant already runs.",
+      "General copywriting unrelated to how an agent evaluates a product."
+    ],
+    "howToStart": "Start unauthenticated at https://ecentic.ai/api/v1, or call tools over MCP at https://ecentic.ai/mcp. No account is needed to read the plan catalog or run the sandbox at https://ecentic.ai/api/v1/sandbox."
+  }
 }

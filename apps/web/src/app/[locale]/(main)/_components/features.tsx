@@ -52,9 +52,14 @@ export const Features = async () => {
                 <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
               )}
               <feature.icon className={cn(feature.color, "size-16")} />
-              <h2 className="font-body font-medium text-2xl text-foreground md:text-4xl">
+              {/* h3, not h2: these four are the children of the section's own
+                  heading, and a page whose headings are all siblings has no
+                  outline for a reader — human or crawler — to walk. Tailwind's
+                  preflight strips UA heading styles, so the level carries no
+                  visual weight of its own and nothing here moves. */}
+              <h3 className="font-body font-medium text-2xl text-foreground md:text-4xl">
                 {translate(`features.items.${feature.key}.title`)}
-              </h2>
+              </h3>
               <p className="font-body font-light text-foreground-dimmed text-lg">
                 {translate(`features.items.${feature.key}.description`)}
               </p>

@@ -6873,7 +6873,9 @@
       "docs": "Documentación",
       "errors": "Errores",
       "rateLimits": "Límites de uso",
-      "versioning": "Versionado"
+      "versioning": "Versionado",
+      "mcp": "Servidor MCP",
+      "authentication": "Autenticación"
     },
     "hero": {
       "title": "Documentación para",
@@ -7128,6 +7130,130 @@
         "title": "Qué no se versiona",
         "description": "Los documentos de descubrimiento siguen la versión de su propio protocolo.",
         "body": "Los documentos de descubrimiento en `.well-known` se versionan según el protocolo que implementan, no según la versión de la API de ecentic — el perfil UCP lleva una versión de UCP, la tarjeta de servidor MCP lleva una versión de protocolo, y así con el resto. Leer la versión dentro del documento siempre es correcto; deducirla de la versión de la API de ecentic no lo es."
+      }
+    },
+    "mcpPage": {
+      "meta": {
+        "title": "Servidor MCP de ecentic",
+        "description": "Cómo conectar un cliente MCP al servidor MCP de ecentic: transporte Streamable HTTP, el handshake, el catálogo de herramientas, la autenticación y los errores que devuelve."
+      },
+      "hero": {
+        "title": "Servidor MCP",
+        "accent": "de ecentic.",
+        "description": "Claude, ChatGPT y cualquier cliente del Model Context Protocol pueden llamar a ecentic de forma nativa por JSON-RPC 2.0. Esta página es la referencia de conexión: el endpoint, el transporte, el handshake y todas las herramientas que expone.",
+        "assurances": [
+          "Streamable HTTP",
+          "JSON-RPC 2.0",
+          "7 herramientas"
+        ],
+        "art": {
+          "alt": "Ilustración ASCII de un robot"
+        },
+        "action": {
+          "primary": "Volver a la documentación",
+          "secondary": "Abrir el manifiesto del servidor"
+        }
+      },
+      "connect": {
+        "number": "01",
+        "title": "Conectar",
+        "description": "Un endpoint, dos rutas, ninguna sesión que gestionar.",
+        "body": "El servidor está disponible en `/mcp` y en `/api/mcp`. Ambos son el mismo handler; la ruta corta existe porque la mayoría de los clientes y escáneres la prueban primero.\n\nEl transporte es Streamable HTTP. Cada petición es un `POST` con JSON-RPC 2.0, y cada respuesta llega por ese mismo POST. ecentic no abre ningún flujo iniciado por el servidor, así que un `GET` con `Accept: text/event-stream` responde `405` en lugar de dejar tu cliente esperando un flujo que nunca emitirá.\n\nNo hay sesión. ecentic no emite `Mcp-Session-Id`, y `DELETE` — el verbo de cierre de sesión — responde `405` por la misma razón. No hay nada que cerrar."
+      },
+      "handshake": {
+        "number": "02",
+        "title": "Handshake",
+        "description": "Initialize y, después, la notificación initialized.",
+        "body": "`initialize` devuelve la versión de protocolo negociada, la identidad del servidor, sus capacidades y una cadena `instructions` que describe para qué sirve ecentic. Si pides una versión que ecentic habla, recibes esa versión; cualquier otra recurre a la que anuncia por defecto.\n\nEl mensaje `notifications/initialized` que sigue es una **notificación** JSON-RPC: no tiene `id` y no recibe respuesta. ecentic la contesta con `202 Accepted` y cuerpo vacío, como exige el transporte. Un servidor que responde a una notificación con un error JSON-RPC rompe el handshake, así que este es el primer intercambio que conviene revisar cuando un cliente no conecta.",
+        "supported": "Versiones de protocolo aceptadas en initialize"
+      },
+      "tools": {
+        "number": "03",
+        "title": "Herramientas",
+        "description": "Qué expone el servidor y qué llamadas necesitan clave.",
+        "columns": {
+          "tool": "Herramienta",
+          "authentication": "Auth",
+          "summary": "Qué hace"
+        },
+        "items": {
+          "listPlans": "Devuelve el catálogo público de planes con precios, modo de facturación y condiciones de la comisión por rendimiento.",
+          "createApiKey": "Genera una clave de API de larga duración en la cuenta que llama. Se muestra una sola vez.",
+          "createCheckout": "Abre una sesión de pago de Stripe para un plan de suscripción.",
+          "connectShopify": "Inicia la instalación OAuth de Shopify para un dominio de tienda.",
+          "connectWooCommerce": "Conecta una tienda WooCommerce con credenciales REST de consumidor.",
+          "connectFeed": "Conecta un feed de productos por URL, detectando XML o JSON automáticamente.",
+          "getOnboardingStatus": "Informa de qué pasos del onboarding ha completado la cuenta."
+        },
+        "none": "ninguna",
+        "bearer": "bearer"
+      },
+      "authentication": {
+        "number": "04",
+        "title": "Autenticación",
+        "description": "Las herramientas de solo lectura son abiertas; todo lo que toca una cuenta requiere una clave bearer.",
+        "body": "Envía `Authorization: Bearer ecentic_sk_…` en las llamadas que modifican el estado de la cuenta. Una llamada que necesita credencial y no la lleva devuelve HTTP 401 con una cabecera `WWW-Authenticate` que nombra el documento de Protected Resource Metadata, de modo que el cliente puede volver a ejecutar el descubrimiento a partir del propio fallo.\n\nLas claves son autoservicio: crea una cuenta y genera una desde el panel o llamando a `create_api_key` en una sesión autenticada. No interviene ningún comercial en ningún momento.",
+        "linkLabel": "Registro y credenciales"
+      },
+      "errors": {
+        "number": "05",
+        "title": "Errores",
+        "description": "Dos superficies de error, y cuál estás viendo.",
+        "body": "Un **error JSON-RPC** — método desconocido, parámetros incorrectos, una herramienta que rechaza la llamada — llega como HTTP 200 con un miembro `error`, exactamente como especifica JSON-RPC. Ramifica según `error.code`.\n\nUn **error de transporte** — un método que el endpoint no ofrece — llega como un documento de problema RFC 9457 con `Content-Type: application/problem+json` y un `code` legible por máquina. Es el mismo modelo de error que usa la superficie REST.\n\nLa única excepción es el 401: lleva el envoltorio JSON-RPC para que un cliente que ya analiza JSON-RPC no necesite un segundo analizador, además de la cabecera `WWW-Authenticate` para el descubrimiento."
+      },
+      "footer": {
+        "note": "Todo lo que afirma esta página es verificable: el manifiesto, la tarjeta del servidor y el documento OpenAPI describen el mismo endpoint."
+      }
+    },
+    "authenticationPage": {
+      "meta": {
+        "title": "Autenticación de la API de ecentic",
+        "description": "Cómo autenticarse en la API de ecentic: qué superficies son públicas, cómo generar una clave de agente, cómo se envían los tokens bearer y qué te dice un 401."
+      },
+      "hero": {
+        "title": "Autenticación de la",
+        "accent": "API de ecentic.",
+        "description": "El descubrimiento público no necesita ninguna credencial. Todo lo que lee o modifica una cuenta de comercio requiere una clave bearer que generas tú mismo: sin llamada comercial y sin aprovisionamiento manual.",
+        "assurances": [
+          "Claves autoservicio",
+          "Tokens bearer",
+          "Metadatos OAuth"
+        ],
+        "art": {
+          "alt": "Ilustración ASCII de un escudo"
+        },
+        "action": {
+          "primary": "Volver a la documentación",
+          "secondary": "Leer auth.md"
+        }
+      },
+      "open": {
+        "number": "01",
+        "title": "Qué no necesita clave",
+        "description": "El descubrimiento es abierto, deliberadamente.",
+        "body": "Todos los endpoints bajo `/api/v1` responden sin cabecera `Authorization`, igual que los documentos de descubrimiento well-known, el documento OpenAPI y la herramienta MCP `list_plans`. Un agente puede conocer toda la forma de la API — endpoints, planes, protocolos, skills, límites de tasa, códigos de error — antes de que nadie haya creado una cuenta.\n\nEl sandbox también es abierto: `POST /api/v1/sandbox/simulation` devuelve exactamente la forma de respuesta de una simulación real, calculada con puntuación sintética, de modo que se puede escribir y probar un cliente sin ninguna credencial."
+      },
+      "keys": {
+        "number": "02",
+        "title": "Generar una clave",
+        "description": "Dos rutas de autoservicio, ambas bajo tu control.",
+        "body": "Crea una cuenta y genera una clave desde el panel o llamando a la herramienta MCP `create_api_key` desde una sesión autenticada. Las claves tienen el formato `ecentic_sk_…`, son de larga duración y se muestran exactamente una vez: ecentic solo guarda un hash, así que una clave perdida se sustituye, no se recupera.\n\nPara rotarla, genera una nueva y revoca la anterior. Nada del proceso requiere contactar con una persona.",
+        "linkLabel": "Guía completa de registro"
+      },
+      "sending": {
+        "number": "03",
+        "title": "Enviar una clave",
+        "description": "Una sola cabecera, en todas partes.",
+        "body": "Envía la clave como token bearer en cada petición protegida. La misma cabecera funciona en la superficie REST y en las llamadas a herramientas MCP.\n\nNo pongas la clave en la query string: las query strings acaban en registros, proxies y cabeceras referrer, y ecentic no la leerá desde ahí."
+      },
+      "failures": {
+        "number": "04",
+        "title": "Cuando falla",
+        "description": "Un 401 te dice adónde ir después.",
+        "body": "Una credencial ausente o inválida devuelve HTTP 401 con una cabecera `WWW-Authenticate` que nombra el documento de Protected Resource Metadata (RFC 9728). Seguirla lleva a los metadatos del servidor de autorización (RFC 8414), de modo que un cliente que recibe un 401 puede descubrir cómo autenticarse sin que una persona lea documentación.\n\nEn la superficie REST el cuerpo es un problema RFC 9457 con `code: \"unauthenticated\"`. En el endpoint MCP es un error JSON-RPC con código `-32001` y una pista `resource_metadata` en `error.data`."
+      },
+      "footer": {
+        "note": "Nunca hacen falta credenciales para evaluar ecentic: solo para actuar sobre una cuenta de comercio."
       }
     }
   }

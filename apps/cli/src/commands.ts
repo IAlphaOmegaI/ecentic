@@ -28,6 +28,16 @@ export const COMMANDS: readonly Command[] = [
     summary: "Published agent skills.",
     path: "/api/v1/skills",
   },
+  {
+    name: "onboarding",
+    summary: "Zero-auth guarantees, each with a URL that proves it.",
+    path: "/api/v1/onboarding",
+  },
+  {
+    name: "sandbox",
+    summary: "Zero-auth sandbox: what it offers, its limits, its caveats.",
+    path: "/api/v1/sandbox",
+  },
   { name: "health", summary: "Service health.", path: "/api/v1/health" },
   {
     name: "openapi",
@@ -79,6 +89,7 @@ Usage
 
 Commands
 ${COMMANDS.map((command) => `  ${command.name.padEnd(11)}${command.summary}`).join("\n")}
+  simulate <json>      Run a sandbox simulation. No account, no credential.
   mcp <method> [json]  Call the MCP endpoint (JSON-RPC 2.0).
   tools                Shorthand for: mcp tools/list
 
@@ -97,6 +108,7 @@ Examples
   ecentic discovery
   ecentic plans | jq '.plans[] | {key, price}'
   ecentic tools
+  ecentic simulate '{"product":{"title":"Alpine Down Jacket"},"competitors":[{"title":"Summit Puffer"}]}'
   ecentic mcp tools/call '{"name":"list_plans","arguments":{}}'
 
 Documentation: ${DEFAULT_HOST}/docs
@@ -130,6 +142,38 @@ export const plan = (
     "User-Agent": `${USER_AGENT}/${version}`,
     ...(options.apiKey ? { Authorization: `Bearer ${options.apiKey}` } : {}),
   };
+
+  if (name === "simulate") {
+    const [rawPayload] = rest;
+    if (!rawPayload)
+      return {
+        kind: "error",
+        message:
+          'simulate needs a JSON payload, e.g. `ecentic simulate \'{"product":{"title":"A"},"competitors":[{"title":"B"}]}\'`.',
+      };
+
+    const payload = (() => {
+      try {
+        return JSON.parse(rawPayload) as unknown;
+      } catch {
+        return null;
+      }
+    })();
+
+    if (payload === null)
+      return {
+        kind: "error",
+        message: `Could not parse payload as JSON: ${rawPayload}`,
+      };
+
+    return {
+      kind: "request",
+      method: "POST",
+      url: `${options.host}/api/v1/sandbox/simulation`,
+      headers: { ...headers, "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    };
+  }
 
   if (name === "mcp" || name === "tools") {
     const method = name === "tools" ? "tools/list" : rest[0];

@@ -77,6 +77,14 @@ export const GET = async (request: Request) => {
         "Human-readable reference for the ecentic API: endpoints, authentication, typed errors, rate limits, and versioning.",
       links: [
         { path: "/docs", label: "ecentic API documentation" },
+        {
+          path: "/docs/mcp",
+          label: "ecentic MCP server — connect and call it",
+        },
+        {
+          path: "/docs/authentication",
+          label: "ecentic API authentication — keys and bearer tokens",
+        },
         { path: "/docs/errors", label: "ecentic API errors (RFC 9457 codes)" },
         { path: "/docs/rate-limits", label: "ecentic API rate limits" },
         {
@@ -94,6 +102,16 @@ export const GET = async (request: Request) => {
         { path: "/api/v1/discovery", label: "Protocol and document discovery" },
         { path: "/api/v1/plans", label: "Plan catalog" },
         { path: "/api/v1/skills", label: "Agent skills" },
+        {
+          path: "/api/v1/onboarding",
+          label:
+            "Onboarding signals — free tier, self-serve keys, sandbox, each with a URL that proves it",
+        },
+        {
+          path: "/api/v1/sandbox",
+          label:
+            "Zero-auth sandbox — build a client before creating an account",
+        },
         { path: "/mcp", label: "MCP endpoint (JSON-RPC tools)" },
         { path: "/api/mcp", label: "MCP endpoint (canonical path)" },
         { path: "/.well-known/mcp.json", label: "MCP server manifest" },
@@ -150,6 +168,9 @@ export const GET = async (request: Request) => {
     `- MCP manifest: ${seo.host}/.well-known/mcp.json`,
     `- Public REST API (v1): ${seo.host}/api/v1`,
     `- Developer documentation: ${seo.host}/docs`,
+    `- Zero-auth sandbox: ${seo.host}/api/v1/sandbox`,
+    `- Onboarding signals: ${seo.host}/api/v1/onboarding`,
+    `- 404 recovery (Markdown): ${seo.host}/404.md`,
     `- Agent instructions: ${seo.host}/.well-known/agent-instructions.md`,
     `- Agent skills: ${seo.host}/.well-known/agent-skills/index.json`,
     `- auth.md: ${seo.host}/auth.md`,

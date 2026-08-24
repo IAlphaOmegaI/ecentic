@@ -146,12 +146,20 @@ export default async () => {
   -H "Content-Type: application/json" \\
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'`}
           </DocsCode>
-          <a
-            href="/auth.md"
-            className="text-primary underline-offset-4 hover:underline"
-          >
-            {translate("authentication.linkLabel")}
-          </a>
+          <div className="flex flex-wrap gap-4">
+            <Link
+              href="/docs/authentication"
+              className="text-primary underline-offset-4 hover:underline"
+            >
+              {translate("breadcrumb.authentication")}
+            </Link>
+            <a
+              href="/auth.md"
+              className="text-primary underline-offset-4 hover:underline"
+            >
+              {translate("authentication.linkLabel")}
+            </a>
+          </div>
         </div>
       </ContentPageSection>
 
@@ -275,6 +283,12 @@ export default async () => {
           <DocsCode label="https://ecentic.ai/.well-known/mcp.json">
             {"curl -s https://ecentic.ai/.well-known/mcp.json | jq .transport"}
           </DocsCode>
+          <Link
+            href="/docs/mcp"
+            className="text-primary underline-offset-4 hover:underline"
+          >
+            {translate("breadcrumb.mcp")}
+          </Link>
         </div>
       </ContentPageSection>
 

@@ -1,6 +1,7 @@
 ---
 name: optimize-listings
 description: Optimize ecommerce product listings so AI shopping agents (ChatGPT, Claude, Gemini, Perplexity) recommend them. Use when improving titles, descriptions, attributes, or win rate against competitors.
+when_to_use: Use when a product loses head-to-head comparisons run by ChatGPT, Claude, Gemini, or Perplexity, and its title, description, or structured attributes need to be rewritten for machine comparison.
 ---
 
 # Optimize Listings for AI Shopping Agents
@@ -12,6 +13,13 @@ Use ecentic to simulate how AI shopping agents compare a product against competi
 - A merchant asks why ChatGPT, Claude, Gemini, or Perplexity prefers a competitor
 - Product titles/descriptions need agent-readable structure (specs, constraints, differentiators)
 - You need a before/after win-rate lift after rewriting a listing
+
+## When not to use
+
+- Classic search-engine SEO aimed at human visitors — ecentic optimizes for how an agent compares products, not for SERP rank
+- General marketing copywriting unrelated to machine comparison
+- Connecting a store or measuring agent traffic — that is [agent-commerce](https://ecentic.ai/.well-known/agent-skills/agent-commerce/SKILL.md)
+- Pricing strategy; ecentic reports how price framing reads to an agent, it does not set prices
 
 ## Workflow
 

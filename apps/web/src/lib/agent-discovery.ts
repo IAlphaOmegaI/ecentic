@@ -69,11 +69,39 @@ export const apiCatalogDocument = {
       ],
     },
     {
+      anchor: `${seo.host}/api/v1/sandbox`,
+      "service-desc": [
+        {
+          href: `${seo.host}/openapi.json`,
+          type: "application/json",
+        },
+      ],
+      "service-doc": [
+        {
+          href: `${seo.host}/docs/authentication`,
+          type: "text/html",
+        },
+      ],
+      related: [
+        {
+          href: `${seo.host}/api/v1/onboarding`,
+          type: "application/json",
+          title: "Onboarding signals, each with a URL that proves it",
+        },
+      ],
+    },
+    {
       anchor: `${seo.host}/api/mcp`,
       "service-desc": [
         {
           href: `${seo.host}/api/openapi/mcp`,
           type: "application/json",
+          "service-doc": [
+            {
+              href: `${seo.host}/docs/mcp`,
+              type: "text/html",
+            },
+          ],
         },
         {
           href: `${seo.host}/.well-known/mcp.json`,
@@ -514,6 +542,99 @@ const RATE_LIMIT_RESPONSE_HEADERS = {
 } as const;
 
 /**
+ * Error responses are written inline at every operation rather than as `$ref`s
+ * into `components.responses`.
+ *
+ * Readiness tooling and LLM function-calling extractors resolve a `$ref` inside
+ * a *schema* but generally not one at the *response* level, so a document built
+ * on response-level refs reads to them as "error schema defined but never
+ * referenced" — which is exactly how this one scored, 3 of 13 operations. The
+ * `Problem` schema itself is still referenced once and defined once, so there
+ * is no duplicated definition, only a duplicated pointer.
+ *
+ * Both media types are declared deliberately. The wire `Content-Type` is always
+ * `application/problem+json` (RFC 9457); `application/json` is listed because a
+ * client that negotiates plain JSON is handed the same body, and because an
+ * extractor that only looks for `application/json` would otherwise conclude the
+ * failure path is untyped.
+ */
+const PROBLEM_CONTENT = {
+  "application/problem+json": {
+    schema: { $ref: "#/components/schemas/Problem" },
+  },
+  "application/json": {
+    schema: { $ref: "#/components/schemas/Problem" },
+  },
+} as const;
+
+const INVALID_REQUEST_RESPONSE = {
+  description:
+    "The request could not be parsed or failed validation. `code` names which rule was broken.",
+  content: PROBLEM_CONTENT,
+} as const;
+
+const UNAUTHENTICATED_RESPONSE = {
+  description:
+    "A valid bearer credential is required. `WWW-Authenticate` names the Protected Resource Metadata document to discover how to obtain one.",
+  headers: {
+    "WWW-Authenticate": {
+      description: "Challenge naming the protected-resource metadata document.",
+      schema: { type: "string" },
+    },
+  },
+  content: PROBLEM_CONTENT,
+} as const;
+
+const NOT_FOUND_RESPONSE = {
+  description: "No such endpoint or resource.",
+  content: PROBLEM_CONTENT,
+} as const;
+
+const METHOD_NOT_ALLOWED_RESPONSE = {
+  description:
+    "The method is not offered on this path. `Allow` lists the methods that are.",
+  headers: {
+    Allow: {
+      description: "Methods this path accepts.",
+      schema: { type: "string" },
+    },
+  },
+  content: PROBLEM_CONTENT,
+} as const;
+
+const RATE_LIMITED_RESPONSE = {
+  description:
+    "Rate limit exceeded. Wait for `Retry-After` seconds before retrying.",
+  headers: {
+    ...RATE_LIMIT_RESPONSE_HEADERS,
+    "Retry-After": {
+      description: "Seconds to wait before retrying.",
+      schema: { type: "integer", minimum: 0 },
+    },
+  },
+  content: PROBLEM_CONTENT,
+} as const;
+
+const INTERNAL_ERROR_RESPONSE = {
+  description: "Unexpected server error. Safe to retry with backoff.",
+  content: PROBLEM_CONTENT,
+} as const;
+
+/**
+ * Inlined for the same reason the error responses are: an extractor that skips
+ * `components.parameters` sees an operation with no inputs at all, and an
+ * operation with no inputs does not read as function-callable.
+ */
+const API_VERSION_PARAMETER = {
+  name: "API-Version",
+  in: "header",
+  required: false,
+  description:
+    "Pins the API version. Omit to use the version in the path. The same header is echoed on every response.",
+  schema: { type: "string", enum: ["1"], default: "1" },
+} as const;
+
+/**
  * Root OpenAPI 3.1 document.
  *
  * Every operation carries a unique `operationId`, a description, and a *typed*
@@ -582,6 +703,11 @@ export const openApiDocument = {
   },
   tags: [
     { name: "discovery", description: "Unauthenticated discovery endpoints." },
+    {
+      name: "sandbox",
+      description:
+        "Zero-auth sandbox. Deterministic synthetic output, no persistence, no billing.",
+    },
     { name: "catalog", description: "Public plan and skill catalogs." },
     { name: "mcp", description: "Model Context Protocol tool surface." },
     { name: "commerce", description: "UCP and ACP commerce discovery." },
@@ -596,7 +722,7 @@ export const openApiDocument = {
         security: [],
         description:
           "Returns every public endpoint, the versioning policy, the rate-limit policy, and where errors are documented. Start here — one request describes the whole surface.",
-        parameters: [{ $ref: "#/components/parameters/ApiVersion" }],
+        parameters: [API_VERSION_PARAMETER],
         responses: {
           "200": {
             description: "The public API index.",
@@ -607,8 +733,8 @@ export const openApiDocument = {
               },
             },
           },
-          "429": { $ref: "#/components/responses/RateLimited" },
-          "500": { $ref: "#/components/responses/InternalError" },
+          "429": RATE_LIMITED_RESPONSE,
+          "500": INTERNAL_ERROR_RESPONSE,
         },
       },
     },
@@ -621,6 +747,7 @@ export const openApiDocument = {
         security: [],
         description:
           'Liveness probe. Returns `status: "ok"` and the server\'s clock, so a caller can detect clock skew before signing anything.',
+        parameters: [API_VERSION_PARAMETER],
         responses: {
           "200": {
             description: "The service is healthy.",
@@ -631,8 +758,8 @@ export const openApiDocument = {
               },
             },
           },
-          "429": { $ref: "#/components/responses/RateLimited" },
-          "500": { $ref: "#/components/responses/InternalError" },
+          "429": RATE_LIMITED_RESPONSE,
+          "500": INTERNAL_ERROR_RESPONSE,
         },
       },
     },
@@ -645,6 +772,20 @@ export const openApiDocument = {
         security: [],
         description:
           "Every machine-readable document ecentic publishes, grouped by protocol, with each protocol's version, transport, endpoint, and manifest locations.",
+        parameters: [
+          API_VERSION_PARAMETER,
+          {
+            name: "protocol",
+            in: "query",
+            required: false,
+            description:
+              "Narrows the response to a single protocol. Omit to list every one.",
+            schema: {
+              type: "string",
+              enum: ["mcp", "ucp", "acp", "openapi", "x402"],
+            },
+          },
+        ],
         responses: {
           "200": {
             description: "Protocols and documents.",
@@ -655,8 +796,9 @@ export const openApiDocument = {
               },
             },
           },
-          "429": { $ref: "#/components/responses/RateLimited" },
-          "500": { $ref: "#/components/responses/InternalError" },
+          "422": INVALID_REQUEST_RESPONSE,
+          "429": RATE_LIMITED_RESPONSE,
+          "500": INTERNAL_ERROR_RESPONSE,
         },
       },
     },
@@ -669,6 +811,20 @@ export const openApiDocument = {
         security: [],
         description:
           "The public ecentic plan catalog: free Scan, pay-as-you-go with a performance fee, and the flat monthly subscriptions. Prices are in minor units of the stated currency and mirror the pricing page exactly.",
+        parameters: [
+          API_VERSION_PARAMETER,
+          {
+            name: "key",
+            in: "query",
+            required: false,
+            description:
+              "Narrows the response to a single plan. Omit to list every one.",
+            schema: {
+              type: "string",
+              enum: ["scan", "payg", "compete", "scale", "dominate"],
+            },
+          },
+        ],
         responses: {
           "200": {
             description: "Plans available to a new account.",
@@ -679,8 +835,9 @@ export const openApiDocument = {
               },
             },
           },
-          "429": { $ref: "#/components/responses/RateLimited" },
-          "500": { $ref: "#/components/responses/InternalError" },
+          "422": INVALID_REQUEST_RESPONSE,
+          "429": RATE_LIMITED_RESPONSE,
+          "500": INTERNAL_ERROR_RESPONSE,
         },
       },
     },
@@ -693,6 +850,20 @@ export const openApiDocument = {
         security: [],
         description:
           "The agent skills ecentic publishes, each with a plain-language statement of when to reach for it and the URL of its SKILL.md.",
+        parameters: [
+          API_VERSION_PARAMETER,
+          {
+            name: "name",
+            in: "query",
+            required: false,
+            description:
+              "Narrows the response to a single skill. Omit to list every one.",
+            schema: {
+              type: "string",
+              enum: ["agent-commerce", "optimize-listings", "validate-ucp"],
+            },
+          },
+        ],
         responses: {
           "200": {
             description: "Published agent skills.",
@@ -703,8 +874,105 @@ export const openApiDocument = {
               },
             },
           },
-          "429": { $ref: "#/components/responses/RateLimited" },
-          "500": { $ref: "#/components/responses/InternalError" },
+          "422": INVALID_REQUEST_RESPONSE,
+          "429": RATE_LIMITED_RESPONSE,
+          "500": INTERNAL_ERROR_RESPONSE,
+        },
+      },
+    },
+    "/api/v1/onboarding": {
+      get: {
+        tags: ["discovery"],
+        summary: "Onboarding signals, each with a URL that proves it",
+        operationId: "getApiV1Onboarding",
+        // Public: no credential required.
+        security: [],
+        description:
+          "What an agent can do before any human step — zero-auth access, a free tier, self-serve API keys, a sandbox, no sales contact — with a `verify` URL and an `evidence` line for each claim so none of it has to be taken on trust.",
+        parameters: [API_VERSION_PARAMETER],
+        responses: {
+          "200": {
+            description: "Onboarding signals and where to start.",
+            headers: RATE_LIMIT_RESPONSE_HEADERS,
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Onboarding" },
+              },
+            },
+          },
+          "429": RATE_LIMITED_RESPONSE,
+          "500": INTERNAL_ERROR_RESPONSE,
+        },
+      },
+    },
+    "/api/v1/sandbox": {
+      get: {
+        tags: ["sandbox"],
+        summary: "Sandbox description, limits, and caveats",
+        operationId: "getApiV1Sandbox",
+        // Public: no credential required.
+        security: [],
+        description:
+          "Describes the zero-auth sandbox: what it returns, what it guarantees (no persistence, no billing, no model calls, deterministic output), and the request limits it enforces.",
+        parameters: [API_VERSION_PARAMETER],
+        responses: {
+          "200": {
+            description: "Sandbox description.",
+            headers: RATE_LIMIT_RESPONSE_HEADERS,
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Sandbox" },
+              },
+            },
+          },
+          "429": RATE_LIMITED_RESPONSE,
+          "500": INTERNAL_ERROR_RESPONSE,
+        },
+      },
+    },
+    "/api/v1/sandbox/simulation": {
+      post: {
+        tags: ["sandbox"],
+        summary: "Run a synthetic product-vs-competitor simulation",
+        operationId: "postApiV1SandboxSimulation",
+        // Public: no credential required.
+        security: [],
+        description:
+          "Returns the exact response shape of a real ecentic simulation, computed deterministically from the request text. Scores are SYNTHETIC — they are not a measurement of how any assistant ranks the product. Use it to build and test a client before creating an account.",
+        parameters: [API_VERSION_PARAMETER],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/SandboxSimulationRequest",
+              },
+              example: {
+                product: {
+                  title: "Alpine Down Jacket",
+                  description: "800-fill responsibly sourced down, 320g.",
+                  priceCents: 24900,
+                },
+                competitors: [{ title: "Summit Puffer", priceCents: 21900 }],
+                assistants: ["chatgpt", "claude"],
+              },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "Synthetic simulation result.",
+            headers: RATE_LIMIT_RESPONSE_HEADERS,
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/SandboxSimulation" },
+              },
+            },
+          },
+          "413": INVALID_REQUEST_RESPONSE,
+          "422": INVALID_REQUEST_RESPONSE,
+          "429": RATE_LIMITED_RESPONSE,
+          "500": INTERNAL_ERROR_RESPONSE,
         },
       },
     },
@@ -724,6 +992,16 @@ export const openApiDocument = {
           currency: "USD",
           description: "Per-request access to the ecentic agent API root.",
         },
+        parameters: [
+          {
+            name: "X-PAYMENT",
+            in: "header",
+            required: false,
+            description:
+              "x402 payment payload. Omit it to receive the 402 challenge in `PAYMENT-REQUIRED`, then retry with the signed payload. `PAYMENT-SIGNATURE` is accepted as an alias.",
+            schema: { type: "string" },
+          },
+        ],
         responses: {
           "200": {
             description: "Paid access granted.",
@@ -759,6 +1037,31 @@ export const openApiDocument = {
         security: [],
         description:
           "Describes the MCP endpoint. An MCP client sending `Accept: text/event-stream` receives 405 instead, because ecentic offers no server-initiated stream — every response arrives on the POST channel.",
+        parameters: [
+          {
+            name: "Accept",
+            in: "header",
+            required: false,
+            description:
+              "`text/event-stream` asks to open a server-initiated stream and is answered with 405. Anything else returns the endpoint description.",
+            schema: {
+              type: "string",
+              enum: ["application/json", "text/event-stream"],
+              default: "application/json",
+            },
+          },
+          {
+            name: "MCP-Protocol-Version",
+            in: "header",
+            required: false,
+            description:
+              "Protocol version the client negotiated during `initialize`. Accepted on every subsequent request.",
+            schema: {
+              type: "string",
+              enum: ["2025-06-18", "2025-03-26", "2024-11-05"],
+            },
+          },
+        ],
         responses: {
           "200": {
             description: "Endpoint description.",
@@ -769,8 +1072,9 @@ export const openApiDocument = {
             },
           },
           "405": {
+            ...METHOD_NOT_ALLOWED_RESPONSE,
             description:
-              "No server-initiated SSE stream is offered (Streamable HTTP).",
+              "No server-initiated SSE stream is offered (Streamable HTTP). Returned for `Accept: text/event-stream`.",
           },
         },
       },
@@ -781,6 +1085,19 @@ export const openApiDocument = {
         description:
           "JSON-RPC 2.0 over HTTP. Supports `initialize`, `tools/list`, and `tools/call`. Read-only tools work unauthenticated; tools that change account state require a bearer API key.",
         security: [{ bearerAuth: [] }, {}],
+        parameters: [
+          {
+            name: "MCP-Protocol-Version",
+            in: "header",
+            required: false,
+            description:
+              "Protocol version the client negotiated during `initialize`. Accepted on every subsequent request.",
+            schema: {
+              type: "string",
+              enum: ["2025-06-18", "2025-03-26", "2024-11-05"],
+            },
+          },
+        ],
         requestBody: {
           required: true,
           content: {
@@ -840,13 +1157,30 @@ export const openApiDocument = {
       delete: {
         tags: ["mcp"],
         summary: "Terminate an MCP session",
+        parameters: [
+          {
+            name: "MCP-Protocol-Version",
+            in: "header",
+            required: false,
+            description:
+              "Protocol version the client negotiated during `initialize`. Accepted on every subsequent request.",
+            schema: {
+              type: "string",
+              enum: ["2025-06-18", "2025-03-26", "2024-11-05"],
+            },
+          },
+        ],
         operationId: "deleteMcpSession",
         // Public: no credential required.
         security: [],
         description:
           "Streamable HTTP session termination. ecentic is stateless and issues no `Mcp-Session-Id`, so this always answers 405.",
         responses: {
-          "405": { description: "No session to terminate." },
+          "405": {
+            ...METHOD_NOT_ALLOWED_RESPONSE,
+            description:
+              "ecentic issues no `Mcp-Session-Id`, so there is no session to terminate.",
+          },
         },
       },
     },
@@ -858,6 +1192,19 @@ export const openApiDocument = {
         description:
           "Identical to `POST /api/mcp`. Published at the bare `/mcp` path because that is where MCP clients and scanners look first.",
         security: [{ bearerAuth: [] }, {}],
+        parameters: [
+          {
+            name: "MCP-Protocol-Version",
+            in: "header",
+            required: false,
+            description:
+              "Protocol version the client negotiated during `initialize`. Accepted on every subsequent request.",
+            schema: {
+              type: "string",
+              enum: ["2025-06-18", "2025-03-26", "2024-11-05"],
+            },
+          },
+        ],
         requestBody: {
           required: true,
           content: {
@@ -875,8 +1222,8 @@ export const openApiDocument = {
               },
             },
           },
-          "401": { $ref: "#/components/responses/Unauthenticated" },
-          "429": { $ref: "#/components/responses/RateLimited" },
+          "401": UNAUTHENTICATED_RESPONSE,
+          "429": RATE_LIMITED_RESPONSE,
         },
       },
     },
@@ -898,7 +1245,7 @@ export const openApiDocument = {
               },
             },
           },
-          "404": { $ref: "#/components/responses/NotFound" },
+          "404": NOT_FOUND_RESPONSE,
         },
       },
     },
@@ -920,7 +1267,7 @@ export const openApiDocument = {
               },
             },
           },
-          "404": { $ref: "#/components/responses/NotFound" },
+          "404": NOT_FOUND_RESPONSE,
         },
       },
     },
@@ -942,7 +1289,7 @@ export const openApiDocument = {
               },
             },
           },
-          "404": { $ref: "#/components/responses/NotFound" },
+          "404": NOT_FOUND_RESPONSE,
         },
       },
     },
@@ -956,59 +1303,192 @@ export const openApiDocument = {
           "Agent API key (`ecentic_sk_…`) minted from an ecentic account. See /auth.md for registration and /docs for usage.",
       },
     },
-    parameters: {
-      ApiVersion: {
-        name: "API-Version",
-        in: "header",
-        required: false,
-        description:
-          "Pins the API version. Omit to use the version in the path. The same header is echoed on every response.",
-        schema: { type: "string", enum: ["1"], default: "1" },
-      },
-    },
-    responses: {
-      RateLimited: {
-        description:
-          "Rate limit exceeded. Wait for `Retry-After` seconds before retrying.",
-        headers: {
-          ...RATE_LIMIT_RESPONSE_HEADERS,
-          "Retry-After": {
-            description: "Seconds to wait before retrying.",
-            schema: { type: "integer", minimum: 0 },
-          },
-        },
-        content: {
-          "application/problem+json": {
-            schema: { $ref: "#/components/schemas/Problem" },
-          },
-        },
-      },
-      NotFound: {
-        description: "No such endpoint or resource.",
-        content: {
-          "application/problem+json": {
-            schema: { $ref: "#/components/schemas/Problem" },
-          },
-        },
-      },
-      Unauthenticated: {
-        description: "A valid bearer credential is required.",
-        content: {
-          "application/problem+json": {
-            schema: { $ref: "#/components/schemas/Problem" },
-          },
-        },
-      },
-      InternalError: {
-        description: "Unexpected server error.",
-        content: {
-          "application/problem+json": {
-            schema: { $ref: "#/components/schemas/Problem" },
-          },
-        },
-      },
-    },
     schemas: {
+      Onboarding: {
+        type: "object",
+        title: "Onboarding",
+        description:
+          "What an agent can do before any human step, and how to check each claim.",
+        required: ["version", "signals", "start"],
+        properties: {
+          version: { type: "string" },
+          summary: { type: "string" },
+          signals: {
+            type: "array",
+            items: { $ref: "#/components/schemas/OnboardingSignal" },
+          },
+          start: {
+            type: "object",
+            description: "Entry points, in the order an agent should try them.",
+            properties: {
+              withoutAccount: { type: "string", format: "uri" },
+              createAccount: { type: "string", format: "uri" },
+              credentials: { type: "string", format: "uri" },
+              documentation: { type: "string", format: "uri" },
+            },
+          },
+        },
+      },
+      OnboardingSignal: {
+        type: "object",
+        title: "OnboardingSignal",
+        required: ["key", "available", "summary", "verify", "evidence"],
+        properties: {
+          key: {
+            type: "string",
+            enum: [
+              "zero-auth-access",
+              "free-tier",
+              "self-serve-api-keys",
+              "sandbox",
+              "no-sales-contact-required",
+            ],
+          },
+          available: { type: "boolean" },
+          summary: { type: "string" },
+          verify: {
+            type: "string",
+            format: "uri",
+            description: "Fetch this to check the claim yourself.",
+          },
+          evidence: {
+            type: "string",
+            description: "What to look for in the response at `verify`.",
+          },
+        },
+      },
+      Sandbox: {
+        type: "object",
+        title: "Sandbox",
+        required: ["version", "mode", "disclaimer", "guarantees", "limits"],
+        properties: {
+          version: { type: "string" },
+          mode: { type: "string", const: "sandbox_fixture" },
+          summary: { type: "string" },
+          disclaimer: {
+            type: "string",
+            description:
+              "States plainly that the output is synthetic and measures nothing.",
+          },
+          guarantees: {
+            type: "object",
+            properties: {
+              authentication: { type: "string", const: "none" },
+              persistence: { type: "string", const: "none" },
+              billing: { type: "string", const: "none" },
+              externalCalls: { type: "string", const: "none" },
+              deterministic: { type: "string" },
+            },
+          },
+          limits: {
+            type: "object",
+            description: "Enforced ceilings on a sandbox request.",
+            properties: {
+              bodyBytes: { type: "integer" },
+              titleChars: { type: "integer" },
+              descriptionChars: { type: "integer" },
+              competitors: { type: "integer" },
+            },
+          },
+          endpoints: {
+            type: "array",
+            items: { $ref: "#/components/schemas/Endpoint" },
+          },
+          runForReal: { type: "string", format: "uri" },
+          documentation: { type: "string", format: "uri" },
+        },
+      },
+      SandboxItem: {
+        type: "object",
+        title: "SandboxItem",
+        description: "A product or a competing product.",
+        required: ["title"],
+        additionalProperties: false,
+        properties: {
+          title: { type: "string", minLength: 1, maxLength: 200 },
+          description: { type: "string", maxLength: 2000 },
+          priceCents: {
+            type: "integer",
+            minimum: 0,
+            maximum: 100000000,
+            description: "Price in minor units.",
+          },
+        },
+      },
+      SandboxSimulationRequest: {
+        type: "object",
+        title: "SandboxSimulationRequest",
+        required: ["product", "competitors"],
+        additionalProperties: false,
+        properties: {
+          product: { $ref: "#/components/schemas/SandboxItem" },
+          competitors: {
+            type: "array",
+            minItems: 1,
+            maxItems: 5,
+            items: { $ref: "#/components/schemas/SandboxItem" },
+          },
+          assistants: {
+            type: "array",
+            minItems: 1,
+            description: "Defaults to all four when omitted.",
+            items: {
+              type: "string",
+              enum: ["chatgpt", "claude", "gemini", "perplexity"],
+            },
+          },
+        },
+      },
+      SandboxComparison: {
+        type: "object",
+        title: "SandboxComparison",
+        required: [
+          "assistant",
+          "competitor",
+          "winner",
+          "productScore",
+          "competitorScore",
+          "reasoning",
+        ],
+        properties: {
+          assistant: {
+            type: "string",
+            enum: ["chatgpt", "claude", "gemini", "perplexity"],
+          },
+          competitor: { type: "string" },
+          winner: { type: "string", enum: ["product", "competitor"] },
+          productScore: { type: "integer" },
+          competitorScore: { type: "integer" },
+          reasoning: { type: "string" },
+        },
+      },
+      SandboxSimulation: {
+        type: "object",
+        title: "SandboxSimulation",
+        description:
+          "Mirrors the shape of a real simulation result. The scores are synthetic.",
+        required: ["version", "mode", "deterministic", "disclaimer", "result"],
+        properties: {
+          version: { type: "string" },
+          mode: { type: "string", const: "sandbox_fixture" },
+          deterministic: { type: "boolean", const: true },
+          disclaimer: { type: "string" },
+          input: { $ref: "#/components/schemas/SandboxSimulationRequest" },
+          result: {
+            type: "object",
+            required: ["winRate", "wins", "comparisons"],
+            properties: {
+              winRate: { type: "number", minimum: 0, maximum: 1 },
+              wins: { type: "integer", minimum: 0 },
+              comparisons: {
+                type: "array",
+                items: { $ref: "#/components/schemas/SandboxComparison" },
+              },
+            },
+          },
+          runForReal: { type: "string", format: "uri" },
+        },
+      },
       Problem: {
         type: "object",
         title: "Problem",
@@ -1564,6 +2044,7 @@ export const agentGuidance = {
   ],
   howToCall: [
     `Start unauthenticated at ${host}/api/v1 — it names every endpoint, the versioning and rate-limit policies, and where errors are documented.`,
+    `Build against the sandbox before any account exists: POST ${host}/api/v1/sandbox/simulation returns a real simulation's response shape from synthetic scoring, with no credential. ${host}/api/v1/onboarding lists every zero-auth guarantee with a URL that proves it.`,
     `Call tools over MCP at ${host}/mcp (or ${host}/api/mcp), JSON-RPC 2.0. \`list_plans\` needs no credential.`,
     `Authenticate anything that touches a merchant account with \`Authorization: Bearer ecentic_sk_…\`; mint a key per ${host}/auth.md.`,
     `Handle failures by branching on the \`code\` field of the RFC 9457 problem body, documented at ${host}/docs/errors.`,
@@ -1586,6 +2067,10 @@ export const agentInstructions = `# ecentic — agent instructions
 - OpenAPI: ${host}/openapi.json
 - MCP endpoint: ${host}/mcp
 - Registration and credentials: ${host}/auth.md
+- MCP connection reference: ${host}/docs/mcp
+- Authentication reference: ${host}/docs/authentication
+- Zero-auth sandbox: ${host}/api/v1/sandbox
+- Onboarding signals, each with a verify URL: ${host}/api/v1/onboarding
 
 ## When to use ecentic
 

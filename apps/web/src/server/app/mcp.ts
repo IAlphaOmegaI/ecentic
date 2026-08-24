@@ -12,6 +12,8 @@ import * as Store from "@/server/app/store";
 import * as Subscription from "@/server/app/subscription";
 import { schema } from "@/server/database";
 import { Environment } from "@/server/utils/environment";
+import * as JsonRpc2 from "@/server/utils/json-rpc";
+import { mcpMethodNotAllowed } from "@/server/utils/mcp-http";
 import { PLANS } from "@/server/utils/stripe";
 import { Utils } from "./mcp/utils";
 
@@ -64,6 +66,21 @@ namespace JsonRpc {
       message: `Method not found: ${method ?? "unknown"}`,
     });
 
+  /**
+   * JSON-RPC's rule is that a message without an `id` is a notification and
+   * gets no reply; Streamable HTTP binds that to "202 Accepted, empty body".
+   *
+   * This is what broke the handshake. Every MCP SDK client sends
+   * `notifications/initialized` immediately after `initialize`, and answering
+   * it with a `-32601` JSON-RPC error — which is what a missing case in the
+   * method switch produces — makes the transport treat the session as failed.
+   */
+  export const accepted = () =>
+    new Response(null, {
+      status: 202,
+      headers: { "Cache-Control": "no-store" },
+    });
+
   export const unauthorized = (id: Request["id"]) =>
     Response.json(
       {
@@ -89,21 +106,10 @@ namespace JsonRpc {
     );
 }
 
-const parse = async (
-  request: Request,
-): Promise<
-  { success: true; data: JsonRpc.Request } | { success: false; message: string }
-> => {
+const parse = async (request: Request): Promise<JsonRpc2.ParsedBody> => {
   const text = await resultify(() => request.text());
   if (!text.success) return { success: false, message: "Invalid JSON payload" };
-
-  const json = resultify(() => JSON.parse(text.data) as unknown);
-  if (!json.success) return { success: false, message: "Invalid JSON payload" };
-
-  if (typeof json.data !== "object" || json.data === null)
-    return { success: false, message: "JSON-RPC body must be an object" };
-
-  return { success: true, data: json.data as JsonRpc.Request };
+  return JsonRpc2.parseBody(text.data);
 };
 
 const parseToolArgs = <T>(schema: z.ZodType<T>, value: unknown) => {
@@ -427,7 +433,14 @@ export const getRoute = async (accept?: string | null) => {
     {
       headers: {
         "Content-Type": "application/json; charset=utf-8",
-        "Cache-Control": "public, max-age=60, s-maxage=60",
+        // This GET answers differently for `Accept: text/event-stream` (405,
+        // per Streamable HTTP). It was served from the shared CDN cache with no
+        // `Vary`, so an SSE probe got the cached 200 JSON back and the client's
+        // stream open failed — the whole reason the handshake scored broken.
+        // A negotiated response that is never stored cannot be mismatched;
+        // `Vary: Accept` is declared alongside it in `next.config.ts`, because
+        // the App Router overwrites a `Vary` set inside a route handler.
+        "Cache-Control": "no-store",
       },
     },
   );
@@ -439,38 +452,33 @@ export const getRoute = async (accept?: string | null) => {
  *
  * Deliberately not exported: this module carries a file-level `"use server"`,
  * which makes every export addressable as a server action. The route handlers
- * that answer `DELETE` build the same response themselves rather than widen
- * that surface for four lines.
+ * that answer `DELETE` call the same shared helper instead.
  */
-const methodNotAllowed = async () =>
-  new Response(null, {
-    status: 405,
-    headers: {
-      Allow: "POST, OPTIONS",
-      "Cache-Control": "no-store",
-    },
-  });
+const methodNotAllowed = async () => mcpMethodNotAllowed();
 
-export const handleRequest = async (request: Request) => {
-  const payload = await parse(request);
-  if (!payload.success)
-    return JsonRpc.create(null, undefined, {
-      code: -32700,
-      message: payload.message,
-    });
+const negotiateProtocolVersion = (params?: JsonRpc2.JsonRpcMessage["params"]) =>
+  JsonRpc2.negotiateProtocolVersion(
+    params?.protocolVersion,
+    Utils.protocol.supportedVersions,
+    Utils.protocol.version,
+  );
 
-  const body = payload.data;
-
+const dispatch = async (request: Request, body: JsonRpc2.JsonRpcMessage) => {
   if (body.jsonrpc !== "2.0")
     return JsonRpc.invalidParams(body.id, 'jsonrpc must be exactly "2.0"');
 
   switch (body.method) {
     case "initialize":
       return JsonRpc.create(body.id, {
-        protocolVersion: Utils.protocol.version,
+        protocolVersion: negotiateProtocolVersion(body.params),
         serverInfo: Utils.protocol.server,
         capabilities: { tools: {} },
+        instructions: Utils.protocol.instructions,
       });
+    // Liveness probe from the shared MCP utilities. An empty result is the
+    // whole contract; answering `-32601` reads to a client as a dead server.
+    case "ping":
+      return JsonRpc.create(body.id, {});
     case "tools/list":
       return JsonRpc.create(body.id, { tools: Utils.tools });
     case "tools/call": {
@@ -536,4 +544,56 @@ export const handleRequest = async (request: Request) => {
     default:
       return JsonRpc.methodNotFound(body.id, body.method);
   }
+};
+
+export const handleRequest = async (request: Request) => {
+  const payload = await parse(request);
+  if (!payload.success)
+    return JsonRpc.create(null, undefined, {
+      code: -32700,
+      message: payload.message,
+    });
+
+  const { batch, messages } = payload;
+
+  const answerable = messages.filter(JsonRpc2.isAnswerable);
+
+  if (answerable.length === 0) return JsonRpc.accepted();
+
+  const [single] = answerable;
+  if (!batch && single) return dispatch(request, single);
+
+  const settled = await Promise.all(
+    answerable.map(async (message) => {
+      const response = await dispatch(request, message);
+      const parsed = await resultify(() => response.json() as Promise<unknown>);
+      return {
+        unauthorized: response.status === 401,
+        // An answer that is not JSON would otherwise vanish from the array,
+        // leaving the client with fewer replies than requests and no way to
+        // tell which one lost its answer. Synthesise one that keeps the id, so
+        // the batch stays correlatable however a dispatch fails.
+        body: parsed.success
+          ? parsed.data
+          : {
+              jsonrpc: "2.0",
+              id: message.id ?? null,
+              error: {
+                code: -32603,
+                message: "Internal error: the response could not be encoded.",
+              },
+            },
+      };
+    }),
+  );
+
+  return new Response(JSON.stringify(settled.map((entry) => entry.body)), {
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": "no-store",
+      ...(settled.some((entry) => entry.unauthorized)
+        ? { "WWW-Authenticate": resourceMetadataWwwAuthenticate }
+        : {}),
+    },
+  });
 };

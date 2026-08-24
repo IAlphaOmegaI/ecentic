@@ -1,7 +1,16 @@
-import { discoveryIndex } from "@/lib/agent-api";
-import { preflight, served } from "@/server/utils/public-api";
+import { discoveryIndex, isProtocolKey } from "@/lib/agent-api";
+import { preflight, refused, served } from "@/server/utils/public-api";
 
-/** Every machine-readable document ecentic publishes, grouped by protocol. */
-export const GET = (request: Request) => served(request, discoveryIndex());
+export const GET = (request: Request) => {
+  const protocol = new URL(request.url).searchParams.get("protocol");
+  if (protocol !== null && !isProtocolKey(protocol))
+    return refused(
+      request,
+      "validation-failed",
+      `Unknown protocol "${protocol}". Omit the parameter to list every protocol.`,
+    );
+
+  return served(request, discoveryIndex(protocol ?? undefined));
+};
 
 export const OPTIONS = preflight;

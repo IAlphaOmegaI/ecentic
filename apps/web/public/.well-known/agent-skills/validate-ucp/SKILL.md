@@ -1,6 +1,7 @@
 ---
 name: validate-ucp
 description: Validate a storefront Universal Commerce Protocol (UCP) profile at /.well-known/ucp. Use when checking UCP reachability, schema correctness, or whether AI shopping agents can discover a merchant.
+when_to_use: Use when checking whether a storefront's Universal Commerce Protocol profile is reachable, schema-correct, and discoverable by AI shopping agents.
 ---
 
 # Validate a UCP Profile
@@ -12,6 +13,12 @@ Use ecentic's free UCP Validator and Playground to inspect any storefront's Univ
 - Confirm `GET https://{store}/.well-known/ucp` returns a valid profile
 - Debug UCP schema errors, capability keys, or transport endpoints
 - Smoke-test catalog search → cart → checkout against a live store
+
+## When not to use
+
+- Optimizing a listing for agent comparison — that is [optimize-listings](https://ecentic.ai/.well-known/agent-skills/optimize-listings/SKILL.md)
+- Connecting a store to ecentic — that is [agent-commerce](https://ecentic.ai/.well-known/agent-skills/agent-commerce/SKILL.md)
+- Validating a protocol other than UCP; ecentic also publishes ACP and MCP surfaces but this skill checks UCP only
 
 ## Workflow
 

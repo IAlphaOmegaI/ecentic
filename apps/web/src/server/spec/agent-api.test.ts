@@ -5,12 +5,20 @@ import {
   API_VERSION,
   apiIndex,
   discoveryIndex,
+  exceedsSandboxBody,
   healthIndex,
+  onboardingIndex,
   PLAN_CATALOG,
   plansIndex,
+  SANDBOX_ASSISTANTS,
+  SANDBOX_LIMITS,
+  sandboxIndex,
+  sandboxSimulation,
   skillsIndex,
   V1_ENDPOINTS,
 } from "@/lib/agent-api";
+import { DOCUMENTED_MCP_TOOLS } from "@/lib/mcp-docs";
+import { Utils } from "@/server/app/mcp/utils";
 
 const HOST = "https://ecentic.ai";
 
@@ -140,5 +148,127 @@ describe("health", () => {
       version: API_VERSION,
       timestamp: stamp,
     });
+  });
+});
+
+describe("MCP documentation", () => {
+  /**
+   * `/docs/mcp` lists the tools by hand so its copy can be typed against the
+   * message catalog. That is only safe while the list is the server's actual
+   * catalog — a tool added to the server and not to the page is a documented
+   * surface with an undocumented hole in it.
+   */
+  test("the documented tool list is the live tool catalog", () => {
+    expect(DOCUMENTED_MCP_TOOLS.map((tool) => tool.name)).toEqual(
+      Utils.tools.map((tool) => tool.name),
+    );
+  });
+});
+
+describe("onboarding signals", () => {
+  /**
+   * The audit's complaint was "described but not verified live". Every signal
+   * therefore has to carry something an auditor can fetch — a claim without a
+   * `verify` URL is exactly the shape that scored half marks.
+   */
+  test("every signal carries a fetchable verify URL and its evidence", () => {
+    const index = onboardingIndex();
+    expect(index.signals.length).toBeGreaterThanOrEqual(4);
+
+    for (const signal of index.signals) {
+      expect(signal.verify, signal.key).toStartWith("https://ecentic.ai");
+      expect(signal.evidence.length, signal.key).toBeGreaterThan(15);
+      expect(signal.summary.length, signal.key).toBeGreaterThan(30);
+    }
+  });
+
+  test("names the four signals the audit looked for", () => {
+    const keys = onboardingIndex().signals.map((signal) => signal.key);
+    expect(keys).toContain("free-tier");
+    expect(keys).toContain("self-serve-api-keys");
+    expect(keys).toContain("sandbox");
+    expect(keys).toContain("zero-auth-access");
+  });
+
+  test("the free-tier claim matches the plan catalog", () => {
+    const free = PLAN_CATALOG.filter((plan) => plan.price === null);
+    expect(free.map((plan) => plan.key)).toEqual(["scan", "payg"]);
+  });
+});
+
+describe("sandbox", () => {
+  const input = {
+    product: { title: "Alpine Down Jacket", priceCents: 24900 },
+    competitors: [{ title: "Summit Puffer", priceCents: 21900 }],
+    assistants: SANDBOX_ASSISTANTS,
+  };
+
+  /**
+   * A sandbox whose output shifts between identical calls is worse than none:
+   * a client cannot tell its own change from the sandbox's noise. Determinism
+   * is the contract the endpoint advertises, so it is asserted, not assumed.
+   */
+  test("identical input produces identical output", () => {
+    expect(sandboxSimulation(input)).toEqual(sandboxSimulation(input));
+  });
+
+  test("different input produces different scores", () => {
+    const other = sandboxSimulation({
+      ...input,
+      product: { title: "Something else entirely" },
+    });
+    expect(other.result.comparisons[0]?.productScore).not.toBe(
+      sandboxSimulation(input).result.comparisons[0]?.productScore,
+    );
+  });
+
+  test("labels itself as synthetic in a way a client cannot miss", () => {
+    const result = sandboxSimulation(input);
+    expect(result.mode).toBe("sandbox_fixture");
+    expect(result.deterministic).toBe(true);
+    expect(result.disclaimer.toLowerCase()).toContain("synthetic");
+    expect(sandboxIndex().mode).toBe("sandbox_fixture");
+    expect(sandboxIndex().guarantees.persistence).toBe("none");
+    expect(sandboxIndex().guarantees.billing).toBe("none");
+  });
+
+  test("one comparison per assistant per competitor, and a matching win rate", () => {
+    const result = sandboxSimulation(input);
+    expect(result.result.comparisons.length).toBe(
+      SANDBOX_ASSISTANTS.length * input.competitors.length,
+    );
+    const wins = result.result.comparisons.filter(
+      (comparison) => comparison.winner === "product",
+    ).length;
+    expect(result.result.wins).toBe(wins);
+    expect(result.result.winRate).toBeCloseTo(
+      wins / result.result.comparisons.length,
+    );
+  });
+
+  /**
+   * The ceiling is a byte ceiling. `String.length` counts UTF-16 code units, so
+   * a body of 16k multibyte characters passes a naive check while arriving as
+   * roughly 48KB — exactly the upload the limit exists to refuse.
+   */
+  test("the body ceiling is measured in bytes, not code units", () => {
+    const underBoth = "a".repeat(SANDBOX_LIMITS.bodyBytes);
+    expect(exceedsSandboxBody(underBoth)).toBe(false);
+    expect(exceedsSandboxBody(`${underBoth}a`)).toBe(true);
+
+    // Three bytes each, so a third of the character budget is the whole byte
+    // budget — a code-unit check would wave this through.
+    const multibyte = "€".repeat(SANDBOX_LIMITS.bodyBytes / 2);
+    expect(multibyte.length).toBeLessThan(SANDBOX_LIMITS.bodyBytes);
+    expect(exceedsSandboxBody(multibyte)).toBe(true);
+  });
+
+  test("scores stay inside the band the schema promises", () => {
+    for (const comparison of sandboxSimulation(input).result.comparisons) {
+      expect(comparison.productScore).toBeGreaterThanOrEqual(55);
+      expect(comparison.productScore).toBeLessThanOrEqual(95);
+      expect(comparison.competitorScore).toBeGreaterThanOrEqual(55);
+      expect(comparison.competitorScore).toBeLessThanOrEqual(95);
+    }
   });
 });
