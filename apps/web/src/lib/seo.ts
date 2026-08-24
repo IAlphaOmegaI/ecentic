@@ -31,6 +31,17 @@ export const brandedTitle = (title: string) =>
     ? `${title}${BRAND_SUFFIX}`
     : title;
 
+/**
+ * Organization schema.
+ *
+ * `contactPoint` and `address` are here because verification tooling reads them
+ * to decide whether a business is real, and an Organization node without either
+ * scores as an unverifiable claim. Every value is one the site already
+ * publishes: the addresses appear in the privacy policy and terms, and the
+ * locality and country are the jurisdiction those terms name. No street address
+ * is published anywhere on the site, so none is invented here — a fabricated
+ * one is worse than an absent one.
+ */
 export const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
@@ -40,6 +51,51 @@ export const organizationSchema = {
     "@type": "ImageObject",
     url: absoluteUrl("/icons/icon-512.png"),
   },
+  email: "support@ecentic.ai",
+  parentOrganization: {
+    "@type": "Organization",
+    name: "zennit",
+    url: "https://www.zennit.dev",
+  },
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Prishtina",
+    addressCountry: "XK",
+  },
+  contactPoint: [
+    {
+      "@type": "ContactPoint",
+      contactType: "customer support",
+      email: "support@ecentic.ai",
+      url: absoluteUrl("/support"),
+      availableLanguage: ["en", "es"],
+      areaServed: "Worldwide",
+    },
+    {
+      "@type": "ContactPoint",
+      contactType: "technical support",
+      email: "support@ecentic.ai",
+      url: absoluteUrl("/docs"),
+      availableLanguage: ["en"],
+      areaServed: "Worldwide",
+    },
+    {
+      "@type": "ContactPoint",
+      contactType: "privacy",
+      email: "privacy@ecentic.ai",
+      url: absoluteUrl("/privacy-policy"),
+      availableLanguage: ["en", "es"],
+      areaServed: "Worldwide",
+    },
+    {
+      "@type": "ContactPoint",
+      contactType: "legal",
+      email: "legal@ecentic.ai",
+      url: absoluteUrl("/terms"),
+      availableLanguage: ["en", "es"],
+      areaServed: "Worldwide",
+    },
+  ],
   sameAs: [...seo.links],
 } as const;
 

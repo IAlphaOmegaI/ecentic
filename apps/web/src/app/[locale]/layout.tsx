@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import { Red_Hat_Display } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
-import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { type PropsWithChildren, Suspense } from "react";
 import "../globals.css";
@@ -19,6 +18,7 @@ import { MotionProvider } from "@/context/motion";
 import { PostHogProvider } from "@/context/posthog";
 import { ThemeProvider } from "@/context/theme";
 import { THEME_INIT_SCRIPT } from "@/context/theme-script";
+import { ClientMessages } from "@/i18n/client-messages";
 import { openGraphLocale } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
 
@@ -137,7 +137,6 @@ export const generateMetadata = async (): Promise<Metadata> => {
 
 export default async ({ children }: PropsWithChildren) => {
   const locale = await getLocale();
-  const messages = await getMessages();
 
   return (
     <html lang={locale} suppressHydrationWarning>
@@ -233,12 +232,16 @@ export default async ({ children }: PropsWithChildren) => {
               <ThemeProvider>
                 <MotionProvider>
                   <ToastProvider>
-                    <NextIntlClientProvider locale={locale} messages={messages}>
+                    {/* Scoped: this provider covers only the chrome rendered
+                        here. Route groups below re-provide their own subset —
+                        see `i18n/client-messages.tsx`. Serializing the whole
+                        catalog here put 242KB of JSON into every page. */}
+                    <ClientMessages scope="root">
                       <div className="isolate">{children}</div>
-                      {/* Must sit under NextIntlClientProvider — `useTranslations`
+                      {/* Must sit under a message provider — `useTranslations`
                           / locale `Link` need the client provider. */}
                       <CookieConsent />
-                    </NextIntlClientProvider>
+                    </ClientMessages>
                     <ToastList
                       types={["error", "success", "info", "loading"]}
                     />

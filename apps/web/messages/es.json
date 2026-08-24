@@ -94,7 +94,9 @@
       "terms": "Términos de servicio",
       "shopify": "Shopify",
       "woocommerce": "WooCommerce",
-      "productListings": "Fichas de producto"
+      "productListings": "Fichas de producto",
+      "docs": "Documentación",
+      "apiReference": "Referencia de la API"
     },
     "cta": {
       "eyebrow": "Que te elija la IA",
@@ -3151,6 +3153,9 @@
       "description": "Una introducción en vídeo a la plataforma ecentic.",
       "close": "Cerrar vídeo",
       "fallback": "Tu navegador no admite vídeo incrustado."
+    },
+    "summary": {
+      "label": "Acerca de ecentic"
     }
   },
   "cookieConsent": {
@@ -6841,6 +6846,270 @@
       "failedTitle": "No se pudo canjear",
       "successTitle": "Canje recibido",
       "successDescription": "Verificaremos tu batch y te escribiremos en un plazo de 1 día laborable."
+    }
+  },
+  "docs": {
+    "meta": {
+      "title": "Documentación de la API de ecentic",
+      "description": "Documentación para desarrolladores de ecentic: API REST, servidor MCP, autenticación, errores tipados, límites de uso, versionado, webhooks y la CLI de ecentic."
+    },
+    "breadcrumb": {
+      "home": "Inicio",
+      "docs": "Documentación",
+      "errors": "Errores",
+      "rateLimits": "Límites de uso",
+      "versioning": "Versionado"
+    },
+    "hero": {
+      "title": "Documentación para",
+      "accent": "desarrolladores.",
+      "description": "Todo lo que un agente o un ingeniero necesita para llamar a ecentic: una API REST versionada, un servidor MCP, errores tipados, límites de uso publicados y los documentos de descubrimiento que permiten encontrarlo todo sin intervención humana.",
+      "assurances": [
+        "Los endpoints públicos no necesitan clave",
+        "OpenAPI 3.1",
+        "Errores RFC 9457"
+      ],
+      "art": {
+        "alt": "Ilustración en ASCII de una consola de terminal"
+      },
+      "action": {
+        "primary": "Abrir el documento OpenAPI",
+        "secondary": "Leer auth.md"
+      }
+    },
+    "quickstart": {
+      "number": "01",
+      "title": "Llama a ecentic en una sola petición",
+      "description": "La superficie pública no requiere autenticación y admite CORS. Empieza aquí y genera una clave solo cuando necesites actuar sobre la cuenta de un comercio.",
+      "intro": "Cada endpoint público responde en JSON, envía cabeceras de límite de uso en tiempo real y apunta a su propia descripción legible por máquinas mediante una cabecera Link.",
+      "steps": [
+        {
+          "title": "Descubre la superficie",
+          "description": "Una petición devuelve todos los endpoints, la política de versionado, la política de límites de uso y dónde están documentados los errores."
+        },
+        {
+          "title": "Lee el mapa de protocolos",
+          "description": "MCP, UCP, ACP, OpenAPI y x402 con sus versiones, transportes y la ubicación de sus manifiestos."
+        },
+        {
+          "title": "Consulta el catálogo de planes",
+          "description": "Los mismos precios que muestra la página de precios, en unidades mínimas legibles por máquinas."
+        }
+      ]
+    },
+    "authentication": {
+      "number": "02",
+      "title": "Autenticación",
+      "description": "Las lecturas públicas son abiertas. Todo lo que toca la cuenta de un comercio requiere una clave bearer.",
+      "body": "ecentic emite claves de API de larga duración una vez que una persona crea una cuenta. Crea la cuenta, genera una clave desde el panel o con la herramienta MCP autenticada `create_api_key` y envíala como token bearer en cada llamada protegida. La clave se muestra una sola vez.\n\nLas llamadas protegidas sin una clave válida devuelven HTTP 401 y una cabecera `WWW-Authenticate` que nombra el documento de metadatos del recurso protegido, de modo que un agente puede repetir el descubrimiento a partir del propio fallo en lugar de adivinar.\n\n- `mcp` — llamar a las herramientas MCP del endpoint de ecentic\n- `onboarding` — conectar tiendas de Shopify, WooCommerce y feeds de productos",
+      "linkLabel": "Guía completa de registro y credenciales"
+    },
+    "endpoints": {
+      "number": "03",
+      "title": "Endpoints",
+      "description": "La superficie REST versionada. Las rutas bajo /api/v1 son estables durante toda la vida de v1.",
+      "columns": {
+        "method": "Método",
+        "path": "Ruta",
+        "authentication": "Auth",
+        "summary": "Resumen"
+      },
+      "authentication": {
+        "none": "Público",
+        "bearer": "Clave bearer",
+        "x402": "Pago x402"
+      }
+    },
+    "protocols": {
+      "number": "04",
+      "title": "Protocolos de agentes",
+      "description": "ecentic habla los protocolos de comercio y herramientas que los agentes ya usan, y publica un manifiesto para cada uno.",
+      "columns": {
+        "protocol": "Protocolo",
+        "version": "Versión",
+        "endpoint": "Endpoint",
+        "manifest": "Manifiesto"
+      }
+    },
+    "reliability": {
+      "number": "05",
+      "title": "Errores, límites y versiones",
+      "description": "Los tres contratos de los que depende una integración, cada uno documentado en su propia página y legible por máquinas.",
+      "cards": [
+        {
+          "title": "Errores tipados",
+          "description": "Cada fallo es application/problem+json con un código estable legible por máquinas y una pista de resolución."
+        },
+        {
+          "title": "Límites de uso",
+          "description": "Cabeceras RateLimit en tiempo real en cada respuesta y Retry-After en un 429, para que un agente se autorregule."
+        },
+        {
+          "title": "Versionado",
+          "description": "La versión va en la ruta, con cabeceras Deprecation y Sunset antes de retirar nada."
+        }
+      ]
+    },
+    "mcp": {
+      "number": "06",
+      "title": "Servidor MCP",
+      "description": "Claude, ChatGPT y cualquier cliente MCP pueden llamar a ecentic de forma nativa.",
+      "body": "El servidor MCP de ecentic habla JSON-RPC 2.0 sobre HTTP y está disponible tanto en `/mcp` como en `/api/mcp`. Su manifiesto se publica en la ruta well-known convencional y como tarjeta de servidor SEP-1649.\n\nLas herramientas de solo lectura (`list_plans`) funcionan sin autenticación. Las que cambian el estado de la cuenta — crear claves, iniciar un pago, conectar una tienda — necesitan una clave bearer.\n\n- `list_plans` — planes y su disponibilidad en Stripe\n- `create_api_key` — generar una clave de agente de larga duración\n- `create_checkout` — abrir una sesión de pago de Stripe\n- `connect_shopify`, `connect_woocommerce`, `connect_feed` — conexión de tiendas"
+    },
+    "webhooks": {
+      "number": "07",
+      "title": "Webhooks",
+      "description": "ecentic recibe webhooks; todavía no los envía.",
+      "body": "Los endpoints entrantes verifican la firma y rechazan cualquier petición que no la supere antes de ejecutar ningún handler. Los webhooks de cumplimiento de Shopify verifican un HMAC, Stripe verifica su propia cabecera de firma y los endpoints de socios verifican un secreto bearer.\n\nLos webhooks salientes — ecentic notificando a tu sistema cuando termina un escaneo o se vuelve a publicar una ficha — aún no están disponibles. Hasta entonces, consulta la superficie REST o suscríbete a través de la sesión MCP."
+    },
+    "cli": {
+      "number": "08",
+      "title": "Línea de comandos",
+      "description": "Automatiza ecentic sin escribir un cliente HTTP.",
+      "body": "La CLI de ecentic envuelve la misma superficie pública documentada aquí — descubrimiento, planes, skills, estado y llamadas a herramientas MCP — para que un agente o una persona desarrolladora pueda usar la terminal en lugar de construir una integración.\n\nLee `ECENTIC_API_KEY` del entorno para los comandos autenticados e imprime JSON en stdout, de modo que todos los comandos se componen con `jq`."
+    },
+    "footer": {
+      "note": "Todos los documentos de esta página son legibles por máquinas y accesibles sin clave."
+    },
+    "errorsPage": {
+      "meta": {
+        "title": "Errores de la API de ecentic",
+        "description": "Cada código de error de la API de ecentic, su estado HTTP, qué significa y cómo lo resuelve un agente. Los errores son application/problem+json según RFC 9457."
+      },
+      "hero": {
+        "title": "Errores de la API",
+        "accent": "de ecentic.",
+        "description": "Cada fallo de la API de ecentic es un documento de problema tipado, no una página HTML. El código es el contrato: es estable, legible por máquinas y seguro para tomar decisiones.",
+        "assurances": ["RFC 9457", "Códigos estables", "Pistas de resolución"],
+        "art": {
+          "alt": "Ilustración en ASCII de un escudo"
+        },
+        "action": {
+          "primary": "Volver a la documentación"
+        }
+      },
+      "shape": {
+        "number": "01",
+        "title": "La forma de un problema",
+        "description": "Un solo tipo de medio y un solo esquema, en cada 4xx y 5xx que devuelve la API.",
+        "body": "Las respuestas llevan `Content-Type: application/problem+json` — deliberadamente no `application/json`, porque el tipo de medio es la señal que permite a un cliente genérico saber que el cuerpo describe un fallo y no el recurso solicitado.\n\n- `type` — URI que nombra el error, anclado en esta página\n- `code` — identificador estable legible por máquinas sobre el que ramificar\n- `title` — resumen breve para personas\n- `status` — el estado HTTP, repetido en el cuerpo\n- `detail` — qué falló en esta petición concreta\n- `resolution` — qué hacer al respecto\n- `instance` — la ruta que lo produjo, cuando se conoce"
+      },
+      "catalogue": {
+        "number": "02",
+        "title": "Catálogo de errores",
+        "description": "Los códigos quedan congelados una vez publicados. Los títulos y las pistas pueden reformularse; los códigos no.",
+        "columns": {
+          "code": "Código",
+          "status": "Estado",
+          "title": "Significado",
+          "resolution": "Cómo resolverlo"
+        }
+      }
+    },
+    "rateLimitsPage": {
+      "meta": {
+        "title": "Límites de uso de la API de ecentic",
+        "description": "La política de límites de uso de la API pública de ecentic, las cabeceras RateLimit en cada respuesta y cómo deben autorregularse los agentes."
+      },
+      "hero": {
+        "title": "Límites de uso",
+        "accent": "de la API.",
+        "description": "Cada respuesta pública lleva el estado actual de tu ventana, para que un agente pueda regular su ritmo en lugar de descubrir el límite al ser rechazado.",
+        "assurances": [
+          "Cabeceras en tiempo real",
+          "Retry-After en un 429",
+          "Ventanas por clave"
+        ],
+        "art": {
+          "alt": "Ilustración en ASCII de una balanza"
+        },
+        "action": {
+          "primary": "Volver a la documentación"
+        }
+      },
+      "policy": {
+        "number": "01",
+        "title": "La política",
+        "description": "Una ventana fija en la superficie pública, contada por credencial.",
+        "body": "Las peticiones que llevan una clave bearer se cuentan contra esa clave; el resto se cuenta contra la IP del cliente, de modo que un agente ruidoso no puede gastar el presupuesto de una dirección compartida.\n\nLa ventana es fija, no deslizante: se reinicia en un límite de reloj, y el valor `reset` de las cabeceras son los segundos que faltan para ese límite."
+      },
+      "headers": {
+        "number": "02",
+        "title": "Cabeceras",
+        "description": "Se envían ambas grafías. Lee la que tu cliente ya entienda.",
+        "body": "`RateLimit-Policy` está siempre presente, porque la política es cierta se haya podido contar la petición o no. Los contadores en tiempo real solo se envían cuando hay un recuento real detrás — un entorno que no puede alcanzar el contador los omite en lugar de anunciar un presupuesto que nadie ha medido.",
+        "columns": {
+          "header": "Cabecera",
+          "example": "Ejemplo",
+          "meaning": "Significado"
+        },
+        "items": [
+          {
+            "meaning": "La política activa: cuota y duración de la ventana en segundos."
+          },
+          {
+            "meaning": "Estado actual: peticiones restantes y segundos hasta el reinicio."
+          },
+          {
+            "meaning": "Peticiones permitidas en la ventana actual."
+          },
+          {
+            "meaning": "Peticiones restantes en la ventana actual."
+          },
+          {
+            "meaning": "Segundos hasta que se reinicie la ventana."
+          },
+          {
+            "meaning": "Solo se envía en un 429. Espera estos segundos y reintenta."
+          }
+        ]
+      },
+      "exceeded": {
+        "number": "03",
+        "title": "Cuando lo superas",
+        "description": "Un 429 es un problema tipado como cualquier otro fallo.",
+        "body": "La respuesta es `application/problem+json` con el código `rate-limited` y lleva `Retry-After` junto a las cabeceras de límite de uso. Espera los segundos que indique en lugar de reintentar de inmediato — un reintento dentro de la misma ventana se cuenta y se rechaza otra vez."
+      }
+    },
+    "versioningPage": {
+      "meta": {
+        "title": "Versionado de la API de ecentic",
+        "description": "Cómo se versiona la API de ecentic, cómo se señalan las obsolescencias con las cabeceras Deprecation y Sunset, y durante cuánto tiempo se mantiene una versión."
+      },
+      "hero": {
+        "title": "Versionado de",
+        "accent": "la API.",
+        "description": "La versión va en la ruta. Una integración que fija una versión conserva el contrato con el que se escribió, y nunca lo pierde sin aviso.",
+        "assurances": [
+          "Versión en la ruta",
+          "180 días de aviso",
+          "Cabeceras Deprecation y Sunset"
+        ],
+        "art": {
+          "alt": "Ilustración en ASCII de un calendario"
+        },
+        "action": {
+          "primary": "Volver a la documentación"
+        }
+      },
+      "strategy": {
+        "number": "01",
+        "title": "Cómo funcionan las versiones",
+        "description": "Un número, en la ruta, que solo cambia ante una ruptura.",
+        "body": "La versión actual es v1, servida en `/api/v1`. Cada respuesta repite además la versión en una cabecera `API-Version`, de modo que un cliente que siga una redirección o un enlace pueda confirmar con qué está hablando realmente.\n\nLos cambios aditivos se publican dentro de una versión: endpoints nuevos, campos opcionales nuevos en las peticiones, campos nuevos en una respuesta existente. Trata los campos de respuesta desconocidos como compatibilidad hacia delante, no como un error.\n\nUn cambio que elimina un campo, lo renombra, estrecha un tipo o cambia el significado de un valor existente es un cambio incompatible y se publica como una ruta de versión nueva junto a la anterior — nunca en el mismo sitio."
+      },
+      "deprecation": {
+        "number": "02",
+        "title": "Obsolescencia y retirada",
+        "description": "Dos cabeceras estándar y una ventana suficiente para reaccionar.",
+        "body": "Cuando una versión queda obsoleta, todas sus respuestas llevan una cabecera `Deprecation` (RFC 9745). Cuando hay fecha de retirada, las respuestas llevan además una cabecera `Sunset` (RFC 8594) con la fecha en que la versión deja de responder, y un `Link` con `rel=\"successor-version\"` que apunta al reemplazo.\n\nEl aviso mínimo entre el anuncio de obsolescencia y la fecha de retirada es de 180 días. Ninguna versión se retira sin haber servido ambas cabeceras durante esa ventana completa."
+      },
+      "support": {
+        "number": "03",
+        "title": "Qué no se versiona",
+        "description": "Los documentos de descubrimiento siguen la versión de su propio protocolo.",
+        "body": "Los documentos de descubrimiento en `.well-known` se versionan según el protocolo que implementan, no según la versión de la API de ecentic — el perfil UCP lleva una versión de UCP, la tarjeta de servidor MCP lleva una versión de protocolo, y así con el resto. Leer la versión dentro del documento siempre es correcto; deducirla de la versión de la API de ecentic no lo es."
+      }
     }
   }
 }

@@ -396,13 +396,33 @@ const getOnboardingStatus = async (actor: Actor, raw: unknown) => {
   };
 };
 
-export const getRoute = async () =>
-  Response.json(
+/**
+ * MCP Streamable HTTP reserves GET for the server-initiated SSE stream: the
+ * spec says a server that does not offer one MUST answer `405`. ecentic answers
+ * every request on the POST channel, so an MCP client asking for
+ * `text/event-stream` gets exactly that 405 — anything else would leave the
+ * client waiting on a stream that never arrives.
+ *
+ * Non-SSE callers still get the informational document that has always been
+ * here; discovery tools read it, and it is not the channel the spec governs.
+ *
+ * @see https://modelcontextprotocol.io/specification/2025-03-26/basic/transports
+ */
+export const getRoute = async (accept?: string | null) => {
+  if (accept != null && /\btext\/event-stream\b/i.test(accept))
+    return methodNotAllowed();
+
+  return Response.json(
     {
       name: Utils.protocol.server.name,
       protocol: "json-rpc-2.0",
+      protocolVersion: Utils.protocol.version,
+      transport: "streamable-http",
       endpoint,
       methods: ["initialize", "tools/list", "tools/call"],
+      manifest: `${host}/.well-known/mcp.json`,
+      serverCard: `${host}/.well-known/mcp/server-card.json`,
+      documentation: `${host}/auth.md`,
     },
     {
       headers: {
@@ -411,6 +431,25 @@ export const getRoute = async () =>
       },
     },
   );
+};
+
+/**
+ * Streamable HTTP's session-termination verb. ecentic is stateless — there is
+ * no `Mcp-Session-Id` to terminate — so the spec's answer is `405`.
+ *
+ * Deliberately not exported: this module carries a file-level `"use server"`,
+ * which makes every export addressable as a server action. The route handlers
+ * that answer `DELETE` build the same response themselves rather than widen
+ * that surface for four lines.
+ */
+const methodNotAllowed = async () =>
+  new Response(null, {
+    status: 405,
+    headers: {
+      Allow: "POST, OPTIONS",
+      "Cache-Control": "no-store",
+    },
+  });
 
 export const handleRequest = async (request: Request) => {
   const payload = await parse(request);

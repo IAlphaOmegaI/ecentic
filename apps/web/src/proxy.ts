@@ -149,14 +149,14 @@ export const proxy = async (request: Request) => {
 // Anchored with `$` so a slug that merely *contains* a dotted word — say
 // `/es/blog/why-node.js-wins` — still gets its locale rewrite.
 //
-// `ucp` needs its own entry because it is the one agent-facing surface with no
-// extension to be saved by that clause: the handlers live at `app/ucp/**`,
-// outside `[locale]`, so the rewrite to `/en/ucp/…` 404s them. The `(?:/.*)?$`
-// tail keeps the exclusion to `/ucp` and its children — the localized
-// `/ucp-validator`, `/ucp-playground` and `/ucp-comparison` pages still route
-// through next-intl.
+// `ucp` and `mcp` need their own entries because they are the agent-facing
+// surfaces with no extension to be saved by that clause: the handlers live at
+// `app/ucp/**` and `app/mcp/**`, outside `[locale]`, so the rewrite to
+// `/en/ucp/…` or `/en/mcp` 404s them. The `(?:/.*)?$` tail keeps each exclusion
+// to that path and its children — the localized `/ucp-validator`,
+// `/ucp-playground` and `/ucp-comparison` pages still route through next-intl.
 export const config = {
   matcher: [
-    "/((?!monitoring|_next/static|_next/image|api|\\.well-known(?:/.*)?$|ucp(?:/.*)?$|opengraph-image(?:-[^/]+)?$|twitter-image(?:-[^/]+)?$|.*\\.(?:js|mjs|css|txt|md|xml|json|webmanifest|ico|png|jpg|jpeg|gif|webp|avif|svg|mp4|webm|woff|woff2|ttf|otf)$).*)",
+    "/((?!monitoring|_next/static|_next/image|api|\\.well-known(?:/.*)?$|ucp(?:/.*)?$|mcp(?:/.*)?$|opengraph-image(?:-[^/]+)?$|twitter-image(?:-[^/]+)?$|.*\\.(?:js|mjs|css|txt|md|xml|json|webmanifest|ico|png|jpg|jpeg|gif|webp|avif|svg|mp4|webm|woff|woff2|ttf|otf)$).*)",
   ],
 } satisfies ProxyConfig;

@@ -56,6 +56,16 @@ export const Footer = async ({ stacked = false }: Footer.Props) => {
     {
       title: translate("columns.resources"),
       links: [
+        { href: "/docs", label: translate("links.docs") },
+        // Not a page — a route handler serving the OpenAPI document. It is in
+        // the footer because "is the API documented" is answered by a crawler
+        // reading the homepage, and a link it can follow is the only answer
+        // that counts.
+        {
+          href: "/openapi.json",
+          label: translate("links.apiReference"),
+          external: true,
+        },
         { href: "/resources", label: translate("links.resources") },
         { href: "/blog", label: translate("links.blog") },
         { href: "/compare/best-ai-ecommerce-tools", label: "Compare" },
@@ -157,12 +167,21 @@ export const Footer = async ({ stacked = false }: Footer.Props) => {
                 <ul className="flex flex-col gap-3">
                   {column.links.map((link) => (
                     <li key={link.href}>
-                      <Link
-                        href={link.href}
-                        className="font-light text-base text-foreground transition-colors hover:text-primary"
-                      >
-                        {link.label}
-                      </Link>
+                      {"external" in link && link.external ? (
+                        <a
+                          href={link.href}
+                          className="font-light text-base text-foreground transition-colors hover:text-primary"
+                        >
+                          {link.label}
+                        </a>
+                      ) : (
+                        <Link
+                          href={link.href}
+                          className="font-light text-base text-foreground transition-colors hover:text-primary"
+                        >
+                          {link.label}
+                        </Link>
+                      )}
                     </li>
                   ))}
                 </ul>

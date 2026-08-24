@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { PropsWithChildren } from "react";
+import { ClientMessages } from "@/i18n/client-messages";
 
 export const metadata: Metadata = {
   robots: {
@@ -16,5 +17,7 @@ export const metadata: Metadata = {
 };
 
 export default ({ children }: PropsWithChildren) => (
-  <main className="h-screen min-h-screen">{children}</main>
+  <ClientMessages scope="auth">
+    <main className="h-screen min-h-screen">{children}</main>
+  </ClientMessages>
 );

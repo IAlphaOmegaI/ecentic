@@ -1,0 +1,49 @@
+{
+  "name": "@ecentic/cli",
+  "version": "0.1.0",
+  "description": "Official command line interface for the ecentic agent API \u2014 discovery, plans, skills, health, and MCP tool calls.",
+  "keywords": [
+    "ecentic",
+    "cli",
+    "ai-agents",
+    "mcp",
+    "model-context-protocol",
+    "ecommerce",
+    "agent-commerce"
+  ],
+  "homepage": "https://ecentic.ai/docs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zennit-dev/ecentic",
+    "directory": "packages/cli"
+  },
+  "bugs": "https://ecentic.ai/support",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "ecentic": "./dist/cli.mjs"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "bun test src",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf .turbo dist node_modules"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "bun-types": "^1.3.14",
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

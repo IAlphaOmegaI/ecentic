@@ -32,6 +32,15 @@ export default withSentryConfig(
       // `app/layout.tsx` (locale segment is the root layout for root-params).
       globalNotFound: true,
     },
+    // `/docs` is the canonical developer entry point. The other three are the
+    // paths crawlers and agents guess first; a permanent redirect is cheaper
+    // than four copies of the same page and keeps one URL in the index.
+    redirects: async () => [
+      { source: "/developers", destination: "/docs", permanent: true },
+      { source: "/developer", destination: "/docs", permanent: true },
+      { source: "/api-docs", destination: "/docs", permanent: true },
+      { source: "/documentation", destination: "/docs", permanent: true },
+    ],
     rewrites: async () => {
       return [
         {

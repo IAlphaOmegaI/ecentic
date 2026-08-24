@@ -94,7 +94,9 @@
       "terms": "Terms of service",
       "shopify": "Shopify",
       "woocommerce": "WooCommerce",
-      "productListings": "Product Listings"
+      "productListings": "Product Listings",
+      "docs": "Developer docs",
+      "apiReference": "API reference"
     },
     "cta": {
       "eyebrow": "Get picked by AI",
@@ -3151,6 +3153,9 @@
       "description": "A video introduction to the ecentic platform.",
       "close": "Close video",
       "fallback": "Your browser does not support embedded video."
+    },
+    "summary": {
+      "label": "About ecentic"
     }
   },
   "cookieConsent": {
@@ -6841,6 +6846,266 @@
       "failedTitle": "Redemption failed",
       "successTitle": "Redemption received",
       "successDescription": "We'll verify your batch and email you within 1 business day."
+    }
+  },
+  "docs": {
+    "meta": {
+      "title": "ecentic API documentation",
+      "description": "ecentic developer documentation: REST API, MCP server, authentication, typed errors, rate limits, versioning, webhooks, and the ecentic CLI."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "docs": "Docs",
+      "errors": "Errors",
+      "rateLimits": "Rate limits",
+      "versioning": "Versioning"
+    },
+    "hero": {
+      "title": "ecentic developer",
+      "accent": "documentation.",
+      "description": "Everything an agent or an engineer needs to call ecentic: a versioned REST API, an MCP server, typed errors, published rate limits, and the discovery documents that let a crawler find all of it without a human in the loop.",
+      "assurances": [
+        "Public endpoints need no key",
+        "OpenAPI 3.1",
+        "RFC 9457 errors"
+      ],
+      "art": {
+        "alt": "ASCII-art illustration of a terminal console"
+      },
+      "action": {
+        "primary": "Open the OpenAPI document",
+        "secondary": "Read auth.md"
+      }
+    },
+    "quickstart": {
+      "number": "01",
+      "title": "Call ecentic in one request",
+      "description": "The public surface is unauthenticated and CORS-open. Start here, then mint a key only when you need to act on a merchant account.",
+      "intro": "Every public endpoint answers JSON, sends live rate-limit headers, and points back at its own machine-readable description through a Link header.",
+      "steps": [
+        {
+          "title": "Discover the surface",
+          "description": "One request returns every endpoint, the versioning policy, the rate-limit policy, and where errors are documented."
+        },
+        {
+          "title": "Read the protocol map",
+          "description": "MCP, UCP, ACP, OpenAPI and x402 with their versions, transports, and manifest locations."
+        },
+        {
+          "title": "Check the plan catalog",
+          "description": "The same prices the pricing page quotes, as machine-readable minor units."
+        }
+      ]
+    },
+    "authentication": {
+      "number": "02",
+      "title": "Authentication",
+      "description": "Public reads are open. Anything that touches a merchant account takes a bearer key.",
+      "body": "ecentic issues long-lived API keys after a human creates an account. Create the account, mint a key from the dashboard or through the authenticated MCP tool `create_api_key`, then send it as a bearer token on every protected call. The key is shown once.\n\nProtected calls without a valid key return HTTP 401 and a `WWW-Authenticate` header naming the Protected Resource Metadata document, so an agent can re-run discovery from the failure itself rather than guessing.\n\n- `mcp` — call MCP tools against the ecentic MCP endpoint\n- `onboarding` — connect Shopify, WooCommerce, and product-feed stores",
+      "linkLabel": "Full registration and credential guide"
+    },
+    "endpoints": {
+      "number": "03",
+      "title": "Endpoints",
+      "description": "The versioned REST surface. Paths under /api/v1 are stable for the life of v1.",
+      "columns": {
+        "method": "Method",
+        "path": "Path",
+        "authentication": "Auth",
+        "summary": "Summary"
+      },
+      "authentication": {
+        "none": "Public",
+        "bearer": "Bearer key",
+        "x402": "x402 payment"
+      }
+    },
+    "protocols": {
+      "number": "04",
+      "title": "Agent protocols",
+      "description": "ecentic speaks the commerce and tool protocols agents already use, and publishes a manifest for each.",
+      "columns": {
+        "protocol": "Protocol",
+        "version": "Version",
+        "endpoint": "Endpoint",
+        "manifest": "Manifest"
+      }
+    },
+    "reliability": {
+      "number": "05",
+      "title": "Errors, limits, and versions",
+      "description": "The three contracts an integration depends on, each documented on its own page and each machine-readable.",
+      "cards": [
+        {
+          "title": "Typed errors",
+          "description": "Every failure is application/problem+json with a stable machine-readable code and a resolution hint."
+        },
+        {
+          "title": "Rate limits",
+          "description": "Live RateLimit headers on every response and Retry-After on a 429, so an agent can self-throttle."
+        },
+        {
+          "title": "Versioning",
+          "description": "Version in the URL path, with Deprecation and Sunset headers before anything is removed."
+        }
+      ]
+    },
+    "mcp": {
+      "number": "06",
+      "title": "MCP server",
+      "description": "Claude, ChatGPT, and any MCP client can call ecentic natively.",
+      "body": "The ecentic MCP server speaks JSON-RPC 2.0 over HTTP and is reachable at both `/mcp` and `/api/mcp`. Its manifest is published at the conventional well-known path and as a SEP-1649 server card.\n\nTools that only read (`list_plans`) work unauthenticated. Tools that change account state — creating keys, starting checkout, connecting a store — need a bearer key.\n\n- `list_plans` — plans and their Stripe availability\n- `create_api_key` — mint a long-lived agent key\n- `create_checkout` — open a Stripe checkout session\n- `connect_shopify`, `connect_woocommerce`, `connect_feed` — store onboarding"
+    },
+    "webhooks": {
+      "number": "07",
+      "title": "Webhooks",
+      "description": "ecentic receives webhooks; it does not yet deliver them outbound.",
+      "body": "Inbound endpoints are signature-verified and reject anything that fails the check before any handler runs. Shopify compliance webhooks verify an HMAC, Stripe verifies its own signature header, and partner endpoints verify a bearer secret.\n\nOutbound webhooks — ecentic notifying your system when a scan finishes or a listing is republished — are not published yet. Poll the REST surface, or subscribe through the MCP session, until they are."
+    },
+    "cli": {
+      "number": "08",
+      "title": "Command line",
+      "description": "Script ecentic without writing an HTTP client.",
+      "body": "The ecentic CLI wraps the same public surface documented here — discovery, plans, skills, health, and MCP tool calls — so an agent or a developer can shell out instead of building an integration.\n\nIt reads `ECENTIC_API_KEY` from the environment for authenticated commands and prints JSON on stdout, so every command composes with `jq`."
+    },
+    "footer": {
+      "note": "Every document on this page is machine-readable and reachable without a key."
+    },
+    "errorsPage": {
+      "meta": {
+        "title": "ecentic API errors",
+        "description": "Every ecentic API error code, its HTTP status, what it means, and how an agent resolves it. Errors are RFC 9457 application/problem+json."
+      },
+      "hero": {
+        "title": "ecentic API",
+        "accent": "errors.",
+        "description": "Every failure on the ecentic API is a typed problem document, not an HTML page. The code is the contract: it is stable, machine-readable, and safe to branch on.",
+        "assurances": ["RFC 9457", "Stable codes", "Resolution hints"],
+        "art": {
+          "alt": "ASCII-art illustration of a shield"
+        },
+        "action": {
+          "primary": "Back to the docs"
+        }
+      },
+      "shape": {
+        "number": "01",
+        "title": "The shape of a problem",
+        "description": "One media type, one schema, on every 4xx and 5xx the API returns.",
+        "body": "Responses carry `Content-Type: application/problem+json` — deliberately not `application/json`, because the media type is how a generic client knows the body describes a failure rather than the resource it asked for.\n\n- `type` — URI naming the error, anchored in this page\n- `code` — the stable machine-readable identifier to branch on\n- `title` — short human summary\n- `status` — the HTTP status, repeated in the body\n- `detail` — what went wrong on this specific request\n- `resolution` — what to do about it\n- `instance` — the path that produced it, when known"
+      },
+      "catalogue": {
+        "number": "02",
+        "title": "Error catalogue",
+        "description": "Codes are frozen once published. Titles and hints may be reworded; codes may not.",
+        "columns": {
+          "code": "Code",
+          "status": "Status",
+          "title": "Meaning",
+          "resolution": "How to resolve"
+        }
+      }
+    },
+    "rateLimitsPage": {
+      "meta": {
+        "title": "ecentic API rate limits",
+        "description": "The ecentic public API rate-limit policy, the RateLimit headers on every response, and how agents should self-throttle."
+      },
+      "hero": {
+        "title": "ecentic API",
+        "accent": "rate limits.",
+        "description": "Every public response carries the live state of your window, so an agent can pace itself instead of discovering the limit by being rejected.",
+        "assurances": ["Live headers", "Retry-After on 429", "Per-key windows"],
+        "art": {
+          "alt": "ASCII-art illustration of a balance scale"
+        },
+        "action": {
+          "primary": "Back to the docs"
+        }
+      },
+      "policy": {
+        "number": "01",
+        "title": "The policy",
+        "description": "One fixed window on the public surface, counted per credential.",
+        "body": "Requests carrying a bearer key are counted against that key; everything else is counted against the client IP, so one noisy agent cannot spend a shared address's budget.\n\nThe window is fixed, not sliding: it resets on a wall-clock boundary, and the `reset` value in the headers is the number of seconds until that boundary."
+      },
+      "headers": {
+        "number": "02",
+        "title": "Headers",
+        "description": "Both spellings are sent. Read whichever your client already understands.",
+        "body": "`RateLimit-Policy` is always present, because the policy is true whether or not a given request could be counted. The live counters are sent only when there is a real count behind them — an environment that cannot reach the counter omits them rather than claiming a budget nobody measured.",
+        "columns": {
+          "header": "Header",
+          "example": "Example",
+          "meaning": "Meaning"
+        },
+        "items": [
+          {
+            "meaning": "The active policy: quota and window length in seconds."
+          },
+          {
+            "meaning": "Live state: requests remaining and seconds until reset."
+          },
+          {
+            "meaning": "Requests allowed in the current window."
+          },
+          {
+            "meaning": "Requests left in the current window."
+          },
+          {
+            "meaning": "Seconds until the window resets."
+          },
+          {
+            "meaning": "Sent only on a 429. Wait this many seconds, then retry."
+          }
+        ]
+      },
+      "exceeded": {
+        "number": "03",
+        "title": "When you exceed it",
+        "description": "A 429 is a typed problem like any other failure.",
+        "body": "The response is `application/problem+json` with code `rate-limited`, and carries `Retry-After` alongside the rate-limit headers. Back off for the number of seconds it names rather than retrying immediately — a retry inside the same window is counted and rejected again."
+      }
+    },
+    "versioningPage": {
+      "meta": {
+        "title": "ecentic API versioning",
+        "description": "How the ecentic API is versioned, how deprecations are signalled with Deprecation and Sunset headers, and how long a version is supported."
+      },
+      "hero": {
+        "title": "ecentic API",
+        "accent": "versioning.",
+        "description": "The version is in the path. An integration that pins a version keeps the contract it was written against, and never loses it without warning.",
+        "assurances": [
+          "URL-path versioning",
+          "180 days notice",
+          "Deprecation and Sunset headers"
+        ],
+        "art": {
+          "alt": "ASCII-art illustration of a calendar"
+        },
+        "action": {
+          "primary": "Back to the docs"
+        }
+      },
+      "strategy": {
+        "number": "01",
+        "title": "How versions work",
+        "description": "One number, in the path, changed only for a break.",
+        "body": "The current version is v1, served at `/api/v1`. Every response also echoes the version in an `API-Version` header, so a client that follows a redirect or a link can confirm what it is actually talking to.\n\nAdditive changes ship inside a version: new endpoints, new optional request fields, new fields on an existing response. Treat unknown response fields as forward compatibility, not as an error.\n\nA change that removes a field, renames one, narrows a type, or changes the meaning of an existing value is a breaking change and ships as a new version path beside the old one — never in place."
+      },
+      "deprecation": {
+        "number": "02",
+        "title": "Deprecation and sunset",
+        "description": "Two standard headers, and a window long enough to act on them.",
+        "body": "When a version is deprecated, every response from it carries a `Deprecation` header (RFC 9745). When a removal date is fixed, responses also carry a `Sunset` header (RFC 8594) naming the date the version stops answering, and a `Link` with `rel=\"successor-version\"` pointing at the replacement.\n\nThe minimum notice between the deprecation announcement and the sunset date is 180 days. No version is removed without both headers having been served for that full window."
+      },
+      "support": {
+        "number": "03",
+        "title": "What is not versioned",
+        "description": "Discovery documents track their own protocol's version instead.",
+        "body": "The `.well-known` discovery documents are versioned by the protocol they implement, not by the ecentic API version — the UCP profile carries a UCP version, the MCP server card carries a protocol version, and so on. Reading the version from inside the document is always correct; inferring it from the ecentic API version is not."
+      }
     }
   }
 }

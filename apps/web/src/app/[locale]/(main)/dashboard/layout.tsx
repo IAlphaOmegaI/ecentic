@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { PropsWithChildren } from "react";
+import { ClientMessages } from "@/i18n/client-messages";
 
 export const metadata: Metadata = {
   robots: {
@@ -20,5 +21,9 @@ export const metadata: Metadata = {
 // (`/dashboard/[store]/*`). Each of those provides its own chrome inside this
 // full-height flex container.
 export default ({ children }: PropsWithChildren) => (
-  <div className="flex h-screen overflow-hidden bg-background">{children}</div>
+  <ClientMessages scope="dashboard">
+    <div className="flex h-screen overflow-hidden bg-background">
+      {children}
+    </div>
+  </ClientMessages>
 );

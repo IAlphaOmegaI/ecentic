@@ -27,7 +27,11 @@ export const agentHomepageLinks = [
   '</.well-known/ucp>; rel="service-desc"; type="application/json"',
   '</.well-known/acp.json>; rel="service-desc"; type="application/json"',
   '</openapi.json>; rel="service-desc"; type="application/json"',
+  '</api/v1>; rel="service-desc"; type="application/json"',
   '</api/mcp>; rel="service-desc"; type="application/json"',
+  '</.well-known/mcp.json>; rel="service-desc"; type="application/json"',
+  '</.well-known/agent-instructions.md>; rel="service-doc"; type="text/markdown"',
+  '</docs>; rel="service-doc"; type="text/html"',
   '</resources>; rel="service-doc"; type="text/html"',
 ] as const;
 
@@ -40,10 +44,39 @@ export const agentHomepageLinkHeader = agentHomepageLinks.join(", ");
 export const apiCatalogDocument = {
   linkset: [
     {
+      anchor: `${seo.host}/api/v1`,
+      "service-desc": [
+        {
+          href: `${seo.host}/openapi.json`,
+          type: "application/json",
+        },
+      ],
+      "service-doc": [
+        {
+          href: `${seo.host}/docs`,
+          type: "text/html",
+        },
+        {
+          href: `${seo.host}/.well-known/agent-instructions.md`,
+          type: "text/markdown",
+        },
+      ],
+      status: [
+        {
+          href: `${seo.host}/api/v1/health`,
+          type: "application/json",
+        },
+      ],
+    },
+    {
       anchor: `${seo.host}/api/mcp`,
       "service-desc": [
         {
           href: `${seo.host}/api/openapi/mcp`,
+          type: "application/json",
+        },
+        {
+          href: `${seo.host}/.well-known/mcp.json`,
           type: "application/json",
         },
         {
@@ -55,6 +88,10 @@ export const apiCatalogDocument = {
         {
           href: `${seo.host}/auth.md`,
           type: "text/markdown",
+        },
+        {
+          href: `${seo.host}/docs`,
+          type: "text/html",
         },
         {
           href: `${seo.host}/resources`,
@@ -317,10 +354,13 @@ export const mcpServerCard = {
   description:
     "MCP tools for ecentic: plan listing, API key creation, Stripe checkout, and Shopify / WooCommerce / feed store onboarding.",
   iconUrl: `${host}/icons/icon-512.png`,
-  documentationUrl: `${host}/auth.md`,
+  documentationUrl: `${host}/docs`,
+  websiteUrl: host,
   transport: {
     type: "streamable-http",
     endpoint: `${host}/api/mcp`,
+    // Same handler, published at the bare path every MCP client probes first.
+    alternativeEndpoints: [`${host}/mcp`],
   },
   capabilities: {
     tools: {},
@@ -330,7 +370,7 @@ export const mcpServerCard = {
     schemes: ["bearer"],
   },
   instructions:
-    "Authenticate with Authorization: Bearer ecentic_sk_…. Discover registration at /auth.md and OAuth Protected Resource Metadata at /.well-known/oauth-protected-resource.",
+    "Authenticate with Authorization: Bearer ecentic_sk_…. Discover registration at /auth.md, developer documentation at /docs, and OAuth Protected Resource Metadata at /.well-known/oauth-protected-resource. Read-only tools such as list_plans work without a token.",
 };
 
 /** Keep in sync with `UCP_VERSION` in `server/app/ucp/protocol.ts`. */
@@ -438,8 +478,53 @@ export const acpDiscoveryDocument = {
   },
 } as const;
 
+/** Published support address — same one the privacy policy and terms quote. */
+export const SUPPORT_EMAIL = "support@ecentic.ai";
+
 /**
- * Root OpenAPI document with MPP `x-payment-info` payment discovery.
+ * Rate-limit headers, described once and referenced by every operation that
+ * sends them. Documenting them in the spec is what lets a generated client
+ * self-throttle instead of discovering the limit by being rejected.
+ */
+const RATE_LIMIT_RESPONSE_HEADERS = {
+  "RateLimit-Policy": {
+    description: 'Active policy, e.g. `"public";q=120;w=60`.',
+    schema: { type: "string" },
+  },
+  RateLimit: {
+    description: 'Live window state, e.g. `"public";r=118;t=42`.',
+    schema: { type: "string" },
+  },
+  "RateLimit-Limit": {
+    description: "Requests allowed in the current window.",
+    schema: { type: "integer" },
+  },
+  "RateLimit-Remaining": {
+    description: "Requests left in the current window.",
+    schema: { type: "integer" },
+  },
+  "RateLimit-Reset": {
+    description: "Seconds until the window resets.",
+    schema: { type: "integer" },
+  },
+  "API-Version": {
+    description: "Major version of the API that produced this response.",
+    schema: { type: "string" },
+  },
+} as const;
+
+/**
+ * Root OpenAPI 3.1 document.
+ *
+ * Every operation carries a unique `operationId`, a description, and a *typed*
+ * response schema — not `additionalProperties: true`. That distinction is the
+ * whole point: an LLM generating a function call from this document can only
+ * produce a correct call if the schema says what comes back, and a permissive
+ * object schema tells it nothing. Every 4xx and 5xx points at one shared
+ * RFC 9457 `Problem`, so failure handling is written once.
+ *
+ * @see https://spec.openapis.org/oas/v3.1.0
+ * @see https://www.rfc-editor.org/rfc/rfc9457
  * @see https://paymentauth.org/draft-payment-discovery-00.txt
  */
 export const openApiDocument = {
@@ -447,25 +532,191 @@ export const openApiDocument = {
   info: {
     title: "ecentic agent commerce API",
     version: "1.0.0",
+    summary:
+      "Public REST and MCP surfaces for AI agents integrating with ecentic.",
     description:
-      "Agent-facing ecentic surfaces: MCP, UCP discovery, ACP checkout bootstrapping, and payable agent API access.",
+      "ecentic simulates how AI shopping agents evaluate product listings, diagnoses why a product wins or loses, and optimizes catalog content.\n\nThis document describes the agent-facing surfaces: the versioned public REST API under `/api/v1`, the MCP JSON-RPC endpoint, commerce-protocol discovery (UCP and ACP), and the x402-payable API root.\n\nVersioning is in the URL path. Deprecations are announced with `Deprecation` (RFC 9745) and `Sunset` (RFC 8594) headers at least 180 days before removal — see /docs/versioning.\n\nAll failures are `application/problem+json` (RFC 9457) with a stable machine-readable `code` — see /docs/errors.\n\nAll responses carry RateLimit headers — see /docs/rate-limits.",
+    termsOfService: `${host}/terms`,
+    contact: {
+      name: "ecentic support",
+      url: `${host}/support`,
+      email: SUPPORT_EMAIL,
+    },
+    license: { name: "Proprietary", url: `${host}/terms` },
   },
-  servers: [{ url: host }],
+  externalDocs: {
+    description: "ecentic developer documentation",
+    url: `${host}/docs`,
+  },
+  servers: [{ url: host, description: "Production" }],
   "x-service-info": {
-    categories: ["developer-tools", "data"],
+    categories: ["developer-tools", "data", "ecommerce"],
     docs: {
-      homepage: `${host}/resources`,
-      apiReference: `${host}/.well-known/api-catalog`,
+      homepage: `${host}/docs`,
+      apiReference: `${host}/openapi.json`,
+      apiCatalog: `${host}/.well-known/api-catalog`,
       llms: `${host}/llms.txt`,
+      agentInstructions: `${host}/.well-known/agent-instructions.md`,
     },
   },
+  "x-api-versioning": {
+    strategy: "url-path",
+    current: "v1",
+    header: "API-Version",
+    deprecationHeader: "Deprecation",
+    sunsetHeader: "Sunset",
+    minimumNoticeDays: 180,
+    policy: `${host}/docs/versioning`,
+  },
+  "x-rate-limit": {
+    policy: `${host}/docs/rate-limits`,
+    headers: [
+      "RateLimit-Policy",
+      "RateLimit",
+      "RateLimit-Limit",
+      "RateLimit-Remaining",
+      "RateLimit-Reset",
+      "Retry-After",
+    ],
+    public: { limit: 120, window: 60, unit: "second" },
+  },
+  tags: [
+    { name: "discovery", description: "Unauthenticated discovery endpoints." },
+    { name: "catalog", description: "Public plan and skill catalogs." },
+    { name: "mcp", description: "Model Context Protocol tool surface." },
+    { name: "commerce", description: "UCP and ACP commerce discovery." },
+  ],
   paths: {
+    "/api/v1": {
+      get: {
+        tags: ["discovery"],
+        summary: "Public agent API index",
+        operationId: "getApiV1Index",
+        // Public: no credential required.
+        security: [],
+        description:
+          "Returns every public endpoint, the versioning policy, the rate-limit policy, and where errors are documented. Start here — one request describes the whole surface.",
+        parameters: [{ $ref: "#/components/parameters/ApiVersion" }],
+        responses: {
+          "200": {
+            description: "The public API index.",
+            headers: RATE_LIMIT_RESPONSE_HEADERS,
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ApiIndex" },
+              },
+            },
+          },
+          "429": { $ref: "#/components/responses/RateLimited" },
+          "500": { $ref: "#/components/responses/InternalError" },
+        },
+      },
+    },
+    "/api/v1/health": {
+      get: {
+        tags: ["discovery"],
+        summary: "Service health",
+        operationId: "getApiV1Health",
+        // Public: no credential required.
+        security: [],
+        description:
+          'Liveness probe. Returns `status: "ok"` and the server\'s clock, so a caller can detect clock skew before signing anything.',
+        responses: {
+          "200": {
+            description: "The service is healthy.",
+            headers: RATE_LIMIT_RESPONSE_HEADERS,
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Health" },
+              },
+            },
+          },
+          "429": { $ref: "#/components/responses/RateLimited" },
+          "500": { $ref: "#/components/responses/InternalError" },
+        },
+      },
+    },
+    "/api/v1/discovery": {
+      get: {
+        tags: ["discovery"],
+        summary: "Protocol and document discovery",
+        operationId: "getApiV1Discovery",
+        // Public: no credential required.
+        security: [],
+        description:
+          "Every machine-readable document ecentic publishes, grouped by protocol, with each protocol's version, transport, endpoint, and manifest locations.",
+        responses: {
+          "200": {
+            description: "Protocols and documents.",
+            headers: RATE_LIMIT_RESPONSE_HEADERS,
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Discovery" },
+              },
+            },
+          },
+          "429": { $ref: "#/components/responses/RateLimited" },
+          "500": { $ref: "#/components/responses/InternalError" },
+        },
+      },
+    },
+    "/api/v1/plans": {
+      get: {
+        tags: ["catalog"],
+        summary: "Plan catalog",
+        operationId: "getApiV1Plans",
+        // Public: no credential required.
+        security: [],
+        description:
+          "The public ecentic plan catalog: free Scan, pay-as-you-go with a performance fee, and the flat monthly subscriptions. Prices are in minor units of the stated currency and mirror the pricing page exactly.",
+        responses: {
+          "200": {
+            description: "Plans available to a new account.",
+            headers: RATE_LIMIT_RESPONSE_HEADERS,
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Plans" },
+              },
+            },
+          },
+          "429": { $ref: "#/components/responses/RateLimited" },
+          "500": { $ref: "#/components/responses/InternalError" },
+        },
+      },
+    },
+    "/api/v1/skills": {
+      get: {
+        tags: ["catalog"],
+        summary: "Agent skills",
+        operationId: "getApiV1Skills",
+        // Public: no credential required.
+        security: [],
+        description:
+          "The agent skills ecentic publishes, each with a plain-language statement of when to reach for it and the URL of its SKILL.md.",
+        responses: {
+          "200": {
+            description: "Published agent skills.",
+            headers: RATE_LIMIT_RESPONSE_HEADERS,
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Skills" },
+              },
+            },
+          },
+          "429": { $ref: "#/components/responses/RateLimited" },
+          "500": { $ref: "#/components/responses/InternalError" },
+        },
+      },
+    },
     "/api": {
       get: {
+        tags: ["discovery"],
         summary: "Agent API root (x402 / MPP payable)",
         operationId: "getAgentApiRoot",
+        // Public: settled with x402 payment, not a credential.
+        security: [],
         description:
-          "Protected by @x402/next. Unpaid requests receive HTTP 402 with a PAYMENT-REQUIRED header (USDC exact scheme via the configured x402 facilitator). Valid PAYMENT-SIGNATURE unlocks the agent surface catalog.",
+          "Protected by x402. Unpaid requests receive HTTP 402 with a PAYMENT-REQUIRED header (USDC exact scheme via the configured facilitator). A valid PAYMENT-SIGNATURE unlocks the agent surface catalog. Free discovery lives under /api/v1 and /.well-known — this root exists to demonstrate machine payment, not to gate discovery.",
         "x-payment-info": {
           intent: "charge",
           method: "stripe",
@@ -475,18 +726,24 @@ export const openApiDocument = {
         },
         responses: {
           "200": {
-            description: "Paid access granted",
+            description: "Paid access granted.",
             content: {
               "application/json": {
-                schema: { type: "object", additionalProperties: true },
+                schema: { $ref: "#/components/schemas/AgentApiRoot" },
               },
             },
           },
           "402": {
-            description: "Payment Required (x402 / MPP challenge)",
+            description: "Payment required (x402 / MPP challenge).",
+            headers: {
+              "PAYMENT-REQUIRED": {
+                description: "x402 payment requirements for this request.",
+                schema: { type: "string" },
+              },
+            },
             content: {
               "application/json": {
-                schema: { type: "object", additionalProperties: true },
+                schema: { $ref: "#/components/schemas/PaymentChallenge" },
               },
             },
           },
@@ -494,51 +751,198 @@ export const openApiDocument = {
       },
     },
     "/api/mcp": {
-      post: {
-        summary: "JSON-RPC MCP request",
-        operationId: "postMcp",
-        security: [{ bearerAuth: [] }],
+      get: {
+        tags: ["mcp"],
+        summary: "MCP endpoint description",
+        operationId: "getMcp",
+        // Public: no credential required.
+        security: [],
+        description:
+          "Describes the MCP endpoint. An MCP client sending `Accept: text/event-stream` receives 405 instead, because ecentic offers no server-initiated stream — every response arrives on the POST channel.",
         responses: {
           "200": {
-            description: "JSON-RPC response",
+            description: "Endpoint description.",
             content: {
               "application/json": {
-                schema: { type: "object", additionalProperties: true },
+                schema: { $ref: "#/components/schemas/McpEndpoint" },
               },
             },
           },
+          "405": {
+            description:
+              "No server-initiated SSE stream is offered (Streamable HTTP).",
+          },
+        },
+      },
+      post: {
+        tags: ["mcp"],
+        summary: "MCP JSON-RPC request",
+        operationId: "postMcp",
+        description:
+          "JSON-RPC 2.0 over HTTP. Supports `initialize`, `tools/list`, and `tools/call`. Read-only tools work unauthenticated; tools that change account state require a bearer API key.",
+        security: [{ bearerAuth: [] }, {}],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/JsonRpcRequest" },
+              examples: {
+                toolsList: {
+                  summary: "List available tools",
+                  value: {
+                    jsonrpc: "2.0",
+                    id: 1,
+                    method: "tools/list",
+                    params: {},
+                  },
+                },
+                toolsCall: {
+                  summary: "Call a tool",
+                  value: {
+                    jsonrpc: "2.0",
+                    id: 2,
+                    method: "tools/call",
+                    params: { name: "list_plans", arguments: {} },
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description:
+              "JSON-RPC response. A JSON-RPC-level failure is reported in `error` with HTTP 200, per the JSON-RPC specification.",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/JsonRpcResponse" },
+              },
+            },
+          },
+          "401": {
+            description:
+              "Authentication required for the requested tool. Carries `WWW-Authenticate` naming the Protected Resource Metadata document.",
+            headers: {
+              "WWW-Authenticate": {
+                description:
+                  "Bearer challenge naming the resource metadata document.",
+                schema: { type: "string" },
+              },
+            },
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/JsonRpcResponse" },
+              },
+            },
+          },
+        },
+      },
+      delete: {
+        tags: ["mcp"],
+        summary: "Terminate an MCP session",
+        operationId: "deleteMcpSession",
+        // Public: no credential required.
+        security: [],
+        description:
+          "Streamable HTTP session termination. ecentic is stateless and issues no `Mcp-Session-Id`, so this always answers 405.",
+        responses: {
+          "405": { description: "No session to terminate." },
+        },
+      },
+    },
+    "/mcp": {
+      post: {
+        tags: ["mcp"],
+        summary: "MCP JSON-RPC request (alias)",
+        operationId: "postMcpAlias",
+        description:
+          "Identical to `POST /api/mcp`. Published at the bare `/mcp` path because that is where MCP clients and scanners look first.",
+        security: [{ bearerAuth: [] }, {}],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/JsonRpcRequest" },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "JSON-RPC response.",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/JsonRpcResponse" },
+              },
+            },
+          },
+          "401": { $ref: "#/components/responses/Unauthenticated" },
+          "429": { $ref: "#/components/responses/RateLimited" },
+        },
+      },
+    },
+    "/.well-known/mcp.json": {
+      get: {
+        tags: ["mcp"],
+        summary: "MCP server manifest",
+        operationId: "getWellKnownMcpManifest",
+        // Public: no credential required.
+        security: [],
+        description:
+          "The MCP server card: protocol version, transport, endpoint, capabilities, and authentication scheme.",
+        responses: {
+          "200": {
+            description: "MCP server card.",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/McpServerCard" },
+              },
+            },
+          },
+          "404": { $ref: "#/components/responses/NotFound" },
         },
       },
     },
     "/.well-known/ucp": {
       get: {
+        tags: ["commerce"],
         summary: "Universal Commerce Protocol discovery profile",
         operationId: "getWellKnownUcp",
+        // Public: no credential required.
+        security: [],
+        description:
+          "UCP business discovery profile: the protocol version, the shopping services and their transports, and the capabilities this business supports.",
         responses: {
           "200": {
-            description: "UCP business profile",
+            description: "UCP business profile.",
             content: {
               "application/json": {
-                schema: { type: "object", additionalProperties: true },
+                schema: { $ref: "#/components/schemas/UcpProfile" },
               },
             },
           },
+          "404": { $ref: "#/components/responses/NotFound" },
         },
       },
     },
     "/.well-known/acp.json": {
       get: {
+        tags: ["commerce"],
         summary: "Agentic Commerce Protocol discovery document",
         operationId: "getWellKnownAcp",
+        // Public: no credential required.
+        security: [],
+        description:
+          "ACP discovery document: protocol version, API base URL, supported transports, services, currencies, and locales.",
         responses: {
           "200": {
-            description: "ACP discovery document",
+            description: "ACP discovery document.",
             content: {
               "application/json": {
-                schema: { type: "object", additionalProperties: true },
+                schema: { $ref: "#/components/schemas/AcpDiscovery" },
               },
             },
           },
+          "404": { $ref: "#/components/responses/NotFound" },
         },
       },
     },
@@ -549,11 +953,689 @@ export const openApiDocument = {
         type: "http",
         scheme: "bearer",
         description:
-          "Agent API key (ecentic_sk_…) or OAuth access token from the authorization server.",
+          "Agent API key (`ecentic_sk_…`) minted from an ecentic account. See /auth.md for registration and /docs for usage.",
+      },
+    },
+    parameters: {
+      ApiVersion: {
+        name: "API-Version",
+        in: "header",
+        required: false,
+        description:
+          "Pins the API version. Omit to use the version in the path. The same header is echoed on every response.",
+        schema: { type: "string", enum: ["1"], default: "1" },
+      },
+    },
+    responses: {
+      RateLimited: {
+        description:
+          "Rate limit exceeded. Wait for `Retry-After` seconds before retrying.",
+        headers: {
+          ...RATE_LIMIT_RESPONSE_HEADERS,
+          "Retry-After": {
+            description: "Seconds to wait before retrying.",
+            schema: { type: "integer", minimum: 0 },
+          },
+        },
+        content: {
+          "application/problem+json": {
+            schema: { $ref: "#/components/schemas/Problem" },
+          },
+        },
+      },
+      NotFound: {
+        description: "No such endpoint or resource.",
+        content: {
+          "application/problem+json": {
+            schema: { $ref: "#/components/schemas/Problem" },
+          },
+        },
+      },
+      Unauthenticated: {
+        description: "A valid bearer credential is required.",
+        content: {
+          "application/problem+json": {
+            schema: { $ref: "#/components/schemas/Problem" },
+          },
+        },
+      },
+      InternalError: {
+        description: "Unexpected server error.",
+        content: {
+          "application/problem+json": {
+            schema: { $ref: "#/components/schemas/Problem" },
+          },
+        },
+      },
+    },
+    schemas: {
+      Problem: {
+        type: "object",
+        title: "Problem",
+        description:
+          "RFC 9457 problem details. Every 4xx and 5xx on this API uses this shape, served as `application/problem+json`. Branch on `code`, not on `title` or `detail` — `code` is frozen once published.",
+        required: ["type", "title", "status", "code", "detail", "resolution"],
+        properties: {
+          type: {
+            type: "string",
+            format: "uri",
+            description:
+              "URI identifying the problem type, anchored in the error documentation.",
+            examples: [`${host}/docs/errors#not-found`],
+          },
+          title: {
+            type: "string",
+            description: "Short human-readable summary of the problem type.",
+          },
+          status: {
+            type: "integer",
+            description: "HTTP status code, repeated in the body.",
+            minimum: 100,
+            maximum: 599,
+          },
+          code: {
+            type: "string",
+            description:
+              "Stable machine-readable identifier. This is the value to branch on.",
+            enum: [
+              "not-found",
+              "method-not-allowed",
+              "unauthenticated",
+              "unauthorized",
+              "payment-required",
+              "subscription-required",
+              "invalid-request",
+              "validation-failed",
+              "conflict",
+              "rate-limited",
+              "upstream-timeout",
+              "internal-error",
+            ],
+          },
+          detail: {
+            type: "string",
+            description: "What went wrong on this specific request.",
+          },
+          resolution: {
+            type: "string",
+            description: "What the caller should do about it.",
+          },
+          documentation: {
+            type: "string",
+            format: "uri",
+            description: "Where every code is documented.",
+          },
+          instance: {
+            type: "string",
+            description: "Path that produced the problem, when known.",
+          },
+        },
+      },
+      Endpoint: {
+        type: "object",
+        title: "Endpoint",
+        required: ["path", "method", "summary", "authentication", "url"],
+        properties: {
+          path: { type: "string", description: "Path, relative to the host." },
+          method: {
+            type: "string",
+            enum: ["GET", "POST"],
+            description: "HTTP method.",
+          },
+          summary: {
+            type: "string",
+            description: "What the endpoint returns.",
+          },
+          authentication: {
+            type: "string",
+            enum: ["none", "bearer", "x402"],
+            description: "Credential the endpoint requires.",
+          },
+          url: { type: "string", format: "uri", description: "Absolute URL." },
+        },
+      },
+      ApiIndex: {
+        type: "object",
+        title: "ApiIndex",
+        description: "Self-description of the public agent API.",
+        required: ["name", "version", "description", "endpoints"],
+        properties: {
+          name: { type: "string" },
+          version: { type: "string", description: "Major API version." },
+          description: { type: "string" },
+          documentation: { type: "string", format: "uri" },
+          openapi: { type: "string", format: "uri" },
+          versioning: {
+            type: "object",
+            description: "How this API is versioned and deprecated.",
+            properties: {
+              strategy: { type: "string", enum: ["url-path"] },
+              current: { type: "string" },
+              header: { type: "string" },
+              policy: { type: "string", format: "uri" },
+              deprecationNoticeDays: { type: "integer" },
+              signals: {
+                type: "object",
+                properties: {
+                  deprecation: { type: "string" },
+                  sunset: { type: "string" },
+                },
+              },
+            },
+          },
+          rateLimit: {
+            type: "object",
+            properties: {
+              policy: { type: "string", format: "uri" },
+              headers: { type: "array", items: { type: "string" } },
+            },
+          },
+          errors: {
+            type: "object",
+            properties: {
+              mediaType: { type: "string" },
+              specification: { type: "string", format: "uri" },
+              documentation: { type: "string", format: "uri" },
+            },
+          },
+          endpoints: {
+            type: "array",
+            items: { $ref: "#/components/schemas/Endpoint" },
+          },
+        },
+      },
+      Health: {
+        type: "object",
+        title: "Health",
+        required: ["status", "service", "version", "timestamp"],
+        properties: {
+          status: { type: "string", enum: ["ok"] },
+          service: { type: "string" },
+          version: { type: "string" },
+          timestamp: {
+            type: "string",
+            format: "date-time",
+            description: "Server clock in ISO 8601, for skew detection.",
+          },
+        },
+      },
+      Protocol: {
+        type: "object",
+        title: "Protocol",
+        required: [
+          "name",
+          "key",
+          "version",
+          "transport",
+          "endpoint",
+          "manifests",
+        ],
+        properties: {
+          name: { type: "string" },
+          key: {
+            type: "string",
+            enum: ["mcp", "ucp", "acp", "openapi", "x402"],
+          },
+          version: { type: "string" },
+          transport: {
+            type: "string",
+            enum: ["http", "http-json-rpc", "rest"],
+          },
+          endpoint: { type: "string", format: "uri" },
+          manifests: {
+            type: "array",
+            items: { type: "string", format: "uri" },
+          },
+        },
+      },
+      Discovery: {
+        type: "object",
+        title: "Discovery",
+        required: ["version", "protocols", "documents"],
+        properties: {
+          version: { type: "string" },
+          protocols: {
+            type: "array",
+            items: { $ref: "#/components/schemas/Protocol" },
+          },
+          documents: {
+            type: "object",
+            description: "Absolute URLs of every published discovery document.",
+            additionalProperties: { type: "string", format: "uri" },
+          },
+        },
+      },
+      Plan: {
+        type: "object",
+        title: "Plan",
+        required: ["key", "name", "billing", "currency", "summary"],
+        properties: {
+          key: {
+            type: "string",
+            enum: ["scan", "payg", "compete", "scale", "dominate"],
+          },
+          name: { type: "string" },
+          billing: {
+            type: "string",
+            enum: ["free", "usage", "subscription"],
+            description:
+              "`free` costs nothing, `usage` bills a performance fee, `subscription` bills a flat recurring price.",
+          },
+          price: {
+            type: ["object", "null"],
+            description: "Null for plans with no recurring price.",
+            properties: {
+              amountCents: {
+                type: "integer",
+                description: "Recurring price in minor units.",
+              },
+              interval: { type: "string", enum: ["month"] },
+            },
+          },
+          currency: { type: "string", enum: ["USD"] },
+          performanceFee: {
+            type: ["object", "null"],
+            description: "Null unless the plan bills on results.",
+            properties: {
+              rateBps: {
+                type: "integer",
+                description: "Fee rate in basis points.",
+              },
+              capCents: {
+                type: "integer",
+                description: "Monthly cap in minor units.",
+              },
+              basis: { type: "string" },
+            },
+          },
+          summary: { type: "string" },
+        },
+      },
+      Plans: {
+        type: "object",
+        title: "Plans",
+        required: ["version", "currency", "plans"],
+        properties: {
+          version: { type: "string" },
+          currency: { type: "string", enum: ["USD"] },
+          documentation: { type: "string", format: "uri" },
+          checkout: { type: "string", format: "uri" },
+          plans: {
+            type: "array",
+            items: { $ref: "#/components/schemas/Plan" },
+          },
+        },
+      },
+      Skill: {
+        type: "object",
+        title: "Skill",
+        required: ["name", "summary", "whenToUse", "path", "url"],
+        properties: {
+          name: { type: "string" },
+          summary: { type: "string" },
+          whenToUse: {
+            type: "string",
+            description: "The situation this skill is the right tool for.",
+          },
+          path: { type: "string" },
+          url: { type: "string", format: "uri" },
+        },
+      },
+      Skills: {
+        type: "object",
+        title: "Skills",
+        required: ["version", "skills"],
+        properties: {
+          version: { type: "string" },
+          index: { type: "string", format: "uri" },
+          skills: {
+            type: "array",
+            items: { $ref: "#/components/schemas/Skill" },
+          },
+        },
+      },
+      AgentApiRoot: {
+        type: "object",
+        title: "AgentApiRoot",
+        required: ["name", "description", "discovery"],
+        properties: {
+          name: { type: "string" },
+          description: { type: "string" },
+          discovery: {
+            type: "object",
+            description: "Free discovery URLs, reachable without payment.",
+            additionalProperties: { type: "string", format: "uri" },
+          },
+        },
+      },
+      PaymentChallenge: {
+        type: "object",
+        title: "PaymentChallenge",
+        description:
+          "x402 payment requirements. Settle the challenge and repeat the request with a PAYMENT-SIGNATURE header.",
+        properties: {
+          x402Version: { type: "integer" },
+          error: { type: "string" },
+          accepts: {
+            type: "array",
+            description: "Accepted payment schemes.",
+            items: {
+              type: "object",
+              properties: {
+                scheme: { type: "string" },
+                network: { type: "string" },
+                maxAmountRequired: { type: "string" },
+                asset: { type: "string" },
+                payTo: { type: "string" },
+                resource: { type: "string", format: "uri" },
+              },
+            },
+          },
+        },
+      },
+      McpEndpoint: {
+        type: "object",
+        title: "McpEndpoint",
+        required: ["name", "protocol", "endpoint", "methods"],
+        properties: {
+          name: { type: "string" },
+          protocol: { type: "string", enum: ["json-rpc-2.0"] },
+          protocolVersion: { type: "string" },
+          transport: { type: "string", enum: ["streamable-http"] },
+          endpoint: { type: "string", format: "uri" },
+          methods: { type: "array", items: { type: "string" } },
+          manifest: { type: "string", format: "uri" },
+          serverCard: { type: "string", format: "uri" },
+          documentation: { type: "string", format: "uri" },
+        },
+      },
+      McpServerCard: {
+        type: "object",
+        title: "McpServerCard",
+        required: ["protocolVersion", "serverInfo", "transport"],
+        properties: {
+          version: { type: "string" },
+          protocolVersion: { type: "string" },
+          serverInfo: {
+            type: "object",
+            required: ["name", "version"],
+            properties: {
+              name: { type: "string" },
+              title: { type: "string" },
+              version: { type: "string" },
+            },
+          },
+          description: { type: "string" },
+          iconUrl: { type: "string", format: "uri" },
+          documentationUrl: { type: "string", format: "uri" },
+          transport: {
+            type: "object",
+            required: ["type", "endpoint"],
+            properties: {
+              type: { type: "string", enum: ["streamable-http"] },
+              endpoint: { type: "string", format: "uri" },
+            },
+          },
+          authentication: {
+            type: "object",
+            properties: {
+              required: { type: "boolean" },
+              schemes: { type: "array", items: { type: "string" } },
+            },
+          },
+          instructions: { type: "string" },
+        },
+      },
+      JsonRpcRequest: {
+        type: "object",
+        title: "JsonRpcRequest",
+        required: ["jsonrpc", "method"],
+        properties: {
+          jsonrpc: { type: "string", enum: ["2.0"] },
+          id: {
+            type: ["integer", "string", "null"],
+            description: "Correlation id echoed on the response.",
+          },
+          method: {
+            type: "string",
+            enum: ["initialize", "tools/list", "tools/call"],
+          },
+          params: {
+            type: "object",
+            description:
+              "Method parameters. For `tools/call`: `{ name, arguments }`.",
+            properties: {
+              name: {
+                type: "string",
+                description: "Tool name, for tools/call.",
+              },
+              arguments: {
+                type: "object",
+                description:
+                  "Tool arguments, matching that tool's inputSchema.",
+              },
+            },
+          },
+        },
+      },
+      JsonRpcResponse: {
+        type: "object",
+        title: "JsonRpcResponse",
+        required: ["jsonrpc", "id"],
+        properties: {
+          jsonrpc: { type: "string", enum: ["2.0"] },
+          id: { type: ["integer", "string", "null"] },
+          result: {
+            type: "object",
+            description: "Present on success. Absent when `error` is present.",
+          },
+          error: {
+            type: "object",
+            description: "Present on failure. Absent when `result` is present.",
+            required: ["code", "message"],
+            properties: {
+              code: { type: "integer" },
+              message: { type: "string" },
+              data: {
+                type: "object",
+                description: "Additional context, such as a discovery hint.",
+              },
+            },
+          },
+        },
+      },
+      UcpProfile: {
+        type: "object",
+        title: "UcpProfile",
+        required: ["ucp"],
+        properties: {
+          ucp: {
+            type: "object",
+            required: ["version", "services", "capabilities"],
+            properties: {
+              version: { type: "string" },
+              services: {
+                type: "object",
+                description:
+                  "Service namespaces, each an array of transports offering it.",
+              },
+              capabilities: {
+                type: "object",
+                description:
+                  "Capability namespaces, keyed by reverse-domain identifier.",
+              },
+              payment_handlers: { type: "object" },
+              supported_versions: {
+                type: "object",
+                additionalProperties: { type: "string", format: "uri" },
+              },
+            },
+          },
+        },
+      },
+      AcpDiscovery: {
+        type: "object",
+        title: "AcpDiscovery",
+        required: ["protocol", "api_base_url", "transports", "capabilities"],
+        properties: {
+          protocol: {
+            type: "object",
+            required: ["name", "version"],
+            properties: {
+              name: { type: "string", enum: ["acp"] },
+              version: { type: "string" },
+              supported_versions: { type: "array", items: { type: "string" } },
+              documentation_url: { type: "string", format: "uri" },
+            },
+          },
+          api_base_url: { type: "string", format: "uri" },
+          transports: { type: "array", items: { type: "string" } },
+          capabilities: {
+            type: "object",
+            properties: {
+              services: { type: "array", items: { type: "string" } },
+              supported_currencies: {
+                type: "array",
+                items: { type: "string" },
+              },
+              supported_locales: { type: "array", items: { type: "string" } },
+            },
+          },
+        },
       },
     },
   },
 } as const;
+
+/**
+ * When an agent should reach for ecentic — and when it should not.
+ *
+ * The audit finding this answers was blunt: an instruction file that only says
+ * what a product *is* gives an agent nothing to route on. Naming the jobs, in
+ * the words a user would actually use, is the difference between guidance and
+ * marketing copy. The `notFor` list matters as much as `bestFor`: an agent that
+ * knows where a tool stops wastes fewer calls finding out.
+ */
+export const agentGuidance = {
+  summary:
+    "ecentic measures and improves how AI shopping agents — ChatGPT, Claude, Gemini, Perplexity — rank a merchant's products against competitors, and rewrites listings to win those comparisons.",
+  bestFor: [
+    {
+      job: "Find out whether AI assistants recommend a store's products",
+      detail:
+        "Run a free scan of the top products across four assistants and return an AI Agent Score with per-product win rates.",
+      start: `${host}/api/v1/plans`,
+    },
+    {
+      job: "Diagnose why a product loses a head-to-head comparison",
+      detail:
+        "Replay the comparison an assistant ran, name the attribute or claim that cost the recommendation, and identify the competitor that won it.",
+      start: `${host}/api/mcp`,
+    },
+    {
+      job: "Rewrite a product listing so agents can evaluate it",
+      detail:
+        "Optimize titles, descriptions, and structured attributes for machine comparison, then publish back to Shopify or WooCommerce.",
+      start: `${host}/.well-known/agent-skills/optimize-listings/SKILL.md`,
+    },
+    {
+      job: "Check whether a storefront is reachable by shopping agents",
+      detail:
+        "Validate a store's Universal Commerce Protocol profile and endpoints, and report what an agent can and cannot see.",
+      start: `${host}/ucp-validator`,
+    },
+    {
+      job: "Measure AI agent traffic to a store",
+      detail:
+        "Track which assistants crawl or cite a catalog, at what volume, and which products they land on.",
+      start: `${host}/.well-known/agent-skills/agent-commerce/SKILL.md`,
+    },
+    {
+      job: "Connect a Shopify, WooCommerce, or product-feed store",
+      detail: "Onboard a catalog through MCP tools without a browser session.",
+      start: `${host}/api/mcp`,
+    },
+  ],
+  notFor: [
+    "Classic search-engine SEO aimed at human visitors — ecentic optimizes for agent comparison, not SERP rank.",
+    "Running ad campaigns, managing inventory, or fulfilling orders.",
+    "Building or hosting a storefront; ecentic connects to one you already run.",
+    "General copywriting unrelated to how an agent evaluates a product.",
+  ],
+  howToCall: [
+    `Start unauthenticated at ${host}/api/v1 — it names every endpoint, the versioning and rate-limit policies, and where errors are documented.`,
+    `Call tools over MCP at ${host}/mcp (or ${host}/api/mcp), JSON-RPC 2.0. \`list_plans\` needs no credential.`,
+    `Authenticate anything that touches a merchant account with \`Authorization: Bearer ecentic_sk_…\`; mint a key per ${host}/auth.md.`,
+    `Handle failures by branching on the \`code\` field of the RFC 9457 problem body, documented at ${host}/docs/errors.`,
+    "Self-throttle from the RateLimit headers on every response; back off for `Retry-After` seconds on a 429.",
+  ],
+} as const;
+
+/**
+ * `/.well-known/agent-instructions.md` — the same guidance as a standalone
+ * Markdown document, for agents that look for an instruction file rather than
+ * parsing llms.txt.
+ */
+export const agentInstructions = `# ecentic — agent instructions
+
+> ${agentGuidance.summary}
+
+- Site: ${host}
+- Developer documentation: ${host}/docs
+- Machine-readable index: ${host}/api/v1
+- OpenAPI: ${host}/openapi.json
+- MCP endpoint: ${host}/mcp
+- Registration and credentials: ${host}/auth.md
+
+## When to use ecentic
+
+Reach for ecentic when the task is one of these:
+
+${agentGuidance.bestFor
+  .map(
+    (entry) =>
+      `- **${entry.job}.** ${entry.detail} Start at [${entry.start}](${entry.start}).`,
+  )
+  .join("\n")}
+
+## When not to use ecentic
+
+${agentGuidance.notFor.map((entry) => `- ${entry}`).join("\n")}
+
+## How to call ecentic
+
+${agentGuidance.howToCall
+  .map((entry, index) => `${index + 1}. ${entry}`)
+  .join("\n")}
+
+## Contracts you can rely on
+
+- **Versioning** — the version is in the path (\`/api/v1\`). Breaking changes ship as a new path; deprecations are announced with \`Deprecation\` and \`Sunset\` headers at least 180 days ahead. See ${host}/docs/versioning.
+- **Errors** — every 4xx and 5xx is \`application/problem+json\` with a stable \`code\`. See ${host}/docs/errors.
+- **Rate limits** — every response carries RateLimit headers; a 429 carries \`Retry-After\`. See ${host}/docs/rate-limits.
+
+## Skills
+
+${[
+  {
+    name: "agent-commerce",
+    when: "Setting up agent tracking, UCP hosting, or catalog sync for a merchant.",
+  },
+  {
+    name: "optimize-listings",
+    when: "Improving titles, descriptions, attributes, or win rate against named competitors.",
+  },
+  {
+    name: "validate-ucp",
+    when: "Checking whether a storefront's UCP profile and endpoints are agent-reachable.",
+  },
+]
+  .map(
+    (skill) =>
+      `- [${skill.name}](${host}/.well-known/agent-skills/${skill.name}/SKILL.md) — ${skill.when}`,
+  )
+  .join("\n")}
+`;
 
 export const authMd = `# auth.md
 
@@ -596,6 +1678,13 @@ GET ${host}/.well-known/mcp/server-card.json
 GET ${host}/.well-known/ucp
 GET ${host}/.well-known/acp.json
 GET ${host}/openapi.json
+\`\`\`
+
+5. Public, unauthenticated REST surface — endpoints, versioning, rate limits,
+   and where errors are documented, in one response:
+
+\`\`\`http
+GET ${host}/api/v1
 \`\`\`
 
 ## Register
@@ -646,10 +1735,26 @@ Re-run discovery from that URL when you see it.
 
 Revoke unused keys from the merchant account (dashboard). Revoked or expired keys fail authentication immediately. There is no public OAuth token revocation endpoint yet.
 
+## Contracts
+
+- **Errors** — every 4xx and 5xx is \`application/problem+json\` (RFC 9457) with a
+  stable machine-readable \`code\`. Branch on \`code\`, never on the prose. Full
+  catalogue: ${host}/docs/errors
+- **Rate limits** — every response carries \`RateLimit-Policy\` and, when the
+  window was counted, live \`RateLimit\` headers. A 429 carries \`Retry-After\`.
+  Policy: ${host}/docs/rate-limits
+- **Versioning** — the version is in the path (\`/api/v1\`). Breaking changes ship
+  as a new path; deprecations are announced with \`Deprecation\` and \`Sunset\`
+  headers at least 180 days ahead. Policy: ${host}/docs/versioning
+
 ## Related links
 
 - Site: ${host}
-- MCP endpoint: ${resource}
+- Developer documentation: ${host}/docs
+- Agent instructions (when to use ecentic): ${host}/.well-known/agent-instructions.md
+- Public REST API: ${host}/api/v1
+- MCP endpoint: ${resource} (also ${host}/mcp)
+- MCP manifest: ${host}/.well-known/mcp.json
 - Agent skills: ${host}/.well-known/agent-skills/index.json
 - UCP profile: ${host}/.well-known/ucp
 - ACP discovery: ${host}/.well-known/acp.json
