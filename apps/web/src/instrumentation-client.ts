@@ -39,7 +39,7 @@ Sentry.init({
 
   // Chatwoot widget's sdk.js posts to its bubble iframe before it's mounted
   // (esp. in headless/bot browsers) and throws internally — external code, not ours
-  //denyUrls: [/\/packs\/js\/sdk\.js/],
+  denyUrls: [/\/packs\/js\/sdk\.js/],
 
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
   tracesSampleRate: 0.1,
